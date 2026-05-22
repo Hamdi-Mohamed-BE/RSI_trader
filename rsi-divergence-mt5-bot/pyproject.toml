@@ -1,0 +1,36 @@
+[project]
+name = "rsi-divergence-mt5-bot"
+version = "0.1.0"
+description = "MT5 RSI divergence signal bot with optional TP protection and web backtesting."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.8.0",
+    "pyyaml>=6.0.2",
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+    "rpyc>=5.2.3,<6",
+    "langchain-core>=0.3.0",
+    "langchain-google-genai>=2.0.0",
+    "playwright>=1.45.0",
+    "beautifulsoup4>=4.12.0",
+    "MetaTrader5>=5.0.45; platform_system == 'Windows'",
+]
+
+[project.scripts]
+rsi-bot = "rsi_divergence_bot.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+package = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rsi_divergence_bot"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/rsi_divergence_bot/static" = "rsi_divergence_bot/static"

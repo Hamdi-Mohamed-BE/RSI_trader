@@ -1,0 +1,138 @@
+//@version=6
+indicator("Warm Trade Plan Overlay", overlay=true, max_boxes_count=10, max_lines_count=20, max_labels_count=30)
+
+lookGroup = "Look"
+showBackground = input.bool(true, "Warm background", group=lookGroup)
+bgTransparency = input.int(12, "Background transparency", minval=0, maxval=100, group=lookGroup)
+showOverlayCandles = input.bool(true, "Black/white candle overlay", group=lookGroup)
+showSmaLow = input.bool(true, "SMA low line", group=lookGroup)
+smaLength = input.int(20, "SMA length", minval=1, group=lookGroup)
+
+planGroup = "Trade Plan Box"
+showTradeBox = input.bool(true, "Show trade box", group=planGroup)
+direction = input.string("Long", "Direction", options=["Long", "Short"], group=planGroup)
+entryInput = input.float(0.0, "Entry price, 0 = current close", step=0.00001, group=planGroup)
+stopInput = input.float(0.0, "Stop price, 0 = auto ATR", step=0.00001, group=planGroup)
+targetInput = input.float(0.0, "Target price, 0 = auto ATR", step=0.00001, group=planGroup)
+boxBarsLeft = input.int(24, "Box bars left", minval=1, group=planGroup)
+boxBarsRight = input.int(24, "Box bars right", minval=1, group=planGroup)
+
+labelGroup = "Right Labels"
+showPriceLabels = input.bool(true, "Show price labels", group=labelGroup)
+labelOffsetBars = input.int(3, "Label offset bars", minval=1, group=labelGroup)
+
+warmTan = #e7c98d
+orangeZone = #ff8b35
+grayZone = #7e8580
+purpleLine = #745bb7
+blackInk = #101010
+blueLabel = #5e88a8
+
+bgcolor(showBackground ? color.new(warmTan, bgTransparency) : na)
+
+smaLow = ta.sma(low, smaLength)
+plot(showSmaLow ? smaLow : na, "SMA 20 low", color=color.new(purpleLine, 0), linewidth=1)
+
+bullCandle = close >= open
+plotcandle(
+     showOverlayCandles ? open : na,
+     showOverlayCandles ? high : na,
+     showOverlayCandles ? low : na,
+     showOverlayCandles ? close : na,
+     title="Black/white candles",
+     color=bullCandle ? color.white : blackInk,
+     wickcolor=blackInk,
+     bordercolor=blackInk)
+
+atr = ta.atr(14)
+entry = entryInput == 0.0 ? close : entryInput
+stop = stopInput == 0.0 ? direction == "Long" ? entry - atr : entry + atr : stopInput
+target = targetInput == 0.0 ? direction == "Long" ? entry + atr * 1.8 : entry - atr * 1.8 : targetInput
+
+rewardTop = math.max(entry, target)
+rewardBottom = math.min(entry, target)
+riskTop = math.max(entry, stop)
+riskBottom = math.min(entry, stop)
+
+var box rewardBox = na
+var box riskBox = na
+var line entryLine = na
+var line stopLine = na
+var line targetLine = na
+var label priceLabel = na
+var label entryLabel = na
+var label stopLabel = na
+var label targetLabel = na
+var label smaLabel = na
+
+priceText(float price) =>
+    str.tostring(price, format.mintick)
+
+newPriceLabel(float price, string labelText, color labelColor) =>
+    label.new(
+         x=bar_index + labelOffsetBars,
+         y=price,
+         text=labelText,
+         xloc=xloc.bar_index,
+         style=label.style_label_left,
+         color=labelColor,
+         textcolor=color.white,
+         size=size.small)
+
+if barstate.islast
+    if not na(rewardBox)
+        box.delete(rewardBox)
+    if not na(riskBox)
+        box.delete(riskBox)
+    if not na(entryLine)
+        line.delete(entryLine)
+    if not na(stopLine)
+        line.delete(stopLine)
+    if not na(targetLine)
+        line.delete(targetLine)
+    if not na(priceLabel)
+        label.delete(priceLabel)
+    if not na(entryLabel)
+        label.delete(entryLabel)
+    if not na(stopLabel)
+        label.delete(stopLabel)
+    if not na(targetLabel)
+        label.delete(targetLabel)
+    if not na(smaLabel)
+        label.delete(smaLabel)
+
+    leftBar = bar_index - boxBarsLeft
+    rightBar = bar_index + boxBarsRight
+
+    if showTradeBox
+        rewardBox := box.new(
+             left=leftBar,
+             top=rewardTop,
+             right=rightBar,
+             bottom=rewardBottom,
+             xloc=xloc.bar_index,
+             bgcolor=color.new(grayZone, 68),
+             border_color=color.new(grayZone, 88))
+        riskBox := box.new(
+             left=leftBar,
+             top=riskTop,
+             right=rightBar,
+             bottom=riskBottom,
+             xloc=xloc.bar_index,
+             bgcolor=color.new(orangeZone, 58),
+             border_color=color.new(orangeZone, 88))
+
+        entryLine := line.new(leftBar, entry, rightBar, entry, xloc=xloc.bar_index, color=color.new(blackInk, 10), style=line.style_dashed, width=1)
+        stopLine := line.new(leftBar, stop, rightBar, stop, xloc=xloc.bar_index, color=color.new(orangeZone, 0), style=line.style_solid, width=1)
+        targetLine := line.new(leftBar, target, rightBar, target, xloc=xloc.bar_index, color=color.new(grayZone, 0), style=line.style_solid, width=1)
+
+    if showPriceLabels
+        priceLabel := newPriceLabel(close, priceText(close), blueLabel)
+        entryLabel := newPriceLabel(entry, priceText(entry), color.new(blackInk, 5))
+        stopLabel := newPriceLabel(stop, priceText(stop), color.new(orangeZone, 0))
+        targetLabel := newPriceLabel(target, priceText(target), color.new(grayZone, 0))
+        if showSmaLow
+            smaLabel := newPriceLabel(smaLow, priceText(smaLow), color.new(purpleLine, 0))
+
+alertcondition(ta.cross(close, smaLow), "SMA low crossing", "{{ticker}} crossing SMA low")
+alertcondition(ta.cross(close, entry), "Trade plan entry crossing", "{{ticker}} crossing trade plan entry")

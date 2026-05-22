@@ -1,0 +1,63 @@
+//@version=5
+indicator("Codex Scan Helper - EMA/VWAP/RSI/ATR", overlay=true, max_labels_count=50)
+
+ema20Len = input.int(20, "EMA 20", minval=1)
+ema50Len = input.int(50, "EMA 50", minval=1)
+ema200Len = input.int(200, "EMA 200", minval=1)
+rsiLen = input.int(14, "RSI", minval=1)
+atrLen = input.int(14, "ATR", minval=1)
+volLen = input.int(20, "Volume average", minval=1)
+
+showTable = input.bool(true, "Show scan table")
+showSignals = input.bool(true, "Show break markers")
+
+ema20 = ta.ema(close, ema20Len)
+ema50 = ta.ema(close, ema50Len)
+ema200 = ta.ema(close, ema200Len)
+vwapValue = ta.vwap(hlc3)
+rsiValue = ta.rsi(close, rsiLen)
+atrValue = ta.atr(atrLen)
+volAvg = ta.sma(volume, volLen)
+
+trendBull = close > ema20 and ema20 > ema50
+trendBear = close < ema20 and ema20 < ema50
+aboveVwap = close > vwapValue
+highVolume = volume > volAvg
+
+buyBreak = showSignals and ta.crossover(close, ema20) and aboveVwap
+sellBreak = showSignals and ta.crossunder(close, ema20) and not aboveVwap
+
+plot(ema20, "EMA 20", color=color.new(color.red, 0), linewidth=2)
+plot(ema50, "EMA 50", color=color.new(color.orange, 0), linewidth=2)
+plot(ema200, "EMA 200", color=color.new(color.blue, 0), linewidth=2)
+plot(vwapValue, "VWAP", color=color.new(color.aqua, 0), linewidth=2)
+
+plotshape(buyBreak, title="Buy watch", style=shape.triangleup, location=location.belowbar, color=color.lime, size=size.tiny, text="BUY")
+plotshape(sellBreak, title="Sell watch", style=shape.triangledown, location=location.abovebar, color=color.red, size=size.tiny, text="SELL")
+
+var table scanTable = table.new(position.top_right, 2, 6, border_width=1)
+
+if barstate.islast and showTable
+    biasText = trendBull ? "BUY BIAS" : trendBear ? "SELL BIAS" : "WAIT"
+    biasColor = trendBull ? color.new(color.green, 0) : trendBear ? color.new(color.red, 0) : color.new(color.gray, 0)
+    vwapText = aboveVwap ? "Above VWAP" : "Below VWAP"
+    vwapColor = aboveVwap ? color.new(color.green, 0) : color.new(color.red, 0)
+    volText = highVolume ? "High" : "Normal"
+    rsiText = str.tostring(rsiValue, "#.0")
+    atrText = str.tostring(atrValue, "#.0")
+
+    table.cell(scanTable, 0, 0, "Bias", text_color=color.white, bgcolor=color.black)
+    table.cell(scanTable, 1, 0, biasText, text_color=color.white, bgcolor=biasColor)
+    table.cell(scanTable, 0, 1, "VWAP", text_color=color.white, bgcolor=color.black)
+    table.cell(scanTable, 1, 1, vwapText, text_color=color.white, bgcolor=vwapColor)
+    table.cell(scanTable, 0, 2, "RSI 14", text_color=color.white, bgcolor=color.black)
+    table.cell(scanTable, 1, 2, rsiText, text_color=color.white, bgcolor=color.new(color.purple, 0))
+    table.cell(scanTable, 0, 3, "ATR 14", text_color=color.white, bgcolor=color.black)
+    table.cell(scanTable, 1, 3, atrText, text_color=color.white, bgcolor=color.new(color.gray, 0))
+    table.cell(scanTable, 0, 4, "Volume", text_color=color.white, bgcolor=color.black)
+    table.cell(scanTable, 1, 4, volText, text_color=color.white, bgcolor=highVolume ? color.new(color.orange, 0) : color.new(color.gray, 0))
+    table.cell(scanTable, 0, 5, "Price", text_color=color.white, bgcolor=color.black)
+    table.cell(scanTable, 1, 5, str.tostring(close, format.mintick), text_color=color.white, bgcolor=color.black)
+
+alertcondition(buyBreak, "Codex Buy Watch", "Price crossed above EMA20 while above VWAP")
+alertcondition(sellBreak, "Codex Sell Watch", "Price crossed below EMA20 while below VWAP")

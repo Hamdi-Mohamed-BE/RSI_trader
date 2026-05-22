@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RSI Divergence MT5 Bot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/app.css?v=14">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 18L8 10L12 14L16 6L20 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1>RSI Divergence MT5 Bot</h1>
+          <p class="subtitle">Signal scanner, backtester &amp; live dashboard</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span id="loop-badge" class="badge badge-muted hidden">Loop stopped</span>
+        <span id="mode-badge" class="badge badge-muted">Loading…</span>
+        <span id="strategy-badge" class="badge badge-accent">—</span>
+        <button id="refresh-logs-btn" class="btn btn-ghost btn-sm" type="button" title="Refresh logs">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Refresh
+        </button>
+      </div>
+    </header>
+
+    <nav class="main-nav" aria-label="Dashboard pages">
+      <a class="nav-link" data-page-link="home" href="/">Live</a>
+      <a class="nav-link" data-page-link="backtest" href="/backtest">Backtest</a>
+      <a class="nav-link" data-page-link="settings" href="/settings">Settings</a>
+      <a class="nav-link" data-page-link="manual-trade" href="/manual-trade">Manual trade</a>
+      <a class="nav-link" data-page-link="telegram-signals" href="/telegram-signals">Telegram signals copy</a>
+      <a class="nav-link" data-page-link="logs" href="/logs">Logs</a>
+      <a class="nav-link nav-link-danger" href="/logout">Logout</a>
+    </nav>
+
+    <section class="stats-grid" id="stats-grid">
+      <article class="stat-card">
+        <span class="stat-label">Enabled symbols</span>
+        <span class="stat-value" id="stat-symbols">—</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Poll interval</span>
+        <span class="stat-value" id="stat-poll">—</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Max setups</span>
+        <span class="stat-value" id="stat-setups">—</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Magic number</span>
+        <span class="stat-value mono" id="stat-magic">—</span>
+      </article>
+    </section>
+
+    <main class="layout">
+      <section class="panel panel-wide" data-pages="settings">
+        <div class="panel-header panel-header-split">
+          <div>
+            <h2>Symbols</h2>
+            <p>Toggle symbols on or off and edit lot sizes. Changes sync automatically before backtests and trading.</p>
+          </div>
+          <button id="save-lots-btn" class="btn btn-secondary btn-sm" type="button">
+            <span class="btn-label">Save settings</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="symbols-table">
+            <thead>
+              <tr>
+                <th>On</th>
+                <th>Symbol</th>
+                <th>Market key</th>
+                <th>Name</th>
+                <th>TF</th>
+                <th>Lot / leg</th>
+                <th>Confirmation</th>
+                <th>Sessions</th>
+              </tr>
+            </thead>
+            <tbody id="symbols-body">
+              <tr><td colspan="8" class="empty-row">Loading configuration…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" data-pages="backtest">
+        <div class="panel-header">
+          <div>
+            <h2>Backtest</h2>
+            <p>Run historical simulation against MT5 data.</p>
+          </div>
+        </div>
+        <form id="backtest-form" class="form-grid">
+          <label class="field">
+            <span>Start (UTC)</span>
+            <input id="start" name="start" type="datetime-local" required>
+          </label>
+          <label class="field">
+            <span>End (UTC)</span>
+            <input id="end" name="end" type="datetime-local" required>
+          </label>
+          <label class="field">
+            <span>Starting balance ($)</span>
+            <input id="starting-balance" name="starting_balance" type="number" min="1" step="any" value="1000" required>
+          </label>
+          <label class="field field-full">
+            <span>Strategy</span>
+            <select id="strategy" name="strategy">
+              <option value="signal_no_tp_protection">Signal only — no TP protection</option>
+              <option value="signal_with_tp_protection">Signal only — with TP protection</option>
+            </select>
+          </label>
+          <div class="form-actions field-full">
+            <button id="backtest-btn" class="btn btn-primary" type="submit">
+              <span class="btn-label">Run backtest</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+        <div id="backtest-summary" class="summary-grid hidden"></div>
+        <div id="backtest-daily-wrap" class="backtest-daily-wrap hidden">
+          <div class="backtest-trades-header">
+            <h3>Daily performance</h3>
+            <p>Realized PnL grouped by exit day (UTC). Balance accumulates across all symbols in exit order.</p>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table data-table-compact" id="backtest-daily-table">
+              <thead>
+                <tr>
+                  <th>Date (UTC)</th>
+                  <th>Trades</th>
+                  <th>W / L</th>
+                  <th>Daily PnL</th>
+                  <th>Balance</th>
+                </tr>
+              </thead>
+              <tbody id="backtest-daily-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-wrap hidden" id="backtest-table-wrap">
+          <table class="data-table" id="backtest-table">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Signals</th>
+                <th>Trades</th>
+                <th>W / L</th>
+                <th>Win rate</th>
+                <th>PnL</th>
+                <th>Max DD</th>
+              </tr>
+            </thead>
+            <tbody id="backtest-body"></tbody>
+          </table>
+        </div>
+        <div id="backtest-trades-wrap" class="backtest-trades-wrap hidden">
+          <div class="backtest-trades-header">
+            <h3>Trade log</h3>
+            <p>Each row passed the shared strategy rules used by scan, backtest, and trade planning.</p>
+          </div>
+          <div id="backtest-trades-list"></div>
+        </div>
+        <details class="raw-json">
+          <summary>Raw JSON response</summary>
+          <pre id="backtest-raw"></pre>
+        </details>
+      </section>
+
+      <section class="panel panel-wide" data-pages="backtest">
+        <div class="panel-header">
+          <div>
+            <h2>Chart preview backtest</h2>
+            <p>Replay one symbol on MT5 candles. See entries, stops, TPs, skips, and simulated exits bar by bar.</p>
+          </div>
+        </div>
+        <form id="chart-preview-form" class="form-grid">
+          <label class="field">
+            <span>Symbol</span>
+            <select id="chart-symbol" name="symbol" required></select>
+          </label>
+          <label class="field">
+            <span>Candle size</span>
+            <select id="chart-timeframe" name="timeframe" required></select>
+          </label>
+          <label class="field">
+            <span>Start (UTC)</span>
+            <input id="chart-start" name="start" type="datetime-local" required>
+          </label>
+          <label class="field">
+            <span>End (UTC)</span>
+            <input id="chart-end" name="end" type="datetime-local" required>
+          </label>
+          <label class="field field-full">
+            <span>Strategy</span>
+            <select id="chart-strategy" name="strategy">
+              <option value="signal_no_tp_protection">Signal only — no TP protection</option>
+              <option value="signal_with_tp_protection">Signal only — with TP protection</option>
+            </select>
+          </label>
+          <div class="form-actions field-full">
+            <button id="chart-preview-btn" class="btn btn-primary" type="submit">
+              <span class="btn-label">Load chart replay</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+
+        <div id="chart-preview-wrap" class="chart-preview-wrap hidden">
+          <div id="chart-preview-summary" class="summary-grid hidden"></div>
+          <div class="chart-toolbar">
+            <button id="chart-play-btn" class="btn btn-primary btn-sm chart-play-btn" type="button">
+              ▶ Live replay
+            </button>
+            <button id="chart-pause-btn" class="btn btn-secondary btn-sm" type="button" disabled>Pause</button>
+            <button id="chart-reset-btn" class="btn btn-ghost btn-sm" type="button">Reset</button>
+            <span id="chart-live-badge" class="badge badge-muted chart-live-badge hidden">LIVE</span>
+            <label class="chart-speed-label">
+              Speed
+              <select id="chart-speed" class="chart-speed"></select>
+            </label>
+            <label class="chart-autoplay-label">
+              <input id="chart-autoplay" type="checkbox" checked>
+              Auto-play on load
+            </label>
+            <span id="chart-time-label" class="chart-time-label">—</span>
+          </div>
+          <input id="chart-scrub" class="chart-scrub" type="range" min="0" max="0" value="0">
+          <div id="chart-container" class="chart-container"></div>
+          <div class="chart-panels">
+            <div class="chart-panel">
+              <h3>Event log</h3>
+              <div id="chart-event-log" class="chart-event-log"></div>
+            </div>
+            <div class="chart-panel">
+              <h3>Trade detail</h3>
+              <div id="chart-trade-detail" class="chart-trade-detail">
+                <p class="chart-detail-empty">Select an event or play the replay to inspect trades.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel panel-wide" data-pages="home">
+        <div class="panel-header panel-header-split">
+          <div>
+            <h2>Auto run &amp; live account</h2>
+            <p>Auto-starts on launch. Scans enabled symbols every poll interval, places MT5 orders on new RSI divergence signals, and manages TP protection.</p>
+          </div>
+          <span id="live-updated" class="live-updated">Live: —</span>
+        </div>
+        <div id="auto-run-status" class="auto-run-status">
+          <div class="auto-run-indicator">
+            <span id="auto-run-dot" class="status-dot"></span>
+            <span id="auto-run-label">Stopped</span>
+          </div>
+          <div class="auto-run-meta">
+            <span id="auto-run-scans">0 scans</span>
+            <span id="auto-run-last">Last scan: —</span>
+            <span id="auto-run-strategy-label">Strategy: —</span>
+          </div>
+        </div>
+        <div class="telegram-options">
+          <label class="field field-full">
+            <span>TP protection rule</span>
+            <select id="auto-run-strategy" name="strategy">
+              <option value="signal_no_tp_protection">Signal only — no TP protection</option>
+              <option value="signal_with_tp_protection">Signal only — with TP protection</option>
+            </select>
+          </label>
+          <label class="toggle">
+            <input id="auto-run-save-strategy" type="checkbox" checked>
+            <span>Save strategy to config.yaml</span>
+          </label>
+        </div>
+        <div class="control-row">
+          <button id="auto-run-save-btn" class="btn btn-secondary" type="button">
+            <span class="btn-label">Save bot strategy</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+          <button id="auto-run-start-btn" class="btn btn-primary" type="button">
+            <span class="btn-label">Start auto run</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+          <button id="auto-run-stop-btn" class="btn btn-danger" type="button" disabled>
+            <span class="btn-label">Stop auto run</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+        </div>
+        <p id="auto-run-hint" class="panel-hint"></p>
+
+        <div id="live-error" class="live-error hidden"></div>
+
+        <div id="account-grid" class="account-grid">
+          <article class="stat-card">
+            <span class="stat-label">Balance</span>
+            <span class="stat-value" id="acct-balance">—</span>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Equity</span>
+            <span class="stat-value" id="acct-equity">—</span>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Floating P/L</span>
+            <span class="stat-value" id="acct-floating">—</span>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Free margin</span>
+            <span class="stat-value" id="acct-free-margin">—</span>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Account</span>
+            <span class="stat-value account-meta" id="acct-meta">—</span>
+          </article>
+        </div>
+
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Open positions</h3>
+            <span id="positions-count" class="live-count">0 open</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Symbol</th>
+                  <th>Side</th>
+                  <th>Vol</th>
+                  <th>Open</th>
+                  <th>Current</th>
+                  <th>SL</th>
+                  <th>TP</th>
+                  <th>P/L</th>
+                  <th>Comment</th>
+                </tr>
+              </thead>
+              <tbody id="positions-body">
+                <tr><td colspan="10" class="empty-row">Loading live positions…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Recent deals (24h)</h3>
+            <span id="deals-count" class="live-count">0 deals</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Ticket</th>
+                  <th>Symbol</th>
+                  <th>Side</th>
+                  <th>Vol</th>
+                  <th>Price</th>
+                  <th>P/L</th>
+                  <th>Comment</th>
+                </tr>
+              </thead>
+              <tbody id="deals-body">
+                <tr><td colspan="8" class="empty-row">Loading recent deals…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-pages="home">
+        <div class="panel-header">
+          <div>
+            <h2>Manual scan</h2>
+            <p>Trigger a single scan cycle immediately.</p>
+          </div>
+        </div>
+        <div class="control-row">
+          <button id="run-once-btn" class="btn btn-secondary" type="button">
+            <span class="btn-label">Run one scan now</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+        </div>
+        <div id="scan-result" class="result-card hidden">
+          <div class="result-title">Last scan</div>
+          <pre id="status"></pre>
+        </div>
+      </section>
+
+      <section class="panel" data-pages="manual-trade">
+        <div class="panel-header">
+          <div>
+            <h2>Manual live trade</h2>
+            <p>Paste one signal and place split live market orders with SL and TPs.</p>
+          </div>
+        </div>
+        <form id="manual-trade-form" class="form-grid">
+          <label class="field field-full">
+            <span>Trade signal</span>
+            <textarea id="manual-trade-text" class="trade-textarea" rows="8" placeholder="BTCUSD BUY&#10;SL 77139&#10;TP1 77451&#10;TP2 77529&#10;TP3 77608&#10;LOT 0.01"></textarea>
+          </label>
+          <div class="form-actions field-full">
+            <button id="manual-trade-btn" class="btn btn-danger" type="submit">
+              <span class="btn-label">Place live test trade</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+        <p class="panel-hint live-warning">This sends real MT5 market orders. Every pasted trade must include SL and at least one TP.</p>
+        <div id="manual-trade-result" class="result-card hidden">
+          <div class="result-title">Manual trade result</div>
+          <pre id="manual-trade-status"></pre>
+        </div>
+      </section>
+
+      <section class="panel panel-wide" data-pages="telegram-signals">
+        <div class="panel-header panel-header-split">
+          <div>
+            <h2>Telegram signals copy</h2>
+            <p>Opens Telegram Web, watches new visible signal messages, asks Gemini to structure them, then places MT5 orders.</p>
+          </div>
+          <span id="telegram-updated" class="live-updated">Telegram: —</span>
+        </div>
+
+        <div id="telegram-status-card" class="auto-run-status">
+          <div class="auto-run-indicator">
+            <span id="telegram-dot" class="status-dot"></span>
+            <span id="telegram-label">Stopped</span>
+          </div>
+          <div class="auto-run-meta">
+            <span id="telegram-counts">0 messages · 0 placed</span>
+            <span id="telegram-last">Last signal: —</span>
+          </div>
+        </div>
+
+        <div class="telegram-options">
+          <label class="toggle">
+            <input id="telegram-protect-tp" type="checkbox" checked>
+            <span>Protect TP hits by moving remaining SLs</span>
+          </label>
+        </div>
+
+        <div class="control-row">
+          <button id="telegram-start-btn" class="btn btn-primary" type="button">
+            <span class="btn-label">Start Telegram copier</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+          <button id="telegram-stop-btn" class="btn btn-danger" type="button" disabled>
+            <span class="btn-label">Stop Telegram copier</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <p id="telegram-hint" class="panel-hint"></p>
+        <div id="telegram-error" class="live-error hidden"></div>
+
+        <div class="summary-grid" id="telegram-summary">
+          <div class="summary-card">
+            <span class="label">Gemini</span>
+            <span class="value" id="telegram-gemini">—</span>
+          </div>
+          <div class="summary-card">
+            <span class="label">Open-symbol guard</span>
+            <span class="value" id="telegram-open-guard">—</span>
+          </div>
+          <div class="summary-card">
+            <span class="label">Channels</span>
+            <span class="value" id="telegram-channels">—</span>
+          </div>
+          <div class="summary-card">
+            <span class="label">Poll interval</span>
+            <span class="value" id="telegram-poll">—</span>
+          </div>
+          <div class="summary-card">
+            <span class="label">Last parsed</span>
+            <span class="value" id="telegram-last-parsed">—</span>
+          </div>
+        </div>
+
+        <div id="telegram-last-result" class="result-card hidden">
+          <div class="result-title">Last copied signal</div>
+          <pre id="telegram-last-result-json"></pre>
+        </div>
+
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Recent message ledger</h3>
+            <div class="live-section-actions">
+              <span class="live-count">last 25 tracked messages</span>
+              <button id="telegram-clear-btn" class="btn btn-secondary btn-sm" type="button">
+                <span class="btn-label">Clear old messages</span>
+                <span class="spinner" hidden aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table data-table-compact">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Channel</th>
+                  <th>Updated</th>
+                  <th>Message</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody id="telegram-messages-body">
+                <tr><td colspan="5" class="empty-row">No Telegram messages tracked yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="panel-hint live-warning">
+          Login in the opened Telegram browser when asked. This copier uses real MT5 orders when dry_run is false and comments them as "signal bot".
+        </p>
+      </section>
+
+      <section class="panel panel-wide" data-pages="logs">
+        <div class="panel-header panel-header-split">
+          <div>
+            <h2>Live logs</h2>
+            <p>Auto-refreshes every 1.5s. Same output as the console.</p>
+          </div>
+          <label class="toggle">
+            <input id="auto-scroll" type="checkbox" checked>
+            <span>Auto-scroll</span>
+          </label>
+        </div>
+        <div class="log-toolbar">
+          <input id="log-filter" class="log-filter" type="search" placeholder="Filter logs…" autocomplete="off">
+          <span id="log-count" class="log-count">0 lines</span>
+        </div>
+        <div class="log-viewport" id="log-viewport">
+          <div id="logs" class="log-content">
+            <div class="log-empty">Loading logs…</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="/static/js/chart-preview.js?v=3" defer></script>
+  <script src="/static/js/app.js?v=28" defer></script>
+</body>
+</html>
