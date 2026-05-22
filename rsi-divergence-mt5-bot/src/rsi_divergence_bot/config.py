@@ -9,7 +9,12 @@ from pydantic import BaseModel, Field, model_validator
 from .symbols import market_key
 
 Timeframe = Literal["M1", "M5", "M15", "M30", "H1"]
-StrategyMode = Literal["signal_no_tp_protection", "signal_with_tp_protection"]
+StrategyMode = Literal[
+    "signal_no_tp_protection",
+    "signal_with_tp_protection",
+    "signal_partial_no_tp_protection",
+    "signal_partial_with_tp_protection",
+]
 TradeDecisionProfile = Literal["safe", "balanced", "backtest"]
 Confirmation = Literal["off", "ema", "trend_guard", "rsi_extreme", "strict"]
 MT5Mode = Literal["native_windows", "linux_bridge"]
@@ -56,6 +61,7 @@ class BotRuntimeConfig(BaseModel):
 
 class RiskConfig(BaseModel):
     max_setup_risk_usd: float | None = 180.0
+    use_daily_loss_guard: bool = True
     max_daily_loss_pct: float | None = Field(default=15.0, ge=0)
     max_extension_atr: float = 1.8
     max_spread_atr: float = 0.35
@@ -66,6 +72,18 @@ class RiskConfig(BaseModel):
     use_existing_position_filter: bool | None = None
     use_max_setups_filter: bool | None = None
     skip_if_symbol_has_position: bool = True
+
+    def daily_loss_guard_active(self) -> bool:
+        return (
+            self.use_daily_loss_guard
+            and self.max_daily_loss_pct is not None
+            and self.max_daily_loss_pct > 0
+        )
+
+    def effective_daily_loss_pct(self) -> float | None:
+        if not self.daily_loss_guard_active():
+            return None
+        return self.max_daily_loss_pct
 
 
 class WebConfig(BaseModel):
@@ -131,6 +149,21 @@ class AppConfig(BaseModel):
     @property
     def enabled_symbols(self) -> list[SymbolConfig]:
         return [item for item in self.symbols if item.enabled]
+
+
+def default_symbol_lot(symbol_cfg: SymbolConfig) -> float:
+    key = symbol_cfg.key.upper()
+    symbol = symbol_cfg.symbol.upper()
+    name = symbol_cfg.name.upper()
+    if key == "XAUUSD" or "GOLD" in name:
+        return 0.08
+    if key == "XAGUSD" or "SILVER" in name:
+        return 0.01
+    if any(token in key for token in ("BTC", "ETH", "SOL")):
+        return 0.10
+    if "OIL" in symbol or "OIL" in name or symbol.startswith("CL"):
+        return 0.01
+    return 0.25
 
 
 def load_config(path: str | Path) -> AppConfig:

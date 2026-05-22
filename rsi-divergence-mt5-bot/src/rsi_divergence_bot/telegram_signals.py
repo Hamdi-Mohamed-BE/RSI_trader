@@ -965,7 +965,7 @@ class TelegramSignalsBot:
     def _place_parsed_signal(self, parsed: ParsedTelegramSignal, *, source_id: str, channel: TelegramChannelConfig) -> dict:
         if self.daily_risk_status:
             daily = self.daily_risk_status()
-            if daily.get("halted"):
+            if daily.get("enabled") and daily.get("halted"):
                 return {"status": "skipped", "channel": channel.name, "reason": "daily loss guard is active", "daily_risk": daily}
 
         if not parsed.symbol:
@@ -1008,65 +1008,28 @@ class TelegramSignalsBot:
         if self.config.bot.dry_run:
             return {"status": "paper", **plan, "entry_price": entry_price}
 
-        tickets: list[dict] = []
-        failed: list[dict] = []
-        for index, tp in enumerate(tps, start=1):
-            if parsed.action in {"buy", "sell"}:
-                result = self.client.send_market(
-                    symbol_cfg.symbol,
-                    parsed.action,
-                    float(lot),
-                    float(parsed.stop_loss),
-                    float(tp),
-                    self.config.bot.magic,
-                    f"{COMMENT_PREFIX} TP{index}",
-                )
-            else:
-                result = self.client.send_pending(
-                    symbol_cfg.symbol,
-                    parsed.action,
-                    float(lot),
-                    float(parsed.entry),
-                    float(parsed.stop_loss),
-                    float(tp),
-                    self.config.bot.magic,
-                    f"{COMMENT_PREFIX} TP{index}",
-                )
-            row = {
-                "tp_index": index,
-                "tp": float(tp),
-                "retcode": getattr(result, "retcode", None),
-                "order": int(getattr(result, "order", 0) or getattr(result, "deal", 0) or 0),
-                "result": str(result),
-            }
-            if row["retcode"] in {self.client.TRADE_DONE, self.client.TRADE_PLACED} and row["order"]:
-                tickets.append(row)
-            else:
-                failed.append(row)
-
-        if tickets:
-            setup_id = f"telegram:{source_id[:16]}"
-            self.state.add_setup(
-                {
-                    "setup_id": setup_id,
-                    "symbol": symbol_cfg.symbol,
-                    "market_key": symbol_cfg.key,
-                    "side": "buy" if parsed.action.startswith("buy") else "sell",
-                    "tickets": [row["order"] for row in tickets],
-                    "tps": tps,
-                    "sl": float(parsed.stop_loss),
-                    "entry_price": float(entry_price),
-                    "moved_to_tp": 0,
-                    "breakeven_applied": False,
-                    "created_at": datetime.now(timezone.utc).isoformat(),
-                    "source": "telegram_signals",
-                    "channel_url": channel.url,
-                    "channel_name": channel.name,
-                }
-            )
-            return {"status": "placed", **plan, "entry_price": entry_price, "setup_id": setup_id, "tickets": tickets, "failed": failed}
-
-        return {"status": "failed", **plan, "entry_price": entry_price, "tickets": tickets, "failed": failed}
+        side = "buy" if parsed.action.startswith("buy") else "sell"
+        setup_id = f"telegram:{source_id[:16]}"
+        result = self.executor.place_market_setup(
+            setup_id=setup_id,
+            symbol=symbol_cfg.symbol,
+            market_key=symbol_cfg.key,
+            side=side,
+            sl=float(parsed.stop_loss),
+            tps=tps,
+            lot_per_leg=float(lot),
+            entry_price=float(entry_price),
+            extra_setup={
+                "breakeven_applied": False,
+                "source": "telegram_signals",
+                "channel_url": channel.url,
+                "channel_name": channel.name,
+            },
+            comment=f"{COMMENT_PREFIX} signal",
+        )
+        if result.get("status") == "placed":
+            return {"status": "placed", **plan, "entry_price": entry_price, "setup_id": setup_id, **result}
+        return {"status": "failed", **plan, "entry_price": entry_price, **result}
 
     def _has_open_market(self, symbol_cfg: SymbolConfig) -> bool:
         target_key = symbol_cfg.key

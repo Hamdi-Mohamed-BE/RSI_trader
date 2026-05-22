@@ -616,3 +616,50 @@ class MT5Client:
                 "tp": tp,
             }
             return self.mt5.order_send(request)
+
+    def close_position_partial(self, ticket: int, symbol: str, volume: float):
+        self.initialize()
+        with _MT5_LOCK:
+            positions = self.mt5.positions_get(ticket=ticket)
+            if not positions:
+                raise RuntimeError(f"Position {ticket} not found for {symbol}")
+            pos = positions[0]
+            pos_type = int(_field(pos, "type", 0))
+            pos_volume = float(_field(pos, "volume", 0.0) or 0.0)
+            close_volume = self.normalize_volume(symbol, min(float(volume), pos_volume))
+            if close_volume <= 0:
+                return None
+
+            tick = self.mt5.symbol_info_tick(symbol)
+            if tick is None:
+                raise RuntimeError(f"No tick for {symbol}: {self.mt5.last_error()}")
+
+            buy_type = self._mt5_const("ORDER_TYPE_BUY", 0)
+            order_type = (
+                self._mt5_const("ORDER_TYPE_SELL", 1)
+                if pos_type == buy_type
+                else self._mt5_const("ORDER_TYPE_BUY", 0)
+            )
+            price = float(
+                _field(tick, "bid") if order_type == self._mt5_const("ORDER_TYPE_SELL", 1) else _field(tick, "ask")
+            )
+
+            last_result = None
+            for filling in self._filling_modes(symbol):
+                request = {
+                    "action": self.mt5.TRADE_ACTION_DEAL,
+                    "symbol": symbol,
+                    "position": ticket,
+                    "volume": close_volume,
+                    "type": order_type,
+                    "price": price,
+                    "deviation": 100,
+                    "magic": int(_field(pos, "magic", 0) or 0),
+                    "comment": str(_field(pos, "comment", "partial TP"))[:31],
+                    "type_filling": filling,
+                }
+                last_result = self.mt5.order_send(request)
+                retcode = getattr(last_result, "retcode", None)
+                if retcode == self.TRADE_DONE:
+                    return last_result
+            return last_result

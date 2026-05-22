@@ -104,7 +104,8 @@ class SignalBot:
         return status
 
     def daily_risk_status(self) -> dict:
-        max_loss_pct = self.config.risk.max_daily_loss_pct
+        risk_cfg = self.config.risk
+        max_loss_pct = risk_cfg.effective_daily_loss_pct()
         now = datetime.now(timezone.utc).replace(microsecond=0)
         today = now.date().isoformat()
         account = self.client.account_snapshot()
@@ -112,7 +113,7 @@ class SignalBot:
         balance = float(account["balance"])
         floating_pnl = float(account.get("floating_pnl", 0.0) or 0.0)
 
-        if max_loss_pct is None or max_loss_pct <= 0:
+        if not risk_cfg.daily_loss_guard_active():
             return {
                 "enabled": False,
                 "halted": False,
@@ -121,7 +122,8 @@ class SignalBot:
                 "equity": equity,
                 "loss": 0.0,
                 "loss_limit": 0.0,
-                "max_daily_loss_pct": max_loss_pct,
+                "use_daily_loss_guard": risk_cfg.use_daily_loss_guard,
+                "max_daily_loss_pct": risk_cfg.max_daily_loss_pct,
             }
 
         state = self.state.read()
@@ -151,6 +153,7 @@ class SignalBot:
             {
                 "enabled": True,
                 "halted": halted,
+                "use_daily_loss_guard": risk_cfg.use_daily_loss_guard,
                 "max_daily_loss_pct": float(max_loss_pct),
                 "loss_limit": loss_limit,
                 "loss": loss,

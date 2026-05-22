@@ -1,6 +1,8 @@
 const STRATEGY_LABELS = {
-  signal_no_tp_protection: "No TP protection",
-  signal_with_tp_protection: "With TP protection",
+  signal_no_tp_protection: "Split legs — no TP protection",
+  signal_with_tp_protection: "Split legs — with TP protection",
+  signal_partial_no_tp_protection: "Single partial — no TP protection",
+  signal_partial_with_tp_protection: "Single partial — with TP protection",
 };
 
 const els = {
@@ -12,6 +14,7 @@ const els = {
   statSetups: document.getElementById("stat-setups"),
   statMagic: document.getElementById("stat-magic"),
   symbolsBody: document.getElementById("symbols-body"),
+  resetLotsBtn: document.getElementById("reset-lots-btn"),
   saveLotsBtn: document.getElementById("save-lots-btn"),
   backtestForm: document.getElementById("backtest-form"),
   start: document.getElementById("start"),
@@ -20,6 +23,7 @@ const els = {
   strategy: document.getElementById("strategy"),
   backtestBtn: document.getElementById("backtest-btn"),
   backtestSummary: document.getElementById("backtest-summary"),
+  backtestResults: document.getElementById("backtest-results"),
   backtestDailyWrap: document.getElementById("backtest-daily-wrap"),
   backtestDailyBody: document.getElementById("backtest-daily-body"),
   backtestTableWrap: document.getElementById("backtest-table-wrap"),
@@ -267,6 +271,8 @@ function renderSymbols(symbols) {
               min="0.01"
               step="0.01"
               data-symbol="${escapeHtml(item.symbol)}"
+              data-reset-lot="${item.reset_lot_per_leg ?? item.lot_per_leg}"
+              title="Reset lot: ${item.reset_lot_per_leg ?? item.lot_per_leg}"
               value="${item.lot_per_leg}"
             >
           </td>
@@ -387,6 +393,39 @@ async function saveLots() {
     toast(error.message, "error");
   } finally {
     setLoading(els.saveLotsBtn, false);
+  }
+}
+
+async function resetLots() {
+  if (!botConfig?.symbols?.length) {
+    toast("Symbol settings are not loaded yet", "error");
+    return;
+  }
+
+  const confirmed = window.confirm("Reset all lots to the default safe table and save config.yaml?");
+  if (!confirmed) return;
+
+  if (settingsTimer) {
+    clearTimeout(settingsTimer);
+    settingsTimer = null;
+  }
+
+  setLoading(els.resetLotsBtn, true, "Resetting...");
+  try {
+    for (const input of els.symbolsBody.querySelectorAll(".lot-input")) {
+      const symbol = input.dataset.symbol;
+      const item = botConfig.symbols.find((row) => row.symbol === symbol);
+      const resetLot = Number(item?.reset_lot_per_leg ?? input.dataset.resetLot);
+      if (Number.isFinite(resetLot) && resetLot > 0) {
+        input.value = resetLot;
+      }
+    }
+    await syncSymbolSettings({ persist: true, silent: false, rerender: true });
+    toast("Lots reset to safe defaults", "success");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.resetLotsBtn, false);
   }
 }
 
@@ -526,11 +565,21 @@ function describeDecisionFilters(filters) {
   return names.length ? `filters: ${names.join(", ")}` : "raw signal gate only";
 }
 
-function syncStrategyUi(strategy) {
+function updateStrategyLabels(strategy) {
   if (!strategy) return;
-  if (els.autoRunStrategy) els.autoRunStrategy.value = strategy;
-  if (els.strategy) els.strategy.value = strategy;
   if (els.strategyBadge) els.strategyBadge.textContent = formatStrategy(strategy);
+  if (els.autoRunStrategyLabel) {
+    els.autoRunStrategyLabel.textContent = `Strategy: ${formatStrategy(strategy)}`;
+  }
+}
+
+function syncStrategyUi(strategy, { updateSelects = true } = {}) {
+  if (!strategy) return;
+  if (updateSelects) {
+    if (els.autoRunStrategy) els.autoRunStrategy.value = strategy;
+    if (els.strategy) els.strategy.value = strategy;
+  }
+  updateStrategyLabels(strategy);
   if (botConfig?.bot) botConfig.bot.strategy = strategy;
 }
 
@@ -538,15 +587,19 @@ function renderAutoRunStatus(status) {
   if (!els.autoRunLabel || !els.autoRunDot) return;
 
   const running = Boolean(status.running);
-  const strategy = status.strategy || botConfig?.bot?.strategy;
+  const serverStrategy = status.strategy || botConfig?.bot?.strategy;
+  const displayStrategy = running
+    ? serverStrategy
+    : (els.autoRunStrategy?.value || serverStrategy);
   els.autoRunDot.classList.toggle("running", running);
   els.autoRunLabel.textContent = running ? "Running" : "Stopped";
   els.autoRunScans.textContent = `${status.scans_completed || 0} scans · ${status.last_signals || 0} signals · ${status.last_placed || 0} placed`;
   els.autoRunLast.textContent = `Last scan: ${formatTimestamp(status.last_scan_at)}`;
-  if (els.autoRunStrategyLabel) {
-    els.autoRunStrategyLabel.textContent = `Strategy: ${formatStrategy(strategy)}`;
+  if (running) {
+    syncStrategyUi(serverStrategy);
+  } else {
+    updateStrategyLabels(displayStrategy);
   }
-  syncStrategyUi(strategy);
   els.autoRunStartBtn.disabled = running;
   els.autoRunStopBtn.disabled = !running;
   if (els.autoRunStrategy) els.autoRunStrategy.disabled = false;
@@ -562,23 +615,23 @@ function renderAutoRunStatus(status) {
   if (status.last_error) {
     els.autoRunHint.textContent = `Last error: ${status.last_error}`;
     els.autoRunHint.className = "panel-hint live-warning";
-  } else if (status.daily_risk?.halted) {
+  } else if (status.daily_risk?.enabled && status.daily_risk?.halted) {
     els.autoRunHint.textContent = `Daily loss guard active: loss ${formatMoney(status.daily_risk.loss)} reached limit ${formatMoney(status.daily_risk.loss_limit)}. New trades are blocked until the next UTC day.`;
     els.autoRunHint.className = "panel-hint live-warning";
   } else if (!running) {
-    const strategyText = formatStrategy(strategy);
+    const strategyText = formatStrategy(displayStrategy);
     els.autoRunHint.textContent = status.dry_run
       ? `Auto run is stopped. Choose a TP protection rule, then start to scan symbols in paper mode (${strategyText}).`
       : `Auto run is stopped. Choose a TP protection rule, then start to scan enabled symbols and place live MT5 orders (${strategyText}).`;
     els.autoRunHint.className = "panel-hint";
   } else if (status.dry_run) {
-    els.autoRunHint.textContent = `Paper mode: ${formatStrategy(strategy)}. Listening every ${status.poll_seconds}s. Signals are logged but no live orders are sent.`;
+    els.autoRunHint.textContent = `Paper mode: ${formatStrategy(displayStrategy)}. Listening every ${status.poll_seconds}s. Signals are logged but no live orders are sent.`;
     els.autoRunHint.className = "panel-hint";
   } else {
     const profile = status.trade_decision_profile || botConfig?.bot?.trade_decision_profile || "safe";
     const filters = status.decision_filters || botConfig?.decision_filters;
     const profileText = `${profile} profile, ${describeDecisionFilters(filters)}`;
-    els.autoRunHint.textContent = `Live mode: ${formatStrategy(strategy)}. Listening every ${status.poll_seconds}s. New signals auto-place split TP orders in MT5, ${profileText}.`;
+    els.autoRunHint.textContent = `Live mode: ${formatStrategy(displayStrategy)}. Listening every ${status.poll_seconds}s. New signals auto-place orders in MT5, ${profileText}.`;
     els.autoRunHint.className = "panel-hint live-warning";
   }
 }
@@ -739,10 +792,46 @@ function renderTelegramStatus(status) {
   renderTelegramMessages(status.recent_messages || []);
 }
 
+function formatGeminiResponse(item) {
+  const parsed = item?.parsed;
+  if (parsed && typeof parsed === "object") {
+    const parts = [];
+    if (parsed.action) parts.push(`action=${parsed.action}`);
+    if (parsed.symbol) parts.push(`symbol=${parsed.symbol}`);
+    if (parsed.entry != null && parsed.entry !== "") parts.push(`entry=${parsed.entry}`);
+    if (parsed.stop_loss != null) parts.push(`sl=${parsed.stop_loss}`);
+    if (Array.isArray(parsed.tps) && parsed.tps.length) parts.push(`tps=[${parsed.tps.join(", ")}]`);
+    if (parsed.confidence != null) parts.push(`confidence=${parsed.confidence}`);
+    if (parts.length) return parts.join(" · ");
+    return JSON.stringify(parsed);
+  }
+
+  const result = item?.result;
+  if (result && typeof result === "object") {
+    if (result.status === "breakeven" || result.status === "paper") {
+      const entry = result.entry_price != null ? `@ ${result.entry_price}` : "";
+      return `Breakeven command → move SL to entry ${entry}`.trim();
+    }
+    if (result.status === "placed" || result.status === "paper") {
+      const bits = [result.status];
+      if (result.symbol) bits.push(result.symbol);
+      if (result.action) bits.push(String(result.action).toUpperCase());
+      if (result.entry_price != null) bits.push(`entry=${result.entry_price}`);
+      return bits.join(" · ");
+    }
+    if (result.reason) return String(result.reason);
+  }
+
+  if (item?.status === "parse_failed") return "Gemini parse failed";
+  if (item?.reason?.includes("Gemini")) return String(item.reason);
+  if (item?.status === "empty") return "No message text to analyze";
+  return "—";
+}
+
 function renderTelegramMessages(messages) {
   if (!els.telegramMessagesBody) return;
   if (!messages.length) {
-    els.telegramMessagesBody.innerHTML = '<tr><td colspan="5" class="empty-row">No Telegram messages tracked yet.</td></tr>';
+    els.telegramMessagesBody.innerHTML = '<tr><td colspan="6" class="empty-row">No Telegram messages tracked yet.</td></tr>';
     return;
   }
   els.telegramMessagesBody.innerHTML = messages
@@ -752,19 +841,21 @@ function renderTelegramMessages(messages) {
       const status = String(item.status || "unknown");
       const statusClass = status === "placed" || status === "paper"
         ? "value-positive"
-        : status === "watching" || status === "latest"
+        : status === "watching" || status === "latest" || status === "breakeven"
           ? "value-positive"
         : status.includes("failed")
           ? "value-negative"
           : status === "stale" || status === "empty"
             ? "value-negative"
           : "value-neutral";
+      const geminiText = formatGeminiResponse(item);
       return `
         <tr>
           <td class="${statusClass}">${escapeHtml(status)}</td>
           <td>${escapeHtml(String(item.channel_name || "—"))}</td>
           <td>${formatTimestamp(item.updated_at)}</td>
           <td>${escapeHtml(String(item.text_preview || "—")).slice(0, 220)}</td>
+          <td class="gemini-response-cell" title="${escapeHtml(geminiText)}">${escapeHtml(geminiText).slice(0, 220)}</td>
           <td>${escapeHtml(String(item.reason || item.result?.reason || "—"))}</td>
         </tr>
       `;
@@ -953,8 +1044,8 @@ function renderBacktestTrades(symbols) {
             <span class="tag">${escapeHtml(symbolRow.name)} · ${escapeHtml(symbolRow.timeframe || "")}</span>
             <span class="backtest-trade-meta">${symbolRow.trade_logs.length} trade${symbolRow.trade_logs.length === 1 ? "" : "s"} · ${formatMoney(symbolRow.pnl)}</span>
           </summary>
-          <div class="table-wrap">
-            <table class="data-table data-table-compact">
+          <div class="table-wrap table-wrap-wide">
+            <table class="data-table data-table-backtest">
               <thead>
                 <tr>
                   <th>Time</th>
@@ -997,6 +1088,45 @@ function renderBacktestTrades(symbols) {
   els.backtestTradesWrap.classList.remove("hidden");
 }
 
+function formatExitKind(value) {
+  if (!value) return "—";
+  return String(value).replace(/_/g, " ").toUpperCase();
+}
+
+function renderBacktestDailyTradeRows(tradeRows, startBalance) {
+  if (!tradeRows?.length) {
+    return `<tr><td colspan="7" class="empty-row">No trades this day.</td></tr>`;
+  }
+
+  const rows = [];
+  if (startBalance != null) {
+    rows.push(`
+      <tr class="daily-trade-start">
+        <td colspan="6">Day open balance</td>
+        <td>${formatMoney(startBalance)}</td>
+      </tr>
+    `);
+  }
+
+  rows.push(
+    ...tradeRows.map(
+      (trade, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${formatTimestamp(trade.exit_time)}</td>
+          <td><strong>${escapeHtml(trade.symbol || "—")}</strong></td>
+          <td class="side-${trade.side || ""}">${trade.side ? String(trade.side).toUpperCase() : "—"}</td>
+          <td class="${pnlClass(trade.pnl)}">${formatMoney(trade.pnl)}</td>
+          <td>${formatMoney(trade.balance_after)}</td>
+          <td>${escapeHtml(formatExitKind(trade.exit_kind))}</td>
+        </tr>
+      `,
+    ),
+  );
+
+  return rows.join("");
+}
+
 function renderBacktestDaily(dailyRows) {
   if (!dailyRows || !dailyRows.length) {
     els.backtestDailyWrap.classList.add("hidden");
@@ -1007,17 +1137,54 @@ function renderBacktestDaily(dailyRows) {
   els.backtestDailyBody.innerHTML = dailyRows
     .map(
       (row) => `
-        <tr>
-          <td><strong>${escapeHtml(row.date)}</strong></td>
+        <tr class="backtest-daily-row">
+          <td class="daily-date-cell">
+            <button type="button" class="daily-expand-btn" aria-expanded="false" aria-label="Show trades for ${escapeHtml(row.date)}">▸</button>
+            <strong>${escapeHtml(row.date)}</strong>
+          </td>
           <td>${row.trades}</td>
           <td>${row.wins} / ${row.losses}</td>
           <td class="${pnlClass(row.pnl)}">${formatMoney(row.pnl)}</td>
           <td>${formatMoney(row.balance)}</td>
         </tr>
+        <tr class="backtest-daily-detail hidden">
+          <td colspan="5">
+            <div class="daily-trades-inner table-wrap">
+              <table class="data-table data-table-compact data-table-backtest daily-trades-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Exit (UTC)</th>
+                    <th>Symbol</th>
+                    <th>Side</th>
+                    <th>PnL</th>
+                    <th>Balance after</th>
+                    <th>Exit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${renderBacktestDailyTradeRows(row.trade_rows, row.start_balance)}
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
       `,
     )
     .join("");
   els.backtestDailyWrap.classList.remove("hidden");
+}
+
+function toggleBacktestDailyRow(button) {
+  const summaryRow = button.closest(".backtest-daily-row");
+  const detailRow = summaryRow?.nextElementSibling;
+  if (!detailRow?.classList.contains("backtest-daily-detail")) return;
+
+  const expanded = button.getAttribute("aria-expanded") === "true";
+  button.setAttribute("aria-expanded", expanded ? "false" : "true");
+  button.textContent = expanded ? "▸" : "▾";
+  detailRow.classList.toggle("hidden", expanded);
+  summaryRow.classList.toggle("is-expanded", !expanded);
 }
 
 function renderBacktestResult(data) {
@@ -1049,6 +1216,7 @@ function renderBacktestResult(data) {
     </div>
   `;
   els.backtestSummary.classList.remove("hidden");
+  els.backtestResults.classList.remove("hidden");
   renderBacktestDaily(data.daily_performance);
 
   els.backtestBody.innerHTML = (data.symbols || [])
@@ -1199,8 +1367,13 @@ async function init() {
   });
 
   els.backtestForm?.addEventListener("submit", runBacktest);
+  els.backtestDailyBody?.addEventListener("click", (event) => {
+    const button = event.target.closest(".daily-expand-btn");
+    if (button) toggleBacktestDailyRow(button);
+  });
   els.runOnceBtn?.addEventListener("click", runOnce);
   els.manualTradeForm?.addEventListener("submit", placeManualTrade);
+  els.resetLotsBtn?.addEventListener("click", resetLots);
   els.saveLotsBtn?.addEventListener("click", saveLots);
   els.symbolsBody?.addEventListener("change", (event) => {
     if (!event.target.matches(".lot-input, .symbol-enabled")) return;
@@ -1214,13 +1387,18 @@ async function init() {
   els.autoRunStopBtn?.addEventListener("click", stopAutoRun);
   els.autoRunSaveBtn?.addEventListener("click", () => saveBotStrategy());
   els.autoRunStrategy?.addEventListener("change", async () => {
+    const strategy = els.autoRunStrategy.value;
+    updateStrategyLabels(strategy);
+    if (els.strategy) els.strategy.value = strategy;
+    if (botConfig?.bot) botConfig.bot.strategy = strategy;
+
     if (!els.autoRunStartBtn?.disabled) return;
     try {
       await saveBotStrategy({
         persist: Boolean(els.autoRunSaveStrategy?.checked),
         silent: true,
       });
-      toast(`Strategy switched to ${formatStrategy(els.autoRunStrategy.value)}`, "info");
+      toast(`Strategy switched to ${formatStrategy(strategy)}`, "info");
       await refreshAutoRunStatus();
     } catch (error) {
       toast(error.message, "error");

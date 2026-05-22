@@ -15,10 +15,19 @@ from fastapi.staticfiles import StaticFiles
 
 from .backtest import run_backtest, run_chart_backtest
 from .bot import SignalBot
-from .config import AppConfig, StrategyMode, save_config, update_bot_strategy, update_symbol_enabled, update_symbol_lots
+from .config import (
+    AppConfig,
+    StrategyMode,
+    default_symbol_lot,
+    save_config,
+    update_bot_strategy,
+    update_symbol_enabled,
+    update_symbol_lots,
+)
 from .decision import resolve_trade_filters
 from .logging_utils import recent_logs
-from .manual_trade import execute_manual_trade, parse_manual_trade
+from .manual_trade import _validate_geometry, parse_manual_trade
+from .symbols import market_key
 from .telegram_signals import TelegramSignalsBot
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -138,6 +147,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "enabled": item.enabled,
                 "timeframe": item.timeframe,
                 "lot_per_leg": item.lot_per_leg,
+                "reset_lot_per_leg": default_symbol_lot(item),
                 "max_setup_risk_usd": item.max_setup_risk_usd,
                 "confirmation": item.confirmation,
                 "sessions": item.sessions,
@@ -356,6 +366,15 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         try:
             await require_mt5_ready()
             plan = parse_manual_trade(body.text, config)
+            daily_risk = await asyncio.to_thread(bot.daily_risk_status)
+            if daily_risk.get("enabled") and daily_risk.get("halted"):
+                raise HTTPException(
+                    status_code=409,
+                    detail=(
+                        "Daily loss guard is active. "
+                        f"Loss {daily_risk.get('loss')} reached limit {daily_risk.get('loss_limit')}."
+                    ),
+                )
             bot.logger.warning(
                 "MANUAL LIVE TRADE requested symbol=%s side=%s lot=%s sl=%s tps=%s",
                 plan.symbol,
@@ -364,7 +383,36 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 plan.sl,
                 plan.tps,
             )
-            result = await asyncio.to_thread(execute_manual_trade, plan, bot.client, config, "manual test trade")
+            tick = await asyncio.to_thread(bot.client.tick, plan.symbol)
+            if tick is None:
+                raise ValueError(f"No live tick for {plan.symbol}.")
+            from .manual_trade import _field as manual_field
+
+            entry = float(manual_field(tick, "ask") if plan.side == "buy" else manual_field(tick, "bid"))
+            _validate_geometry(plan, entry)
+            symbol_cfg = next((item for item in config.symbols if item.symbol == plan.symbol), None)
+            setup_id = f"manual:{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
+            result = await asyncio.to_thread(
+                bot.executor.place_market_setup,
+                setup_id=setup_id,
+                symbol=plan.symbol,
+                market_key=symbol_cfg.key if symbol_cfg else market_key(plan.symbol),
+                side=plan.side,
+                sl=plan.sl,
+                tps=plan.tps,
+                lot_per_leg=plan.lot,
+                entry_price=entry,
+                comment="manual test trade",
+            )
+            result = {
+                "symbol": plan.symbol,
+                "side": plan.side,
+                "lot": plan.lot,
+                "entry": entry,
+                "sl": plan.sl,
+                "tps": plan.tps,
+                **result,
+            }
         except ValueError as exc:
             bot.logger.warning("MANUAL LIVE TRADE rejected: %s", exc)
             raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -373,13 +421,12 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
         bot.logger.warning(
-            "MANUAL LIVE TRADE done symbol=%s side=%s placed=%s failed=%s",
+            "MANUAL LIVE TRADE done symbol=%s side=%s status=%s",
             result["symbol"],
             result["side"],
-            len(result["tickets"]),
-            len(result["failed"]),
+            result.get("status"),
         )
-        return {"status": "sent", **result}
+        return {"status": result.get("status", "sent"), **result}
 
     @app.get("/api/auto-run/status")
     def auto_run_status() -> dict:

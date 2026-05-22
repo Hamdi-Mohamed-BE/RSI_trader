@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css?v=14">
+  <link rel="stylesheet" href="/static/css/app.css?v=17">
 </head>
 <body>
   <div class="app">
@@ -70,10 +70,16 @@
             <h2>Symbols</h2>
             <p>Toggle symbols on or off and edit lot sizes. Changes sync automatically before backtests and trading.</p>
           </div>
-          <button id="save-lots-btn" class="btn btn-secondary btn-sm" type="button">
-            <span class="btn-label">Save settings</span>
-            <span class="spinner" hidden aria-hidden="true"></span>
-          </button>
+          <div class="panel-actions">
+            <button id="reset-lots-btn" class="btn btn-ghost btn-sm" type="button">
+              <span class="btn-label">Reset lots</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+            <button id="save-lots-btn" class="btn btn-secondary btn-sm" type="button">
+              <span class="btn-label">Save settings</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
         </div>
         <div class="table-wrap">
           <table class="data-table" id="symbols-table">
@@ -96,7 +102,7 @@
         </div>
       </section>
 
-      <section class="panel" data-pages="backtest">
+      <section class="panel panel-wide backtest-panel" data-pages="backtest">
         <div class="panel-header">
           <div>
             <h2>Backtest</h2>
@@ -119,8 +125,10 @@
           <label class="field field-full">
             <span>Strategy</span>
             <select id="strategy" name="strategy">
-              <option value="signal_no_tp_protection">Signal only — no TP protection</option>
-              <option value="signal_with_tp_protection">Signal only — with TP protection</option>
+              <option value="signal_no_tp_protection">Split legs — no TP protection</option>
+              <option value="signal_with_tp_protection">Split legs — with TP protection</option>
+              <option value="signal_partial_no_tp_protection">Single partial — no TP protection</option>
+              <option value="signal_partial_with_tp_protection">Single partial — with TP protection</option>
             </select>
           </label>
           <div class="form-actions field-full">
@@ -131,13 +139,14 @@
           </div>
         </form>
         <div id="backtest-summary" class="summary-grid hidden"></div>
+        <div id="backtest-results" class="backtest-results hidden">
         <div id="backtest-daily-wrap" class="backtest-daily-wrap hidden">
           <div class="backtest-trades-header">
             <h3>Daily performance</h3>
-            <p>Realized PnL grouped by exit day (UTC). Balance accumulates across all symbols in exit order.</p>
+            <p>Realized PnL grouped by exit day (UTC). Expand a day to see each trade in exit order with running balance.</p>
           </div>
-          <div class="table-wrap">
-            <table class="data-table data-table-compact" id="backtest-daily-table">
+          <div class="table-wrap table-wrap-wide">
+            <table class="data-table data-table-backtest" id="backtest-daily-table">
               <thead>
                 <tr>
                   <th>Date (UTC)</th>
@@ -151,8 +160,12 @@
             </table>
           </div>
         </div>
-        <div class="table-wrap hidden" id="backtest-table-wrap">
-          <table class="data-table" id="backtest-table">
+        <div class="backtest-trades-header">
+          <h3>Symbol performance</h3>
+          <p>Aggregate stats per symbol for the selected period.</p>
+        </div>
+        <div class="table-wrap table-wrap-wide hidden" id="backtest-table-wrap">
+          <table class="data-table data-table-backtest" id="backtest-table">
             <thead>
               <tr>
                 <th>Symbol</th>
@@ -173,6 +186,7 @@
             <p>Each row passed the shared strategy rules used by scan, backtest, and trade planning.</p>
           </div>
           <div id="backtest-trades-list"></div>
+        </div>
         </div>
         <details class="raw-json">
           <summary>Raw JSON response</summary>
@@ -207,8 +221,10 @@
           <label class="field field-full">
             <span>Strategy</span>
             <select id="chart-strategy" name="strategy">
-              <option value="signal_no_tp_protection">Signal only — no TP protection</option>
-              <option value="signal_with_tp_protection">Signal only — with TP protection</option>
+              <option value="signal_no_tp_protection">Split legs — no TP protection</option>
+              <option value="signal_with_tp_protection">Split legs — with TP protection</option>
+              <option value="signal_partial_no_tp_protection">Single partial — no TP protection</option>
+              <option value="signal_partial_with_tp_protection">Single partial — with TP protection</option>
             </select>
           </label>
           <div class="form-actions field-full">
@@ -278,8 +294,10 @@
           <label class="field field-full">
             <span>TP protection rule</span>
             <select id="auto-run-strategy" name="strategy">
-              <option value="signal_no_tp_protection">Signal only — no TP protection</option>
-              <option value="signal_with_tp_protection">Signal only — with TP protection</option>
+              <option value="signal_no_tp_protection">Split legs — no TP protection</option>
+              <option value="signal_with_tp_protection">Split legs — with TP protection</option>
+              <option value="signal_partial_no_tp_protection">Single partial — no TP protection</option>
+              <option value="signal_partial_with_tp_protection">Single partial — with TP protection</option>
             </select>
           </label>
           <label class="toggle">
@@ -516,11 +534,12 @@
                   <th>Channel</th>
                   <th>Updated</th>
                   <th>Message</th>
+                  <th>Gemini response</th>
                   <th>Reason</th>
                 </tr>
               </thead>
               <tbody id="telegram-messages-body">
-                <tr><td colspan="5" class="empty-row">No Telegram messages tracked yet.</td></tr>
+                <tr><td colspan="6" class="empty-row">No Telegram messages tracked yet.</td></tr>
               </tbody>
             </table>
           </div>
@@ -559,6 +578,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=3" defer></script>
-  <script src="/static/js/app.js?v=28" defer></script>
+  <script src="/static/js/app.js?v=35" defer></script>
 </body>
 </html>
