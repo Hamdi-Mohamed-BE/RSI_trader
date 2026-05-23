@@ -19,15 +19,6 @@ def main() -> None:
     parser.add_argument("--config", default="config.yaml")
     parser.add_argument("--start")
     parser.add_argument("--end")
-    parser.add_argument(
-        "--strategy",
-        choices=[
-            "signal_no_tp_protection",
-            "signal_with_tp_protection",
-            "signal_partial_no_tp_protection",
-            "signal_partial_with_tp_protection",
-        ],
-    )
     args = parser.parse_args()
 
     config_path = Path(args.config).resolve()
@@ -67,7 +58,6 @@ def main() -> None:
                 config,
                 datetime.fromisoformat(args.start),
                 datetime.fromisoformat(args.end),
-                args.strategy or config.bot.strategy,
             )
             logger.info("BACKTEST %s", result)
             print(result)

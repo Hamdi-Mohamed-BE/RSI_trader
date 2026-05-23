@@ -27,6 +27,7 @@ from .config import (
 from .decision import resolve_trade_filters
 from .logging_utils import recent_logs
 from .manual_trade import _validate_geometry, parse_manual_trade
+from .strategy_modes import canonical_strategy
 from .symbols import market_key
 from .telegram_signals import TelegramSignalsBot
 
@@ -185,10 +186,16 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         return symbol_payload()
 
     def apply_bot_strategy(strategy: StrategyMode, persist: bool) -> None:
+        normalized = canonical_strategy(strategy)
+        if bot.is_auto_loop_running() and normalized != config.bot.strategy:
+            raise HTTPException(
+                status_code=409,
+                detail="Stop auto run before changing the shared bot strategy.",
+            )
         update_bot_strategy(config, strategy)
         if persist:
             save_config(config_path, config)
-        bot.logger.info("BOT STRATEGY strategy=%s persist=%s", strategy, persist)
+        bot.logger.info("BOT STRATEGY strategy=%s persist=%s", config.bot.strategy, persist)
 
     async def require_mt5_ready() -> dict:
         status = await asyncio.to_thread(bot.client.connection_status)
@@ -493,7 +500,6 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         timeframe: str = Query("M5"),
         start: datetime = Query(...),
         end: datetime = Query(...),
-        strategy: str = Query("signal_with_tp_protection"),
     ) -> dict:
         bot.logger.info(
             "CHART BACKTEST %s %s %s -> %s strategy=%s",
@@ -501,7 +507,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
             timeframe,
             start.isoformat(),
             end.isoformat(),
-            strategy,
+            config.bot.strategy,
         )
         try:
             await require_mt5_ready()
@@ -513,7 +519,6 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 timeframe,
                 start,
                 end,
-                strategy,
             )
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -531,10 +536,14 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     async def backtest(
         start: datetime = Query(...),
         end: datetime = Query(...),
-        strategy: str = Query("signal_with_tp_protection"),
         starting_balance: float = Query(1000.0, gt=0),
     ) -> dict:
-        bot.logger.info("BACKTEST START %s -> %s strategy=%s", start.isoformat(), end.isoformat(), strategy)
+        bot.logger.info(
+            "BACKTEST START %s -> %s strategy=%s",
+            start.isoformat(),
+            end.isoformat(),
+            config.bot.strategy,
+        )
         try:
             await require_mt5_ready()
             result = await asyncio.to_thread(
@@ -543,7 +552,6 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 config,
                 start,
                 end,
-                strategy,
                 starting_balance,
                 bot.logger,
             )

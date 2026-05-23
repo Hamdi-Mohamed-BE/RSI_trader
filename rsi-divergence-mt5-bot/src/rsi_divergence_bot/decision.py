@@ -29,6 +29,21 @@ class TradeFilterSettings:
     min_tp1_spread_multiple: float
 
 
+def skip_should_mark_seen(code: str) -> bool:
+    """Live bot retries max_setups blocks on the next poll; everything else is marked seen."""
+    return code not in {"max_setups"}
+
+
+def historical_spread_price(row, point: float) -> float:
+    try:
+        spread_points = float(row.get("spread", 0.0))
+    except AttributeError:
+        spread_points = float(getattr(row, "spread", 0.0) or 0.0)
+    if spread_points <= 0 or point <= 0:
+        return 0.0
+    return spread_points * point
+
+
 def signal_risk_usd(client: MT5Client, signal: Signal) -> float:
     return client.money_for_distance(signal.symbol, signal.lot_per_leg, signal.risk_distance) * len(signal.tps)
 

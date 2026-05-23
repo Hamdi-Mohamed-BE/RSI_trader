@@ -1,16 +1,26 @@
 from __future__ import annotations
 
 import logging
+import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 
 import pandas as pd
 
 from .config import AppConfig
-from .decision import TradeDecision, evaluate_trade_signal, resolve_trade_filters
+from .decision import TradeDecision, evaluate_trade_signal, historical_spread_price, resolve_trade_filters, skip_should_mark_seen
+from .live_session import LIVE_SCAN_BARS, collect_live_scan_opportunities, extended_history_start
 from .mt5_client import MT5Client
-from .strategy import Signal, generate_signals
-from .strategy_modes import is_partial_strategy, tp_protection_enabled
+from .portfolio import BacktestPortfolio
+from .strategy import Signal
+from .strategy_modes import (
+    closes_opposite_before_entry,
+    is_box_theory_strategy,
+    is_partial_strategy,
+    is_single_leg_strategy,
+    tp_protection_enabled,
+)
+from .trade_execution import simulate_partial_trade, simulate_single_trade, simulate_split_trade
 
 
 @dataclass
@@ -74,6 +84,7 @@ class _OpenTrade:
 
 @dataclass
 class _SignalJob:
+    scan_unix: int
     entry_unix: int
     symbol_cfg: object
     df: pd.DataFrame
@@ -179,6 +190,10 @@ class DailyLossGuard:
             return False, loss, loss_limit
         return True, loss, loss_limit
 
+    def scan_blocked(self, client: MT5Client, scan_unix: int) -> tuple[bool, float, float]:
+        allowed, loss, loss_limit = self.check_entry(client, scan_unix)
+        return (not allowed), loss, loss_limit
+
     def register_trade(
         self,
         signal: Signal,
@@ -253,178 +268,10 @@ def _skip_log(signal: Signal, decision: TradeDecision) -> BacktestSkip:
     )
 
 
-def _historical_spread_price(row, point: float) -> float | None:
-    try:
-        spread_points = float(row.get("spread", 0.0))
-    except AttributeError:
-        spread_points = float(getattr(row, "spread", 0.0) or 0.0)
-    if spread_points <= 0 or point <= 0:
-        return None
-    return spread_points * point
-
-
-def _simulate_trade(client: MT5Client, signal: Signal, rows, tp_protection: bool) -> dict:
-    active = [True for _ in signal.tps]
-    stops = [signal.sl for _ in signal.tps]
-    pnl = 0.0
-    close = signal.entry
-    exit_time: int | None = None
-    exit_kind = "close"
-    last_bar_time: int | None = None
-
-    def row_unix(row) -> int:
-        ts = getattr(row, "time", None)
-        if hasattr(ts, "timestamp"):
-            return int(ts.timestamp())
-        return int(pd.Timestamp(ts).timestamp())
-
-    for row in rows:
-        high = float(row.high)
-        low = float(row.low)
-        close = float(row.close)
-        bar_time = row_unix(row)
-        last_bar_time = bar_time
-        if signal.side == "buy":
-            for index, is_active in enumerate(active):
-                if is_active and low <= stops[index]:
-                    pnl += client.money_for_distance(signal.symbol, signal.lot_per_leg, stops[index] - signal.entry)
-                    active[index] = False
-                    exit_kind = "sl"
-            for index, tp in enumerate(signal.tps):
-                if active[index] and high >= tp:
-                    pnl += client.money_for_distance(signal.symbol, signal.lot_per_leg, tp - signal.entry)
-                    active[index] = False
-                    exit_kind = f"tp{index + 1}"
-                    if tp_protection:
-                        for move_index, still_active in enumerate(active):
-                            if still_active and stops[move_index] < tp:
-                                stops[move_index] = tp
-        else:
-            for index, is_active in enumerate(active):
-                if is_active and high >= stops[index]:
-                    pnl += client.money_for_distance(signal.symbol, signal.lot_per_leg, signal.entry - stops[index])
-                    active[index] = False
-                    exit_kind = "sl"
-            for index, tp in enumerate(signal.tps):
-                if active[index] and low <= tp:
-                    pnl += client.money_for_distance(signal.symbol, signal.lot_per_leg, signal.entry - tp)
-                    active[index] = False
-                    exit_kind = f"tp{index + 1}"
-                    if tp_protection:
-                        for move_index, still_active in enumerate(active):
-                            if still_active and stops[move_index] > tp:
-                                stops[move_index] = tp
-        if not any(active):
-            exit_time = bar_time
-            return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
-
-    exit_time = last_bar_time
-    for index, is_active in enumerate(active):
-        if not is_active:
-            continue
-        if signal.side == "buy":
-            pnl += client.money_for_distance(signal.symbol, signal.lot_per_leg, close - signal.entry)
-        else:
-            pnl += client.money_for_distance(signal.symbol, signal.lot_per_leg, signal.entry - close)
-    return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
-
-
-def _simulate_trade_partial(client: MT5Client, signal: Signal, rows, tp_protection: bool) -> dict:
-    tps = list(signal.tps)
-    if not tps:
-        return {"pnl": 0.0, "exit_time": None, "exit_kind": "close"}
-
-    total_volume = signal.lot_per_leg * len(tps)
-    slice_volume = total_volume / len(tps)
-    remaining_volume = total_volume
-    sl = float(signal.sl)
-    partial_closed = 0
-    pnl = 0.0
-    exit_time: int | None = None
-    exit_kind = "close"
-    last_bar_time: int | None = None
-
-    def row_unix(row) -> int:
-        ts = getattr(row, "time", None)
-        if hasattr(ts, "timestamp"):
-            return int(ts.timestamp())
-        return int(pd.Timestamp(ts).timestamp())
-
-    def pnl_for_slice(volume: float, exit_price: float) -> float:
-        if signal.side == "buy":
-            return client.money_for_distance(signal.symbol, volume, exit_price - signal.entry)
-        return client.money_for_distance(signal.symbol, volume, signal.entry - exit_price)
-
-    for row in rows:
-        high = float(row.high)
-        low = float(row.low)
-        close = float(row.close)
-        bar_time = row_unix(row)
-        last_bar_time = bar_time
-
-        if remaining_volume <= 0:
-            exit_time = bar_time
-            return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
-
-        if signal.side == "buy":
-            if low <= sl:
-                pnl += pnl_for_slice(remaining_volume, sl)
-                exit_kind = "sl"
-                exit_time = bar_time
-                return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
-
-            while partial_closed < len(tps) - 1 and high >= tps[partial_closed]:
-                close_volume = slice_volume if partial_closed < len(tps) - 2 else remaining_volume - slice_volume
-                close_volume = min(close_volume, remaining_volume)
-                if close_volume <= 0:
-                    break
-                pnl += pnl_for_slice(close_volume, tps[partial_closed])
-                remaining_volume -= close_volume
-                partial_closed += 1
-                exit_kind = f"tp{partial_closed}"
-                if tp_protection:
-                    sl = max(sl, tps[partial_closed - 1])
-
-            if remaining_volume > 0 and high >= tps[-1]:
-                pnl += pnl_for_slice(remaining_volume, tps[-1])
-                exit_kind = f"tp{len(tps)}"
-                exit_time = bar_time
-                return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
-        else:
-            if high >= sl:
-                pnl += pnl_for_slice(remaining_volume, sl)
-                exit_kind = "sl"
-                exit_time = bar_time
-                return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
-
-            while partial_closed < len(tps) - 1 and low <= tps[partial_closed]:
-                close_volume = slice_volume if partial_closed < len(tps) - 2 else remaining_volume - slice_volume
-                close_volume = min(close_volume, remaining_volume)
-                if close_volume <= 0:
-                    break
-                pnl += pnl_for_slice(close_volume, tps[partial_closed])
-                remaining_volume -= close_volume
-                partial_closed += 1
-                exit_kind = f"tp{partial_closed}"
-                if tp_protection:
-                    sl = min(sl, tps[partial_closed - 1])
-
-            if remaining_volume > 0 and low <= tps[-1]:
-                pnl += pnl_for_slice(remaining_volume, tps[-1])
-                exit_kind = f"tp{len(tps)}"
-                exit_time = bar_time
-                return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
-
-    exit_time = last_bar_time
-    if remaining_volume > 0:
-        pnl += pnl_for_slice(remaining_volume, close)
-    return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
-
-
 def _trade_pnl(client: MT5Client, signal: Signal, rows, tp_protection: bool, *, partial_execution: bool = False) -> float:
     if partial_execution:
-        return float(_simulate_trade_partial(client, signal, rows, tp_protection)["pnl"])
-    return float(_simulate_trade(client, signal, rows, tp_protection)["pnl"])
+        return float(simulate_partial_trade(client, signal, rows, tp_protection)["pnl"])
+    return float(simulate_split_trade(client, signal, rows, tp_protection)["pnl"])
 
 
 def _trade_pnl_as_of(client: MT5Client, trade: _OpenTrade, as_of_unix: int) -> float:
@@ -435,8 +282,39 @@ def _trade_pnl_as_of(client: MT5Client, trade: _OpenTrade, as_of_unix: int) -> f
     if not rows:
         return 0.0
     if trade.partial_execution:
-        return float(_simulate_trade_partial(client, trade.signal, rows, trade.tp_protection)["pnl"])
-    return float(_simulate_trade(client, trade.signal, rows, trade.tp_protection)["pnl"])
+        return float(simulate_partial_trade(client, trade.signal, rows, trade.tp_protection)["pnl"])
+    return float(simulate_split_trade(client, trade.signal, rows, trade.tp_protection)["pnl"])
+
+
+def _opposite_side(side: str) -> str:
+    return "sell" if side == "buy" else "buy"
+
+
+def _force_close_market_trades(
+    daily_guard: DailyLossGuard,
+    portfolio: BacktestPortfolio,
+    client: MT5Client,
+    market_key: str,
+    as_of_unix: int,
+    *,
+    side: str | None = None,
+) -> list[tuple[_OpenTrade, float]]:
+    results: list[tuple[_OpenTrade, float]] = []
+    for trade in list(daily_guard.open_trades):
+        if trade.realized or trade.signal.market_key != market_key:
+            continue
+        if side is not None and trade.signal.side != side:
+            continue
+        pnl = _trade_pnl_as_of(client, trade, as_of_unix)
+        daily_guard.balance += pnl
+        trade.realized = True
+        trade.full_pnl = pnl
+        trade.exit_unix = as_of_unix
+        results.append((trade, pnl))
+    daily_guard.open_trades = [trade for trade in daily_guard.open_trades if not trade.realized]
+    if results:
+        portfolio.close_market_setups(market_key)
+    return results
 
 
 def _bar_unix(value) -> int:
@@ -535,10 +413,15 @@ def _symbol_payload(item: SymbolBacktest) -> dict:
     return payload
 
 
-def _decision_rules_payload(config: AppConfig, filters) -> dict:
+def _decision_rules_payload(config: AppConfig, filters, *, strategy: str) -> dict:
     risk_cfg = config.risk
-    return {
+    payload = {
         "profile": config.bot.trade_decision_profile,
+        "bot_strategy": config.bot.strategy,
+        "backtest_strategy": strategy,
+        "signal_selection": "live_poll_mirror",
+        "scan_bars": LIVE_SCAN_BARS,
+        "poll_seconds": config.bot.poll_seconds,
         "execution_filters_applied": filters.spread or filters.tp1_spread or filters.risk,
         "account_filters_applied": filters.existing_position or filters.max_setups,
         "daily_loss_guard_applied": risk_cfg.daily_loss_guard_active(),
@@ -549,7 +432,11 @@ def _decision_rules_payload(config: AppConfig, filters) -> dict:
         "max_extension_atr": config.risk.max_extension_atr,
         "use_daily_loss_guard": risk_cfg.use_daily_loss_guard,
         "max_daily_loss_pct": risk_cfg.max_daily_loss_pct,
+        "enabled_symbols": len(config.enabled_symbols),
     }
+    if is_box_theory_strategy(strategy):
+        payload["box_theory"] = config.box_theory.model_dump()
+    return payload
 
 
 def _event_payload(
@@ -619,26 +506,35 @@ def _collect_signal_jobs(
     symbol_cfg,
     df: pd.DataFrame,
     filters,
+    *,
+    start_unix: int,
+    end_unix: int,
     logger: logging.Logger | None = None,
 ) -> tuple[list[_SignalJob], int]:
-    signals = generate_signals(df, symbol_cfg, config.risk)
     point = _symbol_point(client, symbol_cfg.symbol, logger)
+    opportunities, raw_signals = collect_live_scan_opportunities(
+        df,
+        symbol_cfg,
+        config,
+        start_unix=start_unix,
+        end_unix=end_unix,
+        point=point,
+        retry_max_setups=filters.max_setups,
+    )
     jobs: list[_SignalJob] = []
-    for signal in signals:
-        signal_index = df.index[df["time"] == signal.time]
-        if len(signal_index) == 0:
-            continue
+    for opportunity in opportunities:
         jobs.append(
             _SignalJob(
-                entry_unix=_bar_unix(signal.time),
+                scan_unix=opportunity.scan_unix,
+                entry_unix=opportunity.entry_unix,
                 symbol_cfg=symbol_cfg,
                 df=df,
-                row_index=int(signal_index[0]),
-                signal=signal,
+                row_index=opportunity.row_index,
+                signal=opportunity.signal,
                 point=point,
             )
         )
-    return jobs, len(signals)
+    return jobs, raw_signals
 
 
 def _execute_backtest_jobs(
@@ -653,64 +549,168 @@ def _execute_backtest_jobs(
     include_events: bool = False,
     end_unix: int | None = None,
     logger: logging.Logger | None = None,
-) -> tuple[list[dict], list[dict]]:
+) -> tuple[list[dict], list[dict], float]:
     tp_protection = tp_protection_enabled(strategy)
     partial_execution = is_partial_strategy(strategy)
+    single_leg = is_single_leg_strategy(strategy)
+    box_mode = closes_opposite_before_entry(strategy)
     daily_guard = DailyLossGuard(starting_balance, config.risk.effective_daily_loss_pct())
+    portfolio = BacktestPortfolio()
     closed_trades: list[dict] = []
     events: list[dict] = []
+    symbol_order = {symbol_cfg.symbol: index for index, symbol_cfg in enumerate(config.enabled_symbols)}
 
-    for event_id, job in enumerate(sorted(jobs, key=lambda item: item.entry_unix), start=1):
+    jobs_sorted = sorted(
+        jobs,
+        key=lambda item: (item.scan_unix, symbol_order.get(item.symbol_cfg.symbol, 999)),
+    )
+
+    current_scan: int | None = None
+    scan_blocked = False
+    blocked_loss = 0.0
+    blocked_limit = 0.0
+
+    for event_id, job in enumerate(jobs_sorted, start=1):
         symbol_key = job.symbol_cfg.symbol
         accumulator = accumulators[symbol_key]
         if accumulator.error:
             continue
 
-        decision = evaluate_trade_signal(
-            client,
-            config,
-            job.signal,
-            job.symbol_cfg,
-            spread=_historical_spread_price(job.df.iloc[job.row_index], job.point),
-            filters=filters,
-        )
-        if not decision.allowed:
-            accumulator.skipped += 1
-            accumulator.skipped_logs.append(_skip_log(job.signal, decision))
-            if include_events:
-                events.append(_event_payload(event_id, job.signal, decision, event_type="skip"))
-            continue
+        if job.scan_unix != current_scan:
+            portfolio.settle_through(job.scan_unix)
+            current_scan = job.scan_unix
+            scan_blocked, blocked_loss, blocked_limit = daily_guard.scan_blocked(client, job.scan_unix)
 
-        allowed, loss, loss_limit = daily_guard.check_entry(client, job.entry_unix)
-        if not allowed:
+        if scan_blocked:
+            placeholder = evaluate_trade_signal(
+                client,
+                config,
+                job.signal,
+                job.symbol_cfg,
+                spread=historical_spread_price(job.df.iloc[job.row_index], job.point),
+                seen=portfolio.is_seen(job.signal.setup_id),
+                filters=filters,
+                market_position_keys=portfolio.open_market_keys() if filters.existing_position else None,
+                active_setup_count=portfolio.active_setup_count() if filters.max_setups else None,
+            )
             skip_decision = _daily_loss_skip_decision(
                 job.signal,
-                decision,
-                loss=loss,
-                loss_limit=loss_limit,
+                placeholder,
+                loss=blocked_loss,
+                loss_limit=blocked_limit,
                 max_daily_loss_pct=daily_guard.max_daily_loss_pct,
             )
             accumulator.skipped += 1
             accumulator.skipped_logs.append(_skip_log(job.signal, skip_decision))
             if include_events:
                 events.append(_event_payload(event_id, job.signal, skip_decision, event_type="skip"))
-            if logger:
-                logger.info(
-                    "BACKTEST DAILY LOSS SKIP %s entry=%s loss=%.2f limit=%.2f",
-                    symbol_key,
-                    _iso_time(job.signal.time),
-                    loss,
-                    loss_limit,
+            continue
+
+        if portfolio.is_seen(job.signal.setup_id):
+            decision = evaluate_trade_signal(
+                client,
+                config,
+                job.signal,
+                job.symbol_cfg,
+                seen=True,
+                filters=filters,
+            )
+            accumulator.skipped += 1
+            accumulator.skipped_logs.append(_skip_log(job.signal, decision))
+            if include_events:
+                events.append(_event_payload(event_id, job.signal, decision, event_type="skip"))
+            continue
+
+        if box_mode:
+            for trade, early_pnl in _force_close_market_trades(
+                daily_guard,
+                portfolio,
+                client,
+                job.signal.market_key,
+                job.scan_unix,
+                side=_opposite_side(job.signal.side),
+            ):
+                early_decision = TradeDecision(
+                    allowed=True,
+                    code="force_close",
+                    reason="Box Theory pyramiding=0: closed opposite position",
+                    risk_usd=0.0,
+                    spread=0.0,
+                    spread_atr=0.0,
+                    tp1_distance=0.0,
+                    min_tp1_distance=0.0,
                 )
+                trade_log = _trade_log(
+                    trade.signal,
+                    early_pnl,
+                    early_decision,
+                    exit_time=job.scan_unix,
+                    exit_kind="reverse",
+                )
+                accumulator.trade_logs.append(trade_log)
+                accumulator.record_trade(early_pnl)
+                closed_trades.append(
+                    {
+                        "symbol": trade.signal.symbol,
+                        "side": trade.signal.side,
+                        "entry_time": _iso_time(trade.signal.time),
+                        "exit_time": trade_log.exit_time,
+                        "exit_kind": "reverse",
+                        "pnl": round(early_pnl, 2),
+                        "sort_time": job.scan_unix,
+                    }
+                )
+
+            if job.signal.market_key in portfolio.open_market_keys():
+                decision = TradeDecision(
+                    allowed=False,
+                    code="pyramiding",
+                    reason="Box Theory pyramiding=0: same-side position still open",
+                    risk_usd=0.0,
+                    spread=0.0,
+                    spread_atr=0.0,
+                    tp1_distance=0.0,
+                    min_tp1_distance=0.0,
+                )
+                accumulator.skipped += 1
+                accumulator.skipped_logs.append(_skip_log(job.signal, decision))
+                if include_events:
+                    events.append(_event_payload(event_id, job.signal, decision, event_type="skip"))
+                continue
+
+        position_keys = portfolio.open_market_keys() if filters.existing_position and not box_mode else None
+        setup_count = portfolio.active_setup_count() if filters.max_setups else None
+        decision = evaluate_trade_signal(
+            client,
+            config,
+            job.signal,
+            job.symbol_cfg,
+            spread=historical_spread_price(job.df.iloc[job.row_index], job.point),
+            seen=False,
+            filters=filters,
+            market_position_keys=position_keys,
+            active_setup_count=setup_count,
+        )
+        if not decision.allowed:
+            if skip_should_mark_seen(decision.code):
+                portfolio.mark_seen(job.signal.setup_id)
+            accumulator.skipped += 1
+            accumulator.skipped_logs.append(_skip_log(job.signal, decision))
+            if include_events:
+                events.append(_event_payload(event_id, job.signal, decision, event_type="skip"))
             continue
 
         after = job.df.iloc[job.row_index + 1 :]
         if partial_execution:
-            simulation = _simulate_trade_partial(client, job.signal, after.itertuples(), tp_protection)
+            simulation = simulate_partial_trade(client, job.signal, after.itertuples(), tp_protection)
+        elif single_leg:
+            simulation = simulate_single_trade(client, job.signal, after.itertuples())
         else:
-            simulation = _simulate_trade(client, job.signal, after.itertuples(), tp_protection)
+            simulation = simulate_split_trade(client, job.signal, after.itertuples(), tp_protection)
         trade_pnl = float(simulation["pnl"])
         exit_unix = int(simulation.get("exit_time") or job.entry_unix)
+        portfolio.mark_seen(job.signal.setup_id)
+        portfolio.register_open(job.signal.setup_id, job.signal.market_key, exit_unix)
         daily_guard.register_trade(
             job.signal,
             job.df,
@@ -766,16 +766,26 @@ def _run_symbol_backtest(
     config: AppConfig,
     symbol_cfg,
     df: pd.DataFrame,
-    strategy: str,
     starting_balance: float,
     filters,
     *,
+    start_unix: int,
+    end_unix: int,
     include_events: bool = False,
     logger: logging.Logger | None = None,
 ) -> tuple[SymbolBacktest, list[dict], list[dict]]:
-    jobs, raw_signals = _collect_signal_jobs(client, config, symbol_cfg, df, filters, logger)
+    strategy = config.bot.strategy
+    jobs, raw_signals = _collect_signal_jobs(
+        client,
+        config,
+        symbol_cfg,
+        df,
+        filters,
+        start_unix=start_unix,
+        end_unix=end_unix,
+        logger=logger,
+    )
     accumulator = _SymbolAccumulator(symbol_cfg=symbol_cfg, raw_signals=raw_signals)
-    end_unix = _bar_unix(df.iloc[-1]["time"]) if len(df) else 0
     closed_trades, events, _final_balance = _execute_backtest_jobs(
         client,
         config,
@@ -796,19 +806,23 @@ def run_backtest(
     config: AppConfig,
     start: datetime,
     end: datetime,
-    strategy: str,
     starting_balance: float = 1000.0,
     logger: logging.Logger | None = None,
 ) -> dict:
+    strategy = config.bot.strategy
     filters = resolve_trade_filters(config)
     client.initialize()
+    start_utc = start if start.tzinfo is not None else start.replace(tzinfo=timezone.utc)
     end_utc = end if end.tzinfo is not None else end.replace(tzinfo=timezone.utc)
+    start_unix = int(start_utc.timestamp())
     end_unix = int(end_utc.timestamp())
     accumulators: dict[str, _SymbolAccumulator] = {}
     all_jobs: list[_SignalJob] = []
     symbols = config.enabled_symbols
 
+    t0 = time.perf_counter()
     for index, symbol_cfg in enumerate(symbols, start=1):
+        symbol_t0 = time.perf_counter()
         if logger:
             logger.info(
                 "BACKTEST %s/%s %s %s",
@@ -818,7 +832,8 @@ def run_backtest(
                 symbol_cfg.timeframe,
             )
         try:
-            df = client.rates_range(symbol_cfg.symbol, symbol_cfg.timeframe, start, end)
+            fetch_start = extended_history_start(start_utc, symbol_cfg.timeframe)
+            df = client.rates_range(symbol_cfg.symbol, symbol_cfg.timeframe, fetch_start, end_utc)
         except Exception as exc:  # noqa: BLE001
             accumulators[symbol_cfg.symbol] = _SymbolAccumulator(
                 symbol_cfg=symbol_cfg,
@@ -827,9 +842,29 @@ def run_backtest(
             )
             continue
 
-        jobs, raw_signals = _collect_signal_jobs(client, config, symbol_cfg, df, filters, logger)
+        jobs, raw_signals = _collect_signal_jobs(
+            client,
+            config,
+            symbol_cfg,
+            df,
+            filters,
+            start_unix=start_unix,
+            end_unix=end_unix,
+            logger=logger,
+        )
         accumulators[symbol_cfg.symbol] = _SymbolAccumulator(symbol_cfg=symbol_cfg, raw_signals=raw_signals)
         all_jobs.extend(jobs)
+        if logger:
+            logger.info(
+                "BACKTEST %s done bars=%s raw=%s jobs=%s %.1fs",
+                symbol_cfg.symbol,
+                len(df),
+                raw_signals,
+                len(jobs),
+                time.perf_counter() - symbol_t0,
+            )
+
+    exec_t0 = time.perf_counter()
 
     closed_trades, _events, final_balance = _execute_backtest_jobs(
         client,
@@ -845,10 +880,21 @@ def run_backtest(
     rows = [accumulators[symbol_cfg.symbol].to_result() for symbol_cfg in symbols if symbol_cfg.symbol in accumulators]
     total_pnl = round(final_balance - starting_balance, 2)
     daily_performance = _build_daily_performance(closed_trades, starting_balance)
+    if logger:
+        logger.info(
+            "BACKTEST FINISHED symbols=%s jobs=%s trades=%s total_pnl=%s collect=%.1fs exec=%.1fs total=%.1fs",
+            len(symbols),
+            len(all_jobs),
+            sum(row.trades for row in rows),
+            total_pnl,
+            exec_t0 - t0,
+            time.perf_counter() - exec_t0,
+            time.perf_counter() - t0,
+        )
 
     return {
         "strategy": strategy,
-        "decision_rules": _decision_rules_payload(config, filters),
+        "decision_rules": _decision_rules_payload(config, filters, strategy=strategy),
         "start": start.isoformat(),
         "end": end.isoformat(),
         "starting_balance": round(starting_balance, 2),
@@ -866,8 +912,8 @@ def run_chart_backtest(
     timeframe: str,
     start: datetime,
     end: datetime,
-    strategy: str,
 ) -> dict:
+    strategy = config.bot.strategy
     filters = resolve_trade_filters(config)
     client.initialize()
 
@@ -878,16 +924,22 @@ def run_chart_backtest(
     if timeframe not in {"M1", "M5", "M15", "M30", "H1"}:
         raise ValueError(f"Unsupported timeframe: {timeframe}")
 
+    start_utc = start if start.tzinfo is not None else start.replace(tzinfo=timezone.utc)
+    end_utc = end if end.tzinfo is not None else end.replace(tzinfo=timezone.utc)
+    start_unix = int(start_utc.timestamp())
+    end_unix = int(end_utc.timestamp())
     effective_symbol_cfg = symbol_cfg.model_copy(update={"timeframe": timeframe})
-    df = client.rates_range(symbol, timeframe, start, end)
+    fetch_start = extended_history_start(start_utc, timeframe)
+    df = client.rates_range(symbol, timeframe, fetch_start, end_utc)
     symbol_result, _closed_trades, events = _run_symbol_backtest(
         client,
         config,
         effective_symbol_cfg,
         df,
-        strategy,
         1000.0,
         filters,
+        start_unix=start_unix,
+        end_unix=end_unix,
         include_events=True,
     )
 
@@ -898,7 +950,7 @@ def run_chart_backtest(
         "configured_timeframe": symbol_cfg.timeframe,
         "settings_timeframe_match": timeframe == symbol_cfg.timeframe,
         "strategy": strategy,
-        "decision_rules": _decision_rules_payload(config, filters),
+        "decision_rules": _decision_rules_payload(config, filters, strategy=strategy),
         "start": start.isoformat(),
         "end": end.isoformat(),
         "candles": _candles_payload(df),

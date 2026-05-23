@@ -420,14 +420,13 @@
     const timeframe = els.timeframe.value;
     const start = localInputToIso(els.start.value);
     const end = localInputToIso(els.end.value);
-    const strategy = els.strategy.value;
 
     els.runBtn.disabled = true;
     const label = els.runBtn.querySelector(".btn-label");
     if (label) label.textContent = "Loading chart…";
 
     try {
-      const url = `/api/backtest/chart?symbol=${encodeURIComponent(symbol)}&timeframe=${encodeURIComponent(timeframe)}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&strategy=${encodeURIComponent(strategy)}`;
+      const url = `/api/backtest/chart?symbol=${encodeURIComponent(symbol)}&timeframe=${encodeURIComponent(timeframe)}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
       const response = await fetch(url);
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Chart backtest failed");
@@ -481,6 +480,8 @@
     }
     if (config.bot?.strategy && els.strategy) {
       els.strategy.value = config.bot.strategy;
+      els.strategy.disabled = true;
+      els.strategy.title = "Chart replay uses the same shared bot strategy as live trading.";
     }
 
     els.form.addEventListener("submit", runChartPreview);

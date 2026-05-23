@@ -13,9 +13,9 @@ bot:
   auto_start: false
   poll_seconds: 15
   magic: 260521
-  strategy: signal_partial_no_tp_protection
+  strategy: box_theory
   trade_decision_profile: balanced
-  max_concurrent_setups: 10
+  max_concurrent_setups: 20
   state_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\state.json
   log_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\bot.log
 risk:
@@ -31,6 +31,13 @@ risk:
   use_existing_position_filter: false
   use_max_setups_filter: false
   skip_if_symbol_has_position: false
+box_theory:
+  zone_edge_fraction: 0.25
+  aggressive_body_frac: 0.55
+  aggressive_range_frac: 0.25
+  wick_body_ratio_min: 2.0
+  max_body_range_ratio: 0.35
+  sl_buffer_frac: 0.005
 web:
   host: 127.0.0.1
   port: 8787
@@ -83,7 +90,7 @@ symbols:
 - symbol: XAUUSD-VIP
   name: Gold
   market_key_override: null
-  enabled: true
+  enabled: false
   timeframe: M5
   lot_per_leg: 0.08
   max_setup_risk_usd: 450.0
@@ -100,7 +107,7 @@ symbols:
 - symbol: XAGUSD-VIP
   name: Silver
   market_key_override: null
-  enabled: false
+  enabled: true
   timeframe: M1
   lot_per_leg: 0.08
   max_setup_risk_usd: 550.0
@@ -221,7 +228,7 @@ symbols:
 - symbol: EURUSD-VIP
   name: EURUSD
   market_key_override: null
-  enabled: true
+  enabled: false
   timeframe: M15
   lot_per_leg: 0.4
   max_setup_risk_usd: null
@@ -237,7 +244,7 @@ symbols:
 - symbol: GBPUSD-VIP
   name: GBPUSD
   market_key_override: null
-  enabled: false
+  enabled: true
   timeframe: M15
   lot_per_leg: 0.4
   max_setup_risk_usd: 220.0
@@ -253,9 +260,9 @@ symbols:
 - symbol: ETHUSD
   name: ETHUSD
   market_key_override: null
-  enabled: true
+  enabled: false
   timeframe: M1
-  lot_per_leg: 0.8
+  lot_per_leg: 1.0
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 1.2
@@ -270,9 +277,9 @@ symbols:
 - symbol: SOLUSD
   name: SOLUSD
   market_key_override: null
-  enabled: true
+  enabled: false
   timeframe: M1
-  lot_per_leg: 3.0
+  lot_per_leg: 1.0
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 1.2
@@ -340,7 +347,7 @@ symbols:
 - symbol: AUDJPY-VIP
   name: AUDJPY
   market_key_override: null
-  enabled: true
+  enabled: false
   timeframe: M1
   lot_per_leg: 0.4
   max_setup_risk_usd: null
@@ -376,7 +383,7 @@ symbols:
 - symbol: NZDUSD-VIP
   name: NZDUSD
   market_key_override: null
-  enabled: true
+  enabled: false
   timeframe: M5
   lot_per_leg: 0.4
   max_setup_risk_usd: null

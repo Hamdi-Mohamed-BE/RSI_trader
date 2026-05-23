@@ -617,6 +617,18 @@ class MT5Client:
             }
             return self.mt5.order_send(request)
 
+    def close_position(self, ticket: int, symbol: str):
+        self.initialize()
+        with _MT5_LOCK:
+            positions = self.mt5.positions_get(ticket=ticket)
+            if not positions:
+                return None
+            pos = positions[0]
+            pos_volume = float(_field(pos, "volume", 0.0) or 0.0)
+            if pos_volume <= 0:
+                return None
+        return self.close_position_partial(ticket, symbol, pos_volume)
+
     def close_position_partial(self, ticket: int, symbol: str, volume: float):
         self.initialize()
         with _MT5_LOCK:

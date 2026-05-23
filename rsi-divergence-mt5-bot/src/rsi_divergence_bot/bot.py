@@ -8,8 +8,9 @@ from datetime import datetime, time, timezone
 from .config import AppConfig
 from .decision import resolve_trade_filters
 from .mt5_client import MT5Client
+from .live_session import LIVE_SCAN_BARS
 from .state import StateStore
-from .strategy import latest_closed_signal
+from .signal_engine import latest_closed_signal
 from .trader import TradeExecutor
 
 
@@ -68,8 +69,8 @@ class SignalBot:
 
         for symbol_cfg in self.config.enabled_symbols:
             try:
-                df = self.client.rates(symbol_cfg.symbol, symbol_cfg.timeframe, 600)
-                signal = latest_closed_signal(df, symbol_cfg, self.config.risk)
+                df = self.client.rates(symbol_cfg.symbol, symbol_cfg.timeframe, LIVE_SCAN_BARS)
+                signal = latest_closed_signal(self.config, df, symbol_cfg, self.config.risk)
                 if signal is None:
                     self.logger.info("NO SIGNAL %s %s", symbol_cfg.symbol, symbol_cfg.timeframe)
                     continue

@@ -6,12 +6,14 @@ from typing import Literal
 import yaml
 from pydantic import BaseModel, Field, model_validator
 
+from .strategy_modes import CANONICAL_STRATEGIES, canonical_strategy
 from .symbols import market_key
 
 Timeframe = Literal["M1", "M5", "M15", "M30", "H1"]
 StrategyMode = Literal[
     "signal_no_tp_protection",
     "signal_with_tp_protection",
+    "box_theory",
     "signal_partial_no_tp_protection",
     "signal_partial_with_tp_protection",
 ]
@@ -58,6 +60,21 @@ class BotRuntimeConfig(BaseModel):
     state_file: str = "runtime/state.json"
     log_file: str = "runtime/bot.log"
 
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_legacy_strategy(cls, data):
+        if isinstance(data, dict) and "strategy" in data:
+            data = dict(data)
+            data["strategy"] = canonical_strategy(data["strategy"])
+        return data
+
+    @model_validator(mode="after")
+    def validate_canonical_strategy(self) -> "BotRuntimeConfig":
+        self.strategy = canonical_strategy(self.strategy)  # type: ignore[assignment]
+        if self.strategy not in CANONICAL_STRATEGIES:
+            raise ValueError(f"Unknown bot strategy: {self.strategy}")
+        return self
+
 
 class RiskConfig(BaseModel):
     max_setup_risk_usd: float | None = 180.0
@@ -84,6 +101,15 @@ class RiskConfig(BaseModel):
         if not self.daily_loss_guard_active():
             return None
         return self.max_daily_loss_pct
+
+
+class BoxTheoryConfig(BaseModel):
+    zone_edge_fraction: float = Field(default=0.25, gt=0, lt=0.5)
+    aggressive_body_frac: float = Field(default=0.55, gt=0, le=1)
+    aggressive_range_frac: float = Field(default=0.25, gt=0, le=1)
+    wick_body_ratio_min: float = Field(default=2.0, gt=0)
+    max_body_range_ratio: float = Field(default=0.35, gt=0, le=1)
+    sl_buffer_frac: float = Field(default=0.005, ge=0)
 
 
 class WebConfig(BaseModel):
@@ -141,6 +167,7 @@ class AppConfig(BaseModel):
     mt5: MT5Config = Field(default_factory=MT5Config)
     bot: BotRuntimeConfig = Field(default_factory=BotRuntimeConfig)
     risk: RiskConfig = Field(default_factory=RiskConfig)
+    box_theory: BoxTheoryConfig = Field(default_factory=BoxTheoryConfig)
     web: WebConfig = Field(default_factory=WebConfig)
     auth: AuthConfig = Field(default_factory=AuthConfig)
     telegram_signals: TelegramSignalsConfig = Field(default_factory=TelegramSignalsConfig)
@@ -175,10 +202,12 @@ def load_config(path: str | Path) -> AppConfig:
 def save_config(path: str | Path, config: AppConfig) -> None:
     config_path = Path(path)
     payload = config.model_dump(mode="python")
-    config_path.write_text(
+    tmp_path = config_path.with_suffix(f"{config_path.suffix}.tmp")
+    tmp_path.write_text(
         yaml.safe_dump(payload, sort_keys=False, default_flow_style=False, allow_unicode=True),
         encoding="utf-8",
     )
+    tmp_path.replace(config_path)
 
 
 def update_symbol_lots(config: AppConfig, lots: dict[str, float]) -> list[str]:
@@ -205,4 +234,7 @@ def update_symbol_enabled(config: AppConfig, enabled: dict[str, bool]) -> list[s
 
 
 def update_bot_strategy(config: AppConfig, strategy: StrategyMode) -> None:
-    config.bot.strategy = strategy
+    normalized = canonical_strategy(strategy)
+    if normalized not in CANONICAL_STRATEGIES:
+        raise ValueError(f"Unknown bot strategy: {strategy}")
+    config.bot.strategy = normalized  # type: ignore[assignment]

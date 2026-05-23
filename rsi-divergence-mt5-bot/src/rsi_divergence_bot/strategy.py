@@ -158,14 +158,29 @@ def generate_signals(df: pd.DataFrame, cfg: SymbolConfig, risk_cfg: RiskConfig |
     return signals
 
 
-def latest_closed_signal(df: pd.DataFrame, cfg: SymbolConfig, risk_cfg: RiskConfig) -> Signal | None:
-    # MT5 includes the still-forming bar. Drop it so the bot trades confirmed bars only.
-    closed = df.iloc[:-1].copy() if len(df) > 2 else df.copy()
+def signal_at_closed_index(
+    df: pd.DataFrame,
+    end_index: int,
+    cfg: SymbolConfig,
+    risk_cfg: RiskConfig,
+) -> Signal | None:
+    """Same rule as latest_closed_signal when the bar at end_index is the last closed bar."""
+    if end_index < 0 or end_index >= len(df):
+        return None
+    closed = df.iloc[: end_index + 1]
     signals = generate_signals(closed, cfg, risk_cfg)
     if not signals:
         return None
     latest = signals[-1]
-    last_closed_time = closed.iloc[-1].time
-    if hasattr(last_closed_time, "to_pydatetime"):
-        last_closed_time = last_closed_time.to_pydatetime()
-    return latest if latest.time == last_closed_time else None
+    row_time = closed.iloc[-1]["time"]
+    if hasattr(row_time, "to_pydatetime"):
+        row_time = row_time.to_pydatetime()
+    return latest if latest.time == row_time else None
+
+
+def latest_closed_signal(df: pd.DataFrame, cfg: SymbolConfig, risk_cfg: RiskConfig) -> Signal | None:
+    # MT5 includes the still-forming bar. Drop it so the bot trades confirmed bars only.
+    if len(df) < 2:
+        return None
+    closed = df.iloc[:-1]
+    return signal_at_closed_index(closed, len(closed) - 1, cfg, risk_cfg)

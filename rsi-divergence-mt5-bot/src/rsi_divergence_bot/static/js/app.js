@@ -1,8 +1,12 @@
 const STRATEGY_LABELS = {
-  signal_no_tp_protection: "Split legs — no TP protection",
-  signal_with_tp_protection: "Split legs — with TP protection",
-  signal_partial_no_tp_protection: "Single partial — no TP protection",
-  signal_partial_with_tp_protection: "Single partial — with TP protection",
+  signal_no_tp_protection: "Split legs - no TP protection",
+  signal_with_tp_protection: "Split legs - with TP protection",
+  box_theory: "Box Theory - daily box trap",
+};
+
+const STRATEGY_ALIASES = {
+  signal_partial_no_tp_protection: "signal_no_tp_protection",
+  signal_partial_with_tp_protection: "signal_with_tp_protection",
 };
 
 const els = {
@@ -158,7 +162,13 @@ function localInputToIso(value) {
 }
 
 function formatStrategy(value) {
-  return STRATEGY_LABELS[value] || value.replaceAll("_", " ");
+  const strategy = canonicalStrategy(value);
+  return STRATEGY_LABELS[strategy] || strategy.replaceAll("_", " ");
+}
+
+function canonicalStrategy(value) {
+  const strategy = value || "signal_with_tp_protection";
+  return STRATEGY_ALIASES[strategy] || strategy;
 }
 
 function pnlClass(value) {
@@ -575,12 +585,29 @@ function updateStrategyLabels(strategy) {
 
 function syncStrategyUi(strategy, { updateSelects = true } = {}) {
   if (!strategy) return;
+  const normalized = canonicalStrategy(strategy);
   if (updateSelects) {
-    if (els.autoRunStrategy) els.autoRunStrategy.value = strategy;
-    if (els.strategy) els.strategy.value = strategy;
+    if (els.autoRunStrategy) els.autoRunStrategy.value = normalized;
+    if (els.strategy) els.strategy.value = normalized;
+    const chartStrategy = document.getElementById("chart-strategy");
+    if (chartStrategy) chartStrategy.value = normalized;
   }
-  updateStrategyLabels(strategy);
-  if (botConfig?.bot) botConfig.bot.strategy = strategy;
+  updateStrategyLabels(normalized);
+  if (botConfig?.bot) botConfig.bot.strategy = normalized;
+}
+
+function selectedStrategy() {
+  return canonicalStrategy(els.autoRunStrategy?.value || botConfig?.bot?.strategy);
+}
+
+async function onStrategyChanged({ silent = true } = {}) {
+  const strategy = selectedStrategy();
+  syncStrategyUi(strategy);
+  try {
+    await saveBotStrategy({ strategy, silent });
+  } catch (error) {
+    toast(error.message, "error");
+  }
 }
 
 function renderAutoRunStatus(status) {
@@ -602,7 +629,9 @@ function renderAutoRunStatus(status) {
   }
   els.autoRunStartBtn.disabled = running;
   els.autoRunStopBtn.disabled = !running;
-  if (els.autoRunStrategy) els.autoRunStrategy.disabled = false;
+  if (els.autoRunStrategy) els.autoRunStrategy.disabled = running;
+  if (els.autoRunSaveBtn) els.autoRunSaveBtn.disabled = running;
+  if (els.autoRunSaveStrategy) els.autoRunSaveStrategy.disabled = running;
 
   if (running) {
     els.loopBadge.textContent = "Loop running";
@@ -646,16 +675,16 @@ async function refreshAutoRunStatus() {
   }
 }
 
-async function saveBotStrategy({ persist, silent = false } = {}) {
+async function saveBotStrategy({ strategy, persist, silent = false } = {}) {
   if (!els.autoRunStrategy) return null;
-  const strategy = els.autoRunStrategy.value;
+  const selected = canonicalStrategy(strategy ?? selectedStrategy());
   const saveToConfig = persist ?? Boolean(els.autoRunSaveStrategy?.checked);
   setLoading(els.autoRunSaveBtn, true);
   try {
     const response = await fetch("/api/bot/settings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ strategy, persist: saveToConfig }),
+      body: JSON.stringify({ strategy: selected, persist: saveToConfig }),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to save bot strategy");
@@ -1193,6 +1222,8 @@ function renderBacktestResult(data) {
   const totalClass = pnlClass(data.total_pnl);
   const rawSignals = (data.symbols || []).reduce((sum, row) => sum + (row.raw_signals || 0), 0);
   const skippedSignals = (data.symbols || []).reduce((sum, row) => sum + (row.skipped_signals || 0), 0);
+  const rules = data.decision_rules || {};
+  const pollHint = rules.poll_seconds ? `${rules.poll_seconds}s poll · ${rules.scan_bars || 600} bars` : "";
   els.backtestSummary.innerHTML = `
     <div class="summary-card">
       <span class="label">Start balance</span>
@@ -1209,6 +1240,10 @@ function renderBacktestResult(data) {
     <div class="summary-card">
       <span class="label">Strategy</span>
       <span class="value" style="font-size:0.95rem">${escapeHtml(formatStrategy(data.strategy))}</span>
+    </div>
+    <div class="summary-card">
+      <span class="label">Live mirror</span>
+      <span class="value" style="font-size:0.85rem">${escapeHtml(pollHint)} · ${rules.enabled_symbols ?? "—"} symbols</span>
     </div>
     <div class="summary-card">
       <span class="label">Signal gate</span>
@@ -1258,7 +1293,6 @@ async function runBacktest(event) {
 
   const start = localInputToIso(els.start.value);
   const end = localInputToIso(els.end.value);
-  const strategy = els.strategy.value;
   const startingBalance = Number(els.startingBalance.value);
 
   if (!Number.isFinite(startingBalance) || startingBalance <= 0) {
@@ -1269,10 +1303,9 @@ async function runBacktest(event) {
   setLoading(els.backtestBtn, true, "Running backtest…");
 
   try {
-    await syncSymbolSettings({ persist: false, silent: true });
-    toast("Backtest running — watch Live logs for progress", "info");
+    toast(`Backtest running with current bot config (${formatStrategy(botConfig?.bot?.strategy)})`, "info");
     const response = await fetch(
-      `/api/backtest?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&strategy=${encodeURIComponent(strategy)}&starting_balance=${encodeURIComponent(startingBalance)}`,
+      `/api/backtest?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&starting_balance=${encodeURIComponent(startingBalance)}`,
     );
     const data = await response.json();
     if (!response.ok) {
@@ -1386,24 +1419,7 @@ async function init() {
   els.autoRunStartBtn?.addEventListener("click", startAutoRun);
   els.autoRunStopBtn?.addEventListener("click", stopAutoRun);
   els.autoRunSaveBtn?.addEventListener("click", () => saveBotStrategy());
-  els.autoRunStrategy?.addEventListener("change", async () => {
-    const strategy = els.autoRunStrategy.value;
-    updateStrategyLabels(strategy);
-    if (els.strategy) els.strategy.value = strategy;
-    if (botConfig?.bot) botConfig.bot.strategy = strategy;
-
-    if (!els.autoRunStartBtn?.disabled) return;
-    try {
-      await saveBotStrategy({
-        persist: Boolean(els.autoRunSaveStrategy?.checked),
-        silent: true,
-      });
-      toast(`Strategy switched to ${formatStrategy(strategy)}`, "info");
-      await refreshAutoRunStatus();
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  });
+  els.autoRunStrategy?.addEventListener("change", () => onStrategyChanged());
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
@@ -1414,6 +1430,15 @@ async function init() {
   startLoopPolling();
   startTelegramPolling();
   startLivePolling();
+
+  window.addEventListener("app:strategy-change", (event) => {
+    const strategy = event.detail?.strategy;
+    if (!strategy) return;
+    syncStrategyUi(strategy);
+  });
+
+  window.applyBotStrategy = saveBotStrategy;
+  window.selectedBotStrategy = selectedStrategy;
 
   window.addEventListener("pageshow", (event) => {
     if (event.persisted) {

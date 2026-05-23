@@ -4,12 +4,18 @@ import logging
 from datetime import datetime, timezone
 
 from .config import AppConfig, SymbolConfig
-from .decision import evaluate_trade_signal, resolve_trade_filters
+from .decision import evaluate_trade_signal, resolve_trade_filters, skip_should_mark_seen
 from .mt5_client import MT5Client
 from .state import StateStore
 from .strategy import Signal
-from .strategy_modes import is_partial_strategy, tp_protection_enabled
+from .strategy_modes import (
+    closes_opposite_before_entry,
+    is_partial_strategy,
+    is_single_leg_strategy,
+    tp_protection_enabled,
+)
 from .symbols import market_key
+from .trade_execution import normalized_partial_volumes, normalized_split_lot
 
 Outcome = str  # placed | skipped | duplicate | failed | paper
 ORDER_COMMENT = "RSI auto bot"
@@ -42,7 +48,14 @@ class TradeExecutor:
             return "duplicate"
 
         filters = resolve_trade_filters(self.config)
-        position_keys = self._position_market_keys() if filters.existing_position else None
+        if closes_opposite_before_entry(self.config.bot.strategy):
+            self._close_opposite_positions(signal.symbol, signal.side)
+            if self._has_bot_position_on_side(signal.symbol, signal.side):
+                self.logger.info("SKIP %s Box Theory pyramiding=0 same-side position open", signal.symbol)
+                return "skipped"
+            position_keys = None
+        else:
+            position_keys = self._position_market_keys() if filters.existing_position else None
         decision = evaluate_trade_signal(
             self.client,
             self.config,
@@ -57,7 +70,7 @@ class TradeExecutor:
             self.logger.info("SKIP %s %s", signal.symbol, decision.reason)
             if decision.code == "duplicate":
                 return "duplicate"
-            if decision.code != "max_setups":
+            if skip_should_mark_seen(decision.code):
                 self.state.mark_seen(signal.setup_id)
             return "skipped"
 
@@ -74,19 +87,33 @@ class TradeExecutor:
             self.config.bot.trade_decision_profile,
             self.config.bot.dry_run,
             signal.session,
-            "partial" if is_partial_strategy(self.config.bot.strategy) else "split",
+            (
+                "partial"
+                if is_partial_strategy(self.config.bot.strategy)
+                else "single"
+                if is_single_leg_strategy(self.config.bot.strategy)
+                else "split"
+            ),
         )
         if self.config.bot.dry_run:
             self.state.mark_seen(signal.setup_id)
             if is_partial_strategy(self.config.bot.strategy):
-                total = self.client.normalize_volume(signal.symbol, signal.lot_per_leg * len(signal.tps))
+                total, _per_slice = normalized_partial_volumes(
+                    self.client, signal.symbol, signal.lot_per_leg, len(signal.tps)
+                )
                 self.logger.info("PAPER %s would place 1 partial position vol=%s", signal.symbol, total)
+            elif is_single_leg_strategy(self.config.bot.strategy):
+                lot = normalized_split_lot(self.client, signal.symbol, signal.lot_per_leg)
+                self.logger.info("PAPER %s would place Box Theory single leg vol=%s", signal.symbol, lot)
             else:
                 self.logger.info("PAPER %s would place %s legs", signal.symbol, len(signal.tps))
             return "paper"
 
         if is_partial_strategy(self.config.bot.strategy):
             return self._place_partial_signal(signal)
+
+        if is_single_leg_strategy(self.config.bot.strategy):
+            return self._place_single_signal(signal)
 
         return self._place_split_signal(signal)
 
@@ -106,6 +133,19 @@ class TradeExecutor:
     ) -> dict:
         if is_partial_strategy(self.config.bot.strategy):
             return self._place_partial_market(
+                setup_id=setup_id,
+                symbol=symbol,
+                market_key=market_key,
+                side=side,
+                sl=sl,
+                tps=tps,
+                lot_per_leg=lot_per_leg,
+                entry_price=entry_price,
+                extra_setup=extra_setup,
+                comment=comment,
+            )
+        if is_single_leg_strategy(self.config.bot.strategy):
+            return self._place_single_market(
                 setup_id=setup_id,
                 symbol=symbol,
                 market_key=market_key,
@@ -237,7 +277,7 @@ class TradeExecutor:
         if not tps:
             return {"status": "failed", "reason": "missing take profits"}
 
-        total_volume = self.client.normalize_volume(symbol, lot_per_leg * len(tps))
+        total_volume, _per_slice = normalized_partial_volumes(self.client, symbol, lot_per_leg, len(tps))
         final_tp = float(tps[-1])
         result = self.client.send_market(
             symbol,
@@ -283,6 +323,84 @@ class TradeExecutor:
         self.state.add_setup(setup)
         return {"status": "placed", "ticket": ticket, "volume": total_volume}
 
+    def _place_single_signal(self, signal: Signal) -> Outcome:
+        result = self._place_single_market(
+            setup_id=signal.setup_id,
+            symbol=signal.symbol,
+            market_key=signal.market_key,
+            side=signal.side,
+            sl=signal.sl,
+            tps=signal.tps,
+            lot_per_leg=signal.lot_per_leg,
+        )
+        if result.get("status") == "placed":
+            self.state.mark_seen(signal.setup_id)
+            return "placed"
+        if result.get("status") == "failed":
+            return "failed"
+        return "skipped"
+
+    def _place_single_market(
+        self,
+        *,
+        setup_id: str,
+        symbol: str,
+        market_key: str,
+        side: str,
+        sl: float,
+        tps: list[float],
+        lot_per_leg: float,
+        entry_price: float | None = None,
+        extra_setup: dict | None = None,
+        comment: str = ORDER_COMMENT,
+    ) -> dict:
+        if not tps:
+            return {"status": "failed", "reason": "missing take profit"}
+
+        lot = normalized_split_lot(self.client, symbol, lot_per_leg)
+        tp = float(tps[0])
+        result = self.client.send_market(
+            symbol,
+            side,
+            lot,
+            sl,
+            tp,
+            self.config.bot.magic,
+            f"{comment} BoxTheory"[:31],
+        )
+        retcode = getattr(result, "retcode", None)
+        ticket = int(getattr(result, "order", 0) or getattr(result, "deal", 0) or 0)
+        if retcode != self.client.TRADE_DONE or not ticket:
+            self.logger.warning("BOX THEORY ORDER FAILED %s ret=%s result=%s", symbol, retcode, result)
+            return {"status": "failed", "ticket": ticket}
+
+        self.logger.info(
+            "BOX THEORY PLACED %s ticket=%s vol=%s sl=%.5f tp=%.5f",
+            symbol,
+            ticket,
+            lot,
+            sl,
+            tp,
+        )
+        setup = {
+            "setup_id": setup_id,
+            "symbol": symbol,
+            "market_key": market_key,
+            "side": side,
+            "execution_mode": "single",
+            "tickets": [ticket],
+            "tps": [tp],
+            "sl": sl,
+            "moved_to_tp": 0,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        if entry_price is not None:
+            setup["entry_price"] = entry_price
+        if extra_setup:
+            setup.update(extra_setup)
+        self.state.add_setup(setup)
+        return {"status": "placed", "ticket": ticket, "volume": lot}
+
     def _symbol_cfg(self, symbol: str) -> SymbolConfig | None:
         for item in self.config.symbols:
             if item.symbol == symbol:
@@ -292,6 +410,44 @@ class TradeExecutor:
     def _position_market_keys(self) -> set[str]:
         positions = self.client.positions() or []
         return {market_key(str(_field(pos, "symbol", ""))) for pos in positions}
+
+    def _bot_positions(self, symbol: str) -> list:
+        positions = self.client.positions() or []
+        return [
+            pos
+            for pos in positions
+            if str(_field(pos, "symbol", "")) == symbol
+            and int(_field(pos, "magic", 0) or 0) == self.config.bot.magic
+        ]
+
+    def _position_is_buy(self, pos) -> bool:
+        return int(_field(pos, "type", 0) or 0) == 0
+
+    def _has_bot_position_on_side(self, symbol: str, side: str) -> bool:
+        for pos in self._bot_positions(symbol):
+            is_buy = self._position_is_buy(pos)
+            if side == "buy" and is_buy:
+                return True
+            if side == "sell" and not is_buy:
+                return True
+        return False
+
+    def _close_opposite_positions(self, symbol: str, side_to_open: str) -> None:
+        if self.config.bot.dry_run:
+            return
+        for pos in self._bot_positions(symbol):
+            is_buy = self._position_is_buy(pos)
+            close = (side_to_open == "buy" and not is_buy) or (side_to_open == "sell" and is_buy)
+            if not close:
+                continue
+            ticket = int(_field(pos, "ticket"))
+            result = self.client.close_position(ticket, symbol)
+            self.logger.info(
+                "BOX THEORY CLOSE opposite %s ticket=%s ret=%s",
+                symbol,
+                ticket,
+                getattr(result, "retcode", None),
+            )
 
     def _active_setup_count(self) -> int:
         positions = self.client.positions() or []
@@ -329,6 +485,11 @@ class TradeExecutor:
 
         for setup in setups:
             execution_mode = str(setup.get("execution_mode") or "split")
+            if execution_mode == "single":
+                kept = self._manage_single_setup(setup, open_by_ticket)
+                if kept is not None:
+                    next_setups.append(kept)
+                continue
             if execution_mode == "partial":
                 kept = self._manage_partial_setup(setup, open_by_ticket, enabled)
                 if kept is not None:
@@ -340,6 +501,14 @@ class TradeExecutor:
                 next_setups.append(kept)
 
         self.state.update_setups(next_setups)
+
+    def _manage_single_setup(self, setup: dict, open_by_ticket: dict) -> dict | None:
+        tickets = [int(ticket) for ticket in setup.get("tickets", [])]
+        open_tickets = [ticket for ticket in tickets if ticket in open_by_ticket]
+        if not open_tickets:
+            self.logger.info("BOX THEORY SETUP DONE %s %s", setup.get("symbol"), setup.get("setup_id"))
+            return None
+        return setup
 
     def _manage_split_setup(self, setup: dict, open_by_ticket: dict, tp_protect: bool) -> dict | None:
         tickets = [int(ticket) for ticket in setup.get("tickets", [])]
