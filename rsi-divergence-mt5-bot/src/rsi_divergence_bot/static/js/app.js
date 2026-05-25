@@ -21,6 +21,8 @@ const els = {
   statMagic: document.getElementById("stat-magic"),
   symbolsBody: document.getElementById("symbols-body"),
   resetLotsBtn: document.getElementById("reset-lots-btn"),
+  resetTimeframesBtn: document.getElementById("reset-timeframes-btn"),
+  optimizeTimeframesBtn: document.getElementById("optimize-timeframes-btn"),
   saveLotsBtn: document.getElementById("save-lots-btn"),
   snapshotForm: document.getElementById("snapshot-form"),
   snapshotName: document.getElementById("snapshot-name"),
@@ -72,6 +74,16 @@ const els = {
   positionsCount: document.getElementById("positions-count"),
   dealsBody: document.getElementById("deals-body"),
   dealsCount: document.getElementById("deals-count"),
+  liveSummaryForm: document.getElementById("live-summary-form"),
+  liveSummaryStart: document.getElementById("live-summary-start"),
+  liveSummaryEnd: document.getElementById("live-summary-end"),
+  liveSummaryBtn: document.getElementById("live-summary-btn"),
+  liveSummaryOverall: document.getElementById("live-summary-overall"),
+  liveSummaryChart: document.getElementById("live-summary-chart"),
+  liveSummarySymbolsWrap: document.getElementById("live-summary-symbols-wrap"),
+  liveSummarySymbols: document.getElementById("live-summary-symbols"),
+  liveSummaryCount: document.getElementById("live-summary-count"),
+  liveSummaryBody: document.getElementById("live-summary-body"),
   scanResult: document.getElementById("scan-result"),
   status: document.getElementById("status"),
   logs: document.getElementById("logs"),
@@ -115,6 +127,7 @@ function currentPage() {
   if (path === "/backtest") return "backtest";
   if (path === "/settings") return "settings";
   if (path === "/manual-trade") return "manual-trade";
+  if (path === "/live-summary") return "live-summary";
   if (path === "/telegram-signals") return "telegram-signals";
   if (path === "/logs") return "logs";
   return "home";
@@ -263,6 +276,22 @@ const SYMBOL_GROUPS = [
   ["other", "Other"],
 ];
 
+function timeframeOptions() {
+  const options = botConfig?.timeframe_options || [];
+  if (options.length) return options;
+  return ["M1", "M5", "M15", "M30", "H1"].map((value) => ({ value, label: value }));
+}
+
+function renderTimeframeOptions(selected) {
+  return timeframeOptions()
+    .map((item) => {
+      const value = item.value || item;
+      const label = item.label || value;
+      return `<option value="${escapeHtml(value)}" ${value === selected ? "selected" : ""}>${escapeHtml(label)}</option>`;
+    })
+    .join("");
+}
+
 function symbolGroupLabel(group) {
   return SYMBOL_GROUPS.find(([key]) => key === group)?.[1] || "Other";
 }
@@ -284,7 +313,16 @@ function renderGroupedSymbolRow(item) {
           <td><strong>${escapeHtml(item.symbol)}</strong></td>
           <td><span class="tag">${escapeHtml(item.market_key || item.symbol)}</span></td>
           <td>${escapeHtml(item.name)}</td>
-          <td><span class="tag tag-accent">${escapeHtml(item.timeframe)}</span></td>
+          <td>
+            <select
+              class="timeframe-select"
+              data-symbol="${escapeHtml(item.symbol)}"
+              data-reset-timeframe="${escapeHtml(item.reset_timeframe || item.timeframe)}"
+              title="Reset timeframe: ${escapeHtml(item.reset_timeframe || item.timeframe)}"
+            >
+              ${renderTimeframeOptions(item.timeframe)}
+            </select>
+          </td>
           <td>
             <input
               class="lot-input"
@@ -377,20 +415,24 @@ function updateSymbolStats(stats) {
 function symbolSettingsFromConfig() {
   const lots = {};
   const enabled = {};
+  const timeframes = {};
   for (const item of botConfig?.symbols || []) {
     lots[item.symbol] = item.lot_per_leg;
     enabled[item.symbol] = Boolean(item.enabled);
+    timeframes[item.symbol] = item.timeframe;
   }
-  return { lots, enabled };
+  return { lots, enabled, timeframes };
 }
 
 function collectSymbolSettings() {
   const lots = {};
   const enabled = {};
+  const timeframes = {};
   const lotInputs = els.symbolsBody.querySelectorAll(".lot-input");
   const enabledInputs = els.symbolsBody.querySelectorAll(".symbol-enabled");
+  const timeframeInputs = els.symbolsBody.querySelectorAll(".timeframe-select");
 
-  if (!lotInputs.length && !enabledInputs.length) {
+  if (!lotInputs.length && !enabledInputs.length && !timeframeInputs.length) {
     return symbolSettingsFromConfig();
   }
 
@@ -409,13 +451,22 @@ function collectSymbolSettings() {
     enabled[symbol] = input.checked;
   }
 
-  if (!Object.keys(lots).length || !Object.keys(enabled).length) {
+  for (const input of timeframeInputs) {
+    const symbol = input.dataset.symbol;
+    if (!symbol || !input.value) {
+      throw new Error(`Invalid timeframe for ${symbol || "symbol"}`);
+    }
+    timeframes[symbol] = input.value;
+  }
+
+  if (!Object.keys(lots).length || !Object.keys(enabled).length || !Object.keys(timeframes).length) {
     const fallback = symbolSettingsFromConfig();
     if (!Object.keys(lots).length) Object.assign(lots, fallback.lots);
     if (!Object.keys(enabled).length) Object.assign(enabled, fallback.enabled);
+    if (!Object.keys(timeframes).length) Object.assign(timeframes, fallback.timeframes);
   }
 
-  return { lots, enabled };
+  return { lots, enabled, timeframes };
 }
 
 function formatApiError(detail) {
@@ -427,15 +478,15 @@ function formatApiError(detail) {
 }
 
 async function syncSymbolSettings({ persist = true, silent = false, rerender = false } = {}) {
-  const { lots, enabled } = collectSymbolSettings();
-  if (!Object.keys(lots).length && !Object.keys(enabled).length) {
+  const { lots, enabled, timeframes } = collectSymbolSettings();
+  if (!Object.keys(lots).length && !Object.keys(enabled).length && !Object.keys(timeframes).length) {
     return { status: "noop", symbols: botConfig?.symbols || [], symbol_stats: botConfig?.symbol_stats || null };
   }
 
   const response = await fetch("/api/symbols/settings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ lots, enabled, persist }),
+    body: JSON.stringify({ lots, enabled, timeframes, persist }),
   });
   const data = await response.json();
   if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to sync symbol settings");
@@ -446,6 +497,9 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
   }
   updateSymbolStats(data.symbol_stats);
   if (rerender || !silent) renderSymbols(data.symbols);
+  if (window.ChartPreview?.populateSymbols) {
+    window.ChartPreview.populateSymbols(data.symbols);
+  }
 
   if (!silent) {
     toast(persist ? "Symbol settings saved to config" : "Symbol settings applied", "success");
@@ -667,6 +721,87 @@ async function resetLots() {
   }
 }
 
+async function resetTimeframes() {
+  if (!botConfig?.symbols?.length) {
+    toast("Symbol settings are not loaded yet", "error");
+    return;
+  }
+
+  const confirmed = window.confirm("Reset all symbols to their saved optimized timeframes and save config.yaml?");
+  if (!confirmed) return;
+
+  if (settingsTimer) {
+    clearTimeout(settingsTimer);
+    settingsTimer = null;
+  }
+
+  setLoading(els.resetTimeframesBtn, true, "Resetting...");
+  try {
+    const response = await fetch("/api/symbols/timeframes/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ persist: true }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to reset timeframes");
+    if (botConfig) {
+      botConfig.symbols = data.symbols;
+      botConfig.symbol_stats = data.symbol_stats;
+    }
+    renderSymbols(data.symbols);
+    toast("Timeframes reset", "success");
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.resetTimeframesBtn, false);
+  }
+}
+
+async function optimizeTimeframes() {
+  if (!botConfig?.symbols?.length) {
+    toast("Symbol settings are not loaded yet", "error");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    "Backtest every enabled symbol across all MT5 timeframes for the last 30 days, save the best timeframe as default, and update config.yaml? This can take a while.",
+  );
+  if (!confirmed) return;
+
+  const end = new Date();
+  const start = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
+  setLoading(els.optimizeTimeframesBtn, true, "Optimizing...");
+  try {
+    await syncSymbolSettings({ persist: false, silent: true, rerender: false });
+    const response = await fetch("/api/symbols/timeframes/optimize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        start: start.toISOString(),
+        end: end.toISOString(),
+        starting_balance: 1000,
+        timeframes: timeframeOptions().map((item) => item.value || item),
+        persist: true,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to optimize timeframes");
+    if (botConfig) {
+      botConfig.symbols = data.symbols;
+      botConfig.symbol_stats = data.symbol_stats;
+    }
+    renderSymbols(data.symbols);
+    const changed = (data.optimization?.symbols || []).filter((row) => row.current_timeframe !== row.best_timeframe).length;
+    toast(`Timeframe optimization done: ${changed} symbol${changed === 1 ? "" : "s"} changed`, "success");
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.optimizeTimeframesBtn, false);
+  }
+}
+
 function formatCurrency(value) {
   return `$${Number(value).toFixed(2)}`;
 }
@@ -790,6 +925,123 @@ async function refreshLiveData() {
 function startLivePolling() {
   if (liveTimer) clearInterval(liveTimer);
   liveTimer = setInterval(refreshLiveData, 5000);
+}
+
+function setDefaultLiveSummaryPeriod() {
+  if (!els.liveSummaryStart || !els.liveSummaryEnd) return;
+  const end = new Date();
+  const start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+  if (!els.liveSummaryEnd.value) els.liveSummaryEnd.value = isoToLocalInput(end.toISOString());
+  if (!els.liveSummaryStart.value) els.liveSummaryStart.value = isoToLocalInput(start.toISOString());
+}
+
+function tradeTypeLabel(value) {
+  if (value === "rsi_bot") return "RSI bot";
+  if (value === "signal_bot") return "Telegram signal";
+  return "Other";
+}
+
+function renderLiveSummary(data) {
+  if (!els.liveSummaryOverall) return;
+  const overall = data.overall || {};
+  els.liveSummaryOverall.innerHTML = `
+    <div class="summary-card"><span class="label">Overall P/L</span><span class="value ${pnlClass(overall.net)}">${formatMoney(overall.net || 0)}</span></div>
+    <div class="summary-card"><span class="label">Trades</span><span class="value">${overall.trades || 0}</span></div>
+    <div class="summary-card"><span class="label">W / L / BE</span><span class="value">${overall.wins || 0} / ${overall.losses || 0} / ${overall.breakeven || 0}</span></div>
+    <div class="summary-card"><span class="label">Win rate</span><span class="value">${overall.win_rate || 0}%</span></div>
+  `;
+  els.liveSummaryOverall.classList.remove("hidden");
+
+  const maxAbs = Math.max(
+    1,
+    ...(data.summary || []).map((row) => Math.max(Math.abs(Number(row.win_amount || 0)), Math.abs(Number(row.loss_amount || 0)), Math.abs(Number(row.net || 0)))),
+  );
+  els.liveSummaryChart.innerHTML = (data.summary || [])
+    .map((row) => {
+      const winWidth = Math.max(4, Math.round(Math.abs(Number(row.win_amount || 0)) / maxAbs * 100));
+      const lossWidth = Math.max(4, Math.round(Math.abs(Number(row.loss_amount || 0)) / maxAbs * 100));
+      return `
+        <article class="live-summary-card">
+          <div class="live-summary-card-head">
+            <strong>${escapeHtml(row.label || tradeTypeLabel(row.key))}</strong>
+            <span class="${pnlClass(row.net)}">${formatMoney(row.net || 0)}</span>
+          </div>
+          <div class="live-summary-bars">
+            <div class="live-summary-bar live-summary-win" style="width:${winWidth}%"><span>${formatMoney(row.win_amount || 0)}</span></div>
+            <div class="live-summary-bar live-summary-loss" style="width:${lossWidth}%"><span>${formatMoney(row.loss_amount || 0)}</span></div>
+          </div>
+          <div class="live-summary-metrics">
+            <span>${row.trades || 0} trades</span>
+            <span>${row.wins || 0}W / ${row.losses || 0}L</span>
+            <span>${row.win_rate || 0}% win</span>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+  els.liveSummaryChart.classList.remove("hidden");
+
+  const symbolRows = data.by_symbol || [];
+  if (symbolRows.length) {
+    els.liveSummarySymbols.innerHTML = symbolRows
+      .map((row) => `
+        <tr>
+          <td><strong>${escapeHtml(row.symbol)}</strong></td>
+          <td>${row.trades}</td>
+          <td>${row.wins} / ${row.losses}</td>
+          <td class="${pnlClass(row.net)}">${formatMoney(row.net)}</td>
+        </tr>
+      `)
+      .join("");
+    els.liveSummarySymbolsWrap.classList.remove("hidden");
+  } else {
+    els.liveSummarySymbolsWrap.classList.add("hidden");
+    els.liveSummarySymbols.innerHTML = "";
+  }
+
+  const trades = data.trades || [];
+  els.liveSummaryCount.textContent = `${trades.length} trade${trades.length === 1 ? "" : "s"}`;
+  if (!trades.length) {
+    els.liveSummaryBody.innerHTML = '<tr><td colspan="10" class="empty-row">No trade history in this period.</td></tr>';
+  } else {
+    els.liveSummaryBody.innerHTML = trades
+      .map((row) => `
+        <tr>
+          <td>${formatTimestamp(row.closed_at || row.opened_at)}</td>
+          <td><span class="tag">${escapeHtml(tradeTypeLabel(row.bucket))}</span></td>
+          <td>${row.position_id}</td>
+          <td><strong>${escapeHtml(row.symbol || "-")}</strong></td>
+          <td class="side-${row.side || ""}">${String(row.side || "-").toUpperCase()}</td>
+          <td>${row.volume ?? "-"}</td>
+          <td>${formatOptionalPrice(row.entry_price)}</td>
+          <td>${formatOptionalPrice(row.exit_price)}</td>
+          <td class="${pnlClass(row.pnl)}">${formatMoney(row.pnl || 0)}</td>
+          <td>${escapeHtml(row.comment || "-")}</td>
+        </tr>
+      `)
+      .join("");
+  }
+}
+
+async function loadLiveSummary(event) {
+  if (event) event.preventDefault();
+  if (!els.liveSummaryForm) return;
+  const start = localInputToIso(els.liveSummaryStart.value);
+  const end = localInputToIso(els.liveSummaryEnd.value);
+
+  setLoading(els.liveSummaryBtn, true, "Loading...");
+  try {
+    const response = await fetch(`/api/live-summary?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`, {
+      cache: "no-store",
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to load live summary");
+    renderLiveSummary(data);
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.liveSummaryBtn, false);
+  }
 }
 
 function formatTimestamp(value) {
@@ -1683,7 +1935,10 @@ async function init() {
   });
   els.runOnceBtn?.addEventListener("click", runOnce);
   els.manualTradeForm?.addEventListener("submit", placeManualTrade);
+  els.liveSummaryForm?.addEventListener("submit", loadLiveSummary);
   els.resetLotsBtn?.addEventListener("click", resetLots);
+  els.resetTimeframesBtn?.addEventListener("click", resetTimeframes);
+  els.optimizeTimeframesBtn?.addEventListener("click", optimizeTimeframes);
   els.saveLotsBtn?.addEventListener("click", saveLots);
   els.snapshotForm?.addEventListener("submit", saveSnapshot);
   els.snapshotRefreshBtn?.addEventListener("click", refreshSnapshots);
@@ -1699,7 +1954,7 @@ async function init() {
     }
   });
   els.symbolsBody?.addEventListener("change", (event) => {
-    if (!event.target.matches(".lot-input, .symbol-enabled")) return;
+    if (!event.target.matches(".lot-input, .symbol-enabled, .timeframe-select")) return;
     const row = event.target.closest("tr");
     if (row && event.target.matches(".symbol-enabled")) {
       row.classList.toggle("row-disabled", !event.target.checked);
@@ -1720,6 +1975,7 @@ async function init() {
   startLoopPolling();
   startTelegramPolling();
   startLivePolling();
+  setDefaultLiveSummaryPeriod();
 
   window.addEventListener("app:strategy-change", (event) => {
     const strategy = event.detail?.strategy;
@@ -1742,6 +1998,7 @@ async function init() {
     loadSnapshots(),
     refreshAutoRunStatus(),
     refreshLiveData(),
+    currentPage() === "live-summary" ? loadLiveSummary() : Promise.resolve(),
     refreshTelegramStatus(),
     refreshLogs(),
   ]);

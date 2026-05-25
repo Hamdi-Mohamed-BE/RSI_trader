@@ -9,20 +9,9 @@ import pandas as pd
 from .config import AppConfig, SymbolConfig
 from .signal_engine import generate_signals, latest_closed_signal
 from .strategy import Signal
+from .timeframes import timeframe_seconds
 
 LIVE_SCAN_BARS = 600
-
-TIMEFRAME_SECONDS: dict[str, int] = {
-    "M1": 60,
-    "M5": 300,
-    "M15": 900,
-    "M30": 1800,
-    "H1": 3600,
-}
-
-
-def timeframe_seconds(timeframe: str) -> int:
-    return TIMEFRAME_SECONDS.get(timeframe, 60)
 
 
 def extended_history_start(start: datetime, timeframe: str, window_bars: int = LIVE_SCAN_BARS) -> datetime:

@@ -8,8 +8,31 @@ from pydantic import BaseModel, Field, model_validator
 
 from .strategy_modes import CANONICAL_STRATEGIES, canonical_strategy
 from .symbols import CRYPTO_DEFAULT_LOTS, asset_group, market_key
+from .timeframes import validate_timeframe
 
-Timeframe = Literal["M1", "M5", "M15", "M30", "H1"]
+Timeframe = Literal[
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M10",
+    "M12",
+    "M15",
+    "M20",
+    "M30",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H6",
+    "H8",
+    "H12",
+    "D1",
+    "W1",
+    "MN1",
+]
 StrategyMode = Literal[
     "signal_no_tp_protection",
     "signal_with_tp_protection",
@@ -142,6 +165,7 @@ class SymbolConfig(BaseModel):
     market_key_override: str | None = None
     enabled: bool = True
     timeframe: Timeframe = "M5"
+    optimized_timeframe: Timeframe | None = None
     lot_per_leg: float = Field(gt=0)
     max_setup_risk_usd: float | None = None
     pivot_len: int = Field(default=3, ge=2, le=20)
@@ -234,6 +258,20 @@ def update_symbol_enabled(config: AppConfig, enabled: dict[str, bool]) -> list[s
         if symbol_cfg.symbol not in enabled:
             continue
         symbol_cfg.enabled = enabled[symbol_cfg.symbol]
+        updated.append(symbol_cfg.symbol)
+    return updated
+
+
+def update_symbol_timeframes(config: AppConfig, timeframes: dict[str, str]) -> list[str]:
+    updated: list[str] = []
+    for symbol_cfg in config.symbols:
+        if symbol_cfg.symbol not in timeframes:
+            continue
+        try:
+            timeframe = validate_timeframe(timeframes[symbol_cfg.symbol])
+        except ValueError as exc:
+            raise ValueError(f"Timeframe for {symbol_cfg.symbol}: {exc}") from exc
+        symbol_cfg.timeframe = timeframe  # type: ignore[assignment]
         updated.append(symbol_cfg.symbol)
     return updated
 

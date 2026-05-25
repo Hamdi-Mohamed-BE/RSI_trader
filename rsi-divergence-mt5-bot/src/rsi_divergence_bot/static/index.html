@@ -39,6 +39,7 @@
       <a class="nav-link" data-page-link="backtest" href="/backtest">Backtest</a>
       <a class="nav-link" data-page-link="settings" href="/settings">Settings</a>
       <a class="nav-link" data-page-link="manual-trade" href="/manual-trade">Manual trade</a>
+      <a class="nav-link" data-page-link="live-summary" href="/live-summary">Live summary</a>
       <a class="nav-link" data-page-link="telegram-signals" href="/telegram-signals">Telegram signals copy</a>
       <a class="nav-link" data-page-link="logs" href="/logs">Logs</a>
       <a class="nav-link nav-link-danger" href="/logout">Logout</a>
@@ -73,6 +74,14 @@
           <div class="panel-actions">
             <button id="reset-lots-btn" class="btn btn-ghost btn-sm" type="button">
               <span class="btn-label">Reset lots</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+            <button id="reset-timeframes-btn" class="btn btn-ghost btn-sm" type="button">
+              <span class="btn-label">Reset timeframes</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+            <button id="optimize-timeframes-btn" class="btn btn-secondary btn-sm" type="button">
+              <span class="btn-label">Optimize last month</span>
               <span class="spinner" hidden aria-hidden="true"></span>
             </button>
             <button id="save-lots-btn" class="btn btn-secondary btn-sm" type="button">
@@ -322,6 +331,73 @@
                 <p class="chart-detail-empty">Select an event or play the replay to inspect trades.</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel panel-wide" data-pages="live-summary">
+        <div class="panel-header">
+          <div>
+            <h2>Live summary</h2>
+            <p>Reads MT5 account history and separates RSI bot, Telegram signal bot, and other trades by trade comments.</p>
+          </div>
+        </div>
+        <form id="live-summary-form" class="form-grid">
+          <label class="field">
+            <span>Start (UTC)</span>
+            <input id="live-summary-start" name="start" type="datetime-local" required>
+          </label>
+          <label class="field">
+            <span>End (UTC)</span>
+            <input id="live-summary-end" name="end" type="datetime-local" required>
+          </label>
+          <div class="form-actions field-full">
+            <button id="live-summary-btn" class="btn btn-primary" type="submit">
+              <span class="btn-label">Load summary</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+        <div id="live-summary-overall" class="summary-grid hidden"></div>
+        <div id="live-summary-chart" class="live-summary-chart hidden"></div>
+        <div id="live-summary-symbols-wrap" class="table-wrap hidden">
+          <table class="data-table data-table-compact">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Trades</th>
+                <th>W / L</th>
+                <th>PnL</th>
+              </tr>
+            </thead>
+            <tbody id="live-summary-symbols"></tbody>
+          </table>
+        </div>
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Trade details</h3>
+            <span id="live-summary-count" class="live-count">0 trades</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table data-table-compact">
+              <thead>
+                <tr>
+                  <th>Closed</th>
+                  <th>Type</th>
+                  <th>Position</th>
+                  <th>Symbol</th>
+                  <th>Side</th>
+                  <th>Vol</th>
+                  <th>Entry</th>
+                  <th>Exit</th>
+                  <th>P/L</th>
+                  <th>Comment</th>
+                </tr>
+              </thead>
+              <tbody id="live-summary-body">
+                <tr><td colspan="10" class="empty-row">Choose a period and load the live summary.</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -630,7 +706,7 @@
   <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
-  <script src="/static/js/chart-preview.js?v=5" defer></script>
-  <script src="/static/js/app.js?v=40" defer></script>
+  <script src="/static/js/chart-preview.js?v=6" defer></script>
+  <script src="/static/js/app.js?v=41" defer></script>
 </body>
 </html>

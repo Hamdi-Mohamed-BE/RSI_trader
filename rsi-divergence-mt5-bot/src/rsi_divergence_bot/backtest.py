@@ -19,6 +19,7 @@ from .strategy_modes import (
     is_single_leg_strategy,
     tp_protection_enabled,
 )
+from .timeframes import SUPPORTED_TIMEFRAMES, validate_timeframe
 from .trade_execution import simulate_partial_trade, simulate_single_trade, simulate_split_trade
 
 
@@ -1029,8 +1030,7 @@ def run_chart_backtest(
     if symbol_cfg is None:
         raise ValueError(f"Unknown symbol: {symbol}")
 
-    if timeframe not in {"M1", "M5", "M15", "M30", "H1"}:
-        raise ValueError(f"Unsupported timeframe: {timeframe}")
+    timeframe = validate_timeframe(timeframe)
 
     start_utc = start if start.tzinfo is not None else start.replace(tzinfo=timezone.utc)
     end_utc = end if end.tzinfo is not None else end.replace(tzinfo=timezone.utc)
@@ -1072,4 +1072,117 @@ def run_chart_backtest(
             "losses": symbol_result.losses,
             "pnl": symbol_result.pnl,
         },
+    }
+
+
+def optimize_symbol_timeframes(
+    client: MT5Client,
+    config: AppConfig,
+    start: datetime,
+    end: datetime,
+    starting_balance: float = 1000.0,
+    candidate_timeframes: list[str] | tuple[str, ...] | None = None,
+    logger: logging.Logger | None = None,
+) -> dict:
+    filters = resolve_trade_filters(config)
+    client.initialize()
+    start_utc = start if start.tzinfo is not None else start.replace(tzinfo=timezone.utc)
+    end_utc = end if end.tzinfo is not None else end.replace(tzinfo=timezone.utc)
+    start_unix = int(start_utc.timestamp())
+    end_unix = int(end_utc.timestamp())
+    candidates = tuple(validate_timeframe(item) for item in (candidate_timeframes or SUPPORTED_TIMEFRAMES))
+    rows: list[dict] = []
+
+    for symbol_index, symbol_cfg in enumerate(config.enabled_symbols, start=1):
+        symbol_results: list[dict] = []
+        if logger:
+            logger.info(
+                "TIMEFRAME OPTIMIZE %s/%s %s candidates=%s",
+                symbol_index,
+                len(config.enabled_symbols),
+                symbol_cfg.symbol,
+                len(candidates),
+            )
+
+        for timeframe in candidates:
+            effective_symbol_cfg = symbol_cfg.model_copy(update={"timeframe": timeframe})
+            try:
+                fetch_start = extended_history_start(start_utc, timeframe)
+                df = client.rates_range(symbol_cfg.symbol, timeframe, fetch_start, end_utc)
+                result, _closed_trades, _events = _run_symbol_backtest(
+                    client,
+                    config,
+                    effective_symbol_cfg,
+                    df,
+                    starting_balance,
+                    filters,
+                    start_unix=start_unix,
+                    end_unix=end_unix,
+                    logger=logger,
+                )
+                symbol_results.append(
+                    {
+                        "timeframe": timeframe,
+                        "bars": len(df),
+                        "raw_signals": result.raw_signals,
+                        "trades": result.trades,
+                        "position_legs": result.position_legs,
+                        "wins": result.wins,
+                        "losses": result.losses,
+                        "win_rate": result.win_rate,
+                        "pnl": result.pnl,
+                        "max_drawdown": result.max_drawdown,
+                        "error": None,
+                    }
+                )
+            except Exception as exc:  # noqa: BLE001
+                symbol_results.append(
+                    {
+                        "timeframe": timeframe,
+                        "bars": 0,
+                        "raw_signals": 0,
+                        "trades": 0,
+                        "position_legs": 0,
+                        "wins": 0,
+                        "losses": 0,
+                        "win_rate": 0.0,
+                        "pnl": 0.0,
+                        "max_drawdown": 0.0,
+                        "error": str(exc),
+                    }
+                )
+
+        viable = [item for item in symbol_results if not item["error"] and item["trades"] > 0]
+        if viable:
+            best = max(
+                viable,
+                key=lambda item: (
+                    float(item["pnl"]),
+                    float(item["win_rate"]),
+                    int(item["trades"]),
+                    -float(item["max_drawdown"]),
+                ),
+            )
+            best_timeframe = best["timeframe"]
+        else:
+            best = next((item for item in symbol_results if item["timeframe"] == symbol_cfg.timeframe), None)
+            best_timeframe = symbol_cfg.timeframe
+
+        rows.append(
+            {
+                "symbol": symbol_cfg.symbol,
+                "name": symbol_cfg.name,
+                "current_timeframe": symbol_cfg.timeframe,
+                "best_timeframe": best_timeframe,
+                "best": best,
+                "candidates": symbol_results,
+            }
+        )
+
+    return {
+        "start": start.isoformat(),
+        "end": end.isoformat(),
+        "starting_balance": round(starting_balance, 2),
+        "candidate_timeframes": list(candidates),
+        "symbols": rows,
     }
