@@ -91,7 +91,7 @@ const els = {
   telegramClearBtn: document.getElementById("telegram-clear-btn"),
   telegramHint: document.getElementById("telegram-hint"),
   telegramError: document.getElementById("telegram-error"),
-  telegramGemini: document.getElementById("telegram-gemini"),
+  telegramLlm: document.getElementById("telegram-llm"),
   telegramOpenGuard: document.getElementById("telegram-open-guard"),
   telegramChannels: document.getElementById("telegram-channels"),
   telegramPoll: document.getElementById("telegram-poll"),
@@ -1026,8 +1026,9 @@ function renderTelegramStatus(status) {
     if (status.running && status.browser_open) {
       els.telegramHint.textContent = "Telegram browser is open. Login there if Telegram asks, then keep the signal chats visible.";
       els.telegramHint.className = "panel-hint live-warning";
-    } else if (!status.gemini_api_key_configured) {
-      els.telegramHint.textContent = "Gemini API key is missing. Add telegram_signals.gemini_api_key in config.yaml or set GEMINI_API_KEY.";
+    } else if (!status.llm_configured) {
+      els.telegramHint.textContent =
+        "LLM API key missing. Add telegram_signals.openai_api_key (primary) or gemini_api_key (fallback) in config.yaml.";
       els.telegramHint.className = "panel-hint live-warning";
     } else if (botConfig && !botConfig.bot.dry_run) {
       els.telegramHint.textContent = "Live mode: copied Telegram signals will place real MT5 orders after validation.";
@@ -1053,10 +1054,18 @@ function renderTelegramStatus(status) {
       els.telegramLastResultJson.textContent = "";
     }
   }
+  if (els.telegramLlm && (status.openai_model || status.gemini_model)) {
+    els.telegramLlm.textContent = formatSignalParserLabel({
+      openai_api_key_configured: status.openai_api_key_configured,
+      openai_model: status.openai_model,
+      gemini_api_key_configured: status.gemini_api_key_configured,
+      gemini_model: status.gemini_model,
+    });
+  }
   renderTelegramMessages(status.recent_messages || []);
 }
 
-function formatGeminiResponse(item) {
+function formatLlmResponse(item) {
   const parsed = item?.parsed;
   if (parsed && typeof parsed === "object") {
     const parts = [];
@@ -1086,8 +1095,8 @@ function formatGeminiResponse(item) {
     if (result.reason) return String(result.reason);
   }
 
-  if (item?.status === "parse_failed") return "Gemini parse failed";
-  if (item?.reason?.includes("Gemini")) return String(item.reason);
+  if (item?.status === "parse_failed") return "LLM parse failed";
+  if (item?.reason?.includes("OpenAI") || item?.reason?.includes("Gemini")) return String(item.reason);
   if (item?.status === "empty") return "No message text to analyze";
   return "—";
 }
@@ -1112,14 +1121,14 @@ function renderTelegramMessages(messages) {
           : status === "stale" || status === "empty"
             ? "value-negative"
           : "value-neutral";
-      const geminiText = formatGeminiResponse(item);
+      const llmText = formatLlmResponse(item);
       return `
         <tr>
           <td class="${statusClass}">${escapeHtml(status)}</td>
           <td>${escapeHtml(String(item.channel_name || "—"))}</td>
           <td>${formatTimestamp(item.updated_at)}</td>
           <td>${escapeHtml(String(item.text_preview || "—")).slice(0, 220)}</td>
-          <td class="gemini-response-cell" title="${escapeHtml(geminiText)}">${escapeHtml(geminiText).slice(0, 220)}</td>
+          <td class="llm-response-cell" title="${escapeHtml(llmText)}">${escapeHtml(llmText).slice(0, 220)}</td>
           <td>${escapeHtml(String(item.reason || item.result?.reason || "—"))}</td>
         </tr>
       `;
@@ -1127,13 +1136,21 @@ function renderTelegramMessages(messages) {
     .join("");
 }
 
+function formatSignalParserLabel(telegram) {
+  const openai = telegram.openai_api_key_configured
+    ? `OpenAI ${telegram.openai_model || "gpt-4o-mini"}`
+    : "OpenAI missing";
+  const gemini = telegram.gemini_api_key_configured
+    ? `Gemini ${telegram.gemini_model || "gemini"}`
+    : "Gemini missing";
+  return `${openai} · ${gemini} fallback`;
+}
+
 function renderTelegramConfig(config) {
   if (!config.telegram_signals) return;
   const telegram = config.telegram_signals;
-  if (els.telegramGemini) {
-    els.telegramGemini.textContent = telegram.gemini_api_key_configured
-      ? telegram.gemini_model
-      : "Missing key";
+  if (els.telegramLlm) {
+    els.telegramLlm.textContent = formatSignalParserLabel(telegram);
   }
   if (els.telegramOpenGuard) {
     els.telegramOpenGuard.textContent = telegram.ignore_open_symbol_trades ? "On" : "Off";

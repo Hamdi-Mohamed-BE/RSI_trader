@@ -126,6 +126,8 @@ class TelegramSignalsConfig(BaseModel):
     telegram_url: str = "https://web.telegram.org/k/"
     channels: list[TelegramChannelConfig] = Field(default_factory=list)
     browser_user_data_dir: str = "runtime/telegram-browser"
+    openai_api_key: str | None = None
+    openai_model: str = "gpt-4o-mini"
     gemini_api_key: str | None = None
     gemini_model: str = "gemini-1.5-flash"
     ignore_open_symbol_trades: bool = True

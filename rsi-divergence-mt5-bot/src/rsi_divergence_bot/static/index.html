@@ -503,7 +503,7 @@
         <div class="panel-header panel-header-split">
           <div>
             <h2>Telegram signals copy</h2>
-            <p>Opens Telegram Web, watches new visible signal messages, asks Gemini to structure them, then places MT5 orders.</p>
+            <p>Opens Telegram Web, watches new visible signal messages, parses them with OpenAI GPT mini (Gemini fallback), then places MT5 orders.</p>
           </div>
           <span id="telegram-updated" class="live-updated">Telegram: —</span>
         </div>
@@ -542,8 +542,8 @@
 
         <div class="summary-grid" id="telegram-summary">
           <div class="summary-card">
-            <span class="label">Gemini</span>
-            <span class="value" id="telegram-gemini">—</span>
+            <span class="label">Signal parser</span>
+            <span class="value" id="telegram-llm">—</span>
           </div>
           <div class="summary-card">
             <span class="label">Open-symbol guard</span>
@@ -587,7 +587,7 @@
                   <th>Channel</th>
                   <th>Updated</th>
                   <th>Message</th>
-                  <th>Gemini response</th>
+                  <th>LLM response</th>
                   <th>Reason</th>
                 </tr>
               </thead>

@@ -236,44 +236,100 @@ class TelegramLoopStatus:
 
 
 class GeminiSignalParser:
-    def __init__(self, config: AppConfig):
+    _SYSTEM_PROMPT = (
+        "You extract trade signals from Telegram messages. "
+        "Return only structured output. If the message is not a trade signal, use action='none'. "
+        "Use action='buy' or action='sell' for live/now/market trades. "
+        "Use buy_limit, sell_limit, buy_stop, or sell_stop for pending orders. "
+        "Normalize GOLD/XAU to XAUUSD when clear. Keep prices exactly as written."
+    )
+
+    def __init__(self, config: AppConfig, logger: logging.Logger | None = None):
         self.config = config
+        self.logger = logger or logging.getLogger(__name__)
+
+    @staticmethod
+    def openai_api_key(config: AppConfig) -> str | None:
+        key = config.telegram_signals.openai_api_key or os.getenv("OPENAI_API_KEY")
+        return key.strip() if key else None
+
+    @staticmethod
+    def gemini_api_key(config: AppConfig) -> str | None:
+        key = config.telegram_signals.gemini_api_key or os.getenv("GEMINI_API_KEY")
+        return key.strip() if key else None
+
+    @classmethod
+    def llm_configured(cls, config: AppConfig) -> bool:
+        return bool(cls.openai_api_key(config) or cls.gemini_api_key(config))
 
     def parse(self, message: str) -> ParsedTelegramSignal:
-        api_key = self.config.telegram_signals.gemini_api_key or os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            raise RuntimeError("Gemini API key missing. Set telegram_signals.gemini_api_key or GEMINI_API_KEY.")
+        errors: list[str] = []
+        openai_key = self.openai_api_key(self.config)
+        if openai_key:
+            try:
+                parsed = self._parse_with_openai(message, openai_key)
+                self.logger.info("TELEGRAM PARSE provider=openai action=%s symbol=%s", parsed.action, parsed.symbol)
+                return parsed
+            except Exception as exc:  # noqa: BLE001
+                errors.append(f"OpenAI: {exc}")
+                self.logger.warning("TELEGRAM PARSE OpenAI failed, trying Gemini fallback: %s", exc)
 
-        try:
-            from langchain_core.output_parsers import PydanticOutputParser
-            from langchain_core.prompts import ChatPromptTemplate
-            from langchain_google_genai import ChatGoogleGenerativeAI
-        except ImportError as exc:  # pragma: no cover - depends on optional runtime install
-            raise RuntimeError("LangChain Gemini packages are not installed. Run `uv sync`.") from exc
+        gemini_key = self.gemini_api_key(self.config)
+        if gemini_key:
+            try:
+                parsed = self._parse_with_gemini(message, gemini_key)
+                self.logger.info("TELEGRAM PARSE provider=gemini action=%s symbol=%s", parsed.action, parsed.symbol)
+                return parsed
+            except Exception as exc:  # noqa: BLE001
+                errors.append(f"Gemini: {exc}")
+                self.logger.warning("TELEGRAM PARSE Gemini fallback failed: %s", exc)
+
+        if errors:
+            raise RuntimeError("; ".join(errors))
+        raise RuntimeError(
+            "No LLM API key configured. Set telegram_signals.openai_api_key or OPENAI_API_KEY, "
+            "or telegram_signals.gemini_api_key or GEMINI_API_KEY."
+        )
+
+    def _invoke_llm(self, llm, message: str) -> ParsedTelegramSignal:
+        from langchain_core.output_parsers import PydanticOutputParser
+        from langchain_core.prompts import ChatPromptTemplate
 
         parser = PydanticOutputParser(pydantic_object=ParsedTelegramSignal)
         prompt = ChatPromptTemplate.from_messages(
             [
-                (
-                    "system",
-                    "You extract trade signals from Telegram messages. "
-                    "Return only structured output. If the message is not a trade signal, use action='none'. "
-                    "Use action='buy' or action='sell' for live/now/market trades. "
-                    "Use buy_limit, sell_limit, buy_stop, or sell_stop for pending orders. "
-                    "Normalize GOLD/XAU to XAUUSD when clear. Keep prices exactly as written.",
-                ),
-                (
-                    "human",
-                    "Message:\n{message}\n\n{format_instructions}",
-                ),
+                ("system", self._SYSTEM_PROMPT),
+                ("human", "Message:\n{message}\n\n{format_instructions}"),
             ]
         )
-        llm = ChatGoogleGenerativeAI(model=self.config.telegram_signals.gemini_model, google_api_key=api_key)
         chain = prompt | llm | parser
         result = chain.invoke({"message": message, "format_instructions": parser.get_format_instructions()})
         if not isinstance(result, ParsedTelegramSignal):
             result = ParsedTelegramSignal.model_validate(result)
         return result
+
+    def _parse_with_openai(self, message: str, api_key: str) -> ParsedTelegramSignal:
+        try:
+            from langchain_openai import ChatOpenAI
+        except ImportError as exc:  # pragma: no cover
+            raise RuntimeError("LangChain OpenAI package is not installed. Run `uv sync`.") from exc
+        llm = ChatOpenAI(model=self.config.telegram_signals.openai_model, api_key=api_key, temperature=0)
+        return self._invoke_llm(llm, message)
+
+    def _parse_with_gemini(self, message: str, api_key: str) -> ParsedTelegramSignal:
+        try:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+        except ImportError as exc:  # pragma: no cover
+            raise RuntimeError("LangChain Gemini packages are not installed. Run `uv sync`.") from exc
+        llm = ChatGoogleGenerativeAI(
+            model=self.config.telegram_signals.gemini_model,
+            google_api_key=api_key,
+            temperature=0,
+        )
+        return self._invoke_llm(llm, message)
+
+
+TelegramSignalParser = GeminiSignalParser
 
 
 class TelegramSignalsBot:
@@ -290,7 +346,7 @@ class TelegramSignalsBot:
         self.state = state
         self.logger = logger
         self.daily_risk_status = daily_risk_status
-        self.parser = GeminiSignalParser(config)
+        self.parser = GeminiSignalParser(config, logger)
         self.executor = TradeExecutor(config, client, state, logger)
         self._stop_event = threading.Event()
         self._thread: threading.Thread | None = None
@@ -342,10 +398,11 @@ class TelegramSignalsBot:
         data["running"] = self.is_running()
         data["poll_seconds"] = self.config.telegram_signals.poll_seconds
         data["ignore_open_symbol_trades"] = self.config.telegram_signals.ignore_open_symbol_trades
+        data["openai_model"] = self.config.telegram_signals.openai_model
+        data["openai_api_key_configured"] = bool(GeminiSignalParser.openai_api_key(self.config))
         data["gemini_model"] = self.config.telegram_signals.gemini_model
-        data["gemini_api_key_configured"] = bool(
-            self.config.telegram_signals.gemini_api_key or os.getenv("GEMINI_API_KEY")
-        )
+        data["gemini_api_key_configured"] = bool(GeminiSignalParser.gemini_api_key(self.config))
+        data["llm_configured"] = GeminiSignalParser.llm_configured(self.config)
         data["channels"] = [channel.model_dump(mode="python") for channel in self._enabled_channels()]
         data["recent_messages"] = self.state.recent_telegram_messages(25)
         return data
@@ -877,7 +934,7 @@ class TelegramSignalsBot:
                 message,
                 channel=channel,
                 parsed=parsed.model_dump(mode="python"),
-                reason="Gemini returned action=none",
+                reason="LLM returned action=none",
                 message_key=message_key,
                 message_timestamp=message_timestamp,
                 age_seconds=self._message_age(message_timestamp),

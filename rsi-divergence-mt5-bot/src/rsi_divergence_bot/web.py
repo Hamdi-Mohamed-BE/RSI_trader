@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import hmac
+import os
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -330,8 +331,18 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "poll_seconds": config.telegram_signals.poll_seconds,
                 "telegram_url": config.telegram_signals.telegram_url,
                 "channels": [channel.model_dump(mode="python") for channel in config.telegram_signals.channels],
+                "openai_model": config.telegram_signals.openai_model,
+                "openai_api_key_configured": bool(
+                    config.telegram_signals.openai_api_key or os.getenv("OPENAI_API_KEY")
+                ),
                 "gemini_model": config.telegram_signals.gemini_model,
-                "gemini_api_key_configured": bool(config.telegram_signals.gemini_api_key),
+                "gemini_api_key_configured": bool(
+                    config.telegram_signals.gemini_api_key or os.getenv("GEMINI_API_KEY")
+                ),
+                "llm_configured": bool(
+                    (config.telegram_signals.openai_api_key or os.getenv("OPENAI_API_KEY"))
+                    or (config.telegram_signals.gemini_api_key or os.getenv("GEMINI_API_KEY"))
+                ),
                 "ignore_open_symbol_trades": config.telegram_signals.ignore_open_symbol_trades,
                 "max_tps": config.telegram_signals.max_tps,
                 "default_lot": config.telegram_signals.default_lot,
@@ -559,10 +570,13 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
 
     @app.post("/api/telegram-signals/start")
     async def telegram_signals_start(body: TelegramSignalsStartRequest) -> dict:
-        if not config.telegram_signals.gemini_api_key and not telegram_bot.status().get("gemini_api_key_configured"):
+        if not telegram_bot.status().get("llm_configured"):
             raise HTTPException(
                 status_code=400,
-                detail="Gemini API key missing. Set telegram_signals.gemini_api_key in config.yaml or GEMINI_API_KEY.",
+                detail=(
+                    "LLM API key missing. Set telegram_signals.openai_api_key or OPENAI_API_KEY "
+                    "(primary), or telegram_signals.gemini_api_key or GEMINI_API_KEY (fallback)."
+                ),
             )
         await require_mt5_ready()
         result = telegram_bot.start(protect_tp=body.protect_tp)
