@@ -20,6 +20,7 @@ from .symbols import market_key
 from .trade_geometry import invalid_market_geometry, invalid_pending_geometry
 from .trader import TradeExecutor
 
+from .playwright_runtime import ensure_playwright_runtime, load_sync_playwright, playwright_runtime_error
 from .telegram_html_parser import (
     ParsedChatMessage,
     ParseDiagnostics,
@@ -300,6 +301,11 @@ class TelegramSignalsBot:
     def start(self, *, protect_tp: bool = False) -> dict:
         if self.is_running():
             return self.status()
+        ok, runtime_error = ensure_playwright_runtime()
+        if not ok:
+            self._status.last_error = runtime_error
+            self.logger.error("TELEGRAM SIGNALS start blocked: %s", runtime_error)
+            return {**self.status(), "start_error": runtime_error}
         self._stop_event.clear()
         self._status = TelegramLoopStatus(
             running=True,
@@ -367,7 +373,7 @@ class TelegramSignalsBot:
         playwright = None
         context = None
         try:
-            from playwright.sync_api import sync_playwright
+            sync_playwright = load_sync_playwright()
 
             profile_dir = Path(self.config.telegram_signals.browser_user_data_dir)
             if not profile_dir.is_absolute():
@@ -405,6 +411,10 @@ class TelegramSignalsBot:
 
                 if self._stop_event.wait(self.config.telegram_signals.poll_seconds):
                     break
+        except ImportError as exc:
+            message = playwright_runtime_error(exc)
+            self._status.last_error = message
+            self.logger.error("TELEGRAM SIGNALS failed to start: %s", message)
         except Exception as exc:  # noqa: BLE001
             self._status.last_error = str(exc)
             self.logger.exception("TELEGRAM SIGNALS failed to start: %s", exc)

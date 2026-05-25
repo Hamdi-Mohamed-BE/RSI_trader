@@ -565,7 +565,11 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 detail="Gemini API key missing. Set telegram_signals.gemini_api_key in config.yaml or GEMINI_API_KEY.",
             )
         await require_mt5_ready()
-        return telegram_bot.start(protect_tp=body.protect_tp)
+        result = telegram_bot.start(protect_tp=body.protect_tp)
+        start_error = result.get("start_error")
+        if start_error:
+            raise HTTPException(status_code=503, detail=start_error)
+        return result
 
     @app.post("/api/telegram-signals/stop")
     def telegram_signals_stop() -> dict:
