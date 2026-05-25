@@ -712,6 +712,40 @@ textarea {
   font-size: 0.78rem;
 }
 
+.sort-button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+
+.sort-button:hover,
+.sort-button.is-sorted {
+  color: var(--text);
+}
+
+.sort-indicator {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  min-width: 8px;
+}
+
+.data-table th:not(:first-child) .sort-button,
+.daily-trades-table th:not(:first-child):not(:nth-child(3)):not(:nth-child(4)):not(:last-child) .sort-button {
+  justify-content: flex-end;
+}
+
 #backtest-daily-table th:not(:first-child),
 #backtest-daily-table td:not(:first-child),
 #backtest-table th:not(:first-child):not(:nth-child(2)),

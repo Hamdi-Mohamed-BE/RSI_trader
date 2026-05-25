@@ -2,12 +2,12 @@
 
 This project turns the optimized RSI divergence strategy into a local MT5 bot and a small FastAPI dashboard.
 
-It supports two strategy modes:
+It supports four strategy modes:
 
-- `signal_no_tp_protection`
-- `signal_with_tp_protection`
-
-The second mode watches active 3-leg setups. When TP1 is hit, it moves the remaining legs' stop loss to TP1. When TP2 is hit, it moves the last leg's stop loss to TP2.
+- `signal_no_tp_protection` — split into one MT5 order per TP leg, no SL moves
+- `signal_with_tp_protection` — split legs; when TP1/TP2 hit, move remaining legs' SL to that TP
+- `signal_full_no_tp_protection` — one full-size MT5 order (total lot), final TP only, no SL moves
+- `signal_full_with_tp_protection` — one full-size MT5 order; when TP1/TP2 hit, move SL to that TP
 
 It also supports three decision profiles:
 

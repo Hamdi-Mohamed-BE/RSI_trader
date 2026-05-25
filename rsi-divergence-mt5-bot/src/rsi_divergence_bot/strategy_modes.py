@@ -9,6 +9,8 @@ if TYPE_CHECKING:
 CANONICAL_STRATEGIES = {
     "signal_no_tp_protection",
     "signal_with_tp_protection",
+    "signal_full_no_tp_protection",
+    "signal_full_with_tp_protection",
 }
 
 LEGACY_STRATEGY_ALIASES = {
@@ -21,6 +23,12 @@ LEGACY_STRATEGY_ALIASES = {
 
 TP_PROTECTION_STRATEGIES = {
     "signal_with_tp_protection",
+    "signal_full_with_tp_protection",
+}
+
+FULL_POSITION_STRATEGIES = {
+    "signal_full_no_tp_protection",
+    "signal_full_with_tp_protection",
 }
 
 SINGLE_LEG_STRATEGIES: set[str] = set()
@@ -41,6 +49,10 @@ def tp_protection_enabled(strategy: "StrategyMode | str") -> bool:
 
 def is_single_leg_strategy(strategy: "StrategyMode | str") -> bool:
     return canonical_strategy(strategy) in SINGLE_LEG_STRATEGIES
+
+
+def is_full_position_strategy(strategy: "StrategyMode | str") -> bool:
+    return canonical_strategy(strategy) in FULL_POSITION_STRATEGIES
 
 
 def closes_opposite_before_entry(strategy: "StrategyMode | str") -> bool:

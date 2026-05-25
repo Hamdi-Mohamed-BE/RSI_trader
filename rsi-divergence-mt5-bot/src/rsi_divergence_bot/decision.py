@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .config import AppConfig, SymbolConfig
+from .daily_risk import daily_loss_setup_risk_cap
 from .mt5_client import MT5Client
 from .strategy import Signal
 from .trade_geometry import invalid_market_geometry
@@ -115,6 +116,7 @@ def evaluate_trade_signal(
     execution_filters: bool | None = None,
     market_position_keys: set[str] | None = None,
     active_setup_count: int | None = None,
+    day_start_balance: float | None = None,
 ) -> TradeDecision:
     if filters is None:
         filters = resolve_trade_filters(config)
@@ -206,6 +208,19 @@ def evaluate_trade_signal(
         max_risk = config.risk.max_setup_risk_usd
     if filters.risk and max_risk is not None and risk_usd > max_risk:
         return decision(False, "risk", f"risk {risk_usd:.2f} > cap {max_risk:.2f}")
+
+    max_daily_loss_pct = config.risk.effective_daily_loss_pct()
+    if max_daily_loss_pct is not None and day_start_balance is not None and day_start_balance > 0:
+        daily_cap = daily_loss_setup_risk_cap(day_start_balance, max_daily_loss_pct)
+        if risk_usd > daily_cap:
+            return decision(
+                False,
+                "daily_loss_guard",
+                (
+                    f"setup risk ${risk_usd:.2f} > daily cap ${daily_cap:.2f} "
+                    f"({max_daily_loss_pct:g}% of start-of-day balance ${day_start_balance:.2f})"
+                ),
+            )
 
     if filters.existing_position and market_position_keys is not None and signal.market_key in market_position_keys:
         return decision(False, "position", f"existing {signal.market_key} market position found")

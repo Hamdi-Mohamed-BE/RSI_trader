@@ -15,12 +15,13 @@ from .portfolio import BacktestPortfolio
 from .strategy import Signal
 from .strategy_modes import (
     closes_opposite_before_entry,
+    is_full_position_strategy,
     is_partial_strategy,
     is_single_leg_strategy,
     tp_protection_enabled,
 )
 from .timeframes import SUPPORTED_TIMEFRAMES, validate_timeframe
-from .trade_execution import simulate_partial_trade, simulate_single_trade, simulate_split_trade
+from .trade_execution import simulate_full_trade, simulate_partial_trade, simulate_single_trade, simulate_split_trade
 
 
 @dataclass
@@ -79,7 +80,7 @@ class _OpenTrade:
     df: pd.DataFrame
     row_index: int
     tp_protection: bool
-    partial_execution: bool
+    execution_mode: str
     entry_unix: int
     exit_unix: int
     full_pnl: float
@@ -206,7 +207,7 @@ class DailyLossGuard:
         df: pd.DataFrame,
         row_index: int,
         tp_protection: bool,
-        partial_execution: bool,
+        execution_mode: str,
         entry_unix: int,
         exit_unix: int,
         full_pnl: float,
@@ -217,7 +218,7 @@ class DailyLossGuard:
                 df=df,
                 row_index=row_index,
                 tp_protection=tp_protection,
-                partial_execution=partial_execution,
+                execution_mode=execution_mode,
                 entry_unix=entry_unix,
                 exit_unix=exit_unix,
                 full_pnl=full_pnl,
@@ -362,9 +363,20 @@ def _closed_trade_rows(
     return rows
 
 
-def _trade_pnl(client: MT5Client, signal: Signal, rows, tp_protection: bool, *, partial_execution: bool = False) -> float:
-    if partial_execution:
+def _simulate_trade_pnl(
+    client: MT5Client,
+    signal: Signal,
+    rows,
+    tp_protection: bool,
+    *,
+    execution_mode: str = "split",
+) -> float:
+    if execution_mode == "partial":
         return float(simulate_partial_trade(client, signal, rows, tp_protection)["pnl"])
+    if execution_mode == "full":
+        return float(simulate_full_trade(client, signal, rows, tp_protection)["pnl"])
+    if execution_mode == "single":
+        return float(simulate_single_trade(client, signal, rows, tp_protection)["pnl"])
     return float(simulate_split_trade(client, signal, rows, tp_protection)["pnl"])
 
 
@@ -375,9 +387,13 @@ def _trade_pnl_as_of(client: MT5Client, trade: _OpenTrade, as_of_unix: int) -> f
     rows = tuple(row for row in after.itertuples() if _bar_unix(row.time) <= as_of_unix)
     if not rows:
         return 0.0
-    if trade.partial_execution:
-        return float(simulate_partial_trade(client, trade.signal, rows, trade.tp_protection)["pnl"])
-    return float(simulate_split_trade(client, trade.signal, rows, trade.tp_protection)["pnl"])
+    return _simulate_trade_pnl(
+        client,
+        trade.signal,
+        rows,
+        trade.tp_protection,
+        execution_mode=trade.execution_mode,
+    )
 
 
 def _opposite_side(side: str) -> str:
@@ -653,6 +669,7 @@ def _execute_backtest_jobs(
 ) -> tuple[list[dict], list[dict], float]:
     tp_protection = tp_protection_enabled(strategy)
     partial_execution = is_partial_strategy(strategy)
+    full_execution = is_full_position_strategy(strategy)
     single_leg = is_single_leg_strategy(strategy)
     box_mode = closes_opposite_before_entry(strategy)
     daily_guard = DailyLossGuard(starting_balance, config.risk.effective_daily_loss_pct())
@@ -747,12 +764,12 @@ def _execute_backtest_jobs(
                     early_decision,
                     exit_time=job.scan_unix,
                     exit_kind="reverse",
-                    legs=1 if trade.partial_execution else len(trade.signal.tps),
-                    execution_mode="partial" if trade.partial_execution else "split",
+                    legs=1 if trade.execution_mode in {"partial", "full", "single"} else len(trade.signal.tps),
+                    execution_mode=trade.execution_mode,
                     leg_logs=_leg_logs_from_simulation(
                         trade.signal,
                         {"pnl": early_pnl, "exit_time": job.scan_unix, "exit_kind": "reverse"},
-                        "partial" if trade.partial_execution else "split",
+                        trade.execution_mode,
                     ),
                 )
                 accumulator.trade_logs.append(trade_log)
@@ -762,7 +779,7 @@ def _execute_backtest_jobs(
                         trade.signal.symbol,
                         trade.signal,
                         {"pnl": early_pnl, "exit_time": job.scan_unix, "exit_kind": "reverse"},
-                        "partial" if trade.partial_execution else "split",
+                        trade.execution_mode,
                         job.scan_unix,
                     )
                 )
@@ -796,6 +813,7 @@ def _execute_backtest_jobs(
             filters=filters,
             market_position_keys=position_keys,
             active_setup_count=setup_count,
+            day_start_balance=daily_guard.day_start_balance if daily_guard.enabled else None,
         )
         if not decision.allowed:
             if skip_should_mark_seen(decision.code):
@@ -809,12 +827,17 @@ def _execute_backtest_jobs(
         after = job.df.iloc[job.row_index + 1 :]
         if partial_execution:
             simulation = simulate_partial_trade(client, job.signal, after.itertuples(), tp_protection)
+            execution_mode = "partial"
+        elif full_execution:
+            simulation = simulate_full_trade(client, job.signal, after.itertuples(), tp_protection)
+            execution_mode = "full"
         elif single_leg:
             simulation = simulate_single_trade(client, job.signal, after.itertuples())
+            execution_mode = "single"
         else:
             simulation = simulate_split_trade(client, job.signal, after.itertuples(), tp_protection)
-        execution_mode = "partial" if partial_execution else "single" if single_leg else "split"
-        legs = 1 if partial_execution or single_leg else len(job.signal.tps)
+            execution_mode = "split"
+        legs = 1 if execution_mode in {"partial", "full", "single"} else len(job.signal.tps)
         trade_pnl = float(simulation["pnl"])
         exit_unix = int(simulation.get("exit_time") or job.entry_unix)
         portfolio.mark_seen(job.signal.setup_id)
@@ -824,7 +847,7 @@ def _execute_backtest_jobs(
             job.df,
             job.row_index,
             tp_protection,
-            partial_execution,
+            execution_mode,
             job.entry_unix,
             exit_unix,
             trade_pnl,

@@ -3,8 +3,14 @@ from __future__ import annotations
 import argparse
 import csv
 import logging
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+_ROOT = Path(__file__).resolve().parents[1]
+_SRC = _ROOT / "src"
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
 
 from rsi_divergence_bot.backtest import optimize_symbol_timeframes
 from rsi_divergence_bot.config import load_config
@@ -42,8 +48,8 @@ def _candidate_label(candidate: dict) -> str:
     if candidate.get("error"):
         return "error"
     return (
-        f"{_fmt_money(candidate.get('pnl', 0))} | "
-        f"{int(candidate.get('trades', 0))}T/{int(candidate.get('position_legs', 0))}L | "
+        f"{_fmt_money(candidate.get('pnl', 0))}, "
+        f"{int(candidate.get('trades', 0))}T/{int(candidate.get('position_legs', 0))}L, "
         f"{_fmt_pct(candidate.get('win_rate', 0))}"
     )
 
@@ -144,7 +150,7 @@ def write_reports(result: dict, output_dir: Path) -> tuple[Path, Path]:
         f"End: `{result['end']}`",
         f"Starting balance: `{_fmt_money(result['starting_balance'])}`",
         "",
-        "Cell format in the full table: `PnL | closed trades / position legs | win rate`.",
+        "Cell format in the full table: `PnL, closed trades / position legs, win rate`.",
         "",
         "## Best Timeframe Per Symbol",
         "",
@@ -212,3 +218,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# example usage
+# python scripts/timeframe_performance_report.py --config config.yaml --start "2026-01-01" --end "2026-01-31" --days 30 --balance 1000.0
+# uv run python scripts/timeframe_performance_report.py --config config.yaml --start "2026-01-01" --end "2026-01-31" --days 30 --balance 1000.0

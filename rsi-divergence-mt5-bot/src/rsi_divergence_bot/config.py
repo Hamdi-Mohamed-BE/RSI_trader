@@ -36,6 +36,8 @@ Timeframe = Literal[
 StrategyMode = Literal[
     "signal_no_tp_protection",
     "signal_with_tp_protection",
+    "signal_full_no_tp_protection",
+    "signal_full_with_tp_protection",
     "signal_partial_no_tp_protection",
     "signal_partial_with_tp_protection",
 ]

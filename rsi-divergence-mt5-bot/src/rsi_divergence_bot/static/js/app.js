@@ -1,6 +1,8 @@
 const STRATEGY_LABELS = {
   signal_no_tp_protection: "Split legs - no TP protection",
   signal_with_tp_protection: "Split legs - with TP protection",
+  signal_full_no_tp_protection: "Full position - no TP protection",
+  signal_full_with_tp_protection: "Full position - with TP protection",
 };
 
 const STRATEGY_ALIASES = {
@@ -209,7 +211,100 @@ function escapeHtml(text) {
   return String(text)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function sortHeader(label, key, type = "text", defaultDir = "") {
+  const safeLabel = escapeHtml(label);
+  const safeKey = escapeHtml(key);
+  const safeType = escapeHtml(type);
+  const defaultAttr = defaultDir ? ` data-sort-default="${escapeHtml(defaultDir)}"` : "";
+  return `
+    <button type="button" class="sort-button" data-sort-key="${safeKey}" data-sort-type="${safeType}"${defaultAttr} title="Sort by ${safeLabel}">
+      <span>${safeLabel}</span>
+      <span class="sort-indicator" aria-hidden="true">-</span>
+    </button>
+  `;
+}
+
+function sortValue(row, key, type) {
+  const raw = row.getAttribute(`data-sort-${key}`) ?? "";
+  if (type === "number") {
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : null;
+  }
+  if (type === "date") {
+    const value = Date.parse(raw);
+    return Number.isFinite(value) ? value : null;
+  }
+  return raw.toLowerCase();
+}
+
+function compareSortValues(left, right, type, direction) {
+  const leftMissing = left === null || left === "";
+  const rightMissing = right === null || right === "";
+  if (leftMissing && rightMissing) return 0;
+  if (leftMissing) return 1;
+  if (rightMissing) return -1;
+  const comparison = type === "text" ? String(left).localeCompare(String(right)) : Number(left) - Number(right);
+  return direction === "asc" ? comparison : -comparison;
+}
+
+function applySortableTableSort(button) {
+  const table = button.closest("table");
+  const tbody = table?.tBodies?.[0];
+  if (!table || !tbody) return;
+
+  const key = button.dataset.sortKey;
+  const type = button.dataset.sortType || "text";
+  if (!key) return;
+
+  const sameColumn = table.dataset.sortKey === key;
+  const defaultDir = button.dataset.sortDefault || (type === "text" ? "asc" : "desc");
+  const direction = sameColumn && table.dataset.sortDir === "asc" ? "desc" : sameColumn ? "asc" : defaultDir;
+  const allRows = Array.from(tbody.rows);
+  const pairMode = table.dataset.sortPairs === "true";
+  const sortableRows = allRows.filter((row) => row.dataset.sortRow === "true");
+
+  const compareRows = (leftRow, rightRow) => {
+    const left = sortValue(leftRow, key, type);
+    const right = sortValue(rightRow, key, type);
+    const comparison = compareSortValues(left, right, type, direction);
+    if (comparison !== 0) return comparison;
+    return Number(leftRow.dataset.sortIndex || 0) - Number(rightRow.dataset.sortIndex || 0);
+  };
+
+  if (pairMode) {
+    const groups = sortableRows.map((row) => {
+      const detail = row.nextElementSibling?.classList.contains("backtest-daily-detail")
+        ? row.nextElementSibling
+        : null;
+      return { row, detail };
+    });
+    groups.sort((left, right) => compareRows(left.row, right.row));
+    tbody.replaceChildren(...groups.flatMap((group) => (group.detail ? [group.row, group.detail] : [group.row])));
+  } else {
+    const staticRows = allRows.filter((row) => row.dataset.sortRow !== "true");
+    sortableRows.sort(compareRows);
+    tbody.replaceChildren(...staticRows, ...sortableRows);
+  }
+
+  table.dataset.sortKey = key;
+  table.dataset.sortDir = direction;
+
+  for (const headerButton of table.querySelectorAll(".sort-button")) {
+    const active = headerButton === button;
+    headerButton.classList.toggle("is-sorted", active);
+    headerButton.setAttribute("aria-pressed", active ? "true" : "false");
+    const indicator = headerButton.querySelector(".sort-indicator");
+    if (indicator) indicator.textContent = active ? (direction === "asc" ? "^" : "v") : "-";
+  }
+
+  Array.from(tbody.querySelectorAll(".row-number")).forEach((cell, index) => {
+    cell.textContent = String(index + 1);
+  });
 }
 
 function colorizeLogLine(line) {
@@ -862,8 +957,21 @@ function renderLiveData(data) {
   } else {
     els.positionsBody.innerHTML = positions
       .map(
-        (row) => `
-          <tr>
+        (row, index) => `
+          <tr
+            data-sort-row="true"
+            data-sort-index="${index}"
+            data-sort-ticket="${Number(row.ticket || 0)}"
+            data-sort-symbol="${escapeHtml(row.symbol || "")}"
+            data-sort-side="${escapeHtml(row.side || "")}"
+            data-sort-volume="${Number(row.volume || 0)}"
+            data-sort-open="${Number(row.price_open || 0)}"
+            data-sort-current="${Number(row.price_current || 0)}"
+            data-sort-sl="${Number(row.sl || 0)}"
+            data-sort-tp="${Number(row.tp || 0)}"
+            data-sort-pnl="${Number(row.profit || 0)}"
+            data-sort-comment="${escapeHtml(row.comment || "")}"
+          >
             <td>${row.ticket}${row.is_bot ? ' <span class="tag tag-bot">bot</span>' : ""}</td>
             <td><strong>${escapeHtml(row.symbol)}</strong></td>
             <td class="side-${row.side}">${String(row.side || "").toUpperCase()}</td>
@@ -887,8 +995,19 @@ function renderLiveData(data) {
   } else {
     els.dealsBody.innerHTML = deals
       .map(
-        (row) => `
-          <tr>
+        (row, index) => `
+          <tr
+            data-sort-row="true"
+            data-sort-index="${index}"
+            data-sort-time="${escapeHtml(row.time || "")}"
+            data-sort-ticket="${Number(row.ticket || 0)}"
+            data-sort-symbol="${escapeHtml(row.symbol || "")}"
+            data-sort-side="${escapeHtml(row.side || "")}"
+            data-sort-volume="${Number(row.volume || 0)}"
+            data-sort-price="${Number(row.price || 0)}"
+            data-sort-pnl="${Number(row.profit || 0)}"
+            data-sort-comment="${escapeHtml(row.comment || "")}"
+          >
             <td>${formatTimestamp(row.time)}</td>
             <td>${row.ticket}</td>
             <td><strong>${escapeHtml(row.symbol)}</strong></td>
@@ -984,8 +1103,15 @@ function renderLiveSummary(data) {
   const symbolRows = data.by_symbol || [];
   if (symbolRows.length) {
     els.liveSummarySymbols.innerHTML = symbolRows
-      .map((row) => `
-        <tr>
+      .map((row, index) => `
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-symbol="${escapeHtml(row.symbol || "")}"
+          data-sort-trades="${Number(row.trades || 0)}"
+          data-sort-wins="${Number(row.wins || 0)}"
+          data-sort-pnl="${Number(row.net || 0)}"
+        >
           <td><strong>${escapeHtml(row.symbol)}</strong></td>
           <td>${row.trades}</td>
           <td>${row.wins} / ${row.losses}</td>
@@ -1005,8 +1131,21 @@ function renderLiveSummary(data) {
     els.liveSummaryBody.innerHTML = '<tr><td colspan="10" class="empty-row">No trade history in this period.</td></tr>';
   } else {
     els.liveSummaryBody.innerHTML = trades
-      .map((row) => `
-        <tr>
+      .map((row, index) => `
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-closed="${escapeHtml(row.closed_at || row.opened_at || "")}"
+          data-sort-type="${escapeHtml(tradeTypeLabel(row.bucket))}"
+          data-sort-position="${Number(row.position_id || 0)}"
+          data-sort-symbol="${escapeHtml(row.symbol || "")}"
+          data-sort-side="${escapeHtml(row.side || "")}"
+          data-sort-volume="${Number(row.volume || 0)}"
+          data-sort-entry="${Number(row.entry_price || 0)}"
+          data-sort-exit="${Number(row.exit_price || 0)}"
+          data-sort-pnl="${Number(row.pnl || 0)}"
+          data-sort-comment="${escapeHtml(row.comment || "")}"
+        >
           <td>${formatTimestamp(row.closed_at || row.opened_at)}</td>
           <td><span class="tag">${escapeHtml(tradeTypeLabel(row.bucket))}</span></td>
           <td>${row.position_id}</td>
@@ -1656,8 +1795,23 @@ function renderBacktestDailyTradeRows(tradeRows, startBalance) {
   rows.push(
     ...tradeRows.map(
       (trade, index) => `
-        <tr>
-          <td>${index + 1}</td>
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-exit="${escapeHtml(trade.exit_time || "")}"
+          data-sort-symbol="${escapeHtml(trade.symbol || "")}"
+          data-sort-side="${escapeHtml(trade.side || "")}"
+          data-sort-leg="${Number(trade.leg || 0)}"
+          data-sort-entry="${Number(trade.entry ?? 0)}"
+          data-sort-sl="${Number(trade.sl ?? 0)}"
+          data-sort-tp="${Number(trade.tp ?? 0)}"
+          data-sort-exit-price="${Number(trade.exit_price ?? 0)}"
+          data-sort-lot="${Number(trade.lot ?? 0)}"
+          data-sort-pnl="${Number(trade.pnl ?? 0)}"
+          data-sort-balance="${Number(trade.balance_after ?? 0)}"
+          data-sort-exit-kind="${escapeHtml(formatExitKind(trade.exit_kind))}"
+        >
+          <td class="row-number">${index + 1}</td>
           <td>${formatTimestamp(trade.exit_time)}</td>
           <td><strong>${escapeHtml(trade.symbol || "—")}</strong></td>
           <td class="side-${trade.side || ""}">${trade.side ? String(trade.side).toUpperCase() : "—"}</td>
@@ -1687,8 +1841,17 @@ function renderBacktestDaily(dailyRows) {
 
   els.backtestDailyBody.innerHTML = dailyRows
     .map(
-      (row) => `
-        <tr class="backtest-daily-row">
+      (row, index) => `
+        <tr
+          class="backtest-daily-row"
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-date="${escapeHtml(row.date || "")}"
+          data-sort-legs="${Number(row.trades || 0)}"
+          data-sort-wins="${Number(row.wins || 0)}"
+          data-sort-pnl="${Number(row.pnl || 0)}"
+          data-sort-balance="${Number(row.balance || 0)}"
+        >
           <td class="daily-date-cell">
             <button type="button" class="daily-expand-btn" aria-expanded="false" aria-label="Show trades for ${escapeHtml(row.date)}">▸</button>
             <strong>${escapeHtml(row.date)}</strong>
@@ -1705,18 +1868,18 @@ function renderBacktestDaily(dailyRows) {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Exit (UTC)</th>
-                    <th>Symbol</th>
-                    <th>Side</th>
-                    <th>Leg</th>
-                    <th>Entry</th>
-                    <th>SL</th>
-                    <th>TP</th>
-                    <th>Exit price</th>
-                    <th>Lot</th>
-                    <th>PnL</th>
-                    <th>Balance after</th>
-                    <th>Exit</th>
+                    <th>${sortHeader("Exit (UTC)", "exit", "date", "asc")}</th>
+                    <th>${sortHeader("Symbol", "symbol")}</th>
+                    <th>${sortHeader("Side", "side")}</th>
+                    <th>${sortHeader("Leg", "leg", "number", "asc")}</th>
+                    <th>${sortHeader("Entry", "entry", "number")}</th>
+                    <th>${sortHeader("SL", "sl", "number")}</th>
+                    <th>${sortHeader("TP", "tp", "number")}</th>
+                    <th>${sortHeader("Exit price", "exit-price", "number")}</th>
+                    <th>${sortHeader("Lot", "lot", "number")}</th>
+                    <th>${sortHeader("PnL", "pnl", "number")}</th>
+                    <th>${sortHeader("Balance after", "balance", "number")}</th>
+                    <th>${sortHeader("Exit", "exit-kind")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1784,15 +1947,35 @@ function renderBacktestResult(data) {
 
   els.backtestBody.innerHTML = (data.symbols || [])
     .map(
-      (row) => row.error
+      (row, index) => row.error
         ? `
-        <tr>
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-symbol="${escapeHtml(row.symbol || "")}"
+          data-sort-signals="${Number(row.raw_signals || 0)}"
+          data-sort-setups="0"
+          data-sort-legs="0"
+          data-sort-win-rate="0"
+          data-sort-pnl="-999999999"
+          data-sort-dd="999999999"
+        >
           <td><strong>${escapeHtml(row.symbol)}</strong><div class="tag">${escapeHtml(row.name)} · ${escapeHtml(row.timeframe || "")}</div></td>
           <td colspan="7" class="value-negative">${escapeHtml(row.error)}</td>
         </tr>
       `
       : `
-        <tr>
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-symbol="${escapeHtml(row.symbol || "")}"
+          data-sort-signals="${Number(row.raw_signals ?? row.trades ?? 0)}"
+          data-sort-setups="${Number(row.trades || 0)}"
+          data-sort-legs="${Number(row.position_legs ?? backtestLegCount(row))}"
+          data-sort-win-rate="${Number(row.win_rate || 0)}"
+          data-sort-pnl="${Number(row.pnl || 0)}"
+          data-sort-dd="${Number(row.max_drawdown || 0)}"
+        >
           <td><strong>${escapeHtml(row.symbol)}</strong><div class="tag">${escapeHtml(row.name)} · ${escapeHtml(row.timeframe || "")}</div></td>
           <td>${row.raw_signals ?? row.trades} raw / ${row.skipped_signals ?? 0} skipped</td>
           <td>${row.trades}</td>
@@ -1926,6 +2109,11 @@ async function init() {
 
   window.addEventListener("app:toast", (event) => {
     toast(event.detail.message, event.detail.type || "info");
+  });
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest(".sort-button[data-sort-key]");
+    if (!button) return;
+    applySortableTableSort(button);
   });
 
   els.backtestForm?.addEventListener("submit", runBacktest);
