@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from .config import AppConfig, SymbolConfig
 from .mt5_client import MT5Client
 from .strategy import Signal
+from .trade_geometry import invalid_market_geometry
 
 
 @dataclass(frozen=True)
@@ -137,6 +138,19 @@ def evaluate_trade_signal(
             allowed=False,
             code="tp1",
             reason="missing TP levels",
+            risk_usd=0.0,
+            spread=0.0,
+            spread_atr=0.0,
+            tp1_distance=0.0,
+            min_tp1_distance=0.0,
+        )
+
+    geometry_error = invalid_market_geometry(signal.side, signal.entry, signal.sl, signal.tps)
+    if geometry_error:
+        return TradeDecision(
+            allowed=False,
+            code="geometry",
+            reason=geometry_error,
             risk_usd=0.0,
             spread=0.0,
             spread_atr=0.0,

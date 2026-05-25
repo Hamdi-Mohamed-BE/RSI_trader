@@ -11,9 +11,9 @@ mt5:
 bot:
   dry_run: false
   auto_start: false
-  poll_seconds: 15
+  poll_seconds: 5
   magic: 260521
-  strategy: box_theory
+  strategy: signal_no_tp_protection
   trade_decision_profile: balanced
   max_concurrent_setups: 20
   state_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\state.json
@@ -24,6 +24,7 @@ risk:
   max_daily_loss_pct: 15.0
   max_extension_atr: 1.8
   max_spread_atr: 0.35
+  max_live_entry_drift_risk: 0.35
   min_tp1_spread_multiple: 1.5
   use_spread_filter: false
   use_tp1_spread_filter: false
@@ -31,13 +32,6 @@ risk:
   use_existing_position_filter: false
   use_max_setups_filter: false
   skip_if_symbol_has_position: false
-box_theory:
-  zone_edge_fraction: 0.25
-  aggressive_body_frac: 0.55
-  aggressive_range_frac: 0.25
-  wick_body_ratio_min: 2.0
-  max_body_range_ratio: 0.35
-  sl_buffer_frac: 0.005
 web:
   host: 127.0.0.1
   port: 8787
@@ -75,7 +69,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M1
-  lot_per_leg: 0.4
+  lot_per_leg: 0.2
   max_setup_risk_usd: 550.0
   pivot_len: 3
   sl_atr_mult: 1.2
@@ -127,7 +121,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M1
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -145,7 +139,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M5
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -160,9 +154,9 @@ symbols:
 - symbol: USDJPY-VIP
   name: USDJPY
   market_key_override: null
-  enabled: true
+  enabled: false
   timeframe: M1
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -179,7 +173,7 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M1
-  lot_per_leg: 0.25
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -196,7 +190,7 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M1
-  lot_per_leg: 0.25
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 7
   sl_atr_mult: 1.5
@@ -213,7 +207,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M5
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 7
   sl_atr_mult: 2.0
@@ -230,7 +224,7 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M15
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -246,7 +240,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M15
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: 220.0
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -279,7 +273,160 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M1
-  lot_per_leg: 1.0
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: XRPUSD
+  name: Ripple
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.1
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: ADAUSD
+  name: Cardano
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.2
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: BNBUSD
+  name: Binance Coin
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.3
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: LTCUSD
+  name: Litecoin
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.2
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: BCHUSD
+  name: Bitcoin Cash
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.2
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: DOTUSD
+  name: Polkadot
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: TRXUSD
+  name: TRON
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.05
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: XLMUSD
+  name: Stellar Lumens
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: UNIUSD
+  name: Uniswap
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 1.2
@@ -294,9 +441,9 @@ symbols:
 - symbol: CL-OIL-VIP
   name: Oil
   market_key_override: null
-  enabled: false
+  enabled: true
   timeframe: M5
-  lot_per_leg: 0.01
+  lot_per_leg: 0.1
   max_setup_risk_usd: null
   pivot_len: 5
   sl_atr_mult: 2.0
@@ -313,7 +460,7 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M5
-  lot_per_leg: 0.25
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -331,7 +478,7 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M5
-  lot_per_leg: 0.25
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -349,7 +496,7 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M1
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -367,7 +514,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M5
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -385,7 +532,7 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M5
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -403,7 +550,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M5
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -418,9 +565,9 @@ symbols:
 - symbol: EURCAD-VIP
   name: EURCAD
   market_key_override: null
-  enabled: false
+  enabled: true
   timeframe: M5
-  lot_per_leg: 0.25
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -437,7 +584,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M5
-  lot_per_leg: 0.4
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -455,7 +602,7 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M5
-  lot_per_leg: 0.25
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -473,7 +620,7 @@ symbols:
   market_key_override: null
   enabled: false
   timeframe: M5
-  lot_per_leg: 0.25
+  lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
   sl_atr_mult: 2.0

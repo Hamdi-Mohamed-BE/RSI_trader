@@ -4,8 +4,6 @@ import pandas as pd
 
 from .config import AppConfig, RiskConfig, SymbolConfig
 from .strategy import Signal
-from .strategy_modes import is_box_theory_strategy
-from . import box_theory
 from . import strategy as rsi_strategy
 
 
@@ -15,8 +13,6 @@ def generate_signals(
     symbol_cfg: SymbolConfig,
     risk_cfg: RiskConfig | None = None,
 ) -> list[Signal]:
-    if is_box_theory_strategy(config.bot.strategy):
-        return box_theory.generate_signals(df, symbol_cfg, config, risk_cfg)
     return rsi_strategy.generate_signals(df, symbol_cfg, risk_cfg)
 
 
@@ -26,8 +22,6 @@ def latest_closed_signal(
     symbol_cfg: SymbolConfig,
     risk_cfg: RiskConfig,
 ) -> Signal | None:
-    if is_box_theory_strategy(config.bot.strategy):
-        return box_theory.latest_closed_signal(df, symbol_cfg, config, risk_cfg)
     return rsi_strategy.latest_closed_signal(df, symbol_cfg, risk_cfg)
 
 
@@ -38,6 +32,4 @@ def signal_at_closed_index(
     symbol_cfg: SymbolConfig,
     risk_cfg: RiskConfig,
 ) -> Signal | None:
-    if is_box_theory_strategy(config.bot.strategy):
-        return box_theory.signal_at_closed_index(df, end_index, symbol_cfg, config, risk_cfg)
     return rsi_strategy.signal_at_closed_index(df, end_index, symbol_cfg, risk_cfg)

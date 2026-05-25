@@ -5,7 +5,8 @@ from dataclasses import dataclass
 
 from .config import AppConfig, SymbolConfig
 from .mt5_client import MT5Client
-from .symbols import market_key
+from .symbols import crypto_aliases_for, market_key
+from .trade_geometry import invalid_market_geometry
 
 
 def _field(obj, name: str, default=None):
@@ -115,12 +116,7 @@ def resolve_symbol(token: str, config: AppConfig) -> SymbolConfig | None:
             values.update({"GOLD", "XAU", "XAUUSD"})
         if item.key == "XAGUSD" or "SILVER" in item.name.upper():
             values.update({"SILVER", "XAG", "XAGUSD"})
-        if "BTC" in item.key:
-            values.update({"BTC", "BITCOIN", "BTCUSD"})
-        if "ETH" in item.key:
-            values.update({"ETH", "ETHUSD"})
-        if "SOL" in item.key:
-            values.update({"SOL", "SOLUSD"})
+        values.update(crypto_aliases_for(item.key))
         if "OIL" in item.symbol.upper() or "OIL" in item.name.upper():
             values.update({"OIL", "CL", "CL-OIL"})
 
@@ -176,18 +172,10 @@ def execute_manual_trade(plan: ManualTradePlan, client: MT5Client, config: AppCo
 
 
 def _validate_geometry(plan: ManualTradePlan, entry: float) -> None:
-    if plan.side == "buy":
-        if plan.sl >= entry:
-            raise ValueError(f"BUY SL must be below current ask {entry:.5f}.")
-        bad_tps = [tp for tp in plan.tps if tp <= entry]
-        if bad_tps:
-            raise ValueError(f"BUY TPs must be above current ask {entry:.5f}: {bad_tps}")
-    else:
-        if plan.sl <= entry:
-            raise ValueError(f"SELL SL must be above current bid {entry:.5f}.")
-        bad_tps = [tp for tp in plan.tps if tp >= entry]
-        if bad_tps:
-            raise ValueError(f"SELL TPs must be below current bid {entry:.5f}: {bad_tps}")
+    label = "current ask" if plan.side == "buy" else "current bid"
+    reason = invalid_market_geometry(plan.side, entry, plan.sl, plan.tps, label=label)
+    if reason:
+        raise ValueError(reason)
 
 
 def _norm_symbol(value: str) -> str:

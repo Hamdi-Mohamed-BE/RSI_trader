@@ -7,6 +7,8 @@ from typing import Any
 import pandas as pd
 
 from .config import MT5Config
+from .symbols import CRYPTO_MARKET_KEYS
+from .trade_geometry import invalid_market_geometry, invalid_pending_geometry
 
 try:
     import MetaTrader5 as _native_mt5
@@ -33,6 +35,7 @@ TIMEFRAMES = {
 
 _MT5_LOCK = threading.RLock()
 _THREAD_LOCAL = threading.local()
+_COMMON_24H_SYMBOLS = tuple(sorted(CRYPTO_MARKET_KEYS))
 
 
 def _thread_ready(connection_key: str) -> bool:
@@ -50,10 +53,37 @@ def _utc_naive(dt: datetime) -> datetime:
     return dt.astimezone(timezone.utc).replace(tzinfo=None)
 
 
-def _rates_frame(rates) -> pd.DataFrame:
+def _rates_frame(rates, *, time_offset_seconds: int = 0) -> pd.DataFrame:
     df = pd.DataFrame(rates)
     df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
+    if time_offset_seconds:
+        df["time"] = df["time"] - pd.to_timedelta(time_offset_seconds, unit="s")
     return df
+
+
+def _timeframe_seconds(timeframe: str) -> int:
+    return TIMEFRAMES.get(timeframe, 1) * 60
+
+
+def _floor_timestamp(dt: datetime, timeframe: str) -> datetime:
+    seconds = _timeframe_seconds(timeframe)
+    unix = int(dt.timestamp())
+    return datetime.fromtimestamp(unix - (unix % seconds), tz=timezone.utc)
+
+
+def _detect_server_time_offset_seconds(rates, timeframe: str) -> int | None:
+    if rates is None or len(rates) == 0:
+        return None
+    raw_last = datetime.fromtimestamp(int(rates[-1]["time"]), tz=timezone.utc)
+    expected_last = _floor_timestamp(datetime.now(timezone.utc), timeframe)
+    rounded_hours = round((raw_last - expected_last).total_seconds() / 3600)
+    candidate = int(rounded_hours * 3600)
+    if abs(candidate) > 14 * 3600:
+        return None
+    corrected_delta = abs((raw_last - timedelta(seconds=candidate) - expected_last).total_seconds())
+    if corrected_delta <= max(_timeframe_seconds(timeframe) * 2, 120):
+        return candidate
+    return None
 
 
 def _field(obj, name: str, default=None):
@@ -182,6 +212,7 @@ class MT5Client:
             if self.config.mode == "linux_bridge"
             else f"native:{self.config.path}"
         )
+        self._time_offset_seconds: int | None = None
 
     def _load_backend(self):
         if self.config.mode == "linux_bridge":
@@ -203,6 +234,30 @@ class MT5Client:
         if self.config.timeout:
             kwargs["timeout"] = int(self.config.timeout)
         return kwargs
+
+    def _rates_time_offset(self, symbol: str, timeframe: str, rates) -> int:
+        detected = _detect_server_time_offset_seconds(rates, timeframe)
+        if detected is not None:
+            self._time_offset_seconds = detected
+            return detected
+        if self._time_offset_seconds is not None:
+            return self._time_offset_seconds
+
+        tf = getattr(self.mt5, "TIMEFRAME_M1")
+        for probe_symbol in _COMMON_24H_SYMBOLS:
+            try:
+                if not self.mt5.symbol_select(probe_symbol, True):
+                    continue
+                probe = self.mt5.copy_rates_from_pos(probe_symbol, tf, 0, 5)
+                detected = _detect_server_time_offset_seconds(probe, "M1")
+                if detected is not None:
+                    self._time_offset_seconds = detected
+                    return detected
+            except Exception:  # noqa: BLE001
+                continue
+
+        self._time_offset_seconds = 0
+        return 0
 
     def initialize(self) -> None:
         with _MT5_LOCK:
@@ -399,7 +454,8 @@ class MT5Client:
             rates = self.mt5.copy_rates_from_pos(symbol, tf, 0, count)
             if rates is None or len(rates) == 0:
                 raise RuntimeError(f"No rates for {symbol} {timeframe}: {self.mt5.last_error()}")
-            return _rates_frame(rates)
+            offset = self._rates_time_offset(symbol, timeframe, rates)
+            return _rates_frame(rates, time_offset_seconds=offset)
 
     def rates_range(self, symbol: str, timeframe: str, start: datetime, end: datetime) -> pd.DataFrame:
         if timeframe not in TIMEFRAMES:
@@ -434,12 +490,14 @@ class MT5Client:
             if batch is None or len(batch) == 0:
                 raise RuntimeError(f"No rates for {symbol} {timeframe}: {self.mt5.last_error()}")
 
-            df = _rates_frame(batch)
+            offset = self._rates_time_offset(symbol, timeframe, batch)
+            df = _rates_frame(batch, time_offset_seconds=offset)
             df = df[(df["time"] >= start_utc) & (df["time"] <= end_utc)].reset_index(drop=True)
             if df.empty and bars_needed < 200_000:
                 batch = self.mt5.copy_rates_from_pos(symbol, tf, 0, min(bars_needed * 2, 200_000))
                 if batch is not None and len(batch) > 0:
-                    df = _rates_frame(batch)
+                    offset = self._rates_time_offset(symbol, timeframe, batch)
+                    df = _rates_frame(batch, time_offset_seconds=offset)
                     df = df[(df["time"] >= start_utc) & (df["time"] <= end_utc)].reset_index(drop=True)
 
             if df.empty:
@@ -505,6 +563,9 @@ class MT5Client:
     TRADE_DONE = 10009
 
     def send_market(self, symbol: str, side: str, volume: float, sl: float, tp: float, magic: int, comment: str):
+        side = side.lower()
+        if side not in {"buy", "sell"}:
+            raise ValueError(f"Unsupported market side: {side}")
         self.initialize()
         with _MT5_LOCK:
             if not self.mt5.symbol_select(symbol, True):
@@ -520,6 +581,10 @@ class MT5Client:
             norm_sl = self.normalize_price(symbol, sl)
             norm_tp = self.normalize_price(symbol, tp)
 
+            geometry_error = invalid_market_geometry(side, price, norm_sl, [norm_tp], label="live price")
+            if geometry_error:
+                raise ValueError(f"{symbol} {geometry_error}")
+
             stops_level = int(_field(info, "trade_stops_level", 0) or 0)
             point = float(_field(info, "point") or 0.00001)
             min_stop = stops_level * point
@@ -534,6 +599,10 @@ class MT5Client:
                         norm_sl = self.normalize_price(symbol, price + min_stop)
                     if price - norm_tp < min_stop:
                         norm_tp = self.normalize_price(symbol, price - min_stop)
+
+            geometry_error = invalid_market_geometry(side, price, norm_sl, [norm_tp], label="live price")
+            if geometry_error:
+                raise ValueError(f"{symbol} {geometry_error}")
 
             last_result = None
             for filling in self._filling_modes(symbol):
@@ -567,6 +636,7 @@ class MT5Client:
         magic: int,
         comment: str,
     ):
+        order_kind = order_kind.lower()
         self.initialize()
         with _MT5_LOCK:
             if not self.mt5.symbol_select(symbol, True):
@@ -589,6 +659,18 @@ class MT5Client:
             norm_entry = self.normalize_price(symbol, entry)
             norm_sl = self.normalize_price(symbol, sl)
             norm_tp = self.normalize_price(symbol, tp)
+            side = "buy" if order_kind.startswith("buy") else "sell"
+            geometry_error = invalid_market_geometry(side, norm_entry, norm_sl, [norm_tp], label="pending entry")
+            if geometry_error:
+                raise ValueError(f"{symbol} {order_kind} {geometry_error}")
+            pending_error = invalid_pending_geometry(
+                order_kind,
+                float(_field(tick, "bid", 0.0) or 0.0),
+                float(_field(tick, "ask", 0.0) or 0.0),
+                norm_entry,
+            )
+            if pending_error:
+                raise ValueError(f"{symbol} {pending_error}")
             request = {
                 "action": self.mt5.TRADE_ACTION_PENDING,
                 "symbol": symbol,

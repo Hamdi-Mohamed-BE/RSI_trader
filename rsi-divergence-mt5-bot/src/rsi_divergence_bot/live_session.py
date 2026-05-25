@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
+import numpy as np
 import pandas as pd
 
 from .config import AppConfig, SymbolConfig
@@ -124,12 +125,13 @@ def _index_signals_by_row(df: pd.DataFrame, symbol_cfg: SymbolConfig, config: Ap
     if not signals:
         return {}
 
-    time_to_index = {bar_unix(value): index for index, value in enumerate(df["time"])}
+    times = df["time"].map(bar_unix).to_numpy()
     indexed: dict[int, Signal] = {}
     for signal in signals:
-        row_index = time_to_index.get(bar_unix(signal.time))
-        if row_index is not None:
-            indexed[row_index] = signal
+        signal_unix = bar_unix(signal.time)
+        matches = np.nonzero(times == signal_unix)[0]
+        if len(matches):
+            indexed[int(matches[-1])] = signal
     return indexed
 
 

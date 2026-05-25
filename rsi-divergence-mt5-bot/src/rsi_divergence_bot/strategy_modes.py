@@ -9,17 +9,21 @@ if TYPE_CHECKING:
 CANONICAL_STRATEGIES = {
     "signal_no_tp_protection",
     "signal_with_tp_protection",
-    "box_theory",
 }
 
 LEGACY_STRATEGY_ALIASES = {
     "signal_partial_no_tp_protection": "signal_no_tp_protection",
     "signal_partial_with_tp_protection": "signal_with_tp_protection",
+    "trend_pullback": "signal_with_tp_protection",
+    "supply_demand": "signal_with_tp_protection",
+    "box_theory": "signal_with_tp_protection",
 }
 
 TP_PROTECTION_STRATEGIES = {
     "signal_with_tp_protection",
 }
+
+SINGLE_LEG_STRATEGIES: set[str] = set()
 
 
 def canonical_strategy(strategy: "StrategyMode | str") -> str:
@@ -35,13 +39,9 @@ def tp_protection_enabled(strategy: "StrategyMode | str") -> bool:
     return canonical_strategy(strategy) in TP_PROTECTION_STRATEGIES
 
 
-def is_box_theory_strategy(strategy: "StrategyMode | str") -> bool:
-    return canonical_strategy(strategy) == "box_theory"
-
-
 def is_single_leg_strategy(strategy: "StrategyMode | str") -> bool:
-    return is_box_theory_strategy(strategy)
+    return canonical_strategy(strategy) in SINGLE_LEG_STRATEGIES
 
 
 def closes_opposite_before_entry(strategy: "StrategyMode | str") -> bool:
-    return is_box_theory_strategy(strategy)
+    return is_single_leg_strategy(strategy)

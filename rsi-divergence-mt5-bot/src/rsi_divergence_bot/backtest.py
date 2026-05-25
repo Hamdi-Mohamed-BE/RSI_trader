@@ -15,7 +15,6 @@ from .portfolio import BacktestPortfolio
 from .strategy import Signal
 from .strategy_modes import (
     closes_opposite_before_entry,
-    is_box_theory_strategy,
     is_partial_strategy,
     is_single_leg_strategy,
     tp_protection_enabled,
@@ -31,6 +30,8 @@ class BacktestTrade:
     sl: float
     tps: list[float]
     lot_per_leg: float
+    legs: int
+    execution_mode: str
     risk_usd: float
     pnl: float
     session: str
@@ -38,6 +39,7 @@ class BacktestTrade:
     spread_atr: float
     exit_time: str | None = None
     exit_kind: str | None = None
+    leg_logs: list[dict] | None = None
 
 
 @dataclass
@@ -67,6 +69,7 @@ class SymbolBacktest:
     error: str | None = None
     trade_logs: list[BacktestTrade] | None = None
     skipped_logs: list[BacktestSkip] | None = None
+    position_legs: int = 0
 
 
 @dataclass
@@ -119,6 +122,7 @@ class _SymbolAccumulator:
     def to_result(self) -> SymbolBacktest:
         trades = self.wins + self.losses
         symbol_cfg = self.symbol_cfg
+        position_legs = sum(trade.legs for trade in self.trade_logs)
         return SymbolBacktest(
             symbol=symbol_cfg.symbol,
             market_key=symbol_cfg.key,
@@ -135,6 +139,7 @@ class _SymbolAccumulator:
             error=self.error,
             trade_logs=self.trade_logs,
             skipped_logs=self.skipped_logs,
+            position_legs=position_legs,
         )
 
 
@@ -236,6 +241,9 @@ def _trade_log(
     *,
     exit_time: int | None = None,
     exit_kind: str | None = None,
+    legs: int | None = None,
+    execution_mode: str = "split",
+    leg_logs: list[dict] | None = None,
 ) -> BacktestTrade:
     exit_iso = None
     if exit_time is not None:
@@ -247,6 +255,8 @@ def _trade_log(
         sl=round(signal.sl, 5),
         tps=[round(tp, 5) for tp in signal.tps],
         lot_per_leg=signal.lot_per_leg,
+        legs=legs if legs is not None else len(signal.tps),
+        execution_mode=execution_mode,
         risk_usd=round(decision.risk_usd, 2),
         pnl=round(pnl, 2),
         session=signal.session,
@@ -254,6 +264,7 @@ def _trade_log(
         spread_atr=round(decision.spread_atr, 3),
         exit_time=exit_iso,
         exit_kind=exit_kind,
+        leg_logs=leg_logs,
     )
 
 
@@ -266,6 +277,88 @@ def _skip_log(signal: Signal, decision: TradeDecision) -> BacktestSkip:
         code=decision.code,
         spread_atr=round(decision.spread_atr, 3),
     )
+
+
+def _iso_from_unix(value: int | None) -> str | None:
+    if value is None:
+        return None
+    return datetime.fromtimestamp(int(value), tz=timezone.utc).replace(microsecond=0).isoformat()
+
+
+def _leg_logs_from_simulation(signal: Signal, simulation: dict, execution_mode: str) -> list[dict]:
+    raw_legs = simulation.get("legs") or []
+    if raw_legs:
+        total = len(raw_legs)
+        return [
+            {
+                "leg": int(item.get("leg") or index),
+                "legs": total,
+                "entry": round(float(item.get("entry", signal.entry)), 5),
+                "sl": round(float(item.get("exit_sl", item.get("sl", signal.sl))), 5),
+                "initial_sl": round(float(item.get("sl", signal.sl)), 5),
+                "tp": round(float(item.get("tp", signal.tps[min(index - 1, len(signal.tps) - 1)])), 5)
+                if signal.tps
+                else None,
+                "lot": float(item.get("lot", signal.lot_per_leg)),
+                "exit_price": round(float(item.get("exit_price", signal.entry)), 5),
+                "exit_time": _iso_from_unix(item.get("exit_time")),
+                "exit_kind": item.get("exit_kind") or simulation.get("exit_kind"),
+                "pnl": round(float(item.get("pnl", 0.0)), 2),
+                "execution_mode": execution_mode,
+            }
+            for index, item in enumerate(raw_legs, start=1)
+        ]
+
+    return [
+        {
+            "leg": 1,
+            "legs": 1,
+            "entry": round(float(signal.entry), 5),
+            "sl": round(float(signal.sl), 5),
+            "initial_sl": round(float(signal.sl), 5),
+            "tp": round(float(signal.tps[-1]), 5) if signal.tps else None,
+            "lot": float(signal.lot_per_leg),
+            "exit_price": None,
+            "exit_time": _iso_from_unix(simulation.get("exit_time")),
+            "exit_kind": simulation.get("exit_kind"),
+            "pnl": round(float(simulation.get("pnl", 0.0)), 2),
+            "execution_mode": execution_mode,
+        }
+    ]
+
+
+def _closed_trade_rows(
+    symbol: str,
+    signal: Signal,
+    simulation: dict,
+    execution_mode: str,
+    fallback_sort_time: int,
+) -> list[dict]:
+    rows = []
+    for leg in _leg_logs_from_simulation(signal, simulation, execution_mode):
+        exit_time_iso = leg.get("exit_time") or _iso_from_unix(simulation.get("exit_time"))
+        sort_time = int(pd.Timestamp(exit_time_iso).timestamp()) if exit_time_iso else fallback_sort_time
+        rows.append(
+            {
+                "symbol": symbol,
+                "side": signal.side,
+                "entry_time": _iso_time(signal.time),
+                "exit_time": exit_time_iso,
+                "exit_kind": leg.get("exit_kind"),
+                "pnl": round(float(leg.get("pnl", 0.0)), 2),
+                "sort_time": sort_time,
+                "leg": leg.get("leg"),
+                "legs": leg.get("legs"),
+                "entry": leg.get("entry"),
+                "sl": leg.get("sl"),
+                "initial_sl": leg.get("initial_sl"),
+                "tp": leg.get("tp"),
+                "lot": leg.get("lot"),
+                "exit_price": leg.get("exit_price"),
+                "execution_mode": execution_mode,
+            }
+        )
+    return rows
 
 
 def _trade_pnl(client: MT5Client, signal: Signal, rows, tp_protection: bool, *, partial_execution: bool = False) -> float:
@@ -382,6 +475,15 @@ def _build_daily_performance(closed_trades: list[dict], starting_balance: float)
                 "entry_time": trade.get("entry_time"),
                 "exit_time": exit_time,
                 "exit_kind": trade.get("exit_kind"),
+                "leg": trade.get("leg"),
+                "legs": trade.get("legs"),
+                "entry": trade.get("entry"),
+                "sl": trade.get("sl"),
+                "initial_sl": trade.get("initial_sl"),
+                "tp": trade.get("tp"),
+                "lot": trade.get("lot"),
+                "exit_price": trade.get("exit_price"),
+                "execution_mode": trade.get("execution_mode"),
                 "pnl": round(pnl, 2),
                 "balance_after": round(balance, 2),
             }
@@ -434,8 +536,6 @@ def _decision_rules_payload(config: AppConfig, filters, *, strategy: str) -> dic
         "max_daily_loss_pct": risk_cfg.max_daily_loss_pct,
         "enabled_symbols": len(config.enabled_symbols),
     }
-    if is_box_theory_strategy(strategy):
-        payload["box_theory"] = config.box_theory.model_dump()
     return payload
 
 
@@ -633,7 +733,7 @@ def _execute_backtest_jobs(
                 early_decision = TradeDecision(
                     allowed=True,
                     code="force_close",
-                    reason="Box Theory pyramiding=0: closed opposite position",
+                    reason="Single-leg pyramiding=0: closed opposite position",
                     risk_usd=0.0,
                     spread=0.0,
                     spread_atr=0.0,
@@ -646,26 +746,31 @@ def _execute_backtest_jobs(
                     early_decision,
                     exit_time=job.scan_unix,
                     exit_kind="reverse",
+                    legs=1 if trade.partial_execution else len(trade.signal.tps),
+                    execution_mode="partial" if trade.partial_execution else "split",
+                    leg_logs=_leg_logs_from_simulation(
+                        trade.signal,
+                        {"pnl": early_pnl, "exit_time": job.scan_unix, "exit_kind": "reverse"},
+                        "partial" if trade.partial_execution else "split",
+                    ),
                 )
                 accumulator.trade_logs.append(trade_log)
                 accumulator.record_trade(early_pnl)
-                closed_trades.append(
-                    {
-                        "symbol": trade.signal.symbol,
-                        "side": trade.signal.side,
-                        "entry_time": _iso_time(trade.signal.time),
-                        "exit_time": trade_log.exit_time,
-                        "exit_kind": "reverse",
-                        "pnl": round(early_pnl, 2),
-                        "sort_time": job.scan_unix,
-                    }
+                closed_trades.extend(
+                    _closed_trade_rows(
+                        trade.signal.symbol,
+                        trade.signal,
+                        {"pnl": early_pnl, "exit_time": job.scan_unix, "exit_kind": "reverse"},
+                        "partial" if trade.partial_execution else "split",
+                        job.scan_unix,
+                    )
                 )
 
             if job.signal.market_key in portfolio.open_market_keys():
                 decision = TradeDecision(
                     allowed=False,
                     code="pyramiding",
-                    reason="Box Theory pyramiding=0: same-side position still open",
+                    reason="Single-leg pyramiding=0: same-side position still open",
                     risk_usd=0.0,
                     spread=0.0,
                     spread_atr=0.0,
@@ -707,6 +812,8 @@ def _execute_backtest_jobs(
             simulation = simulate_single_trade(client, job.signal, after.itertuples())
         else:
             simulation = simulate_split_trade(client, job.signal, after.itertuples(), tp_protection)
+        execution_mode = "partial" if partial_execution else "single" if single_leg else "split"
+        legs = 1 if partial_execution or single_leg else len(job.signal.tps)
         trade_pnl = float(simulation["pnl"])
         exit_unix = int(simulation.get("exit_time") or job.entry_unix)
         portfolio.mark_seen(job.signal.setup_id)
@@ -727,6 +834,9 @@ def _execute_backtest_jobs(
             decision,
             exit_time=simulation.get("exit_time"),
             exit_kind=simulation.get("exit_kind"),
+            legs=legs,
+            execution_mode=execution_mode,
+            leg_logs=_leg_logs_from_simulation(job.signal, simulation, execution_mode),
         )
         accumulator.trade_logs.append(trade_log)
         accumulator.record_trade(trade_pnl)
@@ -742,16 +852,14 @@ def _execute_backtest_jobs(
                     exit_kind=simulation.get("exit_kind"),
                 )
             )
-        closed_trades.append(
-            {
-                "symbol": symbol_key,
-                "side": job.signal.side,
-                "entry_time": _iso_time(job.signal.time),
-                "exit_time": trade_log.exit_time,
-                "exit_kind": simulation.get("exit_kind"),
-                "pnl": round(trade_pnl, 2),
-                "sort_time": exit_unix,
-            }
+        closed_trades.extend(
+            _closed_trade_rows(
+                symbol_key,
+                job.signal,
+                simulation,
+                execution_mode,
+                exit_unix,
+            )
         )
 
     if end_unix is not None:

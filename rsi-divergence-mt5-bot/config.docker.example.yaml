@@ -24,6 +24,7 @@ risk:
   max_daily_loss_pct: 15.0
   max_extension_atr: 1.8
   max_spread_atr: 0.35
+  max_live_entry_drift_risk: 0.35
   min_tp1_spread_multiple: 1.5
   use_spread_filter: true
   use_tp1_spread_filter: true
@@ -263,6 +264,150 @@ symbols:
   enabled: true
   timeframe: M1
   lot_per_leg: 0.1
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: XRPUSD
+  name: Ripple
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.1
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: ADAUSD
+  name: Cardano
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.2
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: BNBUSD
+  name: Binance Coin
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.3
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: LTCUSD
+  name: Litecoin
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.2
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: BCHUSD
+  name: Bitcoin Cash
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.2
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: DOTUSD
+  name: Polkadot
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: TRXUSD
+  name: TRON
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.05
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: XLMUSD
+  name: Stellar Lumens
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: UNIUSD
+  name: Uniswap
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
   pivot_len: 3
   sl_atr_mult: 1.2
   rr:

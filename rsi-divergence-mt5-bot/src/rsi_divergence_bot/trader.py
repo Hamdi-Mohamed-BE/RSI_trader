@@ -15,6 +15,7 @@ from .strategy_modes import (
     tp_protection_enabled,
 )
 from .symbols import market_key
+from .trade_geometry import invalid_market_geometry
 from .trade_execution import normalized_partial_volumes, normalized_split_lot
 
 Outcome = str  # placed | skipped | duplicate | failed | paper
@@ -51,7 +52,7 @@ class TradeExecutor:
         if closes_opposite_before_entry(self.config.bot.strategy):
             self._close_opposite_positions(signal.symbol, signal.side)
             if self._has_bot_position_on_side(signal.symbol, signal.side):
-                self.logger.info("SKIP %s Box Theory pyramiding=0 same-side position open", signal.symbol)
+                self.logger.info("SKIP %s single-leg pyramiding=0 same-side position open", signal.symbol)
                 return "skipped"
             position_keys = None
         else:
@@ -104,7 +105,7 @@ class TradeExecutor:
                 self.logger.info("PAPER %s would place 1 partial position vol=%s", signal.symbol, total)
             elif is_single_leg_strategy(self.config.bot.strategy):
                 lot = normalized_split_lot(self.client, signal.symbol, signal.lot_per_leg)
-                self.logger.info("PAPER %s would place Box Theory single leg vol=%s", signal.symbol, lot)
+                self.logger.info("PAPER %s would place single-leg vol=%s", signal.symbol, lot)
             else:
                 self.logger.info("PAPER %s would place %s legs", signal.symbol, len(signal.tps))
             return "paper"
@@ -179,10 +180,14 @@ class TradeExecutor:
             sl=signal.sl,
             tps=signal.tps,
             lot_per_leg=signal.lot_per_leg,
+            entry_price=signal.entry,
         )
         if result.get("status") == "placed":
             self.state.mark_seen(signal.setup_id)
             return "placed"
+        if result.get("status") == "skipped":
+            self.state.mark_seen(signal.setup_id)
+            return "skipped"
         if result.get("status") == "failed":
             return "failed"
         return "skipped"
@@ -196,10 +201,14 @@ class TradeExecutor:
             sl=signal.sl,
             tps=signal.tps,
             lot_per_leg=signal.lot_per_leg,
+            entry_price=signal.entry,
         )
         if result.get("status") == "placed":
             self.state.mark_seen(signal.setup_id)
             return "placed"
+        if result.get("status") == "skipped":
+            self.state.mark_seen(signal.setup_id)
+            return "skipped"
         if result.get("status") == "failed":
             return "failed"
         return "skipped"
@@ -218,17 +227,29 @@ class TradeExecutor:
         extra_setup: dict | None = None,
         comment: str = ORDER_COMMENT,
     ) -> dict:
+        signal_entry = entry_price
+        valid, reason, live_entry = self._validate_market_setup(symbol, side, sl, tps, signal_entry)
+        if not valid:
+            self.logger.warning("SETUP REJECTED %s %s", symbol, reason)
+            return {"status": "skipped", "reason": reason, "entry_price": live_entry}
+        if entry_price is None:
+            entry_price = live_entry
+
         tickets: list[int] = []
         for index, tp in enumerate(tps, start=1):
-            result = self.client.send_market(
-                symbol,
-                side,
-                lot_per_leg,
-                sl,
-                tp,
-                self.config.bot.magic,
-                f"{comment} TP{index}"[:31],
-            )
+            try:
+                result = self.client.send_market(
+                    symbol,
+                    side,
+                    lot_per_leg,
+                    sl,
+                    tp,
+                    self.config.bot.magic,
+                    f"{comment} TP{index}"[:31],
+                )
+            except ValueError as exc:
+                self.logger.warning("ORDER REJECTED %s tp=%s reason=%s", symbol, tp, exc)
+                continue
             retcode = getattr(result, "retcode", None)
             order = int(getattr(result, "order", 0) or getattr(result, "deal", 0) or 0)
             if retcode == self.client.TRADE_DONE and order:
@@ -276,18 +297,29 @@ class TradeExecutor:
     ) -> dict:
         if not tps:
             return {"status": "failed", "reason": "missing take profits"}
+        signal_entry = entry_price
+        valid, reason, live_entry = self._validate_market_setup(symbol, side, sl, tps, signal_entry)
+        if not valid:
+            self.logger.warning("PARTIAL SETUP REJECTED %s %s", symbol, reason)
+            return {"status": "skipped", "reason": reason, "entry_price": live_entry}
+        if entry_price is None:
+            entry_price = live_entry
 
         total_volume, _per_slice = normalized_partial_volumes(self.client, symbol, lot_per_leg, len(tps))
         final_tp = float(tps[-1])
-        result = self.client.send_market(
-            symbol,
-            side,
-            total_volume,
-            sl,
-            final_tp,
-            self.config.bot.magic,
-            f"{comment} partial"[:31],
-        )
+        try:
+            result = self.client.send_market(
+                symbol,
+                side,
+                total_volume,
+                sl,
+                final_tp,
+                self.config.bot.magic,
+                f"{comment} partial"[:31],
+            )
+        except ValueError as exc:
+            self.logger.warning("PARTIAL ORDER REJECTED %s reason=%s", symbol, exc)
+            return {"status": "skipped", "reason": str(exc)}
         retcode = getattr(result, "retcode", None)
         ticket = int(getattr(result, "order", 0) or getattr(result, "deal", 0) or 0)
         if retcode != self.client.TRADE_DONE or not ticket:
@@ -332,10 +364,14 @@ class TradeExecutor:
             sl=signal.sl,
             tps=signal.tps,
             lot_per_leg=signal.lot_per_leg,
+            entry_price=signal.entry,
         )
         if result.get("status") == "placed":
             self.state.mark_seen(signal.setup_id)
             return "placed"
+        if result.get("status") == "skipped":
+            self.state.mark_seen(signal.setup_id)
+            return "skipped"
         if result.get("status") == "failed":
             return "failed"
         return "skipped"
@@ -356,26 +392,37 @@ class TradeExecutor:
     ) -> dict:
         if not tps:
             return {"status": "failed", "reason": "missing take profit"}
+        signal_entry = entry_price
+        valid, reason, live_entry = self._validate_market_setup(symbol, side, sl, tps, signal_entry)
+        if not valid:
+            self.logger.warning("SINGLE-LEG SETUP REJECTED %s %s", symbol, reason)
+            return {"status": "skipped", "reason": reason, "entry_price": live_entry}
+        if entry_price is None:
+            entry_price = live_entry
 
         lot = normalized_split_lot(self.client, symbol, lot_per_leg)
         tp = float(tps[0])
-        result = self.client.send_market(
-            symbol,
-            side,
-            lot,
-            sl,
-            tp,
-            self.config.bot.magic,
-            f"{comment} BoxTheory"[:31],
-        )
+        try:
+            result = self.client.send_market(
+                symbol,
+                side,
+                lot,
+                sl,
+                tp,
+                self.config.bot.magic,
+                f"{comment} SDzone"[:31],
+            )
+        except ValueError as exc:
+            self.logger.warning("SINGLE-LEG ORDER REJECTED %s reason=%s", symbol, exc)
+            return {"status": "skipped", "reason": str(exc)}
         retcode = getattr(result, "retcode", None)
         ticket = int(getattr(result, "order", 0) or getattr(result, "deal", 0) or 0)
         if retcode != self.client.TRADE_DONE or not ticket:
-            self.logger.warning("BOX THEORY ORDER FAILED %s ret=%s result=%s", symbol, retcode, result)
+            self.logger.warning("SINGLE-LEG ORDER FAILED %s ret=%s result=%s", symbol, retcode, result)
             return {"status": "failed", "ticket": ticket}
 
         self.logger.info(
-            "BOX THEORY PLACED %s ticket=%s vol=%s sl=%.5f tp=%.5f",
+            "SINGLE-LEG PLACED %s ticket=%s vol=%s sl=%.5f tp=%.5f",
             symbol,
             ticket,
             lot,
@@ -401,6 +448,38 @@ class TradeExecutor:
         self.state.add_setup(setup)
         return {"status": "placed", "ticket": ticket, "volume": lot}
 
+    def _validate_market_setup(
+        self,
+        symbol: str,
+        side: str,
+        sl: float,
+        tps: list[float],
+        signal_entry: float | None = None,
+    ) -> tuple[bool, str, float | None]:
+        side = side.lower()
+        tick = self.client.tick(symbol)
+        if tick is None:
+            return False, f"no live tick for {symbol}", None
+        entry = float(_field(tick, "ask") if side == "buy" else _field(tick, "bid"))
+        if signal_entry is not None and self.config.risk.max_live_entry_drift_risk is not None:
+            reference = float(signal_entry)
+            risk_distance = abs(reference - float(sl))
+            max_drift = risk_distance * float(self.config.risk.max_live_entry_drift_risk)
+            adverse_drift = entry - reference if side == "buy" else reference - entry
+            if risk_distance > 0 and adverse_drift > max_drift:
+                return (
+                    False,
+                    (
+                        f"live entry drift too high for {side.upper()}: "
+                        f"signal={reference:.5f} live={entry:.5f} max={max_drift:.5f}"
+                    ),
+                    entry,
+                )
+        reason = invalid_market_geometry(side, entry, float(sl), [float(tp) for tp in tps], label="live price")
+        if reason:
+            return False, reason, entry
+        return True, "", entry
+
     def _symbol_cfg(self, symbol: str) -> SymbolConfig | None:
         for item in self.config.symbols:
             if item.symbol == symbol:
@@ -423,6 +502,14 @@ class TradeExecutor:
     def _position_is_buy(self, pos) -> bool:
         return int(_field(pos, "type", 0) or 0) == 0
 
+    def _sl_locks_profit(self, pos, new_sl: float) -> bool:
+        open_price = float(_field(pos, "price_open", 0.0) or 0.0)
+        if open_price <= 0:
+            return False
+        if self._position_is_buy(pos):
+            return new_sl > open_price
+        return new_sl < open_price
+
     def _has_bot_position_on_side(self, symbol: str, side: str) -> bool:
         for pos in self._bot_positions(symbol):
             is_buy = self._position_is_buy(pos)
@@ -443,7 +530,7 @@ class TradeExecutor:
             ticket = int(_field(pos, "ticket"))
             result = self.client.close_position(ticket, symbol)
             self.logger.info(
-                "BOX THEORY CLOSE opposite %s ticket=%s ret=%s",
+                "SINGLE-LEG CLOSE opposite %s ticket=%s ret=%s",
                 symbol,
                 ticket,
                 getattr(result, "retcode", None),
@@ -506,7 +593,7 @@ class TradeExecutor:
         tickets = [int(ticket) for ticket in setup.get("tickets", [])]
         open_tickets = [ticket for ticket in tickets if ticket in open_by_ticket]
         if not open_tickets:
-            self.logger.info("BOX THEORY SETUP DONE %s %s", setup.get("symbol"), setup.get("setup_id"))
+            self.logger.info("SINGLE-LEG SETUP DONE %s %s", setup.get("symbol"), setup.get("setup_id"))
             return None
         return setup
 
@@ -532,7 +619,7 @@ class TradeExecutor:
             target_index = max(target_index, 2)
 
         if target_index > moved_to_tp and target_index <= len(tps):
-            new_sl = tps[target_index - 1]
+            new_sl = self.client.normalize_price(symbol, tps[target_index - 1])
             self.logger.info(
                 "TP PROTECT %s setup=%s move remaining SL to TP%s %.5f",
                 symbol,
@@ -543,6 +630,15 @@ class TradeExecutor:
             if not self.config.bot.dry_run:
                 for ticket in open_tickets:
                     pos = open_by_ticket[ticket]
+                    if not self._sl_locks_profit(pos, new_sl):
+                        self.logger.warning(
+                            "TP PROTECT SKIP ticket=%s %s new SL %.5f would not lock profit from open %.5f",
+                            ticket,
+                            symbol,
+                            new_sl,
+                            float(_field(pos, "price_open", 0.0) or 0.0),
+                        )
+                        continue
                     tp = float(_field(pos, "tp"))
                     result = self.client.update_position_sl(ticket, symbol, new_sl, tp)
                     self.logger.info("SL UPDATE ticket=%s ret=%s", ticket, getattr(result, "retcode", None))
@@ -612,6 +708,15 @@ class TradeExecutor:
                 pos = open_by_ticket.get(ticket)
                 if pos is not None:
                     new_sl = self.client.normalize_price(symbol, tp_level)
+                    if not self._sl_locks_profit(pos, new_sl):
+                        self.logger.warning(
+                            "PARTIAL TP PROTECT SKIP ticket=%s %s new SL %.5f would not lock profit from open %.5f",
+                            ticket,
+                            symbol,
+                            new_sl,
+                            float(_field(pos, "price_open", 0.0) or 0.0),
+                        )
+                        continue
                     final_tp = float(_field(pos, "tp"))
                     self.client.update_position_sl(ticket, symbol, new_sl, final_tp)
                     setup["moved_to_tp"] = partial_closed_tp

@@ -7,13 +7,12 @@ import yaml
 from pydantic import BaseModel, Field, model_validator
 
 from .strategy_modes import CANONICAL_STRATEGIES, canonical_strategy
-from .symbols import market_key
+from .symbols import CRYPTO_DEFAULT_LOTS, asset_group, market_key
 
 Timeframe = Literal["M1", "M5", "M15", "M30", "H1"]
 StrategyMode = Literal[
     "signal_no_tp_protection",
     "signal_with_tp_protection",
-    "box_theory",
     "signal_partial_no_tp_protection",
     "signal_partial_with_tp_protection",
 ]
@@ -82,6 +81,7 @@ class RiskConfig(BaseModel):
     max_daily_loss_pct: float | None = Field(default=15.0, ge=0)
     max_extension_atr: float = 1.8
     max_spread_atr: float = 0.35
+    max_live_entry_drift_risk: float | None = Field(default=0.35, ge=0)
     min_tp1_spread_multiple: float = Field(default=1.5, ge=0)
     use_spread_filter: bool | None = None
     use_tp1_spread_filter: bool | None = None
@@ -101,15 +101,6 @@ class RiskConfig(BaseModel):
         if not self.daily_loss_guard_active():
             return None
         return self.max_daily_loss_pct
-
-
-class BoxTheoryConfig(BaseModel):
-    zone_edge_fraction: float = Field(default=0.25, gt=0, lt=0.5)
-    aggressive_body_frac: float = Field(default=0.55, gt=0, le=1)
-    aggressive_range_frac: float = Field(default=0.25, gt=0, le=1)
-    wick_body_ratio_min: float = Field(default=2.0, gt=0)
-    max_body_range_ratio: float = Field(default=0.35, gt=0, le=1)
-    sl_buffer_frac: float = Field(default=0.005, ge=0)
 
 
 class WebConfig(BaseModel):
@@ -158,6 +149,15 @@ class SymbolConfig(BaseModel):
     sessions: list[str] = Field(default_factory=list)
     max_wait_bars: int = Field(default=8, ge=1, le=50)
 
+    @model_validator(mode="after")
+    def validate_rr_levels(self) -> "SymbolConfig":
+        if not self.rr:
+            raise ValueError(f"{self.symbol} must define at least one risk-reward TP level")
+        if any(level <= 0 for level in self.rr):
+            raise ValueError(f"{self.symbol} RR levels must be positive numbers")
+        self.rr = sorted(float(level) for level in self.rr)
+        return self
+
     @property
     def key(self) -> str:
         return market_key(self.market_key_override or self.symbol)
@@ -167,7 +167,6 @@ class AppConfig(BaseModel):
     mt5: MT5Config = Field(default_factory=MT5Config)
     bot: BotRuntimeConfig = Field(default_factory=BotRuntimeConfig)
     risk: RiskConfig = Field(default_factory=RiskConfig)
-    box_theory: BoxTheoryConfig = Field(default_factory=BoxTheoryConfig)
     web: WebConfig = Field(default_factory=WebConfig)
     auth: AuthConfig = Field(default_factory=AuthConfig)
     telegram_signals: TelegramSignalsConfig = Field(default_factory=TelegramSignalsConfig)
@@ -182,15 +181,19 @@ def default_symbol_lot(symbol_cfg: SymbolConfig) -> float:
     key = symbol_cfg.key.upper()
     symbol = symbol_cfg.symbol.upper()
     name = symbol_cfg.name.upper()
+    if key in CRYPTO_DEFAULT_LOTS:
+        return CRYPTO_DEFAULT_LOTS[key]
     if key == "XAUUSD" or "GOLD" in name:
         return 0.08
     if key == "XAGUSD" or "SILVER" in name:
         return 0.01
-    if any(token in key for token in ("BTC", "ETH", "SOL")):
-        return 0.10
     if "OIL" in symbol or "OIL" in name or symbol.startswith("CL"):
         return 0.01
     return 0.25
+
+
+def symbol_asset_group(symbol_cfg: SymbolConfig) -> str:
+    return asset_group(symbol_cfg.key, symbol_cfg.name)
 
 
 def load_config(path: str | Path) -> AppConfig:

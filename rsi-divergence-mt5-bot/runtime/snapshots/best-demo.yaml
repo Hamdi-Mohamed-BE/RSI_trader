@@ -1,0 +1,635 @@
+mt5:
+  mode: native_windows
+  path: C:/Program Files/MetaTrader 5/terminal64.exe
+  login: null
+  password: null
+  server: null
+  host: localhost
+  port: 18812
+  transport: tcp
+  timeout: 300
+bot:
+  dry_run: false
+  auto_start: false
+  poll_seconds: 15
+  magic: 260521
+  strategy: signal_no_tp_protection
+  trade_decision_profile: balanced
+  max_concurrent_setups: 20
+  state_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\state.json
+  log_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\bot.log
+risk:
+  max_setup_risk_usd: 180.0
+  use_daily_loss_guard: false
+  max_daily_loss_pct: 15.0
+  max_extension_atr: 1.8
+  max_spread_atr: 0.35
+  max_live_entry_drift_risk: 0.35
+  min_tp1_spread_multiple: 1.5
+  use_spread_filter: false
+  use_tp1_spread_filter: false
+  use_risk_filter: false
+  use_existing_position_filter: false
+  use_max_setups_filter: false
+  skip_if_symbol_has_position: false
+web:
+  host: 127.0.0.1
+  port: 8787
+auth:
+  username: admin
+  password: admin
+  cookie_name: rsi_bot_auth
+telegram_signals:
+  enabled: false
+  poll_seconds: 5
+  telegram_url: https://web.telegram.org/k/
+  channels:
+  - name: PROFIT HACKER
+    url: https://web.telegram.org/k/#-1303328644
+    enabled: true
+  - name: Donnfx7 Community
+    url: https://web.telegram.org/k/#@donnfx7community
+    enabled: true
+  - name: Telegram Signal Channel -2946712067
+    url: https://web.telegram.org/k/#-2946712067
+    enabled: true
+  - name: FOREX USA MASTER
+    url: https://web.telegram.org/k/#@FOREXUSAMASTER1
+    enabled: true
+  browser_user_data_dir: runtime/telegram-browser
+  gemini_api_key: AIzaSyD_ge3sM3CSH6RCZsmyAPOuUfQTECcEZzI
+  gemini_model: gemini-3-flash-preview
+  ignore_open_symbol_trades: true
+  max_tps: 5
+  default_lot: null
+  max_message_age_seconds: 300
+symbols:
+- symbol: BTCUSD
+  name: Bitcoin
+  market_key_override: null
+  enabled: true
+  timeframe: M1
+  lot_per_leg: 0.2
+  max_setup_risk_usd: 550.0
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: XAUUSD-VIP
+  name: Gold
+  market_key_override: null
+  enabled: false
+  timeframe: M5
+  lot_per_leg: 0.08
+  max_setup_risk_usd: 450.0
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 3.0
+  confirmation: ema
+  sessions:
+  - London
+  max_wait_bars: 8
+- symbol: XAGUSD-VIP
+  name: Silver
+  market_key_override: null
+  enabled: true
+  timeframe: M1
+  lot_per_leg: 0.08
+  max_setup_risk_usd: 550.0
+  pivot_len: 5
+  sl_atr_mult: 1.5
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: 'off'
+  sessions:
+  - Asia/quiet
+  - NY late
+  max_wait_bars: 8
+- symbol: AUDUSD-VIP
+  name: AUDUSD
+  market_key_override: null
+  enabled: true
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 3.0
+  confirmation: trend_guard
+  sessions:
+  - NY open
+  - NY late
+  max_wait_bars: 8
+- symbol: USDCAD-VIP
+  name: USDCAD
+  market_key_override: null
+  enabled: true
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: 'off'
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: USDJPY-VIP
+  name: USDJPY
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 2.0
+  - 3.0
+  confirmation: trend_guard
+  sessions:
+  - NY late
+  max_wait_bars: 8
+- symbol: EURGBP-VIP
+  name: EURGBP
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 2.0
+  - 3.0
+  confirmation: trend_guard
+  sessions:
+  - London
+  max_wait_bars: 8
+- symbol: AUDCAD-VIP
+  name: AUDCAD
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 7
+  sl_atr_mult: 1.5
+  rr:
+  - 1.0
+  - 2.0
+  - 3.0
+  confirmation: rsi_extreme
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: GBPCHF-VIP
+  name: GBPCHF
+  market_key_override: null
+  enabled: true
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 7
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 2.0
+  - 3.0
+  confirmation: 'off'
+  sessions:
+  - NY late
+  max_wait_bars: 8
+- symbol: EURUSD-VIP
+  name: EURUSD
+  market_key_override: null
+  enabled: false
+  timeframe: M15
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 3.0
+  confirmation: trend_guard
+  sessions: []
+  max_wait_bars: 8
+- symbol: GBPUSD-VIP
+  name: GBPUSD
+  market_key_override: null
+  enabled: true
+  timeframe: M15
+  lot_per_leg: 0.5
+  max_setup_risk_usd: 220.0
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: rsi_extreme
+  sessions: []
+  max_wait_bars: 8
+- symbol: ETHUSD
+  name: ETHUSD
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 1.0
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: SOLUSD
+  name: SOLUSD
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: XRPUSD
+  name: Ripple
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.1
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: ADAUSD
+  name: Cardano
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.2
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: BNBUSD
+  name: Binance Coin
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.3
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: LTCUSD
+  name: Litecoin
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.2
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: BCHUSD
+  name: Bitcoin Cash
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.2
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: DOTUSD
+  name: Polkadot
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: TRXUSD
+  name: TRON
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.05
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: XLMUSD
+  name: Stellar Lumens
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: UNIUSD
+  name: Uniswap
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 1.2
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: ema
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: CL-OIL-VIP
+  name: Oil
+  market_key_override: null
+  enabled: true
+  timeframe: M5
+  lot_per_leg: 0.1
+  max_setup_risk_usd: null
+  pivot_len: 5
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: trend_guard
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: EURJPY-VIP
+  name: EURJPY
+  market_key_override: null
+  enabled: false
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 3.0
+  confirmation: trend_guard
+  sessions:
+  - London
+  - NY open
+  max_wait_bars: 8
+- symbol: GBPJPY-VIP
+  name: GBPJPY
+  market_key_override: null
+  enabled: false
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 3.0
+  confirmation: trend_guard
+  sessions:
+  - London
+  - NY open
+  max_wait_bars: 8
+- symbol: AUDJPY-VIP
+  name: AUDJPY
+  market_key_override: null
+  enabled: false
+  timeframe: M1
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 3.0
+  confirmation: trend_guard
+  sessions:
+  - NY open
+  - NY late
+  max_wait_bars: 8
+- symbol: CADJPY-VIP
+  name: CADJPY
+  market_key_override: null
+  enabled: true
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: trend_guard
+  sessions:
+  - London
+  - NY open
+  max_wait_bars: 8
+- symbol: NZDUSD-VIP
+  name: NZDUSD
+  market_key_override: null
+  enabled: false
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 3.0
+  confirmation: trend_guard
+  sessions:
+  - NY open
+  - NY late
+  max_wait_bars: 8
+- symbol: NZDCAD-VIP
+  name: NZDCAD
+  market_key_override: null
+  enabled: true
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: rsi_extreme
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: EURCAD-VIP
+  name: EURCAD
+  market_key_override: null
+  enabled: true
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: trend_guard
+  sessions:
+  - NY open
+  max_wait_bars: 8
+- symbol: GBPCAD-VIP
+  name: GBPCAD
+  market_key_override: null
+  enabled: true
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: trend_guard
+  sessions:
+  - London
+  - NY open
+  max_wait_bars: 8
+- symbol: EURAUD-VIP
+  name: EURAUD
+  market_key_override: null
+  enabled: false
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: trend_guard
+  sessions:
+  - London
+  - NY open
+  max_wait_bars: 8
+- symbol: GBPAUD-VIP
+  name: GBPAUD
+  market_key_override: null
+  enabled: false
+  timeframe: M5
+  lot_per_leg: 0.5
+  max_setup_risk_usd: null
+  pivot_len: 3
+  sl_atr_mult: 2.0
+  rr:
+  - 1.0
+  - 1.5
+  - 2.0
+  confirmation: trend_guard
+  sessions:
+  - London
+  - NY open
+  max_wait_bars: 8

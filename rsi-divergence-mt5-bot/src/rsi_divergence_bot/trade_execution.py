@@ -4,6 +4,7 @@ import pandas as pd
 
 from .mt5_client import MT5Client
 from .strategy import Signal
+from .trade_geometry import invalid_market_geometry
 
 
 def normalized_split_lot(client: MT5Client, symbol: str, lot_per_leg: float) -> float:
@@ -21,9 +22,12 @@ def simulate_single_trade(client: MT5Client, signal: Signal, rows, tp_protection
 
 
 def simulate_split_trade(client: MT5Client, signal: Signal, rows, tp_protection: bool) -> dict:
+    if invalid_market_geometry(signal.side, signal.entry, signal.sl, signal.tps):
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "invalid_geometry", "legs": []}
     lot_per_leg = normalized_split_lot(client, signal.symbol, signal.lot_per_leg)
     active = [True for _ in signal.tps]
     stops = [signal.sl for _ in signal.tps]
+    leg_results: list[dict] = []
     pnl = 0.0
     close = signal.entry
     exit_time: int | None = None
@@ -36,6 +40,30 @@ def simulate_split_trade(client: MT5Client, signal: Signal, rows, tp_protection:
             return int(ts.timestamp())
         return int(pd.Timestamp(ts).timestamp())
 
+    def close_leg(index: int, exit_price: float, bar_time: int, kind: str) -> None:
+        nonlocal pnl, exit_kind
+        if signal.side == "buy":
+            leg_pnl = client.money_for_distance(signal.symbol, lot_per_leg, exit_price - signal.entry)
+        else:
+            leg_pnl = client.money_for_distance(signal.symbol, lot_per_leg, signal.entry - exit_price)
+        pnl += leg_pnl
+        active[index] = False
+        exit_kind = kind
+        leg_results.append(
+            {
+                "leg": index + 1,
+                "entry": round(float(signal.entry), 5),
+                "sl": round(float(signal.sl), 5),
+                "exit_sl": round(float(stops[index]), 5),
+                "tp": round(float(signal.tps[index]), 5),
+                "lot": lot_per_leg,
+                "exit_price": round(float(exit_price), 5),
+                "exit_time": bar_time,
+                "exit_kind": kind,
+                "pnl": round(float(leg_pnl), 2),
+            }
+        )
+
     for row in rows:
         high = float(row.high)
         low = float(row.low)
@@ -45,14 +73,10 @@ def simulate_split_trade(client: MT5Client, signal: Signal, rows, tp_protection:
         if signal.side == "buy":
             for index, is_active in enumerate(active):
                 if is_active and low <= stops[index]:
-                    pnl += client.money_for_distance(signal.symbol, lot_per_leg, stops[index] - signal.entry)
-                    active[index] = False
-                    exit_kind = "sl"
+                    close_leg(index, stops[index], bar_time, "sl")
             for index, tp in enumerate(signal.tps):
                 if active[index] and high >= tp:
-                    pnl += client.money_for_distance(signal.symbol, lot_per_leg, tp - signal.entry)
-                    active[index] = False
-                    exit_kind = f"tp{index + 1}"
+                    close_leg(index, tp, bar_time, f"tp{index + 1}")
                     if tp_protection:
                         for move_index, still_active in enumerate(active):
                             if still_active and stops[move_index] < tp:
@@ -60,37 +84,34 @@ def simulate_split_trade(client: MT5Client, signal: Signal, rows, tp_protection:
         else:
             for index, is_active in enumerate(active):
                 if is_active and high >= stops[index]:
-                    pnl += client.money_for_distance(signal.symbol, lot_per_leg, signal.entry - stops[index])
-                    active[index] = False
-                    exit_kind = "sl"
+                    close_leg(index, stops[index], bar_time, "sl")
             for index, tp in enumerate(signal.tps):
                 if active[index] and low <= tp:
-                    pnl += client.money_for_distance(signal.symbol, lot_per_leg, signal.entry - tp)
-                    active[index] = False
-                    exit_kind = f"tp{index + 1}"
+                    close_leg(index, tp, bar_time, f"tp{index + 1}")
                     if tp_protection:
                         for move_index, still_active in enumerate(active):
                             if still_active and stops[move_index] > tp:
                                 stops[move_index] = tp
         if not any(active):
             exit_time = bar_time
-            return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
+            return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind, "legs": leg_results}
 
     exit_time = last_bar_time
+    if exit_time is None:
+        return {"pnl": pnl, "exit_time": None, "exit_kind": exit_kind, "legs": leg_results}
     for index, is_active in enumerate(active):
         if not is_active:
             continue
-        if signal.side == "buy":
-            pnl += client.money_for_distance(signal.symbol, lot_per_leg, close - signal.entry)
-        else:
-            pnl += client.money_for_distance(signal.symbol, lot_per_leg, signal.entry - close)
-    return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
+        close_leg(index, close, int(exit_time), "close")
+    return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind, "legs": leg_results}
 
 
 def simulate_partial_trade(client: MT5Client, signal: Signal, rows, tp_protection: bool) -> dict:
     tps = list(signal.tps)
     if not tps:
         return {"pnl": 0.0, "exit_time": None, "exit_kind": "close"}
+    if invalid_market_geometry(signal.side, signal.entry, signal.sl, tps):
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "invalid_geometry"}
 
     total_volume, slice_volume = normalized_partial_volumes(client, signal.symbol, signal.lot_per_leg, len(tps))
     remaining_volume = total_volume

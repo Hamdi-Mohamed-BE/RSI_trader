@@ -320,6 +320,31 @@ h2 {
   border-bottom: none;
 }
 
+.data-table .symbol-section-row td,
+.data-table .symbol-section-row:hover td {
+  background: rgba(34, 211, 165, 0.09);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 1;
+}
+
+.symbol-section-row td {
+  border-top: 1px solid rgba(34, 211, 165, 0.22);
+}
+
+.symbol-section-row span {
+  margin-right: 10px;
+}
+
+.symbol-section-row small {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
 .empty-row {
   text-align: center;
   color: var(--text-muted);
@@ -687,10 +712,15 @@ textarea {
 .daily-trades-table td {
   padding: 8px 12px;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.daily-trades-table th:not(:first-child):not(:nth-child(3)),
-.daily-trades-table td:not(:first-child):not(:nth-child(3)) {
+.daily-trades-table {
+  min-width: 1180px;
+}
+
+.daily-trades-table th:not(:first-child):not(:nth-child(3)):not(:nth-child(4)):not(:last-child),
+.daily-trades-table td:not(:first-child):not(:nth-child(3)):not(:nth-child(4)):not(:last-child) {
   text-align: right;
 }
 
@@ -850,6 +880,42 @@ textarea {
 
 .panel-hint.live-warning {
   color: var(--warn);
+}
+
+.snapshot-form {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(240px, 2fr) auto;
+  gap: 12px 16px;
+  align-items: end;
+  margin-top: 8px;
+}
+
+.snapshot-form .field-wide {
+  grid-column: auto;
+}
+
+.snapshot-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+  color: var(--text-muted);
+}
+
+.checkbox-inline input {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .snapshot-form {
+    grid-template-columns: 1fr;
+  }
 }
 
 .live-updated {

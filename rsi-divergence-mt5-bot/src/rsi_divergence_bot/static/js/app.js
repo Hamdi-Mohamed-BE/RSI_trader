@@ -1,12 +1,14 @@
 const STRATEGY_LABELS = {
   signal_no_tp_protection: "Split legs - no TP protection",
   signal_with_tp_protection: "Split legs - with TP protection",
-  box_theory: "Box Theory - daily box trap",
 };
 
 const STRATEGY_ALIASES = {
   signal_partial_no_tp_protection: "signal_no_tp_protection",
   signal_partial_with_tp_protection: "signal_with_tp_protection",
+  trend_pullback: "signal_with_tp_protection",
+  supply_demand: "signal_with_tp_protection",
+  box_theory: "signal_with_tp_protection",
 };
 
 const els = {
@@ -20,6 +22,13 @@ const els = {
   symbolsBody: document.getElementById("symbols-body"),
   resetLotsBtn: document.getElementById("reset-lots-btn"),
   saveLotsBtn: document.getElementById("save-lots-btn"),
+  snapshotForm: document.getElementById("snapshot-form"),
+  snapshotName: document.getElementById("snapshot-name"),
+  snapshotNote: document.getElementById("snapshot-note"),
+  snapshotSaveBtn: document.getElementById("snapshot-save-btn"),
+  snapshotRefreshBtn: document.getElementById("snapshot-refresh-btn"),
+  snapshotApplyPersist: document.getElementById("snapshot-apply-persist"),
+  snapshotsBody: document.getElementById("snapshots-body"),
   backtestForm: document.getElementById("backtest-form"),
   start: document.getElementById("start"),
   end: document.getElementById("end"),
@@ -246,6 +255,54 @@ async function refreshLogs() {
   }
 }
 
+const SYMBOL_GROUPS = [
+  ["crypto", "Crypto"],
+  ["forex", "Forex"],
+  ["metals", "Gold / Silver"],
+  ["commodities", "Oil / Other"],
+  ["other", "Other"],
+];
+
+function symbolGroupLabel(group) {
+  return SYMBOL_GROUPS.find(([key]) => key === group)?.[1] || "Other";
+}
+
+function renderGroupedSymbolRow(item) {
+  return `
+        <tr class="${item.enabled ? "" : "row-disabled"}">
+          <td>
+            <label class="switch" title="${item.enabled ? "Enabled" : "Disabled"}">
+              <input
+                class="symbol-enabled"
+                type="checkbox"
+                data-symbol="${escapeHtml(item.symbol)}"
+                ${item.enabled ? "checked" : ""}
+              >
+              <span class="switch-slider"></span>
+            </label>
+          </td>
+          <td><strong>${escapeHtml(item.symbol)}</strong></td>
+          <td><span class="tag">${escapeHtml(item.market_key || item.symbol)}</span></td>
+          <td>${escapeHtml(item.name)}</td>
+          <td><span class="tag tag-accent">${escapeHtml(item.timeframe)}</span></td>
+          <td>
+            <input
+              class="lot-input"
+              type="number"
+              min="0.01"
+              step="0.01"
+              data-symbol="${escapeHtml(item.symbol)}"
+              data-reset-lot="${item.reset_lot_per_leg ?? item.lot_per_leg}"
+              title="Reset lot: ${item.reset_lot_per_leg ?? item.lot_per_leg}"
+              value="${item.lot_per_leg}"
+            >
+          </td>
+          <td>${escapeHtml(item.confirmation)}</td>
+          <td>${(item.sessions || []).map((s) => `<span class="tag">${escapeHtml(s)}</span>`).join("") || "—"}</td>
+        </tr>
+      `;
+}
+
 function renderSymbols(symbols) {
   if (!els.symbolsBody) return;
 
@@ -254,6 +311,24 @@ function renderSymbols(symbols) {
     els.symbolsBody.innerHTML = '<tr><td colspan="8" class="empty-row">No symbols in config.</td></tr>';
     return;
   }
+
+  const grouped = new Map(SYMBOL_GROUPS.map(([key]) => [key, []]));
+  for (const item of rows) {
+    const group = grouped.has(item.asset_group) ? item.asset_group : "other";
+    grouped.get(group).push(item);
+  }
+
+  els.symbolsBody.innerHTML = SYMBOL_GROUPS
+    .flatMap(([group]) => {
+      const items = grouped.get(group) || [];
+      if (!items.length) return [];
+      return [
+        `<tr class="symbol-section-row"><td colspan="8"><span>${escapeHtml(symbolGroupLabel(group))}</span><small>${items.length} symbols</small></td></tr>`,
+        ...items.map(renderGroupedSymbolRow),
+      ];
+    })
+    .join("");
+  return;
 
   els.symbolsBody.innerHTML = rows
     .map(
@@ -406,6 +481,159 @@ async function saveLots() {
   }
 }
 
+function formatSnapshotTime(value) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString();
+}
+
+function renderSnapshots(snapshots) {
+  if (!els.snapshotsBody) return;
+  if (!snapshots?.length) {
+    els.snapshotsBody.innerHTML = '<tr><td colspan="6" class="empty-row">No saved snapshots yet.</td></tr>';
+    return;
+  }
+
+  els.snapshotsBody.innerHTML = snapshots
+    .map((item) => {
+      const summary = item.summary || {};
+      const note = item.note ? `<div class="tag">${escapeHtml(item.note)}</div>` : "";
+      return `
+        <tr data-slug="${escapeHtml(item.slug)}">
+          <td>
+            <strong>${escapeHtml(item.name)}</strong>
+            ${note}
+          </td>
+          <td>${escapeHtml(formatStrategy(summary.strategy || "—"))}</td>
+          <td>${summary.dry_run ? "Dry run" : "Live"}</td>
+          <td>${summary.enabled_symbols ?? "—"} / ${summary.total_symbols ?? "—"}</td>
+          <td>${escapeHtml(formatSnapshotTime(item.updated_at))}</td>
+          <td class="snapshot-actions">
+            <button class="btn btn-secondary btn-sm snapshot-apply-btn" type="button" data-slug="${escapeHtml(item.slug)}" data-name="${escapeHtml(item.name)}">Apply</button>
+            <button class="btn btn-ghost btn-sm snapshot-delete-btn" type="button" data-slug="${escapeHtml(item.slug)}" data-name="${escapeHtml(item.name)}">Delete</button>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
+async function loadSnapshots() {
+  if (!els.snapshotsBody) return [];
+  const response = await fetch("/api/config/snapshots", { cache: "no-store" });
+  const data = await response.json();
+  if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to load snapshots");
+  renderSnapshots(data.snapshots || []);
+  return data.snapshots || [];
+}
+
+async function saveSnapshot(event) {
+  event.preventDefault();
+  const name = els.snapshotName?.value?.trim();
+  if (!name) {
+    toast("Enter a snapshot name", "error");
+    return;
+  }
+
+  setLoading(els.snapshotSaveBtn, true);
+  try {
+    await syncSymbolSettings({ persist: false, silent: true, rerender: false });
+    const response = await fetch("/api/config/snapshots", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        note: els.snapshotNote?.value?.trim() || "",
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to save snapshot");
+
+    if (els.snapshotName) els.snapshotName.value = "";
+    if (els.snapshotNote) els.snapshotNote.value = "";
+    await loadSnapshots();
+    toast(`Snapshot saved: ${data.snapshot?.name || name}`, "success");
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.snapshotSaveBtn, false);
+  }
+}
+
+async function applySnapshot(slug, name) {
+  const persist = Boolean(els.snapshotApplyPersist?.checked);
+  const persistText = persist ? " and write to config.yaml" : " in memory only";
+  const confirmed = window.confirm(`Apply snapshot "${name}"${persistText}?`);
+  if (!confirmed) return;
+
+  const row = els.snapshotsBody?.querySelector(`tr[data-slug="${CSS.escape(slug)}"]`);
+  const button = row?.querySelector(".snapshot-apply-btn");
+  setLoading(button, true, "Applying...");
+  try {
+    const response = await fetch(`/api/config/snapshots/${encodeURIComponent(slug)}/apply`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ persist }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to apply snapshot");
+
+    if (botConfig) {
+      botConfig.symbols = data.symbols;
+      botConfig.symbol_stats = data.symbol_stats;
+    }
+    await loadConfig();
+    await refreshAutoRunStatus();
+    toast(
+      persist
+        ? `Snapshot applied and saved: ${name}`
+        : `Snapshot applied in memory: ${name}`,
+      "success",
+    );
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(button, false);
+  }
+}
+
+async function deleteSnapshot(slug, name) {
+  const confirmed = window.confirm(`Delete snapshot "${name}"? This cannot be undone.`);
+  if (!confirmed) return;
+
+  const row = els.snapshotsBody?.querySelector(`tr[data-slug="${CSS.escape(slug)}"]`);
+  const button = row?.querySelector(".snapshot-delete-btn");
+  setLoading(button, true, "Deleting...");
+  try {
+    const response = await fetch(`/api/config/snapshots/${encodeURIComponent(slug)}`, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to delete snapshot");
+    await loadSnapshots();
+    toast(`Snapshot deleted: ${name}`, "success");
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(button, false);
+  }
+}
+
+async function refreshSnapshots() {
+  setLoading(els.snapshotRefreshBtn, true);
+  try {
+    await loadSnapshots();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.snapshotRefreshBtn, false);
+  }
+}
+
 async function resetLots() {
   if (!botConfig?.symbols?.length) {
     toast("Symbol settings are not loaded yet", "error");
@@ -446,6 +674,13 @@ function formatCurrency(value) {
 function formatPrice(value) {
   if (value === 0) return "—";
   return Number(value).toFixed(5);
+}
+
+function formatOptionalPrice(value) {
+  if (value === null || value === undefined || value === "" || value === 0) return "—";
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return "—";
+  return numeric.toFixed(5);
 }
 
 function renderLiveData(data) {
@@ -1056,6 +1291,13 @@ function renderConfig(config) {
   }
 }
 
+function backtestLegCount(symbolRow) {
+  return (symbolRow.position_legs ?? symbolRow.trade_logs?.reduce(
+    (total, trade) => total + Number(trade.legs || (trade.tps || []).length || 1),
+    0,
+  ) ?? 0);
+}
+
 function renderBacktestTrades(symbols) {
   const rows = (symbols || []).filter((item) => !item.error && item.trade_logs && item.trade_logs.length);
   if (!rows.length) {
@@ -1071,7 +1313,8 @@ function renderBacktestTrades(symbols) {
           <summary>
             <strong>${escapeHtml(symbolRow.symbol)}</strong>
             <span class="tag">${escapeHtml(symbolRow.name)} · ${escapeHtml(symbolRow.timeframe || "")}</span>
-            <span class="backtest-trade-meta">${symbolRow.trade_logs.length} trade${symbolRow.trade_logs.length === 1 ? "" : "s"} · ${formatMoney(symbolRow.pnl)}</span>
+            <span class="backtest-trade-meta">${symbolRow.trade_logs.length} setup${symbolRow.trade_logs.length === 1 ? "" : "s"} · ${formatMoney(symbolRow.pnl)}</span>
+            <span class="backtest-trade-meta">${backtestLegCount(symbolRow)} position leg${backtestLegCount(symbolRow) === 1 ? "" : "s"}</span>
           </summary>
           <div class="table-wrap table-wrap-wide">
             <table class="data-table data-table-backtest">
@@ -1079,6 +1322,8 @@ function renderBacktestTrades(symbols) {
                 <tr>
                   <th>Time</th>
                   <th>Side</th>
+                  <th>Mode</th>
+                  <th>Legs</th>
                   <th>Entry</th>
                   <th>SL</th>
                   <th>TPs</th>
@@ -1095,6 +1340,8 @@ function renderBacktestTrades(symbols) {
                       <tr>
                         <td>${formatTimestamp(trade.time)}</td>
                         <td class="side-${trade.side}">${String(trade.side).toUpperCase()}</td>
+                        <td>${escapeHtml(trade.execution_mode || "split")}</td>
+                        <td>${trade.legs || (trade.tps || []).length || 1}</td>
                         <td>${formatPrice(trade.entry)}</td>
                         <td>${formatPrice(trade.sl)}</td>
                         <td class="trade-tps">${(trade.tps || []).map((tp) => formatPrice(tp)).join(" · ")}</td>
@@ -1124,14 +1371,14 @@ function formatExitKind(value) {
 
 function renderBacktestDailyTradeRows(tradeRows, startBalance) {
   if (!tradeRows?.length) {
-    return `<tr><td colspan="7" class="empty-row">No trades this day.</td></tr>`;
+    return `<tr><td colspan="13" class="empty-row">No position legs this day.</td></tr>`;
   }
 
   const rows = [];
   if (startBalance != null) {
     rows.push(`
       <tr class="daily-trade-start">
-        <td colspan="6">Day open balance</td>
+        <td colspan="12">Day open balance</td>
         <td>${formatMoney(startBalance)}</td>
       </tr>
     `);
@@ -1145,6 +1392,12 @@ function renderBacktestDailyTradeRows(tradeRows, startBalance) {
           <td>${formatTimestamp(trade.exit_time)}</td>
           <td><strong>${escapeHtml(trade.symbol || "—")}</strong></td>
           <td class="side-${trade.side || ""}">${trade.side ? String(trade.side).toUpperCase() : "—"}</td>
+          <td>${trade.leg && trade.legs ? `${trade.leg}/${trade.legs}` : "—"}</td>
+          <td>${formatOptionalPrice(trade.entry)}</td>
+          <td>${formatOptionalPrice(trade.sl)}</td>
+          <td>${formatOptionalPrice(trade.tp)}</td>
+          <td>${formatOptionalPrice(trade.exit_price)}</td>
+          <td>${trade.lot ?? "—"}</td>
           <td class="${pnlClass(trade.pnl)}">${formatMoney(trade.pnl)}</td>
           <td>${formatMoney(trade.balance_after)}</td>
           <td>${escapeHtml(formatExitKind(trade.exit_kind))}</td>
@@ -1186,6 +1439,12 @@ function renderBacktestDaily(dailyRows) {
                     <th>Exit (UTC)</th>
                     <th>Symbol</th>
                     <th>Side</th>
+                    <th>Leg</th>
+                    <th>Entry</th>
+                    <th>SL</th>
+                    <th>TP</th>
+                    <th>Exit price</th>
+                    <th>Lot</th>
                     <th>PnL</th>
                     <th>Balance after</th>
                     <th>Exit</th>
@@ -1260,7 +1519,7 @@ function renderBacktestResult(data) {
         ? `
         <tr>
           <td><strong>${escapeHtml(row.symbol)}</strong><div class="tag">${escapeHtml(row.name)} · ${escapeHtml(row.timeframe || "")}</div></td>
-          <td colspan="6" class="value-negative">${escapeHtml(row.error)}</td>
+          <td colspan="7" class="value-negative">${escapeHtml(row.error)}</td>
         </tr>
       `
       : `
@@ -1268,6 +1527,7 @@ function renderBacktestResult(data) {
           <td><strong>${escapeHtml(row.symbol)}</strong><div class="tag">${escapeHtml(row.name)} · ${escapeHtml(row.timeframe || "")}</div></td>
           <td>${row.raw_signals ?? row.trades} raw / ${row.skipped_signals ?? 0} skipped</td>
           <td>${row.trades}</td>
+          <td>${row.position_legs ?? backtestLegCount(row)}</td>
           <td>${row.wins} / ${row.losses}</td>
           <td>${row.win_rate}%</td>
           <td class="${pnlClass(row.pnl)}">${formatMoney(row.pnl)}</td>
@@ -1408,6 +1668,19 @@ async function init() {
   els.manualTradeForm?.addEventListener("submit", placeManualTrade);
   els.resetLotsBtn?.addEventListener("click", resetLots);
   els.saveLotsBtn?.addEventListener("click", saveLots);
+  els.snapshotForm?.addEventListener("submit", saveSnapshot);
+  els.snapshotRefreshBtn?.addEventListener("click", refreshSnapshots);
+  els.snapshotsBody?.addEventListener("click", (event) => {
+    const applyBtn = event.target.closest(".snapshot-apply-btn");
+    if (applyBtn) {
+      applySnapshot(applyBtn.dataset.slug, applyBtn.dataset.name);
+      return;
+    }
+    const deleteBtn = event.target.closest(".snapshot-delete-btn");
+    if (deleteBtn) {
+      deleteSnapshot(deleteBtn.dataset.slug, deleteBtn.dataset.name);
+    }
+  });
   els.symbolsBody?.addEventListener("change", (event) => {
     if (!event.target.matches(".lot-input, .symbol-enabled")) return;
     const row = event.target.closest("tr");
@@ -1447,8 +1720,9 @@ async function init() {
     }
   });
 
-  const [configResult] = await Promise.allSettled([
+  const [configResult, snapshotsResult] = await Promise.allSettled([
     loadConfig(),
+    loadSnapshots(),
     refreshAutoRunStatus(),
     refreshLiveData(),
     refreshTelegramStatus(),

@@ -9,6 +9,7 @@ import pandas as pd
 from .config import RiskConfig, SymbolConfig
 from .indicators import atr, ema, pivot_high, pivot_low, rsi
 from .sessions import in_allowed_session, session_name
+from .trade_geometry import invalid_market_geometry
 
 
 @dataclass(frozen=True)
@@ -90,6 +91,8 @@ def _make_signal(
     if risk_cfg and abs(entry - float(row.ema20)) > float(row.atr) * risk_cfg.max_extension_atr:
         return None
     tps = [entry + risk_distance * rr if side == "buy" else entry - risk_distance * rr for rr in cfg.rr]
+    if invalid_market_geometry(side, entry, sl, tps):
+        return None
     setup_key = f"{cfg.key}:{side}:{time_value.isoformat()}"
     return Signal(
         setup_id=sha1(setup_key.encode("utf-8")).hexdigest()[:8],

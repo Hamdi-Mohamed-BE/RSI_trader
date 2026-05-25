@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css?v=17">
+  <link rel="stylesheet" href="/static/css/app.css?v=20">
 </head>
 <body>
   <div class="app">
@@ -68,7 +68,7 @@
         <div class="panel-header panel-header-split">
           <div>
             <h2>Symbols</h2>
-            <p>Toggle symbols on or off and edit lot sizes. Changes sync automatically before backtests and trading.</p>
+            <p>Toggle symbols on or off and edit lot sizes by market section. Changes sync automatically before backtests and trading.</p>
           </div>
           <div class="panel-actions">
             <button id="reset-lots-btn" class="btn btn-ghost btn-sm" type="button">
@@ -102,6 +102,62 @@
         </div>
       </section>
 
+      <section class="panel panel-wide" data-pages="settings">
+        <div class="panel-header panel-header-split">
+          <div>
+            <h2>Settings snapshots</h2>
+            <p>Save the full bot configuration (strategy, risk filters, symbols, sessions, lots) and restore it later with one click.</p>
+          </div>
+          <div class="panel-actions">
+            <button id="snapshot-refresh-btn" class="btn btn-ghost btn-sm" type="button">
+              <span class="btn-label">Refresh list</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <form id="snapshot-form" class="snapshot-form">
+          <label class="field">
+            <span>Snapshot name</span>
+            <input id="snapshot-name" type="text" maxlength="80" placeholder="e.g. Conservative May" required>
+          </label>
+          <label class="field field-wide">
+            <span>Note (optional)</span>
+            <input id="snapshot-note" type="text" maxlength="160" placeholder="What this preset is for">
+          </label>
+          <button id="snapshot-save-btn" class="btn btn-secondary" type="submit">
+            <span class="btn-label">Save current settings</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <p class="panel-hint">
+          Saving captures the live in-memory config. Symbol table edits are synced automatically before save.
+          <label class="checkbox-inline">
+            <input id="snapshot-apply-persist" type="checkbox" checked>
+            <span>Write to config.yaml when applying a snapshot</span>
+          </label>
+        </p>
+
+        <div class="table-wrap">
+          <table class="data-table data-table-compact" id="snapshots-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Strategy</th>
+                <th>Mode</th>
+                <th>Symbols</th>
+                <th>Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="snapshots-body">
+              <tr><td colspan="6" class="empty-row">Loading snapshots…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section class="panel panel-wide backtest-panel" data-pages="backtest">
         <div class="panel-header">
           <div>
@@ -127,7 +183,6 @@
             <select id="strategy" name="strategy" disabled>
               <option value="signal_no_tp_protection">Split legs — no TP protection</option>
               <option value="signal_with_tp_protection">Split legs — with TP protection</option>
-              <option value="box_theory">Box Theory — daily box trap</option>
             </select>
             <span class="panel-hint" id="backtest-strategy-hint">Backtest uses the same saved strategy as live trading. Change it on the home page before starting the bot.</span>
           </label>
@@ -143,14 +198,14 @@
         <div id="backtest-daily-wrap" class="backtest-daily-wrap hidden">
           <div class="backtest-trades-header">
             <h3>Daily performance</h3>
-            <p>Realized PnL grouped by exit day (UTC). Expand a day to see each trade in exit order with running balance.</p>
+            <p>Realized PnL grouped by exit day (UTC). Expand a day to see each TP leg with entry, SL, TP, exit price, and running balance.</p>
           </div>
           <div class="table-wrap table-wrap-wide">
             <table class="data-table data-table-backtest" id="backtest-daily-table">
               <thead>
                 <tr>
                   <th>Date (UTC)</th>
-                  <th>Trades</th>
+                  <th>Position legs</th>
                   <th>W / L</th>
                   <th>Daily PnL</th>
                   <th>Balance</th>
@@ -170,7 +225,8 @@
               <tr>
                 <th>Symbol</th>
                 <th>Signals</th>
-                <th>Trades</th>
+                <th>Setups</th>
+                <th>Legs</th>
                 <th>W / L</th>
                 <th>Win rate</th>
                 <th>PnL</th>
@@ -223,7 +279,6 @@
             <select id="chart-strategy" name="strategy" disabled>
               <option value="signal_no_tp_protection">Split legs — no TP protection</option>
               <option value="signal_with_tp_protection">Split legs — with TP protection</option>
-              <option value="box_theory">Box Theory — daily box trap</option>
             </select>
             <span class="panel-hint">Chart replay uses the same saved strategy as live trading.</span>
           </label>
@@ -296,7 +351,6 @@
             <select id="auto-run-strategy" name="strategy">
               <option value="signal_no_tp_protection">Split legs — no TP protection</option>
               <option value="signal_with_tp_protection">Split legs — with TP protection</option>
-              <option value="box_theory">Box Theory — daily box trap</option>
             </select>
           </label>
           <label class="toggle">
@@ -577,6 +631,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=5" defer></script>
-  <script src="/static/js/app.js?v=38" defer></script>
+  <script src="/static/js/app.js?v=40" defer></script>
 </body>
 </html>

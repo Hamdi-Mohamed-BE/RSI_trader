@@ -20,9 +20,17 @@ from .config import (
     StrategyMode,
     default_symbol_lot,
     save_config,
+    symbol_asset_group,
     update_bot_strategy,
     update_symbol_enabled,
     update_symbol_lots,
+)
+from .config_snapshots import (
+    apply_snapshot,
+    delete_snapshot,
+    list_snapshots,
+    load_snapshot,
+    save_snapshot,
 )
 from .decision import resolve_trade_filters
 from .logging_utils import recent_logs
@@ -73,6 +81,15 @@ class RunOnceRequest(BaseModel):
     persist: bool = True
     strategy: StrategyMode | None = None
     strategy_persist: bool = False
+
+
+class SnapshotSaveRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    note: str = ""
+
+
+class SnapshotApplyRequest(BaseModel):
+    persist: bool = True
 
 
 def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
@@ -145,6 +162,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "symbol": item.symbol,
                 "market_key": item.key,
                 "name": item.name,
+                "asset_group": symbol_asset_group(item),
                 "enabled": item.enabled,
                 "timeframe": item.timeframe,
                 "lot_per_leg": item.lot_per_leg,
@@ -196,6 +214,33 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         if persist:
             save_config(config_path, config)
         bot.logger.info("BOT STRATEGY strategy=%s persist=%s", config.bot.strategy, persist)
+
+    def apply_config_from_snapshot(slug: str, persist: bool) -> dict:
+        try:
+            snapshot = load_snapshot(config_path, slug)
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+        next_strategy = canonical_strategy(snapshot.bot.strategy)
+        if bot.is_auto_loop_running() and next_strategy != config.bot.strategy:
+            raise HTTPException(
+                status_code=409,
+                detail="Stop auto run before applying a snapshot with a different strategy.",
+            )
+
+        apply_snapshot(config_path, slug=slug, target=config, persist=persist)
+        bot.client.config = config.mt5
+        telegram_bot.config = config
+        bot.logger.info("CONFIG SNAPSHOT apply slug=%s persist=%s strategy=%s", slug, persist, config.bot.strategy)
+        return {
+            "status": "saved" if persist else "applied",
+            "slug": slug,
+            "strategy": config.bot.strategy,
+            "dry_run": config.bot.dry_run,
+            "symbol_stats": symbol_stats(),
+        }
 
     async def require_mt5_ready() -> dict:
         status = await asyncio.to_thread(bot.client.connection_status)
@@ -337,6 +382,42 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
             "strategy": config.bot.strategy,
             "auto_run": bot.auto_loop_status(),
         }
+
+    @app.get("/api/config/snapshots")
+    def api_config_snapshots() -> dict:
+        return {"snapshots": list_snapshots(config_path)}
+
+    @app.post("/api/config/snapshots")
+    def api_save_config_snapshot(body: SnapshotSaveRequest) -> dict:
+        try:
+            entry = save_snapshot(
+                config_path,
+                name=body.name,
+                config=config,
+                note=body.note,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        bot.logger.info("CONFIG SNAPSHOT saved slug=%s name=%s", entry["slug"], entry["name"])
+        return {"status": "saved", "snapshot": entry}
+
+    @app.post("/api/config/snapshots/{slug}/apply")
+    def api_apply_config_snapshot(slug: str, body: SnapshotApplyRequest) -> dict:
+        result = apply_config_from_snapshot(slug, body.persist)
+        return {
+            **result,
+            "symbols": symbol_payload(),
+            "auto_run": bot.auto_loop_status(),
+        }
+
+    @app.delete("/api/config/snapshots/{slug}")
+    def api_delete_config_snapshot(slug: str) -> dict:
+        try:
+            delete_snapshot(config_path, slug)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        bot.logger.info("CONFIG SNAPSHOT deleted slug=%s", slug)
+        return {"status": "deleted", "slug": slug}
 
     @app.post("/api/run-once")
     async def run_once(body: RunOnceRequest | None = None) -> dict:

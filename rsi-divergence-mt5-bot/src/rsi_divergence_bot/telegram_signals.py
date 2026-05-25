@@ -17,6 +17,7 @@ from .manual_trade import resolve_symbol
 from .mt5_client import MT5Client, _field
 from .state import StateStore
 from .symbols import market_key
+from .trade_geometry import invalid_market_geometry, invalid_pending_geometry
 from .trader import TradeExecutor
 
 from .telegram_html_parser import (
@@ -1055,23 +1056,33 @@ class TelegramSignalsBot:
             raise ValueError(f"{action} requires an entry price")
 
         if action == "buy":
-            if sl >= ask or any(tp <= ask for tp in tps):
-                raise ValueError(f"Invalid BUY geometry ask={ask} sl={sl} tps={tps}")
+            reason = invalid_market_geometry("buy", ask, sl, tps, label="current ask")
+            if reason:
+                raise ValueError(reason)
         elif action == "sell":
-            if sl <= bid or any(tp >= bid for tp in tps):
-                raise ValueError(f"Invalid SELL geometry bid={bid} sl={sl} tps={tps}")
+            reason = invalid_market_geometry("sell", bid, sl, tps, label="current bid")
+            if reason:
+                raise ValueError(reason)
         elif action == "buy_limit":
-            if not (entry < ask and sl < entry and all(tp > entry for tp in tps)):
-                raise ValueError(f"Invalid BUY LIMIT geometry ask={ask} entry={entry} sl={sl} tps={tps}")
+            reason = invalid_market_geometry("buy", entry, sl, tps, label="pending entry")
+            pending_reason = invalid_pending_geometry(action, bid, ask, entry)
+            if reason or pending_reason:
+                raise ValueError(reason or pending_reason)
         elif action == "sell_limit":
-            if not (entry > bid and sl > entry and all(tp < entry for tp in tps)):
-                raise ValueError(f"Invalid SELL LIMIT geometry bid={bid} entry={entry} sl={sl} tps={tps}")
+            reason = invalid_market_geometry("sell", entry, sl, tps, label="pending entry")
+            pending_reason = invalid_pending_geometry(action, bid, ask, entry)
+            if reason or pending_reason:
+                raise ValueError(reason or pending_reason)
         elif action == "buy_stop":
-            if not (entry > ask and sl < entry and all(tp > entry for tp in tps)):
-                raise ValueError(f"Invalid BUY STOP geometry ask={ask} entry={entry} sl={sl} tps={tps}")
+            reason = invalid_market_geometry("buy", entry, sl, tps, label="pending entry")
+            pending_reason = invalid_pending_geometry(action, bid, ask, entry)
+            if reason or pending_reason:
+                raise ValueError(reason or pending_reason)
         elif action == "sell_stop":
-            if not (entry < bid and sl > entry and all(tp < entry for tp in tps)):
-                raise ValueError(f"Invalid SELL STOP geometry bid={bid} entry={entry} sl={sl} tps={tps}")
+            reason = invalid_market_geometry("sell", entry, sl, tps, label="pending entry")
+            pending_reason = invalid_pending_geometry(action, bid, ask, entry)
+            if reason or pending_reason:
+                raise ValueError(reason or pending_reason)
         else:
             raise ValueError(f"Unsupported action: {action}")
         return entry
