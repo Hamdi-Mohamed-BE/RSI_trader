@@ -11,6 +11,10 @@ def normalized_split_lot(client: MT5Client, symbol: str, lot_per_leg: float) -> 
     return client.normalize_volume(symbol, lot_per_leg)
 
 
+def normalized_full_volume(client: MT5Client, symbol: str, lot_per_leg: float) -> float:
+    return client.normalize_volume(symbol, lot_per_leg)
+
+
 def normalized_partial_volumes(client: MT5Client, symbol: str, lot_per_leg: float, num_tps: int) -> tuple[float, float]:
     total_volume = client.normalize_volume(symbol, lot_per_leg * num_tps)
     per_slice = client.normalize_volume(symbol, total_volume / num_tps)
@@ -28,7 +32,7 @@ def simulate_full_trade(client: MT5Client, signal: Signal, rows, tp_protection: 
     if invalid_market_geometry(signal.side, signal.entry, signal.sl, tps):
         return {"pnl": 0.0, "exit_time": None, "exit_kind": "invalid_geometry", "legs": []}
 
-    total_volume, _per_slice = normalized_partial_volumes(client, signal.symbol, signal.lot_per_leg, len(tps))
+    total_volume = normalized_full_volume(client, signal.symbol, signal.lot_per_leg)
     sl = float(signal.sl)
     final_tp = float(tps[-1])
     moved_to_tp = 0

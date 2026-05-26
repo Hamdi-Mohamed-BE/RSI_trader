@@ -18,7 +18,7 @@ from .strategy_modes import (
 )
 from .symbols import market_key
 from .trade_geometry import invalid_market_geometry
-from .trade_execution import normalized_partial_volumes, normalized_split_lot
+from .trade_execution import normalized_full_volume, normalized_partial_volumes, normalized_split_lot
 
 Outcome = str  # placed | skipped | duplicate | failed | paper
 ORDER_COMMENT = "RSI auto bot"
@@ -110,9 +110,7 @@ class TradeExecutor:
                 )
                 self.logger.info("PAPER %s would place 1 partial position vol=%s", signal.symbol, total)
             elif is_full_position_strategy(self.config.bot.strategy):
-                total, _per_slice = normalized_partial_volumes(
-                    self.client, signal.symbol, signal.lot_per_leg, len(signal.tps)
-                )
+                total = normalized_full_volume(self.client, signal.symbol, signal.lot_per_leg)
                 self.logger.info("PAPER %s would place 1 full position vol=%s", signal.symbol, total)
             elif is_single_leg_strategy(self.config.bot.strategy):
                 lot = normalized_split_lot(self.client, signal.symbol, signal.lot_per_leg)
@@ -457,7 +455,7 @@ class TradeExecutor:
         if entry_price is None:
             entry_price = live_entry
 
-        total_volume, _per_slice = normalized_partial_volumes(self.client, symbol, lot_per_leg, len(tps))
+        total_volume = normalized_full_volume(self.client, symbol, lot_per_leg)
         final_tp = float(tps[-1])
         try:
             result = self.client.send_market(

@@ -6,6 +6,7 @@ from .config import AppConfig, SymbolConfig
 from .daily_risk import daily_loss_setup_risk_cap
 from .mt5_client import MT5Client
 from .strategy import Signal
+from .strategy_modes import is_full_position_strategy, is_single_leg_strategy
 from .trade_geometry import invalid_market_geometry
 
 
@@ -46,8 +47,11 @@ def historical_spread_price(row, point: float) -> float:
     return spread_points * point
 
 
-def signal_risk_usd(client: MT5Client, signal: Signal) -> float:
-    return client.money_for_distance(signal.symbol, signal.lot_per_leg, signal.risk_distance) * len(signal.tps)
+def signal_risk_usd(client: MT5Client, signal: Signal, *, strategy: str | None = None) -> float:
+    leg_risk = client.money_for_distance(signal.symbol, signal.lot_per_leg, signal.risk_distance)
+    if strategy and (is_full_position_strategy(strategy) or is_single_leg_strategy(strategy)):
+        return leg_risk
+    return leg_risk * len(signal.tps)
 
 
 def profile_uses_entry_filters(profile: str) -> bool:
@@ -186,7 +190,7 @@ def evaluate_trade_signal(
     if atr_proxy <= 0:
         return decision(False, "invalid_atr", "invalid ATR proxy")
 
-    risk_usd = signal_risk_usd(client, signal)
+    risk_usd = signal_risk_usd(client, signal, strategy=config.bot.strategy)
 
     max_spread_atr = config.risk.max_spread_atr
     if filters.spread and spread_atr > max_spread_atr:
