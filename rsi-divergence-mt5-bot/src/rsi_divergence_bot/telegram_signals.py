@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import logging
 import os
 import re
@@ -239,6 +240,8 @@ class GeminiSignalParser:
     _SYSTEM_PROMPT = (
         "You extract trade signals from Telegram messages. "
         "Return only structured output. If the message is not a trade signal, use action='none'. "
+        "If the message is a trade update, TP hit, profit report, entry progress note, or reply to an "
+        "earlier signal, use action='none' even when BUY/SELL text appears in quoted content. "
         "Use action='buy' or action='sell' for live/now/market trades. "
         "Use buy_limit, sell_limit, buy_stop, or sell_stop for pending orders. "
         "Normalize GOLD/XAU to XAUUSD when clear. Keep prices exactly as written."
@@ -960,6 +963,30 @@ class TelegramSignalsBot:
             self.logger.info("TELEGRAM SKIP channel=%s short message hash=%s", channel.name, message_id[:10])
             return
 
+        if _looks_like_trade_update(message):
+            self._seen_messages.add(message_id)
+            self.state.mark_seen(f"telegram:{message_id}")
+            self._status.messages_seen += 1
+            self._status.skipped += 1
+            self._status.last_channel = channel.name
+            self._record_message(
+                message_id,
+                "skipped",
+                message,
+                channel=channel,
+                reason="trade update / reply message",
+                message_key=message_key,
+                message_timestamp=message_timestamp,
+                age_seconds=self._message_age(message_timestamp),
+            )
+            self.logger.info(
+                "TELEGRAM SKIP channel=%s trade update hash=%s text=%s",
+                channel.name,
+                message_id[:10],
+                message[:220].replace("\n", " | "),
+            )
+            return
+
         self._seen_messages.add(message_id)
         self.state.mark_seen(f"telegram:{message_id}")
         self._record_message(
@@ -1015,7 +1042,13 @@ class TelegramSignalsBot:
             return
 
         self._status.parsed_signals += 1
-        result = self._place_parsed_signal(parsed, source_id=message_id, channel=channel)
+        trade_hash = telegram_trade_fingerprint(channel, parsed)
+        result = self._place_parsed_signal(
+            parsed,
+            source_id=message_id,
+            channel=channel,
+            trade_hash=trade_hash,
+        )
         self._record_message(
             message_id,
             str(result.get("status", "unknown")),
@@ -1027,6 +1060,7 @@ class TelegramSignalsBot:
             message_key=message_key,
             message_timestamp=message_timestamp,
             age_seconds=self._message_age(message_timestamp),
+            trade_hash=trade_hash,
         )
         self._status.last_result = result
         self._status.last_action_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -1054,6 +1088,7 @@ class TelegramSignalsBot:
         message_key: str | None = None,
         message_timestamp: float | None = None,
         age_seconds: float | None = None,
+        trade_hash: str | None = None,
     ) -> None:
         now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
         payload: dict = {
@@ -1068,6 +1103,8 @@ class TelegramSignalsBot:
             "updated_at": now,
             "last_seen_at": now,
         }
+        if trade_hash:
+            payload["trade_hash"] = trade_hash
         if message_key:
             payload["message_key"] = str(message_key)
         if message_timestamp is not None:
@@ -1110,6 +1147,7 @@ class TelegramSignalsBot:
         source_id: str,
         channel: TelegramChannelConfig,
         hard: bool = False,
+        trade_hash: str | None = None,
     ) -> dict:
         if not hard and self.daily_risk_status:
             daily = self.daily_risk_status()
@@ -1134,12 +1172,38 @@ class TelegramSignalsBot:
         if not tps:
             return {"status": "skipped", "channel": channel.name, "reason": "missing take profits"}
 
+        fingerprint = trade_hash or telegram_trade_fingerprint(channel, parsed)
+        if not hard and self.state.is_telegram_trade_processed(fingerprint):
+            self.logger.info(
+                "TELEGRAM SKIP channel=%s duplicate trade hash=%s symbol=%s action=%s",
+                channel.name,
+                fingerprint[:12],
+                parsed.symbol,
+                parsed.action,
+            )
+            return {
+                "status": "skipped",
+                "channel": channel.name,
+                "reason": "duplicate trade already processed",
+                "trade_hash": fingerprint,
+                "symbol": symbol_cfg.symbol,
+                "action": parsed.action,
+            }
+
         if (
             not hard
             and self.config.telegram_signals.ignore_open_symbol_trades
             and self._has_open_market(symbol_cfg)
         ):
-            return {"status": "skipped", "channel": channel.name, "reason": f"open position exists for {symbol_cfg.key}", "symbol": symbol_cfg.symbol}
+            result = {
+                "status": "skipped",
+                "channel": channel.name,
+                "reason": f"open position exists for {symbol_cfg.key}",
+                "symbol": symbol_cfg.symbol,
+                "trade_hash": fingerprint,
+            }
+            self._mark_processed_trade(fingerprint, parsed, channel, source_id, result)
+            return result
 
         lot = self.config.telegram_signals.default_lot or symbol_cfg.lot_per_leg
         plan = {
@@ -1177,7 +1241,10 @@ class TelegramSignalsBot:
             self.config.bot.dry_run,
         )
         if self.config.bot.dry_run:
-            return {"status": "paper", **plan, "entry_price": live_entry, "hard_copy": hard}
+            result = {"status": "paper", **plan, "entry_price": live_entry, "hard_copy": hard, "trade_hash": fingerprint}
+            if not hard:
+                self._mark_processed_trade(fingerprint, parsed, channel, source_id, result)
+            return result
 
         setup_id = f"telegram:hard:{source_id[:24]}" if hard else f"telegram:{source_id[:16]}"
         result = self.executor.place_market_setup(
@@ -1199,19 +1266,48 @@ class TelegramSignalsBot:
             comment=f"{COMMENT_PREFIX} signal",
         )
         if result.get("status") == "placed":
-            return {
+            placed = {
                 "status": "placed",
                 **plan,
                 "entry_price": result.get("entry_price") or live_entry,
                 "setup_id": setup_id,
+                "trade_hash": fingerprint,
                 **result,
             }
+            if not hard:
+                self._mark_processed_trade(fingerprint, parsed, channel, source_id, placed)
+            return placed
         return {
             "status": "failed",
             **plan,
             "entry_price": result.get("entry_price") or live_entry,
+            "trade_hash": fingerprint,
             **result,
         }
+
+    def _mark_processed_trade(
+        self,
+        trade_hash: str,
+        parsed: ParsedTelegramSignal,
+        channel: TelegramChannelConfig,
+        source_id: str,
+        result: dict,
+    ) -> None:
+        self.state.mark_telegram_trade_processed(
+            trade_hash,
+            {
+                "channel_url": channel.url,
+                "channel_name": channel.name,
+                "symbol": parsed.symbol,
+                "action": parsed.action,
+                "stop_loss": parsed.stop_loss,
+                "tps": list(parsed.tps),
+                "confidence": parsed.confidence,
+                "message_id": source_id,
+                "status": result.get("status"),
+                "processed_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+            },
+        )
 
     def _has_open_market(self, symbol_cfg: SymbolConfig) -> bool:
         target_key = symbol_cfg.key
@@ -1244,6 +1340,60 @@ def _clean_message(text: str) -> str:
     lines = [line.strip() for line in text.replace("\u200b", "").splitlines()]
     lines = [line for line in lines if line]
     return "\n".join(lines)
+
+
+def _round_price(value: float | None) -> float | None:
+    if value is None:
+        return None
+    return round(float(value), 5)
+
+
+def telegram_trade_fingerprint(channel: TelegramChannelConfig, parsed: ParsedTelegramSignal) -> str:
+    symbol = str(parsed.symbol or "").strip().upper()
+    payload: dict[str, object] = {
+        "channel": channel.url.casefold(),
+        "symbol": symbol,
+        "action": parsed.action,
+        "stop_loss": _round_price(parsed.stop_loss),
+        "tps": [_round_price(tp) for tp in sorted(float(tp) for tp in parsed.tps)],
+        "confidence": round(float(parsed.confidence), 2),
+    }
+    if parsed.entry is not None and parsed.action not in {"buy", "sell"}:
+        payload["entry"] = _round_price(parsed.entry)
+    raw = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:24]
+
+
+def _looks_like_trade_update(text: str) -> bool:
+    cleaned = _clean_message(text)
+    if not cleaned:
+        return False
+
+    if re.search(r"\b\d+(?:ST|ND|RD|TH)\s+ENTRY\b", cleaned, re.IGNORECASE):
+        return True
+    if re.search(r"\b\d+\s*PIPS?\s+DONE\b", cleaned, re.IGNORECASE):
+        return True
+    if re.search(r"\b(?:TP|TARGET)\s*\d+\s*(?:HIT|DONE|✅)", cleaned, re.IGNORECASE):
+        return True
+    if re.search(r"\bPROFIT\s*(?:ACHIEVED|DONE|BOOKED)\b", cleaned, re.IGNORECASE):
+        return True
+
+    profit_rows = re.findall(
+        r"(?mi)^(?:buy|sell)\s+\d+(?:\.\d+)?\s+\d+(?:\.\d+)?\s+\d+(?:\.\d+)?\s+\d+(?:\.\d+)?\s*$",
+        cleaned,
+    )
+    if profit_rows:
+        return True
+
+    if ".||." in cleaned and profit_rows:
+        return True
+
+    if re.search(r"\bDONE\b", cleaned, re.IGNORECASE) and re.search(
+        r"\b(?:PIPS|ENTRY|TARGET|PROFIT|✅)\b", cleaned, re.IGNORECASE
+    ):
+        return True
+
+    return False
 
 
 def _looks_like_breakeven(text: str) -> bool:

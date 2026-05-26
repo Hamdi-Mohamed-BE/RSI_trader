@@ -141,9 +141,30 @@ class StateStore:
         with self._lock:
             state = self._read_unlocked()
             messages_removed = len(state.get("telegram_messages", []))
+            trades_removed = len(state.get("telegram_processed_trades", []))
             seen = state.get("seen_signals", [])
             seen_removed = sum(1 for item in seen if str(item).startswith("telegram:"))
             state["telegram_messages"] = []
+            state["telegram_processed_trades"] = []
             state["seen_signals"] = [item for item in seen if not str(item).startswith("telegram:")]
             self._write_unlocked(state)
-            return {"messages_removed": messages_removed, "seen_removed": seen_removed}
+            return {
+                "messages_removed": messages_removed,
+                "seen_removed": seen_removed,
+                "trade_hashes_removed": trades_removed,
+            }
+
+    def is_telegram_trade_processed(self, trade_hash: str) -> bool:
+        with self._lock:
+            state = self._read_unlocked()
+            known = {str(item.get("hash")) for item in state.get("telegram_processed_trades", [])}
+            return trade_hash in known
+
+    def mark_telegram_trade_processed(self, trade_hash: str, payload: dict[str, Any]) -> None:
+        with self._lock:
+            state = self._read_unlocked()
+            entries = state.setdefault("telegram_processed_trades", [])
+            next_entries = [item for item in entries if item.get("hash") != trade_hash]
+            next_entries.append({"hash": trade_hash, **payload})
+            state["telegram_processed_trades"] = next_entries[-500:]
+            self._write_unlocked(state)
