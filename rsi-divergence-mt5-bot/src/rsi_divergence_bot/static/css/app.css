@@ -30,6 +30,11 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 html,
 body {
   margin: 0;
@@ -44,6 +49,7 @@ body {
     radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.06), transparent 40%),
     var(--bg);
   line-height: 1.5;
+  overflow-x: hidden;
 }
 
 .app {
@@ -278,6 +284,8 @@ h2 {
   overflow: auto;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
 }
 
 .table-wrap-wide {
@@ -437,6 +445,7 @@ textarea {
   border: 1px solid transparent;
   cursor: pointer;
   font-weight: 600;
+  touch-action: manipulation;
   transition: transform 0.12s, background 0.15s, border-color 0.15s;
 }
 
@@ -1022,6 +1031,18 @@ textarea {
   .snapshot-form {
     grid-template-columns: 1fr;
   }
+
+  .snapshot-form .field-wide {
+    grid-column: auto;
+  }
+
+  .snapshot-actions {
+    width: 100%;
+  }
+
+  .snapshot-actions .btn {
+    flex: 1 1 auto;
+  }
 }
 
 .live-updated {
@@ -1464,14 +1485,33 @@ textarea {
   border: 1px solid rgba(248, 113, 113, 0.35);
 }
 
+@media (max-width: 1200px) {
+  .account-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .live-summary-chart {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 960px) {
+  .app {
+    padding: 22px 16px 40px;
+  }
+
   .stats-grid,
   .layout,
-  .summary-grid,
   .form-grid,
   .account-grid,
+  .summary-grid,
   .live-summary-chart,
-  .chart-panels {
+  .chart-panels,
+  .chart-detail-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1481,5 +1521,294 @@ textarea {
 
   .nav-link-danger {
     margin-left: 0;
+  }
+
+  .backtest-trade-meta {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 1.35rem;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .app {
+    padding: 16px 12px 32px;
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: max(32px, env(safe-area-inset-bottom));
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .brand {
+    gap: 12px;
+  }
+
+  .brand-mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .brand-mark svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .topbar-actions {
+    width: 100%;
+  }
+
+  .topbar-actions .btn {
+    margin-left: auto;
+  }
+
+  .main-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    gap: 6px;
+    margin-bottom: 16px;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+
+  .nav-link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-height: 40px;
+    padding: 8px 14px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .panel-header-split,
+  .auto-run-status,
+  .live-section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .panel-actions,
+  .live-section-actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .live-updated {
+    white-space: normal;
+  }
+
+  .chart-toolbar {
+    gap: 8px;
+  }
+
+  .chart-time-label {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .chart-container {
+    min-height: 300px;
+  }
+
+  .chart-event-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .log-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .log-count {
+    white-space: normal;
+  }
+
+  .toast-stack {
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .toast {
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 10px 12px;
+  }
+
+  .data-table-compact th,
+  .data-table-compact td {
+    padding: 8px 10px;
+  }
+
+  .checkbox-inline {
+    display: flex;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 540px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 14px 16px;
+  }
+
+  .subtitle,
+  .panel-header p {
+    font-size: 0.88rem;
+  }
+
+  .topbar-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .topbar-actions .badge {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .topbar-actions .btn {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .control-row {
+    flex-direction: column;
+  }
+
+  .control-row .btn {
+    width: 100%;
+  }
+
+  .panel-actions {
+    flex-direction: column;
+  }
+
+  .panel-actions .btn {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  .snapshot-actions {
+    flex-direction: column;
+  }
+
+  .snapshot-actions .btn {
+    width: 100%;
+  }
+
+  .lot-input,
+  .timeframe-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .gemini-response-cell,
+  .llm-response-cell {
+    min-width: 140px;
+    max-width: none;
+  }
+
+  .chart-container {
+    min-height: 240px;
+  }
+
+  .chart-play-btn {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .chart-toolbar .btn {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+  }
+
+  .chart-speed-label,
+  .chart-autoplay-label {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .chart-speed {
+    flex: 1;
+    max-width: 160px;
+  }
+
+  .login-body {
+    padding: 16px max(12px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
+    box-sizing: border-box;
+  }
+
+  .login-shell {
+    width: min(520px, calc(100% - 24px));
+  }
+
+  .login-card {
+    padding: 18px 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  h1 {
+    font-size: 1.15rem;
+  }
+
+  .nav-link {
+    font-size: 0.82rem;
+    padding: 8px 10px;
+  }
+
+  .badge {
+    font-size: 0.72rem;
+    padding: 5px 10px;
   }
 }
