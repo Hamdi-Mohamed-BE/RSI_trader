@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .backtest import optimize_symbol_timeframes, run_backtest, run_chart_backtest
 from .bot import SignalBot
+from .trade_ai_review import ai_review_status
 from .config import (
     AppConfig,
     StrategyMode,
@@ -25,6 +26,7 @@ from .config import (
     save_config,
     symbol_asset_group,
     update_bot_strategy,
+    update_ai_trade_review,
     update_symbol_enabled,
     update_symbol_lots,
     update_symbol_timeframes,
@@ -93,9 +95,16 @@ class TelegramChannelRemoveRequest(BaseModel):
     persist: bool = True
 
 
+class AiTradeReviewSettings(BaseModel):
+    enabled: bool | None = None
+    use_in_backtest: bool | None = None
+    min_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+
+
 class BotSettingsRequest(BaseModel):
-    strategy: StrategyMode
+    strategy: StrategyMode | None = None
     persist: bool = True
+    ai_trade_review: AiTradeReviewSettings | None = None
 
 
 class AutoRunStartRequest(BaseModel):
@@ -105,6 +114,8 @@ class AutoRunStartRequest(BaseModel):
     persist: bool = True
     strategy: StrategyMode | None = None
     strategy_persist: bool = True
+    ai_trade_review: AiTradeReviewSettings | None = None
+    ai_trade_review_persist: bool = False
 
 
 class RunOnceRequest(BaseModel):
@@ -114,6 +125,8 @@ class RunOnceRequest(BaseModel):
     persist: bool = True
     strategy: StrategyMode | None = None
     strategy_persist: bool = False
+    ai_trade_review: AiTradeReviewSettings | None = None
+    ai_trade_review_persist: bool = False
 
 
 class SnapshotSaveRequest(BaseModel):
@@ -291,6 +304,25 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
             save_config(config_path, config)
         bot.logger.info("BOT STRATEGY strategy=%s persist=%s", config.bot.strategy, persist)
 
+    def apply_ai_trade_review_settings(settings: AiTradeReviewSettings | None, persist: bool) -> None:
+        if settings is None:
+            return
+        update_ai_trade_review(
+            config,
+            enabled=settings.enabled,
+            use_in_backtest=settings.use_in_backtest,
+            min_confidence=settings.min_confidence,
+        )
+        if persist:
+            save_config(config_path, config)
+        bot.logger.info(
+            "BOT AI REVIEW enabled=%s use_in_backtest=%s min_confidence=%s persist=%s",
+            config.bot.ai_trade_review.enabled,
+            config.bot.ai_trade_review.use_in_backtest,
+            config.bot.ai_trade_review.min_confidence,
+            persist,
+        )
+
     def apply_config_from_snapshot(slug: str, persist: bool) -> dict:
         try:
             snapshot = load_snapshot(config_path, slug)
@@ -400,6 +432,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "strategy": config.bot.strategy,
                 "trade_decision_profile": config.bot.trade_decision_profile,
                 "max_concurrent_setups": config.bot.max_concurrent_setups,
+                "ai_trade_review": ai_review_status(config),
             },
             "risk": config.risk.model_dump(mode="python"),
             "telegram_signals": {
@@ -531,10 +564,14 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
 
     @app.post("/api/bot/settings")
     def update_bot_settings(body: BotSettingsRequest) -> dict:
-        apply_bot_strategy(body.strategy, body.persist)
+        if body.strategy is not None:
+            apply_bot_strategy(body.strategy, body.persist)
+        if body.ai_trade_review is not None:
+            apply_ai_trade_review_settings(body.ai_trade_review, body.persist)
         return {
             "status": "saved" if body.persist else "applied",
             "strategy": config.bot.strategy,
+            "ai_trade_review": ai_review_status(config),
             "auto_run": bot.auto_loop_status(),
         }
 
@@ -581,6 +618,8 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
             if body.strategy is not None:
                 apply_bot_strategy(body.strategy, body.strategy_persist)
+            if body.ai_trade_review is not None:
+                apply_ai_trade_review_settings(body.ai_trade_review, body.ai_trade_review_persist)
         await require_mt5_ready()
         try:
             summary = await asyncio.to_thread(bot.run_once)
@@ -684,6 +723,8 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
             if body.strategy is not None:
                 apply_bot_strategy(body.strategy, body.strategy_persist)
+            if body.ai_trade_review is not None:
+                apply_ai_trade_review_settings(body.ai_trade_review, body.ai_trade_review_persist)
         await require_mt5_ready()
         status = bot.start_auto_loop()
         status.update(symbol_stats())
@@ -820,14 +861,17 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         timeframe: str = Query("M5"),
         start: datetime = Query(...),
         end: datetime = Query(...),
+        ai_review: bool = Query(False),
+        ai_review_min_confidence: float | None = Query(None, ge=0.0, le=1.0),
     ) -> dict:
         bot.logger.info(
-            "CHART BACKTEST %s %s %s -> %s strategy=%s",
+            "CHART BACKTEST %s %s %s -> %s strategy=%s ai_review=%s",
             symbol,
             timeframe,
             start.isoformat(),
             end.isoformat(),
             config.bot.strategy,
+            ai_review,
         )
         try:
             await require_mt5_ready()
@@ -839,6 +883,8 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 timeframe,
                 start,
                 end,
+                use_ai_review=ai_review,
+                ai_review_min_confidence=ai_review_min_confidence,
             )
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -857,12 +903,15 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         start: datetime = Query(...),
         end: datetime = Query(...),
         starting_balance: float = Query(1000.0, gt=0),
+        ai_review: bool = Query(False),
+        ai_review_min_confidence: float | None = Query(None, ge=0.0, le=1.0),
     ) -> dict:
         bot.logger.info(
-            "BACKTEST START %s -> %s strategy=%s",
+            "BACKTEST START %s -> %s strategy=%s ai_review=%s",
             start.isoformat(),
             end.isoformat(),
             config.bot.strategy,
+            ai_review,
         )
         try:
             await require_mt5_ready()
@@ -874,6 +923,8 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 end,
                 starting_balance,
                 bot.logger,
+                use_ai_review=ai_review,
+                ai_review_min_confidence=ai_review_min_confidence,
             )
         except HTTPException:
             raise

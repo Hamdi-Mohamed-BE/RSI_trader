@@ -11,6 +11,7 @@ from .mt5_client import MT5Client
 from .live_session import LIVE_SCAN_BARS
 from .state import StateStore
 from .signal_engine import latest_closed_signal
+from .trade_ai_review import ai_review_status
 from .trader import TradeExecutor
 
 
@@ -102,6 +103,10 @@ class SignalBot:
             status["daily_risk"] = self.daily_risk_status()
         except Exception as exc:  # noqa: BLE001
             status["daily_risk"] = {"error": str(exc), "halted": False}
+        status["ai_trade_review"] = ai_review_status(
+            self.config,
+            getattr(self.executor.ai_reviewer, "last_review", None),
+        )
         return status
 
     def daily_risk_status(self) -> dict:

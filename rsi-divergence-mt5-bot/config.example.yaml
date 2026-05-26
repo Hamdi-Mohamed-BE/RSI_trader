@@ -18,6 +18,15 @@ bot:
   max_concurrent_setups: 3
   state_file: runtime/state.json
   log_file: runtime/bot.log
+  ai_trade_review:
+    enabled: false
+    use_in_backtest: false
+    min_confidence: 0.55
+    strategies: []
+    openai_api_key: null
+    openai_model: null
+    gemini_api_key: null
+    gemini_model: null
 risk:
   max_setup_risk_usd: 180.0
   use_daily_loss_guard: true

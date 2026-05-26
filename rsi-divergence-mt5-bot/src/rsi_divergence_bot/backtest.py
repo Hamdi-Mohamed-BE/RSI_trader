@@ -21,6 +21,12 @@ from .strategy_modes import (
     tp_protection_enabled,
 )
 from .timeframes import SUPPORTED_TIMEFRAMES, validate_timeframe
+from .trade_ai_review import (
+    TradeAiReviewer,
+    backtest_ai_review_active,
+    effective_ai_review_min_confidence,
+    llm_configured,
+)
 from .trade_execution import simulate_full_trade, simulate_partial_trade, simulate_single_trade, simulate_split_trade
 
 
@@ -532,7 +538,41 @@ def _symbol_payload(item: SymbolBacktest) -> dict:
     return payload
 
 
-def _decision_rules_payload(config: AppConfig, filters, *, strategy: str) -> dict:
+def _ai_review_skip_decision(signal: Signal, decision: TradeDecision, review) -> TradeDecision:
+    min_confidence = review.confidence
+    return TradeDecision(
+        allowed=False,
+        code="ai_review",
+        reason=f"AI reject conf={min_confidence:.2f}: {review.reason}",
+        risk_usd=decision.risk_usd,
+        spread=decision.spread,
+        spread_atr=decision.spread_atr,
+        tp1_distance=decision.tp1_distance,
+        min_tp1_distance=decision.min_tp1_distance,
+    )
+
+
+def _ai_review_error_decision(signal: Signal, decision: TradeDecision, message: str) -> TradeDecision:
+    return TradeDecision(
+        allowed=False,
+        code="ai_review",
+        reason=message,
+        risk_usd=decision.risk_usd,
+        spread=decision.spread,
+        spread_atr=decision.spread_atr,
+        tp1_distance=decision.tp1_distance,
+        min_tp1_distance=decision.min_tp1_distance,
+    )
+
+
+def _decision_rules_payload(
+    config: AppConfig,
+    filters,
+    *,
+    strategy: str,
+    use_ai_review: bool = False,
+    ai_review_min_confidence: float | None = None,
+) -> dict:
     risk_cfg = config.risk
     payload = {
         "profile": config.bot.trade_decision_profile,
@@ -552,6 +592,13 @@ def _decision_rules_payload(config: AppConfig, filters, *, strategy: str) -> dic
         "use_daily_loss_guard": risk_cfg.use_daily_loss_guard,
         "max_daily_loss_pct": risk_cfg.max_daily_loss_pct,
         "enabled_symbols": len(config.enabled_symbols),
+        "ai_trade_review": {
+            "requested": use_ai_review,
+            "active": backtest_ai_review_active(config, use_ai_review),
+            "min_confidence": effective_ai_review_min_confidence(config, ai_review_min_confidence),
+            "llm_configured": llm_configured(config),
+            "strategies": list(config.bot.ai_trade_review.strategies),
+        },
     }
     return payload
 
@@ -666,7 +713,9 @@ def _execute_backtest_jobs(
     include_events: bool = False,
     end_unix: int | None = None,
     logger: logging.Logger | None = None,
-) -> tuple[list[dict], list[dict], float]:
+    use_ai_review: bool = False,
+    ai_review_min_confidence: float | None = None,
+) -> tuple[list[dict], list[dict], float, dict]:
     tp_protection = tp_protection_enabled(strategy)
     partial_execution = is_partial_strategy(strategy)
     full_execution = is_full_position_strategy(strategy)
@@ -687,6 +736,9 @@ def _execute_backtest_jobs(
     scan_blocked = False
     blocked_loss = 0.0
     blocked_limit = 0.0
+    ai_reviewer = TradeAiReviewer(config, logger) if backtest_ai_review_active(config, use_ai_review) else None
+    min_confidence = effective_ai_review_min_confidence(config, ai_review_min_confidence)
+    ai_stats = {"reviewed": 0, "approved": 0, "rejected": 0, "errors": 0}
 
     for event_id, job in enumerate(jobs_sorted, start=1):
         symbol_key = job.symbol_cfg.symbol
@@ -824,6 +876,57 @@ def _execute_backtest_jobs(
                 events.append(_event_payload(event_id, job.signal, decision, event_type="skip"))
             continue
 
+        if ai_reviewer is not None:
+            if not llm_configured(config):
+                ai_stats["errors"] += 1
+                ai_decision = _ai_review_error_decision(
+                    job.signal,
+                    decision,
+                    "AI review enabled but no OpenAI/Gemini API key configured",
+                )
+                portfolio.mark_seen(job.signal.setup_id)
+                accumulator.skipped += 1
+                accumulator.skipped_logs.append(_skip_log(job.signal, ai_decision))
+                if include_events:
+                    events.append(_event_payload(event_id, job.signal, ai_decision, event_type="skip"))
+                continue
+
+            row = job.df.iloc[job.row_index]
+            review = ai_reviewer.review(
+                job.signal,
+                decision,
+                symbol_cfg=job.symbol_cfg,
+                live_price=float(row.close),
+            )
+            ai_stats["reviewed"] += 1
+            if not review.approved or review.confidence < min_confidence:
+                ai_stats["rejected"] += 1
+                ai_decision = _ai_review_skip_decision(job.signal, decision, review)
+                portfolio.mark_seen(job.signal.setup_id)
+                accumulator.skipped += 1
+                accumulator.skipped_logs.append(_skip_log(job.signal, ai_decision))
+                if logger:
+                    logger.info(
+                        "BACKTEST AI REJECT %s conf=%.2f min=%.2f provider=%s %s",
+                        job.signal.symbol,
+                        review.confidence,
+                        min_confidence,
+                        review.provider or "none",
+                        review.reason,
+                    )
+                if include_events:
+                    events.append(_event_payload(event_id, job.signal, ai_decision, event_type="skip"))
+                continue
+            ai_stats["approved"] += 1
+            if logger:
+                logger.info(
+                    "BACKTEST AI APPROVE %s conf=%.2f provider=%s %s",
+                    job.signal.symbol,
+                    review.confidence,
+                    review.provider or "none",
+                    review.reason,
+                )
+
         after = job.df.iloc[job.row_index + 1 :]
         if partial_execution:
             simulation = simulate_partial_trade(client, job.signal, after.itertuples(), tp_protection)
@@ -890,7 +993,7 @@ def _execute_backtest_jobs(
         final_balance = daily_guard.finalize(client, end_unix)
     else:
         final_balance = daily_guard.balance
-    return closed_trades, events, final_balance
+    return closed_trades, events, final_balance, ai_stats
 
 
 def _run_symbol_backtest(
@@ -905,7 +1008,9 @@ def _run_symbol_backtest(
     end_unix: int,
     include_events: bool = False,
     logger: logging.Logger | None = None,
-) -> tuple[SymbolBacktest, list[dict], list[dict]]:
+    use_ai_review: bool = False,
+    ai_review_min_confidence: float | None = None,
+) -> tuple[SymbolBacktest, list[dict], list[dict], dict]:
     strategy = config.bot.strategy
     jobs, raw_signals = _collect_signal_jobs(
         client,
@@ -918,7 +1023,7 @@ def _run_symbol_backtest(
         logger=logger,
     )
     accumulator = _SymbolAccumulator(symbol_cfg=symbol_cfg, raw_signals=raw_signals)
-    closed_trades, events, _final_balance = _execute_backtest_jobs(
+    closed_trades, events, _final_balance, ai_stats = _execute_backtest_jobs(
         client,
         config,
         jobs,
@@ -929,8 +1034,10 @@ def _run_symbol_backtest(
         include_events=include_events,
         end_unix=end_unix,
         logger=logger,
+        use_ai_review=use_ai_review,
+        ai_review_min_confidence=ai_review_min_confidence,
     )
-    return accumulator.to_result(), closed_trades, events
+    return accumulator.to_result(), closed_trades, events, ai_stats
 
 
 def run_backtest(
@@ -940,6 +1047,9 @@ def run_backtest(
     end: datetime,
     starting_balance: float = 1000.0,
     logger: logging.Logger | None = None,
+    *,
+    use_ai_review: bool = False,
+    ai_review_min_confidence: float | None = None,
 ) -> dict:
     strategy = config.bot.strategy
     filters = resolve_trade_filters(config)
@@ -998,7 +1108,7 @@ def run_backtest(
 
     exec_t0 = time.perf_counter()
 
-    closed_trades, _events, final_balance = _execute_backtest_jobs(
+    closed_trades, _events, final_balance, ai_stats = _execute_backtest_jobs(
         client,
         config,
         all_jobs,
@@ -1008,6 +1118,8 @@ def run_backtest(
         filters,
         end_unix=end_unix,
         logger=logger,
+        use_ai_review=use_ai_review,
+        ai_review_min_confidence=ai_review_min_confidence,
     )
     rows = [accumulators[symbol_cfg.symbol].to_result() for symbol_cfg in symbols if symbol_cfg.symbol in accumulators]
     total_pnl = round(final_balance - starting_balance, 2)
@@ -1026,7 +1138,20 @@ def run_backtest(
 
     return {
         "strategy": strategy,
-        "decision_rules": _decision_rules_payload(config, filters, strategy=strategy),
+        "decision_rules": _decision_rules_payload(
+            config,
+            filters,
+            strategy=strategy,
+            use_ai_review=use_ai_review,
+            ai_review_min_confidence=ai_review_min_confidence,
+        ),
+        "ai_trade_review": {
+            "requested": use_ai_review,
+            "active": backtest_ai_review_active(config, use_ai_review),
+            "min_confidence": effective_ai_review_min_confidence(config, ai_review_min_confidence),
+            "llm_configured": llm_configured(config),
+            **ai_stats,
+        },
         "start": start.isoformat(),
         "end": end.isoformat(),
         "starting_balance": round(starting_balance, 2),
@@ -1044,6 +1169,9 @@ def run_chart_backtest(
     timeframe: str,
     start: datetime,
     end: datetime,
+    *,
+    use_ai_review: bool = False,
+    ai_review_min_confidence: float | None = None,
 ) -> dict:
     strategy = config.bot.strategy
     filters = resolve_trade_filters(config)
@@ -1062,7 +1190,7 @@ def run_chart_backtest(
     effective_symbol_cfg = symbol_cfg.model_copy(update={"timeframe": timeframe})
     fetch_start = extended_history_start(start_utc, timeframe)
     df = client.rates_range(symbol, timeframe, fetch_start, end_utc)
-    symbol_result, _closed_trades, events = _run_symbol_backtest(
+    symbol_result, _closed_trades, events, ai_stats = _run_symbol_backtest(
         client,
         config,
         effective_symbol_cfg,
@@ -1072,6 +1200,8 @@ def run_chart_backtest(
         start_unix=start_unix,
         end_unix=end_unix,
         include_events=True,
+        use_ai_review=use_ai_review,
+        ai_review_min_confidence=ai_review_min_confidence,
     )
 
     return {
@@ -1081,7 +1211,20 @@ def run_chart_backtest(
         "configured_timeframe": symbol_cfg.timeframe,
         "settings_timeframe_match": timeframe == symbol_cfg.timeframe,
         "strategy": strategy,
-        "decision_rules": _decision_rules_payload(config, filters, strategy=strategy),
+        "decision_rules": _decision_rules_payload(
+            config,
+            filters,
+            strategy=strategy,
+            use_ai_review=use_ai_review,
+            ai_review_min_confidence=ai_review_min_confidence,
+        ),
+        "ai_trade_review": {
+            "requested": use_ai_review,
+            "active": backtest_ai_review_active(config, use_ai_review),
+            "min_confidence": effective_ai_review_min_confidence(config, ai_review_min_confidence),
+            "llm_configured": llm_configured(config),
+            **ai_stats,
+        },
         "start": start.isoformat(),
         "end": end.isoformat(),
         "candles": _candles_payload(df),
@@ -1132,7 +1275,7 @@ def optimize_symbol_timeframes(
             try:
                 fetch_start = extended_history_start(start_utc, timeframe)
                 df = client.rates_range(symbol_cfg.symbol, timeframe, fetch_start, end_utc)
-                result, _closed_trades, _events = _run_symbol_backtest(
+                result, _closed_trades, _events, _ai_stats = _run_symbol_backtest(
                     client,
                     config,
                     effective_symbol_cfg,

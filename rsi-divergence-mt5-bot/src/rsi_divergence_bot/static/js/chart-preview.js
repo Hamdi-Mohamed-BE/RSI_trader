@@ -426,7 +426,20 @@
     if (label) label.textContent = "Loading chart…";
 
     try {
-      const url = `/api/backtest/chart?symbol=${encodeURIComponent(symbol)}&timeframe=${encodeURIComponent(timeframe)}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+      const query = new URLSearchParams({
+        symbol,
+        timeframe,
+        start,
+        end,
+      });
+      const aiReview = document.getElementById("backtest-ai-review");
+      const aiConfidence = document.getElementById("backtest-ai-review-confidence");
+      if (aiReview?.checked) query.set("ai_review", "true");
+      const minConfidence = Number(aiConfidence?.value);
+      if (Number.isFinite(minConfidence)) {
+        query.set("ai_review_min_confidence", String(minConfidence));
+      }
+      const url = `/api/backtest/chart?${query.toString()}`;
       const response = await fetch(url);
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Chart backtest failed");

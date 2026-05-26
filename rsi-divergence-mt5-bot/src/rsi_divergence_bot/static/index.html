@@ -206,6 +206,17 @@
             </select>
             <span class="panel-hint" id="backtest-strategy-hint">Backtest uses the same saved strategy as live trading. Change it on the home page before starting the bot.</span>
           </label>
+          <label class="toggle field-full">
+            <input id="backtest-ai-review" name="ai_review" type="checkbox">
+            <span>AI trade review (OpenAI primary, Gemini fallback)</span>
+          </label>
+          <label class="field">
+            <span>AI min confidence</span>
+            <input id="backtest-ai-review-confidence" name="ai_review_min_confidence" type="number" min="0" max="1" step="0.05" value="0.55">
+          </label>
+          <p class="panel-hint field-full" id="backtest-ai-review-hint">
+            When enabled, each signal that passes filters is sent to the LLM before it is simulated. Large date ranges can be slow and use API credits.
+          </p>
           <div class="form-actions field-full">
             <button id="backtest-btn" class="btn btn-primary" type="submit">
               <span class="btn-label">Run backtest</span>
@@ -446,12 +457,27 @@
           </label>
           <label class="toggle">
             <input id="auto-run-save-strategy" type="checkbox" checked>
-            <span>Save strategy to config.yaml</span>
+            <span>Save to config.yaml</span>
           </label>
+          <label class="toggle field-full">
+            <input id="auto-run-ai-review" type="checkbox">
+            <span>AI trade review before live orders (OpenAI → Gemini)</span>
+          </label>
+          <label class="field">
+            <span>AI min confidence</span>
+            <input id="auto-run-ai-review-confidence" type="number" min="0" max="1" step="0.05" value="0.55">
+          </label>
+          <label class="toggle">
+            <input id="auto-run-ai-backtest-default" type="checkbox">
+            <span>Default backtest AI review on</span>
+          </label>
+          <p id="auto-run-ai-review-hint" class="panel-hint field-full">
+            When enabled, each live signal is reviewed by the LLM before MT5 placement.
+          </p>
         </div>
         <div class="control-row">
           <button id="auto-run-save-btn" class="btn btn-secondary" type="button">
-            <span class="btn-label">Save bot strategy</span>
+            <span class="btn-label">Save bot settings</span>
             <span class="spinner" hidden aria-hidden="true"></span>
           </button>
           <button id="auto-run-start-btn" class="btn btn-primary" type="button">

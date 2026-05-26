@@ -18,6 +18,15 @@ bot:
   max_concurrent_setups: 20
   state_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\state.json
   log_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\bot.log
+  ai_trade_review:
+    enabled: true
+    use_in_backtest: false
+    min_confidence: 0.70
+    strategies: []
+    openai_api_key: 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
+    openai_model: gpt-4o-mini
+    gemini_api_key: AIzaSyD_ge3sM3CSH6RCZsmyAPOuUfQTECcEZzI
+    gemini_model: gemini-3-flash-preview
 risk:
   max_setup_risk_usd: 200.0
   use_daily_loss_guard: true
@@ -215,7 +224,7 @@ symbols:
 - symbol: GBPCHF-VIP
   name: GBPCHF
   market_key_override: null
-  enabled: true
+  enabled: false
   timeframe: H1
   optimized_timeframe: H1
   lot_per_leg: 0.5
@@ -393,7 +402,7 @@ symbols:
 - symbol: DOTUSD
   name: Polkadot
   market_key_override: null
-  enabled: true
+  enabled: false
   timeframe: M15
   optimized_timeframe: M15
   lot_per_leg: 0.5

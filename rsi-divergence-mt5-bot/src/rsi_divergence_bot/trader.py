@@ -17,6 +17,7 @@ from .strategy_modes import (
     tp_protection_enabled,
 )
 from .symbols import market_key
+from .trade_ai_review import TradeAiReviewer, ai_review_applies
 from .trade_geometry import invalid_market_geometry
 from .trade_execution import normalized_full_volume, normalized_partial_volumes, normalized_split_lot
 
@@ -36,6 +37,7 @@ class TradeExecutor:
         self.client = client
         self.state = state
         self.logger = logger
+        self.ai_reviewer = TradeAiReviewer(config, logger)
 
     def place_signal(self, signal: Signal) -> Outcome:
         symbol_cfg = self._symbol_cfg(signal.symbol)
@@ -102,6 +104,39 @@ class TradeExecutor:
                 else "split"
             ),
         )
+        if ai_review_applies(self.config):
+            live_price = None
+            try:
+                tick = self.client.tick(signal.symbol)
+                live_price = float(getattr(tick, "bid", None) or getattr(tick, "ask", None) or 0.0) or None
+            except Exception:  # noqa: BLE001
+                live_price = None
+            review = self.ai_reviewer.review(
+                signal,
+                decision,
+                symbol_cfg=symbol_cfg,
+                live_price=live_price,
+            )
+            min_confidence = self.config.bot.ai_trade_review.min_confidence
+            if not review.approved or review.confidence < min_confidence:
+                self.logger.info(
+                    "AI REJECT %s approved=%s confidence=%.2f min=%.2f provider=%s %s",
+                    signal.symbol,
+                    review.approved,
+                    review.confidence,
+                    min_confidence,
+                    review.provider or "none",
+                    review.reason,
+                )
+                self.state.mark_seen(signal.setup_id)
+                return "skipped"
+            self.logger.info(
+                "AI APPROVE %s confidence=%.2f provider=%s %s",
+                signal.symbol,
+                review.confidence,
+                review.provider or "none",
+                review.reason,
+            )
         if self.config.bot.dry_run:
             self.state.mark_seen(signal.setup_id)
             if is_partial_strategy(self.config.bot.strategy):
