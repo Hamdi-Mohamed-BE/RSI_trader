@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Literal
 
 import yaml
-from pydantic import BaseModel, Field, model_validator
+from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
 
 from .strategy_modes import CANONICAL_STRATEGIES, canonical_strategy
 from .symbols import CRYPTO_DEFAULT_LOTS, asset_group, market_key
@@ -57,6 +57,19 @@ class MT5Config(BaseModel):
     port: int = 18812
     transport: MT5Transport = "tcp"
     timeout: int = 300
+    broker_symbol_suffix: str = Field(
+        default="-VIP",
+        validation_alias=AliasChoices("broker_symbol_suffix", "RSI_BOT_BROKER_SYMBOL_SUFFIX"),
+    )
+
+    @field_validator("broker_symbol_suffix", mode="before")
+    @classmethod
+    def normalize_broker_symbol_suffix(cls, value: object) -> str:
+        from .symbols import DEFAULT_BROKER_SYMBOL_SUFFIX, normalize_broker_symbol_suffix
+
+        if value is None:
+            return DEFAULT_BROKER_SYMBOL_SUFFIX
+        return normalize_broker_symbol_suffix(str(value))
 
     @model_validator(mode="after")
     def validate_linux_bridge(self) -> "MT5Config":
@@ -123,6 +136,7 @@ class BotRuntimeConfig(BaseModel):
 
 class RiskConfig(BaseModel):
     max_setup_risk_usd: float | None = 180.0
+    default_forex_lot: float = Field(default=0.25, gt=0)
     use_daily_loss_guard: bool = True
     max_daily_loss_pct: float | None = Field(default=15.0, ge=0)
     max_extension_atr: float = 1.8
@@ -226,7 +240,7 @@ class AppConfig(BaseModel):
         return [item for item in self.symbols if item.enabled]
 
 
-def default_symbol_lot(symbol_cfg: SymbolConfig) -> float:
+def default_symbol_lot(symbol_cfg: SymbolConfig, config: AppConfig | None = None) -> float:
     key = symbol_cfg.key.upper()
     symbol = symbol_cfg.symbol.upper()
     name = symbol_cfg.name.upper()
@@ -238,6 +252,8 @@ def default_symbol_lot(symbol_cfg: SymbolConfig) -> float:
         return 0.01
     if "OIL" in symbol or "OIL" in name or symbol.startswith("CL"):
         return 0.01
+    if config is not None:
+        return config.risk.default_forex_lot
     return 0.25
 
 
@@ -260,6 +276,16 @@ def save_config(path: str | Path, config: AppConfig) -> None:
         encoding="utf-8",
     )
     tmp_path.replace(config_path)
+
+
+def update_default_forex_lot(config: AppConfig, lot: float) -> None:
+    if lot <= 0:
+        raise ValueError("Default forex lot must be greater than 0")
+    config.risk.default_forex_lot = lot
+
+
+def broker_symbol_suffix(config: AppConfig) -> str:
+    return config.mt5.broker_symbol_suffix
 
 
 def update_symbol_lots(config: AppConfig, lots: dict[str, float]) -> list[str]:

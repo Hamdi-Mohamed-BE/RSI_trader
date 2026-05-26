@@ -99,6 +99,17 @@
             </button>
           </div>
         </div>
+        <div class="form-grid settings-defaults">
+          <label class="field">
+            <span>Default forex lot (Telegram unknown pairs)</span>
+            <input id="default-forex-lot" type="number" min="0.01" step="0.01" value="0.25">
+          </label>
+          <p class="panel-hint field-full">
+            Lot size used when Telegram auto-registers a forex pair that is not already in the symbol list below.
+            Changes apply in memory immediately; click <strong>Save settings</strong> to write to config.yaml.
+          </p>
+          <p id="broker-symbol-suffix-hint" class="panel-hint field-full"></p>
+        </div>
         <div class="table-wrap">
           <table class="data-table" id="symbols-table">
             <thead>
@@ -599,9 +610,28 @@
         </div>
         <form id="manual-trade-form" class="form-grid">
           <label class="field field-full">
+            <span>Signal screenshot</span>
+            <div id="manual-trade-image-drop" class="image-drop-zone" tabindex="0" role="region" aria-label="Signal screenshot drop zone. Click here and press Ctrl+V to paste from clipboard.">
+              <input id="manual-trade-image-input" type="file" accept="image/*" hidden>
+              <p class="image-drop-title">Drop an image here, press Ctrl+V to paste a screenshot, or choose a file</p>
+              <p id="manual-trade-image-name" class="panel-hint">No image selected</p>
+              <img id="manual-trade-image-preview" class="image-drop-preview hidden" alt="Selected trade screenshot preview">
+              <div class="form-actions">
+                <button id="manual-trade-image-btn" class="btn btn-secondary" type="button">
+                  <span class="btn-label">Choose image</span>
+                </button>
+                <button id="manual-trade-parse-btn" class="btn btn-primary" type="button" disabled>
+                  <span class="btn-label">Parse image with AI</span>
+                  <span class="spinner" hidden aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </label>
+          <label class="field field-full">
             <span>Trade signal</span>
             <textarea id="manual-trade-text" class="trade-textarea" rows="8" placeholder="BTCUSD BUY&#10;SL 77139&#10;TP1 77451&#10;TP2 77529&#10;TP3 77608&#10;LOT 0.01"></textarea>
           </label>
+          <p id="manual-trade-parse-hint" class="panel-hint field-full hidden"></p>
           <div class="form-actions field-full">
             <button id="manual-trade-btn" class="btn btn-danger" type="submit">
               <span class="btn-label">Place live test trade</span>
@@ -609,7 +639,7 @@
             </button>
           </div>
         </form>
-        <p class="panel-hint live-warning">This sends real MT5 market orders. Every pasted trade must include SL and at least one TP.</p>
+        <p class="panel-hint live-warning">Upload or paste a screenshot to parse with AI, review the text, then place live MT5 orders. Every trade must include SL and at least one TP.</p>
         <div id="manual-trade-result" class="result-card hidden">
           <div class="result-title">Manual trade result</div>
           <pre id="manual-trade-status"></pre>

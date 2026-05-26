@@ -9,19 +9,21 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, quote
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
 from pydantic import BaseModel, Field
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from .backtest import optimize_symbol_timeframes, run_backtest, run_chart_backtest
 from .bot import SignalBot
-from .trade_ai_review import ai_review_status
+from .symbols import market_key
 from .config import (
     AppConfig,
     StrategyMode,
     add_telegram_channel,
+    broker_symbol_suffix,
     default_symbol_lot,
+    update_default_forex_lot,
     remove_telegram_channel,
     save_config,
     symbol_asset_group,
@@ -43,8 +45,9 @@ from .decision import resolve_trade_filters
 from .logging_utils import recent_logs
 from .live_summary import build_live_summary
 from .manual_trade import _validate_geometry, parse_manual_trade
+from .manual_trade_image import llm_configured as manual_trade_image_llm_configured
+from .manual_trade_image import parse_trade_image
 from .strategy_modes import canonical_strategy
-from .symbols import market_key
 from .telegram_signals import TelegramSignalsBot
 from .timeframes import SUPPORTED_TIMEFRAMES, timeframe_options_payload, validate_timeframe
 
@@ -55,6 +58,7 @@ class SymbolSettings(BaseModel):
     lots: dict[str, float] = Field(default_factory=dict)
     enabled: dict[str, bool] = Field(default_factory=dict)
     timeframes: dict[str, str] = Field(default_factory=dict)
+    default_forex_lot: float | None = Field(default=None, gt=0)
     persist: bool = True
 
 
@@ -239,7 +243,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "optimized_timeframe": item.optimized_timeframe,
                 "reset_timeframe": item.optimized_timeframe or item.timeframe,
                 "lot_per_leg": item.lot_per_leg,
-                "reset_lot_per_leg": default_symbol_lot(item),
+                "reset_lot_per_leg": default_symbol_lot(item, config),
                 "max_setup_risk_usd": item.max_setup_risk_usd,
                 "confirmation": item.confirmation,
                 "sessions": item.sessions,
@@ -435,6 +439,9 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "ai_trade_review": ai_review_status(config),
             },
             "risk": config.risk.model_dump(mode="python"),
+            "mt5": {
+                "broker_symbol_suffix": broker_symbol_suffix(config),
+            },
             "telegram_signals": {
                 "enabled": config.telegram_signals.enabled,
                 "poll_seconds": config.telegram_signals.poll_seconds,
@@ -471,12 +478,21 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
 
     @app.post("/api/symbols/settings")
     def update_settings(body: SymbolSettings) -> dict:
-        if not body.lots and not body.enabled and not body.timeframes:
+        if body.default_forex_lot is not None:
+            try:
+                update_default_forex_lot(config, body.default_forex_lot)
+            except ValueError as exc:
+                raise HTTPException(status_code=400, detail=str(exc)) from exc
+            if body.persist:
+                save_config(config_path, config)
+
+        if not body.lots and not body.enabled and not body.timeframes and body.default_forex_lot is None:
             stats = symbol_stats()
             return {
                 "status": "noop",
                 "symbols": symbol_payload(),
                 "symbol_stats": stats,
+                "default_forex_lot": config.risk.default_forex_lot,
             }
 
         symbols = apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
@@ -485,6 +501,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
             "status": "saved" if body.persist else "applied",
             "symbols": symbols,
             "symbol_stats": stats,
+            "default_forex_lot": config.risk.default_forex_lot,
         }
 
     @app.post("/api/symbols/lots")
@@ -639,6 +656,35 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
             "daily_loss": summary.daily_loss,
             "daily_loss_limit": summary.daily_loss_limit,
             **stats,
+        }
+
+    @app.post("/api/manual-trade/parse-image")
+    async def parse_manual_trade_image(image: UploadFile = File(...)) -> dict:
+        if not manual_trade_image_llm_configured(config):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "LLM API key missing. Set telegram_signals.openai_api_key or OPENAI_API_KEY "
+                    "(primary), or telegram_signals.gemini_api_key or GEMINI_API_KEY (fallback)."
+                ),
+            )
+        content = await image.read()
+        mime = image.content_type or "image/png"
+        try:
+            result = await asyncio.to_thread(parse_trade_image, config, content, mime, bot.logger)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except Exception as exc:  # noqa: BLE001
+            bot.logger.exception("MANUAL TRADE IMAGE parse failed: %s", exc)
+            raise HTTPException(status_code=503, detail=f"Image parse failed: {exc}") from exc
+        return {
+            "status": "parsed",
+            "text": result.text,
+            "provider": result.provider,
+            "parsed": result.parsed.model_dump(mode="python"),
+            "llm_configured": True,
         }
 
     @app.post("/api/manual-trade")

@@ -35,6 +35,8 @@ const els = {
   statMagic: document.getElementById("stat-magic"),
   symbolsBody: document.getElementById("symbols-body"),
   resetLotsBtn: document.getElementById("reset-lots-btn"),
+  defaultForexLot: document.getElementById("default-forex-lot"),
+  brokerSymbolSuffixHint: document.getElementById("broker-symbol-suffix-hint"),
   resetTimeframesBtn: document.getElementById("reset-timeframes-btn"),
   optimizeTimeframesBtn: document.getElementById("optimize-timeframes-btn"),
   saveLotsBtn: document.getElementById("save-lots-btn"),
@@ -65,6 +67,13 @@ const els = {
   backtestRaw: document.getElementById("backtest-raw"),
   runOnceBtn: document.getElementById("run-once-btn"),
   manualTradeForm: document.getElementById("manual-trade-form"),
+  manualTradeImageDrop: document.getElementById("manual-trade-image-drop"),
+  manualTradeImageInput: document.getElementById("manual-trade-image-input"),
+  manualTradeImageBtn: document.getElementById("manual-trade-image-btn"),
+  manualTradeParseBtn: document.getElementById("manual-trade-parse-btn"),
+  manualTradeImagePreview: document.getElementById("manual-trade-image-preview"),
+  manualTradeImageName: document.getElementById("manual-trade-image-name"),
+  manualTradeParseHint: document.getElementById("manual-trade-parse-hint"),
   manualTradeText: document.getElementById("manual-trade-text"),
   manualTradeBtn: document.getElementById("manual-trade-btn"),
   manualTradeResult: document.getElementById("manual-trade-result"),
@@ -150,6 +159,7 @@ let loopTimer = null;
 let liveTimer = null;
 let telegramTimer = null;
 let botConfig = null;
+let manualTradeImageFile = null;
 let symbolSettingsReady = false;
 
 function currentPage() {
@@ -611,6 +621,11 @@ function collectSymbolSettings() {
   return { lots, enabled, timeframes };
 }
 
+function defaultForexLotFromUi() {
+  const value = Number(els.defaultForexLot?.value);
+  return Number.isFinite(value) && value > 0 ? value : undefined;
+}
+
 function formatApiError(detail) {
   if (typeof detail === "string") return detail;
   if (Array.isArray(detail)) {
@@ -621,14 +636,20 @@ function formatApiError(detail) {
 
 async function syncSymbolSettings({ persist = true, silent = false, rerender = false } = {}) {
   const { lots, enabled, timeframes } = collectSymbolSettings();
-  if (!Object.keys(lots).length && !Object.keys(enabled).length && !Object.keys(timeframes).length) {
+  const defaultForexLot = defaultForexLotFromUi();
+  if (
+    !Object.keys(lots).length
+    && !Object.keys(enabled).length
+    && !Object.keys(timeframes).length
+    && defaultForexLot === undefined
+  ) {
     return { status: "noop", symbols: botConfig?.symbols || [], symbol_stats: botConfig?.symbol_stats || null };
   }
 
   const response = await fetch("/api/symbols/settings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ lots, enabled, timeframes, persist }),
+    body: JSON.stringify({ lots, enabled, timeframes, default_forex_lot: defaultForexLot, persist }),
   });
   const data = await response.json();
   if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to sync symbol settings");
@@ -636,6 +657,11 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
   if (botConfig) {
     botConfig.symbols = data.symbols;
     botConfig.symbol_stats = data.symbol_stats;
+    if (data.default_forex_lot != null) {
+      botConfig.risk = botConfig.risk || {};
+      botConfig.risk.default_forex_lot = data.default_forex_lot;
+      if (els.defaultForexLot) els.defaultForexLot.value = data.default_forex_lot;
+    }
   }
   updateSymbolStats(data.symbol_stats);
   if (rerender || !silent) renderSymbols(data.symbols);
@@ -653,12 +679,12 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
 
 let settingsTimer = null;
 
-function scheduleSettingsSync({ persist = false, silent = true } = {}) {
+function scheduleSettingsSync({ persist = false, silent = true, rerender = false } = {}) {
   if (!symbolSettingsReady) return;
   if (settingsTimer) clearTimeout(settingsTimer);
   settingsTimer = setTimeout(async () => {
     try {
-      await syncSymbolSettings({ persist, silent, rerender: false });
+      await syncSymbolSettings({ persist, silent, rerender });
       if (!silent) toast("Symbol settings updated", "info");
     } catch (error) {
       toast(error.message, "error");
@@ -1935,6 +1961,15 @@ function renderConfig(config) {
   }
   symbolSettingsReady = true;
 
+  if (els.defaultForexLot && config.risk?.default_forex_lot != null) {
+    els.defaultForexLot.value = config.risk.default_forex_lot;
+  }
+  if (els.brokerSymbolSuffixHint) {
+    const suffix = config.mt5?.broker_symbol_suffix || config.broker_symbol_suffix || "-VIP";
+    els.brokerSymbolSuffixHint.textContent =
+      `Telegram auto-register tries broker symbols like EURUSD${suffix} first (set mt5.broker_symbol_suffix in config.yaml, e.g. -STD).`;
+  }
+
   try {
     const dryRun = config.bot?.dry_run;
     if (els.modeBadge) {
@@ -2396,8 +2431,11 @@ async function placeManualTrade(event) {
     return;
   }
 
+  const aiParsed = els.manualTradeText?.dataset.aiParsed === "true";
   const confirmed = window.confirm(
-    "This will place real MT5 market orders with the pasted SL and TPs. Continue?",
+    aiParsed
+      ? `AI parsed this signal:\n\n${text}\n\nReview it carefully. Place real MT5 market orders now?`
+      : "This will place real MT5 market orders with the pasted SL and TPs. Continue?",
   );
   if (!confirmed) return;
 
@@ -2417,6 +2455,7 @@ async function placeManualTrade(event) {
     const placed = data.tickets?.length || 0;
     const failed = data.failed?.length || 0;
     toast(`Manual trade sent: ${placed} placed, ${failed} failed`, failed ? "error" : "success");
+    if (els.manualTradeText) delete els.manualTradeText.dataset.aiParsed;
     await refreshLiveData();
     await refreshLogs();
   } catch (error) {
@@ -2424,6 +2463,136 @@ async function placeManualTrade(event) {
   } finally {
     setLoading(els.manualTradeBtn, false);
   }
+}
+
+function readClipboardImageFile(clipboardData) {
+  const items = clipboardData?.items;
+  if (!items) return null;
+  for (const item of items) {
+    if (!item.type.startsWith("image/")) continue;
+    const file = item.getAsFile();
+    if (file) return file;
+  }
+  return null;
+}
+
+function handleManualTradeImagePaste(event) {
+  if (currentPage() !== "manual-trade") return;
+  const file = readClipboardImageFile(event.clipboardData);
+  if (!file) return;
+  event.preventDefault();
+  bindManualTradeImageInput(file);
+  els.manualTradeImageDrop?.classList.add("is-focused");
+  toast("Screenshot pasted — click Parse image with AI", "success");
+}
+
+function setManualTradeImageFile(file) {
+  manualTradeImageFile = file || null;
+  if (els.manualTradeParseBtn) els.manualTradeParseBtn.disabled = !manualTradeImageFile;
+  if (!els.manualTradeImageName) return;
+  if (!manualTradeImageFile) {
+    els.manualTradeImageName.textContent = "No image selected";
+    if (els.manualTradeImagePreview) {
+      els.manualTradeImagePreview.src = "";
+      els.manualTradeImagePreview.classList.add("hidden");
+    }
+    return;
+  }
+  els.manualTradeImageName.textContent = `${manualTradeImageFile.name || "Pasted image"} (${Math.round(manualTradeImageFile.size / 1024)} KB)`;
+  if (els.manualTradeImagePreview) {
+    els.manualTradeImagePreview.src = URL.createObjectURL(manualTradeImageFile);
+    els.manualTradeImagePreview.classList.remove("hidden");
+  }
+}
+
+function bindManualTradeImageInput(file) {
+  if (!file || !file.type?.startsWith("image/")) {
+    toast("Choose an image file", "error");
+    return;
+  }
+  setManualTradeImageFile(file);
+}
+
+async function parseManualTradeImage() {
+  if (!manualTradeImageFile) {
+    toast("Choose or paste an image first", "error");
+    return;
+  }
+  setLoading(els.manualTradeParseBtn, true, "Parsing image…");
+  try {
+    const formData = new FormData();
+    formData.append("image", manualTradeImageFile, manualTradeImageFile.name || "signal.png");
+    const response = await fetch("/api/manual-trade/parse-image", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Image parse failed");
+
+    const parsedText = String(data.text || "").trim();
+    if (!parsedText) throw new Error("AI returned an empty trade signal");
+
+    const reviewConfirmed = window.confirm(
+      `AI parsed this trade signal (${data.provider || "llm"}):\n\n${parsedText}\n\nUse this text in the box below? You can edit it before placing the trade.`,
+    );
+    if (!reviewConfirmed) {
+      toast("Image parse cancelled", "info");
+      return;
+    }
+
+    if (els.manualTradeText) {
+      els.manualTradeText.value = parsedText;
+      els.manualTradeText.dataset.aiParsed = "true";
+      els.manualTradeText.focus();
+    }
+    if (els.manualTradeParseHint) {
+      els.manualTradeParseHint.textContent =
+        `AI parsed via ${data.provider || "LLM"}. Review the text below, edit if needed, then click Place live test trade.`;
+      els.manualTradeParseHint.classList.remove("hidden");
+    }
+    toast("Trade signal loaded from image — review before placing", "success");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.manualTradeParseBtn, false);
+  }
+}
+
+function initManualTradeImageInput() {
+  els.manualTradeImageBtn?.addEventListener("click", () => els.manualTradeImageInput?.click());
+  els.manualTradeImageInput?.addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+    if (file) bindManualTradeImageInput(file);
+  });
+  els.manualTradeParseBtn?.addEventListener("click", parseManualTradeImage);
+  document.addEventListener("paste", handleManualTradeImagePaste);
+  els.manualTradeImageDrop?.addEventListener("click", (event) => {
+    if (event.target.closest("button, input, a")) return;
+    els.manualTradeImageDrop.focus();
+    els.manualTradeImageDrop.classList.add("is-focused");
+  });
+  els.manualTradeImageDrop?.addEventListener("focus", () => {
+    els.manualTradeImageDrop.classList.add("is-focused");
+  });
+  els.manualTradeImageDrop?.addEventListener("blur", () => {
+    els.manualTradeImageDrop.classList.remove("is-focused");
+  });
+  els.manualTradeImageDrop?.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    els.manualTradeImageDrop.classList.add("is-dragover");
+  });
+  els.manualTradeImageDrop?.addEventListener("dragleave", () => {
+    els.manualTradeImageDrop.classList.remove("is-dragover");
+  });
+  els.manualTradeImageDrop?.addEventListener("drop", (event) => {
+    event.preventDefault();
+    els.manualTradeImageDrop.classList.remove("is-dragover");
+    const file = event.dataTransfer?.files?.[0];
+    if (file) bindManualTradeImageInput(file);
+  });
+  els.manualTradeText?.addEventListener("input", () => {
+    if (els.manualTradeText.dataset.aiParsed) delete els.manualTradeText.dataset.aiParsed;
+  });
 }
 
 function startLogPolling() {
@@ -2471,6 +2640,7 @@ async function init() {
   });
   els.runOnceBtn?.addEventListener("click", runOnce);
   els.manualTradeForm?.addEventListener("submit", placeManualTrade);
+  initManualTradeImageInput();
   els.liveSummaryForm?.addEventListener("submit", loadLiveSummary);
   els.resetLotsBtn?.addEventListener("click", resetLots);
   els.resetTimeframesBtn?.addEventListener("click", resetTimeframes);
@@ -2496,6 +2666,9 @@ async function init() {
       row.classList.toggle("row-disabled", !event.target.checked);
     }
     scheduleSettingsSync({ persist: false, silent: true });
+  });
+  els.defaultForexLot?.addEventListener("change", () => {
+    scheduleSettingsSync({ persist: false, silent: true, rerender: true });
   });
   els.autoRunStartBtn?.addEventListener("click", startAutoRun);
   els.autoRunStopBtn?.addEventListener("click", stopAutoRun);

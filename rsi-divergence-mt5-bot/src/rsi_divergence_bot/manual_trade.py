@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from .config import AppConfig, SymbolConfig
 from .mt5_client import MT5Client
-from .symbols import crypto_aliases_for, market_key
+from .symbols import crypto_aliases_for, market_key, mt5_symbol_candidates
 from .trade_geometry import invalid_market_geometry
 
 
@@ -126,19 +126,12 @@ def resolve_symbol(token: str, config: AppConfig) -> SymbolConfig | None:
     return aliases.get(target)
 
 
-def _mt5_symbol_candidates(token: str) -> list[str]:
-    base = _norm_symbol(token)
-    if not base:
-        return []
-    return [f"{base}-VIP", f"{base}VIP", base]
-
-
-def _auto_symbol_config(mt5_symbol: str, base_key: str) -> SymbolConfig:
+def _auto_symbol_config(mt5_symbol: str, base_key: str, config: AppConfig) -> SymbolConfig:
     return SymbolConfig(
         symbol=mt5_symbol,
         name=base_key,
         enabled=False,
-        lot_per_leg=0.25,
+        lot_per_leg=config.risk.default_forex_lot,
         rr=[1.0, 1.5, 2.0],
     )
 
@@ -157,13 +150,13 @@ def resolve_symbol_for_telegram(
         return None, False
 
     base = _norm_symbol(token)
-    for candidate in _mt5_symbol_candidates(token):
+    for candidate in mt5_symbol_candidates(token, config.mt5.broker_symbol_suffix):
         if client.symbol_info(candidate) is None or client.tick(candidate) is None:
             continue
         for item in config.symbols:
             if item.symbol.upper() == candidate.upper():
                 return item, False
-        cfg = _auto_symbol_config(candidate, base)
+        cfg = _auto_symbol_config(candidate, base, config)
         if auto_register:
             config.symbols.append(cfg)
             return cfg, True

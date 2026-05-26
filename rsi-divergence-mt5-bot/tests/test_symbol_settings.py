@@ -1,4 +1,4 @@
-from rsi_divergence_bot.config import SymbolConfig, default_symbol_lot, symbol_asset_group
+from rsi_divergence_bot.config import AppConfig, BotRuntimeConfig, RiskConfig, SymbolConfig, default_symbol_lot, symbol_asset_group
 from rsi_divergence_bot.symbols import crypto_aliases_for, market_key
 
 
@@ -18,3 +18,12 @@ def test_crypto_defaults_and_aliases_cover_added_symbols():
     assert default_symbol_lot(_symbol("XRPUSD", "Ripple")) == 0.10
     assert default_symbol_lot(_symbol("BNBUSD", "Binance Coin")) == 0.30
     assert {"XRP", "RIPPLE", "XRPUSD"} <= crypto_aliases_for("XRPUSD")
+
+
+def test_default_forex_lot_comes_from_risk_config():
+    config = AppConfig(
+        bot=BotRuntimeConfig(),
+        risk=RiskConfig(default_forex_lot=0.35),
+        symbols=[_symbol("EURUSD-VIP", "EURUSD")],
+    )
+    assert default_symbol_lot(_symbol("EURUSD-VIP", "EURUSD"), config) == 0.35

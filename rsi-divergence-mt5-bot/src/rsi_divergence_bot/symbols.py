@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 
 
+DEFAULT_BROKER_SYMBOL_SUFFIX = "-VIP"
+
 BROKER_SUFFIXES = {
     "VIP",
     "STD",
@@ -60,6 +62,42 @@ CRYPTO_ALIASES = {
     "XLMUSD": {"XLM", "STELLAR", "XLMUSD"},
     "UNIUSD": {"UNI", "UNISWAP", "UNIUSD"},
 }
+
+
+def normalize_broker_symbol_suffix(raw: str) -> str:
+    value = raw.strip()
+    if not value:
+        return ""
+    upper = value.upper()
+    if upper[0] in "-._":
+        return upper
+    return f"-{upper}"
+
+
+def mt5_symbol_candidates(token: str, broker_suffix: str | None = None) -> list[str]:
+    base = re.sub(r"[^A-Z0-9]", "", token.upper())
+    if not base:
+        return []
+    if broker_suffix is None:
+        suffix = normalize_broker_symbol_suffix(DEFAULT_BROKER_SYMBOL_SUFFIX)
+    else:
+        suffix = normalize_broker_symbol_suffix(broker_suffix)
+    if not suffix:
+        return [base]
+    separator = suffix[0] if suffix[0] in "-._" else "-"
+    tag = suffix[1:] if suffix[0] in "-._" else suffix
+    if not tag:
+        return [base]
+    ordered = [f"{base}{separator}{tag}", f"{base}{tag}", base]
+    seen: set[str] = set()
+    candidates: list[str] = []
+    for item in ordered:
+        key = item.upper()
+        if key in seen:
+            continue
+        seen.add(key)
+        candidates.append(item)
+    return candidates
 
 
 def market_key(symbol: str) -> str:

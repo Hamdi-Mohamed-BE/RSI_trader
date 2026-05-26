@@ -1,4 +1,4 @@
-from rsi_divergence_bot.config import AppConfig, SymbolConfig, TelegramSignalsConfig
+from rsi_divergence_bot.config import AppConfig, MT5Config, RiskConfig, SymbolConfig, TelegramSignalsConfig
 from rsi_divergence_bot.manual_trade import resolve_symbol, resolve_symbol_for_telegram
 
 
@@ -36,10 +36,23 @@ def test_resolve_symbol_for_telegram_uses_existing_alias():
 
 def test_resolve_symbol_for_telegram_auto_registers_vip_symbol():
     config = _config()
+    config.risk.default_forex_lot = 0.35
     client = FakeMT5Client({"CHFJPY-VIP"})
     cfg, auto_registered = resolve_symbol_for_telegram("CHFJPY", config, client)
     assert cfg is not None
     assert cfg.symbol == "CHFJPY-VIP"
-    assert cfg.lot_per_leg == 0.25
+    assert cfg.lot_per_leg == 0.35
     assert auto_registered is True
     assert resolve_symbol("CHFJPY", config) is cfg
+
+
+def test_resolve_symbol_for_telegram_auto_registers_std_symbol():
+    config = _config()
+    config.mt5 = MT5Config(broker_symbol_suffix="-STD")
+    config.risk.default_forex_lot = 0.35
+    client = FakeMT5Client({"CHFJPY-STD"})
+    cfg, auto_registered = resolve_symbol_for_telegram("CHFJPY", config, client)
+    assert cfg is not None
+    assert cfg.symbol == "CHFJPY-STD"
+    assert cfg.lot_per_leg == 0.35
+    assert auto_registered is True

@@ -8,6 +8,9 @@ mt5:
   port: 18812
   transport: tcp
   timeout: 300
+  broker_symbol_suffix: "-VIP"
+  # Or use the legacy env-style key name:
+  # RSI_BOT_BROKER_SYMBOL_SUFFIX: "-STD"
 bot:
   dry_run: true
   auto_start: true
@@ -29,6 +32,8 @@ bot:
     gemini_model: null
 risk:
   max_setup_risk_usd: 180.0
+  default_forex_lot: 0.25
+  # default_forex_lot is also editable in Settings UI; used for Telegram auto-registered forex pairs.
   use_daily_loss_guard: true
   max_daily_loss_pct: 15.0
   max_extension_atr: 1.8
