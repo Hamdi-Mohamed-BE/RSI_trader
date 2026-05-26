@@ -1688,7 +1688,11 @@ async function hardCopyTelegramMessage(messageId, button) {
     renderTelegramStatus(data);
     const status = data.status || "unknown";
     if (status === "placed" || status === "paper") {
-      toast(`Hard copy ${status}: ${data.symbol || ""} ${String(data.action || "").toUpperCase()}`.trim(), "success");
+      const legs = data.legs || data.tickets?.length || 1;
+      toast(
+        `Hard copy ${status}: ${data.symbol || ""} ${String(data.action || "").toUpperCase()} (${legs} leg${legs === 1 ? "" : "s"})`.trim(),
+        "success",
+      );
     } else {
       toast(data.reason || `Hard copy ${status}`, status === "failed" ? "error" : "info");
     }

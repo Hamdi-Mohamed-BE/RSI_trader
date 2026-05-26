@@ -1186,6 +1186,7 @@ class TelegramSignalsBot:
             tps=tps,
             lot_per_leg=float(lot),
             entry_price=None,
+            execution_mode="split",
             extra_setup={
                 "breakeven_applied": False,
                 "source": "telegram_signals",

@@ -145,7 +145,21 @@ class TradeExecutor:
         entry_price: float | None = None,
         extra_setup: dict | None = None,
         comment: str = ORDER_COMMENT,
+        execution_mode: str = "auto",
     ) -> dict:
+        if execution_mode == "split":
+            return self._place_split_market(
+                setup_id=setup_id,
+                symbol=symbol,
+                market_key=market_key,
+                side=side,
+                sl=sl,
+                tps=tps,
+                lot_per_leg=lot_per_leg,
+                entry_price=entry_price,
+                extra_setup=extra_setup,
+                comment=comment,
+            )
         if is_partial_strategy(self.config.bot.strategy):
             return self._place_partial_market(
                 setup_id=setup_id,
@@ -263,6 +277,7 @@ class TradeExecutor:
             entry_price = live_entry
 
         tickets: list[int] = []
+        last_failure: str | None = None
         for index, tp in enumerate(tps, start=1):
             try:
                 result = self.client.send_market(
@@ -275,6 +290,7 @@ class TradeExecutor:
                     f"{comment} TP{index}"[:31],
                 )
             except ValueError as exc:
+                last_failure = str(exc)
                 self.logger.warning("ORDER REJECTED %s tp=%s reason=%s", symbol, tp, exc)
                 continue
             retcode = getattr(result, "retcode", None)
@@ -283,11 +299,19 @@ class TradeExecutor:
                 tickets.append(order)
                 self.logger.info("PLACED %s ticket=%s tp=%s", symbol, order, round(tp, 5))
             else:
+                comment_text = getattr(result, "comment", None)
+                last_failure = f"retcode={retcode} comment={comment_text}"
                 self.logger.warning("ORDER FAILED %s tp=%s ret=%s result=%s", symbol, tp, retcode, result)
 
         if not tickets:
             self.logger.warning("SETUP FAILED %s no orders filled for %s", symbol, setup_id)
-            return {"status": "failed", "tickets": tickets}
+            return {
+                "status": "failed",
+                "tickets": tickets,
+                "ticket": 0,
+                "reason": last_failure or "no orders filled",
+                "entry_price": live_entry,
+            }
 
         setup = {
             "setup_id": setup_id,
@@ -306,7 +330,13 @@ class TradeExecutor:
         if extra_setup:
             setup.update(extra_setup)
         self.state.add_setup(setup)
-        return {"status": "placed", "tickets": tickets}
+        return {
+            "status": "placed",
+            "tickets": tickets,
+            "ticket": tickets[0],
+            "entry_price": entry_price,
+            "legs": len(tickets),
+        }
 
     def _place_partial_market(
         self,
