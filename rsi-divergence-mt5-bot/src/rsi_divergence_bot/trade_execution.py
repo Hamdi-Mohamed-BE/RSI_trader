@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
+from .indicators import ema
 from .mt5_client import MT5Client
 from .strategy import Signal
 from .trade_geometry import invalid_market_geometry
@@ -124,6 +125,128 @@ def simulate_full_trade(client: MT5Client, signal: Signal, rows, tp_protection: 
             "exit_sl": round(float(sl), 5),
             "initial_sl": round(float(signal.sl), 5),
             "tp": round(float(final_tp), 5),
+            "lot": total_volume,
+            "exit_price": round(float(exit_price), 5),
+            "exit_time": exit_time,
+            "exit_kind": exit_kind,
+            "pnl": round(float(pnl), 2),
+        }
+    ]
+    return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind, "legs": leg_results}
+
+
+def simulate_silver_optimized_trade(client: MT5Client, signal: Signal, rows) -> dict:
+    tps = list(signal.tps)
+    if not tps or signal.algorithm != "silver_optimized":
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "invalid_geometry", "legs": []}
+    if invalid_market_geometry(signal.side, signal.entry, signal.sl, tps):
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "invalid_geometry", "legs": []}
+
+    frame = pd.DataFrame(rows)
+    if frame.empty:
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "close", "legs": []}
+
+    fast_len = int(signal.ema_fast_len or 21)
+    slow_len = int(signal.ema_slow_len or 55)
+    frame["ema_fast"] = ema(frame["close"], fast_len)
+    frame["ema_slow"] = ema(frame["close"], slow_len)
+
+    total_volume = normalized_full_volume(client, signal.symbol, signal.lot_per_leg)
+    sl = float(signal.sl)
+    tp = float(tps[0])
+    trail_offset = float(signal.atr_at_entry or abs(signal.entry - signal.sl)) * float(signal.trail_atr_mult or 1.5)
+    pnl = 0.0
+    exit_time: int | None = None
+    exit_kind = "close"
+    exit_price = float(signal.entry)
+    last_bar_time: int | None = None
+    open_position = True
+    peak = float(signal.entry)
+    trough = float(signal.entry)
+
+    def row_unix(row) -> int:
+        ts = getattr(row, "time", None)
+        if hasattr(ts, "timestamp"):
+            return int(ts.timestamp())
+        return int(pd.Timestamp(ts).timestamp())
+
+    def pnl_for_volume(volume: float, price: float) -> float:
+        if signal.side == "buy":
+            return client.money_for_distance(signal.symbol, volume, price - signal.entry)
+        return client.money_for_distance(signal.symbol, volume, signal.entry - price)
+
+    for row in frame.itertuples(index=False):
+        high = float(row.high)
+        low = float(row.low)
+        close = float(row.close)
+        ema_fast = float(row.ema_fast)
+        ema_slow = float(row.ema_slow)
+        bar_time = row_unix(row)
+        last_bar_time = bar_time
+
+        if signal.side == "buy":
+            peak = max(peak, high)
+            trail_stop = max(sl, peak - trail_offset)
+            if close < ema_slow and ema_fast < ema_slow:
+                exit_price = close
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "regime"
+                exit_time = bar_time
+                open_position = False
+                break
+            if low <= trail_stop:
+                exit_price = trail_stop
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "sl" if trail_stop <= sl else "trail"
+                exit_time = bar_time
+                open_position = False
+                break
+            if high >= tp:
+                exit_price = tp
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "tp1"
+                exit_time = bar_time
+                open_position = False
+                break
+        else:
+            trough = min(trough, low)
+            trail_stop = min(sl, trough + trail_offset)
+            if close > ema_slow and ema_fast > ema_slow:
+                exit_price = close
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "regime"
+                exit_time = bar_time
+                open_position = False
+                break
+            if high >= trail_stop:
+                exit_price = trail_stop
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "sl" if trail_stop >= sl else "trail"
+                exit_time = bar_time
+                open_position = False
+                break
+            if low <= tp:
+                exit_price = tp
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "tp1"
+                exit_time = bar_time
+                open_position = False
+                break
+
+    if open_position and last_bar_time is not None:
+        exit_time = last_bar_time
+        exit_price = float(frame.iloc[-1]["close"])
+        pnl = pnl_for_volume(total_volume, exit_price)
+        exit_kind = "close"
+
+    leg_results = [
+        {
+            "leg": 1,
+            "entry": round(float(signal.entry), 5),
+            "sl": round(float(signal.sl), 5),
+            "exit_sl": round(float(sl), 5),
+            "initial_sl": round(float(signal.sl), 5),
+            "tp": round(float(tp), 5),
             "lot": total_volume,
             "exit_price": round(float(exit_price), 5),
             "exit_time": exit_time,

@@ -17,19 +17,17 @@ bot:
   poll_seconds: 15
   magic: 260521
   strategy: signal_with_tp_protection
+  signal_algorithm: rsi_divergence
+  silver_optimized:
+    preset: auto
+    trade_direction: long_and_short
+    htf_timeframe: D1
+    use_vol_filter: true
+    use_time_filter: false
   trade_decision_profile: balanced
   max_concurrent_setups: 3
   state_file: runtime/state.json
   log_file: runtime/bot.log
-  ai_trade_review:
-    enabled: false
-    use_in_backtest: false
-    min_confidence: 0.55
-    strategies: []
-    openai_api_key: null
-    openai_model: null
-    gemini_api_key: null
-    gemini_model: null
 risk:
   max_setup_risk_usd: 180.0
   default_forex_lot: 0.25

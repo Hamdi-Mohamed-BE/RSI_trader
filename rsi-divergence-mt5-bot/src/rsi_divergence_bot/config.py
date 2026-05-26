@@ -45,6 +45,9 @@ TradeDecisionProfile = Literal["safe", "balanced", "backtest"]
 Confirmation = Literal["off", "ema", "trend_guard", "rsi_extreme", "strict"]
 MT5Mode = Literal["native_windows", "linux_bridge"]
 MT5Transport = Literal["tcp", "stdio"]
+SignalAlgorithm = Literal["rsi_divergence", "silver_optimized"]
+SilverPreset = Literal["auto", "xauusd", "xagusd", "btcusd", "custom"]
+SilverDirection = Literal["long_only", "short_only", "long_and_short"]
 
 
 class MT5Config(BaseModel):
@@ -86,24 +89,21 @@ class MT5Config(BaseModel):
         return self
 
 
-class AiTradeReviewConfig(BaseModel):
-    enabled: bool = False
-    use_in_backtest: bool = False
-    min_confidence: float = Field(default=0.55, ge=0.0, le=1.0)
-    strategies: list[StrategyMode] = Field(default_factory=list)
-    openai_api_key: str | None = None
-    openai_model: str | None = None
-    gemini_api_key: str | None = None
-    gemini_model: str | None = None
-
-    @model_validator(mode="before")
-    @classmethod
-    def normalize_strategies(cls, data):
-        if not isinstance(data, dict) or "strategies" not in data:
-            return data
-        data = dict(data)
-        data["strategies"] = [canonical_strategy(item) for item in data.get("strategies") or []]
-        return data
+class SilverOptimizedConfig(BaseModel):
+    preset: SilverPreset = "auto"
+    trade_direction: SilverDirection = "long_and_short"
+    htf_timeframe: str = "D1"
+    use_vol_filter: bool = True
+    use_time_filter: bool = False
+    custom_fast_len: int = Field(default=21, ge=2)
+    custom_slow_len: int = Field(default=55, ge=3)
+    custom_htf_len: int = Field(default=200, ge=20)
+    custom_rsi_len: int = Field(default=14, ge=2)
+    custom_adx_min: float = Field(default=18.0, ge=1.0)
+    custom_atr_len: int = Field(default=14, ge=2)
+    custom_stop_atr: float = Field(default=2.2, gt=0)
+    custom_tp_atr: float = Field(default=3.5, gt=0)
+    custom_trail_atr: float = Field(default=1.6, gt=0)
 
 
 class BotRuntimeConfig(BaseModel):
@@ -112,11 +112,12 @@ class BotRuntimeConfig(BaseModel):
     poll_seconds: int = 15
     magic: int = 260521
     strategy: StrategyMode = "signal_with_tp_protection"
+    signal_algorithm: SignalAlgorithm = "rsi_divergence"
+    silver_optimized: SilverOptimizedConfig = Field(default_factory=SilverOptimizedConfig)
     trade_decision_profile: TradeDecisionProfile = "safe"
     max_concurrent_setups: int = 3
     state_file: str = "runtime/state.json"
     log_file: str = "runtime/bot.log"
-    ai_trade_review: AiTradeReviewConfig = Field(default_factory=AiTradeReviewConfig)
 
     @model_validator(mode="before")
     @classmethod
@@ -332,22 +333,10 @@ def update_bot_strategy(config: AppConfig, strategy: StrategyMode) -> None:
     config.bot.strategy = normalized  # type: ignore[assignment]
 
 
-def update_ai_trade_review(
-    config: AppConfig,
-    *,
-    enabled: bool | None = None,
-    use_in_backtest: bool | None = None,
-    min_confidence: float | None = None,
-) -> None:
-    review = config.bot.ai_trade_review
-    if enabled is not None:
-        review.enabled = enabled
-    if use_in_backtest is not None:
-        review.use_in_backtest = use_in_backtest
-    if min_confidence is not None:
-        if not 0.0 <= min_confidence <= 1.0:
-            raise ValueError("AI min confidence must be between 0 and 1")
-        review.min_confidence = min_confidence
+def update_signal_algorithm(config: AppConfig, algorithm: SignalAlgorithm) -> None:
+    if algorithm not in {"rsi_divergence", "silver_optimized"}:
+        raise ValueError(f"Unknown signal algorithm: {algorithm}")
+    config.bot.signal_algorithm = algorithm  # type: ignore[assignment]
 
 
 def normalize_telegram_channel_url(url: str) -> str:

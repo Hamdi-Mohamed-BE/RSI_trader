@@ -11,7 +11,6 @@ from .mt5_client import MT5Client
 from .live_session import LIVE_SCAN_BARS
 from .state import StateStore
 from .signal_engine import latest_closed_signal
-from .trade_ai_review import ai_review_status
 from .trader import TradeExecutor
 
 
@@ -89,7 +88,7 @@ class SignalBot:
     def is_auto_loop_running(self) -> bool:
         return self._loop_thread is not None and self._loop_thread.is_alive()
 
-    def auto_loop_status(self) -> dict:
+    def auto_loop_status(self, *, include_mt5: bool = True) -> dict:
         status = asdict(self._status)
         status["running"] = self.is_auto_loop_running()
         status["dry_run"] = self.config.bot.dry_run
@@ -99,14 +98,17 @@ class SignalBot:
         status["max_concurrent_setups"] = self.config.bot.max_concurrent_setups
         status["decision_filters"] = asdict(resolve_trade_filters(self.config))
         status["max_setups_active"] = status["decision_filters"]["max_setups"]
-        try:
-            status["daily_risk"] = self.daily_risk_status()
-        except Exception as exc:  # noqa: BLE001
-            status["daily_risk"] = {"error": str(exc), "halted": False}
-        status["ai_trade_review"] = ai_review_status(
-            self.config,
-            getattr(self.executor.ai_reviewer, "last_review", None),
-        )
+        if include_mt5:
+            try:
+                status["daily_risk"] = self.daily_risk_status()
+            except Exception as exc:  # noqa: BLE001
+                status["daily_risk"] = {"error": str(exc), "halted": False}
+        else:
+            cached = self.state.read().get("daily_risk", {})
+            status["daily_risk"] = cached or {
+                "enabled": self.config.risk.daily_loss_guard_active(),
+                "halted": False,
+            }
         return status
 
     def daily_risk_status(self) -> dict:

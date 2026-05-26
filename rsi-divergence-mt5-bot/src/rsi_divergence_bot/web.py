@@ -28,7 +28,7 @@ from .config import (
     save_config,
     symbol_asset_group,
     update_bot_strategy,
-    update_ai_trade_review,
+    update_signal_algorithm,
     update_symbol_enabled,
     update_symbol_lots,
     update_symbol_timeframes,
@@ -99,16 +99,10 @@ class TelegramChannelRemoveRequest(BaseModel):
     persist: bool = True
 
 
-class AiTradeReviewSettings(BaseModel):
-    enabled: bool | None = None
-    use_in_backtest: bool | None = None
-    min_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
-
-
 class BotSettingsRequest(BaseModel):
     strategy: StrategyMode | None = None
+    signal_algorithm: str | None = None
     persist: bool = True
-    ai_trade_review: AiTradeReviewSettings | None = None
 
 
 class AutoRunStartRequest(BaseModel):
@@ -118,8 +112,7 @@ class AutoRunStartRequest(BaseModel):
     persist: bool = True
     strategy: StrategyMode | None = None
     strategy_persist: bool = True
-    ai_trade_review: AiTradeReviewSettings | None = None
-    ai_trade_review_persist: bool = False
+    signal_algorithm: str | None = None
 
 
 class RunOnceRequest(BaseModel):
@@ -129,8 +122,6 @@ class RunOnceRequest(BaseModel):
     persist: bool = True
     strategy: StrategyMode | None = None
     strategy_persist: bool = False
-    ai_trade_review: AiTradeReviewSettings | None = None
-    ai_trade_review_persist: bool = False
 
 
 class SnapshotSaveRequest(BaseModel):
@@ -296,6 +287,17 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         )
         return symbol_payload()
 
+    def apply_signal_algorithm(algorithm: str, persist: bool) -> None:
+        if bot.is_auto_loop_running() and algorithm != config.bot.signal_algorithm:
+            raise HTTPException(
+                status_code=409,
+                detail="Stop auto run before changing the signal algorithm.",
+            )
+        update_signal_algorithm(config, algorithm)  # type: ignore[arg-type]
+        if persist:
+            save_config(config_path, config)
+        bot.logger.info("BOT SIGNAL ALGORITHM algorithm=%s persist=%s", config.bot.signal_algorithm, persist)
+
     def apply_bot_strategy(strategy: StrategyMode, persist: bool) -> None:
         normalized = canonical_strategy(strategy)
         if bot.is_auto_loop_running() and normalized != config.bot.strategy:
@@ -307,25 +309,6 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         if persist:
             save_config(config_path, config)
         bot.logger.info("BOT STRATEGY strategy=%s persist=%s", config.bot.strategy, persist)
-
-    def apply_ai_trade_review_settings(settings: AiTradeReviewSettings | None, persist: bool) -> None:
-        if settings is None:
-            return
-        update_ai_trade_review(
-            config,
-            enabled=settings.enabled,
-            use_in_backtest=settings.use_in_backtest,
-            min_confidence=settings.min_confidence,
-        )
-        if persist:
-            save_config(config_path, config)
-        bot.logger.info(
-            "BOT AI REVIEW enabled=%s use_in_backtest=%s min_confidence=%s persist=%s",
-            config.bot.ai_trade_review.enabled,
-            config.bot.ai_trade_review.use_in_backtest,
-            config.bot.ai_trade_review.min_confidence,
-            persist,
-        )
 
     def apply_config_from_snapshot(slug: str, persist: bool) -> dict:
         try:
@@ -423,6 +406,17 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     def index() -> FileResponse:
         return FileResponse(STATIC_DIR / "index.html")
 
+    @app.get("/api/symbols")
+    def api_symbols() -> dict:
+        stats = symbol_stats()
+        return {
+            "symbols": symbol_payload(),
+            "symbol_stats": stats,
+            "default_forex_lot": config.risk.default_forex_lot,
+            "timeframe_options": timeframe_options_payload(),
+            "broker_symbol_suffix": broker_symbol_suffix(config),
+        }
+
     @app.get("/api/config")
     def api_config() -> dict:
         now = datetime.now(timezone.utc).replace(microsecond=0)
@@ -434,9 +428,10 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "poll_seconds": config.bot.poll_seconds,
                 "magic": config.bot.magic,
                 "strategy": config.bot.strategy,
+                "signal_algorithm": config.bot.signal_algorithm,
+                "silver_optimized": config.bot.silver_optimized.model_dump(mode="python"),
                 "trade_decision_profile": config.bot.trade_decision_profile,
                 "max_concurrent_setups": config.bot.max_concurrent_setups,
-                "ai_trade_review": ai_review_status(config),
             },
             "risk": config.risk.model_dump(mode="python"),
             "mt5": {
@@ -465,7 +460,6 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "max_message_age_seconds": config.telegram_signals.max_message_age_seconds,
             },
             "decision_filters": asdict(resolve_trade_filters(config)),
-            "auto_run": bot.auto_loop_status(),
             "timeframe_options": timeframe_options_payload(),
             "symbols": symbol_payload(),
             "symbol_stats": stats,
@@ -583,13 +577,13 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     def update_bot_settings(body: BotSettingsRequest) -> dict:
         if body.strategy is not None:
             apply_bot_strategy(body.strategy, body.persist)
-        if body.ai_trade_review is not None:
-            apply_ai_trade_review_settings(body.ai_trade_review, body.persist)
+        if body.signal_algorithm is not None:
+            apply_signal_algorithm(body.signal_algorithm, body.persist)
         return {
             "status": "saved" if body.persist else "applied",
             "strategy": config.bot.strategy,
-            "ai_trade_review": ai_review_status(config),
-            "auto_run": bot.auto_loop_status(),
+            "signal_algorithm": config.bot.signal_algorithm,
+            "auto_run": bot.auto_loop_status(include_mt5=False),
         }
 
     @app.get("/api/config/snapshots")
@@ -635,8 +629,6 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
             if body.strategy is not None:
                 apply_bot_strategy(body.strategy, body.strategy_persist)
-            if body.ai_trade_review is not None:
-                apply_ai_trade_review_settings(body.ai_trade_review, body.ai_trade_review_persist)
         await require_mt5_ready()
         try:
             summary = await asyncio.to_thread(bot.run_once)
@@ -757,8 +749,8 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         return {"status": result.get("status", "sent"), **result}
 
     @app.get("/api/auto-run/status")
-    def auto_run_status() -> dict:
-        status = bot.auto_loop_status()
+    def auto_run_status(include_mt5: bool = Query(False)) -> dict:
+        status = bot.auto_loop_status(include_mt5=include_mt5)
         status.update(symbol_stats())
         return status
 
@@ -769,11 +761,12 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
             if body.strategy is not None:
                 apply_bot_strategy(body.strategy, body.strategy_persist)
-            if body.ai_trade_review is not None:
-                apply_ai_trade_review_settings(body.ai_trade_review, body.ai_trade_review_persist)
+            if body.signal_algorithm is not None:
+                apply_signal_algorithm(body.signal_algorithm, body.strategy_persist)
         await require_mt5_ready()
         status = bot.start_auto_loop()
         status.update(symbol_stats())
+        status["signal_algorithm"] = config.bot.signal_algorithm
         return status
 
     @app.post("/api/auto-run/stop")
@@ -907,17 +900,14 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         timeframe: str = Query("M5"),
         start: datetime = Query(...),
         end: datetime = Query(...),
-        ai_review: bool = Query(False),
-        ai_review_min_confidence: float | None = Query(None, ge=0.0, le=1.0),
     ) -> dict:
         bot.logger.info(
-            "CHART BACKTEST %s %s %s -> %s strategy=%s ai_review=%s",
+            "CHART BACKTEST %s %s %s -> %s strategy=%s",
             symbol,
             timeframe,
             start.isoformat(),
             end.isoformat(),
             config.bot.strategy,
-            ai_review,
         )
         try:
             await require_mt5_ready()
@@ -929,8 +919,6 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 timeframe,
                 start,
                 end,
-                use_ai_review=ai_review,
-                ai_review_min_confidence=ai_review_min_confidence,
             )
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -949,28 +937,29 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         start: datetime = Query(...),
         end: datetime = Query(...),
         starting_balance: float = Query(1000.0, gt=0),
-        ai_review: bool = Query(False),
-        ai_review_min_confidence: float | None = Query(None, ge=0.0, le=1.0),
+        signal_algorithm: str | None = Query(None),
     ) -> dict:
+        run_config = config
+        if signal_algorithm:
+            run_config = config.model_copy(deep=True)
+            update_signal_algorithm(run_config, signal_algorithm)  # type: ignore[arg-type]
         bot.logger.info(
-            "BACKTEST START %s -> %s strategy=%s ai_review=%s",
+            "BACKTEST START %s -> %s strategy=%s signal_algorithm=%s",
             start.isoformat(),
             end.isoformat(),
-            config.bot.strategy,
-            ai_review,
+            run_config.bot.strategy,
+            run_config.bot.signal_algorithm,
         )
         try:
             await require_mt5_ready()
             result = await asyncio.to_thread(
                 run_backtest,
                 bot.client,
-                config,
+                run_config,
                 start,
                 end,
                 starting_balance,
                 bot.logger,
-                use_ai_review=ai_review,
-                ai_review_min_confidence=ai_review_min_confidence,
             )
         except HTTPException:
             raise

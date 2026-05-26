@@ -27,6 +27,11 @@ class Signal:
     risk_distance: float
     session: str
     reason: str
+    algorithm: str = "rsi_divergence"
+    trail_atr_mult: float | None = None
+    ema_fast_len: int | None = None
+    ema_slow_len: int | None = None
+    atr_at_entry: float | None = None
 
 
 def prepare_frame(df: pd.DataFrame, cfg: SymbolConfig) -> pd.DataFrame:

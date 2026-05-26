@@ -1,3 +1,8 @@
+const SIGNAL_ALGORITHM_LABELS = {
+  rsi_divergence: "RSI divergence",
+  silver_optimized: "Silver optimized (XAU/XAG/BTC trend pullback)",
+};
+
 const STRATEGY_LABELS = {
   signal_no_tp_protection: "Split legs - no TP protection",
   signal_with_tp_protection: "Split legs - with TP protection",
@@ -52,9 +57,6 @@ const els = {
   end: document.getElementById("end"),
   startingBalance: document.getElementById("starting-balance"),
   strategy: document.getElementById("strategy"),
-  backtestAiReview: document.getElementById("backtest-ai-review"),
-  backtestAiReviewConfidence: document.getElementById("backtest-ai-review-confidence"),
-  backtestAiReviewHint: document.getElementById("backtest-ai-review-hint"),
   backtestBtn: document.getElementById("backtest-btn"),
   backtestSummary: document.getElementById("backtest-summary"),
   backtestResults: document.getElementById("backtest-results"),
@@ -86,12 +88,10 @@ const els = {
   autoRunLast: document.getElementById("auto-run-last"),
   autoRunStrategyLabel: document.getElementById("auto-run-strategy-label"),
   autoRunStrategy: document.getElementById("auto-run-strategy"),
+  autoRunSignalAlgorithm: document.getElementById("auto-run-signal-algorithm"),
+  backtestSignalAlgorithm: document.getElementById("backtest-signal-algorithm"),
   autoRunSaveStrategy: document.getElementById("auto-run-save-strategy"),
   autoRunSaveBtn: document.getElementById("auto-run-save-btn"),
-  autoRunAiReview: document.getElementById("auto-run-ai-review"),
-  autoRunAiReviewConfidence: document.getElementById("auto-run-ai-review-confidence"),
-  autoRunAiBacktestDefault: document.getElementById("auto-run-ai-backtest-default"),
-  autoRunAiReviewHint: document.getElementById("auto-run-ai-review-hint"),
   autoRunHint: document.getElementById("auto-run-hint"),
   liveUpdated: document.getElementById("live-updated"),
   liveError: document.getElementById("live-error"),
@@ -277,6 +277,19 @@ function isoToLocalInput(iso) {
 function localInputToIso(value) {
   if (!value) return "";
   return `${value}:00+00:00`;
+}
+
+function formatSignalAlgorithm(value) {
+  return SIGNAL_ALGORITHM_LABELS[value] || String(value || "rsi_divergence").replaceAll("_", " ");
+}
+
+function syncSignalAlgorithmUi(algorithm, { updateSelects = true } = {}) {
+  const normalized = algorithm || "rsi_divergence";
+  if (updateSelects) {
+    if (els.autoRunSignalAlgorithm) els.autoRunSignalAlgorithm.value = normalized;
+    if (els.backtestSignalAlgorithm) els.backtestSignalAlgorithm.value = normalized;
+  }
+  if (botConfig?.bot) botConfig.bot.signal_algorithm = normalized;
 }
 
 function formatStrategy(value) {
@@ -1118,6 +1131,7 @@ async function refreshLiveData() {
 }
 
 function startLivePolling() {
+  if (currentPage() !== "home") return;
   if (liveTimer) clearInterval(liveTimer);
   liveTimer = setInterval(refreshLiveData, 5000);
 }
@@ -1303,53 +1317,9 @@ function selectedStrategy() {
   return canonicalStrategy(els.autoRunStrategy?.value || botConfig?.bot?.strategy);
 }
 
-function aiReviewSettingsFromUi() {
-  const minConfidence = Number(els.autoRunAiReviewConfidence?.value ?? els.backtestAiReviewConfidence?.value);
-  return {
-    enabled: Boolean(els.autoRunAiReview?.checked),
-    use_in_backtest: Boolean(els.autoRunAiBacktestDefault?.checked ?? els.backtestAiReview?.checked),
-    min_confidence: Number.isFinite(minConfidence) ? minConfidence : undefined,
-  };
-}
-
-function syncAiReviewUi(aiReview) {
-  if (!aiReview) return;
-  if (els.autoRunAiReview) els.autoRunAiReview.checked = Boolean(aiReview.enabled);
-  if (els.autoRunAiBacktestDefault) {
-    els.autoRunAiBacktestDefault.checked = Boolean(aiReview.use_in_backtest);
-  }
-  if (aiReview.min_confidence != null) {
-    if (els.autoRunAiReviewConfidence) els.autoRunAiReviewConfidence.value = aiReview.min_confidence;
-    if (els.backtestAiReviewConfidence) els.backtestAiReviewConfidence.value = aiReview.min_confidence;
-  }
-  if (els.backtestAiReview) {
-    els.backtestAiReview.checked = Boolean(aiReview.use_in_backtest);
-  }
-  updateLiveAiReviewHint(aiReview);
-  updateBacktestAiReviewHint(aiReview);
-}
-
-function updateLiveAiReviewHint(aiReview) {
-  if (!els.autoRunAiReviewHint) return;
-  const review = aiReview || botConfig?.bot?.ai_trade_review || {};
-  const llmReady = Boolean(review.llm_configured);
-  const base = "When enabled, each live signal is reviewed by the LLM before MT5 placement.";
-  els.autoRunAiReviewHint.textContent = llmReady
-    ? base
-    : `${base} No LLM API key is configured — live signals will be skipped when AI review is on.`;
-}
-
-function syncAiReviewConfidenceInputs(value) {
-  if (!Number.isFinite(Number(value))) return;
-  if (els.autoRunAiReviewConfidence) els.autoRunAiReviewConfidence.value = value;
-  if (els.backtestAiReviewConfidence) els.backtestAiReviewConfidence.value = value;
-}
-
-async function onStrategyChanged({ silent = true } = {}) {
-  const strategy = selectedStrategy();
-  syncStrategyUi(strategy);
+async function onBotSettingsChanged({ silent = true } = {}) {
   try {
-    await saveBotStrategy({ strategy, silent });
+    await saveBotStrategy({ silent });
   } catch (error) {
     toast(error.message, "error");
   }
@@ -1372,12 +1342,10 @@ function renderAutoRunStatus(status) {
   } else {
     updateStrategyLabels(displayStrategy);
   }
-  if (status.ai_trade_review) {
-    syncAiReviewUi(status.ai_trade_review);
-  }
   els.autoRunStartBtn.disabled = running;
   els.autoRunStopBtn.disabled = !running;
   if (els.autoRunStrategy) els.autoRunStrategy.disabled = running;
+  if (els.autoRunSignalAlgorithm) els.autoRunSignalAlgorithm.disabled = running;
   if (els.autoRunSaveBtn) els.autoRunSaveBtn.disabled = running;
   if (els.autoRunSaveStrategy) els.autoRunSaveStrategy.disabled = running;
 
@@ -1397,41 +1365,26 @@ function renderAutoRunStatus(status) {
     els.autoRunHint.className = "panel-hint live-warning";
   } else if (!running) {
     const strategyText = formatStrategy(displayStrategy);
-    const aiReviewText =
-      status.ai_trade_review?.active_for_strategy && status.ai_trade_review?.llm_configured
-        ? " AI review is ON (OpenAI primary, Gemini fallback)."
-        : status.ai_trade_review?.active_for_strategy
-          ? " AI review is ON but no LLM key is configured."
-          : "";
     els.autoRunHint.textContent = status.dry_run
-      ? `Auto run is stopped. Choose a TP protection rule, then start to scan symbols in paper mode (${strategyText}).${aiReviewText}`
-      : `Auto run is stopped. Choose a TP protection rule, then start to scan enabled symbols and place live MT5 orders (${strategyText}).${aiReviewText}`;
+      ? `Auto run is stopped. Choose a TP protection rule, then start to scan symbols in paper mode (${strategyText}).`
+      : `Auto run is stopped. Choose a TP protection rule, then start to scan enabled symbols and place live MT5 orders (${strategyText}).`;
     els.autoRunHint.className = "panel-hint";
   } else if (status.dry_run) {
-    const aiReviewText =
-      status.ai_trade_review?.active_for_strategy && status.ai_trade_review?.llm_configured
-        ? " AI review approves/rejects each signal before paper logging."
-        : "";
-    els.autoRunHint.textContent = `Paper mode: ${formatStrategy(displayStrategy)}. Listening every ${status.poll_seconds}s. Signals are logged but no live orders are sent.${aiReviewText}`;
+    els.autoRunHint.textContent = `Paper mode: ${formatStrategy(displayStrategy)}. Listening every ${status.poll_seconds}s. Signals are logged but no live orders are sent.`;
     els.autoRunHint.className = "panel-hint";
   } else {
     const profile = status.trade_decision_profile || botConfig?.bot?.trade_decision_profile || "safe";
     const filters = status.decision_filters || botConfig?.decision_filters;
     const profileText = `${profile} profile, ${describeDecisionFilters(filters)}`;
-    const aiReviewText =
-      status.ai_trade_review?.active_for_strategy && status.ai_trade_review?.llm_configured
-        ? " AI review must approve each signal before MT5 placement."
-        : status.ai_trade_review?.active_for_strategy
-          ? " AI review is enabled but no LLM key is configured (signals will be skipped)."
-          : "";
-    els.autoRunHint.textContent = `Live mode: ${formatStrategy(displayStrategy)}. Listening every ${status.poll_seconds}s. New signals auto-place orders in MT5, ${profileText}.${aiReviewText}`;
+    els.autoRunHint.textContent = `Live mode: ${formatStrategy(displayStrategy)}. Listening every ${status.poll_seconds}s. New signals auto-place orders in MT5, ${profileText}.`;
     els.autoRunHint.className = "panel-hint live-warning";
   }
 }
 
-async function refreshAutoRunStatus() {
+async function refreshAutoRunStatus(includeMt5 = false) {
   try {
-    const response = await fetch("/api/auto-run/status", { cache: "no-store" });
+    const query = includeMt5 ? "?include_mt5=true" : "";
+    const response = await fetch(`/api/auto-run/status${query}`, { cache: "no-store" });
     if (!response.ok) throw new Error("Failed to load auto-run status");
     renderAutoRunStatus(await response.json());
   } catch (error) {
@@ -1443,7 +1396,6 @@ async function saveBotStrategy({ strategy, persist, silent = false } = {}) {
   if (!els.autoRunStrategy) return null;
   const selected = canonicalStrategy(strategy ?? selectedStrategy());
   const saveToConfig = persist ?? Boolean(els.autoRunSaveStrategy?.checked);
-  const aiSettings = aiReviewSettingsFromUi();
   setLoading(els.autoRunSaveBtn, true);
   try {
     const response = await fetch("/api/bot/settings", {
@@ -1451,20 +1403,21 @@ async function saveBotStrategy({ strategy, persist, silent = false } = {}) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         strategy: selected,
+        signal_algorithm: els.autoRunSignalAlgorithm?.value || botConfig?.bot?.signal_algorithm,
         persist: saveToConfig,
-        ai_trade_review: aiSettings,
       }),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to save bot settings");
     syncStrategyUi(data.strategy);
-    if (data.ai_trade_review) {
-      syncAiReviewUi(data.ai_trade_review);
-      if (botConfig?.bot) botConfig.bot.ai_trade_review = data.ai_trade_review;
+    if (data.signal_algorithm) syncSignalAlgorithmUi(data.signal_algorithm);
+    if (botConfig?.bot) {
+      botConfig.bot.strategy = data.strategy;
+      botConfig.bot.signal_algorithm = data.signal_algorithm;
     }
     if (data.auto_run) renderAutoRunStatus(data.auto_run);
     if (!silent) {
-      toast(saveToConfig ? "Bot settings saved to config" : "Bot settings applied", "success");
+      toast(saveToConfig ? "Bot settings saved to config.yaml" : "Bot settings applied in memory", "success");
     }
     return data;
   } finally {
@@ -1489,15 +1442,15 @@ async function startAutoRun() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         strategy: els.autoRunStrategy?.value,
+        signal_algorithm: els.autoRunSignalAlgorithm?.value || botConfig?.bot?.signal_algorithm,
         strategy_persist: Boolean(els.autoRunSaveStrategy?.checked),
-        ai_trade_review: aiReviewSettingsFromUi(),
-        ai_trade_review_persist: Boolean(els.autoRunSaveStrategy?.checked),
         persist: false,
       }),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to start auto run");
     syncStrategyUi(data.strategy || els.autoRunStrategy?.value);
+    if (data.signal_algorithm) syncSignalAlgorithmUi(data.signal_algorithm);
     renderAutoRunStatus(data);
     const strategyText = formatStrategy(data.strategy || els.autoRunStrategy?.value);
     toast(
@@ -1529,8 +1482,9 @@ async function stopAutoRun() {
 }
 
 function startLoopPolling() {
+  if (currentPage() !== "home") return;
   if (loopTimer) clearInterval(loopTimer);
-  loopTimer = setInterval(refreshAutoRunStatus, 2000);
+  loopTimer = setInterval(() => refreshAutoRunStatus(false), 5000);
 }
 
 function renderTelegramStatus(status) {
@@ -1943,6 +1897,7 @@ async function clearTelegramMessages() {
 }
 
 function startTelegramPolling() {
+  if (currentPage() !== "telegram-signals") return;
   if (telegramTimer) clearInterval(telegramTimer);
   telegramTimer = setInterval(refreshTelegramStatus, 2000);
 }
@@ -1981,6 +1936,7 @@ function renderConfig(config) {
       els.strategyBadge.textContent = formatStrategy(config.bot?.strategy);
     }
     syncStrategyUi(config.bot?.strategy);
+    syncSignalAlgorithmUi(config.bot?.signal_algorithm);
     if (els.statSymbols) {
       els.statSymbols.textContent = config.symbol_stats
         ? `${config.symbol_stats.enabled} / ${config.symbol_stats.total}`
@@ -2004,12 +1960,6 @@ function renderConfig(config) {
     if (els.startingBalance) {
       els.startingBalance.value = config.defaults?.starting_balance ?? 1000;
     }
-    if (els.backtestAiReview) {
-      els.backtestAiReview.checked = Boolean(config.bot?.ai_trade_review?.use_in_backtest);
-    }
-    syncAiReviewUi(config.bot?.ai_trade_review);
-
-    if (config.auto_run) renderAutoRunStatus(config.auto_run);
   } catch (error) {
     toast(error.message, "error");
   }
@@ -2020,27 +1970,6 @@ function backtestLegCount(symbolRow) {
     (total, trade) => total + Number(trade.legs || (trade.tps || []).length || 1),
     0,
   ) ?? 0);
-}
-
-function updateBacktestAiReviewHint(aiReview) {
-  if (!els.backtestAiReviewHint) return;
-  const review = aiReview || botConfig?.bot?.ai_trade_review || {};
-  const llmReady = Boolean(review.llm_configured);
-  const base =
-    "When enabled, each signal that passes filters is sent to the LLM before it is simulated. Large date ranges can be slow and use API credits.";
-  els.backtestAiReviewHint.textContent = llmReady
-    ? base
-    : `${base} No LLM API key is configured — signals will be skipped when AI review is on.`;
-}
-
-function backtestAiReviewQueryParams() {
-  const params = new URLSearchParams();
-  if (els.backtestAiReview?.checked) params.set("ai_review", "true");
-  const minConfidence = Number(els.backtestAiReviewConfidence?.value);
-  if (Number.isFinite(minConfidence)) {
-    params.set("ai_review_min_confidence", String(minConfidence));
-  }
-  return params;
 }
 
 function renderBacktestTrades(symbols) {
@@ -2251,13 +2180,7 @@ function renderBacktestResult(data) {
   const rawSignals = (data.symbols || []).reduce((sum, row) => sum + (row.raw_signals || 0), 0);
   const skippedSignals = (data.symbols || []).reduce((sum, row) => sum + (row.skipped_signals || 0), 0);
   const rules = data.decision_rules || {};
-  const aiReview = data.ai_trade_review || rules.ai_trade_review || {};
   const pollHint = rules.poll_seconds ? `${rules.poll_seconds}s poll · ${rules.scan_bars || 600} bars` : "";
-  const aiReviewHint = aiReview.requested
-    ? aiReview.active
-      ? `Reviewed ${aiReview.reviewed || 0} · approved ${aiReview.approved || 0} · rejected ${aiReview.rejected || 0}`
-      : "Requested but not active for this strategy"
-    : "Off";
   els.backtestSummary.innerHTML = `
     <div class="summary-card">
       <span class="label">Start balance</span>
@@ -2282,10 +2205,6 @@ function renderBacktestResult(data) {
     <div class="summary-card">
       <span class="label">Signal gate</span>
       <span class="value" style="font-size:0.95rem">${rawSignals} raw / ${skippedSignals} skipped</span>
-    </div>
-    <div class="summary-card">
-      <span class="label">AI review</span>
-      <span class="value" style="font-size:0.85rem">${escapeHtml(aiReviewHint)}</span>
     </div>
   `;
   els.backtestSummary.classList.remove("hidden");
@@ -2342,10 +2261,59 @@ function renderBacktestResult(data) {
 }
 
 async function loadConfig() {
+  const page = currentPage();
+  if (page === "settings") {
+    await loadSymbolSettings();
+    return;
+  }
   const response = await fetch("/api/config", { cache: "no-store" });
   if (!response.ok) throw new Error("Failed to load config");
   const config = await response.json();
   renderConfig(config);
+}
+
+async function loadSymbolSettings() {
+  const response = await fetch("/api/symbols", { cache: "no-store" });
+  if (!response.ok) throw new Error("Failed to load symbol settings");
+  const data = await response.json();
+  symbolSettingsReady = false;
+  if (botConfig) {
+    botConfig.symbols = data.symbols || [];
+    botConfig.symbol_stats = data.symbol_stats || null;
+    botConfig.risk = botConfig.risk || {};
+    if (data.default_forex_lot != null) botConfig.risk.default_forex_lot = data.default_forex_lot;
+    if (data.timeframe_options) botConfig.timeframe_options = data.timeframe_options;
+    if (data.broker_symbol_suffix) {
+      botConfig.mt5 = botConfig.mt5 || {};
+      botConfig.mt5.broker_symbol_suffix = data.broker_symbol_suffix;
+    }
+  } else {
+    botConfig = {
+      symbols: data.symbols || [],
+      symbol_stats: data.symbol_stats || null,
+      risk: { default_forex_lot: data.default_forex_lot },
+      timeframe_options: data.timeframe_options || [],
+      mt5: { broker_symbol_suffix: data.broker_symbol_suffix || "-VIP" },
+    };
+  }
+  try {
+    renderSymbols(data.symbols || []);
+  } catch (error) {
+    if (els.symbolsBody) {
+      els.symbolsBody.innerHTML = `<tr><td colspan="8" class="empty-row">${escapeHtml(error.message)}</td></tr>`;
+    }
+    throw error;
+  }
+  symbolSettingsReady = true;
+  if (els.defaultForexLot && data.default_forex_lot != null) {
+    els.defaultForexLot.value = data.default_forex_lot;
+  }
+  if (els.brokerSymbolSuffixHint) {
+    const suffix = data.broker_symbol_suffix || "-VIP";
+    els.brokerSymbolSuffixHint.textContent =
+      `Telegram auto-register tries broker symbols like EURUSD${suffix} first (set mt5.broker_symbol_suffix in config.yaml, e.g. -STD).`;
+  }
+  updateSymbolStats(data.symbol_stats);
 }
 
 async function runBacktest(event) {
@@ -2363,21 +2331,14 @@ async function runBacktest(event) {
   setLoading(els.backtestBtn, true, "Running backtest…");
 
   try {
-    const aiReviewOn = Boolean(els.backtestAiReview?.checked);
-    toast(
-      aiReviewOn
-        ? `Backtest running with AI review (${formatStrategy(botConfig?.bot?.strategy)})`
-        : `Backtest running with current bot config (${formatStrategy(botConfig?.bot?.strategy)})`,
-      "info",
-    );
+    const signalAlgorithm = els.backtestSignalAlgorithm?.value || botConfig?.bot?.signal_algorithm || "rsi_divergence";
+    toast(`Backtest running (${formatSignalAlgorithm(signalAlgorithm)})`, "info");
     const query = new URLSearchParams({
       start,
       end,
       starting_balance: String(startingBalance),
+      signal_algorithm: signalAlgorithm,
     });
-    for (const [key, value] of backtestAiReviewQueryParams()) {
-      query.set(key, value);
-    }
     const response = await fetch(`/api/backtest?${query.toString()}`);
     const data = await response.json();
     if (!response.ok) {
@@ -2403,8 +2364,6 @@ async function runOnce() {
       body: JSON.stringify({
         strategy: els.autoRunStrategy?.value,
         strategy_persist: Boolean(els.autoRunSaveStrategy?.checked),
-        ai_trade_review: aiReviewSettingsFromUi(),
-        ai_trade_review_persist: Boolean(els.autoRunSaveStrategy?.checked),
         persist: false,
       }),
     });
@@ -2596,12 +2555,19 @@ function initManualTradeImageInput() {
 }
 
 function startLogPolling() {
+  if (currentPage() !== "logs") return;
   if (logTimer) clearInterval(logTimer);
   logTimer = setInterval(refreshLogs, 1500);
 }
 
 async function init() {
   applyPageVisibility();
+
+  try {
+    await loadConfig();
+  } catch (error) {
+    toast(error.message, "error");
+  }
 
   window.addEventListener("app:toast", (event) => {
     toast(event.detail.message, event.detail.type || "info");
@@ -2618,22 +2584,6 @@ async function init() {
   });
 
   els.backtestForm?.addEventListener("submit", runBacktest);
-  els.backtestAiReview?.addEventListener("change", (event) => {
-    if (els.autoRunAiBacktestDefault) {
-      els.autoRunAiBacktestDefault.checked = Boolean(event.target.checked);
-    }
-    updateBacktestAiReviewHint(botConfig?.bot?.ai_trade_review);
-  });
-  els.autoRunAiReview?.addEventListener("change", () => updateLiveAiReviewHint(botConfig?.bot?.ai_trade_review));
-  els.autoRunAiBacktestDefault?.addEventListener("change", (event) => {
-    if (els.backtestAiReview) els.backtestAiReview.checked = Boolean(event.target.checked);
-  });
-  els.autoRunAiReviewConfidence?.addEventListener("input", (event) => {
-    syncAiReviewConfidenceInputs(event.target.value);
-  });
-  els.backtestAiReviewConfidence?.addEventListener("input", (event) => {
-    syncAiReviewConfidenceInputs(event.target.value);
-  });
   els.backtestDailyBody?.addEventListener("click", (event) => {
     const button = event.target.closest(".daily-expand-btn");
     if (button) toggleBacktestDailyRow(button);
@@ -2668,12 +2618,13 @@ async function init() {
     scheduleSettingsSync({ persist: false, silent: true });
   });
   els.defaultForexLot?.addEventListener("change", () => {
-    scheduleSettingsSync({ persist: false, silent: true, rerender: true });
+    scheduleSettingsSync({ persist: false, silent: true });
   });
   els.autoRunStartBtn?.addEventListener("click", startAutoRun);
   els.autoRunStopBtn?.addEventListener("click", stopAutoRun);
-  els.autoRunSaveBtn?.addEventListener("click", () => saveBotStrategy());
-  els.autoRunStrategy?.addEventListener("change", () => onStrategyChanged());
+  els.autoRunSaveBtn?.addEventListener("click", () => saveBotStrategy({ silent: false, persist: true }));
+  els.autoRunStrategy?.addEventListener("change", () => onBotSettingsChanged());
+  els.autoRunSignalAlgorithm?.addEventListener("change", () => onBotSettingsChanged());
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
@@ -2703,10 +2654,6 @@ async function init() {
   els.refreshLogsBtn?.addEventListener("click", refreshLogs);
   els.logFilter?.addEventListener("input", renderLogs);
 
-  startLogPolling();
-  startLoopPolling();
-  startTelegramPolling();
-  startLivePolling();
   setDefaultLiveSummaryPeriod();
 
   window.addEventListener("app:strategy-change", (event) => {
@@ -2720,20 +2667,30 @@ async function init() {
 
   window.addEventListener("pageshow", (event) => {
     if (event.persisted) {
-      refreshAutoRunStatus();
-      refreshLiveData();
+      void loadConfig().catch((error) => toast(error.message, "error"));
+      if (currentPage() === "home") {
+        void refreshAutoRunStatus(true);
+        void refreshLiveData();
+      }
     }
   });
 
-  const [configResult, snapshotsResult] = await Promise.allSettled([
-    loadConfig(),
-    loadSnapshots(),
-    refreshAutoRunStatus(),
-    refreshLiveData(),
-    currentPage() === "live-summary" ? loadLiveSummary() : Promise.resolve(),
-    refreshTelegramStatus(),
-    refreshLogs(),
-  ]);
+  const page = currentPage();
+  if (page === "logs") {
+    startLogPolling();
+    void refreshLogs();
+  }
+  if (page === "home") {
+    startLoopPolling();
+    startLivePolling();
+    void refreshAutoRunStatus(true);
+    void refreshLiveData();
+  } else if (page === "telegram-signals") {
+    startTelegramPolling();
+    void refreshTelegramStatus();
+  } else if (page === "live-summary") {
+    void loadLiveSummary();
+  }
 
   if (botConfig && window.ChartPreview) {
     try {
@@ -2743,9 +2700,7 @@ async function init() {
     }
   }
 
-  if (configResult.status === "rejected") {
-    toast(configResult.reason?.message || "Failed to load config", "error");
-  }
+  void loadSnapshots().catch((error) => toast(error.message, "error"));
   scheduleResponsiveTables();
 }
 

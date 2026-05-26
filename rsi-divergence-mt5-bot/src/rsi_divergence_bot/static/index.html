@@ -208,6 +208,14 @@
             <input id="starting-balance" name="starting_balance" type="number" min="1" step="any" value="1000" required>
           </label>
           <label class="field field-full">
+            <span>Signal algorithm</span>
+            <select id="backtest-signal-algorithm" name="signal_algorithm">
+              <option value="rsi_divergence">RSI divergence</option>
+              <option value="silver_optimized">Silver optimized (XAU/XAG/BTC trend pullback)</option>
+            </select>
+            <span class="panel-hint">Adaptive trend pullback for XAU, XAG, and BTC. Uses ATR stops, trailing, and regime exits in backtest.</span>
+          </label>
+          <label class="field field-full">
             <span>Shared strategy</span>
             <select id="strategy" name="strategy" disabled>
               <option value="signal_no_tp_protection">Split legs — no TP protection</option>
@@ -217,17 +225,6 @@
             </select>
             <span class="panel-hint" id="backtest-strategy-hint">Backtest uses the same saved strategy as live trading. Change it on the home page before starting the bot.</span>
           </label>
-          <label class="toggle field-full">
-            <input id="backtest-ai-review" name="ai_review" type="checkbox">
-            <span>AI trade review (OpenAI primary, Gemini fallback)</span>
-          </label>
-          <label class="field">
-            <span>AI min confidence</span>
-            <input id="backtest-ai-review-confidence" name="ai_review_min_confidence" type="number" min="0" max="1" step="0.05" value="0.55">
-          </label>
-          <p class="panel-hint field-full" id="backtest-ai-review-hint">
-            When enabled, each signal that passes filters is sent to the LLM before it is simulated. Large date ranges can be slow and use API credits.
-          </p>
           <div class="form-actions field-full">
             <button id="backtest-btn" class="btn btn-primary" type="submit">
               <span class="btn-label">Run backtest</span>
@@ -458,6 +455,13 @@
         </div>
         <div class="telegram-options">
           <label class="field field-full">
+            <span>Signal algorithm</span>
+            <select id="auto-run-signal-algorithm" name="signal_algorithm">
+              <option value="rsi_divergence">RSI divergence</option>
+              <option value="silver_optimized">Silver optimized (XAU/XAG/BTC trend pullback)</option>
+            </select>
+          </label>
+          <label class="field field-full">
             <span>TP protection rule</span>
             <select id="auto-run-strategy" name="strategy">
               <option value="signal_no_tp_protection">Split legs — no TP protection</option>
@@ -470,20 +474,8 @@
             <input id="auto-run-save-strategy" type="checkbox" checked>
             <span>Save to config.yaml</span>
           </label>
-          <label class="toggle field-full">
-            <input id="auto-run-ai-review" type="checkbox">
-            <span>AI trade review before live orders (OpenAI → Gemini)</span>
-          </label>
-          <label class="field">
-            <span>AI min confidence</span>
-            <input id="auto-run-ai-review-confidence" type="number" min="0" max="1" step="0.05" value="0.55">
-          </label>
-          <label class="toggle">
-            <input id="auto-run-ai-backtest-default" type="checkbox">
-            <span>Default backtest AI review on</span>
-          </label>
-          <p id="auto-run-ai-review-hint" class="panel-hint field-full">
-            When enabled, each live signal is reviewed by the LLM before MT5 placement.
+          <p class="panel-hint field-full">
+            When checked, changes to signal algorithm and TP rule are written to config.yaml automatically. You can also click Save bot settings anytime.
           </p>
         </div>
         <div class="control-row">

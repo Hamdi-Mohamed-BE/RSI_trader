@@ -432,13 +432,6 @@
         start,
         end,
       });
-      const aiReview = document.getElementById("backtest-ai-review");
-      const aiConfidence = document.getElementById("backtest-ai-review-confidence");
-      if (aiReview?.checked) query.set("ai_review", "true");
-      const minConfidence = Number(aiConfidence?.value);
-      if (Number.isFinite(minConfidence)) {
-        query.set("ai_review_min_confidence", String(minConfidence));
-      }
       const url = `/api/backtest/chart?${query.toString()}`;
       const response = await fetch(url);
       const data = await response.json();

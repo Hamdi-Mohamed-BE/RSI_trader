@@ -8,25 +8,33 @@ mt5:
   port: 18812
   transport: tcp
   timeout: 300
+  broker_symbol_suffix: -VIP
 bot:
   dry_run: false
   auto_start: false
   poll_seconds: 5
   magic: 260521
-  strategy: signal_full_with_tp_protection
+  strategy: signal_full_no_tp_protection
+  signal_algorithm: silver_optimized
+  silver_optimized:
+    preset: auto
+    trade_direction: long_and_short
+    htf_timeframe: D1
+    use_vol_filter: true
+    use_time_filter: false
+    custom_fast_len: 21
+    custom_slow_len: 55
+    custom_htf_len: 200
+    custom_rsi_len: 14
+    custom_adx_min: 18.0
+    custom_atr_len: 14
+    custom_stop_atr: 2.2
+    custom_tp_atr: 3.5
+    custom_trail_atr: 1.6
   trade_decision_profile: balanced
   max_concurrent_setups: 20
   state_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\state.json
   log_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\bot.log
-  ai_trade_review:
-    enabled: true
-    use_in_backtest: false
-    min_confidence: 0.7
-    strategies: []
-    openai_api_key: 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
-    openai_model: gpt-4o-mini
-    gemini_api_key: AIzaSyD_ge3sM3CSH6RCZsmyAPOuUfQTECcEZzI
-    gemini_model: gemini-3-flash-preview
 risk:
   max_setup_risk_usd: 200.0
   default_forex_lot: 0.5
@@ -80,8 +88,8 @@ symbols:
   name: Bitcoin
   market_key_override: null
   enabled: true
-  timeframe: M1
-  optimized_timeframe: M1
+  timeframe: M4
+  optimized_timeframe: M4
   lot_per_leg: 0.2
   max_setup_risk_usd: 550.0
   pivot_len: 3
@@ -98,9 +106,9 @@ symbols:
   name: Gold
   market_key_override: null
   enabled: true
-  timeframe: M2
-  optimized_timeframe: M2
-  lot_per_leg: 0.08
+  timeframe: M5
+  optimized_timeframe: M5
+  lot_per_leg: 0.1
   max_setup_risk_usd: 450.0
   pivot_len: 3
   sl_atr_mult: 2.0
@@ -116,9 +124,9 @@ symbols:
   name: Silver
   market_key_override: null
   enabled: true
-  timeframe: M1
-  optimized_timeframe: M1
-  lot_per_leg: 0.08
+  timeframe: M4
+  optimized_timeframe: M4
+  lot_per_leg: 0.1
   max_setup_risk_usd: 550.0
   pivot_len: 5
   sl_atr_mult: 1.5
@@ -476,8 +484,8 @@ symbols:
   name: Oil
   market_key_override: null
   enabled: true
-  timeframe: M6
-  optimized_timeframe: M6
+  timeframe: M20
+  optimized_timeframe: M20
   lot_per_leg: 0.1
   max_setup_risk_usd: null
   pivot_len: 5
