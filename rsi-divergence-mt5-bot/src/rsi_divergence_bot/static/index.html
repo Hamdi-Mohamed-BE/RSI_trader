@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css?v=23">
+  <link rel="stylesheet" href="/static/css/app.css?v=24">
 </head>
 <body>
   <div class="app">
@@ -654,6 +654,47 @@
           </div>
         </div>
 
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Managed channels</h3>
+            <span class="live-count">saved to config.yaml</span>
+          </div>
+          <form id="telegram-channel-form" class="telegram-channel-form">
+            <label class="field field-wide">
+              <span>Chat link</span>
+              <input id="telegram-channel-url" type="url" placeholder="https://web.telegram.org/k/#@FOREXUSAMASTER1" required>
+            </label>
+            <label class="field">
+              <span>Display name</span>
+              <input id="telegram-channel-name" type="text" placeholder="Optional label">
+            </label>
+            <label class="toggle">
+              <input id="telegram-channel-enabled" type="checkbox" checked>
+              <span>Enabled</span>
+            </label>
+            <button id="telegram-channel-add-btn" class="btn btn-primary" type="submit">
+              <span class="btn-label">Add channel</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </form>
+          <div class="table-wrap">
+            <table class="data-table data-table-compact">
+              <thead>
+                <tr>
+                  <th>On</th>
+                  <th>Name</th>
+                  <th>Chat link</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="telegram-channels-body">
+                <tr><td colspan="4" class="empty-row">No channels configured yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="panel-hint">Stop the copier before adding, disabling, or removing channels. Restart the copier after changes so browser tabs reload.</p>
+        </div>
+
         <div id="telegram-last-result" class="result-card hidden">
           <div class="result-title">Last copied signal</div>
           <pre id="telegram-last-result-json"></pre>
@@ -723,6 +764,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=46" defer></script>
+  <script src="/static/js/app.js?v=48" defer></script>
 </body>
 </html>

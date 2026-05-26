@@ -120,6 +120,12 @@ const els = {
   telegramLlm: document.getElementById("telegram-llm"),
   telegramOpenGuard: document.getElementById("telegram-open-guard"),
   telegramChannels: document.getElementById("telegram-channels"),
+  telegramChannelsBody: document.getElementById("telegram-channels-body"),
+  telegramChannelForm: document.getElementById("telegram-channel-form"),
+  telegramChannelUrl: document.getElementById("telegram-channel-url"),
+  telegramChannelName: document.getElementById("telegram-channel-name"),
+  telegramChannelEnabled: document.getElementById("telegram-channel-enabled"),
+  telegramChannelAddBtn: document.getElementById("telegram-channel-add-btn"),
   telegramPoll: document.getElementById("telegram-poll"),
   telegramLastParsed: document.getElementById("telegram-last-parsed"),
   telegramLastResult: document.getElementById("telegram-last-result"),
@@ -1492,6 +1498,108 @@ function renderTelegramStatus(status) {
     });
   }
   renderTelegramMessages(status.recent_messages || []);
+  renderTelegramChannels(status.channels || botConfig?.telegram_signals?.channels || []);
+}
+
+function renderTelegramChannels(channels) {
+  if (!els.telegramChannelsBody) return;
+  const list = Array.isArray(channels) ? channels : [];
+  if (els.telegramChannels) {
+    els.telegramChannels.textContent = `${list.filter((channel) => channel.enabled).length} active / ${list.length} total`;
+  }
+  if (!list.length) {
+    els.telegramChannelsBody.innerHTML = '<tr><td colspan="4" class="empty-row">No channels configured yet.</td></tr>';
+    scheduleResponsiveTables();
+    return;
+  }
+  els.telegramChannelsBody.innerHTML = list
+    .map((channel) => {
+      const url = String(channel.url || "");
+      const name = escapeHtml(String(channel.name || "—"));
+      const enabled = Boolean(channel.enabled);
+      return `
+        <tr class="${enabled ? "" : "row-disabled"}">
+          <td>
+            <label class="toggle toggle-compact">
+              <input type="checkbox" class="telegram-channel-toggle" data-url="${escapeHtml(url)}" ${enabled ? "checked" : ""}>
+              <span>${enabled ? "On" : "Off"}</span>
+            </label>
+          </td>
+          <td>${name}</td>
+          <td><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(url).slice(0, 72)}</a></td>
+          <td class="table-actions">
+            <button type="button" class="btn btn-danger btn-sm telegram-channel-remove-btn" data-url="${escapeHtml(url)}">Remove</button>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+  scheduleResponsiveTables();
+}
+
+async function addTelegramChannel(event) {
+  event.preventDefault();
+  const url = String(els.telegramChannelUrl?.value || "").trim();
+  if (!url) {
+    toast("Paste a Telegram Web chat link first.", "error");
+    return;
+  }
+  setLoading(els.telegramChannelAddBtn, true);
+  try {
+    const response = await fetch("/api/telegram-signals/channels", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        url,
+        name: String(els.telegramChannelName?.value || "").trim() || null,
+        enabled: Boolean(els.telegramChannelEnabled?.checked),
+        persist: true,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to add channel");
+    if (botConfig?.telegram_signals) botConfig.telegram_signals.channels = data.channels || [];
+    renderTelegramChannels(data.channels || []);
+    els.telegramChannelForm?.reset();
+    if (els.telegramChannelEnabled) els.telegramChannelEnabled.checked = true;
+    toast(`Added channel ${data.channel?.name || ""}`.trim(), "success");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.telegramChannelAddBtn, false);
+  }
+}
+
+async function updateTelegramChannel(url, patch) {
+  const response = await fetch("/api/telegram-signals/channels", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url, persist: true, ...patch }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.detail || "Failed to update channel");
+  if (botConfig?.telegram_signals) botConfig.telegram_signals.channels = data.channels || [];
+  renderTelegramChannels(data.channels || []);
+  return data;
+}
+
+async function removeTelegramChannel(url) {
+  const confirmed = window.confirm("Remove this Telegram channel from the copier list?");
+  if (!confirmed) return;
+  try {
+    const response = await fetch("/api/telegram-signals/channels/remove", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, persist: true }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to remove channel");
+    if (botConfig?.telegram_signals) botConfig.telegram_signals.channels = data.channels || [];
+    renderTelegramChannels(data.channels || []);
+    toast(`Removed ${data.channel?.name || "channel"}`, "success");
+  } catch (error) {
+    toast(error.message, "error");
+  }
 }
 
 function formatLlmResponse(item) {
@@ -1601,8 +1709,9 @@ function renderTelegramConfig(config) {
     els.telegramOpenGuard.textContent = telegram.ignore_open_symbol_trades ? "On" : "Off";
   }
   if (els.telegramChannels) {
-    els.telegramChannels.textContent = `${(telegram.channels || []).filter((channel) => channel.enabled).length} active`;
+    els.telegramChannels.textContent = `${(telegram.channels || []).filter((channel) => channel.enabled).length} active / ${(telegram.channels || []).length} total`;
   }
+  renderTelegramChannels(telegram.channels || []);
   if (els.telegramPoll) {
     els.telegramPoll.textContent = `${telegram.poll_seconds}s`;
   }
@@ -2251,6 +2360,24 @@ async function init() {
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
+  els.telegramChannelForm?.addEventListener("submit", addTelegramChannel);
+  els.telegramChannelsBody?.addEventListener("change", async (event) => {
+    const toggle = event.target.closest(".telegram-channel-toggle");
+    if (!toggle) return;
+    const url = toggle.dataset.url;
+    try {
+      await updateTelegramChannel(url, { enabled: toggle.checked });
+      toast(toggle.checked ? "Channel enabled" : "Channel disabled", "success");
+    } catch (error) {
+      toggle.checked = !toggle.checked;
+      toast(error.message, "error");
+    }
+  });
+  els.telegramChannelsBody?.addEventListener("click", (event) => {
+    const button = event.target.closest(".telegram-channel-remove-btn");
+    if (!button) return;
+    removeTelegramChannel(button.dataset.url);
+  });
   els.telegramMessagesBody?.addEventListener("click", (event) => {
     const button = event.target.closest(".telegram-hard-copy-btn");
     if (!button) return;

@@ -19,13 +19,16 @@ from .bot import SignalBot
 from .config import (
     AppConfig,
     StrategyMode,
+    add_telegram_channel,
     default_symbol_lot,
+    remove_telegram_channel,
     save_config,
     symbol_asset_group,
     update_bot_strategy,
     update_symbol_enabled,
     update_symbol_lots,
     update_symbol_timeframes,
+    update_telegram_channel,
 )
 from .config_snapshots import (
     apply_snapshot,
@@ -71,6 +74,25 @@ class TelegramHardCopyRequest(BaseModel):
     message_id: str = Field(min_length=8)
 
 
+class TelegramChannelUpsertRequest(BaseModel):
+    url: str = Field(min_length=3)
+    name: str | None = None
+    enabled: bool = True
+    persist: bool = True
+
+
+class TelegramChannelUpdateRequest(BaseModel):
+    url: str = Field(min_length=3)
+    name: str | None = None
+    enabled: bool | None = None
+    persist: bool = True
+
+
+class TelegramChannelRemoveRequest(BaseModel):
+    url: str = Field(min_length=3)
+    persist: bool = True
+
+
 class BotSettingsRequest(BaseModel):
     strategy: StrategyMode
     persist: bool = True
@@ -114,7 +136,24 @@ class TimeframeOptimizeRequest(BaseModel):
 def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     app = FastAPI(title="RSI Divergence MT5 Bot")
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-    telegram_bot = TelegramSignalsBot(config, bot.client, bot.state, bot.logger, bot.daily_risk_status)
+    telegram_bot = TelegramSignalsBot(
+        config,
+        bot.client,
+        bot.state,
+        bot.logger,
+        bot.daily_risk_status,
+        config_path=config_path,
+    )
+
+    def telegram_channels_payload() -> list[dict]:
+        return [channel.model_dump(mode="python") for channel in config.telegram_signals.channels]
+
+    def ensure_telegram_stopped_for_channel_edit() -> None:
+        if telegram_bot.is_running():
+            raise HTTPException(
+                status_code=409,
+                detail="Stop the Telegram copier before adding, removing, or editing channels.",
+            )
 
     def auth_token() -> str:
         seed = f"{config.auth.username}:{config.auth.password}".encode("utf-8")
@@ -719,6 +758,61 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         if result.get("status") == "error":
             raise HTTPException(status_code=400, detail=str(result.get("reason") or "hard copy failed"))
         return {**result, **telegram_bot.status()}
+
+    @app.get("/api/telegram-signals/channels")
+    def telegram_signals_channels() -> dict:
+        return {"channels": telegram_channels_payload()}
+
+    @app.post("/api/telegram-signals/channels")
+    def telegram_signals_add_channel(body: TelegramChannelUpsertRequest) -> dict:
+        ensure_telegram_stopped_for_channel_edit()
+        try:
+            channel = add_telegram_channel(
+                config,
+                body.url,
+                name=body.name,
+                enabled=body.enabled,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        if body.persist:
+            save_config(config_path, config)
+        bot.logger.info("TELEGRAM CHANNEL add name=%s url=%s enabled=%s", channel.name, channel.url, channel.enabled)
+        return {"status": "added", "channel": channel.model_dump(mode="python"), "channels": telegram_channels_payload()}
+
+    @app.patch("/api/telegram-signals/channels")
+    def telegram_signals_update_channel(body: TelegramChannelUpdateRequest) -> dict:
+        ensure_telegram_stopped_for_channel_edit()
+        try:
+            channel = update_telegram_channel(
+                config,
+                body.url,
+                name=body.name,
+                enabled=body.enabled,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        if body.persist:
+            save_config(config_path, config)
+        bot.logger.info(
+            "TELEGRAM CHANNEL update name=%s url=%s enabled=%s",
+            channel.name,
+            channel.url,
+            channel.enabled,
+        )
+        return {"status": "updated", "channel": channel.model_dump(mode="python"), "channels": telegram_channels_payload()}
+
+    @app.post("/api/telegram-signals/channels/remove")
+    def telegram_signals_remove_channel(body: TelegramChannelRemoveRequest) -> dict:
+        ensure_telegram_stopped_for_channel_edit()
+        try:
+            removed = remove_telegram_channel(config, body.url)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        if body.persist:
+            save_config(config_path, config)
+        bot.logger.info("TELEGRAM CHANNEL remove name=%s url=%s", removed.name, removed.url)
+        return {"status": "removed", "channel": removed.model_dump(mode="python"), "channels": telegram_channels_payload()}
 
     @app.get("/api/backtest/chart")
     async def backtest_chart(

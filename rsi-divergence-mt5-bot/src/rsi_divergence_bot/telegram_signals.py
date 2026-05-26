@@ -340,8 +340,10 @@ class TelegramSignalsBot:
         state: StateStore,
         logger: logging.Logger,
         daily_risk_status: Callable[[], dict] | None = None,
+        config_path: Path | None = None,
     ):
         self.config = config
+        self.config_path = config_path
         self.client = client
         self.state = state
         self.logger = logger
@@ -403,7 +405,8 @@ class TelegramSignalsBot:
         data["gemini_model"] = self.config.telegram_signals.gemini_model
         data["gemini_api_key_configured"] = bool(GeminiSignalParser.gemini_api_key(self.config))
         data["llm_configured"] = GeminiSignalParser.llm_configured(self.config)
-        data["channels"] = [channel.model_dump(mode="python") for channel in self._enabled_channels()]
+        data["channels"] = [channel.model_dump(mode="python") for channel in self.config.telegram_signals.channels]
+        data["enabled_channel_count"] = len(self._enabled_channels())
         data["recent_messages"] = self.state.recent_telegram_messages(25)
         return data
 

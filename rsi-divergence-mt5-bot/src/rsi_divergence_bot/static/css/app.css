@@ -1015,6 +1015,33 @@ textarea {
   border: 1px solid var(--border);
 }
 
+.telegram-channel-form {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) minmax(160px, 1fr) auto auto;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 14px;
+}
+
+.telegram-channel-form .field-wide {
+  grid-column: auto;
+}
+
+.telegram-channel-form .toggle {
+  align-self: end;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 900px) {
+  .telegram-channel-form {
+    grid-template-columns: 1fr;
+  }
+
+  .telegram-channel-form .toggle {
+    margin-bottom: 0;
+  }
+}
+
 .auto-run-status {
   display: flex;
   align-items: center;
