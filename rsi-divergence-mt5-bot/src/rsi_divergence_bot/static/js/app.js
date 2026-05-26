@@ -1530,10 +1530,19 @@ function formatLlmResponse(item) {
   return "—";
 }
 
+function canHardCopyTelegramMessage(item) {
+  const text = String(item?.text || item?.text_preview || "").trim();
+  if (!text) return false;
+  const upper = text.toUpperCase();
+  if (/\b(BREAKEVEN|BREAK[\s-]?EVEN)\b/.test(upper)) return false;
+  if (item?.parsed?.action && item.parsed.action !== "none") return true;
+  return /\b(BUY|SELL)\b/.test(upper) && /\b(SL|STOP|TP|TARGET|STOPLOSS)\b/.test(upper);
+}
+
 function renderTelegramMessages(messages) {
   if (!els.telegramMessagesBody) return;
   if (!messages.length) {
-    els.telegramMessagesBody.innerHTML = '<tr><td colspan="6" class="empty-row">No Telegram messages tracked yet.</td></tr>';
+    els.telegramMessagesBody.innerHTML = '<tr><td colspan="7" class="empty-row">No Telegram messages tracked yet.</td></tr>';
     return;
   }
   els.telegramMessagesBody.innerHTML = messages
@@ -1551,14 +1560,20 @@ function renderTelegramMessages(messages) {
             ? "value-negative"
           : "value-neutral";
       const llmText = formatLlmResponse(item);
+      const hardCopyEnabled = canHardCopyTelegramMessage(item);
+      const messageId = escapeHtml(String(item.message_id || ""));
+      const actionCell = hardCopyEnabled
+        ? `<button type="button" class="btn btn-primary btn-sm telegram-hard-copy-btn" data-message-id="${messageId}" title="Force place at market; only checks TPs vs live price">Hard copy</button>`
+        : '<span class="value-neutral">—</span>';
       return `
         <tr>
           <td class="${statusClass}">${escapeHtml(status)}</td>
           <td>${escapeHtml(String(item.channel_name || "—"))}</td>
           <td>${formatTimestamp(item.updated_at)}</td>
-          <td>${escapeHtml(String(item.text_preview || "—")).slice(0, 220)}</td>
+          <td>${escapeHtml(String(item.text_preview || item.text || "—")).slice(0, 220)}</td>
           <td class="llm-response-cell" title="${escapeHtml(llmText)}">${escapeHtml(llmText).slice(0, 220)}</td>
           <td>${escapeHtml(String(item.reason || item.result?.reason || "—"))}</td>
+          <td class="table-actions">${actionCell}</td>
         </tr>
       `;
     })
@@ -1654,9 +1669,40 @@ async function stopTelegramSignals() {
   }
 }
 
+async function hardCopyTelegramMessage(messageId, button) {
+  if (!messageId) return;
+  const confirmed = window.confirm(
+    "Hard copy this signal and place it at market now? Skips age, dedup, daily guard, and open-trade checks. Only validates TPs against live price.",
+  );
+  if (!confirmed) return;
+
+  setLoading(button, true);
+  try {
+    const response = await fetch("/api/telegram-signals/hard-copy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message_id: messageId }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Hard copy failed");
+    renderTelegramStatus(data);
+    const status = data.status || "unknown";
+    if (status === "placed" || status === "paper") {
+      toast(`Hard copy ${status}: ${data.symbol || ""} ${String(data.action || "").toUpperCase()}`.trim(), "success");
+    } else {
+      toast(data.reason || `Hard copy ${status}`, status === "failed" ? "error" : "info");
+    }
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(button, false);
+  }
+}
+
 async function clearTelegramMessages() {
   const confirmed = window.confirm(
-    "Clear all tracked Telegram messages and reset the dedup cache? New messages can be processed again.",
+    "Hard clear all Telegram messages from the state database, reset dedup cache, and wipe counters? This cannot be undone.",
   );
   if (!confirmed) return;
 
@@ -1667,7 +1713,7 @@ async function clearTelegramMessages() {
     if (!response.ok) throw new Error(data.detail || "Failed to clear Telegram messages");
     renderTelegramStatus(data);
     toast(
-      `Cleared ${data.messages_removed || 0} message${data.messages_removed === 1 ? "" : "s"}`,
+      `Hard cleared ${data.messages_removed || 0} message${data.messages_removed === 1 ? "" : "s"} from database`,
       "success",
     );
     await refreshLogs();
@@ -2201,6 +2247,11 @@ async function init() {
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
+  els.telegramMessagesBody?.addEventListener("click", (event) => {
+    const button = event.target.closest(".telegram-hard-copy-btn");
+    if (!button) return;
+    hardCopyTelegramMessage(button.dataset.messageId, button);
+  });
   els.refreshLogsBtn?.addEventListener("click", refreshLogs);
   els.logFilter?.addEventListener("input", renderLogs);
 

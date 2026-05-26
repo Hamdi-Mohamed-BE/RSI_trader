@@ -13,11 +13,11 @@ from typing import Callable, Literal
 from pydantic import BaseModel, Field
 
 from .config import AppConfig, SymbolConfig, TelegramChannelConfig
-from .manual_trade import resolve_symbol
+from .manual_trade import resolve_symbol_for_telegram
 from .mt5_client import MT5Client, _field
 from .state import StateStore
 from .symbols import market_key
-from .trade_geometry import invalid_market_geometry, invalid_pending_geometry
+from .trade_geometry import invalid_market_geometry
 from .trader import TradeExecutor
 
 from .playwright_runtime import ensure_playwright_runtime, load_sync_playwright, playwright_runtime_error
@@ -425,6 +425,75 @@ class TelegramSignalsBot:
             removed["seen_removed"],
         )
         return {"status": "cleared", **removed, **self.status()}
+
+    def hard_copy_message(self, message_id: str) -> dict:
+        record = self.state.get_telegram_message(message_id)
+        if record is None:
+            return {"status": "error", "reason": "message not found in ledger"}
+
+        text = str(record.get("text") or record.get("text_preview") or "").strip()
+        if not text:
+            return {"status": "error", "reason": "message has no text to copy"}
+
+        if _looks_like_breakeven(text):
+            return {"status": "error", "reason": "breakeven commands cannot be hard copied"}
+
+        channel = self._channel_from_record(record)
+        parsed_data = record.get("parsed")
+        if isinstance(parsed_data, dict) and parsed_data.get("action") not in {None, "none"}:
+            parsed = ParsedTelegramSignal.model_validate(parsed_data)
+        else:
+            try:
+                parsed = self.parser.parse(text)
+            except Exception as exc:  # noqa: BLE001
+                return {"status": "error", "reason": f"parse failed: {exc}"}
+
+        if parsed.action == "none":
+            return {"status": "error", "reason": "message is not a trade signal"}
+
+        source_id = f"{message_id}:hard:{int(datetime.now(timezone.utc).timestamp())}"
+        result = self._place_parsed_signal(parsed, source_id=source_id, channel=channel, hard=True)
+        result["hard_copy"] = True
+        result["message_id"] = message_id
+
+        self._record_message(
+            message_id,
+            str(result.get("status", "unknown")),
+            text,
+            channel=channel,
+            parsed=parsed.model_dump(mode="python"),
+            result=result,
+            reason=result.get("reason"),
+            message_key=record.get("message_key"),
+            message_timestamp=record.get("message_timestamp"),
+            age_seconds=record.get("age_seconds"),
+        )
+        self._status.last_signal = parsed.model_dump(mode="python")
+        self._status.last_result = result
+        self._status.last_action_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+        if result["status"] in {"placed", "paper"}:
+            self._status.placed += 1
+        elif result["status"] == "failed":
+            self._status.failed += 1
+        else:
+            self._status.skipped += 1
+        self.logger.warning(
+            "TELEGRAM HARD COPY message=%s channel=%s status=%s symbol=%s reason=%s",
+            message_id[:10],
+            channel.name,
+            result.get("status"),
+            result.get("symbol"),
+            result.get("reason"),
+        )
+        return result
+
+    def _channel_from_record(self, record: dict) -> TelegramChannelConfig:
+        name = str(record.get("channel_name") or "Unknown")
+        url = str(record.get("channel_url") or "")
+        for channel in self.config.telegram_signals.channels:
+            if channel.url == url or channel.name.casefold() == name.casefold():
+                return channel
+        return TelegramChannelConfig(name=name, url=url, enabled=True)
 
     def _loop(self) -> None:
         playwright = None
@@ -988,6 +1057,7 @@ class TelegramSignalsBot:
             "status": status,
             "channel_name": channel.name,
             "channel_url": channel.url,
+            "text": message,
             "text_preview": message[:500],
             "parsed": parsed,
             "result": result,
@@ -1030,24 +1100,42 @@ class TelegramSignalsBot:
         result["channel"] = channel.name
         return result
 
-    def _place_parsed_signal(self, parsed: ParsedTelegramSignal, *, source_id: str, channel: TelegramChannelConfig) -> dict:
-        if self.daily_risk_status:
+    def _place_parsed_signal(
+        self,
+        parsed: ParsedTelegramSignal,
+        *,
+        source_id: str,
+        channel: TelegramChannelConfig,
+        hard: bool = False,
+    ) -> dict:
+        if not hard and self.daily_risk_status:
             daily = self.daily_risk_status()
             if daily.get("enabled") and daily.get("halted"):
                 return {"status": "skipped", "channel": channel.name, "reason": "daily loss guard is active", "daily_risk": daily}
 
         if not parsed.symbol:
             return {"status": "skipped", "channel": channel.name, "reason": "missing symbol"}
-        symbol_cfg = resolve_symbol(parsed.symbol, self.config)
+        symbol_cfg, auto_registered = resolve_symbol_for_telegram(parsed.symbol, self.config, self.client)
         if symbol_cfg is None:
             return {"status": "skipped", "channel": channel.name, "reason": f"unknown symbol {parsed.symbol}"}
+        if auto_registered:
+            self.logger.warning(
+                "TELEGRAM AUTO-REGISTER symbol=%s key=%s lot=%s",
+                symbol_cfg.symbol,
+                symbol_cfg.key,
+                symbol_cfg.lot_per_leg,
+            )
         if parsed.stop_loss is None:
             return {"status": "skipped", "channel": channel.name, "reason": "missing stop loss"}
         tps = [float(tp) for tp in parsed.tps[: self.config.telegram_signals.max_tps]]
         if not tps:
             return {"status": "skipped", "channel": channel.name, "reason": "missing take profits"}
 
-        if self.config.telegram_signals.ignore_open_symbol_trades and self._has_open_market(symbol_cfg):
+        if (
+            not hard
+            and self.config.telegram_signals.ignore_open_symbol_trades
+            and self._has_open_market(symbol_cfg)
+        ):
             return {"status": "skipped", "channel": channel.name, "reason": f"open position exists for {symbol_cfg.key}", "symbol": symbol_cfg.symbol}
 
         lot = self.config.telegram_signals.default_lot or symbol_cfg.lot_per_leg
@@ -1060,24 +1148,35 @@ class TelegramSignalsBot:
             "tps": tps,
             "lot": float(lot),
         }
-        entry_price = self._validate_plan(plan)
+        side = "buy" if parsed.action.startswith("buy") else "sell"
+        try:
+            live_entry = self._live_entry_price(plan)
+        except ValueError as exc:
+            return {"status": "skipped", "channel": channel.name, "reason": str(exc), **plan}
 
+        geometry_reason = invalid_market_geometry(side, live_entry, plan["sl"], tps, label="live price")
+        if geometry_reason:
+            reason = f"TPs no longer valid: {geometry_reason}" if hard else geometry_reason
+            return {"status": "skipped", "channel": channel.name, "reason": reason, **plan, "entry_price": live_entry}
+
+        log_prefix = "TELEGRAM HARD COPY" if hard else "TELEGRAM SIGNAL"
         self.logger.warning(
-            "TELEGRAM SIGNAL channel=%s parsed symbol=%s action=%s entry=%s sl=%s tps=%s lot=%s dry_run=%s",
+            "%s channel=%s parsed symbol=%s action=%s signal_entry=%s live_entry=%s sl=%s tps=%s lot=%s dry_run=%s",
+            log_prefix,
             channel.name,
             plan["symbol"],
             plan["action"],
-            entry_price,
+            plan.get("entry"),
+            live_entry,
             plan["sl"],
             plan["tps"],
             plan["lot"],
             self.config.bot.dry_run,
         )
         if self.config.bot.dry_run:
-            return {"status": "paper", **plan, "entry_price": entry_price}
+            return {"status": "paper", **plan, "entry_price": live_entry, "hard_copy": hard}
 
-        side = "buy" if parsed.action.startswith("buy") else "sell"
-        setup_id = f"telegram:{source_id[:16]}"
+        setup_id = f"telegram:hard:{source_id[:24]}" if hard else f"telegram:{source_id[:16]}"
         result = self.executor.place_market_setup(
             setup_id=setup_id,
             symbol=symbol_cfg.symbol,
@@ -1086,7 +1185,7 @@ class TelegramSignalsBot:
             sl=float(parsed.stop_loss),
             tps=tps,
             lot_per_leg=float(lot),
-            entry_price=float(entry_price),
+            entry_price=None,
             extra_setup={
                 "breakeven_applied": False,
                 "source": "telegram_signals",
@@ -1096,8 +1195,19 @@ class TelegramSignalsBot:
             comment=f"{COMMENT_PREFIX} signal",
         )
         if result.get("status") == "placed":
-            return {"status": "placed", **plan, "entry_price": entry_price, "setup_id": setup_id, **result}
-        return {"status": "failed", **plan, "entry_price": entry_price, **result}
+            return {
+                "status": "placed",
+                **plan,
+                "entry_price": result.get("entry_price") or live_entry,
+                "setup_id": setup_id,
+                **result,
+            }
+        return {
+            "status": "failed",
+            **plan,
+            "entry_price": result.get("entry_price") or live_entry,
+            **result,
+        }
 
     def _has_open_market(self, symbol_cfg: SymbolConfig) -> bool:
         target_key = symbol_cfg.key
@@ -1108,7 +1218,7 @@ class TelegramSignalsBot:
                 return True
         return False
 
-    def _validate_plan(self, plan: dict) -> float:
+    def _live_entry_price(self, plan: dict) -> float:
         action = str(plan["action"])
         symbol = str(plan["symbol"])
         tick = self.client.tick(symbol)
@@ -1116,42 +1226,13 @@ class TelegramSignalsBot:
             raise ValueError(f"No tick for {symbol}")
         bid = float(_field(tick, "bid", 0.0) or 0.0)
         ask = float(_field(tick, "ask", 0.0) or 0.0)
-        sl = float(plan["sl"])
-        tps = [float(tp) for tp in plan["tps"]]
-        entry = ask if action == "buy" else bid if action == "sell" else float(plan["entry"] or 0.0)
+        if action.startswith("buy"):
+            return ask
+        if action.startswith("sell"):
+            return bid
+        entry = float(plan.get("entry") or 0.0)
         if entry <= 0:
             raise ValueError(f"{action} requires an entry price")
-
-        if action == "buy":
-            reason = invalid_market_geometry("buy", ask, sl, tps, label="current ask")
-            if reason:
-                raise ValueError(reason)
-        elif action == "sell":
-            reason = invalid_market_geometry("sell", bid, sl, tps, label="current bid")
-            if reason:
-                raise ValueError(reason)
-        elif action == "buy_limit":
-            reason = invalid_market_geometry("buy", entry, sl, tps, label="pending entry")
-            pending_reason = invalid_pending_geometry(action, bid, ask, entry)
-            if reason or pending_reason:
-                raise ValueError(reason or pending_reason)
-        elif action == "sell_limit":
-            reason = invalid_market_geometry("sell", entry, sl, tps, label="pending entry")
-            pending_reason = invalid_pending_geometry(action, bid, ask, entry)
-            if reason or pending_reason:
-                raise ValueError(reason or pending_reason)
-        elif action == "buy_stop":
-            reason = invalid_market_geometry("buy", entry, sl, tps, label="pending entry")
-            pending_reason = invalid_pending_geometry(action, bid, ask, entry)
-            if reason or pending_reason:
-                raise ValueError(reason or pending_reason)
-        elif action == "sell_stop":
-            reason = invalid_market_geometry("sell", entry, sl, tps, label="pending entry")
-            pending_reason = invalid_pending_geometry(action, bid, ask, entry)
-            if reason or pending_reason:
-                raise ValueError(reason or pending_reason)
-        else:
-            raise ValueError(f"Unsupported action: {action}")
         return entry
 
 

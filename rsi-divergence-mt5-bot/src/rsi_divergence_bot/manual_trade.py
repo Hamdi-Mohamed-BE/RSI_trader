@@ -126,6 +126,51 @@ def resolve_symbol(token: str, config: AppConfig) -> SymbolConfig | None:
     return aliases.get(target)
 
 
+def _mt5_symbol_candidates(token: str) -> list[str]:
+    base = _norm_symbol(token)
+    if not base:
+        return []
+    return [f"{base}-VIP", f"{base}VIP", base]
+
+
+def _auto_symbol_config(mt5_symbol: str, base_key: str) -> SymbolConfig:
+    return SymbolConfig(
+        symbol=mt5_symbol,
+        name=base_key,
+        enabled=False,
+        lot_per_leg=0.25,
+        rr=[1.0, 1.5, 2.0],
+    )
+
+
+def resolve_symbol_for_telegram(
+    token: str,
+    config: AppConfig,
+    client: MT5Client | None = None,
+    *,
+    auto_register: bool = True,
+) -> tuple[SymbolConfig | None, bool]:
+    existing = resolve_symbol(token, config)
+    if existing is not None:
+        return existing, False
+    if client is None:
+        return None, False
+
+    base = _norm_symbol(token)
+    for candidate in _mt5_symbol_candidates(token):
+        if client.symbol_info(candidate) is None or client.tick(candidate) is None:
+            continue
+        for item in config.symbols:
+            if item.symbol.upper() == candidate.upper():
+                return item, False
+        cfg = _auto_symbol_config(candidate, base)
+        if auto_register:
+            config.symbols.append(cfg)
+            return cfg, True
+        return cfg, False
+    return None, False
+
+
 def execute_manual_trade(plan: ManualTradePlan, client: MT5Client, config: AppConfig, comment: str) -> dict:
     tick = client.tick(plan.symbol)
     if tick is None:

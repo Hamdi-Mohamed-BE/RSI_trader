@@ -67,6 +67,10 @@ class TelegramSignalsStartRequest(BaseModel):
     protect_tp: bool = False
 
 
+class TelegramHardCopyRequest(BaseModel):
+    message_id: str = Field(min_length=8)
+
+
 class BotSettingsRequest(BaseModel):
     strategy: StrategyMode
     persist: bool = True
@@ -707,6 +711,14 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     @app.post("/api/telegram-signals/clear-messages")
     def telegram_signals_clear_messages() -> dict:
         return telegram_bot.clear_message_history()
+
+    @app.post("/api/telegram-signals/hard-copy")
+    async def telegram_signals_hard_copy(body: TelegramHardCopyRequest) -> dict:
+        await require_mt5_ready()
+        result = telegram_bot.hard_copy_message(body.message_id)
+        if result.get("status") == "error":
+            raise HTTPException(status_code=400, detail=str(result.get("reason") or "hard copy failed"))
+        return {**result, **telegram_bot.status()}
 
     @app.get("/api/backtest/chart")
     async def backtest_chart(

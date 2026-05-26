@@ -664,8 +664,8 @@
             <h3>Recent message ledger</h3>
             <div class="live-section-actions">
               <span class="live-count">last 25 tracked messages</span>
-              <button id="telegram-clear-btn" class="btn btn-secondary btn-sm" type="button">
-                <span class="btn-label">Clear old messages</span>
+              <button id="telegram-clear-btn" class="btn btn-danger btn-sm" type="button">
+                <span class="btn-label">Hard clear messages</span>
                 <span class="spinner" hidden aria-hidden="true"></span>
               </button>
             </div>
@@ -680,10 +680,11 @@
                   <th>Message</th>
                   <th>LLM response</th>
                   <th>Reason</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="telegram-messages-body">
-                <tr><td colspan="6" class="empty-row">No Telegram messages tracked yet.</td></tr>
+                <tr><td colspan="7" class="empty-row">No Telegram messages tracked yet.</td></tr>
               </tbody>
             </table>
           </div>
@@ -722,6 +723,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=43" defer></script>
+  <script src="/static/js/app.js?v=45" defer></script>
 </body>
 </html>
