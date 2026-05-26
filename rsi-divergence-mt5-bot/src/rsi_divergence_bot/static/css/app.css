@@ -49,13 +49,15 @@ body {
     radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.06), transparent 40%),
     var(--bg);
   line-height: 1.5;
-  overflow-x: hidden;
 }
 
 .app {
+  width: 100%;
   max-width: min(1680px, 100%);
+  min-width: 0;
   margin: 0 auto;
   padding: 28px 24px 48px;
+  overflow-x: clip;
 }
 
 .topbar {
@@ -71,6 +73,15 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
+  min-width: 0;
+}
+
+.brand > div {
+  min-width: 0;
+}
+
+.brand h1 {
+  overflow-wrap: anywhere;
 }
 
 .brand-mark {
@@ -122,6 +133,32 @@ h2 {
   gap: 8px;
   flex-wrap: wrap;
   margin: -8px 0 22px;
+}
+
+.mobile-nav-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.mobile-nav-page {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-toggle {
+  flex: 0 0 auto;
+}
+
+.nav-toggle-icon {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .nav-link {
@@ -247,6 +284,8 @@ h2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
+  width: 100%;
+  min-width: 0;
 }
 
 .panel {
@@ -255,6 +294,8 @@ h2 {
   border-radius: var(--radius);
   padding: 20px;
   box-shadow: var(--shadow);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .panel-wide {
@@ -281,11 +322,40 @@ h2 {
 }
 
 .table-wrap {
+  display: block;
+  width: 100%;
+  max-width: 100%;
   overflow: auto;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
+}
+
+.table-wrap-wide,
+.table-wrap-scroll {
+  position: relative;
+}
+
+.table-wrap-wide::after,
+.table-wrap-scroll::after {
+  content: "";
+  position: sticky;
+  right: 0;
+  top: 0;
+  float: right;
+  width: 28px;
+  height: 100%;
+  margin-left: -28px;
+  pointer-events: none;
+  background: linear-gradient(to left, rgba(10, 14, 20, 0.92), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.table-wrap-wide.can-scroll-x::after,
+.table-wrap-scroll.can-scroll-x::after {
+  opacity: 1;
 }
 
 .table-wrap-wide {
@@ -1542,6 +1612,166 @@ textarea {
 }
 
 @media (max-width: 768px) {
+  .mobile-nav-bar {
+    display: flex;
+  }
+
+  .main-nav {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    overflow: visible;
+    gap: 8px;
+    margin: 0 0 16px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-panel);
+  }
+
+  .main-nav.is-open {
+    display: flex;
+  }
+
+  .nav-link {
+    width: 100%;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .nav-link-danger {
+    margin-left: 0;
+    margin-top: 4px;
+  }
+
+  .table-wrap.is-mobile-cards {
+    overflow: visible;
+    border: none;
+    background: transparent;
+  }
+
+  .table-wrap.is-mobile-cards .data-table {
+    display: block;
+    width: 100%;
+    min-width: 0 !important;
+  }
+
+  .table-wrap.is-mobile-cards .data-table thead {
+    display: none;
+  }
+
+  .table-wrap.is-mobile-cards .data-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .table-wrap.is-mobile-cards .data-table tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    overflow: hidden;
+  }
+
+  .table-wrap.is-mobile-cards .data-table tr.symbol-section-row {
+    background: rgba(34, 211, 165, 0.09);
+    border-color: rgba(34, 211, 165, 0.22);
+  }
+
+  .table-wrap.is-mobile-cards .data-table tr.symbol-section-row td {
+    display: block;
+    text-align: left;
+    border-bottom: none;
+  }
+
+  .table-wrap.is-mobile-cards .data-table tr.symbol-section-row td::before {
+    display: none;
+  }
+
+  .table-wrap.is-mobile-cards .data-table td {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: normal;
+    text-align: right;
+  }
+
+  .table-wrap.is-mobile-cards .data-table td:last-child {
+    border-bottom: none;
+  }
+
+  .table-wrap.is-mobile-cards .data-table td::before {
+    content: attr(data-label);
+    flex: 0 0 42%;
+    max-width: 42%;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    font-weight: 600;
+    text-align: left;
+    padding-top: 1px;
+  }
+
+  .table-wrap.is-mobile-cards .data-table td.empty-row {
+    display: block;
+    text-align: center;
+    padding: 24px 12px;
+  }
+
+  .table-wrap.is-mobile-cards .data-table td.empty-row::before {
+    display: none;
+  }
+
+  .table-wrap.is-mobile-cards .data-table td[colspan] {
+    display: block;
+    text-align: left;
+  }
+
+  .table-wrap.is-mobile-cards .data-table td[colspan]::before {
+    display: none;
+  }
+
+  .table-wrap.is-mobile-cards .snapshot-actions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .table-wrap.is-mobile-cards .data-table td:has(.snapshot-actions),
+  .table-wrap.is-mobile-cards .data-table td:has(.btn) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .table-wrap.is-mobile-cards .data-table td:has(.snapshot-actions)::before,
+  .table-wrap.is-mobile-cards .data-table td:has(.btn)::before {
+    margin-bottom: 4px;
+  }
+
+  .table-wrap.is-mobile-cards .lot-input,
+  .table-wrap.is-mobile-cards .timeframe-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .table-wrap-wide,
+  .table-wrap-scroll {
+    margin-left: -12px;
+    margin-right: -12px;
+    width: calc(100% + 24px);
+    max-width: calc(100% + 24px);
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+
   .app {
     padding: 16px 12px 32px;
     padding-left: max(12px, env(safe-area-inset-left));
@@ -1576,24 +1806,6 @@ textarea {
 
   .topbar-actions .btn {
     margin-left: auto;
-  }
-
-  .main-nav {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    gap: 6px;
-    margin-bottom: 16px;
-    padding-bottom: 4px;
-    scrollbar-width: thin;
-  }
-
-  .nav-link {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    min-height: 40px;
-    padding: 8px 14px;
   }
 
   .stats-grid {

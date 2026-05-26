@@ -5,6 +5,18 @@ const STRATEGY_LABELS = {
   signal_full_with_tp_protection: "Full position - with TP protection",
 };
 
+const PAGE_LABELS = {
+  home: "Live",
+  backtest: "Backtest",
+  settings: "Settings",
+  "manual-trade": "Manual trade",
+  "live-summary": "Live summary",
+  "telegram-signals": "Telegram signals",
+  logs: "Logs",
+};
+
+const MOBILE_TABLE_BP = 768;
+
 const STRATEGY_ALIASES = {
   signal_partial_no_tp_protection: "signal_no_tp_protection",
   signal_partial_with_tp_protection: "signal_with_tp_protection",
@@ -114,6 +126,9 @@ const els = {
   telegramLastResultJson: document.getElementById("telegram-last-result-json"),
   telegramMessagesBody: document.getElementById("telegram-messages-body"),
   toastStack: document.getElementById("toast-stack"),
+  navToggle: document.getElementById("nav-toggle"),
+  mainNav: document.getElementById("main-nav"),
+  mobileNavPage: document.getElementById("mobile-nav-page"),
 };
 
 let allLogs = [];
@@ -138,6 +153,9 @@ function currentPage() {
 function applyPageVisibility() {
   const page = currentPage();
   document.body.dataset.page = page;
+  if (els.mobileNavPage) {
+    els.mobileNavPage.textContent = PAGE_LABELS[page] || "Dashboard";
+  }
 
   for (const section of document.querySelectorAll("[data-pages]")) {
     const pages = (section.dataset.pages || "").split(/\s+/).filter(Boolean);
@@ -147,6 +165,59 @@ function applyPageVisibility() {
   for (const link of document.querySelectorAll("[data-page-link]")) {
     link.classList.toggle("active", link.dataset.pageLink === page);
   }
+
+  closeMobileNav();
+  updateResponsiveTables();
+}
+
+function closeMobileNav() {
+  if (!els.mainNav || !els.navToggle) return;
+  els.mainNav.classList.remove("is-open");
+  els.navToggle.setAttribute("aria-expanded", "false");
+}
+
+function toggleMobileNav() {
+  if (!els.mainNav || !els.navToggle) return;
+  const open = !els.mainNav.classList.contains("is-open");
+  els.mainNav.classList.toggle("is-open", open);
+  els.navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function stampTableLabels(table) {
+  const headers = [...table.querySelectorAll("thead th")].map((th) => {
+    const label = th.querySelector(".sort-button span:first-child");
+    return (label?.textContent || th.textContent || "").trim();
+  });
+  table.querySelectorAll("tbody tr").forEach((row) => {
+    [...row.children].forEach((cell, index) => {
+      if (cell.tagName === "TD" && headers[index]) {
+        cell.dataset.label = headers[index];
+      }
+    });
+  });
+}
+
+function updateResponsiveTables() {
+  const mobile = window.matchMedia(`(max-width: ${MOBILE_TABLE_BP}px)`).matches;
+  document.querySelectorAll(".table-wrap").forEach((wrap) => {
+    const scrollOnly = wrap.classList.contains("table-wrap-scroll") || wrap.classList.contains("table-wrap-wide");
+    wrap.classList.toggle("is-mobile-cards", mobile && !scrollOnly);
+    const table = wrap.querySelector("table.data-table");
+    if (table && mobile && !scrollOnly) {
+      stampTableLabels(table);
+    }
+    if (scrollOnly) {
+      wrap.classList.toggle("can-scroll-x", wrap.scrollWidth > wrap.clientWidth + 4);
+    } else {
+      wrap.classList.remove("can-scroll-x");
+    }
+  });
+}
+
+let responsiveTablesTimer = null;
+function scheduleResponsiveTables() {
+  if (responsiveTablesTimer) clearTimeout(responsiveTablesTimer);
+  responsiveTablesTimer = setTimeout(updateResponsiveTables, 0);
 }
 
 function toast(message, type = "info") {
@@ -442,6 +513,7 @@ function renderSymbols(symbols) {
   const rows = Array.isArray(symbols) ? symbols : [];
   if (!rows.length) {
     els.symbolsBody.innerHTML = '<tr><td colspan="8" class="empty-row">No symbols in config.</td></tr>';
+    scheduleResponsiveTables();
     return;
   }
 
@@ -461,45 +533,7 @@ function renderSymbols(symbols) {
       ];
     })
     .join("");
-  return;
-
-  els.symbolsBody.innerHTML = rows
-    .map(
-      (item) => `
-        <tr class="${item.enabled ? "" : "row-disabled"}">
-          <td>
-            <label class="switch" title="${item.enabled ? "Enabled" : "Disabled"}">
-              <input
-                class="symbol-enabled"
-                type="checkbox"
-                data-symbol="${escapeHtml(item.symbol)}"
-                ${item.enabled ? "checked" : ""}
-              >
-              <span class="switch-slider"></span>
-            </label>
-          </td>
-          <td><strong>${escapeHtml(item.symbol)}</strong></td>
-          <td><span class="tag">${escapeHtml(item.market_key || item.symbol)}</span></td>
-          <td>${escapeHtml(item.name)}</td>
-          <td><span class="tag tag-accent">${escapeHtml(item.timeframe)}</span></td>
-          <td>
-            <input
-              class="lot-input"
-              type="number"
-              min="0.01"
-              step="0.01"
-              data-symbol="${escapeHtml(item.symbol)}"
-              data-reset-lot="${item.reset_lot_per_leg ?? item.lot_per_leg}"
-              title="Reset lot: ${item.reset_lot_per_leg ?? item.lot_per_leg}"
-              value="${item.lot_per_leg}"
-            >
-          </td>
-          <td>${escapeHtml(item.confirmation)}</td>
-          <td>${(item.sessions || []).map((s) => `<span class="tag">${escapeHtml(s)}</span>`).join("") || "—"}</td>
-        </tr>
-      `,
-    )
-    .join("");
+  scheduleResponsiveTables();
 }
 
 function updateSymbolStats(stats) {
@@ -641,6 +675,7 @@ function renderSnapshots(snapshots) {
   if (!els.snapshotsBody) return;
   if (!snapshots?.length) {
     els.snapshotsBody.innerHTML = '<tr><td colspan="6" class="empty-row">No saved snapshots yet.</td></tr>';
+    scheduleResponsiveTables();
     return;
   }
 
@@ -666,6 +701,7 @@ function renderSnapshots(snapshots) {
       `;
     })
     .join("");
+  scheduleResponsiveTables();
 }
 
 async function loadSnapshots() {
@@ -1021,6 +1057,7 @@ function renderLiveData(data) {
       )
       .join("");
   }
+  scheduleResponsiveTables();
 }
 
 async function refreshLiveData() {
@@ -1160,6 +1197,7 @@ function renderLiveSummary(data) {
       `)
       .join("");
   }
+  scheduleResponsiveTables();
 }
 
 async function loadLiveSummary(event) {
@@ -1525,6 +1563,7 @@ function renderTelegramMessages(messages) {
       `;
     })
     .join("");
+  scheduleResponsiveTables();
 }
 
 function formatSignalParserLabel(telegram) {
@@ -1991,6 +2030,7 @@ function renderBacktestResult(data) {
 
   els.backtestTableWrap.classList.remove("hidden");
   renderBacktestTrades(data.symbols);
+  scheduleResponsiveTables();
 }
 
 async function loadConfig() {
@@ -2110,6 +2150,11 @@ async function init() {
   window.addEventListener("app:toast", (event) => {
     toast(event.detail.message, event.detail.type || "info");
   });
+  window.addEventListener("resize", updateResponsiveTables, { passive: true });
+  els.navToggle?.addEventListener("click", toggleMobileNav);
+  els.mainNav?.addEventListener("click", (event) => {
+    if (event.target.closest(".nav-link")) closeMobileNav();
+  });
   document.addEventListener("click", (event) => {
     const button = event.target.closest(".sort-button[data-sort-key]");
     if (!button) return;
@@ -2202,6 +2247,7 @@ async function init() {
   if (configResult.status === "rejected") {
     toast(configResult.reason?.message || "Failed to load config", "error");
   }
+  scheduleResponsiveTables();
 }
 
 init();

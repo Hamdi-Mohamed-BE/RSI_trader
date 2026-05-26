@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0a0e14">
   <title>RSI Divergence MT5 Bot</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css?v=22">
+  <link rel="stylesheet" href="/static/css/app.css?v=23">
 </head>
 <body>
   <div class="app">
@@ -35,7 +35,15 @@
       </div>
     </header>
 
-    <nav class="main-nav" aria-label="Dashboard pages">
+    <div class="mobile-nav-bar">
+      <button id="nav-toggle" class="nav-toggle btn btn-secondary btn-sm" type="button" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-icon" aria-hidden="true">☰</span>
+        <span class="nav-toggle-label">Menu</span>
+      </button>
+      <span id="mobile-nav-page" class="mobile-nav-page">Live</span>
+    </div>
+
+    <nav class="main-nav" id="main-nav" aria-label="Dashboard pages">
       <a class="nav-link" data-page-link="home" href="/">Live</a>
       <a class="nav-link" data-page-link="backtest" href="/backtest">Backtest</a>
       <a class="nav-link" data-page-link="settings" href="/settings">Settings</a>
@@ -714,6 +722,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=42" defer></script>
+  <script src="/static/js/app.js?v=43" defer></script>
 </body>
 </html>
