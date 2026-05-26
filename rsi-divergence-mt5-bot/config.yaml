@@ -25,9 +25,9 @@ risk:
   max_extension_atr: 1.8
   max_spread_atr: 0.35
   max_live_entry_drift_risk: 0.35
-  min_tp1_spread_multiple: 1.5
+  min_tp1_spread_multiple: 0.5
   use_spread_filter: false
-  use_tp1_spread_filter: false
+  use_tp1_spread_filter: true
   use_risk_filter: false
   use_existing_position_filter: false
   use_max_setups_filter: false
@@ -106,8 +106,8 @@ symbols:
   name: Silver
   market_key_override: null
   enabled: true
-  timeframe: M2
-  optimized_timeframe: M2
+  timeframe: M1
+  optimized_timeframe: M1
   lot_per_leg: 0.08
   max_setup_risk_usd: 550.0
   pivot_len: 5
@@ -162,8 +162,8 @@ symbols:
   name: USDJPY
   market_key_override: null
   enabled: true
-  timeframe: M3
-  optimized_timeframe: M3
+  timeframe: M5
+  optimized_timeframe: M5
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -180,8 +180,8 @@ symbols:
   name: EURGBP
   market_key_override: null
   enabled: true
-  timeframe: M20
-  optimized_timeframe: M20
+  timeframe: H1
+  optimized_timeframe: H1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -198,8 +198,8 @@ symbols:
   name: AUDCAD
   market_key_override: null
   enabled: true
-  timeframe: M20
-  optimized_timeframe: M20
+  timeframe: H1
+  optimized_timeframe: H1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 7
@@ -216,8 +216,8 @@ symbols:
   name: GBPCHF
   market_key_override: null
   enabled: true
-  timeframe: M5
-  optimized_timeframe: M5
+  timeframe: H1
+  optimized_timeframe: H1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 7
@@ -234,8 +234,8 @@ symbols:
   name: EURUSD
   market_key_override: null
   enabled: true
-  timeframe: M3
-  optimized_timeframe: M3
+  timeframe: M1
+  optimized_timeframe: M1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -304,8 +304,8 @@ symbols:
   name: Ripple
   market_key_override: null
   enabled: true
-  timeframe: H1
-  optimized_timeframe: H1
+  timeframe: H4
+  optimized_timeframe: H4
   lot_per_leg: 0.1
   max_setup_risk_usd: null
   pivot_len: 3
@@ -322,8 +322,8 @@ symbols:
   name: Cardano
   market_key_override: null
   enabled: true
-  timeframe: D1
-  optimized_timeframe: D1
+  timeframe: M30
+  optimized_timeframe: M30
   lot_per_leg: 0.2
   max_setup_risk_usd: null
   pivot_len: 3
@@ -340,8 +340,8 @@ symbols:
   name: Binance Coin
   market_key_override: null
   enabled: true
-  timeframe: M4
-  optimized_timeframe: M4
+  timeframe: M10
+  optimized_timeframe: M10
   lot_per_leg: 0.3
   max_setup_risk_usd: null
   pivot_len: 3
@@ -430,8 +430,8 @@ symbols:
   name: Stellar Lumens
   market_key_override: null
   enabled: true
-  timeframe: M20
-  optimized_timeframe: M20
+  timeframe: H1
+  optimized_timeframe: H1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -541,8 +541,8 @@ symbols:
   name: CADJPY
   market_key_override: null
   enabled: true
-  timeframe: M5
-  optimized_timeframe: M5
+  timeframe: M6
+  optimized_timeframe: M6
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -653,8 +653,8 @@ symbols:
   name: GBPAUD
   market_key_override: null
   enabled: true
-  timeframe: M2
-  optimized_timeframe: M2
+  timeframe: M30
+  optimized_timeframe: M30
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3

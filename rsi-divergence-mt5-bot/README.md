@@ -28,6 +28,45 @@ risk:
   max_daily_loss_pct: 15.0
 ```
 
+Set any `use_*_filter` key to `null` to fall back to the profile default. Set it to `true` or `false` to force that filter on or off regardless of profile.
+
+## Risk settings reference
+
+These keys live under `risk:` in `config.yaml`. They control **RSI auto-run / manual live trade** filtering unless noted otherwise. Telegram signal copy uses some of the same rules (daily loss guard, open-symbol guard) but has its own settings under `telegram_signals:`.
+
+| Setting | What it does | When it blocks a trade |
+| --- | --- | --- |
+| `max_setup_risk_usd` | Maximum estimated loss in USD if the stop loss is hit for one setup. Uses broker tick value × lot × SL distance. Split strategies count all legs; full/single strategies count one position at `lot_per_leg`. | Only when `use_risk_filter: true`. A symbol-level `max_setup_risk_usd` overrides this global cap for that market. |
+| `use_daily_loss_guard` | Master switch for the daily loss system. | When `false`, daily loss checks are disabled entirely. |
+| `max_daily_loss_pct` | Daily loss limit as a % of the UTC day-start balance. Used in two ways: (1) **halt** — if current equity is down by this % from day start, no new RSI trades until the next UTC day; (2) **pre-trade cap** — reject a new setup if its estimated SL risk exceeds `day_start_balance × max_daily_loss_pct / 100`. | Active when `use_daily_loss_guard: true` and `max_daily_loss_pct > 0`. Telegram copies also respect the halt (unless hard copy bypasses it). |
+| `max_extension_atr` | Signal **generation** filter, not a live order filter. Skips creating a signal when entry is too far from the 20 EMA: `abs(entry - ema20) > ATR × max_extension_atr`. | During RSI scan/backtest signal detection only. No effect after a signal already exists. |
+| `max_spread_atr` | Compares current spread to volatility: `spread / ATR_proxy` must stay at or below this cap. ATR proxy comes from the signal’s SL distance and `sl_atr_mult`. | When `use_spread_filter: true` (or profile default enables spread filter). Blocks wide-spread entries. |
+| `max_live_entry_drift_risk` | Live execution guard. Compares signal entry to current bid/ask. Adverse drift must stay within `SL distance × this fraction`. Example: `0.35` allows price to move up to 35% of the SL distance against you before the order is rejected. | When placing RSI bot orders with a reference entry price. Telegram copy passes `entry_price: null`, so this drift check is skipped for Telegram. Set to `null` to disable everywhere. |
+| `min_tp1_spread_multiple` | Minimum distance from entry to TP1, measured as a multiple of the current spread: `TP1 distance ≥ spread × this value`. | When `use_tp1_spread_filter: true` (or profile default enables it). Avoids trades where TP1 is too close to pay the spread. |
+| `use_spread_filter` | Force the spread/ATR filter on or off. `null` = use `bot.trade_decision_profile` default. | See `max_spread_atr`. |
+| `use_tp1_spread_filter` | Force the TP1-vs-spread filter on or off. `null` = profile default. | See `min_tp1_spread_multiple`. |
+| `use_risk_filter` | Force the per-setup USD risk cap on or off. `null` = profile default. | See `max_setup_risk_usd`. |
+| `use_existing_position_filter` | Force the open-position filter on or off. Blocks a new setup when any open position exists on the same **market key** (e.g. `XAUUSD` groups `XAUUSD-VIP`, `XAUUSD-STD`, etc.). | RSI auto-run / manual trade when enabled. Separate from `telegram_signals.ignore_open_symbol_trades`. |
+| `use_max_setups_filter` | Force the concurrent-setup cap on or off. Blocks new entries when tracked active setups ≥ `bot.max_concurrent_setups`. | RSI auto-run when enabled. Skipped signals are retried on the next poll (not marked seen). |
+| `skip_if_symbol_has_position` | Default input for the **safe** profile’s open-position filter. If you set `use_existing_position_filter` explicitly, this value is ignored. | Only affects profile defaults when `use_existing_position_filter: null`. |
+
+### How your current `balanced` profile interacts
+
+With `bot.trade_decision_profile: balanced`, the defaults are: spread **on**, TP1 spread **on**, risk cap **on**, open-position **off**, max-setups **off**.
+
+Your overrides:
+
+```yaml
+use_spread_filter: false        # spread/ATR filter OFF
+use_tp1_spread_filter: true     # TP1 must be ≥ 1.5× spread
+use_risk_filter: false          # max_setup_risk_usd cap OFF
+use_existing_position_filter: false
+use_max_setups_filter: false
+skip_if_symbol_has_position: false
+```
+
+So today the bot mainly enforces **TP1 distance vs spread**, **daily loss guard (15%)**, and **signal extension vs EMA** at scan time. It does **not** enforce spread/ATR, per-setup USD risk cap, open-position, or max-setup limits unless you turn those filters back on.
+
 ## Setup
 
 ```powershell
@@ -154,6 +193,7 @@ uv run rsi-bot backtest --config config.example.yaml --start 2026-05-13T00:00:00
 - Backtests, scan reporting, and live trading use the same shared RSI-divergence strategy rules after a raw signal appears.
 - Live trading can run the shared decision function in `safe`, `balanced`, or `backtest` profile via `bot.trade_decision_profile`.
 - Set `max_setup_risk_usd` on a symbol to override the global `risk.max_setup_risk_usd` cap for that market.
+- See **Risk settings reference** above for what each `risk:` key does.
 - Backtests use broker tick values from MT5 and follow the configured decision profile so scan, live, and backtest behavior stay aligned.
 - Full backtest and chart preview use the same symbol backtest engine. Chart preview defaults to the symbol's configured candle size; changing the preview candle size intentionally tests a different timeframe.
 - Live trading records a UTC day-start balance/equity guard. If equity drawdown reaches `risk.max_daily_loss_pct`, the bot blocks new trades until the next UTC day while still running position protection checks.
