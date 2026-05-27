@@ -16,7 +16,6 @@ from pydantic import BaseModel, Field
 
 from .config import AppConfig, SymbolConfig, TelegramChannelConfig
 from .manual_trade import resolve_symbol_for_telegram
-from .mt5_account_pool import Mt5AccountPool
 from .mt5_client import MT5Client, _field
 from .state import StateStore
 from .symbols import market_key, resolve_trade_symbol
@@ -348,12 +347,10 @@ class TelegramSignalsBot:
         logger: logging.Logger,
         daily_risk_status: Callable[[], dict] | None = None,
         config_path: Path | None = None,
-        account_pool: Mt5AccountPool | None = None,
     ):
         self.config = config
         self.config_path = config_path
         self.client = client
-        self.pool = account_pool
         self.state = state
         self.logger = logger
         self.daily_risk_status = daily_risk_status
@@ -465,7 +462,6 @@ class TelegramSignalsBot:
                     "tickets",
                     "legs",
                     "entry_price",
-                    "account_results",
                     "hard_copy",
                     "message_id",
                 )
@@ -476,55 +472,6 @@ class TelegramSignalsBot:
             self._status.recent_actions = self._status.recent_actions[-50:]
         if status in {"failed", "error", "skipped"} and reason:
             self._status.last_error = reason
-
-    @staticmethod
-    def _pool_results_summary(account_results: list[dict] | None) -> str:
-        if not account_results:
-            return ""
-        parts: list[str] = []
-        for item in account_results:
-            name = item.get("account_name") or item.get("account_id") or "account"
-            status = item.get("status") or "unknown"
-            if status in {"placed", "paper"}:
-                ticket = item.get("ticket") or (item.get("tickets") or [None])[0]
-                parts.append(f"{name}: {status} ticket={ticket or '?'}")
-            else:
-                detail = item.get("reason") or item.get("error") or status
-                parts.append(f"{name}: {detail}")
-        return "; ".join(parts)
-
-    def _log_pool_trade_results(self, prefix: str, result: dict, *, channel: str, symbol: str) -> None:
-        account_results = result.get("account_results") or []
-        if not account_results:
-            self.logger.warning(
-                "%s channel=%s symbol=%s status=%s reason=%s",
-                prefix,
-                channel,
-                symbol,
-                result.get("status"),
-                result.get("reason"),
-            )
-            return
-        summary = self._pool_results_summary(account_results)
-        self.logger.warning(
-            "%s channel=%s symbol=%s status=%s accounts=%s",
-            prefix,
-            channel,
-            symbol,
-            result.get("status"),
-            summary,
-        )
-        for item in account_results:
-            self.logger.warning(
-                "%s account=%s id=%s status=%s ticket=%s reason=%s error=%s",
-                prefix,
-                item.get("account_name"),
-                item.get("account_id"),
-                item.get("status"),
-                item.get("ticket") or (item.get("tickets") or [None])[0],
-                item.get("reason"),
-                item.get("error"),
-            )
 
     def clear_message_history(self) -> dict:
         removed = self.state.clear_telegram_history()
@@ -594,7 +541,7 @@ class TelegramSignalsBot:
         status = str(result.get("status", "unknown"))
         reason = str(result.get("reason") or "")
         if status in {"failed", "skipped", "error"} and not reason:
-            reason = self._pool_results_summary(result.get("account_results")) or f"hard copy {status}"
+            reason = f"hard copy {status}"
         self._push_action_log(
             "hard_copy",
             status,
@@ -611,22 +558,14 @@ class TelegramSignalsBot:
         else:
             self._status.skipped += 1
         self.logger.warning(
-            "TELEGRAM HARD COPY message=%s channel=%s status=%s symbol=%s action=%s reason=%s accounts=%s",
+            "TELEGRAM HARD COPY message=%s channel=%s status=%s symbol=%s action=%s reason=%s",
             message_id[:10],
             channel.name,
             result.get("status"),
             result.get("symbol"),
             parsed.action,
             reason or result.get("reason"),
-            self._pool_results_summary(result.get("account_results")),
         )
-        if result.get("account_results"):
-            self._log_pool_trade_results(
-                "TELEGRAM HARD COPY",
-                result,
-                channel=channel.name,
-                symbol=str(result.get("symbol") or parsed.symbol or ""),
-            )
         return result
 
     def _channel_from_record(self, record: dict) -> TelegramChannelConfig:
@@ -730,9 +669,6 @@ class TelegramSignalsBot:
             self._channel_pages.pop(url, None)
 
     def _manage_tp_protection(self, *, enabled: bool = True) -> None:
-        if self.pool is not None and self.pool.active:
-            self.pool.manage_tp_protection(enabled=enabled)
-            return
         self.executor.manage_tp_protection(enabled=enabled)
 
     def _cached_open_market_keys(self, *, ttl_seconds: float = 4.0) -> set[str]:
@@ -741,13 +677,10 @@ class TelegramSignalsBot:
             return self._open_market_keys
         keys: set[str] = set()
         try:
-            if self.pool is not None and self.pool.active:
-                keys = self.pool.open_market_keys()
-            else:
-                for pos in self.client.positions() or []:
-                    symbol = str(_field(pos, "symbol", ""))
-                    if symbol:
-                        keys.add(market_key(symbol))
+            for pos in self.client.positions() or []:
+                symbol = str(_field(pos, "symbol", ""))
+                if symbol:
+                    keys.add(market_key(symbol))
         except Exception as exc:  # noqa: BLE001
             self.logger.warning("TELEGRAM open-market lookup failed: %s", exc)
             return self._open_market_keys
@@ -1298,9 +1231,7 @@ class TelegramSignalsBot:
         self._status.last_result = result
         self._status.last_action_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
         action_status = str(result.get("status", "unknown"))
-        action_reason = str(result.get("reason") or "")
-        if action_status in {"failed", "skipped"} and not action_reason:
-            action_reason = self._pool_results_summary(result.get("account_results")) or action_status
+        action_reason = str(result.get("reason") or action_status)
         self._push_action_log(
             "signal_copy",
             action_status,
@@ -1495,61 +1426,30 @@ class TelegramSignalsBot:
             return result
 
         setup_id = f"telegram:hard:{source_id[:24]}" if hard else f"telegram:{source_id[:16]}"
-        if self.pool is not None and self.pool.active:
-            result = self.pool.place_market_setup(
-                setup_id=setup_id,
-                symbol=symbol_cfg.symbol,
-                market_key=symbol_cfg.key,
-                side=side,
-                sl=float(parsed.stop_loss),
-                tps=tps,
-                lot_per_leg=float(lot),
-                entry_price=None,
-                execution_mode="split",
-                extra_setup={
-                    "breakeven_applied": False,
-                    "source": "telegram_signals",
-                    "channel_url": channel.url,
-                    "channel_name": channel.name,
-                },
-                comment=f"{COMMENT_PREFIX} signal",
-            )
-        else:
-            trade_symbol = resolve_trade_symbol(
-                symbol_cfg.symbol,
-                self.config,
-                is_demo=self._primary_is_demo(),
-                append_suffix=self.config.mt5.append_broker_symbol_suffix,
-            )
-            result = self.executor.place_market_setup(
-                setup_id=setup_id,
-                symbol=trade_symbol,
-                market_key=symbol_cfg.key,
-                side=side,
-                sl=float(parsed.stop_loss),
-                tps=tps,
-                lot_per_leg=float(lot),
-                entry_price=None,
-                execution_mode="split",
-                extra_setup={
-                    "breakeven_applied": False,
-                    "source": "telegram_signals",
-                    "channel_url": channel.url,
-                    "channel_name": channel.name,
-                },
-                comment=f"{COMMENT_PREFIX} signal",
-            )
-
-        if result.get("account_results"):
-            self._log_pool_trade_results(
-                log_prefix,
-                result,
-                channel=channel.name,
-                symbol=plan["symbol"],
-            )
-            pool_summary = self._pool_results_summary(result.get("account_results"))
-            if pool_summary and result.get("status") != "placed":
-                result["reason"] = pool_summary
+        trade_symbol = resolve_trade_symbol(
+            symbol_cfg.symbol,
+            self.config,
+            is_demo=self.config.mt5.is_demo,
+            append_suffix=self.config.mt5.append_broker_symbol_suffix,
+        )
+        result = self.executor.place_market_setup(
+            setup_id=setup_id,
+            symbol=trade_symbol,
+            market_key=symbol_cfg.key,
+            side=side,
+            sl=float(parsed.stop_loss),
+            tps=tps,
+            lot_per_leg=float(lot),
+            entry_price=None,
+            execution_mode="split",
+            extra_setup={
+                "breakeven_applied": False,
+                "source": "telegram_signals",
+                "channel_url": channel.url,
+                "channel_name": channel.name,
+            },
+            comment=f"{COMMENT_PREFIX} signal",
+        )
 
         if result.get("status") == "placed":
             placed = {
@@ -1599,8 +1499,6 @@ class TelegramSignalsBot:
         )
 
     def _apply_breakeven(self, setup: dict) -> dict:
-        if self.pool is not None and self.pool.active:
-            return self.pool.apply_breakeven(setup)
         return self.executor.apply_breakeven(setup)
 
     def _has_open_market(self, symbol_cfg: SymbolConfig, *, open_market_keys: set[str] | None = None) -> bool:
@@ -1614,19 +1512,12 @@ class TelegramSignalsBot:
                 return True
         return False
 
-    def _primary_is_demo(self) -> bool:
-        if self.pool is not None and self.pool.active:
-            primary = self.pool.primary_account()
-            if primary is not None:
-                return primary.is_demo
-        return True
-
     def _live_entry_price(self, plan: dict) -> float:
         action = str(plan["action"])
         symbol = resolve_trade_symbol(
             str(plan["symbol"]),
             self.config,
-            is_demo=self._primary_is_demo(),
+            is_demo=self.config.mt5.is_demo,
             append_suffix=self.config.mt5.append_broker_symbol_suffix,
         )
         tick = self.client.tick(symbol)

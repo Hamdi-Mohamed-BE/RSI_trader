@@ -7,7 +7,6 @@ from datetime import datetime, time, timezone
 
 from .config import AppConfig, trade_symbol_for_account
 from .decision import resolve_trade_filters
-from .mt5_account_pool import Mt5AccountPool
 from .mt5_client import MT5Client
 from .live_session import LIVE_SCAN_BARS
 from .state import StateStore
@@ -41,41 +40,24 @@ class ScanSummary:
 
 
 class SignalBot:
-    def __init__(self, config: AppConfig, logger: logging.Logger, *, account_pool: Mt5AccountPool | None = None):
+    def __init__(self, config: AppConfig, logger: logging.Logger):
         self.config = config
         self.logger = logger
-        self.pool = account_pool
-        self.client = self._build_client()
+        self.client = MT5Client(config.mt5)
         self.state = StateStore(config.bot.state_file)
         self.executor = TradeExecutor(config, self.client, self.state, logger)
         self._stop_event = threading.Event()
         self._loop_thread: threading.Thread | None = None
         self._status = LoopStatus()
 
-    def _build_client(self) -> MT5Client:
-        if self.pool is not None and self.pool.active:
-            return self.pool.read_client()  # type: ignore[return-value]
-        return MT5Client(self.config.mt5)
-
-    def attach_pool(self, pool: Mt5AccountPool | None) -> None:
-        self.pool = pool
-        self.client = self._build_client()
-        self.executor = TradeExecutor(self.config, self.client, self.state, self.logger)
-
-    def _primary_is_demo(self) -> bool:
-        if self.pool is not None and self.pool.active:
-            primary = self.pool.primary_account()
-            if primary is not None:
-                return primary.is_demo
-        return True
+    def _is_demo_account(self) -> bool:
+        return bool(self.config.mt5.is_demo)
 
     def _place_signal(self, signal) -> str:
-        if self.pool is not None and self.pool.active:
-            return self.pool.place_signal(signal)
         trade_symbol = resolve_trade_symbol(
             signal.symbol,
             self.config,
-            is_demo=self._primary_is_demo(),
+            is_demo=self._is_demo_account(),
             append_suffix=self.config.mt5.append_broker_symbol_suffix,
         )
         if trade_symbol != signal.symbol:
@@ -101,15 +83,9 @@ class SignalBot:
             )
         return self.executor.place_signal(signal)
 
-    def _manage_tp_protection(self) -> None:
-        if self.pool is not None and self.pool.active:
-            self.pool.manage_tp_protection(enabled=True)
-            return
-        self.executor.manage_tp_protection()
-
     def run_once(self) -> ScanSummary:
         self.client.initialize()
-        self._manage_tp_protection()
+        self.executor.manage_tp_protection()
         summary = ScanSummary()
         daily_risk = self.daily_risk_status()
         summary.daily_halted = bool(daily_risk.get("halted"))
@@ -128,7 +104,7 @@ class SignalBot:
 
         for symbol_cfg in self.config.enabled_symbols:
             try:
-                trade_symbol = trade_symbol_for_account(symbol_cfg, is_demo=self._primary_is_demo())
+                trade_symbol = trade_symbol_for_account(symbol_cfg, is_demo=self._is_demo_account())
                 df = self.client.rates(trade_symbol, symbol_cfg.timeframe, LIVE_SCAN_BARS)
                 signal = latest_closed_signal(self.config, df, symbol_cfg, self.config.risk)
                 if signal is None:

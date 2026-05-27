@@ -72,6 +72,10 @@ class MT5Config(BaseModel):
         default=True,
         validation_alias=AliasChoices("auto_enable_algo_trading", "RSI_BOT_AUTO_ENABLE_ALGO_TRADING"),
     )
+    is_demo: bool = Field(
+        default=True,
+        validation_alias=AliasChoices("is_demo", "RSI_BOT_MT5_IS_DEMO"),
+    )
 
     @field_validator("broker_symbol_suffix", mode="before")
     @classmethod

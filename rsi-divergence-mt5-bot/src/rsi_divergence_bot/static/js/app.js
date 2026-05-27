@@ -14,7 +14,6 @@ const PAGE_LABELS = {
   home: "Live",
   backtest: "Backtest",
   settings: "Settings",
-  "mt5-accounts": "MT5 accounts",
   "manual-trade": "Manual trade",
   "live-summary": "Live summary",
   "telegram-signals": "Telegram signals",
@@ -54,32 +53,9 @@ const els = {
   snapshotRefreshBtn: document.getElementById("snapshot-refresh-btn"),
   snapshotApplyPersist: document.getElementById("snapshot-apply-persist"),
   snapshotsBody: document.getElementById("snapshots-body"),
-  mt5TradingMode: document.getElementById("mt5-trading-mode"),
-  mt5ActiveAccount: document.getElementById("mt5-active-account"),
-  mt5AccountsStatus: document.getElementById("mt5-accounts-status"),
-  mt5AccountForm: document.getElementById("mt5-account-form"),
-  mt5AccountName: document.getElementById("mt5-account-name"),
-  mt5AccountLogin: document.getElementById("mt5-account-login"),
-  mt5AccountPassword: document.getElementById("mt5-account-password"),
-  mt5AccountServer: document.getElementById("mt5-account-server"),
-  mt5AccountSuffix: document.getElementById("mt5-account-suffix"),
-  mt5AccountPath: document.getElementById("mt5-account-path"),
-  mt5AccountDemo: document.getElementById("mt5-account-demo"),
-  mt5AccountEnabled: document.getElementById("mt5-account-enabled"),
-  mt5AccountPrimary: document.getElementById("mt5-account-primary"),
-  mt5AccountSaveBtn: document.getElementById("mt5-account-save-btn"),
-  mt5AccountsBody: document.getElementById("mt5-accounts-body"),
-  mt5AccountsReloadBtn: document.getElementById("mt5-accounts-reload-btn"),
-  mt5AccountFormTitle: document.getElementById("mt5-account-form-title"),
-  mt5AccountEditId: document.getElementById("mt5-account-edit-id"),
-  mt5AccountCancelBtn: document.getElementById("mt5-account-cancel-btn"),
   mt5TestTradeBtn: document.getElementById("mt5-test-trade-btn"),
   mt5TestTradeResult: document.getElementById("mt5-test-trade-result"),
   mt5TestTradeJson: document.getElementById("mt5-test-trade-json"),
-  mt5StatEnabled: document.getElementById("mt5-stat-enabled"),
-  mt5StatMode: document.getElementById("mt5-stat-mode"),
-  mt5StatWorkers: document.getElementById("mt5-stat-workers"),
-  mt5StatPool: document.getElementById("mt5-stat-pool"),
   backtestForm: document.getElementById("backtest-form"),
   start: document.getElementById("start"),
   end: document.getElementById("end"),
@@ -196,15 +172,11 @@ let telegramTimer = null;
 let botConfig = null;
 let manualTradeImageFile = null;
 let symbolSettingsReady = false;
-let mt5AccountsState = null;
-let mt5RuntimeTimer = null;
-let mt5AccountsTimer = null;
 
 function currentPage() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
   if (path === "/backtest") return "backtest";
   if (path === "/settings") return "settings";
-  if (path === "/mt5-accounts") return "mt5-accounts";
   if (path === "/manual-trade") return "manual-trade";
   if (path === "/live-summary") return "live-summary";
   if (path === "/telegram-signals") return "telegram-signals";
@@ -1003,267 +975,6 @@ async function refreshSnapshots() {
   }
 }
 
-function renderMt5Accounts(data) {
-  mt5AccountsState = data;
-  if (els.mt5TradingMode && data.trading_mode) {
-    els.mt5TradingMode.value = data.trading_mode;
-  }
-  if (els.mt5ActiveAccount) {
-    const accounts = data.accounts || [];
-    const selected = data.active_account_id ? String(data.active_account_id) : "";
-    els.mt5ActiveAccount.innerHTML = accounts
-      .map(
-        (account) =>
-          `<option value="${account.id}"${String(account.id) === selected ? " selected" : ""}>${escapeHtml(account.name)} (${account.login})</option>`,
-      )
-      .join("");
-    if (!accounts.length) {
-      els.mt5ActiveAccount.innerHTML = '<option value="">No accounts</option>';
-    }
-  }
-  const workers = data.workers || [];
-  const workerMap = Object.fromEntries(workers.map((item) => [String(item.account_id), item]));
-  const accounts = data.accounts || [];
-  const enabledCount = data.enabled_count ?? accounts.filter((item) => item.enabled).length;
-  const workersAlive = workers.filter((item) => item.alive).length;
-  const sessionMode = data.session_mode === "sequential" ? "Sequential" : "Parallel";
-  const modeLabel = data.trading_mode === "single" ? "Single" : "Parallel";
-  if (els.mt5AccountsStatus) {
-    els.mt5AccountsStatus.textContent =
-      `${enabledCount} enabled · ${modeLabel} targets · ${sessionMode} login · pool ${data.pool_active ? "active" : "config fallback"}`;
-    if (Array.isArray(data.path_warnings) && data.path_warnings.length) {
-      els.mt5AccountsStatus.textContent += ` · WARNING: ${data.path_warnings[0]}`;
-      els.mt5AccountsStatus.className = "panel-hint mt5-status-line live-warning";
-    } else {
-      els.mt5AccountsStatus.className = "panel-hint mt5-status-line";
-    }
-  }
-  if (els.mt5StatEnabled) els.mt5StatEnabled.textContent = String(enabledCount);
-  if (els.mt5StatMode) els.mt5StatMode.textContent = modeLabel;
-  if (els.mt5StatWorkers) els.mt5StatWorkers.textContent = `${workers.filter((item) => item.connected).length}/${accounts.length || 0}`;
-  if (els.mt5StatPool) els.mt5StatPool.textContent = data.pool_active ? "Active" : "Fallback";
-  if (!els.mt5AccountsBody) return;
-  if (!accounts.length) {
-    els.mt5AccountsBody.innerHTML =
-      '<tr><td colspan="8" class="empty-row">No MT5 accounts yet. Add one in the form on the left.</td></tr>';
-    scheduleResponsiveTables();
-    return;
-  }
-  els.mt5AccountsBody.innerHTML = accounts
-    .map((account) => {
-      const worker = workerMap[String(account.id)] || {};
-      const workerLabel = worker.active
-        ? "Active session"
-        : worker.connected
-          ? "Last login OK"
-          : worker.error
-            ? `Error: ${worker.error}`
-            : worker.alive
-              ? "Idle — login on trade"
-              : "Idle";
-      const workerClass = worker.connected || worker.active ? "badge badge-accent" : worker.error ? "badge badge-muted" : "badge badge-muted";
-      const active =
-        data.trading_mode === "single" && String(data.active_account_id) === String(account.id)
-          ? '<span class="badge badge-accent">Active</span>'
-          : "";
-      return `
-        <tr data-account-id="${account.id}">
-          <td>
-            <strong>${escapeHtml(account.name)}</strong>
-            ${account.is_primary ? '<span class="badge badge-accent">Primary</span>' : ""}
-            ${active}
-          </td>
-          <td class="mono">${account.login}</td>
-          <td>${escapeHtml(account.server)}</td>
-          <td><span class="badge ${account.is_demo ? "badge-muted" : "badge-accent"}">${account.is_demo ? "Demo" : "Live"}</span></td>
-          <td class="mono">${escapeHtml(account.symbol_suffix || "—")}</td>
-          <td>
-            <div class="mt5-status-badges">
-              <span class="badge ${account.enabled ? "badge-accent" : "badge-muted"}">${account.enabled ? "Enabled" : "Disabled"}</span>
-            </div>
-          </td>
-          <td><span class="${workerClass}">${escapeHtml(workerLabel)}</span></td>
-          <td>
-            <div class="mt5-action-group">
-              <button type="button" class="btn btn-ghost btn-sm mt5-account-use-btn" data-id="${account.id}">Activate</button>
-              <button type="button" class="btn btn-ghost btn-sm mt5-account-edit-btn" data-id="${account.id}">Edit</button>
-              <button type="button" class="btn btn-ghost btn-sm mt5-account-toggle-btn" data-id="${account.id}" data-enabled="${account.enabled ? "1" : "0"}">${account.enabled ? "Disable" : "Enable"}</button>
-              <button type="button" class="btn btn-ghost btn-sm mt5-account-primary-btn" data-id="${account.id}" ${account.is_primary ? "disabled" : ""}>Set primary</button>
-              <button type="button" class="btn btn-ghost btn-sm mt5-account-delete-btn" data-id="${account.id}">Delete</button>
-            </div>
-          </td>
-        </tr>
-      `;
-    })
-    .join("");
-  scheduleResponsiveTables();
-}
-
-function resetMt5AccountForm() {
-  els.mt5AccountForm?.reset();
-  if (els.mt5AccountEditId) els.mt5AccountEditId.value = "";
-  if (els.mt5AccountDemo) els.mt5AccountDemo.checked = true;
-  if (els.mt5AccountEnabled) els.mt5AccountEnabled.checked = true;
-  if (els.mt5AccountPrimary) els.mt5AccountPrimary.checked = false;
-  if (els.mt5AccountPassword) {
-    els.mt5AccountPassword.required = true;
-    els.mt5AccountPassword.placeholder = "";
-  }
-  if (els.mt5AccountFormTitle) els.mt5AccountFormTitle.textContent = "Add account";
-  if (els.mt5AccountSaveBtn) els.mt5AccountSaveBtn.querySelector(".btn-label").textContent = "Add account";
-  els.mt5AccountCancelBtn?.classList.add("hidden");
-}
-
-function startEditMt5Account(accountId) {
-  const account = (mt5AccountsState?.accounts || []).find((item) => String(item.id) === String(accountId));
-  if (!account) {
-    toast("Account not found", "error");
-    return;
-  }
-  if (els.mt5AccountEditId) els.mt5AccountEditId.value = String(account.id);
-  if (els.mt5AccountName) els.mt5AccountName.value = account.name || "";
-  if (els.mt5AccountLogin) els.mt5AccountLogin.value = String(account.login || "");
-  if (els.mt5AccountPassword) {
-    els.mt5AccountPassword.value = "";
-    els.mt5AccountPassword.required = false;
-    els.mt5AccountPassword.placeholder = "Leave blank to keep current password";
-  }
-  if (els.mt5AccountServer) els.mt5AccountServer.value = account.server || "";
-  if (els.mt5AccountSuffix) els.mt5AccountSuffix.value = account.symbol_suffix || "";
-  if (els.mt5AccountPath) els.mt5AccountPath.value = account.mt5_path || "";
-  if (els.mt5AccountDemo) els.mt5AccountDemo.checked = account.is_demo !== false;
-  if (els.mt5AccountEnabled) els.mt5AccountEnabled.checked = Boolean(account.enabled);
-  if (els.mt5AccountPrimary) els.mt5AccountPrimary.checked = Boolean(account.is_primary);
-  if (els.mt5AccountFormTitle) els.mt5AccountFormTitle.textContent = `Edit ${account.name}`;
-  if (els.mt5AccountSaveBtn) els.mt5AccountSaveBtn.querySelector(".btn-label").textContent = "Save changes";
-  els.mt5AccountCancelBtn?.classList.remove("hidden");
-  els.mt5AccountName?.focus();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-async function loadMt5Accounts() {
-  const response = await fetch("/api/mt5-accounts", { cache: "no-store" });
-  const data = await response.json();
-  if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to load MT5 accounts");
-  renderMt5Accounts(data);
-  return data;
-}
-
-async function patchMt5Account(accountId, partial, { silent = false, successMessage = "Account updated" } = {}) {
-  const response = await fetch(`/api/mt5-accounts/${encodeURIComponent(accountId)}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(partial),
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to update MT5 account");
-  renderMt5Accounts(data);
-  if (!silent) toast(successMessage, "success");
-  return data;
-}
-
-async function saveMt5Account(event) {
-  event.preventDefault();
-  const login = Number(els.mt5AccountLogin?.value);
-  if (!Number.isFinite(login) || login <= 0) {
-    toast("Login must be a positive number", "error");
-    return;
-  }
-  const editingId = els.mt5AccountEditId?.value?.trim();
-  const payload = {
-    name: els.mt5AccountName?.value?.trim(),
-    login,
-    server: els.mt5AccountServer?.value?.trim(),
-    symbol_suffix: els.mt5AccountSuffix?.value?.trim() || "",
-    mt5_path: els.mt5AccountPath?.value?.trim() || null,
-    enabled: Boolean(els.mt5AccountEnabled?.checked),
-    is_demo: Boolean(els.mt5AccountDemo?.checked),
-    is_primary: Boolean(els.mt5AccountPrimary?.checked),
-  };
-  const password = els.mt5AccountPassword?.value || "";
-  if (password || !editingId) {
-    payload.password = password;
-  }
-  if (!editingId && !password) {
-    toast("Password is required for new accounts", "error");
-    return;
-  }
-  setLoading(els.mt5AccountSaveBtn, true);
-  try {
-    const response = await fetch(
-      editingId ? `/api/mt5-accounts/${encodeURIComponent(editingId)}` : "/api/mt5-accounts",
-      {
-        method: editingId ? "PATCH" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      },
-    );
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(formatApiError(data.detail) || `Failed to ${editingId ? "update" : "add"} MT5 account`);
-    }
-    resetMt5AccountForm();
-    renderMt5Accounts(data);
-    toast(
-      editingId
-        ? `MT5 account updated: ${data.account?.name || payload.name}`
-        : `MT5 account added: ${data.account?.name || payload.name}`,
-      "success",
-    );
-  } catch (error) {
-    toast(error.message, "error");
-  } finally {
-    setLoading(els.mt5AccountSaveBtn, false);
-  }
-}
-
-async function updateMt5Runtime(partial, { silent = false } = {}) {
-  const response = await fetch("/api/mt5-accounts/runtime/settings", {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(partial),
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to update MT5 runtime settings");
-  renderMt5Accounts(data);
-  if (!silent) toast("MT5 trading mode updated", "success");
-  return data;
-}
-
-async function deleteMt5Account(accountId, name) {
-  const confirmed = window.confirm(`Delete MT5 account "${name}"?`);
-  if (!confirmed) return;
-  const row = els.mt5AccountsBody?.querySelector(`tr[data-account-id="${CSS.escape(String(accountId))}"]`);
-  const button = row?.querySelector(".mt5-account-delete-btn");
-  setLoading(button, true, "Deleting...");
-  try {
-    const response = await fetch(`/api/mt5-accounts/${encodeURIComponent(accountId)}`, { method: "DELETE" });
-    const data = await response.json();
-    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to delete MT5 account");
-    renderMt5Accounts(data);
-    toast(`MT5 account deleted: ${name}`, "success");
-  } catch (error) {
-    toast(error.message, "error");
-  } finally {
-    setLoading(button, false);
-  }
-}
-
-async function reloadMt5Workers() {
-  setLoading(els.mt5AccountsReloadBtn, true);
-  try {
-    const response = await fetch("/api/mt5-accounts/reload", { method: "POST" });
-    const data = await response.json();
-    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to reload MT5 workers");
-    renderMt5Accounts(data);
-    toast("MT5 workers reloaded", "success");
-  } catch (error) {
-    toast(error.message, "error");
-  } finally {
-    setLoading(els.mt5AccountsReloadBtn, false);
-  }
-}
-
 function renderMt5TestTradeResult(data) {
   if (!els.mt5TestTradeResult || !els.mt5TestTradeJson) return;
   els.mt5TestTradeJson.textContent = JSON.stringify(data, null, 2);
@@ -1271,28 +982,22 @@ function renderMt5TestTradeResult(data) {
 }
 
 function isLiveTradingMode() {
-  if (mt5AccountsState?.dry_run != null) return !mt5AccountsState.dry_run;
   if (botConfig?.bot?.dry_run != null) return !botConfig.bot.dry_run;
   return false;
 }
 
 async function placeMt5TestTrade() {
-  const targetCount = (mt5AccountsState?.accounts || []).filter((item) => item.enabled).length;
-  if (!targetCount) {
-    toast("No enabled MT5 accounts configured", "error");
-    return;
-  }
   const live = isLiveTradingMode();
   const confirmed = window.confirm(
     live
-      ? `Place LIVE XAUUSD 0.01 BUY test trade on ${targetCount} enabled account${targetCount === 1 ? "" : "s"} (sequential login)? No SL/TP — close manually in MT5.`
-      : `Place paper XAUUSD 0.01 BUY test trade on ${targetCount} enabled account${targetCount === 1 ? "" : "s"}?`,
+      ? "Place LIVE XAUUSD 0.01 BUY test trade on the MT5 account from config.yaml? No SL/TP — close manually in MT5."
+      : "Place paper XAUUSD 0.01 BUY test trade?",
   );
   if (!confirmed) return;
 
   setLoading(els.mt5TestTradeBtn, true);
   try {
-    const response = await fetch("/api/mt5-accounts/test-trade", {
+    const response = await fetch("/api/mt5/test-trade", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1304,14 +1009,11 @@ async function placeMt5TestTrade() {
     });
     const data = await response.json();
     if (!response.ok) throw new Error(formatApiError(data.detail) || "Test trade failed");
-    renderMt5Accounts(data);
     renderMt5TestTradeResult(data);
-    const placedCount = (data.account_results || []).filter((item) => item.status === "placed" || item.status === "paper").length;
-    const failedCount = (data.account_results || []).filter((item) => item.status === "failed").length;
     if (data.status === "placed" || data.status === "paper") {
-      toast(`Test trade ${data.status} on ${placedCount}/${targetCount} account(s)`, "success");
+      toast(`Test trade ${data.status}`, "success");
     } else {
-      toast(data.reason || `Test trade failed (${failedCount}/${targetCount})`, "error");
+      toast(data.reason || "Test trade failed", "error");
     }
     await refreshLogs();
   } catch (error) {
@@ -1319,21 +1021,6 @@ async function placeMt5TestTrade() {
   } finally {
     setLoading(els.mt5TestTradeBtn, false);
   }
-}
-
-function scheduleMt5RuntimeSave(partial) {
-  if (mt5RuntimeTimer) clearTimeout(mt5RuntimeTimer);
-  mt5RuntimeTimer = setTimeout(() => {
-    updateMt5Runtime(partial, { silent: true }).catch((error) => toast(error.message, "error"));
-  }, 350);
-}
-
-function startMt5AccountsPolling() {
-  if (mt5AccountsTimer) clearInterval(mt5AccountsTimer);
-  mt5AccountsTimer = setInterval(() => {
-    if (currentPage() !== "mt5-accounts") return;
-    loadMt5Accounts().catch(() => {});
-  }, 8000);
 }
 
 async function resetLots() {
@@ -2982,10 +2669,6 @@ async function loadConfig() {
     await loadSymbolSettings();
     return;
   }
-  if (page === "mt5-accounts") {
-    await loadMt5Accounts();
-    return;
-  }
   const response = await fetch("/api/config", { cache: "no-store" });
   if (!response.ok) throw new Error("Failed to load config");
   const config = await response.json();
@@ -3323,60 +3006,7 @@ async function init() {
   els.optimizeTimeframesBtn?.addEventListener("click", optimizeTimeframes);
   els.saveLotsBtn?.addEventListener("click", saveLots);
   els.snapshotForm?.addEventListener("submit", saveSnapshot);
-  els.mt5AccountForm?.addEventListener("submit", saveMt5Account);
-  els.mt5AccountCancelBtn?.addEventListener("click", resetMt5AccountForm);
-  els.mt5AccountsReloadBtn?.addEventListener("click", reloadMt5Workers);
   els.mt5TestTradeBtn?.addEventListener("click", placeMt5TestTrade);
-  els.mt5TradingMode?.addEventListener("change", () => {
-    scheduleMt5RuntimeSave({ trading_mode: els.mt5TradingMode.value });
-  });
-  els.mt5ActiveAccount?.addEventListener("change", () => {
-    const value = els.mt5ActiveAccount.value;
-    scheduleMt5RuntimeSave({
-      active_account_id: value ? Number(value) : null,
-      trading_mode: "single",
-    });
-    if (els.mt5TradingMode) els.mt5TradingMode.value = "single";
-  });
-  els.mt5AccountsBody?.addEventListener("click", (event) => {
-    const useBtn = event.target.closest(".mt5-account-use-btn");
-    if (useBtn) {
-      const accountId = Number(useBtn.dataset.id);
-      if (els.mt5ActiveAccount) els.mt5ActiveAccount.value = String(accountId);
-      if (els.mt5TradingMode) els.mt5TradingMode.value = "single";
-      updateMt5Runtime({ trading_mode: "single", active_account_id: accountId }).catch((error) =>
-        toast(error.message, "error"),
-      );
-      return;
-    }
-    const editBtn = event.target.closest(".mt5-account-edit-btn");
-    if (editBtn) {
-      startEditMt5Account(Number(editBtn.dataset.id));
-      return;
-    }
-    const toggleBtn = event.target.closest(".mt5-account-toggle-btn");
-    if (toggleBtn) {
-      const accountId = Number(toggleBtn.dataset.id);
-      const enabled = toggleBtn.dataset.enabled !== "1";
-      patchMt5Account(accountId, { enabled }, { successMessage: enabled ? "Account enabled" : "Account disabled" }).catch(
-        (error) => toast(error.message, "error"),
-      );
-      return;
-    }
-    const primaryBtn = event.target.closest(".mt5-account-primary-btn");
-    if (primaryBtn) {
-      patchMt5Account(Number(primaryBtn.dataset.id), { is_primary: true }, { successMessage: "Primary account updated" }).catch(
-        (error) => toast(error.message, "error"),
-      );
-      return;
-    }
-    const deleteBtn = event.target.closest(".mt5-account-delete-btn");
-    if (deleteBtn) {
-      const row = deleteBtn.closest("tr");
-      const name = row?.querySelector("strong")?.textContent?.trim() || "account";
-      deleteMt5Account(Number(deleteBtn.dataset.id), name);
-    }
-  });
   els.snapshotRefreshBtn?.addEventListener("click", refreshSnapshots);
   els.snapshotsBody?.addEventListener("click", (event) => {
     const applyBtn = event.target.closest(".snapshot-apply-btn");
@@ -3492,9 +3122,6 @@ async function init() {
   } else if (page === "telegram-signals") {
     startTelegramPolling();
     void refreshTelegramStatus();
-  } else if (page === "mt5-accounts") {
-    startMt5AccountsPolling();
-    void loadMt5Accounts();
   } else if (page === "live-summary") {
     void loadLiveSummary();
   }
