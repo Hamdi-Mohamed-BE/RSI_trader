@@ -128,6 +128,8 @@ const els = {
   telegramCounts: document.getElementById("telegram-counts"),
   telegramLast: document.getElementById("telegram-last"),
   telegramProtectTp: document.getElementById("telegram-protect-tp"),
+  telegramIgnoreOpen: document.getElementById("telegram-ignore-open"),
+  telegramSettingsPersist: document.getElementById("telegram-settings-persist"),
   telegramStartBtn: document.getElementById("telegram-start-btn"),
   telegramStopBtn: document.getElementById("telegram-stop-btn"),
   telegramClearBtn: document.getElementById("telegram-clear-btn"),
@@ -1556,6 +1558,12 @@ function renderTelegramStatus(status) {
       gemini_model: status.gemini_model,
     });
   }
+  if (els.telegramIgnoreOpen && status.ignore_open_symbol_trades != null) {
+    els.telegramIgnoreOpen.checked = Boolean(status.ignore_open_symbol_trades);
+  }
+  if (els.telegramOpenGuard) {
+    els.telegramOpenGuard.textContent = status.ignore_open_symbol_trades ? "On" : "Off";
+  }
   renderTelegramMessages(status.recent_messages || []);
   renderTelegramChannels(status.channels || botConfig?.telegram_signals?.channels || []);
 }
@@ -1576,17 +1584,19 @@ function renderTelegramChannels(channels) {
       const url = String(channel.url || "");
       const name = escapeHtml(String(channel.name || "—"));
       const enabled = Boolean(channel.enabled);
+      const statusClass = enabled ? "channel-status-active" : "channel-status-disabled";
+      const statusLabel = enabled ? "Active" : "Disabled";
       return `
         <tr class="${enabled ? "" : "row-disabled"}">
-          <td>
-            <label class="toggle toggle-compact">
-              <input type="checkbox" class="telegram-channel-toggle" data-url="${escapeHtml(url)}" ${enabled ? "checked" : ""}>
-              <span>${enabled ? "On" : "Off"}</span>
-            </label>
-          </td>
+          <td><span class="channel-status ${statusClass}">${statusLabel}</span></td>
           <td>${name}</td>
           <td><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(url).slice(0, 72)}</a></td>
           <td class="table-actions">
+            ${
+              enabled
+                ? `<button type="button" class="btn btn-secondary btn-sm telegram-channel-disable-btn" data-url="${escapeHtml(url)}">Disable</button>`
+                : `<button type="button" class="btn btn-primary btn-sm telegram-channel-enable-btn" data-url="${escapeHtml(url)}">Enable</button>`
+            }
             <button type="button" class="btn btn-danger btn-sm telegram-channel-remove-btn" data-url="${escapeHtml(url)}">Remove</button>
           </td>
         </tr>
@@ -1640,6 +1650,36 @@ async function updateTelegramChannel(url, patch) {
   if (botConfig?.telegram_signals) botConfig.telegram_signals.channels = data.channels || [];
   renderTelegramChannels(data.channels || []);
   return data;
+}
+
+async function saveTelegramSettings({ silent = false } = {}) {
+  if (!els.telegramIgnoreOpen) return null;
+  const persist = Boolean(els.telegramSettingsPersist?.checked);
+  try {
+    const response = await fetch("/api/telegram-signals/settings", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ignore_open_symbol_trades: Boolean(els.telegramIgnoreOpen.checked),
+        persist,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to save Telegram settings");
+    if (botConfig?.telegram_signals) {
+      botConfig.telegram_signals.ignore_open_symbol_trades = Boolean(data.ignore_open_symbol_trades);
+    }
+    if (els.telegramOpenGuard) {
+      els.telegramOpenGuard.textContent = data.ignore_open_symbol_trades ? "On" : "Off";
+    }
+    if (!silent) {
+      toast(persist ? "Telegram settings saved" : "Telegram settings applied", "success");
+    }
+    return data;
+  } catch (error) {
+    if (!silent) toast(error.message, "error");
+    throw error;
+  }
 }
 
 async function removeTelegramChannel(url) {
@@ -1766,6 +1806,9 @@ function renderTelegramConfig(config) {
   }
   if (els.telegramOpenGuard) {
     els.telegramOpenGuard.textContent = telegram.ignore_open_symbol_trades ? "On" : "Off";
+  }
+  if (els.telegramIgnoreOpen) {
+    els.telegramIgnoreOpen.checked = Boolean(telegram.ignore_open_symbol_trades);
   }
   if (els.telegramChannels) {
     els.telegramChannels.textContent = `${(telegram.channels || []).filter((channel) => channel.enabled).length} active / ${(telegram.channels || []).length} total`;
@@ -2629,22 +2672,32 @@ async function init() {
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
   els.telegramChannelForm?.addEventListener("submit", addTelegramChannel);
-  els.telegramChannelsBody?.addEventListener("change", async (event) => {
-    const toggle = event.target.closest(".telegram-channel-toggle");
-    if (!toggle) return;
-    const url = toggle.dataset.url;
-    try {
-      await updateTelegramChannel(url, { enabled: toggle.checked });
-      toast(toggle.checked ? "Channel enabled" : "Channel disabled", "success");
-    } catch (error) {
-      toggle.checked = !toggle.checked;
-      toast(error.message, "error");
-    }
+  els.telegramIgnoreOpen?.addEventListener("change", () => {
+    saveTelegramSettings({ silent: false }).catch(() => {});
   });
-  els.telegramChannelsBody?.addEventListener("click", (event) => {
+  els.telegramChannelsBody?.addEventListener("click", async (event) => {
+    const enableBtn = event.target.closest(".telegram-channel-enable-btn");
+    if (enableBtn) {
+      try {
+        await updateTelegramChannel(enableBtn.dataset.url, { enabled: true });
+        toast("Channel enabled", "success");
+      } catch (error) {
+        toast(error.message, "error");
+      }
+      return;
+    }
+    const disableBtn = event.target.closest(".telegram-channel-disable-btn");
+    if (disableBtn) {
+      try {
+        await updateTelegramChannel(disableBtn.dataset.url, { enabled: false });
+        toast("Channel disabled — skipped on next poll", "info");
+      } catch (error) {
+        toast(error.message, "error");
+      }
+      return;
+    }
     const button = event.target.closest(".telegram-channel-remove-btn");
-    if (!button) return;
-    removeTelegramChannel(button.dataset.url);
+    if (button) removeTelegramChannel(button.dataset.url);
   });
   els.telegramMessagesBody?.addEventListener("click", (event) => {
     const button = event.target.closest(".telegram-hard-copy-btn");

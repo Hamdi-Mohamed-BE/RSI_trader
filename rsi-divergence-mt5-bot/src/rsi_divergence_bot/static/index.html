@@ -663,6 +663,14 @@
             <input id="telegram-protect-tp" type="checkbox" checked>
             <span>Protect TP hits by moving remaining SLs</span>
           </label>
+          <label class="toggle">
+            <input id="telegram-ignore-open" type="checkbox" checked>
+            <span>Skip new signals when that symbol already has an open MT5 position</span>
+          </label>
+          <label class="toggle">
+            <input id="telegram-settings-persist" type="checkbox" checked>
+            <span>Save Telegram settings to config.yaml</span>
+          </label>
         </div>
 
         <div class="control-row">
@@ -729,7 +737,7 @@
             <table class="data-table data-table-compact">
               <thead>
                 <tr>
-                  <th>On</th>
+                  <th>Status</th>
                   <th>Name</th>
                   <th>Chat link</th>
                   <th>Actions</th>
@@ -740,7 +748,7 @@
               </tbody>
             </table>
           </div>
-          <p class="panel-hint">Stop the copier before adding, disabling, or removing channels. Restart the copier after changes so browser tabs reload.</p>
+          <p class="panel-hint">Enable or disable channels while the copier is running — disabled channels are skipped on each poll. Stop the copier before adding or removing channels.</p>
         </div>
 
         <div id="telegram-last-result" class="result-card hidden">

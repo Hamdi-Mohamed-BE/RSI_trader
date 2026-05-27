@@ -398,6 +398,10 @@ def add_telegram_channel(
     return channel
 
 
+def update_telegram_ignore_open_trades(config: AppConfig, *, ignore_open: bool) -> None:
+    config.telegram_signals.ignore_open_symbol_trades = ignore_open
+
+
 def update_telegram_channel(
     config: AppConfig,
     url: str,

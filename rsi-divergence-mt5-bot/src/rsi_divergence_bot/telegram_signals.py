@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import threading
+import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -358,6 +359,8 @@ class TelegramSignalsBot:
         self._status = TelegramLoopStatus()
         self._seen_messages: set[str] = set()
         self._channel_pages: dict[str, object] = {}
+        self._open_market_keys: set[str] = set()
+        self._open_market_keys_at: float = 0.0
 
     def start(self, *, protect_tp: bool = False) -> dict:
         if self.is_running():
@@ -528,14 +531,26 @@ class TelegramSignalsBot:
                     if self._status.protect_tp:
                         self.executor.manage_tp_protection(enabled=True)
                     channels = self._enabled_channels()
+                    self._sync_channel_pages(context, channels)
+                    open_market_keys = self._cached_open_market_keys()
                     self.logger.info(
-                        "TELEGRAM ROUND channels=%s windows=%s",
+                        "TELEGRAM ROUND channels=%s windows=%s open_markets=%s",
                         [channel.name for channel in channels],
                         len(self._channel_pages),
+                        len(open_market_keys),
                     )
                     for channel in channels:
-                        page = self._ensure_channel_page(context, channel)
-                        self._read_channel(page, channel)
+                        try:
+                            page = self._ensure_channel_page(context, channel)
+                            self._read_channel(page, channel, open_market_keys=open_market_keys)
+                        except Exception as exc:  # noqa: BLE001
+                            self._status.last_error = f"{channel.name}: {exc}"
+                            self.logger.exception(
+                                "TELEGRAM CHANNEL READ ERROR channel=%s url=%s error=%s",
+                                channel.name,
+                                channel.url,
+                                exc,
+                            )
                     self._status.last_error = None
                 except Exception as exc:  # noqa: BLE001
                     self._status.last_error = str(exc)
@@ -568,6 +583,35 @@ class TelegramSignalsBot:
 
     def _enabled_channels(self) -> list[TelegramChannelConfig]:
         return [channel for channel in self.config.telegram_signals.channels if channel.enabled]
+
+    def _sync_channel_pages(self, context, channels: list[TelegramChannelConfig]) -> None:
+        enabled_urls = {channel.url for channel in channels}
+        for url, page in list(self._channel_pages.items()):
+            if url in enabled_urls:
+                continue
+            try:
+                if page is not None and not page.is_closed():
+                    page.close()
+            except Exception:  # noqa: BLE001
+                pass
+            self._channel_pages.pop(url, None)
+
+    def _cached_open_market_keys(self, *, ttl_seconds: float = 4.0) -> set[str]:
+        now = time.monotonic()
+        if now - self._open_market_keys_at < ttl_seconds and self._open_market_keys_at > 0:
+            return self._open_market_keys
+        keys: set[str] = set()
+        try:
+            for pos in self.client.positions() or []:
+                symbol = str(_field(pos, "symbol", ""))
+                if symbol:
+                    keys.add(market_key(symbol))
+        except Exception as exc:  # noqa: BLE001
+            self.logger.warning("TELEGRAM open-market lookup failed: %s", exc)
+            return self._open_market_keys
+        self._open_market_keys = keys
+        self._open_market_keys_at = now
+        return keys
 
     def _open_browser(self, playwright, profile_dir: Path):
         try:
@@ -615,19 +659,22 @@ class TelegramSignalsBot:
             self._wait_for_chat_messages(page, channel)
             self._scroll_chat_to_bottom(page)
             pages[channel.url] = page
-            page.wait_for_timeout(800)
+            page.wait_for_timeout(400)
         return pages
 
     def _ensure_channel_page(self, context, channel: TelegramChannelConfig):
         page = self._channel_pages.get(channel.url)
         if page is not None and not page.is_closed():
-            return page
+            target_hash = self._channel_hash(channel.url)
+            current = str(getattr(page, "url", "") or "")
+            if target_hash and f"#{target_hash}" in current:
+                return page
 
         self.logger.warning("TELEGRAM WINDOW REOPEN channel=%s url=%s", channel.name, channel.url)
-        page = context.new_page()
-        page.goto(channel.url, wait_until="domcontentloaded", timeout=60_000)
+        page = context.new_page() if page is None or page.is_closed() else page
+        page.goto(channel.url, wait_until="domcontentloaded", timeout=45_000)
         self._wait_for_chat_messages(page, channel)
-        self._scroll_chat_to_bottom(page)
+        self._scroll_chat_to_bottom(page, attempts=2)
         self._channel_pages[channel.url] = page
         return page
 
@@ -648,7 +695,7 @@ class TelegramSignalsBot:
         return nav or {}
 
     def _wait_for_chat_messages(self, page, channel: TelegramChannelConfig) -> None:
-        deadline_ms = 20_000
+        deadline_ms = 12_000
         try:
             page.wait_for_function(
                 """
@@ -669,9 +716,9 @@ class TelegramSignalsBot:
         except Exception:  # noqa: BLE001
             pass
 
-        for attempt in range(4):
+        for attempt in range(3):
             page.evaluate(_TELEGRAM_NAVIGATE_CHAT_JS, {"hash": self._channel_hash(channel.url), "name": channel.name})
-            page.wait_for_timeout(700 + attempt * 400)
+            page.wait_for_timeout(500 + attempt * 250)
             state = page.evaluate(_TELEGRAM_CHAT_STATE_JS)
             if state.get("readableBubbleCount", 0) > 0 or state.get("bubbleCount", 0) > 0:
                 return
@@ -679,10 +726,10 @@ class TelegramSignalsBot:
         page.goto(channel.url, wait_until="domcontentloaded", timeout=60_000)
         page.wait_for_timeout(1200)
 
-    def _scroll_chat_to_bottom(self, page, *, attempts: int = 4) -> None:
+    def _scroll_chat_to_bottom(self, page, *, attempts: int = 2) -> None:
         for _ in range(attempts):
             page.evaluate(_TELEGRAM_SCROLL_CHAT_JS)
-            page.wait_for_timeout(450)
+            page.wait_for_timeout(250)
 
     def _capture_chat_html(self, page) -> tuple[str, str]:
         payload = page.evaluate(_TELEGRAM_CHAT_HTML_JS)
@@ -692,95 +739,98 @@ class TelegramSignalsBot:
             return html, source
         return page.content(), "document"
 
-    def _read_channel(self, page, channel: TelegramChannelConfig) -> None:
-        try:
-            self._scroll_chat_to_bottom(page, attempts=2)
-            self._status.last_channel = channel.name
+    def _read_channel(
+        self,
+        page,
+        channel: TelegramChannelConfig,
+        *,
+        open_market_keys: set[str] | None = None,
+    ) -> None:
+        self._scroll_chat_to_bottom(page, attempts=1)
+        self._status.last_channel = channel.name
 
-            message, diagnostics, skipped_ad = self._read_latest_message(page, channel)
-            now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-            self._status.last_message_at = now
+        message, diagnostics, skipped_ad = self._read_latest_message(page, channel)
+        now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+        self._status.last_message_at = now
 
-            if not message:
-                state = page.evaluate(_TELEGRAM_CHAT_STATE_JS)
-                self.logger.info(
-                    "TELEGRAM POLL channel=%s last=none skipped_ad=%s state=%s parse=%s",
-                    channel.name,
-                    skipped_ad,
-                    state,
-                    asdict(diagnostics),
-                )
-                reason = self._empty_reason(state, diagnostics, skipped_ad=skipped_ad)
-                self._record_message(
-                    self._channel_poll_id(channel),
-                    "empty",
-                    state.get("lastBubbleText") or "",
-                    channel=channel,
-                    reason=reason,
-                    message_key=None,
-                    message_timestamp=None,
-                    age_seconds=None,
-                )
-                return
-
-            payload = {
-                "key": message.key,
-                "text": message.text,
-                "timestamp": message.timestamp,
-            }
-            message_id = self._message_id(channel, payload["text"], message_key=payload.get("key"))
-            age_seconds = self._message_age(payload.get("timestamp"))
-            preview = payload["text"][:220].replace("\n", " | ")
+        if not message:
+            state = page.evaluate(_TELEGRAM_CHAT_STATE_JS)
             self.logger.info(
-                "TELEGRAM POLL channel=%s mid=%s age=%s source=%s skipped_ad=%s last=%s",
+                "TELEGRAM POLL channel=%s last=none skipped_ad=%s state=%s parse=%s",
                 channel.name,
-                (str(payload.get("key") or "")[:16] or message_id[:10]),
-                self._format_age(age_seconds),
-                message.source,
                 skipped_ad,
-                preview,
+                state,
+                asdict(diagnostics),
             )
-
-            seen = message_id in self._seen_messages or self.state.is_seen(f"telegram:{message_id}")
-            max_age = self.config.telegram_signals.max_message_age_seconds
-            stale = age_seconds is not None and age_seconds > max_age
-
-            if seen:
-                status, reason = "watching", "latest message already processed"
-            elif stale:
-                status, reason = "stale", f"message age {age_seconds:.0f}s exceeds {max_age}s"
-            else:
-                status, reason = "latest", "new latest message"
-
+            reason = self._empty_reason(state, diagnostics, skipped_ad=skipped_ad)
             self._record_message(
-                message_id,
-                status,
-                payload["text"],
+                self._channel_poll_id(channel),
+                "empty",
+                state.get("lastBubbleText") or "",
                 channel=channel,
                 reason=reason,
-                message_key=payload.get("key"),
-                message_timestamp=payload.get("timestamp"),
-                age_seconds=age_seconds,
+                message_key=None,
+                message_timestamp=None,
+                age_seconds=None,
             )
+            return
 
-            if seen:
-                return
+        payload = {
+            "key": message.key,
+            "text": message.text,
+            "timestamp": message.timestamp,
+        }
+        message_id = self._message_id(channel, payload["text"], message_key=payload.get("key"))
+        age_seconds = self._message_age(payload.get("timestamp"))
+        preview = payload["text"][:220].replace("\n", " | ")
+        self.logger.info(
+            "TELEGRAM POLL channel=%s mid=%s age=%s source=%s skipped_ad=%s last=%s",
+            channel.name,
+            (str(payload.get("key") or "")[:16] or message_id[:10]),
+            self._format_age(age_seconds),
+            message.source,
+            skipped_ad,
+            preview,
+        )
 
-            if stale:
-                self._seen_messages.add(message_id)
-                self.state.mark_seen(f"telegram:{message_id}")
-                return
+        seen = message_id in self._seen_messages or self.state.is_seen(f"telegram:{message_id}")
+        max_age = self.config.telegram_signals.max_message_age_seconds
+        stale = age_seconds is not None and age_seconds > max_age
 
-            self._process_new_message(
-                channel,
-                payload["text"],
-                message_id=message_id,
-                message_key=payload.get("key"),
-                message_timestamp=payload.get("timestamp"),
-            )
-        except Exception as exc:  # noqa: BLE001
-            self._status.last_error = f"{channel.name}: {exc}"
-            self.logger.exception("TELEGRAM CHANNEL READ ERROR channel=%s url=%s error=%s", channel.name, channel.url, exc)
+        if seen:
+            status, reason = "watching", "latest message already processed"
+        elif stale:
+            status, reason = "stale", f"message age {age_seconds:.0f}s exceeds {max_age}s"
+        else:
+            status, reason = "latest", "new latest message"
+
+        self._record_message(
+            message_id,
+            status,
+            payload["text"],
+            channel=channel,
+            reason=reason,
+            message_key=payload.get("key"),
+            message_timestamp=payload.get("timestamp"),
+            age_seconds=age_seconds,
+        )
+
+        if seen:
+            return
+
+        if stale:
+            self._seen_messages.add(message_id)
+            self.state.mark_seen(f"telegram:{message_id}")
+            return
+
+        self._process_new_message(
+            channel,
+            payload["text"],
+            message_id=message_id,
+            message_key=payload.get("key"),
+            message_timestamp=payload.get("timestamp"),
+            open_market_keys=open_market_keys,
+        )
 
     @staticmethod
     def _empty_reason(state: dict, diagnostics, *, skipped_ad: bool = False) -> str:
@@ -811,9 +861,9 @@ class TelegramSignalsBot:
         last_diagnostics = ParseDiagnostics()
         skipped_ad = False
 
-        for attempt in range(5):
+        for attempt in range(3):
             self._scroll_chat_to_bottom(page, attempts=1)
-            page.wait_for_timeout(350 + attempt * 250)
+            page.wait_for_timeout(250 + attempt * 150)
             html, source = self._capture_chat_html(page)
             candidates, diagnostics = parse_all_messages(html, source=source)
             last_diagnostics = diagnostics
@@ -826,9 +876,9 @@ class TelegramSignalsBot:
                 self._scroll_chat_up(page, attempts=2)
                 continue
 
-        for scroll_up_pass in range(4):
+        for scroll_up_pass in range(2):
             self._scroll_chat_up(page, attempts=1)
-            page.wait_for_timeout(600)
+            page.wait_for_timeout(400)
             html, source = self._capture_chat_html(page)
             candidates, diagnostics = parse_all_messages(html, source=source)
             last_diagnostics = diagnostics
@@ -915,6 +965,7 @@ class TelegramSignalsBot:
         message_id: str,
         message_key: str | None = None,
         message_timestamp: float | None = None,
+        open_market_keys: set[str] | None = None,
     ) -> None:
         if _looks_like_breakeven(message):
             self._seen_messages.add(message_id)
@@ -1048,6 +1099,7 @@ class TelegramSignalsBot:
             source_id=message_id,
             channel=channel,
             trade_hash=trade_hash,
+            open_market_keys=open_market_keys,
         )
         self._record_message(
             message_id,
@@ -1148,6 +1200,7 @@ class TelegramSignalsBot:
         channel: TelegramChannelConfig,
         hard: bool = False,
         trade_hash: str | None = None,
+        open_market_keys: set[str] | None = None,
     ) -> dict:
         if not hard and self.daily_risk_status:
             daily = self.daily_risk_status()
@@ -1193,7 +1246,7 @@ class TelegramSignalsBot:
         if (
             not hard
             and self.config.telegram_signals.ignore_open_symbol_trades
-            and self._has_open_market(symbol_cfg)
+            and self._has_open_market(symbol_cfg, open_market_keys=open_market_keys)
         ):
             result = {
                 "status": "skipped",
@@ -1309,8 +1362,10 @@ class TelegramSignalsBot:
             },
         )
 
-    def _has_open_market(self, symbol_cfg: SymbolConfig) -> bool:
+    def _has_open_market(self, symbol_cfg: SymbolConfig, *, open_market_keys: set[str] | None = None) -> bool:
         target_key = symbol_cfg.key
+        if open_market_keys is not None:
+            return target_key in open_market_keys
         positions = self.client.positions() or []
         for pos in positions:
             symbol = str(_field(pos, "symbol", ""))

@@ -1,4 +1,6 @@
-import pytest
+from __future__ import annotations
+
+import unittest
 
 from rsi_divergence_bot.config import (
     AppConfig,
@@ -9,6 +11,7 @@ from rsi_divergence_bot.config import (
     normalize_telegram_channel_url,
     remove_telegram_channel,
     update_telegram_channel,
+    update_telegram_ignore_open_trades,
 )
 
 
@@ -27,31 +30,42 @@ def _config() -> AppConfig:
     )
 
 
-def test_normalize_telegram_channel_url_accepts_username():
-    assert normalize_telegram_channel_url("@FOREXUSAMASTER1") == "https://web.telegram.org/k/#@FOREXUSAMASTER1"
+class TelegramChannelsConfigTests(unittest.TestCase):
+    def test_normalize_telegram_channel_url_accepts_username(self) -> None:
+        self.assertEqual(
+            normalize_telegram_channel_url("@FOREXUSAMASTER1"),
+            "https://web.telegram.org/k/#@FOREXUSAMASTER1",
+        )
+
+    def test_add_and_remove_telegram_channel(self) -> None:
+        config = _config()
+        added = add_telegram_channel(config, "#-1303328644", name="PROFIT HACKER")
+        self.assertEqual(added.url, "https://web.telegram.org/k/#-1303328644")
+        self.assertEqual(len(config.telegram_signals.channels), 2)
+        removed = remove_telegram_channel(config, added.url)
+        self.assertEqual(removed.name, "PROFIT HACKER")
+        self.assertEqual(len(config.telegram_signals.channels), 1)
+
+    def test_add_duplicate_channel_raises(self) -> None:
+        config = _config()
+        with self.assertRaisesRegex(ValueError, "already exists"):
+            add_telegram_channel(config, "https://web.telegram.org/k/#@FOREXUSAMASTER1")
+
+    def test_update_telegram_channel_enabled(self) -> None:
+        config = _config()
+        channel = update_telegram_channel(
+            config,
+            "https://web.telegram.org/k/#@FOREXUSAMASTER1",
+            enabled=False,
+        )
+        self.assertFalse(channel.enabled)
+
+    def test_update_telegram_ignore_open_trades(self) -> None:
+        config = _config()
+        self.assertTrue(config.telegram_signals.ignore_open_symbol_trades)
+        update_telegram_ignore_open_trades(config, ignore_open=False)
+        self.assertFalse(config.telegram_signals.ignore_open_symbol_trades)
 
 
-def test_add_and_remove_telegram_channel():
-    config = _config()
-    added = add_telegram_channel(config, "#-1303328644", name="PROFIT HACKER")
-    assert added.url == "https://web.telegram.org/k/#-1303328644"
-    assert len(config.telegram_signals.channels) == 2
-    removed = remove_telegram_channel(config, added.url)
-    assert removed.name == "PROFIT HACKER"
-    assert len(config.telegram_signals.channels) == 1
-
-
-def test_add_duplicate_channel_raises():
-    config = _config()
-    with pytest.raises(ValueError, match="already exists"):
-        add_telegram_channel(config, "https://web.telegram.org/k/#@FOREXUSAMASTER1")
-
-
-def test_update_telegram_channel_enabled():
-    config = _config()
-    channel = update_telegram_channel(
-        config,
-        "https://web.telegram.org/k/#@FOREXUSAMASTER1",
-        enabled=False,
-    )
-    assert channel.enabled is False
+if __name__ == "__main__":
+    unittest.main()

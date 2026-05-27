@@ -33,6 +33,7 @@ from .config import (
     update_symbol_lots,
     update_symbol_timeframes,
     update_telegram_channel,
+    update_telegram_ignore_open_trades,
 )
 from .config_snapshots import (
     apply_snapshot,
@@ -96,6 +97,11 @@ class TelegramChannelUpdateRequest(BaseModel):
 
 class TelegramChannelRemoveRequest(BaseModel):
     url: str = Field(min_length=3)
+    persist: bool = True
+
+
+class TelegramSettingsRequest(BaseModel):
+    ignore_open_symbol_trades: bool | None = None
     persist: bool = True
 
 
@@ -827,6 +833,22 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     def telegram_signals_stop() -> dict:
         return telegram_bot.stop()
 
+    @app.patch("/api/telegram-signals/settings")
+    def telegram_signals_settings(body: TelegramSettingsRequest) -> dict:
+        if body.ignore_open_symbol_trades is not None:
+            update_telegram_ignore_open_trades(config, ignore_open=body.ignore_open_symbol_trades)
+            if body.persist:
+                save_config(config_path, config)
+            bot.logger.info(
+                "TELEGRAM SETTINGS ignore_open_symbol_trades=%s persist=%s",
+                config.telegram_signals.ignore_open_symbol_trades,
+                body.persist,
+            )
+        return {
+            "status": "saved" if body.persist else "applied",
+            **telegram_bot.status(),
+        }
+
     @app.post("/api/telegram-signals/clear-messages")
     def telegram_signals_clear_messages() -> dict:
         return telegram_bot.clear_message_history()
@@ -862,7 +884,6 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
 
     @app.patch("/api/telegram-signals/channels")
     def telegram_signals_update_channel(body: TelegramChannelUpdateRequest) -> dict:
-        ensure_telegram_stopped_for_channel_edit()
         try:
             channel = update_telegram_channel(
                 config,
