@@ -7,6 +7,7 @@ from typing import Any
 import pandas as pd
 
 from .config import MT5Config
+from .mt5_algo_trading import ensure_algo_trading
 from .symbols import CRYPTO_MARKET_KEYS
 from .timeframes import TIMEFRAME_MINUTES, mt5_timeframe_value, timeframe_seconds, validate_timeframe
 from .trade_geometry import invalid_market_geometry, invalid_pending_geometry
@@ -252,6 +253,7 @@ class MT5Client:
             if not ok:
                 raise RuntimeError(f"MT5 initialize failed: {self.mt5.last_error()}")
             _set_thread_ready(self.connection_key, True)
+            ensure_algo_trading(self, config=self.config)
 
     def login_account(self, login: int, password: str, server: str) -> None:
         self.initialize_terminal()
@@ -262,6 +264,7 @@ class MT5Client:
             self.config.login = int(login)
             self.config.password = str(password)
             self.config.server = str(server)
+            ensure_algo_trading(self, config=self.config)
 
     def switch_account(self, mt5_config: MT5Config) -> None:
         new_key = self._connection_key_for(mt5_config)
@@ -291,6 +294,7 @@ class MT5Client:
             if not ok:
                 raise RuntimeError(f"MT5 initialize failed: {self.mt5.last_error()}")
             _set_thread_ready(self.connection_key, True)
+            ensure_algo_trading(self, config=self.config)
 
     def _rates_time_offset(self, symbol: str, timeframe: str, rates) -> int:
         detected = _detect_server_time_offset_seconds(rates, timeframe)
