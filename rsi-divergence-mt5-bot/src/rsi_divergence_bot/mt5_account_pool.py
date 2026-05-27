@@ -339,6 +339,7 @@ class Mt5AccountPool:
                 client=self._client,
                 executor=executor,
                 account=account,
+                append_suffix=self.config.mt5.append_broker_symbol_suffix,
             )
             state.connected = True
             state.last_error = None

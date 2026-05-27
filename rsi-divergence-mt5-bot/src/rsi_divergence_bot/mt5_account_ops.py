@@ -6,7 +6,7 @@ from typing import Any
 from .mt5_client import MT5Client
 from .mt5_account_store import Mt5AccountRecord
 from .strategy import Signal
-from .symbols import preferred_broker_symbol
+from .symbols import market_key, preferred_broker_symbol
 from .trader import TradeExecutor
 
 
@@ -18,8 +18,10 @@ def _signal_from_dict(payload: dict) -> Signal:
     return Signal(**data)
 
 
-def _remap_symbol(symbol: str, suffix: str) -> str:
-    return preferred_broker_symbol(symbol, suffix)
+def _remap_symbol(symbol: str, suffix: str, *, append_suffix: bool = True) -> str:
+    if not append_suffix:
+        return market_key(symbol)
+    return preferred_broker_symbol(symbol, suffix, append_suffix=True)
 
 
 def _account_payload(account: Mt5AccountRecord | dict) -> dict:
@@ -35,6 +37,7 @@ def handle_account_operation(
     client: MT5Client,
     executor: TradeExecutor,
     account: Mt5AccountRecord | dict,
+    append_suffix: bool = True,
 ) -> dict:
     payload = payload or {}
     account_data = _account_payload(account)
@@ -94,7 +97,7 @@ def handle_account_operation(
         suffix = str(account_data.get("symbol_suffix") or "")
         signal = Signal(
             setup_id=f"{signal.setup_id}:acct{account_data['id']}",
-            symbol=_remap_symbol(signal.symbol, suffix),
+            symbol=_remap_symbol(signal.symbol, suffix, append_suffix=append_suffix),
             market_key=signal.market_key,
             name=signal.name,
             side=signal.side,
@@ -118,7 +121,7 @@ def handle_account_operation(
     if op == "place_market_setup":
         kwargs = dict(payload)
         suffix = str(account_data.get("symbol_suffix") or "")
-        kwargs["symbol"] = _remap_symbol(str(kwargs["symbol"]), suffix)
+        kwargs["symbol"] = _remap_symbol(str(kwargs["symbol"]), suffix, append_suffix=append_suffix)
         kwargs["setup_id"] = f"{kwargs.get('setup_id', 'setup')}:acct{account_data['id']}"
         result = executor.place_market_setup(**kwargs)
         result["account_id"] = account_data["id"]
@@ -126,7 +129,11 @@ def handle_account_operation(
         return result
 
     if op == "place_test_trade":
-        symbol = _remap_symbol(str(payload.get("symbol") or "XAUUSD"), str(account_data.get("symbol_suffix") or ""))
+        symbol = _remap_symbol(
+            str(payload.get("symbol") or "XAUUSD"),
+            str(account_data.get("symbol_suffix") or ""),
+            append_suffix=append_suffix,
+        )
         side = str(payload.get("side") or "buy")
         volume = float(payload.get("volume") or 0.01)
         result = executor.place_test_trade(symbol, side, volume)

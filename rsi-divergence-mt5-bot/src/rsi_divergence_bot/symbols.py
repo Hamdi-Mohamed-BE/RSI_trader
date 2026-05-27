@@ -100,8 +100,15 @@ def mt5_symbol_candidates(token: str, broker_suffix: str | None = None) -> list[
     return candidates
 
 
-def preferred_broker_symbol(symbol: str, broker_suffix: str | None = None) -> str:
+def preferred_broker_symbol(
+    symbol: str,
+    broker_suffix: str | None = None,
+    *,
+    append_suffix: bool = True,
+) -> str:
     base = market_key(symbol)
+    if not append_suffix:
+        return base
     candidates = mt5_symbol_candidates(base, broker_suffix)
     return candidates[0] if candidates else symbol
 

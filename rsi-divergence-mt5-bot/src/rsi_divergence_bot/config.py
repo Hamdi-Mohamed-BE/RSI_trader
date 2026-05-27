@@ -64,6 +64,10 @@ class MT5Config(BaseModel):
         default="-VIP",
         validation_alias=AliasChoices("broker_symbol_suffix", "RSI_BOT_BROKER_SYMBOL_SUFFIX"),
     )
+    append_broker_symbol_suffix: bool = Field(
+        default=True,
+        validation_alias=AliasChoices("append_broker_symbol_suffix", "RSI_BOT_APPEND_BROKER_SYMBOL_SUFFIX"),
+    )
 
     @field_validator("broker_symbol_suffix", mode="before")
     @classmethod
@@ -287,6 +291,14 @@ def update_default_forex_lot(config: AppConfig, lot: float) -> None:
 
 def broker_symbol_suffix(config: AppConfig) -> str:
     return config.mt5.broker_symbol_suffix
+
+
+def append_broker_symbol_suffix_enabled(config: AppConfig) -> bool:
+    return config.mt5.append_broker_symbol_suffix
+
+
+def update_append_broker_symbol_suffix(config: AppConfig, enabled: bool) -> None:
+    config.mt5.append_broker_symbol_suffix = bool(enabled)
 
 
 def update_symbol_lots(config: AppConfig, lots: dict[str, float]) -> list[str]:

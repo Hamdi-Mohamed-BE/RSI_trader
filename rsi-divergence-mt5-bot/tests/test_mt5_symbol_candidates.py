@@ -54,6 +54,12 @@ class Mt5SymbolCandidatesTests(unittest.TestCase):
         self.assertEqual(config.mt5.broker_symbol_suffix, "-STD")
         self.assertEqual(mt5_symbol_candidates("EURUSD", config.mt5.broker_symbol_suffix)[0], "EURUSD-STD")
 
+    def test_append_suffix_disabled(self) -> None:
+        from rsi_divergence_bot.symbols import preferred_broker_symbol
+
+        self.assertEqual(preferred_broker_symbol("BTCUSD", "-VIP", append_suffix=False), "BTCUSD")
+        self.assertEqual(preferred_broker_symbol("BTCUSD", "-VIP", append_suffix=True), "BTCUSD-VIP")
+
 
 if __name__ == "__main__":
     unittest.main()

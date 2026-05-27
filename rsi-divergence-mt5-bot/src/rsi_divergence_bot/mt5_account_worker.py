@@ -98,6 +98,7 @@ def account_worker_main(
                         client=client,
                         executor=executor,
                         account=account,
+                        append_suffix=config.mt5.append_broker_symbol_suffix,
                     )
                     response = {"ok": True, "result": response_payload}
                 except Exception as exc:  # noqa: BLE001

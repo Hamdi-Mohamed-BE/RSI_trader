@@ -150,7 +150,8 @@ def resolve_symbol_for_telegram(
         return None, False
 
     base = _norm_symbol(token)
-    for candidate in mt5_symbol_candidates(token, config.mt5.broker_symbol_suffix):
+    suffix = config.mt5.broker_symbol_suffix if config.mt5.append_broker_symbol_suffix else ""
+    for candidate in mt5_symbol_candidates(token, suffix):
         if client.symbol_info(candidate) is None or client.tick(candidate) is None:
             continue
         for item in config.symbols:

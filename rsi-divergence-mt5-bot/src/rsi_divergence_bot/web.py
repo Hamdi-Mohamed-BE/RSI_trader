@@ -24,6 +24,8 @@ from .config import (
     StrategyMode,
     add_telegram_channel,
     broker_symbol_suffix,
+    append_broker_symbol_suffix_enabled,
+    update_append_broker_symbol_suffix,
     default_symbol_lot,
     update_default_forex_lot,
     remove_telegram_channel,
@@ -62,6 +64,7 @@ class SymbolSettings(BaseModel):
     enabled: dict[str, bool] = Field(default_factory=dict)
     timeframes: dict[str, str] = Field(default_factory=dict)
     default_forex_lot: float | None = Field(default=None, gt=0)
+    append_broker_symbol_suffix: bool | None = None
     persist: bool = True
 
 
@@ -616,6 +619,7 @@ def create_app(
             "default_forex_lot": config.risk.default_forex_lot,
             "timeframe_options": timeframe_options_payload(),
             "broker_symbol_suffix": broker_symbol_suffix(config),
+            "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
         }
 
     @app.get("/api/config")
@@ -637,6 +641,7 @@ def create_app(
             "risk": config.risk.model_dump(mode="python"),
             "mt5": {
                 "broker_symbol_suffix": broker_symbol_suffix(config),
+                "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
             },
             "telegram_signals": {
                 "enabled": config.telegram_signals.enabled,
@@ -681,13 +686,26 @@ def create_app(
             if body.persist:
                 save_config(config_path, config)
 
-        if not body.lots and not body.enabled and not body.timeframes and body.default_forex_lot is None:
+        if body.append_broker_symbol_suffix is not None:
+            update_append_broker_symbol_suffix(config, body.append_broker_symbol_suffix)
+            if body.persist:
+                save_config(config_path, config)
+
+        if (
+            not body.lots
+            and not body.enabled
+            and not body.timeframes
+            and body.default_forex_lot is None
+            and body.append_broker_symbol_suffix is None
+        ):
             stats = symbol_stats()
             return {
                 "status": "noop",
                 "symbols": symbol_payload(),
                 "symbol_stats": stats,
                 "default_forex_lot": config.risk.default_forex_lot,
+                "broker_symbol_suffix": broker_symbol_suffix(config),
+                "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
             }
 
         symbols = apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
@@ -697,6 +715,8 @@ def create_app(
             "symbols": symbols,
             "symbol_stats": stats,
             "default_forex_lot": config.risk.default_forex_lot,
+            "broker_symbol_suffix": broker_symbol_suffix(config),
+            "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
         }
 
     @app.post("/api/symbols/lots")

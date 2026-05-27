@@ -124,9 +124,13 @@
             <span>Default forex lot (Telegram unknown pairs)</span>
             <input id="default-forex-lot" type="number" min="0.01" step="0.01" value="0.25">
           </label>
+          <label class="toggle field-full">
+            <input id="append-broker-symbol-suffix" type="checkbox" checked>
+            <span>Append broker symbol tag (e.g. BTCUSD → BTCUSD-VIP / BTCUSD-STD per account)</span>
+          </label>
           <p class="panel-hint field-full">
-            Lot size used when Telegram auto-registers a forex pair that is not already in the symbol list below.
-            Changes apply in memory immediately; click <strong>Save settings</strong> to write to config.yaml.
+            When off, orders use the plain symbol name (BTCUSD). When on, the account suffix or
+            <code>mt5.broker_symbol_suffix</code> is appended for MT5 orders and Telegram auto-register.
           </p>
           <p id="broker-symbol-suffix-hint" class="panel-hint field-full"></p>
         </div>
@@ -970,6 +974,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=52" defer></script>
+  <script src="/static/js/app.js?v=53" defer></script>
 </body>
 </html>

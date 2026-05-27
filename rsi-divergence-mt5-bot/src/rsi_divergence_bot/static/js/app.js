@@ -42,6 +42,7 @@ const els = {
   symbolsBody: document.getElementById("symbols-body"),
   resetLotsBtn: document.getElementById("reset-lots-btn"),
   defaultForexLot: document.getElementById("default-forex-lot"),
+  appendBrokerSymbolSuffix: document.getElementById("append-broker-symbol-suffix"),
   brokerSymbolSuffixHint: document.getElementById("broker-symbol-suffix-hint"),
   resetTimeframesBtn: document.getElementById("reset-timeframes-btn"),
   optimizeTimeframesBtn: document.getElementById("optimize-timeframes-btn"),
@@ -676,6 +677,24 @@ function defaultForexLotFromUi() {
   return Number.isFinite(value) && value > 0 ? value : undefined;
 }
 
+function appendBrokerSymbolSuffixFromUi() {
+  if (!els.appendBrokerSymbolSuffix) return undefined;
+  return Boolean(els.appendBrokerSymbolSuffix.checked);
+}
+
+function updateBrokerSymbolSuffixHint(configLike = botConfig) {
+  if (!els.brokerSymbolSuffixHint) return;
+  const suffix = configLike?.mt5?.broker_symbol_suffix || "-VIP";
+  const appendTag = configLike?.mt5?.append_broker_symbol_suffix !== false;
+  if (appendTag) {
+    els.brokerSymbolSuffixHint.textContent =
+      `Broker tag on: orders use symbols like BTCUSD${suffix} (or each MT5 account's suffix, e.g. -STD). Telegram auto-register tries suffixed names first.`;
+  } else {
+    els.brokerSymbolSuffixHint.textContent =
+      "Broker tag off: orders use plain symbol names (BTCUSD, EURUSD, …) with no -VIP / -STD suffix.";
+  }
+}
+
 function formatApiError(detail) {
   if (typeof detail === "string") return detail;
   if (Array.isArray(detail)) {
@@ -687,11 +706,13 @@ function formatApiError(detail) {
 async function syncSymbolSettings({ persist = true, silent = false, rerender = false } = {}) {
   const { lots, enabled, timeframes } = collectSymbolSettings();
   const defaultForexLot = defaultForexLotFromUi();
+  const appendBrokerSymbolSuffix = appendBrokerSymbolSuffixFromUi();
   if (
     !Object.keys(lots).length
     && !Object.keys(enabled).length
     && !Object.keys(timeframes).length
     && defaultForexLot === undefined
+    && appendBrokerSymbolSuffix === undefined
   ) {
     return { status: "noop", symbols: botConfig?.symbols || [], symbol_stats: botConfig?.symbol_stats || null };
   }
@@ -699,7 +720,14 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
   const response = await fetch("/api/symbols/settings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ lots, enabled, timeframes, default_forex_lot: defaultForexLot, persist }),
+    body: JSON.stringify({
+      lots,
+      enabled,
+      timeframes,
+      default_forex_lot: defaultForexLot,
+      append_broker_symbol_suffix: appendBrokerSymbolSuffix,
+      persist,
+    }),
   });
   const data = await response.json();
   if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to sync symbol settings");
@@ -712,6 +740,18 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
       botConfig.risk.default_forex_lot = data.default_forex_lot;
       if (els.defaultForexLot) els.defaultForexLot.value = data.default_forex_lot;
     }
+    if (data.append_broker_symbol_suffix != null) {
+      botConfig.mt5 = botConfig.mt5 || {};
+      botConfig.mt5.append_broker_symbol_suffix = data.append_broker_symbol_suffix;
+      if (els.appendBrokerSymbolSuffix) {
+        els.appendBrokerSymbolSuffix.checked = Boolean(data.append_broker_symbol_suffix);
+      }
+    }
+    if (data.broker_symbol_suffix) {
+      botConfig.mt5 = botConfig.mt5 || {};
+      botConfig.mt5.broker_symbol_suffix = data.broker_symbol_suffix;
+    }
+    updateBrokerSymbolSuffixHint(botConfig);
   }
   updateSymbolStats(data.symbol_stats);
   if (rerender || !silent) renderSymbols(data.symbols);
@@ -2531,11 +2571,10 @@ function renderConfig(config) {
   if (els.defaultForexLot && config.risk?.default_forex_lot != null) {
     els.defaultForexLot.value = config.risk.default_forex_lot;
   }
-  if (els.brokerSymbolSuffixHint) {
-    const suffix = config.mt5?.broker_symbol_suffix || config.broker_symbol_suffix || "-VIP";
-    els.brokerSymbolSuffixHint.textContent =
-      `Telegram auto-register tries broker symbols like EURUSD${suffix} first (set mt5.broker_symbol_suffix in config.yaml, e.g. -STD).`;
+  if (els.appendBrokerSymbolSuffix) {
+    els.appendBrokerSymbolSuffix.checked = config.mt5?.append_broker_symbol_suffix !== false;
   }
+  updateBrokerSymbolSuffixHint(config);
 
   try {
     const dryRun = config.bot?.dry_run;
@@ -2903,13 +2942,20 @@ async function loadSymbolSettings() {
       botConfig.mt5 = botConfig.mt5 || {};
       botConfig.mt5.broker_symbol_suffix = data.broker_symbol_suffix;
     }
+    if (data.append_broker_symbol_suffix != null) {
+      botConfig.mt5 = botConfig.mt5 || {};
+      botConfig.mt5.append_broker_symbol_suffix = data.append_broker_symbol_suffix;
+    }
   } else {
     botConfig = {
       symbols: data.symbols || [],
       symbol_stats: data.symbol_stats || null,
       risk: { default_forex_lot: data.default_forex_lot },
       timeframe_options: data.timeframe_options || [],
-      mt5: { broker_symbol_suffix: data.broker_symbol_suffix || "-VIP" },
+      mt5: {
+        broker_symbol_suffix: data.broker_symbol_suffix || "-VIP",
+        append_broker_symbol_suffix: data.append_broker_symbol_suffix !== false,
+      },
     };
   }
   try {
@@ -2924,11 +2970,10 @@ async function loadSymbolSettings() {
   if (els.defaultForexLot && data.default_forex_lot != null) {
     els.defaultForexLot.value = data.default_forex_lot;
   }
-  if (els.brokerSymbolSuffixHint) {
-    const suffix = data.broker_symbol_suffix || "-VIP";
-    els.brokerSymbolSuffixHint.textContent =
-      `Telegram auto-register tries broker symbols like EURUSD${suffix} first (set mt5.broker_symbol_suffix in config.yaml, e.g. -STD).`;
+  if (els.appendBrokerSymbolSuffix) {
+    els.appendBrokerSymbolSuffix.checked = data.append_broker_symbol_suffix !== false;
   }
+  updateBrokerSymbolSuffixHint(botConfig);
   updateSymbolStats(data.symbol_stats);
 }
 
@@ -3288,6 +3333,15 @@ async function init() {
     scheduleSettingsSync({ persist: false, silent: true });
   });
   els.defaultForexLot?.addEventListener("change", () => {
+    scheduleSettingsSync({ persist: false, silent: true });
+  });
+  els.appendBrokerSymbolSuffix?.addEventListener("change", () => {
+    updateBrokerSymbolSuffixHint({
+      mt5: {
+        broker_symbol_suffix: botConfig?.mt5?.broker_symbol_suffix || "-VIP",
+        append_broker_symbol_suffix: appendBrokerSymbolSuffixFromUi(),
+      },
+    });
     scheduleSettingsSync({ persist: false, silent: true });
   });
   els.autoRunStartBtn?.addEventListener("click", startAutoRun);
