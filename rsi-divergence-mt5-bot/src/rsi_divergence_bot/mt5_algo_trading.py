@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import configparser
+import io
 import logging
 import sys
 import time
@@ -17,6 +18,49 @@ EXPERTS_DEFAULTS = {
     "Account": "0",
     "Profile": "0",
 }
+
+
+def _detect_ini_encoding(raw: bytes) -> str:
+    if raw.startswith(b"\xff\xfe"):
+        return "utf-16-le"
+    if raw.startswith(b"\xfe\xff"):
+        return "utf-16-be"
+    if raw.startswith(b"\xef\xbb\xbf"):
+        return "utf-8-sig"
+    try:
+        raw.decode("utf-8")
+        return "utf-8"
+    except UnicodeDecodeError:
+        return "utf-16-le"
+
+
+def _read_ini_bytes(path: Path) -> tuple[str, str]:
+    raw = path.read_bytes()
+    encoding = _detect_ini_encoding(raw)
+    if encoding == "utf-16-le":
+        text = raw[2:].decode("utf-16-le") if raw.startswith(b"\xff\xfe") else raw.decode("utf-16-le")
+    elif encoding == "utf-16-be":
+        text = raw[2:].decode("utf-16-be") if raw.startswith(b"\xfe\xff") else raw.decode("utf-16-be")
+    elif encoding == "utf-8-sig":
+        text = raw.decode("utf-8-sig")
+    else:
+        text = raw.decode("utf-8")
+    return text, encoding
+
+
+def _write_ini_bytes(path: Path, text: str, encoding: str) -> None:
+    if encoding == "utf-16-le":
+        path.write_bytes(b"\xff\xfe" + text.encode("utf-16-le"))
+    elif encoding == "utf-16-be":
+        path.write_bytes(b"\xfe\xff" + text.encode("utf-16-be"))
+    elif encoding == "utf-8-sig":
+        path.write_bytes(text.encode("utf-8-sig"))
+    else:
+        path.write_text(text, encoding="utf-8")
+
+
+def _default_ini_encoding() -> str:
+    return "utf-16-le" if sys.platform == "win32" else "utf-8"
 
 
 def _terminal_info_dict(client: Any) -> dict[str, Any]:
@@ -61,8 +105,10 @@ def patch_experts_ini(ini_path: Path, *, values: dict[str, str] | None = None) -
     ini_path.parent.mkdir(parents=True, exist_ok=True)
     parser = configparser.ConfigParser()
     parser.optionxform = str
+    encoding = _default_ini_encoding()
     if ini_path.exists():
-        parser.read(ini_path, encoding="utf-8")
+        text, encoding = _read_ini_bytes(ini_path)
+        parser.read_file(io.StringIO(text))
     if "Experts" not in parser:
         parser["Experts"] = {}
     section = parser["Experts"]
@@ -72,8 +118,9 @@ def patch_experts_ini(ini_path: Path, *, values: dict[str, str] | None = None) -
             section[key] = value
             changed = True
     if changed or not ini_path.exists():
-        with ini_path.open("w", encoding="utf-8") as handle:
-            parser.write(handle)
+        buffer = io.StringIO()
+        parser.write(buffer)
+        _write_ini_bytes(ini_path, buffer.getvalue(), encoding)
         return True
     return False
 
@@ -148,7 +195,7 @@ def ensure_algo_trading(
         try:
             if patch_experts_ini(ini_path):
                 active_log.info("MT5 patched Experts config at %s", ini_path)
-        except OSError as exc:
+        except (OSError, UnicodeDecodeError, UnicodeError, configparser.Error) as exc:
             active_log.warning("MT5 could not patch Experts config: %s", exc)
 
     if is_algo_trading_enabled(client) is True:
