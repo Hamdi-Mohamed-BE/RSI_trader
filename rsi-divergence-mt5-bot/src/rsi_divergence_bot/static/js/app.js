@@ -931,10 +931,11 @@ function renderMt5Accounts(data) {
   const accounts = data.accounts || [];
   const enabledCount = data.enabled_count ?? accounts.filter((item) => item.enabled).length;
   const workersAlive = workers.filter((item) => item.alive).length;
+  const sessionMode = data.session_mode === "sequential" ? "Sequential" : "Parallel";
   const modeLabel = data.trading_mode === "single" ? "Single" : "Parallel";
   if (els.mt5AccountsStatus) {
     els.mt5AccountsStatus.textContent =
-      `${enabledCount} enabled · ${modeLabel} mode · ${workersAlive}/${accounts.length || 0} workers running · pool ${data.pool_active ? "active" : "config fallback"}`;
+      `${enabledCount} enabled · ${modeLabel} targets · ${sessionMode} login · pool ${data.pool_active ? "active" : "config fallback"}`;
     if (Array.isArray(data.path_warnings) && data.path_warnings.length) {
       els.mt5AccountsStatus.textContent += ` · WARNING: ${data.path_warnings[0]}`;
       els.mt5AccountsStatus.className = "panel-hint mt5-status-line live-warning";
@@ -944,7 +945,7 @@ function renderMt5Accounts(data) {
   }
   if (els.mt5StatEnabled) els.mt5StatEnabled.textContent = String(enabledCount);
   if (els.mt5StatMode) els.mt5StatMode.textContent = modeLabel;
-  if (els.mt5StatWorkers) els.mt5StatWorkers.textContent = `${workersAlive}/${accounts.length || 0}`;
+  if (els.mt5StatWorkers) els.mt5StatWorkers.textContent = `${workers.filter((item) => item.connected).length}/${accounts.length || 0}`;
   if (els.mt5StatPool) els.mt5StatPool.textContent = data.pool_active ? "Active" : "Fallback";
   if (!els.mt5AccountsBody) return;
   if (!accounts.length) {
@@ -956,14 +957,16 @@ function renderMt5Accounts(data) {
   els.mt5AccountsBody.innerHTML = accounts
     .map((account) => {
       const worker = workerMap[String(account.id)] || {};
-      const workerLabel = worker.connected
-        ? `Connected · PID ${worker.pid || "?"}`
-        : worker.alive
-          ? "Starting…"
+      const workerLabel = worker.active
+        ? "Active session"
+        : worker.connected
+          ? "Last login OK"
           : worker.error
             ? `Error: ${worker.error}`
-            : "Stopped";
-      const workerClass = worker.connected ? "badge badge-accent" : worker.alive ? "badge badge-muted" : "badge badge-muted";
+            : worker.alive
+              ? "Idle — login on trade"
+              : "Idle";
+      const workerClass = worker.connected || worker.active ? "badge badge-accent" : worker.error ? "badge badge-muted" : "badge badge-muted";
       const active =
         data.trading_mode === "single" && String(data.active_account_id) === String(account.id)
           ? '<span class="badge badge-accent">Active</span>'
@@ -1169,16 +1172,16 @@ function renderMt5TestTradeResult(data) {
 }
 
 async function placeMt5TestTrade() {
-  const connectedCount = (mt5AccountsState?.workers || []).filter((item) => item.connected).length;
-  if (!connectedCount) {
-    toast("No connected MT5 accounts — check worker status and terminal paths", "error");
+  const targetCount = (mt5AccountsState?.accounts || []).filter((item) => item.enabled).length;
+  if (!targetCount) {
+    toast("No enabled MT5 accounts configured", "error");
     return;
   }
   const live = botConfig && !botConfig.bot.dry_run;
   const confirmed = window.confirm(
     live
-      ? `Place LIVE XAUUSD 0.01 BUY test trade on ${connectedCount} connected account${connectedCount === 1 ? "" : "s"}? No SL/TP — close manually in MT5.`
-      : `Place paper XAUUSD 0.01 BUY test trade on ${connectedCount} connected account${connectedCount === 1 ? "" : "s"}?`,
+      ? `Place LIVE XAUUSD 0.01 BUY test trade on ${targetCount} enabled account${targetCount === 1 ? "" : "s"} (sequential login)? No SL/TP — close manually in MT5.`
+      : `Place paper XAUUSD 0.01 BUY test trade on ${targetCount} enabled account${targetCount === 1 ? "" : "s"}?`,
   );
   if (!confirmed) return;
 
@@ -1201,9 +1204,9 @@ async function placeMt5TestTrade() {
     const placedCount = (data.account_results || []).filter((item) => item.status === "placed" || item.status === "paper").length;
     const failedCount = (data.account_results || []).filter((item) => item.status === "failed").length;
     if (data.status === "placed" || data.status === "paper") {
-      toast(`Test trade ${data.status} on ${placedCount}/${connectedCount} account(s)`, "success");
+      toast(`Test trade ${data.status} on ${placedCount}/${targetCount} account(s)`, "success");
     } else {
-      toast(data.reason || `Test trade failed (${failedCount}/${connectedCount})`, "error");
+      toast(data.reason || `Test trade failed (${failedCount}/${targetCount})`, "error");
     }
     await refreshLogs();
   } catch (error) {

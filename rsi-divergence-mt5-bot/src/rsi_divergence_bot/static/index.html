@@ -84,7 +84,7 @@
         <span class="stat-value" id="mt5-stat-mode">—</span>
       </article>
       <article class="stat-card">
-        <span class="stat-label">Workers running</span>
+        <span class="stat-label">Sessions OK</span>
         <span class="stat-value" id="mt5-stat-workers">—</span>
       </article>
       <article class="stat-card">
@@ -156,7 +156,7 @@
           <div class="panel-header panel-header-split">
             <div>
               <h2>Trading mode</h2>
-              <p>Parallel copies RSI live trades and Telegram signals to every enabled account. Single uses one active account.</p>
+              <p>Parallel mode logs into each enabled account one at a time when RSI or Telegram signals arrive. Primary account is used for charts and live UI.</p>
             </div>
             <div class="panel-actions">
               <button id="mt5-accounts-reload-btn" class="btn btn-ghost btn-sm" type="button">
@@ -186,7 +186,7 @@
           <div class="mt5-test-trade-card">
             <div class="panel-subheader">
               <h3>Connectivity test</h3>
-              <p>Opens XAUUSD 0.01 BUY on every <strong>connected</strong> account. No SL/TP — close manually in MT5.</p>
+              <p>Opens XAUUSD 0.01 BUY on every <strong>enabled</strong> account (sequential login). No SL/TP — close manually in MT5.</p>
             </div>
             <button id="mt5-test-trade-btn" class="btn btn-danger btn-sm" type="button">
               <span class="btn-label">Place test trade on connected accounts</span>
@@ -255,7 +255,7 @@
           <div class="panel-header panel-header-split">
             <div>
               <h2>Saved accounts</h2>
-              <p>Each enabled account runs in its own worker. Use separate MT5 terminal paths for multiple logins on one PC.</p>
+              <p>One MT5 terminal session — accounts are logged in sequentially when trades are placed. Primary account stays active for market data.</p>
             </div>
           </div>
           <div class="table-wrap mt5-table-wrap">
@@ -267,7 +267,7 @@
                   <th>Server</th>
                   <th>Suffix</th>
                   <th>Status</th>
-                  <th>Worker</th>
+                  <th>Session</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -970,6 +970,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=51" defer></script>
+  <script src="/static/js/app.js?v=52" defer></script>
 </body>
 </html>

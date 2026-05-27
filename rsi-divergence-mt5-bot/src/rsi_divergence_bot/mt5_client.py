@@ -216,17 +216,81 @@ class MT5Client:
             raise RuntimeError("MetaTrader5 package is not installed. Run `uv sync` first.")
         return _native_mt5
 
-    def _initialize_kwargs(self) -> dict[str, Any]:
+    def _initialize_kwargs(self, *, include_login: bool = True) -> dict[str, Any]:
         kwargs: dict[str, Any] = {}
-        if self.config.login is not None:
-            kwargs["login"] = int(self.config.login)
-        if self.config.password:
-            kwargs["password"] = self.config.password
-        if self.config.server:
-            kwargs["server"] = self.config.server
+        if include_login:
+            if self.config.login is not None:
+                kwargs["login"] = int(self.config.login)
+            if self.config.password:
+                kwargs["password"] = self.config.password
+            if self.config.server:
+                kwargs["server"] = self.config.server
         if self.config.timeout:
             kwargs["timeout"] = int(self.config.timeout)
         return kwargs
+
+    def _connection_key_for(self, mt5_config: MT5Config | None = None) -> str:
+        cfg = mt5_config or self.config
+        if cfg.mode == "linux_bridge":
+            return f"bridge:{cfg.host}:{cfg.port}"
+        return f"native:{cfg.path or ''}"
+
+    def initialize_terminal(self) -> None:
+        """Connect to the MT5 terminal without selecting a trading account."""
+        with _MT5_LOCK:
+            if _thread_ready(self.connection_key):
+                if self.mt5.account_info() is not None:
+                    return
+                self.mt5.shutdown()
+                _set_thread_ready(self.connection_key, False)
+
+            kwargs = self._initialize_kwargs(include_login=False)
+            if self.config.mode == "native_windows" and self.config.path:
+                ok = self.mt5.initialize(path=self.config.path, **kwargs)
+            else:
+                ok = self.mt5.initialize(**kwargs)
+            if not ok:
+                raise RuntimeError(f"MT5 initialize failed: {self.mt5.last_error()}")
+            _set_thread_ready(self.connection_key, True)
+
+    def login_account(self, login: int, password: str, server: str) -> None:
+        self.initialize_terminal()
+        with _MT5_LOCK:
+            ok = self.mt5.login(int(login), password=str(password), server=str(server))
+            if not ok:
+                raise RuntimeError(f"MT5 login failed: {self.mt5.last_error()}")
+            self.config.login = int(login)
+            self.config.password = str(password)
+            self.config.server = str(server)
+
+    def switch_account(self, mt5_config: MT5Config) -> None:
+        new_key = self._connection_key_for(mt5_config)
+        path_changed = (mt5_config.path or "") != (self.config.path or "")
+        if new_key != self.connection_key or path_changed:
+            self.shutdown(force=True)
+            self.config = mt5_config
+            self.connection_key = new_key
+            self._time_offset_seconds = None
+        if mt5_config.login is None or not mt5_config.password or not mt5_config.server:
+            raise RuntimeError("account login, password, and server are required")
+        self.login_account(int(mt5_config.login), str(mt5_config.password), str(mt5_config.server))
+
+    def initialize(self) -> None:
+        with _MT5_LOCK:
+            if _thread_ready(self.connection_key):
+                if self.mt5.account_info() is not None:
+                    return
+                self.mt5.shutdown()
+                _set_thread_ready(self.connection_key, False)
+
+            kwargs = self._initialize_kwargs(include_login=True)
+            if self.config.mode == "native_windows" and self.config.path:
+                ok = self.mt5.initialize(path=self.config.path, **kwargs)
+            else:
+                ok = self.mt5.initialize(**kwargs)
+            if not ok:
+                raise RuntimeError(f"MT5 initialize failed: {self.mt5.last_error()}")
+            _set_thread_ready(self.connection_key, True)
 
     def _rates_time_offset(self, symbol: str, timeframe: str, rates) -> int:
         detected = _detect_server_time_offset_seconds(rates, timeframe)
@@ -251,23 +315,6 @@ class MT5Client:
 
         self._time_offset_seconds = 0
         return 0
-
-    def initialize(self) -> None:
-        with _MT5_LOCK:
-            if _thread_ready(self.connection_key):
-                if self.mt5.account_info() is not None:
-                    return
-                self.mt5.shutdown()
-                _set_thread_ready(self.connection_key, False)
-
-            kwargs = self._initialize_kwargs()
-            if self.config.mode == "native_windows" and self.config.path:
-                ok = self.mt5.initialize(path=self.config.path, **kwargs)
-            else:
-                ok = self.mt5.initialize(**kwargs)
-            if not ok:
-                raise RuntimeError(f"MT5 initialize failed: {self.mt5.last_error()}")
-            _set_thread_ready(self.connection_key, True)
 
     def shutdown(self, *, force: bool = False) -> None:
         if not force:
