@@ -71,6 +71,9 @@ const els = {
   mt5AccountFormTitle: document.getElementById("mt5-account-form-title"),
   mt5AccountEditId: document.getElementById("mt5-account-edit-id"),
   mt5AccountCancelBtn: document.getElementById("mt5-account-cancel-btn"),
+  mt5TestTradeBtn: document.getElementById("mt5-test-trade-btn"),
+  mt5TestTradeResult: document.getElementById("mt5-test-trade-result"),
+  mt5TestTradeJson: document.getElementById("mt5-test-trade-json"),
   mt5StatEnabled: document.getElementById("mt5-stat-enabled"),
   mt5StatMode: document.getElementById("mt5-stat-mode"),
   mt5StatWorkers: document.getElementById("mt5-stat-workers"),
@@ -171,7 +174,9 @@ const els = {
   telegramLastParsed: document.getElementById("telegram-last-parsed"),
   telegramLastAction: document.getElementById("telegram-last-action"),
   telegramLastActionMeta: document.getElementById("telegram-last-action-meta"),
+  telegramLastActionStatus: document.getElementById("telegram-last-action-status"),
   telegramLastActionJson: document.getElementById("telegram-last-action-json"),
+  telegramActionLogBody: document.getElementById("telegram-action-log-body"),
   telegramLastResult: document.getElementById("telegram-last-result"),
   telegramLastResultJson: document.getElementById("telegram-last-result-json"),
   telegramMessagesByChannel: document.getElementById("telegram-messages-by-channel"),
@@ -1157,6 +1162,57 @@ async function reloadMt5Workers() {
   }
 }
 
+function renderMt5TestTradeResult(data) {
+  if (!els.mt5TestTradeResult || !els.mt5TestTradeJson) return;
+  els.mt5TestTradeJson.textContent = JSON.stringify(data, null, 2);
+  els.mt5TestTradeResult.classList.remove("hidden");
+}
+
+async function placeMt5TestTrade() {
+  const connectedCount = (mt5AccountsState?.workers || []).filter((item) => item.connected).length;
+  if (!connectedCount) {
+    toast("No connected MT5 accounts — check worker status and terminal paths", "error");
+    return;
+  }
+  const live = botConfig && !botConfig.bot.dry_run;
+  const confirmed = window.confirm(
+    live
+      ? `Place LIVE XAUUSD 0.01 BUY test trade on ${connectedCount} connected account${connectedCount === 1 ? "" : "s"}? No SL/TP — close manually in MT5.`
+      : `Place paper XAUUSD 0.01 BUY test trade on ${connectedCount} connected account${connectedCount === 1 ? "" : "s"}?`,
+  );
+  if (!confirmed) return;
+
+  setLoading(els.mt5TestTradeBtn, true);
+  try {
+    const response = await fetch("/api/mt5-accounts/test-trade", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        symbol: "XAUUSD",
+        side: "buy",
+        volume: 0.01,
+        confirm_live: live,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Test trade failed");
+    renderMt5Accounts(data);
+    renderMt5TestTradeResult(data);
+    const placedCount = (data.account_results || []).filter((item) => item.status === "placed" || item.status === "paper").length;
+    const failedCount = (data.account_results || []).filter((item) => item.status === "failed").length;
+    if (data.status === "placed" || data.status === "paper") {
+      toast(`Test trade ${data.status} on ${placedCount}/${connectedCount} account(s)`, "success");
+    } else {
+      toast(data.reason || `Test trade failed (${failedCount}/${connectedCount})`, "error");
+    }
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.mt5TestTradeBtn, false);
+  }
+}
+
 function scheduleMt5RuntimeSave(partial) {
   if (mt5RuntimeTimer) clearTimeout(mt5RuntimeTimer);
   mt5RuntimeTimer = setTimeout(() => {
@@ -1788,6 +1844,67 @@ function startLoopPolling() {
   loopTimer = setInterval(() => refreshAutoRunStatus(false), 5000);
 }
 
+function telegramStatusClass(status) {
+  const value = String(status || "").toLowerCase();
+  if (value === "placed" || value === "paper" || value === "breakeven") return "value-positive";
+  if (value === "failed" || value === "error" || value.includes("fail")) return "value-negative";
+  if (value === "skipped" || value === "stale") return "value-neutral";
+  return "value-neutral";
+}
+
+function formatTelegramAccountResults(accountResults) {
+  if (!Array.isArray(accountResults) || !accountResults.length) return "";
+  return accountResults
+    .map((item) => {
+      const name = item.account_name || item.account_id || "account";
+      if (item.status === "placed" || item.status === "paper") {
+        const ticket = item.ticket || (item.tickets && item.tickets[0]) || "?";
+        return `${name}: ${item.status} ticket ${ticket}`;
+      }
+      return `${name}: ${item.reason || item.error || item.status || "failed"}`;
+    })
+    .join(" · ");
+}
+
+function renderTelegramActionStatusBadge(statusEl, result) {
+  if (!statusEl) return;
+  const status = String(result?.status || "unknown");
+  const summary = formatTelegramAccountResults(result?.account_results);
+  const reason = result?.reason || summary;
+  statusEl.textContent = summary || reason || status;
+  statusEl.className = `telegram-action-status ${telegramStatusClass(status)}`;
+  statusEl.classList.remove("hidden");
+}
+
+function renderTelegramActionLog(actions) {
+  if (!els.telegramActionLogBody) return;
+  const items = Array.isArray(actions) ? actions.slice().reverse() : [];
+  if (!items.length) {
+    els.telegramActionLogBody.innerHTML = '<p class="empty-row">No copy actions yet.</p>';
+    return;
+  }
+  els.telegramActionLogBody.innerHTML = items
+    .map((item) => {
+      const status = String(item.status || "unknown");
+      const kind = item.hard_copy ? "Hard copy" : item.kind === "signal_copy" ? "Auto copy" : item.kind || "Action";
+      const bits = [kind, status.toUpperCase()];
+      if (item.channel) bits.push(item.channel);
+      if (item.symbol) bits.push(item.symbol);
+      const accountSummary = formatTelegramAccountResults(item.result?.account_results);
+      const detail = accountSummary || item.reason || item.result?.reason || "";
+      return `
+        <article class="telegram-action-log-item">
+          <div class="telegram-action-log-head">
+            <span class="${telegramStatusClass(status)}">${escapeHtml(bits.join(" · "))}</span>
+            <span class="mono">${formatTimestamp(item.at)}</span>
+          </div>
+          ${detail ? `<p class="telegram-action-log-detail">${escapeHtml(detail)}</p>` : ""}
+        </article>
+      `;
+    })
+    .join("");
+}
+
 function renderTelegramStatus(status) {
   if (!els.telegramLabel) return;
   const running = Boolean(status.running);
@@ -1802,7 +1919,7 @@ function renderTelegramStatus(status) {
   }
   if (els.telegramCounts) {
     els.telegramCounts.textContent =
-      `${status.messages_seen || 0} messages · ${status.parsed_signals || 0} parsed · ${status.placed || 0} placed`;
+      `${status.messages_seen || 0} messages · ${status.parsed_signals || 0} parsed · ${status.placed || 0} placed · ${status.failed || 0} failed · ${status.skipped || 0} skipped`;
   }
   if (els.telegramLast) {
     els.telegramLast.textContent = `Last signal: ${formatTimestamp(status.last_action_at || status.last_message_at)}`;
@@ -1847,9 +1964,11 @@ function renderTelegramStatus(status) {
       if (action.channel) bits.push(action.channel);
       if (action.at) bits.push(formatTimestamp(action.at));
       if (action.result?.status) bits.push(String(action.result.status));
+      if (action.result?.hard_copy) bits.push("hard copy");
       if (els.telegramLastActionMeta) {
         els.telegramLastActionMeta.textContent = bits.length ? bits.join(" · ") : "Latest trade action";
       }
+      renderTelegramActionStatusBadge(els.telegramLastActionStatus, action.result);
       els.telegramLastActionJson.textContent = JSON.stringify(
         {
           signal: action.signal || status.last_signal || null,
@@ -1865,14 +1984,17 @@ function renderTelegramStatus(status) {
           ? `${status.last_channel} · ${formatTimestamp(status.last_action_at)}`
           : formatTimestamp(status.last_action_at);
       }
+      renderTelegramActionStatusBadge(els.telegramLastActionStatus, status.last_result);
       els.telegramLastActionJson.textContent = JSON.stringify(status.last_result, null, 2);
       els.telegramLastAction.classList.remove("hidden");
     } else {
       els.telegramLastAction.classList.add("hidden");
       els.telegramLastActionJson.textContent = "";
       if (els.telegramLastActionMeta) els.telegramLastActionMeta.textContent = "";
+      els.telegramLastActionStatus?.classList.add("hidden");
     }
   }
+  renderTelegramActionLog(status.recent_actions || []);
   if (els.telegramLastResult && els.telegramLastResultJson) {
     if (status.last_signal) {
       els.telegramLastResultJson.textContent = JSON.stringify(status.last_signal, null, 2);
@@ -2342,15 +2464,14 @@ async function hardCopyTelegramMessage(messageId, button) {
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Hard copy failed");
     renderTelegramStatus(data);
-    const status = data.status || "unknown";
+    const status = data.status || data.result?.status || "unknown";
+    const accountSummary = formatTelegramAccountResults(data.account_results || data.result?.account_results);
     if (status === "placed" || status === "paper") {
       const legs = data.legs || data.tickets?.length || 1;
-      toast(
-        `Hard copy ${status}: ${data.symbol || ""} ${String(data.action || "").toUpperCase()} (${legs} leg${legs === 1 ? "" : "s"})`.trim(),
-        "success",
-      );
+      const base = `Hard copy ${status}: ${data.symbol || ""} ${String(data.action || "").toUpperCase()} (${legs} leg${legs === 1 ? "" : "s"})`.trim();
+      toast(accountSummary ? `${base} · ${accountSummary}` : base, "success");
     } else {
-      toast(data.reason || `Hard copy ${status}`, status === "failed" ? "error" : "info");
+      toast(accountSummary || data.reason || `Hard copy ${status}`, status === "failed" ? "error" : "info");
     }
     await refreshLogs();
   } catch (error) {
@@ -3092,6 +3213,7 @@ async function init() {
   els.mt5AccountForm?.addEventListener("submit", saveMt5Account);
   els.mt5AccountCancelBtn?.addEventListener("click", resetMt5AccountForm);
   els.mt5AccountsReloadBtn?.addEventListener("click", reloadMt5Workers);
+  els.mt5TestTradeBtn?.addEventListener("click", placeMt5TestTrade);
   els.mt5TradingMode?.addEventListener("change", () => {
     scheduleMt5RuntimeSave({ trading_mode: els.mt5TradingMode.value });
   });

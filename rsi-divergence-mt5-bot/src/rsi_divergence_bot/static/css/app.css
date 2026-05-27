@@ -336,6 +336,24 @@ h2 {
   background: var(--bg-elevated);
 }
 
+.mt5-test-trade-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.mt5-test-trade-card .panel-subheader {
+  margin: 0;
+}
+
+.mt5-test-trade-card .panel-subheader p {
+  margin: 6px 0 0;
+}
+
 .mt5-status-line {
   margin: 0;
   padding-top: 2px;
@@ -1276,6 +1294,46 @@ textarea {
 .telegram-channel-group-count {
   color: var(--text-muted);
   font-size: 0.82rem;
+}
+
+.telegram-action-status {
+  margin: 8px 0 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.telegram-action-log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.telegram-action-log-item {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.telegram-action-log-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 0.86rem;
+}
+
+.telegram-action-log-detail {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  word-break: break-word;
 }
 
 .telegram-msg-cell {

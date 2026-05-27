@@ -176,6 +176,13 @@ class Mt5AccountRuntimeRequest(BaseModel):
     active_account_id: int | None = Field(default=None, gt=0)
 
 
+class Mt5TestTradeRequest(BaseModel):
+    symbol: str = Field(default="XAUUSD", min_length=1)
+    side: str = Field(default="buy", min_length=1)
+    volume: float = Field(default=0.01, gt=0)
+    confirm_live: bool = False
+
+
 def create_app(
     config: AppConfig,
     bot: SignalBot,
@@ -542,6 +549,52 @@ def create_app(
         telegram_bot.client = bot.client
         pool.reload()
         return {"status": "reloaded", **pool.runtime_status()}
+
+    @app.post("/api/mt5-accounts/test-trade")
+    async def mt5_accounts_test_trade(body: Mt5TestTradeRequest) -> dict:
+        if not config.bot.dry_run and not body.confirm_live:
+            raise HTTPException(status_code=400, detail="Live confirmation is required.")
+        side = body.side.lower()
+        if side not in {"buy", "sell"}:
+            raise HTTPException(status_code=400, detail="side must be buy or sell")
+        symbol = body.symbol.strip().upper()
+        volume = float(body.volume)
+        bot.logger.warning(
+            "MT5 TEST TRADE requested symbol=%s side=%s volume=%s dry_run=%s pool=%s",
+            symbol,
+            side,
+            volume,
+            config.bot.dry_run,
+            pool.active,
+        )
+        try:
+            if pool.active:
+                result = await asyncio.to_thread(
+                    pool.place_test_trade,
+                    symbol=symbol,
+                    side=side,
+                    volume=volume,
+                )
+            else:
+                await require_mt5_ready()
+                result = await asyncio.to_thread(
+                    bot.executor.place_test_trade,
+                    symbol,
+                    side,
+                    volume,
+                )
+        except Exception as exc:  # noqa: BLE001
+            bot.logger.exception("MT5 TEST TRADE failed: %s", exc)
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+        bot.logger.warning(
+            "MT5 TEST TRADE done symbol=%s side=%s status=%s accounts=%s",
+            symbol,
+            side,
+            result.get("status"),
+            len(result.get("account_results") or []),
+        )
+        return {"status": result.get("status", "failed"), **result, **pool.runtime_status()}
 
     @app.get("/")
     @app.get("/backtest")

@@ -130,6 +130,71 @@ class TradeExecutor:
 
         return self._place_split_signal(signal)
 
+    def place_test_trade(
+        self,
+        symbol: str = "XAUUSD",
+        side: str = "buy",
+        volume: float = 0.01,
+        *,
+        comment: str = "RSI test trade",
+    ) -> dict:
+        side = side.lower()
+        if side not in {"buy", "sell"}:
+            return {"status": "failed", "reason": f"unsupported side: {side}"}
+
+        tick = self.client.tick(symbol)
+        if tick is None:
+            return {"status": "failed", "reason": f"no live tick for {symbol}", "symbol": symbol}
+
+        entry = float(_field(tick, "ask") if side == "buy" else _field(tick, "bid"))
+        norm_volume = self.client.normalize_volume(symbol, volume)
+        payload = {
+            "symbol": symbol,
+            "side": side,
+            "volume": norm_volume,
+            "entry_price": entry,
+        }
+
+        if self.config.bot.dry_run:
+            self.logger.warning(
+                "TEST TRADE PAPER %s %s vol=%s entry=%.5f dry_run=true",
+                symbol,
+                side.upper(),
+                norm_volume,
+                entry,
+            )
+            return {"status": "paper", **payload}
+
+        try:
+            result = self.client.send_market_bare(
+                symbol,
+                side,
+                norm_volume,
+                self.config.bot.magic,
+                comment[:31],
+            )
+        except Exception as exc:  # noqa: BLE001
+            self.logger.warning("TEST TRADE REJECTED %s %s reason=%s", symbol, side.upper(), exc)
+            return {"status": "failed", "reason": str(exc), **payload}
+
+        retcode = getattr(result, "retcode", None)
+        ticket = int(getattr(result, "order", 0) or getattr(result, "deal", 0) or 0)
+        if retcode == self.client.TRADE_DONE and ticket:
+            self.logger.warning(
+                "TEST TRADE PLACED %s %s ticket=%s vol=%s entry=%.5f",
+                symbol,
+                side.upper(),
+                ticket,
+                norm_volume,
+                entry,
+            )
+            return {"status": "placed", "ticket": ticket, "retcode": retcode, **payload}
+
+        comment_text = getattr(result, "comment", None)
+        reason = f"retcode={retcode} comment={comment_text}"
+        self.logger.warning("TEST TRADE FAILED %s %s %s result=%s", symbol, side.upper(), reason, result)
+        return {"status": "failed", "reason": reason, "retcode": retcode, "ticket": ticket, **payload}
+
     def place_market_setup(
         self,
         *,

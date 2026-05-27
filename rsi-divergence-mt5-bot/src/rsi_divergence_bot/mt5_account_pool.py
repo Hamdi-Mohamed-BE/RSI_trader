@@ -256,6 +256,28 @@ class Mt5AccountPool:
             return [account] if account and account.enabled else []
         return self.store.enabled_accounts()
 
+    def connected_accounts(self) -> list[Mt5AccountRecord]:
+        self.ensure_started()
+        connected: list[Mt5AccountRecord] = []
+        for account in self.store.enabled_accounts():
+            handle = self._workers.get(account.id)
+            if handle is not None and handle.connected:
+                connected.append(account)
+        return connected
+
+    def _enrich_account_result(self, account: Mt5AccountRecord, response: dict) -> dict:
+        if not response.get("ok"):
+            return {
+                "account_id": account.id,
+                "account_name": account.name,
+                "status": "failed",
+                "error": response.get("error") or "worker request failed",
+            }
+        result = dict(response.get("result") or {})
+        result.setdefault("account_id", account.id)
+        result.setdefault("account_name", account.name)
+        return result
+
     def primary_account(self) -> Mt5AccountRecord | None:
         return self.store.primary_account()
 
@@ -303,17 +325,22 @@ class Mt5AccountPool:
             results: list[dict] = []
             with ThreadPoolExecutor(max_workers=len(targets), thread_name_prefix="mt5-pool") as executor:
                 futures = {
-                    executor.submit(self.invoke, account.id, op, payload, timeout=timeout): account.id
+                    executor.submit(self.invoke, account.id, op, payload, timeout=timeout): account
                     for account in targets
                 }
                 for future in as_completed(futures):
+                    account = futures[future]
                     try:
-                        results.append(future.result())
+                        response = future.result()
+                        response["account_id"] = account.id
+                        results.append(response)
                     except Exception as exc:  # noqa: BLE001
-                        account_id = futures[future]
-                        results.append({"ok": False, "error": str(exc), "account_id": account_id})
+                        results.append({"ok": False, "error": str(exc), "account_id": account.id})
             return results
-        return [self.invoke(account.id, op, payload or {}, timeout=timeout) for account in targets]
+        return [
+            {**self.invoke(account.id, op, payload or {}, timeout=timeout), "account_id": account.id}
+            for account in targets
+        ]
 
     def place_signal(self, signal: Signal) -> Outcome:
         if not self.active:
@@ -332,15 +359,18 @@ class Mt5AccountPool:
     def place_market_setup(self, **kwargs) -> dict:
         if not self.active:
             raise RuntimeError("account pool is not active")
+        targets = self.target_accounts()
         responses = self.dispatch("place_market_setup", dict(kwargs), parallel=True)
         account_results = []
         placed_any = False
         primary_result: dict | None = None
+        account_by_id = {account.id: account for account in targets}
         for response in responses:
-            if not response.get("ok"):
-                account_results.append({"status": "failed", "error": response.get("error")})
+            account_id = int(response.get("account_id") or (response.get("result") or {}).get("account_id") or 0)
+            account = account_by_id.get(account_id)
+            if account is None:
                 continue
-            result = response.get("result") or {}
+            result = self._enrich_account_result(account, response)
             account_results.append(result)
             if result.get("status") == "placed":
                 placed_any = True
@@ -352,6 +382,59 @@ class Mt5AccountPool:
         merged["account_results"] = account_results
         if placed_any:
             merged["status"] = "placed"
+        elif all(item.get("status") == "skipped" for item in account_results):
+            merged["status"] = "skipped"
+        return merged
+
+    def place_test_trade(
+        self,
+        *,
+        symbol: str = "XAUUSD",
+        side: str = "buy",
+        volume: float = 0.01,
+    ) -> dict:
+        connected = self.connected_accounts()
+        if not connected:
+            return {
+                "status": "failed",
+                "reason": "no connected MT5 accounts — check worker status and terminal paths",
+                "symbol": symbol,
+                "side": side,
+                "volume": volume,
+                "account_results": [],
+            }
+
+        account_results: list[dict] = []
+        placed_any = False
+        primary_result: dict | None = None
+        for account in connected:
+            response = self.invoke(
+                account.id,
+                "place_test_trade",
+                {"symbol": symbol, "side": side, "volume": volume},
+                timeout=90,
+            )
+            result = self._enrich_account_result(account, response)
+            account_results.append(result)
+            if result.get("status") in {"placed", "paper"}:
+                placed_any = True
+                if primary_result is None:
+                    primary_result = result
+
+        merged = dict(primary_result or account_results[0] if account_results else {"status": "failed"})
+        merged["symbol"] = symbol
+        merged["side"] = side
+        merged["volume"] = volume
+        merged["account_results"] = account_results
+        if placed_any:
+            merged["status"] = "placed" if any(item.get("status") == "placed" for item in account_results) else "paper"
+        elif all(item.get("status") == "failed" for item in account_results):
+            merged["status"] = "failed"
+            failures = [
+                f"{item.get('account_name')}: {item.get('reason') or item.get('error')}"
+                for item in account_results
+            ]
+            merged["reason"] = "; ".join(failures) or "all accounts failed"
         return merged
 
     def manage_tp_protection(self, enabled: bool = True) -> None:

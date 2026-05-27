@@ -662,6 +662,44 @@ class MT5Client:
                     return last_result
             return last_result
 
+    def send_market_bare(self, symbol: str, side: str, volume: float, magic: int, comment: str):
+        """Market order without stop loss or take profit (manual close only)."""
+        side = side.lower()
+        if side not in {"buy", "sell"}:
+            raise ValueError(f"Unsupported market side: {side}")
+        self.initialize()
+        with _MT5_LOCK:
+            if not self.mt5.symbol_select(symbol, True):
+                raise RuntimeError(f"Could not select symbol {symbol}: {self.mt5.last_error()}")
+            tick = self.mt5.symbol_info_tick(symbol)
+            if tick is None:
+                raise RuntimeError(f"No symbol/tick for {symbol}: {self.mt5.last_error()}")
+
+            order_type = self.mt5.ORDER_TYPE_BUY if side == "buy" else self.mt5.ORDER_TYPE_SELL
+            price = float(_field(tick, "ask") if side == "buy" else _field(tick, "bid"))
+            norm_volume = self.normalize_volume(symbol, volume)
+
+            last_result = None
+            for filling in self._filling_modes(symbol):
+                request = {
+                    "action": self.mt5.TRADE_ACTION_DEAL,
+                    "symbol": symbol,
+                    "volume": norm_volume,
+                    "type": order_type,
+                    "price": price,
+                    "sl": 0.0,
+                    "tp": 0.0,
+                    "deviation": 100,
+                    "magic": magic,
+                    "comment": comment[:31],
+                    "type_filling": filling,
+                }
+                last_result = self.mt5.order_send(request)
+                retcode = getattr(last_result, "retcode", None)
+                if retcode == self.TRADE_DONE:
+                    return last_result
+            return last_result
+
     def send_pending(
         self,
         symbol: str,

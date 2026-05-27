@@ -7,7 +7,7 @@ import os
 import re
 import threading
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Literal
@@ -237,6 +237,7 @@ class TelegramLoopStatus:
     last_channel: str | None = None
     last_signal: dict | None = None
     last_result: dict | None = None
+    recent_actions: list[dict] = field(default_factory=list)
 
 
 class GeminiSignalParser:
@@ -427,7 +428,103 @@ class TelegramSignalsBot:
             }
         else:
             data["last_action"] = None
+        data["recent_actions"] = list(self._status.recent_actions[-40:])
         return data
+
+    def _push_action_log(
+        self,
+        kind: str,
+        status: str,
+        *,
+        channel: str | None = None,
+        symbol: str | None = None,
+        reason: str | None = None,
+        hard_copy: bool = False,
+        result: dict | None = None,
+    ) -> None:
+        at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+        entry: dict = {
+            "at": at,
+            "kind": kind,
+            "status": status,
+            "channel": channel,
+            "symbol": symbol,
+            "reason": reason,
+            "hard_copy": hard_copy,
+        }
+        if result:
+            entry["result"] = {
+                key: result.get(key)
+                for key in (
+                    "status",
+                    "reason",
+                    "symbol",
+                    "action",
+                    "side",
+                    "ticket",
+                    "tickets",
+                    "legs",
+                    "entry_price",
+                    "account_results",
+                    "hard_copy",
+                    "message_id",
+                )
+                if result.get(key) is not None
+            }
+        self._status.recent_actions.append(entry)
+        if len(self._status.recent_actions) > 50:
+            self._status.recent_actions = self._status.recent_actions[-50:]
+        if status in {"failed", "error", "skipped"} and reason:
+            self._status.last_error = reason
+
+    @staticmethod
+    def _pool_results_summary(account_results: list[dict] | None) -> str:
+        if not account_results:
+            return ""
+        parts: list[str] = []
+        for item in account_results:
+            name = item.get("account_name") or item.get("account_id") or "account"
+            status = item.get("status") or "unknown"
+            if status in {"placed", "paper"}:
+                ticket = item.get("ticket") or (item.get("tickets") or [None])[0]
+                parts.append(f"{name}: {status} ticket={ticket or '?'}")
+            else:
+                detail = item.get("reason") or item.get("error") or status
+                parts.append(f"{name}: {detail}")
+        return "; ".join(parts)
+
+    def _log_pool_trade_results(self, prefix: str, result: dict, *, channel: str, symbol: str) -> None:
+        account_results = result.get("account_results") or []
+        if not account_results:
+            self.logger.warning(
+                "%s channel=%s symbol=%s status=%s reason=%s",
+                prefix,
+                channel,
+                symbol,
+                result.get("status"),
+                result.get("reason"),
+            )
+            return
+        summary = self._pool_results_summary(account_results)
+        self.logger.warning(
+            "%s channel=%s symbol=%s status=%s accounts=%s",
+            prefix,
+            channel,
+            symbol,
+            result.get("status"),
+            summary,
+        )
+        for item in account_results:
+            self.logger.warning(
+                "%s account=%s id=%s status=%s ticket=%s reason=%s error=%s",
+                prefix,
+                item.get("account_name"),
+                item.get("account_id"),
+                item.get("status"),
+                item.get("ticket") or (item.get("tickets") or [None])[0],
+                item.get("reason"),
+                item.get("error"),
+            )
 
     def clear_message_history(self) -> dict:
         removed = self.state.clear_telegram_history()
@@ -441,6 +538,7 @@ class TelegramSignalsBot:
         self._status.last_action_at = None
         self._status.last_signal = None
         self._status.last_result = None
+        self._status.recent_actions = []
         self.logger.info(
             "TELEGRAM history cleared messages=%s seen_ids=%s",
             removed["messages_removed"],
@@ -493,6 +591,19 @@ class TelegramSignalsBot:
         self._status.last_signal = parsed.model_dump(mode="python")
         self._status.last_result = result
         self._status.last_action_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+        status = str(result.get("status", "unknown"))
+        reason = str(result.get("reason") or "")
+        if status in {"failed", "skipped", "error"} and not reason:
+            reason = self._pool_results_summary(result.get("account_results")) or f"hard copy {status}"
+        self._push_action_log(
+            "hard_copy",
+            status,
+            channel=channel.name,
+            symbol=str(result.get("symbol") or parsed.symbol or ""),
+            reason=reason or None,
+            hard_copy=True,
+            result=result,
+        )
         if result["status"] in {"placed", "paper"}:
             self._status.placed += 1
         elif result["status"] == "failed":
@@ -500,13 +611,22 @@ class TelegramSignalsBot:
         else:
             self._status.skipped += 1
         self.logger.warning(
-            "TELEGRAM HARD COPY message=%s channel=%s status=%s symbol=%s reason=%s",
+            "TELEGRAM HARD COPY message=%s channel=%s status=%s symbol=%s action=%s reason=%s accounts=%s",
             message_id[:10],
             channel.name,
             result.get("status"),
             result.get("symbol"),
-            result.get("reason"),
+            parsed.action,
+            reason or result.get("reason"),
+            self._pool_results_summary(result.get("account_results")),
         )
+        if result.get("account_results"):
+            self._log_pool_trade_results(
+                "TELEGRAM HARD COPY",
+                result,
+                channel=channel.name,
+                symbol=str(result.get("symbol") or parsed.symbol or ""),
+            )
         return result
 
     def _channel_from_record(self, record: dict) -> TelegramChannelConfig:
@@ -1177,6 +1297,18 @@ class TelegramSignalsBot:
         )
         self._status.last_result = result
         self._status.last_action_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+        action_status = str(result.get("status", "unknown"))
+        action_reason = str(result.get("reason") or "")
+        if action_status in {"failed", "skipped"} and not action_reason:
+            action_reason = self._pool_results_summary(result.get("account_results")) or action_status
+        self._push_action_log(
+            "signal_copy",
+            action_status,
+            channel=channel.name,
+            symbol=str(result.get("symbol") or parsed.symbol or ""),
+            reason=action_reason or None,
+            result=result,
+        )
         if result["status"] in {"placed", "paper"}:
             self._status.placed += 1
         elif result["status"] == "failed":
@@ -1401,6 +1533,18 @@ class TelegramSignalsBot:
                 },
                 comment=f"{COMMENT_PREFIX} signal",
             )
+
+        if result.get("account_results"):
+            self._log_pool_trade_results(
+                log_prefix,
+                result,
+                channel=channel.name,
+                symbol=plan["symbol"],
+            )
+            pool_summary = self._pool_results_summary(result.get("account_results"))
+            if pool_summary and result.get("status") != "placed":
+                result["reason"] = pool_summary
+
         if result.get("status") == "placed":
             placed = {
                 "status": "placed",
@@ -1413,13 +1557,16 @@ class TelegramSignalsBot:
             if not hard:
                 self._mark_processed_trade(fingerprint, parsed, channel, source_id, placed)
             return placed
-        return {
-            "status": "failed",
+        failed = {
+            "status": "failed" if result.get("status") == "failed" else "skipped",
             **plan,
             "entry_price": result.get("entry_price") or live_entry,
             "trade_hash": fingerprint,
             **result,
         }
+        if not failed.get("reason"):
+            failed["reason"] = result.get("reason") or "order placement failed"
+        return failed
 
     def _mark_processed_trade(
         self,

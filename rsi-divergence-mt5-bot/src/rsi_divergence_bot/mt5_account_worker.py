@@ -125,6 +125,16 @@ def _handle_command(
         kwargs["setup_id"] = f"{kwargs.get('setup_id', 'setup')}:acct{account['id']}"
         result = executor.place_market_setup(**kwargs)
         result["account_id"] = account["id"]
+        result["account_name"] = account.get("name")
+        return {"ok": True, "result": result}
+
+    if op == "place_test_trade":
+        symbol = _remap_symbol(str(payload.get("symbol") or "XAUUSD"), str(account.get("symbol_suffix") or ""))
+        side = str(payload.get("side") or "buy")
+        volume = float(payload.get("volume") or 0.01)
+        result = executor.place_test_trade(symbol, side, volume)
+        result["account_id"] = account["id"]
+        result["account_name"] = account.get("name")
         return {"ok": True, "result": result}
 
     return {"ok": False, "error": f"unknown op: {op}"}

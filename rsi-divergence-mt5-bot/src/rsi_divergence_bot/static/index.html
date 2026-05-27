@@ -183,6 +183,21 @@
             <p id="mt5-accounts-status" class="panel-hint mt5-status-line">Loading MT5 accounts…</p>
           </div>
 
+          <div class="mt5-test-trade-card">
+            <div class="panel-subheader">
+              <h3>Connectivity test</h3>
+              <p>Opens XAUUSD 0.01 BUY on every <strong>connected</strong> account. No SL/TP — close manually in MT5.</p>
+            </div>
+            <button id="mt5-test-trade-btn" class="btn btn-danger btn-sm" type="button">
+              <span class="btn-label">Place test trade on connected accounts</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+            <div id="mt5-test-trade-result" class="result-card hidden">
+              <div class="result-title">Test trade result</div>
+              <pre id="mt5-test-trade-json"></pre>
+            </div>
+          </div>
+
           <div class="panel-subheader">
             <h3 id="mt5-account-form-title">Add account</h3>
             <p>Stored locally in <code>runtime/mt5_accounts.db</code> — not in config.yaml.</p>
@@ -887,7 +902,18 @@
         <div id="telegram-last-action" class="result-card hidden">
           <div class="result-title">Latest action taken</div>
           <div id="telegram-last-action-meta" class="panel-hint"></div>
+          <div id="telegram-last-action-status" class="telegram-action-status hidden"></div>
           <pre id="telegram-last-action-json"></pre>
+        </div>
+
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Recent copy actions &amp; errors</h3>
+            <span class="live-count">last 40 events · hard copy + auto copy</span>
+          </div>
+          <div id="telegram-action-log-body" class="telegram-action-log">
+            <p class="empty-row">No copy actions yet.</p>
+          </div>
         </div>
 
         <div id="telegram-last-result" class="result-card hidden">
@@ -944,6 +970,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=50" defer></script>
+  <script src="/static/js/app.js?v=51" defer></script>
 </body>
 </html>
