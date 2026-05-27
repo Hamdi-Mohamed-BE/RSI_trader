@@ -19,7 +19,7 @@ from .manual_trade import resolve_symbol_for_telegram
 from .mt5_client import MT5Client, _field
 from .state import StateStore
 from .symbols import market_key, resolve_trade_symbol
-from .trade_geometry import invalid_market_geometry
+from .trade_geometry import default_stop_loss_one_to_one, invalid_market_geometry, synthetic_stop_loss_reference_tp
 from .trader import TradeExecutor
 
 from .playwright_runtime import ensure_playwright_runtime, load_sync_playwright, playwright_runtime_error
@@ -239,6 +239,20 @@ class TelegramLoopStatus:
     recent_actions: list[dict] = field(default_factory=list)
 
 
+@dataclass
+class PendingSlWatch:
+    message_id: str
+    message_key: str | None
+    channel: TelegramChannelConfig
+    setup_id: str
+    tickets: list[int]
+    symbol: str
+    side: str
+    synthetic_sl: float
+    started_at: float
+    expires_at: float
+
+
 class GeminiSignalParser:
     _SYSTEM_PROMPT = (
         "You extract trade signals from Telegram messages. "
@@ -363,6 +377,7 @@ class TelegramSignalsBot:
         self._channel_pages: dict[str, object] = {}
         self._open_market_keys: set[str] = set()
         self._open_market_keys_at: float = 0.0
+        self._pending_sl_watches: dict[str, PendingSlWatch] = {}
 
     def start(self, *, protect_tp: bool = False) -> dict:
         if self.is_running():
@@ -426,6 +441,7 @@ class TelegramSignalsBot:
         else:
             data["last_action"] = None
         data["recent_actions"] = list(self._status.recent_actions[-40:])
+        data["pending_sl_watches"] = len(self._pending_sl_watches)
         return data
 
     def _push_action_log(
@@ -462,6 +478,7 @@ class TelegramSignalsBot:
                     "tickets",
                     "legs",
                     "entry_price",
+                    "tickets",
                     "hard_copy",
                     "message_id",
                 )
@@ -519,7 +536,14 @@ class TelegramSignalsBot:
             return {"status": "error", "reason": "message is not a trade signal"}
 
         source_id = f"{message_id}:hard:{int(datetime.now(timezone.utc).timestamp())}"
-        result = self._place_parsed_signal(parsed, source_id=source_id, channel=channel, hard=True)
+        result = self._place_parsed_signal(
+            parsed,
+            source_id=source_id,
+            channel=channel,
+            hard=True,
+            message_id=message_id,
+            message_key=record.get("message_key"),
+        )
         result["hard_copy"] = True
         result["message_id"] = message_id
 
@@ -824,6 +848,7 @@ class TelegramSignalsBot:
         self._scroll_chat_to_bottom(page, attempts=1)
         self._status.last_channel = channel.name
         self._sync_visible_messages(page, channel)
+        self._refresh_pending_sl_watches(page, channel)
 
         message, diagnostics, skipped_ad = self._read_latest_message(page, channel)
         now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -1214,6 +1239,8 @@ class TelegramSignalsBot:
             channel=channel,
             trade_hash=trade_hash,
             open_market_keys=open_market_keys,
+            message_id=message_id,
+            message_key=message_key,
         )
         self._record_message(
             message_id,
@@ -1327,6 +1354,8 @@ class TelegramSignalsBot:
         hard: bool = False,
         trade_hash: str | None = None,
         open_market_keys: set[str] | None = None,
+        message_id: str | None = None,
+        message_key: str | None = None,
     ) -> dict:
         if not hard and self.daily_risk_status:
             daily = self.daily_risk_status()
@@ -1345,11 +1374,45 @@ class TelegramSignalsBot:
                 symbol_cfg.key,
                 symbol_cfg.lot_per_leg,
             )
-        if parsed.stop_loss is None:
-            return {"status": "skipped", "channel": channel.name, "reason": "missing stop loss"}
+
         tps = [float(tp) for tp in parsed.tps[: self.config.telegram_signals.max_tps]]
         if not tps:
             return {"status": "skipped", "channel": channel.name, "reason": "missing take profits"}
+
+        side = "buy" if parsed.action.startswith("buy") else "sell"
+        lot = self.config.telegram_signals.default_lot or symbol_cfg.lot_per_leg
+        plan = {
+            "channel": channel.name,
+            "symbol": symbol_cfg.symbol,
+            "action": parsed.action,
+            "entry": parsed.entry,
+            "sl": parsed.stop_loss,
+            "tps": tps,
+            "lot": float(lot),
+        }
+        try:
+            live_entry = self._live_entry_price(plan)
+        except ValueError as exc:
+            return {"status": "skipped", "channel": channel.name, "reason": str(exc), **plan}
+
+        reference_entry = float(parsed.entry) if parsed.entry is not None else live_entry
+        sl_is_synthetic = parsed.stop_loss is None
+        if sl_is_synthetic:
+            reference_tp = synthetic_stop_loss_reference_tp(tps)
+            sl = default_stop_loss_one_to_one(side, reference_entry, reference_tp)
+            self.logger.warning(
+                "TELEGRAM DEFAULT SL channel=%s symbol=%s side=%s entry=%s ref_tp=%s synthetic_sl=%s",
+                channel.name,
+                symbol_cfg.symbol,
+                side,
+                reference_entry,
+                reference_tp,
+                sl,
+            )
+        else:
+            sl = float(parsed.stop_loss)
+
+        plan["sl"] = sl
 
         fingerprint = trade_hash or telegram_trade_fingerprint(channel, parsed)
         if not hard and self.state.is_telegram_trade_processed(fingerprint):
@@ -1381,48 +1444,56 @@ class TelegramSignalsBot:
                 "symbol": symbol_cfg.symbol,
                 "trade_hash": fingerprint,
             }
-            self._mark_processed_trade(fingerprint, parsed, channel, source_id, result)
+            self._mark_processed_trade(fingerprint, parsed, channel, source_id, result, stop_loss_used=sl)
             return result
 
-        lot = self.config.telegram_signals.default_lot or symbol_cfg.lot_per_leg
-        plan = {
-            "channel": channel.name,
-            "symbol": symbol_cfg.symbol,
-            "action": parsed.action,
-            "entry": parsed.entry,
-            "sl": float(parsed.stop_loss),
-            "tps": tps,
-            "lot": float(lot),
-        }
-        side = "buy" if parsed.action.startswith("buy") else "sell"
-        try:
-            live_entry = self._live_entry_price(plan)
-        except ValueError as exc:
-            return {"status": "skipped", "channel": channel.name, "reason": str(exc), **plan}
-
-        geometry_reason = invalid_market_geometry(side, live_entry, plan["sl"], tps, label="live price")
+        geometry_reason = invalid_market_geometry(side, live_entry, sl, tps, label="live price")
         if geometry_reason:
             reason = f"TPs no longer valid: {geometry_reason}" if hard else geometry_reason
             return {"status": "skipped", "channel": channel.name, "reason": reason, **plan, "entry_price": live_entry}
 
+        linked_message_id = message_id or source_id
         log_prefix = "TELEGRAM HARD COPY" if hard else "TELEGRAM SIGNAL"
         self.logger.warning(
-            "%s channel=%s parsed symbol=%s action=%s signal_entry=%s live_entry=%s sl=%s tps=%s lot=%s dry_run=%s",
+            "%s channel=%s parsed symbol=%s action=%s signal_entry=%s live_entry=%s sl=%s synthetic=%s tps=%s lot=%s dry_run=%s",
             log_prefix,
             channel.name,
             plan["symbol"],
             plan["action"],
             plan.get("entry"),
             live_entry,
-            plan["sl"],
+            sl,
+            sl_is_synthetic,
             plan["tps"],
             plan["lot"],
             self.config.bot.dry_run,
         )
         if self.config.bot.dry_run:
-            result = {"status": "paper", **plan, "entry_price": live_entry, "hard_copy": hard, "trade_hash": fingerprint}
+            result = {
+                "status": "paper",
+                **plan,
+                "entry_price": live_entry,
+                "hard_copy": hard,
+                "trade_hash": fingerprint,
+                "message_id": linked_message_id,
+                "message_key": message_key,
+                "tickets": [],
+                "sl_synthetic": sl_is_synthetic,
+                "sl_pending_refresh": sl_is_synthetic,
+            }
             if not hard:
-                self._mark_processed_trade(fingerprint, parsed, channel, source_id, result)
+                self._mark_processed_trade(fingerprint, parsed, channel, source_id, result, stop_loss_used=sl)
+            if sl_is_synthetic:
+                self._register_pending_sl_watch(
+                    message_id=linked_message_id,
+                    message_key=message_key,
+                    channel=channel,
+                    setup_id=f"telegram:{source_id[:16]}",
+                    tickets=[],
+                    symbol=symbol_cfg.symbol,
+                    side=side,
+                    synthetic_sl=sl,
+                )
             return result
 
         setup_id = f"telegram:hard:{source_id[:24]}" if hard else f"telegram:{source_id[:16]}"
@@ -1437,7 +1508,7 @@ class TelegramSignalsBot:
             symbol=trade_symbol,
             market_key=symbol_cfg.key,
             side=side,
-            sl=float(parsed.stop_loss),
+            sl=sl,
             tps=tps,
             lot_per_leg=float(lot),
             entry_price=None,
@@ -1447,32 +1518,233 @@ class TelegramSignalsBot:
                 "source": "telegram_signals",
                 "channel_url": channel.url,
                 "channel_name": channel.name,
+                "telegram_message_id": linked_message_id,
+                "telegram_message_key": message_key,
+                "sl_synthetic": sl_is_synthetic,
             },
             comment=f"{COMMENT_PREFIX} signal",
         )
 
         if result.get("status") == "placed":
+            tickets = [int(ticket) for ticket in result.get("tickets") or []]
             placed = {
                 "status": "placed",
                 **plan,
                 "entry_price": result.get("entry_price") or live_entry,
                 "setup_id": setup_id,
                 "trade_hash": fingerprint,
+                "message_id": linked_message_id,
+                "message_key": message_key,
+                "tickets": tickets,
+                "sl_synthetic": sl_is_synthetic,
+                "sl_pending_refresh": sl_is_synthetic,
                 **result,
             }
             if not hard:
-                self._mark_processed_trade(fingerprint, parsed, channel, source_id, placed)
+                self._mark_processed_trade(fingerprint, parsed, channel, source_id, placed, stop_loss_used=sl)
+            if sl_is_synthetic:
+                self._register_pending_sl_watch(
+                    message_id=linked_message_id,
+                    message_key=message_key,
+                    channel=channel,
+                    setup_id=setup_id,
+                    tickets=tickets,
+                    symbol=trade_symbol,
+                    side=side,
+                    synthetic_sl=sl,
+                )
             return placed
         failed = {
             "status": "failed" if result.get("status") == "failed" else "skipped",
             **plan,
             "entry_price": result.get("entry_price") or live_entry,
             "trade_hash": fingerprint,
+            "message_id": linked_message_id,
+            "message_key": message_key,
             **result,
         }
         if not failed.get("reason"):
             failed["reason"] = result.get("reason") or "order placement failed"
         return failed
+
+    def _register_pending_sl_watch(
+        self,
+        *,
+        message_id: str,
+        message_key: str | None,
+        channel: TelegramChannelConfig,
+        setup_id: str,
+        tickets: list[int],
+        symbol: str,
+        side: str,
+        synthetic_sl: float,
+    ) -> None:
+        refresh_seconds = self.config.telegram_signals.sl_refresh_seconds
+        now = time.monotonic()
+        watch = PendingSlWatch(
+            message_id=message_id,
+            message_key=message_key,
+            channel=channel,
+            setup_id=setup_id,
+            tickets=list(tickets),
+            symbol=symbol,
+            side=side,
+            synthetic_sl=float(synthetic_sl),
+            started_at=now,
+            expires_at=now + float(refresh_seconds),
+        )
+        key = message_key or message_id
+        self._pending_sl_watches[key] = watch
+        self.logger.warning(
+            "TELEGRAM SL WATCH message=%s key=%s setup=%s tickets=%s refresh=%ss synthetic_sl=%s",
+            message_id[:10],
+            (message_key or "")[:16],
+            setup_id,
+            tickets,
+            refresh_seconds,
+            synthetic_sl,
+        )
+
+    def _refresh_pending_sl_watches(self, page, channel: TelegramChannelConfig) -> None:
+        if not self._pending_sl_watches:
+            return
+        active = [
+            watch
+            for watch in self._pending_sl_watches.values()
+            if watch.channel.url == channel.url
+        ]
+        if not active:
+            return
+
+        html, source = self._capture_chat_html(page)
+        bubbles, _diagnostics = parse_all_bubbles(html, source=source)
+        bubble_by_key = {bubble.key: bubble for bubble in bubbles if bubble.key}
+
+        now = time.monotonic()
+        for watch in active:
+            watch_key = watch.message_key or watch.message_id
+            if now >= watch.expires_at:
+                self._pending_sl_watches.pop(watch_key, None)
+                self.logger.info(
+                    "TELEGRAM SL WATCH expired message=%s setup=%s keeping synthetic_sl=%s",
+                    watch.message_id[:10],
+                    watch.setup_id,
+                    watch.synthetic_sl,
+                )
+                continue
+
+            bubble = bubble_by_key.get(watch.message_key) if watch.message_key else None
+            ledger = (
+                self.state.find_telegram_message_by_key(watch.message_key)
+                if watch.message_key
+                else self.state.get_telegram_message(watch.message_id)
+            )
+            if bubble is None and ledger:
+                ledger_text = str(ledger.get("text") or "")
+                for candidate in reversed(bubbles):
+                    if candidate.text == ledger_text:
+                        bubble = candidate
+                        break
+            if bubble is None:
+                continue
+
+            current_text = bubble.text
+            previous_text = str((ledger or {}).get("text") or "")
+            if current_text == previous_text:
+                if (ledger or {}).get("result", {}).get("status") == "updated":
+                    self._pending_sl_watches.pop(watch_key, None)
+                continue
+
+            try:
+                parsed = self.parser.parse(current_text)
+            except Exception as exc:  # noqa: BLE001
+                self.logger.warning(
+                    "TELEGRAM SL WATCH parse failed message=%s setup=%s: %s",
+                    watch.message_id[:10],
+                    watch.setup_id,
+                    exc,
+                )
+                continue
+
+            refreshed_message_id = self._message_id(channel, current_text, message_key=watch.message_key)
+            parsed_payload = parsed.model_dump(mode="python")
+            self._record_message(
+                refreshed_message_id,
+                "sl_refresh",
+                current_text,
+                channel=channel,
+                parsed=parsed_payload,
+                message_key=watch.message_key,
+                message_timestamp=bubble.timestamp,
+                age_seconds=self._message_age(bubble.timestamp),
+            )
+
+            if parsed.stop_loss is None:
+                continue
+
+            new_sl = float(parsed.stop_loss)
+            if abs(new_sl - watch.synthetic_sl) < 1e-9:
+                self._pending_sl_watches.pop(watch_key, None)
+                continue
+
+            setup = self._get_setup(watch.setup_id)
+            if setup is None:
+                setup = {
+                    "setup_id": watch.setup_id,
+                    "symbol": watch.symbol,
+                    "side": watch.side,
+                    "tickets": watch.tickets,
+                    "tps": [float(tp) for tp in ((ledger or {}).get("parsed") or {}).get("tps") or []],
+                    "entry_price": (ledger or {}).get("result", {}).get("entry_price"),
+                }
+
+            update_result = self.executor.apply_sl_update(
+                setup,
+                new_sl,
+                reason="telegram message updated with stop loss",
+            )
+            update_result["message_id"] = watch.message_id
+            update_result["message_key"] = watch.message_key
+            update_result["previous_sl"] = watch.synthetic_sl
+            update_result["parsed"] = parsed_payload
+
+            self._record_message(
+                refreshed_message_id,
+                str(update_result.get("status", "unknown")),
+                current_text,
+                channel=channel,
+                parsed=parsed_payload,
+                result=update_result,
+                reason=str(update_result.get("reason") or "stop loss updated from telegram"),
+                message_key=watch.message_key,
+                message_timestamp=bubble.timestamp,
+                age_seconds=self._message_age(bubble.timestamp),
+            )
+            self._push_action_log(
+                "sl_refresh",
+                str(update_result.get("status", "unknown")),
+                channel=channel.name,
+                symbol=watch.symbol,
+                reason=str(update_result.get("reason") or "stop loss updated from telegram"),
+                result=update_result,
+            )
+            self.logger.warning(
+                "TELEGRAM SL UPDATE message=%s setup=%s old_sl=%s new_sl=%s status=%s tickets=%s",
+                watch.message_id[:10],
+                watch.setup_id,
+                watch.synthetic_sl,
+                new_sl,
+                update_result.get("status"),
+                watch.tickets,
+            )
+            self._pending_sl_watches.pop(watch_key, None)
+
+    def _get_setup(self, setup_id: str) -> dict | None:
+        state = self.state.read()
+        for setup in state.get("setups", []):
+            if str(setup.get("setup_id")) == setup_id:
+                return dict(setup)
+        return None
 
     def _mark_processed_trade(
         self,
@@ -1481,6 +1753,8 @@ class TelegramSignalsBot:
         channel: TelegramChannelConfig,
         source_id: str,
         result: dict,
+        *,
+        stop_loss_used: float | None = None,
     ) -> None:
         self.state.mark_telegram_trade_processed(
             trade_hash,
@@ -1489,10 +1763,11 @@ class TelegramSignalsBot:
                 "channel_name": channel.name,
                 "symbol": parsed.symbol,
                 "action": parsed.action,
-                "stop_loss": parsed.stop_loss,
+                "stop_loss": stop_loss_used if stop_loss_used is not None else parsed.stop_loss,
                 "tps": list(parsed.tps),
                 "confidence": parsed.confidence,
                 "message_id": source_id,
+                "tickets": list(result.get("tickets") or []),
                 "status": result.get("status"),
                 "processed_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
             },

@@ -31,6 +31,24 @@ def invalid_market_geometry(side: str, entry: float, sl: float, tps: list[float]
     return None
 
 
+def default_stop_loss_one_to_one(side: str, entry: float, reference_tp: float) -> float:
+    """Risk distance from entry to a reference TP, mirrored on the SL side (1:1 RR)."""
+    side = side.lower()
+    distance = abs(float(reference_tp) - float(entry))
+    if side == "buy":
+        return float(entry) - distance
+    if side == "sell":
+        return float(entry) + distance
+    raise ValueError(f"unsupported side {side}")
+
+
+def synthetic_stop_loss_reference_tp(tps: list[float]) -> float:
+    """Use second TP for default 1:1 SL when available; otherwise first TP."""
+    if len(tps) >= 2:
+        return float(tps[1])
+    return float(tps[0])
+
+
 def invalid_pending_geometry(order_kind: str, current_bid: float, current_ask: float, entry: float) -> str | None:
     if order_kind == "buy_limit" and entry >= current_ask:
         return f"BUY LIMIT entry must be below current ask {current_ask:.5f}: entry={entry:.5f}"

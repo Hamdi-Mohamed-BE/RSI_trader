@@ -207,6 +207,7 @@ class TelegramSignalsConfig(BaseModel):
     max_tps: int = Field(default=5, ge=1, le=8)
     default_lot: float | None = None
     max_message_age_seconds: int = Field(default=300, ge=30, le=3600)
+    sl_refresh_seconds: int = Field(default=60, ge=10, le=600)
 
 
 class SymbolConfig(BaseModel):

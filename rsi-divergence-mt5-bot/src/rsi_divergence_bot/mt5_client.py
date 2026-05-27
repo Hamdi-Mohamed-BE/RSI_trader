@@ -572,7 +572,7 @@ class MT5Client:
 
             minutes = TIMEFRAME_MINUTES[timeframe]
             bars_needed = int((now_naive - start_naive).total_seconds() / 60 / minutes) + 20
-            bars_needed = min(max(bars_needed, 50), 100_000)
+            bars_needed = min(max(bars_needed, 50), 99_999)
 
             batch = self.mt5.copy_rates_from_pos(symbol, tf, 0, bars_needed)
             if batch is None or len(batch) == 0:
@@ -581,8 +581,8 @@ class MT5Client:
             offset = self._rates_time_offset(symbol, timeframe, batch)
             df = _rates_frame(batch, time_offset_seconds=offset)
             df = df[(df["time"] >= start_utc) & (df["time"] <= end_utc)].reset_index(drop=True)
-            if df.empty and bars_needed < 200_000:
-                batch = self.mt5.copy_rates_from_pos(symbol, tf, 0, min(bars_needed * 2, 200_000))
+            if df.empty and bars_needed < 99_999:
+                batch = self.mt5.copy_rates_from_pos(symbol, tf, 0, min(bars_needed * 2, 99_999))
                 if batch is not None and len(batch) > 0:
                     offset = self._rates_time_offset(symbol, timeframe, batch)
                     df = _rates_frame(batch, time_offset_seconds=offset)

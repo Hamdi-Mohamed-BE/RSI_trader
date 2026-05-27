@@ -1958,7 +1958,11 @@ function formatLlmResponse(item) {
     if (parsed.symbol) parts.push(`symbol=${parsed.symbol}`);
     if (parsed.entry != null && parsed.entry !== "") parts.push(`entry=${parsed.entry}`);
     if (parsed.stop_loss != null) parts.push(`sl=${parsed.stop_loss}`);
+    else if (item?.result?.sl_synthetic && item?.result?.sl != null) parts.push(`sl=${item.result.sl} (default 1:1 TP2)`);
     if (Array.isArray(parsed.tps) && parsed.tps.length) parts.push(`tps=[${parsed.tps.join(", ")}]`);
+    if (Array.isArray(item?.result?.tickets) && item.result.tickets.length) {
+      parts.push(`tickets=[${item.result.tickets.join(", ")}]`);
+    }
     if (parsed.confidence != null) parts.push(`confidence=${parsed.confidence}`);
     if (parts.length) return parts.join(" · ");
     return JSON.stringify(parsed);
@@ -1975,6 +1979,17 @@ function formatLlmResponse(item) {
       if (result.symbol) bits.push(result.symbol);
       if (result.action) bits.push(String(result.action).toUpperCase());
       if (result.entry_price != null) bits.push(`entry=${result.entry_price}`);
+      if (result.sl != null) bits.push(`sl=${result.sl}${result.sl_synthetic ? " (default)" : ""}`);
+      if (Array.isArray(result.tickets) && result.tickets.length) bits.push(`tickets=${result.tickets.join(",")}`);
+      return bits.join(" · ");
+    }
+    if (result.status === "updated") {
+      const bits = ["SL updated"];
+      if (result.sl != null) bits.push(`sl=${result.sl}`);
+      if (Array.isArray(result.tickets) && result.tickets.length) {
+        const ticketIds = result.tickets.map((item) => item.ticket ?? item).join(",");
+        bits.push(`tickets=${ticketIds}`);
+      }
       return bits.join(" · ");
     }
     if (result.reason) return String(result.reason);

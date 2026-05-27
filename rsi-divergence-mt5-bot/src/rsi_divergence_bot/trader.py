@@ -1073,3 +1073,93 @@ class TradeExecutor:
             "entry_price": new_sl,
             "tickets": updated,
         }
+
+    def apply_sl_update(self, setup: dict, new_sl: float, *, reason: str = "stop loss updated") -> dict:
+        tickets = [int(ticket) for ticket in setup.get("tickets", [])]
+        if not tickets:
+            return {"status": "skipped", "reason": "setup has no tickets", "setup_id": setup.get("setup_id")}
+
+        symbol = str(setup.get("symbol") or "")
+        if not symbol:
+            return {"status": "skipped", "reason": "setup has no symbol", "setup_id": setup.get("setup_id")}
+
+        side = str(setup.get("side") or "")
+        tps = [float(tp) for tp in setup.get("tps", [])]
+        entry = float(setup.get("entry_price") or 0.0)
+        if entry <= 0:
+            all_positions = self.client.positions() or []
+            open_by_ticket = {int(_field(pos, "ticket")): pos for pos in all_positions}
+            open_tickets = [ticket for ticket in tickets if ticket in open_by_ticket]
+            if open_tickets:
+                entry = sum(
+                    float(_field(open_by_ticket[ticket], "price_open"))
+                    for ticket in open_tickets
+                ) / len(open_tickets)
+
+        normalized_sl = self.client.normalize_price(symbol, float(new_sl))
+        geometry_reason = invalid_market_geometry(side, entry, normalized_sl, tps, label="entry")
+        if geometry_reason:
+            return {
+                "status": "skipped",
+                "reason": geometry_reason,
+                "setup_id": setup.get("setup_id"),
+                "symbol": symbol,
+            }
+
+        all_positions = self.client.positions() or []
+        open_by_ticket = {int(_field(pos, "ticket")): pos for pos in all_positions}
+        open_tickets = [ticket for ticket in tickets if ticket in open_by_ticket]
+        if not open_tickets:
+            return {
+                "status": "skipped",
+                "reason": "no open positions for setup",
+                "setup_id": setup.get("setup_id"),
+                "symbol": symbol,
+            }
+
+        self.logger.warning(
+            "SL UPDATE %s setup=%s move SL to %.5f tickets=%s dry_run=%s reason=%s",
+            symbol,
+            setup.get("setup_id"),
+            normalized_sl,
+            open_tickets,
+            self.config.bot.dry_run,
+            reason,
+        )
+        if self.config.bot.dry_run:
+            return {
+                "status": "paper",
+                "reason": reason,
+                "setup_id": setup.get("setup_id"),
+                "symbol": symbol,
+                "sl": normalized_sl,
+                "tickets": open_tickets,
+            }
+
+        updated: list[dict] = []
+        for ticket in open_tickets:
+            pos = open_by_ticket[ticket]
+            tp = float(_field(pos, "tp"))
+            result = self.client.update_position_sl(ticket, symbol, normalized_sl, tp)
+            updated.append(
+                {
+                    "ticket": ticket,
+                    "retcode": getattr(result, "retcode", None),
+                    "result": str(result),
+                }
+            )
+
+        if setup.get("setup_id"):
+            self.state.update_setup(
+                str(setup["setup_id"]),
+                {"sl": normalized_sl, "sl_synthetic": False, "sl_updated_from_telegram": True},
+            )
+
+        return {
+            "status": "updated",
+            "reason": reason,
+            "setup_id": setup.get("setup_id"),
+            "symbol": symbol,
+            "sl": normalized_sl,
+            "tickets": updated,
+        }

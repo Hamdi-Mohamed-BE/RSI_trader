@@ -132,6 +132,20 @@ class StateStore:
                     return dict(item)
             return None
 
+    def find_telegram_message_by_key(self, message_key: str) -> dict[str, Any] | None:
+        if not message_key:
+            return None
+        with self._lock:
+            state = self._read_unlocked()
+            matches = [
+                dict(item)
+                for item in state.get("telegram_messages", [])
+                if str(item.get("message_key") or "") == str(message_key)
+            ]
+            if not matches:
+                return None
+            return max(matches, key=lambda item: str(item.get("updated_at") or item.get("last_seen_at") or ""))
+
     def recent_telegram_messages(self, limit: int = 50) -> list[dict[str, Any]]:
         with self._lock:
             state = self._read_unlocked()
