@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css?v=24">
+  <link rel="stylesheet" href="/static/css/app.css?v=26">
 </head>
 <body>
   <div class="app">
@@ -47,6 +47,7 @@
       <a class="nav-link" data-page-link="home" href="/">Live</a>
       <a class="nav-link" data-page-link="backtest" href="/backtest">Backtest</a>
       <a class="nav-link" data-page-link="settings" href="/settings">Settings</a>
+      <a class="nav-link" data-page-link="mt5-accounts" href="/mt5-accounts">MT5 accounts</a>
       <a class="nav-link" data-page-link="manual-trade" href="/manual-trade">Manual trade</a>
       <a class="nav-link" data-page-link="live-summary" href="/live-summary">Live summary</a>
       <a class="nav-link" data-page-link="telegram-signals" href="/telegram-signals">Telegram signals copy</a>
@@ -54,7 +55,7 @@
       <a class="nav-link nav-link-danger" href="/logout">Logout</a>
     </nav>
 
-    <section class="stats-grid" id="stats-grid">
+    <section class="stats-grid" id="stats-grid" data-pages="home">
       <article class="stat-card">
         <span class="stat-label">Enabled symbols</span>
         <span class="stat-value" id="stat-symbols">—</span>
@@ -70,6 +71,25 @@
       <article class="stat-card">
         <span class="stat-label">Magic number</span>
         <span class="stat-value mono" id="stat-magic">—</span>
+      </article>
+    </section>
+
+    <section class="stats-grid page-hidden" data-pages="mt5-accounts">
+      <article class="stat-card">
+        <span class="stat-label">Enabled accounts</span>
+        <span class="stat-value" id="mt5-stat-enabled">—</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Trading mode</span>
+        <span class="stat-value" id="mt5-stat-mode">—</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Workers running</span>
+        <span class="stat-value" id="mt5-stat-workers">—</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Account pool</span>
+        <span class="stat-value" id="mt5-stat-pool">—</span>
       </article>
     </section>
 
@@ -131,96 +151,118 @@
         </div>
       </section>
 
-      <section class="panel panel-wide" data-pages="settings">
-        <div class="panel-header panel-header-split">
-          <div>
-            <h2>MT5 accounts</h2>
-            <p>Store real MT5 logins in a local SQLite database. Trade on one active account or fan out to all enabled accounts in parallel.</p>
+      <div class="mt5-page-grid" data-pages="mt5-accounts">
+        <section class="panel mt5-sidebar-panel">
+          <div class="panel-header panel-header-split">
+            <div>
+              <h2>Trading mode</h2>
+              <p>Parallel copies RSI live trades and Telegram signals to every enabled account. Single uses one active account.</p>
+            </div>
+            <div class="panel-actions">
+              <button id="mt5-accounts-reload-btn" class="btn btn-ghost btn-sm" type="button">
+                <span class="btn-label">Reload workers</span>
+                <span class="spinner" hidden aria-hidden="true"></span>
+              </button>
+            </div>
           </div>
-          <div class="panel-actions">
-            <button id="mt5-accounts-reload-btn" class="btn btn-ghost btn-sm" type="button">
-              <span class="btn-label">Reload workers</span>
-              <span class="spinner" hidden aria-hidden="true"></span>
-            </button>
+
+          <div class="mt5-mode-card">
+            <label class="field">
+              <span>Mode</span>
+              <select id="mt5-trading-mode">
+                <option value="parallel">Parallel — all enabled accounts</option>
+                <option value="single">Single — active account only</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Active account</span>
+              <select id="mt5-active-account">
+                <option value="">Primary account</option>
+              </select>
+            </label>
+            <p id="mt5-accounts-status" class="panel-hint mt5-status-line">Loading MT5 accounts…</p>
           </div>
-        </div>
 
-        <div class="form-grid settings-defaults">
-          <label class="field">
-            <span>Trading mode</span>
-            <select id="mt5-trading-mode">
-              <option value="parallel">Parallel (all enabled accounts)</option>
-              <option value="single">Single (active account only)</option>
-            </select>
-          </label>
-          <label class="field">
-            <span>Active account (single mode)</span>
-            <select id="mt5-active-account">
-              <option value="">Primary account</option>
-            </select>
-          </label>
-          <p id="mt5-accounts-status" class="panel-hint field-full">Loading MT5 accounts…</p>
-        </div>
+          <div class="panel-subheader">
+            <h3 id="mt5-account-form-title">Add account</h3>
+            <p>Stored locally in <code>runtime/mt5_accounts.db</code> — not in config.yaml.</p>
+          </div>
 
-        <form id="mt5-account-form" class="snapshot-form">
-          <label class="field">
-            <span>Account name</span>
-            <input id="mt5-account-name" type="text" maxlength="80" placeholder="e.g. VIP live" required>
-          </label>
-          <label class="field">
-            <span>Login</span>
-            <input id="mt5-account-login" type="number" min="1" step="1" required>
-          </label>
-          <label class="field">
-            <span>Password</span>
-            <input id="mt5-account-password" type="password" autocomplete="new-password" required>
-          </label>
-          <label class="field">
-            <span>Server</span>
-            <input id="mt5-account-server" type="text" placeholder="Broker-MT5-Server" required>
-          </label>
-          <label class="field">
-            <span>Symbol suffix</span>
-            <input id="mt5-account-suffix" type="text" placeholder="-VIP, -STD, or empty">
-          </label>
-          <label class="field field-wide">
-            <span>MT5 terminal path (optional)</span>
-            <input id="mt5-account-path" type="text" placeholder="C:\\Program Files\\MetaTrader 5\\terminal64.exe">
-          </label>
-          <label class="checkbox-inline field-full">
-            <input id="mt5-account-enabled" type="checkbox" checked>
-            <span>Enabled</span>
-          </label>
-          <label class="checkbox-inline field-full">
-            <input id="mt5-account-primary" type="checkbox">
-            <span>Primary (used for market data / UI)</span>
-          </label>
-          <button id="mt5-account-save-btn" class="btn btn-secondary" type="submit">
-            <span class="btn-label">Add account</span>
-            <span class="spinner" hidden aria-hidden="true"></span>
-          </button>
-        </form>
+          <form id="mt5-account-form" class="mt5-account-form">
+            <input id="mt5-account-edit-id" type="hidden" value="">
+            <label class="field">
+              <span>Account name</span>
+              <input id="mt5-account-name" type="text" maxlength="80" placeholder="e.g. VIP live" required>
+            </label>
+            <div class="mt5-field-row">
+              <label class="field">
+                <span>Login</span>
+                <input id="mt5-account-login" type="number" min="1" step="1" required>
+              </label>
+              <label class="field">
+                <span>Password</span>
+                <input id="mt5-account-password" type="password" autocomplete="new-password" required>
+              </label>
+            </div>
+            <label class="field">
+              <span>Server</span>
+              <input id="mt5-account-server" type="text" placeholder="Broker-MT5-Server" required>
+            </label>
+            <label class="field">
+              <span>Symbol suffix</span>
+              <input id="mt5-account-suffix" type="text" placeholder="-VIP, -STD, or leave empty">
+            </label>
+            <label class="field">
+              <span>MT5 terminal path <span class="field-optional">optional</span></span>
+              <input id="mt5-account-path" type="text" placeholder="C:\\Program Files\\MetaTrader 5\\terminal64.exe">
+            </label>
+            <div class="mt5-checkbox-stack">
+              <label class="checkbox-block">
+                <input id="mt5-account-enabled" type="checkbox" checked>
+                <span>Enabled for trading</span>
+              </label>
+              <label class="checkbox-block">
+                <input id="mt5-account-primary" type="checkbox">
+                <span>Primary account (market data &amp; live UI)</span>
+              </label>
+            </div>
+            <div class="mt5-form-actions">
+              <button id="mt5-account-save-btn" class="btn btn-secondary" type="submit">
+                <span class="btn-label">Add account</span>
+                <span class="spinner" hidden aria-hidden="true"></span>
+              </button>
+              <button id="mt5-account-cancel-btn" class="btn btn-ghost hidden" type="button">Cancel edit</button>
+            </div>
+          </form>
+        </section>
 
-        <div class="table-wrap">
-          <table class="data-table" id="mt5-accounts-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Login</th>
-                <th>Server</th>
-                <th>Suffix</th>
-                <th>Enabled</th>
-                <th>Primary</th>
-                <th>Worker</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="mt5-accounts-body">
-              <tr><td colspan="8" class="empty-row">Loading accounts…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+        <section class="panel mt5-table-panel">
+          <div class="panel-header panel-header-split">
+            <div>
+              <h2>Saved accounts</h2>
+              <p>Each enabled account runs in its own worker. Use separate MT5 terminal paths for multiple logins on one PC.</p>
+            </div>
+          </div>
+          <div class="table-wrap mt5-table-wrap">
+            <table class="data-table" id="mt5-accounts-table">
+              <thead>
+                <tr>
+                  <th>Account</th>
+                  <th>Login</th>
+                  <th>Server</th>
+                  <th>Suffix</th>
+                  <th>Status</th>
+                  <th>Worker</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="mt5-accounts-body">
+                <tr><td colspan="7" class="empty-row">Loading accounts…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
 
       <section class="panel panel-wide" data-pages="settings">
         <div class="panel-header panel-header-split">
@@ -911,6 +953,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=48" defer></script>
+  <script src="/static/js/app.js?v=49" defer></script>
 </body>
 </html>

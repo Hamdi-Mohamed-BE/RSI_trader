@@ -546,6 +546,7 @@ def create_app(
     @app.get("/")
     @app.get("/backtest")
     @app.get("/settings")
+    @app.get("/mt5-accounts")
     @app.get("/manual-trade")
     @app.get("/live-summary")
     @app.get("/logs")

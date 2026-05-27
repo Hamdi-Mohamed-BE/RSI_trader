@@ -302,6 +302,160 @@ h2 {
   grid-column: 1 / -1;
 }
 
+.mt5-page-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.mt5-page-grid > .panel {
+  min-width: 0;
+}
+
+.mt5-sidebar-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mt5-table-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
+}
+
+.mt5-mode-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.mt5-status-line {
+  margin: 0;
+  padding-top: 2px;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.mt5-account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mt5-field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mt5-checkbox-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(148, 163, 184, 0.04);
+}
+
+.checkbox-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.checkbox-block input {
+  width: auto;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.field-optional {
+  color: var(--text-dim);
+  font-weight: 400;
+  font-size: 0.78rem;
+}
+
+.mt5-table-wrap {
+  flex: 1;
+  min-height: 280px;
+}
+
+.mt5-table-panel .data-table td:last-child {
+  min-width: 220px;
+}
+
+.mt5-action-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.mt5-action-group .btn-sm {
+  padding-inline: 10px;
+}
+
+.panel-subheader {
+  margin: 20px 0 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.panel-subheader h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.panel-subheader p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.mt5-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.mt5-status-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+@media (max-width: 1100px) {
+  .mt5-page-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mt5-table-panel {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .mt5-field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .mt5-action-group .btn-sm {
+    flex: 1 1 calc(50% - 6px);
+  }
+}
+
 .panel-header {
   margin-bottom: 16px;
 }
@@ -1671,7 +1825,8 @@ textarea {
   .summary-grid,
   .live-summary-chart,
   .chart-panels,
-  .chart-detail-grid {
+  .chart-detail-grid,
+  .mt5-page-grid {
     grid-template-columns: 1fr;
   }
 
