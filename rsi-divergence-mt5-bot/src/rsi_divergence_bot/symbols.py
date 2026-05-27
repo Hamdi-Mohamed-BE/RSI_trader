@@ -100,6 +100,12 @@ def mt5_symbol_candidates(token: str, broker_suffix: str | None = None) -> list[
     return candidates
 
 
+def preferred_broker_symbol(symbol: str, broker_suffix: str | None = None) -> str:
+    base = market_key(symbol)
+    candidates = mt5_symbol_candidates(base, broker_suffix)
+    return candidates[0] if candidates else symbol
+
+
 def market_key(symbol: str) -> str:
     """Return a stable market key while preserving real broker symbols elsewhere."""
     value = re.sub(r"\s+", "", symbol.strip().upper())

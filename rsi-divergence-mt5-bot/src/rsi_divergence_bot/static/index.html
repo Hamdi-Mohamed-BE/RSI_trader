@@ -134,6 +134,97 @@
       <section class="panel panel-wide" data-pages="settings">
         <div class="panel-header panel-header-split">
           <div>
+            <h2>MT5 accounts</h2>
+            <p>Store real MT5 logins in a local SQLite database. Trade on one active account or fan out to all enabled accounts in parallel.</p>
+          </div>
+          <div class="panel-actions">
+            <button id="mt5-accounts-reload-btn" class="btn btn-ghost btn-sm" type="button">
+              <span class="btn-label">Reload workers</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-grid settings-defaults">
+          <label class="field">
+            <span>Trading mode</span>
+            <select id="mt5-trading-mode">
+              <option value="parallel">Parallel (all enabled accounts)</option>
+              <option value="single">Single (active account only)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Active account (single mode)</span>
+            <select id="mt5-active-account">
+              <option value="">Primary account</option>
+            </select>
+          </label>
+          <p id="mt5-accounts-status" class="panel-hint field-full">Loading MT5 accounts…</p>
+        </div>
+
+        <form id="mt5-account-form" class="snapshot-form">
+          <label class="field">
+            <span>Account name</span>
+            <input id="mt5-account-name" type="text" maxlength="80" placeholder="e.g. VIP live" required>
+          </label>
+          <label class="field">
+            <span>Login</span>
+            <input id="mt5-account-login" type="number" min="1" step="1" required>
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input id="mt5-account-password" type="password" autocomplete="new-password" required>
+          </label>
+          <label class="field">
+            <span>Server</span>
+            <input id="mt5-account-server" type="text" placeholder="Broker-MT5-Server" required>
+          </label>
+          <label class="field">
+            <span>Symbol suffix</span>
+            <input id="mt5-account-suffix" type="text" placeholder="-VIP, -STD, or empty">
+          </label>
+          <label class="field field-wide">
+            <span>MT5 terminal path (optional)</span>
+            <input id="mt5-account-path" type="text" placeholder="C:\\Program Files\\MetaTrader 5\\terminal64.exe">
+          </label>
+          <label class="checkbox-inline field-full">
+            <input id="mt5-account-enabled" type="checkbox" checked>
+            <span>Enabled</span>
+          </label>
+          <label class="checkbox-inline field-full">
+            <input id="mt5-account-primary" type="checkbox">
+            <span>Primary (used for market data / UI)</span>
+          </label>
+          <button id="mt5-account-save-btn" class="btn btn-secondary" type="submit">
+            <span class="btn-label">Add account</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <div class="table-wrap">
+          <table class="data-table" id="mt5-accounts-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Login</th>
+                <th>Server</th>
+                <th>Suffix</th>
+                <th>Enabled</th>
+                <th>Primary</th>
+                <th>Worker</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="mt5-accounts-body">
+              <tr><td colspan="8" class="empty-row">Loading accounts…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel panel-wide" data-pages="settings">
+        <div class="panel-header panel-header-split">
+          <div>
             <h2>Settings snapshots</h2>
             <p>Save the full bot configuration (strategy, risk filters, symbols, sessions, lots) and restore it later with one click.</p>
           </div>

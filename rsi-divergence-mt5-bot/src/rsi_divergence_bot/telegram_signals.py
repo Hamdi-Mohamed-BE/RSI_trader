@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 
 from .config import AppConfig, SymbolConfig, TelegramChannelConfig
 from .manual_trade import resolve_symbol_for_telegram
+from .mt5_account_pool import Mt5AccountPool
 from .mt5_client import MT5Client, _field
 from .state import StateStore
 from .symbols import market_key
@@ -345,10 +346,12 @@ class TelegramSignalsBot:
         logger: logging.Logger,
         daily_risk_status: Callable[[], dict] | None = None,
         config_path: Path | None = None,
+        account_pool: Mt5AccountPool | None = None,
     ):
         self.config = config
         self.config_path = config_path
         self.client = client
+        self.pool = account_pool
         self.state = state
         self.logger = logger
         self.daily_risk_status = daily_risk_status
@@ -529,7 +532,7 @@ class TelegramSignalsBot:
             while not self._stop_event.is_set():
                 try:
                     if self._status.protect_tp:
-                        self.executor.manage_tp_protection(enabled=True)
+                        self._manage_tp_protection(enabled=True)
                     channels = self._enabled_channels()
                     self._sync_channel_pages(context, channels)
                     open_market_keys = self._cached_open_market_keys()
@@ -596,16 +599,25 @@ class TelegramSignalsBot:
                 pass
             self._channel_pages.pop(url, None)
 
+    def _manage_tp_protection(self, *, enabled: bool = True) -> None:
+        if self.pool is not None and self.pool.active:
+            self.pool.manage_tp_protection(enabled=enabled)
+            return
+        self.executor.manage_tp_protection(enabled=enabled)
+
     def _cached_open_market_keys(self, *, ttl_seconds: float = 4.0) -> set[str]:
         now = time.monotonic()
         if now - self._open_market_keys_at < ttl_seconds and self._open_market_keys_at > 0:
             return self._open_market_keys
         keys: set[str] = set()
         try:
-            for pos in self.client.positions() or []:
-                symbol = str(_field(pos, "symbol", ""))
-                if symbol:
-                    keys.add(market_key(symbol))
+            if self.pool is not None and self.pool.active:
+                keys = self.pool.open_market_keys()
+            else:
+                for pos in self.client.positions() or []:
+                    symbol = str(_field(pos, "symbol", ""))
+                    if symbol:
+                        keys.add(market_key(symbol))
         except Exception as exc:  # noqa: BLE001
             self.logger.warning("TELEGRAM open-market lookup failed: %s", exc)
             return self._open_market_keys
@@ -1188,7 +1200,7 @@ class TelegramSignalsBot:
                 "channel": channel.name,
                 "reason": "no copied telegram setup found for this channel",
             }
-        result = self.executor.apply_breakeven(setup)
+        result = self._apply_breakeven(setup)
         result["channel"] = channel.name
         return result
 
@@ -1300,24 +1312,44 @@ class TelegramSignalsBot:
             return result
 
         setup_id = f"telegram:hard:{source_id[:24]}" if hard else f"telegram:{source_id[:16]}"
-        result = self.executor.place_market_setup(
-            setup_id=setup_id,
-            symbol=symbol_cfg.symbol,
-            market_key=symbol_cfg.key,
-            side=side,
-            sl=float(parsed.stop_loss),
-            tps=tps,
-            lot_per_leg=float(lot),
-            entry_price=None,
-            execution_mode="split",
-            extra_setup={
-                "breakeven_applied": False,
-                "source": "telegram_signals",
-                "channel_url": channel.url,
-                "channel_name": channel.name,
-            },
-            comment=f"{COMMENT_PREFIX} signal",
-        )
+        if self.pool is not None and self.pool.active:
+            result = self.pool.place_market_setup(
+                setup_id=setup_id,
+                symbol=symbol_cfg.symbol,
+                market_key=symbol_cfg.key,
+                side=side,
+                sl=float(parsed.stop_loss),
+                tps=tps,
+                lot_per_leg=float(lot),
+                entry_price=None,
+                execution_mode="split",
+                extra_setup={
+                    "breakeven_applied": False,
+                    "source": "telegram_signals",
+                    "channel_url": channel.url,
+                    "channel_name": channel.name,
+                },
+                comment=f"{COMMENT_PREFIX} signal",
+            )
+        else:
+            result = self.executor.place_market_setup(
+                setup_id=setup_id,
+                symbol=symbol_cfg.symbol,
+                market_key=symbol_cfg.key,
+                side=side,
+                sl=float(parsed.stop_loss),
+                tps=tps,
+                lot_per_leg=float(lot),
+                entry_price=None,
+                execution_mode="split",
+                extra_setup={
+                    "breakeven_applied": False,
+                    "source": "telegram_signals",
+                    "channel_url": channel.url,
+                    "channel_name": channel.name,
+                },
+                comment=f"{COMMENT_PREFIX} signal",
+            )
         if result.get("status") == "placed":
             placed = {
                 "status": "placed",
@@ -1361,6 +1393,11 @@ class TelegramSignalsBot:
                 "processed_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
             },
         )
+
+    def _apply_breakeven(self, setup: dict) -> dict:
+        if self.pool is not None and self.pool.active:
+            return self.pool.apply_breakeven(setup)
+        return self.executor.apply_breakeven(setup)
 
     def _has_open_market(self, symbol_cfg: SymbolConfig, *, open_market_keys: set[str] | None = None) -> bool:
         target_key = symbol_cfg.key

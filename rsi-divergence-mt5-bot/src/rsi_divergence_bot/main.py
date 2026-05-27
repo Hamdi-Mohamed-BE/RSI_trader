@@ -10,6 +10,8 @@ from .backtest import run_backtest
 from .bot import SignalBot
 from .config import load_config
 from .logging_utils import setup_logging
+from .mt5_account_pool import Mt5AccountPool
+from .mt5_account_store import Mt5AccountStore, default_db_path
 from .web import create_app
 
 
@@ -36,11 +38,16 @@ def main() -> None:
         logger.info("STARTUP dry_run=true - no live MT5 orders will be placed")
     else:
         logger.warning("STARTUP dry_run=false - LIVE MT5 orders will be placed")
-    bot = SignalBot(config, logger)
+    runtime_dir = (config_path.parent / "runtime").resolve()
+    account_store = Mt5AccountStore(default_db_path(config_path.parent))
+    account_pool = Mt5AccountPool(account_store, config, runtime_dir, logger)
+    bot = SignalBot(config, logger, account_pool=account_pool)
 
     try:
+        if account_pool.active:
+            account_pool.start()
         if args.command == "web":
-            app = create_app(config, bot, config_path)
+            app = create_app(config, bot, config_path, account_pool=account_pool)
             logger.info("WEB START http://%s:%s", config.web.host, config.web.port)
             uvicorn.run(app, host=config.web.host, port=config.web.port)
         elif args.command == "run":
@@ -62,7 +69,9 @@ def main() -> None:
             logger.info("BACKTEST %s", result)
             print(result)
     finally:
-        bot.client.shutdown(force=True)
+        account_pool.stop()
+        if not account_pool.active:
+            bot.client.shutdown(force=True)
 
 
 if __name__ == "__main__":

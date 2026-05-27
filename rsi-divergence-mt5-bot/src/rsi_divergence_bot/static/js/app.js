@@ -52,6 +52,21 @@ const els = {
   snapshotRefreshBtn: document.getElementById("snapshot-refresh-btn"),
   snapshotApplyPersist: document.getElementById("snapshot-apply-persist"),
   snapshotsBody: document.getElementById("snapshots-body"),
+  mt5TradingMode: document.getElementById("mt5-trading-mode"),
+  mt5ActiveAccount: document.getElementById("mt5-active-account"),
+  mt5AccountsStatus: document.getElementById("mt5-accounts-status"),
+  mt5AccountForm: document.getElementById("mt5-account-form"),
+  mt5AccountName: document.getElementById("mt5-account-name"),
+  mt5AccountLogin: document.getElementById("mt5-account-login"),
+  mt5AccountPassword: document.getElementById("mt5-account-password"),
+  mt5AccountServer: document.getElementById("mt5-account-server"),
+  mt5AccountSuffix: document.getElementById("mt5-account-suffix"),
+  mt5AccountPath: document.getElementById("mt5-account-path"),
+  mt5AccountEnabled: document.getElementById("mt5-account-enabled"),
+  mt5AccountPrimary: document.getElementById("mt5-account-primary"),
+  mt5AccountSaveBtn: document.getElementById("mt5-account-save-btn"),
+  mt5AccountsBody: document.getElementById("mt5-accounts-body"),
+  mt5AccountsReloadBtn: document.getElementById("mt5-accounts-reload-btn"),
   backtestForm: document.getElementById("backtest-form"),
   start: document.getElementById("start"),
   end: document.getElementById("end"),
@@ -163,6 +178,8 @@ let telegramTimer = null;
 let botConfig = null;
 let manualTradeImageFile = null;
 let symbolSettingsReady = false;
+let mt5AccountsState = null;
+let mt5RuntimeTimer = null;
 
 function currentPage() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
@@ -871,6 +888,161 @@ async function refreshSnapshots() {
   } finally {
     setLoading(els.snapshotRefreshBtn, false);
   }
+}
+
+function renderMt5Accounts(data) {
+  mt5AccountsState = data;
+  if (els.mt5TradingMode && data.trading_mode) {
+    els.mt5TradingMode.value = data.trading_mode;
+  }
+  if (els.mt5ActiveAccount) {
+    const accounts = data.accounts || [];
+    const selected = data.active_account_id ? String(data.active_account_id) : "";
+    els.mt5ActiveAccount.innerHTML = accounts
+      .map(
+        (account) =>
+          `<option value="${account.id}"${String(account.id) === selected ? " selected" : ""}>${escapeHtml(account.name)} (${account.login})</option>`,
+      )
+      .join("");
+    if (!accounts.length) {
+      els.mt5ActiveAccount.innerHTML = '<option value="">No accounts</option>';
+    }
+  }
+  const workers = data.workers || [];
+  const workerMap = Object.fromEntries(workers.map((item) => [String(item.account_id), item]));
+  if (els.mt5AccountsStatus) {
+    const enabled = data.enabled_count ?? 0;
+    const mode = data.trading_mode || "parallel";
+    els.mt5AccountsStatus.textContent = `${enabled} enabled account(s) · mode=${mode} · pool=${data.pool_active ? "active" : "config fallback"}`;
+  }
+  if (!els.mt5AccountsBody) return;
+  const accounts = data.accounts || [];
+  if (!accounts.length) {
+    els.mt5AccountsBody.innerHTML =
+      '<tr><td colspan="8" class="empty-row">No MT5 accounts yet. Add one above to enable parallel trading.</td></tr>';
+    scheduleResponsiveTables();
+    return;
+  }
+  els.mt5AccountsBody.innerHTML = accounts
+    .map((account) => {
+      const worker = workerMap[String(account.id)] || {};
+      const workerLabel = worker.alive ? `PID ${worker.pid || "?"}` : "stopped";
+      return `
+        <tr data-account-id="${account.id}">
+          <td>${escapeHtml(account.name)}</td>
+          <td class="mono">${account.login}</td>
+          <td>${escapeHtml(account.server)}</td>
+          <td class="mono">${escapeHtml(account.symbol_suffix || "—")}</td>
+          <td>${account.enabled ? "Yes" : "No"}</td>
+          <td>${account.is_primary ? "Yes" : "No"}</td>
+          <td>${escapeHtml(workerLabel)}</td>
+          <td class="table-actions">
+            <button type="button" class="btn btn-ghost btn-sm mt5-account-use-btn" data-id="${account.id}">Use</button>
+            <button type="button" class="btn btn-ghost btn-sm mt5-account-delete-btn" data-id="${account.id}">Delete</button>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+  scheduleResponsiveTables();
+}
+
+async function loadMt5Accounts() {
+  const response = await fetch("/api/mt5-accounts", { cache: "no-store" });
+  const data = await response.json();
+  if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to load MT5 accounts");
+  renderMt5Accounts(data);
+  return data;
+}
+
+async function saveMt5Account(event) {
+  event.preventDefault();
+  const login = Number(els.mt5AccountLogin?.value);
+  if (!Number.isFinite(login) || login <= 0) {
+    toast("Login must be a positive number", "error");
+    return;
+  }
+  setLoading(els.mt5AccountSaveBtn, true);
+  try {
+    const response = await fetch("/api/mt5-accounts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: els.mt5AccountName?.value?.trim(),
+        login,
+        password: els.mt5AccountPassword?.value || "",
+        server: els.mt5AccountServer?.value?.trim(),
+        symbol_suffix: els.mt5AccountSuffix?.value?.trim() || "",
+        mt5_path: els.mt5AccountPath?.value?.trim() || null,
+        enabled: Boolean(els.mt5AccountEnabled?.checked),
+        is_primary: Boolean(els.mt5AccountPrimary?.checked),
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to add MT5 account");
+    els.mt5AccountForm?.reset();
+    if (els.mt5AccountEnabled) els.mt5AccountEnabled.checked = true;
+    renderMt5Accounts(data);
+    toast(`MT5 account added: ${data.account?.name || "account"}`, "success");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.mt5AccountSaveBtn, false);
+  }
+}
+
+async function updateMt5Runtime(partial, { silent = false } = {}) {
+  const response = await fetch("/api/mt5-accounts/runtime/settings", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(partial),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to update MT5 runtime settings");
+  renderMt5Accounts(data);
+  if (!silent) toast("MT5 trading mode updated", "success");
+  return data;
+}
+
+async function deleteMt5Account(accountId, name) {
+  const confirmed = window.confirm(`Delete MT5 account "${name}"?`);
+  if (!confirmed) return;
+  const row = els.mt5AccountsBody?.querySelector(`tr[data-account-id="${CSS.escape(String(accountId))}"]`);
+  const button = row?.querySelector(".mt5-account-delete-btn");
+  setLoading(button, true, "Deleting...");
+  try {
+    const response = await fetch(`/api/mt5-accounts/${encodeURIComponent(accountId)}`, { method: "DELETE" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to delete MT5 account");
+    renderMt5Accounts(data);
+    toast(`MT5 account deleted: ${name}`, "success");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(button, false);
+  }
+}
+
+async function reloadMt5Workers() {
+  setLoading(els.mt5AccountsReloadBtn, true);
+  try {
+    const response = await fetch("/api/mt5-accounts/reload", { method: "POST" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to reload MT5 workers");
+    renderMt5Accounts(data);
+    toast("MT5 workers reloaded", "success");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.mt5AccountsReloadBtn, false);
+  }
+}
+
+function scheduleMt5RuntimeSave(partial) {
+  if (mt5RuntimeTimer) clearTimeout(mt5RuntimeTimer);
+  mt5RuntimeTimer = setTimeout(() => {
+    updateMt5Runtime(partial, { silent: true }).catch((error) => toast(error.message, "error"));
+  }, 350);
 }
 
 async function resetLots() {
@@ -2307,6 +2479,7 @@ async function loadConfig() {
   const page = currentPage();
   if (page === "settings") {
     await loadSymbolSettings();
+    await loadMt5Accounts();
     return;
   }
   const response = await fetch("/api/config", { cache: "no-store" });
@@ -2640,6 +2813,37 @@ async function init() {
   els.optimizeTimeframesBtn?.addEventListener("click", optimizeTimeframes);
   els.saveLotsBtn?.addEventListener("click", saveLots);
   els.snapshotForm?.addEventListener("submit", saveSnapshot);
+  els.mt5AccountForm?.addEventListener("submit", saveMt5Account);
+  els.mt5AccountsReloadBtn?.addEventListener("click", reloadMt5Workers);
+  els.mt5TradingMode?.addEventListener("change", () => {
+    scheduleMt5RuntimeSave({ trading_mode: els.mt5TradingMode.value });
+  });
+  els.mt5ActiveAccount?.addEventListener("change", () => {
+    const value = els.mt5ActiveAccount.value;
+    scheduleMt5RuntimeSave({
+      active_account_id: value ? Number(value) : null,
+      trading_mode: "single",
+    });
+    if (els.mt5TradingMode) els.mt5TradingMode.value = "single";
+  });
+  els.mt5AccountsBody?.addEventListener("click", (event) => {
+    const useBtn = event.target.closest(".mt5-account-use-btn");
+    if (useBtn) {
+      const accountId = Number(useBtn.dataset.id);
+      if (els.mt5ActiveAccount) els.mt5ActiveAccount.value = String(accountId);
+      if (els.mt5TradingMode) els.mt5TradingMode.value = "single";
+      updateMt5Runtime({ trading_mode: "single", active_account_id: accountId }).catch((error) =>
+        toast(error.message, "error"),
+      );
+      return;
+    }
+    const deleteBtn = event.target.closest(".mt5-account-delete-btn");
+    if (deleteBtn) {
+      const row = deleteBtn.closest("tr");
+      const name = row?.querySelector("td")?.textContent?.trim() || "account";
+      deleteMt5Account(Number(deleteBtn.dataset.id), name);
+    }
+  });
   els.snapshotRefreshBtn?.addEventListener("click", refreshSnapshots);
   els.snapshotsBody?.addEventListener("click", (event) => {
     const applyBtn = event.target.closest(".snapshot-apply-btn");

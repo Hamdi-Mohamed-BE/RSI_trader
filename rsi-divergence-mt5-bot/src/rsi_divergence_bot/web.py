@@ -16,6 +16,8 @@ from fastapi.staticfiles import StaticFiles
 
 from .backtest import optimize_symbol_timeframes, run_backtest, run_chart_backtest
 from .bot import SignalBot
+from .mt5_account_pool import Mt5AccountPool
+from .mt5_account_store import Mt5AccountStore, default_db_path
 from .symbols import market_key
 from .config import (
     AppConfig,
@@ -147,9 +149,46 @@ class TimeframeOptimizeRequest(BaseModel):
     persist: bool = True
 
 
-def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
+class Mt5AccountCreateRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    login: int = Field(gt=0)
+    password: str = Field(min_length=1)
+    server: str = Field(min_length=1)
+    symbol_suffix: str = ""
+    mt5_path: str | None = None
+    enabled: bool = True
+    is_primary: bool = False
+
+
+class Mt5AccountUpdateRequest(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=80)
+    login: int | None = Field(default=None, gt=0)
+    password: str | None = Field(default=None, min_length=1)
+    server: str | None = Field(default=None, min_length=1)
+    symbol_suffix: str | None = None
+    mt5_path: str | None = None
+    enabled: bool | None = None
+    is_primary: bool | None = None
+
+
+class Mt5AccountRuntimeRequest(BaseModel):
+    trading_mode: str | None = None
+    active_account_id: int | None = Field(default=None, gt=0)
+
+
+def create_app(
+    config: AppConfig,
+    bot: SignalBot,
+    config_path: Path,
+    *,
+    account_pool: Mt5AccountPool | None = None,
+) -> FastAPI:
     app = FastAPI(title="RSI Divergence MT5 Bot")
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+    runtime_dir = (config_path.parent / "runtime").resolve()
+    account_store = Mt5AccountStore(default_db_path(config_path.parent))
+    pool = account_pool or Mt5AccountPool(account_store, config, runtime_dir, bot.logger)
+    bot.attach_pool(pool)
     telegram_bot = TelegramSignalsBot(
         config,
         bot.client,
@@ -157,6 +196,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         bot.logger,
         bot.daily_risk_status,
         config_path=config_path,
+        account_pool=pool,
     )
 
     def telegram_channels_payload() -> list[dict]:
@@ -344,7 +384,10 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         }
 
     async def require_mt5_ready() -> dict:
-        status = await asyncio.to_thread(bot.client.connection_status)
+        if pool.active:
+            status = await asyncio.to_thread(pool.connection_status)
+        else:
+            status = await asyncio.to_thread(bot.client.connection_status)
         if not status.get("connected"):
             detail = status.get("error") or "MT5 is not connected yet."
             raise HTTPException(status_code=503, detail=f"MT5 not ready: {detail}")
@@ -353,13 +396,18 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     @app.on_event("startup")
     async def connect_mt5_on_startup() -> None:
         async def wait_for_mt5_and_start() -> None:
+            if pool.active:
+                await asyncio.to_thread(pool.start)
             max_attempts = 90
             delay_seconds = 10
             for attempt in range(1, max_attempts + 1):
                 if bot.is_auto_loop_running():
                     return
                 try:
-                    status = await asyncio.to_thread(bot.client.connection_status)
+                    if pool.active:
+                        status = await asyncio.to_thread(pool.connection_status)
+                    else:
+                        status = await asyncio.to_thread(bot.client.connection_status)
                     if status.get("connected"):
                         bot.logger.info(
                             "MT5 connected login=%s server=%s balance=%s",
@@ -401,6 +449,99 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
             bot.logger.warning("MT5 did not become ready; auto loop was not started")
 
         asyncio.create_task(wait_for_mt5_and_start())
+
+    @app.on_event("shutdown")
+    async def shutdown_mt5_pool() -> None:
+        await asyncio.to_thread(pool.stop)
+
+    @app.get("/api/mt5-accounts")
+    def mt5_accounts_list() -> dict:
+        return pool.runtime_status()
+
+    @app.post("/api/mt5-accounts")
+    def mt5_accounts_create(body: Mt5AccountCreateRequest) -> dict:
+        try:
+            account = account_store.add_account(
+                name=body.name,
+                login=body.login,
+                password=body.password,
+                server=body.server,
+                symbol_suffix=body.symbol_suffix,
+                mt5_path=body.mt5_path,
+                enabled=body.enabled,
+                is_primary=body.is_primary,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        bot.attach_pool(pool)
+        telegram_bot.client = bot.client
+        pool.reload()
+        bot.logger.warning(
+            "MT5 ACCOUNT added id=%s name=%s login=%s suffix=%s",
+            account.id,
+            account.name,
+            account.login,
+            account.symbol_suffix,
+        )
+        return {"status": "created", "account": account.public_dict(), **pool.runtime_status()}
+
+    @app.patch("/api/mt5-accounts/{account_id}")
+    def mt5_accounts_update(account_id: int, body: Mt5AccountUpdateRequest) -> dict:
+        try:
+            account = account_store.update_account(
+                account_id,
+                name=body.name,
+                login=body.login,
+                password=body.password,
+                server=body.server,
+                symbol_suffix=body.symbol_suffix,
+                mt5_path=body.mt5_path,
+                enabled=body.enabled,
+                is_primary=body.is_primary,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        bot.attach_pool(pool)
+        telegram_bot.client = bot.client
+        pool.reload()
+        bot.logger.info("MT5 ACCOUNT updated id=%s name=%s", account.id, account.name)
+        return {"status": "updated", "account": account.public_dict(), **pool.runtime_status()}
+
+    @app.delete("/api/mt5-accounts/{account_id}")
+    def mt5_accounts_delete(account_id: int) -> dict:
+        try:
+            removed = account_store.delete_account(account_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        bot.attach_pool(pool)
+        telegram_bot.client = bot.client
+        pool.reload()
+        bot.logger.warning("MT5 ACCOUNT deleted id=%s name=%s", removed.id, removed.name)
+        return {"status": "deleted", "account": removed.public_dict(), **pool.runtime_status()}
+
+    @app.patch("/api/mt5-accounts/runtime/settings")
+    def mt5_accounts_runtime(body: Mt5AccountRuntimeRequest) -> dict:
+        try:
+            if body.trading_mode is not None:
+                account_store.set_trading_mode(body.trading_mode)
+            if body.active_account_id is not None:
+                account_store.set_active_account_id(body.active_account_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        pool.reload()
+        bot.logger.info(
+            "MT5 ACCOUNT runtime mode=%s active=%s",
+            account_store.trading_mode(),
+            account_store.active_account_id(),
+        )
+        return {"status": "updated", **pool.runtime_status()}
+
+    @app.post("/api/mt5-accounts/reload")
+    def mt5_accounts_reload() -> dict:
+        bot.attach_pool(pool)
+        telegram_bot.client = bot.client
+        pool.reload()
+        return {"status": "reloaded", **pool.runtime_status()}
 
     @app.get("/")
     @app.get("/backtest")
