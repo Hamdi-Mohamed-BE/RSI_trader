@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import time
 import traceback
 from datetime import datetime
 from pathlib import Path
@@ -129,6 +130,31 @@ def _handle_command(
     return {"ok": False, "error": f"unknown op: {op}"}
 
 
+def _initialize_client(client: MT5Client, logger: logging.Logger, *, attempts: int = 8, delay_seconds: float = 4.0) -> None:
+    last_error: Exception | None = None
+    for attempt in range(1, attempts + 1):
+        try:
+            client.initialize()
+            return
+        except Exception as exc:  # noqa: BLE001
+            last_error = exc
+            logger.warning(
+                "MT5 ACCOUNT WORKER initialize attempt %s/%s failed: %s",
+                attempt,
+                attempts,
+                exc,
+            )
+            try:
+                client.shutdown(force=True)
+            except Exception:  # noqa: BLE001
+                pass
+            if attempt < attempts:
+                time.sleep(delay_seconds)
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError("MT5 initialize failed")
+
+
 def account_worker_main(
     account: dict,
     config_dict: dict,
@@ -152,9 +178,18 @@ def account_worker_main(
         client = MT5Client(mt5_cfg)
         state = StateStore(state_path)
         executor = TradeExecutor(config, client, state, logger)
-        client.initialize()
         logger.warning(
-            "MT5 ACCOUNT WORKER started id=%s name=%s login=%s suffix=%s",
+            "MT5 ACCOUNT WORKER connecting id=%s name=%s login=%s server=%s path=%s suffix=%s",
+            account.get("id"),
+            account.get("name"),
+            account.get("login"),
+            account.get("server"),
+            mt5_cfg.path or "default",
+            account.get("symbol_suffix") or "",
+        )
+        _initialize_client(client, logger)
+        logger.warning(
+            "MT5 ACCOUNT WORKER ready id=%s name=%s login=%s suffix=%s",
             account.get("id"),
             account.get("name"),
             account.get("login"),

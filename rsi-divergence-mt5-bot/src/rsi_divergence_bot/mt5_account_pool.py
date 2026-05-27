@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import threading
+import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict
@@ -125,11 +126,36 @@ class Mt5PoolReadClient:
         return response.get("result") or {}
 
 
+def mt5_path_warnings(accounts: list[Mt5AccountRecord], default_path: str | None = None) -> list[str]:
+    enabled = [item for item in accounts if item.enabled]
+    if len(enabled) <= 1:
+        return []
+    grouped: dict[str, list[str]] = {}
+    path_labels: dict[str, str] = {}
+    for account in enabled:
+        raw_path = (account.mt5_path or default_path or "").strip()
+        key = raw_path.casefold() if raw_path else "__default_terminal__"
+        grouped.setdefault(key, []).append(account.name)
+        path_labels[key] = raw_path or "default terminal"
+    warnings: list[str] = []
+    for key, names in grouped.items():
+        if len(names) <= 1:
+            continue
+        label = path_labels[key]
+        warnings.append(
+            f"Accounts {', '.join(names)} share MT5 path '{label}'. "
+            "Parallel mode needs one running terminal64.exe per account."
+        )
+    return warnings
+
+
 class _WorkerHandle:
     def __init__(self, account_id: int, process: Process, cmd_queue: Queue):
         self.account_id = account_id
         self.process = process
         self.cmd_queue = cmd_queue
+        self.connected = False
+        self.last_error: str | None = None
 
 
 class Mt5AccountPool:
@@ -152,6 +178,7 @@ class Mt5AccountPool:
         self._started = False
         self._read_client: Mt5PoolReadClient | None = None
         self._ctx = get_context("spawn")
+        self._worker_stagger_seconds = 5.0
 
     @property
     def active(self) -> bool:
@@ -170,14 +197,13 @@ class Mt5AccountPool:
 
     def start(self) -> None:
         with self._lock:
-            if not self.active:
+            if not self.active or self._started:
                 return
             if self._listener is None or not self._listener.is_alive():
                 self._listener = threading.Thread(target=self._listen_responses, name="mt5-pool-listener", daemon=True)
                 self._listener.start()
-            for account in self.store.enabled_accounts():
-                self._ensure_worker(account)
             self._started = True
+            self._start_workers(self.store.enabled_accounts())
 
     def reload(self) -> None:
         with self._lock:
@@ -191,8 +217,7 @@ class Mt5AccountPool:
             if self._listener is None or not self._listener.is_alive():
                 self._listener = threading.Thread(target=self._listen_responses, name="mt5-pool-listener", daemon=True)
                 self._listener.start()
-            for account in self.store.enabled_accounts():
-                self._ensure_worker(account)
+            self._start_workers(self.store.enabled_accounts())
             self._started = True
 
     def stop(self) -> None:
@@ -202,6 +227,7 @@ class Mt5AccountPool:
             self._started = False
 
     def runtime_status(self) -> dict:
+        enabled = self.store.enabled_accounts()
         workers = []
         for account_id, handle in sorted(self._workers.items()):
             alive = handle.process.is_alive()
@@ -210,11 +236,14 @@ class Mt5AccountPool:
                     "account_id": account_id,
                     "pid": handle.process.pid if alive else None,
                     "alive": alive,
+                    "connected": handle.connected,
+                    "error": handle.last_error,
                 }
             )
         payload = self.store.runtime_payload()
         payload["workers"] = workers
         payload["pool_active"] = self.active
+        payload["path_warnings"] = mt5_path_warnings(enabled, self.config.mt5.path)
         return payload
 
     def target_accounts(self) -> list[Mt5AccountRecord]:
@@ -238,6 +267,9 @@ class Mt5AccountPool:
 
     def invoke(self, account_id: int, op: str, payload: dict | None = None, *, timeout: float = 120) -> dict:
         self.ensure_started()
+        return self._invoke_worker(account_id, op, payload or {}, timeout=timeout)
+
+    def _invoke_worker(self, account_id: int, op: str, payload: dict, *, timeout: float) -> dict:
         handle = self._workers.get(account_id)
         if handle is None:
             account = self.store.get_account(account_id)
@@ -252,7 +284,7 @@ class Mt5AccountPool:
         event = threading.Event()
         with self._lock:
             self._pending[request_id] = {"event": event, "response": None}
-        handle.cmd_queue.put({"request_id": request_id, "op": op, "payload": payload or {}})
+        handle.cmd_queue.put({"request_id": request_id, "op": op, "payload": payload})
         if not event.wait(timeout):
             with self._lock:
                 self._pending.pop(request_id, None)
@@ -378,6 +410,50 @@ class Mt5AccountPool:
                 slot["response"] = message
                 slot["event"].set()
 
+    def _start_workers(self, accounts: list[Mt5AccountRecord]) -> None:
+        enabled = [item for item in accounts if item.enabled]
+        for warning in mt5_path_warnings(enabled, self.config.mt5.path):
+            self.logger.warning("MT5 POOL %s", warning)
+
+        ordered: list[Mt5AccountRecord] = []
+        primary = self.primary_account()
+        if primary and primary.enabled:
+            ordered.append(primary)
+        for account in enabled:
+            if account.id not in {item.id for item in ordered}:
+                ordered.append(account)
+
+        for index, account in enumerate(ordered):
+            if index > 0:
+                time.sleep(self._worker_stagger_seconds)
+            self._ensure_worker(account)
+            ready = self._wait_worker_ready(account.id, timeout=120)
+            handle = self._workers.get(account.id)
+            if handle is not None:
+                handle.connected = ready
+                if not ready and handle.last_error is None:
+                    handle.last_error = "MT5 worker did not connect before timeout"
+
+    def _wait_worker_ready(self, account_id: int, *, timeout: float = 120) -> bool:
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            handle = self._workers.get(account_id)
+            if handle is None or not handle.process.is_alive():
+                if handle is not None and handle.last_error:
+                    return False
+                time.sleep(0.5)
+                continue
+            response = self._invoke_worker(account_id, "connection_status", {}, timeout=30)
+            if response.get("ok") and (response.get("result") or {}).get("connected"):
+                if handle is not None:
+                    handle.last_error = None
+                return True
+            error = response.get("error") or (response.get("result") or {}).get("error")
+            if handle is not None and error:
+                handle.last_error = str(error)
+            time.sleep(2)
+        return False
+
     def _ensure_worker(self, account: Mt5AccountRecord) -> None:
         existing = self._workers.get(account.id)
         if existing is not None and existing.process.is_alive():
@@ -400,10 +476,11 @@ class Mt5AccountPool:
         process.start()
         self._workers[account.id] = _WorkerHandle(account.id, process, cmd_queue)
         self.logger.warning(
-            "MT5 POOL worker started account_id=%s name=%s login=%s suffix=%s pid=%s",
+            "MT5 POOL worker started account_id=%s name=%s login=%s path=%s suffix=%s pid=%s",
             account.id,
             account.name,
             account.login,
+            account.mt5_path or self.config.mt5.path or "default",
             account.symbol_suffix or "",
             process.pid,
         )

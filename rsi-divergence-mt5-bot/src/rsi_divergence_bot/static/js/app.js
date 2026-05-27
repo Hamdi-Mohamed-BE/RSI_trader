@@ -930,6 +930,12 @@ function renderMt5Accounts(data) {
   if (els.mt5AccountsStatus) {
     els.mt5AccountsStatus.textContent =
       `${enabledCount} enabled · ${modeLabel} mode · ${workersAlive}/${accounts.length || 0} workers running · pool ${data.pool_active ? "active" : "config fallback"}`;
+    if (Array.isArray(data.path_warnings) && data.path_warnings.length) {
+      els.mt5AccountsStatus.textContent += ` · WARNING: ${data.path_warnings[0]}`;
+      els.mt5AccountsStatus.className = "panel-hint mt5-status-line live-warning";
+    } else {
+      els.mt5AccountsStatus.className = "panel-hint mt5-status-line";
+    }
   }
   if (els.mt5StatEnabled) els.mt5StatEnabled.textContent = String(enabledCount);
   if (els.mt5StatMode) els.mt5StatMode.textContent = modeLabel;
@@ -945,8 +951,14 @@ function renderMt5Accounts(data) {
   els.mt5AccountsBody.innerHTML = accounts
     .map((account) => {
       const worker = workerMap[String(account.id)] || {};
-      const workerLabel = worker.alive ? `Running · PID ${worker.pid || "?"}` : "Stopped";
-      const workerClass = worker.alive ? "badge badge-accent" : "badge badge-muted";
+      const workerLabel = worker.connected
+        ? `Connected · PID ${worker.pid || "?"}`
+        : worker.alive
+          ? "Starting…"
+          : worker.error
+            ? `Error: ${worker.error}`
+            : "Stopped";
+      const workerClass = worker.connected ? "badge badge-accent" : worker.alive ? "badge badge-muted" : "badge badge-muted";
       const active =
         data.trading_mode === "single" && String(data.active_account_id) === String(account.id)
           ? '<span class="badge badge-accent">Active</span>'
