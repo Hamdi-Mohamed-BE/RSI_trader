@@ -129,8 +129,9 @@
             <span>Append broker symbol tag (e.g. BTCUSD → BTCUSD-VIP / BTCUSD-STD per account)</span>
           </label>
           <p class="panel-hint field-full">
-            When off, orders use the plain symbol name (BTCUSD). When on, the account suffix or
-            <code>mt5.broker_symbol_suffix</code> is appended for MT5 orders and Telegram auto-register.
+            Set the MT5 symbol string for each market in <strong>Demo symbol</strong> and <strong>Live symbol</strong>.
+            Trades use demo names on demo accounts and live names on live accounts (MT5 Accounts page).
+            The broker tag toggle below is only a fallback for symbols not listed in config.
           </p>
           <p id="broker-symbol-suffix-hint" class="panel-hint field-full"></p>
         </div>
@@ -139,9 +140,9 @@
             <thead>
               <tr>
                 <th>On</th>
-                <th>Symbol</th>
-                <th>Market key</th>
-                <th>Name</th>
+                <th>Market</th>
+                <th>Demo symbol</th>
+                <th>Live symbol</th>
                 <th>TF</th>
                 <th>Lot / leg</th>
                 <th>Confirmation</th>
@@ -237,6 +238,10 @@
             </label>
             <div class="mt5-checkbox-stack">
               <label class="checkbox-block">
+                <input id="mt5-account-demo" type="checkbox" checked>
+                <span>Demo account (uses demo symbol names from Settings)</span>
+              </label>
+              <label class="checkbox-block">
                 <input id="mt5-account-enabled" type="checkbox" checked>
                 <span>Enabled for trading</span>
               </label>
@@ -269,6 +274,7 @@
                   <th>Account</th>
                   <th>Login</th>
                   <th>Server</th>
+                  <th>Type</th>
                   <th>Suffix</th>
                   <th>Status</th>
                   <th>Session</th>
@@ -276,7 +282,7 @@
                 </tr>
               </thead>
               <tbody id="mt5-accounts-body">
-                <tr><td colspan="7" class="empty-row">Loading accounts…</td></tr>
+                <tr><td colspan="8" class="empty-row">Loading accounts…</td></tr>
               </tbody>
             </table>
           </div>
@@ -974,6 +980,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=53" defer></script>
+  <script src="/static/js/app.js?v=55" defer></script>
 </body>
 </html>

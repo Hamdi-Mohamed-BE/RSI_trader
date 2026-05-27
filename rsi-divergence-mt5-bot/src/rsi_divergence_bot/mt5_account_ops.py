@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
 
+from .config import AppConfig
 from .mt5_client import MT5Client
 from .mt5_account_store import Mt5AccountRecord
 from .strategy import Signal
-from .symbols import market_key, preferred_broker_symbol
+from .symbols import resolve_trade_symbol
 from .trader import TradeExecutor
 
 
@@ -18,16 +18,30 @@ def _signal_from_dict(payload: dict) -> Signal:
     return Signal(**data)
 
 
-def _remap_symbol(symbol: str, suffix: str, *, append_suffix: bool = True) -> str:
-    if not append_suffix:
-        return market_key(symbol)
-    return preferred_broker_symbol(symbol, suffix, append_suffix=True)
-
-
 def _account_payload(account: Mt5AccountRecord | dict) -> dict:
     if isinstance(account, Mt5AccountRecord):
         return account.to_worker_dict()
     return dict(account)
+
+
+def _resolve_order_symbol(
+    symbol: str,
+    account_data: dict,
+    config: AppConfig | None,
+    *,
+    append_suffix: bool,
+) -> str:
+    is_demo = bool(account_data.get("is_demo", True))
+    suffix = str(account_data.get("symbol_suffix") or "")
+    if config is None:
+        raise ValueError("config is required to resolve trade symbols")
+    return resolve_trade_symbol(
+        symbol,
+        config,
+        is_demo=is_demo,
+        account_suffix=suffix,
+        append_suffix=append_suffix,
+    )
 
 
 def handle_account_operation(
@@ -37,6 +51,7 @@ def handle_account_operation(
     client: MT5Client,
     executor: TradeExecutor,
     account: Mt5AccountRecord | dict,
+    config: AppConfig | None = None,
     append_suffix: bool = True,
 ) -> dict:
     payload = payload or {}
@@ -94,10 +109,10 @@ def handle_account_operation(
 
     if op == "place_signal":
         signal = _signal_from_dict(payload["signal"])
-        suffix = str(account_data.get("symbol_suffix") or "")
+        trade_symbol = _resolve_order_symbol(signal.symbol, account_data, config, append_suffix=append_suffix)
         signal = Signal(
             setup_id=f"{signal.setup_id}:acct{account_data['id']}",
-            symbol=_remap_symbol(signal.symbol, suffix, append_suffix=append_suffix),
+            symbol=trade_symbol,
             market_key=signal.market_key,
             name=signal.name,
             side=signal.side,
@@ -120,8 +135,7 @@ def handle_account_operation(
 
     if op == "place_market_setup":
         kwargs = dict(payload)
-        suffix = str(account_data.get("symbol_suffix") or "")
-        kwargs["symbol"] = _remap_symbol(str(kwargs["symbol"]), suffix, append_suffix=append_suffix)
+        kwargs["symbol"] = _resolve_order_symbol(str(kwargs["symbol"]), account_data, config, append_suffix=append_suffix)
         kwargs["setup_id"] = f"{kwargs.get('setup_id', 'setup')}:acct{account_data['id']}"
         result = executor.place_market_setup(**kwargs)
         result["account_id"] = account_data["id"]
@@ -129,9 +143,10 @@ def handle_account_operation(
         return result
 
     if op == "place_test_trade":
-        symbol = _remap_symbol(
+        symbol = _resolve_order_symbol(
             str(payload.get("symbol") or "XAUUSD"),
-            str(account_data.get("symbol_suffix") or ""),
+            account_data,
+            config,
             append_suffix=append_suffix,
         )
         side = str(payload.get("side") or "buy")

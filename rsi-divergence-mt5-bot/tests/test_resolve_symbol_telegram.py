@@ -40,7 +40,9 @@ def test_resolve_symbol_for_telegram_auto_registers_vip_symbol():
     client = FakeMT5Client({"CHFJPY-VIP"})
     cfg, auto_registered = resolve_symbol_for_telegram("CHFJPY", config, client)
     assert cfg is not None
-    assert cfg.symbol == "CHFJPY-VIP"
+    assert cfg.symbol == "CHFJPY"
+    assert cfg.demo_symbol == "CHFJPY-VIP"
+    assert cfg.live_symbol == "CHFJPY-VIP"
     assert cfg.lot_per_leg == 0.35
     assert auto_registered is True
     assert resolve_symbol("CHFJPY", config) is cfg
@@ -53,6 +55,8 @@ def test_resolve_symbol_for_telegram_auto_registers_std_symbol():
     client = FakeMT5Client({"CHFJPY-STD"})
     cfg, auto_registered = resolve_symbol_for_telegram("CHFJPY", config, client)
     assert cfg is not None
-    assert cfg.symbol == "CHFJPY-STD"
+    assert cfg.symbol == "CHFJPY"
+    assert cfg.demo_symbol == "CHFJPY-STD"
+    assert cfg.live_symbol == "CHFJPY-STD"
     assert cfg.lot_per_leg == 0.35
     assert auto_registered is True

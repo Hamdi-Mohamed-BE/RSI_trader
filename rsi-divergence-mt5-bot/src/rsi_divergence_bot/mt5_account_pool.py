@@ -237,6 +237,8 @@ class Mt5AccountPool:
         payload["pool_active"] = self.active
         payload["session_mode"] = "sequential"
         payload["active_account_id_session"] = self._active_account_id
+        payload["dry_run"] = self.config.bot.dry_run
+        payload["append_broker_symbol_suffix"] = self.config.mt5.append_broker_symbol_suffix
         payload["path_warnings"] = mt5_path_warnings(enabled, self.config.mt5.path)
         return payload
 
@@ -339,6 +341,7 @@ class Mt5AccountPool:
                 client=self._client,
                 executor=executor,
                 account=account,
+                config=self.config,
                 append_suffix=self.config.mt5.append_broker_symbol_suffix,
             )
             state.connected = True

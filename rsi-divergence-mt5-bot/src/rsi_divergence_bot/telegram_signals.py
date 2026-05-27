@@ -19,7 +19,7 @@ from .manual_trade import resolve_symbol_for_telegram
 from .mt5_account_pool import Mt5AccountPool
 from .mt5_client import MT5Client, _field
 from .state import StateStore
-from .symbols import market_key
+from .symbols import market_key, resolve_trade_symbol
 from .trade_geometry import invalid_market_geometry
 from .trader import TradeExecutor
 
@@ -1515,9 +1515,15 @@ class TelegramSignalsBot:
                 comment=f"{COMMENT_PREFIX} signal",
             )
         else:
+            trade_symbol = resolve_trade_symbol(
+                symbol_cfg.symbol,
+                self.config,
+                is_demo=self._primary_is_demo(),
+                append_suffix=self.config.mt5.append_broker_symbol_suffix,
+            )
             result = self.executor.place_market_setup(
                 setup_id=setup_id,
-                symbol=symbol_cfg.symbol,
+                symbol=trade_symbol,
                 market_key=symbol_cfg.key,
                 side=side,
                 sl=float(parsed.stop_loss),
@@ -1608,9 +1614,21 @@ class TelegramSignalsBot:
                 return True
         return False
 
+    def _primary_is_demo(self) -> bool:
+        if self.pool is not None and self.pool.active:
+            primary = self.pool.primary_account()
+            if primary is not None:
+                return primary.is_demo
+        return True
+
     def _live_entry_price(self, plan: dict) -> float:
         action = str(plan["action"])
-        symbol = str(plan["symbol"])
+        symbol = resolve_trade_symbol(
+            str(plan["symbol"]),
+            self.config,
+            is_demo=self._primary_is_demo(),
+            append_suffix=self.config.mt5.append_broker_symbol_suffix,
+        )
         tick = self.client.tick(symbol)
         if tick is None:
             raise ValueError(f"No tick for {symbol}")

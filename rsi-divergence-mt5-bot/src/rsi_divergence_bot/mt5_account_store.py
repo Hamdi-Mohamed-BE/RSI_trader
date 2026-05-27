@@ -20,6 +20,7 @@ class Mt5AccountRecord:
     mt5_path: str | None
     enabled: bool
     is_primary: bool
+    is_demo: bool
     created_at: str
     updated_at: str
 
@@ -32,6 +33,7 @@ class Mt5AccountRecord:
             "server": self.server,
             "symbol_suffix": self.symbol_suffix,
             "mt5_path": self.mt5_path,
+            "is_demo": self.is_demo,
         }
 
     def public_dict(self, *, include_secrets: bool = False) -> dict:
@@ -44,6 +46,7 @@ class Mt5AccountRecord:
             "mt5_path": self.mt5_path,
             "enabled": self.enabled,
             "is_primary": self.is_primary,
+            "is_demo": self.is_demo,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
         }
@@ -95,6 +98,9 @@ class Mt5AccountStore:
                     );
                     """
                 )
+                columns = {row[1] for row in conn.execute("PRAGMA table_info(mt5_accounts)").fetchall()}
+                if "is_demo" not in columns:
+                    conn.execute("ALTER TABLE mt5_accounts ADD COLUMN is_demo INTEGER NOT NULL DEFAULT 1")
                 conn.commit()
             finally:
                 conn.close()
@@ -115,6 +121,7 @@ class Mt5AccountStore:
             mt5_path=str(row["mt5_path"]) if row["mt5_path"] else None,
             enabled=bool(row["enabled"]),
             is_primary=bool(row["is_primary"]),
+            is_demo=bool(row["is_demo"]) if "is_demo" in row.keys() else True,
             created_at=str(row["created_at"]),
             updated_at=str(row["updated_at"]),
         )
@@ -148,6 +155,7 @@ class Mt5AccountStore:
         mt5_path: str | None = None,
         enabled: bool = True,
         is_primary: bool = False,
+        is_demo: bool = True,
     ) -> Mt5AccountRecord:
         cleaned_name = name.strip()
         cleaned_server = server.strip()
@@ -170,8 +178,8 @@ class Mt5AccountStore:
                 cur = conn.execute(
                     """
                     INSERT INTO mt5_accounts
-                    (name, login, password, server, symbol_suffix, mt5_path, enabled, is_primary, created_at, updated_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (name, login, password, server, symbol_suffix, mt5_path, enabled, is_primary, is_demo, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         cleaned_name,
@@ -182,6 +190,7 @@ class Mt5AccountStore:
                         mt5_path.strip() if mt5_path else None,
                         1 if enabled else 0,
                         1 if is_primary else 0,
+                        1 if is_demo else 0,
                         now,
                         now,
                     ),
@@ -207,6 +216,7 @@ class Mt5AccountStore:
         mt5_path: str | None = None,
         enabled: bool | None = None,
         is_primary: bool | None = None,
+        is_demo: bool | None = None,
     ) -> Mt5AccountRecord:
         account = self.get_account(account_id)
         if account is None:
@@ -239,6 +249,8 @@ class Mt5AccountStore:
             updates["enabled"] = 1 if enabled else 0
         if is_primary is not None:
             updates["is_primary"] = 1 if is_primary else 0
+        if is_demo is not None:
+            updates["is_demo"] = 1 if is_demo else 0
         if not updates:
             return account
         with self._lock:

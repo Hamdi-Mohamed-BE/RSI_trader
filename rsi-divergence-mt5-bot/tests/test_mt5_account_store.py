@@ -23,6 +23,7 @@ class Mt5AccountStoreTests(unittest.TestCase):
         )
         self.assertEqual(account.name, "VIP")
         self.assertEqual(account.symbol_suffix, "-VIP")
+        self.assertTrue(account.is_demo)
         self.assertTrue(account.is_primary)
         payload = self.store.runtime_payload()
         self.assertEqual(payload["trading_mode"], "parallel")
@@ -72,6 +73,18 @@ class Mt5AccountStoreTests(unittest.TestCase):
         self.assertIsNotNone(promoted)
         assert promoted is not None
         self.assertTrue(promoted.is_primary)
+
+    def test_is_demo_defaults_true_and_can_update(self) -> None:
+        account = self.store.add_account(
+            name="Live",
+            login=10003,
+            password="secret",
+            server="Broker-Server",
+            is_demo=False,
+        )
+        self.assertFalse(account.is_demo)
+        updated = self.store.update_account(account.id, is_demo=True)
+        self.assertTrue(updated.is_demo)
 
 
 if __name__ == "__main__":

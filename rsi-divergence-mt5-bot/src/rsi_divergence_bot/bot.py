@@ -5,13 +5,15 @@ import threading
 from dataclasses import asdict, dataclass
 from datetime import datetime, time, timezone
 
-from .config import AppConfig
+from .config import AppConfig, trade_symbol_for_account
 from .decision import resolve_trade_filters
 from .mt5_account_pool import Mt5AccountPool
 from .mt5_client import MT5Client
 from .live_session import LIVE_SCAN_BARS
 from .state import StateStore
 from .signal_engine import latest_closed_signal
+from .symbols import resolve_trade_symbol
+from .strategy import Signal
 from .trader import TradeExecutor
 
 
@@ -60,9 +62,43 @@ class SignalBot:
         self.client = self._build_client()
         self.executor = TradeExecutor(self.config, self.client, self.state, self.logger)
 
+    def _primary_is_demo(self) -> bool:
+        if self.pool is not None and self.pool.active:
+            primary = self.pool.primary_account()
+            if primary is not None:
+                return primary.is_demo
+        return True
+
     def _place_signal(self, signal) -> str:
         if self.pool is not None and self.pool.active:
             return self.pool.place_signal(signal)
+        trade_symbol = resolve_trade_symbol(
+            signal.symbol,
+            self.config,
+            is_demo=self._primary_is_demo(),
+            append_suffix=self.config.mt5.append_broker_symbol_suffix,
+        )
+        if trade_symbol != signal.symbol:
+            signal = Signal(
+                setup_id=signal.setup_id,
+                symbol=trade_symbol,
+                market_key=signal.market_key,
+                name=signal.name,
+                side=signal.side,
+                time=signal.time,
+                entry=signal.entry,
+                sl=signal.sl,
+                tps=list(signal.tps),
+                lot_per_leg=signal.lot_per_leg,
+                risk_distance=signal.risk_distance,
+                session=signal.session,
+                reason=signal.reason,
+                algorithm=signal.algorithm,
+                trail_atr_mult=signal.trail_atr_mult,
+                ema_fast_len=signal.ema_fast_len,
+                ema_slow_len=signal.ema_slow_len,
+                atr_at_entry=signal.atr_at_entry,
+            )
         return self.executor.place_signal(signal)
 
     def _manage_tp_protection(self) -> None:
@@ -92,7 +128,8 @@ class SignalBot:
 
         for symbol_cfg in self.config.enabled_symbols:
             try:
-                df = self.client.rates(symbol_cfg.symbol, symbol_cfg.timeframe, LIVE_SCAN_BARS)
+                trade_symbol = trade_symbol_for_account(symbol_cfg, is_demo=self._primary_is_demo())
+                df = self.client.rates(trade_symbol, symbol_cfg.timeframe, LIVE_SCAN_BARS)
                 signal = latest_closed_signal(self.config, df, symbol_cfg, self.config.risk)
                 if signal is None:
                     self.logger.info("NO SIGNAL %s %s", symbol_cfg.symbol, symbol_cfg.timeframe)

@@ -16,6 +16,7 @@ class Mt5PathWarningsTests(unittest.TestCase):
             mt5_path=None,
             enabled=True,
             is_primary=True,
+            is_demo=True,
             created_at="",
             updated_at="",
         )
@@ -33,6 +34,7 @@ class Mt5PathWarningsTests(unittest.TestCase):
                 mt5_path="C:\\MT5\\A\\terminal64.exe",
                 enabled=True,
                 is_primary=True,
+                is_demo=True,
                 created_at="",
                 updated_at="",
             ),
@@ -46,6 +48,7 @@ class Mt5PathWarningsTests(unittest.TestCase):
                 mt5_path="C:\\MT5\\B\\terminal64.exe",
                 enabled=True,
                 is_primary=False,
+                is_demo=True,
                 created_at="",
                 updated_at="",
             ),

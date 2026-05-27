@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from .config import AppConfig, SymbolConfig
 from .mt5_client import MT5Client
-from .symbols import crypto_aliases_for, market_key, mt5_symbol_candidates
+from .symbols import crypto_aliases_for, market_key, mt5_symbol_candidates, resolve_trade_symbol
 from .trade_geometry import invalid_market_geometry
 
 
@@ -111,6 +111,8 @@ def resolve_symbol(token: str, config: AppConfig) -> SymbolConfig | None:
             item.key,
             market_key(item.symbol),
             item.name,
+            item.demo_symbol,
+            item.live_symbol,
         }
         if item.key == "XAUUSD" or "GOLD" in item.name.upper():
             values.update({"GOLD", "XAU", "XAUUSD"})
@@ -127,9 +129,12 @@ def resolve_symbol(token: str, config: AppConfig) -> SymbolConfig | None:
 
 
 def _auto_symbol_config(mt5_symbol: str, base_key: str, config: AppConfig) -> SymbolConfig:
+    base = market_key(base_key) or base_key
     return SymbolConfig(
-        symbol=mt5_symbol,
+        symbol=base,
         name=base_key,
+        demo_symbol=mt5_symbol,
+        live_symbol=mt5_symbol,
         enabled=False,
         lot_per_leg=config.risk.default_forex_lot,
         rr=[1.0, 1.5, 2.0],
@@ -151,11 +156,18 @@ def resolve_symbol_for_telegram(
 
     base = _norm_symbol(token)
     suffix = config.mt5.broker_symbol_suffix if config.mt5.append_broker_symbol_suffix else ""
-    for candidate in mt5_symbol_candidates(token, suffix):
+    candidates = list(mt5_symbol_candidates(token, suffix))
+    for item in config.symbols:
+        for name in (item.demo_symbol, item.live_symbol, item.symbol):
+            key = _norm_symbol(name)
+            if key and key not in candidates:
+                candidates.append(key)
+    for candidate in candidates:
         if client.symbol_info(candidate) is None or client.tick(candidate) is None:
             continue
         for item in config.symbols:
-            if item.symbol.upper() == candidate.upper():
+            names = {item.symbol.upper(), item.demo_symbol.upper(), item.live_symbol.upper()}
+            if candidate.upper() in names or market_key(candidate) == item.key:
                 return item, False
         cfg = _auto_symbol_config(candidate, base, config)
         if auto_register:

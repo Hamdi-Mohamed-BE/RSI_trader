@@ -131,6 +131,33 @@ def crypto_aliases_for(key: str) -> set[str]:
     return set(CRYPTO_ALIASES.get(market_key(key), set()))
 
 
+def find_symbol_config(symbols: list, token: str):
+    key = market_key(token)
+    for item in symbols:
+        if item.key == key or market_key(item.symbol) == key or same_market(item.symbol, token):
+            return item
+    return None
+
+
+def resolve_trade_symbol(
+    symbol: str,
+    config,
+    *,
+    is_demo: bool,
+    account_suffix: str = "",
+    append_suffix: bool = True,
+) -> str:
+    """Pick the MT5 symbol string for an account (demo vs live name from settings)."""
+    symbol_cfg = find_symbol_config(config.symbols, symbol)
+    if symbol_cfg is not None:
+        chosen = symbol_cfg.demo_symbol if is_demo else symbol_cfg.live_symbol
+        return (chosen.strip() or symbol_cfg.symbol).upper()
+    if not append_suffix:
+        return market_key(symbol)
+    suffix = account_suffix or getattr(config.mt5, "broker_symbol_suffix", DEFAULT_BROKER_SYMBOL_SUFFIX)
+    return preferred_broker_symbol(symbol, suffix, append_suffix=True)
+
+
 def asset_group(symbol: str, name: str = "") -> str:
     key = market_key(symbol)
     label = name.strip().upper()

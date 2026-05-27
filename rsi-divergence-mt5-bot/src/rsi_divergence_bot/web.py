@@ -10,7 +10,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, quote
 
 from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -18,7 +18,7 @@ from .backtest import optimize_symbol_timeframes, run_backtest, run_chart_backte
 from .bot import SignalBot
 from .mt5_account_pool import Mt5AccountPool
 from .mt5_account_store import Mt5AccountStore, default_db_path
-from .symbols import market_key
+from .symbols import market_key, resolve_trade_symbol
 from .config import (
     AppConfig,
     StrategyMode,
@@ -36,6 +36,7 @@ from .config import (
     update_symbol_enabled,
     update_symbol_lots,
     update_symbol_timeframes,
+    update_symbol_trade_names,
     update_telegram_channel,
     update_telegram_ignore_open_trades,
 )
@@ -63,6 +64,8 @@ class SymbolSettings(BaseModel):
     lots: dict[str, float] = Field(default_factory=dict)
     enabled: dict[str, bool] = Field(default_factory=dict)
     timeframes: dict[str, str] = Field(default_factory=dict)
+    demo_symbols: dict[str, str] = Field(default_factory=dict)
+    live_symbols: dict[str, str] = Field(default_factory=dict)
     default_forex_lot: float | None = Field(default=None, gt=0)
     append_broker_symbol_suffix: bool | None = None
     persist: bool = True
@@ -161,6 +164,7 @@ class Mt5AccountCreateRequest(BaseModel):
     mt5_path: str | None = None
     enabled: bool = True
     is_primary: bool = False
+    is_demo: bool = True
 
 
 class Mt5AccountUpdateRequest(BaseModel):
@@ -172,6 +176,7 @@ class Mt5AccountUpdateRequest(BaseModel):
     mt5_path: str | None = None
     enabled: bool | None = None
     is_primary: bool | None = None
+    is_demo: bool | None = None
 
 
 class Mt5AccountRuntimeRequest(BaseModel):
@@ -184,6 +189,13 @@ class Mt5TestTradeRequest(BaseModel):
     side: str = Field(default="buy", min_length=1)
     volume: float = Field(default=0.01, gt=0)
     confirm_live: bool = False
+
+    @field_validator("confirm_live", mode="before")
+    @classmethod
+    def coerce_confirm_live(cls, value: object) -> bool:
+        if value is None:
+            return False
+        return bool(value)
 
 
 def create_app(
@@ -284,6 +296,8 @@ def create_app(
                 "symbol": item.symbol,
                 "market_key": item.key,
                 "name": item.name,
+                "demo_symbol": item.demo_symbol,
+                "live_symbol": item.live_symbol,
                 "asset_group": symbol_asset_group(item),
                 "enabled": item.enabled,
                 "timeframe": item.timeframe,
@@ -310,12 +324,15 @@ def create_app(
         lots: dict[str, float],
         enabled: dict[str, bool],
         timeframes: dict[str, str],
+        demo_symbols: dict[str, str],
+        live_symbols: dict[str, str],
         persist: bool,
     ) -> list[dict]:
         try:
             updated_lots = update_symbol_lots(config, lots)
             updated_enabled = update_symbol_enabled(config, enabled)
             updated_timeframes = update_symbol_timeframes(config, timeframes)
+            updated_demo = update_symbol_trade_names(config, demo_symbols, live_symbols)
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
@@ -330,6 +347,14 @@ def create_app(
         unknown_timeframes = sorted(set(timeframes) - set(updated_timeframes))
         if unknown_timeframes:
             raise HTTPException(status_code=400, detail=f"Unknown symbols in timeframes: {', '.join(unknown_timeframes)}")
+
+        unknown_demo = sorted(set(demo_symbols) - set(updated_demo))
+        if unknown_demo:
+            raise HTTPException(status_code=400, detail=f"Unknown symbols in demo_symbols: {', '.join(unknown_demo)}")
+
+        unknown_live = sorted(set(live_symbols) - set(updated_demo))
+        if unknown_live:
+            raise HTTPException(status_code=400, detail=f"Unknown symbols in live_symbols: {', '.join(unknown_live)}")
 
         if persist:
             save_config(config_path, config)
@@ -480,6 +505,7 @@ def create_app(
                 mt5_path=body.mt5_path,
                 enabled=body.enabled,
                 is_primary=body.is_primary,
+                is_demo=body.is_demo,
             )
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -508,6 +534,7 @@ def create_app(
                 mt5_path=body.mt5_path,
                 enabled=body.enabled,
                 is_primary=body.is_primary,
+                is_demo=body.is_demo,
             )
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -695,6 +722,8 @@ def create_app(
             not body.lots
             and not body.enabled
             and not body.timeframes
+            and not body.demo_symbols
+            and not body.live_symbols
             and body.default_forex_lot is None
             and body.append_broker_symbol_suffix is None
         ):
@@ -708,7 +737,14 @@ def create_app(
                 "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
             }
 
-        symbols = apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
+        symbols = apply_symbol_settings(
+            body.lots,
+            body.enabled,
+            body.timeframes,
+            body.demo_symbols,
+            body.live_symbols,
+            body.persist,
+        )
         stats = symbol_stats()
         return {
             "status": "saved" if body.persist else "applied",
@@ -730,7 +766,7 @@ def create_app(
             item.symbol: (item.optimized_timeframe or item.timeframe)
             for item in config.symbols
         }
-        symbols = apply_symbol_settings({}, {}, updates, persist)
+        symbols = apply_symbol_settings({}, {}, updates, {}, {}, persist)
         return {
             "status": "saved" if persist else "applied",
             "symbols": symbols,
@@ -847,7 +883,14 @@ def create_app(
     async def run_once(body: RunOnceRequest | None = None) -> dict:
         if body is not None:
             if body.lots or body.enabled or body.timeframes:
-                apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
+                apply_symbol_settings(
+                    body.lots,
+                    body.enabled,
+                    body.timeframes,
+                    {},
+                    {},
+                    body.persist,
+                )
             if body.strategy is not None:
                 apply_bot_strategy(body.strategy, body.strategy_persist)
         await require_mt5_ready()
@@ -924,27 +967,48 @@ def create_app(
                 plan.sl,
                 plan.tps,
             )
-            tick = await asyncio.to_thread(bot.client.tick, plan.symbol)
+            is_demo = bot._primary_is_demo()
+            trade_symbol = resolve_trade_symbol(
+                plan.symbol,
+                config,
+                is_demo=is_demo,
+                append_suffix=config.mt5.append_broker_symbol_suffix,
+            )
+            tick = await asyncio.to_thread(bot.client.tick, trade_symbol)
             if tick is None:
-                raise ValueError(f"No live tick for {plan.symbol}.")
+                raise ValueError(f"No live tick for {trade_symbol}.")
             from .manual_trade import _field as manual_field
 
             entry = float(manual_field(tick, "ask") if plan.side == "buy" else manual_field(tick, "bid"))
             _validate_geometry(plan, entry)
             symbol_cfg = next((item for item in config.symbols if item.symbol == plan.symbol), None)
             setup_id = f"manual:{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
-            result = await asyncio.to_thread(
-                bot.executor.place_market_setup,
-                setup_id=setup_id,
-                symbol=plan.symbol,
-                market_key=symbol_cfg.key if symbol_cfg else market_key(plan.symbol),
-                side=plan.side,
-                sl=plan.sl,
-                tps=plan.tps,
-                lot_per_leg=plan.lot,
-                entry_price=entry,
-                comment="manual test trade",
-            )
+            if pool.active:
+                result = await asyncio.to_thread(
+                    pool.place_market_setup,
+                    setup_id=setup_id,
+                    symbol=plan.symbol,
+                    market_key=symbol_cfg.key if symbol_cfg else market_key(plan.symbol),
+                    side=plan.side,
+                    sl=plan.sl,
+                    tps=plan.tps,
+                    lot_per_leg=plan.lot,
+                    entry_price=entry,
+                    comment="manual test trade",
+                )
+            else:
+                result = await asyncio.to_thread(
+                    bot.executor.place_market_setup,
+                    setup_id=setup_id,
+                    symbol=trade_symbol,
+                    market_key=symbol_cfg.key if symbol_cfg else market_key(plan.symbol),
+                    side=plan.side,
+                    sl=plan.sl,
+                    tps=plan.tps,
+                    lot_per_leg=plan.lot,
+                    entry_price=entry,
+                    comment="manual test trade",
+                )
             result = {
                 "symbol": plan.symbol,
                 "side": plan.side,
@@ -979,7 +1043,14 @@ def create_app(
     async def auto_run_start(body: AutoRunStartRequest | None = None) -> dict:
         if body is not None:
             if body.lots or body.enabled or body.timeframes:
-                apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
+                apply_symbol_settings(
+                    body.lots,
+                    body.enabled,
+                    body.timeframes,
+                    {},
+                    {},
+                    body.persist,
+                )
             if body.strategy is not None:
                 apply_bot_strategy(body.strategy, body.strategy_persist)
             if body.signal_algorithm is not None:

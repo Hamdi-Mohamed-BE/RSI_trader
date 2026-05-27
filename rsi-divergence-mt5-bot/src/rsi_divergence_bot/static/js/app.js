@@ -64,6 +64,7 @@ const els = {
   mt5AccountServer: document.getElementById("mt5-account-server"),
   mt5AccountSuffix: document.getElementById("mt5-account-suffix"),
   mt5AccountPath: document.getElementById("mt5-account-path"),
+  mt5AccountDemo: document.getElementById("mt5-account-demo"),
   mt5AccountEnabled: document.getElementById("mt5-account-enabled"),
   mt5AccountPrimary: document.getElementById("mt5-account-primary"),
   mt5AccountSaveBtn: document.getElementById("mt5-account-save-btn"),
@@ -550,9 +551,25 @@ function renderGroupedSymbolRow(item) {
               <span class="switch-slider"></span>
             </label>
           </td>
-          <td><strong>${escapeHtml(item.symbol)}</strong></td>
           <td><span class="tag">${escapeHtml(item.market_key || item.symbol)}</span></td>
-          <td>${escapeHtml(item.name)}</td>
+          <td>
+            <input
+              class="demo-symbol-input mono"
+              type="text"
+              data-symbol="${escapeHtml(item.symbol)}"
+              value="${escapeHtml(item.demo_symbol || item.symbol)}"
+              title="MT5 symbol on demo accounts"
+            >
+          </td>
+          <td>
+            <input
+              class="live-symbol-input mono"
+              type="text"
+              data-symbol="${escapeHtml(item.symbol)}"
+              value="${escapeHtml(item.live_symbol || item.symbol)}"
+              title="MT5 symbol on live accounts"
+            >
+          </td>
           <td>
             <select
               class="timeframe-select"
@@ -619,23 +636,31 @@ function symbolSettingsFromConfig() {
   const lots = {};
   const enabled = {};
   const timeframes = {};
+  const demo_symbols = {};
+  const live_symbols = {};
   for (const item of botConfig?.symbols || []) {
     lots[item.symbol] = item.lot_per_leg;
     enabled[item.symbol] = Boolean(item.enabled);
     timeframes[item.symbol] = item.timeframe;
+    demo_symbols[item.symbol] = item.demo_symbol || item.symbol;
+    live_symbols[item.symbol] = item.live_symbol || item.symbol;
   }
-  return { lots, enabled, timeframes };
+  return { lots, enabled, timeframes, demo_symbols, live_symbols };
 }
 
 function collectSymbolSettings() {
   const lots = {};
   const enabled = {};
   const timeframes = {};
+  const demo_symbols = {};
+  const live_symbols = {};
   const lotInputs = els.symbolsBody.querySelectorAll(".lot-input");
   const enabledInputs = els.symbolsBody.querySelectorAll(".symbol-enabled");
   const timeframeInputs = els.symbolsBody.querySelectorAll(".timeframe-select");
+  const demoInputs = els.symbolsBody.querySelectorAll(".demo-symbol-input");
+  const liveInputs = els.symbolsBody.querySelectorAll(".live-symbol-input");
 
-  if (!lotInputs.length && !enabledInputs.length && !timeframeInputs.length) {
+  if (!lotInputs.length && !enabledInputs.length && !timeframeInputs.length && !demoInputs.length && !liveInputs.length) {
     return symbolSettingsFromConfig();
   }
 
@@ -662,14 +687,40 @@ function collectSymbolSettings() {
     timeframes[symbol] = input.value;
   }
 
-  if (!Object.keys(lots).length || !Object.keys(enabled).length || !Object.keys(timeframes).length) {
+  for (const input of demoInputs) {
+    const symbol = input.dataset.symbol;
+    const value = input.value?.trim();
+    if (!symbol || !value) {
+      throw new Error(`Invalid demo symbol for ${symbol || "symbol"}`);
+    }
+    demo_symbols[symbol] = value;
+  }
+
+  for (const input of liveInputs) {
+    const symbol = input.dataset.symbol;
+    const value = input.value?.trim();
+    if (!symbol || !value) {
+      throw new Error(`Invalid live symbol for ${symbol || "symbol"}`);
+    }
+    live_symbols[symbol] = value;
+  }
+
+  if (
+    !Object.keys(lots).length
+    || !Object.keys(enabled).length
+    || !Object.keys(timeframes).length
+    || !Object.keys(demo_symbols).length
+    || !Object.keys(live_symbols).length
+  ) {
     const fallback = symbolSettingsFromConfig();
     if (!Object.keys(lots).length) Object.assign(lots, fallback.lots);
     if (!Object.keys(enabled).length) Object.assign(enabled, fallback.enabled);
     if (!Object.keys(timeframes).length) Object.assign(timeframes, fallback.timeframes);
+    if (!Object.keys(demo_symbols).length) Object.assign(demo_symbols, fallback.demo_symbols);
+    if (!Object.keys(live_symbols).length) Object.assign(live_symbols, fallback.live_symbols);
   }
 
-  return { lots, enabled, timeframes };
+  return { lots, enabled, timeframes, demo_symbols, live_symbols };
 }
 
 function defaultForexLotFromUi() {
@@ -688,10 +739,10 @@ function updateBrokerSymbolSuffixHint(configLike = botConfig) {
   const appendTag = configLike?.mt5?.append_broker_symbol_suffix !== false;
   if (appendTag) {
     els.brokerSymbolSuffixHint.textContent =
-      `Broker tag on: orders use symbols like BTCUSD${suffix} (or each MT5 account's suffix, e.g. -STD). Telegram auto-register tries suffixed names first.`;
+      "Broker tag on: fallback suffix for unknown symbols only. Configured demo/live symbol names take priority on each account.";
   } else {
     els.brokerSymbolSuffixHint.textContent =
-      "Broker tag off: orders use plain symbol names (BTCUSD, EURUSD, …) with no -VIP / -STD suffix.";
+      "Broker tag off: unknown symbols use plain names (BTCUSD). Configured demo/live symbol names are always used when set.";
   }
 }
 
@@ -704,13 +755,15 @@ function formatApiError(detail) {
 }
 
 async function syncSymbolSettings({ persist = true, silent = false, rerender = false } = {}) {
-  const { lots, enabled, timeframes } = collectSymbolSettings();
+  const { lots, enabled, timeframes, demo_symbols, live_symbols } = collectSymbolSettings();
   const defaultForexLot = defaultForexLotFromUi();
   const appendBrokerSymbolSuffix = appendBrokerSymbolSuffixFromUi();
   if (
     !Object.keys(lots).length
     && !Object.keys(enabled).length
     && !Object.keys(timeframes).length
+    && !Object.keys(demo_symbols).length
+    && !Object.keys(live_symbols).length
     && defaultForexLot === undefined
     && appendBrokerSymbolSuffix === undefined
   ) {
@@ -724,6 +777,8 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
       lots,
       enabled,
       timeframes,
+      demo_symbols,
+      live_symbols,
       default_forex_lot: defaultForexLot,
       append_broker_symbol_suffix: appendBrokerSymbolSuffix,
       persist,
@@ -990,7 +1045,7 @@ function renderMt5Accounts(data) {
   if (!els.mt5AccountsBody) return;
   if (!accounts.length) {
     els.mt5AccountsBody.innerHTML =
-      '<tr><td colspan="7" class="empty-row">No MT5 accounts yet. Add one in the form on the left.</td></tr>';
+      '<tr><td colspan="8" class="empty-row">No MT5 accounts yet. Add one in the form on the left.</td></tr>';
     scheduleResponsiveTables();
     return;
   }
@@ -1020,6 +1075,7 @@ function renderMt5Accounts(data) {
           </td>
           <td class="mono">${account.login}</td>
           <td>${escapeHtml(account.server)}</td>
+          <td><span class="badge ${account.is_demo ? "badge-muted" : "badge-accent"}">${account.is_demo ? "Demo" : "Live"}</span></td>
           <td class="mono">${escapeHtml(account.symbol_suffix || "—")}</td>
           <td>
             <div class="mt5-status-badges">
@@ -1046,6 +1102,7 @@ function renderMt5Accounts(data) {
 function resetMt5AccountForm() {
   els.mt5AccountForm?.reset();
   if (els.mt5AccountEditId) els.mt5AccountEditId.value = "";
+  if (els.mt5AccountDemo) els.mt5AccountDemo.checked = true;
   if (els.mt5AccountEnabled) els.mt5AccountEnabled.checked = true;
   if (els.mt5AccountPrimary) els.mt5AccountPrimary.checked = false;
   if (els.mt5AccountPassword) {
@@ -1074,6 +1131,7 @@ function startEditMt5Account(accountId) {
   if (els.mt5AccountServer) els.mt5AccountServer.value = account.server || "";
   if (els.mt5AccountSuffix) els.mt5AccountSuffix.value = account.symbol_suffix || "";
   if (els.mt5AccountPath) els.mt5AccountPath.value = account.mt5_path || "";
+  if (els.mt5AccountDemo) els.mt5AccountDemo.checked = account.is_demo !== false;
   if (els.mt5AccountEnabled) els.mt5AccountEnabled.checked = Boolean(account.enabled);
   if (els.mt5AccountPrimary) els.mt5AccountPrimary.checked = Boolean(account.is_primary);
   if (els.mt5AccountFormTitle) els.mt5AccountFormTitle.textContent = `Edit ${account.name}`;
@@ -1119,6 +1177,7 @@ async function saveMt5Account(event) {
     symbol_suffix: els.mt5AccountSuffix?.value?.trim() || "",
     mt5_path: els.mt5AccountPath?.value?.trim() || null,
     enabled: Boolean(els.mt5AccountEnabled?.checked),
+    is_demo: Boolean(els.mt5AccountDemo?.checked),
     is_primary: Boolean(els.mt5AccountPrimary?.checked),
   };
   const password = els.mt5AccountPassword?.value || "";
@@ -1211,13 +1270,19 @@ function renderMt5TestTradeResult(data) {
   els.mt5TestTradeResult.classList.remove("hidden");
 }
 
+function isLiveTradingMode() {
+  if (mt5AccountsState?.dry_run != null) return !mt5AccountsState.dry_run;
+  if (botConfig?.bot?.dry_run != null) return !botConfig.bot.dry_run;
+  return false;
+}
+
 async function placeMt5TestTrade() {
   const targetCount = (mt5AccountsState?.accounts || []).filter((item) => item.enabled).length;
   if (!targetCount) {
     toast("No enabled MT5 accounts configured", "error");
     return;
   }
-  const live = botConfig && !botConfig.bot.dry_run;
+  const live = isLiveTradingMode();
   const confirmed = window.confirm(
     live
       ? `Place LIVE XAUUSD 0.01 BUY test trade on ${targetCount} enabled account${targetCount === 1 ? "" : "s"} (sequential login)? No SL/TP — close manually in MT5.`

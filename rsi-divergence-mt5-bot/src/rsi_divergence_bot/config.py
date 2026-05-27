@@ -204,6 +204,8 @@ class TelegramSignalsConfig(BaseModel):
 class SymbolConfig(BaseModel):
     symbol: str
     name: str
+    demo_symbol: str = ""
+    live_symbol: str = ""
     market_key_override: str | None = None
     enabled: bool = True
     timeframe: Timeframe = "M5"
@@ -224,6 +226,10 @@ class SymbolConfig(BaseModel):
         if any(level <= 0 for level in self.rr):
             raise ValueError(f"{self.symbol} RR levels must be positive numbers")
         self.rr = sorted(float(level) for level in self.rr)
+        if not self.demo_symbol.strip():
+            self.demo_symbol = self.symbol
+        if not self.live_symbol.strip():
+            self.live_symbol = self.symbol
         return self
 
     @property
@@ -322,6 +328,36 @@ def update_symbol_enabled(config: AppConfig, enabled: dict[str, bool]) -> list[s
         symbol_cfg.enabled = enabled[symbol_cfg.symbol]
         updated.append(symbol_cfg.symbol)
     return updated
+
+
+def update_symbol_trade_names(
+    config: AppConfig,
+    demo_symbols: dict[str, str],
+    live_symbols: dict[str, str],
+) -> list[str]:
+    updated: list[str] = []
+    for symbol_cfg in config.symbols:
+        changed = False
+        if symbol_cfg.symbol in demo_symbols:
+            value = demo_symbols[symbol_cfg.symbol].strip()
+            if not value:
+                raise ValueError(f"Demo symbol for {symbol_cfg.symbol} cannot be empty")
+            symbol_cfg.demo_symbol = value
+            changed = True
+        if symbol_cfg.symbol in live_symbols:
+            value = live_symbols[symbol_cfg.symbol].strip()
+            if not value:
+                raise ValueError(f"Live symbol for {symbol_cfg.symbol} cannot be empty")
+            symbol_cfg.live_symbol = value
+            changed = True
+        if changed:
+            updated.append(symbol_cfg.symbol)
+    return updated
+
+
+def trade_symbol_for_account(symbol_cfg: SymbolConfig, *, is_demo: bool) -> str:
+    chosen = symbol_cfg.demo_symbol if is_demo else symbol_cfg.live_symbol
+    return (chosen.strip() or symbol_cfg.symbol).upper()
 
 
 def update_symbol_timeframes(config: AppConfig, timeframes: dict[str, str]) -> list[str]:
