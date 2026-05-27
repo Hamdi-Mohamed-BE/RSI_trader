@@ -28,6 +28,7 @@ from .telegram_html_parser import (
     ParsedChatMessage,
     ParseDiagnostics,
     looks_like_ad,
+    parse_all_bubbles,
     parse_all_messages,
     parse_chatlist_preview,
     parse_latest_message,
@@ -416,7 +417,16 @@ class TelegramSignalsBot:
         data["llm_configured"] = GeminiSignalParser.llm_configured(self.config)
         data["channels"] = [channel.model_dump(mode="python") for channel in self.config.telegram_signals.channels]
         data["enabled_channel_count"] = len(self._enabled_channels())
-        data["recent_messages"] = self.state.recent_telegram_messages(25)
+        data["recent_messages"] = self.state.recent_telegram_messages(100)
+        if self._status.last_action_at or self._status.last_result:
+            data["last_action"] = {
+                "at": self._status.last_action_at,
+                "channel": self._status.last_channel,
+                "signal": self._status.last_signal,
+                "result": self._status.last_result,
+            }
+        else:
+            data["last_action"] = None
         return data
 
     def clear_message_history(self) -> dict:
@@ -760,6 +770,7 @@ class TelegramSignalsBot:
     ) -> None:
         self._scroll_chat_to_bottom(page, attempts=1)
         self._status.last_channel = channel.name
+        self._sync_visible_messages(page, channel)
 
         message, diagnostics, skipped_ad = self._read_latest_message(page, channel)
         now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -844,6 +855,44 @@ class TelegramSignalsBot:
             open_market_keys=open_market_keys,
         )
 
+    def _sync_visible_messages(self, page, channel: TelegramChannelConfig, *, limit: int = 20) -> None:
+        html, source = self._capture_chat_html(page)
+        bubbles, _diagnostics = parse_all_bubbles(html, source=source)
+        if not bubbles:
+            return
+        for bubble in bubbles[-limit:]:
+            message_id = self._message_id(channel, bubble.text, message_key=bubble.key or None)
+            existing = self.state.get_telegram_message(message_id)
+            if bubble.is_reply:
+                if existing and existing.get("status") in {"placed", "paper", "detected", "parse_failed"}:
+                    if not existing.get("is_reply"):
+                        continue
+                self._record_message(
+                    message_id,
+                    "skipped",
+                    bubble.text,
+                    channel=channel,
+                    reason="reply message (quoted parent)",
+                    message_key=bubble.key or None,
+                    message_timestamp=bubble.timestamp,
+                    age_seconds=self._message_age(bubble.timestamp),
+                    is_reply=True,
+                )
+                continue
+            if existing is not None:
+                continue
+            self._record_message(
+                message_id,
+                "seen",
+                bubble.text,
+                channel=channel,
+                reason="visible in chat history",
+                message_key=bubble.key or None,
+                message_timestamp=bubble.timestamp,
+                age_seconds=self._message_age(bubble.timestamp),
+                is_reply=False,
+            )
+
     @staticmethod
     def _empty_reason(state: dict, diagnostics, *, skipped_ad: bool = False) -> str:
         if skipped_ad:
@@ -884,7 +933,7 @@ class TelegramSignalsBot:
             if chosen is not None:
                 return chosen, diagnostics, skipped_ad
 
-            if skipped_ad:
+            if skipped_ad or diagnostics.reply_count > 0:
                 self._scroll_chat_up(page, attempts=2)
                 continue
 
@@ -1153,6 +1202,7 @@ class TelegramSignalsBot:
         message_timestamp: float | None = None,
         age_seconds: float | None = None,
         trade_hash: str | None = None,
+        is_reply: bool = False,
     ) -> None:
         now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
         payload: dict = {
@@ -1164,6 +1214,7 @@ class TelegramSignalsBot:
             "parsed": parsed,
             "result": result,
             "reason": reason,
+            "is_reply": bool(is_reply),
             "updated_at": now,
             "last_seen_at": now,
         }

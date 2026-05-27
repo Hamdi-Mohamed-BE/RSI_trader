@@ -38,6 +38,7 @@ class ParsedChatMessage:
     text: str
     timestamp: float | None = None
     source: str = "html"
+    is_reply: bool = False
 
 
 @dataclass(frozen=True)
@@ -45,6 +46,7 @@ class ParseDiagnostics:
     bubble_count: int = 0
     message_count: int = 0
     mid_count: int = 0
+    reply_count: int = 0
     html_length: int = 0
     source: str = ""
 
@@ -135,6 +137,17 @@ def _normalize_text(text: str) -> str:
     text = re.sub(r"[ \t]+\n", "\n", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
+
+
+def is_reply_bubble(bubble: Tag) -> bool:
+    """Telegram Web reply messages quote the parent in a subheader block."""
+    if bubble.select_one(".message-subheader, .EmbeddedMessage, .embedded-text-wrapper"):
+        return True
+    for node in bubble.select(".message-content, .content-inner"):
+        classes = _class_set(node)
+        if "has-subheader" in classes or "with-subheader" in classes:
+            return True
+    return False
 
 
 def _message_key(tag: Tag) -> str:
@@ -279,7 +292,7 @@ def pick_latest_non_ad(messages: list[ParsedChatMessage]) -> tuple[ParsedChatMes
     return None, skipped_ad
 
 
-def parse_all_messages(html: str, *, source: str = "html") -> tuple[list[ParsedChatMessage], ParseDiagnostics]:
+def parse_all_bubbles(html: str, *, source: str = "html") -> tuple[list[ParsedChatMessage], ParseDiagnostics]:
     soup = BeautifulSoup(html or "", "html.parser")
     diagnostics = ParseDiagnostics(
         bubble_count=len(soup.select(".bubble")),
@@ -290,10 +303,14 @@ def parse_all_messages(html: str, *, source: str = "html") -> tuple[list[ParsedC
     )
 
     candidates: list[ParsedChatMessage] = []
+    reply_count = 0
     for bubble in _collect_bubbles(soup):
         key = _message_key(bubble)
         if not key:
             continue
+        reply = is_reply_bubble(bubble)
+        if reply:
+            reply_count += 1
         text = _extract_text_from_bubble(bubble)
         if not text or len(text) > 2500:
             continue
@@ -303,8 +320,23 @@ def parse_all_messages(html: str, *, source: str = "html") -> tuple[list[ParsedC
                 text=text,
                 timestamp=_parse_timestamp(bubble),
                 source=source,
+                is_reply=reply,
             )
         )
+    diagnostics = ParseDiagnostics(
+        bubble_count=diagnostics.bubble_count,
+        message_count=diagnostics.message_count,
+        mid_count=diagnostics.mid_count,
+        reply_count=reply_count,
+        html_length=diagnostics.html_length,
+        source=diagnostics.source,
+    )
+    return candidates, diagnostics
+
+
+def parse_all_messages(html: str, *, source: str = "html") -> tuple[list[ParsedChatMessage], ParseDiagnostics]:
+    bubbles, diagnostics = parse_all_bubbles(html, source=source)
+    candidates = [item for item in bubbles if not item.is_reply]
     return candidates, diagnostics
 
 

@@ -1245,6 +1245,106 @@ textarea {
   margin-bottom: 8px;
 }
 
+.telegram-channel-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.telegram-channel-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(148, 163, 184, 0.03);
+  overflow: hidden;
+}
+
+.telegram-channel-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.telegram-channel-group-header h4 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.telegram-channel-group-count {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.telegram-msg-cell {
+  max-width: 320px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+.telegram-msg-cell.is-collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.telegram-expand-btn {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.telegram-expand-btn:hover {
+  text-decoration: underline;
+}
+
+.telegram-json-preview {
+  max-width: 280px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.telegram-json-preview.is-collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.telegram-json-full {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.telegram-json-full.hidden {
+  display: none;
+}
+
+#telegram-last-action-meta {
+  margin-bottom: 8px;
+}
+
 @media (max-width: 900px) {
   .telegram-channel-form {
     grid-template-columns: 1fr;

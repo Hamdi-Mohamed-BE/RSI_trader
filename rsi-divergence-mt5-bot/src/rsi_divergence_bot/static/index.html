@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css?v=26">
+  <link rel="stylesheet" href="/static/css/app.css?v=27">
 </head>
 <body>
   <div class="app">
@@ -884,8 +884,14 @@
           <p class="panel-hint">Enable or disable channels while the copier is running — disabled channels are skipped on each poll. Stop the copier before adding or removing channels.</p>
         </div>
 
+        <div id="telegram-last-action" class="result-card hidden">
+          <div class="result-title">Latest action taken</div>
+          <div id="telegram-last-action-meta" class="panel-hint"></div>
+          <pre id="telegram-last-action-json"></pre>
+        </div>
+
         <div id="telegram-last-result" class="result-card hidden">
-          <div class="result-title">Last copied signal</div>
+          <div class="result-title">Last parsed signal</div>
           <pre id="telegram-last-result-json"></pre>
         </div>
 
@@ -893,30 +899,15 @@
           <div class="live-section-header">
             <h3>Recent message ledger</h3>
             <div class="live-section-actions">
-              <span class="live-count">last 25 tracked messages</span>
+              <span class="live-count">grouped by channel · last 100 tracked</span>
               <button id="telegram-clear-btn" class="btn btn-danger btn-sm" type="button">
                 <span class="btn-label">Hard clear messages</span>
                 <span class="spinner" hidden aria-hidden="true"></span>
               </button>
             </div>
           </div>
-          <div class="table-wrap">
-            <table class="data-table data-table-compact">
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Channel</th>
-                  <th>Updated</th>
-                  <th>Message</th>
-                  <th>LLM response</th>
-                  <th>Reason</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="telegram-messages-body">
-                <tr><td colspan="7" class="empty-row">No Telegram messages tracked yet.</td></tr>
-              </tbody>
-            </table>
+          <div id="telegram-messages-by-channel" class="telegram-channel-groups">
+            <p class="empty-row">No Telegram messages tracked yet.</p>
           </div>
         </div>
 
@@ -953,6 +944,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=49" defer></script>
+  <script src="/static/js/app.js?v=50" defer></script>
 </body>
 </html>

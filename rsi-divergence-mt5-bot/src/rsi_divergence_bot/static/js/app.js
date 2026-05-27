@@ -169,9 +169,12 @@ const els = {
   telegramChannelAddBtn: document.getElementById("telegram-channel-add-btn"),
   telegramPoll: document.getElementById("telegram-poll"),
   telegramLastParsed: document.getElementById("telegram-last-parsed"),
+  telegramLastAction: document.getElementById("telegram-last-action"),
+  telegramLastActionMeta: document.getElementById("telegram-last-action-meta"),
+  telegramLastActionJson: document.getElementById("telegram-last-action-json"),
   telegramLastResult: document.getElementById("telegram-last-result"),
   telegramLastResultJson: document.getElementById("telegram-last-result-json"),
-  telegramMessagesBody: document.getElementById("telegram-messages-body"),
+  telegramMessagesByChannel: document.getElementById("telegram-messages-by-channel"),
   toastStack: document.getElementById("toast-stack"),
   navToggle: document.getElementById("nav-toggle"),
   mainNav: document.getElementById("main-nav"),
@@ -1825,9 +1828,42 @@ function renderTelegramStatus(status) {
       ? `${String(signal.action).toUpperCase()} ${signal.symbol || ""}`
       : "—";
   }
+  if (els.telegramLastAction && els.telegramLastActionJson) {
+    const action = status.last_action;
+    if (action?.result) {
+      const bits = [];
+      if (action.channel) bits.push(action.channel);
+      if (action.at) bits.push(formatTimestamp(action.at));
+      if (action.result?.status) bits.push(String(action.result.status));
+      if (els.telegramLastActionMeta) {
+        els.telegramLastActionMeta.textContent = bits.length ? bits.join(" · ") : "Latest trade action";
+      }
+      els.telegramLastActionJson.textContent = JSON.stringify(
+        {
+          signal: action.signal || status.last_signal || null,
+          result: action.result,
+        },
+        null,
+        2,
+      );
+      els.telegramLastAction.classList.remove("hidden");
+    } else if (status.last_result) {
+      if (els.telegramLastActionMeta) {
+        els.telegramLastActionMeta.textContent = status.last_channel
+          ? `${status.last_channel} · ${formatTimestamp(status.last_action_at)}`
+          : formatTimestamp(status.last_action_at);
+      }
+      els.telegramLastActionJson.textContent = JSON.stringify(status.last_result, null, 2);
+      els.telegramLastAction.classList.remove("hidden");
+    } else {
+      els.telegramLastAction.classList.add("hidden");
+      els.telegramLastActionJson.textContent = "";
+      if (els.telegramLastActionMeta) els.telegramLastActionMeta.textContent = "";
+    }
+  }
   if (els.telegramLastResult && els.telegramLastResultJson) {
-    if (status.last_result) {
-      els.telegramLastResultJson.textContent = JSON.stringify(status.last_result, null, 2);
+    if (status.last_signal) {
+      els.telegramLastResultJson.textContent = JSON.stringify(status.last_signal, null, 2);
       els.telegramLastResult.classList.remove("hidden");
     } else {
       els.telegramLastResult.classList.add("hidden");
@@ -1848,7 +1884,7 @@ function renderTelegramStatus(status) {
   if (els.telegramOpenGuard) {
     els.telegramOpenGuard.textContent = status.ignore_open_symbol_trades ? "On" : "Off";
   }
-  renderTelegramMessages(status.recent_messages || []);
+  renderTelegramMessages(status.recent_messages || [], status.channels || botConfig?.telegram_signals?.channels || []);
   renderTelegramChannels(status.channels || botConfig?.telegram_signals?.channels || []);
 }
 
@@ -2030,46 +2066,159 @@ function canHardCopyTelegramMessage(item) {
   return /\b(BUY|SELL)\b/.test(upper) && /\b(SL|STOP|TP|TARGET|STOPLOSS)\b/.test(upper);
 }
 
-function renderTelegramMessages(messages) {
-  if (!els.telegramMessagesBody) return;
+function telegramActionPayload(item) {
+  const payload = {};
+  if (item?.parsed) payload.parsed = item.parsed;
+  if (item?.result) payload.result = item.result;
+  if (item?.trade_hash) payload.trade_hash = item.trade_hash;
+  if (!Object.keys(payload).length) {
+    if (item?.reason) payload.reason = item.reason;
+    if (item?.status) payload.status = item.status;
+  }
+  return payload;
+}
+
+function telegramMessageText(item) {
+  return String(item?.text || item?.text_preview || "").trim();
+}
+
+function renderTelegramExpandableText(text, rowKey, field) {
+  const cleaned = text || "—";
+  const needsToggle = cleaned.length > 180 || cleaned.includes("\n");
+  if (!needsToggle) {
+    return `<div class="telegram-msg-cell">${escapeHtml(cleaned)}</div>`;
+  }
+  return `
+    <div class="telegram-msg-cell is-collapsed" data-expand-field="${escapeHtml(field)}" data-expand-key="${escapeHtml(rowKey)}">${escapeHtml(cleaned)}</div>
+    <button type="button" class="telegram-expand-btn" data-expand-field="${escapeHtml(field)}" data-expand-key="${escapeHtml(rowKey)}">See more</button>
+  `;
+}
+
+function renderTelegramActionJsonCell(item, rowKey) {
+  const payload = telegramActionPayload(item);
+  const json = JSON.stringify(payload, null, 2);
+  if (!json || json === "{}") {
+    return `<span class="value-neutral">${escapeHtml(formatLlmResponse(item))}</span>`;
+  }
+  const preview = json.length > 160 ? `${json.slice(0, 160)}…` : json;
+  return `
+    <div class="telegram-json-preview is-collapsed" data-expand-field="json" data-expand-key="${escapeHtml(rowKey)}">${escapeHtml(preview)}</div>
+    <button type="button" class="telegram-expand-btn" data-expand-field="json" data-expand-key="${escapeHtml(rowKey)}">See JSON</button>
+    <pre class="telegram-json-full hidden" data-expand-target="json" data-expand-key="${escapeHtml(rowKey)}">${escapeHtml(json)}</pre>
+  `;
+}
+
+function renderTelegramMessageRow(item) {
+  const status = String(item.status || "unknown");
+  const statusClass = status === "placed" || status === "paper"
+    ? "value-positive"
+    : status === "watching" || status === "latest" || status === "breakeven" || status === "seen"
+      ? "value-positive"
+      : status.includes("failed")
+        ? "value-negative"
+        : status === "stale" || status === "empty"
+          ? "value-negative"
+          : "value-neutral";
+  const rowKey = String(item.message_id || `${item.channel_name}-${item.updated_at}`);
+  const isReply = Boolean(item.is_reply);
+  const replyLabel = isReply
+    ? '<span class="badge badge-muted">Yes</span>'
+    : '<span class="badge badge-accent">No</span>';
+  const hardCopyEnabled = canHardCopyTelegramMessage(item);
+  const messageId = escapeHtml(String(item.message_id || ""));
+  const actionCell = hardCopyEnabled
+    ? `<button type="button" class="btn btn-primary btn-sm telegram-hard-copy-btn" data-message-id="${messageId}" title="Force place at market; only checks TPs vs live price">Hard copy</button>`
+    : '<span class="value-neutral">—</span>';
+  const messageCell = renderTelegramExpandableText(telegramMessageText(item), rowKey, "message");
+  return `
+    <tr data-message-row="${escapeHtml(rowKey)}">
+      <td class="${statusClass}">${escapeHtml(status)}</td>
+      <td>${replyLabel}</td>
+      <td>${formatTimestamp(item.updated_at)}</td>
+      <td>${messageCell}</td>
+      <td>${renderTelegramActionJsonCell(item, rowKey)}</td>
+      <td>${escapeHtml(String(item.reason || item.result?.reason || "—"))}</td>
+      <td class="table-actions">${actionCell}</td>
+    </tr>
+  `;
+}
+
+function renderTelegramMessages(messages, channels = []) {
+  if (!els.telegramMessagesByChannel) return;
   if (!messages.length) {
-    els.telegramMessagesBody.innerHTML = '<tr><td colspan="7" class="empty-row">No Telegram messages tracked yet.</td></tr>';
+    els.telegramMessagesByChannel.innerHTML = '<p class="empty-row">No Telegram messages tracked yet.</p>';
     return;
   }
-  els.telegramMessagesBody.innerHTML = messages
-    .slice()
-    .reverse()
-    .map((item) => {
-      const status = String(item.status || "unknown");
-      const statusClass = status === "placed" || status === "paper"
-        ? "value-positive"
-        : status === "watching" || status === "latest" || status === "breakeven"
-          ? "value-positive"
-        : status.includes("failed")
-          ? "value-negative"
-          : status === "stale" || status === "empty"
-            ? "value-negative"
-          : "value-neutral";
-      const llmText = formatLlmResponse(item);
-      const hardCopyEnabled = canHardCopyTelegramMessage(item);
-      const messageId = escapeHtml(String(item.message_id || ""));
-      const actionCell = hardCopyEnabled
-        ? `<button type="button" class="btn btn-primary btn-sm telegram-hard-copy-btn" data-message-id="${messageId}" title="Force place at market; only checks TPs vs live price">Hard copy</button>`
-        : '<span class="value-neutral">—</span>';
+
+  const channelOrder = (channels || []).map((channel) => channel.name);
+  const grouped = new Map();
+  for (const item of messages) {
+    const name = String(item.channel_name || "Unknown channel");
+    if (!grouped.has(name)) grouped.set(name, []);
+    grouped.get(name).push(item);
+  }
+
+  const names = [...new Set([...channelOrder.filter(Boolean), ...grouped.keys()])];
+  els.telegramMessagesByChannel.innerHTML = names
+    .filter((name) => grouped.has(name))
+    .map((name) => {
+      const rows = grouped.get(name) || [];
+      const sorted = rows.slice().sort((a, b) => String(b.updated_at || "").localeCompare(String(a.updated_at || "")));
       return `
-        <tr>
-          <td class="${statusClass}">${escapeHtml(status)}</td>
-          <td>${escapeHtml(String(item.channel_name || "—"))}</td>
-          <td>${formatTimestamp(item.updated_at)}</td>
-          <td>${escapeHtml(String(item.text_preview || item.text || "—")).slice(0, 220)}</td>
-          <td class="llm-response-cell" title="${escapeHtml(llmText)}">${escapeHtml(llmText).slice(0, 220)}</td>
-          <td>${escapeHtml(String(item.reason || item.result?.reason || "—"))}</td>
-          <td class="table-actions">${actionCell}</td>
-        </tr>
+        <section class="telegram-channel-group">
+          <div class="telegram-channel-group-header">
+            <h4>${escapeHtml(name)}</h4>
+            <span class="telegram-channel-group-count">${sorted.length} message${sorted.length === 1 ? "" : "s"}</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table data-table-compact">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Reply</th>
+                  <th>Updated</th>
+                  <th>Message</th>
+                  <th>Action JSON</th>
+                  <th>Reason</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${sorted.map((item) => renderTelegramMessageRow(item)).join("")}
+              </tbody>
+            </table>
+          </div>
+        </section>
       `;
     })
     .join("");
   scheduleResponsiveTables();
+}
+
+function toggleTelegramExpand(button) {
+  const field = button.dataset.expandField;
+  const key = button.dataset.expandKey;
+  if (!field || !key) return;
+  const row = button.closest("tr");
+  if (!row) return;
+
+  if (field === "message") {
+    const cell = row.querySelector(`.telegram-msg-cell[data-expand-key="${CSS.escape(key)}"]`);
+    if (!cell) return;
+    const collapsed = cell.classList.toggle("is-collapsed");
+    button.textContent = collapsed ? "See more" : "See less";
+    return;
+  }
+
+  if (field === "json") {
+    const preview = row.querySelector(`.telegram-json-preview[data-expand-key="${CSS.escape(key)}"]`);
+    const full = row.querySelector(`.telegram-json-full[data-expand-key="${CSS.escape(key)}"]`);
+    if (!preview || !full) return;
+    const hidden = full.classList.toggle("hidden");
+    preview.classList.toggle("is-collapsed", hidden);
+    preview.classList.toggle("hidden", !hidden);
+    button.textContent = hidden ? "See JSON" : "Hide JSON";
+  }
 }
 
 function formatSignalParserLabel(telegram) {
@@ -3040,10 +3189,15 @@ async function init() {
     const button = event.target.closest(".telegram-channel-remove-btn");
     if (button) removeTelegramChannel(button.dataset.url);
   });
-  els.telegramMessagesBody?.addEventListener("click", (event) => {
-    const button = event.target.closest(".telegram-hard-copy-btn");
-    if (!button) return;
-    hardCopyTelegramMessage(button.dataset.messageId, button);
+  els.telegramMessagesByChannel?.addEventListener("click", (event) => {
+    const expandBtn = event.target.closest(".telegram-expand-btn");
+    if (expandBtn) {
+      toggleTelegramExpand(expandBtn);
+      return;
+    }
+    const hardCopyBtn = event.target.closest(".telegram-hard-copy-btn");
+    if (!hardCopyBtn) return;
+    hardCopyTelegramMessage(hardCopyBtn.dataset.messageId, hardCopyBtn);
   });
   els.refreshLogsBtn?.addEventListener("click", refreshLogs);
   els.logFilter?.addEventListener("input", renderLogs);
