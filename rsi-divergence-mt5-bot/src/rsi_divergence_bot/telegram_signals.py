@@ -15,7 +15,7 @@ from typing import Callable, Literal
 from pydantic import BaseModel, Field, ValidationError
 
 from .config import AppConfig, SymbolConfig, TelegramChannelConfig
-from .manual_trade import resolve_symbol_for_telegram
+from .manual_trade import parse_manual_trade, resolve_symbol_for_telegram
 from .mt5_client import MT5Client, _field
 from .state import StateStore
 from .symbols import market_key, resolve_trade_symbol
@@ -261,8 +261,11 @@ class GeminiSignalParser:
     _SYSTEM_PROMPT = (
         "You extract trade signals from Telegram messages. "
         "Return only structured output. If the message is not a trade signal, use action='none'. "
-        "If the message is a trade update, TP hit, profit report, entry progress note, or reply to an "
-        "earlier signal, use action='none' even when BUY/SELL text appears in quoted content. "
+        "If the message is a trade update, TP hit, profit report, or reply to an earlier signal, "
+        "use action='none' even when BUY/SELL text appears in quoted content. "
+        "A fresh signal with symbol + BUY/SELL + SL + one or more TPs is a valid trade even when entry "
+        "is written as a range like 4394_4397, 4394-4397, or 4394/4397 — use action='sell' or 'buy' "
+        "and leave entry empty for market execution unless it is clearly a pending/limit order. "
         "Use action='buy' or action='sell' for live/now/market trades. "
         "Use buy_limit, sell_limit, buy_stop, or sell_stop for pending orders. "
         "Normalize GOLD/XAU to XAUUSD when clear. Keep prices exactly as written."
@@ -288,25 +291,51 @@ class GeminiSignalParser:
 
     def parse(self, message: str) -> ParsedTelegramSignal:
         errors: list[str] = []
+        llm_result: ParsedTelegramSignal | None = None
         openai_key = self.openai_api_key(self.config)
         if openai_key:
             try:
-                parsed = self._parse_with_openai(message, openai_key)
-                self.logger.info("TELEGRAM PARSE provider=openai action=%s symbol=%s", parsed.action, parsed.symbol)
-                return parsed
+                llm_result = self._parse_with_openai(message, openai_key)
+                self.logger.info(
+                    "TELEGRAM PARSE provider=openai action=%s symbol=%s",
+                    llm_result.action,
+                    llm_result.symbol,
+                )
+                if llm_result.action != "none":
+                    return llm_result
             except Exception as exc:  # noqa: BLE001
                 errors.append(f"OpenAI: {exc}")
                 self.logger.warning("TELEGRAM PARSE OpenAI failed, trying Gemini fallback: %s", exc)
 
-        gemini_key = self.gemini_api_key(self.config)
-        if gemini_key:
-            try:
-                parsed = self._parse_with_gemini(message, gemini_key)
-                self.logger.info("TELEGRAM PARSE provider=gemini action=%s symbol=%s", parsed.action, parsed.symbol)
-                return parsed
-            except Exception as exc:  # noqa: BLE001
-                errors.append(f"Gemini: {exc}")
-                self.logger.warning("TELEGRAM PARSE Gemini fallback failed: %s", exc)
+        if llm_result is None or llm_result.action == "none":
+            gemini_key = self.gemini_api_key(self.config)
+            if gemini_key:
+                try:
+                    llm_result = self._parse_with_gemini(message, gemini_key)
+                    self.logger.info(
+                        "TELEGRAM PARSE provider=gemini action=%s symbol=%s",
+                        llm_result.action,
+                        llm_result.symbol,
+                    )
+                    if llm_result.action != "none":
+                        return llm_result
+                except Exception as exc:  # noqa: BLE001
+                    errors.append(f"Gemini: {exc}")
+                    self.logger.warning("TELEGRAM PARSE Gemini fallback failed: %s", exc)
+
+        fallback = fallback_parse_telegram_signal(message, self.config)
+        if fallback is not None:
+            self.logger.info(
+                "TELEGRAM PARSE provider=fallback action=%s symbol=%s sl=%s tps=%s",
+                fallback.action,
+                fallback.symbol,
+                fallback.stop_loss,
+                fallback.tps,
+            )
+            return fallback
+
+        if llm_result is not None:
+            return llm_result
 
         if errors:
             raise RuntimeError("; ".join(errors))
@@ -1977,6 +2006,51 @@ def _clean_message(text: str) -> str:
     lines = [line.strip() for line in text.replace("\u200b", "").splitlines()]
     lines = [line for line in lines if line]
     return "\n".join(lines)
+
+
+def _normalize_signal_text(text: str) -> str:
+    cleaned = _clean_message(text)
+    return re.sub(
+        r"(\d+(?:\.\d+)?)\s*[_/\-–—]\s*(\d+(?:\.\d+)?)",
+        r"\1 \2",
+        cleaned,
+    )
+
+
+def fallback_parse_telegram_signal(text: str, config: AppConfig) -> ParsedTelegramSignal | None:
+    if not _looks_like_trade(text):
+        return None
+    normalized = _normalize_signal_text(text)
+    try:
+        plan = parse_manual_trade(normalized, config)
+    except ValueError:
+        return None
+    action: TelegramAction = "buy" if plan.side == "buy" else "sell"
+    symbol = config_symbol_token(plan.symbol, config)
+    return ParsedTelegramSignal(
+        symbol=symbol,
+        action=action,
+        entry=None,
+        stop_loss=float(plan.sl),
+        tps=[float(tp) for tp in plan.tps],
+        confidence=0.75,
+    )
+
+
+def config_symbol_token(resolved_symbol: str, config: AppConfig) -> str:
+    target = resolved_symbol.upper()
+    for item in config.symbols:
+        if item.symbol.upper() == target or item.key.upper() == target:
+            if item.key == "XAUUSD":
+                return "XAUUSD"
+            if item.key == "XAGUSD":
+                return "XAGUSD"
+            return item.key or item.symbol
+    if "XAU" in target or target.endswith("GOLD"):
+        return "XAUUSD"
+    if "XAG" in target or "SILVER" in target:
+        return "XAGUSD"
+    return target.replace("-VIP", "").replace("-STD", "")
 
 
 def _round_price(value: float | None) -> float | None:
