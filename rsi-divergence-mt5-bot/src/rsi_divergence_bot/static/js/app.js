@@ -97,6 +97,9 @@ const els = {
   autoRunSaveStrategy: document.getElementById("auto-run-save-strategy"),
   autoRunSaveBtn: document.getElementById("auto-run-save-btn"),
   autoRunHint: document.getElementById("auto-run-hint"),
+  dailyLossGuardEnabled: document.getElementById("daily-loss-guard-enabled"),
+  dailyLossGuardPct: document.getElementById("daily-loss-guard-pct"),
+  dailyRiskStatus: document.getElementById("daily-risk-status"),
   liveUpdated: document.getElementById("live-updated"),
   liveError: document.getElementById("live-error"),
   acctBalance: document.getElementById("acct-balance"),
@@ -134,6 +137,7 @@ const els = {
   telegramProtectTp: document.getElementById("telegram-protect-tp"),
   telegramIgnoreOpen: document.getElementById("telegram-ignore-open"),
   telegramSettingsPersist: document.getElementById("telegram-settings-persist"),
+  telegramSaveBtn: document.getElementById("telegram-save-btn"),
   telegramStartBtn: document.getElementById("telegram-start-btn"),
   telegramStopBtn: document.getElementById("telegram-stop-btn"),
   telegramClearBtn: document.getElementById("telegram-clear-btn"),
@@ -322,6 +326,11 @@ function pnlClass(value) {
 function formatMoney(value) {
   const prefix = value > 0 ? "+" : "";
   return `${prefix}$${Number(value).toFixed(2)}`;
+}
+
+function formatLossAmount(value) {
+  const amount = Math.max(0, Number(value) || 0);
+  return `$${amount.toFixed(2)}`;
 }
 
 function escapeHtml(text) {
@@ -1477,6 +1486,44 @@ async function onBotSettingsChanged({ silent = true } = {}) {
   }
 }
 
+function renderDailyRiskStatus(dailyRisk) {
+  if (!els.dailyRiskStatus) return;
+  if (!dailyRisk || dailyRisk.error) {
+    els.dailyRiskStatus.textContent = dailyRisk?.error ? `Daily loss unavailable: ${dailyRisk.error}` : "Daily loss: —";
+    els.dailyRiskStatus.className = "panel-hint field-full";
+    return;
+  }
+  if (!dailyRisk.enabled) {
+    els.dailyRiskStatus.textContent = "Daily loss guard is off.";
+    els.dailyRiskStatus.className = "panel-hint field-full";
+    return;
+  }
+
+  const startEquity = dailyRisk.start_equity ?? dailyRisk.start_balance ?? 0;
+  const loss = Number(dailyRisk.loss || 0);
+  const limit = Number(dailyRisk.loss_limit || 0);
+  const remaining = Number(dailyRisk.remaining ?? Math.max(0, limit - loss));
+  const pctUsed = Number(dailyRisk.loss_pct || 0);
+  const maxPct = Number(dailyRisk.max_daily_loss_pct || 0);
+  const dailyPnl = Number(dailyRisk.daily_pnl || 0);
+  const pnlText = dailyPnl >= 0 ? `day P/L ${formatMoney(dailyPnl)}` : `day P/L ${formatMoney(dailyPnl)}`;
+
+  els.dailyRiskStatus.textContent =
+    `Start equity ${formatLossAmount(startEquity)} · ${pnlText} · drawdown ${formatLossAmount(loss)} / ${formatLossAmount(limit)} (${pctUsed.toFixed(1)}% of ${maxPct}% limit · ${formatLossAmount(remaining)} left)`;
+  els.dailyRiskStatus.className = dailyRisk.halted
+    ? "panel-hint field-full live-warning"
+    : "panel-hint field-full";
+}
+
+function syncDailyRiskSettings(configLike = botConfig) {
+  if (els.dailyLossGuardEnabled) {
+    els.dailyLossGuardEnabled.checked = configLike?.risk?.use_daily_loss_guard !== false;
+  }
+  if (els.dailyLossGuardPct && configLike?.risk?.max_daily_loss_pct != null) {
+    els.dailyLossGuardPct.value = configLike.risk.max_daily_loss_pct;
+  }
+}
+
 function renderAutoRunStatus(status) {
   if (!els.autoRunLabel || !els.autoRunDot) return;
 
@@ -1513,7 +1560,7 @@ function renderAutoRunStatus(status) {
     els.autoRunHint.textContent = `Last error: ${status.last_error}`;
     els.autoRunHint.className = "panel-hint live-warning";
   } else if (status.daily_risk?.enabled && status.daily_risk?.halted) {
-    els.autoRunHint.textContent = `Daily loss guard active: loss ${formatMoney(status.daily_risk.loss)} reached limit ${formatMoney(status.daily_risk.loss_limit)}. New trades are blocked until the next UTC day.`;
+    els.autoRunHint.textContent = `Daily loss guard active: drawdown ${formatLossAmount(status.daily_risk.loss)} reached limit ${formatLossAmount(status.daily_risk.loss_limit)}. New trades are blocked while drawdown stays above the limit.`;
     els.autoRunHint.className = "panel-hint live-warning";
   } else if (!running) {
     const strategyText = formatStrategy(displayStrategy);
@@ -1531,14 +1578,32 @@ function renderAutoRunStatus(status) {
     els.autoRunHint.textContent = `Live mode: ${formatStrategy(displayStrategy)}. Listening every ${status.poll_seconds}s. New signals auto-place orders in MT5, ${profileText}.`;
     els.autoRunHint.className = "panel-hint live-warning";
   }
+  renderDailyRiskStatus(status.daily_risk);
 }
 
-async function refreshAutoRunStatus(includeMt5 = false) {
+async function refreshDailyRiskStatus() {
+  try {
+    const response = await fetch("/api/daily-risk", { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to load daily risk");
+    renderDailyRiskStatus(data);
+    return data;
+  } catch (error) {
+    renderDailyRiskStatus({ error: error.message });
+    return null;
+  }
+}
+
+async function refreshAutoRunStatus(includeMt5 = true) {
   try {
     const query = includeMt5 ? "?include_mt5=true" : "";
     const response = await fetch(`/api/auto-run/status${query}`, { cache: "no-store" });
     if (!response.ok) throw new Error("Failed to load auto-run status");
-    renderAutoRunStatus(await response.json());
+    const status = await response.json();
+    renderAutoRunStatus(status);
+    if (!includeMt5) {
+      void refreshDailyRiskStatus();
+    }
   } catch (error) {
     toast(error.message, "error");
   }
@@ -1556,6 +1621,8 @@ async function saveBotStrategy({ strategy, persist, silent = false } = {}) {
       body: JSON.stringify({
         strategy: selected,
         signal_algorithm: els.autoRunSignalAlgorithm?.value || botConfig?.bot?.signal_algorithm,
+        use_daily_loss_guard: Boolean(els.dailyLossGuardEnabled?.checked),
+        max_daily_loss_pct: Number(els.dailyLossGuardPct?.value),
         persist: saveToConfig,
       }),
     });
@@ -1567,7 +1634,12 @@ async function saveBotStrategy({ strategy, persist, silent = false } = {}) {
       botConfig.bot.strategy = data.strategy;
       botConfig.bot.signal_algorithm = data.signal_algorithm;
     }
+    if (data.risk && botConfig) {
+      botConfig.risk = { ...(botConfig.risk || {}), ...data.risk };
+      syncDailyRiskSettings(botConfig);
+    }
     if (data.auto_run) renderAutoRunStatus(data.auto_run);
+    void refreshDailyRiskStatus();
     if (!silent) {
       toast(saveToConfig ? "Bot settings saved to config.yaml" : "Bot settings applied in memory", "success");
     }
@@ -1636,7 +1708,10 @@ async function stopAutoRun() {
 function startLoopPolling() {
   if (currentPage() !== "home") return;
   if (loopTimer) clearInterval(loopTimer);
-  loopTimer = setInterval(() => refreshAutoRunStatus(false), 5000);
+  loopTimer = setInterval(() => {
+    refreshAutoRunStatus(false);
+    refreshDailyRiskStatus();
+  }, 5000);
 }
 
 function telegramStatusClass(status) {
@@ -1708,6 +1783,7 @@ function renderTelegramStatus(status) {
   if (els.telegramLabel) els.telegramLabel.textContent = running ? "Running" : "Stopped";
   if (els.telegramStartBtn) els.telegramStartBtn.disabled = running;
   if (els.telegramStopBtn) els.telegramStopBtn.disabled = !running;
+  if (els.telegramSaveBtn) els.telegramSaveBtn.disabled = running;
   if (els.telegramUpdated) {
     els.telegramUpdated.textContent = `Telegram: ${running ? "watching" : "stopped"}`;
     els.telegramUpdated.classList.toggle("ok", running);
@@ -1901,16 +1977,17 @@ async function updateTelegramChannel(url, patch) {
   return data;
 }
 
-async function saveTelegramSettings({ silent = false } = {}) {
+async function saveTelegramSettings({ silent = false, persist } = {}) {
   if (!els.telegramIgnoreOpen) return null;
-  const persist = Boolean(els.telegramSettingsPersist?.checked);
+  const saveToConfig = persist ?? Boolean(els.telegramSettingsPersist?.checked);
+  setLoading(els.telegramSaveBtn, true);
   try {
     const response = await fetch("/api/telegram-signals/settings", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ignore_open_symbol_trades: Boolean(els.telegramIgnoreOpen.checked),
-        persist,
+        persist: saveToConfig,
       }),
     });
     const data = await response.json();
@@ -1922,12 +1999,14 @@ async function saveTelegramSettings({ silent = false } = {}) {
       els.telegramOpenGuard.textContent = data.ignore_open_symbol_trades ? "On" : "Off";
     }
     if (!silent) {
-      toast(persist ? "Telegram settings saved" : "Telegram settings applied", "success");
+      toast(saveToConfig ? "Telegram settings saved to config.yaml" : "Telegram settings applied in memory", "success");
     }
     return data;
   } catch (error) {
     if (!silent) toast(error.message, "error");
     throw error;
+  } finally {
+    setLoading(els.telegramSaveBtn, false);
   }
 }
 
@@ -2342,6 +2421,7 @@ function renderConfig(config) {
     els.appendBrokerSymbolSuffix.checked = config.mt5?.append_broker_symbol_suffix !== false;
   }
   updateBrokerSymbolSuffixHint(config);
+  syncDailyRiskSettings(config);
 
   try {
     const dryRun = config.bot?.dry_run;
@@ -3059,12 +3139,15 @@ async function init() {
   els.autoRunSaveBtn?.addEventListener("click", () => saveBotStrategy({ silent: false, persist: true }));
   els.autoRunStrategy?.addEventListener("change", () => onBotSettingsChanged());
   els.autoRunSignalAlgorithm?.addEventListener("change", () => onBotSettingsChanged());
+  els.dailyLossGuardEnabled?.addEventListener("change", () => onBotSettingsChanged());
+  els.dailyLossGuardPct?.addEventListener("change", () => onBotSettingsChanged());
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
+  els.telegramSaveBtn?.addEventListener("click", () => saveTelegramSettings({ silent: false, persist: true }));
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
   els.telegramChannelForm?.addEventListener("submit", addTelegramChannel);
   els.telegramIgnoreOpen?.addEventListener("change", () => {
-    saveTelegramSettings({ silent: false }).catch(() => {});
+    saveTelegramSettings({ silent: true }).catch(() => {});
   });
   els.telegramChannelsBody?.addEventListener("click", async (event) => {
     const enableBtn = event.target.closest(".telegram-channel-enable-btn");
@@ -3133,6 +3216,7 @@ async function init() {
     startLoopPolling();
     startLivePolling();
     void refreshAutoRunStatus(true);
+    void refreshDailyRiskStatus();
     void refreshLiveData();
   } else if (page === "telegram-signals") {
     startTelegramPolling();

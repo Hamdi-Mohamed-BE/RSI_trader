@@ -114,6 +114,8 @@ class TelegramSettingsRequest(BaseModel):
 class BotSettingsRequest(BaseModel):
     strategy: StrategyMode | None = None
     signal_algorithm: str | None = None
+    use_daily_loss_guard: bool | None = None
+    max_daily_loss_pct: float | None = Field(default=None, ge=0)
     persist: bool = True
 
 
@@ -697,12 +699,27 @@ def create_app(
             apply_bot_strategy(body.strategy, body.persist)
         if body.signal_algorithm is not None:
             apply_signal_algorithm(body.signal_algorithm, body.persist)
+        if body.use_daily_loss_guard is not None:
+            config.risk.use_daily_loss_guard = body.use_daily_loss_guard
+        if body.max_daily_loss_pct is not None:
+            config.risk.max_daily_loss_pct = body.max_daily_loss_pct
+        if body.persist and (body.use_daily_loss_guard is not None or body.max_daily_loss_pct is not None):
+            save_config(config_path, config)
         return {
             "status": "saved" if body.persist else "applied",
             "strategy": config.bot.strategy,
             "signal_algorithm": config.bot.signal_algorithm,
+            "risk": config.risk.model_dump(mode="python"),
             "auto_run": bot.auto_loop_status(include_mt5=False),
         }
+
+    @app.get("/api/daily-risk")
+    async def api_daily_risk() -> dict:
+        await require_mt5_ready()
+        try:
+            return await asyncio.to_thread(bot.daily_risk_status)
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     @app.get("/api/config/snapshots")
     def api_config_snapshots() -> dict:

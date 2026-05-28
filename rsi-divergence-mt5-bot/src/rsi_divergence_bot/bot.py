@@ -3,9 +3,10 @@ from __future__ import annotations
 import logging
 import threading
 from dataclasses import asdict, dataclass
-from datetime import datetime, time, timezone
+from datetime import datetime, timezone
 
 from .config import AppConfig, trade_symbol_for_account
+from .daily_risk import compute_daily_risk_status
 from .decision import resolve_trade_filters
 from .mt5_client import MT5Client
 from .live_session import LIVE_SCAN_BARS
@@ -148,67 +149,7 @@ class SignalBot:
         return status
 
     def daily_risk_status(self) -> dict:
-        risk_cfg = self.config.risk
-        max_loss_pct = risk_cfg.effective_daily_loss_pct()
-        now = datetime.now(timezone.utc).replace(microsecond=0)
-        today = now.date().isoformat()
-        account = self.client.account_snapshot()
-        equity = float(account["equity"])
-        balance = float(account["balance"])
-        floating_pnl = float(account.get("floating_pnl", 0.0) or 0.0)
-
-        if not risk_cfg.daily_loss_guard_active():
-            return {
-                "enabled": False,
-                "halted": False,
-                "date": today,
-                "start_balance": balance,
-                "equity": equity,
-                "loss": 0.0,
-                "loss_limit": 0.0,
-                "use_daily_loss_guard": risk_cfg.use_daily_loss_guard,
-                "max_daily_loss_pct": risk_cfg.max_daily_loss_pct,
-            }
-
-        state = self.state.read()
-        daily_risk = state.get("daily_risk", {})
-        if daily_risk.get("date") != today:
-            day_start = datetime.combine(now.date(), time.min, tzinfo=timezone.utc)
-            realized_today = self.client.realized_pnl_since(day_start)
-            start_balance = round(balance - realized_today, 2)
-            if start_balance <= 0:
-                start_balance = balance
-            daily_risk = {
-                "date": today,
-                "start_balance": start_balance,
-                "created_at": now.isoformat(),
-                "halted": False,
-                "halted_at": None,
-            }
-
-        start_balance = float(daily_risk.get("start_balance", balance) or balance)
-        loss_limit = round(start_balance * float(max_loss_pct) / 100.0, 2)
-        loss = round(max(0.0, start_balance - equity), 2)
-        halted = loss_limit > 0 and loss >= loss_limit
-
-        if halted and not daily_risk.get("halted"):
-            daily_risk["halted_at"] = now.isoformat()
-        daily_risk.update(
-            {
-                "enabled": True,
-                "halted": halted,
-                "use_daily_loss_guard": risk_cfg.use_daily_loss_guard,
-                "max_daily_loss_pct": float(max_loss_pct),
-                "loss_limit": loss_limit,
-                "loss": loss,
-                "equity": round(equity, 2),
-                "balance": round(balance, 2),
-                "floating_pnl": round(floating_pnl, 2),
-                "updated_at": now.isoformat(),
-            }
-        )
-        self.state.update_daily_risk(daily_risk)
-        return daily_risk
+        return compute_daily_risk_status(self.client, self.state, self.config.risk)
 
     def start_auto_loop(self) -> dict:
         if self.is_auto_loop_running():

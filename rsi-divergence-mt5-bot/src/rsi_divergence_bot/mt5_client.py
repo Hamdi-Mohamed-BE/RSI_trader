@@ -488,6 +488,9 @@ class MT5Client:
             return rows
 
     def realized_pnl_since(self, start: datetime) -> float:
+        return self.net_pnl_since(start)
+
+    def net_pnl_since(self, start: datetime) -> float:
         self.initialize()
         with _MT5_LOCK:
             utc_from = _utc_naive(start)
@@ -496,11 +499,36 @@ class MT5Client:
             if deals is None:
                 return 0.0
 
+            buy_type = self._mt5_const("DEAL_TYPE_BUY", 0)
+            sell_type = self._mt5_const("DEAL_TYPE_SELL", 1)
             total = 0.0
             for deal in deals:
-                if _field(deal, "type") not in {self.mt5.DEAL_TYPE_BUY, self.mt5.DEAL_TYPE_SELL}:
+                deal_type = _field(deal, "type")
+                if deal_type not in {buy_type, sell_type}:
                     continue
-                total += float(_field(deal, "profit", 0.0)) + float(_field(deal, "commission", 0.0)) + float(_field(deal, "swap", 0.0))
+                total += float(_field(deal, "profit", 0.0))
+                total += float(_field(deal, "commission", 0.0))
+                total += float(_field(deal, "swap", 0.0))
+                total += float(_field(deal, "fee", 0.0))
+            return round(total, 2)
+
+    def balance_adjustments_since(self, start: datetime) -> float:
+        self.initialize()
+        with _MT5_LOCK:
+            utc_from = _utc_naive(start)
+            utc_to = datetime.now(timezone.utc).replace(tzinfo=None)
+            deals = self.mt5.history_deals_get(utc_from, utc_to)
+            if deals is None:
+                return 0.0
+
+            balance_type = self._mt5_const("DEAL_TYPE_BALANCE", 2)
+            credit_type = self._mt5_const("DEAL_TYPE_CREDIT", 3)
+            total = 0.0
+            for deal in deals:
+                deal_type = _field(deal, "type")
+                if deal_type not in {balance_type, credit_type}:
+                    continue
+                total += float(_field(deal, "profit", 0.0))
             return round(total, 2)
 
     def live_snapshot(self, bot_magic: int) -> dict:
