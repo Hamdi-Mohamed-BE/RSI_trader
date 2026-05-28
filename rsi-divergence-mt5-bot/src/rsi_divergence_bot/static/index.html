@@ -654,16 +654,26 @@
             <textarea id="manual-trade-text" class="trade-textarea" rows="8" placeholder="BTCUSD BUY&#10;SL 77139&#10;TP1 77451&#10;TP2 77529&#10;TP3 77608&#10;LOT 0.01"></textarea>
           </label>
           <p id="manual-trade-parse-hint" class="panel-hint field-full hidden"></p>
-          <div class="form-actions field-full">
+          <div class="form-actions field-full manual-trade-actions">
+            <button id="manual-trade-quick-test-btn" class="btn btn-secondary" type="button">
+              <span class="btn-label">Quick EURUSD test (0.01 BUY)</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
             <button id="manual-trade-btn" class="btn btn-danger" type="submit">
-              <span class="btn-label">Place live test trade</span>
+              <span class="btn-label">Place live trade from signal</span>
               <span class="spinner" hidden aria-hidden="true"></span>
             </button>
           </div>
         </form>
-        <p class="panel-hint live-warning">Upload or paste a screenshot to parse with AI, review the text, then place live MT5 orders. Every trade must include SL and at least one TP.</p>
+        <p class="panel-hint live-warning">Upload or paste a screenshot to parse with AI, review the text, then place live MT5 orders. Every trade must include SL and at least one TP. Use the quick test button to verify MT5 connectivity without parsing a signal.</p>
         <div id="manual-trade-result" class="result-card hidden">
-          <div class="result-title">Manual trade result</div>
+          <div class="result-card-head">
+            <div>
+              <div class="result-title">Manual trade result</div>
+              <p id="manual-trade-result-summary" class="manual-trade-result-summary"></p>
+            </div>
+            <button id="manual-trade-dismiss-btn" class="btn btn-secondary btn-sm" type="button">Dismiss</button>
+          </div>
           <pre id="manual-trade-status"></pre>
         </div>
       </section>
