@@ -1350,6 +1350,12 @@ textarea {
   overflow: hidden;
 }
 
+.telegram-msg-cell.is-expanded {
+  max-width: 420px;
+  user-select: text;
+  cursor: text;
+}
+
 .telegram-expand-btn {
   margin-top: 6px;
   padding: 0;
@@ -1391,8 +1397,10 @@ textarea {
   line-height: 1.4;
   white-space: pre-wrap;
   word-break: break-word;
-  max-height: 240px;
+  max-height: 320px;
   overflow: auto;
+  user-select: text;
+  cursor: text;
 }
 
 .telegram-json-full.hidden {

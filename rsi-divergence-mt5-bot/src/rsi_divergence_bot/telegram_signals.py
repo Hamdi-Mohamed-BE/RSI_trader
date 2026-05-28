@@ -37,6 +37,10 @@ from .telegram_html_parser import (
 TelegramAction = Literal["buy", "sell", "buy_limit", "sell_limit", "buy_stop", "sell_stop", "none"]
 COMMENT_PREFIX = "signal bot"
 
+
+class BrowserSessionError(RuntimeError):
+    """Raised when the Playwright browser/context is no longer usable."""
+
 _TELEGRAM_SCROLL_CHAT_JS = """
 () => {
   for (const el of document.querySelectorAll('.scrollable.scrollable-y, .bubbles-container .scrollable, .scrollable')) {
@@ -604,27 +608,20 @@ class TelegramSignalsBot:
     def _loop(self) -> None:
         playwright = None
         context = None
+        profile_dir = self._browser_profile_dir()
         try:
             sync_playwright = load_sync_playwright()
-
-            profile_dir = Path(self.config.telegram_signals.browser_user_data_dir)
-            if not profile_dir.is_absolute():
-                profile_dir = Path(self.config.bot.state_file).resolve().parent.parent / profile_dir
-            profile_dir.mkdir(parents=True, exist_ok=True)
-
             playwright = sync_playwright().start()
-            context = self._open_browser(playwright, profile_dir)
-            channels = self._enabled_channels()
-            self._channel_pages = self._open_all_channel_windows(context, channels)
-            self._status.browser_open = True
+            context = self._start_browser_session(playwright, profile_dir)
             self.logger.warning(
                 "TELEGRAM SIGNALS browser opened with %s channel window(s). Login if asked. channels=%s",
                 len(self._channel_pages),
-                [channel.name for channel in channels],
+                [channel.name for channel in self._enabled_channels()],
             )
 
             while not self._stop_event.is_set():
                 try:
+                    context = self._ensure_browser_session(playwright, profile_dir, context)
                     if self._status.protect_tp:
                         self._manage_tp_protection(enabled=True)
                     channels = self._enabled_channels()
@@ -640,7 +637,25 @@ class TelegramSignalsBot:
                         try:
                             page = self._ensure_channel_page(context, channel)
                             self._read_channel(page, channel, open_market_keys=open_market_keys)
+                        except BrowserSessionError as exc:
+                            self._status.last_error = str(exc)
+                            self.logger.warning(
+                                "TELEGRAM browser session lost while reading %s: %s",
+                                channel.name,
+                                exc,
+                            )
+                            context = self._restart_browser_session(playwright, profile_dir, context)
+                            break
                         except Exception as exc:  # noqa: BLE001
+                            if self._is_browser_closed_error(exc):
+                                self._status.last_error = str(exc)
+                                self.logger.warning(
+                                    "TELEGRAM browser closed while reading %s: %s",
+                                    channel.name,
+                                    exc,
+                                )
+                                context = self._restart_browser_session(playwright, profile_dir, context)
+                                break
                             self._status.last_error = f"{channel.name}: {exc}"
                             self.logger.exception(
                                 "TELEGRAM CHANNEL READ ERROR channel=%s url=%s error=%s",
@@ -648,10 +663,20 @@ class TelegramSignalsBot:
                                 channel.url,
                                 exc,
                             )
-                    self._status.last_error = None
-                except Exception as exc:  # noqa: BLE001
+                    else:
+                        self._status.last_error = None
+                except BrowserSessionError as exc:
                     self._status.last_error = str(exc)
-                    self.logger.exception("TELEGRAM SIGNALS loop error: %s", exc)
+                    self.logger.warning("TELEGRAM browser session lost: %s", exc)
+                    context = self._restart_browser_session(playwright, profile_dir, context)
+                except Exception as exc:  # noqa: BLE001
+                    if self._is_browser_closed_error(exc):
+                        self._status.last_error = str(exc)
+                        self.logger.warning("TELEGRAM browser closed: %s", exc)
+                        context = self._restart_browser_session(playwright, profile_dir, context)
+                    else:
+                        self._status.last_error = str(exc)
+                        self.logger.exception("TELEGRAM SIGNALS loop error: %s", exc)
 
                 if self._stop_event.wait(self.config.telegram_signals.poll_seconds):
                     break
@@ -666,17 +691,78 @@ class TelegramSignalsBot:
             self._status.running = False
             self._status.browser_open = False
             self._channel_pages = {}
-            try:
-                if context is not None:
-                    context.close()
-            except Exception:  # noqa: BLE001
-                pass
-            try:
-                if playwright is not None:
-                    playwright.stop()
-            except Exception:  # noqa: BLE001
-                pass
+            self._close_browser_session(playwright, context)
             self.logger.info("TELEGRAM SIGNALS stopped")
+
+    def _browser_profile_dir(self) -> Path:
+        profile_dir = Path(self.config.telegram_signals.browser_user_data_dir)
+        if not profile_dir.is_absolute():
+            profile_dir = Path(self.config.bot.state_file).resolve().parent.parent / profile_dir
+        profile_dir.mkdir(parents=True, exist_ok=True)
+        return profile_dir
+
+    @staticmethod
+    def _is_browser_closed_error(exc: BaseException) -> bool:
+        message = str(exc).casefold()
+        return "target page, context or browser has been closed" in message or "browser has been closed" in message
+
+    @staticmethod
+    def _context_alive(context) -> bool:
+        if context is None:
+            return False
+        try:
+            browser = context.browser
+            return browser is not None and browser.is_connected()
+        except Exception:  # noqa: BLE001
+            return False
+
+    @staticmethod
+    def _page_alive(page) -> bool:
+        if page is None:
+            return False
+        try:
+            return not page.is_closed()
+        except Exception:  # noqa: BLE001
+            return False
+
+    def _close_browser_session(self, playwright, context) -> None:
+        try:
+            if context is not None:
+                context.close()
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            if playwright is not None:
+                playwright.stop()
+        except Exception:  # noqa: BLE001
+            pass
+
+    def _start_browser_session(self, playwright, profile_dir: Path):
+        self._channel_pages = {}
+        context = self._open_browser(playwright, profile_dir)
+        channels = self._enabled_channels()
+        self._channel_pages = self._open_all_channel_windows(context, channels)
+        self._status.browser_open = True
+        return context
+
+    def _restart_browser_session(self, playwright, profile_dir: Path, context):
+        self.logger.warning("TELEGRAM restarting browser session")
+        try:
+            if context is not None:
+                context.close()
+        except Exception:  # noqa: BLE001
+            pass
+        self._channel_pages = {}
+        self._status.browser_open = False
+        try:
+            return self._start_browser_session(playwright, profile_dir)
+        except Exception as exc:  # noqa: BLE001
+            raise BrowserSessionError(f"Failed to restart Telegram browser: {exc}") from exc
+
+    def _ensure_browser_session(self, playwright, profile_dir: Path, context):
+        if self._context_alive(context):
+            return context
+        return self._restart_browser_session(playwright, profile_dir, context)
 
     def _enabled_channels(self) -> list[TelegramChannelConfig]:
         return [channel for channel in self.config.telegram_signals.channels if channel.enabled]
@@ -749,9 +835,11 @@ class TelegramSignalsBot:
         page.wait_for_timeout(1500)
 
     def _open_all_channel_windows(self, context, channels: list[TelegramChannelConfig]) -> dict[str, object]:
+        if not self._context_alive(context):
+            raise BrowserSessionError("browser context closed before opening channel windows")
         pages: dict[str, object] = {}
         for index, channel in enumerate(channels):
-            page = context.pages[0] if index == 0 and context.pages else context.new_page()
+            page = self._allocate_channel_page(context, channel.url, prefer_existing=index == 0)
             self.logger.info("TELEGRAM WINDOW OPEN channel=%s url=%s", channel.name, channel.url)
             page.goto(channel.url, wait_until="domcontentloaded", timeout=60_000)
             if index == 0:
@@ -762,16 +850,71 @@ class TelegramSignalsBot:
             page.wait_for_timeout(400)
         return pages
 
-    def _ensure_channel_page(self, context, channel: TelegramChannelConfig):
-        page = self._channel_pages.get(channel.url)
-        if page is not None and not page.is_closed():
-            target_hash = self._channel_hash(channel.url)
-            current = str(getattr(page, "url", "") or "")
-            if target_hash and f"#{target_hash}" in current:
+    @staticmethod
+    def _channel_hash_variants(url: str) -> set[str]:
+        target = TelegramSignalsBot._channel_hash(url).replace("#", "")
+        if not target:
+            return set()
+        variants = {target}
+        if re.fullmatch(r"-\d+", target):
+            if target.startswith("-100"):
+                variants.add(target[4:])
+            else:
+                variants.add(f"-100{target[1:]}")
+        return variants
+
+    def _channel_page_on_target(self, page, channel: TelegramChannelConfig) -> bool:
+        if not self._page_alive(page):
+            return False
+        variants = self._channel_hash_variants(channel.url)
+        if not variants:
+            return True
+        try:
+            current = str(page.url or "")
+        except Exception:  # noqa: BLE001
+            return False
+        current_hash = current.split("#", 1)[1] if "#" in current else ""
+        if current_hash in variants:
+            return True
+        return any(f"#{variant}" in current or variant in current_hash or current_hash in variant for variant in variants)
+
+    def _allocate_channel_page(self, context, channel_url: str, *, prefer_existing: bool = False):
+        if not self._context_alive(context):
+            raise BrowserSessionError("browser context closed")
+        for url, page in list(self._channel_pages.items()):
+            if url == channel_url and self._page_alive(page):
                 return page
+            if not self._page_alive(page):
+                self._channel_pages.pop(url, None)
+        assigned = {id(page) for page in self._channel_pages.values() if self._page_alive(page)}
+        if prefer_existing and context.pages:
+            for page in context.pages:
+                if self._page_alive(page) and id(page) not in assigned:
+                    self._channel_pages[channel_url] = page
+                    return page
+        try:
+            page = context.new_page()
+        except Exception as exc:  # noqa: BLE001
+            raise BrowserSessionError(str(exc)) from exc
+        self._channel_pages[channel_url] = page
+        return page
+
+    def _ensure_channel_page(self, context, channel: TelegramChannelConfig):
+        if not self._context_alive(context):
+            raise BrowserSessionError("browser context closed")
+
+        page = self._channel_pages.get(channel.url)
+        if self._page_alive(page) and self._channel_page_on_target(page, channel):
+            return page
+
+        if self._page_alive(page):
+            self.logger.info("TELEGRAM NAVIGATE channel=%s url=%s", channel.name, channel.url)
+            self._open_channel_page(page, channel)
+            self._channel_pages[channel.url] = page
+            return page
 
         self.logger.warning("TELEGRAM WINDOW REOPEN channel=%s url=%s", channel.name, channel.url)
-        page = context.new_page() if page is None or page.is_closed() else page
+        page = self._allocate_channel_page(context, channel.url)
         page.goto(channel.url, wait_until="domcontentloaded", timeout=45_000)
         self._wait_for_chat_messages(page, channel)
         self._scroll_chat_to_bottom(page, attempts=2)

@@ -172,6 +172,10 @@ let logTimer = null;
 let loopTimer = null;
 let liveTimer = null;
 let telegramTimer = null;
+let telegramMessagesFingerprint = "";
+let telegramActionsFingerprint = "";
+let telegramExpandedFields = new Set();
+let telegramUserInteracting = false;
 let botConfig = null;
 let manualTradeImageFile = null;
 let symbolSettingsReady = false;
@@ -1785,7 +1789,112 @@ function renderTelegramActionLog(actions) {
     .join("");
 }
 
-function renderTelegramStatus(status) {
+function telegramActionsFingerprintValue(actions) {
+  return (actions || [])
+    .map((item) => [
+      item.at,
+      item.kind,
+      item.status,
+      item.channel,
+      item.symbol,
+      item.reason,
+      item.result?.status,
+    ].join(":"))
+    .join("|");
+}
+
+function updateTelegramActionLogIfChanged(actions) {
+  const fingerprint = telegramActionsFingerprintValue(actions);
+  if (fingerprint === telegramActionsFingerprint) return;
+  telegramActionsFingerprint = fingerprint;
+  renderTelegramActionLog(actions);
+}
+
+function telegramExpandStorageKey(rowKey, field) {
+  return `${rowKey}::${field}`;
+}
+
+function syncTelegramSettingsFromStatus(status, { force = false } = {}) {
+  if (!force) {
+    const active = document.activeElement;
+    if (active === els.telegramIgnoreOpen || active === els.telegramProtectTp) return;
+  }
+  if (els.telegramIgnoreOpen && status.ignore_open_symbol_trades != null) {
+    els.telegramIgnoreOpen.checked = Boolean(status.ignore_open_symbol_trades);
+  }
+  if (els.telegramProtectTp && status.protect_tp != null) {
+    els.telegramProtectTp.checked = Boolean(status.protect_tp);
+  }
+  if (els.telegramOpenGuard) {
+    els.telegramOpenGuard.textContent = status.ignore_open_symbol_trades ? "On" : "Off";
+  }
+}
+
+function updateTelegramLastPanels(status) {
+  const signal = status.last_signal;
+  if (els.telegramLastParsed) {
+    els.telegramLastParsed.textContent = signal?.action && signal.action !== "none"
+      ? `${String(signal.action).toUpperCase()} ${signal.symbol || ""}`
+      : "—";
+  }
+  if (els.telegramLastAction && els.telegramLastActionJson) {
+    const action = status.last_action;
+    if (action?.result) {
+      const bits = [];
+      if (action.channel) bits.push(action.channel);
+      if (action.at) bits.push(formatTimestamp(action.at));
+      if (action.result?.status) bits.push(String(action.result.status));
+      if (action.result?.hard_copy) bits.push("hard copy");
+      if (els.telegramLastActionMeta) {
+        els.telegramLastActionMeta.textContent = bits.length ? bits.join(" · ") : "Latest trade action";
+      }
+      renderTelegramActionStatusBadge(els.telegramLastActionStatus, action.result);
+      const payload = JSON.stringify(
+        {
+          signal: action.signal || status.last_signal || null,
+          result: action.result,
+        },
+        null,
+        2,
+      );
+      if (els.telegramLastActionJson.textContent !== payload) {
+        els.telegramLastActionJson.textContent = payload;
+      }
+      els.telegramLastAction.classList.remove("hidden");
+    } else if (status.last_result) {
+      if (els.telegramLastActionMeta) {
+        els.telegramLastActionMeta.textContent = status.last_channel
+          ? `${status.last_channel} · ${formatTimestamp(status.last_action_at)}`
+          : formatTimestamp(status.last_action_at);
+      }
+      renderTelegramActionStatusBadge(els.telegramLastActionStatus, status.last_result);
+      const payload = JSON.stringify(status.last_result, null, 2);
+      if (els.telegramLastActionJson.textContent !== payload) {
+        els.telegramLastActionJson.textContent = payload;
+      }
+      els.telegramLastAction.classList.remove("hidden");
+    } else {
+      els.telegramLastAction.classList.add("hidden");
+      els.telegramLastActionJson.textContent = "";
+      if (els.telegramLastActionMeta) els.telegramLastActionMeta.textContent = "";
+      els.telegramLastActionStatus?.classList.add("hidden");
+    }
+  }
+  if (els.telegramLastResult && els.telegramLastResultJson) {
+    if (status.last_signal) {
+      const payload = JSON.stringify(status.last_signal, null, 2);
+      if (els.telegramLastResultJson.textContent !== payload) {
+        els.telegramLastResultJson.textContent = payload;
+      }
+      els.telegramLastResult.classList.remove("hidden");
+    } else {
+      els.telegramLastResult.classList.add("hidden");
+      els.telegramLastResultJson.textContent = "";
+    }
+  }
+}
+
+function renderTelegramStatus(status, { full = false } = {}) {
   if (!els.telegramLabel) return;
   const running = Boolean(status.running);
 
@@ -1831,59 +1940,8 @@ function renderTelegramStatus(status) {
     }
   }
 
-  const signal = status.last_signal;
-  if (els.telegramLastParsed) {
-    els.telegramLastParsed.textContent = signal?.action && signal.action !== "none"
-      ? `${String(signal.action).toUpperCase()} ${signal.symbol || ""}`
-      : "—";
-  }
-  if (els.telegramLastAction && els.telegramLastActionJson) {
-    const action = status.last_action;
-    if (action?.result) {
-      const bits = [];
-      if (action.channel) bits.push(action.channel);
-      if (action.at) bits.push(formatTimestamp(action.at));
-      if (action.result?.status) bits.push(String(action.result.status));
-      if (action.result?.hard_copy) bits.push("hard copy");
-      if (els.telegramLastActionMeta) {
-        els.telegramLastActionMeta.textContent = bits.length ? bits.join(" · ") : "Latest trade action";
-      }
-      renderTelegramActionStatusBadge(els.telegramLastActionStatus, action.result);
-      els.telegramLastActionJson.textContent = JSON.stringify(
-        {
-          signal: action.signal || status.last_signal || null,
-          result: action.result,
-        },
-        null,
-        2,
-      );
-      els.telegramLastAction.classList.remove("hidden");
-    } else if (status.last_result) {
-      if (els.telegramLastActionMeta) {
-        els.telegramLastActionMeta.textContent = status.last_channel
-          ? `${status.last_channel} · ${formatTimestamp(status.last_action_at)}`
-          : formatTimestamp(status.last_action_at);
-      }
-      renderTelegramActionStatusBadge(els.telegramLastActionStatus, status.last_result);
-      els.telegramLastActionJson.textContent = JSON.stringify(status.last_result, null, 2);
-      els.telegramLastAction.classList.remove("hidden");
-    } else {
-      els.telegramLastAction.classList.add("hidden");
-      els.telegramLastActionJson.textContent = "";
-      if (els.telegramLastActionMeta) els.telegramLastActionMeta.textContent = "";
-      els.telegramLastActionStatus?.classList.add("hidden");
-    }
-  }
-  renderTelegramActionLog(status.recent_actions || []);
-  if (els.telegramLastResult && els.telegramLastResultJson) {
-    if (status.last_signal) {
-      els.telegramLastResultJson.textContent = JSON.stringify(status.last_signal, null, 2);
-      els.telegramLastResult.classList.remove("hidden");
-    } else {
-      els.telegramLastResult.classList.add("hidden");
-      els.telegramLastResultJson.textContent = "";
-    }
-  }
+  updateTelegramLastPanels(status);
+  updateTelegramActionLogIfChanged(status.recent_actions || []);
   if (els.telegramLlm && (status.openai_model || status.gemini_model)) {
     els.telegramLlm.textContent = formatSignalParserLabel({
       openai_api_key_configured: status.openai_api_key_configured,
@@ -1892,17 +1950,15 @@ function renderTelegramStatus(status) {
       gemini_model: status.gemini_model,
     });
   }
-  if (els.telegramIgnoreOpen && status.ignore_open_symbol_trades != null) {
-    els.telegramIgnoreOpen.checked = Boolean(status.ignore_open_symbol_trades);
+  syncTelegramSettingsFromStatus(status, { force: full });
+  updateTelegramMessagesIfChanged(
+    status.recent_messages || [],
+    status.channels || botConfig?.telegram_signals?.channels || [],
+    { force: full },
+  );
+  if (full) {
+    renderTelegramChannels(status.channels || botConfig?.telegram_signals?.channels || []);
   }
-  if (els.telegramProtectTp && status.protect_tp != null) {
-    els.telegramProtectTp.checked = Boolean(status.protect_tp);
-  }
-  if (els.telegramOpenGuard) {
-    els.telegramOpenGuard.textContent = status.ignore_open_symbol_trades ? "On" : "Off";
-  }
-  renderTelegramMessages(status.recent_messages || [], status.channels || botConfig?.telegram_signals?.channels || []);
-  renderTelegramChannels(status.channels || botConfig?.telegram_signals?.channels || []);
 }
 
 function renderTelegramChannels(channels) {
@@ -2124,23 +2180,30 @@ function renderTelegramExpandableText(text, rowKey, field) {
   if (!needsToggle) {
     return `<div class="telegram-msg-cell">${escapeHtml(cleaned)}</div>`;
   }
+  const expanded = telegramExpandedFields.has(telegramExpandStorageKey(rowKey, field));
   return `
-    <div class="telegram-msg-cell is-collapsed" data-expand-field="${escapeHtml(field)}" data-expand-key="${escapeHtml(rowKey)}">${escapeHtml(cleaned)}</div>
-    <button type="button" class="telegram-expand-btn" data-expand-field="${escapeHtml(field)}" data-expand-key="${escapeHtml(rowKey)}">See more</button>
+    <div class="telegram-msg-cell ${expanded ? "is-expanded" : "is-collapsed"}" data-expand-field="${escapeHtml(field)}" data-expand-key="${escapeHtml(rowKey)}">${escapeHtml(cleaned)}</div>
+    <button type="button" class="telegram-expand-btn" data-expand-field="${escapeHtml(field)}" data-expand-key="${escapeHtml(rowKey)}">${expanded ? "See less" : "See more"}</button>
   `;
 }
 
-function renderTelegramActionJsonCell(item, rowKey) {
-  const payload = telegramActionPayload(item);
-  const json = JSON.stringify(payload, null, 2);
+function renderTelegramActionJsonCell(item, rowKey, jsonOverride = null) {
+  const payload = jsonOverride == null ? telegramActionPayload(item) : null;
+  const json = jsonOverride ?? JSON.stringify(payload, null, 2);
   if (!json || json === "{}") {
     return `<span class="value-neutral">${escapeHtml(formatLlmResponse(item))}</span>`;
+  }
+  const expanded = telegramExpandedFields.has(telegramExpandStorageKey(rowKey, "json"));
+  if (expanded) {
+    return `
+      <pre class="telegram-json-full" data-expand-target="json" data-expand-key="${escapeHtml(rowKey)}">${escapeHtml(json)}</pre>
+      <button type="button" class="telegram-expand-btn" data-expand-field="json" data-expand-key="${escapeHtml(rowKey)}">Hide JSON</button>
+    `;
   }
   const preview = json.length > 160 ? `${json.slice(0, 160)}…` : json;
   return `
     <div class="telegram-json-preview is-collapsed" data-expand-field="json" data-expand-key="${escapeHtml(rowKey)}">${escapeHtml(preview)}</div>
     <button type="button" class="telegram-expand-btn" data-expand-field="json" data-expand-key="${escapeHtml(rowKey)}">See JSON</button>
-    <pre class="telegram-json-full hidden" data-expand-target="json" data-expand-key="${escapeHtml(rowKey)}">${escapeHtml(json)}</pre>
   `;
 }
 
@@ -2166,17 +2229,40 @@ function renderTelegramMessageRow(item) {
     ? `<button type="button" class="btn btn-primary btn-sm telegram-hard-copy-btn" data-message-id="${messageId}" title="Force place at market; only checks TPs vs live price">Hard copy</button>`
     : '<span class="value-neutral">—</span>';
   const messageCell = renderTelegramExpandableText(telegramMessageText(item), rowKey, "message");
+  const actionPayload = telegramActionPayload(item);
+  const actionJson = JSON.stringify(actionPayload, null, 2);
   return `
-    <tr data-message-row="${escapeHtml(rowKey)}">
+  <tr data-message-row="${escapeHtml(rowKey)}">
       <td class="${statusClass}">${escapeHtml(status)}</td>
       <td>${replyLabel}</td>
       <td>${formatTimestamp(item.updated_at)}</td>
       <td>${messageCell}</td>
-      <td>${renderTelegramActionJsonCell(item, rowKey)}</td>
+      <td data-full-json="${encodeURIComponent(actionJson)}">${renderTelegramActionJsonCell(item, rowKey, actionJson)}</td>
       <td>${escapeHtml(String(item.reason || item.result?.reason || "—"))}</td>
       <td class="table-actions">${actionCell}</td>
     </tr>
   `;
+}
+
+function telegramMessagesFingerprintValue(messages) {
+  return (messages || [])
+    .map((item) => [
+      item.message_id,
+      item.status,
+      item.updated_at,
+      item.reason,
+      item.result?.status,
+      item.result?.reason,
+    ].join(":"))
+    .join("|");
+}
+
+function updateTelegramMessagesIfChanged(messages, channels = [], { force = false } = {}) {
+  const fingerprint = telegramMessagesFingerprintValue(messages);
+  if (!force && telegramUserInteracting) return;
+  if (!force && fingerprint === telegramMessagesFingerprint) return;
+  telegramMessagesFingerprint = fingerprint;
+  renderTelegramMessages(messages, channels);
 }
 
 function renderTelegramMessages(messages, channels = []) {
@@ -2235,6 +2321,7 @@ function toggleTelegramExpand(button) {
   const field = button.dataset.expandField;
   const key = button.dataset.expandKey;
   if (!field || !key) return;
+  const storageKey = telegramExpandStorageKey(key, field);
   const row = button.closest("tr");
   if (!row) return;
 
@@ -2242,18 +2329,26 @@ function toggleTelegramExpand(button) {
     const cell = row.querySelector(`.telegram-msg-cell[data-expand-key="${CSS.escape(key)}"]`);
     if (!cell) return;
     const collapsed = cell.classList.toggle("is-collapsed");
+    cell.classList.toggle("is-expanded", !collapsed);
+    if (collapsed) telegramExpandedFields.delete(storageKey);
+    else telegramExpandedFields.add(storageKey);
     button.textContent = collapsed ? "See more" : "See less";
     return;
   }
 
   if (field === "json") {
-    const preview = row.querySelector(`.telegram-json-preview[data-expand-key="${CSS.escape(key)}"]`);
-    const full = row.querySelector(`.telegram-json-full[data-expand-key="${CSS.escape(key)}"]`);
-    if (!preview || !full) return;
-    const hidden = full.classList.toggle("hidden");
-    preview.classList.toggle("is-collapsed", hidden);
-    preview.classList.toggle("hidden", !hidden);
-    button.textContent = hidden ? "See JSON" : "Hide JSON";
+    const cell = button.closest("td[data-full-json]");
+    if (!cell) return;
+    if (telegramExpandedFields.has(storageKey)) telegramExpandedFields.delete(storageKey);
+    else telegramExpandedFields.add(storageKey);
+    let json = "";
+    try {
+      json = decodeURIComponent(cell.dataset.fullJson || "");
+    } catch (_error) {
+      json = cell.dataset.fullJson || "";
+    }
+    cell.innerHTML = renderTelegramActionJsonCell({ message_id: key }, key, json);
+    cell.dataset.fullJson = encodeURIComponent(json);
   }
 }
 
@@ -2291,13 +2386,13 @@ function renderTelegramConfig(config) {
   }
 }
 
-async function refreshTelegramStatus() {
+async function refreshTelegramStatus({ full = false } = {}) {
   if (!els.telegramLabel) return;
   try {
     const response = await fetch("/api/telegram-signals/status", { cache: "no-store" });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to load Telegram copier status");
-    renderTelegramStatus(data);
+    renderTelegramStatus(data, { full });
   } catch (error) {
     if (els.telegramError) {
       els.telegramError.textContent = error.message;
@@ -2325,7 +2420,7 @@ async function startTelegramSignals() {
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to start Telegram copier");
-    renderTelegramStatus(data);
+    renderTelegramStatus(data, { full: true });
     toast("Telegram copier started", "success");
     await refreshLogs();
   } catch (error) {
@@ -2342,7 +2437,7 @@ async function stopTelegramSignals() {
     const response = await fetch("/api/telegram-signals/stop", { method: "POST" });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to stop Telegram copier");
-    renderTelegramStatus(data);
+    renderTelegramStatus(data, { full: true });
     toast("Telegram copier stopped", "info");
     await refreshLogs();
   } catch (error) {
@@ -2368,7 +2463,7 @@ async function hardCopyTelegramMessage(messageId, button) {
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Hard copy failed");
-    renderTelegramStatus(data);
+    renderTelegramStatus(data, { full: true });
     const status = data.status || data.result?.status || "unknown";
     const accountSummary = formatTelegramAccountResults(data.account_results || data.result?.account_results);
     if (status === "placed" || status === "paper") {
@@ -2397,7 +2492,7 @@ async function clearTelegramMessages() {
     const response = await fetch("/api/telegram-signals/clear-messages", { method: "POST" });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to clear Telegram messages");
-    renderTelegramStatus(data);
+    renderTelegramStatus(data, { full: true });
     toast(
       `Hard cleared ${data.messages_removed || 0} message${data.messages_removed === 1 ? "" : "s"} from database`,
       "success",
@@ -2413,7 +2508,7 @@ async function clearTelegramMessages() {
 function startTelegramPolling() {
   if (currentPage() !== "telegram-signals") return;
   if (telegramTimer) clearInterval(telegramTimer);
-  telegramTimer = setInterval(refreshTelegramStatus, 2000);
+  telegramTimer = setInterval(() => refreshTelegramStatus(), 5000);
 }
 
 function renderConfig(config) {
@@ -3194,6 +3289,17 @@ async function init() {
     const button = event.target.closest(".telegram-channel-remove-btn");
     if (button) removeTelegramChannel(button.dataset.url);
   });
+  els.telegramMessagesByChannel?.addEventListener("pointerdown", () => {
+    telegramUserInteracting = true;
+  });
+  els.telegramMessagesByChannel?.addEventListener("focusin", () => {
+    telegramUserInteracting = true;
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (!els.telegramMessagesByChannel?.contains(event.target)) {
+      telegramUserInteracting = false;
+    }
+  });
   els.telegramMessagesByChannel?.addEventListener("click", (event) => {
     const expandBtn = event.target.closest(".telegram-expand-btn");
     if (expandBtn) {
@@ -3241,7 +3347,7 @@ async function init() {
     void refreshLiveData();
   } else if (page === "telegram-signals") {
     startTelegramPolling();
-    void refreshTelegramStatus();
+    void refreshTelegramStatus({ full: true });
   } else if (page === "live-summary") {
     void loadLiveSummary();
   }

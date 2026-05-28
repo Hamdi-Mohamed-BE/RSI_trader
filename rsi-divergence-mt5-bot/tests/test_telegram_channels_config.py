@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import unittest
 
 from rsi_divergence_bot.config import (
@@ -14,6 +15,7 @@ from rsi_divergence_bot.config import (
     update_telegram_ignore_open_trades,
     update_telegram_settings,
 )
+from rsi_divergence_bot.telegram_signals import TelegramSignalsBot
 
 
 def _config() -> AppConfig:
@@ -73,6 +75,33 @@ class TelegramChannelsConfigTests(unittest.TestCase):
         update_telegram_settings(config, ignore_open_symbol_trades=False, protect_tp=False)
         self.assertFalse(config.telegram_signals.ignore_open_symbol_trades)
         self.assertFalse(config.telegram_signals.protect_tp)
+
+    def test_channel_hash_variants(self) -> None:
+        variants = TelegramSignalsBot._channel_hash_variants("https://web.telegram.org/k/#-1303328644")
+        self.assertIn("-1303328644", variants)
+        self.assertIn("-1001303328644", variants)
+
+    def test_channel_page_on_target_accepts_peer_hash_variants(self) -> None:
+        bot = TelegramSignalsBot(
+            _config(),
+            client=object(),  # type: ignore[arg-type]
+            state=object(),  # type: ignore[arg-type]
+            logger=logging.getLogger("test"),
+        )
+        channel = TelegramChannelConfig(
+            name="PROFIT HACKER",
+            url="https://web.telegram.org/k/#-1303328644",
+            enabled=True,
+        )
+
+        class FakePage:
+            url = "https://web.telegram.org/k/#-1001303328644"
+
+            @staticmethod
+            def is_closed() -> bool:
+                return False
+
+        self.assertTrue(bot._channel_page_on_target(FakePage(), channel))
 
 
 if __name__ == "__main__":
