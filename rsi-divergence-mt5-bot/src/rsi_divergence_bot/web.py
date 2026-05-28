@@ -897,6 +897,8 @@ def create_app(
             result["side"],
             result.get("status"),
         )
+        if result.get("status") == "failed" and not result.get("reason"):
+            result["reason"] = "Order placement failed — check MT5 Experts/Journal for retcode details"
         return {"status": result.get("status", "sent"), **result}
 
     @app.get("/api/auto-run/status")

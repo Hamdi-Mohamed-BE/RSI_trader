@@ -1609,6 +1609,45 @@ textarea {
   border: 1px solid var(--border);
 }
 
+.result-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.manual-trade-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.manual-trade-result-summary {
+  margin: 6px 0 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.result-card.is-failed {
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.result-card.is-failed .manual-trade-result-summary {
+  color: #f87171;
+  font-weight: 600;
+}
+
+.result-card.is-success .manual-trade-result-summary {
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.result-card.is-paper .manual-trade-result-summary {
+  color: #fbbf24;
+  font-weight: 600;
+}
+
 .result-title {
   font-size: 0.78rem;
   text-transform: uppercase;

@@ -3035,22 +3035,122 @@ async function placeManualTrade(event) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, confirm_live: true }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.detail || "Manual trade failed");
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (_error) {
+      data = {};
     }
-    els.manualTradeStatus.textContent = JSON.stringify(data, null, 2);
-    els.manualTradeResult.classList.remove("hidden");
-    const placed = data.tickets?.length || 0;
+    if (!response.ok) {
+      throw new Error(formatApiError(data.detail) || `Manual trade failed (${response.status})`);
+    }
+    renderManualTradeResult(data);
+    const status = String(data.status || "");
+    const placed = data.tickets?.length || (data.ticket ? 1 : 0);
     const failed = data.failed?.length || 0;
-    toast(`Manual trade sent: ${placed} placed, ${failed} failed`, failed ? "error" : "success");
+    if (status === "placed" || status === "paper") {
+      toast(`Manual trade sent: ${placed} placed`, "success");
+    } else {
+      toast(formatManualTradeFailure(data), "error");
+    }
     if (els.manualTradeText) delete els.manualTradeText.dataset.aiParsed;
     await refreshLiveData();
     await refreshLogs();
   } catch (error) {
+    renderManualTradeResult({ status: "failed", reason: error.message });
     toast(error.message, "error");
   } finally {
     setLoading(els.manualTradeBtn, false);
+  }
+}
+
+function clearManualTradeResult() {
+  els.manualTradeResult?.classList.add("hidden");
+  els.manualTradeResult?.classList.remove("is-failed", "is-success", "is-paper");
+  if (els.manualTradeStatus) els.manualTradeStatus.textContent = "";
+  if (els.manualTradeResultSummary) els.manualTradeResultSummary.textContent = "";
+}
+
+function formatManualTradeFailure(data) {
+  if (data?.reason) return String(data.reason);
+  if (Array.isArray(data?.failed) && data.failed.length) {
+    return data.failed.map((item) => item.reason || item.error || JSON.stringify(item)).join("; ");
+  }
+  if (data?.retcode != null) return `MT5 retcode=${data.retcode}`;
+  return "Trade failed — see details below";
+}
+
+function renderManualTradeResult(data) {
+  if (!els.manualTradeResult || !els.manualTradeStatus) return;
+  const status = String(data?.status || "unknown");
+  const isSuccess = status === "placed" || status === "paper";
+  const isFailed = status === "failed" || status === "skipped" || status === "error";
+  els.manualTradeResult.classList.toggle("is-failed", isFailed);
+  els.manualTradeResult.classList.toggle("is-success", isSuccess);
+  els.manualTradeResult.classList.toggle("is-paper", status === "paper");
+  let summary = "";
+  if (data?.quick_test) {
+    summary = isSuccess
+      ? `Quick test OK — ${data.symbol || "EURUSD"} ${String(data.side || "buy").toUpperCase()} @ ${data.entry_price ?? data.entry ?? "market"}`
+      : formatManualTradeFailure(data);
+  } else if (isSuccess) {
+    const tickets = data.tickets?.length || (data.ticket ? 1 : 0);
+    summary = status === "paper"
+      ? `Paper trade OK — ${data.symbol} ${String(data.side || "").toUpperCase()} (${data.lot} lot)`
+      : `Trade placed — ${tickets} ticket(s) on ${data.symbol} ${String(data.side || "").toUpperCase()}`;
+  } else if (isFailed) {
+    summary = formatManualTradeFailure(data);
+  } else {
+    summary = `Status: ${status}`;
+  }
+  if (els.manualTradeResultSummary) els.manualTradeResultSummary.textContent = summary;
+  els.manualTradeStatus.textContent = JSON.stringify(data, null, 2);
+  els.manualTradeResult.classList.remove("hidden");
+}
+
+async function placeManualTradeQuickTest() {
+  const live = isLiveTradingMode();
+  const confirmed = window.confirm(
+    live
+      ? "Place LIVE EURUSD 0.01 BUY test trade? No SL/TP — close manually in MT5. This only checks that orders reach the broker."
+      : "Place paper EURUSD 0.01 BUY test trade?",
+  );
+  if (!confirmed) return;
+
+  setLoading(els.manualTradeQuickTestBtn, true, "Sending test...");
+  try {
+    const response = await fetch("/api/mt5/test-trade", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        symbol: "EURUSD",
+        side: "buy",
+        volume: 0.01,
+        confirm_live: live,
+      }),
+    });
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (_error) {
+      data = {};
+    }
+    if (!response.ok) {
+      throw new Error(formatApiError(data.detail) || `Quick test failed (${response.status})`);
+    }
+    renderManualTradeResult({ ...data, quick_test: true, symbol: data.symbol || "EURUSD", side: data.side || "buy" });
+    if (data.status === "placed" || data.status === "paper") {
+      toast(`Quick test ${data.status}`, "success");
+    } else {
+      toast(formatManualTradeFailure(data), "error");
+    }
+    await refreshLiveData();
+    await refreshLogs();
+  } catch (error) {
+    renderManualTradeResult({ status: "failed", reason: error.message, quick_test: true, symbol: "EURUSD", side: "buy" });
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.manualTradeQuickTestBtn, false);
   }
 }
 
@@ -3220,6 +3320,8 @@ async function init() {
   });
   els.runOnceBtn?.addEventListener("click", runOnce);
   els.manualTradeForm?.addEventListener("submit", placeManualTrade);
+  els.manualTradeQuickTestBtn?.addEventListener("click", placeManualTradeQuickTest);
+  els.manualTradeDismissBtn?.addEventListener("click", clearManualTradeResult);
   initManualTradeImageInput();
   els.liveSummaryForm?.addEventListener("submit", loadLiveSummary);
   els.resetLotsBtn?.addEventListener("click", resetLots);
