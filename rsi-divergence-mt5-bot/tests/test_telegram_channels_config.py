@@ -12,6 +12,7 @@ from rsi_divergence_bot.config import (
     remove_telegram_channel,
     update_telegram_channel,
     update_telegram_ignore_open_trades,
+    update_telegram_settings,
 )
 
 
@@ -65,6 +66,13 @@ class TelegramChannelsConfigTests(unittest.TestCase):
         self.assertTrue(config.telegram_signals.ignore_open_symbol_trades)
         update_telegram_ignore_open_trades(config, ignore_open=False)
         self.assertFalse(config.telegram_signals.ignore_open_symbol_trades)
+
+    def test_update_telegram_settings(self) -> None:
+        config = _config()
+        self.assertTrue(config.telegram_signals.protect_tp)
+        update_telegram_settings(config, ignore_open_symbol_trades=False, protect_tp=False)
+        self.assertFalse(config.telegram_signals.ignore_open_symbol_trades)
+        self.assertFalse(config.telegram_signals.protect_tp)
 
 
 if __name__ == "__main__":

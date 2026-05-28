@@ -77,10 +77,20 @@ class DailyRiskStatusTests(unittest.TestCase):
         client = MagicMock()
         client.account_snapshot.return_value = {"equity": 1000.0, "balance": 1000.0, "floating_pnl": 0.0}
         state = MagicMock()
+        state.read.return_value = {
+            "daily_risk": {
+                "enabled": True,
+                "halted": True,
+                "loss": 1662.17,
+                "loss_limit": 398.95,
+            }
+        }
         risk_cfg = RiskConfig(use_daily_loss_guard=False, max_daily_loss_pct=15.0)
         status = compute_daily_risk_status(client, state, risk_cfg)
         self.assertFalse(status["enabled"])
         self.assertFalse(status["halted"])
+        self.assertEqual(status["loss"], 0.0)
+        state.update_daily_risk.assert_called_once()
         client.net_pnl_since.assert_not_called()
 
 

@@ -53,7 +53,7 @@ def compute_daily_risk_status(
     max_pct = risk_cfg.max_daily_loss_pct
 
     if not risk_cfg.daily_loss_guard_active():
-        return {
+        payload = {
             "enabled": False,
             "halted": False,
             "date": today,
@@ -69,8 +69,11 @@ def compute_daily_risk_status(
             "remaining": 0.0,
             "use_daily_loss_guard": risk_cfg.use_daily_loss_guard,
             "max_daily_loss_pct": max_pct,
+            "halted_at": None,
             "updated_at": now.isoformat(),
         }
+        state.update_daily_risk(payload)
+        return payload
 
     stored = state.read().get("daily_risk", {})
     if stored.get("date") != today:

@@ -204,6 +204,7 @@ class TelegramSignalsConfig(BaseModel):
     gemini_api_key: str | None = None
     gemini_model: str = "gemini-1.5-flash"
     ignore_open_symbol_trades: bool = True
+    protect_tp: bool = True
     max_tps: int = Field(default=5, ge=1, le=8)
     default_lot: float | None = None
     max_message_age_seconds: int = Field(default=300, ge=30, le=3600)
@@ -456,7 +457,19 @@ def add_telegram_channel(
 
 
 def update_telegram_ignore_open_trades(config: AppConfig, *, ignore_open: bool) -> None:
-    config.telegram_signals.ignore_open_symbol_trades = ignore_open
+    update_telegram_settings(config, ignore_open_symbol_trades=ignore_open)
+
+
+def update_telegram_settings(
+    config: AppConfig,
+    *,
+    ignore_open_symbol_trades: bool | None = None,
+    protect_tp: bool | None = None,
+) -> None:
+    if ignore_open_symbol_trades is not None:
+        config.telegram_signals.ignore_open_symbol_trades = ignore_open_symbol_trades
+    if protect_tp is not None:
+        config.telegram_signals.protect_tp = protect_tp
 
 
 def update_telegram_channel(

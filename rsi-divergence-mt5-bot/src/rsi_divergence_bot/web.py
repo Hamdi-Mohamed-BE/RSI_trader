@@ -36,7 +36,7 @@ from .config import (
     update_symbol_timeframes,
     update_symbol_trade_names,
     update_telegram_channel,
-    update_telegram_ignore_open_trades,
+    update_telegram_settings,
 )
 from .config_snapshots import (
     apply_snapshot,
@@ -108,6 +108,7 @@ class TelegramChannelRemoveRequest(BaseModel):
 
 class TelegramSettingsRequest(BaseModel):
     ignore_open_symbol_trades: bool | None = None
+    protect_tp: bool | None = None
     persist: bool = True
 
 
@@ -551,6 +552,7 @@ def create_app(
                     or (config.telegram_signals.gemini_api_key or os.getenv("GEMINI_API_KEY"))
                 ),
                 "ignore_open_symbol_trades": config.telegram_signals.ignore_open_symbol_trades,
+                "protect_tp": config.telegram_signals.protect_tp,
                 "max_tps": config.telegram_signals.max_tps,
                 "default_lot": config.telegram_signals.default_lot,
                 "max_message_age_seconds": config.telegram_signals.max_message_age_seconds,
@@ -985,17 +987,25 @@ def create_app(
 
     @app.patch("/api/telegram-signals/settings")
     def telegram_signals_settings(body: TelegramSettingsRequest) -> dict:
-        if body.ignore_open_symbol_trades is not None:
-            update_telegram_ignore_open_trades(config, ignore_open=body.ignore_open_symbol_trades)
-            if body.persist:
-                save_config(config_path, config)
+        changed = False
+        if body.ignore_open_symbol_trades is not None or body.protect_tp is not None:
+            update_telegram_settings(
+                config,
+                ignore_open_symbol_trades=body.ignore_open_symbol_trades,
+                protect_tp=body.protect_tp,
+            )
+            changed = True
+        if changed and body.persist:
+            save_config(config_path, config)
+        if changed:
             bot.logger.info(
-                "TELEGRAM SETTINGS ignore_open_symbol_trades=%s persist=%s",
+                "TELEGRAM SETTINGS ignore_open_symbol_trades=%s protect_tp=%s persist=%s",
                 config.telegram_signals.ignore_open_symbol_trades,
+                config.telegram_signals.protect_tp,
                 body.persist,
             )
         return {
-            "status": "saved" if body.persist else "applied",
+            "status": "saved" if changed and body.persist else "applied",
             **telegram_bot.status(),
         }
 

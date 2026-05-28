@@ -142,10 +142,25 @@ class SignalBot:
                 status["daily_risk"] = {"error": str(exc), "halted": False}
         else:
             cached = self.state.read().get("daily_risk", {})
-            status["daily_risk"] = cached or {
-                "enabled": self.config.risk.daily_loss_guard_active(),
-                "halted": False,
-            }
+            if not self.config.risk.daily_loss_guard_active():
+                status["daily_risk"] = {
+                    "enabled": False,
+                    "halted": False,
+                    "use_daily_loss_guard": self.config.risk.use_daily_loss_guard,
+                    "max_daily_loss_pct": self.config.risk.max_daily_loss_pct,
+                }
+            else:
+                status["daily_risk"] = cached or {
+                    "enabled": True,
+                    "halted": False,
+                }
+                if status["daily_risk"]:
+                    status["daily_risk"] = {
+                        **status["daily_risk"],
+                        "enabled": True,
+                        "use_daily_loss_guard": self.config.risk.use_daily_loss_guard,
+                        "max_daily_loss_pct": self.config.risk.max_daily_loss_pct,
+                    }
         return status
 
     def daily_risk_status(self) -> dict:

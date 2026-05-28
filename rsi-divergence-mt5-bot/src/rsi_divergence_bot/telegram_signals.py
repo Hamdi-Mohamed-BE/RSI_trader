@@ -423,6 +423,7 @@ class TelegramSignalsBot:
         data["running"] = self.is_running()
         data["poll_seconds"] = self.config.telegram_signals.poll_seconds
         data["ignore_open_symbol_trades"] = self.config.telegram_signals.ignore_open_symbol_trades
+        data["protect_tp"] = self.config.telegram_signals.protect_tp
         data["openai_model"] = self.config.telegram_signals.openai_model
         data["openai_api_key_configured"] = bool(GeminiSignalParser.openai_api_key(self.config))
         data["gemini_model"] = self.config.telegram_signals.gemini_model

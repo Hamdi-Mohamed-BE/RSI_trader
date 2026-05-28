@@ -136,7 +136,6 @@ const els = {
   telegramLast: document.getElementById("telegram-last"),
   telegramProtectTp: document.getElementById("telegram-protect-tp"),
   telegramIgnoreOpen: document.getElementById("telegram-ignore-open"),
-  telegramSettingsPersist: document.getElementById("telegram-settings-persist"),
   telegramSaveBtn: document.getElementById("telegram-save-btn"),
   telegramStartBtn: document.getElementById("telegram-start-btn"),
   telegramStopBtn: document.getElementById("telegram-stop-btn"),
@@ -1486,6 +1485,16 @@ async function onBotSettingsChanged({ silent = true } = {}) {
   }
 }
 
+function isDailyLossGuardEnabled() {
+  if (els.dailyLossGuardEnabled) return Boolean(els.dailyLossGuardEnabled.checked);
+  return botConfig?.risk?.use_daily_loss_guard !== false;
+}
+
+function isDailyLossHalted(dailyRisk) {
+  if (!isDailyLossGuardEnabled()) return false;
+  return Boolean(dailyRisk?.enabled && dailyRisk?.halted);
+}
+
 function renderDailyRiskStatus(dailyRisk) {
   if (!els.dailyRiskStatus) return;
   if (!dailyRisk || dailyRisk.error) {
@@ -1493,7 +1502,7 @@ function renderDailyRiskStatus(dailyRisk) {
     els.dailyRiskStatus.className = "panel-hint field-full";
     return;
   }
-  if (!dailyRisk.enabled) {
+  if (!dailyRisk.enabled || !isDailyLossGuardEnabled()) {
     els.dailyRiskStatus.textContent = "Daily loss guard is off.";
     els.dailyRiskStatus.className = "panel-hint field-full";
     return;
@@ -1559,7 +1568,7 @@ function renderAutoRunStatus(status) {
   if (status.last_error) {
     els.autoRunHint.textContent = `Last error: ${status.last_error}`;
     els.autoRunHint.className = "panel-hint live-warning";
-  } else if (status.daily_risk?.enabled && status.daily_risk?.halted) {
+  } else if (isDailyLossHalted(status.daily_risk)) {
     els.autoRunHint.textContent = `Daily loss guard active: drawdown ${formatLossAmount(status.daily_risk.loss)} reached limit ${formatLossAmount(status.daily_risk.loss_limit)}. New trades are blocked while drawdown stays above the limit.`;
     els.autoRunHint.className = "panel-hint live-warning";
   } else if (!running) {
@@ -1640,6 +1649,7 @@ async function saveBotStrategy({ strategy, persist, silent = false } = {}) {
     }
     if (data.auto_run) renderAutoRunStatus(data.auto_run);
     void refreshDailyRiskStatus();
+    void refreshAutoRunStatus(false);
     if (!silent) {
       toast(saveToConfig ? "Bot settings saved to config.yaml" : "Bot settings applied in memory", "success");
     }
@@ -1783,7 +1793,6 @@ function renderTelegramStatus(status) {
   if (els.telegramLabel) els.telegramLabel.textContent = running ? "Running" : "Stopped";
   if (els.telegramStartBtn) els.telegramStartBtn.disabled = running;
   if (els.telegramStopBtn) els.telegramStopBtn.disabled = !running;
-  if (els.telegramSaveBtn) els.telegramSaveBtn.disabled = running;
   if (els.telegramUpdated) {
     els.telegramUpdated.textContent = `Telegram: ${running ? "watching" : "stopped"}`;
     els.telegramUpdated.classList.toggle("ok", running);
@@ -1886,6 +1895,9 @@ function renderTelegramStatus(status) {
   if (els.telegramIgnoreOpen && status.ignore_open_symbol_trades != null) {
     els.telegramIgnoreOpen.checked = Boolean(status.ignore_open_symbol_trades);
   }
+  if (els.telegramProtectTp && status.protect_tp != null) {
+    els.telegramProtectTp.checked = Boolean(status.protect_tp);
+  }
   if (els.telegramOpenGuard) {
     els.telegramOpenGuard.textContent = status.ignore_open_symbol_trades ? "On" : "Off";
   }
@@ -1977,9 +1989,8 @@ async function updateTelegramChannel(url, patch) {
   return data;
 }
 
-async function saveTelegramSettings({ silent = false, persist } = {}) {
+async function saveTelegramSettings({ silent = false } = {}) {
   if (!els.telegramIgnoreOpen) return null;
-  const saveToConfig = persist ?? Boolean(els.telegramSettingsPersist?.checked);
   setLoading(els.telegramSaveBtn, true);
   try {
     const response = await fetch("/api/telegram-signals/settings", {
@@ -1987,19 +1998,21 @@ async function saveTelegramSettings({ silent = false, persist } = {}) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ignore_open_symbol_trades: Boolean(els.telegramIgnoreOpen.checked),
-        persist: saveToConfig,
+        protect_tp: Boolean(els.telegramProtectTp?.checked),
+        persist: true,
       }),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to save Telegram settings");
     if (botConfig?.telegram_signals) {
       botConfig.telegram_signals.ignore_open_symbol_trades = Boolean(data.ignore_open_symbol_trades);
+      botConfig.telegram_signals.protect_tp = Boolean(data.protect_tp);
     }
     if (els.telegramOpenGuard) {
       els.telegramOpenGuard.textContent = data.ignore_open_symbol_trades ? "On" : "Off";
     }
     if (!silent) {
-      toast(saveToConfig ? "Telegram settings saved to config.yaml" : "Telegram settings applied in memory", "success");
+      toast("Telegram settings saved to config.yaml", "success");
     }
     return data;
   } catch (error) {
@@ -2265,6 +2278,9 @@ function renderTelegramConfig(config) {
   }
   if (els.telegramIgnoreOpen) {
     els.telegramIgnoreOpen.checked = Boolean(telegram.ignore_open_symbol_trades);
+  }
+  if (els.telegramProtectTp) {
+    els.telegramProtectTp.checked = telegram.protect_tp !== false;
   }
   if (els.telegramChannels) {
     els.telegramChannels.textContent = `${(telegram.channels || []).filter((channel) => channel.enabled).length} active / ${(telegram.channels || []).length} total`;
@@ -3139,16 +3155,21 @@ async function init() {
   els.autoRunSaveBtn?.addEventListener("click", () => saveBotStrategy({ silent: false, persist: true }));
   els.autoRunStrategy?.addEventListener("change", () => onBotSettingsChanged());
   els.autoRunSignalAlgorithm?.addEventListener("change", () => onBotSettingsChanged());
-  els.dailyLossGuardEnabled?.addEventListener("change", () => onBotSettingsChanged());
+  els.dailyLossGuardEnabled?.addEventListener("change", () => {
+    onBotSettingsChanged();
+    void refreshAutoRunStatus(false);
+  });
   els.dailyLossGuardPct?.addEventListener("change", () => onBotSettingsChanged());
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
-  els.telegramSaveBtn?.addEventListener("click", () => saveTelegramSettings({ silent: false, persist: true }));
+  els.telegramSaveBtn?.addEventListener("click", () => saveTelegramSettings({ silent: false }));
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
   els.telegramChannelForm?.addEventListener("submit", addTelegramChannel);
-  els.telegramIgnoreOpen?.addEventListener("change", () => {
+  const onTelegramSettingChanged = () => {
     saveTelegramSettings({ silent: true }).catch(() => {});
-  });
+  };
+  els.telegramIgnoreOpen?.addEventListener("change", onTelegramSettingChanged);
+  els.telegramProtectTp?.addEventListener("change", onTelegramSettingChanged);
   els.telegramChannelsBody?.addEventListener("click", async (event) => {
     const enableBtn = event.target.closest(".telegram-channel-enable-btn");
     if (enableBtn) {
