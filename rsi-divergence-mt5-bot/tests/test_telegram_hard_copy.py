@@ -58,3 +58,21 @@ def test_hard_place_rejects_invalid_tps():
     result = bot._place_parsed_signal(parsed, source_id="abc", channel=channel, hard=True)
     assert result["status"] == "skipped"
     assert "TPs no longer valid" in str(result.get("reason"))
+
+
+def test_hard_copy_message_not_found():
+    config = _config()
+    state = MagicMock()
+    state.get_telegram_message.return_value = None
+    bot = TelegramSignalsBot(config, MagicMock(), state, MagicMock())
+    result = bot.hard_copy_message("abc123def456")
+    assert result["status"] == "error"
+    assert "not found in the ledger" in str(result.get("reason"))
+
+
+def test_hard_copy_message_requires_id():
+    config = _config()
+    bot = TelegramSignalsBot(config, MagicMock(), MagicMock(), MagicMock())
+    result = bot.hard_copy_message("   ")
+    assert result["status"] == "error"
+    assert "message_id is required" in str(result.get("reason"))

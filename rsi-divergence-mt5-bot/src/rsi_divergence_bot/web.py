@@ -1016,10 +1016,20 @@ def create_app(
     @app.post("/api/telegram-signals/hard-copy")
     async def telegram_signals_hard_copy(body: TelegramHardCopyRequest) -> dict:
         await require_mt5_ready()
-        result = telegram_bot.hard_copy_message(body.message_id)
-        if result.get("status") == "error":
-            raise HTTPException(status_code=400, detail=str(result.get("reason") or "hard copy failed"))
-        return {**result, **telegram_bot.status()}
+        message_id = body.message_id.strip()
+        if not message_id:
+            raise HTTPException(status_code=400, detail="message_id is required")
+        result = telegram_bot.hard_copy_message(message_id)
+        copy_status = str(result.get("status") or "unknown")
+        reason = str(result.get("reason") or "").strip()
+        if copy_status in {"error", "skipped", "failed"}:
+            detail = reason or {
+                "error": "Hard copy failed",
+                "skipped": "Hard copy skipped",
+                "failed": "Hard copy could not place orders",
+            }.get(copy_status, f"Hard copy {copy_status}")
+            raise HTTPException(status_code=400, detail=detail)
+        return {**telegram_bot.status(), "copy_result": result}
 
     @app.get("/api/telegram-signals/channels")
     def telegram_signals_channels() -> dict:

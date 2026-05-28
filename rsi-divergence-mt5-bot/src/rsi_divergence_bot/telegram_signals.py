@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from .config import AppConfig, SymbolConfig, TelegramChannelConfig
 from .manual_trade import resolve_symbol_for_telegram
@@ -516,44 +516,63 @@ class TelegramSignalsBot:
         return {"status": "cleared", **removed, **self.status()}
 
     def hard_copy_message(self, message_id: str) -> dict:
-        record = self.state.get_telegram_message(message_id)
+        cleaned_id = str(message_id or "").strip()
+        if not cleaned_id:
+            return {"status": "error", "reason": "message_id is required"}
+
+        record = self.state.get_telegram_message(cleaned_id)
         if record is None:
-            return {"status": "error", "reason": "message not found in ledger"}
+            preview = cleaned_id[:12]
+            return {
+                "status": "error",
+                "reason": (
+                    f"Message {preview}… was not found in the ledger. "
+                    "Refresh the page or wait for the copier to sync this chat again."
+                ),
+            }
 
         text = str(record.get("text") or record.get("text_preview") or "").strip()
         if not text:
-            return {"status": "error", "reason": "message has no text to copy"}
+            return {"status": "error", "reason": "Message has no text to copy"}
 
         if _looks_like_breakeven(text):
-            return {"status": "error", "reason": "breakeven commands cannot be hard copied"}
+            return {"status": "error", "reason": "Breakeven/update messages cannot be hard copied"}
 
         channel = self._channel_from_record(record)
         parsed_data = record.get("parsed")
         if isinstance(parsed_data, dict) and parsed_data.get("action") not in {None, "none"}:
-            parsed = ParsedTelegramSignal.model_validate(parsed_data)
+            try:
+                parsed = ParsedTelegramSignal.model_validate(parsed_data)
+            except ValidationError as exc:
+                first = exc.errors()[0] if exc.errors() else {}
+                detail = first.get("msg") or str(exc)
+                return {"status": "error", "reason": f"Stored parse data is invalid: {detail}"}
         else:
             try:
                 parsed = self.parser.parse(text)
             except Exception as exc:  # noqa: BLE001
-                return {"status": "error", "reason": f"parse failed: {exc}"}
+                return {"status": "error", "reason": f"Parse failed: {exc}"}
 
         if parsed.action == "none":
-            return {"status": "error", "reason": "message is not a trade signal"}
+            return {
+                "status": "error",
+                "reason": "Message is not a trade signal (LLM returned action=none)",
+            }
 
-        source_id = f"{message_id}:hard:{int(datetime.now(timezone.utc).timestamp())}"
+        source_id = f"{cleaned_id}:hard:{int(datetime.now(timezone.utc).timestamp())}"
         result = self._place_parsed_signal(
             parsed,
             source_id=source_id,
             channel=channel,
             hard=True,
-            message_id=message_id,
+            message_id=cleaned_id,
             message_key=record.get("message_key"),
         )
         result["hard_copy"] = True
-        result["message_id"] = message_id
+        result["message_id"] = cleaned_id
 
         self._record_message(
-            message_id,
+            cleaned_id,
             str(result.get("status", "unknown")),
             text,
             channel=channel,
@@ -588,7 +607,7 @@ class TelegramSignalsBot:
             self._status.skipped += 1
         self.logger.warning(
             "TELEGRAM HARD COPY message=%s channel=%s status=%s symbol=%s action=%s reason=%s",
-            message_id[:10],
+            cleaned_id[:10],
             channel.name,
             result.get("status"),
             result.get("symbol"),

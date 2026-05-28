@@ -2150,6 +2150,7 @@ function formatLlmResponse(item) {
 }
 
 function canHardCopyTelegramMessage(item) {
+  if (!item?.message_id) return false;
   const text = String(item?.text || item?.text_preview || "").trim();
   if (!text) return false;
   const upper = text.toUpperCase();
@@ -2224,9 +2225,9 @@ function renderTelegramMessageRow(item) {
     ? '<span class="badge badge-muted">Yes</span>'
     : '<span class="badge badge-accent">No</span>';
   const hardCopyEnabled = canHardCopyTelegramMessage(item);
-  const messageId = escapeHtml(String(item.message_id || ""));
+  const messageId = String(item.message_id || "");
   const actionCell = hardCopyEnabled
-    ? `<button type="button" class="btn btn-primary btn-sm telegram-hard-copy-btn" data-message-id="${messageId}" title="Force place at market; only checks TPs vs live price">Hard copy</button>`
+    ? `<button type="button" class="btn btn-primary btn-sm telegram-hard-copy-btn" data-message-id="${escapeHtml(messageId)}" title="Force place at market; only checks TPs vs live price">Hard copy</button>`
     : '<span class="value-neutral">—</span>';
   const messageCell = renderTelegramExpandableText(telegramMessageText(item), rowKey, "message");
   const actionPayload = telegramActionPayload(item);
@@ -2448,7 +2449,10 @@ async function stopTelegramSignals() {
 }
 
 async function hardCopyTelegramMessage(messageId, button) {
-  if (!messageId) return;
+  if (!messageId) {
+    toast("Missing message id for hard copy. Refresh the page and try again.", "error");
+    return;
+  }
   const confirmed = window.confirm(
     "Hard copy this signal and place it at market now? Skips age, dedup, daily guard, and open-trade checks. Only validates TPs against live price.",
   );
@@ -2461,17 +2465,25 @@ async function hardCopyTelegramMessage(messageId, button) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message_id: messageId }),
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.detail || "Hard copy failed");
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (_error) {
+      data = {};
+    }
+    if (!response.ok) {
+      throw new Error(formatApiError(data.detail) || `Hard copy failed (${response.status})`);
+    }
     renderTelegramStatus(data, { full: true });
-    const status = data.status || data.result?.status || "unknown";
-    const accountSummary = formatTelegramAccountResults(data.account_results || data.result?.account_results);
+    const copy = data.copy_result || data;
+    const status = copy.status || "unknown";
+    const accountSummary = formatTelegramAccountResults(copy.account_results || copy.result?.account_results);
     if (status === "placed" || status === "paper") {
-      const legs = data.legs || data.tickets?.length || 1;
-      const base = `Hard copy ${status}: ${data.symbol || ""} ${String(data.action || "").toUpperCase()} (${legs} leg${legs === 1 ? "" : "s"})`.trim();
+      const legs = copy.legs || copy.tickets?.length || 1;
+      const base = `Hard copy ${status}: ${copy.symbol || ""} ${String(copy.action || "").toUpperCase()} (${legs} leg${legs === 1 ? "" : "s"})`.trim();
       toast(accountSummary ? `${base} · ${accountSummary}` : base, "success");
     } else {
-      toast(accountSummary || data.reason || `Hard copy ${status}`, status === "failed" ? "error" : "info");
+      toast(formatApiError(copy.reason) || accountSummary || `Hard copy ${status}`, "info");
     }
     await refreshLogs();
   } catch (error) {
