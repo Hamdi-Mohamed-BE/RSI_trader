@@ -1814,7 +1814,9 @@ function renderDailyRiskStatus(dailyRisk, target = els.dailyRiskStatus) {
     const gain = Number(dailyRisk.gain || Math.max(0, dailyPnl));
     const winTarget = Number(dailyRisk.win_target || 0);
     const winRemaining = Number(dailyRisk.win_remaining ?? Math.max(0, winTarget - gain));
-    parts.push(`gain ${formatLossAmount(gain)} / ${formatLossAmount(winTarget)} (${formatLossAmount(winRemaining)} to goal)`);
+    parts.push(
+      `gain ${formatLossAmount(gain)} / ${formatLossAmount(winTarget)} (${formatLossAmount(winRemaining)} to goal · Start ${formatLossAmount(startEquity)})`,
+    );
   }
 
   let text = parts.join(" · ");
