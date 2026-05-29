@@ -578,7 +578,22 @@
             <span>Max daily loss (% of start-of-day equity)</span>
             <input id="daily-loss-guard-pct" type="number" min="0" max="100" step="0.1" value="15">
           </label>
-          <p id="daily-risk-status" class="panel-hint field-full">Daily loss: loading…</p>
+          <p id="daily-risk-status" class="panel-hint field-full">Daily P/L guard: loading…</p>
+          <label class="toggle field-full">
+            <input id="daily-win-guard-enabled" type="checkbox">
+            <span>Daily win guard — stop new trades once profit from start-of-day balance hits the target</span>
+          </label>
+          <label class="field">
+            <span>Win target mode</span>
+            <select id="daily-win-target-mode">
+              <option value="percent">Percent of start-of-day balance</option>
+              <option value="usd">Fixed USD amount</option>
+            </select>
+          </label>
+          <label class="field">
+            <span id="daily-win-target-label">Daily win target</span>
+            <input id="daily-win-target-value" type="number" min="0" step="0.01" value="5">
+          </label>
         </div>
         <div class="control-row">
           <button id="auto-run-save-btn" class="btn btn-secondary" type="button">
@@ -803,9 +818,24 @@
             <span>Max daily loss (% of intraday peak equity)</span>
             <input id="telegram-daily-loss-guard-pct" type="number" min="0" max="100" step="0.1" value="15">
           </label>
-          <p id="telegram-daily-risk-status" class="panel-hint field-full">Daily loss: loading…</p>
+          <p id="telegram-daily-risk-status" class="panel-hint field-full">Daily P/L guard: loading…</p>
+          <label class="toggle field-full">
+            <input id="telegram-daily-win-guard-enabled" type="checkbox">
+            <span>Daily win guard — stop new trades once profit from start-of-day balance hits the target</span>
+          </label>
+          <label class="field">
+            <span>Win target mode</span>
+            <select id="telegram-daily-win-target-mode">
+              <option value="percent">Percent of start-of-day balance</option>
+              <option value="usd">Fixed USD amount</option>
+            </select>
+          </label>
+          <label class="field">
+            <span id="telegram-daily-win-target-label">Daily win target</span>
+            <input id="telegram-daily-win-target-value" type="number" min="0" step="0.01" value="5">
+          </label>
           <p class="panel-hint field-full">
-            Daily loss guard applies to Telegram copies and live bot trades. Changes are saved to config.yaml when you click Save Telegram settings, toggle options above, or adjust daily loss controls.
+            Daily loss and win guards apply to Telegram copies and live bot trades. Gains are measured from the start-of-day balance and reset each UTC day. Changes save to config.yaml when you adjust controls or click Save.
           </p>
         </div>
 
@@ -962,6 +992,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=67" defer></script>
+  <script src="/static/js/app.js?v=68" defer></script>
 </body>
 </html>

@@ -88,6 +88,41 @@ class DailyRiskStatusTests(unittest.TestCase):
         self.assertEqual(status["loss_limit"], 270.0)
         self.assertTrue(status["halted"])
 
+    def test_daily_win_guard_halts_from_start_of_day_gain(self) -> None:
+        client = MagicMock()
+        client.account_snapshot.return_value = {
+            "equity": 1150.0,
+            "balance": 1150.0,
+            "floating_pnl": 0.0,
+        }
+        state = MagicMock()
+        state.read.return_value = {
+            "daily_risk": {
+                "date": "2026-05-27",
+                "start_equity": 1000.0,
+                "created_at": "2026-05-27T00:05:00+00:00",
+            }
+        }
+        risk_cfg = RiskConfig(
+            use_daily_loss_guard=False,
+            use_daily_win_guard=True,
+            daily_win_target_mode="percent",
+            max_daily_win_pct=10.0,
+        )
+
+        with unittest.mock.patch(
+            "rsi_divergence_bot.daily_risk.datetime",
+            wraps=datetime,
+        ) as dt_mock:
+            dt_mock.now.return_value = datetime(2026, 5, 27, 16, 0, tzinfo=timezone.utc)
+            status = compute_daily_risk_status(client, state, risk_cfg)
+
+        self.assertEqual(status["gain"], 150.0)
+        self.assertEqual(status["win_target"], 100.0)
+        self.assertTrue(status["win_halted"])
+        self.assertEqual(status["halt_reason"], "win")
+        self.assertTrue(status["halted"])
+
     def test_midday_restart_reconstructs_from_closed_deals(self) -> None:
         client = MagicMock()
         client.net_pnl_since.return_value = -150.0
@@ -115,7 +150,7 @@ class DailyRiskStatusTests(unittest.TestCase):
                 "loss_limit": 398.95,
             }
         }
-        risk_cfg = RiskConfig(use_daily_loss_guard=False, max_daily_loss_pct=15.0)
+        risk_cfg = RiskConfig(use_daily_loss_guard=False, use_daily_win_guard=False, max_daily_loss_pct=15.0)
         status = compute_daily_risk_status(client, state, risk_cfg)
         self.assertFalse(status["enabled"])
         self.assertFalse(status["halted"])

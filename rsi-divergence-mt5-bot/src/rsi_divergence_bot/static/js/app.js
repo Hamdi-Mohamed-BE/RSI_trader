@@ -122,9 +122,17 @@ const els = {
   dailyLossGuardEnabled: document.getElementById("daily-loss-guard-enabled"),
   dailyLossGuardPct: document.getElementById("daily-loss-guard-pct"),
   dailyRiskStatus: document.getElementById("daily-risk-status"),
+  dailyWinGuardEnabled: document.getElementById("daily-win-guard-enabled"),
+  dailyWinTargetMode: document.getElementById("daily-win-target-mode"),
+  dailyWinTargetValue: document.getElementById("daily-win-target-value"),
+  dailyWinTargetLabel: document.getElementById("daily-win-target-label"),
   telegramDailyLossGuardEnabled: document.getElementById("telegram-daily-loss-guard-enabled"),
   telegramDailyLossGuardPct: document.getElementById("telegram-daily-loss-guard-pct"),
   telegramDailyRiskStatus: document.getElementById("telegram-daily-risk-status"),
+  telegramDailyWinGuardEnabled: document.getElementById("telegram-daily-win-guard-enabled"),
+  telegramDailyWinTargetMode: document.getElementById("telegram-daily-win-target-mode"),
+  telegramDailyWinTargetValue: document.getElementById("telegram-daily-win-target-value"),
+  telegramDailyWinTargetLabel: document.getElementById("telegram-daily-win-target-label"),
   liveUpdated: document.getElementById("live-updated"),
   liveError: document.getElementById("live-error"),
   acctBalance: document.getElementById("acct-balance"),
@@ -1652,8 +1660,83 @@ function mirrorDailyLossControls(source) {
   });
 }
 
+function dailyWinTargetLabelForMode(mode) {
+  return mode === "usd" ? "Daily win target (USD)" : "Daily win target (% of start-of-day balance)";
+}
+
+function updateDailyWinTargetLabels(mode = dailyWinTargetModeFromUi()) {
+  const label = dailyWinTargetLabelForMode(mode);
+  if (els.dailyWinTargetLabel) els.dailyWinTargetLabel.textContent = label;
+  if (els.telegramDailyWinTargetLabel) els.telegramDailyWinTargetLabel.textContent = label;
+}
+
+function dailyWinTargetModeFromUi() {
+  const liveMode = els.dailyWinTargetMode?.value;
+  if (liveMode) return liveMode;
+  const telegramMode = els.telegramDailyWinTargetMode?.value;
+  if (telegramMode) return telegramMode;
+  return botConfig?.risk?.daily_win_target_mode || "percent";
+}
+
+function dailyWinGuardEnabledFromUi() {
+  if (els.dailyWinGuardEnabled) return Boolean(els.dailyWinGuardEnabled.checked);
+  if (els.telegramDailyWinGuardEnabled) return Boolean(els.telegramDailyWinGuardEnabled.checked);
+  return Boolean(botConfig?.risk?.use_daily_win_guard);
+}
+
+function dailyWinTargetValueFromUi() {
+  const raw = Number(els.dailyWinTargetValue?.value ?? els.telegramDailyWinTargetValue?.value);
+  if (Number.isFinite(raw)) return raw;
+  const risk = botConfig?.risk || {};
+  if ((risk.daily_win_target_mode || "percent") === "usd") {
+    return Number(risk.max_daily_win_usd ?? 0);
+  }
+  return Number(risk.max_daily_win_pct ?? 0);
+}
+
+function syncDailyWinControlValues({ enabled, mode, value }) {
+  const normalizedMode = mode || "percent";
+  if (els.dailyWinGuardEnabled && enabled != null) els.dailyWinGuardEnabled.checked = Boolean(enabled);
+  if (els.telegramDailyWinGuardEnabled && enabled != null) {
+    els.telegramDailyWinGuardEnabled.checked = Boolean(enabled);
+  }
+  if (els.dailyWinTargetMode && mode != null) els.dailyWinTargetMode.value = normalizedMode;
+  if (els.telegramDailyWinTargetMode && mode != null) els.telegramDailyWinTargetMode.value = normalizedMode;
+  if (els.dailyWinTargetValue && value != null) els.dailyWinTargetValue.value = value;
+  if (els.telegramDailyWinTargetValue && value != null) els.telegramDailyWinTargetValue.value = value;
+  updateDailyWinTargetLabels(normalizedMode);
+}
+
+function collectDailyWinSettings() {
+  const mode = dailyWinTargetModeFromUi();
+  const value = dailyWinTargetValueFromUi();
+  return {
+    use_daily_win_guard: dailyWinGuardEnabledFromUi(),
+    daily_win_target_mode: mode,
+    max_daily_win_pct: mode === "percent" ? value : null,
+    max_daily_win_usd: mode === "usd" ? value : null,
+  };
+}
+
+function mirrorDailyWinControls(source) {
+  if (source === "live") {
+    syncDailyWinControlValues({
+      enabled: els.dailyWinGuardEnabled?.checked,
+      mode: els.dailyWinTargetMode?.value,
+      value: Number(els.dailyWinTargetValue?.value),
+    });
+    return;
+  }
+  syncDailyWinControlValues({
+    enabled: els.telegramDailyWinGuardEnabled?.checked,
+    mode: els.telegramDailyWinTargetMode?.value,
+    value: Number(els.telegramDailyWinTargetValue?.value),
+  });
+}
+
 async function onDailyLossSettingsChanged(source = "live") {
   mirrorDailyLossControls(source);
+  mirrorDailyWinControls(source);
   try {
     await saveBotStrategy({ silent: true, persist: true });
   } catch (error) {
@@ -1696,39 +1779,52 @@ function syncDailyLossControlValues({ enabled, pct }) {
   }
 }
 
-function isDailyLossHalted(dailyRisk) {
-  if (!isDailyLossGuardEnabled()) return false;
-  return Boolean(dailyRisk?.enabled && dailyRisk?.halted);
+function isDailyGuardHalted(dailyRisk) {
+  return Boolean(dailyRisk?.halted);
 }
 
 function renderDailyRiskStatus(dailyRisk, target = els.dailyRiskStatus) {
   if (!target) return;
   if (!dailyRisk || dailyRisk.error) {
-    target.textContent = dailyRisk?.error ? `Daily loss unavailable: ${dailyRisk.error}` : "Daily loss: —";
+    target.textContent = dailyRisk?.error ? `Daily P/L guard unavailable: ${dailyRisk.error}` : "Daily P/L guard: —";
     target.className = "panel-hint field-full";
     return;
   }
-  if (!dailyRisk.enabled || !isDailyLossGuardEnabled()) {
-    target.textContent = "Daily loss guard is off.";
+
+  const lossOn = Boolean(dailyRisk.loss_guard_enabled ?? dailyRisk.use_daily_loss_guard);
+  const winOn = Boolean(dailyRisk.win_guard_enabled ?? dailyRisk.use_daily_win_guard);
+  if (!lossOn && !winOn) {
+    target.textContent = "Daily loss and win guards are off.";
     target.className = "panel-hint field-full";
     return;
   }
 
   const startEquity = dailyRisk.start_equity ?? dailyRisk.start_balance ?? 0;
   const peakEquity = dailyRisk.peak_equity ?? startEquity;
-  const loss = Number(dailyRisk.loss || 0);
-  const limit = Number(dailyRisk.loss_limit || 0);
-  const remaining = Number(dailyRisk.remaining ?? Math.max(0, limit - loss));
-  const pctUsed = Number(dailyRisk.loss_pct || 0);
-  const maxPct = Number(dailyRisk.max_daily_loss_pct || 0);
   const dailyPnl = Number(dailyRisk.daily_pnl || 0);
-  const pnlText = dailyPnl >= 0 ? `day P/L ${formatMoney(dailyPnl)}` : `day P/L ${formatMoney(dailyPnl)}`;
+  const parts = [`Start ${formatLossAmount(startEquity)}`, `day P/L ${formatMoney(dailyPnl)}`];
 
-  target.textContent =
-    `Peak equity ${formatLossAmount(peakEquity)} · ${pnlText} · drawdown ${formatLossAmount(loss)} / ${formatLossAmount(limit)} (${pctUsed.toFixed(1)}% of ${maxPct}% limit · ${formatLossAmount(remaining)} left)`;
-  target.className = dailyRisk.halted
-    ? "panel-hint field-full live-warning"
-    : "panel-hint field-full";
+  if (lossOn) {
+    const loss = Number(dailyRisk.loss || 0);
+    const limit = Number(dailyRisk.loss_limit || 0);
+    const remaining = Number(dailyRisk.loss_remaining ?? dailyRisk.remaining ?? Math.max(0, limit - loss));
+    parts.push(`drawdown ${formatLossAmount(loss)} / ${formatLossAmount(limit)} (${formatLossAmount(remaining)} left)`);
+  }
+  if (winOn) {
+    const gain = Number(dailyRisk.gain || Math.max(0, dailyPnl));
+    const winTarget = Number(dailyRisk.win_target || 0);
+    const winRemaining = Number(dailyRisk.win_remaining ?? Math.max(0, winTarget - gain));
+    parts.push(`gain ${formatLossAmount(gain)} / ${formatLossAmount(winTarget)} (${formatLossAmount(winRemaining)} to goal)`);
+  }
+
+  let text = parts.join(" · ");
+  if (dailyRisk.halted) {
+    text = dailyRisk.halt_reason === "win"
+      ? `Daily win target reached. ${text}`
+      : `Daily loss limit reached. ${text}`;
+  }
+  target.textContent = text;
+  target.className = dailyRisk.halted ? "panel-hint field-full live-warning" : "panel-hint field-full";
 }
 
 function renderDailyRiskStatuses(dailyRisk) {
@@ -1740,6 +1836,15 @@ function syncDailyRiskSettings(configLike = botConfig) {
   syncDailyLossControlValues({
     enabled: configLike?.risk?.use_daily_loss_guard !== false,
     pct: configLike?.risk?.max_daily_loss_pct ?? 15,
+  });
+  const winMode = configLike?.risk?.daily_win_target_mode || "percent";
+  const winValue = winMode === "usd"
+    ? configLike?.risk?.max_daily_win_usd ?? 100
+    : configLike?.risk?.max_daily_win_pct ?? 5;
+  syncDailyWinControlValues({
+    enabled: Boolean(configLike?.risk?.use_daily_win_guard),
+    mode: winMode,
+    value: winValue,
   });
 }
 
@@ -1778,8 +1883,12 @@ function renderAutoRunStatus(status) {
   if (status.last_error) {
     els.autoRunHint.textContent = `Last error: ${status.last_error}`;
     els.autoRunHint.className = "panel-hint live-warning";
-  } else if (isDailyLossHalted(status.daily_risk)) {
-    els.autoRunHint.textContent = `Daily loss guard active: drawdown ${formatLossAmount(status.daily_risk.loss)} reached limit ${formatLossAmount(status.daily_risk.loss_limit)}. New trades are blocked while drawdown stays above the limit.`;
+  } else if (isDailyGuardHalted(status.daily_risk)) {
+    if (status.daily_risk?.halt_reason === "win") {
+      els.autoRunHint.textContent = `Daily win guard active: gain ${formatLossAmount(status.daily_risk.gain)} reached target ${formatLossAmount(status.daily_risk.win_target)}. New trades are blocked for the rest of the UTC day.`;
+    } else {
+      els.autoRunHint.textContent = `Daily loss guard active: drawdown ${formatLossAmount(status.daily_risk.loss)} reached limit ${formatLossAmount(status.daily_risk.loss_limit)}. New trades are blocked for the rest of the UTC day.`;
+    }
     els.autoRunHint.className = "panel-hint live-warning";
   } else if (!running) {
     const strategyText = formatStrategy(displayStrategy);
@@ -1843,6 +1952,7 @@ async function saveBotStrategy({ strategy, persist, silent = false } = {}) {
         signal_algorithm: els.autoRunSignalAlgorithm?.value || botConfig?.bot?.signal_algorithm,
         use_daily_loss_guard: dailyLossGuardEnabledFromUi(),
         max_daily_loss_pct: dailyLossGuardPctFromUi(),
+        ...collectDailyWinSettings(),
         persist: saveToConfig,
       }),
     });
@@ -3578,8 +3688,14 @@ async function init() {
   els.autoRunSignalAlgorithm?.addEventListener("change", () => onBotSettingsChanged());
   els.dailyLossGuardEnabled?.addEventListener("change", () => onDailyLossSettingsChanged("live"));
   els.dailyLossGuardPct?.addEventListener("change", () => onDailyLossSettingsChanged("live"));
+  els.dailyWinGuardEnabled?.addEventListener("change", () => onDailyLossSettingsChanged("live"));
+  els.dailyWinTargetMode?.addEventListener("change", () => onDailyLossSettingsChanged("live"));
+  els.dailyWinTargetValue?.addEventListener("change", () => onDailyLossSettingsChanged("live"));
   els.telegramDailyLossGuardEnabled?.addEventListener("change", () => onDailyLossSettingsChanged("telegram"));
   els.telegramDailyLossGuardPct?.addEventListener("change", () => onDailyLossSettingsChanged("telegram"));
+  els.telegramDailyWinGuardEnabled?.addEventListener("change", () => onDailyLossSettingsChanged("telegram"));
+  els.telegramDailyWinTargetMode?.addEventListener("change", () => onDailyLossSettingsChanged("telegram"));
+  els.telegramDailyWinTargetValue?.addEventListener("change", () => onDailyLossSettingsChanged("telegram"));
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
   els.telegramSaveBtn?.addEventListener("click", () => saveTelegramSettings({ silent: false }));

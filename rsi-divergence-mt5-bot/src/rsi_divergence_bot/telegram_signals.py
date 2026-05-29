@@ -35,7 +35,6 @@ from .telegram_html_parser import (
 )
 
 TelegramAction = Literal["buy", "sell", "buy_limit", "sell_limit", "buy_stop", "sell_stop", "none"]
-COMMENT_PREFIX = "signal bot"
 
 
 class BrowserSessionError(RuntimeError):
@@ -1551,8 +1550,16 @@ class TelegramSignalsBot:
     ) -> dict:
         if not hard and self.daily_risk_status:
             daily = self.daily_risk_status()
-            if daily.get("enabled") and daily.get("halted"):
-                return {"status": "skipped", "channel": channel.name, "reason": "daily loss guard is active", "daily_risk": daily}
+            if daily.get("halted"):
+                if daily.get("halt_reason") == "win":
+                    reason = (
+                        "daily win guard is active: "
+                        f"gain ${float(daily.get('gain', 0.0) or 0.0):.2f} reached target "
+                        f"${float(daily.get('win_target', 0.0) or 0.0):.2f}"
+                    )
+                else:
+                    reason = "daily loss guard is active"
+                return {"status": "skipped", "channel": channel.name, "reason": reason, "daily_risk": daily}
 
         if not parsed.symbol:
             return {"status": "skipped", "channel": channel.name, "reason": "missing symbol"}
@@ -1714,7 +1721,7 @@ class TelegramSignalsBot:
                 "telegram_message_key": message_key,
                 "sl_synthetic": sl_is_synthetic,
             },
-            comment=f"{COMMENT_PREFIX} signal",
+            comment=f"TG - {(channel.name or 'Telegram').strip()}"[:31],
         )
 
         if result.get("status") == "placed":

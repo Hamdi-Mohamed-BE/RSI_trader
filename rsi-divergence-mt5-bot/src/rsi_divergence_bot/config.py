@@ -43,6 +43,7 @@ StrategyMode = Literal[
 ]
 TradeDecisionProfile = Literal["safe", "balanced", "backtest"]
 Confirmation = Literal["off", "ema", "trend_guard", "rsi_extreme", "strict"]
+DailyWinTargetMode = Literal["percent", "usd"]
 MT5Mode = Literal["native_windows", "linux_bridge"]
 MT5Transport = Literal["tcp", "stdio"]
 SignalAlgorithm = Literal["rsi_divergence", "silver_optimized", "forex_trade"]
@@ -180,6 +181,10 @@ class RiskConfig(BaseModel):
     default_forex_lot: float = Field(default=0.25, gt=0)
     use_daily_loss_guard: bool = True
     max_daily_loss_pct: float | None = Field(default=15.0, ge=0)
+    use_daily_win_guard: bool = False
+    daily_win_target_mode: DailyWinTargetMode = "percent"
+    max_daily_win_pct: float | None = Field(default=None, ge=0)
+    max_daily_win_usd: float | None = Field(default=None, ge=0)
     max_extension_atr: float = 1.8
     max_spread_atr: float = 0.35
     max_live_entry_drift_risk: float | None = Field(default=0.35, ge=0)
@@ -202,6 +207,22 @@ class RiskConfig(BaseModel):
         if not self.daily_loss_guard_active():
             return None
         return self.max_daily_loss_pct
+
+    def daily_win_guard_active(self) -> bool:
+        if not self.use_daily_win_guard:
+            return False
+        if self.daily_win_target_mode == "usd":
+            return self.max_daily_win_usd is not None and self.max_daily_win_usd > 0
+        return self.max_daily_win_pct is not None and self.max_daily_win_pct > 0
+
+    def effective_daily_win_target_usd(self, start_equity: float) -> float | None:
+        if not self.daily_win_guard_active():
+            return None
+        if self.daily_win_target_mode == "usd":
+            return round(float(self.max_daily_win_usd), 2)
+        if start_equity <= 0:
+            return None
+        return round(start_equity * float(self.max_daily_win_pct) / 100.0, 2)
 
 
 class WebConfig(BaseModel):

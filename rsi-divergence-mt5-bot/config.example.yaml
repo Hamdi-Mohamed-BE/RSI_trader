@@ -54,6 +54,10 @@ risk:
   # default_forex_lot is also editable in Settings UI; used for Telegram auto-registered forex pairs.
   use_daily_loss_guard: true
   max_daily_loss_pct: 15.0
+  use_daily_win_guard: false
+  daily_win_target_mode: percent
+  max_daily_win_pct: 5.0
+  max_daily_win_usd: null
   max_extension_atr: 1.8
   max_spread_atr: 0.35
   max_live_entry_drift_risk: 0.35

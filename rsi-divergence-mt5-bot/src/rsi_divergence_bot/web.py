@@ -118,6 +118,10 @@ class BotSettingsRequest(BaseModel):
     signal_algorithm: str | None = None
     use_daily_loss_guard: bool | None = None
     max_daily_loss_pct: float | None = Field(default=None, ge=0)
+    use_daily_win_guard: bool | None = None
+    daily_win_target_mode: str | None = None
+    max_daily_win_pct: float | None = Field(default=None, ge=0)
+    max_daily_win_usd: float | None = Field(default=None, ge=0)
     persist: bool = True
 
 
@@ -727,7 +731,30 @@ def create_app(
             config.risk.use_daily_loss_guard = body.use_daily_loss_guard
         if body.max_daily_loss_pct is not None:
             config.risk.max_daily_loss_pct = body.max_daily_loss_pct
-        if body.persist and (body.use_daily_loss_guard is not None or body.max_daily_loss_pct is not None):
+        if body.use_daily_win_guard is not None:
+            config.risk.use_daily_win_guard = body.use_daily_win_guard
+        if body.daily_win_target_mode is not None:
+            config.risk.daily_win_target_mode = body.daily_win_target_mode  # type: ignore[assignment]
+            if body.daily_win_target_mode == "percent":
+                config.risk.max_daily_win_usd = None
+            elif body.daily_win_target_mode == "usd":
+                config.risk.max_daily_win_pct = None
+        if body.max_daily_win_pct is not None:
+            config.risk.max_daily_win_pct = body.max_daily_win_pct
+        if body.max_daily_win_usd is not None:
+            config.risk.max_daily_win_usd = body.max_daily_win_usd
+        risk_changed = any(
+            value is not None
+            for value in (
+                body.use_daily_loss_guard,
+                body.max_daily_loss_pct,
+                body.use_daily_win_guard,
+                body.daily_win_target_mode,
+                body.max_daily_win_pct,
+                body.max_daily_win_usd,
+            )
+        )
+        if body.persist and risk_changed:
             save_config(config_path, config)
         return {
             "status": "saved" if body.persist else "applied",
@@ -889,14 +916,18 @@ def create_app(
             await require_mt5_ready()
             plan = parse_manual_trade(body.text, config)
             daily_risk = await asyncio.to_thread(bot.daily_risk_status)
-            if daily_risk.get("enabled") and daily_risk.get("halted"):
-                raise HTTPException(
-                    status_code=409,
-                    detail=(
+            if daily_risk.get("halted"):
+                if daily_risk.get("halt_reason") == "win":
+                    detail = (
+                        "Daily win guard is active. "
+                        f"Gain {daily_risk.get('gain')} reached target {daily_risk.get('win_target')}."
+                    )
+                else:
+                    detail = (
                         "Daily loss guard is active. "
                         f"Loss {daily_risk.get('loss')} reached limit {daily_risk.get('loss_limit')}."
-                    ),
-                )
+                    )
+                raise HTTPException(status_code=409, detail=detail)
             bot.logger.warning(
                 "MANUAL LIVE TRADE requested symbol=%s side=%s lot=%s sl=%s tps=%s",
                 plan.symbol,

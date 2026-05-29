@@ -115,14 +115,24 @@ class SignalBot:
         summary.daily_loss = float(daily_risk.get("loss", 0.0) or 0.0)
         summary.daily_loss_limit = float(daily_risk.get("loss_limit", 0.0) or 0.0)
         if summary.daily_halted:
-            self.logger.warning(
-                "DAILY LOSS HALT active date=%s loss=%.2f limit=%.2f peak_equity=%.2f equity=%.2f; no new trades today",
-                daily_risk.get("date"),
-                summary.daily_loss,
-                summary.daily_loss_limit,
-                float(daily_risk.get("peak_equity", daily_risk.get("start_balance", 0.0)) or 0.0),
-                float(daily_risk.get("equity", 0.0) or 0.0),
-            )
+            if daily_risk.get("win_halted"):
+                self.logger.warning(
+                    "DAILY WIN HALT active date=%s gain=%.2f target=%.2f start_equity=%.2f equity=%.2f; no new trades today",
+                    daily_risk.get("date"),
+                    float(daily_risk.get("gain", 0.0) or 0.0),
+                    float(daily_risk.get("win_target", 0.0) or 0.0),
+                    float(daily_risk.get("start_equity", 0.0) or 0.0),
+                    float(daily_risk.get("equity", 0.0) or 0.0),
+                )
+            else:
+                self.logger.warning(
+                    "DAILY LOSS HALT active date=%s loss=%.2f limit=%.2f peak_equity=%.2f equity=%.2f; no new trades today",
+                    daily_risk.get("date"),
+                    summary.daily_loss,
+                    summary.daily_loss_limit,
+                    float(daily_risk.get("peak_equity", daily_risk.get("start_balance", 0.0)) or 0.0),
+                    float(daily_risk.get("equity", 0.0) or 0.0),
+                )
             return summary
 
         for symbol_cfg in self.config.enabled_symbols:
@@ -173,12 +183,16 @@ class SignalBot:
                 status["daily_risk"] = {"error": str(exc), "halted": False}
         else:
             cached = self.state.read().get("daily_risk", {})
-            if not self.config.risk.daily_loss_guard_active():
+            if not self.config.risk.daily_loss_guard_active() and not self.config.risk.daily_win_guard_active():
                 status["daily_risk"] = {
                     "enabled": False,
                     "halted": False,
                     "use_daily_loss_guard": self.config.risk.use_daily_loss_guard,
                     "max_daily_loss_pct": self.config.risk.max_daily_loss_pct,
+                    "use_daily_win_guard": self.config.risk.use_daily_win_guard,
+                    "daily_win_target_mode": self.config.risk.daily_win_target_mode,
+                    "max_daily_win_pct": self.config.risk.max_daily_win_pct,
+                    "max_daily_win_usd": self.config.risk.max_daily_win_usd,
                 }
             else:
                 status["daily_risk"] = cached or {
@@ -191,6 +205,10 @@ class SignalBot:
                         "enabled": True,
                         "use_daily_loss_guard": self.config.risk.use_daily_loss_guard,
                         "max_daily_loss_pct": self.config.risk.max_daily_loss_pct,
+                        "use_daily_win_guard": self.config.risk.use_daily_win_guard,
+                        "daily_win_target_mode": self.config.risk.daily_win_target_mode,
+                        "max_daily_win_pct": self.config.risk.max_daily_win_pct,
+                        "max_daily_win_usd": self.config.risk.max_daily_win_usd,
                     }
         return status
 
