@@ -121,18 +121,22 @@ const els = {
   autoRunHint: document.getElementById("auto-run-hint"),
   dailyLossGuardEnabled: document.getElementById("daily-loss-guard-enabled"),
   dailyLossGuardPct: document.getElementById("daily-loss-guard-pct"),
-  dailyRiskStatus: document.getElementById("daily-risk-status"),
+  dailyLossStatus: document.getElementById("daily-loss-status"),
   dailyWinGuardEnabled: document.getElementById("daily-win-guard-enabled"),
   dailyWinTargetMode: document.getElementById("daily-win-target-mode"),
   dailyWinTargetValue: document.getElementById("daily-win-target-value"),
   dailyWinTargetLabel: document.getElementById("daily-win-target-label"),
+  dailyWinStatus: document.getElementById("daily-win-status"),
+  dailyGuardResetClock: document.getElementById("daily-guard-reset-clock"),
   telegramDailyLossGuardEnabled: document.getElementById("telegram-daily-loss-guard-enabled"),
   telegramDailyLossGuardPct: document.getElementById("telegram-daily-loss-guard-pct"),
-  telegramDailyRiskStatus: document.getElementById("telegram-daily-risk-status"),
+  telegramDailyLossStatus: document.getElementById("telegram-daily-loss-status"),
   telegramDailyWinGuardEnabled: document.getElementById("telegram-daily-win-guard-enabled"),
   telegramDailyWinTargetMode: document.getElementById("telegram-daily-win-target-mode"),
   telegramDailyWinTargetValue: document.getElementById("telegram-daily-win-target-value"),
   telegramDailyWinTargetLabel: document.getElementById("telegram-daily-win-target-label"),
+  telegramDailyWinStatus: document.getElementById("telegram-daily-win-status"),
+  telegramDailyGuardResetClock: document.getElementById("telegram-daily-guard-reset-clock"),
   liveUpdated: document.getElementById("live-updated"),
   liveError: document.getElementById("live-error"),
   acctBalance: document.getElementById("acct-balance"),
@@ -1783,55 +1787,225 @@ function isDailyGuardHalted(dailyRisk) {
   return Boolean(dailyRisk?.halted);
 }
 
-function renderDailyRiskStatus(dailyRisk, target = els.dailyRiskStatus) {
+let dailyGuardClockTimer = null;
+let lastUtcDayKey = null;
+
+function utcDayKey(date = new Date()) {
+  return date.toISOString().slice(0, 10);
+}
+
+function formatUtcDateTime(date, { includeSeconds = true } = {}) {
+  const datePart = date.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  const timePart = date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: includeSeconds ? "2-digit" : undefined,
+    hour12: false,
+    timeZone: "UTC",
+  });
+  return `${datePart} · ${timePart} UTC`;
+}
+
+function utcMidnightCountdown(now = new Date()) {
+  const resetAt = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0));
+  const totalSec = Math.max(0, Math.floor((resetAt - now) / 1000));
+  return {
+    resetAt,
+    hours: Math.floor(totalSec / 3600),
+    minutes: Math.floor((totalSec % 3600) / 60),
+    seconds: totalSec % 60,
+  };
+}
+
+function formatUtcCountdown({ hours, minutes, seconds }) {
+  const pad = (value) => String(value).padStart(2, "0");
+  if (hours > 0) return `${hours}h ${pad(minutes)}m ${pad(seconds)}s`;
+  if (minutes > 0) return `${minutes}m ${pad(seconds)}s`;
+  return `${seconds}s`;
+}
+
+function formatUtcResetAt(date) {
+  const datePart = date.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  return `00:00:00 UTC (${datePart})`;
+}
+
+function dailyGuardResetClockTargets() {
+  return [els.dailyGuardResetClock, els.telegramDailyGuardResetClock].filter(Boolean);
+}
+
+function renderDailyGuardResetClock() {
+  const targets = dailyGuardResetClockTargets();
+  if (!targets.length) return;
+
+  const now = new Date();
+  const dayKey = utcDayKey(now);
+  const countdown = utcMidnightCountdown(now);
+  const resetLabel = formatUtcResetAt(countdown.resetAt);
+
+  if (lastUtcDayKey && lastUtcDayKey !== dayKey) {
+    void refreshDailyRiskStatus();
+  }
+  lastUtcDayKey = dayKey;
+
+  const html = `
+    <div class="daily-guard-reset-clock-head">
+      <span class="daily-guard-reset-clock-title">UTC day clock</span>
+      <span class="daily-guard-reset-clock-live">${escapeHtml(formatUtcDateTime(now))}</span>
+    </div>
+    <div class="daily-guard-reset-clock-grid">
+      ${dailyGuardStatItem("Time left today", formatUtcCountdown(countdown))}
+      ${dailyGuardStatItem("Guards refresh at", resetLabel)}
+    </div>
+    <p class="daily-guard-reset-clock-note">
+      Daily loss and win guards reset at UTC midnight. Counters clear, blocks lift, and a new start-of-day balance is recorded.
+    </p>
+  `;
+
+  for (const target of targets) {
+    target.className = "daily-guard-reset-clock field-full";
+    target.innerHTML = html;
+  }
+}
+
+function startDailyGuardClock() {
+  const targets = dailyGuardResetClockTargets();
+  if (!targets.length) return;
+  if (dailyGuardClockTimer) clearInterval(dailyGuardClockTimer);
+  renderDailyGuardResetClock();
+  dailyGuardClockTimer = setInterval(renderDailyGuardResetClock, 1000);
+}
+
+function pnlValueClass(value) {
+  const amount = Number(value) || 0;
+  if (amount > 0) return "value-positive";
+  if (amount < 0) return "value-negative";
+  return "";
+}
+
+function dailyGuardStatItem(label, value, valueClass = "") {
+  const safeClass = valueClass ? ` ${valueClass}` : "";
+  return `
+    <div class="daily-guard-stat-item">
+      <span class="daily-guard-stat-label">${escapeHtml(label)}</span>
+      <span class="daily-guard-stat-value${safeClass}">${escapeHtml(value)}</span>
+    </div>
+  `;
+}
+
+function dailyGuardProgressBar(used, total, variant) {
+  const safeTotal = Math.max(0, Number(total) || 0);
+  const safeUsed = Math.max(0, Number(used) || 0);
+  const pct = safeTotal > 0 ? Math.min(100, (safeUsed / safeTotal) * 100) : 0;
+  const caption = variant === "win" ? "of target" : "of limit";
+  return `
+    <div class="daily-guard-stat-progress daily-guard-stat-progress--${variant}">
+      <div class="daily-guard-stat-progress-bar" style="width:${pct.toFixed(1)}%"></div>
+    </div>
+    <p class="daily-guard-stat-progress-caption">${pct.toFixed(1)}% ${caption}</p>
+  `;
+}
+
+function renderDailyGuardPlaceholder(target, message, variant) {
+  if (!target) return;
+  target.className = `daily-guard-stat daily-guard-stat--${variant} field-full is-muted`;
+  target.innerHTML = `<p class="daily-guard-stat-placeholder">${escapeHtml(message)}</p>`;
+}
+
+function renderDailyLossStatus(dailyRisk, target) {
   if (!target) return;
   if (!dailyRisk || dailyRisk.error) {
-    target.textContent = dailyRisk?.error ? `Daily P/L guard unavailable: ${dailyRisk.error}` : "Daily P/L guard: —";
-    target.className = "panel-hint field-full";
+    const message = dailyRisk?.error ? `Loss tracking unavailable: ${dailyRisk.error}` : "Loss tracking: —";
+    renderDailyGuardPlaceholder(target, message, "loss");
     return;
   }
 
   const lossOn = Boolean(dailyRisk.loss_guard_enabled ?? dailyRisk.use_daily_loss_guard);
-  const winOn = Boolean(dailyRisk.win_guard_enabled ?? dailyRisk.use_daily_win_guard);
-  if (!lossOn && !winOn) {
-    target.textContent = "Daily loss and win guards are off.";
-    target.className = "panel-hint field-full";
+  if (!lossOn) {
+    renderDailyGuardPlaceholder(target, "Daily loss guard is off.", "loss");
     return;
   }
 
   const startEquity = dailyRisk.start_equity ?? dailyRisk.start_balance ?? 0;
   const peakEquity = dailyRisk.peak_equity ?? startEquity;
   const dailyPnl = Number(dailyRisk.daily_pnl || 0);
-  const parts = [`Start ${formatLossAmount(startEquity)}`, `day P/L ${formatMoney(dailyPnl)}`];
+  const loss = Number(dailyRisk.loss || 0);
+  const limit = Number(dailyRisk.loss_limit || 0);
+  const remaining = Number(dailyRisk.loss_remaining ?? dailyRisk.remaining ?? Math.max(0, limit - loss));
+  const halted = Boolean(dailyRisk.loss_halted || (dailyRisk.halted && dailyRisk.halt_reason === "loss"));
+  const headline = halted ? "Daily loss limit reached" : "Loss tracking";
 
-  if (lossOn) {
-    const loss = Number(dailyRisk.loss || 0);
-    const limit = Number(dailyRisk.loss_limit || 0);
-    const remaining = Number(dailyRisk.loss_remaining ?? dailyRisk.remaining ?? Math.max(0, limit - loss));
-    parts.push(`drawdown ${formatLossAmount(loss)} / ${formatLossAmount(limit)} (${formatLossAmount(remaining)} left)`);
-  }
-  if (winOn) {
-    const gain = Number(dailyRisk.gain || Math.max(0, dailyPnl));
-    const winTarget = Number(dailyRisk.win_target || 0);
-    const winRemaining = Number(dailyRisk.win_remaining ?? Math.max(0, winTarget - gain));
-    parts.push(
-      `gain ${formatLossAmount(gain)} / ${formatLossAmount(winTarget)} (${formatLossAmount(winRemaining)} to goal · Start ${formatLossAmount(startEquity)})`,
-    );
+  target.className = `daily-guard-stat daily-guard-stat--loss field-full${halted ? " is-halted" : ""}`;
+  target.innerHTML = `
+    <div class="daily-guard-stat-head">
+      <span class="daily-guard-stat-title">${escapeHtml(headline)}</span>
+      ${halted ? '<span class="daily-guard-stat-badge">Blocked</span>' : ""}
+    </div>
+    <div class="daily-guard-stat-grid">
+      ${dailyGuardStatItem("Start", formatLossAmount(startEquity))}
+      ${dailyGuardStatItem("Peak", formatLossAmount(peakEquity))}
+      ${dailyGuardStatItem("Day P/L", formatMoney(dailyPnl), pnlValueClass(dailyPnl))}
+      ${dailyGuardStatItem("Drawdown", `${formatLossAmount(loss)} / ${formatLossAmount(limit)}`)}
+      ${dailyGuardStatItem("Remaining", `${formatLossAmount(remaining)} left`)}
+    </div>
+    ${dailyGuardProgressBar(loss, limit, "loss")}
+  `;
+}
+
+function renderDailyWinStatus(dailyRisk, target) {
+  if (!target) return;
+  if (!dailyRisk || dailyRisk.error) {
+    const message = dailyRisk?.error ? `Win tracking unavailable: ${dailyRisk.error}` : "Win tracking: —";
+    renderDailyGuardPlaceholder(target, message, "win");
+    return;
   }
 
-  let text = parts.join(" · ");
-  if (dailyRisk.halted) {
-    text = dailyRisk.halt_reason === "win"
-      ? `Daily win target reached. ${text}`
-      : `Daily loss limit reached. ${text}`;
+  const winOn = Boolean(dailyRisk.win_guard_enabled ?? dailyRisk.use_daily_win_guard);
+  if (!winOn) {
+    renderDailyGuardPlaceholder(target, "Daily win guard is off.", "win");
+    return;
   }
-  target.textContent = text;
-  target.className = dailyRisk.halted ? "panel-hint field-full live-warning" : "panel-hint field-full";
+
+  const startEquity = dailyRisk.start_equity ?? dailyRisk.start_balance ?? 0;
+  const dailyPnl = Number(dailyRisk.daily_pnl || 0);
+  const gain = Number(dailyRisk.gain || Math.max(0, dailyPnl));
+  const winTarget = Number(dailyRisk.win_target || 0);
+  const winRemaining = Number(dailyRisk.win_remaining ?? Math.max(0, winTarget - gain));
+  const halted = Boolean(dailyRisk.win_halted || (dailyRisk.halted && dailyRisk.halt_reason === "win"));
+  const headline = halted ? "Daily win target reached" : "Win tracking";
+
+  target.className = `daily-guard-stat daily-guard-stat--win field-full${halted ? " is-halted" : ""}`;
+  target.innerHTML = `
+    <div class="daily-guard-stat-head">
+      <span class="daily-guard-stat-title">${escapeHtml(headline)}</span>
+      ${halted ? '<span class="daily-guard-stat-badge">Blocked</span>' : ""}
+    </div>
+    <div class="daily-guard-stat-grid">
+      ${dailyGuardStatItem("Start", formatLossAmount(startEquity))}
+      ${dailyGuardStatItem("Day P/L", formatMoney(dailyPnl), pnlValueClass(dailyPnl))}
+      ${dailyGuardStatItem("Gain", `${formatLossAmount(gain)} / ${formatLossAmount(winTarget)}`)}
+      ${dailyGuardStatItem("To goal", `${formatLossAmount(winRemaining)} left`)}
+    </div>
+    ${dailyGuardProgressBar(gain, winTarget, "win")}
+  `;
 }
 
 function renderDailyRiskStatuses(dailyRisk) {
-  renderDailyRiskStatus(dailyRisk, els.dailyRiskStatus);
-  renderDailyRiskStatus(dailyRisk, els.telegramDailyRiskStatus);
+  renderDailyLossStatus(dailyRisk, els.dailyLossStatus);
+  renderDailyWinStatus(dailyRisk, els.dailyWinStatus);
+  renderDailyLossStatus(dailyRisk, els.telegramDailyLossStatus);
+  renderDailyWinStatus(dailyRisk, els.telegramDailyWinStatus);
 }
 
 function syncDailyRiskSettings(configLike = botConfig) {
@@ -3785,11 +3959,13 @@ async function init() {
   if (page === "home") {
     startLoopPolling();
     startLivePolling();
+    startDailyGuardClock();
     void refreshAutoRunStatus(true);
     void refreshDailyRiskStatus();
     void refreshLiveData();
   } else if (page === "telegram-signals") {
     startTelegramPolling();
+    startDailyGuardClock();
     void refreshTelegramStatus({ full: true });
   } else if (page === "live-summary") {
     void loadLiveSummary();

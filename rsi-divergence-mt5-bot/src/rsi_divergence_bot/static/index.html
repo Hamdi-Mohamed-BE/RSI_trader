@@ -570,6 +570,9 @@
           <p class="panel-hint field-full">
             When checked, changes to signal algorithm and TP rule are written to config.yaml automatically. You can also click Save bot settings anytime.
           </p>
+          <div id="daily-guard-reset-clock" class="daily-guard-reset-clock field-full" aria-live="polite">
+            <p class="daily-guard-stat-placeholder">UTC day clock: loading…</p>
+          </div>
           <label class="toggle field-full">
             <input id="daily-loss-guard-enabled" type="checkbox">
             <span>Daily loss guard — block new trades when equity drawdown hits the limit</span>
@@ -578,7 +581,9 @@
             <span>Max daily loss (% of start-of-day equity)</span>
             <input id="daily-loss-guard-pct" type="number" min="0" max="100" step="0.1" value="15">
           </label>
-          <p id="daily-risk-status" class="panel-hint field-full">Daily P/L guard: loading…</p>
+          <div id="daily-loss-status" class="daily-guard-stat daily-guard-stat--loss field-full" aria-live="polite">
+            <p class="daily-guard-stat-placeholder">Loss tracking: loading…</p>
+          </div>
           <label class="toggle field-full">
             <input id="daily-win-guard-enabled" type="checkbox">
             <span>Daily win guard — stop new trades once profit from start-of-day balance hits the target</span>
@@ -594,6 +599,9 @@
             <span id="daily-win-target-label">Daily win target</span>
             <input id="daily-win-target-value" type="number" min="0" step="0.01" value="5">
           </label>
+          <div id="daily-win-status" class="daily-guard-stat daily-guard-stat--win field-full" aria-live="polite">
+            <p class="daily-guard-stat-placeholder">Win tracking: loading…</p>
+          </div>
         </div>
         <div class="control-row">
           <button id="auto-run-save-btn" class="btn btn-secondary" type="button">
@@ -802,6 +810,9 @@
         </div>
 
         <div class="telegram-options">
+          <div id="telegram-daily-guard-reset-clock" class="daily-guard-reset-clock field-full" aria-live="polite">
+            <p class="daily-guard-stat-placeholder">UTC day clock: loading…</p>
+          </div>
           <label class="toggle">
             <input id="telegram-protect-tp" type="checkbox" checked>
             <span>Protect TP hits by moving remaining SLs</span>
@@ -818,7 +829,9 @@
             <span>Max daily loss (% of intraday peak equity)</span>
             <input id="telegram-daily-loss-guard-pct" type="number" min="0" max="100" step="0.1" value="15">
           </label>
-          <p id="telegram-daily-risk-status" class="panel-hint field-full">Daily P/L guard: loading…</p>
+          <div id="telegram-daily-loss-status" class="daily-guard-stat daily-guard-stat--loss field-full" aria-live="polite">
+            <p class="daily-guard-stat-placeholder">Loss tracking: loading…</p>
+          </div>
           <label class="toggle field-full">
             <input id="telegram-daily-win-guard-enabled" type="checkbox">
             <span>Daily win guard — stop new trades once profit from start-of-day balance hits the target</span>
@@ -834,6 +847,9 @@
             <span id="telegram-daily-win-target-label">Daily win target</span>
             <input id="telegram-daily-win-target-value" type="number" min="0" step="0.01" value="5">
           </label>
+          <div id="telegram-daily-win-status" class="daily-guard-stat daily-guard-stat--win field-full" aria-live="polite">
+            <p class="daily-guard-stat-placeholder">Win tracking: loading…</p>
+          </div>
           <p class="panel-hint field-full">
             Daily loss and win guards apply to Telegram copies and live bot trades. Gains are measured from the start-of-day balance and reset each UTC day. Changes save to config.yaml when you adjust controls or click Save.
           </p>
@@ -992,6 +1008,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=69" defer></script>
+  <script src="/static/js/app.js?v=71" defer></script>
 </body>
 </html>

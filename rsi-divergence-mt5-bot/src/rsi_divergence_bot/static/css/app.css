@@ -1477,6 +1477,179 @@ textarea {
   color: var(--warn);
 }
 
+.daily-guard-stat {
+  margin: 10px 0 0;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  box-shadow: var(--shadow);
+}
+
+.daily-guard-stat--loss {
+  border-left: 3px solid var(--danger);
+  background: linear-gradient(90deg, var(--danger-dim), transparent 42%);
+}
+
+.daily-guard-stat--win {
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(90deg, var(--accent-dim), transparent 42%);
+}
+
+.daily-guard-stat.is-muted {
+  opacity: 0.72;
+}
+
+.daily-guard-stat.is-halted {
+  border-color: var(--warn);
+  box-shadow: 0 0 0 1px var(--warn-dim);
+}
+
+.daily-guard-stat.is-halted .daily-guard-stat-badge {
+  color: var(--warn);
+  background: var(--warn-dim);
+}
+
+.daily-guard-stat-placeholder {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.daily-guard-stat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.daily-guard-stat-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.daily-guard-stat-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--danger);
+  background: var(--danger-dim);
+}
+
+.daily-guard-stat--win .daily-guard-stat-badge {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.daily-guard-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 10px 14px;
+}
+
+.daily-guard-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.daily-guard-stat-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.daily-guard-stat-value {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.daily-guard-stat-progress {
+  margin-top: 12px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.daily-guard-stat-progress-bar {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.25s ease;
+}
+
+.daily-guard-stat-progress--loss .daily-guard-stat-progress-bar {
+  background: linear-gradient(90deg, var(--danger), #fb923c);
+}
+
+.daily-guard-stat-progress--win .daily-guard-stat-progress-bar {
+  background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+}
+
+.daily-guard-stat-progress-caption {
+  margin: 6px 0 0;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.daily-guard-reset-clock {
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(34, 211, 165, 0.08));
+  box-shadow: var(--shadow);
+}
+
+.daily-guard-reset-clock-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.daily-guard-reset-clock-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.daily-guard-reset-clock-live {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.daily-guard-reset-clock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px 14px;
+}
+
+.daily-guard-reset-clock-note {
+  margin: 12px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
 .snapshot-form {
   display: grid;
   grid-template-columns: minmax(180px, 1fr) minmax(240px, 2fr) auto;
