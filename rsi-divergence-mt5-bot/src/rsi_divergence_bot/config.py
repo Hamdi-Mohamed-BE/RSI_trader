@@ -45,7 +45,7 @@ TradeDecisionProfile = Literal["safe", "balanced", "backtest"]
 Confirmation = Literal["off", "ema", "trend_guard", "rsi_extreme", "strict"]
 MT5Mode = Literal["native_windows", "linux_bridge"]
 MT5Transport = Literal["tcp", "stdio"]
-SignalAlgorithm = Literal["rsi_divergence", "silver_optimized"]
+SignalAlgorithm = Literal["rsi_divergence", "silver_optimized", "forex_trade"]
 SilverPreset = Literal["auto", "xauusd", "xagusd", "btcusd", "custom"]
 SilverDirection = Literal["long_only", "short_only", "long_and_short"]
 
@@ -118,6 +118,33 @@ class SilverOptimizedConfig(BaseModel):
     custom_trail_atr: float = Field(default=1.6, gt=0)
 
 
+class ForexTradeConfig(BaseModel):
+    timeframe: Timeframe = "H1"
+    bars: int = Field(default=300, ge=100, le=2000)
+    risk_per_trade: float = Field(default=0.01, gt=0, le=0.25)
+    use_risk_based_lot: bool = True
+    max_spread_points: float = Field(default=25.0, gt=0)
+    use_spread_filter: bool = True
+    rsi_period: int = Field(default=14, ge=2)
+    rsi_long_entry: float = Field(default=30.0, ge=0, le=100)
+    rsi_short_entry: float = Field(default=70.0, ge=0, le=100)
+    rsi_long_exit: float = Field(default=50.0, ge=0, le=100)
+    rsi_short_exit: float = Field(default=50.0, ge=0, le=100)
+    stop_loss_pct: float = Field(default=0.05, gt=0, le=0.5)
+    take_profit_pct: float = Field(default=0.125, gt=0, le=1.0)
+    use_trend_filter: bool = False
+    trend_ema_period: int = Field(default=200, ge=20)
+    symbol_keys: list[str] = Field(default_factory=lambda: ["EURUSD"])
+
+    @model_validator(mode="after")
+    def validate_ranges(self) -> "ForexTradeConfig":
+        if self.rsi_long_entry >= self.rsi_long_exit:
+            raise ValueError("forex_trade rsi_long_entry must be below rsi_long_exit")
+        if self.rsi_short_entry <= self.rsi_short_exit:
+            raise ValueError("forex_trade rsi_short_entry must be above rsi_short_exit")
+        return self
+
+
 class BotRuntimeConfig(BaseModel):
     dry_run: bool = True
     auto_start: bool = True
@@ -126,6 +153,7 @@ class BotRuntimeConfig(BaseModel):
     strategy: StrategyMode = "signal_with_tp_protection"
     signal_algorithm: SignalAlgorithm = "rsi_divergence"
     silver_optimized: SilverOptimizedConfig = Field(default_factory=SilverOptimizedConfig)
+    forex_trade: ForexTradeConfig = Field(default_factory=ForexTradeConfig)
     trade_decision_profile: TradeDecisionProfile = "safe"
     max_concurrent_setups: int = 3
     state_file: str = "runtime/state.json"
@@ -392,9 +420,54 @@ def update_bot_strategy(config: AppConfig, strategy: StrategyMode) -> None:
 
 
 def update_signal_algorithm(config: AppConfig, algorithm: SignalAlgorithm) -> None:
-    if algorithm not in {"rsi_divergence", "silver_optimized"}:
+    if algorithm not in {"rsi_divergence", "silver_optimized", "forex_trade"}:
         raise ValueError(f"Unknown signal algorithm: {algorithm}")
     config.bot.signal_algorithm = algorithm  # type: ignore[assignment]
+
+
+def update_forex_trade_settings(
+    config: AppConfig,
+    *,
+    timeframe: Timeframe | None = None,
+    bars: int | None = None,
+    risk_per_trade: float | None = None,
+    use_risk_based_lot: bool | None = None,
+    max_spread_points: float | None = None,
+    use_spread_filter: bool | None = None,
+    rsi_period: int | None = None,
+    rsi_long_entry: float | None = None,
+    rsi_short_entry: float | None = None,
+    rsi_long_exit: float | None = None,
+    rsi_short_exit: float | None = None,
+    stop_loss_pct: float | None = None,
+    take_profit_pct: float | None = None,
+    use_trend_filter: bool | None = None,
+    trend_ema_period: int | None = None,
+    symbol_keys: list[str] | None = None,
+) -> None:
+    cfg = config.bot.forex_trade
+    updates = {
+        "timeframe": timeframe,
+        "bars": bars,
+        "risk_per_trade": risk_per_trade,
+        "use_risk_based_lot": use_risk_based_lot,
+        "max_spread_points": max_spread_points,
+        "use_spread_filter": use_spread_filter,
+        "rsi_period": rsi_period,
+        "rsi_long_entry": rsi_long_entry,
+        "rsi_short_entry": rsi_short_entry,
+        "rsi_long_exit": rsi_long_exit,
+        "rsi_short_exit": rsi_short_exit,
+        "stop_loss_pct": stop_loss_pct,
+        "take_profit_pct": take_profit_pct,
+        "use_trend_filter": use_trend_filter,
+        "trend_ema_period": trend_ema_period,
+        "symbol_keys": symbol_keys,
+    }
+    for key, value in updates.items():
+        if value is not None:
+            setattr(cfg, key, value)
+    config.bot.forex_trade = ForexTradeConfig.model_validate(cfg.model_dump(mode="python"))
 
 
 def normalize_telegram_channel_url(url: str) -> str:

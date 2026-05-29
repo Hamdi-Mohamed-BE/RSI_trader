@@ -30,6 +30,7 @@ from .config import (
     save_config,
     symbol_asset_group,
     update_bot_strategy,
+    update_forex_trade_settings,
     update_signal_algorithm,
     update_symbol_enabled,
     update_symbol_lots,
@@ -117,6 +118,26 @@ class BotSettingsRequest(BaseModel):
     signal_algorithm: str | None = None
     use_daily_loss_guard: bool | None = None
     max_daily_loss_pct: float | None = Field(default=None, ge=0)
+    persist: bool = True
+
+
+class ForexTradeSettingsRequest(BaseModel):
+    timeframe: str | None = None
+    bars: int | None = Field(default=None, ge=100, le=2000)
+    risk_per_trade: float | None = Field(default=None, gt=0, le=0.25)
+    use_risk_based_lot: bool | None = None
+    max_spread_points: float | None = Field(default=None, gt=0)
+    use_spread_filter: bool | None = None
+    rsi_period: int | None = Field(default=None, ge=2)
+    rsi_long_entry: float | None = Field(default=None, ge=0, le=100)
+    rsi_short_entry: float | None = Field(default=None, ge=0, le=100)
+    rsi_long_exit: float | None = Field(default=None, ge=0, le=100)
+    rsi_short_exit: float | None = Field(default=None, ge=0, le=100)
+    stop_loss_pct: float | None = Field(default=None, gt=0, le=0.5)
+    take_profit_pct: float | None = Field(default=None, gt=0, le=1.0)
+    use_trend_filter: bool | None = None
+    trend_ema_period: int | None = Field(default=None, ge=20)
+    symbol_keys: list[str] | None = None
     persist: bool = True
 
 
@@ -526,6 +547,7 @@ def create_app(
                 "strategy": config.bot.strategy,
                 "signal_algorithm": config.bot.signal_algorithm,
                 "silver_optimized": config.bot.silver_optimized.model_dump(mode="python"),
+                "forex_trade": config.bot.forex_trade.model_dump(mode="python"),
                 "trade_decision_profile": config.bot.trade_decision_profile,
                 "max_concurrent_setups": config.bot.max_concurrent_setups,
             },
@@ -713,6 +735,42 @@ def create_app(
             "signal_algorithm": config.bot.signal_algorithm,
             "risk": config.risk.model_dump(mode="python"),
             "auto_run": bot.auto_loop_status(include_mt5=False),
+        }
+
+    @app.get("/api/forex-trade/settings")
+    def get_forex_trade_settings() -> dict:
+        return config.bot.forex_trade.model_dump(mode="python")
+
+    @app.post("/api/forex-trade/settings")
+    def save_forex_trade_settings(body: ForexTradeSettingsRequest) -> dict:
+        try:
+            update_forex_trade_settings(
+                config,
+                timeframe=body.timeframe,  # type: ignore[arg-type]
+                bars=body.bars,
+                risk_per_trade=body.risk_per_trade,
+                use_risk_based_lot=body.use_risk_based_lot,
+                max_spread_points=body.max_spread_points,
+                use_spread_filter=body.use_spread_filter,
+                rsi_period=body.rsi_period,
+                rsi_long_entry=body.rsi_long_entry,
+                rsi_short_entry=body.rsi_short_entry,
+                rsi_long_exit=body.rsi_long_exit,
+                rsi_short_exit=body.rsi_short_exit,
+                stop_loss_pct=body.stop_loss_pct,
+                take_profit_pct=body.take_profit_pct,
+                use_trend_filter=body.use_trend_filter,
+                trend_ema_period=body.trend_ema_period,
+                symbol_keys=body.symbol_keys,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        if body.persist:
+            save_config(config_path, config)
+        bot.logger.info("FOREX TRADE SETTINGS updated persist=%s", body.persist)
+        return {
+            "status": "saved" if body.persist else "applied",
+            "forex_trade": config.bot.forex_trade.model_dump(mode="python"),
         }
 
     @app.get("/api/daily-risk")

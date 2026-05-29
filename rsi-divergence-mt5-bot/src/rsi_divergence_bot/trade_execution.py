@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from .indicators import ema
+from .config import ForexTradeConfig
+from .indicators import ema, rsi
 from .mt5_client import MT5Client
 from .strategy import Signal
 from .trade_geometry import invalid_market_geometry
@@ -433,3 +434,119 @@ def simulate_partial_trade(client: MT5Client, signal: Signal, rows, tp_protectio
     if remaining_volume > 0:
         pnl += pnl_for_slice(remaining_volume, close)
     return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind}
+
+
+def simulate_forex_trade_trade(
+    client: MT5Client,
+    signal: Signal,
+    rows,
+    cfg: ForexTradeConfig,
+) -> dict:
+    tps = list(signal.tps)
+    if not tps or signal.algorithm != "forex_trade":
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "invalid_geometry", "legs": []}
+    if invalid_market_geometry(signal.side, signal.entry, signal.sl, tps):
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "invalid_geometry", "legs": []}
+
+    frame = pd.DataFrame(rows)
+    if frame.empty:
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "close", "legs": []}
+
+    frame["rsi"] = rsi(frame["close"], cfg.rsi_period)
+
+    total_volume = normalized_full_volume(client, signal.symbol, signal.lot_per_leg)
+    sl = float(signal.sl)
+    tp = float(tps[0])
+    pnl = 0.0
+    exit_time: int | None = None
+    exit_kind = "close"
+    exit_price = float(signal.entry)
+    last_bar_time: int | None = None
+    open_position = True
+
+    def row_unix(row) -> int:
+        ts = getattr(row, "time", None)
+        if hasattr(ts, "timestamp"):
+            return int(ts.timestamp())
+        return int(pd.Timestamp(ts).timestamp())
+
+    def pnl_for_volume(volume: float, price: float) -> float:
+        if signal.side == "buy":
+            return client.money_for_distance(signal.symbol, volume, price - signal.entry)
+        return client.money_for_distance(signal.symbol, volume, signal.entry - price)
+
+    for row in frame.itertuples(index=False):
+        high = float(row.high)
+        low = float(row.low)
+        close = float(row.close)
+        rsi_val = float(row.rsi)
+        bar_time = row_unix(row)
+        last_bar_time = bar_time
+
+        if signal.side == "buy":
+            if low <= sl:
+                exit_price = sl
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "sl"
+                exit_time = bar_time
+                open_position = False
+                break
+            if high >= tp:
+                exit_price = tp
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "tp1"
+                exit_time = bar_time
+                open_position = False
+                break
+            if rsi_val >= cfg.rsi_long_exit:
+                exit_price = close
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "rsi_exit"
+                exit_time = bar_time
+                open_position = False
+                break
+        else:
+            if high >= sl:
+                exit_price = sl
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "sl"
+                exit_time = bar_time
+                open_position = False
+                break
+            if low <= tp:
+                exit_price = tp
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "tp1"
+                exit_time = bar_time
+                open_position = False
+                break
+            if rsi_val <= cfg.rsi_short_exit:
+                exit_price = close
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "rsi_exit"
+                exit_time = bar_time
+                open_position = False
+                break
+
+    if open_position and last_bar_time is not None:
+        exit_time = last_bar_time
+        exit_price = float(frame.iloc[-1]["close"])
+        pnl = pnl_for_volume(total_volume, exit_price)
+        exit_kind = "close"
+
+    leg_results = [
+        {
+            "leg": 1,
+            "entry": round(float(signal.entry), 5),
+            "sl": round(float(signal.sl), 5),
+            "exit_sl": round(float(sl), 5),
+            "initial_sl": round(float(signal.sl), 5),
+            "tp": round(float(tp), 5),
+            "exit_price": round(float(exit_price), 5),
+            "exit_time": exit_time,
+            "exit_kind": exit_kind,
+            "pnl": round(float(pnl), 2),
+        }
+    ]
+    return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind, "legs": leg_results}
+

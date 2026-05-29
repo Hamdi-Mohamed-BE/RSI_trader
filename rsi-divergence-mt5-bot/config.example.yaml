@@ -26,6 +26,24 @@ bot:
     htf_timeframe: D1
     use_vol_filter: true
     use_time_filter: false
+  forex_trade:
+    timeframe: H1
+    bars: 300
+    risk_per_trade: 0.01
+    use_risk_based_lot: true
+    max_spread_points: 25
+    use_spread_filter: true
+    rsi_period: 14
+    rsi_long_entry: 30
+    rsi_short_entry: 70
+    rsi_long_exit: 50
+    rsi_short_exit: 50
+    stop_loss_pct: 0.05
+    take_profit_pct: 0.125
+    use_trend_filter: false
+    trend_ema_period: 200
+    symbol_keys:
+    - EURUSD
   trade_decision_profile: balanced
   max_concurrent_setups: 3
   state_file: runtime/state.json

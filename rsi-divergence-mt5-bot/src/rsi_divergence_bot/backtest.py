@@ -22,6 +22,7 @@ from .strategy_modes import (
 )
 from .timeframes import SUPPORTED_TIMEFRAMES, validate_timeframe
 from .trade_execution import (
+    simulate_forex_trade_trade,
     simulate_full_trade,
     simulate_partial_trade,
     simulate_single_trade,
@@ -152,7 +153,7 @@ class _SymbolAccumulator:
 
 
 class DailyLossGuard:
-    """Mirrors live daily loss guard: block entries when equity is down >= max_daily_loss_pct."""
+    """Mirrors live daily loss guard: block entries when drawdown from intraday peak >= max_daily_loss_pct."""
 
     def __init__(self, starting_balance: float, max_daily_loss_pct: float | None):
         self.enabled = max_daily_loss_pct is not None and max_daily_loss_pct > 0
@@ -160,6 +161,7 @@ class DailyLossGuard:
         self.balance = float(starting_balance)
         self.current_day: str | None = None
         self.day_start_balance = float(starting_balance)
+        self.day_peak_balance = float(starting_balance)
         self.open_trades: list[_OpenTrade] = []
 
     def _utc_day(self, unix: int) -> str:
@@ -190,6 +192,7 @@ class DailyLossGuard:
             return
         if self.current_day is not None:
             self.day_start_balance = equity
+            self.day_peak_balance = equity
         self.current_day = day
 
     def check_entry(self, client: MT5Client, entry_unix: int) -> tuple[bool, float, float]:
@@ -197,8 +200,9 @@ class DailyLossGuard:
             return True, 0.0, 0.0
         equity = self.equity_at(client, entry_unix)
         self._roll_day(self._utc_day(entry_unix), equity)
-        loss_limit = round(self.day_start_balance * self.max_daily_loss_pct / 100.0, 2)
-        loss = round(max(0.0, self.day_start_balance - equity), 2)
+        self.day_peak_balance = max(self.day_peak_balance, equity)
+        loss_limit = round(self.day_peak_balance * self.max_daily_loss_pct / 100.0, 2)
+        loss = round(max(0.0, self.day_peak_balance - equity), 2)
         if loss_limit > 0 and loss >= loss_limit:
             return False, loss, loss_limit
         return True, loss, loss_limit
@@ -608,7 +612,7 @@ def _daily_loss_skip_decision(
         code="daily_loss_guard",
         reason=(
             f"daily loss guard: loss ${loss:.2f} >= limit ${loss_limit:.2f} "
-            f"({max_daily_loss_pct:g}% of start-of-day balance)"
+            f"({max_daily_loss_pct:g}% of intraday peak equity)"
         ),
         risk_usd=decision.risk_usd,
         spread=decision.spread,
@@ -824,7 +828,7 @@ def _execute_backtest_jobs(
             filters=filters,
             market_position_keys=position_keys,
             active_setup_count=setup_count,
-            day_start_balance=daily_guard.day_start_balance if daily_guard.enabled else None,
+            day_start_balance=daily_guard.day_peak_balance if daily_guard.enabled else None,
         )
         if not decision.allowed:
             if skip_should_mark_seen(decision.code):
@@ -839,6 +843,14 @@ def _execute_backtest_jobs(
         if job.signal.algorithm == "silver_optimized":
             simulation = simulate_silver_optimized_trade(client, job.signal, after.itertuples())
             execution_mode = "silver_optimized"
+        elif job.signal.algorithm == "forex_trade":
+            simulation = simulate_forex_trade_trade(
+                client,
+                job.signal,
+                after.itertuples(),
+                config.bot.forex_trade,
+            )
+            execution_mode = "forex_trade"
         elif partial_execution:
             simulation = simulate_partial_trade(client, job.signal, after.itertuples(), tp_protection)
             execution_mode = "partial"
@@ -851,7 +863,7 @@ def _execute_backtest_jobs(
         else:
             simulation = simulate_split_trade(client, job.signal, after.itertuples(), tp_protection)
             execution_mode = "split"
-        legs = 1 if execution_mode in {"partial", "full", "single", "silver_optimized"} else len(job.signal.tps)
+        legs = 1 if execution_mode in {"partial", "full", "single", "silver_optimized", "forex_trade"} else len(job.signal.tps)
         trade_pnl = float(simulation["pnl"])
         exit_unix = int(simulation.get("exit_time") or job.entry_unix)
         portfolio.mark_seen(job.signal.setup_id)

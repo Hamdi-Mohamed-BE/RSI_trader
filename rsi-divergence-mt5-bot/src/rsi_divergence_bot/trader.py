@@ -4,7 +4,7 @@ import logging
 from datetime import datetime, timezone
 
 from .config import AppConfig, SymbolConfig
-from .daily_risk import resolve_day_start_balance
+from .daily_risk import resolve_daily_loss_reference_equity
 from .decision import evaluate_trade_signal, resolve_trade_filters, skip_should_mark_seen
 from .mt5_client import MT5Client
 from .state import StateStore
@@ -59,7 +59,7 @@ class TradeExecutor:
             position_keys = None
         else:
             position_keys = self._position_market_keys() if filters.existing_position else None
-        day_start_balance = resolve_day_start_balance(self.client, self.state, self.config.risk)
+        daily_loss_reference = resolve_daily_loss_reference_equity(self.client, self.state, self.config.risk)
         decision = evaluate_trade_signal(
             self.client,
             self.config,
@@ -69,7 +69,7 @@ class TradeExecutor:
             filters=filters,
             market_position_keys=position_keys,
             active_setup_count=self._active_setup_count() if filters.max_setups else None,
-            day_start_balance=day_start_balance,
+            day_start_balance=daily_loss_reference,
         )
         if not decision.allowed:
             self.logger.info("SKIP %s %s", signal.symbol, decision.reason)

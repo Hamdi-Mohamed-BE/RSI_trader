@@ -58,6 +58,36 @@ class DailyRiskStatusTests(unittest.TestCase):
         self.assertEqual(status["loss_limit"], round(3398.5 * 0.15, 2))
         self.assertFalse(status["halted"])
 
+    def test_peak_equity_sets_loss_limit(self) -> None:
+        client = MagicMock()
+        client.account_snapshot.return_value = {
+            "equity": 1530.0,
+            "balance": 1530.0,
+            "floating_pnl": 0.0,
+        }
+        state = MagicMock()
+        state.read.return_value = {
+            "daily_risk": {
+                "date": "2026-05-27",
+                "start_equity": 1000.0,
+                "peak_equity": 1800.0,
+                "created_at": "2026-05-27T00:05:00+00:00",
+            }
+        }
+        risk_cfg = RiskConfig(use_daily_loss_guard=True, max_daily_loss_pct=15.0)
+
+        with unittest.mock.patch(
+            "rsi_divergence_bot.daily_risk.datetime",
+            wraps=datetime,
+        ) as dt_mock:
+            dt_mock.now.return_value = datetime(2026, 5, 27, 15, 0, tzinfo=timezone.utc)
+            status = compute_daily_risk_status(client, state, risk_cfg)
+
+        self.assertEqual(status["peak_equity"], 1800.0)
+        self.assertEqual(status["loss"], 270.0)
+        self.assertEqual(status["loss_limit"], 270.0)
+        self.assertTrue(status["halted"])
+
     def test_midday_restart_reconstructs_from_closed_deals(self) -> None:
         client = MagicMock()
         client.net_pnl_since.return_value = -150.0

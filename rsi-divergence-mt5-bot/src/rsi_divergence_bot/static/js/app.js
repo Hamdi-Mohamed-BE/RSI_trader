@@ -1,6 +1,7 @@
 const SIGNAL_ALGORITHM_LABELS = {
   rsi_divergence: "RSI divergence",
   silver_optimized: "Silver optimized (XAU/XAG/BTC trend pullback)",
+  forex_trade: "Forex trade (RSI mean-reversion)",
 };
 
 const STRATEGY_LABELS = {
@@ -46,6 +47,24 @@ const els = {
   resetTimeframesBtn: document.getElementById("reset-timeframes-btn"),
   optimizeTimeframesBtn: document.getElementById("optimize-timeframes-btn"),
   saveLotsBtn: document.getElementById("save-lots-btn"),
+  forexTradeForm: document.getElementById("forex-trade-form"),
+  forexTradeSaveBtn: document.getElementById("forex-trade-save-btn"),
+  forexTradeTimeframe: document.getElementById("forex-trade-timeframe"),
+  forexTradeBars: document.getElementById("forex-trade-bars"),
+  forexTradeRiskPerTrade: document.getElementById("forex-trade-risk-per-trade"),
+  forexTradeMaxSpread: document.getElementById("forex-trade-max-spread"),
+  forexTradeRsiPeriod: document.getElementById("forex-trade-rsi-period"),
+  forexTradeRsiLongEntry: document.getElementById("forex-trade-rsi-long-entry"),
+  forexTradeRsiShortEntry: document.getElementById("forex-trade-rsi-short-entry"),
+  forexTradeRsiLongExit: document.getElementById("forex-trade-rsi-long-exit"),
+  forexTradeRsiShortExit: document.getElementById("forex-trade-rsi-short-exit"),
+  forexTradeStopLossPct: document.getElementById("forex-trade-stop-loss-pct"),
+  forexTradeTakeProfitPct: document.getElementById("forex-trade-take-profit-pct"),
+  forexTradeTrendEma: document.getElementById("forex-trade-trend-ema"),
+  forexTradeSymbolKeys: document.getElementById("forex-trade-symbol-keys"),
+  forexTradeUseTrendFilter: document.getElementById("forex-trade-use-trend-filter"),
+  forexTradeUseRiskLot: document.getElementById("forex-trade-use-risk-lot"),
+  forexTradeUseSpreadFilter: document.getElementById("forex-trade-use-spread-filter"),
   snapshotForm: document.getElementById("snapshot-form"),
   snapshotName: document.getElementById("snapshot-name"),
   snapshotNote: document.getElementById("snapshot-note"),
@@ -103,6 +122,9 @@ const els = {
   dailyLossGuardEnabled: document.getElementById("daily-loss-guard-enabled"),
   dailyLossGuardPct: document.getElementById("daily-loss-guard-pct"),
   dailyRiskStatus: document.getElementById("daily-risk-status"),
+  telegramDailyLossGuardEnabled: document.getElementById("telegram-daily-loss-guard-enabled"),
+  telegramDailyLossGuardPct: document.getElementById("telegram-daily-loss-guard-pct"),
+  telegramDailyRiskStatus: document.getElementById("telegram-daily-risk-status"),
   liveUpdated: document.getElementById("live-updated"),
   liveError: document.getElementById("live-error"),
   acctBalance: document.getElementById("acct-balance"),
@@ -518,6 +540,130 @@ function renderTimeframeOptions(selected) {
       return `<option value="${escapeHtml(value)}" ${value === selected ? "selected" : ""}>${escapeHtml(label)}</option>`;
     })
     .join("");
+}
+
+function renderTimeframeOptions(selected) {
+  return timeframeOptions()
+    .map((item) => {
+      const value = item.value || item;
+      const label = item.label || value;
+      return `<option value="${escapeHtml(value)}" ${value === selected ? "selected" : ""}>${escapeHtml(label)}</option>`;
+    })
+    .join("");
+}
+
+function populateForexTradeTimeframeSelect(selected = "H1") {
+  if (!els.forexTradeTimeframe) return;
+  els.forexTradeTimeframe.innerHTML = renderTimeframeOptions(selected);
+}
+
+function syncForexTradeSettingsFromConfig(cfg) {
+  if (!cfg) return;
+  populateForexTradeTimeframeSelect(cfg.timeframe || "H1");
+  if (els.forexTradeTimeframe) els.forexTradeTimeframe.value = cfg.timeframe || "H1";
+  if (els.forexTradeBars && cfg.bars != null) els.forexTradeBars.value = cfg.bars;
+  if (els.forexTradeRiskPerTrade && cfg.risk_per_trade != null) {
+    els.forexTradeRiskPerTrade.value = cfg.risk_per_trade;
+  }
+  if (els.forexTradeMaxSpread && cfg.max_spread_points != null) {
+    els.forexTradeMaxSpread.value = cfg.max_spread_points;
+  }
+  if (els.forexTradeRsiPeriod && cfg.rsi_period != null) els.forexTradeRsiPeriod.value = cfg.rsi_period;
+  if (els.forexTradeRsiLongEntry && cfg.rsi_long_entry != null) {
+    els.forexTradeRsiLongEntry.value = cfg.rsi_long_entry;
+  }
+  if (els.forexTradeRsiShortEntry && cfg.rsi_short_entry != null) {
+    els.forexTradeRsiShortEntry.value = cfg.rsi_short_entry;
+  }
+  if (els.forexTradeRsiLongExit && cfg.rsi_long_exit != null) {
+    els.forexTradeRsiLongExit.value = cfg.rsi_long_exit;
+  }
+  if (els.forexTradeRsiShortExit && cfg.rsi_short_exit != null) {
+    els.forexTradeRsiShortExit.value = cfg.rsi_short_exit;
+  }
+  if (els.forexTradeStopLossPct && cfg.stop_loss_pct != null) {
+    els.forexTradeStopLossPct.value = Number((cfg.stop_loss_pct * 100).toFixed(2));
+  }
+  if (els.forexTradeTakeProfitPct && cfg.take_profit_pct != null) {
+    els.forexTradeTakeProfitPct.value = Number((cfg.take_profit_pct * 100).toFixed(2));
+  }
+  if (els.forexTradeTrendEma && cfg.trend_ema_period != null) {
+    els.forexTradeTrendEma.value = cfg.trend_ema_period;
+  }
+  if (els.forexTradeSymbolKeys && Array.isArray(cfg.symbol_keys)) {
+    els.forexTradeSymbolKeys.value = cfg.symbol_keys.join(", ");
+  }
+  if (els.forexTradeUseTrendFilter) els.forexTradeUseTrendFilter.checked = Boolean(cfg.use_trend_filter);
+  if (els.forexTradeUseRiskLot) els.forexTradeUseRiskLot.checked = cfg.use_risk_based_lot !== false;
+  if (els.forexTradeUseSpreadFilter) els.forexTradeUseSpreadFilter.checked = cfg.use_spread_filter !== false;
+}
+
+function collectForexTradeSettings() {
+  const symbolKeysRaw = els.forexTradeSymbolKeys?.value || "";
+  const symbol_keys = symbolKeysRaw
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+  return {
+    timeframe: els.forexTradeTimeframe?.value || "H1",
+    bars: Number(els.forexTradeBars?.value),
+    risk_per_trade: Number(els.forexTradeRiskPerTrade?.value),
+    max_spread_points: Number(els.forexTradeMaxSpread?.value),
+    rsi_period: Number(els.forexTradeRsiPeriod?.value),
+    rsi_long_entry: Number(els.forexTradeRsiLongEntry?.value),
+    rsi_short_entry: Number(els.forexTradeRsiShortEntry?.value),
+    rsi_long_exit: Number(els.forexTradeRsiLongExit?.value),
+    rsi_short_exit: Number(els.forexTradeRsiShortExit?.value),
+    stop_loss_pct: Number(els.forexTradeStopLossPct?.value) / 100,
+    take_profit_pct: Number(els.forexTradeTakeProfitPct?.value) / 100,
+    use_trend_filter: Boolean(els.forexTradeUseTrendFilter?.checked),
+    trend_ema_period: Number(els.forexTradeTrendEma?.value),
+    symbol_keys,
+    use_risk_based_lot: Boolean(els.forexTradeUseRiskLot?.checked),
+    use_spread_filter: Boolean(els.forexTradeUseSpreadFilter?.checked),
+    persist: true,
+  };
+}
+
+async function saveForexTradeSettings({ silent = false } = {}) {
+  setLoading(els.forexTradeSaveBtn, true, "Saving…");
+  try {
+    const response = await fetch("/api/forex-trade/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(collectForexTradeSettings()),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to save forex settings");
+    if (data.forex_trade) {
+      botConfig = botConfig || {};
+      botConfig.bot = botConfig.bot || {};
+      botConfig.bot.forex_trade = data.forex_trade;
+      syncForexTradeSettingsFromConfig(data.forex_trade);
+    }
+    if (!silent) toast("Forex trade settings saved to config.yaml", "success");
+  } catch (error) {
+    toast(error.message, "error");
+    throw error;
+  } finally {
+    setLoading(els.forexTradeSaveBtn, false);
+  }
+}
+
+async function loadForexTradeSettings() {
+  const [settingsResp, configResp] = await Promise.all([
+    fetch("/api/forex-trade/settings", { cache: "no-store" }),
+    fetch("/api/config", { cache: "no-store" }),
+  ]);
+  if (!settingsResp.ok) throw new Error("Failed to load forex trade settings");
+  const settings = await settingsResp.json();
+  if (configResp.ok) {
+    const config = await configResp.json();
+    botConfig = botConfig || {};
+    botConfig.timeframe_options = config.timeframe_options || botConfig.timeframe_options;
+    botConfig.bot = { ...(botConfig.bot || {}), ...(config.bot || {}), forex_trade: settings };
+  }
+  syncForexTradeSettingsFromConfig(settings);
 }
 
 function symbolGroupLabel(group) {
@@ -1492,9 +1638,62 @@ async function onBotSettingsChanged({ silent = true } = {}) {
   }
 }
 
+function mirrorDailyLossControls(source) {
+  if (source === "live") {
+    syncDailyLossControlValues({
+      enabled: els.dailyLossGuardEnabled?.checked,
+      pct: Number(els.dailyLossGuardPct?.value),
+    });
+    return;
+  }
+  syncDailyLossControlValues({
+    enabled: els.telegramDailyLossGuardEnabled?.checked,
+    pct: Number(els.telegramDailyLossGuardPct?.value),
+  });
+}
+
+async function onDailyLossSettingsChanged(source = "live") {
+  mirrorDailyLossControls(source);
+  try {
+    await saveBotStrategy({ silent: true, persist: true });
+  } catch (error) {
+    toast(error.message, "error");
+  }
+}
+
 function isDailyLossGuardEnabled() {
   if (els.dailyLossGuardEnabled) return Boolean(els.dailyLossGuardEnabled.checked);
+  if (els.telegramDailyLossGuardEnabled) return Boolean(els.telegramDailyLossGuardEnabled.checked);
   return botConfig?.risk?.use_daily_loss_guard !== false;
+}
+
+function dailyLossGuardEnabledFromUi() {
+  if (els.dailyLossGuardEnabled) return Boolean(els.dailyLossGuardEnabled.checked);
+  if (els.telegramDailyLossGuardEnabled) return Boolean(els.telegramDailyLossGuardEnabled.checked);
+  return botConfig?.risk?.use_daily_loss_guard !== false;
+}
+
+function dailyLossGuardPctFromUi() {
+  const liveValue = Number(els.dailyLossGuardPct?.value);
+  if (Number.isFinite(liveValue)) return liveValue;
+  const telegramValue = Number(els.telegramDailyLossGuardPct?.value);
+  if (Number.isFinite(telegramValue)) return telegramValue;
+  return Number(botConfig?.risk?.max_daily_loss_pct ?? 15);
+}
+
+function syncDailyLossControlValues({ enabled, pct }) {
+  if (els.dailyLossGuardEnabled && enabled != null) {
+    els.dailyLossGuardEnabled.checked = Boolean(enabled);
+  }
+  if (els.telegramDailyLossGuardEnabled && enabled != null) {
+    els.telegramDailyLossGuardEnabled.checked = Boolean(enabled);
+  }
+  if (els.dailyLossGuardPct && pct != null) {
+    els.dailyLossGuardPct.value = pct;
+  }
+  if (els.telegramDailyLossGuardPct && pct != null) {
+    els.telegramDailyLossGuardPct.value = pct;
+  }
 }
 
 function isDailyLossHalted(dailyRisk) {
@@ -1502,20 +1701,21 @@ function isDailyLossHalted(dailyRisk) {
   return Boolean(dailyRisk?.enabled && dailyRisk?.halted);
 }
 
-function renderDailyRiskStatus(dailyRisk) {
-  if (!els.dailyRiskStatus) return;
+function renderDailyRiskStatus(dailyRisk, target = els.dailyRiskStatus) {
+  if (!target) return;
   if (!dailyRisk || dailyRisk.error) {
-    els.dailyRiskStatus.textContent = dailyRisk?.error ? `Daily loss unavailable: ${dailyRisk.error}` : "Daily loss: —";
-    els.dailyRiskStatus.className = "panel-hint field-full";
+    target.textContent = dailyRisk?.error ? `Daily loss unavailable: ${dailyRisk.error}` : "Daily loss: —";
+    target.className = "panel-hint field-full";
     return;
   }
   if (!dailyRisk.enabled || !isDailyLossGuardEnabled()) {
-    els.dailyRiskStatus.textContent = "Daily loss guard is off.";
-    els.dailyRiskStatus.className = "panel-hint field-full";
+    target.textContent = "Daily loss guard is off.";
+    target.className = "panel-hint field-full";
     return;
   }
 
   const startEquity = dailyRisk.start_equity ?? dailyRisk.start_balance ?? 0;
+  const peakEquity = dailyRisk.peak_equity ?? startEquity;
   const loss = Number(dailyRisk.loss || 0);
   const limit = Number(dailyRisk.loss_limit || 0);
   const remaining = Number(dailyRisk.remaining ?? Math.max(0, limit - loss));
@@ -1524,20 +1724,23 @@ function renderDailyRiskStatus(dailyRisk) {
   const dailyPnl = Number(dailyRisk.daily_pnl || 0);
   const pnlText = dailyPnl >= 0 ? `day P/L ${formatMoney(dailyPnl)}` : `day P/L ${formatMoney(dailyPnl)}`;
 
-  els.dailyRiskStatus.textContent =
-    `Start equity ${formatLossAmount(startEquity)} · ${pnlText} · drawdown ${formatLossAmount(loss)} / ${formatLossAmount(limit)} (${pctUsed.toFixed(1)}% of ${maxPct}% limit · ${formatLossAmount(remaining)} left)`;
-  els.dailyRiskStatus.className = dailyRisk.halted
+  target.textContent =
+    `Peak equity ${formatLossAmount(peakEquity)} · ${pnlText} · drawdown ${formatLossAmount(loss)} / ${formatLossAmount(limit)} (${pctUsed.toFixed(1)}% of ${maxPct}% limit · ${formatLossAmount(remaining)} left)`;
+  target.className = dailyRisk.halted
     ? "panel-hint field-full live-warning"
     : "panel-hint field-full";
 }
 
+function renderDailyRiskStatuses(dailyRisk) {
+  renderDailyRiskStatus(dailyRisk, els.dailyRiskStatus);
+  renderDailyRiskStatus(dailyRisk, els.telegramDailyRiskStatus);
+}
+
 function syncDailyRiskSettings(configLike = botConfig) {
-  if (els.dailyLossGuardEnabled) {
-    els.dailyLossGuardEnabled.checked = configLike?.risk?.use_daily_loss_guard !== false;
-  }
-  if (els.dailyLossGuardPct && configLike?.risk?.max_daily_loss_pct != null) {
-    els.dailyLossGuardPct.value = configLike.risk.max_daily_loss_pct;
-  }
+  syncDailyLossControlValues({
+    enabled: configLike?.risk?.use_daily_loss_guard !== false,
+    pct: configLike?.risk?.max_daily_loss_pct ?? 15,
+  });
 }
 
 function renderAutoRunStatus(status) {
@@ -1594,7 +1797,7 @@ function renderAutoRunStatus(status) {
     els.autoRunHint.textContent = `Live mode: ${formatStrategy(displayStrategy)}. Listening every ${status.poll_seconds}s. New signals auto-place orders in MT5, ${profileText}.`;
     els.autoRunHint.className = "panel-hint live-warning";
   }
-  renderDailyRiskStatus(status.daily_risk);
+  renderDailyRiskStatuses(status.daily_risk);
 }
 
 async function refreshDailyRiskStatus() {
@@ -1602,10 +1805,10 @@ async function refreshDailyRiskStatus() {
     const response = await fetch("/api/daily-risk", { cache: "no-store" });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to load daily risk");
-    renderDailyRiskStatus(data);
+    renderDailyRiskStatuses(data);
     return data;
   } catch (error) {
-    renderDailyRiskStatus({ error: error.message });
+    renderDailyRiskStatuses({ error: error.message });
     return null;
   }
 }
@@ -1626,9 +1829,10 @@ async function refreshAutoRunStatus(includeMt5 = true) {
 }
 
 async function saveBotStrategy({ strategy, persist, silent = false } = {}) {
-  if (!els.autoRunStrategy) return null;
-  const selected = canonicalStrategy(strategy ?? selectedStrategy());
   const saveToConfig = persist ?? Boolean(els.autoRunSaveStrategy?.checked);
+  const selected = els.autoRunStrategy
+    ? canonicalStrategy(strategy ?? selectedStrategy())
+    : canonicalStrategy(strategy ?? botConfig?.bot?.strategy ?? "signal_with_tp_protection");
   setLoading(els.autoRunSaveBtn, true);
   try {
     const response = await fetch("/api/bot/settings", {
@@ -1637,8 +1841,8 @@ async function saveBotStrategy({ strategy, persist, silent = false } = {}) {
       body: JSON.stringify({
         strategy: selected,
         signal_algorithm: els.autoRunSignalAlgorithm?.value || botConfig?.bot?.signal_algorithm,
-        use_daily_loss_guard: Boolean(els.dailyLossGuardEnabled?.checked),
-        max_daily_loss_pct: Number(els.dailyLossGuardPct?.value),
+        use_daily_loss_guard: dailyLossGuardEnabledFromUi(),
+        max_daily_loss_pct: dailyLossGuardPctFromUi(),
         persist: saveToConfig,
       }),
     });
@@ -2073,6 +2277,7 @@ async function saveTelegramSettings({ silent = false } = {}) {
     if (!silent) {
       toast("Telegram settings saved to config.yaml", "success");
     }
+    await saveBotStrategy({ persist: true, silent: true });
     return data;
   } catch (error) {
     if (!silent) toast(error.message, "error");
@@ -2397,6 +2602,7 @@ async function refreshTelegramStatus({ full = false } = {}) {
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to load Telegram copier status");
     renderTelegramStatus(data, { full });
+    void refreshDailyRiskStatus();
   } catch (error) {
     if (els.telegramError) {
       els.telegramError.textContent = error.message;
@@ -2561,6 +2767,7 @@ function renderConfig(config) {
     }
     syncStrategyUi(config.bot?.strategy);
     syncSignalAlgorithmUi(config.bot?.signal_algorithm);
+    syncForexTradeSettingsFromConfig(config.bot?.forex_trade);
     if (els.statSymbols) {
       els.statSymbols.textContent = config.symbol_stats
         ? `${config.symbol_stats.enabled} / ${config.symbol_stats.total}`
@@ -2888,6 +3095,7 @@ async function loadConfig() {
   const page = currentPage();
   if (page === "settings") {
     await loadSymbolSettings();
+    await loadForexTradeSettings();
     return;
   }
   const response = await fetch("/api/config", { cache: "no-store" });
@@ -3328,6 +3536,7 @@ async function init() {
   els.resetTimeframesBtn?.addEventListener("click", resetTimeframes);
   els.optimizeTimeframesBtn?.addEventListener("click", optimizeTimeframes);
   els.saveLotsBtn?.addEventListener("click", saveLots);
+  els.forexTradeSaveBtn?.addEventListener("click", () => saveForexTradeSettings({ silent: false }));
   els.snapshotForm?.addEventListener("submit", saveSnapshot);
   els.mt5TestTradeBtn?.addEventListener("click", placeMt5TestTrade);
   els.snapshotRefreshBtn?.addEventListener("click", refreshSnapshots);
@@ -3367,11 +3576,10 @@ async function init() {
   els.autoRunSaveBtn?.addEventListener("click", () => saveBotStrategy({ silent: false, persist: true }));
   els.autoRunStrategy?.addEventListener("change", () => onBotSettingsChanged());
   els.autoRunSignalAlgorithm?.addEventListener("change", () => onBotSettingsChanged());
-  els.dailyLossGuardEnabled?.addEventListener("change", () => {
-    onBotSettingsChanged();
-    void refreshAutoRunStatus(false);
-  });
-  els.dailyLossGuardPct?.addEventListener("change", () => onBotSettingsChanged());
+  els.dailyLossGuardEnabled?.addEventListener("change", () => onDailyLossSettingsChanged("live"));
+  els.dailyLossGuardPct?.addEventListener("change", () => onDailyLossSettingsChanged("live"));
+  els.telegramDailyLossGuardEnabled?.addEventListener("change", () => onDailyLossSettingsChanged("telegram"));
+  els.telegramDailyLossGuardPct?.addEventListener("change", () => onDailyLossSettingsChanged("telegram"));
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
   els.telegramSaveBtn?.addEventListener("click", () => saveTelegramSettings({ silent: false }));

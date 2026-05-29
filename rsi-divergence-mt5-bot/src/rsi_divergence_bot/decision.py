@@ -222,7 +222,7 @@ def evaluate_trade_signal(
                 "daily_loss_guard",
                 (
                     f"setup risk ${risk_usd:.2f} > daily cap ${daily_cap:.2f} "
-                    f"({max_daily_loss_pct:g}% of start-of-day balance ${day_start_balance:.2f})"
+                    f"({max_daily_loss_pct:g}% of intraday peak equity ${day_start_balance:.2f})"
                 ),
             )
 

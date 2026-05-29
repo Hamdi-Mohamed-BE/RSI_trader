@@ -7,8 +7,8 @@ from .mt5_client import MT5Client
 from .state import StateStore
 
 
-def daily_loss_setup_risk_cap(day_start_balance: float, max_daily_loss_pct: float) -> float:
-    return round(day_start_balance * max_daily_loss_pct / 100.0, 2)
+def daily_loss_setup_risk_cap(reference_equity: float, max_daily_loss_pct: float) -> float:
+    return round(reference_equity * max_daily_loss_pct / 100.0, 2)
 
 
 def resolve_day_start_equity(
@@ -78,6 +78,7 @@ def compute_daily_risk_status(
     stored = state.read().get("daily_risk", {})
     if stored.get("date") != today:
         start_equity = round(equity, 2)
+        peak_equity = start_equity
     else:
         start_equity = resolve_day_start_equity(
             client,
@@ -87,11 +88,13 @@ def compute_daily_risk_status(
             now=now,
             stored=stored,
         )
+        stored_peak = stored.get("peak_equity")
+        peak_equity = max(float(stored_peak) if stored_peak is not None else start_equity, round(equity, 2))
 
-    loss_limit = round(start_equity * float(max_pct) / 100.0, 2)
+    loss_limit = round(peak_equity * float(max_pct) / 100.0, 2)
     daily_pnl = round(equity - start_equity, 2)
-    loss = round(max(0.0, start_equity - equity), 2)
-    loss_pct = round((loss / start_equity * 100.0) if start_equity > 0 else 0.0, 2)
+    loss = round(max(0.0, peak_equity - equity), 2)
+    loss_pct = round((loss / peak_equity * 100.0) if peak_equity > 0 else 0.0, 2)
     remaining = round(max(0.0, loss_limit - loss), 2)
     halted = loss_limit > 0 and loss >= loss_limit
 
@@ -101,6 +104,7 @@ def compute_daily_risk_status(
         "date": today,
         "start_equity": start_equity,
         "start_balance": start_equity,
+        "peak_equity": round(peak_equity, 2),
         "equity": round(equity, 2),
         "balance": round(balance, 2),
         "floating_pnl": round(floating_pnl, 2),
@@ -140,3 +144,17 @@ def resolve_day_start_balance(
     if start_equity is None:
         return None
     return float(start_equity)
+
+
+def resolve_daily_loss_reference_equity(
+    client: MT5Client,
+    state: StateStore,
+    risk_cfg: RiskConfig,
+) -> float | None:
+    if not risk_cfg.daily_loss_guard_active():
+        return None
+    status = compute_daily_risk_status(client, state, risk_cfg)
+    reference = status.get("peak_equity", status.get("start_equity"))
+    if reference is None:
+        return None
+    return float(reference)

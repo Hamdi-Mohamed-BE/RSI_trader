@@ -96,6 +96,20 @@ def test_daily_loss_guard_resets_limit_on_new_utc_day():
     assert loss_limit == 135.0
 
 
+def test_daily_loss_guard_uses_intraday_peak():
+    guard = DailyLossGuard(1000.0, 15.0)
+    guard.balance = 1800.0
+    ts = 1_704_067_200
+    allowed, _, _ = guard.check_entry(_FixedEquityClient(), ts)
+    assert allowed is True
+
+    guard.balance = 1530.0
+    allowed, loss, loss_limit = guard.check_entry(_FixedEquityClient(), ts + 3600)
+    assert loss == 270.0
+    assert loss_limit == 270.0
+    assert allowed is False
+
+
 def test_daily_loss_setup_risk_cap():
     assert daily_loss_setup_risk_cap(1037.97, 15.0) == 155.70
 

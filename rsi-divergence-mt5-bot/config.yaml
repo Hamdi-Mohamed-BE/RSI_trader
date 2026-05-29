@@ -10,12 +10,14 @@ mt5:
   timeout: 300
   broker_symbol_suffix: -VIP
   append_broker_symbol_suffix: true
+  auto_enable_algo_trading: true
+  is_demo: true
 bot:
   dry_run: false
   auto_start: false
   poll_seconds: 5
   magic: 260521
-  strategy: signal_full_no_tp_protection
+  strategy: signal_no_tp_protection
   signal_algorithm: silver_optimized
   silver_optimized:
     preset: auto
@@ -32,6 +34,24 @@ bot:
     custom_stop_atr: 2.2
     custom_tp_atr: 3.5
     custom_trail_atr: 1.6
+  forex_trade:
+    timeframe: H1
+    bars: 300
+    risk_per_trade: 0.25
+    use_risk_based_lot: true
+    max_spread_points: 25.0
+    use_spread_filter: true
+    rsi_period: 14
+    rsi_long_entry: 30.0
+    rsi_short_entry: 70.0
+    rsi_long_exit: 50.0
+    rsi_short_exit: 50.0
+    stop_loss_pct: 0.05
+    take_profit_pct: 0.125
+    use_trend_filter: true
+    trend_ema_period: 200
+    symbol_keys:
+    - EURUSD
   trade_decision_profile: balanced
   max_concurrent_setups: 20
   state_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\state.json
@@ -81,12 +101,16 @@ telegram_signals:
   gemini_api_key: AIzaSyD_ge3sM3CSH6RCZsmyAPOuUfQTECcEZzI
   gemini_model: gemini-3-flash-preview
   ignore_open_symbol_trades: true
+  protect_tp: true
   max_tps: 5
   default_lot: null
   max_message_age_seconds: 300
+  sl_refresh_seconds: 60
 symbols:
 - symbol: BTCUSD
   name: Bitcoin
+  demo_symbol: BTCUSD
+  live_symbol: BTCUSD
   market_key_override: null
   enabled: true
   timeframe: M4
@@ -105,6 +129,8 @@ symbols:
   max_wait_bars: 8
 - symbol: XAUUSD-VIP
   name: Gold
+  demo_symbol: XAUUSD-VIP
+  live_symbol: XAUUSD-VIP
   market_key_override: null
   enabled: true
   timeframe: M5
@@ -123,6 +149,8 @@ symbols:
   max_wait_bars: 8
 - symbol: XAGUSD-VIP
   name: Silver
+  demo_symbol: XAGUSD-VIP
+  live_symbol: XAGUSD-VIP
   market_key_override: null
   enabled: true
   timeframe: M4
@@ -142,6 +170,8 @@ symbols:
   max_wait_bars: 8
 - symbol: AUDUSD-VIP
   name: AUDUSD
+  demo_symbol: AUDUSD-VIP
+  live_symbol: AUDUSD-VIP
   market_key_override: null
   enabled: false
   timeframe: M15
@@ -161,6 +191,8 @@ symbols:
   max_wait_bars: 8
 - symbol: USDCAD-VIP
   name: USDCAD
+  demo_symbol: USDCAD-VIP
+  live_symbol: USDCAD-VIP
   market_key_override: null
   enabled: false
   timeframe: M6
@@ -179,6 +211,8 @@ symbols:
   max_wait_bars: 8
 - symbol: USDJPY-VIP
   name: USDJPY
+  demo_symbol: USDJPY-VIP
+  live_symbol: USDJPY-VIP
   market_key_override: null
   enabled: false
   timeframe: M5
@@ -197,6 +231,8 @@ symbols:
   max_wait_bars: 8
 - symbol: EURGBP-VIP
   name: EURGBP
+  demo_symbol: EURGBP-VIP
+  live_symbol: EURGBP-VIP
   market_key_override: null
   enabled: false
   timeframe: H1
@@ -215,6 +251,8 @@ symbols:
   max_wait_bars: 8
 - symbol: AUDCAD-VIP
   name: AUDCAD
+  demo_symbol: AUDCAD-VIP
+  live_symbol: AUDCAD-VIP
   market_key_override: null
   enabled: false
   timeframe: H1
@@ -233,6 +271,8 @@ symbols:
   max_wait_bars: 8
 - symbol: GBPCHF-VIP
   name: GBPCHF
+  demo_symbol: GBPCHF-VIP
+  live_symbol: GBPCHF-VIP
   market_key_override: null
   enabled: false
   timeframe: H1
@@ -251,6 +291,8 @@ symbols:
   max_wait_bars: 8
 - symbol: EURUSD-VIP
   name: EURUSD
+  demo_symbol: EURUSD-VIP
+  live_symbol: EURUSD-VIP
   market_key_override: null
   enabled: false
   timeframe: M1
@@ -268,6 +310,8 @@ symbols:
   max_wait_bars: 8
 - symbol: GBPUSD-VIP
   name: GBPUSD
+  demo_symbol: GBPUSD-VIP
+  live_symbol: GBPUSD-VIP
   market_key_override: null
   enabled: false
   timeframe: M30
@@ -285,6 +329,8 @@ symbols:
   max_wait_bars: 8
 - symbol: ETHUSD
   name: ETHUSD
+  demo_symbol: ETHUSD
+  live_symbol: ETHUSD
   market_key_override: null
   enabled: false
   timeframe: M5
@@ -303,6 +349,8 @@ symbols:
   max_wait_bars: 8
 - symbol: SOLUSD
   name: SOLUSD
+  demo_symbol: SOLUSD
+  live_symbol: SOLUSD
   market_key_override: null
   enabled: false
   timeframe: M3
@@ -321,6 +369,8 @@ symbols:
   max_wait_bars: 8
 - symbol: XRPUSD
   name: Ripple
+  demo_symbol: XRPUSD
+  live_symbol: XRPUSD
   market_key_override: null
   enabled: false
   timeframe: H4
@@ -339,6 +389,8 @@ symbols:
   max_wait_bars: 8
 - symbol: ADAUSD
   name: Cardano
+  demo_symbol: ADAUSD
+  live_symbol: ADAUSD
   market_key_override: null
   enabled: false
   timeframe: M30
@@ -357,6 +409,8 @@ symbols:
   max_wait_bars: 8
 - symbol: BNBUSD
   name: Binance Coin
+  demo_symbol: BNBUSD
+  live_symbol: BNBUSD
   market_key_override: null
   enabled: false
   timeframe: M10
@@ -375,6 +429,8 @@ symbols:
   max_wait_bars: 8
 - symbol: LTCUSD
   name: Litecoin
+  demo_symbol: LTCUSD
+  live_symbol: LTCUSD
   market_key_override: null
   enabled: false
   timeframe: H4
@@ -393,6 +449,8 @@ symbols:
   max_wait_bars: 8
 - symbol: BCHUSD
   name: Bitcoin Cash
+  demo_symbol: BCHUSD
+  live_symbol: BCHUSD
   market_key_override: null
   enabled: false
   timeframe: H1
@@ -411,6 +469,8 @@ symbols:
   max_wait_bars: 8
 - symbol: DOTUSD
   name: Polkadot
+  demo_symbol: DOTUSD
+  live_symbol: DOTUSD
   market_key_override: null
   enabled: false
   timeframe: M15
@@ -429,6 +489,8 @@ symbols:
   max_wait_bars: 8
 - symbol: TRXUSD
   name: TRON
+  demo_symbol: TRXUSD
+  live_symbol: TRXUSD
   market_key_override: null
   enabled: false
   timeframe: M4
@@ -447,6 +509,8 @@ symbols:
   max_wait_bars: 8
 - symbol: XLMUSD
   name: Stellar Lumens
+  demo_symbol: XLMUSD
+  live_symbol: XLMUSD
   market_key_override: null
   enabled: false
   timeframe: H1
@@ -465,6 +529,8 @@ symbols:
   max_wait_bars: 8
 - symbol: UNIUSD
   name: Uniswap
+  demo_symbol: UNIUSD
+  live_symbol: UNIUSD
   market_key_override: null
   enabled: false
   timeframe: H4
@@ -483,6 +549,8 @@ symbols:
   max_wait_bars: 8
 - symbol: CL-OIL-VIP
   name: Oil
+  demo_symbol: CL-OIL-VIP
+  live_symbol: CL-OIL-VIP
   market_key_override: null
   enabled: true
   timeframe: M20
@@ -501,6 +569,8 @@ symbols:
   max_wait_bars: 8
 - symbol: EURJPY-VIP
   name: EURJPY
+  demo_symbol: EURJPY-VIP
+  live_symbol: EURJPY-VIP
   market_key_override: null
   enabled: false
   timeframe: M4
@@ -520,6 +590,8 @@ symbols:
   max_wait_bars: 8
 - symbol: GBPJPY-VIP
   name: GBPJPY
+  demo_symbol: GBPJPY-VIP
+  live_symbol: GBPJPY-VIP
   market_key_override: null
   enabled: false
   timeframe: M1
@@ -539,6 +611,8 @@ symbols:
   max_wait_bars: 8
 - symbol: AUDJPY-VIP
   name: AUDJPY
+  demo_symbol: AUDJPY-VIP
+  live_symbol: AUDJPY-VIP
   market_key_override: null
   enabled: false
   timeframe: M2
@@ -558,6 +632,8 @@ symbols:
   max_wait_bars: 8
 - symbol: CADJPY-VIP
   name: CADJPY
+  demo_symbol: CADJPY-VIP
+  live_symbol: CADJPY-VIP
   market_key_override: null
   enabled: false
   timeframe: M6
@@ -577,6 +653,8 @@ symbols:
   max_wait_bars: 8
 - symbol: NZDUSD-VIP
   name: NZDUSD
+  demo_symbol: NZDUSD-VIP
+  live_symbol: NZDUSD-VIP
   market_key_override: null
   enabled: false
   timeframe: M15
@@ -596,6 +674,8 @@ symbols:
   max_wait_bars: 8
 - symbol: NZDCAD-VIP
   name: NZDCAD
+  demo_symbol: NZDCAD-VIP
+  live_symbol: NZDCAD-VIP
   market_key_override: null
   enabled: false
   timeframe: M1
@@ -614,6 +694,8 @@ symbols:
   max_wait_bars: 8
 - symbol: EURCAD-VIP
   name: EURCAD
+  demo_symbol: EURCAD-VIP
+  live_symbol: EURCAD-VIP
   market_key_override: null
   enabled: false
   timeframe: M15
@@ -632,6 +714,8 @@ symbols:
   max_wait_bars: 8
 - symbol: GBPCAD-VIP
   name: GBPCAD
+  demo_symbol: GBPCAD-VIP
+  live_symbol: GBPCAD-VIP
   market_key_override: null
   enabled: false
   timeframe: M4
@@ -651,6 +735,8 @@ symbols:
   max_wait_bars: 8
 - symbol: EURAUD-VIP
   name: EURAUD
+  demo_symbol: EURAUD-VIP
+  live_symbol: EURAUD-VIP
   market_key_override: null
   enabled: false
   timeframe: M3
@@ -670,6 +756,8 @@ symbols:
   max_wait_bars: 8
 - symbol: GBPAUD-VIP
   name: GBPAUD
+  demo_symbol: GBPAUD-VIP
+  live_symbol: GBPAUD-VIP
   market_key_override: null
   enabled: false
   timeframe: M30

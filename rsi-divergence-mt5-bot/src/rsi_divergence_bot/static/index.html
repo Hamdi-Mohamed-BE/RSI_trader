@@ -139,6 +139,92 @@
       <section class="panel panel-wide" data-pages="settings">
         <div class="panel-header panel-header-split">
           <div>
+            <h2>Forex trade strategy</h2>
+            <p>RSI mean-reversion for majors (default: long below RSI 30, short above RSI 70, exit at RSI 50). Used when signal algorithm is <strong>Forex trade</strong> on the Live page.</p>
+          </div>
+          <div class="panel-actions">
+            <button id="forex-trade-save-btn" class="btn btn-secondary btn-sm" type="button">
+              <span class="btn-label">Save forex settings</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+        <form id="forex-trade-form" class="form-grid settings-defaults">
+          <label class="field">
+            <span>Timeframe</span>
+            <select id="forex-trade-timeframe" name="timeframe"></select>
+          </label>
+          <label class="field">
+            <span>History bars</span>
+            <input id="forex-trade-bars" type="number" min="100" max="2000" step="1" value="300">
+          </label>
+          <label class="field">
+            <span>Risk per trade (equity fraction)</span>
+            <input id="forex-trade-risk-per-trade" type="number" min="0.001" max="0.25" step="0.001" value="0.01">
+          </label>
+          <label class="field">
+            <span>Max spread (points)</span>
+            <input id="forex-trade-max-spread" type="number" min="1" step="1" value="25">
+          </label>
+          <label class="field">
+            <span>RSI period</span>
+            <input id="forex-trade-rsi-period" type="number" min="2" step="1" value="14">
+          </label>
+          <label class="field">
+            <span>Long entry (RSI below)</span>
+            <input id="forex-trade-rsi-long-entry" type="number" min="0" max="100" step="1" value="30">
+          </label>
+          <label class="field">
+            <span>Short entry (RSI above)</span>
+            <input id="forex-trade-rsi-short-entry" type="number" min="0" max="100" step="1" value="70">
+          </label>
+          <label class="field">
+            <span>Long exit (RSI at/above)</span>
+            <input id="forex-trade-rsi-long-exit" type="number" min="0" max="100" step="1" value="50">
+          </label>
+          <label class="field">
+            <span>Short exit (RSI at/below)</span>
+            <input id="forex-trade-rsi-short-exit" type="number" min="0" max="100" step="1" value="50">
+          </label>
+          <label class="field">
+            <span>Stop loss (% of price)</span>
+            <input id="forex-trade-stop-loss-pct" type="number" min="0.1" max="50" step="0.1" value="5">
+          </label>
+          <label class="field">
+            <span>Take profit (% of price)</span>
+            <input id="forex-trade-take-profit-pct" type="number" min="0.1" max="100" step="0.1" value="12.5">
+          </label>
+          <label class="field">
+            <span>Trend EMA period</span>
+            <input id="forex-trade-trend-ema" type="number" min="20" step="1" value="200">
+          </label>
+          <label class="field field-full">
+            <span>Symbol keys (comma-separated)</span>
+            <input id="forex-trade-symbol-keys" type="text" value="EURUSD">
+          </label>
+          <label class="toggle">
+            <input id="forex-trade-use-trend-filter" type="checkbox">
+            <span>200 EMA trend filter (only buy above EMA, only sell below)</span>
+          </label>
+          <label class="toggle">
+            <input id="forex-trade-use-risk-lot" type="checkbox" checked>
+            <span>Risk-based lot sizing (uses equity × risk per trade)</span>
+          </label>
+          <label class="toggle">
+            <input id="forex-trade-use-spread-filter" type="checkbox" checked>
+            <span>Spread filter (skip when spread exceeds max points)</span>
+          </label>
+          <p class="panel-hint field-full">
+            Defaults match the EUR/USD RSI backtest assumptions (RSI 14, 30/70 entries, 50 exits, 5% SL, 12.5% TP, H1).
+            Agent suggestions to try: entries 25/75, exits 45/55, tighter 0.5%/1.0% stops, enable trend filter.
+            Open positions also exit live when RSI reaches the exit level.
+          </p>
+        </form>
+      </section>
+
+      <section class="panel panel-wide" data-pages="settings">
+        <div class="panel-header panel-header-split">
+          <div>
             <h2>Settings snapshots</h2>
             <p>Save the full bot configuration (strategy, risk filters, symbols, sessions, lots) and restore it later with one click.</p>
           </div>
@@ -217,6 +303,7 @@
             <select id="backtest-signal-algorithm" name="signal_algorithm">
               <option value="rsi_divergence">RSI divergence</option>
               <option value="silver_optimized">Silver optimized (XAU/XAG/BTC trend pullback)</option>
+              <option value="forex_trade">Forex trade (RSI mean-reversion)</option>
             </select>
             <span class="panel-hint">Adaptive trend pullback for XAU, XAG, and BTC. Uses ATR stops, trailing, and regime exits in backtest.</span>
           </label>
@@ -464,6 +551,7 @@
             <select id="auto-run-signal-algorithm" name="signal_algorithm">
               <option value="rsi_divergence">RSI divergence</option>
               <option value="silver_optimized">Silver optimized (XAU/XAG/BTC trend pullback)</option>
+              <option value="forex_trade">Forex trade (RSI mean-reversion)</option>
             </select>
           </label>
           <label class="field field-full">
@@ -707,8 +795,17 @@
             <input id="telegram-ignore-open" type="checkbox" checked>
             <span>Skip new signals when that symbol already has an open MT5 position</span>
           </label>
+          <label class="toggle field-full">
+            <input id="telegram-daily-loss-guard-enabled" type="checkbox">
+            <span>Daily loss guard — block new trades when drawdown from intraday peak hits the limit</span>
+          </label>
+          <label class="field field-full">
+            <span>Max daily loss (% of intraday peak equity)</span>
+            <input id="telegram-daily-loss-guard-pct" type="number" min="0" max="100" step="0.1" value="15">
+          </label>
+          <p id="telegram-daily-risk-status" class="panel-hint field-full">Daily loss: loading…</p>
           <p class="panel-hint field-full">
-            Changes are saved to config.yaml when you click Save Telegram settings or toggle either option above.
+            Daily loss guard applies to Telegram copies and live bot trades. Changes are saved to config.yaml when you click Save Telegram settings, toggle options above, or adjust daily loss controls.
           </p>
         </div>
 
@@ -865,6 +962,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=64" defer></script>
+  <script src="/static/js/app.js?v=67" defer></script>
 </body>
 </html>

@@ -6,6 +6,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 
 from .config import AppConfig, trade_symbol_for_account
+from . import forex_trade
 from .daily_risk import compute_daily_risk_status
 from .decision import resolve_trade_filters
 from .mt5_client import MT5Client
@@ -82,11 +83,32 @@ class SignalBot:
                 ema_slow_len=signal.ema_slow_len,
                 atr_at_entry=signal.atr_at_entry,
             )
+        if signal.algorithm == "forex_trade":
+            forex_cfg = self.config.bot.forex_trade
+            spread_allowed, spread_reason = forex_trade.spread_ok(self.client, trade_symbol, forex_cfg)
+            if not spread_allowed:
+                self.logger.info("SPREAD SKIP %s %s", trade_symbol, spread_reason)
+                return "skipped"
+            lot = forex_trade.resolve_lot_size(
+                self.client,
+                trade_symbol,
+                signal.risk_distance,
+                forex_cfg,
+                fallback_lot=signal.lot_per_leg,
+            )
+            signal = forex_trade.with_lot(signal, lot)
         return self.executor.place_signal(signal)
 
     def run_once(self) -> ScanSummary:
         self.client.initialize()
         self.executor.manage_tp_protection()
+        if self.config.bot.signal_algorithm == "forex_trade":
+            forex_trade.manage_rsi_exits(
+                self.client,
+                self.config,
+                self.logger,
+                is_demo=self._is_demo_account(),
+            )
         summary = ScanSummary()
         daily_risk = self.daily_risk_status()
         summary.daily_halted = bool(daily_risk.get("halted"))
@@ -94,11 +116,11 @@ class SignalBot:
         summary.daily_loss_limit = float(daily_risk.get("loss_limit", 0.0) or 0.0)
         if summary.daily_halted:
             self.logger.warning(
-                "DAILY LOSS HALT active date=%s loss=%.2f limit=%.2f start_balance=%.2f equity=%.2f; no new trades today",
+                "DAILY LOSS HALT active date=%s loss=%.2f limit=%.2f peak_equity=%.2f equity=%.2f; no new trades today",
                 daily_risk.get("date"),
                 summary.daily_loss,
                 summary.daily_loss_limit,
-                float(daily_risk.get("start_balance", 0.0) or 0.0),
+                float(daily_risk.get("peak_equity", daily_risk.get("start_balance", 0.0)) or 0.0),
                 float(daily_risk.get("equity", 0.0) or 0.0),
             )
             return summary
@@ -106,10 +128,19 @@ class SignalBot:
         for symbol_cfg in self.config.enabled_symbols:
             try:
                 trade_symbol = trade_symbol_for_account(symbol_cfg, is_demo=self._is_demo_account())
-                df = self.client.rates(trade_symbol, symbol_cfg.timeframe, LIVE_SCAN_BARS)
+                if self.config.bot.signal_algorithm == "forex_trade":
+                    forex_cfg = self.config.bot.forex_trade
+                    if not forex_trade.symbol_allowed(symbol_cfg, forex_cfg):
+                        continue
+                    timeframe = forex_cfg.timeframe
+                    bars = max(LIVE_SCAN_BARS, forex_cfg.bars)
+                else:
+                    timeframe = symbol_cfg.timeframe
+                    bars = LIVE_SCAN_BARS
+                df = self.client.rates(trade_symbol, timeframe, bars)
                 signal = latest_closed_signal(self.config, df, symbol_cfg, self.config.risk)
                 if signal is None:
-                    self.logger.info("NO SIGNAL %s %s", symbol_cfg.symbol, symbol_cfg.timeframe)
+                    self.logger.info("NO SIGNAL %s %s", symbol_cfg.symbol, timeframe)
                     continue
                 summary.signals += 1
                 outcome = self._place_signal(signal)
