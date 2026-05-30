@@ -13,7 +13,6 @@ import time
 
 import config as cfg
 import mt5_client as mt5c
-from risk import tp_sl_usd
 from session import fetch_closed_profit
 from strategy import Side, get_scalp_signal, warm_up
 
@@ -31,24 +30,6 @@ class HFTScalper:
         self.running = False
         mt5c.log("Stopping…")
 
-    def _should_close(self, position) -> tuple[bool, str]:
-        if not cfg.USE_SOFTWARE_SLTP_BACKUP:
-            return False, ""
-        if position.sl > 0 and position.tp > 0:
-            return False, ""  # broker handles it
-
-        profit = position.profit + position.swap
-        tp_usd, sl_usd = tp_sl_usd(position.symbol)
-        if profit >= tp_usd:
-            return True, f"TP +${profit:.2f}"
-        if profit <= -sl_usd:
-            return True, f"SL ${profit:.2f}"
-        if cfg.MAX_POSITION_AGE_SECONDS > 0:
-            age = time.time() - position.time
-            if age >= cfg.MAX_POSITION_AGE_SECONDS:
-                return True, f"timeout {age:.0f}s pnl=${profit:.2f}"
-        return False, ""
-
     def _track_broker_closes(self) -> None:
         current = {p.ticket for p in mt5c.bot_positions(self.symbols)}
         closed = self.tracked_tickets - current
@@ -61,19 +42,10 @@ class HFTScalper:
         self.tracked_tickets = current
 
     def manage_open_positions(self) -> None:
+        """Track closes only — exits are handled by broker SL/TP on the order."""
         self._track_broker_closes()
-
         for pos in mt5c.bot_positions(self.symbols):
             self.tracked_tickets.add(pos.ticket)
-            should_close, reason = self._should_close(pos)
-            if not should_close:
-                continue
-            profit_before = pos.profit + pos.swap
-            if mt5c.close_position(pos):
-                self.session_pnl += profit_before
-                self.trades_closed += 1
-                self.tracked_tickets.discard(pos.ticket)
-                mt5c.log(f"  {pos.symbol} {reason} | session=${self.session_pnl:.2f}")
 
     def _cooldown_ok(self, symbol: str) -> bool:
         last = self.last_entry_time.get(symbol, 0.0)
@@ -133,8 +105,8 @@ class HFTScalper:
 
         mt5c.log(
             f"Scalper started | {len(self.symbols)} cryptos lot={cfg.LOT_SIZE} "
-            f"default TP=${cfg.TAKE_PROFIT_USD} SL=${cfg.STOP_LOSS_USD} "
-            f"broker SL/TP={'ON' if cfg.PLACE_BROKER_SLTP else 'OFF'} "
+            f"broker TP=${cfg.TAKE_PROFIT_USD} SL=${cfg.STOP_LOSS_USD} "
+            f"(broker SL/TP={'ON' if cfg.PLACE_BROKER_SLTP else 'OFF'} — bot does not force-close) "
             f"→ session goal ${cfg.SESSION_TARGET_PROFIT_USD}"
         )
         mt5c.log("Tip: enable Algo Trading in MT5 toolbar (green play button)")

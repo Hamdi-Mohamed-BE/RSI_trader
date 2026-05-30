@@ -41,8 +41,7 @@ SYMBOL_TP_SL_USD: dict[str, tuple[float, float]] = {
     "ADAUSD": (10.0, 5.0),
     "LTCUSD": (12.0, 6.0),
 }
-PLACE_BROKER_SLTP = True        # attach SL/TP to every order in MT5
-USE_SOFTWARE_SLTP_BACKUP = True # bot also closes if broker SL/TP missing
+PLACE_BROKER_SLTP = True        # attach SL/TP to every order in MT5 (only exit path for trades)
 
 # ── Session goal ─────────────────────────────────────────────────────────────
 SESSION_TARGET_PROFIT_USD = 100.0
@@ -56,7 +55,6 @@ STATUS_EVERY_SECONDS = 15
 # ── Timing ───────────────────────────────────────────────────────────────────
 LOOP_SLEEP_SECONDS = 0.5
 MIN_SECONDS_BETWEEN_ENTRIES = 60.0   # per symbol — wait before re-entering same coin
-MAX_POSITION_AGE_SECONDS = 0
 
 # ── Order execution ─────────────────────────────────────────────────────────
 DEVIATION_POINTS = 2000
