@@ -15,6 +15,7 @@ class DailyRiskStatusTests(unittest.TestCase):
         floating: float = 0.0,
         login: int = 1001,
         server: str = "Broker-Demo",
+        net_pnl: float = 0.0,
         balance_adj: float = 0.0,
     ) -> MagicMock:
         client = MagicMock()
@@ -26,6 +27,7 @@ class DailyRiskStatusTests(unittest.TestCase):
             "balance": balance,
             "floating_pnl": floating,
         }
+        client.net_pnl_since.return_value = net_pnl
         client.balance_adjustments_since.return_value = balance_adj
         return client
 
@@ -53,7 +55,7 @@ class DailyRiskStatusTests(unittest.TestCase):
         self.assertEqual(status["loss_floor_equity"], 240.0)
 
     def test_loss_halt_at_twenty_percent_of_start(self) -> None:
-        client = self._mock_client(equity=240.0)
+        client = self._mock_client(equity=240.0, net_pnl=-60.0)
         state = MagicMock()
         state.read.return_value = {
             "daily_risk": {
@@ -78,7 +80,7 @@ class DailyRiskStatusTests(unittest.TestCase):
         self.assertTrue(status["loss_halted"])
 
     def test_win_halt_when_profit_reaches_usd_target(self) -> None:
-        client = self._mock_client(equity=500.0)
+        client = self._mock_client(equity=500.0, net_pnl=200.0)
         state = MagicMock()
         state.read.return_value = {
             "daily_risk": {
@@ -107,7 +109,7 @@ class DailyRiskStatusTests(unittest.TestCase):
         self.assertEqual(status["halt_reason"], "win")
 
     def test_same_day_keeps_locked_start(self) -> None:
-        client = self._mock_client(equity=280.0)
+        client = self._mock_client(equity=280.0, net_pnl=-20.0)
         state = MagicMock()
         state.read.return_value = {
             "daily_risk": {
@@ -130,14 +132,16 @@ class DailyRiskStatusTests(unittest.TestCase):
         self.assertEqual(status["loss"], 20.0)
         self.assertFalse(status["halted"])
 
-    def test_deposit_does_not_count_as_loss(self) -> None:
-        client = self._mock_client(equity=600.0, balance_adj=300.0)
+    def test_deposit_and_withdrawal_do_not_count_as_trading_loss(self) -> None:
+        """MT5 +10k / -9.7k balance rows must not create a fake -$300 day P/L."""
+        client = self._mock_client(equity=301.84, floating=0.0)
+        client.net_pnl_since.return_value = 1.84
         state = MagicMock()
         state.read.return_value = {
             "daily_risk": {
-                "date": "2026-05-27",
+                "date": "2026-05-31",
                 "account_key": "1001@Broker-Demo",
-                "start_equity": 300.0,
+                "start_equity": 301.84,
             }
         }
         risk_cfg = RiskConfig(use_daily_loss_guard=True, max_daily_loss_pct=20.0)
@@ -146,11 +150,13 @@ class DailyRiskStatusTests(unittest.TestCase):
             "rsi_divergence_bot.daily_risk.datetime",
             wraps=datetime,
         ) as dt_mock:
-            dt_mock.now.return_value = datetime(2026, 5, 27, 12, 0, tzinfo=timezone.utc)
+            dt_mock.now.return_value = datetime(2026, 5, 31, 15, 0, tzinfo=timezone.utc)
             status = compute_daily_risk_status(client, state, risk_cfg)
 
-        self.assertEqual(status["daily_pnl"], 0.0)
+        self.assertEqual(status["daily_pnl"], 1.84)
         self.assertEqual(status["loss"], 0.0)
+        self.assertFalse(status["halted"])
+        client.balance_adjustments_since.assert_not_called()
 
     def test_account_switch_resets_start(self) -> None:
         client = self._mock_client(equity=300.0, login=2002, server="Broker-Live")

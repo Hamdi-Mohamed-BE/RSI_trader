@@ -24,10 +24,15 @@ def daily_risk_account_key(account: dict) -> str:
     return f"{int(login)}@{server}"
 
 
-def loss_from_day_start(start_equity: float, current_equity: float, balance_adjustment: float = 0.0) -> float:
-    """USD below day-start equity (deposits/withdrawals excluded)."""
-    adjusted_equity = float(current_equity) - float(balance_adjustment)
-    return round(max(0.0, float(start_equity) - adjusted_equity), 2)
+def loss_from_day_start(start_equity: float, current_equity: float) -> float:
+    """USD below day-start equity (trading only; balance ops are not subtracted here)."""
+    return round(max(0.0, float(start_equity) - float(current_equity)), 2)
+
+
+def trading_daily_pnl(client: MT5Client, day_start: datetime, floating_pnl: float) -> float:
+    """Today's P/L from closed buy/sell deals plus open floating — never deposit/withdrawal rows."""
+    closed_pnl = client.net_pnl_since(day_start)
+    return round(closed_pnl + float(floating_pnl), 2)
 
 
 def _disabled_daily_risk_payload(
@@ -116,19 +121,18 @@ def compute_daily_risk_status(
     same_context = stored.get("date") == today and stored.get("account_key") == account_key
 
     day_start = _utc_day_start(now)
-    balance_adjustment = client.balance_adjustments_since(day_start)
 
     if same_context:
         start_equity = round(float(stored.get("start_equity", equity)), 2)
     else:
         start_equity = round(equity, 2)
 
-    daily_pnl = round(equity - start_equity - balance_adjustment, 2)
+    daily_pnl = trading_daily_pnl(client, day_start, floating_pnl)
     gain = round(max(0.0, daily_pnl), 2)
 
     max_loss_pct = float(risk_cfg.max_daily_loss_pct or 0.0)
     loss_limit = round(start_equity * max_loss_pct / 100.0, 2) if loss_guard_enabled else 0.0
-    loss = loss_from_day_start(start_equity, equity, balance_adjustment) if loss_guard_enabled else 0.0
+    loss = loss_from_day_start(start_equity, equity) if loss_guard_enabled else 0.0
     loss_pct = round((loss / start_equity * 100.0) if start_equity > 0 and loss_guard_enabled else 0.0, 2)
     loss_remaining = round(max(0.0, loss_limit - loss), 2) if loss_guard_enabled else 0.0
     loss_floor_equity = round(start_equity - loss_limit, 2) if loss_guard_enabled else start_equity
