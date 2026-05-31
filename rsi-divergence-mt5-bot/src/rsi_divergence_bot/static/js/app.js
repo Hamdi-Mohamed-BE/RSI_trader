@@ -2072,9 +2072,10 @@ function renderDailyLossStatus(dailyRisk, target) {
   }
 
   const startEquity = dailyRisk.start_equity ?? dailyRisk.start_balance ?? 0;
-  const peakEquity = dailyRisk.peak_equity ?? startEquity;
+  const currentEquity = Number(dailyRisk.equity ?? startEquity);
+  const peakEquity = dailyRisk.peak_equity ?? Math.max(startEquity, currentEquity);
   const dailyPnl = Number(dailyRisk.daily_pnl || 0);
-  const loss = Number(dailyRisk.loss || 0);
+  const loss = Math.max(0, Number(dailyRisk.loss ?? Math.max(0, peakEquity - currentEquity)));
   const limit = Number(dailyRisk.loss_limit || 0);
   const remaining = Number(dailyRisk.loss_remaining ?? dailyRisk.remaining ?? Math.max(0, limit - loss));
   const halted = Boolean(dailyRisk.loss_halted || (dailyRisk.halted && dailyRisk.halt_reason === "loss"));
@@ -2089,6 +2090,7 @@ function renderDailyLossStatus(dailyRisk, target) {
     <div class="daily-guard-stat-grid">
       ${dailyGuardStatItem("Start", formatLossAmount(startEquity))}
       ${dailyGuardStatItem("Peak", formatLossAmount(peakEquity))}
+      ${dailyGuardStatItem("Equity", formatLossAmount(currentEquity))}
       ${dailyGuardStatItem("Day P/L", formatMoney(dailyPnl), pnlValueClass(dailyPnl))}
       ${dailyGuardStatItem("Drawdown", `${formatLossAmount(loss)} / ${formatLossAmount(limit)}`)}
       ${dailyGuardStatItem("Remaining", `${formatLossAmount(remaining)} left`)}

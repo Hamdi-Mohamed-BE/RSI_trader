@@ -542,9 +542,10 @@ class MT5Client:
         start_equity: float,
         current_equity: float,
     ) -> float:
-        """Highest equity reached today from UTC day-start, using MT5 deal history."""
-        peak = float(start_equity)
-        running = float(start_equity)
+        """Highest equity today: replay closed deals from day-start, then include live equity."""
+        day_open = float(start_equity)
+        peak = day_open
+        running = day_open
         end = datetime.now(timezone.utc)
         trading_types = self.trading_deal_types()
 
@@ -561,6 +562,7 @@ class MT5Client:
             running = round(running + delta, 2)
             peak = max(peak, running)
 
+        # Live equity includes open P/L; at a new daily high this is the peak.
         return round(max(peak, float(current_equity)), 2)
 
     def live_snapshot(self, bot_magic: int) -> dict:

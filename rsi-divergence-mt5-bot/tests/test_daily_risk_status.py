@@ -34,7 +34,13 @@ class DailyRiskStatusTests(unittest.TestCase):
         return client
 
     def test_new_day_snapshots_current_equity(self) -> None:
-        client = self._mock_client(equity=3398.5, balance=3781.46, floating=-382.96, net_pnl=0.0)
+        client = self._mock_client(
+            equity=3398.5,
+            balance=3781.46,
+            floating=-382.96,
+            net_pnl=0.0,
+            peak=3781.46,
+        )
         state = MagicMock()
         state.read.return_value = {
             "daily_risk": {
@@ -52,8 +58,10 @@ class DailyRiskStatusTests(unittest.TestCase):
             dt_mock.now.return_value = datetime(2026, 5, 27, 12, 0, tzinfo=timezone.utc)
             status = compute_daily_risk_status(client, state, risk_cfg)
 
-        self.assertEqual(status["start_equity"], 3398.5)
-        self.assertEqual(status["loss"], 0.0)
+        # equity + floating = start when no closed P/L today (open loss only)
+        self.assertEqual(status["start_equity"], 3781.46)
+        self.assertEqual(status["daily_pnl"], -382.96)
+        self.assertEqual(status["loss"], 382.96)
         self.assertFalse(status["halted"])
         self.assertEqual(status["data_source"], "mt5")
 
@@ -189,8 +197,32 @@ class DailyRiskStatusTests(unittest.TestCase):
         client.net_pnl_since.return_value = -150.0
         client.balance_adjustments_since.return_value = 0.0
         now = datetime(2026, 5, 27, 12, 0, tzinfo=timezone.utc)
-        start = resolve_day_start_equity(client, equity=3000.0, now=now)
-        self.assertEqual(start, 3150.0)
+        start = resolve_day_start_equity(client, equity=3000.0, now=now, floating_pnl=-25.0)
+        self.assertEqual(start, 3175.0)
+
+    def test_drawdown_zero_when_equity_is_at_intraday_peak(self) -> None:
+        client = self._mock_client(
+            equity=301.84,
+            balance=300.0,
+            floating=1.84,
+            net_pnl=0.0,
+            peak=301.84,
+        )
+        state = MagicMock()
+        state.read.return_value = {"daily_risk": {}}
+        risk_cfg = RiskConfig(use_daily_loss_guard=True, max_daily_loss_pct=20.0)
+
+        with unittest.mock.patch(
+            "rsi_divergence_bot.daily_risk.datetime",
+            wraps=datetime,
+        ) as dt_mock:
+            dt_mock.now.return_value = datetime(2026, 5, 31, 7, 55, tzinfo=timezone.utc)
+            status = compute_daily_risk_status(client, state, risk_cfg)
+
+        self.assertEqual(status["start_equity"], 300.0)
+        self.assertEqual(status["daily_pnl"], 1.84)
+        self.assertEqual(status["peak_equity"], 301.84)
+        self.assertEqual(status["loss"], 0.0)
 
     def test_compute_daily_risk_disabled(self) -> None:
         client = self._mock_client(equity=1000.0)

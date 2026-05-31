@@ -28,15 +28,21 @@ def resolve_day_start_equity(
     *,
     equity: float,
     now: datetime,
+    floating_pnl: float = 0.0,
 ) -> float:
-    """Reconstruct UTC day-start equity from today's MT5 deal history (not cached state)."""
+    """UTC day-start equity: current equity minus today's closed + open P/L and balance ops."""
     day_start = _utc_day_start(now)
     closed_pnl = client.net_pnl_since(day_start)
     balance_adjustment = client.balance_adjustments_since(day_start)
-    reconstructed = round(float(equity) - closed_pnl - balance_adjustment, 2)
+    reconstructed = round(float(equity) - closed_pnl - float(floating_pnl) - balance_adjustment, 2)
     if reconstructed <= 0:
         return round(float(equity), 2)
     return reconstructed
+
+
+def intraday_drawdown_usd(peak_equity: float, current_equity: float) -> float:
+    """Loss from today's high-water equity mark only (peak − current, never negative)."""
+    return round(max(0.0, float(peak_equity) - float(current_equity)), 2)
 
 
 def _disabled_daily_risk_payload(
@@ -119,15 +125,20 @@ def compute_daily_risk_status(
     same_context = stored.get("date") == today and stored.get("account_key") == account_key
 
     day_start = _utc_day_start(now)
-    start_equity = resolve_day_start_equity(client, equity=equity, now=now)
-    peak_equity = client.intraday_equity_peak_since(day_start, start_equity, equity)
     closed_pnl = client.net_pnl_since(day_start)
     daily_pnl = round(closed_pnl + floating_pnl, 2)
+    start_equity = resolve_day_start_equity(
+        client,
+        equity=equity,
+        now=now,
+        floating_pnl=floating_pnl,
+    )
+    peak_equity = client.intraday_equity_peak_since(day_start, start_equity, equity)
     gain = round(max(0.0, daily_pnl), 2)
 
     max_loss_pct = float(risk_cfg.max_daily_loss_pct or 0.0)
     loss_limit = round(peak_equity * max_loss_pct / 100.0, 2) if loss_guard_enabled else 0.0
-    loss = round(max(0.0, peak_equity - equity), 2) if loss_guard_enabled else 0.0
+    loss = intraday_drawdown_usd(peak_equity, equity) if loss_guard_enabled else 0.0
     loss_pct = round((loss / peak_equity * 100.0) if peak_equity > 0 and loss_guard_enabled else 0.0, 2)
     loss_remaining = round(max(0.0, loss_limit - loss), 2) if loss_guard_enabled else 0.0
     loss_halted = loss_guard_enabled and loss_limit > 0 and loss >= loss_limit
