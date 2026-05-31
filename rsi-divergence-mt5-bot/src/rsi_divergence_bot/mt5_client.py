@@ -418,13 +418,18 @@ class MT5Client:
                 return []
 
             rows: list[dict] = []
-            for deal in sorted(deals, key=lambda item: _field(item, "time", 0), reverse=True)[:limit]:
-                if _field(deal, "type") == self.mt5.DEAL_TYPE_BUY:
+            for deal in sorted(deals, key=lambda item: _field(item, "time", 0), reverse=True):
+                deal_type = _field(deal, "type")
+                if not self.is_trading_deal_type(deal_type):
+                    continue
+                if len(rows) >= limit:
+                    break
+                if deal_type == self._mt5_const("DEAL_TYPE_BUY", 0):
                     side = "buy"
-                elif _field(deal, "type") == self.mt5.DEAL_TYPE_SELL:
+                elif deal_type == self._mt5_const("DEAL_TYPE_SELL", 1):
                     side = "sell"
                 else:
-                    side = str(_field(deal, "type"))
+                    side = str(deal_type)
                 rows.append(
                     {
                         "ticket": int(_field(deal, "ticket", 0)),
@@ -541,24 +546,18 @@ class MT5Client:
         peak = float(start_equity)
         running = float(start_equity)
         end = datetime.now(timezone.utc)
-        buy_type = self._mt5_const("DEAL_TYPE_BUY", 0)
-        sell_type = self._mt5_const("DEAL_TYPE_SELL", 1)
-        balance_type = self._mt5_const("DEAL_TYPE_BALANCE", 2)
-        credit_type = self._mt5_const("DEAL_TYPE_CREDIT", 3)
+        trading_types = self.trading_deal_types()
 
         for deal in self.deals_range(start, end):
             deal_type = int(deal.get("type", -1))
-            if deal_type in {buy_type, sell_type}:
-                delta = (
-                    float(deal.get("profit", 0.0))
-                    + float(deal.get("commission", 0.0))
-                    + float(deal.get("swap", 0.0))
-                    + float(deal.get("fee", 0.0))
-                )
-            elif deal_type in {balance_type, credit_type}:
-                delta = float(deal.get("profit", 0.0))
-            else:
+            if deal_type not in trading_types:
                 continue
+            delta = (
+                float(deal.get("profit", 0.0))
+                + float(deal.get("commission", 0.0))
+                + float(deal.get("swap", 0.0))
+                + float(deal.get("fee", 0.0))
+            )
             running = round(running + delta, 2)
             peak = max(peak, running)
 
@@ -707,6 +706,28 @@ class MT5Client:
             return int(getattr(self.mt5, name))
         except Exception:  # noqa: BLE001
             return int(default)
+
+    def trading_deal_types(self) -> set[int]:
+        buy = self._mt5_const("DEAL_TYPE_BUY", 0)
+        sell = self._mt5_const("DEAL_TYPE_SELL", 1)
+        return {buy, sell}
+
+    def balance_deal_types(self) -> set[int]:
+        balance = self._mt5_const("DEAL_TYPE_BALANCE", 2)
+        credit = self._mt5_const("DEAL_TYPE_CREDIT", 3)
+        return {balance, credit}
+
+    def is_trading_deal_type(self, deal_type: object) -> bool:
+        try:
+            return int(deal_type) in self.trading_deal_types()
+        except (TypeError, ValueError):
+            return False
+
+    def is_balance_deal_type(self, deal_type: object) -> bool:
+        try:
+            return int(deal_type) in self.balance_deal_types()
+        except (TypeError, ValueError):
+            return False
 
     TRADE_PLACED = 10008
     TRADE_DONE = 10009

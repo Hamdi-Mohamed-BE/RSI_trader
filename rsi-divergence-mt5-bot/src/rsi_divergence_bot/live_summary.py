@@ -69,6 +69,8 @@ def build_live_summary(client: MT5Client, start: datetime | str, end: datetime |
     bucket_by_position: dict[int, str] = {}
 
     for deal in lookup_deals:
+        if deal.get("side") not in {"buy", "sell"}:
+            continue
         position_id = int(deal.get("position_id") or deal.get("order") or deal.get("ticket") or 0)
         bucket = _comment_bucket(deal.get("comment"))
         if position_id and bucket:
@@ -77,12 +79,10 @@ def build_live_summary(client: MT5Client, start: datetime | str, end: datetime |
     period_deals = [
         deal
         for deal in lookup_deals
-        if start_utc <= _parse_iso(deal["time"]) <= end_utc
+        if start_utc <= _parse_iso(deal["time"]) <= end_utc and deal.get("side") in {"buy", "sell"}
     ]
     grouped: dict[int, dict] = {}
     for deal in period_deals:
-        if deal.get("side") not in {"buy", "sell"}:
-            continue
         position_id = int(deal.get("position_id") or deal.get("order") or deal.get("ticket") or 0)
         key = position_id or int(deal.get("ticket") or 0)
         bucket = _comment_bucket(deal.get("comment")) or bucket_by_position.get(position_id, "other")

@@ -366,6 +366,14 @@ def update_append_broker_symbol_suffix(config: AppConfig, enabled: bool) -> None
     config.mt5.append_broker_symbol_suffix = bool(enabled)
 
 
+def mt5_is_demo_enabled(config: AppConfig) -> bool:
+    return bool(config.mt5.is_demo)
+
+
+def update_mt5_is_demo(config: AppConfig, enabled: bool) -> None:
+    config.mt5.is_demo = bool(enabled)
+
+
 def update_symbol_lots(config: AppConfig, lots: dict[str, float]) -> list[str]:
     updated: list[str] = []
     for symbol_cfg in config.symbols:

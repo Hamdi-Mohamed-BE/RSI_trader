@@ -25,6 +25,11 @@
         </div>
       </div>
       <div class="topbar-actions">
+        <label class="topbar-mt5-toggle toggle" title="Use Demo symbol or Live symbol from config for MT5 orders">
+          <input id="mt5-is-demo" type="checkbox" data-mt5-is-demo-input checked>
+          <span>Demo account symbols</span>
+        </label>
+        <span id="account-type-badge" class="badge badge-muted">Demo</span>
         <span id="loop-badge" class="badge badge-muted hidden">Loop stopped</span>
         <span id="mode-badge" class="badge badge-muted">Loading…</span>
         <span id="strategy-badge" class="badge badge-accent">—</span>
@@ -74,6 +79,15 @@
     </section>
 
     <main class="layout">
+      <section class="panel settings-mt5-bar" data-pages="settings">
+        <div class="settings-mt5-bar-inner">
+          <label class="toggle field-full">
+            <input id="settings-mt5-is-demo" type="checkbox" data-mt5-is-demo-input checked>
+            <span><strong>Demo account symbols</strong> — when on, bot and Telegram use each symbol’s <em>Demo symbol</em> column; when off, <em>Live symbol</em>. Saved to <code>config.yaml</code> (<code>mt5.is_demo</code>).</span>
+          </label>
+        </div>
+      </section>
+
       <section class="panel panel-wide" data-pages="settings">
         <div class="panel-header panel-header-split">
           <div>
@@ -110,7 +124,7 @@
           </label>
           <p class="panel-hint field-full">
             Set the MT5 symbol string for each market in <strong>Demo symbol</strong> and <strong>Live symbol</strong>.
-            Trades use demo names when <code>mt5.is_demo: true</code> in config.yaml, and live names otherwise.
+            Use the <strong>Demo account symbols</strong> toggle at the top of this page (or in the header) to choose which column is used.
             The broker tag toggle below is only a fallback for symbols not listed in config.
           </p>
           <p id="broker-symbol-suffix-hint" class="panel-hint field-full"></p>
@@ -1054,6 +1068,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=73" defer></script>
+  <script src="/static/js/app.js?v=74" defer></script>
 </body>
 </html>

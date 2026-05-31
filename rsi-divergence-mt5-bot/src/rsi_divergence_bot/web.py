@@ -25,6 +25,8 @@ from .config import (
     add_custom_symbol,
     append_broker_symbol_suffix_enabled,
     update_append_broker_symbol_suffix,
+    update_mt5_is_demo,
+    mt5_is_demo_enabled,
     default_symbol_lot,
     update_default_forex_lot,
     remove_telegram_channel,
@@ -68,6 +70,7 @@ class SymbolSettings(BaseModel):
     live_symbols: dict[str, str] = Field(default_factory=dict)
     default_forex_lot: float | None = Field(default=None, gt=0)
     append_broker_symbol_suffix: bool | None = None
+    is_demo: bool | None = None
     persist: bool = True
 
 
@@ -323,6 +326,18 @@ def create_app(
             "lots_used": {item.symbol: item.lot_per_leg for item in enabled},
         }
 
+    def symbol_settings_response(*, status: str) -> dict:
+        stats = symbol_stats()
+        return {
+            "status": status,
+            "symbols": symbol_payload(),
+            "symbol_stats": stats,
+            "default_forex_lot": config.risk.default_forex_lot,
+            "broker_symbol_suffix": broker_symbol_suffix(config),
+            "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
+            "is_demo": mt5_is_demo_enabled(config),
+        }
+
     def apply_symbol_settings(
         lots: dict[str, float],
         enabled: dict[str, bool],
@@ -549,6 +564,7 @@ def create_app(
             "timeframe_options": timeframe_options_payload(),
             "broker_symbol_suffix": broker_symbol_suffix(config),
             "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
+            "is_demo": mt5_is_demo_enabled(config),
         }
 
     @app.get("/api/config")
@@ -572,6 +588,7 @@ def create_app(
             "mt5": {
                 "broker_symbol_suffix": broker_symbol_suffix(config),
                 "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
+                "is_demo": mt5_is_demo_enabled(config),
             },
             "telegram_signals": {
                 "enabled": config.telegram_signals.enabled,
@@ -622,24 +639,28 @@ def create_app(
             if body.persist:
                 save_config(config_path, config)
 
+        if body.is_demo is not None:
+            update_mt5_is_demo(config, body.is_demo)
+            if body.persist:
+                save_config(config_path, config)
+
+        symbol_fields_changed = bool(
+            body.lots
+            or body.enabled
+            or body.timeframes
+            or body.demo_symbols
+            or body.live_symbols
+        )
         if (
-            not body.lots
-            and not body.enabled
-            and not body.timeframes
-            and not body.demo_symbols
-            and not body.live_symbols
+            not symbol_fields_changed
             and body.default_forex_lot is None
             and body.append_broker_symbol_suffix is None
+            and body.is_demo is None
         ):
-            stats = symbol_stats()
-            return {
-                "status": "noop",
-                "symbols": symbol_payload(),
-                "symbol_stats": stats,
-                "default_forex_lot": config.risk.default_forex_lot,
-                "broker_symbol_suffix": broker_symbol_suffix(config),
-                "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
-            }
+            return symbol_settings_response(status="noop")
+
+        if not symbol_fields_changed:
+            return symbol_settings_response(status="saved" if body.persist else "applied")
 
         symbols = apply_symbol_settings(
             body.lots,
@@ -649,14 +670,9 @@ def create_app(
             body.live_symbols,
             body.persist,
         )
-        stats = symbol_stats()
         return {
-            "status": "saved" if body.persist else "applied",
+            **symbol_settings_response(status="saved" if body.persist else "applied"),
             "symbols": symbols,
-            "symbol_stats": stats,
-            "default_forex_lot": config.risk.default_forex_lot,
-            "broker_symbol_suffix": broker_symbol_suffix(config),
-            "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
         }
 
     @app.post("/api/symbols/lots")

@@ -34,6 +34,8 @@ const STRATEGY_ALIASES = {
 const els = {
   loopBadge: document.getElementById("loop-badge"),
   modeBadge: document.getElementById("mode-badge"),
+  accountTypeBadge: document.getElementById("account-type-badge"),
+  mt5IsDemoInputs: () => Array.from(document.querySelectorAll("[data-mt5-is-demo-input]")),
   strategyBadge: document.getElementById("strategy-badge"),
   statSymbols: document.getElementById("stat-symbols"),
   statPoll: document.getElementById("stat-poll"),
@@ -888,6 +890,27 @@ function appendBrokerSymbolSuffixFromUi() {
   return Boolean(els.appendBrokerSymbolSuffix.checked);
 }
 
+function mt5IsDemoFromUi() {
+  const input = els.mt5IsDemoInputs().find((node) => node instanceof HTMLInputElement);
+  if (!input) return undefined;
+  return Boolean(input.checked);
+}
+
+function syncMt5IsDemoInputs(isDemo) {
+  for (const input of els.mt5IsDemoInputs()) {
+    if (input instanceof HTMLInputElement) {
+      input.checked = Boolean(isDemo);
+    }
+  }
+}
+
+function updateAccountTypeBadge(configLike = botConfig) {
+  if (!els.accountTypeBadge) return;
+  const isDemo = configLike?.mt5?.is_demo !== false;
+  els.accountTypeBadge.textContent = isDemo ? "Demo symbols" : "Live symbols";
+  els.accountTypeBadge.className = `badge ${isDemo ? "badge-warn" : "badge-live"}`;
+}
+
 function updateBrokerSymbolSuffixHint(configLike = botConfig) {
   if (!els.brokerSymbolSuffixHint) return;
   const suffix = configLike?.mt5?.broker_symbol_suffix || "-VIP";
@@ -909,10 +932,39 @@ function formatApiError(detail) {
   return "Request failed";
 }
 
+async function syncMt5IsDemoSetting({ persist = true, silent = false } = {}) {
+  const isDemo = mt5IsDemoFromUi();
+  if (isDemo === undefined) return null;
+
+  const response = await fetch("/api/symbols/settings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ is_demo: isDemo, persist }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to save demo account setting");
+
+  if (botConfig) {
+    botConfig.mt5 = botConfig.mt5 || {};
+    botConfig.mt5.is_demo = Boolean(data.is_demo);
+    syncMt5IsDemoInputs(data.is_demo);
+    updateAccountTypeBadge(botConfig);
+  }
+  if (!silent) {
+    toast(
+      data.is_demo ? "Using demo symbol names — saved to config.yaml" : "Using live symbol names — saved to config.yaml",
+      "success",
+    );
+    await refreshLogs();
+  }
+  return data;
+}
+
 async function syncSymbolSettings({ persist = true, silent = false, rerender = false } = {}) {
   const { lots, enabled, timeframes, demo_symbols, live_symbols } = collectSymbolSettings();
   const defaultForexLot = defaultForexLotFromUi();
   const appendBrokerSymbolSuffix = appendBrokerSymbolSuffixFromUi();
+  const isDemo = mt5IsDemoFromUi();
   if (
     !Object.keys(lots).length
     && !Object.keys(enabled).length
@@ -921,6 +973,7 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
     && !Object.keys(live_symbols).length
     && defaultForexLot === undefined
     && appendBrokerSymbolSuffix === undefined
+    && isDemo === undefined
   ) {
     return { status: "noop", symbols: botConfig?.symbols || [], symbol_stats: botConfig?.symbol_stats || null };
   }
@@ -936,6 +989,7 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
       live_symbols,
       default_forex_lot: defaultForexLot,
       append_broker_symbol_suffix: appendBrokerSymbolSuffix,
+      is_demo: isDemo,
       persist,
     }),
   });
@@ -960,6 +1014,12 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
     if (data.broker_symbol_suffix) {
       botConfig.mt5 = botConfig.mt5 || {};
       botConfig.mt5.broker_symbol_suffix = data.broker_symbol_suffix;
+    }
+    if (data.is_demo != null) {
+      botConfig.mt5 = botConfig.mt5 || {};
+      botConfig.mt5.is_demo = Boolean(data.is_demo);
+      syncMt5IsDemoInputs(data.is_demo);
+      updateAccountTypeBadge(botConfig);
     }
     updateBrokerSymbolSuffixHint(botConfig);
   }
@@ -3112,6 +3172,8 @@ function renderConfig(config) {
   if (els.appendBrokerSymbolSuffix) {
     els.appendBrokerSymbolSuffix.checked = config.mt5?.append_broker_symbol_suffix !== false;
   }
+  syncMt5IsDemoInputs(config.mt5?.is_demo !== false);
+  updateAccountTypeBadge(config);
   updateBrokerSymbolSuffixHint(config);
   syncDailyRiskSettings(config);
 
@@ -3483,6 +3545,10 @@ async function loadSymbolSettings() {
       botConfig.mt5 = botConfig.mt5 || {};
       botConfig.mt5.append_broker_symbol_suffix = data.append_broker_symbol_suffix;
     }
+    if (data.is_demo != null) {
+      botConfig.mt5 = botConfig.mt5 || {};
+      botConfig.mt5.is_demo = Boolean(data.is_demo);
+    }
   } else {
     botConfig = {
       symbols: data.symbols || [],
@@ -3492,6 +3558,7 @@ async function loadSymbolSettings() {
       mt5: {
         broker_symbol_suffix: data.broker_symbol_suffix || "-VIP",
         append_broker_symbol_suffix: data.append_broker_symbol_suffix !== false,
+        is_demo: data.is_demo !== false,
       },
     };
   }
@@ -3509,6 +3576,14 @@ async function loadSymbolSettings() {
   }
   if (els.appendBrokerSymbolSuffix) {
     els.appendBrokerSymbolSuffix.checked = data.append_broker_symbol_suffix !== false;
+  }
+  if (data.is_demo != null) {
+    syncMt5IsDemoInputs(data.is_demo);
+    if (botConfig) {
+      botConfig.mt5 = botConfig.mt5 || {};
+      botConfig.mt5.is_demo = Boolean(data.is_demo);
+    }
+    updateAccountTypeBadge(botConfig);
   }
   updateBrokerSymbolSuffixHint(botConfig);
   updateSymbolStats(data.symbol_stats);
@@ -3949,6 +4024,18 @@ async function init() {
     });
     scheduleSettingsSync({ persist: false, silent: true });
   });
+  for (const input of els.mt5IsDemoInputs()) {
+    input.addEventListener("change", () => {
+      const isDemo = mt5IsDemoFromUi();
+      syncMt5IsDemoInputs(isDemo);
+      if (botConfig) {
+        botConfig.mt5 = botConfig.mt5 || {};
+        botConfig.mt5.is_demo = Boolean(isDemo);
+      }
+      updateAccountTypeBadge(botConfig);
+      void syncMt5IsDemoSetting({ persist: true, silent: false });
+    });
+  }
   els.autoRunStartBtn?.addEventListener("click", startAutoRun);
   els.autoRunStopBtn?.addEventListener("click", stopAutoRun);
   els.autoRunSaveBtn?.addEventListener("click", () => saveBotStrategy({ silent: false, persist: true }));
