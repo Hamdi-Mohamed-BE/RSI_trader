@@ -154,7 +154,7 @@ class _SymbolAccumulator:
 
 
 class DailyLossGuard:
-    """Mirrors live daily loss guard: block entries when drawdown from intraday peak >= max_daily_loss_pct."""
+    """Mirrors live daily loss guard: block when equity is down >= max_daily_loss_pct of day-start."""
 
     def __init__(self, starting_balance: float, max_daily_loss_pct: float | None):
         self.enabled = max_daily_loss_pct is not None and max_daily_loss_pct > 0
@@ -162,7 +162,6 @@ class DailyLossGuard:
         self.balance = float(starting_balance)
         self.current_day: str | None = None
         self.day_start_balance = float(starting_balance)
-        self.day_peak_balance = float(starting_balance)
         self.open_trades: list[_OpenTrade] = []
 
     def _utc_day(self, unix: int) -> str:
@@ -191,9 +190,7 @@ class DailyLossGuard:
     def _roll_day(self, day: str, equity: float) -> None:
         if self.current_day == day:
             return
-        if self.current_day is not None:
-            self.day_start_balance = equity
-            self.day_peak_balance = equity
+        self.day_start_balance = equity
         self.current_day = day
 
     def check_entry(self, client: MT5Client, entry_unix: int) -> tuple[bool, float, float]:
@@ -201,9 +198,8 @@ class DailyLossGuard:
             return True, 0.0, 0.0
         equity = self.equity_at(client, entry_unix)
         self._roll_day(self._utc_day(entry_unix), equity)
-        self.day_peak_balance = max(self.day_peak_balance, equity)
-        loss_limit = round(self.day_peak_balance * self.max_daily_loss_pct / 100.0, 2)
-        loss = round(max(0.0, self.day_peak_balance - equity), 2)
+        loss_limit = round(self.day_start_balance * self.max_daily_loss_pct / 100.0, 2)
+        loss = round(max(0.0, self.day_start_balance - equity), 2)
         if loss_limit > 0 and loss >= loss_limit:
             return False, loss, loss_limit
         return True, loss, loss_limit
@@ -830,7 +826,7 @@ def _execute_backtest_jobs(
             filters=filters,
             market_position_keys=position_keys,
             active_setup_count=setup_count,
-            day_start_balance=daily_guard.day_peak_balance if daily_guard.enabled else None,
+            day_start_balance=daily_guard.day_start_balance if daily_guard.enabled else None,
         )
         if not decision.allowed:
             if skip_should_mark_seen(decision.code):

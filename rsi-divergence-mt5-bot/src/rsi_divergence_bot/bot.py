@@ -99,11 +99,11 @@ class SignalBot:
                 )
             else:
                 self.logger.warning(
-                    "DAILY LOSS HALT active date=%s loss=%.2f limit=%.2f peak_equity=%.2f equity=%.2f; no new trades today",
+                    "DAILY LOSS HALT active date=%s loss=%.2f limit=%.2f start=%.2f equity=%.2f; no new trades today",
                     daily_risk.get("date"),
                     summary.daily_loss,
                     summary.daily_loss_limit,
-                    float(daily_risk.get("peak_equity", daily_risk.get("start_balance", 0.0)) or 0.0),
+                    float(daily_risk.get("start_equity", daily_risk.get("start_balance", 0.0)) or 0.0),
                     float(daily_risk.get("equity", 0.0) or 0.0),
                 )
             return summary

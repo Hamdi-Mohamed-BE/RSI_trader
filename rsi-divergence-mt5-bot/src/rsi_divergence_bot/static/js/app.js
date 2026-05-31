@@ -2073,10 +2073,10 @@ function renderDailyLossStatus(dailyRisk, target) {
 
   const startEquity = dailyRisk.start_equity ?? dailyRisk.start_balance ?? 0;
   const currentEquity = Number(dailyRisk.equity ?? startEquity);
-  const peakEquity = dailyRisk.peak_equity ?? Math.max(startEquity, currentEquity);
   const dailyPnl = Number(dailyRisk.daily_pnl || 0);
-  const loss = Math.max(0, Number(dailyRisk.loss ?? Math.max(0, peakEquity - currentEquity)));
+  const loss = Math.max(0, Number(dailyRisk.loss ?? Math.max(0, startEquity - currentEquity)));
   const limit = Number(dailyRisk.loss_limit || 0);
+  const floorEquity = Number(dailyRisk.loss_floor_equity ?? startEquity - limit);
   const remaining = Number(dailyRisk.loss_remaining ?? dailyRisk.remaining ?? Math.max(0, limit - loss));
   const halted = Boolean(dailyRisk.loss_halted || (dailyRisk.halted && dailyRisk.halt_reason === "loss"));
   const headline = halted ? "Daily loss limit reached" : "Loss tracking";
@@ -2089,10 +2089,10 @@ function renderDailyLossStatus(dailyRisk, target) {
     </div>
     <div class="daily-guard-stat-grid">
       ${dailyGuardStatItem("Start", formatLossAmount(startEquity))}
-      ${dailyGuardStatItem("Peak (closed)", formatLossAmount(peakEquity))}
       ${dailyGuardStatItem("Equity", formatLossAmount(currentEquity))}
       ${dailyGuardStatItem("Day P/L", formatMoney(dailyPnl), pnlValueClass(dailyPnl))}
-      ${dailyGuardStatItem("Drawdown", `${formatLossAmount(loss)} / ${formatLossAmount(limit)}`)}
+      ${dailyGuardStatItem("Loss", `${formatLossAmount(loss)} / ${formatLossAmount(limit)}`)}
+      ${dailyGuardStatItem("Stop at", formatLossAmount(floorEquity))}
       ${dailyGuardStatItem("Remaining", `${formatLossAmount(remaining)} left`)}
     </div>
     ${dailyGuardProgressBar(loss, limit, "loss")}
@@ -2114,9 +2114,11 @@ function renderDailyWinStatus(dailyRisk, target) {
   }
 
   const startEquity = dailyRisk.start_equity ?? dailyRisk.start_balance ?? 0;
+  const currentEquity = Number(dailyRisk.equity ?? startEquity);
   const dailyPnl = Number(dailyRisk.daily_pnl || 0);
   const gain = Number(dailyRisk.gain || Math.max(0, dailyPnl));
   const winTarget = Number(dailyRisk.win_target || 0);
+  const winGoalEquity = Number(dailyRisk.win_goal_equity ?? startEquity + winTarget);
   const winRemaining = Number(dailyRisk.win_remaining ?? Math.max(0, winTarget - gain));
   const halted = Boolean(dailyRisk.win_halted || (dailyRisk.halted && dailyRisk.halt_reason === "win"));
   const headline = halted ? "Daily win target reached" : "Win tracking";
@@ -2129,8 +2131,10 @@ function renderDailyWinStatus(dailyRisk, target) {
     </div>
     <div class="daily-guard-stat-grid">
       ${dailyGuardStatItem("Start", formatLossAmount(startEquity))}
+      ${dailyGuardStatItem("Equity", formatLossAmount(currentEquity))}
       ${dailyGuardStatItem("Day P/L", formatMoney(dailyPnl), pnlValueClass(dailyPnl))}
-      ${dailyGuardStatItem("Gain", `${formatLossAmount(gain)} / ${formatLossAmount(winTarget)}`)}
+      ${dailyGuardStatItem("Profit", `${formatLossAmount(gain)} / ${formatLossAmount(winTarget)}`)}
+      ${dailyGuardStatItem("Goal at", formatLossAmount(winGoalEquity))}
       ${dailyGuardStatItem("To goal", `${formatLossAmount(winRemaining)} left`)}
     </div>
     ${dailyGuardProgressBar(gain, winTarget, "win")}

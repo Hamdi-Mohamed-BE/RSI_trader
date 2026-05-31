@@ -73,8 +73,10 @@ def test_daily_loss_guard_disabled():
 
 def test_daily_loss_guard_blocks_when_equity_below_limit():
     guard = DailyLossGuard(1000.0, 15.0)
+    ts = 1_704_067_200
+    guard.check_entry(_FixedEquityClient(), ts)
     guard.balance = 840.0
-    allowed, loss, loss_limit = guard.check_entry(_FixedEquityClient(), 1_700_000_000)
+    allowed, loss, loss_limit = guard.check_entry(_FixedEquityClient(), ts + 60)
     assert allowed is False
     assert loss == 160.0
     assert loss_limit == 150.0
@@ -82,12 +84,12 @@ def test_daily_loss_guard_blocks_when_equity_below_limit():
 
 def test_daily_loss_guard_resets_limit_on_new_utc_day():
     guard = DailyLossGuard(1000.0, 15.0)
-    guard.balance = 840.0
     day_one = 1_704_067_200  # 2024-01-01 00:00:00 UTC
     day_two = 1_704_153_600  # 2024-01-02 00:00:00 UTC
 
-    blocked, _, _ = guard.check_entry(_FixedEquityClient(), day_one)
-    assert blocked is False
+    guard.balance = 840.0
+    allowed, _, _ = guard.check_entry(_FixedEquityClient(), day_one)
+    assert allowed is True
 
     guard.balance = 900.0
     allowed, loss, loss_limit = guard.check_entry(_FixedEquityClient(), day_two)
@@ -96,7 +98,7 @@ def test_daily_loss_guard_resets_limit_on_new_utc_day():
     assert loss_limit == 135.0
 
 
-def test_daily_loss_guard_uses_intraday_peak():
+def test_daily_loss_guard_uses_day_start_not_intraday_high():
     guard = DailyLossGuard(1000.0, 15.0)
     guard.balance = 1800.0
     ts = 1_704_067_200
