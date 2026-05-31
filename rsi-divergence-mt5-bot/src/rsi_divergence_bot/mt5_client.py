@@ -531,6 +531,39 @@ class MT5Client:
                 total += float(_field(deal, "profit", 0.0))
             return round(total, 2)
 
+    def intraday_equity_peak_since(
+        self,
+        start: datetime,
+        start_equity: float,
+        current_equity: float,
+    ) -> float:
+        """Highest equity reached today from UTC day-start, using MT5 deal history."""
+        peak = float(start_equity)
+        running = float(start_equity)
+        end = datetime.now(timezone.utc)
+        buy_type = self._mt5_const("DEAL_TYPE_BUY", 0)
+        sell_type = self._mt5_const("DEAL_TYPE_SELL", 1)
+        balance_type = self._mt5_const("DEAL_TYPE_BALANCE", 2)
+        credit_type = self._mt5_const("DEAL_TYPE_CREDIT", 3)
+
+        for deal in self.deals_range(start, end):
+            deal_type = int(deal.get("type", -1))
+            if deal_type in {buy_type, sell_type}:
+                delta = (
+                    float(deal.get("profit", 0.0))
+                    + float(deal.get("commission", 0.0))
+                    + float(deal.get("swap", 0.0))
+                    + float(deal.get("fee", 0.0))
+                )
+            elif deal_type in {balance_type, credit_type}:
+                delta = float(deal.get("profit", 0.0))
+            else:
+                continue
+            running = round(running + delta, 2)
+            peak = max(peak, running)
+
+        return round(max(peak, float(current_equity)), 2)
+
     def live_snapshot(self, bot_magic: int) -> dict:
         payload: dict = {
             "updated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),

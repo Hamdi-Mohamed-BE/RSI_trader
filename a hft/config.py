@@ -6,12 +6,12 @@ All values are plain constants; change and re-run bot.py.
 # ── Symbols & connection ─────────────────────────────────────────────────────
 # USD crypto pairs on your broker — edit list to match Market Watch names
 SYMBOLS = [
-    "BTCUSD",
-    "ETHUSD",
-    "LTCUSD",
-    "SOLUSD",
-    "XRPUSD",
-    "ADAUSD",
+    "BTCUSDm",
+    "ETHUSDm",
+    "LTCUSDm",
+    "SOLUSDm",
+    "XRPUSDm",
+    "ADAUSDm",
 ]
 
 MT5_TERMINAL_PATH = None        # None = attach to already-open MT5 (recommended)
