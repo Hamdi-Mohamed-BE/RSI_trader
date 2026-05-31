@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 import pandas as pd
 
 from .config import AppConfig
+from .symbols import find_symbol_config, resolve_trade_symbol
 from .decision import TradeDecision, evaluate_trade_signal, historical_spread_price, resolve_trade_filters, skip_should_mark_seen
 from .live_session import LIVE_SCAN_BARS, collect_live_scan_opportunities, extended_history_start
 from .mt5_client import MT5Client
@@ -622,6 +623,11 @@ def _daily_loss_skip_decision(
     )
 
 
+def mt5_trade_symbol(symbol_cfg, config: AppConfig) -> str:
+    """Broker symbol from Settings (demo vs live), not the config table key alone."""
+    return resolve_trade_symbol(symbol_cfg.symbol, config, is_demo=config.mt5.is_demo)
+
+
 def _symbol_point(client: MT5Client, symbol: str, logger: logging.Logger | None = None) -> float:
     try:
         info = client.symbol_info(symbol)
@@ -643,7 +649,8 @@ def _collect_signal_jobs(
     end_unix: int,
     logger: logging.Logger | None = None,
 ) -> tuple[list[_SignalJob], int]:
-    point = _symbol_point(client, symbol_cfg.symbol, logger)
+    trade_symbol = mt5_trade_symbol(symbol_cfg, config)
+    point = _symbol_point(client, trade_symbol, logger)
     opportunities, raw_signals = collect_live_scan_opportunities(
         df,
         symbol_cfg,
@@ -981,17 +988,19 @@ def run_backtest(
     t0 = time.perf_counter()
     for index, symbol_cfg in enumerate(symbols, start=1):
         symbol_t0 = time.perf_counter()
+        trade_symbol = mt5_trade_symbol(symbol_cfg, config)
         if logger:
             logger.info(
-                "BACKTEST %s/%s %s %s",
+                "BACKTEST %s/%s %s mt5=%s %s",
                 index,
                 len(symbols),
                 symbol_cfg.symbol,
+                trade_symbol,
                 symbol_cfg.timeframe,
             )
         try:
             fetch_start = extended_history_start(start_utc, symbol_cfg.timeframe)
-            df = client.rates_range(symbol_cfg.symbol, symbol_cfg.timeframe, fetch_start, end_utc)
+            df = client.rates_range(trade_symbol, symbol_cfg.timeframe, fetch_start, end_utc)
         except Exception as exc:  # noqa: BLE001
             accumulators[symbol_cfg.symbol] = _SymbolAccumulator(
                 symbol_cfg=symbol_cfg,
@@ -1079,7 +1088,7 @@ def run_chart_backtest(
     filters = resolve_trade_filters(config)
     client.initialize()
 
-    symbol_cfg = next((item for item in config.symbols if item.symbol == symbol), None)
+    symbol_cfg = find_symbol_config(config.symbols, symbol)
     if symbol_cfg is None:
         raise ValueError(f"Unknown symbol: {symbol}")
 
@@ -1090,8 +1099,9 @@ def run_chart_backtest(
     start_unix = int(start_utc.timestamp())
     end_unix = int(end_utc.timestamp())
     effective_symbol_cfg = symbol_cfg.model_copy(update={"timeframe": timeframe})
+    trade_symbol = mt5_trade_symbol(symbol_cfg, config)
     fetch_start = extended_history_start(start_utc, timeframe)
-    df = client.rates_range(symbol, timeframe, fetch_start, end_utc)
+    df = client.rates_range(trade_symbol, timeframe, fetch_start, end_utc)
     symbol_result, _closed_trades, events = _run_symbol_backtest(
         client,
         config,
@@ -1161,11 +1171,12 @@ def optimize_symbol_timeframes(
                 len(candidates),
             )
 
+        trade_symbol = mt5_trade_symbol(symbol_cfg, config)
         for timeframe in candidates:
             effective_symbol_cfg = symbol_cfg.model_copy(update={"timeframe": timeframe})
             try:
                 fetch_start = extended_history_start(start_utc, timeframe)
-                df = client.rates_range(symbol_cfg.symbol, timeframe, fetch_start, end_utc)
+                df = client.rates_range(trade_symbol, timeframe, fetch_start, end_utc)
                 result, _closed_trades, _events = _run_symbol_backtest(
                     client,
                     config,
