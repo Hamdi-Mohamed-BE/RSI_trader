@@ -891,6 +891,8 @@ function appendBrokerSymbolSuffixFromUi() {
 }
 
 function mt5IsDemoFromUi() {
+  const preferred = document.getElementById("settings-mt5-is-demo") || document.getElementById("mt5-is-demo");
+  if (preferred instanceof HTMLInputElement) return Boolean(preferred.checked);
   const input = els.mt5IsDemoInputs().find((node) => node instanceof HTMLInputElement);
   if (!input) return undefined;
   return Boolean(input.checked);
@@ -964,7 +966,6 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
   const { lots, enabled, timeframes, demo_symbols, live_symbols } = collectSymbolSettings();
   const defaultForexLot = defaultForexLotFromUi();
   const appendBrokerSymbolSuffix = appendBrokerSymbolSuffixFromUi();
-  const isDemo = mt5IsDemoFromUi();
   if (
     !Object.keys(lots).length
     && !Object.keys(enabled).length
@@ -973,7 +974,6 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
     && !Object.keys(live_symbols).length
     && defaultForexLot === undefined
     && appendBrokerSymbolSuffix === undefined
-    && isDemo === undefined
   ) {
     return { status: "noop", symbols: botConfig?.symbols || [], symbol_stats: botConfig?.symbol_stats || null };
   }
@@ -989,7 +989,6 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
       live_symbols,
       default_forex_lot: defaultForexLot,
       append_broker_symbol_suffix: appendBrokerSymbolSuffix,
-      is_demo: isDemo,
       persist,
     }),
   });
@@ -2164,7 +2163,7 @@ function syncDailyRiskSettings(configLike = botConfig) {
   });
 }
 
-function renderAutoRunStatus(status) {
+function renderAutoRunStatus(status, includeDailyRisk = true) {
   if (!els.autoRunLabel || !els.autoRunDot) return;
 
   const running = Boolean(status.running);
@@ -2222,7 +2221,9 @@ function renderAutoRunStatus(status) {
     els.autoRunHint.textContent = `Live mode: ${formatStrategy(displayStrategy)}. Listening every ${status.poll_seconds}s. New signals auto-place orders in MT5, ${profileText}.`;
     els.autoRunHint.className = "panel-hint live-warning";
   }
-  renderDailyRiskStatuses(status.daily_risk);
+  if (includeDailyRisk && status.daily_risk?.start_equity != null && status.daily_risk?.equity != null) {
+    renderDailyRiskStatuses(status.daily_risk);
+  }
 }
 
 async function refreshDailyRiskStatus() {
@@ -2244,7 +2245,7 @@ async function refreshAutoRunStatus(includeMt5 = true) {
     const response = await fetch(`/api/auto-run/status${query}`, { cache: "no-store" });
     if (!response.ok) throw new Error("Failed to load auto-run status");
     const status = await response.json();
-    renderAutoRunStatus(status);
+    renderAutoRunStatus(status, includeMt5);
     if (!includeMt5) {
       void refreshDailyRiskStatus();
     }

@@ -24,6 +24,17 @@ def daily_risk_account_key(account: dict) -> str:
     return f"{int(login)}@{server}"
 
 
+def lock_day_start_equity(stored_start: float | None, equity: float, *, same_context: bool) -> float:
+    """Keep today's start unless missing/invalid; never leave start at 0 while equity is positive."""
+    if same_context and stored_start is not None:
+        start = round(float(stored_start), 2)
+    else:
+        start = round(float(equity), 2)
+    if start <= 0 and equity > 0:
+        start = round(float(equity), 2)
+    return max(start, 0.01)
+
+
 def loss_from_day_start(start_equity: float, current_equity: float) -> float:
     """USD below day-start equity (trading only; balance ops are not subtracted here)."""
     return round(max(0.0, float(start_equity) - float(current_equity)), 2)
@@ -123,9 +134,9 @@ def compute_daily_risk_status(
     day_start = _utc_day_start(now)
 
     if same_context:
-        start_equity = round(float(stored.get("start_equity", equity)), 2)
+        start_equity = lock_day_start_equity(stored.get("start_equity"), equity, same_context=True)
     else:
-        start_equity = round(equity, 2)
+        start_equity = lock_day_start_equity(None, equity, same_context=False)
 
     daily_pnl = trading_daily_pnl(client, day_start, floating_pnl)
     gain = round(max(0.0, daily_pnl), 2)

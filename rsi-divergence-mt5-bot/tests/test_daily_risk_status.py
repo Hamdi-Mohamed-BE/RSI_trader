@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from unittest.mock import MagicMock
 
 from rsi_divergence_bot.config import RiskConfig
-from rsi_divergence_bot.daily_risk import compute_daily_risk_status, loss_from_day_start
+from rsi_divergence_bot.daily_risk import compute_daily_risk_status, lock_day_start_equity, loss_from_day_start
 
 
 class DailyRiskStatusTests(unittest.TestCase):
@@ -34,6 +34,10 @@ class DailyRiskStatusTests(unittest.TestCase):
     def test_loss_from_day_start(self) -> None:
         self.assertEqual(loss_from_day_start(300.0, 240.0), 60.0)
         self.assertEqual(loss_from_day_start(300.0, 320.0), 0.0)
+
+    def test_lock_day_start_recovers_from_zero(self) -> None:
+        self.assertEqual(lock_day_start_equity(0, 392.35, same_context=True), 392.35)
+        self.assertEqual(lock_day_start_equity(None, 300.0, same_context=False), 300.0)
 
     def test_new_day_locks_start_equity(self) -> None:
         client = self._mock_client(equity=300.0)
@@ -181,6 +185,28 @@ class DailyRiskStatusTests(unittest.TestCase):
         self.assertEqual(status["account_key"], "2002@Broker-Live")
         self.assertEqual(status["start_equity"], 300.0)
         self.assertFalse(status["halted"])
+
+    def test_recovers_when_stored_start_is_zero(self) -> None:
+        client = self._mock_client(equity=392.35, net_pnl=1.84)
+        state = MagicMock()
+        state.read.return_value = {
+            "daily_risk": {
+                "date": "2026-05-31",
+                "account_key": "1001@Broker-Demo",
+                "start_equity": 0,
+            }
+        }
+        risk_cfg = RiskConfig(use_daily_loss_guard=True, max_daily_loss_pct=20.0)
+
+        with unittest.mock.patch(
+            "rsi_divergence_bot.daily_risk.datetime",
+            wraps=datetime,
+        ) as dt_mock:
+            dt_mock.now.return_value = datetime(2026, 5, 31, 15, 0, tzinfo=timezone.utc)
+            status = compute_daily_risk_status(client, state, risk_cfg)
+
+        self.assertEqual(status["start_equity"], 392.35)
+        self.assertEqual(status["loss"], 0.0)
 
     def test_compute_daily_risk_disabled(self) -> None:
         client = self._mock_client(equity=1000.0)
