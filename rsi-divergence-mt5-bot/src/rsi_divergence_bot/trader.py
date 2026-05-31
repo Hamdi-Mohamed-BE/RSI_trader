@@ -16,7 +16,7 @@ from .strategy_modes import (
     is_single_leg_strategy,
     tp_protection_enabled,
 )
-from .symbols import market_key
+from .symbols import find_symbol_config, market_key
 from .trade_geometry import invalid_market_geometry
 from .trade_execution import normalized_full_volume, normalized_partial_volumes, normalized_split_lot
 
@@ -695,10 +695,7 @@ class TradeExecutor:
         return True, "", entry
 
     def _symbol_cfg(self, symbol: str) -> SymbolConfig | None:
-        for item in self.config.symbols:
-            if item.symbol == symbol:
-                return item
-        return None
+        return find_symbol_config(self.config.symbols, symbol)
 
     def _position_market_keys(self) -> set[str]:
         positions = self.client.positions() or []

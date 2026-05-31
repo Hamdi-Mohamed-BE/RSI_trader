@@ -423,8 +423,19 @@ def update_symbol_trade_names(
 
 
 def trade_symbol_for_account(symbol_cfg: SymbolConfig, *, is_demo: bool) -> str:
-    chosen = symbol_cfg.demo_symbol if is_demo else symbol_cfg.live_symbol
-    return (chosen.strip() or symbol_cfg.symbol.strip())
+    from .symbols import settings_mt5_symbol
+
+    return settings_mt5_symbol(symbol_cfg, is_demo=is_demo)
+
+
+def apply_settings_mt5_symbol(signal, symbol_cfg: SymbolConfig, config: AppConfig):
+    """Ensure Signal.symbol is the MT5 name from Settings (demo vs live)."""
+    from dataclasses import replace
+
+    mt5_symbol = trade_symbol_for_account(symbol_cfg, is_demo=config.mt5.is_demo)
+    if signal.symbol == mt5_symbol:
+        return signal
+    return replace(signal, symbol=mt5_symbol)
 
 
 def update_symbol_timeframes(config: AppConfig, timeframes: dict[str, str]) -> list[str]:

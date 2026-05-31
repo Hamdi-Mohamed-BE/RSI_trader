@@ -5,7 +5,7 @@ import threading
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 
-from .config import AppConfig, trade_symbol_for_account
+from .config import AppConfig, apply_settings_mt5_symbol, trade_symbol_for_account
 from . import forex_trade
 from .daily_risk import compute_daily_risk_status
 from .decision import resolve_trade_filters
@@ -13,8 +13,6 @@ from .mt5_client import MT5Client
 from .live_session import LIVE_SCAN_BARS
 from .state import StateStore
 from .signal_engine import latest_closed_signal
-from .symbols import resolve_trade_symbol
-from .strategy import Signal
 from .trader import TradeExecutor
 
 
@@ -55,34 +53,9 @@ class SignalBot:
     def _is_demo_account(self) -> bool:
         return bool(self.config.mt5.is_demo)
 
-    def _place_signal(self, signal) -> str:
-        trade_symbol = resolve_trade_symbol(
-            signal.symbol,
-            self.config,
-            is_demo=self._is_demo_account(),
-            append_suffix=self.config.mt5.append_broker_symbol_suffix,
-        )
-        if trade_symbol != signal.symbol:
-            signal = Signal(
-                setup_id=signal.setup_id,
-                symbol=trade_symbol,
-                market_key=signal.market_key,
-                name=signal.name,
-                side=signal.side,
-                time=signal.time,
-                entry=signal.entry,
-                sl=signal.sl,
-                tps=list(signal.tps),
-                lot_per_leg=signal.lot_per_leg,
-                risk_distance=signal.risk_distance,
-                session=signal.session,
-                reason=signal.reason,
-                algorithm=signal.algorithm,
-                trail_atr_mult=signal.trail_atr_mult,
-                ema_fast_len=signal.ema_fast_len,
-                ema_slow_len=signal.ema_slow_len,
-                atr_at_entry=signal.atr_at_entry,
-            )
+    def _place_signal(self, signal, symbol_cfg) -> str:
+        signal = apply_settings_mt5_symbol(signal, symbol_cfg, self.config)
+        trade_symbol = signal.symbol
         if signal.algorithm == "forex_trade":
             forex_cfg = self.config.bot.forex_trade
             spread_allowed, spread_reason = forex_trade.spread_ok(self.client, trade_symbol, forex_cfg)
@@ -150,17 +123,24 @@ class SignalBot:
                 df = self.client.rates(trade_symbol, timeframe, bars)
                 signal = latest_closed_signal(self.config, df, symbol_cfg, self.config.risk)
                 if signal is None:
-                    self.logger.info("NO SIGNAL %s %s", symbol_cfg.symbol, timeframe)
+                    self.logger.info("NO SIGNAL %s mt5=%s %s", symbol_cfg.symbol, trade_symbol, timeframe)
                     continue
+                signal = apply_settings_mt5_symbol(signal, symbol_cfg, self.config)
                 summary.signals += 1
-                outcome = self._place_signal(signal)
+                outcome = self._place_signal(signal, symbol_cfg)
                 if outcome in ("placed", "paper"):
                     summary.placed += 1
                 else:
                     summary.skipped += 1
             except Exception as exc:  # noqa: BLE001
                 summary.errors += 1
-                self.logger.exception("SCAN ERROR %s %s: %s", symbol_cfg.symbol, symbol_cfg.timeframe, exc)
+                self.logger.exception(
+                    "SCAN ERROR %s mt5=%s %s: %s",
+                    symbol_cfg.symbol,
+                    trade_symbol,
+                    symbol_cfg.timeframe,
+                    exc,
+                )
         return summary
 
     def is_auto_loop_running(self) -> bool:

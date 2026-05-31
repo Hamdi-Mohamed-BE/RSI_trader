@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 import numpy as np
 import pandas as pd
 
-from .config import AppConfig, SymbolConfig
+from .config import AppConfig, SymbolConfig, apply_settings_mt5_symbol
 from .signal_engine import generate_signals, latest_closed_signal
 from .strategy import Signal
 from .timeframes import timeframe_seconds
@@ -178,6 +178,7 @@ def collect_live_scan_opportunities(
                 scan_times.append(scan_unix)
                 scan_unix += poll_seconds
 
+        broker_signal = apply_settings_mt5_symbol(signal, symbol_cfg, config)
         for scan_unix in scan_times:
             opportunities.append(
                 LiveScanOpportunity(
@@ -186,7 +187,7 @@ def collect_live_scan_opportunities(
                     symbol_cfg=symbol_cfg,
                     df=df,
                     row_index=row_index,
-                    signal=signal,
+                    signal=broker_signal,
                     point=point,
                 )
             )

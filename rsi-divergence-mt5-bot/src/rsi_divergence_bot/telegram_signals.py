@@ -18,7 +18,7 @@ from .config import AppConfig, SymbolConfig, TelegramChannelConfig
 from .manual_trade import parse_manual_trade, resolve_symbol_for_telegram
 from .mt5_client import MT5Client, _field
 from .state import StateStore
-from .symbols import market_key, resolve_trade_symbol
+from .symbols import market_key, resolve_trade_symbol, settings_mt5_symbol_from_config
 from .trade_geometry import default_stop_loss_one_to_one, invalid_market_geometry, synthetic_stop_loss_reference_tp
 from .trader import TradeExecutor
 
@@ -1590,7 +1590,7 @@ class TelegramSignalsBot:
             "lot": float(lot),
         }
         try:
-            live_entry = self._live_entry_price(plan)
+            live_entry = self._live_entry_price(plan, symbol_cfg)
         except ValueError as exc:
             return {"status": "skipped", "channel": channel.name, "reason": str(exc), **plan}
 
@@ -1696,12 +1696,7 @@ class TelegramSignalsBot:
             return result
 
         setup_id = f"telegram:hard:{source_id[:24]}" if hard else f"telegram:{source_id[:16]}"
-        trade_symbol = resolve_trade_symbol(
-            symbol_cfg.symbol,
-            self.config,
-            is_demo=self.config.mt5.is_demo,
-            append_suffix=self.config.mt5.append_broker_symbol_suffix,
-        )
+        trade_symbol = settings_mt5_symbol_from_config(symbol_cfg, self.config)
         result = self.executor.place_market_setup(
             setup_id=setup_id,
             symbol=trade_symbol,
@@ -1986,14 +1981,9 @@ class TelegramSignalsBot:
                 return True
         return False
 
-    def _live_entry_price(self, plan: dict) -> float:
+    def _live_entry_price(self, plan: dict, symbol_cfg) -> float:
         action = str(plan["action"])
-        symbol = resolve_trade_symbol(
-            str(plan["symbol"]),
-            self.config,
-            is_demo=self.config.mt5.is_demo,
-            append_suffix=self.config.mt5.append_broker_symbol_suffix,
-        )
+        symbol = settings_mt5_symbol_from_config(symbol_cfg, self.config)
         tick = self.client.tick(symbol)
         if tick is None:
             raise ValueError(f"No tick for {symbol}")

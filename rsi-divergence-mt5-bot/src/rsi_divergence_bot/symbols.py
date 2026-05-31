@@ -149,6 +149,16 @@ def find_symbol_config(symbols: list, token: str):
     return None
 
 
+def settings_mt5_symbol(symbol_cfg, *, is_demo: bool) -> str:
+    """Broker symbol from Settings (demo_symbol / live_symbol), else config table key."""
+    chosen = symbol_cfg.demo_symbol if is_demo else symbol_cfg.live_symbol
+    return (chosen.strip() or symbol_cfg.symbol.strip())
+
+
+def settings_mt5_symbol_from_config(symbol_cfg, config) -> str:
+    return settings_mt5_symbol(symbol_cfg, is_demo=bool(config.mt5.is_demo))
+
+
 def resolve_trade_symbol(
     symbol: str,
     config,
@@ -160,8 +170,7 @@ def resolve_trade_symbol(
     """Pick the MT5 symbol string for an account (demo vs live name from settings)."""
     symbol_cfg = find_symbol_config(config.symbols, symbol)
     if symbol_cfg is not None:
-        chosen = symbol_cfg.demo_symbol if is_demo else symbol_cfg.live_symbol
-        return (chosen.strip() or symbol_cfg.symbol.strip())
+        return settings_mt5_symbol(symbol_cfg, is_demo=is_demo)
     if not append_suffix:
         return market_key(symbol)
     suffix = account_suffix or getattr(config.mt5, "broker_symbol_suffix", DEFAULT_BROKER_SYMBOL_SUFFIX)

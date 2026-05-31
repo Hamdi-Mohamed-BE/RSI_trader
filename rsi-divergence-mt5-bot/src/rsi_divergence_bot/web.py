@@ -16,7 +16,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .backtest import optimize_symbol_timeframes, run_backtest, run_chart_backtest
 from .bot import SignalBot
-from .symbols import market_key, resolve_trade_symbol
+from .symbols import find_symbol_config, market_key, resolve_trade_symbol, settings_mt5_symbol_from_config
 from .config import (
     AppConfig,
     StrategyMode,
@@ -999,13 +999,10 @@ def create_app(
                 plan.sl,
                 plan.tps,
             )
-            is_demo = config.mt5.is_demo
-            trade_symbol = resolve_trade_symbol(
-                plan.symbol,
-                config,
-                is_demo=is_demo,
-                append_suffix=config.mt5.append_broker_symbol_suffix,
-            )
+            symbol_cfg = find_symbol_config(config.symbols, plan.symbol)
+            if symbol_cfg is None:
+                raise HTTPException(status_code=400, detail=f"Unknown symbol: {plan.symbol}")
+            trade_symbol = settings_mt5_symbol_from_config(symbol_cfg, config)
             tick = await asyncio.to_thread(bot.client.tick, trade_symbol)
             if tick is None:
                 raise ValueError(f"No live tick for {trade_symbol}.")
@@ -1013,7 +1010,6 @@ def create_app(
 
             entry = float(manual_field(tick, "ask") if plan.side == "buy" else manual_field(tick, "bid"))
             _validate_geometry(plan, entry)
-            symbol_cfg = next((item for item in config.symbols if item.symbol == plan.symbol), None)
             setup_id = f"manual:{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
             result = await asyncio.to_thread(
                 bot.executor.place_market_setup,

@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 import pandas as pd
 
 from .config import AppConfig
-from .symbols import find_symbol_config, resolve_trade_symbol
+from .symbols import find_symbol_config, settings_mt5_symbol_from_config
 from .decision import TradeDecision, evaluate_trade_signal, historical_spread_price, resolve_trade_filters, skip_should_mark_seen
 from .live_session import LIVE_SCAN_BARS, collect_live_scan_opportunities, extended_history_start
 from .mt5_client import MT5Client
@@ -623,11 +623,6 @@ def _daily_loss_skip_decision(
     )
 
 
-def mt5_trade_symbol(symbol_cfg, config: AppConfig) -> str:
-    """Broker symbol from Settings (demo vs live), not the config table key alone."""
-    return resolve_trade_symbol(symbol_cfg.symbol, config, is_demo=config.mt5.is_demo)
-
-
 def _symbol_point(client: MT5Client, symbol: str, logger: logging.Logger | None = None) -> float:
     try:
         info = client.symbol_info(symbol)
@@ -649,7 +644,7 @@ def _collect_signal_jobs(
     end_unix: int,
     logger: logging.Logger | None = None,
 ) -> tuple[list[_SignalJob], int]:
-    trade_symbol = mt5_trade_symbol(symbol_cfg, config)
+    trade_symbol = settings_mt5_symbol_from_config(symbol_cfg, config)
     point = _symbol_point(client, trade_symbol, logger)
     opportunities, raw_signals = collect_live_scan_opportunities(
         df,
@@ -988,7 +983,7 @@ def run_backtest(
     t0 = time.perf_counter()
     for index, symbol_cfg in enumerate(symbols, start=1):
         symbol_t0 = time.perf_counter()
-        trade_symbol = mt5_trade_symbol(symbol_cfg, config)
+        trade_symbol = settings_mt5_symbol_from_config(symbol_cfg, config)
         if logger:
             logger.info(
                 "BACKTEST %s/%s %s mt5=%s %s",
@@ -1099,7 +1094,7 @@ def run_chart_backtest(
     start_unix = int(start_utc.timestamp())
     end_unix = int(end_utc.timestamp())
     effective_symbol_cfg = symbol_cfg.model_copy(update={"timeframe": timeframe})
-    trade_symbol = mt5_trade_symbol(symbol_cfg, config)
+    trade_symbol = settings_mt5_symbol_from_config(symbol_cfg, config)
     fetch_start = extended_history_start(start_utc, timeframe)
     df = client.rates_range(trade_symbol, timeframe, fetch_start, end_utc)
     symbol_result, _closed_trades, events = _run_symbol_backtest(
@@ -1171,7 +1166,7 @@ def optimize_symbol_timeframes(
                 len(candidates),
             )
 
-        trade_symbol = mt5_trade_symbol(symbol_cfg, config)
+        trade_symbol = settings_mt5_symbol_from_config(symbol_cfg, config)
         for timeframe in candidates:
             effective_symbol_cfg = symbol_cfg.model_copy(update={"timeframe": timeframe})
             try:
