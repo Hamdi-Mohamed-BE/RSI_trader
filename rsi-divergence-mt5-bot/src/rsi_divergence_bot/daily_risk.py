@@ -40,8 +40,15 @@ def resolve_day_start_equity(
     return reconstructed
 
 
+def realized_balance(equity: float, balance: float, floating_pnl: float) -> float:
+    """Account value after closed trades only (MT5 balance, excludes open P/L)."""
+    if balance > 0:
+        return round(float(balance), 2)
+    return round(float(equity) - float(floating_pnl), 2)
+
+
 def intraday_drawdown_usd(peak_equity: float, current_equity: float) -> float:
-    """Loss from today's high-water equity mark only (peak − current, never negative)."""
+    """Loss from today's closed-trade high (peak − current equity, never negative)."""
     return round(max(0.0, float(peak_equity) - float(current_equity)), 2)
 
 
@@ -125,15 +132,26 @@ def compute_daily_risk_status(
     same_context = stored.get("date") == today and stored.get("account_key") == account_key
 
     day_start = _utc_day_start(now)
-    closed_pnl = client.net_pnl_since(day_start)
-    daily_pnl = round(closed_pnl + floating_pnl, 2)
-    start_equity = resolve_day_start_equity(
-        client,
-        equity=equity,
-        now=now,
-        floating_pnl=floating_pnl,
-    )
-    peak_equity = client.intraday_equity_peak_since(day_start, start_equity, equity)
+    balance_adjustment = client.balance_adjustments_since(day_start)
+    closed_balance = realized_balance(equity, balance, floating_pnl)
+
+    if same_context:
+        start_equity = round(float(stored.get("start_equity", equity)), 2)
+        peak_equity = round(
+            max(float(stored.get("peak_equity", start_equity)), closed_balance),
+            2,
+        )
+    else:
+        start_equity = resolve_day_start_equity(
+            client,
+            equity=equity,
+            now=now,
+            floating_pnl=floating_pnl,
+        )
+        replay_peak = client.intraday_balance_peak_since(day_start, start_equity, closed_balance)
+        peak_equity = round(max(start_equity, closed_balance, replay_peak), 2)
+
+    daily_pnl = round(equity - start_equity - balance_adjustment, 2)
     gain = round(max(0.0, daily_pnl), 2)
 
     max_loss_pct = float(risk_cfg.max_daily_loss_pct or 0.0)
@@ -164,8 +182,10 @@ def compute_daily_risk_status(
         "start_equity": start_equity,
         "start_balance": start_equity,
         "peak_equity": round(peak_equity, 2),
+        "peak_basis": "closed_balance",
         "equity": round(equity, 2),
         "balance": round(balance, 2),
+        "closed_balance": closed_balance,
         "floating_pnl": round(floating_pnl, 2),
         "daily_pnl": daily_pnl,
         "gain": gain,

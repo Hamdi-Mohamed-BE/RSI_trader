@@ -2089,7 +2089,7 @@ function renderDailyLossStatus(dailyRisk, target) {
     </div>
     <div class="daily-guard-stat-grid">
       ${dailyGuardStatItem("Start", formatLossAmount(startEquity))}
-      ${dailyGuardStatItem("Peak", formatLossAmount(peakEquity))}
+      ${dailyGuardStatItem("Peak (closed)", formatLossAmount(peakEquity))}
       ${dailyGuardStatItem("Equity", formatLossAmount(currentEquity))}
       ${dailyGuardStatItem("Day P/L", formatMoney(dailyPnl), pnlValueClass(dailyPnl))}
       ${dailyGuardStatItem("Drawdown", `${formatLossAmount(loss)} / ${formatLossAmount(limit)}`)}

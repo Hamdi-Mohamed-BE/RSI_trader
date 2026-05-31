@@ -536,13 +536,13 @@ class MT5Client:
                 total += float(_field(deal, "profit", 0.0))
             return round(total, 2)
 
-    def intraday_equity_peak_since(
+    def _intraday_realized_peak_since(
         self,
         start: datetime,
         start_equity: float,
-        current_equity: float,
+        current_realized: float,
     ) -> float:
-        """Highest equity today: replay closed deals from day-start, then include live equity."""
+        """Highest balance after each closed deal today (no open-trade mark-to-market)."""
         day_open = float(start_equity)
         peak = day_open
         running = day_open
@@ -562,8 +562,25 @@ class MT5Client:
             running = round(running + delta, 2)
             peak = max(peak, running)
 
-        # Live equity includes open P/L; at a new daily high this is the peak.
-        return round(max(peak, float(current_equity)), 2)
+        return round(max(peak, float(current_realized)), 2)
+
+    def intraday_balance_peak_since(
+        self,
+        start: datetime,
+        start_equity: float,
+        current_balance: float,
+    ) -> float:
+        """Peak account balance since UTC day-start (updates only when trades finish)."""
+        return self._intraday_realized_peak_since(start, start_equity, current_balance)
+
+    def intraday_equity_peak_since(
+        self,
+        start: datetime,
+        start_equity: float,
+        current_equity: float,
+    ) -> float:
+        """Deprecated alias — use intraday_balance_peak_since for daily loss guard peaks."""
+        return self._intraday_realized_peak_since(start, start_equity, current_equity)
 
     def live_snapshot(self, bot_magic: int) -> dict:
         payload: dict = {

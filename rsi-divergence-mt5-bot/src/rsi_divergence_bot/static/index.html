@@ -883,10 +883,10 @@
           </label>
           <label class="toggle field-full">
             <input id="telegram-daily-loss-guard-enabled" type="checkbox">
-            <span>Daily loss guard — block new trades when drawdown from intraday peak hits the limit</span>
+            <span>Daily loss guard — block new trades when drawdown from today's highest closed balance hits the limit</span>
           </label>
           <label class="field field-full">
-            <span>Max daily loss (% of intraday peak equity)</span>
+            <span>Max daily loss (% of highest closed balance today)</span>
             <input id="telegram-daily-loss-guard-pct" type="number" min="0" max="100" step="0.1" value="15">
           </label>
           <div id="telegram-daily-loss-status" class="daily-guard-stat daily-guard-stat--loss field-full" aria-live="polite">
