@@ -24,6 +24,20 @@ def test_resolve_trade_symbol_uses_demo_name_for_demo_account():
     assert resolve_trade_symbol("BTCUSD", config, is_demo=False) == "BTCUSD-VIP"
 
 
+def test_resolve_trade_symbol_preserves_demo_symbol_case():
+    config = _config(
+        SymbolConfig(
+            symbol="BTCUSD",
+            name="Bitcoin",
+            demo_symbol="BTCUSDm",
+            live_symbol="BTCUSD-VIP",
+            lot_per_leg=0.1,
+        )
+    )
+    assert resolve_trade_symbol("BTCUSD", config, is_demo=True) == "BTCUSDm"
+    assert resolve_trade_symbol("btcusdm", config, is_demo=True) == "BTCUSDm"
+
+
 def test_resolve_trade_symbol_falls_back_to_suffix_for_unknown_symbol():
     config = _config(
         SymbolConfig(

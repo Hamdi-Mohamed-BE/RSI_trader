@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from .config import AppConfig, SymbolConfig
+from .config import AppConfig, SymbolConfig, trade_symbol_for_account
 from .mt5_client import MT5Client
 from .symbols import crypto_aliases_for, market_key, mt5_symbol_candidates, resolve_trade_symbol
 from .trade_geometry import invalid_market_geometry
@@ -44,12 +44,11 @@ def parse_manual_trade(text: str, config: AppConfig) -> ManualTradePlan:
         tokens = re.findall(r"[A-Z][A-Z0-9-]*|[-+]?\d+(?:\.\d+)?", upper)
         numbers = [float(item) for item in re.findall(r"[-+]?\d+(?:\.\d+)?", clean)]
 
-        if "BUY" in word_tokens or "SELL" in word_tokens:
-            side = "buy" if "BUY" in word_tokens else "sell"
-            side_index = word_tokens.index("BUY") if "BUY" in word_tokens else word_tokens.index("SELL")
-            candidates = list(reversed(word_tokens[:side_index])) + word_tokens[side_index + 1 :]
-            ignored = {"BUY", "SELL", "NOW", "ENTRY", "ENTERY", "SIGNAL"}
-            symbol_token = next((token for token in candidates if token not in ignored), symbol_token)
+        parsed_side, parsed_symbol = _extract_side_and_symbol(line)
+        if parsed_side is not None:
+            side = parsed_side
+            if parsed_symbol:
+                symbol_token = parsed_symbol
             if numbers:
                 entry_hint = numbers[0]
             continue
@@ -92,8 +91,10 @@ def parse_manual_trade(text: str, config: AppConfig) -> ManualTradePlan:
     if lot <= 0:
         raise ValueError("Lot must be greater than zero.")
 
+    mt5_symbol = trade_symbol_for_account(symbol_cfg, is_demo=config.mt5.is_demo)
+
     return ManualTradePlan(
-        symbol=symbol_cfg.symbol,
+        symbol=mt5_symbol,
         side=side,
         lot=lot,
         sl=float(sl),
@@ -102,7 +103,25 @@ def parse_manual_trade(text: str, config: AppConfig) -> ManualTradePlan:
     )
 
 
+def _extract_side_and_symbol(line: str) -> tuple[str | None, str | None]:
+    stripped = line.strip()
+    match = re.match(r"(?i)^\s*([A-Za-z][A-Za-z0-9._-]+)\s+(BUY|SELL)\s*$", stripped)
+    if match:
+        return match.group(2).lower(), match.group(1)
+    match = re.match(r"(?i)^\s*(BUY|SELL)\s+([A-Za-z][A-Za-z0-9._-]+)\s*$", stripped)
+    if match:
+        return match.group(1).lower(), match.group(2)
+    return None, None
+
+
 def resolve_symbol(token: str, config: AppConfig) -> SymbolConfig | None:
+    stripped = token.strip()
+    if stripped:
+        for item in config.symbols:
+            for name in (item.demo_symbol, item.live_symbol, item.symbol, item.name):
+                if name and name.strip() == stripped:
+                    return item
+
     target = _norm_symbol(token)
     aliases: dict[str, SymbolConfig] = {}
     for item in config.symbols:
@@ -166,8 +185,10 @@ def resolve_symbol_for_telegram(
         if client.symbol_info(candidate) is None or client.tick(candidate) is None:
             continue
         for item in config.symbols:
-            names = {item.symbol.upper(), item.demo_symbol.upper(), item.live_symbol.upper()}
-            if candidate.upper() in names or market_key(candidate) == item.key:
+            names = {item.symbol, item.demo_symbol, item.live_symbol}
+            if candidate in names or _norm_symbol(candidate) == _norm_symbol(item.symbol):
+                return item, False
+            if market_key(candidate) == item.key:
                 return item, False
         cfg = _auto_symbol_config(candidate, base, config)
         if auto_register:

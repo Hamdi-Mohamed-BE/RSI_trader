@@ -424,7 +424,7 @@ def update_symbol_trade_names(
 
 def trade_symbol_for_account(symbol_cfg: SymbolConfig, *, is_demo: bool) -> str:
     chosen = symbol_cfg.demo_symbol if is_demo else symbol_cfg.live_symbol
-    return (chosen.strip() or symbol_cfg.symbol).upper()
+    return (chosen.strip() or symbol_cfg.symbol.strip())
 
 
 def update_symbol_timeframes(config: AppConfig, timeframes: dict[str, str]) -> list[str]:
@@ -456,21 +456,21 @@ def add_custom_symbol(
     raw = symbol.strip()
     if not raw:
         raise ValueError("Symbol is required")
-    key = market_key(market_key_override or raw)
+    lookup_key = market_key(market_key_override or raw)
     for item in config.symbols:
-        if item.key == key or market_key(item.symbol) == key:
-            raise ValueError(f"Symbol {key} already exists in config")
+        if item.key == lookup_key or market_key(item.symbol) == lookup_key:
+            raise ValueError(f"Symbol {lookup_key} already exists in config")
 
     try:
         tf = validate_timeframe(timeframe or "M5")
     except ValueError as exc:
         raise ValueError(f"Invalid timeframe: {exc}") from exc
 
-    demo = (demo_symbol or raw).strip() or key
-    live = (live_symbol or raw).strip() or key
+    demo = (demo_symbol or raw).strip() or raw
+    live = (live_symbol or raw).strip() or raw
     provisional = SymbolConfig(
-        symbol=key,
-        name=(name or raw).strip() or key,
+        symbol=raw,
+        name=(name or raw).strip() or raw,
         demo_symbol=demo,
         live_symbol=live,
         market_key_override=market_key_override,
@@ -484,8 +484,8 @@ def add_custom_symbol(
         raise ValueError("Lot size must be greater than 0")
 
     symbol_cfg = SymbolConfig(
-        symbol=key,
-        name=(name or raw).strip() or key,
+        symbol=raw,
+        name=(name or raw).strip() or raw,
         demo_symbol=demo,
         live_symbol=live,
         market_key_override=market_key_override,

@@ -45,7 +45,8 @@ _ALLOWED_MIME = {
 
 def format_manual_trade_text(parsed: ManualTradeImageParse) -> str:
     side = parsed.side.upper()
-    lines = [f"{parsed.symbol.upper()} {side}", f"SL {parsed.stop_loss:g}"]
+    symbol = (parsed.symbol or "").strip()
+    lines = [f"{symbol} {side}", f"SL {parsed.stop_loss:g}"]
     for index, tp in enumerate(parsed.tps, start=1):
         lines.append(f"TP{index} {tp:g}")
     if parsed.lot is not None and parsed.lot > 0:

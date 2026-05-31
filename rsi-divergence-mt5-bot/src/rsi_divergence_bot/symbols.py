@@ -132,10 +132,20 @@ def crypto_aliases_for(key: str) -> set[str]:
 
 
 def find_symbol_config(symbols: list, token: str):
+    stripped = token.strip()
+    if stripped:
+        for item in symbols:
+            for name in (item.demo_symbol, item.live_symbol, item.symbol, item.name):
+                if name and name.strip() == stripped:
+                    return item
+
     key = market_key(token)
     for item in symbols:
         if item.key == key or market_key(item.symbol) == key or same_market(item.symbol, token):
             return item
+        for name in (item.demo_symbol, item.live_symbol):
+            if name and market_key(name) == key:
+                return item
     return None
 
 
@@ -151,7 +161,7 @@ def resolve_trade_symbol(
     symbol_cfg = find_symbol_config(config.symbols, symbol)
     if symbol_cfg is not None:
         chosen = symbol_cfg.demo_symbol if is_demo else symbol_cfg.live_symbol
-        return (chosen.strip() or symbol_cfg.symbol).upper()
+        return (chosen.strip() or symbol_cfg.symbol.strip())
     if not append_suffix:
         return market_key(symbol)
     suffix = account_suffix or getattr(config.mt5, "broker_symbol_suffix", DEFAULT_BROKER_SYMBOL_SUFFIX)
