@@ -22,6 +22,7 @@ from .config import (
     StrategyMode,
     add_telegram_channel,
     broker_symbol_suffix,
+    add_custom_symbol,
     append_broker_symbol_suffix_enabled,
     update_append_broker_symbol_suffix,
     default_symbol_lot,
@@ -72,6 +73,18 @@ class SymbolSettings(BaseModel):
 
 class LotUpdates(BaseModel):
     lots: dict[str, float] = Field(min_length=1)
+    persist: bool = True
+
+
+class AddCustomSymbolRequest(BaseModel):
+    symbol: str = Field(min_length=1, max_length=48)
+    name: str | None = Field(default=None, max_length=80)
+    demo_symbol: str | None = Field(default=None, max_length=48)
+    live_symbol: str | None = Field(default=None, max_length=48)
+    lot_per_leg: float | None = Field(default=None, gt=0)
+    timeframe: str | None = None
+    enabled: bool = True
+    market_key_override: str | None = Field(default=None, max_length=48)
     persist: bool = True
 
 
@@ -649,6 +662,40 @@ def create_app(
     @app.post("/api/symbols/lots")
     def update_lots(body: LotUpdates) -> dict:
         return update_settings(SymbolSettings(lots=body.lots, persist=body.persist))
+
+    @app.post("/api/symbols/add")
+    def add_symbol(body: AddCustomSymbolRequest) -> dict:
+        try:
+            add_custom_symbol(
+                config,
+                symbol=body.symbol,
+                name=body.name,
+                demo_symbol=body.demo_symbol,
+                live_symbol=body.live_symbol,
+                lot_per_leg=body.lot_per_leg,
+                timeframe=body.timeframe,
+                enabled=body.enabled,
+                market_key_override=body.market_key_override,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        if body.persist:
+            save_config(config_path, config)
+        stats = symbol_stats()
+        bot.logger.info(
+            "CUSTOM SYMBOL ADDED symbol=%s persist=%s total=%s",
+            body.symbol,
+            body.persist,
+            stats["total"],
+        )
+        return {
+            "status": "saved" if body.persist else "applied",
+            "symbols": symbol_payload(),
+            "symbol_stats": stats,
+            "default_forex_lot": config.risk.default_forex_lot,
+            "broker_symbol_suffix": broker_symbol_suffix(config),
+            "append_broker_symbol_suffix": append_broker_symbol_suffix_enabled(config),
+        }
 
     @app.post("/api/symbols/timeframes/reset")
     def reset_timeframes(body: SnapshotApplyRequest | None = None) -> dict:

@@ -433,6 +433,63 @@ def update_symbol_timeframes(config: AppConfig, timeframes: dict[str, str]) -> l
     return updated
 
 
+def add_custom_symbol(
+    config: AppConfig,
+    *,
+    symbol: str,
+    name: str | None = None,
+    demo_symbol: str | None = None,
+    live_symbol: str | None = None,
+    lot_per_leg: float | None = None,
+    timeframe: str | None = None,
+    enabled: bool = True,
+    market_key_override: str | None = None,
+) -> SymbolConfig:
+    raw = symbol.strip()
+    if not raw:
+        raise ValueError("Symbol is required")
+    key = market_key(market_key_override or raw)
+    for item in config.symbols:
+        if item.key == key or market_key(item.symbol) == key:
+            raise ValueError(f"Symbol {key} already exists in config")
+
+    try:
+        tf = validate_timeframe(timeframe or "M5")
+    except ValueError as exc:
+        raise ValueError(f"Invalid timeframe: {exc}") from exc
+
+    demo = (demo_symbol or raw).strip() or key
+    live = (live_symbol or raw).strip() or key
+    provisional = SymbolConfig(
+        symbol=key,
+        name=(name or raw).strip() or key,
+        demo_symbol=demo,
+        live_symbol=live,
+        market_key_override=market_key_override,
+        enabled=bool(enabled),
+        timeframe=tf,  # type: ignore[arg-type]
+        lot_per_leg=lot_per_leg or config.risk.default_forex_lot,
+        rr=[1.0, 1.5, 2.0],
+    )
+    lot = lot_per_leg if lot_per_leg is not None else default_symbol_lot(provisional, config)
+    if lot <= 0:
+        raise ValueError("Lot size must be greater than 0")
+
+    symbol_cfg = SymbolConfig(
+        symbol=key,
+        name=(name or raw).strip() or key,
+        demo_symbol=demo,
+        live_symbol=live,
+        market_key_override=market_key_override,
+        enabled=bool(enabled),
+        timeframe=tf,  # type: ignore[arg-type]
+        lot_per_leg=lot,
+        rr=[1.0, 1.5, 2.0],
+    )
+    config.symbols.append(symbol_cfg)
+    return symbol_cfg
+
+
 def update_bot_strategy(config: AppConfig, strategy: StrategyMode) -> None:
     normalized = canonical_strategy(strategy)
     if normalized not in CANONICAL_STRATEGIES:

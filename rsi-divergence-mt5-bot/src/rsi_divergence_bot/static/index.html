@@ -115,6 +115,48 @@
           </p>
           <p id="broker-symbol-suffix-hint" class="panel-hint field-full"></p>
         </div>
+        <form id="add-custom-symbol-form" class="form-grid settings-defaults add-symbol-form">
+          <p class="panel-hint field-full">Add a custom symbol to config.yaml (saved when you click Add symbol).</p>
+          <label class="field">
+            <span>Market key</span>
+            <input id="custom-symbol-key" type="text" placeholder="e.g. NAS100 or US30" required>
+          </label>
+          <label class="field">
+            <span>Display name</span>
+            <input id="custom-symbol-name" type="text" placeholder="Optional label">
+          </label>
+          <label class="field">
+            <span>Demo MT5 symbol</span>
+            <input id="custom-symbol-demo" type="text" placeholder="Broker demo name">
+          </label>
+          <label class="field">
+            <span>Live MT5 symbol</span>
+            <input id="custom-symbol-live" type="text" placeholder="Broker live name">
+          </label>
+          <label class="field">
+            <span>Lot / leg</span>
+            <input id="custom-symbol-lot" type="number" min="0.01" step="0.01" placeholder="Uses default forex lot if empty">
+          </label>
+          <label class="field">
+            <span>Timeframe</span>
+            <select id="custom-symbol-timeframe">
+              <option value="M5" selected>M5</option>
+              <option value="M1">M1</option>
+              <option value="M15">M15</option>
+              <option value="H1">H1</option>
+            </select>
+          </label>
+          <label class="toggle field-full">
+            <input id="custom-symbol-enabled" type="checkbox" checked>
+            <span>Enable for bot scanning after add</span>
+          </label>
+          <div class="field-full add-symbol-actions">
+            <button id="add-custom-symbol-btn" class="btn btn-secondary btn-sm" type="submit">
+              <span class="btn-label">Add symbol</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
         <div class="table-wrap">
           <table class="data-table" id="symbols-table">
             <thead>
@@ -766,8 +808,12 @@
           </label>
           <p id="manual-trade-parse-hint" class="panel-hint field-full hidden"></p>
           <div class="form-actions field-full manual-trade-actions">
-            <button id="manual-trade-quick-test-btn" class="btn btn-secondary" type="button">
+            <button id="manual-trade-quick-test-eurusd-btn" class="btn btn-secondary" type="button">
               <span class="btn-label">Quick EURUSD test (0.01 BUY)</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+            <button id="manual-trade-quick-test-btcusd-btn" class="btn btn-secondary" type="button">
+              <span class="btn-label">Quick BTCUSD test (0.01 BUY)</span>
               <span class="spinner" hidden aria-hidden="true"></span>
             </button>
             <button id="manual-trade-btn" class="btn btn-danger" type="submit">
@@ -776,7 +822,7 @@
             </button>
           </div>
         </form>
-        <p class="panel-hint live-warning">Upload or paste a screenshot to parse with AI, review the text, then place live MT5 orders. Every trade must include SL and at least one TP. Use the quick test button to verify MT5 connectivity without parsing a signal.</p>
+        <p class="panel-hint live-warning">Upload or paste a screenshot to parse with AI, review the text, then place live MT5 orders. Every trade must include SL and at least one TP. Use the quick test buttons to verify MT5 connectivity (no SL/TP — close manually in MT5).</p>
         <div id="manual-trade-result" class="result-card hidden">
           <div class="result-card-head">
             <div>
@@ -1008,6 +1054,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=71" defer></script>
+  <script src="/static/js/app.js?v=73" defer></script>
 </body>
 </html>

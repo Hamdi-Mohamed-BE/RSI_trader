@@ -11,26 +11,26 @@ def daily_loss_setup_risk_cap(reference_equity: float, max_daily_loss_pct: float
     return round(reference_equity * max_daily_loss_pct / 100.0, 2)
 
 
+def _utc_day_start(now: datetime) -> datetime:
+    return datetime.combine(now.date(), time.min, tzinfo=timezone.utc)
+
+
+def daily_risk_account_key(account: dict) -> str:
+    login = account.get("login")
+    server = account.get("server") or ""
+    if login is None:
+        return ""
+    return f"{int(login)}@{server}"
+
+
 def resolve_day_start_equity(
     client: MT5Client,
-    state: StateStore,
-    risk_cfg: RiskConfig,
     *,
     equity: float,
     now: datetime,
-    stored: dict | None = None,
 ) -> float:
-    """Resolve UTC day-start equity from MT5 snapshot or today's closed deal history."""
-    today = now.date().isoformat()
-    cached = stored if stored is not None else state.read().get("daily_risk", {})
-
-    if cached.get("date") == today:
-        if cached.get("start_equity") is not None:
-            return float(cached["start_equity"])
-        if cached.get("start_balance") is not None:
-            return float(cached["start_balance"])
-
-    day_start = datetime.combine(now.date(), time.min, tzinfo=timezone.utc)
+    """Reconstruct UTC day-start equity from today's MT5 deal history (not cached state)."""
+    day_start = _utc_day_start(now)
     closed_pnl = client.net_pnl_since(day_start)
     balance_adjustment = client.balance_adjustments_since(day_start)
     reconstructed = round(float(equity) - closed_pnl - balance_adjustment, 2)
@@ -47,12 +47,15 @@ def _disabled_daily_risk_payload(
     floating_pnl: float,
     risk_cfg: RiskConfig,
     now: datetime,
+    account_key: str,
 ) -> dict:
     return {
         "enabled": False,
         "halted": False,
         "halt_reason": None,
         "date": today,
+        "account_key": account_key,
+        "data_source": "mt5",
         "start_equity": round(equity, 2),
         "start_balance": round(equity, 2),
         "peak_equity": round(equity, 2),
@@ -91,6 +94,7 @@ def compute_daily_risk_status(
     now = datetime.now(timezone.utc).replace(microsecond=0)
     today = now.date().isoformat()
     account = client.account_snapshot()
+    account_key = daily_risk_account_key(account)
     equity = float(account["equity"])
     balance = float(account["balance"])
     floating_pnl = float(account.get("floating_pnl", 0.0) or 0.0)
@@ -106,27 +110,19 @@ def compute_daily_risk_status(
             floating_pnl=floating_pnl,
             risk_cfg=risk_cfg,
             now=now,
+            account_key=account_key,
         )
         state.update_daily_risk(payload)
         return payload
 
     stored = state.read().get("daily_risk", {})
-    if stored.get("date") != today:
-        start_equity = round(equity, 2)
-        peak_equity = start_equity
-    else:
-        start_equity = resolve_day_start_equity(
-            client,
-            state,
-            risk_cfg,
-            equity=equity,
-            now=now,
-            stored=stored,
-        )
-        stored_peak = stored.get("peak_equity")
-        peak_equity = max(float(stored_peak) if stored_peak is not None else start_equity, round(equity, 2))
+    same_context = stored.get("date") == today and stored.get("account_key") == account_key
 
-    daily_pnl = round(equity - start_equity, 2)
+    day_start = _utc_day_start(now)
+    start_equity = resolve_day_start_equity(client, equity=equity, now=now)
+    peak_equity = client.intraday_equity_peak_since(day_start, start_equity, equity)
+    closed_pnl = client.net_pnl_since(day_start)
+    daily_pnl = round(closed_pnl + floating_pnl, 2)
     gain = round(max(0.0, daily_pnl), 2)
 
     max_loss_pct = float(risk_cfg.max_daily_loss_pct or 0.0)
@@ -152,6 +148,8 @@ def compute_daily_risk_status(
         "halted": halted,
         "halt_reason": halt_reason,
         "date": today,
+        "account_key": account_key,
+        "data_source": "mt5",
         "start_equity": start_equity,
         "start_balance": start_equity,
         "peak_equity": round(peak_equity, 2),
@@ -179,7 +177,7 @@ def compute_daily_risk_status(
         "max_daily_win_usd": risk_cfg.max_daily_win_usd,
         "updated_at": now.isoformat(),
     }
-    if stored.get("date") != today:
+    if not same_context:
         payload["created_at"] = now.isoformat()
         payload["halted_at"] = now.isoformat() if loss_halted else None
         payload["win_halted_at"] = now.isoformat() if win_halted else None

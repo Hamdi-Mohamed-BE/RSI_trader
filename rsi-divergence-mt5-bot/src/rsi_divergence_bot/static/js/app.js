@@ -47,6 +47,15 @@ const els = {
   resetTimeframesBtn: document.getElementById("reset-timeframes-btn"),
   optimizeTimeframesBtn: document.getElementById("optimize-timeframes-btn"),
   saveLotsBtn: document.getElementById("save-lots-btn"),
+  addCustomSymbolForm: document.getElementById("add-custom-symbol-form"),
+  addCustomSymbolBtn: document.getElementById("add-custom-symbol-btn"),
+  customSymbolKey: document.getElementById("custom-symbol-key"),
+  customSymbolName: document.getElementById("custom-symbol-name"),
+  customSymbolDemo: document.getElementById("custom-symbol-demo"),
+  customSymbolLive: document.getElementById("custom-symbol-live"),
+  customSymbolLot: document.getElementById("custom-symbol-lot"),
+  customSymbolTimeframe: document.getElementById("custom-symbol-timeframe"),
+  customSymbolEnabled: document.getElementById("custom-symbol-enabled"),
   forexTradeForm: document.getElementById("forex-trade-form"),
   forexTradeSaveBtn: document.getElementById("forex-trade-save-btn"),
   forexTradeTimeframe: document.getElementById("forex-trade-timeframe"),
@@ -101,7 +110,8 @@ const els = {
   manualTradeParseHint: document.getElementById("manual-trade-parse-hint"),
   manualTradeText: document.getElementById("manual-trade-text"),
   manualTradeBtn: document.getElementById("manual-trade-btn"),
-  manualTradeQuickTestBtn: document.getElementById("manual-trade-quick-test-btn"),
+  manualTradeQuickTestEurusdBtn: document.getElementById("manual-trade-quick-test-eurusd-btn"),
+  manualTradeQuickTestBtcusdBtn: document.getElementById("manual-trade-quick-test-btcusd-btn"),
   manualTradeResult: document.getElementById("manual-trade-result"),
   manualTradeResultSummary: document.getElementById("manual-trade-result-summary"),
   manualTradeDismissBtn: document.getElementById("manual-trade-dismiss-btn"),
@@ -965,6 +975,70 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
   }
 
   return data;
+}
+
+async function addCustomSymbol(event) {
+  event.preventDefault();
+  const symbol = els.customSymbolKey?.value?.trim();
+  if (!symbol) {
+    toast("Market key is required", "error");
+    return;
+  }
+
+  const lotRaw = els.customSymbolLot?.value?.trim();
+  const payload = {
+    symbol,
+    name: els.customSymbolName?.value?.trim() || null,
+    demo_symbol: els.customSymbolDemo?.value?.trim() || null,
+    live_symbol: els.customSymbolLive?.value?.trim() || null,
+    timeframe: els.customSymbolTimeframe?.value || "M5",
+    enabled: Boolean(els.customSymbolEnabled?.checked),
+    persist: true,
+  };
+  if (lotRaw) {
+    const lot = Number(lotRaw);
+    if (!Number.isFinite(lot) || lot <= 0) {
+      toast("Lot size must be a positive number", "error");
+      return;
+    }
+    payload.lot_per_leg = lot;
+  }
+
+  setLoading(els.addCustomSymbolBtn, true);
+  try {
+    const response = await fetch("/api/symbols/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to add symbol");
+
+    if (botConfig) {
+      botConfig.symbols = data.symbols;
+      botConfig.symbol_stats = data.symbol_stats;
+    }
+    renderSymbols(data.symbols);
+    updateSymbolStats(data.symbol_stats);
+    if (window.ChartPreview?.populateSymbols) {
+      window.ChartPreview.populateSymbols(data.symbols);
+    }
+
+    els.customSymbolKey.value = "";
+    if (els.customSymbolName) els.customSymbolName.value = "";
+    if (els.customSymbolDemo) els.customSymbolDemo.value = "";
+    if (els.customSymbolLive) els.customSymbolLive.value = "";
+    if (els.customSymbolLot) els.customSymbolLot.value = "";
+    if (els.customSymbolTimeframe) els.customSymbolTimeframe.value = "M5";
+    if (els.customSymbolEnabled) els.customSymbolEnabled.checked = true;
+
+    toast(`Added ${symbol} to config`, "success");
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.addCustomSymbolBtn, false);
+  }
 }
 
 let settingsTimer = null;
@@ -1869,7 +1943,7 @@ function renderDailyGuardResetClock() {
       ${dailyGuardStatItem("Guards refresh at", resetLabel)}
     </div>
     <p class="daily-guard-reset-clock-note">
-      Daily loss and win guards reset at UTC midnight. Counters clear, blocks lift, and a new start-of-day balance is recorded.
+      Daily loss and win guards reset at UTC midnight. Stats are read from MT5 deal history for the logged-in account (not cached balances from a previous account).
     </p>
   `;
 
@@ -3602,24 +3676,25 @@ function renderManualTradeResult(data) {
   els.manualTradeResult.classList.remove("hidden");
 }
 
-async function placeManualTradeQuickTest() {
+async function placeMt5QuickTest(symbol, triggerBtn, volume = 0.01) {
+  const normalized = String(symbol || "EURUSD").trim().toUpperCase();
   const live = isLiveTradingMode();
   const confirmed = window.confirm(
     live
-      ? "Place LIVE EURUSD 0.01 BUY test trade? No SL/TP — close manually in MT5. This only checks that orders reach the broker."
-      : "Place paper EURUSD 0.01 BUY test trade?",
+      ? `Place LIVE ${normalized} ${volume} BUY test trade? No SL/TP — close manually in MT5. This only checks that orders reach the broker.`
+      : `Place paper ${normalized} ${volume} BUY test trade?`,
   );
   if (!confirmed) return;
 
-  setLoading(els.manualTradeQuickTestBtn, true, "Sending test...");
+  setLoading(triggerBtn, true, "Sending test...");
   try {
     const response = await fetch("/api/mt5/test-trade", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        symbol: "EURUSD",
+        symbol: normalized,
         side: "buy",
-        volume: 0.01,
+        volume,
         confirm_live: live,
       }),
     });
@@ -3632,19 +3707,30 @@ async function placeManualTradeQuickTest() {
     if (!response.ok) {
       throw new Error(formatApiError(data.detail) || `Quick test failed (${response.status})`);
     }
-    renderManualTradeResult({ ...data, quick_test: true, symbol: data.symbol || "EURUSD", side: data.side || "buy" });
+    renderManualTradeResult({
+      ...data,
+      quick_test: true,
+      symbol: data.symbol || normalized,
+      side: data.side || "buy",
+    });
     if (data.status === "placed" || data.status === "paper") {
-      toast(`Quick test ${data.status}`, "success");
+      toast(`${normalized} quick test ${data.status}`, "success");
     } else {
       toast(formatManualTradeFailure(data), "error");
     }
     await refreshLiveData();
     await refreshLogs();
   } catch (error) {
-    renderManualTradeResult({ status: "failed", reason: error.message, quick_test: true, symbol: "EURUSD", side: "buy" });
+    renderManualTradeResult({
+      status: "failed",
+      reason: error.message,
+      quick_test: true,
+      symbol: normalized,
+      side: "buy",
+    });
     toast(error.message, "error");
   } finally {
-    setLoading(els.manualTradeQuickTestBtn, false);
+    setLoading(triggerBtn, false);
   }
 }
 
@@ -3814,7 +3900,12 @@ async function init() {
   });
   els.runOnceBtn?.addEventListener("click", runOnce);
   els.manualTradeForm?.addEventListener("submit", placeManualTrade);
-  els.manualTradeQuickTestBtn?.addEventListener("click", placeManualTradeQuickTest);
+  els.manualTradeQuickTestEurusdBtn?.addEventListener("click", () => {
+    void placeMt5QuickTest("EURUSD", els.manualTradeQuickTestEurusdBtn);
+  });
+  els.manualTradeQuickTestBtcusdBtn?.addEventListener("click", () => {
+    void placeMt5QuickTest("BTCUSD", els.manualTradeQuickTestBtcusdBtn);
+  });
   els.manualTradeDismissBtn?.addEventListener("click", clearManualTradeResult);
   initManualTradeImageInput();
   els.liveSummaryForm?.addEventListener("submit", loadLiveSummary);
@@ -3822,6 +3913,7 @@ async function init() {
   els.resetTimeframesBtn?.addEventListener("click", resetTimeframes);
   els.optimizeTimeframesBtn?.addEventListener("click", optimizeTimeframes);
   els.saveLotsBtn?.addEventListener("click", saveLots);
+  els.addCustomSymbolForm?.addEventListener("submit", addCustomSymbol);
   els.forexTradeSaveBtn?.addEventListener("click", () => saveForexTradeSettings({ silent: false }));
   els.snapshotForm?.addEventListener("submit", saveSnapshot);
   els.mt5TestTradeBtn?.addEventListener("click", placeMt5TestTrade);
