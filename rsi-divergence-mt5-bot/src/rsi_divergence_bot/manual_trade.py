@@ -179,6 +179,7 @@ def _auto_symbol_config(mt5_symbol: str, base_key: str, config: AppConfig) -> Sy
         demo_symbol=mt5_symbol,
         live_symbol=mt5_symbol,
         enabled=False,
+        signal_active=True,
         lot_per_leg=config.risk.default_forex_lot,
         rr=[1.0, 1.5, 2.0],
     )

@@ -36,6 +36,7 @@ from .config import (
     update_forex_trade_settings,
     update_signal_algorithm,
     update_symbol_enabled,
+    update_symbol_signal_active,
     update_symbol_lots,
     update_symbol_timeframes,
     update_symbol_trade_names,
@@ -57,6 +58,7 @@ from .manual_trade_image import llm_configured as manual_trade_image_llm_configu
 from .manual_trade_image import parse_trade_image
 from .strategy_modes import canonical_strategy
 from .telegram_signals import TelegramSignalsBot
+from .tradlia_signals import TradliaSignalsBot
 from .timeframes import SUPPORTED_TIMEFRAMES, timeframe_options_payload, validate_timeframe
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -65,6 +67,7 @@ STATIC_DIR = Path(__file__).resolve().parent / "static"
 class SymbolSettings(BaseModel):
     lots: dict[str, float] = Field(default_factory=dict)
     enabled: dict[str, bool] = Field(default_factory=dict)
+    signal_active: dict[str, bool] = Field(default_factory=dict)
     timeframes: dict[str, str] = Field(default_factory=dict)
     demo_symbols: dict[str, str] = Field(default_factory=dict)
     live_symbols: dict[str, str] = Field(default_factory=dict)
@@ -87,6 +90,7 @@ class AddCustomSymbolRequest(BaseModel):
     lot_per_leg: float | None = Field(default=None, gt=0)
     timeframe: str | None = None
     enabled: bool = True
+    signal_active: bool = True
     market_key_override: str | None = Field(default=None, max_length=48)
     persist: bool = True
 
@@ -124,6 +128,20 @@ class TelegramChannelRemoveRequest(BaseModel):
 
 
 class TelegramSettingsRequest(BaseModel):
+    ignore_open_symbol_trades: bool | None = None
+    protect_tp: bool | None = None
+    browser_engine: str | None = None
+    browser_headless: bool | None = None
+    persist: bool = True
+
+
+class TradliaSignalsStartRequest(BaseModel):
+    protect_tp: bool = False
+
+
+class TradliaSettingsRequest(BaseModel):
+    poll_seconds: int | None = Field(default=None, ge=3)
+    api_url: str | None = None
     ignore_open_symbol_trades: bool | None = None
     protect_tp: bool | None = None
     persist: bool = True
@@ -226,6 +244,14 @@ def create_app(
         bot.daily_risk_status,
         config_path=config_path,
     )
+    tradlia_bot = TradliaSignalsBot(
+        config,
+        bot.client,
+        bot.state,
+        bot.logger,
+        bot.daily_risk_status,
+        config_path=config_path,
+    )
 
     def telegram_channels_payload() -> list[dict]:
         return [channel.model_dump(mode="python") for channel in config.telegram_signals.channels]
@@ -306,6 +332,7 @@ def create_app(
                 "live_symbol": item.live_symbol,
                 "asset_group": symbol_asset_group(item),
                 "enabled": item.enabled,
+                "signal_active": item.signal_active,
                 "timeframe": item.timeframe,
                 "optimized_timeframe": item.optimized_timeframe,
                 "reset_timeframe": item.optimized_timeframe or item.timeframe,
@@ -341,6 +368,7 @@ def create_app(
     def apply_symbol_settings(
         lots: dict[str, float],
         enabled: dict[str, bool],
+        signal_active: dict[str, bool],
         timeframes: dict[str, str],
         demo_symbols: dict[str, str],
         live_symbols: dict[str, str],
@@ -349,6 +377,7 @@ def create_app(
         try:
             updated_lots = update_symbol_lots(config, lots)
             updated_enabled = update_symbol_enabled(config, enabled)
+            updated_signal_active = update_symbol_signal_active(config, signal_active)
             updated_timeframes = update_symbol_timeframes(config, timeframes)
             updated_demo = update_symbol_trade_names(config, demo_symbols, live_symbols)
         except ValueError as exc:
@@ -361,6 +390,13 @@ def create_app(
         unknown_enabled = sorted(set(enabled) - set(updated_enabled))
         if unknown_enabled:
             raise HTTPException(status_code=400, detail=f"Unknown symbols in enabled: {', '.join(unknown_enabled)}")
+
+        unknown_signal_active = sorted(set(signal_active) - set(updated_signal_active))
+        if unknown_signal_active:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unknown symbols in signal_active: {', '.join(unknown_signal_active)}",
+            )
 
         unknown_timeframes = sorted(set(timeframes) - set(updated_timeframes))
         if unknown_timeframes:
@@ -427,6 +463,7 @@ def create_app(
         apply_snapshot(config_path, slug=slug, target=config, persist=persist)
         bot.client.config = config.mt5
         telegram_bot.config = config
+        tradlia_bot.config = config
         bot.logger.info("CONFIG SNAPSHOT apply slug=%s persist=%s strategy=%s", slug, persist, config.bot.strategy)
         return {
             "status": "saved" if persist else "applied",
@@ -612,6 +649,24 @@ def create_app(
                 "max_tps": config.telegram_signals.max_tps,
                 "default_lot": config.telegram_signals.default_lot,
                 "max_message_age_seconds": config.telegram_signals.max_message_age_seconds,
+                "browser_engine": config.telegram_signals.browser_engine,
+                "browser_headless": config.telegram_signals.browser_headless,
+            },
+            "tradlia_signals": {
+                "enabled": config.tradlia_signals.enabled,
+                "poll_seconds": config.tradlia_signals.poll_seconds,
+                "api_url": config.tradlia_signals.api_url,
+                "api_key_configured": bool(
+                    config.tradlia_signals.api_key or os.getenv("TRADLIA_API_KEY")
+                ),
+                "bearer_token_configured": bool(
+                    config.tradlia_signals.bearer_token or os.getenv("TRADLIA_BEARER_TOKEN")
+                ),
+                "ignore_open_symbol_trades": config.tradlia_signals.ignore_open_symbol_trades,
+                "protect_tp": config.tradlia_signals.protect_tp,
+                "max_tps": config.tradlia_signals.max_tps,
+                "default_lot": config.tradlia_signals.default_lot,
+                "max_message_age_seconds": config.tradlia_signals.max_message_age_seconds,
             },
             "decision_filters": asdict(resolve_trade_filters(config)),
             "timeframe_options": timeframe_options_payload(),
@@ -647,6 +702,7 @@ def create_app(
         symbol_fields_changed = bool(
             body.lots
             or body.enabled
+            or body.signal_active
             or body.timeframes
             or body.demo_symbols
             or body.live_symbols
@@ -665,6 +721,7 @@ def create_app(
         symbols = apply_symbol_settings(
             body.lots,
             body.enabled,
+            body.signal_active,
             body.timeframes,
             body.demo_symbols,
             body.live_symbols,
@@ -1135,15 +1192,29 @@ def create_app(
     def telegram_signals_stop() -> dict:
         return telegram_bot.stop()
 
+    @app.get("/tradlia-signals")
+    def tradlia_page() -> FileResponse:
+        return FileResponse(STATIC_DIR / "index.html")
+
     @app.patch("/api/telegram-signals/settings")
     def telegram_signals_settings(body: TelegramSettingsRequest) -> dict:
         changed = False
-        if body.ignore_open_symbol_trades is not None or body.protect_tp is not None:
-            update_telegram_settings(
-                config,
-                ignore_open_symbol_trades=body.ignore_open_symbol_trades,
-                protect_tp=body.protect_tp,
-            )
+        if (
+            body.ignore_open_symbol_trades is not None
+            or body.protect_tp is not None
+            or body.browser_engine is not None
+            or body.browser_headless is not None
+        ):
+            try:
+                update_telegram_settings(
+                    config,
+                    ignore_open_symbol_trades=body.ignore_open_symbol_trades,
+                    protect_tp=body.protect_tp,
+                    browser_engine=body.browser_engine,
+                    browser_headless=body.browser_headless,
+                )
+            except ValueError as exc:
+                raise HTTPException(status_code=400, detail=str(exc)) from exc
             changed = True
         if changed and body.persist:
             save_config(config_path, config)
@@ -1234,6 +1305,36 @@ def create_app(
             save_config(config_path, config)
         bot.logger.info("TELEGRAM CHANNEL remove name=%s url=%s", removed.name, removed.url)
         return {"status": "removed", "channel": removed.model_dump(mode="python"), "channels": telegram_channels_payload()}
+
+    @app.get("/api/tradlia-signals/status")
+    def tradlia_signals_status() -> dict:
+        return tradlia_bot.status()
+
+    @app.post("/api/tradlia-signals/start")
+    async def tradlia_signals_start(body: TradliaSignalsStartRequest) -> dict:
+        if not tradlia_bot.status().get("llm_configured"):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "LLM API key missing. Set telegram_signals.openai_api_key or OPENAI_API_KEY "
+                    "(primary), or telegram_signals.gemini_api_key or GEMINI_API_KEY (fallback)."
+                ),
+            )
+        if not tradlia_bot.status().get("api_configured"):
+            raise HTTPException(
+                status_code=400,
+                detail="Tradlia API credentials missing. Set tradlia_signals.api_key / bearer_token or TRADLIA_* env vars.",
+            )
+        await require_mt5_ready()
+        result = tradlia_bot.start(protect_tp=body.protect_tp)
+        start_error = result.get("start_error")
+        if start_error:
+            raise HTTPException(status_code=503, detail=start_error)
+        return result
+
+    @app.post("/api/tradlia-signals/stop")
+    def tradlia_signals_stop() -> dict:
+        return tradlia_bot.stop()
 
     @app.get("/api/backtest/chart")
     async def backtest_chart(

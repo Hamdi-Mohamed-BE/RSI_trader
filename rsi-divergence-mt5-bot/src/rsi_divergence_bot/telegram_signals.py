@@ -15,7 +15,8 @@ from typing import Callable, Literal
 from pydantic import BaseModel, Field, ValidationError
 
 from .config import AppConfig, SymbolConfig, TelegramChannelConfig
-from .manual_trade import parse_manual_trade, resolve_symbol_for_telegram
+from .manual_trade import parse_manual_trade
+from .symbol_registry import ensure_symbol_for_signal_copy
 from .mt5_client import MT5Client, _field
 from .state import StateStore
 from .symbols import market_key, resolve_trade_symbol, settings_mt5_symbol_from_config
@@ -850,19 +851,29 @@ class TelegramSignalsBot:
         return keys
 
     def _open_browser(self, playwright, profile_dir: Path):
-        try:
-            return playwright.chromium.launch_persistent_context(
+        engine = str(self.config.telegram_signals.browser_engine or "firefox").lower()
+        headless = bool(self.config.telegram_signals.browser_headless)
+        viewport = {"width": 1280, "height": 900}
+        launch_args = [
+            "--disable-extensions",
+            "--disable-background-networking",
+            "--disable-default-apps",
+            "--disable-sync",
+            "--no-first-run",
+            "--disable-dev-shm-usage",
+        ]
+        if engine == "firefox":
+            return playwright.firefox.launch_persistent_context(
                 str(profile_dir),
-                channel="chrome",
-                headless=False,
-                viewport={"width": 1280, "height": 900},
+                headless=headless,
+                viewport=viewport,
             )
-        except Exception:
-            return playwright.chromium.launch_persistent_context(
-                str(profile_dir),
-                headless=False,
-                viewport={"width": 1280, "height": 900},
-            )
+        return playwright.chromium.launch_persistent_context(
+            str(profile_dir),
+            headless=headless,
+            viewport=viewport,
+            args=launch_args,
+        )
 
     @staticmethod
     def _channel_hash(url: str) -> str:
@@ -1550,6 +1561,9 @@ class TelegramSignalsBot:
         open_market_keys: set[str] | None = None,
         message_id: str | None = None,
         message_key: str | None = None,
+        max_tps: int | None = None,
+        default_lot: float | None = None,
+        ignore_open_symbol_trades: bool | None = None,
     ) -> dict:
         if not hard and self.daily_risk_status:
             daily = self.daily_risk_status()
@@ -1566,23 +1580,46 @@ class TelegramSignalsBot:
 
         if not parsed.symbol:
             return {"status": "skipped", "channel": channel.name, "reason": "missing symbol"}
-        symbol_cfg, auto_registered = resolve_symbol_for_telegram(parsed.symbol, self.config, self.client)
+        symbol_cfg, created_new, persisted = ensure_symbol_for_signal_copy(
+            parsed.symbol,
+            self.config,
+            self.client,
+            config_path=self.config_path,
+            persist=True,
+            logger=self.logger,
+        )
         if symbol_cfg is None:
             return {"status": "skipped", "channel": channel.name, "reason": f"unknown symbol {parsed.symbol}"}
-        if auto_registered:
+        if created_new:
             self.logger.warning(
-                "TELEGRAM AUTO-REGISTER symbol=%s key=%s lot=%s",
+                "SIGNAL COPY auto-registered symbol=%s key=%s lot=%s persisted=%s",
                 symbol_cfg.symbol,
                 symbol_cfg.key,
                 symbol_cfg.lot_per_leg,
+                persisted,
             )
+        if not symbol_cfg.signal_active:
+            return {
+                "status": "signal_inactive",
+                "channel": channel.name,
+                "reason": f"signal copy disabled for {symbol_cfg.symbol} in Settings (Signal active off)",
+                "symbol": symbol_cfg.symbol,
+            }
 
-        tps = [float(tp) for tp in parsed.tps[: self.config.telegram_signals.max_tps]]
+        copy_max_tps = max_tps if max_tps is not None else self.config.telegram_signals.max_tps
+        copy_default_lot = default_lot if default_lot is not None else self.config.telegram_signals.default_lot
+        copy_ignore_open = (
+            ignore_open_symbol_trades
+            if ignore_open_symbol_trades is not None
+            else self.config.telegram_signals.ignore_open_symbol_trades
+        )
+
+        tps = [float(tp) for tp in parsed.tps[:copy_max_tps]]
         if not tps:
             return {"status": "skipped", "channel": channel.name, "reason": "missing take profits"}
 
         side = "buy" if parsed.action.startswith("buy") else "sell"
-        lot = self.config.telegram_signals.default_lot or symbol_cfg.lot_per_leg
+        lot = copy_default_lot or symbol_cfg.lot_per_leg
         trade_symbol = settings_mt5_symbol_from_config(symbol_cfg, self.config)
         tick = self.client.tick(trade_symbol)
         if tick is None:
@@ -1659,7 +1696,7 @@ class TelegramSignalsBot:
 
         if (
             not hard
-            and self.config.telegram_signals.ignore_open_symbol_trades
+            and copy_ignore_open
             and self._has_open_market(symbol_cfg, open_market_keys=open_market_keys)
         ):
             result = {

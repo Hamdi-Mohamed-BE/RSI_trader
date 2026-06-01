@@ -18,6 +18,7 @@ const PAGE_LABELS = {
   "manual-trade": "Manual trade",
   "live-summary": "Live summary",
   "telegram-signals": "Telegram signals",
+  "tradlia-signals": "Tradlia signals",
   logs: "Logs",
 };
 
@@ -209,6 +210,25 @@ const els = {
   telegramActionLogBody: document.getElementById("telegram-action-log-body"),
   telegramLastResult: document.getElementById("telegram-last-result"),
   telegramLastResultJson: document.getElementById("telegram-last-result-json"),
+  telegramBrowserHeadless: document.getElementById("telegram-browser-headless"),
+  tradliaUpdated: document.getElementById("tradlia-updated"),
+  tradliaDot: document.getElementById("tradlia-dot"),
+  tradliaLabel: document.getElementById("tradlia-label"),
+  tradliaCounts: document.getElementById("tradlia-counts"),
+  tradliaLast: document.getElementById("tradlia-last"),
+  tradliaStartBtn: document.getElementById("tradlia-start-btn"),
+  tradliaStopBtn: document.getElementById("tradlia-stop-btn"),
+  tradliaHint: document.getElementById("tradlia-hint"),
+  tradliaError: document.getElementById("tradlia-error"),
+  tradliaApi: document.getElementById("tradlia-api"),
+  tradliaLlm: document.getElementById("tradlia-llm"),
+  tradliaPoll: document.getElementById("tradlia-poll"),
+  tradliaLastParsed: document.getElementById("tradlia-last-parsed"),
+  tradliaLastAction: document.getElementById("tradlia-last-action"),
+  tradliaLastActionMeta: document.getElementById("tradlia-last-action-meta"),
+  tradliaLastActionStatus: document.getElementById("tradlia-last-action-status"),
+  tradliaLastActionJson: document.getElementById("tradlia-last-action-json"),
+  tradliaActionLogBody: document.getElementById("tradlia-action-log-body"),
   telegramMessagesByChannel: document.getElementById("telegram-messages-by-channel"),
   toastStack: document.getElementById("toast-stack"),
   navToggle: document.getElementById("nav-toggle"),
@@ -221,6 +241,7 @@ let logTimer = null;
 let loopTimer = null;
 let liveTimer = null;
 let telegramTimer = null;
+let tradliaTimer = null;
 let telegramMessagesFingerprint = "";
 let telegramActionsFingerprint = "";
 let telegramExpandedFields = new Set();
@@ -236,6 +257,7 @@ function currentPage() {
   if (path === "/manual-trade") return "manual-trade";
   if (path === "/live-summary") return "live-summary";
   if (path === "/telegram-signals") return "telegram-signals";
+  if (path === "/tradlia-signals") return "tradlia-signals";
   if (path === "/logs") return "logs";
   return "home";
 }
@@ -696,14 +718,25 @@ function symbolGroupLabel(group) {
 
 function renderGroupedSymbolRow(item) {
   return `
-        <tr class="${item.enabled ? "" : "row-disabled"}">
+        <tr class="${item.enabled ? "" : "row-disabled"}${!item.signal_active ? " row-signal-inactive" : ""}">
           <td>
-            <label class="switch" title="${item.enabled ? "Enabled" : "Disabled"}">
+            <label class="switch" title="${item.enabled ? "Bot scans this symbol" : "Bot scan off"}">
               <input
                 class="symbol-enabled"
                 type="checkbox"
                 data-symbol="${escapeHtml(item.symbol)}"
                 ${item.enabled ? "checked" : ""}
+              >
+              <span class="switch-slider"></span>
+            </label>
+          </td>
+          <td>
+            <label class="switch" title="${item.signal_active !== false ? "Telegram/Tradlia may copy" : "Signal copy off"}">
+              <input
+                class="symbol-signal-active"
+                type="checkbox"
+                data-symbol="${escapeHtml(item.symbol)}"
+                ${item.signal_active !== false ? "checked" : ""}
               >
               <span class="switch-slider"></span>
             </label>
@@ -792,32 +825,43 @@ function updateSymbolStats(stats) {
 function symbolSettingsFromConfig() {
   const lots = {};
   const enabled = {};
+  const signal_active = {};
   const timeframes = {};
   const demo_symbols = {};
   const live_symbols = {};
   for (const item of botConfig?.symbols || []) {
     lots[item.symbol] = item.lot_per_leg;
     enabled[item.symbol] = Boolean(item.enabled);
+    signal_active[item.symbol] = item.signal_active !== false;
     timeframes[item.symbol] = item.timeframe;
     demo_symbols[item.symbol] = item.demo_symbol || item.symbol;
     live_symbols[item.symbol] = item.live_symbol || item.symbol;
   }
-  return { lots, enabled, timeframes, demo_symbols, live_symbols };
+  return { lots, enabled, signal_active, timeframes, demo_symbols, live_symbols };
 }
 
 function collectSymbolSettings() {
   const lots = {};
   const enabled = {};
+  const signal_active = {};
   const timeframes = {};
   const demo_symbols = {};
   const live_symbols = {};
   const lotInputs = els.symbolsBody.querySelectorAll(".lot-input");
   const enabledInputs = els.symbolsBody.querySelectorAll(".symbol-enabled");
+  const signalActiveInputs = els.symbolsBody.querySelectorAll(".symbol-signal-active");
   const timeframeInputs = els.symbolsBody.querySelectorAll(".timeframe-select");
   const demoInputs = els.symbolsBody.querySelectorAll(".demo-symbol-input");
   const liveInputs = els.symbolsBody.querySelectorAll(".live-symbol-input");
 
-  if (!lotInputs.length && !enabledInputs.length && !timeframeInputs.length && !demoInputs.length && !liveInputs.length) {
+  if (
+    !lotInputs.length
+    && !enabledInputs.length
+    && !signalActiveInputs.length
+    && !timeframeInputs.length
+    && !demoInputs.length
+    && !liveInputs.length
+  ) {
     return symbolSettingsFromConfig();
   }
 
@@ -834,6 +878,12 @@ function collectSymbolSettings() {
     const symbol = input.dataset.symbol;
     if (!symbol) continue;
     enabled[symbol] = input.checked;
+  }
+
+  for (const input of signalActiveInputs) {
+    const symbol = input.dataset.symbol;
+    if (!symbol) continue;
+    signal_active[symbol] = input.checked;
   }
 
   for (const input of timeframeInputs) {
@@ -872,12 +922,13 @@ function collectSymbolSettings() {
     const fallback = symbolSettingsFromConfig();
     if (!Object.keys(lots).length) Object.assign(lots, fallback.lots);
     if (!Object.keys(enabled).length) Object.assign(enabled, fallback.enabled);
+    if (!Object.keys(signal_active).length) Object.assign(signal_active, fallback.signal_active);
     if (!Object.keys(timeframes).length) Object.assign(timeframes, fallback.timeframes);
     if (!Object.keys(demo_symbols).length) Object.assign(demo_symbols, fallback.demo_symbols);
     if (!Object.keys(live_symbols).length) Object.assign(live_symbols, fallback.live_symbols);
   }
 
-  return { lots, enabled, timeframes, demo_symbols, live_symbols };
+  return { lots, enabled, signal_active, timeframes, demo_symbols, live_symbols };
 }
 
 function defaultForexLotFromUi() {
@@ -963,12 +1014,13 @@ async function syncMt5IsDemoSetting({ persist = true, silent = false } = {}) {
 }
 
 async function syncSymbolSettings({ persist = true, silent = false, rerender = false } = {}) {
-  const { lots, enabled, timeframes, demo_symbols, live_symbols } = collectSymbolSettings();
+  const { lots, enabled, signal_active, timeframes, demo_symbols, live_symbols } = collectSymbolSettings();
   const defaultForexLot = defaultForexLotFromUi();
   const appendBrokerSymbolSuffix = appendBrokerSymbolSuffixFromUi();
   if (
     !Object.keys(lots).length
     && !Object.keys(enabled).length
+    && !Object.keys(signal_active).length
     && !Object.keys(timeframes).length
     && !Object.keys(demo_symbols).length
     && !Object.keys(live_symbols).length
@@ -984,6 +1036,7 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
     body: JSON.stringify({
       lots,
       enabled,
+      signal_active,
       timeframes,
       demo_symbols,
       live_symbols,
@@ -2366,7 +2419,7 @@ function telegramStatusClass(status) {
   const value = String(status || "").toLowerCase();
   if (value === "placed" || value === "paper" || value === "breakeven") return "value-positive";
   if (value === "failed" || value === "error" || value.includes("fail")) return "value-negative";
-  if (value === "skipped" || value === "stale") return "value-neutral";
+  if (value === "skipped" || value === "stale" || value === "signal_inactive") return "value-neutral";
   return "value-neutral";
 }
 
@@ -2698,6 +2751,7 @@ async function saveTelegramSettings({ silent = false } = {}) {
       body: JSON.stringify({
         ignore_open_symbol_trades: Boolean(els.telegramIgnoreOpen.checked),
         protect_tp: Boolean(els.telegramProtectTp?.checked),
+        browser_headless: Boolean(els.telegramBrowserHeadless?.checked),
         persist: true,
       }),
     });
@@ -3022,6 +3076,9 @@ function renderTelegramConfig(config) {
   if (els.telegramProtectTp) {
     els.telegramProtectTp.checked = telegram.protect_tp !== false;
   }
+  if (els.telegramBrowserHeadless && telegram.browser_headless != null) {
+    els.telegramBrowserHeadless.checked = Boolean(telegram.browser_headless);
+  }
   if (els.telegramChannels) {
     els.telegramChannels.textContent = `${(telegram.channels || []).filter((channel) => channel.enabled).length} active / ${(telegram.channels || []).length} total`;
   }
@@ -3029,6 +3086,151 @@ function renderTelegramConfig(config) {
   if (els.telegramPoll) {
     els.telegramPoll.textContent = `${telegram.poll_seconds}s`;
   }
+  if (config.tradlia_signals && els.tradliaPoll) {
+    els.tradliaPoll.textContent = `${config.tradlia_signals.poll_seconds}s`;
+  }
+}
+
+function renderTradliaStatus(status) {
+  if (!els.tradliaLabel) return;
+  const running = Boolean(status.running);
+  els.tradliaDot?.classList.toggle("running", running);
+  els.tradliaLabel.textContent = running ? "Running" : "Stopped";
+  if (els.tradliaStartBtn) els.tradliaStartBtn.disabled = running;
+  if (els.tradliaStopBtn) els.tradliaStopBtn.disabled = !running;
+  if (els.tradliaUpdated) {
+    els.tradliaUpdated.textContent = `Tradlia: ${running ? "watching" : "stopped"}`;
+    els.tradliaUpdated.classList.toggle("ok", running);
+  }
+  if (els.tradliaCounts) {
+    els.tradliaCounts.textContent = `${status.messages_seen || 0} messages · ${status.placed || 0} placed`;
+  }
+  if (els.tradliaApi) {
+    const ok = status.api_configured;
+    els.tradliaApi.textContent = ok ? "Configured" : "Missing";
+    els.tradliaApi.className = `value ${ok ? "value-positive" : "value-negative"}`;
+  }
+  if (els.tradliaLlm) {
+    els.tradliaLlm.textContent = status.llm_configured ? "Ready" : "Missing API key";
+  }
+  if (els.tradliaPoll) {
+    els.tradliaPoll.textContent = `${status.poll_seconds || "—"}s`;
+  }
+  const signal = status.last_signal;
+  if (els.tradliaLastParsed) {
+    els.tradliaLastParsed.textContent = formatTelegramParsedSignal(signal);
+  }
+  if (els.tradliaLast) {
+    els.tradliaLast.textContent = status.last_channel
+      ? `Last: ${status.last_channel}`
+      : "Last signal: —";
+  }
+  if (els.tradliaActionLogBody && Array.isArray(status.recent_actions)) {
+    const items = status.recent_actions.slice().reverse();
+    els.tradliaActionLogBody.innerHTML = items.length
+      ? items
+          .map((item) => {
+            const detail = item.reason || item.result?.execution_reason || item.result?.reason || "";
+            return `
+        <article class="telegram-action-log-item">
+          <div class="telegram-action-log-head">
+            <span class="${telegramStatusClass(item.status)}">${escapeHtml([item.kind, item.status, item.channel].filter(Boolean).join(" · "))}</span>
+            <span class="mono">${formatTimestamp(item.at)}</span>
+          </div>
+          ${detail ? `<p class="telegram-action-log-detail">${escapeHtml(detail)}</p>` : ""}
+        </article>`;
+          })
+          .join("")
+      : '<p class="empty-row">No Tradlia copy actions yet.</p>';
+  }
+  const action = status.last_action;
+  if (els.tradliaLastAction && els.tradliaLastActionJson) {
+    if (action?.result) {
+      if (els.tradliaLastActionMeta) {
+        els.tradliaLastActionMeta.textContent = [action.channel, action.at, action.result?.status].filter(Boolean).join(" · ");
+      }
+      renderTelegramActionStatusBadge(els.tradliaLastActionStatus, action.result);
+      els.tradliaLastActionJson.textContent = JSON.stringify(action, null, 2);
+      els.tradliaLastAction.classList.remove("hidden");
+    } else {
+      els.tradliaLastAction.classList.add("hidden");
+    }
+  }
+}
+
+async function refreshTradliaStatus() {
+  try {
+    const response = await fetch("/api/tradlia-signals/status", { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to load Tradlia status");
+    renderTradliaStatus(data);
+    if (els.tradliaHint) {
+      els.tradliaHint.textContent = data.running
+        ? "Polling Tradlia for new signals…"
+        : "Start when API credentials are set in config or environment variables.";
+    }
+    return data;
+  } catch (error) {
+    if (els.tradliaError) {
+      els.tradliaError.textContent = error.message;
+      els.tradliaError.classList.remove("hidden");
+    }
+    return null;
+  }
+}
+
+async function startTradliaCopier() {
+  if (botConfig && !botConfig.bot.dry_run) {
+    const confirmed = window.confirm(
+      "Live trading is enabled. Tradlia copied signals will place real MT5 orders. Continue?",
+    );
+    if (!confirmed) return;
+  }
+  setLoading(els.tradliaStartBtn, true);
+  try {
+    const response = await fetch("/api/tradlia-signals/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ protect_tp: Boolean(els.telegramProtectTp?.checked) }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to start Tradlia copier");
+    renderTradliaStatus(data);
+    toast("Tradlia copier started", "success");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.tradliaStartBtn, false);
+  }
+}
+
+async function stopTradliaCopier() {
+  setLoading(els.tradliaStopBtn, true);
+  try {
+    const response = await fetch("/api/tradlia-signals/stop", { method: "POST" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to stop Tradlia copier");
+    renderTradliaStatus(data);
+    toast("Tradlia copier stopped", "info");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.tradliaStopBtn, false);
+  }
+}
+
+function startTradliaPolling() {
+  if (tradliaTimer) return;
+  tradliaTimer = window.setInterval(() => {
+    if (currentPage() !== "tradlia-signals") return;
+    void refreshTradliaStatus();
+  }, 5000);
+}
+
+function stopTradliaPolling() {
+  if (!tradliaTimer) return;
+  window.clearInterval(tradliaTimer);
+  tradliaTimer = null;
 }
 
 async function refreshTelegramStatus({ full = false } = {}) {
@@ -4021,10 +4223,11 @@ async function init() {
     }
   });
   els.symbolsBody?.addEventListener("change", (event) => {
-    if (!event.target.matches(".lot-input, .symbol-enabled, .timeframe-select")) return;
+    if (!event.target.matches(".lot-input, .symbol-enabled, .symbol-signal-active, .timeframe-select")) return;
     const row = event.target.closest("tr");
-    if (row && event.target.matches(".symbol-enabled")) {
-      row.classList.toggle("row-disabled", !event.target.checked);
+    if (row && (event.target.matches(".symbol-enabled") || event.target.matches(".symbol-signal-active"))) {
+      row.classList.toggle("row-disabled", !row.querySelector(".symbol-enabled")?.checked);
+      row.classList.toggle("row-signal-inactive", !row.querySelector(".symbol-signal-active")?.checked);
     }
     scheduleSettingsSync({ persist: false, silent: true });
   });
@@ -4069,6 +4272,8 @@ async function init() {
   els.telegramDailyWinTargetValue?.addEventListener("change", () => onDailyLossSettingsChanged("telegram"));
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
+  els.tradliaStartBtn?.addEventListener("click", startTradliaCopier);
+  els.tradliaStopBtn?.addEventListener("click", stopTradliaCopier);
   els.telegramSaveBtn?.addEventListener("click", () => saveTelegramSettings({ silent: false }));
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
   els.telegramChannelForm?.addEventListener("submit", addTelegramChannel);
@@ -4162,6 +4367,9 @@ async function init() {
     startTelegramPolling();
     startDailyGuardClock();
     void refreshTelegramStatus({ full: true });
+  } else if (page === "tradlia-signals") {
+    startTradliaPolling();
+    void refreshTradliaStatus();
   } else if (page === "live-summary") {
     void loadLiveSummary();
   }

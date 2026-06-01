@@ -248,6 +248,14 @@ class TelegramSignalsConfig(BaseModel):
     telegram_url: str = "https://web.telegram.org/k/"
     channels: list[TelegramChannelConfig] = Field(default_factory=list)
     browser_user_data_dir: str = "runtime/telegram-browser"
+    browser_engine: Literal["firefox", "chromium"] = Field(
+        default="firefox",
+        description="Playwright browser for Telegram Web (firefox uses less RAM than Chrome).",
+    )
+    browser_headless: bool = Field(
+        default=False,
+        description="Headless browser mode (lower RAM; log in once with headless=false if needed).",
+    )
     openai_api_key: str | None = None
     openai_model: str = "gpt-4o-mini"
     gemini_api_key: str | None = None
@@ -260,6 +268,28 @@ class TelegramSignalsConfig(BaseModel):
     sl_refresh_seconds: int = Field(default=60, ge=10, le=600)
 
 
+class TradliaSignalsConfig(BaseModel):
+    enabled: bool = False
+    poll_seconds: int = Field(default=10, ge=3)
+    api_url: str = (
+        "https://ucnnpexyvxobqyqsucnn.backend.onspace.ai/rest/v1/telegram_signals"
+        "?select=*&order=time.desc&limit=100"
+    )
+    api_key: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("api_key", "TRADLIA_API_KEY"),
+    )
+    bearer_token: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("bearer_token", "TRADLIA_BEARER_TOKEN"),
+    )
+    max_message_age_seconds: int = Field(default=300, ge=30, le=3600)
+    ignore_open_symbol_trades: bool = True
+    protect_tp: bool = True
+    max_tps: int = Field(default=5, ge=1, le=8)
+    default_lot: float | None = None
+
+
 class SymbolConfig(BaseModel):
     symbol: str
     name: str
@@ -267,6 +297,10 @@ class SymbolConfig(BaseModel):
     live_symbol: str = ""
     market_key_override: str | None = None
     enabled: bool = True
+    signal_active: bool = Field(
+        default=True,
+        description="When false, Telegram/Tradlia signal copiers skip this symbol.",
+    )
     timeframe: Timeframe = "M5"
     optimized_timeframe: Timeframe | None = None
     lot_per_leg: float = Field(gt=0)
@@ -303,6 +337,7 @@ class AppConfig(BaseModel):
     web: WebConfig = Field(default_factory=WebConfig)
     auth: AuthConfig = Field(default_factory=AuthConfig)
     telegram_signals: TelegramSignalsConfig = Field(default_factory=TelegramSignalsConfig)
+    tradlia_signals: TradliaSignalsConfig = Field(default_factory=TradliaSignalsConfig)
     symbols: list[SymbolConfig]
 
     @property
@@ -397,6 +432,16 @@ def update_symbol_enabled(config: AppConfig, enabled: dict[str, bool]) -> list[s
     return updated
 
 
+def update_symbol_signal_active(config: AppConfig, signal_active: dict[str, bool]) -> list[str]:
+    updated: list[str] = []
+    for symbol_cfg in config.symbols:
+        if symbol_cfg.symbol not in signal_active:
+            continue
+        symbol_cfg.signal_active = bool(signal_active[symbol_cfg.symbol])
+        updated.append(symbol_cfg.symbol)
+    return updated
+
+
 def update_symbol_trade_names(
     config: AppConfig,
     demo_symbols: dict[str, str],
@@ -462,6 +507,7 @@ def add_custom_symbol(
     lot_per_leg: float | None = None,
     timeframe: str | None = None,
     enabled: bool = True,
+    signal_active: bool = True,
     market_key_override: str | None = None,
 ) -> SymbolConfig:
     raw = symbol.strip()
@@ -486,6 +532,7 @@ def add_custom_symbol(
         live_symbol=live,
         market_key_override=market_key_override,
         enabled=bool(enabled),
+        signal_active=bool(signal_active),
         timeframe=tf,  # type: ignore[arg-type]
         lot_per_leg=lot_per_leg or config.risk.default_forex_lot,
         rr=[1.0, 1.5, 2.0],
@@ -501,6 +548,7 @@ def add_custom_symbol(
         live_symbol=live,
         market_key_override=market_key_override,
         enabled=bool(enabled),
+        signal_active=bool(signal_active),
         timeframe=tf,  # type: ignore[arg-type]
         lot_per_leg=lot,
         rr=[1.0, 1.5, 2.0],
@@ -635,11 +683,20 @@ def update_telegram_settings(
     *,
     ignore_open_symbol_trades: bool | None = None,
     protect_tp: bool | None = None,
+    browser_engine: str | None = None,
+    browser_headless: bool | None = None,
 ) -> None:
     if ignore_open_symbol_trades is not None:
         config.telegram_signals.ignore_open_symbol_trades = ignore_open_symbol_trades
     if protect_tp is not None:
         config.telegram_signals.protect_tp = protect_tp
+    if browser_engine is not None:
+        engine = browser_engine.strip().lower()
+        if engine not in {"firefox", "chromium"}:
+            raise ValueError("browser_engine must be firefox or chromium")
+        config.telegram_signals.browser_engine = engine  # type: ignore[assignment]
+    if browser_headless is not None:
+        config.telegram_signals.browser_headless = bool(browser_headless)
 
 
 def update_telegram_channel(

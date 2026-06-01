@@ -55,6 +55,7 @@
       <a class="nav-link" data-page-link="manual-trade" href="/manual-trade">Manual trade</a>
       <a class="nav-link" data-page-link="live-summary" href="/live-summary">Live summary</a>
       <a class="nav-link" data-page-link="telegram-signals" href="/telegram-signals">Telegram signals copy</a>
+      <a class="nav-link" data-page-link="tradlia-signals" href="/tradlia-signals">Tradlia signals copy</a>
       <a class="nav-link" data-page-link="logs" href="/logs">Logs</a>
       <a class="nav-link nav-link-danger" href="/logout">Logout</a>
     </nav>
@@ -175,7 +176,8 @@
           <table class="data-table" id="symbols-table">
             <thead>
               <tr>
-                <th>On</th>
+                <th>Bot</th>
+                <th>Signals</th>
                 <th>Market</th>
                 <th>Demo symbol</th>
                 <th>Live symbol</th>
@@ -186,7 +188,7 @@
               </tr>
             </thead>
             <tbody id="symbols-body">
-              <tr><td colspan="8" class="empty-row">Loading configuration…</td></tr>
+              <tr><td colspan="9" class="empty-row">Loading configuration…</td></tr>
             </tbody>
           </table>
         </div>
@@ -882,6 +884,13 @@
             <span>Skip new signals when that symbol already has an open MT5 position</span>
           </label>
           <label class="toggle field-full">
+            <input id="telegram-browser-headless" type="checkbox">
+            <span>Headless browser (less RAM; log in once with this off if Telegram asks)</span>
+          </label>
+          <p class="panel-hint field-full">
+            Telegram Web uses Playwright <strong>Firefox</strong> by default (lighter than Chrome). Install: <code>playwright install firefox</code>
+          </p>
+          <label class="toggle field-full">
             <input id="telegram-daily-loss-guard-enabled" type="checkbox">
             <span>Daily loss guard — stop when equity falls by the max % from today's start balance</span>
           </label>
@@ -1036,7 +1045,85 @@
         </div>
 
         <p class="panel-hint live-warning">
-          Login in the opened Telegram browser when asked. This copier uses real MT5 orders when dry_run is false and comments them as "signal bot".
+          Login in the opened Telegram browser when asked. Uses Firefox by default for lower RAM. This copier uses real MT5 orders when dry_run is false.
+        </p>
+      </section>
+
+      <section class="panel panel-wide" data-pages="tradlia-signals">
+        <div class="panel-header panel-header-split">
+          <div>
+            <h2>Tradlia signals copy</h2>
+            <p>Polls the Tradlia API feed and copies new signals with the same parser and MT5 placement rules as Telegram.</p>
+          </div>
+          <span id="tradlia-updated" class="live-updated">Tradlia: —</span>
+        </div>
+
+        <div id="tradlia-status-card" class="auto-run-status">
+          <div class="auto-run-indicator">
+            <span id="tradlia-dot" class="status-dot"></span>
+            <span id="tradlia-label">Stopped</span>
+          </div>
+          <div class="auto-run-meta">
+            <span id="tradlia-counts">0 messages · 0 placed</span>
+            <span id="tradlia-last">Last signal: —</span>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <button id="tradlia-start-btn" class="btn btn-primary" type="button">
+            <span class="btn-label">Start Tradlia copier</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+          <button id="tradlia-stop-btn" class="btn btn-danger" type="button" disabled>
+            <span class="btn-label">Stop Tradlia copier</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <p id="tradlia-hint" class="panel-hint"></p>
+        <div id="tradlia-error" class="live-error hidden"></div>
+
+        <div class="summary-grid">
+          <div class="summary-card">
+            <span class="label">API credentials</span>
+            <span class="value" id="tradlia-api">—</span>
+          </div>
+          <div class="summary-card">
+            <span class="label">Signal parser</span>
+            <span class="value" id="tradlia-llm">—</span>
+          </div>
+          <div class="summary-card">
+            <span class="label">Poll interval</span>
+            <span class="value" id="tradlia-poll">—</span>
+          </div>
+          <div class="summary-card">
+            <span class="label">Last parsed</span>
+            <span class="value" id="tradlia-last-parsed">—</span>
+          </div>
+        </div>
+
+        <div id="tradlia-last-action" class="telegram-last-action hidden">
+          <div class="telegram-last-action-head">
+            <div>
+              <h3>Last Tradlia action</h3>
+              <p id="tradlia-last-action-meta" class="panel-hint">—</p>
+            </div>
+            <span id="tradlia-last-action-status" class="telegram-action-status hidden"></span>
+          </div>
+          <pre id="tradlia-last-action-json" class="code-block"></pre>
+        </div>
+
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Recent Tradlia actions</h3>
+          </div>
+          <div id="tradlia-action-log-body" class="telegram-action-log">
+            <p class="empty-row">No Tradlia copy actions yet.</p>
+          </div>
+        </div>
+
+        <p class="panel-hint live-warning">
+          Set <code>tradlia_signals.api_key</code> and <code>bearer_token</code> in config.yaml, or use <code>TRADLIA_API_KEY</code> / <code>TRADLIA_BEARER_TOKEN</code> environment variables. Never commit live tokens to git.
         </p>
       </section>
 
@@ -1068,6 +1155,6 @@
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="/static/js/chart-preview.js?v=6" defer></script>
-  <script src="/static/js/app.js?v=76" defer></script>
+  <script src="/static/js/app.js?v=77" defer></script>
 </body>
 </html>

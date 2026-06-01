@@ -93,6 +93,8 @@ telegram_signals:
     url: https://web.telegram.org/k/#@FOREXUSAMASTER1
     enabled: true
   browser_user_data_dir: runtime/telegram-browser
+  browser_engine: firefox
+  browser_headless: false
   openai_api_key: null
   openai_model: gpt-4o-mini
   gemini_api_key: null
@@ -103,6 +105,17 @@ telegram_signals:
   default_lot: null
   max_message_age_seconds: 300
   sl_refresh_seconds: 60
+tradlia_signals:
+  enabled: false
+  poll_seconds: 10
+  api_url: https://ucnnpexyvxobqyqsucnn.backend.onspace.ai/rest/v1/telegram_signals?select=*&order=time.desc&limit=100
+  api_key: null
+  bearer_token: null
+  ignore_open_symbol_trades: true
+  protect_tp: true
+  max_tps: 5
+  default_lot: null
+  max_message_age_seconds: 300
 symbols:
 - symbol: BTCUSD
   name: Bitcoin
