@@ -2394,6 +2394,17 @@ function renderTelegramActionStatusBadge(statusEl, result) {
   statusEl.classList.remove("hidden");
 }
 
+function formatTelegramParsedSignal(signal) {
+  if (!signal?.action || signal.action === "none") return "—";
+  const bits = [String(signal.action).toUpperCase(), signal.symbol || ""];
+  if (signal.entry_low != null && signal.entry_high != null) {
+    bits.push(`${signal.entry_low}-${signal.entry_high}`);
+  } else if (signal.entry != null) {
+    bits.push(String(signal.entry));
+  }
+  return bits.join(" ");
+}
+
 function renderTelegramActionLog(actions) {
   if (!els.telegramActionLogBody) return;
   const items = Array.isArray(actions) ? actions.slice().reverse() : [];
@@ -2409,7 +2420,7 @@ function renderTelegramActionLog(actions) {
       if (item.channel) bits.push(item.channel);
       if (item.symbol) bits.push(item.symbol);
       const accountSummary = formatTelegramAccountResults(item.result?.account_results);
-      const detail = accountSummary || item.reason || item.result?.reason || "";
+      const detail = accountSummary || item.result?.execution_reason || item.reason || item.result?.reason || "";
       return `
         <article class="telegram-action-log-item">
           <div class="telegram-action-log-head">
@@ -2467,9 +2478,7 @@ function syncTelegramSettingsFromStatus(status, { force = false } = {}) {
 function updateTelegramLastPanels(status) {
   const signal = status.last_signal;
   if (els.telegramLastParsed) {
-    els.telegramLastParsed.textContent = signal?.action && signal.action !== "none"
-      ? `${String(signal.action).toUpperCase()} ${signal.symbol || ""}`
-      : "—";
+    els.telegramLastParsed.textContent = formatTelegramParsedSignal(signal);
   }
   if (els.telegramLastAction && els.telegramLastActionJson) {
     const action = status.last_action;

@@ -17,7 +17,7 @@ from .strategy_modes import (
     tp_protection_enabled,
 )
 from .symbols import find_symbol_config, market_key
-from .trade_geometry import invalid_market_geometry
+from .trade_geometry import invalid_market_geometry, invalid_pending_geometry
 from .trade_execution import normalized_full_volume, normalized_partial_volumes, normalized_split_lot
 
 Outcome = str  # placed | skipped | duplicate | failed | paper
@@ -274,6 +274,106 @@ class TradeExecutor:
             extra_setup=extra_setup,
             comment=comment,
         )
+
+    def place_pending_setup(
+        self,
+        *,
+        setup_id: str,
+        symbol: str,
+        market_key: str,
+        order_kind: str,
+        side: str,
+        entry_price: float,
+        sl: float,
+        tps: list[float],
+        lot_per_leg: float,
+        extra_setup: dict | None = None,
+        comment: str = ORDER_COMMENT,
+    ) -> dict:
+        order_kind = order_kind.lower()
+        side = side.lower()
+        tick = self.client.tick(symbol)
+        if tick is None:
+            return {"status": "skipped", "reason": f"no live tick for {symbol}"}
+        bid = float(_field(tick, "bid", 0.0) or 0.0)
+        ask = float(_field(tick, "ask", 0.0) or 0.0)
+        entry = float(entry_price)
+        pending_error = invalid_pending_geometry(order_kind, bid, ask, entry)
+        if pending_error:
+            return {"status": "skipped", "reason": pending_error, "entry_price": entry}
+        geometry_error = invalid_market_geometry(side, entry, float(sl), [float(tp) for tp in tps], label="pending entry")
+        if geometry_error:
+            return {"status": "skipped", "reason": geometry_error, "entry_price": entry}
+
+        tickets: list[int] = []
+        last_failure: str | None = None
+        for index, tp in enumerate(tps, start=1):
+            try:
+                result = self.client.send_pending(
+                    symbol,
+                    order_kind,
+                    lot_per_leg,
+                    entry,
+                    sl,
+                    float(tp),
+                    self.config.bot.magic,
+                    f"{comment} TP{index}"[:31],
+                )
+            except ValueError as exc:
+                last_failure = str(exc)
+                self.logger.warning("PENDING REJECTED %s tp=%s reason=%s", symbol, tp, exc)
+                continue
+            retcode = getattr(result, "retcode", None)
+            order = int(getattr(result, "order", 0) or getattr(result, "deal", 0) or 0)
+            if retcode == self.client.TRADE_DONE and order:
+                tickets.append(order)
+                self.logger.info(
+                    "PENDING PLACED %s ticket=%s kind=%s entry=%s tp=%s",
+                    symbol,
+                    order,
+                    order_kind,
+                    entry,
+                    round(tp, 5),
+                )
+            else:
+                comment_text = getattr(result, "comment", None)
+                last_failure = f"retcode={retcode} comment={comment_text}"
+                self.logger.warning("PENDING FAILED %s tp=%s ret=%s result=%s", symbol, tp, retcode, result)
+
+        if not tickets:
+            return {
+                "status": "failed",
+                "tickets": tickets,
+                "ticket": 0,
+                "reason": last_failure or "no pending orders filled",
+                "entry_price": entry,
+                "order_kind": order_kind,
+            }
+
+        setup = {
+            "setup_id": setup_id,
+            "symbol": symbol,
+            "market_key": market_key,
+            "side": side,
+            "execution_mode": "pending",
+            "order_kind": order_kind,
+            "tickets": tickets,
+            "tps": tps,
+            "sl": sl,
+            "entry_price": entry,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        if extra_setup:
+            setup.update(extra_setup)
+        self.state.add_setup(setup)
+        return {
+            "status": "placed",
+            "tickets": tickets,
+            "ticket": tickets[0],
+            "entry_price": entry,
+            "order_kind": order_kind,
+            "legs": len(tickets),
+        }
 
     def _place_split_signal(self, signal: Signal) -> Outcome:
         result = self._place_split_market(

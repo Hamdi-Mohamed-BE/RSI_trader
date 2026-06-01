@@ -19,6 +19,7 @@ from .manual_trade import parse_manual_trade, resolve_symbol_for_telegram
 from .mt5_client import MT5Client, _field
 from .state import StateStore
 from .symbols import market_key, resolve_trade_symbol, settings_mt5_symbol_from_config
+from .telegram_entry import EntryZone, resolve_telegram_execution
 from .trade_geometry import default_stop_loss_one_to_one, invalid_market_geometry, synthetic_stop_loss_reference_tp
 from .trader import TradeExecutor
 
@@ -217,6 +218,8 @@ class ParsedTelegramSignal(BaseModel):
     symbol: str | None = Field(default=None, description="Trading symbol like XAUUSD, EURUSD, BTCUSD, GOLD.")
     action: TelegramAction = Field(description="buy/sell for live market trades, or a pending order type.")
     entry: float | None = Field(default=None, description="Entry price for pending orders. Optional for live buy/sell.")
+    entry_low: float | None = Field(default=None, description="Lower bound of an entry zone from the signal.")
+    entry_high: float | None = Field(default=None, description="Upper bound of an entry zone from the signal.")
     stop_loss: float | None = Field(default=None, description="Stop loss price.")
     tps: list[float] = Field(default_factory=list, description="Take profit prices in the planned hit order.")
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
@@ -263,10 +266,10 @@ class GeminiSignalParser:
         "If the message is a trade update, TP hit, profit report, or reply to an earlier signal, "
         "use action='none' even when BUY/SELL text appears in quoted content. "
         "A fresh signal with symbol + BUY/SELL + SL + one or more TPs is a valid trade even when entry "
-        "is written as a range like 4394_4397, 4394-4397, or 4394/4397 — use action='sell' or 'buy' "
-        "and leave entry empty for market execution unless it is clearly a pending/limit order. "
-        "Use action='buy' or action='sell' for live/now/market trades. "
-        "Use buy_limit, sell_limit, buy_stop, or sell_stop for pending orders. "
+        "is written as a range like 4394_4397, 4394-4397, or 4540/35 — put entry_low and entry_high for ranges "
+        "(4540/35 means 4535-4540). Use action='buy' or action='sell' for now/market-style signals; the bot "
+        "will compare live price to the zone and choose market or a pending pre-order automatically. "
+        "Use buy_limit, sell_limit, buy_stop, or sell_stop only when the message explicitly asks for a pending order. "
         "Normalize GOLD/XAU to XAUUSD when clear. Keep prices exactly as written."
     )
 
@@ -1580,21 +1583,44 @@ class TelegramSignalsBot:
 
         side = "buy" if parsed.action.startswith("buy") else "sell"
         lot = self.config.telegram_signals.default_lot or symbol_cfg.lot_per_leg
+        trade_symbol = settings_mt5_symbol_from_config(symbol_cfg, self.config)
+        tick = self.client.tick(trade_symbol)
+        if tick is None:
+            return {"status": "skipped", "channel": channel.name, "reason": f"No tick for {trade_symbol}"}
+        bid = float(_field(tick, "bid", 0.0) or 0.0)
+        ask = float(_field(tick, "ask", 0.0) or 0.0)
+
+        zone = _entry_zone_from_parsed(parsed)
+        pending_action = parsed.action if parsed.action not in {"buy", "sell", "none"} else None
+        try:
+            execution = resolve_telegram_execution(
+                side,
+                bid=bid,
+                ask=ask,
+                zone=zone,
+                explicit_entry=parsed.entry,
+                pending_action=pending_action,
+            )
+        except ValueError as exc:
+            return {"status": "skipped", "channel": channel.name, "reason": str(exc)}
+
         plan = {
             "channel": channel.name,
             "symbol": symbol_cfg.symbol,
-            "action": parsed.action,
+            "action": execution.order_kind if execution.order_kind != "market" else parsed.action,
             "entry": parsed.entry,
+            "entry_low": execution.zone_low,
+            "entry_high": execution.zone_high,
             "sl": parsed.stop_loss,
             "tps": tps,
             "lot": float(lot),
+            "execution_mode": execution.order_kind,
+            "execution_reason": execution.reason,
+            "current_bid": execution.current_bid,
+            "current_ask": execution.current_ask,
         }
-        try:
-            live_entry = self._live_entry_price(plan, symbol_cfg)
-        except ValueError as exc:
-            return {"status": "skipped", "channel": channel.name, "reason": str(exc), **plan}
 
-        reference_entry = float(parsed.entry) if parsed.entry is not None else live_entry
+        reference_entry = execution.entry_price
         sl_is_synthetic = parsed.stop_loss is None
         if sl_is_synthetic:
             reference_tp = synthetic_stop_loss_reference_tp(tps)
@@ -1646,21 +1672,33 @@ class TelegramSignalsBot:
             self._mark_processed_trade(fingerprint, parsed, channel, source_id, result, stop_loss_used=sl)
             return result
 
-        geometry_reason = invalid_market_geometry(side, live_entry, sl, tps, label="live price")
+        geometry_label = "pending entry" if execution.order_kind != "market" else "live price"
+        geometry_entry = execution.entry_price
+        geometry_reason = invalid_market_geometry(side, geometry_entry, sl, tps, label=geometry_label)
         if geometry_reason:
             reason = f"TPs no longer valid: {geometry_reason}" if hard else geometry_reason
-            return {"status": "skipped", "channel": channel.name, "reason": reason, **plan, "entry_price": live_entry}
+            return {
+                "status": "skipped",
+                "channel": channel.name,
+                "reason": reason,
+                **plan,
+                "entry_price": geometry_entry,
+            }
 
         linked_message_id = message_id or source_id
         log_prefix = "TELEGRAM HARD COPY" if hard else "TELEGRAM SIGNAL"
         self.logger.warning(
-            "%s channel=%s parsed symbol=%s action=%s signal_entry=%s live_entry=%s sl=%s synthetic=%s tps=%s lot=%s dry_run=%s",
+            "%s channel=%s parsed symbol=%s action=%s execution=%s signal_zone=%s-%s live=%s/%s reason=%s sl=%s synthetic=%s tps=%s lot=%s dry_run=%s",
             log_prefix,
             channel.name,
             plan["symbol"],
             plan["action"],
-            plan.get("entry"),
-            live_entry,
+            execution.order_kind,
+            execution.zone_low,
+            execution.zone_high,
+            bid,
+            ask,
+            execution.reason,
             sl,
             sl_is_synthetic,
             plan["tps"],
@@ -1671,7 +1709,7 @@ class TelegramSignalsBot:
             result = {
                 "status": "paper",
                 **plan,
-                "entry_price": live_entry,
+                "entry_price": geometry_entry,
                 "hard_copy": hard,
                 "trade_hash": fingerprint,
                 "message_id": linked_message_id,
@@ -1696,35 +1734,56 @@ class TelegramSignalsBot:
             return result
 
         setup_id = f"telegram:hard:{source_id[:24]}" if hard else f"telegram:{source_id[:16]}"
-        trade_symbol = settings_mt5_symbol_from_config(symbol_cfg, self.config)
-        result = self.executor.place_market_setup(
-            setup_id=setup_id,
-            symbol=trade_symbol,
-            market_key=symbol_cfg.key,
-            side=side,
-            sl=sl,
-            tps=tps,
-            lot_per_leg=float(lot),
-            entry_price=None,
-            execution_mode="split",
-            extra_setup={
-                "breakeven_applied": False,
-                "source": "telegram_signals",
-                "channel_url": channel.url,
-                "channel_name": channel.name,
-                "telegram_message_id": linked_message_id,
-                "telegram_message_key": message_key,
-                "sl_synthetic": sl_is_synthetic,
-            },
-            comment=f"TG - {(channel.name or 'Telegram').strip()}"[:31],
-        )
+        extra_setup = {
+            "breakeven_applied": False,
+            "source": "telegram_signals",
+            "channel_url": channel.url,
+            "channel_name": channel.name,
+            "telegram_message_id": linked_message_id,
+            "telegram_message_key": message_key,
+            "sl_synthetic": sl_is_synthetic,
+            "execution_reason": execution.reason,
+        }
+        comment = f"TG - {(channel.name or 'Telegram').strip()}"[:31]
+        drift_reference = None
+        if execution.order_kind == "market" and zone is not None:
+            drift_reference = zone.high if side == "buy" else zone.low
+
+        if execution.order_kind == "market":
+            result = self.executor.place_market_setup(
+                setup_id=setup_id,
+                symbol=trade_symbol,
+                market_key=symbol_cfg.key,
+                side=side,
+                sl=sl,
+                tps=tps,
+                lot_per_leg=float(lot),
+                entry_price=drift_reference,
+                execution_mode="split",
+                extra_setup=extra_setup,
+                comment=comment,
+            )
+        else:
+            result = self.executor.place_pending_setup(
+                setup_id=setup_id,
+                symbol=trade_symbol,
+                market_key=symbol_cfg.key,
+                order_kind=execution.order_kind,
+                side=side,
+                entry_price=geometry_entry,
+                sl=sl,
+                tps=tps,
+                lot_per_leg=float(lot),
+                extra_setup=extra_setup,
+                comment=comment,
+            )
 
         if result.get("status") == "placed":
             tickets = [int(ticket) for ticket in result.get("tickets") or []]
             placed = {
                 "status": "placed",
                 **plan,
-                "entry_price": result.get("entry_price") or live_entry,
+                "entry_price": result.get("entry_price") or geometry_entry,
                 "setup_id": setup_id,
                 "trade_hash": fingerprint,
                 "message_id": linked_message_id,
@@ -1736,7 +1795,7 @@ class TelegramSignalsBot:
             }
             if not hard:
                 self._mark_processed_trade(fingerprint, parsed, channel, source_id, placed, stop_loss_used=sl)
-            if sl_is_synthetic:
+            if sl_is_synthetic and execution.order_kind == "market":
                 self._register_pending_sl_watch(
                     message_id=linked_message_id,
                     message_key=message_key,
@@ -1751,7 +1810,7 @@ class TelegramSignalsBot:
         failed = {
             "status": "failed" if result.get("status") == "failed" else "skipped",
             **plan,
-            "entry_price": result.get("entry_price") or live_entry,
+            "entry_price": result.get("entry_price") or geometry_entry,
             "trade_hash": fingerprint,
             "message_id": linked_message_id,
             "message_key": message_key,
@@ -2027,11 +2086,23 @@ def fallback_parse_telegram_signal(text: str, config: AppConfig) -> ParsedTelegr
     return ParsedTelegramSignal(
         symbol=symbol,
         action=action,
-        entry=None,
+        entry=plan.entry_hint,
+        entry_low=plan.entry_low,
+        entry_high=plan.entry_high,
         stop_loss=float(plan.sl),
         tps=[float(tp) for tp in plan.tps],
         confidence=0.75,
     )
+
+
+def _entry_zone_from_parsed(parsed: ParsedTelegramSignal) -> EntryZone | None:
+    if parsed.entry_low is not None and parsed.entry_high is not None:
+        low = float(parsed.entry_low)
+        high = float(parsed.entry_high)
+        return EntryZone(low=min(low, high), high=max(low, high))
+    if parsed.entry is not None:
+        return EntryZone.single(float(parsed.entry))
+    return None
 
 
 def config_symbol_token(resolved_symbol: str, config: AppConfig) -> str:

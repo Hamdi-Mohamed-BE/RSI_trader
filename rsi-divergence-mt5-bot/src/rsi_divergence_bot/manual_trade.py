@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from .config import AppConfig, SymbolConfig, trade_symbol_for_account
 from .mt5_client import MT5Client
 from .symbols import crypto_aliases_for, market_key, mt5_symbol_candidates, resolve_trade_symbol
+from .telegram_entry import extract_entry_zone_from_line
 from .trade_geometry import invalid_market_geometry
 
 
@@ -23,6 +24,8 @@ class ManualTradePlan:
     sl: float
     tps: list[float]
     entry_hint: float | None = None
+    entry_low: float | None = None
+    entry_high: float | None = None
 
 
 def parse_manual_trade(text: str, config: AppConfig) -> ManualTradePlan:
@@ -33,6 +36,8 @@ def parse_manual_trade(text: str, config: AppConfig) -> ManualTradePlan:
     side: str | None = None
     symbol_token: str | None = None
     entry_hint: float | None = None
+    entry_low: float | None = None
+    entry_high: float | None = None
     sl: float | None = None
     tps: list[float] = []
     lot: float | None = None
@@ -49,7 +54,12 @@ def parse_manual_trade(text: str, config: AppConfig) -> ManualTradePlan:
             side = parsed_side
             if parsed_symbol:
                 symbol_token = parsed_symbol
-            if numbers:
+            zone = extract_entry_zone_from_line(line)
+            if zone is not None:
+                entry_low = zone.low
+                entry_high = zone.high
+                entry_hint = zone.high if side == "buy" else zone.low
+            elif numbers:
                 entry_hint = numbers[0]
             continue
 
@@ -65,7 +75,7 @@ def parse_manual_trade(text: str, config: AppConfig) -> ManualTradePlan:
         ):
             if not numbers:
                 raise ValueError(f"TP line has no price: {line}")
-            tps.append(numbers[-1])
+            tps.extend(numbers)
             continue
 
         if "LOT" in tokens or "VOLUME" in tokens:
@@ -100,6 +110,8 @@ def parse_manual_trade(text: str, config: AppConfig) -> ManualTradePlan:
         sl=float(sl),
         tps=[float(tp) for tp in tps],
         entry_hint=entry_hint,
+        entry_low=entry_low,
+        entry_high=entry_high,
     )
 
 
@@ -109,6 +121,18 @@ def _extract_side_and_symbol(line: str) -> tuple[str | None, str | None]:
     if match:
         return match.group(2).lower(), match.group(1)
     match = re.match(r"(?i)^\s*(BUY|SELL)\s+([A-Za-z][A-Za-z0-9._-]+)\s*$", stripped)
+    if match:
+        return match.group(1).lower(), match.group(2)
+    match = re.match(
+        r"(?i)^\s*([A-Za-z][A-Za-z0-9._-]+)\s+(BUY|SELL)(?:\s+NOW)?(?:\s+[\d./_\-–—]+)?",
+        stripped,
+    )
+    if match:
+        return match.group(2).lower(), match.group(1)
+    match = re.match(
+        r"(?i)^\s*(BUY|SELL)(?:\s+NOW)?\s+([A-Za-z][A-Za-z0-9._-]+)(?:\s+[\d./_\-–—]+)?",
+        stripped,
+    )
     if match:
         return match.group(1).lower(), match.group(2)
     return None, None
