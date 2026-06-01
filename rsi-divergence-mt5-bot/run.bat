@@ -31,6 +31,15 @@ if not exist "runtime" (
     mkdir "runtime"
 )
 
+echo Ensuring Playwright browsers for Telegram Web (chromium + firefox)...
+"%UV_EXE%" run python -m playwright install chromium firefox
+if errorlevel 1 (
+    echo.
+    echo WARNING: Playwright browser install failed or timed out.
+    echo Telegram copy may fail until you run: uv run python -m playwright install chromium
+    echo.
+)
+
 echo Starting dashboard with config.yaml...
 echo Open this in the VPS browser:
 echo http://127.0.0.1:8787

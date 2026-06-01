@@ -127,12 +127,12 @@ if errorlevel 1 (
 )
 
 echo.
-echo Installing Telegram browser automation engine...
-"%UV_EXE%" run python -m playwright install chromium
+echo Installing Telegram browser automation engines (chromium + firefox)...
+"%UV_EXE%" run python -m playwright install chromium firefox
 if errorlevel 1 (
     echo.
-    echo WARNING: Playwright Chromium install failed or timed out.
-    echo The Telegram copier will still try your installed Google Chrome first.
+    echo WARNING: Playwright browser install failed or timed out.
+    echo Run manually: uv run python -m playwright install chromium firefox
 )
 
 echo.
