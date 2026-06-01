@@ -31,6 +31,18 @@ class TelegramEntryTests(unittest.TestCase):
         self.assertEqual(zone.low, 4394.0)
         self.assertEqual(zone.high, 4397.0)
 
+    def test_force_market_ignores_entry_zone(self) -> None:
+        decision = resolve_telegram_execution(
+            "buy",
+            bid=4551.0,
+            ask=4552.0,
+            zone=EntryZone(low=4535.0, high=4540.0),
+            force_market=True,
+        )
+        self.assertEqual(decision.order_kind, "market")
+        self.assertEqual(decision.entry_price, 4552.0)
+        self.assertIn("max age", decision.reason)
+
     def test_buy_above_zone_uses_limit(self) -> None:
         decision = resolve_telegram_execution(
             "buy",

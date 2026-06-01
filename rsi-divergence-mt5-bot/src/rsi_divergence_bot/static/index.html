@@ -1004,6 +1004,7 @@
             </table>
           </div>
           <p class="panel-hint">Enable or disable channels while the copier is running — disabled channels are skipped on each poll. Stop the copier before adding or removing channels.</p>
+          <p class="panel-hint">Signals younger than <code>max_message_age_seconds</code> (default 5 minutes) open at <strong>market</strong> immediately; older messages are skipped. Limit pre-orders are not used for fresh auto-copy.</p>
         </div>
 
         <div id="telegram-last-action" class="result-card hidden">
@@ -1032,7 +1033,7 @@
           <div class="live-section-header">
             <h3>Recent message ledger</h3>
             <div class="live-section-actions">
-              <span class="live-count">grouped by channel · last 100 tracked</span>
+              <span class="live-count">managed channels only · paginated · newest first</span>
               <button id="telegram-clear-btn" class="btn btn-danger btn-sm" type="button">
                 <span class="btn-label">Hard clear messages</span>
                 <span class="spinner" hidden aria-hidden="true"></span>

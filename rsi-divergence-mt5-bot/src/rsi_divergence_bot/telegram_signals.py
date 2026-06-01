@@ -467,7 +467,7 @@ class TelegramSignalsBot:
         data["llm_configured"] = GeminiSignalParser.llm_configured(self.config)
         data["channels"] = [channel.model_dump(mode="python") for channel in self.config.telegram_signals.channels]
         data["enabled_channel_count"] = len(self._enabled_channels())
-        data["recent_messages"] = self.state.recent_telegram_messages(100)
+        data["recent_messages"] = self._ledger_messages_for_ui(100)
         if self._status.last_action_at or self._status.last_result:
             data["last_action"] = {
                 "at": self._status.last_action_at,
@@ -599,6 +599,8 @@ class TelegramSignalsBot:
             hard=True,
             message_id=cleaned_id,
             message_key=record.get("message_key"),
+            message_age_seconds=record.get("age_seconds"),
+            force_market=True,
         )
         result["hard_copy"] = True
         result["message_id"] = cleaned_id
@@ -1052,7 +1054,6 @@ class TelegramSignalsBot:
     ) -> None:
         self._scroll_chat_to_bottom(page, attempts=1)
         self._status.last_channel = channel.name
-        self._sync_visible_messages(page, channel)
         self._refresh_pending_sl_watches(page, channel)
 
         message, diagnostics, skipped_ad = self._read_latest_message(page, channel)
@@ -1287,6 +1288,33 @@ class TelegramSignalsBot:
     def _channel_poll_id(self, channel: TelegramChannelConfig) -> str:
         return hashlib.sha256(f"{channel.url}\n__poll__".encode("utf-8")).hexdigest()
 
+    def _configured_channel_keys(self) -> tuple[set[str], set[str]]:
+        names: set[str] = set()
+        urls: set[str] = set()
+        for channel in self.config.telegram_signals.channels:
+            if channel.name.strip():
+                names.add(channel.name.strip().casefold())
+            if channel.url.strip():
+                urls.add(channel.url.strip())
+        return names, urls
+
+    def _message_matches_configured_channel(self, item: dict) -> bool:
+        names, urls = self._configured_channel_keys()
+        if not names and not urls:
+            return False
+        channel_name = str(item.get("channel_name") or "").strip().casefold()
+        channel_url = str(item.get("channel_url") or "").strip()
+        if channel_url and channel_url in urls:
+            return True
+        if channel_name and channel_name in names:
+            return True
+        return False
+
+    def _ledger_messages_for_ui(self, limit: int = 100) -> list[dict]:
+        rows = self.state.recent_telegram_messages(limit * 3)
+        filtered = [item for item in rows if self._message_matches_configured_channel(item)]
+        return filtered[-limit:]
+
     def _message_age(self, message_timestamp: float | None) -> float | None:
         if message_timestamp is None:
             return None
@@ -1438,6 +1466,7 @@ class TelegramSignalsBot:
 
         self._status.parsed_signals += 1
         trade_hash = telegram_trade_fingerprint(channel, parsed)
+        age_seconds = self._message_age(message_timestamp)
         result = self._place_parsed_signal(
             parsed,
             source_id=message_id,
@@ -1446,6 +1475,7 @@ class TelegramSignalsBot:
             open_market_keys=open_market_keys,
             message_id=message_id,
             message_key=message_key,
+            message_age_seconds=age_seconds,
         )
         self._record_message(
             message_id,
@@ -1457,7 +1487,7 @@ class TelegramSignalsBot:
             reason=result.get("reason"),
             message_key=message_key,
             message_timestamp=message_timestamp,
-            age_seconds=self._message_age(message_timestamp),
+            age_seconds=age_seconds,
             trade_hash=trade_hash,
         )
         self._status.last_result = result
@@ -1561,6 +1591,8 @@ class TelegramSignalsBot:
         open_market_keys: set[str] | None = None,
         message_id: str | None = None,
         message_key: str | None = None,
+        message_age_seconds: float | None = None,
+        force_market: bool | None = None,
         max_tps: int | None = None,
         default_lot: float | None = None,
         ignore_open_symbol_trades: bool | None = None,
@@ -1629,6 +1661,15 @@ class TelegramSignalsBot:
 
         zone = _entry_zone_from_parsed(parsed)
         pending_action = parsed.action if parsed.action not in {"buy", "sell", "none"} else None
+        max_age = self.config.telegram_signals.max_message_age_seconds
+        fresh_signal = (
+            force_market is True
+            or (
+                force_market is not False
+                and message_age_seconds is not None
+                and message_age_seconds <= max_age
+            )
+        )
         try:
             execution = resolve_telegram_execution(
                 side,
@@ -1636,7 +1677,8 @@ class TelegramSignalsBot:
                 ask=ask,
                 zone=zone,
                 explicit_entry=parsed.entry,
-                pending_action=pending_action,
+                pending_action=pending_action if not fresh_signal else None,
+                force_market=fresh_signal,
             )
         except ValueError as exc:
             return {"status": "skipped", "channel": channel.name, "reason": str(exc)}

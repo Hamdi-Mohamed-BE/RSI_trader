@@ -252,6 +252,8 @@ let telegramTimer = null;
 let tradliaTimer = null;
 let telegramMessagesFingerprint = "";
 let tradliaMessagesFingerprint = "";
+const TELEGRAM_LEDGER_PAGE_SIZE = 15;
+const telegramLedgerPages = new Map();
 let telegramActionsFingerprint = "";
 let telegramExpandedFields = new Set();
 let telegramUserInteracting = false;
@@ -2974,7 +2976,45 @@ function updateTelegramMessagesIfChanged(messages, channels = [], { force = fals
   renderTelegramMessages(messages, channels);
 }
 
-function renderSignalMessagesByChannel(container, messages, channels = [], { hardCopyClass = "telegram-hard-copy-btn", emptyText } = {}) {
+function filterTelegramLedgerMessages(messages, channels = []) {
+  const names = new Set(
+    (channels || []).map((channel) => String(channel.name || "").trim().toLowerCase()).filter(Boolean),
+  );
+  const urls = new Set(
+    (channels || []).map((channel) => String(channel.url || "").trim()).filter(Boolean),
+  );
+  if (!names.size && !urls.size) return [];
+  return (messages || []).filter((item) => {
+    const name = String(item.channel_name || "").trim().toLowerCase();
+    const url = String(item.channel_url || "").trim();
+    if (url && urls.has(url)) return true;
+    if (name && names.has(name)) return true;
+    return false;
+  });
+}
+
+function paginateLedgerRows(rows, channelKey, pageState, pageSize) {
+  const total = rows.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  let page = Number(pageState.get(channelKey) || 1);
+  if (page > totalPages) page = totalPages;
+  if (page < 1) page = 1;
+  pageState.set(channelKey, page);
+  const start = (page - 1) * pageSize;
+  return {
+    pageRows: rows.slice(start, start + pageSize),
+    page,
+    totalPages,
+    total,
+  };
+}
+
+function renderSignalMessagesByChannel(
+  container,
+  messages,
+  channels = [],
+  { hardCopyClass = "telegram-hard-copy-btn", emptyText, paginate = false, pageSize = 15, pageState = null } = {},
+) {
   if (!container) return;
   if (!messages.length) {
     container.innerHTML = `<p class="empty-row">${escapeHtml(emptyText || "No messages tracked yet.")}</p>`;
@@ -2999,12 +3039,28 @@ function renderSignalMessagesByChannel(container, messages, channels = [], { har
         const right = String(a.tradlia_time || a.updated_at || "");
         return left.localeCompare(right);
       });
+      const channelKey = name.toLowerCase();
+      const ledger = paginate && pageState
+        ? paginateLedgerRows(sorted, channelKey, pageState, pageSize)
+        : { pageRows: sorted, page: 1, totalPages: 1, total: sorted.length };
+      const paginationHtml =
+        paginate && ledger.totalPages > 1
+          ? `
+          <div class="telegram-channel-pagination">
+            <button type="button" class="btn btn-secondary btn-sm telegram-ledger-page-btn" data-telegram-page="prev" data-channel-key="${escapeHtml(channelKey)}" ${ledger.page <= 1 ? "disabled" : ""}>Newer</button>
+            <span class="panel-hint">Page ${ledger.page} of ${ledger.totalPages} · ${ledger.total} total</span>
+            <button type="button" class="btn btn-secondary btn-sm telegram-ledger-page-btn" data-telegram-page="next" data-channel-key="${escapeHtml(channelKey)}" ${ledger.page >= ledger.totalPages ? "disabled" : ""}>Older</button>
+          </div>`
+          : paginate
+            ? `<p class="panel-hint telegram-channel-pagination">${ledger.total} message${ledger.total === 1 ? "" : "s"}</p>`
+            : "";
       return `
         <section class="telegram-channel-group">
           <div class="telegram-channel-group-header">
             <h4>${escapeHtml(name)}</h4>
-            <span class="telegram-channel-group-count">${sorted.length} message${sorted.length === 1 ? "" : "s"}</span>
+            <span class="telegram-channel-group-count">${ledger.total} message${ledger.total === 1 ? "" : "s"}</span>
           </div>
+          ${paginationHtml}
           <div class="table-wrap">
             <table class="data-table data-table-compact">
               <thead>
@@ -3019,7 +3075,7 @@ function renderSignalMessagesByChannel(container, messages, channels = [], { har
                 </tr>
               </thead>
               <tbody>
-                ${sorted.map((item) => renderTelegramMessageRow(item, { hardCopyClass })).join("")}
+                ${ledger.pageRows.map((item) => renderTelegramMessageRow(item, { hardCopyClass })).join("")}
               </tbody>
             </table>
           </div>
@@ -3031,9 +3087,16 @@ function renderSignalMessagesByChannel(container, messages, channels = [], { har
 }
 
 function renderTelegramMessages(messages, channels = []) {
-  renderSignalMessagesByChannel(els.telegramMessagesByChannel, messages, channels, {
+  const managed = channels || botConfig?.telegram_signals?.channels || [];
+  const filtered = filterTelegramLedgerMessages(messages, managed);
+  renderSignalMessagesByChannel(els.telegramMessagesByChannel, filtered, managed, {
     hardCopyClass: "telegram-hard-copy-btn",
-    emptyText: "No Telegram messages tracked yet.",
+    emptyText: managed.length
+      ? "No messages for your managed channels yet."
+      : "Add channels above to track Telegram signal messages.",
+    paginate: true,
+    pageSize: TELEGRAM_LEDGER_PAGE_SIZE,
+    pageState: telegramLedgerPages,
   });
 }
 
@@ -4529,6 +4592,18 @@ async function init() {
     }
   });
   els.telegramMessagesByChannel?.addEventListener("click", (event) => {
+    const pageBtn = event.target.closest(".telegram-ledger-page-btn");
+    if (pageBtn) {
+      const channelKey = pageBtn.dataset.channelKey;
+      const direction = pageBtn.dataset.telegramPage;
+      if (channelKey) {
+        const current = Number(telegramLedgerPages.get(channelKey) || 1);
+        telegramLedgerPages.set(channelKey, direction === "next" ? current + 1 : current - 1);
+        telegramUserInteracting = true;
+        void refreshTelegramStatus();
+      }
+      return;
+    }
     const expandBtn = event.target.closest(".telegram-expand-btn");
     if (expandBtn) {
       toggleTelegramExpand(expandBtn);

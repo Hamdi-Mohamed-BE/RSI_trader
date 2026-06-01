@@ -89,6 +89,7 @@ def resolve_telegram_execution(
     zone: EntryZone | None = None,
     explicit_entry: float | None = None,
     pending_action: str | None = None,
+    force_market: bool = False,
 ) -> TelegramExecutionDecision:
     side = side.lower()
     if side not in {"buy", "sell"}:
@@ -96,6 +97,25 @@ def resolve_telegram_execution(
 
     zone_low = zone.low if zone else None
     zone_high = zone.high if zone else None
+
+    if force_market:
+        live = ask if side == "buy" else bid
+        zone_note = ""
+        if zone is not None:
+            zone_note = f" (entry zone {zone.low:.5f}-{zone.high:.5f} ignored)"
+        return TelegramExecutionDecision(
+            order_kind="market",
+            side=side,
+            entry_price=live,
+            current_bid=bid,
+            current_ask=ask,
+            zone_low=zone_low,
+            zone_high=zone_high,
+            reason=(
+                f"Signal under max age — market {side} at live "
+                f"{'ask' if side == 'buy' else 'bid'} {live:.5f}{zone_note}"
+            ),
+        )
 
     if pending_action and pending_action not in {"buy", "sell", "none"}:
         entry = float(explicit_entry or 0.0)
