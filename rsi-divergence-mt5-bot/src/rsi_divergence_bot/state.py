@@ -168,6 +168,46 @@ class StateStore:
                 "trade_hashes_removed": trades_removed,
             }
 
+    def upsert_tradlia_message(self, message_id: str, payload: dict[str, Any]) -> None:
+        with self._lock:
+            state = self._read_unlocked()
+            messages = state.setdefault("tradlia_messages", [])
+            existing = next((item for item in messages if item.get("message_id") == message_id), None)
+            if existing is not None:
+                merged = {**existing, **payload}
+                if payload.get("parsed") is None and existing.get("parsed") is not None:
+                    merged["parsed"] = existing["parsed"]
+                if payload.get("result") is None and existing.get("result") is not None:
+                    merged["result"] = existing["result"]
+                if payload.get("text") is None and existing.get("text") is not None:
+                    merged["text"] = existing["text"]
+                payload = merged
+            next_messages = [item for item in messages if item.get("message_id") != message_id]
+            next_messages.append({"message_id": message_id, **payload})
+            state["tradlia_messages"] = next_messages[-500:]
+            self._write_unlocked(state)
+
+    def get_tradlia_message(self, message_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            state = self._read_unlocked()
+            for item in state.get("tradlia_messages", []):
+                if item.get("message_id") == message_id:
+                    return dict(item)
+            return None
+
+    def recent_tradlia_messages(self, limit: int = 50) -> list[dict[str, Any]]:
+        with self._lock:
+            state = self._read_unlocked()
+            return list(state.get("tradlia_messages", []))[-limit:]
+
+    def clear_tradlia_history(self) -> dict[str, int]:
+        with self._lock:
+            state = self._read_unlocked()
+            messages_removed = len(state.get("tradlia_messages", []))
+            state["tradlia_messages"] = []
+            self._write_unlocked(state)
+            return {"messages_removed": messages_removed}
+
     def is_telegram_trade_processed(self, trade_hash: str) -> bool:
         with self._lock:
             state = self._read_unlocked()

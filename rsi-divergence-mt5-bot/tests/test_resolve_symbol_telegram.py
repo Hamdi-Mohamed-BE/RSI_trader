@@ -34,6 +34,23 @@ def test_resolve_symbol_for_telegram_uses_existing_alias():
     assert auto_registered is False
 
 
+def test_resolve_symbol_for_telegram_does_not_match_unrelated_symbol():
+    config = _config()
+    config.symbols.append(
+        SymbolConfig(
+            symbol="BTCUSD",
+            name="BTCUSD",
+            demo_symbol="BTCUSD-VIP",
+            live_symbol="BTCUSD-STD",
+            lot_per_leg=0.03,
+        )
+    )
+    client = FakeMT5Client({"BTCUSD-VIP"})
+    cfg, auto_registered = resolve_symbol_for_telegram("CHFJPY", config, client)
+    assert cfg is None
+    assert auto_registered is False
+
+
 def test_resolve_symbol_for_telegram_auto_registers_vip_symbol():
     config = _config()
     config.risk.default_forex_lot = 0.35
@@ -42,7 +59,7 @@ def test_resolve_symbol_for_telegram_auto_registers_vip_symbol():
     assert cfg is not None
     assert cfg.symbol == "CHFJPY"
     assert cfg.demo_symbol == "CHFJPY-VIP"
-    assert cfg.live_symbol == "CHFJPY-VIP"
+    assert cfg.live_symbol == "CHFJPY-STD"
     assert cfg.lot_per_leg == 0.35
     assert auto_registered is True
     assert resolve_symbol("CHFJPY", config) is cfg
@@ -56,7 +73,7 @@ def test_resolve_symbol_for_telegram_auto_registers_std_symbol():
     cfg, auto_registered = resolve_symbol_for_telegram("CHFJPY", config, client)
     assert cfg is not None
     assert cfg.symbol == "CHFJPY"
-    assert cfg.demo_symbol == "CHFJPY-STD"
+    assert cfg.demo_symbol == "CHFJPY-VIP"
     assert cfg.live_symbol == "CHFJPY-STD"
     assert cfg.lot_per_leg == 0.35
     assert auto_registered is True

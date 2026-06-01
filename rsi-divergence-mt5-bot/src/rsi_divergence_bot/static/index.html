@@ -1069,7 +1069,31 @@
           </div>
         </div>
 
+        <form id="tradlia-credentials-form" class="telegram-channel-form tradlia-credentials-form">
+          <label class="field field-wide">
+            <span>Supabase API key</span>
+            <input id="tradlia-api-key" type="password" autocomplete="off" placeholder="Paste apikey header value">
+          </label>
+          <label class="field field-wide">
+            <span>Bearer token</span>
+            <input id="tradlia-bearer-token" type="password" autocomplete="off" placeholder="Paste authorization bearer token">
+          </label>
+          <label class="field field-wide">
+            <span>API URL (optional)</span>
+            <input id="tradlia-api-url" type="url" placeholder="Defaults to Tradlia telegram_signals endpoint">
+          </label>
+          <button id="tradlia-save-credentials-btn" class="btn btn-secondary" type="submit">
+            <span class="btn-label">Save API credentials</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
+        </form>
+        <p class="panel-hint">Credentials save to <code>config.yaml</code> when you click Save. Leave a field blank to keep the existing value. Env vars <code>TRADLIA_API_KEY</code> / <code>TRADLIA_BEARER_TOKEN</code> still work.</p>
+
         <div class="control-row">
+          <button id="tradlia-sync-feed-btn" class="btn btn-secondary" type="button">
+            <span class="btn-label">Refresh feed</span>
+            <span class="spinner" hidden aria-hidden="true"></span>
+          </button>
           <button id="tradlia-start-btn" class="btn btn-primary" type="button">
             <span class="btn-label">Start Tradlia copier</span>
             <span class="spinner" hidden aria-hidden="true"></span>
@@ -1116,14 +1140,31 @@
         <div class="live-section">
           <div class="live-section-header">
             <h3>Recent Tradlia actions</h3>
+            <span class="live-count">last 40 events · hard copy + auto copy</span>
           </div>
           <div id="tradlia-action-log-body" class="telegram-action-log">
             <p class="empty-row">No Tradlia copy actions yet.</p>
           </div>
         </div>
 
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Polled signal feed</h3>
+            <div class="live-section-actions">
+              <span class="live-count">grouped by channel · refreshes while this tab is open</span>
+              <button id="tradlia-clear-btn" class="btn btn-danger btn-sm" type="button">
+                <span class="btn-label">Clear ledger</span>
+                <span class="spinner" hidden aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div id="tradlia-messages-by-channel" class="telegram-channel-groups">
+            <p class="empty-row">No Tradlia messages yet. Save credentials and click Refresh feed.</p>
+          </div>
+        </div>
+
         <p class="panel-hint live-warning">
-          Set <code>tradlia_signals.api_key</code> and <code>bearer_token</code> in config.yaml, or use <code>TRADLIA_API_KEY</code> / <code>TRADLIA_BEARER_TOKEN</code> environment variables. Never commit live tokens to git.
+          Never commit live API tokens to git. Hard copy skips age, dedup, and daily guards — only validates TPs vs live price.
         </p>
       </section>
 

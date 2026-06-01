@@ -3,9 +3,16 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from .config import AppConfig, SymbolConfig, trade_symbol_for_account
+from .config import AppConfig, SymbolConfig, default_symbol_lot, trade_symbol_for_account
 from .mt5_client import MT5Client
-from .symbols import crypto_aliases_for, market_key, mt5_symbol_candidates, resolve_trade_symbol
+from .symbols import (
+    crypto_aliases_for,
+    find_symbol_config,
+    market_key,
+    mt5_symbol_candidates,
+    signal_copy_broker_symbols,
+    token_mt5_symbol_candidates,
+)
 from .telegram_entry import extract_entry_zone_from_line
 from .trade_geometry import invalid_market_geometry
 
@@ -173,14 +180,25 @@ def resolve_symbol(token: str, config: AppConfig) -> SymbolConfig | None:
 
 def _auto_symbol_config(mt5_symbol: str, base_key: str, config: AppConfig) -> SymbolConfig:
     base = market_key(base_key) or base_key
-    return SymbolConfig(
+    _, demo_name, live_name = signal_copy_broker_symbols(base)
+    provisional = SymbolConfig(
         symbol=base,
         name=base_key,
-        demo_symbol=mt5_symbol,
-        live_symbol=mt5_symbol,
+        demo_symbol=demo_name,
+        live_symbol=live_name,
         enabled=False,
         signal_active=True,
         lot_per_leg=config.risk.default_forex_lot,
+        rr=[1.0, 1.5, 2.0],
+    )
+    return SymbolConfig(
+        symbol=base,
+        name=base_key,
+        demo_symbol=demo_name,
+        live_symbol=live_name,
+        enabled=False,
+        signal_active=True,
+        lot_per_leg=default_symbol_lot(provisional, config),
         rr=[1.0, 1.5, 2.0],
     )
 
@@ -198,24 +216,35 @@ def resolve_symbol_for_telegram(
     if client is None:
         return None, False
 
-    base = _norm_symbol(token)
+    base_key, demo_name, live_name = signal_copy_broker_symbols(token)
     suffix = config.mt5.broker_symbol_suffix if config.mt5.append_broker_symbol_suffix else ""
-    candidates = list(mt5_symbol_candidates(token, suffix))
-    for item in config.symbols:
-        for name in (item.demo_symbol, item.live_symbol, item.symbol):
-            key = _norm_symbol(name)
-            if key and key not in candidates:
-                candidates.append(key)
+    candidates = token_mt5_symbol_candidates(token, suffix)
     for candidate in candidates:
         if client.symbol_info(candidate) is None or client.tick(candidate) is None:
             continue
-        for item in config.symbols:
-            names = {item.symbol, item.demo_symbol, item.live_symbol}
-            if candidate in names or _norm_symbol(candidate) == _norm_symbol(item.symbol):
-                return item, False
-            if market_key(candidate) == item.key:
-                return item, False
-        cfg = _auto_symbol_config(candidate, base, config)
+        matched = find_symbol_config(config.symbols, candidate) or find_symbol_config(config.symbols, base_key)
+        if matched is not None:
+            return matched, False
+        provisional = SymbolConfig(
+            symbol=base_key,
+            name=token.strip() or base_key,
+            demo_symbol=demo_name,
+            live_symbol=live_name,
+            enabled=False,
+            signal_active=True,
+            lot_per_leg=config.risk.default_forex_lot,
+            rr=[1.0, 1.5, 2.0],
+        )
+        cfg = SymbolConfig(
+            symbol=base_key,
+            name=token.strip() or base_key,
+            demo_symbol=demo_name,
+            live_symbol=live_name,
+            enabled=False,
+            signal_active=True,
+            lot_per_leg=default_symbol_lot(provisional, config),
+            rr=[1.0, 1.5, 2.0],
+        )
         if auto_register:
             config.symbols.append(cfg)
             return cfg, True

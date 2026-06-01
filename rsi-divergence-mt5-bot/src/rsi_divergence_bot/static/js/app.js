@@ -229,6 +229,14 @@ const els = {
   tradliaLastActionStatus: document.getElementById("tradlia-last-action-status"),
   tradliaLastActionJson: document.getElementById("tradlia-last-action-json"),
   tradliaActionLogBody: document.getElementById("tradlia-action-log-body"),
+  tradliaApiKey: document.getElementById("tradlia-api-key"),
+  tradliaBearerToken: document.getElementById("tradlia-bearer-token"),
+  tradliaApiUrl: document.getElementById("tradlia-api-url"),
+  tradliaCredentialsForm: document.getElementById("tradlia-credentials-form"),
+  tradliaSaveCredentialsBtn: document.getElementById("tradlia-save-credentials-btn"),
+  tradliaSyncFeedBtn: document.getElementById("tradlia-sync-feed-btn"),
+  tradliaClearBtn: document.getElementById("tradlia-clear-btn"),
+  tradliaMessagesByChannel: document.getElementById("tradlia-messages-by-channel"),
   telegramMessagesByChannel: document.getElementById("telegram-messages-by-channel"),
   toastStack: document.getElementById("toast-stack"),
   navToggle: document.getElementById("nav-toggle"),
@@ -243,9 +251,11 @@ let liveTimer = null;
 let telegramTimer = null;
 let tradliaTimer = null;
 let telegramMessagesFingerprint = "";
+let tradliaMessagesFingerprint = "";
 let telegramActionsFingerprint = "";
 let telegramExpandedFields = new Set();
 let telegramUserInteracting = false;
+let tradliaUserInteracting = false;
 let botConfig = null;
 let manualTradeImageFile = null;
 let symbolSettingsReady = false;
@@ -2906,11 +2916,11 @@ function renderTelegramActionJsonCell(item, rowKey, jsonOverride = null) {
   `;
 }
 
-function renderTelegramMessageRow(item) {
+function renderTelegramMessageRow(item, { hardCopyClass = "telegram-hard-copy-btn" } = {}) {
   const status = String(item.status || "unknown");
   const statusClass = status === "placed" || status === "paper"
     ? "value-positive"
-    : status === "watching" || status === "latest" || status === "breakeven" || status === "seen"
+    : status === "watching" || status === "latest" || status === "breakeven" || status === "seen" || status === "feed"
       ? "value-positive"
       : status.includes("failed")
         ? "value-negative"
@@ -2925,7 +2935,7 @@ function renderTelegramMessageRow(item) {
   const hardCopyEnabled = canHardCopyTelegramMessage(item);
   const messageId = String(item.message_id || "");
   const actionCell = hardCopyEnabled
-    ? `<button type="button" class="btn btn-primary btn-sm telegram-hard-copy-btn" data-message-id="${escapeHtml(messageId)}" title="Force place at market; only checks TPs vs live price">Hard copy</button>`
+    ? `<button type="button" class="btn btn-primary btn-sm ${hardCopyClass}" data-message-id="${escapeHtml(messageId)}" title="Force place at market; only checks TPs vs live price">Hard copy</button>`
     : '<span class="value-neutral">—</span>';
   const messageCell = renderTelegramExpandableText(telegramMessageText(item), rowKey, "message");
   const actionPayload = telegramActionPayload(item);
@@ -2964,10 +2974,10 @@ function updateTelegramMessagesIfChanged(messages, channels = [], { force = fals
   renderTelegramMessages(messages, channels);
 }
 
-function renderTelegramMessages(messages, channels = []) {
-  if (!els.telegramMessagesByChannel) return;
+function renderSignalMessagesByChannel(container, messages, channels = [], { hardCopyClass = "telegram-hard-copy-btn", emptyText } = {}) {
+  if (!container) return;
   if (!messages.length) {
-    els.telegramMessagesByChannel.innerHTML = '<p class="empty-row">No Telegram messages tracked yet.</p>';
+    container.innerHTML = `<p class="empty-row">${escapeHtml(emptyText || "No messages tracked yet.")}</p>`;
     return;
   }
 
@@ -2980,11 +2990,15 @@ function renderTelegramMessages(messages, channels = []) {
   }
 
   const names = [...new Set([...channelOrder.filter(Boolean), ...grouped.keys()])];
-  els.telegramMessagesByChannel.innerHTML = names
+  container.innerHTML = names
     .filter((name) => grouped.has(name))
     .map((name) => {
       const rows = grouped.get(name) || [];
-      const sorted = rows.slice().sort((a, b) => String(b.updated_at || "").localeCompare(String(a.updated_at || "")));
+      const sorted = rows.slice().sort((a, b) => {
+        const left = String(b.tradlia_time || b.updated_at || "");
+        const right = String(a.tradlia_time || a.updated_at || "");
+        return left.localeCompare(right);
+      });
       return `
         <section class="telegram-channel-group">
           <div class="telegram-channel-group-header">
@@ -3005,7 +3019,7 @@ function renderTelegramMessages(messages, channels = []) {
                 </tr>
               </thead>
               <tbody>
-                ${sorted.map((item) => renderTelegramMessageRow(item)).join("")}
+                ${sorted.map((item) => renderTelegramMessageRow(item, { hardCopyClass })).join("")}
               </tbody>
             </table>
           </div>
@@ -3014,6 +3028,28 @@ function renderTelegramMessages(messages, channels = []) {
     })
     .join("");
   scheduleResponsiveTables();
+}
+
+function renderTelegramMessages(messages, channels = []) {
+  renderSignalMessagesByChannel(els.telegramMessagesByChannel, messages, channels, {
+    hardCopyClass: "telegram-hard-copy-btn",
+    emptyText: "No Telegram messages tracked yet.",
+  });
+}
+
+function updateTradliaMessagesIfChanged(messages, { force = false } = {}) {
+  const fingerprint = telegramMessagesFingerprintValue(messages);
+  if (!force && tradliaUserInteracting) return;
+  if (!force && fingerprint === tradliaMessagesFingerprint) return;
+  tradliaMessagesFingerprint = fingerprint;
+  renderTradliaMessages(messages);
+}
+
+function renderTradliaMessages(messages) {
+  renderSignalMessagesByChannel(els.tradliaMessagesByChannel, messages, [], {
+    hardCopyClass: "tradlia-hard-copy-btn",
+    emptyText: "No Tradlia messages yet. Save credentials and click Refresh feed.",
+  });
 }
 
 function toggleTelegramExpand(button) {
@@ -3103,12 +3139,19 @@ function renderTradliaStatus(status) {
     els.tradliaUpdated.classList.toggle("ok", running);
   }
   if (els.tradliaCounts) {
-    els.tradliaCounts.textContent = `${status.messages_seen || 0} messages · ${status.placed || 0} placed`;
+    const ledger = Array.isArray(status.recent_messages) ? status.recent_messages.length : 0;
+    els.tradliaCounts.textContent = `${ledger || status.messages_seen || 0} messages · ${status.placed || 0} placed · ${status.skipped || 0} skipped`;
   }
   if (els.tradliaApi) {
     const ok = status.api_configured;
     els.tradliaApi.textContent = ok ? "Configured" : "Missing";
     els.tradliaApi.className = `value ${ok ? "value-positive" : "value-negative"}`;
+  }
+  if (els.tradliaSyncFeedBtn) {
+    els.tradliaSyncFeedBtn.disabled = !status.api_configured;
+  }
+  if (els.tradliaStartBtn && !running) {
+    els.tradliaStartBtn.disabled = running || !status.api_configured || !status.llm_configured;
   }
   if (els.tradliaLlm) {
     els.tradliaLlm.textContent = status.llm_configured ? "Ready" : "Missing API key";
@@ -3130,11 +3173,12 @@ function renderTradliaStatus(status) {
     els.tradliaActionLogBody.innerHTML = items.length
       ? items
           .map((item) => {
+            const kind = item.hard_copy ? "Hard copy" : item.kind === "tradlia_copy" ? "Auto copy" : item.kind || "Action";
             const detail = item.reason || item.result?.execution_reason || item.result?.reason || "";
             return `
         <article class="telegram-action-log-item">
           <div class="telegram-action-log-head">
-            <span class="${telegramStatusClass(item.status)}">${escapeHtml([item.kind, item.status, item.channel].filter(Boolean).join(" · "))}</span>
+            <span class="${telegramStatusClass(item.status)}">${escapeHtml([kind, item.status, item.channel, item.symbol].filter(Boolean).join(" · "))}</span>
             <span class="mono">${formatTimestamp(item.at)}</span>
           </div>
           ${detail ? `<p class="telegram-action-log-detail">${escapeHtml(detail)}</p>` : ""}
@@ -3143,6 +3187,7 @@ function renderTradliaStatus(status) {
           .join("")
       : '<p class="empty-row">No Tradlia copy actions yet.</p>';
   }
+  updateTradliaMessagesIfChanged(status.recent_messages || [], { force: false });
   const action = status.last_action;
   if (els.tradliaLastAction && els.tradliaLastActionJson) {
     if (action?.result) {
@@ -3158,16 +3203,157 @@ function renderTradliaStatus(status) {
   }
 }
 
+function applyTradliaConfigFromBot(config) {
+  const tradlia = config?.tradlia_signals;
+  if (!tradlia) return;
+  if (els.tradliaApiUrl && tradlia.api_url) {
+    els.tradliaApiUrl.value = tradlia.api_url;
+  }
+  if (els.tradliaApiKey) {
+    els.tradliaApiKey.placeholder = tradlia.api_key_configured
+      ? "Saved — paste to replace"
+      : "Paste apikey header value";
+  }
+  if (els.tradliaBearerToken) {
+    els.tradliaBearerToken.placeholder = tradlia.bearer_token_configured
+      ? "Saved — paste to replace"
+      : "Paste authorization bearer token";
+  }
+}
+
+async function saveTradliaCredentials(event) {
+  event?.preventDefault();
+  const apiKey = els.tradliaApiKey?.value?.trim() || "";
+  const bearerToken = els.tradliaBearerToken?.value?.trim() || "";
+  const apiUrl = els.tradliaApiUrl?.value?.trim() || "";
+  if (!apiKey && !bearerToken && !apiUrl) {
+    toast("Enter at least an API key or bearer token to save", "info");
+    return;
+  }
+  setLoading(els.tradliaSaveCredentialsBtn, true);
+  try {
+    const body = { persist: true };
+    if (apiKey) body.api_key = apiKey;
+    if (bearerToken) body.bearer_token = bearerToken;
+    if (apiUrl) body.api_url = apiUrl;
+    const response = await fetch("/api/tradlia-signals/settings", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to save Tradlia credentials");
+    if (els.tradliaApiKey) els.tradliaApiKey.value = "";
+    if (els.tradliaBearerToken) els.tradliaBearerToken.value = "";
+    renderTradliaStatus(data);
+    if (botConfig?.tradlia_signals) {
+      botConfig.tradlia_signals.api_key_configured = Boolean(data.api_configured);
+      botConfig.tradlia_signals.bearer_token_configured = Boolean(data.api_configured);
+    }
+    applyTradliaConfigFromBot(botConfig);
+    toast("Tradlia credentials saved", "success");
+    if (data.api_configured) {
+      await syncTradliaFeed({ silent: true });
+    }
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.tradliaSaveCredentialsBtn, false);
+  }
+}
+
+async function syncTradliaFeed({ silent = false } = {}) {
+  setLoading(els.tradliaSyncFeedBtn, true);
+  try {
+    const response = await fetch("/api/tradlia-signals/sync-feed", { method: "POST" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to refresh Tradlia feed");
+    renderTradliaStatus(data);
+    if (!silent) {
+      const count = data.messages_synced ?? (data.recent_messages || []).length;
+      toast(`Tradlia feed refreshed (${count} row${count === 1 ? "" : "s"})`, "success");
+    }
+    return data;
+  } catch (error) {
+    if (!silent) toast(error.message, "error");
+    return null;
+  } finally {
+    setLoading(els.tradliaSyncFeedBtn, false);
+  }
+}
+
+async function clearTradliaMessages() {
+  const confirmed = window.confirm(
+    "Clear all Tradlia messages from the ledger and reset copy counters? This cannot be undone.",
+  );
+  if (!confirmed) return;
+  setLoading(els.tradliaClearBtn, true);
+  try {
+    const response = await fetch("/api/tradlia-signals/clear-messages", { method: "POST" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to clear Tradlia ledger");
+    tradliaMessagesFingerprint = "";
+    renderTradliaStatus(data);
+    toast(`Cleared ${data.messages_removed || 0} message${data.messages_removed === 1 ? "" : "s"}`, "info");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.tradliaClearBtn, false);
+  }
+}
+
+async function hardCopyTradliaMessage(messageId, button) {
+  if (!messageId) {
+    toast("Missing message id for hard copy. Refresh the feed and try again.", "error");
+    return;
+  }
+  const confirmed = window.confirm(
+    "Hard copy this Tradlia signal and place it at market now? Skips age, dedup, daily guard, and open-trade checks. Only validates TPs against live price.",
+  );
+  if (!confirmed) return;
+  setLoading(button, true);
+  try {
+    const response = await fetch("/api/tradlia-signals/hard-copy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message_id: messageId }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || `Hard copy failed (${response.status})`);
+    renderTradliaStatus(data);
+    const copy = data.copy_result || {};
+    const status = String(copy.status || "unknown");
+    const legs = Array.isArray(copy.tickets) ? copy.tickets.length : copy.legs;
+    if (status === "placed" || status === "paper") {
+      const base = `Hard copy ${status}: ${copy.symbol || ""} ${String(copy.action || "").toUpperCase()} (${legs} leg${legs === 1 ? "" : "s"})`.trim();
+      toast(base, "success");
+    } else {
+      toast(formatApiError(copy.reason) || `Hard copy ${status}`, "info");
+    }
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(button, false);
+  }
+}
+
 async function refreshTradliaStatus() {
   try {
     const response = await fetch("/api/tradlia-signals/status", { cache: "no-store" });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Failed to load Tradlia status");
     renderTradliaStatus(data);
+    if (els.tradliaError) els.tradliaError.classList.add("hidden");
     if (els.tradliaHint) {
-      els.tradliaHint.textContent = data.running
-        ? "Polling Tradlia for new signals…"
-        : "Start when API credentials are set in config or environment variables.";
+      if (data.running) {
+        els.tradliaHint.textContent = "Polling Tradlia for new signals…";
+      } else if (!data.api_configured) {
+        els.tradliaHint.textContent = "Save API key and bearer token above, then Refresh feed or Start copier.";
+      } else if (!data.llm_configured) {
+        els.tradliaHint.textContent = "Tradlia API is ready. Add an OpenAI or Gemini key (Telegram settings) for signal parsing.";
+      } else {
+        els.tradliaHint.textContent = "Credentials OK. Refresh feed to load messages, or Start to auto-copy new signals.";
+      }
     }
     return data;
   } catch (error) {
@@ -3421,6 +3607,7 @@ function renderConfig(config) {
     if (els.statMagic) els.statMagic.textContent = config.bot?.magic ?? "—";
 
     renderTelegramConfig(config);
+    applyTradliaConfigFromBot(config);
 
     if (els.start && config.defaults?.backtest_start) {
       els.start.value = isoToLocalInput(config.defaults.backtest_start);
@@ -4274,6 +4461,30 @@ async function init() {
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
   els.tradliaStartBtn?.addEventListener("click", startTradliaCopier);
   els.tradliaStopBtn?.addEventListener("click", stopTradliaCopier);
+  els.tradliaCredentialsForm?.addEventListener("submit", saveTradliaCredentials);
+  els.tradliaSyncFeedBtn?.addEventListener("click", () => syncTradliaFeed());
+  els.tradliaClearBtn?.addEventListener("click", clearTradliaMessages);
+  els.tradliaMessagesByChannel?.addEventListener("pointerdown", () => {
+    tradliaUserInteracting = true;
+  });
+  els.tradliaMessagesByChannel?.addEventListener("focusin", () => {
+    tradliaUserInteracting = true;
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (!els.tradliaMessagesByChannel?.contains(event.target)) {
+      tradliaUserInteracting = false;
+    }
+  });
+  els.tradliaMessagesByChannel?.addEventListener("click", (event) => {
+    const expandBtn = event.target.closest(".telegram-expand-btn");
+    if (expandBtn) {
+      toggleTelegramExpand(expandBtn);
+      return;
+    }
+    const hardCopyBtn = event.target.closest(".tradlia-hard-copy-btn");
+    if (!hardCopyBtn) return;
+    hardCopyTradliaMessage(hardCopyBtn.dataset.messageId, hardCopyBtn);
+  });
   els.telegramSaveBtn?.addEventListener("click", () => saveTelegramSettings({ silent: false }));
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
   els.telegramChannelForm?.addEventListener("submit", addTelegramChannel);

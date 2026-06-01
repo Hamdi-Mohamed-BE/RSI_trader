@@ -142,9 +142,15 @@ class TradliaSignalsStartRequest(BaseModel):
 class TradliaSettingsRequest(BaseModel):
     poll_seconds: int | None = Field(default=None, ge=3)
     api_url: str | None = None
+    api_key: str | None = None
+    bearer_token: str | None = None
     ignore_open_symbol_trades: bool | None = None
     protect_tp: bool | None = None
     persist: bool = True
+
+
+class TradliaHardCopyRequest(BaseModel):
+    message_id: str
 
 
 class BotSettingsRequest(BaseModel):
@@ -1335,6 +1341,79 @@ def create_app(
     @app.post("/api/tradlia-signals/stop")
     def tradlia_signals_stop() -> dict:
         return tradlia_bot.stop()
+
+    @app.patch("/api/tradlia-signals/settings")
+    def tradlia_signals_settings(body: TradliaSettingsRequest) -> dict:
+        changed = False
+        tradlia = config.tradlia_signals
+        if body.poll_seconds is not None:
+            tradlia.poll_seconds = body.poll_seconds
+            changed = True
+        if body.api_url is not None:
+            cleaned = body.api_url.strip()
+            if cleaned:
+                tradlia.api_url = cleaned
+                changed = True
+        if body.api_key is not None:
+            tradlia.api_key = body.api_key.strip() or None
+            changed = True
+        if body.bearer_token is not None:
+            tradlia.bearer_token = body.bearer_token.strip() or None
+            changed = True
+        if body.ignore_open_symbol_trades is not None:
+            tradlia.ignore_open_symbol_trades = body.ignore_open_symbol_trades
+            changed = True
+        if body.protect_tp is not None:
+            tradlia.protect_tp = body.protect_tp
+            changed = True
+        if changed and body.persist:
+            save_config(config_path, config)
+        if changed:
+            tradlia_bot.config = config
+            bot.logger.info(
+                "TRADLIA SETTINGS api_configured=%s poll=%ss persist=%s",
+                tradlia_bot.status(sync_feed=False).get("api_configured"),
+                tradlia.poll_seconds,
+                body.persist,
+            )
+        return {
+            "status": "saved" if changed and body.persist else "applied",
+            **tradlia_bot.status(),
+        }
+
+    @app.post("/api/tradlia-signals/sync-feed")
+    def tradlia_signals_sync_feed() -> dict:
+        if not tradlia_bot.status(sync_feed=False).get("api_configured"):
+            raise HTTPException(
+                status_code=400,
+                detail="Tradlia API credentials missing. Set api key and bearer token below or via env vars.",
+            )
+        try:
+            return tradlia_bot.sync_feed()
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+    @app.post("/api/tradlia-signals/clear-messages")
+    def tradlia_signals_clear_messages() -> dict:
+        return tradlia_bot.clear_message_history()
+
+    @app.post("/api/tradlia-signals/hard-copy")
+    async def tradlia_signals_hard_copy(body: TradliaHardCopyRequest) -> dict:
+        await require_mt5_ready()
+        message_id = body.message_id.strip()
+        if not message_id:
+            raise HTTPException(status_code=400, detail="message_id is required")
+        result = tradlia_bot.hard_copy_message(message_id)
+        copy_status = str(result.get("status") or "unknown")
+        reason = str(result.get("reason") or "").strip()
+        if copy_status in {"error", "skipped", "failed"}:
+            detail = reason or {
+                "error": "Hard copy failed",
+                "skipped": "Hard copy skipped",
+                "failed": "Hard copy could not place orders",
+            }.get(copy_status, f"Hard copy {copy_status}")
+            raise HTTPException(status_code=400, detail=detail)
+        return {**tradlia_bot.status(), "copy_result": result}
 
     @app.get("/api/backtest/chart")
     async def backtest_chart(

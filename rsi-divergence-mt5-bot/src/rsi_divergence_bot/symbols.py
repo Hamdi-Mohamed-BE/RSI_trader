@@ -74,6 +74,45 @@ def normalize_broker_symbol_suffix(raw: str) -> str:
     return f"-{upper}"
 
 
+def signal_copy_broker_symbols(token: str) -> tuple[str, str, str]:
+    """Config table key plus demo (-VIP) and live (-STD) broker names for signal auto-register."""
+    base = market_key(token)
+    if not base:
+        base = re.sub(r"[^A-Z0-9]", "", token.strip().upper())
+    return base, f"{base}-VIP", f"{base}-STD"
+
+
+def token_mt5_symbol_candidates(token: str, broker_suffix: str | None = None) -> list[str]:
+    """MT5 names to try for a signal token — never includes unrelated symbols from settings."""
+    base, demo_name, live_name = signal_copy_broker_symbols(token)
+    ordered = [demo_name, live_name, base]
+    if broker_suffix is not None:
+        ordered.extend(mt5_symbol_candidates(token, broker_suffix))
+    else:
+        ordered.extend(mt5_symbol_candidates(token, "-VIP"))
+        ordered.extend(mt5_symbol_candidates(token, "-STD"))
+        ordered.append(base)
+    seen: set[str] = set()
+    candidates: list[str] = []
+    for item in ordered:
+        key = item.upper()
+        if not key or key in seen:
+            continue
+        if market_key(item) != base:
+            continue
+        seen.add(key)
+        candidates.append(item)
+    return candidates
+
+
+def first_available_mt5_symbol(client, candidates: list[str]) -> str | None:
+    for candidate in candidates:
+        if client.symbol_info(candidate) is None or client.tick(candidate) is None:
+            continue
+        return candidate
+    return None
+
+
 def mt5_symbol_candidates(token: str, broker_suffix: str | None = None) -> list[str]:
     base = re.sub(r"[^A-Z0-9]", "", token.upper())
     if not base:
