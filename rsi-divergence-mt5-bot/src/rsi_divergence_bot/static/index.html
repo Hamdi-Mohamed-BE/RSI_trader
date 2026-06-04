@@ -888,7 +888,7 @@
             <span>Headless browser (less RAM; log in once with this off if Telegram asks)</span>
           </label>
           <p class="panel-hint field-full">
-            Telegram Web uses Playwright <strong>Firefox</strong> by default (lighter than Chrome). Install: <code>playwright install firefox</code>
+            Telegram Web uses Playwright <strong>Chromium</strong> by default. Install: <code>playwright install chromium</code> (run.bat does this on start)
           </p>
           <label class="toggle field-full">
             <input id="telegram-daily-loss-guard-enabled" type="checkbox">
@@ -1046,7 +1046,7 @@
         </div>
 
         <p class="panel-hint live-warning">
-          Login in the opened Telegram browser when asked. Uses Firefox by default for lower RAM. This copier uses real MT5 orders when dry_run is false.
+          Login in the opened Telegram browser when asked. Uses Chromium by default. Set <code>browser_engine: firefox</code> in config to use Firefox instead. This copier uses real MT5 orders when dry_run is false.
         </p>
       </section>
 

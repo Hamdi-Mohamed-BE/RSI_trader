@@ -249,8 +249,8 @@ class TelegramSignalsConfig(BaseModel):
     channels: list[TelegramChannelConfig] = Field(default_factory=list)
     browser_user_data_dir: str = "runtime/telegram-browser"
     browser_engine: Literal["firefox", "chromium"] = Field(
-        default="firefox",
-        description="Playwright browser for Telegram Web (firefox uses less RAM than Chrome).",
+        default="chromium",
+        description="Playwright browser for Telegram Web (chromium or firefox).",
     )
     browser_headless: bool = Field(
         default=False,

@@ -7,7 +7,7 @@ def playwright_runtime_error(exc: BaseException) -> str:
     message = str(exc).strip() or exc.__class__.__name__
     lowered = message.lower()
     if "greenlet" in lowered or "_greenlet" in lowered:
-        reinstall = "uv pip install --force-reinstall greenlet playwright && playwright install firefox"
+        reinstall = "uv pip install --force-reinstall greenlet playwright && playwright install chromium"
         if sys.platform == "win32":
             return (
                 "Playwright could not load greenlet (native DLL missing). "

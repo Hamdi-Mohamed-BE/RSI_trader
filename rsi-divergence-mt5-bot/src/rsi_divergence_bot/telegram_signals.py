@@ -853,7 +853,7 @@ class TelegramSignalsBot:
         return keys
 
     def _open_browser(self, playwright, profile_dir: Path):
-        engine = str(self.config.telegram_signals.browser_engine or "firefox").lower()
+        engine = str(self.config.telegram_signals.browser_engine or "chromium").lower()
         headless = bool(self.config.telegram_signals.browser_headless)
         viewport = {"width": 1280, "height": 900}
         launch_args = [
