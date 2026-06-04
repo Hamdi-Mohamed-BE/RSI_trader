@@ -127,13 +127,15 @@ if errorlevel 1 (
 )
 
 echo.
-echo Installing Telegram browser automation engines (chromium + firefox)...
-"%UV_EXE%" run python -m playwright install chromium firefox
+echo Installing Playwright Firefox for Telegram Web (default browser)...
+"%UV_EXE%" run python -m playwright install firefox
 if errorlevel 1 (
     echo.
-    echo WARNING: Playwright browser install failed or timed out.
-    echo Run manually: uv run python -m playwright install chromium firefox
+    echo WARNING: Playwright Firefox install failed or timed out.
+    echo Run manually: uv run python -m playwright install firefox
 )
+echo Optional Chromium for telegram_signals.browser_engine: chromium
+"%UV_EXE%" run python -m playwright install chromium
 
 echo.
 echo Verifying imports...

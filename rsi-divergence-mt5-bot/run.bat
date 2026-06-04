@@ -31,12 +31,12 @@ if not exist "runtime" (
     mkdir "runtime"
 )
 
-echo Ensuring Playwright browsers for Telegram Web (chromium + firefox)...
-"%UV_EXE%" run python -m playwright install chromium firefox
+echo Ensuring Playwright Firefox for Telegram Web (default browser)...
+"%UV_EXE%" run python -m playwright install firefox
 if errorlevel 1 (
     echo.
-    echo WARNING: Playwright browser install failed or timed out.
-    echo Telegram copy may fail until you run: uv run python -m playwright install chromium
+    echo WARNING: Playwright Firefox install failed or timed out.
+    echo Telegram copy may fail until you run: uv run python -m playwright install firefox
     echo.
 )
 
