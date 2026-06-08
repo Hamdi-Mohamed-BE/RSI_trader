@@ -14,6 +14,7 @@ const STRATEGY_LABELS = {
 const PAGE_LABELS = {
   home: "Live",
   backtest: "Backtest",
+  "momentum-strategy": "Momentum strategy",
   settings: "Settings",
   "manual-trade": "Manual trade",
   "live-summary": "Live summary",
@@ -102,6 +103,48 @@ const els = {
   backtestTradesWrap: document.getElementById("backtest-trades-wrap"),
   backtestTradesList: document.getElementById("backtest-trades-list"),
   backtestRaw: document.getElementById("backtest-raw"),
+  enitrendForm: document.getElementById("enitrend-form"),
+  enitrendSymbols: document.getElementById("enitrend-symbols"),
+  enitrendVolume: document.getElementById("enitrend-volume"),
+  enitrendStart: document.getElementById("enitrend-start"),
+  enitrendEnd: document.getElementById("enitrend-end"),
+  enitrendStartingBalance: document.getElementById("enitrend-starting-balance"),
+  enitrendExecutionTimeframe: document.getElementById("enitrend-execution-timeframe"),
+  enitrendHigherTimeframe: document.getElementById("enitrend-higher-timeframe"),
+  enitrendVolatilityLookback: document.getElementById("enitrend-volatility-lookback"),
+  enitrendTrendSmoothing: document.getElementById("enitrend-trend-smoothing"),
+  enitrendVolatilityMultiplier: document.getElementById("enitrend-volatility-multiplier"),
+  enitrendStopLossMode: document.getElementById("enitrend-stop-loss-mode"),
+  enitrendTakeProfitMode: document.getElementById("enitrend-take-profit-mode"),
+  enitrendSlAtrLength: document.getElementById("enitrend-sl-atr-length"),
+  enitrendSlAtrMultiplier: document.getElementById("enitrend-sl-atr-multiplier"),
+  enitrendTpAtrMultiplier: document.getElementById("enitrend-tp-atr-multiplier"),
+  enitrendSlPercent: document.getElementById("enitrend-sl-percent"),
+  enitrendTpPercent: document.getElementById("enitrend-tp-percent"),
+  enitrendRiskReward: document.getElementById("enitrend-risk-reward"),
+  enitrendBreakEvenTrigger: document.getElementById("enitrend-break-even-trigger"),
+  enitrendBreakEvenOffset: document.getElementById("enitrend-break-even-offset"),
+  enitrendTrailingMultiplier: document.getElementById("enitrend-trailing-multiplier"),
+  enitrendUseHtf: document.getElementById("enitrend-use-htf"),
+  enitrendUseBreakEven: document.getElementById("enitrend-use-break-even"),
+  enitrendUseTrailing: document.getElementById("enitrend-use-trailing"),
+  enitrendBacktestBtn: document.getElementById("enitrend-backtest-btn"),
+  enitrendBacktestTopBtn: document.getElementById("enitrend-backtest-top-btn"),
+  enitrendStartBtn: document.getElementById("enitrend-start-btn"),
+  enitrendStopBtn: document.getElementById("enitrend-stop-btn"),
+  enitrendLiveDot: document.getElementById("enitrend-live-dot"),
+  enitrendLiveLabel: document.getElementById("enitrend-live-label"),
+  enitrendLiveCounts: document.getElementById("enitrend-live-counts"),
+  enitrendLiveSymbols: document.getElementById("enitrend-live-symbols"),
+  enitrendLiveHint: document.getElementById("enitrend-live-hint"),
+  enitrendPollSeconds: document.getElementById("enitrend-poll-seconds"),
+  enitrendSummary: document.getElementById("enitrend-summary"),
+  enitrendResults: document.getElementById("enitrend-results"),
+  enitrendTableWrap: document.getElementById("enitrend-table-wrap"),
+  enitrendBody: document.getElementById("enitrend-body"),
+  enitrendTradesWrap: document.getElementById("enitrend-trades-wrap"),
+  enitrendTradesList: document.getElementById("enitrend-trades-list"),
+  enitrendRaw: document.getElementById("enitrend-raw"),
   runOnceBtn: document.getElementById("run-once-btn"),
   manualTradeForm: document.getElementById("manual-trade-form"),
   manualTradeImageDrop: document.getElementById("manual-trade-image-drop"),
@@ -250,6 +293,7 @@ let loopTimer = null;
 let liveTimer = null;
 let telegramTimer = null;
 let tradliaTimer = null;
+let enitrendTimer = null;
 let telegramMessagesFingerprint = "";
 let tradliaMessagesFingerprint = "";
 const TELEGRAM_LEDGER_PAGE_SIZE = 15;
@@ -265,6 +309,7 @@ let symbolSettingsReady = false;
 function currentPage() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
   if (path === "/backtest") return "backtest";
+  if (path === "/momentum-strategy" || path === "/enitrend") return "momentum-strategy";
   if (path === "/settings") return "settings";
   if (path === "/manual-trade") return "manual-trade";
   if (path === "/live-summary") return "live-summary";
@@ -276,6 +321,7 @@ function currentPage() {
 
 function applyPageVisibility() {
   const page = currentPage();
+  const hash = window.location.hash.replace(/^#/, "");
   document.body.dataset.page = page;
   if (els.mobileNavPage) {
     els.mobileNavPage.textContent = PAGE_LABELS[page] || "Dashboard";
@@ -287,11 +333,21 @@ function applyPageVisibility() {
   }
 
   for (const link of document.querySelectorAll("[data-page-link]")) {
-    link.classList.toggle("active", link.dataset.pageLink === page);
+    let active = link.dataset.pageLink === page;
+    if (active && link.hasAttribute("data-page-hash")) {
+      active = (link.dataset.pageHash || "") === hash;
+    }
+    link.classList.toggle("active", active);
   }
 
   closeMobileNav();
   updateResponsiveTables();
+  if (hash) {
+    const target = document.getElementById(hash);
+    if (target && !target.classList.contains("page-hidden")) {
+      window.setTimeout(() => target.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+    }
+  }
 }
 
 function closeMobileNav() {
@@ -3671,6 +3727,7 @@ function renderConfig(config) {
 
     renderTelegramConfig(config);
     applyTradliaConfigFromBot(config);
+    renderEnitrendActiveSymbols(config);
 
     if (els.start && config.defaults?.backtest_start) {
       els.start.value = isoToLocalInput(config.defaults.backtest_start);
@@ -3680,6 +3737,15 @@ function renderConfig(config) {
     }
     if (els.startingBalance) {
       els.startingBalance.value = config.defaults?.starting_balance ?? 1000;
+    }
+    if (els.enitrendStart && config.defaults?.backtest_start) {
+      els.enitrendStart.value = isoToLocalInput(config.defaults.backtest_start);
+    }
+    if (els.enitrendEnd && config.defaults?.backtest_end) {
+      els.enitrendEnd.value = isoToLocalInput(config.defaults.backtest_end);
+    }
+    if (els.enitrendStartingBalance) {
+      els.enitrendStartingBalance.value = config.defaults?.starting_balance ?? 1000;
     }
   } catch (error) {
     toast(error.message, "error");
@@ -3979,6 +4045,354 @@ function renderBacktestResult(data) {
   els.backtestTableWrap.classList.remove("hidden");
   renderBacktestTrades(data.symbols);
   scheduleResponsiveTables();
+}
+
+function parseSymbolList(value) {
+  return String(value || "")
+    .split(/[\n,]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function enabledSymbolTokens(config = botConfig) {
+  return (config?.symbols || []).filter((item) => item.enabled).map((item) => item.symbol);
+}
+
+function renderEnitrendActiveSymbols(config = botConfig) {
+  const tokens = enabledSymbolTokens(config);
+  if (els.enitrendSymbols) {
+    els.enitrendSymbols.value = tokens.length ? tokens.join(", ") : "";
+    els.enitrendSymbols.placeholder = tokens.length ? "" : "No enabled symbols — turn on symbols in Settings";
+  }
+  if (els.enitrendLiveSymbols) {
+    els.enitrendLiveSymbols.textContent = tokens.length
+      ? `Active symbols: ${tokens.length} (${tokens.slice(0, 6).join(", ")}${tokens.length > 6 ? "…" : ""})`
+      : "Active symbols: none enabled";
+  }
+}
+
+function collectEnitrendStrategyPayload() {
+  return {
+    execution_timeframe: els.enitrendExecutionTimeframe?.value || "M15",
+    higher_timeframe: els.enitrendHigherTimeframe?.value || "H4",
+    volatility_lookback: Number(els.enitrendVolatilityLookback?.value),
+    trend_smoothing: Number(els.enitrendTrendSmoothing?.value),
+    volatility_multiplier: Number(els.enitrendVolatilityMultiplier?.value),
+    use_higher_timeframe_filter: Boolean(els.enitrendUseHtf?.checked),
+    volume: Number(els.enitrendVolume?.value),
+    stop_loss_mode: els.enitrendStopLossMode?.value || "atr",
+    take_profit_mode: els.enitrendTakeProfitMode?.value || "risk_reward",
+    stop_loss_atr_length: Number(els.enitrendSlAtrLength?.value),
+    stop_loss_atr_multiplier: Number(els.enitrendSlAtrMultiplier?.value),
+    take_profit_atr_multiplier: Number(els.enitrendTpAtrMultiplier?.value),
+    stop_loss_percent: Number(els.enitrendSlPercent?.value),
+    take_profit_percent: Number(els.enitrendTpPercent?.value),
+    risk_reward_ratio: Number(els.enitrendRiskReward?.value),
+    use_break_even: Boolean(els.enitrendUseBreakEven?.checked),
+    break_even_trigger_r: Number(els.enitrendBreakEvenTrigger?.value),
+    break_even_offset: Number(els.enitrendBreakEvenOffset?.value),
+    use_trailing_stop: Boolean(els.enitrendUseTrailing?.checked),
+    trailing_stop_atr_multiplier: Number(els.enitrendTrailingMultiplier?.value),
+  };
+}
+
+function collectEnitrendBacktestPayload() {
+  return {
+    symbols: [],
+    start: localInputToIso(els.enitrendStart?.value || ""),
+    end: localInputToIso(els.enitrendEnd?.value || ""),
+    starting_balance: Number(els.enitrendStartingBalance?.value),
+    ...collectEnitrendStrategyPayload(),
+  };
+}
+
+function collectEnitrendLivePayload() {
+  return {
+    ...collectEnitrendStrategyPayload(),
+    poll_seconds: Number(els.enitrendPollSeconds?.value || 60),
+  };
+}
+
+function renderEnitrendLiveStatus(status) {
+  if (!els.enitrendLiveLabel) return;
+  const running = Boolean(status.running);
+  els.enitrendLiveDot?.classList.toggle("running", running);
+  els.enitrendLiveLabel.textContent = running ? "Running" : "Stopped";
+  if (els.enitrendStartBtn) els.enitrendStartBtn.disabled = running;
+  if (els.enitrendStopBtn) els.enitrendStopBtn.disabled = !running;
+  if (els.enitrendLiveCounts) {
+    els.enitrendLiveCounts.textContent = `${status.scans_completed || 0} scans · ${status.last_placed || 0} placed · ${status.last_signals || 0} signals`;
+  }
+  if (els.enitrendLiveHint) {
+    if (running) {
+      els.enitrendLiveHint.textContent = status.dry_run
+        ? "Paper mode — momentum signals are logged but no live orders are sent."
+        : "Live mode — momentum bot places MT5 orders for enabled symbols.";
+    } else {
+      els.enitrendLiveHint.textContent = "Start scans all enabled symbols from Settings using the form settings below.";
+    }
+  }
+  renderEnitrendActiveSymbols(botConfig);
+}
+
+async function refreshEnitrendLiveStatus() {
+  try {
+    const response = await fetch("/api/enitrend/status", { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to load momentum bot status");
+    renderEnitrendLiveStatus(data);
+    return data;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function startEnitrendBot() {
+  const tokens = enabledSymbolTokens();
+  if (!tokens.length) {
+    toast("Enable at least one symbol in Settings before starting the momentum bot", "error");
+    return;
+  }
+  if (botConfig && !botConfig.bot.dry_run) {
+    const confirmed = window.confirm(
+      "Live trading is enabled. The momentum bot will place real MT5 orders on aligned signals. Continue?",
+    );
+    if (!confirmed) return;
+  }
+  setLoading(els.enitrendStartBtn, true);
+  try {
+    const response = await fetch("/api/enitrend/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(collectEnitrendLivePayload()),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to start momentum bot");
+    renderEnitrendLiveStatus(data);
+    toast("Momentum bot started", "success");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.enitrendStartBtn, false);
+  }
+}
+
+async function stopEnitrendBot() {
+  setLoading(els.enitrendStopBtn, true);
+  try {
+    const response = await fetch("/api/enitrend/stop", { method: "POST" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to stop momentum bot");
+    renderEnitrendLiveStatus(data);
+    toast("Momentum bot stopped", "info");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.enitrendStopBtn, false);
+  }
+}
+
+function startEnitrendPolling() {
+  if (enitrendTimer) return;
+  enitrendTimer = window.setInterval(() => {
+    if (currentPage() !== "momentum-strategy" && currentPage() !== "backtest") return;
+    void refreshEnitrendLiveStatus();
+  }, 5000);
+}
+
+function stopEnitrendPolling() {
+  if (!enitrendTimer) return;
+  window.clearInterval(enitrendTimer);
+  enitrendTimer = null;
+}
+
+function setEnitrendLoading(loading) {
+  if (els.enitrendBacktestBtn) setLoading(els.enitrendBacktestBtn, loading, "Running backtest...");
+  if (els.enitrendBacktestTopBtn) setLoading(els.enitrendBacktestTopBtn, loading, "Running backtest...");
+}
+
+function enitrendRiskSummary(settings = {}) {
+  const slMode = String(settings.stop_loss_mode || "atr").replaceAll("_", " ").toUpperCase();
+  const tpMode = String(settings.take_profit_mode || "risk_reward").replaceAll("_", " ").toUpperCase();
+  const bits = [`SL ${slMode}`, `TP ${tpMode}`];
+  if (settings.use_break_even) bits.push(`BE ${settings.break_even_trigger_r}R`);
+  if (settings.use_trailing_stop) bits.push(`Trail ${settings.trailing_stop_atr_multiplier} ATR`);
+  return bits.join(" · ");
+}
+
+function renderEnitrendTrades(symbols) {
+  const groups = (symbols || []).filter((row) => Array.isArray(row.trade_logs) && row.trade_logs.length);
+  if (!els.enitrendTradesWrap || !els.enitrendTradesList) return;
+  if (!groups.length) {
+    els.enitrendTradesList.innerHTML = `<p class="empty-row">No completed momentum trades for this period.</p>`;
+    els.enitrendTradesWrap.classList.remove("hidden");
+    return;
+  }
+  els.enitrendTradesList.innerHTML = groups
+    .map((symbolRow, index) => {
+      const rows = symbolRow.trade_logs
+        .map(
+          (trade) => `
+            <tr>
+              <td>${escapeHtml(formatTimestamp(trade.entry_time || trade.signal_time))}</td>
+              <td>${escapeHtml(formatTimestamp(trade.exit_time))}</td>
+              <td class="${trade.side === "buy" ? "side-buy" : "side-sell"}">${escapeHtml(String(trade.side || "").toUpperCase())}</td>
+              <td>${formatPrice(trade.entry)}</td>
+              <td>${formatPrice(trade.exit)}</td>
+              <td>${trade.initial_sl == null ? "—" : formatPrice(trade.initial_sl)}</td>
+              <td>${trade.tp == null ? "—" : formatPrice(trade.tp)}</td>
+              <td>${Number(trade.volume || 0).toFixed(2)}</td>
+              <td>${escapeHtml(formatExitKind(trade.exit_kind))}</td>
+              <td class="${pnlClass(trade.pnl)}">${formatMoney(trade.pnl)}</td>
+            </tr>
+          `,
+        )
+        .join("");
+      return `
+        <details class="backtest-symbol-trades" ${index === 0 ? "open" : ""}>
+          <summary>
+            <strong>${escapeHtml(symbolRow.symbol)}</strong>
+            <span class="tag">${escapeHtml(symbolRow.name || symbolRow.mt5_symbol || "")}</span>
+            <span class="backtest-trade-meta">${symbolRow.trade_logs.length} trade${symbolRow.trade_logs.length === 1 ? "" : "s"} · ${formatMoney(symbolRow.pnl)}</span>
+          </summary>
+          <div class="table-wrap table-wrap-wide">
+            <table class="data-table data-table-compact daily-trades-table">
+              <thead>
+                <tr>
+                  <th>Entry</th>
+                  <th>Exit</th>
+                  <th>Side</th>
+                  <th>Entry price</th>
+                  <th>Exit price</th>
+                  <th>SL</th>
+                  <th>TP</th>
+                  <th>Volume</th>
+                  <th>Exit kind</th>
+                  <th>PnL</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </details>
+      `;
+    })
+    .join("");
+  els.enitrendTradesWrap.classList.remove("hidden");
+}
+
+function renderEnitrendResult(data) {
+  if (els.enitrendRaw) els.enitrendRaw.textContent = JSON.stringify(data, null, 2);
+  const settings = data.settings || {};
+  const totalClass = pnlClass(data.total_pnl);
+  const rawSignals = (data.symbols || []).reduce((sum, row) => sum + Number(row.raw_signals || 0), 0);
+  const alignedSignals = (data.symbols || []).reduce((sum, row) => sum + Number(row.aligned_signals || 0), 0);
+  const trades = (data.symbols || []).reduce((sum, row) => sum + Number(row.trades || 0), 0);
+  els.enitrendSummary.innerHTML = `
+    <div class="summary-card">
+      <span class="label">Start balance</span>
+      <span class="value">${formatMoney(data.starting_balance)}</span>
+    </div>
+    <div class="summary-card">
+      <span class="label">Total PnL</span>
+      <span class="value ${totalClass}">${formatMoney(data.total_pnl)}</span>
+    </div>
+    <div class="summary-card">
+      <span class="label">End balance</span>
+      <span class="value">${formatMoney(data.end_balance_if_sequential)}</span>
+    </div>
+    <div class="summary-card">
+      <span class="label">Signals</span>
+      <span class="value" style="font-size:0.95rem">${rawSignals} raw / ${alignedSignals} aligned</span>
+    </div>
+    <div class="summary-card">
+      <span class="label">Timeframes</span>
+      <span class="value" style="font-size:0.95rem">${escapeHtml(settings.execution_timeframe || "M15")} / ${escapeHtml(settings.higher_timeframe || "H4")}</span>
+    </div>
+    <div class="summary-card">
+      <span class="label">Risk</span>
+      <span class="value" style="font-size:0.82rem">${escapeHtml(enitrendRiskSummary(settings))}</span>
+    </div>
+    <div class="summary-card">
+      <span class="label">Trades</span>
+      <span class="value">${trades}</span>
+    </div>
+  `;
+  els.enitrendSummary.classList.remove("hidden");
+  els.enitrendResults.classList.remove("hidden");
+
+  els.enitrendBody.innerHTML = (data.symbols || [])
+    .map((row) => row.error
+      ? `
+        <tr>
+          <td><strong>${escapeHtml(row.symbol || row.mt5_symbol || "—")}</strong><div class="tag">${escapeHtml(row.mt5_symbol || "")}</div></td>
+          <td colspan="7" class="value-negative">${escapeHtml(row.error)}</td>
+        </tr>
+      `
+      : `
+        <tr>
+          <td><strong>${escapeHtml(row.symbol || "—")}</strong><div class="tag">${escapeHtml(row.name || row.mt5_symbol || "")} · ${escapeHtml(row.timeframe || "")}</div></td>
+          <td>${Number(row.bars || 0)}</td>
+          <td>${Number(row.raw_signals || 0)} raw / ${Number(row.aligned_signals || 0)} aligned</td>
+          <td>${Number(row.trades || 0)}</td>
+          <td>${Number(row.wins || 0)} / ${Number(row.losses || 0)}</td>
+          <td>${Number(row.win_rate || 0).toFixed(2)}%</td>
+          <td class="${pnlClass(row.pnl)}">${formatMoney(row.pnl || 0)}</td>
+          <td>${formatMoney(-Number(row.max_drawdown || 0))}</td>
+        </tr>
+      `)
+    .join("");
+  els.enitrendTableWrap.classList.remove("hidden");
+  renderEnitrendTrades(data.symbols || []);
+  scheduleResponsiveTables();
+}
+
+async function runEnitrendBacktest(event) {
+  event.preventDefault();
+  const payload = collectEnitrendBacktestPayload();
+  if (!enabledSymbolTokens().length) {
+    toast("Enable at least one symbol in Settings before running the backtest", "error");
+    return;
+  }
+  if (!payload.start || !payload.end) {
+    toast("Choose a start and end time", "error");
+    return;
+  }
+  const startTime = Date.parse(payload.start);
+  const endTime = Date.parse(payload.end);
+  if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) {
+    toast("Start and end dates are not valid", "error");
+    return;
+  }
+  if (startTime >= endTime) {
+    toast("Set End after Start, then run the momentum backtest", "error");
+    els.enitrendEnd?.focus();
+    return;
+  }
+  if (!Number.isFinite(payload.starting_balance) || payload.starting_balance <= 0) {
+    toast("Starting balance must be greater than 0", "error");
+    return;
+  }
+  setEnitrendLoading(true);
+  try {
+    toast("Momentum strategy backtest running", "info");
+    const response = await fetch("/api/enitrend/backtest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(formatApiError(data.detail) || "Momentum strategy backtest failed");
+    }
+    renderEnitrendResult(data);
+    toast("Momentum strategy backtest completed", "success");
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setEnitrendLoading(false);
+  }
 }
 
 async function loadConfig() {
@@ -4437,6 +4851,9 @@ async function init() {
   });
 
   els.backtestForm?.addEventListener("submit", runBacktest);
+  els.enitrendForm?.addEventListener("submit", runEnitrendBacktest);
+  els.enitrendStartBtn?.addEventListener("click", startEnitrendBot);
+  els.enitrendStopBtn?.addEventListener("click", stopEnitrendBot);
   els.backtestDailyBody?.addEventListener("click", (event) => {
     const button = event.target.closest(".daily-expand-btn");
     if (button) toggleBacktestDailyRow(button);
@@ -4636,6 +5053,7 @@ async function init() {
       }
     }
   });
+  window.addEventListener("hashchange", applyPageVisibility);
 
   const page = currentPage();
   if (page === "logs") {
@@ -4656,6 +5074,9 @@ async function init() {
   } else if (page === "tradlia-signals") {
     startTradliaPolling();
     void refreshTradliaStatus();
+  } else if (page === "momentum-strategy" || page === "backtest") {
+    startEnitrendPolling();
+    void refreshEnitrendLiveStatus();
   } else if (page === "live-summary") {
     void loadLiveSummary();
   }

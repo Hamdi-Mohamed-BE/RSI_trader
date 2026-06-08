@@ -1,56 +1,5 @@
 {
-  "setups": [
-    {
-      "setup_id": "telegram:8f6e70f3629f06a6",
-      "symbol": "BTCUSD",
-      "market_key": "BTCUSD",
-      "side": "sell",
-      "execution_mode": "split",
-      "tickets": [
-        410550872,
-        410550877,
-        410550891
-      ],
-      "tps": [
-        76600.0,
-        76000.0,
-        75150.0
-      ],
-      "sl": 78150.0,
-      "moved_to_tp": 0,
-      "created_at": "2026-05-25T06:31:20.181360+00:00",
-      "entry_price": 77300.87,
-      "breakeven_applied": false,
-      "source": "telegram_signals",
-      "channel_url": "https://web.telegram.org/k/#-1303328644",
-      "channel_name": "PROFIT HACKER"
-    },
-    {
-      "setup_id": "telegram:b58c9edb96a91ceb",
-      "symbol": "USDCAD-VIP",
-      "market_key": "USDCAD",
-      "side": "sell",
-      "execution_mode": "split",
-      "tickets": [
-        410576901,
-        410576902,
-        410576903
-      ],
-      "tps": [
-        1.3745,
-        1.369,
-        1.362
-      ],
-      "sl": 1.3886,
-      "moved_to_tp": 0,
-      "created_at": "2026-05-25T06:58:03.339540+00:00",
-      "entry_price": 1.38097,
-      "breakeven_applied": false,
-      "source": "telegram_signals",
-      "channel_url": "https://web.telegram.org/k/#-1303328644",
-      "channel_name": "PROFIT HACKER"
-    }
-  ],
+  "setups": [],
   "seen_signals": [
     "f17a5d5e",
     "906bbf39",
@@ -119,28 +68,43 @@
     "telegram:175b4affaa9737d76509b20a3d03d0e3789445ee491e0edd18cae0d8e5f18601",
     "telegram:0bd2946b9b7199373c553e201985cbf702232e6bb11a5f84b2bb6f27ab6f3667",
     "telegram:336da514a108b7f7fbeede977e519af4f0911416a852be8a1234acd858cb7b8c",
-    "d40bb5f3"
+    "d40bb5f3",
+    "6b90562d"
   ],
   "daily_risk": {
-    "enabled": true,
+    "enabled": false,
     "halted": false,
-    "date": "2026-05-29",
-    "start_equity": 3063.76,
-    "start_balance": 3063.76,
-    "peak_equity": 3064.08,
-    "equity": 3060.31,
-    "balance": 3101.95,
-    "floating_pnl": -41.64,
-    "daily_pnl": -3.45,
-    "loss": 3.77,
-    "loss_limit": 459.61,
-    "loss_pct": 0.12,
-    "remaining": 455.84,
-    "use_daily_loss_guard": true,
+    "halt_reason": null,
+    "date": "2026-06-08",
+    "account_key": "1109378@VTMarkets-Demo",
+    "data_source": "mt5",
+    "start_equity": 71.59,
+    "start_balance": 71.59,
+    "equity": 71.59,
+    "balance": 71.59,
+    "floating_pnl": 0.0,
+    "daily_pnl": 0.0,
+    "gain": 0.0,
+    "loss": 0.0,
+    "loss_limit": 0.0,
+    "loss_pct": 0.0,
+    "loss_remaining": 0.0,
+    "win_target": 0.0,
+    "win_goal_equity": 71.59,
+    "win_remaining": 0.0,
+    "loss_guard_enabled": false,
+    "win_guard_enabled": false,
+    "loss_halted": false,
+    "win_halted": false,
+    "use_daily_loss_guard": false,
     "max_daily_loss_pct": 15.0,
-    "updated_at": "2026-05-29T00:04:25+00:00",
-    "created_at": "2026-05-29T00:03:30+00:00",
-    "halted_at": null
+    "use_daily_win_guard": false,
+    "daily_win_target_mode": "percent",
+    "max_daily_win_pct": null,
+    "max_daily_win_usd": null,
+    "halted_at": null,
+    "win_halted_at": null,
+    "updated_at": "2026-06-08T23:06:05+00:00"
   },
   "telegram_messages": [
     {
@@ -583,5 +547,5 @@
       "age_seconds": 14017.2
     }
   ],
-  "auto_loop_enabled": false
+  "auto_loop_enabled": true
 }

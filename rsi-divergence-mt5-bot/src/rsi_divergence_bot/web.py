@@ -16,6 +16,8 @@ from fastapi.staticfiles import StaticFiles
 
 from .backtest import optimize_symbol_timeframes, run_backtest, run_chart_backtest
 from .bot import SignalBot
+from .enitrend import EniTrendBacktestSettings, resolve_backtest_symbols, run_enitrend_backtest
+from .enitrend_bot import EniTrendMomentumBot
 from .symbols import find_symbol_config, market_key, resolve_trade_symbol, settings_mt5_symbol_from_config
 from .config import (
     AppConfig,
@@ -221,6 +223,65 @@ class TimeframeOptimizeRequest(BaseModel):
     persist: bool = True
 
 
+class EniTrendStrategyRequest(BaseModel):
+    execution_timeframe: str = "M15"
+    higher_timeframe: str = "H4"
+    volatility_lookback: int = Field(default=25, ge=5)
+    trend_smoothing: int = Field(default=15, ge=1)
+    volatility_multiplier: float = Field(default=3.8, gt=0)
+    use_higher_timeframe_filter: bool = True
+    volume: float = Field(default=0.01, gt=0)
+    stop_loss_mode: str = "atr"
+    take_profit_mode: str = "risk_reward"
+    stop_loss_atr_length: int = Field(default=14, ge=1)
+    stop_loss_atr_multiplier: float = Field(default=1.5, gt=0)
+    take_profit_atr_multiplier: float = Field(default=3.0, gt=0)
+    stop_loss_percent: float = Field(default=1.0, gt=0)
+    take_profit_percent: float = Field(default=2.0, gt=0)
+    risk_reward_ratio: float = Field(default=2.0, gt=0)
+    use_break_even: bool = False
+    break_even_trigger_r: float = Field(default=1.0, gt=0)
+    break_even_offset: float = Field(default=0.0, ge=0)
+    use_trailing_stop: bool = False
+    trailing_stop_atr_multiplier: float = Field(default=2.0, gt=0)
+
+    @field_validator("stop_loss_mode")
+    @classmethod
+    def validate_stop_loss_mode(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if normalized not in {"off", "atr", "percent"}:
+            raise ValueError("Stop loss mode must be Off, ATR, or Percent.")
+        return normalized
+
+    @field_validator("take_profit_mode")
+    @classmethod
+    def validate_take_profit_mode(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if normalized not in {"off", "atr", "percent", "risk_reward"}:
+            raise ValueError("Take profit mode must be Off, ATR, Percent, or Risk Reward.")
+        return normalized
+
+
+class EniTrendBacktestRequest(EniTrendStrategyRequest):
+    symbols: list[str] = Field(default_factory=list)
+    start: datetime
+    end: datetime
+    starting_balance: float = Field(default=1000.0, gt=0)
+
+    @field_validator("symbols", mode="before")
+    @classmethod
+    def coerce_symbols(cls, value: object) -> list[str]:
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(",") if item.strip()]
+        if isinstance(value, list):
+            return [str(item).strip() for item in value if str(item).strip()]
+        return value  # type: ignore[return-value]
+
+
+class EniTrendMomentumStartRequest(EniTrendStrategyRequest):
+    poll_seconds: int = Field(default=60, ge=15, le=900)
+
+
 class Mt5TestTradeRequest(BaseModel):
     symbol: str = Field(default="XAUUSD", min_length=1)
     side: str = Field(default="buy", min_length=1)
@@ -258,6 +319,38 @@ def create_app(
         bot.daily_risk_status,
         config_path=config_path,
     )
+    enitrend_bot = EniTrendMomentumBot(
+        config,
+        bot.client,
+        bot.state,
+        bot.logger,
+        bot.daily_risk_status,
+    )
+
+    def enitrend_settings_from_request(body: EniTrendStrategyRequest) -> EniTrendBacktestSettings:
+        return EniTrendBacktestSettings(
+            symbols=tuple(resolve_backtest_symbols(config, [])),
+            execution_timeframe=body.execution_timeframe,
+            higher_timeframe=body.higher_timeframe,
+            volatility_lookback=body.volatility_lookback,
+            trend_smoothing=body.trend_smoothing,
+            volatility_multiplier=body.volatility_multiplier,
+            use_higher_timeframe_filter=body.use_higher_timeframe_filter,
+            volume=body.volume,
+            stop_loss_mode=body.stop_loss_mode,  # type: ignore[arg-type]
+            take_profit_mode=body.take_profit_mode,  # type: ignore[arg-type]
+            stop_loss_atr_length=body.stop_loss_atr_length,
+            stop_loss_atr_multiplier=body.stop_loss_atr_multiplier,
+            take_profit_atr_multiplier=body.take_profit_atr_multiplier,
+            stop_loss_percent=body.stop_loss_percent,
+            take_profit_percent=body.take_profit_percent,
+            risk_reward_ratio=body.risk_reward_ratio,
+            use_break_even=body.use_break_even,
+            break_even_trigger_r=body.break_even_trigger_r,
+            break_even_offset=body.break_even_offset,
+            use_trailing_stop=body.use_trailing_stop,
+            trailing_stop_atr_multiplier=body.trailing_stop_atr_multiplier,
+        )
 
     def telegram_channels_payload() -> list[dict]:
         return [channel.model_dump(mode="python") for channel in config.telegram_signals.channels]
@@ -470,6 +563,7 @@ def create_app(
         bot.client.config = config.mt5
         telegram_bot.config = config
         tradlia_bot.config = config
+        enitrend_bot.config = config
         bot.logger.info("CONFIG SNAPSHOT apply slug=%s persist=%s strategy=%s", slug, persist, config.bot.strategy)
         return {
             "status": "saved" if persist else "applied",
@@ -591,6 +685,8 @@ def create_app(
     @app.get("/backtest")
     @app.get("/settings")
     @app.get("/manual-trade")
+    @app.get("/momentum-strategy")
+    @app.get("/enitrend")
     @app.get("/live-summary")
     @app.get("/logs")
     @app.get("/telegram-signals")
@@ -1414,6 +1510,66 @@ def create_app(
             }.get(copy_status, f"Hard copy {copy_status}")
             raise HTTPException(status_code=400, detail=detail)
         return {**tradlia_bot.status(), "copy_result": result}
+
+    @app.get("/api/enitrend/status")
+    def enitrend_momentum_status() -> dict:
+        return enitrend_bot.status()
+
+    @app.post("/api/enitrend/start")
+    async def enitrend_momentum_start(body: EniTrendMomentumStartRequest) -> dict:
+        if not config.enabled_symbols:
+            raise HTTPException(status_code=400, detail="No enabled symbols in Settings.")
+        await require_mt5_ready()
+        settings = enitrend_settings_from_request(body)
+        try:
+            return enitrend_bot.start(settings, poll_seconds=body.poll_seconds)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    @app.post("/api/enitrend/stop")
+    def enitrend_momentum_stop() -> dict:
+        return enitrend_bot.stop()
+
+    @app.post("/api/enitrend/backtest")
+    async def enitrend_backtest(body: EniTrendBacktestRequest) -> dict:
+        symbol_tokens = resolve_backtest_symbols(config, body.symbols)
+        settings = EniTrendBacktestSettings(
+            **{
+                **asdict(enitrend_settings_from_request(body)),
+                "symbols": symbol_tokens,
+            }
+        )
+        bot.logger.info(
+            "ENITREND BACKTEST START symbols=%s %s/%s %s -> %s",
+            ",".join(symbol_tokens),
+            body.execution_timeframe,
+            body.higher_timeframe,
+            body.start.isoformat(),
+            body.end.isoformat(),
+        )
+        try:
+            await require_mt5_ready()
+            result = await asyncio.to_thread(
+                run_enitrend_backtest,
+                bot.client,
+                config,
+                settings,
+                body.start,
+                body.end,
+                body.starting_balance,
+                bot.logger,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except Exception as exc:  # noqa: BLE001
+            bot.logger.exception("ENITREND BACKTEST failed: %s", exc)
+            raise HTTPException(status_code=503, detail=f"Momentum strategy backtest failed: {exc}") from exc
+        bot.logger.info(
+            "ENITREND BACKTEST DONE symbols=%s total_pnl=%s",
+            len(result.get("symbols") or []),
+            result.get("total_pnl"),
+        )
+        return result
 
     @app.get("/api/backtest/chart")
     async def backtest_chart(
