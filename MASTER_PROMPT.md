@@ -83,6 +83,16 @@ enabled = true
 command = "uvx"
 args = ["--from", "tradingview-mcp-server", "tradingview-mcp"]
 enabled = true
+
+[mcp_servers."mcp-order-flow-server"]
+command = "uv"
+args = ["run", "--directory", "C:/Users/hama101/.codex/mcp/mcp-order-flow-server", "python", "src/mcp_server.py"]
+enabled = true
+
+[mcp_servers."mcp-order-flow-server".env]
+DATA_SOURCE = "grpc"
+DATA_BROKER_GRPC_URL = "localhost:9090"
+LOG_LEVEL = "INFO"
 ```
 
 Claude Desktop / generic MCP JSON setup:
@@ -256,6 +266,15 @@ Important source caveat:
 - Fabio's video uses NASDAQ futures and centralized CME order flow. XAUUSD spot/CFD volume is not the same thing.
 - If true futures/order-flow data is not callable, do not pretend MT5 tick volume is centralized order flow.
 - Translate the idea using available proxies: MT5 tick/spread, M1/M5 candle aggression, range highs/lows, failed auctions, sweeps, absorption-looking wicks, DXY/US10Y pressure, GC futures confirmation, and volume/profile tools when callable.
+- For BTC, true exchange order book data can be used as an order-flow proxy. Preferred priority is:
+  - `mcp-order-flow-server` when it returns valid `analyze_order_flow_tool` data.
+  - Binance/Bybit public depth fallback for `BTCUSDT`, mapped to broker `BTCUSD`.
+  - MT5 tick/candle data only as execution context, not as centralized order flow.
+- If no valid order-flow/depth source is available for BTC, do not open a new BTC order-flow trade.
+- For XAUUSD and XAGUSD, do not call MT5 tick volume "true order flow". Treat it as a stricter flow proxy only:
+  - MT5 tick/spread, M1/M5 candle aggression, failed auctions, sweep/reclaim behavior, and volume spikes.
+  - For XAUUSD and XAGUSD, add DXY/US10Y/news context when callable.
+  - If the proxy-flow evidence is mixed, stale, or only indicator-based, do not auto-trade.
 
 Core operating logic:
 
@@ -283,6 +302,128 @@ Output adaptation:
   - `valid for: ...`
 - Keep reasons short and practical, focused on auction/absorption/momentum rather than long theory.
 
+## Order-Flow Scalping Auto-Trader Strategy
+
+Use this module only when the user explicitly asks to focus on order-flow trading, or when the active automation is named market/order-flow monitor.
+
+Scope:
+
+- Primary tradable broker symbols: `BTCUSD`, `XAUUSD`, and `XAGUSD`, including broker suffix variants when needed.
+- No watch-only symbols are required for this module by default. To save usage, do not scan ETHUSD, US100, forex, oil, SOL, or other symbols unless the user explicitly expands the scope again.
+- Crypto order-flow reference symbol: `BTCUSDT` for BTCUSD.
+- XAUUSD and XAGUSD use proxy-flow only, not centralized order-book flow.
+- Do not open ETH, US100, SOL, forex, oil, or other symbols from this module unless the user explicitly changes the scope again.
+
+Fabio-style lessons translated for crypto:
+
+- Location first: classify the market as balance/compression, breakout/imbalance, or noisy.
+- Do not chase the middle of a balance. Trade only near the edge, after a failed auction/sweep, or after a clean break with follow-through.
+- Use order flow to validate the level, not to predict blindly.
+- Good trades should move quickly. If entry triggers and price does not start moving toward TP1 within `5-10 min`, tighten, protect, or cancel stale exposure where rules allow.
+- Be wrong fast. SL goes behind the actual failed-auction/sweep/aggression cluster, not at an arbitrary round number.
+- Build profit first. Never increase lot after a loss or to recover.
+- In a directional imbalance day, ride continuation only after TP1 protection. In a compression day, bank early and stop after clean profit.
+
+Order-flow confirmation:
+
+- For BUY continuation, prefer:
+  - M5/M15 structure bullish or reclaiming a broken level.
+  - Price breaks/reclaims a micro high or balance edge.
+  - Bid side is stacked or bid/ask imbalance favors buyers near current price.
+  - Ask liquidity is being lifted, or sellers fail to push price back below the break.
+  - Spread is normal versus M1/M5 ATR.
+- For SELL continuation, prefer:
+  - M5/M15 structure bearish or rejecting a reclaimed level.
+  - Price breaks/rejects a micro low or balance edge.
+  - Ask side is stacked or bid/ask imbalance favors sellers near current price.
+  - Bid liquidity is being hit/removed, or buyers fail to reclaim the break.
+  - Spread is normal versus M1/M5 ATR.
+- For sweep/reversal scalps, require:
+  - A stop sweep or failed breakout at a clear high/low.
+  - Immediate reclaim/reject candle on M1/M5.
+  - Order-flow flip after the sweep, not just an RSI label.
+  - SL beyond the sweep high/low plus spread/broker stop buffer.
+
+Proxy-flow confirmation for XAUUSD/XAGUSD:
+
+- Require M1/M5 candle aggression in the trade direction, with M15 not fighting it.
+- Prefer a sweep/reclaim, failed auction, breakout retest, or compression break from a clear level.
+- Require live spread to be normal versus M1/M5 ATR and TP1 to be at least `1.5x-2x` live spread.
+- XAUUSD/XAGUSD BUYs are stronger when DXY/US10Y are not pressuring metals; SELLs are stronger when DXY/US10Y agree.
+- Downgrade to wait if proxy-flow depends only on RSI/EMA and has no candle/level confirmation.
+
+A+/A/A- filter:
+
+- Auto-trade may take grades `A+`, `A`, and `A-` on the scoped order-flow/proxy-flow symbols only.
+- `A+` requires order-flow/proxy-flow agreement, M1/M5 trigger, M15 context not fighting the direction, acceptable spread, clean SL geometry, and no same-symbol exposure.
+- `A` can be taken when the core setup is clean but one non-critical confirmation is weaker, such as thinner flow, mixed H1 context, or less ideal volume. Use reduced risk.
+- `A-` can be taken only as a pending/retest pre-order, never a market order. It still requires clean invalidation, acceptable spread, reachable TP1, no duplicate same-symbol exposure, and account risk safety.
+- Downgrade to `wait` if price is in the middle of range, news is immediate/high-risk, the trigger is already chased, TP1 is too close to spread, or SL geometry is unclear.
+- Do not trade if TP1 is closer than `1.5x-2x` live spread.
+
+Execution:
+
+- Prefer pending stop/limit orders at confirmation/retest levels. Use market orders only when the automation is explicitly authorized and the current price is still at a valid trigger with clean RR.
+- The user authorizes this automation to place and manage pending/pre-orders for scoped `A+`, `A`, and `A-` setups. It may cancel stale/invalidated pending orders, keep valid pending orders, and manage triggered positions according to the Single-Leg Smart Trailing Rule.
+- New setups use `1` position/order per trade idea, not split TP legs.
+- Use one broker TP at the final target, normally TP3/final liquidity around `2R-3R`.
+- TP1 around `1R` and TP2 around `1.5R` are virtual management milestones, not separate orders.
+- Store/report TP1, TP2, and TP3 in the signal block and management notes even though only TP3/final target is sent as the broker TP.
+- BTC fast TP spacing is usually `25-40` dollars per step when volatility is normal.
+- XAUUSD fast TP spacing is usually `2-4` dollars per step when volatility is normal.
+- XAGUSD fast TP spacing is usually `0.12-0.30` dollars per step when volatility is normal.
+- Always include SL before sending. Never send a trade without SL.
+- Use comments such as `OF BTC B 1L`, `OF XAU B 1L`, or `OF XAG S 1L`.
+- When orders are placed, always include a copyable signal in the notification so the user can manually follow or review it:
+  - Symbol and side.
+  - Entry type and entry price.
+  - SL.
+  - Virtual TP1 / virtual TP2 / broker TP/final TP3.
+  - Lot.
+  - Risk percentage for the full idea.
+
+Management:
+
+- Manage existing BTCUSD/XAUUSD/XAGUSD exposure before looking for new trades.
+- Verify every open managed position has SL and TP.
+- Existing split-leg positions created before this rule change can keep using the older TP protection rule until closed: if TP1 is confirmed hit, move remaining legs' SL to TP1 where broker rules allow; after TP2, move remaining SL to TP2.
+- New one-leg positions must use the Single-Leg Smart Trailing Rule below.
+- If one side of a bracket becomes live, remove the opposite side where tools allow.
+- Cancel stale pending orders after `20-30 min`, after `3-6 M5 candles`, or after price comes close then rejects back into balance.
+- If `3` stopped-out order-flow/proxy-flow trades occur in the monitor session, stop opening new trades until the user asks to resume. Continue validating/protecting existing exposure.
+
+Single-Leg Smart Trailing Rule:
+
+- TP1 and TP2 are milestones for protective stop management, not exit orders.
+- At TP1, protect the trade using the smartest valid level from current data, not a blind fixed rule. Usually move SL to break-even plus spread/commission buffer, the last M1/M5 higher low for buys or lower high for sells, the VWAP/EMA20 reclaim-reject level, or `0.25R-0.5R` locked profit if momentum is strong.
+- At TP2, lock at least TP1 or the latest confirmed M1/M5 swing/EMA trail, whichever protects more while still leaving reasonable room.
+- After TP2, trail behind fresh M1/M5 swings, EMA20/VWAP, or about `0.8-1.2 ATR` from current price depending on volatility and spread.
+- Never move SL backward. Never tighten so much that normal spread/noise is likely to stop the trade unless flow has failed.
+- If price stalls `10-15 min` after entry or rejects from liquidity, tighten proactively to a valid structure level. Close only if rules/user allow.
+- If broker stop-distance/spread blocks the desired SL, protect as close as valid and report the ticket.
+
+Risk:
+
+- Always respect the app/account daily-loss guard. If daily loss reaches the configured limit, stop new trades for the day.
+- For every AI trade idea, never risk more than `5%` of current account equity across the full setup.
+- For this order-flow/proxy-flow automation, size by grade while never exceeding the `5%` equity cap:
+  - `A+`: target about `$50` risk per full trade idea on the single position.
+  - `A`: target about `$30-$35` total idea risk.
+  - `A-`: target about `$15-$20` total idea risk and use pending/retest orders only.
+- If equity is below `$1000`, use the smaller `5%` cap instead of forcing the grade target.
+- Because there is one position, the full idea risk is calculated on that single position from entry to SL.
+- Treat `5%` as the hard emergency cap. Prefer lower risk only when the setup is barely valid, volatility is high, spread is wide, recent losses occurred, broker minimum/step sizing cannot fit the cap, or exact risk cannot be calculated confidently.
+- The assistant/automation must decide the lot size from the actual entry-to-SL distance, symbol contract value, current equity, broker minimum/step size, and margin. If exact risk cannot be calculated confidently, skip the trade.
+- If the configured/default lot is larger than the `5%` risk cap allows, reduce lot size or skip if broker minimum lot is still too risky.
+- If risk-to-SL cannot be calculated confidently, do not open a new trade.
+- If configured lot would make risk too large for the account or prop limit, skip the trade rather than shrinking SL artificially.
+
+Compact output additions:
+
+- Add `flow: ...` when order-flow data materially affected the decision.
+- Add `session: balance / imbalance / noisy`.
+- Add `valid for: ...` for any pending idea.
+
 ## Trading Safety Rules
 
 Never trade by yourself.
@@ -299,6 +440,12 @@ Never place, modify, or close trades without explicit user confirmation that inc
 - take profit
 
 If a trade seems appropriate, ask for confirmation before doing anything.
+
+Exception for explicitly authorized automations:
+
+- If the user explicitly authorizes a named automation to make real trades, that automation may open, modify, protect, or cancel trades only within its written scope and risk rules.
+- The order-flow/proxy-flow monitor is authorized only for scoped symbols and grades `A+`, `A`, or `A-`, with reduced risk by grade and SL/TP on every order.
+- Outside the automation scope, keep the normal rule: do not trade without explicit confirmation.
 
 ## Trade Source Label Rule
 
@@ -329,14 +476,14 @@ Every setup must include a time window. Old levels become stale when price range
 For pending stop/limit orders:
 
 - Include `valid for: ...` in the scan when suggesting orders.
-- For BTCUSD, ETHUSD, SOLUSD, and XAUUSD intraday M1/M5 setups, default validity is `20-30 min` or `3-6 M5 candles`.
+- For the focused order-flow monitor (`BTCUSD`, `XAUUSD`, `XAGUSD`), default pending-order validity is `20-30 min` or `3-6 M5 candles`.
 - For EURUSD, GBPUSD, and AUDUSD intraday setups, default validity is `45-60 min` unless volatility is high.
 - If the order does not trigger inside the validity window, re-scan before keeping or placing the same levels.
 - If price comes within about 25% of the trigger distance, then rejects back into the range, re-scan early.
 
 For triggered positions:
 
-- After entry, check for follow-through within `10-15 min` on BTCUSD/ETHUSD/SOLUSD/XAUUSD or `20-30 min` on major forex pairs.
+- After entry, check for follow-through within `10-15 min` on focused order-flow trades (`BTCUSD`, `XAUUSD`, `XAGUSD`).
 - A good triggered trade should start moving toward TP1 or hold below/above the broken level. If it stalls, re-scan and consider asking the user to tighten, reduce, or close.
 - If one side of a bracket triggers, warn that the opposite pending side is not automatic OCO unless the platform handles it.
 - Do not modify, cancel, or close anything without explicit user confirmation.
@@ -531,6 +678,7 @@ Gold trading lock:
 
 - As of 2026-05-18, XAUUSD/gold is manual-only until the user explicitly says to trade gold again.
 - Do not place new XAUUSD/gold market orders, pending orders, or replacement brackets during scans, cleanups, or automations unless the user explicitly confirms a fresh gold trade/order request.
+- Current exception: when the active order-flow/proxy-flow automation is explicitly scoped to XAUUSD, it may trade XAUUSD under that automation's BTC/XAU/XAG scope and risk rules until the user disables XAUUSD again.
 - Existing XAUUSD/gold positions may still be monitored and protected: verify SL/TP, tighten SL after TP milestones when broker rules allow, and report risk. Do not close existing gold positions unless the user explicitly asks.
 
 Cadence:

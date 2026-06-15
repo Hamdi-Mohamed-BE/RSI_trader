@@ -1,0 +1,46 @@
+{
+  "mt5_path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
+  "timeframe": "H4",
+  "poll_seconds": 60,
+  "state_file": "state/sniper_state_H4.json",
+  "symbols": {
+    "BTCUSD": ["BTCUSD", "BTCUSD-VIP"],
+    "ETHUSD": ["ETHUSD", "ETHUSD-VIP"],
+    "XAUUSD": ["XAUUSD-VIP", "XAUUSD", "XAUUSD.crp"],
+    "XAGUSD": ["XAGUSD-VIP", "XAGUSD"],
+    "US30": ["DJ30.", "US30", "US30.", "DJ30ft.", "DOW"],
+    "US100": ["NAS100.", "US100", "US100.", "NAS100ft.", "USTEC"],
+    "EURUSD": ["EURUSD-VIP", "EURUSD", "EURUSD."]
+  },
+  "strategy": {
+    "atr_multiplier": 1.5,
+    "bootstrap_no_trade": true,
+    "trade_on_closed_bar": true,
+    "max_signal_age_minutes": 25,
+    "max_spread_atr_ratio": 0.35,
+    "require_fresh_cross": true
+  },
+  "risk": {
+    "default_risk_usd": 20.0,
+    "max_equity_risk_pct": 5.0,
+    "risk_by_symbol": {
+      "BTCUSD": 20.0,
+      "ETHUSD": 20.0,
+      "XAUUSD": 20.0,
+      "XAGUSD": 20.0,
+      "US30": 20.0,
+      "US100": 30.0,
+      "EURUSD": 15.0
+    }
+  },
+  "execution": {
+    "mode": "live",
+    "magic": 26061515,
+    "deviation_points": 30,
+    "skip_if_any_symbol_exposure": true,
+    "broker_tp": "TP5",
+    "manage_virtual_targets": true,
+    "move_sl_to_entry_at_tp1": false,
+    "move_sl_to_tp1_at_tp2": true
+  }
+}
