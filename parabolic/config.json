@@ -1,0 +1,45 @@
+{
+  "mt5_path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
+  "timeframe": "M5",
+  "poll_seconds": 30,
+  "state_file": "state/parabolic_sar_state.json",
+  "symbols": {
+    "BTCUSD": {
+      "aliases": ["BTCUSD", "BTCUSD-VIP"],
+      "lot": 0.1
+    },
+    "ETHUSD": {
+      "aliases": ["ETHUSD", "ETHUSD-VIP"],
+      "lot": 5.0
+    },
+    "XAUUSD": {
+      "aliases": ["XAUUSD-VIP", "XAUUSD", "XAUUSD.crp"],
+      "lot": 0.1
+    },
+    "XAGUSD": {
+      "aliases": ["XAGUSD-VIP", "XAGUSD"],
+      "lot": 0.1
+    },
+    "EURUSD": {
+      "aliases": ["EURUSD-VIP", "EURUSD", "EURUSD."],
+      "lot": 0.5
+    }
+  },
+  "strategy": {
+    "start": 0.02,
+    "increment": 0.02,
+    "maximum": 0.2,
+    "bars": 300,
+    "bootstrap_no_trade": true,
+    "use_psar_as_sl": true
+  },
+  "execution": {
+    "mode": "live",
+    "magic": 26061560,
+    "deviation_points": 30,
+    "open_comment": "parabolic",
+    "close_comment": "parabolic close",
+    "manage_all_symbol_positions": false,
+    "open_if_same_side_exists": false
+  }
+}
