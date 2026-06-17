@@ -1,0 +1,47 @@
+{
+  "mt5_path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
+  "box_timeframe": "H4",
+  "execution_timeframe": "M5",
+  "poll_seconds": 10,
+  "state_file": "state/box_bot_state.json",
+  "symbols": {
+    "XAUUSD": {
+      "aliases": ["XAUUSD-VIP", "XAUUSD", "XAUUSD.crp", "GOLD"],
+      "lot": 0.05
+    },
+    "XAGUSD": {
+      "aliases": ["XAGUSD-VIP", "XAGUSD", "XAGUSD.crp", "SILVER"],
+      "lot": 0.05
+    },
+    "BTCUSD": {
+      "aliases": ["BTCUSD", "BTCUSD-VIP", "BTCUSD.crp", "BTCUSDm"],
+      "lot": 0.08
+    }
+  },
+  "strategy": {
+    "bootstrap_no_trade": true,
+    "atr_period": 14,
+    "edge_zone_pct": 0.15,
+    "final_rr": 3.0,
+    "min_final_rr": 2.9,
+    "max_spread_atr_ratio": 0.35,
+    "require_rejection_candle": true,
+    "stop_buffer_atr": 0.1,
+    "stop_buffer_spread_mult": 2.0,
+    "breakout_close_buffer_atr": 0.1,
+    "breakout_retest_tolerance_atr": 0.2,
+    "breakout_trade_mode": "retest",
+    "max_breakout_stop_atr": 1.6
+  },
+  "execution": {
+    "mode": "dry_run",
+    "magic": 26061740,
+    "deviation_points": 30,
+    "comment": "boxbot",
+    "legs": 3,
+    "lot_mode": "per_leg",
+    "skip_if_symbol_has_bot_positions": true,
+    "move_sl_to_entry_at_tp1": true,
+    "break_even_offset_points": 0
+  }
+}
