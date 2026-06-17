@@ -211,6 +211,51 @@ function Escape-SingleQuotedPowerShell {
     return $Value -replace "'", "''"
 }
 
+function Format-PowerShellArrayLiteral {
+    param([string[]]$Values)
+    $quotedValues = $Values | ForEach-Object { "'" + (Escape-SingleQuotedPowerShell $_) + "'" }
+    return "@(" + ($quotedValues -join ", ") + ")"
+}
+
+function ConvertTo-NotionMcpUrl {
+    param([string]$Url)
+    if (-not $Url) {
+        return $null
+    }
+
+    $cleanUrl = $Url.Trim().TrimEnd('.', ',', ';', ')', ']')
+    if ($cleanUrl -match '/mcp($|[?#])') {
+        return $cleanUrl
+    }
+
+    return $cleanUrl.TrimEnd('/') + "/mcp"
+}
+
+function Get-TunnelUrlFromLog {
+    param([string]$LogPath)
+    if (-not (Test-Path -LiteralPath $LogPath)) {
+        return $null
+    }
+
+    $content = Get-Content -LiteralPath $LogPath -Raw -ErrorAction SilentlyContinue
+    if (-not $content) {
+        return $null
+    }
+
+    $explicitMatch = [regex]::Match($content, 'tunnel established at\s+(https://[^\s''"<>]+)', 'IgnoreCase')
+    if ($explicitMatch.Success) {
+        return ConvertTo-NotionMcpUrl $explicitMatch.Groups[1].Value
+    }
+
+    $urls = [regex]::Matches($content, 'https://[^\s''"<>]+') | ForEach-Object { $_.Value }
+    $tunnelUrl = $urls | Where-Object { $_ -match 'tunnel\.gla\.ma|gla\.ma|pipenet' } | Select-Object -First 1
+    if ($tunnelUrl) {
+        return ConvertTo-NotionMcpUrl $tunnelUrl
+    }
+
+    return $null
+}
+
 function Resolve-ProjectPath {
     param(
         [string[]]$EnvNames,
@@ -384,7 +429,7 @@ if ($skipped.Count -gt 0) {
 Write-Host ""
 if ($PublicTunnel) {
     Write-Host "HTTPS public tunnel mode is ON by default." -ForegroundColor Green
-    Write-Host "Use the HTTPS tunnel URLs printed inside each MCP window for Notion." -ForegroundColor Green
+    Write-Host "This launcher will collect the HTTPS tunnel URLs and save them in mcp-links.txt." -ForegroundColor Green
     Write-Host "Default API key/token: $ApiKey" -ForegroundColor Yellow
     Write-Host "In Notion auth, add header X-API-Key with that token." -ForegroundColor Yellow
     Write-Host "To run localhost only instead, use: start-local-mcps.bat -LocalOnly" -ForegroundColor Yellow
@@ -399,9 +444,19 @@ if ($DryRun) {
     exit 0
 }
 
+$logRoot = Join-Path $ScriptRoot "mcp-logs"
+$linksFile = Join-Path $ScriptRoot "mcp-links.txt"
+New-Item -ItemType Directory -Force -Path $logRoot | Out-Null
+Remove-Item -Path (Join-Path $logRoot "*.log") -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath $linksFile -Force -ErrorAction SilentlyContinue
+
 foreach ($server in $servers) {
     $proxyArgs = @($mcpProxyArgsBase + @("--port", [string]$server.Port, "--") + $server.Command)
     $displayCommand = "npx.cmd " + (($proxyArgs | ForEach-Object { Format-Argument $_ }) -join " ")
+    $proxyArgLiteral = Format-PowerShellArrayLiteral $proxyArgs
+    $safeLogName = ($server.Name -replace '[^A-Za-z0-9_.-]', '_') + ".log"
+    $logPath = Join-Path $logRoot $safeLogName
+    $server.LogPath = $logPath
 
     $envLines = @()
     $envLines += "`$env:Path = '$(Escape-SingleQuotedPowerShell $env:Path)'"
@@ -415,11 +470,21 @@ foreach ($server in $servers) {
     $childScriptLines += "Write-Host ''"
     $childScriptLines += "Write-Host 'Starting $($server.Name)' -ForegroundColor Cyan"
     $childScriptLines += "Write-Host 'Local MCP URL: http://127.0.0.1:$($server.Port)/mcp' -ForegroundColor Green"
+    $childScriptLines += "Write-Host 'Log file: $(Escape-SingleQuotedPowerShell $logPath)' -ForegroundColor DarkGray"
     if ($PublicTunnel) {
-        $childScriptLines += "Write-Host 'Public tunnel mode is enabled. Copy the HTTPS tunnel URL printed by mcp-proxy if Notion needs HTTPS.' -ForegroundColor Yellow"
+        $childScriptLines += "Write-Host 'Public tunnel mode is enabled. This window will print a tunnel URL; the main launcher also saves it to mcp-links.txt.' -ForegroundColor Yellow"
     }
     $childScriptLines += $envLines
-    $childScriptLines += $displayCommand
+    $childScriptLines += "`$proxyArgs = $proxyArgLiteral"
+    $childScriptLines += "Write-Host 'Command: $displayCommand' -ForegroundColor DarkGray"
+    $childScriptLines += "try {"
+    $childScriptLines += "    & npx.cmd @proxyArgs 2>&1 | ForEach-Object { `$line = `$_; Write-Host `$line; `$line | Out-File -LiteralPath '$(Escape-SingleQuotedPowerShell $logPath)' -Append -Encoding UTF8 }"
+    $childScriptLines += "} catch {"
+    $childScriptLines += "    Write-Host `$_ -ForegroundColor Red"
+    $childScriptLines += "    `$_ | Out-File -LiteralPath '$(Escape-SingleQuotedPowerShell $logPath)' -Append -Encoding UTF8"
+    $childScriptLines += "}"
+    $childScriptLines += "Write-Host 'Proxy stopped. Press any key to close this window.' -ForegroundColor Yellow"
+    $childScriptLines += "`$null = `$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')"
 
     $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes(($childScriptLines -join "`r`n")))
     Start-Process -FilePath "cmd.exe" -ArgumentList @("/k", "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand $encoded") -WindowStyle Normal -WorkingDirectory $ScriptRoot
@@ -427,3 +492,64 @@ foreach ($server in $servers) {
 
 Write-Host "Started $($servers.Count) MCP windows." -ForegroundColor Green
 Write-Host "Keep those windows open while using the MCPs." -ForegroundColor Green
+
+if ($PublicTunnel) {
+    Write-Host ""
+    Write-Host "Waiting for HTTPS tunnel links..." -ForegroundColor Cyan
+
+    $deadline = (Get-Date).AddSeconds(90)
+    $foundLinks = @{}
+    do {
+        foreach ($server in $servers) {
+            if (-not $foundLinks.ContainsKey($server.Name)) {
+                $url = Get-TunnelUrlFromLog $server.LogPath
+                if ($url) {
+                    $foundLinks[$server.Name] = $url
+                }
+            }
+        }
+
+        if ($foundLinks.Count -ge $servers.Count) {
+            break
+        }
+
+        Start-Sleep -Seconds 2
+    } while ((Get-Date) -lt $deadline)
+
+    $summary = [System.Collections.Generic.List[string]]::new()
+    $summary.Add("Notion MCP HTTPS links")
+    $summary.Add("======================")
+    $summary.Add("")
+    $summary.Add("Authentication")
+    $summary.Add("Key: X-API-Key")
+    $summary.Add("Value: $ApiKey")
+    $summary.Add("")
+
+    Write-Host ""
+    Write-Host "Notion-ready HTTPS links" -ForegroundColor Cyan
+    Write-Host "========================" -ForegroundColor Cyan
+    Write-Host "Auth header: X-API-Key = $ApiKey" -ForegroundColor Yellow
+    Write-Host ""
+
+    foreach ($server in $servers) {
+        if ($foundLinks.ContainsKey($server.Name)) {
+            $line = ("{0,-24} {1}" -f $server.Name, $foundLinks[$server.Name])
+            Write-Host $line -ForegroundColor Green
+            $summary.Add($line)
+        } else {
+            $line = ("{0,-24} {1}" -f $server.Name, "No HTTPS tunnel URL found yet. Check mcp-logs\$($server.Name -replace '[^A-Za-z0-9_.-]', '_').log")
+            Write-Host $line -ForegroundColor Yellow
+            $summary.Add($line)
+        }
+    }
+
+    $summary.Add("")
+    $summary.Add("Local fallbacks")
+    foreach ($server in $servers) {
+        $summary.Add(("{0,-24} http://127.0.0.1:{1}/mcp" -f $server.Name, $server.Port))
+    }
+
+    Set-Content -LiteralPath $linksFile -Value $summary -Encoding UTF8
+    Write-Host ""
+    Write-Host "Saved the same list here: $linksFile" -ForegroundColor Green
+}
