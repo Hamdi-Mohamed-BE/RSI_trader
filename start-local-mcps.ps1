@@ -183,6 +183,97 @@ function Ensure-Git {
     }
 }
 
+function Test-PortBusy {
+    param([int]$Port)
+    return [bool](Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue)
+}
+
+function Format-Argument {
+    param([string]$Value)
+    if ($Value -match '[\s"&|<>^]') {
+        return '"' + ($Value -replace '"', '\"') + '"'
+    }
+    return $Value
+}
+
+function ConvertTo-ForwardSlashPath {
+    param([string]$Path)
+    return ($Path -replace '\\', '/')
+}
+
+function Escape-SingleQuotedPowerShell {
+    param([string]$Value)
+    return $Value -replace "'", "''"
+}
+
+function Resolve-ProjectPath {
+    param(
+        [string[]]$EnvNames,
+        [string[]]$Candidates,
+        [scriptblock]$Validator = { param($Path) return $true }
+    )
+
+    foreach ($envName in $EnvNames) {
+        $envValue = [Environment]::GetEnvironmentVariable($envName)
+        if ($envValue -and (Test-Path -LiteralPath $envValue) -and (& $Validator $envValue)) {
+            return (Resolve-Path -LiteralPath $envValue).Path
+        }
+    }
+
+    foreach ($candidate in $Candidates) {
+        if ($candidate -and (Test-Path -LiteralPath $candidate) -and (& $Validator $candidate)) {
+            return (Resolve-Path -LiteralPath $candidate).Path
+        }
+    }
+
+    return $null
+}
+
+function Test-PythonPackageProject {
+    param(
+        [string]$Path,
+        [string]$PackageName
+    )
+
+    return (
+        (Test-Path -LiteralPath (Join-Path $Path "pyproject.toml")) -and
+        (
+            (Test-Path -LiteralPath (Join-Path $Path $PackageName)) -or
+            (Test-Path -LiteralPath (Join-Path $Path "src\$PackageName"))
+        )
+    )
+}
+
+function Add-Server {
+    param(
+        [System.Collections.ArrayList]$List,
+        [string]$Name,
+        [int]$Port,
+        [string[]]$Command,
+        [hashtable]$Env = @{}
+    )
+
+    [void]$List.Add([ordered]@{
+        Name = $Name
+        Port = $Port
+        Command = $Command
+        Env = $Env
+    })
+}
+
+function Add-Skipped {
+    param(
+        [System.Collections.ArrayList]$List,
+        [string]$Name,
+        [string]$Reason
+    )
+
+    [void]$List.Add([ordered]@{
+        Name = $Name
+        Reason = $Reason
+    })
+}
+
 $mcpProxyArgsBase = @(
     "-y",
     "mcp-proxy",
@@ -199,66 +290,63 @@ if ($PublicTunnel) {
     }
 }
 
-$servers = @(
-    @{
-        Name = "mcp-metatrader5-server"
-        Port = 8821
-        Command = @("uvx", "--from", "git+https://github.com/Qoyyuum/mcp-metatrader5-server", "mt5mcp")
-        Env = @{}
-    },
-    @{
-        Name = "trading-skills"
-        Port = 8822
-        Command = @("uvx", "--from", "git+https://github.com/staskh/trading_skills.git", "trading-skills-mcp")
-        Env = @{}
-    },
-    @{
-        Name = "vibe-trading"
-        Port = 8823
-        Command = @("uvx", "--from", "C:/Users/hama101/Desktop/geek/vibe trader/Vibe-Trading", "vibe-trading-mcp")
-        Env = @{}
-    },
-    @{
-        Name = "ai-trader"
-        Port = 8824
-        Command = @("uv", "run", "--directory", "C:/Users/hama101/Documents/Codex/2026-05-13/hey/ai-trader", "python", "-m", "ai_trader.mcp")
-        Env = @{}
-    },
-    @{
-        Name = "tradingview"
-        Port = 8825
-        Command = @("npx.cmd", "-y", "tradingview-mcp-server")
-        Env = @{}
-    },
-    @{
-        Name = "tradingview-mcp-2"
-        Port = 8826
-        Command = @("uvx", "--from", "tradingview-mcp-server", "tradingview-mcp")
-        Env = @{}
-    },
-    @{
-        Name = "mcp-order-flow-server"
-        Port = 8827
-        Command = @("uv", "run", "--directory", "C:/Users/hama101/.codex/mcp/mcp-order-flow-server", "python", "src/mcp_server.py")
-        Env = @{
+$servers = [System.Collections.ArrayList]::new()
+$skipped = [System.Collections.ArrayList]::new()
+$parentRoot = Split-Path -Parent $ScriptRoot
+
+Add-Server $servers "mcp-metatrader5-server" 8821 @("uvx", "--from", "git+https://github.com/Qoyyuum/mcp-metatrader5-server", "mt5mcp")
+Add-Server $servers "trading-skills" 8822 @("uvx", "--from", "git+https://github.com/staskh/trading_skills.git", "trading-skills-mcp")
+
+$vibeDir = Resolve-ProjectPath `
+    -EnvNames @("VIBE_TRADING_DIR") `
+    -Candidates @(
+        (Join-Path $ScriptRoot "Vibe-Trading"),
+        (Join-Path $ScriptRoot "vibe-trading"),
+        (Join-Path $parentRoot "vibe trader\Vibe-Trading"),
+        (Join-Path $env:USERPROFILE "Desktop\geek\vibe trader\Vibe-Trading")
+    )
+if ($vibeDir) {
+    Add-Server $servers "vibe-trading" 8823 @("uvx", "--from", (ConvertTo-ForwardSlashPath $vibeDir), "vibe-trading-mcp")
+} else {
+    Add-Skipped $skipped "vibe-trading" "local project folder not found. Set VIBE_TRADING_DIR to its folder."
+}
+
+$aiTraderDir = Resolve-ProjectPath `
+    -EnvNames @("AI_TRADER_MCP_DIR", "AI_TRADER_DIR") `
+    -Candidates @(
+        $ScriptRoot,
+        (Join-Path $ScriptRoot "ai-trader"),
+        (Join-Path $parentRoot "ai-trader"),
+        (Join-Path $env:USERPROFILE "Documents\Codex\2026-05-13\hey\ai-trader")
+    ) `
+    -Validator { param($Path) Test-PythonPackageProject $Path "ai_trader" }
+if ($aiTraderDir) {
+    Add-Server $servers "ai-trader" 8824 @("uv", "run", "--directory", (ConvertTo-ForwardSlashPath $aiTraderDir), "python", "-m", "ai_trader.mcp")
+} else {
+    Add-Skipped $skipped "ai-trader" "Python package folder with ai_trader.mcp not found. Set AI_TRADER_MCP_DIR to that project."
+}
+
+Add-Server $servers "tradingview" 8825 @("npx.cmd", "-y", "tradingview-mcp-server")
+Add-Server $servers "tradingview-mcp-2" 8826 @("uvx", "--from", "tradingview-mcp-server", "tradingview-mcp")
+
+$orderFlowDir = Resolve-ProjectPath `
+    -EnvNames @("ORDER_FLOW_MCP_DIR") `
+    -Candidates @(
+        (Join-Path $ScriptRoot "mcp-order-flow-server"),
+        (Join-Path $parentRoot "mcp-order-flow-server"),
+        (Join-Path $env:USERPROFILE ".codex\mcp\mcp-order-flow-server")
+    ) `
+    -Validator { param($Path) Test-Path -LiteralPath (Join-Path $Path "src\mcp_server.py") }
+if ($orderFlowDir) {
+    Add-Server $servers "mcp-order-flow-server" 8827 `
+        @("uv", "run", "--directory", (ConvertTo-ForwardSlashPath $orderFlowDir), "python", "src/mcp_server.py") `
+        @{
             DATA_SOURCE = "grpc"
             DATA_BROKER_GRPC_URL = "localhost:9090"
             LOG_LEVEL = "INFO"
         }
-    }
-)
-
-function Test-PortBusy {
-    param([int]$Port)
-    return [bool](Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue)
-}
-
-function Format-Argument {
-    param([string]$Value)
-    if ($Value -match '[\s"&|<>^]') {
-        return '"' + ($Value -replace '"', '\"') + '"'
-    }
-    return $Value
+} else {
+    Add-Skipped $skipped "mcp-order-flow-server" "local project folder not found. Set ORDER_FLOW_MCP_DIR to its folder."
 }
 
 Write-Host ""
@@ -280,6 +368,14 @@ foreach ($server in $servers) {
     Write-Host ("{0,-24} {1,-10} {2}" -f $server.Name, $status, $localUrl)
 }
 
+if ($skipped.Count -gt 0) {
+    Write-Host ""
+    Write-Host "Skipped local-only MCPs:" -ForegroundColor Yellow
+    foreach ($item in $skipped) {
+        Write-Host ("{0,-24} {1}" -f $item.Name, $item.Reason) -ForegroundColor Yellow
+    }
+}
+
 Write-Host ""
 Write-Host "Copy/paste the /mcp URLs above into Notion if Notion accepts local HTTP URLs." -ForegroundColor Green
 Write-Host "If Notion rejects localhost or requires HTTPS, run: start-local-mcps.bat -PublicTunnel" -ForegroundColor Yellow
@@ -296,12 +392,14 @@ foreach ($server in $servers) {
     $displayCommand = "npx.cmd " + (($proxyArgs | ForEach-Object { Format-Argument $_ }) -join " ")
 
     $envLines = @()
+    $envLines += "`$env:Path = '$(Escape-SingleQuotedPowerShell $env:Path)'"
     foreach ($key in $server.Env.Keys) {
         $value = $server.Env[$key]
-        $envLines += "`$env:$key = '$value'"
+        $envLines += "`$env:$key = '$(Escape-SingleQuotedPowerShell $value)'"
     }
 
     $childScriptLines = @()
+    $childScriptLines += "Set-Location -LiteralPath '$(Escape-SingleQuotedPowerShell $ScriptRoot)'"
     $childScriptLines += "Write-Host ''"
     $childScriptLines += "Write-Host 'Starting $($server.Name)' -ForegroundColor Cyan"
     $childScriptLines += "Write-Host 'Local MCP URL: http://127.0.0.1:$($server.Port)/mcp' -ForegroundColor Green"
@@ -312,7 +410,7 @@ foreach ($server in $servers) {
     $childScriptLines += $displayCommand
 
     $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes(($childScriptLines -join "`r`n")))
-    Start-Process -FilePath "cmd.exe" -ArgumentList @("/k", "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand $encoded") -WindowStyle Normal
+    Start-Process -FilePath "cmd.exe" -ArgumentList @("/k", "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand $encoded") -WindowStyle Normal -WorkingDirectory $ScriptRoot
 }
 
 Write-Host "Started $($servers.Count) MCP windows." -ForegroundColor Green
