@@ -1,13 +1,18 @@
 param(
     [switch]$DryRun,
     [switch]$PublicTunnel,
-    [string]$ApiKey = $env:MCP_PROXY_API_KEY
+    [switch]$LocalOnly,
+    [string]$ApiKey = $(if ($env:MCP_PROXY_API_KEY) { $env:MCP_PROXY_API_KEY } else { "mcp-tokens" })
 )
 
 $ErrorActionPreference = "Stop"
 
 $ScriptRoot = Split-Path -Parent $PSCommandPath
 $RuntimeRoot = Join-Path $ScriptRoot ".mcp-runtime"
+
+if (-not $LocalOnly) {
+    $PublicTunnel = $true
+}
 
 function Add-ToPathFront {
     param([string]$PathToAdd)
@@ -377,9 +382,16 @@ if ($skipped.Count -gt 0) {
 }
 
 Write-Host ""
-Write-Host "Copy/paste the /mcp URLs above into Notion if Notion accepts local HTTP URLs." -ForegroundColor Green
-Write-Host "If Notion rejects localhost or requires HTTPS, run: start-local-mcps.bat -PublicTunnel" -ForegroundColor Yellow
-Write-Host "For public tunnel mode, set MCP_PROXY_API_KEY first and add that key in Notion auth." -ForegroundColor Yellow
+if ($PublicTunnel) {
+    Write-Host "HTTPS public tunnel mode is ON by default." -ForegroundColor Green
+    Write-Host "Use the HTTPS tunnel URLs printed inside each MCP window for Notion." -ForegroundColor Green
+    Write-Host "Default API key/token: $ApiKey" -ForegroundColor Yellow
+    Write-Host "In Notion auth, add header X-API-Key with that token." -ForegroundColor Yellow
+    Write-Host "To run localhost only instead, use: start-local-mcps.bat -LocalOnly" -ForegroundColor Yellow
+} else {
+    Write-Host "Local-only mode is ON. Copy/paste the /mcp URLs above if Notion accepts local HTTP URLs." -ForegroundColor Green
+    Write-Host "To run HTTPS public tunnels, use: start-local-mcps.bat" -ForegroundColor Yellow
+}
 Write-Host ""
 
 if ($DryRun) {
