@@ -343,6 +343,7 @@ Create a `risk_manager.py` that handles:
 - Max daily loss
 - Max drawdown
 - Max number of trades per day
+- Symbol activity cooldown after any MT5 open or close event
 - Stop trading after daily loss limit
 - Stop trading after max drawdown
 - Reject trades where risk is too high
@@ -375,6 +376,7 @@ START_BALANCE=1000
 MAX_LOT_RISK_PCT=3.0
 MAX_SPREAD_RISK_PERCENT=15
 MAX_SPREAD_POINTS=0
+AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES=60
 
 MAX_RISK_PER_TRADE_PERCENT=1
 MAX_DAILY_LOSS_PERCENT=3

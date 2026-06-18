@@ -526,7 +526,7 @@ Default research settings:
 - Max total drawdown: user configured, default 8 percent.
 - Max trades per day: user configured, default 3.
 - Any max cap set to 0 is disabled and must be ignored.
-- After a symbol closes by TP or SL, cool that symbol for 1 hour before considering another entry. If the close is break-even, do not apply this symbol cooldown.
+- After any MT5 trade on a symbol is opened or closed, cool that symbol until 1 hour after that activity. This includes manual trades, TP, SL, and break-even closes.
 - Minimum setup score: 90.
 - Minimum risk-to-reward: 5.0.
 

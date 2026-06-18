@@ -322,7 +322,10 @@ class TradeAutomation:
         self.one_position_per_symbol = _env_bool("AUTO_ONE_POSITION_PER_SYMBOL", True)
         self.trade_protection_enabled = _env_bool("AUTO_PROTECT_OPEN_TRADES", True)
         self.protection_final_rr = max(1.0, _env_float("AUTO_PROTECTION_FINAL_RR", self.config.min_risk_reward))
-        self.symbol_result_cooldown_minutes = _env_int("AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES", 60)
+        self.symbol_activity_cooldown_minutes = _env_int(
+            "AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES",
+            _env_int("AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES", 60),
+        )
         self.max_lot_risk_pct = max(0.0, float(self.config.max_lot_risk_pct))
         self.max_spread_risk_percent = max(0.0, float(self.config.max_spread_risk_percent))
         self.max_spread_points = max(0.0, float(self.config.max_spread_points))
@@ -480,21 +483,84 @@ class TradeAutomation:
         return active
 
     def _set_symbol_cooldown(self, symbol: str, now: datetime, event: dict[str, Any]) -> dict[str, Any] | None:
-        if self.symbol_result_cooldown_minutes <= 0:
+        if self.symbol_activity_cooldown_minutes <= 0:
             return None
-        until = now + timedelta(minutes=self.symbol_result_cooldown_minutes)
+        event_at = _parse_datetime(
+            event.get("event_at")
+            or event.get("closed_at")
+            or event.get("opened_at")
+            or event.get("created_at")
+            or now
+        ) or now
+        until = event_at + timedelta(minutes=self.symbol_activity_cooldown_minutes)
+        if until <= now:
+            return None
+        event_type = str(event.get("event_type") or event.get("event") or "activity")
         payload = {
             "status": "active",
             "symbol": symbol,
             "until": until.isoformat(timespec="seconds"),
             "created_at": now.isoformat(timespec="seconds"),
-            "minutes": self.symbol_result_cooldown_minutes,
+            "minutes": self.symbol_activity_cooldown_minutes,
+            "event_type": event_type,
+            "event_at": event_at.isoformat(timespec="seconds"),
+            "source": event.get("source"),
             "outcome": event.get("outcome"),
             "ticket": event.get("ticket"),
+            "position_id": event.get("position_id"),
+            "broker_symbol": event.get("broker_symbol"),
             "exit_reason": event.get("exit_reason"),
+            "profit": event.get("profit"),
         }
         self.trade_state.setdefault("symbol_cooldowns", {})[symbol] = payload
         return payload
+
+    def refresh_symbol_activity_cooldowns(self, now: datetime) -> list[dict[str, Any]]:
+        if self.symbol_activity_cooldown_minutes <= 0:
+            return []
+
+        activities = self.client.recent_trade_activity(
+            TRADE_SYMBOLS,
+            lookback_minutes=self.symbol_activity_cooldown_minutes,
+        )
+        updates: list[dict[str, Any]] = []
+        cooldowns = self.trade_state.setdefault("symbol_cooldowns", {})
+        changed = False
+        for symbol, activity in activities.items():
+            before = dict(cooldowns.get(symbol) or {})
+            cooldown = self._set_symbol_cooldown(symbol, now, activity)
+            if not cooldown:
+                continue
+            was_changed = (
+                before.get("until") != cooldown.get("until")
+                or before.get("event_at") != cooldown.get("event_at")
+                or before.get("event_type") != cooldown.get("event_type")
+                or before.get("ticket") != cooldown.get("ticket")
+                or before.get("position_id") != cooldown.get("position_id")
+            )
+            if was_changed:
+                changed = True
+                update = {
+                    "symbol": symbol,
+                    "activity": activity,
+                    "cooldown": cooldown,
+                }
+                updates.append(update)
+                _log_automation_event(
+                    "symbol_activity_cooldown",
+                    now,
+                    symbol=symbol,
+                    event_type=activity.get("event_type"),
+                    event_at=activity.get("event_at"),
+                    source=activity.get("source"),
+                    ticket=activity.get("ticket"),
+                    position_id=activity.get("position_id"),
+                    broker_symbol=activity.get("broker_symbol"),
+                    cooldown=cooldown,
+                )
+        if changed:
+            _write_trade_state(self.trade_state)
+        return updates
 
     @staticmethod
     def _is_break_even_exit(state: dict[str, Any], exit_price: float) -> bool:
@@ -546,6 +612,8 @@ class TradeAutomation:
         event.update(
             {
                 "status": "closed_processed",
+                "event_type": "closed",
+                "event_at": history.get("closed_at") or now.isoformat(timespec="seconds"),
                 "outcome": outcome,
                 "exit_reason": history.get("exit_reason"),
                 "exit_price": history.get("exit_price"),
@@ -554,14 +622,9 @@ class TradeAutomation:
             }
         )
 
-        if outcome in {"TP", "SL"}:
-            cooldown = self._set_symbol_cooldown(str(state.get("symbol")), now, event)
-            event["cooldown"] = cooldown
-            event["status"] = "closed_symbol_cooldown_started" if cooldown else "closed_no_cooldown_configured"
-        elif outcome == "BE":
-            event["status"] = "closed_break_even_no_cooldown"
-        else:
-            event["status"] = "closed_other_no_cooldown"
+        cooldown = self._set_symbol_cooldown(str(state.get("symbol")), now, event)
+        event["cooldown"] = cooldown
+        event["status"] = "closed_symbol_activity_cooldown_started" if cooldown else "closed_no_activity_cooldown"
 
         state["status"] = "closed_processed"
         state["closed_outcome"] = outcome
@@ -756,6 +819,7 @@ class TradeAutomation:
         now = datetime.now()
         _write_heartbeat("scanning")
         protection_actions = self.protect_open_positions(now)
+        activity_cooldown_updates = self.refresh_symbol_activity_cooldowns(now)
         active_symbol_cooldowns = self.active_symbol_cooldowns(now)
         scan = scan_market(
             symbols=TRADE_SYMBOLS,
@@ -771,6 +835,7 @@ class TradeAutomation:
             allowed_count=len(scan.get("allowed", [])),
             near_miss_count=len(scan.get("near_misses", [])),
             active_symbol_cooldown_count=len(active_symbol_cooldowns),
+            activity_cooldown_update_count=len(activity_cooldown_updates),
             protection_action_count=len(protection_actions),
             live_trading=self.config.live_trading,
             auto_place_trades=self.auto_place_trades,
@@ -791,8 +856,10 @@ class TradeAutomation:
             block_reasons: list[str] = []
 
             if symbol_cooldown:
+                activity_label = symbol_cooldown.get("event_type") or symbol_cooldown.get("outcome") or "activity"
+                activity_time = symbol_cooldown.get("event_at") or symbol_cooldown.get("created_at")
                 block_reasons.append(
-                    f"Symbol is cooling down after {symbol_cooldown.get('outcome')} until {symbol_cooldown.get('until')}."
+                    f"Symbol is cooling down after recent {activity_label} at {activity_time} until {symbol_cooldown.get('until')}."
                 )
             if key in self.trade_state.get("consumed_signals", {}) or legacy_key in self.trade_state.get("consumed_signals", {}):
                 block_reasons.append("This signal was already placed and saved in trade_state.json.")
@@ -970,6 +1037,30 @@ class TradeAutomation:
             if will_send_to_mt5:
                 placement = self.client.place_order(order)
                 placed_payload = {**ticket, "status": "sent_to_mt5", "placement": placement}
+                if placement.get("placed"):
+                    activity = {
+                        "event_type": "opened",
+                        "event_at": now.isoformat(timespec="seconds"),
+                        "source": "order_placement",
+                        "ticket": (placement.get("result") or {}).get("order") or (placement.get("result") or {}).get("deal"),
+                        "broker_symbol": order.get("broker_symbol"),
+                    }
+                    cooldown = self._set_symbol_cooldown(signal["symbol"], now, activity)
+                    if cooldown:
+                        active_symbol_cooldowns[signal["symbol"]] = cooldown
+                        placed_payload["activity_cooldown"] = cooldown
+                        _log_automation_event(
+                            "symbol_activity_cooldown",
+                            now,
+                            signal,
+                            symbol=signal["symbol"],
+                            event_type=activity["event_type"],
+                            event_at=activity["event_at"],
+                            source=activity["source"],
+                            ticket=activity["ticket"],
+                            broker_symbol=activity["broker_symbol"],
+                            cooldown=cooldown,
+                        )
                 placed.append(placed_payload)
                 _append_jsonl(PLACED_ORDERS_PATH, placed_payload)
                 result = placement.get("result") or {}
@@ -1010,7 +1101,8 @@ class TradeAutomation:
             "live_trading": self.config.live_trading,
             "auto_place_trades": self.auto_place_trades,
             "one_position_per_symbol": self.one_position_per_symbol,
-            "symbol_result_cooldown_minutes": self.symbol_result_cooldown_minutes,
+            "symbol_activity_cooldown_minutes": self.symbol_activity_cooldown_minutes,
+            "activity_cooldown_updates": activity_cooldown_updates,
             "active_symbol_cooldowns": active_symbol_cooldowns,
             "trade_protection": {
                 "enabled": self.trade_protection_enabled,
@@ -1042,7 +1134,7 @@ class TradeAutomation:
         print(f"Live trading: {self.config.live_trading}; AUTO_PLACE_TRADES: {self.auto_place_trades}")
         print(f"One position per symbol: {self.one_position_per_symbol}")
         print(f"Trade protection: {self.trade_protection_enabled}; final RR: 1:{self.protection_final_rr:g}")
-        print(f"TP/SL symbol cooldown: {self.symbol_result_cooldown_minutes} minutes; BE exits do not cool down.")
+        print(f"Symbol activity cooldown: {self.symbol_activity_cooldown_minutes} minutes after any open or close.")
         print(f"Detail log: {AUTOMATION_EVENTS_PATH}")
         print(f"Console detail limit per cycle: {self.log_detail_limit}")
         print("Press Ctrl+C to stop.")

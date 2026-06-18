@@ -565,6 +565,106 @@ class MT5Client:
             positions = [position for position in positions if int(position.get("magic") or 0) == int(magic)]
         return positions
 
+    @staticmethod
+    def _mt5_timestamp(payload: dict[str, Any]) -> datetime | None:
+        time_msc = payload.get("time_msc")
+        if time_msc:
+            try:
+                return datetime.fromtimestamp(int(time_msc) / 1000)
+            except (OSError, TypeError, ValueError):
+                pass
+        raw_time = payload.get("time")
+        if raw_time:
+            try:
+                return datetime.fromtimestamp(int(raw_time))
+            except (OSError, TypeError, ValueError):
+                return None
+        return None
+
+    def recent_trade_activity(
+        self,
+        symbols: list[str] | tuple[str, ...],
+        lookback_minutes: int = 60,
+        magic: int | None = None,
+    ) -> dict[str, dict[str, Any]]:
+        if mt5 is None or not self.connect() or lookback_minutes <= 0:
+            return {}
+
+        now = datetime.now()
+        start = now - timedelta(minutes=lookback_minutes)
+        target_symbols = sorted((str(symbol).upper() for symbol in symbols), key=len, reverse=True)
+        resolved_symbols = {
+            symbol: (self.resolve_symbol(symbol) or symbol).upper()
+            for symbol in target_symbols
+        }
+
+        def base_symbol(broker_symbol: str) -> str | None:
+            upper = broker_symbol.upper()
+            for symbol in target_symbols:
+                if upper == resolved_symbols[symbol]:
+                    return symbol
+            for symbol in target_symbols:
+                resolved = resolved_symbols[symbol]
+                if symbol in upper or resolved in upper:
+                    return symbol
+            return None
+
+        activities: dict[str, dict[str, Any]] = {}
+
+        def activity_time(value: Any) -> datetime | None:
+            if not value:
+                return None
+            try:
+                return datetime.fromisoformat(str(value))
+            except ValueError:
+                return None
+
+        def record(symbol: str | None, event_type: str, payload: dict[str, Any], happened_at: datetime | None) -> None:
+            if symbol is None or happened_at is None or happened_at < start:
+                return
+            current = activities.get(symbol)
+            current_at = activity_time(current.get("event_at")) if current else None
+            if current_at and current_at >= happened_at:
+                return
+            activities[symbol] = {
+                "symbol": symbol,
+                "broker_symbol": payload.get("symbol"),
+                "event_type": event_type,
+                "event_at": happened_at.isoformat(timespec="seconds"),
+                "source": "open_position" if event_type == "opened" else "history_deal",
+                "ticket": payload.get("ticket") or payload.get("order"),
+                "position_id": payload.get("position_id") or payload.get("position"),
+                "deal": payload.get("ticket") if event_type == "closed" else None,
+                "magic": payload.get("magic"),
+                "volume": payload.get("volume"),
+                "price": payload.get("price") or payload.get("price_open"),
+                "profit": payload.get("profit"),
+                "reason": payload.get("reason"),
+            }
+
+        positions = mt5.positions_get() or []
+        for position in positions:
+            payload = position._asdict()
+            if magic is not None and int(payload.get("magic") or 0) != int(magic):
+                continue
+            record(base_symbol(str(payload.get("symbol") or "")), "opened", payload, self._mt5_timestamp(payload))
+
+        raw_deals = mt5.history_deals_get(start, now) or []
+        close_entries = {
+            getattr(mt5, "DEAL_ENTRY_OUT", 1),
+            getattr(mt5, "DEAL_ENTRY_OUT_BY", 3),
+            getattr(mt5, "DEAL_ENTRY_INOUT", 2),
+        }
+        for deal in raw_deals:
+            payload = deal._asdict()
+            if magic is not None and int(payload.get("magic") or 0) != int(magic):
+                continue
+            if int(payload.get("entry", -1)) not in close_entries:
+                continue
+            record(base_symbol(str(payload.get("symbol") or "")), "closed", payload, self._mt5_timestamp(payload))
+
+        return activities
+
     def closed_position_deal(self, position_ticket: int, lookback_days: int = 14) -> dict[str, Any]:
         if mt5 is None or not self.connect():
             return {"found": False, "message": "MT5 is not connected."}

@@ -89,7 +89,7 @@ Defaults:
 - Console detail limit: `AUTO_LOG_DETAIL_LIMIT=8`
 - Minimum setup score: `90`
 - Minimum R:R: `5.0`
-- TP/SL symbol cooldown: `60` minutes
+- Symbol activity cooldown: `AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES=60`
 - Backtest scan step: `3` candles for faster UI runs; set it to `1` for a slower full scan.
 
 The worker writes:
@@ -110,6 +110,6 @@ Safety gates:
 - Duplicate protection persists across restarts in `reports/automation/trade_state.json`.
 - `AUTO_ONE_POSITION_PER_SYMBOL=true` blocks new entries when that symbol already has an open position.
 - `AUTO_PROTECT_OPEN_TRADES=true` checks open automation trades every scan. With the default 1:5 profile, TP1 moves SL to break-even, TP2 moves SL to TP1, TP3 moves SL to TP2, TP4 moves SL to TP3, and TP5 moves SL to TP4 if the position is still open.
-- `AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES=60` cools a symbol down after an automation trade closes by TP or SL. A break-even SL close does not trigger this cooldown.
+- `AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES=60` cools a symbol until one hour after any MT5 position on that symbol was opened or closed. This includes manual trades and break-even closes. The old `AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES` name still works as a fallback.
 - `reports/automation/automation.lock` and `automation_heartbeat.json` prevent accidentally running two automation workers.
 - Use `stop_automation.bat` when you want to stop the worker and clear the runtime lock.
