@@ -294,15 +294,13 @@ class TradeAutomation:
         self.trade_protection_enabled = _env_bool("AUTO_PROTECT_OPEN_TRADES", True)
         self.protection_final_rr = max(1.0, _env_float("AUTO_PROTECTION_FINAL_RR", self.config.min_risk_reward))
         self.symbol_result_cooldown_minutes = _env_int("AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES", 60)
+        self.max_lot_risk_pct = max(0.0, float(self.config.max_lot_risk_pct))
         self.seen: dict[str, datetime] = {
             key: datetime.fromisoformat(value) for key, value in _read_seen_signals().items()
         }
         self.trade_state = _read_trade_state()
         _migrate_placed_orders_to_state(self.trade_state)
         _write_trade_state(self.trade_state)
-
-    def lot_for_symbol(self, symbol: str) -> float:
-        return float(self.config.symbol_lots.get(symbol, 0.01))
 
     def _cooldown_active(self, key: str, now: datetime) -> bool:
         seen_at = self.seen.get(key)
@@ -680,12 +678,46 @@ class TradeAutomation:
                 _append_jsonl(BLOCKED_ORDERS_PATH, blocked_ticket)
                 continue
 
-            lot = self.lot_for_symbol(signal["symbol"])
+            will_send_to_mt5 = self.config.live_trading and self.auto_place_trades
+            lot_sizing = self.client.risk_based_lot(
+                signal,
+                risk_percent=self.max_lot_risk_pct,
+                fallback_balance=self.config.starting_balance,
+                require_account_balance=will_send_to_mt5,
+            )
+            if not lot_sizing.get("ok"):
+                blocked_ticket = {
+                    "created_at": now.isoformat(timespec="seconds"),
+                    "status": "blocked_lot_sizing",
+                    "duplicate_key": key,
+                    "legacy_key": legacy_key,
+                    "setup_score": signal.get("setup_score"),
+                    "setup_grade": signal.get("setup_grade"),
+                    "signal": signal,
+                    "reasons": [str(lot_sizing.get("message") or "Risk-based lot sizing failed.")],
+                    "lot_sizing": lot_sizing,
+                    "safety": {
+                        "live_trading": self.config.live_trading,
+                        "auto_place_trades": self.auto_place_trades,
+                        "will_send_to_mt5": will_send_to_mt5,
+                        "max_lot_risk_pct": self.max_lot_risk_pct,
+                        "open_positions_same_symbol_any": len(open_positions_any),
+                        "open_positions_same_symbol_magic": len(open_positions_magic),
+                        "one_position_per_symbol": self.one_position_per_symbol,
+                        "symbol_cooldown": symbol_cooldown,
+                    },
+                }
+                blocked.append(blocked_ticket)
+                _append_jsonl(BLOCKED_ORDERS_PATH, blocked_ticket)
+                continue
+
+            lot = float(lot_sizing["lot"])
             order = self.client.prepare_order(
                 signal,
                 lot=lot,
-                live_trading=self.config.live_trading and self.auto_place_trades,
+                live_trading=will_send_to_mt5,
             )
+            order["lot_sizing"] = lot_sizing
             ticket = {
                 "created_at": now.isoformat(timespec="seconds"),
                 "status": "prepared",
@@ -701,7 +733,8 @@ class TradeAutomation:
                     "open_positions_same_symbol_any": len(open_positions_any),
                     "open_positions_same_symbol_magic": len(open_positions_magic),
                     "one_position_per_symbol": self.one_position_per_symbol,
-                    "will_send_to_mt5": self.config.live_trading and self.auto_place_trades,
+                    "will_send_to_mt5": will_send_to_mt5,
+                    "max_lot_risk_pct": self.max_lot_risk_pct,
                 },
             }
             prepared.append(ticket)
@@ -710,7 +743,7 @@ class TradeAutomation:
             self.seen[legacy_key] = now
             _write_seen_signals({item_key: item_value.isoformat() for item_key, item_value in self.seen.items()})
 
-            if self.config.live_trading and self.auto_place_trades:
+            if will_send_to_mt5:
                 placement = self.client.place_order(order)
                 placed_payload = {**ticket, "status": "sent_to_mt5", "placement": placement}
                 placed.append(placed_payload)
@@ -722,7 +755,11 @@ class TradeAutomation:
             "checked_at": now.isoformat(timespec="seconds"),
             "interval_seconds": self.interval_seconds,
             "timeframes": list(self.timeframes),
-            "lots": {symbol: self.lot_for_symbol(symbol) for symbol in TRADE_SYMBOLS},
+            "lot_sizing": {
+                "mode": "risk_percent_of_current_balance",
+                "max_lot_risk_pct": self.max_lot_risk_pct,
+                "env": "MAX_LOT_RISK_PCT",
+            },
             "live_trading": self.config.live_trading,
             "auto_place_trades": self.auto_place_trades,
             "one_position_per_symbol": self.one_position_per_symbol,
@@ -750,7 +787,7 @@ class TradeAutomation:
     def run_forever(self) -> None:
         print("LTA automation worker started.")
         print(f"Scanning {', '.join(TRADE_SYMBOLS)} on {', '.join(self.timeframes)} every {self.interval_seconds}s.")
-        print("Lots: " + ", ".join(f"{symbol}={self.lot_for_symbol(symbol)}" for symbol in TRADE_SYMBOLS))
+        print(f"Dynamic lot sizing: risk {self.max_lot_risk_pct:g}% of current account balance per trade.")
         print(f"Live trading: {self.config.live_trading}; AUTO_PLACE_TRADES: {self.auto_place_trades}")
         print(f"One position per symbol: {self.one_position_per_symbol}")
         print(f"Trade protection: {self.trade_protection_enabled}; final RR: 1:{self.protection_final_rr:g}")

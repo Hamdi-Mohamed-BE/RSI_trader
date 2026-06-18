@@ -162,7 +162,8 @@ The UI should allow the user to:
 
 - Select symbol: XAUUSD, XAGUSD, BTCUSD
 - Set starting balance
-- Set lot size per symbol
+- Set backtest lot size per symbol
+- Set live automation lot risk percent
 - Select date range for backtest
 - Select timeframe
 - Run backtest
@@ -192,6 +193,7 @@ Implement an `mt5_client.py` module that can:
 - Fetch symbol info
 - Fetch current bid/ask
 - Normalize lot size
+- Calculate live lot size from current account balance, configured risk percent, and stop-loss distance
 - Calculate pip/point value
 - Prepare an order object
 - Optionally place orders only if live trading is enabled
@@ -333,7 +335,8 @@ Reason breakdown for rejected setups
 Create a `risk_manager.py` that handles:
 
 - Lot size validation
-- Per-symbol lot config
+- Backtest per-symbol lot config
+- Live dynamic lot sizing from `MAX_LOT_RISK_PCT`
 - Start balance
 - Max risk per trade
 - Max daily loss
@@ -368,9 +371,7 @@ LIVE_TRADING=false
 
 START_BALANCE=1000
 
-XAUUSD_LOT=0.01
-XAGUSD_LOT=0.01
-BTCUSD_LOT=0.02
+MAX_LOT_RISK_PCT=3.0
 
 MAX_RISK_PER_TRADE_PERCENT=1
 MAX_DAILY_LOSS_PERCENT=3
@@ -394,7 +395,7 @@ LIVE_TRADING=true
 setup_score >= 90
 risk manager approves
 symbol is allowed
-lot size is valid
+dynamic lot size is valid
 stop loss exists
 take profit exists
 ```
@@ -438,7 +439,7 @@ The README must explain:
 - how to run the FastAPI app
 - how to connect MT5
 - how to run a backtest
-- how to configure lot sizes
+- how to configure backtest lot sizes and live dynamic risk-percent sizing
 - how to enable/disable live trading
 - what the strategy engine currently supports
 - what still needs manual validation

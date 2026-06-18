@@ -82,21 +82,7 @@ Use `run_automation.bat` to scan MT5 continuously for A+ setups.
 
 Defaults:
 
-- XAUUSD lot: `0.05`
-- XAGUSD lot: `0.05`
-- BTCUSD lot: `0.08`
-- EURUSD lot: `1.0`
-- USDJPY lot: `1.0`
-- GBPUSD lot: `1.0`
-- USDCAD lot: `1.0`
-- USDAUD lot: `1.0`
-- AUDUSD lot: `1.0`
-- NZDUSD lot: `1.0`
-- EURGBP lot: `1.0`
-- EURJPY lot: `1.0`
-- GBPJPY lot: `1.0`
-- US30 lot: `1.0`
-- US300 lot: `1.0`
+- Live automation lot sizing: `MAX_LOT_RISK_PCT=3.0`
 - Scan timeframes: `M5,M15,M30,H1,H4,D1,W1`
 - Scan interval: `60` seconds
 - Minimum setup score: `90`
@@ -115,6 +101,7 @@ Safety gates:
 - By default, it prepares tickets only.
 - It sends live market orders only when both `LIVE_TRADING=true` and `AUTO_PLACE_TRADES=true` are set in `.env`.
 - Every signal must still be an A+ setup and include entry, stop loss, take profit, and risk-to-reward.
+- Live automation does not use fixed per-symbol lots. It calculates lot size from the current MT5 account balance, `MAX_LOT_RISK_PCT`, the live entry price, and the signal stop loss. If the broker minimum lot would risk more than the budget, the trade is blocked instead of rounded up.
 - Duplicate protection persists across restarts in `reports/automation/trade_state.json`.
 - `AUTO_ONE_POSITION_PER_SYMBOL=true` blocks new entries when that symbol already has an open position.
 - `AUTO_PROTECT_OPEN_TRADES=true` checks open automation trades every scan. With the default 1:5 profile, TP1 moves SL to break-even, TP2 moves SL to TP1, TP3 moves SL to TP2, TP4 moves SL to TP3, and TP5 moves SL to TP4 if the position is still open.

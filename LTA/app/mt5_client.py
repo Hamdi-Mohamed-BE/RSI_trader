@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 import hashlib
+import math
 from typing import Any
 
 import numpy as np
@@ -80,6 +81,12 @@ class MT5Client:
             "terminal": info._asdict() if info else None,
         }
 
+    def account_info(self) -> dict[str, Any] | None:
+        if mt5 is None or not self.connect():
+            return None
+        info = mt5.account_info()
+        return info._asdict() if info else None
+
     def resolve_symbol(self, symbol: str) -> str | None:
         if not self.connect():
             return None
@@ -152,6 +159,28 @@ class MT5Client:
         steps = round((clipped - min_lot) / step)
         return round(min_lot + steps * step, 4)
 
+    def lot_constraints(self, symbol: str) -> dict[str, float]:
+        info = self.symbol_info(symbol)
+        if not info:
+            return {"min": 0.01, "max": 100.0, "step": 0.01}
+        return {
+            "min": float(info.get("volume_min") or 0.01),
+            "max": float(info.get("volume_max") or 100.0),
+            "step": float(info.get("volume_step") or 0.01),
+        }
+
+    def normalize_lot_down(self, symbol: str, lot: float) -> float:
+        constraints = self.lot_constraints(symbol)
+        min_lot = constraints["min"]
+        max_lot = constraints["max"]
+        step = constraints["step"]
+        if lot < min_lot:
+            return 0.0
+        clipped = min(lot, max_lot)
+        steps = math.floor((clipped - min_lot + 1e-12) / step)
+        normalized = min_lot + steps * step
+        return round(max(min_lot, min(normalized, max_lot)), 4)
+
     def contract_size(self, symbol: str) -> float:
         info = self.symbol_info(symbol)
         if info and info.get("trade_contract_size"):
@@ -178,6 +207,211 @@ class MT5Client:
         info = self.symbol_info(symbol)
         digits = int(info.get("digits") or 5) if info else 5
         return round(float(price), digits)
+
+    def estimate_trade_risk(
+        self,
+        symbol: str,
+        direction: str,
+        lot: float,
+        entry_price: float,
+        stop_loss: float,
+    ) -> dict[str, Any]:
+        if lot <= 0 or entry_price <= 0 or stop_loss <= 0 or entry_price == stop_loss:
+            return {"ok": False, "risk": 0.0, "method": "invalid_inputs"}
+
+        resolved = self.resolve_symbol(symbol) or symbol
+        direction = direction.upper()
+        if mt5 is not None and self.connect():
+            order_type = mt5.ORDER_TYPE_BUY if direction == "BUY" else mt5.ORDER_TYPE_SELL
+            profit = mt5.order_calc_profit(order_type, resolved, float(lot), float(entry_price), float(stop_loss))
+            if profit is not None:
+                return {
+                    "ok": True,
+                    "risk": abs(float(profit)),
+                    "method": "mt5_order_calc_profit",
+                    "broker_symbol": resolved,
+                }
+
+        risk = abs(float(entry_price) - float(stop_loss)) * self.contract_size(symbol) * float(lot)
+        return {
+            "ok": risk > 0,
+            "risk": risk,
+            "method": "contract_size_fallback",
+            "broker_symbol": resolved,
+        }
+
+    def risk_based_lot(
+        self,
+        signal: dict[str, Any],
+        risk_percent: float,
+        fallback_balance: float | None = None,
+        require_account_balance: bool = False,
+    ) -> dict[str, Any]:
+        raw_symbol = str(signal.get("symbol") or "")
+        direction = str(signal.get("direction") or "").upper()
+        stop_loss = float(signal.get("stop_loss") or 0.0)
+        signal_entry = float(signal.get("entry") or 0.0)
+        resolved = self.resolve_symbol(raw_symbol) or raw_symbol
+        if direction not in {"BUY", "SELL"}:
+            return {
+                "ok": False,
+                "message": "Signal direction must be BUY or SELL for risk-based lot sizing.",
+                "risk_percent": risk_percent,
+                "symbol": raw_symbol,
+                "broker_symbol": resolved,
+            }
+
+        account = self.account_info()
+        balance = float(account.get("balance") or 0.0) if account else 0.0
+        balance_source = "mt5_account_balance"
+        if balance <= 0:
+            if require_account_balance:
+                return {
+                    "ok": False,
+                    "message": "Account balance is unavailable, so risk-based live lot sizing is blocked.",
+                    "risk_percent": risk_percent,
+                    "symbol": raw_symbol,
+                    "broker_symbol": resolved,
+                }
+            balance = float(fallback_balance or 0.0)
+            balance_source = "fallback_balance"
+
+        if risk_percent <= 0 or balance <= 0:
+            return {
+                "ok": False,
+                "message": "Risk percent or balance is zero.",
+                "risk_percent": risk_percent,
+                "balance": balance,
+                "balance_source": balance_source,
+                "symbol": raw_symbol,
+                "broker_symbol": resolved,
+            }
+
+        quote = self.current_quote(raw_symbol)
+        entry_price = signal_entry
+        entry_source = "signal_entry"
+        if quote and direction in {"BUY", "SELL"}:
+            entry_price = float(quote["ask"] if direction == "BUY" else quote["bid"])
+            entry_source = "current_quote"
+
+        if entry_price <= 0 or stop_loss <= 0 or entry_price == stop_loss:
+            return {
+                "ok": False,
+                "message": "Entry or stop loss is invalid for risk-based lot sizing.",
+                "risk_percent": risk_percent,
+                "balance": balance,
+                "balance_source": balance_source,
+                "symbol": raw_symbol,
+                "broker_symbol": resolved,
+                "entry_price": entry_price,
+                "stop_loss": stop_loss,
+            }
+
+        risk_budget = balance * (risk_percent / 100)
+        per_lot = self.estimate_trade_risk(raw_symbol, direction, 1.0, entry_price, stop_loss)
+        risk_per_lot = float(per_lot.get("risk") or 0.0)
+        if not per_lot.get("ok") or risk_per_lot <= 0:
+            return {
+                "ok": False,
+                "message": "Could not estimate risk per 1.0 lot.",
+                "risk_percent": risk_percent,
+                "balance": balance,
+                "balance_source": balance_source,
+                "symbol": raw_symbol,
+                "broker_symbol": resolved,
+                "entry_price": entry_price,
+                "stop_loss": stop_loss,
+                "risk_budget": risk_budget,
+                "per_lot": per_lot,
+            }
+
+        raw_lot = risk_budget / risk_per_lot
+        constraints = self.lot_constraints(raw_symbol)
+        lot = self.normalize_lot_down(raw_symbol, raw_lot)
+        if lot <= 0:
+            min_lot_risk = self.estimate_trade_risk(raw_symbol, direction, constraints["min"], entry_price, stop_loss)
+            return {
+                "ok": False,
+                "message": "Risk budget is below broker minimum lot risk; trade blocked instead of rounding up.",
+                "risk_percent": risk_percent,
+                "balance": balance,
+                "balance_source": balance_source,
+                "symbol": raw_symbol,
+                "broker_symbol": resolved,
+                "entry_price": entry_price,
+                "entry_source": entry_source,
+                "stop_loss": stop_loss,
+                "risk_budget": risk_budget,
+                "raw_lot": raw_lot,
+                "lot_constraints": constraints,
+                "min_lot_risk": min_lot_risk,
+            }
+
+        estimated = self.estimate_trade_risk(raw_symbol, direction, lot, entry_price, stop_loss)
+        step = constraints["step"]
+        while estimated.get("ok") and float(estimated.get("risk") or 0.0) > risk_budget * 1.001 and lot > constraints["min"]:
+            lot = round(lot - step, 4)
+            estimated = self.estimate_trade_risk(raw_symbol, direction, lot, entry_price, stop_loss)
+
+        final_risk = float(estimated.get("risk") or 0.0)
+        if not estimated.get("ok") or final_risk <= 0:
+            return {
+                "ok": False,
+                "message": "Could not estimate final normalized lot risk.",
+                "risk_percent": risk_percent,
+                "balance": balance,
+                "balance_source": balance_source,
+                "symbol": raw_symbol,
+                "broker_symbol": resolved,
+                "entry_price": entry_price,
+                "entry_source": entry_source,
+                "stop_loss": stop_loss,
+                "risk_budget": risk_budget,
+                "raw_lot": raw_lot,
+                "lot": lot,
+                "estimated": estimated,
+                "lot_constraints": constraints,
+            }
+        if final_risk > risk_budget * 1.001:
+            return {
+                "ok": False,
+                "message": "Broker-normalized lot still exceeds the risk budget; trade blocked.",
+                "risk_percent": risk_percent,
+                "balance": balance,
+                "balance_source": balance_source,
+                "symbol": raw_symbol,
+                "broker_symbol": resolved,
+                "entry_price": entry_price,
+                "entry_source": entry_source,
+                "stop_loss": stop_loss,
+                "risk_budget": risk_budget,
+                "raw_lot": raw_lot,
+                "lot": lot,
+                "estimated_risk": final_risk,
+                "risk_method": estimated.get("method"),
+                "lot_constraints": constraints,
+            }
+
+        return {
+            "ok": bool(estimated.get("ok")),
+            "message": "Risk-based lot calculated.",
+            "risk_percent": risk_percent,
+            "balance": balance,
+            "balance_source": balance_source,
+            "symbol": raw_symbol,
+            "broker_symbol": resolved,
+            "direction": direction,
+            "entry_price": entry_price,
+            "entry_source": entry_source,
+            "stop_loss": stop_loss,
+            "risk_budget": risk_budget,
+            "risk_per_1_lot": risk_per_lot,
+            "raw_lot": raw_lot,
+            "lot": lot,
+            "estimated_risk": final_risk,
+            "risk_method": estimated.get("method"),
+            "lot_constraints": constraints,
+        }
 
     def fetch_candles(
         self,
