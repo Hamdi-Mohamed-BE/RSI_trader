@@ -6,11 +6,60 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 
-TradeSymbol = Literal["XAUUSD", "XAGUSD", "BTCUSD", "EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDAUD"]
-Symbol = Literal["ALL", "XAUUSD", "XAGUSD", "BTCUSD", "EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDAUD"]
-Timeframe = Literal["M1", "M5", "M15", "M30", "H1", "H4", "D1"]
+TradeSymbol = Literal[
+    "XAUUSD",
+    "XAGUSD",
+    "BTCUSD",
+    "EURUSD",
+    "USDJPY",
+    "GBPUSD",
+    "USDCAD",
+    "USDAUD",
+    "AUDUSD",
+    "NZDUSD",
+    "EURGBP",
+    "EURJPY",
+    "GBPJPY",
+    "US30",
+    "US300",
+]
+Symbol = Literal[
+    "ALL",
+    "XAUUSD",
+    "XAGUSD",
+    "BTCUSD",
+    "EURUSD",
+    "USDJPY",
+    "GBPUSD",
+    "USDCAD",
+    "USDAUD",
+    "AUDUSD",
+    "NZDUSD",
+    "EURGBP",
+    "EURJPY",
+    "GBPJPY",
+    "US30",
+    "US300",
+]
+Timeframe = Literal["M1", "M5", "M15", "M30", "H1", "H4", "D1", "W1"]
 
-TRADE_SYMBOLS: tuple[str, ...] = ("XAUUSD", "XAGUSD", "BTCUSD", "EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDAUD")
+TRADE_SYMBOLS: tuple[str, ...] = (
+    "XAUUSD",
+    "XAGUSD",
+    "BTCUSD",
+    "EURUSD",
+    "USDJPY",
+    "GBPUSD",
+    "USDCAD",
+    "USDAUD",
+    "AUDUSD",
+    "NZDUSD",
+    "EURGBP",
+    "EURJPY",
+    "GBPJPY",
+    "US30",
+    "US300",
+)
 DEFAULT_SYMBOL_LOTS: dict[str, float] = {
     "XAUUSD": 0.05,
     "XAGUSD": 0.05,
@@ -20,9 +69,16 @@ DEFAULT_SYMBOL_LOTS: dict[str, float] = {
     "GBPUSD": 1.0,
     "USDCAD": 1.0,
     "USDAUD": 1.0,
+    "AUDUSD": 1.0,
+    "NZDUSD": 1.0,
+    "EURGBP": 1.0,
+    "EURJPY": 1.0,
+    "GBPJPY": 1.0,
+    "US30": 1.0,
+    "US300": 1.0,
 }
 ALLOWED_SYMBOLS: tuple[str, ...] = ("ALL", *TRADE_SYMBOLS)
-ALLOWED_TIMEFRAMES: tuple[str, ...] = ("M1", "M5", "M15", "M30", "H1", "H4", "D1")
+ALLOWED_TIMEFRAMES: tuple[str, ...] = ("M1", "M5", "M15", "M30", "H1", "H4", "D1", "W1")
 
 
 class BacktestRequest(BaseModel):
@@ -35,12 +91,12 @@ class BacktestRequest(BaseModel):
     symbol_lots: dict[str, float] = Field(
         default_factory=lambda: dict(DEFAULT_SYMBOL_LOTS)
     )
-    risk_per_trade_percent: float = Field(default=1.0, gt=0, le=10)
-    max_daily_loss_percent: float = Field(default=3.0, gt=0, le=50)
-    max_drawdown_percent: float = Field(default=8.0, gt=0, le=80)
-    max_trades_per_day: int = Field(default=3, ge=1, le=50)
+    risk_per_trade_percent: float = Field(default=1.0, ge=0, le=10)
+    max_daily_loss_percent: float = Field(default=3.0, ge=0, le=50)
+    max_drawdown_percent: float = Field(default=8.0, ge=0, le=80)
+    max_trades_per_day: int = Field(default=3, ge=0, le=50)
     min_setup_score: int = Field(default=90, ge=1, le=100)
-    min_risk_reward: float = Field(default=3.0, ge=0.5, le=20)
+    min_risk_reward: float = Field(default=5.0, ge=0.5, le=20)
     signal_stride: int = Field(default=3, ge=1, le=25)
     use_demo_if_mt5_unavailable: bool = True
 
@@ -60,6 +116,8 @@ class Signal(BaseModel):
     tp1: float | None = None
     tp2: float | None = None
     tp3: float | None = None
+    tp4: float | None = None
+    tp5: float | None = None
     risk_reward: float | None = None
     invalidation: str | None = None
     reasons: list[str] = Field(default_factory=list)

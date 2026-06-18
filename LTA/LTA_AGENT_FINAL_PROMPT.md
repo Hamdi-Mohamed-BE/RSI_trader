@@ -254,7 +254,7 @@ Each signal must include:
   "entry": 2350.50,
   "stop_loss": 2346.20,
   "take_profit": 2363.40,
-  "risk_reward": 3.0,
+  "risk_reward": 5.0,
   "setup_score": 94,
   "setup_grade": "A+",
   "reasons": [
@@ -378,7 +378,7 @@ MAX_TOTAL_DRAWDOWN_PERCENT=8
 MAX_TRADES_PER_DAY=3
 
 MIN_SETUP_SCORE=90
-MIN_RISK_REWARD=3.0
+MIN_RISK_REWARD=5.0
 ```
 
 ---

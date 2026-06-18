@@ -13,6 +13,13 @@ DEFAULT_CONTRACT_SIZES = {
     "GBPUSD": 100000.0,
     "USDCAD": 100000.0,
     "USDAUD": 100000.0,
+    "AUDUSD": 100000.0,
+    "NZDUSD": 100000.0,
+    "EURGBP": 100000.0,
+    "EURJPY": 100000.0,
+    "GBPJPY": 100000.0,
+    "US30": 1.0,
+    "US300": 1.0,
 }
 
 
@@ -75,21 +82,21 @@ class RiskManager:
         risk_amount = 0.0
         if not reasons:
             risk_amount = self.trade_risk_amount(float(signal["entry"]), float(signal["stop_loss"]))
-            max_risk_amount = balance * (self.max_risk_percent / 100)
             if risk_amount <= 0:
                 reasons.append("Trade risk is zero or invalid.")
-            if risk_amount > max_risk_amount:
+            max_risk_amount = balance * (self.max_risk_percent / 100)
+            if self.max_risk_percent > 0 and risk_amount > max_risk_amount:
                 reasons.append("Lot size risks more than the allowed percent.")
 
         daily_loss_limit = self.starting_balance * (self.max_daily_loss_percent / 100)
-        if daily_pnl <= -daily_loss_limit:
+        if self.max_daily_loss_percent > 0 and daily_pnl <= -daily_loss_limit:
             reasons.append("Daily loss limit has already been reached.")
 
         drawdown = 0.0 if equity_peak <= 0 else (equity_peak - balance) / equity_peak * 100
-        if drawdown >= self.max_drawdown_percent:
+        if self.max_drawdown_percent > 0 and drawdown >= self.max_drawdown_percent:
             reasons.append("Maximum drawdown limit has already been reached.")
 
-        if trades_today >= self.max_trades_per_day:
+        if self.max_trades_per_day > 0 and trades_today >= self.max_trades_per_day:
             reasons.append("Maximum trades per day has already been reached.")
 
         return RiskDecision(approved=not reasons, reasons=reasons, risk_amount=risk_amount)

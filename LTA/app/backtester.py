@@ -19,7 +19,7 @@ from .strategy_engine import generate_signal
 
 
 BACKTEST_CACHE_DIR = REPORTS_DIR / "backtest_cache"
-BACKTEST_CACHE_VERSION = "2026-06-18-fast-protection-v1"
+BACKTEST_CACHE_VERSION = "2026-06-18-rr5-weekly-expanded-symbols-v1"
 LIVE_CACHE_SECONDS = 180
 
 

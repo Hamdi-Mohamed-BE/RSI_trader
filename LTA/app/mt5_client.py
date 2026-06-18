@@ -22,6 +22,7 @@ TIMEFRAME_MINUTES: dict[str, int] = {
     "H1": 60,
     "H4": 240,
     "D1": 1440,
+    "W1": 10080,
 }
 
 
@@ -36,6 +37,7 @@ def _mt5_timeframe(timeframe: str) -> Any:
         "H1": mt5.TIMEFRAME_H1,
         "H4": mt5.TIMEFRAME_H4,
         "D1": mt5.TIMEFRAME_D1,
+        "W1": mt5.TIMEFRAME_W1,
     }.get(timeframe)
 
 
@@ -95,6 +97,13 @@ class MT5Client:
             "GBPUSD": ("GBPUSD", "POUND"),
             "USDCAD": ("USDCAD", "CANADIAN"),
             "USDAUD": ("USDAUD", "AUD"),
+            "AUDUSD": ("AUDUSD", "AUSSIE", "AUSTRALIAN"),
+            "NZDUSD": ("NZDUSD", "KIWI", "NEW ZEALAND"),
+            "EURGBP": ("EURGBP", "EURO", "POUND"),
+            "EURJPY": ("EURJPY", "EURO", "YEN"),
+            "GBPJPY": ("GBPJPY", "POUND", "YEN"),
+            "US30": ("US30", "DJ30", "DOW", "WALL STREET"),
+            "US300": ("US300", "USA300", "US 300"),
         }.get(symbol, (symbol,))
         filtered = [
             item
@@ -156,6 +165,13 @@ class MT5Client:
             "GBPUSD": 100000.0,
             "USDCAD": 100000.0,
             "USDAUD": 100000.0,
+            "AUDUSD": 100000.0,
+            "NZDUSD": 100000.0,
+            "EURGBP": 100000.0,
+            "EURJPY": 100000.0,
+            "GBPJPY": 100000.0,
+            "US30": 1.0,
+            "US300": 1.0,
         }.get(symbol, 1.0)
 
     def normalize_price(self, symbol: str, price: float) -> float:
@@ -204,6 +220,8 @@ class MT5Client:
             "tp1": signal.get("tp1"),
             "tp2": signal.get("tp2"),
             "tp3": signal.get("tp3"),
+            "tp4": signal.get("tp4"),
+            "tp5": signal.get("tp5"),
             "comment": "LTA A+ live" if live_trading else "LTA A+ prepared",
         }
 
@@ -216,6 +234,64 @@ class MT5Client:
         if magic is not None:
             positions = [position for position in positions if int(position.get("magic") or 0) == int(magic)]
         return positions
+
+    def closed_position_deal(self, position_ticket: int, lookback_days: int = 14) -> dict[str, Any]:
+        if mt5 is None or not self.connect():
+            return {"found": False, "message": "MT5 is not connected."}
+
+        raw_deals = None
+        try:
+            raw_deals = mt5.history_deals_get(position=int(position_ticket))
+        except TypeError:
+            raw_deals = None
+
+        if raw_deals is None:
+            end = datetime.now()
+            start = end - timedelta(days=lookback_days)
+            raw_deals = mt5.history_deals_get(start, end)
+
+        deals = []
+        for deal in raw_deals or []:
+            payload = deal._asdict()
+            position_id = int(payload.get("position_id") or payload.get("position") or 0)
+            if position_id == int(position_ticket):
+                deals.append(payload)
+
+        if not deals:
+            return {"found": False, "message": f"No history deal found for position {position_ticket}."}
+
+        close_entries = {
+            getattr(mt5, "DEAL_ENTRY_OUT", 1),
+            getattr(mt5, "DEAL_ENTRY_OUT_BY", 3),
+            getattr(mt5, "DEAL_ENTRY_INOUT", 2),
+        }
+        closing_deals = [deal for deal in deals if int(deal.get("entry", -1)) in close_entries]
+        closing_deals.sort(key=lambda deal: (int(deal.get("time_msc") or 0), int(deal.get("time") or 0)))
+        closing_deal = closing_deals[-1] if closing_deals else deals[-1]
+
+        reason = int(closing_deal.get("reason") or -1)
+        reason_name = {
+            getattr(mt5, "DEAL_REASON_SL", 4): "SL",
+            getattr(mt5, "DEAL_REASON_TP", 5): "TP",
+        }.get(reason, "OTHER")
+        profit = sum(
+            float(deal.get("profit") or 0.0) + float(deal.get("commission") or 0.0) + float(deal.get("swap") or 0.0)
+            for deal in closing_deals or [closing_deal]
+        )
+
+        return {
+            "found": True,
+            "position_ticket": int(position_ticket),
+            "closing_deal": closing_deal,
+            "exit_reason": reason_name,
+            "exit_reason_code": reason,
+            "exit_price": float(closing_deal.get("price") or 0.0),
+            "profit": profit,
+            "closed_at": datetime.fromtimestamp(int(closing_deal.get("time") or 0)).isoformat(timespec="seconds")
+            if closing_deal.get("time")
+            else None,
+            "deals": deals,
+        }
 
     def place_order(self, order: dict[str, Any]) -> dict[str, Any]:
         if not order.get("live_trading"):
@@ -326,6 +402,13 @@ def generate_demo_candles(symbol: str, timeframe: str, start: datetime, end: dat
         "GBPUSD": 1.27,
         "USDCAD": 1.37,
         "USDAUD": 1.50,
+        "AUDUSD": 0.66,
+        "NZDUSD": 0.61,
+        "EURGBP": 0.85,
+        "EURJPY": 170.0,
+        "GBPJPY": 200.0,
+        "US30": 39000.0,
+        "US300": 18000.0,
     }.get(symbol, 100.0)
     volatility = {
         "XAUUSD": 1.8,
@@ -336,6 +419,13 @@ def generate_demo_candles(symbol: str, timeframe: str, start: datetime, end: dat
         "GBPUSD": 0.0014,
         "USDCAD": 0.0012,
         "USDAUD": 0.0014,
+        "AUDUSD": 0.0012,
+        "NZDUSD": 0.0012,
+        "EURGBP": 0.0010,
+        "EURJPY": 0.16,
+        "GBPJPY": 0.22,
+        "US30": 75.0,
+        "US300": 45.0,
     }.get(symbol, 1.0)
 
     drift = np.sin(np.linspace(0, 10, len(times))) * volatility * 0.12

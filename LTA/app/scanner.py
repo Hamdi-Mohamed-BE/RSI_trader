@@ -8,15 +8,28 @@ from .mt5_client import MT5Client
 from .strategy_engine import detect_aoi, detect_bias, detect_market_structure, generate_signal
 
 
-DEFAULT_SCAN_TIMEFRAMES: tuple[str, ...] = ("M5", "M15", "M30", "H1", "H4")
-LOOKBACK_DAYS: dict[str, int] = {"M1": 14, "M5": 45, "M15": 60, "M30": 90, "H1": 120, "H4": 240, "D1": 720}
+DEFAULT_SCAN_TIMEFRAMES: tuple[str, ...] = ("M5", "M15", "M30", "H1", "H4", "D1", "W1")
+LOOKBACK_DAYS: dict[str, int] = {
+    "M1": 14,
+    "M5": 45,
+    "M15": 60,
+    "M30": 90,
+    "H1": 120,
+    "H4": 240,
+    "D1": 720,
+    "W1": 3650,
+}
+STALE_LIMITS: dict[str, timedelta] = {
+    "D1": timedelta(days=4),
+    "W1": timedelta(days=10),
+}
 
 
 def scan_market(
     symbols: list[str] | tuple[str, ...] = TRADE_SYMBOLS,
     timeframes: list[str] | tuple[str, ...] = DEFAULT_SCAN_TIMEFRAMES,
     min_score: int = 90,
-    min_rr: float = 3.0,
+    min_rr: float = 5.0,
     max_stale: timedelta = timedelta(days=2),
 ) -> dict[str, Any]:
     client = MT5Client()
@@ -70,7 +83,8 @@ def scan_market(
                 "candles": int(len(candles)),
             }
 
-            if now - last_time > max_stale:
+            stale_limit = STALE_LIMITS.get(timeframe, max_stale)
+            if now - last_time > stale_limit:
                 result["stale"].append({**common, "reason": "Latest candle is stale, ignored for live scan."})
                 continue
 

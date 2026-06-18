@@ -63,7 +63,7 @@ class AppConfig:
     max_total_drawdown_percent: float = 8.0
     max_trades_per_day: int = 3
     min_setup_score: int = 90
-    min_risk_reward: float = 3.0
+    min_risk_reward: float = 5.0
     backtest_signal_stride: int = 3
 
 
@@ -81,6 +81,6 @@ def load_config() -> AppConfig:
         max_total_drawdown_percent=_float_env("MAX_TOTAL_DRAWDOWN_PERCENT", 8.0),
         max_trades_per_day=_int_env("MAX_TRADES_PER_DAY", 3),
         min_setup_score=_int_env("MIN_SETUP_SCORE", 90),
-        min_risk_reward=_float_env("MIN_RISK_REWARD", 3.0),
+        min_risk_reward=_float_env("MIN_RISK_REWARD", 5.0),
         backtest_signal_stride=_int_env("BACKTEST_SIGNAL_STRIDE", 3),
     )

@@ -343,21 +343,22 @@ def _build_trade_levels(df: pd.DataFrame, direction: str, min_rr: float) -> tupl
         stop = float(recent["low"].min()) - atr * 0.15
         risk = max(entry - stop, atr * 0.25)
         stop = entry - risk
-        target = entry + risk * max(min_rr, 3.0)
+        target = entry + risk * max(min_rr, 5.0)
     else:
         stop = float(recent["high"].max()) + atr * 0.15
         risk = max(stop - entry, atr * 0.25)
         stop = entry + risk
-        target = entry - risk * max(min_rr, 3.0)
+        target = entry - risk * max(min_rr, 5.0)
     rr = abs(target - entry) / max(abs(entry - stop), 1e-9)
     return entry, stop, target, rr
 
 
-def _profit_targets(entry: float, stop: float, direction: str, final_rr: float = 3.0) -> tuple[float, float, float]:
+def _profit_targets(entry: float, stop: float, direction: str, final_rr: float = 5.0) -> dict[str, float]:
     risk = abs(entry - stop)
+    stages = range(1, int(max(1, round(final_rr))) + 1)
     if direction == "BUY":
-        return entry + risk, entry + risk * 2, entry + risk * final_rr
-    return entry - risk, entry - risk * 2, entry - risk * final_rr
+        return {f"tp{stage}": entry + risk * stage for stage in stages}
+    return {f"tp{stage}": entry - risk * stage for stage in stages}
 
 
 def score_setup(context: dict[str, Any]) -> tuple[int, list[str]]:
@@ -440,7 +441,7 @@ def generate_signal(
     symbol: str,
     timeframe: str,
     min_score: int = 90,
-    min_rr: float = 3.0,
+    min_rr: float = 5.0,
 ) -> dict[str, Any] | None:
     df = _to_frame(candles)
     if len(df) < 80:
@@ -454,7 +455,7 @@ def generate_signal(
         direction = "BUY" if float(df.iloc[-1]["close"]) >= float(level["price"]) else "SELL"
 
     entry, stop, target, rr = _build_trade_levels(df, direction, min_rr)
-    tp1, tp2, tp3 = _profit_targets(entry, stop, direction, max(min_rr, 3.0))
+    targets = _profit_targets(entry, stop, direction, max(min_rr, 5.0))
     confirmation = detect_entry_confirmation(df, level, direction)
     liquidity_ok, liquidity_reason = _liquidity_context(df, direction)
     bias = detect_bias(df, timeframe)
@@ -496,9 +497,11 @@ def generate_signal(
         "entry": round(entry, 5),
         "stop_loss": round(stop, 5),
         "take_profit": round(target, 5),
-        "tp1": round(tp1, 5),
-        "tp2": round(tp2, 5),
-        "tp3": round(tp3, 5),
+        "tp1": round(targets["tp1"], 5),
+        "tp2": round(targets["tp2"], 5),
+        "tp3": round(targets["tp3"], 5),
+        "tp4": round(targets["tp4"], 5) if "tp4" in targets else None,
+        "tp5": round(targets["tp5"], 5) if "tp5" in targets else None,
         "risk_reward": round(rr, 2),
         "invalidation": invalidation,
         "reasons": list(dict.fromkeys(reasons)),

@@ -102,7 +102,7 @@ async def backtest_form(request: Request):
             max_drawdown_percent=float(form.get("max_drawdown_percent") or 8),
             max_trades_per_day=int(form.get("max_trades_per_day") or 3),
             min_setup_score=int(form.get("min_setup_score") or 90),
-            min_risk_reward=float(form.get("min_risk_reward") or 3),
+            min_risk_reward=float(form.get("min_risk_reward") or 5),
             signal_stride=int(form.get("signal_stride") or 3),
             use_demo_if_mt5_unavailable=str(form.get("use_demo_if_mt5_unavailable") or "") == "on",
         )
