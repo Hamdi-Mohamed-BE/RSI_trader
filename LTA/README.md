@@ -77,7 +77,14 @@ Defaults:
 - Scan interval: `60` seconds
 - Console detail limit: `AUTO_LOG_DETAIL_LIMIT=8`
 - Minimum setup score: `90`
+- Pending pre-place setup score: `AUTO_PREPLACE_MIN_SCORE=85`
+- Pending order expiry: `AUTO_PREPLACE_EXPIRY_MINUTES=240`
 - Minimum R:R: `5.0`
+- Total daily bot trade cap: `MAX_TRADES_PER_DAY=3`, counted across all symbols and both market/pending placements.
+- Whole-bot loss streak stop: `AUTO_MAX_CONSECUTIVE_LOSSES=2`
+- Symbol daily lock: `AUTO_SYMBOL_MAX_LOSSES_PER_DAY=1` or `AUTO_SYMBOL_MAX_DAILY_LOSS_R=1.0`
+- Strict window: `AUTO_STRICT_SESSION_START=10:00`, `AUTO_STRICT_SESSION_END=13:00`, requiring stronger internal-structure confirmation.
+- Forex HTF agreement: `AUTO_FOREX_REQUIRE_HTF_AGREEMENT=true`
 - Symbol activity cooldown: `AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES=60`
 - Backtest scan step: `3` candles for faster UI runs; set it to `1` for a slower full scan.
 
@@ -92,12 +99,21 @@ Safety gates:
 
 - By default, it prepares tickets only.
 - It sends live market orders only when both `LIVE_TRADING=true` and `AUTO_PLACE_TRADES=true` are set in `.env`.
-- Every signal must still be an A+ setup and include entry, stop loss, take profit, and risk-to-reward.
+- It sends live pending orders only when `LIVE_TRADING=true`, `AUTO_PLACE_TRADES=true`, and `AUTO_PREPLACE_ORDERS=true` are all set in `.env`.
+- Pending orders are separate from confirmed A+ market entries. They are only created from `preplace` setups where a trigger price would complete an LTA Entry Model 3 internal break or a clean Entry Model 2 LTF swing retest.
+- Every market signal must still be an A+ setup and include entry, stop loss, take profit, and risk-to-reward.
 - MT5 order comments include the setup grade, score, and timeframe, for example `LTA A+ S95 M15`.
 - The bot checks the live bid/ask spread before preparing an order and again just before sending to MT5. If the red/blue price spread is too large versus the stop distance, the trade is blocked and logged as `blocked_spread`.
 - Live automation does not use fixed per-symbol lots. It calculates lot size from the current MT5 account balance, `MAX_LOT_RISK_PCT`, the live entry price, and the signal stop loss. If the broker minimum lot would risk more than the budget, the trade is blocked instead of rounded up.
 - Duplicate protection persists across restarts in `reports/automation/trade_state.json`.
+- `MAX_TRADES_PER_DAY` is a total bot cap for the day, not a per-symbol cap.
+- `AUTO_MAX_CONSECUTIVE_LOSSES=2` stops all new orders after two losing bot trades in a row.
+- A losing bot trade locks that symbol until the later of the current session end or the normal activity cooldown. With `AUTO_SYMBOL_MAX_LOSSES_PER_DAY=1`, that symbol is also blocked for the rest of the day after one failed A+ setup.
+- `AUTO_SYMBOL_MAX_DAILY_LOSS_R=1.0` blocks a symbol for the day if its closed bot trades reach -1R or worse.
+- During `AUTO_STRICT_SESSION_START` to `AUTO_STRICT_SESSION_END`, market entries need `AUTO_STRICT_SESSION_MIN_SCORE` and internal-structure confirmation. Pending orders need `AUTO_STRICT_SESSION_PREPLACE_MIN_SCORE` and must be break-stop orders.
+- When forex pairs are in the loop, `AUTO_FOREX_REQUIRE_HTF_AGREEMENT=true` requires H1/H4/D1 agreement before a forex signal can pass.
 - `AUTO_ONE_POSITION_PER_SYMBOL=true` blocks new entries when that symbol already has an open position.
+- `AUTO_ONE_PENDING_PER_SYMBOL=true` blocks a second LTA pending order on a symbol that already has one.
 - `AUTO_PROTECT_OPEN_TRADES=true` checks open automation trades every scan. With the default 1:5 profile, TP1 moves SL to break-even, TP2 moves SL to TP1, TP3 moves SL to TP2, TP4 moves SL to TP3, and TP5 moves SL to TP4 if the position is still open.
 - `AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES=60` cools a symbol until one hour after any MT5 position on that symbol was opened or closed. This includes manual trades and break-even closes. The old `AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES` name still works as a fallback.
 - `reports/automation/automation.lock` and `automation_heartbeat.json` prevent accidentally running two automation workers.

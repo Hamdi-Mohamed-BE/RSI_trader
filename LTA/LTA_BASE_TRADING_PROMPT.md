@@ -419,6 +419,52 @@ If any answer is missing, reject the setup.
 
 ---
 
+## Pending Pre-Place Rules
+
+Pending orders are not allowed to weaken the A+ gate. They are only allowed when price has already reacted from an LTA key level and one exact trigger would make the setup more valid according to the entry models.
+
+Allowed pending setup types:
+
+- Pending Entry Model 3 - Internal Structure Break: after mitigation/manipulation at a key level, place a BUY_STOP above internal highs or a SELL_STOP below internal lows only when that trigger would confirm the reclaim/rejection and structure break.
+- Pending Entry Model 2 - LTF Swing Retest: after a first key-level reaction and expansion away from the level, place a BUY_LIMIT or SELL_LIMIT only at the LTF Swing PoC/VaH/VaL retest area, with stop beyond the reacted structure.
+
+Pending order rules:
+
+- Score must be at least `AUTO_PREPLACE_MIN_SCORE`, default 85.
+- The signal status must be `preplace`, not `allowed`.
+- The order must include `execution_type=PENDING`, `pending_order_type`, and `trigger_price`.
+- The trigger must be close enough to the current setup to avoid stale orders.
+- Stop loss must be structural, and the final target must keep the configured minimum R:R, default 1:5.
+- Live pending placement still requires `LIVE_TRADING=true`, `AUTO_PLACE_TRADES=true`, and `AUTO_PREPLACE_ORDERS=true`.
+- Do not stack pending orders. Respect one open position per symbol, one pending order per symbol, duplicate signal tracking, spread guard, risk-based lot sizing, and symbol cooldown.
+- If the pending trigger does not get hit before expiry, treat the idea as stale and wait for a fresh scan.
+
+Example pending output:
+
+```json
+{
+  "symbol": "XAUUSD",
+  "timeframe": "M15",
+  "direction": "BUY",
+  "setup_grade": "PRE-A+",
+  "setup_score": 86,
+  "profile_type": "Previous Weekly",
+  "key_level": "PW PoC",
+  "entry_model": "Pending Entry Model 3 - Internal Structure Break",
+  "execution_type": "PENDING",
+  "pending_order_type": "BUY_STOP",
+  "trigger_price": 2354.20,
+  "entry": 2354.20,
+  "stop_loss": 2349.70,
+  "take_profit": 2376.70,
+  "risk_reward": 5.0,
+  "preplace_valid_if": "Price trades through the internal highs, confirming the reclaim/structure break after the level reaction.",
+  "status": "preplace"
+}
+```
+
+---
+
 ## Stop Loss Rules
 
 Bullish:
@@ -526,9 +572,15 @@ Default research settings:
 - Live bid/ask spread must be acceptable before entry. Default `MAX_SPREAD_RISK_PERCENT` is 15 percent, meaning spread must not consume more than 15 percent of the stop distance. A fixed point cap may also be configured with `MAX_SPREAD_POINTS`.
 - Max daily loss: user configured, default 3 percent.
 - Max total drawdown: user configured, default 8 percent.
-- Max trades per day: user configured, default 3.
+- Max trades per day: user configured, default 3 total bot placements across all symbols, not per symbol.
 - Any max cap set to 0 is disabled and must be ignored.
 - After any MT5 trade on a symbol is opened or closed, cool that symbol until 1 hour after that activity. This includes manual trades, TP, SL, and break-even closes.
+- Stop all new orders for the whole bot after `AUTO_MAX_CONSECUTIVE_LOSSES`, default 2, losing bot trades in a row.
+- After any losing bot trade, lock that symbol until the later of the current session end or the normal activity cooldown.
+- Stop trading a symbol for the day after `AUTO_SYMBOL_MAX_LOSSES_PER_DAY`, default 1, failed A+ setup.
+- Stop trading a symbol for the day if closed bot trades on that symbol reach `AUTO_SYMBOL_MAX_DAILY_LOSS_R`, default -1R.
+- During `AUTO_STRICT_SESSION_START` to `AUTO_STRICT_SESSION_END`, default 10:00 to 13:00, require stronger confirmation: score 95+ for market entries, score 90+ for pending entries, and internal-structure confirmation.
+- If forex pairs are active, require H1/H4/D1 agreement with the trade direction before allowing lower-timeframe reactions.
 - Minimum setup score: 90.
 - Minimum risk-to-reward: 5.0.
 
@@ -537,6 +589,10 @@ Reject trade if:
 - Daily loss limit has been hit.
 - Drawdown limit has been hit.
 - Max trades per day reached.
+- The whole-bot consecutive loss limit has been reached.
+- The symbol has one failed A+ today or is down 1R or more today.
+- The setup appears in the strict 10:00-13:00 window without stronger confirmation.
+- Forex higher-timeframe agreement is missing or opposing the trade.
 - Lot size is invalid for the symbol.
 - Account balance cannot support the risk or broker minimum lot without exceeding the configured lot risk percentage.
 - Bid/ask spread is too wide relative to the stop distance.
@@ -608,6 +664,7 @@ For every rejected setup, output JSON:
 Use this exact final gate:
 
 - A+ setup, score 90 or higher, risk approved: allowed.
+- PRE-A+ setup, score 85 to 89, exact trigger defined, risk approved: preplace only.
 - A setup, score 80 to 89: skip for live trading, keep for research.
 - B setup or lower: skip.
 - Unclear setup: skip.

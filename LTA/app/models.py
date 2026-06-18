@@ -66,6 +66,9 @@ class Signal(BaseModel):
     profile_type: str | None = None
     key_level: str | None = None
     entry_model: str | None = None
+    execution_type: str | None = None
+    pending_order_type: str | None = None
+    trigger_price: float | None = None
     entry: float | None = None
     stop_loss: float | None = None
     take_profit: float | None = None
@@ -76,8 +79,9 @@ class Signal(BaseModel):
     tp5: float | None = None
     risk_reward: float | None = None
     invalidation: str | None = None
+    preplace_valid_if: str | None = None
     reasons: list[str] = Field(default_factory=list)
-    status: Literal["allowed", "rejected"] = "rejected"
+    status: Literal["allowed", "rejected", "preplace"] = "rejected"
     timestamp: datetime | None = None
 
 

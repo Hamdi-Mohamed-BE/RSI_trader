@@ -155,6 +155,20 @@ For automated trading, only allow trades with score >= 90.
 
 ---
 
+## Pending Pre-Place Logic
+
+The bot may prepare a pending order only when the setup is not yet a market-entry A+, but one exact price trigger would complete the LTA entry logic.
+
+- Use `status="preplace"` and `execution_type="PENDING"`.
+- Use `BUY_STOP` or `SELL_STOP` when breaking the internal high/low would confirm Entry Model 3.
+- Use `BUY_LIMIT` or `SELL_LIMIT` only for a clean LTF Swing PoC/VaH/VaL retest after the first key-level reaction.
+- Default minimum score is `AUTO_PREPLACE_MIN_SCORE=85`; live pending placement still requires `LIVE_TRADING=true`, `AUTO_PLACE_TRADES=true`, and `AUTO_PREPLACE_ORDERS=true`.
+- Never stack pending orders on the same symbol. Respect open positions, existing MT5 pending orders, duplicate signal tracking, spread, dynamic risk sizing, expiry, and symbol cooldown.
+
+Pending orders are PRE-A+ only. Confirmed A+ market trades still require score >= 90.
+
+---
+
 ## FastAPI UI Requirements
 
 Create a simple browser UI.
@@ -384,6 +398,17 @@ MAX_DAILY_LOSS_PERCENT=3
 MAX_TOTAL_DRAWDOWN_PERCENT=8
 MAX_TRADES_PER_DAY=3
 
+AUTO_MAX_CONSECUTIVE_LOSSES=2
+AUTO_SYMBOL_MAX_LOSSES_PER_DAY=1
+AUTO_SYMBOL_MAX_DAILY_LOSS_R=1.0
+AUTO_SYMBOL_LOSS_LOCKOUT_REST_OF_SESSION=true
+AUTO_STRICT_SESSION_START=10:00
+AUTO_STRICT_SESSION_END=13:00
+AUTO_STRICT_SESSION_MIN_SCORE=95
+AUTO_STRICT_SESSION_PREPLACE_MIN_SCORE=90
+AUTO_STRICT_SESSION_REQUIRE_INTERNAL_BREAK=true
+AUTO_FOREX_REQUIRE_HTF_AGREEMENT=true
+
 MIN_SETUP_SCORE=90
 MIN_RISK_REWARD=5.0
 ```
@@ -402,6 +427,11 @@ setup_score >= 90
 risk manager approves
 bid/ask spread is acceptable
 symbol is allowed
+daily total bot trade cap is not reached
+whole-bot consecutive loss limit is not reached
+symbol is not locked after a failed A+ or -1R day
+strict 10:00-13:00 window rules are satisfied
+forex H1/H4/D1 agreement is satisfied when trading forex
 dynamic lot size is valid
 stop loss exists
 take profit exists

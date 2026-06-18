@@ -235,6 +235,8 @@ class MT5Client:
         parts = ["LTA", grade, score]
         if timeframe:
             parts.append(timeframe)
+        if str(signal.get("execution_type") or "").upper() == "PENDING":
+            parts.append("P")
         if not live_trading:
             parts.append("prep")
         return " ".join(parts)[:31]
@@ -255,7 +257,14 @@ class MT5Client:
         if not quote:
             return {"ok": False, "message": "Live bid/ask quote is unavailable, so spread cannot be checked.", "symbol": symbol}
 
-        entry_price = float(quote["ask"] if direction == "BUY" else quote["bid"])
+        signal_entry = float(signal.get("trigger_price") or signal.get("entry") or 0.0)
+        entry_price = signal_entry
+        entry_source = "signal_entry"
+        if str(signal.get("execution_type") or "").upper() == "PENDING" and signal_entry > 0:
+            entry_source = "pending_trigger"
+        else:
+            entry_price = float(quote["ask"] if direction == "BUY" else quote["bid"])
+            entry_source = "current_quote"
         spread = float(quote.get("spread") or max(0.0, float(quote["ask"]) - float(quote["bid"])))
         spread_points = float(quote.get("spread_points") or 0.0)
         risk_distance = abs(entry_price - stop_loss)
@@ -286,6 +295,7 @@ class MT5Client:
             "direction": direction,
             "quote": quote,
             "entry_price": entry_price,
+            "entry_source": entry_source,
             "stop_loss": stop_loss,
             "spread": spread,
             "spread_points": spread_points,
@@ -379,7 +389,11 @@ class MT5Client:
         quote = quote or self.current_quote(raw_symbol)
         entry_price = signal_entry
         entry_source = "signal_entry"
-        if quote and direction in {"BUY", "SELL"}:
+        pending_entry = float(signal.get("trigger_price") or 0.0)
+        if str(signal.get("execution_type") or "").upper() == "PENDING" and pending_entry > 0:
+            entry_price = pending_entry
+            entry_source = "pending_trigger"
+        elif quote and direction in {"BUY", "SELL"}:
             entry_price = float(quote["ask"] if direction == "BUY" else quote["bid"])
             entry_source = "current_quote"
 
@@ -534,11 +548,15 @@ class MT5Client:
 
     def prepare_order(self, signal: dict[str, Any], lot: float, live_trading: bool = False) -> dict[str, Any]:
         resolved = self.resolve_symbol(signal["symbol"]) or signal["symbol"]
+        execution_type = str(signal.get("execution_type") or "MARKET").upper()
         return {
             "live_trading": bool(live_trading),
             "symbol": signal["symbol"],
             "broker_symbol": resolved,
             "direction": signal["direction"],
+            "execution_type": execution_type,
+            "pending_order_type": signal.get("pending_order_type"),
+            "trigger_price": signal.get("trigger_price"),
             "lot": self.normalize_lot(signal["symbol"], lot),
             "timeframe": signal.get("timeframe"),
             "setup_score": signal.get("setup_score"),
@@ -552,8 +570,19 @@ class MT5Client:
             "tp3": signal.get("tp3"),
             "tp4": signal.get("tp4"),
             "tp5": signal.get("tp5"),
+            "preplace_valid_if": signal.get("preplace_valid_if"),
             "comment": self.order_comment(signal, live_trading=live_trading),
         }
+
+    def pending_orders(self, symbol: str | None = None, magic: int | None = None) -> list[dict[str, Any]]:
+        if mt5 is None or not self.connect():
+            return []
+        resolved = self.resolve_symbol(symbol) if symbol else None
+        raw_orders = mt5.orders_get(symbol=resolved) if resolved else mt5.orders_get()
+        orders = [order._asdict() for order in (raw_orders or [])]
+        if magic is not None:
+            orders = [order for order in orders if int(order.get("magic") or 0) == int(magic)]
+        return orders
 
     def open_positions(self, symbol: str | None = None, magic: int | None = None) -> list[dict[str, Any]]:
         if mt5 is None or not self.connect():
@@ -721,6 +750,172 @@ class MT5Client:
             if closing_deal.get("time")
             else None,
             "deals": deals,
+        }
+
+    def place_pending_order(self, order: dict[str, Any]) -> dict[str, Any]:
+        if not order.get("live_trading"):
+            return {"placed": False, "message": "Live trading is disabled."}
+        if mt5 is None or not self.connect():
+            return {"placed": False, "message": "MT5 is not connected."}
+        required = ("symbol", "direction", "lot", "stop_loss", "take_profit", "pending_order_type")
+        if not all(order.get(key) is not None for key in required):
+            return {"placed": False, "message": "Pending order is missing symbol, direction, lot, SL, TP, or pending type."}
+
+        symbol = order.get("broker_symbol") or self.resolve_symbol(order["symbol"])
+        if not symbol:
+            return {"placed": False, "message": "Broker symbol could not be resolved."}
+
+        info = mt5.symbol_info(symbol)
+        if info is None:
+            return {"placed": False, "message": f"Symbol info unavailable for {symbol}."}
+        if not info.visible:
+            mt5.symbol_select(symbol, True)
+            info = mt5.symbol_info(symbol)
+        if info is None:
+            return {"placed": False, "message": f"Symbol info unavailable for {symbol} after symbol_select."}
+
+        tick = mt5.symbol_info_tick(symbol)
+        if tick is None:
+            return {"placed": False, "message": f"No live tick for {symbol}."}
+
+        pending_type = str(order.get("pending_order_type") or "").upper()
+        type_map = {
+            "BUY_LIMIT": mt5.ORDER_TYPE_BUY_LIMIT,
+            "SELL_LIMIT": mt5.ORDER_TYPE_SELL_LIMIT,
+            "BUY_STOP": mt5.ORDER_TYPE_BUY_STOP,
+            "SELL_STOP": mt5.ORDER_TYPE_SELL_STOP,
+        }
+        order_type = type_map.get(pending_type)
+        if order_type is None:
+            return {"placed": False, "message": f"Unsupported pending order type: {pending_type}."}
+
+        direction = str(order["direction"]).upper()
+        raw_price = float(order.get("trigger_price") or order.get("entry") or 0.0)
+        if raw_price <= 0:
+            return {"placed": False, "message": "Pending trigger price is invalid."}
+        price = self.normalize_price(symbol, raw_price)
+        stop_loss = self.normalize_price(symbol, float(order["stop_loss"]))
+        take_profit = self.normalize_price(symbol, float(order["take_profit"]))
+        point = float(getattr(info, "point", 0.0) or 0.0)
+        digits = int(getattr(info, "digits", 5) or 5)
+        if point <= 0:
+            point = 10 ** -digits
+        bid = float(tick.bid)
+        ask = float(tick.ask)
+        spread = max(0.0, ask - bid)
+        spread_points = spread / point if point > 0 else 0.0
+
+        side_error = None
+        if pending_type == "BUY_STOP" and price <= ask:
+            side_error = "BUY_STOP trigger must be above current ask."
+        elif pending_type == "SELL_STOP" and price >= bid:
+            side_error = "SELL_STOP trigger must be below current bid."
+        elif pending_type == "BUY_LIMIT" and price >= ask:
+            side_error = "BUY_LIMIT trigger must be below current ask."
+        elif pending_type == "SELL_LIMIT" and price <= bid:
+            side_error = "SELL_LIMIT trigger must be above current bid."
+        if side_error:
+            return {
+                "placed": False,
+                "message": side_error,
+                "pending_order_type": pending_type,
+                "trigger_price": price,
+                "quote": {"bid": bid, "ask": ask, "spread": spread, "spread_points": spread_points, "point": point},
+            }
+
+        stop_level_points = float(getattr(info, "trade_stops_level", 0.0) or 0.0)
+        min_distance = stop_level_points * point
+        reference_price = ask if pending_type.startswith("BUY") else bid
+        if min_distance > 0 and abs(price - reference_price) < min_distance:
+            return {
+                "placed": False,
+                "message": f"Pending trigger is inside the broker minimum stop distance ({stop_level_points:g} points).",
+                "pending_order_type": pending_type,
+                "trigger_price": price,
+                "minimum_distance": min_distance,
+                "quote": {"bid": bid, "ask": ask, "spread": spread, "spread_points": spread_points, "point": point},
+            }
+
+        spread_limits = order.get("spread_limits") or {}
+        if spread_limits:
+            check = self.spread_check(
+                {
+                    "symbol": order["symbol"],
+                    "direction": direction,
+                    "stop_loss": stop_loss,
+                    "execution_type": "PENDING",
+                    "trigger_price": price,
+                },
+                max_spread_risk_percent=float(spread_limits.get("max_spread_risk_percent") or 0.0),
+                max_spread_points=float(spread_limits.get("max_spread_points") or 0.0),
+                quote={
+                    "bid": bid,
+                    "ask": ask,
+                    "last": float(tick.last),
+                    "spread": spread,
+                    "spread_points": spread_points,
+                    "point": point,
+                    "digits": float(digits),
+                },
+            )
+            if not check.get("ok"):
+                return {
+                    "placed": False,
+                    "message": "MT5 pending order blocked because spread widened before placement.",
+                    "spread_check": check,
+                }
+
+        request = {
+            "action": mt5.TRADE_ACTION_PENDING,
+            "symbol": symbol,
+            "volume": float(order["lot"]),
+            "type": order_type,
+            "price": price,
+            "sl": stop_loss,
+            "tp": take_profit,
+            "deviation": 20,
+            "magic": 27032024,
+            "comment": str(order.get("comment") or "LTA pending setup")[:31],
+            "type_time": mt5.ORDER_TIME_GTC,
+        }
+        filling_return = getattr(mt5, "ORDER_FILLING_RETURN", None)
+        if filling_return is not None:
+            request["type_filling"] = filling_return
+
+        expires_at = order.get("expires_at")
+        if expires_at:
+            if isinstance(expires_at, datetime):
+                expiration = expires_at
+            else:
+                try:
+                    expiration = datetime.fromisoformat(str(expires_at))
+                except ValueError:
+                    return {"placed": False, "message": f"Invalid pending expiration: {expires_at}."}
+            if expiration <= datetime.now():
+                return {"placed": False, "message": "Pending expiration is already in the past."}
+            request["type_time"] = mt5.ORDER_TIME_SPECIFIED
+            request["expiration"] = expiration
+
+        result = mt5.order_send(request)
+        if result is None:
+            return {"placed": False, "message": "MT5 order_send returned no result.", "request": request}
+        payload = result._asdict()
+        success_codes = {mt5.TRADE_RETCODE_DONE, getattr(mt5, "TRADE_RETCODE_PLACED", 10008)}
+        return {
+            "placed": payload.get("retcode") in success_codes,
+            "message": payload.get("comment", ""),
+            "pending_order_type": pending_type,
+            "trigger_price": price,
+            "request": request,
+            "quote": {
+                "bid": bid,
+                "ask": ask,
+                "last": float(tick.last),
+                "spread": spread,
+                "spread_points": spread_points,
+                "point": point,
+            },
+            "result": payload,
         }
 
     def place_order(self, order: dict[str, Any]) -> dict[str, Any]:

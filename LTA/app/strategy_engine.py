@@ -361,6 +361,357 @@ def _profit_targets(entry: float, stop: float, direction: str, final_rr: float =
     return {f"tp{stage}": entry - risk * stage for stage in stages}
 
 
+def _recent_aoi(candles: pd.DataFrame, lookback: int = 12) -> dict[str, Any] | None:
+    df = _to_frame(candles)
+    level = detect_aoi(df)
+    if level:
+        current = df.iloc[-1]
+        item = dict(level)
+        item["touched_recent"] = True
+        item["distance_from_close"] = abs(float(current["close"]) - float(level["price"]))
+        return item
+
+    if len(df) < 60:
+        return None
+    current = df.iloc[-1]
+    close = float(current["close"])
+    atr = _atr(df)
+    tolerance = max(atr * 0.55, abs(close) * 0.00045)
+    max_distance = max(atr * 4.0, abs(close) * 0.0025)
+    levels = _candidate_levels(df)
+    recent = df.tail(lookback)
+    touched: list[dict[str, Any]] = []
+
+    for level in levels:
+        price = float(level["price"])
+        touched_recent = float(recent["low"].min()) - tolerance <= price <= float(recent["high"].max()) + tolerance
+        distance = abs(close - price)
+        if not touched_recent or distance > max_distance:
+            continue
+        confluence = 1 + sum(
+            1
+            for other in levels
+            if other is not level and abs(float(other["price"]) - price) <= tolerance
+        )
+        item = dict(level)
+        item["confluence"] = confluence
+        item["tolerance"] = tolerance
+        item["touched_recent"] = True
+        item["distance_from_close"] = distance
+        touched.append(item)
+
+    if not touched:
+        return None
+    touched.sort(key=lambda item: (item["confluence"], item["priority"], -item["distance_from_close"]), reverse=True)
+    return touched[0]
+
+
+def _preentry_direction(df: pd.DataFrame, level: dict[str, Any]) -> str | None:
+    direction = _direction_from_reaction(df, level)
+    if direction:
+        return direction
+
+    current = df.iloc[-1]
+    recent = df.tail(12)
+    price = float(level["price"])
+    tolerance = float(level.get("tolerance") or _atr(df) * 0.45)
+    close = float(current["close"])
+    bias = detect_bias(df)
+    touched_support = float(recent["low"].min()) <= price + tolerance and close >= price
+    touched_resistance = float(recent["high"].max()) >= price - tolerance and close <= price
+
+    if touched_support and not touched_resistance:
+        return "BUY"
+    if touched_resistance and not touched_support:
+        return "SELL"
+    if close > price and bias in {"bullish", "ranging"}:
+        return "BUY"
+    if close < price and bias in {"bearish", "ranging"}:
+        return "SELL"
+    if close > price:
+        return "BUY"
+    if close < price:
+        return "SELL"
+    return None
+
+
+def _score_preentry_candidate(
+    df: pd.DataFrame,
+    level: dict[str, Any],
+    direction: str,
+    trigger_price: float,
+    stop_loss: float,
+    risk_reward: float,
+    min_rr: float,
+    mode: str,
+    timeframe: str,
+) -> tuple[int, list[str], dict[str, Any]]:
+    current = df.iloc[-1]
+    atr = _atr(df)
+    close = float(current["close"])
+    bias = detect_bias(df, timeframe)
+    structure = detect_market_structure(df)
+    liquidity_ok, liquidity_reason = _liquidity_context(df, direction)
+    session = _session_name(pd.Timestamp(current["time"]).to_pydatetime())
+    trigger_distance = abs(trigger_price - close)
+    stop_clear = trigger_price > stop_loss if direction == "BUY" else trigger_price < stop_loss
+
+    score = 0
+    reasons: list[str] = []
+    score += min(20, int(level.get("priority", 10)))
+    reasons.append(f"Price recently reacted around {level['key_level']} ({level['profile_type']}).")
+    if int(level.get("confluence") or 1) >= 2:
+        score += 5
+        reasons.append("The pending level has volume-profile confluence.")
+
+    if (bias == "bullish" and direction == "BUY") or (bias == "bearish" and direction == "SELL"):
+        score += 15
+        reasons.append("Pending direction aligns with the higher-timeframe bias.")
+    elif bias == "ranging":
+        score += 8
+        reasons.append("Range conditions allow a level-to-level reaction setup.")
+    else:
+        reasons.append("Higher-timeframe bias is not fully aligned yet.")
+
+    if (structure.get("structure") == "bullish" and direction == "BUY") or (
+        structure.get("structure") == "bearish" and direction == "SELL"
+    ):
+        score += 10
+        reasons.append(structure.get("details") or "Market structure supports the pending direction.")
+    elif structure.get("structure") == "ranging":
+        score += 5
+        reasons.append("Structure is ranging, so confirmation trigger is required.")
+
+    if liquidity_ok:
+        score += 15
+        reasons.append(liquidity_reason)
+    else:
+        reasons.append(liquidity_reason)
+
+    if mode == "structure_break":
+        score += 12
+        reasons.append("Pending stop is placed only at the internal break/reclaim trigger.")
+    else:
+        score += 8
+        reasons.append("Pending limit is placed at the LTF swing profile retest area after the first reaction.")
+
+    if stop_clear:
+        score += 10
+        reasons.append("Stop loss is beyond the reacted structure, not inside the noise.")
+    else:
+        reasons.append("Stop loss is not structurally clear enough.")
+
+    if risk_reward >= min_rr:
+        score += 10
+        reasons.append("The pending setup keeps the required reward-to-risk profile.")
+    else:
+        reasons.append("The pending setup does not keep the minimum reward-to-risk.")
+
+    if trigger_distance <= atr * 1.5:
+        score += 10
+        reasons.append("Trigger is close enough to current price to remain tied to the active setup.")
+    elif trigger_distance <= atr * 3.0:
+        score += 5
+        reasons.append("Trigger is valid but slightly stretched from the current candle.")
+    else:
+        reasons.append("Trigger is far from current price and may become stale.")
+
+    if session in {"London", "New York"}:
+        score += 8
+        reasons.append(f"Pending setup is forming during active {session} conditions.")
+    elif session == "Asia":
+        score += 4
+        reasons.append("Asia session requires stricter trigger confirmation.")
+    else:
+        reasons.append("Off-session timing lowers the pending setup quality.")
+
+    if not liquidity_ok:
+        score = min(score, 83)
+    if not stop_clear:
+        score = min(score, 74)
+    if risk_reward < min_rr:
+        score = min(score, 79)
+    if trigger_distance > atr * 3.0:
+        score = min(score, 80)
+    score = min(89, max(0, score))
+    metadata = {
+        "bias": bias,
+        "structure": structure.get("structure"),
+        "trigger_distance": trigger_distance,
+        "atr": atr,
+        "session": session,
+    }
+    return score, list(dict.fromkeys(reasons)), metadata
+
+
+def _structure_break_preentry(
+    df: pd.DataFrame,
+    level: dict[str, Any],
+    direction: str,
+    timeframe: str,
+    min_rr: float,
+) -> dict[str, Any] | None:
+    if len(df) < 24:
+        return None
+    current = df.iloc[-1]
+    prev = df.iloc[-2]
+    prev2 = df.iloc[-3]
+    close = float(current["close"])
+    atr = _atr(df)
+    buffer = max(atr * 0.05, abs(close) * 0.00002)
+    recent = df.tail(12)
+    tolerance = float(level.get("tolerance") or atr * 0.45)
+    level_price = float(level["price"])
+
+    if direction == "BUY":
+        trigger = max(float(current["high"]), float(prev["high"]), float(prev2["high"])) + buffer
+        stop = min(float(recent["low"].min()), level_price - tolerance) - atr * 0.15
+        pending_order_type = "BUY_STOP"
+        valid_if = "Price trades through the internal highs, confirming the reclaim/structure break after the level reaction."
+        invalidation = "Close below the reacted key level or the manipulation swing low."
+    else:
+        trigger = min(float(current["low"]), float(prev["low"]), float(prev2["low"])) - buffer
+        stop = max(float(recent["high"].max()), level_price + tolerance) + atr * 0.15
+        pending_order_type = "SELL_STOP"
+        valid_if = "Price trades through the internal lows, confirming the rejection/structure break after the level reaction."
+        invalidation = "Close above the reacted key level or the manipulation swing high."
+
+    if not np.isfinite(trigger) or not np.isfinite(stop):
+        return None
+    risk = abs(trigger - stop)
+    if risk <= 0:
+        return None
+    target = trigger + risk * max(min_rr, 5.0) if direction == "BUY" else trigger - risk * max(min_rr, 5.0)
+    rr = abs(target - trigger) / max(risk, 1e-9)
+    if abs(trigger - close) > atr * 3.5:
+        return None
+
+    score, reasons, metadata = _score_preentry_candidate(
+        df=df,
+        level=level,
+        direction=direction,
+        trigger_price=trigger,
+        stop_loss=stop,
+        risk_reward=rr,
+        min_rr=min_rr,
+        mode="structure_break",
+        timeframe=timeframe,
+    )
+    targets = _profit_targets(trigger, stop, direction, max(min_rr, 5.0))
+    return {
+        "direction": direction,
+        "setup_score": int(score),
+        "setup_grade": "PRE-A+" if score >= 85 else "WATCH",
+        "profile_type": level["profile_type"],
+        "key_level": level["key_level"],
+        "entry_model": "Pending Entry Model 3 - Internal Structure Break",
+        "execution_type": "PENDING",
+        "pending_order_type": pending_order_type,
+        "trigger_price": round(trigger, 5),
+        "entry": round(trigger, 5),
+        "stop_loss": round(stop, 5),
+        "take_profit": round(target, 5),
+        "tp1": round(targets["tp1"], 5),
+        "tp2": round(targets["tp2"], 5),
+        "tp3": round(targets["tp3"], 5),
+        "tp4": round(targets["tp4"], 5) if "tp4" in targets else None,
+        "tp5": round(targets["tp5"], 5) if "tp5" in targets else None,
+        "risk_reward": round(rr, 2),
+        "invalidation": invalidation,
+        "preplace_valid_if": valid_if,
+        "reasons": reasons,
+        "status": "preplace",
+        **metadata,
+    }
+
+
+def _profile_retest_preentry(
+    df: pd.DataFrame,
+    level: dict[str, Any],
+    direction: str,
+    timeframe: str,
+    min_rr: float,
+) -> dict[str, Any] | None:
+    if len(df) < 40:
+        return None
+    current = df.iloc[-1]
+    close = float(current["close"])
+    atr = _atr(df)
+    reaction = df.tail(24)
+    profile = _volume_profile(reaction)
+    if profile is None:
+        return None
+    level_price = float(level["price"])
+    moved_from_level = (close - level_price) if direction == "BUY" else (level_price - close)
+    if moved_from_level < atr * 0.45 or moved_from_level > atr * 3.5:
+        return None
+
+    raw_levels = [profile.poc, profile.vah, profile.val]
+    if direction == "BUY":
+        possible = [price for price in raw_levels if price < close]
+        if not possible:
+            return None
+        trigger = min(possible, key=lambda price: abs(price - profile.poc))
+        stop = min(float(reaction["low"].min()), level_price) - atr * 0.15
+        pending_order_type = "BUY_LIMIT"
+        valid_if = "Price retraces into the LTF swing profile after the first key-level reaction, giving the planned pullback entry."
+        invalidation = "Close below the LTF swing low and reacted key level."
+    else:
+        possible = [price for price in raw_levels if price > close]
+        if not possible:
+            return None
+        trigger = min(possible, key=lambda price: abs(price - profile.poc))
+        stop = max(float(reaction["high"].max()), level_price) + atr * 0.15
+        pending_order_type = "SELL_LIMIT"
+        valid_if = "Price retraces into the LTF swing profile after the first key-level rejection, giving the planned pullback entry."
+        invalidation = "Close above the LTF swing high and reacted key level."
+
+    if abs(trigger - close) < atr * 0.12 or abs(trigger - close) > atr * 3.5:
+        return None
+    risk = abs(trigger - stop)
+    if risk <= 0:
+        return None
+    target = trigger + risk * max(min_rr, 5.0) if direction == "BUY" else trigger - risk * max(min_rr, 5.0)
+    rr = abs(target - trigger) / max(risk, 1e-9)
+    score, reasons, metadata = _score_preentry_candidate(
+        df=df,
+        level=level,
+        direction=direction,
+        trigger_price=trigger,
+        stop_loss=stop,
+        risk_reward=rr,
+        min_rr=min_rr,
+        mode="profile_retest",
+        timeframe=timeframe,
+    )
+    targets = _profit_targets(trigger, stop, direction, max(min_rr, 5.0))
+    return {
+        "direction": direction,
+        "setup_score": int(score),
+        "setup_grade": "PRE-A+" if score >= 85 else "WATCH",
+        "profile_type": level["profile_type"],
+        "key_level": level["key_level"],
+        "entry_model": "Pending Entry Model 2 - LTF Swing Retest",
+        "execution_type": "PENDING",
+        "pending_order_type": pending_order_type,
+        "trigger_price": round(trigger, 5),
+        "entry": round(trigger, 5),
+        "stop_loss": round(stop, 5),
+        "take_profit": round(target, 5),
+        "tp1": round(targets["tp1"], 5),
+        "tp2": round(targets["tp2"], 5),
+        "tp3": round(targets["tp3"], 5),
+        "tp4": round(targets["tp4"], 5) if "tp4" in targets else None,
+        "tp5": round(targets["tp5"], 5) if "tp5" in targets else None,
+        "risk_reward": round(rr, 2),
+        "invalidation": invalidation,
+        "preplace_valid_if": valid_if,
+        "reasons": reasons,
+        "status": "preplace",
+        **metadata,
+    }
+
+
 def score_setup(context: dict[str, Any]) -> tuple[int, list[str]]:
     reasons: list[str] = []
     score = 0
@@ -504,7 +855,61 @@ def generate_signal(
         "tp5": round(targets["tp5"], 5) if "tp5" in targets else None,
         "risk_reward": round(rr, 2),
         "invalidation": invalidation,
+        "bias": bias,
+        "structure": structure.get("structure"),
+        "session": session,
         "reasons": list(dict.fromkeys(reasons)),
         "status": status,
         "timestamp": pd.Timestamp(df.iloc[-1]["time"]).to_pydatetime(),
     }
+
+
+def generate_preentry_candidate(
+    candles: pd.DataFrame,
+    symbol: str,
+    timeframe: str,
+    min_score: int = 85,
+    min_rr: float = 5.0,
+) -> dict[str, Any] | None:
+    df = _to_frame(candles)
+    if len(df) < 80:
+        return None
+
+    level = _recent_aoi(df)
+    if not level:
+        return None
+
+    direction = _preentry_direction(df, level)
+    if direction is None:
+        return None
+
+    confirmation = detect_entry_confirmation(df, level, direction)
+    if confirmation.get("confirmed"):
+        return None
+
+    candidates = [
+        _structure_break_preentry(df, level, direction, timeframe, min_rr),
+        _profile_retest_preentry(df, level, direction, timeframe, min_rr),
+    ]
+    valid = [
+        candidate
+        for candidate in candidates
+        if candidate
+        and int(candidate.get("setup_score") or 0) >= min_score
+        and float(candidate.get("risk_reward") or 0.0) >= min_rr
+    ]
+    if not valid:
+        return None
+
+    valid.sort(
+        key=lambda item: (
+            int(item.get("setup_score") or 0),
+            1 if str(item.get("pending_order_type") or "").endswith("_STOP") else 0,
+        ),
+        reverse=True,
+    )
+    candidate = dict(valid[0])
+    candidate["symbol"] = symbol
+    candidate["timeframe"] = timeframe
+    candidate["timestamp"] = pd.Timestamp(df.iloc[-1]["time"]).to_pydatetime()
+    return candidate
