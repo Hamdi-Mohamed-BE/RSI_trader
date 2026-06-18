@@ -1,6 +1,11 @@
 @echo off
 setlocal
 
+if /I "%~1" NEQ "--visible" (
+    start "LTA A+ Setup Automation" /normal cmd /k ""%~f0" --visible"
+    exit /b
+)
+
 cd /d "%~dp0"
 title LTA A+ Setup Automation
 
@@ -23,6 +28,7 @@ echo.
 echo LTA automation is starting.
 echo It scans MT5 and prepares A+ trade tickets.
 echo Live order sending requires LIVE_TRADING=true and AUTO_PLACE_TRADES=true in .env.
+echo This window is the automation process. Closing it stops the visible bot session.
 echo Press Ctrl+C in this window to stop.
 echo.
 

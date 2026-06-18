@@ -23,6 +23,7 @@ PLACED_ORDERS_PATH = AUTOMATION_DIR / "placed_orders.jsonl"
 SEEN_SIGNALS_PATH = AUTOMATION_DIR / "seen_signals.json"
 TRADE_STATE_PATH = AUTOMATION_DIR / "trade_state.json"
 BLOCKED_ORDERS_PATH = AUTOMATION_DIR / "blocked_orders.jsonl"
+PROTECTION_LOG_PATH = AUTOMATION_DIR / "trade_protection.jsonl"
 INSTANCE_LOCK_PATH = AUTOMATION_DIR / "automation.lock"
 HEARTBEAT_PATH = AUTOMATION_DIR / "automation_heartbeat.json"
 MAGIC_NUMBER = 27032024
@@ -45,6 +46,18 @@ def _env_int(name: str, default: int) -> int:
         return default
     try:
         return int(value)
+    except ValueError:
+        return default
+
+
+def _env_float(name: str, default: float) -> float:
+    import os
+
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return float(value)
     except ValueError:
         return default
 
@@ -103,7 +116,7 @@ def _write_seen_signals(seen: dict[str, str]) -> None:
 
 
 def _default_trade_state() -> dict[str, Any]:
-    return {"consumed_signals": {}, "last_updated": None}
+    return {"consumed_signals": {}, "protected_positions": {}, "last_updated": None}
 
 
 def _read_trade_state() -> dict[str, Any]:
@@ -114,6 +127,7 @@ def _read_trade_state() -> dict[str, Any]:
         if not isinstance(data, dict):
             return _default_trade_state()
         data.setdefault("consumed_signals", {})
+        data.setdefault("protected_positions", {})
         return data
     except json.JSONDecodeError:
         return _default_trade_state()
@@ -257,6 +271,8 @@ class TradeAutomation:
         self.cooldown_minutes = _env_int("AUTO_SIGNAL_COOLDOWN_MINUTES", 120)
         self.auto_place_trades = _env_bool("AUTO_PLACE_TRADES", False)
         self.one_position_per_symbol = _env_bool("AUTO_ONE_POSITION_PER_SYMBOL", True)
+        self.trade_protection_enabled = _env_bool("AUTO_PROTECT_OPEN_TRADES", True)
+        self.protection_final_rr = max(1.0, _env_float("AUTO_PROTECTION_FINAL_RR", self.config.min_risk_reward))
         self.seen: dict[str, datetime] = {
             key: datetime.fromisoformat(value) for key, value in _read_seen_signals().items()
         }
@@ -291,9 +307,194 @@ class TradeAutomation:
         consumed[_legacy_signal_key(signal)] = payload
         _write_trade_state(self.trade_state)
 
+    @staticmethod
+    def _position_direction(position: dict[str, Any]) -> str:
+        return "SELL" if int(position.get("type") or 0) == 1 else "BUY"
+
+    @staticmethod
+    def _level_at_r(entry: float, risk: float, direction: str, r_multiple: float) -> float:
+        if direction == "BUY":
+            return entry + risk * r_multiple
+        return entry - risk * r_multiple
+
+    @staticmethod
+    def _stage_is_hit(market_price: float, target: float, direction: str) -> bool:
+        if direction == "BUY":
+            return market_price >= target
+        return market_price <= target
+
+    @staticmethod
+    def _stop_is_better(current_stop: float, desired_stop: float, direction: str) -> bool:
+        if current_stop <= 0:
+            return True
+        if direction == "BUY":
+            return desired_stop > current_stop
+        return desired_stop < current_stop
+
+    @staticmethod
+    def _base_symbol_from_broker_symbol(broker_symbol: str) -> str:
+        upper = broker_symbol.upper()
+        for symbol in TRADE_SYMBOLS:
+            if symbol in upper:
+                return symbol
+        return broker_symbol
+
+    def _position_state(self, ticket: str, position: dict[str, Any]) -> dict[str, Any]:
+        protected = self.trade_state.setdefault("protected_positions", {})
+        existing = protected.get(ticket, {})
+        broker_symbol = str(position.get("symbol") or existing.get("broker_symbol") or "")
+        direction = self._position_direction(position)
+        entry = float(position.get("price_open") or existing.get("entry") or 0.0)
+        current_stop = float(position.get("sl") or 0.0)
+        take_profit = float(position.get("tp") or 0.0)
+        initial_stop = float(existing.get("initial_stop") or current_stop or 0.0)
+
+        if initial_stop <= 0 and take_profit > 0 and entry > 0:
+            one_r = abs(take_profit - entry) / self.protection_final_rr
+            initial_stop = entry - one_r if direction == "BUY" else entry + one_r
+
+        payload = {
+            **existing,
+            "ticket": ticket,
+            "broker_symbol": broker_symbol,
+            "symbol": existing.get("symbol") or self._base_symbol_from_broker_symbol(broker_symbol),
+            "direction": direction,
+            "entry": entry,
+            "initial_stop": initial_stop,
+            "take_profit": take_profit,
+            "last_seen_at": datetime.now().isoformat(timespec="seconds"),
+        }
+        protected[ticket] = payload
+        return payload
+
+    def protect_open_positions(self, now: datetime) -> list[dict[str, Any]]:
+        if not self.trade_protection_enabled:
+            return []
+
+        actions: list[dict[str, Any]] = []
+        positions = self.client.open_positions(magic=MAGIC_NUMBER)
+        protected_positions = self.trade_state.setdefault("protected_positions", {})
+        open_tickets = {str(position.get("ticket")) for position in positions if position.get("ticket")}
+
+        for stale_ticket in set(protected_positions) - open_tickets:
+            protected_positions[stale_ticket]["status"] = "closed_or_not_found"
+            protected_positions[stale_ticket]["last_seen_at"] = now.isoformat(timespec="seconds")
+
+        for position in positions:
+            ticket = str(position.get("ticket") or "")
+            if not ticket:
+                continue
+
+            state = self._position_state(ticket, position)
+            direction = state["direction"]
+            broker_symbol = state["broker_symbol"]
+            entry = float(state["entry"])
+            initial_stop = float(state["initial_stop"])
+            take_profit = float(state["take_profit"] or position.get("tp") or 0.0)
+            current_stop = float(position.get("sl") or 0.0)
+            risk = abs(entry - initial_stop)
+
+            action = {
+                "checked_at": now.isoformat(timespec="seconds"),
+                "ticket": ticket,
+                "symbol": state["symbol"],
+                "broker_symbol": broker_symbol,
+                "direction": direction,
+                "entry": entry,
+                "initial_stop": initial_stop,
+                "current_stop": current_stop,
+                "take_profit": take_profit,
+                "status": "waiting",
+                "stage": int(state.get("stage") or 0),
+            }
+
+            if entry <= 0 or initial_stop <= 0 or risk <= 0:
+                action["status"] = "skipped_missing_initial_risk"
+                actions.append(action)
+                continue
+
+            quote = self.client.current_quote(broker_symbol) or self.client.current_quote(str(state["symbol"]))
+            if not quote:
+                action["status"] = "skipped_no_quote"
+                actions.append(action)
+                continue
+
+            market_price = float(quote["bid"] if direction == "BUY" else quote["ask"])
+            hit_stage = 0
+            stage_targets = {
+                1: self._level_at_r(entry, risk, direction, 1.0),
+                2: self._level_at_r(entry, risk, direction, 2.0),
+                3: self._level_at_r(entry, risk, direction, 3.0),
+            }
+            for stage, target in stage_targets.items():
+                if self._stage_is_hit(market_price, target, direction):
+                    hit_stage = stage
+
+            action["market_price"] = market_price
+            action["tp1"] = stage_targets[1]
+            action["tp2"] = stage_targets[2]
+            action["tp3"] = stage_targets[3]
+            action["hit_stage"] = hit_stage
+
+            if hit_stage <= 0:
+                state["stage"] = max(int(state.get("stage") or 0), 0)
+                state["status"] = "waiting_for_tp1"
+                actions.append(action)
+                continue
+
+            if hit_stage == 1:
+                desired_stop = entry
+                action["rule"] = "tp1_hit_move_sl_to_break_even"
+            elif hit_stage == 2:
+                desired_stop = stage_targets[1]
+                action["rule"] = "tp2_hit_trail_sl_to_tp1"
+            else:
+                desired_stop = stage_targets[2]
+                action["rule"] = "tp3_hit_trail_sl_to_tp2"
+
+            desired_stop = self.client.normalize_price(broker_symbol, desired_stop)
+            action["desired_stop"] = desired_stop
+
+            if not self._stop_is_better(current_stop, desired_stop, direction):
+                action["status"] = "already_protected"
+                state["stage"] = max(int(state.get("stage") or 0), hit_stage)
+                state["status"] = action["status"]
+                state["last_stop"] = current_stop
+                actions.append(action)
+                continue
+
+            if (direction == "BUY" and desired_stop >= market_price) or (direction == "SELL" and desired_stop <= market_price):
+                action["status"] = "skipped_stop_too_close_to_market"
+                actions.append(action)
+                continue
+
+            result = self.client.modify_position_sl_tp(
+                ticket=int(ticket),
+                symbol=broker_symbol,
+                stop_loss=desired_stop,
+                take_profit=take_profit if take_profit > 0 else None,
+            )
+            action["modify_result"] = result
+            if result.get("modified"):
+                action["status"] = "modified"
+                state["stage"] = max(int(state.get("stage") or 0), hit_stage)
+                state["status"] = action["status"]
+                state["last_stop"] = desired_stop
+                state["last_modified_at"] = now.isoformat(timespec="seconds")
+            else:
+                action["status"] = "modify_failed"
+                state["status"] = action["status"]
+
+            actions.append(action)
+            _append_jsonl(PROTECTION_LOG_PATH, action)
+
+        _write_trade_state(self.trade_state)
+        return actions
+
     def run_once(self) -> dict[str, Any]:
         now = datetime.now()
         _write_heartbeat("scanning")
+        protection_actions = self.protect_open_positions(now)
         scan = scan_market(
             symbols=TRADE_SYMBOLS,
             timeframes=self.timeframes,
@@ -386,6 +587,13 @@ class TradeAutomation:
             "live_trading": self.config.live_trading,
             "auto_place_trades": self.auto_place_trades,
             "one_position_per_symbol": self.one_position_per_symbol,
+            "trade_protection": {
+                "enabled": self.trade_protection_enabled,
+                "final_rr": self.protection_final_rr,
+                "checked_count": len(protection_actions),
+                "modified_count": sum(1 for action in protection_actions if action.get("status") == "modified"),
+                "actions": protection_actions,
+            },
             "prepared_count": len(prepared),
             "placed_count": len(placed),
             "blocked_count": len(blocked),
@@ -401,17 +609,19 @@ class TradeAutomation:
     def run_forever(self) -> None:
         print("LTA automation worker started.")
         print(f"Scanning {', '.join(TRADE_SYMBOLS)} on {', '.join(self.timeframes)} every {self.interval_seconds}s.")
-        print(f"Lots: XAUUSD={self.lot_for_symbol('XAUUSD')}, XAGUSD={self.lot_for_symbol('XAGUSD')}, BTCUSD={self.lot_for_symbol('BTCUSD')}")
+        print("Lots: " + ", ".join(f"{symbol}={self.lot_for_symbol(symbol)}" for symbol in TRADE_SYMBOLS))
         print(f"Live trading: {self.config.live_trading}; AUTO_PLACE_TRADES: {self.auto_place_trades}")
         print(f"One position per symbol: {self.one_position_per_symbol}")
+        print(f"Trade protection: {self.trade_protection_enabled}; final RR: 1:{self.protection_final_rr:g}")
         print("Press Ctrl+C to stop.")
         while True:
             payload = self.run_once()
             allowed = len(payload["scan"]["allowed"])
             near = len(payload["scan"]["near_misses"])
             prepared = payload["prepared_count"]
+            protected = payload["trade_protection"]["modified_count"]
             print(
-                f"[{payload['checked_at']}] A+={allowed} near={near} prepared={prepared} placed={payload['placed_count']} blocked={payload['blocked_count']}"
+                f"[{payload['checked_at']}] A+={allowed} near={near} prepared={prepared} placed={payload['placed_count']} blocked={payload['blocked_count']} protected={protected}"
             )
             time.sleep(self.interval_seconds)
 

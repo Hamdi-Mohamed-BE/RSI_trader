@@ -16,7 +16,7 @@ def scan_market(
     symbols: list[str] | tuple[str, ...] = TRADE_SYMBOLS,
     timeframes: list[str] | tuple[str, ...] = DEFAULT_SCAN_TIMEFRAMES,
     min_score: int = 90,
-    min_rr: float = 2.0,
+    min_rr: float = 3.0,
     max_stale: timedelta = timedelta(days=2),
 ) -> dict[str, Any]:
     client = MT5Client()
@@ -106,4 +106,3 @@ def scan_market(
     for key in ("allowed", "near_misses", "rejected"):
         result[key].sort(key=lambda item: item.get("setup_score", 0), reverse=True)
     return result
-

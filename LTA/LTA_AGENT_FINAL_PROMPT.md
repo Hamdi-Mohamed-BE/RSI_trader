@@ -5,7 +5,7 @@ You are an expert AI trading-system engineer, quantitative analyst, and Python/F
 Your job is to read and understand the trading book located in:
 
 ```txt
-C:\Users\hama101\Desktop\geek\LTA
+C:\Users\hama101\Desktop\geek\ai trader\LTA
 ```
 
 The book may be long, so read it in chunks. Extract the full trading methodology, rules, terminology, setups, confirmations, invalidations, examples, and risk-management principles. Do not skip details. Your first goal is to understand the strategy deeply enough to trade only the highest-quality setups.
@@ -21,7 +21,7 @@ Before writing code, inspect the folder, identify the book file format, read it 
 Create a file inside the same folder:
 
 ```txt
-C:\Users\hama101\Desktop\geek\LTA\LTA_BASE_TRADING_PROMPT.md
+C:\Users\hama101\Desktop\geek\ai trader\LTA\LTA_BASE_TRADING_PROMPT.md
 ```
 
 This prompt must allow another AI trading agent to quickly understand and apply the book’s strategy.
@@ -65,7 +65,7 @@ After creating the base trading prompt, build a simple local Python app using Fa
 Project location:
 
 ```txt
-C:\Users\hama101\Desktop\geek\LTA
+C:\Users\hama101\Desktop\geek\ai trader\LTA
 ```
 
 Suggested structure:
@@ -378,7 +378,7 @@ MAX_TOTAL_DRAWDOWN_PERCENT=8
 MAX_TRADES_PER_DAY=3
 
 MIN_SETUP_SCORE=90
-MIN_RISK_REWARD=2.0
+MIN_RISK_REWARD=3.0
 ```
 
 ---

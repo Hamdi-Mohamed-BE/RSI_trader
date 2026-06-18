@@ -220,6 +220,12 @@
     .download:hover,
     button:hover { filter: brightness(1.08); }
 
+    button:disabled {
+      cursor: wait;
+      opacity: 0.72;
+      filter: none;
+    }
+
     .run-panel {
       border: 1px solid var(--line);
       background: linear-gradient(180deg, rgba(17, 26, 49, 0.92), rgba(9, 14, 30, 0.92));
@@ -661,7 +667,7 @@
     <section class="hero">
       <div>
         <h1>Recommended Strategy Backtest</h1>
-        <div class="subtitle">Historical performance for the LTA A+ setup engine across XAUUSD, XAGUSD, and BTCUSD.</div>
+        <div class="subtitle">Historical performance for the LTA A+ setup engine across {{ trade_symbols | join(", ") }}.</div>
       </div>
       <div class="hero-actions">
         {% if result and result.json_report %}
@@ -693,7 +699,7 @@
         </div>
       </div>
 
-      <form method="post" action="/backtest">
+      <form id="backtestForm" method="post" action="/backtest">
         <div class="quick-grid">
           <label>
             Symbol
@@ -738,24 +744,18 @@
             <input type="number" step="0.1" min="0.5" max="20" name="min_risk_reward" value="{{ submitted.min_risk_reward if submitted else defaults.min_risk_reward }}">
           </label>
 
-          <button class="primary" type="submit">Run Backtest</button>
+          <button id="backtestButton" class="primary" type="submit">Run Backtest</button>
         </div>
 
         <details class="advanced">
           <summary>Advanced lot and risk settings</summary>
           <div class="advanced-grid">
+          {% for item in defaults.lot_fields %}
           <label>
-            XAU Lot
-            <input type="number" step="0.01" min="0.01" name="xau_lot" value="{{ defaults.xau_lot }}">
+            {{ item.symbol }} Lot
+            <input type="number" step="0.01" min="0.01" name="{{ item.field }}" value="{{ submitted.symbol_lots.get(item.symbol, item.value) if submitted else item.value }}">
           </label>
-          <label>
-            XAG Lot
-            <input type="number" step="0.01" min="0.01" name="xag_lot" value="{{ defaults.xag_lot }}">
-          </label>
-          <label>
-            BTC Lot
-            <input type="number" step="0.01" min="0.01" name="btc_lot" value="{{ defaults.btc_lot }}">
-          </label>
+          {% endfor %}
 
           <label>
             Risk %
@@ -773,6 +773,10 @@
           <label>
             Max Trades
             <input type="number" step="1" min="1" max="50" name="max_trades_per_day" value="{{ submitted.max_trades_per_day if submitted else defaults.max_trades_per_day }}">
+          </label>
+          <label>
+            Scan Step
+            <input type="number" step="1" min="1" max="25" name="signal_stride" value="{{ submitted.signal_stride if submitted else defaults.signal_stride }}">
           </label>
           <label class="check">
             <input type="checkbox" name="use_demo_if_mt5_unavailable" checked>
@@ -842,7 +846,7 @@
       <section class="panel">
         <div class="panel-head">
           <h2>Symbol Watchlist</h2>
-          <div class="status-pill">Watching XAUUSD, XAGUSD, and BTCUSD together</div>
+          <div class="status-pill">Watching {{ trade_symbols | join(", ") }} together</div>
         </div>
         <div class="watch-grid">
           {% for item in result.symbol_summaries %}
@@ -1090,6 +1094,15 @@
 
     drawChart();
     window.addEventListener("resize", drawChart);
+
+    const backtestForm = document.getElementById("backtestForm");
+    const backtestButton = document.getElementById("backtestButton");
+    if (backtestForm && backtestButton) {
+      backtestForm.addEventListener("submit", () => {
+        backtestButton.disabled = true;
+        backtestButton.textContent = "Running...";
+      });
+    }
   </script>
 </body>
 </html>

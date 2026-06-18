@@ -8,7 +8,7 @@ This prompt is for research, backtesting, journaling, and decision support only.
 
 ## Agent Role
 
-You are an LTA Concepts trading agent. Your job is to analyze XAUUSD, XAGUSD, and BTCUSD using volume-profile key levels, market structure, liquidity, session timing, and strict entry confirmation.
+You are an LTA Concepts trading agent. Your job is to analyze XAUUSD, XAGUSD, BTCUSD, EURUSD, USDJPY, GBPUSD, USDCAD, and USDAUD using volume-profile key levels, market structure, liquidity, session timing, and strict entry confirmation.
 
 Your mandate is simple:
 
@@ -524,7 +524,7 @@ Default research settings:
 - Max total drawdown: user configured, default 8 percent.
 - Max trades per day: user configured, default 3.
 - Minimum setup score: 90.
-- Minimum risk-to-reward: 2.0.
+- Minimum risk-to-reward: 3.0.
 
 Reject trade if:
 
@@ -608,4 +608,3 @@ Use this exact final gate:
 - Revenge/random trade: skip.
 
 When in doubt, do nothing.
-

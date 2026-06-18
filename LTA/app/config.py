@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 import os
 
+from .models import DEFAULT_SYMBOL_LOTS, TRADE_SYMBOLS
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPORTS_DIR = PROJECT_ROOT / "reports"
@@ -54,14 +56,15 @@ class AppConfig:
     live_trading: bool = False
     starting_balance: float = 1000.0
     symbol_lots: dict[str, float] = field(
-        default_factory=lambda: {"XAUUSD": 0.05, "XAGUSD": 0.05, "BTCUSD": 0.08}
+        default_factory=lambda: dict(DEFAULT_SYMBOL_LOTS)
     )
     max_risk_per_trade_percent: float = 1.0
     max_daily_loss_percent: float = 3.0
     max_total_drawdown_percent: float = 8.0
     max_trades_per_day: int = 3
     min_setup_score: int = 90
-    min_risk_reward: float = 2.0
+    min_risk_reward: float = 3.0
+    backtest_signal_stride: int = 3
 
 
 def load_config() -> AppConfig:
@@ -70,14 +73,14 @@ def load_config() -> AppConfig:
         live_trading=_bool_env("LIVE_TRADING", False),
         starting_balance=_float_env("START_BALANCE", 1000.0),
         symbol_lots={
-            "XAUUSD": _float_env("XAUUSD_LOT", 0.05),
-            "XAGUSD": _float_env("XAGUSD_LOT", 0.05),
-            "BTCUSD": _float_env("BTCUSD_LOT", 0.08),
+            symbol: _float_env(f"{symbol}_LOT", DEFAULT_SYMBOL_LOTS[symbol])
+            for symbol in TRADE_SYMBOLS
         },
         max_risk_per_trade_percent=_float_env("MAX_RISK_PER_TRADE_PERCENT", 1.0),
         max_daily_loss_percent=_float_env("MAX_DAILY_LOSS_PERCENT", 3.0),
         max_total_drawdown_percent=_float_env("MAX_TOTAL_DRAWDOWN_PERCENT", 8.0),
         max_trades_per_day=_int_env("MAX_TRADES_PER_DAY", 3),
         min_setup_score=_int_env("MIN_SETUP_SCORE", 90),
-        min_risk_reward=_float_env("MIN_RISK_REWARD", 2.0),
+        min_risk_reward=_float_env("MIN_RISK_REWARD", 3.0),
+        backtest_signal_stride=_int_env("BACKTEST_SIGNAL_STRIDE", 3),
     )

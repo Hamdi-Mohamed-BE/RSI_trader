@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from datetime import datetime, time, timedelta
+from datetime import date, datetime, time, timedelta
+import hashlib
 import json
 from pathlib import Path
+import time as time_module
 from typing import Any
 
 import numpy as np
@@ -16,12 +18,45 @@ from .risk_manager import RiskManager
 from .strategy_engine import generate_signal
 
 
+BACKTEST_CACHE_DIR = REPORTS_DIR / "backtest_cache"
+BACKTEST_CACHE_VERSION = "2026-06-18-fast-protection-v1"
+LIVE_CACHE_SECONDS = 180
+
+
 def _date_bounds(request: BacktestRequest) -> tuple[datetime, datetime]:
     start = datetime.combine(request.start, time.min)
     end = datetime.combine(request.end, time.max)
     if end <= start:
         end = start + timedelta(days=1)
     return start, end
+
+
+def _cache_path(request: BacktestRequest) -> Path:
+    payload = model_to_dict(request)
+    payload["cache_version"] = BACKTEST_CACHE_VERSION
+    digest = hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode("utf-8")).hexdigest()
+    return BACKTEST_CACHE_DIR / f"{digest}.json"
+
+
+def _cache_is_fresh(path: Path, request: BacktestRequest) -> bool:
+    if request.end < date.today():
+        return True
+    age = time_module.time() - path.stat().st_mtime
+    return age <= LIVE_CACHE_SECONDS
+
+
+def _read_cached_report(request: BacktestRequest) -> BacktestReport | None:
+    path = _cache_path(request)
+    if not path.exists() or not _cache_is_fresh(path, request):
+        return None
+    report = BacktestReport.model_validate_json(path.read_text(encoding="utf-8"))
+    report.warnings = list(dict.fromkeys([*report.warnings, "Loaded from the recent backtest cache."]))
+    return report
+
+
+def _write_cached_report(request: BacktestRequest, report: BacktestReport) -> None:
+    BACKTEST_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    _cache_path(request).write_text(json.dumps(model_to_dict(report), indent=2, default=str), encoding="utf-8")
 
 
 def _load_candles(request: BacktestRequest, mt5_client: MT5Client) -> tuple[pd.DataFrame, str, list[str]]:
@@ -181,6 +216,7 @@ def _run_single_backtest(request: BacktestRequest, write_report: bool = True) ->
     trades: list[TradeResult] = []
     rejected: list[Signal] = []
     reason_counter: Counter[str] = Counter()
+    signal_stride = max(1, int(request.signal_stride))
 
     i = max(120, min(240, len(candles) // 5))
     while i < len(candles) - 2:
@@ -193,7 +229,7 @@ def _run_single_backtest(request: BacktestRequest, write_report: bool = True) ->
             min_rr=request.min_risk_reward,
         )
         if signal is None:
-            i += 1
+            i += signal_stride
             continue
 
         signal_day = risk.day_key(pd.Timestamp(signal["timestamp"]).to_pydatetime())
@@ -202,7 +238,7 @@ def _run_single_backtest(request: BacktestRequest, write_report: bool = True) ->
             rejected.append(rejected_signal)
             for reason in signal.get("reasons", [])[:3]:
                 reason_counter[reason] += 1
-            i += 1
+            i += signal_stride
             continue
 
         decision = risk.approve(signal, balance, equity_peak, daily_pnl[signal_day], daily_trades[signal_day])
@@ -211,7 +247,7 @@ def _run_single_backtest(request: BacktestRequest, write_report: bool = True) ->
             rejected.append(rejected_signal)
             for reason in decision.reasons:
                 reason_counter[reason] += 1
-            i += 1
+            i += signal_stride
             continue
 
         exit_index, exit_price, result, closed_at = _simulate_trade(candles, i, signal)
@@ -248,7 +284,7 @@ def _run_single_backtest(request: BacktestRequest, write_report: bool = True) ->
                 reasons=signal["reasons"],
             )
         )
-        i = max(exit_index + 1, i + 1)
+        i = max(exit_index + 1, i + signal_stride)
 
     stats = _report_stats(trades)
 
@@ -295,8 +331,10 @@ def _symbol_lot(request: BacktestRequest, symbol: str) -> float:
 def _portfolio_report(request: BacktestRequest) -> BacktestReport:
     reports: list[BacktestReport] = []
     warnings: list[str] = [
-        "All-symbol mode aggregates XAUUSD, XAGUSD, and BTCUSD into one research dashboard using each symbol's configured lot."
+        f"All-symbol mode aggregates {', '.join(TRADE_SYMBOLS)} into one research dashboard using each symbol's configured lot."
     ]
+    if request.signal_stride > 1:
+        warnings.append(f"Fast mode scanned every {request.signal_stride} candles. Set scan step to 1 for the slow full scan.")
 
     for symbol in TRADE_SYMBOLS:
         symbol_request = request.model_copy(
@@ -391,6 +429,22 @@ def _portfolio_report(request: BacktestRequest) -> BacktestReport:
 
 
 def run_backtest(request: BacktestRequest) -> BacktestReport:
+    cached = _read_cached_report(request)
+    if cached:
+        return cached
+
     if request.symbol == "ALL":
-        return _portfolio_report(request)
-    return _run_single_backtest(request, write_report=True)
+        report = _portfolio_report(request)
+    else:
+        report = _run_single_backtest(request, write_report=True)
+        if request.signal_stride > 1:
+            report.warnings = list(
+                dict.fromkeys(
+                    [
+                        *report.warnings,
+                        f"Fast mode scanned every {request.signal_stride} candles. Set scan step to 1 for the slow full scan.",
+                    ]
+                )
+            )
+    _write_cached_report(request, report)
+    return report

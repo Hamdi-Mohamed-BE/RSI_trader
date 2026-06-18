@@ -12,7 +12,7 @@ from fastapi.templating import Jinja2Templates
 from .backtester import run_backtest
 from .automation import LATEST_SCAN_PATH
 from .config import PROJECT_ROOT, REPORTS_DIR, load_config
-from .models import ALLOWED_SYMBOLS, ALLOWED_TIMEFRAMES, BacktestRequest
+from .models import ALLOWED_SYMBOLS, ALLOWED_TIMEFRAMES, TRADE_SYMBOLS, BacktestRequest
 from .mt5_client import MT5Client
 
 
@@ -23,6 +23,10 @@ app = FastAPI(
 )
 
 templates = Jinja2Templates(directory=str(PROJECT_ROOT / "app" / "templates"))
+
+
+def _lot_field(symbol: str) -> str:
+    return f"{symbol.lower()}_lot"
 
 
 def _default_context(request: Request, **extra):
@@ -38,16 +42,20 @@ def _default_context(request: Request, **extra):
             "start": (today - timedelta(days=30)).isoformat(),
             "end": today.isoformat(),
             "starting_balance": config.starting_balance,
-            "xau_lot": config.symbol_lots["XAUUSD"],
-            "xag_lot": config.symbol_lots["XAGUSD"],
-            "btc_lot": config.symbol_lots["BTCUSD"],
+            "symbol_lots": config.symbol_lots,
+            "lot_fields": [
+                {"symbol": symbol, "field": _lot_field(symbol), "value": config.symbol_lots[symbol]}
+                for symbol in TRADE_SYMBOLS
+            ],
             "risk_per_trade_percent": config.max_risk_per_trade_percent,
             "max_daily_loss_percent": config.max_daily_loss_percent,
             "max_drawdown_percent": config.max_total_drawdown_percent,
             "max_trades_per_day": config.max_trades_per_day,
             "min_setup_score": config.min_setup_score,
             "min_risk_reward": config.min_risk_reward,
+            "signal_stride": config.backtest_signal_stride,
         },
+        "trade_symbols": TRADE_SYMBOLS,
         "live_trading": config.live_trading,
         "mt5_status": MT5Client().terminal_status(),
     }
@@ -56,18 +64,19 @@ def _default_context(request: Request, **extra):
 
 
 def _lot_for_symbol(symbol: str, form) -> float:
+    lots = _symbol_lots_from_form(form)
     if symbol == "ALL":
-        return float(form.get("xau_lot") or 0.01)
-    key = {"XAUUSD": "xau_lot", "XAGUSD": "xag_lot", "BTCUSD": "btc_lot"}[symbol]
-    return float(form.get(key) or 0.01)
+        return lots[TRADE_SYMBOLS[0]]
+    return lots.get(symbol, 0.01)
 
 
 def _symbol_lots_from_form(form) -> dict[str, float]:
-    return {
-        "XAUUSD": float(form.get("xau_lot") or 0.01),
-        "XAGUSD": float(form.get("xag_lot") or 0.01),
-        "BTCUSD": float(form.get("btc_lot") or 0.01),
-    }
+    lots: dict[str, float] = {}
+    defaults = load_config().symbol_lots
+    for symbol in TRADE_SYMBOLS:
+        raw_value = form.get(_lot_field(symbol))
+        lots[symbol] = float(raw_value or defaults.get(symbol) or 0.01)
+    return lots
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -93,7 +102,8 @@ async def backtest_form(request: Request):
             max_drawdown_percent=float(form.get("max_drawdown_percent") or 8),
             max_trades_per_day=int(form.get("max_trades_per_day") or 3),
             min_setup_score=int(form.get("min_setup_score") or 90),
-            min_risk_reward=float(form.get("min_risk_reward") or 2),
+            min_risk_reward=float(form.get("min_risk_reward") or 3),
+            signal_stride=int(form.get("signal_stride") or 3),
             use_demo_if_mt5_unavailable=str(form.get("use_demo_if_mt5_unavailable") or "") == "on",
         )
         report = run_backtest(req)

@@ -90,6 +90,11 @@ class MT5Client:
             "XAUUSD": ("XAUUSD", "GOLD"),
             "XAGUSD": ("XAGUSD", "SILVER"),
             "BTCUSD": ("BTCUSD", "BITCOIN"),
+            "EURUSD": ("EURUSD", "EURO"),
+            "USDJPY": ("USDJPY", "YEN"),
+            "GBPUSD": ("GBPUSD", "POUND"),
+            "USDCAD": ("USDCAD", "CANADIAN"),
+            "USDAUD": ("USDAUD", "AUD"),
         }.get(symbol, (symbol,))
         filtered = [
             item
@@ -142,7 +147,21 @@ class MT5Client:
         info = self.symbol_info(symbol)
         if info and info.get("trade_contract_size"):
             return float(info["trade_contract_size"])
-        return {"XAUUSD": 100.0, "XAGUSD": 5000.0, "BTCUSD": 1.0}.get(symbol, 1.0)
+        return {
+            "XAUUSD": 100.0,
+            "XAGUSD": 5000.0,
+            "BTCUSD": 1.0,
+            "EURUSD": 100000.0,
+            "USDJPY": 100000.0,
+            "GBPUSD": 100000.0,
+            "USDCAD": 100000.0,
+            "USDAUD": 100000.0,
+        }.get(symbol, 1.0)
+
+    def normalize_price(self, symbol: str, price: float) -> float:
+        info = self.symbol_info(symbol)
+        digits = int(info.get("digits") or 5) if info else 5
+        return round(float(price), digits)
 
     def fetch_candles(
         self,
@@ -182,6 +201,9 @@ class MT5Client:
             "entry": signal["entry"],
             "stop_loss": signal["stop_loss"],
             "take_profit": signal["take_profit"],
+            "tp1": signal.get("tp1"),
+            "tp2": signal.get("tp2"),
+            "tp3": signal.get("tp3"),
             "comment": "LTA A+ live" if live_trading else "LTA A+ prepared",
         }
 
@@ -245,6 +267,38 @@ class MT5Client:
             "result": payload,
         }
 
+    def modify_position_sl_tp(
+        self,
+        ticket: int,
+        symbol: str,
+        stop_loss: float | None = None,
+        take_profit: float | None = None,
+    ) -> dict[str, Any]:
+        if mt5 is None or not self.connect():
+            return {"modified": False, "message": "MT5 is not connected."}
+
+        resolved = self.resolve_symbol(symbol) or symbol
+        request: dict[str, Any] = {
+            "action": mt5.TRADE_ACTION_SLTP,
+            "position": int(ticket),
+            "symbol": resolved,
+        }
+        if stop_loss is not None:
+            request["sl"] = self.normalize_price(resolved, float(stop_loss))
+        if take_profit is not None:
+            request["tp"] = self.normalize_price(resolved, float(take_profit))
+
+        result = mt5.order_send(request)
+        if result is None:
+            return {"modified": False, "message": "MT5 order_send returned no result.", "request": request}
+        payload = result._asdict()
+        return {
+            "modified": payload.get("retcode") == mt5.TRADE_RETCODE_DONE,
+            "message": payload.get("comment", ""),
+            "request": request,
+            "result": payload,
+        }
+
 
 def generate_demo_candles(symbol: str, timeframe: str, start: datetime, end: datetime, max_bars: int = 8000) -> pd.DataFrame:
     """Generate deterministic candles so the UI can run before MT5 is installed.
@@ -263,8 +317,26 @@ def generate_demo_candles(symbol: str, timeframe: str, start: datetime, end: dat
 
     seed = int(hashlib.sha256(f"{symbol}-{timeframe}-{start.date()}-{end.date()}".encode()).hexdigest()[:8], 16)
     rng = np.random.default_rng(seed)
-    base = {"XAUUSD": 2350.0, "XAGUSD": 30.0, "BTCUSD": 65000.0}.get(symbol, 100.0)
-    volatility = {"XAUUSD": 1.8, "XAGUSD": 0.04, "BTCUSD": 120.0}.get(symbol, 1.0)
+    base = {
+        "XAUUSD": 2350.0,
+        "XAGUSD": 30.0,
+        "BTCUSD": 65000.0,
+        "EURUSD": 1.08,
+        "USDJPY": 157.0,
+        "GBPUSD": 1.27,
+        "USDCAD": 1.37,
+        "USDAUD": 1.50,
+    }.get(symbol, 100.0)
+    volatility = {
+        "XAUUSD": 1.8,
+        "XAGUSD": 0.04,
+        "BTCUSD": 120.0,
+        "EURUSD": 0.0011,
+        "USDJPY": 0.12,
+        "GBPUSD": 0.0014,
+        "USDCAD": 0.0012,
+        "USDAUD": 0.0014,
+    }.get(symbol, 1.0)
 
     drift = np.sin(np.linspace(0, 10, len(times))) * volatility * 0.12
     shocks = rng.normal(0, volatility, len(times))

@@ -4,7 +4,16 @@ from dataclasses import dataclass
 from datetime import date
 
 
-DEFAULT_CONTRACT_SIZES = {"XAUUSD": 100.0, "XAGUSD": 5000.0, "BTCUSD": 1.0}
+DEFAULT_CONTRACT_SIZES = {
+    "XAUUSD": 100.0,
+    "XAGUSD": 5000.0,
+    "BTCUSD": 1.0,
+    "EURUSD": 100000.0,
+    "USDJPY": 100000.0,
+    "GBPUSD": 100000.0,
+    "USDCAD": 100000.0,
+    "USDAUD": 100000.0,
+}
 
 
 @dataclass
@@ -88,4 +97,3 @@ class RiskManager:
     @staticmethod
     def day_key(timestamp) -> date:
         return timestamp.date()
-

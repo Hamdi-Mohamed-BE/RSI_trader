@@ -194,15 +194,16 @@ def detect_aoi(candles: pd.DataFrame) -> dict[str, Any] | None:
     current = df.iloc[-1]
     atr = _atr(df)
     tolerance = max(atr * 0.45, abs(float(current["close"])) * 0.00035)
+    levels = _candidate_levels(df)
     touched: list[dict[str, Any]] = []
-    for level in _candidate_levels(df):
+    for level in levels:
         price = float(level["price"])
         in_candle = float(current["low"]) - tolerance <= price <= float(current["high"]) + tolerance
         near_close = abs(float(current["close"]) - price) <= tolerance
         if in_candle or near_close:
             confluence = 1 + sum(
                 1
-                for other in _candidate_levels(df)
+                for other in levels
                 if other is not level and abs(float(other["price"]) - price) <= tolerance
             )
             item = dict(level)
@@ -342,14 +343,21 @@ def _build_trade_levels(df: pd.DataFrame, direction: str, min_rr: float) -> tupl
         stop = float(recent["low"].min()) - atr * 0.15
         risk = max(entry - stop, atr * 0.25)
         stop = entry - risk
-        target = entry + risk * max(min_rr, 2.5)
+        target = entry + risk * max(min_rr, 3.0)
     else:
         stop = float(recent["high"].max()) + atr * 0.15
         risk = max(stop - entry, atr * 0.25)
         stop = entry + risk
-        target = entry - risk * max(min_rr, 2.5)
+        target = entry - risk * max(min_rr, 3.0)
     rr = abs(target - entry) / max(abs(entry - stop), 1e-9)
     return entry, stop, target, rr
+
+
+def _profit_targets(entry: float, stop: float, direction: str, final_rr: float = 3.0) -> tuple[float, float, float]:
+    risk = abs(entry - stop)
+    if direction == "BUY":
+        return entry + risk, entry + risk * 2, entry + risk * final_rr
+    return entry - risk, entry - risk * 2, entry - risk * final_rr
 
 
 def score_setup(context: dict[str, Any]) -> tuple[int, list[str]]:
@@ -432,7 +440,7 @@ def generate_signal(
     symbol: str,
     timeframe: str,
     min_score: int = 90,
-    min_rr: float = 2.0,
+    min_rr: float = 3.0,
 ) -> dict[str, Any] | None:
     df = _to_frame(candles)
     if len(df) < 80:
@@ -446,6 +454,7 @@ def generate_signal(
         direction = "BUY" if float(df.iloc[-1]["close"]) >= float(level["price"]) else "SELL"
 
     entry, stop, target, rr = _build_trade_levels(df, direction, min_rr)
+    tp1, tp2, tp3 = _profit_targets(entry, stop, direction, max(min_rr, 3.0))
     confirmation = detect_entry_confirmation(df, level, direction)
     liquidity_ok, liquidity_reason = _liquidity_context(df, direction)
     bias = detect_bias(df, timeframe)
@@ -487,10 +496,12 @@ def generate_signal(
         "entry": round(entry, 5),
         "stop_loss": round(stop, 5),
         "take_profit": round(target, 5),
+        "tp1": round(tp1, 5),
+        "tp2": round(tp2, 5),
+        "tp3": round(tp3, 5),
         "risk_reward": round(rr, 2),
         "invalidation": invalidation,
         "reasons": list(dict.fromkeys(reasons)),
         "status": status,
         "timestamp": pd.Timestamp(df.iloc[-1]["time"]).to_pydatetime(),
     }
-

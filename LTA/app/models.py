@@ -6,11 +6,21 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 
-TradeSymbol = Literal["XAUUSD", "XAGUSD", "BTCUSD"]
-Symbol = Literal["ALL", "XAUUSD", "XAGUSD", "BTCUSD"]
+TradeSymbol = Literal["XAUUSD", "XAGUSD", "BTCUSD", "EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDAUD"]
+Symbol = Literal["ALL", "XAUUSD", "XAGUSD", "BTCUSD", "EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDAUD"]
 Timeframe = Literal["M1", "M5", "M15", "M30", "H1", "H4", "D1"]
 
-TRADE_SYMBOLS: tuple[str, ...] = ("XAUUSD", "XAGUSD", "BTCUSD")
+TRADE_SYMBOLS: tuple[str, ...] = ("XAUUSD", "XAGUSD", "BTCUSD", "EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDAUD")
+DEFAULT_SYMBOL_LOTS: dict[str, float] = {
+    "XAUUSD": 0.05,
+    "XAGUSD": 0.05,
+    "BTCUSD": 0.08,
+    "EURUSD": 1.0,
+    "USDJPY": 1.0,
+    "GBPUSD": 1.0,
+    "USDCAD": 1.0,
+    "USDAUD": 1.0,
+}
 ALLOWED_SYMBOLS: tuple[str, ...] = ("ALL", *TRADE_SYMBOLS)
 ALLOWED_TIMEFRAMES: tuple[str, ...] = ("M1", "M5", "M15", "M30", "H1", "H4", "D1")
 
@@ -23,14 +33,15 @@ class BacktestRequest(BaseModel):
     starting_balance: float = Field(default=1000.0, gt=0)
     lot_size: float = Field(default=0.01, gt=0)
     symbol_lots: dict[str, float] = Field(
-        default_factory=lambda: {"XAUUSD": 0.01, "XAGUSD": 0.01, "BTCUSD": 0.01}
+        default_factory=lambda: dict(DEFAULT_SYMBOL_LOTS)
     )
     risk_per_trade_percent: float = Field(default=1.0, gt=0, le=10)
     max_daily_loss_percent: float = Field(default=3.0, gt=0, le=50)
     max_drawdown_percent: float = Field(default=8.0, gt=0, le=80)
     max_trades_per_day: int = Field(default=3, ge=1, le=50)
     min_setup_score: int = Field(default=90, ge=1, le=100)
-    min_risk_reward: float = Field(default=2.0, ge=0.5, le=20)
+    min_risk_reward: float = Field(default=3.0, ge=0.5, le=20)
+    signal_stride: int = Field(default=3, ge=1, le=25)
     use_demo_if_mt5_unavailable: bool = True
 
 
@@ -46,6 +57,9 @@ class Signal(BaseModel):
     entry: float | None = None
     stop_loss: float | None = None
     take_profit: float | None = None
+    tp1: float | None = None
+    tp2: float | None = None
+    tp3: float | None = None
     risk_reward: float | None = None
     invalidation: str | None = None
     reasons: list[str] = Field(default_factory=list)
