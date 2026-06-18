@@ -80,6 +80,10 @@ def scan_market(
                 "last_close": round(float(last["close"]), 5),
                 "bid": round(float(quote["bid"]), 5) if quote else None,
                 "ask": round(float(quote["ask"]), 5) if quote else None,
+                "spread": round(float(quote["spread"]), 5) if quote and quote.get("spread") is not None else None,
+                "spread_points": round(float(quote["spread_points"]), 1)
+                if quote and quote.get("spread_points") is not None
+                else None,
                 "candles": int(len(candles)),
             }
 

@@ -146,7 +146,23 @@ class MT5Client:
         tick = mt5.symbol_info_tick(resolved)
         if tick is None:
             return None
-        return {"bid": float(tick.bid), "ask": float(tick.ask), "last": float(tick.last)}
+        info = mt5.symbol_info(resolved)
+        point = float(getattr(info, "point", 0.0) or 0.0) if info else 0.0
+        digits = int(getattr(info, "digits", 5) or 5) if info else 5
+        if point <= 0:
+            point = 10 ** -digits
+        bid = float(tick.bid)
+        ask = float(tick.ask)
+        spread = max(0.0, ask - bid)
+        return {
+            "bid": bid,
+            "ask": ask,
+            "last": float(tick.last),
+            "spread": spread,
+            "spread_points": spread / point if point > 0 else 0.0,
+            "point": point,
+            "digits": float(digits),
+        }
 
     def normalize_lot(self, symbol: str, lot: float) -> float:
         info = self.symbol_info(symbol)
@@ -208,6 +224,78 @@ class MT5Client:
         digits = int(info.get("digits") or 5) if info else 5
         return round(float(price), digits)
 
+    @staticmethod
+    def order_comment(signal: dict[str, Any], live_trading: bool = False) -> str:
+        grade = str(signal.get("setup_grade") or "A+").replace(" ", "")[:4]
+        timeframe = str(signal.get("timeframe") or "").upper()[:5]
+        try:
+            score = f"S{int(round(float(signal.get('setup_score'))))}"
+        except (TypeError, ValueError):
+            score = "SNA"
+        parts = ["LTA", grade, score]
+        if timeframe:
+            parts.append(timeframe)
+        if not live_trading:
+            parts.append("prep")
+        return " ".join(parts)[:31]
+
+    def spread_check(
+        self,
+        signal: dict[str, Any],
+        max_spread_risk_percent: float = 15.0,
+        max_spread_points: float = 0.0,
+        quote: dict[str, float] | None = None,
+    ) -> dict[str, Any]:
+        symbol = str(signal.get("symbol") or "")
+        direction = str(signal.get("direction") or "").upper()
+        stop_loss = float(signal.get("stop_loss") or 0.0)
+        quote = quote or self.current_quote(symbol)
+        if direction not in {"BUY", "SELL"}:
+            return {"ok": False, "message": "Signal direction must be BUY or SELL for spread check.", "symbol": symbol}
+        if not quote:
+            return {"ok": False, "message": "Live bid/ask quote is unavailable, so spread cannot be checked.", "symbol": symbol}
+
+        entry_price = float(quote["ask"] if direction == "BUY" else quote["bid"])
+        spread = float(quote.get("spread") or max(0.0, float(quote["ask"]) - float(quote["bid"])))
+        spread_points = float(quote.get("spread_points") or 0.0)
+        risk_distance = abs(entry_price - stop_loss)
+        if entry_price <= 0 or stop_loss <= 0 or risk_distance <= 0:
+            return {
+                "ok": False,
+                "message": "Entry or stop loss is invalid for spread check.",
+                "symbol": symbol,
+                "direction": direction,
+                "quote": quote,
+                "entry_price": entry_price,
+                "stop_loss": stop_loss,
+            }
+
+        spread_risk_percent = (spread / risk_distance) * 100
+        reasons: list[str] = []
+        if max_spread_risk_percent > 0 and spread_risk_percent > max_spread_risk_percent:
+            reasons.append(
+                f"Spread is {spread_risk_percent:.2f}% of stop distance, above max {max_spread_risk_percent:.2f}%."
+            )
+        if max_spread_points > 0 and spread_points > max_spread_points:
+            reasons.append(f"Spread is {spread_points:.1f} points, above max {max_spread_points:.1f}.")
+
+        return {
+            "ok": not reasons,
+            "message": "Spread accepted." if not reasons else "Spread is too wide for this setup.",
+            "symbol": symbol,
+            "direction": direction,
+            "quote": quote,
+            "entry_price": entry_price,
+            "stop_loss": stop_loss,
+            "spread": spread,
+            "spread_points": spread_points,
+            "risk_distance": risk_distance,
+            "spread_risk_percent": spread_risk_percent,
+            "max_spread_risk_percent": max_spread_risk_percent,
+            "max_spread_points": max_spread_points,
+            "reasons": reasons,
+        }
+
     def estimate_trade_risk(
         self,
         symbol: str,
@@ -246,6 +334,7 @@ class MT5Client:
         risk_percent: float,
         fallback_balance: float | None = None,
         require_account_balance: bool = False,
+        quote: dict[str, float] | None = None,
     ) -> dict[str, Any]:
         raw_symbol = str(signal.get("symbol") or "")
         direction = str(signal.get("direction") or "").upper()
@@ -287,7 +376,7 @@ class MT5Client:
                 "broker_symbol": resolved,
             }
 
-        quote = self.current_quote(raw_symbol)
+        quote = quote or self.current_quote(raw_symbol)
         entry_price = signal_entry
         entry_source = "signal_entry"
         if quote and direction in {"BUY", "SELL"}:
@@ -404,6 +493,9 @@ class MT5Client:
             "entry_price": entry_price,
             "entry_source": entry_source,
             "stop_loss": stop_loss,
+            "quote": quote,
+            "spread": float(quote.get("spread") or 0.0) if quote else None,
+            "spread_points": float(quote.get("spread_points") or 0.0) if quote else None,
             "risk_budget": risk_budget,
             "risk_per_1_lot": risk_per_lot,
             "raw_lot": raw_lot,
@@ -448,6 +540,10 @@ class MT5Client:
             "broker_symbol": resolved,
             "direction": signal["direction"],
             "lot": self.normalize_lot(signal["symbol"], lot),
+            "timeframe": signal.get("timeframe"),
+            "setup_score": signal.get("setup_score"),
+            "setup_grade": signal.get("setup_grade"),
+            "entry_model": signal.get("entry_model"),
             "entry": signal["entry"],
             "stop_loss": signal["stop_loss"],
             "take_profit": signal["take_profit"],
@@ -456,7 +552,7 @@ class MT5Client:
             "tp3": signal.get("tp3"),
             "tp4": signal.get("tp4"),
             "tp5": signal.get("tp5"),
-            "comment": "LTA A+ live" if live_trading else "LTA A+ prepared",
+            "comment": self.order_comment(signal, live_trading=live_trading),
         }
 
     def open_positions(self, symbol: str | None = None, magic: int | None = None) -> list[dict[str, Any]]:
@@ -552,6 +648,38 @@ class MT5Client:
         direction = str(order["direction"]).upper()
         order_type = mt5.ORDER_TYPE_BUY if direction == "BUY" else mt5.ORDER_TYPE_SELL
         price = float(tick.ask if direction == "BUY" else tick.bid)
+        point = float(getattr(info, "point", 0.0) or 0.0)
+        digits = int(getattr(info, "digits", 5) or 5)
+        if point <= 0:
+            point = 10 ** -digits
+        spread = max(0.0, float(tick.ask) - float(tick.bid))
+        spread_points = spread / point if point > 0 else 0.0
+        spread_limits = order.get("spread_limits") or {}
+        if spread_limits:
+            check = self.spread_check(
+                {
+                    "symbol": order["symbol"],
+                    "direction": direction,
+                    "stop_loss": order["stop_loss"],
+                },
+                max_spread_risk_percent=float(spread_limits.get("max_spread_risk_percent") or 0.0),
+                max_spread_points=float(spread_limits.get("max_spread_points") or 0.0),
+                quote={
+                    "bid": float(tick.bid),
+                    "ask": float(tick.ask),
+                    "last": float(tick.last),
+                    "spread": spread,
+                    "spread_points": spread_points,
+                    "point": point,
+                    "digits": float(digits),
+                },
+            )
+            if not check.get("ok"):
+                return {
+                    "placed": False,
+                    "message": "MT5 send blocked because spread widened before execution.",
+                    "spread_check": check,
+                }
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
             "symbol": symbol,
@@ -574,6 +702,14 @@ class MT5Client:
             "placed": payload.get("retcode") == mt5.TRADE_RETCODE_DONE,
             "message": payload.get("comment", ""),
             "request": request,
+            "quote": {
+                "bid": float(tick.bid),
+                "ask": float(tick.ask),
+                "last": float(tick.last),
+                "spread": spread,
+                "spread_points": spread_points,
+                "point": point,
+            },
             "result": payload,
         }
 

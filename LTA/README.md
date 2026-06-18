@@ -83,8 +83,10 @@ Use `run_automation.bat` to scan MT5 continuously for A+ setups.
 Defaults:
 
 - Live automation lot sizing: `MAX_LOT_RISK_PCT=3.0`
+- Max spread: `MAX_SPREAD_RISK_PERCENT=15`, meaning spread must be 15% or less of the stop distance. `MAX_SPREAD_POINTS=0` disables the fixed-points cap.
 - Scan timeframes: `M5,M15,M30,H1,H4,D1,W1`
 - Scan interval: `60` seconds
+- Console detail limit: `AUTO_LOG_DETAIL_LIMIT=8`
 - Minimum setup score: `90`
 - Minimum R:R: `5.0`
 - TP/SL symbol cooldown: `60` minutes
@@ -95,12 +97,15 @@ The worker writes:
 - latest scan: `reports/automation/latest_scan.json`
 - prepared trade tickets: `reports/automation/prepared_orders.jsonl`
 - live placement records, only if enabled: `reports/automation/placed_orders.jsonl`
+- readable decision events: `reports/automation/automation_events.jsonl`
 
 Safety gates:
 
 - By default, it prepares tickets only.
 - It sends live market orders only when both `LIVE_TRADING=true` and `AUTO_PLACE_TRADES=true` are set in `.env`.
 - Every signal must still be an A+ setup and include entry, stop loss, take profit, and risk-to-reward.
+- MT5 order comments include the setup grade, score, and timeframe, for example `LTA A+ S95 M15`.
+- The bot checks the live bid/ask spread before preparing an order and again just before sending to MT5. If the red/blue price spread is too large versus the stop distance, the trade is blocked and logged as `blocked_spread`.
 - Live automation does not use fixed per-symbol lots. It calculates lot size from the current MT5 account balance, `MAX_LOT_RISK_PCT`, the live entry price, and the signal stop loss. If the broker minimum lot would risk more than the budget, the trade is blocked instead of rounded up.
 - Duplicate protection persists across restarts in `reports/automation/trade_state.json`.
 - `AUTO_ONE_POSITION_PER_SYMBOL=true` blocks new entries when that symbol already has an open position.

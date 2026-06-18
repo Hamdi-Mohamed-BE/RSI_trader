@@ -521,6 +521,7 @@ Default research settings:
 - Live trading disabled.
 - Risk per trade: user configured, default 1 percent or less.
 - Live automation lot size is dynamic, not fixed per symbol. Default `MAX_LOT_RISK_PCT` is 3 percent of the current MT5 account balance, calculated from live entry price to stop loss and rounded down to the broker lot step.
+- Live bid/ask spread must be acceptable before entry. Default `MAX_SPREAD_RISK_PERCENT` is 15 percent, meaning spread must not consume more than 15 percent of the stop distance. A fixed point cap may also be configured with `MAX_SPREAD_POINTS`.
 - Max daily loss: user configured, default 3 percent.
 - Max total drawdown: user configured, default 8 percent.
 - Max trades per day: user configured, default 3.
@@ -536,6 +537,7 @@ Reject trade if:
 - Max trades per day reached.
 - Lot size is invalid for the symbol.
 - Account balance cannot support the risk or broker minimum lot without exceeding the configured lot risk percentage.
+- Bid/ask spread is too wide relative to the stop distance.
 - Stop loss or take profit is missing.
 - Setup score is below 90.
 

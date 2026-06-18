@@ -23,6 +23,7 @@ PLACED_ORDERS_PATH = AUTOMATION_DIR / "placed_orders.jsonl"
 SEEN_SIGNALS_PATH = AUTOMATION_DIR / "seen_signals.json"
 TRADE_STATE_PATH = AUTOMATION_DIR / "trade_state.json"
 BLOCKED_ORDERS_PATH = AUTOMATION_DIR / "blocked_orders.jsonl"
+AUTOMATION_EVENTS_PATH = AUTOMATION_DIR / "automation_events.jsonl"
 PROTECTION_LOG_PATH = AUTOMATION_DIR / "trade_protection.jsonl"
 CLOSED_TRADE_EVENTS_PATH = AUTOMATION_DIR / "closed_trade_events.jsonl"
 INSTANCE_LOCK_PATH = AUTOMATION_DIR / "automation.lock"
@@ -99,6 +100,34 @@ def _append_jsonl(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(payload, default=str) + "\n")
+
+
+def _signal_log_fields(signal: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "symbol": signal.get("symbol"),
+        "timeframe": signal.get("timeframe"),
+        "direction": signal.get("direction"),
+        "setup_score": signal.get("setup_score"),
+        "setup_grade": signal.get("setup_grade"),
+        "key_level": signal.get("key_level"),
+        "entry_model": signal.get("entry_model"),
+        "entry": signal.get("entry"),
+        "stop_loss": signal.get("stop_loss"),
+        "take_profit": signal.get("take_profit"),
+        "risk_reward": signal.get("risk_reward"),
+        "last_candle_time": signal.get("last_candle_time") or signal.get("timestamp"),
+    }
+
+
+def _log_automation_event(event: str, now: datetime, signal: dict[str, Any] | None = None, **extra: Any) -> None:
+    payload: dict[str, Any] = {
+        "created_at": now.isoformat(timespec="seconds"),
+        "event": event,
+    }
+    if signal:
+        payload.update(_signal_log_fields(signal))
+    payload.update(extra)
+    _append_jsonl(AUTOMATION_EVENTS_PATH, payload)
 
 
 def _read_seen_signals() -> dict[str, str]:
@@ -295,6 +324,9 @@ class TradeAutomation:
         self.protection_final_rr = max(1.0, _env_float("AUTO_PROTECTION_FINAL_RR", self.config.min_risk_reward))
         self.symbol_result_cooldown_minutes = _env_int("AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES", 60)
         self.max_lot_risk_pct = max(0.0, float(self.config.max_lot_risk_pct))
+        self.max_spread_risk_percent = max(0.0, float(self.config.max_spread_risk_percent))
+        self.max_spread_points = max(0.0, float(self.config.max_spread_points))
+        self.log_detail_limit = max(0, _env_int("AUTO_LOG_DETAIL_LIMIT", 8))
         self.seen: dict[str, datetime] = {
             key: datetime.fromisoformat(value) for key, value in _read_seen_signals().items()
         }
@@ -357,6 +389,78 @@ class TradeAutomation:
             if symbol in upper:
                 return symbol
         return broker_symbol
+
+    @staticmethod
+    def _money(value: Any) -> str:
+        try:
+            return f"${float(value):.2f}"
+        except (TypeError, ValueError):
+            return "$?"
+
+    def _print_cycle_details(self, payload: dict[str, Any]) -> None:
+        if self.log_detail_limit <= 0:
+            return
+
+        for ticket in payload.get("prepared", [])[: self.log_detail_limit]:
+            signal = ticket.get("signal") or {}
+            order = ticket.get("order") or {}
+            sizing = order.get("lot_sizing") or {}
+            spread_check = order.get("spread_check") or {}
+            spread_text = ""
+            if spread_check:
+                spread_text = (
+                    f" spread={float(spread_check.get('spread_risk_percent') or 0.0):.1f}%"
+                    f"/{float(spread_check.get('spread_points') or 0.0):.1f}pts"
+                )
+            print(
+                "  prepared "
+                f"{signal.get('symbol')} {signal.get('timeframe')} {signal.get('direction')} "
+                f"S{signal.get('setup_score')} lot={order.get('lot')} "
+                f"risk={self._money(sizing.get('estimated_risk'))}/{self._money(sizing.get('risk_budget'))}"
+                f"{spread_text} "
+                f"comment='{order.get('comment')}'"
+            )
+
+        for ticket in payload.get("placed", [])[: self.log_detail_limit]:
+            signal = ticket.get("signal") or {}
+            order = ticket.get("order") or {}
+            placement = ticket.get("placement") or {}
+            result = placement.get("result") or {}
+            status = "placed" if placement.get("placed") else "failed"
+            broker_ticket = result.get("order") or result.get("deal") or "-"
+            quote = placement.get("quote") or {}
+            spread_text = ""
+            if quote:
+                spread_text = f" spread={float(quote.get('spread_points') or 0.0):.1f}pts"
+            print(
+                "  mt5 "
+                f"{status} {signal.get('symbol')} {signal.get('timeframe')} "
+                f"S{signal.get('setup_score')} lot={order.get('lot')} ticket={broker_ticket}{spread_text} "
+                f"msg='{placement.get('message')}'"
+            )
+
+        for ticket in payload.get("blocked", [])[: self.log_detail_limit]:
+            signal = ticket.get("signal") or {}
+            reasons = ticket.get("reasons") or []
+            reason = str(reasons[0]) if reasons else str(ticket.get("status"))
+            print(
+                "  blocked "
+                f"{signal.get('symbol')} {signal.get('timeframe')} {signal.get('direction')} "
+                f"S{signal.get('setup_score')}: {reason[:160]}"
+            )
+
+        protection = payload.get("trade_protection") or {}
+        modified_actions = [
+            action
+            for action in protection.get("actions", [])
+            if action.get("status") == "modified"
+        ][: self.log_detail_limit]
+        for action in modified_actions:
+            print(
+                "  protected "
+                f"{action.get('symbol')} ticket={action.get('ticket')} "
+                f"stage=TP{action.get('hit_stage')} sl->{action.get('desired_stop')}"
+            )
 
     def active_symbol_cooldowns(self, now: datetime) -> dict[str, dict[str, Any]]:
         cooldowns = self.trade_state.setdefault("symbol_cooldowns", {})
@@ -512,6 +616,19 @@ class TradeAutomation:
             closed_event = self._process_closed_position(stale_ticket, state, now)
             if closed_event:
                 actions.append(closed_event)
+                _log_automation_event(
+                    "position_closed",
+                    now,
+                    ticket=stale_ticket,
+                    symbol=closed_event.get("symbol"),
+                    broker_symbol=closed_event.get("broker_symbol"),
+                    status=closed_event.get("status"),
+                    outcome=closed_event.get("outcome"),
+                    exit_reason=closed_event.get("exit_reason"),
+                    exit_price=closed_event.get("exit_price"),
+                    profit=closed_event.get("profit"),
+                    cooldown=closed_event.get("cooldown"),
+                )
 
         for position in positions:
             ticket = str(position.get("ticket") or "")
@@ -617,6 +734,20 @@ class TradeAutomation:
 
             actions.append(action)
             _append_jsonl(PROTECTION_LOG_PATH, action)
+            if result.get("modified"):
+                _log_automation_event(
+                    "protection_modified",
+                    now,
+                    ticket=ticket,
+                    symbol=state["symbol"],
+                    broker_symbol=broker_symbol,
+                    direction=direction,
+                    stage=hit_stage,
+                    old_stop=current_stop,
+                    new_stop=desired_stop,
+                    take_profit=take_profit,
+                    market_price=market_price,
+                )
 
         _write_trade_state(self.trade_state)
         return actions
@@ -631,6 +762,21 @@ class TradeAutomation:
             timeframes=self.timeframes,
             min_score=self.config.min_setup_score,
             min_rr=self.config.min_risk_reward,
+        )
+        _log_automation_event(
+            "scan_summary",
+            now,
+            symbols=list(TRADE_SYMBOLS),
+            timeframes=list(self.timeframes),
+            allowed_count=len(scan.get("allowed", [])),
+            near_miss_count=len(scan.get("near_misses", [])),
+            active_symbol_cooldown_count=len(active_symbol_cooldowns),
+            protection_action_count=len(protection_actions),
+            live_trading=self.config.live_trading,
+            auto_place_trades=self.auto_place_trades,
+            max_lot_risk_pct=self.max_lot_risk_pct,
+            max_spread_risk_percent=self.max_spread_risk_percent,
+            max_spread_points=self.max_spread_points,
         )
         prepared: list[dict[str, Any]] = []
         placed: list[dict[str, Any]] = []
@@ -676,14 +822,65 @@ class TradeAutomation:
                 }
                 blocked.append(blocked_ticket)
                 _append_jsonl(BLOCKED_ORDERS_PATH, blocked_ticket)
+                _log_automation_event(
+                    "signal_blocked",
+                    now,
+                    signal,
+                    status=blocked_ticket["status"],
+                    reasons=block_reasons,
+                    safety=blocked_ticket["safety"],
+                )
                 continue
 
             will_send_to_mt5 = self.config.live_trading and self.auto_place_trades
+            spread_check = self.client.spread_check(
+                signal,
+                max_spread_risk_percent=self.max_spread_risk_percent,
+                max_spread_points=self.max_spread_points,
+            )
+            if not spread_check.get("ok"):
+                spread_reasons = spread_check.get("reasons") or [spread_check.get("message") or "Spread check failed."]
+                blocked_ticket = {
+                    "created_at": now.isoformat(timespec="seconds"),
+                    "status": "blocked_spread",
+                    "duplicate_key": key,
+                    "legacy_key": legacy_key,
+                    "setup_score": signal.get("setup_score"),
+                    "setup_grade": signal.get("setup_grade"),
+                    "signal": signal,
+                    "reasons": [str(reason) for reason in spread_reasons],
+                    "spread_check": spread_check,
+                    "safety": {
+                        "live_trading": self.config.live_trading,
+                        "auto_place_trades": self.auto_place_trades,
+                        "will_send_to_mt5": will_send_to_mt5,
+                        "max_spread_risk_percent": self.max_spread_risk_percent,
+                        "max_spread_points": self.max_spread_points,
+                        "open_positions_same_symbol_any": len(open_positions_any),
+                        "open_positions_same_symbol_magic": len(open_positions_magic),
+                        "one_position_per_symbol": self.one_position_per_symbol,
+                        "symbol_cooldown": symbol_cooldown,
+                    },
+                }
+                blocked.append(blocked_ticket)
+                _append_jsonl(BLOCKED_ORDERS_PATH, blocked_ticket)
+                _log_automation_event(
+                    "signal_blocked",
+                    now,
+                    signal,
+                    status=blocked_ticket["status"],
+                    reasons=blocked_ticket["reasons"],
+                    spread_check=spread_check,
+                    safety=blocked_ticket["safety"],
+                )
+                continue
+
             lot_sizing = self.client.risk_based_lot(
                 signal,
                 risk_percent=self.max_lot_risk_pct,
                 fallback_balance=self.config.starting_balance,
                 require_account_balance=will_send_to_mt5,
+                quote=spread_check.get("quote"),
             )
             if not lot_sizing.get("ok"):
                 blocked_ticket = {
@@ -709,6 +906,15 @@ class TradeAutomation:
                 }
                 blocked.append(blocked_ticket)
                 _append_jsonl(BLOCKED_ORDERS_PATH, blocked_ticket)
+                _log_automation_event(
+                    "signal_blocked",
+                    now,
+                    signal,
+                    status=blocked_ticket["status"],
+                    reasons=blocked_ticket["reasons"],
+                    lot_sizing=lot_sizing,
+                    safety=blocked_ticket["safety"],
+                )
                 continue
 
             lot = float(lot_sizing["lot"])
@@ -718,6 +924,11 @@ class TradeAutomation:
                 live_trading=will_send_to_mt5,
             )
             order["lot_sizing"] = lot_sizing
+            order["spread_check"] = spread_check
+            order["spread_limits"] = {
+                "max_spread_risk_percent": self.max_spread_risk_percent,
+                "max_spread_points": self.max_spread_points,
+            }
             ticket = {
                 "created_at": now.isoformat(timespec="seconds"),
                 "status": "prepared",
@@ -735,10 +946,23 @@ class TradeAutomation:
                     "one_position_per_symbol": self.one_position_per_symbol,
                     "will_send_to_mt5": will_send_to_mt5,
                     "max_lot_risk_pct": self.max_lot_risk_pct,
+                    "max_spread_risk_percent": self.max_spread_risk_percent,
+                    "max_spread_points": self.max_spread_points,
                 },
             }
             prepared.append(ticket)
             _append_jsonl(PREPARED_ORDERS_PATH, ticket)
+            _log_automation_event(
+                "order_prepared",
+                now,
+                signal,
+                broker_symbol=order.get("broker_symbol"),
+                lot=order.get("lot"),
+                comment=order.get("comment"),
+                will_send_to_mt5=will_send_to_mt5,
+                lot_sizing=lot_sizing,
+                spread_check=spread_check,
+            )
             self.seen[key] = now
             self.seen[legacy_key] = now
             _write_seen_signals({item_key: item_value.isoformat() for item_key, item_value in self.seen.items()})
@@ -748,6 +972,22 @@ class TradeAutomation:
                 placed_payload = {**ticket, "status": "sent_to_mt5", "placement": placement}
                 placed.append(placed_payload)
                 _append_jsonl(PLACED_ORDERS_PATH, placed_payload)
+                result = placement.get("result") or {}
+                _log_automation_event(
+                    "order_sent_to_mt5",
+                    now,
+                    signal,
+                    broker_symbol=order.get("broker_symbol"),
+                    lot=order.get("lot"),
+                    comment=order.get("comment"),
+                    placed=placement.get("placed"),
+                    message=placement.get("message"),
+                    retcode=result.get("retcode"),
+                    order_ticket=result.get("order") or result.get("deal"),
+                    request=placement.get("request"),
+                    quote=placement.get("quote"),
+                    spread_check=placement.get("spread_check") or order.get("spread_check"),
+                )
                 if placement.get("placed"):
                     self._mark_consumed(signal, ticket, placement)
 
@@ -759,6 +999,13 @@ class TradeAutomation:
                 "mode": "risk_percent_of_current_balance",
                 "max_lot_risk_pct": self.max_lot_risk_pct,
                 "env": "MAX_LOT_RISK_PCT",
+            },
+            "spread_guard": {
+                "mode": "ask_bid_spread_vs_stop_distance",
+                "max_spread_risk_percent": self.max_spread_risk_percent,
+                "max_spread_points": self.max_spread_points,
+                "env_risk_percent": "MAX_SPREAD_RISK_PERCENT",
+                "env_points": "MAX_SPREAD_POINTS",
             },
             "live_trading": self.config.live_trading,
             "auto_place_trades": self.auto_place_trades,
@@ -788,10 +1035,16 @@ class TradeAutomation:
         print("LTA automation worker started.")
         print(f"Scanning {', '.join(TRADE_SYMBOLS)} on {', '.join(self.timeframes)} every {self.interval_seconds}s.")
         print(f"Dynamic lot sizing: risk {self.max_lot_risk_pct:g}% of current account balance per trade.")
+        print(
+            f"Spread guard: max {self.max_spread_risk_percent:g}% of stop distance"
+            + (f", max {self.max_spread_points:g} points." if self.max_spread_points > 0 else ".")
+        )
         print(f"Live trading: {self.config.live_trading}; AUTO_PLACE_TRADES: {self.auto_place_trades}")
         print(f"One position per symbol: {self.one_position_per_symbol}")
         print(f"Trade protection: {self.trade_protection_enabled}; final RR: 1:{self.protection_final_rr:g}")
         print(f"TP/SL symbol cooldown: {self.symbol_result_cooldown_minutes} minutes; BE exits do not cool down.")
+        print(f"Detail log: {AUTOMATION_EVENTS_PATH}")
+        print(f"Console detail limit per cycle: {self.log_detail_limit}")
         print("Press Ctrl+C to stop.")
         while True:
             payload = self.run_once()
@@ -803,6 +1056,7 @@ class TradeAutomation:
             print(
                 f"[{payload['checked_at']}] A+={allowed} near={near} prepared={prepared} placed={payload['placed_count']} blocked={payload['blocked_count']} protected={protected} cooldowns={cooldowns}"
             )
+            self._print_cycle_details(payload)
             time.sleep(self.interval_seconds)
 
 

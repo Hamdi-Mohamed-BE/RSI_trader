@@ -337,6 +337,7 @@ Create a `risk_manager.py` that handles:
 - Lot size validation
 - Backtest per-symbol lot config
 - Live dynamic lot sizing from `MAX_LOT_RISK_PCT`
+- Live bid/ask spread guard from `MAX_SPREAD_RISK_PERCENT` and `MAX_SPREAD_POINTS`
 - Start balance
 - Max risk per trade
 - Max daily loss
@@ -372,6 +373,8 @@ LIVE_TRADING=false
 START_BALANCE=1000
 
 MAX_LOT_RISK_PCT=3.0
+MAX_SPREAD_RISK_PERCENT=15
+MAX_SPREAD_POINTS=0
 
 MAX_RISK_PER_TRADE_PERCENT=1
 MAX_DAILY_LOSS_PERCENT=3
@@ -394,6 +397,7 @@ Do not place market orders unless:
 LIVE_TRADING=true
 setup_score >= 90
 risk manager approves
+bid/ask spread is acceptable
 symbol is allowed
 dynamic lot size is valid
 stop loss exists
