@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LTA A+ Setup Research</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050817;
+      --bg-2: #070b1b;
+      --panel: #0d1427;
+      --panel-2: #111a31;
+      --line: #22304d;
+      --line-soft: rgba(122, 145, 183, 0.18);
+      --text: #f8fbff;
+      --muted: #8da0c5;
+      --soft: #c8d4ee;
+      --green: #00d694;
+      --green-2: #10b981;
+      --red: #ff5b68;
+      --violet: #6c5cff;
+      --orange: #ff7a1a;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 22% 0%, rgba(45, 72, 139, 0.24), transparent 34rem),
+        linear-gradient(180deg, #050817 0%, #060918 100%);
+      color: var(--text);
+    }
+
+    a { color: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(122, 145, 183, 0.15);
+      background: rgba(3, 7, 20, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      width: min(1560px, calc(100vw - 48px));
+      margin: 0 auto;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02));
+      color: #ffffff;
+      font-weight: 900;
+    }
+
+    .brand-title {
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    .brand-sub {
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 900;
+      margin-left: 4px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      min-width: 0;
+      flex: 1;
+    }
+
+    .nav span,
+    .chip,
+    .icon-btn {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      padding: 0 13px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .nav span.active {
+      color: #ffffff;
+      background: #1b2740;
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    .nav span.dim { display: inline-flex; gap: 8px; }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: max-content;
+    }
+
+    .switcher,
+    .range {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #101a30;
+      border: 1px solid #22304d;
+      border-radius: 10px;
+      padding: 5px;
+    }
+
+    .chip {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+      padding-inline: 14px;
+    }
+
+    .chip.active {
+      color: #ffffff;
+      background: var(--violet);
+      box-shadow: 0 0 24px rgba(108, 92, 255, 0.35);
+    }
+
+    .icon-btn {
+      width: 42px;
+      padding: 0;
+      color: var(--soft);
+      background: #101a30;
+      border-color: #22304d;
+      font-weight: 800;
+    }
+
+    .app {
+      width: min(1560px, calc(100vw - 48px));
+      margin: 0 auto;
+      padding: 46px 0 56px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 26px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 3vw, 44px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 760px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    button,
+    .button,
+    .download {
+      border: 0;
+      min-height: 42px;
+      border-radius: 9px;
+      padding: 0 16px;
+      color: #ffffff;
+      background: #1b2740;
+      font: inherit;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: linear-gradient(135deg, #6c5cff, #4b38f2);
+      box-shadow: 0 12px 34px rgba(108, 92, 255, 0.32);
+    }
+
+    .button:hover,
+    .download:hover,
+    button:hover { filter: brightness(1.08); }
+
+    .run-panel {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(17, 26, 49, 0.92), rgba(9, 14, 30, 0.92));
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 26px;
+    }
+
+    .run-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+      color: var(--soft);
+      font-weight: 800;
+    }
+
+    .status-pill {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .status-pill strong { color: var(--green); }
+    .status-pill .off { color: var(--red); }
+
+    form { display: grid; gap: 12px; }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.9fr 1fr 1fr 1fr 0.85fr 0.85fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #080e20;
+      color: var(--text);
+      padding: 9px 11px;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: rgba(108, 92, 255, 0.75);
+      box-shadow: 0 0 0 3px rgba(108, 92, 255, 0.16);
+    }
+
+    .advanced {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+    }
+
+    .advanced summary {
+      cursor: pointer;
+      color: var(--soft);
+      font-size: 13px;
+      font-weight: 800;
+      width: max-content;
+      list-style: none;
+    }
+
+    .advanced summary::-webkit-details-marker { display: none; }
+
+    .advanced summary::before {
+      content: "+";
+      display: inline-grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      border-radius: 6px;
+      background: #1b2740;
+      color: var(--green);
+    }
+
+    .advanced[open] summary::before { content: "-"; }
+
+    .advanced-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--soft);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .check input {
+      width: 16px;
+      min-height: 16px;
+      accent-color: var(--violet);
+    }
+
+    .notice {
+      border: 1px solid rgba(255, 122, 26, 0.34);
+      background: rgba(255, 122, 26, 0.08);
+      color: #ffd2ac;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+    }
+
+    .error {
+      border-color: rgba(255, 91, 104, 0.38);
+      background: rgba(255, 91, 104, 0.08);
+      color: #ffc3c8;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 30px;
+    }
+
+    .metric {
+      min-height: 108px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(17, 26, 49, 0.95), rgba(11, 17, 35, 0.95));
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+      min-width: 0;
+    }
+
+    .metric span {
+      display: block;
+      color: #7890bc;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 11px;
+    }
+
+    .metric strong {
+      display: block;
+      color: #ffffff;
+      font-size: clamp(25px, 2.2vw, 36px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      overflow-wrap: anywhere;
+    }
+
+    .metric strong.green,
+    .green { color: var(--green); }
+
+    .metric strong.red,
+    .red { color: var(--red); }
+
+    .metric strong.violet,
+    .violet { color: #7871ff; }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(17, 26, 49, 0.9), rgba(9, 14, 30, 0.94));
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 26px;
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      color: #bcd0f4;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .chart-wrap {
+      height: 410px;
+      position: relative;
+    }
+
+    #equityChart {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .empty {
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 28px;
+      text-align: center;
+      background: rgba(8, 14, 32, 0.62);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 980px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line-soft);
+      text-align: left;
+      padding: 13px 14px;
+      vertical-align: top;
+    }
+
+    th {
+      color: #8da0c5;
+      background: rgba(17, 26, 49, 0.72);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    td {
+      color: #d9e4ff;
+      background: rgba(8, 14, 32, 0.34);
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .small-list {
+      margin: 0;
+      padding-left: 16px;
+      color: #b6c5e5;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px;
+    }
+
+    .watch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .watch-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 16px;
+      background: rgba(8, 14, 32, 0.52);
+    }
+
+    .watch-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .watch-symbol {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .watch-source {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      background: #101a30;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 9px;
+    }
+
+    .watch-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .watch-stats span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .watch-stats strong {
+      display: block;
+      font-size: 18px;
+      color: #ffffff;
+    }
+
+    .reason-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .reason-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: rgba(8, 14, 32, 0.48);
+      color: #cbd8f3;
+    }
+
+    .reason-list b {
+      color: var(--violet);
+      min-width: 44px;
+      text-align: right;
+    }
+
+    @media (max-width: 1400px) {
+      .top-actions .range { display: none; }
+    }
+
+    @media (max-width: 1100px) {
+      .topbar-inner,
+      .app { width: min(1180px, calc(100vw - 32px)); }
+      .quick-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .quick-grid button { grid-column: span 2; }
+      .advanced-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 880px) {
+      .topbar-inner { flex-wrap: wrap; padding: 12px 0; gap: 12px; }
+      .nav { order: 3; width: 100%; overflow-x: auto; }
+      .hero { display: grid; }
+      .hero-actions { justify-content: flex-start; }
+      .quick-grid,
+      .advanced-grid,
+      .watch-grid,
+      .split { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .quick-grid button { grid-column: auto; }
+      button.primary { width: 100%; }
+    }
+
+    @media (max-width: 560px) {
+      .topbar-inner,
+      .app { width: min(100vw - 20px, 1560px); }
+      .app { padding-top: 28px; }
+      .metrics { grid-template-columns: 1fr; }
+      .metric { min-height: auto; }
+      .chart-wrap { height: 300px; }
+    }
+  </style>
+</head>
+<body>
+  {% set active_symbol = submitted.symbol if submitted else defaults.symbol %}
+  {% set active_timeframe = submitted.timeframe if submitted else defaults.timeframe %}
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">L</div>
+        <div>
+          <div class="brand-title">LTA TRADER <span class="brand-sub">Lab</span></div>
+          <div class="status-pill">Trust the setup. Trade only A+.</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Dashboard navigation">
+        <span>Trackrecord</span>
+        <span class="active">Overview</span>
+        <span>Trades</span>
+        <span>Customize</span>
+        <span>Methodology</span>
+      </nav>
+
+      <div class="top-actions">
+        <div class="switcher">
+          <span class="chip">Spot</span>
+          <span class="chip active">CFDs</span>
+        </div>
+        <div class="range">
+          <span class="chip">All</span>
+          <span class="chip">1YR</span>
+          <span class="chip">6MN</span>
+          <span class="chip">3MN</span>
+          <span class="chip active">1MN</span>
+        </div>
+        <span class="icon-btn">SL</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="app">
+    <section class="hero">
+      <div>
+        <h1>Recommended Strategy Backtest</h1>
+        <div class="subtitle">Historical performance for the LTA A+ setup engine across XAUUSD, XAGUSD, and BTCUSD.</div>
+      </div>
+      <div class="hero-actions">
+        {% if result and result.json_report %}
+          <a class="download" href="/reports/{{ result.json_report }}">Export JSON</a>
+        {% endif %}
+        {% if result and result.csv_report %}
+          <a class="download" href="/reports/{{ result.csv_report }}">Export CSV</a>
+        {% endif %}
+      </div>
+    </section>
+
+    {% if error %}
+      <div class="notice error">{{ error }}</div>
+    {% endif %}
+
+    {% if result and result.warnings %}
+      {% for warning in result.warnings %}
+        <div class="notice">{{ warning }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <section class="run-panel">
+      <div class="run-head">
+        <div>Backtest Controls</div>
+        <div class="status-pill">
+          Live trading:
+          <strong class="{{ 'off' if not live_trading else '' }}">{{ "enabled" if live_trading else "disabled" }}</strong>
+          &nbsp; / &nbsp; MT5: <strong>{{ mt5_status.message }}</strong>
+        </div>
+      </div>
+
+      <form method="post" action="/backtest">
+        <div class="quick-grid">
+          <label>
+            Symbol
+            <select name="symbol">
+              {% for symbol in symbols %}
+                <option value="{{ symbol }}" {% if active_symbol == symbol %}selected{% endif %}>{{ "ALL SYMBOLS" if symbol == "ALL" else symbol }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>
+            Timeframe
+            <select name="timeframe">
+              {% for tf in timeframes %}
+                <option value="{{ tf }}" {% if active_timeframe == tf %}selected{% endif %}>{{ tf }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>
+            Start
+            <input type="date" name="start" value="{{ submitted.start if submitted else defaults.start }}">
+          </label>
+
+          <label>
+            End
+            <input type="date" name="end" value="{{ submitted.end if submitted else defaults.end }}">
+          </label>
+
+          <label>
+            Balance
+            <input type="number" step="0.01" min="1" name="starting_balance" value="{{ submitted.starting_balance if submitted else defaults.starting_balance }}">
+          </label>
+
+          <label>
+            Min Score
+            <input type="number" step="1" min="1" max="100" name="min_setup_score" value="{{ submitted.min_setup_score if submitted else defaults.min_setup_score }}">
+          </label>
+
+          <label>
+            Min R:R
+            <input type="number" step="0.1" min="0.5" max="20" name="min_risk_reward" value="{{ submitted.min_risk_reward if submitted else defaults.min_risk_reward }}">
+          </label>
+
+          <button class="primary" type="submit">Run Backtest</button>
+        </div>
+
+        <details class="advanced">
+          <summary>Advanced lot and risk settings</summary>
+          <div class="advanced-grid">
+          <label>
+            XAU Lot
+            <input type="number" step="0.01" min="0.01" name="xau_lot" value="{{ defaults.xau_lot }}">
+          </label>
+          <label>
+            XAG Lot
+            <input type="number" step="0.01" min="0.01" name="xag_lot" value="{{ defaults.xag_lot }}">
+          </label>
+          <label>
+            BTC Lot
+            <input type="number" step="0.01" min="0.01" name="btc_lot" value="{{ defaults.btc_lot }}">
+          </label>
+
+          <label>
+            Risk %
+            <input type="number" step="0.1" min="0.1" max="10" name="risk_per_trade_percent" value="{{ submitted.risk_per_trade_percent if submitted else defaults.risk_per_trade_percent }}">
+          </label>
+
+          <label>
+            Daily Loss %
+            <input type="number" step="0.1" min="0.1" max="50" name="max_daily_loss_percent" value="{{ submitted.max_daily_loss_percent if submitted else defaults.max_daily_loss_percent }}">
+          </label>
+          <label>
+            Drawdown %
+            <input type="number" step="0.1" min="0.1" max="80" name="max_drawdown_percent" value="{{ submitted.max_drawdown_percent if submitted else defaults.max_drawdown_percent }}">
+          </label>
+          <label>
+            Max Trades
+            <input type="number" step="1" min="1" max="50" name="max_trades_per_day" value="{{ submitted.max_trades_per_day if submitted else defaults.max_trades_per_day }}">
+          </label>
+          <label class="check">
+            <input type="checkbox" name="use_demo_if_mt5_unavailable" checked>
+            Use demo data if MT5 is unavailable
+          </label>
+          </div>
+        </details>
+      </form>
+    </section>
+
+    <section class="metrics" aria-label="Backtest metrics">
+      <div class="metric">
+        <span>Total Return</span>
+        <strong class="{{ 'green' if result and result.total_return_percent >= 0 else 'red' if result else '' }}">
+          {{ "%+.2f"|format(result.total_return_percent) ~ "%" if result else "+0.00%" }}
+        </strong>
+      </div>
+      <div class="metric">
+        <span>Final Capital</span>
+        <strong>{{ "$%.2f"|format(result.ending_balance) if result else "$0.00" }}</strong>
+      </div>
+      <div class="metric">
+        <span>P&amp;L</span>
+        <strong class="{{ 'green' if result and result.net_profit >= 0 else 'red' if result else '' }}">
+          {{ "$%+.2f"|format(result.net_profit) if result else "$+0.00" }}
+        </strong>
+      </div>
+      <div class="metric">
+        <span>Win Rate</span>
+        <strong class="green">{{ "%.2f"|format(result.win_rate) ~ "%" if result else "0.00%" }}</strong>
+      </div>
+      <div class="metric">
+        <span>Max Drawdown</span>
+        <strong class="{{ 'red' if result and result.max_drawdown > 0 else 'green' }}">{{ "-%.2f"|format(result.max_drawdown) ~ "%" if result else "-0.00%" }}</strong>
+      </div>
+      <div class="metric">
+        <span>Sharpe Ratio</span>
+        <strong>{{ "%.2f"|format(result.sharpe_ratio) if result else "0.00" }}</strong>
+      </div>
+      <div class="metric">
+        <span>Profit Factor</span>
+        <strong class="violet">{{ "%.2f"|format(result.profit_factor) if result else "0.00" }}</strong>
+      </div>
+      <div class="metric">
+        <span>Total Trades</span>
+        <strong>{{ result.total_trades if result else 0 }}</strong>
+      </div>
+      <div class="metric">
+        <span>Avg Win</span>
+        <strong class="green">{{ "$%.2f"|format(result.average_win) if result else "$0.00" }}</strong>
+      </div>
+      <div class="metric">
+        <span>Avg Loss</span>
+        <strong class="red">{{ "$%.2f"|format(result.average_loss) if result else "$0.00" }}</strong>
+      </div>
+      <div class="metric">
+        <span>Best Trade</span>
+        <strong class="green">{{ "$%.2f"|format(result.best_trade) if result and result.best_trade is not none else "$0.00" }}</strong>
+      </div>
+      <div class="metric">
+        <span>Worst Trade</span>
+        <strong class="red">{{ "$%.2f"|format(result.worst_trade) if result and result.worst_trade is not none else "$0.00" }}</strong>
+      </div>
+    </section>
+
+    {% if result and result.symbol_summaries %}
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Symbol Watchlist</h2>
+          <div class="status-pill">Watching XAUUSD, XAGUSD, and BTCUSD together</div>
+        </div>
+        <div class="watch-grid">
+          {% for item in result.symbol_summaries %}
+            <div class="watch-card">
+              <div class="watch-top">
+                <div class="watch-symbol">{{ item.symbol }}</div>
+                <div class="watch-source">{{ item.data_source }} / lot {{ item.lot_size }}</div>
+              </div>
+              <div class="watch-stats">
+                <div><span>P&amp;L</span><strong class="{{ 'green' if item.net_profit >= 0 else 'red' }}">{{ "$%+.2f"|format(item.net_profit) }}</strong></div>
+                <div><span>Return</span><strong class="{{ 'green' if item.total_return_percent >= 0 else 'red' }}">{{ "%+.2f"|format(item.total_return_percent) }}%</strong></div>
+                <div><span>Win Rate</span><strong>{{ "%.2f"|format(item.win_rate) }}%</strong></div>
+                <div><span>A+ Trades</span><strong>{{ item.a_plus_setups_taken }}</strong></div>
+                <div><span>Rejected</span><strong>{{ item.setups_rejected }}</strong></div>
+                <div><span>Drawdown</span><strong class="{{ 'red' if item.max_drawdown > 0 else 'green' }}">-{{ "%.2f"|format(item.max_drawdown) }}%</strong></div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Equity Curve</h2>
+        <div class="status-pill">{{ "ALL SYMBOLS" if active_symbol == "ALL" else active_symbol }} / {{ active_timeframe }} / {{ result.data_source if result else "waiting for run" }}</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="equityChart" aria-label="Equity curve"></canvas>
+      </div>
+    </section>
+
+    <section class="split">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Accepted A+ Trades</h2>
+          <div class="status-pill">{{ result.a_plus_setups_taken if result else 0 }} taken</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Opened</th>
+                <th>Dir</th>
+                <th>Entry</th>
+                <th>Exit</th>
+                <th>Result</th>
+                <th>PnL</th>
+                <th>Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if result %}
+                {% for trade in result.trades %}
+                  <tr>
+                    <td>{{ trade.symbol }}</td>
+                    <td>{{ trade.opened_at }}</td>
+                    <td>{{ trade.direction }}</td>
+                    <td>{{ trade.entry }}</td>
+                    <td>{{ trade.exit_price }}</td>
+                    <td class="{{ 'green' if trade.result == 'win' else 'red' if trade.result == 'loss' else '' }}">{{ trade.result }}</td>
+                    <td class="{{ 'green' if trade.pnl >= 0 else 'red' }}">{{ trade.pnl }}</td>
+                    <td>{{ trade.key_level }}</td>
+                  </tr>
+                {% else %}
+                  <tr><td colspan="8">No A+ trades were accepted for this run.</td></tr>
+                {% endfor %}
+              {% else %}
+                <tr><td colspan="8">Run a backtest to see accepted trades.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Rejected Reasons</h2>
+          <div class="status-pill">{{ result.setups_rejected if result else 0 }} rejected</div>
+        </div>
+        {% if result and result.rejected_reason_breakdown %}
+          <ul class="reason-list">
+            {% for reason, count in result.rejected_reason_breakdown.items() %}
+              <li><span>{{ reason }}</span><b>{{ count }}</b></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty">Rejected setups will appear here after a backtest.</div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Recent Rejected Setups</h2>
+        <div class="status-pill">Showing latest candidates</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Time</th>
+              <th>Score</th>
+              <th>Grade</th>
+              <th>Direction</th>
+              <th>Key Level</th>
+              <th>Entry Model</th>
+              <th>Reasons</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if result %}
+              {% for setup in result.rejected_setups[-25:] %}
+                <tr>
+                  <td>{{ setup.symbol }}</td>
+                  <td>{{ setup.timestamp }}</td>
+                  <td>{{ setup.setup_score }}</td>
+                  <td>{{ setup.setup_grade }}</td>
+                  <td>{{ setup.direction or "n/a" }}</td>
+                  <td>{{ setup.key_level or "n/a" }}</td>
+                  <td>{{ setup.entry_model or "none" }}</td>
+                  <td>
+                    <ul class="small-list">
+                      {% for reason in setup.reasons[:4] %}
+                        <li>{{ reason }}</li>
+                      {% endfor %}
+                    </ul>
+                  </td>
+                </tr>
+              {% else %}
+                <tr><td colspan="8">No rejected setup candidates were logged.</td></tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="8">Run a backtest to inspect rejected setups.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script id="equity-data" type="application/json">{{ (result.equity_curve if result else [defaults.starting_balance]) | tojson }}</script>
+  <script>
+    const canvas = document.getElementById("equityChart");
+    const raw = JSON.parse(document.getElementById("equity-data").textContent || "[]");
+    const equity = raw.length > 1 ? raw : [raw[0] || 0, raw[0] || 0, raw[0] || 0, raw[0] || 0];
+
+    function money(value) {
+      return "$" + Number(value).toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    function drawChart() {
+      const ctx = canvas.getContext("2d");
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const w = rect.width;
+      const h = rect.height;
+      const pad = { top: 16, right: 28, bottom: 28, left: 72 };
+      const cw = w - pad.left - pad.right;
+      const ch = h - pad.top - pad.bottom;
+      const min = Math.min(...equity);
+      const max = Math.max(...equity);
+      const range = Math.max(max - min, Math.abs(max || 1) * 0.01);
+      const yMin = min - range * 0.18;
+      const yMax = max + range * 0.18;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "#0b1123";
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.strokeStyle = "rgba(122, 145, 183, 0.14)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 6; i++) {
+        const y = pad.top + (ch / 6) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(w - pad.right, y);
+        ctx.stroke();
+      }
+      const verticals = Math.min(80, Math.max(12, equity.length * 2));
+      for (let i = 0; i <= verticals; i++) {
+        const x = pad.left + (cw / verticals) * i;
+        ctx.beginPath();
+        ctx.moveTo(x, pad.top);
+        ctx.lineTo(x, h - pad.bottom);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#8da0c5";
+      ctx.font = "12px Inter, system-ui, sans-serif";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      for (let i = 0; i <= 5; i++) {
+        const value = yMax - ((yMax - yMin) / 5) * i;
+        const y = pad.top + (ch / 5) * i;
+        ctx.fillText(money(value), pad.left - 12, y);
+      }
+
+      const points = equity.map((value, index) => {
+        const x = pad.left + (equity.length === 1 ? 0 : (cw / (equity.length - 1)) * index);
+        const y = pad.top + ((yMax - value) / (yMax - yMin)) * ch;
+        return [x, y];
+      });
+
+      const fill = ctx.createLinearGradient(0, pad.top, 0, h - pad.bottom);
+      fill.addColorStop(0, "rgba(0, 214, 148, 0.34)");
+      fill.addColorStop(1, "rgba(0, 214, 148, 0.04)");
+      ctx.beginPath();
+      points.forEach(([x, y], index) => {
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.lineTo(points[points.length - 1][0], h - pad.bottom);
+      ctx.lineTo(points[0][0], h - pad.bottom);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
+
+      ctx.strokeStyle = "#00d694";
+      ctx.lineWidth = 3;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.shadowColor = "rgba(0, 214, 148, 0.45)";
+      ctx.shadowBlur = 16;
+      ctx.beginPath();
+      points.forEach(([x, y], index) => {
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      const [lastX, lastY] = points[points.length - 1];
+      ctx.fillStyle = "#00d694";
+      ctx.beginPath();
+      ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    drawChart();
+    window.addEventListener("resize", drawChart);
+  </script>
+</body>
+</html>

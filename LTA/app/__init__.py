@@ -1,0 +1,2 @@
+"""LTA trading research platform."""
+

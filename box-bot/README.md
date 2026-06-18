@@ -1,6 +1,6 @@
 # H4 Box Bot
 
-Python MT5 bot for XAUUSD, XAGUSD, and BTCUSD.
+Python MT5 bot for XAUUSD, XAGUSD, BTCUSD, EURUSD, and USDJPY.
 
 Default mode is `dry_run`, so it scans and prints trade plans without placing real orders. Use `--live` only after the dry-run output matches what you expect.
 
@@ -28,6 +28,8 @@ Configured in `config.json`:
 - `XAUUSD`: `0.05` lot per leg
 - `XAGUSD`: `0.05` lot per leg
 - `BTCUSD`: `0.08` lot per leg
+- `EURUSD`: `0.01` lot per leg
+- `USDJPY`: `0.01` lot per leg
 
 ## Run
 
@@ -56,3 +58,13 @@ python .\box_bot.py --loop --live
 ```
 
 Stop the loop with `Ctrl+C`.
+
+## Backtest
+
+Run a one-year backtest with a `$300` starting balance:
+
+```powershell
+python .\backtest_box_bot.py --start 2025-06-17 --end 2026-06-17 --start-balance 300 --summary-only
+```
+
+The backtester saves full JSON and CSV trade reports in `reports/`.
