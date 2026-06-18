@@ -5,18 +5,7 @@ Local FastAPI app for testing LTA Concepts-style A+ setups on:
 - XAUUSD
 - XAGUSD
 - BTCUSD
-- EURUSD
-- USDJPY
-- GBPUSD
-- USDCAD
-- USDAUD
-- AUDUSD
-- NZDUSD
-- EURGBP
-- EURJPY
-- GBPJPY
 - US30
-- US300
 
 The app is built for research, backtesting, and controlled local automation. Live trading is disabled by default in `.env.example`; live order placement only runs when both live switches are enabled.
 
@@ -66,7 +55,7 @@ For real backtests:
 4. Install the Python requirements.
 5. Run the app and disable demo fallback if you want MT5-only testing.
 
-Note: `USDAUD`, `US30`, and `US300` are kept exactly as configured. If your broker does not provide those exact symbols, the scanner will mark them unavailable unless MT5 can resolve a close broker variant.
+Note: `US30` is kept exactly as configured. If your broker does not provide that exact symbol, the scanner will mark it unavailable unless MT5 can resolve a close broker variant.
 
 ## Safety
 

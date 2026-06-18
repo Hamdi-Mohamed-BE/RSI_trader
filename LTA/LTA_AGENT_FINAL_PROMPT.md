@@ -103,6 +103,7 @@ Start with only these symbols:
 XAUUSD
 XAGUSD
 BTCUSD
+US30
 ```
 
 The user must be able to configure:
@@ -160,7 +161,7 @@ Create a simple browser UI.
 
 The UI should allow the user to:
 
-- Select symbol: XAUUSD, XAGUSD, BTCUSD
+- Select symbol: XAUUSD, XAGUSD, BTCUSD, US30
 - Set starting balance
 - Set backtest lot size per symbol
 - Set live automation lot risk percent
