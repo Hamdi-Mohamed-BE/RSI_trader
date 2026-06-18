@@ -874,7 +874,7 @@ class MT5Client:
             "sl": stop_loss,
             "tp": take_profit,
             "deviation": 20,
-            "magic": 27032024,
+            "magic": int(order.get("magic") or 27032024),
             "comment": str(order.get("comment") or "LTA pending setup")[:31],
             "type_time": mt5.ORDER_TIME_GTC,
         }
@@ -984,7 +984,7 @@ class MT5Client:
             "sl": float(order["stop_loss"]),
             "tp": float(order["take_profit"]),
             "deviation": 20,
-            "magic": 27032024,
+            "magic": int(order.get("magic") or 27032024),
             "comment": str(order.get("comment") or "LTA A+ automation")[:31],
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_IOC,

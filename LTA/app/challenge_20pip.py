@@ -1,0 +1,676 @@
+from __future__ import annotations
+
+import argparse
+import atexit
+from datetime import datetime
+import json
+import os
+import time
+from pathlib import Path
+from typing import Any
+
+from .config import REPORTS_DIR, load_config
+from .mt5_client import MT5Client
+from .scanner import scan_market
+
+
+CHALLENGE_MAGIC = 20052024
+CHALLENGE_DIR = REPORTS_DIR / "20pip_challenge"
+STATE_PATH = CHALLENGE_DIR / "challenge_state.json"
+EVENTS_PATH = CHALLENGE_DIR / "challenge_events.jsonl"
+LATEST_PATH = CHALLENGE_DIR / "latest.json"
+LOCK_PATH = CHALLENGE_DIR / "challenge.lock"
+HEARTBEAT_PATH = CHALLENGE_DIR / "challenge_heartbeat.json"
+
+
+def _env_bool(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _env_int(name: str, default: int) -> int:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        return default
+
+
+def _env_float(name: str, default: float) -> float:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return float(value)
+    except ValueError:
+        return default
+
+
+def _env_list(name: str, default: tuple[str, ...]) -> tuple[str, ...]:
+    value = os.getenv(name)
+    if not value:
+        return default
+    return tuple(item.strip().upper() for item in value.split(",") if item.strip())
+
+
+def _write_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+
+
+def _append_jsonl(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, default=str) + "\n")
+
+
+def _parse_datetime(value: Any) -> datetime | None:
+    if not value:
+        return None
+    if isinstance(value, datetime):
+        return value
+    try:
+        return datetime.fromisoformat(str(value))
+    except ValueError:
+        return None
+
+
+def _today_key(now: datetime) -> str:
+    return now.date().isoformat()
+
+
+def _default_state(start_balance: float) -> dict[str, Any]:
+    now = datetime.now().isoformat(timespec="seconds")
+    return {
+        "status": "active",
+        "created_at": now,
+        "updated_at": now,
+        "challenge_balance": round(start_balance, 2),
+        "level": 1,
+        "last_trade_date": None,
+        "open_trades": {},
+        "closed_trades": {},
+        "stats": {
+            "wins": 0,
+            "losses": 0,
+            "break_evens": 0,
+            "placements": 0,
+        },
+    }
+
+
+def _read_state(start_balance: float) -> dict[str, Any]:
+    if not STATE_PATH.exists():
+        return _default_state(start_balance)
+    try:
+        data = json.loads(STATE_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return _default_state(start_balance)
+    if not isinstance(data, dict):
+        return _default_state(start_balance)
+    default = _default_state(start_balance)
+    for key, value in default.items():
+        data.setdefault(key, value)
+    data.setdefault("open_trades", {})
+    data.setdefault("closed_trades", {})
+    data.setdefault("stats", default["stats"])
+    for key, value in default["stats"].items():
+        data["stats"].setdefault(key, value)
+    return data
+
+
+def _write_state(state: dict[str, Any]) -> None:
+    state["updated_at"] = datetime.now().isoformat(timespec="seconds")
+    _write_json(STATE_PATH, state)
+
+
+class ChallengeLock:
+    def __init__(self, path: Path) -> None:
+        self.path = path
+        self.acquired = False
+
+    def acquire(self) -> None:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        if self.path.exists():
+            raise RuntimeError("20 Pip Challenge worker is already running or the lock file still exists.")
+        self.path.write_text(
+            json.dumps({"pid": os.getpid(), "started_at": datetime.now().isoformat(timespec="seconds")}, indent=2),
+            encoding="utf-8",
+        )
+        self.acquired = True
+        atexit.register(self.release)
+
+    def release(self) -> None:
+        if self.acquired:
+            _write_json(
+                HEARTBEAT_PATH,
+                {
+                    "pid": os.getpid(),
+                    "status": "stopped",
+                    "updated_at": datetime.now().isoformat(timespec="seconds"),
+                },
+            )
+            self.path.unlink(missing_ok=True)
+            self.acquired = False
+
+
+class TwentyPipChallengeBot:
+    def __init__(self) -> None:
+        self.config = load_config()
+        self.client = MT5Client()
+        self.start_balance = max(1.0, _env_float("CHALLENGE20_START_BALANCE", 20.0))
+        self.risk_percent = max(0.0, _env_float("CHALLENGE20_RISK_PERCENT", 23.0))
+        self.target_percent = max(0.0, _env_float("CHALLENGE20_TARGET_PERCENT", 30.0))
+        self.max_levels = max(1, _env_int("CHALLENGE20_LEVELS", 30))
+        self.interval_seconds = max(10, _env_int("CHALLENGE20_SCAN_INTERVAL_SECONDS", 60))
+        self.symbols = _env_list("CHALLENGE20_SYMBOLS", ("XAUUSD",))
+        self.timeframes = _env_list("CHALLENGE20_TIMEFRAMES", ("M5", "M15"))
+        self.min_setup_score = max(1, min(100, _env_int("CHALLENGE20_MIN_SETUP_SCORE", 90)))
+        self.one_trade_per_day = _env_bool("CHALLENGE20_ONE_TRADE_PER_DAY", True)
+        self.live_trading = _env_bool("CHALLENGE20_LIVE_TRADING", False)
+        self.place_trades = _env_bool("CHALLENGE20_PLACE_TRADES", False)
+        self.max_account_risk_percent = max(0.0, _env_float("CHALLENGE20_MAX_ACCOUNT_RISK_PERCENT", 23.0))
+        self.max_spread_risk_percent = max(0.0, _env_float("CHALLENGE20_MAX_SPREAD_RISK_PERCENT", 15.0))
+        self.max_spread_points = max(0.0, _env_float("CHALLENGE20_MAX_SPREAD_POINTS", 0.0))
+        self.allow_pending = _env_bool("CHALLENGE20_ALLOW_PENDING", False)
+        self.state = _read_state(self.start_balance)
+        self.state["level"] = self.level_for_balance(float(self.state.get("challenge_balance") or self.start_balance))
+        _write_state(self.state)
+
+    @property
+    def reward_risk(self) -> float:
+        if self.risk_percent <= 0:
+            return 0.0
+        return self.target_percent / self.risk_percent
+
+    def target_balance(self) -> float:
+        return self.start_balance * ((1 + self.target_percent / 100) ** self.max_levels)
+
+    def level_for_balance(self, balance: float) -> int:
+        if balance <= self.start_balance:
+            return 1
+        level = 1
+        target_multiplier = 1 + self.target_percent / 100
+        running = self.start_balance
+        while level < self.max_levels and balance >= running * target_multiplier:
+            running *= target_multiplier
+            level += 1
+        return level
+
+    def level_target(self, level: int) -> float:
+        return self.start_balance * ((1 + self.target_percent / 100) ** level)
+
+    def challenge_balance(self) -> float:
+        return float(self.state.get("challenge_balance") or self.start_balance)
+
+    def risk_amount(self) -> float:
+        return self.challenge_balance() * (self.risk_percent / 100)
+
+    def account_balance(self) -> float:
+        account = self.client.account_info()
+        return float((account or {}).get("balance") or 0.0)
+
+    def _heartbeat(self, status: str) -> None:
+        _write_json(
+            HEARTBEAT_PATH,
+            {
+                "pid": os.getpid(),
+                "status": status,
+                "updated_at": datetime.now().isoformat(timespec="seconds"),
+            },
+        )
+
+    def _log_event(self, event: str, **payload: Any) -> None:
+        _append_jsonl(
+            EVENTS_PATH,
+            {
+                "created_at": datetime.now().isoformat(timespec="seconds"),
+                "event": event,
+                **payload,
+            },
+        )
+
+    @staticmethod
+    def _base_symbol_from_broker_symbol(broker_symbol: str) -> str:
+        upper = broker_symbol.upper()
+        for symbol in ("XAUUSD", "XAGUSD", "BTCUSD", "US30", "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "AUDUSD"):
+            if symbol in upper:
+                return symbol
+        return broker_symbol
+
+    def sync_open_positions(self, now: datetime) -> list[dict[str, Any]]:
+        positions = self.client.open_positions(magic=CHALLENGE_MAGIC)
+        open_tickets = {str(position.get("ticket")) for position in positions if position.get("ticket")}
+        open_trades = self.state.setdefault("open_trades", {})
+        actions: list[dict[str, Any]] = []
+
+        for position in positions:
+            ticket = str(position.get("ticket") or "")
+            if not ticket or ticket in open_trades:
+                continue
+            broker_symbol = str(position.get("symbol") or "")
+            direction = "SELL" if int(position.get("type") or 0) == 1 else "BUY"
+            entry = float(position.get("price_open") or 0.0)
+            stop = float(position.get("sl") or 0.0)
+            risk_amount = 0.0
+            if entry > 0 and stop > 0:
+                estimated = self.client.estimate_trade_risk(
+                    self._base_symbol_from_broker_symbol(broker_symbol),
+                    direction,
+                    float(position.get("volume") or 0.0),
+                    entry,
+                    stop,
+                )
+                risk_amount = float(estimated.get("risk") or 0.0)
+            open_trades[ticket] = {
+                "ticket": ticket,
+                "symbol": self._base_symbol_from_broker_symbol(broker_symbol),
+                "broker_symbol": broker_symbol,
+                "direction": direction,
+                "volume": position.get("volume"),
+                "entry": entry,
+                "stop_loss": stop,
+                "take_profit": position.get("tp"),
+                "risk_amount": risk_amount,
+                "challenge_balance_at_entry": self.challenge_balance(),
+                "level": self.state.get("level"),
+                "opened_at": datetime.fromtimestamp(int(position.get("time") or 0)).isoformat(timespec="seconds")
+                if position.get("time")
+                else now.isoformat(timespec="seconds"),
+                "status": "open",
+            }
+            actions.append({"status": "synced_open_position", "ticket": ticket})
+
+        for ticket, trade in list(open_trades.items()):
+            if ticket in open_tickets:
+                continue
+            history = self.client.closed_position_deal(int(ticket))
+            if not history.get("found"):
+                trade["status"] = "closed_pending_history"
+                actions.append({"status": "closed_pending_history", "ticket": ticket, "history": history})
+                continue
+
+            profit = float(history.get("profit") or 0.0)
+            balance = max(0.0, self.challenge_balance() + profit)
+            self.state["challenge_balance"] = round(balance, 2)
+            self.state["level"] = self.level_for_balance(balance)
+            outcome = "BE"
+            if profit > 0:
+                outcome = "WIN"
+                self.state.setdefault("stats", {})["wins"] = int(self.state.setdefault("stats", {}).get("wins") or 0) + 1
+            elif profit < 0:
+                outcome = "LOSS"
+                self.state.setdefault("stats", {})["losses"] = int(self.state.setdefault("stats", {}).get("losses") or 0) + 1
+            else:
+                self.state.setdefault("stats", {})["break_evens"] = int(self.state.setdefault("stats", {}).get("break_evens") or 0) + 1
+
+            closed = {
+                **trade,
+                "status": "closed",
+                "closed_at": history.get("closed_at") or now.isoformat(timespec="seconds"),
+                "outcome": outcome,
+                "profit": round(profit, 2),
+                "challenge_balance_after": round(balance, 2),
+                "history": history,
+            }
+            self.state.setdefault("closed_trades", {})[ticket] = closed
+            del open_trades[ticket]
+            self._log_event("position_closed", ticket=ticket, outcome=outcome, profit=profit, balance=balance)
+            actions.append({"status": "closed_processed", "ticket": ticket, "outcome": outcome, "profit": profit})
+
+        if self.challenge_balance() <= 0:
+            self.state["status"] = "failed"
+        elif self.challenge_balance() >= self.target_balance():
+            self.state["status"] = "completed"
+
+        _write_state(self.state)
+        return actions
+
+    def _already_traded_today(self, now: datetime) -> bool:
+        if not self.one_trade_per_day:
+            return False
+        if self.state.get("last_trade_date") == _today_key(now):
+            return True
+        for trade in self.state.get("open_trades", {}).values():
+            opened_at = _parse_datetime(trade.get("opened_at"))
+            if opened_at and opened_at.date() == now.date():
+                return True
+        return False
+
+    def _adjust_signal_target(self, signal: dict[str, Any]) -> dict[str, Any]:
+        adjusted = dict(signal)
+        direction = str(adjusted.get("direction") or "").upper()
+        entry = float(adjusted.get("entry") or 0.0)
+        stop = float(adjusted.get("stop_loss") or 0.0)
+        risk = abs(entry - stop)
+        rr = self.reward_risk
+        if entry <= 0 or stop <= 0 or risk <= 0 or rr <= 0:
+            return adjusted
+        target = entry + risk * rr if direction == "BUY" else entry - risk * rr
+        adjusted["take_profit"] = round(target, 5)
+        adjusted["tp1"] = round(target, 5)
+        adjusted["tp2"] = None
+        adjusted["tp3"] = None
+        adjusted["tp4"] = None
+        adjusted["tp5"] = None
+        adjusted["risk_reward"] = round(rr, 3)
+        adjusted.setdefault("reasons", [])
+        adjusted["reasons"] = [
+            *adjusted["reasons"],
+            f"20 Pip Challenge target: risk {self.risk_percent:g}% to seek {self.target_percent:g}% ({rr:.2f}R).",
+        ]
+        return adjusted
+
+    def _risk_lot_from_challenge_bank(self, signal: dict[str, Any], risk_amount: float, will_send: bool) -> dict[str, Any]:
+        symbol = str(signal.get("symbol") or "")
+        direction = str(signal.get("direction") or "").upper()
+        stop_loss = float(signal.get("stop_loss") or 0.0)
+        quote = self.client.current_quote(symbol)
+        if will_send and not quote:
+            return {"ok": False, "message": "Live quote is unavailable.", "risk_amount": risk_amount}
+        entry_price = float(signal.get("entry") or 0.0)
+        entry_source = "signal_entry"
+        if quote:
+            entry_price = float(quote["ask"] if direction == "BUY" else quote["bid"])
+            entry_source = "current_quote"
+        if risk_amount <= 0 or entry_price <= 0 or stop_loss <= 0 or entry_price == stop_loss:
+            return {
+                "ok": False,
+                "message": "Invalid challenge risk, entry, or stop.",
+                "risk_amount": risk_amount,
+                "entry_price": entry_price,
+                "stop_loss": stop_loss,
+            }
+
+        account_balance = self.account_balance()
+        account_risk_cap = account_balance * (self.max_account_risk_percent / 100)
+        if will_send and account_balance < self.start_balance:
+            return {
+                "ok": False,
+                "message": "Current MT5 balance is below the challenge start balance.",
+                "account_balance": account_balance,
+                "start_balance": self.start_balance,
+            }
+        if self.max_account_risk_percent > 0 and account_balance > 0 and risk_amount > account_risk_cap:
+            return {
+                "ok": False,
+                "message": "Challenge risk amount exceeds the configured account-risk cap.",
+                "risk_amount": risk_amount,
+                "account_balance": account_balance,
+                "account_risk_cap": account_risk_cap,
+                "max_account_risk_percent": self.max_account_risk_percent,
+            }
+
+        per_lot = self.client.estimate_trade_risk(symbol, direction, 1.0, entry_price, stop_loss)
+        risk_per_lot = float(per_lot.get("risk") or 0.0)
+        if not per_lot.get("ok") or risk_per_lot <= 0:
+            return {
+                "ok": False,
+                "message": "Could not estimate risk per 1.0 lot.",
+                "risk_amount": risk_amount,
+                "per_lot": per_lot,
+            }
+
+        raw_lot = risk_amount / risk_per_lot
+        lot = self.client.normalize_lot_down(symbol, raw_lot)
+        if lot <= 0:
+            return {
+                "ok": False,
+                "message": "Risk amount is below broker minimum lot risk.",
+                "risk_amount": risk_amount,
+                "risk_per_1_lot": risk_per_lot,
+                "raw_lot": raw_lot,
+                "lot_constraints": self.client.lot_constraints(symbol),
+            }
+
+        estimated = self.client.estimate_trade_risk(symbol, direction, lot, entry_price, stop_loss)
+        final_risk = float(estimated.get("risk") or 0.0)
+        return {
+            "ok": bool(estimated.get("ok")) and final_risk > 0,
+            "message": "Challenge lot calculated.",
+            "symbol": symbol,
+            "direction": direction,
+            "entry_price": entry_price,
+            "entry_source": entry_source,
+            "stop_loss": stop_loss,
+            "quote": quote,
+            "challenge_balance": self.challenge_balance(),
+            "risk_percent": self.risk_percent,
+            "risk_amount": risk_amount,
+            "target_percent": self.target_percent,
+            "reward_risk": self.reward_risk,
+            "risk_per_1_lot": risk_per_lot,
+            "raw_lot": raw_lot,
+            "lot": lot,
+            "estimated_risk": final_risk,
+            "account_balance": account_balance,
+            "max_account_risk_percent": self.max_account_risk_percent,
+            "risk_method": estimated.get("method"),
+        }
+
+    def _order_comment(self, signal: dict[str, Any]) -> str:
+        level = int(self.state.get("level") or 1)
+        score = int(signal.get("setup_score") or 0)
+        timeframe = str(signal.get("timeframe") or "")[:5]
+        return f"20PIP L{level} S{score} {timeframe}"[:31]
+
+    def _record_position_after_placement(
+        self,
+        signal: dict[str, Any],
+        order: dict[str, Any],
+        placement: dict[str, Any],
+        now: datetime,
+        risk_amount: float,
+    ) -> dict[str, Any] | None:
+        positions = self.client.open_positions(signal["symbol"], magic=CHALLENGE_MAGIC)
+        known = set(self.state.setdefault("open_trades", {}))
+        candidates = [position for position in positions if str(position.get("ticket") or "") not in known]
+        if not candidates:
+            return None
+        candidates.sort(key=lambda item: int(item.get("time") or 0), reverse=True)
+        position = candidates[0]
+        ticket = str(position.get("ticket") or "")
+        if not ticket:
+            return None
+        record = {
+            "ticket": ticket,
+            "symbol": signal.get("symbol"),
+            "broker_symbol": order.get("broker_symbol"),
+            "direction": signal.get("direction"),
+            "volume": position.get("volume") or order.get("lot"),
+            "entry": position.get("price_open") or order.get("entry"),
+            "stop_loss": position.get("sl") or order.get("stop_loss"),
+            "take_profit": position.get("tp") or order.get("take_profit"),
+            "risk_amount": risk_amount,
+            "challenge_balance_at_entry": self.challenge_balance(),
+            "level": self.state.get("level"),
+            "opened_at": now.isoformat(timespec="seconds"),
+            "signal": signal,
+            "order": order,
+            "placement": placement,
+            "status": "open",
+        }
+        self.state.setdefault("open_trades", {})[ticket] = record
+        return record
+
+    def run_once(self) -> dict[str, Any]:
+        now = datetime.now()
+        self._heartbeat("scanning")
+        sync_actions = self.sync_open_positions(now)
+        blocks: list[str] = []
+        prepared: dict[str, Any] | None = None
+        placement: dict[str, Any] | None = None
+        selected_signal: dict[str, Any] | None = None
+
+        if self.state.get("status") != "active":
+            blocks.append(f"Challenge status is {self.state.get('status')}.")
+        if self.reward_risk <= 0:
+            blocks.append("Challenge reward/risk is invalid.")
+        if self.state.get("open_trades"):
+            blocks.append("A 20 Pip Challenge position is already open.")
+        if self._already_traded_today(now):
+            blocks.append("One-trade-per-day rule is active and today's challenge trade is already used.")
+
+        scan: dict[str, Any] = {
+            "allowed": [],
+            "preplace": [],
+            "near_misses": [],
+            "rejected": [],
+            "errors": [],
+        }
+        if not blocks:
+            scan = scan_market(
+                symbols=self.symbols,
+                timeframes=self.timeframes,
+                min_score=self.min_setup_score,
+                preplace_min_score=max(85, self.min_setup_score - 5),
+                min_rr=max(1.0, self.reward_risk),
+            )
+            candidates = list(scan.get("allowed", []))
+            if self.allow_pending:
+                candidates.extend(scan.get("preplace", []))
+            candidates.sort(key=lambda item: int(item.get("setup_score") or 0), reverse=True)
+            if not candidates:
+                blocks.append("No challenge-qualified LTA setup found.")
+            else:
+                selected_signal = self._adjust_signal_target(candidates[0])
+
+        if selected_signal:
+            will_send = self.live_trading and self.place_trades
+            spread_check = self.client.spread_check(
+                selected_signal,
+                max_spread_risk_percent=self.max_spread_risk_percent,
+                max_spread_points=self.max_spread_points,
+            )
+            if not spread_check.get("ok"):
+                blocks.extend(str(reason) for reason in (spread_check.get("reasons") or [spread_check.get("message")]))
+            else:
+                risk_amount = self.risk_amount()
+                lot_sizing = self._risk_lot_from_challenge_bank(selected_signal, risk_amount, will_send)
+                if not lot_sizing.get("ok"):
+                    blocks.append(str(lot_sizing.get("message") or "Challenge lot sizing failed."))
+                else:
+                    order = self.client.prepare_order(
+                        selected_signal,
+                        lot=float(lot_sizing["lot"]),
+                        live_trading=will_send,
+                    )
+                    order["magic"] = CHALLENGE_MAGIC
+                    order["comment"] = self._order_comment(selected_signal)
+                    order["lot_sizing"] = lot_sizing
+                    order["spread_check"] = spread_check
+                    order["spread_limits"] = {
+                        "max_spread_risk_percent": self.max_spread_risk_percent,
+                        "max_spread_points": self.max_spread_points,
+                    }
+                    prepared = {
+                        "created_at": now.isoformat(timespec="seconds"),
+                        "signal": selected_signal,
+                        "order": order,
+                        "challenge": {
+                            "level": self.state.get("level"),
+                            "challenge_balance": self.challenge_balance(),
+                            "risk_amount": risk_amount,
+                            "risk_percent": self.risk_percent,
+                            "target_percent": self.target_percent,
+                            "reward_risk": self.reward_risk,
+                            "target_balance": self.target_balance(),
+                        },
+                    }
+                    self._log_event("challenge_order_prepared", prepared=prepared)
+
+                    if will_send:
+                        placement = self.client.place_order(order)
+                        self._log_event("challenge_order_sent", placement=placement, prepared=prepared)
+                        if placement.get("placed"):
+                            self.state["last_trade_date"] = _today_key(now)
+                            self.state.setdefault("stats", {})["placements"] = int(
+                                self.state.setdefault("stats", {}).get("placements") or 0
+                            ) + 1
+                            record = self._record_position_after_placement(
+                                selected_signal,
+                                order,
+                                placement,
+                                now,
+                                risk_amount,
+                            )
+                            if record:
+                                prepared["tracked_position"] = record
+                            _write_state(self.state)
+
+        payload = {
+            "checked_at": now.isoformat(timespec="seconds"),
+            "status": self.state.get("status"),
+            "symbols": list(self.symbols),
+            "timeframes": list(self.timeframes),
+            "live_trading": self.live_trading,
+            "place_trades": self.place_trades,
+            "one_trade_per_day": self.one_trade_per_day,
+            "challenge_balance": self.challenge_balance(),
+            "level": self.state.get("level"),
+            "level_target": round(self.level_target(int(self.state.get("level") or 1)), 2),
+            "final_target_balance": round(self.target_balance(), 2),
+            "risk_percent": self.risk_percent,
+            "target_percent": self.target_percent,
+            "reward_risk": round(self.reward_risk, 3),
+            "risk_amount": round(self.risk_amount(), 2),
+            "open_trade_count": len(self.state.get("open_trades", {})),
+            "sync_actions": sync_actions,
+            "blocked": blocks,
+            "prepared": prepared,
+            "placement": placement,
+            "scan": scan,
+            "state_path": str(STATE_PATH),
+            "events_path": str(EVENTS_PATH),
+        }
+        _write_json(LATEST_PATH, payload)
+        self._heartbeat("waiting")
+        return payload
+
+    def run_forever(self) -> None:
+        print("20 Pip Challenge worker started.")
+        print(f"Symbols: {', '.join(self.symbols)} | timeframes: {', '.join(self.timeframes)}")
+        print(
+            f"Challenge bank: ${self.challenge_balance():.2f}, level {self.state.get('level')}/{self.max_levels}, "
+            f"final target about ${self.target_balance():,.2f}."
+        )
+        print(
+            f"Risk {self.risk_percent:g}% to target {self.target_percent:g}% "
+            f"({self.reward_risk:.2f}R), one trade/day={self.one_trade_per_day}."
+        )
+        print(f"Live trading: {self.live_trading}; CHALLENGE20_PLACE_TRADES: {self.place_trades}")
+        print(f"State: {STATE_PATH}")
+        print("Press Ctrl+C to stop.")
+        while True:
+            payload = self.run_once()
+            blocked = "; ".join(payload.get("blocked") or [])
+            print(
+                f"[{payload['checked_at']}] level={payload['level']} "
+                f"bank=${payload['challenge_balance']:.2f} risk=${payload['risk_amount']:.2f} "
+                f"open={payload['open_trade_count']} prepared={bool(payload['prepared'])} "
+                f"placed={bool((payload.get('placement') or {}).get('placed'))}"
+                + (f" blocked={blocked[:180]}" if blocked else "")
+            )
+            time.sleep(self.interval_seconds)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="20 Pip Challenge sub-bot.")
+    parser.add_argument("--once", action="store_true", help="Run one scan and exit.")
+    args = parser.parse_args()
+
+    lock = ChallengeLock(LOCK_PATH)
+    lock.acquire()
+    bot = TwentyPipChallengeBot()
+    if args.once:
+        print(json.dumps(bot.run_once(), indent=2, default=str))
+        return
+    bot.run_forever()
+
+
+if __name__ == "__main__":
+    main()

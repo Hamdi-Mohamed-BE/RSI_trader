@@ -118,3 +118,32 @@ Safety gates:
 - `AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES=60` cools a symbol until one hour after any MT5 position on that symbol was opened or closed. This includes manual trades and break-even closes. The old `AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES` name still works as a fallback.
 - `reports/automation/automation.lock` and `automation_heartbeat.json` prevent accidentally running two automation workers.
 - Use `stop_automation.bat` when you want to stop the worker and clear the runtime lock.
+
+## 20 Pip Challenge Bot
+
+Use `run_20pip_challenge.bat` to run the separate 20 Pip Challenge worker in its own visible terminal window.
+
+This worker has its own magic number, tracker, and `.env` switches. It starts with a virtual challenge bank of `$20`, risks `23%` of that challenge bank, targets `30%`, and advances through `30` compounding levels. That is about `1.30R`, matching the common 20 Pip Challenge model.
+
+Defaults:
+
+- Symbols: `CHALLENGE20_SYMBOLS=XAUUSD`
+- Timeframes: `CHALLENGE20_TIMEFRAMES=M5,M15`
+- Minimum setup score: `CHALLENGE20_MIN_SETUP_SCORE=90`
+- One challenge trade per day: `CHALLENGE20_ONE_TRADE_PER_DAY=true`
+- Live order sending: off, unless both `CHALLENGE20_LIVE_TRADING=true` and `CHALLENGE20_PLACE_TRADES=true`
+- Account cap: `CHALLENGE20_MAX_ACCOUNT_RISK_PERCENT=23`
+- Spread cap: `CHALLENGE20_MAX_SPREAD_RISK_PERCENT=15`
+
+The worker writes:
+
+- state: `reports/20pip_challenge/challenge_state.json`
+- latest scan: `reports/20pip_challenge/latest.json`
+- event log: `reports/20pip_challenge/challenge_events.jsonl`
+
+Safety notes:
+
+- The challenge bank is tracked separately from the MT5 account. The bot sizes from the challenge bank and checks that the account can support the risk before sending anything.
+- Public versions of the challenge are very aggressive. A few losses can wipe out the challenge bank, so the live switches are intentionally separate from the main automation switches.
+- The current implementation uses LTA A+ confirmation on MT5 candles. It does not use a true 10-second candle feed yet.
+- Use `stop_20pip_challenge.bat` when you want to stop this worker and clear the challenge lock.
