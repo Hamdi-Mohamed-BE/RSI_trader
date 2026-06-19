@@ -14,6 +14,7 @@ from .config import REPORTS_DIR, load_config
 from .models import TRADE_SYMBOLS
 from .mt5_client import MT5Client
 from .scanner import DEFAULT_SCAN_TIMEFRAMES, scan_market
+from .session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, minutes_in_timezone
 
 
 AUTOMATION_DIR = REPORTS_DIR / "automation"
@@ -366,6 +367,8 @@ class TradeAutomation:
         self.symbol_loss_lockout_rest_of_session = _env_bool("AUTO_SYMBOL_LOSS_LOCKOUT_REST_OF_SESSION", True)
         self.strict_session_start = _parse_time_minutes(os.getenv("AUTO_STRICT_SESSION_START"), 10 * 60)
         self.strict_session_end = _parse_time_minutes(os.getenv("AUTO_STRICT_SESSION_END"), 13 * 60)
+        self.session_timezone = os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)
+        self.data_timezone = os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE)
         self.strict_session_min_score = max(1, min(100, _env_int("AUTO_STRICT_SESSION_MIN_SCORE", 95)))
         self.strict_session_preplace_min_score = max(
             1,
@@ -487,10 +490,16 @@ class TradeAutomation:
     def _in_strict_session_window(self, signal: dict[str, Any], now: datetime) -> bool:
         if self.strict_session_start == self.strict_session_end:
             return False
-        minutes = self._minutes_of_day(self._signal_time(signal, now))
+        minutes = minutes_in_timezone(self._signal_time(signal, now), self.data_timezone, self.session_timezone)
         if self.strict_session_start < self.strict_session_end:
             return self.strict_session_start <= minutes < self.strict_session_end
         return minutes >= self.strict_session_start or minutes < self.strict_session_end
+
+    def _strict_window_label(self) -> str:
+        return (
+            f"{os.getenv('AUTO_STRICT_SESSION_START', '10:00')}-"
+            f"{os.getenv('AUTO_STRICT_SESSION_END', '13:00')} {self.session_timezone}"
+        )
 
     def _strict_session_reasons(self, signal: dict[str, Any], now: datetime, pending: bool = False) -> list[str]:
         if not self._in_strict_session_window(signal, now):
@@ -501,15 +510,15 @@ class TradeAutomation:
         min_score = self.strict_session_preplace_min_score if pending else self.strict_session_min_score
         if score < min_score:
             reasons.append(
-                f"Strict 10:00-13:00 filter requires score >= {min_score}; setup score is {score}."
+                f"Strict {self._strict_window_label()} filter requires score >= {min_score}; setup score is {score}."
             )
 
         model = str(signal.get("entry_model") or "")
         if self.strict_session_require_internal_break and "Internal Structure" not in model:
-            reasons.append("Strict 10:00-13:00 filter requires internal-structure confirmation.")
+            reasons.append(f"Strict {self._strict_window_label()} filter requires internal-structure confirmation.")
 
         if pending and str(signal.get("pending_order_type") or "").upper() not in {"BUY_STOP", "SELL_STOP"}:
-            reasons.append("Strict 10:00-13:00 filter allows only break-stop pending orders, not retest limits.")
+            reasons.append(f"Strict {self._strict_window_label()} filter allows only break-stop pending orders, not retest limits.")
         return reasons
 
     def _session_end(self, value: datetime) -> datetime:
@@ -1696,6 +1705,8 @@ class TradeAutomation:
                 "symbol_max_losses_per_day": self.symbol_max_losses_per_day,
                 "symbol_max_daily_loss_r": self.symbol_max_daily_loss_r,
                 "symbol_loss_lockout_rest_of_session": self.symbol_loss_lockout_rest_of_session,
+                "session_timezone": self.session_timezone,
+                "data_timezone": self.data_timezone,
                 "strict_session_start": os.getenv("AUTO_STRICT_SESSION_START", "10:00"),
                 "strict_session_end": os.getenv("AUTO_STRICT_SESSION_END", "13:00"),
                 "strict_session_min_score": self.strict_session_min_score,
@@ -1751,7 +1762,7 @@ class TradeAutomation:
         )
         print(
             f"Strict window: {os.getenv('AUTO_STRICT_SESSION_START', '10:00')}-"
-            f"{os.getenv('AUTO_STRICT_SESSION_END', '13:00')} requires "
+            f"{os.getenv('AUTO_STRICT_SESSION_END', '13:00')} {self.session_timezone} requires "
             f"S{self.strict_session_min_score}+ and internal-structure confirmation."
         )
         print(f"Trade protection: {self.trade_protection_enabled}; final RR: 1:{self.protection_final_rr:g}")

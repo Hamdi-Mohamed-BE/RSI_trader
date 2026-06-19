@@ -73,7 +73,7 @@ Defaults:
 
 - Live automation lot sizing: `MAX_LOT_RISK_PCT=3.0`
 - Max spread: `MAX_SPREAD_RISK_PERCENT=15`, meaning spread must be 15% or less of the stop distance. `MAX_SPREAD_POINTS=0` disables the fixed-points cap.
-- Scan timeframes: `M5,M15,M30,H1,H4,D1,W1`
+- Scan timeframes: `M15,M30,H1,H4,D1,W1`
 - Scan interval: `60` seconds
 - Console detail limit: `AUTO_LOG_DETAIL_LIMIT=8`
 - Minimum setup score: `90`
@@ -83,7 +83,7 @@ Defaults:
 - Total daily bot trade cap: `MAX_TRADES_PER_DAY=3`, counted across all symbols and both market/pending placements.
 - Whole-bot loss streak stop: `AUTO_MAX_CONSECUTIVE_LOSSES=2`
 - Symbol daily lock: `AUTO_SYMBOL_MAX_LOSSES_PER_DAY=1` or `AUTO_SYMBOL_MAX_DAILY_LOSS_R=1.0`
-- Strict window: `AUTO_STRICT_SESSION_START=10:00`, `AUTO_STRICT_SESSION_END=13:00`, requiring stronger internal-structure confirmation.
+- Strict window: `AUTO_STRICT_SESSION_START=10:00`, `AUTO_STRICT_SESSION_END=13:00`, interpreted in `MARKET_SESSION_TIMEZONE=America/New_York`, requiring stronger internal-structure confirmation.
 - Forex HTF agreement: `AUTO_FOREX_REQUIRE_HTF_AGREEMENT=true`
 - Symbol activity cooldown: `AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES=60`
 - Backtest scan step: `3` candles for faster UI runs; set it to `1` for a slower full scan.
@@ -110,7 +110,7 @@ Safety gates:
 - `AUTO_MAX_CONSECUTIVE_LOSSES=2` stops all new orders after two losing bot trades in a row.
 - A losing bot trade locks that symbol until the later of the current session end or the normal activity cooldown. With `AUTO_SYMBOL_MAX_LOSSES_PER_DAY=1`, that symbol is also blocked for the rest of the day after one failed A+ setup.
 - `AUTO_SYMBOL_MAX_DAILY_LOSS_R=1.0` blocks a symbol for the day if its closed bot trades reach -1R or worse.
-- During `AUTO_STRICT_SESSION_START` to `AUTO_STRICT_SESSION_END`, market entries need `AUTO_STRICT_SESSION_MIN_SCORE` and internal-structure confirmation. Pending orders need `AUTO_STRICT_SESSION_PREPLACE_MIN_SCORE` and must be break-stop orders.
+- During `AUTO_STRICT_SESSION_START` to `AUTO_STRICT_SESSION_END` in `MARKET_SESSION_TIMEZONE`, market entries need `AUTO_STRICT_SESSION_MIN_SCORE` and internal-structure confirmation. Pending orders need `AUTO_STRICT_SESSION_PREPLACE_MIN_SCORE` and must be break-stop orders.
 - When forex pairs are in the loop, `AUTO_FOREX_REQUIRE_HTF_AGREEMENT=true` requires H1/H4/D1 agreement before a forex signal can pass.
 - `AUTO_ONE_POSITION_PER_SYMBOL=true` blocks new entries when that symbol already has an open position.
 - `AUTO_ONE_PENDING_PER_SYMBOL=true` blocks a second LTA pending order on a symbol that already has one.
@@ -128,7 +128,7 @@ This worker has its own magic number, tracker, and `.env` switches. It starts wi
 Defaults:
 
 - Symbols: `CHALLENGE20_SYMBOLS=XAUUSD`
-- Timeframes: `CHALLENGE20_TIMEFRAMES=M5,M15`
+- Timeframes: `CHALLENGE20_TIMEFRAMES=M15,M30`
 - Minimum setup score: `CHALLENGE20_MIN_SETUP_SCORE=90`
 - One challenge trade per day: `CHALLENGE20_ONE_TRADE_PER_DAY=true`
 - Live order sending: off, unless both `CHALLENGE20_LIVE_TRADING=true` and `CHALLENGE20_PLACE_TRADES=true`
@@ -147,3 +147,30 @@ Safety notes:
 - Public versions of the challenge are very aggressive. A few losses can wipe out the challenge bank, so the live switches are intentionally separate from the main automation switches.
 - The current implementation uses LTA A+ confirmation on MT5 candles. It does not use a true 10-second candle feed yet.
 - Use `stop_20pip_challenge.bat` when you want to stop this worker and clear the challenge lock.
+
+## ORB Bot
+
+Use `run_orb_bot.bat` to run the separate Opening Range Breakout worker in its own visible terminal window.
+
+Defaults:
+
+- Symbols: `ORB_SYMBOLS=XAUUSD,XAGUSD,BTCUSD,US30,EURUSD,GBPUSD,USDJPY,USDCHF,USDCAD,AUDUSD,NZDUSD`
+- Timeframe: `ORB_TIMEFRAME=M15`
+- Session window: `ORB_SESSION_START=09:30`, `ORB_SESSION_END=16:00`, interpreted in `ORB_SESSION_TIMEZONE=America/New_York`
+- Opening range: `ORB_RANGE_MINUTES=15`
+- Target: `ORB_RR=5.0`
+- Live order sending: off, unless `ORB_LIVE_TRADING=true` and `ORB_PLACE_TRADES=true`
+- Pending stop sending: off, unless `ORB_PLACE_PENDING=true`
+- Candle data timezone: `MARKET_DATA_TIMEZONE=UTC`
+
+The worker writes:
+
+- state: `reports/orb_bot/orb_state.json`
+- latest scan: `reports/orb_bot/latest.json`
+- event log: `reports/orb_bot/orb_events.jsonl`
+
+Safety notes:
+
+- ORB has its own magic number and does not share the LTA automation state.
+- Pending ORB stops are prepared by default but not sent unless the pending live switch is enabled.
+- Use `stop_orb_bot.bat` when you want to stop this worker and clear the ORB lock.
