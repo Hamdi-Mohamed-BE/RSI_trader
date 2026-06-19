@@ -163,11 +163,12 @@ Use `run_orb_bot.bat` to run the separate Opening Range Breakout worker in its o
 
 Defaults:
 
-- Symbols: `ORB_SYMBOLS=XAUUSD,XAGUSD,BTCUSD,US30,EURUSD,GBPUSD,USDJPY,USDCHF,USDCAD,AUDUSD,NZDUSD`
+- Symbols: `ORB_SYMBOLS=BTCUSD,XAGUSD,US30,EURUSD,GBPUSD,USDCHF,XAUUSD,NZDUSD,AUDUSD,USDCAD,USDJPY`, ordered by latest positive ORB net R.
 - Timeframe: `ORB_TIMEFRAME=M15`
 - Session window: `ORB_SESSION_START=09:30`, `ORB_SESSION_END=16:00`, interpreted in `ORB_SESSION_TIMEZONE=America/New_York`
 - Opening range: `ORB_RANGE_MINUTES=15`
 - Target: `ORB_RR=5.0`
+- Trade protection: `ORB_PROTECT_OPEN_TRADES=true`, `ORB_PROTECTION_FINAL_RR=5.0`
 - Live order sending: off, unless `ORB_LIVE_TRADING=true` and `ORB_PLACE_TRADES=true`
 - Pending stop sending: off, unless `ORB_PLACE_PENDING=true`
 - Candle data timezone: `MARKET_DATA_TIMEZONE=UTC`
@@ -177,9 +178,11 @@ The worker writes:
 - state: `reports/orb_bot/orb_state.json`
 - latest scan: `reports/orb_bot/latest.json`
 - event log: `reports/orb_bot/orb_events.jsonl`
+- protection log: `reports/orb_bot/orb_trade_protection.jsonl`
 
 Safety notes:
 
 - ORB has its own magic number and does not share the LTA automation state.
+- ORB protection checks ORB-owned open positions every scan. With the default 1:5 profile, TP1 moves SL to break-even, TP2 moves SL to TP1, TP3 moves SL to TP2, TP4 moves SL to TP3, and TP5 moves SL to TP4.
 - Pending ORB stops are prepared by default but not sent unless the pending live switch is enabled.
 - Use `stop_orb_bot.bat` when you want to stop this worker and clear the ORB lock.

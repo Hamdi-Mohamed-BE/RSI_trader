@@ -23,6 +23,7 @@ EVENTS_PATH = ORB_DIR / "orb_events.jsonl"
 LATEST_PATH = ORB_DIR / "latest.json"
 LOCK_PATH = ORB_DIR / "orb.lock"
 HEARTBEAT_PATH = ORB_DIR / "orb_heartbeat.json"
+PROTECTION_LOG_PATH = ORB_DIR / "orb_trade_protection.jsonl"
 
 
 def _env_bool(name: str, default: bool) -> bool:
@@ -72,7 +73,7 @@ def _append_jsonl(path: Path, payload: dict[str, Any]) -> None:
 
 def _read_state() -> dict[str, Any]:
     if not STATE_PATH.exists():
-        return {"created_at": datetime.now().isoformat(timespec="seconds"), "consumed": {}}
+        return {"created_at": datetime.now().isoformat(timespec="seconds"), "consumed": {}, "protected_positions": {}}
     try:
         data = json.loads(STATE_PATH.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
@@ -80,6 +81,7 @@ def _read_state() -> dict[str, Any]:
     if not isinstance(data, dict):
         return {"created_at": datetime.now().isoformat(timespec="seconds"), "consumed": {}}
     data.setdefault("consumed", {})
+    data.setdefault("protected_positions", {})
     return data
 
 
@@ -147,6 +149,8 @@ class ORBBot:
             session_timezone=os.getenv("ORB_SESSION_TIMEZONE", os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)),
             data_timezone=os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE),
         )
+        self.protect_open_trades = _env_bool("ORB_PROTECT_OPEN_TRADES", True)
+        self.protection_final_rr = max(1.0, _env_float("ORB_PROTECTION_FINAL_RR", self.settings.reward_risk))
         self.state = _read_state()
         _write_state(self.state)
 
@@ -226,6 +230,202 @@ class ORBBot:
         score = int(signal.get("setup_score") or 0)
         return f"ORB {direction} S{score} {self.timeframe}"[:31]
 
+    @staticmethod
+    def _position_direction(position: dict[str, Any]) -> str:
+        return "SELL" if int(position.get("type") or 0) == 1 else "BUY"
+
+    @staticmethod
+    def _level_at_r(entry: float, risk: float, direction: str, r_multiple: float) -> float:
+        if direction == "BUY":
+            return entry + risk * r_multiple
+        return entry - risk * r_multiple
+
+    @staticmethod
+    def _stage_is_hit(market_price: float, target: float, direction: str) -> bool:
+        if direction == "BUY":
+            return market_price >= target
+        return market_price <= target
+
+    @staticmethod
+    def _stop_is_better(current_stop: float, desired_stop: float, direction: str) -> bool:
+        if current_stop <= 0:
+            return True
+        if direction == "BUY":
+            return desired_stop > current_stop
+        return desired_stop < current_stop
+
+    def _position_state(self, ticket: str, position: dict[str, Any]) -> dict[str, Any]:
+        protected = self.state.setdefault("protected_positions", {})
+        existing = protected.get(ticket, {})
+        broker_symbol = str(position.get("symbol") or existing.get("broker_symbol") or "")
+        direction = self._position_direction(position)
+        entry = float(position.get("price_open") or existing.get("entry") or 0.0)
+        current_stop = float(position.get("sl") or 0.0)
+        take_profit = float(position.get("tp") or 0.0)
+        initial_stop = float(existing.get("initial_stop") or current_stop or 0.0)
+
+        if initial_stop <= 0 and take_profit > 0 and entry > 0:
+            one_r = abs(take_profit - entry) / self.protection_final_rr
+            initial_stop = entry - one_r if direction == "BUY" else entry + one_r
+
+        payload = {
+            **existing,
+            "ticket": ticket,
+            "broker_symbol": broker_symbol,
+            "symbol": existing.get("symbol") or broker_symbol,
+            "direction": direction,
+            "entry": entry,
+            "initial_stop": initial_stop,
+            "take_profit": take_profit,
+            "status": "open",
+            "last_seen_at": datetime.now().isoformat(timespec="seconds"),
+        }
+        protected[ticket] = payload
+        return payload
+
+    def protect_open_positions(self, now: datetime) -> list[dict[str, Any]]:
+        if not self.protect_open_trades:
+            return []
+
+        actions: list[dict[str, Any]] = []
+        positions = self.client.open_positions(magic=ORB_MAGIC)
+        protected_positions = self.state.setdefault("protected_positions", {})
+        open_tickets = {str(position.get("ticket")) for position in positions if position.get("ticket")}
+
+        for stale_ticket in set(protected_positions) - open_tickets:
+            state = protected_positions[stale_ticket]
+            if state.get("status") == "closed":
+                continue
+            state["status"] = "closed"
+            state["closed_seen_at"] = now.isoformat(timespec="seconds")
+            actions.append(
+                {
+                    "checked_at": now.isoformat(timespec="seconds"),
+                    "ticket": stale_ticket,
+                    "symbol": state.get("symbol"),
+                    "broker_symbol": state.get("broker_symbol"),
+                    "status": "closed_seen",
+                }
+            )
+
+        for position in positions:
+            ticket = str(position.get("ticket") or "")
+            if not ticket:
+                continue
+
+            state = self._position_state(ticket, position)
+            direction = state["direction"]
+            broker_symbol = state["broker_symbol"]
+            entry = float(state["entry"])
+            initial_stop = float(state["initial_stop"])
+            take_profit = float(state["take_profit"] or position.get("tp") or 0.0)
+            current_stop = float(position.get("sl") or 0.0)
+            risk = abs(entry - initial_stop)
+
+            action: dict[str, Any] = {
+                "checked_at": now.isoformat(timespec="seconds"),
+                "ticket": ticket,
+                "symbol": state["symbol"],
+                "broker_symbol": broker_symbol,
+                "direction": direction,
+                "entry": entry,
+                "initial_stop": initial_stop,
+                "current_stop": current_stop,
+                "take_profit": take_profit,
+                "status": "waiting",
+                "stage": int(state.get("stage") or 0),
+            }
+
+            if entry <= 0 or initial_stop <= 0 or risk <= 0:
+                action["status"] = "skipped_missing_initial_risk"
+                actions.append(action)
+                continue
+
+            quote = self.client.current_quote(broker_symbol)
+            if not quote:
+                action["status"] = "skipped_no_quote"
+                actions.append(action)
+                continue
+
+            market_price = float(quote["bid"] if direction == "BUY" else quote["ask"])
+            final_stage = max(1, int(round(self.protection_final_rr)))
+            stage_targets = {
+                stage: self._level_at_r(entry, risk, direction, float(stage))
+                for stage in range(1, final_stage + 1)
+            }
+            hit_stage = 0
+            for stage, target in stage_targets.items():
+                if self._stage_is_hit(market_price, target, direction):
+                    hit_stage = stage
+
+            action["market_price"] = market_price
+            action["targets"] = {f"tp{stage}": target for stage, target in stage_targets.items()}
+            action["hit_stage"] = hit_stage
+
+            if hit_stage <= 0:
+                state["stage"] = max(int(state.get("stage") or 0), 0)
+                state["status"] = "waiting_for_tp1"
+                actions.append(action)
+                continue
+
+            if hit_stage == 1:
+                desired_stop = entry
+                action["rule"] = "tp1_hit_move_sl_to_break_even"
+            else:
+                desired_stop = stage_targets[hit_stage - 1]
+                action["rule"] = f"tp{hit_stage}_hit_trail_sl_to_tp{hit_stage - 1}"
+
+            desired_stop = self.client.normalize_price(broker_symbol, desired_stop)
+            action["desired_stop"] = desired_stop
+
+            if not self._stop_is_better(current_stop, desired_stop, direction):
+                action["status"] = "already_protected"
+                state["stage"] = max(int(state.get("stage") or 0), hit_stage)
+                state["status"] = action["status"]
+                state["last_stop"] = current_stop
+                actions.append(action)
+                continue
+
+            if (direction == "BUY" and desired_stop >= market_price) or (direction == "SELL" and desired_stop <= market_price):
+                action["status"] = "skipped_stop_too_close_to_market"
+                actions.append(action)
+                continue
+
+            result = self.client.modify_position_sl_tp(
+                ticket=int(ticket),
+                symbol=broker_symbol,
+                stop_loss=desired_stop,
+                take_profit=take_profit if take_profit > 0 else None,
+            )
+            action["modify_result"] = result
+            if result.get("modified"):
+                action["status"] = "modified"
+                state["stage"] = max(int(state.get("stage") or 0), hit_stage)
+                state["status"] = action["status"]
+                state["last_stop"] = desired_stop
+                state["last_modified_at"] = now.isoformat(timespec="seconds")
+                self._log_event(
+                    "orb_protection_modified",
+                    ticket=ticket,
+                    symbol=state["symbol"],
+                    broker_symbol=broker_symbol,
+                    direction=direction,
+                    stage=hit_stage,
+                    old_stop=current_stop,
+                    new_stop=desired_stop,
+                    take_profit=take_profit,
+                    market_price=market_price,
+                )
+            else:
+                action["status"] = "modify_failed"
+                state["status"] = action["status"]
+
+            actions.append(action)
+            _append_jsonl(PROTECTION_LOG_PATH, action)
+
+        _write_state(self.state)
+        return actions
+
     def _prepare_signal(self, signal: dict[str, Any], now: datetime) -> tuple[dict[str, Any] | None, list[str]]:
         blocks: list[str] = []
         quote = self.client.current_quote(str(signal.get("symbol") or ""))
@@ -268,6 +468,7 @@ class ORBBot:
     def run_once(self) -> dict[str, Any]:
         now = now_naive(self.settings.data_timezone)
         self._heartbeat("scanning")
+        protection_actions = self.protect_open_positions(now)
         prepared: list[dict[str, Any]] = []
         placements: list[dict[str, Any]] = []
         blocked: list[dict[str, Any]] = []
@@ -325,6 +526,14 @@ class ORBBot:
             "prepare_pending": self.prepare_pending,
             "place_pending": self.place_pending,
             "risk_percent": self.risk_percent,
+            "trade_protection": {
+                "enabled": self.protect_open_trades,
+                "final_rr": self.protection_final_rr,
+                "checked_count": len(protection_actions),
+                "modified_count": sum(1 for action in protection_actions if action.get("status") == "modified"),
+                "actions": protection_actions,
+                "log_path": str(PROTECTION_LOG_PATH),
+            },
             "prepared_count": len(prepared),
             "placement_count": len(placements),
             "blocked": blocked,
@@ -346,14 +555,17 @@ class ORBBot:
             f"range={self.settings.range_minutes}m, RR={self.settings.reward_risk:g}."
         )
         print(f"Candle/data timezone: {self.settings.data_timezone}.")
+        print(f"Trade protection: {self.protect_open_trades}; final RR: {self.protection_final_rr:g}.")
         print(f"Live trading: {self.live_trading}; ORB_PLACE_TRADES: {self.place_trades}; ORB_PLACE_PENDING: {self.place_pending}")
         print(f"State: {STATE_PATH}")
         print("Press Ctrl+C to stop.")
         while True:
             payload = self.run_once()
+            protection = payload.get("trade_protection") or {}
             print(
                 f"[{payload['checked_at']}] prepared={payload['prepared_count']} "
-                f"sent={payload['placement_count']} blocked={len(payload['blocked'])} errors={len(payload['errors'])}"
+                f"sent={payload['placement_count']} blocked={len(payload['blocked'])} errors={len(payload['errors'])} "
+                f"protected={protection.get('modified_count', 0)}/{protection.get('checked_count', 0)}"
             )
             time.sleep(self.interval_seconds)
 
