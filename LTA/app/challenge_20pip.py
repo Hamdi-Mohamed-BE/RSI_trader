@@ -190,6 +190,10 @@ class TwentyPipChallengeBot:
         self.max_account_risk_percent = max(0.0, _env_float("CHALLENGE20_MAX_ACCOUNT_RISK_PERCENT", 23.0))
         self.max_spread_risk_percent = max(0.0, _env_float("CHALLENGE20_MAX_SPREAD_RISK_PERCENT", 15.0))
         self.max_spread_points = max(0.0, _env_float("CHALLENGE20_MAX_SPREAD_POINTS", 0.0))
+        self.protect_open_trades = _env_bool("CHALLENGE20_PROTECT_OPEN_TRADES", False)
+        self.protection_final_rr = max(1.0, _env_float("CHALLENGE20_PROTECTION_FINAL_RR", self.reward_risk or 3.0))
+        self.tp1_partial_close_enabled = _env_bool("CHALLENGE20_TP1_PARTIAL_CLOSE", False)
+        self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("CHALLENGE20_TP1_PARTIAL_CLOSE_PCT", 0.0)))
         self.allow_pending = _env_bool("CHALLENGE20_ALLOW_PENDING", False)
         self.orb_timeframe = os.getenv("CHALLENGE20_ORB_TIMEFRAME", os.getenv("ORB_TIMEFRAME", "M15")).strip().upper() or "M15"
         self.orb_lookback_days = max(3, _env_int("CHALLENGE20_ORB_LOOKBACK_DAYS", _env_int("ORB_LOOKBACK_DAYS", 10)))
@@ -241,6 +245,26 @@ class TwentyPipChallengeBot:
     def account_balance(self) -> float:
         account = self.client.account_info()
         return float((account or {}).get("balance") or 0.0)
+
+    @staticmethod
+    def _level_at_r(entry: float, risk: float, direction: str, r_multiple: float) -> float:
+        if direction == "BUY":
+            return entry + risk * r_multiple
+        return entry - risk * r_multiple
+
+    @staticmethod
+    def _stage_is_hit(market_price: float, target: float, direction: str) -> bool:
+        if direction == "BUY":
+            return market_price >= target
+        return market_price <= target
+
+    @staticmethod
+    def _stop_is_better(current_stop: float, desired_stop: float, direction: str) -> bool:
+        if current_stop <= 0:
+            return True
+        if direction == "BUY":
+            return desired_stop > current_stop
+        return desired_stop < current_stop
 
     def _heartbeat(self, status: str) -> None:
         _write_json(
@@ -313,6 +337,7 @@ class TwentyPipChallengeBot:
                 "direction": direction,
                 "volume": position.get("volume"),
                 "entry": entry,
+                "initial_stop": stop,
                 "stop_loss": stop,
                 "take_profit": position.get("tp"),
                 "risk_amount": risk_amount,
@@ -370,6 +395,160 @@ class TwentyPipChallengeBot:
         _write_state(self.state)
         return actions
 
+    def protect_open_positions(self, now: datetime) -> list[dict[str, Any]]:
+        if not self.protect_open_trades:
+            return []
+
+        positions = self.client.open_positions(magic=CHALLENGE_MAGIC)
+        open_trades = self.state.setdefault("open_trades", {})
+        actions: list[dict[str, Any]] = []
+
+        for position in positions:
+            ticket = str(position.get("ticket") or "")
+            if not ticket:
+                continue
+
+            trade = open_trades.setdefault(
+                ticket,
+                {
+                    "ticket": ticket,
+                    "symbol": self._base_symbol_from_broker_symbol(str(position.get("symbol") or "")),
+                    "broker_symbol": position.get("symbol"),
+                    "status": "open",
+                },
+            )
+            broker_symbol = str(position.get("symbol") or trade.get("broker_symbol") or "")
+            direction = str(trade.get("direction") or ("SELL" if int(position.get("type") or 0) == 1 else "BUY")).upper()
+            entry = float(position.get("price_open") or trade.get("entry") or 0.0)
+            initial_stop = float(trade.get("initial_stop") or trade.get("stop_loss") or position.get("sl") or 0.0)
+            current_stop = float(position.get("sl") or 0.0)
+            take_profit = float(position.get("tp") or trade.get("take_profit") or 0.0)
+            risk = abs(entry - initial_stop)
+
+            action: dict[str, Any] = {
+                "checked_at": now.isoformat(timespec="seconds"),
+                "ticket": ticket,
+                "symbol": trade.get("symbol"),
+                "broker_symbol": broker_symbol,
+                "direction": direction,
+                "entry": entry,
+                "initial_stop": initial_stop,
+                "current_stop": current_stop,
+                "take_profit": take_profit,
+                "status": "waiting",
+                "stage": int(trade.get("stage") or 0),
+            }
+
+            if entry <= 0 or initial_stop <= 0 or risk <= 0:
+                action["status"] = "skipped_missing_initial_risk"
+                actions.append(action)
+                continue
+
+            quote = self.client.current_quote(broker_symbol) or self.client.current_quote(str(trade.get("symbol") or ""))
+            if not quote:
+                action["status"] = "skipped_no_quote"
+                actions.append(action)
+                continue
+
+            market_price = float(quote["bid"] if direction == "BUY" else quote["ask"])
+            final_stage = max(1, int(round(self.protection_final_rr)))
+            stage_targets = {
+                stage: self._level_at_r(entry, risk, direction, float(stage))
+                for stage in range(1, final_stage + 1)
+            }
+            hit_stage = 0
+            for stage, target in stage_targets.items():
+                if self._stage_is_hit(market_price, target, direction):
+                    hit_stage = stage
+
+            action["market_price"] = market_price
+            action["targets"] = {f"tp{stage}": target for stage, target in stage_targets.items()}
+            action["hit_stage"] = hit_stage
+
+            if hit_stage <= 0:
+                trade["stage"] = max(int(trade.get("stage") or 0), 0)
+                trade["status"] = "waiting_for_tp1"
+                actions.append(action)
+                continue
+
+            partial_payload: dict[str, Any] = {
+                "enabled": self.tp1_partial_close_enabled,
+                "percent": self.tp1_partial_close_pct,
+                "done": bool(trade.get("tp1_partial_done")),
+                "status": trade.get("tp1_partial_status"),
+            }
+            action["tp1_partial_close"] = partial_payload
+            if self.tp1_partial_close_enabled and self.tp1_partial_close_pct > 0 and not trade.get("tp1_partial_done"):
+                result = self.client.close_partial_position(
+                    ticket=int(ticket),
+                    symbol=broker_symbol,
+                    direction=direction,
+                    current_volume=float(position.get("volume") or 0.0),
+                    close_percent=self.tp1_partial_close_pct,
+                    comment=f"20PIP TP1 {self.tp1_partial_close_pct:g}%",
+                )
+                partial_payload["result"] = result
+                if result.get("closed"):
+                    status = "closed"
+                elif result.get("permanent_skip"):
+                    status = "skipped"
+                else:
+                    status = "failed"
+                partial_payload["status"] = status
+                if result.get("closed") or result.get("permanent_skip"):
+                    trade["tp1_partial_done"] = True
+                    trade["tp1_partial_status"] = status
+                    trade["tp1_partial_at"] = now.isoformat(timespec="seconds")
+                    trade["tp1_partial_percent"] = self.tp1_partial_close_pct
+                    trade["tp1_partial_closed_volume"] = result.get("closed_volume")
+                    trade["tp1_partial_remaining_volume"] = result.get("remaining_volume")
+
+            if hit_stage == 1:
+                desired_stop = entry
+                action["rule"] = "tp1_hit_move_sl_to_break_even"
+            else:
+                desired_stop = stage_targets[hit_stage - 1]
+                action["rule"] = f"tp{hit_stage}_hit_trail_sl_to_tp{hit_stage - 1}"
+
+            desired_stop = self.client.normalize_price(broker_symbol, desired_stop)
+            action["desired_stop"] = desired_stop
+
+            if not self._stop_is_better(current_stop, desired_stop, direction):
+                action["status"] = "already_protected"
+                trade["stage"] = max(int(trade.get("stage") or 0), hit_stage)
+                trade["status"] = action["status"]
+                trade["last_stop"] = current_stop
+                actions.append(action)
+                continue
+
+            if (direction == "BUY" and desired_stop >= market_price) or (direction == "SELL" and desired_stop <= market_price):
+                action["status"] = "skipped_stop_too_close_to_market"
+                actions.append(action)
+                continue
+
+            result = self.client.modify_position_sl_tp(
+                ticket=int(ticket),
+                symbol=broker_symbol,
+                stop_loss=desired_stop,
+                take_profit=take_profit if take_profit > 0 else None,
+            )
+            action["modify_result"] = result
+            if result.get("modified"):
+                action["status"] = "modified"
+                trade["stage"] = max(int(trade.get("stage") or 0), hit_stage)
+                trade["status"] = action["status"]
+                trade["last_stop"] = desired_stop
+                trade["last_modified_at"] = now.isoformat(timespec="seconds")
+            else:
+                action["status"] = "modify_failed"
+                trade["status"] = action["status"]
+
+            self._log_event("challenge_trade_protection", action=action)
+            actions.append(action)
+
+        _write_state(self.state)
+        return actions
+
     def _already_traded_today(self, now: datetime) -> bool:
         if not self.one_trade_per_day:
             return False
@@ -392,9 +571,9 @@ class TwentyPipChallengeBot:
             return adjusted
         target = entry + risk * rr if direction == "BUY" else entry - risk * rr
         adjusted["take_profit"] = round(target, 5)
-        adjusted["tp1"] = round(target, 5)
-        adjusted["tp2"] = None
-        adjusted["tp3"] = None
+        adjusted["tp1"] = round(self._level_at_r(entry, risk, direction, 1.0), 5)
+        adjusted["tp2"] = round(self._level_at_r(entry, risk, direction, 2.0), 5) if rr >= 2 else None
+        adjusted["tp3"] = round(target, 5) if rr >= 3 else None
         adjusted["tp4"] = None
         adjusted["tp5"] = None
         adjusted["risk_reward"] = round(rr, 3)
@@ -591,6 +770,7 @@ class TwentyPipChallengeBot:
         now = datetime.now()
         self._heartbeat("scanning")
         sync_actions = self.sync_open_positions(now)
+        protection_actions = self.protect_open_positions(now)
         blocks: list[str] = []
         prepared: dict[str, Any] | None = None
         placement: dict[str, Any] | None = None
@@ -720,6 +900,17 @@ class TwentyPipChallengeBot:
             "risk_percent": self.risk_percent,
             "target_percent": self.target_percent,
             "reward_risk": round(self.reward_risk, 3),
+            "trade_protection": {
+                "enabled": self.protect_open_trades,
+                "final_rr": self.protection_final_rr,
+                "tp1_partial_close": {
+                    "enabled": self.tp1_partial_close_enabled,
+                    "percent": self.tp1_partial_close_pct,
+                },
+                "checked_count": len(protection_actions),
+                "modified_count": sum(1 for action in protection_actions if action.get("status") == "modified"),
+                "actions": protection_actions,
+            },
             "risk_amount": round(self.risk_amount(), 2),
             "open_trade_count": len(self.state.get("open_trades", {})),
             "sync_actions": sync_actions,

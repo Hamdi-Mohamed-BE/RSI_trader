@@ -154,6 +154,7 @@ Safety notes:
 - Public versions of the challenge are very aggressive. A few losses can wipe out the challenge bank, so the live switches are intentionally separate from the main automation switches.
 - `CHALLENGE20_STRATEGY=LTA` uses LTA A+ confirmation on MT5 candles. `CHALLENGE20_STRATEGY=ORB` uses the ORB session/range settings and then adjusts TP to the challenge RR.
 - Set `CHALLENGE20_SYMBOLS` to a comma-separated list if you want the challenge to watch different symbols from the main LTA bot.
+- The challenge bot follows the challenge model by default: fixed SL, fixed challenge TP, one trade/day. It does not trail SL or close half at TP1 unless `CHALLENGE20_PROTECT_OPEN_TRADES=true` is explicitly enabled.
 - The current implementation does not use a true 10-second candle feed yet.
 - `CHALLENGE20_ALLOW_PENDING=false` is recommended for ORB challenge mode until an OCO pair of pending breakout orders is added.
 - Use `stop_20pip_challenge.bat` when you want to stop this worker and clear the challenge lock.

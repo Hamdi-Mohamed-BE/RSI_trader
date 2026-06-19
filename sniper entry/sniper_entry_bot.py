@@ -493,15 +493,117 @@ class SniperBot:
             "risk_method": risk_method,
         }
 
+    @staticmethod
+    def normalize_volume_down(info: Any, volume: float) -> float:
+        min_lot = float(getattr(info, "volume_min", 0.01) or 0.01)
+        max_lot = float(getattr(info, "volume_max", 100.0) or 100.0)
+        step = float(getattr(info, "volume_step", 0.01) or 0.01)
+        if volume < min_lot:
+            return 0.0
+        clipped = min(float(volume), max_lot)
+        steps = math.floor((clipped - min_lot + 1e-12) / step)
+        normalized = min_lot + steps * step
+        return round(max(min_lot, min(normalized, max_lot)), 4)
+
+    def close_partial_position(
+        self,
+        data: dict[str, Any],
+        symbol: str,
+        side: str,
+        info: Any,
+        tick: Any,
+        close_percent: float,
+    ) -> dict[str, Any]:
+        ticket = int(data["ticket"])
+        current_volume = float(data.get("volume") or 0.0)
+        close_percent = max(0.0, min(100.0, float(close_percent or 0.0)))
+        min_lot = float(getattr(info, "volume_min", 0.01) or 0.01)
+        target_volume = current_volume * (close_percent / 100.0)
+        close_volume = self.normalize_volume_down(info, target_volume)
+
+        if close_volume <= 0:
+            return {
+                "closed": False,
+                "permanent_skip": True,
+                "message": "Partial close volume is below broker minimum lot.",
+                "ticket": ticket,
+                "current_volume": current_volume,
+                "target_volume": target_volume,
+                "minimum_lot": min_lot,
+            }
+
+        remaining_volume = round(current_volume - close_volume, 8)
+        if 0 < remaining_volume < min_lot:
+            close_volume = self.normalize_volume_down(info, current_volume - min_lot)
+            remaining_volume = round(current_volume - close_volume, 8)
+        if close_volume <= 0 or close_volume >= current_volume or remaining_volume < min_lot:
+            return {
+                "closed": False,
+                "permanent_skip": True,
+                "message": "Broker minimum lot does not allow a safe partial close.",
+                "ticket": ticket,
+                "current_volume": current_volume,
+                "target_volume": target_volume,
+                "minimum_lot": min_lot,
+            }
+
+        order_type = mt5.ORDER_TYPE_SELL if side == "BUY" else mt5.ORDER_TYPE_BUY
+        price = float(tick.bid if side == "BUY" else tick.ask)
+        request_base = {
+            "action": mt5.TRADE_ACTION_DEAL,
+            "position": ticket,
+            "symbol": symbol,
+            "volume": close_volume,
+            "type": order_type,
+            "price": price,
+            "deviation": int(self.config.get("execution", {}).get("deviation_points", 30)),
+            "comment": f"SNIP TP1 {close_percent:g}%"[:31],
+        }
+        if not self.live:
+            return {"closed": False, "dry_run": True, "request": request_base}
+
+        last_error: dict[str, Any] | None = None
+        for filling in FILLING_MODES:
+            request = dict(request_base)
+            request["type_filling"] = filling
+            result = mt5.order_send(request)
+            result_data = as_dict(result) if result else {"retcode": None, "comment": "no send result"}
+            if result_data.get("retcode") in (
+                mt5.TRADE_RETCODE_DONE,
+                getattr(mt5, "TRADE_RETCODE_DONE_PARTIAL", 10010),
+                mt5.TRADE_RETCODE_PLACED,
+            ):
+                return {
+                    "closed": True,
+                    "ticket": ticket,
+                    "closed_volume": close_volume,
+                    "remaining_volume": remaining_volume,
+                    "close_percent": close_percent,
+                    "retcode": result_data.get("retcode"),
+                    "comment": result_data.get("comment"),
+                    "request": request,
+                    "result": result_data,
+                }
+            last_error = {
+                "stage": "send",
+                "retcode": result_data.get("retcode"),
+                "comment": result_data.get("comment"),
+                "filling": filling,
+            }
+        return {"closed": False, "error": last_error or "unknown_partial_close_error", "request": request_base}
+
     def manage_positions(self) -> list[dict[str, Any]]:
         if not self.config.get("execution", {}).get("manage_virtual_targets", True):
             return []
         magic = int(self.config.get("execution", {}).get("magic", 26061515))
         actions: list[dict[str, Any]] = []
+        managed_positions = self.state.setdefault("managed_positions", {})
         for position in mt5.positions_get() or []:
             data = as_dict(position)
             if int(data.get("magic", 0) or 0) != magic and not str(data.get("comment", "")).startswith("SNIP"):
                 continue
+            ticket = str(int(data["ticket"]))
+            position_state = managed_positions.setdefault(ticket, {})
             symbol = data["symbol"]
             side = "BUY" if int(data["type"]) == mt5.POSITION_TYPE_BUY else "SELL"
             info = mt5.symbol_info(symbol)
@@ -524,6 +626,25 @@ class SniperBot:
             price = float(tick.bid if side == "BUY" else tick.ask)
             spread = float(tick.ask - tick.bid)
             buffer = max(spread * 1.5, (info.point or 0.01) * 10)
+            hit_tp1 = price >= tp1 if side == "BUY" else price <= tp1
+            partial_enabled = self.config.get("execution", {}).get("partial_close_at_tp1", True)
+            partial_pct = float(self.config.get("execution", {}).get("tp1_partial_close_pct", 50.0))
+            if hit_tp1 and partial_enabled and partial_pct > 0 and not position_state.get("tp1_partial_done"):
+                partial_result = self.close_partial_position(data, symbol, side, info, tick, partial_pct)
+                actions.append(
+                    {
+                        "ticket": int(data["ticket"]),
+                        "action": "tp1_partial_close",
+                        "percent": partial_pct,
+                        "result": partial_result,
+                    }
+                )
+                if partial_result.get("closed") or partial_result.get("permanent_skip"):
+                    position_state["tp1_partial_done"] = True
+                    position_state["tp1_partial_status"] = "closed" if partial_result.get("closed") else "skipped"
+                    position_state["tp1_partial_at"] = utc_now()
+                    position_state["tp1_partial_closed_volume"] = partial_result.get("closed_volume")
+                    position_state["tp1_partial_remaining_volume"] = partial_result.get("remaining_volume")
             desired_sl = None
             reason = None
             if side == "BUY":
