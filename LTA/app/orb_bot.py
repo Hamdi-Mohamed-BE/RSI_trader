@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import atexit
+from dataclasses import replace
 from datetime import datetime, timedelta
 import json
 import os
@@ -58,6 +59,26 @@ def _env_list(name: str, default: tuple[str, ...]) -> tuple[str, ...]:
     if not value:
         return default
     return tuple(item.strip().upper() for item in value.split(",") if item.strip())
+
+
+def _env_float_map(name: str) -> dict[str, float]:
+    value = os.getenv(name)
+    if not value:
+        return {}
+    result: dict[str, float] = {}
+    for raw_item in value.split(","):
+        item = raw_item.strip()
+        if not item:
+            continue
+        separator = ":" if ":" in item else "=" if "=" in item else None
+        if not separator:
+            continue
+        symbol, raw_value = item.split(separator, 1)
+        try:
+            result[symbol.strip().upper()] = float(raw_value.strip())
+        except ValueError:
+            continue
+    return result
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -151,12 +172,43 @@ class ORBBot:
             session_timezone=os.getenv("ORB_SESSION_TIMEZONE", os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)),
             data_timezone=os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE),
         )
+        self.symbol_rr = _env_float_map("ORB_SYMBOL_RR")
+        self.symbol_protection_rr = _env_float_map("ORB_SYMBOL_PROTECTION_RR")
         self.protect_open_trades = _env_bool("ORB_PROTECT_OPEN_TRADES", True)
         self.protection_final_rr = max(1.0, _env_float("ORB_PROTECTION_FINAL_RR", self.settings.reward_risk))
         self.tp1_partial_close_enabled = _env_bool("ORB_TP1_PARTIAL_CLOSE", True)
         self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("ORB_TP1_PARTIAL_CLOSE_PCT", 50.0)))
         self.state = _read_state()
         _write_state(self.state)
+
+    def _base_symbol_from_broker_symbol(self, broker_symbol: str) -> str:
+        upper = broker_symbol.upper()
+        for symbol in (*self.symbols, *TRADE_SYMBOLS):
+            if symbol in upper:
+                return symbol
+        return broker_symbol
+
+    def _rr_for_symbol(self, symbol: str | None) -> float:
+        base = str(symbol or "").upper()
+        if base not in self.symbol_rr:
+            base = self._base_symbol_from_broker_symbol(base)
+        try:
+            return max(0.5, float(self.symbol_rr.get(base, self.settings.reward_risk)))
+        except (TypeError, ValueError):
+            return self.settings.reward_risk
+
+    def _protection_rr_for_symbol(self, symbol: str | None) -> float:
+        base = str(symbol or "").upper()
+        if base not in self.symbol_protection_rr and base not in self.symbol_rr:
+            base = self._base_symbol_from_broker_symbol(base)
+        value = self.symbol_protection_rr.get(base, self.symbol_rr.get(base, self.protection_final_rr))
+        try:
+            return max(1.0, float(value))
+        except (TypeError, ValueError):
+            return self.protection_final_rr
+
+    def _settings_for_symbol(self, symbol: str) -> ORBSettings:
+        return replace(self.settings, reward_risk=self._rr_for_symbol(symbol))
 
     def _heartbeat(self, status: str) -> None:
         _write_json(
@@ -242,6 +294,7 @@ class ORBBot:
             "timeframe": signal.get("timeframe"),
             "direction": signal.get("direction"),
             "execution_type": signal.get("execution_type"),
+            "risk_reward": signal.get("risk_reward"),
             "timestamp": signal.get("timestamp"),
             "payload": payload,
             "created_at": datetime.now().isoformat(timespec="seconds"),
@@ -255,7 +308,9 @@ class ORBBot:
     def _order_comment(self, signal: dict[str, Any]) -> str:
         direction = str(signal.get("direction") or "")[:1]
         score = int(signal.get("setup_score") or 0)
-        return f"ORB {direction} S{score} {self.timeframe}"[:31]
+        rr = signal.get("risk_reward")
+        rr_text = f" R{float(rr):g}" if rr else ""
+        return f"ORB {direction} S{score} {self.timeframe}{rr_text}"[:31]
 
     @staticmethod
     def _position_direction(position: dict[str, Any]) -> str:
@@ -285,6 +340,8 @@ class ORBBot:
         protected = self.state.setdefault("protected_positions", {})
         existing = protected.get(ticket, {})
         broker_symbol = str(position.get("symbol") or existing.get("broker_symbol") or "")
+        symbol = existing.get("symbol") or self._base_symbol_from_broker_symbol(broker_symbol)
+        final_rr = max(1.0, float(existing.get("final_rr") or self._protection_rr_for_symbol(symbol)))
         direction = self._position_direction(position)
         entry = float(position.get("price_open") or existing.get("entry") or 0.0)
         current_stop = float(position.get("sl") or 0.0)
@@ -292,14 +349,15 @@ class ORBBot:
         initial_stop = float(existing.get("initial_stop") or current_stop or 0.0)
 
         if initial_stop <= 0 and take_profit > 0 and entry > 0:
-            one_r = abs(take_profit - entry) / self.protection_final_rr
+            one_r = abs(take_profit - entry) / final_rr
             initial_stop = entry - one_r if direction == "BUY" else entry + one_r
 
         payload = {
             **existing,
             "ticket": ticket,
             "broker_symbol": broker_symbol,
-            "symbol": existing.get("symbol") or broker_symbol,
+            "symbol": symbol,
+            "final_rr": final_rr,
             "direction": direction,
             "entry": entry,
             "initial_stop": initial_stop,
@@ -433,6 +491,7 @@ class ORBBot:
                 "ticket": ticket,
                 "symbol": state["symbol"],
                 "broker_symbol": broker_symbol,
+                "final_rr": float(state.get("final_rr") or self._protection_rr_for_symbol(state["symbol"])),
                 "direction": direction,
                 "entry": entry,
                 "initial_stop": initial_stop,
@@ -454,7 +513,7 @@ class ORBBot:
                 continue
 
             market_price = float(quote["bid"] if direction == "BUY" else quote["ask"])
-            final_stage = max(1, int(round(self.protection_final_rr)))
+            final_stage = max(1, int(round(float(action["final_rr"]))))
             stage_targets = {
                 stage: self._level_at_r(entry, risk, direction, float(stage))
                 for stage in range(1, final_stage + 1)
@@ -616,17 +675,18 @@ class ORBBot:
         cycle_commitments = 0
 
         for symbol in self.symbols:
+            symbol_settings = self._settings_for_symbol(symbol)
             candles = self._load_candles(symbol, now)
             if candles is None or len(candles) < 120:
                 errors.append({"symbol": symbol, "error": f"Not enough {self.timeframe} candles."})
                 continue
 
             signals: list[dict[str, Any]] = []
-            confirmed = confirmed_orb_signal(candles, symbol, self.timeframe, self.settings, now=now)
+            confirmed = confirmed_orb_signal(candles, symbol, self.timeframe, symbol_settings, now=now)
             if confirmed:
                 signals.append(confirmed)
             elif self.prepare_pending:
-                signals.extend(pending_orb_signals(candles, symbol, self.timeframe, self.settings, now=now))
+                signals.extend(pending_orb_signals(candles, symbol, self.timeframe, symbol_settings, now=now))
 
             for signal in signals:
                 if self._already_consumed(signal):
@@ -677,6 +737,12 @@ class ORBBot:
             "symbols": list(self.symbols),
             "timeframe": self.timeframe,
             "settings": self.settings.__dict__,
+            "settings_by_symbol": {
+                symbol: self._settings_for_symbol(symbol).__dict__
+                for symbol in self.symbols
+            },
+            "symbol_rr": self.symbol_rr,
+            "symbol_protection_rr": self.symbol_protection_rr,
             "live_trading": self.live_trading,
             "place_trades": self.place_trades,
             "prepare_pending": self.prepare_pending,
@@ -686,6 +752,10 @@ class ORBBot:
             "trade_protection": {
                 "enabled": self.protect_open_trades,
                 "final_rr": self.protection_final_rr,
+                "symbol_final_rr": {
+                    symbol: self._protection_rr_for_symbol(symbol)
+                    for symbol in self.symbols
+                },
                 "tp1_partial_close": {
                     "enabled": self.tp1_partial_close_enabled,
                     "percent": self.tp1_partial_close_pct,
@@ -715,8 +785,13 @@ class ORBBot:
             f"Session {self.settings.session_start}-{self.settings.session_end} {self.settings.session_timezone}, "
             f"range={self.settings.range_minutes}m, RR={self.settings.reward_risk:g}."
         )
+        if self.symbol_rr:
+            print(
+                "Per-symbol RR: "
+                + ", ".join(f"{symbol}=1:{rr:g}" for symbol, rr in sorted(self.symbol_rr.items()))
+            )
         print(f"Candle/data timezone: {self.settings.data_timezone}.")
-        print(f"Trade protection: {self.protect_open_trades}; final RR: {self.protection_final_rr:g}.")
+        print(f"Trade protection: {self.protect_open_trades}; default final RR: {self.protection_final_rr:g}.")
         print(f"Max ORB trades per day: {self.max_trades_per_day if self.max_trades_per_day > 0 else 'unlimited'}.")
         print(f"Live trading: {self.live_trading}; ORB_PLACE_TRADES: {self.place_trades}; ORB_PLACE_PENDING: {self.place_pending}")
         print(f"State: {STATE_PATH}")

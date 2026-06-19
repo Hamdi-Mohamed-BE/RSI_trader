@@ -74,6 +74,26 @@ def _env_list(name: str, default: tuple[str, ...]) -> tuple[str, ...]:
     return tuple(item.strip().upper() for item in value.split(",") if item.strip())
 
 
+def _env_float_map(name: str) -> dict[str, float]:
+    value = os.getenv(name)
+    if not value:
+        return {}
+    result: dict[str, float] = {}
+    for raw_item in value.split(","):
+        item = raw_item.strip()
+        if not item:
+            continue
+        separator = ":" if ":" in item else "=" if "=" in item else None
+        if not separator:
+            continue
+        symbol, raw_value = item.split(separator, 1)
+        try:
+            result[symbol.strip().upper()] = float(raw_value.strip())
+        except ValueError:
+            continue
+    return result
+
+
 def _parse_time_minutes(value: str | None, default: int) -> int:
     if not value:
         return default
@@ -393,6 +413,8 @@ class TradeAutomation:
         self.one_position_per_symbol = _env_bool("AUTO_ONE_POSITION_PER_SYMBOL", True)
         self.trade_protection_enabled = _env_bool("AUTO_PROTECT_OPEN_TRADES", True)
         self.protection_final_rr = max(1.0, _env_float("AUTO_PROTECTION_FINAL_RR", self.config.min_risk_reward))
+        self.symbol_rr = _env_float_map("AUTO_SYMBOL_RR")
+        self.symbol_protection_rr = _env_float_map("AUTO_SYMBOL_PROTECTION_RR")
         self.tp1_partial_close_enabled = _env_bool("AUTO_TP1_PARTIAL_CLOSE", True)
         self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("AUTO_TP1_PARTIAL_CLOSE_PCT", 50.0)))
         self.max_consecutive_losses = max(0, _env_int("AUTO_MAX_CONSECUTIVE_LOSSES", 2))
@@ -425,6 +447,61 @@ class TradeAutomation:
         _migrate_placed_orders_to_state(self.trade_state)
         _write_trade_state(self.trade_state)
 
+    def _rr_for_symbol(self, symbol: str | None, default: float | None = None) -> float:
+        base = str(symbol or "").upper()
+        if base not in self.symbol_rr:
+            base = self._base_symbol_from_broker_symbol(base)
+        value = self.symbol_rr.get(base, default if default is not None else self.config.min_risk_reward)
+        try:
+            return max(0.5, float(value))
+        except (TypeError, ValueError):
+            return max(0.5, float(default if default is not None else self.config.min_risk_reward))
+
+    def _protection_rr_for_symbol(self, symbol: str | None) -> float:
+        base = str(symbol or "").upper()
+        if base not in self.symbol_protection_rr and base not in self.symbol_rr:
+            base = self._base_symbol_from_broker_symbol(base)
+        value = self.symbol_protection_rr.get(base, self.symbol_rr.get(base, self.protection_final_rr))
+        try:
+            return max(1.0, float(value))
+        except (TypeError, ValueError):
+            return self.protection_final_rr
+
+    def _scan_min_rr(self) -> float:
+        values = [self.config.min_risk_reward, *self.symbol_rr.values()]
+        return max(0.5, min(float(value) for value in values if value is not None))
+
+    def _retarget_signal_rr(self, signal: dict[str, Any]) -> dict[str, Any]:
+        symbol = str(signal.get("symbol") or "")
+        target_rr = self._rr_for_symbol(symbol)
+        try:
+            entry = float(signal.get("entry") or signal.get("trigger_price") or 0.0)
+            stop_loss = float(signal.get("stop_loss") or 0.0)
+        except (TypeError, ValueError):
+            return signal
+        direction = str(signal.get("direction") or "").upper()
+        risk = abs(entry - stop_loss)
+        if direction not in {"BUY", "SELL"} or entry <= 0 or stop_loss <= 0 or risk <= 0:
+            return signal
+
+        adjusted = dict(signal)
+        target = self._level_at_r(entry, risk, direction, target_rr)
+        adjusted["original_risk_reward"] = signal.get("risk_reward")
+        adjusted["configured_risk_reward"] = round(target_rr, 3)
+        adjusted["risk_reward"] = round(target_rr, 3)
+        adjusted["take_profit"] = round(target, 5)
+        for stage in range(1, 6):
+            adjusted[f"tp{stage}"] = (
+                round(self._level_at_r(entry, risk, direction, float(stage)), 5)
+                if target_rr >= stage
+                else None
+            )
+        if symbol.upper() in self.symbol_rr:
+            reasons = list(adjusted.get("reasons") or [])
+            reasons.append(f"Per-symbol RR profile uses final target 1:{target_rr:g}.")
+            adjusted["reasons"] = list(dict.fromkeys(reasons))
+        return adjusted
+
     def _cooldown_active(self, key: str, now: datetime) -> bool:
         seen_at = self.seen.get(key)
         if not seen_at:
@@ -452,6 +529,8 @@ class TradeAutomation:
             "execution_type": signal.get("execution_type"),
             "pending_order_type": signal.get("pending_order_type"),
             "trigger_price": signal.get("trigger_price"),
+            "risk_reward": signal.get("risk_reward"),
+            "configured_risk_reward": signal.get("configured_risk_reward"),
             "last_candle_time": signal.get("last_candle_time") or signal.get("timestamp"),
             "placement": placement,
         }
@@ -1082,6 +1161,8 @@ class TradeAutomation:
         protected = self.trade_state.setdefault("protected_positions", {})
         existing = protected.get(ticket, {})
         broker_symbol = str(position.get("symbol") or existing.get("broker_symbol") or "")
+        symbol = existing.get("symbol") or self._base_symbol_from_broker_symbol(broker_symbol)
+        final_rr = max(1.0, float(existing.get("final_rr") or self._protection_rr_for_symbol(symbol)))
         direction = self._position_direction(position)
         entry = float(position.get("price_open") or existing.get("entry") or 0.0)
         current_stop = float(position.get("sl") or 0.0)
@@ -1089,14 +1170,15 @@ class TradeAutomation:
         initial_stop = float(existing.get("initial_stop") or current_stop or 0.0)
 
         if initial_stop <= 0 and take_profit > 0 and entry > 0:
-            one_r = abs(take_profit - entry) / self.protection_final_rr
+            one_r = abs(take_profit - entry) / final_rr
             initial_stop = entry - one_r if direction == "BUY" else entry + one_r
 
         payload = {
             **existing,
             "ticket": ticket,
             "broker_symbol": broker_symbol,
-            "symbol": existing.get("symbol") or self._base_symbol_from_broker_symbol(broker_symbol),
+            "symbol": symbol,
+            "final_rr": final_rr,
             "direction": direction,
             "entry": entry,
             "initial_stop": initial_stop,
@@ -1156,6 +1238,7 @@ class TradeAutomation:
                 "ticket": ticket,
                 "symbol": state["symbol"],
                 "broker_symbol": broker_symbol,
+                "final_rr": float(state.get("final_rr") or self._protection_rr_for_symbol(state["symbol"])),
                 "direction": direction,
                 "entry": entry,
                 "initial_stop": initial_stop,
@@ -1178,7 +1261,7 @@ class TradeAutomation:
 
             market_price = float(quote["bid"] if direction == "BUY" else quote["ask"])
             hit_stage = 0
-            final_stage = max(1, int(round(self.protection_final_rr)))
+            final_stage = max(1, int(round(float(action["final_rr"]))))
             stage_targets = {
                 stage: self._level_at_r(entry, risk, direction, float(stage))
                 for stage in range(1, final_stage + 1)
@@ -1273,8 +1356,10 @@ class TradeAutomation:
             timeframes=self.timeframes,
             min_score=self.config.min_setup_score,
             preplace_min_score=self.preplace_min_score,
-            min_rr=self.config.min_risk_reward,
+            min_rr=self._scan_min_rr(),
         )
+        scan["allowed"] = [self._retarget_signal_rr(signal) for signal in scan.get("allowed", [])]
+        scan["preplace"] = [self._retarget_signal_rr(signal) for signal in scan.get("preplace", [])]
         _log_automation_event(
             "scan_summary",
             now,
@@ -1294,6 +1379,10 @@ class TradeAutomation:
             max_lot_risk_pct=self.max_lot_risk_pct,
             max_spread_risk_percent=self.max_spread_risk_percent,
             max_spread_points=self.max_spread_points,
+            default_rr=self.config.min_risk_reward,
+            scan_min_rr=self._scan_min_rr(),
+            symbol_rr=self.symbol_rr,
+            symbol_protection_rr=self.symbol_protection_rr,
             daily_bot_stats=daily_bot_stats,
         )
         prepared: list[dict[str, Any]] = []
@@ -1843,6 +1932,10 @@ class TradeAutomation:
                 "strict_session_min_score": self.strict_session_min_score,
                 "strict_session_preplace_min_score": self.strict_session_preplace_min_score,
                 "strict_session_require_internal_break": self.strict_session_require_internal_break,
+                "default_rr": self.config.min_risk_reward,
+                "scan_min_rr": self._scan_min_rr(),
+                "symbol_rr": self.symbol_rr,
+                "symbol_protection_rr": self.symbol_protection_rr,
             },
             "daily_bot_stats": daily_bot_stats_payload,
             "activity_cooldown_updates": activity_cooldown_updates,
@@ -1850,6 +1943,10 @@ class TradeAutomation:
             "trade_protection": {
                 "enabled": self.trade_protection_enabled,
                 "final_rr": self.protection_final_rr,
+                "symbol_final_rr": {
+                    symbol: self._protection_rr_for_symbol(symbol)
+                    for symbol in self.watchlist_symbols
+                },
                 "tp1_partial_close": {
                     "enabled": self.tp1_partial_close_enabled,
                     "percent": self.tp1_partial_close_pct,
@@ -1906,7 +2003,12 @@ class TradeAutomation:
             f"{os.getenv('AUTO_STRICT_SESSION_END', '13:00')} {self.session_timezone} requires "
             f"S{self.strict_session_min_score}+ and internal-structure confirmation."
         )
-        print(f"Trade protection: {self.trade_protection_enabled}; final RR: 1:{self.protection_final_rr:g}")
+        if self.symbol_rr:
+            print(
+                "Per-symbol RR: "
+                + ", ".join(f"{symbol}=1:{rr:g}" for symbol, rr in sorted(self.symbol_rr.items()))
+            )
+        print(f"Trade protection: {self.trade_protection_enabled}; default final RR: 1:{self.protection_final_rr:g}")
         print(f"Symbol activity cooldown: {self.symbol_activity_cooldown_minutes} minutes after any open or close.")
         print(f"Detail log: {AUTOMATION_EVENTS_PATH}")
         print(f"Console detail limit per cycle: {self.log_detail_limit}")

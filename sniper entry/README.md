@@ -9,22 +9,17 @@ Default mode is `live`, so valid fresh signals can place real MT5 orders. Use `-
 Configured logical symbols:
 
 - `BTCUSD`
-- `ETHUSD`
-- `XAUUSD`
-- `XAGUSD`
-- `US30` -> broker alias usually `DJ30.`
-- `US100` -> broker alias usually `NAS100.`
-- `EURUSD` -> prefers `EURUSD-VIP` if available
 
 ## Strategy
 
 - Signal: EMA 9 / EMA 21 cross on the closed 4h candle.
 - Entry: market price at scan time.
 - SL: `ATR(14) * 1.5`.
-- Broker TP: TP5 / final target.
+- Broker TP: TP3 / final target.
 - Lot sizing: risks `5%` of current account balance per trade by default, controlled by `risk.balance_risk_pct` in `config.json`.
-- TP1-TP4 are virtual management levels.
-- Management does not trail at TP1. Once TP2 is hit, it can move SL to TP1 for bot-owned trades.
+- TP1 and TP2 are virtual management levels.
+- At TP1 the bot closes 50% and moves SL to entry. At TP2 it trails SL to TP1.
+- Guardrails block weekends, trades outside the configured New York session, duplicate exposure, more than one trade per day, daily loss beyond 5%, drawdown beyond 15%, and two consecutive losses inside the configured lookback.
 
 ## Run
 
