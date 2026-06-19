@@ -152,6 +152,8 @@ class ORBBot:
         )
         self.protect_open_trades = _env_bool("ORB_PROTECT_OPEN_TRADES", True)
         self.protection_final_rr = max(1.0, _env_float("ORB_PROTECTION_FINAL_RR", self.settings.reward_risk))
+        self.tp1_partial_close_enabled = _env_bool("ORB_TP1_PARTIAL_CLOSE", True)
+        self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("ORB_TP1_PARTIAL_CLOSE_PCT", 50.0)))
         self.state = _read_state()
         _write_state(self.state)
 
@@ -284,6 +286,85 @@ class ORBBot:
         protected[ticket] = payload
         return payload
 
+    def _handle_tp1_partial_close(
+        self,
+        ticket: str,
+        position: dict[str, Any],
+        state: dict[str, Any],
+        action: dict[str, Any],
+        now: datetime,
+    ) -> None:
+        partial_payload: dict[str, Any] = {
+            "enabled": self.tp1_partial_close_enabled,
+            "percent": self.tp1_partial_close_pct,
+            "done": bool(state.get("tp1_partial_done")),
+            "status": state.get("tp1_partial_status"),
+        }
+        action["tp1_partial_close"] = partial_payload
+
+        if not self.tp1_partial_close_enabled or self.tp1_partial_close_pct <= 0 or state.get("tp1_partial_done"):
+            return
+
+        volume = float(position.get("volume") or 0.0)
+        if volume <= 0:
+            partial_payload["status"] = "skipped_missing_volume"
+            return
+
+        result = self.client.close_partial_position(
+            ticket=int(ticket),
+            symbol=str(state.get("broker_symbol") or position.get("symbol") or ""),
+            direction=str(state.get("direction") or ""),
+            current_volume=volume,
+            close_percent=self.tp1_partial_close_pct,
+            comment=f"ORB TP1 {self.tp1_partial_close_pct:g}%",
+        )
+        partial_payload["result"] = result
+
+        if result.get("closed"):
+            status = "closed"
+        elif result.get("permanent_skip"):
+            status = "skipped"
+        else:
+            status = "failed"
+        partial_payload["status"] = status
+
+        if result.get("closed") or result.get("permanent_skip"):
+            state["tp1_partial_done"] = True
+            state["tp1_partial_status"] = status
+            state["tp1_partial_at"] = now.isoformat(timespec="seconds")
+            state["tp1_partial_percent"] = self.tp1_partial_close_pct
+            state["tp1_partial_closed_volume"] = result.get("closed_volume")
+            state["tp1_partial_remaining_volume"] = result.get("remaining_volume")
+
+        if result.get("closed"):
+            event_name = "orb_tp1_partial_close_closed"
+        elif result.get("permanent_skip"):
+            event_name = "orb_tp1_partial_close_skipped"
+        else:
+            event_name = "orb_tp1_partial_close_failed"
+        event = {
+            "checked_at": now.isoformat(timespec="seconds"),
+            "event": event_name,
+            "ticket": ticket,
+            "symbol": state.get("symbol"),
+            "broker_symbol": state.get("broker_symbol"),
+            "direction": state.get("direction"),
+            "volume": volume,
+            "percent": self.tp1_partial_close_pct,
+            "result": result,
+        }
+        _append_jsonl(PROTECTION_LOG_PATH, event)
+        self._log_event(
+            event_name,
+            ticket=ticket,
+            symbol=state.get("symbol"),
+            broker_symbol=state.get("broker_symbol"),
+            direction=state.get("direction"),
+            volume=volume,
+            percent=self.tp1_partial_close_pct,
+            result=result,
+        )
+
     def protect_open_positions(self, now: datetime) -> list[dict[str, Any]]:
         if not self.protect_open_trades:
             return []
@@ -375,6 +456,8 @@ class ORBBot:
             else:
                 desired_stop = stage_targets[hit_stage - 1]
                 action["rule"] = f"tp{hit_stage}_hit_trail_sl_to_tp{hit_stage - 1}"
+
+            self._handle_tp1_partial_close(ticket, position, state, action, now)
 
             desired_stop = self.client.normalize_price(broker_symbol, desired_stop)
             action["desired_stop"] = desired_stop
@@ -562,6 +645,10 @@ class ORBBot:
             "trade_protection": {
                 "enabled": self.protect_open_trades,
                 "final_rr": self.protection_final_rr,
+                "tp1_partial_close": {
+                    "enabled": self.tp1_partial_close_enabled,
+                    "percent": self.tp1_partial_close_pct,
+                },
                 "checked_count": len(protection_actions),
                 "modified_count": sum(1 for action in protection_actions if action.get("status") == "modified"),
                 "actions": protection_actions,

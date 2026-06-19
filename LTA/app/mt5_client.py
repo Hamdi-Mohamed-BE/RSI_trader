@@ -1065,6 +1065,126 @@ class MT5Client:
             "result": payload,
         }
 
+    def close_partial_position(
+        self,
+        ticket: int,
+        symbol: str,
+        direction: str,
+        current_volume: float,
+        close_percent: float = 50.0,
+        comment: str = "TP1 partial close",
+        deviation: int = 20,
+    ) -> dict[str, Any]:
+        if mt5 is None or not self.connect():
+            return {"closed": False, "message": "MT5 is not connected."}
+
+        resolved = self.resolve_symbol(symbol) or symbol
+        info = mt5.symbol_info(resolved)
+        if info is None:
+            return {"closed": False, "message": f"Symbol info unavailable for {resolved}."}
+        if not info.visible:
+            mt5.symbol_select(resolved, True)
+            info = mt5.symbol_info(resolved)
+        if info is None:
+            return {"closed": False, "message": f"Symbol info unavailable for {resolved} after symbol_select."}
+
+        current_volume = float(current_volume or 0.0)
+        close_percent = max(0.0, min(100.0, float(close_percent or 0.0)))
+        constraints = self.lot_constraints(resolved)
+        min_lot = float(constraints["min"])
+        step = float(constraints["step"])
+        target_volume = current_volume * (close_percent / 100.0)
+        close_volume = self.normalize_lot_down(resolved, target_volume)
+
+        if close_volume <= 0:
+            return {
+                "closed": False,
+                "permanent_skip": True,
+                "message": "Partial close volume is below broker minimum lot.",
+                "symbol": resolved,
+                "ticket": int(ticket),
+                "current_volume": current_volume,
+                "target_volume": target_volume,
+                "minimum_lot": min_lot,
+                "lot_step": step,
+            }
+
+        remaining_volume = round(current_volume - close_volume, 8)
+        if 0 < remaining_volume < min_lot:
+            max_close = current_volume - min_lot
+            close_volume = self.normalize_lot_down(resolved, max_close)
+            remaining_volume = round(current_volume - close_volume, 8)
+
+        if close_volume <= 0 or close_volume >= current_volume or remaining_volume < min_lot:
+            return {
+                "closed": False,
+                "permanent_skip": True,
+                "message": "Broker minimum lot does not allow a safe partial close.",
+                "symbol": resolved,
+                "ticket": int(ticket),
+                "current_volume": current_volume,
+                "target_volume": target_volume,
+                "minimum_lot": min_lot,
+                "lot_step": step,
+            }
+
+        tick = mt5.symbol_info_tick(resolved)
+        if tick is None:
+            return {"closed": False, "message": f"No live tick for {resolved}."}
+
+        position_direction = str(direction or "").upper()
+        if position_direction == "BUY":
+            order_type = mt5.ORDER_TYPE_SELL
+            price = float(tick.bid)
+        elif position_direction == "SELL":
+            order_type = mt5.ORDER_TYPE_BUY
+            price = float(tick.ask)
+        else:
+            return {"closed": False, "message": f"Unsupported position direction: {direction}."}
+
+        request = {
+            "action": mt5.TRADE_ACTION_DEAL,
+            "position": int(ticket),
+            "symbol": resolved,
+            "volume": close_volume,
+            "type": order_type,
+            "price": price,
+            "deviation": int(deviation),
+            "comment": str(comment or "TP1 partial close")[:31],
+            "type_time": mt5.ORDER_TIME_GTC,
+            "type_filling": mt5.ORDER_FILLING_IOC,
+        }
+        result = mt5.order_send(request)
+        if result is None:
+            last_error = mt5.last_error()
+            return {
+                "closed": False,
+                "message": f"MT5 order_send returned no result: {last_error[1] if last_error else 'unknown error'}.",
+                "last_error": last_error,
+                "request": request,
+            }
+
+        payload = result._asdict()
+        success_codes = {
+            mt5.TRADE_RETCODE_DONE,
+            getattr(mt5, "TRADE_RETCODE_DONE_PARTIAL", 10010),
+            getattr(mt5, "TRADE_RETCODE_PLACED", 10008),
+        }
+        return {
+            "closed": payload.get("retcode") in success_codes,
+            "message": payload.get("comment", ""),
+            "ticket": int(ticket),
+            "symbol": resolved,
+            "current_volume": current_volume,
+            "target_volume": target_volume,
+            "closed_volume": close_volume,
+            "remaining_volume": remaining_volume,
+            "close_percent": close_percent,
+            "request": request,
+            "quote": {"bid": float(tick.bid), "ask": float(tick.ask), "last": float(tick.last)},
+            "result": payload,
+        }
+
     def modify_position_sl_tp(
         self,
         ticket: int,

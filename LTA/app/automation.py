@@ -362,6 +362,8 @@ class TradeAutomation:
         self.one_position_per_symbol = _env_bool("AUTO_ONE_POSITION_PER_SYMBOL", True)
         self.trade_protection_enabled = _env_bool("AUTO_PROTECT_OPEN_TRADES", True)
         self.protection_final_rr = max(1.0, _env_float("AUTO_PROTECTION_FINAL_RR", self.config.min_risk_reward))
+        self.tp1_partial_close_enabled = _env_bool("AUTO_TP1_PARTIAL_CLOSE", True)
+        self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("AUTO_TP1_PARTIAL_CLOSE_PCT", 50.0)))
         self.max_consecutive_losses = max(0, _env_int("AUTO_MAX_CONSECUTIVE_LOSSES", 2))
         self.symbol_max_losses_per_day = max(0, _env_int("AUTO_SYMBOL_MAX_LOSSES_PER_DAY", 1))
         self.symbol_max_daily_loss_r = max(0.0, _env_float("AUTO_SYMBOL_MAX_DAILY_LOSS_R", 1.0))
@@ -955,6 +957,86 @@ class TradeAutomation:
         _append_jsonl(CLOSED_TRADE_EVENTS_PATH, event)
         return event
 
+    def _handle_tp1_partial_close(
+        self,
+        ticket: str,
+        position: dict[str, Any],
+        state: dict[str, Any],
+        action: dict[str, Any],
+        now: datetime,
+    ) -> None:
+        partial_payload: dict[str, Any] = {
+            "enabled": self.tp1_partial_close_enabled,
+            "percent": self.tp1_partial_close_pct,
+            "done": bool(state.get("tp1_partial_done")),
+            "status": state.get("tp1_partial_status"),
+        }
+        action["tp1_partial_close"] = partial_payload
+
+        if not self.tp1_partial_close_enabled or self.tp1_partial_close_pct <= 0 or state.get("tp1_partial_done"):
+            return
+
+        volume = float(position.get("volume") or 0.0)
+        if volume <= 0:
+            partial_payload["status"] = "skipped_missing_volume"
+            return
+
+        result = self.client.close_partial_position(
+            ticket=int(ticket),
+            symbol=str(state.get("broker_symbol") or position.get("symbol") or ""),
+            direction=str(state.get("direction") or ""),
+            current_volume=volume,
+            close_percent=self.tp1_partial_close_pct,
+            comment=f"LTA TP1 {self.tp1_partial_close_pct:g}%",
+        )
+        partial_payload["result"] = result
+
+        if result.get("closed"):
+            status = "closed"
+        elif result.get("permanent_skip"):
+            status = "skipped"
+        else:
+            status = "failed"
+        partial_payload["status"] = status
+
+        if result.get("closed") or result.get("permanent_skip"):
+            state["tp1_partial_done"] = True
+            state["tp1_partial_status"] = status
+            state["tp1_partial_at"] = now.isoformat(timespec="seconds")
+            state["tp1_partial_percent"] = self.tp1_partial_close_pct
+            state["tp1_partial_closed_volume"] = result.get("closed_volume")
+            state["tp1_partial_remaining_volume"] = result.get("remaining_volume")
+
+        if result.get("closed"):
+            event_name = "tp1_partial_close_closed"
+        elif result.get("permanent_skip"):
+            event_name = "tp1_partial_close_skipped"
+        else:
+            event_name = "tp1_partial_close_failed"
+        event = {
+            "checked_at": now.isoformat(timespec="seconds"),
+            "event": event_name,
+            "ticket": ticket,
+            "symbol": state.get("symbol"),
+            "broker_symbol": state.get("broker_symbol"),
+            "direction": state.get("direction"),
+            "volume": volume,
+            "percent": self.tp1_partial_close_pct,
+            "result": result,
+        }
+        _append_jsonl(PROTECTION_LOG_PATH, event)
+        _log_automation_event(
+            event_name,
+            now,
+            ticket=ticket,
+            symbol=state.get("symbol"),
+            broker_symbol=state.get("broker_symbol"),
+            direction=state.get("direction"),
+            volume=volume,
+            percent=self.tp1_partial_close_pct,
+            result=result,
+        )
+
     def _position_state(self, ticket: str, position: dict[str, Any]) -> dict[str, Any]:
         protected = self.trade_state.setdefault("protected_positions", {})
         existing = protected.get(ticket, {})
@@ -1082,6 +1164,8 @@ class TradeAutomation:
             else:
                 desired_stop = stage_targets[hit_stage - 1]
                 action["rule"] = f"tp{hit_stage}_hit_trail_sl_to_tp{hit_stage - 1}"
+
+            self._handle_tp1_partial_close(ticket, position, state, action, now)
 
             desired_stop = self.client.normalize_price(broker_symbol, desired_stop)
             action["desired_stop"] = desired_stop
@@ -1721,6 +1805,10 @@ class TradeAutomation:
             "trade_protection": {
                 "enabled": self.trade_protection_enabled,
                 "final_rr": self.protection_final_rr,
+                "tp1_partial_close": {
+                    "enabled": self.tp1_partial_close_enabled,
+                    "percent": self.tp1_partial_close_pct,
+                },
                 "checked_count": len(protection_actions),
                 "modified_count": sum(1 for action in protection_actions if action.get("status") == "modified"),
                 "actions": protection_actions,
