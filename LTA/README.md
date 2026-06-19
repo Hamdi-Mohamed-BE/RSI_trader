@@ -172,6 +172,7 @@ Defaults:
 - Live order sending: off, unless `ORB_LIVE_TRADING=true` and `ORB_PLACE_TRADES=true`
 - Pending stop sending: off, unless `ORB_PLACE_PENDING=true`
 - Candle data timezone: `MARKET_DATA_TIMEZONE=UTC`
+- Console detail limit: `ORB_LOG_DETAIL_LIMIT=8`
 
 The worker writes:
 

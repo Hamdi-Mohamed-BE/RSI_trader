@@ -137,6 +137,7 @@ class ORBBot:
         self.max_spread_risk_percent = max(0.0, _env_float("ORB_MAX_SPREAD_RISK_PERCENT", self.config.max_spread_risk_percent))
         self.max_spread_points = max(0.0, _env_float("ORB_MAX_SPREAD_POINTS", self.config.max_spread_points))
         self.pending_expiry_minutes = max(0, _env_int("ORB_PENDING_EXPIRY_MINUTES", 360))
+        self.log_detail_limit = max(0, _env_int("ORB_LOG_DETAIL_LIMIT", 8))
         self.settings = ORBSettings(
             session_start=os.getenv("ORB_SESSION_START", "09:30"),
             session_end=os.getenv("ORB_SESSION_END", "16:00"),
@@ -465,6 +466,38 @@ class ORBBot:
             order["expires_at"] = now + timedelta(minutes=self.pending_expiry_minutes)
         return order, blocks
 
+    @staticmethod
+    def _short_text(value: Any, limit: int = 180) -> str:
+        text = str(value or "").replace("\r", " ").replace("\n", " ").strip()
+        return text if len(text) <= limit else text[: limit - 3] + "..."
+
+    def _print_cycle_details(self, payload: dict[str, Any]) -> None:
+        if self.log_detail_limit <= 0:
+            return
+
+        for error in payload.get("errors", [])[: self.log_detail_limit]:
+            symbol = error.get("symbol") or "?"
+            message = error.get("error") or error.get("message") or error
+            print(f"  error {symbol}: {self._short_text(message)}")
+
+        for item in payload.get("blocked", [])[: self.log_detail_limit]:
+            symbol = item.get("symbol") or "?"
+            direction = item.get("direction") or ""
+            reasons = item.get("reasons") or [item.get("reason") or item.get("message") or "blocked"]
+            reason_text = "; ".join(str(reason) for reason in reasons if reason)
+            print(f"  blocked {symbol} {direction}: {self._short_text(reason_text)}")
+
+        for item in payload.get("placements", [])[: self.log_detail_limit]:
+            placement = item.get("placement") or {}
+            if placement.get("placed"):
+                continue
+            signal = item.get("signal") or {}
+            symbol = signal.get("symbol") or "?"
+            direction = signal.get("direction") or ""
+            order_type = signal.get("pending_order_type") or signal.get("execution_type") or ""
+            message = placement.get("message") or placement.get("error") or "placement failed"
+            print(f"  failed {symbol} {direction} {order_type}: {self._short_text(message)}")
+
     def run_once(self) -> dict[str, Any]:
         now = now_naive(self.settings.data_timezone)
         self._heartbeat("scanning")
@@ -567,6 +600,7 @@ class ORBBot:
                 f"sent={payload['placement_count']} blocked={len(payload['blocked'])} errors={len(payload['errors'])} "
                 f"protected={protection.get('modified_count', 0)}/{protection.get('checked_count', 0)}"
             )
+            self._print_cycle_details(payload)
             time.sleep(self.interval_seconds)
 
 
