@@ -441,15 +441,26 @@ class SniperBot:
             "updated_at": utc_now(),
         }
 
-    def calc_lot(self, signal: Signal, equity: float) -> tuple[float | None, dict[str, Any]]:
+    def calc_lot(self, signal: Signal, balance: float) -> tuple[float | None, dict[str, Any]]:
         info = mt5.symbol_info(signal.broker_symbol)
-        if not info or not info.trade_tick_size or not info.trade_tick_value:
+        if not info:
             return None, {"error": "risk_unavailable"}
         risk_cfg = self.config.get("risk", {})
-        target_risk = float(risk_cfg.get("risk_by_symbol", {}).get(signal.logical_symbol, risk_cfg.get("default_risk_usd", 20.0)))
-        cap = min(target_risk, equity * float(risk_cfg.get("max_equity_risk_pct", 5.0)) / 100.0)
-        distance = abs(signal.entry - signal.sl)
-        risk_per_lot = distance / info.trade_tick_size * info.trade_tick_value
+        risk_pct = float(risk_cfg.get("balance_risk_pct", 5.0))
+        if balance <= 0 or risk_pct <= 0:
+            return None, {"error": "risk_budget_invalid", "balance": round(balance, 2), "balance_risk_pct": risk_pct}
+
+        cap = balance * risk_pct / 100.0
+        order_type = mt5.ORDER_TYPE_BUY if signal.side == "BUY" else mt5.ORDER_TYPE_SELL
+        risk_calc = mt5.order_calc_profit(order_type, signal.broker_symbol, 1.0, signal.entry, signal.sl)
+        risk_per_lot = abs(float(risk_calc or 0.0))
+        risk_method = "mt5_order_calc_profit"
+        if risk_per_lot <= 0:
+            if not info.trade_tick_size or not info.trade_tick_value:
+                return None, {"error": "risk_unavailable", "balance": round(balance, 2), "balance_risk_pct": risk_pct}
+            distance = abs(signal.entry - signal.sl)
+            risk_per_lot = distance / info.trade_tick_size * info.trade_tick_value
+            risk_method = "tick_value_fallback"
         if risk_per_lot <= 0:
             return None, {"error": "risk_per_lot_zero"}
         step = float(info.volume_step or 0.01)
@@ -460,13 +471,26 @@ class SniperBot:
         lot = round(min(max_lot, lot), 4)
         if lot < min_lot:
             min_risk = risk_per_lot * min_lot
-            return None, {"error": "min_lot_exceeds_cap", "risk_cap": round(cap, 2), "min_lot": min_lot, "min_lot_risk": round(min_risk, 2)}
+            return None, {
+                "error": "min_lot_exceeds_cap",
+                "risk_model": "balance_percent",
+                "balance": round(balance, 2),
+                "balance_risk_pct": risk_pct,
+                "risk_cap": round(cap, 2),
+                "min_lot": min_lot,
+                "min_lot_risk": round(min_risk, 2),
+                "risk_method": risk_method,
+            }
         risk = risk_per_lot * lot
         return lot, {
+            "risk_model": "balance_percent",
+            "balance": round(balance, 2),
+            "balance_risk_pct": risk_pct,
             "risk_cap": round(cap, 2),
             "risk_per_lot": round(risk_per_lot, 2),
             "dollar_risk": round(risk, 2),
-            "risk_pct": round(risk / equity * 100.0, 2) if equity else None,
+            "risk_pct": round(risk / balance * 100.0, 2) if balance else None,
+            "risk_method": risk_method,
         }
 
     def manage_positions(self) -> list[dict[str, Any]]:
@@ -608,7 +632,7 @@ class SniperBot:
                     row["status"] = "signal_skipped_duplicate_exposure"
                     output["symbols"].append(row)
                     continue
-                lot, risk = self.calc_lot(signal, float(account.equity))
+                lot, risk = self.calc_lot(signal, float(account.balance))
                 row["risk"] = risk
                 if lot is None:
                     row["status"] = "signal_skipped_risk"

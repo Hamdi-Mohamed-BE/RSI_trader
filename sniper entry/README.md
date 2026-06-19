@@ -22,6 +22,7 @@ Configured logical symbols:
 - Entry: market price at scan time.
 - SL: `ATR(14) * 1.5`.
 - Broker TP: TP5 / final target.
+- Lot sizing: risks `5%` of current account balance per trade by default, controlled by `risk.balance_risk_pct` in `config.json`.
 - TP1-TP4 are virtual management levels.
 - Management does not trail at TP1. Once TP2 is hit, it can move SL to TP1 for bot-owned trades.
 
