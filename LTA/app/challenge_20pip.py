@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from .config import REPORTS_DIR, load_config
+from .models import TRADE_SYMBOLS
 from .mt5_client import MT5Client
 from .orb_strategy import ORBSettings, confirmed_orb_signal, pending_orb_signals
 from .scanner import scan_market
@@ -57,6 +58,14 @@ def _env_list(name: str, default: tuple[str, ...]) -> tuple[str, ...]:
     if not value:
         return default
     return tuple(item.strip().upper() for item in value.split(",") if item.strip())
+
+
+def _symbol_watchlist_env(name: str, default: tuple[str, ...]) -> tuple[str, ...]:
+    value = os.getenv(name)
+    if value and value.strip().upper() in {"AUTO_SYMBOLS", "LTA", "LTA_BOT", "MAIN", "MAIN_BOT"}:
+        return _env_list("AUTO_SYMBOLS", default)
+    symbols = _env_list(name, _env_list("AUTO_SYMBOLS", default))
+    return symbols or default
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -172,7 +181,7 @@ class TwentyPipChallengeBot:
         if self.strategy not in {"LTA", "ORB"}:
             self.strategy = "LTA"
         self.interval_seconds = max(10, _env_int("CHALLENGE20_SCAN_INTERVAL_SECONDS", 60))
-        self.symbols = _env_list("CHALLENGE20_SYMBOLS", ("XAUUSD",))
+        self.symbols = _symbol_watchlist_env("CHALLENGE20_SYMBOLS", TRADE_SYMBOLS)
         self.timeframes = _env_list("CHALLENGE20_TIMEFRAMES", ("M5", "M15"))
         self.min_setup_score = max(1, min(100, _env_int("CHALLENGE20_MIN_SETUP_SCORE", 90)))
         self.one_trade_per_day = _env_bool("CHALLENGE20_ONE_TRADE_PER_DAY", True)

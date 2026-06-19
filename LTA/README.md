@@ -101,7 +101,7 @@ The worker writes:
 Safety gates:
 
 - By default, it prepares tickets only.
-- Edit `AUTO_SYMBOLS` to control the main LTA automation watchlist. This does not change `ORB_SYMBOLS` or `CHALLENGE20_SYMBOLS`.
+- Edit `AUTO_SYMBOLS` to control the main LTA automation watchlist. With `CHALLENGE20_SYMBOLS=AUTO_SYMBOLS`, the 20 Pip Challenge follows the same list. `ORB_SYMBOLS` remains separate.
 - It sends live market orders only when both `LIVE_TRADING=true` and `AUTO_PLACE_TRADES=true` are set in `.env`.
 - It sends live pending orders only when `LIVE_TRADING=true`, `AUTO_PLACE_TRADES=true`, and `AUTO_PREPLACE_ORDERS=true` are all set in `.env`.
 - Pending orders are separate from confirmed A+ market entries. They are only created from `preplace` setups where a trigger price would complete an LTA Entry Model 3 internal break or a clean Entry Model 2 LTF swing retest.
@@ -132,7 +132,7 @@ This worker has its own magic number, tracker, and `.env` switches. It starts wi
 Defaults:
 
 - Strategy: `CHALLENGE20_STRATEGY=ORB`, using ORB entries with the 20 Pip Challenge risk/target math.
-- Symbols: `CHALLENGE20_SYMBOLS=XAUUSD,XAGUSD,BTCUSD,US30,EURUSD,GBPUSD,USDJPY,USDCHF,USDCAD,AUDUSD,NZDUSD`
+- Symbols: `CHALLENGE20_SYMBOLS=AUTO_SYMBOLS`, meaning it follows the main LTA bot watchlist from `AUTO_SYMBOLS`
 - Timeframes: `CHALLENGE20_TIMEFRAMES=M15,M30`
 - ORB challenge timeframe: `CHALLENGE20_ORB_TIMEFRAME=M15`
 - Minimum setup score: `CHALLENGE20_MIN_SETUP_SCORE=90`
@@ -152,6 +152,7 @@ Safety notes:
 - The challenge bank is tracked separately from the MT5 account. The bot sizes from the challenge bank and checks that the account can support the risk before sending anything.
 - Public versions of the challenge are very aggressive. A few losses can wipe out the challenge bank, so the live switches are intentionally separate from the main automation switches.
 - `CHALLENGE20_STRATEGY=LTA` uses LTA A+ confirmation on MT5 candles. `CHALLENGE20_STRATEGY=ORB` uses the ORB session/range settings and then adjusts TP to the challenge RR.
+- Set `CHALLENGE20_SYMBOLS` to a comma-separated list if you want the challenge to watch different symbols from the main LTA bot.
 - The current implementation does not use a true 10-second candle feed yet.
 - `CHALLENGE20_ALLOW_PENDING=false` is recommended for ORB challenge mode until an OCO pair of pending breakout orders is added.
 - Use `stop_20pip_challenge.bat` when you want to stop this worker and clear the challenge lock.
