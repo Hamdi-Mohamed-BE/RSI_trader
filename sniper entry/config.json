@@ -35,7 +35,7 @@
   "guardrails": {
     "enabled": true,
     "timezone": "America/New_York",
-    "allowed_weekdays": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    "allowed_weekdays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     "sessions": [
       {
         "name": "NY BTC",
@@ -43,8 +43,8 @@
         "end": "17:00"
       }
     ],
-    "max_trades_per_day": 1,
-    "max_daily_loss_pct": 5.0,
+    "max_trades_per_day": 3,
+    "max_daily_loss_pct": 10.0,
     "max_total_drawdown_pct": 15.0,
     "max_consecutive_losses": 2,
     "symbol_loss_cooldown_minutes": 240,
