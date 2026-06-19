@@ -350,6 +350,7 @@ class TradeAutomation:
     def __init__(self) -> None:
         self.config = load_config()
         self.client = MT5Client()
+        self.watchlist_symbols = _env_list("AUTO_SYMBOLS", TRADE_SYMBOLS) or TRADE_SYMBOLS
         self.timeframes = _env_list("AUTO_SCAN_TIMEFRAMES", DEFAULT_SCAN_TIMEFRAMES)
         self.interval_seconds = _env_int("AUTO_SCAN_INTERVAL_SECONDS", 60)
         self.cooldown_minutes = _env_int("AUTO_SIGNAL_COOLDOWN_MINUTES", 120)
@@ -449,10 +450,9 @@ class TradeAutomation:
             return desired_stop > current_stop
         return desired_stop < current_stop
 
-    @staticmethod
-    def _base_symbol_from_broker_symbol(broker_symbol: str) -> str:
+    def _base_symbol_from_broker_symbol(self, broker_symbol: str) -> str:
         upper = broker_symbol.upper()
-        for symbol in TRADE_SYMBOLS:
+        for symbol in (*self.watchlist_symbols, *TRADE_SYMBOLS):
             if symbol in upper:
                 return symbol
         return broker_symbol
@@ -807,7 +807,7 @@ class TradeAutomation:
             return []
 
         activities = self.client.recent_trade_activity(
-            TRADE_SYMBOLS,
+            self.watchlist_symbols,
             lookback_minutes=self.symbol_activity_cooldown_minutes,
         )
         updates: list[dict[str, Any]] = []
@@ -1144,7 +1144,7 @@ class TradeAutomation:
         active_symbol_cooldowns = self.active_symbol_cooldowns(now)
         daily_bot_stats = self.daily_bot_stats(now)
         scan = scan_market(
-            symbols=TRADE_SYMBOLS,
+            symbols=self.watchlist_symbols,
             timeframes=self.timeframes,
             min_score=self.config.min_setup_score,
             preplace_min_score=self.preplace_min_score,
@@ -1153,7 +1153,7 @@ class TradeAutomation:
         _log_automation_event(
             "scan_summary",
             now,
-            symbols=list(TRADE_SYMBOLS),
+            symbols=list(self.watchlist_symbols),
             timeframes=list(self.timeframes),
             allowed_count=len(scan.get("allowed", [])),
             preplace_count=len(scan.get("preplace", [])),
@@ -1678,6 +1678,8 @@ class TradeAutomation:
         payload = {
             "checked_at": now.isoformat(timespec="seconds"),
             "interval_seconds": self.interval_seconds,
+            "symbols": list(self.watchlist_symbols),
+            "watchlist_env": "AUTO_SYMBOLS",
             "timeframes": list(self.timeframes),
             "lot_sizing": {
                 "mode": "risk_percent_of_current_balance",
@@ -1741,7 +1743,7 @@ class TradeAutomation:
 
     def run_forever(self) -> None:
         print("LTA automation worker started.")
-        print(f"Scanning {', '.join(TRADE_SYMBOLS)} on {', '.join(self.timeframes)} every {self.interval_seconds}s.")
+        print(f"Scanning {', '.join(self.watchlist_symbols)} on {', '.join(self.timeframes)} every {self.interval_seconds}s.")
         print(f"Dynamic lot sizing: risk {self.max_lot_risk_pct:g}% of current account balance per trade.")
         print(
             f"Spread guard: max {self.max_spread_risk_percent:g}% of stop distance"

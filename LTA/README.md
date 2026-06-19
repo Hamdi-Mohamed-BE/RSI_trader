@@ -75,6 +75,7 @@ Defaults:
 
 - Live automation lot sizing: `MAX_LOT_RISK_PCT=3.0`
 - Max spread: `MAX_SPREAD_RISK_PERCENT=15`, meaning spread must be 15% or less of the stop distance. `MAX_SPREAD_POINTS=0` disables the fixed-points cap.
+- Watchlist symbols: `AUTO_SYMBOLS=XAUUSD,XAGUSD,BTCUSD,US30`
 - Scan timeframes: `M15,M30,H1,H4,D1,W1`
 - Scan interval: `60` seconds
 - Console detail limit: `AUTO_LOG_DETAIL_LIMIT=8`
@@ -100,6 +101,7 @@ The worker writes:
 Safety gates:
 
 - By default, it prepares tickets only.
+- Edit `AUTO_SYMBOLS` to control the main LTA automation watchlist. This does not change `ORB_SYMBOLS` or `CHALLENGE20_SYMBOLS`.
 - It sends live market orders only when both `LIVE_TRADING=true` and `AUTO_PLACE_TRADES=true` are set in `.env`.
 - It sends live pending orders only when `LIVE_TRADING=true`, `AUTO_PLACE_TRADES=true`, and `AUTO_PREPLACE_ORDERS=true` are all set in `.env`.
 - Pending orders are separate from confirmed A+ market entries. They are only created from `preplace` setups where a trigger price would complete an LTA Entry Model 3 internal break or a clean Entry Model 2 LTF swing retest.
