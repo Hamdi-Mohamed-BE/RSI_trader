@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, timezone, tzinfo
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
@@ -8,12 +8,63 @@ DEFAULT_SESSION_TIMEZONE = "America/New_York"
 DEFAULT_DATA_TIMEZONE = "UTC"
 
 
-def zone(name: str | None, default: str = DEFAULT_DATA_TIMEZONE) -> ZoneInfo:
+class NewYorkFallbackZone(tzinfo):
+    @staticmethod
+    def _nth_weekday(year: int, month: int, weekday: int, n: int) -> int:
+        first = datetime(year, month, 1)
+        return 1 + ((weekday - first.weekday()) % 7) + (n - 1) * 7
+
+    @classmethod
+    def _transition_utc(cls, year: int) -> tuple[datetime, datetime]:
+        dst_start_day = cls._nth_weekday(year, 3, 6, 2)
+        dst_end_day = cls._nth_weekday(year, 11, 6, 1)
+        return datetime(year, 3, dst_start_day, 7), datetime(year, 11, dst_end_day, 6)
+
+    @classmethod
+    def _transition_local(cls, year: int) -> tuple[datetime, datetime]:
+        dst_start_day = cls._nth_weekday(year, 3, 6, 2)
+        dst_end_day = cls._nth_weekday(year, 11, 6, 1)
+        return datetime(year, 3, dst_start_day, 2), datetime(year, 11, dst_end_day, 2)
+
+    def _is_dst_local(self, value: datetime | None) -> bool:
+        if value is None:
+            return False
+        local = value.replace(tzinfo=None)
+        start, end = self._transition_local(local.year)
+        return start <= local < end
+
+    def utcoffset(self, value: datetime | None) -> timedelta:
+        return timedelta(hours=-4 if self._is_dst_local(value) else -5)
+
+    def dst(self, value: datetime | None) -> timedelta:
+        return timedelta(hours=1 if self._is_dst_local(value) else 0)
+
+    def tzname(self, value: datetime | None) -> str:
+        return "EDT" if self._is_dst_local(value) else "EST"
+
+    def fromutc(self, value: datetime) -> datetime:
+        if value.tzinfo is not self:
+            raise ValueError("fromutc: dt.tzinfo is not self")
+        utc_value = value.replace(tzinfo=None)
+        start, end = self._transition_utc(utc_value.year)
+        offset = timedelta(hours=-4 if start <= utc_value < end else -5)
+        return (utc_value + offset).replace(tzinfo=self)
+
+
+def zone(name: str | None, default: str = DEFAULT_DATA_TIMEZONE) -> tzinfo:
     selected = (name or default).strip() or default
     try:
         return ZoneInfo(selected)
     except ZoneInfoNotFoundError:
+        pass
+    try:
         return ZoneInfo(default)
+    except ZoneInfoNotFoundError:
+        if selected in {"America/New_York", "US/Eastern"} or default in {"America/New_York", "US/Eastern"}:
+            return NewYorkFallbackZone()
+        if selected.upper() == "UTC" or default.upper() == "UTC":
+            return timezone.utc
+        return timezone.utc
 
 
 def parse_hhmm(value: str | None, default: str) -> time:

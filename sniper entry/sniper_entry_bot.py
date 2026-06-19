@@ -5,7 +5,7 @@ import json
 import math
 import time
 from dataclasses import dataclass
-from datetime import datetime, time as datetime_time, timedelta, timezone
+from datetime import datetime, time as datetime_time, timedelta, timezone, tzinfo
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
@@ -64,11 +64,65 @@ def parse_hhmm(value: str, default: str = "00:00") -> datetime_time:
         return datetime_time(hour=int(hour), minute=int(minute))
 
 
-def safe_zone(name: str | None, default: str = "America/New_York") -> ZoneInfo:
+class NewYorkFallbackZone(tzinfo):
+    """Small Windows-safe fallback when Python's IANA tzdata is unavailable."""
+
+    @staticmethod
+    def _nth_weekday(year: int, month: int, weekday: int, n: int) -> int:
+        first = datetime(year, month, 1)
+        return 1 + ((weekday - first.weekday()) % 7) + (n - 1) * 7
+
+    @classmethod
+    def _transition_utc(cls, year: int) -> tuple[datetime, datetime]:
+        dst_start_day = cls._nth_weekday(year, 3, 6, 2)
+        dst_end_day = cls._nth_weekday(year, 11, 6, 1)
+        return datetime(year, 3, dst_start_day, 7), datetime(year, 11, dst_end_day, 6)
+
+    @classmethod
+    def _transition_local(cls, year: int) -> tuple[datetime, datetime]:
+        dst_start_day = cls._nth_weekday(year, 3, 6, 2)
+        dst_end_day = cls._nth_weekday(year, 11, 6, 1)
+        return datetime(year, 3, dst_start_day, 2), datetime(year, 11, dst_end_day, 2)
+
+    def _is_dst_local(self, dt: datetime | None) -> bool:
+        if dt is None:
+            return False
+        value = dt.replace(tzinfo=None)
+        start, end = self._transition_local(value.year)
+        return start <= value < end
+
+    def utcoffset(self, dt: datetime | None) -> timedelta:
+        return timedelta(hours=-4 if self._is_dst_local(dt) else -5)
+
+    def dst(self, dt: datetime | None) -> timedelta:
+        return timedelta(hours=1 if self._is_dst_local(dt) else 0)
+
+    def tzname(self, dt: datetime | None) -> str:
+        return "EDT" if self._is_dst_local(dt) else "EST"
+
+    def fromutc(self, dt: datetime) -> datetime:
+        if dt.tzinfo is not self:
+            raise ValueError("fromutc: dt.tzinfo is not self")
+        value = dt.replace(tzinfo=None)
+        start, end = self._transition_utc(value.year)
+        offset = timedelta(hours=-4 if start <= value < end else -5)
+        return (value + offset).replace(tzinfo=self)
+
+
+def safe_zone(name: str | None, default: str = "America/New_York") -> tzinfo:
+    selected = (name or default).strip() or default
     try:
-        return ZoneInfo((name or default).strip() or default)
+        return ZoneInfo(selected)
     except ZoneInfoNotFoundError:
+        pass
+    try:
         return ZoneInfo(default)
+    except ZoneInfoNotFoundError:
+        if selected in {"America/New_York", "US/Eastern"} or default in {"America/New_York", "US/Eastern"}:
+            return NewYorkFallbackZone()
+        if selected.upper() == "UTC" or default.upper() == "UTC":
+            return timezone.utc
+        return timezone.utc
 
 
 def minutes_of_day(value: datetime_time) -> int:

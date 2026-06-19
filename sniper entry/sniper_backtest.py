@@ -41,7 +41,8 @@ class Candidate:
     sl: float
     tp1: float
     tp2: float
-    tp5: float
+    final_tp: float
+    target_multiple: int
     exit_price: float
     result: str
     r_multiple: float
@@ -59,6 +60,15 @@ def utc_datetime(value: str) -> datetime:
 
 def iso_from_ts(timestamp: int) -> str:
     return datetime.fromtimestamp(timestamp, timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def target_multiple_from_config(config: dict[str, Any]) -> int:
+    raw = str(config.get("execution", {}).get("broker_tp", "TP3")).upper().replace("TP", "")
+    try:
+        value = int(raw)
+    except ValueError:
+        value = 3
+    return max(1, min(5, value))
 
 
 def resolve_symbol(logical: str, aliases: list[str]) -> str | None:
@@ -184,6 +194,10 @@ def build_candidate(
     atr: float,
     end_ts: int,
     manage_tp2_to_tp1: bool,
+    target_multiple: int,
+    partial_close_at_tp1: bool,
+    tp1_partial_close_pct: float,
+    move_sl_to_entry_at_tp1: bool,
 ) -> Candidate | None:
     point = point_for(info)
     entry_bar = m5[entry_index]
@@ -194,12 +208,12 @@ def build_candidate(
         sl = entry - risk_unit
         tp1 = entry + risk_unit
         tp2 = entry + 2 * risk_unit
-        tp5 = entry + 5 * risk_unit
+        final_tp = entry + target_multiple * risk_unit
     else:
         sl = entry + risk_unit
         tp1 = entry - risk_unit
         tp2 = entry - 2 * risk_unit
-        tp5 = entry - 5 * risk_unit
+        final_tp = entry - target_multiple * risk_unit
 
     current_sl = sl
     stage = 0
@@ -209,6 +223,9 @@ def build_candidate(
     risk = abs(entry - sl)
     if risk <= 0:
         return None
+    remaining_fraction = 1.0
+    realized_r = 0.0
+    partial_fraction = max(0.0, min(1.0, tp1_partial_close_pct / 100.0)) if partial_close_at_tp1 else 0.0
 
     for bar in m5[entry_index:]:
         bar_time = int(bar["time"])
@@ -225,12 +242,21 @@ def build_candidate(
                 exit_price = current_sl
                 exit_time = bar_time
                 result = "loss" if current_sl <= sl + risk * 0.05 else "trail_stop"
+                realized_r += remaining_fraction * ((exit_price - entry) / risk)
                 break
-            if high_bid >= tp5:
-                exit_price = tp5
+            if high_bid >= final_tp:
+                exit_price = final_tp
                 exit_time = bar_time
                 result = "win"
+                realized_r += remaining_fraction * target_multiple
                 break
+            if stage < 1 and high_bid >= tp1:
+                if partial_fraction > 0:
+                    realized_r += partial_fraction * 1.0
+                    remaining_fraction -= partial_fraction
+                if move_sl_to_entry_at_tp1:
+                    current_sl = max(current_sl, entry)
+                stage = 1
             if manage_tp2_to_tp1 and stage < 2 and high_bid >= tp2:
                 current_sl = max(current_sl, tp1)
                 stage = 2
@@ -239,20 +265,31 @@ def build_candidate(
                 exit_price = current_sl
                 exit_time = bar_time
                 result = "loss" if current_sl >= sl - risk * 0.05 else "trail_stop"
+                realized_r += remaining_fraction * ((entry - exit_price) / risk)
                 break
-            if low_ask <= tp5:
-                exit_price = tp5
+            if low_ask <= final_tp:
+                exit_price = final_tp
                 exit_time = bar_time
                 result = "win"
+                realized_r += remaining_fraction * target_multiple
                 break
+            if stage < 1 and low_ask <= tp1:
+                if partial_fraction > 0:
+                    realized_r += partial_fraction * 1.0
+                    remaining_fraction -= partial_fraction
+                if move_sl_to_entry_at_tp1:
+                    current_sl = min(current_sl, entry)
+                stage = 1
             if manage_tp2_to_tp1 and stage < 2 and low_ask <= tp2:
                 current_sl = min(current_sl, tp1)
                 stage = 2
 
-    if side == "BUY":
-        r_multiple = (exit_price - entry) / risk
     else:
-        r_multiple = (entry - exit_price) / risk
+        if side == "BUY":
+            realized_r += remaining_fraction * ((exit_price - entry) / risk)
+        else:
+            realized_r += remaining_fraction * ((entry - exit_price) / risk)
+    r_multiple = realized_r
     per_lot, _ = risk_per_lot(broker, side, entry, sl, info)
     if per_lot <= 0:
         return None
@@ -267,7 +304,8 @@ def build_candidate(
         sl=round(sl, int(getattr(info, "digits", 5) or 5)),
         tp1=round(tp1, int(getattr(info, "digits", 5) or 5)),
         tp2=round(tp2, int(getattr(info, "digits", 5) or 5)),
-        tp5=round(tp5, int(getattr(info, "digits", 5) or 5)),
+        final_tp=round(final_tp, int(getattr(info, "digits", 5) or 5)),
+        target_multiple=target_multiple,
         exit_price=round(exit_price, int(getattr(info, "digits", 5) or 5)),
         result=result,
         r_multiple=round(float(r_multiple), 4),
@@ -314,7 +352,12 @@ def generate_candidates(
     point = point_for(info)
     max_spread_ratio = float(config.get("strategy", {}).get("max_spread_atr_ratio", 0.35))
     atr_multiplier = float(config.get("strategy", {}).get("atr_multiplier", 1.5))
-    manage_tp2_to_tp1 = bool(config.get("execution", {}).get("move_sl_to_tp1_at_tp2", True))
+    execution_cfg = config.get("execution", {})
+    manage_tp2_to_tp1 = bool(execution_cfg.get("move_sl_to_tp1_at_tp2", True))
+    target_multiple = target_multiple_from_config(config)
+    partial_close_at_tp1 = bool(execution_cfg.get("partial_close_at_tp1", True))
+    tp1_partial_close_pct = float(execution_cfg.get("tp1_partial_close_pct", 50.0) or 0.0)
+    move_sl_to_entry_at_tp1 = bool(execution_cfg.get("move_sl_to_entry_at_tp1", True))
 
     candidates: list[Candidate] = []
     state = 0
@@ -431,6 +474,10 @@ def generate_candidates(
             float(atr14[index]),
             end_ts,
             manage_tp2_to_tp1,
+            target_multiple,
+            partial_close_at_tp1,
+            tp1_partial_close_pct,
+            move_sl_to_entry_at_tp1,
         )
         if candidate:
             candidates.append(candidate)
@@ -626,8 +673,8 @@ def main() -> None:
                 "timeframe": config.get("timeframe", "H4"),
                 "entry": "EMA 9/21 cross on closed bar, entered at next M5 open",
                 "stop": f"ATR(14) * {config.get('strategy', {}).get('atr_multiplier', 1.5)}",
-                "target": "TP5 / 5R",
-                "management": "If TP2 is hit, SL trails to TP1 when enabled.",
+                "target": f"{config.get('execution', {}).get('broker_tp', 'TP3')} / {target_multiple_from_config(config)}R",
+                "management": "Optional TP1 partial close, SL to entry at TP1, and SL to TP1 at TP2 when enabled.",
                 "note": "Live max_signal_age/bootstrap filters are operational safeguards and are not applied to historical bars.",
             },
             "starting_balance": args.balance,
