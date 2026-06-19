@@ -22,6 +22,8 @@ from sniper_entry_bot import (
     macd_values,
     rates_to_dicts,
     rsi_series,
+    safe_zone,
+    session_contains,
     session_vwap,
     sma,
 )
@@ -124,6 +126,24 @@ def normalize_lot_down(info: Any, raw_lot: float) -> float:
         return 0.0
     steps = math.floor((min(raw_lot, max_lot) - min_lot + 1e-12) / step)
     return round(min_lot + steps * step, 4)
+
+
+def allowed_by_guardrails(config: dict[str, Any], timestamp: int) -> tuple[bool, str]:
+    guardrails = config.get("guardrails", {}) or {}
+    if not guardrails.get("enabled", True):
+        return True, "disabled"
+    timezone_name = str(guardrails.get("timezone", "America/New_York"))
+    local_time = datetime.fromtimestamp(timestamp, timezone.utc).astimezone(safe_zone(timezone_name))
+    weekdays = [str(item).strip().lower()[:3] for item in guardrails.get("allowed_weekdays", [])]
+    if weekdays and local_time.strftime("%a").lower()[:3] not in weekdays:
+        return False, "weekday_block"
+    sessions = guardrails.get("sessions", [])
+    if sessions and not any(
+        session_contains(local_time, str(session.get("start", "00:00")), str(session.get("end", "23:59")))
+        for session in sessions
+    ):
+        return False, "outside_allowed_session"
+    return True, "allowed"
 
 
 def risk_per_lot(symbol: str, side: str, entry: float, sl: float, info: Any) -> tuple[float, str]:
@@ -331,6 +351,11 @@ def generate_candidates(
             state = -1
         if signal_time < start_ts or signal_time > end_ts:
             continue
+        allowed, guardrail_reason = allowed_by_guardrails(config, signal_time)
+        if not allowed:
+            key = f"guardrail_{guardrail_reason}"
+            stats[key] = int(stats.get(key, 0)) + 1
+            continue
         if not (trigger_buy or trigger_sell):
             continue
         stats["crosses"] += 1
@@ -374,6 +399,19 @@ def generate_candidates(
             else "MILD BEAR"
         )
 
+        side = "BUY" if trigger_buy else "SELL"
+        strategy_cfg = config.get("strategy", {})
+        min_adx = float(strategy_cfg.get("min_adx", 0.0) or 0.0)
+        if min_adx > 0 and float(adx[index]) < min_adx:
+            stats["adx_filtered"] = int(stats.get("adx_filtered", 0)) + 1
+            continue
+        if strategy_cfg.get("require_bias_alignment", True):
+            edge = float(strategy_cfg.get("min_bias_edge_pct", 15.0) or 0.0)
+            bias_edge = bull_pct - bear_pct if side == "BUY" else bear_pct - bull_pct
+            if bias_edge < edge:
+                stats["bias_filtered"] = int(stats.get("bias_filtered", 0)) + 1
+                continue
+
         entry_index = first_index_at_or_after(m5_times, signal_time)
         if entry_index is None:
             stats["no_m5_entry"] += 1
@@ -381,7 +419,7 @@ def generate_candidates(
         candidate = build_candidate(
             logical,
             broker,
-            "BUY" if trigger_buy else "SELL",
+            side,
             signal_time,
             entry_index,
             m5,
@@ -403,15 +441,46 @@ def apply_portfolio(
     candidates: list[Candidate],
     starting_balance: float,
     risk_pct: float,
+    guardrails: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    guardrails = guardrails or {}
     balance = starting_balance
     peak = balance
     max_dd = 0.0
     open_until: dict[str, int] = {}
+    daily_trades: dict[str, int] = {}
+    daily_pnl: dict[str, float] = {}
+    symbol_cooldown_until: dict[str, int] = {}
+    loss_streak = 0
     trades: list[dict[str, Any]] = []
     skipped_open = 0
     skipped_lot = 0
+    skipped_guardrail = 0
+    timezone_name = str(guardrails.get("timezone", "America/New_York"))
+    replay_zone = safe_zone(timezone_name)
+    max_trades_per_day = int(guardrails.get("max_trades_per_day", 0) or 0)
+    max_daily_loss_pct = float(guardrails.get("max_daily_loss_pct", 0.0) or 0.0)
+    max_drawdown_pct = float(guardrails.get("max_total_drawdown_pct", 0.0) or 0.0)
+    max_consecutive_losses = int(guardrails.get("max_consecutive_losses", 0) or 0)
+    symbol_loss_cooldown_minutes = int(guardrails.get("symbol_loss_cooldown_minutes", 0) or 0)
     for candidate in sorted(candidates, key=lambda item: (item.entry_time, item.logical_symbol)):
+        local_day = datetime.fromtimestamp(candidate.entry_time, timezone.utc).astimezone(replay_zone).date().isoformat()
+        current_dd_pct = (peak - balance) / peak * 100.0 if peak else 0.0
+        if max_drawdown_pct > 0 and current_dd_pct >= max_drawdown_pct:
+            skipped_guardrail += 1
+            continue
+        if max_trades_per_day > 0 and daily_trades.get(local_day, 0) >= max_trades_per_day:
+            skipped_guardrail += 1
+            continue
+        if max_daily_loss_pct > 0 and daily_pnl.get(local_day, 0.0) <= -(balance * max_daily_loss_pct / 100.0):
+            skipped_guardrail += 1
+            continue
+        if max_consecutive_losses > 0 and loss_streak >= max_consecutive_losses:
+            skipped_guardrail += 1
+            continue
+        if symbol_cooldown_until.get(candidate.logical_symbol, 0) > candidate.entry_time:
+            skipped_guardrail += 1
+            continue
         if open_until.get(candidate.logical_symbol, 0) > candidate.entry_time:
             skipped_open += 1
             continue
@@ -431,6 +500,14 @@ def apply_portfolio(
         peak = max(peak, balance)
         max_dd = max(max_dd, (peak - balance) / peak if peak else 0.0)
         open_until[candidate.logical_symbol] = candidate.exit_time
+        daily_trades[local_day] = daily_trades.get(local_day, 0) + 1
+        daily_pnl[local_day] = daily_pnl.get(local_day, 0.0) + pnl
+        if pnl < 0:
+            loss_streak += 1
+            if symbol_loss_cooldown_minutes > 0:
+                symbol_cooldown_until[candidate.logical_symbol] = candidate.exit_time + symbol_loss_cooldown_minutes * 60
+        elif pnl > 0:
+            loss_streak = 0
         row = asdict(candidate)
         row.update(
             {
@@ -460,6 +537,7 @@ def apply_portfolio(
         "max_drawdown_pct": round(max_dd * 100, 2),
         "skipped_same_symbol_open": skipped_open,
         "skipped_lot_too_small": skipped_lot,
+        "skipped_guardrail": skipped_guardrail,
     }
     return summary, trades
 
@@ -503,12 +581,13 @@ def main() -> None:
             all_candidates.extend(candidates)
             availability.append({"logical_symbol": logical, "broker_symbol": broker, "signals": len(candidates), **stats})
 
-        portfolio_summary, portfolio_trades = apply_portfolio(all_candidates, args.balance, risk_pct)
+        guardrails = config.get("guardrails", {}) or {}
+        portfolio_summary, portfolio_trades = apply_portfolio(all_candidates, args.balance, risk_pct, guardrails)
         per_symbol: list[dict[str, Any]] = []
         per_symbol_trades: dict[str, list[dict[str, Any]]] = {}
         for logical in sorted({candidate.logical_symbol for candidate in all_candidates}):
             symbol_candidates = [candidate for candidate in all_candidates if candidate.logical_symbol == logical]
-            summary, trades = apply_portfolio(symbol_candidates, args.balance, risk_pct)
+            summary, trades = apply_portfolio(symbol_candidates, args.balance, risk_pct, guardrails)
             summary["symbol"] = logical
             per_symbol.append(summary)
             per_symbol_trades[logical] = trades

@@ -5,9 +5,10 @@ import json
 import math
 import time
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, time as datetime_time, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import MetaTrader5 as mt5
 
@@ -51,6 +52,36 @@ class Signal:
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def parse_hhmm(value: str, default: str = "00:00") -> datetime_time:
+    raw = str(value or default).strip() or default
+    try:
+        hour, minute = raw.split(":", 1)
+        return datetime_time(hour=int(hour), minute=int(minute))
+    except (TypeError, ValueError):
+        hour, minute = default.split(":", 1)
+        return datetime_time(hour=int(hour), minute=int(minute))
+
+
+def safe_zone(name: str | None, default: str = "America/New_York") -> ZoneInfo:
+    try:
+        return ZoneInfo((name or default).strip() or default)
+    except ZoneInfoNotFoundError:
+        return ZoneInfo(default)
+
+
+def minutes_of_day(value: datetime_time) -> int:
+    return value.hour * 60 + value.minute
+
+
+def session_contains(now_local: datetime, start: str, end: str) -> bool:
+    current = now_local.hour * 60 + now_local.minute
+    start_minutes = minutes_of_day(parse_hhmm(start, "00:00"))
+    end_minutes = minutes_of_day(parse_hhmm(end, "23:59"))
+    if end_minutes <= start_minutes:
+        return current >= start_minutes or current <= end_minutes
+    return start_minutes <= current <= end_minutes
 
 
 def as_dict(value: Any) -> dict[str, Any]:
@@ -310,6 +341,146 @@ class SniperBot:
             found.append({"kind": "order", "ticket": int(data["ticket"]), "type": int(data["type"]), "volume": float(data["volume_current"])})
         return found
 
+    def guardrail_config(self) -> dict[str, Any]:
+        return self.config.get("guardrails", {}) or {}
+
+    def session_gate(self, now_utc: datetime | None = None) -> tuple[bool, list[str], dict[str, Any]]:
+        guardrails = self.guardrail_config()
+        if not guardrails.get("enabled", True):
+            return True, [], {"enabled": False}
+        timezone_name = str(guardrails.get("timezone", "America/New_York"))
+        zone = safe_zone(timezone_name)
+        now_local = (now_utc or datetime.now(timezone.utc)).astimezone(zone)
+        reasons: list[str] = []
+        weekdays = [str(item).strip().lower()[:3] for item in guardrails.get("allowed_weekdays", [])]
+        if weekdays and now_local.strftime("%a").lower()[:3] not in weekdays:
+            reasons.append(f"weekday_block:{now_local.strftime('%a')}")
+        sessions = guardrails.get("sessions", [])
+        session_hits = []
+        if sessions:
+            for session in sessions:
+                if session_contains(now_local, str(session.get("start", "00:00")), str(session.get("end", "23:59"))):
+                    session_hits.append(str(session.get("name", "session")))
+            if not session_hits:
+                reasons.append("outside_allowed_session")
+        return not reasons, reasons, {
+            "timezone": timezone_name,
+            "local_time": now_local.replace(microsecond=0).isoformat(),
+            "session_hits": session_hits,
+        }
+
+    def bot_deals_since(self, start: datetime, end: datetime | None = None) -> list[dict[str, Any]]:
+        end = end or datetime.now(timezone.utc)
+        magic = int(self.config.get("execution", {}).get("magic", 26061515))
+        rows: list[dict[str, Any]] = []
+        for deal in mt5.history_deals_get(start, end) or []:
+            data = as_dict(deal)
+            comment = str(data.get("comment", ""))
+            if int(data.get("magic", 0) or 0) == magic or comment.startswith("SNIP"):
+                rows.append(data)
+        return rows
+
+    def bot_closed_trades(self, days: int = 30) -> list[dict[str, Any]]:
+        start = datetime.now(timezone.utc) - timedelta(days=max(1, int(days)))
+        grouped: dict[str, dict[str, Any]] = {}
+        close_entries = {
+            getattr(mt5, "DEAL_ENTRY_OUT", 1),
+            getattr(mt5, "DEAL_ENTRY_INOUT", 2),
+            getattr(mt5, "DEAL_ENTRY_OUT_BY", 3),
+        }
+        for deal in self.bot_deals_since(start):
+            entry_type = int(deal.get("entry", -1) or -1)
+            if entry_type not in close_entries:
+                continue
+            position_id = str(deal.get("position_id") or deal.get("position") or deal.get("ticket"))
+            item = grouped.setdefault(
+                position_id,
+                {
+                    "position_id": position_id,
+                    "symbol": str(deal.get("symbol", "")),
+                    "time": int(deal.get("time", 0) or 0),
+                    "profit": 0.0,
+                },
+            )
+            item["time"] = max(int(item.get("time", 0) or 0), int(deal.get("time", 0) or 0))
+            item["profit"] = float(item.get("profit", 0.0)) + float(deal.get("profit", 0.0) or 0.0)
+            item["profit"] += float(deal.get("swap", 0.0) or 0.0) + float(deal.get("commission", 0.0) or 0.0)
+        return sorted(grouped.values(), key=lambda item: int(item.get("time", 0) or 0))
+
+    def daily_metrics(self, account: Any) -> dict[str, Any]:
+        guardrails = self.guardrail_config()
+        timezone_name = str(guardrails.get("timezone", "America/New_York"))
+        zone = safe_zone(timezone_name)
+        now_local = datetime.now(timezone.utc).astimezone(zone)
+        day_start = datetime.combine(now_local.date(), datetime_time.min, tzinfo=zone).astimezone(timezone.utc)
+        deals = self.bot_deals_since(day_start)
+        entry_types = {getattr(mt5, "DEAL_ENTRY_IN", 0), getattr(mt5, "DEAL_ENTRY_INOUT", 2)}
+        trades_today = {
+            str(deal.get("position_id") or deal.get("position") or deal.get("ticket"))
+            for deal in deals
+            if int(deal.get("entry", -1) or -1) in entry_types
+        }
+        daily_pnl = sum(
+            float(deal.get("profit", 0.0) or 0.0)
+            + float(deal.get("swap", 0.0) or 0.0)
+            + float(deal.get("commission", 0.0) or 0.0)
+            for deal in deals
+        )
+        risk_state = self.state.setdefault("risk_state", {})
+        equity = float(getattr(account, "equity", 0.0) or 0.0)
+        previous_peak = float(risk_state.get("equity_peak", equity) or equity)
+        peak = max(previous_peak, equity)
+        risk_state["equity_peak"] = peak
+        risk_state["updated_at"] = utc_now()
+        drawdown_pct = ((peak - equity) / peak * 100.0) if peak > 0 else 0.0
+        closed = self.bot_closed_trades(guardrails.get("loss_streak_lookback_days", 30))
+        loss_streak = 0
+        for trade in reversed(closed):
+            if float(trade.get("profit", 0.0) or 0.0) < 0:
+                loss_streak += 1
+            elif float(trade.get("profit", 0.0) or 0.0) > 0:
+                break
+        return {
+            "timezone": timezone_name,
+            "day": now_local.date().isoformat(),
+            "daily_pnl": round(daily_pnl, 2),
+            "trades_today": len(trades_today),
+            "loss_streak": loss_streak,
+            "equity_peak": round(peak, 2),
+            "drawdown_pct": round(drawdown_pct, 2),
+            "recent_closed": closed[-10:],
+        }
+
+    def risk_gate(self, signal: Signal, account: Any, metrics: dict[str, Any]) -> tuple[bool, list[str]]:
+        guardrails = self.guardrail_config()
+        if not guardrails.get("enabled", True):
+            return True, []
+        reasons: list[str] = []
+        max_trades = int(guardrails.get("max_trades_per_day", 0) or 0)
+        if max_trades > 0 and int(metrics.get("trades_today", 0)) >= max_trades:
+            reasons.append("max_trades_per_day")
+        max_daily_loss_pct = float(guardrails.get("max_daily_loss_pct", 0.0) or 0.0)
+        balance = float(getattr(account, "balance", 0.0) or 0.0)
+        if max_daily_loss_pct > 0 and float(metrics.get("daily_pnl", 0.0) or 0.0) <= -(balance * max_daily_loss_pct / 100.0):
+            reasons.append("max_daily_loss")
+        max_drawdown_pct = float(guardrails.get("max_total_drawdown_pct", 0.0) or 0.0)
+        if max_drawdown_pct > 0 and float(metrics.get("drawdown_pct", 0.0) or 0.0) >= max_drawdown_pct:
+            reasons.append("max_total_drawdown")
+        max_losses = int(guardrails.get("max_consecutive_losses", 0) or 0)
+        if max_losses > 0 and int(metrics.get("loss_streak", 0) or 0) >= max_losses:
+            reasons.append("max_consecutive_losses")
+
+        cooldown_minutes = int(guardrails.get("symbol_loss_cooldown_minutes", 0) or 0)
+        if cooldown_minutes > 0:
+            cutoff = datetime.now(timezone.utc).timestamp() - cooldown_minutes * 60
+            for trade in reversed(metrics.get("recent_closed", [])):
+                if str(trade.get("symbol", "")).upper() != signal.broker_symbol.upper():
+                    continue
+                if float(trade.get("profit", 0.0) or 0.0) < 0 and int(trade.get("time", 0) or 0) >= cutoff:
+                    reasons.append("symbol_loss_cooldown")
+                break
+        return not reasons, reasons
+
     def analyze(self, logical: str, broker_symbol: str) -> tuple[Signal | None, dict[str, Any]]:
         timeframe_name = self.config.get("timeframe", "H4")
         timeframe = TIMEFRAMES[timeframe_name]
@@ -403,6 +574,30 @@ class SniperBot:
             return None, {"status": "no_cross", "bias": bias, "bull_pct": round(bull_pct), "bear_pct": round(bear_pct)}
 
         side = "BUY" if trigger_buy else "SELL"
+        strategy_cfg = self.config.get("strategy", {})
+        min_adx = float(strategy_cfg.get("min_adx", 0.0) or 0.0)
+        if min_adx > 0 and float(adx[index]) < min_adx:
+            self.update_symbol_state(logical, bar_time, state_after)
+            return None, {
+                "status": "weak_trend_adx",
+                "side": side,
+                "adx": round(float(adx[index]), 2),
+                "min_adx": min_adx,
+                "bias": bias,
+            }
+        if strategy_cfg.get("require_bias_alignment", True):
+            edge = float(strategy_cfg.get("min_bias_edge_pct", 15.0) or 0.0)
+            bias_edge = bull_pct - bear_pct if side == "BUY" else bear_pct - bull_pct
+            if bias_edge < edge:
+                self.update_symbol_state(logical, bar_time, state_after)
+                return None, {
+                    "status": "bias_not_aligned",
+                    "side": side,
+                    "bias": bias,
+                    "bull_pct": round(bull_pct),
+                    "bear_pct": round(bear_pct),
+                    "required_edge": edge,
+                }
         risk_unit = float(atr14[index]) * float(self.config.get("strategy", {}).get("atr_multiplier", 1.5))
         entry = float(tick.ask if side == "BUY" else tick.bid)
         if side == "BUY":
@@ -737,6 +932,14 @@ class SniperBot:
                 "signals": [],
                 "orders": [],
             }
+            session_ok, session_reasons, session_info = self.session_gate()
+            daily_metrics = self.daily_metrics(account)
+            output["guardrails"] = {
+                "session_ok": session_ok,
+                "session_reasons": session_reasons,
+                "session": session_info,
+                "daily": daily_metrics,
+            }
             can_trade = bool(account.trade_allowed) and bool(terminal.trade_allowed)
             for logical, aliases in self.config.get("symbols", {}).items():
                 broker_symbol = self.resolve_symbol(logical, aliases)
@@ -755,6 +958,17 @@ class SniperBot:
                 output["signals"].append(signal.__dict__)
                 if duplicates:
                     row["status"] = "signal_skipped_duplicate_exposure"
+                    output["symbols"].append(row)
+                    continue
+                if not session_ok:
+                    row["status"] = "signal_skipped_session"
+                    row["guardrail_reasons"] = session_reasons
+                    output["symbols"].append(row)
+                    continue
+                risk_ok, risk_reasons = self.risk_gate(signal, account, daily_metrics)
+                if not risk_ok:
+                    row["status"] = "signal_skipped_guardrail"
+                    row["guardrail_reasons"] = risk_reasons
                     output["symbols"].append(row)
                     continue
                 lot, risk = self.calc_lot(signal, float(account.balance))

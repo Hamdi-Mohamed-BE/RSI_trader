@@ -218,14 +218,14 @@ def main() -> None:
     reward_risk = target_percent / risk_percent if risk_percent > 0 else 0.0
 
     settings = ORBSettings(
-        session_start=args.session_start or os.getenv("ORB_SESSION_START", "09:30"),
-        session_end=args.session_end or os.getenv("ORB_SESSION_END", "16:00"),
-        range_minutes=max(1, args.range_minutes or env_int("ORB_RANGE_MINUTES", 15)),
+        session_start=args.session_start or os.getenv("CHALLENGE20_ORB_SESSION_START", os.getenv("ORB_SESSION_START", "09:30")),
+        session_end=args.session_end or os.getenv("CHALLENGE20_ORB_SESSION_END", os.getenv("ORB_SESSION_END", "16:00")),
+        range_minutes=max(1, args.range_minutes or env_int("CHALLENGE20_ORB_RANGE_MINUTES", env_int("ORB_RANGE_MINUTES", 15))),
         reward_risk=max(0.5, reward_risk),
-        buffer_atr=max(0.0, env_float("ORB_BREAK_BUFFER_ATR", 0.0)),
-        min_range_atr=max(0.0, env_float("ORB_MIN_RANGE_ATR", 0.0)),
-        max_range_atr=max(0.0, env_float("ORB_MAX_RANGE_ATR", 999.0)),
-        session_timezone=args.session_timezone or os.getenv("ORB_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE),
+        buffer_atr=max(0.0, env_float("CHALLENGE20_ORB_BREAK_BUFFER_ATR", env_float("ORB_BREAK_BUFFER_ATR", 0.0))),
+        min_range_atr=max(0.0, env_float("CHALLENGE20_ORB_MIN_RANGE_ATR", env_float("ORB_MIN_RANGE_ATR", 0.0))),
+        max_range_atr=max(0.0, env_float("CHALLENGE20_ORB_MAX_RANGE_ATR", env_float("ORB_MAX_RANGE_ATR", 999.0))),
+        session_timezone=args.session_timezone or os.getenv("CHALLENGE20_ORB_SESSION_TIMEZONE", os.getenv("ORB_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)),
         data_timezone=args.data_timezone or os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE),
     )
     timeframe = (args.timeframe or os.getenv("CHALLENGE20_ORB_TIMEFRAME") or os.getenv("ORB_TIMEFRAME", "M15")).upper()

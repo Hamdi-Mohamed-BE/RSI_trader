@@ -198,15 +198,15 @@ class TwentyPipChallengeBot:
         self.orb_timeframe = os.getenv("CHALLENGE20_ORB_TIMEFRAME", os.getenv("ORB_TIMEFRAME", "M15")).strip().upper() or "M15"
         self.orb_lookback_days = max(3, _env_int("CHALLENGE20_ORB_LOOKBACK_DAYS", _env_int("ORB_LOOKBACK_DAYS", 10)))
         self.orb_settings = ORBSettings(
-            session_start=os.getenv("ORB_SESSION_START", "09:30"),
-            session_end=os.getenv("ORB_SESSION_END", "16:00"),
-            range_minutes=max(1, _env_int("ORB_RANGE_MINUTES", 15)),
+            session_start=os.getenv("CHALLENGE20_ORB_SESSION_START", os.getenv("ORB_SESSION_START", "09:30")),
+            session_end=os.getenv("CHALLENGE20_ORB_SESSION_END", os.getenv("ORB_SESSION_END", "16:00")),
+            range_minutes=max(1, _env_int("CHALLENGE20_ORB_RANGE_MINUTES", _env_int("ORB_RANGE_MINUTES", 15))),
             reward_risk=max(0.5, self.reward_risk),
-            buffer_atr=max(0.0, _env_float("ORB_BREAK_BUFFER_ATR", 0.0)),
-            min_range_atr=max(0.0, _env_float("ORB_MIN_RANGE_ATR", 0.0)),
-            max_range_atr=max(0.0, _env_float("ORB_MAX_RANGE_ATR", 999.0)),
-            max_signal_age_minutes=max(1, _env_int("ORB_MAX_SIGNAL_AGE_MINUTES", 30)),
-            session_timezone=os.getenv("ORB_SESSION_TIMEZONE", os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)),
+            buffer_atr=max(0.0, _env_float("CHALLENGE20_ORB_BREAK_BUFFER_ATR", _env_float("ORB_BREAK_BUFFER_ATR", 0.0))),
+            min_range_atr=max(0.0, _env_float("CHALLENGE20_ORB_MIN_RANGE_ATR", _env_float("ORB_MIN_RANGE_ATR", 0.0))),
+            max_range_atr=max(0.0, _env_float("CHALLENGE20_ORB_MAX_RANGE_ATR", _env_float("ORB_MAX_RANGE_ATR", 999.0))),
+            max_signal_age_minutes=max(1, _env_int("CHALLENGE20_ORB_MAX_SIGNAL_AGE_MINUTES", _env_int("ORB_MAX_SIGNAL_AGE_MINUTES", 30))),
+            session_timezone=os.getenv("CHALLENGE20_ORB_SESSION_TIMEZONE", os.getenv("ORB_SESSION_TIMEZONE", os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE))),
             data_timezone=os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE),
         )
         self.state = _read_state(self.start_balance)

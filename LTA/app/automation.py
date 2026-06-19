@@ -88,6 +88,37 @@ def _parse_time_minutes(value: str | None, default: int) -> int:
     return hour * 60 + minute
 
 
+def _env_session_ranges(name: str) -> tuple[tuple[int, int, str], ...]:
+    value = os.getenv(name)
+    if not value:
+        return ()
+    ranges: list[tuple[int, int, str]] = []
+    for raw_item in value.split(","):
+        item = raw_item.strip()
+        if not item or "-" not in item:
+            continue
+        start_text, end_text = item.split("-", 1)
+        start = _parse_time_minutes(start_text.strip(), -1)
+        end = _parse_time_minutes(end_text.strip(), -1)
+        if start < 0 or end < 0:
+            continue
+        ranges.append((start, end, f"{start_text.strip()}-{end_text.strip()}"))
+    return tuple(ranges)
+
+
+def _minutes_in_ranges(minutes: int, ranges: tuple[tuple[int, int, str], ...]) -> bool:
+    if not ranges:
+        return True
+    for start, end, _label in ranges:
+        if start == end:
+            return True
+        if start < end and start <= minutes < end:
+            return True
+        if start > end and (minutes >= start or minutes < end):
+            return True
+    return False
+
+
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
@@ -372,6 +403,7 @@ class TradeAutomation:
         self.strict_session_end = _parse_time_minutes(os.getenv("AUTO_STRICT_SESSION_END"), 13 * 60)
         self.session_timezone = os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)
         self.data_timezone = os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE)
+        self.allowed_sessions = _env_session_ranges("AUTO_ALLOWED_SESSIONS")
         self.strict_session_min_score = max(1, min(100, _env_int("AUTO_STRICT_SESSION_MIN_SCORE", 95)))
         self.strict_session_preplace_min_score = max(
             1,
@@ -496,6 +528,15 @@ class TradeAutomation:
         if self.strict_session_start < self.strict_session_end:
             return self.strict_session_start <= minutes < self.strict_session_end
         return minutes >= self.strict_session_start or minutes < self.strict_session_end
+
+    def _allowed_session_reasons(self, signal: dict[str, Any], now: datetime) -> list[str]:
+        if not self.allowed_sessions:
+            return []
+        minutes = minutes_in_timezone(self._signal_time(signal, now), self.data_timezone, self.session_timezone)
+        if _minutes_in_ranges(minutes, self.allowed_sessions):
+            return []
+        labels = ", ".join(label for *_times, label in self.allowed_sessions)
+        return [f"Outside AUTO_ALLOWED_SESSIONS ({labels}) in {self.session_timezone}."]
 
     def _strict_window_label(self) -> str:
         return (
@@ -1270,6 +1311,7 @@ class TradeAutomation:
             symbol_cooldown = active_symbol_cooldowns.get(signal["symbol"])
             block_reasons: list[str] = []
 
+            block_reasons.extend(self._allowed_session_reasons(signal, now))
             block_reasons.extend(self.account_circuit_breaker_reasons(daily_bot_stats, cycle_trade_commitments))
             block_reasons.extend(self.symbol_day_block_reasons(signal, daily_bot_stats))
             block_reasons.extend(self._strict_session_reasons(signal, now, pending=False))
@@ -1514,6 +1556,7 @@ class TradeAutomation:
                 symbol_cooldown = active_symbol_cooldowns.get(signal["symbol"])
                 block_reasons: list[str] = []
 
+                block_reasons.extend(self._allowed_session_reasons(signal, now))
                 block_reasons.extend(self.account_circuit_breaker_reasons(daily_bot_stats, cycle_trade_commitments))
                 block_reasons.extend(self.symbol_day_block_reasons(signal, daily_bot_stats))
                 block_reasons.extend(self._strict_session_reasons(signal, now, pending=True))
@@ -1793,6 +1836,8 @@ class TradeAutomation:
                 "symbol_loss_lockout_rest_of_session": self.symbol_loss_lockout_rest_of_session,
                 "session_timezone": self.session_timezone,
                 "data_timezone": self.data_timezone,
+                "allowed_sessions": [label for *_times, label in self.allowed_sessions],
+                "allowed_sessions_env": "AUTO_ALLOWED_SESSIONS",
                 "strict_session_start": os.getenv("AUTO_STRICT_SESSION_START", "10:00"),
                 "strict_session_end": os.getenv("AUTO_STRICT_SESSION_END", "13:00"),
                 "strict_session_min_score": self.strict_session_min_score,
@@ -1850,6 +1895,12 @@ class TradeAutomation:
             f"symbol losses/day={self.symbol_max_losses_per_day}, "
             f"symbol max daily loss={self.symbol_max_daily_loss_r:g}R."
         )
+        if self.allowed_sessions:
+            print(
+                "Allowed sessions: "
+                + ", ".join(label for *_times, label in self.allowed_sessions)
+                + f" {self.session_timezone}."
+            )
         print(
             f"Strict window: {os.getenv('AUTO_STRICT_SESSION_START', '10:00')}-"
             f"{os.getenv('AUTO_STRICT_SESSION_END', '13:00')} {self.session_timezone} requires "

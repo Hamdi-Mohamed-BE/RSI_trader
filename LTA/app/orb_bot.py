@@ -133,6 +133,7 @@ class ORBBot:
         self.prepare_pending = _env_bool("ORB_PREPARE_PENDING", True)
         self.place_pending = _env_bool("ORB_PLACE_PENDING", False)
         self.one_trade_per_symbol_per_day = _env_bool("ORB_ONE_TRADE_PER_SYMBOL_PER_DAY", True)
+        self.max_trades_per_day = max(0, _env_int("ORB_MAX_TRADES_PER_DAY", 1))
         self.risk_percent = max(0.0, _env_float("ORB_MAX_LOT_RISK_PCT", self.config.max_lot_risk_pct))
         self.max_spread_risk_percent = max(0.0, _env_float("ORB_MAX_SPREAD_RISK_PERCENT", self.config.max_spread_risk_percent))
         self.max_spread_points = max(0.0, _env_float("ORB_MAX_SPREAD_POINTS", self.config.max_spread_points))
@@ -199,6 +200,29 @@ class ORBBot:
                 str(signal.get("execution_type") or ""),
             ]
         )
+
+    @staticmethod
+    def _session_day(signal: dict[str, Any]) -> str:
+        timestamp = signal.get("timestamp")
+        data_timezone = os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE)
+        session_timezone = os.getenv("ORB_SESSION_TIMEZONE", os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE))
+        if isinstance(timestamp, datetime):
+            return date_in_timezone(timestamp, data_timezone, session_timezone).isoformat()
+        try:
+            return date_in_timezone(datetime.fromisoformat(str(timestamp)), data_timezone, session_timezone).isoformat()
+        except ValueError:
+            return now_naive(session_timezone).date().isoformat()
+
+    def _consumed_count_for_day(self, session_day: str) -> int:
+        consumed = self.state.get("consumed", {})
+        count = 0
+        for key, item in consumed.items():
+            key_day = str(key).split("|", 1)[0]
+            if key_day != session_day:
+                continue
+            if str(item.get("status") or "").lower() in {"placed", "prepared"}:
+                count += 1
+        return count
 
     def _already_consumed(self, signal: dict[str, Any]) -> bool:
         if not self.one_trade_per_symbol_per_day:
@@ -589,6 +613,7 @@ class ORBBot:
         placements: list[dict[str, Any]] = []
         blocked: list[dict[str, Any]] = []
         errors: list[dict[str, Any]] = []
+        cycle_commitments = 0
 
         for symbol in self.symbols:
             candles = self._load_candles(symbol, now)
@@ -606,6 +631,19 @@ class ORBBot:
             for signal in signals:
                 if self._already_consumed(signal):
                     blocked.append({"symbol": symbol, "direction": signal.get("direction"), "reason": "ORB signal already consumed today."})
+                    continue
+                session_day = self._session_day(signal)
+                consumed_today = self._consumed_count_for_day(session_day) + cycle_commitments
+                if self.max_trades_per_day > 0 and consumed_today >= self.max_trades_per_day:
+                    blocked.append(
+                        {
+                            "symbol": symbol,
+                            "direction": signal.get("direction"),
+                            "reason": f"ORB_MAX_TRADES_PER_DAY reached for {session_day}.",
+                            "max_trades_per_day": self.max_trades_per_day,
+                            "consumed_today": consumed_today,
+                        }
+                    )
                     continue
                 order, reasons = self._prepare_signal(signal, now)
                 if not order:
@@ -629,8 +667,10 @@ class ORBBot:
                     self._log_event("orb_order_sent", signal=signal, placement=placement)
                     if placement.get("placed"):
                         self._mark_consumed(signal, "placed", placement)
+                        cycle_commitments += 1
                 else:
                     self._mark_consumed(signal, "prepared", {"message": "Prepared only; ORB live placement is disabled."})
+                    cycle_commitments += 1
 
         payload = {
             "checked_at": now.isoformat(timespec="seconds"),
@@ -642,6 +682,7 @@ class ORBBot:
             "prepare_pending": self.prepare_pending,
             "place_pending": self.place_pending,
             "risk_percent": self.risk_percent,
+            "max_trades_per_day": self.max_trades_per_day,
             "trade_protection": {
                 "enabled": self.protect_open_trades,
                 "final_rr": self.protection_final_rr,
@@ -676,6 +717,7 @@ class ORBBot:
         )
         print(f"Candle/data timezone: {self.settings.data_timezone}.")
         print(f"Trade protection: {self.protect_open_trades}; final RR: {self.protection_final_rr:g}.")
+        print(f"Max ORB trades per day: {self.max_trades_per_day if self.max_trades_per_day > 0 else 'unlimited'}.")
         print(f"Live trading: {self.live_trading}; ORB_PLACE_TRADES: {self.place_trades}; ORB_PLACE_PENDING: {self.place_pending}")
         print(f"State: {STATE_PATH}")
         print("Press Ctrl+C to stop.")
