@@ -515,7 +515,10 @@ class SniperBot:
                 actions.append({"ticket": int(data["ticket"]), "action": "review", "reason": "missing_sl_tp"})
                 continue
             final_distance = abs(tp - entry)
-            risk_unit = final_distance / 5.0
+            target_name = str(self.config.get("execution", {}).get("broker_tp", "TP5")).upper()
+            target_multiple = int(target_name.replace("TP", "")) if target_name.replace("TP", "").isdigit() else 5
+            target_multiple = max(1, min(5, target_multiple))
+            risk_unit = final_distance / float(target_multiple)
             tp1 = entry + risk_unit if side == "BUY" else entry - risk_unit
             tp2 = entry + 2 * risk_unit if side == "BUY" else entry - 2 * risk_unit
             price = float(tick.bid if side == "BUY" else tick.ask)
@@ -558,7 +561,8 @@ class SniperBot:
         if not info:
             return {"ok": False, "error": "symbol_info_missing"}
         order_type = mt5.ORDER_TYPE_BUY if signal.side == "BUY" else mt5.ORDER_TYPE_SELL
-        tp = signal.tp5
+        target_name = str(self.config.get("execution", {}).get("broker_tp", "TP5")).lower()
+        tp = getattr(signal, target_name, signal.tp5)
         request_base = {
             "action": mt5.TRADE_ACTION_DEAL,
             "symbol": signal.broker_symbol,
