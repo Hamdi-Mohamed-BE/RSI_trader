@@ -55,6 +55,8 @@ For real backtests:
 4. Install the Python requirements.
 5. Run the app and disable demo fallback if you want MT5-only testing.
 
+Set `MT5_TERMINAL_PATH` in `.env` if the Python MT5 package cannot auto-find your terminal. The default is `C:\Program Files\MetaTrader 5\terminal64.exe`.
+
 Note: `US30` is kept exactly as configured. If your broker does not provide that exact symbol, the scanner will mark it unavailable unless MT5 can resolve a close broker variant.
 
 ## Safety
@@ -127,8 +129,10 @@ This worker has its own magic number, tracker, and `.env` switches. It starts wi
 
 Defaults:
 
-- Symbols: `CHALLENGE20_SYMBOLS=XAUUSD`
+- Strategy: `CHALLENGE20_STRATEGY=ORB`, using ORB entries with the 20 Pip Challenge risk/target math.
+- Symbols: `CHALLENGE20_SYMBOLS=XAUUSD,XAGUSD,BTCUSD,US30,EURUSD,GBPUSD,USDJPY,USDCHF,USDCAD,AUDUSD,NZDUSD`
 - Timeframes: `CHALLENGE20_TIMEFRAMES=M15,M30`
+- ORB challenge timeframe: `CHALLENGE20_ORB_TIMEFRAME=M15`
 - Minimum setup score: `CHALLENGE20_MIN_SETUP_SCORE=90`
 - One challenge trade per day: `CHALLENGE20_ONE_TRADE_PER_DAY=true`
 - Live order sending: off, unless both `CHALLENGE20_LIVE_TRADING=true` and `CHALLENGE20_PLACE_TRADES=true`
@@ -145,7 +149,9 @@ Safety notes:
 
 - The challenge bank is tracked separately from the MT5 account. The bot sizes from the challenge bank and checks that the account can support the risk before sending anything.
 - Public versions of the challenge are very aggressive. A few losses can wipe out the challenge bank, so the live switches are intentionally separate from the main automation switches.
-- The current implementation uses LTA A+ confirmation on MT5 candles. It does not use a true 10-second candle feed yet.
+- `CHALLENGE20_STRATEGY=LTA` uses LTA A+ confirmation on MT5 candles. `CHALLENGE20_STRATEGY=ORB` uses the ORB session/range settings and then adjusts TP to the challenge RR.
+- The current implementation does not use a true 10-second candle feed yet.
+- `CHALLENGE20_ALLOW_PENDING=false` is recommended for ORB challenge mode until an OCO pair of pending breakout orders is added.
 - Use `stop_20pip_challenge.bat` when you want to stop this worker and clear the challenge lock.
 
 ## ORB Bot

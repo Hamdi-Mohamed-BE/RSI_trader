@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 import hashlib
 import math
+import os
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -61,7 +63,16 @@ class MT5Client:
             return False
         if self._connected:
             return True
-        self._connected = bool(mt5.initialize())
+        terminal_path = os.getenv("MT5_TERMINAL_PATH", "").strip().strip('"').strip("'")
+        if not terminal_path:
+            for candidate in (
+                r"C:\Program Files\MetaTrader 5\terminal64.exe",
+                r"C:\Program Files (x86)\MetaTrader 5\terminal64.exe",
+            ):
+                if Path(candidate).exists():
+                    terminal_path = candidate
+                    break
+        self._connected = bool(mt5.initialize(path=terminal_path)) if terminal_path else bool(mt5.initialize())
         return self._connected
 
     def shutdown(self) -> None:
@@ -101,6 +112,7 @@ class MT5Client:
             "BTCUSD": ("BTCUSD", "BITCOIN"),
             "EURUSD": ("EURUSD", "EURO"),
             "USDJPY": ("USDJPY", "YEN"),
+            "USDCHF": ("USDCHF", "SWISS", "FRANC"),
             "GBPUSD": ("GBPUSD", "POUND"),
             "USDCAD": ("USDCAD", "CANADIAN"),
             "USDAUD": ("USDAUD", "AUD"),
@@ -207,6 +219,7 @@ class MT5Client:
             "BTCUSD": 1.0,
             "EURUSD": 100000.0,
             "USDJPY": 100000.0,
+            "USDCHF": 100000.0,
             "GBPUSD": 100000.0,
             "USDCAD": 100000.0,
             "USDAUD": 100000.0,
@@ -894,11 +907,48 @@ class MT5Client:
             if expiration <= datetime.now():
                 return {"placed": False, "message": "Pending expiration is already in the past."}
             request["type_time"] = mt5.ORDER_TIME_SPECIFIED
-            request["expiration"] = expiration
+            request["expiration"] = int(expiration.timestamp())
+
+        check_result = mt5.order_check(request)
+        if check_result is None:
+            last_error = mt5.last_error()
+            return {
+                "placed": False,
+                "message": f"MT5 order_check returned no result: {last_error[1] if last_error else 'unknown error'}.",
+                "last_error": last_error,
+                "request": request,
+            }
+        check_payload = check_result._asdict()
+        accepted_check_codes = {0, mt5.TRADE_RETCODE_DONE, getattr(mt5, "TRADE_RETCODE_PLACED", 10008)}
+        if check_payload.get("retcode") not in accepted_check_codes:
+            return {
+                "placed": False,
+                "message": check_payload.get("comment") or "MT5 order_check rejected pending order.",
+                "pending_order_type": pending_type,
+                "trigger_price": price,
+                "request": request,
+                "quote": {
+                    "bid": bid,
+                    "ask": ask,
+                    "last": float(tick.last),
+                    "spread": spread,
+                    "spread_points": spread_points,
+                    "point": point,
+                },
+                "check": check_payload,
+                "last_error": mt5.last_error(),
+            }
 
         result = mt5.order_send(request)
         if result is None:
-            return {"placed": False, "message": "MT5 order_send returned no result.", "request": request}
+            last_error = mt5.last_error()
+            return {
+                "placed": False,
+                "message": f"MT5 order_send returned no result: {last_error[1] if last_error else 'unknown error'}.",
+                "last_error": last_error,
+                "request": request,
+                "check": check_payload,
+            }
         payload = result._asdict()
         success_codes = {mt5.TRADE_RETCODE_DONE, getattr(mt5, "TRADE_RETCODE_PLACED", 10008)}
         return {
@@ -915,6 +965,7 @@ class MT5Client:
                 "spread_points": spread_points,
                 "point": point,
             },
+            "check": check_payload,
             "result": payload,
         }
 
@@ -991,7 +1042,13 @@ class MT5Client:
         }
         result = mt5.order_send(request)
         if result is None:
-            return {"placed": False, "message": "MT5 order_send returned no result.", "request": request}
+            last_error = mt5.last_error()
+            return {
+                "placed": False,
+                "message": f"MT5 order_send returned no result: {last_error[1] if last_error else 'unknown error'}.",
+                "last_error": last_error,
+                "request": request,
+            }
         payload = result._asdict()
         return {
             "placed": payload.get("retcode") == mt5.TRADE_RETCODE_DONE,
@@ -1031,7 +1088,13 @@ class MT5Client:
 
         result = mt5.order_send(request)
         if result is None:
-            return {"modified": False, "message": "MT5 order_send returned no result.", "request": request}
+            last_error = mt5.last_error()
+            return {
+                "modified": False,
+                "message": f"MT5 order_send returned no result: {last_error[1] if last_error else 'unknown error'}.",
+                "last_error": last_error,
+                "request": request,
+            }
         payload = result._asdict()
         return {
             "modified": payload.get("retcode") == mt5.TRADE_RETCODE_DONE,

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import atexit
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 import time
@@ -11,7 +11,9 @@ from typing import Any
 
 from .config import REPORTS_DIR, load_config
 from .mt5_client import MT5Client
+from .orb_strategy import ORBSettings, confirmed_orb_signal, pending_orb_signals
 from .scanner import scan_market
+from .session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, now_naive
 
 
 CHALLENGE_MAGIC = 20052024
@@ -166,6 +168,9 @@ class TwentyPipChallengeBot:
         self.risk_percent = max(0.0, _env_float("CHALLENGE20_RISK_PERCENT", 23.0))
         self.target_percent = max(0.0, _env_float("CHALLENGE20_TARGET_PERCENT", 30.0))
         self.max_levels = max(1, _env_int("CHALLENGE20_LEVELS", 30))
+        self.strategy = os.getenv("CHALLENGE20_STRATEGY", "LTA").strip().upper() or "LTA"
+        if self.strategy not in {"LTA", "ORB"}:
+            self.strategy = "LTA"
         self.interval_seconds = max(10, _env_int("CHALLENGE20_SCAN_INTERVAL_SECONDS", 60))
         self.symbols = _env_list("CHALLENGE20_SYMBOLS", ("XAUUSD",))
         self.timeframes = _env_list("CHALLENGE20_TIMEFRAMES", ("M5", "M15"))
@@ -177,6 +182,20 @@ class TwentyPipChallengeBot:
         self.max_spread_risk_percent = max(0.0, _env_float("CHALLENGE20_MAX_SPREAD_RISK_PERCENT", 15.0))
         self.max_spread_points = max(0.0, _env_float("CHALLENGE20_MAX_SPREAD_POINTS", 0.0))
         self.allow_pending = _env_bool("CHALLENGE20_ALLOW_PENDING", False)
+        self.orb_timeframe = os.getenv("CHALLENGE20_ORB_TIMEFRAME", os.getenv("ORB_TIMEFRAME", "M15")).strip().upper() or "M15"
+        self.orb_lookback_days = max(3, _env_int("CHALLENGE20_ORB_LOOKBACK_DAYS", _env_int("ORB_LOOKBACK_DAYS", 10)))
+        self.orb_settings = ORBSettings(
+            session_start=os.getenv("ORB_SESSION_START", "09:30"),
+            session_end=os.getenv("ORB_SESSION_END", "16:00"),
+            range_minutes=max(1, _env_int("ORB_RANGE_MINUTES", 15)),
+            reward_risk=max(0.5, self.reward_risk),
+            buffer_atr=max(0.0, _env_float("ORB_BREAK_BUFFER_ATR", 0.0)),
+            min_range_atr=max(0.0, _env_float("ORB_MIN_RANGE_ATR", 0.0)),
+            max_range_atr=max(0.0, _env_float("ORB_MAX_RANGE_ATR", 999.0)),
+            max_signal_age_minutes=max(1, _env_int("ORB_MAX_SIGNAL_AGE_MINUTES", 30)),
+            session_timezone=os.getenv("ORB_SESSION_TIMEZONE", os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)),
+            data_timezone=os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE),
+        )
         self.state = _read_state(self.start_balance)
         self.state["level"] = self.level_for_balance(float(self.state.get("challenge_balance") or self.start_balance))
         _write_state(self.state)
@@ -237,7 +256,19 @@ class TwentyPipChallengeBot:
     @staticmethod
     def _base_symbol_from_broker_symbol(broker_symbol: str) -> str:
         upper = broker_symbol.upper()
-        for symbol in ("XAUUSD", "XAGUSD", "BTCUSD", "US30", "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "AUDUSD"):
+        for symbol in (
+            "XAUUSD",
+            "XAGUSD",
+            "BTCUSD",
+            "US30",
+            "EURUSD",
+            "GBPUSD",
+            "USDJPY",
+            "USDCHF",
+            "USDCAD",
+            "AUDUSD",
+            "NZDUSD",
+        ):
             if symbol in upper:
                 return symbol
         return broker_symbol
@@ -456,7 +487,57 @@ class TwentyPipChallengeBot:
         level = int(self.state.get("level") or 1)
         score = int(signal.get("setup_score") or 0)
         timeframe = str(signal.get("timeframe") or "")[:5]
-        return f"20PIP L{level} S{score} {timeframe}"[:31]
+        strategy = self.strategy[:3]
+        return f"20PIP {strategy} L{level} S{score} {timeframe}"[:31]
+
+    def _scan_orb_challenge(self) -> dict[str, Any]:
+        scan: dict[str, Any] = {
+            "allowed": [],
+            "preplace": [],
+            "near_misses": [],
+            "rejected": [],
+            "errors": [],
+        }
+        now = now_naive(self.orb_settings.data_timezone)
+        start = now - timedelta(days=self.orb_lookback_days)
+        for symbol in self.symbols:
+            try:
+                candles = self.client.fetch_candles(symbol, self.orb_timeframe, start, now)
+                if candles is None or len(candles) < 64:
+                    scan["rejected"].append(
+                        {
+                            "symbol": symbol,
+                            "timeframe": self.orb_timeframe,
+                            "reason": "Not enough candles for ORB challenge scan.",
+                        }
+                    )
+                    continue
+
+                confirmed = confirmed_orb_signal(candles, symbol, self.orb_timeframe, self.orb_settings, now=now)
+                if confirmed and int(confirmed.get("setup_score") or 0) >= self.min_setup_score:
+                    scan["allowed"].append(confirmed)
+                elif confirmed:
+                    scan["near_misses"].append(
+                        {
+                            **confirmed,
+                            "reason": f"ORB score below challenge threshold {self.min_setup_score}.",
+                        }
+                    )
+
+                if self.allow_pending:
+                    for pending in pending_orb_signals(candles, symbol, self.orb_timeframe, self.orb_settings, now=now):
+                        if int(pending.get("setup_score") or 0) >= max(85, self.min_setup_score - 5):
+                            scan["preplace"].append(pending)
+                        else:
+                            scan["near_misses"].append(
+                                {
+                                    **pending,
+                                    "reason": "ORB pending score below challenge threshold.",
+                                }
+                            )
+            except Exception as exc:
+                scan["errors"].append({"symbol": symbol, "timeframe": self.orb_timeframe, "error": str(exc)})
+        return scan
 
     def _record_position_after_placement(
         self,
@@ -523,13 +604,16 @@ class TwentyPipChallengeBot:
             "errors": [],
         }
         if not blocks:
-            scan = scan_market(
-                symbols=self.symbols,
-                timeframes=self.timeframes,
-                min_score=self.min_setup_score,
-                preplace_min_score=max(85, self.min_setup_score - 5),
-                min_rr=max(1.0, self.reward_risk),
-            )
+            if self.strategy == "ORB":
+                scan = self._scan_orb_challenge()
+            else:
+                scan = scan_market(
+                    symbols=self.symbols,
+                    timeframes=self.timeframes,
+                    min_score=self.min_setup_score,
+                    preplace_min_score=max(85, self.min_setup_score - 5),
+                    min_rr=max(1.0, self.reward_risk),
+                )
             candidates = list(scan.get("allowed", []))
             if self.allow_pending:
                 candidates.extend(scan.get("preplace", []))
@@ -607,6 +691,16 @@ class TwentyPipChallengeBot:
             "status": self.state.get("status"),
             "symbols": list(self.symbols),
             "timeframes": list(self.timeframes),
+            "strategy": self.strategy,
+            "orb": {
+                "timeframe": self.orb_timeframe,
+                "session_start": self.orb_settings.session_start,
+                "session_end": self.orb_settings.session_end,
+                "session_timezone": self.orb_settings.session_timezone,
+                "range_minutes": self.orb_settings.range_minutes,
+            }
+            if self.strategy == "ORB"
+            else None,
             "live_trading": self.live_trading,
             "place_trades": self.place_trades,
             "one_trade_per_day": self.one_trade_per_day,
@@ -633,7 +727,14 @@ class TwentyPipChallengeBot:
 
     def run_forever(self) -> None:
         print("20 Pip Challenge worker started.")
+        print(f"Strategy: {self.strategy}")
         print(f"Symbols: {', '.join(self.symbols)} | timeframes: {', '.join(self.timeframes)}")
+        if self.strategy == "ORB":
+            print(
+                f"ORB: {self.orb_settings.range_minutes}m range, "
+                f"{self.orb_settings.session_start}-{self.orb_settings.session_end} "
+                f"{self.orb_settings.session_timezone}, timeframe {self.orb_timeframe}."
+            )
         print(
             f"Challenge bank: ${self.challenge_balance():.2f}, level {self.state.get('level')}/{self.max_levels}, "
             f"final target about ${self.target_balance():,.2f}."
