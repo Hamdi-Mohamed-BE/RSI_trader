@@ -81,6 +81,35 @@ def _env_float_map(name: str) -> dict[str, float]:
     return result
 
 
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _orb_signal_quality_sort_key(signal: dict[str, Any]) -> tuple[float, float, float, int]:
+    score = _safe_float(signal.get("setup_score"))
+    rr = _safe_float(signal.get("configured_risk_reward"), _safe_float(signal.get("risk_reward")))
+    orb = signal.get("orb") or {}
+    range_atr = _safe_float(orb.get("range_atr"), 999.0)
+    range_quality = 100.0 - min(100.0, abs(range_atr - 1.0) * 40.0)
+    execution = str(signal.get("execution_type") or "").upper()
+    pending_type = str(signal.get("pending_order_type") or "").upper()
+    execution_rank = 2 if execution == "MARKET" else 1 if pending_type in {"BUY_STOP", "SELL_STOP"} else 0
+    return (score, rr, range_quality, execution_rank)
+
+
+def _rank_orb_signals(signals: list[dict[str, Any]], candidate_limit: int = 0) -> list[dict[str, Any]]:
+    ranked = sorted(signals, key=_orb_signal_quality_sort_key, reverse=True)
+    if candidate_limit > 0:
+        ranked = ranked[:candidate_limit]
+    for index, signal in enumerate(ranked, start=1):
+        signal.setdefault("selector_rank", index)
+        signal.setdefault("selector_score_tuple", _orb_signal_quality_sort_key(signal))
+    return ranked
+
+
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
@@ -155,6 +184,8 @@ class ORBBot:
         self.place_pending = _env_bool("ORB_PLACE_PENDING", False)
         self.one_trade_per_symbol_per_day = _env_bool("ORB_ONE_TRADE_PER_SYMBOL_PER_DAY", True)
         self.max_trades_per_day = max(0, _env_int("ORB_MAX_TRADES_PER_DAY", 1))
+        self.best_setup_selector = _env_bool("ORB_BEST_SETUP_SELECTOR", True)
+        self.best_setup_candidate_limit = max(0, _env_int("ORB_BEST_SETUP_CANDIDATE_LIMIT", 0))
         self.risk_percent = max(0.0, _env_float("ORB_MAX_LOT_RISK_PCT", self.config.max_lot_risk_pct))
         self.max_spread_risk_percent = max(0.0, _env_float("ORB_MAX_SPREAD_RISK_PERCENT", self.config.max_spread_risk_percent))
         self.max_spread_points = max(0.0, _env_float("ORB_MAX_SPREAD_POINTS", self.config.max_spread_points))
@@ -674,6 +705,7 @@ class ORBBot:
         errors: list[dict[str, Any]] = []
         cycle_commitments = 0
 
+        cycle_signals: list[dict[str, Any]] = []
         for symbol in self.symbols:
             symbol_settings = self._settings_for_symbol(symbol)
             candles = self._load_candles(symbol, now)
@@ -688,49 +720,70 @@ class ORBBot:
             elif self.prepare_pending:
                 signals.extend(pending_orb_signals(candles, symbol, self.timeframe, symbol_settings, now=now))
 
-            for signal in signals:
-                if self._already_consumed(signal):
-                    blocked.append({"symbol": symbol, "direction": signal.get("direction"), "reason": "ORB signal already consumed today."})
-                    continue
-                session_day = self._session_day(signal)
-                consumed_today = self._consumed_count_for_day(session_day) + cycle_commitments
-                if self.max_trades_per_day > 0 and consumed_today >= self.max_trades_per_day:
-                    blocked.append(
-                        {
-                            "symbol": symbol,
-                            "direction": signal.get("direction"),
-                            "reason": f"ORB_MAX_TRADES_PER_DAY reached for {session_day}.",
-                            "max_trades_per_day": self.max_trades_per_day,
-                            "consumed_today": consumed_today,
-                        }
-                    )
-                    continue
-                order, reasons = self._prepare_signal(signal, now)
-                if not order:
-                    blocked.append({"symbol": symbol, "direction": signal.get("direction"), "reasons": reasons})
-                    continue
-                ticket = {
-                    "created_at": now.isoformat(timespec="seconds"),
-                    "signal": signal,
-                    "order": order,
-                }
-                prepared.append(ticket)
-                self._log_event("orb_order_prepared", ticket=ticket)
+            cycle_signals.extend(signals)
 
-                placement: dict[str, Any] | None = None
-                if order.get("live_trading"):
-                    if str(signal.get("execution_type") or "").upper() == "PENDING":
-                        placement = self.client.place_pending_order(order)
-                    else:
-                        placement = self.client.place_order(order)
-                    placements.append({"signal": signal, "placement": placement})
-                    self._log_event("orb_order_sent", signal=signal, placement=placement)
-                    if placement.get("placed"):
-                        self._mark_consumed(signal, "placed", placement)
-                        cycle_commitments += 1
+        if self.best_setup_selector:
+            cycle_signals = _rank_orb_signals(cycle_signals, self.best_setup_candidate_limit)
+
+        for signal in cycle_signals:
+            symbol = str(signal.get("symbol") or "")
+            if self._already_consumed(signal):
+                blocked.append(
+                    {
+                        "symbol": symbol,
+                        "direction": signal.get("direction"),
+                        "rank": signal.get("selector_rank"),
+                        "reason": "ORB signal already consumed today.",
+                    }
+                )
+                continue
+            session_day = self._session_day(signal)
+            consumed_today = self._consumed_count_for_day(session_day) + cycle_commitments
+            if self.max_trades_per_day > 0 and consumed_today >= self.max_trades_per_day:
+                blocked.append(
+                    {
+                        "symbol": symbol,
+                        "direction": signal.get("direction"),
+                        "rank": signal.get("selector_rank"),
+                        "reason": f"ORB_MAX_TRADES_PER_DAY reached for {session_day}.",
+                        "max_trades_per_day": self.max_trades_per_day,
+                        "consumed_today": consumed_today,
+                    }
+                )
+                continue
+            order, reasons = self._prepare_signal(signal, now)
+            if not order:
+                blocked.append(
+                    {
+                        "symbol": symbol,
+                        "direction": signal.get("direction"),
+                        "rank": signal.get("selector_rank"),
+                        "reasons": reasons,
+                    }
+                )
+                continue
+            ticket = {
+                "created_at": now.isoformat(timespec="seconds"),
+                "signal": signal,
+                "order": order,
+            }
+            prepared.append(ticket)
+            self._log_event("orb_order_prepared", ticket=ticket)
+
+            placement: dict[str, Any] | None = None
+            if order.get("live_trading"):
+                if str(signal.get("execution_type") or "").upper() == "PENDING":
+                    placement = self.client.place_pending_order(order)
                 else:
-                    self._mark_consumed(signal, "prepared", {"message": "Prepared only; ORB live placement is disabled."})
+                    placement = self.client.place_order(order)
+                placements.append({"signal": signal, "placement": placement})
+                self._log_event("orb_order_sent", signal=signal, placement=placement)
+                if placement.get("placed"):
+                    self._mark_consumed(signal, "placed", placement)
                     cycle_commitments += 1
+            else:
+                self._mark_consumed(signal, "prepared", {"message": "Prepared only; ORB live placement is disabled."})
+                cycle_commitments += 1
 
         payload = {
             "checked_at": now.isoformat(timespec="seconds"),
@@ -749,6 +802,22 @@ class ORBBot:
             "place_pending": self.place_pending,
             "risk_percent": self.risk_percent,
             "max_trades_per_day": self.max_trades_per_day,
+            "best_setup_selector": self.best_setup_selector,
+            "best_setup_candidate_limit": self.best_setup_candidate_limit,
+            "ranked_signal_count": len(cycle_signals),
+            "top_ranked_signals": [
+                {
+                    "rank": item.get("selector_rank"),
+                    "symbol": item.get("symbol"),
+                    "direction": item.get("direction"),
+                    "execution_type": item.get("execution_type"),
+                    "pending_order_type": item.get("pending_order_type"),
+                    "score": item.get("setup_score"),
+                    "rr": item.get("risk_reward"),
+                    "range_atr": (item.get("orb") or {}).get("range_atr"),
+                }
+                for item in cycle_signals[:5]
+            ],
             "trade_protection": {
                 "enabled": self.protect_open_trades,
                 "final_rr": self.protection_final_rr,
@@ -793,6 +862,10 @@ class ORBBot:
         print(f"Candle/data timezone: {self.settings.data_timezone}.")
         print(f"Trade protection: {self.protect_open_trades}; default final RR: {self.protection_final_rr:g}.")
         print(f"Max ORB trades per day: {self.max_trades_per_day if self.max_trades_per_day > 0 else 'unlimited'}.")
+        print(
+            f"Best setup selector: {self.best_setup_selector}; "
+            f"candidate limit: {self.best_setup_candidate_limit if self.best_setup_candidate_limit > 0 else 'unlimited'}."
+        )
         print(f"Live trading: {self.live_trading}; ORB_PLACE_TRADES: {self.place_trades}; ORB_PLACE_PENDING: {self.place_pending}")
         print(f"State: {STATE_PATH}")
         print("Press Ctrl+C to stop.")

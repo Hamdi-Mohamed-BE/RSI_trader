@@ -30,6 +30,16 @@ CLOSED_TRADE_EVENTS_PATH = AUTOMATION_DIR / "closed_trade_events.jsonl"
 INSTANCE_LOCK_PATH = AUTOMATION_DIR / "automation.lock"
 HEARTBEAT_PATH = AUTOMATION_DIR / "automation_heartbeat.json"
 MAGIC_NUMBER = 27032024
+TIMEFRAME_QUALITY_RANK = {
+    "W1": 70,
+    "D1": 60,
+    "H4": 50,
+    "H1": 40,
+    "M30": 30,
+    "M15": 20,
+    "M5": 10,
+    "M1": 0,
+}
 
 
 def _env_bool(name: str, default: bool) -> bool:
@@ -92,6 +102,35 @@ def _env_float_map(name: str) -> dict[str, float]:
         except ValueError:
             continue
     return result
+
+
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _signal_quality_sort_key(signal: dict[str, Any]) -> tuple[float, float, int, int, float]:
+    score = _safe_float(signal.get("setup_score"))
+    rr = _safe_float(signal.get("configured_risk_reward"), _safe_float(signal.get("risk_reward")))
+    timeframe = str(signal.get("timeframe") or "").upper()
+    timeframe_rank = TIMEFRAME_QUALITY_RANK.get(timeframe, 0)
+    execution = str(signal.get("execution_type") or "").upper()
+    pending_type = str(signal.get("pending_order_type") or "").upper()
+    execution_rank = 2 if execution == "MARKET" else 1 if pending_type in {"BUY_STOP", "SELL_STOP"} else 0
+    distance = _safe_float(signal.get("trigger_distance"), 999.0)
+    return (score, rr, timeframe_rank, execution_rank, -distance)
+
+
+def _rank_signals(signals: list[dict[str, Any]], candidate_limit: int = 0) -> list[dict[str, Any]]:
+    ranked = sorted(signals, key=_signal_quality_sort_key, reverse=True)
+    if candidate_limit > 0:
+        ranked = ranked[:candidate_limit]
+    for index, signal in enumerate(ranked, start=1):
+        signal.setdefault("selector_rank", index)
+        signal.setdefault("selector_score_tuple", _signal_quality_sort_key(signal))
+    return ranked
 
 
 def _parse_time_minutes(value: str | None, default: int) -> int:
@@ -407,6 +446,8 @@ class TradeAutomation:
         self.cooldown_minutes = _env_int("AUTO_SIGNAL_COOLDOWN_MINUTES", 120)
         self.auto_place_trades = _env_bool("AUTO_PLACE_TRADES", False)
         self.auto_preplace_orders = _env_bool("AUTO_PREPLACE_ORDERS", False)
+        self.best_setup_selector = _env_bool("AUTO_BEST_SETUP_SELECTOR", True)
+        self.best_setup_candidate_limit = max(0, _env_int("AUTO_BEST_SETUP_CANDIDATE_LIMIT", 0))
         self.preplace_min_score = max(1, min(100, _env_int("AUTO_PREPLACE_MIN_SCORE", 85)))
         self.preplace_expiry_minutes = max(0, _env_int("AUTO_PREPLACE_EXPIRY_MINUTES", 240))
         self.one_pending_per_symbol = _env_bool("AUTO_ONE_PENDING_PER_SYMBOL", True)
@@ -1360,6 +1401,9 @@ class TradeAutomation:
         )
         scan["allowed"] = [self._retarget_signal_rr(signal) for signal in scan.get("allowed", [])]
         scan["preplace"] = [self._retarget_signal_rr(signal) for signal in scan.get("preplace", [])]
+        if self.best_setup_selector:
+            scan["allowed"] = _rank_signals(scan["allowed"], self.best_setup_candidate_limit)
+            scan["preplace"] = _rank_signals(scan["preplace"], self.best_setup_candidate_limit)
         _log_automation_event(
             "scan_summary",
             now,
@@ -1383,6 +1427,32 @@ class TradeAutomation:
             scan_min_rr=self._scan_min_rr(),
             symbol_rr=self.symbol_rr,
             symbol_protection_rr=self.symbol_protection_rr,
+            best_setup_selector=self.best_setup_selector,
+            best_setup_candidate_limit=self.best_setup_candidate_limit,
+            top_allowed=[
+                {
+                    "rank": item.get("selector_rank"),
+                    "symbol": item.get("symbol"),
+                    "timeframe": item.get("timeframe"),
+                    "score": item.get("setup_score"),
+                    "rr": item.get("risk_reward"),
+                    "direction": item.get("direction"),
+                    "entry_model": item.get("entry_model"),
+                }
+                for item in scan.get("allowed", [])[:5]
+            ],
+            top_preplace=[
+                {
+                    "rank": item.get("selector_rank"),
+                    "symbol": item.get("symbol"),
+                    "timeframe": item.get("timeframe"),
+                    "score": item.get("setup_score"),
+                    "rr": item.get("risk_reward"),
+                    "direction": item.get("direction"),
+                    "pending_order_type": item.get("pending_order_type"),
+                }
+                for item in scan.get("preplace", [])[:5]
+            ],
             daily_bot_stats=daily_bot_stats,
         )
         prepared: list[dict[str, Any]] = []
@@ -1914,6 +1984,8 @@ class TradeAutomation:
             "auto_preplace_orders": self.auto_preplace_orders,
             "preplace_min_score": self.preplace_min_score,
             "preplace_expiry_minutes": self.preplace_expiry_minutes,
+            "best_setup_selector": self.best_setup_selector,
+            "best_setup_candidate_limit": self.best_setup_candidate_limit,
             "one_position_per_symbol": self.one_position_per_symbol,
             "one_pending_per_symbol": self.one_pending_per_symbol,
             "symbol_activity_cooldown_minutes": self.symbol_activity_cooldown_minutes,
@@ -1936,6 +2008,8 @@ class TradeAutomation:
                 "scan_min_rr": self._scan_min_rr(),
                 "symbol_rr": self.symbol_rr,
                 "symbol_protection_rr": self.symbol_protection_rr,
+                "best_setup_selector": self.best_setup_selector,
+                "best_setup_candidate_limit": self.best_setup_candidate_limit,
             },
             "daily_bot_stats": daily_bot_stats_payload,
             "activity_cooldown_updates": activity_cooldown_updates,
@@ -1980,6 +2054,10 @@ class TradeAutomation:
             + (f", max {self.max_spread_points:g} points." if self.max_spread_points > 0 else ".")
         )
         print(f"Live trading: {self.config.live_trading}; AUTO_PLACE_TRADES: {self.auto_place_trades}")
+        print(
+            f"Best setup selector: {self.best_setup_selector}; "
+            f"candidate limit: {self.best_setup_candidate_limit if self.best_setup_candidate_limit > 0 else 'unlimited'}."
+        )
         print(
             f"Pre-place pending orders: {self.auto_preplace_orders}; "
             f"min score: {self.preplace_min_score}; expiry: {self.preplace_expiry_minutes} minutes."

@@ -68,6 +68,25 @@ def _symbol_watchlist_env(name: str, default: tuple[str, ...]) -> tuple[str, ...
     return symbols or default
 
 
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _challenge_signal_quality_sort_key(signal: dict[str, Any]) -> tuple[float, float, float, int]:
+    score = _safe_float(signal.get("setup_score"))
+    rr = _safe_float(signal.get("risk_reward"))
+    orb = signal.get("orb") or {}
+    range_atr = _safe_float(orb.get("range_atr"), 999.0)
+    range_quality = 100.0 - min(100.0, abs(range_atr - 1.0) * 40.0)
+    execution = str(signal.get("execution_type") or "").upper()
+    pending_type = str(signal.get("pending_order_type") or "").upper()
+    execution_rank = 2 if execution == "MARKET" else 1 if pending_type in {"BUY_STOP", "SELL_STOP"} else 0
+    return (score, rr, range_quality, execution_rank)
+
+
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
@@ -806,7 +825,10 @@ class TwentyPipChallengeBot:
             candidates = list(scan.get("allowed", []))
             if self.allow_pending:
                 candidates.extend(scan.get("preplace", []))
-            candidates.sort(key=lambda item: int(item.get("setup_score") or 0), reverse=True)
+            candidates.sort(key=_challenge_signal_quality_sort_key, reverse=True)
+            for rank, candidate in enumerate(candidates, start=1):
+                candidate["selector_rank"] = rank
+                candidate["selector_score_tuple"] = _challenge_signal_quality_sort_key(candidate)
             if not candidates:
                 blocks.append("No challenge-qualified LTA setup found.")
             else:
