@@ -3,8 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .config import AppConfig, SymbolConfig
+from .daily_risk import daily_loss_setup_risk_cap
 from .mt5_client import MT5Client
 from .strategy import Signal
+from .strategy_modes import is_full_position_strategy, is_single_leg_strategy
 from .trade_geometry import invalid_market_geometry
 
 
@@ -45,8 +47,11 @@ def historical_spread_price(row, point: float) -> float:
     return spread_points * point
 
 
-def signal_risk_usd(client: MT5Client, signal: Signal) -> float:
-    return client.money_for_distance(signal.symbol, signal.lot_per_leg, signal.risk_distance) * len(signal.tps)
+def signal_risk_usd(client: MT5Client, signal: Signal, *, strategy: str | None = None) -> float:
+    leg_risk = client.money_for_distance(signal.symbol, signal.lot_per_leg, signal.risk_distance)
+    if strategy and (is_full_position_strategy(strategy) or is_single_leg_strategy(strategy)):
+        return leg_risk
+    return leg_risk * len(signal.tps)
 
 
 def profile_uses_entry_filters(profile: str) -> bool:
@@ -115,6 +120,7 @@ def evaluate_trade_signal(
     execution_filters: bool | None = None,
     market_position_keys: set[str] | None = None,
     active_setup_count: int | None = None,
+    day_start_balance: float | None = None,
 ) -> TradeDecision:
     if filters is None:
         filters = resolve_trade_filters(config)
@@ -184,7 +190,7 @@ def evaluate_trade_signal(
     if atr_proxy <= 0:
         return decision(False, "invalid_atr", "invalid ATR proxy")
 
-    risk_usd = signal_risk_usd(client, signal)
+    risk_usd = signal_risk_usd(client, signal, strategy=config.bot.strategy)
 
     max_spread_atr = config.risk.max_spread_atr
     if filters.spread and spread_atr > max_spread_atr:
@@ -206,6 +212,19 @@ def evaluate_trade_signal(
         max_risk = config.risk.max_setup_risk_usd
     if filters.risk and max_risk is not None and risk_usd > max_risk:
         return decision(False, "risk", f"risk {risk_usd:.2f} > cap {max_risk:.2f}")
+
+    max_daily_loss_pct = config.risk.effective_daily_loss_pct()
+    if max_daily_loss_pct is not None and day_start_balance is not None and day_start_balance > 0:
+        daily_cap = daily_loss_setup_risk_cap(day_start_balance, max_daily_loss_pct)
+        if risk_usd > daily_cap:
+            return decision(
+                False,
+                "daily_loss_guard",
+                (
+                    f"setup risk ${risk_usd:.2f} > daily cap ${daily_cap:.2f} "
+                    f"({max_daily_loss_pct:g}% of start-of-day balance ${day_start_balance:.2f})"
+                ),
+            )
 
     if filters.existing_position and market_position_keys is not None and signal.market_key in market_position_keys:
         return decision(False, "position", f"existing {signal.market_key} market position found")

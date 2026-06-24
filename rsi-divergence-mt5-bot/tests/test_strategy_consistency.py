@@ -1,6 +1,7 @@
 from rsi_divergence_bot.config import AppConfig, update_bot_strategy
 from rsi_divergence_bot.strategy_modes import (
     canonical_strategy,
+    is_full_position_strategy,
     is_partial_strategy,
     tp_protection_enabled,
 )
@@ -38,3 +39,15 @@ def test_update_bot_strategy_persists_canonical_strategy():
     update_bot_strategy(config, "signal_partial_no_tp_protection")
 
     assert config.bot.strategy == "signal_no_tp_protection"
+
+
+def test_full_position_strategies_are_canonical():
+    no_protect = minimal_config("signal_full_no_tp_protection")
+    with_protect = minimal_config("signal_full_with_tp_protection")
+
+    assert no_protect.bot.strategy == "signal_full_no_tp_protection"
+    assert with_protect.bot.strategy == "signal_full_with_tp_protection"
+    assert is_full_position_strategy("signal_full_no_tp_protection") is True
+    assert is_full_position_strategy("signal_full_with_tp_protection") is True
+    assert tp_protection_enabled("signal_full_no_tp_protection") is False
+    assert tp_protection_enabled("signal_full_with_tp_protection") is True

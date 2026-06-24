@@ -1,7 +1,6 @@
 (() => {
-  const TIMEFRAMES = ["M1", "M5", "M15", "M30", "H1"];
   const SPEEDS = [1, 2, 5, 10, 20, 50];
-  const TIMEFRAME_MS = { M1: 900, M5: 650, M15: 500, M30: 400, H1: 350 };
+  const TIMEFRAME_MS = { M1: 900, M2: 850, M3: 800, M4: 750, M5: 650, M6: 620, M10: 560, M12: 540, M15: 500, M20: 460, M30: 400, H1: 350 };
   const WINDOW_BARS = 90;
 
   let chart = null;
@@ -16,6 +15,7 @@
   let activeEventId = null;
   let lastRenderedCursor = -1;
   let symbolConfigBySymbol = new Map();
+  let timeframeOptions = ["M1", "M5", "M15", "M30", "H1"].map((value) => ({ value, label: value }));
 
   const els = {};
 
@@ -456,7 +456,8 @@
   function setConfiguredTimeframe() {
     if (!els.symbol || !els.timeframe) return;
     const cfg = symbolConfigBySymbol.get(els.symbol.value);
-    if (cfg?.timeframe && TIMEFRAMES.includes(cfg.timeframe)) {
+    const available = timeframeOptions.map((item) => item.value);
+    if (cfg?.timeframe && available.includes(cfg.timeframe)) {
       els.timeframe.value = cfg.timeframe;
     }
   }
@@ -465,8 +466,13 @@
     bindElements();
     if (!els.form) return;
 
+    timeframeOptions = (config.timeframe_options && config.timeframe_options.length)
+      ? config.timeframe_options
+      : timeframeOptions;
     if (els.timeframe) {
-      els.timeframe.innerHTML = TIMEFRAMES.map((tf) => `<option value="${tf}">${tf}</option>`).join("");
+      els.timeframe.innerHTML = timeframeOptions
+        .map((tf) => `<option value="${escapeHtml(tf.value)}">${escapeHtml(tf.label || tf.value)}</option>`)
+        .join("");
     }
     populateSymbols(config.symbols || []);
     setConfiguredTimeframe();

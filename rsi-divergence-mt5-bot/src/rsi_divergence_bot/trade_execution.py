@@ -11,6 +11,10 @@ def normalized_split_lot(client: MT5Client, symbol: str, lot_per_leg: float) -> 
     return client.normalize_volume(symbol, lot_per_leg)
 
 
+def normalized_full_volume(client: MT5Client, symbol: str, lot_per_leg: float) -> float:
+    return client.normalize_volume(symbol, lot_per_leg)
+
+
 def normalized_partial_volumes(client: MT5Client, symbol: str, lot_per_leg: float, num_tps: int) -> tuple[float, float]:
     total_volume = client.normalize_volume(symbol, lot_per_leg * num_tps)
     per_slice = client.normalize_volume(symbol, total_volume / num_tps)
@@ -19,6 +23,115 @@ def normalized_partial_volumes(client: MT5Client, symbol: str, lot_per_leg: floa
 
 def simulate_single_trade(client: MT5Client, signal: Signal, rows, tp_protection: bool = False) -> dict:
     return simulate_split_trade(client, signal, rows, tp_protection=False)
+
+
+def simulate_full_trade(client: MT5Client, signal: Signal, rows, tp_protection: bool) -> dict:
+    tps = list(signal.tps)
+    if not tps:
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "close", "legs": []}
+    if invalid_market_geometry(signal.side, signal.entry, signal.sl, tps):
+        return {"pnl": 0.0, "exit_time": None, "exit_kind": "invalid_geometry", "legs": []}
+
+    total_volume = normalized_full_volume(client, signal.symbol, signal.lot_per_leg)
+    sl = float(signal.sl)
+    final_tp = float(tps[-1])
+    moved_to_tp = 0
+    pnl = 0.0
+    exit_time: int | None = None
+    exit_kind = "close"
+    exit_price = float(signal.entry)
+    last_bar_time: int | None = None
+    open_position = True
+
+    def row_unix(row) -> int:
+        ts = getattr(row, "time", None)
+        if hasattr(ts, "timestamp"):
+            return int(ts.timestamp())
+        return int(pd.Timestamp(ts).timestamp())
+
+    def pnl_for_volume(volume: float, exit_price: float) -> float:
+        if signal.side == "buy":
+            return client.money_for_distance(signal.symbol, volume, exit_price - signal.entry)
+        return client.money_for_distance(signal.symbol, volume, signal.entry - exit_price)
+
+    for row in rows:
+        high = float(row.high)
+        low = float(row.low)
+        close = float(row.close)
+        bar_time = row_unix(row)
+        last_bar_time = bar_time
+
+        if not open_position:
+            break
+
+        if signal.side == "buy":
+            if low <= sl:
+                exit_price = sl
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "sl"
+                exit_time = bar_time
+                open_position = False
+                break
+            if high >= final_tp:
+                exit_price = final_tp
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = f"tp{len(tps)}"
+                exit_time = bar_time
+                open_position = False
+                break
+            if tp_protection:
+                for index, tp in enumerate(tps[:-1], start=1):
+                    if index <= moved_to_tp:
+                        continue
+                    if high >= tp:
+                        sl = max(sl, float(tp))
+                        moved_to_tp = index
+        else:
+            if high >= sl:
+                exit_price = sl
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = "sl"
+                exit_time = bar_time
+                open_position = False
+                break
+            if low <= final_tp:
+                exit_price = final_tp
+                pnl = pnl_for_volume(total_volume, exit_price)
+                exit_kind = f"tp{len(tps)}"
+                exit_time = bar_time
+                open_position = False
+                break
+            if tp_protection:
+                for index, tp in enumerate(tps[:-1], start=1):
+                    if index <= moved_to_tp:
+                        continue
+                    if low <= tp:
+                        sl = min(sl, float(tp))
+                        moved_to_tp = index
+
+    if open_position:
+        exit_time = last_bar_time
+        if exit_time is not None:
+            exit_price = close
+            pnl = pnl_for_volume(total_volume, exit_price)
+            exit_kind = "close"
+
+    leg_results = [
+        {
+            "leg": 1,
+            "entry": round(float(signal.entry), 5),
+            "sl": round(float(sl), 5),
+            "exit_sl": round(float(sl), 5),
+            "initial_sl": round(float(signal.sl), 5),
+            "tp": round(float(final_tp), 5),
+            "lot": total_volume,
+            "exit_price": round(float(exit_price), 5),
+            "exit_time": exit_time,
+            "exit_kind": exit_kind,
+            "pnl": round(float(pnl), 2),
+        }
+    ]
+    return {"pnl": pnl, "exit_time": exit_time, "exit_kind": exit_kind, "legs": leg_results}
 
 
 def simulate_split_trade(client: MT5Client, signal: Signal, rows, tp_protection: bool) -> dict:

@@ -8,6 +8,7 @@ import pandas as pd
 
 from .config import MT5Config
 from .symbols import CRYPTO_MARKET_KEYS
+from .timeframes import TIMEFRAME_MINUTES, mt5_timeframe_value, timeframe_seconds, validate_timeframe
 from .trade_geometry import invalid_market_geometry, invalid_pending_geometry
 
 try:
@@ -24,14 +25,6 @@ except ImportError:  # pragma: no cover
     def obtain(value):
         return value
 
-
-TIMEFRAMES = {
-    "M1": 1,
-    "M5": 5,
-    "M15": 15,
-    "M30": 30,
-    "H1": 60,
-}
 
 _MT5_LOCK = threading.RLock()
 _THREAD_LOCAL = threading.local()
@@ -62,7 +55,7 @@ def _rates_frame(rates, *, time_offset_seconds: int = 0) -> pd.DataFrame:
 
 
 def _timeframe_seconds(timeframe: str) -> int:
-    return TIMEFRAMES.get(timeframe, 1) * 60
+    return timeframe_seconds(timeframe)
 
 
 def _floor_timestamp(dt: datetime, timeframe: str) -> datetime:
@@ -243,7 +236,7 @@ class MT5Client:
         if self._time_offset_seconds is not None:
             return self._time_offset_seconds
 
-        tf = getattr(self.mt5, "TIMEFRAME_M1")
+        tf = mt5_timeframe_value(self.mt5, "M1")
         for probe_symbol in _COMMON_24H_SYMBOLS:
             try:
                 if not self.mt5.symbol_select(probe_symbol, True):
@@ -399,6 +392,50 @@ class MT5Client:
                 )
             return rows
 
+    def deals_range(self, start: datetime, end: datetime) -> list[dict]:
+        self.initialize()
+        with _MT5_LOCK:
+            utc_from = _utc_naive(start)
+            utc_to = _utc_naive(end)
+            deals = self.mt5.history_deals_get(utc_from, utc_to)
+            if deals is None:
+                return []
+
+            buy_type = self._mt5_const("DEAL_TYPE_BUY", 0)
+            sell_type = self._mt5_const("DEAL_TYPE_SELL", 1)
+            rows: list[dict] = []
+            for deal in sorted(deals, key=lambda item: _field(item, "time", 0)):
+                deal_type = int(_field(deal, "type", -1))
+                if deal_type == buy_type:
+                    side = "buy"
+                elif deal_type == sell_type:
+                    side = "sell"
+                else:
+                    side = str(deal_type)
+                rows.append(
+                    {
+                        "ticket": int(_field(deal, "ticket", 0)),
+                        "order": int(_field(deal, "order", 0)),
+                        "position_id": int(_field(deal, "position_id", 0)),
+                        "symbol": _field(deal, "symbol"),
+                        "side": side,
+                        "type": deal_type,
+                        "entry": int(_field(deal, "entry", 0)),
+                        "reason": int(_field(deal, "reason", 0)),
+                        "volume": float(_field(deal, "volume", 0.0)),
+                        "price": float(_field(deal, "price", 0.0)),
+                        "profit": round(float(_field(deal, "profit", 0.0)), 2),
+                        "commission": round(float(_field(deal, "commission", 0.0)), 2),
+                        "swap": round(float(_field(deal, "swap", 0.0)), 2),
+                        "fee": round(float(_field(deal, "fee", 0.0)), 2),
+                        "magic": int(_field(deal, "magic", 0)),
+                        "comment": _field(deal, "comment", ""),
+                        "time": datetime.fromtimestamp(int(_field(deal, "time", 0)), tz=timezone.utc).isoformat(),
+                        "time_unix": int(_field(deal, "time", 0)),
+                    }
+                )
+            return rows
+
     def realized_pnl_since(self, start: datetime) -> float:
         self.initialize()
         with _MT5_LOCK:
@@ -446,11 +483,12 @@ class MT5Client:
         return payload
 
     def rates(self, symbol: str, timeframe: str, count: int = 500) -> pd.DataFrame:
+        timeframe = validate_timeframe(timeframe)
         self.initialize()
         with _MT5_LOCK:
             if not self.mt5.symbol_select(symbol, True):
                 raise RuntimeError(f"Could not select symbol {symbol}: {self.mt5.last_error()}")
-            tf = getattr(self.mt5, f"TIMEFRAME_{timeframe}")
+            tf = mt5_timeframe_value(self.mt5, timeframe)
             rates = self.mt5.copy_rates_from_pos(symbol, tf, 0, count)
             if rates is None or len(rates) == 0:
                 raise RuntimeError(f"No rates for {symbol} {timeframe}: {self.mt5.last_error()}")
@@ -458,8 +496,7 @@ class MT5Client:
             return _rates_frame(rates, time_offset_seconds=offset)
 
     def rates_range(self, symbol: str, timeframe: str, start: datetime, end: datetime) -> pd.DataFrame:
-        if timeframe not in TIMEFRAMES:
-            raise ValueError(f"Unsupported timeframe: {timeframe}")
+        timeframe = validate_timeframe(timeframe)
 
         self.initialize()
         with _MT5_LOCK:
@@ -478,11 +515,11 @@ class MT5Client:
             if start_naive >= end_naive:
                 raise ValueError(f"Invalid date range for {symbol}: start must be before end")
 
-            tf = getattr(self.mt5, f"TIMEFRAME_{timeframe}")
+            tf = mt5_timeframe_value(self.mt5, timeframe)
             start_utc = pd.Timestamp(start_naive, tz="UTC")
             end_utc = pd.Timestamp(end_naive, tz="UTC")
 
-            minutes = TIMEFRAMES[timeframe]
+            minutes = TIMEFRAME_MINUTES[timeframe]
             bars_needed = int((now_naive - start_naive).total_seconds() / 60 / minutes) + 20
             bars_needed = min(max(bars_needed, 50), 100_000)
 

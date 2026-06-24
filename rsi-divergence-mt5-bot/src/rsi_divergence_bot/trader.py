@@ -4,19 +4,21 @@ import logging
 from datetime import datetime, timezone
 
 from .config import AppConfig, SymbolConfig
+from .daily_risk import resolve_day_start_balance
 from .decision import evaluate_trade_signal, resolve_trade_filters, skip_should_mark_seen
 from .mt5_client import MT5Client
 from .state import StateStore
 from .strategy import Signal
 from .strategy_modes import (
     closes_opposite_before_entry,
+    is_full_position_strategy,
     is_partial_strategy,
     is_single_leg_strategy,
     tp_protection_enabled,
 )
 from .symbols import market_key
 from .trade_geometry import invalid_market_geometry
-from .trade_execution import normalized_partial_volumes, normalized_split_lot
+from .trade_execution import normalized_full_volume, normalized_partial_volumes, normalized_split_lot
 
 Outcome = str  # placed | skipped | duplicate | failed | paper
 ORDER_COMMENT = "RSI auto bot"
@@ -57,6 +59,7 @@ class TradeExecutor:
             position_keys = None
         else:
             position_keys = self._position_market_keys() if filters.existing_position else None
+        day_start_balance = resolve_day_start_balance(self.client, self.state, self.config.risk)
         decision = evaluate_trade_signal(
             self.client,
             self.config,
@@ -66,6 +69,7 @@ class TradeExecutor:
             filters=filters,
             market_position_keys=position_keys,
             active_setup_count=self._active_setup_count() if filters.max_setups else None,
+            day_start_balance=day_start_balance,
         )
         if not decision.allowed:
             self.logger.info("SKIP %s %s", signal.symbol, decision.reason)
@@ -91,6 +95,8 @@ class TradeExecutor:
             (
                 "partial"
                 if is_partial_strategy(self.config.bot.strategy)
+                else "full"
+                if is_full_position_strategy(self.config.bot.strategy)
                 else "single"
                 if is_single_leg_strategy(self.config.bot.strategy)
                 else "split"
@@ -103,6 +109,9 @@ class TradeExecutor:
                     self.client, signal.symbol, signal.lot_per_leg, len(signal.tps)
                 )
                 self.logger.info("PAPER %s would place 1 partial position vol=%s", signal.symbol, total)
+            elif is_full_position_strategy(self.config.bot.strategy):
+                total = normalized_full_volume(self.client, signal.symbol, signal.lot_per_leg)
+                self.logger.info("PAPER %s would place 1 full position vol=%s", signal.symbol, total)
             elif is_single_leg_strategy(self.config.bot.strategy):
                 lot = normalized_split_lot(self.client, signal.symbol, signal.lot_per_leg)
                 self.logger.info("PAPER %s would place single-leg vol=%s", signal.symbol, lot)
@@ -112,6 +121,9 @@ class TradeExecutor:
 
         if is_partial_strategy(self.config.bot.strategy):
             return self._place_partial_signal(signal)
+
+        if is_full_position_strategy(self.config.bot.strategy):
+            return self._place_full_signal(signal)
 
         if is_single_leg_strategy(self.config.bot.strategy):
             return self._place_single_signal(signal)
@@ -131,9 +143,36 @@ class TradeExecutor:
         entry_price: float | None = None,
         extra_setup: dict | None = None,
         comment: str = ORDER_COMMENT,
+        execution_mode: str = "auto",
     ) -> dict:
+        if execution_mode == "split":
+            return self._place_split_market(
+                setup_id=setup_id,
+                symbol=symbol,
+                market_key=market_key,
+                side=side,
+                sl=sl,
+                tps=tps,
+                lot_per_leg=lot_per_leg,
+                entry_price=entry_price,
+                extra_setup=extra_setup,
+                comment=comment,
+            )
         if is_partial_strategy(self.config.bot.strategy):
             return self._place_partial_market(
+                setup_id=setup_id,
+                symbol=symbol,
+                market_key=market_key,
+                side=side,
+                sl=sl,
+                tps=tps,
+                lot_per_leg=lot_per_leg,
+                entry_price=entry_price,
+                extra_setup=extra_setup,
+                comment=comment,
+            )
+        if is_full_position_strategy(self.config.bot.strategy):
+            return self._place_full_market(
                 setup_id=setup_id,
                 symbol=symbol,
                 market_key=market_key,
@@ -236,6 +275,7 @@ class TradeExecutor:
             entry_price = live_entry
 
         tickets: list[int] = []
+        last_failure: str | None = None
         for index, tp in enumerate(tps, start=1):
             try:
                 result = self.client.send_market(
@@ -248,6 +288,7 @@ class TradeExecutor:
                     f"{comment} TP{index}"[:31],
                 )
             except ValueError as exc:
+                last_failure = str(exc)
                 self.logger.warning("ORDER REJECTED %s tp=%s reason=%s", symbol, tp, exc)
                 continue
             retcode = getattr(result, "retcode", None)
@@ -256,11 +297,19 @@ class TradeExecutor:
                 tickets.append(order)
                 self.logger.info("PLACED %s ticket=%s tp=%s", symbol, order, round(tp, 5))
             else:
+                comment_text = getattr(result, "comment", None)
+                last_failure = f"retcode={retcode} comment={comment_text}"
                 self.logger.warning("ORDER FAILED %s tp=%s ret=%s result=%s", symbol, tp, retcode, result)
 
         if not tickets:
             self.logger.warning("SETUP FAILED %s no orders filled for %s", symbol, setup_id)
-            return {"status": "failed", "tickets": tickets}
+            return {
+                "status": "failed",
+                "tickets": tickets,
+                "ticket": 0,
+                "reason": last_failure or "no orders filled",
+                "entry_price": live_entry,
+            }
 
         setup = {
             "setup_id": setup_id,
@@ -279,7 +328,13 @@ class TradeExecutor:
         if extra_setup:
             setup.update(extra_setup)
         self.state.add_setup(setup)
-        return {"status": "placed", "tickets": tickets}
+        return {
+            "status": "placed",
+            "tickets": tickets,
+            "ticket": tickets[0],
+            "entry_price": entry_price,
+            "legs": len(tickets),
+        }
 
     def _place_partial_market(
         self,
@@ -345,6 +400,100 @@ class TradeExecutor:
             "sl": sl,
             "initial_volume": total_volume,
             "partial_closed_tp": 0,
+            "moved_to_tp": 0,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        if entry_price is not None:
+            setup["entry_price"] = entry_price
+        if extra_setup:
+            setup.update(extra_setup)
+        self.state.add_setup(setup)
+        return {"status": "placed", "ticket": ticket, "volume": total_volume}
+
+    def _place_full_signal(self, signal: Signal) -> Outcome:
+        result = self._place_full_market(
+            setup_id=signal.setup_id,
+            symbol=signal.symbol,
+            market_key=signal.market_key,
+            side=signal.side,
+            sl=signal.sl,
+            tps=signal.tps,
+            lot_per_leg=signal.lot_per_leg,
+            entry_price=signal.entry,
+        )
+        if result.get("status") == "placed":
+            self.state.mark_seen(signal.setup_id)
+            return "placed"
+        if result.get("status") == "skipped":
+            self.state.mark_seen(signal.setup_id)
+            return "skipped"
+        if result.get("status") == "failed":
+            return "failed"
+        return "skipped"
+
+    def _place_full_market(
+        self,
+        *,
+        setup_id: str,
+        symbol: str,
+        market_key: str,
+        side: str,
+        sl: float,
+        tps: list[float],
+        lot_per_leg: float,
+        entry_price: float | None = None,
+        extra_setup: dict | None = None,
+        comment: str = ORDER_COMMENT,
+    ) -> dict:
+        if not tps:
+            return {"status": "failed", "reason": "missing take profits"}
+        signal_entry = entry_price
+        valid, reason, live_entry = self._validate_market_setup(symbol, side, sl, tps, signal_entry)
+        if not valid:
+            self.logger.warning("FULL SETUP REJECTED %s %s", symbol, reason)
+            return {"status": "skipped", "reason": reason, "entry_price": live_entry}
+        if entry_price is None:
+            entry_price = live_entry
+
+        total_volume = normalized_full_volume(self.client, symbol, lot_per_leg)
+        final_tp = float(tps[-1])
+        try:
+            result = self.client.send_market(
+                symbol,
+                side,
+                total_volume,
+                sl,
+                final_tp,
+                self.config.bot.magic,
+                f"{comment} full"[:31],
+            )
+        except ValueError as exc:
+            self.logger.warning("FULL ORDER REJECTED %s reason=%s", symbol, exc)
+            return {"status": "skipped", "reason": str(exc)}
+        retcode = getattr(result, "retcode", None)
+        ticket = int(getattr(result, "order", 0) or getattr(result, "deal", 0) or 0)
+        if retcode != self.client.TRADE_DONE or not ticket:
+            self.logger.warning("FULL ORDER FAILED %s ret=%s result=%s", symbol, retcode, result)
+            return {"status": "failed", "ticket": ticket}
+
+        self.logger.info(
+            "FULL PLACED %s ticket=%s vol=%s sl=%.5f final_tp=%.5f",
+            symbol,
+            ticket,
+            total_volume,
+            sl,
+            final_tp,
+        )
+        setup = {
+            "setup_id": setup_id,
+            "symbol": symbol,
+            "market_key": market_key,
+            "side": side,
+            "execution_mode": "full",
+            "tickets": [ticket],
+            "tps": [float(tp) for tp in tps],
+            "sl": sl,
+            "initial_volume": total_volume,
             "moved_to_tp": 0,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
@@ -582,6 +731,11 @@ class TradeExecutor:
                 if kept is not None:
                     next_setups.append(kept)
                 continue
+            if execution_mode == "full":
+                kept = self._manage_full_setup(setup, open_by_ticket, enabled)
+                if kept is not None:
+                    next_setups.append(kept)
+                continue
 
             kept = self._manage_split_setup(setup, open_by_ticket, enabled)
             if kept is not None:
@@ -595,6 +749,62 @@ class TradeExecutor:
         if not open_tickets:
             self.logger.info("SINGLE-LEG SETUP DONE %s %s", setup.get("symbol"), setup.get("setup_id"))
             return None
+        return setup
+
+    def _manage_full_setup(self, setup: dict, open_by_ticket: dict, tp_protect: bool) -> dict | None:
+        tickets = [int(ticket) for ticket in setup.get("tickets", [])]
+        if not tickets:
+            return None
+        ticket = tickets[0]
+        if ticket not in open_by_ticket:
+            self.logger.info("FULL SETUP DONE %s %s", setup.get("symbol"), setup.get("setup_id"))
+            return None
+
+        if not tp_protect:
+            return setup
+
+        symbol = str(setup.get("symbol"))
+        side = str(setup.get("side"))
+        tps = [float(tp) for tp in setup.get("tps", [])]
+        if len(tps) < 2:
+            return setup
+
+        moved_to_tp = int(setup.get("moved_to_tp", 0))
+        tick = self.client.tick(symbol)
+        if tick is None:
+            return setup
+
+        bid = float(_field(tick, "bid", 0.0) or 0.0)
+        ask = float(_field(tick, "ask", 0.0) or 0.0)
+        mark = ask if side == "buy" else bid
+
+        while moved_to_tp < len(tps) - 1:
+            tp_level = tps[moved_to_tp]
+            hit = mark >= tp_level if side == "buy" else mark <= tp_level
+            if not hit:
+                break
+
+            moved_to_tp += 1
+            setup["moved_to_tp"] = moved_to_tp
+            if not self.config.bot.dry_run:
+                pos = open_by_ticket.get(ticket)
+                if pos is None:
+                    break
+                new_sl = self.client.normalize_price(symbol, tp_level)
+                if not self._sl_locks_profit(pos, new_sl):
+                    self.logger.warning(
+                        "FULL TP PROTECT SKIP ticket=%s %s new SL %.5f would not lock profit from open %.5f",
+                        ticket,
+                        symbol,
+                        new_sl,
+                        float(_field(pos, "price_open", 0.0) or 0.0),
+                    )
+                    break
+                final_tp = float(_field(pos, "tp"))
+                self.client.update_position_sl(ticket, symbol, new_sl, final_tp)
+                setup["sl"] = new_sl
+                self.logger.info("FULL TP PROTECT %s SL -> %.5f after TP%s", symbol, new_sl, moved_to_tp)
+
         return setup
 
     def _manage_split_setup(self, setup: dict, open_by_ticket: dict, tp_protect: bool) -> dict | None:

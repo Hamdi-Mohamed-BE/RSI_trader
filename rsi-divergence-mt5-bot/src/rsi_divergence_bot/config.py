@@ -8,11 +8,36 @@ from pydantic import BaseModel, Field, model_validator
 
 from .strategy_modes import CANONICAL_STRATEGIES, canonical_strategy
 from .symbols import CRYPTO_DEFAULT_LOTS, asset_group, market_key
+from .timeframes import validate_timeframe
 
-Timeframe = Literal["M1", "M5", "M15", "M30", "H1"]
+Timeframe = Literal[
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M10",
+    "M12",
+    "M15",
+    "M20",
+    "M30",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H6",
+    "H8",
+    "H12",
+    "D1",
+    "W1",
+    "MN1",
+]
 StrategyMode = Literal[
     "signal_no_tp_protection",
     "signal_with_tp_protection",
+    "signal_full_no_tp_protection",
+    "signal_full_with_tp_protection",
     "signal_partial_no_tp_protection",
     "signal_partial_with_tp_protection",
 ]
@@ -104,7 +129,7 @@ class RiskConfig(BaseModel):
 
 
 class WebConfig(BaseModel):
-    host: str = "127.0.0.1"
+    host: str = "0.0.0.0"
     port: int = 8787
 
 
@@ -142,6 +167,7 @@ class SymbolConfig(BaseModel):
     market_key_override: str | None = None
     enabled: bool = True
     timeframe: Timeframe = "M5"
+    optimized_timeframe: Timeframe | None = None
     lot_per_leg: float = Field(gt=0)
     max_setup_risk_usd: float | None = None
     pivot_len: int = Field(default=3, ge=2, le=20)
@@ -238,8 +264,116 @@ def update_symbol_enabled(config: AppConfig, enabled: dict[str, bool]) -> list[s
     return updated
 
 
+def update_symbol_timeframes(config: AppConfig, timeframes: dict[str, str]) -> list[str]:
+    updated: list[str] = []
+    for symbol_cfg in config.symbols:
+        if symbol_cfg.symbol not in timeframes:
+            continue
+        try:
+            timeframe = validate_timeframe(timeframes[symbol_cfg.symbol])
+        except ValueError as exc:
+            raise ValueError(f"Timeframe for {symbol_cfg.symbol}: {exc}") from exc
+        symbol_cfg.timeframe = timeframe  # type: ignore[assignment]
+        updated.append(symbol_cfg.symbol)
+    return updated
+
+
 def update_bot_strategy(config: AppConfig, strategy: StrategyMode) -> None:
     normalized = canonical_strategy(strategy)
     if normalized not in CANONICAL_STRATEGIES:
         raise ValueError(f"Unknown bot strategy: {strategy}")
     config.bot.strategy = normalized  # type: ignore[assignment]
+
+
+def normalize_telegram_channel_url(url: str) -> str:
+    raw = str(url or "").strip()
+    if not raw:
+        raise ValueError("Channel URL is required")
+    base = "https://web.telegram.org/k/#"
+    if raw.startswith("http"):
+        if "#" not in raw:
+            raise ValueError("Telegram Web URL must include #channel hash or @username")
+        token = raw.split("#", 1)[1].lstrip("#").strip()
+        if not token:
+            raise ValueError("Telegram Web URL is missing channel hash")
+        return f"{base}{token}"
+    token = raw.lstrip("#").strip()
+    if not token:
+        raise ValueError("Invalid Telegram channel link")
+    if not token.startswith("@") and not token.startswith("-") and not token.isdigit():
+        token = f"@{token}"
+    return f"{base}{token}"
+
+
+def telegram_channel_key(url: str) -> str:
+    return normalize_telegram_channel_url(url).casefold()
+
+
+def derive_telegram_channel_name(url: str) -> str:
+    normalized = normalize_telegram_channel_url(url)
+    token = normalized.rsplit("#", 1)[-1]
+    if token.startswith("@"):
+        return token[1:]
+    return f"Telegram {token}"
+
+
+def find_telegram_channel(config: AppConfig, url: str) -> TelegramChannelConfig | None:
+    target = telegram_channel_key(url)
+    for channel in config.telegram_signals.channels:
+        if telegram_channel_key(channel.url) == target:
+            return channel
+    return None
+
+
+def add_telegram_channel(
+    config: AppConfig,
+    url: str,
+    *,
+    name: str | None = None,
+    enabled: bool = True,
+) -> TelegramChannelConfig:
+    normalized = normalize_telegram_channel_url(url)
+    if find_telegram_channel(config, normalized) is not None:
+        raise ValueError("Channel already exists")
+    channel = TelegramChannelConfig(
+        name=(name or derive_telegram_channel_name(normalized)).strip() or derive_telegram_channel_name(normalized),
+        url=normalized,
+        enabled=enabled,
+    )
+    config.telegram_signals.channels.append(channel)
+    return channel
+
+
+def update_telegram_channel(
+    config: AppConfig,
+    url: str,
+    *,
+    name: str | None = None,
+    enabled: bool | None = None,
+) -> TelegramChannelConfig:
+    channel = find_telegram_channel(config, url)
+    if channel is None:
+        raise ValueError("Channel not found")
+    if name is not None:
+        cleaned = name.strip()
+        if not cleaned:
+            raise ValueError("Channel name cannot be empty")
+        channel.name = cleaned
+    if enabled is not None:
+        channel.enabled = enabled
+    return channel
+
+
+def remove_telegram_channel(config: AppConfig, url: str) -> TelegramChannelConfig:
+    target = telegram_channel_key(url)
+    removed: TelegramChannelConfig | None = None
+    kept: list[TelegramChannelConfig] = []
+    for channel in config.telegram_signals.channels:
+        if telegram_channel_key(channel.url) == target:
+            removed = channel
+            continue
+        kept.append(channel)
+    if removed is None:
+        raise ValueError("Channel not found")
+    config.telegram_signals.channels = kept
+    return removed

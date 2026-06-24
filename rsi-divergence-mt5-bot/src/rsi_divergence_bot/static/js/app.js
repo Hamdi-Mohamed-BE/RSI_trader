@@ -1,7 +1,21 @@
 const STRATEGY_LABELS = {
   signal_no_tp_protection: "Split legs - no TP protection",
   signal_with_tp_protection: "Split legs - with TP protection",
+  signal_full_no_tp_protection: "Full position - no TP protection",
+  signal_full_with_tp_protection: "Full position - with TP protection",
 };
+
+const PAGE_LABELS = {
+  home: "Live",
+  backtest: "Backtest",
+  settings: "Settings",
+  "manual-trade": "Manual trade",
+  "live-summary": "Live summary",
+  "telegram-signals": "Telegram signals",
+  logs: "Logs",
+};
+
+const MOBILE_TABLE_BP = 768;
 
 const STRATEGY_ALIASES = {
   signal_partial_no_tp_protection: "signal_no_tp_protection",
@@ -21,6 +35,8 @@ const els = {
   statMagic: document.getElementById("stat-magic"),
   symbolsBody: document.getElementById("symbols-body"),
   resetLotsBtn: document.getElementById("reset-lots-btn"),
+  resetTimeframesBtn: document.getElementById("reset-timeframes-btn"),
+  optimizeTimeframesBtn: document.getElementById("optimize-timeframes-btn"),
   saveLotsBtn: document.getElementById("save-lots-btn"),
   snapshotForm: document.getElementById("snapshot-form"),
   snapshotName: document.getElementById("snapshot-name"),
@@ -72,6 +88,16 @@ const els = {
   positionsCount: document.getElementById("positions-count"),
   dealsBody: document.getElementById("deals-body"),
   dealsCount: document.getElementById("deals-count"),
+  liveSummaryForm: document.getElementById("live-summary-form"),
+  liveSummaryStart: document.getElementById("live-summary-start"),
+  liveSummaryEnd: document.getElementById("live-summary-end"),
+  liveSummaryBtn: document.getElementById("live-summary-btn"),
+  liveSummaryOverall: document.getElementById("live-summary-overall"),
+  liveSummaryChart: document.getElementById("live-summary-chart"),
+  liveSummarySymbolsWrap: document.getElementById("live-summary-symbols-wrap"),
+  liveSummarySymbols: document.getElementById("live-summary-symbols"),
+  liveSummaryCount: document.getElementById("live-summary-count"),
+  liveSummaryBody: document.getElementById("live-summary-body"),
   scanResult: document.getElementById("scan-result"),
   status: document.getElementById("status"),
   logs: document.getElementById("logs"),
@@ -94,12 +120,21 @@ const els = {
   telegramLlm: document.getElementById("telegram-llm"),
   telegramOpenGuard: document.getElementById("telegram-open-guard"),
   telegramChannels: document.getElementById("telegram-channels"),
+  telegramChannelsBody: document.getElementById("telegram-channels-body"),
+  telegramChannelForm: document.getElementById("telegram-channel-form"),
+  telegramChannelUrl: document.getElementById("telegram-channel-url"),
+  telegramChannelName: document.getElementById("telegram-channel-name"),
+  telegramChannelEnabled: document.getElementById("telegram-channel-enabled"),
+  telegramChannelAddBtn: document.getElementById("telegram-channel-add-btn"),
   telegramPoll: document.getElementById("telegram-poll"),
   telegramLastParsed: document.getElementById("telegram-last-parsed"),
   telegramLastResult: document.getElementById("telegram-last-result"),
   telegramLastResultJson: document.getElementById("telegram-last-result-json"),
   telegramMessagesBody: document.getElementById("telegram-messages-body"),
   toastStack: document.getElementById("toast-stack"),
+  navToggle: document.getElementById("nav-toggle"),
+  mainNav: document.getElementById("main-nav"),
+  mobileNavPage: document.getElementById("mobile-nav-page"),
 };
 
 let allLogs = [];
@@ -115,6 +150,7 @@ function currentPage() {
   if (path === "/backtest") return "backtest";
   if (path === "/settings") return "settings";
   if (path === "/manual-trade") return "manual-trade";
+  if (path === "/live-summary") return "live-summary";
   if (path === "/telegram-signals") return "telegram-signals";
   if (path === "/logs") return "logs";
   return "home";
@@ -123,6 +159,9 @@ function currentPage() {
 function applyPageVisibility() {
   const page = currentPage();
   document.body.dataset.page = page;
+  if (els.mobileNavPage) {
+    els.mobileNavPage.textContent = PAGE_LABELS[page] || "Dashboard";
+  }
 
   for (const section of document.querySelectorAll("[data-pages]")) {
     const pages = (section.dataset.pages || "").split(/\s+/).filter(Boolean);
@@ -132,6 +171,59 @@ function applyPageVisibility() {
   for (const link of document.querySelectorAll("[data-page-link]")) {
     link.classList.toggle("active", link.dataset.pageLink === page);
   }
+
+  closeMobileNav();
+  updateResponsiveTables();
+}
+
+function closeMobileNav() {
+  if (!els.mainNav || !els.navToggle) return;
+  els.mainNav.classList.remove("is-open");
+  els.navToggle.setAttribute("aria-expanded", "false");
+}
+
+function toggleMobileNav() {
+  if (!els.mainNav || !els.navToggle) return;
+  const open = !els.mainNav.classList.contains("is-open");
+  els.mainNav.classList.toggle("is-open", open);
+  els.navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function stampTableLabels(table) {
+  const headers = [...table.querySelectorAll("thead th")].map((th) => {
+    const label = th.querySelector(".sort-button span:first-child");
+    return (label?.textContent || th.textContent || "").trim();
+  });
+  table.querySelectorAll("tbody tr").forEach((row) => {
+    [...row.children].forEach((cell, index) => {
+      if (cell.tagName === "TD" && headers[index]) {
+        cell.dataset.label = headers[index];
+      }
+    });
+  });
+}
+
+function updateResponsiveTables() {
+  const mobile = window.matchMedia(`(max-width: ${MOBILE_TABLE_BP}px)`).matches;
+  document.querySelectorAll(".table-wrap").forEach((wrap) => {
+    const scrollOnly = wrap.classList.contains("table-wrap-scroll") || wrap.classList.contains("table-wrap-wide");
+    wrap.classList.toggle("is-mobile-cards", mobile && !scrollOnly);
+    const table = wrap.querySelector("table.data-table");
+    if (table && mobile && !scrollOnly) {
+      stampTableLabels(table);
+    }
+    if (scrollOnly) {
+      wrap.classList.toggle("can-scroll-x", wrap.scrollWidth > wrap.clientWidth + 4);
+    } else {
+      wrap.classList.remove("can-scroll-x");
+    }
+  });
+}
+
+let responsiveTablesTimer = null;
+function scheduleResponsiveTables() {
+  if (responsiveTablesTimer) clearTimeout(responsiveTablesTimer);
+  responsiveTablesTimer = setTimeout(updateResponsiveTables, 0);
 }
 
 function toast(message, type = "info") {
@@ -196,7 +288,100 @@ function escapeHtml(text) {
   return String(text)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function sortHeader(label, key, type = "text", defaultDir = "") {
+  const safeLabel = escapeHtml(label);
+  const safeKey = escapeHtml(key);
+  const safeType = escapeHtml(type);
+  const defaultAttr = defaultDir ? ` data-sort-default="${escapeHtml(defaultDir)}"` : "";
+  return `
+    <button type="button" class="sort-button" data-sort-key="${safeKey}" data-sort-type="${safeType}"${defaultAttr} title="Sort by ${safeLabel}">
+      <span>${safeLabel}</span>
+      <span class="sort-indicator" aria-hidden="true">-</span>
+    </button>
+  `;
+}
+
+function sortValue(row, key, type) {
+  const raw = row.getAttribute(`data-sort-${key}`) ?? "";
+  if (type === "number") {
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : null;
+  }
+  if (type === "date") {
+    const value = Date.parse(raw);
+    return Number.isFinite(value) ? value : null;
+  }
+  return raw.toLowerCase();
+}
+
+function compareSortValues(left, right, type, direction) {
+  const leftMissing = left === null || left === "";
+  const rightMissing = right === null || right === "";
+  if (leftMissing && rightMissing) return 0;
+  if (leftMissing) return 1;
+  if (rightMissing) return -1;
+  const comparison = type === "text" ? String(left).localeCompare(String(right)) : Number(left) - Number(right);
+  return direction === "asc" ? comparison : -comparison;
+}
+
+function applySortableTableSort(button) {
+  const table = button.closest("table");
+  const tbody = table?.tBodies?.[0];
+  if (!table || !tbody) return;
+
+  const key = button.dataset.sortKey;
+  const type = button.dataset.sortType || "text";
+  if (!key) return;
+
+  const sameColumn = table.dataset.sortKey === key;
+  const defaultDir = button.dataset.sortDefault || (type === "text" ? "asc" : "desc");
+  const direction = sameColumn && table.dataset.sortDir === "asc" ? "desc" : sameColumn ? "asc" : defaultDir;
+  const allRows = Array.from(tbody.rows);
+  const pairMode = table.dataset.sortPairs === "true";
+  const sortableRows = allRows.filter((row) => row.dataset.sortRow === "true");
+
+  const compareRows = (leftRow, rightRow) => {
+    const left = sortValue(leftRow, key, type);
+    const right = sortValue(rightRow, key, type);
+    const comparison = compareSortValues(left, right, type, direction);
+    if (comparison !== 0) return comparison;
+    return Number(leftRow.dataset.sortIndex || 0) - Number(rightRow.dataset.sortIndex || 0);
+  };
+
+  if (pairMode) {
+    const groups = sortableRows.map((row) => {
+      const detail = row.nextElementSibling?.classList.contains("backtest-daily-detail")
+        ? row.nextElementSibling
+        : null;
+      return { row, detail };
+    });
+    groups.sort((left, right) => compareRows(left.row, right.row));
+    tbody.replaceChildren(...groups.flatMap((group) => (group.detail ? [group.row, group.detail] : [group.row])));
+  } else {
+    const staticRows = allRows.filter((row) => row.dataset.sortRow !== "true");
+    sortableRows.sort(compareRows);
+    tbody.replaceChildren(...staticRows, ...sortableRows);
+  }
+
+  table.dataset.sortKey = key;
+  table.dataset.sortDir = direction;
+
+  for (const headerButton of table.querySelectorAll(".sort-button")) {
+    const active = headerButton === button;
+    headerButton.classList.toggle("is-sorted", active);
+    headerButton.setAttribute("aria-pressed", active ? "true" : "false");
+    const indicator = headerButton.querySelector(".sort-indicator");
+    if (indicator) indicator.textContent = active ? (direction === "asc" ? "^" : "v") : "-";
+  }
+
+  Array.from(tbody.querySelectorAll(".row-number")).forEach((cell, index) => {
+    cell.textContent = String(index + 1);
+  });
 }
 
 function colorizeLogLine(line) {
@@ -263,6 +448,22 @@ const SYMBOL_GROUPS = [
   ["other", "Other"],
 ];
 
+function timeframeOptions() {
+  const options = botConfig?.timeframe_options || [];
+  if (options.length) return options;
+  return ["M1", "M5", "M15", "M30", "H1"].map((value) => ({ value, label: value }));
+}
+
+function renderTimeframeOptions(selected) {
+  return timeframeOptions()
+    .map((item) => {
+      const value = item.value || item;
+      const label = item.label || value;
+      return `<option value="${escapeHtml(value)}" ${value === selected ? "selected" : ""}>${escapeHtml(label)}</option>`;
+    })
+    .join("");
+}
+
 function symbolGroupLabel(group) {
   return SYMBOL_GROUPS.find(([key]) => key === group)?.[1] || "Other";
 }
@@ -284,7 +485,16 @@ function renderGroupedSymbolRow(item) {
           <td><strong>${escapeHtml(item.symbol)}</strong></td>
           <td><span class="tag">${escapeHtml(item.market_key || item.symbol)}</span></td>
           <td>${escapeHtml(item.name)}</td>
-          <td><span class="tag tag-accent">${escapeHtml(item.timeframe)}</span></td>
+          <td>
+            <select
+              class="timeframe-select"
+              data-symbol="${escapeHtml(item.symbol)}"
+              data-reset-timeframe="${escapeHtml(item.reset_timeframe || item.timeframe)}"
+              title="Reset timeframe: ${escapeHtml(item.reset_timeframe || item.timeframe)}"
+            >
+              ${renderTimeframeOptions(item.timeframe)}
+            </select>
+          </td>
           <td>
             <input
               class="lot-input"
@@ -309,6 +519,7 @@ function renderSymbols(symbols) {
   const rows = Array.isArray(symbols) ? symbols : [];
   if (!rows.length) {
     els.symbolsBody.innerHTML = '<tr><td colspan="8" class="empty-row">No symbols in config.</td></tr>';
+    scheduleResponsiveTables();
     return;
   }
 
@@ -328,45 +539,7 @@ function renderSymbols(symbols) {
       ];
     })
     .join("");
-  return;
-
-  els.symbolsBody.innerHTML = rows
-    .map(
-      (item) => `
-        <tr class="${item.enabled ? "" : "row-disabled"}">
-          <td>
-            <label class="switch" title="${item.enabled ? "Enabled" : "Disabled"}">
-              <input
-                class="symbol-enabled"
-                type="checkbox"
-                data-symbol="${escapeHtml(item.symbol)}"
-                ${item.enabled ? "checked" : ""}
-              >
-              <span class="switch-slider"></span>
-            </label>
-          </td>
-          <td><strong>${escapeHtml(item.symbol)}</strong></td>
-          <td><span class="tag">${escapeHtml(item.market_key || item.symbol)}</span></td>
-          <td>${escapeHtml(item.name)}</td>
-          <td><span class="tag tag-accent">${escapeHtml(item.timeframe)}</span></td>
-          <td>
-            <input
-              class="lot-input"
-              type="number"
-              min="0.01"
-              step="0.01"
-              data-symbol="${escapeHtml(item.symbol)}"
-              data-reset-lot="${item.reset_lot_per_leg ?? item.lot_per_leg}"
-              title="Reset lot: ${item.reset_lot_per_leg ?? item.lot_per_leg}"
-              value="${item.lot_per_leg}"
-            >
-          </td>
-          <td>${escapeHtml(item.confirmation)}</td>
-          <td>${(item.sessions || []).map((s) => `<span class="tag">${escapeHtml(s)}</span>`).join("") || "—"}</td>
-        </tr>
-      `,
-    )
-    .join("");
+  scheduleResponsiveTables();
 }
 
 function updateSymbolStats(stats) {
@@ -377,20 +550,24 @@ function updateSymbolStats(stats) {
 function symbolSettingsFromConfig() {
   const lots = {};
   const enabled = {};
+  const timeframes = {};
   for (const item of botConfig?.symbols || []) {
     lots[item.symbol] = item.lot_per_leg;
     enabled[item.symbol] = Boolean(item.enabled);
+    timeframes[item.symbol] = item.timeframe;
   }
-  return { lots, enabled };
+  return { lots, enabled, timeframes };
 }
 
 function collectSymbolSettings() {
   const lots = {};
   const enabled = {};
+  const timeframes = {};
   const lotInputs = els.symbolsBody.querySelectorAll(".lot-input");
   const enabledInputs = els.symbolsBody.querySelectorAll(".symbol-enabled");
+  const timeframeInputs = els.symbolsBody.querySelectorAll(".timeframe-select");
 
-  if (!lotInputs.length && !enabledInputs.length) {
+  if (!lotInputs.length && !enabledInputs.length && !timeframeInputs.length) {
     return symbolSettingsFromConfig();
   }
 
@@ -409,13 +586,22 @@ function collectSymbolSettings() {
     enabled[symbol] = input.checked;
   }
 
-  if (!Object.keys(lots).length || !Object.keys(enabled).length) {
+  for (const input of timeframeInputs) {
+    const symbol = input.dataset.symbol;
+    if (!symbol || !input.value) {
+      throw new Error(`Invalid timeframe for ${symbol || "symbol"}`);
+    }
+    timeframes[symbol] = input.value;
+  }
+
+  if (!Object.keys(lots).length || !Object.keys(enabled).length || !Object.keys(timeframes).length) {
     const fallback = symbolSettingsFromConfig();
     if (!Object.keys(lots).length) Object.assign(lots, fallback.lots);
     if (!Object.keys(enabled).length) Object.assign(enabled, fallback.enabled);
+    if (!Object.keys(timeframes).length) Object.assign(timeframes, fallback.timeframes);
   }
 
-  return { lots, enabled };
+  return { lots, enabled, timeframes };
 }
 
 function formatApiError(detail) {
@@ -427,15 +613,15 @@ function formatApiError(detail) {
 }
 
 async function syncSymbolSettings({ persist = true, silent = false, rerender = false } = {}) {
-  const { lots, enabled } = collectSymbolSettings();
-  if (!Object.keys(lots).length && !Object.keys(enabled).length) {
+  const { lots, enabled, timeframes } = collectSymbolSettings();
+  if (!Object.keys(lots).length && !Object.keys(enabled).length && !Object.keys(timeframes).length) {
     return { status: "noop", symbols: botConfig?.symbols || [], symbol_stats: botConfig?.symbol_stats || null };
   }
 
   const response = await fetch("/api/symbols/settings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ lots, enabled, persist }),
+    body: JSON.stringify({ lots, enabled, timeframes, persist }),
   });
   const data = await response.json();
   if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to sync symbol settings");
@@ -446,6 +632,9 @@ async function syncSymbolSettings({ persist = true, silent = false, rerender = f
   }
   updateSymbolStats(data.symbol_stats);
   if (rerender || !silent) renderSymbols(data.symbols);
+  if (window.ChartPreview?.populateSymbols) {
+    window.ChartPreview.populateSymbols(data.symbols);
+  }
 
   if (!silent) {
     toast(persist ? "Symbol settings saved to config" : "Symbol settings applied", "success");
@@ -492,6 +681,7 @@ function renderSnapshots(snapshots) {
   if (!els.snapshotsBody) return;
   if (!snapshots?.length) {
     els.snapshotsBody.innerHTML = '<tr><td colspan="6" class="empty-row">No saved snapshots yet.</td></tr>';
+    scheduleResponsiveTables();
     return;
   }
 
@@ -517,6 +707,7 @@ function renderSnapshots(snapshots) {
       `;
     })
     .join("");
+  scheduleResponsiveTables();
 }
 
 async function loadSnapshots() {
@@ -667,6 +858,87 @@ async function resetLots() {
   }
 }
 
+async function resetTimeframes() {
+  if (!botConfig?.symbols?.length) {
+    toast("Symbol settings are not loaded yet", "error");
+    return;
+  }
+
+  const confirmed = window.confirm("Reset all symbols to their saved optimized timeframes and save config.yaml?");
+  if (!confirmed) return;
+
+  if (settingsTimer) {
+    clearTimeout(settingsTimer);
+    settingsTimer = null;
+  }
+
+  setLoading(els.resetTimeframesBtn, true, "Resetting...");
+  try {
+    const response = await fetch("/api/symbols/timeframes/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ persist: true }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to reset timeframes");
+    if (botConfig) {
+      botConfig.symbols = data.symbols;
+      botConfig.symbol_stats = data.symbol_stats;
+    }
+    renderSymbols(data.symbols);
+    toast("Timeframes reset", "success");
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.resetTimeframesBtn, false);
+  }
+}
+
+async function optimizeTimeframes() {
+  if (!botConfig?.symbols?.length) {
+    toast("Symbol settings are not loaded yet", "error");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    "Backtest every enabled symbol across all MT5 timeframes for the last 30 days, save the best timeframe as default, and update config.yaml? This can take a while.",
+  );
+  if (!confirmed) return;
+
+  const end = new Date();
+  const start = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
+  setLoading(els.optimizeTimeframesBtn, true, "Optimizing...");
+  try {
+    await syncSymbolSettings({ persist: false, silent: true, rerender: false });
+    const response = await fetch("/api/symbols/timeframes/optimize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        start: start.toISOString(),
+        end: end.toISOString(),
+        starting_balance: 1000,
+        timeframes: timeframeOptions().map((item) => item.value || item),
+        persist: true,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to optimize timeframes");
+    if (botConfig) {
+      botConfig.symbols = data.symbols;
+      botConfig.symbol_stats = data.symbol_stats;
+    }
+    renderSymbols(data.symbols);
+    const changed = (data.optimization?.symbols || []).filter((row) => row.current_timeframe !== row.best_timeframe).length;
+    toast(`Timeframe optimization done: ${changed} symbol${changed === 1 ? "" : "s"} changed`, "success");
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.optimizeTimeframesBtn, false);
+  }
+}
+
 function formatCurrency(value) {
   return `$${Number(value).toFixed(2)}`;
 }
@@ -727,8 +999,21 @@ function renderLiveData(data) {
   } else {
     els.positionsBody.innerHTML = positions
       .map(
-        (row) => `
-          <tr>
+        (row, index) => `
+          <tr
+            data-sort-row="true"
+            data-sort-index="${index}"
+            data-sort-ticket="${Number(row.ticket || 0)}"
+            data-sort-symbol="${escapeHtml(row.symbol || "")}"
+            data-sort-side="${escapeHtml(row.side || "")}"
+            data-sort-volume="${Number(row.volume || 0)}"
+            data-sort-open="${Number(row.price_open || 0)}"
+            data-sort-current="${Number(row.price_current || 0)}"
+            data-sort-sl="${Number(row.sl || 0)}"
+            data-sort-tp="${Number(row.tp || 0)}"
+            data-sort-pnl="${Number(row.profit || 0)}"
+            data-sort-comment="${escapeHtml(row.comment || "")}"
+          >
             <td>${row.ticket}${row.is_bot ? ' <span class="tag tag-bot">bot</span>' : ""}</td>
             <td><strong>${escapeHtml(row.symbol)}</strong></td>
             <td class="side-${row.side}">${String(row.side || "").toUpperCase()}</td>
@@ -752,8 +1037,19 @@ function renderLiveData(data) {
   } else {
     els.dealsBody.innerHTML = deals
       .map(
-        (row) => `
-          <tr>
+        (row, index) => `
+          <tr
+            data-sort-row="true"
+            data-sort-index="${index}"
+            data-sort-time="${escapeHtml(row.time || "")}"
+            data-sort-ticket="${Number(row.ticket || 0)}"
+            data-sort-symbol="${escapeHtml(row.symbol || "")}"
+            data-sort-side="${escapeHtml(row.side || "")}"
+            data-sort-volume="${Number(row.volume || 0)}"
+            data-sort-price="${Number(row.price || 0)}"
+            data-sort-pnl="${Number(row.profit || 0)}"
+            data-sort-comment="${escapeHtml(row.comment || "")}"
+          >
             <td>${formatTimestamp(row.time)}</td>
             <td>${row.ticket}</td>
             <td><strong>${escapeHtml(row.symbol)}</strong></td>
@@ -767,6 +1063,7 @@ function renderLiveData(data) {
       )
       .join("");
   }
+  scheduleResponsiveTables();
 }
 
 async function refreshLiveData() {
@@ -790,6 +1087,144 @@ async function refreshLiveData() {
 function startLivePolling() {
   if (liveTimer) clearInterval(liveTimer);
   liveTimer = setInterval(refreshLiveData, 5000);
+}
+
+function setDefaultLiveSummaryPeriod() {
+  if (!els.liveSummaryStart || !els.liveSummaryEnd) return;
+  const end = new Date();
+  const start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+  if (!els.liveSummaryEnd.value) els.liveSummaryEnd.value = isoToLocalInput(end.toISOString());
+  if (!els.liveSummaryStart.value) els.liveSummaryStart.value = isoToLocalInput(start.toISOString());
+}
+
+function tradeTypeLabel(value) {
+  if (value === "rsi_bot") return "RSI bot";
+  if (value === "signal_bot") return "Telegram signal";
+  return "Other";
+}
+
+function renderLiveSummary(data) {
+  if (!els.liveSummaryOverall) return;
+  const overall = data.overall || {};
+  els.liveSummaryOverall.innerHTML = `
+    <div class="summary-card"><span class="label">Overall P/L</span><span class="value ${pnlClass(overall.net)}">${formatMoney(overall.net || 0)}</span></div>
+    <div class="summary-card"><span class="label">Trades</span><span class="value">${overall.trades || 0}</span></div>
+    <div class="summary-card"><span class="label">W / L / BE</span><span class="value">${overall.wins || 0} / ${overall.losses || 0} / ${overall.breakeven || 0}</span></div>
+    <div class="summary-card"><span class="label">Win rate</span><span class="value">${overall.win_rate || 0}%</span></div>
+  `;
+  els.liveSummaryOverall.classList.remove("hidden");
+
+  const maxAbs = Math.max(
+    1,
+    ...(data.summary || []).map((row) => Math.max(Math.abs(Number(row.win_amount || 0)), Math.abs(Number(row.loss_amount || 0)), Math.abs(Number(row.net || 0)))),
+  );
+  els.liveSummaryChart.innerHTML = (data.summary || [])
+    .map((row) => {
+      const winWidth = Math.max(4, Math.round(Math.abs(Number(row.win_amount || 0)) / maxAbs * 100));
+      const lossWidth = Math.max(4, Math.round(Math.abs(Number(row.loss_amount || 0)) / maxAbs * 100));
+      return `
+        <article class="live-summary-card">
+          <div class="live-summary-card-head">
+            <strong>${escapeHtml(row.label || tradeTypeLabel(row.key))}</strong>
+            <span class="${pnlClass(row.net)}">${formatMoney(row.net || 0)}</span>
+          </div>
+          <div class="live-summary-bars">
+            <div class="live-summary-bar live-summary-win" style="width:${winWidth}%"><span>${formatMoney(row.win_amount || 0)}</span></div>
+            <div class="live-summary-bar live-summary-loss" style="width:${lossWidth}%"><span>${formatMoney(row.loss_amount || 0)}</span></div>
+          </div>
+          <div class="live-summary-metrics">
+            <span>${row.trades || 0} trades</span>
+            <span>${row.wins || 0}W / ${row.losses || 0}L</span>
+            <span>${row.win_rate || 0}% win</span>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+  els.liveSummaryChart.classList.remove("hidden");
+
+  const symbolRows = data.by_symbol || [];
+  if (symbolRows.length) {
+    els.liveSummarySymbols.innerHTML = symbolRows
+      .map((row, index) => `
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-symbol="${escapeHtml(row.symbol || "")}"
+          data-sort-trades="${Number(row.trades || 0)}"
+          data-sort-wins="${Number(row.wins || 0)}"
+          data-sort-pnl="${Number(row.net || 0)}"
+        >
+          <td><strong>${escapeHtml(row.symbol)}</strong></td>
+          <td>${row.trades}</td>
+          <td>${row.wins} / ${row.losses}</td>
+          <td class="${pnlClass(row.net)}">${formatMoney(row.net)}</td>
+        </tr>
+      `)
+      .join("");
+    els.liveSummarySymbolsWrap.classList.remove("hidden");
+  } else {
+    els.liveSummarySymbolsWrap.classList.add("hidden");
+    els.liveSummarySymbols.innerHTML = "";
+  }
+
+  const trades = data.trades || [];
+  els.liveSummaryCount.textContent = `${trades.length} trade${trades.length === 1 ? "" : "s"}`;
+  if (!trades.length) {
+    els.liveSummaryBody.innerHTML = '<tr><td colspan="10" class="empty-row">No trade history in this period.</td></tr>';
+  } else {
+    els.liveSummaryBody.innerHTML = trades
+      .map((row, index) => `
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-closed="${escapeHtml(row.closed_at || row.opened_at || "")}"
+          data-sort-type="${escapeHtml(tradeTypeLabel(row.bucket))}"
+          data-sort-position="${Number(row.position_id || 0)}"
+          data-sort-symbol="${escapeHtml(row.symbol || "")}"
+          data-sort-side="${escapeHtml(row.side || "")}"
+          data-sort-volume="${Number(row.volume || 0)}"
+          data-sort-entry="${Number(row.entry_price || 0)}"
+          data-sort-exit="${Number(row.exit_price || 0)}"
+          data-sort-pnl="${Number(row.pnl || 0)}"
+          data-sort-comment="${escapeHtml(row.comment || "")}"
+        >
+          <td>${formatTimestamp(row.closed_at || row.opened_at)}</td>
+          <td><span class="tag">${escapeHtml(tradeTypeLabel(row.bucket))}</span></td>
+          <td>${row.position_id}</td>
+          <td><strong>${escapeHtml(row.symbol || "-")}</strong></td>
+          <td class="side-${row.side || ""}">${String(row.side || "-").toUpperCase()}</td>
+          <td>${row.volume ?? "-"}</td>
+          <td>${formatOptionalPrice(row.entry_price)}</td>
+          <td>${formatOptionalPrice(row.exit_price)}</td>
+          <td class="${pnlClass(row.pnl)}">${formatMoney(row.pnl || 0)}</td>
+          <td>${escapeHtml(row.comment || "-")}</td>
+        </tr>
+      `)
+      .join("");
+  }
+  scheduleResponsiveTables();
+}
+
+async function loadLiveSummary(event) {
+  if (event) event.preventDefault();
+  if (!els.liveSummaryForm) return;
+  const start = localInputToIso(els.liveSummaryStart.value);
+  const end = localInputToIso(els.liveSummaryEnd.value);
+
+  setLoading(els.liveSummaryBtn, true, "Loading...");
+  try {
+    const response = await fetch(`/api/live-summary?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`, {
+      cache: "no-store",
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(formatApiError(data.detail) || "Failed to load live summary");
+    renderLiveSummary(data);
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.liveSummaryBtn, false);
+  }
 }
 
 function formatTimestamp(value) {
@@ -1063,6 +1498,108 @@ function renderTelegramStatus(status) {
     });
   }
   renderTelegramMessages(status.recent_messages || []);
+  renderTelegramChannels(status.channels || botConfig?.telegram_signals?.channels || []);
+}
+
+function renderTelegramChannels(channels) {
+  if (!els.telegramChannelsBody) return;
+  const list = Array.isArray(channels) ? channels : [];
+  if (els.telegramChannels) {
+    els.telegramChannels.textContent = `${list.filter((channel) => channel.enabled).length} active / ${list.length} total`;
+  }
+  if (!list.length) {
+    els.telegramChannelsBody.innerHTML = '<tr><td colspan="4" class="empty-row">No channels configured yet.</td></tr>';
+    scheduleResponsiveTables();
+    return;
+  }
+  els.telegramChannelsBody.innerHTML = list
+    .map((channel) => {
+      const url = String(channel.url || "");
+      const name = escapeHtml(String(channel.name || "—"));
+      const enabled = Boolean(channel.enabled);
+      return `
+        <tr class="${enabled ? "" : "row-disabled"}">
+          <td>
+            <label class="toggle toggle-compact">
+              <input type="checkbox" class="telegram-channel-toggle" data-url="${escapeHtml(url)}" ${enabled ? "checked" : ""}>
+              <span>${enabled ? "On" : "Off"}</span>
+            </label>
+          </td>
+          <td>${name}</td>
+          <td><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(url).slice(0, 72)}</a></td>
+          <td class="table-actions">
+            <button type="button" class="btn btn-danger btn-sm telegram-channel-remove-btn" data-url="${escapeHtml(url)}">Remove</button>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+  scheduleResponsiveTables();
+}
+
+async function addTelegramChannel(event) {
+  event.preventDefault();
+  const url = String(els.telegramChannelUrl?.value || "").trim();
+  if (!url) {
+    toast("Paste a Telegram Web chat link first.", "error");
+    return;
+  }
+  setLoading(els.telegramChannelAddBtn, true);
+  try {
+    const response = await fetch("/api/telegram-signals/channels", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        url,
+        name: String(els.telegramChannelName?.value || "").trim() || null,
+        enabled: Boolean(els.telegramChannelEnabled?.checked),
+        persist: true,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to add channel");
+    if (botConfig?.telegram_signals) botConfig.telegram_signals.channels = data.channels || [];
+    renderTelegramChannels(data.channels || []);
+    els.telegramChannelForm?.reset();
+    if (els.telegramChannelEnabled) els.telegramChannelEnabled.checked = true;
+    toast(`Added channel ${data.channel?.name || ""}`.trim(), "success");
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(els.telegramChannelAddBtn, false);
+  }
+}
+
+async function updateTelegramChannel(url, patch) {
+  const response = await fetch("/api/telegram-signals/channels", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url, persist: true, ...patch }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.detail || "Failed to update channel");
+  if (botConfig?.telegram_signals) botConfig.telegram_signals.channels = data.channels || [];
+  renderTelegramChannels(data.channels || []);
+  return data;
+}
+
+async function removeTelegramChannel(url) {
+  const confirmed = window.confirm("Remove this Telegram channel from the copier list?");
+  if (!confirmed) return;
+  try {
+    const response = await fetch("/api/telegram-signals/channels/remove", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, persist: true }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to remove channel");
+    if (botConfig?.telegram_signals) botConfig.telegram_signals.channels = data.channels || [];
+    renderTelegramChannels(data.channels || []);
+    toast(`Removed ${data.channel?.name || "channel"}`, "success");
+  } catch (error) {
+    toast(error.message, "error");
+  }
 }
 
 function formatLlmResponse(item) {
@@ -1101,10 +1638,19 @@ function formatLlmResponse(item) {
   return "—";
 }
 
+function canHardCopyTelegramMessage(item) {
+  const text = String(item?.text || item?.text_preview || "").trim();
+  if (!text) return false;
+  const upper = text.toUpperCase();
+  if (/\b(BREAKEVEN|BREAK[\s-]?EVEN)\b/.test(upper)) return false;
+  if (item?.parsed?.action && item.parsed.action !== "none") return true;
+  return /\b(BUY|SELL)\b/.test(upper) && /\b(SL|STOP|TP|TARGET|STOPLOSS)\b/.test(upper);
+}
+
 function renderTelegramMessages(messages) {
   if (!els.telegramMessagesBody) return;
   if (!messages.length) {
-    els.telegramMessagesBody.innerHTML = '<tr><td colspan="6" class="empty-row">No Telegram messages tracked yet.</td></tr>';
+    els.telegramMessagesBody.innerHTML = '<tr><td colspan="7" class="empty-row">No Telegram messages tracked yet.</td></tr>';
     return;
   }
   els.telegramMessagesBody.innerHTML = messages
@@ -1122,18 +1668,25 @@ function renderTelegramMessages(messages) {
             ? "value-negative"
           : "value-neutral";
       const llmText = formatLlmResponse(item);
+      const hardCopyEnabled = canHardCopyTelegramMessage(item);
+      const messageId = escapeHtml(String(item.message_id || ""));
+      const actionCell = hardCopyEnabled
+        ? `<button type="button" class="btn btn-primary btn-sm telegram-hard-copy-btn" data-message-id="${messageId}" title="Force place at market; only checks TPs vs live price">Hard copy</button>`
+        : '<span class="value-neutral">—</span>';
       return `
         <tr>
           <td class="${statusClass}">${escapeHtml(status)}</td>
           <td>${escapeHtml(String(item.channel_name || "—"))}</td>
           <td>${formatTimestamp(item.updated_at)}</td>
-          <td>${escapeHtml(String(item.text_preview || "—")).slice(0, 220)}</td>
+          <td>${escapeHtml(String(item.text_preview || item.text || "—")).slice(0, 220)}</td>
           <td class="llm-response-cell" title="${escapeHtml(llmText)}">${escapeHtml(llmText).slice(0, 220)}</td>
           <td>${escapeHtml(String(item.reason || item.result?.reason || "—"))}</td>
+          <td class="table-actions">${actionCell}</td>
         </tr>
       `;
     })
     .join("");
+  scheduleResponsiveTables();
 }
 
 function formatSignalParserLabel(telegram) {
@@ -1156,8 +1709,9 @@ function renderTelegramConfig(config) {
     els.telegramOpenGuard.textContent = telegram.ignore_open_symbol_trades ? "On" : "Off";
   }
   if (els.telegramChannels) {
-    els.telegramChannels.textContent = `${(telegram.channels || []).filter((channel) => channel.enabled).length} active`;
+    els.telegramChannels.textContent = `${(telegram.channels || []).filter((channel) => channel.enabled).length} active / ${(telegram.channels || []).length} total`;
   }
+  renderTelegramChannels(telegram.channels || []);
   if (els.telegramPoll) {
     els.telegramPoll.textContent = `${telegram.poll_seconds}s`;
   }
@@ -1224,9 +1778,44 @@ async function stopTelegramSignals() {
   }
 }
 
+async function hardCopyTelegramMessage(messageId, button) {
+  if (!messageId) return;
+  const confirmed = window.confirm(
+    "Hard copy this signal and place it at market now? Skips age, dedup, daily guard, and open-trade checks. Only validates TPs against live price.",
+  );
+  if (!confirmed) return;
+
+  setLoading(button, true);
+  try {
+    const response = await fetch("/api/telegram-signals/hard-copy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message_id: messageId }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Hard copy failed");
+    renderTelegramStatus(data);
+    const status = data.status || "unknown";
+    if (status === "placed" || status === "paper") {
+      const legs = data.legs || data.tickets?.length || 1;
+      toast(
+        `Hard copy ${status}: ${data.symbol || ""} ${String(data.action || "").toUpperCase()} (${legs} leg${legs === 1 ? "" : "s"})`.trim(),
+        "success",
+      );
+    } else {
+      toast(data.reason || `Hard copy ${status}`, status === "failed" ? "error" : "info");
+    }
+    await refreshLogs();
+  } catch (error) {
+    toast(error.message, "error");
+  } finally {
+    setLoading(button, false);
+  }
+}
+
 async function clearTelegramMessages() {
   const confirmed = window.confirm(
-    "Clear all tracked Telegram messages and reset the dedup cache? New messages can be processed again.",
+    "Hard clear all Telegram messages from the state database, reset dedup cache, and wipe counters? This cannot be undone.",
   );
   if (!confirmed) return;
 
@@ -1237,7 +1826,7 @@ async function clearTelegramMessages() {
     if (!response.ok) throw new Error(data.detail || "Failed to clear Telegram messages");
     renderTelegramStatus(data);
     toast(
-      `Cleared ${data.messages_removed || 0} message${data.messages_removed === 1 ? "" : "s"}`,
+      `Hard cleared ${data.messages_removed || 0} message${data.messages_removed === 1 ? "" : "s"} from database`,
       "success",
     );
     await refreshLogs();
@@ -1404,8 +1993,23 @@ function renderBacktestDailyTradeRows(tradeRows, startBalance) {
   rows.push(
     ...tradeRows.map(
       (trade, index) => `
-        <tr>
-          <td>${index + 1}</td>
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-exit="${escapeHtml(trade.exit_time || "")}"
+          data-sort-symbol="${escapeHtml(trade.symbol || "")}"
+          data-sort-side="${escapeHtml(trade.side || "")}"
+          data-sort-leg="${Number(trade.leg || 0)}"
+          data-sort-entry="${Number(trade.entry ?? 0)}"
+          data-sort-sl="${Number(trade.sl ?? 0)}"
+          data-sort-tp="${Number(trade.tp ?? 0)}"
+          data-sort-exit-price="${Number(trade.exit_price ?? 0)}"
+          data-sort-lot="${Number(trade.lot ?? 0)}"
+          data-sort-pnl="${Number(trade.pnl ?? 0)}"
+          data-sort-balance="${Number(trade.balance_after ?? 0)}"
+          data-sort-exit-kind="${escapeHtml(formatExitKind(trade.exit_kind))}"
+        >
+          <td class="row-number">${index + 1}</td>
           <td>${formatTimestamp(trade.exit_time)}</td>
           <td><strong>${escapeHtml(trade.symbol || "—")}</strong></td>
           <td class="side-${trade.side || ""}">${trade.side ? String(trade.side).toUpperCase() : "—"}</td>
@@ -1435,8 +2039,17 @@ function renderBacktestDaily(dailyRows) {
 
   els.backtestDailyBody.innerHTML = dailyRows
     .map(
-      (row) => `
-        <tr class="backtest-daily-row">
+      (row, index) => `
+        <tr
+          class="backtest-daily-row"
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-date="${escapeHtml(row.date || "")}"
+          data-sort-legs="${Number(row.trades || 0)}"
+          data-sort-wins="${Number(row.wins || 0)}"
+          data-sort-pnl="${Number(row.pnl || 0)}"
+          data-sort-balance="${Number(row.balance || 0)}"
+        >
           <td class="daily-date-cell">
             <button type="button" class="daily-expand-btn" aria-expanded="false" aria-label="Show trades for ${escapeHtml(row.date)}">▸</button>
             <strong>${escapeHtml(row.date)}</strong>
@@ -1453,18 +2066,18 @@ function renderBacktestDaily(dailyRows) {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Exit (UTC)</th>
-                    <th>Symbol</th>
-                    <th>Side</th>
-                    <th>Leg</th>
-                    <th>Entry</th>
-                    <th>SL</th>
-                    <th>TP</th>
-                    <th>Exit price</th>
-                    <th>Lot</th>
-                    <th>PnL</th>
-                    <th>Balance after</th>
-                    <th>Exit</th>
+                    <th>${sortHeader("Exit (UTC)", "exit", "date", "asc")}</th>
+                    <th>${sortHeader("Symbol", "symbol")}</th>
+                    <th>${sortHeader("Side", "side")}</th>
+                    <th>${sortHeader("Leg", "leg", "number", "asc")}</th>
+                    <th>${sortHeader("Entry", "entry", "number")}</th>
+                    <th>${sortHeader("SL", "sl", "number")}</th>
+                    <th>${sortHeader("TP", "tp", "number")}</th>
+                    <th>${sortHeader("Exit price", "exit-price", "number")}</th>
+                    <th>${sortHeader("Lot", "lot", "number")}</th>
+                    <th>${sortHeader("PnL", "pnl", "number")}</th>
+                    <th>${sortHeader("Balance after", "balance", "number")}</th>
+                    <th>${sortHeader("Exit", "exit-kind")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1532,15 +2145,35 @@ function renderBacktestResult(data) {
 
   els.backtestBody.innerHTML = (data.symbols || [])
     .map(
-      (row) => row.error
+      (row, index) => row.error
         ? `
-        <tr>
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-symbol="${escapeHtml(row.symbol || "")}"
+          data-sort-signals="${Number(row.raw_signals || 0)}"
+          data-sort-setups="0"
+          data-sort-legs="0"
+          data-sort-win-rate="0"
+          data-sort-pnl="-999999999"
+          data-sort-dd="999999999"
+        >
           <td><strong>${escapeHtml(row.symbol)}</strong><div class="tag">${escapeHtml(row.name)} · ${escapeHtml(row.timeframe || "")}</div></td>
           <td colspan="7" class="value-negative">${escapeHtml(row.error)}</td>
         </tr>
       `
       : `
-        <tr>
+        <tr
+          data-sort-row="true"
+          data-sort-index="${index}"
+          data-sort-symbol="${escapeHtml(row.symbol || "")}"
+          data-sort-signals="${Number(row.raw_signals ?? row.trades ?? 0)}"
+          data-sort-setups="${Number(row.trades || 0)}"
+          data-sort-legs="${Number(row.position_legs ?? backtestLegCount(row))}"
+          data-sort-win-rate="${Number(row.win_rate || 0)}"
+          data-sort-pnl="${Number(row.pnl || 0)}"
+          data-sort-dd="${Number(row.max_drawdown || 0)}"
+        >
           <td><strong>${escapeHtml(row.symbol)}</strong><div class="tag">${escapeHtml(row.name)} · ${escapeHtml(row.timeframe || "")}</div></td>
           <td>${row.raw_signals ?? row.trades} raw / ${row.skipped_signals ?? 0} skipped</td>
           <td>${row.trades}</td>
@@ -1556,6 +2189,7 @@ function renderBacktestResult(data) {
 
   els.backtestTableWrap.classList.remove("hidden");
   renderBacktestTrades(data.symbols);
+  scheduleResponsiveTables();
 }
 
 async function loadConfig() {
@@ -1675,6 +2309,16 @@ async function init() {
   window.addEventListener("app:toast", (event) => {
     toast(event.detail.message, event.detail.type || "info");
   });
+  window.addEventListener("resize", updateResponsiveTables, { passive: true });
+  els.navToggle?.addEventListener("click", toggleMobileNav);
+  els.mainNav?.addEventListener("click", (event) => {
+    if (event.target.closest(".nav-link")) closeMobileNav();
+  });
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest(".sort-button[data-sort-key]");
+    if (!button) return;
+    applySortableTableSort(button);
+  });
 
   els.backtestForm?.addEventListener("submit", runBacktest);
   els.backtestDailyBody?.addEventListener("click", (event) => {
@@ -1683,7 +2327,10 @@ async function init() {
   });
   els.runOnceBtn?.addEventListener("click", runOnce);
   els.manualTradeForm?.addEventListener("submit", placeManualTrade);
+  els.liveSummaryForm?.addEventListener("submit", loadLiveSummary);
   els.resetLotsBtn?.addEventListener("click", resetLots);
+  els.resetTimeframesBtn?.addEventListener("click", resetTimeframes);
+  els.optimizeTimeframesBtn?.addEventListener("click", optimizeTimeframes);
   els.saveLotsBtn?.addEventListener("click", saveLots);
   els.snapshotForm?.addEventListener("submit", saveSnapshot);
   els.snapshotRefreshBtn?.addEventListener("click", refreshSnapshots);
@@ -1699,7 +2346,7 @@ async function init() {
     }
   });
   els.symbolsBody?.addEventListener("change", (event) => {
-    if (!event.target.matches(".lot-input, .symbol-enabled")) return;
+    if (!event.target.matches(".lot-input, .symbol-enabled, .timeframe-select")) return;
     const row = event.target.closest("tr");
     if (row && event.target.matches(".symbol-enabled")) {
       row.classList.toggle("row-disabled", !event.target.checked);
@@ -1713,6 +2360,29 @@ async function init() {
   els.telegramStartBtn?.addEventListener("click", startTelegramSignals);
   els.telegramStopBtn?.addEventListener("click", stopTelegramSignals);
   els.telegramClearBtn?.addEventListener("click", clearTelegramMessages);
+  els.telegramChannelForm?.addEventListener("submit", addTelegramChannel);
+  els.telegramChannelsBody?.addEventListener("change", async (event) => {
+    const toggle = event.target.closest(".telegram-channel-toggle");
+    if (!toggle) return;
+    const url = toggle.dataset.url;
+    try {
+      await updateTelegramChannel(url, { enabled: toggle.checked });
+      toast(toggle.checked ? "Channel enabled" : "Channel disabled", "success");
+    } catch (error) {
+      toggle.checked = !toggle.checked;
+      toast(error.message, "error");
+    }
+  });
+  els.telegramChannelsBody?.addEventListener("click", (event) => {
+    const button = event.target.closest(".telegram-channel-remove-btn");
+    if (!button) return;
+    removeTelegramChannel(button.dataset.url);
+  });
+  els.telegramMessagesBody?.addEventListener("click", (event) => {
+    const button = event.target.closest(".telegram-hard-copy-btn");
+    if (!button) return;
+    hardCopyTelegramMessage(button.dataset.messageId, button);
+  });
   els.refreshLogsBtn?.addEventListener("click", refreshLogs);
   els.logFilter?.addEventListener("input", renderLogs);
 
@@ -1720,6 +2390,7 @@ async function init() {
   startLoopPolling();
   startTelegramPolling();
   startLivePolling();
+  setDefaultLiveSummaryPeriod();
 
   window.addEventListener("app:strategy-change", (event) => {
     const strategy = event.detail?.strategy;
@@ -1742,6 +2413,7 @@ async function init() {
     loadSnapshots(),
     refreshAutoRunStatus(),
     refreshLiveData(),
+    currentPage() === "live-summary" ? loadLiveSummary() : Promise.resolve(),
     refreshTelegramStatus(),
     refreshLogs(),
   ]);
@@ -1757,6 +2429,7 @@ async function init() {
   if (configResult.status === "rejected") {
     toast(configResult.reason?.message || "Failed to load config", "error");
   }
+  scheduleResponsiveTables();
 }
 
 init();

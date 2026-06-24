@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0e14">
   <title>RSI Divergence MT5 Bot</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css?v=20">
+  <link rel="stylesheet" href="/static/css/app.css?v=24">
 </head>
 <body>
   <div class="app">
@@ -34,11 +35,20 @@
       </div>
     </header>
 
-    <nav class="main-nav" aria-label="Dashboard pages">
+    <div class="mobile-nav-bar">
+      <button id="nav-toggle" class="nav-toggle btn btn-secondary btn-sm" type="button" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-icon" aria-hidden="true">☰</span>
+        <span class="nav-toggle-label">Menu</span>
+      </button>
+      <span id="mobile-nav-page" class="mobile-nav-page">Live</span>
+    </div>
+
+    <nav class="main-nav" id="main-nav" aria-label="Dashboard pages">
       <a class="nav-link" data-page-link="home" href="/">Live</a>
       <a class="nav-link" data-page-link="backtest" href="/backtest">Backtest</a>
       <a class="nav-link" data-page-link="settings" href="/settings">Settings</a>
       <a class="nav-link" data-page-link="manual-trade" href="/manual-trade">Manual trade</a>
+      <a class="nav-link" data-page-link="live-summary" href="/live-summary">Live summary</a>
       <a class="nav-link" data-page-link="telegram-signals" href="/telegram-signals">Telegram signals copy</a>
       <a class="nav-link" data-page-link="logs" href="/logs">Logs</a>
       <a class="nav-link nav-link-danger" href="/logout">Logout</a>
@@ -73,6 +83,14 @@
           <div class="panel-actions">
             <button id="reset-lots-btn" class="btn btn-ghost btn-sm" type="button">
               <span class="btn-label">Reset lots</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+            <button id="reset-timeframes-btn" class="btn btn-ghost btn-sm" type="button">
+              <span class="btn-label">Reset timeframes</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+            <button id="optimize-timeframes-btn" class="btn btn-secondary btn-sm" type="button">
+              <span class="btn-label">Optimize last month</span>
               <span class="spinner" hidden aria-hidden="true"></span>
             </button>
             <button id="save-lots-btn" class="btn btn-secondary btn-sm" type="button">
@@ -183,6 +201,8 @@
             <select id="strategy" name="strategy" disabled>
               <option value="signal_no_tp_protection">Split legs — no TP protection</option>
               <option value="signal_with_tp_protection">Split legs — with TP protection</option>
+              <option value="signal_full_no_tp_protection">Full position — no TP protection</option>
+              <option value="signal_full_with_tp_protection">Full position — with TP protection</option>
             </select>
             <span class="panel-hint" id="backtest-strategy-hint">Backtest uses the same saved strategy as live trading. Change it on the home page before starting the bot.</span>
           </label>
@@ -201,14 +221,14 @@
             <p>Realized PnL grouped by exit day (UTC). Expand a day to see each TP leg with entry, SL, TP, exit price, and running balance.</p>
           </div>
           <div class="table-wrap table-wrap-wide">
-            <table class="data-table data-table-backtest" id="backtest-daily-table">
+            <table class="data-table data-table-backtest" id="backtest-daily-table" data-sort-pairs="true">
               <thead>
                 <tr>
-                  <th>Date (UTC)</th>
-                  <th>Position legs</th>
-                  <th>W / L</th>
-                  <th>Daily PnL</th>
-                  <th>Balance</th>
+                  <th><button type="button" class="sort-button" data-sort-key="date" data-sort-type="date" data-sort-default="asc" title="Sort by Date (UTC)"><span>Date (UTC)</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="legs" data-sort-type="number" title="Sort by Position legs"><span>Position legs</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="wins" data-sort-type="number" title="Sort by W / L"><span>W / L</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="pnl" data-sort-type="number" title="Sort by Daily PnL"><span>Daily PnL</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="balance" data-sort-type="number" title="Sort by Balance"><span>Balance</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
                 </tr>
               </thead>
               <tbody id="backtest-daily-body"></tbody>
@@ -223,14 +243,14 @@
           <table class="data-table data-table-backtest" id="backtest-table">
             <thead>
               <tr>
-                <th>Symbol</th>
-                <th>Signals</th>
-                <th>Setups</th>
-                <th>Legs</th>
-                <th>W / L</th>
-                <th>Win rate</th>
-                <th>PnL</th>
-                <th>Max DD</th>
+                <th><button type="button" class="sort-button" data-sort-key="symbol" data-sort-type="text" title="Sort by Symbol"><span>Symbol</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="signals" data-sort-type="number" title="Sort by Signals"><span>Signals</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="setups" data-sort-type="number" title="Sort by Setups"><span>Setups</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="legs" data-sort-type="number" title="Sort by Legs"><span>Legs</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="win-rate" data-sort-type="number" title="Sort by W / L"><span>W / L</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="win-rate" data-sort-type="number" title="Sort by Win rate"><span>Win rate</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="pnl" data-sort-type="number" title="Sort by PnL"><span>PnL</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="dd" data-sort-type="number" data-sort-default="asc" title="Sort by Max DD"><span>Max DD</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
               </tr>
             </thead>
             <tbody id="backtest-body"></tbody>
@@ -279,6 +299,8 @@
             <select id="chart-strategy" name="strategy" disabled>
               <option value="signal_no_tp_protection">Split legs — no TP protection</option>
               <option value="signal_with_tp_protection">Split legs — with TP protection</option>
+              <option value="signal_full_no_tp_protection">Full position — no TP protection</option>
+              <option value="signal_full_with_tp_protection">Full position — with TP protection</option>
             </select>
             <span class="panel-hint">Chart replay uses the same saved strategy as live trading.</span>
           </label>
@@ -326,6 +348,73 @@
         </div>
       </section>
 
+      <section class="panel panel-wide" data-pages="live-summary">
+        <div class="panel-header">
+          <div>
+            <h2>Live summary</h2>
+            <p>Reads MT5 account history and separates RSI bot, Telegram signal bot, and other trades by trade comments.</p>
+          </div>
+        </div>
+        <form id="live-summary-form" class="form-grid">
+          <label class="field">
+            <span>Start (UTC)</span>
+            <input id="live-summary-start" name="start" type="datetime-local" required>
+          </label>
+          <label class="field">
+            <span>End (UTC)</span>
+            <input id="live-summary-end" name="end" type="datetime-local" required>
+          </label>
+          <div class="form-actions field-full">
+            <button id="live-summary-btn" class="btn btn-primary" type="submit">
+              <span class="btn-label">Load summary</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+        <div id="live-summary-overall" class="summary-grid hidden"></div>
+        <div id="live-summary-chart" class="live-summary-chart hidden"></div>
+        <div id="live-summary-symbols-wrap" class="table-wrap hidden">
+          <table class="data-table data-table-compact">
+            <thead>
+              <tr>
+                <th><button type="button" class="sort-button" data-sort-key="symbol" data-sort-type="text" title="Sort by Symbol"><span>Symbol</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="trades" data-sort-type="number" title="Sort by Trades"><span>Trades</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="wins" data-sort-type="number" title="Sort by W / L"><span>W / L</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                <th><button type="button" class="sort-button" data-sort-key="pnl" data-sort-type="number" title="Sort by PnL"><span>PnL</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+              </tr>
+            </thead>
+            <tbody id="live-summary-symbols"></tbody>
+          </table>
+        </div>
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Trade details</h3>
+            <span id="live-summary-count" class="live-count">0 trades</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table data-table-compact">
+              <thead>
+                <tr>
+                  <th><button type="button" class="sort-button" data-sort-key="closed" data-sort-type="date" data-sort-default="asc" title="Sort by Closed"><span>Closed</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="type" data-sort-type="text" title="Sort by Type"><span>Type</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="position" data-sort-type="number" title="Sort by Position"><span>Position</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="symbol" data-sort-type="text" title="Sort by Symbol"><span>Symbol</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="side" data-sort-type="text" title="Sort by Side"><span>Side</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="volume" data-sort-type="number" title="Sort by Vol"><span>Vol</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="entry" data-sort-type="number" title="Sort by Entry"><span>Entry</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="exit" data-sort-type="number" title="Sort by Exit"><span>Exit</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="pnl" data-sort-type="number" title="Sort by P/L"><span>P/L</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="comment" data-sort-type="text" title="Sort by Comment"><span>Comment</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                </tr>
+              </thead>
+              <tbody id="live-summary-body">
+                <tr><td colspan="10" class="empty-row">Choose a period and load the live summary.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section class="panel panel-wide" data-pages="home">
         <div class="panel-header panel-header-split">
           <div>
@@ -351,6 +440,8 @@
             <select id="auto-run-strategy" name="strategy">
               <option value="signal_no_tp_protection">Split legs — no TP protection</option>
               <option value="signal_with_tp_protection">Split legs — with TP protection</option>
+              <option value="signal_full_no_tp_protection">Full position — no TP protection</option>
+              <option value="signal_full_with_tp_protection">Full position — with TP protection</option>
             </select>
           </label>
           <label class="toggle">
@@ -408,16 +499,16 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Ticket</th>
-                  <th>Symbol</th>
-                  <th>Side</th>
-                  <th>Vol</th>
-                  <th>Open</th>
-                  <th>Current</th>
-                  <th>SL</th>
-                  <th>TP</th>
-                  <th>P/L</th>
-                  <th>Comment</th>
+                  <th><button type="button" class="sort-button" data-sort-key="ticket" data-sort-type="number" title="Sort by Ticket"><span>Ticket</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="symbol" data-sort-type="text" title="Sort by Symbol"><span>Symbol</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="side" data-sort-type="text" title="Sort by Side"><span>Side</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="volume" data-sort-type="number" title="Sort by Vol"><span>Vol</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="open" data-sort-type="number" title="Sort by Open"><span>Open</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="current" data-sort-type="number" title="Sort by Current"><span>Current</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="sl" data-sort-type="number" title="Sort by SL"><span>SL</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="tp" data-sort-type="number" title="Sort by TP"><span>TP</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="pnl" data-sort-type="number" title="Sort by P/L"><span>P/L</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="comment" data-sort-type="text" title="Sort by Comment"><span>Comment</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
                 </tr>
               </thead>
               <tbody id="positions-body">
@@ -436,14 +527,14 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Time</th>
-                  <th>Ticket</th>
-                  <th>Symbol</th>
-                  <th>Side</th>
-                  <th>Vol</th>
-                  <th>Price</th>
-                  <th>P/L</th>
-                  <th>Comment</th>
+                  <th><button type="button" class="sort-button" data-sort-key="time" data-sort-type="date" data-sort-default="asc" title="Sort by Time"><span>Time</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="ticket" data-sort-type="number" title="Sort by Ticket"><span>Ticket</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="symbol" data-sort-type="text" title="Sort by Symbol"><span>Symbol</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="side" data-sort-type="text" title="Sort by Side"><span>Side</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="volume" data-sort-type="number" title="Sort by Vol"><span>Vol</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="price" data-sort-type="number" title="Sort by Price"><span>Price</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="pnl" data-sort-type="number" title="Sort by P/L"><span>P/L</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
+                  <th><button type="button" class="sort-button" data-sort-key="comment" data-sort-type="text" title="Sort by Comment"><span>Comment</span><span class="sort-indicator" aria-hidden="true">-</span></button></th>
                 </tr>
               </thead>
               <tbody id="deals-body">
@@ -563,6 +654,47 @@
           </div>
         </div>
 
+        <div class="live-section">
+          <div class="live-section-header">
+            <h3>Managed channels</h3>
+            <span class="live-count">saved to config.yaml</span>
+          </div>
+          <form id="telegram-channel-form" class="telegram-channel-form">
+            <label class="field field-wide">
+              <span>Chat link</span>
+              <input id="telegram-channel-url" type="url" placeholder="https://web.telegram.org/k/#@FOREXUSAMASTER1" required>
+            </label>
+            <label class="field">
+              <span>Display name</span>
+              <input id="telegram-channel-name" type="text" placeholder="Optional label">
+            </label>
+            <label class="toggle">
+              <input id="telegram-channel-enabled" type="checkbox" checked>
+              <span>Enabled</span>
+            </label>
+            <button id="telegram-channel-add-btn" class="btn btn-primary" type="submit">
+              <span class="btn-label">Add channel</span>
+              <span class="spinner" hidden aria-hidden="true"></span>
+            </button>
+          </form>
+          <div class="table-wrap">
+            <table class="data-table data-table-compact">
+              <thead>
+                <tr>
+                  <th>On</th>
+                  <th>Name</th>
+                  <th>Chat link</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="telegram-channels-body">
+                <tr><td colspan="4" class="empty-row">No channels configured yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="panel-hint">Stop the copier before adding, disabling, or removing channels. Restart the copier after changes so browser tabs reload.</p>
+        </div>
+
         <div id="telegram-last-result" class="result-card hidden">
           <div class="result-title">Last copied signal</div>
           <pre id="telegram-last-result-json"></pre>
@@ -573,8 +705,8 @@
             <h3>Recent message ledger</h3>
             <div class="live-section-actions">
               <span class="live-count">last 25 tracked messages</span>
-              <button id="telegram-clear-btn" class="btn btn-secondary btn-sm" type="button">
-                <span class="btn-label">Clear old messages</span>
+              <button id="telegram-clear-btn" class="btn btn-danger btn-sm" type="button">
+                <span class="btn-label">Hard clear messages</span>
                 <span class="spinner" hidden aria-hidden="true"></span>
               </button>
             </div>
@@ -589,10 +721,11 @@
                   <th>Message</th>
                   <th>LLM response</th>
                   <th>Reason</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="telegram-messages-body">
-                <tr><td colspan="6" class="empty-row">No Telegram messages tracked yet.</td></tr>
+                <tr><td colspan="7" class="empty-row">No Telegram messages tracked yet.</td></tr>
               </tbody>
             </table>
           </div>
@@ -630,7 +763,7 @@
   <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
-  <script src="/static/js/chart-preview.js?v=5" defer></script>
-  <script src="/static/js/app.js?v=40" defer></script>
+  <script src="/static/js/chart-preview.js?v=6" defer></script>
+  <script src="/static/js/app.js?v=48" defer></script>
 </body>
 </html>

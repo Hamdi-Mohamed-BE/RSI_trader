@@ -5,7 +5,7 @@ import hashlib
 import hmac
 import os
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, quote
 
@@ -14,17 +14,21 @@ from pydantic import BaseModel, Field
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
-from .backtest import run_backtest, run_chart_backtest
+from .backtest import optimize_symbol_timeframes, run_backtest, run_chart_backtest
 from .bot import SignalBot
 from .config import (
     AppConfig,
     StrategyMode,
+    add_telegram_channel,
     default_symbol_lot,
+    remove_telegram_channel,
     save_config,
     symbol_asset_group,
     update_bot_strategy,
     update_symbol_enabled,
     update_symbol_lots,
+    update_symbol_timeframes,
+    update_telegram_channel,
 )
 from .config_snapshots import (
     apply_snapshot,
@@ -35,10 +39,12 @@ from .config_snapshots import (
 )
 from .decision import resolve_trade_filters
 from .logging_utils import recent_logs
+from .live_summary import build_live_summary
 from .manual_trade import _validate_geometry, parse_manual_trade
 from .strategy_modes import canonical_strategy
 from .symbols import market_key
 from .telegram_signals import TelegramSignalsBot
+from .timeframes import SUPPORTED_TIMEFRAMES, timeframe_options_payload, validate_timeframe
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
@@ -46,6 +52,7 @@ STATIC_DIR = Path(__file__).resolve().parent / "static"
 class SymbolSettings(BaseModel):
     lots: dict[str, float] = Field(default_factory=dict)
     enabled: dict[str, bool] = Field(default_factory=dict)
+    timeframes: dict[str, str] = Field(default_factory=dict)
     persist: bool = True
 
 
@@ -63,6 +70,29 @@ class TelegramSignalsStartRequest(BaseModel):
     protect_tp: bool = False
 
 
+class TelegramHardCopyRequest(BaseModel):
+    message_id: str = Field(min_length=8)
+
+
+class TelegramChannelUpsertRequest(BaseModel):
+    url: str = Field(min_length=3)
+    name: str | None = None
+    enabled: bool = True
+    persist: bool = True
+
+
+class TelegramChannelUpdateRequest(BaseModel):
+    url: str = Field(min_length=3)
+    name: str | None = None
+    enabled: bool | None = None
+    persist: bool = True
+
+
+class TelegramChannelRemoveRequest(BaseModel):
+    url: str = Field(min_length=3)
+    persist: bool = True
+
+
 class BotSettingsRequest(BaseModel):
     strategy: StrategyMode
     persist: bool = True
@@ -71,6 +101,7 @@ class BotSettingsRequest(BaseModel):
 class AutoRunStartRequest(BaseModel):
     lots: dict[str, float] = Field(default_factory=dict)
     enabled: dict[str, bool] = Field(default_factory=dict)
+    timeframes: dict[str, str] = Field(default_factory=dict)
     persist: bool = True
     strategy: StrategyMode | None = None
     strategy_persist: bool = True
@@ -79,6 +110,7 @@ class AutoRunStartRequest(BaseModel):
 class RunOnceRequest(BaseModel):
     lots: dict[str, float] = Field(default_factory=dict)
     enabled: dict[str, bool] = Field(default_factory=dict)
+    timeframes: dict[str, str] = Field(default_factory=dict)
     persist: bool = True
     strategy: StrategyMode | None = None
     strategy_persist: bool = False
@@ -93,10 +125,35 @@ class SnapshotApplyRequest(BaseModel):
     persist: bool = True
 
 
+class TimeframeOptimizeRequest(BaseModel):
+    start: datetime | None = None
+    end: datetime | None = None
+    starting_balance: float = Field(default=1000.0, gt=0)
+    timeframes: list[str] = Field(default_factory=list)
+    persist: bool = True
+
+
 def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     app = FastAPI(title="RSI Divergence MT5 Bot")
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-    telegram_bot = TelegramSignalsBot(config, bot.client, bot.state, bot.logger, bot.daily_risk_status)
+    telegram_bot = TelegramSignalsBot(
+        config,
+        bot.client,
+        bot.state,
+        bot.logger,
+        bot.daily_risk_status,
+        config_path=config_path,
+    )
+
+    def telegram_channels_payload() -> list[dict]:
+        return [channel.model_dump(mode="python") for channel in config.telegram_signals.channels]
+
+    def ensure_telegram_stopped_for_channel_edit() -> None:
+        if telegram_bot.is_running():
+            raise HTTPException(
+                status_code=409,
+                detail="Stop the Telegram copier before adding, removing, or editing channels.",
+            )
 
     def auth_token() -> str:
         seed = f"{config.auth.username}:{config.auth.password}".encode("utf-8")
@@ -166,6 +223,8 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "asset_group": symbol_asset_group(item),
                 "enabled": item.enabled,
                 "timeframe": item.timeframe,
+                "optimized_timeframe": item.optimized_timeframe,
+                "reset_timeframe": item.optimized_timeframe or item.timeframe,
                 "lot_per_leg": item.lot_per_leg,
                 "reset_lot_per_leg": default_symbol_lot(item),
                 "max_setup_risk_usd": item.max_setup_risk_usd,
@@ -183,10 +242,16 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
             "lots_used": {item.symbol: item.lot_per_leg for item in enabled},
         }
 
-    def apply_symbol_settings(lots: dict[str, float], enabled: dict[str, bool], persist: bool) -> list[dict]:
+    def apply_symbol_settings(
+        lots: dict[str, float],
+        enabled: dict[str, bool],
+        timeframes: dict[str, str],
+        persist: bool,
+    ) -> list[dict]:
         try:
             updated_lots = update_symbol_lots(config, lots)
             updated_enabled = update_symbol_enabled(config, enabled)
+            updated_timeframes = update_symbol_timeframes(config, timeframes)
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
@@ -198,10 +263,20 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
         if unknown_enabled:
             raise HTTPException(status_code=400, detail=f"Unknown symbols in enabled: {', '.join(unknown_enabled)}")
 
+        unknown_timeframes = sorted(set(timeframes) - set(updated_timeframes))
+        if unknown_timeframes:
+            raise HTTPException(status_code=400, detail=f"Unknown symbols in timeframes: {', '.join(unknown_timeframes)}")
+
         if persist:
             save_config(config_path, config)
 
-        bot.logger.info("SYMBOL SETTINGS persist=%s symbols=%s", persist, len(lots))
+        bot.logger.info(
+            "SYMBOL SETTINGS persist=%s lots=%s enabled=%s timeframes=%s",
+            persist,
+            len(lots),
+            len(enabled),
+            len(timeframes),
+        )
         return symbol_payload()
 
     def apply_bot_strategy(strategy: StrategyMode, persist: bool) -> None:
@@ -306,6 +381,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     @app.get("/backtest")
     @app.get("/settings")
     @app.get("/manual-trade")
+    @app.get("/live-summary")
     @app.get("/logs")
     @app.get("/telegram-signals")
     def index() -> FileResponse:
@@ -350,6 +426,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
             },
             "decision_filters": asdict(resolve_trade_filters(config)),
             "auto_run": bot.auto_loop_status(),
+            "timeframe_options": timeframe_options_payload(),
             "symbols": symbol_payload(),
             "symbol_stats": stats,
             "defaults": {
@@ -361,7 +438,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
 
     @app.post("/api/symbols/settings")
     def update_settings(body: SymbolSettings) -> dict:
-        if not body.lots and not body.enabled:
+        if not body.lots and not body.enabled and not body.timeframes:
             stats = symbol_stats()
             return {
                 "status": "noop",
@@ -369,7 +446,7 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "symbol_stats": stats,
             }
 
-        symbols = apply_symbol_settings(body.lots, body.enabled, body.persist)
+        symbols = apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
         stats = symbol_stats()
         return {
             "status": "saved" if body.persist else "applied",
@@ -380,6 +457,73 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     @app.post("/api/symbols/lots")
     def update_lots(body: LotUpdates) -> dict:
         return update_settings(SymbolSettings(lots=body.lots, persist=body.persist))
+
+    @app.post("/api/symbols/timeframes/reset")
+    def reset_timeframes(body: SnapshotApplyRequest | None = None) -> dict:
+        persist = True if body is None else body.persist
+        updates = {
+            item.symbol: (item.optimized_timeframe or item.timeframe)
+            for item in config.symbols
+        }
+        symbols = apply_symbol_settings({}, {}, updates, persist)
+        return {
+            "status": "saved" if persist else "applied",
+            "symbols": symbols,
+            "symbol_stats": symbol_stats(),
+        }
+
+    @app.post("/api/symbols/timeframes/optimize")
+    async def optimize_timeframes(body: TimeframeOptimizeRequest | None = None) -> dict:
+        body = body or TimeframeOptimizeRequest()
+        end = body.end or datetime.now(timezone.utc).replace(microsecond=0)
+        start = body.start or (end - timedelta(days=30))
+        candidates = body.timeframes or list(SUPPORTED_TIMEFRAMES)
+        try:
+            candidates = [validate_timeframe(item) for item in candidates]
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+        bot.logger.info(
+            "TIMEFRAME OPTIMIZE START %s -> %s symbols=%s candidates=%s",
+            start.isoformat(),
+            end.isoformat(),
+            len(config.enabled_symbols),
+            len(candidates),
+        )
+        await require_mt5_ready()
+        try:
+            result = await asyncio.to_thread(
+                optimize_symbol_timeframes,
+                bot.client,
+                config,
+                start,
+                end,
+                body.starting_balance,
+                candidates,
+                bot.logger,
+            )
+        except Exception as exc:  # noqa: BLE001
+            bot.logger.exception("TIMEFRAME OPTIMIZE failed: %s", exc)
+            raise HTTPException(status_code=503, detail=f"Timeframe optimization failed: {exc}") from exc
+
+        for row in result["symbols"]:
+            symbol_cfg = next((item for item in config.symbols if item.symbol == row["symbol"]), None)
+            if symbol_cfg is None:
+                continue
+            best_timeframe = validate_timeframe(row["best_timeframe"])
+            symbol_cfg.timeframe = best_timeframe  # type: ignore[assignment]
+            symbol_cfg.optimized_timeframe = best_timeframe  # type: ignore[assignment]
+
+        if body.persist:
+            save_config(config_path, config)
+
+        bot.logger.info("TIMEFRAME OPTIMIZE DONE symbols=%s persist=%s", len(result["symbols"]), body.persist)
+        return {
+            "status": "saved" if body.persist else "applied",
+            "optimization": result,
+            "symbols": symbol_payload(),
+            "symbol_stats": symbol_stats(),
+        }
 
     @app.get("/api/logs")
     def logs() -> list[str]:
@@ -433,8 +577,8 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     @app.post("/api/run-once")
     async def run_once(body: RunOnceRequest | None = None) -> dict:
         if body is not None:
-            if body.lots or body.enabled:
-                apply_symbol_settings(body.lots, body.enabled, body.persist)
+            if body.lots or body.enabled or body.timeframes:
+                apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
             if body.strategy is not None:
                 apply_bot_strategy(body.strategy, body.strategy_persist)
         await require_mt5_ready()
@@ -536,8 +680,8 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     @app.post("/api/auto-run/start")
     async def auto_run_start(body: AutoRunStartRequest | None = None) -> dict:
         if body is not None:
-            if body.lots or body.enabled:
-                apply_symbol_settings(body.lots, body.enabled, body.persist)
+            if body.lots or body.enabled or body.timeframes:
+                apply_symbol_settings(body.lots, body.enabled, body.timeframes, body.persist)
             if body.strategy is not None:
                 apply_bot_strategy(body.strategy, body.strategy_persist)
         await require_mt5_ready()
@@ -563,6 +707,20 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
                 "positions": [],
                 "deals": [],
             }
+
+    @app.get("/api/live-summary")
+    async def live_summary(
+        start: datetime = Query(...),
+        end: datetime = Query(...),
+    ) -> dict:
+        try:
+            await require_mt5_ready()
+            return await asyncio.to_thread(build_live_summary, bot.client, start, end)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except Exception as exc:  # noqa: BLE001
+            bot.logger.exception("LIVE SUMMARY failed: %s", exc)
+            raise HTTPException(status_code=503, detail=f"Live summary failed: {exc}") from exc
 
     @app.get("/api/telegram-signals/status")
     def telegram_signals_status() -> dict:
@@ -592,6 +750,69 @@ def create_app(config: AppConfig, bot: SignalBot, config_path: Path) -> FastAPI:
     @app.post("/api/telegram-signals/clear-messages")
     def telegram_signals_clear_messages() -> dict:
         return telegram_bot.clear_message_history()
+
+    @app.post("/api/telegram-signals/hard-copy")
+    async def telegram_signals_hard_copy(body: TelegramHardCopyRequest) -> dict:
+        await require_mt5_ready()
+        result = telegram_bot.hard_copy_message(body.message_id)
+        if result.get("status") == "error":
+            raise HTTPException(status_code=400, detail=str(result.get("reason") or "hard copy failed"))
+        return {**result, **telegram_bot.status()}
+
+    @app.get("/api/telegram-signals/channels")
+    def telegram_signals_channels() -> dict:
+        return {"channels": telegram_channels_payload()}
+
+    @app.post("/api/telegram-signals/channels")
+    def telegram_signals_add_channel(body: TelegramChannelUpsertRequest) -> dict:
+        ensure_telegram_stopped_for_channel_edit()
+        try:
+            channel = add_telegram_channel(
+                config,
+                body.url,
+                name=body.name,
+                enabled=body.enabled,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        if body.persist:
+            save_config(config_path, config)
+        bot.logger.info("TELEGRAM CHANNEL add name=%s url=%s enabled=%s", channel.name, channel.url, channel.enabled)
+        return {"status": "added", "channel": channel.model_dump(mode="python"), "channels": telegram_channels_payload()}
+
+    @app.patch("/api/telegram-signals/channels")
+    def telegram_signals_update_channel(body: TelegramChannelUpdateRequest) -> dict:
+        ensure_telegram_stopped_for_channel_edit()
+        try:
+            channel = update_telegram_channel(
+                config,
+                body.url,
+                name=body.name,
+                enabled=body.enabled,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        if body.persist:
+            save_config(config_path, config)
+        bot.logger.info(
+            "TELEGRAM CHANNEL update name=%s url=%s enabled=%s",
+            channel.name,
+            channel.url,
+            channel.enabled,
+        )
+        return {"status": "updated", "channel": channel.model_dump(mode="python"), "channels": telegram_channels_payload()}
+
+    @app.post("/api/telegram-signals/channels/remove")
+    def telegram_signals_remove_channel(body: TelegramChannelRemoveRequest) -> dict:
+        ensure_telegram_stopped_for_channel_edit()
+        try:
+            removed = remove_telegram_channel(config, body.url)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        if body.persist:
+            save_config(config_path, config)
+        bot.logger.info("TELEGRAM CHANNEL remove name=%s url=%s", removed.name, removed.url)
+        return {"status": "removed", "channel": removed.model_dump(mode="python"), "channels": telegram_channels_payload()}
 
     @app.get("/api/backtest/chart")
     async def backtest_chart(

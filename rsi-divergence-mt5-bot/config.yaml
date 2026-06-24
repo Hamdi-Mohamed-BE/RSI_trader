@@ -13,27 +13,27 @@ bot:
   auto_start: false
   poll_seconds: 5
   magic: 260521
-  strategy: signal_no_tp_protection
+  strategy: signal_full_with_tp_protection
   trade_decision_profile: balanced
   max_concurrent_setups: 20
   state_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\state.json
   log_file: C:\Users\hama101\Desktop\geek\ai trader\rsi-divergence-mt5-bot\runtime\bot.log
 risk:
-  max_setup_risk_usd: 180.0
-  use_daily_loss_guard: false
+  max_setup_risk_usd: 200.0
+  use_daily_loss_guard: true
   max_daily_loss_pct: 15.0
   max_extension_atr: 1.8
   max_spread_atr: 0.35
   max_live_entry_drift_risk: 0.35
-  min_tp1_spread_multiple: 1.5
+  min_tp1_spread_multiple: 0.5
   use_spread_filter: false
-  use_tp1_spread_filter: false
+  use_tp1_spread_filter: true
   use_risk_filter: false
   use_existing_position_filter: false
   use_max_setups_filter: false
   skip_if_symbol_has_position: false
 web:
-  host: 127.0.0.1
+  host: 0.0.0.0
   port: 8787
 auth:
   username: admin
@@ -71,6 +71,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M1
+  optimized_timeframe: M1
   lot_per_leg: 0.2
   max_setup_risk_usd: 550.0
   pivot_len: 3
@@ -87,7 +88,8 @@ symbols:
   name: Gold
   market_key_override: null
   enabled: false
-  timeframe: M5
+  timeframe: M20
+  optimized_timeframe: M20
   lot_per_leg: 0.08
   max_setup_risk_usd: 450.0
   pivot_len: 3
@@ -105,6 +107,7 @@ symbols:
   market_key_override: null
   enabled: true
   timeframe: M1
+  optimized_timeframe: M1
   lot_per_leg: 0.08
   max_setup_risk_usd: 550.0
   pivot_len: 5
@@ -121,8 +124,9 @@ symbols:
 - symbol: AUDUSD-VIP
   name: AUDUSD
   market_key_override: null
-  enabled: true
-  timeframe: M1
+  enabled: false
+  timeframe: M15
+  optimized_timeframe: M15
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -140,7 +144,8 @@ symbols:
   name: USDCAD
   market_key_override: null
   enabled: true
-  timeframe: M5
+  timeframe: M6
+  optimized_timeframe: M6
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -156,8 +161,9 @@ symbols:
 - symbol: USDJPY-VIP
   name: USDJPY
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: M5
+  optimized_timeframe: M5
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -173,8 +179,9 @@ symbols:
 - symbol: EURGBP-VIP
   name: EURGBP
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: H1
+  optimized_timeframe: H1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -190,8 +197,9 @@ symbols:
 - symbol: AUDCAD-VIP
   name: AUDCAD
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: H1
+  optimized_timeframe: H1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 7
@@ -208,7 +216,8 @@ symbols:
   name: GBPCHF
   market_key_override: null
   enabled: true
-  timeframe: M5
+  timeframe: H1
+  optimized_timeframe: H1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 7
@@ -224,8 +233,9 @@ symbols:
 - symbol: EURUSD-VIP
   name: EURUSD
   market_key_override: null
-  enabled: false
-  timeframe: M15
+  enabled: true
+  timeframe: M1
+  optimized_timeframe: M1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -240,8 +250,9 @@ symbols:
 - symbol: GBPUSD-VIP
   name: GBPUSD
   market_key_override: null
-  enabled: true
-  timeframe: M15
+  enabled: false
+  timeframe: M30
+  optimized_timeframe: M30
   lot_per_leg: 0.5
   max_setup_risk_usd: 220.0
   pivot_len: 3
@@ -256,8 +267,9 @@ symbols:
 - symbol: ETHUSD
   name: ETHUSD
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: M5
+  optimized_timeframe: M5
   lot_per_leg: 1.0
   max_setup_risk_usd: null
   pivot_len: 3
@@ -273,8 +285,9 @@ symbols:
 - symbol: SOLUSD
   name: SOLUSD
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: M3
+  optimized_timeframe: M3
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -290,8 +303,9 @@ symbols:
 - symbol: XRPUSD
   name: Ripple
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: H4
+  optimized_timeframe: H4
   lot_per_leg: 0.1
   max_setup_risk_usd: null
   pivot_len: 3
@@ -307,8 +321,9 @@ symbols:
 - symbol: ADAUSD
   name: Cardano
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: M30
+  optimized_timeframe: M30
   lot_per_leg: 0.2
   max_setup_risk_usd: null
   pivot_len: 3
@@ -324,8 +339,9 @@ symbols:
 - symbol: BNBUSD
   name: Binance Coin
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: M10
+  optimized_timeframe: M10
   lot_per_leg: 0.3
   max_setup_risk_usd: null
   pivot_len: 3
@@ -341,8 +357,9 @@ symbols:
 - symbol: LTCUSD
   name: Litecoin
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: H4
+  optimized_timeframe: H4
   lot_per_leg: 0.2
   max_setup_risk_usd: null
   pivot_len: 3
@@ -358,8 +375,9 @@ symbols:
 - symbol: BCHUSD
   name: Bitcoin Cash
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: H1
+  optimized_timeframe: H1
   lot_per_leg: 0.2
   max_setup_risk_usd: null
   pivot_len: 3
@@ -375,8 +393,9 @@ symbols:
 - symbol: DOTUSD
   name: Polkadot
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: M15
+  optimized_timeframe: M15
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -392,8 +411,9 @@ symbols:
 - symbol: TRXUSD
   name: TRON
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: M4
+  optimized_timeframe: M4
   lot_per_leg: 0.05
   max_setup_risk_usd: null
   pivot_len: 3
@@ -409,8 +429,9 @@ symbols:
 - symbol: XLMUSD
   name: Stellar Lumens
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: H1
+  optimized_timeframe: H1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -426,8 +447,9 @@ symbols:
 - symbol: UNIUSD
   name: Uniswap
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: H4
+  optimized_timeframe: H4
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -443,8 +465,9 @@ symbols:
 - symbol: CL-OIL-VIP
   name: Oil
   market_key_override: null
-  enabled: true
-  timeframe: M5
+  enabled: false
+  timeframe: M20
+  optimized_timeframe: M20
   lot_per_leg: 0.1
   max_setup_risk_usd: null
   pivot_len: 5
@@ -460,8 +483,9 @@ symbols:
 - symbol: EURJPY-VIP
   name: EURJPY
   market_key_override: null
-  enabled: false
-  timeframe: M5
+  enabled: true
+  timeframe: M4
+  optimized_timeframe: M4
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -478,8 +502,9 @@ symbols:
 - symbol: GBPJPY-VIP
   name: GBPJPY
   market_key_override: null
-  enabled: false
-  timeframe: M5
+  enabled: true
+  timeframe: M1
+  optimized_timeframe: M1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -496,8 +521,9 @@ symbols:
 - symbol: AUDJPY-VIP
   name: AUDJPY
   market_key_override: null
-  enabled: false
-  timeframe: M1
+  enabled: true
+  timeframe: M2
+  optimized_timeframe: M2
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -515,7 +541,8 @@ symbols:
   name: CADJPY
   market_key_override: null
   enabled: true
-  timeframe: M5
+  timeframe: M6
+  optimized_timeframe: M6
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -533,7 +560,8 @@ symbols:
   name: NZDUSD
   market_key_override: null
   enabled: false
-  timeframe: M5
+  timeframe: M15
+  optimized_timeframe: M15
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -551,7 +579,8 @@ symbols:
   name: NZDCAD
   market_key_override: null
   enabled: true
-  timeframe: M5
+  timeframe: M1
+  optimized_timeframe: M1
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -568,7 +597,8 @@ symbols:
   name: EURCAD
   market_key_override: null
   enabled: true
-  timeframe: M5
+  timeframe: M15
+  optimized_timeframe: M15
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -585,7 +615,8 @@ symbols:
   name: GBPCAD
   market_key_override: null
   enabled: true
-  timeframe: M5
+  timeframe: M4
+  optimized_timeframe: M4
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -602,8 +633,9 @@ symbols:
 - symbol: EURAUD-VIP
   name: EURAUD
   market_key_override: null
-  enabled: false
-  timeframe: M5
+  enabled: true
+  timeframe: M3
+  optimized_timeframe: M3
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3
@@ -620,8 +652,9 @@ symbols:
 - symbol: GBPAUD-VIP
   name: GBPAUD
   market_key_override: null
-  enabled: false
-  timeframe: M5
+  enabled: true
+  timeframe: M30
+  optimized_timeframe: M30
   lot_per_leg: 0.5
   max_setup_risk_usd: null
   pivot_len: 3

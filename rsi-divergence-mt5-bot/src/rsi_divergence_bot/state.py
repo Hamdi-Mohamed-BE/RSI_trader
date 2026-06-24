@@ -116,11 +116,21 @@ class StateStore:
                     merged["parsed"] = existing["parsed"]
                 if payload.get("result") is None and existing.get("result") is not None:
                     merged["result"] = existing["result"]
+                if payload.get("text") is None and existing.get("text") is not None:
+                    merged["text"] = existing["text"]
                 payload = merged
             next_messages = [item for item in messages if item.get("message_id") != message_id]
             next_messages.append({"message_id": message_id, **payload})
             state["telegram_messages"] = next_messages[-500:]
             self._write_unlocked(state)
+
+    def get_telegram_message(self, message_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            state = self._read_unlocked()
+            for item in state.get("telegram_messages", []):
+                if item.get("message_id") == message_id:
+                    return dict(item)
+            return None
 
     def recent_telegram_messages(self, limit: int = 50) -> list[dict[str, Any]]:
         with self._lock:
