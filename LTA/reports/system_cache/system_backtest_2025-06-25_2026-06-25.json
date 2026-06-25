@@ -1,0 +1,78 @@
+{
+  "created_at": "2026-06-25",
+  "window_start": "2025-06-25",
+  "window_end": "2026-06-25",
+  "starting_balance": 300.0,
+  "risk_pct": 5.0,
+  "runs": {
+    "strategy_suite": {
+      "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\strategy_suite\\20260625-023010\\strategy_suite_report.json",
+      "summary": {
+        "starting_balance": 300.0,
+        "ending_balance": 298.48,
+        "net_profit": -1.52,
+        "return_pct": -0.51,
+        "trades": 79,
+        "wins": 48,
+        "losses": 31,
+        "win_rate": 60.76,
+        "net_r": 1.85,
+        "avg_spread_r": 0.1394,
+        "max_drawdown_pct": 33.17
+      }
+    },
+    "lta_orb": {
+      "command": [
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\.venv\\Scripts\\python.exe",
+        "scripts\\dynamic_exit_backtest.py",
+        "--start",
+        "2025-06-25",
+        "--end",
+        "2026-06-25",
+        "--balance",
+        "300.0",
+        "--risk-pct",
+        "5.0"
+      ],
+      "returncode": 0,
+      "stdout_tail": "      \"skipped_same_symbol_overlap\": 42,\n      \"policy\": \"fixed_current\"\n    },\n    {\n      \"starting_balance\": 300.0,\n      \"ending_balance\": 314.33,\n      \"net_profit\": 14.33,\n      \"return_pct\": 4.78,\n      \"trades\": 192,\n      \"wins\": 104,\n      \"losses\": 88,\n      \"win_rate\": 54.17,\n      \"net_r\": 7.05,\n      \"max_drawdown_pct\": 73.97,\n      \"skipped_guardrail\": 0,\n      \"skipped_same_symbol_overlap\": 42,\n      \"policy\": \"dynamic_aggressive\"\n    },\n    {\n      \"starting_balance\": 300.0,\n      \"ending_balance\": 309.99,\n      \"net_profit\": 9.99,\n      \"return_pct\": 3.33,\n      \"trades\": 204,\n      \"wins\": 112,\n      \"losses\": 92,\n      \"win_rate\": 54.9,\n      \"net_r\": 6.59,\n      \"max_drawdown_pct\": 64.31,\n      \"skipped_guardrail\": 0,\n      \"skipped_same_symbol_overlap\": 42,\n      \"policy\": \"dynamic_conservative\"\n    },\n    {\n      \"starting_balance\": 300.0,\n      \"ending_balance\": 247.1,\n      \"net_profit\": -52.9,\n      \"return_pct\": -17.63,\n      \"trades\": 185,\n      \"wins\": 98,\n      \"losses\": 87,\n      \"win_rate\": 52.97,\n      \"net_r\": 1.92,\n      \"max_drawdown_pct\": 70.57,\n      \"skipped_guardrail\": 0,\n      \"skipped_same_symbol_overlap\": 32,\n      \"policy\": \"dynamic_capped\"\n    },\n    {\n      \"starting_balance\": 300.0,\n      \"ending_balance\": 166.66,\n      \"net_profit\": -133.34,\n      \"return_pct\": -44.45,\n      \"trades\": 218,\n      \"wins\": 115,\n      \"losses\": 103,\n      \"win_rate\": 52.75,\n      \"net_r\": -5.4,\n      \"max_drawdown_pct\": 76.81,\n      \"skipped_guardrail\": 0,\n      \"skipped_same_symbol_overlap\": 44,\n      \"policy\": \"dynamic_balanced\"\n    },\n    {\n      \"starting_balance\": 300.0,\n      \"ending_balance\": 152.69,\n      \"net_profit\": -147.31,\n      \"return_pct\": -49.1,\n      \"trades\": 218,\n      \"wins\": 115,\n      \"losses\": 103,\n      \"win_rate\": 52.75,\n      \"net_r\": -7.4,\n      \"max_drawdown_pct\": 75.69,\n      \"skipped_guardrail\": 0,\n      \"skipped_same_symbol_overlap\": 44,\n      \"policy\": \"dynamic_score\"\n    }\n  ]\n}",
+      "stderr_tail": ""
+    },
+    "20pip": {
+      "command": [
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\.venv\\Scripts\\python.exe",
+        "scripts\\orb_challenge_backtest.py",
+        "--start",
+        "2025-06-25",
+        "--end",
+        "2026-06-25"
+      ],
+      "returncode": 0,
+      "stdout_tail": "      \"net_r\": 39.17,\n      \"start_balance\": 20.0,\n      \"final_balance\": 0.06,\n      \"level\": 1,\n      \"target_balance\": 52399.91,\n      \"target_reached\": false,\n      \"target_reached_at\": null,\n      \"max_drawdown_pct\": 100.0,\n      \"min_balance\": 0.0\n    },\n    \"one_open_trade_at_a_time\": {\n      \"trades\": 312,\n      \"wins\": 140,\n      \"losses\": 148,\n      \"timeouts\": 24,\n      \"win_rate\": 44.87,\n      \"net_r\": 33.11,\n      \"start_balance\": 20.0,\n      \"final_balance\": 1.68,\n      \"level\": 1,\n      \"target_balance\": 52399.91,\n      \"target_reached\": false,\n      \"target_reached_at\": null,\n      \"max_drawdown_pct\": 100.0,\n      \"min_balance\": 0.0\n    },\n    \"one_trade_per_day\": {\n      \"trades\": 256,\n      \"wins\": 118,\n      \"losses\": 129,\n      \"timeouts\": 9,\n      \"win_rate\": 46.09,\n      \"net_r\": 23.18,\n      \"start_balance\": 20.0,\n      \"final_balance\": 0.77,\n      \"level\": 1,\n      \"target_balance\": 52399.91,\n      \"target_reached\": false,\n      \"target_reached_at\": null,\n      \"max_drawdown_pct\": 99.99,\n      \"min_balance\": 0.01\n    }\n  },\n  \"top_symbols\": [\n    {\n      \"trades\": 252,\n      \"wins\": 119,\n      \"losses\": 125,\n      \"timeouts\": 8,\n      \"win_rate\": 47.22,\n      \"net_r\": 31.21,\n      \"start_balance\": 20.0,\n      \"final_balance\": 5.77,\n      \"level\": 1,\n      \"target_balance\": 52399.91,\n      \"target_reached\": false,\n      \"target_reached_at\": null,\n      \"max_drawdown_pct\": 99.91,\n      \"min_balance\": 0.04,\n      \"symbol\": \"XAUUSD\"\n    },\n    {\n      \"trades\": 208,\n      \"wins\": 82,\n      \"losses\": 94,\n      \"timeouts\": 32,\n      \"win_rate\": 39.42,\n      \"net_r\": 7.96,\n      \"start_balance\": 20.0,\n      \"final_balance\": 0.22,\n      \"level\": 1,\n      \"target_balance\": 52399.91,\n      \"target_reached\": false,\n      \"target_reached_at\": null,\n      \"max_drawdown_pct\": 99.89,\n      \"min_balance\": 0.02,\n      \"symbol\": \"US30\"\n    }\n  ]\n}",
+      "stderr_tail": ""
+    },
+    "sniper": {
+      "command": [
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\.venv\\Scripts\\python.exe",
+        "sniper_backtest.py",
+        "--start",
+        "2025-06-25",
+        "--end",
+        "2026-06-25",
+        "--balance",
+        "300.0",
+        "--risk-pct",
+        "5.0"
+      ],
+      "returncode": 0,
+      "stdout_tail": "{\n  \"report\": \"C:\\\\Users\\\\hama101\\\\Desktop\\\\geek\\\\ai trader\\\\sniper entry\\\\reports\\\\sniper_backtest\\\\20260625-023537\\\\sniper_backtest_report.json\",\n  \"portfolio\": {\n    \"starting_balance\": 300.0,\n    \"ending_balance\": 338.71,\n    \"net_profit\": 38.71,\n    \"return_pct\": 12.9,\n    \"trades\": 11,\n    \"wins\": 7,\n    \"losses\": 4,\n    \"win_rate\": 63.64,\n    \"net_r\": 3.0,\n    \"max_drawdown_pct\": 9.48,\n    \"skipped_same_symbol_open\": 2,\n    \"skipped_lot_too_small\": 14,\n    \"skipped_guardrail\": 23\n  },\n  \"per_symbol\": [\n    {\n      \"starting_balance\": 300.0,\n      \"ending_balance\": 338.71,\n      \"net_profit\": 38.71,\n      \"return_pct\": 12.9,\n      \"trades\": 11,\n      \"wins\": 7,\n      \"losses\": 4,\n      \"win_rate\": 63.64,\n      \"net_r\": 3.0,\n      \"max_drawdown_pct\": 9.48,\n      \"skipped_same_symbol_open\": 2,\n      \"skipped_lot_too_small\": 14,\n      \"skipped_guardrail\": 23,\n      \"symbol\": \"BTCUSD\"\n    }\n  ]\n}",
+      "stderr_tail": ""
+    }
+  },
+  "latest": {
+    "strategy_suite": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\strategy_suite\\20260625-023010\\strategy_suite_report.json",
+    "lta_orb": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\dynamic_exit_backtest\\20260625-023011\\dynamic_exit_backtest_report.json",
+    "20pip": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-023533\\orb_challenge_backtest_report.json",
+    "sniper": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\sniper entry\\reports\\sniper_backtest\\20260625-023537\\sniper_backtest_report.json"
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "created_at": "2026-06-25T02:11:09",
+  "window_start": "2026-05-25 00:00:00",
+  "window_end": "2026-06-25 23:59:59",
+  "symbols": [
+    "AUDUSD",
+    "XAUUSD",
+    "BTCUSD",
+    "US30"
+  ],
+  "strategy": "ORB + 20 Pip Challenge",
+  "start_balance": 20.0,
+  "risk_percent": 23.0,
+  "target_percent": 30.0,
+  "reward_risk": 1.3043,
+  "levels": 30,
+  "orb": {
+    "timeframe": "M15",
+    "session_start": "19:00",
+    "session_end": "02:00",
+    "session_timezone": "America/New_York",
+    "data_timezone": "UTC",
+    "range_minutes": 30,
+    "buffer_atr": 0.0,
+    "min_range_atr": 0.0,
+    "max_range_atr": 999.0
+  },
+  "summaries": {
+    "all_signals": {
+      "trades": 98,
+      "wins": 48,
+      "losses": 43,
+      "timeouts": 7,
+      "win_rate": 48.98,
+      "net_r": 11.9,
+      "start_balance": 20.0,
+      "final_balance": 12.71,
+      "level": 1,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 93.22,
+      "min_balance": 3.2
+    },
+    "one_open_trade_at_a_time": {
+      "trades": 42,
+      "wins": 22,
+      "losses": 18,
+      "timeouts": 2,
+      "win_rate": 52.38,
+      "net_r": 5.95,
+      "start_balance": 20.0,
+      "final_balance": 19.11,
+      "level": 1,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 85.7,
+      "min_balance": 7.01
+    },
+    "one_trade_per_day": {
+      "trades": 31,
+      "wins": 17,
+      "losses": 12,
+      "timeouts": 2,
+      "win_rate": 54.84,
+      "net_r": 5.53,
+      "start_balance": 20.0,
+      "final_balance": 25.12,
+      "level": 1,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 74.44,
+      "min_balance": 9.63
+    }
+  },
+  "per_symbol": [
+    {
+      "trades": 23,
+      "wins": 13,
+      "losses": 10,
+      "timeouts": 0,
+      "win_rate": 56.52,
+      "net_r": 6.95,
+      "start_balance": 20.0,
+      "final_balance": 44.31,
+      "level": 4,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 72.95,
+      "min_balance": 9.14,
+      "symbol": "XAUUSD"
+    },
+    {
+      "trades": 23,
+      "wins": 12,
+      "losses": 8,
+      "timeouts": 3,
+      "win_rate": 52.17,
+      "net_r": 5.55,
+      "start_balance": 20.0,
+      "final_balance": 35.45,
+      "level": 3,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 50.82,
+      "min_balance": 15.16,
+      "symbol": "US30"
+    },
+    {
+      "trades": 22,
+      "wins": 12,
+      "losses": 8,
+      "timeouts": 2,
+      "win_rate": 54.55,
+      "net_r": 2.32,
+      "start_balance": 20.0,
+      "final_balance": 16.52,
+      "level": 1,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 66.84,
+      "min_balance": 12.5,
+      "symbol": "AUDUSD"
+    },
+    {
+      "trades": 30,
+      "wins": 11,
+      "losses": 17,
+      "timeouts": 2,
+      "win_rate": 36.67,
+      "net_r": -2.92,
+      "start_balance": 20.0,
+      "final_balance": 3.92,
+      "level": 1,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 80.47,
+      "min_balance": 3.91,
+      "symbol": "BTCUSD"
+    }
+  ],
+  "availability": [
+    {
+      "symbol": "AUDUSD",
+      "broker_symbol": "AUDUSDm",
+      "candles": 2697,
+      "days": 27,
+      "status": "ok"
+    },
+    {
+      "symbol": "XAUUSD",
+      "broker_symbol": "XAUUSDm",
+      "candles": 2559,
+      "days": 27,
+      "status": "ok"
+    },
+    {
+      "symbol": "BTCUSD",
+      "broker_symbol": "BTCUSDm",
+      "candles": 3657,
+      "days": 31,
+      "status": "ok"
+    },
+    {
+      "symbol": "US30",
+      "broker_symbol": "US30m",
+      "candles": 2553,
+      "days": 27,
+      "status": "ok"
+    }
+  ],
+  "skipped_count": 2,
+  "paths": {
+    "trades": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\orb_challenge_trades.csv",
+    "availability": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\availability.csv",
+    "skipped": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\skipped.csv",
+    "per_symbol_summary": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\per_symbol_summary.csv",
+    "equity": {
+      "all_signals": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\all_signals_equity.csv",
+      "one_open_trade_at_a_time": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\one_open_trade_at_a_time_equity.csv",
+      "one_trade_per_day": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\one_trade_per_day_equity.csv"
+    },
+    "per_symbol_equity": {
+      "AUDUSD": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\AUDUSD_equity.csv",
+      "BTCUSD": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\BTCUSD_equity.csv",
+      "US30": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\US30_equity.csv",
+      "XAUUSD": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260625-021108\\XAUUSD_equity.csv"
+    }
+  }
+}

@@ -301,6 +301,8 @@ class PositionWatcher:
                 logger.info("Trade %s is closed.", trade.signal_key)
 
     def _maybe_move_break_even(self, trade: TradeRecord, positions: list[object]) -> None:
+        if not self.settings.break_even_enabled:
+            return
         if trade.break_even_done:
             return
 

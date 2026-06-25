@@ -65,6 +65,8 @@ class PolicyTrade:
     r_multiple: float
     setup_score: int
     atr: float
+    spread_r: float
+    spread_points: float
     atr_percentile: float
     session_metric: float | None
     stop_mode: str
@@ -175,6 +177,35 @@ def current_rr(symbol: str, default_rr: float, rr_map: dict[str, float]) -> floa
     return max(1.0, float(rr_map.get(symbol.upper(), default_rr)))
 
 
+def infer_point(symbol: str) -> float:
+    upper = symbol.upper()
+    if upper.endswith("JPY") and len(upper) == 6:
+        return 0.001
+    if len(upper) == 6 and upper[:3].isalpha() and upper[3:].isalpha():
+        return 0.00001
+    if upper == "XAUUSD":
+        return 0.01
+    if upper == "XAGUSD":
+        return 0.001
+    if upper == "BTCUSD":
+        return 0.01
+    if upper in {"US30", "US300"}:
+        return 0.1
+    return 0.01
+
+
+def historical_spread_price(row: pd.Series, symbol: str) -> tuple[float, float]:
+    try:
+        points = max(0.0, float(row.get("spread") or 0.0))
+    except (TypeError, ValueError):
+        points = 0.0
+    try:
+        multiplier = max(0.0, float(os.getenv("BACKTEST_SPREAD_MULTIPLIER", "1") or 1.0))
+    except ValueError:
+        multiplier = 1.0
+    return points * infer_point(symbol) * multiplier, points
+
+
 def dynamic_rr(candidate: Candidate, mode: str) -> float:
     score = int(candidate.setup_score)
     vol = float(candidate.atr_percentile)
@@ -279,7 +310,14 @@ def simulate_managed_trade(
     current_sl_r = -1.0
     stage = 0
     remaining = 1.0
-    realized_r = 0.0
+    first_row = trade_path.iloc[0]
+    spread_price, spread_points = historical_spread_price(first_row, candidate.symbol)
+    spread_r = spread_price / risk_distance if risk_distance > 0 else 0.0
+    spread_enabled = str(os.getenv("BACKTEST_SPREAD_ADJUST", "true")).strip().lower() in {"1", "true", "yes", "on"}
+    max_spread_r = float(os.getenv("BACKTEST_MAX_SPREAD_R", "0") or 0.0)
+    if spread_enabled and max_spread_r > 0 and spread_r > max_spread_r:
+        return None
+    realized_r = -spread_r if spread_enabled else 0.0
     exit_price = float(trade_path.iloc[-1]["close"])
     closed_at = pd.Timestamp(trade_path.iloc[-1]["time"]).to_pydatetime()
     result = "timeout"
@@ -358,6 +396,8 @@ def simulate_managed_trade(
         r_multiple=round(float(realized_r), 4),
         setup_score=candidate.setup_score,
         atr=round(float(candidate.atr), 6),
+        spread_r=round(float(spread_r if spread_enabled else 0.0), 4),
+        spread_points=round(float(spread_points), 2),
         atr_percentile=round(float(candidate.atr_percentile), 4),
         session_metric=round(float(candidate.session_metric), 4) if candidate.session_metric is not None else None,
         stop_mode=stop_mode,

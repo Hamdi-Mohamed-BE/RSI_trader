@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import atexit
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import json
 import os
 import time
@@ -814,6 +814,22 @@ class TwentyPipChallengeBot:
         if not blocks:
             if self.strategy == "ORB":
                 scan = self._scan_orb_challenge()
+            elif self.strategy in {"HYBRID", "MULTI", "SUITE"}:
+                if self.strategy in {"HYBRID", "MULTI"}:
+                    scan = self._scan_orb_challenge()
+                suite_candidates: list[dict[str, Any]] = []
+                try:
+                    from .strategy_suite import challenge_entry_candidates
+
+                    lookback_days = max(1, int(os.getenv("CHALLENGE20_SUITE_LOOKBACK_DAYS", "3") or 3))
+                    suite_candidates = challenge_entry_candidates(
+                        date.today() - timedelta(days=lookback_days),
+                        date.today(),
+                        tuple(self.symbols),
+                    )
+                except Exception as exc:
+                    scan.setdefault("errors", []).append({"source": "strategy_suite", "error": str(exc)})
+                scan.setdefault("allowed", []).extend(suite_candidates)
             else:
                 scan = scan_market(
                     symbols=self.symbols,

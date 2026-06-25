@@ -35,6 +35,7 @@ TP @ 3375
 - If the calculated volume is below the broker minimum lot, it uses the broker minimum lot.
 - Auto-discovers broker symbols when `SYMBOL_MAP` does not define one, so `NAS100` can resolve to names like `NAS100.cash`, `NAS100m`, `US100`, or `USTECm`.
 - `ORDER_MODE=single` places one trade with the last TP and moves SL to break-even when TP1 is touched.
+- `BREAK_EVEN_ENABLED=false` disables the automatic SL move to break-even.
 - `ORDER_MODE=split` splits the total volume across all TP levels when broker minimum lot rules allow it.
 - Cancels still-pending orders after `PENDING_ORDER_TTL_SECONDS`, default `180`.
 
@@ -85,6 +86,7 @@ ORDER_MODE=single
 SYMBOL_MAP=NAS100=NAS100.cash,GBPUSD=GBPUSD
 AUTO_DISCOVER_SYMBOLS=true
 RECENT_MESSAGE_LOG_COUNT=5
+BREAK_EVEN_ENABLED=true
 ```
 
 For MT5 live trading, your terminal must be installed, logged in, and allowed to trade. Use a demo account first.

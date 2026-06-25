@@ -4,6 +4,7 @@ from dataclasses import asdict, dataclass
 from datetime import date, datetime, time, timedelta
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 from typing import Any
@@ -55,6 +56,8 @@ class ORBTrade:
     exit_price: float
     result: str
     r_multiple: float
+    spread_r: float
+    spread_points: float
     pnl: float
     range_high: float
     range_low: float
@@ -93,6 +96,38 @@ def pnl_for(symbol: str, direction: str, lot: float, contract_size: float, entry
     if direction == "BUY":
         return (exit_price - entry) * contract_size * lot
     return (entry - exit_price) * contract_size * lot
+
+
+def infer_point(symbol: str) -> float:
+    upper = symbol.upper()
+    if upper.endswith("JPY") and len(upper) == 6:
+        return 0.001
+    if len(upper) == 6 and upper[:3].isalpha() and upper[3:].isalpha():
+        return 0.00001
+    if upper == "XAUUSD":
+        return 0.01
+    if upper == "XAGUSD":
+        return 0.001
+    if upper == "BTCUSD":
+        return 0.01
+    if upper in {"US30", "US300"}:
+        return 0.1
+    return 0.01
+
+
+def spread_cost_r(row: pd.Series, symbol: str, risk: float) -> tuple[float, float]:
+    if risk <= 0:
+        return 0.0, 0.0
+    try:
+        points = max(0.0, float(row.get("spread") or 0.0))
+    except (TypeError, ValueError):
+        points = 0.0
+    try:
+        multiplier = max(0.0, float(os.getenv("BACKTEST_SPREAD_MULTIPLIER", "1") or 1.0))
+    except ValueError:
+        multiplier = 1.0
+    spread_price = points * infer_point(symbol) * multiplier
+    return spread_price / risk, points
 
 
 def simulate_orb_day(
@@ -196,6 +231,13 @@ def simulate_orb_day(
 
     risk = max(abs(entry - stop), 1e-9)
     r_multiple = ((exit_price - entry) / risk) if direction == "BUY" else ((entry - exit_price) / risk)
+    spread_r, spread_points = spread_cost_r(trade_path.iloc[0], symbol, risk)
+    spread_enabled = str(os.getenv("BACKTEST_SPREAD_ADJUST", "true")).strip().lower() in {"1", "true", "yes", "on"}
+    max_spread_r = float(os.getenv("BACKTEST_MAX_SPREAD_R", "0") or 0.0)
+    if spread_enabled and max_spread_r > 0 and spread_r > max_spread_r:
+        return None
+    if spread_enabled:
+        r_multiple -= spread_r
     opened_at = pd.Timestamp(trade_path.iloc[0]["time"]).to_pydatetime()
     pnl = pnl_for(symbol, direction, lot, contract_size, entry, exit_price)
     return ORBTrade(
@@ -213,6 +255,8 @@ def simulate_orb_day(
         exit_price=round(float(exit_price), 6),
         result=result,
         r_multiple=round(float(r_multiple), 4),
+        spread_r=round(float(spread_r if spread_enabled else 0.0), 4),
+        spread_points=round(float(spread_points), 2),
         pnl=round(float(pnl), 2),
         range_high=round(range_high, 6),
         range_low=round(range_low, 6),
