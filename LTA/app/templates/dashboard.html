@@ -202,9 +202,9 @@
     function bestSummary(data) {
       const reports = data.reports || {};
       const combined = reports.combined && reports.combined.combined_production_summary;
-      const suite = reports.strategy_suite && reports.strategy_suite.summary;
+      const bpr = reports.bpr && reports.bpr.summary;
       const lta = reports.lta_orb && reports.lta_orb.best_account_policy;
-      return combined || suite || lta || {};
+      return combined || bpr || lta || {};
     }
 
     function renderStats(data) {
@@ -250,7 +250,7 @@
       const items = [
         ["Combined", reports.combined && reports.combined.combined_production_summary, reports.combined && reports.combined.path],
         ["LTA + ORB", reports.lta_orb && reports.lta_orb.best_account_policy, reports.lta_orb && reports.lta_orb.path],
-        ["Strategy Suite", reports.strategy_suite && reports.strategy_suite.summary, reports.strategy_suite && reports.strategy_suite.path],
+        ["BPR", reports.bpr && reports.bpr.summary, reports.bpr && reports.bpr.path],
         ["20 Pip", reports.challenge20 && (reports.challenge20.summaries && reports.challenge20.summaries.all_signals), reports.challenge20 && reports.challenge20.path],
         ["Sniper", reports.sniper && reports.sniper.portfolio_summary, reports.sniper && reports.sniper.path],
       ].filter(item => item[1] || item[2]);

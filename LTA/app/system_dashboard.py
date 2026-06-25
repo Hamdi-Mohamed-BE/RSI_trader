@@ -11,11 +11,10 @@ import time
 from typing import Any
 
 from .automation import HEARTBEAT_PATH as LTA_HEARTBEAT, MAGIC_NUMBER as LTA_MAGIC
+from .bpr_bot import BPR_MAGIC, HEARTBEAT_PATH as BPR_HEARTBEAT
 from .challenge_20pip import CHALLENGE_MAGIC, HEARTBEAT_PATH as CHALLENGE_HEARTBEAT
 from .config import PROJECT_ROOT, REPORTS_DIR, load_config
 from .orb_bot import HEARTBEAT_PATH as ORB_HEARTBEAT, ORB_MAGIC
-from .strategy_bot_worker import heartbeat_path as suite_heartbeat_path
-from .strategy_suite import latest_suite_report, suite_bot_configs
 
 
 SNIPER_ROOT = PROJECT_ROOT.parent / "sniper entry"
@@ -70,20 +69,18 @@ def bot_definitions() -> dict[str, BotDefinition]:
             command=(py, "-m", "app.challenge_20pip"),
             heartbeat=CHALLENGE_HEARTBEAT,
             magic=CHALLENGE_MAGIC,
-            description="Aggressive challenge bank engine using the best eligible entry source.",
+            description="Original aggressive challenge bank engine.",
+        ),
+        "bpr": BotDefinition(
+            bot_id="bpr",
+            name="BPR Bot",
+            group="production",
+            command=(py, "-m", "app.bpr_bot"),
+            heartbeat=BPR_HEARTBEAT,
+            magic=BPR_MAGIC,
+            description="Balanced Price Range retest engine built from overlapping opposite FVGs.",
         ),
     }
-    for bot_id, config in suite_bot_configs().items():
-        definitions[bot_id] = BotDefinition(
-            bot_id=bot_id,
-            name=config.name,
-            group="experimental",
-            command=(py, "-m", "app.strategy_bot_worker", "--bot", bot_id),
-            heartbeat=suite_heartbeat_path(bot_id),
-            magic=None,
-            description=config.notes,
-            experimental=True,
-        )
     if SNIPER_ROOT.exists():
         definitions["sniper"] = BotDefinition(
             bot_id="sniper",
@@ -136,8 +133,6 @@ def start_bot(bot_id: str) -> dict[str, Any]:
     if bot_id not in definitions:
         return {"ok": False, "message": f"Unknown bot: {bot_id}"}
     definition = definitions[bot_id]
-    if definition.bot_id == "arbitrage" and not suite_bot_configs()["arbitrage"].enabled:
-        return {"ok": False, "message": "Arbitrage is disabled until multiple independent feeds are configured."}
     command = subprocess.list2cmdline(definition.command)
     shell_line = f'cd /d "{PROJECT_ROOT}" && title {definition.name} && {command}'
     creationflags = getattr(subprocess, "CREATE_NEW_CONSOLE", 0)
@@ -183,17 +178,15 @@ def load_latest_reports() -> dict[str, Any]:
     dynamic = latest_report_file("dynamic_exit_backtest/*/dynamic_exit_backtest_report.json")
     combined = latest_report_file("dynamic_exit_backtest/*/combined_live_like_5mo_report.json")
     challenge = latest_report_file("20pip_challenge_backtest/*/orb_challenge_backtest_report.json")
-    suite = latest_suite_report()
+    bpr = latest_report_file("bpr_backtest/*/bpr_backtest_report.json")
     sniper = latest_report_file("reports/sniper_backtest/*/sniper_backtest_report.json", root=SNIPER_ROOT) if SNIPER_ROOT.exists() else None
-    for key, path in {"lta_orb": dynamic, "combined": combined, "challenge20": challenge, "sniper": sniper}.items():
+    for key, path in {"lta_orb": dynamic, "combined": combined, "challenge20": challenge, "bpr": bpr, "sniper": sniper}.items():
         if path and path.exists():
             try:
                 reports[key] = json.loads(path.read_text(encoding="utf-8"))
                 reports[key]["path"] = str(path)
             except Exception as exc:
                 reports[key] = {"error": str(exc), "path": str(path)}
-    if suite:
-        reports["strategy_suite"] = suite
     return reports
 
 
@@ -211,6 +204,7 @@ def daily_trade_history(days: int = 7) -> dict[str, Any]:
         LTA_MAGIC: "LTA",
         ORB_MAGIC: "ORB",
         CHALLENGE_MAGIC: "20pip",
+        BPR_MAGIC: "BPR",
         26061515: "Sniper",
     }
     try:
@@ -225,16 +219,8 @@ def daily_trade_history(days: int = 7) -> dict[str, Any]:
             bot = magic_to_bot.get(magic)
             if bot is None:
                 upper = comment.upper()
-                if "GRID" in upper:
-                    bot = "Grid"
-                elif "TREND" in upper:
-                    bot = "Trend"
-                elif "MEAN" in upper:
-                    bot = "MeanReversion"
-                elif "NEWS" in upper:
-                    bot = "NewsPulse"
-                elif "DCA" in upper:
-                    bot = "DCA"
+                if "BPR" in upper:
+                    bot = "BPR"
                 else:
                     continue
             rows.append(
@@ -270,12 +256,11 @@ def daily_trade_history(days: int = 7) -> dict[str, Any]:
 
 def dashboard_summary() -> dict[str, Any]:
     reports = load_latest_reports()
-    suite_configs = {key: asdict(value) for key, value in suite_bot_configs().items()}
     return {
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "config": asdict(load_config()),
         "bots": bot_statuses(),
         "reports": reports,
-        "suite_configs": suite_configs,
+        "suite_configs": {},
         "daily": daily_trade_history(days=14),
     }

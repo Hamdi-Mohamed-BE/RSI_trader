@@ -29,7 +29,7 @@ if errorlevel 1 (
 echo.
 echo Live risk note:
 echo LIVE_TRADING / strategy-specific .env switches control whether each bot can place MT5 orders.
-echo The News bot is configured to place pending news straddles when NEWS_PLACE_PENDING=true.
+echo Active system: LTA original, ORB, 20pip original, BPR, and Sniper.
 echo.
 
 set "MODE=%~1"
@@ -39,22 +39,16 @@ echo Starting all bot windows...
 call :start_bot "LTA A+ Bot" "run_lta_bot.bat"
 call :start_bot "ORB Bot" "run_orb_bot.bat"
 call :start_bot "20 Pip Challenge Bot" "run_20pip_bot.bat"
-call :start_bot "Grid Range Bot" "run_grid_bot.bat"
-call :start_bot "Trend Following Bot" "run_trend_bot.bat"
-call :start_bot "Mean Reversion Bot" "run_mean_reversion_bot.bat"
-call :start_bot "DCA Dip Bot" "run_dca_bot.bat"
-call :start_bot "News Pulse Bot" "run_news_bot.bat"
-call :start_bot "Arbitrage Framework" "run_arbitrage_bot.bat"
+call :start_bot "BPR Bot" "run_bpr_bot.bat"
 call :start_bot "Sniper Bot" "run_sniper_bot.bat"
 goto :done
 
 :enabled_only
-echo Starting production/enabled bot windows only...
+echo Starting active bot windows only...
 call :start_bot "LTA A+ Bot" "run_lta_bot.bat"
 call :start_bot "ORB Bot" "run_orb_bot.bat"
 call :start_bot "20 Pip Challenge Bot" "run_20pip_bot.bat"
-call :start_bot "Grid Range Bot" "run_grid_bot.bat"
-call :start_bot "News Pulse Bot" "run_news_bot.bat"
+call :start_bot "BPR Bot" "run_bpr_bot.bat"
 call :start_bot "Sniper Bot" "run_sniper_bot.bat"
 goto :done
 
@@ -73,7 +67,7 @@ exit /b 0
 :done
 echo.
 echo Launch requests sent.
-echo Default mode starts every bot launcher.
-echo Use run_all_bots.bat --enabled to start only the currently useful production/enabled set.
+echo Default mode starts the active production set.
+echo The --enabled option is kept as an alias for the same active set.
 echo.
 pause

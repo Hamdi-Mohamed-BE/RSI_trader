@@ -14,7 +14,6 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from app.config import REPORTS_DIR
-from app.strategy_suite import backtest_strategy_suite
 
 
 def run_command(command: list[str], cwd: Path) -> dict[str, Any]:
@@ -39,7 +38,7 @@ def main() -> None:
     parser.add_argument("--days", type=int, default=365)
     parser.add_argument("--balance", type=float, default=300.0)
     parser.add_argument("--risk-pct", type=float, default=5.0)
-    parser.add_argument("--skip-heavy", action="store_true", help="Only run the new strategy suite.")
+    parser.add_argument("--skip-heavy", action="store_true", help="Only run the BPR backtest.")
     args = parser.parse_args()
 
     end_day = date.fromisoformat(args.end) if args.end else date.today()
@@ -52,8 +51,21 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     runs: dict[str, Any] = {}
 
-    suite_report = backtest_strategy_suite(start_day, end_day, args.balance, args.risk_pct)
-    runs["strategy_suite"] = {"report": suite_report.get("path"), "summary": suite_report.get("summary")}
+    runs["bpr"] = run_command(
+        [
+            py,
+            "scripts\\bpr_backtest.py",
+            "--start",
+            start_day.isoformat(),
+            "--end",
+            end_day.isoformat(),
+            "--balance",
+            str(args.balance),
+            "--risk-pct",
+            str(args.risk_pct),
+        ],
+        ROOT,
+    )
 
     if not args.skip_heavy:
         runs["lta_orb"] = run_command(
@@ -108,7 +120,7 @@ def main() -> None:
         "risk_pct": args.risk_pct,
         "runs": runs,
         "latest": {
-            "strategy_suite": latest("strategy_suite/*/strategy_suite_report.json", REPORTS_DIR),
+            "bpr": latest("bpr_backtest/*/bpr_backtest_report.json", REPORTS_DIR),
             "lta_orb": latest("dynamic_exit_backtest/*/dynamic_exit_backtest_report.json", REPORTS_DIR),
             "20pip": latest("20pip_challenge_backtest/*/orb_challenge_backtest_report.json", REPORTS_DIR),
             "sniper": latest("reports/sniper_backtest/*/sniper_backtest_report.json", ROOT.parent / "sniper entry")
