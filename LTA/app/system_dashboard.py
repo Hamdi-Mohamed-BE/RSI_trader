@@ -131,11 +131,6 @@ def bot_statuses() -> list[dict[str, Any]]:
     return sorted(statuses, key=lambda item: (item["group"], item["name"]))
 
 
-def _quote_arg(value: str) -> str:
-    escaped = value.replace('"', "")
-    return f'^"{escaped}^"'
-
-
 def start_bot(bot_id: str) -> dict[str, Any]:
     definitions = bot_definitions()
     if bot_id not in definitions:
@@ -143,10 +138,15 @@ def start_bot(bot_id: str) -> dict[str, Any]:
     definition = definitions[bot_id]
     if definition.bot_id == "arbitrage" and not suite_bot_configs()["arbitrage"].enabled:
         return {"ok": False, "message": "Arbitrage is disabled until multiple independent feeds are configured."}
-    title = f"{definition.name}"
-    command = " ".join(_quote_arg(part) for part in definition.command)
-    start_cmd = f'start "{title}" cmd.exe /k "cd /d {_quote_arg(str(PROJECT_ROOT))} && {command}"'
-    subprocess.Popen(["cmd.exe", "/c", start_cmd], cwd=str(PROJECT_ROOT), close_fds=True)
+    command = subprocess.list2cmdline(definition.command)
+    shell_line = f'cd /d "{PROJECT_ROOT}" && title {definition.name} && {command}'
+    creationflags = getattr(subprocess, "CREATE_NEW_CONSOLE", 0)
+    subprocess.Popen(
+        ["cmd.exe", "/k", shell_line],
+        cwd=str(PROJECT_ROOT),
+        close_fds=True,
+        creationflags=creationflags,
+    )
     return {"ok": True, "message": f"{definition.name} start requested in a visible console."}
 
 
