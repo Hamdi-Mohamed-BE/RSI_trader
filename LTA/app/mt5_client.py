@@ -607,6 +607,39 @@ class MT5Client:
             positions = [position for position in positions if int(position.get("magic") or 0) == int(magic)]
         return positions
 
+    def cancel_pending_order(self, ticket: int, symbol: str | None = None) -> dict[str, Any]:
+        if mt5 is None or not self.connect():
+            return {"cancelled": False, "message": "MT5 is not connected."}
+        if int(ticket or 0) <= 0:
+            return {"cancelled": False, "message": "Pending order ticket is invalid."}
+        request: dict[str, Any] = {
+            "action": mt5.TRADE_ACTION_REMOVE,
+            "order": int(ticket),
+        }
+        if symbol:
+            resolved = self.resolve_symbol(symbol) or symbol
+            request["symbol"] = resolved
+        result = mt5.order_send(request)
+        if result is None:
+            last_error = mt5.last_error()
+            return {
+                "cancelled": False,
+                "message": f"MT5 order_send returned no result: {last_error[1] if last_error else 'unknown error'}.",
+                "last_error": last_error,
+                "request": request,
+            }
+        payload = result._asdict()
+        success_codes = {
+            mt5.TRADE_RETCODE_DONE,
+            getattr(mt5, "TRADE_RETCODE_PLACED", 10008),
+        }
+        return {
+            "cancelled": payload.get("retcode") in success_codes,
+            "message": payload.get("comment", ""),
+            "request": request,
+            "result": payload,
+        }
+
     @staticmethod
     def _mt5_timestamp(payload: dict[str, Any]) -> datetime | None:
         time_msc = payload.get("time_msc")

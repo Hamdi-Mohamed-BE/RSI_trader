@@ -31,6 +31,6 @@ echo This window is the News bot process. Closing it stops this visible bot sess
 echo Press Ctrl+C in this window to stop.
 echo.
 
-".venv\Scripts\python.exe" -m app.strategy_bot_worker --bot news
+".venv\Scripts\python.exe" -m app.strategy_bot_worker --bot news --interval 10
 
 pause

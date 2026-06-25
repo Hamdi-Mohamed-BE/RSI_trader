@@ -9,6 +9,7 @@ import urllib.request
 from typing import Any
 
 from .config import DATA_DIR
+from .session_time import DEFAULT_SESSION_TIMEZONE, zone
 
 
 NEWS_EVENTS_PATH = DATA_DIR / "news_events.csv"
@@ -27,23 +28,95 @@ def load_news_events(path: Path = NEWS_EVENTS_PATH) -> list[dict[str, Any]]:
     return rows
 
 
-def upcoming_news_events(minutes_ahead: int = 240) -> list[dict[str, Any]]:
+def parse_news_time(raw_time: Any) -> datetime | None:
+    try:
+        event_time = datetime.fromisoformat(str(raw_time or "").replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if event_time.tzinfo is None:
+        event_time = event_time.replace(tzinfo=timezone.utc)
+    return event_time.astimezone(timezone.utc)
+
+
+def _bool_env(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _csv_items(value: str) -> list[str]:
+    return [item.strip().upper() for item in value.split(",") if item.strip()]
+
+
+def _scheduled_event_time_events(now: datetime, end: datetime) -> list[dict[str, Any]]:
+    raw_times = os.getenv("NEWS_EVENT_TIMES", "").strip()
+    if not raw_times:
+        return []
+    session_timezone = os.getenv("NEWS_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)
+    session_zone = zone(session_timezone, DEFAULT_SESSION_TIMEZONE)
+    local_now = now.astimezone(session_zone)
+    symbols = ",".join(_csv_items(os.getenv("NEWS_SYMBOLS", "XAUUSD,XAGUSD,BTCUSD,US30")))
+    events: list[dict[str, Any]] = []
+    for day_offset in (0, 1):
+        session_day = local_now.date() + timedelta(days=day_offset)
+        for raw_item in raw_times.split(","):
+            item = raw_item.strip()
+            if not item:
+                continue
+            try:
+                hour, minute = item.split(":", 1)
+                local_event = datetime(
+                    session_day.year,
+                    session_day.month,
+                    session_day.day,
+                    int(hour),
+                    int(minute),
+                    tzinfo=session_zone,
+                )
+            except ValueError:
+                continue
+            event_time = local_event.astimezone(timezone.utc)
+            if now <= event_time <= end:
+                events.append(
+                    {
+                        "time": event_time.isoformat(),
+                        "time_utc": event_time.isoformat(),
+                        "title": f"Scheduled news window {item} {session_timezone}",
+                        "currency": "USD",
+                        "impact": "scheduled",
+                        "symbols": symbols,
+                        "notes": "Generated from NEWS_EVENT_TIMES fallback.",
+                        "source": "NEWS_EVENT_TIMES",
+                    }
+                )
+    return events
+
+
+def upcoming_news_events(minutes_ahead: int = 240, include_scheduled_fallback: bool | None = None) -> list[dict[str, Any]]:
     now = datetime.now(timezone.utc)
     end = now + timedelta(minutes=max(1, minutes_ahead))
     events: list[dict[str, Any]] = []
     for event in load_news_events():
         raw_time = str(event.get("time") or "")
-        try:
-            event_time = datetime.fromisoformat(raw_time.replace("Z", "+00:00"))
-        except ValueError:
+        event_time = parse_news_time(raw_time)
+        if event_time is None:
             continue
-        if event_time.tzinfo is None:
-            event_time = event_time.replace(tzinfo=timezone.utc)
         if now <= event_time <= end:
             item = dict(event)
             item["time_utc"] = event_time.isoformat()
+            item.setdefault("source", "news_events.csv")
             events.append(item)
-    return sorted(events, key=lambda item: item["time_utc"])
+    if include_scheduled_fallback is None:
+        include_scheduled_fallback = _bool_env("NEWS_USE_EVENT_TIME_FALLBACK", True)
+    if include_scheduled_fallback:
+        events.extend(_scheduled_event_time_events(now, end))
+
+    deduped: dict[tuple[str, str], dict[str, Any]] = {}
+    for item in events:
+        key = (str(item.get("time_utc") or item.get("time") or ""), str(item.get("title") or item.get("event") or ""))
+        deduped[key] = item
+    return sorted(deduped.values(), key=lambda item: item["time_utc"])
 
 
 def openai_news_bias(event: dict[str, Any], symbols: tuple[str, ...]) -> dict[str, Any]:
