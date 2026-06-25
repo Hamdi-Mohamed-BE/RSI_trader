@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "profit-hacker-bot"
+version = "0.1.0"
+description = "Telegram signal reader with MT5 order placement and break-even management."
+requires-python = ">=3.10"
+dependencies = [
+  "MetaTrader5>=5.0.45",
+  "Telethon>=1.36.0",
+  "python-dotenv>=1.0.1",
+]
+
+[project.scripts]
+profit-hacker-bot = "profit_hacker_bot.main:run"
+
+[tool.setuptools.packages.find]
+where = ["src"]
