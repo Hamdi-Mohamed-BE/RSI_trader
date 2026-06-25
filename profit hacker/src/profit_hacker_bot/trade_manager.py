@@ -48,13 +48,14 @@ class TradeManager:
             )
             return
 
-        broker_symbol = self.settings.resolve_symbol(signal.symbol)
         comment_prefix = self._comment_prefix(signal)
 
         if self.settings.dry_run and not self.broker.connected:
+            broker_symbol = self.settings.resolve_symbol(signal.symbol)
             logger.info(
-                "[DRY RUN] %s %s %s SL=%s TP=%s",
+                "[DRY RUN] %s%s %s %s SL=%s TP=%s",
                 signal.symbol,
+                f" -> {broker_symbol}" if broker_symbol != signal.symbol else "",
                 signal.direction.value,
                 signal.entry_type.value,
                 signal.stop_loss,
@@ -63,6 +64,7 @@ class TradeManager:
             return
 
         try:
+            broker_symbol = self.broker.resolve_broker_symbol(signal.symbol)
             entry_type, entry_price = self.broker.resolve_entry(
                 symbol=broker_symbol,
                 direction=signal.direction,

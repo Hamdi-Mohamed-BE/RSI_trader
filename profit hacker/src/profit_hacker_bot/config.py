@@ -72,6 +72,7 @@ class Settings:
     pending_order_ttl_seconds: int
     order_mode: str
     symbol_map: dict[str, str]
+    auto_discover_symbols: bool
     max_entry_drift_points: float
     break_even_offset_points: float
     mt5_magic: int
@@ -119,6 +120,7 @@ def load_settings(env_path: str | Path | None = None) -> Settings:
         pending_order_ttl_seconds=_int("PENDING_ORDER_TTL_SECONDS", 180),
         order_mode=_string("ORDER_MODE", "single").lower(),
         symbol_map=_symbol_map(_string("SYMBOL_MAP")),
+        auto_discover_symbols=_bool("AUTO_DISCOVER_SYMBOLS", True),
         max_entry_drift_points=_float("MAX_ENTRY_DRIFT_POINTS", 0.0),
         break_even_offset_points=_float("BREAK_EVEN_OFFSET_POINTS", 0.0),
         mt5_magic=_int("MT5_MAGIC", 1303328644),

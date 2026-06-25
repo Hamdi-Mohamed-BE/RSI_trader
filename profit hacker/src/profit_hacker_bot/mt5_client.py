@@ -13,6 +13,7 @@ from .models import (
     OrderPlan,
     VolumeConstraints,
 )
+from .symbol_discovery import choose_best_symbol
 
 try:
     import MetaTrader5 as mt5
@@ -30,6 +31,7 @@ class MT5Client:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
         self.connected = False
+        self._symbol_cache: dict[str, str] = {}
 
     def connect(self, *, required: bool) -> None:
         if mt5 is None:
@@ -80,6 +82,56 @@ class MT5Client:
         if not info.visible and not mt5.symbol_select(symbol, True):
             raise BrokerError(f"Could not select MT5 symbol: {symbol}")
         return mt5.symbol_info(symbol)
+
+    def resolve_broker_symbol(self, telegram_symbol: str) -> str:
+        self.ensure_ready()
+        requested = telegram_symbol.upper()
+        if requested in self._symbol_cache:
+            return self._symbol_cache[requested]
+
+        configured = self.settings.symbol_map.get(requested)
+        if configured:
+            self.ensure_symbol(configured)
+            self._symbol_cache[requested] = configured
+            if configured.upper() != requested:
+                logger.info("Using configured symbol map %s -> %s.", requested, configured)
+            return configured
+
+        exact_info = mt5.symbol_info(requested)
+        if exact_info is not None:
+            self.ensure_symbol(requested)
+            self._symbol_cache[requested] = requested
+            return requested
+
+        if not self.settings.auto_discover_symbols:
+            raise BrokerError(
+                f"MT5 symbol not found: {requested}. Add it to SYMBOL_MAP or enable AUTO_DISCOVER_SYMBOLS."
+            )
+
+        broker_symbols = mt5.symbols_get()
+        if not broker_symbols:
+            raise BrokerError("Could not read broker symbol list from MT5.")
+
+        match = choose_best_symbol(
+            requested,
+            broker_symbols,
+            disabled_trade_mode=getattr(mt5, "SYMBOL_TRADE_MODE_DISABLED", None),
+        )
+        if match is None:
+            raise BrokerError(
+                f"No broker symbol match found for {requested}. Add SYMBOL_MAP={requested}=YourBrokerSymbol."
+            )
+
+        self.ensure_symbol(match.name)
+        self._symbol_cache[requested] = match.name
+        logger.info(
+            "Auto-discovered broker symbol %s -> %s (%s, score %s).",
+            requested,
+            match.name,
+            match.reason,
+            match.score,
+        )
+        return match.name
 
     def tick(self, symbol: str) -> Any:
         self.ensure_ready()
