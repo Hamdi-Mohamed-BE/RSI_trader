@@ -7,6 +7,7 @@ It starts in dry-run mode. Keep it that way on a demo account until the logs mat
 ## What it does
 
 - Reads the Telegram channel id from your Telegram Web URL: `-1001303328644`.
+- Logs the last `RECENT_MESSAGE_LOG_COUNT` messages on startup so you can confirm the Telegram loop is reading the channel.
 - Ignores forwarded messages.
 - Ignores stale messages older than `MAX_SIGNAL_AGE_SECONDS`, default `180`.
 - Ignores messages that do not contain a valid symbol, direction, stop loss, and TP.
@@ -83,6 +84,7 @@ PENDING_ORDER_TTL_SECONDS=180
 ORDER_MODE=single
 SYMBOL_MAP=NAS100=NAS100.cash,GBPUSD=GBPUSD
 AUTO_DISCOVER_SYMBOLS=true
+RECENT_MESSAGE_LOG_COUNT=5
 ```
 
 For MT5 live trading, your terminal must be installed, logged in, and allowed to trade. Use a demo account first.

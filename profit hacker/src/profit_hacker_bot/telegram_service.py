@@ -39,29 +39,66 @@ class TelegramSignalService:
         await self.client.start(phone=self.settings.telegram_phone or None)
         logger.info("Telegram connected. Watching channel %s.", self.settings.telegram_channel)
 
+        await self._log_recent_messages()
         await self._catch_up_recent()
 
         @self.client.on(events.NewMessage(chats=self.settings.telegram_channel))
         async def _on_new_message(event: events.NewMessage.Event) -> None:
-            await self._process_message(event.message)
+            await self._process_message(event.message, live=True)
 
         await self.client.run_until_disconnected()
 
-    async def _catch_up_recent(self) -> None:
-        async for message in self.client.iter_messages(self.settings.telegram_channel, limit=50):
-            await self._process_message(message)
+    async def _log_recent_messages(self) -> None:
+        count = max(0, int(self.settings.recent_message_log_count))
+        if count == 0:
+            return
 
-    async def _process_message(self, message: object) -> None:
+        logger.info("Last %s Telegram message(s), newest first:", count)
+        found = 0
+        async for message in self.client.iter_messages(self.settings.telegram_channel, limit=count):
+            found += 1
+            logger.info(
+                "  #%s %s forwarded=%s | %s",
+                int(getattr(message, "id", 0)),
+                self._message_date_text(message),
+                "yes" if self._is_forwarded(message) else "no",
+                self._preview(message),
+            )
+        if found == 0:
+            logger.info("  No messages found in this channel.")
+
+    async def _catch_up_recent(self) -> None:
+        logger.info("Checking recent Telegram messages for fresh signals.")
+        async for message in self.client.iter_messages(self.settings.telegram_channel, limit=50):
+            await self._process_message(message, verbose=False)
+
+    async def _process_message(
+        self,
+        message: object,
+        *,
+        live: bool = False,
+        verbose: bool = True,
+    ) -> None:
         message_id = int(getattr(message, "id", 0))
         source_id = str(self.settings.telegram_channel)
         if self.storage.has_message(source_id, message_id):
+            if live:
+                logger.info("Telegram message #%s already handled.", message_id)
             return
 
         created_at = getattr(message, "date", None)
         if created_at is not None and created_at.tzinfo is None:
             created_at = created_at.replace(tzinfo=timezone.utc)
         text = getattr(message, "raw_text", None) or getattr(message, "message", None) or ""
-        forwarded = bool(getattr(message, "fwd_from", None) or getattr(message, "forward", None))
+        forwarded = self._is_forwarded(message)
+
+        if live:
+            logger.info(
+                "New Telegram message #%s forwarded=%s | %s",
+                message_id,
+                "yes" if forwarded else "no",
+                self._text_preview(text),
+            )
 
         outcome = self.parser.parse(
             text,
@@ -79,7 +116,45 @@ class TelegramSignalService:
                 reason=outcome.ignored_reason,
                 raw_text=text,
             )
-            logger.debug("Ignored Telegram message %s: %s", message_id, outcome.ignored_reason)
+            if verbose:
+                logger.info(
+                    "Ignored Telegram message #%s: %s | %s",
+                    message_id,
+                    outcome.ignored_reason,
+                    self._text_preview(text),
+                )
+            else:
+                logger.debug("Ignored Telegram message #%s: %s", message_id, outcome.ignored_reason)
             return
 
+        signal = outcome.signal
+        assert signal is not None
+        logger.info(
+            "Accepted Telegram message #%s as signal: %s %s %s SL=%s TP=%s.",
+            message_id,
+            signal.symbol,
+            signal.direction.value,
+            signal.entry_type.value,
+            signal.stop_loss,
+            ", ".join(str(tp) for tp in signal.take_profits),
+        )
         await asyncio.to_thread(self.handle_signal, outcome.signal)
+
+    def _preview(self, message: object) -> str:
+        text = getattr(message, "raw_text", None) or getattr(message, "message", None) or ""
+        return self._text_preview(text)
+
+    def _text_preview(self, text: str, max_length: int = 180) -> str:
+        preview = " ".join(text.split())
+        if not preview:
+            return "[no text]"
+        if len(preview) <= max_length:
+            return preview
+        return f"{preview[: max_length - 3]}..."
+
+    def _message_date_text(self, message: object) -> str:
+        value = getattr(message, "date", None)
+        return value.isoformat() if value is not None else "no-date"
+
+    def _is_forwarded(self, message: object) -> bool:
+        return bool(getattr(message, "fwd_from", None) or getattr(message, "forward", None))

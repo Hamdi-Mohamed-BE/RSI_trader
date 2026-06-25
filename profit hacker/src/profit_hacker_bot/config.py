@@ -62,6 +62,7 @@ class Settings:
     telegram_phone: str
     telegram_session: str
     telegram_channel: int | str
+    recent_message_log_count: int
     mt5_path: str
     mt5_login: int | None
     mt5_password: str
@@ -110,6 +111,7 @@ def load_settings(env_path: str | Path | None = None) -> Settings:
         telegram_phone=_string("TELEGRAM_PHONE"),
         telegram_session=_string("TELEGRAM_SESSION", "profit_hacker.session"),
         telegram_channel=_channel(_string("TELEGRAM_CHANNEL", "-1001303328644")),
+        recent_message_log_count=_int("RECENT_MESSAGE_LOG_COUNT", 5),
         mt5_path=_string("MT5_PATH", r"C:\Program Files\MetaTrader 5\terminal64.exe"),
         mt5_login=_optional_int("MT5_LOGIN"),
         mt5_password=_string("MT5_PASSWORD"),
