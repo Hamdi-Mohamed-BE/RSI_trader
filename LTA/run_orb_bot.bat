@@ -33,6 +33,9 @@ echo This window is the ORB process. Closing it stops the visible bot session.
 echo Press Ctrl+C in this window to stop.
 echo.
 
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$lock = Join-Path (Get-Location) 'reports\orb_bot\orb.lock'; if (Test-Path -LiteralPath $lock) { $payload = Get-Content -LiteralPath $lock -Raw | ConvertFrom-Json -ErrorAction SilentlyContinue; $lockPid = [int]($payload.pid); $cmd = if ($lockPid -gt 0) { (Get-CimInstance Win32_Process -Filter \"ProcessId = $lockPid\" -ErrorAction SilentlyContinue).CommandLine } else { $null }; if (-not $cmd -or ($cmd -notlike '*app.orb_bot*' -and $cmd -notlike '*orb_bot.py*')) { Remove-Item -LiteralPath $lock -Force -ErrorAction SilentlyContinue; Write-Host 'Removed stale ORB lock.' } }"
+
 ".venv\Scripts\python.exe" -m app.orb_bot
 
 pause

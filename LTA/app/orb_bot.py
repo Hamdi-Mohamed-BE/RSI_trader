@@ -6,6 +6,7 @@ from dataclasses import replace
 from datetime import datetime, timedelta
 import json
 import os
+import subprocess
 import time
 from pathlib import Path
 from typing import Any
@@ -140,6 +141,37 @@ def _write_state(state: dict[str, Any]) -> None:
     _write_json(STATE_PATH, state)
 
 
+def _read_lock_payload(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _orb_process_is_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        ps = (
+            f"$p = Get-CimInstance Win32_Process -Filter \"ProcessId = {int(pid)}\" "
+            "-ErrorAction SilentlyContinue; if ($p) { $p.CommandLine }"
+        )
+        result = subprocess.run(
+            ["powershell", "-NoProfile", "-Command", ps],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        command_line = (result.stdout or "").lower()
+        return "app.orb_bot" in command_line or "orb_bot.py" in command_line
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
 class ORBLock:
     def __init__(self, path: Path) -> None:
         self.path = path
@@ -148,7 +180,23 @@ class ORBLock:
     def acquire(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         if self.path.exists():
-            raise RuntimeError("ORB worker is already running or the lock file still exists.")
+            payload = _read_lock_payload(self.path)
+            pid = int(payload.get("pid") or 0)
+            if _orb_process_is_alive(pid):
+                raise RuntimeError(
+                    f"ORB worker is already running with PID {pid}. "
+                    "Close that ORB window or run stop_orb_bot.bat first."
+                )
+            _append_jsonl(
+                EVENTS_PATH,
+                {
+                    "event": "orb_stale_lock_removed",
+                    "removed_at": datetime.now().isoformat(timespec="seconds"),
+                    "lock_path": str(self.path),
+                    "lock_payload": payload,
+                },
+            )
+            self.path.unlink(missing_ok=True)
         self.path.write_text(
             json.dumps({"pid": os.getpid(), "started_at": datetime.now().isoformat(timespec="seconds")}, indent=2),
             encoding="utf-8",
