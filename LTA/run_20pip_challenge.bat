@@ -32,6 +32,8 @@ echo This window is the challenge process. Closing it stops the visible bot sess
 echo Press Ctrl+C in this window to stop.
 echo.
 
+".venv\Scripts\python.exe" scripts\clear_stale_20pip_lock.py
+
 ".venv\Scripts\python.exe" -m app.challenge_20pip
 
 pause

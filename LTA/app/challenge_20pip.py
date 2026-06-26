@@ -5,6 +5,7 @@ import atexit
 from datetime import date, datetime, timedelta
 import json
 import os
+import subprocess
 import time
 from pathlib import Path
 from typing import Any
@@ -98,6 +99,41 @@ def _append_jsonl(path: Path, payload: dict[str, Any]) -> None:
         handle.write(json.dumps(payload, default=str) + "\n")
 
 
+def _read_lock_payload(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _challenge_process_is_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        ps = (
+            f"$p = Get-CimInstance Win32_Process -Filter \"ProcessId = {int(pid)}\" "
+            "-ErrorAction SilentlyContinue; "
+            "if ($p) { $p.CommandLine }"
+        )
+        try:
+            result = subprocess.run(
+                ["powershell", "-NoProfile", "-Command", ps],
+                capture_output=True,
+                text=True,
+                timeout=3,
+            )
+        except Exception:
+            return False
+        command_line = (result.stdout or "").lower()
+        return "app.challenge_20pip" in command_line or "challenge_20pip.py" in command_line
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    return True
+
+
 def _parse_datetime(value: Any) -> datetime | None:
     if not value:
         return None
@@ -166,7 +202,27 @@ class ChallengeLock:
     def acquire(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         if self.path.exists():
-            raise RuntimeError("20 Pip Challenge worker is already running or the lock file still exists.")
+            payload = _read_lock_payload(self.path)
+            try:
+                pid = int(payload.get("pid") or 0)
+            except (TypeError, ValueError):
+                pid = 0
+            if _challenge_process_is_alive(pid):
+                raise RuntimeError(
+                    f"20 Pip Challenge worker is already running with PID {pid}. "
+                    "Close that challenge window or run stop_20pip_challenge.bat first."
+                )
+            _append_jsonl(
+                EVENTS_PATH,
+                {
+                    "event": "challenge_stale_lock_removed",
+                    "removed_at": datetime.now().isoformat(timespec="seconds"),
+                    "lock_path": str(self.path),
+                    "lock_payload": payload,
+                },
+            )
+            self.path.unlink(missing_ok=True)
+            HEARTBEAT_PATH.unlink(missing_ok=True)
         self.path.write_text(
             json.dumps({"pid": os.getpid(), "started_at": datetime.now().isoformat(timespec="seconds")}, indent=2),
             encoding="utf-8",
