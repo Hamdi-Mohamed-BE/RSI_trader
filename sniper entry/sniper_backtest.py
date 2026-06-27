@@ -355,7 +355,7 @@ def generate_candidates(
     execution_cfg = config.get("execution", {})
     manage_tp2_to_tp1 = bool(execution_cfg.get("move_sl_to_tp1_at_tp2", True))
     target_multiple = target_multiple_from_config(config)
-    partial_close_at_tp1 = bool(execution_cfg.get("partial_close_at_tp1", True))
+    partial_close_at_tp1 = bool(execution_cfg.get("partial_close_at_tp1", False))
     tp1_partial_close_pct = float(execution_cfg.get("tp1_partial_close_pct", 0.0) or 0.0)
     move_sl_to_entry_at_tp1 = bool(execution_cfg.get("move_sl_to_entry_at_tp1", True))
 
@@ -459,6 +459,27 @@ def generate_candidates(
         if entry_index is None:
             stats["no_m5_entry"] += 1
             continue
+        dynamic_cfg = strategy_cfg.get("dynamic_stop", {}) or {}
+        base_atr_multiplier = float(dynamic_cfg.get("base_atr", atr_multiplier))
+        activity_factor = 1.0
+        if dynamic_cfg.get("enabled", True):
+            atr_lookback = max(20, int(dynamic_cfg.get("volatility_lookback", 50) or 50))
+            historical_atr = sorted(float(value) for value in atr14[max(0, index - atr_lookback) : index] if value)
+            baseline_atr = historical_atr[len(historical_atr) // 2] if historical_atr else float(atr14[index])
+            volatility_ratio = float(atr14[index]) / max(baseline_atr, 1e-12)
+            volume_lookback = max(10, int(dynamic_cfg.get("volume_lookback", 30) or 30))
+            historical_volume = sorted(float(value) for value in volumes[max(0, index - volume_lookback) : index] if value > 0)
+            baseline_volume = historical_volume[len(historical_volume) // 2] if historical_volume else max(float(volumes[index]), 1.0)
+            volume_ratio = float(volumes[index]) / max(baseline_volume, 1.0)
+            boost = max(0.0, volatility_ratio - 1.0) * 0.55 + max(0.0, volume_ratio - 1.0) * 0.20
+            if (
+                volatility_ratio >= float(dynamic_cfg.get("high_volatility_ratio", 1.2))
+                and volume_ratio >= float(dynamic_cfg.get("high_volume_ratio", 1.35))
+            ):
+                boost += 0.15
+            activity_factor = min(float(dynamic_cfg.get("max_widen_factor", 2.5)), 1.0 + boost)
+        atr_multiple = min(float(dynamic_cfg.get("max_atr", 3.5)), base_atr_multiplier * activity_factor)
+        risk_unit = float(atr14[index]) * atr_multiple
         candidate = build_candidate(
             logical,
             broker,
@@ -467,7 +488,7 @@ def generate_candidates(
             entry_index,
             m5,
             info,
-            float(atr14[index]) * atr_multiplier,
+            risk_unit,
             bull_pct,
             bear_pct,
             bias,
@@ -489,6 +510,7 @@ def apply_portfolio(
     starting_balance: float,
     risk_pct: float,
     guardrails: dict[str, Any] | None = None,
+    use_broker_min_lot: bool = True,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     guardrails = guardrails or {}
     balance = starting_balance
@@ -538,8 +560,10 @@ def apply_portfolio(
         risk_budget = balance * risk_pct / 100.0
         lot = normalize_lot_down(info, risk_budget / candidate.risk_per_lot)
         if lot <= 0:
-            skipped_lot += 1
-            continue
+            if not use_broker_min_lot:
+                skipped_lot += 1
+                continue
+            lot = float(getattr(info, "volume_min", 0.01) or 0.01)
         actual_risk = candidate.risk_per_lot * lot
         pnl = actual_risk * candidate.r_multiple
         before = balance
@@ -563,6 +587,8 @@ def apply_portfolio(
                 "lot": lot,
                 "risk_budget": round(risk_budget, 2),
                 "actual_risk": round(actual_risk, 2),
+                "minimum_lot_override": actual_risk > risk_budget * 1.001,
+                "risk_overrun": round(max(0.0, actual_risk - risk_budget), 2),
                 "pnl": round(pnl, 2),
                 "balance_before": round(before, 2),
                 "balance_after": round(balance, 2),
@@ -629,12 +655,25 @@ def main() -> None:
             availability.append({"logical_symbol": logical, "broker_symbol": broker, "signals": len(candidates), **stats})
 
         guardrails = config.get("guardrails", {}) or {}
-        portfolio_summary, portfolio_trades = apply_portfolio(all_candidates, args.balance, risk_pct, guardrails)
+        use_broker_min_lot = bool(config.get("risk", {}).get("use_broker_min_lot", True))
+        portfolio_summary, portfolio_trades = apply_portfolio(
+            all_candidates,
+            args.balance,
+            risk_pct,
+            guardrails,
+            use_broker_min_lot=use_broker_min_lot,
+        )
         per_symbol: list[dict[str, Any]] = []
         per_symbol_trades: dict[str, list[dict[str, Any]]] = {}
         for logical in sorted({candidate.logical_symbol for candidate in all_candidates}):
             symbol_candidates = [candidate for candidate in all_candidates if candidate.logical_symbol == logical]
-            summary, trades = apply_portfolio(symbol_candidates, args.balance, risk_pct, guardrails)
+            summary, trades = apply_portfolio(
+                symbol_candidates,
+                args.balance,
+                risk_pct,
+                guardrails,
+                use_broker_min_lot=use_broker_min_lot,
+            )
             summary["symbol"] = logical
             per_symbol.append(summary)
             per_symbol_trades[logical] = trades
@@ -672,9 +711,9 @@ def main() -> None:
             "strategy": {
                 "timeframe": config.get("timeframe", "H4"),
                 "entry": "EMA 9/21 cross on closed bar, entered at next M5 open",
-                "stop": f"ATR(14) * {config.get('strategy', {}).get('atr_multiplier', 1.5)}",
+                "stop": "Adaptive ATR(14) and tick-volume regime stop from current config",
                 "target": f"{config.get('execution', {}).get('broker_tp', 'TP3')} / {target_multiple_from_config(config)}R",
-                "management": "Optional TP1 partial close, SL to entry at TP1, and SL to TP1 at TP2 when enabled.",
+                "management": "No TP1 partial close; SL to entry at TP1 and SL to TP1 at TP2.",
                 "note": "Live max_signal_age/bootstrap filters are operational safeguards and are not applied to historical bars.",
             },
             "starting_balance": args.balance,

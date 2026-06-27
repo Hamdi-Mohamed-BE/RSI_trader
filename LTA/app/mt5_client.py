@@ -524,24 +524,34 @@ class MT5Client:
         raw_lot = risk_budget / risk_per_lot
         constraints = self.lot_constraints(raw_symbol)
         lot = self.normalize_lot_down(raw_symbol, raw_lot)
+        use_broker_minimum = str(os.getenv("USE_BROKER_MIN_LOT_WHEN_RISK_TOO_SMALL", "true")).strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
+        minimum_lot_override = False
         if lot <= 0:
             min_lot_risk = self.estimate_trade_risk(raw_symbol, direction, constraints["min"], entry_price, stop_loss)
-            return {
-                "ok": False,
-                "message": "Risk budget is below broker minimum lot risk; trade blocked instead of rounding up.",
-                "risk_percent": risk_percent,
-                "balance": balance,
-                "balance_source": balance_source,
-                "symbol": raw_symbol,
-                "broker_symbol": resolved,
-                "entry_price": entry_price,
-                "entry_source": entry_source,
-                "stop_loss": stop_loss,
-                "risk_budget": risk_budget,
-                "raw_lot": raw_lot,
-                "lot_constraints": constraints,
-                "min_lot_risk": min_lot_risk,
-            }
+            if not use_broker_minimum:
+                return {
+                    "ok": False,
+                    "message": "Risk budget is below broker minimum lot risk and minimum-lot override is disabled.",
+                    "risk_percent": risk_percent,
+                    "balance": balance,
+                    "balance_source": balance_source,
+                    "symbol": raw_symbol,
+                    "broker_symbol": resolved,
+                    "entry_price": entry_price,
+                    "entry_source": entry_source,
+                    "stop_loss": stop_loss,
+                    "risk_budget": risk_budget,
+                    "raw_lot": raw_lot,
+                    "lot_constraints": constraints,
+                    "min_lot_risk": min_lot_risk,
+                }
+            lot = float(constraints["min"])
+            minimum_lot_override = True
 
         estimated = self.estimate_trade_risk(raw_symbol, direction, lot, entry_price, stop_loss)
         step = constraints["step"]
@@ -568,7 +578,7 @@ class MT5Client:
                 "estimated": estimated,
                 "lot_constraints": constraints,
             }
-        if final_risk > risk_budget * 1.001:
+        if final_risk > risk_budget * 1.001 and not minimum_lot_override:
             return {
                 "ok": False,
                 "message": "Broker-normalized lot still exceeds the risk budget; trade blocked.",
@@ -590,7 +600,11 @@ class MT5Client:
 
         return {
             "ok": bool(estimated.get("ok")),
-            "message": "Risk-based lot calculated.",
+            "message": (
+                "Broker minimum lot used; actual risk exceeds the requested percentage cap."
+                if minimum_lot_override
+                else "Risk-based lot calculated."
+            ),
             "risk_percent": risk_percent,
             "balance": balance,
             "balance_source": balance_source,
@@ -608,6 +622,9 @@ class MT5Client:
             "raw_lot": raw_lot,
             "lot": lot,
             "estimated_risk": final_risk,
+            "actual_risk_percent": (final_risk / balance * 100.0) if balance > 0 else None,
+            "risk_overrun": max(0.0, final_risk - risk_budget),
+            "minimum_lot_override": minimum_lot_override,
             "risk_method": estimated.get("method"),
             "lot_constraints": constraints,
         }

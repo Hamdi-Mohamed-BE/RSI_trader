@@ -1,8 +1,8 @@
 {
   "mt5_path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
-  "timeframe": "H4",
+  "timeframe": "M30",
   "poll_seconds": 60,
-  "state_file": "state/sniper_state_H4_optimized.json",
+  "state_file": "state/sniper_state_M30_london_optimized.json",
   "symbols": {
     "BTCUSD": ["BTCUSD", "BTCUSD-VIP", "BTCUSDm"]
   },
@@ -28,7 +28,8 @@
     }
   },
   "risk": {
-    "balance_risk_pct": 5.0
+    "balance_risk_pct": 5.0,
+    "use_broker_min_lot": true
   },
   "execution": {
     "mode": "live",
@@ -63,12 +64,12 @@
     "allowed_weekdays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     "sessions": [
       {
-        "name": "NY BTC",
-        "start": "08:00",
-        "end": "17:00"
+        "name": "London",
+        "start": "03:00",
+        "end": "12:00"
       }
     ],
-    "max_trades_per_day": 5,
+    "max_trades_per_day": 3,
     "max_daily_loss_pct": 0.0,
     "max_total_drawdown_pct": 0.0,
     "max_consecutive_losses": 2,

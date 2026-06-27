@@ -1,5 +1,7 @@
 # Profit Hacker Telegram to MT5 Bot
 
+Looking for the standalone gold trend EA recreated from the supplied video transcript? See [`mt5/README.md`](mt5/README.md) or run `install_gold_ea.bat`.
+
 This bot reads fresh Telegram channel messages, parses trading signals, places MT5 orders, and watches open trades so the stop loss can move to break-even once the first TP price is reached.
 
 It starts in dry-run mode. Keep it that way on a demo account until the logs match exactly what you expect.

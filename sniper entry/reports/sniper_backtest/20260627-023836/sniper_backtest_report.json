@@ -1,0 +1,50 @@
+{
+  "created_at": "2026-06-27T02:38:36",
+  "window_start": "2026-06-26T00:00:00+00:00",
+  "window_end": "2026-06-27T23:59:59+00:00",
+  "strategy": {
+    "timeframe": "H4",
+    "entry": "EMA 9/21 cross on closed bar, entered at next M5 open",
+    "stop": "Adaptive ATR(14) and tick-volume regime stop from current config",
+    "target": "TP3 / 3R",
+    "management": "No TP1 partial close; SL to entry at TP1 and SL to TP1 at TP2.",
+    "note": "Live max_signal_age/bootstrap filters are operational safeguards and are not applied to historical bars."
+  },
+  "starting_balance": 300.0,
+  "risk_pct": 5.0,
+  "portfolio_summary": {
+    "starting_balance": 300.0,
+    "ending_balance": 300.0,
+    "net_profit": 0.0,
+    "return_pct": 0.0,
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "win_rate": 0.0,
+    "net_r": 0,
+    "max_drawdown_pct": 0.0,
+    "skipped_same_symbol_open": 0,
+    "skipped_lot_too_small": 0,
+    "skipped_guardrail": 0
+  },
+  "per_symbol_summary": [],
+  "availability": [
+    {
+      "logical_symbol": "BTCUSD",
+      "broker_symbol": "BTCUSDm",
+      "signals": 0,
+      "status": "ok",
+      "h4_bars": 487,
+      "m5_bars": 23342,
+      "crosses": 0,
+      "spread_filtered": 0,
+      "indicator_skips": 27,
+      "no_m5_entry": 0,
+      "guardrail_outside_allowed_session": 4
+    }
+  ],
+  "paths": {
+    "portfolio_trades": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\sniper entry\\reports\\sniper_backtest\\20260627-023836\\portfolio_trades.csv",
+    "per_symbol_summary": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\sniper entry\\reports\\sniper_backtest\\20260627-023836\\per_symbol_summary.csv"
+  }
+}

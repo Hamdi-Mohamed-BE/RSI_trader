@@ -108,7 +108,7 @@ Safety gates:
 - Every market signal must still be an A+ setup and include entry, stop loss, take profit, and risk-to-reward.
 - MT5 order comments include the setup grade, score, and timeframe, for example `LTA A+ S95 M15`.
 - The bot checks the live bid/ask spread before preparing an order and again just before sending to MT5. If the red/blue price spread is too large versus the stop distance, the trade is blocked and logged as `blocked_spread`.
-- Live automation does not use fixed per-symbol lots. It calculates lot size from the current MT5 account balance, `MAX_LOT_RISK_PCT`, the live entry price, and the signal stop loss. If the broker minimum lot would risk more than the budget, the trade is blocked instead of rounded up.
+- Live automation calculates lot size from the current MT5 account balance, `MAX_LOT_RISK_PCT`, the live entry price, and the signal stop loss. With `USE_BROKER_MIN_LOT_WHEN_RISK_TOO_SMALL=true`, a calculated size below the broker minimum is rounded up to the minimum lot and the resulting risk overrun is logged.
 - Duplicate protection persists across restarts in `reports/automation/trade_state.json`.
 - `MAX_TRADES_PER_DAY` is a total bot cap for the day, not a per-symbol cap.
 - `AUTO_MAX_CONSECUTIVE_LOSSES=2` stops all new orders after two losing bot trades in a row.

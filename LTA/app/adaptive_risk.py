@@ -137,10 +137,11 @@ def apply_dynamic_stop(
     signal: dict[str, Any],
     candles: pd.DataFrame | None,
     settings: DynamicStopSettings,
+    last_bar_is_closed: bool = False,
 ) -> dict[str, Any]:
     if not settings.enabled or candles is None:
         return signal
-    df = _closed_frame(candles)
+    df = _frame(candles) if last_bar_is_closed else _closed_frame(candles)
     required = max(settings.atr_period + 3, settings.volume_lookback + 3)
     if len(df) < required:
         return signal
@@ -231,8 +232,9 @@ def evaluate_setup_validity(
     entry: float,
     profit: float,
     settings: SmartExitSettings,
+    last_bar_is_closed: bool = False,
 ) -> dict[str, Any]:
-    df = _closed_frame(candles)
+    df = _frame(candles) if last_bar_is_closed else _closed_frame(candles)
     required = max(settings.ema_slow + 3, settings.atr_period + 3, settings.structure_lookback + 3)
     if len(df) < required:
         return {"invalid": False, "score": 0, "reasons": ["not_enough_closed_bars"]}

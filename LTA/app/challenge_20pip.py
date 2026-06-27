@@ -760,21 +760,34 @@ class TwentyPipChallengeBot:
 
         raw_lot = risk_amount / risk_per_lot
         lot = self.client.normalize_lot_down(symbol, raw_lot)
+        constraints = self.client.lot_constraints(symbol)
+        use_broker_minimum = _env_bool(
+            "CHALLENGE20_USE_BROKER_MIN_LOT",
+            _env_bool("USE_BROKER_MIN_LOT_WHEN_RISK_TOO_SMALL", True),
+        )
+        minimum_lot_override = False
         if lot <= 0:
-            return {
-                "ok": False,
-                "message": "Risk amount is below broker minimum lot risk.",
-                "risk_amount": risk_amount,
-                "risk_per_1_lot": risk_per_lot,
-                "raw_lot": raw_lot,
-                "lot_constraints": self.client.lot_constraints(symbol),
-            }
+            if not use_broker_minimum:
+                return {
+                    "ok": False,
+                    "message": "Risk amount is below broker minimum lot risk and minimum-lot override is disabled.",
+                    "risk_amount": risk_amount,
+                    "risk_per_1_lot": risk_per_lot,
+                    "raw_lot": raw_lot,
+                    "lot_constraints": constraints,
+                }
+            lot = float(constraints["min"])
+            minimum_lot_override = True
 
         estimated = self.client.estimate_trade_risk(symbol, direction, lot, entry_price, stop_loss)
         final_risk = float(estimated.get("risk") or 0.0)
         return {
             "ok": bool(estimated.get("ok")) and final_risk > 0,
-            "message": "Challenge lot calculated.",
+            "message": (
+                "Challenge is using the broker minimum lot above its requested risk amount."
+                if minimum_lot_override
+                else "Challenge lot calculated."
+            ),
             "symbol": symbol,
             "direction": direction,
             "entry_price": entry_price,
@@ -790,6 +803,9 @@ class TwentyPipChallengeBot:
             "raw_lot": raw_lot,
             "lot": lot,
             "estimated_risk": final_risk,
+            "actual_risk_percent_of_account": (final_risk / account_balance * 100.0) if account_balance > 0 else None,
+            "risk_overrun": max(0.0, final_risk - risk_amount),
+            "minimum_lot_override": minimum_lot_override,
             "account_balance": account_balance,
             "max_account_risk_percent": self.max_account_risk_percent,
             "risk_method": estimated.get("method"),

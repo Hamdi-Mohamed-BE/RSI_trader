@@ -17,6 +17,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from app.config import REPORTS_DIR, load_config
+from app.adaptive_risk import (
+    apply_dynamic_stop,
+    dynamic_stop_settings,
+    evaluate_setup_validity,
+    smart_exit_settings,
+)
 from app.mt5_client import MT5Client, TIMEFRAME_MINUTES
 from app.orb_strategy import ORBSettings, atr as orb_atr, session_bounds as orb_session_bounds
 from app.session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, as_aware, date_in_timezone
@@ -215,6 +221,10 @@ def dynamic_rr(candidate: Candidate, mode: str) -> float:
 
     if mode == "static":
         return max(1.0, candidate.configured_rr)
+    if mode == "challenge20":
+        risk_percent = max(0.01, float(os.getenv("CHALLENGE20_RISK_PERCENT", "23") or 23.0))
+        target_percent = max(0.01, float(os.getenv("CHALLENGE20_TARGET_PERCENT", "30") or 30.0))
+        return target_percent / risk_percent
     if mode == "conservative":
         return 2.0 if vol >= 0.75 or wide_session else 3.0
     if mode == "balanced":
@@ -264,6 +274,8 @@ def dynamic_stop_distance(candidate: Candidate, mode: str) -> tuple[float, str]:
 
 
 POLICIES: tuple[dict[str, str], ...] = (
+    {"name": "production_current", "stop": "live_adaptive", "rr": "static"},
+    {"name": "challenge20_current", "stop": "live_adaptive", "rr": "challenge20"},
     {"name": "fixed_current", "stop": "static", "rr": "static"},
     {"name": "dynamic_balanced", "stop": "adaptive", "rr": "balanced"},
     {"name": "dynamic_conservative", "stop": "atr_floor_1_0", "rr": "conservative"},
@@ -290,13 +302,39 @@ def simulate_managed_trade(
     candidate: Candidate,
     policy: dict[str, str],
     max_holding_bars: int,
-    partial_fraction: float = 0.50,
+    partial_fraction: float = 0.0,
 ) -> PolicyTrade | None:
     direction = candidate.direction.upper()
     if direction not in {"BUY", "SELL"}:
         return None
 
-    risk_distance, stop_mode = dynamic_stop_distance(candidate, policy["stop"])
+    if policy["stop"] == "live_adaptive":
+        prefix = (
+            "CHALLENGE20"
+            if policy["name"] == "challenge20_current"
+            else "AUTO" if candidate.bot.upper() == "LTA" else candidate.bot.upper()
+        )
+        signal = {
+            "direction": direction,
+            "entry": candidate.entry,
+            "stop_loss": candidate.base_stop,
+            "risk_reward": candidate.configured_rr,
+        }
+        context = df.iloc[max(0, candidate.start_index - 160) : candidate.start_index + 1]
+        adjusted = apply_dynamic_stop(
+            signal,
+            context,
+            dynamic_stop_settings(prefix),
+            last_bar_is_closed=True,
+        )
+        risk_distance = abs(float(adjusted.get("stop_loss") or candidate.base_stop) - candidate.entry)
+        dynamic_meta = adjusted.get("dynamic_stop") or {}
+        stop_mode = (
+            f"live_adaptive(vol={float(dynamic_meta.get('volatility_ratio') or 1):.2f},"
+            f"volume={float(dynamic_meta.get('volume_ratio') or 1):.2f})"
+        )
+    else:
+        risk_distance, stop_mode = dynamic_stop_distance(candidate, policy["stop"])
     if risk_distance <= 0:
         return None
     entry = candidate.entry
@@ -322,7 +360,14 @@ def simulate_managed_trade(
     closed_at = pd.Timestamp(trade_path.iloc[-1]["time"]).to_pydatetime()
     result = "timeout"
 
-    for _, row in trade_path.iterrows():
+    use_smart_exit = policy["name"] in {"production_current", "challenge20_current"}
+    exit_prefix = (
+        "CHALLENGE20"
+        if policy["name"] == "challenge20_current"
+        else "AUTO" if candidate.bot.upper() == "LTA" else candidate.bot.upper()
+    )
+    exit_settings = smart_exit_settings(exit_prefix)
+    for row_index, row in trade_path.iterrows():
         high = float(row["high"])
         low = float(row["low"])
         happened_at = pd.Timestamp(row["time"]).to_pydatetime()
@@ -343,10 +388,11 @@ def simulate_managed_trade(
                 break
             while stage < int(math.floor(final_rr)) and high >= price_at_r(entry, risk_distance, direction, stage + 1):
                 stage += 1
-                if stage == 1 and partial_fraction > 0 and remaining > 0:
-                    close_fraction = min(partial_fraction, remaining)
-                    realized_r += close_fraction * 1.0
-                    remaining -= close_fraction
+                if stage == 1:
+                    if partial_fraction > 0 and remaining > 0:
+                        close_fraction = min(partial_fraction, remaining)
+                        realized_r += close_fraction * 1.0
+                        remaining -= close_fraction
                     current_sl_r = max(current_sl_r, 0.0)
                 elif stage >= 2:
                     current_sl_r = max(current_sl_r, float(stage - 1))
@@ -365,13 +411,38 @@ def simulate_managed_trade(
                 break
             while stage < int(math.floor(final_rr)) and low <= price_at_r(entry, risk_distance, direction, stage + 1):
                 stage += 1
-                if stage == 1 and partial_fraction > 0 and remaining > 0:
-                    close_fraction = min(partial_fraction, remaining)
-                    realized_r += close_fraction * 1.0
-                    remaining -= close_fraction
+                if stage == 1:
+                    if partial_fraction > 0 and remaining > 0:
+                        close_fraction = min(partial_fraction, remaining)
+                        realized_r += close_fraction * 1.0
+                        remaining -= close_fraction
                     current_sl_r = max(current_sl_r, 0.0)
                 elif stage >= 2:
                     current_sl_r = max(current_sl_r, float(stage - 1))
+
+        smart_exit_delay = TIMEFRAME_MINUTES.get(exit_settings.timeframe, 15) * exit_settings.min_bars_open * 60
+        elapsed_seconds = (happened_at - candidate.opened_at).total_seconds()
+        if use_smart_exit and exit_settings.enabled and elapsed_seconds >= smart_exit_delay:
+            close_price = float(row["close"])
+            unrealized_r = (
+                (close_price - entry) / risk_distance
+                if direction == "BUY"
+                else (entry - close_price) / risk_distance
+            )
+            validity = evaluate_setup_validity(
+                df.iloc[max(0, int(row_index) - exit_settings.lookback_bars) : int(row_index) + 1],
+                direction=direction,
+                entry=entry,
+                profit=unrealized_r,
+                settings=exit_settings,
+                last_bar_is_closed=True,
+            )
+            if validity.get("invalid"):
+                exit_price = close_price
+                closed_at = happened_at
+                result = "smart_exit"
+                realized_r += remaining * unrealized_r
+                break
     else:
         if direction == "BUY":
             realized_r += remaining * ((exit_price - entry) / risk_distance)
@@ -808,7 +879,7 @@ def main() -> None:
     for policy in POLICIES:
         for candidate in all_candidates:
             df = market_data[candidate.series_key]
-            trade = simulate_managed_trade(df, candidate, policy, int(args.max_holding_bars), partial_fraction=0.50)
+            trade = simulate_managed_trade(df, candidate, policy, int(args.max_holding_bars), partial_fraction=0.0)
             if trade:
                 policy_rows.append(asdict(trade))
 
@@ -871,8 +942,9 @@ def main() -> None:
         "risk_pct": float(args.risk_pct),
         "model_notes": [
             "A+ entry candidates use the current LTA/ORB watchlists and sessions from .env.",
-            "Each exit uses 50% partial close at TP1, SL to break-even at TP1, then SL to TP(n-1) after TPn.",
-            "Dynamic stops use ATR floors/caps; lot/risk is represented in R-multiples and compounded at the requested account risk.",
+            "No position is partially closed at TP1. SL moves to break-even at TP1, then to TP(n-1) after TPn.",
+            "production_current mirrors the live ATR/volume adaptive stop and confirmation-based smart invalidation exit.",
+            "Dynamic stops use ATR/volume regimes; lot/risk is represented in R-multiples and compounded at the requested account risk.",
             "This is a research backtest. Live spread, slippage, broker minimum lot, and order filling can change actual results.",
         ],
         "policies": list(POLICIES),

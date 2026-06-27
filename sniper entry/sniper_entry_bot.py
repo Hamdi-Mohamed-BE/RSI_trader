@@ -758,18 +758,22 @@ class SniperBot:
         raw = cap / risk_per_lot
         lot = math.floor(raw / step) * step
         lot = round(min(max_lot, lot), 4)
+        minimum_lot_override = False
         if lot < min_lot:
             min_risk = risk_per_lot * min_lot
-            return None, {
-                "error": "min_lot_exceeds_cap",
-                "risk_model": "balance_percent",
-                "balance": round(balance, 2),
-                "balance_risk_pct": risk_pct,
-                "risk_cap": round(cap, 2),
-                "min_lot": min_lot,
-                "min_lot_risk": round(min_risk, 2),
-                "risk_method": risk_method,
-            }
+            if not self.config.get("risk", {}).get("use_broker_min_lot", True):
+                return None, {
+                    "error": "min_lot_exceeds_cap",
+                    "risk_model": "balance_percent",
+                    "balance": round(balance, 2),
+                    "balance_risk_pct": risk_pct,
+                    "risk_cap": round(cap, 2),
+                    "min_lot": min_lot,
+                    "min_lot_risk": round(min_risk, 2),
+                    "risk_method": risk_method,
+                }
+            lot = min_lot
+            minimum_lot_override = True
         risk = risk_per_lot * lot
         return lot, {
             "risk_model": "balance_percent",
@@ -779,6 +783,8 @@ class SniperBot:
             "risk_per_lot": round(risk_per_lot, 2),
             "dollar_risk": round(risk, 2),
             "risk_pct": round(risk / balance * 100.0, 2) if balance else None,
+            "risk_overrun": round(max(0.0, risk - cap), 2),
+            "minimum_lot_override": minimum_lot_override,
             "risk_method": risk_method,
         }
 

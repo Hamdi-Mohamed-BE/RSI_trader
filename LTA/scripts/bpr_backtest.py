@@ -17,9 +17,15 @@ if str(ROOT) not in sys.path:
 
 from app.bpr_strategy import add_atr, generate_bpr_signals, settings_from_env
 from app.bpr_strategy import BPRSettings
+from app.adaptive_risk import (
+    apply_dynamic_stop,
+    dynamic_stop_settings,
+    evaluate_setup_validity,
+    smart_exit_settings,
+)
 from app.config import REPORTS_DIR, load_config
 from app.models import TRADE_SYMBOLS
-from app.mt5_client import MT5Client
+from app.mt5_client import MT5Client, TIMEFRAME_MINUTES
 
 
 BPR_REPORT_DIR = REPORTS_DIR / "bpr_backtest"
@@ -166,6 +172,12 @@ def simulate_trade(df: pd.DataFrame, signal: dict[str, Any], max_holding_bars: i
     start_index = int(signal.get("start_index") or 0)
     if start_index <= 0 or start_index >= len(df) - 1:
         return None
+    signal = apply_dynamic_stop(
+        signal,
+        df.iloc[max(0, start_index - 160) : start_index + 1],
+        dynamic_stop_settings("BPR"),
+        last_bar_is_closed=True,
+    )
     direction = str(signal.get("direction") or "").upper()
     entry = float(signal.get("entry") or 0.0)
     stop_loss = float(signal.get("stop_loss") or 0.0)
@@ -187,58 +199,88 @@ def simulate_trade(df: pd.DataFrame, signal: dict[str, Any], max_holding_bars: i
     closed_at = pd.Timestamp(df.iloc[min(len(df) - 1, start_index + max_holding_bars)]["time"]).to_pydatetime()
     result = "TIME"
     gross_r = 0.0
+    current_sl_r = -1.0
+    stage = 0
+    final_rr = float(signal.get("risk_reward") or 0.0)
+    exit_settings = smart_exit_settings("BPR")
+    opened_at = pd.Timestamp(signal.get("opened_at")).to_pydatetime()
     future = df.iloc[start_index + 1 : min(len(df), start_index + max_holding_bars + 1)]
-    for _, row in future.iterrows():
+    for row_index, row in future.iterrows():
         high = float(row["high"])
         low = float(row["low"])
         happened_at = pd.Timestamp(row["time"]).to_pydatetime()
+        active_stop = entry + risk_distance * current_sl_r if direction == "BUY" else entry - risk_distance * current_sl_r
         if direction == "BUY":
-            stop_hit = low <= stop_loss
+            stop_hit = low <= active_stop
             tp_hit = high >= take_profit
             if stop_hit and tp_hit:
-                exit_price = stop_loss
+                exit_price = active_stop
                 result = "SL_SAME_BAR"
-                gross_r = -1.0
+                gross_r = current_sl_r
                 closed_at = happened_at
                 break
             if stop_hit:
-                exit_price = stop_loss
-                result = "SL"
-                gross_r = -1.0
+                exit_price = active_stop
+                result = "SL" if current_sl_r < -0.05 else "TRAIL"
+                gross_r = current_sl_r
                 closed_at = happened_at
                 break
             if tp_hit:
                 exit_price = take_profit
                 result = "TP"
-                gross_r = float(signal.get("risk_reward") or 0.0)
+                gross_r = final_rr
                 closed_at = happened_at
                 break
+            while stage < int(final_rr) and high >= entry + risk_distance * (stage + 1):
+                stage += 1
+                current_sl_r = max(current_sl_r, 0.0 if stage == 1 else float(stage - 1))
         else:
-            stop_hit = high >= stop_loss
+            stop_hit = high >= active_stop
             tp_hit = low <= take_profit
             if stop_hit and tp_hit:
-                exit_price = stop_loss
+                exit_price = active_stop
                 result = "SL_SAME_BAR"
-                gross_r = -1.0
+                gross_r = current_sl_r
                 closed_at = happened_at
                 break
             if stop_hit:
-                exit_price = stop_loss
-                result = "SL"
-                gross_r = -1.0
+                exit_price = active_stop
+                result = "SL" if current_sl_r < -0.05 else "TRAIL"
+                gross_r = current_sl_r
                 closed_at = happened_at
                 break
             if tp_hit:
                 exit_price = take_profit
                 result = "TP"
-                gross_r = float(signal.get("risk_reward") or 0.0)
+                gross_r = final_rr
+                closed_at = happened_at
+                break
+            while stage < int(final_rr) and low <= entry - risk_distance * (stage + 1):
+                stage += 1
+                current_sl_r = max(current_sl_r, 0.0 if stage == 1 else float(stage - 1))
+
+        smart_exit_delay = TIMEFRAME_MINUTES.get(exit_settings.timeframe, 15) * exit_settings.min_bars_open * 60
+        if exit_settings.enabled and (happened_at - opened_at).total_seconds() >= smart_exit_delay:
+            close_price = float(row["close"])
+            unrealized_r = (close_price - entry) / risk_distance if direction == "BUY" else (entry - close_price) / risk_distance
+            validity = evaluate_setup_validity(
+                df.iloc[max(0, int(row_index) - exit_settings.lookback_bars) : int(row_index) + 1],
+                direction=direction,
+                entry=entry,
+                profit=unrealized_r,
+                settings=exit_settings,
+                last_bar_is_closed=True,
+            )
+            if validity.get("invalid"):
+                exit_price = close_price
+                result = "SMART_EXIT"
+                gross_r = unrealized_r
                 closed_at = happened_at
                 break
     if result == "TIME":
         gross_r = (exit_price - entry) / risk_distance if direction == "BUY" else (entry - exit_price) / risk_distance
 
     bpr = signal.get("bpr") or {}
-    opened_at = pd.Timestamp(signal.get("opened_at")).to_pydatetime()
     return BPRBacktestTrade(
         symbol=str(signal["symbol"]),
         timeframe=str(signal["timeframe"]),
