@@ -118,7 +118,7 @@ Safety gates:
 - When forex pairs are in the loop, `AUTO_FOREX_REQUIRE_HTF_AGREEMENT=true` requires H1/H4/D1 agreement before a forex signal can pass.
 - `AUTO_ONE_POSITION_PER_SYMBOL=true` blocks new entries when that symbol already has an open position.
 - `AUTO_ONE_PENDING_PER_SYMBOL=true` blocks a second LTA pending order on a symbol that already has one.
-- `AUTO_PROTECT_OPEN_TRADES=true` checks open automation trades every scan. With `AUTO_TP1_PARTIAL_CLOSE=true`, the bot closes `AUTO_TP1_PARTIAL_CLOSE_PCT=50` percent of the open volume the first time TP1 is hit, then moves SL to break-even. After that, TP2 moves SL to TP1, TP3 moves SL to TP2, TP4 moves SL to TP3, and TP5 moves SL to TP4 if the position is still open.
+- `AUTO_PROTECT_OPEN_TRADES=true` checks open automation trades every scan. The default `AUTO_TP1_PARTIAL_CLOSE=false` keeps the full position open: TP1 moves SL to break-even, TP2 moves SL to TP1, TP3 moves SL to TP2, TP4 moves SL to TP3, and TP5 moves SL to TP4.
 - If the broker minimum lot does not allow a safe half-close, the bot records a skipped partial close and still trails the stop loss.
 - `AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES=60` cools a symbol until one hour after any MT5 position on that symbol was opened or closed. This includes manual trades and break-even closes. The old `AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES` name still works as a fallback.
 - `reports/automation/automation.lock` and `automation_heartbeat.json` prevent accidentally running two automation workers.
@@ -170,7 +170,7 @@ Defaults:
 - Session window: `ORB_SESSION_START=09:30`, `ORB_SESSION_END=16:00`, interpreted in `ORB_SESSION_TIMEZONE=America/New_York`
 - Opening range: `ORB_RANGE_MINUTES=15`
 - Target: `ORB_RR=5.0`
-- Trade protection: `ORB_PROTECT_OPEN_TRADES=true`, `ORB_PROTECTION_FINAL_RR=5.0`, `ORB_TP1_PARTIAL_CLOSE=true`, `ORB_TP1_PARTIAL_CLOSE_PCT=50`
+- Trade protection: `ORB_PROTECT_OPEN_TRADES=true`, `ORB_PROTECTION_FINAL_RR=5.0`, `ORB_TP1_PARTIAL_CLOSE=false`, `ORB_TP1_PARTIAL_CLOSE_PCT=0`
 - Live order sending: off, unless `ORB_LIVE_TRADING=true` and `ORB_PLACE_TRADES=true`
 - Pending stop sending: off, unless `ORB_PLACE_PENDING=true`
 - Candle data timezone: `MARKET_DATA_TIMEZONE=UTC`

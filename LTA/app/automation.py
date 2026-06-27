@@ -10,9 +10,15 @@ import time
 from pathlib import Path
 from typing import Any
 
+from .adaptive_risk import (
+    apply_dynamic_stop,
+    dynamic_stop_settings,
+    maybe_close_invalid_position,
+    smart_exit_settings,
+)
 from .config import REPORTS_DIR, load_config
 from .models import TRADE_SYMBOLS
-from .mt5_client import MT5Client
+from .mt5_client import MT5Client, TIMEFRAME_MINUTES
 from .scanner import DEFAULT_SCAN_TIMEFRAMES, scan_market
 from .session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, minutes_in_timezone
 
@@ -456,8 +462,11 @@ class TradeAutomation:
         self.protection_final_rr = max(1.0, _env_float("AUTO_PROTECTION_FINAL_RR", self.config.min_risk_reward))
         self.symbol_rr = _env_float_map("AUTO_SYMBOL_RR")
         self.symbol_protection_rr = _env_float_map("AUTO_SYMBOL_PROTECTION_RR")
-        self.tp1_partial_close_enabled = _env_bool("AUTO_TP1_PARTIAL_CLOSE", True)
-        self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("AUTO_TP1_PARTIAL_CLOSE_PCT", 50.0)))
+        self.tp1_partial_close_enabled = _env_bool("AUTO_TP1_PARTIAL_CLOSE", False)
+        self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("AUTO_TP1_PARTIAL_CLOSE_PCT", 0.0)))
+        self.dynamic_stop_settings = dynamic_stop_settings("AUTO")
+        self.smart_exit_settings = smart_exit_settings("AUTO")
+        self._dynamic_stop_candles: dict[tuple[str, str], Any] = {}
         self.max_consecutive_losses = max(0, _env_int("AUTO_MAX_CONSECUTIVE_LOSSES", 2))
         self.symbol_max_losses_per_day = max(0, _env_int("AUTO_SYMBOL_MAX_LOSSES_PER_DAY", 1))
         self.symbol_max_daily_loss_r = max(0.0, _env_float("AUTO_SYMBOL_MAX_DAILY_LOSS_R", 1.0))
@@ -542,6 +551,26 @@ class TradeAutomation:
             reasons.append(f"Per-symbol RR profile uses final target 1:{target_rr:g}.")
             adjusted["reasons"] = list(dict.fromkeys(reasons))
         return adjusted
+
+    def _apply_adaptive_stop(self, signal: dict[str, Any], now: datetime) -> dict[str, Any]:
+        if not self.dynamic_stop_settings.enabled:
+            return signal
+        symbol = str(signal.get("symbol") or "")
+        timeframe = str(signal.get("timeframe") or "M15").upper()
+        cache_key = (symbol, timeframe)
+        candles = self._dynamic_stop_candles.get(cache_key)
+        if candles is None:
+            actual_minutes = TIMEFRAME_MINUTES.get(timeframe, 15)
+            candles = self.client.fetch_candles(
+                symbol,
+                timeframe,
+                now - timedelta(minutes=actual_minutes * 140),
+                now,
+                max_bars=140,
+            )
+            if candles is not None:
+                self._dynamic_stop_candles[cache_key] = candles
+        return apply_dynamic_stop(signal, candles, self.dynamic_stop_settings)
 
     def _cooldown_active(self, key: str, now: datetime) -> bool:
         seen_at = self.seen.get(key)
@@ -1294,6 +1323,23 @@ class TradeAutomation:
                 actions.append(action)
                 continue
 
+            smart_exit = maybe_close_invalid_position(
+                self.client,
+                position,
+                self.smart_exit_settings,
+                live_trading=self.config.live_trading,
+                now=now,
+                comment="LTA setup invalidated",
+            )
+            if smart_exit is not None:
+                action["smart_exit"] = smart_exit
+                action["status"] = f"smart_exit_{smart_exit['status']}"
+                state["status"] = action["status"]
+                actions.append(action)
+                _append_jsonl(PROTECTION_LOG_PATH, action)
+                if smart_exit["status"] in {"closed", "dry_run"}:
+                    continue
+
             quote = self.client.current_quote(broker_symbol) or self.client.current_quote(str(state["symbol"]))
             if not quote:
                 action["status"] = "skipped_no_quote"
@@ -1399,8 +1445,15 @@ class TradeAutomation:
             preplace_min_score=self.preplace_min_score,
             min_rr=self._scan_min_rr(),
         )
-        scan["allowed"] = [self._retarget_signal_rr(signal) for signal in scan.get("allowed", [])]
-        scan["preplace"] = [self._retarget_signal_rr(signal) for signal in scan.get("preplace", [])]
+        self._dynamic_stop_candles.clear()
+        scan["allowed"] = [
+            self._retarget_signal_rr(self._apply_adaptive_stop(signal, now))
+            for signal in scan.get("allowed", [])
+        ]
+        scan["preplace"] = [
+            self._retarget_signal_rr(self._apply_adaptive_stop(signal, now))
+            for signal in scan.get("preplace", [])
+        ]
         if self.best_setup_selector:
             scan["allowed"] = _rank_signals(scan["allowed"], self.best_setup_candidate_limit)
             scan["preplace"] = _rank_signals(scan["preplace"], self.best_setup_candidate_limit)
@@ -1520,6 +1573,7 @@ class TradeAutomation:
                 continue
 
             will_send_to_mt5 = self.config.live_trading and self.auto_place_trades
+            signal = self.client.normalize_signal_for_execution(signal)
             spread_check = self.client.spread_check(
                 signal,
                 max_spread_risk_percent=self.max_spread_risk_percent,
@@ -1769,6 +1823,7 @@ class TradeAutomation:
                     continue
 
                 will_send_pending_to_mt5 = self.config.live_trading and self.auto_place_trades and self.auto_preplace_orders
+                signal = self.client.normalize_signal_for_execution(signal)
                 spread_check = self.client.spread_check(
                     signal,
                     max_spread_risk_percent=self.max_spread_risk_percent,
@@ -2025,6 +2080,8 @@ class TradeAutomation:
                     "enabled": self.tp1_partial_close_enabled,
                     "percent": self.tp1_partial_close_pct,
                 },
+                "dynamic_stop": self.dynamic_stop_settings.__dict__,
+                "smart_exit": self.smart_exit_settings.__dict__,
                 "checked_count": len(protection_actions),
                 "modified_count": sum(1 for action in protection_actions if action.get("status") == "modified"),
                 "actions": protection_actions,

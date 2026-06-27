@@ -11,6 +11,12 @@ import time
 from pathlib import Path
 from typing import Any
 
+from .adaptive_risk import (
+    apply_dynamic_stop,
+    dynamic_stop_settings,
+    maybe_close_invalid_position,
+    smart_exit_settings,
+)
 from .config import REPORTS_DIR, load_config
 from .models import TRADE_SYMBOLS
 from .mt5_client import MT5Client
@@ -255,8 +261,10 @@ class ORBBot:
         self.symbol_protection_rr = _env_float_map("ORB_SYMBOL_PROTECTION_RR")
         self.protect_open_trades = _env_bool("ORB_PROTECT_OPEN_TRADES", True)
         self.protection_final_rr = max(1.0, _env_float("ORB_PROTECTION_FINAL_RR", self.settings.reward_risk))
-        self.tp1_partial_close_enabled = _env_bool("ORB_TP1_PARTIAL_CLOSE", True)
-        self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("ORB_TP1_PARTIAL_CLOSE_PCT", 50.0)))
+        self.tp1_partial_close_enabled = _env_bool("ORB_TP1_PARTIAL_CLOSE", False)
+        self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("ORB_TP1_PARTIAL_CLOSE_PCT", 0.0)))
+        self.dynamic_stop_settings = dynamic_stop_settings("ORB")
+        self.smart_exit_settings = smart_exit_settings("ORB")
         self.state = _read_state()
         _write_state(self.state)
 
@@ -585,6 +593,23 @@ class ORBBot:
                 actions.append(action)
                 continue
 
+            smart_exit = maybe_close_invalid_position(
+                self.client,
+                position,
+                self.smart_exit_settings,
+                live_trading=self.live_trading,
+                now=now,
+                comment="ORB setup invalidated",
+            )
+            if smart_exit is not None:
+                action["smart_exit"] = smart_exit
+                action["status"] = f"smart_exit_{smart_exit['status']}"
+                state["status"] = action["status"]
+                actions.append(action)
+                _append_jsonl(PROTECTION_LOG_PATH, action)
+                if smart_exit["status"] in {"closed", "dry_run"}:
+                    continue
+
             quote = self.client.current_quote(broker_symbol)
             if not quote:
                 action["status"] = "skipped_no_quote"
@@ -675,6 +700,7 @@ class ORBBot:
     def _prepare_signal(self, signal: dict[str, Any], now: datetime) -> tuple[dict[str, Any] | None, list[str]]:
         blocks: list[str] = []
         quote = self.client.current_quote(str(signal.get("symbol") or ""))
+        signal = self.client.normalize_signal_for_execution(signal, quote=quote)
         spread = self.client.spread_check(
             signal,
             max_spread_risk_percent=self.max_spread_risk_percent,
@@ -767,6 +793,11 @@ class ORBBot:
                 signals.append(confirmed)
             elif self.prepare_pending:
                 signals.extend(pending_orb_signals(candles, symbol, self.timeframe, symbol_settings, now=now))
+
+            signals = [
+                apply_dynamic_stop(signal, candles, self.dynamic_stop_settings)
+                for signal in signals
+            ]
 
             cycle_signals.extend(signals)
 
@@ -877,6 +908,8 @@ class ORBBot:
                     "enabled": self.tp1_partial_close_enabled,
                     "percent": self.tp1_partial_close_pct,
                 },
+                "dynamic_stop": self.dynamic_stop_settings.__dict__,
+                "smart_exit": self.smart_exit_settings.__dict__,
                 "checked_count": len(protection_actions),
                 "modified_count": sum(1 for action in protection_actions if action.get("status") == "modified"),
                 "actions": protection_actions,

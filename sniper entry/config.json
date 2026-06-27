@@ -15,7 +15,17 @@
     "require_fresh_cross": true,
     "require_bias_alignment": true,
     "min_bias_edge_pct": 20.0,
-    "min_adx": 0.0
+    "min_adx": 0.0,
+    "dynamic_stop": {
+      "enabled": true,
+      "base_atr": 1.5,
+      "volatility_lookback": 50,
+      "volume_lookback": 30,
+      "high_volatility_ratio": 1.2,
+      "high_volume_ratio": 1.35,
+      "max_atr": 3.5,
+      "max_widen_factor": 2.5
+    }
   },
   "risk": {
     "balance_risk_pct": 5.0
@@ -27,10 +37,25 @@
     "skip_if_any_symbol_exposure": true,
     "broker_tp": "TP3",
     "manage_virtual_targets": true,
-    "partial_close_at_tp1": true,
-    "tp1_partial_close_pct": 50.0,
+    "partial_close_at_tp1": false,
+    "tp1_partial_close_pct": 0.0,
     "move_sl_to_entry_at_tp1": true,
-    "move_sl_to_tp1_at_tp2": true
+    "move_sl_to_tp1_at_tp2": true,
+    "smart_exit": {
+      "enabled": true,
+      "timeframe": "M15",
+      "lookback_bars": 100,
+      "min_bars_open": 2,
+      "ema_fast": 9,
+      "ema_slow": 21,
+      "atr_period": 14,
+      "profit_confirmations": 1,
+      "loss_confirmations": 2,
+      "adverse_entry_atr": 0.25,
+      "momentum_body_atr": 0.65,
+      "momentum_volume_ratio": 1.3,
+      "structure_lookback": 8
+    }
   },
   "guardrails": {
     "enabled": true,

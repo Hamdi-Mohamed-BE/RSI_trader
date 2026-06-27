@@ -8,6 +8,12 @@ from pathlib import Path
 import time
 from typing import Any
 
+from .adaptive_risk import (
+    apply_dynamic_stop,
+    dynamic_stop_settings,
+    maybe_close_invalid_position,
+    smart_exit_settings,
+)
 from .bpr_strategy import generate_bpr_signals, settings_from_env
 from .bpr_strategy import BPRSettings
 from .config import REPORTS_DIR, load_config
@@ -123,7 +129,7 @@ def _append_jsonl(path: Path, payload: dict[str, Any]) -> None:
 
 def _read_state() -> dict[str, Any]:
     if not STATE_PATH.exists():
-        return {"created_at": datetime.now().isoformat(timespec="seconds"), "consumed": {}, "placed": []}
+        return {"created_at": datetime.now().isoformat(timespec="seconds"), "consumed": {}, "placed": [], "protected_positions": {}}
     try:
         data = json.loads(STATE_PATH.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
@@ -132,6 +138,7 @@ def _read_state() -> dict[str, Any]:
         return {"created_at": datetime.now().isoformat(timespec="seconds"), "consumed": {}, "placed": []}
     data.setdefault("consumed", {})
     data.setdefault("placed", [])
+    data.setdefault("protected_positions", {})
     return data
 
 
@@ -205,6 +212,9 @@ class BPRBot:
         self.symbol_min_score = _env_float_map("BPR_SYMBOL_MIN_SCORE")
         self.timeframe_rr = _env_pair_float_map("BPR_TIMEFRAME_RR")
         self.timeframe_min_score = _env_pair_float_map("BPR_TIMEFRAME_MIN_SCORE")
+        self.protect_open_trades = _env_bool("BPR_PROTECT_OPEN_TRADES", True)
+        self.dynamic_stop_settings = dynamic_stop_settings("BPR")
+        self.smart_exit_settings = smart_exit_settings("BPR")
         self.state = _read_state()
         _write_state(self.state)
 
@@ -242,8 +252,137 @@ class BPRBot:
             order["expires_at"] = (datetime.now() + timedelta(minutes=self.pending_expiry_minutes)).isoformat(timespec="seconds")
         return order
 
+    @staticmethod
+    def _position_direction(position: dict[str, Any]) -> str:
+        return "SELL" if int(position.get("type") or 0) == 1 else "BUY"
+
+    @staticmethod
+    def _level_at_r(entry: float, risk: float, direction: str, multiple: float) -> float:
+        return entry + risk * multiple if direction == "BUY" else entry - risk * multiple
+
+    @staticmethod
+    def _stop_is_better(current_stop: float, desired_stop: float, direction: str) -> bool:
+        if current_stop <= 0:
+            return True
+        return desired_stop > current_stop if direction == "BUY" else desired_stop < current_stop
+
+    def protect_positions(self, now: datetime) -> list[dict[str, Any]]:
+        if not self.protect_open_trades:
+            return []
+        positions = self.client.open_positions(magic=BPR_MAGIC)
+        protected = self.state.setdefault("protected_positions", {})
+        open_tickets = {str(position.get("ticket")) for position in positions if position.get("ticket")}
+        for stale_ticket in set(protected) - open_tickets:
+            protected.pop(stale_ticket, None)
+
+        actions: list[dict[str, Any]] = []
+        for position in positions:
+            ticket = str(position.get("ticket") or "")
+            if not ticket:
+                continue
+            direction = self._position_direction(position)
+            broker_symbol = str(position.get("symbol") or "")
+            entry = float(position.get("price_open") or 0.0)
+            current_stop = float(position.get("sl") or 0.0)
+            take_profit = float(position.get("tp") or 0.0)
+            state = protected.setdefault(ticket, {})
+            initial_stop = float(state.get("initial_stop") or current_stop or 0.0)
+            risk = abs(entry - initial_stop)
+            final_rr = float(state.get("final_rr") or 0.0)
+            if final_rr <= 0 and risk > 0 and take_profit > 0:
+                final_rr = abs(take_profit - entry) / risk
+            final_rr = max(1.0, final_rr or self.settings.reward_risk)
+            state.update(
+                {
+                    "symbol": broker_symbol,
+                    "direction": direction,
+                    "entry": entry,
+                    "initial_stop": initial_stop,
+                    "final_rr": final_rr,
+                }
+            )
+            action: dict[str, Any] = {
+                "checked_at": now.isoformat(timespec="seconds"),
+                "ticket": ticket,
+                "symbol": broker_symbol,
+                "direction": direction,
+                "entry": entry,
+                "initial_stop": initial_stop,
+                "current_stop": current_stop,
+                "take_profit": take_profit,
+                "status": "waiting",
+            }
+            if entry <= 0 or initial_stop <= 0 or risk <= 0:
+                action["status"] = "skipped_missing_initial_risk"
+                actions.append(action)
+                continue
+
+            smart_exit = maybe_close_invalid_position(
+                self.client,
+                position,
+                self.smart_exit_settings,
+                live_trading=self.live_trading,
+                now=now,
+                comment="BPR setup invalidated",
+            )
+            if smart_exit is not None:
+                action["smart_exit"] = smart_exit
+                action["status"] = f"smart_exit_{smart_exit['status']}"
+                state["status"] = action["status"]
+                actions.append(action)
+                _append_jsonl(EVENTS_PATH, {"event": "bpr_smart_exit", **action})
+                if smart_exit["status"] in {"closed", "dry_run"}:
+                    continue
+
+            quote = self.client.current_quote(broker_symbol)
+            if not quote:
+                action["status"] = "skipped_no_quote"
+                actions.append(action)
+                continue
+            market_price = float(quote["bid"] if direction == "BUY" else quote["ask"])
+            hit_stage = 0
+            stage_targets = {
+                stage: self._level_at_r(entry, risk, direction, float(stage))
+                for stage in range(1, max(1, int(round(final_rr))) + 1)
+            }
+            for stage, target in stage_targets.items():
+                if (direction == "BUY" and market_price >= target) or (direction == "SELL" and market_price <= target):
+                    hit_stage = stage
+            action["market_price"] = market_price
+            action["hit_stage"] = hit_stage
+            if hit_stage <= 0:
+                actions.append(action)
+                continue
+            desired_stop = entry if hit_stage == 1 else stage_targets[hit_stage - 1]
+            action["rule"] = "tp1_hit_move_sl_to_break_even" if hit_stage == 1 else f"tp{hit_stage}_hit_trail_sl_to_tp{hit_stage - 1}"
+            desired_stop = self.client.normalize_price(broker_symbol, desired_stop)
+            action["desired_stop"] = desired_stop
+            if not self._stop_is_better(current_stop, desired_stop, direction):
+                action["status"] = "already_protected"
+                actions.append(action)
+                continue
+            if not self.live_trading:
+                action["status"] = "dry_run_trail"
+                actions.append(action)
+                continue
+            result = self.client.modify_position_sl_tp(
+                int(ticket),
+                broker_symbol,
+                stop_loss=desired_stop,
+                take_profit=take_profit if take_profit > 0 else None,
+            )
+            action["modify_result"] = result
+            action["status"] = "modified" if result.get("modified") else "modify_failed"
+            state["status"] = action["status"]
+            state["stage"] = max(int(state.get("stage") or 0), hit_stage)
+            actions.append(action)
+            _append_jsonl(EVENTS_PATH, {"event": "bpr_trade_protection", **action})
+        _write_state(self.state)
+        return actions
+
     def run_once(self) -> dict[str, Any]:
         now = datetime.now()
+        protection_actions = self.protect_positions(now)
         prepared: list[dict[str, Any]] = []
         placed: list[dict[str, Any]] = []
         blocked: list[dict[str, Any]] = []
@@ -260,7 +399,10 @@ class BPRBot:
                     continue
                 signals = generate_bpr_signals(candles, symbol, timeframe, symbol_settings, include_pending=True)
                 if signals:
-                    candidates.extend(signals[-3:])
+                    candidates.extend(
+                        apply_dynamic_stop(signal, candles, self.dynamic_stop_settings)
+                        for signal in signals[-3:]
+                    )
 
         candidates.sort(key=lambda item: (float(item.get("setup_score") or 0), item.get("opened_at") or now), reverse=True)
         for signal in candidates:
@@ -286,6 +428,7 @@ class BPRBot:
                 blocked.append({"signal": signal, "reasons": reasons})
                 continue
 
+            signal = self.client.normalize_signal_for_execution(signal)
             spread_check = self.client.spread_check(
                 signal,
                 max_spread_risk_percent=self.max_spread_risk_percent,
@@ -357,6 +500,13 @@ class BPRBot:
             "symbol_min_score": self.symbol_min_score,
             "timeframe_rr": {f"{symbol}.{timeframe}": value for (symbol, timeframe), value in self.timeframe_rr.items()},
             "timeframe_min_score": {f"{symbol}.{timeframe}": value for (symbol, timeframe), value in self.timeframe_min_score.items()},
+            "trade_protection": {
+                "enabled": self.protect_open_trades,
+                "tp1_partial_close": False,
+                "dynamic_stop": self.dynamic_stop_settings.__dict__,
+                "smart_exit": self.smart_exit_settings.__dict__,
+                "actions": protection_actions,
+            },
             "candidates": len(candidates),
             "prepared_count": len(prepared),
             "placed_count": len(placed),

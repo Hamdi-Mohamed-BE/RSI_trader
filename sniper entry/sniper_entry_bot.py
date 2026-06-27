@@ -652,7 +652,35 @@ class SniperBot:
                     "bear_pct": round(bear_pct),
                     "required_edge": edge,
                 }
-        risk_unit = float(atr14[index]) * float(self.config.get("strategy", {}).get("atr_multiplier", 1.5))
+        dynamic_cfg = strategy_cfg.get("dynamic_stop", {}) or {}
+        base_atr_multiplier = float(dynamic_cfg.get("base_atr", strategy_cfg.get("atr_multiplier", 1.5)))
+        activity_factor = 1.0
+        volatility_ratio = 1.0
+        volume_ratio = 1.0
+        if dynamic_cfg.get("enabled", True):
+            atr_lookback = max(20, int(dynamic_cfg.get("volatility_lookback", 50) or 50))
+            historical_atr = [float(value) for value in atr14[max(0, index - atr_lookback) : index] if value]
+            baseline_atr = sorted(historical_atr)[len(historical_atr) // 2] if historical_atr else float(atr14[index])
+            volatility_ratio = float(atr14[index]) / max(baseline_atr, 1e-12)
+            volume_lookback = max(10, int(dynamic_cfg.get("volume_lookback", 30) or 30))
+            historical_volume = sorted(float(value) for value in volumes[max(0, index - volume_lookback) : index] if value > 0)
+            baseline_volume = historical_volume[len(historical_volume) // 2] if historical_volume else max(float(volumes[index]), 1.0)
+            volume_ratio = float(volumes[index]) / max(baseline_volume, 1.0)
+            boost = max(0.0, volatility_ratio - 1.0) * 0.55 + max(0.0, volume_ratio - 1.0) * 0.20
+            if (
+                volatility_ratio >= float(dynamic_cfg.get("high_volatility_ratio", 1.2))
+                and volume_ratio >= float(dynamic_cfg.get("high_volume_ratio", 1.35))
+            ):
+                boost += 0.15
+            activity_factor = min(float(dynamic_cfg.get("max_widen_factor", 2.5)), 1.0 + boost)
+        atr_multiple = min(float(dynamic_cfg.get("max_atr", 3.5)), base_atr_multiplier * activity_factor)
+        risk_unit = float(atr14[index]) * atr_multiple
+        broker_minimum_stop = max(
+            float(getattr(info, "trade_stops_level", 0) or 0) * float(info.point or 0.0),
+            float(getattr(info, "trade_freeze_level", 0) or 0) * float(info.point or 0.0),
+            spread * 1.25,
+        )
+        risk_unit = max(risk_unit, broker_minimum_stop)
         entry = float(tick.ask if side == "BUY" else tick.bid)
         if side == "BUY":
             sl = entry - risk_unit
@@ -681,7 +709,19 @@ class SniperBot:
             spread=spread,
         )
         self.update_symbol_state(logical, bar_time, state_after)
-        return signal, {"status": "signal", "side": side, "bias": bias, "bull_pct": round(bull_pct), "bear_pct": round(bear_pct)}
+        return signal, {
+            "status": "signal",
+            "side": side,
+            "bias": bias,
+            "bull_pct": round(bull_pct),
+            "bear_pct": round(bear_pct),
+            "dynamic_stop": {
+                "atr_multiple": round(atr_multiple, 3),
+                "activity_factor": round(activity_factor, 3),
+                "volatility_ratio": round(volatility_ratio, 3),
+                "volume_ratio": round(volume_ratio, 3),
+            },
+        }
 
     def update_symbol_state(self, logical: str, bar_time: int, signal_state: int) -> None:
         self.state.setdefault("symbols", {})[logical] = {
@@ -841,6 +881,118 @@ class SniperBot:
             }
         return {"closed": False, "error": last_error or "unknown_partial_close_error", "request": request_base}
 
+    def close_position_full(
+        self,
+        data: dict[str, Any],
+        symbol: str,
+        side: str,
+        tick: Any,
+    ) -> dict[str, Any]:
+        request_base = {
+            "action": mt5.TRADE_ACTION_DEAL,
+            "position": int(data["ticket"]),
+            "symbol": symbol,
+            "volume": float(data.get("volume") or 0.0),
+            "type": mt5.ORDER_TYPE_SELL if side == "BUY" else mt5.ORDER_TYPE_BUY,
+            "price": float(tick.bid if side == "BUY" else tick.ask),
+            "deviation": int(self.config.get("execution", {}).get("deviation_points", 30)),
+            "comment": "SNIP setup invalidated",
+            "type_time": mt5.ORDER_TIME_GTC,
+        }
+        if not self.live:
+            return {"closed": False, "dry_run": True, "request": request_base}
+        last_error: dict[str, Any] | None = None
+        for filling in FILLING_MODES:
+            request = {**request_base, "type_filling": filling}
+            result = mt5.order_send(request)
+            result_data = as_dict(result) if result else {"retcode": None, "comment": "no result"}
+            if result_data.get("retcode") in {
+                mt5.TRADE_RETCODE_DONE,
+                getattr(mt5, "TRADE_RETCODE_DONE_PARTIAL", 10010),
+            }:
+                return {"closed": True, "request": request, "result": result_data}
+            last_error = {
+                "retcode": result_data.get("retcode"),
+                "comment": result_data.get("comment"),
+                "filling": filling,
+            }
+        return {"closed": False, "error": last_error or "unknown_close_error", "request": request_base}
+
+    def smart_exit_check(
+        self,
+        data: dict[str, Any],
+        symbol: str,
+        side: str,
+        tick: Any,
+    ) -> dict[str, Any] | None:
+        cfg = self.config.get("execution", {}).get("smart_exit", {}) or {}
+        if not cfg.get("enabled", True):
+            return None
+        timeframe_name = str(cfg.get("timeframe", "M15")).upper()
+        timeframe = TIMEFRAMES.get(timeframe_name, mt5.TIMEFRAME_M15)
+        min_bars_open = max(1, int(cfg.get("min_bars_open", 2) or 2))
+        timeframe_minutes = {"M1": 1, "M5": 5, "M15": 15, "M30": 30, "H1": 60, "H4": 240}.get(timeframe_name, 15)
+        opened_at = int(data.get("time") or 0)
+        if opened_at and time.time() - opened_at < timeframe_minutes * min_bars_open * 60:
+            return None
+        candles = self.get_closed_rates(symbol, timeframe, max(60, int(cfg.get("lookback_bars", 100) or 100)))
+        if len(candles) < 35:
+            return None
+        closes = [float(candle["close"]) for candle in candles]
+        ema_fast = ema_series(closes, max(2, int(cfg.get("ema_fast", 9) or 9)))
+        ema_slow = ema_series(closes, max(3, int(cfg.get("ema_slow", 21) or 21)))
+        atr_values = atr_series(candles, max(2, int(cfg.get("atr_period", 14) or 14)))
+        atr = float(atr_values[-1] or 0.0)
+        if atr <= 0 or ema_fast[-1] is None or ema_slow[-1] is None:
+            return None
+        entry = float(data.get("price_open") or 0.0)
+        latest = candles[-1]
+        last_two_closes = closes[-2:]
+        structure_lookback = max(3, int(cfg.get("structure_lookback", 8) or 8))
+        previous_structure = candles[-structure_lookback - 1 : -1]
+        volume_history = sorted(float(candle.get("tick_volume", 1.0) or 1.0) for candle in candles[-31:-1])
+        baseline_volume = volume_history[len(volume_history) // 2] if volume_history else 1.0
+        volume_ratio = float(latest.get("tick_volume", 1.0) or 1.0) / max(baseline_volume, 1.0)
+        adverse_atr = float(cfg.get("adverse_entry_atr", 0.25) or 0.25)
+        body_atr = float(cfg.get("momentum_body_atr", 0.65) or 0.65)
+        body = abs(float(latest["close"]) - float(latest["open"]))
+        if side == "BUY":
+            trend_reversal = bool(ema_fast[-1] < ema_slow[-1] and all(value < float(ema_fast[-1]) for value in last_two_closes))
+            failed_entry = all(value < entry - atr * adverse_atr for value in last_two_closes)
+            adverse_momentum = float(latest["close"]) < float(latest["open"]) and body >= atr * body_atr
+            structure_break = float(latest["close"]) < min(float(candle["low"]) for candle in previous_structure)
+        else:
+            trend_reversal = bool(ema_fast[-1] > ema_slow[-1] and all(value > float(ema_fast[-1]) for value in last_two_closes))
+            failed_entry = all(value > entry + atr * adverse_atr for value in last_two_closes)
+            adverse_momentum = float(latest["close"]) > float(latest["open"]) and body >= atr * body_atr
+            structure_break = float(latest["close"]) > max(float(candle["high"]) for candle in previous_structure)
+        score = 0
+        reasons: list[str] = []
+        for confirmed, weight, reason in (
+            (trend_reversal, 1, "ema_trend_reversed"),
+            (failed_entry, 1, "two_closes_failed_entry"),
+            (adverse_momentum and volume_ratio >= float(cfg.get("momentum_volume_ratio", 1.3)), 1, "high_volume_adverse_momentum"),
+            (structure_break, 2, "adverse_structure_break"),
+        ):
+            if confirmed:
+                score += weight
+                reasons.append(reason)
+        profit = float(data.get("profit") or 0.0)
+        required = max(1, int(cfg.get("profit_confirmations", 1) if profit > 0 else cfg.get("loss_confirmations", 2)))
+        if score < required:
+            return None
+        result = self.close_position_full(data, symbol, side, tick)
+        return {
+            "action": "smart_invalidation_exit",
+            "score": score,
+            "required": required,
+            "reasons": reasons,
+            "profit": profit,
+            "atr": atr,
+            "volume_ratio": round(volume_ratio, 3),
+            "result": result,
+        }
+
     def manage_positions(self) -> list[dict[str, Any]]:
         if not self.config.get("execution", {}).get("manage_virtual_targets", True):
             return []
@@ -859,6 +1011,11 @@ class SniperBot:
             tick = mt5.symbol_info_tick(symbol)
             if not info or not tick:
                 continue
+            smart_exit = self.smart_exit_check(data, symbol, side, tick)
+            if smart_exit is not None:
+                actions.append({"ticket": int(data["ticket"]), **smart_exit})
+                if smart_exit.get("result", {}).get("closed") or smart_exit.get("result", {}).get("dry_run"):
+                    continue
             entry = float(data["price_open"])
             old_sl = float(data.get("sl") or 0)
             tp = float(data.get("tp") or 0)
@@ -876,8 +1033,8 @@ class SniperBot:
             spread = float(tick.ask - tick.bid)
             buffer = max(spread * 1.5, (info.point or 0.01) * 10)
             hit_tp1 = price >= tp1 if side == "BUY" else price <= tp1
-            partial_enabled = self.config.get("execution", {}).get("partial_close_at_tp1", True)
-            partial_pct = float(self.config.get("execution", {}).get("tp1_partial_close_pct", 50.0))
+            partial_enabled = self.config.get("execution", {}).get("partial_close_at_tp1", False)
+            partial_pct = float(self.config.get("execution", {}).get("tp1_partial_close_pct", 0.0))
             if hit_tp1 and partial_enabled and partial_pct > 0 and not position_state.get("tp1_partial_done"):
                 partial_result = self.close_partial_position(data, symbol, side, info, tick, partial_pct)
                 actions.append(

@@ -10,6 +10,12 @@ import time
 from pathlib import Path
 from typing import Any
 
+from .adaptive_risk import (
+    apply_dynamic_stop,
+    dynamic_stop_settings,
+    maybe_close_invalid_position,
+    smart_exit_settings,
+)
 from .config import REPORTS_DIR, load_config
 from .models import TRADE_SYMBOLS
 from .mt5_client import MT5Client
@@ -265,10 +271,12 @@ class TwentyPipChallengeBot:
         self.max_account_risk_percent = max(0.0, _env_float("CHALLENGE20_MAX_ACCOUNT_RISK_PERCENT", 23.0))
         self.max_spread_risk_percent = max(0.0, _env_float("CHALLENGE20_MAX_SPREAD_RISK_PERCENT", 15.0))
         self.max_spread_points = max(0.0, _env_float("CHALLENGE20_MAX_SPREAD_POINTS", 0.0))
-        self.protect_open_trades = _env_bool("CHALLENGE20_PROTECT_OPEN_TRADES", False)
+        self.protect_open_trades = _env_bool("CHALLENGE20_PROTECT_OPEN_TRADES", True)
         self.protection_final_rr = max(1.0, _env_float("CHALLENGE20_PROTECTION_FINAL_RR", self.reward_risk or 3.0))
         self.tp1_partial_close_enabled = _env_bool("CHALLENGE20_TP1_PARTIAL_CLOSE", False)
         self.tp1_partial_close_pct = max(0.0, min(100.0, _env_float("CHALLENGE20_TP1_PARTIAL_CLOSE_PCT", 0.0)))
+        self.dynamic_stop_settings = dynamic_stop_settings("CHALLENGE20")
+        self.smart_exit_settings = smart_exit_settings("CHALLENGE20")
         self.allow_pending = _env_bool("CHALLENGE20_ALLOW_PENDING", False)
         self.orb_timeframe = os.getenv("CHALLENGE20_ORB_TIMEFRAME", os.getenv("ORB_TIMEFRAME", "M15")).strip().upper() or "M15"
         self.orb_lookback_days = max(3, _env_int("CHALLENGE20_ORB_LOOKBACK_DAYS", _env_int("ORB_LOOKBACK_DAYS", 10)))
@@ -519,6 +527,23 @@ class TwentyPipChallengeBot:
                 actions.append(action)
                 continue
 
+            smart_exit = maybe_close_invalid_position(
+                self.client,
+                position,
+                self.smart_exit_settings,
+                live_trading=self.live_trading,
+                now=now,
+                comment="20PIP setup invalidated",
+            )
+            if smart_exit is not None:
+                action["smart_exit"] = smart_exit
+                action["status"] = f"smart_exit_{smart_exit['status']}"
+                trade["status"] = action["status"]
+                actions.append(action)
+                self._log_event("challenge_smart_exit", action=action)
+                if smart_exit["status"] in {"closed", "dry_run"}:
+                    continue
+
             quote = self.client.current_quote(broker_symbol) or self.client.current_quote(str(trade.get("symbol") or ""))
             if not quote:
                 action["status"] = "skipped_no_quote"
@@ -658,6 +683,30 @@ class TwentyPipChallengeBot:
             f"20 Pip Challenge target: risk {self.risk_percent:g}% to seek {self.target_percent:g}% ({rr:.2f}R).",
         ]
         return adjusted
+
+    def _apply_adaptive_stop(self, signal: dict[str, Any], now: datetime) -> dict[str, Any]:
+        if not self.dynamic_stop_settings.enabled:
+            return signal
+        symbol = str(signal.get("symbol") or "")
+        timeframe = str(signal.get("timeframe") or "M15").upper()
+        minutes = {
+            "M1": 1,
+            "M5": 5,
+            "M15": 15,
+            "M30": 30,
+            "H1": 60,
+            "H4": 240,
+            "D1": 1440,
+            "W1": 10080,
+        }.get(timeframe, 15)
+        candles = self.client.fetch_candles(
+            symbol,
+            timeframe,
+            now - timedelta(minutes=minutes * 140),
+            now,
+            max_bars=140,
+        )
+        return apply_dynamic_stop(signal, candles, self.dynamic_stop_settings)
 
     def _risk_lot_from_challenge_bank(self, signal: dict[str, Any], risk_amount: float, will_send: bool) -> dict[str, Any]:
         symbol = str(signal.get("symbol") or "")
@@ -904,10 +953,11 @@ class TwentyPipChallengeBot:
             if not candidates:
                 blocks.append("No challenge-qualified LTA setup found.")
             else:
-                selected_signal = self._adjust_signal_target(candidates[0])
+                selected_signal = self._adjust_signal_target(self._apply_adaptive_stop(candidates[0], now))
 
         if selected_signal:
             will_send = self.live_trading and self.place_trades
+            selected_signal = self.client.normalize_signal_for_execution(selected_signal)
             spread_check = self.client.spread_check(
                 selected_signal,
                 max_spread_risk_percent=self.max_spread_risk_percent,
@@ -1001,6 +1051,8 @@ class TwentyPipChallengeBot:
                     "enabled": self.tp1_partial_close_enabled,
                     "percent": self.tp1_partial_close_pct,
                 },
+                "dynamic_stop": self.dynamic_stop_settings.__dict__,
+                "smart_exit": self.smart_exit_settings.__dict__,
                 "checked_count": len(protection_actions),
                 "modified_count": sum(1 for action in protection_actions if action.get("status") == "modified"),
                 "actions": protection_actions,

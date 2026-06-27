@@ -356,7 +356,7 @@ def generate_candidates(
     manage_tp2_to_tp1 = bool(execution_cfg.get("move_sl_to_tp1_at_tp2", True))
     target_multiple = target_multiple_from_config(config)
     partial_close_at_tp1 = bool(execution_cfg.get("partial_close_at_tp1", True))
-    tp1_partial_close_pct = float(execution_cfg.get("tp1_partial_close_pct", 50.0) or 0.0)
+    tp1_partial_close_pct = float(execution_cfg.get("tp1_partial_close_pct", 0.0) or 0.0)
     move_sl_to_entry_at_tp1 = bool(execution_cfg.get("move_sl_to_entry_at_tp1", True))
 
     candidates: list[Candidate] = []

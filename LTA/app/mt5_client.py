@@ -254,6 +254,72 @@ class MT5Client:
             parts.append("prep")
         return " ".join(parts)[:31]
 
+    def normalize_signal_for_execution(
+        self,
+        signal: dict[str, Any],
+        quote: dict[str, float] | None = None,
+    ) -> dict[str, Any]:
+        adjusted = dict(signal)
+        symbol = str(signal.get("symbol") or "")
+        direction = str(signal.get("direction") or "").upper()
+        if direction not in {"BUY", "SELL"}:
+            return adjusted
+        quote = quote or self.current_quote(symbol)
+        if not quote:
+            return adjusted
+        execution_type = str(signal.get("execution_type") or "MARKET").upper()
+        pending_entry = float(signal.get("trigger_price") or 0.0)
+        entry = (
+            pending_entry
+            if execution_type == "PENDING" and pending_entry > 0
+            else float(quote["ask"] if direction == "BUY" else quote["bid"])
+        )
+        stop = float(signal.get("stop_loss") or 0.0)
+        if entry <= 0 or stop <= 0:
+            return adjusted
+
+        info = self.symbol_info(symbol) or {}
+        point = float(info.get("point") or quote.get("point") or 0.0)
+        broker_stop_distance = max(
+            float(info.get("trade_stops_level") or 0.0) * point,
+            float(info.get("trade_freeze_level") or 0.0) * point,
+        )
+        spread_distance = float(quote.get("spread") or 0.0) * 1.25
+        minimum_distance = max(broker_stop_distance, spread_distance, point)
+        risk_distance = (entry - stop) if direction == "BUY" else (stop - entry)
+        stop_widened = risk_distance < minimum_distance
+        if stop_widened:
+            risk_distance = minimum_distance
+            stop = entry - risk_distance if direction == "BUY" else entry + risk_distance
+        if risk_distance <= 0:
+            return adjusted
+
+        rr = max(0.5, float(signal.get("configured_risk_reward") or signal.get("risk_reward") or 3.0))
+        adjusted["entry"] = self.normalize_price(symbol, entry)
+        adjusted["stop_loss"] = self.normalize_price(symbol, stop)
+        adjusted["take_profit"] = self.normalize_price(
+            symbol,
+            entry + risk_distance * rr if direction == "BUY" else entry - risk_distance * rr,
+        )
+        for stage in range(1, 6):
+            adjusted[f"tp{stage}"] = (
+                self.normalize_price(
+                    symbol,
+                    entry + risk_distance * stage if direction == "BUY" else entry - risk_distance * stage,
+                )
+                if rr >= stage
+                else None
+            )
+        adjusted["execution_price_adjustment"] = {
+            "entry_source": "pending_trigger" if execution_type == "PENDING" else "live_quote",
+            "entry": entry,
+            "risk_distance": risk_distance,
+            "broker_stop_distance": broker_stop_distance,
+            "minimum_distance": minimum_distance,
+            "stop_widened_for_broker": stop_widened,
+        }
+        return adjusted
+
     def spread_check(
         self,
         signal: dict[str, Any],
@@ -281,10 +347,24 @@ class MT5Client:
         spread = float(quote.get("spread") or max(0.0, float(quote["ask"]) - float(quote["bid"])))
         spread_points = float(quote.get("spread_points") or 0.0)
         risk_distance = abs(entry_price - stop_loss)
+        stop_on_correct_side = (
+            (direction == "BUY" and stop_loss < entry_price)
+            or (direction == "SELL" and stop_loss > entry_price)
+        )
         if entry_price <= 0 or stop_loss <= 0 or risk_distance <= 0:
             return {
                 "ok": False,
                 "message": "Entry or stop loss is invalid for spread check.",
+                "symbol": symbol,
+                "direction": direction,
+                "quote": quote,
+                "entry_price": entry_price,
+                "stop_loss": stop_loss,
+            }
+        if not stop_on_correct_side:
+            return {
+                "ok": False,
+                "message": "Stop loss is on the wrong side of the executable entry price.",
                 "symbol": symbol,
                 "direction": direction,
                 "quote": quote,
@@ -1216,6 +1296,86 @@ class MT5Client:
             "request": request,
             "quote": {"bid": float(tick.bid), "ask": float(tick.ask), "last": float(tick.last)},
             "result": payload,
+        }
+
+    def close_position(
+        self,
+        ticket: int,
+        symbol: str,
+        direction: str,
+        volume: float,
+        comment: str = "Smart invalidation exit",
+        deviation: int = 30,
+        live_trading: bool = True,
+    ) -> dict[str, Any]:
+        if mt5 is None or not self.connect():
+            return {"closed": False, "message": "MT5 is not connected."}
+        resolved = self.resolve_symbol(symbol) or symbol
+        tick = mt5.symbol_info_tick(resolved)
+        info = mt5.symbol_info(resolved)
+        if tick is None or info is None:
+            return {"closed": False, "message": f"Live symbol data is unavailable for {resolved}."}
+        direction = str(direction or "").upper()
+        if direction == "BUY":
+            order_type = mt5.ORDER_TYPE_SELL
+            price = float(tick.bid)
+        elif direction == "SELL":
+            order_type = mt5.ORDER_TYPE_BUY
+            price = float(tick.ask)
+        else:
+            return {"closed": False, "message": f"Unsupported position direction: {direction}."}
+
+        request_base = {
+            "action": mt5.TRADE_ACTION_DEAL,
+            "position": int(ticket),
+            "symbol": resolved,
+            "volume": float(volume),
+            "type": order_type,
+            "price": price,
+            "deviation": int(deviation),
+            "comment": str(comment or "Smart invalidation exit")[:31],
+            "type_time": mt5.ORDER_TIME_GTC,
+        }
+        if not live_trading:
+            return {"closed": False, "dry_run": True, "message": "Smart exit prepared only.", "request": request_base}
+
+        filling_modes = [
+            int(getattr(info, "filling_mode", mt5.ORDER_FILLING_IOC)),
+            mt5.ORDER_FILLING_IOC,
+            mt5.ORDER_FILLING_FOK,
+            mt5.ORDER_FILLING_RETURN,
+        ]
+        last_result: dict[str, Any] | None = None
+        seen: set[int] = set()
+        for filling_mode in filling_modes:
+            if filling_mode in seen:
+                continue
+            seen.add(filling_mode)
+            request = {**request_base, "type_filling": filling_mode}
+            result = mt5.order_send(request)
+            if result is None:
+                last_result = {"last_error": mt5.last_error(), "request": request}
+                continue
+            payload = result._asdict()
+            last_result = {"result": payload, "request": request}
+            if payload.get("retcode") in {
+                mt5.TRADE_RETCODE_DONE,
+                getattr(mt5, "TRADE_RETCODE_DONE_PARTIAL", 10010),
+            }:
+                return {
+                    "closed": True,
+                    "message": payload.get("comment", ""),
+                    "ticket": int(ticket),
+                    "symbol": resolved,
+                    "volume": float(volume),
+                    **last_result,
+                }
+        return {
+            "closed": False,
+            "message": "MT5 rejected the smart invalidation exit.",
+            "ticket": int(ticket),
+            "symbol": resolved,
+            **(last_result or {}),
         }
 
     def modify_position_sl_tp(
