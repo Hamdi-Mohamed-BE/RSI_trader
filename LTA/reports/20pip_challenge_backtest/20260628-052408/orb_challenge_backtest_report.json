@@ -1,0 +1,131 @@
+{
+  "created_at": "2026-06-28T05:24:09",
+  "window_start": "2025-12-28 00:00:00",
+  "window_end": "2026-06-28 23:59:59",
+  "symbols": [
+    "BTCUSD"
+  ],
+  "strategy": "ORB + 20 Pip Challenge",
+  "start_balance": 20.0,
+  "risk_percent": 23.0,
+  "target_percent": 30.0,
+  "reward_risk": 1.1111,
+  "take_profit_pips": 20.0,
+  "stop_loss_pips": 18.0,
+  "pip_sizes": {
+    "BTCUSD": 5.0
+  },
+  "weekdays_only": true,
+  "allowed_weekdays": [
+    "THU",
+    "TUE",
+    "WED"
+  ],
+  "levels": 30,
+  "production_limits": {
+    "max_trades_per_day": 2,
+    "max_open_positions": 2,
+    "second_trade_min_score": 100
+  },
+  "orb": {
+    "timeframe": "M15",
+    "session_start": "08:00",
+    "session_end": "17:00",
+    "session_timezone": "America/New_York",
+    "data_timezone": "UTC",
+    "range_minutes": 30,
+    "buffer_atr": 0.0,
+    "min_range_atr": 0.0,
+    "max_range_atr": 999.0
+  },
+  "summaries": {
+    "all_signals": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "timeouts": 0,
+      "win_rate": 0.0,
+      "net_r": 0.0,
+      "start_balance": 20.0,
+      "final_balance": 20.0,
+      "level": 1,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 0.0,
+      "min_balance": 20.0
+    },
+    "one_open_trade_at_a_time": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "timeouts": 0,
+      "win_rate": 0.0,
+      "net_r": 0.0,
+      "start_balance": 20.0,
+      "final_balance": 20.0,
+      "level": 1,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 0.0,
+      "min_balance": 20.0
+    },
+    "one_trade_per_day": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "timeouts": 0,
+      "win_rate": 0.0,
+      "net_r": 0.0,
+      "start_balance": 20.0,
+      "final_balance": 20.0,
+      "level": 1,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 0.0,
+      "min_balance": 20.0
+    },
+    "production_limited": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "timeouts": 0,
+      "win_rate": 0.0,
+      "net_r": 0.0,
+      "start_balance": 20.0,
+      "final_balance": 20.0,
+      "level": 1,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 0.0,
+      "min_balance": 20.0
+    }
+  },
+  "per_symbol": [],
+  "availability": [
+    {
+      "symbol": "BTCUSD",
+      "broker_symbol": "BTCUSDm",
+      "candles": 18166,
+      "days": 78,
+      "status": "ok"
+    }
+  ],
+  "skipped_count": 8,
+  "paths": {
+    "trades": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-052408\\orb_challenge_trades.csv",
+    "availability": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-052408\\availability.csv",
+    "skipped": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-052408\\skipped.csv",
+    "per_symbol_summary": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-052408\\per_symbol_summary.csv",
+    "equity": {
+      "all_signals": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-052408\\all_signals_equity.csv",
+      "one_open_trade_at_a_time": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-052408\\one_open_trade_at_a_time_equity.csv",
+      "one_trade_per_day": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-052408\\one_trade_per_day_equity.csv",
+      "production_limited": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-052408\\production_limited_equity.csv"
+    },
+    "per_symbol_equity": {}
+  }
+}

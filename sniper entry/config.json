@@ -1,8 +1,8 @@
 {
   "mt5_path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
-  "timeframe": "M30",
+  "timeframe": "H4",
   "poll_seconds": 60,
-  "state_file": "state/sniper_state_M30_london_optimized.json",
+  "state_file": "state/sniper_state_H4_newyork_optimized.json",
   "symbols": {
     "BTCUSD": ["BTCUSD", "BTCUSD-VIP", "BTCUSDm"]
   },
@@ -10,7 +10,7 @@
     "atr_multiplier": 1.5,
     "bootstrap_no_trade": true,
     "trade_on_closed_bar": true,
-    "max_signal_age_minutes": 25,
+    "max_signal_age_minutes": 240,
     "max_spread_atr_ratio": 0.2,
     "require_fresh_cross": true,
     "require_bias_alignment": true,
@@ -36,7 +36,7 @@
     "magic": 26061515,
     "deviation_points": 30,
     "skip_if_any_symbol_exposure": true,
-    "broker_tp": "TP3",
+    "broker_tp": "TP1",
     "manage_virtual_targets": true,
     "partial_close_at_tp1": false,
     "tp1_partial_close_pct": 0.0,
@@ -64,9 +64,9 @@
     "allowed_weekdays": ["Mon", "Tue", "Wed", "Thu", "Fri"],
     "sessions": [
       {
-        "name": "London",
-        "start": "03:00",
-        "end": "12:00"
+        "name": "NewYork",
+        "start": "08:00",
+        "end": "17:00"
       }
     ],
     "max_trades_per_day": 3,

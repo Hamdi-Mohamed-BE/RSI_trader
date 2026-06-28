@@ -105,7 +105,6 @@ class MT5Client:
         if exact is not None:
             return symbol
 
-        candidates = list(mt5.symbols_get(f"*{symbol}*") or [])
         preferred = {
             "XAUUSD": ("XAUUSD", "GOLD"),
             "XAGUSD": ("XAGUSD", "SILVER"),
@@ -122,8 +121,16 @@ class MT5Client:
             "EURJPY": ("EURJPY", "EURO", "YEN"),
             "GBPJPY": ("GBPJPY", "POUND", "YEN"),
             "US30": ("US30", "DJ30", "DOW", "WALL STREET"),
+            "US100": ("US100", "NAS100", "USTEC", "NASDAQ", "NDX"),
             "US300": ("US300", "USA300", "US 300"),
         }.get(symbol, (symbol,))
+        candidates = []
+        seen: set[str] = set()
+        for token in (symbol, *preferred):
+            for item in mt5.symbols_get(f"*{token}*") or []:
+                if item.name not in seen:
+                    candidates.append(item)
+                    seen.add(item.name)
         filtered = [
             item
             for item in candidates
@@ -229,6 +236,7 @@ class MT5Client:
             "EURJPY": 100000.0,
             "GBPJPY": 100000.0,
             "US30": 1.0,
+            "US100": 1.0,
             "US300": 1.0,
         }.get(symbol, 1.0)
 

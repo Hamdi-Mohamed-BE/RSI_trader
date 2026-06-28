@@ -133,11 +133,12 @@ This worker has its own magic number, tracker, and `.env` switches. It starts wi
 Defaults:
 
 - Strategy: `CHALLENGE20_STRATEGY=ORB`, using ORB entries with the 20 Pip Challenge risk/target math.
-- Symbols: `CHALLENGE20_SYMBOLS=AUTO_SYMBOLS`, meaning it follows the main LTA bot watchlist from `AUTO_SYMBOLS`
+- Symbols: `CHALLENGE20_SYMBOLS=AUDUSD,USDCAD,EURUSD,GBPUSD`, in tested selection priority.
 - Timeframes: `CHALLENGE20_TIMEFRAMES=M15,M30`
 - ORB challenge timeframe: `CHALLENGE20_ORB_TIMEFRAME=M15`
-- Minimum setup score: `CHALLENGE20_MIN_SETUP_SCORE=90`
-- One challenge trade per day: `CHALLENGE20_ONE_TRADE_PER_DAY=true`
+- Minimum setup score: `CHALLENGE20_MIN_SETUP_SCORE=95`
+- Daily cap: two trades, with `CHALLENGE20_SECOND_TRADE_MIN_SCORE=100` for the second entry.
+- Fixed challenge exit: `CHALLENGE20_TAKE_PROFIT_PIPS=20` and `CHALLENGE20_STOP_LOSS_PIPS=18`.
 - Live order sending: off, unless both `CHALLENGE20_LIVE_TRADING=true` and `CHALLENGE20_PLACE_TRADES=true`
 - Account cap: `CHALLENGE20_MAX_ACCOUNT_RISK_PERCENT=23`
 - Spread cap: `CHALLENGE20_MAX_SPREAD_RISK_PERCENT=15`
@@ -154,7 +155,7 @@ Safety notes:
 - Public versions of the challenge are very aggressive. A few losses can wipe out the challenge bank, so the live switches are intentionally separate from the main automation switches.
 - `CHALLENGE20_STRATEGY=LTA` uses LTA A+ confirmation on MT5 candles. `CHALLENGE20_STRATEGY=ORB` uses the ORB session/range settings and then adjusts TP to the challenge RR.
 - Set `CHALLENGE20_SYMBOLS` to a comma-separated list if you want the challenge to watch different symbols from the main LTA bot.
-- The challenge bot follows the challenge model by default: fixed SL, fixed challenge TP, one trade/day. It does not trail SL or close half at TP1 unless `CHALLENGE20_PROTECT_OPEN_TRADES=true` is explicitly enabled.
+- The challenge bot uses a fixed 20-pip TP and 18-pip SL. It does not trail SL or close half unless `CHALLENGE20_PROTECT_OPEN_TRADES=true` is explicitly enabled.
 - The current implementation does not use a true 10-second candle feed yet.
 - `CHALLENGE20_ALLOW_PENDING=false` is recommended for ORB challenge mode until an OCO pair of pending breakout orders is added.
 - Use `stop_20pip_challenge.bat` when you want to stop this worker and clear the challenge lock.
@@ -165,7 +166,7 @@ Use `run_orb_bot.bat` to run the separate Opening Range Breakout worker in its o
 
 Defaults:
 
-- Symbols: `ORB_SYMBOLS=BTCUSD,XAGUSD,US30,EURUSD,GBPUSD,USDCHF,XAUUSD,NZDUSD,AUDUSD,USDCAD,USDJPY`, ordered by latest positive ORB net R.
+- Symbols: `ORB_SYMBOLS=XAGUSD,XAUUSD,EURUSD`, ordered by the six-month production test.
 - Timeframe: `ORB_TIMEFRAME=M15`
 - Session window: `ORB_SESSION_START=09:30`, `ORB_SESSION_END=16:00`, interpreted in `ORB_SESSION_TIMEZONE=America/New_York`
 - Opening range: `ORB_RANGE_MINUTES=15`

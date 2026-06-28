@@ -165,6 +165,7 @@ def _default_state(start_balance: float) -> dict[str, Any]:
         "challenge_balance": round(start_balance, 2),
         "level": 1,
         "last_trade_date": None,
+        "daily_placements": {},
         "open_trades": {},
         "closed_trades": {},
         "stats": {
@@ -190,6 +191,7 @@ def _read_state(start_balance: float) -> dict[str, Any]:
         data.setdefault(key, value)
     data.setdefault("open_trades", {})
     data.setdefault("closed_trades", {})
+    data.setdefault("daily_placements", {})
     data.setdefault("stats", default["stats"])
     for key, value in default["stats"].items():
         data["stats"].setdefault(key, value)
@@ -273,9 +275,16 @@ class TwentyPipChallengeBot:
             self.strategy = "LTA"
         self.interval_seconds = max(10, _env_int("CHALLENGE20_SCAN_INTERVAL_SECONDS", 60))
         self.symbols = _symbol_watchlist_env("CHALLENGE20_SYMBOLS", TRADE_SYMBOLS)
+        self.symbol_priority = _env_list("CHALLENGE20_SYMBOL_PRIORITY", self.symbols)
         self.timeframes = _env_list("CHALLENGE20_TIMEFRAMES", ("M5", "M15"))
         self.min_setup_score = max(1, min(100, _env_int("CHALLENGE20_MIN_SETUP_SCORE", 90)))
         self.one_trade_per_day = _env_bool("CHALLENGE20_ONE_TRADE_PER_DAY", True)
+        self.max_trades_per_day = max(1, _env_int("CHALLENGE20_MAX_TRADES_PER_DAY", 1))
+        self.max_open_positions = max(1, _env_int("CHALLENGE20_MAX_OPEN_POSITIONS", 1))
+        self.second_trade_min_score = max(
+            self.min_setup_score,
+            min(100, _env_int("CHALLENGE20_SECOND_TRADE_MIN_SCORE", 100)),
+        )
         self.live_trading = _env_bool("CHALLENGE20_LIVE_TRADING", False)
         self.place_trades = _env_bool("CHALLENGE20_PLACE_TRADES", False)
         self.max_account_risk_percent = max(0.0, _env_float("CHALLENGE20_MAX_ACCOUNT_RISK_PERCENT", 23.0))
@@ -389,6 +398,7 @@ class TwentyPipChallengeBot:
             "XAGUSD",
             "BTCUSD",
             "US30",
+            "US100",
             "EURUSD",
             "GBPUSD",
             "USDJPY",
@@ -664,16 +674,42 @@ class TwentyPipChallengeBot:
         _write_state(self.state)
         return actions
 
-    def _already_traded_today(self, now: datetime) -> bool:
-        if not self.one_trade_per_day:
-            return False
-        if self.state.get("last_trade_date") == _today_key(now):
-            return True
-        for trade in self.state.get("open_trades", {}).values():
-            opened_at = _parse_datetime(trade.get("opened_at"))
-            if opened_at and opened_at.date() == now.date():
-                return True
-        return False
+    def _current_session_day_key(self) -> str:
+        local_now = datetime.now(zone(self.orb_settings.session_timezone))
+        start_value = parse_hhmm(self.orb_settings.session_start, "19:00")
+        end_value = parse_hhmm(self.orb_settings.session_end, "02:00")
+        start = start_value.hour * 60 + start_value.minute
+        end = end_value.hour * 60 + end_value.minute
+        current = local_now.hour * 60 + local_now.minute
+        session_day = local_now.date()
+        if start > end and current < end:
+            session_day -= timedelta(days=1)
+        return session_day.isoformat()
+
+    def _daily_trade_limit(self) -> int:
+        return 1 if self.one_trade_per_day else self.max_trades_per_day
+
+    def _trades_today(self) -> int:
+        day_key = self._current_session_day_key()
+        count = int(self.state.setdefault("daily_placements", {}).get(day_key) or 0)
+        if count == 0 and self.state.get("last_trade_date") == day_key:
+            return 1
+        return count
+
+    def _mark_daily_placement(self) -> None:
+        day_key = self._current_session_day_key()
+        daily = self.state.setdefault("daily_placements", {})
+        daily[day_key] = int(daily.get(day_key) or 0) + 1
+        self.state["last_trade_date"] = day_key
+
+    def _candidate_sort_key(self, signal: dict[str, Any]) -> tuple[int, float, float, float, int]:
+        symbol = self._base_symbol_from_broker_symbol(str(signal.get("symbol") or ""))
+        try:
+            priority = self.symbol_priority.index(symbol)
+        except ValueError:
+            priority = len(self.symbol_priority)
+        score, rr, range_quality, execution_rank = _challenge_signal_quality_sort_key(signal)
+        return (priority, -score, -rr, -range_quality, -execution_rank)
 
     def _adjust_signal_target(
         self,
@@ -1088,10 +1124,18 @@ class TwentyPipChallengeBot:
                     weekend_pending_actions.append({"order": order, "result": result})
         if self.reward_risk <= 0:
             blocks.append("Challenge reward/risk is invalid.")
-        if self.state.get("open_trades"):
-            blocks.append("A 20 Pip Challenge position is already open.")
-        if self._already_traded_today(now):
-            blocks.append("One-trade-per-day rule is active and today's challenge trade is already used.")
+        open_positions = self.client.open_positions(magic=CHALLENGE_MAGIC)
+        pending_orders = self.client.pending_orders(magic=CHALLENGE_MAGIC)
+        committed_positions = len(open_positions) + len(pending_orders)
+        if committed_positions >= self.max_open_positions:
+            blocks.append(
+                f"Challenge exposure cap reached: {committed_positions}/{self.max_open_positions} open or pending."
+            )
+        trades_today = self._trades_today()
+        if trades_today >= self._daily_trade_limit():
+            blocks.append(
+                f"Challenge daily trade cap reached: {trades_today}/{self._daily_trade_limit()}."
+            )
 
         scan: dict[str, Any] = {
             "allowed": [],
@@ -1130,12 +1174,27 @@ class TwentyPipChallengeBot:
             candidates = list(scan.get("allowed", []))
             if self.allow_pending:
                 candidates.extend(scan.get("preplace", []))
-            candidates.sort(key=_challenge_signal_quality_sort_key, reverse=True)
+            exposed_symbols = {
+                self._base_symbol_from_broker_symbol(str(item.get("symbol") or ""))
+                for item in (*open_positions, *pending_orders)
+            }
+            candidates = [
+                candidate
+                for candidate in candidates
+                if self._base_symbol_from_broker_symbol(str(candidate.get("symbol") or "")) not in exposed_symbols
+            ]
+            if trades_today >= 1:
+                candidates = [
+                    candidate
+                    for candidate in candidates
+                    if int(candidate.get("setup_score") or 0) >= self.second_trade_min_score
+                ]
+            candidates.sort(key=self._candidate_sort_key)
             for rank, candidate in enumerate(candidates, start=1):
                 candidate["selector_rank"] = rank
-                candidate["selector_score_tuple"] = _challenge_signal_quality_sort_key(candidate)
+                candidate["selector_score_tuple"] = self._candidate_sort_key(candidate)
             if not candidates:
-                blocks.append("No challenge-qualified LTA setup found.")
+                blocks.append(f"No challenge-qualified {self.strategy} setup found on an unexposed symbol.")
             else:
                 selected_signal = (
                     self._adjust_signal_target(candidates[0])
@@ -1205,7 +1264,7 @@ class TwentyPipChallengeBot:
                         )
                         self._log_event("challenge_order_sent", placement=placement, prepared=prepared)
                         if placement.get("placed"):
-                            self.state["last_trade_date"] = _today_key(now)
+                            self._mark_daily_placement()
                             self.state.setdefault("stats", {})["placements"] = int(
                                 self.state.setdefault("stats", {}).get("placements") or 0
                             ) + 1
@@ -1220,6 +1279,7 @@ class TwentyPipChallengeBot:
             "checked_at": now.isoformat(timespec="seconds"),
             "status": self.state.get("status"),
             "symbols": list(self.symbols),
+            "symbol_priority": list(self.symbol_priority),
             "timeframes": list(self.timeframes),
             "strategy": self.strategy,
             "orb": {
@@ -1234,6 +1294,11 @@ class TwentyPipChallengeBot:
             "live_trading": self.live_trading,
             "place_trades": self.place_trades,
             "one_trade_per_day": self.one_trade_per_day,
+            "max_trades_per_day": self._daily_trade_limit(),
+            "max_open_positions": self.max_open_positions,
+            "second_trade_min_score": self.second_trade_min_score,
+            "trades_today": trades_today,
+            "committed_positions": committed_positions,
             "challenge_balance": self.challenge_balance(),
             "level": self.state.get("level"),
             "level_target": round(self.level_target(int(self.state.get("level") or 1)), 2),

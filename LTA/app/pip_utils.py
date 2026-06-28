@@ -8,6 +8,7 @@ DEFAULT_PIP_SIZES: dict[str, float] = {
     "XAGUSD": 0.001,
     "BTCUSD": 0.01,
     "US30": 1.0,
+    "US100": 1.0,
     "US300": 1.0,
 }
 

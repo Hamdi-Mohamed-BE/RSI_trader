@@ -1,0 +1,196 @@
+{
+  "created_at": "2026-06-28T05:35:26",
+  "window_start": "2025-12-28 00:00:00",
+  "window_end": "2026-06-28 23:59:59",
+  "symbols": [
+    "AUDUSD",
+    "EURUSD"
+  ],
+  "strategy": "ORB + 20 Pip Challenge",
+  "start_balance": 20.0,
+  "risk_percent": 23.0,
+  "target_percent": 30.0,
+  "reward_risk": 1.1111,
+  "take_profit_pips": 20.0,
+  "stop_loss_pips": 18.0,
+  "pip_sizes": {
+    "AUDUSD": 0.0001,
+    "EURUSD": 0.0001
+  },
+  "weekdays_only": true,
+  "allowed_weekdays": [
+    "THU",
+    "TUE",
+    "WED"
+  ],
+  "levels": 30,
+  "production_limits": {
+    "max_trades_per_day": 2,
+    "max_open_positions": 2,
+    "second_trade_min_score": 100
+  },
+  "orb": {
+    "timeframe": "M15",
+    "session_start": "19:00",
+    "session_end": "02:00",
+    "session_timezone": "America/New_York",
+    "data_timezone": "UTC",
+    "range_minutes": 30,
+    "buffer_atr": 0.0,
+    "min_range_atr": 0.0,
+    "max_range_atr": 999.0
+  },
+  "summaries": {
+    "all_signals": {
+      "trades": 142,
+      "wins": 42,
+      "losses": 28,
+      "timeouts": 72,
+      "win_rate": 29.58,
+      "net_r": 25.05,
+      "start_balance": 20.0,
+      "final_balance": 529.43,
+      "level": 13,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 76.92,
+      "min_balance": 16.26,
+      "minimum_lot_overrides": 0,
+      "max_actual_risk_percent": 22.99,
+      "sizing_mode": "mt5_min_step_compounding"
+    },
+    "one_open_trade_at_a_time": {
+      "trades": 79,
+      "wins": 28,
+      "losses": 14,
+      "timeouts": 37,
+      "win_rate": 35.44,
+      "net_r": 19.76,
+      "start_balance": 20.0,
+      "final_balance": 371.28,
+      "level": 12,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 67.67,
+      "min_balance": 20.0,
+      "minimum_lot_overrides": 0,
+      "max_actual_risk_percent": 22.99,
+      "sizing_mode": "mt5_min_step_compounding"
+    },
+    "one_trade_per_day": {
+      "trades": 75,
+      "wins": 27,
+      "losses": 13,
+      "timeouts": 35,
+      "win_rate": 36.0,
+      "net_r": 19.12,
+      "start_balance": 20.0,
+      "final_balance": 296.06,
+      "level": 11,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 67.21,
+      "min_balance": 20.0,
+      "minimum_lot_overrides": 0,
+      "max_actual_risk_percent": 22.97,
+      "sizing_mode": "mt5_min_step_compounding"
+    },
+    "production_limited": {
+      "trades": 118,
+      "wins": 34,
+      "losses": 23,
+      "timeouts": 61,
+      "win_rate": 28.81,
+      "net_r": 19.76,
+      "start_balance": 20.0,
+      "final_balance": 231.51,
+      "level": 10,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 76.5,
+      "min_balance": 19.3,
+      "minimum_lot_overrides": 0,
+      "max_actual_risk_percent": 22.99,
+      "sizing_mode": "mt5_min_step_compounding"
+    }
+  },
+  "per_symbol": [
+    {
+      "trades": 72,
+      "wins": 28,
+      "losses": 14,
+      "timeouts": 30,
+      "win_rate": 38.89,
+      "net_r": 18.59,
+      "start_balance": 20.0,
+      "final_balance": 276.11,
+      "level": 11,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 67.2,
+      "min_balance": 16.33,
+      "minimum_lot_overrides": 0,
+      "max_actual_risk_percent": 22.96,
+      "sizing_mode": "mt5_min_step_compounding",
+      "symbol": "AUDUSD"
+    },
+    {
+      "trades": 70,
+      "wins": 14,
+      "losses": 14,
+      "timeouts": 42,
+      "win_rate": 20.0,
+      "net_r": 6.46,
+      "start_balance": 20.0,
+      "final_balance": 31.87,
+      "level": 2,
+      "target_balance": 52399.91,
+      "target_reached": false,
+      "target_reached_at": null,
+      "max_drawdown_pct": 47.97,
+      "min_balance": 15.16,
+      "minimum_lot_overrides": 0,
+      "max_actual_risk_percent": 22.97,
+      "sizing_mode": "mt5_min_step_compounding",
+      "symbol": "EURUSD"
+    }
+  ],
+  "availability": [
+    {
+      "symbol": "AUDUSD",
+      "broker_symbol": "AUDUSDm",
+      "candles": 12767,
+      "days": 78,
+      "status": "ok"
+    },
+    {
+      "symbol": "EURUSD",
+      "broker_symbol": "EURUSDm",
+      "candles": 12767,
+      "days": 78,
+      "status": "ok"
+    }
+  ],
+  "skipped_count": 10,
+  "paths": {
+    "trades": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\orb_challenge_trades.csv",
+    "availability": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\availability.csv",
+    "skipped": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\skipped.csv",
+    "per_symbol_summary": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\per_symbol_summary.csv",
+    "equity": {
+      "all_signals": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\all_signals_equity.csv",
+      "one_open_trade_at_a_time": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\one_open_trade_at_a_time_equity.csv",
+      "one_trade_per_day": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\one_trade_per_day_equity.csv",
+      "production_limited": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\production_limited_equity.csv"
+    },
+    "per_symbol_equity": {
+      "AUDUSD": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\AUDUSD_equity.csv",
+      "EURUSD": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\LTA\\reports\\20pip_challenge_backtest\\20260628-053524\\EURUSD_equity.csv"
+    }
+  }
+}

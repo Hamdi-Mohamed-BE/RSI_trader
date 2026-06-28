@@ -30,6 +30,7 @@ DEFAULT_SYMBOLS = (
     "XAGUSD",
     "BTCUSD",
     "US30",
+    "US100",
     "EURUSD",
     "GBPUSD",
     "USDJPY",
@@ -116,6 +117,8 @@ def compound_challenge(
         )
 
     for _, row in rows.sort_values(["opened_at", "symbol"]).iterrows():
+        if balance <= 0:
+            break
         r_multiple = float(row["r_multiple"])
         before = balance
         requested_risk = balance * risk_fraction
@@ -220,6 +223,35 @@ def one_trade_per_day(rows: pd.DataFrame, symbol_order: dict[str, int]) -> pd.Da
     return pd.DataFrame(selected)
 
 
+def production_limited_trades(
+    rows: pd.DataFrame,
+    symbol_order: dict[str, int],
+    max_trades_per_day: int,
+    max_open_positions: int,
+    second_trade_min_score: int,
+) -> pd.DataFrame:
+    if rows.empty:
+        return rows.copy()
+    selected: list[pd.Series] = []
+    ranked = rows.assign(rank=rows["symbol"].map(symbol_order).fillna(999))
+    for _, group in ranked.sort_values(["opened_at", "rank", "closed_at"]).groupby("date"):
+        day_selected: list[pd.Series] = []
+        for _, row in group.iterrows():
+            if len(day_selected) >= max_trades_per_day:
+                break
+            if day_selected and int(row.get("setup_score") or 0) < second_trade_min_score:
+                continue
+            open_rows = [item for item in day_selected if item["closed_at"] > row["opened_at"]]
+            if len(open_rows) >= max_open_positions:
+                continue
+            if any(item["symbol"] == row["symbol"] for item in open_rows):
+                continue
+            clean = row.drop(labels=["rank"])
+            day_selected.append(clean)
+            selected.append(clean)
+    return pd.DataFrame(selected)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Backtest 20 Pip Challenge progression using ORB entries.")
     parser.add_argument("--symbols", default=None)
@@ -255,6 +287,9 @@ def main() -> None:
     risk_percent = args.risk_percent if args.risk_percent is not None else env_float("CHALLENGE20_RISK_PERCENT", 23.0)
     target_percent = args.target_percent if args.target_percent is not None else env_float("CHALLENGE20_TARGET_PERCENT", 30.0)
     max_levels = args.levels if args.levels is not None else env_int("CHALLENGE20_LEVELS", 30)
+    max_trades_per_day = max(1, env_int("CHALLENGE20_MAX_TRADES_PER_DAY", 1))
+    max_open_positions = max(1, env_int("CHALLENGE20_MAX_OPEN_POSITIONS", 1))
+    second_trade_min_score = max(1, min(100, env_int("CHALLENGE20_SECOND_TRADE_MIN_SCORE", 100)))
     take_profit_pips = max(
         0.1,
         args.take_profit_pips
@@ -397,6 +432,8 @@ def main() -> None:
                     row["lot_min"] = float(constraints.get("min") or 0.01)
                     row["lot_max"] = float(constraints.get("max") or 100.0)
                     row["lot_step"] = float(constraints.get("step") or 0.01)
+                    range_atr = row.get("range_atr")
+                    row["setup_score"] = 100 if range_atr is not None and 0.5 <= float(range_atr) <= 2.0 else 95
                     trades.append(row)
             elif isinstance(result, dict):
                 skipped.append(result)
@@ -415,6 +452,13 @@ def main() -> None:
         "all_signals": trade_frame,
         "one_open_trade_at_a_time": one_open_trade_at_a_time(trade_frame, symbol_order),
         "one_trade_per_day": one_trade_per_day(trade_frame, symbol_order),
+        "production_limited": production_limited_trades(
+            trade_frame,
+            symbol_order,
+            max_trades_per_day,
+            max_open_positions,
+            second_trade_min_score,
+        ),
     }
     summaries: dict[str, Any] = {}
     equity_paths: dict[str, str] = {}
@@ -462,6 +506,11 @@ def main() -> None:
         "weekdays_only": True,
         "allowed_weekdays": sorted(allowed_weekdays),
         "levels": max_levels,
+        "production_limits": {
+            "max_trades_per_day": max_trades_per_day,
+            "max_open_positions": max_open_positions,
+            "second_trade_min_score": second_trade_min_score,
+        },
         "orb": {
             "timeframe": timeframe,
             "session_start": settings.session_start,
