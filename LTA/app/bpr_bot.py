@@ -19,6 +19,7 @@ from .bpr_strategy import BPRSettings
 from .config import REPORTS_DIR, load_config
 from .models import TRADE_SYMBOLS
 from .mt5_client import MT5Client
+from .session_time import DEFAULT_SESSION_TIMEZONE, is_weekday_now
 
 
 BPR_MAGIC = 26062540
@@ -202,11 +203,13 @@ class BPRBot:
         self.one_position_per_symbol = _env_bool("BPR_ONE_POSITION_PER_SYMBOL", True)
         self.one_pending_per_symbol = _env_bool("BPR_ONE_PENDING_PER_SYMBOL", True)
         self.max_trades_per_day = max(0, _env_int("BPR_MAX_TRADES_PER_DAY", 3))
+        self.weekdays_only = _env_bool("BPR_WEEKDAYS_ONLY", True)
         self.risk_percent = max(0.0, _env_float("BPR_MAX_LOT_RISK_PCT", self.config.max_lot_risk_pct))
         self.max_spread_risk_percent = max(0.0, _env_float("BPR_MAX_SPREAD_RISK_PERCENT", self.config.max_spread_risk_percent))
         self.max_spread_points = max(0.0, _env_float("BPR_MAX_SPREAD_POINTS", self.config.max_spread_points))
         self.pending_expiry_minutes = max(0, _env_int("BPR_PENDING_EXPIRY_MINUTES", 180))
         self.log_detail_limit = max(0, _env_int("BPR_LOG_DETAIL_LIMIT", 8))
+        self.session_timezone = os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)
         self.settings = settings_from_env()
         self.symbol_rr = _env_float_map("BPR_SYMBOL_RR")
         self.symbol_min_score = _env_float_map("BPR_SYMBOL_MIN_SCORE")
@@ -388,8 +391,19 @@ class BPRBot:
         blocked: list[dict[str, Any]] = []
         candidates: list[dict[str, Any]] = []
         placed_today = self._placed_today_count()
+        weekday_entry_allowed = not self.weekdays_only or is_weekday_now(self.session_timezone)
+        weekend_pending_actions: list[dict[str, Any]] = []
+        if not weekday_entry_allowed:
+            blocked.append({"reason": "Weekend entry block is active; BPR trades are Monday-Friday only."})
+            if self.live_trading:
+                for order in self.client.pending_orders(magic=BPR_MAGIC):
+                    result = self.client.cancel_pending_order(
+                        int(order.get("ticket") or 0),
+                        str(order.get("symbol") or ""),
+                    )
+                    weekend_pending_actions.append({"order": order, "result": result})
 
-        for symbol in self.symbols:
+        for symbol in self.symbols if weekday_entry_allowed else ():
             for timeframe in self._timeframes_for_symbol(symbol):
                 symbol_settings = self._settings_for_symbol(symbol, timeframe)
                 start = now - timedelta(days=self.lookback_days)
@@ -495,6 +509,9 @@ class BPRBot:
             "place_trades": self.place_trades,
             "place_pending": self.place_pending,
             "risk_percent": self.risk_percent,
+            "weekday_entry_allowed": weekday_entry_allowed,
+            "weekend_pending_actions": weekend_pending_actions,
+            "weekdays_only": self.weekdays_only,
             "settings": self.settings.__dict__,
             "symbol_rr": self.symbol_rr,
             "symbol_min_score": self.symbol_min_score,

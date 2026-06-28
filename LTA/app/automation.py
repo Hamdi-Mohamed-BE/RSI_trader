@@ -20,7 +20,7 @@ from .config import REPORTS_DIR, load_config
 from .models import TRADE_SYMBOLS
 from .mt5_client import MT5Client, TIMEFRAME_MINUTES
 from .scanner import DEFAULT_SCAN_TIMEFRAMES, scan_market
-from .session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, minutes_in_timezone
+from .session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, is_weekday_now, minutes_in_timezone
 
 
 AUTOMATION_DIR = REPORTS_DIR / "automation"
@@ -475,6 +475,7 @@ class TradeAutomation:
         self.strict_session_end = _parse_time_minutes(os.getenv("AUTO_STRICT_SESSION_END"), 13 * 60)
         self.session_timezone = os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)
         self.data_timezone = os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE)
+        self.weekdays_only = _env_bool("AUTO_WEEKDAYS_ONLY", True)
         self.allowed_sessions = _env_session_ranges("AUTO_ALLOWED_SESSIONS")
         self.strict_session_min_score = max(1, min(100, _env_int("AUTO_STRICT_SESSION_MIN_SCORE", 95)))
         self.strict_session_preplace_min_score = max(
@@ -1438,12 +1439,32 @@ class TradeAutomation:
         activity_cooldown_updates = self.refresh_symbol_activity_cooldowns(now)
         active_symbol_cooldowns = self.active_symbol_cooldowns(now)
         daily_bot_stats = self.daily_bot_stats(now)
-        scan = scan_market(
-            symbols=self.watchlist_symbols,
-            timeframes=self.timeframes,
-            min_score=self.config.min_setup_score,
-            preplace_min_score=self.preplace_min_score,
-            min_rr=self._scan_min_rr(),
+        weekday_entry_allowed = not self.weekdays_only or is_weekday_now(self.session_timezone)
+        weekend_pending_actions: list[dict[str, Any]] = []
+        if not weekday_entry_allowed and self.config.live_trading:
+            for order in self.client.pending_orders(magic=MAGIC_NUMBER):
+                result = self.client.cancel_pending_order(
+                    int(order.get("ticket") or 0),
+                    str(order.get("symbol") or ""),
+                )
+                weekend_pending_actions.append({"order": order, "result": result})
+        scan = (
+            scan_market(
+                symbols=self.watchlist_symbols,
+                timeframes=self.timeframes,
+                min_score=self.config.min_setup_score,
+                preplace_min_score=self.preplace_min_score,
+                min_rr=self._scan_min_rr(),
+            )
+            if weekday_entry_allowed
+            else {
+                "allowed": [],
+                "preplace": [],
+                "near_misses": [],
+                "rejected": [],
+                "errors": [],
+                "weekend_block": "New entries are disabled Saturday and Sunday.",
+            }
         )
         self._dynamic_stop_candles.clear()
         scan["allowed"] = [
@@ -1468,6 +1489,8 @@ class TradeAutomation:
             active_symbol_cooldown_count=len(active_symbol_cooldowns),
             activity_cooldown_update_count=len(activity_cooldown_updates),
             protection_action_count=len(protection_actions),
+            weekday_entry_allowed=weekday_entry_allowed,
+            weekend_pending_cancel_count=len(weekend_pending_actions),
             live_trading=self.config.live_trading,
             auto_place_trades=self.auto_place_trades,
             auto_preplace_orders=self.auto_preplace_orders,
@@ -2037,6 +2060,9 @@ class TradeAutomation:
             "live_trading": self.config.live_trading,
             "auto_place_trades": self.auto_place_trades,
             "auto_preplace_orders": self.auto_preplace_orders,
+            "weekday_entry_allowed": weekday_entry_allowed,
+            "weekend_pending_actions": weekend_pending_actions,
+            "weekdays_only": self.weekdays_only,
             "preplace_min_score": self.preplace_min_score,
             "preplace_expiry_minutes": self.preplace_expiry_minutes,
             "best_setup_selector": self.best_setup_selector,

@@ -101,6 +101,15 @@ def minutes_in_timezone(value: datetime, source_timezone: str, target_timezone: 
     return converted.hour * 60 + converted.minute
 
 
+def is_weekday_in_timezone(value: datetime, source_timezone: str, target_timezone: str) -> bool:
+    converted = as_aware(value, source_timezone).astimezone(zone(target_timezone))
+    return converted.weekday() < 5
+
+
+def is_weekday_now(timezone_name: str = DEFAULT_SESSION_TIMEZONE) -> bool:
+    return datetime.now(zone(timezone_name)).weekday() < 5
+
+
 def session_bounds(
     session_day: date,
     session_start: str,

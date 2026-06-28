@@ -20,8 +20,9 @@ from .config import REPORTS_DIR, load_config
 from .models import TRADE_SYMBOLS
 from .mt5_client import MT5Client
 from .orb_strategy import ORBSettings, confirmed_orb_signal, pending_orb_signals
+from .pip_utils import parse_pip_size_map, pip_size_for
 from .scanner import scan_market
-from .session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, now_naive
+from .session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, now_naive, parse_hhmm, zone
 
 
 CHALLENGE_MAGIC = 20052024
@@ -257,6 +258,15 @@ class TwentyPipChallengeBot:
         self.start_balance = max(1.0, _env_float("CHALLENGE20_START_BALANCE", 20.0))
         self.risk_percent = max(0.0, _env_float("CHALLENGE20_RISK_PERCENT", 23.0))
         self.target_percent = max(0.0, _env_float("CHALLENGE20_TARGET_PERCENT", 30.0))
+        self.exit_mode = os.getenv("CHALLENGE20_EXIT_MODE", "FIXED_PIPS").strip().upper() or "FIXED_PIPS"
+        self.take_profit_pips = max(0.1, _env_float("CHALLENGE20_TAKE_PROFIT_PIPS", 20.0))
+        self.stop_loss_pips = max(0.1, _env_float("CHALLENGE20_STOP_LOSS_PIPS", 15.4))
+        self.pip_size_overrides = parse_pip_size_map(os.getenv("CHALLENGE20_SYMBOL_PIP_SIZE"))
+        self.weekdays_only = _env_bool("CHALLENGE20_WEEKDAYS_ONLY", True)
+        self.close_at_session_end = _env_bool("CHALLENGE20_CLOSE_AT_SESSION_END", True)
+        self.allowed_weekdays = set(
+            _env_list("CHALLENGE20_ALLOWED_WEEKDAYS", ("MON", "TUE", "WED", "THU", "FRI"))
+        )
         self.max_levels = max(1, _env_int("CHALLENGE20_LEVELS", 30))
         self.strategy = os.getenv("CHALLENGE20_STRATEGY", "LTA").strip().upper() or "LTA"
         if self.strategy not in {"LTA", "ORB"}:
@@ -298,6 +308,8 @@ class TwentyPipChallengeBot:
 
     @property
     def reward_risk(self) -> float:
+        if self.exit_mode == "FIXED_PIPS":
+            return self.take_profit_pips / self.stop_loss_pips
         if self.risk_percent <= 0:
             return 0.0
         return self.target_percent / self.risk_percent
@@ -431,7 +443,10 @@ class TwentyPipChallengeBot:
                 else now.isoformat(timespec="seconds"),
                 "status": "open",
             }
+            reconciliation = self._reconcile_fixed_position(open_trades[ticket])
             actions.append({"status": "synced_open_position", "ticket": ticket})
+            if reconciliation is not None:
+                actions[-1]["fixed_pip_reconciliation"] = reconciliation
 
         for ticket, trade in list(open_trades.items()):
             if ticket in open_tickets:
@@ -660,10 +675,73 @@ class TwentyPipChallengeBot:
                 return True
         return False
 
-    def _adjust_signal_target(self, signal: dict[str, Any]) -> dict[str, Any]:
+    def _adjust_signal_target(
+        self,
+        signal: dict[str, Any],
+        quote: dict[str, float] | None = None,
+    ) -> dict[str, Any]:
         adjusted = dict(signal)
         direction = str(adjusted.get("direction") or "").upper()
+        symbol = str(adjusted.get("symbol") or "")
+        execution_type = str(adjusted.get("execution_type") or "MARKET").upper()
+        pending_entry = float(adjusted.get("trigger_price") or 0.0)
         entry = float(adjusted.get("entry") or 0.0)
+        if quote and execution_type != "PENDING":
+            entry = float(quote["ask"] if direction == "BUY" else quote["bid"])
+        elif execution_type == "PENDING" and pending_entry > 0:
+            entry = pending_entry
+
+        if self.exit_mode == "FIXED_PIPS":
+            info = self.client.symbol_info(symbol) or {}
+            point = float(info.get("point") or (quote or {}).get("point") or 0.0)
+            digits = int(info.get("digits") or (quote or {}).get("digits") or 5)
+            pip_size = pip_size_for(
+                symbol,
+                point=point,
+                digits=digits,
+                overrides=self.pip_size_overrides,
+            )
+            stop_distance = pip_size * self.stop_loss_pips
+            target_distance = pip_size * self.take_profit_pips
+            broker_minimum = max(
+                float(info.get("trade_stops_level") or 0.0) * point,
+                float(info.get("trade_freeze_level") or 0.0) * point,
+            )
+            if direction not in {"BUY", "SELL"} or entry <= 0 or pip_size <= 0:
+                adjusted["fixed_pip_error"] = "Invalid direction, entry, or pip size."
+                return adjusted
+            if broker_minimum > 0 and min(stop_distance, target_distance) < broker_minimum:
+                adjusted["fixed_pip_error"] = (
+                    f"Broker minimum distance {broker_minimum:g} exceeds the fixed-pip challenge distance."
+                )
+                return adjusted
+            stop = entry - stop_distance if direction == "BUY" else entry + stop_distance
+            target = entry + target_distance if direction == "BUY" else entry - target_distance
+            adjusted["entry"] = self.client.normalize_price(symbol, entry)
+            adjusted["stop_loss"] = self.client.normalize_price(symbol, stop)
+            adjusted["take_profit"] = self.client.normalize_price(symbol, target)
+            adjusted["tp1"] = adjusted["take_profit"]
+            adjusted["tp2"] = None
+            adjusted["tp3"] = None
+            adjusted["tp4"] = None
+            adjusted["tp5"] = None
+            adjusted["risk_reward"] = round(self.reward_risk, 4)
+            adjusted["configured_risk_reward"] = round(self.reward_risk, 4)
+            adjusted["fixed_pip_plan"] = {
+                "pip_size": pip_size,
+                "stop_loss_pips": self.stop_loss_pips,
+                "take_profit_pips": self.take_profit_pips,
+                "entry": adjusted["entry"],
+                "stop_loss": adjusted["stop_loss"],
+                "take_profit": adjusted["take_profit"],
+            }
+            adjusted.setdefault("reasons", [])
+            adjusted["reasons"] = [
+                *adjusted["reasons"],
+                f"20 Pip Challenge: fixed {self.take_profit_pips:g}-pip TP and {self.stop_loss_pips:g}-pip SL.",
+            ]
+            return adjusted
+
         stop = float(adjusted.get("stop_loss") or 0.0)
         risk = abs(entry - stop)
         rr = self.reward_risk
@@ -680,7 +758,7 @@ class TwentyPipChallengeBot:
         adjusted.setdefault("reasons", [])
         adjusted["reasons"] = [
             *adjusted["reasons"],
-            f"20 Pip Challenge target: risk {self.risk_percent:g}% to seek {self.target_percent:g}% ({rr:.2f}R).",
+            f"Legacy challenge target: risk {self.risk_percent:g}% to seek {self.target_percent:g}% ({rr:.2f}R).",
         ]
         return adjusted
 
@@ -717,7 +795,7 @@ class TwentyPipChallengeBot:
             return {"ok": False, "message": "Live quote is unavailable.", "risk_amount": risk_amount}
         entry_price = float(signal.get("entry") or 0.0)
         entry_source = "signal_entry"
-        if quote:
+        if quote and self.exit_mode != "FIXED_PIPS":
             entry_price = float(quote["ask"] if direction == "BUY" else quote["bid"])
             entry_source = "current_quote"
         if risk_amount <= 0 or entry_price <= 0 or stop_loss <= 0 or entry_price == stop_loss:
@@ -818,6 +896,74 @@ class TwentyPipChallengeBot:
         strategy = self.strategy[:3]
         return f"20PIP {strategy} L{level} S{score} {timeframe}"[:31]
 
+    def _session_is_open(self) -> bool:
+        local_now = datetime.now(zone(self.orb_settings.session_timezone))
+        current = local_now.hour * 60 + local_now.minute
+        start_value = parse_hhmm(self.orb_settings.session_start, "19:00")
+        end_value = parse_hhmm(self.orb_settings.session_end, "02:00")
+        start = start_value.hour * 60 + start_value.minute
+        end = end_value.hour * 60 + end_value.minute
+        if start < end:
+            return start <= current < end
+        return current >= start or current < end
+
+    def _close_positions_after_session(self) -> list[dict[str, Any]]:
+        if not self.close_at_session_end or self._session_is_open():
+            return []
+        actions: list[dict[str, Any]] = []
+        for order in self.client.pending_orders(magic=CHALLENGE_MAGIC):
+            result = self.client.cancel_pending_order(
+                int(order.get("ticket") or 0),
+                str(order.get("symbol") or ""),
+            )
+            actions.append({"action": "cancel_pending", "order": order, "result": result})
+        for position in self.client.open_positions(magic=CHALLENGE_MAGIC):
+            direction = "SELL" if int(position.get("type") or 0) == 1 else "BUY"
+            result = self.client.close_position(
+                ticket=int(position.get("ticket") or 0),
+                symbol=str(position.get("symbol") or ""),
+                direction=direction,
+                volume=float(position.get("volume") or 0.0),
+                comment="20PIP session close",
+                live_trading=self.live_trading,
+            )
+            actions.append({"action": "close_position", "position": position, "result": result})
+        return actions
+
+    def _reconcile_fixed_position(self, record: dict[str, Any]) -> dict[str, Any] | None:
+        if self.exit_mode != "FIXED_PIPS":
+            return None
+        symbol = str(record.get("symbol") or record.get("broker_symbol") or "")
+        broker_symbol = str(record.get("broker_symbol") or symbol)
+        direction = str(record.get("direction") or "").upper()
+        entry = float(record.get("entry") or 0.0)
+        info = self.client.symbol_info(symbol) or {}
+        pip_size = pip_size_for(
+            symbol,
+            point=float(info.get("point") or 0.0),
+            digits=int(info.get("digits") or 0),
+            overrides=self.pip_size_overrides,
+        )
+        if direction not in {"BUY", "SELL"} or entry <= 0 or pip_size <= 0:
+            return {"modified": False, "message": "Could not reconcile fixed-pip levels."}
+        stop_distance = pip_size * self.stop_loss_pips
+        target_distance = pip_size * self.take_profit_pips
+        stop = entry - stop_distance if direction == "BUY" else entry + stop_distance
+        target = entry + target_distance if direction == "BUY" else entry - target_distance
+        stop = self.client.normalize_price(symbol, stop)
+        target = self.client.normalize_price(symbol, target)
+        result = self.client.modify_position_sl_tp(
+            ticket=int(record.get("ticket") or 0),
+            symbol=broker_symbol,
+            stop_loss=stop,
+            take_profit=target,
+        )
+        record["initial_stop"] = stop
+        record["stop_loss"] = stop
+        record["take_profit"] = target
+        record["fixed_pip_reconciliation"] = result
+        return result
+
     def _scan_orb_challenge(self) -> dict[str, Any]:
         scan: dict[str, Any] = {
             "allowed": [],
@@ -904,20 +1050,42 @@ class TwentyPipChallengeBot:
             "status": "open",
         }
         self.state.setdefault("open_trades", {})[ticket] = record
+        self._reconcile_fixed_position(record)
         return record
 
     def run_once(self) -> dict[str, Any]:
         now = datetime.now()
         self._heartbeat("scanning")
         sync_actions = self.sync_open_positions(now)
+        session_close_actions = self._close_positions_after_session()
         protection_actions = self.protect_open_positions(now)
         blocks: list[str] = []
+        weekend_pending_actions: list[dict[str, Any]] = []
         prepared: dict[str, Any] | None = None
         placement: dict[str, Any] | None = None
         selected_signal: dict[str, Any] | None = None
 
         if self.state.get("status") != "active":
             blocks.append(f"Challenge status is {self.state.get('status')}.")
+        if self.strategy == "ORB" and not self._session_is_open():
+            blocks.append("ORB challenge session is closed; no new challenge entry is allowed.")
+        challenge_timezone = os.getenv(
+            "CHALLENGE20_ORB_SESSION_TIMEZONE",
+            os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE),
+        )
+        current_weekday = datetime.now(zone(challenge_timezone)).strftime("%a").upper()[:3]
+        if self.weekdays_only and current_weekday not in self.allowed_weekdays:
+            blocks.append(
+                f"Challenge entry-day block is active for {current_weekday}; "
+                f"allowed days are {','.join(sorted(self.allowed_weekdays))}."
+            )
+            if self.live_trading:
+                for order in self.client.pending_orders(magic=CHALLENGE_MAGIC):
+                    result = self.client.cancel_pending_order(
+                        int(order.get("ticket") or 0),
+                        str(order.get("symbol") or ""),
+                    )
+                    weekend_pending_actions.append({"order": order, "result": result})
         if self.reward_risk <= 0:
             blocks.append("Challenge reward/risk is invalid.")
         if self.state.get("open_trades"):
@@ -969,17 +1137,29 @@ class TwentyPipChallengeBot:
             if not candidates:
                 blocks.append("No challenge-qualified LTA setup found.")
             else:
-                selected_signal = self._adjust_signal_target(self._apply_adaptive_stop(candidates[0], now))
+                selected_signal = (
+                    self._adjust_signal_target(candidates[0])
+                    if self.exit_mode == "FIXED_PIPS"
+                    else self._adjust_signal_target(self._apply_adaptive_stop(candidates[0], now))
+                )
 
         if selected_signal:
             will_send = self.live_trading and self.place_trades
-            selected_signal = self.client.normalize_signal_for_execution(selected_signal)
+            if self.exit_mode == "FIXED_PIPS":
+                quote = self.client.current_quote(str(selected_signal.get("symbol") or ""))
+                selected_signal = self._adjust_signal_target(selected_signal, quote=quote)
+                if selected_signal.get("fixed_pip_error"):
+                    blocks.append(str(selected_signal["fixed_pip_error"]))
+            else:
+                selected_signal = self.client.normalize_signal_for_execution(selected_signal)
             spread_check = self.client.spread_check(
                 selected_signal,
                 max_spread_risk_percent=self.max_spread_risk_percent,
                 max_spread_points=self.max_spread_points,
             )
-            if not spread_check.get("ok"):
+            if blocks:
+                spread_check = {"ok": False, "message": "Challenge signal blocked before spread validation."}
+            elif not spread_check.get("ok"):
                 blocks.extend(str(reason) for reason in (spread_check.get("reasons") or [spread_check.get("message")]))
             else:
                 risk_amount = self.risk_amount()
@@ -1017,19 +1197,20 @@ class TwentyPipChallengeBot:
                     self._log_event("challenge_order_prepared", prepared=prepared)
 
                     if will_send:
-                        placement = self.client.place_order(order)
+                        is_pending = str(selected_signal.get("execution_type") or "").upper() == "PENDING"
+                        placement = (
+                            self.client.place_pending_order(order)
+                            if is_pending
+                            else self.client.place_order(order)
+                        )
                         self._log_event("challenge_order_sent", placement=placement, prepared=prepared)
                         if placement.get("placed"):
                             self.state["last_trade_date"] = _today_key(now)
                             self.state.setdefault("stats", {})["placements"] = int(
                                 self.state.setdefault("stats", {}).get("placements") or 0
                             ) + 1
-                            record = self._record_position_after_placement(
-                                selected_signal,
-                                order,
-                                placement,
-                                now,
-                                risk_amount,
+                            record = None if is_pending else self._record_position_after_placement(
+                                selected_signal, order, placement, now, risk_amount
                             )
                             if record:
                                 prepared["tracked_position"] = record
@@ -1060,6 +1241,17 @@ class TwentyPipChallengeBot:
             "risk_percent": self.risk_percent,
             "target_percent": self.target_percent,
             "reward_risk": round(self.reward_risk, 3),
+            "exit_plan": {
+                "mode": self.exit_mode,
+                "take_profit_pips": self.take_profit_pips,
+                "stop_loss_pips": self.stop_loss_pips,
+                "pip_size_overrides": self.pip_size_overrides,
+            },
+            "weekdays_only": self.weekdays_only,
+            "allowed_weekdays": sorted(self.allowed_weekdays),
+            "weekend_pending_actions": weekend_pending_actions,
+            "close_at_session_end": self.close_at_session_end,
+            "session_close_actions": session_close_actions,
             "trade_protection": {
                 "enabled": self.protect_open_trades,
                 "final_rr": self.protection_final_rr,
@@ -1101,10 +1293,19 @@ class TwentyPipChallengeBot:
             f"Challenge bank: ${self.challenge_balance():.2f}, level {self.state.get('level')}/{self.max_levels}, "
             f"final target about ${self.target_balance():,.2f}."
         )
-        print(
-            f"Risk {self.risk_percent:g}% to target {self.target_percent:g}% "
-            f"({self.reward_risk:.2f}R), one trade/day={self.one_trade_per_day}."
-        )
+        if self.exit_mode == "FIXED_PIPS":
+            print(
+                f"Risk {self.risk_percent:g}% with fixed TP {self.take_profit_pips:g} pips / "
+                f"SL {self.stop_loss_pips:g} pips ({self.reward_risk:.2f}R), "
+                f"one trade/day={self.one_trade_per_day}."
+            )
+        else:
+            print(
+                f"Risk {self.risk_percent:g}% to target {self.target_percent:g}% "
+                f"({self.reward_risk:.2f}R), one trade/day={self.one_trade_per_day}."
+            )
+        print(f"Weekday entries only: {self.weekdays_only}")
+        print(f"Allowed challenge days: {', '.join(sorted(self.allowed_weekdays))}")
         print(f"Live trading: {self.live_trading}; CHALLENGE20_PLACE_TRADES: {self.place_trades}")
         print(f"State: {STATE_PATH}")
         print("Press Ctrl+C to stop.")

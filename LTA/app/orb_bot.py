@@ -21,7 +21,13 @@ from .config import REPORTS_DIR, load_config
 from .models import TRADE_SYMBOLS
 from .mt5_client import MT5Client
 from .orb_strategy import ORBSettings, confirmed_orb_signal, pending_orb_signals
-from .session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, date_in_timezone, now_naive
+from .session_time import (
+    DEFAULT_DATA_TIMEZONE,
+    DEFAULT_SESSION_TIMEZONE,
+    date_in_timezone,
+    is_weekday_in_timezone,
+    now_naive,
+)
 
 
 ORB_MAGIC = 30062024
@@ -238,6 +244,7 @@ class ORBBot:
         self.place_pending = _env_bool("ORB_PLACE_PENDING", False)
         self.one_trade_per_symbol_per_day = _env_bool("ORB_ONE_TRADE_PER_SYMBOL_PER_DAY", True)
         self.max_trades_per_day = max(0, _env_int("ORB_MAX_TRADES_PER_DAY", 1))
+        self.weekdays_only = _env_bool("ORB_WEEKDAYS_ONLY", True)
         self.best_setup_selector = _env_bool("ORB_BEST_SETUP_SELECTOR", True)
         self.best_setup_candidate_limit = max(0, _env_int("ORB_BEST_SETUP_CANDIDATE_LIMIT", 0))
         self.risk_percent = max(0.0, _env_float("ORB_MAX_LOT_RISK_PCT", self.config.max_lot_risk_pct))
@@ -778,9 +785,22 @@ class ORBBot:
         blocked: list[dict[str, Any]] = []
         errors: list[dict[str, Any]] = []
         cycle_commitments = 0
+        weekday_entry_allowed = not self.weekdays_only or is_weekday_in_timezone(
+            now, self.settings.data_timezone, self.settings.session_timezone
+        )
+        weekend_pending_actions: list[dict[str, Any]] = []
+        if not weekday_entry_allowed:
+            blocked.append({"reason": "Weekend entry block is active; ORB trades are Monday-Friday only."})
+            if self.live_trading:
+                for order in self.client.pending_orders(magic=ORB_MAGIC):
+                    result = self.client.cancel_pending_order(
+                        int(order.get("ticket") or 0),
+                        str(order.get("symbol") or ""),
+                    )
+                    weekend_pending_actions.append({"order": order, "result": result})
 
         cycle_signals: list[dict[str, Any]] = []
-        for symbol in self.symbols:
+        for symbol in self.symbols if weekday_entry_allowed else ():
             symbol_settings = self._settings_for_symbol(symbol)
             candles = self._load_candles(symbol, now)
             if candles is None or len(candles) < 120:
@@ -879,6 +899,9 @@ class ORBBot:
             "place_trades": self.place_trades,
             "prepare_pending": self.prepare_pending,
             "place_pending": self.place_pending,
+            "weekday_entry_allowed": weekday_entry_allowed,
+            "weekend_pending_actions": weekend_pending_actions,
+            "weekdays_only": self.weekdays_only,
             "risk_percent": self.risk_percent,
             "max_trades_per_day": self.max_trades_per_day,
             "best_setup_selector": self.best_setup_selector,

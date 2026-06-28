@@ -44,7 +44,7 @@ DEFAULT_RRS = (1, 2, 3, 4, 5, 6)
 class ORBTrade:
     symbol: str
     range_minutes: int
-    rr: int
+    rr: float
     month: str
     date: str
     opened_at: str
@@ -115,7 +115,12 @@ def infer_point(symbol: str) -> float:
     return 0.01
 
 
-def spread_cost_r(row: pd.Series, symbol: str, risk: float) -> tuple[float, float]:
+def spread_cost_r(
+    row: pd.Series,
+    symbol: str,
+    risk: float,
+    point_size: float | None = None,
+) -> tuple[float, float]:
     if risk <= 0:
         return 0.0, 0.0
     try:
@@ -126,7 +131,7 @@ def spread_cost_r(row: pd.Series, symbol: str, risk: float) -> tuple[float, floa
         multiplier = max(0.0, float(os.getenv("BACKTEST_SPREAD_MULTIPLIER", "1") or 1.0))
     except ValueError:
         multiplier = 1.0
-    spread_price = points * infer_point(symbol) * multiplier
+    spread_price = points * float(point_size or infer_point(symbol)) * multiplier
     return spread_price / risk, points
 
 
@@ -135,12 +140,15 @@ def simulate_orb_day(
     symbol: str,
     session_day: date,
     settings: ORBSettings,
-    rr: int,
+    rr: float,
     lot: float,
     contract_size: float,
     timeframe_minutes: int = 15,
     day_candles: pd.DataFrame | None = None,
     prior_candles: pd.DataFrame | None = None,
+    fixed_stop_distance: float | None = None,
+    fixed_target_distance: float | None = None,
+    point_size: float | None = None,
 ) -> ORBTrade | dict[str, Any] | None:
     session_start, range_end, session_end = session_parts(session_day, settings)
     source = day_candles if day_candles is not None else df
@@ -196,7 +204,12 @@ def simulate_orb_day(
     if trigger_position is None or direction is None:
         return None
 
-    target = target_for(direction, entry, stop, rr)
+    if fixed_stop_distance and fixed_stop_distance > 0:
+        stop = entry - fixed_stop_distance if direction == "BUY" else entry + fixed_stop_distance
+    if fixed_target_distance and fixed_target_distance > 0:
+        target = entry + fixed_target_distance if direction == "BUY" else entry - fixed_target_distance
+    else:
+        target = target_for(direction, entry, stop, rr)
     exit_price = float(post.iloc[-1]["close"])
     result = "timeout"
     closed_at = pd.Timestamp(post.iloc[-1]["time"]).to_pydatetime()
@@ -231,7 +244,7 @@ def simulate_orb_day(
 
     risk = max(abs(entry - stop), 1e-9)
     r_multiple = ((exit_price - entry) / risk) if direction == "BUY" else ((entry - exit_price) / risk)
-    spread_r, spread_points = spread_cost_r(trade_path.iloc[0], symbol, risk)
+    spread_r, spread_points = spread_cost_r(trade_path.iloc[0], symbol, risk, point_size=point_size)
     spread_enabled = str(os.getenv("BACKTEST_SPREAD_ADJUST", "true")).strip().lower() in {"1", "true", "yes", "on"}
     max_spread_r = float(os.getenv("BACKTEST_MAX_SPREAD_R", "0") or 0.0)
     if spread_enabled and max_spread_r > 0 and spread_r > max_spread_r:

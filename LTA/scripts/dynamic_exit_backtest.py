@@ -655,6 +655,9 @@ def collect_lta_candidates(
                     continue
                 if candle_time > end:
                     break
+                if date_in_timezone(candle_time, data_timezone, session_timezone).weekday() >= 5:
+                    i += stride
+                    continue
                 if not in_allowed_sessions(candle_time, allowed_sessions, data_timezone, session_timezone):
                     i += stride
                     continue
@@ -731,6 +734,8 @@ def collect_orb_candidates(
         )
         log(f"ORB {symbol}: scanning {len(days)} session days")
         for session_day in days:
+            if session_day.weekday() >= 5:
+                continue
             session_start, range_end, session_end = orb_session_bounds(session_day, settings)
             if session_end < start or session_start > end:
                 continue

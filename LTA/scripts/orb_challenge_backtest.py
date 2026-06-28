@@ -20,6 +20,7 @@ for path in (ROOT, SCRIPT_DIR):
 from app.config import REPORTS_DIR, load_config
 from app.mt5_client import MT5Client, TIMEFRAME_MINUTES
 from app.orb_strategy import ORBSettings
+from app.pip_utils import parse_pip_size_map, pip_size_for
 from app.session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, date_in_timezone
 from orb_backtest import ORBTrade, normalize_candles, session_parts, simulate_orb_day
 
@@ -90,6 +91,8 @@ def compound_challenge(
     max_drawdown = 0.0
     reached_at: str | None = None
     equity_rows: list[dict[str, Any]] = []
+    minimum_lot_overrides = 0
+    max_actual_risk_percent = 0.0
 
     if rows.empty:
         return (
@@ -115,7 +118,30 @@ def compound_challenge(
     for _, row in rows.sort_values(["opened_at", "symbol"]).iterrows():
         r_multiple = float(row["r_multiple"])
         before = balance
-        balance = max(0.0, balance * (1 + risk_fraction * r_multiple))
+        requested_risk = balance * risk_fraction
+        risk_per_lot = float(row.get("risk_per_lot") or 0.0)
+        lot_min = float(row.get("lot_min") or 0.01)
+        lot_max = float(row.get("lot_max") or 100.0)
+        lot_step = float(row.get("lot_step") or 0.01)
+        lot = 0.0
+        minimum_override = False
+        if risk_per_lot > 0 and lot_step > 0:
+            raw_lot = requested_risk / risk_per_lot
+            if raw_lot < lot_min:
+                lot = lot_min
+                minimum_override = True
+                minimum_lot_overrides += 1
+            else:
+                steps = int((min(raw_lot, lot_max) - lot_min + 1e-12) // lot_step)
+                lot = min(lot_max, lot_min + steps * lot_step)
+            actual_risk = risk_per_lot * lot
+        else:
+            raw_lot = 0.0
+            actual_risk = requested_risk
+        actual_risk_percent = actual_risk / balance * 100 if balance > 0 else 0.0
+        max_actual_risk_percent = max(max_actual_risk_percent, actual_risk_percent)
+        pnl = actual_risk * r_multiple
+        balance = max(0.0, balance + pnl)
         peak = max(peak, balance)
         min_balance = min(min_balance, balance)
         max_drawdown = max(max_drawdown, (peak - balance) / peak if peak > 0 else 0.0)
@@ -129,6 +155,13 @@ def compound_challenge(
                 "direction": row["direction"],
                 "result": row["result"],
                 "r_multiple": round(r_multiple, 4),
+                "requested_risk": round(requested_risk, 2),
+                "actual_risk": round(actual_risk, 2),
+                "actual_risk_percent": round(actual_risk_percent, 2),
+                "raw_lot": round(raw_lot, 4),
+                "lot": round(lot, 4),
+                "minimum_lot_override": minimum_override,
+                "pnl": round(pnl, 2),
                 "balance_before": round(before, 2),
                 "balance_after": round(balance, 2),
                 "level_after": level,
@@ -157,6 +190,9 @@ def compound_challenge(
         "target_reached_at": reached_at,
         "max_drawdown_pct": round(max_drawdown * 100, 2),
         "min_balance": round(min_balance, 2),
+        "minimum_lot_overrides": minimum_lot_overrides,
+        "max_actual_risk_percent": round(max_actual_risk_percent, 2),
+        "sizing_mode": "mt5_min_step_compounding",
     }
     return summary, pd.DataFrame(equity_rows)
 
@@ -200,6 +236,10 @@ def main() -> None:
     parser.add_argument("--data-timezone", default=None)
     parser.add_argument("--range-minutes", type=int, default=None)
     parser.add_argument("--timeframe", default=None)
+    parser.add_argument("--take-profit-pips", type=float, default=None)
+    parser.add_argument("--stop-loss-pips", type=float, default=None)
+    parser.add_argument("--pip-sizes", default=None, help="Comma-separated SYMBOL:size overrides.")
+    parser.add_argument("--allowed-weekdays", default=None, help="Comma-separated Mon-Fri day names.")
     args = parser.parse_args()
 
     load_config()
@@ -215,7 +255,29 @@ def main() -> None:
     risk_percent = args.risk_percent if args.risk_percent is not None else env_float("CHALLENGE20_RISK_PERCENT", 23.0)
     target_percent = args.target_percent if args.target_percent is not None else env_float("CHALLENGE20_TARGET_PERCENT", 30.0)
     max_levels = args.levels if args.levels is not None else env_int("CHALLENGE20_LEVELS", 30)
-    reward_risk = target_percent / risk_percent if risk_percent > 0 else 0.0
+    take_profit_pips = max(
+        0.1,
+        args.take_profit_pips
+        if args.take_profit_pips is not None
+        else env_float("CHALLENGE20_TAKE_PROFIT_PIPS", 20.0),
+    )
+    stop_loss_pips = max(
+        0.1,
+        args.stop_loss_pips
+        if args.stop_loss_pips is not None
+        else env_float("CHALLENGE20_STOP_LOSS_PIPS", 15.4),
+    )
+    pip_sizes = parse_pip_size_map(args.pip_sizes or os.getenv("CHALLENGE20_SYMBOL_PIP_SIZE"))
+    allowed_weekdays = {
+        item.strip().upper()[:3]
+        for item in str(
+            args.allowed_weekdays
+            or os.getenv("CHALLENGE20_ALLOWED_WEEKDAYS")
+            or "MON,TUE,WED,THU,FRI"
+        ).split(",")
+        if item.strip()
+    }
+    reward_risk = take_profit_pips / stop_loss_pips
 
     settings = ORBSettings(
         session_start=args.session_start or os.getenv("CHALLENGE20_ORB_SESSION_START", os.getenv("ORB_SESSION_START", "09:30")),
@@ -240,8 +302,8 @@ def main() -> None:
     log(f"MT5 status: {status.get('message')}")
     log(f"Window: {start_day} to {end_day}")
     log(
-        f"Challenge: start=${start_balance:g}, risk={risk_percent:g}%, target={target_percent:g}% "
-        f"({reward_risk:.2f}R)"
+        f"Challenge: start=${start_balance:g}, risk={risk_percent:g}%, "
+        f"TP={take_profit_pips:g} pips, SL={stop_loss_pips:g} pips ({reward_risk:.2f}R)"
     )
     log(
         f"ORB: {settings.range_minutes}m, {settings.session_start}-{settings.session_end} "
@@ -278,7 +340,11 @@ def main() -> None:
                 for value in df["time"]
             }
         )
-        days = [day for day in days if start_day <= day <= end_day]
+        days = [
+            day
+            for day in days
+            if start_day <= day <= end_day and day.strftime("%a").upper()[:3] in allowed_weekdays
+        ]
         day_groups = {}
         prior_groups = {}
         for day in days:
@@ -286,6 +352,18 @@ def main() -> None:
             day_groups[day] = df[(df["time"] >= session_start) & (df["time"] <= session_end)].reset_index(drop=True)
             prior_groups[day] = df[df["time"] < session_start].tail(64).reset_index(drop=True)
         contract_size = client.contract_size(symbol)
+        info = client.symbol_info(symbol) or {}
+        point_size = float(info.get("point") or 0.0)
+        pip_size = pip_size_for(
+            symbol,
+            point=point_size,
+            digits=int(info.get("digits") or 0),
+            overrides=pip_sizes,
+        )
+        if pip_size <= 0:
+            availability.append({"symbol": symbol, "broker_symbol": resolved, "status": "unknown_pip_size"})
+            log(f"{symbol}: skipped, pip size could not be determined")
+            continue
         availability.append({"symbol": symbol, "broker_symbol": resolved, "candles": len(df), "days": len(days), "status": "ok"})
         log(f"{symbol}: {len(df)} {timeframe} candles, {len(days)} session days")
         for session_day in days:
@@ -300,10 +378,25 @@ def main() -> None:
                 timeframe_minutes=timeframe_minutes,
                 day_candles=day_groups[session_day],
                 prior_candles=prior_groups[session_day],
+                fixed_stop_distance=pip_size * stop_loss_pips,
+                fixed_target_distance=pip_size * take_profit_pips,
+                point_size=point_size,
             )
             if isinstance(result, ORBTrade):
                 row = asdict(result)
                 if start <= pd.Timestamp(row["opened_at"]).to_pydatetime() <= end:
+                    risk_estimate = client.estimate_trade_risk(
+                        symbol,
+                        str(row["direction"]),
+                        1.0,
+                        float(row["entry"]),
+                        float(row["stop_loss"]),
+                    )
+                    constraints = client.lot_constraints(symbol)
+                    row["risk_per_lot"] = float(risk_estimate.get("risk") or 0.0)
+                    row["lot_min"] = float(constraints.get("min") or 0.01)
+                    row["lot_max"] = float(constraints.get("max") or 100.0)
+                    row["lot_step"] = float(constraints.get("step") or 0.01)
                     trades.append(row)
             elif isinstance(result, dict):
                 skipped.append(result)
@@ -363,6 +456,11 @@ def main() -> None:
         "risk_percent": risk_percent,
         "target_percent": target_percent,
         "reward_risk": round(reward_risk, 4),
+        "take_profit_pips": take_profit_pips,
+        "stop_loss_pips": stop_loss_pips,
+        "pip_sizes": {symbol: pip_size_for(symbol, overrides=pip_sizes) for symbol in symbols},
+        "weekdays_only": True,
+        "allowed_weekdays": sorted(allowed_weekdays),
         "levels": max_levels,
         "orb": {
             "timeframe": timeframe,
