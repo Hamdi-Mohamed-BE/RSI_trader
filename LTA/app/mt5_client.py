@@ -658,10 +658,36 @@ class MT5Client:
             return None
         df = pd.DataFrame(rates)
         df["time"] = pd.to_datetime(df["time"], unit="s")
-        df = df.rename(columns={"tick_volume": "volume"})
-        if "volume" not in df.columns:
-            df["volume"] = 1.0
-        df = df[["time", "open", "high", "low", "close", "volume", "spread"]].copy()
+        tick_volume = pd.to_numeric(
+            df["tick_volume"] if "tick_volume" in df.columns else pd.Series(0.0, index=df.index),
+            errors="coerce",
+        ).fillna(0.0)
+        real_volume = pd.to_numeric(
+            df["real_volume"] if "real_volume" in df.columns else pd.Series(0.0, index=df.index),
+            errors="coerce",
+        ).fillna(0.0)
+        real_coverage = float((real_volume > 0).mean()) if len(real_volume) else 0.0
+        use_real_volume = real_coverage >= 0.80 and float(real_volume.sum()) > 0
+        df["tick_volume"] = tick_volume
+        df["real_volume"] = real_volume
+        df["volume"] = real_volume if use_real_volume else tick_volume
+        df["volume_source"] = "real_volume" if use_real_volume else "tick_volume_proxy"
+        if "spread" not in df.columns:
+            df["spread"] = 0.0
+        df = df[
+            [
+                "time",
+                "open",
+                "high",
+                "low",
+                "close",
+                "volume",
+                "tick_volume",
+                "real_volume",
+                "volume_source",
+                "spread",
+            ]
+        ].copy()
         return df.tail(max_bars).reset_index(drop=True)
 
     def prepare_order(self, signal: dict[str, Any], lot: float, live_trading: bool = False) -> dict[str, Any]:

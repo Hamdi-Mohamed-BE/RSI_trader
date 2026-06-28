@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import heapq
 import json
 import math
 import os
@@ -140,6 +141,35 @@ def in_allowed_sessions(
         if start > end and (minutes >= start or minutes <= end):
             return True
     return False
+
+
+def passes_strict_session_gate(
+    signal: dict[str, Any],
+    value: datetime,
+    data_timezone: str,
+    session_timezone: str,
+) -> bool:
+    start_raw = os.getenv("AUTO_STRICT_SESSION_START", "10:00")
+    end_raw = os.getenv("AUTO_STRICT_SESSION_END", "13:00")
+    ranges = parse_sessions(f"{start_raw}-{end_raw}")
+    if not ranges or ranges[0][0] == ranges[0][1]:
+        return True
+    local = as_aware(value, data_timezone).astimezone(as_aware(datetime.now(), session_timezone).tzinfo)
+    minutes = local.hour * 60 + local.minute
+    start, end, _label = ranges[0]
+    in_window = start <= minutes < end if start < end else minutes >= start or minutes < end
+    if not in_window:
+        return True
+    min_score = int(os.getenv("AUTO_STRICT_SESSION_MIN_SCORE", "96") or 96)
+    if int(signal.get("setup_score") or 0) < min_score:
+        return False
+    require_internal = str(os.getenv("AUTO_STRICT_SESSION_REQUIRE_INTERNAL_BREAK", "true")).strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+    return not require_internal or "Internal Structure" in str(signal.get("entry_model") or "")
 
 
 def normalize_candles(candles: pd.DataFrame) -> pd.DataFrame:
@@ -551,12 +581,30 @@ def apply_account(
     daily_pnl: dict[str, float] = {}
     open_until: dict[str, datetime] = {}
     applied: list[dict[str, Any]] = []
+    pending: list[tuple[datetime, int, dict[str, Any]]] = []
     skipped_guardrail = 0
     skipped_overlap = 0
+    sequence = 0
+
+    def settle(until: datetime | None = None) -> None:
+        nonlocal balance, peak, max_drawdown
+        while pending and (until is None or pending[0][0] <= until):
+            closed_at, _sequence, item = heapq.heappop(pending)
+            before = balance
+            pnl = float(item["pnl"])
+            balance = max(0.0, balance + pnl)
+            peak = max(peak, balance)
+            max_drawdown = max(max_drawdown, (peak - balance) / peak if peak else 0.0)
+            daily_key = closed_at.date().isoformat()
+            daily_pnl[daily_key] = daily_pnl.get(daily_key, 0.0) + pnl
+            item["balance_before_settlement"] = round(before, 2)
+            item["balance_after"] = round(balance, 2)
+            applied.append(item)
 
     for row in sorted(rows, key=lambda item: (str(item["opened_at"]), str(item["bot"]), str(item["symbol"]))):
         opened_at = datetime.fromisoformat(str(row["opened_at"]))
         closed_at = datetime.fromisoformat(str(row["closed_at"]))
+        settle(opened_at)
         day_key = opened_at.date().isoformat()
         current_dd_pct = (peak - balance) / peak * 100 if peak > 0 else 0.0
         if open_until.get(str(row["symbol"]), datetime.min) > opened_at:
@@ -573,24 +621,20 @@ def apply_account(
             continue
 
         risk_amount = balance * risk_pct / 100
-        pnl = risk_amount * float(row["r_multiple"])
-        before = balance
-        balance = max(0.0, balance + pnl)
-        peak = max(peak, balance)
-        max_drawdown = max(max_drawdown, (peak - balance) / peak if peak else 0.0)
-        daily_trades[day_key] = daily_trades.get(day_key, 0) + 1
-        daily_pnl[day_key] = daily_pnl.get(day_key, 0.0) + pnl
-        open_until[str(row["symbol"])] = closed_at
         item = dict(row)
         item.update(
             {
-                "balance_before": round(before, 2),
+                "balance_at_entry": round(balance, 2),
                 "risk_amount": round(risk_amount, 2),
-                "pnl": round(pnl, 2),
-                "balance_after": round(balance, 2),
+                "pnl": round(risk_amount * float(row["r_multiple"]), 2),
             }
         )
-        applied.append(item)
+        daily_trades[day_key] = daily_trades.get(day_key, 0) + 1
+        open_until[str(row["symbol"])] = closed_at
+        sequence += 1
+        heapq.heappush(pending, (closed_at, sequence, item))
+
+    settle()
 
     wins = sum(1 for item in applied if float(item["r_multiple"]) > 0)
     losses = sum(1 for item in applied if float(item["r_multiple"]) < 0)
@@ -670,6 +714,9 @@ def collect_lta_candidates(
                     min_rr=min_rr,
                 )
                 if signal and signal.get("status") == "allowed":
+                    if not passes_strict_session_gate(signal, candle_time, data_timezone, session_timezone):
+                        i += stride
+                        continue
                     entry = float(signal.get("entry") or 0.0)
                     stop = float(signal.get("stop_loss") or 0.0)
                     direction = str(signal.get("direction") or "").upper()
@@ -809,6 +856,7 @@ def main() -> None:
     parser.add_argument("--risk-pct", type=float, default=5.0)
     parser.add_argument("--max-holding-bars", type=int, default=96)
     parser.add_argument("--lookback-bars", type=int, default=500)
+    parser.add_argument("--skip-orb", action="store_true", help="Validate only LTA candidates.")
     args = parser.parse_args()
 
     config = load_config()
@@ -819,7 +867,7 @@ def main() -> None:
 
     lta_symbols = parse_csv(os.getenv("AUTO_SYMBOLS"), DEFAULT_LTA_SYMBOLS)
     lta_timeframes = parse_csv(os.getenv("AUTO_SCAN_TIMEFRAMES"), DEFAULT_LTA_TIMEFRAMES)
-    orb_symbols = parse_csv(os.getenv("ORB_SYMBOLS"), DEFAULT_ORB_SYMBOLS)
+    orb_symbols = () if args.skip_orb else parse_csv(os.getenv("ORB_SYMBOLS"), DEFAULT_ORB_SYMBOLS)
     auto_rr = parse_rr_map(os.getenv("AUTO_SYMBOL_RR"))
     orb_rr = parse_rr_map(os.getenv("ORB_SYMBOL_RR"))
     allowed_sessions = parse_sessions(os.getenv("AUTO_ALLOWED_SESSIONS"))
@@ -847,7 +895,10 @@ def main() -> None:
     log(f"MT5 status: {status.get('message')}")
     log(f"Window: {start.date()} to {end.date()} | balance=${args.balance:g} | risk={args.risk_pct:g}%")
     log(f"LTA: {', '.join(lta_symbols)} on {', '.join(lta_timeframes)}")
-    log(f"ORB: {', '.join(orb_symbols)} | {orb_settings.session_start}-{orb_settings.session_end} {orb_settings.session_timezone}")
+    if orb_symbols:
+        log(f"ORB: {', '.join(orb_symbols)} | {orb_settings.session_start}-{orb_settings.session_end} {orb_settings.session_timezone}")
+    else:
+        log("ORB: skipped")
 
     market_data: dict[str, pd.DataFrame] = {}
     lta_candidates, lta_availability = collect_lta_candidates(

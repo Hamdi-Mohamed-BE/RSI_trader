@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime, timedelta
+import os
 from typing import Any
 
 import numpy as np
 import pandas as pd
+
+from .session_time import DEFAULT_DATA_TIMEZONE, DEFAULT_SESSION_TIMEZONE, zone
 
 
 @dataclass(frozen=True)
@@ -13,6 +16,13 @@ class Profile:
     poc: float
     vah: float
     val: float
+    hvns: tuple[float, ...] = ()
+    lvns: tuple[float, ...] = ()
+    row_size: float = 0.0
+    total_volume: float = 0.0
+    volume_source: str = "unknown"
+    range_start: datetime | None = None
+    range_end: datetime | None = None
 
 
 def _to_frame(candles: pd.DataFrame) -> pd.DataFrame:
@@ -23,6 +33,8 @@ def _to_frame(candles: pd.DataFrame) -> pd.DataFrame:
     if "volume" not in df.columns:
         df["volume"] = 1.0
     df["volume"] = pd.to_numeric(df["volume"], errors="coerce").fillna(1.0).clip(lower=1.0)
+    if "volume_source" not in df.columns:
+        df["volume_source"] = "unknown_proxy"
     return df.dropna(subset=["open", "high", "low", "close"]).reset_index(drop=True)
 
 
@@ -40,40 +52,100 @@ def _atr(df: pd.DataFrame, period: int = 14) -> float:
     return value
 
 
-def _volume_profile(df: pd.DataFrame, bins: int = 48, value_area: float = 0.70) -> Profile | None:
+def _volume_profile(
+    df: pd.DataFrame,
+    bins: int | None = None,
+    value_area: float | None = None,
+) -> Profile | None:
     if len(df) < 8:
         return None
     low = float(df["low"].min())
     high = float(df["high"].max())
     if high <= low:
         return None
+    bins = int(bins if bins is not None else os.getenv("LTA_PROFILE_BINS", "48") or 48)
+    value_area = float(
+        value_area if value_area is not None else os.getenv("LTA_PROFILE_VALUE_AREA", "0.70") or 0.70
+    )
     bins = min(max(16, bins), 96)
-    weights = df["volume"].to_numpy(dtype=float)
-    closes = df["close"].to_numpy(dtype=float)
-    hist, edges = np.histogram(closes, bins=bins, range=(low, high), weights=weights)
+    value_area = min(0.90, max(0.50, value_area))
+    edges = np.linspace(low, high, bins + 1)
+    bar_lows = np.maximum(low, df["low"].to_numpy(dtype=float))[:, None]
+    bar_highs = np.minimum(high, df["high"].to_numpy(dtype=float))[:, None]
+    bar_volumes = np.maximum(0.0, df["volume"].to_numpy(dtype=float))
+    overlap = np.maximum(
+        0.0,
+        np.minimum(edges[1:][None, :], bar_highs) - np.maximum(edges[:-1][None, :], bar_lows),
+    )
+    overlap_totals = overlap.sum(axis=1)
+    distributable = overlap_totals > 0
+    hist = (
+        overlap[distributable]
+        * (bar_volumes[distributable] / overlap_totals[distributable])[:, None]
+    ).sum(axis=0)
+    point_rows = np.flatnonzero(~distributable & (bar_volumes > 0))
+    if len(point_rows):
+        closes = df["close"].to_numpy(dtype=float)
+        indices = np.clip(np.searchsorted(edges, closes[point_rows], side="right") - 1, 0, bins - 1)
+        np.add.at(hist, indices, bar_volumes[point_rows])
     if hist.sum() <= 0:
         return None
     centers = (edges[:-1] + edges[1:]) / 2
     poc_idx = int(np.argmax(hist))
-    ranked = np.argsort(hist)[::-1]
-    selected: list[int] = []
-    total = 0.0
+    left = right = poc_idx
+    total = float(hist[poc_idx])
     target = float(hist.sum() * value_area)
-    for idx in ranked:
-        selected.append(int(idx))
-        total += float(hist[idx])
-        if total >= target:
-            break
-    selected_centers = centers[selected]
+    while total < target and (left > 0 or right < bins - 1):
+        lower_volume = float(hist[left - 1]) if left > 0 else -1.0
+        upper_volume = float(hist[right + 1]) if right < bins - 1 else -1.0
+        if upper_volume >= lower_volume and right < bins - 1:
+            right += 1
+            total += float(hist[right])
+        elif left > 0:
+            left -= 1
+            total += float(hist[left])
+
+    smooth = np.convolve(hist, np.array([0.25, 0.5, 0.25]), mode="same")
+    positive = smooth[smooth > 0]
+    high_cutoff = float(np.quantile(positive, 0.65)) if len(positive) else 0.0
+    low_cutoff = float(np.quantile(positive, 0.25)) if len(positive) else 0.0
+    hvn_indices = [
+        index
+        for index in range(1, bins - 1)
+        if smooth[index] >= smooth[index - 1]
+        and smooth[index] >= smooth[index + 1]
+        and smooth[index] >= high_cutoff
+    ]
+    lvn_indices = [
+        index
+        for index in range(1, bins - 1)
+        if smooth[index] <= smooth[index - 1]
+        and smooth[index] <= smooth[index + 1]
+        and 0 < smooth[index] <= low_cutoff
+    ]
+    hvn_indices.sort(key=lambda index: float(smooth[index]), reverse=True)
+    lvn_indices.sort(key=lambda index: float(smooth[index]))
+    volume_source = str(df["volume_source"].mode().iloc[0]) if len(df["volume_source"].mode()) else "unknown_proxy"
     return Profile(
         poc=float(centers[poc_idx]),
-        vah=float(np.max(selected_centers)),
-        val=float(np.min(selected_centers)),
+        vah=float(edges[right + 1]),
+        val=float(edges[left]),
+        hvns=tuple(float(centers[index]) for index in hvn_indices[:3]),
+        lvns=tuple(float(centers[index]) for index in lvn_indices[:3]),
+        row_size=float(edges[1] - edges[0]),
+        total_volume=float(hist.sum()),
+        volume_source=volume_source,
+        range_start=pd.Timestamp(df["time"].iloc[0]).to_pydatetime(),
+        range_end=pd.Timestamp(df["time"].iloc[-1]).to_pydatetime(),
     )
 
 
 def _session_name(timestamp: datetime) -> str:
-    hour = timestamp.hour + timestamp.minute / 60
+    data_zone = zone(os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE), DEFAULT_DATA_TIMEZONE)
+    session_zone = zone(os.getenv("LTA_PROFILE_TIMEZONE", DEFAULT_SESSION_TIMEZONE), DEFAULT_SESSION_TIMEZONE)
+    aware = timestamp.replace(tzinfo=data_zone) if timestamp.tzinfo is None else timestamp.astimezone(data_zone)
+    local = aware.astimezone(session_zone)
+    hour = local.hour + local.minute / 60
     if 8 <= hour < 17:
         return "New York"
     if 3 <= hour < 12:
@@ -81,6 +153,23 @@ def _session_name(timestamp: datetime) -> str:
     if hour >= 19 or hour < 2:
         return "Asia"
     return "Off-session"
+
+
+def _volume_context(df: pd.DataFrame) -> dict[str, Any]:
+    if len(df) < 12:
+        return {"ratio": 1.0, "regime": "normal", "source": "unknown_proxy"}
+    recent = float(df["volume"].tail(3).mean())
+    baseline_frame = df["volume"].iloc[:-3].tail(30)
+    baseline = float(baseline_frame.median()) if len(baseline_frame) else recent
+    ratio = recent / max(baseline, 1.0)
+    if ratio >= float(os.getenv("LTA_HIGH_VOLUME_RATIO", "1.35") or 1.35):
+        regime = "high"
+    elif ratio <= float(os.getenv("LTA_LOW_VOLUME_RATIO", "0.75") or 0.75):
+        regime = "low"
+    else:
+        regime = "normal"
+    source = str(df["volume_source"].mode().iloc[0]) if len(df["volume_source"].mode()) else "unknown_proxy"
+    return {"ratio": ratio, "regime": regime, "source": source}
 
 
 def _candle_parts(row: pd.Series) -> dict[str, float]:
@@ -133,57 +222,259 @@ def detect_market_structure(candles: pd.DataFrame) -> dict[str, Any]:
     return {"structure": "ranging", "details": "Recent range is mixed or consolidating."}
 
 
-def _week_id(series: pd.Series) -> pd.Series:
-    iso = series.dt.isocalendar()
-    return iso["year"].astype(str) + "-" + iso["week"].astype(str).str.zfill(2)
+def _profile_clock(df: pd.DataFrame) -> pd.DataFrame:
+    framed = df.copy()
+    data_zone = zone(os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE), DEFAULT_DATA_TIMEZONE)
+    session_zone = zone(os.getenv("LTA_PROFILE_TIMEZONE", DEFAULT_SESSION_TIMEZONE), DEFAULT_SESSION_TIMEZONE)
+    reset_raw = os.getenv("LTA_PROFILE_DAY_START", "18:00") or "18:00"
+    try:
+        reset_hour, reset_minute = (int(part) for part in reset_raw.split(":", 1))
+    except (TypeError, ValueError):
+        reset_hour, reset_minute = 18, 0
+    reset_minutes = reset_hour * 60 + reset_minute
+    rollover_shift = timedelta(minutes=(24 * 60 - reset_minutes) % (24 * 60))
+    timestamps = pd.to_datetime(framed["time"])
+    if timestamps.dt.tz is None:
+        aware = timestamps.dt.tz_localize(data_zone)
+    else:
+        aware = timestamps.dt.tz_convert(data_zone)
+    local = aware.dt.tz_convert(session_zone)
+    shifted = local + pd.Timedelta(rollover_shift)
+    trading_days = shifted.dt.date
+    framed["_local_time"] = local.dt.tz_localize(None)
+    framed["_trading_day"] = trading_days
+    framed["_week_start"] = [day - timedelta(days=day.weekday()) for day in trading_days]
+    framed["_local_minute"] = local.dt.hour * 60 + local.dt.minute
+    return framed
 
 
-def _add_profile_levels(levels: list[dict[str, Any]], profile: Profile | None, profile_type: str, prefix: str, priority: int) -> None:
+def _profile_metadata(profile: Profile) -> dict[str, Any]:
+    return {
+        "profile_hvns": list(profile.hvns),
+        "profile_lvns": list(profile.lvns),
+        "profile_row_size": profile.row_size,
+        "profile_total_volume": profile.total_volume,
+        "volume_source": profile.volume_source,
+        "profile_range_start": profile.range_start,
+        "profile_range_end": profile.range_end,
+    }
+
+
+def _add_profile_levels(
+    levels: list[dict[str, Any]],
+    profile: Profile | None,
+    profile_type: str,
+    prefix: str,
+    priority: int,
+) -> None:
     if profile is None:
         return
+    metadata = _profile_metadata(profile)
     levels.extend(
         [
-            {"profile_type": profile_type, "key_level": f"{prefix} PoC", "kind": "PoC", "price": profile.poc, "priority": priority},
-            {"profile_type": profile_type, "key_level": f"{prefix} VaH", "kind": "VaH", "price": profile.vah, "priority": priority - 1},
-            {"profile_type": profile_type, "key_level": f"{prefix} VaL", "kind": "VaL", "price": profile.val, "priority": priority - 1},
+            {"profile_type": profile_type, "key_level": f"{prefix} PoC", "kind": "PoC", "price": profile.poc, "priority": priority, **metadata},
+            {"profile_type": profile_type, "key_level": f"{prefix} VaH", "kind": "VaH", "price": profile.vah, "priority": priority - 1, **metadata},
+            {"profile_type": profile_type, "key_level": f"{prefix} VaL", "kind": "VaL", "price": profile.val, "priority": priority - 1, **metadata},
         ]
     )
+    for index, price in enumerate(profile.hvns[:2], start=1):
+        levels.append(
+            {
+                "profile_type": profile_type,
+                "key_level": f"{prefix} HVN {index}",
+                "kind": "HVN",
+                "price": price,
+                "priority": priority - 2,
+                **metadata,
+            }
+        )
+
+
+def _add_price_level(
+    levels: list[dict[str, Any]],
+    profile_type: str,
+    key_level: str,
+    kind: str,
+    price: float,
+    priority: int,
+    volume_source: str,
+) -> None:
+    levels.append(
+        {
+            "profile_type": profile_type,
+            "key_level": key_level,
+            "kind": kind,
+            "price": float(price),
+            "priority": priority,
+            "volume_source": volume_source,
+        }
+    )
+
+
+def _true_range_series(df: pd.DataFrame) -> pd.Series:
+    previous_close = df["close"].shift(1)
+    return pd.concat(
+        [
+            df["high"] - df["low"],
+            (df["high"] - previous_close).abs(),
+            (df["low"] - previous_close).abs(),
+        ],
+        axis=1,
+    ).max(axis=1)
+
+
+def _fixed_range_segment(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]] | None:
+    if len(df) < 50:
+        return None
+    atr_series = _true_range_series(df).rolling(14).mean()
+    lengths = (24, 36, 48, 72, 96)
+    best: tuple[float, pd.DataFrame, dict[str, Any]] | None = None
+    latest_end = len(df) - 5
+    earliest_end = max(24, len(df) - 60)
+    for end_index in range(latest_end, earliest_end - 1, -1):
+        for length in lengths:
+            start_index = end_index - length + 1
+            if start_index < 0:
+                continue
+            segment = df.iloc[start_index : end_index + 1]
+            after = df.iloc[end_index + 1 :]
+            if len(after) < 3:
+                continue
+            atr_value = float(atr_series.iloc[end_index])
+            if not np.isfinite(atr_value) or atr_value <= 0:
+                continue
+            range_high = float(segment["high"].max())
+            range_low = float(segment["low"].min())
+            width_atr = (range_high - range_low) / atr_value
+            path = float(segment["close"].diff().abs().sum())
+            efficiency = abs(float(segment["close"].iloc[-1]) - float(segment["close"].iloc[0])) / max(path, 1e-9)
+            midpoint = (range_high + range_low) / 2
+            signs = np.sign(segment["close"].to_numpy(dtype=float) - midpoint)
+            rotations = int(np.count_nonzero(signs[1:] != signs[:-1]))
+            broke_up = bool((after["close"] > range_high + atr_value * 0.10).any())
+            broke_down = bool((after["close"] < range_low - atr_value * 0.10).any())
+            if not (1.5 <= width_atr <= 8.0 and efficiency <= 0.42 and rotations >= 3 and (broke_up or broke_down)):
+                continue
+            breakout_direction = "BUY" if broke_up and not broke_down else "SELL" if broke_down and not broke_up else "MIXED"
+            recency = end_index / max(len(df), 1)
+            score = recency * 10 + rotations - efficiency * 5 + min(length, 72) / 24
+            metadata = {
+                "anchor_start": pd.Timestamp(segment["time"].iloc[0]).to_pydatetime(),
+                "anchor_end": pd.Timestamp(segment["time"].iloc[-1]).to_pydatetime(),
+                "breakout_direction": breakout_direction,
+                "range_atr": width_atr,
+                "rotations": rotations,
+            }
+            if best is None or score > best[0]:
+                best = (score, segment, metadata)
+    return (best[1], best[2]) if best else None
+
+
+def _swing_segment(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]] | None:
+    if len(df) < 30:
+        return None
+    recent = df.tail(min(180, len(df))).copy()
+    offset = len(df) - len(recent)
+    atr_value = _atr(recent)
+    highs = recent["high"].to_numpy(dtype=float)
+    lows = recent["low"].to_numpy(dtype=float)
+    pivot_highs = [index for index in range(3, len(recent) - 3) if highs[index] >= highs[index - 3 : index + 4].max()]
+    pivot_lows = [index for index in range(3, len(recent) - 3) if lows[index] <= lows[index - 3 : index + 4].min()]
+    legs: list[tuple[float, int, int, str]] = []
+    for high_index in pivot_highs:
+        prior_lows = [index for index in pivot_lows if index < high_index and high_index - index <= 100]
+        if prior_lows:
+            low_index = min(prior_lows, key=lambda index: lows[index])
+            move = highs[high_index] - lows[low_index]
+            if move >= atr_value * 2.0:
+                legs.append((move + high_index * atr_value * 0.01, low_index, high_index, "BUY"))
+    for low_index in pivot_lows:
+        prior_highs = [index for index in pivot_highs if index < low_index and low_index - index <= 100]
+        if prior_highs:
+            high_index = max(prior_highs, key=lambda index: highs[index])
+            move = highs[high_index] - lows[low_index]
+            if move >= atr_value * 2.0:
+                legs.append((move + low_index * atr_value * 0.01, high_index, low_index, "SELL"))
+    if not legs:
+        return None
+    _, first, second, direction = max(legs, key=lambda item: item[0])
+    start_index, end_index = sorted((first + offset, second + offset))
+    segment = df.iloc[start_index : end_index + 1]
+    return segment, {
+        "anchor_start": pd.Timestamp(segment["time"].iloc[0]).to_pydatetime(),
+        "anchor_end": pd.Timestamp(segment["time"].iloc[-1]).to_pydatetime(),
+        "swing_direction": direction,
+        "swing_high": float(segment["high"].max()),
+        "swing_low": float(segment["low"].min()),
+    }
 
 
 def _candidate_levels(df: pd.DataFrame) -> list[dict[str, Any]]:
     levels: list[dict[str, Any]] = []
     if len(df) < 60:
         return levels
+    clocked = _profile_clock(df)
+    current_day = clocked["_trading_day"].iloc[-1]
+    previous_days = sorted(day for day in clocked["_trading_day"].unique() if day < current_day)
+    if previous_days:
+        previous_day = clocked[clocked["_trading_day"] == previous_days[-1]]
+        profile = _volume_profile(previous_day)
+        _add_profile_levels(levels, profile, "Previous Daily", "PD", 20)
+        source = profile.volume_source if profile else "unknown_proxy"
+        _add_price_level(levels, "Previous Daily", "PD High", "High", float(previous_day["high"].max()), 18, source)
+        _add_price_level(levels, "Previous Daily", "PD Low", "Low", float(previous_day["low"].min()), 18, source)
+        try:
+            main_hour, main_minute = (
+                int(part) for part in (os.getenv("LTA_PROFILE_MAIN_SESSION_START", "09:30") or "09:30").split(":", 1)
+            )
+        except (TypeError, ValueError):
+            main_hour, main_minute = 9, 30
+        main_start_minutes = main_hour * 60 + main_minute
+        try:
+            reset_hour, reset_minute = (
+                int(part) for part in (os.getenv("LTA_PROFILE_DAY_START", "18:00") or "18:00").split(":", 1)
+            )
+        except (TypeError, ValueError):
+            reset_hour, reset_minute = 18, 0
+        reset_minutes = reset_hour * 60 + reset_minute
+        overnight = previous_day[
+            (previous_day["_local_minute"] >= reset_minutes)
+            | (previous_day["_local_minute"] < main_start_minutes)
+        ]
+        _add_profile_levels(levels, _volume_profile(overnight), "Early Previous Daily", "EPD", 17)
 
-    dates = df["time"].dt.date
-    current_date = dates.iloc[-1]
-    previous_dates = sorted({d for d in dates.unique() if d < current_date})
-    if previous_dates:
-        prev_day = df[dates == previous_dates[-1]]
-        _add_profile_levels(levels, _volume_profile(prev_day), "Previous Daily", "PD", 18)
-    if len(previous_dates) >= 2:
-        early_day = df[dates == previous_dates[-2]]
-        _add_profile_levels(levels, _volume_profile(early_day), "Early Previous Daily", "EPD", 14)
-
-    weeks = _week_id(df["time"])
-    current_week = weeks.iloc[-1]
-    previous_weeks = list(dict.fromkeys(weeks[weeks != current_week].tolist()))
+    current_week = clocked["_week_start"].iloc[-1]
+    previous_weeks = sorted(week for week in clocked["_week_start"].unique() if week < current_week)
     if previous_weeks:
-        prev_week_id = previous_weeks[-1]
-        prev_week = df[weeks == prev_week_id]
-        _add_profile_levels(levels, _volume_profile(prev_week), "Previous Weekly", "PW", 20)
-    current_week_df = df[weeks == current_week]
-    if len(current_week_df) >= 80:
-        _add_profile_levels(levels, _volume_profile(current_week_df), "Current Weekly", "CW", 17)
+        previous_week = clocked[clocked["_week_start"] == previous_weeks[-1]]
+        _add_profile_levels(levels, _volume_profile(previous_week), "Previous Weekly", "PW", 22)
+    if len(previous_weeks) >= 2:
+        early_previous_week = clocked[clocked["_week_start"] == previous_weeks[-2]]
+        _add_profile_levels(levels, _volume_profile(early_previous_week), "Early Previous Weekly", "EPW", 18)
 
-    fixed = df.tail(min(120, len(df)))
-    recent_range = float(fixed["high"].max() - fixed["low"].min())
-    atr = _atr(df)
-    if recent_range <= atr * 18:
-        _add_profile_levels(levels, _volume_profile(fixed), "Fixed Range", "Fixed", 16)
+    latest_local = clocked["_local_time"].iloc[-1]
+    current_week_reliable = latest_local.weekday() > 2 or (
+        latest_local.weekday() == 2 and latest_local.hour >= 17
+    )
+    if current_week_reliable:
+        current_week_frame = clocked[clocked["_week_start"] == current_week]
+        _add_profile_levels(levels, _volume_profile(current_week_frame), "Current Weekly", "CW", 19)
 
-    swing = df.tail(min(180, len(df)))
-    _add_profile_levels(levels, _volume_profile(swing), "Swing", "Swing", 15)
+    fixed = _fixed_range_segment(df)
+    if fixed:
+        fixed_frame, fixed_meta = fixed
+        before = len(levels)
+        _add_profile_levels(levels, _volume_profile(fixed_frame), "Fixed Range", "Fixed", 19)
+        for level in levels[before:]:
+            level.update(fixed_meta)
+
+    swing = _swing_segment(df)
+    if swing:
+        swing_frame, swing_meta = swing
+        before = len(levels)
+        _add_profile_levels(levels, _volume_profile(swing_frame), "Swing", "Swing", 18)
+        for level in levels[before:]:
+            level.update(swing_meta)
     return levels
 
 
@@ -240,6 +531,64 @@ def _liquidity_context(df: pd.DataFrame, direction: str) -> tuple[bool, str]:
     return False, "Liquidity buildup or sweep is not clear."
 
 
+def _level_touch_indices(df: pd.DataFrame, price: float, tolerance: float, lookback: int = 80) -> list[int]:
+    start = max(0, len(df) - lookback)
+    touched = (
+        (df["low"].iloc[start:] - tolerance <= price)
+        & (df["high"].iloc[start:] + tolerance >= price)
+    ).to_numpy(dtype=bool)
+    episodes: list[int] = []
+    previous = False
+    for offset, value in enumerate(touched):
+        if value and not previous:
+            episodes.append(start + offset)
+        previous = bool(value)
+    return episodes
+
+
+def _internal_swing_profile(
+    df: pd.DataFrame,
+    level_price: float,
+    tolerance: float,
+    direction: str,
+) -> tuple[Profile, dict[str, Any]] | None:
+    if len(df) < 20:
+        return None
+    search_end = len(df) - 3
+    if search_end < 8:
+        return None
+    search = df.iloc[max(0, search_end - 70) : search_end]
+    candidates = _level_touch_indices(search, level_price, tolerance, lookback=len(search))
+    if not candidates:
+        return None
+    atr_value = _atr(df)
+    for relative_touch in reversed(candidates):
+        touch_index = max(0, search_end - len(search)) + relative_touch
+        if search_end - touch_index < 5:
+            continue
+        development = df.iloc[touch_index:search_end]
+        if direction == "BUY":
+            extreme_label = development["high"].idxmax()
+            extreme_index = int(df.index.get_loc(extreme_label))
+            move = float(df.iloc[extreme_index]["high"]) - level_price
+        else:
+            extreme_label = development["low"].idxmin()
+            extreme_index = int(df.index.get_loc(extreme_label))
+            move = level_price - float(df.iloc[extreme_index]["low"])
+        if extreme_index <= touch_index or move < atr_value * 0.55:
+            continue
+        segment = df.iloc[touch_index : extreme_index + 1]
+        profile = _volume_profile(segment)
+        if profile:
+            return profile, {
+                "touch_index": touch_index,
+                "swing_index": extreme_index,
+                "anchor_start": pd.Timestamp(segment["time"].iloc[0]).to_pydatetime(),
+                "anchor_end": pd.Timestamp(segment["time"].iloc[-1]).to_pydatetime(),
+            }
+    return None
+
+
 def detect_entry_confirmation(candles: pd.DataFrame, level: dict[str, Any] | None = None, direction: str | None = None) -> dict[str, Any]:
     df = _to_frame(candles)
     if level is None or direction is None or len(df) < 8:
@@ -252,6 +601,9 @@ def detect_entry_confirmation(candles: pd.DataFrame, level: dict[str, Any] | Non
     tolerance = float(level.get("tolerance") or _atr(df) * 0.45)
     reasons: list[str] = []
     models: list[str] = []
+    volume = _volume_context(df)
+    touch_indices = _level_touch_indices(df, level_price, tolerance)
+    touch_count = len(touch_indices)
 
     prev_parts = _candle_parts(prev)
     current_parts = _candle_parts(current)
@@ -266,17 +618,18 @@ def detect_entry_confirmation(candles: pd.DataFrame, level: dict[str, Any] | Non
             and float(current["close"]) > float(current["open"])
             and float(current["close"]) > max(float(prev["open"]), float(prev["close"]))
         )
-        if double_wick:
+        if double_wick and touch_count <= 2:
             models.append("Entry Model 1 - Double Wick Confirmation")
             reasons.append("Bullish double wick and candle flip confirmed at the key level.")
 
-        prior = df.iloc[-12:-3]
+        prior = df.iloc[-14:-3]
         swept_low = float(prev["low"]) <= float(prior["low"].min()) if len(prior) else False
         broke_internal = float(current["close"]) > max(float(prev["high"]), float(prev2["high"]))
         reclaimed = float(current["close"]) > level_price
-        if swept_low and broke_internal and reclaimed:
+        base_width = float(prior["high"].max() - prior["low"].min()) if len(prior) else float("inf")
+        if swept_low and broke_internal and reclaimed and base_width <= _atr(df) * 5.0:
             models.append("Entry Model 3 - Confirmation of Internal Structure")
-            reasons.append("Sell-side manipulation reversed and broke internal highs.")
+            reasons.append("Consolidation, sell-side manipulation, and expansion through internal highs confirmed.")
 
     else:
         double_wick = (
@@ -286,36 +639,74 @@ def detect_entry_confirmation(candles: pd.DataFrame, level: dict[str, Any] | Non
             and float(current["close"]) < float(current["open"])
             and float(current["close"]) < min(float(prev["open"]), float(prev["close"]))
         )
-        if double_wick:
+        if double_wick and touch_count <= 2:
             models.append("Entry Model 1 - Double Wick Confirmation")
             reasons.append("Bearish double wick and candle flip confirmed at the key level.")
 
-        prior = df.iloc[-12:-3]
+        prior = df.iloc[-14:-3]
         swept_high = float(prev["high"]) >= float(prior["high"].max()) if len(prior) else False
         broke_internal = float(current["close"]) < min(float(prev["low"]), float(prev2["low"]))
         rejected = float(current["close"]) < level_price
-        if swept_high and broke_internal and rejected:
+        base_width = float(prior["high"].max() - prior["low"].min()) if len(prior) else float("inf")
+        if swept_high and broke_internal and rejected and base_width <= _atr(df) * 5.0:
             models.append("Entry Model 3 - Confirmation of Internal Structure")
-            reasons.append("Buy-side manipulation reversed and broke internal lows.")
+            reasons.append("Consolidation, buy-side manipulation, and expansion through internal lows confirmed.")
 
-    if not models and len(df) >= 40:
-        reaction = df.tail(24)
-        reaction_start = reaction.iloc[0]
-        if direction == "BUY" and float(reaction["low"].min()) <= level_price + tolerance:
-            swing_profile = _volume_profile(reaction)
-            if swing_profile and abs(float(current["low"]) - swing_profile.poc) <= tolerance and float(current["close"]) > float(current["open"]):
-                models.append("Entry Model 2 - Internal Swing Confirmation")
-                reasons.append("LTF swing profile retest confirmed after the initial bullish reaction.")
-        if direction == "SELL" and float(reaction["high"].max()) >= level_price - tolerance:
-            swing_profile = _volume_profile(reaction)
-            if swing_profile and abs(float(current["high"]) - swing_profile.poc) <= tolerance and float(current["close"]) < float(current["open"]):
-                models.append("Entry Model 2 - Internal Swing Confirmation")
-                reasons.append("LTF swing profile retest confirmed after the initial bearish reaction.")
+    internal = _internal_swing_profile(df, level_price, tolerance, direction)
+    internal_metadata: dict[str, Any] | None = None
+    if internal:
+        swing_profile, internal_metadata = internal
+        profile_tolerance = max(tolerance * 0.75, swing_profile.row_size * 1.5)
+        if direction == "BUY":
+            retested = float(current["low"]) - profile_tolerance <= swing_profile.poc <= float(current["high"]) + profile_tolerance
+            structure_broke = float(current["close"]) > max(float(prev["high"]), float(prev2["high"]))
+            confirmed = float(current["close"]) > float(current["open"])
+        else:
+            retested = float(current["low"]) - profile_tolerance <= swing_profile.poc <= float(current["high"]) + profile_tolerance
+            structure_broke = float(current["close"]) < min(float(prev["low"]), float(prev2["low"]))
+            confirmed = float(current["close"]) < float(current["open"])
+        if retested and structure_broke and confirmed:
+            models.append("Entry Model 2 - Internal Swing Confirmation")
+            reasons.append("The first key-level touch formed an internal swing; its PoC retest and structure break confirmed.")
+            internal_metadata = {**internal_metadata, **_profile_metadata(swing_profile), "internal_swing_poc": swing_profile.poc}
+
+    prev2_touched = float(prev2["low"]) - tolerance <= level_price <= float(prev2["high"]) + tolerance
+    if volume["regime"] == "high" and prev2_touched:
+        prev_parts2 = _candle_parts(prev)
+        if direction == "BUY":
+            em4 = (
+                prev_parts2["body"] <= 0.55
+                and float(current["close"]) > float(current["open"])
+                and float(current["close"]) > float(prev["high"])
+            )
+        else:
+            em4 = (
+                prev_parts2["body"] <= 0.55
+                and float(current["close"]) < float(current["open"])
+                and float(current["close"]) < float(prev["low"])
+            )
+        if em4:
+            models.append("Entry Model 4 - High Volume Continuation")
+            reasons.append("A three-candle high-volume continuation flip confirmed the established directional bias.")
 
     if models:
         model = " + ".join(dict.fromkeys(models))
-        return {"confirmed": True, "model": model, "reasons": reasons}
-    return {"confirmed": False, "model": None, "reasons": ["No official LTA entry model confirmed yet."]}
+        return {
+            "confirmed": True,
+            "model": model,
+            "reasons": reasons,
+            "touch_count": touch_count,
+            "volume": volume,
+            "internal_swing": internal_metadata,
+        }
+    return {
+        "confirmed": False,
+        "model": None,
+        "reasons": ["No official LTA entry model confirmed yet."],
+        "touch_count": touch_count,
+        "volume": volume,
+        "internal_swing": internal_metadata,
+    }
 
 
 def _direction_from_reaction(df: pd.DataFrame, level: dict[str, Any]) -> str | None:
@@ -453,6 +844,9 @@ def _score_preentry_candidate(
     structure = detect_market_structure(df)
     liquidity_ok, liquidity_reason = _liquidity_context(df, direction)
     session = _session_name(pd.Timestamp(current["time"]).to_pydatetime())
+    volume = _volume_context(df)
+    tolerance = float(level.get("tolerance") or atr * 0.45)
+    touch_count = len(_level_touch_indices(df, float(level["price"]), tolerance))
     trigger_distance = abs(trigger_price - close)
     stop_clear = trigger_price > stop_loss if direction == "BUY" else trigger_price < stop_loss
 
@@ -525,6 +919,19 @@ def _score_preentry_candidate(
     else:
         reasons.append("Off-session timing lowers the pending setup quality.")
 
+    if volume["regime"] == "high":
+        score += 6
+        reasons.append(f"High relative volume supports the pending reaction ({volume['ratio']:.2f}x baseline).")
+    elif volume["regime"] == "low":
+        reasons.append(f"Low relative volume requires a higher-timeframe or internal-swing confirmation ({volume['ratio']:.2f}x).")
+    else:
+        score += 2
+    if 1 <= touch_count <= 2:
+        score += 4
+    elif touch_count > 2:
+        score -= 8
+        reasons.append(f"The key level has already been mitigated {touch_count} times.")
+
     if not liquidity_ok:
         score = min(score, 83)
     if not stop_clear:
@@ -533,6 +940,10 @@ def _score_preentry_candidate(
         score = min(score, 79)
     if trigger_distance > atr * 3.0:
         score = min(score, 80)
+    if touch_count > 2:
+        score = min(score, 79)
+    if volume["regime"] == "low" and timeframe.upper() in {"M1", "M5", "M15"} and mode != "profile_retest":
+        score = min(score, 82)
     score = min(89, max(0, score))
     metadata = {
         "bias": bias,
@@ -540,6 +951,12 @@ def _score_preentry_candidate(
         "trigger_distance": trigger_distance,
         "atr": atr,
         "session": session,
+        "volume_source": level.get("volume_source") or volume.get("source"),
+        "volume_ratio": round(float(volume["ratio"]), 3),
+        "volume_regime": volume["regime"],
+        "level_touch_count": touch_count,
+        "profile_hvns": level.get("profile_hvns") or [],
+        "profile_lvns": level.get("profile_lvns") or [],
     }
     return score, list(dict.fromkeys(reasons)), metadata
 
@@ -637,11 +1054,13 @@ def _profile_retest_preentry(
     current = df.iloc[-1]
     close = float(current["close"])
     atr = _atr(df)
-    reaction = df.tail(24)
-    profile = _volume_profile(reaction)
-    if profile is None:
-        return None
     level_price = float(level["price"])
+    tolerance = float(level.get("tolerance") or atr * 0.45)
+    internal = _internal_swing_profile(df, level_price, tolerance, direction)
+    if internal is None:
+        return None
+    profile, internal_meta = internal
+    reaction = df.iloc[int(internal_meta["touch_index"]) : int(internal_meta["swing_index"]) + 1]
     moved_from_level = (close - level_price) if direction == "BUY" else (level_price - close)
     if moved_from_level < atr * 0.45 or moved_from_level > atr * 3.5:
         return None
@@ -708,6 +1127,7 @@ def _profile_retest_preentry(
         "preplace_valid_if": valid_if,
         "reasons": reasons,
         "status": "preplace",
+        "internal_swing": {**internal_meta, **_profile_metadata(profile), "internal_swing_poc": profile.poc},
         **metadata,
     }
 
@@ -774,6 +1194,26 @@ def score_setup(context: dict[str, Any]) -> tuple[int, list[str]]:
     else:
         reasons.append("Off-session timing lowers quality.")
 
+    volume = context.get("volume") or {}
+    volume_regime = str(volume.get("regime") or "normal")
+    volume_ratio = float(volume.get("ratio") or 1.0)
+    if volume_regime == "high":
+        score += 8
+        reasons.append(f"High relative volume confirms participation ({volume_ratio:.2f}x baseline).")
+    elif volume_regime == "normal":
+        score += 3
+        reasons.append(f"Relative volume is normal ({volume_ratio:.2f}x baseline).")
+    else:
+        reasons.append(f"Low relative volume requires slower confirmation ({volume_ratio:.2f}x baseline).")
+
+    touch_count = int(confirmation.get("touch_count") or 0)
+    if 1 <= touch_count <= 2:
+        score += 5
+        reasons.append(f"This is key-level mitigation number {touch_count}; first and second touches receive priority.")
+    elif touch_count > 2:
+        score -= 8
+        reasons.append(f"The level has already been mitigated {touch_count} times and is considered degraded.")
+
     if not level:
         score = min(score, 60)
     if not confirmation.get("confirmed"):
@@ -782,6 +1222,13 @@ def score_setup(context: dict[str, Any]) -> tuple[int, list[str]]:
         score = min(score, 75)
     if context["risk_reward"] < context["min_rr"]:
         score = min(score, 79)
+    model = str(confirmation.get("model") or "")
+    if volume_regime == "low" and context.get("timeframe") in {"M1", "M5", "M15"} and not any(
+        name in model for name in ("Entry Model 2", "Entry Model 3")
+    ):
+        score = min(score, 84)
+    if touch_count > 2:
+        score = min(score, 84)
 
     grade = min(100, max(0, score))
     return grade, reasons
@@ -808,6 +1255,7 @@ def generate_signal(
     entry, stop, target, rr = _build_trade_levels(df, direction, min_rr)
     targets = _profit_targets(entry, stop, direction, max(min_rr, 5.0))
     confirmation = detect_entry_confirmation(df, level, direction)
+    volume = confirmation.get("volume") or _volume_context(df)
     liquidity_ok, liquidity_reason = _liquidity_context(df, direction)
     bias = detect_bias(df, timeframe)
     structure = detect_market_structure(df)
@@ -826,6 +1274,8 @@ def generate_signal(
         "risk_reward": rr,
         "min_rr": min_rr,
         "session": session,
+        "timeframe": timeframe.upper(),
+        "volume": volume,
     }
     score, reasons = score_setup(context)
     grade = "A+" if score >= 90 else "A" if score >= 80 else "B" if score >= 70 else "C"
@@ -843,6 +1293,7 @@ def generate_signal(
         "setup_grade": grade,
         "setup_score": int(score),
         "profile_type": level["profile_type"],
+        "profile_kind": level.get("kind"),
         "key_level": level["key_level"],
         "entry_model": confirmation.get("model"),
         "entry": round(entry, 5),
@@ -858,6 +1309,15 @@ def generate_signal(
         "bias": bias,
         "structure": structure.get("structure"),
         "session": session,
+        "volume_source": level.get("volume_source") or volume.get("source"),
+        "volume_ratio": round(float(volume.get("ratio") or 1.0), 3),
+        "volume_regime": volume.get("regime"),
+        "profile_hvns": level.get("profile_hvns") or [],
+        "profile_lvns": level.get("profile_lvns") or [],
+        "profile_range_start": level.get("profile_range_start"),
+        "profile_range_end": level.get("profile_range_end"),
+        "level_touch_count": confirmation.get("touch_count"),
+        "internal_swing": confirmation.get("internal_swing"),
         "reasons": list(dict.fromkeys(reasons)),
         "status": status,
         "timestamp": pd.Timestamp(df.iloc[-1]["time"]).to_pydatetime(),
