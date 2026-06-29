@@ -85,10 +85,12 @@ RISK_PERCENT=5
 MAX_SIGNAL_AGE_SECONDS=180
 PENDING_ORDER_TTL_SECONDS=180
 ORDER_MODE=single
-SYMBOL_MAP=NAS100=NAS100.cash,GBPUSD=GBPUSD
+SYMBOL_MAP=NAS100=NAS100.cash
 AUTO_DISCOVER_SYMBOLS=true
 RECENT_MESSAGE_LOG_COUNT=5
 BREAK_EVEN_ENABLED=true
 ```
 
 For MT5 live trading, your terminal must be installed, logged in, and allowed to trade. Use a demo account first.
+
+The order sender reads the broker's supported filling policies and safely retries FOK/IOC/RETURN only when MT5 returns `10030 Unsupported filling mode`. A configured symbol that is unavailable also falls back to broker symbol discovery when `AUTO_DISCOVER_SYMBOLS=true`.

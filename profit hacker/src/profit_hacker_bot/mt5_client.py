@@ -22,6 +22,11 @@ except ImportError:  # pragma: no cover - depends on local Windows setup
 
 logger = logging.getLogger(__name__)
 
+# MetaTrader5's Python package exposes ORDER_FILLING_* but not the
+# SYMBOL_FILLING_* bitmask constants returned by symbol_info().filling_mode.
+SYMBOL_FILLING_FOK_FLAG = 1
+SYMBOL_FILLING_IOC_FLAG = 2
+
 
 class BrokerError(RuntimeError):
     pass
@@ -91,11 +96,21 @@ class MT5Client:
 
         configured = self.settings.symbol_map.get(requested)
         if configured:
-            self.ensure_symbol(configured)
-            self._symbol_cache[requested] = configured
-            if configured.upper() != requested:
-                logger.info("Using configured symbol map %s -> %s.", requested, configured)
-            return configured
+            try:
+                self.ensure_symbol(configured)
+            except BrokerError:
+                if not self.settings.auto_discover_symbols:
+                    raise
+                logger.warning(
+                    "Configured symbol map %s -> %s is unavailable; trying broker auto-discovery.",
+                    requested,
+                    configured,
+                )
+            else:
+                self._symbol_cache[requested] = configured
+                if configured.upper() != requested:
+                    logger.info("Using configured symbol map %s -> %s.", requested, configured)
+                return configured
 
         exact_info = mt5.symbol_info(requested)
         if exact_info is not None:
@@ -269,20 +284,51 @@ class MT5Client:
             "comment": plan.comment,
             "type_time": mt5.ORDER_TIME_GTC,
         }
-        if plan.entry_type is EntryType.MARKET:
-            request["type_filling"] = self._filling_type(info)
-
-        result = mt5.order_send(request)
-        if result is None:
-            raise BrokerError(f"order_send returned None: {mt5.last_error()}")
-
         ok_codes = {
             mt5.TRADE_RETCODE_DONE,
             mt5.TRADE_RETCODE_PLACED,
             mt5.TRADE_RETCODE_DONE_PARTIAL,
         }
-        if result.retcode not in ok_codes:
-            raise BrokerError(f"order_send failed: retcode={result.retcode}, comment={result.comment}")
+        invalid_fill = getattr(mt5, "TRADE_RETCODE_INVALID_FILL", 10030)
+        attempts: list[str] = []
+        result = None
+        filling_candidates = self._filling_candidates(
+            info,
+            pending=plan.entry_type is not EntryType.MARKET,
+        )
+        for index, filling in enumerate(filling_candidates):
+            candidate_request = {**request, "type_filling": filling}
+            result = mt5.order_send(candidate_request)
+            filling_name = self._filling_name(filling)
+            if result is None:
+                raise BrokerError(
+                    f"order_send returned None with {filling_name}: {mt5.last_error()}"
+                )
+            attempts.append(f"{filling_name}={result.retcode}:{result.comment}")
+            if result.retcode in ok_codes:
+                if index > 0:
+                    logger.info(
+                        "Placed %s using fallback filling mode %s after %s rejection(s).",
+                        plan.symbol,
+                        filling_name,
+                        index,
+                    )
+                break
+            if result.retcode == invalid_fill and index + 1 < len(filling_candidates):
+                logger.warning(
+                    "%s rejected filling mode %s; retrying with %s.",
+                    plan.symbol,
+                    filling_name,
+                    self._filling_name(filling_candidates[index + 1]),
+                )
+                continue
+            raise BrokerError(
+                f"order_send failed: retcode={result.retcode}, comment={result.comment}, "
+                f"filling_attempts={'; '.join(attempts)}"
+            )
+
+        if result is None or result.retcode not in ok_codes:
+            raise BrokerError(f"order_send failed for all filling modes: {'; '.join(attempts)}")
 
         return BrokerOrderResult(
             ticket=int(result.order),
@@ -382,13 +428,36 @@ class MT5Client:
             return mt5.ORDER_TYPE_SELL_STOP, plan.entry_price
         raise BrokerError(f"Unsupported order plan: {plan}")
 
-    def _filling_type(self, info: Any) -> int:
+    def _filling_candidates(self, info: Any, *, pending: bool) -> tuple[int, ...]:
         filling_mode = int(getattr(info, "filling_mode", 0))
-        if filling_mode == getattr(mt5, "SYMBOL_FILLING_FOK", -1):
-            return mt5.ORDER_FILLING_FOK
-        if filling_mode == getattr(mt5, "SYMBOL_FILLING_IOC", -1):
-            return mt5.ORDER_FILLING_IOC
-        return mt5.ORDER_FILLING_RETURN
+        allowed: list[int] = []
+        if filling_mode & SYMBOL_FILLING_FOK_FLAG:
+            allowed.append(mt5.ORDER_FILLING_FOK)
+        if filling_mode & SYMBOL_FILLING_IOC_FLAG:
+            allowed.append(mt5.ORDER_FILLING_IOC)
+
+        preferred = [mt5.ORDER_FILLING_RETURN, *allowed] if pending else allowed
+        # Broker metadata is not always reliable. Unsupported-fill retcode 10030
+        # guarantees the rejected request was not executed, so trying the other
+        # standard policies is safe and avoids silently missing a valid signal.
+        fallbacks = [
+            mt5.ORDER_FILLING_FOK,
+            mt5.ORDER_FILLING_IOC,
+            mt5.ORDER_FILLING_RETURN,
+        ]
+        candidates: list[int] = []
+        for value in [*preferred, *fallbacks]:
+            if value not in candidates:
+                candidates.append(value)
+        return tuple(candidates)
+
+    def _filling_name(self, filling: int) -> str:
+        names = {
+            mt5.ORDER_FILLING_FOK: "FOK",
+            mt5.ORDER_FILLING_IOC: "IOC",
+            mt5.ORDER_FILLING_RETURN: "RETURN",
+        }
+        return names.get(filling, str(filling))
 
     def _floor_to_step(self, value: float, step: float) -> float:
         if step <= 0:
