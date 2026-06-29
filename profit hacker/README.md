@@ -10,6 +10,8 @@ It starts in dry-run mode. Keep it that way on a demo account until the logs mat
 
 - Reads the Telegram channel id from your Telegram Web URL: `-1001303328644`.
 - Logs the last `RECENT_MESSAGE_LOG_COUNT` messages on startup so you can confirm the Telegram loop is reading the channel.
+- Re-scans the last `RESCAN_MESSAGE_COUNT` messages on startup. Previously ignored messages are reparsed after parser updates, but accepted messages are never duplicated.
+- A recovered signal is placed only when current price remains between its stop loss and TP1 and it is not older than `RESCAN_MAX_AGE_SECONDS`.
 - Ignores forwarded messages.
 - Ignores stale messages older than `MAX_SIGNAL_AGE_SECONDS`, default `180`.
 - Ignores messages that do not contain a valid symbol, direction, stop loss, and TP.

@@ -153,6 +153,10 @@ class MT5Client:
         tick = mt5.symbol_info_tick(symbol)
         if tick is None:
             raise BrokerError(f"No tick available for {symbol}")
+        if float(getattr(tick, "bid", 0.0) or 0.0) <= 0 or float(
+            getattr(tick, "ask", 0.0) or 0.0
+        ) <= 0:
+            raise BrokerError(f"No live bid/ask quote available for {symbol}")
         return tick
 
     def current_entry_price(self, symbol: str, direction: Direction) -> float:

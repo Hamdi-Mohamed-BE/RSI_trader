@@ -106,6 +106,16 @@ class MT5ClientTests(unittest.TestCase):
             [fake.ORDER_FILLING_FOK, fake.ORDER_FILLING_IOC],
         )
 
+    def test_rejects_zero_quote_as_unavailable(self) -> None:
+        fake = FakeMT5()
+        fake.symbol_info_tick = lambda _symbol: SimpleNamespace(ask=0.0, bid=0.0)
+        client = MT5Client(settings())
+        client.connected = True
+
+        with patch("profit_hacker_bot.mt5_client.mt5", fake):
+            with self.assertRaisesRegex(Exception, "No live bid/ask quote"):
+                client.tick("GBPUSDm")
+
 
 if __name__ == "__main__":
     unittest.main()

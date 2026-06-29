@@ -38,12 +38,17 @@ class TradeManager:
             raw_text=signal.raw_text,
         )
 
-        if signal.age_seconds() > self.settings.max_signal_age_seconds:
+        age_limit = (
+            self.settings.rescan_max_age_seconds
+            if signal.recovered
+            else self.settings.max_signal_age_seconds
+        )
+        if age_limit > 0 and signal.age_seconds() > age_limit:
             self.storage.record_message(
                 signal.source_id,
                 signal.message_id,
                 status="ignored",
-                reason="stale before order placement",
+                reason=f"stale before order placement ({age_limit}s limit)",
                 raw_text=signal.raw_text,
             )
             return
@@ -71,6 +76,7 @@ class TradeManager:
                 entry_type=signal.entry_type,
                 entry_price=signal.entry_price,
             )
+            self._validate_active_geometry(signal, entry_price)
             self._reject_late_market_entry(
                 signal=signal,
                 broker_symbol=broker_symbol,
@@ -143,6 +149,35 @@ class TradeManager:
                 status="ignored",
                 reason=str(exc),
                 raw_text=signal.raw_text,
+            )
+
+    def _validate_active_geometry(self, signal: Signal, entry_price: float) -> None:
+        stop = float(signal.stop_loss)
+        first_tp = float(signal.first_tp)
+        if signal.direction.is_buy:
+            if entry_price <= stop:
+                raise BrokerError(
+                    f"Signal is no longer active: BUY price {entry_price:g} reached/passed SL {stop:g}."
+                )
+            if entry_price >= first_tp:
+                raise BrokerError(
+                    f"Signal is no longer active: BUY price {entry_price:g} reached/passed TP1 {first_tp:g}."
+                )
+            invalid_targets = [value for value in signal.take_profits if value <= entry_price]
+        else:
+            if entry_price >= stop:
+                raise BrokerError(
+                    f"Signal is no longer active: SELL price {entry_price:g} reached/passed SL {stop:g}."
+                )
+            if entry_price <= first_tp:
+                raise BrokerError(
+                    f"Signal is no longer active: SELL price {entry_price:g} reached/passed TP1 {first_tp:g}."
+                )
+            invalid_targets = [value for value in signal.take_profits if value >= entry_price]
+        if invalid_targets:
+            raise BrokerError(
+                "Signal contains TP level(s) on the wrong side of current/entry price: "
+                + ", ".join(f"{value:g}" for value in invalid_targets)
             )
 
     def _build_order_plans(

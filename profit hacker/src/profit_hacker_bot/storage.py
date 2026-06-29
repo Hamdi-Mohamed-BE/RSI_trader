@@ -75,6 +75,21 @@ class Storage:
             ).fetchone()
             return row is not None
 
+    def message_record(self, source_id: str, message_id: int) -> dict[str, Any] | None:
+        with self._connect() as db:
+            row = db.execute(
+                "SELECT status, reason, raw_text FROM messages WHERE source_id = ? AND message_id = ?",
+                (source_id, message_id),
+            ).fetchone()
+        return dict(row) if row is not None else None
+
+    def delete_message(self, source_id: str, message_id: int) -> None:
+        with self._connect() as db:
+            db.execute(
+                "DELETE FROM messages WHERE source_id = ? AND message_id = ?",
+                (source_id, message_id),
+            )
+
     def record_message(
         self,
         source_id: str,

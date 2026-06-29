@@ -33,6 +33,7 @@ class Signal:
     take_profits: tuple[float, ...]
     raw_text: str
     entry_price: float | None = None
+    recovered: bool = False
 
     @property
     def key(self) -> str:

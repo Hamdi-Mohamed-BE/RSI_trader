@@ -63,6 +63,30 @@ class SignalParserTest(unittest.TestCase):
         self.assertEqual(signal.stop_loss, 1.32850)
         self.assertEqual(signal.final_tp, 1.31450)
 
+    def test_parses_channel_stoposs_typo(self) -> None:
+        outcome = self.parse(
+            "CADJPY SELL NOW\nSTOPOSS @ 114.260\nTP @ 113.900\nTP @ 113.760\nTP @ 113.600"
+        )
+
+        self.assertTrue(outcome.accepted)
+        signal = outcome.signal
+        assert signal is not None
+        self.assertEqual(signal.symbol, "CADJPY")
+        self.assertEqual(signal.stop_loss, 114.260)
+        self.assertEqual(signal.take_profits, (113.900, 113.760, 113.600))
+
+    def test_recovery_can_use_a_separate_age_limit(self) -> None:
+        outcome = self.parser.parse(
+            "CADJPY SELL NOW\nSTOPOSS @ 114.260\nTP @ 113.900",
+            source_id="-1001303328644",
+            message_id=12,
+            created_at=self.now - timedelta(minutes=10),
+            now=self.now,
+            max_age_seconds=3600,
+        )
+
+        self.assertTrue(outcome.accepted)
+
     def test_rejects_forwarded_message(self) -> None:
         outcome = self.parse(
             """

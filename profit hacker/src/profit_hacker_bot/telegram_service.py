@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections.abc import Callable
+from dataclasses import replace
 from datetime import timezone
 
 from telethon import TelegramClient, events
@@ -68,9 +69,16 @@ class TelegramSignalService:
             logger.info("  No messages found in this channel.")
 
     async def _catch_up_recent(self) -> None:
-        logger.info("Checking recent Telegram messages for fresh signals.")
-        async for message in self.client.iter_messages(self.settings.telegram_channel, limit=50):
-            await self._process_message(message, verbose=False)
+        count = max(0, int(self.settings.rescan_message_count))
+        if count == 0:
+            return
+        logger.info(
+            "Re-scanning the last %s Telegram messages for active signals up to %ss old.",
+            count,
+            self.settings.rescan_max_age_seconds,
+        )
+        async for message in self.client.iter_messages(self.settings.telegram_channel, limit=count):
+            await self._process_message(message, verbose=False, recovery=True)
 
     async def _process_message(
         self,
@@ -78,10 +86,12 @@ class TelegramSignalService:
         *,
         live: bool = False,
         verbose: bool = True,
+        recovery: bool = False,
     ) -> None:
         message_id = int(getattr(message, "id", 0))
         source_id = str(self.settings.telegram_channel)
-        if self.storage.has_message(source_id, message_id):
+        existing = self.storage.message_record(source_id, message_id)
+        if existing and not (recovery and existing.get("status") == "ignored"):
             if live:
                 logger.info("Telegram message #%s already handled.", message_id)
             return
@@ -106,6 +116,11 @@ class TelegramSignalService:
             message_id=message_id,
             created_at=created_at,
             forwarded=forwarded,
+            max_age_seconds=(
+                self.settings.rescan_max_age_seconds
+                if recovery
+                else self.settings.max_signal_age_seconds
+            ),
         )
 
         if not outcome.accepted:
@@ -129,6 +144,15 @@ class TelegramSignalService:
 
         signal = outcome.signal
         assert signal is not None
+        if recovery:
+            signal = replace(signal, recovered=True)
+        if recovery and existing:
+            self.storage.delete_message(source_id, message_id)
+            logger.info(
+                "Recovered previously ignored Telegram message #%s (%s).",
+                message_id,
+                existing.get("reason") or "no reason recorded",
+            )
         logger.info(
             "Accepted Telegram message #%s as signal: %s %s %s SL=%s TP=%s.",
             message_id,
@@ -138,7 +162,7 @@ class TelegramSignalService:
             signal.stop_loss,
             ", ".join(str(tp) for tp in signal.take_profits),
         )
-        await asyncio.to_thread(self.handle_signal, outcome.signal)
+        await asyncio.to_thread(self.handle_signal, signal)
 
     def _preview(self, message: object) -> str:
         text = getattr(message, "raw_text", None) or getattr(message, "message", None) or ""

@@ -27,7 +27,7 @@ HEADER_PATTERNS = [
 
 SL_PATTERNS = [
     re.compile(
-        rf"\b(?:SL|S/L|STOP\s*LOSS|STOPLOSS)\b\s*(?:@|:|-|=)?\s*(?P<price>{PRICE_RE})",
+        rf"\b(?:SL|S/L|STOP\s*LOSS|STOPLOSS|STOPOSS)\b\s*(?:@|:|-|=)?\s*(?P<price>{PRICE_RE})",
         re.IGNORECASE,
     ),
 ]
@@ -97,6 +97,7 @@ class SignalParser:
         created_at: datetime | None,
         forwarded: bool = False,
         now: datetime | None = None,
+        max_age_seconds: int | None = None,
     ) -> ParseOutcome:
         if not text or not text.strip():
             return ParseOutcome(None, "empty message")
@@ -107,8 +108,9 @@ class SignalParser:
         created = _to_utc(created_at)
         current = _to_utc(now)
         age = (current - created).total_seconds()
-        if age > self.max_age_seconds:
-            return ParseOutcome(None, f"message older than {self.max_age_seconds}s")
+        age_limit = self.max_age_seconds if max_age_seconds is None else max(0, max_age_seconds)
+        if age_limit > 0 and age > age_limit:
+            return ParseOutcome(None, f"message older than {age_limit}s")
 
         if _looks_promotional_without_signal(text):
             return ParseOutcome(None, "promotional message")
