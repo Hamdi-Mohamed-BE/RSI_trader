@@ -5,6 +5,7 @@ from rsi_divergence_bot.symbols import (
     DEFAULT_BROKER_SYMBOL_SUFFIX,
     normalize_broker_symbol_suffix,
     mt5_symbol_candidates,
+    market_key,
 )
 
 
@@ -59,6 +60,10 @@ class Mt5SymbolCandidatesTests(unittest.TestCase):
 
         self.assertEqual(preferred_broker_symbol("BTCUSD", "-VIP", append_suffix=False), "BTCUSD")
         self.assertEqual(preferred_broker_symbol("BTCUSD", "-VIP", append_suffix=True), "BTCUSD-VIP")
+
+    def test_market_key_normalizes_attached_broker_suffix(self) -> None:
+        self.assertEqual(market_key("CADJPYm"), "CADJPY")
+        self.assertEqual(market_key("US30m"), "US30")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 ﻿from __future__ import annotations
 
+import math
 import threading
 from datetime import datetime, timedelta, timezone
 from typing import Any
@@ -153,6 +154,22 @@ class MT5BridgeBackend:
             code = f"mt5.positions_get(*{args!r}, **{kwargs!r})"
         else:
             code = f"mt5.positions_get(**{kwargs!r})"
+        return self._eval_plain(f"[item._asdict() for item in ({code} or [])]")
+
+    def orders_get(self, *args, **kwargs):
+        self._connect()
+        if args:
+            code = f"mt5.orders_get(*{args!r}, **{kwargs!r})"
+        else:
+            code = f"mt5.orders_get(**{kwargs!r})"
+        return self._eval_plain(f"[item._asdict() for item in ({code} or [])]")
+
+    def symbols_get(self, *args, **kwargs):
+        self._connect()
+        if args:
+            code = f"mt5.symbols_get(*{args!r}, **{kwargs!r})"
+        else:
+            code = f"mt5.symbols_get(**{kwargs!r})"
         return self._eval_plain(f"[item._asdict() for item in ({code} or [])]")
 
     def history_deals_get(self, *args, **kwargs):
@@ -364,6 +381,16 @@ class MT5Client:
         self.initialize()
         with _MT5_LOCK:
             return self.mt5.positions_get(symbol=symbol) if symbol else self.mt5.positions_get()
+
+    def orders(self, symbol: str | None = None):
+        self.initialize()
+        with _MT5_LOCK:
+            return self.mt5.orders_get(symbol=symbol) if symbol else self.mt5.orders_get()
+
+    def symbols(self):
+        self.initialize()
+        with _MT5_LOCK:
+            return self.mt5.symbols_get() or []
 
     def account_snapshot(self) -> dict:
         info = self.account()
@@ -679,6 +706,50 @@ class MT5Client:
         tick_value = _field(info, "trade_tick_value") or _field(info, "trade_tick_value_profit") or 1.0
         return price_distance / tick_size * tick_value * volume
 
+    def volume_for_risk(
+        self,
+        symbol: str,
+        entry_price: float,
+        stop_loss: float,
+        risk_percent: float = 5.0,
+    ) -> dict[str, float | bool]:
+        account = self.account()
+        balance = float(_field(account, "balance", 0.0) or 0.0)
+        if balance <= 0:
+            raise ValueError("MT5 account balance is unavailable for risk sizing")
+        distance = abs(float(entry_price) - float(stop_loss))
+        if distance <= 0:
+            raise ValueError("Entry and stop loss cannot be equal for risk sizing")
+        one_lot_loss = abs(float(self.money_for_distance(symbol, 1.0, distance)))
+        if one_lot_loss <= 0:
+            raise ValueError(f"Could not calculate one-lot stop risk for {symbol}")
+
+        risk_money = balance * float(risk_percent) / 100.0
+        raw_volume = risk_money / one_lot_loss
+        info = self.symbol_info(symbol)
+        step = float(_field(info, "volume_step", 0.01) or 0.01)
+        minimum = float(_field(info, "volume_min", step) or step)
+        maximum = float(_field(info, "volume_max", raw_volume) or raw_volume)
+        used_minimum = raw_volume < minimum
+        if used_minimum:
+            volume = minimum
+        else:
+            volume = math.floor((raw_volume + 1e-12) / step) * step if step > 0 else raw_volume
+            volume = max(minimum, volume)
+        volume = min(maximum, volume)
+        volume = self.normalize_volume(symbol, volume)
+        actual_risk = one_lot_loss * volume
+        return {
+            "balance": balance,
+            "risk_percent": float(risk_percent),
+            "risk_money": risk_money,
+            "raw_volume": raw_volume,
+            "volume": volume,
+            "actual_risk": actual_risk,
+            "actual_risk_percent": actual_risk / balance * 100.0,
+            "used_minimum_lot": used_minimum,
+        }
+
     def spread_price(self, symbol: str) -> float:
         self.initialize()
         with _MT5_LOCK:
@@ -911,8 +982,15 @@ class MT5Client:
                 "comment": comment[:31],
                 "type_time": self._mt5_const("ORDER_TIME_GTC", 0),
             }
-            result = self.mt5.order_send(request)
-            return result
+            order_return = self._mt5_const("ORDER_FILLING_RETURN", 2)
+            filling_modes = [order_return, *self._filling_modes(symbol)]
+            last_result = None
+            for filling in dict.fromkeys(filling_modes):
+                last_result = self.mt5.order_send({**request, "type_filling": filling})
+                retcode = getattr(last_result, "retcode", None)
+                if retcode in {self.TRADE_DONE, self.TRADE_PLACED}:
+                    return last_result
+            return last_result
 
     def update_position_sl(self, ticket: int, symbol: str, sl: float, tp: float):
         self.initialize()

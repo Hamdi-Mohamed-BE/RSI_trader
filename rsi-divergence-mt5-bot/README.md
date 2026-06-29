@@ -17,6 +17,17 @@ It also supports three decision profiles:
 
 Each profile is only a preset. You can override the active filters directly in `risk:`:
 
+Telegram signal copying uses one full-position order by default. Its lot is calculated so the original SL risks 5% of current account balance, TP is the final signal target, TP1 moves SL to break-even, and later targets trail SL to the prior TP. Unknown signal symbols are discovered from the broker's complete MT5 symbol list and the actual broker name is saved to the active demo/live mapping.
+
+```yaml
+telegram_signals:
+  execution_mode: full
+  use_risk_based_lot: true
+  risk_percent: 5.0
+  auto_discover_symbols: true
+  protect_tp: true
+```
+
 ```yaml
 risk:
   use_spread_filter: true

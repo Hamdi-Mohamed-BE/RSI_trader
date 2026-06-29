@@ -287,6 +287,7 @@ class TradeExecutor:
         sl: float,
         tps: list[float],
         lot_per_leg: float,
+        execution_mode: str = "split",
         extra_setup: dict | None = None,
         comment: str = ORDER_COMMENT,
     ) -> dict:
@@ -305,9 +306,10 @@ class TradeExecutor:
         if geometry_error:
             return {"status": "skipped", "reason": geometry_error, "entry_price": entry}
 
+        selected_tps = [float(tps[-1])] if execution_mode == "full" else [float(tp) for tp in tps]
         tickets: list[int] = []
         last_failure: str | None = None
-        for index, tp in enumerate(tps, start=1):
+        for index, tp in enumerate(selected_tps, start=1):
             try:
                 result = self.client.send_pending(
                     symbol,
@@ -325,7 +327,7 @@ class TradeExecutor:
                 continue
             retcode = getattr(result, "retcode", None)
             order = int(getattr(result, "order", 0) or getattr(result, "deal", 0) or 0)
-            if retcode == self.client.TRADE_DONE and order:
+            if retcode in {self.client.TRADE_DONE, self.client.TRADE_PLACED} and order:
                 tickets.append(order)
                 self.logger.info(
                     "PENDING PLACED %s ticket=%s kind=%s entry=%s tp=%s",
@@ -355,12 +357,13 @@ class TradeExecutor:
             "symbol": symbol,
             "market_key": market_key,
             "side": side,
-            "execution_mode": "pending",
+            "execution_mode": "pending_full" if execution_mode == "full" else "pending",
             "order_kind": order_kind,
             "tickets": tickets,
             "tps": tps,
             "sl": sl,
             "entry_price": entry,
+            "order_comment": comment,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
         if extra_setup:
@@ -880,9 +883,36 @@ class TradeExecutor:
         next_setups: list[dict] = []
         all_positions = self.client.positions() or []
         open_by_ticket = {int(_field(pos, "ticket")): pos for pos in all_positions}
+        all_orders = getattr(self.client, "orders", lambda: [])() or []
+        pending_tickets = {int(_field(order, "ticket")): order for order in all_orders}
 
         for setup in setups:
             execution_mode = str(setup.get("execution_mode") or "split")
+            if execution_mode == "pending_full":
+                tickets = [int(ticket) for ticket in setup.get("tickets", [])]
+                if not any(ticket in open_by_ticket for ticket in tickets):
+                    matching_positions = [
+                        pos
+                        for pos in all_positions
+                        if str(_field(pos, "symbol", "")) == str(setup.get("symbol") or "")
+                        and int(_field(pos, "magic", 0) or 0) == self.config.bot.magic
+                    ]
+                    if len(matching_positions) == 1:
+                        position_ticket = int(_field(matching_positions[0], "ticket", 0) or 0)
+                        if position_ticket:
+                            setup["tickets"] = [position_ticket]
+                            tickets = [position_ticket]
+                if any(ticket in open_by_ticket for ticket in tickets):
+                    setup["execution_mode"] = "full"
+                    kept = self._manage_full_setup(setup, open_by_ticket, enabled)
+                elif any(ticket in pending_tickets for ticket in tickets):
+                    kept = setup
+                else:
+                    self.logger.info("PENDING FULL SETUP DONE %s %s", setup.get("symbol"), setup.get("setup_id"))
+                    kept = None
+                if kept is not None:
+                    next_setups.append(kept)
+                continue
             if execution_mode == "single":
                 kept = self._manage_single_setup(setup, open_by_ticket)
                 if kept is not None:
@@ -932,13 +962,14 @@ class TradeExecutor:
             return setup
 
         moved_to_tp = int(setup.get("moved_to_tp", 0))
+        telegram_breakeven = setup.get("source") == "telegram_signals"
         tick = self.client.tick(symbol)
         if tick is None:
             return setup
 
         bid = float(_field(tick, "bid", 0.0) or 0.0)
         ask = float(_field(tick, "ask", 0.0) or 0.0)
-        mark = ask if side == "buy" else bid
+        mark = bid if side == "buy" else ask
 
         while moved_to_tp < len(tps) - 1:
             tp_level = tps[moved_to_tp]
@@ -946,14 +977,28 @@ class TradeExecutor:
             if not hit:
                 break
 
-            moved_to_tp += 1
-            setup["moved_to_tp"] = moved_to_tp
+            next_stage = moved_to_tp + 1
             if not self.config.bot.dry_run:
                 pos = open_by_ticket.get(ticket)
                 if pos is None:
                     break
-                new_sl = self.client.normalize_price(symbol, tp_level)
-                if not self._sl_locks_profit(pos, new_sl):
+                open_price = float(_field(pos, "price_open", 0.0) or 0.0)
+                if telegram_breakeven:
+                    desired_sl = open_price if next_stage == 1 else tps[next_stage - 2]
+                else:
+                    desired_sl = tp_level
+                new_sl = self.client.normalize_price(symbol, desired_sl)
+                current_sl = float(_field(pos, "sl", 0.0) or 0.0)
+                already_better = (
+                    current_sl >= new_sl
+                    if side == "buy"
+                    else current_sl != 0.0 and current_sl <= new_sl
+                )
+                if already_better:
+                    moved_to_tp = next_stage
+                    setup["moved_to_tp"] = moved_to_tp
+                    continue
+                if not (telegram_breakeven and next_stage == 1) and not self._sl_locks_profit(pos, new_sl):
                     self.logger.warning(
                         "FULL TP PROTECT SKIP ticket=%s %s new SL %.5f would not lock profit from open %.5f",
                         ticket,
@@ -965,7 +1010,12 @@ class TradeExecutor:
                 final_tp = float(_field(pos, "tp"))
                 self.client.update_position_sl(ticket, symbol, new_sl, final_tp)
                 setup["sl"] = new_sl
-                self.logger.info("FULL TP PROTECT %s SL -> %.5f after TP%s", symbol, new_sl, moved_to_tp)
+                label = "BE" if telegram_breakeven and next_stage == 1 else (
+                    f"TP{next_stage - 1}" if telegram_breakeven else f"TP{next_stage}"
+                )
+                self.logger.info("FULL TP PROTECT %s SL -> %s %.5f after TP%s", symbol, label, new_sl, next_stage)
+            moved_to_tp = next_stage
+            setup["moved_to_tp"] = moved_to_tp
 
         return setup
 

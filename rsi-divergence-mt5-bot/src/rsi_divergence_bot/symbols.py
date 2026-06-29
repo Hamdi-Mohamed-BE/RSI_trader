@@ -6,6 +6,8 @@ import re
 DEFAULT_BROKER_SYMBOL_SUFFIX = "-VIP"
 
 BROKER_SUFFIXES = {
+    "M",
+    "C",
     "VIP",
     "STD",
     "STANDARD",
@@ -113,6 +115,58 @@ def first_available_mt5_symbol(client, candidates: list[str]) -> str | None:
     return None
 
 
+def discover_mt5_symbol(client, token: str, candidates: list[str] | None = None) -> str | None:
+    direct = first_available_mt5_symbol(client, candidates or [])
+    if direct is not None:
+        return direct
+    if not hasattr(client, "symbols"):
+        return None
+
+    requested = re.sub(r"[^A-Z0-9]", "", market_key(token).upper())
+    if not requested:
+        return None
+    scored: list[tuple[int, int, str]] = []
+    try:
+        broker_symbols = client.symbols() or []
+    except Exception:  # noqa: BLE001
+        return None
+    for item in broker_symbols:
+        if isinstance(item, dict):
+            name = str(item.get("name") or "")
+        else:
+            name = str(getattr(item, "name", item))
+        normalized = re.sub(r"[^A-Z0-9]", "", name.upper())
+        if normalized == requested:
+            score = 110
+        elif normalized.startswith(requested):
+            score = 96
+        elif normalized.endswith(requested):
+            score = 82
+        elif len(requested) >= 4 and requested in normalized:
+            score = 68
+        else:
+            continue
+        scored.append((-score, len(name), name))
+
+    for _score, _length, name in sorted(scored):
+        try:
+            tick = client.tick(name)
+            info = client.symbol_info(name)
+        except Exception:  # noqa: BLE001
+            continue
+        if info is None or tick is None:
+            continue
+        if isinstance(tick, dict):
+            bid = float(tick.get("bid", 0.0) or 0.0)
+            ask = float(tick.get("ask", 0.0) or 0.0)
+        else:
+            bid = float(getattr(tick, "bid", 0.0) or 0.0)
+            ask = float(getattr(tick, "ask", 0.0) or 0.0)
+        if bid > 0 and ask > 0:
+            return name
+    return None
+
+
 def mt5_symbol_candidates(token: str, broker_suffix: str | None = None) -> list[str]:
     base = re.sub(r"[^A-Z0-9]", "", token.upper())
     if not base:
@@ -157,9 +211,26 @@ def market_key(symbol: str) -> str:
     value = re.sub(r"\s+", "", symbol.strip().upper())
     while True:
         match = re.search(r"([._-])([A-Z0-9]+)$", value)
-        if not match or match.group(2) not in BROKER_SUFFIXES:
-            return value
-        value = value[: match.start()]
+        if match and match.group(2) in BROKER_SUFFIXES:
+            value = value[: match.start()]
+            continue
+        attached = next(
+            (
+                suffix
+                for suffix in sorted(BROKER_SUFFIXES, key=len, reverse=True)
+                if len(suffix) > 1 and value.endswith(suffix) and len(value) - len(suffix) >= 3
+            ),
+            None,
+        )
+        if attached:
+            value = value[: -len(attached)]
+            continue
+        if value.endswith(("M", "C")):
+            candidate = value[:-1]
+            if re.fullmatch(r"[A-Z]{6}|[A-Z]{2,5}\d{2,3}", candidate):
+                value = candidate
+                continue
+        return value
 
 
 def same_market(left: str, right: str) -> bool:

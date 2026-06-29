@@ -432,9 +432,13 @@ class TelegramSignalsBot:
         self._thread = threading.Thread(target=self._loop, name="telegram-signals-copy", daemon=True)
         self._thread.start()
         self.logger.warning(
-            "TELEGRAM SIGNALS START poll=%ss protect_tp=%s ignore_open_symbol_trades=%s dry_run=%s",
+            "TELEGRAM SIGNALS START poll=%ss protect_tp=%s execution=%s risk_based=%s risk=%.2f%% auto_discovery=%s ignore_open_symbol_trades=%s dry_run=%s",
             self.config.telegram_signals.poll_seconds,
             protect_tp,
+            self.config.telegram_signals.execution_mode,
+            self.config.telegram_signals.use_risk_based_lot,
+            self.config.telegram_signals.risk_percent,
+            self.config.telegram_signals.auto_discover_symbols,
             self.config.telegram_signals.ignore_open_symbol_trades,
             self.config.bot.dry_run,
         )
@@ -460,6 +464,10 @@ class TelegramSignalsBot:
         data["poll_seconds"] = self.config.telegram_signals.poll_seconds
         data["ignore_open_symbol_trades"] = self.config.telegram_signals.ignore_open_symbol_trades
         data["protect_tp"] = self.config.telegram_signals.protect_tp
+        data["execution_mode"] = self.config.telegram_signals.execution_mode
+        data["use_risk_based_lot"] = self.config.telegram_signals.use_risk_based_lot
+        data["risk_percent"] = self.config.telegram_signals.risk_percent
+        data["auto_discover_symbols"] = self.config.telegram_signals.auto_discover_symbols
         data["openai_model"] = self.config.telegram_signals.openai_model
         data["openai_api_key_configured"] = bool(GeminiSignalParser.openai_api_key(self.config))
         data["gemini_model"] = self.config.telegram_signals.gemini_model
@@ -1717,6 +1725,29 @@ class TelegramSignalsBot:
             sl = float(parsed.stop_loss)
 
         plan["sl"] = sl
+        risk_details: dict | None = None
+        if self.config.telegram_signals.use_risk_based_lot:
+            try:
+                risk_details = self.client.volume_for_risk(
+                    trade_symbol,
+                    reference_entry,
+                    sl,
+                    self.config.telegram_signals.risk_percent,
+                )
+            except ValueError as exc:
+                return {
+                    "status": "skipped",
+                    "channel": channel.name,
+                    "reason": str(exc),
+                    **plan,
+                }
+            lot = float(risk_details["volume"])
+            plan["lot"] = lot
+            plan["risk_percent"] = float(risk_details["risk_percent"])
+            plan["risk_money"] = round(float(risk_details["risk_money"]), 2)
+            plan["actual_risk"] = round(float(risk_details["actual_risk"]), 2)
+            plan["actual_risk_percent"] = round(float(risk_details["actual_risk_percent"]), 3)
+            plan["used_minimum_lot"] = bool(risk_details["used_minimum_lot"])
 
         fingerprint = trade_hash or telegram_trade_fingerprint(channel, parsed)
         if not hard and self.state.is_telegram_trade_processed(fingerprint):
@@ -1822,6 +1853,7 @@ class TelegramSignalsBot:
             "telegram_message_key": message_key,
             "sl_synthetic": sl_is_synthetic,
             "execution_reason": execution.reason,
+            "telegram_risk": risk_details,
         }
         comment = f"TG - {(channel.name or 'Telegram').strip()}"[:31]
         drift_reference = None
@@ -1838,7 +1870,7 @@ class TelegramSignalsBot:
                 tps=tps,
                 lot_per_leg=float(lot),
                 entry_price=drift_reference,
-                execution_mode="split",
+                execution_mode=self.config.telegram_signals.execution_mode,
                 extra_setup=extra_setup,
                 comment=comment,
             )
@@ -1853,6 +1885,7 @@ class TelegramSignalsBot:
                 sl=sl,
                 tps=tps,
                 lot_per_leg=float(lot),
+                execution_mode=self.config.telegram_signals.execution_mode,
                 extra_setup=extra_setup,
                 comment=comment,
             )

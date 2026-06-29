@@ -262,6 +262,10 @@ class TelegramSignalsConfig(BaseModel):
     gemini_model: str = "gemini-1.5-flash"
     ignore_open_symbol_trades: bool = True
     protect_tp: bool = True
+    execution_mode: Literal["full", "split"] = "full"
+    use_risk_based_lot: bool = True
+    risk_percent: float = Field(default=5.0, gt=0, le=100)
+    auto_discover_symbols: bool = True
     max_tps: int = Field(default=5, ge=1, le=8)
     default_lot: float | None = None
     max_message_age_seconds: int = Field(default=300, ge=30, le=3600)

@@ -103,7 +103,7 @@ class ManualTradeRequest(BaseModel):
 
 
 class TelegramSignalsStartRequest(BaseModel):
-    protect_tp: bool = False
+    protect_tp: bool = True
 
 
 class TelegramHardCopyRequest(BaseModel):

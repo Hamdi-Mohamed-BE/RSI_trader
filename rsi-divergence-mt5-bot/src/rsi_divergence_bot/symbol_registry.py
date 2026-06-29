@@ -7,10 +7,11 @@ from .config import AppConfig, SymbolConfig, add_custom_symbol, default_symbol_l
 from .manual_trade import resolve_symbol
 from .mt5_client import MT5Client
 from .symbols import (
+    discover_mt5_symbol,
     find_symbol_config,
-    first_available_mt5_symbol,
     market_key,
     signal_copy_broker_symbols,
+    settings_mt5_symbol_from_config,
     token_mt5_symbol_candidates,
 )
 
@@ -36,13 +37,42 @@ def ensure_symbol_for_signal_copy(
 
     existing = resolve_symbol(cleaned, config) or find_symbol_config(config.symbols, base_key)
     if existing is not None:
-        return existing, False, False
+        active_name = settings_mt5_symbol_from_config(existing, config)
+        if not config.telegram_signals.auto_discover_symbols:
+            return existing, False, False
+        suffix = config.mt5.broker_symbol_suffix if config.mt5.append_broker_symbol_suffix else ""
+        candidates = [active_name, *token_mt5_symbol_candidates(cleaned, suffix)]
+        mt5_name = discover_mt5_symbol(client, cleaned, candidates)
+        if mt5_name is None:
+            return existing, False, False
+        changed = active_name.upper() != mt5_name.upper()
+        if changed:
+            if config.mt5.is_demo:
+                existing.demo_symbol = mt5_name
+            else:
+                existing.live_symbol = mt5_name
+            if persist and config_path is not None:
+                save_config(config_path, config)
+            (logger or logging.getLogger(__name__)).warning(
+                "SIGNAL COPY discovered broker symbol %s -> %s and updated active account mapping",
+                cleaned,
+                mt5_name,
+            )
+        return existing, False, bool(changed and persist and config_path is not None)
+
+    if not config.telegram_signals.auto_discover_symbols:
+        return None, False, False
 
     suffix = config.mt5.broker_symbol_suffix if config.mt5.append_broker_symbol_suffix else ""
     candidates = token_mt5_symbol_candidates(cleaned, suffix)
-    mt5_name = first_available_mt5_symbol(client, candidates)
+    mt5_name = discover_mt5_symbol(client, cleaned, candidates)
     if mt5_name is None:
         return None, False, False
+
+    if config.mt5.is_demo:
+        demo_name = mt5_name
+    else:
+        live_name = mt5_name
 
     lot = config.risk.default_forex_lot
     provisional = SymbolConfig(
