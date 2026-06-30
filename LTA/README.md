@@ -166,14 +166,16 @@ Use `run_orb_bot.bat` to run the separate Opening Range Breakout worker in its o
 
 Defaults:
 
-- Symbols: `ORB_SYMBOLS=XAGUSD,XAUUSD,EURUSD`, ordered by the six-month production test.
-- Timeframe: `ORB_TIMEFRAME=M15`
-- Session window: `ORB_SESSION_START=09:30`, `ORB_SESSION_END=16:00`, interpreted in `ORB_SESSION_TIMEZONE=America/New_York`
+- Symbols: `ORB_SYMBOLS=XAGUSD,XAUUSD,US100,EURUSD,GBPUSD`. These were positive over the January-June 2026 spread-filtered retest; symbols with fewer than eight accepted trades were excluded.
+- Timeframe: `ORB_TIMEFRAME=M5`
+- Range anchor: `ORB_SESSION_START=08:00` with `ORB_RANGE_START_UTC_OFFSET=-05:00`. This is fixed 08:00 EST, which appears as 08:00 New York in standard time and 09:00 New York during daylight-saving time.
+- Trading cutoff: `ORB_SESSION_END=16:00`, interpreted in `ORB_SESSION_TIMEZONE=America/New_York`
+- Entry: `ORB_ENTRY_MODEL=BREAKOUT_RETEST` requires a completed M5 close beyond the 15-minute range, then places a limit order at the last opposing candle's demand/supply boundary.
 - Opening range: `ORB_RANGE_MINUTES=15`
-- Target: `ORB_RR=5.0`
-- Trade protection: `ORB_PROTECT_OPEN_TRADES=true`, `ORB_PROTECTION_FINAL_RR=5.0`, `ORB_TP1_PARTIAL_CLOSE=false`, `ORB_TP1_PARTIAL_CLOSE_PCT=0`
-- Live order sending: off, unless `ORB_LIVE_TRADING=true` and `ORB_PLACE_TRADES=true`
-- Pending stop sending: off, unless `ORB_PLACE_PENDING=true`
+- Per-symbol targets: `XAGUSD=2.5R`, `XAUUSD=1.5R`, `US100=1R`, `EURUSD=1.5R`, `GBPUSD=1R`
+- Stop: the far edge of the demand/supply candle. `ORB_DYNAMIC_STOP_ENABLED=false` keeps live execution aligned with the tested structural stop.
+- Trade protection: `ORB_PROTECT_OPEN_TRADES=true`, `ORB_TP1_PARTIAL_CLOSE=false`, `ORB_TP1_PARTIAL_CLOSE_PCT=0`
+- Live order sending is controlled by `ORB_LIVE_TRADING`, `ORB_PLACE_TRADES`, and `ORB_PLACE_PENDING`.
 - Candle data timezone: `MARKET_DATA_TIMEZONE=UTC`
 - Console detail limit: `ORB_LOG_DETAIL_LIMIT=8`
 
@@ -187,6 +189,6 @@ The worker writes:
 Safety notes:
 
 - ORB has its own magic number and does not share the LTA automation state.
-- ORB protection checks ORB-owned open positions every scan. With the default 1:5 profile, TP1 closes half the open volume when broker lot rules allow it and moves SL to break-even. TP2 moves SL to TP1, TP3 moves SL to TP2, TP4 moves SL to TP3, and TP5 moves SL to TP4.
-- Pending ORB stops are prepared by default but not sent unless the pending live switch is enabled.
+- ORB protection checks ORB-owned open positions every scan. TP1 moves SL to break-even without a partial close; later whole-R milestones trail SL to the previous milestone when the configured RR reaches them.
+- Retest limit orders expire at the New York session cutoff. No order is staged before an M5 candle has closed outside the opening range.
 - Use `stop_orb_bot.bat` when you want to stop this worker and clear the ORB lock.

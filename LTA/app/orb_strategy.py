@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 import numpy as np
@@ -14,6 +14,7 @@ from .session_time import (
     now_naive,
     parse_hhmm,
     session_bounds as timezone_session_bounds,
+    zone,
 )
 
 
@@ -29,6 +30,9 @@ class ORBSettings:
     max_signal_age_minutes: int = 30
     session_timezone: str = DEFAULT_SESSION_TIMEZONE
     data_timezone: str = DEFAULT_DATA_TIMEZONE
+    entry_model: str = "BREAKOUT"
+    range_start_utc_offset_minutes: int | None = None
+    zone_lookback_bars: int = 6
 
 
 def session_bounds(session_day: date, settings: ORBSettings) -> tuple[datetime, datetime, datetime]:
@@ -39,8 +43,35 @@ def session_bounds(session_day: date, settings: ORBSettings) -> tuple[datetime, 
         settings.session_timezone,
         settings.data_timezone,
     )
+    if settings.range_start_utc_offset_minutes is not None:
+        fixed_zone = timezone(timedelta(minutes=int(settings.range_start_utc_offset_minutes)))
+        fixed_start = datetime.combine(
+            session_day,
+            parse_hhmm(settings.session_start, "08:00"),
+            tzinfo=fixed_zone,
+        )
+        start = fixed_start.astimezone(zone(settings.data_timezone)).replace(tzinfo=None)
+        if end <= start:
+            end += timedelta(days=1)
     range_end = start + timedelta(minutes=max(1, int(settings.range_minutes)))
     return start, range_end, end
+
+
+def _uses_retest_entry(settings: ORBSettings) -> bool:
+    return str(settings.entry_model or "").strip().upper() in {
+        "RETEST",
+        "BREAKOUT_RETEST",
+        "CONFIRMED_RETEST",
+    }
+
+
+def _timeframe_minutes(timeframe: str) -> int:
+    value = str(timeframe or "").strip().upper()
+    if value.startswith("M") and value[1:].isdigit():
+        return max(1, int(value[1:]))
+    if value.startswith("H") and value[1:].isdigit():
+        return max(1, int(value[1:]) * 60)
+    return 5
 
 
 def to_frame(candles: pd.DataFrame) -> pd.DataFrame:
@@ -166,6 +197,75 @@ def find_first_breakout(candles: pd.DataFrame, context: dict[str, Any], now: dat
     return None
 
 
+def find_first_confirmed_breakout(
+    candles: pd.DataFrame,
+    context: dict[str, Any],
+    timeframe: str,
+    now: datetime | None = None,
+) -> dict[str, Any] | None:
+    df = to_frame(candles)
+    data_timezone = str(context.get("data_timezone") or DEFAULT_DATA_TIMEZONE)
+    now = now or now_naive(data_timezone)
+    if not context.get("ready"):
+        return None
+    range_end = context["range_end"]
+    session_end = context["session_end"]
+    bar_delta = timedelta(minutes=_timeframe_minutes(timeframe))
+    post = df[(df["time"] >= range_end) & (df["time"] <= min(now, session_end))]
+    buy_trigger = float(context["buy_trigger"])
+    sell_trigger = float(context["sell_trigger"])
+    for index, row in post.iterrows():
+        bar_time = pd.Timestamp(row["time"]).to_pydatetime()
+        confirmed_at = bar_time + bar_delta
+        if confirmed_at > now:
+            continue
+        close = float(row["close"])
+        if close > buy_trigger:
+            return {
+                "direction": "BUY",
+                "index": int(index),
+                "time": bar_time,
+                "confirmed_at": confirmed_at,
+            }
+        if close < sell_trigger:
+            return {
+                "direction": "SELL",
+                "index": int(index),
+                "time": bar_time,
+                "confirmed_at": confirmed_at,
+            }
+    return None
+
+
+def find_retest_zone(
+    candles: pd.DataFrame,
+    breakout_index: int,
+    direction: str,
+    lookback_bars: int,
+) -> dict[str, Any] | None:
+    df = to_frame(candles)
+    start = max(0, int(breakout_index) - max(1, int(lookback_bars)))
+    prior = df.iloc[start:int(breakout_index)]
+    if direction == "BUY":
+        candidates = prior[prior["close"] < prior["open"]]
+    else:
+        candidates = prior[prior["close"] > prior["open"]]
+    if candidates.empty:
+        return None
+    row = candidates.iloc[-1]
+    low = float(row["low"])
+    high = float(row["high"])
+    if low <= 0 or high <= low:
+        return None
+    return {
+        "time": pd.Timestamp(row["time"]).to_pydatetime(),
+        "low": low,
+        "high": high,
+        "entry": high if direction == "BUY" else low,
+        "stop_loss": low if direction == "BUY" else high,
+    }
+
+
 def confirmed_orb_signal(
     candles: pd.DataFrame,
     symbol: str,
@@ -173,8 +273,10 @@ def confirmed_orb_signal(
     settings: ORBSettings,
     now: datetime | None = None,
 ) -> dict[str, Any] | None:
-    now = now or datetime.now()
+    now = now or now_naive(settings.data_timezone)
     context = build_orb_context(candles, settings, now=now)
+    if _uses_retest_entry(settings):
+        return confirmed_retest_signal(candles, symbol, timeframe, settings, context=context, now=now)
     breakout = find_first_breakout(candles, context, now=now)
     if not context.get("ready") or breakout is None:
         return None
@@ -239,6 +341,102 @@ def confirmed_orb_signal(
     }
 
 
+def confirmed_retest_signal(
+    candles: pd.DataFrame,
+    symbol: str,
+    timeframe: str,
+    settings: ORBSettings,
+    context: dict[str, Any] | None = None,
+    now: datetime | None = None,
+) -> dict[str, Any] | None:
+    now = now or now_naive(settings.data_timezone)
+    context = context or build_orb_context(candles, settings, now=now)
+    breakout = find_first_confirmed_breakout(candles, context, timeframe, now=now)
+    if not context.get("ready") or breakout is None or now > context["session_end"]:
+        return None
+    direction = str(breakout.get("direction") or "")
+    if direction not in {"BUY", "SELL"}:
+        return None
+    confirmed_at = breakout["confirmed_at"]
+    if now - confirmed_at > timedelta(minutes=max(1, int(settings.max_signal_age_minutes))):
+        return None
+
+    df = to_frame(candles)
+    signal_row = df.iloc[int(breakout["index"])]
+    breakout_close = float(signal_row["close"])
+    retest_zone = find_retest_zone(
+        df,
+        int(breakout["index"]),
+        direction,
+        settings.zone_lookback_bars,
+    )
+    if retest_zone is None:
+        return None
+    entry = float(retest_zone["entry"])
+    stop_loss = float(retest_zone["stop_loss"])
+    if entry <= 0 or stop_loss <= 0 or entry == stop_loss:
+        return None
+    if direction == "BUY" and entry >= breakout_close:
+        return None
+    if direction == "SELL" and entry <= breakout_close:
+        return None
+
+    take_profit = target_for(direction, entry, stop_loss, settings.reward_risk)
+    range_atr = context.get("range_atr")
+    score = 95
+    if range_atr is not None and 0.5 <= float(range_atr) <= 2.0:
+        score = 100
+    pending_type = "BUY_LIMIT" if direction == "BUY" else "SELL_LIMIT"
+    return {
+        "symbol": symbol,
+        "timeframe": timeframe,
+        "direction": direction,
+        "setup_grade": "ORB",
+        "setup_score": score,
+        "profile_type": "Opening Range Retest",
+        "key_level": f"ORB {settings.range_minutes}m {settings.session_start} EST",
+        "entry_model": "Confirmed M5 Breakout + Demand/Supply Retest",
+        "execution_type": "PENDING",
+        "pending_order_type": pending_type,
+        "trigger_price": entry,
+        "entry": entry,
+        "stop_loss": stop_loss,
+        "take_profit": take_profit,
+        "risk_reward": float(settings.reward_risk),
+        "timestamp": confirmed_at,
+        "expires_at": context["session_end"],
+        "status": "preplace",
+        "orb": {
+            "entry_model": "BREAKOUT_RETEST",
+            "session_start": context["session_start"].isoformat(sep=" ", timespec="seconds"),
+            "range_end": context["range_end"].isoformat(sep=" ", timespec="seconds"),
+            "session_end": context["session_end"].isoformat(sep=" ", timespec="seconds"),
+            "session_timezone": settings.session_timezone,
+            "range_start_utc_offset_minutes": settings.range_start_utc_offset_minutes,
+            "data_timezone": settings.data_timezone,
+            "range_high": context["range_high"],
+            "range_low": context["range_low"],
+            "range_width": context["range_width"],
+            "range_atr": context.get("range_atr"),
+            "buy_trigger": context["buy_trigger"],
+            "sell_trigger": context["sell_trigger"],
+            "breakout_time": breakout["time"].isoformat(sep=" ", timespec="seconds"),
+            "breakout_confirmed_at": confirmed_at.isoformat(sep=" ", timespec="seconds"),
+            "breakout_close": breakout_close,
+            "retest_zone": {
+                "time": retest_zone["time"].isoformat(sep=" ", timespec="seconds"),
+                "low": retest_zone["low"],
+                "high": retest_zone["high"],
+            },
+        },
+        "reasons": [
+            f"The {settings.range_minutes} minute opening range began at fixed 08:00 EST.",
+            f"A completed {timeframe} candle closed outside the range in the {direction} direction.",
+            f"{pending_type} waits at the last opposing candle's demand/supply boundary.",
+        ],
+    }
+
+
 def pending_orb_signals(
     candles: pd.DataFrame,
     symbol: str,
@@ -246,6 +444,8 @@ def pending_orb_signals(
     settings: ORBSettings,
     now: datetime | None = None,
 ) -> list[dict[str, Any]]:
+    if _uses_retest_entry(settings):
+        return []
     now = now or now_naive(settings.data_timezone)
     context = build_orb_context(candles, settings, now=now)
     if not context.get("ready") or now > context["session_end"]:

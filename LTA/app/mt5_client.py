@@ -1068,7 +1068,8 @@ class MT5Client:
                     expiration = datetime.fromisoformat(str(expires_at))
                 except ValueError:
                     return {"placed": False, "message": f"Invalid pending expiration: {expires_at}."}
-            if expiration <= datetime.now():
+            expiration_now = datetime.now(expiration.tzinfo) if expiration.tzinfo else datetime.now()
+            if expiration <= expiration_now:
                 return {"placed": False, "message": "Pending expiration is already in the past."}
             request["type_time"] = mt5.ORDER_TIME_SPECIFIED
             request["expiration"] = int(expiration.timestamp())

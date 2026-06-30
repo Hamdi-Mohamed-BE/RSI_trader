@@ -5,6 +5,7 @@ import atexit
 from dataclasses import replace
 from datetime import datetime, timedelta
 import json
+import math
 import os
 import subprocess
 import time
@@ -24,6 +25,7 @@ from .orb_strategy import ORBSettings, confirmed_orb_signal, pending_orb_signals
 from .session_time import (
     DEFAULT_DATA_TIMEZONE,
     DEFAULT_SESSION_TIMEZONE,
+    as_aware,
     date_in_timezone,
     is_weekday_in_timezone,
     now_naive,
@@ -94,6 +96,25 @@ def _env_float_map(name: str) -> dict[str, float]:
     return result
 
 
+def _env_utc_offset_minutes(name: str, default: int | None = None) -> int | None:
+    value = os.getenv(name)
+    if value is None or not value.strip():
+        return default
+    raw = value.strip()
+    try:
+        return int(raw)
+    except ValueError:
+        pass
+    sign = -1 if raw.startswith("-") else 1
+    token = raw.lstrip("+-")
+    try:
+        hours, minutes = token.split(":", 1)
+        parsed = sign * (int(hours) * 60 + int(minutes))
+    except (TypeError, ValueError):
+        return default
+    return parsed if -14 * 60 <= parsed <= 14 * 60 else default
+
+
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
         return float(value)
@@ -109,7 +130,12 @@ def _orb_signal_quality_sort_key(signal: dict[str, Any]) -> tuple[float, float, 
     range_quality = 100.0 - min(100.0, abs(range_atr - 1.0) * 40.0)
     execution = str(signal.get("execution_type") or "").upper()
     pending_type = str(signal.get("pending_order_type") or "").upper()
-    execution_rank = 2 if execution == "MARKET" else 1 if pending_type in {"BUY_STOP", "SELL_STOP"} else 0
+    execution_rank = 2 if execution == "MARKET" else 1 if pending_type in {
+        "BUY_STOP",
+        "SELL_STOP",
+        "BUY_LIMIT",
+        "SELL_LIMIT",
+    } else 0
     return (score, rr, range_quality, execution_rank)
 
 
@@ -263,6 +289,9 @@ class ORBBot:
             max_signal_age_minutes=max(1, _env_int("ORB_MAX_SIGNAL_AGE_MINUTES", 30)),
             session_timezone=os.getenv("ORB_SESSION_TIMEZONE", os.getenv("MARKET_SESSION_TIMEZONE", DEFAULT_SESSION_TIMEZONE)),
             data_timezone=os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE),
+            entry_model=os.getenv("ORB_ENTRY_MODEL", "BREAKOUT").strip().upper() or "BREAKOUT",
+            range_start_utc_offset_minutes=_env_utc_offset_minutes("ORB_RANGE_START_UTC_OFFSET"),
+            zone_lookback_bars=max(1, _env_int("ORB_RETEST_ZONE_LOOKBACK_BARS", 6)),
         )
         self.symbol_rr = _env_float_map("ORB_SYMBOL_RR")
         self.symbol_protection_rr = _env_float_map("ORB_SYMBOL_PROTECTION_RR")
@@ -624,7 +653,7 @@ class ORBBot:
                 continue
 
             market_price = float(quote["bid"] if direction == "BUY" else quote["ask"])
-            final_stage = max(1, int(round(float(action["final_rr"]))))
+            final_stage = max(1, int(math.floor(float(action["final_rr"]) + 1e-9)))
             stage_targets = {
                 stage: self._level_at_r(entry, risk, direction, float(stage))
                 for stage in range(1, final_stage + 1)
@@ -740,8 +769,14 @@ class ORBBot:
             "max_spread_risk_percent": self.max_spread_risk_percent,
             "max_spread_points": self.max_spread_points,
         }
-        if is_pending and self.pending_expiry_minutes > 0:
-            order["expires_at"] = now + timedelta(minutes=self.pending_expiry_minutes)
+        signal_expiry = signal.get("expires_at")
+        if signal_expiry:
+            order["expires_at"] = as_aware(signal_expiry, self.settings.data_timezone)
+        elif is_pending and self.pending_expiry_minutes > 0:
+            order["expires_at"] = as_aware(
+                now + timedelta(minutes=self.pending_expiry_minutes),
+                self.settings.data_timezone,
+            )
         return order, blocks
 
     @staticmethod
@@ -809,7 +844,10 @@ class ORBBot:
 
             signals: list[dict[str, Any]] = []
             confirmed = confirmed_orb_signal(candles, symbol, self.timeframe, symbol_settings, now=now)
-            if confirmed:
+            if confirmed and (
+                str(confirmed.get("execution_type") or "").upper() != "PENDING"
+                or self.prepare_pending
+            ):
                 signals.append(confirmed)
             elif self.prepare_pending:
                 signals.extend(pending_orb_signals(candles, symbol, self.timeframe, symbol_settings, now=now))
@@ -958,6 +996,16 @@ class ORBBot:
             f"Session {self.settings.session_start}-{self.settings.session_end} {self.settings.session_timezone}, "
             f"range={self.settings.range_minutes}m, RR={self.settings.reward_risk:g}."
         )
+        if self.settings.range_start_utc_offset_minutes is not None:
+            minutes = int(self.settings.range_start_utc_offset_minutes)
+            sign = "+" if minutes >= 0 else "-"
+            absolute = abs(minutes)
+            print(
+                f"Range anchor uses fixed UTC{sign}{absolute // 60:02d}:{absolute % 60:02d}; "
+                f"entry model: {self.settings.entry_model}."
+            )
+        else:
+            print(f"Entry model: {self.settings.entry_model}.")
         if self.symbol_rr:
             print(
                 "Per-symbol RR: "
