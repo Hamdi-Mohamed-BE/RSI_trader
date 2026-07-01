@@ -4,8 +4,11 @@ from datetime import datetime, timedelta
 import os
 from typing import Any
 
+import pandas as pd
+
 from .models import TRADE_SYMBOLS
-from .mt5_client import MT5Client
+from .mt5_client import MT5Client, TIMEFRAME_MINUTES
+from .session_time import DEFAULT_DATA_TIMEZONE, now_naive
 from .strategy_engine import detect_aoi, detect_bias, detect_market_structure, generate_preentry_candidate, generate_signal
 
 
@@ -49,6 +52,17 @@ def _direction_opposes_bias(direction: str, bias: str) -> bool:
     return (direction == "BUY" and bias == "bearish") or (direction == "SELL" and bias == "bullish")
 
 
+def _closed_candles(candles, timeframe: str, now: datetime):
+    if candles is None or len(candles) == 0:
+        return candles
+    minutes = TIMEFRAME_MINUTES.get(str(timeframe).upper())
+    if not minutes:
+        return candles
+    times = pd.to_datetime(candles["time"])
+    closed = candles.loc[times + timedelta(minutes=minutes) <= now].copy()
+    return closed.reset_index(drop=True)
+
+
 def _forex_htf_context(client: MT5Client, symbol: str, now: datetime) -> dict[str, Any]:
     biases: dict[str, str] = {}
     for timeframe in ("H1", "H4", "D1"):
@@ -83,7 +97,8 @@ def scan_market(
 ) -> dict[str, Any]:
     client = MT5Client()
     status = client.terminal_status()
-    now = datetime.now()
+    data_timezone = os.getenv("MARKET_DATA_TIMEZONE", DEFAULT_DATA_TIMEZONE)
+    now = now_naive(data_timezone)
     result: dict[str, Any] = {
         "scanned_at": now.isoformat(timespec="seconds"),
         "mt5_status": status.get("message"),
@@ -111,6 +126,7 @@ def scan_market(
         for timeframe in timeframes:
             start = now - timedelta(days=LOOKBACK_DAYS.get(timeframe, 90))
             candles = client.fetch_candles(symbol, timeframe, start, now)
+            candles = _closed_candles(candles, timeframe, now)
             if candles is None or len(candles) < 120:
                 result["errors"].append(
                     {
@@ -161,6 +177,20 @@ def scan_market(
                 item = {**common, **signal}
                 if signal["status"] == "allowed" and signal["setup_score"] >= min_score:
                     result["allowed"].append(item)
+                    if _env_bool("AUTO_PREFER_RETEST_LIMITS", True):
+                        pullback = generate_preentry_candidate(
+                            candles,
+                            symbol=symbol,
+                            timeframe=timeframe,
+                            min_score=preplace_min_score,
+                            min_rr=min_rr,
+                            allow_after_confirmation=True,
+                            limit_only=True,
+                        )
+                        if pullback and pullback.get("direction") == signal.get("direction"):
+                            pullback["market_confirmation_score"] = signal.get("setup_score")
+                            pullback["market_confirmation_model"] = signal.get("entry_model")
+                            result["preplace"].append({**common, **pullback})
                     continue
                 if signal["setup_score"] >= 80:
                     result["near_misses"].append(item)

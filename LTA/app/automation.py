@@ -124,9 +124,67 @@ def _signal_quality_sort_key(signal: dict[str, Any]) -> tuple[float, float, int,
     timeframe_rank = TIMEFRAME_QUALITY_RANK.get(timeframe, 0)
     execution = str(signal.get("execution_type") or "").upper()
     pending_type = str(signal.get("pending_order_type") or "").upper()
-    execution_rank = 2 if execution == "MARKET" else 1 if pending_type in {"BUY_STOP", "SELL_STOP"} else 0
+    execution_rank = (
+        3
+        if execution == "MARKET"
+        else 2
+        if pending_type in {"BUY_LIMIT", "SELL_LIMIT"}
+        else 1
+        if pending_type in {"BUY_STOP", "SELL_STOP"}
+        else 0
+    )
     distance = _safe_float(signal.get("trigger_distance"), 999.0)
     return (score, rr, timeframe_rank, execution_rank, -distance)
+
+
+def _position_record_direction(position: dict[str, Any]) -> str:
+    explicit = str(position.get("direction") or "").upper()
+    if explicit in {"BUY", "SELL"}:
+        return explicit
+    return "SELL" if int(position.get("type") or 0) == 1 else "BUY"
+
+
+def _pending_record_direction(order: dict[str, Any]) -> str | None:
+    explicit = str(order.get("direction") or "").upper()
+    if explicit in {"BUY", "SELL"}:
+        return explicit
+    try:
+        order_type = int(order.get("type"))
+    except (TypeError, ValueError):
+        return None
+    if order_type in {2, 4, 6}:
+        return "BUY"
+    if order_type in {3, 5, 7}:
+        return "SELL"
+    return None
+
+
+def _same_direction_positions(positions: list[dict[str, Any]], direction: str) -> list[dict[str, Any]]:
+    expected = str(direction or "").upper()
+    return [position for position in positions if _position_record_direction(position) == expected]
+
+
+def _same_direction_pending_orders(orders: list[dict[str, Any]], direction: str) -> list[dict[str, Any]]:
+    expected = str(direction or "").upper()
+    return [order for order in orders if _pending_record_direction(order) == expected]
+
+
+def _profitable_positions(positions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [position for position in positions if _safe_float(position.get("profit")) > 0.0]
+
+
+def _oldest_profitable_position(positions: list[dict[str, Any]]) -> dict[str, Any] | None:
+    profitable = _profitable_positions(positions)
+    if not profitable:
+        return None
+
+    def sort_key(position: dict[str, Any]) -> tuple[float, int]:
+        opened_at = _safe_float(position.get("time"), float("inf"))
+        if opened_at <= 0:
+            opened_at = float("inf")
+        return opened_at, int(position.get("ticket") or 0)
+
+    return min(profitable, key=sort_key)
 
 
 def _rank_signals(signals: list[dict[str, Any]], candidate_limit: int = 0) -> list[dict[str, Any]]:
@@ -456,8 +514,15 @@ class TradeAutomation:
         self.best_setup_candidate_limit = max(0, _env_int("AUTO_BEST_SETUP_CANDIDATE_LIMIT", 0))
         self.preplace_min_score = max(1, min(100, _env_int("AUTO_PREPLACE_MIN_SCORE", 85)))
         self.preplace_expiry_minutes = max(0, _env_int("AUTO_PREPLACE_EXPIRY_MINUTES", 240))
-        self.one_pending_per_symbol = _env_bool("AUTO_ONE_PENDING_PER_SYMBOL", True)
-        self.one_position_per_symbol = _env_bool("AUTO_ONE_POSITION_PER_SYMBOL", True)
+        self.one_pending_per_symbol = _env_bool(
+            "AUTO_ONE_PENDING_PER_SYMBOL_DIRECTION",
+            _env_bool("AUTO_ONE_PENDING_PER_SYMBOL", True),
+        )
+        self.one_position_per_symbol = _env_bool(
+            "AUTO_ONE_POSITION_PER_SYMBOL_DIRECTION",
+            _env_bool("AUTO_ONE_POSITION_PER_SYMBOL", True),
+        )
+        self.market_max_chase_atr = max(0.0, _env_float("AUTO_MARKET_MAX_CHASE_ATR", 0.35))
         self.trade_protection_enabled = _env_bool("AUTO_PROTECT_OPEN_TRADES", True)
         self.protection_final_rr = max(1.0, _env_float("AUTO_PROTECTION_FINAL_RR", self.config.min_risk_reward))
         self.symbol_rr = _env_float_map("AUTO_SYMBOL_RR")
@@ -612,7 +677,110 @@ class TradeAutomation:
 
     @staticmethod
     def _position_direction(position: dict[str, Any]) -> str:
-        return "SELL" if int(position.get("type") or 0) == 1 else "BUY"
+        return _position_record_direction(position)
+
+    def _refresh_profitable_position_target(
+        self,
+        signal: dict[str, Any],
+        positions: list[dict[str, Any]],
+        quote: dict[str, Any] | None,
+        now: datetime,
+    ) -> dict[str, Any] | None:
+        position = _oldest_profitable_position(positions)
+        if not position:
+            return None
+
+        direction = str(signal.get("direction") or "").upper()
+        ticket = int(position.get("ticket") or 0)
+        broker_symbol = str(position.get("symbol") or signal.get("symbol") or "")
+        requested_target = _safe_float(signal.get("take_profit"))
+        current_target = _safe_float(position.get("tp"))
+        current_stop = _safe_float(position.get("sl"))
+        action = {
+            "created_at": now.isoformat(timespec="seconds"),
+            "status": "target_refresh_failed",
+            "ticket": ticket,
+            "symbol": signal.get("symbol"),
+            "broker_symbol": broker_symbol,
+            "direction": direction,
+            "position_profit": _safe_float(position.get("profit")),
+            "position_volume": _safe_float(position.get("volume")),
+            "preserved_stop_loss": current_stop,
+            "previous_take_profit": current_target,
+            "requested_take_profit": requested_target,
+            "signal": signal,
+        }
+        if ticket <= 0 or direction not in {"BUY", "SELL"} or requested_target <= 0:
+            action["status"] = "invalid_target_refresh"
+            action["message"] = "The profitable position or new setup target is invalid."
+            return action
+
+        normalized_target = self.client.normalize_price(broker_symbol, requested_target)
+        action["new_take_profit"] = normalized_target
+        if normalized_target == self.client.normalize_price(broker_symbol, current_target):
+            action["status"] = "target_already_current"
+            action["message"] = "The profitable position already uses this setup target."
+            return action
+
+        if not quote:
+            action["status"] = "target_refresh_no_quote"
+            action["message"] = "A live quote is required to validate the new take-profit target."
+            return action
+
+        market_price = _safe_float(quote.get("bid") if direction == "BUY" else quote.get("ask"))
+        action["market_price"] = market_price
+        target_still_ahead = (
+            direction == "BUY" and normalized_target > market_price
+        ) or (
+            direction == "SELL" and normalized_target < market_price
+        )
+        if market_price <= 0 or not target_still_ahead:
+            action["status"] = "target_already_reached"
+            action["message"] = "The new setup target is no longer ahead of the live market price."
+            return action
+
+        if not (self.config.live_trading and self.auto_place_trades):
+            action["status"] = "target_refresh_not_live"
+            action["message"] = "TP refresh was detected but live order modification is disabled."
+            return action
+
+        result = self.client.modify_position_sl_tp(
+            ticket=ticket,
+            symbol=broker_symbol,
+            stop_loss=current_stop,
+            take_profit=normalized_target,
+        )
+        action["modify_result"] = result
+        action["status"] = "target_refreshed" if result.get("modified") else "target_refresh_failed"
+        action["message"] = result.get("message") or (
+            "Profitable position TP updated from the new same-direction setup."
+            if result.get("modified")
+            else "MT5 rejected the profitable position TP refresh."
+        )
+        return action
+
+    def _complete_target_refresh(
+        self,
+        signal: dict[str, Any],
+        action: dict[str, Any],
+        now: datetime,
+    ) -> None:
+        refresh_ticket = {
+            "created_at": now.isoformat(timespec="seconds"),
+            "status": action["status"],
+            "signal": signal,
+            "target_refresh": action,
+        }
+        self._mark_consumed(
+            signal,
+            refresh_ticket,
+            action.get("modify_result"),
+            status=action["status"],
+            include_legacy=False,
+        )
+        key = _signal_key(signal)
+        self.seen[key] = now
+        _write_seen_signals({item_key: item_value.isoformat() for item_key, item_value in self.seen.items()})
 
     @staticmethod
     def _level_at_r(entry: float, risk: float, direction: str, r_multiple: float) -> float:
@@ -707,12 +875,42 @@ class TradeAutomation:
             )
 
         model = str(signal.get("entry_model") or "")
-        if self.strict_session_require_internal_break and "Internal Structure" not in model:
+        pending_type = str(signal.get("pending_order_type") or "").upper()
+        book_retest = pending and pending_type in {"BUY_LIMIT", "SELL_LIMIT"} and bool(
+            signal.get("book_aligned_retest")
+        )
+        if self.strict_session_require_internal_break and "Internal Structure" not in model and not book_retest:
             reasons.append(f"Strict {self._strict_window_label()} filter requires internal-structure confirmation.")
 
-        if pending and str(signal.get("pending_order_type") or "").upper() not in {"BUY_STOP", "SELL_STOP"}:
-            reasons.append(f"Strict {self._strict_window_label()} filter allows only break-stop pending orders, not retest limits.")
+        if pending and pending_type in {"BUY_LIMIT", "SELL_LIMIT"} and not book_retest:
+            reasons.append(f"Strict {self._strict_window_label()} filter requires a book-aligned EM2/base retest limit.")
+        if book_retest and str(signal.get("volume_regime") or "normal") == "low" and str(
+            signal.get("timeframe") or ""
+        ).upper() in {"M1", "M5", "M15"}:
+            reasons.append(f"Strict {self._strict_window_label()} filter requires higher-timeframe confirmation in low volume.")
         return reasons
+
+    def _market_entry_reasons(self, signal: dict[str, Any], quote: dict[str, Any] | None) -> list[str]:
+        if not quote or self.market_max_chase_atr <= 0:
+            return []
+        try:
+            direction = str(signal.get("direction") or "").upper()
+            confirmation_price = float(signal.get("confirmation_price") or signal.get("entry") or 0.0)
+            atr = float(signal.get("atr") or 0.0)
+            stop = float(signal.get("stop_loss") or 0.0)
+            market_price = float(quote["ask"] if direction == "BUY" else quote["bid"])
+        except (KeyError, TypeError, ValueError):
+            return []
+        if direction not in {"BUY", "SELL"} or confirmation_price <= 0 or atr <= 0:
+            return []
+        if (direction == "BUY" and market_price <= stop) or (direction == "SELL" and market_price >= stop):
+            return ["The confirmed setup is already beyond its structural invalidation level."]
+        favorable_move = market_price - confirmation_price if direction == "BUY" else confirmation_price - market_price
+        if favorable_move > atr * self.market_max_chase_atr:
+            return [
+                f"Market moved {favorable_move / atr:.2f} ATR beyond the confirmed close; wait for the book-aligned pullback order instead."
+            ]
+        return []
 
     def _session_end(self, value: datetime) -> datetime:
         minutes = self._minutes_of_day(value)
@@ -897,6 +1095,15 @@ class TradeAutomation:
                 f"{status} {signal.get('symbol')} {signal.get('timeframe')} "
                 f"S{signal.get('setup_score')} lot={order.get('lot')}{trigger_text} ticket={broker_ticket}{spread_text} "
                 f"msg='{placement.get('message')}'"
+            )
+
+        for action in payload.get("target_refreshes", [])[: self.log_detail_limit]:
+            print(
+                "  retargeted "
+                f"{action.get('symbol')} {action.get('direction')} ticket={action.get('ticket')} "
+                f"profit={self._money(action.get('position_profit'))} "
+                f"tp={action.get('previous_take_profit')}->{action.get('new_take_profit')} "
+                f"status={action.get('status')} msg='{action.get('message')}'"
             )
 
         for ticket in payload.get("blocked", [])[: self.log_detail_limit]:
@@ -1536,6 +1743,7 @@ class TradeAutomation:
         blocked: list[dict[str, Any]] = []
         pending_prepared: list[dict[str, Any]] = []
         pending_placed: list[dict[str, Any]] = []
+        target_refreshes: list[dict[str, Any]] = []
         cycle_trade_commitments = 0
 
         for signal in scan["allowed"]:
@@ -1543,13 +1751,56 @@ class TradeAutomation:
             legacy_key = _legacy_signal_key(signal)
             open_positions_any = self.client.open_positions(signal["symbol"])
             open_positions_magic = self.client.open_positions(signal["symbol"], magic=MAGIC_NUMBER)
+            pending_orders_magic = self.client.pending_orders(signal["symbol"], magic=MAGIC_NUMBER)
+            same_direction_open_any = _same_direction_positions(open_positions_any, str(signal.get("direction") or ""))
+            same_direction_open_magic = _same_direction_positions(open_positions_magic, str(signal.get("direction") or ""))
+            same_direction_pending_magic = _same_direction_pending_orders(
+                pending_orders_magic,
+                str(signal.get("direction") or ""),
+            )
+            quote = self.client.current_quote(signal["symbol"])
             symbol_cooldown = active_symbol_cooldowns.get(signal["symbol"])
             block_reasons: list[str] = []
+
+            refresh_gate_reasons = [
+                *self._allowed_session_reasons(signal, now),
+                *self._strict_session_reasons(signal, now, pending=False),
+                *self._market_entry_reasons(signal, quote),
+            ]
+            exact_signal_consumed = key in self.trade_state.get("consumed_signals", {})
+            if (
+                same_direction_open_magic
+                and not refresh_gate_reasons
+                and not exact_signal_consumed
+                and not self._cooldown_active(key, now)
+            ):
+                target_refresh = self._refresh_profitable_position_target(
+                    signal,
+                    same_direction_open_magic,
+                    quote,
+                    now,
+                )
+                if target_refresh:
+                    target_refreshes.append(target_refresh)
+                    _log_automation_event(
+                        "profitable_position_target_refresh",
+                        now,
+                        signal,
+                        **{key: value for key, value in target_refresh.items() if key != "signal"},
+                    )
+                    if target_refresh["status"] in {
+                        "target_refreshed",
+                        "target_already_current",
+                        "target_already_reached",
+                    }:
+                        self._complete_target_refresh(signal, target_refresh, now)
+                        continue
 
             block_reasons.extend(self._allowed_session_reasons(signal, now))
             block_reasons.extend(self.account_circuit_breaker_reasons(daily_bot_stats, cycle_trade_commitments))
             block_reasons.extend(self.symbol_day_block_reasons(signal, daily_bot_stats))
             block_reasons.extend(self._strict_session_reasons(signal, now, pending=False))
+            block_reasons.extend(self._market_entry_reasons(signal, quote))
             if symbol_cooldown:
                 activity_label = symbol_cooldown.get("event_type") or symbol_cooldown.get("outcome") or "activity"
                 activity_time = symbol_cooldown.get("event_at") or symbol_cooldown.get("created_at")
@@ -1560,10 +1811,12 @@ class TradeAutomation:
                 block_reasons.append("This signal was already placed and saved in trade_state.json.")
             if self._cooldown_active(key, now) or self._cooldown_active(legacy_key, now):
                 block_reasons.append("Signal is still inside the cooldown window.")
-            if self.one_position_per_symbol and open_positions_any:
-                block_reasons.append("An open position already exists on this symbol.")
-            elif open_positions_magic:
-                block_reasons.append("An open LTA automation position already exists on this symbol.")
+            if self.one_position_per_symbol and same_direction_open_any:
+                block_reasons.append("An open position already exists on this symbol in the same direction.")
+            elif same_direction_open_magic:
+                block_reasons.append("An open LTA automation position already exists on this symbol in the same direction.")
+            if self.one_pending_per_symbol and same_direction_pending_magic:
+                block_reasons.append("An LTA pending order already exists on this symbol in the same direction.")
 
             if block_reasons:
                 blocked_ticket = {
@@ -1578,6 +1831,9 @@ class TradeAutomation:
                     "safety": {
                         "open_positions_same_symbol_any": len(open_positions_any),
                         "open_positions_same_symbol_magic": len(open_positions_magic),
+                        "open_positions_same_direction_any": len(same_direction_open_any),
+                        "open_positions_same_direction_magic": len(same_direction_open_magic),
+                        "pending_orders_same_direction_magic": len(same_direction_pending_magic),
                         "one_position_per_symbol": self.one_position_per_symbol,
                         "symbol_cooldown": symbol_cooldown,
                         "daily_bot_stats": daily_bot_stats,
@@ -1596,11 +1852,12 @@ class TradeAutomation:
                 continue
 
             will_send_to_mt5 = self.config.live_trading and self.auto_place_trades
-            signal = self.client.normalize_signal_for_execution(signal)
+            signal = self.client.normalize_signal_for_execution(signal, quote=quote)
             spread_check = self.client.spread_check(
                 signal,
                 max_spread_risk_percent=self.max_spread_risk_percent,
                 max_spread_points=self.max_spread_points,
+                quote=quote,
             )
             if not spread_check.get("ok"):
                 spread_reasons = spread_check.get("reasons") or [spread_check.get("message") or "Spread check failed."]
@@ -1789,8 +2046,54 @@ class TradeAutomation:
                 open_positions_any = self.client.open_positions(signal["symbol"])
                 open_positions_magic = self.client.open_positions(signal["symbol"], magic=MAGIC_NUMBER)
                 pending_orders_magic = self.client.pending_orders(signal["symbol"], magic=MAGIC_NUMBER)
+                same_direction_open_any = _same_direction_positions(
+                    open_positions_any,
+                    str(signal.get("direction") or ""),
+                )
+                same_direction_open_magic = _same_direction_positions(
+                    open_positions_magic,
+                    str(signal.get("direction") or ""),
+                )
+                same_direction_pending_magic = _same_direction_pending_orders(
+                    pending_orders_magic,
+                    str(signal.get("direction") or ""),
+                )
+                quote = self.client.current_quote(signal["symbol"])
                 symbol_cooldown = active_symbol_cooldowns.get(signal["symbol"])
                 block_reasons: list[str] = []
+
+                refresh_gate_reasons = [
+                    *self._allowed_session_reasons(signal, now),
+                    *self._strict_session_reasons(signal, now, pending=True),
+                ]
+                exact_signal_consumed = key in self.trade_state.get("consumed_signals", {})
+                if (
+                    same_direction_open_magic
+                    and not refresh_gate_reasons
+                    and not exact_signal_consumed
+                    and not self._cooldown_active(key, now)
+                ):
+                    target_refresh = self._refresh_profitable_position_target(
+                        signal,
+                        same_direction_open_magic,
+                        quote,
+                        now,
+                    )
+                    if target_refresh:
+                        target_refreshes.append(target_refresh)
+                        _log_automation_event(
+                            "profitable_position_target_refresh",
+                            now,
+                            signal,
+                            **{key: value for key, value in target_refresh.items() if key != "signal"},
+                        )
+                        if target_refresh["status"] in {
+                            "target_refreshed",
+                            "target_already_current",
+                            "target_already_reached",
+                        }:
+                            self._complete_target_refresh(signal, target_refresh, now)
+                            continue
 
                 block_reasons.extend(self._allowed_session_reasons(signal, now))
                 block_reasons.extend(self.account_circuit_breaker_reasons(daily_bot_stats, cycle_trade_commitments))
@@ -1806,12 +2109,12 @@ class TradeAutomation:
                     block_reasons.append("This pending signal was already placed and saved in trade_state.json.")
                 if self._cooldown_active(key, now) or self._cooldown_active(legacy_key, now):
                     block_reasons.append("Pending signal is still inside the cooldown window.")
-                if self.one_position_per_symbol and open_positions_any:
-                    block_reasons.append("An open position already exists on this symbol.")
-                elif open_positions_magic:
-                    block_reasons.append("An open LTA automation position already exists on this symbol.")
-                if self.one_pending_per_symbol and pending_orders_magic:
-                    block_reasons.append("An LTA pending order already exists on this symbol.")
+                if self.one_position_per_symbol and same_direction_open_any:
+                    block_reasons.append("An open position already exists on this symbol in the same direction.")
+                elif same_direction_open_magic:
+                    block_reasons.append("An open LTA automation position already exists on this symbol in the same direction.")
+                if self.one_pending_per_symbol and same_direction_pending_magic:
+                    block_reasons.append("An LTA pending order already exists on this symbol in the same direction.")
 
                 if block_reasons:
                     blocked_ticket = {
@@ -1827,6 +2130,9 @@ class TradeAutomation:
                             "open_positions_same_symbol_any": len(open_positions_any),
                             "open_positions_same_symbol_magic": len(open_positions_magic),
                             "pending_orders_same_symbol_magic": len(pending_orders_magic),
+                            "open_positions_same_direction_any": len(same_direction_open_any),
+                            "open_positions_same_direction_magic": len(same_direction_open_magic),
+                            "pending_orders_same_direction_magic": len(same_direction_pending_magic),
                             "one_position_per_symbol": self.one_position_per_symbol,
                             "one_pending_per_symbol": self.one_pending_per_symbol,
                             "symbol_cooldown": symbol_cooldown,
@@ -1846,11 +2152,12 @@ class TradeAutomation:
                     continue
 
                 will_send_pending_to_mt5 = self.config.live_trading and self.auto_place_trades and self.auto_preplace_orders
-                signal = self.client.normalize_signal_for_execution(signal)
+                signal = self.client.normalize_signal_for_execution(signal, quote=quote)
                 spread_check = self.client.spread_check(
                     signal,
                     max_spread_risk_percent=self.max_spread_risk_percent,
                     max_spread_points=self.max_spread_points,
+                    quote=quote,
                 )
                 if not spread_check.get("ok"):
                     spread_reasons = spread_check.get("reasons") or [spread_check.get("message") or "Spread check failed."]
@@ -2116,11 +2423,13 @@ class TradeAutomation:
             "placed_count": len(placed),
             "pending_prepared_count": len(pending_prepared),
             "pending_placed_count": len(pending_placed),
+            "target_refresh_count": len(target_refreshes),
             "blocked_count": len(blocked),
             "prepared": prepared,
             "placed": placed,
             "pending_prepared": pending_prepared,
             "pending_placed": pending_placed,
+            "target_refreshes": target_refreshes,
             "blocked": blocked,
             "scan": scan,
         }
@@ -2145,8 +2454,9 @@ class TradeAutomation:
             f"Pre-place pending orders: {self.auto_preplace_orders}; "
             f"min score: {self.preplace_min_score}; expiry: {self.preplace_expiry_minutes} minutes."
         )
-        print(f"One position per symbol: {self.one_position_per_symbol}")
-        print(f"One pending order per symbol: {self.one_pending_per_symbol}")
+        print(f"One position per symbol+direction: {self.one_position_per_symbol}")
+        print(f"One pending order per symbol+direction: {self.one_pending_per_symbol}")
+        print(f"Market anti-chase limit: {self.market_max_chase_atr:g} ATR beyond the confirmed close.")
         print(
             f"Daily process controls: max trades={self.config.max_trades_per_day}, "
             f"max loss streak={self.max_consecutive_losses}, "
@@ -2182,6 +2492,7 @@ class TradeAutomation:
             prepared = payload["prepared_count"]
             pending_prepared = payload["pending_prepared_count"]
             pending_placed = payload["pending_placed_count"]
+            target_refreshes = payload["target_refresh_count"]
             protected = payload["trade_protection"]["modified_count"]
             cooldowns = len(payload["active_symbol_cooldowns"])
             daily = payload.get("daily_bot_stats") or {}
@@ -2189,7 +2500,7 @@ class TradeAutomation:
                 f"[{payload['checked_at']}] A+={allowed} preplace={preplace} near={near} "
                 f"prepared={prepared} placed={payload['placed_count']} "
                 f"pending={pending_prepared}/{pending_placed} blocked={payload['blocked_count']} "
-                f"protected={protected} cooldowns={cooldowns} "
+                f"retargeted={target_refreshes} protected={protected} cooldowns={cooldowns} "
                 f"day_trades={daily.get('projected_placed_today', daily.get('placed_today', 0))}/{self.config.max_trades_per_day} "
                 f"loss_streak={daily.get('consecutive_losses', 0)}"
             )

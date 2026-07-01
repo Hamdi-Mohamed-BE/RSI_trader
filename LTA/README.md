@@ -73,16 +73,16 @@ Use `run_automation.bat` to scan MT5 continuously for A+ setups.
 
 Defaults:
 
-- Live automation lot sizing: `MAX_LOT_RISK_PCT=3.0`
-- Max spread: `MAX_SPREAD_RISK_PERCENT=15`, meaning spread must be 15% or less of the stop distance. `MAX_SPREAD_POINTS=0` disables the fixed-points cap.
-- Watchlist symbols: `AUTO_SYMBOLS=XAUUSD,XAGUSD,BTCUSD,US30`
-- Scan timeframes: `M15,M30,H1,H4,D1,W1`
+- Live automation lot sizing: `MAX_LOT_RISK_PCT=5.0`
+- Max spread: `MAX_SPREAD_RISK_PERCENT=10`, meaning spread must be 10% or less of the stop distance. `MAX_SPREAD_POINTS=0` disables the fixed-points cap.
+- Watchlist symbols: `AUTO_SYMBOLS=XAUUSD`
+- Scan timeframes: `M15,M30,H1`
 - Scan interval: `60` seconds
 - Console detail limit: `AUTO_LOG_DETAIL_LIMIT=8`
 - Minimum setup score: `90`
 - Pending pre-place setup score: `AUTO_PREPLACE_MIN_SCORE=85`
-- Pending order expiry: `AUTO_PREPLACE_EXPIRY_MINUTES=240`
-- Minimum R:R: `5.0`
+- Pending order expiry: `AUTO_PREPLACE_EXPIRY_MINUTES=180`
+- Gold target profile: `AUTO_SYMBOL_RR=XAUUSD:6`
 - Total daily bot trade cap: `MAX_TRADES_PER_DAY=3`, counted across all symbols and both market/pending placements.
 - Whole-bot loss streak stop: `AUTO_MAX_CONSECUTIVE_LOSSES=2`
 - Symbol daily lock: `AUTO_SYMBOL_MAX_LOSSES_PER_DAY=1` or `AUTO_SYMBOL_MAX_DAILY_LOSS_R=1.0`
@@ -104,7 +104,9 @@ Safety gates:
 - Edit `AUTO_SYMBOLS` to control the main LTA automation watchlist. With `CHALLENGE20_SYMBOLS=AUTO_SYMBOLS`, the 20 Pip Challenge follows the same list. `ORB_SYMBOLS` remains separate.
 - It sends live market orders only when both `LIVE_TRADING=true` and `AUTO_PLACE_TRADES=true` are set in `.env`.
 - It sends live pending orders only when `LIVE_TRADING=true`, `AUTO_PLACE_TRADES=true`, and `AUTO_PREPLACE_ORDERS=true` are all set in `.env`.
-- Pending orders are separate from confirmed A+ market entries. They are only created from `preplace` setups where a trigger price would complete an LTA Entry Model 3 internal break or a clean Entry Model 2 LTF swing retest.
+- Pending orders are separate from confirmed A+ market entries. The preferred pending entries are Entry Model 2 LTF Swing POC/VAH/VAL retests and fresh supply/demand base retests that produced a volume-backed structure break. Entry Model 3 break-stop orders remain available when no valid pullback level exists.
+- `AUTO_PREFER_RETEST_LIMITS=true` also prepares a pullback alternative beside a confirmed market setup. If the live quote has already moved more than `AUTO_MARKET_MAX_CHASE_ATR=0.35` beyond the confirmed close, the market order is blocked and the book-aligned pending limit can remain eligible.
+- Signal generation uses completed candles only. The current unfinished M15/M30/H1 candle cannot confirm an entry.
 - Every market signal must still be an A+ setup and include entry, stop loss, take profit, and risk-to-reward.
 - MT5 order comments include the setup grade, score, and timeframe, for example `LTA A+ S95 M15`.
 - The bot checks the live bid/ask spread before preparing an order and again just before sending to MT5. If the red/blue price spread is too large versus the stop distance, the trade is blocked and logged as `blocked_spread`.
@@ -114,10 +116,11 @@ Safety gates:
 - `AUTO_MAX_CONSECUTIVE_LOSSES=2` stops all new orders after two losing bot trades in a row.
 - A losing bot trade locks that symbol until the later of the current session end or the normal activity cooldown. With `AUTO_SYMBOL_MAX_LOSSES_PER_DAY=1`, that symbol is also blocked for the rest of the day after one failed A+ setup.
 - `AUTO_SYMBOL_MAX_DAILY_LOSS_R=1.0` blocks a symbol for the day if its closed bot trades reach -1R or worse.
-- During `AUTO_STRICT_SESSION_START` to `AUTO_STRICT_SESSION_END` in `MARKET_SESSION_TIMEZONE`, market entries need `AUTO_STRICT_SESSION_MIN_SCORE` and internal-structure confirmation. Pending orders need `AUTO_STRICT_SESSION_PREPLACE_MIN_SCORE` and must be break-stop orders.
+- During `AUTO_STRICT_SESSION_START` to `AUTO_STRICT_SESSION_END` in `MARKET_SESSION_TIMEZONE`, market entries need `AUTO_STRICT_SESSION_MIN_SCORE` and internal-structure confirmation. Book-aligned EM2/base retest limits are allowed when they meet `AUTO_STRICT_SESSION_PREPLACE_MIN_SCORE`; low-volume M15 retests still require a higher-timeframe confirmation.
 - When forex pairs are in the loop, `AUTO_FOREX_REQUIRE_HTF_AGREEMENT=true` requires H1/H4/D1 agreement before a forex signal can pass.
-- `AUTO_ONE_POSITION_PER_SYMBOL=true` blocks new entries when that symbol already has an open position.
-- `AUTO_ONE_PENDING_PER_SYMBOL=true` blocks a second LTA pending order on a symbol that already has one.
+- `AUTO_ONE_POSITION_PER_SYMBOL_DIRECTION=true` blocks a second position only when symbol and direction both match. A gold sell does not block a separately confirmed gold buy.
+- When a new same-direction setup appears and the existing LTA position is profitable, the bot updates that existing position to the new TP instead of opening a duplicate. Its volume and SL remain unchanged; flat or losing same-direction positions still block the new entry.
+- `AUTO_ONE_PENDING_PER_SYMBOL_DIRECTION=true` applies the same direction-aware rule to LTA pending orders.
 - `AUTO_PROTECT_OPEN_TRADES=true` checks open automation trades every scan. The default `AUTO_TP1_PARTIAL_CLOSE=false` keeps the full position open: TP1 moves SL to break-even, TP2 moves SL to TP1, TP3 moves SL to TP2, TP4 moves SL to TP3, and TP5 moves SL to TP4.
 - If the broker minimum lot does not allow a safe half-close, the bot records a skipped partial close and still trails the stop loss.
 - `AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES=60` cools a symbol until one hour after any MT5 position on that symbol was opened or closed. This includes manual trades and break-even closes. The old `AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES` name still works as a fallback.

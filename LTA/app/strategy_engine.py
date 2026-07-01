@@ -885,6 +885,9 @@ def _score_preentry_candidate(
     if mode == "structure_break":
         score += 12
         reasons.append("Pending stop is placed only at the internal break/reclaim trigger.")
+    elif mode == "supply_demand_retest":
+        score += 12
+        reasons.append("Pending limit retests the fresh base that produced a volume-backed structure break.")
     else:
         score += 8
         reasons.append("Pending limit is placed at the LTF swing profile retest area after the first reaction.")
@@ -1042,6 +1045,162 @@ def _structure_break_preentry(
     }
 
 
+def _supply_demand_retest_preentry(
+    df: pd.DataFrame,
+    level: dict[str, Any],
+    direction: str,
+    timeframe: str,
+    min_rr: float,
+) -> dict[str, Any] | None:
+    if len(df) < 50:
+        return None
+    current = df.iloc[-1]
+    close = float(current["close"])
+    atr = _atr(df)
+    if atr <= 0:
+        return None
+    level_price = float(level["price"])
+    tolerance = float(level.get("tolerance") or atr * 0.45)
+    search_start = max(10, len(df) - 20)
+
+    selected: dict[str, Any] | None = None
+    for expansion_index in range(len(df) - 1, search_start - 1, -1):
+        base_index = expansion_index - 1
+        initial_index = expansion_index - 2
+        if initial_index < 1:
+            continue
+        initial = df.iloc[initial_index]
+        base = df.iloc[base_index]
+        expansion = df.iloc[expansion_index]
+        prior = df.iloc[max(0, initial_index - 8) : initial_index + 1]
+        if prior.empty:
+            continue
+
+        base_low = float(base["low"])
+        base_high = float(base["high"])
+        base_range = base_high - base_low
+        body = abs(float(expansion["close"]) - float(expansion["open"]))
+        body_atr = body / atr
+        volume_history = df["volume"].iloc[max(0, expansion_index - 30) : expansion_index]
+        volume_baseline = float(volume_history.median()) if len(volume_history) else float(expansion["volume"])
+        volume_ratio = float(expansion["volume"]) / max(volume_baseline, 1.0)
+        level_was_mitigated = (
+            min(float(initial["low"]), base_low) - tolerance
+            <= level_price
+            <= max(float(initial["high"]), base_high) + tolerance
+        )
+        if not level_was_mitigated or base_range <= 0 or base_range > atr * 1.35:
+            continue
+
+        if direction == "BUY":
+            broke_structure = (
+                float(expansion["close"]) > float(prior["high"].max())
+                and float(expansion["high"]) > float(initial["high"])
+                and float(expansion["close"]) > float(expansion["open"])
+            )
+            trigger = base_high
+            stop = base_low - atr * 0.15
+            moved_away = close > trigger + atr * 0.12
+            retested = bool((df["low"].iloc[expansion_index + 1 :] <= trigger).any())
+            pending_order_type = "BUY_LIMIT"
+            invalidation = "Close below the fresh demand base that produced the bullish structure break."
+        else:
+            broke_structure = (
+                float(expansion["close"]) < float(prior["low"].min())
+                and float(expansion["low"]) < float(initial["low"])
+                and float(expansion["close"]) < float(expansion["open"])
+            )
+            trigger = base_low
+            stop = base_high + atr * 0.15
+            moved_away = close < trigger - atr * 0.12
+            retested = bool((df["high"].iloc[expansion_index + 1 :] >= trigger).any())
+            pending_order_type = "SELL_LIMIT"
+            invalidation = "Close above the fresh supply base that produced the bearish structure break."
+
+        strong_imbalance = body_atr >= 0.75 and (volume_ratio >= 1.15 or body_atr >= 1.20)
+        if not broke_structure or not strong_imbalance or not moved_away or retested:
+            continue
+        if abs(trigger - close) > atr * 3.5:
+            continue
+        selected = {
+            "expansion_index": expansion_index,
+            "base_index": base_index,
+            "initial_index": initial_index,
+            "trigger": trigger,
+            "stop": stop,
+            "pending_order_type": pending_order_type,
+            "invalidation": invalidation,
+            "body_atr": body_atr,
+            "volume_ratio": volume_ratio,
+            "base_low": base_low,
+            "base_high": base_high,
+        }
+        break
+
+    if selected is None:
+        return None
+    trigger = float(selected["trigger"])
+    stop = float(selected["stop"])
+    risk = abs(trigger - stop)
+    if risk <= 0:
+        return None
+    final_rr = max(min_rr, 5.0)
+    target = trigger + risk * final_rr if direction == "BUY" else trigger - risk * final_rr
+    score, reasons, metadata = _score_preentry_candidate(
+        df=df,
+        level=level,
+        direction=direction,
+        trigger_price=trigger,
+        stop_loss=stop,
+        risk_reward=final_rr,
+        min_rr=min_rr,
+        mode="supply_demand_retest",
+        timeframe=timeframe,
+    )
+    targets = _profit_targets(trigger, stop, direction, final_rr)
+    expansion_index = int(selected["expansion_index"])
+    base_index = int(selected["base_index"])
+    return {
+        "direction": direction,
+        "setup_score": int(score),
+        "setup_grade": "PRE-A+" if score >= 85 else "WATCH",
+        "profile_type": level["profile_type"],
+        "key_level": level["key_level"],
+        "entry_model": "Pending Supply/Demand Base Retest",
+        "execution_type": "PENDING",
+        "pending_order_type": selected["pending_order_type"],
+        "trigger_price": round(trigger, 5),
+        "entry": round(trigger, 5),
+        "stop_loss": round(stop, 5),
+        "take_profit": round(target, 5),
+        "tp1": round(targets["tp1"], 5),
+        "tp2": round(targets["tp2"], 5),
+        "tp3": round(targets["tp3"], 5),
+        "tp4": round(targets["tp4"], 5) if "tp4" in targets else None,
+        "tp5": round(targets["tp5"], 5) if "tp5" in targets else None,
+        "risk_reward": round(final_rr, 2),
+        "invalidation": selected["invalidation"],
+        "preplace_valid_if": "Price pulls back into the untested base that launched the structure-breaking expansion.",
+        "book_aligned_retest": True,
+        "supply_demand_zone": {
+            "kind": "demand" if direction == "BUY" else "supply",
+            "low": round(float(selected["base_low"]), 5),
+            "high": round(float(selected["base_high"]), 5),
+            "base_time": pd.Timestamp(df.iloc[base_index]["time"]).to_pydatetime(),
+            "expansion_time": pd.Timestamp(df.iloc[expansion_index]["time"]).to_pydatetime(),
+            "expansion_body_atr": round(float(selected["body_atr"]), 3),
+            "expansion_volume_ratio": round(float(selected["volume_ratio"]), 3),
+            "fresh": True,
+        },
+        "reasons": list(dict.fromkeys([
+            *reasons,
+            "The base is untested after expansion, matching the book's balance-to-imbalance retest model.",
+        ])),
+        "status": "preplace",
+        **metadata,
+    }
+
+
 def _profile_retest_preentry(
     df: pd.DataFrame,
     level: dict[str, Any],
@@ -1125,6 +1284,7 @@ def _profile_retest_preentry(
         "risk_reward": round(rr, 2),
         "invalidation": invalidation,
         "preplace_valid_if": valid_if,
+        "book_aligned_retest": True,
         "reasons": reasons,
         "status": "preplace",
         "internal_swing": {**internal_meta, **_profile_metadata(profile), "internal_swing_poc": profile.poc},
@@ -1296,6 +1456,8 @@ def generate_signal(
         "profile_kind": level.get("kind"),
         "key_level": level["key_level"],
         "entry_model": confirmation.get("model"),
+        "confirmation_price": round(entry, 5),
+        "atr": round(float(_atr(df)), 5),
         "entry": round(entry, 5),
         "stop_loss": round(stop, 5),
         "take_profit": round(target, 5),
@@ -1330,6 +1492,8 @@ def generate_preentry_candidate(
     timeframe: str,
     min_score: int = 85,
     min_rr: float = 5.0,
+    allow_after_confirmation: bool = False,
+    limit_only: bool = False,
 ) -> dict[str, Any] | None:
     df = _to_frame(candles)
     if len(df) < 80:
@@ -1344,12 +1508,13 @@ def generate_preentry_candidate(
         return None
 
     confirmation = detect_entry_confirmation(df, level, direction)
-    if confirmation.get("confirmed"):
+    if confirmation.get("confirmed") and not allow_after_confirmation:
         return None
 
     candidates = [
-        _structure_break_preentry(df, level, direction, timeframe, min_rr),
         _profile_retest_preentry(df, level, direction, timeframe, min_rr),
+        _supply_demand_retest_preentry(df, level, direction, timeframe, min_rr),
+        _structure_break_preentry(df, level, direction, timeframe, min_rr),
     ]
     valid = [
         candidate
@@ -1357,14 +1522,24 @@ def generate_preentry_candidate(
         if candidate
         and int(candidate.get("setup_score") or 0) >= min_score
         and float(candidate.get("risk_reward") or 0.0) >= min_rr
+        and (
+            not limit_only
+            or str(candidate.get("pending_order_type") or "").upper() in {"BUY_LIMIT", "SELL_LIMIT"}
+        )
     ]
     if not valid:
         return None
 
     valid.sort(
         key=lambda item: (
+            3
+            if "Entry Model 2" in str(item.get("entry_model") or "")
+            else 2
+            if bool(item.get("book_aligned_retest"))
+            else 1
+            if str(item.get("pending_order_type") or "").endswith("_LIMIT")
+            else 0,
             int(item.get("setup_score") or 0),
-            1 if str(item.get("pending_order_type") or "").endswith("_STOP") else 0,
         ),
         reverse=True,
     )
@@ -1372,4 +1547,9 @@ def generate_preentry_candidate(
     candidate["symbol"] = symbol
     candidate["timeframe"] = timeframe
     candidate["timestamp"] = pd.Timestamp(df.iloc[-1]["time"]).to_pydatetime()
+    if confirmation.get("confirmed"):
+        candidate["confirmed_market_alternative"] = True
+        reasons = list(candidate.get("reasons") or [])
+        reasons.append("A market confirmation exists; this pending limit is the non-chasing pullback alternative.")
+        candidate["reasons"] = list(dict.fromkeys(reasons))
     return candidate
