@@ -20,7 +20,7 @@ if not exist ".venv\Scripts\python.exe" (
 )
 
 echo Checking dependencies...
-".venv\Scripts\python.exe" -c "import fastapi, uvicorn, jinja2, pandas, numpy, MetaTrader5" >NUL 2>NUL
+".venv\Scripts\python.exe" -c "import fastapi, uvicorn, jinja2, pandas, numpy, matplotlib, MetaTrader5" >NUL 2>NUL
 if errorlevel 1 (
     echo Installing dependencies...
     ".venv\Scripts\python.exe" -m pip install -r requirements.txt
@@ -36,6 +36,7 @@ set "MODE=%~1"
 if /I "%MODE%"=="--enabled" goto :enabled_only
 
 echo Starting all bot windows...
+call :start_bot "Telegram Trade Signaler" "run_telegram_signaler.bat"
 call :start_bot "LTA A+ Bot" "run_lta_bot.bat"
 call :start_bot "ORB Bot" "run_orb_bot.bat"
 call :start_bot "20 Pip Challenge Bot" "run_20pip_bot.bat"
@@ -45,6 +46,7 @@ goto :done
 
 :enabled_only
 echo Starting active bot windows only...
+call :start_bot "Telegram Trade Signaler" "run_telegram_signaler.bat"
 call :start_bot "LTA A+ Bot" "run_lta_bot.bat"
 call :start_bot "ORB Bot" "run_orb_bot.bat"
 call :start_bot "20 Pip Challenge Bot" "run_20pip_bot.bat"

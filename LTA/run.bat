@@ -13,7 +13,7 @@ if not exist ".venv\Scripts\python.exe" (
 )
 
 echo Checking dependencies...
-".venv\Scripts\python.exe" -c "import fastapi, uvicorn, jinja2, pandas, numpy" >NUL 2>NUL
+".venv\Scripts\python.exe" -c "import fastapi, uvicorn, jinja2, pandas, numpy, matplotlib" >NUL 2>NUL
 if errorlevel 1 (
     echo Installing dependencies...
     ".venv\Scripts\python.exe" -m pip install -r requirements.txt

@@ -15,6 +15,7 @@ from .bpr_bot import BPR_MAGIC, HEARTBEAT_PATH as BPR_HEARTBEAT
 from .challenge_20pip import CHALLENGE_MAGIC, HEARTBEAT_PATH as CHALLENGE_HEARTBEAT
 from .config import PROJECT_ROOT, REPORTS_DIR, load_config
 from .orb_bot import HEARTBEAT_PATH as ORB_HEARTBEAT, ORB_MAGIC
+from .telegram_signaler import HEARTBEAT_PATH as TELEGRAM_SIGNALER_HEARTBEAT
 
 
 SNIPER_ROOT = PROJECT_ROOT.parent / "sniper entry"
@@ -44,6 +45,15 @@ def python_exe() -> str:
 def bot_definitions() -> dict[str, BotDefinition]:
     py = python_exe()
     definitions = {
+        "telegram": BotDefinition(
+            bot_id="telegram",
+            name="Telegram Trade Signaler",
+            group="service",
+            command=(py, "-m", "app.telegram_signaler"),
+            heartbeat=TELEGRAM_SIGNALER_HEARTBEAT,
+            magic=None,
+            description="Read-only MT5 watcher that posts chart signals and threaded trade updates.",
+        ),
         "lta": BotDefinition(
             bot_id="lta",
             name="LTA A+ Bot",

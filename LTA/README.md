@@ -67,6 +67,22 @@ Default risk settings live in `.env.example`. Copy it to `.env` if you want loca
 
 Set any of these caps to `0` to disable that specific limit: `MAX_RISK_PER_TRADE_PERCENT`, `MAX_DAILY_LOSS_PERCENT`, `MAX_TOTAL_DRAWDOWN_PERCENT`, or `MAX_TRADES_PER_DAY`.
 
+## Telegram Trade Signaler
+
+Use `run_telegram_signaler.bat` to run the read-only MT5 watcher, or use `run_all_bots.bat` to start it with the five active strategies. It appears in the web dashboard as **Telegram Trade Signaler** and can be started or stopped there too.
+
+Set these values in `.env`:
+
+```env
+TELEGRAM_SIGNALER_ENABLED=true
+TELEGRAM_BOT_TOKEN=your_botfather_token
+TELEGRAM_CHAT_ID=your_chat_or_channel_id
+```
+
+The watcher recognizes LTA, ORB, 20 Pip, BPR, and Sniper by their MT5 magic numbers. A pending order receives the original signal message; its fill, TP/SL changes, TP1-to-break-even protection, trailing-stop updates, cancellation, and final close reply to that original message. Direct market entries receive an original live-entry message. Initial signals include an MT5 candlestick chart with entry, SL, TP, and current-price levels when `TELEGRAM_SIGNALER_SEND_CHART=true`.
+
+Telegram state and message mappings are stored in `reports/telegram_signaler/state.json`, so reply threads survive restarts. The signaler never places, closes, or modifies an MT5 order. Use `stop_telegram_signaler.bat` to stop it.
+
 ## Automation Worker
 
 Use `run_automation.bat` to scan MT5 continuously for A+ setups.
