@@ -1,6 +1,6 @@
 # H4 Box Bot
 
-Python MT5 bot for XAUUSD, XAGUSD, BTCUSD, EURUSD, and USDJPY.
+Python MT5 bot for XAUUSD, XAGUSD, BTCUSD, EURUSD, USDJPY, US30, US100, and ETHUSD.
 
 Default mode is `dry_run`, so it scans and prints trade plans without placing real orders. Use `--live` only after the dry-run output matches what you expect.
 
@@ -30,6 +30,9 @@ Configured in `config.json`:
 - `BTCUSD`: `0.08` lot per leg
 - `EURUSD`: `0.01` lot per leg
 - `USDJPY`: `0.01` lot per leg
+- `US30`: `0.01` lot per leg
+- `US100`: `0.01` lot per leg
+- `ETHUSD`: `0.10` lot per leg (broker minimum)
 
 ## Run
 
