@@ -3,7 +3,7 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
@@ -33,7 +33,21 @@ class SettingsUpdate(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse(request=request, name="index.html", context={})
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={},
+        headers={
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+            "Expires": "0",
+        },
+    )
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon() -> Response:
+    return Response(status_code=204, headers={"Cache-Control": "public, max-age=86400"})
 
 
 @app.get("/api/status")

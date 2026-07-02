@@ -23,6 +23,8 @@ Double-click `run.bat`. On the first launch it prepares dependencies through `uv
 
 Run `update.bat` when dependencies need refreshing. The app runs directly from `src/`, so a stale or running `rsi-bot.exe` is not replaced during normal startup.
 
+The single web page is served with browser caching disabled and clears service workers left by the removed RSI dashboard. After upgrading from the old app, refresh the tab once with `Ctrl+F5`.
+
 ## Telegram Modes
 
 ### Bot API
