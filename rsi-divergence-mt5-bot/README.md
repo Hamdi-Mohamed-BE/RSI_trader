@@ -19,7 +19,9 @@ A focused Telegram-to-MT5 copy trader. The old RSI strategy, backtests, Docker s
 
 ## Start
 
-Double-click `run.bat`. It installs dependencies through `uv`, starts the API copier, and keeps its console visible.
+Double-click `run.bat`. On the first launch it prepares dependencies through `uv`, then starts the API copier and keeps its console visible. Later launches skip package installation, preventing Windows file-lock errors from older copier processes.
+
+Run `update.bat` when dependencies need refreshing. The app runs directly from `src/`, so a stale or running `rsi-bot.exe` is not replaced during normal startup.
 
 ## Telegram Modes
 

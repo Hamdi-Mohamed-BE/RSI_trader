@@ -2,9 +2,12 @@
 setlocal
 cd /d "%~dp0"
 title Telegram User API Login
-call uv sync
-if errorlevel 1 goto :failed
-call uv run python -m telegram_mt5_copier.login
+if not exist ".venv\Scripts\python.exe" (
+  call uv sync --no-install-project --inexact
+  if errorlevel 1 goto :failed
+)
+set "PYTHONPATH=%CD%\src;%PYTHONPATH%"
+call ".venv\Scripts\python.exe" -m telegram_mt5_copier.login
 pause
 exit /b %errorlevel%
 
