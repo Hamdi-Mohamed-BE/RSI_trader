@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Live Desk | NAW LTA{% endblock %}
+{% block content %}
+<section class="mb-5 flex flex-wrap items-end justify-between gap-4">
+  <div><p class="label">System overview</p><h1 class="mt-1 text-2xl font-semibold text-white">Live trading desk</h1><p class="mt-1 text-sm text-muted">CME volume profile, depth pressure, and active paper orders.</p></div>
+  <button id="scan-now" class="btn" type="button">Scan now</button>
+</section>
+
+<section id="metrics" class="panel mb-5 grid grid-cols-2 overflow-hidden lg:grid-cols-4">
+  <div class="metric"><p class="label">Symbols</p><p class="value" data-metric="symbols_watched">0</p></div>
+  <div class="metric"><p class="label">A+ now</p><p class="value text-signal" data-metric="a_plus_setups">0</p></div>
+  <div class="metric"><p class="label">Open orders</p><p class="value" data-metric="open_orders">0</p></div>
+  <div class="metric"><p class="label">Today P&amp;L</p><p class="value" data-metric="today_pnl">$0.00</p></div>
+</section>
+
+<div class="grid gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(340px,.65fr)]">
+  <section class="panel min-w-0">
+    <div class="panel-head flex-wrap gap-3"><div><p class="label">Market structure</p><h2 id="chart-title" class="mt-1 font-semibold text-white">Select a symbol</h2></div><div id="symbol-tabs" class="flex max-w-full gap-1 overflow-x-auto"></div></div>
+    <div class="relative h-[320px] min-h-[300px] w-full sm:h-[420px]"><canvas id="candle-chart" class="h-full w-full"></canvas><div id="chart-empty" class="absolute inset-0 grid place-items-center text-sm text-muted">Waiting for the first market scan</div><div id="chart-tooltip" class="chart-tooltip border border-line bg-ink-800 px-3 py-2 text-xs shadow-xl"></div></div>
+    <div id="chart-levels" class="grid grid-cols-3 border-t border-line text-center text-xs sm:grid-cols-6"></div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><div><p class="label">Current scan</p><h2 class="mt-1 font-semibold text-white">Decision detail</h2></div><span id="detail-score" class="badge">--</span></div>
+    <div id="scan-detail" class="space-y-4 p-4 text-sm text-muted"><p>No scan selected.</p></div>
+  </section>
+</div>
+
+<section class="panel mt-5">
+  <div class="panel-head"><div><p class="label">Execution ledger</p><h2 class="mt-1 font-semibold text-white">Recent orders</h2></div><span class="text-xs text-muted">Paper execution</span></div>
+  <div class="table-wrap"><table class="data-table"><thead><tr><th>Time</th><th>Symbol</th><th>Side</th><th>Type</th><th>Entry</th><th>Stop</th><th>Target</th><th>Score</th><th>Status</th><th>P&amp;L</th></tr></thead><tbody id="orders-body"><tr><td colspan="10" class="text-center">No orders yet.</td></tr></tbody></table></div>
+</section>
+{% endblock %}

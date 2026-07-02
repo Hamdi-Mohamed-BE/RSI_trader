@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Backtests | NAW LTA{% endblock %}
+{% block content %}
+<section class="mb-5"><p class="label">Research queue</p><h1 class="mt-1 text-2xl font-semibold text-white">Backtest laboratory</h1><p class="mt-1 text-sm text-muted">CME one-minute traded volume with spread and slippage included. Each symbol starts from the same balance.</p></section>
+<section class="panel mb-5 p-4">
+  <form id="backtest-form" class="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
+    <label><span class="label mb-2 block">Period</span><select name="period" class="field"><option value="1m">Last 30 days</option><option value="6m">Last 183 days</option></select></label>
+    <label><span class="label mb-2 block">Starting balance</span><input name="starting_balance" class="field" type="number" min="1" step="1" value="300"></label>
+    <label class="flex min-h-10 items-center gap-3 border border-line bg-ink-950 px-3" style="border-radius:4px"><input name="optimize" type="checkbox" class="accent-[#22d3a7]"><span class="text-sm text-slate-300">Optimize and save best per-symbol defaults</span></label>
+    <button class="btn btn-primary" type="submit">Queue backtest</button>
+  </form>
+  <div class="mt-4"><p class="label mb-2">Symbols</p><div id="backtest-symbols" class="flex flex-wrap gap-2"></div></div>
+</section>
+<div class="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
+  <section class="panel"><div class="panel-head"><h2 class="font-semibold text-white">Runs</h2><button id="refresh-runs" class="btn" type="button">Refresh</button></div><div id="runs-list" class="max-h-[680px] divide-y divide-line overflow-y-auto"><p class="p-4 text-sm text-muted">No backtests yet.</p></div></section>
+  <section class="panel min-w-0"><div class="panel-head"><div><p class="label">Results</p><h2 id="result-title" class="mt-1 font-semibold text-white">Select a run</h2></div></div><div id="result-content" class="p-4 text-sm text-muted">Per-symbol performance and monthly breakdown will appear here.</div></section>
+</div>
+{% endblock %}

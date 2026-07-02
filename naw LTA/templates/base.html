@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>{% block title %}NAW LTA{% endblock %}</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body data-page="{{ page }}">
+  <header class="sticky top-0 z-30 border-b border-line bg-ink-950/95 backdrop-blur">
+    <div class="mx-auto flex h-16 max-w-[1600px] items-center gap-6 px-4 lg:px-6">
+      <a href="/" class="flex shrink-0 items-center gap-3" aria-label="NAW LTA dashboard">
+        <span class="grid h-9 w-9 place-items-center border border-signal bg-[#0d211c] text-xs font-black text-signal" style="border-radius:5px">NL</span>
+        <span><strong class="block text-sm tracking-wide text-white">NAW LTA</strong><small class="block text-[10px] uppercase tracking-[.16em] text-muted">Order Flow Lab</small></span>
+      </a>
+      <nav class="hidden h-full items-center gap-6 md:flex" aria-label="Main navigation">
+        <a href="/" class="nav-link {% if page == 'dashboard' %}active{% endif %}">Live desk</a>
+        <a href="/scanner" class="nav-link {% if page == 'scanner' %}active{% endif %}">Scanner</a>
+        <a href="/backtests" class="nav-link {% if page == 'backtests' %}active{% endif %}">Backtests</a>
+        <a href="/config" class="nav-link {% if page == 'config' %}active{% endif %}">Configuration</a>
+      </nav>
+      <div class="ml-auto flex items-center gap-3">
+        <div id="worker-status" class="hidden items-center gap-2 text-xs text-muted sm:flex"><span class="dot"></span><span>Checking worker</span></div>
+        <button id="worker-toggle" class="btn" type="button">Start worker</button>
+      </div>
+    </div>
+    <nav class="flex h-11 items-center justify-around border-t border-line px-2 md:hidden" aria-label="Mobile navigation">
+      <a href="/" class="text-xs {% if page == 'dashboard' %}text-signal{% else %}text-muted{% endif %}">Live</a>
+      <a href="/scanner" class="text-xs {% if page == 'scanner' %}text-signal{% else %}text-muted{% endif %}">Scanner</a>
+      <a href="/backtests" class="text-xs {% if page == 'backtests' %}text-signal{% else %}text-muted{% endif %}">Tests</a>
+      <a href="/config" class="text-xs {% if page == 'config' %}text-signal{% else %}text-muted{% endif %}">Config</a>
+    </nav>
+  </header>
+  <main class="mx-auto max-w-[1600px] px-4 py-5 lg:px-6 lg:py-6">
+    {% block content %}{% endblock %}
+  </main>
+  <div id="toast" class="pointer-events-none fixed bottom-5 right-5 z-50 hidden max-w-sm border border-line bg-ink-800 px-4 py-3 text-sm shadow-2xl" style="border-radius:6px"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

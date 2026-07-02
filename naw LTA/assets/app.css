@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink-950: #080b10;
+  --color-ink-900: #0d1118;
+  --color-ink-850: #121822;
+  --color-ink-800: #18202c;
+  --color-line: #263241;
+  --color-muted: #8290a3;
+  --color-signal: #22d3a7;
+  --color-cyan: #38bdf8;
+  --color-loss: #fb7185;
+  --color-warning: #fbbf24;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { background: #080b10; color-scheme: dark; }
+  body { margin: 0; min-height: 100vh; background: #080b10; color: #e7edf5; }
+  button, input, select { font: inherit; }
+}
+
+@layer components {
+  .panel { @apply border border-line bg-ink-900; border-radius: 6px; }
+  .panel-head { @apply flex items-center justify-between border-b border-line px-4 py-3; }
+  .metric { @apply border-r border-line px-4 py-4 last:border-r-0; }
+  .label { @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-muted; }
+  .value { @apply mt-1 text-2xl font-semibold text-white; }
+  .btn { @apply inline-flex min-h-9 items-center justify-center gap-2 border border-line bg-ink-800 px-3 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:bg-[#1d2734] disabled:cursor-not-allowed disabled:opacity-50; border-radius: 5px; }
+  .btn-primary { @apply border-signal bg-signal text-[#041410] hover:bg-[#34e6b9]; }
+  .btn-danger { @apply border-loss bg-loss text-[#24060d] hover:bg-[#ff8fa0]; }
+  .field { @apply w-full border border-line bg-ink-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan; border-radius: 4px; }
+  .badge { @apply inline-flex items-center border border-line px-2 py-1 text-[11px] font-bold uppercase tracking-[0.08em]; border-radius: 999px; }
+  .dot { @apply h-2 w-2 rounded-full bg-muted; }
+  .table-wrap { @apply w-full overflow-x-auto; }
+  .data-table { @apply w-full min-w-[720px] border-collapse text-left text-sm; }
+  .data-table th { @apply border-b border-line px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted; }
+  .data-table td { @apply border-b border-line/70 px-4 py-3 text-slate-300; }
+  .nav-link { @apply border-b-2 border-transparent px-1 py-5 text-sm font-medium text-muted transition hover:text-white; }
+  .nav-link.active { @apply border-signal text-white; }
+}
+
+.chart-tooltip { position: absolute; pointer-events: none; z-index: 10; display: none; }
+.skeleton { animation: pulse 1.5s ease-in-out infinite; background: #18202c; }
+@keyframes pulse { 50% { opacity: .45; } }
+

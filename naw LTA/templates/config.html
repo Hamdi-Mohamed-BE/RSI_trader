@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Configuration | NAW LTA{% endblock %}
+{% block content %}
+<section class="mb-5 flex flex-wrap items-end justify-between gap-4"><div><p class="label">Single source of truth</p><h1 class="mt-1 text-2xl font-semibold text-white">Strategy configuration</h1><p class="mt-1 text-sm text-muted">These exact settings drive both live scans and backtests.</p></div><button id="save-config" class="btn btn-primary" type="button">Save settings</button></section>
+<div id="provider-notice" class="mb-5 hidden border border-warning/50 bg-[#211b0d] p-4 text-sm text-warning" style="border-radius:6px"></div>
+<form id="config-form" class="space-y-5">
+  <section class="panel"><div class="panel-head"><div><p class="label">Risk and execution</p><h2 class="mt-1 font-semibold text-white">Account controls</h2></div></div><div id="global-config" class="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4"></div></section>
+  <section class="panel"><div class="panel-head"><div><p class="label">Universe</p><h2 class="mt-1 font-semibold text-white">Per-symbol model</h2></div></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Enabled</th><th>Symbol</th><th>CME contract</th><th>RR</th><th>ATR stop</th><th>Min score</th><th>Spread bps</th><th>Slippage bps</th><th>Sessions</th></tr></thead><tbody id="symbol-config"></tbody></table></div></section>
+  <section class="panel"><div class="panel-head"><div><p class="label">Signal model</p><h2 class="mt-1 font-semibold text-white">Profile and order flow</h2></div></div><div id="signal-config" class="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4"></div></section>
+</form>
+{% endblock %}

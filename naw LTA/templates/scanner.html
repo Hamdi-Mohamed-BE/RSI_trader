@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Scanner | NAW LTA{% endblock %}
+{% block content %}
+<section class="mb-5"><p class="label">Live opportunity map</p><h1 class="mt-1 text-2xl font-semibold text-white">Market scanner</h1><p class="mt-1 text-sm text-muted">Only the six configured markets. Scores include profile location, rejection, volume, trend, and depth.</p></section>
+<section id="scanner-grid" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></section>
+<section class="panel mt-5"><div class="panel-head"><div><p class="label">Selected setup</p><h2 id="scanner-detail-title" class="mt-1 font-semibold text-white">No scan selected</h2></div></div><div id="scanner-detail" class="grid gap-5 p-4 md:grid-cols-3"><p class="text-sm text-muted">Run the worker to populate scans.</p></div></section>
+{% endblock %}

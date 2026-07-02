@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Telegram MT5 Copier</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080b10;--panel:#0e141d;--line:#263241;--muted:#8b98aa;--text:#eef3f8;--green:#25d3a7;--red:#fb7185;--blue:#38bdf8}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,Segoe UI,sans-serif}header{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:16px;padding:14px max(18px,calc((100vw - 1400px)/2));border-bottom:1px solid var(--line);background:#080b10f2}h1,h2,p{margin:0}.brand{font-size:16px}.sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}.status{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;background:var(--red)}.dot.on{background:var(--green)}button{border:1px solid var(--line);border-radius:5px;background:#18222e;color:var(--text);padding:9px 13px;font-weight:700;cursor:pointer}button.primary{background:var(--green);border-color:var(--green);color:#03150f}button.danger{background:var(--red);border-color:var(--red);color:#21050c}main{max-width:1400px;margin:auto;padding:22px 18px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:18px}.metric{padding:15px;border-right:1px solid var(--line);background:var(--panel)}.metric:last-child{border:0}.metric strong{display:block;font-size:24px;margin-top:4px}.label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.55fr);gap:18px}.panel{border:1px solid var(--line);border-radius:6px;background:var(--panel);overflow:hidden}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:16px}label span{display:block;margin-bottom:6px;color:var(--muted);font-size:12px}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:4px;background:#080d14;color:var(--text);padding:9px 10px;outline:none}textarea{min-height:76px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue)}.check{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);padding:10px;border-radius:4px}.check input{width:18px;height:18px}.wide{grid-column:1/-1}.actions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end}.notice{padding:12px 16px;color:var(--muted);border-top:1px solid var(--line)}.error{color:#fecdd3}.table-wrap{overflow:auto;max-height:665px}table{border-collapse:collapse;width:100%;min-width:750px}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{position:sticky;top:0;background:#111923;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 7px;font-size:10px;font-weight:800}.COPIED{color:var(--green)}.ERROR{color:var(--red)}.IGNORED{color:var(--muted)}code{font-family:Consolas,monospace;font-size:12px}@media(max-width:850px){.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border-right:0}.grid{grid-template-columns:1fr}form{grid-template-columns:1fr}.wide,.actions{grid-column:auto}.status span{display:none}}
+  </style>
+</head>
+<body>
+  <header><div><strong class="brand">Telegram MT5 Copier</strong><div class="sub">API only · no browser</div></div><div class="status"><i id="dot" class="dot"></i><span id="workerText">Checking</span></div><button id="toggle">Start</button></header>
+  <main>
+    <section class="metrics"><div class="metric"><span class="label">Received</span><strong id="received">0</strong></div><div class="metric"><span class="label">Copied</span><strong id="copied" style="color:var(--green)">0</strong></div><div class="metric"><span class="label">Ignored</span><strong id="ignored">0</strong></div><div class="metric"><span class="label">Last action</span><strong id="action" style="font-size:14px">--</strong></div></section>
+    <div class="grid">
+      <section class="panel"><div class="panel-head"><div><div class="label">Configuration</div><h2>Copier settings</h2></div><button id="test">Test Telegram</button></div>
+        <form id="settings">
+          <label><span>Telegram connection</span><select name="TELEGRAM_MODE"><option value="bot">Bot API</option><option value="user">User API (Telethon)</option></select></label>
+          <label><span>Polling seconds</span><input name="POLL_SECONDS" type="number" min="2"></label>
+          <label class="wide"><span>Source chats: IDs or @usernames, comma separated</span><textarea name="TELEGRAM_SOURCE_CHATS"></textarea></label>
+          <label><span>Bot token</span><input name="TELEGRAM_BOT_TOKEN" type="password" placeholder="Configured value is kept when blank"></label>
+          <label><span>Telegram API ID</span><input name="TELEGRAM_API_ID" type="number" placeholder="Required for user mode"></label>
+          <label><span>Telegram API hash</span><input name="TELEGRAM_API_HASH" type="password" placeholder="Required for user mode"></label>
+          <label><span>Telegram phone</span><input name="TELEGRAM_PHONE" placeholder="+country number"></label>
+          <label><span>Gemini API key</span><input name="GEMINI_API_KEY" type="password" placeholder="Configured value is kept when blank"></label>
+          <label><span>User session path</span><input name="TELEGRAM_SESSION_PATH"></label>
+          <label><span>Risk per trade (%)</span><input name="RISK_PERCENT" type="number" step="0.1" min="0.1"></label>
+          <label><span>Maximum message age (seconds)</span><input name="MAX_MESSAGE_AGE_SECONDS" type="number" min="30"></label>
+          <label><span>MT5 magic number</span><input name="MT5_MAGIC_NUMBER" type="number"></label>
+          <label><span>MT5 deviation points</span><input name="MT5_DEVIATION_POINTS" type="number"></label>
+          <label class="wide"><span>Symbol aliases (JSON)</span><textarea name="SYMBOL_ALIASES"></textarea></label>
+          <label class="check"><span>Start copier with app</span><input name="COPIER_ENABLED" type="checkbox"></label>
+          <label class="check"><span>Place live MT5 orders</span><input name="LIVE_TRADING" type="checkbox"></label>
+          <div class="actions"><button type="submit" class="primary">Save and restart</button></div>
+        </form><p id="configNote" class="notice">Bot API receives channel posts only when this bot is added to the source channel. Use User API for channels you can read personally.</p>
+      </section>
+      <section class="panel"><div class="panel-head"><div><div class="label">Runtime</div><h2>Recent messages</h2></div><button id="refresh">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Channel</th><th>Message</th><th>Status</th><th>Error</th></tr></thead><tbody id="messages"><tr><td colspan="5">No messages yet.</td></tr></tbody></table></div><p id="error" class="notice error"></p></section>
+    </div>
+  </main>
+  <script>
+    const $=s=>document.querySelector(s); let running=false;
+    const esc=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+    async function api(path,options={}){const r=await fetch(path,{headers:{"Content-Type":"application/json"},...options});const d=await r.json();if(!r.ok)throw new Error(d.detail||"Request failed");return d}
+    async function loadSettings(){const d=await api('/api/settings');for(const [k,v] of Object.entries(d)){const el=document.querySelector(`[name="${k}"]`);if(!el)continue;if(el.type==='checkbox')el.checked=Boolean(v);else if((k==='TELEGRAM_BOT_TOKEN'||k==='TELEGRAM_API_HASH'||k==='GEMINI_API_KEY')&&v==='configured')el.value='';else el.value=v??''}}
+    async function loadStatus(){const d=await api('/api/status');running=d.running;$('#dot').className=`dot ${running?'on':''}`;$('#workerText').textContent=running?`Running · ${d.mode}`:'Stopped';$('#toggle').textContent=running?'Stop':'Start';$('#toggle').className=running?'danger':'primary';$('#received').textContent=d.received;$('#copied').textContent=d.copied;$('#ignored').textContent=d.ignored;$('#action').textContent=d.last_action||'--';$('#error').textContent=d.last_error||''}
+    async function loadMessages(){const rows=await api('/api/messages');$('#messages').innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(new Date(x.date).toLocaleString())}</td><td>${esc(x.chat)}</td><td>${esc(x.text)}</td><td><span class="pill ${esc(x.status)}">${esc(x.status)}</span></td><td class="error">${esc(x.error||'')}</td></tr>`).join(''):'<tr><td colspan="5">No messages yet.</td></tr>'}
+    $('#settings').addEventListener('submit',async e=>{e.preventDefault();const values={};for(const el of e.currentTarget.elements){if(!el.name)continue;values[el.name]=el.type==='checkbox'?el.checked:el.value}try{await api('/api/settings',{method:'PUT',body:JSON.stringify({values})});await loadSettings();await loadStatus()}catch(err){$('#error').textContent=err.message}});
+    $('#toggle').addEventListener('click',async()=>{await api(running?'/api/stop':'/api/start',{method:'POST'});await loadStatus()});
+    $('#test').addEventListener('click',async()=>{try{const d=await api('/api/test-telegram',{method:'POST'});$('#configNote').textContent=d.ok?`Telegram connected: ${d.username||d.mode}`:'Telegram settings incomplete'}catch(err){$('#configNote').textContent=err.message}});
+    $('#refresh').addEventListener('click',loadMessages);
+    Promise.all([loadSettings(),loadStatus(),loadMessages()]);setInterval(()=>{loadStatus();loadMessages()},5000);
+  </script>
+</body>
+</html>

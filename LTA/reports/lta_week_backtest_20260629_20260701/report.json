@@ -1,0 +1,113 @@
+{
+  "created_at": "2026-07-01T22:22:55",
+  "window": "2026-06-29 through available 2026-07-01 MT5 candles",
+  "assumptions": {
+    "starting_balance": 300,
+    "risk_percent": 5,
+    "max_orders_per_day": 3,
+    "max_consecutive_losses_per_day": 2,
+    "spread_max_risk_percent": 10,
+    "signal_stride": 3,
+    "pending_expiry_minutes": 180,
+    "forex_htf_agreement": true,
+    "same_symbol_opposite_direction_allowed": true
+  },
+  "summary": {
+    "starting_balance": 300.0,
+    "ending_balance": 298.76,
+    "net_profit": -1.24,
+    "return_pct": -0.41,
+    "orders_accepted": 7,
+    "filled_trades": 5,
+    "unfilled_orders": 2,
+    "wins": 2,
+    "losses": 2,
+    "break_even_or_timeout": 1,
+    "win_rate": 40.0,
+    "net_r": -0.0336,
+    "max_drawdown_pct": 9.75,
+    "blocked_events": 28,
+    "daily_order_counts": {
+      "2026-06-29": 1,
+      "2026-06-30": 3,
+      "2026-07-01": 3
+    }
+  },
+  "symbol_breakdown": [
+    {
+      "symbol": "XAUUSD",
+      "candidates": 12,
+      "wins": 4,
+      "losses": 6,
+      "net_r": 8.6612,
+      "avg_r": 0.7218,
+      "market": 6,
+      "pending": 6
+    },
+    {
+      "symbol": "BTCUSD",
+      "candidates": 4,
+      "wins": 3,
+      "losses": 1,
+      "net_r": 2.0,
+      "avg_r": 0.5,
+      "market": 4,
+      "pending": 0
+    },
+    {
+      "symbol": "USDJPY",
+      "candidates": 3,
+      "wins": 3,
+      "losses": 0,
+      "net_r": 1.5891,
+      "avg_r": 0.5297,
+      "market": 2,
+      "pending": 1
+    },
+    {
+      "symbol": "ETHUSD",
+      "candidates": 2,
+      "wins": 1,
+      "losses": 1,
+      "net_r": 0.759,
+      "avg_r": 0.3795,
+      "market": 1,
+      "pending": 1
+    },
+    {
+      "symbol": "XAGUSD",
+      "candidates": 1,
+      "wins": 0,
+      "losses": 1,
+      "net_r": -1.0013,
+      "avg_r": -1.0013,
+      "market": 1,
+      "pending": 0
+    },
+    {
+      "symbol": "EURUSD",
+      "candidates": 1,
+      "wins": 0,
+      "losses": 1,
+      "net_r": -1.0288,
+      "avg_r": -1.0288,
+      "market": 1,
+      "pending": 0
+    },
+    {
+      "symbol": "USDCHF",
+      "candidates": 1,
+      "wins": 0,
+      "losses": 1,
+      "net_r": -1.0622,
+      "avg_r": -1.0622,
+      "market": 1,
+      "pending": 0
+    }
+  ],
+  "paths": {
+    "accepted": "reports\\lta_week_backtest_20260629_20260701\\accepted_orders_and_trades.csv",
+    "blocked": "reports\\lta_week_backtest_20260629_20260701\\blocked_events.csv",
+    "symbols": "reports\\lta_week_backtest_20260629_20260701\\symbol_breakdown.csv"
+  }
+}

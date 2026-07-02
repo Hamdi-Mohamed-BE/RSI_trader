@@ -1,55 +1,27 @@
 @echo off
 setlocal
-
 cd /d "%~dp0"
+title Telegram MT5 Copier
 
-echo.
-echo ==========================================
-echo  RSI Divergence MT5 Bot - Web Dashboard
-echo ==========================================
-echo.
-
-if not exist "config.yaml" (
-    echo ERROR: config.yaml was not found.
-    echo Run install.bat first.
-    pause
-    exit /b 1
-)
-
-set "UV_EXE="
-for /f "delims=" %%I in ('where uv 2^>nul') do if not defined UV_EXE set "UV_EXE=%%I"
-if not defined UV_EXE if exist "%USERPROFILE%\.local\bin\uv.exe" set "UV_EXE=%USERPROFILE%\.local\bin\uv.exe"
-
-if not defined UV_EXE (
-    echo ERROR: uv was not found.
-    echo Run install.bat first.
-    pause
-    exit /b 1
-)
-
-if not exist "runtime" (
-    mkdir "runtime"
-)
-
-echo Ensuring Playwright Chromium for Telegram Web (default browser)...
-"%UV_EXE%" run python -m playwright install chromium
+where uv >nul 2>nul
 if errorlevel 1 (
-    echo.
-    echo WARNING: Playwright Chromium install failed or timed out.
-    echo Telegram copy may fail until you run: uv run python -m playwright install chromium
-    echo.
+  echo uv is required: https://docs.astral.sh/uv/
+  pause
+  exit /b 1
 )
 
-echo Starting dashboard with config.yaml...
-echo Open this in the VPS browser:
-echo http://127.0.0.1:8787
-echo.
-echo Keep this window open while the bot is running.
-echo Press Ctrl+C to stop.
-echo.
-
-"%UV_EXE%" run rsi-bot web --config config.yaml
+if not exist ".env" copy /y ".env.example" ".env" >nul
+echo Syncing the focused copier environment...
+call uv sync
+if errorlevel 1 goto :failed
 
 echo.
-echo Dashboard stopped.
+echo Telegram MT5 Copier: http://127.0.0.1:8787
+echo Closing this window stops the copier.
+call uv run python -m telegram_mt5_copier.main
+exit /b %errorlevel%
+
+:failed
+echo Setup failed. Review the message above.
 pause
+exit /b 1
