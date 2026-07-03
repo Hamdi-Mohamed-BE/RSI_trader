@@ -638,36 +638,15 @@
         </div>
       </div>
 
-      <nav class="nav" aria-label="Dashboard navigation">
-        <span>Trackrecord</span>
-        <span class="active">Overview</span>
-        <span>Trades</span>
-        <span>Customize</span>
-        <span>Methodology</span>
-      </nav>
-
-      <div class="top-actions">
-        <div class="switcher">
-          <span class="chip">Spot</span>
-          <span class="chip active">CFDs</span>
-        </div>
-        <div class="range">
-          <span class="chip">All</span>
-          <span class="chip">1YR</span>
-          <span class="chip">6MN</span>
-          <span class="chip">3MN</span>
-          <span class="chip active">1MN</span>
-        </div>
-        <span class="icon-btn">SL</span>
-      </div>
+      <div class="status-pill">Original LTA strategy only</div>
     </div>
   </div>
 
   <main class="app">
     <section class="hero">
       <div>
-        <h1>Recommended Strategy Backtest</h1>
-        <div class="subtitle">Historical performance for the LTA A+ setup engine across {{ trade_symbols | join(", ") }}.</div>
+        <h1>LTA A+ Strategy Backtest</h1>
+        <div class="subtitle">Historical performance for the original LTA setup engine across {{ trade_symbols | join(", ") }}.</div>
       </div>
       <div class="hero-actions">
         {% if result and result.json_report %}
@@ -695,6 +674,10 @@
         <div class="status-pill">
           Live trading:
           <strong class="{{ 'off' if not live_trading else '' }}">{{ "enabled" if live_trading else "disabled" }}</strong>
+          &nbsp; / &nbsp; Sizing:
+          <strong>
+            {% if lot_sizing_mode == "STATIC_LOT" %}static {{ static_lot }} lots{% else %}{{ max_lot_risk_pct }}% risk{% endif %}
+          </strong>
           &nbsp; / &nbsp; MT5: <strong>{{ mt5_status.message }}</strong>
         </div>
       </div>

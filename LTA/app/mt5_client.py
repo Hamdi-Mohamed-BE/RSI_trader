@@ -637,6 +637,68 @@ class MT5Client:
             "lot_constraints": constraints,
         }
 
+    def static_lot_sizing(
+        self,
+        signal: dict[str, Any],
+        configured_lot: float,
+        quote: dict[str, float] | None = None,
+    ) -> dict[str, Any]:
+        raw_symbol = str(signal.get("symbol") or "")
+        direction = str(signal.get("direction") or "").upper()
+        resolved = self.resolve_symbol(raw_symbol) or raw_symbol
+        if configured_lot <= 0:
+            return {
+                "ok": False,
+                "mode": "static_lot",
+                "message": "STATIC_LOT must be greater than zero.",
+                "configured_lot": configured_lot,
+                "symbol": raw_symbol,
+                "broker_symbol": resolved,
+            }
+
+        lot = self.normalize_lot(raw_symbol, configured_lot)
+        constraints = self.lot_constraints(raw_symbol)
+        quote = quote or self.current_quote(raw_symbol)
+        entry_price = float(signal.get("entry") or 0.0)
+        entry_source = "signal_entry"
+        pending_entry = float(signal.get("trigger_price") or 0.0)
+        if str(signal.get("execution_type") or "").upper() == "PENDING" and pending_entry > 0:
+            entry_price = pending_entry
+            entry_source = "pending_trigger"
+        elif quote and direction in {"BUY", "SELL"}:
+            entry_price = float(quote["ask"] if direction == "BUY" else quote["bid"])
+            entry_source = "current_quote"
+
+        stop_loss = float(signal.get("stop_loss") or 0.0)
+        estimated: dict[str, Any] = {}
+        if direction in {"BUY", "SELL"} and entry_price > 0 and stop_loss > 0 and entry_price != stop_loss:
+            estimated = self.estimate_trade_risk(raw_symbol, direction, lot, entry_price, stop_loss)
+        account = self.account_info() or {}
+        balance = float(account.get("balance") or 0.0)
+        estimated_risk = float(estimated.get("risk") or 0.0)
+
+        return {
+            "ok": lot > 0,
+            "mode": "static_lot",
+            "message": "Static lot normalized to broker volume constraints.",
+            "configured_lot": configured_lot,
+            "lot": lot,
+            "symbol": raw_symbol,
+            "broker_symbol": resolved,
+            "direction": direction,
+            "entry_price": entry_price,
+            "entry_source": entry_source,
+            "stop_loss": stop_loss,
+            "quote": quote,
+            "balance": balance or None,
+            "estimated_risk": estimated_risk or None,
+            "actual_risk_percent": (
+                estimated_risk / balance * 100.0 if estimated_risk > 0 and balance > 0 else None
+            ),
+            "risk_method": estimated.get("method"),
+            "lot_constraints": constraints,
+        }
+
     def fetch_candles(
         self,
         symbol: str,

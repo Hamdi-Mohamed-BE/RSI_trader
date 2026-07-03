@@ -91,7 +91,7 @@ def scan_market(
     symbols: list[str] | tuple[str, ...] = TRADE_SYMBOLS,
     timeframes: list[str] | tuple[str, ...] = DEFAULT_SCAN_TIMEFRAMES,
     min_score: int = 90,
-    preplace_min_score: int = 85,
+    preplace_min_score: int = 92,
     min_rr: float = 5.0,
     max_stale: timedelta = timedelta(days=2),
 ) -> dict[str, Any]:

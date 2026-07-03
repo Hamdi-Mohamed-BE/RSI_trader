@@ -4,6 +4,7 @@ from types import SimpleNamespace
 import pandas as pd
 
 from app import strategy_engine
+from app.config import load_config
 from app.automation import (
     TradeAutomation,
     _oldest_profitable_position,
@@ -11,6 +12,7 @@ from app.automation import (
     _same_direction_positions,
 )
 from app.scanner import _closed_candles
+from app.mt5_client import MT5Client
 
 
 def _candles(count: int = 80) -> pd.DataFrame:
@@ -202,3 +204,105 @@ def test_supply_demand_candidate_uses_fresh_base_before_expansion() -> None:
     assert candidate["trigger_price"] == 100.2
     assert candidate["supply_demand_zone"]["kind"] == "demand"
     assert candidate["supply_demand_zone"]["fresh"] is True
+
+
+def test_lot_sizing_mode_loads_static_and_risk_percent(monkeypatch) -> None:
+    monkeypatch.setenv("LOT_SIZING_MODE", "STATIC_LOT")
+    monkeypatch.setenv("STATIC_LOT", "0.08")
+    static = load_config()
+    assert static.lot_sizing_mode == "STATIC_LOT"
+    assert static.static_lot == 0.08
+
+    monkeypatch.setenv("LOT_SIZING_MODE", "RISK_PERCENT")
+    risk = load_config()
+    assert risk.lot_sizing_mode == "RISK_PERCENT"
+
+
+def test_static_lot_is_normalized_and_reports_estimated_risk(monkeypatch) -> None:
+    client = MT5Client()
+    monkeypatch.setattr(client, "resolve_symbol", lambda symbol: f"{symbol}m")
+    monkeypatch.setattr(client, "normalize_lot", lambda _symbol, lot: round(lot, 2))
+    monkeypatch.setattr(
+        client,
+        "lot_constraints",
+        lambda _symbol: {"min": 0.01, "max": 100.0, "step": 0.01},
+    )
+    monkeypatch.setattr(client, "account_info", lambda: {"balance": 300.0})
+    monkeypatch.setattr(
+        client,
+        "estimate_trade_risk",
+        lambda *_args: {"ok": True, "risk": 15.0, "method": "test"},
+    )
+    signal = {
+        "symbol": "XAUUSD",
+        "direction": "BUY",
+        "entry": 3300.0,
+        "stop_loss": 3290.0,
+        "execution_type": "MARKET",
+    }
+
+    sizing = client.static_lot_sizing(
+        signal,
+        configured_lot=0.08,
+        quote={"bid": 3300.0, "ask": 3300.2},
+    )
+
+    assert sizing["ok"] is True
+    assert sizing["mode"] == "static_lot"
+    assert sizing["lot"] == 0.08
+    assert sizing["broker_symbol"] == "XAUUSDm"
+    assert sizing["estimated_risk"] == 15.0
+    assert sizing["actual_risk_percent"] == 5.0
+
+
+def test_automation_selects_the_configured_lot_sizing_path() -> None:
+    class FakeClient:
+        def __init__(self) -> None:
+            self.calls: list[tuple[str, float]] = []
+
+        def static_lot_sizing(self, _signal, lot, quote=None):
+            self.calls.append(("static", lot))
+            return {"ok": True, "lot": lot, "quote": quote}
+
+        def risk_based_lot(self, _signal, risk_percent, **_kwargs):
+            self.calls.append(("risk", risk_percent))
+            return {"ok": True, "lot": 0.03}
+
+    client = FakeClient()
+    bot = SimpleNamespace(
+        client=client,
+        lot_sizing_mode="STATIC_LOT",
+        static_lot=0.08,
+        max_lot_risk_pct=5.0,
+        config=SimpleNamespace(starting_balance=300.0),
+    )
+    signal = {"symbol": "XAUUSD", "direction": "BUY"}
+
+    static = TradeAutomation._size_lot(bot, signal, quote=None, require_account_balance=True)
+    bot.lot_sizing_mode = "RISK_PERCENT"
+    risk = TradeAutomation._size_lot(bot, signal, quote=None, require_account_balance=True)
+
+    assert static["lot"] == 0.08
+    assert risk["lot"] == 0.03
+    assert client.calls == [("static", 0.08), ("risk", 5.0)]
+
+
+def test_pending_orders_require_a_plus_grade_and_score_92() -> None:
+    bot = SimpleNamespace(preplace_min_score=92)
+
+    accepted = TradeAutomation._pending_quality_reasons(
+        bot,
+        {"setup_score": 92, "setup_grade": "PRE-A+"},
+    )
+    low_score = TradeAutomation._pending_quality_reasons(
+        bot,
+        {"setup_score": 91, "setup_grade": "PRE-A+"},
+    )
+    low_grade = TradeAutomation._pending_quality_reasons(
+        bot,
+        {"setup_score": 95, "setup_grade": "WATCH"},
+    )
+
+    assert accepted == []
+    assert "score >= 92" in low_score[0]
+    assert "A+ or PRE-A+" in low_grade[0]

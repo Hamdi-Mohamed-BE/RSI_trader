@@ -512,7 +512,7 @@ class TradeAutomation:
         self.auto_preplace_orders = _env_bool("AUTO_PREPLACE_ORDERS", False)
         self.best_setup_selector = _env_bool("AUTO_BEST_SETUP_SELECTOR", True)
         self.best_setup_candidate_limit = max(0, _env_int("AUTO_BEST_SETUP_CANDIDATE_LIMIT", 0))
-        self.preplace_min_score = max(1, min(100, _env_int("AUTO_PREPLACE_MIN_SCORE", 85)))
+        self.preplace_min_score = max(1, min(100, _env_int("AUTO_PREPLACE_MIN_SCORE", 92)))
         self.preplace_expiry_minutes = max(0, _env_int("AUTO_PREPLACE_EXPIRY_MINUTES", 240))
         self.one_pending_per_symbol = _env_bool(
             "AUTO_ONE_PENDING_PER_SYMBOL_DIRECTION",
@@ -545,13 +545,15 @@ class TradeAutomation:
         self.strict_session_min_score = max(1, min(100, _env_int("AUTO_STRICT_SESSION_MIN_SCORE", 95)))
         self.strict_session_preplace_min_score = max(
             1,
-            min(100, _env_int("AUTO_STRICT_SESSION_PREPLACE_MIN_SCORE", 90)),
+            min(100, _env_int("AUTO_STRICT_SESSION_PREPLACE_MIN_SCORE", 92)),
         )
         self.strict_session_require_internal_break = _env_bool("AUTO_STRICT_SESSION_REQUIRE_INTERNAL_BREAK", True)
         self.symbol_activity_cooldown_minutes = _env_int(
             "AUTO_SYMBOL_ACTIVITY_COOLDOWN_MINUTES",
             _env_int("AUTO_SYMBOL_RESULT_COOLDOWN_MINUTES", 60),
         )
+        self.lot_sizing_mode = self.config.lot_sizing_mode
+        self.static_lot = max(0.0, float(self.config.static_lot))
         self.max_lot_risk_pct = max(0.0, float(self.config.max_lot_risk_pct))
         self.max_spread_risk_percent = max(0.0, float(self.config.max_spread_risk_percent))
         self.max_spread_points = max(0.0, float(self.config.max_spread_points))
@@ -562,6 +564,22 @@ class TradeAutomation:
         self.trade_state = _read_trade_state()
         _migrate_placed_orders_to_state(self.trade_state)
         _write_trade_state(self.trade_state)
+
+    def _size_lot(
+        self,
+        signal: dict[str, Any],
+        quote: dict[str, float] | None,
+        require_account_balance: bool,
+    ) -> dict[str, Any]:
+        if self.lot_sizing_mode == "STATIC_LOT":
+            return self.client.static_lot_sizing(signal, self.static_lot, quote=quote)
+        return self.client.risk_based_lot(
+            signal,
+            risk_percent=self.max_lot_risk_pct,
+            fallback_balance=self.config.starting_balance,
+            require_account_balance=require_account_balance,
+            quote=quote,
+        )
 
     def _rr_for_symbol(self, symbol: str | None, default: float | None = None) -> float:
         base = str(symbol or "").upper()
@@ -862,6 +880,20 @@ class TradeAutomation:
             f"{os.getenv('AUTO_STRICT_SESSION_END', '13:00')} {self.session_timezone}"
         )
 
+    def _pending_quality_reasons(self, signal: dict[str, Any]) -> list[str]:
+        score = int(signal.get("setup_score") or 0)
+        grade = str(signal.get("setup_grade") or "").strip().upper()
+        reasons: list[str] = []
+        if score < self.preplace_min_score:
+            reasons.append(
+                f"Pending orders require an A+ score >= {self.preplace_min_score}; setup score is {score}."
+            )
+        if grade not in {"A+", "PRE-A+"}:
+            reasons.append(
+                f"Pending orders require an A+ or PRE-A+ grade; setup grade is {grade or 'missing'}."
+            )
+        return reasons
+
     def _strict_session_reasons(self, signal: dict[str, Any], now: datetime, pending: bool = False) -> list[str]:
         if not self._in_strict_session_window(signal, now):
             return []
@@ -1066,11 +1098,20 @@ class TradeAutomation:
                     f" spread={float(spread_check.get('spread_risk_percent') or 0.0):.1f}%"
                     f"/{float(spread_check.get('spread_points') or 0.0):.1f}pts"
                 )
+            if sizing.get("mode") == "static_lot":
+                sizing_text = f"static={float(sizing.get('configured_lot') or 0.0):g}"
+                if sizing.get("estimated_risk") is not None:
+                    sizing_text += f" risk={self._money(sizing.get('estimated_risk'))}"
+            else:
+                sizing_text = (
+                    f"risk={self._money(sizing.get('estimated_risk'))}/"
+                    f"{self._money(sizing.get('risk_budget'))}"
+                )
             print(
                 f"  {mode} "
                 f"{signal.get('symbol')} {signal.get('timeframe')} {signal.get('direction')} "
                 f"S{signal.get('setup_score')} lot={order.get('lot')}{trigger_text} "
-                f"risk={self._money(sizing.get('estimated_risk'))}/{self._money(sizing.get('risk_budget'))}"
+                f"{sizing_text}"
                 f"{spread_text} "
                 f"comment='{order.get('comment')}'"
             )
@@ -1703,6 +1744,8 @@ class TradeAutomation:
             auto_preplace_orders=self.auto_preplace_orders,
             preplace_min_score=self.preplace_min_score,
             preplace_expiry_minutes=self.preplace_expiry_minutes,
+            lot_sizing_mode=self.lot_sizing_mode,
+            static_lot=self.static_lot,
             max_lot_risk_pct=self.max_lot_risk_pct,
             max_spread_risk_percent=self.max_spread_risk_percent,
             max_spread_points=self.max_spread_points,
@@ -1897,10 +1940,8 @@ class TradeAutomation:
                 )
                 continue
 
-            lot_sizing = self.client.risk_based_lot(
+            lot_sizing = self._size_lot(
                 signal,
-                risk_percent=self.max_lot_risk_pct,
-                fallback_balance=self.config.starting_balance,
                 require_account_balance=will_send_to_mt5,
                 quote=spread_check.get("quote"),
             )
@@ -1913,12 +1954,14 @@ class TradeAutomation:
                     "setup_score": signal.get("setup_score"),
                     "setup_grade": signal.get("setup_grade"),
                     "signal": signal,
-                    "reasons": [str(lot_sizing.get("message") or "Risk-based lot sizing failed.")],
+                    "reasons": [str(lot_sizing.get("message") or "Lot sizing failed.")],
                     "lot_sizing": lot_sizing,
                     "safety": {
                         "live_trading": self.config.live_trading,
                         "auto_place_trades": self.auto_place_trades,
                         "will_send_to_mt5": will_send_to_mt5,
+                        "lot_sizing_mode": self.lot_sizing_mode,
+                        "static_lot": self.static_lot,
                         "max_lot_risk_pct": self.max_lot_risk_pct,
                         "open_positions_same_symbol_any": len(open_positions_any),
                         "open_positions_same_symbol_magic": len(open_positions_magic),
@@ -1968,6 +2011,8 @@ class TradeAutomation:
                     "open_positions_same_symbol_magic": len(open_positions_magic),
                     "one_position_per_symbol": self.one_position_per_symbol,
                     "will_send_to_mt5": will_send_to_mt5,
+                    "lot_sizing_mode": self.lot_sizing_mode,
+                    "static_lot": self.static_lot,
                     "max_lot_risk_pct": self.max_lot_risk_pct,
                     "max_spread_risk_percent": self.max_spread_risk_percent,
                     "max_spread_points": self.max_spread_points,
@@ -2063,6 +2108,7 @@ class TradeAutomation:
                 block_reasons: list[str] = []
 
                 refresh_gate_reasons = [
+                    *self._pending_quality_reasons(signal),
                     *self._allowed_session_reasons(signal, now),
                     *self._strict_session_reasons(signal, now, pending=True),
                 ]
@@ -2095,6 +2141,7 @@ class TradeAutomation:
                             self._complete_target_refresh(signal, target_refresh, now)
                             continue
 
+                block_reasons.extend(self._pending_quality_reasons(signal))
                 block_reasons.extend(self._allowed_session_reasons(signal, now))
                 block_reasons.extend(self.account_circuit_breaker_reasons(daily_bot_stats, cycle_trade_commitments))
                 block_reasons.extend(self.symbol_day_block_reasons(signal, daily_bot_stats))
@@ -2200,10 +2247,8 @@ class TradeAutomation:
                     )
                     continue
 
-                lot_sizing = self.client.risk_based_lot(
+                lot_sizing = self._size_lot(
                     signal,
-                    risk_percent=self.max_lot_risk_pct,
-                    fallback_balance=self.config.starting_balance,
                     require_account_balance=will_send_pending_to_mt5,
                     quote=spread_check.get("quote"),
                 )
@@ -2216,13 +2261,15 @@ class TradeAutomation:
                         "setup_score": signal.get("setup_score"),
                         "setup_grade": signal.get("setup_grade"),
                         "signal": signal,
-                        "reasons": [str(lot_sizing.get("message") or "Risk-based lot sizing failed.")],
+                        "reasons": [str(lot_sizing.get("message") or "Lot sizing failed.")],
                         "lot_sizing": lot_sizing,
                         "safety": {
                             "live_trading": self.config.live_trading,
                             "auto_place_trades": self.auto_place_trades,
                             "auto_preplace_orders": self.auto_preplace_orders,
                             "will_send_to_mt5": will_send_pending_to_mt5,
+                            "lot_sizing_mode": self.lot_sizing_mode,
+                            "static_lot": self.static_lot,
                             "max_lot_risk_pct": self.max_lot_risk_pct,
                             "open_positions_same_symbol_any": len(open_positions_any),
                             "open_positions_same_symbol_magic": len(open_positions_magic),
@@ -2279,6 +2326,8 @@ class TradeAutomation:
                         "one_position_per_symbol": self.one_position_per_symbol,
                         "one_pending_per_symbol": self.one_pending_per_symbol,
                         "will_send_to_mt5": will_send_pending_to_mt5,
+                        "lot_sizing_mode": self.lot_sizing_mode,
+                        "static_lot": self.static_lot,
                         "max_lot_risk_pct": self.max_lot_risk_pct,
                         "max_spread_risk_percent": self.max_spread_risk_percent,
                         "max_spread_points": self.max_spread_points,
@@ -2353,9 +2402,12 @@ class TradeAutomation:
             "watchlist_env": "AUTO_SYMBOLS",
             "timeframes": list(self.timeframes),
             "lot_sizing": {
-                "mode": "risk_percent_of_current_balance",
+                "mode": self.lot_sizing_mode.lower(),
+                "static_lot": self.static_lot,
                 "max_lot_risk_pct": self.max_lot_risk_pct,
-                "env": "MAX_LOT_RISK_PCT",
+                "mode_env": "LOT_SIZING_MODE",
+                "static_env": "STATIC_LOT",
+                "risk_env": "MAX_LOT_RISK_PCT",
             },
             "spread_guard": {
                 "mode": "ask_bid_spread_vs_stop_distance",
@@ -2440,7 +2492,10 @@ class TradeAutomation:
     def run_forever(self) -> None:
         print("LTA automation worker started.")
         print(f"Scanning {', '.join(self.watchlist_symbols)} on {', '.join(self.timeframes)} every {self.interval_seconds}s.")
-        print(f"Dynamic lot sizing: risk {self.max_lot_risk_pct:g}% of current account balance per trade.")
+        if self.lot_sizing_mode == "STATIC_LOT":
+            print(f"Lot sizing: static {self.static_lot:g} lots per trade (broker normalized).")
+        else:
+            print(f"Lot sizing: risk {self.max_lot_risk_pct:g}% of current account balance per trade.")
         print(
             f"Spread guard: max {self.max_spread_risk_percent:g}% of stop distance"
             + (f", max {self.max_spread_points:g} points." if self.max_spread_points > 0 else ".")

@@ -4,9 +4,6 @@ from datetime import date, datetime, timedelta
 import json
 from pathlib import Path
 
-import subprocess
-import sys
-
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
@@ -17,7 +14,6 @@ from .automation import LATEST_SCAN_PATH
 from .config import PROJECT_ROOT, REPORTS_DIR, load_config
 from .models import ALLOWED_SYMBOLS, ALLOWED_TIMEFRAMES, TRADE_SYMBOLS, BacktestRequest
 from .mt5_client import MT5Client
-from .system_dashboard import bot_statuses, dashboard_summary, start_bot, stop_bot
 
 
 app = FastAPI(
@@ -61,6 +57,9 @@ def _default_context(request: Request, **extra):
         },
         "trade_symbols": TRADE_SYMBOLS,
         "live_trading": config.live_trading,
+        "lot_sizing_mode": config.lot_sizing_mode,
+        "static_lot": config.static_lot,
+        "max_lot_risk_pct": config.max_lot_risk_pct,
         "mt5_status": MT5Client().terminal_status(),
     }
     context.update(extra)
@@ -85,11 +84,6 @@ def _symbol_lots_from_form(form) -> dict[str, float]:
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse(request, "dashboard.html", {"request": request})
-
-
-@app.get("/legacy", response_class=HTMLResponse)
-async def legacy_index(request: Request):
     return templates.TemplateResponse(request, "index.html", _default_context(request))
 
 
@@ -137,44 +131,6 @@ async def automation_latest():
     if not LATEST_SCAN_PATH.exists():
         return {"status": "empty", "message": "Automation has not produced a scan yet."}
     return JSONResponse(content=json.loads(LATEST_SCAN_PATH.read_text(encoding="utf-8")))
-
-
-@app.get("/api/dashboard/summary")
-async def api_dashboard_summary():
-    return JSONResponse(jsonable_encoder(dashboard_summary()))
-
-
-@app.get("/api/bots")
-async def api_bots():
-    return JSONResponse(jsonable_encoder({"bots": bot_statuses()}))
-
-
-@app.post("/api/bots/{bot_id}/start")
-async def api_start_bot(bot_id: str):
-    return JSONResponse(jsonable_encoder(start_bot(bot_id)))
-
-
-@app.post("/api/bots/{bot_id}/stop")
-async def api_stop_bot(bot_id: str):
-    return JSONResponse(jsonable_encoder(stop_bot(bot_id)))
-
-
-@app.post("/api/reports/precompute")
-async def api_precompute_reports():
-    py = PROJECT_ROOT / ".venv" / "Scripts" / "python.exe"
-    python = str(py) if py.exists() else sys.executable
-    command = [
-        python,
-        "scripts\\system_backtest.py",
-        "--days",
-        "365",
-        "--balance",
-        "300",
-        "--risk-pct",
-        "5",
-    ]
-    subprocess.Popen(command, cwd=str(PROJECT_ROOT), close_fds=True)
-    return {"ok": True, "message": "Last-year report precompute started. Refresh the dashboard in a few minutes."}
 
 
 @app.get("/reports/{filename}")

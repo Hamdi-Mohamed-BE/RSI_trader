@@ -62,6 +62,8 @@ class AppConfig:
     max_daily_loss_percent: float = 3.0
     max_total_drawdown_percent: float = 8.0
     max_trades_per_day: int = 3
+    lot_sizing_mode: str = "STATIC_LOT"
+    static_lot: float = 0.08
     max_lot_risk_pct: float = 3.0
     max_spread_risk_percent: float = 15.0
     max_spread_points: float = 0.0
@@ -72,6 +74,15 @@ class AppConfig:
 
 def load_config() -> AppConfig:
     _load_dotenv(PROJECT_ROOT / ".env")
+    raw_lot_mode = os.getenv("LOT_SIZING_MODE", "STATIC_LOT").strip().upper()
+    lot_sizing_mode = {
+        "STATIC": "STATIC_LOT",
+        "STATIC_LOT": "STATIC_LOT",
+        "LOT": "STATIC_LOT",
+        "RISK": "RISK_PERCENT",
+        "PERCENT": "RISK_PERCENT",
+        "RISK_PERCENT": "RISK_PERCENT",
+    }.get(raw_lot_mode, "STATIC_LOT")
     return AppConfig(
         live_trading=_bool_env("LIVE_TRADING", False),
         starting_balance=_float_env("START_BALANCE", 1000.0),
@@ -83,6 +94,8 @@ def load_config() -> AppConfig:
         max_daily_loss_percent=_float_env("MAX_DAILY_LOSS_PERCENT", 3.0),
         max_total_drawdown_percent=_float_env("MAX_TOTAL_DRAWDOWN_PERCENT", 8.0),
         max_trades_per_day=_int_env("MAX_TRADES_PER_DAY", 3),
+        lot_sizing_mode=lot_sizing_mode,
+        static_lot=max(0.0, _float_env("STATIC_LOT", 0.08)),
         max_lot_risk_pct=_float_env("MAX_LOT_RISK_PCT", _float_env("max_lot_risk_pct", 3.0)),
         max_spread_risk_percent=_float_env("MAX_SPREAD_RISK_PERCENT", 15.0),
         max_spread_points=_float_env("MAX_SPREAD_POINTS", 0.0),
