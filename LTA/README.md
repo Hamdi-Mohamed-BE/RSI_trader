@@ -34,7 +34,9 @@ AUTO_PLACE_TRADES=true
 AUTO_PREPLACE_ORDERS=true
 ```
 
-The current live `.env` uses static `0.08` lots. `.env.example` keeps live execution disabled.
+The current live `.env` uses static `0.01` lots and scans every five minutes. `.env.example` keeps live execution disabled and retains `0.08` as the default static-lot example.
+
+`python -m app.watch_cycle` performs one lock-protected cycle and prints a compact status for thread monitoring. Optional `WATCH_REFERENCE_LEVELS` values provide screenshot context only; they never bypass the live `92+` pending-order gate.
 
 ## Retained LTA Behavior
 
