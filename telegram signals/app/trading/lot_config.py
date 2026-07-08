@@ -42,6 +42,9 @@ BROKER_SUFFIXES = (
 
 def canonical_symbol(symbol: str | None) -> str:
     value = re.sub(r"[^A-Z0-9._-]", "", (symbol or "").upper().strip())
+    compact = value.replace(".", "").replace("-", "").replace("_", "")
+    if compact in CANONICAL_ALIASES:
+        return CANONICAL_ALIASES[compact]
     for suffix in BROKER_SUFFIXES:
         if value.endswith(suffix) and len(value) > len(suffix) + 2:
             value = value[: -len(suffix)]

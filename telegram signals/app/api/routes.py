@@ -20,6 +20,21 @@ router = APIRouter(prefix="/api")
 @router.post("/copier/start")
 async def start_copier(db: Session = Depends(get_db)):
     """Starts the copier polling process."""
+    permissions = mt5_client.get_trading_permissions()
+    if not permissions.get("ok"):
+        SettingsService.set(db, "copier_enabled", False)
+        SystemEventRepository.log(
+            db,
+            "error",
+            "mt5",
+            f"Copier start blocked: {permissions['message']}",
+            permissions,
+        )
+        return {
+            "status": "error",
+            "message": permissions["message"],
+            "trading_permissions": permissions,
+        }
     SettingsService.set(db, "copier_enabled", True)
     if not copier_service.is_running():
         copier_service.start()
@@ -45,7 +60,8 @@ async def get_status(db: Session = Depends(get_db)):
         "copier_enabled": copier_enabled,
         "copier_loop_running": copier_service.is_running(),
         "mt5_connected": mt5_connected,
-        "account_info": mt5_client.get_account_info() if mt5_connected else None
+        "account_info": mt5_client.get_account_info() if mt5_connected else None,
+        "trading_permissions": mt5_client.get_trading_permissions() if mt5_connected else None,
     }
 
 @router.get("/messages")

@@ -55,6 +55,49 @@ class MT5Client:
             return None
         return info._asdict()
 
+    def get_trading_permissions(self) -> Dict[str, Any]:
+        """Returns terminal/account trading permissions with a user-facing diagnosis."""
+        if not self.connect():
+            return {
+                "ok": False,
+                "message": "MetaTrader 5 is not connected.",
+                "terminal_connected": False,
+            }
+        terminal = mt5.terminal_info()
+        account = mt5.account_info()
+        terminal_connected = bool(terminal and terminal.connected)
+        terminal_trade_allowed = bool(terminal and terminal.trade_allowed)
+        trade_api_disabled = bool(terminal and terminal.tradeapi_disabled)
+        account_trade_allowed = bool(account and account.trade_allowed)
+        account_expert_allowed = bool(account and account.trade_expert)
+        ok = (
+            terminal_connected
+            and terminal_trade_allowed
+            and not trade_api_disabled
+            and account_trade_allowed
+            and account_expert_allowed
+        )
+        reasons = []
+        if not terminal_connected:
+            reasons.append("terminal is disconnected")
+        if not terminal_trade_allowed:
+            reasons.append("AutoTrading/Algo Trading is disabled in the MT5 terminal")
+        if trade_api_disabled:
+            reasons.append("Python trading API access is disabled")
+        if not account_trade_allowed:
+            reasons.append("the account does not allow trading")
+        if not account_expert_allowed:
+            reasons.append("expert trading is disabled for the account")
+        return {
+            "ok": ok,
+            "message": "Trading is enabled." if ok else "; ".join(reasons) + ".",
+            "terminal_connected": terminal_connected,
+            "terminal_trade_allowed": terminal_trade_allowed,
+            "trade_api_disabled": trade_api_disabled,
+            "account_trade_allowed": account_trade_allowed,
+            "account_expert_allowed": account_expert_allowed,
+        }
+
     def get_symbol_info(self, symbol: str) -> Optional[Dict[str, Any]]:
         """Retrieves specifications for a symbol."""
         if not self.connect():
@@ -115,7 +158,13 @@ class MT5Client:
         orders_logger.info(f"order_send result: {result_dict}")
         
         if result.retcode != mt5.TRADE_RETCODE_DONE:
-            return False, result_dict, f"Trade rejected: {result.comment} (code {result.retcode})"
+            if result.retcode == 10027:
+                error = "AutoTrading is disabled in the MT5 terminal. Enable Algo Trading, then reprocess the signal."
+            elif result.retcode == 10026:
+                error = "Automated trading is disabled by the broker/server."
+            else:
+                error = f"Trade rejected: {result.comment} (code {result.retcode})"
+            return False, result_dict, error
             
         return True, result_dict, None
 

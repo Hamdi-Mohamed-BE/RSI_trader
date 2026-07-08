@@ -11,7 +11,6 @@ SESSION_DIR.mkdir(parents=True, exist_ok=True)
 class TelegramClientWrapper:
     def __init__(self):
         self.client: TelegramClient | None = None
-        self.session_name = str(SESSION_DIR / "copier_bot_session")
         self._fingerprint: tuple | None = None
         
     async def get_client(

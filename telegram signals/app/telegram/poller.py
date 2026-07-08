@@ -16,7 +16,10 @@ from app.db.repositories import TelegramMessageRepository, SystemEventRepository
 def parse_chat_reference(chat_link: str):
     web_match = re.search(r"web\.telegram\.org/[^#]*#(-?\d+)", chat_link)
     if web_match:
-        return int(web_match.group(1))
+        raw_id = web_match.group(1)
+        if raw_id.startswith("-") and not raw_id.startswith("-100"):
+            return int(f"-100{raw_id[1:]}")
+        return int(raw_id)
     private_match = re.match(r"https?://t\.me/c/(\d+)", chat_link)
     if private_match:
         return int(f"-100{private_match.group(1)}")

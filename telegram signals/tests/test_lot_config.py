@@ -5,6 +5,7 @@ def test_canonical_symbol_handles_aliases_and_broker_suffixes():
     assert canonical_symbol("GOLD") == "XAUUSD"
     assert canonical_symbol("XAUUSDm") == "XAUUSD"
     assert canonical_symbol("BTCUSD.raw") == "BTCUSD"
+    assert canonical_symbol("USTEC") == "US100"
     assert canonical_symbol("USTECm") == "US100"
 
 

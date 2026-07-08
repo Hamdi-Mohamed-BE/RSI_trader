@@ -1,5 +1,5 @@
 import MetaTrader5 as mt5
-from typing import Optional, Dict, List, Tuple
+from typing import Optional, Dict, Tuple
 from app.trading.mt5_client import mt5_client
 from app.trading.lot_config import canonical_symbol
 from app.core.logging import logger
@@ -11,9 +11,6 @@ DEFAULT_ALIAS_MAP = {
     "US30": ["US30", "DJ30", "DJI", "US30.cash", "US30m", "US30-STD"],
     "NAS100": ["NAS100", "USTEC", "US100", "NAS100.cash", "NAS100m", "NAS100-STD"]
 }
-
-# Suffixes to trim for comparison
-SUFFIXES = ["M", "C", ".M", ".C", ".RAW", ".PRO", "-STD", "_STD", "-VIP", "_VIP"]
 
 class SymbolResolver:
     def __init__(self):
