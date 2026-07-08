@@ -51,7 +51,9 @@ class SettingsService:
             "break_even_offset_points",
             "allow_no_sl",
             "max_spread_points",
-            "max_trades_per_day"
+            "max_trades_per_day",
+            "stale_signal_max_age_minutes",
+            "stale_signal_max_entry_distance_points",
         ]
         
         result = {}

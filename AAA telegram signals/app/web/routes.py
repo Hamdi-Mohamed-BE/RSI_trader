@@ -178,6 +178,8 @@ async def save_settings_form(
     min_llm_confidence: float = Form(0.80),
     max_spread_points: str = Form(""),
     max_trades_per_day: int = Form(0),
+    stale_signal_max_age_minutes: int = Form(5),
+    stale_signal_max_entry_distance_points: int = Form(50),
     allow_reply_signals: bool = Form(False),
     allow_no_sl: bool = Form(False),
     move_to_break_even_enabled: bool = Form(False),
@@ -201,6 +203,8 @@ async def save_settings_form(
     SettingsService.set(db, "poll_interval_seconds", poll_interval_seconds)
     SettingsService.set(db, "min_llm_confidence", min_llm_confidence)
     SettingsService.set(db, "max_trades_per_day", max_trades_per_day)
+    SettingsService.set(db, "stale_signal_max_age_minutes", stale_signal_max_age_minutes)
+    SettingsService.set(db, "stale_signal_max_entry_distance_points", stale_signal_max_entry_distance_points)
     SettingsService.set(db, "allow_reply_signals", allow_reply_signals)
     SettingsService.set(db, "allow_no_sl", allow_no_sl)
     SettingsService.set(db, "move_to_break_even_enabled", move_to_break_even_enabled)

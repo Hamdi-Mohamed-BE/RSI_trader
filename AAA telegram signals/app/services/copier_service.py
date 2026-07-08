@@ -211,13 +211,23 @@ class CopierService:
             SystemEventRepository.log(session, "error", "mt5", error_msg)
             return
 
+        sym_info = mt5_client.get_symbol_info(broker_symbol)
+        stale_error = self._validate_stale_signal(session, msg, parsed, tick, sym_info)
+        if stale_error:
+            self._save_failed_attempt(session, msg.id, parsed, stale_error, "validation_failed", broker_symbol)
+            msg.ignored = True
+            msg.ignore_reason = stale_error
+            msg.processed = True
+            TelegramMessageRepository.save(session, msg)
+            SystemEventRepository.log(session, "warning", "copier", f"Skipped stale signal: {stale_error}")
+            return
+
         # Determine reference entry price
         ref_price = parsed.entry_price or (tick["ask"] if parsed.side == "buy" else tick["bid"])
         
         # Validate spread limit
         max_spread = SettingsService.get(session, "max_spread_points")
         if max_spread and max_spread > 0:
-            sym_info = mt5_client.get_symbol_info(broker_symbol)
             spread = tick["ask"] - tick["bid"]
             point = sym_info.get("point") if sym_info else 0.00001
             spread_points = int(round(spread / point)) if point > 0 else 0
@@ -443,6 +453,49 @@ class CopierService:
             error=error_msg
         )
         OrderAttemptRepository.save(session, attempt)
+
+    def _validate_stale_signal(self, session: Session, msg: TelegramMessage, parsed: Any, tick: dict, sym_info: Optional[dict]) -> Optional[str]:
+        max_age_minutes = int(SettingsService.get(session, "stale_signal_max_age_minutes") or 0)
+        if max_age_minutes <= 0:
+            return None
+
+        age_minutes = self._message_age_minutes(msg.message_date)
+        if age_minutes <= max_age_minutes:
+            return None
+
+        if not parsed.entry_price:
+            return (
+                f"Signal is {age_minutes:.1f} minutes old and has no explicit entry price; "
+                "skipping to avoid chasing an old NOW trade."
+            )
+
+        point = float((sym_info or {}).get("point") or 0.00001)
+        max_distance_points = int(SettingsService.get(session, "stale_signal_max_entry_distance_points") or 50)
+        configured_distance = max_distance_points * point
+        risk_distance = abs(float(parsed.entry_price) - float(parsed.stop_loss or parsed.entry_price))
+        allowed_distance = max(configured_distance, risk_distance * 0.15)
+        current_price = float(tick["ask"] if parsed.side == "buy" else tick["bid"])
+        distance = abs(current_price - float(parsed.entry_price))
+
+        if distance > allowed_distance:
+            distance_points = distance / point if point > 0 else distance
+            allowed_points = allowed_distance / point if point > 0 else allowed_distance
+            return (
+                f"Signal is {age_minutes:.1f} minutes old and current price {current_price:g} "
+                f"is {distance_points:.1f} points from entry {float(parsed.entry_price):g}; "
+                f"allowed {allowed_points:.1f} points."
+            )
+
+        return None
+
+    @staticmethod
+    def _message_age_minutes(message_date: datetime) -> float:
+        if message_date.tzinfo is not None:
+            now = datetime.now(message_date.tzinfo)
+        else:
+            now = datetime.utcnow()
+        age_seconds = max(0.0, (now - message_date).total_seconds())
+        return age_seconds / 60.0
 
 # Global orchestrator instance
 copier_service = CopierService()

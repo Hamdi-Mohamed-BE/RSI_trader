@@ -48,6 +48,8 @@ async def lifespan(app: FastAPI):
             SettingsService.set(session, "break_even_offset_points", settings.BREAK_EVEN_OFFSET_POINTS)
             SettingsService.set(session, "allow_no_sl", settings.ALLOW_NO_SL)
             SettingsService.set(session, "max_trades_per_day", settings.MAX_TRADES_PER_DAY)
+            SettingsService.set(session, "stale_signal_max_age_minutes", settings.STALE_SIGNAL_MAX_AGE_MINUTES)
+            SettingsService.set(session, "stale_signal_max_entry_distance_points", settings.STALE_SIGNAL_MAX_ENTRY_DISTANCE_POINTS)
             
             db_copier_enabled = settings.COPIER_ENABLED
             

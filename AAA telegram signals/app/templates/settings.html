@@ -137,6 +137,18 @@
             </div>
 
             <div class="form-group">
+                <label for="stale_signal_max_age_minutes">Stale Signal Age Limit (Minutes)</label>
+                <input type="number" id="stale_signal_max_age_minutes" name="stale_signal_max_age_minutes" class="form-input" value="{{ settings.stale_signal_max_age_minutes or 5 }}">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">If a signal is older than this, it must still be close to entry. 0 disables this check.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="stale_signal_max_entry_distance_points">Max Stale Distance From Entry (Points)</label>
+                <input type="number" id="stale_signal_max_entry_distance_points" name="stale_signal_max_entry_distance_points" class="form-input" value="{{ settings.stale_signal_max_entry_distance_points or 50 }}">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Older signals are ignored when current price moved farther than this from entry.</span>
+            </div>
+
+            <div class="form-group">
                 <label class="form-checkbox">
                     <input type="checkbox" name="allow_reply_signals" {% if settings.allow_reply_signals %}checked{% endif %}>
                     Allow copier to parse Reply messages
