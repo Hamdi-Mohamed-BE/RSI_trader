@@ -30,20 +30,32 @@ def _migrate_sqlite():
     """Small additive migrations for local SQLite databases."""
     if not settings.DATABASE_URL.startswith("sqlite"):
         return
-    columns = {
+    managed_trade_columns = {
         "take_profits_json": "TEXT DEFAULT '[]'",
         "tp2_partial_done": "BOOLEAN DEFAULT 0",
         "tp2_partial_done_at": "DATETIME",
         "tp2_partial_volume": "FLOAT",
+    }
+    order_attempt_columns = {
+        "signal_hash": "TEXT",
     }
     with engine.begin() as conn:
         existing = {
             row[1]
             for row in conn.execute(text("PRAGMA table_info(managed_trades)")).fetchall()
         }
-        for name, definition in columns.items():
+        for name, definition in managed_trade_columns.items():
             if name not in existing:
                 conn.execute(text(f"ALTER TABLE managed_trades ADD COLUMN {name} {definition}"))
+
+        existing = {
+            row[1]
+            for row in conn.execute(text("PRAGMA table_info(order_attempts)")).fetchall()
+        }
+        for name, definition in order_attempt_columns.items():
+            if name not in existing:
+                conn.execute(text(f"ALTER TABLE order_attempts ADD COLUMN {name} {definition}"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_order_attempts_signal_hash ON order_attempts (signal_hash)"))
 
 def get_db():
     """Dependency for database session context."""

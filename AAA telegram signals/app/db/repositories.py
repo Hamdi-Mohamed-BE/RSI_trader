@@ -94,6 +94,21 @@ class OrderAttemptRepository:
         )
         return len(session.exec(statement).all())
 
+    @staticmethod
+    def get_placed_by_signal_hash(session: Session, signal_hash: str) -> Optional[OrderAttempt]:
+        if not signal_hash:
+            return None
+        statement = (
+            select(OrderAttempt)
+            .where(
+                OrderAttempt.signal_hash == signal_hash,
+                OrderAttempt.status == "placed",
+            )
+            .order_by(desc(OrderAttempt.created_at))
+            .limit(1)
+        )
+        return session.exec(statement).first()
+
 
 class ManagedTradeRepository:
     @staticmethod

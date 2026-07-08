@@ -5,6 +5,7 @@ from sqlmodel import Session
 from typing import Any, Optional
 
 from app.core.logging import logger, orders_logger
+from app.core.signal_hash import signal_content_hash
 from app.telegram.poller import TelegramPoller
 from app.llm.parser import parse_signal
 from app.trading.mt5_client import mt5_client
@@ -93,6 +94,27 @@ class CopierService:
     async def _process_message(self, session: Session, msg: TelegramMessage):
         """Pipeline processing a single Telegram message into a trade order."""
         logger.info(f"Processing message {msg.message_id} from chat {msg.chat_id}")
+        signal_hash = signal_content_hash(msg.raw_text)
+
+        duplicate_attempt = OrderAttemptRepository.get_placed_by_signal_hash(session, signal_hash)
+        if duplicate_attempt:
+            reason = (
+                f"Duplicate signal content already placed as order attempt "
+                f"{duplicate_attempt.id} on {duplicate_attempt.broker_symbol or duplicate_attempt.symbol_raw}."
+            )
+            logger.warning(f"Skipping message {msg.message_id}: {reason}")
+            msg.ignored = True
+            msg.ignore_reason = reason
+            msg.processed = True
+            TelegramMessageRepository.save(session, msg)
+            SystemEventRepository.log(
+                session,
+                "warning",
+                "copier",
+                f"Skipped duplicate Telegram signal message {msg.message_id}.",
+                {"signal_hash": signal_hash, "existing_order_attempt_id": duplicate_attempt.id},
+            )
+            return
         
         # 1. Check max daily limit
         max_daily = int(SettingsService.get(session, "max_trades_per_day") or 0)
@@ -311,6 +333,7 @@ class CopierService:
         # Create tentative OrderAttempt record
         attempt = OrderAttempt(
             telegram_message_db_id=msg.id,
+            signal_hash=signal_hash,
             symbol_raw=symbol_raw,
             broker_symbol=broker_symbol,
             side=parsed.side,
@@ -399,8 +422,10 @@ class CopierService:
     def _save_failed_attempt(self, session: Session, message_db_id: int, parsed: Any, error_msg: str, status: str, broker_symbol: Optional[str] = None):
         """Helper to log validation/order failures."""
         import json
+        message = session.get(TelegramMessage, message_db_id)
         attempt = OrderAttempt(
             telegram_message_db_id=message_db_id,
+            signal_hash=signal_content_hash(message.raw_text if message else None),
             symbol_raw=parsed.symbol_raw or "UNKNOWN",
             broker_symbol=broker_symbol,
             side=parsed.side or "UNKNOWN",

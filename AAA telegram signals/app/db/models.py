@@ -61,6 +61,7 @@ class OrderAttempt(SQLModel, table=True):
     
     id: Optional[int] = Field(default=None, primary_key=True)
     telegram_message_db_id: int = Field(index=True)
+    signal_hash: Optional[str] = Field(default=None, index=True)
     symbol_raw: str
     broker_symbol: Optional[str] = Field(default=None)
     side: str
