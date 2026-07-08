@@ -59,17 +59,34 @@
                         </td>
                         <td style="white-space: nowrap;">
                             <div style="display: flex; gap: 0.5rem;">
-                                {% if item.parsed %}
-                                <button onclick="viewJsonModal('Parsed Signal #{{ item.msg.message_id }}', {{ item.parsed_json_str | safe }})" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
-                                    <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Inspect
-                                </button>
-                                {% endif %}
                                 <button onclick="reprocessMessage({{ item.msg.id }})" class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
                                     <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Reprocess
                                 </button>
                             </div>
                         </td>
                     </tr>
+                    {% if item.parsed %}
+                    <tr class="parsed-json-row">
+                        <td colspan="7">
+                            <div class="inline-json-panel">
+                                <div class="inline-json-heading">
+                                    <span>Parsed response</span>
+                                    <span class="inline-json-id">Message #{{ item.msg.message_id }}</span>
+                                </div>
+                                <pre class="inline-json-preview">{{ item.parsed_json_preview }}</pre>
+                                {% if item.parsed_json_has_more %}
+                                <details class="inline-json-details">
+                                    <summary>
+                                        <span class="json-more-label">See more</span>
+                                        <span class="json-less-label">Show less</span>
+                                    </summary>
+                                    <pre class="inline-json-full">{{ item.parsed_json_pretty }}</pre>
+                                </details>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
                     {% endfor %}
                 {% else %}
                     <tr>

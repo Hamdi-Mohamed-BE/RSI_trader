@@ -9,9 +9,10 @@ class TradeManager:
     @staticmethod
     def process_break_even(session: Session, dynamic_offset_points: int | None = None) -> int:
         """
-        Retrieves active trades from DB, polls MT5 positions, checks if TP1 has been reached,
-        and moves stop loss to entry price + offset if break-even is triggered.
-        Returns: number of trades successfully moved to break-even.
+        Protects active copier trades:
+        - TP1 reached: move SL to break-even.
+        - TP2 reached: close 50% once and leave the rest running to TP3/final TP.
+        Returns: number of successful trade-management actions.
         """
         active_db_trades = ManagedTradeRepository.get_active(session)
         if not active_db_trades:
@@ -35,73 +36,132 @@ class TradeManager:
                 ManagedTradeRepository.save(session, trade)
                 continue
                 
-            # If break-even is already done, skip
-            if trade.break_even_done:
-                continue
-
-            # Check if break-even is enabled and trigger TP exists
-            if not trade.break_even_enabled or not trade.break_even_trigger_tp:
-                continue
-
             pos = mt5_pos_map[ticket]
             current_price = pos["price_current"]
             entry_price = trade.entry_price
             side = trade.side.lower()
-            trigger_tp = trade.break_even_trigger_tp
-            
-            # Check if target TP1 trigger has been reached
-            trigger_reached = False
-            if side == "buy":
-                trigger_reached = current_price >= trigger_tp
-            elif side == "sell":
-                trigger_reached = current_price <= trigger_tp
 
-            if trigger_reached:
-                orders_logger.info(f"Trade {ticket} ({trade.symbol_raw}) hit TP1 trigger {trigger_tp}. Triggering break-even.")
-                
-                # Fetch symbol info to get point size
-                sym_info = mt5_client.get_symbol_info(trade.broker_symbol)
-                point = sym_info.get("point") if sym_info else 0.00001
-                
-                # Calculate new SL
-                offset_pts = dynamic_offset_points if dynamic_offset_points is not None else 0
-                offset_price = offset_pts * point
-                
-                if side == "buy":
-                    new_sl = entry_price + offset_price
-                else:
-                    new_sl = entry_price - offset_price
+            if (
+                not trade.break_even_done
+                and trade.break_even_enabled
+                and trade.break_even_trigger_tp
+                and TradeManager._price_reached(side, current_price, trade.break_even_trigger_tp)
+            ):
+                modified_count += TradeManager._move_to_break_even(
+                    session=session,
+                    trade=trade,
+                    pos=pos,
+                    dynamic_offset_points=dynamic_offset_points,
+                )
 
-                # Send modification request to MT5
-                # For safety, let's round the SL to symbol digits
-                digits = sym_info.get("digits") if sym_info else 5
-                new_sl = round(new_sl, digits)
-                
-                orders_logger.info(f"Moving SL for trade {ticket} from current {pos['sl']} to break-even {new_sl}")
-                
-                success, error = mt5_client.modify_position(ticket, stop_loss=new_sl, take_profit=trade.final_take_profit)
-                
-                if success:
-                    trade.stop_loss_current = new_sl
-                    trade.break_even_done = True
-                    trade.break_even_done_at = datetime.utcnow()
-                    trade.updated_at = datetime.utcnow()
-                    ManagedTradeRepository.save(session, trade)
-                    
-                    SystemEventRepository.log(
-                        session,
-                        level="success",
-                        source="trading",
-                        message=f"Moved trade {ticket} ({trade.symbol_raw}) to break-even at {new_sl}"
-                    )
-                    modified_count += 1
-                else:
-                    orders_logger.error(f"Failed to move trade {ticket} to break-even. Error: {error}")
-                    SystemEventRepository.log(
-                        session,
-                        level="error",
-                        source="trading",
-                        message=f"Failed to move trade {ticket} to break-even: {error}"
-                    )
+            take_profits = trade.take_profits
+            tp2 = take_profits[1] if len(take_profits) >= 3 else None
+            if (
+                tp2
+                and not trade.tp2_partial_done
+                and TradeManager._price_reached(side, current_price, tp2)
+            ):
+                modified_count += TradeManager._close_half_at_tp2(session, trade, pos, tp2)
                     
         return modified_count
+
+    @staticmethod
+    def _price_reached(side: str, current_price: float, target: float) -> bool:
+        if side == "buy":
+            return current_price >= target
+        if side == "sell":
+            return current_price <= target
+        return False
+
+    @staticmethod
+    def _move_to_break_even(
+        session: Session,
+        trade: ManagedTrade,
+        pos: dict,
+        dynamic_offset_points: int | None = None,
+    ) -> int:
+        ticket = trade.mt5_ticket
+        orders_logger.info(
+            f"Trade {ticket} ({trade.symbol_raw}) hit TP1 trigger {trade.break_even_trigger_tp}. Triggering break-even."
+        )
+
+        sym_info = mt5_client.get_symbol_info(trade.broker_symbol)
+        point = sym_info.get("point") if sym_info else 0.00001
+        digits = sym_info.get("digits") if sym_info else 5
+        offset_pts = dynamic_offset_points if dynamic_offset_points is not None else 0
+        offset_price = offset_pts * point
+
+        if trade.side.lower() == "buy":
+            new_sl = trade.entry_price + offset_price
+        else:
+            new_sl = trade.entry_price - offset_price
+        new_sl = round(new_sl, digits)
+
+        orders_logger.info(f"Moving SL for trade {ticket} from current {pos['sl']} to break-even {new_sl}")
+
+        success, error = mt5_client.modify_position(ticket, stop_loss=new_sl, take_profit=trade.final_take_profit)
+
+        if success:
+            trade.stop_loss_current = new_sl
+            trade.break_even_done = True
+            trade.break_even_done_at = datetime.utcnow()
+            trade.updated_at = datetime.utcnow()
+            ManagedTradeRepository.save(session, trade)
+
+            SystemEventRepository.log(
+                session,
+                level="success",
+                source="trading",
+                message=f"Moved trade {ticket} ({trade.symbol_raw}) to break-even at {new_sl}"
+            )
+            return 1
+
+        orders_logger.error(f"Failed to move trade {ticket} to break-even. Error: {error}")
+        SystemEventRepository.log(
+            session,
+            level="error",
+            source="trading",
+            message=f"Failed to move trade {ticket} to break-even: {error}"
+        )
+        return 0
+
+    @staticmethod
+    def _close_half_at_tp2(session: Session, trade: ManagedTrade, pos: dict, tp2: float) -> int:
+        ticket = trade.mt5_ticket
+        current_volume = float(pos.get("volume") or trade.lot)
+        half_volume = current_volume / 2
+
+        orders_logger.info(
+            f"Trade {ticket} ({trade.symbol_raw}) hit TP2 {tp2}. Closing 50% ({half_volume:g}) and leaving the rest to TP3/final TP."
+        )
+        success, result, error = mt5_client.close_partial_position(
+            ticket,
+            volume=half_volume,
+            comment=f"TG TP2 half {ticket}",
+        )
+
+        if success:
+            trade.tp2_partial_done = True
+            trade.tp2_partial_done_at = datetime.utcnow()
+            trade.tp2_partial_volume = half_volume
+            trade.updated_at = datetime.utcnow()
+            ManagedTradeRepository.save(session, trade)
+
+            SystemEventRepository.log(
+                session,
+                level="success",
+                source="trading",
+                message=f"Closed 50% of trade {ticket} ({trade.symbol_raw}) at TP2 {tp2}; remainder is running to TP3/final TP.",
+                details={"mt5_result": result},
+            )
+            return 1
+
+        orders_logger.error(f"Failed to close 50% of trade {ticket} at TP2. Error: {error}")
+        SystemEventRepository.log(
+            session,
+            level="error",
+            source="trading",
+            message=f"Failed TP2 partial close for trade {ticket}: {error}",
+            details={"mt5_result": result},
+        )
+        return 0

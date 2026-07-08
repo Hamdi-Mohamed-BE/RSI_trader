@@ -3,6 +3,15 @@ import MetaTrader5 as mt5
 from typing import Optional, Dict, Any, List, Tuple
 from app.core.logging import orders_logger, logger
 
+
+def _order_filling_from_symbol_info(info: Dict[str, Any]) -> int:
+    filling_mode = int(info.get("filling_mode") or info.get("type_filling") or 0)
+    if filling_mode & 1:
+        return mt5.ORDER_FILLING_FOK
+    if filling_mode & 2:
+        return mt5.ORDER_FILLING_IOC
+    return mt5.ORDER_FILLING_RETURN
+
 class MT5Client:
     def __init__(self):
         self._connected = False
@@ -157,7 +166,10 @@ class MT5Client:
         result_dict = result._asdict()
         orders_logger.info(f"order_send result: {result_dict}")
         
-        if result.retcode != mt5.TRADE_RETCODE_DONE:
+        success_codes = {mt5.TRADE_RETCODE_DONE}
+        if hasattr(mt5, "TRADE_RETCODE_DONE_PARTIAL"):
+            success_codes.add(mt5.TRADE_RETCODE_DONE_PARTIAL)
+        if result.retcode not in success_codes:
             if result.retcode == 10027:
                 error = "AutoTrading is disabled in the MT5 terminal. Enable Algo Trading, then reprocess the signal."
             elif result.retcode == 10026:
@@ -220,6 +232,56 @@ class MT5Client:
         
         success, result, error = self.send_order(request)
         return success, error
+
+    def close_partial_position(self, ticket: int, volume: float, comment: str = "TG TP2 partial") -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
+        """Closes part of an active position by sending the opposite deal against the ticket."""
+        if not self.connect():
+            return False, None, "MT5 terminal not connected"
+
+        positions = mt5.positions_get(ticket=ticket)
+        if not positions or len(positions) == 0:
+            return False, None, f"Position with ticket {ticket} not found"
+
+        position = positions[0]
+        info = mt5.symbol_info(position.symbol)
+        tick = mt5.symbol_info_tick(position.symbol)
+        if info is None or tick is None:
+            return False, None, f"Missing symbol info/tick for {position.symbol}"
+
+        info_dict = info._asdict()
+        digits = int(info_dict.get("digits") or 5)
+        volume_step = float(info_dict.get("volume_step") or 0.01)
+        volume_min = float(info_dict.get("volume_min") or volume_step)
+        position_volume = float(position.volume)
+        close_volume = min(float(volume), position_volume)
+
+        if close_volume < volume_min:
+            return False, None, f"Partial close volume {close_volume:g} is below broker minimum {volume_min:g}"
+
+        steps = int(close_volume / volume_step)
+        close_volume = round(steps * volume_step, 8)
+        if close_volume < volume_min:
+            return False, None, f"Normalized partial close volume is below broker minimum {volume_min:g}"
+
+        is_buy = position.type == mt5.POSITION_TYPE_BUY
+        close_type = mt5.ORDER_TYPE_SELL if is_buy else mt5.ORDER_TYPE_BUY
+        price = tick.bid if is_buy else tick.ask
+
+        request = {
+            "action": mt5.TRADE_ACTION_DEAL,
+            "position": ticket,
+            "symbol": position.symbol,
+            "volume": close_volume,
+            "type": close_type,
+            "price": round(float(price), digits),
+            "deviation": 20,
+            "magic": int(position.magic or 0),
+            "comment": comment[:31],
+            "type_time": mt5.ORDER_TIME_GTC,
+            "type_filling": _order_filling_from_symbol_info(info_dict),
+        }
+
+        return self.send_order(request)
 
 # Global MT5 client
 mt5_client = MT5Client()

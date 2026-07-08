@@ -422,6 +422,80 @@ pre.code-json {
   color: var(--accent-blue);
 }
 
+/* Inline parsed response: server-rendered so it works without modal JavaScript. */
+.parsed-json-row td {
+    padding: 0 1.5rem 1.25rem;
+    border-top: 0;
+}
+
+.inline-json-panel {
+    padding: 1rem 1.1rem;
+    border: 1px solid rgba(139, 92, 246, 0.24);
+    border-radius: 8px;
+    background: rgba(7, 5, 18, 0.72);
+}
+
+.inline-json-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+    color: var(--text-main);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.inline-json-id {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.inline-json-preview,
+.inline-json-full {
+    margin: 0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #c9d4ff;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.78rem;
+    line-height: 1.55;
+}
+
+.inline-json-details {
+    margin-top: 0.7rem;
+}
+
+.inline-json-details summary {
+    display: inline-flex;
+    cursor: pointer;
+    color: var(--accent-blue);
+    font-size: 0.8rem;
+    font-weight: 700;
+    user-select: none;
+}
+
+.inline-json-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.inline-json-details[open] .json-more-label,
+.json-less-label {
+    display: none;
+}
+
+.inline-json-details[open] .json-less-label {
+    display: inline;
+}
+
+.inline-json-full {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(139, 92, 246, 0.18);
+}
+
 /* Modal details overlay */
 .modal-overlay {
   position: fixed;

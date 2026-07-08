@@ -102,14 +102,25 @@ class ManagedTrade(SQLModel, table=True):
     entry_price: float
     stop_loss_original: float
     stop_loss_current: float
+    take_profits_json: str = Field(default="[]")
     final_take_profit: float
     break_even_trigger_tp: Optional[float] = Field(default=None)
     break_even_enabled: bool = Field(default=True)
     break_even_done: bool = Field(default=False)
     break_even_done_at: Optional[datetime] = Field(default=None)
+    tp2_partial_done: bool = Field(default=False)
+    tp2_partial_done_at: Optional[datetime] = Field(default=None)
+    tp2_partial_volume: Optional[float] = Field(default=None)
     status: str = Field(default="active")  # active, closed, unknown
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    @property
+    def take_profits(self) -> List[float]:
+        try:
+            return json.loads(self.take_profits_json)
+        except Exception:
+            return []
 
 
 class SystemEvent(SQLModel, table=True):

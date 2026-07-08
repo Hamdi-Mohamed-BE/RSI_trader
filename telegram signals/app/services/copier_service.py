@@ -375,10 +375,12 @@ class CopierService:
                 entry_price=send_result.get("price") or ref_price,
                 stop_loss_original=sl or 0.0,
                 stop_loss_current=sl or 0.0,
+                take_profits_json=json.dumps(parsed.take_profits),
                 final_take_profit=tp or 0.0,
                 break_even_trigger_tp=parsed.break_even_trigger_tp,
                 break_even_enabled=bool(SettingsService.get(session, "move_to_break_even_enabled")),
                 break_even_done=False,
+                tp2_partial_done=False,
                 status="active"
             )
             ManagedTradeRepository.save(session, mt)

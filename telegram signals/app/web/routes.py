@@ -100,19 +100,29 @@ async def view_messages(request: Request, db: Session = Depends(get_db)):
         parsed_stmt = select(LLMParseResult).where(LLMParseResult.telegram_message_db_id == msg.id)
         parsed_db = db.exec(parsed_stmt).first()
         
-        parsed_obj = None
-        parsed_json_str = "null"
+        parsed_json_pretty = ""
+        parsed_json_preview = ""
+        parsed_json_has_more = False
         if parsed_db:
             try:
                 parsed_obj = json.loads(parsed_db.normalized_json)
-                parsed_json_str = json.dumps(parsed_obj)
+                parsed_json_pretty = json.dumps(parsed_obj, indent=2, ensure_ascii=False)
             except Exception:
-                pass
+                parsed_json_pretty = parsed_db.normalized_json or parsed_db.raw_response_json or ""
+            preview_limit = 300
+            parsed_json_has_more = len(parsed_json_pretty) > preview_limit
+            parsed_json_preview = (
+                parsed_json_pretty[:preview_limit].rstrip() + "\n..."
+                if parsed_json_has_more
+                else parsed_json_pretty
+            )
                 
         messages_data.append({
             "msg": msg,
             "parsed": parsed_db,
-            "parsed_json_str": parsed_json_str
+            "parsed_json_pretty": parsed_json_pretty,
+            "parsed_json_preview": parsed_json_preview,
+            "parsed_json_has_more": parsed_json_has_more,
         })
 
     context = {

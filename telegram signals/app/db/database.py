@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from sqlmodel import SQLModel, create_engine, Session
+from sqlalchemy import text
 
 from app.core.config import settings
 
@@ -22,6 +23,27 @@ def init_db():
     # Import models here to ensure they are registered with SQLModel.metadata
     from app.db import models
     SQLModel.metadata.create_all(engine)
+    _migrate_sqlite()
+
+
+def _migrate_sqlite():
+    """Small additive migrations for local SQLite databases."""
+    if not settings.DATABASE_URL.startswith("sqlite"):
+        return
+    columns = {
+        "take_profits_json": "TEXT DEFAULT '[]'",
+        "tp2_partial_done": "BOOLEAN DEFAULT 0",
+        "tp2_partial_done_at": "DATETIME",
+        "tp2_partial_volume": "FLOAT",
+    }
+    with engine.begin() as conn:
+        existing = {
+            row[1]
+            for row in conn.execute(text("PRAGMA table_info(managed_trades)")).fetchall()
+        }
+        for name, definition in columns.items():
+            if name not in existing:
+                conn.execute(text(f"ALTER TABLE managed_trades ADD COLUMN {name} {definition}"))
 
 def get_db():
     """Dependency for database session context."""
