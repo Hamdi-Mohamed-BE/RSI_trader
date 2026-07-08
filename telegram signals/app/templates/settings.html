@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Settings | AI Signal Copier{% endblock %}
+{% block page_header %}System Settings{% endblock %}
+{% block page_sub %}Manage API credentials, risk strategies, and trade boundaries{% endblock %}
+
+{% block content %}
+<form action="/settings" method="post">
+    <div class="settings-grid">
+        <!-- Credentials Card -->
+        <div class="glass-panel settings-card">
+            <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.5rem; font-weight: 700;">
+                <i data-lucide="key" style="vertical-align: middle; margin-right: 0.5rem; color: var(--accent-purple);"></i>
+                API Credentials
+            </h3>
+
+            <div class="form-group">
+                <label for="telegram_mode">Telegram Login Mode</label>
+                <select id="telegram_mode" name="telegram_mode" class="form-input" style="background-color: #120e28;">
+                    <option value="bot" {% if settings.telegram_mode == 'bot' %}selected{% endif %}>Bot account</option>
+                    <option value="user" {% if settings.telegram_mode == 'user' %}selected{% endif %}>User account</option>
+                </select>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Use a bot only when it is a channel administrator. User mode can read channels your Telegram account has joined.</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="telegram_api_id">Telegram API ID</label>
+                <input type="number" id="telegram_api_id" name="telegram_api_id" class="form-input" value="{{ settings.telegram_api_id }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="telegram_api_hash">Telegram API Hash</label>
+                <input type="text" id="telegram_api_hash" name="telegram_api_hash" class="form-input" value="{{ settings.telegram_api_hash }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="telegram_bot_token">Telegram Bot Token</label>
+                <input type="password" id="telegram_bot_token" name="telegram_bot_token" class="form-input" value="{{ settings.telegram_bot_token }}">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Bot must be added as an administrator to your target channel to read messages.</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="telegram_chat_link">Telegram Chat Link / Chat ID</label>
+                <input type="text" id="telegram_chat_link" name="telegram_chat_link" class="form-input" value="{{ settings.telegram_chat_link }}" placeholder="e.g. -100123456789 or channel_username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="gemini_api_key">Gemini API Key</label>
+                <input type="password" id="gemini_api_key" name="gemini_api_key" class="form-input" value="{{ settings.gemini_api_key }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="gemini_model">Gemini Model</label>
+                <input type="text" id="gemini_model" name="gemini_model" class="form-input" value="{{ settings.gemini_model or 'gemini-2.5-flash' }}">
+            </div>
+        </div>
+        
+        <!-- Risk & Strategy Card -->
+        <div class="glass-panel settings-card">
+            <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.5rem; font-weight: 700;">
+                <i data-lucide="shield-alert" style="vertical-align: middle; margin-right: 0.5rem; color: var(--accent-pink);"></i>
+                Risk & Safety Settings
+            </h3>
+            
+            <div class="form-group">
+                <label for="risk_mode">Risk Mode</label>
+                <select id="risk_mode" name="risk_mode" class="form-input" style="background-color: #120e28;">
+                    <option value="fixed_lot" {% if settings.risk_mode == 'fixed_lot' %}selected{% endif %}>Fixed Lot</option>
+                    <option value="risk_percent" {% if settings.risk_mode == 'risk_percent' %}selected{% endif %}>Percentage Risk (% Balance/Equity)</option>
+                    <option value="risk_usd_cap" {% if settings.risk_mode == 'risk_usd_cap' %}selected{% endif %}>USD Cap per Trade</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="fixed_lot">Default Fixed Lot</label>
+                <input type="number" step="0.01" id="fixed_lot" name="fixed_lot" class="form-input" value="{{ settings.fixed_lot or 0.01 }}">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Used for every symbol without an override. Keep this conservative for forex.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="symbol_lots">Per-Symbol Lot Overrides</label>
+                <textarea id="symbol_lots" name="symbol_lots" class="form-input" rows="5" placeholder="XAUUSD=0.10&#10;BTCUSD=1.00">{{ settings.symbol_lots or '' }}</textarea>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">One SYMBOL=LOT per line. Telegram aliases and broker suffixes are matched automatically.</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="risk_percent">Risk Percentage (%)</label>
+                <input type="number" step="0.1" id="risk_percent" name="risk_percent" class="form-input" value="{{ settings.risk_percent or 1.0 }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="risk_usd_cap">USD Risk Cap ($)</label>
+                <input type="number" step="0.01" id="risk_usd_cap" name="risk_usd_cap" class="form-input" value="{{ settings.risk_usd_cap or 10.0 }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="use_equity_instead_of_balance" {% if settings.use_equity_instead_of_balance %}checked{% endif %}>
+                    Use Equity instead of Balance for risk calculations
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="allow_min_lot_if_risk_too_small" {% if settings.allow_min_lot_if_risk_too_small %}checked{% endif %}>
+                    Allow Broker Minimum Lot if calculated risk size is too small
+                </label>
+            </div>
+        </div>
+
+        <!-- Copier Settings Card -->
+        <div class="glass-panel settings-card">
+            <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.5rem; font-weight: 700;">
+                <i data-lucide="sliders" style="vertical-align: middle; margin-right: 0.5rem; color: var(--accent-blue);"></i>
+                Copier Parameters
+            </h3>
+            
+            <div class="form-group">
+                <label for="poll_interval_seconds">Telegram Poll Interval (Seconds)</label>
+                <input type="number" id="poll_interval_seconds" name="poll_interval_seconds" class="form-input" value="{{ settings.poll_interval_seconds or 10 }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="min_llm_confidence">Minimum LLM Confidence (0.00 to 1.00)</label>
+                <input type="number" step="0.05" id="min_llm_confidence" name="min_llm_confidence" class="form-input" value="{{ settings.min_llm_confidence or 0.80 }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="max_spread_points">Max Spread Limit (Points, optional)</label>
+                <input type="number" id="max_spread_points" name="max_spread_points" class="form-input" value="{{ settings.max_spread_points or '' }}" placeholder="Unlimited if empty">
+            </div>
+            
+            <div class="form-group">
+                <label for="max_trades_per_day">Max Placed Trades Per Day</label>
+                <input type="number" id="max_trades_per_day" name="max_trades_per_day" class="form-input" value="{{ settings.max_trades_per_day or 0 }}">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">0 means unlimited.</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="allow_reply_signals" {% if settings.allow_reply_signals %}checked{% endif %}>
+                    Allow copier to parse Reply messages
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="allow_no_sl" {% if settings.allow_no_sl %}checked{% endif %}>
+                    Allow trades with no Stop Loss (CRITICAL RISK!)
+                </label>
+            </div>
+        </div>
+
+        <!-- Management Strategies Card -->
+        <div class="glass-panel settings-card">
+            <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.5rem; font-weight: 700;">
+                <i data-lucide="layers" style="vertical-align: middle; margin-right: 0.5rem; color: var(--status-success);"></i>
+                Trade Management Strategies
+            </h3>
+            
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="move_to_break_even_enabled" {% if settings.move_to_break_even_enabled %}checked{% endif %}>
+                    Move SL to Break-Even when TP1 is touched
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label for="break_even_offset_points">Break-Even Points Offset (Positive = profit buffer)</label>
+                <input type="number" id="break_even_offset_points" name="break_even_offset_points" class="form-input" value="{{ settings.break_even_offset_points or 0 }}">
+            </div>
+            
+            <div style="margin-top: 3rem; display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem; width: 100%;">
+                    <i data-lucide="save"></i> Save Settings Configuration
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

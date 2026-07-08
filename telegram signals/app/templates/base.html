@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TG → MT5 Copier{% endblock %}</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i data-lucide="zap" style="color: var(--accent-pink);"></i>
+                <span>AI SIGNAL COPIER</span>
+            </div>
+            <ul class="nav-links">
+                <li class="{% if active_page == 'dashboard' %}active{% endif %}">
+                    <a href="/"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+                </li>
+                <li class="{% if active_page == 'messages' %}active{% endif %}">
+                    <a href="/messages"><i data-lucide="message-square"></i>Messages</a>
+                </li>
+                <li class="{% if active_page == 'trades' %}active{% endif %}">
+                    <a href="/trades"><i data-lucide="trending-up"></i>Copier Trades</a>
+                </li>
+                <li class="{% if active_page == 'settings' %}active{% endif %}">
+                    <a href="/settings"><i data-lucide="settings"></i>Settings</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <header class="header-bar">
+                <div class="page-title">
+                    <h1>{% block page_header %}Dashboard{% endblock %}</h1>
+                    <p>{% block page_sub %}Real-time Forex and CFD copy trading{% endblock %}</p>
+                </div>
+                
+                <!-- Quick Status -->
+                <div class="copier-status-toggle glass-panel">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Copier Status:</span>
+                    {% if copier_enabled %}
+                    <span id="copier-status-text" class="badge badge-success">Active</span>
+                    {% else %}
+                    <span id="copier-status-text" class="badge badge-danger">Stopped</span>
+                    {% endif %}
+                    <label class="switch">
+                        <input type="checkbox" id="copier-toggle" {% if copier_enabled %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </header>
+
+            <!-- Main block injection -->
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- Modal JSON Inspector container -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-container glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 1rem;">
+                <h3 id="modal-title" style="font-weight: 700;">Parsed Signal Details</h3>
+                <button onclick="closeModal()" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; border-radius: 8px;">
+                    <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                </button>
+            </div>
+            <pre id="modal-code-content" class="code-json"></pre>
+        </div>
+    </div>
+
+    <!-- App Script -->
+    <script src="/static/js/app.js"></script>
+    <script>
+        // Init Lucide icon elements
+        lucide.createIcons();
+    </script>
+</body>
+</html>

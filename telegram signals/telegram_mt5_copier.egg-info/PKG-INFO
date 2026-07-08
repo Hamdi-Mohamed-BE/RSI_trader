@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: telegram-mt5-copier
+Version: 0.1.0
+Summary: Telegram to MetaTrader 5 Signal Copier with FastAPI and Gemini AI
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.100.0
+Requires-Dist: uvicorn[standard]>=0.22.0
+Requires-Dist: jinja2>=3.1.2
+Requires-Dist: python-multipart>=0.0.6
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: pydantic-settings>=2.0.0
+Requires-Dist: sqlmodel>=0.0.18
+Requires-Dist: sqlalchemy>=2.0.0
+Requires-Dist: aiosqlite>=0.19.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: telethon>=1.30.0
+Requires-Dist: google-genai>=0.1.1
+Requires-Dist: MetaTrader5>=5.0.45
+Requires-Dist: tenacity>=8.2.2
+Requires-Dist: loguru>=0.7.0
+Requires-Dist: orjson>=3.9.0
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: pytest>=7.0.0
+
+# Telegram to MetaTrader 5 Signal Copier
+
+A local Windows/VPS automation service that polls a Telegram channel or chat every 10 seconds (using a Bot account), parses trading signals using a regex-based deterministic parser with Gemini AI validation, resolves symbol name variances across brokers, calculates lot sizes under customized risk configurations, and places orders directly on MetaTrader 5.
+
+## Features
+
+- **Double-Layer Parsing**: Combines a regex deterministic parser for standard layouts with a Gemini AI parser (`gemini-2.5-flash`) for advanced validation.
+- **Database Caching**: Caches Gemini responses in a local SQLite database to prevent redundant API calls.
+- **Auto Symbol Resolution**: Dynamically maps common forex and commodity codes (e.g. `USDCAD`, `GOLD`, `BTC`) to broker-specific symbols (e.g. `USDCADm`, `XAUUSD-STD`).
+- **Flexible Risk Models**: Places orders using Fixed Lot, Balance/Equity Risk Percentage, or hard USD Risk Caps.
+- **Break-Even Trade Manager**: Automatically moves open trade stop-losses to entry price once the first take-profit (TP1) is crossed.
+- **Sleek Web Interface**: Features a premium dark-mode glassmorphic dashboard built with FastAPI and Jinja2 templates.
+
+## Installation & Setup
+
+1. **Open MetaTrader 5**: Ensure your MT5 terminal is running on the same Windows system, logged into your broker account, and has **Algo Trading** enabled.
+2. **Execute Launcher**: Double click `run.bat`. It will create a virtual environment (`.venv`), install all packages listed in `pyproject.toml`, initialize the SQLite database, and launch the web server.
+3. **Open Browser**: Open [http://127.0.0.1:8787](http://127.0.0.1:8787) to access the dashboard.
+4. **Save Configuration**: Go to the **Settings** page, check that your credentials are set, and configure your risk preferences.
+5. **Start Copying**: Toggle the Copier Switch on the dashboard header to start processing!
+
+## Running Tests
+
+To run the automated test suite:
+- Double click `test.bat` (executes `pytest` on tests for parsing, symbol resolving, risk calculations, and trade requests builders).

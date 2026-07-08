@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Trades | AI Signal Copier{% endblock %}
+{% block page_header %}Trade History{% endblock %}
+{% block page_sub %}Displays all executed copier orders and managed stop-loss history{% endblock %}
+
+{% block content %}
+<div class="data-section">
+    <div class="section-header">
+        <h2>Order Attempts & Execution Logs</h2>
+    </div>
+    
+    <div class="glass-panel table-wrapper">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Symbol</th>
+                    <th>Side</th>
+                    <th>Type</th>
+                    <th>Lot</th>
+                    <th>SL / TP</th>
+                    <th>BE Trigger</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if attempts %}
+                    {% for attempt in attempts %}
+                    <tr>
+                        <td style="white-space: nowrap;">{{ attempt.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>
+                            <strong>{{ attempt.symbol_raw }}</strong>
+                            {% if attempt.broker_symbol and attempt.broker_symbol != attempt.symbol_raw %}
+                            <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Broker: {{ attempt.broker_symbol }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge {% if attempt.side.lower() == 'buy' %}badge-success{% else %}badge-danger{% endif %}">
+                                {{ attempt.side.upper() }}
+                            </span>
+                        </td>
+                        <td>{{ attempt.order_type.upper() }}{% if attempt.pending_type %} ({{ attempt.pending_type.upper() }}){% endif %}</td>
+                        <td>{{ attempt.lot }}</td>
+                        <td>
+                            <span style="color: var(--status-danger);">{{ attempt.stop_loss or "-" }}</span> / 
+                            <span style="color: var(--status-success);">{{ attempt.final_take_profit or "-" }}</span>
+                        </td>
+                        <td>{{ attempt.break_even_trigger_tp or "-" }}</td>
+                        <td>
+                            {% if attempt.status == 'placed' %}
+                            <span class="badge badge-success">Placed</span>
+                            {% elif attempt.status == 'validation_failed' or attempt.status == 'order_check_failed' or attempt.status == 'send_failed' %}
+                            <span class="badge badge-danger" title="{{ attempt.error }}">Failed</span>
+                            {% else %}
+                            <span class="badge badge-warning">{{ attempt.status.upper() }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                {% if attempt.mt5_result_json %}
+                                <button onclick="viewJsonModal('Execution Result #{{ attempt.id }}', {{ attempt.mt5_result_json | safe }})" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">
+                                    MT5
+                                </button>
+                                {% endif %}
+                                {% if attempt.error %}
+                                <button onclick="alert('Error details:\n{{ attempt.error }}')" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; color: var(--status-danger);">
+                                    Error
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                            No copier trade attempts recorded yet.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

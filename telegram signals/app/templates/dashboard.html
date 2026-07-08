@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | AI Signal Copier{% endblock %}
+{% block page_header %}Dashboard{% endblock %}
+{% block page_sub %}System summary and connection monitors{% endblock %}
+
+{% block content %}
+<!-- Stats Cards Grid -->
+<div class="stats-grid">
+    <div class="glass-panel stat-card success">
+        <div class="stat-label">MT5 Connection</div>
+        <div class="stat-value" style="display: flex; align-items: center; gap: 0.5rem; color: {% if mt5_connected %}var(--status-success){% else %}var(--status-danger){% endif %};">
+            <i data-lucide="{% if mt5_connected %}check-circle{% else %}alert-triangle{% endif %}"></i>
+            {% if mt5_connected %}Connected{% else %}Offline{% endif %}
+        </div>
+        <div class="stat-subtext">{% if mt5_connected %}Login: {{ account_login }} ({{ account_server }}){% else %}Please open MT5 on Windows{% endif %}</div>
+    </div>
+    
+    <div class="glass-panel stat-card blue">
+        <div class="stat-label">Account Balance</div>
+        <div class="stat-value">${{ "{:,.2f}".format(balance) if balance else "0.00" }}</div>
+        <div class="stat-subtext">Equity: ${{ "{:,.2f}".format(equity) if equity else "0.00" }}</div>
+    </div>
+    
+    <div class="glass-panel stat-card pink">
+        <div class="stat-label">Today's Trades</div>
+        <div class="stat-value">{{ daily_trades_count }}</div>
+        <div class="stat-subtext">Limit: {% if max_daily > 0 %}{{ max_daily }} trades/day{% else %}Unlimited{% endif %}</div>
+    </div>
+    
+    <div class="glass-panel stat-card">
+        <div class="stat-label">Total Messages</div>
+        <div class="stat-value">{{ total_messages_count }}</div>
+        <div class="stat-subtext">Last Polled: {{ last_polled_time or "Never" }}</div>
+    </div>
+</div>
+
+<!-- Active Positions opened by Copier -->
+<div class="data-section">
+    <div class="section-header">
+        <h2><i data-lucide="trending-up" style="vertical-align: middle; margin-right: 0.5rem;"></i>Active Positions</h2>
+        <a href="/trades" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">View All</a>
+    </div>
+    
+    <div class="glass-panel table-wrapper">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Ticket</th>
+                    <th>Symbol</th>
+                    <th>Side</th>
+                    <th>Volume</th>
+                    <th>Entry Price</th>
+                    <th>Current Price</th>
+                    <th>SL / TP</th>
+                    <th>Break-Even</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if active_trades %}
+                    {% for trade in active_trades %}
+                    <tr>
+                        <td><strong>#{{ trade.ticket }}</strong></td>
+                        <td>{{ trade.symbol }}</td>
+                        <td>
+                            <span class="badge {% if trade.side == 0 %}badge-success{% else %}badge-danger{% endif %}">
+                                {% if trade.side == 0 %}BUY{% else %}SELL{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ trade.volume }}</td>
+                        <td>{{ trade.price_open }}</td>
+                        <td>{{ trade.price_current }}</td>
+                        <td>
+                            <span style="color: var(--status-danger);">{{ trade.sl }}</span> / 
+                            <span style="color: var(--status-success);">{{ trade.tp }}</span>
+                        </td>
+                        <td>
+                            {% if trade.be_done %}
+                            <span class="badge badge-success">Done</span>
+                            {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not trade.be_done %}
+                            <button onclick="moveBreakEven({{ trade.db_id }})" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">
+                                Force BE
+                            </button>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            No active copier positions in MT5.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Recent Messages & System Logs row -->
+<div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; margin-top: 2rem;">
+    <!-- Recent Messages -->
+    <div class="data-section">
+        <div class="section-header">
+            <h2>Recent Telegram Messages</h2>
+            <a href="/messages" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">All Messages</a>
+        </div>
+        
+        <div class="glass-panel table-wrapper">
+            <table class="custom-table" style="font-size: 0.85rem;">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Msg ID</th>
+                        <th>Text Preview</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if recent_messages %}
+                        {% for msg in recent_messages %}
+                        <tr>
+                            <td>{{ msg.message_date.strftime('%H:%M:%S') }}</td>
+                            <td>{{ msg.message_id }}</td>
+                            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ msg.raw_text }}
+                            </td>
+                            <td>
+                                {% if msg.ignored %}
+                                <span class="badge badge-danger">Ignored</span>
+                                {% elif msg.processed %}
+                                <span class="badge badge-success">Processed</span>
+                                {% else %}
+                                <span class="badge badge-warning">Queued</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                                No Telegram messages polled yet.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- System Events log -->
+    <div class="data-section">
+        <div class="section-header">
+            <h2>System Events</h2>
+        </div>
+        
+        <div class="glass-panel" style="padding: 1rem; max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.85rem;">
+            {% if system_events %}
+                {% for event in system_events %}
+                <div style="display: flex; gap: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.02); padding-bottom: 0.5rem;">
+                    <div style="font-weight: 700; color: {% if event.level == 'success' %}var(--status-success){% elif event.level == 'error' %}var(--status-danger){% elif event.level == 'warning' %}var(--status-warning){% else %}var(--accent-blue){% endif %};">
+                        [{{ event.level.upper() }}]
+                    </div>
+                    <div style="flex: 1;">
+                        {{ event.message }}
+                        <span style="display: block; font-size: 0.75rem; color: var(--text-muted);">{{ event.created_at.strftime('%H:%M:%S') }} - {{ event.source }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                    No system log events.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

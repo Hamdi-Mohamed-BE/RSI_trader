@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Messages | AI Signal Copier{% endblock %}
+{% block page_header %}Telegram Messages{% endblock %}
+{% block page_sub %}Displaying last 10 messages and parsing cached details{% endblock %}
+
+{% block content %}
+<div class="data-section">
+    <div class="section-header">
+        <h2>Polled Messages (Last 10)</h2>
+    </div>
+    
+    <div class="glass-panel table-wrapper">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Message ID</th>
+                    <th>Raw Text</th>
+                    <th>Status</th>
+                    <th>LLM Confidence</th>
+                    <th>Signal Detected</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if messages %}
+                    {% for item in messages %}
+                    <tr>
+                        <td style="white-space: nowrap;">{{ item.msg.message_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>{{ item.msg.message_id }}</td>
+                        <td style="max-width: 300px; font-family: monospace; white-space: pre-wrap; font-size: 0.85rem;">{{ item.msg.raw_text }}</td>
+                        <td>
+                            {% if item.msg.ignored %}
+                            <span class="badge badge-danger" title="Reason: {{ item.msg.ignore_reason }}">Ignored</span>
+                            {% elif item.msg.processed %}
+                            <span class="badge badge-success">Processed</span>
+                            {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.parsed %}
+                            <span class="badge badge-purple">{{ "{:.0%}".format(item.parsed.confidence) }}</span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.parsed %}
+                                {% if item.parsed.is_signal %}
+                                <span class="badge badge-success">Yes</span>
+                                {% else %}
+                                <span class="badge badge-danger">No</span>
+                                {% endif %}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td style="white-space: nowrap;">
+                            <div style="display: flex; gap: 0.5rem;">
+                                {% if item.parsed %}
+                                <button onclick="viewJsonModal('Parsed Signal #{{ item.msg.message_id }}', {{ item.parsed_json_str | safe }})" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                    <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Inspect
+                                </button>
+                                {% endif %}
+                                <button onclick="reprocessMessage({{ item.msg.id }})" class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                    <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Reprocess
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                            No Telegram messages have been processed yet.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
