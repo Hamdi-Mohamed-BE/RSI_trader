@@ -410,6 +410,21 @@ input:checked + .slider:before {
   transform: translateX(24px);
 }
 
+.auto-refresh-status {
+  display: inline-flex;
+  align-items: center;
+  min-width: 92px;
+  justify-content: center;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  border-radius: 8px;
+  color: var(--accent-blue);
+  background: rgba(96, 165, 250, 0.08);
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 /* JSON Code inspector */
 pre.code-json {
   background: rgba(0, 0, 0, 0.3);

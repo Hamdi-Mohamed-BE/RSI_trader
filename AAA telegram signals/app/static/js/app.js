@@ -3,7 +3,73 @@
 document.addEventListener('DOMContentLoaded', () => {
     setupCopierToggler();
     setupModals();
+    setupAutoRefresh();
 });
+
+const AUTO_REFRESH_SECONDS = 5;
+let formHasUnsavedChanges = false;
+
+function setupAutoRefresh() {
+    const status = document.getElementById('auto-refresh-status');
+    if (!status) return;
+
+    document.querySelectorAll('form input, form textarea, form select').forEach((el) => {
+        el.addEventListener('input', () => {
+            formHasUnsavedChanges = true;
+            updateAutoRefreshStatus('Paused while editing');
+        });
+        el.addEventListener('change', () => {
+            formHasUnsavedChanges = true;
+            updateAutoRefreshStatus('Paused while editing');
+        });
+    });
+
+    let remaining = AUTO_REFRESH_SECONDS;
+    updateAutoRefreshStatus(`Refresh in ${remaining}s`);
+
+    setInterval(() => {
+        if (shouldPauseAutoRefresh()) {
+            updateAutoRefreshStatus(autoRefreshPauseReason());
+            return;
+        }
+
+        remaining -= 1;
+        if (remaining <= 0) {
+            updateAutoRefreshStatus('Refreshing...');
+            window.location.reload();
+            return;
+        }
+
+        updateAutoRefreshStatus(`Refresh in ${remaining}s`);
+    }, 1000);
+}
+
+function shouldPauseAutoRefresh() {
+    const active = document.activeElement;
+    const editing = active && ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName);
+    const modalOpen = document.getElementById('modal-overlay')?.classList.contains('active');
+    const detailsOpen = Boolean(document.querySelector('details[open]'));
+    return formHasUnsavedChanges || editing || modalOpen || detailsOpen;
+}
+
+function autoRefreshPauseReason() {
+    const active = document.activeElement;
+    if (formHasUnsavedChanges || (active && ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName))) {
+        return 'Paused while editing';
+    }
+    if (document.getElementById('modal-overlay')?.classList.contains('active')) {
+        return 'Paused for modal';
+    }
+    if (document.querySelector('details[open]')) {
+        return 'Paused for details';
+    }
+    return 'Auto refresh paused';
+}
+
+function updateAutoRefreshStatus(text) {
+    const status = document.getElementById('auto-refresh-status');
+    if (status) status.innerText = text;
+}
 
 // Setup start/stop copier toggle switch
 function setupCopierToggler() {

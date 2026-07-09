@@ -12,7 +12,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="/static/css/app.css">
 </head>
-<body>
+<body data-active-page="{{ active_page or '' }}">
     <div class="app-container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
@@ -46,6 +46,7 @@
                 
                 <!-- Quick Status -->
                 <div class="copier-status-toggle glass-panel">
+                    <span id="auto-refresh-status" class="auto-refresh-status" title="Auto refresh status">Auto refresh</span>
                     <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Copier Status:</span>
                     {% if copier_enabled %}
                     <span id="copier-status-text" class="badge badge-success">Active</span>
