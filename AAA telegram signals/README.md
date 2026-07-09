@@ -24,7 +24,7 @@ A local Windows/VPS automation service that polls a Telegram channel or chat eve
 
 - Paste a numeric chat ID, username, `t.me/c/...` link, or `web.telegram.org/a/#-100...` URL into Settings.
 - Bot mode requires the Telegram bot to be an administrator/member of the target channel.
-- User mode reads channels joined by your Telegram account. The first start may request the Telegram login code in the visible console window.
+- User mode reads channels joined by your Telegram account. The first start shows a QR image at `storage/sessions/telegram_login_qr.png`; scan it from Telegram mobile via **Settings > Devices > Link Desktop Device**. If QR login expires, the app falls back to phone-code login in the visible console window.
 
 ### Fixed Lots
 

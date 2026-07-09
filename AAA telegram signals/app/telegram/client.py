@@ -1,5 +1,7 @@
 from pathlib import Path
 from getpass import getpass
+import asyncio
+import os
 from telethon import TelegramClient
 from telethon.errors import (
     PhoneCodeExpiredError,
@@ -13,6 +15,7 @@ from app.core.logging import telegram_logger
 # Store sessions inside storage/sessions
 SESSION_DIR = Path("storage/sessions")
 SESSION_DIR.mkdir(parents=True, exist_ok=True)
+QR_PATH = SESSION_DIR / "telegram_login_qr.png"
 
 class TelegramClientWrapper:
     def __init__(self):
@@ -82,7 +85,56 @@ class TelegramClientWrapper:
             self._fingerprint = None
 
     async def _login_user_interactive(self, client: TelegramClient) -> None:
-        """Interactive Telegram user login that preserves phone_code_hash across retries."""
+        """Interactive Telegram user login. QR is tried first; phone-code remains as fallback."""
+        if await self._try_qr_login(client):
+            return
+
+        print("QR login was not completed. Falling back to phone code login.")
+        await self._login_user_by_phone_code(client)
+
+    async def _try_qr_login(self, client: TelegramClient) -> bool:
+        try:
+            import qrcode
+        except Exception as exc:
+            telegram_logger.warning(f"QR package is not available; falling back to phone code login: {exc}")
+            return False
+
+        for attempt in range(1, 3):
+            qr_login = await client.qr_login()
+            img = qrcode.make(qr_login.url)
+            img.save(QR_PATH)
+
+            print("")
+            print("Telegram QR login is ready.")
+            print(f"Open this QR image and scan it from Telegram mobile: {QR_PATH.resolve()}")
+            print("Telegram app: Settings > Devices > Link Desktop Device.")
+            print("Waiting for QR scan...")
+            telegram_logger.info(f"Telegram QR login image generated at {QR_PATH.resolve()} (attempt {attempt}/2).")
+
+            try:
+                os.startfile(QR_PATH)
+            except Exception:
+                pass
+
+            try:
+                await qr_login.wait(timeout=60)
+                return True
+            except asyncio.TimeoutError:
+                telegram_logger.warning("Telegram QR login expired before it was scanned.")
+                print("QR expired before scan. Creating a fresh QR...")
+            except SessionPasswordNeededError:
+                password = getpass("Telegram 2FA password: ")
+                await client.sign_in(password=password)
+                return True
+            except Exception as exc:
+                telegram_logger.warning(f"Telegram QR login failed: {exc}")
+                print(f"QR login failed: {exc}")
+                return False
+
+        return False
+
+    async def _login_user_by_phone_code(self, client: TelegramClient) -> None:
+        """Phone-code login that preserves phone_code_hash across retries."""
         while True:
             phone = input("Please enter your phone number with country code, e.g. +216...: ").strip()
             if phone:
