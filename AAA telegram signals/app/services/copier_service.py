@@ -62,6 +62,19 @@ class CopierService:
                     
                     if copier_enabled:
                         logger.debug("Copier is enabled. Processing cycle...")
+
+                        daily_breaker = TradeManager.process_daily_pnl_limits(
+                            session,
+                            win_goal_usd=float(SettingsService.get(session, "daily_win_goal_usd") or 0.0),
+                            loss_limit_usd=float(SettingsService.get(session, "daily_loss_limit_usd") or 0.0),
+                        )
+                        if daily_breaker.get("triggered"):
+                            SettingsService.set(session, "copier_enabled", False)
+                            logger.warning(
+                                "Copier paused after daily P/L breaker: "
+                                f"{daily_breaker.get('reason')}"
+                            )
+                            continue
                         
                         # 2. Poll and process new messages
                         read_mode = (SettingsService.get(session, "telegram_read_mode") or "api").strip().lower()
@@ -86,6 +99,17 @@ class CopierService:
                             be_enabled = SettingsService.get(session, "move_to_break_even_enabled")
                             if be_enabled:
                                 TradeManager.process_break_even(session, dynamic_offset_points=be_offset)
+                            daily_breaker = TradeManager.process_daily_pnl_limits(
+                                session,
+                                win_goal_usd=float(SettingsService.get(session, "daily_win_goal_usd") or 0.0),
+                                loss_limit_usd=float(SettingsService.get(session, "daily_loss_limit_usd") or 0.0),
+                            )
+                            if daily_breaker.get("triggered"):
+                                SettingsService.set(session, "copier_enabled", False)
+                                logger.warning(
+                                    "Copier paused after daily P/L breaker: "
+                                    f"{daily_breaker.get('reason')}"
+                                )
                         except Exception as e:
                             logger.error(f"Error in break-even trade manager: {e}")
                     else:

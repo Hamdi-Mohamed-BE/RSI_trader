@@ -1,5 +1,6 @@
 import json
-from fastapi import APIRouter, Request, Depends, Form
+from pathlib import Path
+from fastapi import APIRouter, Request, Depends, Form, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select, func
@@ -17,9 +18,19 @@ from app.services.settings_service import SettingsService
 from app.trading.mt5_client import mt5_client
 from app.trading.order_builder import MAGIC_NUMBER
 from app.core.config import settings
+from app.telegram.poller import telegram_poller
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+TELEGRAM_MEDIA_DIR = Path("app/static/telegram_media")
+TELEGRAM_MEDIA_URL_PREFIX = "/static/telegram_media"
+
+
+def _existing_media_url_for_message(message_id: int) -> str | None:
+    matches = sorted(TELEGRAM_MEDIA_DIR.glob(f"*_{message_id}.*"))
+    if not matches:
+        return None
+    return f"{TELEGRAM_MEDIA_URL_PREFIX}/{matches[0].name}"
 
 @router.get("/", response_class=HTMLResponse)
 async def view_dashboard(request: Request, db: Session = Depends(get_db)):
@@ -88,14 +99,32 @@ async def view_dashboard(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(request=request, name="dashboard.html", context=context)
 
 @router.get("/messages", response_class=HTMLResponse)
-async def view_messages(request: Request, db: Session = Depends(get_db)):
+async def view_messages(
+    request: Request,
+    db: Session = Depends(get_db),
+    page: int = Query(1, ge=1),
+    per_page: int = Query(25, ge=5, le=100),
+    reloaded: int = Query(0, ge=0),
+    created: int = Query(0, ge=0),
+    media_updated: int = Query(0, ge=0),
+):
     copier_enabled = SettingsService.get(db, "copier_enabled")
     
-    # Fetch last 10 messages always (as requested by user)
-    recent_msgs = TelegramMessageRepository.get_recent(db, limit=10)
+    # Show the full current-day message list instead of hiding older same-day posts.
+    today = datetime.now()
+    total_messages = TelegramMessageRepository.count_for_day(db, today)
+    total_pages = max(1, (total_messages + per_page - 1) // per_page)
+    page = min(page, total_pages)
+    offset = (page - 1) * per_page
+    recent_msgs = TelegramMessageRepository.get_for_day(db, today, limit=per_page, offset=offset)
     
     messages_data = []
     for msg in recent_msgs:
+        media_url = msg.media_url or _existing_media_url_for_message(msg.message_id)
+        if media_url and msg.media_url != media_url:
+            msg.media_url = media_url
+            TelegramMessageRepository.save(db, msg)
+
         # Get cached LLM parsing result from DB
         parsed_stmt = select(LLMParseResult).where(LLMParseResult.telegram_message_db_id == msg.id)
         parsed_db = db.exec(parsed_stmt).first()
@@ -119,6 +148,7 @@ async def view_messages(request: Request, db: Session = Depends(get_db)):
                 
         messages_data.append({
             "msg": msg,
+            "media_url": media_url,
             "parsed": parsed_db,
             "parsed_json_pretty": parsed_json_pretty,
             "parsed_json_preview": parsed_json_preview,
@@ -128,9 +158,50 @@ async def view_messages(request: Request, db: Session = Depends(get_db)):
     context = {
         "active_page": "messages",
         "copier_enabled": copier_enabled,
-        "messages": messages_data
+        "messages": messages_data,
+        "message_count": total_messages,
+        "message_day_label": today.strftime("%Y-%m-%d"),
+        "page": page,
+        "per_page": per_page,
+        "total_pages": total_pages,
+        "has_prev": page > 1,
+        "has_next": page < total_pages,
+        "prev_page": max(1, page - 1),
+        "next_page": min(total_pages, page + 1),
+        "reload_notice": {
+            "scanned": reloaded,
+            "created": created,
+            "media_updated": media_updated,
+        } if reloaded else None,
     }
     return templates.TemplateResponse(request=request, name="messages.html", context=context)
+
+@router.post("/messages/reload")
+async def reload_messages_from_telegram(
+    request: Request,
+    db: Session = Depends(get_db),
+    limit: int = Form(120),
+    per_page: int = Form(25),
+):
+    limit = max(20, min(int(limit or 120), 300))
+    per_page = max(5, min(int(per_page or 25), 100))
+    result = await telegram_poller.refresh_recent_messages(db, limit=limit)
+    SystemEventRepository.log(
+        db,
+        "info",
+        "telegram",
+        f"Manual Telegram reload scanned {result.get('scanned', 0)} messages, created {result.get('created', 0)}, media backfilled {result.get('media_updated', 0)}.",
+    )
+    return RedirectResponse(
+        url=(
+            "/messages"
+            f"?per_page={per_page}"
+            f"&reloaded={result.get('scanned', 0)}"
+            f"&created={result.get('created', 0)}"
+            f"&media_updated={result.get('media_updated', 0)}"
+        ),
+        status_code=303,
+    )
 
 @router.get("/trades", response_class=HTMLResponse)
 async def view_trades(request: Request, db: Session = Depends(get_db)):
@@ -180,6 +251,8 @@ async def save_settings_form(
     min_llm_confidence: float = Form(0.80),
     max_spread_points: str = Form(""),
     max_trades_per_day: int = Form(0),
+    daily_win_goal_usd: float = Form(500.0),
+    daily_loss_limit_usd: float = Form(500.0),
     stale_signal_max_age_minutes: int = Form(5),
     stale_signal_max_entry_distance_points: int = Form(50),
     allow_reply_signals: bool = Form(False),
@@ -207,6 +280,8 @@ async def save_settings_form(
     SettingsService.set(db, "poll_interval_seconds", poll_interval_seconds)
     SettingsService.set(db, "min_llm_confidence", min_llm_confidence)
     SettingsService.set(db, "max_trades_per_day", max_trades_per_day)
+    SettingsService.set(db, "daily_win_goal_usd", daily_win_goal_usd)
+    SettingsService.set(db, "daily_loss_limit_usd", daily_loss_limit_usd)
     SettingsService.set(db, "stale_signal_max_age_minutes", stale_signal_max_age_minutes)
     SettingsService.set(db, "stale_signal_max_entry_distance_points", stale_signal_max_entry_distance_points)
     SettingsService.set(db, "allow_reply_signals", allow_reply_signals)

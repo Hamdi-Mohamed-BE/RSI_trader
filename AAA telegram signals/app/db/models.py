@@ -30,6 +30,7 @@ class TelegramMessage(SQLModel, table=True):
     message_id: int = Field(index=True)
     message_date: datetime
     raw_text: str = Field(sa_column=Column(Text))
+    media_url: Optional[str] = Field(default=None)
     is_reply: bool = Field(default=False)
     is_forwarded: bool = Field(default=False)
     is_edited: bool = Field(default=False)

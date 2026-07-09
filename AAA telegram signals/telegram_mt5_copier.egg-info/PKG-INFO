@@ -21,6 +21,10 @@ Requires-Dist: tenacity>=8.2.2
 Requires-Dist: loguru>=0.7.0
 Requires-Dist: orjson>=3.9.0
 Requires-Dist: httpx>=0.24.0
+Requires-Dist: qrcode[pil]>=7.4.2
+Requires-Dist: beautifulsoup4>=4.12.0
+Requires-Dist: selenium>=4.20.0
+Requires-Dist: webdriver-manager>=4.0.0
 Requires-Dist: pytest>=7.0.0
 
 # Telegram to MetaTrader 5 Signal Copier
@@ -49,7 +53,8 @@ A local Windows/VPS automation service that polls a Telegram channel or chat eve
 
 - Paste a numeric chat ID, username, `t.me/c/...` link, or `web.telegram.org/a/#-100...` URL into Settings.
 - Bot mode requires the Telegram bot to be an administrator/member of the target channel.
-- User mode reads channels joined by your Telegram account. The first start may request the Telegram login code in the visible console window.
+- User mode reads channels joined by your Telegram account. The first start shows a QR image at `storage/sessions/telegram_login_qr.png`; scan it from Telegram mobile via **Settings > Devices > Link Desktop Device**. If QR login expires, the app falls back to phone-code login in the visible console window.
+- `Telegram Read Mode` can be switched between `API session` and `Browser scraper`. Browser mode opens Telegram Web through Selenium, keeps the Chrome profile/cookies in `storage/browser_profile`, and reads visible chat messages from the automated browser before sending them through the same copier pipeline. Keep browser headless off for the first login.
 
 ### Fixed Lots
 

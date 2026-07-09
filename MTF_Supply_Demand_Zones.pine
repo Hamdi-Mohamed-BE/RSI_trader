@@ -1,0 +1,297 @@
+//@version=5
+indicator("Codex MTF Supply & Demand Zones", overlay=true, max_boxes_count=120, max_labels_count=120, dynamic_requests=true)
+
+// ----- Inputs
+groupTf = "Timeframes"
+showTf1 = input.bool(true, "Show TF 1", group=groupTf, inline="tf1")
+tf1 = input.timeframe("15", "", group=groupTf, inline="tf1")
+showTf2 = input.bool(true, "Show TF 2", group=groupTf, inline="tf2")
+tf2 = input.timeframe("60", "", group=groupTf, inline="tf2")
+showTf3 = input.bool(true, "Show TF 3", group=groupTf, inline="tf3")
+tf3 = input.timeframe("240", "", group=groupTf, inline="tf3")
+showTf4 = input.bool(true, "Show TF 4", group=groupTf, inline="tf4")
+tf4 = input.timeframe("D", "", group=groupTf, inline="tf4")
+showTf5 = input.bool(true, "Show TF 5", group=groupTf, inline="tf5")
+tf5 = input.timeframe("2W", "", group=groupTf, inline="tf5")
+
+groupLogic = "Zone Logic"
+pivotLeft = input.int(3, "Pivot left bars", minval=1, maxval=20, group=groupLogic)
+pivotRight = input.int(3, "Pivot right bars", minval=1, maxval=20, group=groupLogic)
+zoneMode = input.string("Body to Wick", "Zone size", options=["Body to Wick", "ATR Width"], group=groupLogic)
+atrLen = input.int(14, "ATR length", minval=1, group=groupLogic)
+atrMult = input.float(0.35, "ATR width multiplier", minval=0.01, step=0.01, group=groupLogic)
+maxZonesPerTf = input.int(4, "Max zones per timeframe", minval=1, maxval=12, group=groupLogic)
+deleteBrokenZones = input.bool(true, "Delete zones after clean break", group=groupLogic)
+showOnlyNearest = input.bool(true, "Show only nearest zones", group=groupLogic)
+nearestZonesPerSide = input.int(1, "Nearest supply/demand zones", minval=1, maxval=5, group=groupLogic)
+nearestFromNextHigherTf = input.bool(true, "Nearest zones from next higher timeframe", group=groupLogic)
+
+groupStyle = "Style"
+demandColor = input.color(color.new(color.lime, 82), "Demand fill", group=groupStyle)
+demandBorder = input.color(color.new(color.lime, 15), "Demand border", group=groupStyle)
+supplyColor = input.color(color.new(color.red, 82), "Supply fill", group=groupStyle)
+supplyBorder = input.color(color.new(color.red, 15), "Supply border", group=groupStyle)
+labelZones = input.bool(true, "Show timeframe labels", group=groupStyle)
+
+// ----- Per-timeframe zone detector
+// Returns: new supply?, supply top/bottom/time, new demand?, demand top/bottom/time
+zoneDetector() =>
+    ph = ta.pivothigh(high, pivotLeft, pivotRight)
+    pl = ta.pivotlow(low, pivotLeft, pivotRight)
+    atr = ta.atr(atrLen)
+
+    pivotBodyTop = math.max(open[pivotRight], close[pivotRight])
+    pivotBodyBottom = math.min(open[pivotRight], close[pivotRight])
+
+    newSupply = not na(ph)
+    supplyTop = high[pivotRight]
+    supplyBottomBody = pivotBodyTop
+    supplyBottomAtr = supplyTop - atr[pivotRight] * atrMult
+    supplyBottom = zoneMode == "Body to Wick" ? supplyBottomBody : supplyBottomAtr
+    supplyTime = time[pivotRight]
+
+    newDemand = not na(pl)
+    demandBottom = low[pivotRight]
+    demandTopBody = pivotBodyBottom
+    demandTopAtr = demandBottom + atr[pivotRight] * atrMult
+    demandTop = zoneMode == "Body to Wick" ? demandTopBody : demandTopAtr
+    demandTime = time[pivotRight]
+
+    [newSupply, supplyTop, supplyBottom, supplyTime, newDemand, demandTop, demandBottom, demandTime]
+
+// ----- Box storage
+var box[] supplyBoxes = array.new_box()
+var box[] demandBoxes = array.new_box()
+var label[] supplyLabels = array.new_label()
+var label[] demandLabels = array.new_label()
+var int[] supplyTfSeconds = array.new_int()
+var int[] demandTfSeconds = array.new_int()
+
+tfLimit() =>
+    maxZonesPerTf * 5
+
+hiddenColor() =>
+    color.new(color.black, 100)
+
+tfDisplayName(_tf) =>
+    seconds = timeframe.in_seconds(_tf)
+    minutes = seconds / 60
+    hours = seconds / 3600
+    days = seconds / 86400
+    weeks = seconds / 604800
+    result = _tf
+    if seconds < 3600
+        result := str.tostring(minutes) + "m"
+    else if seconds < 86400
+        result := str.tostring(hours) + "H"
+    else if seconds < 604800
+        result := str.tostring(days) + "D"
+    else
+        result := str.tostring(weeks) + "W"
+    result
+
+addZone(_isSupply, _top, _bottom, _startTime, _tfName, _tfSeconds) =>
+    if not na(_top) and not na(_bottom) and _top > _bottom
+        fill = _isSupply ? supplyColor : demandColor
+        border = _isSupply ? supplyBorder : demandBorder
+        b = box.new(left=_startTime, top=_top, right=time, bottom=_bottom, xloc=xloc.bar_time, extend=extend.right, bgcolor=fill, border_color=border, border_width=1)
+        txt = (_isSupply ? "Supply " : "Demand ") + tfDisplayName(_tfName)
+        y = _isSupply ? _top : _bottom
+        l = label.new(x=time, y=y, text=txt, xloc=xloc.bar_time, style=label.style_label_left, textcolor=labelZones ? color.white : hiddenColor(), color=labelZones ? color.new(border, 0) : hiddenColor(), size=size.tiny)
+        if _isSupply
+            array.push(supplyBoxes, b)
+            array.push(supplyLabels, l)
+            array.push(supplyTfSeconds, _tfSeconds)
+            if array.size(supplyBoxes) > tfLimit()
+                old = array.shift(supplyBoxes)
+                oldLabel = array.shift(supplyLabels)
+                array.shift(supplyTfSeconds)
+                box.delete(old)
+                label.delete(oldLabel)
+        else
+            array.push(demandBoxes, b)
+            array.push(demandLabels, l)
+            array.push(demandTfSeconds, _tfSeconds)
+            if array.size(demandBoxes) > tfLimit()
+                old = array.shift(demandBoxes)
+                oldLabel = array.shift(demandLabels)
+                array.shift(demandTfSeconds)
+                box.delete(old)
+                label.delete(oldLabel)
+
+processTf(_enabled, _tf, _name) =>
+    [ns, sTop, sBot, sTime, nd, dTop, dBot, dTime] = request.security(syminfo.tickerid, _tf, zoneDetector(), barmerge.gaps_off, barmerge.lookahead_off)
+    tfSeconds = timeframe.in_seconds(_tf)
+    supplyPulse = _enabled and ns and not ns[1]
+    demandPulse = _enabled and nd and not nd[1]
+    if supplyPulse
+        addZone(true, sTop, sBot, sTime, _name, tfSeconds)
+    if demandPulse
+        addZone(false, dTop, dBot, dTime, _name, tfSeconds)
+
+// ----- Build selected MTF zones
+processTf(showTf1, tf1, tf1)
+processTf(showTf2, tf2, tf2)
+processTf(showTf3, tf3, tf3)
+processTf(showTf4, tf4, tf4)
+processTf(showTf5, tf5, tf5)
+
+// ----- Remove invalidated zones
+if deleteBrokenZones
+    if array.size(supplyBoxes) > 0
+        for i = array.size(supplyBoxes) - 1 to 0
+            b = array.get(supplyBoxes, i)
+            top = box.get_top(b)
+            if close > top
+                l = array.get(supplyLabels, i)
+                box.delete(b)
+                label.delete(l)
+                array.remove(supplyBoxes, i)
+                array.remove(supplyLabels, i)
+                array.remove(supplyTfSeconds, i)
+
+    if array.size(demandBoxes) > 0
+        for i = array.size(demandBoxes) - 1 to 0
+            b = array.get(demandBoxes, i)
+            bottom = box.get_bottom(b)
+            if close < bottom
+                l = array.get(demandLabels, i)
+                box.delete(b)
+                label.delete(l)
+                array.remove(demandBoxes, i)
+                array.remove(demandLabels, i)
+                array.remove(demandTfSeconds, i)
+
+hasIndex(_indexes, _value) =>
+    found = false
+    if array.size(_indexes) > 0
+        for j = 0 to array.size(_indexes) - 1
+            if array.get(_indexes, j) == _value
+                found := true
+    found
+
+hideZone(_b, _l) =>
+    box.set_bgcolor(_b, hiddenColor())
+    box.set_border_color(_b, hiddenColor())
+    label.set_textcolor(_l, hiddenColor())
+    label.set_color(_l, hiddenColor())
+    label.set_x(_l, time)
+
+showZone(_isSupply, _b, _l) =>
+    border = _isSupply ? supplyBorder : demandBorder
+    fill = _isSupply ? supplyColor : demandColor
+    box.set_bgcolor(_b, fill)
+    box.set_border_color(_b, border)
+    label.set_x(_l, time)
+    label.set_textcolor(_l, labelZones ? color.white : hiddenColor())
+    label.set_color(_l, labelZones ? color.new(border, 0) : hiddenColor())
+
+showAllZones() =>
+    if array.size(supplyBoxes) > 0
+        for i = 0 to array.size(supplyBoxes) - 1
+            showZone(true, array.get(supplyBoxes, i), array.get(supplyLabels, i))
+    if array.size(demandBoxes) > 0
+        for i = 0 to array.size(demandBoxes) - 1
+            showZone(false, array.get(demandBoxes, i), array.get(demandLabels, i))
+
+nextHigherTfSeconds() =>
+    chartSeconds = timeframe.in_seconds(timeframe.period)
+    int best = na
+    tf1Seconds = timeframe.in_seconds(tf1)
+    tf2Seconds = timeframe.in_seconds(tf2)
+    tf3Seconds = timeframe.in_seconds(tf3)
+    tf4Seconds = timeframe.in_seconds(tf4)
+    tf5Seconds = timeframe.in_seconds(tf5)
+    if showTf1 and tf1Seconds > chartSeconds and (na(best) or tf1Seconds < best)
+        best := tf1Seconds
+    if showTf2 and tf2Seconds > chartSeconds and (na(best) or tf2Seconds < best)
+        best := tf2Seconds
+    if showTf3 and tf3Seconds > chartSeconds and (na(best) or tf3Seconds < best)
+        best := tf3Seconds
+    if showTf4 and tf4Seconds > chartSeconds and (na(best) or tf4Seconds < best)
+        best := tf4Seconds
+    if showTf5 and tf5Seconds > chartSeconds and (na(best) or tf5Seconds < best)
+        best := tf5Seconds
+    best
+
+nextHigherTfName(_targetSeconds) =>
+    name = "all"
+    if not na(_targetSeconds)
+        if showTf1 and timeframe.in_seconds(tf1) == _targetSeconds
+            name := tfDisplayName(tf1)
+        if showTf2 and timeframe.in_seconds(tf2) == _targetSeconds
+            name := tfDisplayName(tf2)
+        if showTf3 and timeframe.in_seconds(tf3) == _targetSeconds
+            name := tfDisplayName(tf3)
+        if showTf4 and timeframe.in_seconds(tf4) == _targetSeconds
+            name := tfDisplayName(tf4)
+        if showTf5 and timeframe.in_seconds(tf5) == _targetSeconds
+            name := tfDisplayName(tf5)
+    name
+
+zoneMatchesTargetTf(_zoneSeconds, _targetSeconds) =>
+    not nearestFromNextHigherTf or na(_targetSeconds) or _zoneSeconds == _targetSeconds
+
+showNearestSupplyZones(_targetSeconds) =>
+    if array.size(supplyBoxes) > 0
+        selected = array.new_int()
+        for i = 0 to array.size(supplyBoxes) - 1
+            hideZone(array.get(supplyBoxes, i), array.get(supplyLabels, i))
+        picks = math.min(nearestZonesPerSide, array.size(supplyBoxes))
+        for pick = 0 to picks - 1
+            bestIndex = -1
+            bestDistance = 10000000000.0
+            for i = 0 to array.size(supplyBoxes) - 1
+                tfOk = zoneMatchesTargetTf(array.get(supplyTfSeconds, i), _targetSeconds)
+                if tfOk and not hasIndex(selected, i)
+                    b = array.get(supplyBoxes, i)
+                    top = box.get_top(b)
+                    bottom = box.get_bottom(b)
+                    inside = close >= bottom and close <= top
+                    distance = inside ? 0.0 : bottom > close ? bottom - close : na
+                    if not na(distance) and distance < bestDistance
+                        bestDistance := distance
+                        bestIndex := i
+            if bestIndex >= 0
+                array.push(selected, bestIndex)
+                showZone(true, array.get(supplyBoxes, bestIndex), array.get(supplyLabels, bestIndex))
+
+showNearestDemandZones(_targetSeconds) =>
+    if array.size(demandBoxes) > 0
+        selected = array.new_int()
+        for i = 0 to array.size(demandBoxes) - 1
+            hideZone(array.get(demandBoxes, i), array.get(demandLabels, i))
+        picks = math.min(nearestZonesPerSide, array.size(demandBoxes))
+        for pick = 0 to picks - 1
+            bestIndex = -1
+            bestDistance = 10000000000.0
+            for i = 0 to array.size(demandBoxes) - 1
+                tfOk = zoneMatchesTargetTf(array.get(demandTfSeconds, i), _targetSeconds)
+                if tfOk and not hasIndex(selected, i)
+                    b = array.get(demandBoxes, i)
+                    top = box.get_top(b)
+                    bottom = box.get_bottom(b)
+                    inside = close >= bottom and close <= top
+                    distance = inside ? 0.0 : close > top ? close - top : na
+                    if not na(distance) and distance < bestDistance
+                        bestDistance := distance
+                        bestIndex := i
+            if bestIndex >= 0
+                array.push(selected, bestIndex)
+                showZone(false, array.get(demandBoxes, bestIndex), array.get(demandLabels, bestIndex))
+
+// ----- Keep the chart clean by showing only the closest actionable zones.
+if barstate.islast
+    if showOnlyNearest
+        targetSeconds = nextHigherTfSeconds()
+        showNearestSupplyZones(targetSeconds)
+        showNearestDemandZones(targetSeconds)
+    else
+        showAllZones()
+
+// ----- Tiny status table
+var table status = table.new(position.top_right, 1, 1)
+if barstate.islast
+    statusTarget = nextHigherTfSeconds()
+    targetText = showOnlyNearest and nearestFromNextHigherTf ? " | nearest HTF: " + nextHigherTfName(statusTarget) : ""
+    table.cell(status, 0, 0, "MTF S/D: " + tfDisplayName(tf1) + " | " + tfDisplayName(tf2) + " | " + tfDisplayName(tf3) + " | " + tfDisplayName(tf4) + " | " + tfDisplayName(tf5) + targetText, text_color=color.white, bgcolor=color.new(color.black, 60), text_size=size.tiny)

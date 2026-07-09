@@ -39,6 +39,9 @@ def _migrate_sqlite():
     order_attempt_columns = {
         "signal_hash": "TEXT",
     }
+    telegram_message_columns = {
+        "media_url": "TEXT",
+    }
     with engine.begin() as conn:
         existing = {
             row[1]
@@ -56,6 +59,14 @@ def _migrate_sqlite():
             if name not in existing:
                 conn.execute(text(f"ALTER TABLE order_attempts ADD COLUMN {name} {definition}"))
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_order_attempts_signal_hash ON order_attempts (signal_hash)"))
+
+        existing = {
+            row[1]
+            for row in conn.execute(text("PRAGMA table_info(telegram_messages)")).fetchall()
+        }
+        for name, definition in telegram_message_columns.items():
+            if name not in existing:
+                conn.execute(text(f"ALTER TABLE telegram_messages ADD COLUMN {name} {definition}"))
 
 def get_db():
     """Dependency for database session context."""

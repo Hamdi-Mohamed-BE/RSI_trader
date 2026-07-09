@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 import MetaTrader5 as mt5
 from typing import Optional, Dict, Any, List, Tuple
 from app.core.logging import orders_logger, logger
@@ -210,6 +211,16 @@ class MT5Client:
             
         return [ord._asdict() for ord in orders]
 
+    def get_history_deals(self, date_from: datetime, date_to: datetime) -> List[Dict[str, Any]]:
+        """Retrieves account deal history for a date range."""
+        if not self.connect():
+            return []
+
+        deals = mt5.history_deals_get(date_from, date_to)
+        if deals is None:
+            return []
+        return [deal._asdict() for deal in deals]
+
     def modify_position(self, ticket: int, stop_loss: float, take_profit: float) -> Tuple[bool, Optional[str]]:
         """Modifies the SL and TP values for an active position."""
         if not self.connect():
@@ -281,6 +292,29 @@ class MT5Client:
             "type_filling": _order_filling_from_symbol_info(info_dict),
         }
 
+        return self.send_order(request)
+
+    def close_position(self, ticket: int, comment: str = "TG daily limit close") -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
+        """Closes an active position completely."""
+        if not self.connect():
+            return False, None, "MT5 terminal not connected"
+
+        positions = mt5.positions_get(ticket=ticket)
+        if not positions or len(positions) == 0:
+            return False, None, f"Position with ticket {ticket} not found"
+
+        return self.close_partial_position(ticket, float(positions[0].volume), comment=comment)
+
+    def cancel_order(self, ticket: int, comment: str = "TG daily limit cancel") -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
+        """Cancels a pending order by ticket."""
+        if not self.connect():
+            return False, None, "MT5 terminal not connected"
+
+        request = {
+            "action": mt5.TRADE_ACTION_REMOVE,
+            "order": int(ticket),
+            "comment": comment[:31],
+        }
         return self.send_order(request)
 
 # Global MT5 client

@@ -50,6 +50,8 @@ class Settings(BaseSettings):
     ALLOW_NO_SL: bool = False
     MAX_SPREAD_POINTS: int | None = None
     MAX_TRADES_PER_DAY: int = 0
+    DAILY_WIN_GOAL_USD: float = 500.0
+    DAILY_LOSS_LIMIT_USD: float = 500.0
     STALE_SIGNAL_MAX_AGE_MINUTES: int = 5
     STALE_SIGNAL_MAX_ENTRY_DISTANCE_POINTS: int = 50
 

@@ -251,6 +251,77 @@ body {
   color: #fff;
 }
 
+.section-subline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.4rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.message-reload-form {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.message-reload-form label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.compact-select {
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  padding: 0.45rem 0.55rem;
+  font-family: var(--font-sans);
+}
+
+.compact-btn {
+  padding: 0.5rem 0.85rem;
+  border-radius: 9px;
+  font-size: 0.82rem;
+}
+
+.reload-notice {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  color: var(--status-success);
+  border-color: rgba(0, 255, 135, 0.2);
+  background: rgba(0, 255, 135, 0.06);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+.pagination-status {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.btn.disabled {
+  opacity: 0.42;
+  cursor: default;
+  pointer-events: none;
+}
+
 .table-wrapper {
   overflow-x: auto;
   border-radius: var(--border-radius);
@@ -508,6 +579,102 @@ pre.code-json {
 .inline-json-full {
     margin-top: 0.8rem;
     padding-top: 0.8rem;
+    border-top: 1px solid rgba(139, 92, 246, 0.18);
+}
+
+/* Telegram raw message preview */
+.raw-message-cell {
+    max-width: 320px;
+    min-width: 220px;
+    vertical-align: top;
+}
+
+.message-media-cell {
+    width: 150px;
+    min-width: 150px;
+    vertical-align: top;
+}
+
+.message-media-link {
+    display: block;
+    width: 138px;
+    max-width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(139, 92, 246, 0.24);
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.message-media-thumb {
+    display: block;
+    width: 138px;
+    height: 92px;
+    object-fit: cover;
+}
+
+.media-empty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    min-height: 32px;
+    padding: 0.35rem 0.55rem;
+    border-radius: 7px;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+
+.raw-message-preview,
+.raw-message-full {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: var(--text-secondary);
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.82rem;
+    line-height: 1.55;
+}
+
+.raw-message-preview {
+    max-height: 7.8rem;
+    overflow: hidden;
+}
+
+.raw-message-details {
+    margin: 0;
+}
+
+.raw-message-details summary {
+    display: block;
+    cursor: pointer;
+    color: var(--accent-blue);
+    font-size: 0.78rem;
+    font-weight: 700;
+    user-select: none;
+}
+
+.raw-message-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.raw-message-details[open] .raw-more-label,
+.raw-less-label {
+    display: none;
+}
+
+.raw-message-details[open] .raw-less-label {
+    display: inline;
+}
+
+.raw-message-details[open] .raw-message-preview {
+    display: none;
+}
+
+.raw-message-details[open] .raw-message-full {
+    margin-top: 0.65rem;
+    padding-top: 0.65rem;
     border-top: 1px solid rgba(139, 92, 246, 0.18);
 }
 

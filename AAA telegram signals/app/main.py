@@ -50,6 +50,8 @@ async def lifespan(app: FastAPI):
             SettingsService.set(session, "break_even_offset_points", settings.BREAK_EVEN_OFFSET_POINTS)
             SettingsService.set(session, "allow_no_sl", settings.ALLOW_NO_SL)
             SettingsService.set(session, "max_trades_per_day", settings.MAX_TRADES_PER_DAY)
+            SettingsService.set(session, "daily_win_goal_usd", settings.DAILY_WIN_GOAL_USD)
+            SettingsService.set(session, "daily_loss_limit_usd", settings.DAILY_LOSS_LIMIT_USD)
             SettingsService.set(session, "stale_signal_max_age_minutes", settings.STALE_SIGNAL_MAX_AGE_MINUTES)
             SettingsService.set(session, "stale_signal_max_entry_distance_points", settings.STALE_SIGNAL_MAX_ENTRY_DISTANCE_POINTS)
             
@@ -80,6 +82,7 @@ app = FastAPI(
 # Ensure static directories exist
 os.makedirs("app/static/css", exist_ok=True)
 os.makedirs("app/static/js", exist_ok=True)
+os.makedirs("app/static/telegram_media", exist_ok=True)
 
 # Mount static folder
 app.mount("/static", StaticFiles(directory="app/static"), name="static")

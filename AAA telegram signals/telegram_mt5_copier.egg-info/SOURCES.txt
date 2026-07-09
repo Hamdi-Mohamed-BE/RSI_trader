@@ -9,6 +9,7 @@ app/core/config.py
 app/core/constants.py
 app/core/logging.py
 app/core/security.py
+app/core/signal_hash.py
 app/db/__init__.py
 app/db/database.py
 app/db/models.py
@@ -22,6 +23,7 @@ app/services/__init__.py
 app/services/copier_service.py
 app/services/settings_service.py
 app/telegram/__init__.py
+app/telegram/browser_poller.py
 app/telegram/client.py
 app/telegram/filters.py
 app/telegram/poller.py
@@ -39,9 +41,12 @@ telegram_mt5_copier.egg-info/SOURCES.txt
 telegram_mt5_copier.egg-info/dependency_links.txt
 telegram_mt5_copier.egg-info/requires.txt
 telegram_mt5_copier.egg-info/top_level.txt
+tests/test_browser_poller.py
 tests/test_lot_config.py
 tests/test_order_builder.py
 tests/test_parser.py
 tests/test_risk.py
+tests/test_signal_hash.py
 tests/test_symbol_resolver.py
 tests/test_telegram_poller.py
+tests/test_trade_manager.py

@@ -2,13 +2,41 @@
 
 {% block title %}Messages | AI Signal Copier{% endblock %}
 {% block page_header %}Telegram Messages{% endblock %}
-{% block page_sub %}Displaying last 10 messages and parsing cached details{% endblock %}
+{% block page_sub %}Displaying all messages from today with cached parsing details{% endblock %}
 
 {% block content %}
 <div class="data-section">
     <div class="section-header">
-        <h2>Polled Messages (Last 10)</h2>
+        <div>
+            <h2>Today's Messages{% if message_day_label %} - {{ message_day_label }}{% endif %}</h2>
+            <div class="section-subline">
+                <span class="badge badge-purple">{{ message_count or 0 }} messages</span>
+                <span>Page {{ page }} of {{ total_pages }}</span>
+            </div>
+        </div>
+        <form method="post" action="/messages/reload" class="message-reload-form">
+            <input type="hidden" name="per_page" value="{{ per_page }}">
+            <label>
+                Scan
+                <select name="limit" class="compact-select">
+                    <option value="60">60</option>
+                    <option value="120" selected>120</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                </select>
+            </label>
+            <button type="submit" class="btn btn-secondary compact-btn">
+                <i data-lucide="download-cloud" style="width: 14px; height: 14px;"></i>
+                Reload from Telegram
+            </button>
+        </form>
     </div>
+
+    {% if reload_notice %}
+    <div class="reload-notice glass-panel">
+        Reloaded Telegram chat: scanned {{ reload_notice.scanned }}, added {{ reload_notice.created }}, image backfills {{ reload_notice.media_updated }}.
+    </div>
+    {% endif %}
     
     <div class="glass-panel table-wrapper">
         <table class="custom-table">
@@ -16,6 +44,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Message ID</th>
+                    <th>Media</th>
                     <th>Raw Text</th>
                     <th>Status</th>
                     <th>LLM Confidence</th>
@@ -26,10 +55,34 @@
             <tbody>
                 {% if messages %}
                     {% for item in messages %}
+                    {% set raw_text = item.msg.raw_text or '' %}
+                    {% set raw_has_more = raw_text|length > 220 or raw_text.split('\n')|length > 6 %}
                     <tr>
                         <td style="white-space: nowrap;">{{ item.msg.message_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                         <td>{{ item.msg.message_id }}</td>
-                        <td style="max-width: 300px; font-family: monospace; white-space: pre-wrap; font-size: 0.85rem;">{{ item.msg.raw_text }}</td>
+                        <td class="message-media-cell">
+                            {% if item.media_url %}
+                            <a href="{{ item.media_url }}" target="_blank" rel="noopener" class="message-media-link">
+                                <img src="{{ item.media_url }}?v={{ item.msg.message_id }}" alt="Telegram message image #{{ item.msg.message_id }}" class="message-media-thumb" loading="lazy">
+                            </a>
+                            {% else %}
+                            <span class="media-empty">No image</span>
+                            {% endif %}
+                        </td>
+                        <td class="raw-message-cell">
+                            {% if raw_has_more %}
+                            <details class="raw-message-details">
+                                <summary>
+                                    <pre class="raw-message-preview">{{ raw_text[:220] }}...</pre>
+                                    <span class="raw-more-label">Read more</span>
+                                    <span class="raw-less-label">Show less</span>
+                                </summary>
+                                <pre class="raw-message-full">{{ raw_text }}</pre>
+                            </details>
+                            {% else %}
+                            <pre class="raw-message-preview">{{ raw_text[:220] }}{% if raw_has_more %}...{% endif %}</pre>
+                            {% endif %}
+                        </td>
                         <td>
                             {% if item.msg.ignored %}
                             <span class="badge badge-danger" title="Reason: {{ item.msg.ignore_reason }}">Ignored</span>
@@ -67,7 +120,7 @@
                     </tr>
                     {% if item.parsed %}
                     <tr class="parsed-json-row">
-                        <td colspan="7">
+                        <td colspan="8">
                             <div class="inline-json-panel">
                                 <div class="inline-json-heading">
                                     <span>Parsed response</span>
@@ -90,13 +143,27 @@
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 3rem;">
-                            No Telegram messages have been processed yet.
+                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                            No Telegram messages have been processed today.
                         </td>
                     </tr>
                 {% endif %}
             </tbody>
         </table>
+    </div>
+
+    <div class="pagination-bar">
+        {% if has_prev %}
+        <a class="btn btn-secondary compact-btn" href="/messages?page={{ prev_page }}&per_page={{ per_page }}">Previous</a>
+        {% else %}
+        <span class="btn btn-secondary compact-btn disabled">Previous</span>
+        {% endif %}
+        <span class="pagination-status">Page {{ page }} / {{ total_pages }}</span>
+        {% if has_next %}
+        <a class="btn btn-secondary compact-btn" href="/messages?page={{ next_page }}&per_page={{ per_page }}">Next</a>
+        {% else %}
+        <span class="btn btn-secondary compact-btn disabled">Next</span>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

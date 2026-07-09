@@ -54,6 +54,8 @@ class SettingsService:
             "allow_no_sl",
             "max_spread_points",
             "max_trades_per_day",
+            "daily_win_goal_usd",
+            "daily_loss_limit_usd",
             "stale_signal_max_age_minutes",
             "stale_signal_max_entry_distance_points",
         ]

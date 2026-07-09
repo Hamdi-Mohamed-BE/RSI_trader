@@ -154,6 +154,18 @@
             </div>
 
             <div class="form-group">
+                <label for="daily_win_goal_usd">Daily Win Goal ($)</label>
+                <input type="number" step="0.01" id="daily_win_goal_usd" name="daily_win_goal_usd" class="form-input" value="{{ settings.daily_win_goal_usd if settings.daily_win_goal_usd is not none else 500 }}">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">When today’s closed + open copier P/L reaches this amount, open copier trades are closed and trading pauses. 0 disables.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="daily_loss_limit_usd">Daily Loss Limit ($)</label>
+                <input type="number" step="0.01" id="daily_loss_limit_usd" name="daily_loss_limit_usd" class="form-input" value="{{ settings.daily_loss_limit_usd if settings.daily_loss_limit_usd is not none else 500 }}">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">When today’s closed + open copier P/L is below negative this amount, open copier trades are closed and trading pauses. 0 disables.</span>
+            </div>
+
+            <div class="form-group">
                 <label for="stale_signal_max_age_minutes">Stale Signal Age Limit (Minutes)</label>
                 <input type="number" id="stale_signal_max_age_minutes" name="stale_signal_max_age_minutes" class="form-input" value="{{ settings.stale_signal_max_age_minutes or 5 }}">
                 <span style="font-size: 0.75rem; color: var(--text-muted);">If a signal is older than this, it must still be close to entry. 0 disables this check.</span>

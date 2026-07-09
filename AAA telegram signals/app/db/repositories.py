@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, time
 from typing import List, Optional, Any, Dict
-from sqlmodel import Session, select, desc
+from sqlmodel import Session, select, desc, func
 import json
 
 from app.db.models import Settings, TelegramMessage, LLMParseResult, OrderAttempt, ManagedTrade, SystemEvent
@@ -58,6 +58,32 @@ class TelegramMessageRepository:
     def get_recent(session: Session, limit: int = 20) -> List[TelegramMessage]:
         statement = select(TelegramMessage).order_by(desc(TelegramMessage.message_date)).limit(limit)
         return list(session.exec(statement).all())
+
+    @staticmethod
+    def get_for_day(session: Session, day: datetime, limit: int = 25, offset: int = 0) -> List[TelegramMessage]:
+        day_start = datetime.combine(day.date(), time.min)
+        day_end = datetime.combine(day.date(), time.max)
+        statement = (
+            select(TelegramMessage)
+            .where(
+                TelegramMessage.message_date >= day_start,
+                TelegramMessage.message_date <= day_end,
+            )
+            .order_by(desc(TelegramMessage.message_date))
+            .offset(offset)
+            .limit(limit)
+        )
+        return list(session.exec(statement).all())
+
+    @staticmethod
+    def count_for_day(session: Session, day: datetime) -> int:
+        day_start = datetime.combine(day.date(), time.min)
+        day_end = datetime.combine(day.date(), time.max)
+        statement = select(func.count()).select_from(TelegramMessage).where(
+            TelegramMessage.message_date >= day_start,
+            TelegramMessage.message_date <= day_end,
+        )
+        return int(session.exec(statement).one() or 0)
 
 
 class LLMParseResultRepository:
