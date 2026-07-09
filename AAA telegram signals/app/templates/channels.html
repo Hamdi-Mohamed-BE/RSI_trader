@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Channels | AI Signal Copier{% endblock %}
+{% block page_header %}Telegram Channels{% endblock %}
+{% block page_sub %}Manage every channel the copier polls for signals{% endblock %}
+
+{% block content %}
+<div class="settings-grid">
+    <div class="glass-panel settings-card">
+        <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.5rem; font-weight: 700;">
+            <i data-lucide="plus-circle" style="vertical-align: middle; margin-right: 0.5rem; color: var(--accent-blue);"></i>
+            Add Channel
+        </h3>
+        <form action="/channels" method="post">
+            <div class="form-group">
+                <label for="chat_link">Channel URL / Chat ID</label>
+                <input type="text" id="chat_link" name="chat_link" class="form-input" placeholder="https://web.telegram.org/k/#-1184623065" required>
+            </div>
+            <div class="form-group">
+                <label for="attr">Trade Comment Attribute</label>
+                <input type="text" id="attr" name="attr" class="form-input" value="Telegram">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">MT5 trade comment becomes: Trade {this value}</span>
+            </div>
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="enabled" checked>
+                    Poll this channel
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                <i data-lucide="save"></i> Save Channel
+            </button>
+        </form>
+    </div>
+
+    <div class="glass-panel settings-card">
+        <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.5rem; font-weight: 700;">
+            <i data-lucide="radio" style="vertical-align: middle; margin-right: 0.5rem; color: var(--accent-purple);"></i>
+            Active Channel List
+        </h3>
+        {% if channels %}
+            <div class="channel-list">
+            {% for channel in channels %}
+                <form action="/channels/{{ channel.id }}/update" method="post" class="channel-card">
+                    <div class="form-group">
+                        <label>Channel URL / Chat ID</label>
+                        <input type="text" name="chat_link" class="form-input" value="{{ channel.chat_link }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Trade Comment Attribute</label>
+                        <input type="text" name="attr" class="form-input" value="{{ channel.attr }}">
+                    </div>
+                    <div class="channel-card-footer">
+                        <label class="form-checkbox">
+                            <input type="checkbox" name="enabled" {% if channel.enabled %}checked{% endif %}>
+                            Enabled
+                        </label>
+                        <button type="submit" class="btn btn-secondary compact-btn">
+                            <i data-lucide="save" style="width: 14px; height: 14px;"></i>
+                            Update
+                        </button>
+                    </div>
+                </form>
+            {% endfor %}
+            </div>
+        {% else %}
+            <p style="color: var(--text-muted);">No channels yet. Your .env channel will be created automatically on app restart.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

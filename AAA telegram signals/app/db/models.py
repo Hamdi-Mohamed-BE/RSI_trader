@@ -22,10 +22,22 @@ class Settings(SQLModel, table=True):
         return cls(key=key, value_json=json.dumps(value), updated_at=datetime.utcnow())
 
 
+class TelegramChannel(SQLModel, table=True):
+    __tablename__ = "telegram_channels"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    chat_link: str = Field(unique=True, index=True)
+    attr: str = Field(default="Telegram")
+    enabled: bool = Field(default=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
 class TelegramMessage(SQLModel, table=True):
     __tablename__ = "telegram_messages"
     
     id: Optional[int] = Field(default=None, primary_key=True)
+    telegram_channel_id: Optional[int] = Field(default=None, index=True)
     chat_id: int = Field(index=True)
     message_id: int = Field(index=True)
     message_date: datetime

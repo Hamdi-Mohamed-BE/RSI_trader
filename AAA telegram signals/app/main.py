@@ -7,6 +7,7 @@ from sqlmodel import Session
 from app.core.config import settings
 from app.core.logging import logger
 from app.db.database import init_db, engine
+from app.db.repositories import TelegramChannelRepository
 from app.services.copier_service import copier_service
 from app.services.settings_service import SettingsService
 from app.trading.mt5_client import mt5_client
@@ -56,6 +57,10 @@ async def lifespan(app: FastAPI):
             SettingsService.set(session, "stale_signal_max_entry_distance_points", settings.STALE_SIGNAL_MAX_ENTRY_DISTANCE_POINTS)
             
             db_copier_enabled = settings.COPIER_ENABLED
+
+        default_chat_link = SettingsService.get(session, "telegram_chat_link") or settings.TELEGRAM_CHAT_LINK
+        if default_chat_link:
+            TelegramChannelRepository.ensure_channel(session, default_chat_link, attr="Env Channel", enabled=True)
             
     # Connect MT5 terminal
     mt5_client.connect()

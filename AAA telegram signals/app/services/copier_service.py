@@ -18,7 +18,7 @@ from app.trading.trade_manager import TradeManager
 from app.services.settings_service import SettingsService
 from app.db.database import engine
 from app.db.models import OrderAttempt, ManagedTrade, TelegramMessage
-from app.db.repositories import OrderAttemptRepository, ManagedTradeRepository, SystemEventRepository, TelegramMessageRepository
+from app.db.repositories import OrderAttemptRepository, ManagedTradeRepository, SystemEventRepository, TelegramMessageRepository, TelegramChannelRepository
 
 class CopierService:
     def __init__(self):
@@ -79,7 +79,16 @@ class CopierService:
                         # 2. Poll and process new messages
                         read_mode = (SettingsService.get(session, "telegram_read_mode") or "api").strip().lower()
                         if read_mode == "browser":
-                            new_messages = browser_telegram_poller.poll_messages(session)
+                            channels = TelegramChannelRepository.list_enabled(session)
+                            new_messages = []
+                            for channel in channels:
+                                new_messages.extend(
+                                    browser_telegram_poller.poll_messages(
+                                        session,
+                                        chat_link_override=channel.chat_link,
+                                        telegram_channel_id=channel.id,
+                                    )
+                                )
                         else:
                             new_messages = await self._poller.poll_messages(session)
                         if new_messages:
@@ -124,6 +133,8 @@ class CopierService:
         """Pipeline processing a single Telegram message into a trade order."""
         logger.info(f"Processing message {msg.message_id} from chat {msg.chat_id}")
         signal_hash = signal_content_hash(msg.raw_text)
+        channel = TelegramChannelRepository.get(session, msg.telegram_channel_id) if msg.telegram_channel_id else None
+        channel_attr = (channel.attr if channel else "Telegram").strip() or "Telegram"
 
         duplicate_attempt = OrderAttemptRepository.get_placed_by_signal_hash(session, signal_hash)
         if duplicate_attempt:
@@ -360,7 +371,7 @@ class CopierService:
                 stop_loss=sl,
                 take_profit=tp,
                 pending_type=parsed.pending_type,
-                comment=f"TG msg {msg.message_id}"
+                comment=f"Trade {channel_attr}"[:31]
             )
         except Exception as req_err:
             error_msg = f"Failed to build MT5 request: {req_err}"

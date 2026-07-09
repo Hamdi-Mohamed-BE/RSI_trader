@@ -32,6 +32,27 @@
         </form>
     </div>
 
+    <form method="get" action="/messages" class="message-filter-form glass-panel">
+        <label>
+            Channel
+            <select name="channel_id" class="compact-select">
+                <option value="0" {% if not selected_channel_id %}selected{% endif %}>All channels</option>
+                {% for channel in channels %}
+                <option value="{{ channel.id }}" {% if selected_channel_id == channel.id %}selected{% endif %}>{{ channel.attr }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Per page
+            <select name="per_page" class="compact-select">
+                {% for size in [10, 25, 50, 100] %}
+                <option value="{{ size }}" {% if per_page == size %}selected{% endif %}>{{ size }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit" class="btn btn-secondary compact-btn">Apply Filter</button>
+    </form>
+
     {% if reload_notice %}
     <div class="reload-notice glass-panel">
         Reloaded Telegram chat: scanned {{ reload_notice.scanned }}, added {{ reload_notice.created }}, image backfills {{ reload_notice.media_updated }}.
@@ -44,6 +65,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Message ID</th>
+                    <th>Channel</th>
                     <th>Media</th>
                     <th>Raw Text</th>
                     <th>Status</th>
@@ -60,6 +82,13 @@
                     <tr>
                         <td style="white-space: nowrap;">{{ item.msg.message_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                         <td>{{ item.msg.message_id }}</td>
+                        <td>
+                            {% if item.channel %}
+                            <span class="badge badge-purple">{{ item.channel.attr }}</span>
+                            {% else %}
+                            <span class="badge badge-warning">Unknown</span>
+                            {% endif %}
+                        </td>
                         <td class="message-media-cell">
                             {% if item.media_url %}
                             <a href="{{ item.media_url }}" target="_blank" rel="noopener" class="message-media-link">
@@ -120,7 +149,7 @@
                     </tr>
                     {% if item.parsed %}
                     <tr class="parsed-json-row">
-                        <td colspan="8">
+                        <td colspan="9">
                             <div class="inline-json-panel">
                                 <div class="inline-json-heading">
                                     <span>Parsed response</span>
@@ -143,7 +172,7 @@
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                        <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 3rem;">
                             No Telegram messages have been processed today.
                         </td>
                     </tr>
@@ -154,13 +183,13 @@
 
     <div class="pagination-bar">
         {% if has_prev %}
-        <a class="btn btn-secondary compact-btn" href="/messages?page={{ prev_page }}&per_page={{ per_page }}">Previous</a>
+        <a class="btn btn-secondary compact-btn" href="/messages?page={{ prev_page }}&per_page={{ per_page }}&channel_id={{ selected_channel_id }}">Previous</a>
         {% else %}
         <span class="btn btn-secondary compact-btn disabled">Previous</span>
         {% endif %}
         <span class="pagination-status">Page {{ page }} / {{ total_pages }}</span>
         {% if has_next %}
-        <a class="btn btn-secondary compact-btn" href="/messages?page={{ next_page }}&per_page={{ per_page }}">Next</a>
+        <a class="btn btn-secondary compact-btn" href="/messages?page={{ next_page }}&per_page={{ per_page }}&channel_id={{ selected_channel_id }}">Next</a>
         {% else %}
         <span class="btn btn-secondary compact-btn disabled">Next</span>
         {% endif %}

@@ -10,6 +10,7 @@ from app.db.database import get_db
 from app.db.models import TelegramMessage, LLMParseResult
 from app.db.repositories import (
     TelegramMessageRepository,
+    TelegramChannelRepository,
     OrderAttemptRepository,
     ManagedTradeRepository,
     SystemEventRepository
@@ -104,6 +105,7 @@ async def view_messages(
     db: Session = Depends(get_db),
     page: int = Query(1, ge=1),
     per_page: int = Query(25, ge=5, le=100),
+    channel_id: int = Query(0, ge=0),
     reloaded: int = Query(0, ge=0),
     created: int = Query(0, ge=0),
     media_updated: int = Query(0, ge=0),
@@ -112,11 +114,20 @@ async def view_messages(
     
     # Show the full current-day message list instead of hiding older same-day posts.
     today = datetime.now()
-    total_messages = TelegramMessageRepository.count_for_day(db, today)
+    channels = TelegramChannelRepository.list_all(db)
+    selected_channel_id = channel_id or None
+    total_messages = TelegramMessageRepository.count_for_day(db, today, telegram_channel_id=selected_channel_id)
     total_pages = max(1, (total_messages + per_page - 1) // per_page)
     page = min(page, total_pages)
     offset = (page - 1) * per_page
-    recent_msgs = TelegramMessageRepository.get_for_day(db, today, limit=per_page, offset=offset)
+    recent_msgs = TelegramMessageRepository.get_for_day(
+        db,
+        today,
+        limit=per_page,
+        offset=offset,
+        telegram_channel_id=selected_channel_id,
+    )
+    channel_by_id = {channel.id: channel for channel in channels}
     
     messages_data = []
     for msg in recent_msgs:
@@ -149,6 +160,7 @@ async def view_messages(
         messages_data.append({
             "msg": msg,
             "media_url": media_url,
+            "channel": channel_by_id.get(msg.telegram_channel_id),
             "parsed": parsed_db,
             "parsed_json_pretty": parsed_json_pretty,
             "parsed_json_preview": parsed_json_preview,
@@ -161,6 +173,8 @@ async def view_messages(
         "messages": messages_data,
         "message_count": total_messages,
         "message_day_label": today.strftime("%Y-%m-%d"),
+        "channels": channels,
+        "selected_channel_id": channel_id,
         "page": page,
         "per_page": per_page,
         "total_pages": total_pages,
@@ -192,6 +206,62 @@ async def reload_messages_from_telegram(
         "telegram",
         f"Manual Telegram reload scanned {result.get('scanned', 0)} messages, created {result.get('created', 0)}, media backfilled {result.get('media_updated', 0)}.",
     )
+
+@router.get("/channels", response_class=HTMLResponse)
+async def view_channels(request: Request, db: Session = Depends(get_db)):
+    copier_enabled = SettingsService.get(db, "copier_enabled")
+    default_chat_link = SettingsService.get(db, "telegram_chat_link") or settings.TELEGRAM_CHAT_LINK
+    if default_chat_link:
+        TelegramChannelRepository.ensure_channel(db, default_chat_link, attr="Env Channel", enabled=True)
+    channels = TelegramChannelRepository.list_all(db)
+    return templates.TemplateResponse(
+        request=request,
+        name="channels.html",
+        context={
+            "active_page": "channels",
+            "copier_enabled": copier_enabled,
+            "channels": channels,
+        },
+    )
+
+@router.post("/channels")
+async def save_channel(
+    request: Request,
+    db: Session = Depends(get_db),
+    chat_link: str = Form(...),
+    attr: str = Form("Telegram"),
+    enabled: bool = Form(False),
+):
+    chat_link = chat_link.strip()
+    attr = (attr or "Telegram").strip()
+    if chat_link:
+        existing = TelegramChannelRepository.get_by_link(db, chat_link)
+        if existing:
+            existing.attr = attr
+            existing.enabled = enabled
+            TelegramChannelRepository.save(db, existing)
+        else:
+            TelegramChannelRepository.ensure_channel(db, chat_link, attr=attr, enabled=enabled)
+        SystemEventRepository.log(db, "info", "telegram", f"Saved Telegram channel {attr}: {chat_link}")
+    return RedirectResponse(url="/channels", status_code=303)
+
+@router.post("/channels/{channel_id}/update")
+async def update_channel(
+    channel_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    chat_link: str = Form(...),
+    attr: str = Form("Telegram"),
+    enabled: bool = Form(False),
+):
+    channel = TelegramChannelRepository.get(db, channel_id)
+    if channel:
+        channel.chat_link = chat_link.strip()
+        channel.attr = (attr or "Telegram").strip()
+        channel.enabled = enabled
+        TelegramChannelRepository.save(db, channel)
+        SystemEventRepository.log(db, "info", "telegram", f"Updated Telegram channel {channel.attr}.")
+    return RedirectResponse(url="/channels", status_code=303)
     return RedirectResponse(
         url=(
             "/messages"

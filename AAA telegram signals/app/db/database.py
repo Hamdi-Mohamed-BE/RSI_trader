@@ -41,6 +41,7 @@ def _migrate_sqlite():
     }
     telegram_message_columns = {
         "media_url": "TEXT",
+        "telegram_channel_id": "INTEGER",
     }
     with engine.begin() as conn:
         existing = {
@@ -67,6 +68,7 @@ def _migrate_sqlite():
         for name, definition in telegram_message_columns.items():
             if name not in existing:
                 conn.execute(text(f"ALTER TABLE telegram_messages ADD COLUMN {name} {definition}"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_telegram_messages_telegram_channel_id ON telegram_messages (telegram_channel_id)"))
 
 def get_db():
     """Dependency for database session context."""

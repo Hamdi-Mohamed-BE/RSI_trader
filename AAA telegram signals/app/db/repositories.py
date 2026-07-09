@@ -3,7 +3,7 @@ from typing import List, Optional, Any, Dict
 from sqlmodel import Session, select, desc, func
 import json
 
-from app.db.models import Settings, TelegramMessage, LLMParseResult, OrderAttempt, ManagedTrade, SystemEvent
+from app.db.models import Settings, TelegramChannel, TelegramMessage, LLMParseResult, OrderAttempt, ManagedTrade, SystemEvent
 
 class SettingsRepository:
     @staticmethod
@@ -30,6 +30,43 @@ class SettingsRepository:
         return db_setting
 
 
+class TelegramChannelRepository:
+    @staticmethod
+    def save(session: Session, channel: TelegramChannel) -> TelegramChannel:
+        channel.updated_at = datetime.utcnow()
+        session.add(channel)
+        session.commit()
+        session.refresh(channel)
+        return channel
+
+    @staticmethod
+    def get(session: Session, channel_id: int) -> Optional[TelegramChannel]:
+        return session.get(TelegramChannel, channel_id)
+
+    @staticmethod
+    def get_by_link(session: Session, chat_link: str) -> Optional[TelegramChannel]:
+        statement = select(TelegramChannel).where(TelegramChannel.chat_link == chat_link)
+        return session.exec(statement).first()
+
+    @staticmethod
+    def list_all(session: Session) -> List[TelegramChannel]:
+        statement = select(TelegramChannel).order_by(desc(TelegramChannel.enabled), TelegramChannel.attr)
+        return list(session.exec(statement).all())
+
+    @staticmethod
+    def list_enabled(session: Session) -> List[TelegramChannel]:
+        statement = select(TelegramChannel).where(TelegramChannel.enabled == True).order_by(TelegramChannel.attr)  # noqa: E712
+        return list(session.exec(statement).all())
+
+    @staticmethod
+    def ensure_channel(session: Session, chat_link: str, attr: str = "Telegram", enabled: bool = True) -> TelegramChannel:
+        existing = TelegramChannelRepository.get_by_link(session, chat_link)
+        if existing:
+            return existing
+        channel = TelegramChannel(chat_link=chat_link, attr=attr or "Telegram", enabled=enabled)
+        return TelegramChannelRepository.save(session, channel)
+
+
 class TelegramMessageRepository:
     @staticmethod
     def save(session: Session, message: TelegramMessage) -> TelegramMessage:
@@ -47,10 +84,13 @@ class TelegramMessageRepository:
         return session.exec(statement).first()
 
     @staticmethod
-    def get_latest_message_id(session: Session, chat_id: int) -> int:
+    def get_latest_message_id(session: Session, chat_id: int, telegram_channel_id: Optional[int] = None) -> int:
         statement = select(TelegramMessage).where(
             TelegramMessage.chat_id == chat_id
-        ).order_by(desc(TelegramMessage.message_id)).limit(1)
+        )
+        if telegram_channel_id is not None:
+            statement = statement.where(TelegramMessage.telegram_channel_id == telegram_channel_id)
+        statement = statement.order_by(desc(TelegramMessage.message_id)).limit(1)
         result = session.exec(statement).first()
         return result.message_id if result else 0
 
@@ -60,7 +100,13 @@ class TelegramMessageRepository:
         return list(session.exec(statement).all())
 
     @staticmethod
-    def get_for_day(session: Session, day: datetime, limit: int = 25, offset: int = 0) -> List[TelegramMessage]:
+    def get_for_day(
+        session: Session,
+        day: datetime,
+        limit: int = 25,
+        offset: int = 0,
+        telegram_channel_id: Optional[int] = None,
+    ) -> List[TelegramMessage]:
         day_start = datetime.combine(day.date(), time.min)
         day_end = datetime.combine(day.date(), time.max)
         statement = (
@@ -69,20 +115,22 @@ class TelegramMessageRepository:
                 TelegramMessage.message_date >= day_start,
                 TelegramMessage.message_date <= day_end,
             )
-            .order_by(desc(TelegramMessage.message_date))
-            .offset(offset)
-            .limit(limit)
         )
+        if telegram_channel_id is not None:
+            statement = statement.where(TelegramMessage.telegram_channel_id == telegram_channel_id)
+        statement = statement.order_by(desc(TelegramMessage.message_date)).offset(offset).limit(limit)
         return list(session.exec(statement).all())
 
     @staticmethod
-    def count_for_day(session: Session, day: datetime) -> int:
+    def count_for_day(session: Session, day: datetime, telegram_channel_id: Optional[int] = None) -> int:
         day_start = datetime.combine(day.date(), time.min)
         day_end = datetime.combine(day.date(), time.max)
         statement = select(func.count()).select_from(TelegramMessage).where(
             TelegramMessage.message_date >= day_start,
             TelegramMessage.message_date <= day_end,
         )
+        if telegram_channel_id is not None:
+            statement = statement.where(TelegramMessage.telegram_channel_id == telegram_channel_id)
         return int(session.exec(statement).one() or 0)
 
 

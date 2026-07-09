@@ -7,9 +7,8 @@ from app.core.config import settings
 from app.core.logging import telegram_logger
 from app.telegram.client import telegram_client_wrapper
 from app.telegram.filters import filter_message
-from app.db.database import engine
-from app.db.models import TelegramMessage
-from app.db.repositories import TelegramMessageRepository, SystemEventRepository, SettingsRepository
+from app.db.models import TelegramChannel, TelegramMessage
+from app.db.repositories import TelegramChannelRepository, TelegramMessageRepository, SystemEventRepository, SettingsRepository
 
 
 MEDIA_DIR = Path("app/static/telegram_media")
@@ -35,8 +34,8 @@ class TelegramPoller:
         self._running = False
         self._task = None
 
-    async def _target(self, session: Session):
-        chat_link = SettingsRepository.get(session, "telegram_chat_link", None) or settings.TELEGRAM_CHAT_LINK
+    async def _target(self, session: Session, chat_link: str | None = None):
+        chat_link = chat_link or SettingsRepository.get(session, "telegram_chat_link", None) or settings.TELEGRAM_CHAT_LINK
         if not chat_link:
             telegram_logger.warning("TELEGRAM_CHAT_LINK is not set. Skipping poll.")
             return None, None, None, None
@@ -58,14 +57,30 @@ class TelegramPoller:
         )
         return client, target_entity, chat_id, chat_link
 
+    def _enabled_channels(self, session: Session) -> list[TelegramChannel]:
+        channels = TelegramChannelRepository.list_enabled(session)
+        if channels:
+            return channels
+        chat_link = SettingsRepository.get(session, "telegram_chat_link", None) or settings.TELEGRAM_CHAT_LINK
+        if not chat_link:
+            return []
+        return [TelegramChannelRepository.ensure_channel(session, chat_link, attr="Env Channel", enabled=True)]
+
     async def poll_messages(self, session: Session) -> list:
-        """Polls new messages from the target channel and returns new database message instances."""
+        """Polls new messages from all enabled channels and returns new database message instances."""
+        new_messages: list[TelegramMessage] = []
+        for channel in self._enabled_channels(session):
+            new_messages.extend(await self._poll_channel_messages(session, channel))
+        return new_messages
+
+    async def _poll_channel_messages(self, session: Session, channel: TelegramChannel) -> list[TelegramMessage]:
+        """Polls one target channel."""
         try:
-            client, target_entity, chat_id, chat_link = await self._target(session)
+            client, target_entity, chat_id, chat_link = await self._target(session, channel.chat_link)
             if not client:
                 return []
 
-            last_msg_id = TelegramMessageRepository.get_latest_message_id(session, chat_id)
+            last_msg_id = TelegramMessageRepository.get_latest_message_id(session, chat_id, channel.id)
             
             telegram_logger.debug(f"Polling {chat_link} (ID: {chat_id}) since message ID {last_msg_id}...")
             
@@ -87,11 +102,15 @@ class TelegramPoller:
                 # Double check in DB to prevent duplicates
                 existing = TelegramMessageRepository.get_by_telegram_id(session, chat_id, msg.id)
                 if existing:
+                    if existing.telegram_channel_id != channel.id:
+                        existing.telegram_channel_id = channel.id
+                        TelegramMessageRepository.save(session, existing)
                     continue
 
                 # Prepare database record
                 media_url = await self._download_image_media(msg, chat_id)
                 db_msg = TelegramMessage(
+                    telegram_channel_id=channel.id,
                     chat_id=chat_id,
                     message_id=msg.id,
                     message_date=msg.date or datetime.utcnow(),
@@ -127,9 +146,24 @@ class TelegramPoller:
             return []
 
     async def refresh_recent_messages(self, session: Session, limit: int = 120) -> dict:
+        """Refetch recent history for all enabled channels and backfill missing text/image media in the DB."""
+        total = {"scanned": 0, "created": 0, "media_updated": 0}
+        errors = []
+        for channel in self._enabled_channels(session):
+            result = await self._refresh_recent_channel_messages(session, channel, limit=limit)
+            total["scanned"] += int(result.get("scanned") or 0)
+            total["created"] += int(result.get("created") or 0)
+            total["media_updated"] += int(result.get("media_updated") or 0)
+            if result.get("error"):
+                errors.append(f"{channel.attr}: {result['error']}")
+        if errors:
+            total["error"] = "; ".join(errors)
+        return total
+
+    async def _refresh_recent_channel_messages(self, session: Session, channel: TelegramChannel, limit: int = 120) -> dict:
         """Refetch recent channel history and backfill missing text/image media in the DB."""
         try:
-            client, target_entity, chat_id, chat_link = await self._target(session)
+            client, target_entity, chat_id, chat_link = await self._target(session, channel.chat_link)
             if not client:
                 return {"scanned": 0, "created": 0, "media_updated": 0}
 
@@ -149,6 +183,9 @@ class TelegramPoller:
 
                 if existing:
                     changed = False
+                    if existing.telegram_channel_id != channel.id:
+                        existing.telegram_channel_id = channel.id
+                        changed = True
                     raw_text = msg.text or ""
                     if raw_text and existing.raw_text != raw_text:
                         existing.raw_text = raw_text
@@ -162,6 +199,7 @@ class TelegramPoller:
                     continue
 
                 db_msg = TelegramMessage(
+                    telegram_channel_id=channel.id,
                     chat_id=chat_id,
                     message_id=msg.id,
                     message_date=msg.date or datetime.utcnow(),

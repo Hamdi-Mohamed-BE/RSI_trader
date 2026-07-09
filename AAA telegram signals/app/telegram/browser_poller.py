@@ -59,8 +59,8 @@ class BrowserTelegramPoller:
         self._driver = None
         self._loaded_url = None
 
-    def poll_messages(self, session: Session) -> List[TelegramMessage]:
-        chat_link = SettingsRepository.get(session, "telegram_chat_link", None) or settings.TELEGRAM_CHAT_LINK
+    def poll_messages(self, session: Session, chat_link_override: str | None = None, telegram_channel_id: int | None = None) -> List[TelegramMessage]:
+        chat_link = chat_link_override or SettingsRepository.get(session, "telegram_chat_link", None) or settings.TELEGRAM_CHAT_LINK
         target_url = normalize_telegram_web_url(chat_link)
         try:
             driver = self._get_driver(session)
@@ -95,6 +95,7 @@ class BrowserTelegramPoller:
                     continue
 
                 db_msg = TelegramMessage(
+                    telegram_channel_id=telegram_channel_id,
                     chat_id=chat_id,
                     message_id=msg.id,
                     message_date=msg.date or datetime.utcnow(),
