@@ -23,8 +23,8 @@ if %ERRORLEVEL% equ 0 (
         mkdir storage\sessions
     )
     
-    echo Starting FastAPI server via venv python...
-    call .venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8787
+    echo Starting FastAPI server on all network interfaces...
+    call .venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8787
 ) else (
     echo [WARN] uv not found. Falling back to standard python pip.
     if not exist .venv (
@@ -46,8 +46,8 @@ if %ERRORLEVEL% equ 0 (
         mkdir storage\sessions
     )
     
-    echo Starting FastAPI server...
-    python -m uvicorn app.main:app --host 127.0.0.1 --port 8787
+    echo Starting FastAPI server on all network interfaces...
+    python -m uvicorn app.main:app --host 0.0.0.0 --port 8787
 )
 
 pause
