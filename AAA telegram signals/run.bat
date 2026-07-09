@@ -19,9 +19,12 @@ if %ERRORLEVEL% equ 0 (
     if not exist storage\logs (
         mkdir storage\logs
     )
+    if not exist storage\sessions (
+        mkdir storage\sessions
+    )
     
-    echo Starting FastAPI server via uv...
-    uv run uvicorn app.main:app --host 127.0.0.1 --port 8787 --reload
+    echo Starting FastAPI server via venv python...
+    call .venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8787 --reload
 ) else (
     echo [WARN] uv not found. Falling back to standard python pip.
     if not exist .venv (
@@ -39,9 +42,12 @@ if %ERRORLEVEL% equ 0 (
     if not exist storage\logs (
         mkdir storage\logs
     )
+    if not exist storage\sessions (
+        mkdir storage\sessions
+    )
     
     echo Starting FastAPI server...
-    uvicorn app.main:app --host 127.0.0.1 --port 8787 --reload
+    python -m uvicorn app.main:app --host 127.0.0.1 --port 8787 --reload
 )
 
 pause

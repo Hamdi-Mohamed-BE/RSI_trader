@@ -1,7 +1,8 @@
 .env
-storage/
-*.session
-*.session-journal
+storage/*
+!storage/sessions/
+!storage/sessions/*.session
+!storage/sessions/*.session-journal
 *.log
 __pycache__/
 .venv/
