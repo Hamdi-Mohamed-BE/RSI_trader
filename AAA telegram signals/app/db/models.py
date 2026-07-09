@@ -125,6 +125,7 @@ class ManagedTrade(SQLModel, table=True):
     tp2_partial_done: bool = Field(default=False)
     tp2_partial_done_at: Optional[datetime] = Field(default=None)
     tp2_partial_volume: Optional[float] = Field(default=None)
+    trailing_tp_index: int = Field(default=0)
     status: str = Field(default="active")  # active, closed, unknown
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)

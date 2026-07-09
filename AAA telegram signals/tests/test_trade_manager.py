@@ -44,11 +44,14 @@ def test_trade_manager_moves_be_and_closes_half_at_tp2(mock_mt5, mock_repo, mock
 
     count = TradeManager.process_break_even(MagicMock(), dynamic_offset_points=0)
 
-    assert count == 2
+    assert count == 3
     assert trade.break_even_done is True
-    assert trade.stop_loss_current == 2400.0
+    assert trade.stop_loss_current == 2410.0
     assert trade.tp2_partial_done is True
-    mock_mt5.modify_position.assert_called_once_with(12345, stop_loss=2400.0, take_profit=2430.0)
+    assert trade.trailing_tp_index == 2
+    assert mock_mt5.modify_position.call_count == 2
+    mock_mt5.modify_position.assert_any_call(12345, stop_loss=2400.0, take_profit=2430.0)
+    mock_mt5.modify_position.assert_any_call(12345, stop_loss=2410.0, take_profit=2430.0)
     mock_mt5.close_partial_position.assert_called_once()
     assert mock_mt5.close_partial_position.call_args.kwargs["volume"] == 0.05
 
@@ -60,6 +63,24 @@ def test_trade_manager_does_not_repeat_tp2_partial(mock_mt5, mock_repo, mock_eve
     trade = _trade(break_even_done=True, tp2_partial_done=True)
     mock_repo.get_active.return_value = [trade]
     mock_mt5.get_positions.return_value = [{"ticket": 12345, "price_current": 2425.0, "sl": 2400.0, "volume": 0.05}]
+    mock_mt5.get_symbol_info.return_value = {"point": 0.01, "digits": 2}
+    mock_mt5.modify_position.return_value = (True, None)
+
+    count = TradeManager.process_break_even(MagicMock(), dynamic_offset_points=0)
+
+    assert count == 1
+    assert trade.trailing_tp_index == 2
+    mock_mt5.modify_position.assert_called_once_with(12345, stop_loss=2410.0, take_profit=2430.0)
+    mock_mt5.close_partial_position.assert_not_called()
+
+
+@patch("app.trading.trade_manager.SystemEventRepository")
+@patch("app.trading.trade_manager.ManagedTradeRepository")
+@patch("app.trading.trade_manager.mt5_client")
+def test_trade_manager_does_not_repeat_tp_ladder(mock_mt5, mock_repo, mock_events):
+    trade = _trade(break_even_done=True, tp2_partial_done=True, trailing_tp_index=2, stop_loss_current=2410.0)
+    mock_repo.get_active.return_value = [trade]
+    mock_mt5.get_positions.return_value = [{"ticket": 12345, "price_current": 2425.0, "sl": 2410.0, "volume": 0.05}]
 
     count = TradeManager.process_break_even(MagicMock(), dynamic_offset_points=0)
 

@@ -35,6 +35,7 @@ def _migrate_sqlite():
         "tp2_partial_done": "BOOLEAN DEFAULT 0",
         "tp2_partial_done_at": "DATETIME",
         "tp2_partial_volume": "FLOAT",
+        "trailing_tp_index": "INTEGER DEFAULT 0",
     }
     order_attempt_columns = {
         "signal_hash": "TEXT",

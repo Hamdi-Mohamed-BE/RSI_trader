@@ -147,6 +147,7 @@ class TradeManager:
         Protects active copier trades:
         - TP1 reached: move SL to break-even.
         - TP2 reached: close 50% once and leave the rest running to TP3/final TP.
+        - TP2+ reached: trail SL to the previous TP level (TP2 -> TP1, TP3 -> TP2, etc.).
         Returns: number of successful trade-management actions.
         """
         active_db_trades = ManagedTradeRepository.get_active(session)
@@ -197,6 +198,8 @@ class TradeManager:
                 and TradeManager._price_reached(side, current_price, tp2)
             ):
                 modified_count += TradeManager._close_half_at_tp2(session, trade, pos, tp2)
+
+            modified_count += TradeManager._process_tp_ladder(session, trade, pos, current_price)
                     
         return modified_count
 
@@ -298,5 +301,96 @@ class TradeManager:
             source="trading",
             message=f"Failed TP2 partial close for trade {ticket}: {error}",
             details={"mt5_result": result},
+        )
+        return 0
+
+    @staticmethod
+    def _process_tp_ladder(session: Session, trade: ManagedTrade, pos: dict, current_price: float) -> int:
+        take_profits = trade.take_profits
+        if len(take_profits) < 2:
+            return 0
+
+        side = trade.side.lower()
+        actions = 0
+        trailing_tp_index = int(trade.trailing_tp_index or 0)
+
+        for tp_index in range(2, len(take_profits) + 1):
+            target_tp = take_profits[tp_index - 1]
+            stop_anchor = take_profits[tp_index - 2]
+
+            if trailing_tp_index >= tp_index:
+                continue
+            if not TradeManager._price_reached(side, current_price, target_tp):
+                continue
+
+            actions += TradeManager._move_stop_to_ladder_anchor(
+                session=session,
+                trade=trade,
+                pos=pos,
+                target_tp=target_tp,
+                stop_anchor=stop_anchor,
+                tp_index=tp_index,
+            )
+            if actions:
+                pos = {**pos, "sl": trade.stop_loss_current}
+
+        return actions
+
+    @staticmethod
+    def _move_stop_to_ladder_anchor(
+        session: Session,
+        trade: ManagedTrade,
+        pos: dict,
+        target_tp: float,
+        stop_anchor: float,
+        tp_index: int,
+    ) -> int:
+        ticket = trade.mt5_ticket
+        sym_info = mt5_client.get_symbol_info(trade.broker_symbol)
+        digits = sym_info.get("digits") if sym_info else 5
+        new_sl = round(float(stop_anchor), digits)
+        current_sl = float(pos.get("sl") or trade.stop_loss_current or 0)
+        side = trade.side.lower()
+
+        if side == "buy" and current_sl and new_sl <= current_sl:
+            trade.trailing_tp_index = tp_index
+            trade.updated_at = datetime.utcnow()
+            ManagedTradeRepository.save(session, trade)
+            return 0
+        if side == "sell" and current_sl and new_sl >= current_sl:
+            trade.trailing_tp_index = tp_index
+            trade.updated_at = datetime.utcnow()
+            ManagedTradeRepository.save(session, trade)
+            return 0
+
+        orders_logger.info(
+            f"Trade {ticket} ({trade.symbol_raw}) hit TP{tp_index} {target_tp}. "
+            f"Trailing SL from {current_sl} to TP{tp_index - 1} anchor {new_sl}."
+        )
+
+        success, error = mt5_client.modify_position(ticket, stop_loss=new_sl, take_profit=trade.final_take_profit)
+        if success:
+            trade.stop_loss_current = new_sl
+            trade.trailing_tp_index = tp_index
+            trade.updated_at = datetime.utcnow()
+            ManagedTradeRepository.save(session, trade)
+
+            SystemEventRepository.log(
+                session,
+                level="success",
+                source="trading",
+                message=(
+                    f"Trade {ticket} ({trade.symbol_raw}) hit TP{tp_index}; "
+                    f"trailed SL to TP{tp_index - 1} at {new_sl}."
+                ),
+            )
+            return 1
+
+        orders_logger.error(f"Failed TP ladder SL update for trade {ticket}. Error: {error}")
+        SystemEventRepository.log(
+            session,
+            level="error",
+            source="trading",
+            message=f"Failed TP ladder SL update for trade {ticket}: {error}",
         )
         return 0
