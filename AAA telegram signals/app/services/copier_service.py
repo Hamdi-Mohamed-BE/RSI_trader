@@ -7,6 +7,7 @@ from typing import Any, Optional
 from app.core.logging import logger, orders_logger
 from app.core.signal_hash import signal_content_hash
 from app.telegram.poller import TelegramPoller
+from app.telegram.browser_poller import browser_telegram_poller
 from app.llm.parser import parse_signal
 from app.trading.mt5_client import mt5_client
 from app.trading.symbol_resolver import symbol_resolver
@@ -63,7 +64,11 @@ class CopierService:
                         logger.debug("Copier is enabled. Processing cycle...")
                         
                         # 2. Poll and process new messages
-                        new_messages = await self._poller.poll_messages(session)
+                        read_mode = (SettingsService.get(session, "telegram_read_mode") or "api").strip().lower()
+                        if read_mode == "browser":
+                            new_messages = browser_telegram_poller.poll_messages(session)
+                        else:
+                            new_messages = await self._poller.poll_messages(session)
                         if new_messages:
                             logger.info(f"Polled {len(new_messages)} new messages. Processing...")
                             for msg in new_messages:

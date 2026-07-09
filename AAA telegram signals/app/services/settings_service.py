@@ -35,6 +35,8 @@ class SettingsService:
             "telegram_api_hash",
             "telegram_bot_token",
             "telegram_chat_link",
+            "telegram_read_mode",
+            "telegram_browser_headless",
             "allow_reply_signals",
             "gemini_api_key",
             "gemini_model",

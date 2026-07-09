@@ -43,6 +43,23 @@
                 <label for="telegram_chat_link">Telegram Chat Link / Chat ID</label>
                 <input type="text" id="telegram_chat_link" name="telegram_chat_link" class="form-input" value="{{ settings.telegram_chat_link }}" placeholder="e.g. -100123456789 or channel_username" required>
             </div>
+
+            <div class="form-group">
+                <label for="telegram_read_mode">Telegram Read Mode</label>
+                <select id="telegram_read_mode" name="telegram_read_mode" class="form-input" style="background-color: #120e28;">
+                    <option value="api" {% if (settings.telegram_read_mode or 'api') == 'api' %}selected{% endif %}>API session (recommended)</option>
+                    <option value="browser" {% if settings.telegram_read_mode == 'browser' %}selected{% endif %}>Browser scraper (Selenium)</option>
+                </select>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Browser mode opens Telegram Web with a persistent Chrome profile in storage/browser_profile.</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="telegram_browser_headless" {% if settings.telegram_browser_headless %}checked{% endif %}>
+                    Run Telegram browser hidden/headless after login
+                </label>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Keep unchecked for first login so you can scan QR or enter phone code.</span>
+            </div>
             
             <div class="form-group">
                 <label for="gemini_api_key">Gemini API Key</label>

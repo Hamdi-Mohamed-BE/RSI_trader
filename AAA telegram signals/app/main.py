@@ -33,6 +33,8 @@ async def lifespan(app: FastAPI):
             SettingsService.set(session, "telegram_api_hash", settings.TELEGRAM_API_HASH)
             SettingsService.set(session, "telegram_bot_token", settings.TELEGRAM_BOT_TOKEN)
             SettingsService.set(session, "telegram_chat_link", settings.TELEGRAM_CHAT_LINK)
+            SettingsService.set(session, "telegram_read_mode", settings.TELEGRAM_READ_MODE)
+            SettingsService.set(session, "telegram_browser_headless", settings.TELEGRAM_BROWSER_HEADLESS)
             SettingsService.set(session, "allow_reply_signals", settings.ALLOW_REPLY_SIGNALS)
             SettingsService.set(session, "gemini_api_key", settings.GEMINI_API_KEY)
             SettingsService.set(session, "gemini_model", settings.GEMINI_MODEL)

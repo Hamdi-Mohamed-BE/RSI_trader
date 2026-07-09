@@ -165,6 +165,8 @@ async def save_settings_form(
     telegram_api_hash: str = Form(...),
     telegram_bot_token: str = Form(""),
     telegram_chat_link: str = Form(...),
+    telegram_read_mode: str = Form("api"),
+    telegram_browser_headless: bool = Form(False),
     gemini_api_key: str = Form(...),
     gemini_model: str = Form("gemini-2.5-flash"),
     risk_mode: str = Form("fixed_lot"),
@@ -191,6 +193,8 @@ async def save_settings_form(
     SettingsService.set(db, "telegram_api_hash", telegram_api_hash)
     SettingsService.set(db, "telegram_bot_token", telegram_bot_token)
     SettingsService.set(db, "telegram_chat_link", telegram_chat_link)
+    SettingsService.set(db, "telegram_read_mode", telegram_read_mode if telegram_read_mode in {"api", "browser"} else "api")
+    SettingsService.set(db, "telegram_browser_headless", telegram_browser_headless)
     SettingsService.set(db, "gemini_api_key", gemini_api_key)
     SettingsService.set(db, "gemini_model", gemini_model)
     SettingsService.set(db, "risk_mode", risk_mode)

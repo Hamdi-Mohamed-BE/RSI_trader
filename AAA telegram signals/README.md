@@ -25,6 +25,7 @@ A local Windows/VPS automation service that polls a Telegram channel or chat eve
 - Paste a numeric chat ID, username, `t.me/c/...` link, or `web.telegram.org/a/#-100...` URL into Settings.
 - Bot mode requires the Telegram bot to be an administrator/member of the target channel.
 - User mode reads channels joined by your Telegram account. The first start shows a QR image at `storage/sessions/telegram_login_qr.png`; scan it from Telegram mobile via **Settings > Devices > Link Desktop Device**. If QR login expires, the app falls back to phone-code login in the visible console window.
+- `Telegram Read Mode` can be switched between `API session` and `Browser scraper`. Browser mode opens Telegram Web through Selenium, keeps the Chrome profile/cookies in `storage/browser_profile`, and reads visible chat messages from the automated browser before sending them through the same copier pipeline. Keep browser headless off for the first login.
 
 ### Fixed Lots
 

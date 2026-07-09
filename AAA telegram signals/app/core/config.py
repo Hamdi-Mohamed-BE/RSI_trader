@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     TELEGRAM_BOT_TOKEN: str = ""
     TELEGRAM_SESSION_STRING: str = ""
     TELEGRAM_CHAT_LINK: str = ""
+    TELEGRAM_READ_MODE: str = "api"  # "api" or "browser"
+    TELEGRAM_BROWSER_HEADLESS: bool = False
     ALLOW_REPLY_SIGNALS: bool = False
     
     # Gemini Settings
