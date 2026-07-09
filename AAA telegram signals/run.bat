@@ -24,7 +24,7 @@ if %ERRORLEVEL% equ 0 (
     )
     
     echo Starting FastAPI server via venv python...
-    call .venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8787 --reload
+    call .venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8787
 ) else (
     echo [WARN] uv not found. Falling back to standard python pip.
     if not exist .venv (
@@ -47,7 +47,7 @@ if %ERRORLEVEL% equ 0 (
     )
     
     echo Starting FastAPI server...
-    python -m uvicorn app.main:app --host 127.0.0.1 --port 8787 --reload
+    python -m uvicorn app.main:app --host 127.0.0.1 --port 8787
 )
 
 pause
