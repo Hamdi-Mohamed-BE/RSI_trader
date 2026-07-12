@@ -8,6 +8,7 @@ from typing import Any
 CANONICAL_ALIASES = {
     "GOLD": "XAUUSD",
     "XAU": "XAUUSD",
+    "XAAUSD": "XAUUSD",
     "SILVER": "XAGUSD",
     "XAG": "XAGUSD",
     "BTC": "BTCUSD",

@@ -3,6 +3,7 @@ from app.trading.lot_config import canonical_symbol, fixed_lot_for_signal, parse
 
 def test_canonical_symbol_handles_aliases_and_broker_suffixes():
     assert canonical_symbol("GOLD") == "XAUUSD"
+    assert canonical_symbol("XAAUSD") == "XAUUSD"
     assert canonical_symbol("XAUUSDm") == "XAUUSD"
     assert canonical_symbol("BTCUSD.raw") == "BTCUSD"
     assert canonical_symbol("USTEC") == "US100"

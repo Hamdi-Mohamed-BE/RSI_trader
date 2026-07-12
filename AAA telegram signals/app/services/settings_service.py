@@ -51,6 +51,8 @@ class SettingsService:
             "max_lot",
             "move_to_break_even_enabled",
             "break_even_offset_points",
+            "rr_override_enabled",
+            "target_rr",
             "allow_no_sl",
             "max_spread_points",
             "max_trades_per_day",

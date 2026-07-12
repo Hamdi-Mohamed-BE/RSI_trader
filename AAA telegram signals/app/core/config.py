@@ -45,6 +45,8 @@ class Settings(BaseSettings):
     # Trade Management Settings
     MOVE_TO_BREAK_EVEN_ENABLED: bool = True
     BREAK_EVEN_OFFSET_POINTS: int = 0
+    RR_OVERRIDE_ENABLED: bool = False
+    TARGET_RR: float = 1.0
     
     # Validation / Safety Settings
     ALLOW_NO_SL: bool = False

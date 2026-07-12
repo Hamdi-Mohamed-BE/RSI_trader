@@ -49,6 +49,8 @@ async def lifespan(app: FastAPI):
             SettingsService.set(session, "allow_min_lot_if_risk_too_small", settings.ALLOW_MIN_LOT_IF_RISK_TOO_SMALL)
             SettingsService.set(session, "move_to_break_even_enabled", settings.MOVE_TO_BREAK_EVEN_ENABLED)
             SettingsService.set(session, "break_even_offset_points", settings.BREAK_EVEN_OFFSET_POINTS)
+            SettingsService.set(session, "rr_override_enabled", settings.RR_OVERRIDE_ENABLED)
+            SettingsService.set(session, "target_rr", settings.TARGET_RR)
             SettingsService.set(session, "allow_no_sl", settings.ALLOW_NO_SL)
             SettingsService.set(session, "max_trades_per_day", settings.MAX_TRADES_PER_DAY)
             SettingsService.set(session, "daily_win_goal_usd", settings.DAILY_WIN_GOAL_USD)

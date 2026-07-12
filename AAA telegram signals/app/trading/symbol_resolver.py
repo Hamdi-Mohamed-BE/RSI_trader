@@ -5,7 +5,7 @@ from app.trading.lot_config import canonical_symbol
 from app.core.logging import logger
 
 DEFAULT_ALIAS_MAP = {
-    "GOLD": ["XAUUSD", "XAUUSDm", "XAUUSD-STD", "XAUUSD.raw", "GOLD"],
+    "GOLD": ["XAUUSD", "XAUUSDm", "XAUUSD-STD", "XAUUSD.raw", "GOLD", "XAAUSD"],
     "SILVER": ["XAGUSD", "XAGUSDm", "SILVER"],
     "BTC": ["BTCUSD", "BTCUSDm", "BTCUSD-STD", "BTCUSD.raw", "BTC"],
     "US30": ["US30", "DJ30", "DJI", "US30.cash", "US30m", "US30-STD"],

@@ -230,6 +230,8 @@ class CopierService:
         # 4. Validate SL/TP rules
         sl = parsed.stop_loss
         tp = parsed.final_take_profit
+        effective_take_profits = list(parsed.take_profits or [])
+        effective_break_even_tp = parsed.break_even_trigger_tp
         allow_no_sl = SettingsService.get(session, "allow_no_sl")
         
         # Verify SL exists if required
@@ -264,6 +266,33 @@ class CopierService:
 
         # Determine reference entry price
         ref_price = parsed.entry_price or (tick["ask"] if parsed.side == "buy" else tick["bid"])
+
+        rr_override_enabled = bool(SettingsService.get(session, "rr_override_enabled"))
+        target_rr = float(SettingsService.get(session, "target_rr") or 1.0)
+        if rr_override_enabled:
+            if not sl:
+                error_msg = "RR override is enabled, but signal has no Stop Loss to calculate risk distance."
+                self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
+                msg.processed = True
+                TelegramMessageRepository.save(session, msg)
+                SystemEventRepository.log(session, "error", "copier", f"Validation failed for {symbol_raw}: {error_msg}")
+                return
+            effective_take_profits = self._build_rr_take_profit_ladder(
+                side=parsed.side,
+                entry_price=ref_price,
+                stop_loss=sl,
+                target_rr=target_rr,
+                symbol_info=sym_info,
+            )
+            tp = effective_take_profits[-1] if effective_take_profits else None
+            effective_break_even_tp = effective_take_profits[0] if effective_take_profits else None
+            parsed.parser_notes.append(
+                f"Signal TPs overridden by user RR target 1:{target_rr:g}; effective TPs: {effective_take_profits}."
+            )
+            logger.info(
+                f"RR override active for {symbol_raw}: entry={ref_price}, SL={sl}, "
+                f"target_rr={target_rr:g}, effective_tps={effective_take_profits}"
+            )
         
         # Validate spread limit
         max_spread = SettingsService.get(session, "max_spread_points")
@@ -381,7 +410,7 @@ class CopierService:
             return
 
         # Create tentative OrderAttempt record
-        attempt = OrderAttempt(
+            attempt = OrderAttempt(
             telegram_message_db_id=msg.id,
             signal_hash=signal_hash,
             symbol_raw=symbol_raw,
@@ -391,9 +420,9 @@ class CopierService:
             pending_type=parsed.pending_type,
             entry_price=parsed.entry_price or ref_price,
             stop_loss=sl,
-            take_profits_json=json.dumps(parsed.take_profits),
+            take_profits_json=json.dumps(effective_take_profits),
             final_take_profit=tp,
-            break_even_trigger_tp=parsed.break_even_trigger_tp,
+            break_even_trigger_tp=effective_break_even_tp,
             lot=lot,
             risk_mode=risk_mode,
             risk_amount=risk_usd if risk_mode == "risk_usd_cap" else (risk_pct if risk_mode == "risk_percent" else fixed_lot),
@@ -448,9 +477,9 @@ class CopierService:
                 entry_price=send_result.get("price") or ref_price,
                 stop_loss_original=sl or 0.0,
                 stop_loss_current=sl or 0.0,
-                take_profits_json=json.dumps(parsed.take_profits),
+                take_profits_json=json.dumps(effective_take_profits),
                 final_take_profit=tp or 0.0,
-                break_even_trigger_tp=parsed.break_even_trigger_tp,
+                break_even_trigger_tp=effective_break_even_tp,
                 break_even_enabled=bool(SettingsService.get(session, "move_to_break_even_enabled")),
                 break_even_done=False,
                 tp2_partial_done=False,
@@ -468,6 +497,37 @@ class CopierService:
         # Mark message as processed
         msg.processed = True
         TelegramMessageRepository.save(session, msg)
+
+    @staticmethod
+    def _build_rr_take_profit_ladder(
+        side: str,
+        entry_price: float,
+        stop_loss: float,
+        target_rr: float,
+        symbol_info: Optional[dict] = None,
+    ) -> list[float]:
+        target_rr = max(float(target_rr or 0), 0.1)
+        risk_distance = abs(float(entry_price) - float(stop_loss))
+        if risk_distance <= 0:
+            raise ValueError("Entry price and Stop Loss cannot be equal for RR override.")
+
+        digits = int((symbol_info or {}).get("digits") or 5)
+        rr_steps: list[float] = []
+        whole_steps = int(target_rr)
+        rr_steps.extend(float(step) for step in range(1, whole_steps + 1))
+        if not rr_steps or abs(target_rr - rr_steps[-1]) > 1e-9:
+            rr_steps.append(target_rr)
+
+        tps: list[float] = []
+        for rr in rr_steps:
+            if side == "buy":
+                tp = float(entry_price) + (risk_distance * rr)
+            else:
+                tp = float(entry_price) - (risk_distance * rr)
+            rounded_tp = round(tp, digits)
+            if rounded_tp not in tps:
+                tps.append(rounded_tp)
+        return tps
 
     def _save_failed_attempt(self, session: Session, message_db_id: int, parsed: Any, error_msg: str, status: str, broker_symbol: Optional[str] = None):
         """Helper to log validation/order failures."""

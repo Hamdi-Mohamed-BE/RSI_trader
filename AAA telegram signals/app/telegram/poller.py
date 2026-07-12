@@ -136,12 +136,16 @@ class TelegramPoller:
             return new_db_messages
 
         except Exception as e:
-            telegram_logger.error(f"Error polling Telegram messages: {e}", exc_info=True)
+            channel_label = self._channel_label(channel)
+            telegram_logger.error(
+                f"Error polling Telegram messages for {channel_label}: {e}",
+                exc_info=True,
+            )
             SystemEventRepository.log(
                 session, 
                 level="error", 
                 source="telegram", 
-                message=f"Polling failed: {str(e)}"
+                message=f"Polling failed for {channel_label}: {str(e)}"
             )
             return []
 
@@ -221,14 +225,26 @@ class TelegramPoller:
 
             return {"scanned": len(history), "created": created, "media_updated": media_updated}
         except Exception as e:
-            telegram_logger.error(f"Error refreshing recent Telegram messages: {e}", exc_info=True)
+            channel_label = self._channel_label(channel)
+            telegram_logger.error(
+                f"Error refreshing recent Telegram messages for {channel_label}: {e}",
+                exc_info=True,
+            )
             SystemEventRepository.log(
                 session,
                 level="error",
                 source="telegram",
-                message=f"Refresh recent messages failed: {str(e)}",
+                message=f"Refresh recent messages failed for {channel_label}: {str(e)}",
             )
             return {"scanned": 0, "created": 0, "media_updated": 0, "error": str(e)}
+
+    @staticmethod
+    def _channel_label(channel: TelegramChannel) -> str:
+        attr = (getattr(channel, "attr", "") or "Telegram").strip()
+        link = (getattr(channel, "chat_link", "") or "").strip()
+        channel_id = getattr(channel, "id", None)
+        id_part = f"#{channel_id}" if channel_id is not None else "#?"
+        return f"{attr} {id_part} ({link})"
 
     @staticmethod
     def _image_extension(msg) -> str | None:

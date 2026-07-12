@@ -146,7 +146,6 @@ class TradeManager:
         """
         Protects active copier trades:
         - TP1 reached: move SL to break-even.
-        - TP2 reached: close 50% once and leave the rest running to TP3/final TP.
         - TP2+ reached: trail SL to the previous TP level (TP2 -> TP1, TP3 -> TP2, etc.).
         Returns: number of successful trade-management actions.
         """
@@ -189,15 +188,6 @@ class TradeManager:
                     pos=pos,
                     dynamic_offset_points=dynamic_offset_points,
                 )
-
-            take_profits = trade.take_profits
-            tp2 = take_profits[1] if len(take_profits) >= 3 else None
-            if (
-                tp2
-                and not trade.tp2_partial_done
-                and TradeManager._price_reached(side, current_price, tp2)
-            ):
-                modified_count += TradeManager._close_half_at_tp2(session, trade, pos, tp2)
 
             modified_count += TradeManager._process_tp_ladder(session, trade, pos, current_price)
                     

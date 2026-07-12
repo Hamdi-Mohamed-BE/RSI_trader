@@ -172,8 +172,11 @@
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 3rem;">
-                            No Telegram messages have been processed today.
+                        <td colspan="9" class="empty-table-cell">
+                            <div class="empty-state">
+                                <div class="empty-state-title">No messages yet</div>
+                                <div class="empty-state-copy">The copier has not processed Telegram messages for this filter today.</div>
+                            </div>
                         </td>
                     </tr>
                 {% endif %}

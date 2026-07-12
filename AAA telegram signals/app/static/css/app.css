@@ -298,10 +298,24 @@ body {
 .compact-select {
   border: 1px solid var(--panel-border);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
+  background: #171229;
   color: var(--text-primary);
   padding: 0.45rem 0.55rem;
   font-family: var(--font-sans);
+  font-weight: 700;
+  min-width: 116px;
+  outline: none;
+}
+
+.compact-select:focus {
+  border-color: rgba(157, 78, 221, 0.65);
+  box-shadow: 0 0 0 3px rgba(157, 78, 221, 0.16);
+}
+
+.compact-select option {
+  background: #171229;
+  color: #fff;
+  font-weight: 600;
 }
 
 .compact-btn {
@@ -391,6 +405,31 @@ body {
 .custom-table tr:hover td {
   background: rgba(255, 255, 255, 0.015);
   color: #fff;
+}
+
+.empty-table-cell {
+  padding: 3rem 1.5rem !important;
+  text-align: center;
+}
+
+.empty-state {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 420px;
+  color: var(--text-muted);
+}
+
+.empty-state-title {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.empty-state-copy {
+  color: var(--text-muted);
+  font-size: 0.86rem;
 }
 
 /* Badges */
