@@ -106,27 +106,46 @@ async def view_messages(
     page: int = Query(1, ge=1),
     per_page: int = Query(25, ge=5, le=100),
     channel_id: int = Query(0, ge=0),
+    scope: str = Query("all"),
     reloaded: int = Query(0, ge=0),
     created: int = Query(0, ge=0),
     media_updated: int = Query(0, ge=0),
 ):
     copier_enabled = SettingsService.get(db, "copier_enabled")
     
-    # Show the full current-day message list instead of hiding older same-day posts.
     today = datetime.now()
+    scope = "today" if str(scope).lower() == "today" else "all"
     channels = TelegramChannelRepository.list_all(db)
     selected_channel_id = channel_id or None
-    total_messages = TelegramMessageRepository.count_for_day(db, today, telegram_channel_id=selected_channel_id)
+    if scope == "today":
+        total_messages = TelegramMessageRepository.count_for_day(
+            db,
+            today,
+            telegram_channel_id=selected_channel_id,
+        )
+    else:
+        total_messages = TelegramMessageRepository.count_all(
+            db,
+            telegram_channel_id=selected_channel_id,
+        )
     total_pages = max(1, (total_messages + per_page - 1) // per_page)
     page = min(page, total_pages)
     offset = (page - 1) * per_page
-    recent_msgs = TelegramMessageRepository.get_for_day(
-        db,
-        today,
-        limit=per_page,
-        offset=offset,
-        telegram_channel_id=selected_channel_id,
-    )
+    if scope == "today":
+        recent_msgs = TelegramMessageRepository.get_for_day(
+            db,
+            today,
+            limit=per_page,
+            offset=offset,
+            telegram_channel_id=selected_channel_id,
+        )
+    else:
+        recent_msgs = TelegramMessageRepository.get_paginated(
+            db,
+            limit=per_page,
+            offset=offset,
+            telegram_channel_id=selected_channel_id,
+        )
     channel_by_id = {channel.id: channel for channel in channels}
     
     messages_data = []
@@ -172,7 +191,8 @@ async def view_messages(
         "copier_enabled": copier_enabled,
         "messages": messages_data,
         "message_count": total_messages,
-        "message_day_label": today.strftime("%Y-%m-%d"),
+        "message_day_label": today.strftime("%Y-%m-%d") if scope == "today" else None,
+        "message_scope": scope,
         "channels": channels,
         "selected_channel_id": channel_id,
         "page": page,
@@ -196,15 +216,31 @@ async def reload_messages_from_telegram(
     db: Session = Depends(get_db),
     limit: int = Form(120),
     per_page: int = Form(25),
+    channel_id: int = Form(0),
+    scope: str = Form("all"),
 ):
     limit = max(20, min(int(limit or 120), 300))
     per_page = max(5, min(int(per_page or 25), 100))
+    channel_id = max(0, int(channel_id or 0))
+    scope = "today" if str(scope).lower() == "today" else "all"
     result = await telegram_poller.refresh_recent_messages(db, limit=limit)
     SystemEventRepository.log(
         db,
         "info",
         "telegram",
         f"Manual Telegram reload scanned {result.get('scanned', 0)} messages, created {result.get('created', 0)}, media backfilled {result.get('media_updated', 0)}.",
+    )
+    return RedirectResponse(
+        url=(
+            "/messages"
+            f"?per_page={per_page}"
+            f"&channel_id={channel_id}"
+            f"&scope={scope}"
+            f"&reloaded={result.get('scanned', 0)}"
+            f"&created={result.get('created', 0)}"
+            f"&media_updated={result.get('media_updated', 0)}"
+        ),
+        status_code=303,
     )
 
 @router.get("/channels", response_class=HTMLResponse)
@@ -262,16 +298,6 @@ async def update_channel(
         TelegramChannelRepository.save(db, channel)
         SystemEventRepository.log(db, "info", "telegram", f"Updated Telegram channel {channel.attr}.")
     return RedirectResponse(url="/channels", status_code=303)
-    return RedirectResponse(
-        url=(
-            "/messages"
-            f"?per_page={per_page}"
-            f"&reloaded={result.get('scanned', 0)}"
-            f"&created={result.get('created', 0)}"
-            f"&media_updated={result.get('media_updated', 0)}"
-        ),
-        status_code=303,
-    )
 
 @router.get("/trades", response_class=HTMLResponse)
 async def view_trades(request: Request, db: Session = Depends(get_db)):

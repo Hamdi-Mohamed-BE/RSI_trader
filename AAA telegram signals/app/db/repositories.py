@@ -100,6 +100,39 @@ class TelegramMessageRepository:
         return list(session.exec(statement).all())
 
     @staticmethod
+    def get_paginated(
+        session: Session,
+        limit: int = 25,
+        offset: int = 0,
+        telegram_channel_id: Optional[int] = None,
+    ) -> List[TelegramMessage]:
+        statement = select(TelegramMessage)
+        if telegram_channel_id is not None:
+            statement = statement.where(TelegramMessage.telegram_channel_id == telegram_channel_id)
+        statement = statement.order_by(desc(TelegramMessage.message_date)).offset(offset).limit(limit)
+        return list(session.exec(statement).all())
+
+    @staticmethod
+    def count_all(session: Session, telegram_channel_id: Optional[int] = None) -> int:
+        statement = select(func.count()).select_from(TelegramMessage)
+        if telegram_channel_id is not None:
+            statement = statement.where(TelegramMessage.telegram_channel_id == telegram_channel_id)
+        return int(session.exec(statement).one() or 0)
+
+    @staticmethod
+    def get_pending(session: Session, limit: int = 20) -> List[TelegramMessage]:
+        statement = (
+            select(TelegramMessage)
+            .where(
+                TelegramMessage.processed == False,  # noqa: E712
+                TelegramMessage.ignored == False,  # noqa: E712
+            )
+            .order_by(TelegramMessage.message_date)
+            .limit(limit)
+        )
+        return list(session.exec(statement).all())
+
+    @staticmethod
     def get_for_day(
         session: Session,
         day: datetime,

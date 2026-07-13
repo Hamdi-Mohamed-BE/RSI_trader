@@ -86,7 +86,7 @@ def test_stale_signal_without_explicit_entry_is_rejected(mock_get):
 
 @patch("app.services.copier_service.SettingsService.get", side_effect=_stale_settings)
 def test_stale_signal_far_from_entry_is_rejected(mock_get):
-    parsed = SimpleNamespace(side="buy", entry_price=2400.0, stop_loss=2390.0)
+    parsed = SimpleNamespace(side="buy", order_type="market", pending_type=None, entry_price=2400.0, stop_loss=2390.0)
 
     error = CopierService()._validate_stale_signal(
         MagicMock(),
@@ -102,7 +102,7 @@ def test_stale_signal_far_from_entry_is_rejected(mock_get):
 
 @patch("app.services.copier_service.SettingsService.get", side_effect=_stale_settings)
 def test_stale_signal_near_entry_is_allowed(mock_get):
-    parsed = SimpleNamespace(side="buy", entry_price=2400.0, stop_loss=2390.0)
+    parsed = SimpleNamespace(side="buy", order_type="market", pending_type=None, entry_price=2400.0, stop_loss=2390.0)
 
     error = CopierService()._validate_stale_signal(
         MagicMock(),
@@ -110,6 +110,43 @@ def test_stale_signal_near_entry_is_allowed(mock_get):
         parsed,
         {"ask": 2400.25, "bid": 2400.05},
         {"point": 0.01},
+    )
+
+    assert error is None
+
+
+@patch("app.services.copier_service.SettingsService.get", side_effect=_stale_settings)
+def test_stale_pending_limit_order_is_allowed_even_far_from_entry(mock_get):
+    parsed = SimpleNamespace(
+        side="buy",
+        order_type="pending",
+        pending_type="buy_limit",
+        entry_price=2400.0,
+        stop_loss=2390.0,
+    )
+
+    error = CopierService()._validate_stale_signal(
+        MagicMock(),
+        _message(minutes_old=60),
+        parsed,
+        {"ask": 2450.0, "bid": 2449.8},
+        {"point": 0.01},
+    )
+
+    assert error is None
+
+
+@patch("app.services.copier_service.SettingsService.get", side_effect=_stale_settings)
+def test_stale_validation_force_bypass_allows_old_market_signal(mock_get):
+    parsed = SimpleNamespace(side="buy", order_type="market", pending_type=None, entry_price=None, stop_loss=2390.0)
+
+    error = CopierService()._validate_stale_signal(
+        MagicMock(),
+        _message(minutes_old=60),
+        parsed,
+        {"ask": 2450.0, "bid": 2449.8},
+        {"point": 0.01},
+        force_bypass=True,
     )
 
     assert error is None

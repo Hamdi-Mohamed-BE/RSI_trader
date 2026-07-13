@@ -93,14 +93,21 @@ class CopierService:
                             new_messages = await self._poller.poll_messages(session)
                         if new_messages:
                             logger.info(f"Polled {len(new_messages)} new messages. Processing...")
-                            for msg in new_messages:
-                                if msg.ignored:
-                                    continue
-                                try:
-                                    await self._process_message(session, msg)
-                                except Exception as e:
-                                    logger.error(f"Error processing message {msg.id}: {e}")
-                                    traceback.print_exc()
+                        pending_messages = TelegramMessageRepository.get_pending(session, limit=25)
+                        messages_to_process = self._merge_message_batches(new_messages, pending_messages)
+                        if pending_messages:
+                            logger.info(
+                                f"Found {len(pending_messages)} saved pending messages. "
+                                "Processing backlog..."
+                            )
+                        for msg in messages_to_process:
+                            if msg.ignored:
+                                continue
+                            try:
+                                await self._process_message(session, msg)
+                            except Exception as e:
+                                self._mark_message_processing_error(session, msg, e)
+                                traceback.print_exc()
                         
                         # 3. Process break-even triggers
                         try:
@@ -129,7 +136,34 @@ class CopierService:
                 
             await asyncio.sleep(max(1, poll_interval))
 
-    async def _process_message(self, session: Session, msg: TelegramMessage):
+    @staticmethod
+    def _merge_message_batches(*batches: list[TelegramMessage]) -> list[TelegramMessage]:
+        merged: list[TelegramMessage] = []
+        seen: set[int] = set()
+        for batch in batches:
+            for msg in batch:
+                if msg.id is None or msg.id in seen:
+                    continue
+                seen.add(msg.id)
+                merged.append(msg)
+        return merged
+
+    @staticmethod
+    def _mark_message_processing_error(session: Session, msg: TelegramMessage, exc: Exception):
+        error_msg = f"Processing exception: {exc}"
+        logger.error(f"Error processing message {msg.id}: {exc}")
+        msg.ignored = True
+        msg.ignore_reason = error_msg[:500]
+        msg.processed = True
+        TelegramMessageRepository.save(session, msg)
+        SystemEventRepository.log(
+            session,
+            "error",
+            "copier",
+            f"Message {msg.message_id} failed during processing and was marked ignored: {exc}",
+        )
+
+    async def _process_message(self, session: Session, msg: TelegramMessage, force_stale_bypass: bool = False):
         """Pipeline processing a single Telegram message into a trade order."""
         logger.info(f"Processing message {msg.message_id} from chat {msg.chat_id}")
         signal_hash = signal_content_hash(msg.raw_text)
@@ -254,7 +288,14 @@ class CopierService:
             return
 
         sym_info = mt5_client.get_symbol_info(broker_symbol)
-        stale_error = self._validate_stale_signal(session, msg, parsed, tick, sym_info)
+        stale_error = self._validate_stale_signal(
+            session,
+            msg,
+            parsed,
+            tick,
+            sym_info,
+            force_bypass=force_stale_bypass,
+        )
         if stale_error:
             self._save_failed_attempt(session, msg.id, parsed, stale_error, "validation_failed", broker_symbol)
             msg.ignored = True
@@ -410,7 +451,7 @@ class CopierService:
             return
 
         # Create tentative OrderAttempt record
-            attempt = OrderAttempt(
+        attempt = OrderAttempt(
             telegram_message_db_id=msg.id,
             signal_hash=signal_hash,
             symbol_raw=symbol_raw,
@@ -554,7 +595,21 @@ class CopierService:
         )
         OrderAttemptRepository.save(session, attempt)
 
-    def _validate_stale_signal(self, session: Session, msg: TelegramMessage, parsed: Any, tick: dict, sym_info: Optional[dict]) -> Optional[str]:
+    def _validate_stale_signal(
+        self,
+        session: Session,
+        msg: TelegramMessage,
+        parsed: Any,
+        tick: dict,
+        sym_info: Optional[dict],
+        force_bypass: bool = False,
+    ) -> Optional[str]:
+        if force_bypass:
+            return None
+
+        if self._is_explicit_pending_order(parsed):
+            return None
+
         max_age_minutes = int(SettingsService.get(session, "stale_signal_max_age_minutes") or 0)
         if max_age_minutes <= 0:
             return None
@@ -587,6 +642,16 @@ class CopierService:
             )
 
         return None
+
+    @staticmethod
+    def _is_explicit_pending_order(parsed: Any) -> bool:
+        order_type = str(getattr(parsed, "order_type", "") or "").lower()
+        pending_type = str(getattr(parsed, "pending_type", "") or "").lower()
+        return (
+            order_type == "pending"
+            and pending_type in {"buy_limit", "sell_limit", "buy_stop", "sell_stop"}
+            and bool(getattr(parsed, "entry_price", None))
+        )
 
     @staticmethod
     def _message_age_minutes(message_date: datetime) -> float:

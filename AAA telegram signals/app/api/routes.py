@@ -90,7 +90,7 @@ async def reprocess_message(id: int, db: Session = Depends(get_db)):
 
     # Trigger process pipeline directly
     try:
-        await copier_service._process_message(db, msg)
+        await copier_service._process_message(db, msg, force_stale_bypass=True)
         SystemEventRepository.log(
             db,
             level="success",

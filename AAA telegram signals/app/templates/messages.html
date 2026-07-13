@@ -2,13 +2,13 @@
 
 {% block title %}Messages | AI Signal Copier{% endblock %}
 {% block page_header %}Telegram Messages{% endblock %}
-{% block page_sub %}Displaying all messages from today with cached parsing details{% endblock %}
+{% block page_sub %}Displaying Telegram messages with cached parsing details{% endblock %}
 
 {% block content %}
 <div class="data-section">
     <div class="section-header">
         <div>
-            <h2>Today's Messages{% if message_day_label %} - {{ message_day_label }}{% endif %}</h2>
+            <h2>{% if message_scope == 'today' %}Today's Messages - {{ message_day_label }}{% else %}All Messages{% endif %}</h2>
             <div class="section-subline">
                 <span class="badge badge-purple">{{ message_count or 0 }} messages</span>
                 <span>Page {{ page }} of {{ total_pages }}</span>
@@ -16,6 +16,8 @@
         </div>
         <form method="post" action="/messages/reload" class="message-reload-form">
             <input type="hidden" name="per_page" value="{{ per_page }}">
+            <input type="hidden" name="channel_id" value="{{ selected_channel_id }}">
+            <input type="hidden" name="scope" value="{{ message_scope }}">
             <label>
                 Scan
                 <select name="limit" class="compact-select">
@@ -40,6 +42,13 @@
                 {% for channel in channels %}
                 <option value="{{ channel.id }}" {% if selected_channel_id == channel.id %}selected{% endif %}>{{ channel.attr }}</option>
                 {% endfor %}
+            </select>
+        </label>
+        <label>
+            View
+            <select name="scope" class="compact-select">
+                <option value="all" {% if message_scope != 'today' %}selected{% endif %}>All messages</option>
+                <option value="today" {% if message_scope == 'today' %}selected{% endif %}>Today only</option>
             </select>
         </label>
         <label>
@@ -186,13 +195,13 @@
 
     <div class="pagination-bar">
         {% if has_prev %}
-        <a class="btn btn-secondary compact-btn" href="/messages?page={{ prev_page }}&per_page={{ per_page }}&channel_id={{ selected_channel_id }}">Previous</a>
+        <a class="btn btn-secondary compact-btn" href="/messages?page={{ prev_page }}&per_page={{ per_page }}&channel_id={{ selected_channel_id }}&scope={{ message_scope }}">Previous</a>
         {% else %}
         <span class="btn btn-secondary compact-btn disabled">Previous</span>
         {% endif %}
         <span class="pagination-status">Page {{ page }} / {{ total_pages }}</span>
         {% if has_next %}
-        <a class="btn btn-secondary compact-btn" href="/messages?page={{ next_page }}&per_page={{ per_page }}&channel_id={{ selected_channel_id }}">Next</a>
+        <a class="btn btn-secondary compact-btn" href="/messages?page={{ next_page }}&per_page={{ per_page }}&channel_id={{ selected_channel_id }}&scope={{ message_scope }}">Next</a>
         {% else %}
         <span class="btn btn-secondary compact-btn disabled">Next</span>
         {% endif %}

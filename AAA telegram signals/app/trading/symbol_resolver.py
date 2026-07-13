@@ -6,6 +6,7 @@ from app.core.logging import logger
 
 DEFAULT_ALIAS_MAP = {
     "GOLD": ["XAUUSD", "XAUUSDm", "XAUUSD-STD", "XAUUSD.raw", "GOLD", "XAAUSD"],
+    "XAAUSD": ["XAUUSD", "XAUUSDm", "XAUUSD-STD", "XAUUSD.raw", "GOLD"],
     "SILVER": ["XAGUSD", "XAGUSDm", "SILVER"],
     "BTC": ["BTCUSD", "BTCUSDm", "BTCUSD-STD", "BTCUSD.raw", "BTC"],
     "US30": ["US30", "DJ30", "DJI", "US30.cash", "US30m", "US30-STD"],
@@ -20,6 +21,24 @@ class SymbolResolver:
         """Normalizes a symbol by making uppercase and stripping common suffixes/punctuation."""
         return canonical_symbol(symbol)
 
+    def _allows_opening(self, symbol_obj) -> bool:
+        trade_mode = getattr(symbol_obj, "trade_mode", None)
+        if isinstance(trade_mode, int):
+            # 0 = disabled, 3 = close only. Both cannot open new market/pending trades.
+            return trade_mode not in {0, 3}
+        return True
+
+    def _symbol_is_openable(self, symbol_name: str) -> bool:
+        info = mt5.symbol_info(symbol_name)
+        if info is None:
+            return True
+        return self._allows_opening(info)
+
+    def _remember(self, requested_symbol: str, broker_symbol: str, confidence: float) -> Tuple[str, float]:
+        self._cache[requested_symbol.upper()] = broker_symbol
+        mt5_client.select_symbol(broker_symbol, True)
+        return broker_symbol, confidence
+
     def resolve(self, requested_symbol: str) -> Tuple[Optional[str], float]:
         """
         Resolves a raw input symbol (e.g. USDCAD) to a broker-specific symbol (e.g. USDCADm).
@@ -29,7 +48,11 @@ class SymbolResolver:
         
         # 1. Check cache first
         if req_upper in self._cache:
-            return self._cache[req_upper], 1.0
+            cached = self._cache[req_upper]
+            if self._symbol_is_openable(cached):
+                return cached, 1.0
+            logger.warning(f"Cached symbol {cached} for {req_upper} is close-only/disabled. Re-resolving.")
+            self._cache.pop(req_upper, None)
 
         # Ensure MT5 is connected
         if not mt5_client.connect():
@@ -42,15 +65,12 @@ class SymbolResolver:
             logger.warning("Failed to retrieve symbols from MT5, returning raw symbol.")
             return req_upper, 0.5
 
-        broker_symbols = [s.name for s in all_symbols]
+        broker_symbols = list(all_symbols)
         
         # 2. Try exact match first
         for s in broker_symbols:
-            if s.upper() == req_upper:
-                self._cache[req_upper] = s
-                # Make sure it's visible
-                mt5_client.select_symbol(s, True)
-                return s, 1.0
+            if s.name.upper() == req_upper and self._allows_opening(s):
+                return self._remember(req_upper, s.name, 1.0)
 
         # 3. Check alias mapping
         aliases = []
@@ -65,30 +85,30 @@ class SymbolResolver:
                     break
         
         if aliases:
-            # Check which alias matches a broker symbol
-            for s in broker_symbols:
-                for alias in aliases:
-                    if s.upper() == alias.upper() or self._normalize(s) == self._normalize(alias):
-                        self._cache[req_upper] = s
-                        mt5_client.select_symbol(s, True)
-                        return s, 0.95
+            # Follow alias priority first. This prevents broker symbols like a close-only
+            # stock named "GOLD" from beating the intended gold spot symbol "XAUUSD".
+            for alias in aliases:
+                alias_norm = self._normalize(alias)
+                for s in broker_symbols:
+                    if not self._allows_opening(s):
+                        continue
+                    if s.name.upper() == alias.upper() or self._normalize(s.name) == alias_norm:
+                        return self._remember(req_upper, s.name, 0.95)
 
         # 4. Try normalized comparison
         req_norm = self._normalize(req_upper)
         for s in broker_symbols:
-            if self._normalize(s) == req_norm:
-                self._cache[req_upper] = s
-                mt5_client.select_symbol(s, True)
-                return s, 0.90
+            if self._allows_opening(s) and self._normalize(s.name) == req_norm:
+                return self._remember(req_upper, s.name, 0.90)
 
         # 5. Fuzzy match prefix / suffix containment
         # Example: Input is EURUSD, broker has "EURUSD.micro"
         for s in broker_symbols:
-            s_upper = s.upper()
+            if not self._allows_opening(s):
+                continue
+            s_upper = s.name.upper()
             if req_upper in s_upper or s_upper in req_upper:
-                self._cache[req_upper] = s
-                mt5_client.select_symbol(s, True)
-                return s, 0.80
+                return self._remember(req_upper, s.name, 0.80)
 
         # fallback: return requested in upper case
         return req_upper, 0.3

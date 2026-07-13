@@ -83,3 +83,24 @@ def test_resolve_us100_to_suffixed_ustec(mock_mt5, mock_client, mock_resolver):
 
     assert broker_sym == "USTECm"
     assert conf >= 0.90
+
+
+@patch("app.trading.symbol_resolver.mt5_client")
+@patch("app.trading.symbol_resolver.mt5")
+def test_resolve_xaausd_skips_close_only_gold_stock(mock_mt5, mock_client, mock_resolver):
+    mock_client.connect.return_value = True
+
+    close_only_gold_stock = MagicMock()
+    close_only_gold_stock.name = "GOLD"
+    close_only_gold_stock.trade_mode = 3
+
+    spot_gold = MagicMock()
+    spot_gold.name = "XAUUSD"
+    spot_gold.trade_mode = 4
+
+    mock_mt5.symbols_get.return_value = [close_only_gold_stock, spot_gold]
+
+    broker_sym, conf = mock_resolver.resolve("XAAUSD")
+
+    assert broker_sym == "XAUUSD"
+    assert conf >= 0.90
