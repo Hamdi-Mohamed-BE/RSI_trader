@@ -7,6 +7,7 @@ Focused implementation of the original LTA Concepts strategy, plus one isolated 
 - `run_lta_bot.bat` starts the visible LTA automation worker.
 - `stop_lta_bot.bat` stops that worker and clears its runtime lock.
 - `run.bat` starts the LTA backtesting and scan page at `http://127.0.0.1:8000`.
+- `run_sats_bot.bat` starts the separate Self-Aware Trend System research worker.
 
 ## Lot Sizing
 
@@ -68,4 +69,30 @@ Run the 60-day walk-forward optimizer with:
 
 ```powershell
 .\.venv\Scripts\python.exe -m app.relvol_orb_backtest --days 60 --balance 300
+```
+
+## Self-Aware Trend System
+
+`run_sats_bot.bat` scans the Python port of the TradingView "Self-Aware Trend System [WillyAlgoTrader]" script. It keeps its own state under `reports/sats_bot/` and uses its own live switches:
+
+```env
+SATS_LIVE_TRADING=false
+SATS_PLACE_ORDERS=false
+SATS_ENTRY_MODE=THREE_LEG_SPLIT
+```
+
+The port includes the adaptive SuperTrend flip, Trend Quality Index, score/TQI filters, ATR stop, TP ladder, timeout exits, and flip exits. The visual dashboard and experimental self-learning memory are intentionally not ported because they are TradingView state/UI features rather than stable execution rules.
+
+`THREE_LEG_SPLIT` opens one idea as three separate tickets: leg 1 targets TP1, leg 2 targets TP2, and leg 3 targets TP3. TP1 moves the remaining stop losses to break-even; TP2 moves the last leg stop to TP1. Keep `SATS_STATIC_LOT` at least `0.03` if your broker minimum is `0.01`, otherwise each split leg may be rounded up to the minimum.
+
+Run the 60-day optimizer/backtest on BTC, XAU, US30, and US100 with:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.sats_backtest --days 60 --balance 300 --symbols BTCUSD,XAUUSD,US30,US100
+```
+
+For the three-leg execution model:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.sats_backtest --days 60 --balance 300 --symbols BTCUSD,XAUUSD,US30,US100 --entry-mode THREE_LEG_SPLIT
 ```
