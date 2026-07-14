@@ -87,6 +87,67 @@ def test_resolve_us100_to_suffixed_ustec(mock_mt5, mock_client, mock_resolver):
 
 @patch("app.trading.symbol_resolver.mt5_client")
 @patch("app.trading.symbol_resolver.mt5")
+def test_resolve_us30_prefers_upcomers_index_over_dow_stock(mock_mt5, mock_client, mock_resolver):
+    mock_client.connect.return_value = True
+
+    dow_stock = MagicMock()
+    dow_stock.name = "DOW"
+    dow_stock.trade_mode = 4
+
+    us30_index = MagicMock()
+    us30_index.name = "DJCUSD.c"
+    us30_index.trade_mode = 4
+
+    mock_mt5.symbols_get.return_value = [dow_stock, us30_index]
+
+    broker_sym, conf = mock_resolver.resolve("US30")
+
+    assert broker_sym == "DJCUSD.c"
+    assert conf >= 0.90
+
+
+@patch("app.trading.symbol_resolver.mt5_client")
+@patch("app.trading.symbol_resolver.mt5")
+def test_resolve_dow_signal_prefers_us30_index_over_stock(mock_mt5, mock_client, mock_resolver):
+    mock_client.connect.return_value = True
+
+    dow_stock = MagicMock()
+    dow_stock.name = "DOW"
+    dow_stock.trade_mode = 4
+
+    us30_index = MagicMock()
+    us30_index.name = "DJCUSD.c"
+    us30_index.trade_mode = 4
+
+    mock_mt5.symbols_get.return_value = [dow_stock, us30_index]
+
+    broker_sym, conf = mock_resolver.resolve("DOW")
+
+    assert broker_sym == "DJCUSD.c"
+    assert conf >= 0.90
+
+
+@patch("app.trading.symbol_resolver.mt5_client")
+@patch("app.trading.symbol_resolver.mt5")
+def test_resolve_us100_prefers_upcomers_nasdaq_index(mock_mt5, mock_client, mock_resolver):
+    mock_client.connect.return_value = True
+
+    nasdaq_index = MagicMock()
+    nasdaq_index.name = "NACUSD.c"
+    nasdaq_index.trade_mode = 4
+
+    mock_mt5.symbols_get.return_value = [nasdaq_index]
+
+    for requested in ("US100", "NAS100", "USTEC"):
+        mock_resolver.clear_cache()
+        broker_sym, conf = mock_resolver.resolve(requested)
+
+        assert broker_sym == "NACUSD.c"
+        assert conf >= 0.90
+
+
+@patch("app.trading.symbol_resolver.mt5_client")
+@patch("app.trading.symbol_resolver.mt5")
 def test_resolve_xaausd_skips_close_only_gold_stock(mock_mt5, mock_client, mock_resolver):
     mock_client.connect.return_value = True
 

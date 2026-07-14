@@ -9,8 +9,15 @@ DEFAULT_ALIAS_MAP = {
     "XAAUSD": ["XAUUSD", "XAUUSDm", "XAUUSD-STD", "XAUUSD.raw", "GOLD"],
     "SILVER": ["XAGUSD", "XAGUSDm", "SILVER"],
     "BTC": ["BTCUSD", "BTCUSDm", "BTCUSD-STD", "BTCUSD.raw", "BTC"],
-    "US30": ["US30", "DJ30", "DJI", "US30.cash", "US30m", "US30-STD"],
-    "NAS100": ["NAS100", "USTEC", "US100", "NAS100.cash", "NAS100m", "NAS100-STD"]
+    "US30": ["DJCUSD.c", "DJCUSD", "US30", "DJ30", "DJI", "US30.cash", "US30m", "US30-STD", "DOW"],
+    "DJ30": ["DJCUSD.c", "DJCUSD", "US30", "DJ30", "DJI", "US30.cash", "US30m", "US30-STD", "DOW"],
+    "DJI": ["DJCUSD.c", "DJCUSD", "US30", "DJ30", "DJI", "US30.cash", "US30m", "US30-STD", "DOW"],
+    "DOW": ["DJCUSD.c", "DJCUSD", "US30", "DJ30", "DJI", "US30.cash", "US30m", "US30-STD", "DOW"],
+    "US100": ["NACUSD.c", "NACUSD", "US100", "NAS100", "USTEC", "USTEC100", "NDX", "NAS100.cash", "NAS100m", "NAS100-STD"],
+    "NAS100": ["NACUSD.c", "NACUSD", "US100", "NAS100", "USTEC", "USTEC100", "NDX", "NAS100.cash", "NAS100m", "NAS100-STD"],
+    "USTEC": ["NACUSD.c", "NACUSD", "US100", "NAS100", "USTEC", "USTEC100", "NDX", "NAS100.cash", "NAS100m", "NAS100-STD"],
+    "USTEC100": ["NACUSD.c", "NACUSD", "US100", "NAS100", "USTEC", "USTEC100", "NDX", "NAS100.cash", "NAS100m", "NAS100-STD"],
+    "NDX": ["NACUSD.c", "NACUSD", "US100", "NAS100", "USTEC", "USTEC100", "NDX", "NAS100.cash", "NAS100m", "NAS100-STD"],
 }
 
 class SymbolResolver:
@@ -39,6 +46,30 @@ class SymbolResolver:
         mt5_client.select_symbol(broker_symbol, True)
         return broker_symbol, confidence
 
+    def _aliases_for(self, requested_symbol: str) -> list[str]:
+        if requested_symbol in DEFAULT_ALIAS_MAP:
+            return DEFAULT_ALIAS_MAP[requested_symbol]
+        for key, values in DEFAULT_ALIAS_MAP.items():
+            if requested_symbol in values or self._normalize(requested_symbol) == self._normalize(key):
+                return values
+        return []
+
+    def _resolve_aliases(self, req_upper: str, broker_symbols: list) -> Tuple[Optional[str], float]:
+        aliases = self._aliases_for(req_upper)
+        if not aliases:
+            return None, 0.0
+
+        # Follow alias priority first. This prevents broker stock symbols like DOW
+        # or GOLD from beating the intended CFD/spot symbol.
+        for alias in aliases:
+            alias_norm = self._normalize(alias)
+            for s in broker_symbols:
+                if not self._allows_opening(s):
+                    continue
+                if s.name.upper() == alias.upper() or self._normalize(s.name) == alias_norm:
+                    return self._remember(req_upper, s.name, 0.98)
+        return None, 0.0
+
     def resolve(self, requested_symbol: str) -> Tuple[Optional[str], float]:
         """
         Resolves a raw input symbol (e.g. USDCAD) to a broker-specific symbol (e.g. USDCADm).
@@ -66,34 +97,18 @@ class SymbolResolver:
             return req_upper, 0.5
 
         broker_symbols = list(all_symbols)
+
+        # 2. Resolve known aliases before exact broker symbols. This matters for
+        # index names: "DOW" is a stock on many brokers, while Telegram channels
+        # usually mean US30/Dow index.
+        alias_symbol, alias_confidence = self._resolve_aliases(req_upper, broker_symbols)
+        if alias_symbol:
+            return alias_symbol, alias_confidence
         
-        # 2. Try exact match first
+        # 3. Try exact match
         for s in broker_symbols:
             if s.name.upper() == req_upper and self._allows_opening(s):
                 return self._remember(req_upper, s.name, 1.0)
-
-        # 3. Check alias mapping
-        aliases = []
-        # Check direct match in alias map
-        if req_upper in DEFAULT_ALIAS_MAP:
-            aliases = DEFAULT_ALIAS_MAP[req_upper]
-        else:
-            # Check if requested matches any list entry (reverse lookup)
-            for k, val_list in DEFAULT_ALIAS_MAP.items():
-                if req_upper in val_list:
-                    aliases = val_list
-                    break
-        
-        if aliases:
-            # Follow alias priority first. This prevents broker symbols like a close-only
-            # stock named "GOLD" from beating the intended gold spot symbol "XAUUSD".
-            for alias in aliases:
-                alias_norm = self._normalize(alias)
-                for s in broker_symbols:
-                    if not self._allows_opening(s):
-                        continue
-                    if s.name.upper() == alias.upper() or self._normalize(s.name) == alias_norm:
-                        return self._remember(req_upper, s.name, 0.95)
 
         # 4. Try normalized comparison
         req_norm = self._normalize(req_upper)
