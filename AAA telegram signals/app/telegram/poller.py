@@ -2,6 +2,7 @@ import re
 from pathlib import Path
 from sqlmodel import Session
 from datetime import datetime
+from telethon import utils
 
 from app.core.config import settings
 from app.core.logging import telegram_logger
@@ -29,6 +30,16 @@ def parse_chat_reference(chat_link: str):
         return int(chat_link)
     return chat_link
 
+
+def _candidate_numeric_ids(entity_reference) -> set[int]:
+    if not isinstance(entity_reference, int):
+        return set()
+    text_id = str(abs(entity_reference))
+    candidates = {abs(entity_reference)}
+    if text_id.startswith("100") and len(text_id) > 3:
+        candidates.add(int(text_id[3:]))
+    return candidates
+
 class TelegramPoller:
     def __init__(self):
         self._running = False
@@ -48,7 +59,7 @@ class TelegramPoller:
             session_string=settings.TELEGRAM_SESSION_STRING,
         )
         entity = parse_chat_reference(chat_link)
-        target_entity = await client.get_input_entity(entity)
+        target_entity = await self._resolve_target_entity(client, entity, chat_link)
         chat_id = (
             getattr(target_entity, "channel_id", None)
             or getattr(target_entity, "chat_id", None)
@@ -56,6 +67,34 @@ class TelegramPoller:
             or hash(chat_link)
         )
         return client, target_entity, chat_id, chat_link
+
+    async def _resolve_target_entity(self, client, entity_reference, chat_link: str):
+        try:
+            return await client.get_input_entity(entity_reference)
+        except Exception as first_error:
+            candidates = _candidate_numeric_ids(entity_reference)
+            if candidates:
+                async for dialog in client.iter_dialogs():
+                    entity = getattr(dialog, "entity", None)
+                    if entity is None:
+                        continue
+                    raw_id = getattr(entity, "id", None)
+                    peer_id = utils.get_peer_id(entity)
+                    if raw_id in candidates or abs(peer_id) in candidates:
+                        telegram_logger.info(
+                            f"Resolved Telegram channel {chat_link} from joined dialogs "
+                            f"as {getattr(dialog, 'name', '') or raw_id}."
+                        )
+                        return await client.get_input_entity(entity)
+
+            raise ValueError(
+                "Could not resolve Telegram channel entity from this session. "
+                "The web link may be correct, but Telethon also needs the channel access hash. "
+                "Open this channel once in the same Telegram account/session, make sure the account "
+                "is still a member, then restart the copier. If it is a private channel, a public "
+                "@username or t.me invite/joined session is more reliable. "
+                f"Original error: {first_error}"
+            ) from first_error
 
     def _enabled_channels(self, session: Session) -> list[TelegramChannel]:
         channels = TelegramChannelRepository.list_enabled(session)
