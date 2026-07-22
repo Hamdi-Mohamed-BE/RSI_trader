@@ -45,6 +45,9 @@ class Settings(BaseSettings):
     # Trade Management Settings
     MOVE_TO_BREAK_EVEN_ENABLED: bool = True
     BREAK_EVEN_OFFSET_POINTS: int = 0
+    BREAK_EVEN_TRIGGER_TP_LEVEL: int = 1
+    SPLIT_LEGS_ENABLED: bool = False
+    SPLIT_LEGS_MAX_COUNT: int = 0
     RR_OVERRIDE_ENABLED: bool = False
     TARGET_RR: float = 1.0
     

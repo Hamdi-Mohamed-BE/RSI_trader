@@ -355,6 +355,9 @@ async def save_settings_form(
     allow_no_sl: bool = Form(False),
     move_to_break_even_enabled: bool = Form(False),
     break_even_offset_points: int = Form(0),
+    break_even_trigger_tp_level: int = Form(1),
+    split_legs_enabled: bool = Form(False),
+    split_legs_max_count: int = Form(0),
     rr_override_enabled: bool = Form(False),
     target_rr: float = Form(1.0)
 ):
@@ -386,6 +389,9 @@ async def save_settings_form(
     SettingsService.set(db, "allow_no_sl", allow_no_sl)
     SettingsService.set(db, "move_to_break_even_enabled", move_to_break_even_enabled)
     SettingsService.set(db, "break_even_offset_points", break_even_offset_points)
+    SettingsService.set(db, "break_even_trigger_tp_level", max(int(break_even_trigger_tp_level or 1), 1))
+    SettingsService.set(db, "split_legs_enabled", split_legs_enabled)
+    SettingsService.set(db, "split_legs_max_count", max(int(split_legs_max_count or 0), 0))
     SettingsService.set(db, "rr_override_enabled", rr_override_enabled)
     SettingsService.set(db, "target_rr", max(float(target_rr or 0), 0.1))
     

@@ -1,5 +1,6 @@
-import pytest
-from app.llm.parser import parse_determinist
+import asyncio
+from app.llm.parser import extract_symbol_raw, parse_determinist, parse_signal
+from app.llm.schemas import SignalParseSchema
 
 def test_parse_determinist_market_buy():
     msg = """
@@ -43,6 +44,86 @@ def test_parse_determinist_pending_sell():
     assert result.take_profits == [2348.00, 2340.00]
     assert result.final_take_profit == 2340.00
     assert result.break_even_trigger_tp == 2348.00
+
+
+def test_parse_determinist_xauusd_pending_sell_limit_with_at_entry():
+    msg = """
+    XAUUSD SELL LIMIT AT 4115
+    SL 4140
+    TP 4077
+    """
+
+    result = parse_determinist(msg)
+
+    assert result is not None
+    assert result.symbol_raw == "XAUUSD"
+    assert result.side == "sell"
+    assert result.order_type == "pending"
+    assert result.pending_type == "sell_limit"
+    assert result.entry_price == 4115
+    assert result.stop_loss == 4140
+    assert result.take_profits == [4077]
+
+
+def test_extract_symbol_raw_is_context_based_not_whitelist():
+    examples = {
+        "**GBPNZD SELL NOW**\nSTOPLOSS @ 2.35770\nTP @ 2.34100": "GBPNZD",
+        "CADJPY SELL NOW STOPOSS @ 114.260 TP @ 113.900": "CADJPY",
+        "SELL LIMIT GOLD @ 2355.50\nSL 2362\nTP 2348": "GOLD",
+        "BUY NOW XAUUSD\nSL 4043\nTP 4067": "XAUUSD",
+        "US500 SELL STOP @ 6500\nSL 6550\nTP 6400": "US500",
+        "BTCUSD BUY LIMIT 62000\nSL 61000\nTP 64000": "BTCUSD",
+    }
+
+    for message, expected in examples.items():
+        assert extract_symbol_raw(message) == expected
+
+
+def test_parse_determinist_accepts_common_stoploss_typos():
+    msg = "CADJPY SELL NOW STOPOSS @ 114.260 TP @ 113.900"
+
+    result = parse_determinist(msg)
+
+    assert result is not None
+    assert result.symbol_raw == "CADJPY"
+    assert result.side == "sell"
+    assert result.stop_loss == 114.260
+    assert result.take_profits == [113.900]
+
+
+def test_parse_signal_repairs_missing_llm_symbol_from_deterministic_parser(monkeypatch):
+    msg = """
+    XAUUSD SELL LIMIT AT 4115
+    SL 4140
+    TP 4077
+    """
+
+    async def fake_parse_message(*args, **kwargs):
+        return SignalParseSchema(
+            is_signal=True,
+            confidence=1.0,
+            ignore_reason=None,
+            message_type="signal",
+            symbol_raw=None,
+            side="sell",
+            order_type="pending",
+            pending_type="sell_limit",
+            entry_price=4115.0,
+            stop_loss=4140.0,
+            take_profits=[4077.0],
+            final_take_profit=4077.0,
+            break_even_trigger_tp=4077.0,
+            risk_warnings=[],
+            parser_notes=[],
+        )
+
+    monkeypatch.setattr("app.llm.parser.gemini_client.parse_message", fake_parse_message)
+
+    result = asyncio.run(parse_signal(msg))
+
+    assert result.symbol_raw == "XAUUSD"
+    assert "Repaired missing fields from deterministic text parser." in result.parser_notes
+
 
 def test_parse_determinist_missing_elements():
     # Missing SL

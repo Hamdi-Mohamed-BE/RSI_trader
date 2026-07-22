@@ -1,4 +1,5 @@
 import asyncio
+import json
 import traceback
 from datetime import datetime
 from sqlmodel import Session
@@ -379,7 +380,28 @@ class CopierService:
                 TelegramMessageRepository.save(session, msg)
                 return
 
-        # 5. Calculate Lot Size
+        split_enabled = bool(SettingsService.get(session, "split_legs_enabled"))
+        split_max_count = int(SettingsService.get(session, "split_legs_max_count") or 0)
+        be_trigger_level = int(SettingsService.get(session, "break_even_trigger_tp_level") or 1)
+        if effective_take_profits:
+            effective_break_even_tp = self._break_even_trigger_from_level(
+                effective_take_profits,
+                be_trigger_level,
+                effective_break_even_tp,
+            )
+
+        if split_enabled:
+            leg_take_profits = self._split_leg_targets(effective_take_profits, split_max_count)
+            if not leg_take_profits:
+                error_msg = "Split legs are enabled, but the signal has no usable take-profit targets."
+                self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
+                msg.processed = True
+                TelegramMessageRepository.save(session, msg)
+                return
+        else:
+            leg_take_profits = [tp]
+
+        # 5. Calculate per-leg lot/risk settings
         risk_mode = SettingsService.get(session, "risk_mode")
         fixed_lot = float(SettingsService.get(session, "fixed_lot") or 0.01)
         lot_source = "dynamic risk sizing"
@@ -398,146 +420,206 @@ class CopierService:
         use_equity = SettingsService.get(session, "use_equity_instead_of_balance")
         allow_min_lot = SettingsService.get(session, "allow_min_lot_if_risk_too_small")
         max_lot = SettingsService.get(session, "max_lot")
-        
-        try:
-            lot, lot_warning = RiskCalculator.calculate_lot(
-                symbol=broker_symbol,
-                side=parsed.side,
-                entry_price=ref_price,
-                stop_loss=sl or 0.0,
-                risk_mode=risk_mode,
-                fixed_lot=fixed_lot,
-                risk_percent=risk_pct,
-                risk_usd_cap=risk_usd,
-                use_equity_instead_of_balance=use_equity,
-                allow_min_lot_if_risk_too_small=allow_min_lot,
-                max_lot_limit=max_lot
-            )
-            
-            if lot <= 0:
-                error_msg = "Calculated lot size is 0 (below broker limits and minimum lot execution disabled)."
-                self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
-                msg.processed = True
-                TelegramMessageRepository.save(session, msg)
-                return
-                
-        except Exception as lot_err:
-            error_msg = f"Lot calculation error: {lot_err}"
-            self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
-            msg.processed = True
-            TelegramMessageRepository.save(session, msg)
-            SystemEventRepository.log(session, "error", "risk", error_msg)
-            return
 
-        # 6. Build MT5 Request
-        import json
-        try:
-            req_dict = OrderBuilder.build_request(
-                symbol=broker_symbol,
-                side=parsed.side,
-                order_type=parsed.order_type,
-                lot=lot,
-                entry_price=parsed.entry_price,
-                stop_loss=sl,
-                take_profit=tp,
-                pending_type=parsed.pending_type,
-                comment=f"Trade {channel_attr}"[:31]
-            )
-        except Exception as req_err:
-            error_msg = f"Failed to build MT5 request: {req_err}"
-            self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
-            msg.processed = True
-            TelegramMessageRepository.save(session, msg)
-            return
-
-        # Create tentative OrderAttempt record
-        attempt = OrderAttempt(
-            telegram_message_db_id=msg.id,
-            signal_hash=signal_hash,
-            symbol_raw=symbol_raw,
-            broker_symbol=broker_symbol,
-            side=parsed.side,
-            order_type=parsed.order_type,
-            pending_type=parsed.pending_type,
-            entry_price=parsed.entry_price or ref_price,
-            stop_loss=sl,
-            take_profits_json=json.dumps(effective_take_profits),
-            final_take_profit=tp,
-            break_even_trigger_tp=effective_break_even_tp,
-            lot=lot,
-            risk_mode=risk_mode,
-            risk_amount=risk_usd if risk_mode == "risk_usd_cap" else (risk_pct if risk_mode == "risk_percent" else fixed_lot),
-            status="pending_validation",
-            mt5_request_json=json.dumps(req_dict)
+        leg_count = len(leg_take_profits)
+        leg_fixed_lot, leg_risk_pct, leg_risk_usd = self._risk_inputs_for_leg(
+            risk_mode,
+            fixed_lot,
+            risk_pct,
+            risk_usd,
+            leg_count if split_enabled else 1,
         )
-        OrderAttemptRepository.save(session, attempt)
+        placed_count = 0
 
-        # 7. Pre-check trade margin (order_check)
-        check_ok, check_result, check_err = mt5_client.check_order(req_dict)
-        if not check_ok:
-            attempt.status = "order_check_failed"
-            attempt.error = check_err or "order_check rejected by broker"
-            attempt.mt5_result_json = json.dumps(check_result) if check_result else None
-            OrderAttemptRepository.save(session, attempt)
-            
-            msg.processed = True
-            TelegramMessageRepository.save(session, msg)
-            SystemEventRepository.log(session, "error", "trading", f"Order check failed for {broker_symbol}: {attempt.error}")
-            return
+        for leg_index, leg_tp in enumerate(leg_take_profits, start=1):
+            try:
+                lot, lot_warning = RiskCalculator.calculate_lot(
+                    symbol=broker_symbol,
+                    side=parsed.side,
+                    entry_price=ref_price,
+                    stop_loss=sl or 0.0,
+                    risk_mode=risk_mode,
+                    fixed_lot=leg_fixed_lot,
+                    risk_percent=leg_risk_pct,
+                    risk_usd_cap=leg_risk_usd,
+                    use_equity_instead_of_balance=use_equity,
+                    allow_min_lot_if_risk_too_small=allow_min_lot,
+                    max_lot_limit=max_lot
+                )
 
-        # 8. Submit Order to MT5 (order_send)
-        send_ok, send_result, send_err = mt5_client.send_order(req_dict)
-        if not send_ok:
-            attempt.status = "send_failed"
-            attempt.error = send_err or "order_send failed to execute"
-            attempt.mt5_result_json = json.dumps(send_result) if send_result else None
-            OrderAttemptRepository.save(session, attempt)
-            
-            msg.processed = True
-            TelegramMessageRepository.save(session, msg)
-            SystemEventRepository.log(session, "error", "trading", f"Order execution failed for {broker_symbol}: {attempt.error}")
-            return
+                if lot <= 0:
+                    error_msg = "Calculated lot size is 0 (below broker limits and minimum lot execution disabled)."
+                    self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
+                    if not split_enabled:
+                        msg.processed = True
+                        TelegramMessageRepository.save(session, msg)
+                        return
+                    continue
 
-        # 9. Placed successfully!
-        attempt.status = "placed"
-        attempt.mt5_result_json = json.dumps(send_result)
-        OrderAttemptRepository.save(session, attempt)
+            except Exception as lot_err:
+                error_msg = f"Lot calculation error: {lot_err}"
+                self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
+                SystemEventRepository.log(session, "error", "risk", error_msg)
+                if not split_enabled:
+                    msg.processed = True
+                    TelegramMessageRepository.save(session, msg)
+                    return
+                continue
 
-        # Get Ticket Number
-        ticket = send_result.get("order") or send_result.get("position")
-        if ticket:
-            # Create ManagedTrade to track break-even triggers
-            mt = ManagedTrade(
-                order_attempt_id=attempt.id,
-                mt5_ticket=ticket,
-                position_identifier=ticket,
+            leg_suffix = f" L{leg_index}/{leg_count}" if split_enabled else ""
+            try:
+                req_dict = OrderBuilder.build_request(
+                    symbol=broker_symbol,
+                    side=parsed.side,
+                    order_type=parsed.order_type,
+                    lot=lot,
+                    entry_price=parsed.entry_price,
+                    stop_loss=sl,
+                    take_profit=leg_tp,
+                    pending_type=parsed.pending_type,
+                    comment=f"Trade {channel_attr}{leg_suffix}"[:31]
+                )
+            except Exception as req_err:
+                error_msg = f"Failed to build MT5 request: {req_err}"
+                self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
+                if not split_enabled:
+                    msg.processed = True
+                    TelegramMessageRepository.save(session, msg)
+                    return
+                continue
+
+            leg_tp_ladder = effective_take_profits[:leg_index] if split_enabled else effective_take_profits
+            attempt = OrderAttempt(
+                telegram_message_db_id=msg.id,
+                signal_hash=signal_hash,
                 symbol_raw=symbol_raw,
                 broker_symbol=broker_symbol,
                 side=parsed.side,
-                lot=lot,
-                entry_price=send_result.get("price") or ref_price,
-                stop_loss_original=sl or 0.0,
-                stop_loss_current=sl or 0.0,
-                take_profits_json=json.dumps(effective_take_profits),
-                final_take_profit=tp or 0.0,
+                order_type=parsed.order_type,
+                pending_type=parsed.pending_type,
+                entry_price=parsed.entry_price or ref_price,
+                stop_loss=sl,
+                take_profits_json=json.dumps(leg_tp_ladder),
+                final_take_profit=leg_tp,
                 break_even_trigger_tp=effective_break_even_tp,
-                break_even_enabled=bool(SettingsService.get(session, "move_to_break_even_enabled")),
-                break_even_done=False,
-                tp2_partial_done=False,
-                status="active"
+                lot=lot,
+                risk_mode=risk_mode,
+                risk_amount=leg_risk_usd if risk_mode == "risk_usd_cap" else (leg_risk_pct if risk_mode == "risk_percent" else leg_fixed_lot),
+                status="pending_validation",
+                mt5_request_json=json.dumps(req_dict)
             )
-            ManagedTradeRepository.save(session, mt)
-            
-            msg_warn = f" (Warning: {lot_warning})" if lot_warning else ""
-            success_msg = f"Successfully placed {parsed.side} trade on {broker_symbol}. Ticket: {ticket}, Volume: {lot}{msg_warn}"
-            orders_logger.info(success_msg)
-            SystemEventRepository.log(session, "success", "trading", success_msg)
-        else:
-            orders_logger.warning("Order placed successfully but ticket number could not be retrieved from MT5 result.")
+            OrderAttemptRepository.save(session, attempt)
+
+            check_ok, check_result, check_err = mt5_client.check_order(req_dict)
+            if not check_ok:
+                attempt.status = "order_check_failed"
+                attempt.error = check_err or "order_check rejected by broker"
+                attempt.mt5_result_json = json.dumps(check_result) if check_result else None
+                OrderAttemptRepository.save(session, attempt)
+                SystemEventRepository.log(session, "error", "trading", f"Order check failed for {broker_symbol} leg {leg_index}: {attempt.error}")
+                if not split_enabled:
+                    msg.processed = True
+                    TelegramMessageRepository.save(session, msg)
+                    return
+                continue
+
+            send_ok, send_result, send_err = mt5_client.send_order(req_dict)
+            if not send_ok:
+                attempt.status = "send_failed"
+                attempt.error = send_err or "order_send failed to execute"
+                attempt.mt5_result_json = json.dumps(send_result) if send_result else None
+                OrderAttemptRepository.save(session, attempt)
+                SystemEventRepository.log(session, "error", "trading", f"Order execution failed for {broker_symbol} leg {leg_index}: {attempt.error}")
+                if not split_enabled:
+                    msg.processed = True
+                    TelegramMessageRepository.save(session, msg)
+                    return
+                continue
+
+            attempt.status = "placed"
+            attempt.mt5_result_json = json.dumps(send_result)
+            OrderAttemptRepository.save(session, attempt)
+            placed_count += 1
+
+            ticket = send_result.get("order") or send_result.get("position")
+            if ticket:
+                mt = ManagedTrade(
+                    order_attempt_id=attempt.id,
+                    mt5_ticket=ticket,
+                    position_identifier=ticket,
+                    symbol_raw=symbol_raw,
+                    broker_symbol=broker_symbol,
+                    side=parsed.side,
+                    lot=lot,
+                    entry_price=send_result.get("price") or ref_price,
+                    stop_loss_original=sl or 0.0,
+                    stop_loss_current=sl or 0.0,
+                    take_profits_json=json.dumps(leg_tp_ladder),
+                    final_take_profit=leg_tp or 0.0,
+                    break_even_trigger_tp=effective_break_even_tp,
+                    break_even_enabled=bool(SettingsService.get(session, "move_to_break_even_enabled")),
+                    break_even_done=False,
+                    tp2_partial_done=False,
+                    status="active"
+                )
+                ManagedTradeRepository.save(session, mt)
+
+                msg_warn = f" (Warning: {lot_warning})" if lot_warning else ""
+                success_msg = (
+                    f"Successfully placed {parsed.side} trade on {broker_symbol} "
+                    f"leg {leg_index}/{leg_count}. Ticket: {ticket}, TP: {leg_tp}, Volume: {lot}{msg_warn}"
+                )
+                orders_logger.info(success_msg)
+                SystemEventRepository.log(session, "success", "trading", success_msg)
+            else:
+                orders_logger.warning("Order placed successfully but ticket number could not be retrieved from MT5 result.")
+
+        if split_enabled:
+            orders_logger.info(
+                f"Split legs complete for message {msg.message_id}: placed {placed_count}/{leg_count} legs."
+            )
 
         # Mark message as processed
         msg.processed = True
         TelegramMessageRepository.save(session, msg)
+
+    @staticmethod
+    def _split_leg_targets(take_profits: list[float], max_count: int | None = 0) -> list[float]:
+        targets = [float(tp) for tp in (take_profits or []) if tp is not None]
+        limit = max(int(max_count or 0), 0)
+        if limit > 0:
+            return targets[:limit]
+        return targets
+
+    @staticmethod
+    def _break_even_trigger_from_level(
+        take_profits: list[float],
+        level: int | None,
+        fallback: Optional[float] = None,
+    ) -> Optional[float]:
+        targets = [float(tp) for tp in (take_profits or []) if tp is not None]
+        if not targets:
+            return fallback
+        target_index = max(int(level or 1), 1) - 1
+        target_index = min(target_index, len(targets) - 1)
+        return targets[target_index]
+
+    @staticmethod
+    def _risk_inputs_for_leg(
+        risk_mode: str,
+        fixed_lot: float,
+        risk_percent: float,
+        risk_usd_cap: float,
+        leg_count: int,
+    ) -> tuple[float, float, float]:
+        divisor = max(int(leg_count or 1), 1)
+        if risk_mode == "fixed_lot":
+            return fixed_lot / divisor, risk_percent, risk_usd_cap
+        if risk_mode == "risk_percent":
+            return fixed_lot, risk_percent / divisor, risk_usd_cap
+        if risk_mode == "risk_usd_cap":
+            return fixed_lot, risk_percent, risk_usd_cap / divisor
+        return fixed_lot, risk_percent, risk_usd_cap
 
     @staticmethod
     def _build_rr_take_profit_ladder(

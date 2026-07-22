@@ -6,16 +6,144 @@ from app.llm.gemini_client import gemini_client
 from app.core.logging import logger
 from app.core.config import settings
 
-# Regex patterns for deterministic parsing
-SYMBOL_PATTERN = re.compile(r"\b([A-Z]{6}|XAUUSD|XAGUSD|GOLD|SILVER|BTCUSD|BTC|ETHUSD|ETH|US30|DJ30|DJI|NAS100|USTEC|US100|SP500|SPX500|GER30|DE30|UK100)\b", re.IGNORECASE)
+# Regex patterns for deterministic parsing. Symbol detection is intentionally
+# context-based instead of a fixed whitelist; the broker resolver handles the
+# final mapping to MT5 symbols such as XAUUSDm, US30m, USTECm, etc.
+SYMBOL_TOKEN_PATTERN = re.compile(r"[#$*`_~\[]*([A-Z][A-Z0-9._/-]{1,15})[\]$*`_~]*", re.IGNORECASE)
+SYMBOL_BEFORE_SIDE_PATTERN = re.compile(
+    r"(?:^|[\s*_#])([A-Z][A-Z0-9._/-]{1,15})\s+(?:BUY|SELL)\b",
+    re.IGNORECASE,
+)
+SYMBOL_AFTER_SIDE_PATTERN = re.compile(
+    r"\b(?:BUY|SELL)(?:\s+(?:NOW|MARKET|LIMIT|STOP|ENTRY|ENTRIES|ZONE|AT))*\s+([A-Z][A-Z0-9._/-]{1,15})\b",
+    re.IGNORECASE,
+)
 
-SL_PATTERN = re.compile(r"(?:sl|stop\s*loss|stoploss)\b\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
+NON_SYMBOL_TOKENS = {
+    "A",
+    "ACTIVE",
+    "AGAIN",
+    "ALL",
+    "AND",
+    "AT",
+    "BE",
+    "BUY",
+    "ENTRY",
+    "ENTRIES",
+    "FIRST",
+    "FOR",
+    "FROM",
+    "HIT",
+    "LIMIT",
+    "LOSS",
+    "MARKET",
+    "NOW",
+    "ORDER",
+    "PRICE",
+    "PROFIT",
+    "SELL",
+    "SETUP",
+    "SIGNAL",
+    "SL",
+    "STOP",
+    "STOPLOSS",
+    "STOPLOSSS",
+    "TAKE",
+    "TARGET",
+    "TP",
+    "UPDATE",
+    "ZONE",
+}
+
+SL_PATTERN = re.compile(r"(?:sl|s/l|stop\s*loss|stoploss+|stop\s*oss|stoposs)\b\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
 TP_PATTERN = re.compile(r"(?:tp|take\s*profit|target|tp\d+)\b\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
 
 # Pending entry pattern — matches "@ 2355.50", "entry 2355.50", "price: 1.3500", etc.
 ENTRY_PATTERN = re.compile(r"(?:entry|entries|at|price|limit|stop)\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
 # Standalone @ with a price (e.g., "SELL LIMIT GOLD @ 2355.50")
 AT_PRICE_PATTERN = re.compile(r"@\s*([0-9.]+)", re.IGNORECASE)
+
+
+def clean_symbol_token(value: str) -> str:
+    cleaned = re.sub(r"[^A-Z0-9._/-]", "", (value or "").upper())
+    return cleaned.strip("._-/")
+
+
+def is_symbol_candidate(value: str) -> bool:
+    token = clean_symbol_token(value)
+    if not token or token in NON_SYMBOL_TOKENS:
+        return False
+    if token.startswith(("TP", "SL")) and token[2:].isdigit():
+        return False
+    if token.replace(".", "").isdigit():
+        return False
+    letters = sum(1 for char in token if char.isalpha())
+    if letters < 2:
+        return False
+    return bool(re.search(r"[A-Z]", token))
+
+
+def extract_symbol_raw(text: str) -> Optional[str]:
+    text_upper = (text or "").upper()
+
+    for pattern in (SYMBOL_BEFORE_SIDE_PATTERN, SYMBOL_AFTER_SIDE_PATTERN):
+        for match in pattern.finditer(text_upper):
+            candidate = clean_symbol_token(match.group(1))
+            if is_symbol_candidate(candidate):
+                return candidate
+
+    for line in text_upper.splitlines():
+        if not re.search(r"\b(?:BUY|SELL)\b", line):
+            continue
+        for match in SYMBOL_TOKEN_PATTERN.finditer(line):
+            candidate = clean_symbol_token(match.group(1))
+            if is_symbol_candidate(candidate):
+                return candidate
+
+    return None
+
+
+def merge_deterministic_fields(
+    primary: SignalParseSchema,
+    deterministic: Optional[SignalParseSchema],
+    raw_text: str = "",
+) -> SignalParseSchema:
+    """
+    Keep the LLM response, but repair missing core trade fields from the
+    deterministic parser. A signal with symbol_raw=None should never reach MT5.
+    """
+    repaired = primary.model_copy(deep=True)
+    notes_added = False
+
+    def fill(field: str, value):
+        nonlocal notes_added
+        if value in (None, "", []):
+            return
+        if getattr(repaired, field, None) in (None, "", []):
+            setattr(repaired, field, value)
+            notes_added = True
+
+    if deterministic:
+        fill("symbol_raw", deterministic.symbol_raw)
+        fill("side", deterministic.side)
+        fill("order_type", deterministic.order_type)
+        fill("pending_type", deterministic.pending_type)
+        fill("entry_price", deterministic.entry_price)
+        fill("stop_loss", deterministic.stop_loss)
+        if not repaired.take_profits:
+            repaired.take_profits = list(deterministic.take_profits)
+            notes_added = True
+        fill("final_take_profit", deterministic.final_take_profit)
+        fill("break_even_trigger_tp", deterministic.break_even_trigger_tp)
+    elif repaired.is_signal and not repaired.symbol_raw:
+        symbol = extract_symbol_raw(raw_text)
+        if symbol:
+            repaired.symbol_raw = symbol
+            notes_added = True
+
+    if notes_added:
+        repaired.parser_notes.append("Repaired missing fields from deterministic text parser.")
+    return repaired
 
 def parse_determinist(text: str) -> Optional[SignalParseSchema]:
     """
@@ -27,10 +155,9 @@ def parse_determinist(text: str) -> Optional[SignalParseSchema]:
     text_lines = text_clean.split("\n")
     
     # 1. Match symbol
-    sym_match = SYMBOL_PATTERN.search(text_clean)
-    if not sym_match:
+    symbol = extract_symbol_raw(text_clean)
+    if not symbol:
         return None
-    symbol = sym_match.group(1).upper()
     
     # 2. Match side & order type
     side = None
@@ -128,10 +255,14 @@ async def parse_signal(text: str, message_db_id: Optional[int] = None, session: 
     # 1. Check cache in database if session & message_db_id are provided
     if session and message_db_id:
         from app.db.models import LLMParseResult
-        from sqlmodel import select
+        from sqlmodel import select, desc
         import json
         
-        statement = select(LLMParseResult).where(LLMParseResult.telegram_message_db_id == message_db_id)
+        statement = (
+            select(LLMParseResult)
+            .where(LLMParseResult.telegram_message_db_id == message_db_id)
+            .order_by(desc(LLMParseResult.created_at))
+        )
         cached = session.exec(statement).first()
         if cached:
             logger.info(f"Using cached parse result for message ID {message_db_id}")
@@ -141,7 +272,21 @@ async def parse_signal(text: str, message_db_id: Optional[int] = None, session: 
             else:
                 try:
                     parsed_data = json.loads(cached.normalized_json)
-                    return SignalParseSchema(**parsed_data)
+                    cached_result = SignalParseSchema(**parsed_data)
+                    det_for_cache = parse_determinist(text)
+                    repaired_result = merge_deterministic_fields(cached_result, det_for_cache, text)
+                    if cached_result.model_dump() != repaired_result.model_dump():
+                        cached.normalized_json = repaired_result.model_dump_json()
+                        cached.raw_response_json = repaired_result.model_dump_json()
+                        cached.confidence = repaired_result.confidence
+                        cached.is_signal = repaired_result.is_signal
+                        session.add(cached)
+                        session.commit()
+                        logger.warning(
+                            f"Repaired cached parse result for message ID {message_db_id}: "
+                            f"symbol={repaired_result.symbol_raw}"
+                        )
+                    return repaired_result
                 except Exception as cache_err:
                     logger.error(f"Error reading cached JSON: {cache_err}")
 
@@ -164,6 +309,7 @@ async def parse_signal(text: str, message_db_id: Optional[int] = None, session: 
         # Merge notes if deterministic succeeded
         if det_result and gemini_result.is_signal:
             gemini_result.parser_notes.append("Deterministic parser also matched successfully.")
+        gemini_result = merge_deterministic_fields(gemini_result, det_result, text)
             
         # Cache successful Gemini result
         if session and message_db_id:

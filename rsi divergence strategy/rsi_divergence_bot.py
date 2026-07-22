@@ -143,6 +143,47 @@ def save_live_state(state: dict) -> None:
     LIVE_STATE_PATH.write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
+def parse_state_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def successful_live_records(state: dict, symbol: str | None = None) -> list[dict]:
+    records: list[dict] = []
+    for item in state.get("signals", {}).values():
+        if symbol and str(item.get("symbol", "")).upper() != symbol.upper():
+            continue
+        if item.get("tickets"):
+            records.append(item)
+    return records
+
+
+def live_ideas_count_for_day(state: dict, symbol: str, day: datetime) -> int:
+    day_key = day.astimezone(timezone.utc).date()
+    count = 0
+    for item in successful_live_records(state, symbol):
+        placed_at = parse_state_datetime(item.get("placed_at"))
+        if placed_at and placed_at.date() == day_key:
+            count += 1
+    return count
+
+
+def last_live_idea_time(state: dict, symbol: str) -> datetime | None:
+    times = [
+        placed_at
+        for item in successful_live_records(state, symbol)
+        if (placed_at := parse_state_datetime(item.get("placed_at"))) is not None
+    ]
+    return max(times) if times else None
+
+
 def clean_symbol(value: str) -> str:
     return "".join(ch for ch in value.upper() if ch.isalnum())
 
@@ -402,6 +443,13 @@ def has_same_side_position(broker_symbol: str, side: str, magic: int) -> bool:
     return False
 
 
+def has_any_position(broker_symbol: str, magic: int) -> bool:
+    positions = mt5.positions_get(symbol=broker_symbol)
+    if not positions:
+        return False
+    return any(int(position.magic) == magic for position in positions)
+
+
 def send_market_leg(
     broker_symbol: str,
     side: str,
@@ -446,11 +494,29 @@ def place_live_signal(
     signal: dict,
     args: argparse.Namespace,
     state: dict,
+    max_daily_ideas: int,
 ) -> str:
     side = signal["side"]
     signal_key = f"{symbol}:{side}:{signal['signal_time'].isoformat()}:{config.timeframe}"
     if signal_key in state.get("signals", {}):
         return f"skip duplicate {signal_key}"
+
+    now = datetime.now(timezone.utc)
+    ideas_today = live_ideas_count_for_day(state, symbol, now)
+    if max_daily_ideas > 0 and ideas_today >= max_daily_ideas:
+        return f"blocked {symbol} daily idea cap {ideas_today}/{max_daily_ideas}"
+
+    last_placed = last_live_idea_time(state, symbol)
+    if args.symbol_cooldown_minutes > 0 and last_placed:
+        minutes_since = (now - last_placed).total_seconds() / 60.0
+        if minutes_since < args.symbol_cooldown_minutes:
+            return (
+                f"blocked {symbol} cooldown {minutes_since:.0f}/"
+                f"{args.symbol_cooldown_minutes} minutes since last idea"
+            )
+
+    if args.live_one_position_per_symbol and has_any_position(broker_symbol, args.magic):
+        return f"skip existing RSI position for {broker_symbol}"
 
     if args.live_one_position_per_side and has_same_side_position(broker_symbol, side, args.magic):
         return f"skip existing {side} position for {broker_symbol}"
@@ -1202,7 +1268,8 @@ def run_live_once(args: argparse.Namespace, configs: dict[str, SymbolConfig], ma
         if not signal:
             messages.append(f"{symbol}: no fresh {config.timeframe} signal")
             continue
-        messages.append(place_live_signal(symbol, broker_symbol, config, signal, args, state))
+        max_daily_ideas = max_trades_by_symbol.get(symbol, args.max_trades_per_symbol_day)
+        messages.append(place_live_signal(symbol, broker_symbol, config, signal, args, state, max_daily_ideas))
     return messages
 
 
@@ -1228,6 +1295,11 @@ def run_live(args: argparse.Namespace) -> int:
         print(f"Account: {account.login} | {account.server} | equity={account.equity:.2f}")
         print(f"Symbols: {args.symbols}")
         print(f"Sizing: {args.risk_mode}, risk%={args.risk}, fixedLot={args.fixed_lot}, usdCap={args.risk_usd_cap}, offset={args.risk_usd_offset}")
+        print(
+            f"Overtrade guards: cooldown={args.symbol_cooldown_minutes}m, "
+            f"default daily ideas/symbol={args.max_trades_per_symbol_day}, "
+            f"onePositionPerSymbol={args.live_one_position_per_symbol}"
+        )
         print("Press Ctrl+C to stop.")
 
         while True:
@@ -1265,7 +1337,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-spread-points", type=int, default=int(os.getenv("RSI_MAX_SPREAD_POINTS", "350")))
     parser.add_argument("--deviation-points", type=int, default=int(os.getenv("RSI_DEVIATION_POINTS", "30")))
     parser.add_argument("--live-one-position-per-side", action="store_true", default=os.getenv("RSI_LIVE_ONE_POSITION_PER_SIDE", "true").lower() in {"1", "true", "yes", "on"})
+    parser.add_argument("--live-one-position-per-symbol", action="store_true", default=os.getenv("RSI_LIVE_ONE_POSITION_PER_SYMBOL", "true").lower() in {"1", "true", "yes", "on"})
     parser.add_argument("--max-trades-per-symbol-day", type=int, default=int(os.getenv("RSI_MAX_TRADES_PER_SYMBOL_DAY", "3")))
+    parser.add_argument("--symbol-cooldown-minutes", type=int, default=int(os.getenv("RSI_SYMBOL_COOLDOWN_MINUTES", "120")))
     parser.add_argument("--use-optimized", action="store_true", default=os.getenv("RSI_USE_OPTIMIZED", "true").lower() in {"1", "true", "yes", "on"}, help="Use optimized_configs.json when present")
     parser.add_argument(
         "--symbols",

@@ -212,6 +212,26 @@
             </div>
 
             <div class="form-group">
+                <label for="break_even_trigger_tp_level">Break-Even Trigger TP Level</label>
+                <input type="number" min="1" step="1" id="break_even_trigger_tp_level" name="break_even_trigger_tp_level" class="form-input" value="{{ settings.break_even_trigger_tp_level or 1 }}">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">1 = move at TP1, 2 = move at TP2, 3 = move at TP3.</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="split_legs_enabled" {% if settings.split_legs_enabled %}checked{% endif %}>
+                    Split one signal into one leg per TP
+                </label>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Divides total lot, risk %, or USD risk cap across the TP legs. Every leg uses the same SL.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="split_legs_max_count">Max Split Legs</label>
+                <input type="number" min="0" step="1" id="split_legs_max_count" name="split_legs_max_count" class="form-input" value="{{ settings.split_legs_max_count or 0 }}">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">0 means use every TP from the signal. Example: 4 TPs and $200 risk = $50 risk per leg.</span>
+            </div>
+
+            <div class="form-group">
                 <label class="form-checkbox">
                     <input type="checkbox" name="rr_override_enabled" {% if settings.rr_override_enabled %}checked{% endif %}>
                     Override signal TPs and target custom RR
