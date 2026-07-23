@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-07-14T03:09:40",
+  "days": 60,
+  "balance": 300.0,
+  "risk_percent": 4.0,
+  "objective": "return_pct - 0.35*max_drawdown_pct + trade/win bonuses",
+  "configs": {
+    "AUDUSD": {
+      "symbol": "AUDUSD",
+      "timeframe": "M1",
+      "pivot_len": 3,
+      "atr_sl_mult": 1.2,
+      "confirmation": "TREND",
+      "rr": [
+        1.0,
+        1.5,
+        3.0
+      ],
+      "session": "ALL",
+      "max_trades_per_symbol_day": 1
+    },
+    "XAUUSD": {
+      "symbol": "XAUUSD",
+      "timeframe": "M5",
+      "pivot_len": 3,
+      "atr_sl_mult": 1.2,
+      "confirmation": "EMA",
+      "rr": [
+        1.0,
+        1.5,
+        2.0
+      ],
+      "session": "ALL",
+      "max_trades_per_symbol_day": 3
+    },
+    "GBPCHF": {
+      "symbol": "GBPCHF",
+      "timeframe": "M5",
+      "pivot_len": 7,
+      "atr_sl_mult": 2.0,
+      "confirmation": "OFF",
+      "rr": [
+        1.0,
+        2.0,
+        3.0
+      ],
+      "session": "ALL",
+      "max_trades_per_symbol_day": 2
+    },
+    "AUDCAD": {
+      "symbol": "AUDCAD",
+      "timeframe": "M1",
+      "pivot_len": 7,
+      "atr_sl_mult": 2.0,
+      "confirmation": "RSI_EXTREME",
+      "rr": [
+        1.0,
+        2.0,
+        3.0
+      ],
+      "session": "ALL",
+      "max_trades_per_symbol_day": 1
+    },
+    "XAGUSD": {
+      "symbol": "XAGUSD",
+      "timeframe": "M1",
+      "pivot_len": 5,
+      "atr_sl_mult": 2.0,
+      "confirmation": "OFF",
+      "rr": [
+        1.0,
+        2.0,
+        3.0
+      ],
+      "session": "NY_OPEN",
+      "max_trades_per_symbol_day": 3
+    }
+  },
+  "enabled_symbols": [
+    "AUDUSD",
+    "XAUUSD",
+    "GBPCHF",
+    "AUDCAD",
+    "XAGUSD"
+  ]
+}

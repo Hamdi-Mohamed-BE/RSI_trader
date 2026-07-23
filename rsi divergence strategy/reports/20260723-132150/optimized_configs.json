@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-07-23T13:21:38",
+  "days": 60,
+  "balance": 300.0,
+  "risk_percent": 4.0,
+  "objective": "return_pct - 0.35*max_drawdown_pct + trade/win bonuses",
+  "configs": {
+    "EURJPY": {
+      "symbol": "EURJPY",
+      "timeframe": "M5",
+      "pivot_len": 3,
+      "atr_sl_mult": 1.2,
+      "confirmation": "EMA",
+      "rr": [
+        1.0,
+        2.0,
+        3.0
+      ],
+      "session": "NY_OPEN",
+      "max_trades_per_symbol_day": 2
+    }
+  },
+  "enabled_symbols": [
+    "EURJPY"
+  ]
+}

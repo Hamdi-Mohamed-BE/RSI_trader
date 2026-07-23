@@ -184,6 +184,69 @@ def last_live_idea_time(state: dict, symbol: str) -> datetime | None:
     return max(times) if times else None
 
 
+def live_closed_records(state: dict, symbol: str | None = None) -> list[dict]:
+    records: list[dict] = []
+    for item in state.get("signals", {}).values():
+        if symbol and str(item.get("symbol", "")).upper() != symbol.upper():
+            continue
+        if item.get("closed_at") and item.get("realized_r") is not None:
+            records.append(item)
+    return records
+
+
+def live_loss_guard_reason(state: dict, symbol: str, args: argparse.Namespace, now: datetime | None = None) -> str | None:
+    now = now or datetime.now(timezone.utc)
+    records = sorted(
+        live_closed_records(state, symbol),
+        key=lambda item: parse_state_datetime(item.get("closed_at")) or datetime.min.replace(tzinfo=timezone.utc),
+    )
+
+    if args.max_consecutive_losses > 0 and args.loss_cooldown_days > 0:
+        streak = 0
+        latest_loss_time: datetime | None = None
+        for item in reversed(records):
+            realized_r = float(item.get("realized_r") or 0.0)
+            closed_at = parse_state_datetime(item.get("closed_at"))
+            if realized_r < 0:
+                streak += 1
+                latest_loss_time = latest_loss_time or closed_at
+                if streak >= args.max_consecutive_losses:
+                    break
+            elif realized_r > 0:
+                break
+        if streak >= args.max_consecutive_losses and latest_loss_time is not None:
+            cooldown_until = latest_loss_time + timedelta(days=args.loss_cooldown_days)
+            if now < cooldown_until:
+                return (
+                    f"loss guard: {symbol} has {streak} consecutive closed losses; "
+                    f"cooldown until {cooldown_until.isoformat()}"
+                )
+
+    if args.weekly_loss_limit_r > 0:
+        week_key = now.isocalendar()[:2]
+        weekly_r = sum(
+            float(item.get("realized_r") or 0.0)
+            for item in records
+            if (closed_at := parse_state_datetime(item.get("closed_at")))
+            and closed_at.isocalendar()[:2] == week_key
+        )
+        if weekly_r <= -abs(args.weekly_loss_limit_r):
+            return f"weekly loss guard: {symbol} is {weekly_r:.2f}R this week"
+
+    if args.monthly_loss_limit_r > 0:
+        monthly_r = sum(
+            float(item.get("realized_r") or 0.0)
+            for item in records
+            if (closed_at := parse_state_datetime(item.get("closed_at")))
+            and closed_at.year == now.year
+            and closed_at.month == now.month
+        )
+        if monthly_r <= -abs(args.monthly_loss_limit_r):
+            return f"monthly loss guard: {symbol} is {monthly_r:.2f}R this month"
+
+    return None
+
+
 def clean_symbol(value: str) -> str:
     return "".join(ch for ch in value.upper() if ch.isalnum())
 
@@ -450,6 +513,89 @@ def has_any_position(broker_symbol: str, magic: int) -> bool:
     return any(int(position.magic) == magic for position in positions)
 
 
+def refresh_live_signal_outcomes(state: dict, args: argparse.Namespace) -> int:
+    signals = state.get("signals", {})
+    pending = [
+        item for item in signals.values()
+        if item.get("tickets") and item.get("closed_at") is None
+    ]
+    if not pending:
+        return 0
+
+    now = datetime.now(timezone.utc)
+    earliest = min(
+        (
+            parse_state_datetime(item.get("placed_at"))
+            for item in pending
+            if parse_state_datetime(item.get("placed_at")) is not None
+        ),
+        default=now - timedelta(days=args.live_history_lookback_days),
+    )
+    start = min(earliest - timedelta(days=1), now - timedelta(days=args.live_history_lookback_days))
+    deals = mt5.history_deals_get(start, now + timedelta(days=1)) or []
+    open_positions = mt5.positions_get() or []
+    open_ids = set()
+    for position in open_positions:
+        if int(getattr(position, "magic", 0) or 0) != int(args.magic):
+            continue
+        open_ids.add(int(getattr(position, "ticket", 0) or 0))
+        open_ids.add(int(getattr(position, "identifier", 0) or 0))
+
+    changed = 0
+    for item in pending:
+        raw_tickets = item.get("tickets") or []
+        ids = {int(ticket) for ticket in raw_tickets if str(ticket).lstrip("-").isdigit()}
+        if not ids:
+            continue
+
+        seed_deals = [
+            deal for deal in deals
+            if int(getattr(deal, "ticket", 0) or 0) in ids
+            or int(getattr(deal, "order", 0) or 0) in ids
+            or int(getattr(deal, "position_id", 0) or 0) in ids
+        ]
+        position_ids = {
+            int(getattr(deal, "position_id", 0) or 0)
+            for deal in seed_deals
+            if int(getattr(deal, "position_id", 0) or 0)
+        }
+        if position_ids & open_ids:
+            continue
+
+        related = [
+            deal for deal in deals
+            if int(getattr(deal, "position_id", 0) or 0) in position_ids
+            or int(getattr(deal, "ticket", 0) or 0) in ids
+            or int(getattr(deal, "order", 0) or 0) in ids
+        ]
+        if not related:
+            continue
+
+        profit = sum(
+            float(getattr(deal, "profit", 0.0) or 0.0)
+            + float(getattr(deal, "swap", 0.0) or 0.0)
+            + float(getattr(deal, "commission", 0.0) or 0.0)
+            for deal in related
+        )
+        actual_risk = float((item.get("sizing") or {}).get("actual_risk") or 0.0)
+        if actual_risk <= 0:
+            actual_risk = abs(float((item.get("sizing") or {}).get("target_risk") or 0.0))
+        realized_r = profit / actual_risk if actual_risk > 0 else 0.0
+        latest_time = max(
+            (datetime.fromtimestamp(int(getattr(deal, "time", 0) or 0), tz=timezone.utc) for deal in related),
+            default=now,
+        )
+        item["closed_at"] = latest_time.isoformat()
+        item["realized_profit"] = round(profit, 2)
+        item["realized_r"] = round(realized_r, 4)
+        item["outcome"] = "win" if realized_r > 0 else ("loss" if realized_r < 0 else "flat")
+        changed += 1
+
+    if changed:
+        save_live_state(state)
+    return changed
+
+
 def send_market_leg(
     broker_symbol: str,
     side: str,
@@ -514,6 +660,10 @@ def place_live_signal(
                 f"blocked {symbol} cooldown {minutes_since:.0f}/"
                 f"{args.symbol_cooldown_minutes} minutes since last idea"
             )
+
+    guard_reason = live_loss_guard_reason(state, symbol, args, now)
+    if guard_reason:
+        return f"blocked {guard_reason}"
 
     if args.live_one_position_per_symbol and has_any_position(broker_symbol, args.magic):
         return f"skip existing RSI position for {broker_symbol}"
@@ -891,6 +1041,10 @@ def backtest_symbol(
     fixed_lot: float,
     risk_usd_cap: float,
     risk_usd_offset: float,
+    max_consecutive_losses: int = 0,
+    loss_cooldown_days: int = 0,
+    weekly_loss_limit_r: float = 0.0,
+    monthly_loss_limit_r: float = 0.0,
 ) -> tuple[list[TradeIdea], dict]:
     end = datetime.now(timezone.utc)
     start = end - timedelta(days=days + 10)
@@ -908,8 +1062,21 @@ def backtest_symbol(
     trades: list[TradeIdea] = []
     next_free_index = -1
     day_counts: dict[str, int] = {}
+    consecutive_losses = 0
+    cooldown_until: datetime | None = None
+    weekly_r: dict[tuple[int, int], float] = {}
+    monthly_r: dict[tuple[int, int], float] = {}
     for signal in sorted(signals, key=lambda item: item["entry_index"]):
         if signal["entry_index"] <= next_free_index:
+            continue
+        entry_time = signal["entry_time"]
+        if cooldown_until is not None and entry_time < cooldown_until:
+            continue
+        week_key = (entry_time.isocalendar().year, entry_time.isocalendar().week)
+        if weekly_loss_limit_r > 0 and weekly_r.get(week_key, 0.0) <= -abs(weekly_loss_limit_r):
+            continue
+        month_key = (entry_time.year, entry_time.month)
+        if monthly_loss_limit_r > 0 and monthly_r.get(month_key, 0.0) <= -abs(monthly_loss_limit_r):
             continue
         day_key = signal["entry_time"].date().isoformat()
         if max_trades_per_day > 0 and day_counts.get(day_key, 0) >= max_trades_per_day:
@@ -933,6 +1100,16 @@ def backtest_symbol(
             max_dd = max(max_dd, (peak - balance) / peak * 100.0)
         next_free_index = int(result["exit_index"])
         day_counts[day_key] = day_counts.get(day_key, 0) + 1
+        realized_r = float(result["r_multiple"])
+        weekly_r[week_key] = weekly_r.get(week_key, 0.0) + realized_r
+        monthly_r[month_key] = monthly_r.get(month_key, 0.0) + realized_r
+        if realized_r < 0:
+            consecutive_losses += 1
+            if max_consecutive_losses > 0 and consecutive_losses >= max_consecutive_losses:
+                cooldown_until = signal["entry_time"] + timedelta(days=max(0, loss_cooldown_days))
+                consecutive_losses = 0
+        else:
+            consecutive_losses = 0
         trades.append(
             TradeIdea(
                 symbol=display_symbol,
@@ -993,6 +1170,10 @@ def backtest_symbol(
         "fixed_lot": fixed_lot,
         "risk_usd_cap": risk_usd_cap,
         "risk_usd_offset": risk_usd_offset,
+        "max_consecutive_losses": max_consecutive_losses,
+        "loss_cooldown_days": loss_cooldown_days,
+        "weekly_loss_limit_r": weekly_loss_limit_r,
+        "monthly_loss_limit_r": monthly_loss_limit_r,
     }
     return trades, stats
 
@@ -1198,6 +1379,10 @@ def run_backtest(args: argparse.Namespace) -> int:
                 args.fixed_lot,
                 args.risk_usd_cap,
                 args.risk_usd_offset,
+                args.max_consecutive_losses,
+                args.loss_cooldown_days,
+                args.weekly_loss_limit_r,
+                args.monthly_loss_limit_r,
             )
             if "error" in row:
                 skipped.append({"symbol": symbol, "reason": row["error"]})
@@ -1219,6 +1404,10 @@ def run_backtest(args: argparse.Namespace) -> int:
             "fixed_lot": args.fixed_lot,
             "risk_usd_cap": args.risk_usd_cap,
             "risk_usd_offset": args.risk_usd_offset,
+            "max_consecutive_losses": args.max_consecutive_losses,
+            "loss_cooldown_days": args.loss_cooldown_days,
+            "weekly_loss_limit_r": args.weekly_loss_limit_r,
+            "monthly_loss_limit_r": args.monthly_loss_limit_r,
             "max_trades_per_symbol_day": args.max_trades_per_symbol_day,
             "symbols": symbols,
             "combined": combined,
@@ -1300,11 +1489,20 @@ def run_live(args: argparse.Namespace) -> int:
             f"default daily ideas/symbol={args.max_trades_per_symbol_day}, "
             f"onePositionPerSymbol={args.live_one_position_per_symbol}"
         )
+        print(
+            f"Loss guards: consecutiveLosses={args.max_consecutive_losses}, "
+            f"lossCooldownDays={args.loss_cooldown_days}, "
+            f"weeklyLossLimit={args.weekly_loss_limit_r}R, "
+            f"monthlyLossLimit={args.monthly_loss_limit_r}R"
+        )
         print("Press Ctrl+C to stop.")
 
         while True:
             stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             print(f"\n[{stamp}] scan")
+            refreshed = refresh_live_signal_outcomes(state, args)
+            if refreshed:
+                print(f"  refreshed {refreshed} closed RSI signal outcome(s)")
             for message in run_live_once(args, configs, max_trades_by_symbol, state):
                 print(" ", message)
             if args.live_once:
@@ -1331,6 +1529,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--require-demo", action="store_true", default=os.getenv("RSI_REQUIRE_DEMO", "true").lower() in {"1", "true", "yes", "on"})
     parser.add_argument("--scan-interval-seconds", type=int, default=int(os.getenv("RSI_SCAN_INTERVAL_SECONDS", "60")))
     parser.add_argument("--live-lookback-days", type=int, default=int(os.getenv("RSI_LIVE_LOOKBACK_DAYS", "14")))
+    parser.add_argument("--live-history-lookback-days", type=int, default=int(os.getenv("RSI_LIVE_HISTORY_LOOKBACK_DAYS", "60")))
     parser.add_argument("--live-max-signal-age-minutes", type=int, default=int(os.getenv("RSI_LIVE_MAX_SIGNAL_AGE_MINUTES", "10")))
     parser.add_argument("--max-entry-drift-r", type=float, default=float(os.getenv("RSI_MAX_ENTRY_DRIFT_R", "0.35")))
     parser.add_argument("--magic", type=int, default=int(os.getenv("RSI_MAGIC", "7142026")))
@@ -1340,6 +1539,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--live-one-position-per-symbol", action="store_true", default=os.getenv("RSI_LIVE_ONE_POSITION_PER_SYMBOL", "true").lower() in {"1", "true", "yes", "on"})
     parser.add_argument("--max-trades-per-symbol-day", type=int, default=int(os.getenv("RSI_MAX_TRADES_PER_SYMBOL_DAY", "3")))
     parser.add_argument("--symbol-cooldown-minutes", type=int, default=int(os.getenv("RSI_SYMBOL_COOLDOWN_MINUTES", "120")))
+    parser.add_argument("--max-consecutive-losses", type=int, default=int(os.getenv("RSI_MAX_CONSECUTIVE_LOSSES", "0")))
+    parser.add_argument("--loss-cooldown-days", type=int, default=int(os.getenv("RSI_LOSS_COOLDOWN_DAYS", "0")))
+    parser.add_argument("--weekly-loss-limit-r", type=float, default=float(os.getenv("RSI_WEEKLY_LOSS_LIMIT_R", "0")))
+    parser.add_argument("--monthly-loss-limit-r", type=float, default=float(os.getenv("RSI_MONTHLY_LOSS_LIMIT_R", "0")))
     parser.add_argument("--use-optimized", action="store_true", default=os.getenv("RSI_USE_OPTIMIZED", "true").lower() in {"1", "true", "yes", "on"}, help="Use optimized_configs.json when present")
     parser.add_argument(
         "--symbols",
