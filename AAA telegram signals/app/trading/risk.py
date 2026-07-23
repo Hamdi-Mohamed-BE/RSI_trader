@@ -5,6 +5,25 @@ from app.core.logging import logger
 
 class RiskCalculator:
     @staticmethod
+    def estimate_loss(
+        symbol: str,
+        side: str,
+        entry_price: float,
+        stop_loss: float,
+        lot: float,
+    ) -> Optional[float]:
+        profit = mt5_client.calculate_order_profit(
+            symbol=symbol,
+            side=side,
+            lot=lot,
+            entry_price=entry_price,
+            exit_price=stop_loss,
+        )
+        if profit is None:
+            return None
+        return abs(float(profit))
+
+    @staticmethod
     def calculate_lot(
         symbol: str,
         side: str,
@@ -43,6 +62,9 @@ class RiskCalculator:
             volume_max = symbol_info.get("volume_max") or volume_max
             volume_step = symbol_info.get("volume_step") or volume_step
             
+        risk_amount: Optional[float] = None
+        risk_per_lot_source = "fixed lot"
+
         if risk_mode == "fixed_lot":
             lot = fixed_lot
             warning = None
@@ -72,20 +94,39 @@ class RiskCalculator:
                 logger.warning(f"Unknown risk mode: {risk_mode}. Defaulting to fixed lot.")
                 return fixed_lot, None
 
-            # Formula: risk_per_lot = (price_distance / tick_size) * tick_value
-            # This represents the USD/account currency value lost if 1 lot hit SL
-            risk_per_lot = (price_distance / tick_size) * tick_value
+            mt5_risk_per_lot = RiskCalculator.estimate_loss(
+                symbol=symbol,
+                side=side,
+                entry_price=entry_price,
+                stop_loss=stop_loss,
+                lot=1.0,
+            )
+            if mt5_risk_per_lot and mt5_risk_per_lot > 0:
+                risk_per_lot = mt5_risk_per_lot
+                risk_per_lot_source = "MT5 order_calc_profit"
+            else:
+                # Fallback: risk_per_lot = (price_distance / tick_size) * tick_value.
+                # MT5's native profit engine is preferred because broker tick values are
+                # often misleading for metals, crypto, indices, and custom CFDs.
+                risk_per_lot = (price_distance / tick_size) * tick_value
+                risk_per_lot_source = "tick value fallback"
             if risk_per_lot <= 0:
                 raise ValueError("Calculated risk per lot is zero or negative. Check symbol tick value/size.")
                 
             lot = risk_amount / risk_per_lot
-            logger.info(f"Raw calculated lot: {lot:.5f} (Risk Amt: {risk_amount:.2f}, Risk/Lot: {risk_per_lot:.2f})")
+            logger.info(
+                f"Raw calculated lot: {lot:.5f} "
+                f"(Risk Amt: {risk_amount:.2f}, Risk/Lot: {risk_per_lot:.2f}, source={risk_per_lot_source})"
+            )
             warning = None
 
         # 2. Normalization steps
         # Step sizing normalization
         # Let's align lot to volume_step
-        steps = round(lot / volume_step)
+        if risk_mode in {"risk_percent", "risk_usd_cap"}:
+            steps = math.floor((lot / volume_step) + 1e-9)
+        else:
+            steps = round(lot / volume_step)
         normalized_lot = steps * volume_step
         
         # Round to decimal points matching volume_step precision (e.g. 0.01 step -> 2 decimals)
@@ -100,11 +141,47 @@ class RiskCalculator:
         # Lower limits and warnings
         if normalized_lot < volume_min:
             if allow_min_lot_if_risk_too_small:
-                warning = f"Calculated lot {lot:.4f} is below broker minimum {volume_min}. Using broker minimum lot. Actual risk may exceed configured cap."
-                normalized_lot = volume_min
+                min_lot_risk = None
+                if risk_mode in {"risk_percent", "risk_usd_cap"}:
+                    min_lot_risk = RiskCalculator.estimate_loss(
+                        symbol=symbol,
+                        side=side,
+                        entry_price=entry_price,
+                        stop_loss=stop_loss,
+                        lot=volume_min,
+                    )
+                if (
+                    risk_mode in {"risk_percent", "risk_usd_cap"}
+                    and risk_amount is not None
+                    and min_lot_risk is not None
+                    and min_lot_risk > risk_amount
+                ):
+                    normalized_lot = 0.0
+                    warning = (
+                        f"Broker minimum lot {volume_min} would risk {min_lot_risk:.2f}, "
+                        f"above configured cap {risk_amount:.2f}. Position sizing skipped."
+                    )
+                else:
+                    warning = f"Calculated lot {lot:.4f} is below broker minimum {volume_min}. Using broker minimum lot."
+                    normalized_lot = volume_min
             else:
                 # Lot size is zero/too small, don't trade
                 normalized_lot = 0.0
                 warning = f"Calculated lot {lot:.4f} is below broker minimum {volume_min}. Position sizing skipped."
+
+        if risk_mode in {"risk_percent", "risk_usd_cap"} and normalized_lot > 0 and risk_amount is not None:
+            actual_risk = RiskCalculator.estimate_loss(
+                symbol=symbol,
+                side=side,
+                entry_price=entry_price,
+                stop_loss=stop_loss,
+                lot=normalized_lot,
+            )
+            if actual_risk is not None and actual_risk > risk_amount + 0.01:
+                warning = (
+                    f"Normalized lot {normalized_lot} would risk {actual_risk:.2f}, "
+                    f"above configured cap {risk_amount:.2f}. Position sizing skipped."
+                )
+                normalized_lot = 0.0
                 
         return normalized_lot, warning

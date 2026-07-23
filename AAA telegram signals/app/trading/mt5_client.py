@@ -126,6 +126,31 @@ class MT5Client:
             return None
         return tick._asdict()
 
+    def calculate_order_profit(
+        self,
+        symbol: str,
+        side: str,
+        lot: float,
+        entry_price: float,
+        exit_price: float,
+    ) -> Optional[float]:
+        """Uses MT5's native profit engine to estimate P/L for a hypothetical trade."""
+        if not self.connect():
+            return None
+        self.select_symbol(symbol, True)
+        order_type = mt5.ORDER_TYPE_BUY if str(side).lower() == "buy" else mt5.ORDER_TYPE_SELL
+        profit = mt5.order_calc_profit(
+            order_type,
+            symbol,
+            float(lot),
+            float(entry_price),
+            float(exit_price),
+        )
+        if profit is None:
+            logger.warning(f"order_calc_profit returned None for {symbol}: {mt5.last_error()}")
+            return None
+        return float(profit)
+
     def select_symbol(self, symbol: str, select: bool = True) -> bool:
         """Selects a symbol in Market Watch."""
         if not self.connect():

@@ -448,13 +448,51 @@ class CopierService:
                 )
 
                 if lot <= 0:
-                    error_msg = "Calculated lot size is 0 (below broker limits and minimum lot execution disabled)."
+                    error_msg = lot_warning or "Calculated lot size is 0 (below broker limits and minimum lot execution disabled)."
                     self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
                     if not split_enabled:
                         msg.processed = True
                         TelegramMessageRepository.save(session, msg)
                         return
                     continue
+
+                leg_risk_cap = None
+                if risk_mode == "risk_usd_cap":
+                    leg_risk_cap = leg_risk_usd
+                elif risk_mode == "risk_percent":
+                    account_info = mt5_client.get_account_info() or {}
+                    account_value = (
+                        account_info.get("equity")
+                        if use_equity
+                        else account_info.get("balance")
+                    ) or 0.0
+                    leg_risk_cap = float(account_value) * (leg_risk_pct / 100.0)
+
+                actual_leg_risk = None
+                if risk_mode in {"risk_percent", "risk_usd_cap"} and sl:
+                    actual_leg_risk = RiskCalculator.estimate_loss(
+                        symbol=broker_symbol,
+                        side=parsed.side,
+                        entry_price=ref_price,
+                        stop_loss=sl,
+                        lot=lot,
+                    )
+                    if (
+                        leg_risk_cap is not None
+                        and actual_leg_risk is not None
+                        and actual_leg_risk > leg_risk_cap + 0.01
+                    ):
+                        error_msg = (
+                            f"Calculated lot {lot:g} would risk {actual_leg_risk:.2f}, "
+                            f"above per-leg cap {leg_risk_cap:.2f}; skipped."
+                        )
+                        self._save_failed_attempt(session, msg.id, parsed, error_msg, "validation_failed", broker_symbol)
+                        SystemEventRepository.log(session, "error", "risk", error_msg)
+                        if not split_enabled:
+                            msg.processed = True
+                            TelegramMessageRepository.save(session, msg)
+                            return
+                        continue
 
             except Exception as lot_err:
                 error_msg = f"Lot calculation error: {lot_err}"
@@ -504,7 +542,11 @@ class CopierService:
                 break_even_trigger_tp=effective_break_even_tp,
                 lot=lot,
                 risk_mode=risk_mode,
-                risk_amount=leg_risk_usd if risk_mode == "risk_usd_cap" else (leg_risk_pct if risk_mode == "risk_percent" else leg_fixed_lot),
+                risk_amount=(
+                    actual_leg_risk
+                    if actual_leg_risk is not None
+                    else (leg_risk_usd if risk_mode == "risk_usd_cap" else (leg_risk_pct if risk_mode == "risk_percent" else leg_fixed_lot))
+                ),
                 status="pending_validation",
                 mt5_request_json=json.dumps(req_dict)
             )
