@@ -19,6 +19,16 @@ EDUCATION_KEYWORDS = [
     r"chart setup", r"technical analysis", r"market overview"
 ]
 
+
+def looks_like_trade_signal(text: str) -> bool:
+    """Detect strong signal shape before generic disclaimer/result filters."""
+    text_lower = (text or "").lower()
+    has_side = bool(re.search(r"\b(?:buy|sell|buying|selling)\b", text_lower))
+    has_sl = bool(re.search(r"\b(?:sl|s/l|stop\s*loss|stoploss+|stop\s*oss|stoposs)\b", text_lower))
+    has_tp = bool(re.search(r"\b(?:tp\s*\d*|take\s*profit|target)\b", text_lower))
+    return has_side and has_sl and has_tp
+
+
 def is_spam_or_promo(text: str) -> bool:
     """Helper to detect promotional or spam content."""
     text_lower = text.lower()
@@ -64,6 +74,12 @@ def filter_message(
     text = message.text or ""
     if not text.strip():
         return True, "empty_text"
+
+    # Real signal posts often include boilerplate like "not financial advice",
+    # "profit", or "educational purposes". Let the parser decide when the
+    # message clearly contains side + SL + TP.
+    if looks_like_trade_signal(text):
+        return False, None
         
     # 4. Check for ads/promos
     if is_spam_or_promo(text):

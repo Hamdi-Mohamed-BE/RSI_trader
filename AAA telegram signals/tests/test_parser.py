@@ -85,6 +85,33 @@ def test_parse_determinist_split_gold_range_signal_without_symbol():
     assert result.break_even_trigger_tp == 4092
 
 
+def test_parse_determinist_scalp_idea_selling_format_with_entry_range():
+    msg = """
+    **SCALP IDEA!**
+    I AM SELLING XAUUSD (GOLD)
+    Entry point : 4056-4060
+    Stop Loss : 4062
+    TP 1 : 4055
+    TP 2 : 4054
+    TP 3 : 4052
+    TP 4 : 4050
+    TP 5 : Open
+    For educational purposes only. This is not financial advice.
+    """
+
+    result = parse_determinist(msg)
+
+    assert result is not None
+    assert result.symbol_raw == "XAUUSD"
+    assert result.side == "sell"
+    assert result.order_type == "market"
+    assert result.entry_price == 4060
+    assert result.stop_loss == 4062
+    assert result.take_profits == [4055, 4054, 4052, 4050]
+    assert result.final_take_profit == 4050
+    assert result.break_even_trigger_tp == 4055
+
+
 def test_extract_symbol_raw_is_context_based_not_whitelist():
     examples = {
         "**GBPNZD SELL NOW**\nSTOPLOSS @ 2.35770\nTP @ 2.34100": "GBPNZD",

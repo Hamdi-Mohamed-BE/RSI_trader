@@ -11,11 +11,11 @@ from app.core.config import settings
 # final mapping to MT5 symbols such as XAUUSDm, US30m, USTECm, etc.
 SYMBOL_TOKEN_PATTERN = re.compile(r"[#$*`_~\[]*([A-Z][A-Z0-9._/-]{1,15})[\]$*`_~]*", re.IGNORECASE)
 SYMBOL_BEFORE_SIDE_PATTERN = re.compile(
-    r"(?:^|[\s*_#])([A-Z][A-Z0-9._/-]{1,15})\s+(?:BUY|SELL)\b",
+    r"(?:^|[\s*_#])([A-Z][A-Z0-9._/-]{1,15})\s+(?:BUY(?:ING)?|SELL(?:ING)?)\b",
     re.IGNORECASE,
 )
 SYMBOL_AFTER_SIDE_PATTERN = re.compile(
-    r"\b(?:BUY|SELL)(?:\s+(?:NOW|MARKET|LIMIT|STOP|ENTRY|ENTRIES|ZONE|AT))*\s+([A-Z][A-Z0-9._/-]{1,15})\b",
+    r"\b(?:BUY(?:ING)?|SELL(?:ING)?)(?:\s+(?:NOW|MARKET|LIMIT|STOP|ENTRY|ENTRIES|ZONE|AT))*\s+([A-Z][A-Z0-9._/-]{1,15})\b",
     re.IGNORECASE,
 )
 
@@ -24,6 +24,7 @@ NON_SYMBOL_TOKENS = {
     "ACTIVE",
     "AGAIN",
     "ALL",
+    "AM",
     "AND",
     "AT",
     "BE",
@@ -41,7 +42,9 @@ NON_SYMBOL_TOKENS = {
     "ORDER",
     "PRICE",
     "PROFIT",
+    "SCALP",
     "SELL",
+    "SELLING",
     "SETUP",
     "SIGNAL",
     "SL",
@@ -56,12 +59,17 @@ NON_SYMBOL_TOKENS = {
 }
 
 SL_PATTERN = re.compile(r"(?:sl|s/l|stop\s*loss|stoploss+|stop\s*oss|stoposs)\b\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
-TP_PATTERN = re.compile(r"(?:tp|take\s*profit|target|tp\d+)\b\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
+TP_PATTERN = re.compile(r"(?:tp\s*\d*|take\s*profit|target)\b\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
 
 # Pending entry pattern — matches "@ 2355.50", "entry 2355.50", "price: 1.3500", etc.
-ENTRY_PATTERN = re.compile(r"(?:entry|entries|at|price|limit|stop)\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
+ENTRY_PATTERN = re.compile(r"(?:entry(?:\s*point)?|entries|at|price|limit|stop)\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
 # Standalone @ with a price (e.g., "SELL LIMIT GOLD @ 2355.50")
 AT_PRICE_PATTERN = re.compile(r"@\s*([0-9.]+)", re.IGNORECASE)
+ENTRY_RANGE_PATTERN = re.compile(
+    r"(?:entry(?:\s*point)?|entries|at|price)\s*[@:=]?\s*"
+    r"([0-9]+(?:\.[0-9]+)?)\s*(?:-|–|—|to|â€“|â€”)\s*([0-9]+(?:\.[0-9]+)?)",
+    re.IGNORECASE,
+)
 PENDING_RANGE_PATTERN = re.compile(
     r"\b(?P<side>buy|sell)\s+(?P<kind>limit|stop)\b[^\d\n]*"
     r"(?P<first>[0-9]+(?:\.[0-9]+)?)\s*(?:-|–|—|to)\s*"
@@ -100,7 +108,7 @@ def extract_symbol_raw(text: str) -> Optional[str]:
                 return candidate
 
     for line in text_upper.splitlines():
-        if not re.search(r"\b(?:BUY|SELL)\b", line):
+        if not re.search(r"\b(?:BUY(?:ING)?|SELL(?:ING)?)\b", line):
             continue
         for match in SYMBOL_TOKEN_PATTERN.finditer(line):
             candidate = clean_symbol_token(match.group(1))
@@ -116,7 +124,7 @@ def infer_symbol_from_price_context(text: str) -> Optional[str]:
     XAU-style prices, for example: BUY LIMIT 4087 - 4085 SL 4082.
     """
     text_upper = (text or "").upper()
-    if not re.search(r"\b(?:BUY|SELL)\b", text_upper):
+    if not re.search(r"\b(?:BUY(?:ING)?|SELL(?:ING)?)\b", text_upper):
         return None
     if not re.search(r"\b(?:SL|S/L|STOP\s*LOSS|STOPLOSS|STOPOSS|TP|TARGET)\b", text_upper):
         return None
@@ -192,9 +200,9 @@ def parse_determinist(text: str) -> Optional[SignalParseSchema]:
     text_lower = text_clean.lower()
     
     # Determine buy vs sell
-    if "buy" in text_lower:
+    if re.search(r"\bbuy(?:ing)?\b", text_lower):
         side = "buy"
-    elif "sell" in text_lower:
+    elif re.search(r"\bsell(?:ing)?\b", text_lower):
         side = "sell"
     else:
         return None
@@ -217,7 +225,13 @@ def parse_determinist(text: str) -> Optional[SignalParseSchema]:
     # 4. Match TPs
     tps = []
     for line in text_lines:
-        if re.match(r"^\s*(?:tp\d*|take\s*profit|target)\b", line, re.IGNORECASE):
+        if re.match(r"^\s*(?:tp\s*\d*|take\s*profit|target)\b", line, re.IGNORECASE):
+            if re.match(r"^\s*tp\s*\d+\s*[@:=]?\s*(?:open|running|runner)\b", line, re.IGNORECASE):
+                continue
+            if re.match(r"^\s*tp\s*\d+\s*[@:=]", line, re.IGNORECASE):
+                for match in TP_PATTERN.finditer(line):
+                    tps.append(float(match.group(1)))
+                continue
             line_numbers = [float(match.group(1)) for match in PRICE_PATTERN.finditer(line)]
             if line_numbers:
                 tps.extend(line_numbers)
@@ -237,8 +251,16 @@ def parse_determinist(text: str) -> Optional[SignalParseSchema]:
     final_tp = tps[-1]
     break_even_trigger_tp = tps[0] if len(tps) > 0 else None
     
-    # 5. Entry price for pending
+    # 5. Entry price, if provided
     entry_price = None
+    entry_range_match = ENTRY_RANGE_PATTERN.search(text_clean)
+    if entry_range_match:
+        first = float(entry_range_match.group(1))
+        second = float(entry_range_match.group(2))
+        low = min(first, second)
+        high = max(first, second)
+        entry_price = low if side == "buy" else high
+
     if order_type == "pending":
         range_match = PENDING_RANGE_PATTERN.search(text_clean)
         if range_match:
@@ -270,6 +292,10 @@ def parse_determinist(text: str) -> Optional[SignalParseSchema]:
         if entry_price is None:
             # If it's pending but we can't find entry price, deterministic fails
             return None
+    elif entry_price is None:
+        entry_match = ENTRY_PATTERN.search(text_clean)
+        if entry_match:
+            entry_price = float(entry_match.group(1))
             
     return SignalParseSchema(
         is_signal=True,
