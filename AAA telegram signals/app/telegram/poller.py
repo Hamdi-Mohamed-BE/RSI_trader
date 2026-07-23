@@ -17,17 +17,26 @@ MEDIA_URL_PREFIX = "/static/telegram_media"
 
 
 def parse_chat_reference(chat_link: str):
+    chat_link = (chat_link or "").strip()
     web_match = re.search(r"web\.telegram\.org/[^#]*#(-?\d+)", chat_link)
     if web_match:
         raw_id = web_match.group(1)
         if raw_id.startswith("-") and not raw_id.startswith("-100"):
             return int(f"-100{raw_id[1:]}")
         return int(raw_id)
+    web_username_match = re.search(r"web\.telegram\.org/[^#]*#@?([A-Za-z0-9_]{5,})", chat_link)
+    if web_username_match:
+        return web_username_match.group(1)
+    public_match = re.match(r"https?://t\.me/(?!c/)(?:s/)?@?([A-Za-z0-9_]{5,})(?:/.*)?$", chat_link)
+    if public_match:
+        return public_match.group(1)
     private_match = re.match(r"https?://t\.me/c/(\d+)", chat_link)
     if private_match:
         return int(f"-100{private_match.group(1)}")
     if chat_link.lstrip("-").isdigit():
         return int(chat_link)
+    if chat_link.startswith("@") and len(chat_link) > 1:
+        return chat_link[1:]
     return chat_link
 
 
@@ -72,6 +81,14 @@ class TelegramPoller:
         try:
             return await client.get_input_entity(entity_reference)
         except Exception as first_error:
+            if isinstance(entity_reference, str):
+                normalized_reference = parse_chat_reference(entity_reference)
+                if normalized_reference != entity_reference:
+                    try:
+                        return await client.get_input_entity(normalized_reference)
+                    except Exception:
+                        pass
+
             candidates = _candidate_numeric_ids(entity_reference)
             if candidates:
                 async for dialog in client.iter_dialogs():

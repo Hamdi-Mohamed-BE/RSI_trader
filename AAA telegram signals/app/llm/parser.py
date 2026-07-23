@@ -62,6 +62,13 @@ TP_PATTERN = re.compile(r"(?:tp|take\s*profit|target|tp\d+)\b\s*[@:=]?\s*([0-9.]
 ENTRY_PATTERN = re.compile(r"(?:entry|entries|at|price|limit|stop)\s*[@:=]?\s*([0-9.]+)", re.IGNORECASE)
 # Standalone @ with a price (e.g., "SELL LIMIT GOLD @ 2355.50")
 AT_PRICE_PATTERN = re.compile(r"@\s*([0-9.]+)", re.IGNORECASE)
+PENDING_RANGE_PATTERN = re.compile(
+    r"\b(?P<side>buy|sell)\s+(?P<kind>limit|stop)\b[^\d\n]*"
+    r"(?P<first>[0-9]+(?:\.[0-9]+)?)\s*(?:-|–|—|to)\s*"
+    r"(?P<second>[0-9]+(?:\.[0-9]+)?)",
+    re.IGNORECASE,
+)
+PRICE_PATTERN = re.compile(r"(?<![A-Za-z])([0-9]+(?:\.[0-9]+)?)")
 
 
 def clean_symbol_token(value: str) -> str:
@@ -100,6 +107,24 @@ def extract_symbol_raw(text: str) -> Optional[str]:
             if is_symbol_candidate(candidate):
                 return candidate
 
+    return None
+
+
+def infer_symbol_from_price_context(text: str) -> Optional[str]:
+    """
+    Infer gold only for compact channel posts that omit the symbol but use
+    XAU-style prices, for example: BUY LIMIT 4087 - 4085 SL 4082.
+    """
+    text_upper = (text or "").upper()
+    if not re.search(r"\b(?:BUY|SELL)\b", text_upper):
+        return None
+    if not re.search(r"\b(?:SL|S/L|STOP\s*LOSS|STOPLOSS|STOPOSS|TP|TARGET)\b", text_upper):
+        return None
+
+    prices = [float(match.group(1)) for match in PRICE_PATTERN.finditer(text_upper)]
+    trade_prices = [price for price in prices if 1000 <= price <= 10000]
+    if len(trade_prices) >= 3 and len(trade_prices) == len(prices):
+        return "XAUUSD"
     return None
 
 
@@ -155,7 +180,7 @@ def parse_determinist(text: str) -> Optional[SignalParseSchema]:
     text_lines = text_clean.split("\n")
     
     # 1. Match symbol
-    symbol = extract_symbol_raw(text_clean)
+    symbol = extract_symbol_raw(text_clean) or infer_symbol_from_price_context(text_clean)
     if not symbol:
         return None
     
@@ -192,6 +217,11 @@ def parse_determinist(text: str) -> Optional[SignalParseSchema]:
     # 4. Match TPs
     tps = []
     for line in text_lines:
+        if re.match(r"^\s*(?:tp\d*|take\s*profit|target)\b", line, re.IGNORECASE):
+            line_numbers = [float(match.group(1)) for match in PRICE_PATTERN.finditer(line)]
+            if line_numbers:
+                tps.extend(line_numbers)
+                continue
         for match in TP_PATTERN.finditer(line):
             tps.append(float(match.group(1)))
             
@@ -210,10 +240,25 @@ def parse_determinist(text: str) -> Optional[SignalParseSchema]:
     # 5. Entry price for pending
     entry_price = None
     if order_type == "pending":
+        range_match = PENDING_RANGE_PATTERN.search(text_clean)
+        if range_match:
+            first = float(range_match.group("first"))
+            second = float(range_match.group("second"))
+            low = min(first, second)
+            high = max(first, second)
+            if pending_type == "buy_limit":
+                entry_price = low
+            elif pending_type == "sell_limit":
+                entry_price = high
+            elif pending_type == "buy_stop":
+                entry_price = high
+            elif pending_type == "sell_stop":
+                entry_price = low
+
         entry_match = ENTRY_PATTERN.search(text_clean)
-        if entry_match:
+        if entry_price is None and entry_match:
             entry_price = float(entry_match.group(1))
-        else:
+        if entry_price is None:
             # Fallback: look for standalone "@" prices that aren't already SL or TP
             known_values = set(tps + [stop_loss])
             for at_match in AT_PRICE_PATTERN.finditer(text_clean):

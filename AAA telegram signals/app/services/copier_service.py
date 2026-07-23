@@ -1,8 +1,9 @@
 import asyncio
 import json
+import re
 import traceback
-from datetime import datetime
-from sqlmodel import Session
+from datetime import datetime, timedelta
+from sqlmodel import Session, select
 from typing import Any, Optional
 
 from app.core.logging import logger, orders_logger
@@ -164,12 +165,85 @@ class CopierService:
             f"Message {msg.message_id} failed during processing and was marked ignored: {exc}",
         )
 
+    @staticmethod
+    def _looks_like_tp_continuation(text: str | None) -> bool:
+        raw = (text or "").strip()
+        if not raw:
+            return False
+        upper = raw.upper()
+        if re.search(r"\b(?:BUY|SELL|SL|S/L|STOP\s*LOSS|STOPLOSS|STOPOSS)\b", upper):
+            return False
+        return bool(re.search(r"\b(?:TP\d*|TAKE\s*PROFIT|TARGET)\b", upper)) and bool(
+            re.search(r"(?<![A-Za-z])\d+(?:\.\d+)?", upper)
+        )
+
+    @staticmethod
+    def _looks_like_signal_header_waiting_for_tps(text: str | None) -> bool:
+        upper = (text or "").upper()
+        if not re.search(r"\b(?:BUY|SELL)\b", upper):
+            return False
+        if not re.search(r"\b(?:SL|S/L|STOP\s*LOSS|STOPLOSS|STOPOSS)\b", upper):
+            return False
+        return not re.search(r"\b(?:TP\d*|TAKE\s*PROFIT|TARGET)\b", upper)
+
+    def _find_recent_signal_header_for_tps(self, session: Session, msg: TelegramMessage) -> Optional[TelegramMessage]:
+        max_age = timedelta(minutes=20)
+        statement = (
+            select(TelegramMessage)
+            .where(
+                TelegramMessage.chat_id == msg.chat_id,
+                TelegramMessage.message_id < msg.message_id,
+            )
+            .order_by(TelegramMessage.message_id.desc())
+            .limit(12)
+        )
+        if msg.telegram_channel_id is not None:
+            statement = statement.where(TelegramMessage.telegram_channel_id == msg.telegram_channel_id)
+
+        for previous in session.exec(statement).all():
+            if msg.message_date and previous.message_date and msg.message_date - previous.message_date > max_age:
+                continue
+            if self._looks_like_signal_header_waiting_for_tps(previous.raw_text):
+                return previous
+        return None
+
+    def _build_parse_text_from_message_context(
+        self,
+        session: Session,
+        msg: TelegramMessage,
+    ) -> tuple[str, Optional[TelegramMessage]]:
+        raw_text = msg.raw_text or ""
+        if not self._looks_like_tp_continuation(raw_text):
+            return raw_text, None
+
+        parent = self._find_recent_signal_header_for_tps(session, msg)
+        if not parent:
+            return raw_text, None
+
+        combined = f"{parent.raw_text.strip()}\n{raw_text.strip()}"
+        logger.info(
+            f"Merged TP continuation message {msg.message_id} with header message "
+            f"{parent.message_id} from chat {msg.chat_id}."
+        )
+        return combined, parent
+
     async def _process_message(self, session: Session, msg: TelegramMessage, force_stale_bypass: bool = False):
         """Pipeline processing a single Telegram message into a trade order."""
         logger.info(f"Processing message {msg.message_id} from chat {msg.chat_id}")
-        signal_hash = signal_content_hash(msg.raw_text)
         channel = TelegramChannelRepository.get(session, msg.telegram_channel_id) if msg.telegram_channel_id else None
         channel_attr = (channel.attr if channel else "Telegram").strip() or "Telegram"
+        parse_text, continuation_parent = self._build_parse_text_from_message_context(session, msg)
+
+        if not continuation_parent and self._looks_like_signal_header_waiting_for_tps(msg.raw_text):
+            reason = "Waiting for follow-up TP message before placing this split Telegram signal."
+            logger.info(f"Message {msg.message_id} has entry/SL but no TP yet. {reason}")
+            msg.ignored = True
+            msg.ignore_reason = reason
+            msg.processed = True
+            TelegramMessageRepository.save(session, msg)
+            return
+
+        signal_hash = signal_content_hash(parse_text)
 
         duplicate_attempt = OrderAttemptRepository.get_placed_by_signal_hash(session, signal_hash)
         if duplicate_attempt:
@@ -211,8 +285,8 @@ class CopierService:
         
         try:
             parsed = await parse_signal(
-                msg.raw_text,
-                message_db_id=msg.id,
+                parse_text,
+                message_db_id=None if continuation_parent else msg.id,
                 session=session,
                 dynamic_key=gemini_key,
                 dynamic_model=gemini_model

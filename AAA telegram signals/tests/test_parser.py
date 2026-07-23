@@ -65,6 +65,26 @@ def test_parse_determinist_xauusd_pending_sell_limit_with_at_entry():
     assert result.take_profits == [4077]
 
 
+def test_parse_determinist_split_gold_range_signal_without_symbol():
+    msg = """
+    BUY LIMIT 4087 - 4085 Sl 4082
+    TP 4092 4102 4112 4122 4132 4142
+    """
+
+    result = parse_determinist(msg)
+
+    assert result is not None
+    assert result.symbol_raw == "XAUUSD"
+    assert result.side == "buy"
+    assert result.order_type == "pending"
+    assert result.pending_type == "buy_limit"
+    assert result.entry_price == 4085
+    assert result.stop_loss == 4082
+    assert result.take_profits == [4092, 4102, 4112, 4122, 4132, 4142]
+    assert result.final_take_profit == 4142
+    assert result.break_even_trigger_tp == 4092
+
+
 def test_extract_symbol_raw_is_context_based_not_whitelist():
     examples = {
         "**GBPNZD SELL NOW**\nSTOPLOSS @ 2.35770\nTP @ 2.34100": "GBPNZD",
