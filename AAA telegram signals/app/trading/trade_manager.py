@@ -156,22 +156,68 @@ class TradeManager:
         # Poll all active positions from MT5
         mt5_positions = mt5_client.get_positions()
         # Create mapping of ticket -> position dict for fast lookup
-        mt5_pos_map = {pos["ticket"]: pos for pos in mt5_positions}
+        mt5_pos_map = {int(pos["ticket"]): pos for pos in mt5_positions if pos.get("ticket")}
+        mt5_order_map = {
+            int(order.get("ticket") or order.get("order")): order
+            for order in mt5_client.get_orders()
+            if order.get("ticket") or order.get("order")
+        }
+        claimed_position_tickets: set[int] = set()
 
         modified_count = 0
 
         for trade in active_db_trades:
-            ticket = trade.mt5_ticket
+            ticket = int(trade.mt5_ticket)
             
-            # If trade is no longer active in MT5, mark it as closed in DB
-            if ticket not in mt5_pos_map:
+            pos = mt5_pos_map.get(ticket)
+            if pos:
+                claimed_position_tickets.add(int(pos["ticket"]))
+            elif ticket in mt5_order_map:
+                # Pending order has not triggered yet. Keep the managed trade alive.
+                continue
+            else:
+                pos = TradeManager._find_matching_position_for_trade(
+                    trade,
+                    mt5_positions,
+                    claimed_position_tickets,
+                )
+
+                if pos:
+                    old_ticket = ticket
+                    new_ticket = int(pos["ticket"])
+                    trade.mt5_ticket = new_ticket
+                    trade.position_identifier = int(
+                        pos.get("identifier")
+                        or pos.get("position_id")
+                        or pos.get("ticket")
+                    )
+                    if pos.get("price_open"):
+                        trade.entry_price = float(pos["price_open"])
+                    if pos.get("sl"):
+                        trade.stop_loss_current = float(pos["sl"])
+                    trade.updated_at = datetime.utcnow()
+                    ManagedTradeRepository.save(session, trade)
+                    claimed_position_tickets.add(new_ticket)
+                    orders_logger.info(
+                        f"Relinked managed trade from pending/order ticket {old_ticket} "
+                        f"to active position ticket {new_ticket}."
+                    )
+                    ticket = new_ticket
+                else:
+                    # If trade is no longer an active MT5 order or position, mark it as closed in DB.
+                    logger.info(f"Managed trade {ticket} is no longer active in MT5. Marking as closed.")
+                    trade.status = "closed"
+                    trade.updated_at = datetime.utcnow()
+                    ManagedTradeRepository.save(session, trade)
+                    continue
+
+            if pos is None:
                 logger.info(f"Managed trade {ticket} is no longer active in MT5. Marking as closed.")
                 trade.status = "closed"
                 trade.updated_at = datetime.utcnow()
                 ManagedTradeRepository.save(session, trade)
                 continue
                 
-            pos = mt5_pos_map[ticket]
             current_price = pos["price_current"]
             entry_price = trade.entry_price
             side = trade.side.lower()
@@ -192,6 +238,60 @@ class TradeManager:
             modified_count += TradeManager._process_tp_ladder(session, trade, pos, current_price)
                     
         return modified_count
+
+    @staticmethod
+    def _find_matching_position_for_trade(
+        trade: ManagedTrade,
+        mt5_positions: list[dict],
+        claimed_position_tickets: set[int],
+    ) -> dict | None:
+        """Relink filled pending orders to their new MT5 position ticket."""
+        expected_side = trade.side.lower()
+        expected_volume = float(trade.lot or 0.0)
+
+        matches: list[tuple[int, dict]] = []
+        for pos in mt5_positions:
+            ticket = int(pos.get("ticket") or 0)
+            if not ticket or ticket in claimed_position_tickets:
+                continue
+            if str(pos.get("symbol") or "") != trade.broker_symbol:
+                continue
+            if int(pos.get("magic") or 0) != MAGIC_NUMBER:
+                continue
+            if TradeManager._position_side(pos) != expected_side:
+                continue
+
+            volume = float(pos.get("volume") or 0.0)
+            volume_penalty = 0 if abs(volume - expected_volume) < 0.0000001 else 5
+            entry = float(pos.get("price_open") or 0.0)
+            entry_penalty = abs(entry - float(trade.entry_price or entry)) if entry else 999999
+            score = volume_penalty + int(entry_penalty * 1000)
+            matches.append((score, pos))
+
+        if not matches:
+            return None
+
+        matches.sort(key=lambda item: item[0])
+        return matches[0][1]
+
+    @staticmethod
+    def _position_side(pos: dict) -> str | None:
+        raw_type = pos.get("type")
+        try:
+            position_type = int(raw_type)
+        except Exception:
+            position_type = -1
+        if position_type == 0:
+            return "buy"
+        if position_type == 1:
+            return "sell"
+
+        side = str(pos.get("side") or pos.get("type_str") or "").lower()
+        if "buy" in side:
+            return "buy"
+        if "sell" in side:
+            return "sell"
+        return None
 
     @staticmethod
     def _price_reached(side: str, current_price: float, target: float) -> bool:

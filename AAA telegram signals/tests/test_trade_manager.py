@@ -85,3 +85,57 @@ def test_trade_manager_does_not_repeat_tp_ladder(mock_mt5, mock_repo, mock_event
     assert count == 0
     mock_mt5.modify_position.assert_not_called()
     mock_mt5.close_partial_position.assert_not_called()
+
+
+@patch("app.trading.trade_manager.SystemEventRepository")
+@patch("app.trading.trade_manager.ManagedTradeRepository")
+@patch("app.trading.trade_manager.mt5_client")
+def test_trade_manager_keeps_pending_order_alive_before_fill(mock_mt5, mock_repo, mock_events):
+    trade = _trade(mt5_ticket=111, position_identifier=111)
+    mock_repo.get_active.return_value = [trade]
+    mock_mt5.get_positions.return_value = []
+    mock_mt5.get_orders.return_value = [{"ticket": 111, "symbol": "XAUUSDm", "magic": 878701}]
+
+    count = TradeManager.process_break_even(MagicMock(), dynamic_offset_points=0)
+
+    assert count == 0
+    assert trade.status == "active"
+    mock_repo.save.assert_not_called()
+    mock_mt5.modify_position.assert_not_called()
+
+
+@patch("app.trading.trade_manager.SystemEventRepository")
+@patch("app.trading.trade_manager.ManagedTradeRepository")
+@patch("app.trading.trade_manager.mt5_client")
+def test_trade_manager_relinks_filled_pending_order_and_moves_be(mock_mt5, mock_repo, mock_events):
+    trade = _trade(
+        mt5_ticket=111,
+        position_identifier=111,
+        entry_price=2400.0,
+        break_even_trigger_tp=2410.0,
+    )
+    mock_repo.get_active.return_value = [trade]
+    mock_mt5.get_orders.return_value = []
+    mock_mt5.get_positions.return_value = [
+        {
+            "ticket": 222,
+            "identifier": 333,
+            "symbol": "XAUUSDm",
+            "magic": 878701,
+            "type": 0,
+            "volume": 0.10,
+            "price_open": 2400.0,
+            "price_current": 2411.0,
+            "sl": 2390.0,
+        }
+    ]
+    mock_mt5.get_symbol_info.return_value = {"point": 0.01, "digits": 2}
+    mock_mt5.modify_position.return_value = (True, None)
+
+    count = TradeManager.process_break_even(MagicMock(), dynamic_offset_points=0)
+
+    assert count == 1
+    assert trade.mt5_ticket == 222
+    assert trade.position_identifier == 333
+    assert trade.break_even_done is True
+    mock_mt5.modify_position.assert_called_once_with(222, stop_loss=2400.0, take_profit=2430.0)
