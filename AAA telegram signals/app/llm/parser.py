@@ -161,7 +161,7 @@ def merge_deterministic_fields(
         fill("final_take_profit", deterministic.final_take_profit)
         fill("break_even_trigger_tp", deterministic.break_even_trigger_tp)
     elif repaired.is_signal and not repaired.symbol_raw:
-        symbol = extract_symbol_raw(raw_text)
+        symbol = extract_symbol_raw(raw_text) or infer_symbol_from_price_context(raw_text)
         if symbol:
             repaired.symbol_raw = symbol
             notes_added = True

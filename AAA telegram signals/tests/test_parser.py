@@ -1,5 +1,5 @@
 import asyncio
-from app.llm.parser import extract_symbol_raw, parse_determinist, parse_signal
+from app.llm.parser import extract_symbol_raw, merge_deterministic_fields, parse_determinist, parse_signal
 from app.llm.schemas import SignalParseSchema
 
 def test_parse_determinist_market_buy():
@@ -143,6 +143,30 @@ def test_parse_signal_repairs_missing_llm_symbol_from_deterministic_parser(monke
 
     assert result.symbol_raw == "XAUUSD"
     assert "Repaired missing fields from deterministic text parser." in result.parser_notes
+
+
+def test_merge_repairs_missing_symbol_from_gold_price_context():
+    primary = SignalParseSchema(
+        is_signal=True,
+        confidence=1.0,
+        ignore_reason=None,
+        message_type="signal",
+        symbol_raw=None,
+        side="buy",
+        order_type="pending",
+        pending_type="buy_limit",
+        entry_price=4065.0,
+        stop_loss=4055.0,
+        take_profits=[4150.0],
+        final_take_profit=4150.0,
+        break_even_trigger_tp=4065.0,
+        risk_warnings=[],
+        parser_notes=[],
+    )
+
+    repaired = merge_deterministic_fields(primary, None, "Buy limit 4065 SL 4055 TP 4150")
+
+    assert repaired.symbol_raw == "XAUUSD"
 
 
 def test_parse_determinist_missing_elements():

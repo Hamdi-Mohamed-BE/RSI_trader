@@ -10,7 +10,7 @@ from app.core.logging import logger, orders_logger
 from app.core.signal_hash import signal_content_hash
 from app.telegram.poller import TelegramPoller
 from app.telegram.browser_poller import browser_telegram_poller
-from app.llm.parser import parse_signal
+from app.llm.parser import infer_symbol_from_price_context, parse_signal
 from app.trading.mt5_client import mt5_client
 from app.trading.symbol_resolver import symbol_resolver
 from app.trading.risk import RiskCalculator
@@ -227,6 +227,27 @@ class CopierService:
         )
         return combined, parent
 
+    @staticmethod
+    def _infer_missing_symbol_from_signal_prices(raw_text: str, parsed) -> Optional[str]:
+        inferred = infer_symbol_from_price_context(raw_text)
+        if inferred:
+            return inferred
+
+        prices: list[float] = []
+        for value in (
+            getattr(parsed, "entry_price", None),
+            getattr(parsed, "stop_loss", None),
+            getattr(parsed, "final_take_profit", None),
+            getattr(parsed, "break_even_trigger_tp", None),
+        ):
+            if value is not None:
+                prices.append(float(value))
+        prices.extend(float(tp) for tp in (getattr(parsed, "take_profits", None) or []) if tp is not None)
+
+        if len(prices) >= 3 and all(1000 <= price <= 10000 for price in prices):
+            return "XAUUSD"
+        return None
+
     async def _process_message(self, session: Session, msg: TelegramMessage, force_stale_bypass: bool = False):
         """Pipeline processing a single Telegram message into a trade order."""
         logger.info(f"Processing message {msg.message_id} from chat {msg.chat_id}")
@@ -319,6 +340,19 @@ class CopierService:
 
         # 3. Resolve Broker Symbol
         symbol_raw = parsed.symbol_raw
+        if not symbol_raw:
+            inferred_symbol = self._infer_missing_symbol_from_signal_prices(parse_text, parsed)
+            if inferred_symbol:
+                parsed.symbol_raw = inferred_symbol
+                parsed.parser_notes.append(
+                    f"Defaulted missing symbol to {inferred_symbol} from gold-like price context."
+                )
+                symbol_raw = inferred_symbol
+                logger.warning(
+                    f"Message {msg.message_id} had no symbol text; defaulted to {inferred_symbol} "
+                    "because entry/SL/TP prices matched gold range."
+                )
+
         if not symbol_raw:
             logger.error("Parsed signal contains no symbol raw.")
             self._save_failed_attempt(session, msg.id, parsed, "No symbol raw extracted", "validation_failed")
