@@ -121,8 +121,10 @@ class MT5Client:
         """Retrieves current tick data (ask/bid) for a symbol."""
         if not self.connect():
             return None
+        mt5.symbol_select(symbol, True)
         tick = mt5.symbol_info_tick(symbol)
         if tick is None:
+            logger.warning(f"symbol_info_tick returned None for {symbol}: {mt5.last_error()}")
             return None
         return tick._asdict()
 

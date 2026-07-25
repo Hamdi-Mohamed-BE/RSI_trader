@@ -22,7 +22,13 @@ DEFAULT_ALIAS_MAP = {
 
 class SymbolResolver:
     def __init__(self):
-        self._cache: Dict[str, str] = {}
+        self._cache: Dict[str, Tuple[Optional[Tuple[int, str]], str]] = {}
+
+    def _account_key(self) -> Optional[Tuple[int, str]]:
+        account = mt5.account_info()
+        if account is None:
+            return None
+        return int(account.login), str(account.server)
 
     def _normalize(self, symbol: str) -> str:
         """Normalizes a symbol by making uppercase and stripping common suffixes/punctuation."""
@@ -38,11 +44,11 @@ class SymbolResolver:
     def _symbol_is_openable(self, symbol_name: str) -> bool:
         info = mt5.symbol_info(symbol_name)
         if info is None:
-            return True
+            return False
         return self._allows_opening(info)
 
     def _remember(self, requested_symbol: str, broker_symbol: str, confidence: float) -> Tuple[str, float]:
-        self._cache[requested_symbol.upper()] = broker_symbol
+        self._cache[requested_symbol.upper()] = (self._account_key(), broker_symbol)
         mt5_client.select_symbol(broker_symbol, True)
         return broker_symbol, confidence
 
@@ -79,10 +85,14 @@ class SymbolResolver:
         
         # 1. Check cache first
         if req_upper in self._cache:
-            cached = self._cache[req_upper]
-            if self._symbol_is_openable(cached):
+            cached_account, cached = self._cache[req_upper]
+            current_account = self._account_key()
+            if cached_account == current_account and self._symbol_is_openable(cached):
                 return cached, 1.0
-            logger.warning(f"Cached symbol {cached} for {req_upper} is close-only/disabled. Re-resolving.")
+            logger.warning(
+                f"Cached symbol {cached} for {req_upper} is unavailable, close-only, "
+                "or from another account. Re-resolving."
+            )
             self._cache.pop(req_upper, None)
 
         # Ensure MT5 is connected

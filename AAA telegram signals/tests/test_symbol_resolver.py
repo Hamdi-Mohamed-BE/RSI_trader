@@ -165,3 +165,38 @@ def test_resolve_xaausd_skips_close_only_gold_stock(mock_mt5, mock_client, mock_
 
     assert broker_sym == "XAUUSD"
     assert conf >= 0.90
+
+
+@patch("app.trading.symbol_resolver.mt5_client")
+@patch("app.trading.symbol_resolver.mt5")
+def test_resolve_rechecks_cached_symbol_after_account_switch(mock_mt5, mock_client, mock_resolver):
+    mock_client.connect.return_value = True
+
+    account = MagicMock()
+    account.login = 1001
+    account.server = "Broker-A"
+    mock_mt5.account_info.return_value = account
+
+    plain_gold = MagicMock()
+    plain_gold.name = "XAUUSD"
+    plain_gold.trade_mode = 4
+    mock_mt5.symbol_info.return_value = plain_gold
+    mock_mt5.symbols_get.return_value = [plain_gold]
+
+    broker_sym, conf = mock_resolver.resolve("XAUUSD")
+    assert broker_sym == "XAUUSD"
+    assert conf >= 0.90
+
+    account.login = 2002
+    account.server = "Broker-B"
+    mock_mt5.symbol_info.return_value = None
+
+    suffixed_gold = MagicMock()
+    suffixed_gold.name = "XAUUSD.."
+    suffixed_gold.trade_mode = 4
+    mock_mt5.symbols_get.return_value = [suffixed_gold]
+
+    broker_sym, conf = mock_resolver.resolve("XAUUSD")
+
+    assert broker_sym == "XAUUSD.."
+    assert conf >= 0.90
