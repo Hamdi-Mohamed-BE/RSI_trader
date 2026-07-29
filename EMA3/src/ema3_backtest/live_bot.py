@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import json
 import logging
+import math
 from pathlib import Path
 import re
 import time
@@ -36,7 +37,8 @@ class LiveConfig:
     symbol_hint: str
     pivot_distance: int
     max_same_direction_legs: int
-    fixed_lot: float
+    risk_pct_per_trade: float
+    maximum_lot: float
     live_trading: bool
     close_on_opposite: bool
     entry_window_minutes: int
@@ -60,7 +62,10 @@ class LiveConfig:
             max_same_direction_legs=int(
                 os.getenv("MAX_SAME_DIRECTION_LEGS", "1")
             ),
-            fixed_lot=float(os.getenv("FIXED_LOT", "0.10")),
+            risk_pct_per_trade=float(
+                os.getenv("RISK_PCT_PER_TRADE", "3.0")
+            ),
+            maximum_lot=float(os.getenv("MAXIMUM_LOT", "100.0")),
             live_trading=env_bool("LIVE_TRADING", False),
             close_on_opposite=env_bool("CLOSE_ON_OPPOSITE", True),
             entry_window_minutes=int(os.getenv("ENTRY_WINDOW_MINUTES", "10")),
@@ -79,8 +84,10 @@ class LiveConfig:
             raise ValueError("PIVOT_DISTANCE must be at least 1")
         if self.max_same_direction_legs < 1:
             raise ValueError("MAX_SAME_DIRECTION_LEGS must be at least 1")
-        if self.fixed_lot <= 0:
-            raise ValueError("FIXED_LOT must be positive")
+        if not 0 < self.risk_pct_per_trade <= 100:
+            raise ValueError("RISK_PCT_PER_TRADE must be between 0 and 100")
+        if self.maximum_lot <= 0:
+            raise ValueError("MAXIMUM_LOT must be positive")
         if self.history_bars < self.pivot_distance * 2 + 3:
             raise ValueError("HISTORY_BARS is too small for the pivot distance")
         if self.entry_window_minutes < 1:
@@ -185,6 +192,7 @@ def confirmed_signal(
     confirmation_time = completed.at[confirmation_idx, "time"]
     return {
         "side": side,
+        "pivot_price": pivot_low if side == "buy" else pivot_high,
         "pivot_time": pivot_time,
         "confirmation_time": confirmation_time,
         "signal_id": f"{side}:{pivot_time.isoformat()}:{confirmation_time.isoformat()}",
@@ -207,7 +215,9 @@ def save_state(path: Path, state: dict[str, object]) -> None:
     temporary.replace(path)
 
 
-def normalized_volume(symbol: str, requested: float) -> float:
+def normalized_volume(
+    symbol: str, requested: float, round_down: bool = False
+) -> float:
     info = mt5.symbol_info(symbol)
     if info is None:
         raise RuntimeError(f"No symbol information for {symbol}")
@@ -216,8 +226,49 @@ def normalized_volume(symbol: str, requested: float) -> float:
     maximum = float(info.volume_max)
     volume = min(max(requested, minimum), maximum)
     if step > 0:
-        volume = round(round(volume / step) * step, 8)
+        units = (
+            math.floor((volume + 1e-12) / step)
+            if round_down
+            else round(volume / step)
+        )
+        volume = round(units * step, 8)
     return volume
+
+
+def risk_sized_volume(
+    symbol: str,
+    side: str,
+    entry: float,
+    stop: float,
+    risk_budget: float,
+    maximum_lot: float,
+) -> tuple[float, float]:
+    info = mt5.symbol_info(symbol)
+    if info is None:
+        raise RuntimeError(f"No symbol information for {symbol}")
+    order_type = mt5.ORDER_TYPE_BUY if side == "buy" else mt5.ORDER_TYPE_SELL
+    loss_one_lot = mt5.order_calc_profit(order_type, symbol, 1.0, entry, stop)
+    if loss_one_lot is None:
+        raise RuntimeError(
+            f"Could not calculate position risk for {symbol}: {mt5.last_error()}"
+        )
+    loss_one_lot = abs(float(loss_one_lot))
+    if loss_one_lot <= 0:
+        raise RuntimeError("Calculated one-lot stop risk is zero")
+    raw_volume = min(
+        risk_budget / loss_one_lot,
+        maximum_lot,
+        float(info.volume_max),
+    )
+    if raw_volume + 1e-12 < float(info.volume_min):
+        raise RuntimeError(
+            f"Risk sizing allows {raw_volume:.4f} lot, below broker minimum "
+            f"{float(info.volume_min):.4f}; trade skipped"
+        )
+    volume = normalized_volume(symbol, raw_volume, round_down=True)
+    if volume <= 0:
+        raise RuntimeError("Risk-sized volume rounded to zero")
+    return volume, loss_one_lot * volume
 
 
 def managed_positions(symbol: str, magic: int) -> list[object]:
@@ -298,20 +349,52 @@ def close_position(
 
 
 def open_position(
-    symbol: str, side: str, config: LiveConfig, dry_run: bool
+    symbol: str,
+    side: str,
+    stop: float,
+    config: LiveConfig,
+    dry_run: bool,
 ) -> None:
     tick = mt5.symbol_info_tick(symbol)
     if tick is None:
         raise RuntimeError(f"No live tick for {symbol}")
-    volume = normalized_volume(symbol, config.fixed_lot)
     order_type = mt5.ORDER_TYPE_BUY if side == "buy" else mt5.ORDER_TYPE_SELL
     price = float(tick.ask) if side == "buy" else float(tick.bid)
+    info = mt5.symbol_info(symbol)
+    account = mt5.account_info()
+    if info is None or account is None:
+        raise RuntimeError("Symbol or account information unavailable")
+    # MT5 bars are Bid-based. A Sell closes at Ask, so its structural pivot
+    # stop needs the current spread above the recorded Bid pivot high.
+    if side == "sell":
+        stop += max(float(tick.ask) - float(tick.bid), 0.0)
+    stop = round(float(stop), int(info.digits))
+    if (side == "buy" and stop >= price) or (side == "sell" and stop <= price):
+        raise RuntimeError(
+            f"Invalid structural stop {stop} for {side} entry near {price}"
+        )
+    minimum_stop_distance = float(info.trade_stops_level) * float(info.point)
+    if abs(price - stop) + 1e-12 < minimum_stop_distance:
+        raise RuntimeError(
+            "Structural stop is inside the broker minimum stop distance "
+            f"({minimum_stop_distance})"
+        )
+    risk_budget = float(account.equity) * config.risk_pct_per_trade / 100.0
+    volume, actual_risk = risk_sized_volume(
+        symbol,
+        side,
+        price,
+        stop,
+        risk_budget,
+        config.maximum_lot,
+    )
     request = {
         "action": mt5.TRADE_ACTION_DEAL,
         "symbol": symbol,
         "volume": volume,
         "type": order_type,
         "price": price,
+        "sl": stop,
         "deviation": config.deviation_points,
         "magic": config.magic,
         "comment": config.comment,
@@ -319,19 +402,27 @@ def open_position(
     }
     if dry_run:
         logging.info(
-            "DRY RUN open side=%s symbol=%s volume=%.2f price=%s",
+            "DRY RUN open side=%s symbol=%s volume=%.2f price=%s stop=%s "
+            "risk=$%.2f (%.2f%% equity)",
             side,
             symbol,
             volume,
             price,
+            stop,
+            actual_risk,
+            actual_risk / float(account.equity) * 100.0,
         )
         return
     result = send_request(request)
     logging.info(
-        "Opened %s %.2f %s retcode=%s order=%s deal=%s",
+        "Opened %s %.2f %s entry=%s stop=%s risk=$%.2f retcode=%s "
+        "order=%s deal=%s",
         side,
         volume,
         symbol,
+        price,
+        stop,
+        actual_risk,
         result.retcode,
         result.order,
         result.deal,
@@ -396,7 +487,13 @@ def process_once(symbol: str, config: LiveConfig, state: dict[str, object]) -> N
             close_position(symbol, position, config, dry_run)
         same_side = []
     if len(same_side) < config.max_same_direction_legs:
-        open_position(symbol, side, config, dry_run)
+        open_position(
+            symbol,
+            side,
+            float(signal["pivot_price"]),
+            config,
+            dry_run,
+        )
     else:
         logging.info(
             "Signal ignored: already at max %d %s leg(s)",
@@ -407,6 +504,7 @@ def process_once(symbol: str, config: LiveConfig, state: dict[str, object]) -> N
     state["processed_signals"] = processed[-100:]
     state["last_signal"] = {
         "side": side,
+        "pivot_price": float(signal["pivot_price"]),
         "pivot_time": signal["pivot_time"].isoformat(),
         "confirmation_time": signal["confirmation_time"].isoformat(),
         "signal_id": signal_id,
@@ -440,10 +538,12 @@ def run(once: bool = False) -> None:
         logging.info(account_line())
         symbol = discover_gold_symbol(config.symbol_hint)
         logging.info(
-            "Gold discovered as %s | H4 | pivot=%d | lot=%.2f | max legs=%d | mode=%s",
+            "Gold discovered as %s | H4 | pivot=%d | risk=%.2f%% | "
+            "max lot=%.2f | max legs=%d | mode=%s",
             symbol,
             config.pivot_distance,
-            config.fixed_lot,
+            config.risk_pct_per_trade,
+            config.maximum_lot,
             config.max_same_direction_legs,
             "LIVE" if config.live_trading else "DRY RUN",
         )

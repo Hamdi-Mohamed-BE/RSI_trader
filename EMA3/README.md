@@ -27,15 +27,17 @@ The live worker follows the single-leg version shown in the 30-day report:
 - automatically finds the connected broker's tradable gold symbol;
 - reads H4 candles and confirms a six-left/six-right pivot without look-ahead;
 - enters only near the next H4 open after confirmation;
-- holds one 0.10-lot position;
+- sizes one position so its structural-stop loss is at most 3% of live equity;
+- places the stop at the confirmed pivot low for Buy or pivot high for Sell;
 - closes and reverses it when the opposite pivot is confirmed;
 - manages only positions carrying its own magic number.
 
 It uses the MT5 terminal and account that are already open and connected. No
 login, password, server, or terminal path is stored in `.env`.
 
-Start with `LIVE_TRADING=false` and inspect `logs/ema3-live.log`. When the
-symbol and signals are correct, set it to `true` and run:
+The supplied `.env` is configured with `LIVE_TRADING=true`. Starting the
+worker can therefore place and close orders. To observe without execution,
+change it to `false`.
 
 ```powershell
 uv run ema3-live

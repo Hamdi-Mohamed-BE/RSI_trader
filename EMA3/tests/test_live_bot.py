@@ -2,7 +2,11 @@ from types import SimpleNamespace
 
 import pandas as pd
 
-from ema3_backtest.live_bot import choose_gold_symbol, confirmed_signal
+from ema3_backtest.live_bot import (
+    choose_gold_symbol,
+    confirmed_signal,
+    risk_sized_volume,
+)
 
 
 def test_gold_discovery_accepts_broker_suffix() -> None:
@@ -60,3 +64,26 @@ def test_latest_completed_bar_confirms_pivot() -> None:
     assert signal is not None
     assert signal["side"] == "buy"
     assert signal["pivot_time"] == frame.at[2, "time"]
+    assert signal["pivot_price"] == 5.0
+
+
+def test_risk_size_rounds_down_without_exceeding_budget(monkeypatch) -> None:
+    info = SimpleNamespace(volume_min=0.01, volume_max=100.0, volume_step=0.01)
+    monkeypatch.setattr(
+        "ema3_backtest.live_bot.mt5.symbol_info",
+        lambda *_: info,
+    )
+    monkeypatch.setattr(
+        "ema3_backtest.live_bot.mt5.order_calc_profit",
+        lambda *_: -1_000.0,
+    )
+    volume, actual_risk = risk_sized_volume(
+        "XAUUSD",
+        "buy",
+        entry=4_000.0,
+        stop=3_990.0,
+        risk_budget=117.38,
+        maximum_lot=100.0,
+    )
+    assert volume == 0.11
+    assert actual_risk == 110.0
