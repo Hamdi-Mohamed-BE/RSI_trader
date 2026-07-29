@@ -442,6 +442,44 @@ def _strategy_board(
     return rows
 
 
+def _account_board(account: object) -> str:
+    trade_mode = int(getattr(account, "trade_mode", -1))
+    mode_names = {
+        int(mt5.ACCOUNT_TRADE_MODE_DEMO): "DEMO",
+        int(mt5.ACCOUNT_TRADE_MODE_CONTEST): "CONTEST",
+        int(mt5.ACCOUNT_TRADE_MODE_REAL): "LIVE",
+    }
+    row = {
+        "account": getattr(account, "login", "unknown"),
+        "type": mode_names.get(trade_mode, "UNKNOWN"),
+        "server": getattr(account, "server", "unknown"),
+        "currency": getattr(account, "currency", "unknown"),
+        "leverage": f"1:{getattr(account, 'leverage', 0)}",
+        "balance": f"{float(getattr(account, 'balance', 0.0)):,.2f}",
+        "equity": f"{float(getattr(account, 'equity', 0.0)):,.2f}",
+        "free_margin": f"{float(getattr(account, 'margin_free', 0.0)):,.2f}",
+        "floating_pnl": f"{float(getattr(account, 'profit', 0.0)):,.2f}",
+        "trade_allowed": (
+            "YES" if bool(getattr(account, "trade_allowed", False)) else "NO"
+        ),
+    }
+    return render_table(
+        [row],
+        (
+            "account",
+            "type",
+            "server",
+            "currency",
+            "leverage",
+            "balance",
+            "equity",
+            "free_margin",
+            "floating_pnl",
+            "trade_allowed",
+        ),
+    )
+
+
 def _order_board(receipts: list[dict[str, object]]) -> str:
     rows: list[dict[str, object]] = []
     for receipt in receipts:
@@ -812,10 +850,15 @@ def cancel_oco_siblings(config: AppConfig) -> int:
 
 def run_live(config: AppConfig, once: bool = False, poll_seconds: int = 5) -> None:
     with mt5_connection(config):
+        account = mt5.account_info()
+        if account is None:
+            raise MT5Error(f"No connected MT5 account: {mt5.last_error()}")
         symbol_map = discover_symbols(config.symbols)
         board = _strategy_board(config, symbol_map)
         print(
-            "\nASIAN BREAKOUT - LIVE STRATEGY BOARD\n"
+            "\nMT5 CONNECTED ACCOUNT\n"
+            + _account_board(account)
+            + "\n\nASIAN BREAKOUT - LIVE STRATEGY BOARD\n"
             + render_table(
                 board,
                 (

@@ -70,7 +70,9 @@ run cycle. Live trading remains locked unless `DRY_RUN=false` and
 
 ## Logging and signal display
 
-The live runner prints a strategy board at startup. It shows the canonical
+The live runner first prints the connected MT5 account type, server, currency,
+leverage, balance, equity, free margin, floating P/L, and trading permission.
+It then prints a strategy board showing the canonical
 instrument, discovered broker symbol, entry model, actual execution method,
 exit rule, risk, and whether the setup is automated or display-only.
 Mechanical OCO signals also print an order board with the pending order type,
