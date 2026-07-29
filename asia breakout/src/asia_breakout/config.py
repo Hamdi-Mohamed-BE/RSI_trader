@@ -59,7 +59,7 @@ class StrategyConfig:
 
 @dataclass(frozen=True, slots=True)
 class AppConfig:
-    terminal_path: Path
+    terminal_path: Path | None
     login: int | None
     password: str | None
     server: str | None
@@ -89,6 +89,7 @@ def load_config(env_file: str | Path | None = None) -> AppConfig:
     else:
         load_dotenv()
 
+    terminal_text = os.getenv("MT5_TERMINAL_PATH", "").strip()
     login_text = os.getenv("MT5_LOGIN", "").strip()
     strategy = StrategyConfig(
         entry_mode=os.getenv("ENTRY_MODE", "confirmed_close"),
@@ -131,9 +132,7 @@ def load_config(env_file: str | Path | None = None) -> AppConfig:
     else:
         symbols = DEFAULT_SYMBOLS
     return AppConfig(
-        terminal_path=Path(
-            os.getenv("MT5_TERMINAL_PATH", r"C:\Program Files\MetaTrader 5\terminal64.exe")
-        ),
+        terminal_path=Path(terminal_text) if terminal_text else None,
         login=int(login_text) if login_text else None,
         password=os.getenv("MT5_PASSWORD") or None,
         server=os.getenv("MT5_SERVER") or None,

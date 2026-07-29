@@ -22,14 +22,21 @@ class MT5Error(RuntimeError):
 
 @contextmanager
 def mt5_connection(config: AppConfig):
-    if not mt5.initialize(path=str(config.terminal_path)):
+    initialize_kwargs: dict[str, object] = {}
+    if config.terminal_path is not None:
+        initialize_kwargs["path"] = str(config.terminal_path)
+    if not mt5.initialize(**initialize_kwargs):
         log_event(
             LOGGER,
             logging.ERROR,
             "mt5_initialize_failed",
             "MT5 initialization failed",
             error=mt5.last_error(),
-            terminal_path=str(config.terminal_path),
+            terminal_path=(
+                str(config.terminal_path)
+                if config.terminal_path is not None
+                else "auto-connected terminal"
+            ),
         )
         raise MT5Error(f"MT5 initialize failed: {mt5.last_error()}")
     try:

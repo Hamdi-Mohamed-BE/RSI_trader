@@ -58,8 +58,10 @@ EURJPY, and XAUUSD at 3% risk per idea with a 6% basket cap. The broader
 six-symbol `pf3_basket.json` remains available for research and comparison.
 
 Configuration files use canonical names such as `XAUUSD` and `BTCUSD`.
-After connecting to MT5, the bot reads the broker's complete symbol catalogue
-and resolves those names to the account's exact prefix/suffix convention.
+By default the bot attaches to the open, already logged-in MT5 terminal; no
+account credentials are required in `.env`. After connecting, it reads the
+broker's complete symbol catalogue and resolves canonical names to the
+account's exact prefix/suffix convention.
 `SYMBOLS` is optional and, when supplied, also uses canonical names.
 
 `run_backtest.bat` runs the full optimization. `run_live.bat` starts one dry
