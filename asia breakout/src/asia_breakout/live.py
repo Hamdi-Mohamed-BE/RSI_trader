@@ -102,10 +102,8 @@ def _market_request(
     volume: float,
     magic: int,
     risk_pct: float,
+    filling_mode: int,
 ) -> dict[str, object]:
-    info = mt5.symbol_info(symbol)
-    if info is None:
-        raise MT5Error(f"No symbol information for {symbol}")
     return {
         "action": mt5.TRADE_ACTION_DEAL,
         "symbol": symbol,
@@ -118,8 +116,41 @@ def _market_request(
         "magic": magic,
         "comment": f"ASIA {direction.upper()} {risk_pct:g}pct",
         "type_time": mt5.ORDER_TIME_GTC,
-        "type_filling": int(info.filling_mode),
+        "type_filling": filling_mode,
     }
+
+
+def _market_filling_modes(symbol: str) -> tuple[int, ...]:
+    """Translate MT5 symbol filling flags into valid market-order modes.
+
+    ``symbol_info().filling_mode`` is a bit mask of ``SYMBOL_FILLING_*``
+    flags, not an ``ORDER_FILLING_*`` enum. For example, a value of 3 means
+    that both FOK and IOC are supported; passing the raw value 3 in a trade
+    request incorrectly selects BOC and causes retcode 10030.
+    """
+    info = mt5.symbol_info(symbol)
+    if info is None:
+        raise MT5Error(f"No symbol information for {symbol}")
+
+    flags = int(info.filling_mode)
+    modes: list[int] = []
+    # The Python MT5 package does not expose SYMBOL_FILLING_* constants.
+    # Their documented flag values are FOK=1 and IOC=2.
+    if flags & 1:
+        modes.append(int(mt5.ORDER_FILLING_FOK))
+    if flags & 2:
+        modes.append(int(mt5.ORDER_FILLING_IOC))
+
+    # Brokers occasionally expose incomplete/incorrect symbol flags. These
+    # safe market-order fallbacks are verified with order_check before use.
+    for fallback in (
+        int(mt5.ORDER_FILLING_FOK),
+        int(mt5.ORDER_FILLING_IOC),
+        int(mt5.ORDER_FILLING_RETURN),
+    ):
+        if fallback not in modes:
+            modes.append(fallback)
+    return tuple(modes)
 
 
 def place_confirmation_market(
@@ -157,19 +188,42 @@ def place_confirmation_market(
         stop,
         risk_cash,
     )
-    request = _market_request(
-        symbol,
-        signal.direction,
-        entry,
-        stop,
-        target,
-        volume,
-        config.magic,
-        strategy.risk_pct,
+    request: dict[str, object] | None = None
+    check = None
+    rejected_modes: list[tuple[int, object]] = []
+    for filling_mode in _market_filling_modes(symbol):
+        candidate = _market_request(
+            symbol,
+            signal.direction,
+            entry,
+            stop,
+            target,
+            volume,
+            config.magic,
+            strategy.risk_pct,
+            filling_mode,
+        )
+        candidate_check = mt5.order_check(candidate)
+        if candidate_check is not None and candidate_check.retcode == 0:
+            request = candidate
+            check = candidate_check
+            break
+        rejected_modes.append((filling_mode, candidate_check))
+    if request is None or check is None:
+        raise MT5Error(
+            f"Market order check failed for {symbol} with all supported "
+            f"filling modes: {rejected_modes}"
+        )
+    log_event(
+        LOGGER,
+        logging.INFO,
+        "market_filling_selected",
+        f"{instrument} selected broker-compatible market filling mode",
+        instrument=instrument,
+        broker_symbol=symbol,
+        symbol_filling_flags=int(mt5.symbol_info(symbol).filling_mode),
+        selected_filling_mode=request["type_filling"],
     )
-    check = mt5.order_check(request)
-    if check is None or check.retcode != 0:
-        raise MT5Error(f"Market order check failed for {symbol}: {check}")
     if config.dry_run or not config.enable_trading:
         receipt = {
             "instrument": instrument,

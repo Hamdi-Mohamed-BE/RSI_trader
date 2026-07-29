@@ -2,7 +2,11 @@ from types import SimpleNamespace
 
 import MetaTrader5 as mt5
 
-from asia_breakout.live import _account_board, trailing_stop_candidate
+from asia_breakout.live import (
+    _account_board,
+    _market_filling_modes,
+    trailing_stop_candidate,
+)
 
 
 def test_buy_trailing_waits_for_start_and_only_advances() -> None:
@@ -34,3 +38,14 @@ def test_account_board_displays_live_equity_and_margin() -> None:
     assert "LIVE" in board
     assert "1,025.50" in board
     assert "900.25" in board
+
+
+def test_market_filling_bitmask_is_translated_to_order_modes(monkeypatch) -> None:
+    monkeypatch.setattr(
+        mt5,
+        "symbol_info",
+        lambda _symbol: SimpleNamespace(filling_mode=1 | 2),
+    )
+    modes = _market_filling_modes("BTCUSDm")
+    assert modes[:2] == (mt5.ORDER_FILLING_FOK, mt5.ORDER_FILLING_IOC)
+    assert 3 not in modes
