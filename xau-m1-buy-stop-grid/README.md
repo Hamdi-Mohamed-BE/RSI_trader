@@ -63,3 +63,8 @@ Set `PLACE_ORDERS=true` only when you want it to send the pending orders to MT5.
 For a `$100` account during news capped to `1:200`, do not use `FIXED_LOT=max`. Use small fixed lots such as `0.01`.
 
 Each run prints start time, key MT5 steps, finish time, and total elapsed seconds.
+
+Pending-order expiration is calculated from the broker's MT5 server time, not
+the Windows clock. This prevents `Invalid expiration` rejections when the
+broker server uses a different timezone. The run also ends with an order
+summary and returns a failure exit code when every live send is blocked.

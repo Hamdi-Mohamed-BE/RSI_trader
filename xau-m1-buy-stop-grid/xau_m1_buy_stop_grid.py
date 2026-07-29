@@ -203,6 +203,14 @@ def broker_stop_limits(symbol: str) -> tuple[float, float]:
     return min_buy_stop, max_sell_stop
 
 
+def broker_time(symbol: str) -> int:
+    """Return the broker server epoch used for pending-order expiration."""
+    tick = mt5.symbol_info_tick(symbol)
+    if tick is not None and int(getattr(tick, "time", 0) or 0) > 0:
+        return int(tick.time)
+    return int(time.time())
+
+
 def existing_pending_prices(symbol: str, magic: int, order_type: int) -> list[float]:
     orders = mt5.orders_get(symbol=symbol)
     if not orders:
@@ -435,7 +443,10 @@ def build_request(
         request["tp"] = normalize_price(symbol, tp)
     if config.expiration_minutes > 0:
         request["type_time"] = mt5.ORDER_TIME_SPECIFIED
-        request["expiration"] = int(time.time() + config.expiration_minutes * 60)
+        # Some brokers expose server-local epoch values through MT5. Using the
+        # computer clock can therefore create an expiration already in the past
+        # from the trade server's perspective.
+        request["expiration"] = broker_time(symbol) + config.expiration_minutes * 60
     return request
 
 
@@ -448,10 +459,13 @@ def handle_ladder(
     lot: float,
     config: GridConfig,
     candle: dict[str, float],
-) -> None:
+) -> tuple[int, int, int]:
+    placed = 0
+    blocked = 0
+    skipped = 0
     if count <= 0:
         print(f"{side}: disabled count={count}")
-        return
+        return placed, blocked, skipped
 
     mt5_type = mt5.ORDER_TYPE_BUY_STOP if side == "BUY" else mt5.ORDER_TYPE_SELL_STOP
     existing_prices = existing_pending_prices(symbol, config.magic, mt5_type)
@@ -470,14 +484,17 @@ def handle_ladder(
         duplicate = any(abs(request_price - old_price) <= config.duplicate_tolerance_usd for old_price in existing_prices)
         if config.skip_duplicate_pending and duplicate:
             print(f"{side} L{index}: skipped duplicate stop near {request_price}")
+            skipped += 1
             continue
 
         check = mt5.order_check(request)
         if check is None:
             print(f"{side} L{index}: order_check failed: {mt5.last_error()} | request={request}")
+            blocked += 1
             continue
         if check.retcode not in {0, mt5.TRADE_RETCODE_DONE}:
             print(f"{side} L{index}: check blocked {check.retcode} {check.comment} | request={request}")
+            blocked += 1
             continue
 
         if not config.place_orders:
@@ -487,12 +504,19 @@ def handle_ladder(
         result = mt5.order_send(request)
         if result is None:
             print(f"{side} L{index}: send failed: {mt5.last_error()} | request={request}")
+            blocked += 1
         elif result.retcode == mt5.TRADE_RETCODE_DONE:
             print(f"{side} L{index}: placed STOP ticket={result.order} @ {request_price} lot={order_lot:g}")
+            placed += 1
             if config.skip_duplicate_pending:
                 existing_prices.append(request_price)
         else:
-            print(f"{side} L{index}: send blocked {result.retcode} {result.comment} | request={request}")
+            print(
+                f"{side} L{index}: send blocked {result.retcode} {result.comment} "
+                f"| last_error={mt5.last_error()} | request={request}"
+            )
+            blocked += 1
+    return placed, blocked, skipped
 
 
 def main() -> int:
@@ -560,10 +584,40 @@ def main() -> int:
         print(f"PLACE_ORDERS={config.place_orders}")
         print("")
 
+        placed = blocked = skipped = 0
         if config.order_side in {"buy", "both"}:
-            handle_ladder(symbol, "BUY", buy_base_price, config.buy_order_count, config.buy_price_diff_usd, buy_lot, config, candle)
+            outcome = handle_ladder(
+                symbol,
+                "BUY",
+                buy_base_price,
+                config.buy_order_count,
+                config.buy_price_diff_usd,
+                buy_lot,
+                config,
+                candle,
+            )
+            placed += outcome[0]
+            blocked += outcome[1]
+            skipped += outcome[2]
         if config.order_side in {"sell", "both"}:
-            handle_ladder(symbol, "SELL", sell_base_price, config.sell_order_count, config.sell_price_diff_usd, sell_lot, config, candle)
+            outcome = handle_ladder(
+                symbol,
+                "SELL",
+                sell_base_price,
+                config.sell_order_count,
+                config.sell_price_diff_usd,
+                sell_lot,
+                config,
+                candle,
+            )
+            placed += outcome[0]
+            blocked += outcome[1]
+            skipped += outcome[2]
+        print("")
+        print(f"Order summary: placed={placed} blocked={blocked} skipped={skipped}")
+        if config.place_orders and placed == 0 and blocked > 0:
+            log("ERROR: no pending orders were placed.")
+            return 2
         if config.place_orders:
             manage_runner_positions(symbol, config)
         return 0

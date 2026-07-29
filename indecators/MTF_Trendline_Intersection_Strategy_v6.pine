@@ -1,0 +1,436 @@
+//@version=6
+indicator("MTF Trendline Intersection Strategy [Codex]", overlay=true, max_lines_count=500, max_labels_count=200, max_boxes_count=50, dynamic_requests=true)
+
+// -----------------------------------------------------------------------------
+// Inputs
+// -----------------------------------------------------------------------------
+groupTf = "Top Down Timeframes"
+showTf1 = input.bool(true, "Show TF 1", group=groupTf, inline="tf1")
+tf1 = input.timeframe("1W", "", group=groupTf, inline="tf1")
+showTf2 = input.bool(true, "Show TF 2", group=groupTf, inline="tf2")
+tf2 = input.timeframe("1D", "", group=groupTf, inline="tf2")
+showTf3 = input.bool(true, "Show TF 3", group=groupTf, inline="tf3")
+tf3 = input.timeframe("720", "", group=groupTf, inline="tf3")
+showTf4 = input.bool(true, "Show TF 4", group=groupTf, inline="tf4")
+tf4 = input.timeframe("240", "", group=groupTf, inline="tf4")
+
+groupPivot = "Trendline Detection"
+pivotLeft = input.int(3, "Pivot left bars", minval=1, maxval=25, group=groupPivot)
+pivotRight = input.int(3, "Pivot right bars", minval=1, maxval=25, group=groupPivot)
+atrLen = input.int(14, "ATR length", minval=1, maxval=100, group=groupPivot)
+useSlopeFilter = input.bool(false, "Require 45 degree ATR slope filter", group=groupPivot)
+targetSlopeAtr = input.float(0.35, "45 degree target slope, ATR per HTF bar", minval=0.01, step=0.05, group=groupPivot)
+slopeTolerance = input.float(1.25, "Slope tolerance", minval=0.05, maxval=5.0, step=0.05, group=groupPivot)
+minPivotAtrMove = input.float(0.0, "Minimum pivot separation, ATR", minval=0.0, step=0.05, group=groupPivot)
+maxLinesPerTfSide = input.int(5, "Max lines per timeframe/side", minval=1, maxval=10, group=groupPivot)
+
+groupClean = "Line Cleanup"
+preferCurrentPriceLines = input.bool(true, "Prefer lines closest to current price", group=groupClean)
+showCurrentPriceProbes = input.bool(true, "Draw latest pivot to current price lines", group=groupClean)
+deleteBrokenLines = input.bool(false, "Delete broken trendlines", group=groupClean)
+breakAtrBuffer = input.float(0.20, "Break buffer, ATR", minval=0.0, step=0.05, group=groupClean)
+maxLineAgeBars = input.int(2000, "Max age, chart bars", minval=100, maxval=5000, group=groupClean)
+removeFarAwayLines = input.bool(false, "Remove lines far from price", group=groupClean)
+farAwayAtr = input.float(50.0, "Far-away distance, ATR", minval=1.0, step=0.5, group=groupClean)
+duplicateAtr = input.float(0.35, "Duplicate/overlap threshold, ATR", minval=0.05, step=0.05, group=groupClean)
+
+groupIntersections = "Intersections"
+showIntersections = input.bool(true, "Show cross levels", group=groupIntersections)
+intersectionLookahead = input.int(240, "Future bars to keep intersections", minval=10, maxval=1200, group=groupIntersections)
+nearPriceAtr = input.float(2.5, "Keep crosses near price, ATR", minval=0.25, step=0.25, group=groupIntersections)
+maxCrossLevels = input.int(24, "Max horizontal cross levels", minval=4, maxval=100, group=groupIntersections)
+
+groupSignals = "Signals"
+showSetups = input.bool(true, "Highlight long/short candidates", group=groupSignals)
+rr = input.float(2.0, "Reward:risk target", minval=0.5, step=0.25, group=groupSignals)
+entryAtrBuffer = input.float(0.10, "Entry confirmation buffer, ATR", minval=0.0, step=0.05, group=groupSignals)
+stopAtrBuffer = input.float(0.35, "Stop buffer beyond structure, ATR", minval=0.0, step=0.05, group=groupSignals)
+setupExpiryBars = input.int(80, "Setup label expiry, bars", minval=10, maxval=500, group=groupSignals)
+
+groupStyle = "Style"
+showLabels = input.bool(true, "Show timeframe labels", group=groupStyle)
+showStatusPanel = input.bool(true, "Show status panel", group=groupStyle)
+tf1Color = input.color(color.rgb(255, 193, 7), "TF 1 color", group=groupStyle)
+tf2Color = input.color(color.rgb(33, 150, 243), "TF 2 color", group=groupStyle)
+tf3Color = input.color(color.rgb(156, 39, 176), "TF 3 color", group=groupStyle)
+tf4Color = input.color(color.rgb(0, 188, 165), "TF 4 color", group=groupStyle)
+longColor = input.color(color.rgb(0, 200, 83), "Long setup color", group=groupStyle)
+shortColor = input.color(color.rgb(229, 57, 53), "Short setup color", group=groupStyle)
+
+// -----------------------------------------------------------------------------
+// Types and storage
+// -----------------------------------------------------------------------------
+type TrendItem
+    line id
+    label tag
+    int x1
+    float y1
+    int x2
+    float y2
+    int tfRank
+    int tfSeconds
+    string tfName
+    bool up
+
+type CrossItem
+    line id
+    label tag
+    float price
+    int x
+    int rank
+
+var TrendItem[] trends = array.new<TrendItem>()
+var CrossItem[] crosses = array.new<CrossItem>()
+var line[] setupLines = array.new_line()
+var label[] setupLabels = array.new_label()
+var int[] setupBars = array.new_int()
+var table statusPanel = table.new(position.top_right, 1, 2, border_width=1)
+var line probeUp1 = na
+var line probeDn1 = na
+var line probeUp2 = na
+var line probeDn2 = na
+var line probeUp3 = na
+var line probeDn3 = na
+var line probeUp4 = na
+var line probeDn4 = na
+
+// -----------------------------------------------------------------------------
+// Helpers
+// -----------------------------------------------------------------------------
+tfName(string tf) =>
+    seconds = timeframe.in_seconds(tf)
+    seconds >= 2592000 ? str.tostring(seconds / 2592000) + "M" :
+     seconds >= 604800 ? str.tostring(seconds / 604800) + "W" :
+     seconds >= 86400 ? str.tostring(seconds / 86400) + "D" :
+     seconds >= 3600 ? str.tostring(seconds / 3600) + "H" :
+     str.tostring(seconds / 60) + "m"
+
+linePriceAt(int x1, float y1, int x2, float y2, int x) =>
+    x2 == x1 ? na : y1 + (y2 - y1) * (float(x - x1) / float(x2 - x1))
+
+lineSlope(int x1, float y1, int x2, float y2) =>
+    x2 == x1 ? na : (y2 - y1) / float(x2 - x1)
+
+styleForRank(int rank, bool up) =>
+    rank == 1 ? line.style_solid : rank == 2 ? line.style_dashed : up ? line.style_dotted : line.style_dashed
+
+colorForRank(int rank) =>
+    rank == 1 ? tf1Color : rank == 2 ? tf2Color : rank == 3 ? tf3Color : tf4Color
+
+widthForRank(int rank) =>
+    rank == 1 ? 3 : rank == 2 ? 2 : 1
+
+deleteTrendAt(int i) =>
+    item = array.get(trends, i)
+    array.remove(trends, i)
+    line.delete(item.id)
+    if not na(item.tag)
+        label.delete(item.tag)
+
+deleteCrossAt(int i) =>
+    item = array.get(crosses, i)
+    array.remove(crosses, i)
+    line.delete(item.id)
+    if not na(item.tag)
+        label.delete(item.tag)
+
+oldestIndexFor(int rank, bool up) =>
+    int found = na
+    if array.size(trends) > 0
+        for i = 0 to array.size(trends) - 1
+            item = array.get(trends, i)
+            if item.tfRank == rank and item.up == up
+                found := i
+                break
+    found
+
+farthestIndexFor(int rank, bool up, float refPrice, float atr) =>
+    int found = na
+    float worstDistance = -1.0
+    if array.size(trends) > 0
+        for i = 0 to array.size(trends) - 1
+            item = array.get(trends, i)
+            if item.tfRank == rank and item.up == up
+                projected = linePriceAt(item.x1, item.y1, item.x2, item.y2, time)
+                distance = not na(projected) and not na(atr) and atr > 0 ? math.abs(refPrice - projected) / atr : 1000000.0
+                if distance > worstDistance
+                    worstDistance := distance
+                    found := i
+    found
+
+countFor(int rank, bool up) =>
+    int count = 0
+    if array.size(trends) > 0
+        for i = 0 to array.size(trends) - 1
+            item = array.get(trends, i)
+            if item.tfRank == rank and item.up == up
+                count += 1
+    count
+
+trendDetector() =>
+    atr = ta.atr(atrLen)
+    ph = ta.pivothigh(high, pivotLeft, pivotRight)
+    pl = ta.pivotlow(low, pivotLeft, pivotRight)
+    var float prevLow = na
+    var int prevLowTime = na
+    var float prevHigh = na
+    var int prevHighTime = na
+
+    bool newUp = false
+    int upX1 = na
+    float upY1 = na
+    int upX2 = na
+    float upY2 = na
+
+    bool newDown = false
+    int dnX1 = na
+    float dnY1 = na
+    int dnX2 = na
+    float dnY2 = na
+
+    if not na(pl)
+        pivotPrice = low[pivotRight]
+        pivotTime = time[pivotRight]
+        atrAtPivot = atr[pivotRight]
+        tfBars = not na(prevLowTime) ? math.max(1.0, float(pivotTime - prevLowTime) / float(timeframe.in_seconds(timeframe.period) * 1000)) : na
+        atrMove = not na(atrAtPivot) and atrAtPivot > 0 and not na(prevLow) ? (pivotPrice - prevLow) / atrAtPivot : na
+        slopeAtr = not na(tfBars) and not na(atrMove) ? atrMove / tfBars : na
+        validSlope = not useSlopeFilter or (not na(slopeAtr) and math.abs(slopeAtr - targetSlopeAtr) <= slopeTolerance)
+        if not na(prevLow) and pivotPrice > prevLow and atrMove >= minPivotAtrMove and validSlope
+            newUp := true
+            upX1 := prevLowTime
+            upY1 := prevLow
+            upX2 := pivotTime
+            upY2 := pivotPrice
+        prevLow := pivotPrice
+        prevLowTime := pivotTime
+
+    if not na(ph)
+        pivotPrice = high[pivotRight]
+        pivotTime = time[pivotRight]
+        atrAtPivot = atr[pivotRight]
+        tfBars = not na(prevHighTime) ? math.max(1.0, float(pivotTime - prevHighTime) / float(timeframe.in_seconds(timeframe.period) * 1000)) : na
+        atrMove = not na(atrAtPivot) and atrAtPivot > 0 and not na(prevHigh) ? (prevHigh - pivotPrice) / atrAtPivot : na
+        slopeAtr = not na(tfBars) and not na(atrMove) ? atrMove / tfBars : na
+        validSlope = not useSlopeFilter or (not na(slopeAtr) and math.abs(slopeAtr - targetSlopeAtr) <= slopeTolerance)
+        if not na(prevHigh) and pivotPrice < prevHigh and atrMove >= minPivotAtrMove and validSlope
+            newDown := true
+            dnX1 := prevHighTime
+            dnY1 := prevHigh
+            dnX2 := pivotTime
+            dnY2 := pivotPrice
+        prevHigh := pivotPrice
+        prevHighTime := pivotTime
+
+    [newUp, upX1, upY1, upX2, upY2, newDown, dnX1, dnY1, dnX2, dnY2, atr, prevLow, prevLowTime, prevHigh, prevHighTime]
+
+addTrend(bool enabled, bool isUp, bool isNew, int x1, float y1, int x2, float y2, int rank, string tf, int tfSec, float refPrice, float atr) =>
+    if enabled and isNew and not na(x1) and not na(x2) and x2 > x1
+        col = colorForRank(rank)
+        id = line.new(x1, y1, x2, y2, xloc=xloc.bar_time, extend=extend.right, color=col, style=styleForRank(rank, isUp), width=widthForRank(rank))
+        txt = (isUp ? "UP " : "DOWN ") + tfName(tf)
+        tag = showLabels ? label.new(x2, y2, txt, xloc=xloc.bar_time, style=isUp ? label.style_label_up : label.style_label_down, color=color.new(col, 12), textcolor=color.white, size=size.tiny) : na
+        array.push(trends, TrendItem.new(id, tag, x1, y1, x2, y2, rank, tfSec, tfName(tf), isUp))
+        while countFor(rank, isUp) > maxLinesPerTfSide
+            idx = preferCurrentPriceLines ? farthestIndexFor(rank, isUp, refPrice, atr) : oldestIndexFor(rank, isUp)
+            if not na(idx)
+                deleteTrendAt(idx)
+            else
+                break
+
+updateCurrentProbe(line id, bool enabled, bool isUp, int x1, float y1, int rank, string tf) =>
+    line result = id
+    valid = enabled and showCurrentPriceProbes and not na(x1) and not na(y1) and x1 < time and (isUp ? close > y1 : close < y1)
+    col = colorForRank(rank)
+    if valid
+        if na(result)
+            result := line.new(x1, y1, time, close, xloc=xloc.bar_time, extend=extend.right, color=color.new(col, 0), style=line.style_arrow_right, width=widthForRank(rank))
+        else
+            line.set_xy1(result, x1, y1)
+            line.set_xy2(result, time, close)
+            line.set_color(result, color.new(col, 0))
+            line.set_style(result, line.style_arrow_right)
+            line.set_width(result, widthForRank(rank))
+    else
+        if not na(result)
+            line.delete(result)
+            result := na
+    result
+
+// -----------------------------------------------------------------------------
+// Multi-timeframe confirmed pivot extraction
+// -----------------------------------------------------------------------------
+[tf1Up, tf1Ux1, tf1Uy1, tf1Ux2, tf1Uy2, tf1Dn, tf1Dx1, tf1Dy1, tf1Dx2, tf1Dy2, tf1Atr, tf1LastLow, tf1LastLowTime, tf1LastHigh, tf1LastHighTime] = request.security(syminfo.tickerid, tf1, trendDetector(), barmerge.gaps_off, barmerge.lookahead_off)
+[tf2Up, tf2Ux1, tf2Uy1, tf2Ux2, tf2Uy2, tf2Dn, tf2Dx1, tf2Dy1, tf2Dx2, tf2Dy2, tf2Atr, tf2LastLow, tf2LastLowTime, tf2LastHigh, tf2LastHighTime] = request.security(syminfo.tickerid, tf2, trendDetector(), barmerge.gaps_off, barmerge.lookahead_off)
+[tf3Up, tf3Ux1, tf3Uy1, tf3Ux2, tf3Uy2, tf3Dn, tf3Dx1, tf3Dy1, tf3Dx2, tf3Dy2, tf3Atr, tf3LastLow, tf3LastLowTime, tf3LastHigh, tf3LastHighTime] = request.security(syminfo.tickerid, tf3, trendDetector(), barmerge.gaps_off, barmerge.lookahead_off)
+[tf4Up, tf4Ux1, tf4Uy1, tf4Ux2, tf4Uy2, tf4Dn, tf4Dx1, tf4Dy1, tf4Dx2, tf4Dy2, tf4Atr, tf4LastLow, tf4LastLowTime, tf4LastHigh, tf4LastHighTime] = request.security(syminfo.tickerid, tf4, trendDetector(), barmerge.gaps_off, barmerge.lookahead_off)
+
+chartAtr = ta.atr(atrLen)
+
+addTrend(showTf1, true, tf1Up and not tf1Up[1], tf1Ux1, tf1Uy1, tf1Ux2, tf1Uy2, 1, tf1, timeframe.in_seconds(tf1), close, chartAtr)
+addTrend(showTf1, false, tf1Dn and not tf1Dn[1], tf1Dx1, tf1Dy1, tf1Dx2, tf1Dy2, 1, tf1, timeframe.in_seconds(tf1), close, chartAtr)
+addTrend(showTf2, true, tf2Up and not tf2Up[1], tf2Ux1, tf2Uy1, tf2Ux2, tf2Uy2, 2, tf2, timeframe.in_seconds(tf2), close, chartAtr)
+addTrend(showTf2, false, tf2Dn and not tf2Dn[1], tf2Dx1, tf2Dy1, tf2Dx2, tf2Dy2, 2, tf2, timeframe.in_seconds(tf2), close, chartAtr)
+addTrend(showTf3, true, tf3Up and not tf3Up[1], tf3Ux1, tf3Uy1, tf3Ux2, tf3Uy2, 3, tf3, timeframe.in_seconds(tf3), close, chartAtr)
+addTrend(showTf3, false, tf3Dn and not tf3Dn[1], tf3Dx1, tf3Dy1, tf3Dx2, tf3Dy2, 3, tf3, timeframe.in_seconds(tf3), close, chartAtr)
+addTrend(showTf4, true, tf4Up and not tf4Up[1], tf4Ux1, tf4Uy1, tf4Ux2, tf4Uy2, 4, tf4, timeframe.in_seconds(tf4), close, chartAtr)
+addTrend(showTf4, false, tf4Dn and not tf4Dn[1], tf4Dx1, tf4Dy1, tf4Dx2, tf4Dy2, 4, tf4, timeframe.in_seconds(tf4), close, chartAtr)
+
+probeUp1 := updateCurrentProbe(probeUp1, showTf1, true, tf1LastLowTime, tf1LastLow, 1, tf1)
+probeDn1 := updateCurrentProbe(probeDn1, showTf1, false, tf1LastHighTime, tf1LastHigh, 1, tf1)
+probeUp2 := updateCurrentProbe(probeUp2, showTf2, true, tf2LastLowTime, tf2LastLow, 2, tf2)
+probeDn2 := updateCurrentProbe(probeDn2, showTf2, false, tf2LastHighTime, tf2LastHigh, 2, tf2)
+probeUp3 := updateCurrentProbe(probeUp3, showTf3, true, tf3LastLowTime, tf3LastLow, 3, tf3)
+probeDn3 := updateCurrentProbe(probeDn3, showTf3, false, tf3LastHighTime, tf3LastHigh, 3, tf3)
+probeUp4 := updateCurrentProbe(probeUp4, showTf4, true, tf4LastLowTime, tf4LastLow, 4, tf4)
+probeDn4 := updateCurrentProbe(probeDn4, showTf4, false, tf4LastHighTime, tf4LastHigh, 4, tf4)
+
+// -----------------------------------------------------------------------------
+// Cleanup: broken, stale, far-away, duplicate. Lower rank number is higher TF.
+// -----------------------------------------------------------------------------
+if array.size(trends) > 0 and not na(chartAtr)
+    for i = array.size(trends) - 1 to 0
+        item = array.get(trends, i)
+        projected = linePriceAt(item.x1, item.y1, item.x2, item.y2, time)
+        broken = deleteBrokenLines and not na(projected) and (item.up ? close < projected - chartAtr * breakAtrBuffer : close > projected + chartAtr * breakAtrBuffer)
+        stale = float(time - item.x2) / float(timeframe.in_seconds(timeframe.period) * 1000) > maxLineAgeBars
+        farAway = removeFarAwayLines and not na(projected) and math.abs(close - projected) > chartAtr * farAwayAtr
+        if broken or stale or farAway
+            deleteTrendAt(i)
+
+if array.size(trends) > 1 and not na(chartAtr)
+    for i = array.size(trends) - 1 to 0
+        itemI = array.get(trends, i)
+        priceI = linePriceAt(itemI.x1, itemI.y1, itemI.x2, itemI.y2, time)
+        bool removeI = false
+        for j = 0 to array.size(trends) - 1
+            if i != j
+                itemJ = array.get(trends, j)
+                priceJ = linePriceAt(itemJ.x1, itemJ.y1, itemJ.x2, itemJ.y2, time)
+                overlap = not na(priceI) and not na(priceJ) and math.abs(priceI - priceJ) <= chartAtr * duplicateAtr
+                conflictOrDup = overlap and (itemI.up != itemJ.up or itemI.up == itemJ.up)
+                if conflictOrDup and itemJ.tfRank < itemI.tfRank
+                    removeI := true
+        if removeI
+            deleteTrendAt(i)
+
+// -----------------------------------------------------------------------------
+// Intersections: keep near current price and near current/future bars.
+// -----------------------------------------------------------------------------
+if showIntersections and barstate.isconfirmed and array.size(trends) > 1 and not na(chartAtr)
+    for i = 0 to array.size(trends) - 2
+        a = array.get(trends, i)
+        m1 = lineSlope(a.x1, a.y1, a.x2, a.y2)
+        for j = i + 1 to array.size(trends) - 1
+            b = array.get(trends, j)
+            if a.up != b.up
+                m2 = lineSlope(b.x1, b.y1, b.x2, b.y2)
+                if not na(m1) and not na(m2) and math.abs(m1 - m2) > 0.0000000001
+                    xCross = int(((b.y1 - a.y1) + m1 * float(a.x1) - m2 * float(b.x1)) / (m1 - m2))
+                    yCross = linePriceAt(a.x1, a.y1, a.x2, a.y2, xCross)
+                    barsAway = float(xCross - time) / float(timeframe.in_seconds(timeframe.period) * 1000)
+                    nearTime = barsAway >= -10 and barsAway <= intersectionLookahead
+                    nearPrice = not na(yCross) and math.abs(close - yCross) <= chartAtr * nearPriceAtr
+                    bool duplicateCross = false
+                    if array.size(crosses) > 0
+                        for k = 0 to array.size(crosses) - 1
+                            c = array.get(crosses, k)
+                            if math.abs(c.price - yCross) <= chartAtr * duplicateAtr
+                                duplicateCross := true
+                    if nearTime and nearPrice and not duplicateCross
+                        rank = math.min(a.tfRank, b.tfRank)
+                        col = color.new(colorForRank(rank), 35)
+                        id = line.new(time, yCross, time + timeframe.in_seconds(timeframe.period) * 1000 * intersectionLookahead, yCross, xloc=xloc.bar_time, extend=extend.none, color=col, style=line.style_dotted, width=1)
+                        tag = showLabels ? label.new(time, yCross, "X " + str.tostring(yCross, format.mintick), xloc=xloc.bar_time, style=label.style_label_left, color=color.new(col, 10), textcolor=color.white, size=size.tiny) : na
+                        array.push(crosses, CrossItem.new(id, tag, yCross, xCross, rank))
+
+while array.size(crosses) > maxCrossLevels
+    deleteCrossAt(0)
+
+if array.size(crosses) > 0 and not na(chartAtr)
+    for i = array.size(crosses) - 1 to 0
+        c = array.get(crosses, i)
+        old = float(time - c.x) / float(timeframe.in_seconds(timeframe.period) * 1000) > intersectionLookahead
+        far = math.abs(close - c.price) > chartAtr * nearPriceAtr
+        if old or far
+            deleteCrossAt(i)
+
+// -----------------------------------------------------------------------------
+// Setup detection: bounce or break around retained cross levels / trendline confluence.
+// -----------------------------------------------------------------------------
+float nearestSupport = na
+float nearestResistance = na
+int supportRank = 99
+int resistanceRank = 99
+
+if array.size(crosses) > 0
+    for i = 0 to array.size(crosses) - 1
+        c = array.get(crosses, i)
+        if c.price <= close and (na(nearestSupport) or close - c.price < close - nearestSupport)
+            nearestSupport := c.price
+            supportRank := c.rank
+        if c.price >= close and (na(nearestResistance) or c.price - close < nearestResistance - close)
+            nearestResistance := c.price
+            resistanceRank := c.rank
+
+longSignal = showSetups and not na(nearestSupport) and low <= nearestSupport + chartAtr * entryAtrBuffer and close > nearestSupport and close > open
+shortSignal = showSetups and not na(nearestResistance) and high >= nearestResistance - chartAtr * entryAtrBuffer and close < nearestResistance and close < open
+
+newSetupLine(y, col, style) =>
+    id = line.new(bar_index, y, bar_index + setupExpiryBars, y, xloc=xloc.bar_index, extend=extend.none, color=col, style=style, width=2)
+    array.push(setupLines, id)
+
+newSetupLabel(y, txt, col, style) =>
+    id = label.new(bar_index, y, txt, xloc=xloc.bar_index, style=style, color=color.new(col, 8), textcolor=color.white, size=size.small)
+    array.push(setupLabels, id)
+    array.push(setupBars, bar_index)
+
+if longSignal and not longSignal[1]
+    entry = close
+    stop = nearestSupport - chartAtr * stopAtrBuffer
+    target = entry + (entry - stop) * rr
+    newSetupLine(entry, longColor, line.style_solid)
+    newSetupLine(stop, color.new(shortColor, 15), line.style_dashed)
+    newSetupLine(target, color.new(longColor, 15), line.style_dashed)
+    newSetupLabel(entry, "LONG\nE " + str.tostring(entry, format.mintick) + "\nSL " + str.tostring(stop, format.mintick) + "\nTP " + str.tostring(target, format.mintick), longColor, label.style_label_up)
+
+if shortSignal and not shortSignal[1]
+    entry = close
+    stop = nearestResistance + chartAtr * stopAtrBuffer
+    target = entry - (stop - entry) * rr
+    newSetupLine(entry, shortColor, line.style_solid)
+    newSetupLine(stop, color.new(longColor, 15), line.style_dashed)
+    newSetupLine(target, color.new(shortColor, 15), line.style_dashed)
+    newSetupLabel(entry, "SHORT\nE " + str.tostring(entry, format.mintick) + "\nSL " + str.tostring(stop, format.mintick) + "\nTP " + str.tostring(target, format.mintick), shortColor, label.style_label_down)
+
+if array.size(setupBars) > 0
+    for i = array.size(setupBars) - 1 to 0
+        if bar_index - array.get(setupBars, i) > setupExpiryBars
+            label.delete(array.get(setupLabels, i))
+            array.remove(setupLabels, i)
+            array.remove(setupBars, i)
+
+while array.size(setupLines) > 60
+    line.delete(array.shift(setupLines))
+
+while array.size(setupLabels) > 20
+    label.delete(array.shift(setupLabels))
+    array.shift(setupBars)
+
+plotshape(longSignal and not longSignal[1], title="Long Candidate", style=shape.triangleup, location=location.belowbar, color=longColor, size=size.small, text="L")
+plotshape(shortSignal and not shortSignal[1], title="Short Candidate", style=shape.triangledown, location=location.abovebar, color=shortColor, size=size.small, text="S")
+
+if barstate.islast
+    if showStatusPanel
+        slopeMode = useSlopeFilter ? "45 filter on" : "45 filter off"
+        cleanupMode = deleteBrokenLines ? "break cleanup on" : "break cleanup off"
+        focusMode = preferCurrentPriceLines ? "current focus on" : "current focus off"
+        probeMode = showCurrentPriceProbes ? "probes on" : "probes off"
+        table.cell(statusPanel, 0, 0, "MTF Trendlines", bgcolor=color.new(color.black, 0), text_color=color.white, text_size=size.small)
+        table.cell(statusPanel, 0, 1, "Lines: " + str.tostring(array.size(trends)) + " | Crosses: " + str.tostring(array.size(crosses)) + "\n" + focusMode + " | " + probeMode + "\n" + slopeMode + " | " + cleanupMode, bgcolor=color.new(color.black, 15), text_color=color.white, text_size=size.tiny)
+    else
+        table.clear(statusPanel, 0, 0, 0, 1)
+
+alertcondition(longSignal and not longSignal[1], "MTF Trendline Long Candidate", "MTF trendline/intersection long candidate on {{ticker}} {{interval}}")
+alertcondition(shortSignal and not shortSignal[1], "MTF Trendline Short Candidate", "MTF trendline/intersection short candidate on {{ticker}} {{interval}}")
+alertcondition((longSignal and not longSignal[1]) or (shortSignal and not shortSignal[1]), "MTF Trendline Any Candidate", "MTF trendline/intersection candidate on {{ticker}} {{interval}}")

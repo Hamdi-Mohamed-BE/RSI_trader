@@ -250,7 +250,8 @@ export async function fetchCandles(productId: string, granularity: number) {
 export async function fetchCandleHistory(productId: string, granularity: number, requestedBars: number) {
   const candles = new Map<number, { time: number; low: number; high: number; open: number; close: number; volume: number }>();
   let end = Math.floor(Date.now() / 1000 / granularity) * granularity;
-  const maxPages = Math.ceil(Math.min(requestedBars, 1_500) / 290) + 1;
+  const cappedBars = Math.min(requestedBars, 20_000);
+  const maxPages = Math.ceil(cappedBars / 290) + 1;
   for (let page = 0; page < maxPages && candles.size < requestedBars; page++) {
     const start = end - granularity * 290;
     const query = new URLSearchParams({ granularity: String(granularity), start: new Date(start * 1000).toISOString(), end: new Date(end * 1000).toISOString() });
@@ -262,5 +263,5 @@ export async function fetchCandleHistory(productId: string, granularity: number,
     end = start - granularity;
     if (page < maxPages - 1) await new Promise((resolve) => setTimeout(resolve, 180));
   }
-  return [...candles.values()].sort((a, b) => a.time - b.time).slice(-requestedBars);
+  return [...candles.values()].sort((a, b) => a.time - b.time).slice(-cappedBars);
 }

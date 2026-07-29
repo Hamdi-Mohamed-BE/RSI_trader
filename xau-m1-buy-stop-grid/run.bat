@@ -18,6 +18,13 @@ echo ============================================================
 echo.
 
 "%PYTHON%" "%~dp0xau_m1_buy_stop_grid.py"
+set EXIT_CODE=%ERRORLEVEL%
 
 echo.
+if not "%EXIT_CODE%"=="0" (
+  echo BOT FAILED - no valid order batch was completed. Exit code: %EXIT_CODE%
+) else (
+  echo BOT FINISHED SUCCESSFULLY.
+)
 pause
+exit /b %EXIT_CODE%

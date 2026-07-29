@@ -94,9 +94,10 @@ app.post("/api/risk", (req, res) => {
 });
 
 const backtestSchema = z.object({
+  strategyMode: z.enum(["lta", "h4-retest"]).optional().default("lta"),
   productId: z.string().min(3),
   granularity: z.union([z.literal(300), z.literal(900), z.literal(3600), z.literal(21600), z.literal(86400)]),
-  bars: z.number().int().min(150).max(1500),
+  bars: z.number().int().min(150).max(20000),
   direction: z.enum(["long", "short", "both"]),
   model: z.enum(["all", "EM1", "EM2", "EM3", "EM4"]),
   quality: z.enum(["A", "A+"]),
@@ -104,7 +105,9 @@ const backtestSchema = z.object({
   targetR: z.number().min(1.5).max(5),
   riskPct: z.number().positive().max(10),
   accountSize: z.number().positive(),
-  maxHoldBars: z.number().int().min(4).max(120)
+  maxHoldBars: z.number().int().min(4).max(120),
+  sessionFilter: z.enum(["ALL", "ASIA", "LONDON", "NY", "LONDON_NY", "NY_EXT"]).optional().default("ALL"),
+  trendFilter: z.enum(["raw", "trend", "strict"]).optional().default("raw")
 });
 
 app.post("/api/backtest", async (req, res) => {
