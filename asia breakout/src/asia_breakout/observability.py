@@ -42,7 +42,7 @@ def setup_logging(log_dir: Path, level: str = "INFO") -> None:
     text_file = TimedRotatingFileHandler(
         log_dir / "asia-breakout.log",
         when="midnight",
-        backupCount=30,
+        backupCount=90,
         encoding="utf-8",
         utc=True,
     )
@@ -55,7 +55,7 @@ def setup_logging(log_dir: Path, level: str = "INFO") -> None:
     json_file = TimedRotatingFileHandler(
         log_dir / "events.jsonl",
         when="midnight",
-        backupCount=30,
+        backupCount=90,
         encoding="utf-8",
         utc=True,
     )

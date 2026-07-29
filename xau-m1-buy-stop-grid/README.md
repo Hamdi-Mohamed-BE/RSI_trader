@@ -68,3 +68,25 @@ Pending-order expiration is calculated from the broker's MT5 server time, not
 the Windows clock. This prevents `Invalid expiration` rejections when the
 broker server uses a different timezone. The run also ends with an order
 summary and returns a failure exit code when every live send is blocked.
+
+## FX news-pulse backtest
+
+Run `run_news_backtest.bat` to replay the same pre-news M1 OCO idea on:
+
+- EURUSD for major EUR and USD releases.
+- EURAUD for major AUD releases.
+- EURJPY for major JPY releases.
+- USDCAD for major CAD releases.
+
+The backtest is read-only. It auto-discovers broker suffixes, uses recorded M1
+spread, models gap fills and slippage, and sizes each isolated event to the
+maximum broker-normalized lot allowed by the configured simulated 1:200
+leverage. Results are written to:
+
+- `news_pulse_backtest_report.json`
+- `news_pulse_event_results.csv`
+
+The default starting balance is `$100`, matching this project's original news
+profile. Change `NEWS_BACKTEST_START_BALANCE` in `.env` for another balance.
+`NEWS_MT5_HISTORY_OFFSET_HOURS` aligns real UTC release times with the broker's
+stored MT5 bar timestamps.

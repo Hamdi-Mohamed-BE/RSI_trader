@@ -42,6 +42,15 @@ def mt5_connection(config: AppConfig):
     try:
         ensure_account(config)
         account = mt5.account_info()
+        if (
+            config.require_demo_account
+            and account is not None
+            and int(account.trade_mode) != int(mt5.ACCOUNT_TRADE_MODE_DEMO)
+        ):
+            raise MT5Error(
+                "This profile requires a DEMO account, but the connected "
+                "MT5 account is not demo."
+            )
         log_event(
             LOGGER,
             logging.INFO,

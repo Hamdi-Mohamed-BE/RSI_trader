@@ -68,6 +68,13 @@ account's exact prefix/suffix convention.
 run cycle. Live trading remains locked unless `DRY_RUN=false` and
 `ENABLE_TRADING=true` are both set.
 
+`run_forward_test.bat` starts the frozen one-month forward-test profile in
+`.env.forward`. That profile uses the active core-three configuration at 3%
+risk per idea with a 6% basket cap, writes separate records under
+`logs/forward/`, and refuses to run unless the connected MT5 account is a demo
+account. Keep the same configuration unchanged for the full test period so
+the result remains genuinely out-of-sample.
+
 ## Logging and signal display
 
 The live runner first prints the connected MT5 account type, server, currency,
@@ -87,7 +94,8 @@ Trailing configurations keep their optimized fixed target as a hard cap. Once
 a completed M1 candle reaches the configured activation distance, the live
 manager advances the stop using the configured R distance. Stops only tighten.
 
-Logs rotate daily and are retained for 30 days:
+Logs rotate daily and are retained for 90 days, which preserves a complete
+one-month forward-test audit:
 
 - `logs/asia-breakout.log`: readable operational log.
 - `logs/events.jsonl`: structured events for later analysis.

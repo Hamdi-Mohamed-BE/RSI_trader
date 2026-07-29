@@ -65,6 +65,7 @@ class AppConfig:
     server: str | None
     enable_trading: bool
     dry_run: bool
+    require_demo_account: bool
     magic: int
     max_basket_risk_pct: float
     log_dir: Path
@@ -138,6 +139,7 @@ def load_config(env_file: str | Path | None = None) -> AppConfig:
         server=os.getenv("MT5_SERVER") or None,
         enable_trading=_bool("ENABLE_TRADING"),
         dry_run=_bool("DRY_RUN", True),
+        require_demo_account=_bool("REQUIRE_DEMO_ACCOUNT"),
         magic=int(os.getenv("MAGIC", "290729")),
         max_basket_risk_pct=float(os.getenv("MAX_BASKET_RISK_PCT", "6.0")),
         log_dir=Path(os.getenv("LOG_DIR", "logs")),

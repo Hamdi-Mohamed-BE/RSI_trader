@@ -1,0 +1,49 @@
+{
+  "period_start_utc": "2025-07-29T05:36:54.146188+00:00",
+  "training_end_utc": "2026-04-28T23:36:54.146188+00:00",
+  "validation_end_utc": "2026-07-29T05:36:54.146188+00:00",
+  "history_days": 365,
+  "train_fraction": 0.75,
+  "tested_configurations": 23,
+  "max_same_direction_legs": 2,
+  "risk_pct": 1.0,
+  "portfolio_cap_pct": 3.0,
+  "portfolio": {
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "win_rate_pct": 0.0,
+    "net_r": 0,
+    "profit_factor": Infinity,
+    "expectancy_r": 0.0,
+    "max_dd_pct_at_1pct": 0.0,
+    "ending_balance_at_1pct": 1000.0,
+    "accepted": 0,
+    "skipped_exposure": 0,
+    "ending_balance": 1000.0,
+    "return_pct": 0.0,
+    "max_realized_dd_pct": 0.0
+  },
+  "errors": [
+    {
+      "instrument": "BTCUSD",
+      "error": "no configuration reached 12 training trades with PF >= 1.05 and positive net R"
+    },
+    {
+      "instrument": "AUDCAD",
+      "error": "no configuration reached 12 training trades with PF >= 1.05 and positive net R"
+    },
+    {
+      "instrument": "AUDCHF",
+      "error": "no configuration reached 12 training trades with PF >= 1.05 and positive net R"
+    },
+    {
+      "instrument": "GBPUSD",
+      "error": "no configuration reached 12 training trades with PF >= 1.05 and positive net R"
+    },
+    {
+      "instrument": "US30",
+      "error": "no configuration reached 12 training trades with PF >= 1.05 and positive net R"
+    }
+  ]
+}
