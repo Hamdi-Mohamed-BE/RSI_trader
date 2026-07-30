@@ -1,0 +1,411 @@
+{
+  "methodology": {
+    "window": "2011-07-30 through 2026-07-29",
+    "train": "2011-07-30 through 2024-07-29",
+    "validation": "2024-07-30 through 2026-07-29",
+    "features_frozen": "30 minutes before each release",
+    "target": "XAUUSD direction from T-1 minute executable entry to first release-minute close",
+    "data": "Dukascopy XAUUSD M1 bid and ask, BLS/BEA/Federal Reserve release dates",
+    "execution": "$100 reset per release, 0.08 lot, 1:500, recorded bid/ask spread, loss capped at $100",
+    "warning": "Price-action classifier only; archived analyst consensus and release surprises are not available."
+  },
+  "sample": {
+    "calendar": 716,
+    "usable": 699,
+    "train": 607,
+    "validation": 92,
+    "skipped": [
+      {
+        "event": "NFP",
+        "release_utc": "2012-04-06T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2012-12-07T13:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2013-05-16T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2013-06-07T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2013-09-17T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2015-01-16T13:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2015-04-03T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2015-05-22T12:30:00+00:00"
+      },
+      {
+        "event": "FOMC",
+        "release_utc": "2015-06-17T18:00:00+00:00"
+      },
+      {
+        "event": "FOMC",
+        "release_utc": "2015-07-29T18:00:00+00:00"
+      },
+      {
+        "event": "GDP",
+        "release_utc": "2015-07-30T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2015-10-15T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2017-04-14T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2020-04-10T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2021-04-02T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2023-04-07T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2026-04-03T12:30:00+00:00"
+      }
+    ],
+    "imputed_release_sides": 135,
+    "imputed_dates": [
+      "2011-08-17",
+      "2011-08-18",
+      "2011-09-21",
+      "2011-10-07",
+      "2011-11-02",
+      "2011-11-15",
+      "2011-12-15",
+      "2012-01-27",
+      "2012-04-13",
+      "2012-04-25",
+      "2012-05-15",
+      "2012-06-01",
+      "2012-06-20",
+      "2012-10-05",
+      "2012-10-26",
+      "2012-11-02",
+      "2012-11-14",
+      "2012-11-15",
+      "2012-12-13",
+      "2012-12-14",
+      "2013-01-16",
+      "2013-01-30",
+      "2013-02-01",
+      "2013-02-20",
+      "2013-02-21",
+      "2013-05-01",
+      "2013-06-14",
+      "2013-06-18",
+      "2013-07-05",
+      "2013-07-12",
+      "2013-07-31",
+      "2013-08-14",
+      "2013-11-21",
+      "2014-02-20",
+      "2014-03-07",
+      "2014-03-19",
+      "2014-05-02",
+      "2014-05-14",
+      "2014-05-15",
+      "2014-09-05",
+      "2014-10-03",
+      "2014-10-29",
+      "2014-11-07",
+      "2014-12-17",
+      "2015-01-09",
+      "2015-01-30",
+      "2015-03-13",
+      "2015-03-24",
+      "2015-04-14",
+      "2015-05-14",
+      "2015-06-05",
+      "2015-06-18",
+      "2015-07-02",
+      "2015-07-15",
+      "2015-07-17",
+      "2015-08-14",
+      "2015-08-19",
+      "2015-09-04",
+      "2015-09-11",
+      "2015-09-16",
+      "2015-09-17",
+      "2015-10-02",
+      "2015-10-14",
+      "2015-11-17",
+      "2015-12-15",
+      "2016-02-19",
+      "2016-06-03",
+      "2016-06-16",
+      "2016-08-16",
+      "2016-09-15",
+      "2016-11-17",
+      "2017-02-14",
+      "2017-05-05",
+      "2017-10-13",
+      "2018-03-13",
+      "2018-04-10",
+      "2018-05-09",
+      "2018-11-09",
+      "2019-05-09",
+      "2019-06-19",
+      "2019-09-11",
+      "2019-11-13",
+      "2020-01-15",
+      "2020-02-19",
+      "2020-04-03",
+      "2020-06-10",
+      "2020-07-10",
+      "2020-07-30",
+      "2020-12-11",
+      "2021-01-08",
+      "2021-01-13",
+      "2021-06-04",
+      "2021-07-13",
+      "2021-07-28",
+      "2021-07-29",
+      "2021-08-06",
+      "2021-08-12",
+      "2021-09-14",
+      "2021-09-22",
+      "2022-11-02",
+      "2022-11-04",
+      "2022-11-10",
+      "2022-12-02",
+      "2022-12-09",
+      "2023-02-16",
+      "2023-04-13",
+      "2023-12-13",
+      "2024-02-13",
+      "2024-02-16",
+      "2024-03-12",
+      "2024-03-20",
+      "2024-06-12",
+      "2024-07-05",
+      "2024-08-14",
+      "2024-11-07",
+      "2024-11-13",
+      "2025-04-11",
+      "2025-04-30",
+      "2025-05-07",
+      "2025-06-11",
+      "2025-07-30",
+      "2025-09-17",
+      "2026-01-13",
+      "2026-01-28",
+      "2026-03-06",
+      "2026-04-14",
+      "2026-07-14",
+      "2026-07-15"
+    ],
+    "annual_median_spread_used_for_imputation": {
+      "2011": 0.44399999999996,
+      "2012": 0.3630000000000564,
+      "2013": 0.34400000000005093,
+      "2014": 0.28599999999983083,
+      "2015": 0.30999999999994543,
+      "2016": 0.3020000000001346,
+      "2017": 0.2400000000000091,
+      "2018": 0.2339999999999236,
+      "2019": 0.29700000000002547,
+      "2020": 0.3969999999999345,
+      "2021": 0.35400000000004184,
+      "2022": 0.36750000000006366,
+      "2023": 0.3300000000001546,
+      "2024": 0.38699999999971624,
+      "2025": 0.5799999999999272,
+      "2026": 0.680000000000291
+    }
+  },
+  "train_direction_accuracy_pct": 58.32,
+  "train_majority_baseline_pct": 50.08,
+  "model_selection": {
+    "method": "Five-fold expanding-window time-series CV on training data only; minimum log loss",
+    "selected_c": 0.03,
+    "candidates": [
+      {
+        "c": 0.03,
+        "mean_log_loss": 0.6986893387922248,
+        "mean_accuracy_pct": 51.28712871287129
+      },
+      {
+        "c": 0.06,
+        "mean_log_loss": 0.7033613309520348,
+        "mean_accuracy_pct": 51.48514851485149
+      },
+      {
+        "c": 0.1,
+        "mean_log_loss": 0.70687877100188,
+        "mean_accuracy_pct": 51.881188118811885
+      },
+      {
+        "c": 0.2,
+        "mean_log_loss": 0.711275628701088,
+        "mean_accuracy_pct": 51.28712871287129
+      },
+      {
+        "c": 0.35,
+        "mean_log_loss": 0.7141664550196944,
+        "mean_accuracy_pct": 52.27722772277228
+      },
+      {
+        "c": 0.6,
+        "mean_log_loss": 0.7163946305735998,
+        "mean_accuracy_pct": 52.475247524752476
+      },
+      {
+        "c": 1.0,
+        "mean_log_loss": 0.7179971406563199,
+        "mean_accuracy_pct": 51.68316831683168
+      },
+      {
+        "c": 2.0,
+        "mean_log_loss": 0.7194637378077722,
+        "mean_accuracy_pct": 51.48514851485149
+      }
+    ]
+  },
+  "validation_direction_accuracy_pct": 59.78,
+  "validation_roc_auc": 0.6236,
+  "validation_confusion_matrix": [
+    [
+      23,
+      16
+    ],
+    [
+      21,
+      32
+    ]
+  ],
+  "validation_overall": {
+    "events": 92,
+    "correct": 55,
+    "accuracy_pct": 59.78,
+    "wins": 49,
+    "losses": 43,
+    "win_rate_pct": 53.26,
+    "net_gold_pips": 922.0,
+    "net_usd_fresh_100_each": 1031.23,
+    "avg_usd": 11.21,
+    "profit_factor": 1.459,
+    "max_cumulative_drawdown_usd": 427.76
+  },
+  "validation_by_event": {
+    "NFP": {
+      "events": 22,
+      "correct": 11,
+      "accuracy_pct": 50.0,
+      "wins": 10,
+      "losses": 12,
+      "win_rate_pct": 45.45,
+      "net_gold_pips": -8073.5,
+      "net_usd_fresh_100_each": 31.62,
+      "avg_usd": 1.44,
+      "profit_factor": 1.038,
+      "max_cumulative_drawdown_usd": 360.88
+    },
+    "GDP": {
+      "events": 7,
+      "correct": 4,
+      "accuracy_pct": 57.14,
+      "wins": 3,
+      "losses": 4,
+      "win_rate_pct": 42.86,
+      "net_gold_pips": -177.1,
+      "net_usd_fresh_100_each": -14.17,
+      "avg_usd": -2.02,
+      "profit_factor": 0.773,
+      "max_cumulative_drawdown_usd": 45.98
+    },
+    "CPI": {
+      "events": 23,
+      "correct": 16,
+      "accuracy_pct": 69.57,
+      "wins": 15,
+      "losses": 8,
+      "win_rate_pct": 65.22,
+      "net_gold_pips": 14698.3,
+      "net_usd_fresh_100_each": 1181.33,
+      "avg_usd": 51.36,
+      "profit_factor": 3.791,
+      "max_cumulative_drawdown_usd": 171.76
+    },
+    "PPI": {
+      "events": 23,
+      "correct": 14,
+      "accuracy_pct": 60.87,
+      "wins": 13,
+      "losses": 10,
+      "win_rate_pct": 56.52,
+      "net_gold_pips": -1557.3,
+      "net_usd_fresh_100_each": -78.9,
+      "avg_usd": -3.43,
+      "profit_factor": 0.812,
+      "max_cumulative_drawdown_usd": 221.1
+    },
+    "FOMC": {
+      "events": 17,
+      "correct": 10,
+      "accuracy_pct": 58.82,
+      "wins": 8,
+      "losses": 9,
+      "win_rate_pct": 47.06,
+      "net_gold_pips": -3968.4,
+      "net_usd_fresh_100_each": -88.65,
+      "avg_usd": -5.21,
+      "profit_factor": 0.826,
+      "max_cumulative_drawdown_usd": 273.05
+    }
+  },
+  "feature_names": [
+    "ret_5",
+    "ret_15",
+    "ret_30",
+    "ret_60",
+    "range_15_atr",
+    "range_30_atr",
+    "body_15_atr",
+    "volume_z",
+    "distance_2h_open_atr",
+    "pre_spread_atr",
+    "event_NFP",
+    "event_GDP",
+    "event_CPI",
+    "event_PPI",
+    "event_FOMC"
+  ],
+  "coefficients": {
+    "ret_5": -0.020682,
+    "ret_15": 0.07565,
+    "ret_30": -0.139226,
+    "ret_60": 0.125933,
+    "range_15_atr": 0.063759,
+    "range_30_atr": -0.0778,
+    "body_15_atr": 0.069372,
+    "volume_z": 0.003879,
+    "distance_2h_open_atr": 0.065163,
+    "pre_spread_atr": 0.080616,
+    "event_NFP": -0.080899,
+    "event_GDP": -0.102872,
+    "event_CPI": 0.083888,
+    "event_PPI": 0.129835,
+    "event_FOMC": -0.078954
+  }
+}

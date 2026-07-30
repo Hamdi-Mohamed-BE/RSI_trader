@@ -1,0 +1,58 @@
+//@version=6
+indicator("AMD Asia Range + London/NY Windows", overlay=true, max_boxes_count=100, max_lines_count=300)
+
+timezoneInput = input.string("UTC", "Session timezone")
+asiaSession = input.session("0000-0800", "Asia accumulation")
+londonSession = input.session("0800-0900", "London confirmation")
+newYorkSession = input.session("1330-1600", "New York window")
+extendLevels = input.bool(true, "Extend Asia high/low through the day")
+
+inAsia = not na(time(timeframe.period, asiaSession, timezoneInput))
+inLondon = not na(time(timeframe.period, londonSession, timezoneInput))
+inNewYork = not na(time(timeframe.period, newYorkSession, timezoneInput))
+
+asiaStarted = inAsia and not inAsia[1]
+asiaEnded = not inAsia and inAsia[1]
+
+var float asiaHigh = na
+var float asiaLow = na
+var box asiaBox = na
+var line asiaHighLine = na
+var line asiaLowLine = na
+
+if asiaStarted
+    asiaHigh := high
+    asiaLow := low
+    asiaBox := box.new(bar_index, asiaHigh, bar_index, asiaLow, bgcolor=color.new(color.blue, 84), border_color=color.new(color.blue, 25))
+    asiaHighLine := line.new(bar_index, asiaHigh, bar_index, asiaHigh, color=color.aqua, width=2)
+    asiaLowLine := line.new(bar_index, asiaLow, bar_index, asiaLow, color=color.aqua, width=2)
+
+if inAsia
+    asiaHigh := math.max(nz(asiaHigh, high), high)
+    asiaLow := math.min(nz(asiaLow, low), low)
+    box.set_right(asiaBox, bar_index)
+    box.set_top(asiaBox, asiaHigh)
+    box.set_bottom(asiaBox, asiaLow)
+    line.set_x2(asiaHighLine, bar_index)
+    line.set_y1(asiaHighLine, asiaHigh)
+    line.set_y2(asiaHighLine, asiaHigh)
+    line.set_x2(asiaLowLine, bar_index)
+    line.set_y1(asiaLowLine, asiaLow)
+    line.set_y2(asiaLowLine, asiaLow)
+
+if asiaEnded and extendLevels
+    line.set_extend(asiaHighLine, extend.right)
+    line.set_extend(asiaLowLine, extend.right)
+
+londonCloseAbove = inLondon[1] and not inLondon and close[1] > asiaHigh
+londonCloseBelow = inLondon[1] and not inLondon and close[1] < asiaLow
+
+plotshape(londonCloseAbove, title="London-up reference", text="LDN UP / NY SELL", style=shape.labelup, location=location.belowbar, color=color.new(color.green, 0), textcolor=color.white, size=size.tiny)
+plotshape(londonCloseBelow, title="London-down reference", text="LDN DOWN / NY BUY", style=shape.labeldown, location=location.abovebar, color=color.new(color.red, 0), textcolor=color.white, size=size.tiny)
+
+bgcolor(inAsia ? color.new(color.blue, 92) : na, title="Asia")
+bgcolor(inLondon ? color.new(color.orange, 91) : na, title="London confirmation")
+bgcolor(inNewYork ? color.new(color.purple, 92) : na, title="New York")
+
+alertcondition(londonCloseAbove, "AMD London-up reference", "London H1 closed above the Asia high. New York direction is SELL only.")
+alertcondition(londonCloseBelow, "AMD London-down reference", "London H1 closed below the Asia low. New York direction is BUY only.")

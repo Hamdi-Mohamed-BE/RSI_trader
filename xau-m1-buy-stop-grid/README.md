@@ -90,3 +90,31 @@ The default starting balance is `$100`, matching this project's original news
 profile. Change `NEWS_BACKTEST_START_BALANCE` in `.env` for another balance.
 `NEWS_MT5_HISTORY_OFFSET_HOURS` aligns real UTC release times with the broker's
 stored MT5 bar timestamps.
+
+## Fifteen-year direction validation
+
+`fifteen_year_news_backtest.py` builds an official-release calendar for NFP,
+advance GDP, CPI, PPI, and scheduled FOMC statements. It trains on the first
+13 years and evaluates once on the untouched final two years. Features stop 30
+minutes before each release. Dukascopy XAUUSD M1 bid/ask data is cached under
+`data/news-event-days`.
+
+The model is a price-action probability filter, not a substitute for archived
+analyst consensus and actual-release surprise data. `NEWS_DIRECTION_WATCHLIST`
+controls monitored event families. Keep only independently validated families
+in `NEWS_DIRECTION_TRADE_EVENTS`.
+
+Run `news_ml_model_comparison.py` to compare regularized logistic regression,
+random forest, Extra Trees, and two gradient-boosting models without selecting
+on the final two-month holdout. It writes:
+
+- `news_ml_comparison_report.json`
+- `news_ml_last_2_months.csv`
+- `news_direction_model.joblib`
+
+The saved model remains the regularized logistic classifier because it had the
+lowest expanding-window cross-validation log loss. Sentiment from a released
+statement must not be used by the pre-release model; it belongs in a separate
+post-release strategy. Historical pre-release sentiment requires timestamped
+headline archives, while macro surprise features require vintage actual values
+and archived market consensus.
