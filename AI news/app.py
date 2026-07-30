@@ -10,6 +10,7 @@ from fastapi.responses import HTMLResponse
 from calendar_provider import upcoming_us_events
 from news_core import EVENTS, ROOT
 from predict_news import load_env, make_prediction
+from release_intelligence import analyze_release, build_pre_release_packet
 
 
 load_env()
@@ -34,13 +35,18 @@ def index() -> str:
     h1 {{ font-size:34px; margin:0 0 8px; }}
     p {{ color:#9ba7b8; }}
     .panel {{ border:1px solid #283241; border-radius:8px; padding:24px; background:#0c1119; }}
-    form {{ display:grid; grid-template-columns:1fr 2fr auto; gap:12px; align-items:end; }}
+    form {{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; align-items:end; }}
     label {{ display:grid; gap:8px; color:#a9b5c5; font-size:13px; }}
     select,input,button {{ min-height:44px; border-radius:6px; border:1px solid #344154; padding:0 12px; font:inherit; }}
     select,input {{ background:#080d14; color:#fff; }}
     button {{ background:#25c69a; color:#04110d; border:0; font-weight:700; cursor:pointer; padding:0 20px; }}
     pre {{ margin-top:20px; white-space:pre-wrap; overflow-wrap:anywhere; background:#06090e; border:1px solid #222a36; border-radius:6px; padding:18px; min-height:120px; }}
     .notice {{ margin-top:16px; font-size:13px; }}
+    .stack {{ display:grid; gap:18px; }}
+    .section-title {{ margin:0 0 6px; font-size:19px; }}
+    .wide {{ grid-column:1/-1; }}
+    .secondary {{ background:#192231; color:#eaf0f8; border:1px solid #344154; }}
+    .phase {{ color:#70ddbd; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }}
     @media(max-width:700px) {{ form {{ grid-template-columns:1fr; }} h1 {{ font-size:28px; }} }}
   </style>
 </head>
@@ -48,25 +54,57 @@ def index() -> str:
   <header><strong>Gold News AI</strong><span>Prediction only</span></header>
   <main>
     <h1>XAUUSD News Impulse</h1>
-    <p>Run a permanently saved prediction 15-30 minutes before a supported USD release.</p>
-    <section class="panel">
-      <form id="form">
+    <p>Estimate whether a supported USD release will be positive or negative for gold.</p>
+    <section class="stack">
+    <div class="panel">
+      <div class="phase">Before publication</div>
+      <h2 class="section-title">Pre-release forecast</h2>
+      <form id="forecast-form">
         <label>Event<select name="event">{options}</select></label>
         <label>Release time (UTC)<input name="release" type="datetime-local" required></label>
-        <button type="submit">Predict</button>
+        <label>Forecast<input name="forecast" placeholder="optional consensus"></label>
+        <label>Previous<input name="previous" placeholder="optional previous value"></label>
+        <label class="wide">Official source URL<input name="source_url" placeholder="optional"></label>
+        <button class="wide" type="submit">Predict gold impact</button>
       </form>
-      <pre id="output">Waiting for a query.</pre>
-      <p class="notice">No order placement or account management exists in this application.</p>
+      <pre id="forecast-output">Waiting for a query.</pre>
+    </div>
+    <div class="panel">
+      <div class="phase">After publication</div>
+      <h2 class="section-title">Release interpretation</h2>
+      <form id="release-form">
+        <label>Event<select name="event">{options}</select></label>
+        <label>Release time (UTC)<input name="release_time" type="datetime-local" required></label>
+        <label>Actual<input name="actual" placeholder="e.g. 2.4%"></label>
+        <label>Forecast<input name="forecast" placeholder="e.g. 2.1%"></label>
+        <label>Previous<input name="previous" placeholder="e.g. 2.0%"></label>
+        <label>Revised<input name="revised" placeholder="optional"></label>
+        <label class="wide">Official source URL<input name="source_url" placeholder="Optional BLS, BEA, or Federal Reserve HTTPS URL"></label>
+        <button class="wide secondary" type="submit">Analyze published release</button>
+      </form>
+      <pre id="release-output">Waiting for published data.</pre>
+    </div>
+    <p class="notice">Prediction and analysis only. No order placement or account management exists.</p>
     </section>
   </main>
   <script>
-    document.getElementById('form').addEventListener('submit', async (event) => {{
+    document.getElementById('forecast-form').addEventListener('submit', async (event) => {{
       event.preventDefault();
-      const output = document.getElementById('output');
+      const output = document.getElementById('forecast-output');
       output.textContent = 'Running model...';
       const body = new FormData(event.target);
       body.set('release', body.get('release') + ':00Z');
       const response = await fetch('/api/predict', {{method:'POST', body}});
+      const data = await response.json();
+      output.textContent = JSON.stringify(data, null, 2);
+    }});
+    document.getElementById('release-form').addEventListener('submit', async (event) => {{
+      event.preventDefault();
+      const output = document.getElementById('release-output');
+      output.textContent = 'Analyzing release...';
+      const body = new FormData(event.target);
+      body.set('release_time', body.get('release_time') + ':00Z');
+      const response = await fetch('/api/analyze-release', {{method:'POST', body}});
       const data = await response.json();
       output.textContent = JSON.stringify(data, null, 2);
     }});
@@ -81,12 +119,19 @@ def health() -> dict:
         lead: (ROOT / "models" / f"gold_news_impulse_{lead}m.joblib").exists()
         for lead in (15, 30)
     }
-    return {"status": "ok" if all(models.values()) else "models_missing", "models": models, "trade_execution": False}
+    models["gold_direction"] = (
+        ROOT / "models" / "gold_news_direction.joblib"
+    ).exists()
+    return {
+        "status": "ok" if all(models.values()) else "models_missing",
+        "models": models,
+        "trade_execution": False,
+    }
 
 
 @app.get("/api/backtest")
 def backtest() -> dict:
-    path = ROOT / "backtest_report.json"
+    path = ROOT / "gold_direction_backtest.json"
     if not path.exists():
         raise HTTPException(status_code=404, detail="Run train_model.bat first.")
     return json.loads(path.read_text(encoding="utf-8"))
@@ -98,9 +143,60 @@ def upcoming(days: int = 7) -> dict:
 
 
 @app.post("/api/predict")
-def predict(event: str = Form(...), release: str = Form(...)) -> dict:
+def predict(
+    event: str = Form(...),
+    release: str = Form(...),
+    forecast: str | None = Form(None),
+    previous: str | None = Form(None),
+    source_url: str | None = Form(None),
+) -> dict:
     try:
         parsed = datetime.fromisoformat(release.replace("Z", "+00:00")).astimezone(timezone.utc)
-        return make_prediction(event, parsed)
+        result = make_prediction(
+            event,
+            parsed,
+            forecast=forecast,
+            previous=previous,
+            source_url=source_url,
+        )
+        result["codex_analyst_packet"] = build_pre_release_packet(
+            result,
+            forecast=forecast,
+            previous=previous,
+            source_url=source_url,
+        )
+        packet_dir = ROOT / "analyst_packets"
+        packet_dir.mkdir(exist_ok=True)
+        packet_path = packet_dir / os.path.basename(result["saved_to"])
+        packet_path.write_text(
+            json.dumps(result["codex_analyst_packet"], indent=2),
+            encoding="utf-8",
+        )
+        result["codex_analyst_packet"]["saved_to"] = str(packet_path)
+        return result
+    except Exception as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+
+
+@app.post("/api/analyze-release")
+def analyze_published_release(
+    event: str = Form(...),
+    release_time: str = Form(...),
+    actual: str | None = Form(None),
+    forecast: str | None = Form(None),
+    previous: str | None = Form(None),
+    revised: str | None = Form(None),
+    source_url: str | None = Form(None),
+) -> dict:
+    try:
+        return analyze_release(
+            event=event,
+            release_time=release_time,
+            actual=actual,
+            forecast=forecast,
+            previous=previous,
+            revised=revised,
+            source_url=source_url or None,
+        )
     except Exception as error:
         raise HTTPException(status_code=400, detail=str(error)) from error

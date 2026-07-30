@@ -11,6 +11,7 @@ import pandas as pd
 
 from .config import load_config
 from .engine import backtest_symbol, metrics
+from .article_engine import backtest_article_model, params_from_config
 from .live import run_live
 from .mt5_data import connection, discover_symbols, load_m1, symbol_metadata
 
@@ -34,6 +35,50 @@ def write_report(
     account: object,
     config: object,
 ) -> None:
+    if str(getattr(config, "strategy_model", "legacy")) == "article":
+        lines = [
+            "# Confirmed AMD Sweep/Retest Backtest",
+            "",
+            f"- Period: **{start.isoformat()} to {end.isoformat()}**",
+            f"- Data source: **MT5 / {getattr(account, 'server', 'unknown')}**",
+            f"- Starting balance: **${getattr(config, 'starting_balance', 0):,.2f} per symbol**",
+            f"- Risk: **{getattr(config, 'risk_pct', 0):.2f}% of current balance per trade**",
+            "- Accumulation: **full-wick Asia range, 00:00-08:00 UTC**",
+            "- Manipulation entry: **M5 sweep outside the range and close back inside**",
+            "- Distribution entry: **M5 close outside, pullback to the range edge, and directional M5 close**",
+            (
+                "- Sessions: **"
+                f"{'London' if getattr(config, 'article_trade_london', False) else ''}"
+                f"{' + ' if getattr(config, 'article_trade_london', False) and getattr(config, 'article_trade_new_york', False) else ''}"
+                f"{'New York' if getattr(config, 'article_trade_new_york', False) else ''}**"
+            ),
+            (
+                f"- Target: **{getattr(config, 'article_fade_rr', 0):.2f}R fade / "
+                f"{getattr(config, 'article_distribution_rr', 0):.2f}R distribution**"
+            ),
+            (
+                f"- Management: **at +{getattr(config, 'lock_trigger_r', 0):.2f}R, "
+                f"stop advances to +{getattr(config, 'lock_profit_r', 0):.2f}R**"
+            ),
+            f"- Maximum trades per day: **{getattr(config, 'article_max_trades_per_day', 1)}**",
+            "- Signals use completed M5 candles and enter no earlier than the next M1 candle.",
+            "- Conservative rule: if SL and TP occur in one M1 bar, SL is assumed first.",
+            "",
+            "| Symbol | Trades | Wins | Losses | Win rate | PF | Net R | Realized max DD | Ending balance |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        ]
+        for row in rows:
+            lines.append(
+                f"| {row['canonical_symbol']} ({row['symbol']}) "
+                f"| {row['trades']} | {row['wins']} | {row['losses']} "
+                f"| {_fmt(row['win_rate_pct'])}% "
+                f"| {_fmt(row['profit_factor'])} "
+                f"| {_fmt(row['net_r'])}R "
+                f"| {_fmt(row['max_drawdown_pct'])}% "
+                f"| ${_fmt(row['ending_balance'])} |"
+            )
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        return
     mode = str(getattr(config, "ny_entry_mode", "unknown"))
     risk_pct = float(getattr(config, "risk_pct", 0.0))
     max_risk = risk_pct * 2.0 if mode == "dual" else risk_pct
@@ -138,6 +183,23 @@ def write_report(
 
 def command_backtest(args: argparse.Namespace) -> None:
     config = load_config(args.env)
+    env_name = Path(args.env).name.lower() if args.env else ".env"
+    if env_name == ".env":
+        report_name = "REPORT.md"
+        summary_stem = "summary"
+    elif env_name == ".env.article":
+        report_name = "ARTICLE_REPORT.md"
+        summary_stem = "summary_article"
+    elif env_name == ".env.cross_asset":
+        report_name = "CROSS_ASSET_REPORT.md"
+        summary_stem = "summary_cross_asset"
+    else:
+        safe_env = "".join(
+            character if character.isalnum() else "_"
+            for character in env_name
+        ).strip("_")
+        report_name = f"{safe_env.upper()}_REPORT.md"
+        summary_stem = f"summary_{safe_env}"
     end = (
         datetime.strptime(args.end, "%Y-%m-%d").replace(tzinfo=UTC)
         if args.end
@@ -188,14 +250,29 @@ def command_backtest(args: argparse.Namespace) -> None:
                 config.root / "data",
                 args.refresh,
             )
-            trades = backtest_symbol(
-                frame,
-                symbol,
-                float(metadata["point"]),
-                config,
-                start,
-                end,
-            )
+            if config.strategy_model == "article":
+                trades = backtest_article_model(
+                    frame,
+                    symbol,
+                    float(metadata["point"]),
+                    config,
+                    params_from_config(config),
+                    start,
+                    end,
+                )
+            elif config.strategy_model == "legacy":
+                trades = backtest_symbol(
+                    frame,
+                    symbol,
+                    float(metadata["point"]),
+                    config,
+                    start,
+                    end,
+                )
+            else:
+                raise ValueError(
+                    f"Unsupported STRATEGY_MODEL: {config.strategy_model}"
+                )
             row = metrics(
                 symbol,
                 trades,
@@ -208,6 +285,19 @@ def command_backtest(args: argparse.Namespace) -> None:
                     (frame["time"] >= start) & (frame["time"] < end)
                 ]
             )
+            tested_frame = frame.loc[
+                (frame["time"] >= start) & (frame["time"] < end)
+            ]
+            row["history_start"] = (
+                tested_frame.iloc[0]["time"].isoformat()
+                if not tested_frame.empty
+                else None
+            )
+            row["history_end"] = (
+                tested_frame.iloc[-1]["time"].isoformat()
+                if not tested_frame.empty
+                else None
+            )
             summaries.append(row)
             pd.DataFrame([trade.to_dict() for trade in trades]).to_csv(
                 trade_dir / f"{canonical}.csv",
@@ -219,20 +309,23 @@ def command_backtest(args: argparse.Namespace) -> None:
                 f"DD {_fmt(row['max_drawdown_pct'])}% | "
                 f"end ${_fmt(row['ending_balance'])}"
             )
-    pd.DataFrame(summaries).to_csv(reports / "summary.csv", index=False)
-    (reports / "summary.json").write_text(
+    pd.DataFrame(summaries).to_csv(
+        reports / f"{summary_stem}.csv",
+        index=False,
+    )
+    (reports / f"{summary_stem}.json").write_text(
         json.dumps(summaries, indent=2, default=str),
         encoding="utf-8",
     )
     write_report(
-        reports / "REPORT.md",
+        reports / report_name,
         summaries,
         start,
         end,
         account,
         config,
     )
-    print(f"\nReport: {reports / 'REPORT.md'}")
+    print(f"\nReport: {reports / report_name}")
 
 
 def build_parser() -> argparse.ArgumentParser:

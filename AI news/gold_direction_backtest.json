@@ -1,0 +1,536 @@
+{
+  "scope": {
+    "target": "Binary immediate XAUUSD effect; every release is POSITIVE or NEGATIVE.",
+    "no_trade_outputs": false,
+    "trade_execution": false,
+    "selection_rule": "Model and features selected only with expanding chronological validation from 2019-07-30 through 2024-07-30 exclusive.",
+    "deployment_guard": "The broad holdout may reject a complex model in favor of the historical anchor. The recent holdout is never used for that decision.",
+    "broad_holdout": "2024-07-30 through 2026-05-30 exclusive",
+    "recent_holdout": "2026-05-30 onward"
+  },
+  "selected": {
+    "early_30m": {
+      "model": "extra_trees",
+      "profile": "t30_macro",
+      "market_model_weight": 0.0,
+      "historical_event_weight": 1.0
+    },
+    "final_15m": {
+      "model": "hist_gradient_boosting",
+      "profile": "t15",
+      "market_model_weight": 0.0,
+      "historical_event_weight": 1.0
+    }
+  },
+  "candidate_validation": {
+    "early_30m": [
+      {
+        "model": "logistic",
+        "profile": "t30",
+        "events": 236,
+        "correct": 126,
+        "wrong": 110,
+        "accuracy_pct": 53.39,
+        "balanced_accuracy_pct": 53.41,
+        "brier": 0.25838,
+        "log_loss": 0.71243
+      },
+      {
+        "model": "extra_trees",
+        "profile": "t30",
+        "events": 236,
+        "correct": 127,
+        "wrong": 109,
+        "accuracy_pct": 53.81,
+        "balanced_accuracy_pct": 53.88,
+        "brier": 0.25202,
+        "log_loss": 0.6981
+      },
+      {
+        "model": "hist_gradient_boosting",
+        "profile": "t30",
+        "events": 236,
+        "correct": 115,
+        "wrong": 121,
+        "accuracy_pct": 48.73,
+        "balanced_accuracy_pct": 48.75,
+        "brier": 0.27933,
+        "log_loss": 0.76138
+      },
+      {
+        "model": "logistic",
+        "profile": "t30_macro",
+        "events": 236,
+        "correct": 131,
+        "wrong": 105,
+        "accuracy_pct": 55.51,
+        "balanced_accuracy_pct": 55.62,
+        "brier": 0.28873,
+        "log_loss": 0.83793
+      },
+      {
+        "model": "extra_trees",
+        "profile": "t30_macro",
+        "events": 236,
+        "correct": 134,
+        "wrong": 102,
+        "accuracy_pct": 56.78,
+        "balanced_accuracy_pct": 56.86,
+        "brier": 0.2477,
+        "log_loss": 0.68894
+      },
+      {
+        "model": "hist_gradient_boosting",
+        "profile": "t30_macro",
+        "events": 236,
+        "correct": 117,
+        "wrong": 119,
+        "accuracy_pct": 49.58,
+        "balanced_accuracy_pct": 49.64,
+        "brier": 0.27764,
+        "log_loss": 0.75662
+      }
+    ],
+    "final_15m": [
+      {
+        "model": "logistic",
+        "profile": "t15",
+        "events": 236,
+        "correct": 121,
+        "wrong": 115,
+        "accuracy_pct": 51.27,
+        "balanced_accuracy_pct": 51.31,
+        "brier": 0.26988,
+        "log_loss": 0.73807
+      },
+      {
+        "model": "extra_trees",
+        "profile": "t15",
+        "events": 236,
+        "correct": 125,
+        "wrong": 111,
+        "accuracy_pct": 52.97,
+        "balanced_accuracy_pct": 52.99,
+        "brier": 0.25356,
+        "log_loss": 0.70136
+      },
+      {
+        "model": "hist_gradient_boosting",
+        "profile": "t15",
+        "events": 236,
+        "correct": 128,
+        "wrong": 108,
+        "accuracy_pct": 54.24,
+        "balanced_accuracy_pct": 54.3,
+        "brier": 0.27503,
+        "log_loss": 0.76157
+      },
+      {
+        "model": "logistic",
+        "profile": "dual",
+        "events": 236,
+        "correct": 113,
+        "wrong": 123,
+        "accuracy_pct": 47.88,
+        "balanced_accuracy_pct": 47.95,
+        "brier": 0.2881,
+        "log_loss": 0.78676
+      },
+      {
+        "model": "extra_trees",
+        "profile": "dual",
+        "events": 236,
+        "correct": 122,
+        "wrong": 114,
+        "accuracy_pct": 51.69,
+        "balanced_accuracy_pct": 51.75,
+        "brier": 0.25937,
+        "log_loss": 0.71314
+      },
+      {
+        "model": "hist_gradient_boosting",
+        "profile": "dual",
+        "events": 236,
+        "correct": 111,
+        "wrong": 125,
+        "accuracy_pct": 47.03,
+        "balanced_accuracy_pct": 47.07,
+        "brier": 0.28829,
+        "log_loss": 0.78556
+      },
+      {
+        "model": "logistic",
+        "profile": "dual_macro",
+        "events": 236,
+        "correct": 122,
+        "wrong": 114,
+        "accuracy_pct": 51.69,
+        "balanced_accuracy_pct": 51.81,
+        "brier": 0.3124,
+        "log_loss": 0.91907
+      },
+      {
+        "model": "extra_trees",
+        "profile": "dual_macro",
+        "events": 236,
+        "correct": 119,
+        "wrong": 117,
+        "accuracy_pct": 50.42,
+        "balanced_accuracy_pct": 50.49,
+        "brier": 0.25833,
+        "log_loss": 0.71085
+      },
+      {
+        "model": "hist_gradient_boosting",
+        "profile": "dual_macro",
+        "events": 236,
+        "correct": 118,
+        "wrong": 118,
+        "accuracy_pct": 50.0,
+        "balanced_accuracy_pct": 50.08,
+        "brier": 0.28349,
+        "log_loss": 0.77289
+      }
+    ],
+    "early_30m_blends": [
+      {
+        "model_weight": 0.0,
+        "events": 236,
+        "correct": 134,
+        "wrong": 102,
+        "accuracy_pct": 56.78,
+        "balanced_accuracy_pct": 56.78,
+        "brier": 0.2486,
+        "log_loss": 0.69043
+      },
+      {
+        "model_weight": 0.25,
+        "events": 236,
+        "correct": 133,
+        "wrong": 103,
+        "accuracy_pct": 56.36,
+        "balanced_accuracy_pct": 56.37,
+        "brier": 0.24656,
+        "log_loss": 0.68625
+      },
+      {
+        "model_weight": 0.5,
+        "events": 236,
+        "correct": 126,
+        "wrong": 110,
+        "accuracy_pct": 53.39,
+        "balanced_accuracy_pct": 53.46,
+        "brier": 0.24574,
+        "log_loss": 0.68455
+      },
+      {
+        "model_weight": 0.75,
+        "events": 236,
+        "correct": 129,
+        "wrong": 107,
+        "accuracy_pct": 54.66,
+        "balanced_accuracy_pct": 54.73,
+        "brier": 0.24611,
+        "log_loss": 0.68538
+      },
+      {
+        "model_weight": 1.0,
+        "events": 236,
+        "correct": 134,
+        "wrong": 102,
+        "accuracy_pct": 56.78,
+        "balanced_accuracy_pct": 56.86,
+        "brier": 0.2477,
+        "log_loss": 0.68894
+      }
+    ],
+    "final_15m_blends": [
+      {
+        "model_weight": 0.0,
+        "events": 236,
+        "correct": 134,
+        "wrong": 102,
+        "accuracy_pct": 56.78,
+        "balanced_accuracy_pct": 56.78,
+        "brier": 0.2486,
+        "log_loss": 0.69043
+      },
+      {
+        "model_weight": 0.25,
+        "events": 236,
+        "correct": 131,
+        "wrong": 105,
+        "accuracy_pct": 55.51,
+        "balanced_accuracy_pct": 55.59,
+        "brier": 0.24828,
+        "log_loss": 0.68985
+      },
+      {
+        "model_weight": 0.5,
+        "events": 236,
+        "correct": 126,
+        "wrong": 110,
+        "accuracy_pct": 53.39,
+        "balanced_accuracy_pct": 53.45,
+        "brier": 0.25258,
+        "log_loss": 0.69937
+      },
+      {
+        "model_weight": 0.75,
+        "events": 236,
+        "correct": 129,
+        "wrong": 107,
+        "accuracy_pct": 54.66,
+        "balanced_accuracy_pct": 54.73,
+        "brier": 0.26149,
+        "log_loss": 0.72104
+      },
+      {
+        "model_weight": 1.0,
+        "events": 236,
+        "correct": 128,
+        "wrong": 108,
+        "accuracy_pct": 54.24,
+        "balanced_accuracy_pct": 54.3,
+        "brier": 0.27503,
+        "log_loss": 0.76157
+      }
+    ]
+  },
+  "broad_holdout": {
+    "events": 84,
+    "correct": 49,
+    "wrong": 35,
+    "accuracy_pct": 58.33,
+    "balanced_accuracy_pct": 58.45,
+    "brier": 0.24426,
+    "log_loss": 0.68167,
+    "wilson_95_pct": [
+      47.65,
+      68.29
+    ],
+    "by_event": {
+      "NFP": {
+        "events": 20,
+        "correct": 10,
+        "accuracy_pct": 50.0
+      },
+      "GDP": {
+        "events": 7,
+        "correct": 4,
+        "accuracy_pct": 57.14
+      },
+      "CPI": {
+        "events": 21,
+        "correct": 16,
+        "accuracy_pct": 76.19
+      },
+      "PPI": {
+        "events": 21,
+        "correct": 11,
+        "accuracy_pct": 52.38
+      },
+      "FOMC": {
+        "events": 15,
+        "correct": 8,
+        "accuracy_pct": 53.33
+      }
+    },
+    "event_majority_baseline": {
+      "mapping": {
+        "NFP": "NEGATIVE",
+        "GDP": "NEGATIVE",
+        "CPI": "POSITIVE",
+        "PPI": "POSITIVE",
+        "FOMC": "NEGATIVE"
+      },
+      "events": 84,
+      "correct": 49,
+      "accuracy_pct": 58.33
+    },
+    "momentum_baseline": {
+      "events": 84,
+      "correct": 41,
+      "accuracy_pct": 48.81
+    }
+  },
+  "recent_holdout": {
+    "events": 8,
+    "correct": 6,
+    "wrong": 2,
+    "accuracy_pct": 75.0,
+    "balanced_accuracy_pct": 83.33,
+    "brier": 0.21802,
+    "log_loss": 0.62873,
+    "wilson_95_pct": [
+      40.93,
+      92.85
+    ],
+    "by_event": {
+      "NFP": {
+        "events": 2,
+        "correct": 1,
+        "accuracy_pct": 50.0
+      },
+      "CPI": {
+        "events": 2,
+        "correct": 2,
+        "accuracy_pct": 100.0
+      },
+      "PPI": {
+        "events": 2,
+        "correct": 2,
+        "accuracy_pct": 100.0
+      },
+      "FOMC": {
+        "events": 2,
+        "correct": 1,
+        "accuracy_pct": 50.0
+      }
+    },
+    "event_majority_baseline": {
+      "mapping": {
+        "NFP": "NEGATIVE",
+        "GDP": "NEGATIVE",
+        "CPI": "POSITIVE",
+        "PPI": "POSITIVE",
+        "FOMC": "NEGATIVE"
+      },
+      "events": 8,
+      "correct": 6,
+      "accuracy_pct": 75.0
+    },
+    "momentum_baseline": {
+      "events": 8,
+      "correct": 3,
+      "accuracy_pct": 37.5
+    }
+  },
+  "early_30m_holdout": {
+    "deployment_guard": "market model rejected after the broad holdout failed to beat the event-history baseline; recent holdout remained untouched",
+    "broad": {
+      "events": 84,
+      "correct": 49,
+      "wrong": 35,
+      "accuracy_pct": 58.33,
+      "balanced_accuracy_pct": 58.45,
+      "brier": 0.24426,
+      "log_loss": 0.68167
+    },
+    "recent": {
+      "events": 8,
+      "correct": 6,
+      "wrong": 2,
+      "accuracy_pct": 75.0,
+      "balanced_accuracy_pct": 83.33,
+      "brier": 0.21802,
+      "log_loss": 0.62873
+    }
+  },
+  "recent_events": [
+    {
+      "release_utc": "2026-06-05T12:30:00+00:00",
+      "event": "NFP",
+      "predicted_gold_impact": "NEGATIVE",
+      "confidence_pct": 56.78,
+      "raw_probability_positive_pct": 45.98,
+      "historical_probability_positive_pct": 45.98,
+      "market_model_probability_positive_pct": 41.36,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -14.755,
+      "actual_move_pips": -1475.5,
+      "correct": true
+    },
+    {
+      "release_utc": "2026-06-10T12:30:00+00:00",
+      "event": "CPI",
+      "predicted_gold_impact": "POSITIVE",
+      "confidence_pct": 56.78,
+      "raw_probability_positive_pct": 58.05,
+      "historical_probability_positive_pct": 58.05,
+      "market_model_probability_positive_pct": 56.45,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 27.823,
+      "actual_move_pips": 2782.3,
+      "correct": true
+    },
+    {
+      "release_utc": "2026-06-11T12:30:00+00:00",
+      "event": "PPI",
+      "predicted_gold_impact": "POSITIVE",
+      "confidence_pct": 56.78,
+      "raw_probability_positive_pct": 56.35,
+      "historical_probability_positive_pct": 56.35,
+      "market_model_probability_positive_pct": 54.75,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 2.952,
+      "actual_move_pips": 295.2,
+      "correct": true
+    },
+    {
+      "release_utc": "2026-06-17T18:00:00+00:00",
+      "event": "FOMC",
+      "predicted_gold_impact": "NEGATIVE",
+      "confidence_pct": 56.78,
+      "raw_probability_positive_pct": 45.0,
+      "historical_probability_positive_pct": 45.0,
+      "market_model_probability_positive_pct": 27.92,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -31.935,
+      "actual_move_pips": -3193.5,
+      "correct": true
+    },
+    {
+      "release_utc": "2026-07-02T12:30:00+00:00",
+      "event": "NFP",
+      "predicted_gold_impact": "NEGATIVE",
+      "confidence_pct": 56.78,
+      "raw_probability_positive_pct": 45.71,
+      "historical_probability_positive_pct": 45.71,
+      "market_model_probability_positive_pct": 22.92,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 52.13,
+      "actual_move_pips": 5213.0,
+      "correct": false
+    },
+    {
+      "release_utc": "2026-07-14T12:30:00+00:00",
+      "event": "CPI",
+      "predicted_gold_impact": "POSITIVE",
+      "confidence_pct": 56.78,
+      "raw_probability_positive_pct": 58.29,
+      "historical_probability_positive_pct": 58.29,
+      "market_model_probability_positive_pct": 55.3,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 60.54,
+      "actual_move_pips": 6054.0,
+      "correct": true
+    },
+    {
+      "release_utc": "2026-07-15T12:30:00+00:00",
+      "event": "PPI",
+      "predicted_gold_impact": "POSITIVE",
+      "confidence_pct": 56.78,
+      "raw_probability_positive_pct": 56.59,
+      "historical_probability_positive_pct": 56.59,
+      "market_model_probability_positive_pct": 84.03,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 8.75,
+      "actual_move_pips": 875.0,
+      "correct": true
+    },
+    {
+      "release_utc": "2026-07-29T18:00:00+00:00",
+      "event": "FOMC",
+      "predicted_gold_impact": "NEGATIVE",
+      "confidence_pct": 56.78,
+      "raw_probability_positive_pct": 44.63,
+      "historical_probability_positive_pct": 44.63,
+      "market_model_probability_positive_pct": 40.13,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 32.425,
+      "actual_move_pips": 3242.5,
+      "correct": false
+    }
+  ]
+}

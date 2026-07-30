@@ -1,0 +1,249 @@
+{
+  "methodology": {
+    "window": "2026-05-30 through 2026-07-30 exclusive",
+    "lead_minutes": 30,
+    "walk_forward": true,
+    "training_rule": "Each model sees only clear releases dated before the event.",
+    "feature_profile": "legacy stable 18-feature profile",
+    "confidence_threshold": 0.6,
+    "execution": "Enter at the final pre-release M1 bid/ask close and exit at the release M1 bid/ask close. One XAUUSD pip is defined as $0.01.",
+    "no_trade_pips": 0
+  },
+  "audit": {
+    "calendar_events": 716,
+    "usable_samples": 699,
+    "skipped": 17,
+    "imputed_sides": 135,
+    "skipped_examples": [
+      {
+        "event": "NFP",
+        "release_utc": "2012-04-06T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2012-12-07T13:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2013-05-16T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2013-06-07T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2013-09-17T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2015-01-16T13:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2015-04-03T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2015-05-22T12:30:00+00:00"
+      },
+      {
+        "event": "FOMC",
+        "release_utc": "2015-06-17T18:00:00+00:00"
+      },
+      {
+        "event": "FOMC",
+        "release_utc": "2015-07-29T18:00:00+00:00"
+      },
+      {
+        "event": "GDP",
+        "release_utc": "2015-07-30T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2015-10-15T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2017-04-14T12:30:00+00:00"
+      },
+      {
+        "event": "CPI",
+        "release_utc": "2020-04-10T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2021-04-02T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2023-04-07T12:30:00+00:00"
+      },
+      {
+        "event": "NFP",
+        "release_utc": "2026-04-03T12:30:00+00:00"
+      }
+    ]
+  },
+  "summary": {
+    "events": 8,
+    "called_trades": 3,
+    "no_trades": 5,
+    "uncertain_actual_outcomes": 1,
+    "wins": 3,
+    "losses": 0,
+    "win_rate_pct": 100.0,
+    "direction_accuracy_pct": 100.0,
+    "net_pips": 4038.3,
+    "raw_bias_net_pips_without_confidence_filter": 8786.3,
+    "gross_win_pips": 4038.3,
+    "gross_loss_pips": 0,
+    "profit_factor_pips": null
+  },
+  "events": [
+    {
+      "date": "2026-06-05",
+      "release_utc": "2026-06-05T12:30:00+00:00",
+      "event": "NFP",
+      "training_samples": 483,
+      "prediction": "NO TRADE",
+      "model_bias": "BUY",
+      "confidence_pct": 53.45,
+      "actual_outcome": "SELL",
+      "correct_when_called": null,
+      "entry": 4465.335,
+      "exit": 4450.58,
+      "actual_move_pips": -1475.5,
+      "release_range_pips": 1761.0,
+      "captured_or_lost_pips": 0.0,
+      "bias_hypothetical_pips": -1629.0,
+      "spread_imputed": null
+    },
+    {
+      "date": "2026-06-10",
+      "release_utc": "2026-06-10T12:30:00+00:00",
+      "event": "CPI",
+      "training_samples": 484,
+      "prediction": "NO TRADE",
+      "model_bias": "BUY",
+      "confidence_pct": 56.75,
+      "actual_outcome": "BUY",
+      "correct_when_called": null,
+      "entry": 4141.372,
+      "exit": 4169.195,
+      "actual_move_pips": 2782.3,
+      "release_range_pips": 3303.9,
+      "captured_or_lost_pips": 0.0,
+      "bias_hypothetical_pips": 2694.0,
+      "spread_imputed": null
+    },
+    {
+      "date": "2026-06-11",
+      "release_utc": "2026-06-11T12:30:00+00:00",
+      "event": "PPI",
+      "training_samples": 485,
+      "prediction": "BUY",
+      "model_bias": "BUY",
+      "confidence_pct": 60.28,
+      "actual_outcome": "UNCERTAIN",
+      "correct_when_called": false,
+      "entry": 4070.102,
+      "exit": 4071.805,
+      "actual_move_pips": 295.2,
+      "release_range_pips": 855.0,
+      "captured_or_lost_pips": 170.3,
+      "bias_hypothetical_pips": 170.3,
+      "spread_imputed": null
+    },
+    {
+      "date": "2026-06-17",
+      "release_utc": "2026-06-17T18:00:00+00:00",
+      "event": "FOMC",
+      "training_samples": 485,
+      "prediction": "SELL",
+      "model_bias": "SELL",
+      "confidence_pct": 72.75,
+      "actual_outcome": "SELL",
+      "correct_when_called": true,
+      "entry": 4379.575,
+      "exit": 4348.965,
+      "actual_move_pips": -3193.5,
+      "release_range_pips": 4138.0,
+      "captured_or_lost_pips": 3061.0,
+      "bias_hypothetical_pips": 3061.0,
+      "spread_imputed": null
+    },
+    {
+      "date": "2026-07-02",
+      "release_utc": "2026-07-02T12:30:00+00:00",
+      "event": "NFP",
+      "training_samples": 486,
+      "prediction": "NO TRADE",
+      "model_bias": "SELL",
+      "confidence_pct": 58.52,
+      "actual_outcome": "BUY",
+      "correct_when_called": null,
+      "entry": 4065.43,
+      "exit": 4117.56,
+      "actual_move_pips": 5213.0,
+      "release_range_pips": 5381.2,
+      "captured_or_lost_pips": 0.0,
+      "bias_hypothetical_pips": -5362.0,
+      "spread_imputed": null
+    },
+    {
+      "date": "2026-07-14",
+      "release_utc": "2026-07-14T12:30:00+00:00",
+      "event": "CPI",
+      "training_samples": 487,
+      "prediction": "NO TRADE",
+      "model_bias": "BUY",
+      "confidence_pct": 52.41,
+      "actual_outcome": "BUY",
+      "correct_when_called": null,
+      "entry": 4030.685,
+      "exit": 4091.225,
+      "actual_move_pips": 6054.0,
+      "release_range_pips": 6215.0,
+      "captured_or_lost_pips": 0.0,
+      "bias_hypothetical_pips": 5986.0,
+      "spread_imputed": "bid"
+    },
+    {
+      "date": "2026-07-15",
+      "release_utc": "2026-07-15T12:30:00+00:00",
+      "event": "PPI",
+      "training_samples": 488,
+      "prediction": "BUY",
+      "model_bias": "BUY",
+      "confidence_pct": 66.0,
+      "actual_outcome": "BUY",
+      "correct_when_called": true,
+      "entry": 4040.425,
+      "exit": 4048.495,
+      "actual_move_pips": 875.0,
+      "release_range_pips": 1075.0,
+      "captured_or_lost_pips": 807.0,
+      "bias_hypothetical_pips": 807.0,
+      "spread_imputed": "bid"
+    },
+    {
+      "date": "2026-07-29",
+      "release_utc": "2026-07-29T18:00:00+00:00",
+      "event": "FOMC",
+      "training_samples": 489,
+      "prediction": "NO TRADE",
+      "model_bias": "BUY",
+      "confidence_pct": 53.2,
+      "actual_outcome": "BUY",
+      "correct_when_called": null,
+      "entry": 4043.8,
+      "exit": 4076.225,
+      "actual_move_pips": 3242.5,
+      "release_range_pips": 4089.0,
+      "captured_or_lost_pips": 0.0,
+      "bias_hypothetical_pips": 3059.0,
+      "spread_imputed": null
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "period": {
+    "start": "2025-07-30T00:00:00+00:00",
+    "end": "2026-07-30T00:00:00+00:00"
+  },
+  "split": {
+    "selection_end": "2026-05-18T00:00:00+00:00",
+    "holdout_start": "2026-05-18T00:00:00+00:00"
+  },
+  "symbol": "XAUUSD..",
+  "risk_pct_for_comparison": 1.0,
+  "winner": {
+    "enable_fade": false,
+    "enable_distribution": true,
+    "trade_london": true,
+    "trade_new_york": false,
+    "max_trades_per_day": 2,
+    "fade_rr": 3.0,
+    "distribution_rr": 3.0,
+    "sweep_min_fraction": 0.03,
+    "sweep_max_fraction": 0.5,
+    "breakout_fraction": 0.06,
+    "retest_tolerance_fraction": 0.06,
+    "stop_buffer_fraction": 0.03,
+    "volume_factor": 0.0,
+    "use_regime_filter": false,
+    "london_window_minutes": 240,
+    "ny_window_minutes": 180
+  },
+  "full_sample": {
+    "symbol": "XAUUSD..",
+    "trades": 107,
+    "wins": 13,
+    "losses": 28,
+    "win_rate_pct": 12.149532710280374,
+    "profit_factor": 1.3591111645193228,
+    "net_r": 10.99999999999991,
+    "ending_balance": 1108.3307174506679,
+    "return_pct": 10.83307174506678,
+    "max_drawdown_pct": 5.851985059899972,
+    "london_trades": 0,
+    "new_york_trades": 0,
+    "new_york_limit_trades": 0,
+    "new_york_stop_trades": 0,
+    "new_york_limit_win_rate_pct": 0.0,
+    "new_york_limit_profit_factor_r": 0.0,
+    "new_york_limit_net_r": 0.0,
+    "new_york_stop_win_rate_pct": 0.0,
+    "new_york_stop_profit_factor_r": 0.0,
+    "new_york_stop_net_r": 0.0,
+    "both_filled_days": 0,
+    "limit_only_days": 0,
+    "stop_only_days": 0,
+    "max_concurrent_trades": 1,
+    "max_planned_exposure_pct": 1.0,
+    "locked_stop_exits": 66
+  },
+  "holdout": {
+    "params": "{\"breakout_fraction\": 0.06, \"distribution_rr\": 3.0, \"enable_distribution\": true, \"enable_fade\": false, \"fade_rr\": 3.0, \"london_window_minutes\": 240, \"max_trades_per_day\": 2, \"ny_window_minutes\": 180, \"retest_tolerance_fraction\": 0.06, \"stop_buffer_fraction\": 0.03, \"sweep_max_fraction\": 0.5, \"sweep_min_fraction\": 0.03, \"trade_london\": true, \"trade_new_york\": false, \"use_regime_filter\": false, \"volume_factor\": 0.0}",
+    "train_trades": 80,
+    "train_wr": 12.5,
+    "train_pf": 1.8701061719050762,
+    "train_net_r": 14.0,
+    "train_dd": 2.9700999999999995,
+    "test_trades": 27,
+    "test_wr": 11.11111111111111,
+    "test_pf": 0.735287452941163,
+    "test_net_r": -3.000000000000091,
+    "test_dd": 5.8519850599,
+    "score": 0.8446423195539826
+  }
+}

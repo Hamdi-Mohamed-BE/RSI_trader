@@ -13,9 +13,19 @@ uv sync
 if errorlevel 1 goto :failed
 uv run python train_news_model.py
 if errorlevel 1 goto :failed
+uv run python backtest_max_walkforward.py
+if errorlevel 1 goto :failed
+uv run python backtest_gold_direction.py
+if errorlevel 1 goto :failed
+uv run python backtest_gold_direction_5y.py
+if errorlevel 1 goto :failed
+uv run python backtest_gold_direction_v2.py
+if errorlevel 1 goto :failed
+uv run python official_nowcasts.py
+if errorlevel 1 echo Official nowcast refresh skipped; the validated model is still ready.
 
 echo.
-echo Models and walk-forward report completed.
+echo Binary gold-direction V2 model and reports completed.
 pause
 exit /b 0
 

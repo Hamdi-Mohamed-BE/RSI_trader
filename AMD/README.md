@@ -1,68 +1,104 @@
 # AMD Session Bot
 
-An MT5 research implementation of the requested
-Accumulation-Manipulation-Distribution routine.
+An XAUUSD MT5 implementation of two mechanical
+Accumulation-Manipulation-Distribution models.
 
-## Rules implemented
+## Recommendation
 
-1. Accumulation: Asia range is the full wick high/low from 00:00-08:00 UTC.
-2. London directional reference:
-   - Aggregate the 08:00-09:00 UTC candle.
-   - A close above the Asia high establishes a London-up reference.
-   - A close below the Asia low establishes a London-down reference.
-   - No London trade is placed.
-3. New York distribution/reversal:
-   - Direction must be opposite the London reference.
-   - Observe the first 45 minutes from 13:30 UTC.
-   - Place only a buy stop or sell stop 2.5 median spreads beyond that range.
-   - The target is 4R.
-   - The stop goes beyond the opposite side plus 7.5% of the Asia range,
-     subject to the minimum spread-based protection.
-   - The pending order expires at 16:00 UTC.
-4. A pre-entry regime gate accepts trades only when:
-   - prior five-session ATR is 1.5%-2.8% of the prior close; and
-   - today's Asia range is 0.40-1.20 times its prior 20-session median.
-   Both inputs use only information available before the New York entry.
-5. The single active leg risks at most 3% of current equity. Lot size is
-   rounded down to the broker step; the order is skipped if the minimum lot
-   would exceed the risk cap.
-6. At +0.30R, its stop advances to +0.15R.
-7. Remaining trades close at 21:00 UTC.
-8. Backtests use M1 broker history and historical spread. Ambiguous candles are
-   evaluated pessimistically: stop first.
+The article-aligned model at 3% risk is the protected default in `.env`.
+Execution remains disabled and dry-run protected while it is forward tested.
+XAUUSD remains the only default symbol because the cross-asset validation did
+not justify adding another market.
+
+The selective legacy model remains the stronger historical reference because
+it produced better return, profit factor, and drawdown in the same one-year
+broker sample.
+
+| Model at 10% risk | Trades | Win rate | PF | Net R | Return | Realized DD |
+|---|---:|---:|---:|---:|---:|---:|
+| Selective legacy reference | 12 | 91.67% | 9.87 | +13.95R | +226.16% | 10.00% |
+| Article-aligned higher frequency | 67 | 85.07% | 1.76 | +10.70R | +150.66% | 21.47% |
+
+The higher-frequency model generated 5.6 times as many trades, but its edge was
+weaker. At the more balanced 3% risk, it produced PF 1.97, +35.94% return, and
+6.66% realized drawdown.
+
+Past results are not a guarantee. The article provides testable behavior, not
+proof of a profitable edge.
+
+## Selective live model
+
+Selected by setting `STRATEGY_MODEL=legacy`:
+
+1. Build the full-wick Asia range from 00:00-08:00 UTC.
+2. Require the 08:00-09:00 London H1 candle to close outside the range.
+3. Trade only the opposite-side New York expansion after its first 45 minutes.
+4. Apply the recent-volatility and Asia-range regime filter.
+5. Target 4R; at +0.30R, move the stop to +0.15R.
+6. Expire unfilled orders at 16:00 UTC and close remaining positions at 21:00.
+
+## Higher-frequency article model
+
+Selected by `STRATEGY_MODEL=article` in `.env`:
+
+1. Accumulation is the full-wick Asia range from 00:00-08:00 UTC.
+2. Scan completed M5 candles during the first four hours of London.
+3. A manipulation fade requires a wick beyond the range and a close back
+   inside. The sweep must be 2%-60% of the Asia-range height.
+4. A distribution continuation requires an M5 close outside the range,
+   pullback to its edge, and directional M5 close that holds the edge.
+5. Enter on the next minute, never inside the confirmation candle.
+6. Target 1.5R; at +0.30R, move the stop to +0.15R.
+7. Keep the regime filter and take at most one setup per day.
+
+The one-year research was separated chronologically into 60% train, 20%
+validation, and 20% final test. The chosen active candidate was stable across
+the segments, including 27 trades, PF 1.91, +5.05R, and 4.20% realized
+drawdown in the final segment at 3% risk. That segment has now been reviewed,
+so the next meaningful evidence must come from forward testing.
+
+The 85.07% full-year win rate includes 48 small +0.15R protected-stop exits,
+9 full +1.5R targets, and 10 full -1R stops.
 
 ## Run
+
+Backtest the protected default:
 
 ```powershell
 cd "C:\Users\hama101\Desktop\geek\ai trader\AMD"
 uv sync
-uv run amd-bot backtest --days 60
+uv run amd-bot backtest --days 365
 ```
 
-Or double-click `run_backtest.bat`.
+Backtest the separate article forward-test profile:
 
-`run_live.bat` starts live execution when `.env` contains
-`ENABLE_TRADING=true` and `DRY_RUN=false`.
+```powershell
+uv run amd-bot backtest --env .env.article --days 365
+```
 
-Live safeguards:
+Forward-test the article model without placing orders by double-clicking
+`run_article_forward.bat`. Its profile has `ENABLE_TRADING=false` and
+`DRY_RUN=true`.
 
-- auto-connects to the MT5 account that is already open;
-- discovers the broker's XAU symbol;
+`run_live.bat` uses `.env`, which now selects Expanded AMD at 3% risk with
+`ENABLE_TRADING=false` and `DRY_RUN=true`.
+
+## Live safeguards
+
+- auto-connects to the account already open in MT5;
+- dynamically discovers the broker's XAU symbol;
 - tries broker-compatible RETURN, IOC, and FOK filling modes;
-- never chases a stop trigger that was crossed while the bot was offline;
-- loads sufficient prior history and applies the same regime gate as backtests;
-- prevents another bot order after an order, position, or deal exists that day;
-- cancels pending orders at 16:00 UTC;
-- advances the stop according to the configured R rule;
+- sizes volume down to the broker step without exceeding configured risk;
+- article signals use completed M5 candles and expire after 120 seconds;
+- permits at most one bot trade per day;
+- advances stops using the same R rule as the backtest;
 - force-closes remaining bot positions at 21:00 UTC;
-- never modifies manual trades or orders with a different magic number.
+- never modifies manual trades or orders with another magic number.
 
-## Chart overlay
+## Reports
 
-Paste `tradingview/AMD_Asia_Range.pine` into TradingView's Pine Editor. It:
-
-- shades the 00:00-08:00 UTC Asia accumulation range;
-- extends the full-wick Asia high and low;
-- shades the London confirmation and New York execution windows;
-- labels the London H1 close-above/close-below conditions;
-- exposes TradingView alert conditions for both London setups.
+- `reports/REPORT.md`: current selective-model backtest.
+- `reports/ARTICLE_REPORT.md`: higher-frequency article-model backtest.
+- `reports/CROSS_ASSET_VALIDATION.md`: exact and normalized basket comparison.
+- `reports/article_research/robust_search.csv`: parameter comparison.
+- `reports/article_research/robust_winner.json`: chronological selection audit.

@@ -100,6 +100,513 @@
       "comparisons": [
         {
           "name": "logistic",
+          "profile": "legacy",
+          "cv": {
+            "selected_threshold": 0.6,
+            "selected_metrics": {
+              "samples": 355,
+              "overall_accuracy_pct": 10.99,
+              "directional_call_accuracy_pct": 50.65,
+              "coverage_pct": 21.69,
+              "called_predictions": 77,
+              "macro_precision": 0.3418,
+              "macro_recall": 0.0729,
+              "macro_f1": 0.1191,
+              "brier_multiclass": 0.51425,
+              "confusion_labels": [
+                "BUY",
+                "SELL",
+                "UNCERTAIN"
+              ],
+              "confusion_matrix": [
+                [
+                  24,
+                  13,
+                  144
+                ],
+                [
+                  25,
+                  15,
+                  134
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "threshold": 0.6,
+              "selection_score": 0.003027
+            },
+            "thresholds": [
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 50.14,
+                "directional_call_accuracy_pct": 50.14,
+                "coverage_pct": 100.0,
+                "called_predictions": 355,
+                "macro_precision": 0.3331,
+                "macro_recall": 0.3331,
+                "macro_f1": 0.3308,
+                "brier_multiclass": 0.51425,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    107,
+                    74,
+                    0
+                  ],
+                  [
+                    103,
+                    71,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.45,
+                "selection_score": 0.0014
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 50.14,
+                "directional_call_accuracy_pct": 50.14,
+                "coverage_pct": 100.0,
+                "called_predictions": 355,
+                "macro_precision": 0.3331,
+                "macro_recall": 0.3331,
+                "macro_f1": 0.3308,
+                "brier_multiclass": 0.51425,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    107,
+                    74,
+                    0
+                  ],
+                  [
+                    103,
+                    71,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.5,
+                "selection_score": 0.0014
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 28.17,
+                "directional_call_accuracy_pct": 47.85,
+                "coverage_pct": 58.87,
+                "called_predictions": 209,
+                "macro_precision": 0.3145,
+                "macro_recall": 0.1867,
+                "macro_f1": 0.2308,
+                "brier_multiclass": 0.51425,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    66,
+                    42,
+                    73
+                  ],
+                  [
+                    67,
+                    34,
+                    73
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.55,
+                "selection_score": 0.0
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 10.99,
+                "directional_call_accuracy_pct": 50.65,
+                "coverage_pct": 21.69,
+                "called_predictions": 77,
+                "macro_precision": 0.3418,
+                "macro_recall": 0.0729,
+                "macro_f1": 0.1191,
+                "brier_multiclass": 0.51425,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    24,
+                    13,
+                    144
+                  ],
+                  [
+                    25,
+                    15,
+                    134
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.6,
+                "selection_score": 0.003027
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 3.66,
+                "directional_call_accuracy_pct": 61.9,
+                "coverage_pct": 5.92,
+                "called_predictions": 21,
+                "macro_precision": 0.4152,
+                "macro_recall": 0.0244,
+                "macro_f1": 0.0461,
+                "brier_multiclass": 0.51425,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    7,
+                    5,
+                    169
+                  ],
+                  [
+                    3,
+                    6,
+                    165
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.65,
+                "selection_score": 0.028954
+              }
+            ]
+          },
+          "validation": {
+            "samples": 61,
+            "overall_accuracy_pct": 16.39,
+            "directional_call_accuracy_pct": 83.33,
+            "coverage_pct": 19.67,
+            "called_predictions": 12,
+            "macro_precision": 0.5524,
+            "macro_recall": 0.1089,
+            "macro_f1": 0.1819,
+            "brier_multiclass": 0.46654,
+            "confusion_labels": [
+              "BUY",
+              "SELL",
+              "UNCERTAIN"
+            ],
+            "confusion_matrix": [
+              [
+                6,
+                1,
+                29
+              ],
+              [
+                1,
+                4,
+                20
+              ],
+              [
+                0,
+                0,
+                0
+              ]
+            ]
+          },
+          "threshold": 0.6
+        },
+        {
+          "name": "extra_trees",
+          "profile": "legacy",
+          "cv": {
+            "selected_threshold": 0.55,
+            "selected_metrics": {
+              "samples": 355,
+              "overall_accuracy_pct": 31.27,
+              "directional_call_accuracy_pct": 53.37,
+              "coverage_pct": 58.59,
+              "called_predictions": 208,
+              "macro_precision": 0.3542,
+              "macro_recall": 0.208,
+              "macro_f1": 0.2619,
+              "brier_multiclass": 0.50807,
+              "confusion_labels": [
+                "BUY",
+                "SELL",
+                "UNCERTAIN"
+              ],
+              "confusion_matrix": [
+                [
+                  63,
+                  48,
+                  70
+                ],
+                [
+                  49,
+                  48,
+                  77
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "threshold": 0.55,
+              "selection_score": 0.025795
+            },
+            "thresholds": [
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 50.99,
+                "directional_call_accuracy_pct": 50.99,
+                "coverage_pct": 100.0,
+                "called_predictions": 355,
+                "macro_precision": 0.3393,
+                "macro_recall": 0.3393,
+                "macro_f1": 0.3388,
+                "brier_multiclass": 0.50807,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    101,
+                    80,
+                    0
+                  ],
+                  [
+                    94,
+                    80,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.45,
+                "selection_score": 0.0099
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 50.99,
+                "directional_call_accuracy_pct": 50.99,
+                "coverage_pct": 100.0,
+                "called_predictions": 355,
+                "macro_precision": 0.3393,
+                "macro_recall": 0.3393,
+                "macro_f1": 0.3388,
+                "brier_multiclass": 0.50807,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    101,
+                    80,
+                    0
+                  ],
+                  [
+                    94,
+                    80,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.5,
+                "selection_score": 0.0099
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 31.27,
+                "directional_call_accuracy_pct": 53.37,
+                "coverage_pct": 58.59,
+                "called_predictions": 208,
+                "macro_precision": 0.3542,
+                "macro_recall": 0.208,
+                "macro_f1": 0.2619,
+                "brier_multiclass": 0.50807,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    63,
+                    48,
+                    70
+                  ],
+                  [
+                    49,
+                    48,
+                    77
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.55,
+                "selection_score": 0.025795
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 14.08,
+                "directional_call_accuracy_pct": 52.63,
+                "coverage_pct": 26.76,
+                "called_predictions": 95,
+                "macro_precision": 0.3499,
+                "macro_recall": 0.0937,
+                "macro_f1": 0.1478,
+                "brier_multiclass": 0.50807,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    28,
+                    24,
+                    129
+                  ],
+                  [
+                    21,
+                    22,
+                    131
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.6,
+                "selection_score": 0.013605
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 2.25,
+                "directional_call_accuracy_pct": 34.78,
+                "coverage_pct": 6.48,
+                "called_predictions": 23,
+                "macro_precision": 0.2302,
+                "macro_recall": 0.015,
+                "macro_f1": 0.028,
+                "brier_multiclass": 0.50807,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    5,
+                    6,
+                    170
+                  ],
+                  [
+                    9,
+                    3,
+                    162
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.65,
+                "selection_score": 0.0
+              }
+            ]
+          },
+          "validation": {
+            "samples": 61,
+            "overall_accuracy_pct": 24.59,
+            "directional_call_accuracy_pct": 55.56,
+            "coverage_pct": 44.26,
+            "called_predictions": 27,
+            "macro_precision": 0.3598,
+            "macro_recall": 0.1593,
+            "macro_f1": 0.2208,
+            "brier_multiclass": 0.50388,
+            "confusion_labels": [
+              "BUY",
+              "SELL",
+              "UNCERTAIN"
+            ],
+            "confusion_matrix": [
+              [
+                10,
+                6,
+                20
+              ],
+              [
+                6,
+                5,
+                14
+              ],
+              [
+                0,
+                0,
+                0
+              ]
+            ]
+          },
+          "threshold": 0.55
+        },
+        {
+          "name": "logistic",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.55,
             "selected_metrics": {
@@ -245,41 +752,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 29.58,
-                "directional_call_accuracy_pct": 50.24,
-                "coverage_pct": 58.87,
-                "called_predictions": 209,
-                "macro_precision": 0.336,
-                "macro_recall": 0.1969,
-                "macro_f1": 0.2476,
-                "brier_multiclass": 0.53006,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    58,
-                    44,
-                    79
-                  ],
-                  [
-                    60,
-                    47,
-                    67
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.001841
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 22.82,
                 "directional_call_accuracy_pct": 49.69,
                 "coverage_pct": 45.92,
@@ -315,41 +787,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 18.59,
-                "directional_call_accuracy_pct": 50.38,
-                "coverage_pct": 36.9,
-                "called_predictions": 131,
-                "macro_precision": 0.336,
-                "macro_recall": 0.1239,
-                "macro_f1": 0.181,
-                "brier_multiclass": 0.53006,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    34,
-                    31,
-                    116
-                  ],
-                  [
-                    34,
-                    32,
-                    108
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.002308
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 13.24,
                 "directional_call_accuracy_pct": 50.54,
                 "coverage_pct": 26.2,
@@ -382,41 +819,6 @@
                 ],
                 "threshold": 0.65,
                 "selection_score": 0.002764
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 6.76,
-                "directional_call_accuracy_pct": 52.17,
-                "coverage_pct": 12.96,
-                "called_predictions": 46,
-                "macro_precision": 0.3472,
-                "macro_recall": 0.045,
-                "macro_f1": 0.0797,
-                "brier_multiclass": 0.53006,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    13,
-                    11,
-                    157
-                  ],
-                  [
-                    11,
-                    11,
-                    152
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
-                "selection_score": 0.007812
               }
             ]
           },
@@ -457,6 +859,7 @@
         },
         {
           "name": "extra_trees",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.6,
             "selected_metrics": {
@@ -602,41 +1005,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 24.51,
-                "directional_call_accuracy_pct": 53.7,
-                "coverage_pct": 45.63,
-                "called_predictions": 162,
-                "macro_precision": 0.3555,
-                "macro_recall": 0.1628,
-                "macro_f1": 0.2225,
-                "brier_multiclass": 0.50929,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    52,
-                    34,
-                    95
-                  ],
-                  [
-                    41,
-                    35,
-                    98
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.024993
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 18.31,
                 "directional_call_accuracy_pct": 57.02,
                 "coverage_pct": 32.11,
@@ -672,41 +1040,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 8.73,
-                "directional_call_accuracy_pct": 47.69,
-                "coverage_pct": 18.31,
-                "called_predictions": 65,
-                "macro_precision": 0.3205,
-                "macro_recall": 0.0581,
-                "macro_f1": 0.0979,
-                "brier_multiclass": 0.50929,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    18,
-                    13,
-                    150
-                  ],
-                  [
-                    21,
-                    13,
-                    140
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 4.79,
                 "directional_call_accuracy_pct": 43.59,
                 "coverage_pct": 10.99,
@@ -739,41 +1072,6 @@
                 ],
                 "threshold": 0.65,
                 "selection_score": 0.0
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 1.97,
-                "directional_call_accuracy_pct": 53.85,
-                "coverage_pct": 3.66,
-                "called_predictions": 13,
-                "macro_precision": 0.3917,
-                "macro_recall": 0.0131,
-                "macro_f1": 0.0253,
-                "brier_multiclass": 0.50929,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    4,
-                    5,
-                    172
-                  ],
-                  [
-                    1,
-                    3,
-                    170
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
-                "selection_score": 0.007365
               }
             ]
           },
@@ -814,17 +1112,18 @@
         },
         {
           "name": "extra_trees_regularized",
+          "profile": "enhanced",
           "cv": {
-            "selected_threshold": 0.575,
+            "selected_threshold": 0.45,
             "selected_metrics": {
               "samples": 355,
-              "overall_accuracy_pct": 18.31,
-              "directional_call_accuracy_pct": 54.17,
-              "coverage_pct": 33.8,
-              "called_predictions": 120,
-              "macro_precision": 0.3609,
-              "macro_recall": 0.1218,
-              "macro_f1": 0.1817,
+              "overall_accuracy_pct": 51.55,
+              "directional_call_accuracy_pct": 51.55,
+              "coverage_pct": 100.0,
+              "called_predictions": 355,
+              "macro_precision": 0.3433,
+              "macro_recall": 0.3432,
+              "macro_f1": 0.3431,
               "brier_multiclass": 0.50648,
               "confusion_labels": [
                 "BUY",
@@ -833,14 +1132,14 @@
               ],
               "confusion_matrix": [
                 [
-                  37,
-                  24,
-                  120
+                  99,
+                  82,
+                  0
                 ],
                 [
-                  31,
-                  28,
-                  115
+                  90,
+                  84,
+                  0
                 ],
                 [
                   0,
@@ -848,8 +1147,8 @@
                   0
                 ]
               ],
-              "threshold": 0.575,
-              "selection_score": 0.024243
+              "threshold": 0.45,
+              "selection_score": 0.0155
             },
             "thresholds": [
               {
@@ -959,41 +1258,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 18.31,
-                "directional_call_accuracy_pct": 54.17,
-                "coverage_pct": 33.8,
-                "called_predictions": 120,
-                "macro_precision": 0.3609,
-                "macro_recall": 0.1218,
-                "macro_f1": 0.1817,
-                "brier_multiclass": 0.50648,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    37,
-                    24,
-                    120
-                  ],
-                  [
-                    31,
-                    28,
-                    115
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.024243
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 7.32,
                 "directional_call_accuracy_pct": 46.43,
                 "coverage_pct": 15.77,
@@ -1025,41 +1289,6 @@
                   ]
                 ],
                 "threshold": 0.6,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 3.1,
-                "directional_call_accuracy_pct": 47.83,
-                "coverage_pct": 6.48,
-                "called_predictions": 23,
-                "macro_precision": 0.3182,
-                "macro_recall": 0.0206,
-                "macro_f1": 0.0387,
-                "brier_multiclass": 0.50648,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    6,
-                    6,
-                    169
-                  ],
-                  [
-                    6,
-                    5,
-                    163
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
                 "selection_score": 0.0
               },
               {
@@ -1096,53 +1325,18 @@
                 ],
                 "threshold": 0.65,
                 "selection_score": 0.0
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 0.0,
-                "directional_call_accuracy_pct": 0.0,
-                "coverage_pct": 0.28,
-                "called_predictions": 1,
-                "macro_precision": 0.0,
-                "macro_recall": 0.0,
-                "macro_f1": 0.0,
-                "brier_multiclass": 0.50648,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    0,
-                    1,
-                    180
-                  ],
-                  [
-                    0,
-                    0,
-                    174
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
-                "selection_score": 0.0
               }
             ]
           },
           "validation": {
             "samples": 61,
-            "overall_accuracy_pct": 18.03,
-            "directional_call_accuracy_pct": 61.11,
-            "coverage_pct": 29.51,
-            "called_predictions": 18,
-            "macro_precision": 0.4462,
-            "macro_recall": 0.1181,
-            "macro_f1": 0.1841,
+            "overall_accuracy_pct": 45.9,
+            "directional_call_accuracy_pct": 45.9,
+            "coverage_pct": 100.0,
+            "called_predictions": 61,
+            "macro_precision": 0.3089,
+            "macro_recall": 0.3081,
+            "macro_f1": 0.3045,
             "brier_multiclass": 0.49646,
             "confusion_labels": [
               "BUY",
@@ -1151,14 +1345,14 @@
             ],
             "confusion_matrix": [
               [
-                7,
-                1,
-                28
+                16,
+                20,
+                0
               ],
               [
-                6,
-                4,
-                15
+                13,
+                12,
+                0
               ],
               [
                 0,
@@ -1167,10 +1361,11 @@
               ]
             ]
           },
-          "threshold": 0.575
+          "threshold": 0.45
         },
         {
           "name": "random_forest",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.6,
             "selected_metrics": {
@@ -1316,41 +1511,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 19.44,
-                "directional_call_accuracy_pct": 51.49,
-                "coverage_pct": 37.75,
-                "called_predictions": 134,
-                "macro_precision": 0.3421,
-                "macro_recall": 0.1292,
-                "macro_f1": 0.1871,
-                "brier_multiclass": 0.51492,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    40,
-                    29,
-                    112
-                  ],
-                  [
-                    36,
-                    29,
-                    109
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.009155
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 12.96,
                 "directional_call_accuracy_pct": 54.12,
                 "coverage_pct": 23.94,
@@ -1386,41 +1546,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 7.32,
-                "directional_call_accuracy_pct": 53.06,
-                "coverage_pct": 13.8,
-                "called_predictions": 49,
-                "macro_precision": 0.3609,
-                "macro_recall": 0.0488,
-                "macro_f1": 0.0857,
-                "brier_multiclass": 0.51492,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    14,
-                    8,
-                    159
-                  ],
-                  [
-                    15,
-                    12,
-                    147
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.011367
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 3.66,
                 "directional_call_accuracy_pct": 50.0,
                 "coverage_pct": 7.32,
@@ -1452,41 +1577,6 @@
                   ]
                 ],
                 "threshold": 0.65,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 0.28,
-                "directional_call_accuracy_pct": 50.0,
-                "coverage_pct": 0.56,
-                "called_predictions": 2,
-                "macro_precision": 0.3333,
-                "macro_recall": 0.0018,
-                "macro_f1": 0.0037,
-                "brier_multiclass": 0.51492,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    1,
-                    1,
-                    179
-                  ],
-                  [
-                    0,
-                    0,
-                    174
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
                 "selection_score": 0.0
               }
             ]
@@ -1528,17 +1618,18 @@
         },
         {
           "name": "gradient_boosting",
+          "profile": "enhanced",
           "cv": {
-            "selected_threshold": 0.7,
+            "selected_threshold": 0.65,
             "selected_metrics": {
               "samples": 355,
-              "overall_accuracy_pct": 13.24,
-              "directional_call_accuracy_pct": 55.95,
-              "coverage_pct": 23.66,
-              "called_predictions": 84,
-              "macro_precision": 0.3774,
-              "macro_recall": 0.0883,
-              "macro_f1": 0.1428,
+              "overall_accuracy_pct": 21.41,
+              "directional_call_accuracy_pct": 52.78,
+              "coverage_pct": 40.56,
+              "called_predictions": 144,
+              "macro_precision": 0.3533,
+              "macro_recall": 0.1423,
+              "macro_f1": 0.2018,
               "brier_multiclass": 0.54523,
               "confusion_labels": [
                 "BUY",
@@ -1547,14 +1638,14 @@
               ],
               "confusion_matrix": [
                 [
-                  24,
-                  14,
-                  143
+                  44,
+                  27,
+                  110
                 ],
                 [
-                  23,
-                  23,
-                  128
+                  41,
+                  32,
+                  101
                 ],
                 [
                   0,
@@ -1562,8 +1653,8 @@
                   0
                 ]
               ],
-              "threshold": 0.7,
-              "selection_score": 0.028942
+              "threshold": 0.65,
+              "selection_score": 0.017705
             },
             "thresholds": [
               {
@@ -1673,41 +1764,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 31.27,
-                "directional_call_accuracy_pct": 48.9,
-                "coverage_pct": 63.94,
-                "called_predictions": 227,
-                "macro_precision": 0.3268,
-                "macro_recall": 0.2081,
-                "macro_f1": 0.2537,
-                "brier_multiclass": 0.54523,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    61,
-                    50,
-                    70
-                  ],
-                  [
-                    66,
-                    50,
-                    58
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 27.04,
                 "directional_call_accuracy_pct": 48.73,
                 "coverage_pct": 55.49,
@@ -1739,41 +1795,6 @@
                   ]
                 ],
                 "threshold": 0.6,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 23.1,
-                "directional_call_accuracy_pct": 48.81,
-                "coverage_pct": 47.32,
-                "called_predictions": 168,
-                "macro_precision": 0.3265,
-                "macro_recall": 0.1536,
-                "macro_f1": 0.2079,
-                "brier_multiclass": 0.54523,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    47,
-                    35,
-                    99
-                  ],
-                  [
-                    51,
-                    35,
-                    88
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
                 "selection_score": 0.0
               },
               {
@@ -1810,53 +1831,18 @@
                 ],
                 "threshold": 0.65,
                 "selection_score": 0.017705
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 13.24,
-                "directional_call_accuracy_pct": 55.95,
-                "coverage_pct": 23.66,
-                "called_predictions": 84,
-                "macro_precision": 0.3774,
-                "macro_recall": 0.0883,
-                "macro_f1": 0.1428,
-                "brier_multiclass": 0.54523,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    24,
-                    14,
-                    143
-                  ],
-                  [
-                    23,
-                    23,
-                    128
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
-                "selection_score": 0.028942
               }
             ]
           },
           "validation": {
             "samples": 61,
-            "overall_accuracy_pct": 3.28,
-            "directional_call_accuracy_pct": 66.67,
-            "coverage_pct": 4.92,
-            "called_predictions": 3,
-            "macro_precision": 0.5,
-            "macro_recall": 0.0226,
-            "macro_f1": 0.0432,
+            "overall_accuracy_pct": 16.39,
+            "directional_call_accuracy_pct": 71.43,
+            "coverage_pct": 22.95,
+            "called_predictions": 14,
+            "macro_precision": 0.4762,
+            "macro_recall": 0.1089,
+            "macro_f1": 0.1764,
             "brier_multiclass": 0.4718,
             "confusion_labels": [
               "BUY",
@@ -1865,14 +1851,14 @@
             ],
             "confusion_matrix": [
               [
-                1,
-                0,
-                35
+                6,
+                3,
+                27
               ],
               [
                 1,
-                1,
-                23
+                4,
+                20
               ],
               [
                 0,
@@ -1881,10 +1867,11 @@
               ]
             ]
           },
-          "threshold": 0.7
+          "threshold": 0.65
         },
         {
           "name": "hist_gradient_boosting",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.45,
             "selected_metrics": {
@@ -2030,41 +2017,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 37.18,
-                "directional_call_accuracy_pct": 48.53,
-                "coverage_pct": 76.62,
-                "called_predictions": 272,
-                "macro_precision": 0.3231,
-                "macro_recall": 0.2475,
-                "macro_f1": 0.2801,
-                "brier_multiclass": 0.58916,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    72,
-                    66,
-                    43
-                  ],
-                  [
-                    74,
-                    60,
-                    40
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 32.68,
                 "directional_call_accuracy_pct": 48.95,
                 "coverage_pct": 66.76,
@@ -2100,41 +2052,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 28.17,
-                "directional_call_accuracy_pct": 47.62,
-                "coverage_pct": 59.15,
-                "called_predictions": 210,
-                "macro_precision": 0.3172,
-                "macro_recall": 0.1873,
-                "macro_f1": 0.2348,
-                "brier_multiclass": 0.58916,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    57,
-                    48,
-                    76
-                  ],
-                  [
-                    62,
-                    43,
-                    69
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 27.32,
                 "directional_call_accuracy_pct": 48.99,
                 "coverage_pct": 55.77,
@@ -2166,41 +2083,6 @@
                   ]
                 ],
                 "threshold": 0.65,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 18.87,
-                "directional_call_accuracy_pct": 48.91,
-                "coverage_pct": 38.59,
-                "called_predictions": 137,
-                "macro_precision": 0.3282,
-                "macro_recall": 0.1255,
-                "macro_f1": 0.1804,
-                "brier_multiclass": 0.58916,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    39,
-                    27,
-                    115
-                  ],
-                  [
-                    43,
-                    28,
-                    103
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
                 "selection_score": 0.0
               }
             ]
@@ -2242,6 +2124,7 @@
         }
       ],
       "selected_model": "extra_trees",
+      "selected_feature_profile": "enhanced",
       "selected_threshold": 0.6,
       "selected_validation": {
         "samples": 61,
@@ -2470,6 +2353,513 @@
       "comparisons": [
         {
           "name": "logistic",
+          "profile": "legacy",
+          "cv": {
+            "selected_threshold": 0.55,
+            "selected_metrics": {
+              "samples": 355,
+              "overall_accuracy_pct": 28.45,
+              "directional_call_accuracy_pct": 51.79,
+              "coverage_pct": 54.93,
+              "called_predictions": 195,
+              "macro_precision": 0.3456,
+              "macro_recall": 0.1901,
+              "macro_f1": 0.2445,
+              "brier_multiclass": 0.51494,
+              "confusion_labels": [
+                "BUY",
+                "SELL",
+                "UNCERTAIN"
+              ],
+              "confusion_matrix": [
+                [
+                  46,
+                  52,
+                  83
+                ],
+                [
+                  42,
+                  55,
+                  77
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "threshold": 0.55,
+              "selection_score": 0.013267
+            },
+            "thresholds": [
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 50.14,
+                "directional_call_accuracy_pct": 50.14,
+                "coverage_pct": 100.0,
+                "called_predictions": 355,
+                "macro_precision": 0.3346,
+                "macro_recall": 0.3346,
+                "macro_f1": 0.3342,
+                "brier_multiclass": 0.51494,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    86,
+                    95,
+                    0
+                  ],
+                  [
+                    82,
+                    92,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.45,
+                "selection_score": 0.0014
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 50.14,
+                "directional_call_accuracy_pct": 50.14,
+                "coverage_pct": 100.0,
+                "called_predictions": 355,
+                "macro_precision": 0.3346,
+                "macro_recall": 0.3346,
+                "macro_f1": 0.3342,
+                "brier_multiclass": 0.51494,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    86,
+                    95,
+                    0
+                  ],
+                  [
+                    82,
+                    92,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.5,
+                "selection_score": 0.0014
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 28.45,
+                "directional_call_accuracy_pct": 51.79,
+                "coverage_pct": 54.93,
+                "called_predictions": 195,
+                "macro_precision": 0.3456,
+                "macro_recall": 0.1901,
+                "macro_f1": 0.2445,
+                "brier_multiclass": 0.51494,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    46,
+                    52,
+                    83
+                  ],
+                  [
+                    42,
+                    55,
+                    77
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.55,
+                "selection_score": 0.013267
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 14.37,
+                "directional_call_accuracy_pct": 51.52,
+                "coverage_pct": 27.89,
+                "called_predictions": 99,
+                "macro_precision": 0.3444,
+                "macro_recall": 0.0959,
+                "macro_f1": 0.1497,
+                "brier_multiclass": 0.51494,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    24,
+                    27,
+                    130
+                  ],
+                  [
+                    21,
+                    27,
+                    126
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.6,
+                "selection_score": 0.008027
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 7.04,
+                "directional_call_accuracy_pct": 58.14,
+                "coverage_pct": 12.11,
+                "called_predictions": 43,
+                "macro_precision": 0.3952,
+                "macro_recall": 0.0469,
+                "macro_f1": 0.0835,
+                "brier_multiclass": 0.51494,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    14,
+                    6,
+                    161
+                  ],
+                  [
+                    12,
+                    11,
+                    151
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.65,
+                "selection_score": 0.028327
+              }
+            ]
+          },
+          "validation": {
+            "samples": 61,
+            "overall_accuracy_pct": 34.43,
+            "directional_call_accuracy_pct": 58.33,
+            "coverage_pct": 59.02,
+            "called_predictions": 36,
+            "macro_precision": 0.3824,
+            "macro_recall": 0.223,
+            "macro_f1": 0.281,
+            "brier_multiclass": 0.47507,
+            "confusion_labels": [
+              "BUY",
+              "SELL",
+              "UNCERTAIN"
+            ],
+            "confusion_matrix": [
+              [
+                14,
+                6,
+                16
+              ],
+              [
+                9,
+                7,
+                9
+              ],
+              [
+                0,
+                0,
+                0
+              ]
+            ]
+          },
+          "threshold": 0.55
+        },
+        {
+          "name": "extra_trees",
+          "profile": "legacy",
+          "cv": {
+            "selected_threshold": 0.6,
+            "selected_metrics": {
+              "samples": 355,
+              "overall_accuracy_pct": 16.34,
+              "directional_call_accuracy_pct": 54.72,
+              "coverage_pct": 29.86,
+              "called_predictions": 106,
+              "macro_precision": 0.3659,
+              "macro_recall": 0.1086,
+              "macro_f1": 0.1666,
+              "brier_multiclass": 0.51309,
+              "confusion_labels": [
+                "BUY",
+                "SELL",
+                "UNCERTAIN"
+              ],
+              "confusion_matrix": [
+                [
+                  34,
+                  19,
+                  128
+                ],
+                [
+                  29,
+                  24,
+                  121
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "threshold": 0.6,
+              "selection_score": 0.025792
+            },
+            "thresholds": [
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 49.86,
+                "directional_call_accuracy_pct": 49.86,
+                "coverage_pct": 100.0,
+                "called_predictions": 355,
+                "macro_precision": 0.3324,
+                "macro_recall": 0.3324,
+                "macro_f1": 0.3324,
+                "brier_multiclass": 0.51309,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    90,
+                    91,
+                    0
+                  ],
+                  [
+                    87,
+                    87,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.45,
+                "selection_score": 0.0
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 49.86,
+                "directional_call_accuracy_pct": 49.86,
+                "coverage_pct": 100.0,
+                "called_predictions": 355,
+                "macro_precision": 0.3324,
+                "macro_recall": 0.3324,
+                "macro_f1": 0.3324,
+                "brier_multiclass": 0.51309,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    90,
+                    91,
+                    0
+                  ],
+                  [
+                    87,
+                    87,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.5,
+                "selection_score": 0.0
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 30.99,
+                "directional_call_accuracy_pct": 51.4,
+                "coverage_pct": 60.28,
+                "called_predictions": 214,
+                "macro_precision": 0.3427,
+                "macro_recall": 0.2064,
+                "macro_f1": 0.2574,
+                "brier_multiclass": 0.51309,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    59,
+                    48,
+                    74
+                  ],
+                  [
+                    56,
+                    51,
+                    67
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.55,
+                "selection_score": 0.01087
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 16.34,
+                "directional_call_accuracy_pct": 54.72,
+                "coverage_pct": 29.86,
+                "called_predictions": 106,
+                "macro_precision": 0.3659,
+                "macro_recall": 0.1086,
+                "macro_f1": 0.1666,
+                "brier_multiclass": 0.51309,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    34,
+                    19,
+                    128
+                  ],
+                  [
+                    29,
+                    24,
+                    121
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.6,
+                "selection_score": 0.025792
+              },
+              {
+                "samples": 355,
+                "overall_accuracy_pct": 5.07,
+                "directional_call_accuracy_pct": 48.65,
+                "coverage_pct": 10.42,
+                "called_predictions": 37,
+                "macro_precision": 0.3411,
+                "macro_recall": 0.0337,
+                "macro_f1": 0.0607,
+                "brier_multiclass": 0.51309,
+                "confusion_labels": [
+                  "BUY",
+                  "SELL",
+                  "UNCERTAIN"
+                ],
+                "confusion_matrix": [
+                  [
+                    11,
+                    5,
+                    165
+                  ],
+                  [
+                    14,
+                    7,
+                    153
+                  ],
+                  [
+                    0,
+                    0,
+                    0
+                  ]
+                ],
+                "threshold": 0.65,
+                "selection_score": 0.0
+              }
+            ]
+          },
+          "validation": {
+            "samples": 61,
+            "overall_accuracy_pct": 27.87,
+            "directional_call_accuracy_pct": 65.38,
+            "coverage_pct": 42.62,
+            "called_predictions": 26,
+            "macro_precision": 0.4359,
+            "macro_recall": 0.19,
+            "macro_f1": 0.2628,
+            "brier_multiclass": 0.50418,
+            "confusion_labels": [
+              "BUY",
+              "SELL",
+              "UNCERTAIN"
+            ],
+            "confusion_matrix": [
+              [
+                9,
+                5,
+                22
+              ],
+              [
+                4,
+                8,
+                13
+              ],
+              [
+                0,
+                0,
+                0
+              ]
+            ]
+          },
+          "threshold": 0.6
+        },
+        {
+          "name": "logistic",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.55,
             "selected_metrics": {
@@ -2615,41 +3005,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 32.96,
-                "directional_call_accuracy_pct": 52.47,
-                "coverage_pct": 62.82,
-                "called_predictions": 223,
-                "macro_precision": 0.3496,
-                "macro_recall": 0.2195,
-                "macro_f1": 0.2697,
-                "brier_multiclass": 0.53714,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    62,
-                    55,
-                    64
-                  ],
-                  [
-                    51,
-                    55,
-                    68
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.019577
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 27.61,
                 "directional_call_accuracy_pct": 51.58,
                 "coverage_pct": 53.52,
@@ -2685,41 +3040,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 23.38,
-                "directional_call_accuracy_pct": 52.2,
-                "coverage_pct": 44.79,
-                "called_predictions": 159,
-                "macro_precision": 0.3506,
-                "macro_recall": 0.1558,
-                "macro_f1": 0.2154,
-                "brier_multiclass": 0.53714,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    43,
-                    45,
-                    93
-                  ],
-                  [
-                    31,
-                    40,
-                    103
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.014724
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 18.03,
                 "directional_call_accuracy_pct": 49.61,
                 "coverage_pct": 36.34,
@@ -2751,41 +3071,6 @@
                   ]
                 ],
                 "threshold": 0.65,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 10.99,
-                "directional_call_accuracy_pct": 48.75,
-                "coverage_pct": 22.54,
-                "called_predictions": 80,
-                "macro_precision": 0.3291,
-                "macro_recall": 0.0733,
-                "macro_f1": 0.1195,
-                "brier_multiclass": 0.53714,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    19,
-                    25,
-                    137
-                  ],
-                  [
-                    16,
-                    20,
-                    138
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
                 "selection_score": 0.0
               }
             ]
@@ -2827,6 +3112,7 @@
         },
         {
           "name": "extra_trees",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.45,
             "selected_metrics": {
@@ -2972,41 +3258,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 27.32,
-                "directional_call_accuracy_pct": 53.59,
-                "coverage_pct": 50.99,
-                "called_predictions": 181,
-                "macro_precision": 0.3587,
-                "macro_recall": 0.182,
-                "macro_f1": 0.2412,
-                "brier_multiclass": 0.50945,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    51,
-                    36,
-                    94
-                  ],
-                  [
-                    48,
-                    46,
-                    80
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.025635
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 18.03,
                 "directional_call_accuracy_pct": 51.61,
                 "coverage_pct": 34.93,
@@ -3042,41 +3293,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 11.55,
-                "directional_call_accuracy_pct": 51.25,
-                "coverage_pct": 22.54,
-                "called_predictions": 80,
-                "macro_precision": 0.3426,
-                "macro_recall": 0.0769,
-                "macro_f1": 0.1255,
-                "brier_multiclass": 0.50945,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    22,
-                    17,
-                    142
-                  ],
-                  [
-                    22,
-                    19,
-                    133
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.005935
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 7.32,
                 "directional_call_accuracy_pct": 56.52,
                 "coverage_pct": 12.96,
@@ -3109,41 +3325,6 @@
                 ],
                 "threshold": 0.65,
                 "selection_score": 0.023472
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 1.13,
-                "directional_call_accuracy_pct": 40.0,
-                "coverage_pct": 2.82,
-                "called_predictions": 10,
-                "macro_precision": 0.2667,
-                "macro_recall": 0.0074,
-                "macro_f1": 0.0145,
-                "brier_multiclass": 0.50945,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    3,
-                    4,
-                    174
-                  ],
-                  [
-                    2,
-                    1,
-                    171
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
-                "selection_score": 0.0
               }
             ]
           },
@@ -3184,6 +3365,7 @@
         },
         {
           "name": "extra_trees_regularized",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.45,
             "selected_metrics": {
@@ -3329,41 +3511,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 17.18,
-                "directional_call_accuracy_pct": 51.26,
-                "coverage_pct": 33.52,
-                "called_predictions": 119,
-                "macro_precision": 0.3418,
-                "macro_recall": 0.1146,
-                "macro_f1": 0.1716,
-                "brier_multiclass": 0.50389,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    31,
-                    28,
-                    122
-                  ],
-                  [
-                    30,
-                    30,
-                    114
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.007295
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 10.7,
                 "directional_call_accuracy_pct": 54.29,
                 "coverage_pct": 19.72,
@@ -3399,41 +3546,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 5.07,
-                "directional_call_accuracy_pct": 51.43,
-                "coverage_pct": 9.86,
-                "called_predictions": 35,
-                "macro_precision": 0.342,
-                "macro_recall": 0.0337,
-                "macro_f1": 0.0614,
-                "brier_multiclass": 0.50389,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    10,
-                    9,
-                    162
-                  ],
-                  [
-                    8,
-                    8,
-                    158
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.00449
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 1.13,
                 "directional_call_accuracy_pct": 40.0,
                 "coverage_pct": 2.82,
@@ -3466,41 +3578,6 @@
                 ],
                 "threshold": 0.65,
                 "selection_score": 0.0
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 0.28,
-                "directional_call_accuracy_pct": 100.0,
-                "coverage_pct": 0.28,
-                "called_predictions": 1,
-                "macro_precision": 0.3333,
-                "macro_recall": 0.0019,
-                "macro_f1": 0.0038,
-                "brier_multiclass": 0.50389,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    0,
-                    0,
-                    181
-                  ],
-                  [
-                    0,
-                    1,
-                    173
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
-                "selection_score": 0.026458
               }
             ]
           },
@@ -3541,6 +3618,7 @@
         },
         {
           "name": "random_forest",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.45,
             "selected_metrics": {
@@ -3686,41 +3764,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 23.1,
-                "directional_call_accuracy_pct": 50.31,
-                "coverage_pct": 45.92,
-                "called_predictions": 163,
-                "macro_precision": 0.3356,
-                "macro_recall": 0.1538,
-                "macro_f1": 0.2106,
-                "brier_multiclass": 0.51078,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    45,
-                    36,
-                    100
-                  ],
-                  [
-                    45,
-                    37,
-                    92
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.002101
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 16.34,
                 "directional_call_accuracy_pct": 51.79,
                 "coverage_pct": 31.55,
@@ -3756,41 +3799,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 9.3,
-                "directional_call_accuracy_pct": 46.48,
-                "coverage_pct": 20.0,
-                "called_predictions": 71,
-                "macro_precision": 0.3185,
-                "macro_recall": 0.0621,
-                "macro_f1": 0.1038,
-                "brier_multiclass": 0.51078,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    15,
-                    13,
-                    153
-                  ],
-                  [
-                    25,
-                    18,
-                    131
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 4.79,
                 "directional_call_accuracy_pct": 54.84,
                 "coverage_pct": 8.73,
@@ -3823,41 +3831,6 @@
                 ],
                 "threshold": 0.65,
                 "selection_score": 0.014301
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 1.13,
-                "directional_call_accuracy_pct": 100.0,
-                "coverage_pct": 1.13,
-                "called_predictions": 4,
-                "macro_precision": 0.6667,
-                "macro_recall": 0.0074,
-                "macro_f1": 0.0147,
-                "brier_multiclass": 0.51078,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    3,
-                    0,
-                    178
-                  ],
-                  [
-                    0,
-                    1,
-                    173
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
-                "selection_score": 0.053151
               }
             ]
           },
@@ -3898,6 +3871,7 @@
         },
         {
           "name": "gradient_boosting",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.65,
             "selected_metrics": {
@@ -4043,41 +4017,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 32.96,
-                "directional_call_accuracy_pct": 49.58,
-                "coverage_pct": 66.48,
-                "called_predictions": 236,
-                "macro_precision": 0.3305,
-                "macro_recall": 0.2198,
-                "macro_f1": 0.264,
-                "brier_multiclass": 0.54847,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    59,
-                    59,
-                    63
-                  ],
-                  [
-                    60,
-                    58,
-                    56
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.0
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 29.01,
                 "directional_call_accuracy_pct": 51.5,
                 "coverage_pct": 56.34,
@@ -4113,41 +4052,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 21.41,
-                "directional_call_accuracy_pct": 50.33,
-                "coverage_pct": 42.54,
-                "called_predictions": 151,
-                "macro_precision": 0.3373,
-                "macro_recall": 0.1427,
-                "macro_f1": 0.2004,
-                "brier_multiclass": 0.54847,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    39,
-                    32,
-                    110
-                  ],
-                  [
-                    43,
-                    37,
-                    94
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.002152
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 17.75,
                 "directional_call_accuracy_pct": 52.07,
                 "coverage_pct": 34.08,
@@ -4180,41 +4084,6 @@
                 ],
                 "threshold": 0.65,
                 "selection_score": 0.012084
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 11.27,
-                "directional_call_accuracy_pct": 51.28,
-                "coverage_pct": 21.97,
-                "called_predictions": 78,
-                "macro_precision": 0.3475,
-                "macro_recall": 0.0751,
-                "macro_f1": 0.1231,
-                "brier_multiclass": 0.54847,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    21,
-                    14,
-                    146
-                  ],
-                  [
-                    24,
-                    19,
-                    131
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
-                "selection_score": 0.006
               }
             ]
           },
@@ -4255,6 +4124,7 @@
         },
         {
           "name": "hist_gradient_boosting",
+          "profile": "enhanced",
           "cv": {
             "selected_threshold": 0.45,
             "selected_metrics": {
@@ -4400,41 +4270,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 40.56,
-                "directional_call_accuracy_pct": 51.99,
-                "coverage_pct": 78.03,
-                "called_predictions": 277,
-                "macro_precision": 0.3458,
-                "macro_recall": 0.27,
-                "macro_f1": 0.3031,
-                "brier_multiclass": 0.57665,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    79,
-                    66,
-                    36
-                  ],
-                  [
-                    67,
-                    65,
-                    42
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.575,
-                "selection_score": 0.017579
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 38.59,
                 "directional_call_accuracy_pct": 52.49,
                 "coverage_pct": 73.52,
@@ -4470,41 +4305,6 @@
               },
               {
                 "samples": 355,
-                "overall_accuracy_pct": 33.8,
-                "directional_call_accuracy_pct": 51.06,
-                "coverage_pct": 66.2,
-                "called_predictions": 235,
-                "macro_precision": 0.3398,
-                "macro_recall": 0.2251,
-                "macro_f1": 0.2707,
-                "brier_multiclass": 0.57665,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    65,
-                    57,
-                    59
-                  ],
-                  [
-                    58,
-                    55,
-                    61
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.625,
-                "selection_score": 0.008625
-              },
-              {
-                "samples": 355,
                 "overall_accuracy_pct": 30.14,
                 "directional_call_accuracy_pct": 51.44,
                 "coverage_pct": 58.59,
@@ -4537,41 +4337,6 @@
                 ],
                 "threshold": 0.65,
                 "selection_score": 0.011022
-              },
-              {
-                "samples": 355,
-                "overall_accuracy_pct": 23.66,
-                "directional_call_accuracy_pct": 51.22,
-                "coverage_pct": 46.2,
-                "called_predictions": 164,
-                "macro_precision": 0.3422,
-                "macro_recall": 0.1577,
-                "macro_f1": 0.2159,
-                "brier_multiclass": 0.57665,
-                "confusion_labels": [
-                  "BUY",
-                  "SELL",
-                  "UNCERTAIN"
-                ],
-                "confusion_matrix": [
-                  [
-                    43,
-                    36,
-                    102
-                  ],
-                  [
-                    44,
-                    41,
-                    89
-                  ],
-                  [
-                    0,
-                    0,
-                    0
-                  ]
-                ],
-                "threshold": 0.7,
-                "selection_score": 0.008292
               }
             ]
           },
@@ -4612,17 +4377,18 @@
         }
       ],
       "selected_model": "extra_trees",
-      "selected_threshold": 0.45,
+      "selected_feature_profile": "legacy",
+      "selected_threshold": 0.6,
       "selected_validation": {
         "samples": 61,
-        "overall_accuracy_pct": 50.82,
-        "directional_call_accuracy_pct": 50.82,
-        "coverage_pct": 100.0,
-        "called_predictions": 61,
-        "macro_precision": 0.3398,
-        "macro_recall": 0.34,
-        "macro_f1": 0.3366,
-        "brier_multiclass": 0.51431,
+        "overall_accuracy_pct": 27.87,
+        "directional_call_accuracy_pct": 65.38,
+        "coverage_pct": 42.62,
+        "called_predictions": 26,
+        "macro_precision": 0.4359,
+        "macro_recall": 0.19,
+        "macro_f1": 0.2628,
+        "brier_multiclass": 0.50418,
         "confusion_labels": [
           "BUY",
           "SELL",
@@ -4630,14 +4396,14 @@
         ],
         "confusion_matrix": [
           [
-            18,
-            18,
-            0
+            9,
+            5,
+            22
           ],
           [
-            12,
-            13,
-            0
+            4,
+            8,
+            13
           ],
           [
             0,
@@ -4649,69 +4415,69 @@
       "validation_by_event": {
         "NFP": {
           "samples": 16,
-          "calls": 16,
-          "coverage_pct": 100.0,
-          "directional_accuracy_pct": 75.0
+          "calls": 8,
+          "coverage_pct": 50.0,
+          "directional_accuracy_pct": 62.5
         },
         "GDP": {
           "samples": 3,
-          "calls": 3,
-          "coverage_pct": 100.0,
-          "directional_accuracy_pct": 0.0
+          "calls": 0,
+          "coverage_pct": 0.0,
+          "directional_accuracy_pct": null
         },
         "CPI": {
           "samples": 15,
-          "calls": 15,
-          "coverage_pct": 100.0,
-          "directional_accuracy_pct": 26.67
+          "calls": 4,
+          "coverage_pct": 26.67,
+          "directional_accuracy_pct": 50.0
         },
         "PPI": {
           "samples": 14,
-          "calls": 14,
-          "coverage_pct": 100.0,
-          "directional_accuracy_pct": 57.14
+          "calls": 8,
+          "coverage_pct": 57.14,
+          "directional_accuracy_pct": 62.5
         },
         "FOMC": {
           "samples": 13,
-          "calls": 13,
-          "coverage_pct": 100.0,
-          "directional_accuracy_pct": 53.85
+          "calls": 6,
+          "coverage_pct": 46.15,
+          "directional_accuracy_pct": 83.33
         }
       },
       "confidence_calibration": [
         {
           "confidence_from": 0.5,
           "confidence_to": 0.55,
-          "samples": 18,
-          "mean_confidence_pct": 52.67,
-          "observed_accuracy_pct": 61.11
+          "samples": 20,
+          "mean_confidence_pct": 52.56,
+          "observed_accuracy_pct": 60.0
         },
         {
           "confidence_from": 0.55,
           "confidence_to": 0.6,
-          "samples": 24,
-          "mean_confidence_pct": 57.4,
-          "observed_accuracy_pct": 29.17
+          "samples": 15,
+          "mean_confidence_pct": 57.67,
+          "observed_accuracy_pct": 46.67
         },
         {
           "confidence_from": 0.6,
           "confidence_to": 0.65,
-          "samples": 14,
-          "mean_confidence_pct": 62.69,
-          "observed_accuracy_pct": 78.57
+          "samples": 20,
+          "mean_confidence_pct": 62.07,
+          "observed_accuracy_pct": 70.0
         },
         {
           "confidence_from": 0.65,
           "confidence_to": 0.7,
-          "samples": 4,
-          "mean_confidence_pct": 67.3,
-          "observed_accuracy_pct": 50.0
+          "samples": 3,
+          "mean_confidence_pct": 67.57,
+          "observed_accuracy_pct": 100.0
         },
         {
           "confidence_from": 0.7,
           "confidence_to": 0.8,
-          "samples": 1,
-          "mean_confidence_pct": 70.35,
+          "samples": 3,
+          "mean_confidence_pct": 74.3,
           "observed_accuracy_pct": 0.0
         }
       ],

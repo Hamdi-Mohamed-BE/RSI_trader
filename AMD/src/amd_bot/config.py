@@ -30,6 +30,7 @@ def _time(name: str, default: str) -> time:
 
 @dataclass(frozen=True, slots=True)
 class Config:
+    strategy_model: str
     symbols: tuple[str, ...]
     starting_balance: float
     risk_pct: float
@@ -61,6 +62,22 @@ class Config:
     poll_seconds: int
     deviation_points: int
     log_level: str
+    article_enable_fade: bool
+    article_enable_distribution: bool
+    article_trade_london: bool
+    article_trade_new_york: bool
+    article_max_trades_per_day: int
+    article_fade_rr: float
+    article_distribution_rr: float
+    article_sweep_min_fraction: float
+    article_sweep_max_fraction: float
+    article_breakout_fraction: float
+    article_retest_tolerance_fraction: float
+    article_stop_buffer_fraction: float
+    article_volume_factor: float
+    article_london_window_minutes: int
+    article_ny_window_minutes: int
+    article_signal_max_age_seconds: int
     root: Path
 
 
@@ -74,6 +91,7 @@ def load_config(env_path: str | Path | None = None) -> Config:
         if item.strip()
     )
     return Config(
+        strategy_model=os.getenv("STRATEGY_MODEL", "legacy").strip().lower(),
         symbols=symbols,
         starting_balance=float(os.getenv("STARTING_BALANCE", "1000")),
         risk_pct=float(os.getenv("RISK_PCT", "3")),
@@ -119,5 +137,45 @@ def load_config(env_path: str | Path | None = None) -> Config:
         poll_seconds=int(os.getenv("POLL_SECONDS", "15")),
         deviation_points=int(os.getenv("DEVIATION_POINTS", "30")),
         log_level=os.getenv("LOG_LEVEL", "INFO").upper(),
+        article_enable_fade=_bool("ARTICLE_ENABLE_FADE", True),
+        article_enable_distribution=_bool(
+            "ARTICLE_ENABLE_DISTRIBUTION", True
+        ),
+        article_trade_london=_bool("ARTICLE_TRADE_LONDON", True),
+        article_trade_new_york=_bool("ARTICLE_TRADE_NEW_YORK", False),
+        article_max_trades_per_day=int(
+            os.getenv("ARTICLE_MAX_TRADES_PER_DAY", "1")
+        ),
+        article_fade_rr=float(os.getenv("ARTICLE_FADE_RR", "1.5")),
+        article_distribution_rr=float(
+            os.getenv("ARTICLE_DISTRIBUTION_RR", "1.5")
+        ),
+        article_sweep_min_fraction=float(
+            os.getenv("ARTICLE_SWEEP_MIN_FRACTION", "0.02")
+        ),
+        article_sweep_max_fraction=float(
+            os.getenv("ARTICLE_SWEEP_MAX_FRACTION", "0.60")
+        ),
+        article_breakout_fraction=float(
+            os.getenv("ARTICLE_BREAKOUT_FRACTION", "0.00")
+        ),
+        article_retest_tolerance_fraction=float(
+            os.getenv("ARTICLE_RETEST_TOLERANCE_FRACTION", "0.04")
+        ),
+        article_stop_buffer_fraction=float(
+            os.getenv("ARTICLE_STOP_BUFFER_FRACTION", "0.03")
+        ),
+        article_volume_factor=float(
+            os.getenv("ARTICLE_VOLUME_FACTOR", "0.00")
+        ),
+        article_london_window_minutes=int(
+            os.getenv("ARTICLE_LONDON_WINDOW_MINUTES", "240")
+        ),
+        article_ny_window_minutes=int(
+            os.getenv("ARTICLE_NY_WINDOW_MINUTES", "180")
+        ),
+        article_signal_max_age_seconds=int(
+            os.getenv("ARTICLE_SIGNAL_MAX_AGE_SECONDS", "120")
+        ),
         root=root,
     )

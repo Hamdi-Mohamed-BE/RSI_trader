@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import re
 from pathlib import Path
 
@@ -11,6 +11,12 @@ import pandas as pd
 
 class MT5Error(RuntimeError):
     pass
+
+
+SYMBOL_ALIASES: dict[str, tuple[str, ...]] = {
+    "US100": ("US100", "NAS100", "USTEC", "NDX100", "NASDAQ100"),
+    "US30": ("US30", "DJ30", "DJI30", "DOW30", "WS30"),
+}
 
 
 def normalize(value: str) -> str:
@@ -37,17 +43,24 @@ def discover_symbols(instruments: tuple[str, ...]) -> dict[str, str]:
     result: dict[str, str] = {}
     for requested in instruments:
         wanted = normalize(requested)
+        aliases = tuple(
+            normalize(alias)
+            for alias in SYMBOL_ALIASES.get(wanted, (wanted,))
+        )
         choices: list[tuple[tuple[int, int, int, int], str]] = []
         for item in available:
             candidate = normalize(item.name)
-            if candidate == wanted:
-                score = 3
-            elif candidate.startswith(wanted):
-                score = 2
-            elif wanted in candidate:
-                score = 1
-            else:
+            match_scores = []
+            for alias in aliases:
+                if candidate == alias:
+                    match_scores.append(3)
+                elif candidate.startswith(alias):
+                    match_scores.append(2)
+                elif alias in candidate:
+                    match_scores.append(1)
+            if not match_scores:
                 continue
+            score = max(match_scores)
             choices.append(
                 (
                     (
@@ -101,15 +114,25 @@ def load_m1(
         frame = pd.read_csv(path)
         frame["time"] = pd.to_datetime(frame["time"], utc=True)
         return frame
-    rates = mt5.copy_rates_range(
-        symbol,
-        mt5.TIMEFRAME_M1,
-        start.astimezone(timezone.utc),
-        end.astimezone(timezone.utc),
-    )
-    if rates is None or not len(rates):
+    chunks = []
+    chunk_end = end.astimezone(timezone.utc)
+    utc_start = start.astimezone(timezone.utc)
+    # Large M1 requests are rejected by some terminals/brokers. Work backwards
+    # in bounded windows and keep the history the broker actually provides.
+    while chunk_end > utc_start:
+        chunk_start = max(utc_start, chunk_end - timedelta(days=14))
+        rates = mt5.copy_rates_range(
+            symbol,
+            mt5.TIMEFRAME_M1,
+            chunk_start,
+            chunk_end,
+        )
+        if rates is not None and len(rates):
+            chunks.append(pd.DataFrame(rates))
+        chunk_end = chunk_start
+    if not chunks:
         raise MT5Error(f"No M1 history for {symbol}: {mt5.last_error()}")
-    frame = pd.DataFrame(rates)
+    frame = pd.concat(reversed(chunks), ignore_index=True)
     frame["time"] = pd.to_datetime(frame["time"], unit="s", utc=True)
     frame = frame.drop_duplicates("time").sort_values("time").reset_index(drop=True)
     frame.to_csv(path, index=False, compression="gzip")

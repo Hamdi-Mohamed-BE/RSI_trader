@@ -1,0 +1,19 @@
+# Confirmed AMD Sweep/Retest Backtest
+
+- Period: **2025-07-30T00:00:00+00:00 to 2026-07-30T00:00:00+00:00**
+- Data source: **MT5 / MEXAtlantic-Demo**
+- Starting balance: **$1,000.00 per symbol**
+- Risk: **3.00% of current balance per trade**
+- Accumulation: **full-wick Asia range, 00:00-08:00 UTC**
+- Manipulation entry: **M5 sweep outside the range and close back inside**
+- Distribution entry: **M5 close outside, pullback to the range edge, and directional M5 close**
+- Sessions: **London**
+- Target: **1.50R fade / 1.50R distribution**
+- Management: **at +0.30R, stop advances to +0.15R**
+- Maximum trades per day: **1**
+- Signals use completed M5 candles and enter no earlier than the next M1 candle.
+- Conservative rule: if SL and TP occur in one M1 bar, SL is assumed first.
+
+| Symbol | Trades | Wins | Losses | Win rate | PF | Net R | Realized max DD | Ending balance |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| XAUUSD (XAUUSD..) | 67 | 57 | 10 | 85.07% | 1.97 | 10.70R | 6.66% | $1359.44 |

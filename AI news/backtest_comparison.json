@@ -1,0 +1,101 @@
+{
+  "methodology": {
+    "same_data": true,
+    "calendar_releases": 716,
+    "usable_releases": 699,
+    "train_samples": 429,
+    "final_holdout_samples": 61,
+    "holdout_start": "2024-07-30",
+    "leakage_rule": "Every pre-release feature is timestamped before release. Actual, forecast surprise, revisions, and statement text are excluded from this backtest."
+  },
+  "per_lead": [
+    {
+      "lead_minutes": 15,
+      "baseline": {
+        "lead_minutes": 15,
+        "model": "extra_trees",
+        "feature_profile": "legacy",
+        "threshold": 0.55,
+        "calls": 27,
+        "coverage_pct": 44.26,
+        "directional_accuracy_pct": 55.56,
+        "brier_multiclass": 0.50388
+      },
+      "improved": {
+        "lead_minutes": 15,
+        "model": "extra_trees",
+        "feature_profile": "enhanced",
+        "threshold": 0.6,
+        "calls": 16,
+        "coverage_pct": 26.23,
+        "directional_accuracy_pct": 62.5,
+        "brier_multiclass": 0.49985
+      },
+      "accuracy_change_points": 6.94,
+      "coverage_change_points": -18.03,
+      "call_change": -11,
+      "brier_change": -0.00403
+    },
+    {
+      "lead_minutes": 30,
+      "baseline": {
+        "lead_minutes": 30,
+        "model": "extra_trees",
+        "feature_profile": "legacy",
+        "threshold": 0.6,
+        "calls": 26,
+        "coverage_pct": 42.62,
+        "directional_accuracy_pct": 65.38,
+        "brier_multiclass": 0.50418
+      },
+      "improved": {
+        "lead_minutes": 30,
+        "model": "extra_trees",
+        "feature_profile": "legacy",
+        "threshold": 0.6,
+        "calls": 26,
+        "coverage_pct": 42.62,
+        "directional_accuracy_pct": 65.38,
+        "brier_multiclass": 0.50418
+      },
+      "accuracy_change_points": 0.0,
+      "coverage_change_points": 0.0,
+      "call_change": 0,
+      "brier_change": 0.0
+    }
+  ],
+  "pooled": {
+    "baseline": {
+      "calls": 53,
+      "correct": 32,
+      "directional_accuracy_pct": 60.38
+    },
+    "improved": {
+      "calls": 42,
+      "correct": 27,
+      "directional_accuracy_pct": 64.29
+    },
+    "accuracy_change_points": 3.91,
+    "call_change": -11
+  },
+  "post_release_statement_research": {
+    "selected_model": "text_t15",
+    "validation": {
+      "events": 92,
+      "direction_accuracy_pct": 50.0,
+      "win_rate_pct": 42.39,
+      "net_usd_fresh_100_each": -638.26,
+      "profit_factor": 0.746,
+      "max_cumulative_drawdown_usd": 964.77,
+      "roc_auc": 0.4786
+    },
+    "deployment_recommendation": {
+      "enabled": false,
+      "reason": "The training-CV-selected official-text model did not achieve a validation profit factor above 1.0 or a useful directional edge. Preserve it for research; do not replace the validated pre-release model.",
+      "preferred_existing_model": "news_direction_model.joblib",
+      "preferred_existing_live_event_filter": "CPI only"
+    },
+    "timing": "Entry one minute after release; not a pre-release forecast."
+  },
+  "conclusion": "Use the enhanced profile at T-15 and retain the legacy profile at T-30. The official-statement layer remains post-release confirmation only."
+}

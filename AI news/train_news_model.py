@@ -43,7 +43,7 @@ MODEL_DIR = ROOT / "models"
 REPORT_PATH = ROOT / "backtest_report.json"
 DETAIL_PATH = ROOT / "backtest_validation_predictions.csv"
 TEST_START = date(2024, 7, 30)
-THRESHOLDS = (0.45, 0.50, 0.55, 0.575, 0.60, 0.625, 0.65, 0.70)
+THRESHOLDS = (0.45, 0.50, 0.55, 0.60, 0.65)
 LEGACY_FEATURE_COUNT = 18
 DEPLOYMENT_PROFILE = {15: "enhanced", 30: "legacy"}
 

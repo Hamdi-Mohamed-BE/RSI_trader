@@ -8,6 +8,11 @@ import time as clock
 import MetaTrader5 as mt5
 import pandas as pd
 
+from .article_engine import (
+    Candidate,
+    article_candidates_for_day,
+    params_from_config,
+)
 from .config import Config
 from .engine import ask, combine, regime_states
 from .mt5_data import connection, discover_symbols, load_m1, MT5Error
@@ -26,6 +31,18 @@ class PendingSignal:
     stop: float
     target: float
     risk: float
+    asia_high: float
+    asia_low: float
+
+
+@dataclass(frozen=True, slots=True)
+class ArticleSignal:
+    session_date: date
+    phase: str
+    side: str
+    signal_time: datetime
+    stop: float
+    rr: float
     asia_high: float
     asia_low: float
 
@@ -243,6 +260,67 @@ def build_pending_signal(
     )
 
 
+def build_article_signal(
+    frame: pd.DataFrame,
+    point: float,
+    config: Config,
+    now: datetime,
+) -> tuple[ArticleSignal | None, str]:
+    """Return a fresh, confirmed article-model signal for live execution."""
+    day = now.date()
+    source = frame.loc[frame["time"] <= now].copy()
+    if source.empty:
+        return None, "M1 history unavailable"
+    if config.regime_filter_enabled:
+        regime = regime_states(source, config).get(day)
+        if regime is None:
+            return None, "regime history incomplete"
+        if not regime.allowed:
+            return None, regime.reason
+    # Keep the current M1 row: its open is the executable next-bar reference
+    # immediately after a completed M5 signal. An unfinished M5 bar cannot
+    # qualify because its computed end_time is still in the future.
+    day_frame = source.loc[source["time"].dt.date == day].reset_index(
+        drop=True
+    )
+    candidates, asia_high, asia_low = article_candidates_for_day(
+        day_frame,
+        point,
+        config,
+        params_from_config(config),
+        day,
+    )
+    if not candidates:
+        return None, "waiting for confirmed AMD sweep/retest"
+    candidate: Candidate = candidates[0]
+    age = (now - candidate.signal_time).total_seconds()
+    if age < 0:
+        return None, f"waiting for M5 close at {candidate.signal_time:%H:%M} UTC"
+    if age > config.article_signal_max_age_seconds:
+        return None, (
+            f"confirmed {candidate.phase} signal is stale "
+            f"({int(age)}s old)"
+        )
+    rr = (
+        config.article_fade_rr
+        if candidate.phase.endswith("_fade")
+        else config.article_distribution_rr
+    )
+    return (
+        ArticleSignal(
+            session_date=day,
+            phase=candidate.phase,
+            side=candidate.side,
+            signal_time=candidate.signal_time,
+            stop=candidate.stop,
+            rr=rr,
+            asia_high=asia_high,
+            asia_low=asia_low,
+        ),
+        "ready",
+    )
+
+
 def _bot_orders(symbol: str) -> list[object]:
     return [
         order
@@ -342,6 +420,71 @@ def place_pending(
     return result
 
 
+def place_article_market(
+    symbol: str,
+    signal: ArticleSignal,
+    account: object,
+    config: Config,
+) -> object:
+    info = mt5.symbol_info(symbol)
+    tick = mt5.symbol_info_tick(symbol)
+    if info is None or tick is None:
+        raise MT5Error(f"No live quote for {symbol}")
+    digits = int(info.digits)
+    point = float(info.point)
+    min_distance = max(float(info.trade_stops_level) * point, point)
+    is_buy = signal.side == "buy"
+    entry = _round_price(float(tick.ask if is_buy else tick.bid), digits)
+    stop = _round_price(signal.stop, digits)
+    if is_buy and stop >= entry - min_distance:
+        raise MT5Error("Confirmed buy no longer has a valid structural stop")
+    if not is_buy and stop <= entry + min_distance:
+        raise MT5Error("Confirmed sell no longer has a valid structural stop")
+    risk = abs(entry - stop)
+    target = _round_price(
+        entry + signal.rr * risk if is_buy else entry - signal.rr * risk,
+        digits,
+    )
+    volume, planned, allowed = calculate_risk_volume(
+        symbol,
+        signal.side,
+        entry,
+        stop,
+        float(account.equity),
+        config.risk_pct,
+    )
+    if volume <= 0:
+        raise MT5Error(
+            f"Broker minimum lot exceeds risk cap: allowed ${allowed:.2f}, "
+            f"minimum-lot risk ${planned:.2f}"
+        )
+    phase_code = "AF" if signal.phase.endswith("_fade") else "AD"
+    request: dict[str, object] = {
+        "action": mt5.TRADE_ACTION_DEAL,
+        "symbol": symbol,
+        "volume": volume,
+        "type": mt5.ORDER_TYPE_BUY if is_buy else mt5.ORDER_TYPE_SELL,
+        "price": entry,
+        "sl": stop,
+        "tp": target,
+        "deviation": config.deviation_points,
+        "magic": config.magic,
+        "comment": (
+            f"{COMMENT_PREFIX} {phase_code} "
+            f"{'B' if is_buy else 'S'} {signal.session_date:%Y%m%d}"
+        ),
+        "type_time": mt5.ORDER_TIME_GTC,
+    }
+    result = _checked_send(request)
+    print(
+        f"  LIVE MARKET PLACED {symbol} {signal.side.upper()} "
+        f"{signal.phase} ticket={result.order or result.deal} "
+        f"volume={volume} entry={entry} SL={stop} TP={target} "
+        f"risk=${planned:.2f}/${allowed:.2f}"
+    )
+    return result
+
+
 def _cancel_order(order: object) -> None:
     result = _checked_send(
         {
@@ -422,7 +565,14 @@ def manage_symbol(symbol: str, now: datetime, config: Config) -> None:
         if target <= 0:
             print(f"  position {position.ticket} has no TP; protection skipped")
             continue
-        risk = abs(target - entry) / config.ny_fallback_rr
+        comment = str(getattr(position, "comment", ""))
+        if comment.startswith(f"{COMMENT_PREFIX} AF"):
+            target_rr = config.article_fade_rr
+        elif comment.startswith(f"{COMMENT_PREFIX} AD"):
+            target_rr = config.article_distribution_rr
+        else:
+            target_rr = config.ny_fallback_rr
+        risk = abs(target - entry) / target_rr
         if risk <= 0:
             continue
         tick = mt5.symbol_info_tick(symbol)
@@ -498,12 +648,25 @@ def run_live(config: Config, once: bool = False) -> None:
                         refresh=True,
                     )
                     point = float(mt5.symbol_info(symbol).point)
-                    signal, reason = build_pending_signal(
-                        frame,
-                        point,
-                        config,
-                        now,
-                    )
+                    if config.strategy_model == "article":
+                        signal, reason = build_article_signal(
+                            frame,
+                            point,
+                            config,
+                            now,
+                        )
+                    elif config.strategy_model == "legacy":
+                        signal, reason = build_pending_signal(
+                            frame,
+                            point,
+                            config,
+                            now,
+                        )
+                    else:
+                        raise ValueError(
+                            f"Unsupported STRATEGY_MODEL: "
+                            f"{config.strategy_model}"
+                        )
                     if signal is None:
                         print(f"  {canonical:<7} {reason}")
                         continue
@@ -513,14 +676,28 @@ def run_live(config: Config, once: bool = False) -> None:
                             "exists for today"
                         )
                         continue
-                    print(
-                        f"  {canonical:<7} {signal.side.upper()} STOP ready "
-                        f"entry={signal.entry:.5f} SL={signal.stop:.5f} "
-                        f"TP={signal.target:.5f}"
-                    )
-                    if mode == "LIVE":
-                        place_pending(symbol, signal, account, config)
+                    if isinstance(signal, ArticleSignal):
+                        print(
+                            f"  {canonical:<7} {signal.side.upper()} "
+                            f"{signal.phase} confirmed; structural "
+                            f"SL={signal.stop:.5f}, target={signal.rr:.2f}R"
+                        )
+                        if mode == "LIVE":
+                            place_article_market(
+                                symbol,
+                                signal,
+                                account,
+                                config,
+                            )
                     else:
+                        print(
+                            f"  {canonical:<7} {signal.side.upper()} STOP ready "
+                            f"entry={signal.entry:.5f} SL={signal.stop:.5f} "
+                            f"TP={signal.target:.5f}"
+                        )
+                        if mode == "LIVE":
+                            place_pending(symbol, signal, account, config)
+                    if mode != "LIVE":
                         print("  DRY-RUN: order not submitted")
                 except Exception as exc:
                     print(f"  {canonical:<7} ERROR: {exc}")

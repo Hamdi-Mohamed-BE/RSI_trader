@@ -1,64 +1,45 @@
-# Gold News AI - Initial Validation
+# Gold Direction Results
 
-This is a prediction-only XAUUSD research result. It does not place, modify, or
-manage trades.
+The production output is information only:
 
-## Data and target
+- `POSITIVE`: the immediate release-minute effect on XAUUSD is expected to be up.
+- `NEGATIVE`: the immediate release-minute effect on XAUUSD is expected to be down.
 
-- Calendar releases: 716
-- Usable releases: 699
-- Supported events: NFP, GDP, CPI, PPI, and FOMC statements
-- Price data: XAUUSD M1 bid/ask, 2011-07-30 through 2026-07-29
-- Training: chronological expanding-window validation
-- Final holdout: the latest two years, 61 clear-direction releases
-- Target: direction from the final pre-release midpoint to the release M1 close
-- Unclear release minutes excluded: 209
+There are no trade calls, entries, stops, targets, lots, or `NO TRADE` outputs.
 
-M1 history cannot establish the true first 30-second tick impulse. The included
-release monitor records that information prospectively from MT5 ticks.
+## Honest frozen validation
 
-## Final holdout results
+The final T-15 model and feature choice used chronological validation ending
+before 2024-07-30. The broad holdout then covered 84 releases from 2024-07-30
+through 2026-05-30:
 
-| Lead | Model | Threshold | Directional accuracy when called | Coverage | Calls |
-|---|---|---:|---:|---:|---:|
-| 15 minutes | Extra Trees | 0.55 | 55.56% | 44.26% | 27 |
-| 30 minutes | Extra Trees | 0.60 | 65.38% | 42.62% | 26 |
+- Correct: **49 / 84**
+- Accuracy: **58.33%**
+- 95% Wilson interval: **47.65% to 68.29%**
+- Simple event-history baseline: **58.33%**
+- Pre-release momentum baseline: **48.81%**
 
-The 30-minute model is the stronger initial default. It made a directional call
-on 26 of 61 clear releases and returned `NO TRADE` on the rest.
+The untouched recent window from 2026-05-30 onward contained eight releases:
 
-The event-majority baseline scored 62.30% at full coverage. The 30-minute model
-improved called-direction accuracy modestly by abstaining on lower-confidence
-cases; it has not demonstrated a large universal edge.
+- Correct: **6 / 8**
+- Accuracy: **75.00%**
+- 95% Wilson interval: **40.93% to 92.85%**
 
-## 30-minute model by event
+Recent event accuracy was CPI 2/2, PPI 2/2, NFP 1/2, and FOMC 1/2. The sample
+is too small to treat 75% as a stable future rate.
 
-| Event | Samples | Calls | Coverage | Directional accuracy |
-|---|---:|---:|---:|---:|
-| NFP | 16 | 8 | 50.00% | 62.50% |
-| GDP | 3 | 0 | 0.00% | Not measurable |
-| CPI | 15 | 4 | 26.67% | 50.00% |
-| PPI | 14 | 8 | 57.14% | 62.50% |
-| FOMC | 13 | 6 | 46.15% | 83.33% |
+## What actually improved
 
-GDP has too few holdout samples for a useful conclusion. FOMC is promising but
-still based on only six called predictions.
+Changing the target from selective trade calls to a binary gold-impact forecast
+removed misleading coverage statistics and scored every release. Market-only ML
+did not beat the event-history anchor on the broad holdout, so the final T-15
+forecast conservatively uses the historical event profile. This is simpler and
+better supported by the evidence.
 
-## Historical release-minute movement
+The T-30 research model adds prior-day broad USD, 2-year and 10-year Treasury
+yields, VIX, inflation breakevens, and the effective fed funds rate. It improved
+pre-holdout validation, but should not replace the final T-15 historical anchor
+until a larger forward sample confirms the gain.
 
-These are USD price ranges, not broker points or guaranteed future movement.
-
-| Event | Median | 75th percentile | Samples |
-|---|---:|---:|---:|
-| NFP | $6.081 | $9.384 | 150 |
-| GDP | $2.771 | $4.733 | 51 |
-| CPI | $2.739 | $5.271 | 149 |
-| PPI | $1.534 | $3.132 | 156 |
-| FOMC | $4.961 | $7.440 | 101 |
-
-## Missing information
-
-The archive does not contain point-in-time consensus, actual values, revisions,
-DXY, Treasury yields, positioning, or complete historical ticks. The system
-reports these inputs as missing instead of fabricating them. A licensed
-point-in-time economic calendar feed is the most important next data upgrade.
+Complete tables are in `GOLD_DIRECTION_RESULTS.md` and
+`gold_direction_backtest.json`.
