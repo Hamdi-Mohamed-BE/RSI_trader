@@ -172,9 +172,18 @@ def command_backtest(args: argparse.Namespace) -> None:
         for canonical, symbol in symbol_map.items():
             print(f"Testing {canonical} -> {symbol}...")
             metadata = symbol_metadata(symbol)
+            warmup_days = (
+                max(
+                    config.regime_atr_days,
+                    config.regime_asia_median_days,
+                )
+                * 2
+                if config.regime_filter_enabled
+                else 0
+            )
             frame = load_m1(
                 symbol,
-                start,
+                start - timedelta(days=warmup_days),
                 end,
                 config.root / "data",
                 args.refresh,
@@ -194,7 +203,11 @@ def command_backtest(args: argparse.Namespace) -> None:
                 config.risk_pct,
             )
             row["canonical_symbol"] = canonical
-            row["bars"] = len(frame)
+            row["bars"] = len(
+                frame.loc[
+                    (frame["time"] >= start) & (frame["time"] < end)
+                ]
+            )
             summaries.append(row)
             pd.DataFrame([trade.to_dict() for trade in trades]).to_csv(
                 trade_dir / f"{canonical}.csv",

@@ -1,0 +1,233 @@
+{
+  "method": {
+    "training_window": "2026-05-08 through 2026-06-25",
+    "test_window": "2026-07-01 through 2026-07-29",
+    "prediction_cutoff": "T-30 minutes",
+    "target": "XAUUSD direction over first 60 seconds",
+    "features": [
+      "xau_return_5m_atr",
+      "xau_return_15m_atr",
+      "xau_return_30m_atr",
+      "dxy_return_5m_atr",
+      "dxy_return_15m_atr",
+      "dxy_return_30m_atr",
+      "xau_range_30m_atr",
+      "xau_tick_volume_zscore"
+    ],
+    "model": "standardized balanced logistic regression, C=0.5",
+    "missing_historical_inputs": [
+      "timestamped consensus snapshots",
+      "timestamped institutional nowcasts",
+      "Treasury yield history",
+      "options skew",
+      "CME gold order book"
+    ],
+    "confidence_rule": "Prompt cap of 55% because timestamped consensus is missing."
+  },
+  "sample": {
+    "training_events_available": 12,
+    "test_events_available": 16
+  },
+  "results": {
+    "directional_accuracy_pct": 62.5,
+    "correct": 10,
+    "incorrect": 6,
+    "brier_score": 0.2689,
+    "actionable_predictions": 0,
+    "no_trade_predictions": 16
+  },
+  "predictions": [
+    {
+      "event_time_utc": "2026-07-01T12:15:00+00:00",
+      "event": "ADP",
+      "prediction": "UP",
+      "raw_up_probability": 78.26,
+      "raw_confidence": 78.26,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "UP",
+      "actual_move_60s_usd": 0.05,
+      "correct": true
+    },
+    {
+      "event_time_utc": "2026-07-01T14:00:00+00:00",
+      "event": "ISM manufacturing",
+      "prediction": "UP",
+      "raw_up_probability": 55.42,
+      "raw_confidence": 55.42,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "UP",
+      "actual_move_60s_usd": 3.1,
+      "correct": true
+    },
+    {
+      "event_time_utc": "2026-07-02T12:30:00+00:00",
+      "event": "Payrolls",
+      "prediction": "DOWN",
+      "raw_up_probability": 46.01,
+      "raw_confidence": 53.99,
+      "agent_confidence_capped": 53.99,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "DOWN",
+      "actual_move_60s_usd": -1.49,
+      "correct": true
+    },
+    {
+      "event_time_utc": "2026-07-06T14:00:00+00:00",
+      "event": "ISM services",
+      "prediction": "UP",
+      "raw_up_probability": 73.56,
+      "raw_confidence": 73.56,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "UP",
+      "actual_move_60s_usd": 0.91,
+      "correct": true
+    },
+    {
+      "event_time_utc": "2026-07-07T12:30:00+00:00",
+      "event": "Trade balance",
+      "prediction": "UP",
+      "raw_up_probability": 50.84,
+      "raw_confidence": 50.84,
+      "agent_confidence_capped": 50.84,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "UP",
+      "actual_move_60s_usd": 2.96,
+      "correct": true
+    },
+    {
+      "event_time_utc": "2026-07-08T18:00:00+00:00",
+      "event": "FOMC minutes",
+      "prediction": "UP",
+      "raw_up_probability": 60.52,
+      "raw_confidence": 60.52,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "DOWN",
+      "actual_move_60s_usd": -2.77,
+      "correct": false
+    },
+    {
+      "event_time_utc": "2026-07-09T12:30:00+00:00",
+      "event": "Jobless claims",
+      "prediction": "UP",
+      "raw_up_probability": 68.8,
+      "raw_confidence": 68.8,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "DOWN",
+      "actual_move_60s_usd": -0.4,
+      "correct": false
+    },
+    {
+      "event_time_utc": "2026-07-14T12:30:00+00:00",
+      "event": "CPI",
+      "prediction": "DOWN",
+      "raw_up_probability": 26.12,
+      "raw_confidence": 73.88,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "DOWN",
+      "actual_move_60s_usd": -1.25,
+      "correct": true
+    },
+    {
+      "event_time_utc": "2026-07-15T12:30:00+00:00",
+      "event": "PPI",
+      "prediction": "UP",
+      "raw_up_probability": 57.87,
+      "raw_confidence": 57.87,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "UP",
+      "actual_move_60s_usd": 0.59,
+      "correct": true
+    },
+    {
+      "event_time_utc": "2026-07-16T12:30:00+00:00",
+      "event": "Retail sales",
+      "prediction": "UP",
+      "raw_up_probability": 77.21,
+      "raw_confidence": 77.21,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "DOWN",
+      "actual_move_60s_usd": -0.24,
+      "correct": false
+    },
+    {
+      "event_time_utc": "2026-07-17T14:00:00+00:00",
+      "event": "Consumer sentiment",
+      "prediction": "UP",
+      "raw_up_probability": 75.7,
+      "raw_confidence": 75.7,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "UP",
+      "actual_move_60s_usd": 2.01,
+      "correct": true
+    },
+    {
+      "event_time_utc": "2026-07-23T12:30:00+00:00",
+      "event": "Jobless claims",
+      "prediction": "UP",
+      "raw_up_probability": 71.88,
+      "raw_confidence": 71.88,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "DOWN",
+      "actual_move_60s_usd": -1.62,
+      "correct": false
+    },
+    {
+      "event_time_utc": "2026-07-23T13:45:00+00:00",
+      "event": "Flash PMI",
+      "prediction": "UP",
+      "raw_up_probability": 84.83,
+      "raw_confidence": 84.83,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "DOWN",
+      "actual_move_60s_usd": -1.73,
+      "correct": false
+    },
+    {
+      "event_time_utc": "2026-07-27T12:30:00+00:00",
+      "event": "Durable goods",
+      "prediction": "UP",
+      "raw_up_probability": 52.11,
+      "raw_confidence": 52.11,
+      "agent_confidence_capped": 52.11,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "DOWN",
+      "actual_move_60s_usd": -0.29,
+      "correct": false
+    },
+    {
+      "event_time_utc": "2026-07-28T14:00:00+00:00",
+      "event": "Consumer confidence",
+      "prediction": "UP",
+      "raw_up_probability": 55.17,
+      "raw_confidence": 55.17,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "UP",
+      "actual_move_60s_usd": 1.33,
+      "correct": true
+    },
+    {
+      "event_time_utc": "2026-07-29T18:00:00+00:00",
+      "event": "FOMC",
+      "prediction": "DOWN",
+      "raw_up_probability": 29.1,
+      "raw_confidence": 70.9,
+      "agent_confidence_capped": 55.0,
+      "agent_action": "NO_TRADE",
+      "actual_direction_60s": "DOWN",
+      "actual_move_60s_usd": -1.16,
+      "correct": true
+    }
+  ]
+}

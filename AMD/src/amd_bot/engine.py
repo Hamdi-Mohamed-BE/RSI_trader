@@ -5,6 +5,7 @@ from datetime import date, datetime, time, timedelta, timezone
 import math
 
 import pandas as pd
+import numpy as np
 
 from .config import Config
 
@@ -38,6 +39,124 @@ class Trade:
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
+
+
+@dataclass(frozen=True, slots=True)
+class RegimeState:
+    ready: bool
+    allowed: bool
+    atr_pct: float
+    asia_ratio: float
+    reason: str
+
+
+def regime_states(
+    frame: pd.DataFrame,
+    config: Config,
+) -> dict[date, RegimeState]:
+    """Calculate pre-New-York regime values without future information."""
+    if frame.empty:
+        return {}
+    source = frame.sort_values("time").copy()
+    source["_day"] = source["time"].dt.date
+    rows: list[dict[str, object]] = []
+    for day, group in source.groupby("_day", sort=True):
+        asia_start = combine(day, config.asia_start)
+        asia_end = combine(day, config.asia_end)
+        asia = group.loc[
+            (group["time"] >= asia_start) & (group["time"] < asia_end)
+        ]
+        rows.append(
+            {
+                "day": day,
+                "high": float(group["high"].max()),
+                "low": float(group["low"].min()),
+                "close": float(group.iloc[-1]["close"]),
+                "asia_range": (
+                    float(asia["high"].max() - asia["low"].min())
+                    if len(asia) >= 120
+                    else math.nan
+                ),
+            }
+        )
+    daily = pd.DataFrame(rows)
+    if daily.empty:
+        return {}
+    previous_close = daily["close"].shift(1)
+    daily["true_range"] = np.maximum(
+        daily["high"] - daily["low"],
+        np.maximum(
+            (daily["high"] - previous_close).abs(),
+            (daily["low"] - previous_close).abs(),
+        ),
+    )
+    daily["atr"] = (
+        daily["true_range"]
+        .shift(1)
+        .rolling(config.regime_atr_days, min_periods=config.regime_atr_days)
+        .mean()
+    )
+    daily["atr_pct"] = daily["atr"] / previous_close * 100.0
+    daily["asia_median"] = (
+        daily["asia_range"]
+        .shift(1)
+        .rolling(
+            config.regime_asia_median_days,
+            min_periods=config.regime_asia_median_days,
+        )
+        .median()
+    )
+    daily["asia_ratio"] = daily["asia_range"] / daily["asia_median"]
+    result: dict[date, RegimeState] = {}
+    for row in daily.itertuples(index=False):
+        ready = bool(
+            math.isfinite(float(row.atr_pct))
+            and math.isfinite(float(row.asia_ratio))
+        )
+        allowed = bool(
+            ready
+            and config.regime_atr_pct_min
+            <= float(row.atr_pct)
+            <= config.regime_atr_pct_max
+            and config.regime_asia_ratio_min
+            <= float(row.asia_ratio)
+            <= config.regime_asia_ratio_max
+        )
+        if not ready:
+            reason = "regime history incomplete"
+        elif not (
+            config.regime_atr_pct_min
+            <= float(row.atr_pct)
+            <= config.regime_atr_pct_max
+        ):
+            reason = (
+                f"ATR regime {float(row.atr_pct):.2f}% outside "
+                f"{config.regime_atr_pct_min:.2f}-"
+                f"{config.regime_atr_pct_max:.2f}%"
+            )
+        elif not (
+            config.regime_asia_ratio_min
+            <= float(row.asia_ratio)
+            <= config.regime_asia_ratio_max
+        ):
+            reason = (
+                f"Asia-range regime {float(row.asia_ratio):.2f} outside "
+                f"{config.regime_asia_ratio_min:.2f}-"
+                f"{config.regime_asia_ratio_max:.2f}"
+            )
+        else:
+            reason = (
+                f"regime accepted: ATR {float(row.atr_pct):.2f}%, "
+                f"Asia ratio {float(row.asia_ratio):.2f}"
+            )
+        result[row.day] = RegimeState(
+            ready=ready,
+            allowed=allowed,
+            atr_pct=float(row.atr_pct) if ready else math.nan,
+            asia_ratio=float(row.asia_ratio) if ready else math.nan,
+            reason=reason,
+        )
+    return result
 
 
 def combine(day: date, value: time) -> datetime:
@@ -220,6 +339,7 @@ def backtest_symbol(
     start: datetime,
     end: datetime,
 ) -> list[Trade]:
+    states = regime_states(frame, config)
     frame = frame.loc[(frame["time"] >= start) & (frame["time"] < end)].copy()
     frame = frame.reset_index(drop=True)
     trades: list[Trade] = []
@@ -258,6 +378,10 @@ def backtest_symbol(
         asia_range = asia_high - asia_low
         if asia_range <= 0:
             continue
+        if config.regime_filter_enabled:
+            regime = states.get(day)
+            if regime is None or not regime.allowed:
+                continue
         london_close = float(london.iloc[-1]["close"])
         london_high = float(london["high"].max())
         london_low = float(london["low"].min())

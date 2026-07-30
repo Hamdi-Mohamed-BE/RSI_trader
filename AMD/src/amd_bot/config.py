@@ -48,6 +48,13 @@ class Config:
     lock_trigger_r: float
     lock_profit_r: float
     ny_stop_buffer_fraction: float
+    regime_filter_enabled: bool
+    regime_atr_days: int
+    regime_atr_pct_min: float
+    regime_atr_pct_max: float
+    regime_asia_median_days: int
+    regime_asia_ratio_min: float
+    regime_asia_ratio_max: float
     enable_trading: bool
     dry_run: bool
     magic: int
@@ -88,6 +95,23 @@ def load_config(env_path: str | Path | None = None) -> Config:
         lock_profit_r=float(os.getenv("LOCK_PROFIT_R", "0.15")),
         ny_stop_buffer_fraction=float(
             os.getenv("NY_STOP_BUFFER_RANGE_FRACTION", "0.05")
+        ),
+        regime_filter_enabled=_bool("REGIME_FILTER_ENABLED", False),
+        regime_atr_days=int(os.getenv("REGIME_ATR_DAYS", "5")),
+        regime_atr_pct_min=float(
+            os.getenv("REGIME_ATR_PCT_MIN", "1.5")
+        ),
+        regime_atr_pct_max=float(
+            os.getenv("REGIME_ATR_PCT_MAX", "2.8")
+        ),
+        regime_asia_median_days=int(
+            os.getenv("REGIME_ASIA_MEDIAN_DAYS", "20")
+        ),
+        regime_asia_ratio_min=float(
+            os.getenv("REGIME_ASIA_RATIO_MIN", "0.40")
+        ),
+        regime_asia_ratio_max=float(
+            os.getenv("REGIME_ASIA_RATIO_MAX", "1.20")
         ),
         enable_trading=_bool("ENABLE_TRADING", False),
         dry_run=_bool("DRY_RUN", True),

@@ -13,18 +13,22 @@ Accumulation-Manipulation-Distribution routine.
    - No London trade is placed.
 3. New York distribution/reversal:
    - Direction must be opposite the London reference.
-   - Observe the first 70 minutes from 13:30 UTC.
-   - Place only a buy stop above or sell stop below that range.
-   - The target is 2.25R.
-   - The stop goes beyond the opposite side plus 24% of the Asia range,
+   - Observe the first 45 minutes from 13:30 UTC.
+   - Place only a buy stop or sell stop 2.5 median spreads beyond that range.
+   - The target is 4R.
+   - The stop goes beyond the opposite side plus 7.5% of the Asia range,
      subject to the minimum spread-based protection.
    - The pending order expires at 16:00 UTC.
-4. The single active leg risks at most 3% of current equity. Lot size is
+4. A pre-entry regime gate accepts trades only when:
+   - prior five-session ATR is 1.5%-2.8% of the prior close; and
+   - today's Asia range is 0.40-1.20 times its prior 20-session median.
+   Both inputs use only information available before the New York entry.
+5. The single active leg risks at most 3% of current equity. Lot size is
    rounded down to the broker step; the order is skipped if the minimum lot
    would exceed the risk cap.
-5. At +0.20R, its stop advances to +0.04R.
-6. Remaining trades close at 21:00 UTC.
-7. Backtests use M1 broker history and historical spread. Ambiguous candles are
+6. At +0.30R, its stop advances to +0.15R.
+7. Remaining trades close at 21:00 UTC.
+8. Backtests use M1 broker history and historical spread. Ambiguous candles are
    evaluated pessimistically: stop first.
 
 ## Run
@@ -46,6 +50,7 @@ Live safeguards:
 - discovers the broker's XAU symbol;
 - tries broker-compatible RETURN, IOC, and FOK filling modes;
 - never chases a stop trigger that was crossed while the bot was offline;
+- loads sufficient prior history and applies the same regime gate as backtests;
 - prevents another bot order after an order, position, or deal exists that day;
 - cancels pending orders at 16:00 UTC;
 - advances the stop according to the configured R rule;

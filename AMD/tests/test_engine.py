@@ -3,7 +3,8 @@ from datetime import date, datetime, time, timezone
 import pandas as pd
 
 from amd_bot.config import Config
-from amd_bot.engine import combine, resample_ohlc
+from amd_bot.config import load_config
+from amd_bot.engine import combine, regime_states, resample_ohlc
 
 
 def test_combine_uses_utc() -> None:
@@ -29,3 +30,25 @@ def test_resample_ohlc() -> None:
     assert len(result) == 1
     assert result.iloc[0]["high"] == 6
     assert result.iloc[0]["low"] == 0
+
+
+def test_regime_state_uses_only_prior_days() -> None:
+    config = load_config()
+    rows: list[dict[str, object]] = []
+    for day in pd.date_range("2026-01-01", periods=25, freq="D", tz="UTC"):
+        for minute in range(24 * 60):
+            timestamp = day + pd.Timedelta(minutes=minute)
+            price = 100.0 + minute / 10_000
+            rows.append(
+                {
+                    "time": timestamp,
+                    "open": price,
+                    "high": price + 0.5,
+                    "low": price - 0.5,
+                    "close": price,
+                    "spread": 1,
+                    "tick_volume": 1,
+                }
+            )
+    states = regime_states(pd.DataFrame(rows), config)
+    assert states[date(2026, 1, 25)].ready

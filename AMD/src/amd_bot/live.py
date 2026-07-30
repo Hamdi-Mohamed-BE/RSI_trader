@@ -9,7 +9,7 @@ import MetaTrader5 as mt5
 import pandas as pd
 
 from .config import Config
-from .engine import ask, combine
+from .engine import ask, combine, regime_states
 from .mt5_data import connection, discover_symbols, load_m1, MT5Error
 
 
@@ -147,6 +147,12 @@ def build_pending_signal(
     if config.ny_entry_mode != "stop_only":
         return None, "live execution supports the validated stop_only mode"
     day = now.date()
+    if config.regime_filter_enabled:
+        regime = regime_states(frame, config).get(day)
+        if regime is None:
+            return None, "regime history incomplete"
+        if not regime.allowed:
+            return None, regime.reason
     asia_start = combine(day, config.asia_start)
     asia_end = combine(day, config.asia_end)
     london_start = combine(day, config.london_start)
@@ -457,6 +463,11 @@ def run_live(config: Config, once: bool = False) -> None:
     while True:
         now = datetime.now(UTC)
         day_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        history_days = max(
+            config.regime_atr_days,
+            config.regime_asia_median_days,
+        ) * 2
+        history_start = day_start - timedelta(days=history_days)
         with connection() as account:
             mode = (
                 "LIVE"
@@ -481,7 +492,7 @@ def run_live(config: Config, once: bool = False) -> None:
                     manage_symbol(symbol, now, config)
                     frame = load_m1(
                         symbol,
-                        day_start,
+                        history_start,
                         now,
                         config.root / "data" / "live",
                         refresh=True,
