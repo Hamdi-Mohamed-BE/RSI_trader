@@ -139,11 +139,24 @@ def make_prediction(event: str, release_utc: datetime) -> dict:
         bid, ask = bars_for_prediction(symbol, release_utc)
         feature_cutoff = now.replace(second=0, microsecond=0) - timedelta(minutes=1)
         feature_anchor = feature_cutoff + timedelta(minutes=lead)
-        extracted = extract_features(event, feature_anchor, bid, ask, lead)
+        extracted = extract_features(
+            event,
+            feature_anchor,
+            bid,
+            ask,
+            lead,
+            artifact.get("event_history_features", {}).get(event),
+        )
         if extracted is None:
             raise RuntimeError("The required pre-release M1 feature window is incomplete.")
         features, context = extracted
-        probabilities = artifact["model"].predict_proba(np.asarray([features], dtype=float))[0]
+        selected_features = [
+            features[index]
+            for index in artifact.get("feature_indices", range(len(features)))
+        ]
+        probabilities = artifact["model"].predict_proba(
+            np.asarray([selected_features], dtype=float)
+        )[0]
         probability_map = {
             label: float(value)
             for label, value in zip(artifact["model"].classes_, probabilities)
@@ -188,6 +201,7 @@ def make_prediction(event: str, release_utc: datetime) -> dict:
                 "lead_minutes": lead,
                 "threshold": artifact["threshold"],
                 "trained_through": artifact["trained_through"],
+                "feature_profile": artifact.get("feature_profile", "legacy"),
             },
             "market_context": context,
             "execution_capability": False,

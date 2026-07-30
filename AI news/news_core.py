@@ -17,7 +17,7 @@ CALENDAR_PATH = ROOT / "news_15y_calendar.csv"
 EVENTS = ("NFP", "GDP", "CPI", "PPI", "FOMC")
 LEADS = (15, 30)
 LABELS = ("BUY", "SELL", "UNCERTAIN")
-FEATURE_NAMES = (
+MARKET_FEATURE_NAMES = (
     "ret_5_atr",
     "ret_15_atr",
     "ret_30_atr",
@@ -32,7 +32,37 @@ FEATURE_NAMES = (
     "spread_atr",
     "atr_pct",
     *tuple(f"event_{event}" for event in EVENTS),
+    "ret_120_atr",
+    "range_60_atr",
+    "range_120_atr",
+    "range_180_atr",
+    "close_position_15",
+    "close_position_30",
+    "close_position_60",
+    "close_position_180",
+    "volume_ratio_5_30",
+    "volume_ratio_15_60",
+    "true_range_ratio_5_30",
+    "true_range_ratio_15_60",
+    "slope_15_atr",
+    "slope_30_atr",
+    "slope_60_atr",
+    "slope_120_atr",
+    "trend_r2_30",
+    "trend_r2_60",
+    "trend_r2_120",
+    "rsi_14_centered",
+    "body_1_atr",
+    "wick_balance_1_atr",
 )
+HISTORY_FEATURE_NAMES = (
+    "event_prior_buy_rate",
+    "event_prior_uncertain_rate",
+    "event_recent_3_balance",
+    "event_recent_6_balance",
+    "global_recent_6_balance",
+)
+FEATURE_NAMES = (*MARKET_FEATURE_NAMES, *HISTORY_FEATURE_NAMES)
 
 
 @dataclass(frozen=True)
@@ -159,12 +189,47 @@ def nearest(
     return None
 
 
+def _direction_balance(labels: list[str], window: int) -> float:
+    values = {"BUY": 1.0, "SELL": -1.0, "UNCERTAIN": 0.0}
+    recent = labels[-window:]
+    return float(np.mean([values[label] for label in recent])) if recent else 0.0
+
+
+def event_history_features(
+    event_name: str,
+    event_history: dict[str, list[str]],
+    global_history: list[str],
+) -> list[float]:
+    labels = event_history.get(event_name, [])
+    buys = labels.count("BUY")
+    sells = labels.count("SELL")
+    uncertain = labels.count("UNCERTAIN")
+    return [
+        float((buys + 1) / (buys + sells + 2)),
+        float((uncertain + 1) / (len(labels) + 3)),
+        _direction_balance(labels, 3),
+        _direction_balance(labels, 6),
+        _direction_balance(global_history, 6),
+    ]
+
+
+def history_snapshot(samples: list[dict], event_name: str) -> list[float]:
+    event_history: dict[str, list[str]] = defaultdict(list)
+    global_history: list[str] = []
+    for sample in sorted(samples, key=lambda row: row["release_utc"]):
+        label = sample["target"]
+        event_history[sample["event"]].append(label)
+        global_history.append(label)
+    return event_history_features(event_name, event_history, global_history)
+
+
 def extract_features(
     event_name: str,
     release_utc: datetime,
     bid: dict[int, dict[str, float]],
     ask: dict[int, dict[str, float]],
     lead_minutes: int,
+    history_features: list[float] | None = None,
 ) -> tuple[list[float], dict] | None:
     release_ms = int(release_utc.timestamp() * 1000)
     cutoff_ms = release_ms - lead_minutes * 60_000
@@ -200,8 +265,39 @@ def extract_features(
     def price_range(minutes: int) -> float:
         return float((np.max(highs[-minutes:]) - np.min(lows[-minutes:])) / atr)
 
+    def close_position(minutes: int) -> float:
+        high = float(np.max(highs[-minutes:]))
+        low = float(np.min(lows[-minutes:]))
+        return 0.0 if high <= low else float(2 * (closes[-1] - low) / (high - low) - 1)
+
+    def ratio(short: np.ndarray, long: np.ndarray) -> float:
+        denominator = float(np.mean(long))
+        return 1.0 if denominator <= 0 else float(np.mean(short) / denominator)
+
+    def trend(minutes: int) -> tuple[float, float]:
+        values = closes[-minutes:]
+        x = np.arange(minutes, dtype=float)
+        slope, intercept = np.polyfit(x, values, 1)
+        fitted = slope * x + intercept
+        residual = float(np.sum((values - fitted) ** 2))
+        total = float(np.sum((values - np.mean(values)) ** 2))
+        r2 = 0.0 if total <= 0 else max(0.0, 1.0 - residual / total)
+        return float(slope * minutes / atr), r2
+
     volume_std = float(np.std(volumes[-60:]))
     spread = cutoff_ask["close"] - cutoff_bid["close"]
+    tr_5_30 = ratio(true_ranges[-5:], true_ranges[-30:])
+    tr_15_60 = ratio(true_ranges[-15:], true_ranges[-60:])
+    slope_15, _ = trend(15)
+    slope_30, r2_30 = trend(30)
+    slope_60, r2_60 = trend(60)
+    slope_120, r2_120 = trend(120)
+    deltas = np.diff(closes[-15:])
+    gains = float(np.mean(np.maximum(deltas, 0)))
+    losses = float(np.mean(np.maximum(-deltas, 0)))
+    rsi = 0.5 if gains + losses <= 0 else gains / (gains + losses)
+    last_upper_wick = highs[-1] - max(opens[-1], closes[-1])
+    last_lower_wick = min(opens[-1], closes[-1]) - lows[-1]
     features = [
         ret(5),
         ret(15),
@@ -217,6 +313,29 @@ def extract_features(
         float(spread / atr),
         float(atr / closes[-1]),
         *[1.0 if event_name == event else 0.0 for event in EVENTS],
+        ret(120),
+        price_range(60),
+        price_range(120),
+        price_range(180),
+        close_position(15),
+        close_position(30),
+        close_position(60),
+        close_position(180),
+        ratio(volumes[-5:], volumes[-30:]),
+        ratio(volumes[-15:], volumes[-60:]),
+        tr_5_30,
+        tr_15_60,
+        slope_15,
+        slope_30,
+        slope_60,
+        slope_120,
+        r2_30,
+        r2_60,
+        r2_120,
+        float(2 * rsi - 1),
+        float((closes[-1] - opens[-1]) / atr),
+        float((last_lower_wick - last_upper_wick) / atr),
+        *(history_features or [0.5, 1 / 3, 0.0, 0.0, 0.0]),
     ]
     context = {
         "cutoff_utc": datetime.fromtimestamp(cutoff_ms / 1000, timezone.utc).isoformat(),
@@ -297,6 +416,8 @@ def build_samples(lead_minutes: int) -> tuple[list[dict], dict]:
     skipped = []
     imputed = []
     cache: dict[tuple[str, str], dict[int, dict[str, float]]] = {}
+    event_history: dict[str, list[str]] = defaultdict(list)
+    global_history: list[str] = []
 
     for event in events:
         day = event.release_utc.date().isoformat()
@@ -309,7 +430,15 @@ def build_samples(lead_minutes: int) -> tuple[list[dict], dict]:
             cache[(day, "ask")],
             spreads.get(event.release_utc.year, global_spread),
         )
-        extracted = extract_features(event.event, event.release_utc, bid, ask, lead_minutes)
+        prior_features = event_history_features(event.event, event_history, global_history)
+        extracted = extract_features(
+            event.event,
+            event.release_utc,
+            bid,
+            ask,
+            lead_minutes,
+            prior_features,
+        )
         if extracted is None:
             skipped.append({"event": event.event, "release_utc": event.release_utc.isoformat()})
             continue
@@ -330,6 +459,8 @@ def build_samples(lead_minutes: int) -> tuple[list[dict], dict]:
                 "context": context,
             }
         )
+        event_history[event.event].append(reaction["impulse"])
+        global_history.append(reaction["impulse"])
     return samples, {
         "calendar_events": len(events),
         "usable_samples": len(samples),

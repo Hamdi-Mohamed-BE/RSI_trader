@@ -9,7 +9,12 @@ from statistics import mean
 import joblib
 import numpy as np
 from sklearn.base import clone
-from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import (
+    ExtraTreesClassifier,
+    GradientBoostingClassifier,
+    HistGradientBoostingClassifier,
+    RandomForestClassifier,
+)
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
@@ -23,14 +28,24 @@ from sklearn.model_selection import TimeSeriesSplit
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-from news_core import EVENTS, FEATURE_NAMES, LABELS, LEADS, ROOT, build_samples
+from news_core import (
+    EVENTS,
+    FEATURE_NAMES,
+    LABELS,
+    LEADS,
+    ROOT,
+    build_samples,
+    history_snapshot,
+)
 
 
 MODEL_DIR = ROOT / "models"
 REPORT_PATH = ROOT / "backtest_report.json"
 DETAIL_PATH = ROOT / "backtest_validation_predictions.csv"
 TEST_START = date(2024, 7, 30)
-THRESHOLDS = (0.45, 0.50, 0.55, 0.60, 0.65)
+THRESHOLDS = (0.45, 0.50, 0.55, 0.575, 0.60, 0.625, 0.65, 0.70)
+LEGACY_FEATURE_COUNT = 18
+DEPLOYMENT_PROFILE = {15: "enhanced", 30: "legacy"}
 
 
 def candidates() -> dict[str, object]:
@@ -56,6 +71,40 @@ def candidates() -> dict[str, object]:
             class_weight="balanced",
             random_state=42,
             n_jobs=-1,
+        ),
+        "extra_trees_regularized": ExtraTreesClassifier(
+            n_estimators=900,
+            min_samples_leaf=12,
+            max_depth=9,
+            max_features=0.55,
+            class_weight="balanced",
+            random_state=42,
+            n_jobs=-1,
+        ),
+        "random_forest": RandomForestClassifier(
+            n_estimators=700,
+            min_samples_leaf=10,
+            max_depth=8,
+            max_features=0.55,
+            class_weight="balanced_subsample",
+            random_state=42,
+            n_jobs=-1,
+        ),
+        "gradient_boosting": GradientBoostingClassifier(
+            n_estimators=150,
+            learning_rate=0.035,
+            max_depth=2,
+            min_samples_leaf=12,
+            subsample=0.8,
+            random_state=42,
+        ),
+        "hist_gradient_boosting": HistGradientBoostingClassifier(
+            learning_rate=0.04,
+            max_iter=180,
+            max_leaf_nodes=11,
+            min_samples_leaf=18,
+            l2_regularization=1.5,
+            random_state=42,
         ),
     }
 
@@ -119,8 +168,11 @@ def metrics(y_true: np.ndarray, predicted: np.ndarray, probabilities: np.ndarray
     }
 
 
-def cross_validate(rows: list[dict], model: object) -> dict:
-    x = np.asarray([row["features"] for row in rows], dtype=float)
+def cross_validate(rows: list[dict], model: object, feature_indices: list[int]) -> dict:
+    x = np.asarray(
+        [[row["features"][index] for index in feature_indices] for row in rows],
+        dtype=float,
+    )
     y = np.asarray([row["target"] for row in rows])
     splitter = TimeSeriesSplit(n_splits=5)
     out_of_fold: list[tuple[int, str, dict[str, float]]] = []
@@ -243,34 +295,54 @@ def train_lead(lead: int) -> tuple[dict, list[dict]]:
     rows = [row for row in all_rows if row["target"] != "UNCERTAIN"]
     train = [row for row in rows if date.fromisoformat(row["release_utc"][:10]) < TEST_START]
     test = [row for row in rows if date.fromisoformat(row["release_utc"][:10]) >= TEST_START]
-    x_train = np.asarray([row["features"] for row in train], dtype=float)
     y_train = np.asarray([row["target"] for row in train])
-    x_test = np.asarray([row["features"] for row in test], dtype=float)
     y_test = np.asarray([row["target"] for row in test])
 
     comparisons = []
-    for name, model in candidates().items():
-        cv = cross_validate(train, model)
-        selected_threshold = cv["selected_threshold"]
-        fitted = clone(model)
-        fitted.fit(x_train, y_train)
-        probabilities = fitted.predict_proba(x_test)
-        classes = list(fitted.classes_)
-        predicted = apply_threshold(probabilities, classes, selected_threshold)
-        comparisons.append(
-            {
-                "name": name,
-                "cv": cv,
-                "validation": metrics(y_test, predicted, probabilities, classes),
-                "model": fitted,
-                "classes": classes,
-                "threshold": selected_threshold,
-                "probabilities": probabilities,
-                "predicted": predicted,
-            }
+    profiles = {
+        "legacy": list(range(LEGACY_FEATURE_COUNT)),
+        "enhanced": list(range(len(FEATURE_NAMES))),
+    }
+    for profile, feature_indices in profiles.items():
+        x_train = np.asarray(
+            [[row["features"][index] for index in feature_indices] for row in train],
+            dtype=float,
         )
+        x_test = np.asarray(
+            [[row["features"][index] for index in feature_indices] for row in test],
+            dtype=float,
+        )
+        models = candidates()
+        if profile == "legacy":
+            models = {key: models[key] for key in ("logistic", "extra_trees")}
+        for name, model in models.items():
+            cv = cross_validate(train, model, feature_indices)
+            selected_threshold = cv["selected_threshold"]
+            fitted = clone(model)
+            fitted.fit(x_train, y_train)
+            probabilities = fitted.predict_proba(x_test)
+            classes = list(fitted.classes_)
+            predicted = apply_threshold(probabilities, classes, selected_threshold)
+            comparisons.append(
+                {
+                    "name": name,
+                    "profile": profile,
+                    "feature_indices": feature_indices,
+                    "cv": cv,
+                    "validation": metrics(y_test, predicted, probabilities, classes),
+                    "model": fitted,
+                    "classes": classes,
+                    "threshold": selected_threshold,
+                    "probabilities": probabilities,
+                    "predicted": predicted,
+                }
+            )
+    deployment_candidates = [
+        item for item in comparisons
+        if item["profile"] == DEPLOYMENT_PROFILE[lead]
+    ]
     selected = max(
-        comparisons,
+        deployment_candidates,
         key=lambda item: (
             item["cv"]["selected_metrics"]["selection_score"],
             -item["cv"]["selected_metrics"]["brier_multiclass"],
@@ -291,9 +363,13 @@ def train_lead(lead: int) -> tuple[dict, list[dict]]:
         }
 
     MODEL_DIR.mkdir(exist_ok=True)
+    selected_indices = selected["feature_indices"]
     production = clone(candidates()[selected["name"]])
     production.fit(
-        np.asarray([row["features"] for row in rows], dtype=float),
+        np.asarray(
+            [[row["features"][index] for index in selected_indices] for row in rows],
+            dtype=float,
+        ),
         np.asarray([row["target"] for row in rows]),
     )
     artifact = {
@@ -303,9 +379,16 @@ def train_lead(lead: int) -> tuple[dict, list[dict]]:
         "classes": list(production.classes_),
         "threshold": selected["threshold"],
         "events": list(EVENTS),
-        "feature_names": list(FEATURE_NAMES),
+        "feature_names": [FEATURE_NAMES[index] for index in selected_indices],
+        "feature_indices": selected_indices,
+        "feature_profile": selected["profile"],
         "trained_through": rows[-1]["release_utc"],
         "expected_ranges": expected_ranges,
+        "event_history_features": {
+            event: history_snapshot(all_rows, event)
+            for event in EVENTS
+        },
+        "feature_version": 2,
         "execution_capability": False,
     }
     model_path = MODEL_DIR / f"gold_news_impulse_{lead}m.joblib"
@@ -339,7 +422,7 @@ def train_lead(lead: int) -> tuple[dict, list[dict]]:
         {
             key: value
             for key, value in comparison.items()
-            if key not in {"model", "classes", "probabilities", "predicted"}
+            if key not in {"model", "classes", "probabilities", "predicted", "feature_indices"}
         }
         for comparison in comparisons
     ]
@@ -362,6 +445,7 @@ def train_lead(lead: int) -> tuple[dict, list[dict]]:
         ),
         "comparisons": report_comparisons,
         "selected_model": selected["name"],
+        "selected_feature_profile": selected["profile"],
         "selected_threshold": selected["threshold"],
         "selected_validation": selected["validation"],
         "validation_by_event": by_event,
