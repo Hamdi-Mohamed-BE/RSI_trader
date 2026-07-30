@@ -146,9 +146,9 @@ def load_config(env_path: str | Path | None = None) -> Config:
         article_max_trades_per_day=int(
             os.getenv("ARTICLE_MAX_TRADES_PER_DAY", "1")
         ),
-        article_fade_rr=float(os.getenv("ARTICLE_FADE_RR", "1.5")),
+        article_fade_rr=float(os.getenv("ARTICLE_FADE_RR", "2.0")),
         article_distribution_rr=float(
-            os.getenv("ARTICLE_DISTRIBUTION_RR", "1.5")
+            os.getenv("ARTICLE_DISTRIBUTION_RR", "2.0")
         ),
         article_sweep_min_fraction=float(
             os.getenv("ARTICLE_SWEEP_MIN_FRACTION", "0.02")
@@ -169,7 +169,7 @@ def load_config(env_path: str | Path | None = None) -> Config:
             os.getenv("ARTICLE_VOLUME_FACTOR", "0.00")
         ),
         article_london_window_minutes=int(
-            os.getenv("ARTICLE_LONDON_WINDOW_MINUTES", "240")
+            os.getenv("ARTICLE_LONDON_WINDOW_MINUTES", "180")
         ),
         article_ny_window_minutes=int(
             os.getenv("ARTICLE_NY_WINDOW_MINUTES", "180")

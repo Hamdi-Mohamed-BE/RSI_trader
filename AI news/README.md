@@ -41,8 +41,8 @@ disabled because they did not beat these compact rules on frozen data.
 | Window | Events | Correct | Accuracy | 95% interval |
 |---|---:|---:|---:|---:|
 | Previous five-year baseline | 234 | 132 | 56.41% | 50.00-62.61% |
-| V2 five-year replay | 234 | 143 | 61.11% | generated in report |
-| V2 recent untouched 2024-2026 | 92 | generated | generated | generated |
+| V2 five-year replay | 234 | 143 | 61.11% | 54.73-67.13% |
+| V2 recent untouched 2024-2026 | 92 | 59 | 64.13% | 53.95-73.18% |
 
 The recent result is encouraging but not statistically conclusive. Full event
 rows and model comparisons are in:

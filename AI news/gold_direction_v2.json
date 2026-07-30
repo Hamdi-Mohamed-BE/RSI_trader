@@ -1,0 +1,2759 @@
+{
+  "methodology": {
+    "target": "Binary sign of the XAUUSD release-minute midpoint move.",
+    "selection": "Choose one of four simple event rules on the pre-2021 development window only.",
+    "deployment_guard": "A non-baseline event rule is promoted only if it strictly beats event-history on the 2021-2024 broad guard.",
+    "final_test": "The 2024-2026 recent window is not used by selection or the broad deployment guard.",
+    "source_audit": {
+      "calendar_events": 716,
+      "usable_samples": 699,
+      "skipped": 17,
+      "imputed_sides": 135,
+      "skipped_examples": [
+        {
+          "event": "NFP",
+          "release_utc": "2012-04-06T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2012-12-07T13:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-05-16T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2013-06-07T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-09-17T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-01-16T13:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2015-04-03T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-05-22T12:30:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-06-17T18:00:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-07-29T18:00:00+00:00"
+        },
+        {
+          "event": "GDP",
+          "release_utc": "2015-07-30T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-10-15T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2017-04-14T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2020-04-10T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2021-04-02T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2023-04-07T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2026-04-03T12:30:00+00:00"
+        }
+      ]
+    }
+  },
+  "production_policy": {
+    "NFP": "inverse_last",
+    "GDP": "event_history",
+    "CPI": "event_history",
+    "PPI": "event_history",
+    "FOMC": "inverse_majority_5"
+  },
+  "selected_candidates": {
+    "NFP": "inverse_last",
+    "GDP": "inverse_last",
+    "CPI": "event_history",
+    "PPI": "event_history",
+    "FOMC": "inverse_majority_5"
+  },
+  "candidate_validation": {
+    "NFP": [
+      {
+        "rule": "event_history",
+        "events": 59,
+        "correct": 32,
+        "wrong": 27,
+        "accuracy_pct": 54.24,
+        "wilson_95_pct": [
+          41.66,
+          66.3
+        ],
+        "order": 0
+      },
+      {
+        "rule": "inverse_last",
+        "events": 59,
+        "correct": 36,
+        "wrong": 23,
+        "accuracy_pct": 61.02,
+        "wilson_95_pct": [
+          48.27,
+          72.42
+        ],
+        "order": 1
+      },
+      {
+        "rule": "inverse_majority_3",
+        "events": 59,
+        "correct": 34,
+        "wrong": 25,
+        "accuracy_pct": 57.63,
+        "wilson_95_pct": [
+          44.93,
+          69.39
+        ],
+        "order": 2
+      },
+      {
+        "rule": "inverse_majority_5",
+        "events": 59,
+        "correct": 31,
+        "wrong": 28,
+        "accuracy_pct": 52.54,
+        "wilson_95_pct": [
+          40.04,
+          64.73
+        ],
+        "order": 3
+      }
+    ],
+    "GDP": [
+      {
+        "rule": "event_history",
+        "events": 20,
+        "correct": 12,
+        "wrong": 8,
+        "accuracy_pct": 60.0,
+        "wilson_95_pct": [
+          38.66,
+          78.12
+        ],
+        "order": 0
+      },
+      {
+        "rule": "inverse_last",
+        "events": 20,
+        "correct": 14,
+        "wrong": 6,
+        "accuracy_pct": 70.0,
+        "wilson_95_pct": [
+          48.1,
+          85.45
+        ],
+        "order": 1
+      },
+      {
+        "rule": "inverse_majority_3",
+        "events": 20,
+        "correct": 11,
+        "wrong": 9,
+        "accuracy_pct": 55.0,
+        "wilson_95_pct": [
+          34.21,
+          74.18
+        ],
+        "order": 2
+      },
+      {
+        "rule": "inverse_majority_5",
+        "events": 20,
+        "correct": 12,
+        "wrong": 8,
+        "accuracy_pct": 60.0,
+        "wilson_95_pct": [
+          38.66,
+          78.12
+        ],
+        "order": 3
+      }
+    ],
+    "CPI": [
+      {
+        "rule": "event_history",
+        "events": 58,
+        "correct": 33,
+        "wrong": 25,
+        "accuracy_pct": 56.9,
+        "wilson_95_pct": [
+          44.12,
+          68.82
+        ],
+        "order": 0
+      },
+      {
+        "rule": "inverse_last",
+        "events": 58,
+        "correct": 30,
+        "wrong": 28,
+        "accuracy_pct": 51.72,
+        "wilson_95_pct": [
+          39.16,
+          64.07
+        ],
+        "order": 1
+      },
+      {
+        "rule": "inverse_majority_3",
+        "events": 58,
+        "correct": 27,
+        "wrong": 31,
+        "accuracy_pct": 46.55,
+        "wilson_95_pct": [
+          34.33,
+          59.2
+        ],
+        "order": 2
+      },
+      {
+        "rule": "inverse_majority_5",
+        "events": 58,
+        "correct": 27,
+        "wrong": 31,
+        "accuracy_pct": 46.55,
+        "wilson_95_pct": [
+          34.33,
+          59.2
+        ],
+        "order": 3
+      }
+    ],
+    "PPI": [
+      {
+        "rule": "event_history",
+        "events": 60,
+        "correct": 35,
+        "wrong": 25,
+        "accuracy_pct": 58.33,
+        "wilson_95_pct": [
+          45.73,
+          69.94
+        ],
+        "order": 0
+      },
+      {
+        "rule": "inverse_last",
+        "events": 60,
+        "correct": 29,
+        "wrong": 31,
+        "accuracy_pct": 48.33,
+        "wilson_95_pct": [
+          36.17,
+          60.69
+        ],
+        "order": 1
+      },
+      {
+        "rule": "inverse_majority_3",
+        "events": 60,
+        "correct": 33,
+        "wrong": 27,
+        "accuracy_pct": 55.0,
+        "wilson_95_pct": [
+          42.49,
+          66.91
+        ],
+        "order": 2
+      },
+      {
+        "rule": "inverse_majority_5",
+        "events": 60,
+        "correct": 33,
+        "wrong": 27,
+        "accuracy_pct": 55.0,
+        "wilson_95_pct": [
+          42.49,
+          66.91
+        ],
+        "order": 3
+      }
+    ],
+    "FOMC": [
+      {
+        "rule": "event_history",
+        "events": 39,
+        "correct": 20,
+        "wrong": 19,
+        "accuracy_pct": 51.28,
+        "wilson_95_pct": [
+          36.2,
+          66.14
+        ],
+        "order": 0
+      },
+      {
+        "rule": "inverse_last",
+        "events": 39,
+        "correct": 20,
+        "wrong": 19,
+        "accuracy_pct": 51.28,
+        "wilson_95_pct": [
+          36.2,
+          66.14
+        ],
+        "order": 1
+      },
+      {
+        "rule": "inverse_majority_3",
+        "events": 39,
+        "correct": 21,
+        "wrong": 18,
+        "accuracy_pct": 53.85,
+        "wilson_95_pct": [
+          38.57,
+          68.43
+        ],
+        "order": 2
+      },
+      {
+        "rule": "inverse_majority_5",
+        "events": 39,
+        "correct": 23,
+        "wrong": 16,
+        "accuracy_pct": 58.97,
+        "wilson_95_pct": [
+          43.42,
+          72.92
+        ],
+        "order": 3
+      }
+    ]
+  },
+  "broad_guard": {
+    "NFP": {
+      "candidate": "inverse_last",
+      "accepted": true,
+      "baseline": {
+        "events": 35,
+        "correct": 20,
+        "wrong": 15,
+        "accuracy_pct": 57.14,
+        "wilson_95_pct": [
+          40.86,
+          72.02
+        ]
+      },
+      "challenger": {
+        "events": 35,
+        "correct": 22,
+        "wrong": 13,
+        "accuracy_pct": 62.86,
+        "wilson_95_pct": [
+          46.34,
+          76.83
+        ]
+      },
+      "reason": "candidate beat event-history on the broad guard"
+    },
+    "GDP": {
+      "candidate": "inverse_last",
+      "accepted": false,
+      "baseline": {
+        "events": 12,
+        "correct": 8,
+        "wrong": 4,
+        "accuracy_pct": 66.67,
+        "wilson_95_pct": [
+          39.06,
+          86.19
+        ]
+      },
+      "challenger": {
+        "events": 12,
+        "correct": 7,
+        "wrong": 5,
+        "accuracy_pct": 58.33,
+        "wilson_95_pct": [
+          31.95,
+          80.67
+        ]
+      },
+      "reason": "event-history retained; candidate did not strictly improve"
+    },
+    "CPI": {
+      "candidate": "event_history",
+      "accepted": false,
+      "baseline": {
+        "events": 36,
+        "correct": 20,
+        "wrong": 16,
+        "accuracy_pct": 55.56,
+        "wilson_95_pct": [
+          39.58,
+          70.46
+        ]
+      },
+      "challenger": {
+        "events": 36,
+        "correct": 20,
+        "wrong": 16,
+        "accuracy_pct": 55.56,
+        "wilson_95_pct": [
+          39.58,
+          70.46
+        ]
+      },
+      "reason": "event-history retained; candidate did not strictly improve"
+    },
+    "PPI": {
+      "candidate": "event_history",
+      "accepted": false,
+      "baseline": {
+        "events": 36,
+        "correct": 19,
+        "wrong": 17,
+        "accuracy_pct": 52.78,
+        "wilson_95_pct": [
+          37.01,
+          68.01
+        ]
+      },
+      "challenger": {
+        "events": 36,
+        "correct": 19,
+        "wrong": 17,
+        "accuracy_pct": 52.78,
+        "wilson_95_pct": [
+          37.01,
+          68.01
+        ]
+      },
+      "reason": "event-history retained; candidate did not strictly improve"
+    },
+    "FOMC": {
+      "candidate": "inverse_majority_5",
+      "accepted": true,
+      "baseline": {
+        "events": 23,
+        "correct": 10,
+        "wrong": 13,
+        "accuracy_pct": 43.48,
+        "wilson_95_pct": [
+          25.63,
+          63.19
+        ]
+      },
+      "challenger": {
+        "events": 23,
+        "correct": 15,
+        "wrong": 8,
+        "accuracy_pct": 65.22,
+        "wilson_95_pct": [
+          44.89,
+          81.19
+        ]
+      },
+      "reason": "candidate beat event-history on the broad guard"
+    }
+  },
+  "five_year": {
+    "events": 234,
+    "correct": 143,
+    "wrong": 91,
+    "accuracy_pct": 61.11,
+    "wilson_95_pct": [
+      54.73,
+      67.13
+    ],
+    "by_event": {
+      "NFP": {
+        "events": 57,
+        "correct": 35,
+        "wrong": 22,
+        "accuracy_pct": 61.4,
+        "wilson_95_pct": [
+          48.43,
+          72.94
+        ]
+      },
+      "GDP": {
+        "events": 19,
+        "correct": 12,
+        "wrong": 7,
+        "accuracy_pct": 63.16,
+        "wilson_95_pct": [
+          41.04,
+          80.85
+        ]
+      },
+      "CPI": {
+        "events": 59,
+        "correct": 38,
+        "wrong": 21,
+        "accuracy_pct": 64.41,
+        "wilson_95_pct": [
+          51.66,
+          75.4
+        ]
+      },
+      "PPI": {
+        "events": 59,
+        "correct": 32,
+        "wrong": 27,
+        "accuracy_pct": 54.24,
+        "wilson_95_pct": [
+          41.66,
+          66.3
+        ]
+      },
+      "FOMC": {
+        "events": 40,
+        "correct": 26,
+        "wrong": 14,
+        "accuracy_pct": 65.0,
+        "wilson_95_pct": [
+          49.51,
+          77.87
+        ]
+      }
+    }
+  },
+  "five_year_baseline": {
+    "events": 234,
+    "correct": 132,
+    "wrong": 102,
+    "accuracy_pct": 56.41,
+    "wilson_95_pct": [
+      50.0,
+      62.61
+    ]
+  },
+  "broad_2021_2024": {
+    "events": 142,
+    "correct": 84,
+    "wrong": 58,
+    "accuracy_pct": 59.15,
+    "wilson_95_pct": [
+      50.93,
+      66.9
+    ]
+  },
+  "recent_2024_2026": {
+    "events": 92,
+    "correct": 59,
+    "wrong": 33,
+    "accuracy_pct": 64.13,
+    "wilson_95_pct": [
+      53.95,
+      73.18
+    ],
+    "by_event": {
+      "NFP": {
+        "events": 22,
+        "correct": 13,
+        "wrong": 9,
+        "accuracy_pct": 59.09,
+        "wilson_95_pct": [
+          38.73,
+          76.74
+        ]
+      },
+      "GDP": {
+        "events": 7,
+        "correct": 4,
+        "wrong": 3,
+        "accuracy_pct": 57.14,
+        "wilson_95_pct": [
+          25.05,
+          84.18
+        ]
+      },
+      "CPI": {
+        "events": 23,
+        "correct": 18,
+        "wrong": 5,
+        "accuracy_pct": 78.26,
+        "wilson_95_pct": [
+          58.1,
+          90.34
+        ]
+      },
+      "PPI": {
+        "events": 23,
+        "correct": 13,
+        "wrong": 10,
+        "accuracy_pct": 56.52,
+        "wilson_95_pct": [
+          36.81,
+          74.37
+        ]
+      },
+      "FOMC": {
+        "events": 17,
+        "correct": 11,
+        "wrong": 6,
+        "accuracy_pct": 64.71,
+        "wilson_95_pct": [
+          41.3,
+          82.69
+        ]
+      }
+    }
+  },
+  "recent_baseline": {
+    "events": 92,
+    "correct": 55,
+    "wrong": 37,
+    "accuracy_pct": 59.78,
+    "wilson_95_pct": [
+      49.57,
+      69.22
+    ]
+  },
+  "recent_two_month": {
+    "events": 8,
+    "correct": 6,
+    "wrong": 2,
+    "accuracy_pct": 75.0,
+    "wilson_95_pct": [
+      40.93,
+      92.85
+    ]
+  },
+  "five_minute_follow_through": {
+    "events": 234,
+    "correct": 142,
+    "wrong": 92,
+    "accuracy_pct": 60.68,
+    "wilson_95_pct": [
+      54.3,
+      66.72
+    ]
+  },
+  "events": [
+    {
+      "release_utc": "2021-08-06T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -9.393
+    },
+    {
+      "release_utc": "2021-08-11T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.543
+    },
+    {
+      "release_utc": "2021-08-12T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -1.345
+    },
+    {
+      "release_utc": "2021-09-03T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 8.2545
+    },
+    {
+      "release_utc": "2021-09-10T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -0.5535
+    },
+    {
+      "release_utc": "2021-09-14T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 3.727
+    },
+    {
+      "release_utc": "2021-09-22T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 4.872
+    },
+    {
+      "release_utc": "2021-10-08T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 5.91
+    },
+    {
+      "release_utc": "2021-10-13T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.4875
+    },
+    {
+      "release_utc": "2021-10-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.068
+    },
+    {
+      "release_utc": "2021-10-28T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -0.752
+    },
+    {
+      "release_utc": "2021-11-03T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.862
+    },
+    {
+      "release_utc": "2021-11-05T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -3.067
+    },
+    {
+      "release_utc": "2021-11-09T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.7425
+    },
+    {
+      "release_utc": "2021-11-10T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -2.2755
+    },
+    {
+      "release_utc": "2021-12-03T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 7.25
+    },
+    {
+      "release_utc": "2021-12-10T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.5065
+    },
+    {
+      "release_utc": "2021-12-14T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.0665
+    },
+    {
+      "release_utc": "2021-12-15T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -5.345
+    },
+    {
+      "release_utc": "2022-01-07T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 4.41
+    },
+    {
+      "release_utc": "2022-01-12T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -0.6005
+    },
+    {
+      "release_utc": "2022-01-13T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.94
+    },
+    {
+      "release_utc": "2022-01-26T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.24
+    },
+    {
+      "release_utc": "2022-01-27T13:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -1.215
+    },
+    {
+      "release_utc": "2022-02-04T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -5.897
+    },
+    {
+      "release_utc": "2022-02-10T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.907
+    },
+    {
+      "release_utc": "2022-02-15T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -0.675
+    },
+    {
+      "release_utc": "2022-03-04T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.327
+    },
+    {
+      "release_utc": "2022-03-10T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.218
+    },
+    {
+      "release_utc": "2022-03-15T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -3.1915
+    },
+    {
+      "release_utc": "2022-03-16T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -0.945
+    },
+    {
+      "release_utc": "2022-04-01T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -1.095
+    },
+    {
+      "release_utc": "2022-04-12T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.1685
+    },
+    {
+      "release_utc": "2022-04-13T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.882
+    },
+    {
+      "release_utc": "2022-04-28T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 4.7
+    },
+    {
+      "release_utc": "2022-05-04T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 5.385
+    },
+    {
+      "release_utc": "2022-05-06T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 3.575
+    },
+    {
+      "release_utc": "2022-05-11T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.739
+    },
+    {
+      "release_utc": "2022-05-12T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.396
+    },
+    {
+      "release_utc": "2022-06-03T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 0.579
+    },
+    {
+      "release_utc": "2022-06-10T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -2.996
+    },
+    {
+      "release_utc": "2022-06-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.3525
+    },
+    {
+      "release_utc": "2022-06-15T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 1.505
+    },
+    {
+      "release_utc": "2022-07-08T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -6.5005
+    },
+    {
+      "release_utc": "2022-07-13T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.101
+    },
+    {
+      "release_utc": "2022-07-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -1.0225
+    },
+    {
+      "release_utc": "2022-07-27T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -0.7485
+    },
+    {
+      "release_utc": "2022-07-28T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 5.631
+    },
+    {
+      "release_utc": "2022-08-05T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -9.824
+    },
+    {
+      "release_utc": "2022-08-10T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 14.67
+    },
+    {
+      "release_utc": "2022-08-11T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -0.075
+    },
+    {
+      "release_utc": "2022-09-02T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.637
+    },
+    {
+      "release_utc": "2022-09-13T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -13.042
+    },
+    {
+      "release_utc": "2022-09-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -2.368
+    },
+    {
+      "release_utc": "2022-09-21T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -7.76
+    },
+    {
+      "release_utc": "2022-10-07T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -4.401
+    },
+    {
+      "release_utc": "2022-10-12T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.301
+    },
+    {
+      "release_utc": "2022-10-13T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -14.257
+    },
+    {
+      "release_utc": "2022-10-27T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -1.683
+    },
+    {
+      "release_utc": "2022-11-02T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 6.51
+    },
+    {
+      "release_utc": "2022-11-04T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -2.521
+    },
+    {
+      "release_utc": "2022-11-10T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 21.7
+    },
+    {
+      "release_utc": "2022-11-15T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 7.1205
+    },
+    {
+      "release_utc": "2022-12-02T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -12.739
+    },
+    {
+      "release_utc": "2022-12-09T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -8.55
+    },
+    {
+      "release_utc": "2022-12-13T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 14.9435
+    },
+    {
+      "release_utc": "2022-12-14T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -4.97
+    },
+    {
+      "release_utc": "2023-01-06T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.95
+    },
+    {
+      "release_utc": "2023-01-12T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -2.081
+    },
+    {
+      "release_utc": "2023-01-18T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.4125
+    },
+    {
+      "release_utc": "2023-01-26T13:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -4.0685
+    },
+    {
+      "release_utc": "2023-02-01T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -3.295
+    },
+    {
+      "release_utc": "2023-02-03T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -10.2335
+    },
+    {
+      "release_utc": "2023-02-14T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -9.14
+    },
+    {
+      "release_utc": "2023-02-16T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -2.51
+    },
+    {
+      "release_utc": "2023-03-10T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.367
+    },
+    {
+      "release_utc": "2023-03-14T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 3.284
+    },
+    {
+      "release_utc": "2023-03-15T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 4.255
+    },
+    {
+      "release_utc": "2023-03-22T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 9.0065
+    },
+    {
+      "release_utc": "2023-04-12T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 10.9695
+    },
+    {
+      "release_utc": "2023-04-13T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.496
+    },
+    {
+      "release_utc": "2023-04-27T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -4.37
+    },
+    {
+      "release_utc": "2023-05-03T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.438
+    },
+    {
+      "release_utc": "2023-05-05T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -9.323
+    },
+    {
+      "release_utc": "2023-05-10T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 8.14
+    },
+    {
+      "release_utc": "2023-05-11T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 4.4
+    },
+    {
+      "release_utc": "2023-06-02T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -3.1315
+    },
+    {
+      "release_utc": "2023-06-13T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 7.2365
+    },
+    {
+      "release_utc": "2023-06-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.6835
+    },
+    {
+      "release_utc": "2023-06-14T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -6.7595
+    },
+    {
+      "release_utc": "2023-07-07T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -0.122
+    },
+    {
+      "release_utc": "2023-07-12T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 9.273
+    },
+    {
+      "release_utc": "2023-07-13T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.122
+    },
+    {
+      "release_utc": "2023-07-26T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.8915
+    },
+    {
+      "release_utc": "2023-07-27T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -2.3605
+    },
+    {
+      "release_utc": "2023-08-04T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 3.1945
+    },
+    {
+      "release_utc": "2023-08-10T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 4.382
+    },
+    {
+      "release_utc": "2023-08-11T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -3.9445
+    },
+    {
+      "release_utc": "2023-09-01T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 5.59
+    },
+    {
+      "release_utc": "2023-09-13T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -3.305
+    },
+    {
+      "release_utc": "2023-09-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -5.335
+    },
+    {
+      "release_utc": "2023-09-20T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -3.5915
+    },
+    {
+      "release_utc": "2023-10-06T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -4.6465
+    },
+    {
+      "release_utc": "2023-10-11T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -1.46
+    },
+    {
+      "release_utc": "2023-10-12T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -2.055
+    },
+    {
+      "release_utc": "2023-10-26T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 1.035
+    },
+    {
+      "release_utc": "2023-11-01T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 2.8865
+    },
+    {
+      "release_utc": "2023-11-03T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 7.2165
+    },
+    {
+      "release_utc": "2023-11-14T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 10.4705
+    },
+    {
+      "release_utc": "2023-11-15T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.6805
+    },
+    {
+      "release_utc": "2023-12-08T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -9.77
+    },
+    {
+      "release_utc": "2023-12-12T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 4.625
+    },
+    {
+      "release_utc": "2023-12-13T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.71
+    },
+    {
+      "release_utc": "2023-12-13T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 11.057
+    },
+    {
+      "release_utc": "2024-01-05T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -11.46
+    },
+    {
+      "release_utc": "2024-01-11T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -8.4365
+    },
+    {
+      "release_utc": "2024-01-12T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 4.415
+    },
+    {
+      "release_utc": "2024-01-25T13:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -1.37
+    },
+    {
+      "release_utc": "2024-01-31T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -5.0
+    },
+    {
+      "release_utc": "2024-02-02T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -11.165
+    },
+    {
+      "release_utc": "2024-02-13T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -7.39
+    },
+    {
+      "release_utc": "2024-02-16T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -5.913
+    },
+    {
+      "release_utc": "2024-03-08T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 7.1
+    },
+    {
+      "release_utc": "2024-03-12T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -3.75
+    },
+    {
+      "release_utc": "2024-03-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -2.38
+    },
+    {
+      "release_utc": "2024-03-20T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 4.533
+    },
+    {
+      "release_utc": "2024-04-05T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -13.13
+    },
+    {
+      "release_utc": "2024-04-10T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -13.458
+    },
+    {
+      "release_utc": "2024-04-11T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.82
+    },
+    {
+      "release_utc": "2024-04-25T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 1.1935
+    },
+    {
+      "release_utc": "2024-05-01T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 3.435
+    },
+    {
+      "release_utc": "2024-05-03T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 23.1335
+    },
+    {
+      "release_utc": "2024-05-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.375
+    },
+    {
+      "release_utc": "2024-05-15T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 12.6265
+    },
+    {
+      "release_utc": "2024-06-07T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -18.6285
+    },
+    {
+      "release_utc": "2024-06-12T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 7.75
+    },
+    {
+      "release_utc": "2024-06-12T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -5.31
+    },
+    {
+      "release_utc": "2024-06-13T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 9.56
+    },
+    {
+      "release_utc": "2024-07-05T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.24
+    },
+    {
+      "release_utc": "2024-07-11T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 15.94
+    },
+    {
+      "release_utc": "2024-07-12T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -6.6515
+    },
+    {
+      "release_utc": "2024-07-25T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -2.48
+    },
+    {
+      "release_utc": "2024-07-31T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -3.68
+    },
+    {
+      "release_utc": "2024-08-02T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 17.1
+    },
+    {
+      "release_utc": "2024-08-13T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.385
+    },
+    {
+      "release_utc": "2024-08-14T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -0.36
+    },
+    {
+      "release_utc": "2024-09-06T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 6.8285
+    },
+    {
+      "release_utc": "2024-09-11T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.89
+    },
+    {
+      "release_utc": "2024-09-12T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -1.0935
+    },
+    {
+      "release_utc": "2024-09-18T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 12.2615
+    },
+    {
+      "release_utc": "2024-10-04T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -15.7
+    },
+    {
+      "release_utc": "2024-10-10T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.8085
+    },
+    {
+      "release_utc": "2024-10-11T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.77
+    },
+    {
+      "release_utc": "2024-10-30T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -1.53
+    },
+    {
+      "release_utc": "2024-11-01T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 6.37
+    },
+    {
+      "release_utc": "2024-11-07T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -2.43
+    },
+    {
+      "release_utc": "2024-11-13T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 8.963
+    },
+    {
+      "release_utc": "2024-11-14T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -2.315
+    },
+    {
+      "release_utc": "2024-12-06T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 2.5335
+    },
+    {
+      "release_utc": "2024-12-11T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.6195
+    },
+    {
+      "release_utc": "2024-12-12T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.4535
+    },
+    {
+      "release_utc": "2024-12-18T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -3.87
+    },
+    {
+      "release_utc": "2025-01-10T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -7.6265
+    },
+    {
+      "release_utc": "2025-01-14T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.436
+    },
+    {
+      "release_utc": "2025-01-15T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 8.768
+    },
+    {
+      "release_utc": "2025-01-29T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.356
+    },
+    {
+      "release_utc": "2025-01-30T13:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 0.427
+    },
+    {
+      "release_utc": "2025-02-07T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -0.875
+    },
+    {
+      "release_utc": "2025-02-12T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -10.8635
+    },
+    {
+      "release_utc": "2025-02-13T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -1.295
+    },
+    {
+      "release_utc": "2025-03-07T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 6.845
+    },
+    {
+      "release_utc": "2025-03-12T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.0215
+    },
+    {
+      "release_utc": "2025-03-13T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 4.5215
+    },
+    {
+      "release_utc": "2025-03-19T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.25
+    },
+    {
+      "release_utc": "2025-04-04T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 1.2385
+    },
+    {
+      "release_utc": "2025-04-10T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 5.43
+    },
+    {
+      "release_utc": "2025-04-11T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.16
+    },
+    {
+      "release_utc": "2025-04-30T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -3.99
+    },
+    {
+      "release_utc": "2025-05-02T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -8.045
+    },
+    {
+      "release_utc": "2025-05-07T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -0.54
+    },
+    {
+      "release_utc": "2025-05-13T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.58
+    },
+    {
+      "release_utc": "2025-05-15T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.655
+    },
+    {
+      "release_utc": "2025-06-06T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -8.285
+    },
+    {
+      "release_utc": "2025-06-11T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 6.1
+    },
+    {
+      "release_utc": "2025-06-12T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.8485
+    },
+    {
+      "release_utc": "2025-06-18T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.8965
+    },
+    {
+      "release_utc": "2025-07-03T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -13.3715
+    },
+    {
+      "release_utc": "2025-07-15T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.4535
+    },
+    {
+      "release_utc": "2025-07-16T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 1.4765
+    },
+    {
+      "release_utc": "2025-07-30T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -2.327
+    },
+    {
+      "release_utc": "2025-07-30T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 0.46
+    },
+    {
+      "release_utc": "2025-08-01T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 10.9185
+    },
+    {
+      "release_utc": "2025-08-12T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 9.92
+    },
+    {
+      "release_utc": "2025-08-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -8.408
+    },
+    {
+      "release_utc": "2025-09-05T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 19.3135
+    },
+    {
+      "release_utc": "2025-09-10T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 6.5315
+    },
+    {
+      "release_utc": "2025-09-11T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 7.8665
+    },
+    {
+      "release_utc": "2025-09-17T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -4.59
+    },
+    {
+      "release_utc": "2025-10-24T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 29.2865
+    },
+    {
+      "release_utc": "2025-10-29T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -6.4465
+    },
+    {
+      "release_utc": "2025-11-20T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -3.955
+    },
+    {
+      "release_utc": "2025-11-25T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 6.7635
+    },
+    {
+      "release_utc": "2025-12-10T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 16.72
+    },
+    {
+      "release_utc": "2025-12-16T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 4.415
+    },
+    {
+      "release_utc": "2025-12-18T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 9.758
+    },
+    {
+      "release_utc": "2025-12-23T13:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -0.7
+    },
+    {
+      "release_utc": "2026-01-09T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -2.25
+    },
+    {
+      "release_utc": "2026-01-13T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 9.94
+    },
+    {
+      "release_utc": "2026-01-14T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -1.0835
+    },
+    {
+      "release_utc": "2026-01-28T19:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 7.313
+    },
+    {
+      "release_utc": "2026-01-30T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -12.8735
+    },
+    {
+      "release_utc": "2026-02-11T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -60.0015
+    },
+    {
+      "release_utc": "2026-02-13T13:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 27.565
+    },
+    {
+      "release_utc": "2026-02-20T13:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 1.2085
+    },
+    {
+      "release_utc": "2026-02-27T13:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -12.5565
+    },
+    {
+      "release_utc": "2026-03-06T13:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 35.54
+    },
+    {
+      "release_utc": "2026-03-11T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -3.4885
+    },
+    {
+      "release_utc": "2026-03-18T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -9.5
+    },
+    {
+      "release_utc": "2026-03-18T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 5.7665
+    },
+    {
+      "release_utc": "2026-04-10T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 13.5965
+    },
+    {
+      "release_utc": "2026-04-14T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -0.39
+    },
+    {
+      "release_utc": "2026-04-29T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -3.5435
+    },
+    {
+      "release_utc": "2026-04-30T12:30:00+00:00",
+      "event": "GDP",
+      "rule": "event_history",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 2.515
+    },
+    {
+      "release_utc": "2026-05-08T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -2.236
+    },
+    {
+      "release_utc": "2026-05-12T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.0535
+    },
+    {
+      "release_utc": "2026-05-13T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -4.3215
+    },
+    {
+      "release_utc": "2026-06-05T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": false,
+      "actual_move_usd": -14.755
+    },
+    {
+      "release_utc": "2026-06-10T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 27.8235
+    },
+    {
+      "release_utc": "2026-06-11T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 2.9515
+    },
+    {
+      "release_utc": "2026-06-17T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "correct": true,
+      "actual_move_usd": -31.935
+    },
+    {
+      "release_utc": "2026-07-02T12:30:00+00:00",
+      "event": "NFP",
+      "rule": "inverse_last",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 52.13
+    },
+    {
+      "release_utc": "2026-07-14T12:30:00+00:00",
+      "event": "CPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 60.54
+    },
+    {
+      "release_utc": "2026-07-15T12:30:00+00:00",
+      "event": "PPI",
+      "rule": "event_history",
+      "predicted_gold_impact": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": true,
+      "actual_move_usd": 8.75
+    },
+    {
+      "release_utc": "2026-07-29T18:00:00+00:00",
+      "event": "FOMC",
+      "rule": "inverse_majority_5",
+      "predicted_gold_impact": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "correct": false,
+      "actual_move_usd": 32.425
+    }
+  ]
+}

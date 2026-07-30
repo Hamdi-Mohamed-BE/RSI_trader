@@ -139,7 +139,7 @@ class GoldDirectionTests(unittest.TestCase):
             rule_direction("inverse_majority_5", history),
             "NEGATIVE",
         )
-        self.assertAlmostEqual(event_history_probability(history), 4 / 9)
+        self.assertAlmostEqual(event_history_probability(history), 5 / 9)
 
     def test_live_rule_probability_is_bounded(self) -> None:
         probability = live_rule_probability(

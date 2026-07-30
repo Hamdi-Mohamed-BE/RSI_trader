@@ -14,14 +14,13 @@ The selective legacy model remains the stronger historical reference because
 it produced better return, profit factor, and drawdown in the same one-year
 broker sample.
 
-| Model at 10% risk | Trades | Win rate | PF | Net R | Return | Realized DD |
+| Model | Trades | Win rate | PF | Net R | Return | Realized DD |
 |---|---:|---:|---:|---:|---:|---:|
-| Selective legacy reference | 12 | 91.67% | 9.87 | +13.95R | +226.16% | 10.00% |
-| Article-aligned higher frequency | 67 | 85.07% | 1.76 | +10.70R | +150.66% | 21.47% |
+| Selective legacy reference, 10% risk | 12 | 91.67% | 9.87 | +13.95R | +226.16% | 10.00% |
+| Expanded AMD default, 3% risk | 64 | 85.94% | 2.20 | +12.20R | +41.80% | 6.66% |
 
-The higher-frequency model generated 5.6 times as many trades, but its edge was
-weaker. At the more balanced 3% risk, it produced PF 1.97, +35.94% return, and
-6.66% realized drawdown.
+The protected default uses a three-hour London scan, 2R targets and the
+existing +0.30R to +0.15R protective-stop rule.
 
 Past results are not a guarantee. The article provides testable behavior, not
 proof of a profitable edge.
@@ -42,13 +41,13 @@ Selected by setting `STRATEGY_MODEL=legacy`:
 Selected by `STRATEGY_MODEL=article` in `.env`:
 
 1. Accumulation is the full-wick Asia range from 00:00-08:00 UTC.
-2. Scan completed M5 candles during the first four hours of London.
+2. Scan completed M5 candles during the first three hours of London.
 3. A manipulation fade requires a wick beyond the range and a close back
    inside. The sweep must be 2%-60% of the Asia-range height.
 4. A distribution continuation requires an M5 close outside the range,
    pullback to its edge, and directional M5 close that holds the edge.
 5. Enter on the next minute, never inside the confirmation candle.
-6. Target 1.5R; at +0.30R, move the stop to +0.15R.
+6. Target 2R; at +0.30R, move the stop to +0.15R.
 7. Keep the regime filter and take at most one setup per day.
 
 The one-year research was separated chronologically into 60% train, 20%
@@ -57,8 +56,8 @@ the segments, including 27 trades, PF 1.91, +5.05R, and 4.20% realized
 drawdown in the final segment at 3% risk. That segment has now been reviewed,
 so the next meaningful evidence must come from forward testing.
 
-The 85.07% full-year win rate includes 48 small +0.15R protected-stop exits,
-9 full +1.5R targets, and 10 full -1R stops.
+The 85.94% full-year win rate includes 48 small +0.15R protected-stop exits,
+7 full +2R targets, and 9 full -1R stops.
 
 ## Run
 

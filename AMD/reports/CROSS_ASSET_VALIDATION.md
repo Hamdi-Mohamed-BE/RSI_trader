@@ -1,5 +1,11 @@
 # Expanded AMD Cross-Asset Validation
 
+> Historical comparison note: the non-XAU basket in this report used the
+> earlier four-hour London window and 1.5R target. The current protected
+> default was subsequently improved to a three-hour window and 2R target.
+> Its current XAU result is 64 trades, 85.94% win rate, PF 2.20, +12.20R
+> and 6.66% max drawdown.
+
 - Period: 2025-07-30 to 2026-07-30
 - Source: connected MT5 account, MEXAtlantic-Demo
 - Starting balance: $1,000 per symbol

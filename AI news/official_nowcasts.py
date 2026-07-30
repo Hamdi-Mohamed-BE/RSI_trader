@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import io
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import openpyxl
@@ -134,7 +134,7 @@ def refresh_official_nowcasts() -> dict:
     atlanta = requests.get(ATLANTA_URL, timeout=90)
     atlanta.raise_for_status()
     payload = {
-        "generated_at_utc": datetime.utcnow().isoformat() + "Z",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "sources": {
             "cleveland_fed": CLEVELAND_URL,
             "atlanta_fed": ATLANTA_URL,

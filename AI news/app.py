@@ -115,23 +115,26 @@ def index() -> str:
 
 @app.get("/api/health")
 def health() -> dict:
-    models = {
+    legacy_models = {
         lead: (ROOT / "models" / f"gold_news_impulse_{lead}m.joblib").exists()
         for lead in (15, 30)
     }
-    models["gold_direction"] = (
+    direction_ready = (
         ROOT / "models" / "gold_news_direction.joblib"
     ).exists()
     return {
-        "status": "ok" if all(models.values()) else "models_missing",
-        "models": models,
+        "status": "ok" if direction_ready else "model_missing",
+        "models": {
+            "gold_direction_v2": direction_ready,
+            "legacy_research": legacy_models,
+        },
         "trade_execution": False,
     }
 
 
 @app.get("/api/backtest")
 def backtest() -> dict:
-    path = ROOT / "gold_direction_backtest.json"
+    path = ROOT / "gold_direction_v2.json"
     if not path.exists():
         raise HTTPException(status_code=404, detail="Run train_model.bat first.")
     return json.loads(path.read_text(encoding="utf-8"))
