@@ -13,15 +13,16 @@ Accumulation-Manipulation-Distribution routine.
    - No London trade is placed.
 3. New York distribution/reversal:
    - Direction must be opposite the London reference.
-   - Rest a liquidity-limit order during the first 45 minutes from 13:30 UTC.
-   - If the limit does not fill, cancel it and replace it with a buy stop
-     above or sell stop below that 45-minute range.
-   - The limit target is 5R and the replacement stop target is 4R.
-   - The stop buffer is 5% of the Asia range, subject to the minimum
-     spread-based protection.
+   - Observe the first 70 minutes from 13:30 UTC.
+   - Place only a buy stop above or sell stop below that range.
+   - The target is 2.25R.
+   - The stop goes beyond the opposite side plus 24% of the Asia range,
+     subject to the minimum spread-based protection.
    - The pending order expires at 16:00 UTC.
-4. The single active leg risks 3% of current balance.
-5. At +0.50R, its stop advances to +0.15R.
+4. The single active leg risks at most 3% of current equity. Lot size is
+   rounded down to the broker step; the order is skipped if the minimum lot
+   would exceed the risk cap.
+5. At +0.20R, its stop advances to +0.04R.
 6. Remaining trades close at 21:00 UTC.
 7. Backtests use M1 broker history and historical spread. Ambiguous candles are
    evaluated pessimistically: stop first.
@@ -36,8 +37,20 @@ uv run amd-bot backtest --days 60
 
 Or double-click `run_backtest.bat`.
 
-`run_live.bat` currently starts a dry-run scanner. Real order submission is
-intentionally locked until the strategy passes forward validation.
+`run_live.bat` starts live execution when `.env` contains
+`ENABLE_TRADING=true` and `DRY_RUN=false`.
+
+Live safeguards:
+
+- auto-connects to the MT5 account that is already open;
+- discovers the broker's XAU symbol;
+- tries broker-compatible RETURN, IOC, and FOK filling modes;
+- never chases a stop trigger that was crossed while the bot was offline;
+- prevents another bot order after an order, position, or deal exists that day;
+- cancels pending orders at 16:00 UTC;
+- advances the stop according to the configured R rule;
+- force-closes remaining bot positions at 21:00 UTC;
+- never modifies manual trades or orders with a different magic number.
 
 ## Chart overlay
 

@@ -52,6 +52,7 @@ class Config:
     dry_run: bool
     magic: int
     poll_seconds: int
+    deviation_points: int
     log_level: str
     root: Path
 
@@ -92,6 +93,7 @@ def load_config(env_path: str | Path | None = None) -> Config:
         dry_run=_bool("DRY_RUN", True),
         magic=int(os.getenv("MAGIC", "300730")),
         poll_seconds=int(os.getenv("POLL_SECONDS", "15")),
+        deviation_points=int(os.getenv("DEVIATION_POINTS", "30")),
         log_level=os.getenv("LOG_LEVEL", "INFO").upper(),
         root=root,
     )
