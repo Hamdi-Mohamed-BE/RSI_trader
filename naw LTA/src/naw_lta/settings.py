@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     celery_broker: str = "sqla+sqlite:///./data/celery_broker.sqlite"
     celery_backend: str = "db+sqlite:///./data/celery_results.sqlite"
     databento_api_key: str = Field(default="", validation_alias="DATABENTO_API_KEY")
+    force_live_execution: bool = False
 
 
 settings = Settings()

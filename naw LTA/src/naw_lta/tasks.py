@@ -12,6 +12,7 @@ from .engine.profile import VolumeProfile, build_bar_profile
 from .engine.strategy import LtaOrderFlowEngine
 from .models import BacktestRun, BacktestSymbolResult, ScanSnapshot
 from .providers import DatabentoProvider
+from .settings import settings
 from .services.config_store import get_runtime_config, get_runtime_state, save_runtime_config
 from .services.live_data import LiveDataStore
 from .services.mt5_execution import MT5Bridge
@@ -27,6 +28,13 @@ def scan_market() -> dict[str, Any]:
     with SessionLocal() as db:
         state = get_runtime_state(db)
         config = get_runtime_config(db)
+        if settings.force_live_execution:
+            config = config.model_copy(
+                update={
+                    "execution_mode": "mt5",
+                    "mt5_live_orders_enabled": True,
+                }
+            )
         if not state.worker_enabled:
             return {"status": "disabled"}
         now = datetime.now(timezone.utc)
