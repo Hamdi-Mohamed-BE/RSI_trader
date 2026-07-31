@@ -630,6 +630,25 @@ def validate_execution_flags(config: Config) -> None:
         )
 
 
+def required_live_history_days(config: Config) -> int:
+    """Return enough calendar history to warm every rolling regime input.
+
+    ATR itself needs ``regime_atr_days`` completed sessions and its relative
+    baseline then needs another ``regime_atr_median_days`` ATR observations.
+    The old calculation omitted that second window, which made the regime
+    permanently incomplete when the ATR median was longer than the Asia-range
+    median.  Convert required trading sessions to calendar days and retain a
+    two-week cushion for weekends, holidays, and a missing broker session.
+    """
+    if not config.regime_filter_enabled:
+        return 14
+    required_sessions = max(
+        config.regime_atr_days + config.regime_atr_median_days + 3,
+        config.regime_asia_median_days + 2,
+    )
+    return max(70, math.ceil(required_sessions * 7 / 5) + 14)
+
+
 def run_live(config: Config, once: bool = False) -> None:
     global _active_config
     _active_config = config
@@ -637,10 +656,7 @@ def run_live(config: Config, once: bool = False) -> None:
     while True:
         now = datetime.now(UTC)
         day_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        history_days = max(
-            config.regime_atr_days,
-            config.regime_asia_median_days,
-        ) * 2
+        history_days = required_live_history_days(config)
         history_start = day_start - timedelta(days=history_days)
         with connection() as account:
             mode = (
