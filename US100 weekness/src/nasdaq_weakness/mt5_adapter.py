@@ -51,13 +51,23 @@ def symbol_score(name: str, canonical: str = "US100") -> tuple[int, int, str]:
         "NASDAQ100": 970,
         "NDX100": 960,
         "NQ100": 950,
+        "TECH100": 940,
     }
     score = exacts.get(clean, 0)
-    aliases = ("US100", "NAS100", "USTEC", "NASDAQ", "NDX", "NQ")
+    aliases = (
+        "US100",
+        "NAS100",
+        "USTEC",
+        "NASDAQ",
+        "TECH100",
+        "NDX",
+        "NQ100",
+    )
     for rank, alias in enumerate(aliases):
         if alias in clean:
             score = max(score, 900 - rank * 10)
-    if canonical and re.sub(r"[^A-Z0-9]", "", canonical.upper()) in clean:
+    canonical_clean = re.sub(r"[^A-Z0-9]", "", canonical.upper())
+    if canonical_clean and canonical_clean != "AUTO" and canonical_clean in clean:
         score += 100
     if re.search(r"[HMUZ]\d{1,2}$", clean):
         score -= 20
@@ -122,7 +132,7 @@ def discover_symbol(canonical: str = "US100") -> str:
         raise MT5Error(
             f"No tradeable Nasdaq-100 symbol found for {requested!r}. "
             "Expected the exact broker symbol or an alias such as US100, "
-            f"NAS100, USTEC, NDX, or NASDAQ.{detail}"
+            f"NAS100, USTEC/USTECm (Exness), TECH100, NDX, or NASDAQ.{detail}"
         )
     candidates.sort(reverse=True)
     symbol = candidates[0][1]

@@ -14,6 +14,7 @@ from .mt5_adapter import (
     account_summary,
     cancel_order,
     close_position,
+    connection,
     discover_symbol,
     fetch_m1,
     modify_position_stop,
@@ -130,11 +131,27 @@ def run_live(config: Config, cycles: int = 0) -> None:
             "first. Unlocking requires ENABLE_TRADING=true, DRY_RUN=false, "
             "and the explicit LIVE_UNLOCK acknowledgement."
         )
+    # The CLI account/backtest commands already open an MT5 connection, but
+    # the live worker is invoked directly by run_live.bat.  It must own the
+    # MT5 lifecycle as well; otherwise symbols_get() is empty and automatic
+    # broker-symbol discovery cannot work.
+    with connection():
+        _run_live_connected(config, cycles)
+
+
+def _run_live_connected(config: Config, cycles: int = 0) -> None:
+    account = account_summary()
+    symbol = discover_symbol(config.canonical_symbol)
+    print(
+        "CONNECTED MT5 | "
+        f"server={account['server']} | login={account['login']} | "
+        f"balance={account['balance']:.2f} {account['currency']} | "
+        f"Nasdaq-100={symbol}"
+    )
     state_path = config.logs_dir / "live_state.json"
     completed_cycles = 0
     while cycles <= 0 or completed_cycles < cycles:
         now = datetime.now(timezone.utc)
-        symbol = discover_symbol(config.canonical_symbol)
         frame = fetch_m1(symbol, now - timedelta(days=14), now)
         plan = _current_plan(frame, symbol, config, now)
         _manage(frame, symbol, config, plan, now)

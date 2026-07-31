@@ -23,7 +23,7 @@ def _clock(name: str, default: str) -> tuple[int, int]:
 @dataclass(frozen=True)
 class Config:
     project_dir: Path
-    canonical_symbol: str = "US100"
+    canonical_symbol: str = "AUTO"
     history_days: int = 365
     risk_pct: float = 2.0
     max_daily_risk_pct: float = 2.0
@@ -100,7 +100,7 @@ def load_config(project_dir: Path | None = None) -> Config:
         project_dir=base,
         # Preserve broker-specific casing. MT5 symbol lookup is case-sensitive
         # for names such as USTEC_x100m; scoring normalizes case separately.
-        canonical_symbol=os.getenv("CANONICAL_SYMBOL", "US100").strip(),
+        canonical_symbol=os.getenv("CANONICAL_SYMBOL", "AUTO").strip(),
         history_days=int(os.getenv("HISTORY_DAYS", "365")),
         risk_pct=float(os.getenv("RISK_PCT", "2.0")),
         max_daily_risk_pct=float(os.getenv("MAX_DAILY_RISK_PCT", "2.0")),
