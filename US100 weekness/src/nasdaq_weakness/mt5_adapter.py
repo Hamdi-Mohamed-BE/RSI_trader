@@ -64,9 +64,44 @@ def symbol_score(name: str, canonical: str = "US100") -> tuple[int, int, str]:
     return score, -len(name), name
 
 
+def _activate_symbol(name: str) -> str | None:
+    """Select an exact broker symbol and confirm that it can be traded."""
+    info = mt5.symbol_info(name)
+    if info is None:
+        return None
+    if not mt5.symbol_select(name, True):
+        return None
+    refreshed = mt5.symbol_info(name)
+    if (
+        refreshed is None
+        or refreshed.trade_mode == mt5.SYMBOL_TRADE_MODE_DISABLED
+    ):
+        return None
+    return str(getattr(refreshed, "name", name))
+
+
 def discover_symbol(canonical: str = "US100") -> str:
+    requested = canonical.strip()
+
+    # A configured value may be the broker's exact case-sensitive symbol,
+    # not merely a generic alias. Resolve it before scanning the catalogue.
+    if requested:
+        direct = _activate_symbol(requested)
+        if direct:
+            return direct
+
+    catalogue = tuple(mt5.symbols_get() or ())
+
+    # If the environment changed the case (or an editor normalized it), find
+    # the catalogue's exact spelling before applying fuzzy alias scoring.
+    for item in catalogue:
+        if requested and item.name.casefold() == requested.casefold():
+            exact = _activate_symbol(item.name)
+            if exact:
+                return exact
+
     candidates: list[tuple[tuple[int, int, str], str]] = []
-    for item in mt5.symbols_get() or ():
+    for item in catalogue:
         score = symbol_score(item.name, canonical)
         if score[0] <= 0:
             continue
@@ -75,9 +110,19 @@ def discover_symbol(canonical: str = "US100") -> str:
             continue
         candidates.append((score, item.name))
     if not candidates:
+        nearby = sorted(
+            item.name
+            for item in catalogue
+            if re.search(
+                r"US100|NAS|USTEC|TECH100|NDX|NQ",
+                re.sub(r"[^A-Z0-9]", "", item.name.upper()),
+            )
+        )[:20]
+        detail = f" Nearby catalogue symbols: {', '.join(nearby)}." if nearby else ""
         raise MT5Error(
-            "No tradeable Nasdaq-100 symbol found. Expected a broker alias "
-            "such as US100, NAS100, USTEC, NDX, or NASDAQ."
+            f"No tradeable Nasdaq-100 symbol found for {requested!r}. "
+            "Expected the exact broker symbol or an alias such as US100, "
+            f"NAS100, USTEC, NDX, or NASDAQ.{detail}"
         )
     candidates.sort(reverse=True)
     symbol = candidates[0][1]

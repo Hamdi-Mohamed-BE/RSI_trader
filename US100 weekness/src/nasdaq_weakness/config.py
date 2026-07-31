@@ -98,7 +98,9 @@ def load_config(project_dir: Path | None = None) -> Config:
     load_dotenv(base / ".env", override=False)
     cfg = Config(
         project_dir=base,
-        canonical_symbol=os.getenv("CANONICAL_SYMBOL", "US100").upper(),
+        # Preserve broker-specific casing. MT5 symbol lookup is case-sensitive
+        # for names such as USTEC_x100m; scoring normalizes case separately.
+        canonical_symbol=os.getenv("CANONICAL_SYMBOL", "US100").strip(),
         history_days=int(os.getenv("HISTORY_DAYS", "365")),
         risk_pct=float(os.getenv("RISK_PCT", "2.0")),
         max_daily_risk_pct=float(os.getenv("MAX_DAILY_RISK_PCT", "2.0")),
