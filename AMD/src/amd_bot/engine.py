@@ -46,6 +46,7 @@ class RegimeState:
     ready: bool
     allowed: bool
     atr_pct: float
+    atr_ratio: float
     asia_ratio: float
     reason: str
 
@@ -97,6 +98,16 @@ def regime_states(
         .mean()
     )
     daily["atr_pct"] = daily["atr"] / previous_close * 100.0
+    daily["atr_median"] = (
+        daily["atr"]
+        .shift(1)
+        .rolling(
+            config.regime_atr_median_days,
+            min_periods=config.regime_atr_median_days,
+        )
+        .median()
+    )
+    daily["atr_ratio"] = daily["atr"] / daily["atr_median"]
     daily["asia_median"] = (
         daily["asia_range"]
         .shift(1)
@@ -109,30 +120,40 @@ def regime_states(
     daily["asia_ratio"] = daily["asia_range"] / daily["asia_median"]
     result: dict[date, RegimeState] = {}
     for row in daily.itertuples(index=False):
+        atr_value = (
+            float(row.atr_ratio)
+            if config.regime_use_relative_atr
+            else float(row.atr_pct)
+        )
+        atr_minimum = (
+            config.regime_atr_ratio_min
+            if config.regime_use_relative_atr
+            else config.regime_atr_pct_min
+        )
+        atr_maximum = (
+            config.regime_atr_ratio_max
+            if config.regime_use_relative_atr
+            else config.regime_atr_pct_max
+        )
         ready = bool(
-            math.isfinite(float(row.atr_pct))
+            math.isfinite(atr_value)
             and math.isfinite(float(row.asia_ratio))
         )
         allowed = bool(
             ready
-            and config.regime_atr_pct_min
-            <= float(row.atr_pct)
-            <= config.regime_atr_pct_max
+            and atr_minimum <= atr_value <= atr_maximum
             and config.regime_asia_ratio_min
             <= float(row.asia_ratio)
             <= config.regime_asia_ratio_max
         )
         if not ready:
             reason = "regime history incomplete"
-        elif not (
-            config.regime_atr_pct_min
-            <= float(row.atr_pct)
-            <= config.regime_atr_pct_max
-        ):
+        elif not (atr_minimum <= atr_value <= atr_maximum):
+            label = "ATR ratio" if config.regime_use_relative_atr else "ATR"
+            suffix = "" if config.regime_use_relative_atr else "%"
             reason = (
-                f"ATR regime {float(row.atr_pct):.2f}% outside "
-                f"{config.regime_atr_pct_min:.2f}-"
-                f"{config.regime_atr_pct_max:.2f}%"
+                f"{label} regime {atr_value:.2f}{suffix} outside "
+                f"{atr_minimum:.2f}-{atr_maximum:.2f}{suffix}"
             )
         elif not (
             config.regime_asia_ratio_min
@@ -145,14 +166,28 @@ def regime_states(
                 f"{config.regime_asia_ratio_max:.2f}"
             )
         else:
+            atr_description = (
+                f"ATR ratio {float(row.atr_ratio):.2f}"
+                if config.regime_use_relative_atr
+                else f"ATR {float(row.atr_pct):.2f}%"
+            )
             reason = (
-                f"regime accepted: ATR {float(row.atr_pct):.2f}%, "
+                f"regime accepted: {atr_description}, "
                 f"Asia ratio {float(row.asia_ratio):.2f}"
             )
         result[row.day] = RegimeState(
             ready=ready,
             allowed=allowed,
-            atr_pct=float(row.atr_pct) if ready else math.nan,
+            atr_pct=(
+                float(row.atr_pct)
+                if math.isfinite(float(row.atr_pct))
+                else math.nan
+            ),
+            atr_ratio=(
+                float(row.atr_ratio)
+                if math.isfinite(float(row.atr_ratio))
+                else math.nan
+            ),
             asia_ratio=float(row.asia_ratio) if ready else math.nan,
             reason=reason,
         )

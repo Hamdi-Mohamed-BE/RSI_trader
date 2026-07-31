@@ -200,6 +200,14 @@ def command_backtest(args: argparse.Namespace) -> None:
         ).strip("_")
         report_name = f"{safe_env.upper()}_REPORT.md"
         summary_stem = f"summary_{safe_env}"
+    if args.report_name:
+        requested_report = Path(args.report_name).name
+        report_name = (
+            requested_report
+            if requested_report.lower().endswith(".md")
+            else f"{requested_report}.md"
+        )
+        summary_stem = Path(report_name).stem.lower()
     end = (
         datetime.strptime(args.end, "%Y-%m-%d").replace(tzinfo=UTC)
         if args.end
@@ -338,6 +346,10 @@ def build_parser() -> argparse.ArgumentParser:
     backtest.add_argument("--end")
     backtest.add_argument("--symbols")
     backtest.add_argument("--refresh", action="store_true")
+    backtest.add_argument(
+        "--report-name",
+        help="Save this run under a distinct report name",
+    )
     backtest.set_defaults(func=command_backtest)
     live = sub.add_parser("live", help="Run the protected live scanner")
     live.add_argument("--env")

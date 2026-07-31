@@ -195,7 +195,10 @@ def _update_artifact(
     if not MODEL_PATH.exists():
         return
     artifact = joblib.load(MODEL_PATH)
-    artifact["artifact_version"] = 2
+    artifact["artifact_version"] = max(
+        2,
+        int(artifact.get("artifact_version", 1)),
+    )
     artifact["direction_rule_policy"] = {
         "rules": policy,
         "reliability": _reliability(rows, policy),

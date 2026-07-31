@@ -21,11 +21,19 @@ uv run python backtest_gold_direction_5y.py
 if errorlevel 1 goto :failed
 uv run python backtest_gold_direction_v2.py
 if errorlevel 1 goto :failed
+uv run python backtest_fomc_pipeline.py
+if errorlevel 1 goto :failed
+uv run python backtest_fomc_frozen_holdout.py
+if errorlevel 1 goto :failed
+uv run python backtest_fomc_regime.py
+if errorlevel 1 goto :failed
+uv run python backtest_fomc_regime_walkforward.py
+if errorlevel 1 goto :failed
 uv run python official_nowcasts.py
 if errorlevel 1 echo Official nowcast refresh skipped; the validated model is still ready.
 
 echo.
-echo Binary gold-direction V2 model and reports completed.
+echo Binary gold-direction V2, FOMC ensemble, and regime audit reports completed.
 pause
 exit /b 0
 

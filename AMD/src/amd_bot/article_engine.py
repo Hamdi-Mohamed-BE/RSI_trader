@@ -34,6 +34,19 @@ class ArticleParams:
     retest_tolerance_fraction: float = 0.04
     stop_buffer_fraction: float = 0.03
     volume_factor: float = 0.0
+    require_directional_confirmation: bool = False
+    min_body_fraction: float = 0.0
+    min_close_location: float = 0.0
+    fade_reclaim_fraction: float = 0.0
+    fade_confirmation_mode: str = "immediate"
+    fade_mss_lookahead_bars: int = 6
+    distribution_hold_fraction: float = 0.0
+    breakout_max_fraction: float = 0.0
+    max_risk_fraction: float = 0.0
+    trend_filter_mode: str = "none"
+    trend_fast: int = 8
+    trend_slow: int = 24
+    trend_price_alignment: bool = True
     use_regime_filter: bool = False
     london_window_minutes: int = 240
     ny_window_minutes: int = 180
@@ -66,6 +79,23 @@ def params_from_config(config: Config) -> ArticleParams:
         retest_tolerance_fraction=config.article_retest_tolerance_fraction,
         stop_buffer_fraction=config.article_stop_buffer_fraction,
         volume_factor=config.article_volume_factor,
+        require_directional_confirmation=(
+            config.article_require_directional_confirmation
+        ),
+        min_body_fraction=config.article_min_body_fraction,
+        min_close_location=config.article_min_close_location,
+        fade_reclaim_fraction=config.article_fade_reclaim_fraction,
+        fade_confirmation_mode=config.article_fade_confirmation_mode,
+        fade_mss_lookahead_bars=config.article_fade_mss_lookahead_bars,
+        distribution_hold_fraction=(
+            config.article_distribution_hold_fraction
+        ),
+        breakout_max_fraction=config.article_breakout_max_fraction,
+        max_risk_fraction=config.article_max_risk_fraction,
+        trend_filter_mode=config.article_trend_filter_mode,
+        trend_fast=config.article_trend_fast,
+        trend_slow=config.article_trend_slow,
+        trend_price_alignment=config.article_trend_price_alignment,
         use_regime_filter=config.regime_filter_enabled,
         london_window_minutes=config.article_london_window_minutes,
         ny_window_minutes=config.article_ny_window_minutes,
@@ -88,6 +118,99 @@ def _volume_ok(row: pd.Series, factor: float) -> bool:
         return True
     median = float(row.get("prior_volume_median", math.nan))
     return math.isfinite(median) and float(row["tick_volume"]) >= median * factor
+
+
+def _confirmation_ok(
+    row: pd.Series,
+    side: str,
+    params: ArticleParams,
+) -> bool:
+    candle_range = float(row["high"]) - float(row["low"])
+    if candle_range <= 0:
+        return False
+    open_price = float(row["open"])
+    close = float(row["close"])
+    if params.require_directional_confirmation:
+        if side == "buy" and close <= open_price:
+            return False
+        if side == "sell" and close >= open_price:
+            return False
+    body_fraction = abs(close - open_price) / candle_range
+    if body_fraction < params.min_body_fraction:
+        return False
+    close_location = (
+        (close - float(row["low"])) / candle_range
+        if side == "buy"
+        else (float(row["high"]) - close) / candle_range
+    )
+    return close_location >= params.min_close_location
+
+
+def _risk_ok(risk: float, asia_range: float, params: ArticleParams) -> bool:
+    if risk <= 0:
+        return False
+    return (
+        params.max_risk_fraction <= 0
+        or risk <= asia_range * params.max_risk_fraction
+    )
+
+
+def _trend_biases(
+    frame: pd.DataFrame,
+    config: Config,
+    params: ArticleParams,
+    start: datetime,
+    end: datetime,
+) -> dict[date, str]:
+    mode = params.trend_filter_mode
+    dates = pd.date_range(start.date(), end.date(), freq="D", inclusive="left")
+    if mode == "none":
+        return {}
+    if mode in {"long_only", "short_only"}:
+        side = "buy" if mode == "long_only" else "sell"
+        return {stamp.date(): side for stamp in dates}
+    if mode != "h1_ema":
+        raise ValueError(f"Unsupported trend filter mode: {mode}")
+    if params.trend_fast < 1 or params.trend_slow <= params.trend_fast:
+        raise ValueError("H1 trend periods must satisfy 1 <= fast < slow")
+    hourly = resample_ohlc(frame, "1h")
+    if hourly.empty:
+        return {}
+    hourly["end_time"] = hourly["time"] + pd.Timedelta(hours=1)
+    hourly["fast"] = hourly["close"].ewm(
+        span=params.trend_fast,
+        adjust=False,
+        min_periods=params.trend_fast,
+    ).mean()
+    hourly["slow"] = hourly["close"].ewm(
+        span=params.trend_slow,
+        adjust=False,
+        min_periods=params.trend_slow,
+    ).mean()
+    result: dict[date, str] = {}
+    for stamp in dates:
+        day = stamp.date()
+        decision_time = combine(day, config.london_start)
+        completed = hourly.loc[hourly["end_time"] <= decision_time]
+        if completed.empty:
+            continue
+        row = completed.iloc[-1]
+        fast = float(row["fast"])
+        slow = float(row["slow"])
+        close = float(row["close"])
+        if not (math.isfinite(fast) and math.isfinite(slow)):
+            continue
+        bullish = fast > slow and (
+            not params.trend_price_alignment or close >= fast
+        )
+        bearish = fast < slow and (
+            not params.trend_price_alignment or close <= fast
+        )
+        if bullish:
+            result[day] = "buy"
+        elif bearish:
+            result[day] = "sell"
+    return result
 
 
 def _next_m1_index(day_frame: pd.DataFrame, when: datetime) -> int | None:
@@ -126,7 +249,8 @@ def _fade_candidates(
     minimum = asia_range * params.sweep_min_fraction
     maximum = asia_range * params.sweep_max_fraction
     stop_buffer = max(asia_range * params.stop_buffer_fraction, point)
-    for _, row in session.iterrows():
+    rows = list(session.iterrows())
+    for position, (_, row) in enumerate(rows):
         if not _volume_ok(row, params.volume_factor):
             continue
         high_sweep = float(row["high"]) - asia_high
@@ -150,13 +274,53 @@ def _fade_candidates(
             structural_stop = float(row["low"]) - stop_buffer
         if side is None:
             continue
-        entry_time = row["end_time"].to_pydatetime()
+        close = float(row["close"])
+        if side == "sell" and close > (
+            asia_high - asia_range * params.fade_reclaim_fraction
+        ):
+            continue
+        if side == "buy" and close < (
+            asia_low + asia_range * params.fade_reclaim_fraction
+        ):
+            continue
+        if not _confirmation_ok(row, side, params):
+            continue
+        confirmation = row
+        if params.fade_confirmation_mode == "mss":
+            confirmation = None
+            sweep_low = float(row["low"])
+            sweep_high = float(row["high"])
+            for _, follow in rows[
+                position + 1 :
+                position + 1 + params.fade_mss_lookahead_bars
+            ]:
+                bearish_break = (
+                    side == "sell"
+                    and float(follow["close"]) < sweep_low
+                    and float(follow["close"]) < float(follow["open"])
+                )
+                bullish_break = (
+                    side == "buy"
+                    and float(follow["close"]) > sweep_high
+                    and float(follow["close"]) > float(follow["open"])
+                )
+                if bearish_break or bullish_break:
+                    confirmation = follow
+                    break
+            if confirmation is None:
+                continue
+        elif params.fade_confirmation_mode != "immediate":
+            raise ValueError(
+                "Unsupported fade confirmation mode: "
+                f"{params.fade_confirmation_mode}"
+            )
+        entry_time = confirmation["end_time"].to_pydatetime()
         entry_idx = _next_m1_index(day_frame, entry_time)
         if entry_idx is None:
             continue
         entry = _market_entry(day_frame, entry_idx, side, point)
         risk = abs(entry - structural_stop)
-        if risk <= point:
+        if risk <= point or not _risk_ok(risk, asia_range, params):
             continue
         target = (
             entry + params.fade_rr * risk
@@ -211,6 +375,17 @@ def _distribution_candidates(
             edge = asia_low
         if side is None:
             continue
+        breakout_extension = (
+            float(breakout["close"]) - asia_high
+            if side == "buy"
+            else asia_low - float(breakout["close"])
+        )
+        if (
+            params.breakout_max_fraction > 0
+            and breakout_extension
+            > asia_range * params.breakout_max_fraction
+        ):
+            continue
         for _, retest in rows[position + 1 :]:
             if retest["time"] >= end:
                 break
@@ -230,6 +405,17 @@ def _distribution_candidates(
                 continue
             if not _volume_ok(retest, params.volume_factor):
                 continue
+            close = float(retest["close"])
+            if side == "buy" and close < (
+                edge + asia_range * params.distribution_hold_fraction
+            ):
+                continue
+            if side == "sell" and close > (
+                edge - asia_range * params.distribution_hold_fraction
+            ):
+                continue
+            if not _confirmation_ok(retest, side, params):
+                continue
             entry_time = retest["end_time"].to_pydatetime()
             entry_idx = _next_m1_index(day_frame, entry_time)
             if entry_idx is None:
@@ -241,7 +427,7 @@ def _distribution_candidates(
                 else max(float(retest["high"]) + stop_buffer, edge + stop_buffer)
             )
             risk = abs(entry - stop)
-            if risk <= point:
+            if risk <= point or not _risk_ok(risk, asia_range, params):
                 break
             target = (
                 entry + params.distribution_rr * risk
@@ -270,6 +456,7 @@ def article_candidates_for_day(
     config: Config,
     params: ArticleParams,
     day: date,
+    allowed_side: str | None = None,
 ) -> tuple[list[Candidate], float, float]:
     asia_start = combine(day, config.asia_start)
     asia_end = combine(day, config.asia_end)
@@ -335,6 +522,12 @@ def article_candidates_for_day(
                     params,
                 )
             )
+        if allowed_side is not None:
+            candidates = [
+                candidate
+                for candidate in candidates
+                if candidate.side == allowed_side
+            ]
         if candidates:
             daily_candidates.append(
                 min(candidates, key=lambda candidate: candidate.signal_time)
@@ -363,6 +556,7 @@ def backtest_article_model(
     daily cap.
     """
     states = regime_states(frame, config) if params.use_regime_filter else {}
+    trend_biases = _trend_biases(frame, config, params, start, end)
     source = frame.loc[(frame["time"] >= start) & (frame["time"] < end)].copy()
     source = source.reset_index(drop=True)
     if source.empty:
@@ -384,7 +578,14 @@ def backtest_article_model(
             if state is None or not state.allowed:
                 continue
         daily_candidates, asia_high, asia_low = article_candidates_for_day(
-            day_frame, point, config, params, day
+            day_frame,
+            point,
+            config,
+            params,
+            day,
+            trend_biases.get(day)
+            if params.trend_filter_mode != "none"
+            else None,
         )
         if not math.isfinite(asia_high) or not math.isfinite(asia_low):
             continue

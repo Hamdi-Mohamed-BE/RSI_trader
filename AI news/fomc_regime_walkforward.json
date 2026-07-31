@@ -1,0 +1,1607 @@
+{
+  "methodology": {
+    "test_type": "Expanding one-event-at-a-time walk-forward. Every prediction uses only prior completed meetings.",
+    "research_warning": "The architecture was selected after observing this historical archive, so frozen blocks and a future locked test remain the primary robustness checks.",
+    "source_audit": {
+      "calendar_events": 716,
+      "usable_samples": 699,
+      "skipped": 17,
+      "imputed_sides": 135,
+      "skipped_examples": [
+        {
+          "event": "NFP",
+          "release_utc": "2012-04-06T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2012-12-07T13:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-05-16T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2013-06-07T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-09-17T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-01-16T13:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2015-04-03T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-05-22T12:30:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-06-17T18:00:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-07-29T18:00:00+00:00"
+        },
+        {
+          "event": "GDP",
+          "release_utc": "2015-07-30T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-10-15T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2017-04-14T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2020-04-10T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2021-04-02T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2023-04-07T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2026-04-03T12:30:00+00:00"
+        }
+      ]
+    }
+  },
+  "overall": {
+    "history": {
+      "calls": 79,
+      "correct": 49,
+      "wrong": 30,
+      "accuracy_pct": 62.03,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        51.0,
+        71.93
+      ]
+    },
+    "v1_model": {
+      "calls": 79,
+      "correct": 41,
+      "wrong": 38,
+      "accuracy_pct": 51.9,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        41.05,
+        62.57
+      ]
+    },
+    "regime_model": {
+      "calls": 79,
+      "correct": 36,
+      "wrong": 43,
+      "accuracy_pct": 45.57,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        35.05,
+        56.5
+      ]
+    },
+    "v1_history_agreement": {
+      "calls": 37,
+      "correct": 24,
+      "wrong": 13,
+      "accuracy_pct": 64.86,
+      "coverage_pct": 46.84,
+      "wilson_95_pct": [
+        48.76,
+        78.17
+      ]
+    },
+    "regime_history_agreement": {
+      "calls": 32,
+      "correct": 19,
+      "wrong": 13,
+      "accuracy_pct": 59.38,
+      "coverage_pct": 40.51,
+      "wilson_95_pct": [
+        42.26,
+        74.48
+      ]
+    },
+    "regime_history_conf60": {
+      "calls": 23,
+      "correct": 13,
+      "wrong": 10,
+      "accuracy_pct": 56.52,
+      "coverage_pct": 29.11,
+      "wilson_95_pct": [
+        36.81,
+        74.37
+      ]
+    },
+    "dual_model_history_union": {
+      "calls": 52,
+      "correct": 33,
+      "wrong": 19,
+      "accuracy_pct": 63.46,
+      "coverage_pct": 65.82,
+      "wilson_95_pct": [
+        49.87,
+        75.2
+      ]
+    }
+  },
+  "windows": [
+    {
+      "start": "2016-07-30",
+      "end": "2019-07-30",
+      "events": 23,
+      "metrics": {
+        "history": {
+          "calls": 23,
+          "correct": 14,
+          "wrong": 9,
+          "accuracy_pct": 60.87,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            40.79,
+            77.84
+          ]
+        },
+        "v1_model": {
+          "calls": 23,
+          "correct": 12,
+          "wrong": 11,
+          "accuracy_pct": 52.17,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            32.96,
+            70.76
+          ]
+        },
+        "regime_model": {
+          "calls": 23,
+          "correct": 10,
+          "wrong": 13,
+          "accuracy_pct": 43.48,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            25.63,
+            63.19
+          ]
+        },
+        "v1_history_agreement": {
+          "calls": 9,
+          "correct": 6,
+          "wrong": 3,
+          "accuracy_pct": 66.67,
+          "coverage_pct": 39.13,
+          "wilson_95_pct": [
+            35.42,
+            87.94
+          ]
+        },
+        "regime_history_agreement": {
+          "calls": 7,
+          "correct": 4,
+          "wrong": 3,
+          "accuracy_pct": 57.14,
+          "coverage_pct": 30.43,
+          "wilson_95_pct": [
+            25.05,
+            84.18
+          ]
+        },
+        "regime_history_conf60": {
+          "calls": 6,
+          "correct": 4,
+          "wrong": 2,
+          "accuracy_pct": 66.67,
+          "coverage_pct": 26.09,
+          "wilson_95_pct": [
+            30.0,
+            90.32
+          ]
+        },
+        "dual_model_history_union": {
+          "calls": 14,
+          "correct": 10,
+          "wrong": 4,
+          "accuracy_pct": 71.43,
+          "coverage_pct": 60.87,
+          "wilson_95_pct": [
+            45.35,
+            88.28
+          ]
+        }
+      }
+    },
+    {
+      "start": "2019-07-30",
+      "end": "2021-07-30",
+      "events": 16,
+      "metrics": {
+        "history": {
+          "calls": 16,
+          "correct": 9,
+          "wrong": 7,
+          "accuracy_pct": 56.25,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            33.18,
+            76.9
+          ]
+        },
+        "v1_model": {
+          "calls": 16,
+          "correct": 6,
+          "wrong": 10,
+          "accuracy_pct": 37.5,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            18.48,
+            61.36
+          ]
+        },
+        "regime_model": {
+          "calls": 16,
+          "correct": 9,
+          "wrong": 7,
+          "accuracy_pct": 56.25,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            33.18,
+            76.9
+          ]
+        },
+        "v1_history_agreement": {
+          "calls": 11,
+          "correct": 5,
+          "wrong": 6,
+          "accuracy_pct": 45.45,
+          "coverage_pct": 68.75,
+          "wilson_95_pct": [
+            21.27,
+            71.99
+          ]
+        },
+        "regime_history_agreement": {
+          "calls": 6,
+          "correct": 4,
+          "wrong": 2,
+          "accuracy_pct": 66.67,
+          "coverage_pct": 37.5,
+          "wilson_95_pct": [
+            30.0,
+            90.32
+          ]
+        },
+        "regime_history_conf60": {
+          "calls": 4,
+          "correct": 3,
+          "wrong": 1,
+          "accuracy_pct": 75.0,
+          "coverage_pct": 25.0,
+          "wilson_95_pct": [
+            30.06,
+            95.44
+          ]
+        },
+        "dual_model_history_union": {
+          "calls": 12,
+          "correct": 6,
+          "wrong": 6,
+          "accuracy_pct": 50.0,
+          "coverage_pct": 75.0,
+          "wilson_95_pct": [
+            25.38,
+            74.62
+          ]
+        }
+      }
+    },
+    {
+      "start": "2021-07-30",
+      "end": "2024-07-30",
+      "events": 23,
+      "metrics": {
+        "history": {
+          "calls": 23,
+          "correct": 15,
+          "wrong": 8,
+          "accuracy_pct": 65.22,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            44.89,
+            81.19
+          ]
+        },
+        "v1_model": {
+          "calls": 23,
+          "correct": 13,
+          "wrong": 10,
+          "accuracy_pct": 56.52,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            36.81,
+            74.37
+          ]
+        },
+        "regime_model": {
+          "calls": 23,
+          "correct": 9,
+          "wrong": 14,
+          "accuracy_pct": 39.13,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            22.16,
+            59.21
+          ]
+        },
+        "v1_history_agreement": {
+          "calls": 13,
+          "correct": 9,
+          "wrong": 4,
+          "accuracy_pct": 69.23,
+          "coverage_pct": 56.52,
+          "wilson_95_pct": [
+            42.37,
+            87.32
+          ]
+        },
+        "regime_history_agreement": {
+          "calls": 13,
+          "correct": 7,
+          "wrong": 6,
+          "accuracy_pct": 53.85,
+          "coverage_pct": 56.52,
+          "wilson_95_pct": [
+            29.14,
+            76.79
+          ]
+        },
+        "regime_history_conf60": {
+          "calls": 9,
+          "correct": 4,
+          "wrong": 5,
+          "accuracy_pct": 44.44,
+          "coverage_pct": 39.13,
+          "wilson_95_pct": [
+            18.88,
+            73.34
+          ]
+        },
+        "dual_model_history_union": {
+          "calls": 19,
+          "correct": 12,
+          "wrong": 7,
+          "accuracy_pct": 63.16,
+          "coverage_pct": 82.61,
+          "wilson_95_pct": [
+            41.04,
+            80.85
+          ]
+        }
+      }
+    },
+    {
+      "start": "2024-07-30",
+      "end": "2026-07-30",
+      "events": 17,
+      "metrics": {
+        "history": {
+          "calls": 17,
+          "correct": 11,
+          "wrong": 6,
+          "accuracy_pct": 64.71,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            41.3,
+            82.69
+          ]
+        },
+        "v1_model": {
+          "calls": 17,
+          "correct": 10,
+          "wrong": 7,
+          "accuracy_pct": 58.82,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            36.01,
+            78.39
+          ]
+        },
+        "regime_model": {
+          "calls": 17,
+          "correct": 8,
+          "wrong": 9,
+          "accuracy_pct": 47.06,
+          "coverage_pct": 100.0,
+          "wilson_95_pct": [
+            26.16,
+            69.04
+          ]
+        },
+        "v1_history_agreement": {
+          "calls": 4,
+          "correct": 4,
+          "wrong": 0,
+          "accuracy_pct": 100.0,
+          "coverage_pct": 23.53,
+          "wilson_95_pct": [
+            51.01,
+            100.0
+          ]
+        },
+        "regime_history_agreement": {
+          "calls": 6,
+          "correct": 4,
+          "wrong": 2,
+          "accuracy_pct": 66.67,
+          "coverage_pct": 35.29,
+          "wilson_95_pct": [
+            30.0,
+            90.32
+          ]
+        },
+        "regime_history_conf60": {
+          "calls": 4,
+          "correct": 2,
+          "wrong": 2,
+          "accuracy_pct": 50.0,
+          "coverage_pct": 23.53,
+          "wilson_95_pct": [
+            15.0,
+            85.0
+          ]
+        },
+        "dual_model_history_union": {
+          "calls": 7,
+          "correct": 5,
+          "wrong": 2,
+          "accuracy_pct": 71.43,
+          "coverage_pct": 41.18,
+          "wilson_95_pct": [
+            35.89,
+            91.78
+          ]
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "release_utc": "2016-09-21T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -1.02,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.421841,
+      "regime_probability": 0.085938
+    },
+    {
+      "release_utc": "2016-11-02T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 0.7545,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.354807,
+      "regime_probability": 0.096228
+    },
+    {
+      "release_utc": "2016-12-14T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -6.715,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.441187,
+      "regime_probability": 0.535364
+    },
+    {
+      "release_utc": "2017-02-01T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 2.5185,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.431136,
+      "regime_probability": 0.991581
+    },
+    {
+      "release_utc": "2017-03-15T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 9.413,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.47679,
+      "regime_probability": 0.960561
+    },
+    {
+      "release_utc": "2017-05-03T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 0.0765,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.487294,
+      "regime_probability": 0.966074
+    },
+    {
+      "release_utc": "2017-06-14T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -0.566,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.379103,
+      "regime_probability": 0.984337
+    },
+    {
+      "release_utc": "2017-07-26T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -0.529,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.441585,
+      "regime_probability": 0.898137
+    },
+    {
+      "release_utc": "2017-09-20T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -2.12,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.587547,
+      "regime_probability": 0.940502
+    },
+    {
+      "release_utc": "2017-11-01T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 1.627,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.48664,
+      "regime_probability": 0.988896
+    },
+    {
+      "release_utc": "2017-12-13T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 2.661,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.50109,
+      "regime_probability": 0.232414
+    },
+    {
+      "release_utc": "2018-01-31T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 1.415,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.437273,
+      "regime_probability": 0.753029
+    },
+    {
+      "release_utc": "2018-03-21T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 1.9875,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.393418,
+      "regime_probability": 0.016124
+    },
+    {
+      "release_utc": "2018-05-02T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 0.028,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.582385,
+      "regime_probability": 0.966603
+    },
+    {
+      "release_utc": "2018-06-13T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -1.76,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.547378,
+      "regime_probability": 0.964799
+    },
+    {
+      "release_utc": "2018-08-01T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -0.34,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.493732,
+      "regime_probability": 0.583588
+    },
+    {
+      "release_utc": "2018-09-26T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 1.405,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.489746,
+      "regime_probability": 0.819227
+    },
+    {
+      "release_utc": "2018-11-08T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 0.4985,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.548425,
+      "regime_probability": 0.158457
+    },
+    {
+      "release_utc": "2018-12-19T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -3.215,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.606033,
+      "regime_probability": 0.895589
+    },
+    {
+      "release_utc": "2019-01-30T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 4.505,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.587655,
+      "regime_probability": 0.274258
+    },
+    {
+      "release_utc": "2019-03-20T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 4.06,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.57125,
+      "regime_probability": 0.534389
+    },
+    {
+      "release_utc": "2019-05-01T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -0.43,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.478612,
+      "regime_probability": 0.714507
+    },
+    {
+      "release_utc": "2019-06-19T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 3.44,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.519726,
+      "regime_probability": 0.987033
+    },
+    {
+      "release_utc": "2019-07-31T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -7.0135,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.445865,
+      "regime_probability": 0.653497
+    },
+    {
+      "release_utc": "2019-09-18T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -3.585,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.338748,
+      "regime_probability": 0.865038
+    },
+    {
+      "release_utc": "2019-10-30T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -3.8315,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.509145,
+      "regime_probability": 0.643058
+    },
+    {
+      "release_utc": "2019-12-11T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -1.489,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.546038,
+      "regime_probability": 0.343798
+    },
+    {
+      "release_utc": "2020-01-29T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -0.115,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.528976,
+      "regime_probability": 0.456848
+    },
+    {
+      "release_utc": "2020-04-29T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 1.615,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.342535,
+      "regime_probability": 0.08188
+    },
+    {
+      "release_utc": "2020-06-10T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -2.257,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.385467,
+      "regime_probability": 0.480073
+    },
+    {
+      "release_utc": "2020-07-29T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 1.9685,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.420956,
+      "regime_probability": 0.237734
+    },
+    {
+      "release_utc": "2020-09-16T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -0.095,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.505197,
+      "regime_probability": 0.166363
+    },
+    {
+      "release_utc": "2020-11-05T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 1.153,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.574066,
+      "regime_probability": 0.674568
+    },
+    {
+      "release_utc": "2020-12-16T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -2.38,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.439791,
+      "regime_probability": 0.235633
+    },
+    {
+      "release_utc": "2021-01-27T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 2.779,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.462101,
+      "regime_probability": 0.713887
+    },
+    {
+      "release_utc": "2021-03-17T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 6.083,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.347153,
+      "regime_probability": 0.92093
+    },
+    {
+      "release_utc": "2021-04-28T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -2.3835,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.537796,
+      "regime_probability": 0.455947
+    },
+    {
+      "release_utc": "2021-06-16T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -11.9515,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.41171,
+      "regime_probability": 0.679342
+    },
+    {
+      "release_utc": "2021-07-28T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -3.933,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.561922,
+      "regime_probability": 0.503151
+    },
+    {
+      "release_utc": "2021-09-22T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 4.872,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.599397,
+      "regime_probability": 0.523823
+    },
+    {
+      "release_utc": "2021-11-03T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 2.862,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.421583,
+      "regime_probability": 0.923363
+    },
+    {
+      "release_utc": "2021-12-15T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -5.345,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.456317,
+      "regime_probability": 0.779319
+    },
+    {
+      "release_utc": "2022-01-26T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 1.24,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.492874,
+      "regime_probability": 0.759816
+    },
+    {
+      "release_utc": "2022-03-16T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -0.945,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.454517,
+      "regime_probability": 0.999964
+    },
+    {
+      "release_utc": "2022-05-04T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 5.385,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.433875,
+      "regime_probability": 0.247664
+    },
+    {
+      "release_utc": "2022-06-15T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 1.505,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.392971,
+      "regime_probability": 0.017036
+    },
+    {
+      "release_utc": "2022-07-27T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -0.7485,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.549798,
+      "regime_probability": 0.133661
+    },
+    {
+      "release_utc": "2022-09-21T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -7.76,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.426348,
+      "regime_probability": 0.929788
+    },
+    {
+      "release_utc": "2022-11-02T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 6.51,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.553665,
+      "regime_probability": 0.431084
+    },
+    {
+      "release_utc": "2022-12-14T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -4.97,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.533959,
+      "regime_probability": 0.964322
+    },
+    {
+      "release_utc": "2023-02-01T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -3.295,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.537672,
+      "regime_probability": 0.594038
+    },
+    {
+      "release_utc": "2023-03-22T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 9.0065,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.512115,
+      "regime_probability": 0.593531
+    },
+    {
+      "release_utc": "2023-05-03T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 5.438,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.54432,
+      "regime_probability": 0.636137
+    },
+    {
+      "release_utc": "2023-06-14T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -6.7595,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.3785,
+      "regime_probability": 0.989336
+    },
+    {
+      "release_utc": "2023-07-26T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 2.8915,
+      "history": "POSITIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "POSITIVE",
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": null,
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.551563,
+      "regime_probability": 0.592916
+    },
+    {
+      "release_utc": "2023-09-20T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -3.5915,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.617796,
+      "regime_probability": 0.985111
+    },
+    {
+      "release_utc": "2023-11-01T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 2.8865,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.605603,
+      "regime_probability": 0.651464
+    },
+    {
+      "release_utc": "2023-12-13T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 11.057,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.619942,
+      "regime_probability": 0.289612
+    },
+    {
+      "release_utc": "2024-01-31T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -5.0,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.463952,
+      "regime_probability": 0.80421
+    },
+    {
+      "release_utc": "2024-03-20T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 4.533,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.525414,
+      "regime_probability": 0.115313
+    },
+    {
+      "release_utc": "2024-05-01T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 3.435,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.336472,
+      "regime_probability": 0.769742
+    },
+    {
+      "release_utc": "2024-06-12T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -5.31,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.67719,
+      "regime_probability": 0.930748
+    },
+    {
+      "release_utc": "2024-07-31T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -3.68,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.418056,
+      "regime_probability": 0.726463
+    },
+    {
+      "release_utc": "2024-09-18T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 12.2615,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.422086,
+      "regime_probability": 0.356339
+    },
+    {
+      "release_utc": "2024-11-07T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -2.43,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.451977,
+      "regime_probability": 0.826437
+    },
+    {
+      "release_utc": "2024-12-18T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -3.87,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.37693,
+      "regime_probability": 0.248141
+    },
+    {
+      "release_utc": "2025-01-29T19:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -4.356,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.412364,
+      "regime_probability": 0.219314
+    },
+    {
+      "release_utc": "2025-03-19T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 5.25,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.346679,
+      "regime_probability": 0.609767
+    },
+    {
+      "release_utc": "2025-05-07T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -0.54,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "POSITIVE",
+      "regime_history_conf60": "POSITIVE",
+      "dual_model_history_union": "POSITIVE",
+      "v1_probability": 0.402069,
+      "regime_probability": 0.608762
+    },
+    {
+      "release_utc": "2025-06-18T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 2.8965,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.473886,
+      "regime_probability": 0.136313
+    },
+    {
+      "release_utc": "2025-07-30T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 0.46,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.379455,
+      "regime_probability": 0.481865
+    },
+    {
+      "release_utc": "2025-09-17T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -4.59,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.580574,
+      "regime_probability": 0.400141
+    },
+    {
+      "release_utc": "2025-10-29T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -6.4465,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.457502,
+      "regime_probability": 0.130281
+    },
+    {
+      "release_utc": "2025-12-10T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 16.72,
+      "history": "POSITIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.487004,
+      "regime_probability": 0.320219
+    },
+    {
+      "release_utc": "2026-01-28T19:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 7.313,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.55323,
+      "regime_probability": 0.961085
+    },
+    {
+      "release_utc": "2026-03-18T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 5.7665,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.56532,
+      "regime_probability": 0.982676
+    },
+    {
+      "release_utc": "2026-04-29T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -3.5435,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "POSITIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": null,
+      "regime_history_conf60": null,
+      "dual_model_history_union": null,
+      "v1_probability": 0.597716,
+      "regime_probability": 0.733517
+    },
+    {
+      "release_utc": "2026-06-17T18:00:00+00:00",
+      "actual": "NEGATIVE",
+      "move_usd": -31.935,
+      "history": "NEGATIVE",
+      "v1_model": "NEGATIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": "NEGATIVE",
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": null,
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.377001,
+      "regime_probability": 0.486648
+    },
+    {
+      "release_utc": "2026-07-29T18:00:00+00:00",
+      "actual": "POSITIVE",
+      "move_usd": 32.425,
+      "history": "NEGATIVE",
+      "v1_model": "POSITIVE",
+      "regime_model": "NEGATIVE",
+      "v1_history_agreement": null,
+      "regime_history_agreement": "NEGATIVE",
+      "regime_history_conf60": "NEGATIVE",
+      "dual_model_history_union": "NEGATIVE",
+      "v1_probability": 0.538729,
+      "regime_probability": 0.338472
+    }
+  ]
+}

@@ -12,6 +12,12 @@ import MetaTrader5 as mt5
 import numpy as np
 
 from economic_context import EconomicContextStore
+from fomc_pipeline import (
+    combine_fomc_decision,
+    fomc_release_phases,
+    model_probability_positive,
+    pricing_context,
+)
 from gold_direction_rules import live_rule_probability
 from macro_regime import MacroRegimeStore
 from news_core import EVENTS, ROOT, complete_sides, extract_features, normalize_rows
@@ -268,10 +274,32 @@ def _impact_decision(
     event: str,
     artifact: dict,
     vector: np.ndarray,
+    features_30: list[float],
+    fomc_pricing: dict | None = None,
 ) -> dict:
     prior_probability = float(
         artifact["event_prior_probability_positive"][event]
     )
+    fomc_ensemble = artifact.get("fomc_ensemble")
+    if event == "FOMC" and fomc_ensemble:
+        model_probability = model_probability_positive(
+            fomc_ensemble["model"],
+            features_30,
+        )
+        result = combine_fomc_decision(
+            history_labels=artifact["event_direction_history"].get(
+                event,
+                [],
+            ),
+            model_probability_positive_value=model_probability,
+            pricing=fomc_pricing,
+        )
+        return {
+            **result,
+            "market_probability_positive": model_probability,
+            "historical_probability_positive": prior_probability,
+            "market_model_weight": 1.0,
+        }
     rule_policy = artifact.get("direction_rule_policy")
     if rule_policy:
         rule = rule_policy["rules"][event]
@@ -332,6 +360,13 @@ def make_prediction(
     forecast: str | None = None,
     previous: str | None = None,
     source_url: str | None = None,
+    fomc_current_lower: float | None = None,
+    fomc_current_upper: float | None = None,
+    fomc_cut_25_probability: float | None = None,
+    fomc_hold_probability: float | None = None,
+    fomc_hike_25_probability: float | None = None,
+    fomc_cut_50_probability: float | None = None,
+    fomc_hike_50_probability: float | None = None,
 ) -> dict:
     event = event.upper()
     now = datetime.now(timezone.utc)
@@ -400,6 +435,19 @@ def make_prediction(
         if lead == 15:
             features_15, context_15 = snapshot(15)
         mode_artifact = artifact[mode]
+        fomc_pricing = (
+            pricing_context(
+                current_lower=fomc_current_lower,
+                current_upper=fomc_current_upper,
+                cut_25_probability=fomc_cut_25_probability,
+                hold_probability=fomc_hold_probability,
+                hike_25_probability=fomc_hike_25_probability,
+                cut_50_probability=fomc_cut_50_probability,
+                hike_50_probability=fomc_hike_50_probability,
+            )
+            if event == "FOMC"
+            else None
+        )
         vector = np.empty(0, dtype=float)
         if float(mode_artifact["model_weight"]) > 0:
             profile = mode_artifact["candidate"]["profile"]
@@ -414,7 +462,14 @@ def make_prediction(
                 features_30,
                 macro_features,
             )
-        decision = _impact_decision(mode_artifact, event, artifact, vector)
+        decision = _impact_decision(
+            mode_artifact,
+            event,
+            artifact,
+            vector,
+            features_30,
+            fomc_pricing,
+        )
         direction = decision["gold_impact"]
         confidence = decision["confidence"]
         context = context_15 or context_30
@@ -438,6 +493,11 @@ def make_prediction(
             if direction == "POSITIVE"
             else "A materially weaker-than-forecast USD release can reverse a NEGATIVE gold forecast."
         )
+        model_name = mode_artifact["candidate"]["name"]
+        feature_profile = mode_artifact["candidate"]["profile"]
+        if event == "FOMC" and artifact.get("fomc_ensemble"):
+            model_name = "extra_trees_fomc_ensemble"
+            feature_profile = "t30_legacy_18"
         result = {
             "generated_at_utc": now.isoformat(),
             "event": event,
@@ -462,6 +522,20 @@ def make_prediction(
                     f"The validated event rule is "
                     f"{decision['direction_rule'].replace('_', ' ')}."
                 ),
+                *(
+                    [
+                        (
+                            "The FOMC history and T-30 components "
+                            f"{'agree' if decision['components_agree'] else 'disagree'}."
+                        ),
+                        (
+                            "FedWatch modal-versus-weighted pricing "
+                            f"{'resolved the conflict.' if decision['resolver'].startswith('fedwatch') else 'did not resolve the direction.'}"
+                        ),
+                    ]
+                    if event == "FOMC"
+                    else []
+                ),
             ],
             "key_invalidation_condition": invalidation,
             "alternative_scenario": "The opposite gold impact becomes more likely when the published surprise clearly contradicts the pre-release estimate.",
@@ -473,8 +547,8 @@ def make_prediction(
             "model": {
                 "name": "binary gold-impact model",
                 "lead_minutes": lead,
-                "estimator": mode_artifact["candidate"]["name"],
-                "feature_profile": mode_artifact["candidate"]["profile"],
+                "estimator": model_name,
+                "feature_profile": feature_profile,
                 "market_model_weight": decision["market_model_weight"],
                 "trained_through": artifact["trained_through"],
                 "artifact_version": artifact["artifact_version"],
@@ -494,7 +568,24 @@ def make_prediction(
                     2,
                 ),
                 "direction_rule": decision["direction_rule"],
+                **(
+                    {
+                        "confidence_tier": decision["confidence_tier"],
+                        "resolver": decision["resolver"],
+                        "history_direction": decision["history_direction"],
+                        "t30_model_direction": decision["model_direction"],
+                        "components_agree": decision["components_agree"],
+                        "fedwatch_pricing": decision["fedwatch_pricing"],
+                    }
+                    if event == "FOMC"
+                    else {}
+                ),
             },
+            "fomc_release_phases": (
+                fomc_release_phases(release_utc)
+                if event == "FOMC"
+                else None
+            ),
             "execution_capability": False,
         }
     finally:
@@ -525,6 +616,13 @@ def main() -> None:
     parser.add_argument("--forecast")
     parser.add_argument("--previous")
     parser.add_argument("--source-url")
+    parser.add_argument("--fomc-current-lower", type=float)
+    parser.add_argument("--fomc-current-upper", type=float)
+    parser.add_argument("--fomc-cut-25-probability", type=float)
+    parser.add_argument("--fomc-hold-probability", type=float)
+    parser.add_argument("--fomc-hike-25-probability", type=float)
+    parser.add_argument("--fomc-cut-50-probability", type=float)
+    parser.add_argument("--fomc-hike-50-probability", type=float)
     args = parser.parse_args()
     print(
         json.dumps(
@@ -534,6 +632,13 @@ def main() -> None:
                 forecast=args.forecast,
                 previous=args.previous,
                 source_url=args.source_url,
+                fomc_current_lower=args.fomc_current_lower,
+                fomc_current_upper=args.fomc_current_upper,
+                fomc_cut_25_probability=args.fomc_cut_25_probability,
+                fomc_hold_probability=args.fomc_hold_probability,
+                fomc_hike_25_probability=args.fomc_hike_25_probability,
+                fomc_cut_50_probability=args.fomc_cut_50_probability,
+                fomc_hike_50_probability=args.fomc_hike_50_probability,
             ),
             indent=2,
         )

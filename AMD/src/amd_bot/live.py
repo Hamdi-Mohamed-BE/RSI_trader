@@ -10,6 +10,7 @@ import pandas as pd
 
 from .article_engine import (
     Candidate,
+    _trend_biases,
     article_candidates_for_day,
     params_from_config,
 )
@@ -283,12 +284,26 @@ def build_article_signal(
     day_frame = source.loc[source["time"].dt.date == day].reset_index(
         drop=True
     )
+    params = params_from_config(config)
+    trend_bias = None
+    if params.trend_filter_mode != "none":
+        trend_bias = _trend_biases(
+            source,
+            config,
+            params,
+            now.replace(hour=0, minute=0, second=0, microsecond=0),
+            now.replace(hour=0, minute=0, second=0, microsecond=0)
+            + timedelta(days=1),
+        ).get(day)
+        if trend_bias is None:
+            return None, "waiting for aligned H1 trend"
     candidates, asia_high, asia_low = article_candidates_for_day(
         day_frame,
         point,
         config,
-        params_from_config(config),
+        params,
         day,
+        trend_bias,
     )
     if not candidates:
         return None, "waiting for confirmed AMD sweep/retest"
@@ -602,14 +617,23 @@ def manage_symbol(symbol: str, now: datetime, config: Config) -> None:
 _active_config: Config
 
 
-def run_live(config: Config, once: bool = False) -> None:
-    global _active_config
-    _active_config = config
+def validate_execution_flags(config: Config) -> None:
     if not config.enable_trading and not config.dry_run:
         raise RuntimeError(
             "Invalid execution flags: DRY_RUN=false requires "
             "ENABLE_TRADING=true"
         )
+    if config.enable_trading and not config.dry_run and not config.model_approved:
+        raise RuntimeError(
+            "Live execution blocked: MODEL_APPROVED=false. The current "
+            "strategy failed untouched out-of-sample validation."
+        )
+
+
+def run_live(config: Config, once: bool = False) -> None:
+    global _active_config
+    _active_config = config
+    validate_execution_flags(config)
     while True:
         now = datetime.now(UTC)
         day_start = now.replace(hour=0, minute=0, second=0, microsecond=0)

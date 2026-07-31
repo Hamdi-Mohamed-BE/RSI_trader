@@ -1,0 +1,1307 @@
+{
+  "methodology": {
+    "test_type": "Frozen temporal block holdout. The ExtraTrees model is fitted once before each block and never refitted inside that block.",
+    "history_rule_update": "The deterministic history component may observe completed meetings inside the block, exactly as it would live.",
+    "no_fedwatch": "The pricing resolver is excluded because a complete point-in-time historical FedWatch archive is unavailable.",
+    "honesty_warning": "The estimator does not see test outcomes, but the architecture was designed after July 2026. This is stronger than the rolling replay, but it is not future data unseen by the researcher.",
+    "source_audit": {
+      "calendar_events": 716,
+      "usable_samples": 699,
+      "skipped": 17,
+      "imputed_sides": 135,
+      "skipped_examples": [
+        {
+          "event": "NFP",
+          "release_utc": "2012-04-06T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2012-12-07T13:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-05-16T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2013-06-07T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-09-17T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-01-16T13:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2015-04-03T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-05-22T12:30:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-06-17T18:00:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-07-29T18:00:00+00:00"
+        },
+        {
+          "event": "GDP",
+          "release_utc": "2015-07-30T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-10-15T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2017-04-14T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2020-04-10T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2021-04-02T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2023-04-07T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2026-04-03T12:30:00+00:00"
+        }
+      ]
+    }
+  },
+  "windows": [
+    {
+      "start": "2016-07-30",
+      "end": "2019-07-30",
+      "training_events": 39,
+      "test_events": 23,
+      "history_rule": {
+        "events": 23,
+        "correct": 14,
+        "wrong": 9,
+        "accuracy_pct": 60.87,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          40.79,
+          77.84
+        ]
+      },
+      "frozen_t30_model": {
+        "events": 23,
+        "correct": 14,
+        "wrong": 9,
+        "accuracy_pct": 60.87,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          40.79,
+          77.84
+        ]
+      },
+      "agreement_only": {
+        "events": 9,
+        "correct": 7,
+        "wrong": 2,
+        "accuracy_pct": 77.78,
+        "coverage_pct": 39.13,
+        "wilson_95_pct": [
+          45.26,
+          93.68
+        ]
+      }
+    },
+    {
+      "start": "2019-07-30",
+      "end": "2021-07-30",
+      "training_events": 62,
+      "test_events": 16,
+      "history_rule": {
+        "events": 16,
+        "correct": 9,
+        "wrong": 7,
+        "accuracy_pct": 56.25,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          33.18,
+          76.9
+        ]
+      },
+      "frozen_t30_model": {
+        "events": 16,
+        "correct": 6,
+        "wrong": 10,
+        "accuracy_pct": 37.5,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          18.48,
+          61.36
+        ]
+      },
+      "agreement_only": {
+        "events": 11,
+        "correct": 5,
+        "wrong": 6,
+        "accuracy_pct": 45.45,
+        "coverage_pct": 68.75,
+        "wilson_95_pct": [
+          21.27,
+          71.99
+        ]
+      }
+    },
+    {
+      "start": "2021-07-30",
+      "end": "2024-07-30",
+      "training_events": 78,
+      "test_events": 23,
+      "history_rule": {
+        "events": 23,
+        "correct": 15,
+        "wrong": 8,
+        "accuracy_pct": 65.22,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          44.89,
+          81.19
+        ]
+      },
+      "frozen_t30_model": {
+        "events": 23,
+        "correct": 11,
+        "wrong": 12,
+        "accuracy_pct": 47.83,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          29.24,
+          67.04
+        ]
+      },
+      "agreement_only": {
+        "events": 11,
+        "correct": 7,
+        "wrong": 4,
+        "accuracy_pct": 63.64,
+        "coverage_pct": 47.83,
+        "wilson_95_pct": [
+          35.38,
+          84.83
+        ]
+      }
+    },
+    {
+      "start": "2024-07-30",
+      "end": "2026-07-30",
+      "training_events": 101,
+      "test_events": 17,
+      "history_rule": {
+        "events": 17,
+        "correct": 11,
+        "wrong": 6,
+        "accuracy_pct": 64.71,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          41.3,
+          82.69
+        ]
+      },
+      "frozen_t30_model": {
+        "events": 17,
+        "correct": 11,
+        "wrong": 6,
+        "accuracy_pct": 64.71,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          41.3,
+          82.69
+        ]
+      },
+      "agreement_only": {
+        "events": 5,
+        "correct": 5,
+        "wrong": 0,
+        "accuracy_pct": 100.0,
+        "coverage_pct": 29.41,
+        "wilson_95_pct": [
+          56.55,
+          100.0
+        ]
+      }
+    }
+  ],
+  "overall": {
+    "test_events": 79,
+    "history_rule": {
+      "events": 79,
+      "correct": 49,
+      "wrong": 30,
+      "accuracy_pct": 62.03,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        51.0,
+        71.93
+      ]
+    },
+    "frozen_t30_model": {
+      "events": 79,
+      "correct": 42,
+      "wrong": 37,
+      "accuracy_pct": 53.16,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        42.27,
+        63.76
+      ]
+    },
+    "agreement_only": {
+      "events": 36,
+      "correct": 24,
+      "wrong": 12,
+      "accuracy_pct": 66.67,
+      "coverage_pct": 45.57,
+      "wilson_95_pct": [
+        50.33,
+        79.79
+      ]
+    }
+  },
+  "events": [
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2016-09-21T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 42.18,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -1.02
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2016-11-02T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 36.14,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 0.7545
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2016-12-14T19:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 45.12,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -6.715
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2017-02-01T19:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 41.55,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 2.5185
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2017-03-15T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 43.92,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 9.413
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2017-05-03T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 47.83,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 0.0765
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2017-06-14T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 41.92,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -0.566
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2017-07-26T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 42.21,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -0.529
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2017-09-20T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 49.74,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -2.12
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2017-11-01T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 54.84,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 1.627
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2017-12-13T19:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 47.88,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 2.661
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2018-01-31T19:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 47.68,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 1.415
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2018-03-21T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 41.53,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 1.9875
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2018-05-02T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 54.02,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 0.028
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2018-06-13T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 52.03,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -1.76
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2018-08-01T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 46.84,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -0.34
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2018-09-26T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 55.98,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 1.405
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2018-11-08T19:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 51.38,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 0.4985
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2018-12-19T19:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 51.41,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -3.215
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2019-01-30T19:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 54.71,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 4.505
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2019-03-20T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 50.33,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 4.06
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2019-05-01T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 43.99,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -0.43
+    },
+    {
+      "window_start": "2016-07-30",
+      "window_end": "2019-07-30",
+      "release_utc": "2019-06-19T18:00:00+00:00",
+      "training_events": 39,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 53.31,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 3.44
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2019-07-31T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 44.59,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -7.0135
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2019-09-18T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 34.97,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -3.585
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2019-10-30T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 53.73,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -3.8315
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2019-12-11T19:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 59.78,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -1.489
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2020-01-29T19:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 51.21,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -0.115
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2020-04-29T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 42.54,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 1.615
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2020-06-10T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 39.44,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -2.257
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2020-07-29T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 43.1,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 1.9685
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2020-09-16T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 51.04,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -0.095
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2020-11-05T19:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 55.29,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 1.153
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2020-12-16T19:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 47.46,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -2.38
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2021-01-27T19:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 42.93,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 2.779
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2021-03-17T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 33.96,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 6.083
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2021-04-28T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 59.42,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -2.3835
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2021-06-16T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 39.32,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -11.9515
+    },
+    {
+      "window_start": "2019-07-30",
+      "window_end": "2021-07-30",
+      "release_utc": "2021-07-28T18:00:00+00:00",
+      "training_events": 62,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 60.76,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -3.933
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2021-09-22T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 59.94,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 4.872
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2021-11-03T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 43.29,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 2.862
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2021-12-15T19:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 46.99,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -5.345
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2022-01-26T19:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 48.98,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 1.24
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2022-03-16T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 47.69,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -0.945
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2022-05-04T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 41.76,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 5.385
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2022-06-15T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 37.81,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 1.505
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2022-07-27T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 55.65,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -0.7485
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2022-09-21T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 42.52,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -7.76
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2022-11-02T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 50.99,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 6.51
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2022-12-14T19:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 51.54,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -4.97
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2023-02-01T19:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 49.85,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -3.295
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2023-03-22T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 44.33,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 9.0065
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2023-05-03T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 53.88,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 5.438
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2023-06-14T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 36.42,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -6.7595
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2023-07-26T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 46.71,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 2.8915
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2023-09-20T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 55.97,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -3.5915
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2023-11-01T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 55.5,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 2.8865
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2023-12-13T19:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 60.33,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 11.057
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2024-01-31T19:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 42.21,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -5.0
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2024-03-20T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 49.32,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 4.533
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2024-05-01T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 38.94,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 3.435
+    },
+    {
+      "window_start": "2021-07-30",
+      "window_end": "2024-07-30",
+      "release_utc": "2024-06-12T18:00:00+00:00",
+      "training_events": 78,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 68.64,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -5.31
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2024-07-31T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 41.81,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -3.68
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2024-09-18T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 40.8,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 12.2615
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2024-11-07T19:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 45.67,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -2.43
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2024-12-18T19:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 37.43,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -3.87
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2025-01-29T19:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 43.99,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -4.356
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2025-03-19T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 38.1,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 5.25
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2025-05-07T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 37.39,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -0.54
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2025-06-18T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 47.77,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 2.8965
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2025-07-30T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 39.13,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 0.46
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2025-09-17T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 57.78,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -4.59
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2025-10-29T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 44.19,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -6.4465
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2025-12-10T19:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "POSITIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 50.45,
+      "components_agree": true,
+      "agreement_prediction": "POSITIVE",
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 16.72
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2026-01-28T19:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 56.17,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 7.313
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2026-03-18T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 55.85,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 5.7665
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2026-04-29T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 56.14,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -3.5435
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2026-06-17T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "NEGATIVE",
+      "model_probability_positive_pct": 40.3,
+      "components_agree": true,
+      "agreement_prediction": "NEGATIVE",
+      "actual_gold_impact": "NEGATIVE",
+      "actual_move_usd": -31.935
+    },
+    {
+      "window_start": "2024-07-30",
+      "window_end": "2026-07-30",
+      "release_utc": "2026-07-29T18:00:00+00:00",
+      "training_events": 101,
+      "history_prediction": "NEGATIVE",
+      "model_prediction": "POSITIVE",
+      "model_probability_positive_pct": 54.52,
+      "components_agree": false,
+      "agreement_prediction": null,
+      "actual_gold_impact": "POSITIVE",
+      "actual_move_usd": 32.425
+    }
+  ]
+}

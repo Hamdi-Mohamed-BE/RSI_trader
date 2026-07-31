@@ -53,11 +53,16 @@ class Config:
     regime_atr_days: int
     regime_atr_pct_min: float
     regime_atr_pct_max: float
+    regime_use_relative_atr: bool
+    regime_atr_median_days: int
+    regime_atr_ratio_min: float
+    regime_atr_ratio_max: float
     regime_asia_median_days: int
     regime_asia_ratio_min: float
     regime_asia_ratio_max: float
     enable_trading: bool
     dry_run: bool
+    model_approved: bool
     magic: int
     poll_seconds: int
     deviation_points: int
@@ -75,6 +80,19 @@ class Config:
     article_retest_tolerance_fraction: float
     article_stop_buffer_fraction: float
     article_volume_factor: float
+    article_require_directional_confirmation: bool
+    article_min_body_fraction: float
+    article_min_close_location: float
+    article_fade_reclaim_fraction: float
+    article_fade_confirmation_mode: str
+    article_fade_mss_lookahead_bars: int
+    article_distribution_hold_fraction: float
+    article_breakout_max_fraction: float
+    article_max_risk_fraction: float
+    article_trend_filter_mode: str
+    article_trend_fast: int
+    article_trend_slow: int
+    article_trend_price_alignment: bool
     article_london_window_minutes: int
     article_ny_window_minutes: int
     article_signal_max_age_seconds: int
@@ -122,6 +140,18 @@ def load_config(env_path: str | Path | None = None) -> Config:
         regime_atr_pct_max=float(
             os.getenv("REGIME_ATR_PCT_MAX", "2.8")
         ),
+        regime_use_relative_atr=_bool(
+            "REGIME_USE_RELATIVE_ATR", False
+        ),
+        regime_atr_median_days=int(
+            os.getenv("REGIME_ATR_MEDIAN_DAYS", "60")
+        ),
+        regime_atr_ratio_min=float(
+            os.getenv("REGIME_ATR_RATIO_MIN", "0.65")
+        ),
+        regime_atr_ratio_max=float(
+            os.getenv("REGIME_ATR_RATIO_MAX", "1.60")
+        ),
         regime_asia_median_days=int(
             os.getenv("REGIME_ASIA_MEDIAN_DAYS", "20")
         ),
@@ -133,6 +163,7 @@ def load_config(env_path: str | Path | None = None) -> Config:
         ),
         enable_trading=_bool("ENABLE_TRADING", False),
         dry_run=_bool("DRY_RUN", True),
+        model_approved=_bool("MODEL_APPROVED", False),
         magic=int(os.getenv("MAGIC", "300730")),
         poll_seconds=int(os.getenv("POLL_SECONDS", "15")),
         deviation_points=int(os.getenv("DEVIATION_POINTS", "30")),
@@ -167,6 +198,45 @@ def load_config(env_path: str | Path | None = None) -> Config:
         ),
         article_volume_factor=float(
             os.getenv("ARTICLE_VOLUME_FACTOR", "0.00")
+        ),
+        article_require_directional_confirmation=_bool(
+            "ARTICLE_REQUIRE_DIRECTIONAL_CONFIRMATION", False
+        ),
+        article_min_body_fraction=float(
+            os.getenv("ARTICLE_MIN_BODY_FRACTION", "0.00")
+        ),
+        article_min_close_location=float(
+            os.getenv("ARTICLE_MIN_CLOSE_LOCATION", "0.00")
+        ),
+        article_fade_reclaim_fraction=float(
+            os.getenv("ARTICLE_FADE_RECLAIM_FRACTION", "0.00")
+        ),
+        article_fade_confirmation_mode=os.getenv(
+            "ARTICLE_FADE_CONFIRMATION_MODE", "immediate"
+        ).strip().lower(),
+        article_fade_mss_lookahead_bars=int(
+            os.getenv("ARTICLE_FADE_MSS_LOOKAHEAD_BARS", "6")
+        ),
+        article_distribution_hold_fraction=float(
+            os.getenv("ARTICLE_DISTRIBUTION_HOLD_FRACTION", "0.00")
+        ),
+        article_breakout_max_fraction=float(
+            os.getenv("ARTICLE_BREAKOUT_MAX_FRACTION", "0.00")
+        ),
+        article_max_risk_fraction=float(
+            os.getenv("ARTICLE_MAX_RISK_FRACTION", "0.00")
+        ),
+        article_trend_filter_mode=os.getenv(
+            "ARTICLE_TREND_FILTER_MODE", "none"
+        ).strip().lower(),
+        article_trend_fast=int(
+            os.getenv("ARTICLE_TREND_FAST", "8")
+        ),
+        article_trend_slow=int(
+            os.getenv("ARTICLE_TREND_SLOW", "24")
+        ),
+        article_trend_price_alignment=_bool(
+            "ARTICLE_TREND_PRICE_ALIGNMENT", True
         ),
         article_london_window_minutes=int(
             os.getenv("ARTICLE_LONDON_WINDOW_MINUTES", "180")

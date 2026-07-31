@@ -1,0 +1,1943 @@
+{
+  "methodology": {
+    "start": "2024-07-31T00:00:00+00:00",
+    "holdout_start": "2026-01-31T00:00:00+00:00",
+    "end": "2026-07-31T00:00:00+00:00",
+    "calendar_events": 93,
+    "development_events": 69,
+    "holdout_events": 24,
+    "risk_per_leg_pct": 1.0,
+    "start_balance": 10000.0,
+    "same_bar_policy": "SL first; an entry-bar TP is not credited",
+    "gold_pip_size": 0.1,
+    "gold_literal_stress_pip_size": 0.01,
+    "eurusd_pip_size": 0.0001,
+    "event_filter_rule": "Development only: >=8 trades, PF >=1.30, and positive net R."
+  },
+  "symbols": {
+    "EURUSD": {
+      "selected_config": {
+        "mode": "forecast",
+        "reward_risk": 3.0,
+        "spread_buffer_multiplier": 1.0,
+        "min_buffer_pips": 2.0,
+        "pending_minutes": 15,
+        "max_hold_minutes": 180,
+        "allow_reentry": false,
+        "reentry_rr": 5.0
+      },
+      "allowed_events": [
+        "NFP",
+        "CPI",
+        "PPI"
+      ],
+      "development": {
+        "symbol": "EURUSD",
+        "config": {
+          "mode": "forecast",
+          "reward_risk": 3.0,
+          "spread_buffer_multiplier": 1.0,
+          "min_buffer_pips": 2.0,
+          "pending_minutes": 15,
+          "max_hold_minutes": 180,
+          "allow_reentry": false,
+          "reentry_rr": 5.0
+        },
+        "performance": {
+          "trades": 38,
+          "wins": 22,
+          "losses": 16,
+          "win_rate_pct": 57.89473684210526,
+          "profit_factor": 2.2894997523526888,
+          "net_r": 5.785555555555777,
+          "max_drawdown_r": 1.1688888888889117,
+          "start_balance": 10000.0,
+          "ending_balance": 10590.340979503988,
+          "return_pct": 5.903409795039871,
+          "max_drawdown_pct": 1.16516789777781
+        },
+        "statuses": {
+          "event_filter": 18,
+          "traded": 38,
+          "expired": 10,
+          "missing_bid_ask": 3
+        },
+        "same_minute_oco_collisions": 0
+      },
+      "holdout": {
+        "symbol": "EURUSD",
+        "config": {
+          "mode": "forecast",
+          "reward_risk": 3.0,
+          "spread_buffer_multiplier": 1.0,
+          "min_buffer_pips": 2.0,
+          "pending_minutes": 15,
+          "max_hold_minutes": 180,
+          "allow_reentry": false,
+          "reentry_rr": 5.0
+        },
+        "performance": {
+          "trades": 8,
+          "wins": 7,
+          "losses": 1,
+          "win_rate_pct": 87.5,
+          "profit_factor": 9.59842519684972,
+          "net_r": 1.2133333333333518,
+          "max_drawdown_r": 0.1411111111111243,
+          "start_balance": 10000.0,
+          "ending_balance": 10121.893393684944,
+          "return_pct": 1.2189339368494423,
+          "max_drawdown_pct": 0.1411111111111221
+        },
+        "statuses": {
+          "expired": 8,
+          "traded": 8,
+          "event_filter": 6,
+          "missing_forecast": 1,
+          "missing_bid_ask": 1
+        },
+        "same_minute_oco_collisions": 0
+      },
+      "full": {
+        "symbol": "EURUSD",
+        "config": {
+          "mode": "forecast",
+          "reward_risk": 3.0,
+          "spread_buffer_multiplier": 1.0,
+          "min_buffer_pips": 2.0,
+          "pending_minutes": 15,
+          "max_hold_minutes": 180,
+          "allow_reentry": false,
+          "reentry_rr": 5.0
+        },
+        "performance": {
+          "trades": 46,
+          "wins": 29,
+          "losses": 17,
+          "win_rate_pct": 63.04347826086956,
+          "profit_factor": 2.512364945978427,
+          "net_r": 6.998888888889128,
+          "max_drawdown_r": 1.1688888888889117,
+          "start_balance": 10000.0,
+          "ending_balance": 10719.430239731231,
+          "return_pct": 7.194302397312313,
+          "max_drawdown_pct": 1.16516789777781
+        },
+        "statuses": {
+          "event_filter": 24,
+          "traded": 46,
+          "expired": 18,
+          "missing_bid_ask": 4,
+          "missing_forecast": 1
+        },
+        "same_minute_oco_collisions": 0
+      },
+      "unfiltered_full": {
+        "symbol": "EURUSD",
+        "config": {
+          "mode": "forecast",
+          "reward_risk": 3.0,
+          "spread_buffer_multiplier": 1.0,
+          "min_buffer_pips": 2.0,
+          "pending_minutes": 15,
+          "max_hold_minutes": 180,
+          "allow_reentry": false,
+          "reentry_rr": 5.0
+        },
+        "performance": {
+          "trades": 66,
+          "wins": 37,
+          "losses": 29,
+          "win_rate_pct": 56.06060606060606,
+          "profit_factor": 1.672535640307069,
+          "net_r": 6.132777777777983,
+          "max_drawdown_r": 2.687777777777826,
+          "start_balance": 10000.0,
+          "ending_balance": 10624.404934104723,
+          "return_pct": 6.244049341047231,
+          "max_drawdown_pct": 2.660756377060012
+        },
+        "statuses": {
+          "traded": 66,
+          "expired": 22,
+          "missing_bid_ask": 4,
+          "missing_forecast": 1
+        },
+        "same_minute_oco_collisions": 0
+      },
+      "leaderboard": [
+        {
+          "key": "forecast|rr=3|spread=1|reentry=false",
+          "allowed_events": [
+            "NFP",
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 38,
+            "wins": 22,
+            "losses": 16,
+            "win_rate_pct": 57.89473684210526,
+            "profit_factor": 2.2894997523526888,
+            "net_r": 5.785555555555777,
+            "max_drawdown_r": 1.1688888888889117,
+            "start_balance": 10000.0,
+            "ending_balance": 10590.340979503988,
+            "return_pct": 5.903409795039871,
+            "max_drawdown_pct": 1.16516789777781
+          },
+          "full": {
+            "trades": 46,
+            "wins": 29,
+            "losses": 17,
+            "win_rate_pct": 63.04347826086956,
+            "profit_factor": 2.512364945978427,
+            "net_r": 6.998888888889128,
+            "max_drawdown_r": 1.1688888888889117,
+            "start_balance": 10000.0,
+            "ending_balance": 10719.430239731231,
+            "return_pct": 7.194302397312313,
+            "max_drawdown_pct": 1.16516789777781
+          }
+        },
+        {
+          "key": "forecast|rr=3|spread=1|reentry=true",
+          "allowed_events": [
+            "NFP",
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 38,
+            "wins": 22,
+            "losses": 16,
+            "win_rate_pct": 57.89473684210526,
+            "profit_factor": 2.2894997523526888,
+            "net_r": 5.785555555555777,
+            "max_drawdown_r": 1.1688888888889117,
+            "start_balance": 10000.0,
+            "ending_balance": 10590.340979503988,
+            "return_pct": 5.903409795039871,
+            "max_drawdown_pct": 1.16516789777781
+          },
+          "full": {
+            "trades": 46,
+            "wins": 29,
+            "losses": 17,
+            "win_rate_pct": 63.04347826086956,
+            "profit_factor": 2.512364945978427,
+            "net_r": 6.998888888889128,
+            "max_drawdown_r": 1.1688888888889117,
+            "start_balance": 10000.0,
+            "ending_balance": 10719.430239731231,
+            "return_pct": 7.194302397312313,
+            "max_drawdown_pct": 1.16516789777781
+          }
+        },
+        {
+          "key": "forecast|rr=3|spread=1.5|reentry=false",
+          "allowed_events": [
+            "NFP",
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 38,
+            "wins": 22,
+            "losses": 16,
+            "win_rate_pct": 57.89473684210526,
+            "profit_factor": 2.210500846842517,
+            "net_r": 5.558888888889102,
+            "max_drawdown_r": 1.2122222222222332,
+            "start_balance": 10000.0,
+            "ending_balance": 10566.402498759258,
+            "return_pct": 5.664024987592575,
+            "max_drawdown_pct": 1.208145529021004
+          },
+          "full": {
+            "trades": 46,
+            "wins": 29,
+            "losses": 17,
+            "win_rate_pct": 63.04347826086956,
+            "profit_factor": 2.427816901408473,
+            "net_r": 6.758333333333548,
+            "max_drawdown_r": 1.2122222222222332,
+            "start_balance": 10000.0,
+            "ending_balance": 10693.718599436565,
+            "return_pct": 6.9371859943656355,
+            "max_drawdown_pct": 1.208145529021004
+          }
+        },
+        {
+          "key": "forecast|rr=3|spread=1.5|reentry=true",
+          "allowed_events": [
+            "NFP",
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 38,
+            "wins": 22,
+            "losses": 16,
+            "win_rate_pct": 57.89473684210526,
+            "profit_factor": 2.210500846842517,
+            "net_r": 5.558888888889102,
+            "max_drawdown_r": 1.2122222222222332,
+            "start_balance": 10000.0,
+            "ending_balance": 10566.402498759258,
+            "return_pct": 5.664024987592575,
+            "max_drawdown_pct": 1.208145529021004
+          },
+          "full": {
+            "trades": 46,
+            "wins": 29,
+            "losses": 17,
+            "win_rate_pct": 63.04347826086956,
+            "profit_factor": 2.427816901408473,
+            "net_r": 6.758333333333548,
+            "max_drawdown_r": 1.2122222222222332,
+            "start_balance": 10000.0,
+            "ending_balance": 10693.718599436565,
+            "return_pct": 6.9371859943656355,
+            "max_drawdown_pct": 1.208145529021004
+          }
+        },
+        {
+          "key": "forecast|rr=3|spread=2|reentry=false",
+          "allowed_events": [
+            "NFP",
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 38,
+            "wins": 21,
+            "losses": 17,
+            "win_rate_pct": 55.26315789473684,
+            "profit_factor": 2.1227657572907224,
+            "net_r": 5.304444444444715,
+            "max_drawdown_r": 1.2555555555555795,
+            "start_balance": 10000.0,
+            "ending_balance": 10539.577846068336,
+            "return_pct": 5.395778460683354,
+            "max_drawdown_pct": 1.2511157881234956
+          },
+          "full": {
+            "trades": 46,
+            "wins": 28,
+            "losses": 18,
+            "win_rate_pct": 60.869565217391305,
+            "profit_factor": 2.331125827814601,
+            "net_r": 6.476666666666959,
+            "max_drawdown_r": 1.2555555555555795,
+            "start_balance": 10000.0,
+            "ending_balance": 10663.67429017727,
+            "return_pct": 6.636742901772696,
+            "max_drawdown_pct": 1.2511157881234956
+          }
+        },
+        {
+          "key": "forecast|rr=3|spread=2|reentry=true",
+          "allowed_events": [
+            "NFP",
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 38,
+            "wins": 21,
+            "losses": 17,
+            "win_rate_pct": 55.26315789473684,
+            "profit_factor": 2.1227657572907224,
+            "net_r": 5.304444444444715,
+            "max_drawdown_r": 1.2555555555555795,
+            "start_balance": 10000.0,
+            "ending_balance": 10539.577846068336,
+            "return_pct": 5.395778460683354,
+            "max_drawdown_pct": 1.2511157881234956
+          },
+          "full": {
+            "trades": 46,
+            "wins": 28,
+            "losses": 18,
+            "win_rate_pct": 60.869565217391305,
+            "profit_factor": 2.331125827814601,
+            "net_r": 6.476666666666959,
+            "max_drawdown_r": 1.2555555555555795,
+            "start_balance": 10000.0,
+            "ending_balance": 10663.67429017727,
+            "return_pct": 6.636742901772696,
+            "max_drawdown_pct": 1.2511157881234956
+          }
+        },
+        {
+          "key": "oco|rr=3|spread=1|reentry=false",
+          "allowed_events": [
+            "CPI"
+          ],
+          "development": {
+            "trades": 17,
+            "wins": 9,
+            "losses": 8,
+            "win_rate_pct": 52.94117647058823,
+            "profit_factor": 1.7399236317352942,
+            "net_r": 1.9377777777778875,
+            "max_drawdown_r": 1.4611111111111028,
+            "start_balance": 10000.0,
+            "ending_balance": 10193.365791929238,
+            "return_pct": 1.9336579192923864,
+            "max_drawdown_pct": 1.454112092586655
+          },
+          "full": {
+            "trades": 23,
+            "wins": 15,
+            "losses": 8,
+            "win_rate_pct": 65.21739130434783,
+            "profit_factor": 2.0907933814171047,
+            "net_r": 2.8566666666668117,
+            "max_drawdown_r": 1.4611111111111028,
+            "start_balance": 10000.0,
+            "ending_balance": 10287.365370306203,
+            "return_pct": 2.873653703062029,
+            "max_drawdown_pct": 1.454112092586655
+          }
+        },
+        {
+          "key": "oco|rr=3|spread=1|reentry=true",
+          "allowed_events": [
+            "CPI"
+          ],
+          "development": {
+            "trades": 17,
+            "wins": 9,
+            "losses": 8,
+            "win_rate_pct": 52.94117647058823,
+            "profit_factor": 1.7399236317352942,
+            "net_r": 1.9377777777778875,
+            "max_drawdown_r": 1.4611111111111028,
+            "start_balance": 10000.0,
+            "ending_balance": 10193.365791929238,
+            "return_pct": 1.9336579192923864,
+            "max_drawdown_pct": 1.454112092586655
+          },
+          "full": {
+            "trades": 23,
+            "wins": 15,
+            "losses": 8,
+            "win_rate_pct": 65.21739130434783,
+            "profit_factor": 2.0907933814171047,
+            "net_r": 2.8566666666668117,
+            "max_drawdown_r": 1.4611111111111028,
+            "start_balance": 10000.0,
+            "ending_balance": 10287.365370306203,
+            "return_pct": 2.873653703062029,
+            "max_drawdown_pct": 1.454112092586655
+          }
+        },
+        {
+          "key": "oco|rr=3|spread=1.5|reentry=false",
+          "allowed_events": [
+            "CPI"
+          ],
+          "development": {
+            "trades": 17,
+            "wins": 9,
+            "losses": 8,
+            "win_rate_pct": 52.94117647058823,
+            "profit_factor": 1.7205789804909148,
+            "net_r": 1.9083333333334473,
+            "max_drawdown_r": 1.4861111111110938,
+            "start_balance": 10000.0,
+            "ending_balance": 10190.34980575123,
+            "return_pct": 1.9034980575122873,
+            "max_drawdown_pct": 1.478861238718747
+          },
+          "full": {
+            "trades": 23,
+            "wins": 15,
+            "losses": 8,
+            "win_rate_pct": 65.21739130434783,
+            "profit_factor": 2.067128172855094,
+            "net_r": 2.826111111111253,
+            "max_drawdown_r": 1.4861111111110938,
+            "start_balance": 10000.0,
+            "ending_balance": 10284.20746762619,
+            "return_pct": 2.8420746762618965,
+            "max_drawdown_pct": 1.478861238718747
+          }
+        },
+        {
+          "key": "oco|rr=3|spread=1.5|reentry=true",
+          "allowed_events": [
+            "CPI"
+          ],
+          "development": {
+            "trades": 17,
+            "wins": 9,
+            "losses": 8,
+            "win_rate_pct": 52.94117647058823,
+            "profit_factor": 1.7205789804909148,
+            "net_r": 1.9083333333334473,
+            "max_drawdown_r": 1.4861111111110938,
+            "start_balance": 10000.0,
+            "ending_balance": 10190.34980575123,
+            "return_pct": 1.9034980575122873,
+            "max_drawdown_pct": 1.478861238718747
+          },
+          "full": {
+            "trades": 23,
+            "wins": 15,
+            "losses": 8,
+            "win_rate_pct": 65.21739130434783,
+            "profit_factor": 2.067128172855094,
+            "net_r": 2.826111111111253,
+            "max_drawdown_r": 1.4861111111110938,
+            "start_balance": 10000.0,
+            "ending_balance": 10284.20746762619,
+            "return_pct": 2.8420746762618965,
+            "max_drawdown_pct": 1.478861238718747
+          }
+        },
+        {
+          "key": "oco|rr=3|spread=2|reentry=false",
+          "allowed_events": [
+            "CPI"
+          ],
+          "development": {
+            "trades": 17,
+            "wins": 9,
+            "losses": 8,
+            "win_rate_pct": 52.94117647058823,
+            "profit_factor": 1.6946280991735654,
+            "net_r": 1.8677777777778477,
+            "max_drawdown_r": 1.5155555555555837,
+            "start_balance": 10000.0,
+            "ending_balance": 10186.198079925382,
+            "return_pct": 1.861980799253815,
+            "max_drawdown_pct": 1.5079906540189525
+          },
+          "full": {
+            "trades": 23,
+            "wins": 15,
+            "losses": 8,
+            "win_rate_pct": 65.21739130434783,
+            "profit_factor": 2.033057851239684,
+            "net_r": 2.7777777777778736,
+            "max_drawdown_r": 1.5155555555555837,
+            "start_balance": 10000.0,
+            "ending_balance": 10279.219098888618,
+            "return_pct": 2.7921909888861673,
+            "max_drawdown_pct": 1.5079906540189525
+          }
+        },
+        {
+          "key": "oco|rr=3|spread=2|reentry=true",
+          "allowed_events": [
+            "CPI"
+          ],
+          "development": {
+            "trades": 17,
+            "wins": 9,
+            "losses": 8,
+            "win_rate_pct": 52.94117647058823,
+            "profit_factor": 1.6946280991735654,
+            "net_r": 1.8677777777778477,
+            "max_drawdown_r": 1.5155555555555837,
+            "start_balance": 10000.0,
+            "ending_balance": 10186.198079925382,
+            "return_pct": 1.861980799253815,
+            "max_drawdown_pct": 1.5079906540189525
+          },
+          "full": {
+            "trades": 23,
+            "wins": 15,
+            "losses": 8,
+            "win_rate_pct": 65.21739130434783,
+            "profit_factor": 2.033057851239684,
+            "net_r": 2.7777777777778736,
+            "max_drawdown_r": 1.5155555555555837,
+            "start_balance": 10000.0,
+            "ending_balance": 10279.219098888618,
+            "return_pct": 2.7921909888861673,
+            "max_drawdown_pct": 1.5079906540189525
+          }
+        }
+      ]
+    },
+    "XAUUSD": {
+      "selected_config": {
+        "mode": "oco",
+        "reward_risk": 5.0,
+        "spread_buffer_multiplier": 1.5,
+        "min_buffer_pips": 2.0,
+        "pending_minutes": 15,
+        "max_hold_minutes": 180,
+        "allow_reentry": true,
+        "reentry_rr": 5.0
+      },
+      "allowed_events": [
+        "PPI"
+      ],
+      "development": {
+        "symbol": "XAUUSD",
+        "config": {
+          "mode": "oco",
+          "reward_risk": 5.0,
+          "spread_buffer_multiplier": 1.5,
+          "min_buffer_pips": 2.0,
+          "pending_minutes": 15,
+          "max_hold_minutes": 180,
+          "allow_reentry": true,
+          "reentry_rr": 5.0
+        },
+        "performance": {
+          "trades": 20,
+          "wins": 9,
+          "losses": 11,
+          "win_rate_pct": 45.0,
+          "profit_factor": 3.0711039273026333,
+          "net_r": 16.04523333333313,
+          "max_drawdown_r": 3.1274000000000335,
+          "start_balance": 10000.0,
+          "ending_balance": 11686.969057286311,
+          "return_pct": 16.869690572863117,
+          "max_drawdown_pct": 3.0937160926000318
+        },
+        "statuses": {
+          "event_filter": 52,
+          "traded": 16,
+          "missing_bid_ask": 1
+        },
+        "same_minute_oco_collisions": 0
+      },
+      "holdout": {
+        "symbol": "XAUUSD",
+        "config": {
+          "mode": "oco",
+          "reward_risk": 5.0,
+          "spread_buffer_multiplier": 1.5,
+          "min_buffer_pips": 2.0,
+          "pending_minutes": 15,
+          "max_hold_minutes": 180,
+          "allow_reentry": true,
+          "reentry_rr": 5.0
+        },
+        "performance": {
+          "trades": 4,
+          "wins": 2,
+          "losses": 2,
+          "win_rate_pct": 50.0,
+          "profit_factor": 2.8916666666667274,
+          "net_r": 3.783333333333455,
+          "max_drawdown_r": 1.216666666666545,
+          "start_balance": 10000.0,
+          "ending_balance": 10371.663225000013,
+          "return_pct": 3.7166322500001403,
+          "max_drawdown_pct": 1.2222549999998764
+        },
+        "statuses": {
+          "event_filter": 18,
+          "traded": 4,
+          "missing_bid_ask": 2
+        },
+        "same_minute_oco_collisions": 0
+      },
+      "full": {
+        "symbol": "XAUUSD",
+        "config": {
+          "mode": "oco",
+          "reward_risk": 5.0,
+          "spread_buffer_multiplier": 1.5,
+          "min_buffer_pips": 2.0,
+          "pending_minutes": 15,
+          "max_hold_minutes": 180,
+          "allow_reentry": true,
+          "reentry_rr": 5.0
+        },
+        "performance": {
+          "trades": 24,
+          "wins": 11,
+          "losses": 13,
+          "win_rate_pct": 45.833333333333336,
+          "profit_factor": 3.0342856686885114,
+          "net_r": 19.82856666666659,
+          "max_drawdown_r": 3.1274000000000335,
+          "start_balance": 10000.0,
+          "ending_balance": 12121.330718316949,
+          "return_pct": 21.213307183169494,
+          "max_drawdown_pct": 3.0937160926000318
+        },
+        "statuses": {
+          "event_filter": 70,
+          "traded": 20,
+          "missing_bid_ask": 3
+        },
+        "same_minute_oco_collisions": 0
+      },
+      "unfiltered_full": {
+        "symbol": "XAUUSD",
+        "config": {
+          "mode": "oco",
+          "reward_risk": 5.0,
+          "spread_buffer_multiplier": 1.5,
+          "min_buffer_pips": 2.0,
+          "pending_minutes": 15,
+          "max_hold_minutes": 180,
+          "allow_reentry": true,
+          "reentry_rr": 5.0
+        },
+        "performance": {
+          "trades": 106,
+          "wins": 25,
+          "losses": 81,
+          "win_rate_pct": 23.58490566037736,
+          "profit_factor": 1.0273369707555755,
+          "net_r": 1.9075733333334597,
+          "max_drawdown_r": 13.729966666666588,
+          "start_balance": 10000.0,
+          "ending_balance": 10006.062270401015,
+          "return_pct": 0.06062270401014924,
+          "max_drawdown_pct": 12.893416074499648
+        },
+        "statuses": {
+          "traded": 76,
+          "missing_bid_ask": 17
+        },
+        "same_minute_oco_collisions": 0
+      },
+      "leaderboard": [
+        {
+          "key": "oco|rr=5|spread=1.5|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 20,
+            "wins": 9,
+            "losses": 11,
+            "win_rate_pct": 45.0,
+            "profit_factor": 3.0711039273026333,
+            "net_r": 16.04523333333313,
+            "max_drawdown_r": 3.1274000000000335,
+            "start_balance": 10000.0,
+            "ending_balance": 11686.969057286311,
+            "return_pct": 16.869690572863117,
+            "max_drawdown_pct": 3.0937160926000318
+          },
+          "full": {
+            "trades": 24,
+            "wins": 11,
+            "losses": 13,
+            "win_rate_pct": 45.833333333333336,
+            "profit_factor": 3.0342856686885114,
+            "net_r": 19.82856666666659,
+            "max_drawdown_r": 3.1274000000000335,
+            "start_balance": 10000.0,
+            "ending_balance": 12121.330718316949,
+            "return_pct": 21.213307183169494,
+            "max_drawdown_pct": 3.0937160926000318
+          }
+        },
+        {
+          "key": "oco|rr=4|spread=1.5|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 20,
+            "wins": 9,
+            "losses": 11,
+            "win_rate_pct": 45.0,
+            "profit_factor": 2.9420248491567254,
+            "net_r": 15.04523333333313,
+            "max_drawdown_r": 3.1274000000000335,
+            "start_balance": 10000.0,
+            "ending_balance": 11575.66459007406,
+            "return_pct": 15.756645900740596,
+            "max_drawdown_pct": 3.0937160926000318
+          },
+          "full": {
+            "trades": 24,
+            "wins": 11,
+            "losses": 13,
+            "win_rate_pct": 45.833333333333336,
+            "profit_factor": 2.8290983041264215,
+            "net_r": 17.82856666666659,
+            "max_drawdown_r": 3.1274000000000335,
+            "start_balance": 10000.0,
+            "ending_balance": 11891.547668872212,
+            "return_pct": 18.91547668872211,
+            "max_drawdown_pct": 3.0937160926000318
+          }
+        },
+        {
+          "key": "oco|rr=4|spread=1.5|reentry=false",
+          "allowed_events": [
+            "NFP",
+            "PPI"
+          ],
+          "development": {
+            "trades": 33,
+            "wins": 12,
+            "losses": 21,
+            "win_rate_pct": 36.36363636363637,
+            "profit_factor": 1.7850896006100505,
+            "net_r": 14.642444444444415,
+            "max_drawdown_r": 7.587222222222105,
+            "start_balance": 10000.0,
+            "ending_balance": 11501.811157442644,
+            "return_pct": 15.01811157442643,
+            "max_drawdown_pct": 7.34010226165751
+          },
+          "full": {
+            "trades": 41,
+            "wins": 15,
+            "losses": 26,
+            "win_rate_pct": 36.58536585365854,
+            "profit_factor": 1.520978887565694,
+            "net_r": 14.412388888888877,
+            "max_drawdown_r": 7.587222222222105,
+            "start_balance": 10000.0,
+            "ending_balance": 11439.967784223769,
+            "return_pct": 14.39967784223768,
+            "max_drawdown_pct": 7.34010226165751
+          }
+        },
+        {
+          "key": "oco|rr=7|spread=1.5|reentry=true",
+          "allowed_events": [
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 37,
+            "wins": 13,
+            "losses": 24,
+            "win_rate_pct": 35.13513513513514,
+            "profit_factor": 1.7510415032662339,
+            "net_r": 14.203922222222019,
+            "max_drawdown_r": 6.844344444444445,
+            "start_balance": 10000.0,
+            "ending_balance": 11439.920414906397,
+            "return_pct": 14.399204149063971,
+            "max_drawdown_pct": 6.64457259764355
+          },
+          "full": {
+            "trades": 51,
+            "wins": 15,
+            "losses": 36,
+            "win_rate_pct": 29.41176470588235,
+            "profit_factor": 1.4070951239514826,
+            "net_r": 11.832895555555574,
+            "max_drawdown_r": 7.695026666666429,
+            "start_balance": 10000.0,
+            "ending_balance": 11140.149187627243,
+            "return_pct": 11.401491876272441,
+            "max_drawdown_pct": 7.4460772838580205
+          }
+        },
+        {
+          "key": "oco|rr=4|spread=1|reentry=false",
+          "allowed_events": [
+            "NFP",
+            "PPI"
+          ],
+          "development": {
+            "trades": 33,
+            "wins": 12,
+            "losses": 21,
+            "win_rate_pct": 36.36363636363637,
+            "profit_factor": 1.7272652267436777,
+            "net_r": 13.711777777777769,
+            "max_drawdown_r": 6.153333333333345,
+            "start_balance": 10000.0,
+            "ending_balance": 11398.580110432873,
+            "return_pct": 13.985801104328722,
+            "max_drawdown_pct": 5.99634534947484
+          },
+          "full": {
+            "trades": 41,
+            "wins": 15,
+            "losses": 26,
+            "win_rate_pct": 36.58536585365854,
+            "profit_factor": 1.5015040807767994,
+            "net_r": 13.818777777777743,
+            "max_drawdown_r": 6.153333333333345,
+            "start_balance": 10000.0,
+            "ending_balance": 11377.362883223745,
+            "return_pct": 13.77362883223745,
+            "max_drawdown_pct": 5.99634534947484
+          }
+        },
+        {
+          "key": "oco|rr=7|spread=1|reentry=true",
+          "allowed_events": [
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 37,
+            "wins": 13,
+            "losses": 24,
+            "win_rate_pct": 35.13513513513514,
+            "profit_factor": 1.689990984874621,
+            "net_r": 11.710166666666584,
+            "max_drawdown_r": 6.682233333333321,
+            "start_balance": 10000.0,
+            "ending_balance": 11177.180834084156,
+            "return_pct": 11.771808340841572,
+            "max_drawdown_pct": 6.492552875588021
+          },
+          "full": {
+            "trades": 51,
+            "wins": 15,
+            "losses": 36,
+            "win_rate_pct": 29.41176470588235,
+            "profit_factor": 1.3651194790474266,
+            "net_r": 9.759584444444418,
+            "max_drawdown_r": 7.274582222222145,
+            "start_balance": 10000.0,
+            "ending_balance": 10930.293479960374,
+            "return_pct": 9.302934799603735,
+            "max_drawdown_pct": 7.054927168170967
+          }
+        },
+        {
+          "key": "oco|rr=7|spread=2|reentry=true",
+          "allowed_events": [
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 36,
+            "wins": 11,
+            "losses": 25,
+            "win_rate_pct": 30.555555555555557,
+            "profit_factor": 1.5993933586749491,
+            "net_r": 11.628277777777445,
+            "max_drawdown_r": 6.893233333333339,
+            "start_balance": 10000.0,
+            "ending_balance": 11150.489975148723,
+            "return_pct": 11.50489975148723,
+            "max_drawdown_pct": 6.690261524784067
+          },
+          "full": {
+            "trades": 50,
+            "wins": 13,
+            "losses": 37,
+            "win_rate_pct": 26.0,
+            "profit_factor": 1.312400010316176,
+            "net_r": 9.23280666666652,
+            "max_drawdown_r": 7.7194711111109005,
+            "start_balance": 10000.0,
+            "ending_balance": 10855.669349996835,
+            "return_pct": 8.556693499968349,
+            "max_drawdown_pct": 7.468525729916743
+          }
+        },
+        {
+          "key": "oco|rr=7|spread=1|reentry=false",
+          "allowed_events": [
+            "CPI",
+            "PPI"
+          ],
+          "development": {
+            "trades": 29,
+            "wins": 12,
+            "losses": 17,
+            "win_rate_pct": 41.37931034482759,
+            "profit_factor": 1.7043109362530238,
+            "net_r": 11.178666666666533,
+            "max_drawdown_r": 6.153333333333345,
+            "start_balance": 10000.0,
+            "ending_balance": 11119.512704957097,
+            "return_pct": 11.195127049570974,
+            "max_drawdown_pct": 5.996345349474815
+          },
+          "full": {
+            "trades": 38,
+            "wins": 14,
+            "losses": 24,
+            "win_rate_pct": 36.8421052631579,
+            "profit_factor": 1.5240713931774226,
+            "net_r": 11.986444444444363,
+            "max_drawdown_r": 6.153333333333345,
+            "start_balance": 10000.0,
+            "ending_balance": 11179.179678637794,
+            "return_pct": 11.79179678637794,
+            "max_drawdown_pct": 5.996345349474815
+          }
+        },
+        {
+          "key": "oco|rr=5|spread=1.5|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 16,
+            "wins": 7,
+            "losses": 9,
+            "win_rate_pct": 43.75,
+            "profit_factor": 2.359890236237347,
+            "net_r": 9.856333333333119,
+            "max_drawdown_r": 4.0,
+            "start_balance": 10000.0,
+            "ending_balance": 11000.733447091028,
+            "return_pct": 10.00733447091029,
+            "max_drawdown_pct": 3.9403989999999953
+          },
+          "full": {
+            "trades": 20,
+            "wins": 9,
+            "losses": 11,
+            "win_rate_pct": 45.0,
+            "profit_factor": 2.474895171270314,
+            "net_r": 13.639666666666574,
+            "max_drawdown_r": 4.0,
+            "start_balance": 10000.0,
+            "ending_balance": 11409.590254122166,
+            "return_pct": 14.095902541221662,
+            "max_drawdown_pct": 3.9403989999999953
+          }
+        },
+        {
+          "key": "forecast|rr=7|spread=1.5|reentry=false",
+          "allowed_events": [
+            "NFP",
+            "PPI"
+          ],
+          "development": {
+            "trades": 25,
+            "wins": 9,
+            "losses": 16,
+            "win_rate_pct": 36.0,
+            "profit_factor": 1.7156981058533458,
+            "net_r": 10.60911111111116,
+            "max_drawdown_r": 5.682777777777776,
+            "start_balance": 10000.0,
+            "ending_balance": 11051.823915445562,
+            "return_pct": 10.518239154455621,
+            "max_drawdown_pct": 5.561488790484689
+          },
+          "full": {
+            "trades": 28,
+            "wins": 10,
+            "losses": 18,
+            "win_rate_pct": 35.714285714285715,
+            "profit_factor": 1.9278189827687604,
+            "net_r": 15.609111111111158,
+            "max_drawdown_r": 5.682777777777776,
+            "start_balance": 10000.0,
+            "ending_balance": 11590.12510289517,
+            "return_pct": 15.901251028951702,
+            "max_drawdown_pct": 5.561488790484689
+          }
+        },
+        {
+          "key": "oco|rr=4|spread=1|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 20,
+            "wins": 8,
+            "losses": 12,
+            "win_rate_pct": 40.0,
+            "profit_factor": 2.1398853468754853,
+            "net_r": 8.903644444444378,
+            "max_drawdown_r": 3.236800000000038,
+            "start_balance": 10000.0,
+            "ending_balance": 10903.248378012808,
+            "return_pct": 9.032483780128086,
+            "max_drawdown_pct": 3.1997315671947115
+          },
+          "full": {
+            "trades": 24,
+            "wins": 10,
+            "losses": 14,
+            "win_rate_pct": 41.666666666666664,
+            "profit_factor": 2.193703212946921,
+            "net_r": 11.711422222222204,
+            "max_drawdown_r": 3.236800000000038,
+            "start_balance": 10000.0,
+            "ending_balance": 11203.4988829884,
+            "return_pct": 12.034988829884007,
+            "max_drawdown_pct": 3.1997315671947115
+          }
+        },
+        {
+          "key": "oco|rr=5|spread=1|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 20,
+            "wins": 8,
+            "losses": 12,
+            "win_rate_pct": 40.0,
+            "profit_factor": 2.1398853468754853,
+            "net_r": 8.903644444444378,
+            "max_drawdown_r": 3.236800000000038,
+            "start_balance": 10000.0,
+            "ending_balance": 10903.248378012808,
+            "return_pct": 9.032483780128086,
+            "max_drawdown_pct": 3.1997315671947115
+          },
+          "full": {
+            "trades": 24,
+            "wins": 10,
+            "losses": 14,
+            "win_rate_pct": 41.666666666666664,
+            "profit_factor": 2.295629622079528,
+            "net_r": 12.711422222222204,
+            "max_drawdown_r": 3.236800000000038,
+            "start_balance": 10000.0,
+            "ending_balance": 11311.224833786362,
+            "return_pct": 13.112248337863619,
+            "max_drawdown_pct": 3.1997315671947115
+          }
+        },
+        {
+          "key": "forecast|rr=7|spread=2|reentry=false",
+          "allowed_events": [
+            "NFP",
+            "PPI"
+          ],
+          "development": {
+            "trades": 23,
+            "wins": 8,
+            "losses": 15,
+            "win_rate_pct": 34.78260869565217,
+            "profit_factor": 1.6758122286970325,
+            "net_r": 9.496888888888861,
+            "max_drawdown_r": 4.8957777777777665,
+            "start_balance": 10000.0,
+            "ending_balance": 10931.691856403424,
+            "return_pct": 9.31691856403425,
+            "max_drawdown_pct": 4.812582965960654
+          },
+          "full": {
+            "trades": 26,
+            "wins": 9,
+            "losses": 17,
+            "win_rate_pct": 34.61538461538461,
+            "profit_factor": 1.9030891585278897,
+            "net_r": 14.496888888888861,
+            "max_drawdown_r": 4.8957777777777665,
+            "start_balance": 10000.0,
+            "ending_balance": 11464.141771653265,
+            "return_pct": 14.641417716532645,
+            "max_drawdown_pct": 4.812582965960654
+          }
+        },
+        {
+          "key": "oco|rr=5|spread=1|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 16,
+            "wins": 7,
+            "losses": 9,
+            "win_rate_pct": 43.75,
+            "profit_factor": 2.0178520995912304,
+            "net_r": 7.6084444444443555,
+            "max_drawdown_r": 4.1671111111111,
+            "start_balance": 10000.0,
+            "ending_balance": 10764.377210701205,
+            "return_pct": 7.643772107012037,
+            "max_drawdown_pct": 4.1146702996720785
+          },
+          "full": {
+            "trades": 20,
+            "wins": 9,
+            "losses": 11,
+            "win_rate_pct": 45.0,
+            "profit_factor": 2.2048783347991865,
+            "net_r": 11.416222222222181,
+            "max_drawdown_r": 4.1671111111111,
+            "start_balance": 10000.0,
+            "ending_balance": 11167.157401592529,
+            "return_pct": 11.671574015925291,
+            "max_drawdown_pct": 4.1146702996720785
+          }
+        },
+        {
+          "key": "oco|rr=4|spread=2|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 19,
+            "wins": 7,
+            "losses": 12,
+            "win_rate_pct": 36.8421052631579,
+            "profit_factor": 1.8491456765685181,
+            "net_r": 7.702477777777494,
+            "max_drawdown_r": 4.356622222222318,
+            "start_balance": 10000.0,
+            "ending_balance": 10765.576133631343,
+            "return_pct": 7.655761336313427,
+            "max_drawdown_pct": 4.295203367315765
+          },
+          "full": {
+            "trades": 23,
+            "wins": 9,
+            "losses": 14,
+            "win_rate_pct": 39.130434782608695,
+            "profit_factor": 1.9449465413191853,
+            "net_r": 10.461366666666477,
+            "max_drawdown_r": 4.356622222222318,
+            "start_balance": 10000.0,
+            "ending_balance": 11056.670689302307,
+            "return_pct": 10.566706893023081,
+            "max_drawdown_pct": 4.295203367315765
+          }
+        },
+        {
+          "key": "oco|rr=5|spread=2|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 19,
+            "wins": 7,
+            "losses": 12,
+            "win_rate_pct": 36.8421052631579,
+            "profit_factor": 1.8491456765685181,
+            "net_r": 7.702477777777494,
+            "max_drawdown_r": 4.356622222222318,
+            "start_balance": 10000.0,
+            "ending_balance": 10765.576133631343,
+            "return_pct": 7.655761336313427,
+            "max_drawdown_pct": 4.295203367315765
+          },
+          "full": {
+            "trades": 23,
+            "wins": 9,
+            "losses": 14,
+            "win_rate_pct": 39.130434782608695,
+            "profit_factor": 2.0352737969663957,
+            "net_r": 11.461366666666477,
+            "max_drawdown_r": 4.356622222222318,
+            "start_balance": 10000.0,
+            "ending_balance": 11162.984830545598,
+            "return_pct": 11.629848305455969,
+            "max_drawdown_pct": 4.295203367315765
+          }
+        },
+        {
+          "key": "forecast|rr=4|spread=1.5|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 10,
+            "wins": 5,
+            "losses": 5,
+            "win_rate_pct": 50.0,
+            "profit_factor": 2.629232236528342,
+            "net_r": 6.832999999999882,
+            "max_drawdown_r": 3.130555555555576,
+            "start_balance": 10000.0,
+            "ending_balance": 10688.139941506932,
+            "return_pct": 6.881399415069311,
+            "max_drawdown_pct": 3.0980575000000243
+          },
+          "full": {
+            "trades": 11,
+            "wins": 6,
+            "losses": 5,
+            "win_rate_pct": 54.54545454545455,
+            "profit_factor": 3.5829756795421686,
+            "net_r": 10.832999999999881,
+            "max_drawdown_r": 3.130555555555576,
+            "start_balance": 10000.0,
+            "ending_balance": 11115.665539167208,
+            "return_pct": 11.156655391672077,
+            "max_drawdown_pct": 3.0980575000000243
+          }
+        },
+        {
+          "key": "forecast|rr=5|spread=1.5|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 10,
+            "wins": 5,
+            "losses": 5,
+            "win_rate_pct": 50.0,
+            "profit_factor": 2.629232236528342,
+            "net_r": 6.832999999999882,
+            "max_drawdown_r": 3.130555555555576,
+            "start_balance": 10000.0,
+            "ending_balance": 10688.139941506932,
+            "return_pct": 6.881399415069311,
+            "max_drawdown_pct": 3.0980575000000243
+          },
+          "full": {
+            "trades": 11,
+            "wins": 6,
+            "losses": 5,
+            "win_rate_pct": 54.54545454545455,
+            "profit_factor": 3.8214115402956246,
+            "net_r": 11.832999999999881,
+            "max_drawdown_r": 3.130555555555576,
+            "start_balance": 10000.0,
+            "ending_balance": 11222.546938582278,
+            "return_pct": 12.225469385822784,
+            "max_drawdown_pct": 3.0980575000000243
+          }
+        },
+        {
+          "key": "forecast|rr=4|spread=2|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 10,
+            "wins": 5,
+            "losses": 5,
+            "win_rate_pct": 50.0,
+            "profit_factor": 2.4861459653842415,
+            "net_r": 6.382666666666459,
+            "max_drawdown_r": 3.2068888888889484,
+            "start_balance": 10000.0,
+            "ending_balance": 10640.463524186163,
+            "return_pct": 6.404635241861634,
+            "max_drawdown_pct": 3.1728718000000526
+          },
+          "full": {
+            "trades": 11,
+            "wins": 6,
+            "losses": 5,
+            "win_rate_pct": 54.54545454545455,
+            "profit_factor": 3.4175096370267877,
+            "net_r": 10.38266666666646,
+            "max_drawdown_r": 3.2068888888889484,
+            "start_balance": 10000.0,
+            "ending_balance": 11066.08206515361,
+            "return_pct": 10.660820651536106,
+            "max_drawdown_pct": 3.1728718000000526
+          }
+        },
+        {
+          "key": "forecast|rr=5|spread=2|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 10,
+            "wins": 5,
+            "losses": 5,
+            "win_rate_pct": 50.0,
+            "profit_factor": 2.4861459653842415,
+            "net_r": 6.382666666666459,
+            "max_drawdown_r": 3.2068888888889484,
+            "start_balance": 10000.0,
+            "ending_balance": 10640.463524186163,
+            "return_pct": 6.404635241861634,
+            "max_drawdown_pct": 3.1728718000000526
+          },
+          "full": {
+            "trades": 11,
+            "wins": 6,
+            "losses": 5,
+            "win_rate_pct": 54.54545454545455,
+            "profit_factor": 3.6503505549374244,
+            "net_r": 11.38266666666646,
+            "max_drawdown_r": 3.2068888888889484,
+            "start_balance": 10000.0,
+            "ending_balance": 11172.486700395471,
+            "return_pct": 11.72486700395472,
+            "max_drawdown_pct": 3.1728718000000526
+          }
+        },
+        {
+          "key": "forecast|rr=4|spread=1.5|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 13,
+            "wins": 5,
+            "losses": 8,
+            "win_rate_pct": 38.46153846153846,
+            "profit_factor": 2.0342766483414683,
+            "net_r": 5.606399999999829,
+            "max_drawdown_r": 4.2579555555556095,
+            "start_balance": 10000.0,
+            "ending_balance": 10557.294782914672,
+            "return_pct": 5.572947829146724,
+            "max_drawdown_pct": 4.189295468997616
+          },
+          "full": {
+            "trades": 14,
+            "wins": 6,
+            "losses": 8,
+            "win_rate_pct": 42.857142857142854,
+            "profit_factor": 2.7722023392243877,
+            "net_r": 9.60639999999983,
+            "max_drawdown_r": 4.2579555555556095,
+            "start_balance": 10000.0,
+            "ending_balance": 10979.58657423126,
+            "return_pct": 9.795865742312593,
+            "max_drawdown_pct": 4.189295468997616
+          }
+        },
+        {
+          "key": "forecast|rr=5|spread=1.5|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 13,
+            "wins": 5,
+            "losses": 8,
+            "win_rate_pct": 38.46153846153846,
+            "profit_factor": 2.0342766483414683,
+            "net_r": 5.606399999999829,
+            "max_drawdown_r": 4.2579555555556095,
+            "start_balance": 10000.0,
+            "ending_balance": 10557.294782914672,
+            "return_pct": 5.572947829146724,
+            "max_drawdown_pct": 4.189295468997616
+          },
+          "full": {
+            "trades": 14,
+            "wins": 6,
+            "losses": 8,
+            "win_rate_pct": 42.857142857142854,
+            "profit_factor": 2.9566837619451176,
+            "net_r": 10.606399999999827,
+            "max_drawdown_r": 4.2579555555556095,
+            "start_balance": 10000.0,
+            "ending_balance": 11085.159522060407,
+            "return_pct": 10.851595220604061,
+            "max_drawdown_pct": 4.189295468997616
+          }
+        },
+        {
+          "key": "forecast|rr=7|spread=1.5|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 13,
+            "wins": 5,
+            "losses": 8,
+            "win_rate_pct": 38.46153846153846,
+            "profit_factor": 2.0342766483414683,
+            "net_r": 5.606399999999829,
+            "max_drawdown_r": 4.2579555555556095,
+            "start_balance": 10000.0,
+            "ending_balance": 10557.294782914672,
+            "return_pct": 5.572947829146724,
+            "max_drawdown_pct": 4.189295468997616
+          },
+          "full": {
+            "trades": 14,
+            "wins": 6,
+            "losses": 8,
+            "win_rate_pct": 42.857142857142854,
+            "profit_factor": 3.3256466073865774,
+            "net_r": 12.606399999999827,
+            "max_drawdown_r": 4.2579555555556095,
+            "start_balance": 10000.0,
+            "ending_balance": 11296.305417718699,
+            "return_pct": 12.963054177186994,
+            "max_drawdown_pct": 4.189295468997616
+          }
+        },
+        {
+          "key": "forecast|rr=4|spread=1|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 12,
+            "wins": 5,
+            "losses": 7,
+            "win_rate_pct": 41.666666666666664,
+            "profit_factor": 1.8378890935283072,
+            "net_r": 5.105444444444352,
+            "max_drawdown_r": 4.054222222222254,
+            "start_balance": 10000.0,
+            "ending_balance": 10503.715552296764,
+            "return_pct": 5.03715552296764,
+            "max_drawdown_pct": 3.9930107680000195
+          },
+          "full": {
+            "trades": 13,
+            "wins": 6,
+            "losses": 7,
+            "win_rate_pct": 46.15384615384615,
+            "profit_factor": 2.4943562063494698,
+            "net_r": 9.105444444444352,
+            "max_drawdown_r": 4.054222222222254,
+            "start_balance": 10000.0,
+            "ending_balance": 10923.864174388635,
+            "return_pct": 9.238641743886355,
+            "max_drawdown_pct": 3.9930107680000195
+          }
+        },
+        {
+          "key": "forecast|rr=5|spread=1|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 12,
+            "wins": 5,
+            "losses": 7,
+            "win_rate_pct": 41.666666666666664,
+            "profit_factor": 1.8378890935283072,
+            "net_r": 5.105444444444352,
+            "max_drawdown_r": 4.054222222222254,
+            "start_balance": 10000.0,
+            "ending_balance": 10503.715552296764,
+            "return_pct": 5.03715552296764,
+            "max_drawdown_pct": 3.9930107680000195
+          },
+          "full": {
+            "trades": 13,
+            "wins": 6,
+            "losses": 7,
+            "win_rate_pct": 46.15384615384615,
+            "profit_factor": 2.6584729845547606,
+            "net_r": 10.105444444444352,
+            "max_drawdown_r": 4.054222222222254,
+            "start_balance": 10000.0,
+            "ending_balance": 11028.901329911603,
+            "return_pct": 10.289013299116023,
+            "max_drawdown_pct": 3.9930107680000195
+          }
+        },
+        {
+          "key": "forecast|rr=7|spread=1|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 12,
+            "wins": 5,
+            "losses": 7,
+            "win_rate_pct": 41.666666666666664,
+            "profit_factor": 1.8378890935283072,
+            "net_r": 5.105444444444352,
+            "max_drawdown_r": 4.054222222222254,
+            "start_balance": 10000.0,
+            "ending_balance": 10503.715552296764,
+            "return_pct": 5.03715552296764,
+            "max_drawdown_pct": 3.9930107680000195
+          },
+          "full": {
+            "trades": 13,
+            "wins": 6,
+            "losses": 7,
+            "win_rate_pct": 46.15384615384615,
+            "profit_factor": 2.9867065409653417,
+            "net_r": 12.105444444444352,
+            "max_drawdown_r": 4.054222222222254,
+            "start_balance": 10000.0,
+            "ending_balance": 11238.975640957538,
+            "return_pct": 12.38975640957538,
+            "max_drawdown_pct": 3.9930107680000195
+          }
+        },
+        {
+          "key": "forecast|rr=4|spread=2|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 13,
+            "wins": 5,
+            "losses": 8,
+            "win_rate_pct": 38.46153846153846,
+            "profit_factor": 1.9338369650086644,
+            "net_r": 5.156066666666407,
+            "max_drawdown_r": 4.334288888888982,
+            "start_balance": 10000.0,
+            "ending_balance": 10510.202024529844,
+            "return_pct": 5.102020245298444,
+            "max_drawdown_pct": 4.263267265713619
+          },
+          "full": {
+            "trades": 14,
+            "wins": 6,
+            "losses": 8,
+            "win_rate_pct": 42.857142857142854,
+            "profit_factor": 2.658293823602718,
+            "net_r": 9.156066666666407,
+            "max_drawdown_r": 4.334288888888982,
+            "start_balance": 10000.0,
+            "ending_balance": 10930.610105511038,
+            "return_pct": 9.306101055110382,
+            "max_drawdown_pct": 4.263267265713619
+          }
+        },
+        {
+          "key": "forecast|rr=5|spread=2|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 13,
+            "wins": 5,
+            "losses": 8,
+            "win_rate_pct": 38.46153846153846,
+            "profit_factor": 1.9338369650086644,
+            "net_r": 5.156066666666407,
+            "max_drawdown_r": 4.334288888888982,
+            "start_balance": 10000.0,
+            "ending_balance": 10510.202024529844,
+            "return_pct": 5.102020245298444,
+            "max_drawdown_pct": 4.263267265713619
+          },
+          "full": {
+            "trades": 14,
+            "wins": 6,
+            "losses": 8,
+            "win_rate_pct": 42.857142857142854,
+            "profit_factor": 2.8394080382512312,
+            "net_r": 10.156066666666407,
+            "max_drawdown_r": 4.334288888888982,
+            "start_balance": 10000.0,
+            "ending_balance": 11035.712125756338,
+            "return_pct": 10.357121257563385,
+            "max_drawdown_pct": 4.263267265713619
+          }
+        },
+        {
+          "key": "forecast|rr=7|spread=2|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 13,
+            "wins": 5,
+            "losses": 8,
+            "win_rate_pct": 38.46153846153846,
+            "profit_factor": 1.9338369650086644,
+            "net_r": 5.156066666666407,
+            "max_drawdown_r": 4.334288888888982,
+            "start_balance": 10000.0,
+            "ending_balance": 10510.202024529844,
+            "return_pct": 5.102020245298444,
+            "max_drawdown_pct": 4.263267265713619
+          },
+          "full": {
+            "trades": 14,
+            "wins": 6,
+            "losses": 8,
+            "win_rate_pct": 42.857142857142854,
+            "profit_factor": 3.201636467548258,
+            "net_r": 12.156066666666407,
+            "max_drawdown_r": 4.334288888888982,
+            "start_balance": 10000.0,
+            "ending_balance": 11245.916166246934,
+            "return_pct": 12.459161662469342,
+            "max_drawdown_pct": 4.263267265713619
+          }
+        },
+        {
+          "key": "oco|rr=4|spread=2|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 15,
+            "wins": 6,
+            "losses": 9,
+            "win_rate_pct": 40.0,
+            "profit_factor": 1.5474142991312285,
+            "net_r": 4.144777777777563,
+            "max_drawdown_r": 3.229222222222284,
+            "start_balance": 10000.0,
+            "ending_balance": 10402.76727897075,
+            "return_pct": 4.027672789707504,
+            "max_drawdown_pct": 3.2051716384813367
+          },
+          "full": {
+            "trades": 19,
+            "wins": 8,
+            "losses": 11,
+            "win_rate_pct": 42.10526315789474,
+            "profit_factor": 1.7212690378900375,
+            "net_r": 6.903666666666545,
+            "max_drawdown_r": 3.229222222222284,
+            "start_balance": 10000.0,
+            "ending_balance": 10684.051706411701,
+            "return_pct": 6.840517064117013,
+            "max_drawdown_pct": 3.2051716384813367
+          }
+        },
+        {
+          "key": "oco|rr=5|spread=2|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 15,
+            "wins": 6,
+            "losses": 9,
+            "win_rate_pct": 40.0,
+            "profit_factor": 1.5474142991312285,
+            "net_r": 4.144777777777563,
+            "max_drawdown_r": 3.229222222222284,
+            "start_balance": 10000.0,
+            "ending_balance": 10402.76727897075,
+            "return_pct": 4.027672789707504,
+            "max_drawdown_pct": 3.2051716384813367
+          },
+          "full": {
+            "trades": 19,
+            "wins": 8,
+            "losses": 11,
+            "win_rate_pct": 42.10526315789474,
+            "profit_factor": 1.8257452637444218,
+            "net_r": 7.903666666666545,
+            "max_drawdown_r": 3.229222222222284,
+            "start_balance": 10000.0,
+            "ending_balance": 10786.782972819505,
+            "return_pct": 7.867829728195042,
+            "max_drawdown_pct": 3.2051716384813367
+          }
+        },
+        {
+          "key": "oco|rr=7|spread=2|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 15,
+            "wins": 6,
+            "losses": 9,
+            "win_rate_pct": 40.0,
+            "profit_factor": 1.5474142991312285,
+            "net_r": 4.144777777777563,
+            "max_drawdown_r": 3.229222222222284,
+            "start_balance": 10000.0,
+            "ending_balance": 10402.76727897075,
+            "return_pct": 4.027672789707504,
+            "max_drawdown_pct": 3.2051716384813367
+          },
+          "full": {
+            "trades": 19,
+            "wins": 8,
+            "losses": 11,
+            "win_rate_pct": 42.10526315789474,
+            "profit_factor": 2.03469771545319,
+            "net_r": 9.903666666666545,
+            "max_drawdown_r": 3.229222222222284,
+            "start_balance": 10000.0,
+            "ending_balance": 10992.245505635114,
+            "return_pct": 9.922455056351144,
+            "max_drawdown_pct": 3.2051716384813367
+          }
+        },
+        {
+          "key": "oco|rr=7|spread=1.5|reentry=false",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 16,
+            "wins": 6,
+            "losses": 10,
+            "win_rate_pct": 37.5,
+            "profit_factor": 1.4675539868787728,
+            "net_r": 3.8563333333331187,
+            "max_drawdown_r": 4.0,
+            "start_balance": 10000.0,
+            "ending_balance": 10372.120107257255,
+            "return_pct": 3.721201072572544,
+            "max_drawdown_pct": 3.9403989999999953
+          },
+          "full": {
+            "trades": 20,
+            "wins": 8,
+            "losses": 12,
+            "win_rate_pct": 40.0,
+            "profit_factor": 1.940649022562906,
+            "net_r": 9.639666666666574,
+            "max_drawdown_r": 4.0,
+            "start_balance": 10000.0,
+            "ending_balance": 10962.52059518513,
+            "return_pct": 9.625205951851301,
+            "max_drawdown_pct": 3.9403989999999953
+          }
+        },
+        {
+          "key": "forecast|rr=4|spread=1|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 16,
+            "wins": 5,
+            "losses": 11,
+            "win_rate_pct": 31.25,
+            "profit_factor": 1.5073807636510204,
+            "net_r": 3.769444444444294,
+            "max_drawdown_r": 5.291022222222294,
+            "start_balance": 10000.0,
+            "ending_balance": 10363.77774328164,
+            "return_pct": 3.6377774328163914,
+            "max_drawdown_pct": 5.178019293102326
+          },
+          "full": {
+            "trades": 17,
+            "wins": 6,
+            "losses": 11,
+            "win_rate_pct": 35.294117647058826,
+            "profit_factor": 2.0457951333323017,
+            "net_r": 7.769444444444294,
+            "max_drawdown_r": 5.291022222222294,
+            "start_balance": 10000.0,
+            "ending_balance": 10778.328853012907,
+            "return_pct": 7.783288530129062,
+            "max_drawdown_pct": 5.178019293102326
+          }
+        },
+        {
+          "key": "forecast|rr=5|spread=1|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 16,
+            "wins": 5,
+            "losses": 11,
+            "win_rate_pct": 31.25,
+            "profit_factor": 1.5073807636510204,
+            "net_r": 3.769444444444294,
+            "max_drawdown_r": 5.291022222222294,
+            "start_balance": 10000.0,
+            "ending_balance": 10363.77774328164,
+            "return_pct": 3.6377774328163914,
+            "max_drawdown_pct": 5.178019293102326
+          },
+          "full": {
+            "trades": 17,
+            "wins": 6,
+            "losses": 11,
+            "win_rate_pct": 35.294117647058826,
+            "profit_factor": 2.180398725752622,
+            "net_r": 8.769444444444293,
+            "max_drawdown_r": 5.291022222222294,
+            "start_balance": 10000.0,
+            "ending_balance": 10881.966630445722,
+            "return_pct": 8.819666304457229,
+            "max_drawdown_pct": 5.178019293102326
+          }
+        },
+        {
+          "key": "forecast|rr=7|spread=1|reentry=true",
+          "allowed_events": [
+            "PPI"
+          ],
+          "development": {
+            "trades": 16,
+            "wins": 5,
+            "losses": 11,
+            "win_rate_pct": 31.25,
+            "profit_factor": 1.5073807636510204,
+            "net_r": 3.769444444444294,
+            "max_drawdown_r": 5.291022222222294,
+            "start_balance": 10000.0,
+            "ending_balance": 10363.77774328164,
+            "return_pct": 3.6377774328163914,
+            "max_drawdown_pct": 5.178019293102326
+          },
+          "full": {
+            "trades": 17,
+            "wins": 6,
+            "losses": 11,
+            "win_rate_pct": 35.294117647058826,
+            "profit_factor": 2.4496059105932626,
+            "net_r": 10.769444444444293,
+            "max_drawdown_r": 5.291022222222294,
+            "start_balance": 10000.0,
+            "ending_balance": 11089.242185311356,
+            "return_pct": 10.892421853113564,
+            "max_drawdown_pct": 5.178019293102326
+          }
+        }
+      ],
+      "literal_0_01_pip_stress": {
+        "symbol": "XAUUSD",
+        "config": {
+          "mode": "oco",
+          "reward_risk": 5.0,
+          "spread_buffer_multiplier": 1.5,
+          "min_buffer_pips": 2.0,
+          "pending_minutes": 15,
+          "max_hold_minutes": 180,
+          "allow_reentry": true,
+          "reentry_rr": 5.0
+        },
+        "performance": {
+          "trades": 29,
+          "wins": 0,
+          "losses": 29,
+          "win_rate_pct": 0.0,
+          "profit_factor": 0.0,
+          "net_r": -63.83122222223104,
+          "max_drawdown_r": 63.831222222231034,
+          "start_balance": 10000.0,
+          "ending_balance": 5217.786564131224,
+          "return_pct": -47.82213435868776,
+          "max_drawdown_pct": 47.82213435868776
+        },
+        "statuses": {
+          "event_filter": 70,
+          "traded": 20,
+          "missing_bid_ask": 3
+        },
+        "same_minute_oco_collisions": 0
+      }
+    }
+  },
+  "combined_development": {
+    "trades": 58,
+    "wins": 31,
+    "losses": 27,
+    "win_rate_pct": 53.44827586206897,
+    "profit_factor": 2.7844569759510662,
+    "net_r": 21.830788888888904,
+    "max_drawdown_r": 2.9552333333333234,
+    "start_balance": 10000.0,
+    "ending_balance": 12376.898733357426,
+    "return_pct": 23.768987333574266,
+    "max_drawdown_pct": 2.9259136634888843
+  },
+  "combined_holdout": {
+    "trades": 12,
+    "wins": 9,
+    "losses": 3,
+    "win_rate_pct": 75.0,
+    "profit_factor": 3.333679294239802,
+    "net_r": 4.9966666666668065,
+    "max_drawdown_r": 1.1277777777776645,
+    "start_balance": 10000.0,
+    "ending_balance": 10498.086947865271,
+    "return_pct": 4.980869478652705,
+    "max_drawdown_pct": 1.1346519087208429
+  },
+  "combined_full": {
+    "trades": 70,
+    "wins": 40,
+    "losses": 30,
+    "win_rate_pct": 57.142857142857146,
+    "profit_factor": 2.866262105342083,
+    "net_r": 26.827455555555716,
+    "max_drawdown_r": 2.9552333333333234,
+    "start_balance": 10000.0,
+    "ending_balance": 12993.375904770977,
+    "return_pct": 29.933759047709763,
+    "max_drawdown_pct": 2.9259136634888843
+  }
+}

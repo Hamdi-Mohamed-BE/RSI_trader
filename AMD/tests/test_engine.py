@@ -35,7 +35,8 @@ def test_resample_ohlc() -> None:
 def test_regime_state_uses_only_prior_days() -> None:
     config = load_config()
     rows: list[dict[str, object]] = []
-    for day in pd.date_range("2026-01-01", periods=25, freq="D", tz="UTC"):
+    days = pd.date_range("2026-01-01", periods=40, freq="D", tz="UTC")
+    for day in days:
         for minute in range(24 * 60):
             timestamp = day + pd.Timedelta(minutes=minute)
             price = 100.0 + minute / 10_000
@@ -51,4 +52,4 @@ def test_regime_state_uses_only_prior_days() -> None:
                 }
             )
     states = regime_states(pd.DataFrame(rows), config)
-    assert states[date(2026, 1, 25)].ready
+    assert states[days[-1].date()].ready

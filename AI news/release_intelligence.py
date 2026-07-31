@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 import requests
 
+from fomc_pipeline import fomc_release_phases
 from news_core import EVENTS, ROOT
 
 
@@ -24,6 +25,21 @@ ALLOWED_SOURCE_HOSTS = {
     "www.census.gov",
 }
 GOLD_INVERSE_EVENTS = {"NFP", "GDP", "CPI", "PPI"}
+FOMC_HAWKISH_PHRASES = {
+    "inflation remains somewhat elevated": 1.5,
+    "inflation remains elevated": 1.5,
+    "economic activity has continued to expand at a solid pace": 0.5,
+    "labor market conditions remain solid": 0.5,
+    "attentive to the risks of inflation": 1.0,
+}
+FOMC_DOVISH_PHRASES = {
+    "downside risks to employment have risen": 1.5,
+    "job gains have slowed": 0.75,
+    "unemployment rate has moved up": 0.75,
+    "inflation has eased": 0.75,
+    "reduce the target range": 1.5,
+    "lower the target range": 1.5,
+}
 
 
 class TextExtractor(HTMLParser):
@@ -109,6 +125,130 @@ def deterministic_surprise(
     }
 
 
+def _target_range(text: str) -> list[float] | None:
+    match = re.search(
+        r"target range for the federal funds rate (?:at|to) "
+        r"(\d+(?:\.\d+)?)\s*(?:percent)?\s+to\s+"
+        r"(\d+(?:\.\d+)?)\s*percent",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if not match:
+        return None
+    return [float(match.group(1)), float(match.group(2))]
+
+
+def _phrase_score(text: str) -> dict:
+    lowered = re.sub(r"\s+", " ", text.lower())
+    hawkish = {
+        phrase: weight
+        for phrase, weight in FOMC_HAWKISH_PHRASES.items()
+        if phrase in lowered
+    }
+    dovish = {
+        phrase: weight
+        for phrase, weight in FOMC_DOVISH_PHRASES.items()
+        if phrase in lowered
+    }
+    return {
+        "score": round(sum(hawkish.values()) - sum(dovish.values()), 3),
+        "hawkish_phrases": list(hawkish),
+        "dovish_phrases": list(dovish),
+    }
+
+
+def _policy_sentences(text: str) -> list[str]:
+    keywords = (
+        "inflation",
+        "employment",
+        "labor market",
+        "federal funds",
+        "economic activity",
+        "risks",
+        "committee decided",
+    )
+    sentences = [
+        re.sub(r"\s+", " ", sentence).strip()
+        for sentence in re.split(r"(?<=[.!?])\s+", text)
+    ]
+    return [
+        sentence
+        for sentence in sentences
+        if 20 <= len(sentence) <= 500
+        and any(keyword in sentence.lower() for keyword in keywords)
+    ]
+
+
+def analyze_fomc_statement_diff(
+    current_text: str,
+    previous_text: str,
+) -> dict:
+    current_range = _target_range(current_text)
+    previous_range = _target_range(previous_text)
+    current_tone = _phrase_score(current_text)
+    previous_tone = _phrase_score(previous_text)
+    tone_change = current_tone["score"] - previous_tone["score"]
+    rate_change_bps = None
+    if current_range and previous_range:
+        current_midpoint = sum(current_range) / 2
+        previous_midpoint = sum(previous_range) / 2
+        rate_change_bps = 100 * (current_midpoint - previous_midpoint)
+
+    stance_change = tone_change
+    if rate_change_bps is not None:
+        stance_change += rate_change_bps / 12.5
+    if stance_change >= 0.75:
+        direction = "NEGATIVE"
+    elif stance_change <= -0.75:
+        direction = "POSITIVE"
+    else:
+        direction = "UNCERTAIN"
+    confidence = min(85.0, 50.0 + 10.0 * abs(stance_change))
+    if direction == "UNCERTAIN":
+        confidence = min(confidence, 55.0)
+
+    current_sentences = _policy_sentences(current_text)
+    previous_normalized = {
+        re.sub(r"\W+", " ", sentence.lower()).strip()
+        for sentence in _policy_sentences(previous_text)
+    }
+    changed = [
+        sentence
+        for sentence in current_sentences
+        if re.sub(r"\W+", " ", sentence.lower()).strip()
+        not in previous_normalized
+    ][:8]
+    return {
+        "gold_impact": direction,
+        "confidence_pct": round(confidence, 2),
+        "current_target_range_pct": current_range,
+        "previous_target_range_pct": previous_range,
+        "rate_change_bps": (
+            round(rate_change_bps, 3)
+            if rate_change_bps is not None
+            else None
+        ),
+        "tone_change_score": round(tone_change, 3),
+        "combined_stance_change": round(stance_change, 3),
+        "current_tone": current_tone,
+        "previous_tone": previous_tone,
+        "changed_policy_sentences": changed,
+        "interpretation": (
+            "More dovish than the previous statement; positive for gold."
+            if direction == "POSITIVE"
+            else (
+                "More hawkish than the previous statement; negative for gold."
+                if direction == "NEGATIVE"
+                else "No sufficiently strong deterministic statement change."
+            )
+        ),
+        "timing_warning": (
+            "Post-release statement analysis only. The press conference is a "
+            "separate shock and can reverse this result."
+        ),
+    }
+
+
 def _analysis_prompt(payload: dict, statement_text: str, timing_mode: str) -> str:
     timing_instruction = (
         "This is a PRE-RELEASE forecast. Use only information timestamped before publication."
@@ -180,12 +320,26 @@ def analyze_release(
     previous: str | None,
     revised: str | None = None,
     source_url: str | None = None,
+    previous_source_url: str | None = None,
 ) -> dict:
     event = event.upper()
     if event not in EVENTS:
         raise ValueError(f"Unsupported event: {event}")
     statement_text = fetch_official_text(source_url) if source_url else ""
+    previous_statement_text = (
+        fetch_official_text(previous_source_url)
+        if previous_source_url
+        else ""
+    )
     numeric_result = deterministic_surprise(event, actual, forecast, previous, revised)
+    fomc_statement_diff = (
+        analyze_fomc_statement_diff(
+            statement_text,
+            previous_statement_text,
+        )
+        if event == "FOMC" and statement_text and previous_statement_text
+        else None
+    )
     payload = {
         "event": event,
         "release_time": release_time,
@@ -195,6 +349,8 @@ def analyze_release(
         "revised": revised,
         "numeric_surprise": numeric_result,
         "source_url": source_url,
+        "previous_source_url": previous_source_url,
+        "fomc_statement_diff": fomc_statement_diff,
     }
     result = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -204,6 +360,17 @@ def analyze_release(
         "numeric_analysis": numeric_result,
         "official_source_url": source_url,
         "official_text_characters": len(statement_text),
+        "previous_official_text_characters": len(previous_statement_text),
+        "fomc_statement_diff": fomc_statement_diff,
+        "fomc_release_phases": (
+            fomc_release_phases(
+                datetime.fromisoformat(
+                    release_time.replace("Z", "+00:00")
+                ).astimezone(timezone.utc)
+            )
+            if event == "FOMC"
+            else None
+        ),
         "codex_analysis_packet": {
             "payload": payload,
             "prompt_for_codex": _analysis_prompt(

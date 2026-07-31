@@ -65,6 +65,19 @@ def index() -> str:
         <label>Forecast<input name="forecast" placeholder="optional consensus"></label>
         <label>Previous<input name="previous" placeholder="optional previous value"></label>
         <label class="wide">Official source URL<input name="source_url" placeholder="optional"></label>
+        <div class="wide panel" style="padding:16px">
+          <div class="phase">FOMC only — optional FedWatch snapshot</div>
+          <p style="margin:8px 0 12px">Enter probabilities captured before the release. Leave blank for other events.</p>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+            <label>Current target lower %<input name="fomc_current_lower" type="number" step="0.001"></label>
+            <label>Current target upper %<input name="fomc_current_upper" type="number" step="0.001"></label>
+            <label>50bp cut probability %<input name="fomc_cut_50_probability" type="number" min="0" step="0.1"></label>
+            <label>25bp cut probability %<input name="fomc_cut_25_probability" type="number" min="0" step="0.1"></label>
+            <label>Hold probability %<input name="fomc_hold_probability" type="number" min="0" step="0.1"></label>
+            <label>25bp hike probability %<input name="fomc_hike_25_probability" type="number" min="0" step="0.1"></label>
+            <label>50bp hike probability %<input name="fomc_hike_50_probability" type="number" min="0" step="0.1"></label>
+          </div>
+        </div>
         <button class="wide" type="submit">Predict gold impact</button>
       </form>
       <pre id="forecast-output">Waiting for a query.</pre>
@@ -80,6 +93,7 @@ def index() -> str:
         <label>Previous<input name="previous" placeholder="e.g. 2.0%"></label>
         <label>Revised<input name="revised" placeholder="optional"></label>
         <label class="wide">Official source URL<input name="source_url" placeholder="Optional BLS, BEA, or Federal Reserve HTTPS URL"></label>
+        <label class="wide">Previous FOMC statement URL<input name="previous_source_url" placeholder="Optional; enables deterministic statement comparison"></label>
         <button class="wide secondary" type="submit">Analyze published release</button>
       </form>
       <pre id="release-output">Waiting for published data.</pre>
@@ -93,6 +107,17 @@ def index() -> str:
       const output = document.getElementById('forecast-output');
       output.textContent = 'Running model...';
       const body = new FormData(event.target);
+      for (const name of [
+        'fomc_current_lower',
+        'fomc_current_upper',
+        'fomc_cut_50_probability',
+        'fomc_cut_25_probability',
+        'fomc_hold_probability',
+        'fomc_hike_25_probability',
+        'fomc_hike_50_probability'
+      ]) {{
+        if (!body.get(name)) body.delete(name);
+      }}
       body.set('release', body.get('release') + ':00Z');
       const response = await fetch('/api/predict', {{method:'POST', body}});
       const data = await response.json();
@@ -126,6 +151,9 @@ def health() -> dict:
         "status": "ok" if direction_ready else "model_missing",
         "models": {
             "gold_direction_v2": direction_ready,
+            "fomc_ensemble": (
+                ROOT / "fomc_pipeline_backtest.json"
+            ).exists(),
             "legacy_research": legacy_models,
         },
         "trade_execution": False,
@@ -137,6 +165,17 @@ def backtest() -> dict:
     path = ROOT / "gold_direction_v2.json"
     if not path.exists():
         raise HTTPException(status_code=404, detail="Run train_model.bat first.")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+@app.get("/api/fomc-backtest")
+def fomc_backtest() -> dict:
+    path = ROOT / "fomc_pipeline_backtest.json"
+    if not path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="Run backtest_fomc_pipeline.py first.",
+        )
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -152,6 +191,13 @@ def predict(
     forecast: str | None = Form(None),
     previous: str | None = Form(None),
     source_url: str | None = Form(None),
+    fomc_current_lower: float | None = Form(None),
+    fomc_current_upper: float | None = Form(None),
+    fomc_cut_25_probability: float | None = Form(None),
+    fomc_hold_probability: float | None = Form(None),
+    fomc_hike_25_probability: float | None = Form(None),
+    fomc_cut_50_probability: float | None = Form(None),
+    fomc_hike_50_probability: float | None = Form(None),
 ) -> dict:
     try:
         parsed = datetime.fromisoformat(release.replace("Z", "+00:00")).astimezone(timezone.utc)
@@ -161,6 +207,13 @@ def predict(
             forecast=forecast,
             previous=previous,
             source_url=source_url,
+            fomc_current_lower=fomc_current_lower,
+            fomc_current_upper=fomc_current_upper,
+            fomc_cut_25_probability=fomc_cut_25_probability,
+            fomc_hold_probability=fomc_hold_probability,
+            fomc_hike_25_probability=fomc_hike_25_probability,
+            fomc_cut_50_probability=fomc_cut_50_probability,
+            fomc_hike_50_probability=fomc_hike_50_probability,
         )
         result["codex_analyst_packet"] = build_pre_release_packet(
             result,
@@ -190,6 +243,7 @@ def analyze_published_release(
     previous: str | None = Form(None),
     revised: str | None = Form(None),
     source_url: str | None = Form(None),
+    previous_source_url: str | None = Form(None),
 ) -> dict:
     try:
         return analyze_release(
@@ -200,6 +254,7 @@ def analyze_published_release(
             previous=previous,
             revised=revised,
             source_url=source_url or None,
+            previous_source_url=previous_source_url or None,
         )
     except Exception as error:
         raise HTTPException(status_code=400, detail=str(error)) from error

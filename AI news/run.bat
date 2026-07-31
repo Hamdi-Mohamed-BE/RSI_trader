@@ -16,9 +16,9 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist "models\gold_news_impulse_15m.joblib" (
-  echo Trained models are missing. Running the walk-forward trainer first...
-  uv run python train_news_model.py
+if not exist "models\gold_news_direction.joblib" (
+  echo Trained direction models are missing. Running the full trainer first...
+  call train_model.bat
   if errorlevel 1 (
     echo Model training failed.
     pause

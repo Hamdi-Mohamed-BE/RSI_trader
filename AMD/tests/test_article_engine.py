@@ -121,6 +121,61 @@ def test_fade_requires_sweep_and_close_back_inside() -> None:
     )
 
 
+def test_fade_mss_waits_for_break_of_sweep_candle() -> None:
+    frame = _day_frame()
+    sweep = frame["time"].between(
+        "2026-07-30T08:00:00Z",
+        "2026-07-30T08:04:00Z",
+    )
+    frame.loc[sweep, ["open", "high", "low", "close"]] = [
+        109.0,
+        112.0,
+        108.0,
+        109.5,
+    ]
+    pause = frame["time"].between(
+        "2026-07-30T08:05:00Z",
+        "2026-07-30T08:09:00Z",
+    )
+    frame.loc[pause, ["open", "high", "low", "close"]] = [
+        109.0,
+        110.0,
+        108.2,
+        108.5,
+    ]
+    break_bar = frame["time"].between(
+        "2026-07-30T08:10:00Z",
+        "2026-07-30T08:14:00Z",
+    )
+    frame.loc[break_bar, ["open", "high", "low", "close"]] = [
+        108.5,
+        109.0,
+        106.5,
+        107.0,
+    ]
+    config = replace(load_config(), regime_filter_enabled=False)
+    params = ArticleParams(
+        enable_fade=True,
+        enable_distribution=False,
+        trade_london=True,
+        trade_new_york=False,
+        fade_confirmation_mode="mss",
+        fade_mss_lookahead_bars=3,
+    )
+    candidates, _, _ = article_candidates_for_day(
+        frame,
+        0.01,
+        config,
+        params,
+        date(2026, 7, 30),
+    )
+    assert len(candidates) == 1
+    assert candidates[0].side == "sell"
+    assert candidates[0].entry_time == pd.Timestamp(
+        "2026-07-30T08:15:00Z"
+    )
+
+
 def test_live_signal_is_available_on_next_m1_open() -> None:
     frame = _day_frame()
     breakout = frame["time"].between(

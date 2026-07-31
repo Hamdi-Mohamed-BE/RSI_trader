@@ -1,0 +1,76 @@
+{
+  "selection_period": "2024-07-30 through 2026-07-30",
+  "untouched_test_period": "2023-07-30 through 2024-07-30",
+  "params": {
+    "enable_fade": true,
+    "enable_distribution": false,
+    "trade_london": true,
+    "trade_new_york": false,
+    "max_trades_per_day": 1,
+    "fade_rr": 2.0,
+    "distribution_rr": 2.0,
+    "sweep_min_fraction": 0.02,
+    "sweep_max_fraction": 0.6,
+    "breakout_fraction": 0.0,
+    "retest_tolerance_fraction": 0.04,
+    "stop_buffer_fraction": 0.03,
+    "volume_factor": 0.0,
+    "require_directional_confirmation": false,
+    "min_body_fraction": 0.0,
+    "min_close_location": 0.0,
+    "fade_reclaim_fraction": 0.0,
+    "distribution_hold_fraction": 0.0,
+    "breakout_max_fraction": 0.0,
+    "max_risk_fraction": 0.0,
+    "trend_filter_mode": "none",
+    "trend_fast": 8,
+    "trend_slow": 24,
+    "trend_price_alignment": true,
+    "use_regime_filter": true,
+    "london_window_minutes": 180,
+    "ny_window_minutes": 180
+  },
+  "config": {
+    "risk_pct": 3.0,
+    "lock_trigger_r": 0.3,
+    "lock_profit_r": 0.15,
+    "relative_atr_days": 5,
+    "relative_atr_median_days": 30,
+    "relative_atr_min": 0.65,
+    "relative_atr_max": 1.0,
+    "asia_ratio_min": 0.6,
+    "asia_ratio_max": 1.0
+  },
+  "unseen_results": [
+    {
+      "period": "2023-07-30 to 2024-01-30",
+      "trades": 16,
+      "win_rate_pct": 50.0,
+      "profit_factor": 0.14816896097979387,
+      "net_r": -6.799999999999898,
+      "return_pct": -18.75934751173456,
+      "max_drawdown_pct": 18.759347511734564,
+      "ending_balance": 812.4065248826544
+    },
+    {
+      "period": "2024-01-30 to 2024-07-30",
+      "trades": 27,
+      "win_rate_pct": 40.74074074074074,
+      "profit_factor": 0.0927694170383007,
+      "net_r": -14.35000000000015,
+      "return_pct": -35.46473463495662,
+      "max_drawdown_pct": 35.75384234440653,
+      "ending_balance": 645.3526536504338
+    },
+    {
+      "period": "FULL UNSEEN YEAR",
+      "trades": 43,
+      "win_rate_pct": 44.18604651162791,
+      "profit_factor": 0.11545484638042942,
+      "net_r": -21.15000000000005,
+      "return_pct": -47.57112933240515,
+      "max_drawdown_pct": 47.80600232195612,
+      "ending_balance": 524.2887066759486
+    }
+  ]
+}
