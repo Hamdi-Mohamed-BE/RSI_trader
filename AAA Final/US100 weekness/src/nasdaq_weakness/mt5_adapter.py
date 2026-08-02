@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import math
 from pathlib import Path
 import re
@@ -333,6 +333,46 @@ def strategy_positions(symbol: str, magic: int):
         for item in (mt5.positions_get(symbol=symbol) or ())
         if int(item.magic) == magic
     )
+
+
+def consecutive_strategy_losses(symbol: str, magic: int, days: int = 365) -> int:
+    """Count consecutive fully closed losing positions for this bot.
+
+    Deals are grouped by MT5 position id so partial exits count as one result.
+    Breakeven closures do not reset or advance the streak.
+    """
+    end = datetime.now(timezone.utc)
+    deals = tuple(mt5.history_deals_get(end - timedelta(days=days), end) or ())
+    grouped: dict[int, dict[str, float]] = {}
+    for deal in deals:
+        if str(getattr(deal, "symbol", "")) != symbol:
+            continue
+        if int(getattr(deal, "magic", 0)) != magic:
+            continue
+        position_id = int(getattr(deal, "position_id", 0) or 0)
+        if position_id <= 0:
+            continue
+        item = grouped.setdefault(position_id, {"time": 0.0, "pnl": 0.0, "closed": 0.0})
+        item["time"] = max(item["time"], float(getattr(deal, "time_msc", 0) or 0))
+        item["pnl"] += sum(
+            float(getattr(deal, name, 0.0) or 0.0)
+            for name in ("profit", "commission", "swap", "fee")
+        )
+        entry = int(getattr(deal, "entry", -1))
+        if entry in {mt5.DEAL_ENTRY_OUT, mt5.DEAL_ENTRY_OUT_BY}:
+            item["closed"] = 1.0
+    outcomes = sorted(
+        (value["time"], value["pnl"])
+        for value in grouped.values()
+        if value["closed"] > 0
+    )
+    streak = 0
+    for _, pnl in reversed(outcomes):
+        if pnl < -1e-9:
+            streak += 1
+        elif pnl > 1e-9:
+            break
+    return streak
 
 
 def cancel_order(ticket: int) -> None:

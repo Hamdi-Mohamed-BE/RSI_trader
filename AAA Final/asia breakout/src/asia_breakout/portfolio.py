@@ -5,6 +5,8 @@ from math import inf
 
 import pandas as pd
 
+from .risk import next_loss_streak, progressed_risk_pct
+
 
 @dataclass(frozen=True, slots=True)
 class PortfolioResult:
@@ -41,6 +43,8 @@ def simulate_portfolio(
     risk_pct: float,
     exposure_cap_pct: float,
     priority: tuple[str, ...],
+    progression_multiplier: float | None = None,
+    max_risk_pct: float | None = None,
 ) -> tuple[PortfolioResult, pd.DataFrame]:
     """Compound one account while rejecting entries above the exposure cap."""
     frames: list[pd.DataFrame] = []
@@ -104,13 +108,16 @@ def simulate_portfolio(
     max_active = 0
     max_planned_exposure = 0.0
     active: dict[int, float] = {}
+    active_risk_pct: dict[int, float] = {}
     accepted: list[int] = []
     skipped: list[int] = []
     risk_cash_by_trade: dict[int, float] = {}
+    risk_pct_by_trade: dict[int, float] = {}
     pnl_cash_by_trade: dict[int, float] = {}
     balance_after_exit: dict[int, float] = {}
     exit_sequence: dict[int, int] = {}
     closed_count = 0
+    loss_streak = 0
 
     def update_drawdowns() -> None:
         nonlocal peak, max_realized_dd, max_committed_dd
@@ -128,8 +135,12 @@ def simulate_portfolio(
             risk_cash = active.pop(index, None)
             if risk_cash is None:
                 continue
+            active_risk_pct.pop(index, None)
             pnl_cash = risk_cash * float(trades.loc[index, "pnl_r"])
             balance += pnl_cash
+            loss_streak = next_loss_streak(
+                loss_streak, float(trades.loc[index, "pnl_r"])
+            )
             closed_count += 1
             pnl_cash_by_trade[index] = pnl_cash
             balance_after_exit[index] = balance
@@ -137,13 +148,25 @@ def simulate_portfolio(
             update_drawdowns()
             continue
 
-        proposed_exposure = (len(active) + 1) * risk_pct
+        trade_risk_pct = (
+            progressed_risk_pct(
+                risk_pct,
+                loss_streak,
+                progression_multiplier,
+                max_risk_pct,
+            )
+            if progression_multiplier is not None
+            else risk_pct
+        )
+        proposed_exposure = sum(active_risk_pct.values()) + trade_risk_pct
         if proposed_exposure > exposure_cap_pct + 1e-12:
             skipped.append(index)
             continue
-        risk_cash = balance * risk_pct / 100.0
+        risk_cash = balance * trade_risk_pct / 100.0
         active[index] = risk_cash
+        active_risk_pct[index] = trade_risk_pct
         risk_cash_by_trade[index] = risk_cash
+        risk_pct_by_trade[index] = trade_risk_pct
         accepted.append(index)
         max_active = max(max_active, len(active))
         max_planned_exposure = max(max_planned_exposure, proposed_exposure)
@@ -152,6 +175,7 @@ def simulate_portfolio(
     selected = trades.loc[accepted].copy()
     selected["portfolio_status"] = "accepted"
     selected["portfolio_risk_cash"] = selected.index.map(risk_cash_by_trade)
+    selected["portfolio_risk_pct"] = selected.index.map(risk_pct_by_trade)
     selected["portfolio_pnl_cash"] = selected.index.map(pnl_cash_by_trade)
     selected["portfolio_balance_after_exit"] = selected.index.map(balance_after_exit)
     selected["portfolio_exit_sequence"] = selected.index.map(exit_sequence)
@@ -159,6 +183,7 @@ def simulate_portfolio(
         rejected = trades.loc[skipped].copy()
         rejected["portfolio_status"] = "skipped_cap"
         rejected["portfolio_risk_cash"] = pd.NA
+        rejected["portfolio_risk_pct"] = pd.NA
         rejected["portfolio_pnl_cash"] = pd.NA
         rejected["portfolio_balance_after_exit"] = pd.NA
         rejected["portfolio_exit_sequence"] = pd.NA

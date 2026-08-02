@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 import logging
 import math
@@ -14,6 +14,8 @@ from typing import Iterable
 import MetaTrader5 as mt5
 import pandas as pd
 from dotenv import load_dotenv
+
+from .portfolio_guard import selected_xau_entry_guard
 
 
 UTC = timezone.utc
@@ -38,11 +40,16 @@ class LiveConfig:
     pivot_distance: int
     max_same_direction_legs: int
     risk_pct_per_trade: float
+    risk_progression_enabled: bool
+    risk_progression_multiplier: float
+    risk_progression_max_pct: float
     maximum_lot: float
     live_trading: bool
     close_on_opposite: bool
     exit_mode: str
+    trailing_enabled: bool
     target_r: float
+    max_target_r: float
     trail_start_r: float
     trail_distance_r: float
     signal_filter: str
@@ -69,13 +76,22 @@ class LiveConfig:
                 os.getenv("MAX_SAME_DIRECTION_LEGS", "1")
             ),
             risk_pct_per_trade=float(
-                os.getenv("RISK_PCT_PER_TRADE", "1.0")
+                os.getenv("RISK_PCT_PER_TRADE", "0.5")
+            ),
+            risk_progression_enabled=env_bool("RISK_PROGRESSION_ENABLED", False),
+            risk_progression_multiplier=float(
+                os.getenv("RISK_PROGRESSION_MULTIPLIER", "1.6")
+            ),
+            risk_progression_max_pct=float(
+                os.getenv("RISK_PROGRESSION_MAX_PCT", "3.2")
             ),
             maximum_lot=float(os.getenv("MAXIMUM_LOT", "100.0")),
             live_trading=env_bool("LIVE_TRADING", False),
             close_on_opposite=env_bool("CLOSE_ON_OPPOSITE", True),
             exit_mode=os.getenv("EXIT_MODE", "trail").strip().lower(),
-            target_r=float(os.getenv("TARGET_R", "4.0")),
+            trailing_enabled=env_bool("TRAILING_ENABLED", True),
+            target_r=float(os.getenv("TARGET_R", "1.7")),
+            max_target_r=float(os.getenv("MAX_TARGET_R", "1.7")),
             trail_start_r=float(os.getenv("TRAIL_START_R", "1.0")),
             trail_distance_r=float(os.getenv("TRAIL_DISTANCE_R", "1.0")),
             signal_filter=os.getenv("SIGNAL_FILTER", "ema200_slope").strip().lower(),
@@ -98,6 +114,10 @@ class LiveConfig:
             raise ValueError("MAX_SAME_DIRECTION_LEGS must be at least 1")
         if not 0 < self.risk_pct_per_trade <= 100:
             raise ValueError("RISK_PCT_PER_TRADE must be between 0 and 100")
+        if self.risk_progression_multiplier < 1:
+            raise ValueError("RISK_PROGRESSION_MULTIPLIER must be at least 1")
+        if not 0 < self.risk_progression_max_pct <= 100:
+            raise ValueError("RISK_PROGRESSION_MAX_PCT must be between 0 and 100")
         if self.maximum_lot <= 0:
             raise ValueError("MAXIMUM_LOT must be positive")
         if self.history_bars < self.pivot_distance * 2 + 3:
@@ -106,6 +126,8 @@ class LiveConfig:
             raise ValueError("ENTRY_WINDOW_MINUTES must be positive")
         if self.exit_mode not in {"fixed", "trail", "opposite"}:
             raise ValueError("EXIT_MODE must be fixed, trail, or opposite")
+        if not 0 < self.max_target_r <= 1.7:
+            raise ValueError("MAX_TARGET_R must be positive and no greater than 1.7")
         if self.exit_mode == "fixed" and self.target_r <= 0:
             raise ValueError("TARGET_R must be positive for fixed exits")
         if self.exit_mode == "trail" and (
@@ -118,6 +140,23 @@ class LiveConfig:
             raise ValueError("EMA_SLOPE_BARS must be positive")
         if self.signal_filter == "ema200_slope" and self.history_bars < 250:
             raise ValueError("HISTORY_BARS must be at least 250 for EMA200 filtering")
+
+    @property
+    def effective_exit_mode(self) -> str:
+        if self.exit_mode == "trail" and not self.trailing_enabled:
+            return "fixed"
+        return self.exit_mode
+
+
+def progressive_risk_pct(config: LiveConfig, loss_streak: int) -> float:
+    """Return capped live risk for the next entry."""
+    if not config.risk_progression_enabled:
+        return config.risk_pct_per_trade
+    uncapped = (
+        config.risk_pct_per_trade
+        * config.risk_progression_multiplier ** max(loss_streak, 0)
+    )
+    return min(uncapped, config.risk_progression_max_pct)
 
 
 def gold_symbol_score(item: object, hint: str) -> tuple[int, int, int, int, str]:
@@ -311,10 +350,7 @@ def risk_sized_volume(
         float(info.volume_max),
     )
     if raw_volume + 1e-12 < float(info.volume_min):
-        raise RuntimeError(
-            f"Risk sizing allows {raw_volume:.4f} lot, below broker minimum "
-            f"{float(info.volume_min):.4f}; trade skipped"
-        )
+        raw_volume = float(info.volume_min)
     volume = normalized_volume(symbol, raw_volume, round_down=True)
     if volume <= 0:
         raise RuntimeError("Risk-sized volume rounded to zero")
@@ -326,6 +362,78 @@ def managed_positions(symbol: str, magic: int) -> list[object]:
     if positions is None:
         raise RuntimeError(f"Could not read positions: {mt5.last_error()}")
     return [position for position in positions if int(position.magic) == magic]
+
+
+def advance_loss_streak(loss_streak: int, closed_trade_pnls: Iterable[float]) -> int:
+    """Apply the exact rule: loss increments, win resets, flat leaves unchanged."""
+    streak = max(int(loss_streak), 0)
+    for pnl in closed_trade_pnls:
+        if pnl < 0:
+            streak += 1
+        elif pnl > 0:
+            streak = 0
+    return streak
+
+
+def sync_loss_streak(
+    symbol: str, config: LiveConfig, state: dict[str, object]
+) -> bool:
+    """Persist the loss streak from newly closed positions owned by this bot."""
+    if not config.risk_progression_enabled:
+        return False
+    deals = mt5.history_deals_get(datetime.now(UTC) - timedelta(days=730), datetime.now(UTC))
+    if deals is None:
+        raise RuntimeError(f"Could not read deal history: {mt5.last_error()}")
+    open_positions = mt5.positions_get(symbol=symbol)
+    if open_positions is None:
+        raise RuntimeError(f"Could not read open positions: {mt5.last_error()}")
+    active_position_ids = {
+        int(getattr(position, "identifier", getattr(position, "ticket", 0)))
+        for position in open_positions
+        if int(getattr(position, "magic", 0)) == config.magic
+    }
+    processed = {int(value) for value in state.get("processed_closed_positions", [])}
+    grouped: dict[int, tuple[int, float]] = {}
+    for deal in deals:
+        if str(getattr(deal, "symbol", "")) != symbol:
+            continue
+        if int(getattr(deal, "magic", 0)) != config.magic:
+            continue
+        if int(getattr(deal, "entry", -1)) not in {
+            int(mt5.DEAL_ENTRY_OUT),
+            int(getattr(mt5, "DEAL_ENTRY_OUT_BY", 3)),
+        }:
+            continue
+        position_id = int(getattr(deal, "position_id", 0))
+        if not position_id or position_id in processed:
+            continue
+        pnl = sum(
+            float(getattr(deal, name, 0.0))
+            for name in ("profit", "commission", "swap", "fee")
+        )
+        time_msc = int(getattr(deal, "time_msc", 0))
+        previous_time, previous_pnl = grouped.get(position_id, (0, 0.0))
+        grouped[position_id] = (max(previous_time, time_msc), previous_pnl + pnl)
+    closed = [
+        (time_msc, position_id, pnl)
+        for position_id, (time_msc, pnl) in grouped.items()
+        if position_id not in active_position_ids
+    ]
+    if not closed:
+        return False
+    closed.sort()
+    streak = advance_loss_streak(
+        int(state.get("loss_streak", 0)), [pnl for _, _, pnl in closed]
+    )
+    processed.update(position_id for _, position_id, _ in closed)
+    state["loss_streak"] = streak
+    state["processed_closed_positions"] = sorted(processed)[-500:]
+    logging.info(
+        "Risk progression updated: loss_streak=%d next_risk=%.4f%%",
+        streak,
+        progressive_risk_pct(config, streak),
+    )
+    return True
 
 
 def side_of_position(position: object) -> str:
@@ -433,6 +541,7 @@ def open_position(
     side: str,
     stop: float,
     config: LiveConfig,
+    state: dict[str, object],
     dry_run: bool,
 ) -> dict[str, object] | None:
     tick = mt5.symbol_info_tick(symbol)
@@ -459,7 +568,10 @@ def open_position(
             "Structural stop is inside the broker minimum stop distance "
             f"({minimum_stop_distance})"
         )
-    risk_budget = float(account.equity) * config.risk_pct_per_trade / 100.0
+    applied_risk_pct = progressive_risk_pct(
+        config, int(state.get("loss_streak", 0))
+    )
+    risk_budget = float(account.equity) * applied_risk_pct / 100.0
     volume, actual_risk = risk_sized_volume(
         symbol,
         side,
@@ -470,11 +582,15 @@ def open_position(
     )
     risk_distance = abs(price - stop)
     target = 0.0
-    if config.exit_mode == "fixed":
+    effective_exit_mode = config.effective_exit_mode
+    if effective_exit_mode in {"fixed", "trail"}:
+        target_r = min(config.target_r, config.max_target_r)
+        if effective_exit_mode == "trail":
+            target_r = config.max_target_r
         target = (
-            price + config.target_r * risk_distance
+            price + target_r * risk_distance
             if side == "buy"
-            else price - config.target_r * risk_distance
+            else price - target_r * risk_distance
         )
         target = round(target, int(info.digits))
     request = {
@@ -493,7 +609,7 @@ def open_position(
         request["tp"] = target
     exit_label: float | str = target or (
         f"trail {config.trail_start_r:g}R/{config.trail_distance_r:g}R"
-        if config.exit_mode == "trail"
+        if effective_exit_mode == "trail"
         else "opposite signal"
     )
     if dry_run:
@@ -510,7 +626,17 @@ def open_position(
             actual_risk / float(account.equity) * 100.0,
         )
         return None
-    result = send_request(request)
+    actual_risk_pct = actual_risk / float(account.equity) * 100.0
+    with selected_xau_entry_guard(max(applied_risk_pct, actual_risk_pct)) as decision:
+        if not decision.allowed:
+            logging.warning(
+                "Entry blocked: shared XAU risk %.2f%% + %.2f%% exceeds %.2f%%",
+                decision.current_risk_pct,
+                decision.proposed_risk_pct,
+                decision.cap_risk_pct,
+            )
+            return None
+        result = send_request(request)
     logging.info(
         "Opened %s %.2f %s entry=%s stop=%s target=%s risk=$%.2f retcode=%s "
         "order=%s deal=%s",
@@ -542,7 +668,7 @@ def manage_trailing_positions(
     state: dict[str, object],
     dry_run: bool,
 ) -> bool:
-    if config.exit_mode != "trail" or completed.empty:
+    if config.effective_exit_mode != "trail" or completed.empty:
         return False
     info = mt5.symbol_info(symbol)
     tick = mt5.symbol_info_tick(symbol)
@@ -658,6 +784,8 @@ def account_line() -> str:
 
 
 def process_once(symbol: str, config: LiveConfig, state: dict[str, object]) -> None:
+    if sync_loss_streak(symbol, config, state):
+        save_state(config.state_file, state)
     frame = latest_h4_frame(symbol, config.history_bars)
     completed = frame.iloc[:-1].reset_index(drop=True)
     positions = managed_positions(symbol, config.magic)
@@ -729,6 +857,7 @@ def process_once(symbol: str, config: LiveConfig, state: dict[str, object]) -> N
             side,
             float(signal["pivot_price"]),
             config,
+            state,
             dry_run,
         )
         if opened is not None:
@@ -790,10 +919,10 @@ def run(once: bool = False) -> None:
             config.pivot_distance,
             config.risk_pct_per_trade,
             (
-                f"fixed {config.target_r:g}R"
-                if config.exit_mode == "fixed"
-                else f"trail {config.trail_start_r:g}R/{config.trail_distance_r:g}R"
-                if config.exit_mode == "trail"
+                f"fixed {min(config.target_r, config.max_target_r):g}R"
+                if config.effective_exit_mode == "fixed"
+                else f"trail {config.trail_start_r:g}R/{config.trail_distance_r:g}R cap {config.max_target_r:g}R"
+                if config.effective_exit_mode == "trail"
                 else "opposite signal"
             ),
             config.signal_filter,

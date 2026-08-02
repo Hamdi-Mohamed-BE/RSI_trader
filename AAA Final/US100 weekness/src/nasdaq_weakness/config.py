@@ -25,14 +25,19 @@ class Config:
     project_dir: Path
     canonical_symbol: str = "AUTO"
     history_days: int = 365
-    risk_pct: float = 2.0
-    max_daily_risk_pct: float = 2.0
+    risk_pct: float = 0.5
+    max_daily_risk_pct: float = 5.0
+    risk_progression_enabled: bool = False
+    risk_progression_multiplier: float = 1.6
+    risk_progression_max_pct: float = 5.0
     note_point_to_price: float = 0.1
     strategy_mode: str = "ALL"
     pending_mode: str = "OCO"
     s2a_entry_model: str = "REFERENCE_PAIR"
     s2b_entry_model: str = "CLOSE_PLUS_50"
     target_rr: float = 2.0
+    max_target_rr: float = 1.7
+    trailing_enabled: bool = True
     runner_trail_bars: int = 1
     runner_buffer_points: float = 5.0
     order_expiry_ny: tuple[int, int] = (12, 0)
@@ -68,9 +73,13 @@ class Config:
     def with_parameters(self, **kwargs: object) -> "Config":
         return replace(self, **kwargs)
 
+    @property
+    def effective_target_rr(self) -> float:
+        return min(self.target_rr, self.max_target_rr)
+
     def validate(self) -> None:
-        if not 0 < self.risk_pct <= 2:
-            raise ValueError("RISK_PCT must be greater than 0 and no more than 2")
+        if not 0 < self.risk_pct <= 100:
+            raise ValueError("RISK_PCT must be greater than 0 and below 100")
         if self.max_daily_risk_pct < self.risk_pct:
             raise ValueError("MAX_DAILY_RISK_PCT cannot be below RISK_PCT")
         if self.strategy_mode not in {"S1", "S2A", "S2B", "ALL"}:
@@ -89,6 +98,12 @@ class Config:
             raise ValueError("NOTE_POINT_TO_PRICE must be positive")
         if self.target_rr < 1:
             raise ValueError("TARGET_RR must be at least 1")
+        if not 0 < self.max_target_rr <= 1.7:
+            raise ValueError("MAX_TARGET_RR must be positive and no more than 1.7")
+        if self.risk_progression_multiplier < 1:
+            raise ValueError("RISK_PROGRESSION_MULTIPLIER must be at least 1")
+        if not 0 < self.risk_progression_max_pct <= 100:
+            raise ValueError("RISK_PROGRESSION_MAX_PCT must be between 0 and 100")
         if self.runner_trail_bars not in {1, 2}:
             raise ValueError("RUNNER_TRAIL_BARS must be 1 or 2")
 
@@ -102,8 +117,15 @@ def load_config(project_dir: Path | None = None) -> Config:
         # for names such as USTEC_x100m; scoring normalizes case separately.
         canonical_symbol=os.getenv("CANONICAL_SYMBOL", "AUTO").strip(),
         history_days=int(os.getenv("HISTORY_DAYS", "365")),
-        risk_pct=float(os.getenv("RISK_PCT", "2.0")),
-        max_daily_risk_pct=float(os.getenv("MAX_DAILY_RISK_PCT", "2.0")),
+        risk_pct=float(os.getenv("RISK_PCT", "0.5")),
+        max_daily_risk_pct=float(os.getenv("MAX_DAILY_RISK_PCT", "5.0")),
+        risk_progression_enabled=_bool("RISK_PROGRESSION_ENABLED", False),
+        risk_progression_multiplier=float(
+            os.getenv("RISK_PROGRESSION_MULTIPLIER", "1.6")
+        ),
+        risk_progression_max_pct=float(
+            os.getenv("RISK_PROGRESSION_MAX_PCT", "5.0")
+        ),
         note_point_to_price=float(os.getenv("NOTE_POINT_TO_PRICE", "0.1")),
         strategy_mode=os.getenv("STRATEGY_MODE", "ALL").upper(),
         pending_mode=os.getenv("PENDING_MODE", "OCO").upper(),
@@ -114,6 +136,8 @@ def load_config(project_dir: Path | None = None) -> Config:
             "S2B_ENTRY_MODEL", "CLOSE_PLUS_50"
         ).upper(),
         target_rr=float(os.getenv("TARGET_RR", "2.0")),
+        max_target_rr=float(os.getenv("MAX_TARGET_RR", "1.7")),
+        trailing_enabled=_bool("TRAILING_ENABLED", True),
         runner_trail_bars=int(os.getenv("RUNNER_TRAIL_BARS", "1")),
         runner_buffer_points=float(
             os.getenv("RUNNER_BUFFER_POINTS", "5")

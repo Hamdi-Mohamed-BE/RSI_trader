@@ -280,6 +280,7 @@ def _simulate_open_trade(
         raise ValueError("Trade risk must be positive")
     current_stop = stop
     locked = False
+    trailed = False
     mae_r = 0.0
     exit_idx = entry_idx
     exit_price = entry
@@ -294,7 +295,9 @@ def _simulate_open_trade(
             mae_r = max(mae_r, adverse)
             if float(row["low"]) <= current_stop:
                 exit_price = current_stop
-                exit_reason = "locked_stop" if locked else "stop"
+                exit_reason = (
+                    "trailing_stop" if trailed else "locked_stop" if locked else "stop"
+                )
                 break
             if float(row["high"]) >= target:
                 exit_price = target
@@ -306,12 +309,21 @@ def _simulate_open_trade(
             ):
                 current_stop = entry + config.lock_profit_r * risk
                 locked = True
+            if config.trailing_enabled:
+                close = float(row["close"])
+                if close >= entry + config.trail_start_r * risk:
+                    candidate_stop = close - config.trail_distance_r * risk
+                    if candidate_stop > current_stop:
+                        current_stop = candidate_stop
+                        trailed = True
         else:
             adverse = max(0.0, ask(row, "high", point) - entry) / risk
             mae_r = max(mae_r, adverse)
             if ask(row, "high", point) >= current_stop:
                 exit_price = current_stop
-                exit_reason = "locked_stop" if locked else "stop"
+                exit_reason = (
+                    "trailing_stop" if trailed else "locked_stop" if locked else "stop"
+                )
                 break
             if ask(row, "low", point) <= target:
                 exit_price = target
@@ -324,6 +336,13 @@ def _simulate_open_trade(
             ):
                 current_stop = entry - config.lock_profit_r * risk
                 locked = True
+            if config.trailing_enabled:
+                close = ask(row, "close", point)
+                if close <= entry - config.trail_start_r * risk:
+                    candidate_stop = close + config.trail_distance_r * risk
+                    if candidate_stop < current_stop:
+                        current_stop = candidate_stop
+                        trailed = True
     else:
         eligible = frame.loc[
             (frame.index >= entry_idx) & (frame["time"] < force_exit)
@@ -573,6 +592,9 @@ def metrics(
     trades: list[Trade],
     starting_balance: float,
     risk_pct: float,
+    progression_enabled: bool = False,
+    progression_multiplier: float = 1.6,
+    progression_max_pct: float | None = None,
 ) -> dict[str, object]:
     if not trades:
         return {
@@ -601,6 +623,7 @@ def metrics(
             "stop_only_days": 0,
             "max_concurrent_trades": 0,
             "max_planned_exposure_pct": 0.0,
+            "max_risk_used_pct": risk_pct,
         }
     events: list[tuple[pd.Timestamp, int, int]] = []
     for idx, trade in enumerate(trades):
@@ -612,13 +635,25 @@ def metrics(
     max_dd = 0.0
     risk_cash: dict[int, float] = {}
     cash_pnls: list[float] = []
+    loss_streak = 0
+    max_risk_used = risk_pct
     for _, kind, idx in events:
         if kind == 1:
-            risk_cash[idx] = balance * risk_pct / 100.0
+            current_risk = risk_pct
+            if progression_enabled:
+                current_risk *= progression_multiplier ** loss_streak
+            if progression_max_pct is not None:
+                current_risk = min(current_risk, progression_max_pct)
+            max_risk_used = max(max_risk_used, current_risk)
+            risk_cash[idx] = balance * current_risk / 100.0
             continue
         pnl = risk_cash.pop(idx, balance * risk_pct / 100.0) * trades[idx].pnl_r
         cash_pnls.append(pnl)
         balance += pnl
+        if pnl < -1e-9:
+            loss_streak += 1
+        elif pnl > 1e-9:
+            loss_streak = 0
         peak = max(peak, balance)
         if peak > 0:
             max_dd = max(max_dd, (peak - balance) / peak * 100.0)
@@ -698,6 +733,7 @@ def metrics(
         "stop_only_days": stop_only_days,
         "max_concurrent_trades": max_active_count,
         "max_planned_exposure_pct": max_active_count * risk_pct,
+        "max_risk_used_pct": max_risk_used,
         "locked_stop_exits": sum(
             trade.exit_reason == "locked_stop" for trade in trades
         ),

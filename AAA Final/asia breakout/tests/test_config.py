@@ -42,5 +42,5 @@ def test_symbol_strategy_file_overrides_shared_defaults(tmp_path, monkeypatch) -
     config = load_config(env_path)
 
     assert config.strategy.rr == 1.5
-    assert config.strategy_for("TEST").rr == 5.0
+    assert config.strategy_for("TEST").rr == 1.7
     assert config.strategy_for("TEST").exit_mode == "trailing"

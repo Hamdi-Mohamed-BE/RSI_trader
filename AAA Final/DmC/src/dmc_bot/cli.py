@@ -14,6 +14,7 @@ import pandas as pd
 from .config import load_config
 from .live import run_live
 from .mt5_data import account_summary, connection, discover_symbol, load_or_fetch_m1
+from .risk_study import run_risk_study
 from .strategy import run_backtest
 
 
@@ -28,6 +29,12 @@ def _parser() -> argparse.ArgumentParser:
         "--symbol",
         help="Test one configured instrument instead of the complete basket",
     )
+    risk_study = sub.add_parser(
+        "risk-study",
+        help="Compare flat/progression risk with trailing on/off at max 1.7R",
+    )
+    risk_study.add_argument("--days", type=int, default=60)
+    risk_study.add_argument("--balance", type=float, default=1000.0)
     live = sub.add_parser("live")
     live.add_argument("--once", action="store_true")
     return parser
@@ -127,12 +134,58 @@ def main() -> None:
         end = datetime.now(timezone.utc).replace(second=0, microsecond=0)
         start = end - timedelta(days=args.days)
         hints = (
-            [args.symbol]
-            if args.symbol
+            [getattr(args, "symbol", None)]
+            if getattr(args, "symbol", None)
             else [item.canonical_symbol for item in config.instruments]
             if config.instruments
             else [config.canonical_symbol]
         )
+        if args.command == "risk-study":
+            datasets = {}
+            for hint in hints:
+                instrument_config = config.for_instrument(hint)
+                warmup = start - timedelta(days=120)
+                symbol = discover_symbol(hint)
+                info = mt5.symbol_info(symbol)
+                if info is None:
+                    raise RuntimeError(f"Cannot read {symbol} metadata")
+                frame = load_or_fetch_m1(
+                    symbol,
+                    warmup,
+                    end,
+                    config.root / "data",
+                    refresh=True,
+                )
+                datasets[symbol] = (
+                    frame,
+                    float(info.point),
+                    instrument_config,
+                )
+            output_dir = config.root / "reports" / "risk_progression_1_7r"
+            result = run_risk_study(
+                datasets,
+                start=start,
+                end=end,
+                starting_balance=args.balance,
+                output_dir=output_dir,
+                base_risk_pct=0.5,
+                multiplier=1.6,
+                target_rr=1.7,
+            )
+            print("\nDmC risk progression study")
+            for name, scenario in result["scenarios"].items():
+                metrics = scenario["portfolio"]
+                pf = metrics["profit_factor_cash_weighted"]
+                pf_text = "inf" if math.isinf(pf) else f"{pf:.2f}"
+                print(
+                    f"{name:24s} | trades {metrics['trades']:3d} | "
+                    f"WR {metrics['win_rate_pct']:6.2f}% | PF {pf_text:>6s} | "
+                    f"net {metrics['net_profit']:+9.2f} | "
+                    f"DD {metrics['max_realized_dd_pct']:6.2f}% | "
+                    f"max risk {metrics['max_risk_pct_used']:.3f}%"
+                )
+            print(f"Reports: {output_dir}")
+            return
         for hint in hints:
             instrument_config = config.for_instrument(hint)
             warmup_days = (

@@ -1,4 +1,5 @@
-from datetime import datetime, time
+from dataclasses import replace
+from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -9,7 +10,11 @@ from dmc_bot.strategy import (
     build_plans,
     hourly_gain_failure,
     idea_comment,
+    loss_streak_from_results,
     next_body_target,
+    Plan,
+    risk_pct_for_streak,
+    _simulate_plan,
 )
 
 
@@ -111,3 +116,43 @@ def test_body_level_gain_failure_uses_nearest_aligned_reaction():
     assert body_level_gain_failure(
         levels, (99.0, 101.0, 96.0, 98.0), side_hint=-1
     ) == (-1, 100.0, "fail_high")
+
+
+def test_loss_progression_is_exact_and_win_resets():
+    assert risk_pct_for_streak(0.5, 0, 1.6) == 0.5
+    assert risk_pct_for_streak(0.5, 1, 1.6) == 0.8
+    assert risk_pct_for_streak(0.5, 2, 1.6) == 1.2800000000000002
+    assert risk_pct_for_streak(0.5, 5, 1.6, 2.0) == 2.0
+    assert loss_streak_from_results([-1.0, -1.0, 0.0]) == 2
+    assert loss_streak_from_results([-1.0, -1.0, 1.0]) == 0
+
+
+def test_fixed_tp_is_capped_at_1_7r_and_trailing_switch_changes_exit():
+    start = datetime(2026, 7, 1, 13, 30, tzinfo=timezone.utc)
+    plan = Plan(
+        session_date=date(2026, 7, 1), signal_time=start,
+        expiry=start + timedelta(hours=1), side=1, rank="A+",
+        entry=100.0, initial_stop=90.0, d1_body_fraction=0.8,
+        h4_body_fraction=0.8, target=117.0,
+    )
+    frame = pd.DataFrame(
+        {
+            "time": pd.to_datetime(
+                [start, start + timedelta(minutes=1), start + timedelta(minutes=2),
+                 start + timedelta(minutes=3)], utc=True
+            ),
+            "open": [100.0, 100.0, 110.0, 105.0],
+            "high": [101.0, 112.0, 111.0, 118.0],
+            "low": [99.0, 99.0, 99.0, 104.0],
+            "close": [100.0, 110.0, 100.0, 117.0],
+            "spread": [0.0, 0.0, 0.0, 0.0],
+        }
+    )
+    base = replace(
+        _config(), trail_start_r=1.0, trail_distance_r=0.5,
+        max_hold_hours=4, target_rr=1.7,
+    )
+    fixed = _simulate_plan(plan, frame, replace(base, trailing_enabled=False), 0.01)
+    trailing = _simulate_plan(plan, frame, replace(base, trailing_enabled=True), 0.01)
+    assert fixed is not None and fixed.r_multiple == 1.7
+    assert trailing is not None and trailing.r_multiple == 0.5

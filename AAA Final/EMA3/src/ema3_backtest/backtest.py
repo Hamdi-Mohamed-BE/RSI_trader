@@ -357,7 +357,20 @@ def main() -> None:
         default=os.getenv("EXIT_MODE", "trail").strip().lower(),
     )
     parser.add_argument(
+        "--trailing-enabled",
+        action=argparse.BooleanOptionalAction,
+        default=os.getenv("TRAILING_ENABLED", "true").strip().lower()
+        in {"1", "true", "yes", "on"},
+        help="explicitly enable/disable trailing; disabled converts trail mode to fixed",
+    )
+    parser.add_argument(
         "--target-r", type=float, default=float(os.getenv("TARGET_R", "4.0"))
+    )
+    parser.add_argument(
+        "--max-target-r",
+        type=float,
+        default=float(os.getenv("MAX_TARGET_R", "1.7")),
+        help="hard ceiling for fixed targets and the terminal cap for trailing exits",
     )
     parser.add_argument(
         "--trail-start-r",
@@ -369,6 +382,24 @@ def main() -> None:
         type=float,
         default=float(os.getenv("TRAIL_DISTANCE_R", "1.0")),
     )
+    parser.add_argument(
+        "--risk-progression",
+        action=argparse.BooleanOptionalAction,
+        default=os.getenv("RISK_PROGRESSION_ENABLED", "false").strip().lower()
+        in {"1", "true", "yes", "on"},
+    )
+    parser.add_argument(
+        "--risk-progression-multiplier",
+        type=float,
+        default=float(os.getenv("RISK_PROGRESSION_MULTIPLIER", "1.6")),
+    )
+    parser.add_argument(
+        "--max-risk-pct",
+        type=float,
+        default=float(os.getenv("RISK_PROGRESSION_MAX_PCT", "3.2")),
+        help="live-style safety cap; ignored with --uncapped-progression",
+    )
+    parser.add_argument("--uncapped-progression", action="store_true")
     parser.add_argument(
         "--signal-filter",
         choices=("none", "ema200_slope"),
@@ -388,6 +419,12 @@ def main() -> None:
         raise SystemExit("--risk-pct must be between 0 and 100")
     if args.balance <= 0:
         raise SystemExit("--balance must be positive")
+    if args.max_target_r <= 0 or args.max_target_r > 1.7:
+        raise SystemExit("--max-target-r must be positive and no greater than 1.7")
+    if args.risk_progression_multiplier < 1:
+        raise SystemExit("--risk-progression-multiplier must be at least 1")
+    if args.max_risk_pct <= 0:
+        raise SystemExit("--max-risk-pct must be positive")
 
     # Import locally to avoid a module-level cycle: optimize imports the shared
     # rate and pivot helpers from this module.
@@ -398,13 +435,18 @@ def main() -> None:
         simulate,
     )
 
+    capped_target_r = min(args.target_r, args.max_target_r)
+    effective_exit_mode = (
+        "fixed" if args.exit_mode == "trail" and not args.trailing_enabled else args.exit_mode
+    )
     exit_config = (
-        ExitConfig(mode="fixed", target_r=args.target_r)
-        if args.exit_mode == "fixed"
+        ExitConfig(mode="fixed", target_r=capped_target_r)
+        if effective_exit_mode == "fixed"
         else ExitConfig(
             mode="trail",
             trail_start_r=args.trail_start_r,
             trail_distance_r=args.trail_distance_r,
+            target_cap_r=args.max_target_r,
         )
     )
 
@@ -436,9 +478,22 @@ def main() -> None:
     finally:
         mt5.shutdown()
 
-    stats = metrics(trades, risk_pct=args.risk_pct, starting_balance=args.balance)
+    progression_cap = None if args.uncapped_progression else args.max_risk_pct
+    stats = metrics(
+        trades,
+        risk_pct=args.risk_pct,
+        starting_balance=args.balance,
+        progression_enabled=args.risk_progression,
+        progression_multiplier=args.risk_progression_multiplier,
+        max_risk_pct=progression_cap,
+    )
     journal = compounded_journal(
-        trades, risk_pct=args.risk_pct, starting_balance=args.balance
+        trades,
+        risk_pct=args.risk_pct,
+        starting_balance=args.balance,
+        progression_enabled=args.risk_progression,
+        progression_multiplier=args.risk_progression_multiplier,
+        max_risk_pct=progression_cap,
     )
     equity = pd.DataFrame(
         [
@@ -469,6 +524,12 @@ def main() -> None:
         "stop": "confirmed pivot extreme; historical spread included",
         "same_bar_policy": "stop before target (conservative)",
         "starting_balance": args.balance,
+        "base_risk_pct": args.risk_pct,
+        "risk_progression_enabled": args.risk_progression,
+        "risk_progression_multiplier": args.risk_progression_multiplier,
+        "risk_progression_max_pct": progression_cap,
+        "max_target_r": args.max_target_r,
+        "trailing_enabled": args.trailing_enabled,
         **stats,
     }
     args.output.mkdir(parents=True, exist_ok=True)
@@ -487,7 +548,9 @@ def main() -> None:
             f"- Broker symbol: **{summary['broker_symbol']}**",
             f"- Setup: **pivot {args.distance} left / {args.distance} right; {exit_config.name}**",
             f"- Filter: **{args.signal_filter}, slope lookback {args.ema_slope_bars} H4 bars**",
-            f"- Risk: **{args.risk_pct:.2f}% of current balance per trade**",
+            f"- Base risk: **{args.risk_pct:.2f}% of current balance per trade**",
+            f"- Loss progression: **{'enabled' if args.risk_progression else 'disabled'}**, multiplier **{args.risk_progression_multiplier:g}x**, cap **{'none' if progression_cap is None else f'{progression_cap:g}%'}**",
+            f"- Maximum target: **{args.max_target_r:g}R**",
             f"- Structural stop: **confirmed pivot extreme**",
             "",
             "| Metric | Result |",

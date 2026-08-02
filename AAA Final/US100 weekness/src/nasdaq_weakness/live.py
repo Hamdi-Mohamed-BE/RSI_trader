@@ -14,6 +14,7 @@ from .mt5_adapter import (
     account_summary,
     cancel_order,
     close_position,
+    consecutive_strategy_losses,
     connection,
     discover_symbol,
     fetch_m1,
@@ -96,6 +97,8 @@ def _manage(
         for item in strategy_orders(symbol, config.magic):
             cancel_order(int(item.ticket))
         return
+    if not config.trailing_enabled:
+        return
     tick = mt5.symbol_info_tick(symbol)
     if tick is None:
         return
@@ -163,11 +166,19 @@ def _run_live_connected(config: Config, cycles: int = 0) -> None:
             signal_time = min(item.signal_time for item in plan.orders)
             lateness = (now - signal_time).total_seconds()
             if 0 <= lateness <= 90 and key not in submitted:
+                loss_streak = consecutive_strategy_losses(symbol, config.magic)
+                current_risk_pct = config.risk_pct
+                if config.risk_progression_enabled:
+                    current_risk_pct = min(
+                        config.risk_pct
+                        * config.risk_progression_multiplier ** loss_streak,
+                        config.risk_progression_max_pct,
+                    )
                 receipts = []
                 for index, order in enumerate(plan.orders, start=1):
                     cash = (
                         float(account["balance"])
-                        * config.risk_pct
+                        * current_risk_pct
                         / 100
                         * order.risk_share
                     )

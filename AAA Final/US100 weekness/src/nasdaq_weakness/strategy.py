@@ -156,6 +156,7 @@ def build_day_plan(
             else "red"
         )
     conversion = config.note_point_to_price
+    target_rr = config.effective_target_rr
     reasons: list[str] = []
     orders: list[PlannedOrder] = []
 
@@ -173,7 +174,7 @@ def build_day_plan(
     if use_s1:
         entry = float(candle1["open"])
         stop = entry + 50 * conversion
-        fixed_target = entry - 100 * conversion
+        fixed_target = entry - target_rr * (stop - entry)
         invalidation = max(reference_high, h4_mid)
         orders = [
             PlannedOrder(
@@ -194,7 +195,7 @@ def build_day_plan(
                 kind="MARKET",
                 entry=entry,
                 stop=stop,
-                target=None,
+                target=fixed_target,
                 risk_share=0.5,
                 invalidation_high=invalidation,
                 runner=True,
@@ -240,7 +241,7 @@ def build_day_plan(
                         kind=kind,
                         entry=entry,
                         stop=stop,
-                        target=entry - config.target_rr * risk,
+                        target=entry - target_rr * risk,
                         risk_share=share,
                         invalidation_high=london_high,
                     )
@@ -253,7 +254,7 @@ def build_day_plan(
                         if config.s2a_entry_model == "DIRECT"
                         else "fade entries at both reference-candle edges"
                     ),
-                    f"target {config.target_rr:.1f}R",
+                    f"target {target_rr:.1f}R cap",
                 )
             )
     elif c2_color == "red" and config.strategy_mode in {"S2B", "ALL"}:
@@ -282,7 +283,7 @@ def build_day_plan(
                     kind=kind,
                     entry=entry,
                     stop=stop,
-                    target=entry - config.target_rr * (stop - entry),
+                    target=entry - target_rr * (stop - entry),
                     risk_share=share,
                     invalidation_high=max(red_high, london_high),
                 )
@@ -295,7 +296,7 @@ def build_day_plan(
                     if config.s2b_entry_model == "CLOSE_PLUS_50"
                     else "midpoint pullback plus red-low continuation orders"
                 ),
-                f"target {config.target_rr:.1f}R",
+                f"target {target_rr:.1f}R cap",
             )
         )
     else:

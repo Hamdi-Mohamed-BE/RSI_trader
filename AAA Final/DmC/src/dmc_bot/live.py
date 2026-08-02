@@ -19,10 +19,60 @@ from .mt5_data import (
     strategy_positions,
     volume_for_risk,
 )
-from .strategy import build_plans, idea_comment
+from .portfolio_guard import selected_xau_entry_guard
+from .strategy import (
+    build_plans,
+    idea_comment,
+    loss_streak_from_results,
+    risk_pct_for_streak,
+)
 
 
 LOGGER = logging.getLogger("dmc.live")
+
+
+def _closed_trade_results(magic: int) -> list[float]:
+    """Reconstruct completed strategy-position P/L in chronological order."""
+    start = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    deals = tuple(mt5.history_deals_get(start, datetime.now(timezone.utc)) or ())
+    grouped: dict[int, dict[str, float]] = {}
+    for deal in deals:
+        if int(getattr(deal, "magic", 0)) != magic:
+            continue
+        position_id = int(getattr(deal, "position_id", 0))
+        if position_id <= 0:
+            continue
+        item = grouped.setdefault(
+            position_id, {"pnl": 0.0, "closed": 0.0, "time_msc": 0.0}
+        )
+        item["pnl"] += sum(
+            float(getattr(deal, name, 0.0) or 0.0)
+            for name in ("profit", "commission", "swap", "fee")
+        )
+        entry = int(getattr(deal, "entry", -1))
+        if entry in {mt5.DEAL_ENTRY_OUT, mt5.DEAL_ENTRY_OUT_BY}:
+            item["closed"] = 1.0
+            item["time_msc"] = max(
+                item["time_msc"], float(getattr(deal, "time_msc", 0) or 0)
+            )
+    closed = sorted(
+        (item for item in grouped.values() if item["closed"]),
+        key=lambda item: item["time_msc"],
+    )
+    return [item["pnl"] for item in closed]
+
+
+def _next_live_risk_pct(config: Config) -> tuple[float, int]:
+    if not config.risk_progression_enabled:
+        return config.risk_pct, 0
+    streak = loss_streak_from_results(_closed_trade_results(config.magic))
+    risk_pct = risk_pct_for_streak(
+        config.risk_pct,
+        streak,
+        config.risk_progression_multiplier,
+        config.live_max_risk_pct,
+    )
+    return risk_pct, streak
 
 
 def _accepted(retcode: int) -> bool:
@@ -114,6 +164,8 @@ def _manage(config: Config, symbol: str, frame: pd.DataFrame, now: datetime) -> 
             continue
         is_buy = int(position.type) == mt5.POSITION_TYPE_BUY
         favorable = close - float(position.price_open) if is_buy else float(position.price_open) - close
+        if not config.trailing_enabled:
+            continue
         if favorable < config.trail_start_r * risk:
             continue
         proposed = close - config.trail_distance_r * risk if is_buy else close + config.trail_distance_r * risk
@@ -137,6 +189,7 @@ def _run_symbol_cycle(
     symbol: str,
     *,
     can_open: bool,
+    risk_pct: float,
 ) -> bool:
     now = datetime.now(timezone.utc)
     history_days = (
@@ -173,9 +226,41 @@ def _run_symbol_cycle(
     if not valid_limit:
         LOGGER.info("Ignoring stale %s setup: pullback entry was already crossed", symbol)
         return False
-    risk_cash = float(account["equity"]) * config.risk_pct / 100.0
+    risk_cash = float(account["equity"]) * risk_pct / 100.0
     volume = volume_for_risk(symbol, plan.side, plan.entry, plan.initial_stop, risk_cash)
-    result = _send_pending(config, symbol, plan, volume)
+    order_type = mt5.ORDER_TYPE_BUY if plan.side > 0 else mt5.ORDER_TYPE_SELL
+    projected_loss = mt5.order_calc_profit(
+        order_type,
+        symbol,
+        volume,
+        plan.entry,
+        plan.initial_stop,
+    )
+    actual_risk_pct = (
+        abs(float(projected_loss)) / float(account["equity"]) * 100.0
+        if projected_loss is not None and float(account["equity"]) > 0
+        else risk_pct
+    )
+    guard_risk_pct = max(risk_pct, actual_risk_pct)
+    if actual_risk_pct > risk_pct + 1e-9:
+        LOGGER.warning(
+            "%s broker minimum %.2f lots raises planned risk from %.2f%% to %.2f%%",
+            symbol,
+            volume,
+            risk_pct,
+            actual_risk_pct,
+        )
+    with selected_xau_entry_guard(guard_risk_pct) as decision:
+        if not decision.allowed:
+            LOGGER.warning(
+                "Skipping %s: shared XAU risk %.2f%% + %.2f%% exceeds %.2f%%",
+                symbol,
+                decision.current_risk_pct,
+                decision.proposed_risk_pct,
+                decision.cap_risk_pct,
+            )
+            return False
+        result = _send_pending(config, symbol, plan, volume)
     LOGGER.info(
         "Placed %s %s %s %.2f at %.3f SL %.3f ticket=%s",
         symbol,
@@ -219,9 +304,17 @@ def run_cycle(config: Config) -> None:
         raise MT5Error("None of the configured DmC instruments is tradeable")
 
     symbols = [symbol for _, symbol in resolved]
+    next_risk_pct, loss_streak = _next_live_risk_pct(config)
     maximum_slots = max(
         1,
-        math.floor(config.max_total_risk_pct / config.risk_pct + 1e-9),
+        math.floor(config.max_total_risk_pct / next_risk_pct + 1e-9),
+    )
+    LOGGER.info(
+        "Risk state: base %.3f%% | loss streak %d | next %.3f%% | live cap %.3f%%",
+        config.risk_pct,
+        loss_streak,
+        next_risk_pct,
+        config.live_max_risk_pct,
     )
     for instrument_config, symbol in resolved:
         active = _active_symbol_count(symbols, config.magic)
@@ -230,12 +323,13 @@ def run_cycle(config: Config) -> None:
             account,
             symbol,
             can_open=active < maximum_slots,
+            risk_pct=next_risk_pct,
         )
         if placed:
             LOGGER.info(
                 "DmC exposure after %s: %.2f%% / %.2f%% cap",
                 symbol,
-                (active + 1) * config.risk_pct,
+                (active + 1) * next_risk_pct,
                 config.max_total_risk_pct,
             )
 

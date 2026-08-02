@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import date, datetime, timedelta, timezone
 from typing import Iterable
 
@@ -40,6 +40,8 @@ class Trade:
     r_multiple: float
     mae_r: float
     exit_reason: str
+    risk_pct_used: float = 0.0
+    cash_pnl: float = 0.0
 
     def row(self) -> dict[str, object]:
         result = asdict(self)
@@ -64,6 +66,36 @@ class Metrics:
     max_intratrade_dd_pct: float
     start: str
     end: str
+    gross_profit_cash: float = 0.0
+    gross_loss_cash: float = 0.0
+    max_risk_pct_used: float = 0.0
+    final_loss_streak: int = 0
+    progression_enabled: bool = False
+    trailing_enabled: bool = True
+    target_rr: float = 1.7
+    cash_weighted_profit_factor: float = 0.0
+
+
+def loss_streak_from_results(results: Iterable[float]) -> int:
+    """Return consecutive closed losses; wins reset and flat trades preserve it."""
+    streak = 0
+    for result in results:
+        if result < 0:
+            streak += 1
+        elif result > 0:
+            streak = 0
+    return streak
+
+
+def risk_pct_for_streak(
+    base_risk_pct: float,
+    loss_streak: int,
+    multiplier: float = 1.6,
+    cap_pct: float | None = None,
+) -> float:
+    """Exact research progression, optionally capped for live-account safety."""
+    risk_pct = base_risk_pct * multiplier**max(0, loss_streak)
+    return min(risk_pct, cap_pct) if cap_pct is not None else risk_pct
 
 
 def _ohlc(frame: pd.DataFrame) -> tuple[float, float, float, float]:
@@ -297,13 +329,15 @@ def build_plans(frame: pd.DataFrame, config: Config) -> list[Plan]:
             stop = entry - stop_distance if d1_side > 0 else entry + stop_distance
         else:
             stop = entry - config.stop_points if d1_side > 0 else entry + config.stop_points
-        target = None
+        risk_distance = abs(entry - stop)
+        fixed_target = entry + d1_side * config.target_rr * risk_distance
+        target = fixed_target
         if config.target_mode == "next_body":
             if not levels:
                 levels = completed_body_levels(
                     work, pd.Timestamp(local_open), config
                 )
-            target = next_body_target(
+            body_target = next_body_target(
                 levels,
                 entry,
                 stop,
@@ -311,8 +345,10 @@ def build_plans(frame: pd.DataFrame, config: Config) -> list[Plan]:
                 config.minimum_target_r,
                 config.maximum_target_r,
             )
-            if target is None:
+            if body_target is None:
                 continue
+            body_r = abs(body_target - entry) / risk_distance
+            target = body_target if body_r <= config.target_rr else fixed_target
         rank = "A+" if min(d1_fraction, h4_fraction) >= config.strong_body_fraction else "A"
         expiry = datetime.combine(current, config.pending_expiry, config.timezone)
         plans.append(
@@ -372,9 +408,10 @@ def _simulate_plan(plan: Plan, frame: pd.DataFrame, config: Config, point: float
                 return Trade(plan.session_date, plan.side, plan.rank, plan.signal_time, entry_time, pd.Timestamp(row.time).to_pydatetime(), plan.entry, plan.initial_stop, stop, (stop - plan.entry) / risk, worst_r, "stop/trail")
             if plan.target is not None and float(row.high) >= plan.target:
                 result = (plan.target - plan.entry) / risk
-                return Trade(plan.session_date, plan.side, plan.rank, plan.signal_time, entry_time, pd.Timestamp(row.time).to_pydatetime(), plan.entry, plan.initial_stop, plan.target, result, worst_r, "next-body target")
+                reason = "next-body target" if config.target_mode == "next_body" else "fixed target"
+                return Trade(plan.session_date, plan.side, plan.rank, plan.signal_time, entry_time, pd.Timestamp(row.time).to_pydatetime(), plan.entry, plan.initial_stop, plan.target, result, worst_r, reason)
             best = max(best, float(row.high))
-            if best - plan.entry >= config.trail_start_r * risk:
+            if config.trailing_enabled and best - plan.entry >= config.trail_start_r * risk:
                 stop = max(stop, float(row.close) - config.trail_distance_r * risk)
         else:
             adverse = (float(row.high) - plan.entry) / risk
@@ -384,9 +421,10 @@ def _simulate_plan(plan: Plan, frame: pd.DataFrame, config: Config, point: float
                 return Trade(plan.session_date, plan.side, plan.rank, plan.signal_time, entry_time, pd.Timestamp(row.time).to_pydatetime(), plan.entry, plan.initial_stop, exit_price, (plan.entry - exit_price) / risk, worst_r, "stop/trail")
             if plan.target is not None and float(row.low) <= plan.target:
                 result = (plan.entry - plan.target) / risk
-                return Trade(plan.session_date, plan.side, plan.rank, plan.signal_time, entry_time, pd.Timestamp(row.time).to_pydatetime(), plan.entry, plan.initial_stop, plan.target, result, worst_r, "next-body target")
+                reason = "next-body target" if config.target_mode == "next_body" else "fixed target"
+                return Trade(plan.session_date, plan.side, plan.rank, plan.signal_time, entry_time, pd.Timestamp(row.time).to_pydatetime(), plan.entry, plan.initial_stop, plan.target, result, worst_r, reason)
             best = min(best, float(row.low))
-            if plan.entry - best >= config.trail_start_r * risk:
+            if config.trailing_enabled and plan.entry - best >= config.trail_start_r * risk:
                 stop = min(stop, float(row.close) + config.trail_distance_r * risk)
     exit_price = float(last.close)
     result = (exit_price - plan.entry) / risk * plan.side
@@ -418,21 +456,56 @@ def run_backtest(
         if trade is not None:
             weekly[key] = weekly.get(key, 0) + 1
             trades.append(trade)
-    wins = sum(item.r_multiple > 0 for item in trades)
-    losses = sum(item.r_multiple <= 0 for item in trades)
-    gross_win = sum(max(0.0, item.r_multiple) for item in trades)
-    gross_loss = -sum(min(0.0, item.r_multiple) for item in trades)
-    pf = gross_win / gross_loss if gross_loss else (float("inf") if gross_win else 0.0)
     balance = starting_balance
     peak = balance
     max_dd = 0.0
     max_intra = 0.0
-    for trade in trades:
-        risk_cash = balance * config.risk_pct / 100.0
+    loss_streak = 0
+    sized_trades: list[Trade] = []
+    gross_profit_cash = 0.0
+    gross_loss_cash = 0.0
+    max_risk_pct_used = 0.0
+    for trade in sorted(trades, key=lambda item: item.exit_time):
+        risk_pct = (
+            risk_pct_for_streak(
+                config.risk_pct,
+                loss_streak,
+                config.risk_progression_multiplier,
+            )
+            if config.risk_progression_enabled
+            else config.risk_pct
+        )
+        max_risk_pct_used = max(max_risk_pct_used, risk_pct)
+        risk_cash = balance * risk_pct / 100.0
         max_intra = max(max_intra, (peak - (balance - risk_cash * trade.mae_r)) / peak * 100.0)
-        balance += risk_cash * trade.r_multiple
+        cash_pnl = risk_cash * trade.r_multiple
+        balance += cash_pnl
+        sized_trades.append(
+            replace(trade, risk_pct_used=risk_pct, cash_pnl=cash_pnl)
+        )
+        if cash_pnl > 0:
+            gross_profit_cash += cash_pnl
+            loss_streak = 0
+        elif cash_pnl < 0:
+            gross_loss_cash += -cash_pnl
+            loss_streak += 1
         peak = max(peak, balance)
         max_dd = max(max_dd, (peak - balance) / peak * 100.0)
+    trades = sorted(sized_trades, key=lambda item: item.entry_time)
+    wins = sum(item.r_multiple > 0 for item in trades)
+    losses = sum(item.r_multiple <= 0 for item in trades)
+    gross_win_r = sum(max(0.0, item.r_multiple) for item in trades)
+    gross_loss_r = -sum(min(0.0, item.r_multiple) for item in trades)
+    pf = (
+        gross_win_r / gross_loss_r
+        if gross_loss_r
+        else (float("inf") if gross_win_r else 0.0)
+    )
+    cash_weighted_pf = (
+        gross_profit_cash / gross_loss_cash
+        if gross_loss_cash
+        else (float("inf") if gross_profit_cash else 0.0)
+    )
     metrics = Metrics(
         trades=len(trades),
         wins=wins,
@@ -446,6 +519,14 @@ def run_backtest(
         max_intratrade_dd_pct=max_intra,
         start=start.isoformat(),
         end=end.isoformat(),
+        gross_profit_cash=gross_profit_cash,
+        gross_loss_cash=gross_loss_cash,
+        max_risk_pct_used=max_risk_pct_used,
+        final_loss_streak=loss_streak,
+        progression_enabled=config.risk_progression_enabled,
+        trailing_enabled=config.trailing_enabled,
+        target_rr=config.target_rr,
+        cash_weighted_profit_factor=cash_weighted_pf,
     )
     return trades, metrics
 

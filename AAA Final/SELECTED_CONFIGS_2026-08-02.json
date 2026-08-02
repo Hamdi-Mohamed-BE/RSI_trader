@@ -1,6 +1,22 @@
 {
   "audit_date": "2026-08-02",
-  "production_envs_changed": false,
+  "production_envs_changed": true,
+  "live_portfolio": {
+    "symbols": ["XAUUSD"],
+    "workers": ["EMA3", "asia_breakout", "DmC", "AMD", "US100_weakness"],
+    "risk_pct": {
+      "EMA3": 1.00,
+      "asia_breakout": 1.00,
+      "DmC": 1.00,
+      "AMD": 1.00,
+      "US100_weakness": 1.00
+    },
+    "shared_xau_risk_cap_pct": 4.00,
+    "comparison_portfolio_cap_pct": 4.00,
+    "broker_minimum_lot_fallback": true,
+    "risk_progression": false,
+    "classic_grid": false
+  },
   "selection": {
     "EMA3": {
       "status": "conditional_pass",
@@ -13,7 +29,7 @@
       "reason": "Best balance of untouched PF, positive net R, and drawdown. Fourteen untouched trades remain a limited sample."
     },
     "asia_breakout": {
-      "status": "conditional_pass_lower_risk",
+      "status": "live_enabled_by_owner",
       "symbols": ["XAUUSD"],
       "entry_mode": "confirmed_close",
       "stop_mode": "midpoint",
@@ -32,18 +48,19 @@
       "symbols": ["XAUUSD"],
       "bias_model": "previous_body",
       "entry_model": "reaction_retest",
+      "exit": "fixed_1.7R",
       "trail_start_r": 2.0,
       "trail_distance_r": 1.5,
       "max_hold_hours": 24,
-      "reason": "Positive untouched holdout, but only eight trades and PF decayed to 1.35."
+      "reason": "Positive untouched holdout, but only eight trades and PF decayed to 1.35. The tested engine reached its 1.7R target before the configured 2R trail, so production explicitly uses the tested fixed exit rather than claiming an inactive trail."
     },
     "AMD": {
-      "status": "rejected_for_live",
+      "status": "live_enabled_by_owner_research_risk",
       "research_candidate": "XAUUSD London-only v2 reversal",
       "reason": "Original frozen untouched year failed badly; v2 has a losing regime and excessive long-run drawdown."
     },
     "US100_weakness": {
-      "status": "rejected",
+      "status": "live_enabled_by_owner_research_risk",
       "research_candidate": "S2A OCO reference-pair 3R",
       "reason": "Development PF 0.87 with negative net R; later sample contains only seven trades."
     }

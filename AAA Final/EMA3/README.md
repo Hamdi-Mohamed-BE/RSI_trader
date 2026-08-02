@@ -106,5 +106,25 @@ positions. Set it to `false` for observation-only mode. It manages only trades
 with its own magic number.
 
 The live worker mirrors the tested logic: completed H4 pivots, EMA200 slope
-filter, structural stop, one leg, 1% equity risk, and 1R/1R completed-H4
-trailing. No order was placed while producing this report.
+filter, structural stop, one leg, 0.5% base equity risk, and configurable
+completed-H4 trailing. No order was placed while producing this report.
+
+## 0.5% loss-streak research controls
+
+The risk engine supports the optional sequence `0.5%, 0.8%, 1.28%, ...`:
+
+- `RISK_PROGRESSION_ENABLED=false` keeps flat 0.5% risk and is the live default.
+- `RISK_PROGRESSION_MULTIPLIER=1.6` controls the consecutive-loss multiplier.
+- `RISK_PROGRESSION_MAX_PCT=3.2` is the live safety ceiling.
+- `TARGET_R=1.7` and `MAX_TARGET_R=1.7` enforce the 1.7R target ceiling.
+- `TRAILING_ENABLED=true/false` explicitly switches trailing on or off. With it
+  disabled, an `EXIT_MODE=trail` configuration uses the fixed capped target.
+
+Only a closed losing trade increments the streak. A closed winning trade resets
+it to zero; a flat trade leaves the streak unchanged. The research study is
+deliberately uncapped so it tests the exact requested formula, while live trading
+remains flat-risk unless progression is manually enabled.
+
+Run the four-way comparison with `run_risk_study.bat`. Machine-readable results,
+scenario journals, and the report are written to
+`reports/risk_progression_1_7r`.

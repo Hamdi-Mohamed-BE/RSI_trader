@@ -114,3 +114,17 @@ cancellation. The two pending legs must therefore not be treated as risk-free.
 The optimized basket is a research result, not a live guarantee. Most selected
 symbols were selected on a recent two-month sample. The longer one-year report
 shows substantial regime instability and must be reviewed before live use.
+
+## 0.5% loss-progression study
+
+`uv run asia-breakout risk-study` compares fixed and M1-close trailing exits,
+all with a hard 1.7R target. It also compares flat 0.5% risk with the exact
+research progression `0.5% * 1.6^closed_loss_streak`; a closed win resets the
+streak and breakeven leaves it unchanged. Results are written under
+`reports/risk_progression_1_7r`.
+
+Live progression is deliberately off by default. If explicitly enabled with
+`RISK_PROGRESSION_ENABLED=true`, `MAX_LIVE_RISK_PCT` caps the next idea and the
+basket exposure cap remains enforced. `TRAILING_ENABLED` is the global live
+kill switch for trailing management, while `MAX_TARGET_RR=1.7` prevents any
+symbol configuration from placing a farther target.

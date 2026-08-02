@@ -129,7 +129,7 @@ def _simulate_filled(
             last_m15_close = close_time
             if float(closed["close"]) > order.invalidation_high:
                 return result(row, ask_close, "BODY_INVALIDATION")
-            if order.runner:
+            if order.runner and config.trailing_enabled:
                 trail_history.append(float(closed["high"]))
                 if len(trail_history) >= config.runner_trail_bars:
                     candidate = (
@@ -156,6 +156,10 @@ def _stats(
     trades: list[Trade],
     risk_pct: float,
     initial_balance: float,
+    *,
+    progression_enabled: bool = False,
+    progression_multiplier: float = 1.6,
+    progression_max_pct: float | None = None,
 ) -> Stats:
     by_day: dict[str, list[Trade]] = defaultdict(list)
     for trade in trades:
@@ -180,14 +184,19 @@ def _stats(
     max_losses = 0
     loss_run = 0
     for value in idea_results:
-        balance *= 1 + (risk_pct / 100) * value
+        current_risk = risk_pct
+        if progression_enabled:
+            current_risk *= progression_multiplier ** loss_run
+            if progression_max_pct is not None:
+                current_risk = min(current_risk, progression_max_pct)
+        balance *= 1 + (current_risk / 100) * value
         peak = max(peak, balance)
         if peak > 0:
             max_drawdown = max(max_drawdown, (peak - balance) / peak * 100)
         if value < 0:
             loss_run += 1
             max_losses = max(max_losses, loss_run)
-        else:
+        elif value > 0:
             loss_run = 0
     count = len(idea_results)
     return Stats(
@@ -282,6 +291,12 @@ def run_backtest(
         "strategy_mode": config.strategy_mode,
         "note_point_to_price": config.note_point_to_price,
         "target_rr": config.target_rr,
+        "effective_target_rr": config.effective_target_rr,
+        "max_target_rr": config.max_target_rr,
+        "trailing_enabled": config.trailing_enabled,
+        "risk_progression_enabled": config.risk_progression_enabled,
+        "risk_progression_multiplier": config.risk_progression_multiplier,
+        "risk_progression_max_pct": config.risk_progression_max_pct,
         "pending_mode": config.pending_mode,
         "s2a_entry_model": config.s2a_entry_model,
         "s2b_entry_model": config.s2b_entry_model,
@@ -296,5 +311,12 @@ def run_backtest(
         end=end,
         parameters=parameters,
         trades=tuple(trades),
-        stats=_stats(trades, config.risk_pct, initial_balance),
+        stats=_stats(
+            trades,
+            config.risk_pct,
+            initial_balance,
+            progression_enabled=config.risk_progression_enabled,
+            progression_multiplier=config.risk_progression_multiplier,
+            progression_max_pct=config.risk_progression_max_pct,
+        ),
     )

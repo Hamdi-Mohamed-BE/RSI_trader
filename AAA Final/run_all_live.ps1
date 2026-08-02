@@ -39,6 +39,18 @@ function Require-Setting {
 
 $bots = @(
     [pscustomobject]@{
+        Name = "Asia Breakout"
+        Folder = "asia breakout"
+        Launcher = "run_live.bat"
+        ProcessMarker = "asia-breakout.exe"
+        Required = @{
+            ENABLE_TRADING = "true"
+            DRY_RUN = "false"
+            RISK_PCT = "1.00"
+            MAX_LIVE_RISK_PCT = "1.00"
+        }
+    },
+    [pscustomobject]@{
         Name = "AMD"
         Folder = "AMD"
         Launcher = "run_live.bat"
@@ -47,16 +59,7 @@ $bots = @(
             ENABLE_TRADING = "true"
             DRY_RUN = "false"
             MODEL_APPROVED = "true"
-        }
-    },
-    [pscustomobject]@{
-        Name = "Asia Breakout"
-        Folder = "asia breakout"
-        Launcher = "run_live.bat"
-        ProcessMarker = "asia-breakout.exe"
-        Required = @{
-            ENABLE_TRADING = "true"
-            DRY_RUN = "false"
+            RISK_PCT = "1.00"
         }
     },
     [pscustomobject]@{
@@ -68,6 +71,8 @@ $bots = @(
             ENABLE_TRADING = "true"
             DRY_RUN = "false"
             LIVE_UNLOCK = "I_ACCEPT_DMC_LIVE_RISK"
+            RISK_PCT = "1.00"
+            LIVE_MAX_RISK_PCT = "1.00"
         }
     },
     [pscustomobject]@{
@@ -77,6 +82,8 @@ $bots = @(
         ProcessMarker = "ema3-live.exe"
         Required = @{
             LIVE_TRADING = "true"
+            RISK_PCT_PER_TRADE = "1.00"
+            MAX_PORTFOLIO_RISK_PCT = "1.00"
         }
     },
     [pscustomobject]@{
@@ -88,13 +95,15 @@ $bots = @(
             ENABLE_TRADING = "true"
             DRY_RUN = "false"
             LIVE_UNLOCK = "I_ACCEPT_NASDAQ_WEAKNESS_LIVE_RISK"
+            RISK_PCT = "1.00"
+            MAX_DAILY_RISK_PCT = "1.00"
         }
     }
 )
 
 Write-Host ""
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host " AAA FINAL - LIVE ENVIRONMENT CHECK" -ForegroundColor Cyan
+Write-Host " AAA FINAL - ALL FIVE LIVE WORKERS" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
 
 foreach ($bot in $bots) {
@@ -141,9 +150,13 @@ if not account.trade_allowed or not account.trade_expert:
 mt5.shutdown()
 '@
 
-Push-Location (Join-Path $Root "asia breakout")
+Push-Location (Join-Path $Root "EMA3")
 try {
-    $accountCheck | uv run python -
+    $python = Join-Path (Get-Location) ".venv\Scripts\python.exe"
+    if (-not (Test-Path -LiteralPath $python)) {
+        throw "EMA3 virtual environment is missing: $python"
+    }
+    $accountCheck | & $python -
     if ($LASTEXITCODE -ne 0) {
         throw "Connected MT5 account check failed with exit code $LASTEXITCODE"
     }
@@ -154,7 +167,7 @@ finally {
 
 if ($CheckOnly) {
     Write-Host ""
-    Write-Host "All five environments and the connected MT5 account are live-ready." -ForegroundColor Green
+    Write-Host "All five live environments and the connected MT5 account are ready." -ForegroundColor Green
     exit 0
 }
 
@@ -185,7 +198,7 @@ foreach ($bot in $bots) {
         FilePath = $env:ComSpec
         ArgumentList = @("/d", "/c", $quotedLauncher)
         WorkingDirectory = $folder
-        WindowStyle = "Minimized"
+        WindowStyle = "Hidden"
         PassThru = $true
     }
     $process = Start-Process @startArguments
@@ -193,5 +206,7 @@ foreach ($bot in $bots) {
 }
 
 Write-Host ""
-Write-Host "All available workers have been started. Closing this window does not stop them." -ForegroundColor Cyan
+Write-Host "All five live workers have been started." -ForegroundColor Cyan
+Write-Host "Each bot targets 1% risk and uses the broker minimum lot when necessary." -ForegroundColor Cyan
+Write-Host "XAU workers share a 4% reserved-risk cap; US100 has its own 1% cap." -ForegroundColor Cyan
 Write-Host "Do not launch overlapping copies: the duplicate guard only applies to this master launcher." -ForegroundColor Cyan

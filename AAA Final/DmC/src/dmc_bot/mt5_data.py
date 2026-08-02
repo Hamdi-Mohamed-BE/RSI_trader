@@ -176,11 +176,7 @@ def volume_for_risk(symbol: str, side: int, entry: float, stop: float, cash: flo
         loss = -abs(entry - stop) / tick_size * tick_value
     raw = cash / abs(float(loss))
     step = float(info.volume_step or 0.01)
-    volume = math.floor(raw / step + 1e-9) * step
-    if volume < float(info.volume_min):
-        raise MT5Error(
-            f"Minimum {symbol} volume {info.volume_min:g} exceeds the configured cash risk"
-        )
+    volume = max(float(info.volume_min), math.floor(raw / step + 1e-9) * step)
     volume = min(volume, float(info.volume_max))
     precision = max(0, len(f"{step:.10f}".rstrip("0").split(".")[-1]))
     return round(volume, precision)

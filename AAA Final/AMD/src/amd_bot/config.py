@@ -34,6 +34,13 @@ class Config:
     symbols: tuple[str, ...]
     starting_balance: float
     risk_pct: float
+    risk_progression_enabled: bool
+    risk_progression_multiplier: float
+    risk_progression_max_pct: float
+    max_target_rr: float
+    trailing_enabled: bool
+    trail_start_r: float
+    trail_distance_r: float
     asia_start: time
     asia_end: time
     london_start: time
@@ -98,6 +105,9 @@ class Config:
     article_signal_max_age_seconds: int
     root: Path
 
+    def capped_rr(self, value: float) -> float:
+        return min(float(value), self.max_target_rr)
+
 
 def load_config(env_path: str | Path | None = None) -> Config:
     root = Path(__file__).resolve().parents[2]
@@ -114,7 +124,18 @@ def load_config(env_path: str | Path | None = None) -> Config:
         strategy_model=os.getenv("STRATEGY_MODEL", "legacy").strip().lower(),
         symbols=symbols,
         starting_balance=float(os.getenv("STARTING_BALANCE", "1000")),
-        risk_pct=float(os.getenv("RISK_PCT", "3")),
+        risk_pct=float(os.getenv("RISK_PCT", "0.5")),
+        risk_progression_enabled=_bool("RISK_PROGRESSION_ENABLED", False),
+        risk_progression_multiplier=float(
+            os.getenv("RISK_PROGRESSION_MULTIPLIER", "1.6")
+        ),
+        risk_progression_max_pct=float(
+            os.getenv("RISK_PROGRESSION_MAX_PCT", "5.0")
+        ),
+        max_target_rr=min(float(os.getenv("MAX_TARGET_RR", "1.7")), 1.7),
+        trailing_enabled=_bool("TRAILING_ENABLED", True),
+        trail_start_r=float(os.getenv("TRAIL_START_R", "1.0")),
+        trail_distance_r=float(os.getenv("TRAIL_DISTANCE_R", "0.5")),
         asia_start=_time("ASIA_START_UTC", "00:00"),
         asia_end=_time("ASIA_END_UTC", "08:00"),
         london_start=_time("LONDON_CONFIRM_START_UTC", "08:00"),
@@ -122,8 +143,16 @@ def load_config(env_path: str | Path | None = None) -> Config:
         ny_start=_time("NY_START_UTC", "13:30"),
         ny_cutoff=_time("NY_SIGNAL_CUTOFF_UTC", "16:00"),
         force_exit=_time("FORCE_EXIT_UTC", "21:00"),
-        ny_rr=float(os.getenv("NY_RR", "5")),
-        ny_fallback_rr=float(os.getenv("NY_FALLBACK_RR", "4")),
+        ny_rr=min(
+            float(os.getenv("NY_RR", "1.7")),
+            float(os.getenv("MAX_TARGET_RR", "1.7")),
+            1.7,
+        ),
+        ny_fallback_rr=min(
+            float(os.getenv("NY_FALLBACK_RR", "1.7")),
+            float(os.getenv("MAX_TARGET_RR", "1.7")),
+            1.7,
+        ),
         ny_fallback_minutes=int(os.getenv("NY_FALLBACK_MINUTES", "45")),
         ny_entry_buffer_spreads=float(
             os.getenv("NY_ENTRY_BUFFER_SPREADS", "1")

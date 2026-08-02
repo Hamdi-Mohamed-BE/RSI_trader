@@ -46,6 +46,9 @@ class StrategyConfig:
     max_range_adr_fraction: float = 0.50
     retest_bars: int = 4
     risk_pct: float = 3.0
+    risk_progression_enabled: bool = False
+    risk_progression_multiplier: float = 1.6
+    max_live_risk_pct: float = 2.0
     starting_balance: float = 1_000.0
     asia_start: time = time(0, 0)
     asia_end: time = time(8, 0)
@@ -68,6 +71,8 @@ class AppConfig:
     require_demo_account: bool
     magic: int
     max_basket_risk_pct: float
+    max_target_rr: float
+    trailing_enabled: bool
     log_dir: Path
     log_level: str
     symbols: tuple[str, ...]
@@ -76,12 +81,13 @@ class AppConfig:
 
     def strategy_for(self, symbol: str) -> StrategyConfig:
         direct = self.symbol_strategies.get(symbol)
-        if direct is not None:
-            return direct
-        canonical = canonical_for_symbol(symbol, tuple(self.symbol_strategies))
-        if canonical is None:
-            return self.strategy
-        return self.symbol_strategies[canonical]
+        if direct is None:
+            canonical = canonical_for_symbol(symbol, tuple(self.symbol_strategies))
+            direct = self.strategy if canonical is None else self.symbol_strategies[canonical]
+        changes: dict[str, object] = {"rr": min(direct.rr, self.max_target_rr)}
+        if not self.trailing_enabled:
+            changes["exit_mode"] = "fixed"
+        return direct.evolved(**changes)
 
 
 def load_config(env_file: str | Path | None = None) -> AppConfig:
@@ -104,6 +110,11 @@ def load_config(env_file: str | Path | None = None) -> AppConfig:
         max_range_adr_fraction=float(os.getenv("MAX_RANGE_ADR_FRACTION", "0.50")),
         retest_bars=int(os.getenv("RETEST_BARS", "4")),
         risk_pct=float(os.getenv("RISK_PCT", "3.0")),
+        risk_progression_enabled=_bool("RISK_PROGRESSION_ENABLED"),
+        risk_progression_multiplier=float(
+            os.getenv("RISK_PROGRESSION_MULTIPLIER", "1.6")
+        ),
+        max_live_risk_pct=float(os.getenv("MAX_LIVE_RISK_PCT", "2.0")),
         starting_balance=float(os.getenv("STARTING_BALANCE", "1000")),
         asia_start=_time("ASIA_START_UTC", "00:00"),
         asia_end=_time("ASIA_END_UTC", "08:00"),
@@ -142,6 +153,8 @@ def load_config(env_file: str | Path | None = None) -> AppConfig:
         require_demo_account=_bool("REQUIRE_DEMO_ACCOUNT"),
         magic=int(os.getenv("MAGIC", "290729")),
         max_basket_risk_pct=float(os.getenv("MAX_BASKET_RISK_PCT", "6.0")),
+        max_target_rr=float(os.getenv("MAX_TARGET_RR", "1.7")),
+        trailing_enabled=_bool("TRAILING_ENABLED", True),
         log_dir=Path(os.getenv("LOG_DIR", "logs")),
         log_level=os.getenv("LOG_LEVEL", "INFO"),
         symbols=symbols,

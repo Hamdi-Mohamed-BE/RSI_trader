@@ -25,12 +25,21 @@ class ExitConfig:
     target_r: float | None = None
     trail_start_r: float | None = None
     trail_distance_r: float | None = None
+    target_cap_r: float | None = None
 
     @property
     def name(self) -> str:
         if self.mode == "fixed":
             return f"fixed_{self.target_r:g}R"
-        return f"trail_start_{self.trail_start_r:g}R_distance_{self.trail_distance_r:g}R"
+        cap = (
+            f"_cap_{self.target_cap_r:g}R"
+            if self.target_cap_r is not None
+            else ""
+        )
+        return (
+            f"trail_start_{self.trail_start_r:g}R_"
+            f"distance_{self.trail_distance_r:g}R{cap}"
+        )
 
 
 @dataclass(slots=True)
@@ -232,6 +241,10 @@ def simulate(
                 if side == "buy" and config.mode == "fixed"
                 else entry - float(config.target_r) * risk_distance
                 if side == "sell" and config.mode == "fixed"
+                else entry + float(config.target_cap_r) * risk_distance
+                if side == "buy" and config.mode == "trail" and config.target_cap_r is not None
+                else entry - float(config.target_cap_r) * risk_distance
+                if side == "sell" and config.mode == "trail" and config.target_cap_r is not None
                 else None
             )
 
@@ -284,33 +297,59 @@ def simulate(
 
 
 def metrics(
-    trades: Iterable[RTrade], risk_pct: float = 1.0, starting_balance: float = 1_000.0
+    trades: Iterable[RTrade],
+    risk_pct: float = 1.0,
+    starting_balance: float = 1_000.0,
+    progression_enabled: bool = False,
+    progression_multiplier: float = 1.6,
+    max_risk_pct: float | None = None,
 ) -> dict[str, float | int | bool]:
     records = list(trades)
     balance = starting_balance
     peak = balance
     max_dd = 0.0
     results: list[float] = []
+    cash_results: list[float] = []
     ruined = False
+    loss_streak = 0
+    maximum_applied_risk_pct = 0.0
     for trade in records:
         value = trade.result_r
         results.append(value)
-        risk_cash = balance * risk_pct / 100.0
+        applied_risk_pct = (
+            risk_pct * progression_multiplier**loss_streak
+            if progression_enabled
+            else risk_pct
+        )
+        if max_risk_pct is not None:
+            applied_risk_pct = min(applied_risk_pct, max_risk_pct)
+        maximum_applied_risk_pct = max(maximum_applied_risk_pct, applied_risk_pct)
+        risk_cash = balance * applied_risk_pct / 100.0
         # A historical gap can lose more than the intended 1R. Once equity is
         # exhausted, the account cannot keep trading or recover from a negative
         # balance. The legacy fixed-lot report allowed exactly that and produced
         # the misleading 400% drawdown result.
+        previous_balance = balance
         balance = max(0.0, balance + risk_cash * value)
+        cash_results.append(balance - previous_balance)
         peak = max(peak, balance)
         if peak > 0:
             max_dd = max(max_dd, (peak - balance) / peak * 100.0)
         if balance <= 0:
             ruined = True
             break
+        if value < 0:
+            loss_streak += 1
+        elif value > 0:
+            loss_streak = 0
     wins = [value for value in results if value > 0]
     losses = [value for value in results if value < 0]
     gross_profit = sum(wins)
     gross_loss = abs(sum(losses))
+    cash_wins = [value for value in cash_results if value > 0]
+    cash_losses = [value for value in cash_results if value < 0]
+    cash_gross_profit = sum(cash_wins)
+    cash_gross_loss = abs(sum(cash_losses))
     return {
         "trades": len(results),
         "wins": len(wins),
@@ -318,8 +357,18 @@ def metrics(
         "win_rate_pct": len(wins) / len(results) * 100.0 if results else 0.0,
         "net_r": sum(results),
         "profit_factor": gross_profit / gross_loss if gross_loss else math.inf,
+        "cash_profit_factor": (
+            cash_gross_profit / cash_gross_loss if cash_gross_loss else math.inf
+        ),
+        "cash_gross_profit": cash_gross_profit,
+        "cash_gross_loss": cash_gross_loss,
         "expectancy_r": sum(results) / len(results) if results else 0.0,
         "risk_pct": risk_pct,
+        "progression_enabled": progression_enabled,
+        "progression_multiplier": progression_multiplier,
+        "max_risk_pct": max_risk_pct,
+        "maximum_applied_risk_pct": maximum_applied_risk_pct,
+        "final_loss_streak": loss_streak,
         "processed_trades": len(results),
         "ruined": ruined,
         "max_drawdown_pct": max_dd,
@@ -334,15 +383,26 @@ def compounded_journal(
     trades: Iterable[RTrade],
     risk_pct: float = 1.0,
     starting_balance: float = 1_000.0,
+    progression_enabled: bool = False,
+    progression_multiplier: float = 1.6,
+    max_risk_pct: float | None = None,
 ) -> pd.DataFrame:
     """Create a realizable risk-sized cash journal without negative-equity recovery."""
     balance = starting_balance
     peak = starting_balance
     rows: list[dict[str, object]] = []
+    loss_streak = 0
     for trade in trades:
         if balance <= 0:
             break
-        risk_cash = balance * risk_pct / 100.0
+        applied_risk_pct = (
+            risk_pct * progression_multiplier**loss_streak
+            if progression_enabled
+            else risk_pct
+        )
+        if max_risk_pct is not None:
+            applied_risk_pct = min(applied_risk_pct, max_risk_pct)
+        risk_cash = balance * applied_risk_pct / 100.0
         pnl_cash = risk_cash * trade.result_r
         balance = max(0.0, balance + pnl_cash)
         peak = max(peak, balance)
@@ -350,6 +410,8 @@ def compounded_journal(
         row.update(
             {
                 "risk_pct": risk_pct,
+                "applied_risk_pct": applied_risk_pct,
+                "loss_streak_before": loss_streak,
                 "risk_cash": risk_cash,
                 "pnl_cash": pnl_cash,
                 "balance": balance,
@@ -359,6 +421,10 @@ def compounded_journal(
             }
         )
         rows.append(row)
+        if trade.result_r < 0:
+            loss_streak += 1
+        elif trade.result_r > 0:
+            loss_streak = 0
     return pd.DataFrame(rows)
 
 
@@ -427,12 +493,20 @@ def portfolio_metrics(
 
 
 def config_grid() -> list[ExitConfig]:
+    target_cap_r = min(float(os.getenv("MAX_TARGET_R", "1.7")), 1.7)
     fixed = [
-        ExitConfig(mode="fixed", target_r=rr)
+        ExitConfig(mode="fixed", target_r=min(rr, target_cap_r))
         for rr in env_floats("FIXED_RRS", "1,1.5,2,2.5,3,4,5")
     ]
+    # De-duplicate values that collapse to the target ceiling.
+    fixed = list({config.name: config for config in fixed}.values())
     trailing = [
-        ExitConfig(mode="trail", trail_start_r=start, trail_distance_r=distance)
+        ExitConfig(
+            mode="trail",
+            trail_start_r=start,
+            trail_distance_r=distance,
+            target_cap_r=target_cap_r,
+        )
         for start, distance in itertools.product(
             env_floats("TRAIL_START_RS", "1,1.5,2,3"),
             env_floats("TRAIL_DISTANCE_RS", "0.5,1,1.5,2"),

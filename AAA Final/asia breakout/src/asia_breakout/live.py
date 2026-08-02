@@ -18,19 +18,60 @@ from .mt5_data import (
     symbol_metadata,
 )
 from .observability import log_event, render_table
+from .portfolio_guard import selected_xau_entry_guard
+from .risk import progressed_risk_pct
 
 
 LOGGER = logging.getLogger("asia_breakout.live")
 
 
+def closed_strategy_loss_streak(config: AppConfig, now: datetime | None = None) -> int:
+    """Count consecutive closed losing positions for this bot's magic number."""
+    now = now or datetime.now(timezone.utc)
+    deals = mt5.history_deals_get(now - timedelta(days=3650), now) or ()
+    closed: dict[int, dict[str, float]] = {}
+    for deal in deals:
+        if int(deal.magic) != config.magic:
+            continue
+        if int(deal.entry) not in {mt5.DEAL_ENTRY_OUT, mt5.DEAL_ENTRY_INOUT}:
+            continue
+        position_id = int(getattr(deal, "position_id", deal.ticket))
+        record = closed.setdefault(position_id, {"time": 0.0, "pnl": 0.0})
+        record["time"] = max(record["time"], float(deal.time))
+        record["pnl"] += sum(
+            float(getattr(deal, field, 0.0) or 0.0)
+            for field in ("profit", "commission", "swap", "fee")
+        )
+    streak = 0
+    for record in sorted(closed.values(), key=lambda item: item["time"], reverse=True):
+        if record["pnl"] < -1e-9:
+            streak += 1
+        elif record["pnl"] > 1e-9:
+            break
+    return streak
+
+
+def effective_live_risk_pct(
+    config: AppConfig,
+    strategy: StrategyConfig,
+    now: datetime | None = None,
+) -> float:
+    if not strategy.risk_progression_enabled:
+        return min(strategy.risk_pct, strategy.max_live_risk_pct)
+    return progressed_risk_pct(
+        strategy.risk_pct,
+        closed_strategy_loss_streak(config, now),
+        strategy.risk_progression_multiplier,
+        strategy.max_live_risk_pct,
+    )
+
+
 def _round_volume(value: float, minimum: float, maximum: float, step: float) -> float:
-    value = min(maximum, value)
-    if value + 1e-12 < minimum:
-        return 0.0
+    value = min(maximum, max(minimum, value))
     steps = (Decimal(str(value)) / Decimal(str(step))).quantize(
         Decimal("1"), rounding=ROUND_DOWN
     )
-    return float(steps * Decimal(str(step)))
+    return max(minimum, float(steps * Decimal(str(step))))
 
 
 def volume_for_risk(
@@ -52,16 +93,15 @@ def volume_for_risk(
         float(info["volume_max"]),
         float(info["volume_step"]),
     )
-    if volume + 1e-12 < float(info["volume_min"]):
-        raise MT5Error(
-            f"Risk sizing allows {raw:.4f} lot for {symbol}, below broker "
-            f"minimum {float(info['volume_min']):.4f}; trade skipped"
-        )
     planned = abs(float(loss_one_lot)) * volume
     if planned > risk_cash * 1.001:
-        raise MT5Error(
-            f"Rounded volume would risk ${planned:.2f}, above the "
-            f"${risk_cash:.2f} budget; trade skipped"
+        LOGGER.warning(
+            "Using broker minimum volume %.4f for %s: planned risk $%.2f "
+            "exceeds the configured $%.2f budget",
+            volume,
+            symbol,
+            planned,
+            risk_cash,
         )
     return volume
 
@@ -194,7 +234,8 @@ def place_confirmation_market(
     account = mt5.account_info()
     if account is None:
         raise MT5Error(f"No MT5 account: {mt5.last_error()}")
-    risk_cash = float(account.balance) * strategy.risk_pct / 100.0
+    live_risk_pct = effective_live_risk_pct(config, strategy)
+    risk_cash = float(account.balance) * live_risk_pct / 100.0
     volume = volume_for_risk(
         symbol,
         signal.direction,
@@ -214,7 +255,7 @@ def place_confirmation_market(
             target,
             volume,
             config.magic,
-            strategy.risk_pct,
+            live_risk_pct,
             filling_mode,
         )
         candidate_check = mt5.order_check(candidate)
@@ -277,7 +318,7 @@ def place_confirmation_market(
         stop=stop,
         target=target,
         risk_cash=risk_cash,
-        risk_pct=strategy.risk_pct,
+        risk_pct=live_risk_pct,
     )
     return receipt
 
@@ -318,7 +359,8 @@ def place_mechanical_oco(
     account = mt5.account_info()
     if account is None:
         raise MT5Error(f"No MT5 account: {mt5.last_error()}")
-    risk_cash = float(account.balance) * strategy.risk_pct / 100.0
+    live_risk_pct = effective_live_risk_pct(config, strategy, now)
+    risk_cash = float(account.balance) * live_risk_pct / 100.0
     expiration = datetime.combine(
         now.date(), strategy.entry_cutoff, tzinfo=timezone.utc
     )
@@ -332,7 +374,7 @@ def place_mechanical_oco(
             volume_for_risk(symbol, "buy", buy_entry, buy_stop, risk_cash),
             expiration,
             config.magic,
-            strategy.risk_pct,
+            live_risk_pct,
         ),
         _pending_request(
             symbol,
@@ -343,7 +385,7 @@ def place_mechanical_oco(
             volume_for_risk(symbol, "sell", sell_entry, sell_stop, risk_cash),
             expiration,
             config.magic,
-            strategy.risk_pct,
+            live_risk_pct,
         ),
     ]
     log_event(
@@ -359,7 +401,7 @@ def place_mechanical_oco(
         buffer=buffer,
         stop_mode=strategy.stop_mode,
         rr=strategy.rr,
-        risk_pct=strategy.risk_pct,
+        risk_pct=live_risk_pct,
         risk_cash=risk_cash,
     )
     receipts: list[dict[str, object]] = []
@@ -379,7 +421,7 @@ def place_mechanical_oco(
             stop=request["sl"],
             target=request["tp"],
             expiration=expiration,
-            risk_pct=strategy.risk_pct,
+            risk_pct=live_risk_pct,
             risk_cash=risk_cash,
         )
         check = mt5.order_check(request)
@@ -659,8 +701,9 @@ def _current_confirmation_signal(
     if signal is None:
         return None
     account = mt5.account_info()
+    live_risk_pct = effective_live_risk_pct(config, strategy, now)
     risk_cash = (
-        float(account.balance) * strategy.risk_pct / 100.0
+        float(account.balance) * live_risk_pct / 100.0
         if account is not None
         else 0.0
     )
@@ -670,6 +713,18 @@ def _current_confirmation_signal(
         signal.entry,
         signal.stop,
         risk_cash,
+    )
+    order_type = mt5.ORDER_TYPE_BUY if signal.direction == "buy" else mt5.ORDER_TYPE_SELL
+    one_lot_risk = mt5.order_calc_profit(
+        order_type, symbol, 1.0, signal.entry, signal.stop
+    )
+    planned_risk_cash = (
+        abs(float(one_lot_risk)) * volume if one_lot_risk is not None else risk_cash
+    )
+    actual_risk_pct = (
+        planned_risk_cash / float(account.balance) * 100.0
+        if account is not None and float(account.balance) > 0
+        else live_risk_pct
     )
     details: dict[str, object] = {
         "instrument": instrument,
@@ -681,8 +736,8 @@ def _current_confirmation_signal(
         "stop": signal.stop,
         "target": signal.target,
         "rr": strategy.rr,
-        "risk_pct": strategy.risk_pct,
-        "risk_cash": risk_cash,
+        "risk_pct": max(live_risk_pct, actual_risk_pct),
+        "risk_cash": planned_risk_cash,
         "asian_high": high,
         "asian_low": low,
         "asian_range": asian_range,
@@ -753,7 +808,16 @@ def strategy_exposure_risk_pct(config: AppConfig) -> float:
         for item in (*positions, *orders)
         if int(item.magic) == config.magic
     }
-    return sum(config.strategy_for(symbol).risk_pct for symbol in symbols)
+    # MT5 does not retain the strategy's original percentage. Reserve the
+    # configured per-trade safety cap while progression is active.
+    return sum(
+        (
+            config.strategy_for(symbol).max_live_risk_pct
+            if config.strategy_for(symbol).risk_progression_enabled
+            else config.strategy_for(symbol).risk_pct
+        )
+        for symbol in symbols
+    )
 
 
 def trailing_stop_candidate(
@@ -1069,10 +1133,8 @@ def run_live(config: AppConfig, once: bool = False, poll_seconds: int = 5) -> No
                         )
                         continue
                     current_risk = strategy_exposure_risk_pct(config)
-                    if (
-                        current_risk + strategy.risk_pct
-                        > config.max_basket_risk_pct
-                    ):
+                    proposed_risk = float(details["risk_pct"])
+                    if current_risk + proposed_risk > config.max_basket_risk_pct:
                         log_event(
                             LOGGER,
                             logging.WARNING,
@@ -1082,17 +1144,31 @@ def run_live(config: AppConfig, once: bool = False, poll_seconds: int = 5) -> No
                             broker_symbol=symbol,
                             basket_risk_cap_pct=config.max_basket_risk_pct,
                             current_risk_pct=current_risk,
-                            proposed_risk_pct=strategy.risk_pct,
+                            proposed_risk_pct=proposed_risk,
                         )
                         continue
                     try:
-                        receipt = place_confirmation_market(
-                            config,
-                            instrument,
-                            symbol,
-                            signal,
-                        )
-                        details["status"] = receipt["status"]
+                        with selected_xau_entry_guard(proposed_risk) as decision:
+                            if not decision.allowed:
+                                log_event(
+                                    LOGGER,
+                                    logging.WARNING,
+                                    "confirmed_signal_blocked_shared_xau_cap",
+                                    f"Skipping {instrument}: shared XAU risk cap reached",
+                                    instrument=instrument,
+                                    broker_symbol=symbol,
+                                    current_risk_pct=decision.current_risk_pct,
+                                    proposed_risk_pct=decision.proposed_risk_pct,
+                                    shared_cap_pct=decision.cap_risk_pct,
+                                )
+                                continue
+                            receipt = place_confirmation_market(
+                                config,
+                                instrument,
+                                symbol,
+                                signal,
+                            )
+                            details["status"] = receipt["status"]
                     except Exception:
                         LOGGER.exception(
                             "Failed to place confirmed signal for %s (%s)",
@@ -1131,8 +1207,9 @@ def run_live(config: AppConfig, once: bool = False, poll_seconds: int = 5) -> No
                             execution="market_after_confirmation",
                         )
                         continue
+                    proposed_risk = effective_live_risk_pct(config, strategy, now)
                     if (
-                        strategy_exposure_risk_pct(config) + strategy.risk_pct
+                        strategy_exposure_risk_pct(config) + proposed_risk
                         > config.max_basket_risk_pct
                     ):
                         log_event(
@@ -1144,7 +1221,7 @@ def run_live(config: AppConfig, once: bool = False, poll_seconds: int = 5) -> No
                             broker_symbol=symbol,
                             basket_risk_cap_pct=config.max_basket_risk_pct,
                             current_risk_pct=strategy_exposure_risk_pct(config),
-                            proposed_risk_pct=strategy.risk_pct,
+                            proposed_risk_pct=proposed_risk,
                         )
                         continue
                     try:

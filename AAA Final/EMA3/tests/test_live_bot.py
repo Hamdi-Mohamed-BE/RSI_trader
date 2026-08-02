@@ -6,6 +6,8 @@ import pandas as pd
 from ema3_backtest.live_bot import (
     choose_gold_symbol,
     confirmed_signal,
+    advance_loss_streak,
+    progressive_risk_pct,
     risk_sized_volume,
     send_request,
 )
@@ -115,3 +117,21 @@ def test_send_request_checks_filling_before_submission(monkeypatch) -> None:
     assert result is sent
     assert checks == [mt5.ORDER_FILLING_FOK]
     assert sends == [mt5.ORDER_FILLING_FOK]
+
+
+def test_live_progression_resets_only_after_win() -> None:
+    assert advance_loss_streak(0, [-1.0, -3.0]) == 2
+    assert advance_loss_streak(2, [0.0]) == 2
+    assert advance_loss_streak(2, [5.0]) == 0
+
+
+def test_live_progressive_risk_is_safety_capped() -> None:
+    config = SimpleNamespace(
+        risk_pct_per_trade=0.5,
+        risk_progression_enabled=True,
+        risk_progression_multiplier=1.6,
+        risk_progression_max_pct=1.28,
+    )
+    assert progressive_risk_pct(config, 0) == 0.5
+    assert progressive_risk_pct(config, 1) == 0.8
+    assert progressive_risk_pct(config, 9) == 1.28

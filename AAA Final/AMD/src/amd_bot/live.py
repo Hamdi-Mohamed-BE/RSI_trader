@@ -17,6 +17,7 @@ from .article_engine import (
 from .config import Config
 from .engine import ask, combine, regime_states
 from .mt5_data import connection, discover_symbols, load_m1, MT5Error
+from .portfolio_guard import selected_xau_entry_guard
 
 
 UTC = timezone.utc
@@ -67,8 +68,9 @@ def calculate_risk_volume(
 ) -> tuple[float, float, float]:
     """Return volume, planned cash risk and allowed cash risk.
 
-    Volume is always rounded down to the broker step. If the broker minimum
-    lot would exceed the configured risk, volume is returned as zero.
+    Volume is rounded down to the broker step. If calculated volume is below
+    the broker minimum, the minimum tradable lot is returned and planned risk
+    reports the resulting cash exposure.
     """
     info = mt5.symbol_info(symbol)
     if info is None:
@@ -83,15 +85,65 @@ def calculate_risk_volume(
     step = float(info.volume_step)
     minimum = float(info.volume_min)
     maximum = float(info.volume_max)
-    if step <= 0 or raw + 1e-12 < minimum:
+    if step <= 0:
         return 0.0, 0.0, allowed
     steps = math.floor((raw + 1e-12) / step)
-    volume = min(steps * step, maximum)
+    volume = min(max(steps * step, minimum), maximum)
     volume = round(volume, _volume_digits(step))
     planned = loss_per_lot * volume
-    if volume < minimum or planned > allowed * 1.001:
+    if volume < minimum:
         return 0.0, planned, allowed
     return volume, planned, allowed
+
+
+def consecutive_strategy_losses(symbol: str, magic: int, days: int = 365) -> int:
+    """Return the bot's consecutive fully closed losing positions."""
+    end = datetime.now(UTC)
+    deals = tuple(mt5.history_deals_get(end - timedelta(days=days), end) or ())
+    grouped: dict[int, dict[str, float]] = {}
+    for deal in deals:
+        if str(getattr(deal, "symbol", "")) != symbol:
+            continue
+        if int(getattr(deal, "magic", 0)) != int(magic):
+            continue
+        position_id = int(getattr(deal, "position_id", 0) or 0)
+        if position_id <= 0:
+            continue
+        item = grouped.setdefault(
+            position_id, {"time": 0.0, "pnl": 0.0, "closed": 0.0}
+        )
+        item["time"] = max(
+            item["time"], float(getattr(deal, "time_msc", 0) or 0)
+        )
+        item["pnl"] += sum(
+            float(getattr(deal, name, 0.0) or 0.0)
+            for name in ("profit", "commission", "swap", "fee")
+        )
+        if int(getattr(deal, "entry", -1)) in {
+            mt5.DEAL_ENTRY_OUT,
+            mt5.DEAL_ENTRY_OUT_BY,
+        }:
+            item["closed"] = 1.0
+    outcomes = sorted(
+        (item["time"], item["pnl"])
+        for item in grouped.values()
+        if item["closed"] > 0
+    )
+    streak = 0
+    for _, pnl in reversed(outcomes):
+        if pnl < -1e-9:
+            streak += 1
+        elif pnl > 1e-9:
+            break
+    return streak
+
+
+def current_risk_pct(symbol: str, config: Config) -> tuple[float, int]:
+    if not config.risk_progression_enabled:
+        return config.risk_pct, 0
+    streak = consecutive_strategy_losses(symbol, config.magic)
+    value = config.risk_pct * config.risk_progression_multiplier ** streak
+    return min(value, config.risk_progression_max_pct), streak
 
 
 def _filling_candidates() -> tuple[int, ...]:
@@ -316,7 +368,7 @@ def build_article_signal(
             f"confirmed {candidate.phase} signal is stale "
             f"({int(age)}s old)"
         )
-    rr = (
+    rr = config.capped_rr(
         config.article_fade_rr
         if candidate.phase.endswith("_fade")
         else config.article_distribution_rr
@@ -390,13 +442,14 @@ def place_pending(
         raise MT5Error("Buy-stop entry is no longer above the live ask")
     if signal.side == "sell" and entry >= float(tick.bid) - min_distance:
         raise MT5Error("Sell-stop entry is no longer below the live bid")
+    active_risk_pct, loss_streak = current_risk_pct(symbol, config)
     volume, planned, allowed = calculate_risk_volume(
         symbol,
         signal.side,
         entry,
         stop,
         float(account.equity),
-        config.risk_pct,
+        active_risk_pct,
     )
     if volume <= 0:
         raise MT5Error(
@@ -422,11 +475,21 @@ def place_pending(
         "comment": comment,
         "type_time": mt5.ORDER_TIME_GTC,
     }
-    result = _checked_send(request)
+    actual_risk_pct = planned / float(account.equity) * 100.0
+    with selected_xau_entry_guard(max(active_risk_pct, actual_risk_pct)) as decision:
+        if not decision.allowed:
+            raise MT5Error(
+                "Shared XAU risk cap reached: "
+                f"{decision.current_risk_pct:.2f}% active + "
+                f"{decision.proposed_risk_pct:.2f}% proposed > "
+                f"{decision.cap_risk_pct:.2f}% cap"
+            )
+        result = _checked_send(request)
     print(
         f"  LIVE ORDER PLACED {symbol} {signal.side.upper()} STOP "
         f"ticket={result.order} volume={volume} entry={entry} "
-        f"SL={stop} TP={target} risk=${planned:.2f}/{allowed:.2f}"
+        f"SL={stop} TP={target} risk=${planned:.2f}/{allowed:.2f} "
+        f"risk_pct={active_risk_pct:.2f}% streak={loss_streak}"
     )
     return result
 
@@ -456,13 +519,14 @@ def place_article_market(
         entry + signal.rr * risk if is_buy else entry - signal.rr * risk,
         digits,
     )
+    active_risk_pct, loss_streak = current_risk_pct(symbol, config)
     volume, planned, allowed = calculate_risk_volume(
         symbol,
         signal.side,
         entry,
         stop,
         float(account.equity),
-        config.risk_pct,
+        active_risk_pct,
     )
     if volume <= 0:
         raise MT5Error(
@@ -486,12 +550,22 @@ def place_article_market(
         )[:31],
         "type_time": mt5.ORDER_TIME_GTC,
     }
-    result = _checked_send(request)
+    actual_risk_pct = planned / float(account.equity) * 100.0
+    with selected_xau_entry_guard(max(active_risk_pct, actual_risk_pct)) as decision:
+        if not decision.allowed:
+            raise MT5Error(
+                "Shared XAU risk cap reached: "
+                f"{decision.current_risk_pct:.2f}% active + "
+                f"{decision.proposed_risk_pct:.2f}% proposed > "
+                f"{decision.cap_risk_pct:.2f}% cap"
+            )
+        result = _checked_send(request)
     print(
         f"  LIVE MARKET PLACED {symbol} {signal.side.upper()} "
         f"{signal.phase} ticket={result.order or result.deal} "
         f"volume={volume} entry={entry} SL={stop} TP={target} "
-        f"risk=${planned:.2f}/${allowed:.2f}"
+        f"risk=${planned:.2f}/${allowed:.2f} "
+        f"risk_pct={active_risk_pct:.2f}% streak={loss_streak}"
     )
     return result
 
@@ -578,11 +652,11 @@ def manage_symbol(symbol: str, now: datetime, config: Config) -> None:
             continue
         comment = str(getattr(position, "comment", ""))
         if comment.startswith((f"{COMMENT_PREFIX} A+ AF", f"{COMMENT_PREFIX} AF")):
-            target_rr = config.article_fade_rr
+            target_rr = config.capped_rr(config.article_fade_rr)
         elif comment.startswith((f"{COMMENT_PREFIX} A+ AD", f"{COMMENT_PREFIX} AD")):
-            target_rr = config.article_distribution_rr
+            target_rr = config.capped_rr(config.article_distribution_rr)
         else:
-            target_rr = config.ny_fallback_rr
+            target_rr = config.capped_rr(config.ny_fallback_rr)
         risk = abs(target - entry) / target_rr
         if risk <= 0:
             continue
@@ -597,6 +671,14 @@ def manage_symbol(symbol: str, now: datetime, config: Config) -> None:
         if int(position.type) == mt5.POSITION_TYPE_BUY:
             trigger = entry + config.lock_trigger_r * risk
             protected = entry + config.lock_profit_r * risk
+            if (
+                config.trailing_enabled
+                and float(tick.bid) >= entry + config.trail_start_r * risk
+            ):
+                protected = max(
+                    protected,
+                    float(tick.bid) - config.trail_distance_r * risk,
+                )
             improves = float(position.sl) < protected
             valid = protected < float(tick.bid) - min_distance
             if float(tick.bid) >= trigger and improves and valid:
@@ -604,6 +686,14 @@ def manage_symbol(symbol: str, now: datetime, config: Config) -> None:
         else:
             trigger = entry - config.lock_trigger_r * risk
             protected = entry - config.lock_profit_r * risk
+            if (
+                config.trailing_enabled
+                and float(tick.ask) <= entry - config.trail_start_r * risk
+            ):
+                protected = min(
+                    protected,
+                    float(tick.ask) + config.trail_distance_r * risk,
+                )
             improves = float(position.sl) == 0 or float(position.sl) > protected
             valid = protected > float(tick.ask) + min_distance
             if float(tick.ask) <= trigger and improves and valid:

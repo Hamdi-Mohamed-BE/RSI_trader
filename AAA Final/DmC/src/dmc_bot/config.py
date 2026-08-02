@@ -69,9 +69,14 @@ class Config:
     body_level_weekly_lookback: int = 4
     body_level_monthly_lookback: int = 3
     minimum_target_r: float = 0.50
-    maximum_target_r: float = 6.0
+    maximum_target_r: float = 1.7
     instruments: tuple[InstrumentSettings, ...] = ()
     max_total_risk_pct: float = 4.0
+    risk_progression_enabled: bool = False
+    risk_progression_multiplier: float = 1.6
+    live_max_risk_pct: float = 4.0
+    trailing_enabled: bool = True
+    target_rr: float = 1.7
 
     @property
     def timezone(self) -> ZoneInfo:
@@ -127,7 +132,7 @@ def load_config(env_path: str | Path | None = None) -> Config:
         pullback_points=float(os.getenv("PULLBACK_POINTS", "25")),
         stop_points=float(os.getenv("STOP_POINTS", "55")),
         trail_start_r=float(os.getenv("TRAIL_START_R", "1.0")),
-        trail_distance_r=float(os.getenv("TRAIL_DISTANCE_R", "1.0")),
+        trail_distance_r=float(os.getenv("TRAIL_DISTANCE_R", "0.5")),
         max_hold_hours=int(os.getenv("MAX_HOLD_HOURS", "72")),
         max_trades_per_week=int(os.getenv("MAX_TRADES_PER_WEEK", "3")),
         poll_seconds=int(os.getenv("POLL_SECONDS", "15")),
@@ -157,8 +162,15 @@ def load_config(env_path: str | Path | None = None) -> Config:
             os.getenv("BODY_LEVEL_MONTHLY_LOOKBACK", "3")
         ),
         minimum_target_r=float(os.getenv("MINIMUM_TARGET_R", "0.50")),
-        maximum_target_r=float(os.getenv("MAXIMUM_TARGET_R", "6.0")),
+        maximum_target_r=float(os.getenv("MAXIMUM_TARGET_R", "1.7")),
         max_total_risk_pct=float(os.getenv("MAX_TOTAL_RISK_PCT", "4.0")),
+        risk_progression_enabled=_bool("RISK_PROGRESSION_ENABLED", False),
+        risk_progression_multiplier=float(
+            os.getenv("RISK_PROGRESSION_MULTIPLIER", "1.6")
+        ),
+        live_max_risk_pct=float(os.getenv("LIVE_MAX_RISK_PCT", "4.0")),
+        trailing_enabled=_bool("TRAILING_ENABLED", True),
+        target_rr=float(os.getenv("TARGET_RR", "1.7")),
     )
     hints = tuple(
         item.strip()
@@ -197,8 +209,16 @@ def load_config(env_path: str | Path | None = None) -> Config:
     config = replace(config, instruments=tuple(instruments))
     if not 0 < config.risk_pct <= 10:
         raise ValueError("RISK_PCT must be within (0, 10]")
+    if config.risk_progression_multiplier < 1.0:
+        raise ValueError("RISK_PROGRESSION_MULTIPLIER must be at least 1.0")
+    if not 0 < config.live_max_risk_pct <= 100:
+        raise ValueError("LIVE_MAX_RISK_PCT must be within (0, 100]")
+    if config.live_max_risk_pct < config.risk_pct:
+        raise ValueError("LIVE_MAX_RISK_PCT must be at least RISK_PCT")
     if config.max_total_risk_pct < config.risk_pct:
         raise ValueError("MAX_TOTAL_RISK_PCT must be at least RISK_PCT")
+    if config.live_max_risk_pct > config.max_total_risk_pct:
+        raise ValueError("LIVE_MAX_RISK_PCT must not exceed MAX_TOTAL_RISK_PCT")
     if config.pullback_points <= 0 or config.stop_points <= 0:
         raise ValueError("Pullback and stop distances must be positive")
     if config.max_trades_per_week < 1:
@@ -223,5 +243,9 @@ def load_config(env_path: str | Path | None = None) -> Config:
         raise ValueError("Structural stop limits are invalid")
     if not 0 < config.minimum_target_r <= config.maximum_target_r:
         raise ValueError("Target R limits are invalid")
+    if not 0 < config.target_rr <= 1.7:
+        raise ValueError("TARGET_RR must be within (0, 1.7]")
+    if config.maximum_target_r > 1.7:
+        raise ValueError("MAXIMUM_TARGET_R must not exceed the 1.7R TP ceiling")
     _ = config.timezone
     return config

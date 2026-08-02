@@ -1,7 +1,6 @@
 from types import SimpleNamespace
 
 import MetaTrader5 as mt5
-import pytest
 
 from asia_breakout.live import (
     _account_board,
@@ -9,7 +8,6 @@ from asia_breakout.live import (
     trailing_stop_candidate,
     volume_for_risk,
 )
-from asia_breakout.mt5_data import MT5Error
 
 
 def test_buy_trailing_waits_for_start_and_only_advances() -> None:
@@ -54,7 +52,7 @@ def test_market_filling_bitmask_is_translated_to_order_modes(monkeypatch) -> Non
     assert 3 not in modes
 
 
-def test_risk_sizing_never_forces_broker_minimum_above_budget(
+def test_risk_sizing_uses_broker_minimum_when_budget_is_smaller(
     monkeypatch,
 ) -> None:
     monkeypatch.setattr(
@@ -66,5 +64,4 @@ def test_risk_sizing_never_forces_broker_minimum_above_budget(
         },
     )
     monkeypatch.setattr(mt5, "order_calc_profit", lambda *_: -1_000.0)
-    with pytest.raises(MT5Error, match="below broker minimum"):
-        volume_for_risk("XAUUSD", "buy", 4_000.0, 3_990.0, 50.0)
+    assert volume_for_risk("XAUUSD", "buy", 4_000.0, 3_990.0, 50.0) == 0.10

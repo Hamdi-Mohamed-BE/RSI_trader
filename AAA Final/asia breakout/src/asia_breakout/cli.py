@@ -21,6 +21,7 @@ from .mt5_data import (
 from .optimizer import optimize_symbol, universal_config_summary
 from .observability import log_event, setup_logging
 from .portfolio import simulate_portfolio
+from .risk_study import run_risk_progression_study
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -550,10 +551,44 @@ def command_portfolio(args: argparse.Namespace) -> None:
     print(f"\nSaved: {reports / 'exposure_scenarios.csv'}")
 
 
+def command_risk_study(args: argparse.Namespace) -> None:
+    config = load_config(args.env)
+    setup_logging(config.log_dir, config.log_level)
+    warmup, start, end = _dates(args)
+    output = ROOT / "reports" / "risk_progression_1_7r"
+    summary = run_risk_progression_study(
+        config,
+        warmup,
+        start,
+        end,
+        ROOT / "data",
+        output,
+        args.refresh,
+    )
+    columns = [
+        "scenario",
+        "signals",
+        "accepted_trades",
+        "skipped_signals",
+        "wins",
+        "losses",
+        "win_rate_pct",
+        "profit_factor",
+        "cash_profit_factor",
+        "ending_balance",
+        "return_pct",
+        "max_realized_drawdown_pct",
+        "max_committed_risk_drawdown_pct",
+        "max_planned_exposure_pct",
+    ]
+    print(summary[columns].to_string(index=False))
+    print(f"\nSaved: {output / 'summary.csv'}")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Asian-session breakout research bot")
     subparsers = parser.add_subparsers(dest="command", required=True)
-    for name in ("optimize", "backtest", "portfolio"):
+    for name in ("optimize", "backtest", "portfolio", "risk-study"):
         item = subparsers.add_parser(name)
         item.add_argument("--start", help="UTC start date YYYY-MM-DD")
         item.add_argument("--end", help="UTC end date YYYY-MM-DD")
@@ -584,6 +619,8 @@ def main() -> None:
         command_backtest(args)
     elif args.command == "portfolio":
         command_portfolio(args)
+    elif args.command == "risk-study":
+        command_risk_study(args)
     else:
         config = load_config(args.env)
         setup_logging(config.log_dir, config.log_level)
