@@ -10,6 +10,8 @@ Latest model audit: [ROBUSTNESS_AUDIT_2026-08-02.md](ROBUSTNESS_AUDIT_2026-08-02
 | EMA3 | `EMA3\\run_live_bot.bat` | `EMA3\\run_backtest.bat` | enabled |
 | US100 weakness | `US100 weekness\\run_live.bat` | `US100 weekness\\run_backtest.bat` | enabled |
 
+To validate the connected MT5 account and start all five workers together, run `run_all_live.bat` in this folder. The master launcher checks every live environment and skips workers that are already running.
+
 Every launcher changes into its own folder before running, so relocating the suite did not introduce absolute-path dependencies. Every bot connects to the account already open in MetaTrader 5 and performs broker-symbol discovery where applicable.
 
 The actual `.env` files are live-enabled as requested. Starting a live BAT can submit, modify or close orders. Do not run overlapping bots on the same symbol unless their combined exposure is intentionally budgeted.
