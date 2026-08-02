@@ -1,5 +1,6 @@
 param(
-    [switch]$CheckOnly
+    [switch]$CheckOnly,
+    [switch]$HiddenTerminals
 )
 
 $ErrorActionPreference = "Stop"
@@ -35,6 +36,113 @@ function Require-Setting {
     if (-not $Values.ContainsKey($Key) -or $Values[$Key].ToLowerInvariant() -ne $Expected.ToLowerInvariant()) {
         throw "$Bot is not live-ready: expected $Key=$Expected"
     }
+}
+
+function Start-VisibleBotTerminal {
+    param(
+        [Parameter(Mandatory)][string]$Launcher,
+        [Parameter(Mandatory)][string]$WorkingDirectory
+    )
+
+    if (-not ("AaaFinalConsoleProcess" -as [type])) {
+        Add-Type -TypeDefinition @'
+using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Text;
+
+public static class AaaFinalConsoleProcess
+{
+    private const uint CREATE_NEW_CONSOLE = 0x00000010;
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    private struct STARTUPINFO
+    {
+        public int cb;
+        public string lpReserved;
+        public string lpDesktop;
+        public string lpTitle;
+        public int dwX;
+        public int dwY;
+        public int dwXSize;
+        public int dwYSize;
+        public int dwXCountChars;
+        public int dwYCountChars;
+        public int dwFillAttribute;
+        public int dwFlags;
+        public short wShowWindow;
+        public short cbReserved2;
+        public IntPtr lpReserved2;
+        public IntPtr hStdInput;
+        public IntPtr hStdOutput;
+        public IntPtr hStdError;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct PROCESS_INFORMATION
+    {
+        public IntPtr hProcess;
+        public IntPtr hThread;
+        public uint dwProcessId;
+        public uint dwThreadId;
+    }
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern bool CreateProcessW(
+        string applicationName,
+        StringBuilder commandLine,
+        IntPtr processAttributes,
+        IntPtr threadAttributes,
+        bool inheritHandles,
+        uint creationFlags,
+        IntPtr environment,
+        string currentDirectory,
+        ref STARTUPINFO startupInfo,
+        out PROCESS_INFORMATION processInformation);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool CloseHandle(IntPtr handle);
+
+    public static int Start(string commandInterpreter, string launcher, string workingDirectory)
+    {
+        STARTUPINFO startupInfo = new STARTUPINFO();
+        startupInfo.cb = Marshal.SizeOf(typeof(STARTUPINFO));
+        PROCESS_INFORMATION processInformation;
+        string arguments = "/d /c \"\"" + launcher + "\"\"";
+        StringBuilder commandLine = new StringBuilder(
+            "\"" + commandInterpreter + "\" " + arguments);
+
+        bool started = CreateProcessW(
+            commandInterpreter,
+            commandLine,
+            IntPtr.Zero,
+            IntPtr.Zero,
+            false,
+            CREATE_NEW_CONSOLE,
+            IntPtr.Zero,
+            workingDirectory,
+            ref startupInfo,
+            out processInformation);
+
+        if (!started)
+        {
+            throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
+
+        int processId = unchecked((int)processInformation.dwProcessId);
+        CloseHandle(processInformation.hThread);
+        CloseHandle(processInformation.hProcess);
+        return processId;
+    }
+}
+'@
+    }
+
+    return [AaaFinalConsoleProcess]::Start(
+        $env:ComSpec,
+        $Launcher,
+        $WorkingDirectory
+    )
 }
 
 $bots = @(
@@ -193,20 +301,31 @@ foreach ($bot in $bots) {
         continue
     }
 
-    $quotedLauncher = '"' + $launcher + '"'
-    $startArguments = @{
-        FilePath = $env:ComSpec
-        ArgumentList = @("/d", "/c", $quotedLauncher)
-        WorkingDirectory = $folder
-        WindowStyle = "Hidden"
-        PassThru = $true
+    if ($HiddenTerminals) {
+        $quotedLauncher = '"' + $launcher + '"'
+        $startArguments = @{
+            FilePath = $env:ComSpec
+            ArgumentList = @("/d", "/c", $quotedLauncher)
+            WorkingDirectory = $folder
+            WindowStyle = "Hidden"
+            PassThru = $true
+        }
     }
-    $process = Start-Process @startArguments
+    else {
+        # CREATE_NEW_CONSOLE guarantees one visible terminal per worker even if this
+        # controller itself was launched without a console window.
+        $processId = Start-VisibleBotTerminal -Launcher $launcher -WorkingDirectory $folder
+        $process = [pscustomobject]@{ Id = $processId }
+    }
+    if ($HiddenTerminals) {
+        $process = Start-Process @startArguments
+    }
     Write-Host ("[START] {0} | launcher PID {1}" -f $bot.Name, $process.Id) -ForegroundColor Green
 }
 
 Write-Host ""
 Write-Host "All five live workers have been started." -ForegroundColor Cyan
+Write-Host $(if ($HiddenTerminals) { "Bot terminals are hidden." } else { "Each bot is running in its own named terminal." }) -ForegroundColor Cyan
 Write-Host "Each bot targets 1% risk and uses the broker minimum lot when necessary." -ForegroundColor Cyan
 Write-Host "XAU workers share a 4% reserved-risk cap; US100 has its own 1% cap." -ForegroundColor Cyan
 Write-Host "Do not launch overlapping copies: the duplicate guard only applies to this master launcher." -ForegroundColor Cyan

@@ -1,7 +1,10 @@
 @echo off
+title AAA FINAL - US100 WEAKNESS
+setlocal
 cd /d "%~dp0"
 
 echo ============================================================
+echo  AAA FINAL - US100 WEAKNESS BOT
 echo  CHECKING CONNECTED MT5 ACCOUNT AND AUTO-DISCOVERING US100
 echo ============================================================
 uv run nasdaq-weakness account

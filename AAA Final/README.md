@@ -12,7 +12,9 @@ Latest model audit: [ROBUSTNESS_AUDIT_2026-08-02.md](ROBUSTNESS_AUDIT_2026-08-02
 | AMD | XAUUSD expanded AMD article model | 1.00% | enabled for forward testing |
 | US100 weakness | US100 S2A reference-pair/OCO model, capped at 1.7R | 1.00% | enabled for forward testing |
 
-To validate the connected MT5 account and start all five workers, run `run_all_live.bat` in this folder. The master launcher checks every environment and skips workers that are already running.
+To validate the connected MT5 account and start all five workers, run `run_all_live.bat` in this folder. Each worker opens in a separate visible terminal whose title contains the bot name. The master launcher checks every environment and skips workers that are already running. To run without visible terminals, use `run_all_live.bat hidden`.
+
+Run `stop_all_bots.bat` to stop all five workers (or run `run_all_live.bat stop`). It only closes processes launched from this suite; MetaTrader 5 and existing positions or pending orders are not changed.
 
 Every launcher changes into its own folder before running, so relocating the suite did not introduce absolute-path dependencies. Every bot connects to the account already open in MetaTrader 5 and performs broker-symbol discovery where applicable.
 

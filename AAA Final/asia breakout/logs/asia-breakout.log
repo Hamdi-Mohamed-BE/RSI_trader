@@ -274,3 +274,70 @@ Traceback (most recent call last):
   File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\mt5_data.py", line 210, in fetch_m1
     raise MT5Error(f"No M1 data for {symbol}: {mt5.last_error()}")
 asia_breakout.mt5_data.MT5Error: No M1 data for XAUUSD..: (1, 'Success')
+2026-08-02 18:03:56,104Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:04:56,111Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:05:56,118Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:06:56,125Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:07:56,131Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:08:56,138Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:09:56,145Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:10:56,153Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:12:11,186Z | INFO    | asia_breakout.mt5 | Connected to MT5 account
+2026-08-02 18:12:11,198Z | INFO    | asia_breakout.mt5 | XAUUSD resolved to XAUUSD..
+2026-08-02 18:12:11,201Z | INFO    | asia_breakout.live | Live monitor started
+2026-08-02 18:12:11,202Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:12:14,205Z | ERROR   | asia_breakout.live | Failed to scan confirmation signal for XAUUSD (XAUUSD..)
+Traceback (most recent call last):
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\live.py", line 1060, in run_live
+    detected = _current_confirmation_signal(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\live.py", line 659, in _current_confirmation_signal
+    frame = fetch_m1(symbol, day_start, closed_slot - timedelta(seconds=1))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\mt5_data.py", line 210, in fetch_m1
+    raise MT5Error(f"No M1 data for {symbol}: {mt5.last_error()}")
+asia_breakout.mt5_data.MT5Error: No M1 data for XAUUSD..: (1, 'Success')
+2026-08-02 18:14:12,202Z | INFO    | asia_breakout.mt5 | Connected to MT5 account
+2026-08-02 18:14:12,212Z | INFO    | asia_breakout.mt5 | XAUUSD resolved to XAUUSD..
+2026-08-02 18:14:12,213Z | INFO    | asia_breakout.live | Live monitor started
+2026-08-02 18:14:12,214Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:14:15,216Z | ERROR   | asia_breakout.live | Failed to scan confirmation signal for XAUUSD (XAUUSD..)
+Traceback (most recent call last):
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\live.py", line 1060, in run_live
+    detected = _current_confirmation_signal(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\live.py", line 659, in _current_confirmation_signal
+    frame = fetch_m1(symbol, day_start, closed_slot - timedelta(seconds=1))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\mt5_data.py", line 210, in fetch_m1
+    raise MT5Error(f"No M1 data for {symbol}: {mt5.last_error()}")
+asia_breakout.mt5_data.MT5Error: No M1 data for XAUUSD..: (1, 'Success')
+2026-08-02 18:15:03,224Z | ERROR   | asia_breakout.live | Failed to scan confirmation signal for XAUUSD (XAUUSD..)
+Traceback (most recent call last):
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\live.py", line 1060, in run_live
+    detected = _current_confirmation_signal(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\live.py", line 659, in _current_confirmation_signal
+    frame = fetch_m1(symbol, day_start, closed_slot - timedelta(seconds=1))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\mt5_data.py", line 210, in fetch_m1
+    raise MT5Error(f"No M1 data for {symbol}: {mt5.last_error()}")
+asia_breakout.mt5_data.MT5Error: No M1 data for XAUUSD..: (1, 'Success')
+2026-08-02 18:15:13,226Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:15:22,107Z | INFO    | asia_breakout.mt5 | Connected to MT5 account
+2026-08-02 18:15:22,112Z | INFO    | asia_breakout.mt5 | XAUUSD resolved to XAUUSD..
+2026-08-02 18:15:22,120Z | INFO    | asia_breakout.live | Live monitor started
+2026-08-02 18:15:22,120Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:15:25,123Z | ERROR   | asia_breakout.live | Failed to scan confirmation signal for XAUUSD (XAUUSD..)
+Traceback (most recent call last):
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\live.py", line 1060, in run_live
+    detected = _current_confirmation_signal(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\live.py", line 659, in _current_confirmation_signal
+    frame = fetch_m1(symbol, day_start, closed_slot - timedelta(seconds=1))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA Final\asia breakout\src\asia_breakout\mt5_data.py", line 210, in fetch_m1
+    raise MT5Error(f"No M1 data for {symbol}: {mt5.last_error()}")
+asia_breakout.mt5_data.MT5Error: No M1 data for XAUUSD..: (1, 'Success')
+2026-08-02 18:16:25,131Z | INFO    | asia_breakout.live | Live monitor heartbeat
+2026-08-02 18:17:25,138Z | INFO    | asia_breakout.live | Live monitor heartbeat
