@@ -20,6 +20,10 @@ class MT5Error(RuntimeError):
     pass
 
 
+class MarketDataUnavailable(MT5Error):
+    """The terminal is connected, but the requested market bars are unavailable."""
+
+
 @contextmanager
 def mt5_connection(config: AppConfig):
     initialize_kwargs: dict[str, object] = {}
@@ -207,7 +211,10 @@ def fetch_m1(symbol: str, start: datetime, end: datetime) -> pd.DataFrame:
                 break
         time.sleep(1)
     if rates is None or len(rates) == 0:
-        raise MT5Error(f"No M1 data for {symbol}: {mt5.last_error()}")
+        raise MarketDataUnavailable(
+            f"No M1 bars for {symbol} between {start.isoformat()} and "
+            f"{end.isoformat()}; the market may be closed"
+        )
     frame = pd.DataFrame(rates)
     frame["time"] = pd.to_datetime(frame["time"], unit="s", utc=True)
     frame = frame.drop_duplicates("time").sort_values("time").reset_index(drop=True)

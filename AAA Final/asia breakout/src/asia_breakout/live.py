@@ -11,6 +11,7 @@ import pandas as pd
 from .config import AppConfig, StrategyConfig
 from .engine import EntrySignal, find_entry_signal
 from .mt5_data import (
+    MarketDataUnavailable,
     MT5Error,
     discover_symbols,
     fetch_m1,
@@ -1063,6 +1064,20 @@ def run_live(config: AppConfig, once: bool = False, poll_seconds: int = 5) -> No
                             symbol,
                             now,
                         )
+                    except MarketDataUnavailable:
+                        log_event(
+                            LOGGER,
+                            logging.INFO,
+                            "market_data_unavailable",
+                            (
+                                f"{instrument} waiting: market closed or no fresh "
+                                "M1 bars"
+                            ),
+                            instrument=instrument,
+                            broker_symbol=symbol,
+                            utc_time=now,
+                        )
+                        continue
                     except Exception:
                         LOGGER.exception(
                             "Failed to scan confirmation signal for %s (%s)",
