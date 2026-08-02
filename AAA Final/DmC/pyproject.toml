@@ -1,0 +1,27 @@
+[project]
+name = "dmc-pullback"
+version = "0.1.0"
+description = "Daily and New York H4 aligned pullback strategy for MT5 US100 and gold"
+requires-python = ">=3.11"
+dependencies = [
+  "MetaTrader5>=5.0.5700",
+  "pandas>=2.2",
+  "python-dotenv>=1.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3"]
+
+[project.scripts]
+dmc-bot = "dmc_bot.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dmc_bot"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

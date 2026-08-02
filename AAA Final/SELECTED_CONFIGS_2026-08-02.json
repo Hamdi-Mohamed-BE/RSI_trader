@@ -1,0 +1,51 @@
+{
+  "audit_date": "2026-08-02",
+  "production_envs_changed": false,
+  "selection": {
+    "EMA3": {
+      "status": "conditional_pass",
+      "symbol": "XAUUSD",
+      "timeframe": "H4",
+      "pivot_distance": 5,
+      "signal_filter": "ema200_slope",
+      "ema_slope_bars": 6,
+      "exit": "trail_start_1.5R_distance_1R",
+      "reason": "Best balance of untouched PF, positive net R, and drawdown. Fourteen untouched trades remain a limited sample."
+    },
+    "asia_breakout": {
+      "status": "conditional_pass_lower_risk",
+      "symbols": ["XAUUSD"],
+      "entry_mode": "confirmed_close",
+      "stop_mode": "midpoint",
+      "rr": 3.0,
+      "exit_mode": "trailing",
+      "trail_start_r": 2.0,
+      "trail_distance_r": 0.5,
+      "buffer_range_fraction": 0.03,
+      "min_range_adr_fraction": 0.05,
+      "max_range_adr_fraction": 0.5,
+      "retest_bars": 4,
+      "reason": "Only symbol with positive meaningful older unseen performance; optimized PF compressed to 1.36 and drawdown rose to 16.08% at tested risk."
+    },
+    "DmC": {
+      "status": "provisional_forward_only",
+      "symbols": ["XAUUSD"],
+      "bias_model": "previous_body",
+      "entry_model": "reaction_retest",
+      "trail_start_r": 2.0,
+      "trail_distance_r": 1.5,
+      "max_hold_hours": 24,
+      "reason": "Positive untouched holdout, but only eight trades and PF decayed to 1.35."
+    },
+    "AMD": {
+      "status": "rejected_for_live",
+      "research_candidate": "XAUUSD London-only v2 reversal",
+      "reason": "Original frozen untouched year failed badly; v2 has a losing regime and excessive long-run drawdown."
+    },
+    "US100_weakness": {
+      "status": "rejected",
+      "research_candidate": "S2A OCO reference-pair 3R",
+      "reason": "Development PF 0.87 with negative net R; later sample contains only seven trades."
+    }
+  }
+}

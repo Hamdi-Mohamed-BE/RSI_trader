@@ -1,0 +1,98 @@
+{
+  "BTCUSD": {
+    "strategy": {
+      "entry_mode": "confirmed_close",
+      "stop_mode": "midpoint",
+      "rr": 1.0,
+      "exit_mode": "trailing",
+      "trail_start_r": 0.5,
+      "trail_distance_r": 0.5,
+      "buffer_range_fraction": 0.05,
+      "min_range_adr_fraction": 0.05,
+      "max_range_adr_fraction": 0.7,
+      "retest_bars": 4
+    },
+    "metrics": {
+      "trades": 27,
+      "win_rate_pct": 85.18518518518519,
+      "profit_factor": 4.66365746360441,
+      "net_r": 9.702137893450484,
+      "max_drawdown_pct": 5.2954250409238846,
+      "ending_balance": 1330.3875931504708,
+      "first_half_net_r": 3.6787363503177435,
+      "second_half_net_r": 6.02340154313274
+    }
+  },
+  "EURJPY": {
+    "strategy": {
+      "entry_mode": "mechanical_oco",
+      "stop_mode": "midpoint",
+      "rr": 6.0,
+      "exit_mode": "trailing",
+      "trail_start_r": 2.0,
+      "trail_distance_r": 1.0,
+      "buffer_range_fraction": 0.0,
+      "min_range_adr_fraction": 0.05,
+      "max_range_adr_fraction": 0.35,
+      "retest_bars": 4
+    },
+    "metrics": {
+      "trades": 13,
+      "win_rate_pct": 61.53846153846154,
+      "profit_factor": 4.316847949748653,
+      "net_r": 16.584239748743265,
+      "max_drawdown_pct": 9.203034552147715,
+      "ending_balance": 1591.2356398084157,
+      "first_half_net_r": 6.780875667508451,
+      "second_half_net_r": 9.803364081234815
+    }
+  },
+  "GBPJPY": {
+    "strategy": {
+      "entry_mode": "confirmed_close",
+      "stop_mode": "opposite",
+      "rr": 0.5,
+      "exit_mode": "fixed",
+      "trail_start_r": 1.0,
+      "trail_distance_r": 1.0,
+      "buffer_range_fraction": 0.0,
+      "min_range_adr_fraction": 0.05,
+      "max_range_adr_fraction": 0.5,
+      "retest_bars": 4
+    },
+    "metrics": {
+      "trades": 26,
+      "win_rate_pct": 84.61538461538461,
+      "profit_factor": 4.858890855816389,
+      "net_r": 8.10707394520311,
+      "max_drawdown_pct": 5.140309085055051,
+      "ending_balance": 1271.5413578944986,
+      "first_half_net_r": 4.0,
+      "second_half_net_r": 4.10707394520311
+    }
+  },
+  "XAUUSD": {
+    "strategy": {
+      "entry_mode": "confirmed_close",
+      "stop_mode": "midpoint",
+      "rr": 3.0,
+      "exit_mode": "trailing",
+      "trail_start_r": 2.0,
+      "trail_distance_r": 0.5,
+      "buffer_range_fraction": 0.03,
+      "min_range_adr_fraction": 0.05,
+      "max_range_adr_fraction": 0.5,
+      "retest_bars": 4
+    },
+    "metrics": {
+      "trades": 18,
+      "win_rate_pct": 77.77777777777779,
+      "profit_factor": 4.475770454907413,
+      "net_r": 13.90308181962965,
+      "max_drawdown_pct": 5.299077700568568,
+      "ending_balance": 1493.849740134529,
+      "first_half_net_r": 3.808864646520553,
+      "second_half_net_r": 10.094217173109097
+    }
+  }
+}

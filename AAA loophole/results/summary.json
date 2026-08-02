@@ -1,0 +1,62 @@
+{
+  "generated_through": "2026-07-31",
+  "candidate_count": 720,
+  "selected_candidate": {
+    "family": "pullback_rsi",
+    "direction": "long",
+    "regime_ma": 100,
+    "atr_stop": 3.0,
+    "max_hold": 10,
+    "target_r": 0.0,
+    "rsi_period": 2,
+    "rsi_entry": 5,
+    "rsi_exit": 70,
+    "breakout_lookback": 0,
+    "exit_ema": 0
+  },
+  "selected_candidate_id": "PB_long_MA100_RSI2_E5_X70_ATR3_H10_T0",
+  "development": {
+    "trades": 68,
+    "profit_factor": 2.3167136043303724,
+    "win_rate_pct": 79.41176470588235,
+    "max_drawdown_pct": 1.5965081060436814,
+    "total_return_pct": 5.502380230251314,
+    "net_r": 10.753771586518573,
+    "avg_r": 0.15814369980174373
+  },
+  "unseen_nq_test": {
+    "trades": 24,
+    "profit_factor": 1.8652026017456698,
+    "win_rate_pct": 83.33333333333334,
+    "max_drawdown_pct": 1.1736091978666874,
+    "total_return_pct": 1.3958425748006764,
+    "net_r": 2.7860798259293427,
+    "avg_r": 0.1160866594137226
+  },
+  "qqq_crosscheck": {
+    "trades": 22,
+    "profit_factor": 2.477708521771478,
+    "win_rate_pct": 81.81818181818183,
+    "max_drawdown_pct": 0.8517249830609308,
+    "total_return_pct": 1.7622589152237689,
+    "net_r": 3.505073437112892,
+    "avg_r": 0.15932151986876783
+  },
+  "unseen_nq_bootstrap": {
+    "pf_ci_low": 0.7000870961581798,
+    "pf_ci_high": 30.084553844035078,
+    "probability_pf_above_1_pct": 88.08
+  },
+  "nq_buy_hold_test_period": {
+    "total_return_pct": 123.91115840920754,
+    "max_drawdown_pct": 35.27601809954744
+  },
+  "assumptions": {
+    "risk_fraction_per_trade": 0.005,
+    "nq_slippage_points_per_side": 0.5,
+    "nq_round_trip_commission_equivalent_points": 0.62,
+    "qqq_slippage_bps_per_side": 1.0,
+    "execution": "signal at close, fill at next open",
+    "same_bar_stop_target": "stop first"
+  }
+}

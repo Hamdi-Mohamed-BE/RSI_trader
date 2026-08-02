@@ -1,0 +1,19 @@
+bot,candidate,symbol,timeframe,segment,start,end,trades,win_rate_pct,profit_factor,net_r,max_drawdown_pct,decision
+EMA3,EMA200 slope pivot reversal,XAUUSD,H4,development,2025-08-02,2026-05-02,23,60.87,4.12,28.11,2.97,conditional_pass
+EMA3,EMA200 slope pivot reversal,XAUUSD,H4,untouched_validation,2026-05-02,2026-08-01,14,57.14,1.80,4.82,2.97,conditional_pass
+EMA3,EMA200 slope pivot reversal,US30,H1,untouched_validation,2026-05-02,2026-08-01,23,30.43,1.38,6.12,6.79,secondary
+EMA3,EMA200 slope pivot reversal,BTCUSD,H4,untouched_validation,2026-05-02,2026-08-02,9,33.33,1.44,2.48,2.97,inconclusive
+Asia Breakout,confirmed close midpoint trailing,XAUUSD,M1/session,optimized_sample,,,18,77.78,4.48,13.90,5.30,seen
+Asia Breakout,confirmed close midpoint trailing,XAUUSD,M1/session,older_unseen,2025-08-02,2026-05-02,67,47.76,1.36,10.58,16.08,conditional_pass
+Asia Breakout,confirmed close midpoint trailing,BTCUSD,M1/session,older_unseen,2025-08-02,2026-05-02,117,63.25,1.10,3.66,15.53,too_weak
+Asia Breakout,confirmed close opposite fixed,GBPJPY,M1/session,older_unseen,2025-08-02,2026-05-02,97,61.86,0.98,-0.48,20.49,fail
+Asia Breakout,mechanical OCO midpoint trailing,EURJPY,M1/session,older_unseen,2025-08-02,2026-05-02,26,19.23,0.39,-12.76,39.02,fail
+DmC,previous body reaction retest,XAUUSD,H4,development,2026-02-03,2026-05-02,6,83.33,14.53,13.68,2.02,seen
+DmC,previous body reaction retest,XAUUSD,H4,validation,2026-05-02,2026-06-17,7,57.14,2.79,5.38,2.68,validation
+DmC,previous body reaction retest,XAUUSD,H4,untouched_holdout,2026-06-17,2026-08-01,8,50.00,1.35,1.42,4.00,provisional
+AMD,article AMD,XAUUSD,M5/session,development,,,76,84.21,2.18,14.25,8.73,seen
+AMD,article AMD,XAUUSD,M5/session,untouched_year,2023-07-30,2024-07-30,43,44.19,0.12,-21.15,47.81,fail
+AMD,v2 London reversal,XAUUSD,M5/session,older_stress,2020-01-01,2023-12-31,45,37.78,1.11,5.00,19.42,reject_live
+US100 Weakness,S2A OCO reference pair,NAS100U6,intraday,development,2026-06-14,2026-07-10,14,21.43,0.87,-0.65,5.93,fail
+US100 Weakness,S2A OCO reference pair,NAS100U6,intraday,validation,2026-07-12,2026-07-20,4,50.00,1.78,0.78,1.00,inconclusive
+US100 Weakness,S2A OCO reference pair,NAS100U6,intraday,untouched_holdout,2026-07-21,2026-07-30,3,33.33,1.48,0.48,1.00,inconclusive
