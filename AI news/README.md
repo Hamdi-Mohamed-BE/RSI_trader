@@ -1,5 +1,13 @@
 # Gold News AI
 
+## Weekend direction research
+
+`run_weekend_direction_train.bat` builds a five-year XAUUSD weekend-direction
+classifier. Model and threshold selection use expanding chronological folds in
+the first four years; the final 52 weekends remain frozen for a one-time unseen
+evaluation. `run_weekend_direction_predict.bat` produces an informational
+Friday estimate and never sends an MT5 order.
+
 Prediction-only application for the immediate XAUUSD effect of high-impact USD
 releases. Every supported release receives one result:
 
@@ -7,6 +15,21 @@ releases. Every supported release receives one result:
 - `NEGATIVE`: expected immediate effect on gold is downward.
 
 It does not produce trade calls and cannot place, modify, or manage orders.
+
+## Weekend gap bot
+
+The weekend-gap strategy is isolated from the prediction app. It places an OCO
+buy-stop/sell-stop pair outside the final completed Friday M1 wick and removes
+untriggered orders at the weekly reopen.
+
+- Run the verified one-year optimization with `run_weekend_gap_backtest.bat`.
+- Start the visible worker with `run_weekend_gap_bot.bat`.
+- Its separate settings file is `.env.weekend-gap` (created from
+  `.env.weekend-gap.example` on first launch).
+- Both live switches default to `false`; test on demo before enabling them.
+
+The current frozen-holdout defaults are a $1.50 offset, five-minute placement
+lead, $20 stop, 4:1 reward/risk, and 720 market-minute maximum hold.
 
 ## Coverage
 
@@ -179,3 +202,18 @@ can compare actual, forecast, previous, revisions, and official release text.
 - `GOLD_DIRECTION_RESULTS.md`
 - `NEWS_IMPACT_PREDICTION_PROMPT.md`
 - `CODEX_ANALYST_WORKFLOW.md`
+
+## Gold weekend direction V2
+
+V2 is a prediction-only research model for the Friday-close to weekly-reopen
+XAUUSD gap. It first estimates whether the gap will exceed the rolling 70th
+percentile of the previous 26 weekend gaps, then estimates UP or DOWN.
+
+Inputs are completed MT5 bars, lagged FRED macro observations, and CFTC gold
+positioning lagged by a full week. The nested chronological replay independently
+selects its feature set, regularization, and confidence gates in each unseen
+block. A rejected model is hard-locked to `NO TRADE` in the live predictor.
+
+- Run `run_weekend_direction_v2_backtest.bat` to refresh context and rebuild the report.
+- Run `run_weekend_direction_v2_predict.bat` near Friday close for an estimate.
+- Read `GOLD_WEEKEND_DIRECTION_V2.md` for the current validation verdict.

@@ -4,7 +4,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$workerPattern = "asia-breakout\.exe|amd-bot\.exe|dmc-bot\.exe|ema3-live\.exe|nasdaq-weakness\.exe|run_live\.bat|run_live_bot\.bat"
+$workerPattern = "asia-breakout\.exe|amd-bot\.exe|dmc-bot\.exe|ema3-live\.exe|nasdaq-weakness\.exe|news-pulse\.exe|weekend-direction\.exe|run_live\.bat|run_live_bot\.bat"
 
 $targets = @(
     Get-CimInstance Win32_Process | Where-Object {

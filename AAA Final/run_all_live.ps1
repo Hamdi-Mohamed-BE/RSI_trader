@@ -206,12 +206,36 @@ $bots = @(
             RISK_PCT = "1.00"
             MAX_DAILY_RISK_PCT = "1.00"
         }
+    },
+    [pscustomobject]@{
+        Name = "XAU News Pulse"
+        Folder = "news pulse"
+        Launcher = "run_live.bat"
+        ProcessMarker = "news-pulse.exe"
+        Required = @{
+            LIVE_TRADING = "true"
+            PLACE_ORDERS = "true"
+            DRY_RUN = "false"
+            LIVE_CALENDAR_ENABLED = "true"
+        }
+    },
+    [pscustomobject]@{
+        Name = "XAU Weekend Direction"
+        Folder = "weekend direction"
+        Launcher = "run_live.bat"
+        ProcessMarker = "weekend-direction.exe"
+        Required = @{
+            LIVE_TRADING = "true"
+            PLACE_ORDERS = "true"
+            DRY_RUN = "false"
+            ALLOW_PROVISIONAL_MOMENTUM_MODE = "false"
+        }
     }
 )
 
 Write-Host ""
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host " AAA FINAL - ALL FIVE LIVE WORKERS" -ForegroundColor Cyan
+Write-Host " AAA FINAL - SEVEN LIVE-READY WORKERS" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
 
 foreach ($bot in $bots) {
@@ -275,7 +299,7 @@ finally {
 
 if ($CheckOnly) {
     Write-Host ""
-    Write-Host "All five live environments and the connected MT5 account are ready." -ForegroundColor Green
+    Write-Host "All seven worker environments and the connected MT5 account are ready." -ForegroundColor Green
     exit 0
 }
 
@@ -324,8 +348,10 @@ foreach ($bot in $bots) {
 }
 
 Write-Host ""
-Write-Host "All five live workers have been started." -ForegroundColor Cyan
+Write-Host "All seven workers have been started." -ForegroundColor Cyan
 Write-Host $(if ($HiddenTerminals) { "Bot terminals are hidden." } else { "Each bot is running in its own named terminal." }) -ForegroundColor Cyan
 Write-Host "Each bot targets 1% risk and uses the broker minimum lot when necessary." -ForegroundColor Cyan
 Write-Host "XAU workers share a 4% reserved-risk cap; US100 has its own 1% cap." -ForegroundColor Cyan
+Write-Host "News Pulse is live-enabled with an automatically refreshed calendar." -ForegroundColor Cyan
+Write-Host "Weekend Direction is live-enabled but remains validation-gated to NO_TRADE while its selected model is rejected." -ForegroundColor Cyan
 Write-Host "Do not launch overlapping copies: the duplicate guard only applies to this master launcher." -ForegroundColor Cyan

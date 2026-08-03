@@ -94,7 +94,7 @@ uv run amd-bot backtest --days 365
 uv run amd-bot live --once
 ```
 
-`run_live.bat` is safe: it uses the dry-run flags above and submits no order.
+`run_live.bat` uses the working live-enabled `.env` and can submit orders after all strategy and broker guards pass. Use the backtest or one-cycle command for non-live validation.
 
 ## Validation commands
 

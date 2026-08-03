@@ -1,0 +1,626 @@
+{
+  "generated_utc": "2026-08-03T03:01:29.386857+00:00",
+  "purpose": "Predict UP/DOWN direction of the XAUUSD weekly reopen; prediction only",
+  "data": {
+    "server": "MEXAtlantic-Demo",
+    "requested_start_utc": "2021-08-02T21:53:35.280529+00:00",
+    "requested_end_utc": "2026-08-03T02:59:35.280529+00:00",
+    "series": {
+      "XAUUSD": {
+        "symbol": "XAUUSD..",
+        "description": "Gold vs US Dollar",
+        "point": 0.01,
+        "timeframe_seconds": 60,
+        "bars": 1707828,
+        "first_utc": "2021-08-02T21:54:00+00:00",
+        "last_utc": "2026-08-03T02:59:00+00:00"
+      },
+      "XAGUSD": {
+        "symbol": "XAGUSD..",
+        "description": "Silver vs US Dollar",
+        "point": 0.0001,
+        "timeframe_seconds": 3600,
+        "bars": 28546,
+        "first_utc": "2021-08-02T22:00:00+00:00",
+        "last_utc": "2026-08-03T02:00:00+00:00"
+      },
+      "US30": {
+        "symbol": "US30",
+        "description": "US Wall Street 30 index",
+        "point": 0.01,
+        "timeframe_seconds": 3600,
+        "bars": 29544,
+        "first_utc": "2021-08-02T22:00:00+00:00",
+        "last_utc": "2026-08-03T02:00:00+00:00"
+      },
+      "BTCUSD": {
+        "symbol": "BTCUSD",
+        "description": "Bitcoin Spot CFD (1 lot = 1 Bitcoin)",
+        "point": 0.01,
+        "timeframe_seconds": 3600,
+        "bars": 33150,
+        "first_utc": "2021-08-02T22:00:00+00:00",
+        "last_utc": "2026-08-03T02:00:00+00:00"
+      }
+    }
+  },
+  "sample": {
+    "start_reopen_utc": "2021-08-16T01:00:00+00:00",
+    "end_reopen_utc": "2026-08-03T01:00:00+00:00",
+    "weekends": 241,
+    "development_weekends": 189,
+    "frozen_holdout_weekends": 52,
+    "frozen_holdout_start_utc": "2025-08-04T01:00:00+00:00",
+    "up_weekends": 98,
+    "down_weekends": 143,
+    "data_hash_sha256": "55cd0c2762c409dfd885465d172821545378525a54c354aab2029372913c9ba3"
+  },
+  "anti_overfit_protocol": {
+    "development": "All model, feature-set, regularization, and confidence-threshold selection used only the first four years",
+    "validation": "Four expanding chronological folds with a one-week embargo",
+    "final_test": "The final 52 weekends were frozen and evaluated once after selection",
+    "live_refit": "After recording the holdout result, the saved prediction model was refit on all five years"
+  },
+  "selected_model": {
+    "name": "forest_gold_cross_history_d2_leaf12",
+    "feature_set": "gold_cross_history",
+    "development_oof": {
+      "samples": 95,
+      "up_rate_pct": 41.05,
+      "accuracy_pct": 57.89,
+      "accuracy_ci95_pct": [
+        47.85,
+        67.33
+      ],
+      "balanced_accuracy_pct": 57.67,
+      "roc_auc": 0.5884,
+      "brier_score": 0.2427,
+      "log_loss": 0.67799,
+      "confusion_matrix_down_up": [
+        [
+          33,
+          23
+        ],
+        [
+          17,
+          22
+        ]
+      ]
+    },
+    "confidence_selection": {
+      "threshold": 0.625,
+      "actions": 29,
+      "coverage_pct": 30.53,
+      "accuracy_pct": 68.97,
+      "wilson_low_pct": 50.77,
+      "wilson_high_pct": 82.72
+    },
+    "deployment_status": "rejected"
+  },
+  "frozen_holdout": {
+    "model": {
+      "samples": 52,
+      "up_rate_pct": 53.85,
+      "accuracy_pct": 46.15,
+      "accuracy_ci95_pct": [
+        33.34,
+        59.5
+      ],
+      "balanced_accuracy_pct": 43.15,
+      "roc_auc": 0.4048,
+      "brier_score": 0.27185,
+      "log_loss": 0.73914,
+      "confusion_matrix_down_up": [
+        [
+          1,
+          23
+        ],
+        [
+          5,
+          23
+        ]
+      ]
+    },
+    "high_confidence": {
+      "threshold": 0.625,
+      "actions": 19,
+      "no_trade": 33,
+      "coverage_pct": 36.54,
+      "accuracy_pct": 47.37,
+      "accuracy_ci95_pct": [
+        27.33,
+        68.29
+      ]
+    },
+    "majority_baseline": {
+      "samples": 52,
+      "up_rate_pct": 53.85,
+      "accuracy_pct": 46.15,
+      "accuracy_ci95_pct": [
+        33.34,
+        59.5
+      ],
+      "balanced_accuracy_pct": 50.0,
+      "roc_auc": 0.5,
+      "brier_score": 0.27678,
+      "log_loss": 0.74835,
+      "confusion_matrix_down_up": [
+        [
+          24,
+          0
+        ],
+        [
+          28,
+          0
+        ]
+      ]
+    },
+    "friday_24h_momentum_baseline_accuracy_pct": 57.69
+  },
+  "rolling_oos_by_year": [
+    {
+      "year": 2021,
+      "samples": 0,
+      "accuracy_pct": null,
+      "action": null
+    },
+    {
+      "year": 2022,
+      "samples": 0,
+      "accuracy_pct": null,
+      "action": null
+    },
+    {
+      "samples": 5,
+      "up_rate_pct": 60.0,
+      "accuracy_pct": 40.0,
+      "accuracy_ci95_pct": [
+        11.76,
+        76.93
+      ],
+      "balanced_accuracy_pct": 50.0,
+      "roc_auc": 0.6667,
+      "brier_score": 0.22587,
+      "log_loss": 0.63725,
+      "confusion_matrix_down_up": [
+        [
+          2,
+          0
+        ],
+        [
+          3,
+          0
+        ]
+      ],
+      "year": 2023,
+      "action": {
+        "threshold": 0.625,
+        "actions": 1,
+        "no_trade": 4,
+        "coverage_pct": 20.0,
+        "accuracy_pct": 100.0,
+        "accuracy_ci95_pct": [
+          20.65,
+          100.0
+        ]
+      }
+    },
+    {
+      "samples": 51,
+      "up_rate_pct": 45.1,
+      "accuracy_pct": 56.86,
+      "accuracy_ci95_pct": [
+        43.27,
+        69.5
+      ],
+      "balanced_accuracy_pct": 56.44,
+      "roc_auc": 0.6382,
+      "brier_score": 0.23286,
+      "log_loss": 0.65715,
+      "confusion_matrix_down_up": [
+        [
+          17,
+          11
+        ],
+        [
+          11,
+          12
+        ]
+      ],
+      "year": 2024,
+      "action": {
+        "threshold": 0.625,
+        "actions": 12,
+        "no_trade": 39,
+        "coverage_pct": 23.53,
+        "accuracy_pct": 75.0,
+        "accuracy_ci95_pct": [
+          46.77,
+          91.11
+        ]
+      }
+    },
+    {
+      "samples": 51,
+      "up_rate_pct": 45.1,
+      "accuracy_pct": 49.02,
+      "accuracy_ci95_pct": [
+        35.86,
+        62.32
+      ],
+      "balanced_accuracy_pct": 50.47,
+      "roc_auc": 0.5109,
+      "brier_score": 0.26645,
+      "log_loss": 0.72759,
+      "confusion_matrix_down_up": [
+        [
+          10,
+          18
+        ],
+        [
+          8,
+          15
+        ]
+      ],
+      "year": 2025,
+      "action": {
+        "threshold": 0.625,
+        "actions": 19,
+        "no_trade": 32,
+        "coverage_pct": 37.25,
+        "accuracy_pct": 57.89,
+        "accuracy_ci95_pct": [
+          36.28,
+          76.86
+        ]
+      }
+    },
+    {
+      "samples": 30,
+      "up_rate_pct": 53.33,
+      "accuracy_pct": 50.0,
+      "accuracy_ci95_pct": [
+        33.15,
+        66.85
+      ],
+      "balanced_accuracy_pct": 46.88,
+      "roc_auc": 0.4955,
+      "brier_score": 0.25721,
+      "log_loss": 0.70788,
+      "confusion_matrix_down_up": [
+        [
+          0,
+          14
+        ],
+        [
+          1,
+          15
+        ]
+      ],
+      "year": 2026,
+      "action": {
+        "threshold": 0.625,
+        "actions": 7,
+        "no_trade": 23,
+        "coverage_pct": 23.33,
+        "accuracy_pct": 57.14,
+        "accuracy_ci95_pct": [
+          25.05,
+          84.18
+        ]
+      }
+    }
+  ],
+  "top_development_candidates": [
+    {
+      "name": "forest_gold_cross_history_d2_leaf12",
+      "feature_set": "gold_cross_history",
+      "selection_score": 0.246933,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 57.89,
+        "accuracy_ci95_pct": [
+          47.85,
+          67.33
+        ],
+        "balanced_accuracy_pct": 57.67,
+        "roc_auc": 0.5884,
+        "brier_score": 0.2427,
+        "log_loss": 0.67799,
+        "confusion_matrix_down_up": [
+          [
+            33,
+            23
+          ],
+          [
+            17,
+            22
+          ]
+        ]
+      }
+    },
+    {
+      "name": "forest_gold_cross_history_d3_leaf15",
+      "feature_set": "gold_cross_history",
+      "selection_score": 0.248371,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 55.79,
+        "accuracy_ci95_pct": [
+          45.77,
+          65.36
+        ],
+        "balanced_accuracy_pct": 55.49,
+        "roc_auc": 0.5925,
+        "brier_score": 0.24392,
+        "log_loss": 0.6806,
+        "confusion_matrix_down_up": [
+          [
+            32,
+            24
+          ],
+          [
+            18,
+            21
+          ]
+        ]
+      }
+    },
+    {
+      "name": "forest_gold_history_d2_leaf12",
+      "feature_set": "gold_history",
+      "selection_score": 0.249455,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 56.84,
+        "accuracy_ci95_pct": [
+          46.81,
+          66.34
+        ],
+        "balanced_accuracy_pct": 57.55,
+        "roc_auc": 0.5815,
+        "brier_score": 0.24521,
+        "log_loss": 0.68383,
+        "confusion_matrix_down_up": [
+          [
+            30,
+            26
+          ],
+          [
+            15,
+            24
+          ]
+        ]
+      }
+    },
+    {
+      "name": "forest_gold_d3_leaf15",
+      "feature_set": "gold",
+      "selection_score": 0.250566,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 60.0,
+        "accuracy_ci95_pct": [
+          49.95,
+          69.28
+        ],
+        "balanced_accuracy_pct": 59.84,
+        "roc_auc": 0.5842,
+        "brier_score": 0.24655,
+        "log_loss": 0.68656,
+        "confusion_matrix_down_up": [
+          [
+            34,
+            22
+          ],
+          [
+            16,
+            23
+          ]
+        ]
+      }
+    },
+    {
+      "name": "forest_gold_d2_leaf12",
+      "feature_set": "gold",
+      "selection_score": 0.250966,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 61.05,
+        "accuracy_ci95_pct": [
+          51.0,
+          70.25
+        ],
+        "balanced_accuracy_pct": 60.74,
+        "roc_auc": 0.581,
+        "brier_score": 0.24704,
+        "log_loss": 0.68739,
+        "confusion_matrix_down_up": [
+          [
+            35,
+            21
+          ],
+          [
+            16,
+            23
+          ]
+        ]
+      }
+    },
+    {
+      "name": "forest_gold_history_d3_leaf15",
+      "feature_set": "gold_history",
+      "selection_score": 0.251125,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 56.84,
+        "accuracy_ci95_pct": [
+          46.81,
+          66.34
+        ],
+        "balanced_accuracy_pct": 57.55,
+        "roc_auc": 0.5865,
+        "brier_score": 0.24688,
+        "log_loss": 0.68737,
+        "confusion_matrix_down_up": [
+          [
+            30,
+            26
+          ],
+          [
+            15,
+            24
+          ]
+        ]
+      }
+    },
+    {
+      "name": "logistic_gold_history_c0.01_plain",
+      "feature_set": "gold_history",
+      "selection_score": 0.258668,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 58.95,
+        "accuracy_ci95_pct": [
+          48.9,
+          68.3
+        ],
+        "balanced_accuracy_pct": 52.72,
+        "roc_auc": 0.5014,
+        "brier_score": 0.25394,
+        "log_loss": 0.70441,
+        "confusion_matrix_down_up": [
+          [
+            49,
+            7
+          ],
+          [
+            32,
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "name": "logistic_gold_c0.01_plain",
+      "feature_set": "gold",
+      "selection_score": 0.260568,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 58.95,
+        "accuracy_ci95_pct": [
+          48.9,
+          68.3
+        ],
+        "balanced_accuracy_pct": 52.72,
+        "roc_auc": 0.494,
+        "brier_score": 0.25584,
+        "log_loss": 0.70843,
+        "confusion_matrix_down_up": [
+          [
+            49,
+            7
+          ],
+          [
+            32,
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "name": "logistic_gold_cross_history_c0.01_plain",
+      "feature_set": "gold_cross_history",
+      "selection_score": 0.264357,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 57.89,
+        "accuracy_ci95_pct": [
+          47.85,
+          67.33
+        ],
+        "balanced_accuracy_pct": 51.83,
+        "roc_auc": 0.4849,
+        "brier_score": 0.25954,
+        "log_loss": 0.71747,
+        "confusion_matrix_down_up": [
+          [
+            48,
+            8
+          ],
+          [
+            32,
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "name": "logistic_gold_history_c0.01_balanced",
+      "feature_set": "gold_history",
+      "selection_score": 0.267726,
+      "metrics": {
+        "samples": 95,
+        "up_rate_pct": 41.05,
+        "accuracy_pct": 49.47,
+        "accuracy_ci95_pct": [
+          39.64,
+          59.35
+        ],
+        "balanced_accuracy_pct": 50.14,
+        "roc_auc": 0.5165,
+        "brier_score": 0.26274,
+        "log_loss": 0.72433,
+        "confusion_matrix_down_up": [
+          [
+            26,
+            30
+          ],
+          [
+            18,
+            21
+          ]
+        ]
+      }
+    }
+  ],
+  "folds": [
+    {
+      "train_samples": 93,
+      "test_samples": 23,
+      "train_end": 92,
+      "test_start": 94,
+      "test_end": 116
+    },
+    {
+      "train_samples": 116,
+      "test_samples": 24,
+      "train_end": 115,
+      "test_start": 117,
+      "test_end": 140
+    },
+    {
+      "train_samples": 140,
+      "test_samples": 24,
+      "train_end": 139,
+      "test_start": 141,
+      "test_end": 164
+    },
+    {
+      "train_samples": 164,
+      "test_samples": 24,
+      "train_end": 163,
+      "test_start": 165,
+      "test_end": 188
+    }
+  ]
+}

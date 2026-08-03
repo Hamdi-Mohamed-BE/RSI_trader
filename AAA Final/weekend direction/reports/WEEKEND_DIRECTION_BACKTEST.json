@@ -1,0 +1,115 @@
+{
+  "generated_utc": "2026-08-03T04:19:13.836167+00:00",
+  "model_validated": false,
+  "default_live_action": "NO_TRADE",
+  "selected_rejected_model": {
+    "config": {
+      "signal_policy": "v2_conf_60",
+      "lead_minutes": 1,
+      "stop_spec": "range60_1.0",
+      "reward_risk": 4.0,
+      "max_hold_minutes": 720
+    },
+    "development": {
+      "trades": 38,
+      "wins": 13,
+      "losses": 25,
+      "win_rate_pct": 34.21,
+      "profit_factor": 1.711,
+      "net_r": 17.5127,
+      "average_r": 0.4609,
+      "gross_profit_r": 42.1322,
+      "gross_loss_r": 24.6195,
+      "max_drawdown_r": 5.0,
+      "gap_stop_count": 1,
+      "gap_target_count": 0,
+      "timeout_count": 5
+    },
+    "holdout": {
+      "trades": 13,
+      "wins": 2,
+      "losses": 11,
+      "win_rate_pct": 15.38,
+      "profit_factor": 0.248,
+      "net_r": -13.4634,
+      "average_r": -1.0356,
+      "gross_profit_r": 4.4387,
+      "gross_loss_r": 17.902,
+      "max_drawdown_r": 13.902,
+      "gap_stop_count": 6,
+      "gap_target_count": 0,
+      "timeout_count": 1
+    },
+    "full": {
+      "trades": 51,
+      "wins": 15,
+      "losses": 36,
+      "win_rate_pct": 29.41,
+      "profit_factor": 1.095,
+      "net_r": 4.0493,
+      "average_r": 0.0794,
+      "gross_profit_r": 46.5708,
+      "gross_loss_r": 42.5215,
+      "max_drawdown_r": 16.7486,
+      "gap_stop_count": 7,
+      "gap_target_count": 0,
+      "timeout_count": 6
+    }
+  },
+  "provisional_momentum": {
+    "config": {
+      "signal_policy": "momentum_gate",
+      "lead_minutes": 4,
+      "stop_spec": "fixed_30",
+      "reward_risk": 3.0,
+      "max_hold_minutes": 0
+    },
+    "development": {
+      "trades": 24,
+      "wins": 10,
+      "losses": 14,
+      "win_rate_pct": 41.67,
+      "profit_factor": 1.411,
+      "net_r": 0.5423,
+      "average_r": 0.0226,
+      "gross_profit_r": 1.8607,
+      "gross_loss_r": 1.3183,
+      "max_drawdown_r": 0.6087,
+      "gap_stop_count": 0,
+      "gap_target_count": 0,
+      "timeout_count": 0
+    },
+    "holdout": {
+      "trades": 21,
+      "wins": 17,
+      "losses": 4,
+      "win_rate_pct": 80.95,
+      "profit_factor": 5.78,
+      "net_r": 8.6903,
+      "average_r": 0.4138,
+      "gross_profit_r": 10.5083,
+      "gross_loss_r": 1.818,
+      "max_drawdown_r": 1.523,
+      "gap_stop_count": 0,
+      "gap_target_count": 0,
+      "timeout_count": 0
+    },
+    "full": {
+      "trades": 45,
+      "wins": 27,
+      "losses": 18,
+      "win_rate_pct": 60.0,
+      "profit_factor": 3.944,
+      "net_r": 9.2327,
+      "average_r": 0.2052,
+      "gross_profit_r": 12.369,
+      "gross_loss_r": 3.1363,
+      "max_drawdown_r": 1.523,
+      "gap_stop_count": 0,
+      "gap_target_count": 0,
+      "timeout_count": 0
+    },
+    "validated": false
+  },
+  "caveat": "The momentum result was selected after comparing RR families and is not live-authorized."
+}

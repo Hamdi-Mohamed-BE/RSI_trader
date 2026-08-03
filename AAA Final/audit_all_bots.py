@@ -160,6 +160,8 @@ def bot_definitions() -> list[tuple[str, Path, list[str], int]]:
         ("DmC", ROOT / "DmC" / ".env", ["US100"], 1082601),
         ("EMA3", ROOT / "EMA3" / ".env", ["XAUUSD"], 3082026),
         ("US100 Weakness", ROOT / "US100 weekness" / ".env", ["US100"], 310731),
+        ("XAU News Pulse", ROOT / "news pulse" / ".env", ["XAUUSD"], 860301),
+        ("XAU Weekend Direction", ROOT / "weekend direction" / ".env", ["XAUUSD"], 860302),
     ]
 
 
