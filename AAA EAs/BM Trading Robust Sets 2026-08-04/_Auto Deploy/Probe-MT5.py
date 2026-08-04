@@ -78,6 +78,9 @@ def main() -> None:
                         "visible": bool(item.visible),
                         "select": bool(item.select),
                         "trade_mode": int(item.trade_mode),
+                        "volume_min": float(item.volume_min),
+                        "volume_max": float(item.volume_max),
+                        "volume_step": float(item.volume_step),
                     }
                     for item in symbols
                 ],

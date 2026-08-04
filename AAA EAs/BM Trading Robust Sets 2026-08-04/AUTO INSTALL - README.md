@@ -1,6 +1,12 @@
 # One-click MT5 installer
 
-Double-click **INSTALL AND RUN ON ACTIVE MT5.bat** after opening the MT5 account that should run the portfolio.
+Choose the launcher that matches the account:
+
+- **INSTALL AND RUN ON ACTIVE MT5.bat** now uses the USD 900 profile requested for the current account.
+- **INSTALL AND RUN ON 900 USD MT5.bat** is an explicitly named copy of the same USD 800-1,200 launcher.
+- **INSTALL AND RUN ON 100K MT5.bat** preserves access to the original USD 90,000-110,000 presets.
+
+Open the target MT5 account first, then double-click the matching launcher.
 
 The installer:
 
@@ -21,6 +27,19 @@ It does not delete other MT5 profiles and does not close open positions. If the 
 - Turnaround Tuesday: NDX100/NAS100/UT100 D1, 0.24 lot
 
 These sizes were designed for approximately $100,000. For safety, the installer refuses to start the EAs unless the selected account is denominated in USD and its balance is between $90,000 and $110,000. The final account-number confirmation remains mandatory.
+
+## USD 900 profile
+
+The small-account launcher creates a separate profile named **BM Trading 900 - AUTO**. It loads:
+
+- Range Breakout: USDJPY M5, $18 requested fixed stop risk
+- ATR Candle Breakout: XAUUSD H1, $18 requested fixed stop risk
+- Go Long: US30 D1, 0.01 fixed lot, no hard stop
+- Turnaround Tuesday: NDX100/NAS100/UT100 D1, 0.01 fixed lot, no hard stop
+
+The $18 inputs equal 2% of a $900 starting balance. This is not a promise that losses are capped at $18: gaps, slippage and broker minimum volume can exceed the requested risk. The two index EAs have no hard stop at all. If the broker requires more than 0.01 lot for an index, that index EA is skipped instead of silently increasing its position size.
+
+Continue only by typing `RUN <account number> 900` when the installer displays the correct USD account and balance. The launcher intentionally does not install a 10%-risk profile because the historical replay exceeded the account balance at that exposure.
 
 ## Important limitations
 

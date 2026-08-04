@@ -1,6 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$TargetTerminal,
+    [ValidateSet('100K', '900')]
+    [string]$AccountProfile = '100K',
     [switch]$ValidateOnly
 )
 
@@ -8,8 +10,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $PackageRoot = Split-Path -Parent $PSScriptRoot
-$ProfileName = 'BM Trading 100K - AUTO'
-$ExpertFolderName = 'BM Trading 100K - AUTO'
+$IsSmallAccount = $AccountProfile -eq '900'
+$ProfileName = if ($IsSmallAccount) { 'BM Trading 900 - AUTO' } else { 'BM Trading 100K - AUTO' }
+$ExpertFolderName = $ProfileName
 $ProbePath = Join-Path $PSScriptRoot 'Probe-MT5.py'
 $Unicode = New-Object System.Text.UnicodeEncoding($false, $true)
 
@@ -23,30 +26,51 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 }
 
 function Get-PortfolioItems {
+    $rangeSet = if ($IsSmallAccount) {
+        'Range Breakout EA\PORTFOLIO 900 - Range Breakout - USDJPY M5 - 18 USD risk.set'
+    } else {
+        'Range Breakout EA\PORTFOLIO 100K FINAL - Range Breakout - USDJPY M5 - 245 USD risk.set'
+    }
+    $atrSet = if ($IsSmallAccount) {
+        'ATR Candle Breakout EA\PORTFOLIO 900 - ATR Candle Breakout - XAUUSD H1 - 18 USD risk.set'
+    } else {
+        'ATR Candle Breakout EA\PORTFOLIO 100K FINAL - ATR Candle Breakout - XAUUSD H1 - 146 USD risk.set'
+    }
+    $goLongSet = if ($IsSmallAccount) {
+        'Go Long EA\PORTFOLIO 900 - Go Long - US30 D1 - 0.01 lot.set'
+    } else {
+        'Go Long EA\PORTFOLIO 100K FINAL - Go Long - US30 D1 - 0.50 lot.set'
+    }
+    $turnaroundSet = if ($IsSmallAccount) {
+        'Turnaround Tuesday EA\PORTFOLIO 900 - Turnaround Tuesday - UT100 D1 - 0.01 lot.set'
+    } else {
+        'Turnaround Tuesday EA\PORTFOLIO 100K FINAL - Turnaround Tuesday - UT100 D1 - 0.24 lot.set'
+    }
+
     $items = @(
         [pscustomobject]@{
             Label = 'Range Breakout'; Canonical = 'USDJPY'; Aliases = @('USDJPY')
             Period = 5; Expert = 'Range Breakout EA.ex5'
             ExpertSource = 'Range Breakout EA\Range Breakout EA.ex5'
-            SetSource = 'Range Breakout EA\PORTFOLIO 100K FINAL - Range Breakout - USDJPY M5 - 245 USD risk.set'
+            SetSource = $rangeSet; SmallFixedLot = 0.0
         },
         [pscustomobject]@{
             Label = 'ATR Candle Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 60; Expert = 'ATR Candle Breakout EA.ex5'
             ExpertSource = 'ATR Candle Breakout EA\ATR Candle Breakout EA.ex5'
-            SetSource = 'ATR Candle Breakout EA\PORTFOLIO 100K FINAL - ATR Candle Breakout - XAUUSD H1 - 146 USD risk.set'
+            SetSource = $atrSet; SmallFixedLot = 0.0
         },
         [pscustomobject]@{
             Label = 'Go Long'; Canonical = 'US30'; Aliases = @('US30', 'DJ30', 'WS30', 'DJI30', 'DOW30', 'DOWJONES')
             Period = 1440; Expert = 'Go Long EA.ex5'
             ExpertSource = 'Go Long EA\Go Long EA.ex5'
-            SetSource = 'Go Long EA\PORTFOLIO 100K FINAL - Go Long - US30 D1 - 0.50 lot.set'
+            SetSource = $goLongSet; SmallFixedLot = 0.01
         },
         [pscustomobject]@{
             Label = 'Turnaround Tuesday'; Canonical = 'NDX100'; Aliases = @('NDX100', 'NAS100', 'USTEC', 'US100', 'UT100', 'NASDAQ100', 'NQ100')
             Period = 1440; Expert = 'Turnaround Tuesday EA.ex5'
             ExpertSource = 'Turnaround Tuesday EA\Turnaround Tuesday EA.ex5'
-            SetSource = 'Turnaround Tuesday EA\PORTFOLIO 100K FINAL - Turnaround Tuesday - UT100 D1 - 0.24 lot.set'
+            SetSource = $turnaroundSet; SmallFixedLot = 0.01
         }
     )
 
@@ -420,21 +444,41 @@ foreach ($item in $portfolio) {
         Stop-WithMessage "No tradable broker symbol matched $($item.Canonical). Possible symbols: $hints"
     }
     $item | Add-Member -NotePropertyName BrokerSymbol -NotePropertyValue ([string]$match.name)
-    Write-Host ('{0,-22} {1,-8} -> {2}' -f $item.Label, $item.Canonical, $item.BrokerSymbol)
+    $brokerMinimum = [double]$match.volume_min
+    $item | Add-Member -NotePropertyName BrokerVolumeMinimum -NotePropertyValue $brokerMinimum
+    $item | Add-Member -NotePropertyName Deploy -NotePropertyValue $true
+    if ($IsSmallAccount -and [double]$item.SmallFixedLot -gt 0 -and $brokerMinimum -gt ([double]$item.SmallFixedLot + 0.0000001)) {
+        $item.Deploy = $false
+        Write-Host ('SKIP {0}: broker minimum {1:N2} lot exceeds the safe 0.01-lot preset.' -f $item.Label, $brokerMinimum) -ForegroundColor Yellow
+    } else {
+        Write-Host ('{0,-22} {1,-8} -> {2} (minimum {3} lot)' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $brokerMinimum)
+    }
+}
+$portfolio = @($portfolio | Where-Object { $_.Deploy })
+if ($portfolio.Count -lt 2) {
+    Stop-WithMessage 'Fewer than two EAs can be deployed safely with this broker contract specification.'
 }
 
 $balance = [double]$probe.account.balance
-if ($balance -lt 90000 -or $balance -gt 110000) {
-    Stop-WithMessage "Refusing to run: these settings are for a USD 100,000 account, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Log into the correct 100K account and run the BAT again."
-}
 if ([string]$probe.account.currency -ine 'USD') {
     Stop-WithMessage "Refusing to run: these fixed-money settings require a USD account, but account $login uses $($probe.account.currency)."
 }
+if ($IsSmallAccount) {
+    if ($balance -lt 800 -or $balance -gt 1200) {
+        Stop-WithMessage "Refusing to run: the small-account settings are for roughly USD 900, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Use an account between USD 800 and USD 1,200."
+    }
+} elseif ($balance -lt 90000 -or $balance -gt 110000) {
+    Stop-WithMessage "Refusing to run: these settings are for a USD 100,000 account, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Log into the correct 100K account and run the BAT again."
+}
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
-Write-Host "four-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
+Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
+if ($IsSmallAccount) {
+    Write-Host 'SMALL ACCOUNT: the stop-based EAs request $18 risk each. The index EAs have no hard stop.' -ForegroundColor Red
+    Write-Host 'This is the 2%-per-stopped-trade profile, NOT the 10% profile that could wipe out the account.' -ForegroundColor Red
+}
 Write-Host 'It does not delete your existing profiles or close any open positions.' -ForegroundColor Yellow
-$expected = "RUN $login"
+$expected = if ($IsSmallAccount) { "RUN $login 900" } else { "RUN $login" }
 $confirmation = Read-Host "Type exactly '$expected' to continue"
 if ($confirmation -cne $expected) { Stop-WithMessage 'Confirmation did not match. No portfolio files were installed.' }
 
@@ -492,7 +536,9 @@ $manifest = @(
     'Terminal: ' + $terminalPath
     'Data folder: ' + $dataRoot
     'Profile: ' + $ProfileName
+    'Account preset: ' + $AccountProfile
     'Account: ' + $login
+    'Balance at install: ' + $balance.ToString('N2') + ' ' + [string]$probe.account.currency
     'Server: ' + [string]$probe.account.server
     ''
     'Charts:'
@@ -500,7 +546,7 @@ $manifest = @(
 $manifestPath = Join-Path $PSScriptRoot 'LAST INSTALL.txt'
 [IO.File]::WriteAllText($manifestPath, (($manifest -join "`r`n") + "`r`n"), [Text.UTF8Encoding]::new($true))
 
-Write-Stage 'Starting the four-EA profile'
+Write-Stage "Starting the $($portfolio.Count)-EA profile"
 $arguments = '/profile:"' + $ProfileName + '"'
 Start-Process -FilePath $terminalPath -ArgumentList $arguments
 Start-Sleep -Seconds 12
