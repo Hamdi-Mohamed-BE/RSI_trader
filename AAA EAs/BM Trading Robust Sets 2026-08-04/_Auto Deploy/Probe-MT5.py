@@ -81,6 +81,11 @@ def main() -> None:
                         "volume_min": float(item.volume_min),
                         "volume_max": float(item.volume_max),
                         "volume_step": float(item.volume_step),
+                        "bid": float(item.bid),
+                        "ask": float(item.ask),
+                        "trade_tick_size": float(item.trade_tick_size),
+                        "trade_tick_value": float(item.trade_tick_value),
+                        "trade_tick_value_loss": float(item.trade_tick_value_loss),
                     }
                     for item in symbols
                 ],

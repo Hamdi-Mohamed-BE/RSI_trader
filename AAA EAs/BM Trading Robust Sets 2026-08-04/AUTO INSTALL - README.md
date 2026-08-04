@@ -32,14 +32,14 @@ These sizes were designed for approximately $100,000. For safety, the installer 
 
 The small-account launcher creates a separate profile named **BM Trading 900 - AUTO**. It loads:
 
-- Range Breakout: USDJPY M5, $18 requested fixed stop risk
-- ATR Candle Breakout: XAUUSD H1, $18 requested fixed stop risk
-- Go Long: US30 D1, 0.01 fixed lot, no hard stop
-- Turnaround Tuesday: NDX100/NAS100/UT100 D1, 0.01 fixed lot, no hard stop
+- Range Breakout: USDJPY M5, $40 requested fixed stop risk
+- ATR Candle Breakout: XAUUSD H1, $40 requested fixed stop risk
+- Go Long: US30 D1, broker-specific lot and hard stop targeting $40
+- Turnaround Tuesday: NDX100/NAS100/UT100 D1, broker-specific lot and hard stop targeting $40
 
-The $18 inputs equal 2% of a $900 starting balance. This is not a promise that losses are capped at $18: gaps, slippage and broker minimum volume can exceed the requested risk. The two index EAs have no hard stop at all. If the broker requires more than 0.01 lot for an index, that index EA is skipped instead of silently increasing its position size.
+The $40 target is approximately 4.44% of a $900 starting balance and sits inside the requested $30-$60 range. The installer calculates an effective index lot and percentage hard stop from the broker's current quote, tick value, tick size and volume rules. It deploys all four EAs and saves the exact effective `.set` file beside each EA. Gaps, slippage, commissions, price changes between calculation and execution, and broker behavior can still produce a loss above $40.
 
-Continue only by typing `RUN <account number> 900` when the installer displays the correct USD account and balance. The launcher intentionally does not install a 10%-risk profile because the historical replay exceeded the account balance at that exposure.
+Continue only by typing `RUN <account number> 900` when the installer displays the correct USD account and balance.
 
 ## Important limitations
 

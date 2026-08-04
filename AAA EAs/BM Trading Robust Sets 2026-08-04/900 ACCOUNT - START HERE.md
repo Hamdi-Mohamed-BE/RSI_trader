@@ -8,13 +8,13 @@ The launcher is separate from the original $100K launcher. It verifies the activ
 
 | EA | Chart | Small-account input |
 |---|---|---:|
-| Range Breakout | USDJPY M5 | $18 requested stop risk |
-| ATR Candle Breakout | XAUUSD H1 | $18 requested stop risk |
-| Go Long | US30 D1 | 0.01 fixed lot; no hard stop |
-| Turnaround Tuesday | UT100/NAS100 D1 | 0.01 fixed lot; no hard stop |
+| Range Breakout | USDJPY M5 | $40 requested stop risk |
+| ATR Candle Breakout | XAUUSD H1 | $40 requested stop risk |
+| Go Long | US30 D1 | Broker-specific lot and hard stop targeting $40 |
+| Turnaround Tuesday | UT100/NAS100 D1 | Broker-specific lot and hard stop targeting $40 |
 
-The $18 risk equals 2% of $900 for the two EAs that use stop-based money sizing. It can be exceeded by gaps, slippage and minimum lot rounding. Go Long and Turnaround Tuesday cannot be described as 2%-risk trades because their strategy settings have no hard stop.
+The small-account launcher targets $40 per stopped trade, approximately 4.44% of $900. It adds hard stops to Go Long and Turnaround Tuesday and calculates their lots/stops from the connected broker's contract specifications. This changes those two strategies from the original validation, which used no hard stop. Gaps and slippage can still exceed the target.
 
-The historical 19-month replay of these approximate sizes averaged $58.55 per month, had a worst month of -$154.11, and produced a $260.95 maximum monthly closed-balance drawdown ($326.19 with the prior 1.25x stress factor). The global closed-balance drawdown was $462.40. These figures exclude simultaneous floating-equity drawdown and do not guarantee future results.
+The earlier replay does not validate these newly added index stops. Run the generated effective presets on demo before relying on them with real funds. Exact presets from the most recent successful installation are saved as `LAST INSTALLED 900 - ... .set` beside each matching EA.
 
 Do not use the original **INSTALL AND RUN ON ACTIVE MT5.bat** on this account. It remains locked to $100K accounts because its position sizes are approximately 100 times too large.

@@ -52,25 +52,25 @@ function Get-PortfolioItems {
             Label = 'Range Breakout'; Canonical = 'USDJPY'; Aliases = @('USDJPY')
             Period = 5; Expert = 'Range Breakout EA.ex5'
             ExpertSource = 'Range Breakout EA\Range Breakout EA.ex5'
-            SetSource = $rangeSet; SmallFixedLot = 0.0
+            SetSource = $rangeSet; SmallDynamicRisk = $false
         },
         [pscustomobject]@{
             Label = 'ATR Candle Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 60; Expert = 'ATR Candle Breakout EA.ex5'
             ExpertSource = 'ATR Candle Breakout EA\ATR Candle Breakout EA.ex5'
-            SetSource = $atrSet; SmallFixedLot = 0.0
+            SetSource = $atrSet; SmallDynamicRisk = $false
         },
         [pscustomobject]@{
             Label = 'Go Long'; Canonical = 'US30'; Aliases = @('US30', 'DJ30', 'WS30', 'DJI30', 'DOW30', 'DOWJONES')
             Period = 1440; Expert = 'Go Long EA.ex5'
             ExpertSource = 'Go Long EA\Go Long EA.ex5'
-            SetSource = $goLongSet; SmallFixedLot = 0.01
+            SetSource = $goLongSet; SmallDynamicRisk = $true
         },
         [pscustomobject]@{
             Label = 'Turnaround Tuesday'; Canonical = 'NDX100'; Aliases = @('NDX100', 'NAS100', 'USTEC', 'US100', 'UT100', 'NASDAQ100', 'NQ100')
             Period = 1440; Expert = 'Turnaround Tuesday EA.ex5'
             ExpertSource = 'Turnaround Tuesday EA\Turnaround Tuesday EA.ex5'
-            SetSource = $turnaroundSet; SmallFixedLot = 0.01
+            SetSource = $turnaroundSet; SmallDynamicRisk = $true
         }
     )
 
@@ -168,12 +168,12 @@ function Normalize-Symbol([string]$Name) {
     return ($Name.ToUpperInvariant() -replace '[^A-Z0-9]', '')
 }
 
-function Find-BrokerSymbol([object[]]$Symbols, [string[]]$Aliases) {
+function Find-BrokerSymbol([object[]]$Symbols, [string[]]$Aliases, [switch]$AllowFutures) {
     $best = $null
     $bestScore = [int]::MaxValue
     foreach ($symbol in $Symbols) {
         if ([int]$symbol.trade_mode -eq 0) { continue }
-        if ([string]$symbol.path -match '(?i)future') { continue }
+        if (-not $AllowFutures -and [string]$symbol.path -match '(?i)future') { continue }
         $normalized = Normalize-Symbol ([string]$symbol.name)
         for ($aliasIndex = 0; $aliasIndex -lt $Aliases.Count; $aliasIndex++) {
             $alias = Normalize-Symbol $Aliases[$aliasIndex]
@@ -213,8 +213,25 @@ function Read-SetInputs([string]$Path) {
     return $result
 }
 
-function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
+function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
+    if ($IsSmallAccount) {
+        if ($inputs.Contains('RiskMoney')) { $inputs['RiskMoney'] = '40' }
+        if ($inputs.Contains('InpRiskAmount')) { $inputs['InpRiskAmount'] = '40' }
+        if ([bool]$Item.SmallDynamicRisk) {
+            $inputs['Volume'] = '0'
+            $inputs['Lots'] = ([double]$Item.EffectiveLot).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+            $inputs['RiskPercent'] = '4.44444444'
+            $inputs['SlCalcMode'] = '1'
+            $inputs['SlValue'] = ([double]$Item.EffectiveStopPercent).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+            $inputs['Commentary'] = 'BM900-DYNAMIC-40USD-HARD-SL'
+        }
+    }
+    return $inputs
+}
+
+function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
+    $inputs = Get-EffectiveInputs $Item
     $inputLines = @($inputs.Keys | ForEach-Object { '{0}={1}' -f $_, $inputs[$_] }) -join "`r`n"
     $left = if (($Index % 2) -eq 0) { 0 } else { 800 }
     $top = if ($Index -lt 2) { 0 } else { 450 }
@@ -436,6 +453,9 @@ if (-not [bool]$probe.account.trade_expert) { Stop-WithMessage 'This account cur
 $symbols = @($probe.symbols)
 foreach ($item in $portfolio) {
     $match = Find-BrokerSymbol $symbols $item.Aliases
+    if (-not $match -and $IsSmallAccount) {
+        $match = Find-BrokerSymbol $symbols $item.Aliases -AllowFutures
+    }
     if (-not $match) {
         $hints = @($symbols | Where-Object {
             $name = ([string]$_.name).ToUpperInvariant()
@@ -446,17 +466,36 @@ foreach ($item in $portfolio) {
     $item | Add-Member -NotePropertyName BrokerSymbol -NotePropertyValue ([string]$match.name)
     $brokerMinimum = [double]$match.volume_min
     $item | Add-Member -NotePropertyName BrokerVolumeMinimum -NotePropertyValue $brokerMinimum
-    $item | Add-Member -NotePropertyName Deploy -NotePropertyValue $true
-    if ($IsSmallAccount -and [double]$item.SmallFixedLot -gt 0 -and $brokerMinimum -gt ([double]$item.SmallFixedLot + 0.0000001)) {
-        $item.Deploy = $false
-        Write-Host ('SKIP {0}: broker minimum {1:N2} lot exceeds the safe 0.01-lot preset.' -f $item.Label, $brokerMinimum) -ForegroundColor Yellow
+    if ($IsSmallAccount -and [bool]$item.SmallDynamicRisk) {
+        $price = [Math]::Max([double]$match.bid, [double]$match.ask)
+        $tickSize = [Math]::Abs([double]$match.trade_tick_size)
+        $tickValue = [Math]::Max([Math]::Abs([double]$match.trade_tick_value_loss), [Math]::Abs([double]$match.trade_tick_value))
+        $volumeStep = [Math]::Abs([double]$match.volume_step)
+        $volumeMaximum = [double]$match.volume_max
+        if ($price -le 0 -or $tickSize -le 0 -or $tickValue -le 0 -or $brokerMinimum -le 0 -or $volumeStep -le 0) {
+            Stop-WithMessage "Cannot calculate a broker-specific USD 40 stop for $($item.Label) on $($item.BrokerSymbol). Quote or contract data is missing."
+        }
+
+        $targetRisk = 40.0
+        $preferredStopPercent = 0.75
+        $preferredDistance = $price * ($preferredStopPercent / 100.0)
+        $riskPerLot = ($preferredDistance / $tickSize) * $tickValue
+        $rawLot = $targetRisk / $riskPerLot
+        $steps = [Math]::Round(($rawLot - $brokerMinimum) / $volumeStep, 0, [MidpointRounding]::AwayFromZero)
+        $effectiveLot = $brokerMinimum + ([Math]::Max(0, $steps) * $volumeStep)
+        $effectiveLot = [Math]::Min($volumeMaximum, [Math]::Max($brokerMinimum, $effectiveLot))
+        $effectiveLot = [Math]::Round($effectiveLot, 8)
+        $effectiveStopPercent = (($targetRisk * $tickSize) / ($tickValue * $effectiveLot * $price)) * 100.0
+        if ($effectiveStopPercent -le 0) {
+            Stop-WithMessage "The calculated hard stop for $($item.Label) is invalid."
+        }
+        $item | Add-Member -NotePropertyName EffectiveLot -NotePropertyValue $effectiveLot
+        $item | Add-Member -NotePropertyName EffectiveStopPercent -NotePropertyValue $effectiveStopPercent
+        $item | Add-Member -NotePropertyName EffectiveRisk -NotePropertyValue $targetRisk
+        Write-Host ('{0,-22} {1,-8} -> {2}; lot {3}, hard SL {4:N4}%, target ${5:N0}' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $effectiveLot, $effectiveStopPercent, $targetRisk) -ForegroundColor Yellow
     } else {
-        Write-Host ('{0,-22} {1,-8} -> {2} (minimum {3} lot)' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $brokerMinimum)
+        Write-Host ('{0,-22} {1,-8} -> {2}; requested stop risk $40' -f $item.Label, $item.Canonical, $item.BrokerSymbol)
     }
-}
-$portfolio = @($portfolio | Where-Object { $_.Deploy })
-if ($portfolio.Count -lt 2) {
-    Stop-WithMessage 'Fewer than two EAs can be deployed safely with this broker contract specification.'
 }
 
 $balance = [double]$probe.account.balance
@@ -474,8 +513,8 @@ if ($IsSmallAccount) {
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
 if ($IsSmallAccount) {
-    Write-Host 'SMALL ACCOUNT: the stop-based EAs request $18 risk each. The index EAs have no hard stop.' -ForegroundColor Red
-    Write-Host 'This is the 2%-per-stopped-trade profile, NOT the 10% profile that could wipe out the account.' -ForegroundColor Red
+    Write-Host 'SMALL ACCOUNT: all four EAs target approximately $40 loss per stopped trade.' -ForegroundColor Red
+    Write-Host 'The installer adds broker-specific hard stops to the two index EAs; gaps can still lose more.' -ForegroundColor Red
 }
 Write-Host 'It does not delete your existing profiles or close any open positions.' -ForegroundColor Yellow
 $expected = if ($IsSmallAccount) { "RUN $login 900" } else { "RUN $login" }
@@ -511,7 +550,18 @@ if (Test-Path -LiteralPath $profileTargetFull) {
 for ($i = 0; $i -lt $portfolio.Count; $i++) {
     $item = $portfolio[$i]
     Copy-Item -LiteralPath $item.ExpertFullPath -Destination (Join-Path $expertsTarget $item.Expert) -Force
-    Copy-Item -LiteralPath $item.SetFullPath -Destination (Join-Path $testerTarget ([IO.Path]::GetFileName($item.SetFullPath))) -Force
+    if ($IsSmallAccount) {
+        $effectiveInputs = Get-EffectiveInputs $item
+        $effectiveSetText = (@($effectiveInputs.Keys | ForEach-Object { '{0}={1}' -f $_, $effectiveInputs[$_] }) -join "`r`n") + "`r`n"
+        $safeLabel = $item.Label -replace '[^A-Za-z0-9 -]', ''
+        $effectiveSetName = "LAST INSTALLED 900 - $safeLabel - $($item.BrokerSymbol).set"
+        $effectiveSetSource = Join-Path (Split-Path -Parent $item.SetFullPath) $effectiveSetName
+        [IO.File]::WriteAllText($effectiveSetSource, $effectiveSetText, [Text.UTF8Encoding]::new($true))
+        Copy-Item -LiteralPath $effectiveSetSource -Destination (Join-Path $testerTarget $effectiveSetName) -Force
+        $item | Add-Member -NotePropertyName EffectiveSetPath -NotePropertyValue $effectiveSetSource
+    } else {
+        Copy-Item -LiteralPath $item.SetFullPath -Destination (Join-Path $testerTarget ([IO.Path]::GetFileName($item.SetFullPath))) -Force
+    }
     $chartName = 'chart{0:D2}.chr' -f ($i + 1)
     $chartPath = Join-Path $profileTargetFull $chartName
     $chartText = New-ChartText $item $item.BrokerSymbol ([DateTime]::UtcNow.Ticks + $i) $i
@@ -542,7 +592,15 @@ $manifest = @(
     'Server: ' + [string]$probe.account.server
     ''
     'Charts:'
-) + @($portfolio | ForEach-Object { '{0}: {1}, period {2}, {3}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert })
+) + @($portfolio | ForEach-Object {
+    if ($IsSmallAccount -and [bool]$_.SmallDynamicRisk) {
+        '{0}: {1}, period {2}, {3}; lot {4}; hard SL {5:N4}%; target risk USD {6:N2}; set {7}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveLot, $_.EffectiveStopPercent, $_.EffectiveRisk, $_.EffectiveSetPath
+    } elseif ($IsSmallAccount) {
+        '{0}: {1}, period {2}, {3}; requested stop risk USD 40; set {4}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveSetPath
+    } else {
+        '{0}: {1}, period {2}, {3}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert
+    }
+})
 $manifestPath = Join-Path $PSScriptRoot 'LAST INSTALL.txt'
 [IO.File]::WriteAllText($manifestPath, (($manifest -join "`r`n") + "`r`n"), [Text.UTF8Encoding]::new($true))
 
