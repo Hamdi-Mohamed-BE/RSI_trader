@@ -467,7 +467,7 @@ foreach ($item in $portfolio) {
     $brokerMinimum = [double]$match.volume_min
     $item | Add-Member -NotePropertyName BrokerVolumeMinimum -NotePropertyValue $brokerMinimum
     if ($IsSmallAccount -and [bool]$item.SmallDynamicRisk) {
-        $price = [Math]::Max([double]$match.bid, [double]$match.ask)
+        $price = [Math]::Max([Math]::Max([double]$match.bid, [double]$match.ask), [double]$match.reference_price)
         $tickSize = [Math]::Abs([double]$match.trade_tick_size)
         $tickValue = [Math]::Max([Math]::Abs([double]$match.trade_tick_value_loss), [Math]::Abs([double]$match.trade_tick_value))
         $volumeStep = [Math]::Abs([double]$match.volume_step)
