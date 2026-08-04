@@ -1,0 +1,295 @@
+{
+  "prepared": "2026-08-04",
+  "program": "tegasFX $100K Instant Funding, Bronze 50% profit split",
+  "forecast_start": "2026-08-05",
+  "forecast_end": "2026-12-31",
+  "business_days": 107,
+  "latest_conservative_request_date_for_year_end_processing": "2026-12-28",
+  "source_history": {
+    "start": "2025-01-02",
+    "end": "2026-07-31",
+    "business_days": 412,
+    "starting_balance": 100000.0,
+    "net_profit": 17844.91
+  },
+  "modeled_rules": {
+    "overall_static_loss_floor": -10000.0,
+    "daily_closed_equity_high_watermark_loss": -10000.0,
+    "minimum_trading_days_before_request": 10,
+    "starting_profit_split": 0.5,
+    "cash_target": 1000.0,
+    "account_profit_needed_for_cash_target": 2000.0,
+    "current_listed_security_deposit": 9999.0,
+    "refund_formula": "90% of security deposit minus realized losses, after review"
+  },
+  "limitations": [
+    "The official page displays selectable drawdown tiers; this model uses the narrowest 10% tier conservatively.",
+    "Only closed deals are available, so floating-equity daily and overall breaches are understated.",
+    "Payout eligibility is not payout approval or cash receipt.",
+    "The $9,999 security deposit and its refund are counterparty exposures; they are not included as investment return.",
+    "Future spreads, commissions, swaps, slippage, symbol mapping, outages and compliance reviews are unknown."
+  ],
+  "results": {
+    "tested_execution": {
+      "paths": 50000,
+      "survival_probability_percent": 99.97,
+      "any_positive_payout_request_probability_percent": 97.794,
+      "any_positive_payout_request_sampling_95pct_interval_percent": [
+        97.66525513140614,
+        97.92274486859385
+      ],
+      "at_least_1000_cash_request_probability_percent": 87.9,
+      "at_least_1000_cash_request_sampling_95pct_interval_percent": [
+        87.61413683888965,
+        88.18586316111035
+      ],
+      "any_positive_request_date": {
+        "p10": "2026-08-18",
+        "median": "2026-08-18",
+        "p90": "2026-09-11"
+      },
+      "at_least_1000_request_date": {
+        "p10": "2026-08-18",
+        "median": "2026-09-09",
+        "p90": "2026-11-11"
+      },
+      "cash_at_first_positive_request": {
+        "mean": 471.41619363151113,
+        "p10": 43.32499999999995,
+        "median": 318.07500000000005,
+        "p90": 1133.1490000000001
+      },
+      "cash_at_first_1000_request": {
+        "mean": 1243.4165935153585,
+        "p10": 1022.4190000000001,
+        "median": 1150.8925,
+        "p90": 1603.7805
+      },
+      "ending_account_profit_if_survived": {
+        "mean": 4960.531384015205,
+        "median": 4885.370000000001
+      },
+      "status_counts": {
+        "static_breach": 15,
+        "survived": 49985
+      },
+      "historical_rolling_windows": {
+        "paths": 306,
+        "survival_probability_percent": 100.0,
+        "any_positive_payout_request_probability_percent": 100.0,
+        "any_positive_payout_request_sampling_95pct_interval_percent": [
+          100.0,
+          100.0
+        ],
+        "at_least_1000_cash_request_probability_percent": 80.06535947712419,
+        "at_least_1000_cash_request_sampling_95pct_interval_percent": [
+          75.58903158374099,
+          84.54168737050738
+        ],
+        "any_positive_request_date": {
+          "p10": "2026-08-18",
+          "median": "2026-08-18",
+          "p90": "2026-09-02"
+        },
+        "at_least_1000_request_date": {
+          "p10": "2026-08-18",
+          "median": "2026-09-02",
+          "p90": "2026-10-23"
+        },
+        "cash_at_first_positive_request": {
+          "mean": 446.3258986928106,
+          "p10": 40.69999999999999,
+          "median": 343.88,
+          "p90": 1079.8025000000002
+        },
+        "cash_at_first_1000_request": {
+          "mean": 1173.9929387755103,
+          "p10": 1024.672,
+          "median": 1154.0350000000003,
+          "p90": 1358.1189999999997
+        },
+        "ending_account_profit_if_survived": {
+          "mean": 5609.399477124183,
+          "median": 6986.75
+        },
+        "status_counts": {
+          "survived": 306
+        }
+      }
+    },
+    "moderate_execution_and_news_stress": {
+      "paths": 50000,
+      "survival_probability_percent": 99.728,
+      "any_positive_payout_request_probability_percent": 93.57,
+      "any_positive_payout_request_sampling_95pct_interval_percent": [
+        93.35499682643457,
+        93.78500317356541
+      ],
+      "at_least_1000_cash_request_probability_percent": 72.918,
+      "at_least_1000_cash_request_sampling_95pct_interval_percent": [
+        72.528480853249,
+        73.307519146751
+      ],
+      "any_positive_request_date": {
+        "p10": "2026-08-18",
+        "median": "2026-08-18",
+        "p90": "2026-09-23"
+      },
+      "at_least_1000_request_date": {
+        "p10": "2026-08-18",
+        "median": "2026-09-14",
+        "p90": "2026-11-20"
+      },
+      "cash_at_first_positive_request": {
+        "mean": 411.06984832211157,
+        "p10": 36.57030000000048,
+        "median": 265.71124999999984,
+        "p90": 1010.1049499999998
+      },
+      "cash_at_first_1000_request": {
+        "mean": 1226.860215584629,
+        "p10": 1020.9464499999997,
+        "median": 1139.8347499999998,
+        "p90": 1566.2183999999997
+      },
+      "ending_account_profit_if_survived": {
+        "mean": 2229.9178770054527,
+        "median": 2170.0187499999984
+      },
+      "status_counts": {
+        "static_breach": 136,
+        "survived": 49864
+      },
+      "historical_rolling_windows": {
+        "paths": 306,
+        "survival_probability_percent": 100.0,
+        "any_positive_payout_request_probability_percent": 95.42483660130719,
+        "any_positive_payout_request_sampling_95pct_interval_percent": [
+          93.08368587413156,
+          97.76598732848282
+        ],
+        "at_least_1000_cash_request_probability_percent": 79.08496732026144,
+        "at_least_1000_cash_request_sampling_95pct_interval_percent": [
+          74.528045249862,
+          83.64188939066086
+        ],
+        "any_positive_request_date": {
+          "p10": "2026-08-18",
+          "median": "2026-08-18",
+          "p90": "2026-09-10"
+        },
+        "at_least_1000_request_date": {
+          "p10": "2026-08-18",
+          "median": "2026-09-09",
+          "p90": "2026-11-18"
+        },
+        "cash_at_first_positive_request": {
+          "mean": 389.7731601027396,
+          "p10": 42.43437499999997,
+          "median": 252.8482499999999,
+          "p90": 963.6670750000005
+        },
+        "cash_at_first_1000_request": {
+          "mean": 1125.661337809917,
+          "p10": 1022.5486749999998,
+          "median": 1094.6276249999996,
+          "p90": 1249.3549499999997
+        },
+        "ending_account_profit_if_survived": {
+          "mean": 2875.3227973856187,
+          "median": 4270.447249999997
+        },
+        "status_counts": {
+          "survived": 306
+        }
+      }
+    },
+    "severe_execution_and_news_stress": {
+      "paths": 50000,
+      "survival_probability_percent": 98.2,
+      "any_positive_payout_request_probability_percent": 84.898,
+      "any_positive_payout_request_sampling_95pct_interval_percent": [
+        84.58413923290753,
+        85.21186076709246
+      ],
+      "at_least_1000_cash_request_probability_percent": 52.54,
+      "at_least_1000_cash_request_sampling_95pct_interval_percent": [
+        52.102296549398105,
+        52.97770345060189
+      ],
+      "any_positive_request_date": {
+        "p10": "2026-08-18",
+        "median": "2026-08-18",
+        "p90": "2026-09-28"
+      },
+      "at_least_1000_request_date": {
+        "p10": "2026-08-18",
+        "median": "2026-09-14",
+        "p90": "2026-11-23"
+      },
+      "cash_at_first_positive_request": {
+        "mean": 367.02727802775087,
+        "p10": 31.145999999999884,
+        "median": 231.49649999999986,
+        "p90": 908.1492000000001
+      },
+      "cash_at_first_1000_request": {
+        "mean": 1216.4957960411116,
+        "p10": 1018.6980500000002,
+        "median": 1133.3310000000001,
+        "p90": 1538.8480000000002
+      },
+      "ending_account_profit_if_survived": {
+        "mean": -414.4467433808568,
+        "median": -526.3870000000003
+      },
+      "status_counts": {
+        "static_breach": 900,
+        "survived": 49100
+      },
+      "historical_rolling_windows": {
+        "paths": 306,
+        "survival_probability_percent": 100.0,
+        "any_positive_payout_request_probability_percent": 90.52287581699346,
+        "any_positive_payout_request_sampling_95pct_interval_percent": [
+          87.24107049381129,
+          93.80468114017563
+        ],
+        "at_least_1000_cash_request_probability_percent": 62.091503267973856,
+        "at_least_1000_cash_request_sampling_95pct_interval_percent": [
+          56.65549977998251,
+          67.5275067559652
+        ],
+        "any_positive_request_date": {
+          "p10": "2026-08-18",
+          "median": "2026-08-18",
+          "p90": "2026-09-30"
+        },
+        "at_least_1000_request_date": {
+          "p10": "2026-08-19",
+          "median": "2026-09-15",
+          "p90": "2026-11-20"
+        },
+        "cash_at_first_positive_request": {
+          "mean": 321.75709566787,
+          "p10": 25.805000000000287,
+          "median": 203.4285,
+          "p90": 850.8033
+        },
+        "cash_at_first_1000_request": {
+          "mean": 1111.6991947368422,
+          "p10": 1013.77535,
+          "median": 1084.8829999999998,
+          "p90": 1245.3662500000003
+        },
+        "ending_account_profit_if_survived": {
+          "mean": 141.24611764705762,
+          "median": 1454.7420000000002
+        },
+        "status_counts": {
+          "survived": 306
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+[project]
+name = "xau-safe-grid"
+version = "0.1.0"
+description = "Risk-capped adaptive XAUUSD grid bot for MetaTrader 5"
+requires-python = ">=3.11"
+dependencies = [
+  "MetaTrader5>=5.0.5700",
+  "pandas>=2.2",
+  "numpy>=2.0",
+  "python-dotenv>=1.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3"]
+
+[project.scripts]
+xau-grid = "xau_grid.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/xau_grid"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+

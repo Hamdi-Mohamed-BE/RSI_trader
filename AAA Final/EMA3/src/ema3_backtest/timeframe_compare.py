@@ -24,9 +24,14 @@ from .optimize import (
 UTC = timezone.utc
 
 TIMEFRAMES: dict[str, tuple[int, timedelta]] = {
+    "M1": (mt5.TIMEFRAME_M1, timedelta(minutes=1)),
+    "M5": (mt5.TIMEFRAME_M5, timedelta(minutes=5)),
+    "M15": (mt5.TIMEFRAME_M15, timedelta(minutes=15)),
     "H1": (mt5.TIMEFRAME_H1, timedelta(hours=1)),
     "H4": (mt5.TIMEFRAME_H4, timedelta(hours=4)),
 }
+
+SCALPING_TIMEFRAMES = {"M1", "M5", "M15"}
 
 ALIASES: dict[str, tuple[str, ...]] = {
     "XAUUSD": ("XAUUSD", "GOLD"),
@@ -112,7 +117,21 @@ def completed_rates(
     return frame.loc[frame["time"] < current_open].reset_index(drop=True)
 
 
-def exit_grid() -> list[ExitConfig]:
+def exit_grid(timeframe: str) -> list[ExitConfig]:
+    if timeframe in SCALPING_TIMEFRAMES:
+        fixed = [
+            ExitConfig("fixed", target_r=value)
+            for value in (1.0, 1.5, 1.7)
+        ]
+        trailing = [
+            ExitConfig(
+                "trail",
+                trail_start_r=1.0,
+                trail_distance_r=0.5,
+                target_cap_r=1.7,
+            )
+        ]
+        return fixed + trailing
     fixed = [ExitConfig("fixed", target_r=value) for value in (2.0, 3.0, 4.0)]
     trailing = [
         ExitConfig("trail", trail_start_r=start, trail_distance_r=distance)
@@ -122,15 +141,25 @@ def exit_grid() -> list[ExitConfig]:
 
 
 def signal_variants(timeframe: str) -> list[tuple[str, int]]:
+    if timeframe in SCALPING_TIMEFRAMES:
+        return [("none", 1), ("ema200_slope", 6)]
     slope = 24 if timeframe == "H1" else 6
     return [("none", 1), ("ema200_slope", slope)]
 
 
 def pivot_distances(timeframe: str) -> tuple[int, ...]:
+    if timeframe in SCALPING_TIMEFRAMES:
+        return (4, 6, 8)
     return (6, 8, 10) if timeframe == "H1" else (4, 5, 6)
 
 
 def confidence_requirements(timeframe: str, coverage_days: float) -> tuple[int, int]:
+    if timeframe == "M1":
+        return (120, 30)
+    if timeframe == "M5":
+        return (60, 15)
+    if timeframe == "M15":
+        return (30, 8)
     if coverage_days < 120:
         return ((8, 3) if timeframe == "H1" else (4, 2))
     return ((25, 8) if timeframe == "H1" else (10, 4))
@@ -156,7 +185,8 @@ def optimize_one(
     actual_start = max(requested_start, frame.at[0, "time"].to_pydatetime())
     actual_end = min(end, (frame.at[len(frame) - 1, "time"] + duration).to_pydatetime())
     coverage_days = (actual_end - actual_start).total_seconds() / 86_400.0
-    if coverage_days < 30:
+    minimum_coverage_days = 27 if timeframe in SCALPING_TIMEFRAMES else 30
+    if coverage_days < minimum_coverage_days:
         raise RuntimeError(f"only {coverage_days:.1f} days of usable history")
     split = actual_start + (actual_end - actual_start) * 0.75
     minimum_train, minimum_validation = confidence_requirements(
@@ -165,13 +195,14 @@ def optimize_one(
     prepared: dict[tuple[int, str, int], list[dict[str, object]]] = {}
     rows: list[dict[str, object]] = []
     candidates: list[tuple[dict[str, object], ExitConfig, list[dict[str, object]]]] = []
+    evaluated: list[tuple[dict[str, object], ExitConfig, list[dict[str, object]]]] = []
     for distance in pivot_distances(timeframe):
         for signal_filter, slope_bars in signal_variants(timeframe):
             key = (distance, signal_filter, slope_bars)
             prepared[key] = filtered_pivot_signals(
                 frame, distance, signal_filter, slope_bars
             )
-            for exit_config in exit_grid():
+            for exit_config in exit_grid(timeframe):
                 trades = simulate(
                     frame,
                     requested,
@@ -201,6 +232,7 @@ def optimize_one(
                 }
                 row["selection_score"] = selection_score(row)
                 rows.append(row)
+                evaluated.append((row, exit_config, prepared[key]))
                 if (
                     int(stats["trades"]) >= minimum_train
                     and float(stats["net_r"]) > 0
@@ -208,12 +240,16 @@ def optimize_one(
                     and float(stats["max_drawdown_pct"]) <= 15.0
                 ):
                     candidates.append((row, exit_config, prepared[key]))
-    if not candidates:
+    training_approved = bool(candidates)
+    if not candidates and timeframe not in SCALPING_TIMEFRAMES:
         raise RuntimeError(
             f"no training candidate passed minimum {minimum_train} trades"
         )
+    selection_pool = candidates if candidates else evaluated
+    if not selection_pool:
+        raise RuntimeError("no configurations could be evaluated")
     selected_row, selected_exit, selected_signals = max(
-        candidates, key=lambda item: float(item[0]["selection_score"])
+        selection_pool, key=lambda item: float(item[0]["selection_score"])
     )
     distance = int(selected_row["distance"])
     signal_filter = str(selected_row["signal_filter"])
@@ -262,7 +298,7 @@ def optimize_one(
     ]
     validation = record("validation", validation_trades)
     full = record("full", full_trades)
-    robust = (
+    robust = training_approved and (
         int(validation["trades"]) >= minimum_validation
         and float(validation["net_r"]) > 0
         and finite_pf(validation["profit_factor"]) >= 1.15
@@ -285,6 +321,7 @@ def optimize_one(
         "ema_slope_bars": slope_bars,
         "exit": selected_exit.name,
         "minimum_validation_trades": minimum_validation,
+        "training_approved": training_approved,
         "robust": robust,
         "confidence": confidence,
         **{f"train_{key}": value for key, value in selected_row.items() if key in {
@@ -304,7 +341,7 @@ def pf_text(value: object) -> str:
 
 def main() -> None:
     load_dotenv()
-    parser = argparse.ArgumentParser(description="Compare EMA3 across H1/H4 markets")
+    parser = argparse.ArgumentParser(description="Compare EMA3 across supported timeframes")
     parser.add_argument(
         "--symbols",
         default=os.getenv(
@@ -314,6 +351,11 @@ def main() -> None:
     )
     parser.add_argument(
         "--days", type=int, default=int(os.getenv("COMPARE_HISTORY_DAYS", "365"))
+    )
+    parser.add_argument(
+        "--timeframes",
+        default=os.getenv("COMPARE_TIMEFRAMES", "H1,H4"),
+        help="comma-separated timeframe list (M1,M5,M15,H1,H4)",
     )
     parser.add_argument(
         "--risk-pct", type=float, default=float(os.getenv("BACKTEST_RISK_PCT", "1"))
@@ -328,6 +370,14 @@ def main() -> None:
     )
     args = parser.parse_args()
     requested_symbols = [part.strip().upper() for part in args.symbols.split(",") if part.strip()]
+    requested_timeframes = [
+        part.strip().upper() for part in args.timeframes.split(",") if part.strip()
+    ]
+    unsupported = [value for value in requested_timeframes if value not in TIMEFRAMES]
+    if unsupported:
+        raise SystemExit(f"Unsupported timeframe(s): {', '.join(unsupported)}")
+    if not requested_timeframes:
+        raise SystemExit("At least one timeframe is required")
     end = datetime.now(UTC)
     requested_start = end - timedelta(days=args.days)
     best_rows: list[dict[str, object]] = []
@@ -342,7 +392,7 @@ def main() -> None:
                 info = mt5.symbol_info(broker_symbol)
                 if info is None:
                     raise RuntimeError("symbol_info unavailable")
-                for timeframe in TIMEFRAMES:
+                for timeframe in requested_timeframes:
                     try:
                         frame = completed_rates(
                             broker_symbol,
@@ -405,7 +455,7 @@ def main() -> None:
             ["rank_score", "validation_trades"], ascending=[False, False]
         )
     lines = [
-        "# EMA3 H1 versus H4 Walk-Forward Comparison",
+        "# EMA3 Timeframe Walk-Forward Comparison",
         "",
         f"Requested period: {requested_start.isoformat()} to {end.isoformat()}",
         "The first 75% of each broker-history sample selects the setup; the final 25% is untouched validation.",
@@ -486,6 +536,7 @@ def main() -> None:
                 "end_utc": end.isoformat(),
                 "risk_pct": args.risk_pct,
                 "starting_balance": args.balance,
+                "timeframes": requested_timeframes,
                 "completed_comparisons": len(best_rows),
                 "errors": errors,
             },

@@ -44,29 +44,38 @@ def account_summary() -> dict[str, object]:
 def symbol_score(name: str, canonical: str = "US100") -> tuple[int, int, str]:
     upper = name.upper()
     clean = re.sub(r"[^A-Z0-9]", "", upper)
-    exacts = {
-        "US100": 1000,
-        "NAS100": 990,
-        "USTEC": 980,
-        "NASDAQ100": 970,
-        "NDX100": 960,
-        "NQ100": 950,
-        "TECH100": 940,
-    }
+    canonical_clean = re.sub(r"[^A-Z0-9]", "", canonical.upper())
+    gold_requested = canonical_clean.startswith("XAU") or "GOLD" in canonical_clean
+    exacts = (
+        {"XAUUSD": 1000, "GOLD": 990, "XAU": 980}
+        if gold_requested
+        else {
+            "US100": 1000,
+            "NAS100": 990,
+            "USTEC": 980,
+            "NASDAQ100": 970,
+            "NDX100": 960,
+            "NQ100": 950,
+            "TECH100": 940,
+        }
+    )
     score = exacts.get(clean, 0)
     aliases = (
-        "US100",
-        "NAS100",
-        "USTEC",
-        "NASDAQ",
-        "TECH100",
-        "NDX",
-        "NQ100",
+        ("XAUUSD", "GOLD", "XAU")
+        if gold_requested
+        else (
+            "US100",
+            "NAS100",
+            "USTEC",
+            "NASDAQ",
+            "TECH100",
+            "NDX",
+            "NQ100",
+        )
     )
     for rank, alias in enumerate(aliases):
         if alias in clean:
             score = max(score, 900 - rank * 10)
-    canonical_clean = re.sub(r"[^A-Z0-9]", "", canonical.upper())
     if canonical_clean and canonical_clean != "AUTO" and canonical_clean in clean:
         score += 100
     if re.search(r"[HMUZ]\d{1,2}$", clean):
@@ -120,19 +129,24 @@ def discover_symbol(canonical: str = "US100") -> str:
             continue
         candidates.append((score, item.name))
     if not candidates:
+        gold_requested = requested.upper().startswith("XAU") or "GOLD" in requested.upper()
         nearby = sorted(
             item.name
             for item in catalogue
             if re.search(
-                r"US100|NAS|USTEC|TECH100|NDX|NQ",
+                r"XAU|GOLD" if gold_requested else r"US100|NAS|USTEC|TECH100|NDX|NQ",
                 re.sub(r"[^A-Z0-9]", "", item.name.upper()),
             )
         )[:20]
         detail = f" Nearby catalogue symbols: {', '.join(nearby)}." if nearby else ""
+        expected = (
+            "XAUUSD, XAUUSDm, or GOLD"
+            if gold_requested
+            else "US100, NAS100, USTEC/USTECm (Exness), TECH100, NDX, or NASDAQ"
+        )
         raise MT5Error(
-            f"No tradeable Nasdaq-100 symbol found for {requested!r}. "
-            "Expected the exact broker symbol or an alias such as US100, "
-            f"NAS100, USTEC/USTECm (Exness), TECH100, NDX, or NASDAQ.{detail}"
+            f"No tradeable symbol found for {requested!r}. Expected the exact "
+            f"broker symbol or an alias such as {expected}.{detail}"
         )
     candidates.sort(reverse=True)
     symbol = candidates[0][1]

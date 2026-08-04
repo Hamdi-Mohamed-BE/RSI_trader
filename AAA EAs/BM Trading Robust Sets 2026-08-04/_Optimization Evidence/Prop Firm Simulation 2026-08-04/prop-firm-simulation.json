@@ -1,0 +1,195 @@
+{
+  "important_limitations": [
+    "Simulation uses closed-deal events from the exact final MT5 reports; prop rules use floating equity too.",
+    "Negative closed events are multiplied by 1.25; positive events are not increased.",
+    "Weekly block bootstrap reuses a 19-month historical sample and is not a true forecast.",
+    "News, weekend, symbol mapping, spreads, swaps, slippage, EA licensing and compliance reviews can reduce eligibility.",
+    "Monte Carlo confidence intervals measure sampling error only, not model uncertainty."
+  ],
+  "dataset": {
+    "start": "2025-01-02",
+    "end": "2026-07-31",
+    "business_days": 412,
+    "raw_net_profit": 17844.909999999996,
+    "net_profit_used_for_return_simulation": 17844.909999999996,
+    "all_losing_deals_25pct_worse_net_profit_warning_scenario": -6819.1875,
+    "loss_stress_factor": 1.25,
+    "worst_closed_day": -1903.42,
+    "best_closed_day": 3327.8500000000004,
+    "maximum_stressed_intraday_closed_loss": 2379.2749999999996,
+    "best_actual_42_business_day_profit": 7334.909999999998,
+    "median_actual_42_business_day_profit": 1938.2500000000007,
+    "deadline": "2026-09-30",
+    "deadline_business_days": 42
+  },
+  "results": {
+    "FundedNext Stellar 1-Step": {
+      "historical_rolling_42_business_days": {
+        "windows": 371,
+        "payouts": 0,
+        "payout_probability_percent": 0.0,
+        "challenge_pass_probability_percent": 0.0,
+        "average_net_payout_when_successful": 0.0,
+        "status_counts": {
+          "unfinished": 371
+        }
+      },
+      "historical_rolling_260_business_days": {
+        "windows": 153,
+        "payouts": 133,
+        "payout_probability_percent": 86.9281045751634,
+        "challenge_pass_probability_percent": 87.58169934640523,
+        "average_net_payout_when_successful": 338.9763190977443,
+        "status_counts": {
+          "payout": 133,
+          "unfinished": 20
+        }
+      },
+      "bootstrap_42_business_days": {
+        "trials": 50000,
+        "payouts": 27,
+        "payout_probability_percent": 0.054,
+        "challenge_pass_probability_percent": 0.106,
+        "monte_carlo_95pct_interval_percent": [
+          0.03363658285336177,
+          0.07436341714663823
+        ],
+        "average_net_payout_when_successful": 729.1311259259261,
+        "median_challenge_business_days_when_successful": 32.0,
+        "status_counts": {
+          "unfinished": 49921,
+          "max_loss_breach": 52,
+          "payout": 27
+        }
+      },
+      "bootstrap_260_business_days": {
+        "trials": 50000,
+        "payouts": 32480,
+        "payout_probability_percent": 64.96,
+        "challenge_pass_probability_percent": 68.754,
+        "monte_carlo_95pct_interval_percent": [
+          64.54180760950395,
+          65.37819239049605
+        ],
+        "average_net_payout_when_successful": 629.1756527463056,
+        "median_challenge_business_days_when_successful": 148.0,
+        "status_counts": {
+          "payout": 32480,
+          "unfinished": 15838,
+          "max_loss_breach": 1682
+        }
+      }
+    },
+    "FTMO 1-Step Standard": {
+      "historical_rolling_42_business_days": {
+        "windows": 371,
+        "payouts": 0,
+        "payout_probability_percent": 0.0,
+        "challenge_pass_probability_percent": 0.0,
+        "average_net_payout_when_successful": 0.0,
+        "status_counts": {
+          "unfinished": 371
+        }
+      },
+      "historical_rolling_260_business_days": {
+        "windows": 153,
+        "payouts": 134,
+        "payout_probability_percent": 87.58169934640523,
+        "challenge_pass_probability_percent": 87.58169934640523,
+        "average_net_payout_when_successful": 518.4562835820894,
+        "status_counts": {
+          "payout": 134,
+          "unfinished": 19
+        }
+      },
+      "bootstrap_42_business_days": {
+        "trials": 50000,
+        "payouts": 5,
+        "payout_probability_percent": 0.01,
+        "challenge_pass_probability_percent": 0.014,
+        "monte_carlo_95pct_interval_percent": [
+          0.0012350518084816953,
+          0.018764948191518308
+        ],
+        "average_net_payout_when_successful": 1336.7178000000004,
+        "median_challenge_business_days_when_successful": 26.0,
+        "status_counts": {
+          "unfinished": 49995,
+          "payout": 5
+        }
+      },
+      "bootstrap_260_business_days": {
+        "trials": 50000,
+        "payouts": 31837,
+        "payout_probability_percent": 63.674,
+        "challenge_pass_probability_percent": 67.362,
+        "monte_carlo_95pct_interval_percent": [
+          63.25243851563695,
+          64.09556148436305
+        ],
+        "average_net_payout_when_successful": 956.0008492320256,
+        "median_challenge_business_days_when_successful": 146.0,
+        "status_counts": {
+          "payout": 31837,
+          "unfinished": 17718,
+          "max_loss_breach": 445
+        }
+      }
+    },
+    "FTMO 2-Step Swing": {
+      "historical_rolling_42_business_days": {
+        "windows": 371,
+        "payouts": 0,
+        "payout_probability_percent": 0.0,
+        "challenge_pass_probability_percent": 0.0,
+        "average_net_payout_when_successful": 0.0,
+        "status_counts": {
+          "unfinished": 371
+        }
+      },
+      "historical_rolling_260_business_days": {
+        "windows": 153,
+        "payouts": 87,
+        "payout_probability_percent": 56.86274509803921,
+        "challenge_pass_probability_percent": 56.86274509803921,
+        "average_net_payout_when_successful": 319.9114482758621,
+        "status_counts": {
+          "payout": 87,
+          "unfinished": 66
+        }
+      },
+      "bootstrap_42_business_days": {
+        "trials": 50000,
+        "payouts": 0,
+        "payout_probability_percent": 0.0,
+        "challenge_pass_probability_percent": 0.0,
+        "monte_carlo_95pct_interval_percent": [
+          0.0,
+          0.0
+        ],
+        "average_net_payout_when_successful": 0.0,
+        "median_challenge_business_days_when_successful": null,
+        "status_counts": {
+          "unfinished": 50000
+        }
+      },
+      "bootstrap_260_business_days": {
+        "trials": 50000,
+        "payouts": 14851,
+        "payout_probability_percent": 29.702,
+        "challenge_pass_probability_percent": 37.02,
+        "monte_carlo_95pct_interval_percent": [
+          29.30146967708915,
+          30.10253032291085
+        ],
+        "average_net_payout_when_successful": 774.8579435728234,
+        "median_challenge_business_days_when_successful": null,
+        "status_counts": {
+          "unfinished": 35025,
+          "payout": 14851,
+          "max_loss_breach": 124
+        }
+      }
+    }
+  }
+}

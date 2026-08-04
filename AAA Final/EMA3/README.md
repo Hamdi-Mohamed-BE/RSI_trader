@@ -33,6 +33,19 @@ GBPJPY. The first 75% of each available history selects the configuration and
 the final 25% validates it without resetting open strategy state at the split.
 The current report is saved in `reports/timeframe_comparison/REPORT.md`.
 
+## M1 / M5 / M15 scalping research
+
+The engine and live worker now accept `M1`, `M5`, and `M15` through the
+`TIMEFRAME` setting. Run the isolated 30-day gold comparison with:
+
+```text
+run_scalping_backtest.bat
+```
+
+Results are saved in `reports/scalping_30d/RESULTS.md`. The August 2026 study
+did not produce a timeframe that passed untouched validation, so the live
+`.env` deliberately remains on the validated H4 profile.
+
 The latest standard-confidence validation ranked XAUUSD H4 first: 14 trades,
 57.1% win rate, 1.80 profit factor, +4.82R and 2.97% drawdown. H1 did not improve
 Gold. US100 H4 was mildly positive, but the connected broker exposed only about

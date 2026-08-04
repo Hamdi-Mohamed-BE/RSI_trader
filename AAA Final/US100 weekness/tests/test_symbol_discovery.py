@@ -15,6 +15,12 @@ def test_requested_alias_gets_a_preference():
     )
 
 
+def test_gold_profile_scores_gold_aliases_only():
+    assert symbol_score("XAUUSD..", "XAUUSD")[0] > 0
+    assert symbol_score("GOLDm", "XAUUSD")[0] > 0
+    assert symbol_score("USTECm", "XAUUSD")[0] == 0
+
+
 def test_exact_mixed_case_broker_symbol_works_without_catalogue(monkeypatch):
     info = SimpleNamespace(
         name="USTEC_x100m",
@@ -64,3 +70,25 @@ def test_auto_discovers_exness_ustec_suffix(monkeypatch):
     monkeypatch.setattr(mt5_adapter.mt5, "symbol_select", lambda *_: True)
 
     assert discover_symbol("AUTO") == "USTECm"
+
+
+def test_auto_discovers_broker_gold_suffix(monkeypatch):
+    items = (
+        SimpleNamespace(name="EURUSDm"),
+        SimpleNamespace(name="USTECm"),
+        SimpleNamespace(name="XAUUSD.."),
+    )
+    enabled = SimpleNamespace(
+        trade_mode=mt5_adapter.mt5.SYMBOL_TRADE_MODE_FULL,
+    )
+
+    def symbol_info(name):
+        if name == "XAUUSD":
+            return None
+        return SimpleNamespace(name=name, trade_mode=enabled.trade_mode)
+
+    monkeypatch.setattr(mt5_adapter.mt5, "symbols_get", lambda: items)
+    monkeypatch.setattr(mt5_adapter.mt5, "symbol_info", symbol_info)
+    monkeypatch.setattr(mt5_adapter.mt5, "symbol_select", lambda *_: True)
+
+    assert discover_symbol("XAUUSD") == "XAUUSD.."

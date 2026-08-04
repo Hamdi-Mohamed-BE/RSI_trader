@@ -1,0 +1,606 @@
+{
+  "prepared": "2026-08-04",
+  "program": "E8 Pro Forex $100K, standard 80% plan",
+  "source_history": {
+    "start": "2025-01-02",
+    "end": "2026-07-31",
+    "business_days": 412,
+    "starting_balance": 100000.0,
+    "net_profit": 17844.91,
+    "data_available": "Closed-deal combined MT5 history only; floating equity is unavailable."
+  },
+  "modeled_rules": {
+    "challenge_target": 8000.0,
+    "static_max_loss": 8000.0,
+    "daily_loss": 2500.0,
+    "daily_profit_cap": 2000.0,
+    "minimum_funded_profit_for_request": 1000.0,
+    "standard_plan_cash_formula": "funded profit x 50% requestable portion x 80% payout share",
+    "stage_transition_assumption": "Two complete business days after challenge pass for review/KYC/activation."
+  },
+  "interpretation": {
+    "payout_request_eligibility": "The simulated account meets the published numerical threshold. It is not a prediction that E8 accepts or sends cash.",
+    "cash_received_probability": "Not estimable from MT5 returns. E8 states payouts are discretionary and not guaranteed."
+  },
+  "important_limitations": [
+    "The five-day block bootstrap reorders only 19 months of history and is not a forecast guarantee.",
+    "The MT5 reports contain closed deals, not floating intraday equity; real rule-breach risk is therefore understated.",
+    "Future spreads, swaps, slippage, news gaps, outages, symbol mapping, EA licensing and E8 compliance reviews are not observable.",
+    "The public third-party EAs may be used by other E8 customers; E8 says matching EA strategies across users can cause termination.",
+    "Positions spanning a challenge-to-funded transition cannot be reconstructed from the combined daily data.",
+    "No probability of payout approval is claimed because there is no auditable denominator for E8 requests and approvals."
+  ],
+  "results": {
+    "tested_execution": {
+      "description": "Exact closed-deal net P/L from the final MT5 reports.",
+      "historical_sample_net_profit_after_adjustment": 17844.91,
+      "horizons": {
+        "by_end_of_next_month": {
+          "paths": 50000,
+          "challenge_pass_probability_percent": 1.266,
+          "payout_request_eligibility_probability_percent": 0.188,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            0.15002993218610217,
+            0.2259700678138978
+          ],
+          "challenge_pass_date_when_passed": {
+            "p10": "2026-09-11",
+            "median": "2026-09-23",
+            "p90": "2026-09-30"
+          },
+          "payout_request_date_when_eligible": {
+            "p10": "2026-09-18",
+            "median": "2026-09-28",
+            "p90": "2026-09-30"
+          },
+          "first_request_cash_on_standard_80pct_plan_when_eligible": {
+            "mean": 565.1568936170213,
+            "p10": 415.2856,
+            "median": 520.828,
+            "p90": 783.4456000000002
+          },
+          "unconditional_expected_requestable_cash": 1.0624949600000002,
+          "status_counts": {
+            "challenge_static_breach": 2,
+            "challenge_unfinished": 49365,
+            "funded_not_started": 213,
+            "funded_unfinished": 326,
+            "payout_request_eligible": 94
+          },
+          "forecast_start": "2026-08-05",
+          "forecast_end": "2026-09-30",
+          "business_days": 41,
+          "historical_rolling_windows": {
+            "paths": 372,
+            "challenge_pass_probability_percent": 0.0,
+            "payout_request_eligibility_probability_percent": 0.0,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.0,
+              0.0
+            ],
+            "challenge_pass_date_when_passed": null,
+            "payout_request_date_when_eligible": null,
+            "first_request_cash_on_standard_80pct_plan_when_eligible": {
+              "mean": 0.0
+            },
+            "unconditional_expected_requestable_cash": 0.0,
+            "status_counts": {
+              "challenge_unfinished": 372
+            }
+          }
+        },
+        "by_end_of_2026": {
+          "paths": 50000,
+          "challenge_pass_probability_percent": 27.016000000000002,
+          "payout_request_eligibility_probability_percent": 16.066,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            15.744120060681302,
+            16.387879939318697
+          ],
+          "challenge_pass_date_when_passed": {
+            "p10": "2026-10-12",
+            "median": "2026-11-24",
+            "p90": "2026-12-24"
+          },
+          "payout_request_date_when_eligible": {
+            "p10": "2026-10-23",
+            "median": "2026-12-02",
+            "p90": "2026-12-25"
+          },
+          "first_request_cash_on_standard_80pct_plan_when_eligible": {
+            "mean": 545.1296322668991,
+            "p10": 412.0448000000001,
+            "median": 500.7560000000001,
+            "p90": 755.052
+          },
+          "unconditional_expected_requestable_cash": 87.58052672000001,
+          "status_counts": {
+            "challenge_static_breach": 111,
+            "challenge_unfinished": 36381,
+            "funded_not_started": 767,
+            "funded_unfinished": 4708,
+            "payout_request_eligible": 8033
+          },
+          "forecast_start": "2026-08-05",
+          "forecast_end": "2026-12-31",
+          "business_days": 107,
+          "historical_rolling_windows": {
+            "paths": 306,
+            "challenge_pass_probability_percent": 45.42483660130719,
+            "payout_request_eligibility_probability_percent": 20.915032679738562,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              16.35811060933914,
+              25.471954750137986
+            ],
+            "challenge_pass_date_when_passed": {
+              "p10": "2026-10-26",
+              "median": "2026-12-03",
+              "p90": "2026-12-24"
+            },
+            "payout_request_date_when_eligible": {
+              "p10": "2026-11-24",
+              "median": "2026-12-15",
+              "p90": "2026-12-29"
+            },
+            "first_request_cash_on_standard_80pct_plan_when_eligible": {
+              "mean": 509.7560000000001,
+              "p10": 401.76,
+              "median": 513.2800000000001,
+              "p90": 608.6640000000003
+            },
+            "unconditional_expected_requestable_cash": 106.61563398692812,
+            "status_counts": {
+              "challenge_unfinished": 167,
+              "funded_not_started": 7,
+              "funded_unfinished": 68,
+              "payout_request_eligible": 64
+            }
+          }
+        },
+        "six_months": {
+          "paths": 50000,
+          "challenge_pass_probability_percent": 39.504,
+          "payout_request_eligibility_probability_percent": 27.16,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            26.77012901028571,
+            27.549870989714293
+          ],
+          "challenge_pass_date_when_passed": {
+            "p10": "2026-10-20",
+            "median": "2026-12-10",
+            "p90": "2027-01-25"
+          },
+          "payout_request_date_when_eligible": {
+            "p10": "2026-11-03",
+            "median": "2026-12-23",
+            "p90": "2027-01-27"
+          },
+          "first_request_cash_on_standard_80pct_plan_when_eligible": {
+            "mean": 547.970455964654,
+            "p10": 412.704,
+            "median": 502.94000000000005,
+            "p90": 768.7360000000001
+          },
+          "unconditional_expected_requestable_cash": 148.82877584000002,
+          "status_counts": {
+            "challenge_static_breach": 194,
+            "challenge_unfinished": 30054,
+            "funded_not_started": 695,
+            "funded_static_breach": 6,
+            "funded_unfinished": 5471,
+            "payout_request_eligible": 13580
+          },
+          "forecast_start": "2026-08-05",
+          "forecast_end": "2027-02-04",
+          "business_days": 132,
+          "historical_rolling_windows": {
+            "paths": 281,
+            "challenge_pass_probability_percent": 62.989323843416365,
+            "payout_request_eligibility_probability_percent": 47.686832740213525,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              41.84690251754988,
+              53.52676296287717
+            ],
+            "challenge_pass_date_when_passed": {
+              "p10": "2026-10-29",
+              "median": "2026-12-09",
+              "p90": "2027-01-12"
+            },
+            "payout_request_date_when_eligible": {
+              "p10": "2026-12-07",
+              "median": "2027-01-06",
+              "p90": "2027-01-29"
+            },
+            "first_request_cash_on_standard_80pct_plan_when_eligible": {
+              "mean": 498.1077313432837,
+              "p10": 401.76,
+              "median": 484.86800000000005,
+              "p90": 608.6640000000003
+            },
+            "unconditional_expected_requestable_cash": 237.53180071174378,
+            "status_counts": {
+              "challenge_unfinished": 104,
+              "funded_unfinished": 43,
+              "payout_request_eligible": 134
+            }
+          }
+        }
+      }
+    },
+    "moderate_execution_and_news_stress": {
+      "description": "Every winning deal reduced 5% and every losing deal enlarged 5%.",
+      "historical_sample_net_profit_after_adjustment": 7087.025499999992,
+      "horizons": {
+        "by_end_of_next_month": {
+          "paths": 50000,
+          "challenge_pass_probability_percent": 0.338,
+          "payout_request_eligibility_probability_percent": 0.038,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            0.02091636295773058,
+            0.05508363704226942
+          ],
+          "challenge_pass_date_when_passed": {
+            "p10": "2026-09-11",
+            "median": "2026-09-24",
+            "p90": "2026-09-30"
+          },
+          "payout_request_date_when_eligible": {
+            "p10": "2026-09-16",
+            "median": "2026-09-28",
+            "p90": "2026-09-30"
+          },
+          "first_request_cash_on_standard_80pct_plan_when_eligible": {
+            "mean": 558.7860842105264,
+            "p10": 413.8152,
+            "median": 487.13020000000006,
+            "p90": 763.8960000000001
+          },
+          "unconditional_expected_requestable_cash": 0.212338712,
+          "status_counts": {
+            "challenge_static_breach": 14,
+            "challenge_unfinished": 49817,
+            "funded_not_started": 63,
+            "funded_unfinished": 87,
+            "payout_request_eligible": 19
+          },
+          "forecast_start": "2026-08-05",
+          "forecast_end": "2026-09-30",
+          "business_days": 41,
+          "historical_rolling_windows": {
+            "paths": 372,
+            "challenge_pass_probability_percent": 0.0,
+            "payout_request_eligibility_probability_percent": 0.0,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.0,
+              0.0
+            ],
+            "challenge_pass_date_when_passed": null,
+            "payout_request_date_when_eligible": null,
+            "first_request_cash_on_standard_80pct_plan_when_eligible": {
+              "mean": 0.0
+            },
+            "unconditional_expected_requestable_cash": 0.0,
+            "status_counts": {
+              "challenge_unfinished": 372
+            }
+          }
+        },
+        "by_end_of_2026": {
+          "paths": 50000,
+          "challenge_pass_probability_percent": 10.100000000000001,
+          "payout_request_eligibility_probability_percent": 4.946,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            4.755943238905089,
+            5.136056761094911
+          ],
+          "challenge_pass_date_when_passed": {
+            "p10": "2026-10-16",
+            "median": "2026-11-26",
+            "p90": "2026-12-25"
+          },
+          "payout_request_date_when_eligible": {
+            "p10": "2026-10-28",
+            "median": "2026-12-04",
+            "p90": "2026-12-28"
+          },
+          "first_request_cash_on_standard_80pct_plan_when_eligible": {
+            "mean": 536.4571191265669,
+            "p10": 415.21708,
+            "median": 496.36700000000013,
+            "p90": 729.4525200000004
+          },
+          "unconditional_expected_requestable_cash": 26.533169112,
+          "status_counts": {
+            "challenge_static_breach": 754,
+            "challenge_unfinished": 44196,
+            "funded_not_started": 330,
+            "funded_static_breach": 2,
+            "funded_unfinished": 2245,
+            "payout_request_eligible": 2473
+          },
+          "forecast_start": "2026-08-05",
+          "forecast_end": "2026-12-31",
+          "business_days": 107,
+          "historical_rolling_windows": {
+            "paths": 306,
+            "challenge_pass_probability_percent": 8.49673202614379,
+            "payout_request_eligibility_probability_percent": 1.6339869281045754,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.21348384194944564,
+              3.054490014259705
+            ],
+            "challenge_pass_date_when_passed": {
+              "p10": "2026-10-26",
+              "median": "2026-12-15",
+              "p90": "2026-12-29"
+            },
+            "payout_request_date_when_eligible": {
+              "p10": "2026-12-21",
+              "median": "2026-12-29",
+              "p90": "2026-12-31"
+            },
+            "first_request_cash_on_standard_80pct_plan_when_eligible": {
+              "mean": 501.02063999999973,
+              "p10": 454.48299999999966,
+              "median": 475.4517999999998,
+              "p90": 574.5423199999998
+            },
+            "unconditional_expected_requestable_cash": 8.186611764705878,
+            "status_counts": {
+              "challenge_unfinished": 280,
+              "funded_not_started": 5,
+              "funded_unfinished": 16,
+              "payout_request_eligible": 5
+            }
+          }
+        },
+        "six_months": {
+          "paths": 50000,
+          "challenge_pass_probability_percent": 15.864,
+          "payout_request_eligibility_probability_percent": 9.006,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            8.7550752969952,
+            9.2569247030048
+          ],
+          "challenge_pass_date_when_passed": {
+            "p10": "2026-10-23",
+            "median": "2026-12-17",
+            "p90": "2027-01-27"
+          },
+          "payout_request_date_when_eligible": {
+            "p10": "2026-11-06",
+            "median": "2026-12-28",
+            "p90": "2027-01-29"
+          },
+          "first_request_cash_on_standard_80pct_plan_when_eligible": {
+            "mean": 540.7672512991338,
+            "p10": 414.61495999999994,
+            "median": 496.62760000000003,
+            "p90": 750.35056
+          },
+          "unconditional_expected_requestable_cash": 48.70149865199999,
+          "status_counts": {
+            "challenge_static_breach": 1159,
+            "challenge_unfinished": 40909,
+            "funded_not_started": 344,
+            "funded_static_breach": 17,
+            "funded_unfinished": 3068,
+            "payout_request_eligible": 4503
+          },
+          "forecast_start": "2026-08-05",
+          "forecast_end": "2027-02-04",
+          "business_days": 132,
+          "historical_rolling_windows": {
+            "paths": 281,
+            "challenge_pass_probability_percent": 21.70818505338078,
+            "payout_request_eligibility_probability_percent": 9.252669039145907,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              5.8645913851942035,
+              12.64074669309761
+            ],
+            "challenge_pass_date_when_passed": {
+              "p10": "2026-11-02",
+              "median": "2027-01-08",
+              "p90": "2027-02-02"
+            },
+            "payout_request_date_when_eligible": {
+              "p10": "2026-12-29",
+              "median": "2027-01-12",
+              "p90": "2027-02-01"
+            },
+            "first_request_cash_on_standard_80pct_plan_when_eligible": {
+              "mean": 465.37673846153825,
+              "p10": 434.48509999999976,
+              "median": 464.9037999999999,
+              "p90": 506.52799999999974
+            },
+            "unconditional_expected_requestable_cash": 43.059769395017774,
+            "status_counts": {
+              "challenge_unfinished": 220,
+              "funded_not_started": 8,
+              "funded_unfinished": 27,
+              "payout_request_eligible": 26
+            }
+          }
+        }
+      }
+    },
+    "severe_execution_and_news_stress": {
+      "description": "Every winning deal reduced 10% and every losing deal enlarged 10%; the source history becomes net-negative.",
+      "historical_sample_net_profit_after_adjustment": -3670.8590000000045,
+      "horizons": {
+        "by_end_of_next_month": {
+          "paths": 50000,
+          "challenge_pass_probability_percent": 0.068,
+          "payout_request_eligibility_probability_percent": 0.008,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            0.00016031360627225086,
+            0.01583968639372775
+          ],
+          "challenge_pass_date_when_passed": {
+            "p10": "2026-09-11",
+            "median": "2026-09-23",
+            "p90": "2026-09-30"
+          },
+          "payout_request_date_when_eligible": {
+            "p10": "2026-09-22",
+            "median": "2026-09-28",
+            "p90": "2026-09-30"
+          },
+          "first_request_cash_on_standard_80pct_plan_when_eligible": {
+            "mean": 523.7601000000001,
+            "p10": 465.86052000000007,
+            "median": 490.8596000000001,
+            "p90": 607.9800800000003
+          },
+          "unconditional_expected_requestable_cash": 0.04190080800000002,
+          "status_counts": {
+            "challenge_static_breach": 93,
+            "challenge_unfinished": 49873,
+            "funded_not_started": 10,
+            "funded_unfinished": 20,
+            "payout_request_eligible": 4
+          },
+          "forecast_start": "2026-08-05",
+          "forecast_end": "2026-09-30",
+          "business_days": 41,
+          "historical_rolling_windows": {
+            "paths": 372,
+            "challenge_pass_probability_percent": 0.0,
+            "payout_request_eligibility_probability_percent": 0.0,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.0,
+              0.0
+            ],
+            "challenge_pass_date_when_passed": null,
+            "payout_request_date_when_eligible": null,
+            "first_request_cash_on_standard_80pct_plan_when_eligible": {
+              "mean": 0.0
+            },
+            "unconditional_expected_requestable_cash": 0.0,
+            "status_counts": {
+              "challenge_unfinished": 372
+            }
+          }
+        },
+        "by_end_of_2026": {
+          "paths": 50000,
+          "challenge_pass_probability_percent": 2.562,
+          "payout_request_eligibility_probability_percent": 0.9979999999999999,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            0.9108718838682254,
+            1.0851281161317745
+          ],
+          "challenge_pass_date_when_passed": {
+            "p10": "2026-10-15",
+            "median": "2026-11-27",
+            "p90": "2026-12-24"
+          },
+          "payout_request_date_when_eligible": {
+            "p10": "2026-10-27",
+            "median": "2026-12-04",
+            "p90": "2026-12-28"
+          },
+          "first_request_cash_on_standard_80pct_plan_when_eligible": {
+            "mean": 528.404446492986,
+            "p10": 417.6128,
+            "median": 489.4964000000001,
+            "p90": 699.27568
+          },
+          "unconditional_expected_requestable_cash": 5.2734763760000005,
+          "status_counts": {
+            "challenge_static_breach": 3206,
+            "challenge_unfinished": 45513,
+            "funded_not_started": 73,
+            "funded_static_breach": 3,
+            "funded_unfinished": 706,
+            "payout_request_eligible": 499
+          },
+          "forecast_start": "2026-08-05",
+          "forecast_end": "2026-12-31",
+          "business_days": 107,
+          "historical_rolling_windows": {
+            "paths": 306,
+            "challenge_pass_probability_percent": 0.0,
+            "payout_request_eligibility_probability_percent": 0.0,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.0,
+              0.0
+            ],
+            "challenge_pass_date_when_passed": null,
+            "payout_request_date_when_eligible": null,
+            "first_request_cash_on_standard_80pct_plan_when_eligible": {
+              "mean": 0.0
+            },
+            "unconditional_expected_requestable_cash": 0.0,
+            "status_counts": {
+              "challenge_static_breach": 19,
+              "challenge_unfinished": 287
+            }
+          }
+        },
+        "six_months": {
+          "paths": 50000,
+          "challenge_pass_probability_percent": 4.204,
+          "payout_request_eligibility_probability_percent": 1.902,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            1.7822690572597375,
+            2.021730942740262
+          ],
+          "challenge_pass_date_when_passed": {
+            "p10": "2026-10-26",
+            "median": "2026-12-17",
+            "p90": "2027-01-27"
+          },
+          "payout_request_date_when_eligible": {
+            "p10": "2026-11-10",
+            "median": "2026-12-30",
+            "p90": "2027-01-29"
+          },
+          "first_request_cash_on_standard_80pct_plan_when_eligible": {
+            "mean": 536.0589059936908,
+            "p10": 412.06399999999985,
+            "median": 493.4627999999999,
+            "p90": 731.9383999999999
+          },
+          "unconditional_expected_requestable_cash": 10.195840392,
+          "status_counts": {
+            "challenge_static_breach": 5186,
+            "challenge_unfinished": 42712,
+            "funded_not_started": 90,
+            "funded_static_breach": 6,
+            "funded_unfinished": 1055,
+            "payout_request_eligible": 951
+          },
+          "forecast_start": "2026-08-05",
+          "forecast_end": "2027-02-04",
+          "business_days": 132,
+          "historical_rolling_windows": {
+            "paths": 281,
+            "challenge_pass_probability_percent": 2.491103202846975,
+            "payout_request_eligibility_probability_percent": 0.0,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.0,
+              0.0
+            ],
+            "challenge_pass_date_when_passed": {
+              "p10": "2027-01-12",
+              "median": "2027-01-14",
+              "p90": "2027-01-28"
+            },
+            "payout_request_date_when_eligible": null,
+            "first_request_cash_on_standard_80pct_plan_when_eligible": {
+              "mean": 0.0
+            },
+            "unconditional_expected_requestable_cash": 0.0,
+            "status_counts": {
+              "challenge_static_breach": 34,
+              "challenge_unfinished": 240,
+              "funded_unfinished": 7
+            }
+          }
+        }
+      }
+    }
+  }
+}

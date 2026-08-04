@@ -20,6 +20,14 @@ from .portfolio_guard import selected_xau_entry_guard
 
 UTC = timezone.utc
 
+LIVE_TIMEFRAMES: dict[str, tuple[int, int]] = {
+    "M1": (mt5.TIMEFRAME_M1, 1),
+    "M5": (mt5.TIMEFRAME_M5, 5),
+    "M15": (mt5.TIMEFRAME_M15, 15),
+    "H1": (mt5.TIMEFRAME_H1, 60),
+    "H4": (mt5.TIMEFRAME_H4, 240),
+}
+
 
 def canonical(value: str) -> str:
     return re.sub(r"[^A-Z0-9]", "", value.upper())
@@ -37,6 +45,7 @@ def env_bool(name: str, default: bool) -> bool:
 @dataclass(frozen=True, slots=True)
 class LiveConfig:
     symbol_hint: str
+    timeframe: str
     pivot_distance: int
     max_same_direction_legs: int
     risk_pct_per_trade: float
@@ -71,6 +80,7 @@ class LiveConfig:
         load_dotenv()
         return cls(
             symbol_hint=os.getenv("GOLD_SYMBOL_HINT", "AUTO").strip(),
+            timeframe=os.getenv("TIMEFRAME", "H4").strip().upper(),
             pivot_distance=int(os.getenv("PIVOT_DISTANCE", "5")),
             max_same_direction_legs=int(
                 os.getenv("MAX_SAME_DIRECTION_LEGS", "1")
@@ -108,6 +118,10 @@ class LiveConfig:
         )
 
     def validate(self) -> None:
+        if self.timeframe not in LIVE_TIMEFRAMES:
+            raise ValueError(
+                "TIMEFRAME must be one of " + ", ".join(LIVE_TIMEFRAMES)
+            )
         if self.pivot_distance < 1:
             raise ValueError("PIVOT_DISTANCE must be at least 1")
         if self.max_same_direction_legs < 1:
@@ -220,13 +234,21 @@ def discover_gold_symbol(hint: str) -> str:
     return symbol
 
 
-def latest_h4_frame(symbol: str, bars: int) -> pd.DataFrame:
-    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H4, 0, bars)
+def latest_frame(symbol: str, timeframe: str, bars: int) -> pd.DataFrame:
+    mt5_timeframe, _ = LIVE_TIMEFRAMES[timeframe]
+    rates = mt5.copy_rates_from_pos(symbol, mt5_timeframe, 0, bars)
     if rates is None or len(rates) < 3:
-        raise RuntimeError(f"No H4 data for {symbol}: {mt5.last_error()}")
+        raise RuntimeError(
+            f"No {timeframe} data for {symbol}: {mt5.last_error()}"
+        )
     frame = pd.DataFrame(rates).sort_values("time").reset_index(drop=True)
     frame["time"] = pd.to_datetime(frame["time"], unit="s", utc=True)
     return frame
+
+
+def latest_h4_frame(symbol: str, bars: int) -> pd.DataFrame:
+    """Backward-compatible helper retained for integrations importing it."""
+    return latest_frame(symbol, "H4", bars)
 
 
 def confirmed_signal(
@@ -786,7 +808,7 @@ def account_line() -> str:
 def process_once(symbol: str, config: LiveConfig, state: dict[str, object]) -> None:
     if sync_loss_streak(symbol, config, state):
         save_state(config.state_file, state)
-    frame = latest_h4_frame(symbol, config.history_bars)
+    frame = latest_frame(symbol, config.timeframe, config.history_bars)
     completed = frame.iloc[:-1].reset_index(drop=True)
     positions = managed_positions(symbol, config.magic)
     dry_run = not config.live_trading
@@ -798,11 +820,14 @@ def process_once(symbol: str, config: LiveConfig, state: dict[str, object]) -> N
     now = datetime.now(UTC)
     current_open = current["time"].to_pydatetime()
     bar_age_minutes = (now - current_open).total_seconds() / 60.0
-    if not 0 <= bar_age_minutes < config.entry_window_minutes:
+    _, bar_minutes = LIVE_TIMEFRAMES[config.timeframe]
+    effective_window = min(config.entry_window_minutes, bar_minutes)
+    if not 0 <= bar_age_minutes < effective_window:
         logging.debug(
-            "No entry: current H4 bar age %.1f min (window %d)",
+            "No entry: current %s bar age %.1f min (window %d)",
+            config.timeframe,
             bar_age_minutes,
-            config.entry_window_minutes,
+            effective_window,
         )
         return
     tick = mt5.symbol_info_tick(symbol)
@@ -913,9 +938,10 @@ def run(once: bool = False) -> None:
         logging.info(account_line())
         symbol = discover_gold_symbol(config.symbol_hint)
         logging.info(
-            "Gold discovered as %s | H4 | pivot=%d | risk=%.2f%% | "
+            "Gold discovered as %s | %s | pivot=%d | risk=%.2f%% | "
             "exit=%s | filter=%s | max lot=%.2f | max legs=%d | mode=%s",
             symbol,
+            config.timeframe,
             config.pivot_distance,
             config.risk_pct_per_trade,
             (
@@ -944,7 +970,7 @@ def run(once: bool = False) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Live EMA3 H4 pivot reversal bot")
+    parser = argparse.ArgumentParser(description="Live EMA3 pivot reversal bot")
     parser.add_argument(
         "--once",
         action="store_true",

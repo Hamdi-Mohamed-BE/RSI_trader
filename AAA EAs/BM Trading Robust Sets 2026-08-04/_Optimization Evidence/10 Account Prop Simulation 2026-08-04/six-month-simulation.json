@@ -1,0 +1,483 @@
+{
+  "prepared": "2026-08-04",
+  "forecast_start": "2026-08-05",
+  "forecast_end": "2027-02-04",
+  "business_days": 132,
+  "trials_per_program_scenario": 50000,
+  "portfolio_test_source": {
+    "start": "2025-01-02",
+    "end": "2026-07-31",
+    "starting_balance": 100000.0,
+    "net_profit": 17844.91,
+    "note": "Only closed-deal combined history is available; prop firms enforce floating equity."
+  },
+  "correlation": {
+    "assumption": "All copied accounts receive the same return path and are fully correlated.",
+    "implication": "Account count multiplies payout dollars, not the probability of passing or receiving a payout."
+  },
+  "program_limits": {
+    "FundedNext Stellar 1-Step": "One cloned account modeled as compliant; identical EA trades across FundedNext accounts are prohibited.",
+    "BrightFunded 2-Step Bright": "Up to four copied $100K funded accounts ($400K allocation) modeled as compliant.",
+    "Ten copied $100K accounts": "Hypothetical only; exceeds the reviewed firms' identical-strategy allocation rules."
+  },
+  "important_limitations": [
+    "A block bootstrap reorders five-day chunks from only 19 months of history; it is not a forecast guarantee.",
+    "Floating equity, future spreads, swaps, symbol mapping, slippage, outages, EA licensing and firm reviews are not observable in the combined reports.",
+    "The moderate stress is a sensitivity test, not an empirically measured broker adjustment.",
+    "Stage transitions approximate one business day between evaluation phases and two business days before funded activation.",
+    "The model assumes a phase can restart from the sampled daily P/L stream; positions spanning a stage transition cannot be reconstructed from combined daily data.",
+    "BrightFunded funded-news profits inside its restricted window may be removed; the stress case is not an exact news-calendar replay.",
+    "Payout reputation and published rules cannot guarantee that any private simulated-account firm will remain solvent or approve a future payout."
+  ],
+  "results": {
+    "tested_execution": {
+      "description": "Exact closed-deal net P/L from the final MT5 reports.",
+      "historical_sample_net_profit_after_adjustment": 17844.91,
+      "programs": {
+        "FundedNext Stellar 1-Step": {
+          "paths": 50000,
+          "phase1_pass_probability_percent": 26.274,
+          "all_evaluation_phases_pass_probability_percent": 26.274,
+          "first_payout_probability_percent": 19.28,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            18.934207825578426,
+            19.625792174421576
+          ],
+          "first_payout_per_account_when_successful": {
+            "mean": 624.7591219792531,
+            "p10": 85.83713600000011,
+            "median": 476.99564000000004,
+            "p90": 1384.45848
+          },
+          "unconditional_expected_first_payout_per_account": 120.45355871760002,
+          "first_payout_date_when_successful": {
+            "p10": "2026-11-13",
+            "median": "2026-12-29",
+            "p90": "2027-01-28"
+          },
+          "status_counts": {
+            "funded_max_loss_breach": 19,
+            "funded_unfinished": 3478,
+            "payout": 9640,
+            "phase1_max_loss_breach": 865,
+            "phase1_unfinished": 35998
+          },
+          "historical_rolling_132_business_day_windows": {
+            "paths": 281,
+            "phase1_pass_probability_percent": 32.74021352313167,
+            "all_evaluation_phases_pass_probability_percent": 32.74021352313167,
+            "first_payout_probability_percent": 20.284697508896798,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              15.582963799329095,
+              24.986431218464503
+            ],
+            "first_payout_per_account_when_successful": {
+              "mean": 276.8566715789474,
+              "p10": 5.550679999999999,
+              "median": 272.93288000000007,
+              "p90": 523.48548
+            },
+            "unconditional_expected_first_payout_per_account": 56.15953836298933,
+            "first_payout_date_when_successful": {
+              "p10": "2026-12-28",
+              "median": "2027-01-18",
+              "p90": "2027-02-02"
+            },
+            "status_counts": {
+              "funded_unfinished": 35,
+              "payout": 57,
+              "phase1_unfinished": 189
+            }
+          },
+          "correlated_account_payouts_when_successful": {
+            "one_account": {
+              "mean": 624.7591219792531,
+              "p10": 85.83713600000011,
+              "median": 476.99564000000004,
+              "p90": 1384.45848
+            },
+            "four_correlated_accounts": {
+              "mean": 2499.0364879170124,
+              "p10": 343.34854400000046,
+              "median": 1907.9825600000001,
+              "p90": 5537.83392
+            },
+            "ten_correlated_accounts_hypothetical": {
+              "mean": 6247.591219792531,
+              "p10": 858.3713600000011,
+              "median": 4769.9564,
+              "p90": 13844.5848
+            }
+          }
+        },
+        "BrightFunded 2-Step Bright": {
+          "paths": 50000,
+          "phase1_pass_probability_percent": 43.144,
+          "all_evaluation_phases_pass_probability_percent": 8.826,
+          "first_payout_probability_percent": 2.88,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            2.733404158792959,
+            3.026595841207041
+          ],
+          "first_payout_per_account_when_successful": {
+            "mean": 1424.2727222222225,
+            "p10": 137.24239999999992,
+            "median": 1082.9,
+            "p90": 3118.2384000000043
+          },
+          "unconditional_expected_first_payout_per_account": 41.0190544,
+          "first_payout_date_when_successful": {
+            "p10": "2026-12-17",
+            "median": "2027-01-18",
+            "p90": "2027-02-02"
+          },
+          "status_counts": {
+            "funded_max_loss_breach": 1,
+            "funded_unfinished": 2972,
+            "payout": 1440,
+            "phase1_max_loss_breach": 193,
+            "phase1_unfinished": 28235,
+            "phase2_max_loss_breach": 6,
+            "phase2_unfinished": 17153
+          },
+          "historical_rolling_132_business_day_windows": {
+            "paths": 281,
+            "phase1_pass_probability_percent": 62.98932384341637,
+            "all_evaluation_phases_pass_probability_percent": 4.270462633451957,
+            "first_payout_probability_percent": 0.0,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.0,
+              0.0
+            ],
+            "first_payout_per_account_when_successful": {
+              "mean": 0.0
+            },
+            "unconditional_expected_first_payout_per_account": 0.0,
+            "first_payout_date_when_successful": null,
+            "status_counts": {
+              "funded_unfinished": 12,
+              "phase1_unfinished": 104,
+              "phase2_unfinished": 165
+            }
+          },
+          "correlated_account_payouts_when_successful": {
+            "one_account": {
+              "mean": 1424.2727222222225,
+              "p10": 137.24239999999992,
+              "median": 1082.9,
+              "p90": 3118.2384000000043
+            },
+            "four_correlated_accounts": {
+              "mean": 5697.09088888889,
+              "p10": 548.9695999999997,
+              "median": 4331.6,
+              "p90": 12472.953600000017
+            },
+            "ten_correlated_accounts_hypothetical": {
+              "mean": 14242.727222222224,
+              "p10": 1372.423999999999,
+              "median": 10829.0,
+              "p90": 31182.384000000042
+            }
+          }
+        }
+      }
+    },
+    "moderate_execution_and_news_stress": {
+      "description": "Every winning deal reduced 5% and every losing deal enlarged 5%.",
+      "historical_sample_net_profit_after_adjustment": 7087.025499999992,
+      "programs": {
+        "FundedNext Stellar 1-Step": {
+          "paths": 50000,
+          "phase1_pass_probability_percent": 9.164,
+          "all_evaluation_phases_pass_probability_percent": 9.164,
+          "first_payout_probability_percent": 5.96,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            5.752484515207177,
+            6.167515484792823
+          ],
+          "first_payout_per_account_when_successful": {
+            "mean": 574.1338345248321,
+            "p10": 65.9864683999999,
+            "median": 424.9008869999999,
+            "p90": 1317.8434105999997
+          },
+          "unconditional_expected_first_payout_per_account": 34.218376537679994,
+          "first_payout_date_when_successful": {
+            "p10": "2026-11-18",
+            "median": "2027-01-01",
+            "p90": "2027-01-29"
+          },
+          "status_counts": {
+            "funded_max_loss_breach": 26,
+            "funded_unfinished": 1576,
+            "payout": 2980,
+            "phase1_max_loss_breach": 3820,
+            "phase1_unfinished": 41598
+          },
+          "historical_rolling_132_business_day_windows": {
+            "paths": 281,
+            "phase1_pass_probability_percent": 5.338078291814947,
+            "all_evaluation_phases_pass_probability_percent": 5.338078291814947,
+            "first_payout_probability_percent": 2.8469750889679712,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.9024081016390892,
+              4.791542076296854
+            ],
+            "first_payout_per_account_when_successful": {
+              "mean": 265.3173412499997,
+              "p10": 59.747781999999354,
+              "median": 243.00938799999963,
+              "p90": 492.7182306
+            },
+            "unconditional_expected_first_payout_per_account": 7.553518612099635,
+            "first_payout_date_when_successful": {
+              "p10": "2027-01-18",
+              "median": "2027-01-29",
+              "p90": "2027-02-02"
+            },
+            "status_counts": {
+              "funded_unfinished": 7,
+              "payout": 8,
+              "phase1_max_loss_breach": 18,
+              "phase1_unfinished": 248
+            }
+          },
+          "correlated_account_payouts_when_successful": {
+            "one_account": {
+              "mean": 574.1338345248321,
+              "p10": 65.9864683999999,
+              "median": 424.9008869999999,
+              "p90": 1317.8434105999997
+            },
+            "four_correlated_accounts": {
+              "mean": 2296.5353380993283,
+              "p10": 263.9458735999996,
+              "median": 1699.6035479999996,
+              "p90": 5271.373642399999
+            },
+            "ten_correlated_accounts_hypothetical": {
+              "mean": 5741.338345248321,
+              "p10": 659.864683999999,
+              "median": 4249.008869999999,
+              "p90": 13178.434105999997
+            }
+          }
+        },
+        "BrightFunded 2-Step Bright": {
+          "paths": 50000,
+          "phase1_pass_probability_percent": 18.936,
+          "all_evaluation_phases_pass_probability_percent": 2.004,
+          "first_payout_probability_percent": 0.5479999999999999,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            0.4832904903196446,
+            0.6127095096803553
+          ],
+          "first_payout_per_account_when_successful": {
+            "mean": 1199.527408759124,
+            "p10": 99.53059999999951,
+            "median": 880.9027999999996,
+            "p90": 2786.286160000001
+          },
+          "unconditional_expected_first_payout_per_account": 6.573410199999998,
+          "first_payout_date_when_successful": {
+            "p10": "2026-12-21",
+            "median": "2027-01-19",
+            "p90": "2027-02-02"
+          },
+          "status_counts": {
+            "funded_unfinished": 728,
+            "payout": 274,
+            "phase1_max_loss_breach": 1205,
+            "phase1_unfinished": 39327,
+            "phase2_max_loss_breach": 15,
+            "phase2_unfinished": 8451
+          },
+          "historical_rolling_132_business_day_windows": {
+            "paths": 281,
+            "phase1_pass_probability_percent": 21.708185053380785,
+            "all_evaluation_phases_pass_probability_percent": 0.0,
+            "first_payout_probability_percent": 0.0,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.0,
+              0.0
+            ],
+            "first_payout_per_account_when_successful": {
+              "mean": 0.0
+            },
+            "unconditional_expected_first_payout_per_account": 0.0,
+            "first_payout_date_when_successful": null,
+            "status_counts": {
+              "phase1_unfinished": 220,
+              "phase2_unfinished": 61
+            }
+          },
+          "correlated_account_payouts_when_successful": {
+            "one_account": {
+              "mean": 1199.527408759124,
+              "p10": 99.53059999999951,
+              "median": 880.9027999999996,
+              "p90": 2786.286160000001
+            },
+            "four_correlated_accounts": {
+              "mean": 4798.109635036496,
+              "p10": 398.12239999999804,
+              "median": 3523.6111999999985,
+              "p90": 11145.144640000004
+            },
+            "ten_correlated_accounts_hypothetical": {
+              "mean": 11995.27408759124,
+              "p10": 995.305999999995,
+              "median": 8809.027999999997,
+              "p90": 27862.86160000001
+            }
+          }
+        }
+      }
+    },
+    "severe_execution_and_news_stress": {
+      "description": "Every winning deal reduced 10% and every losing deal enlarged 10%; this makes the tested 19-month sample net-negative.",
+      "historical_sample_net_profit_after_adjustment": -3670.8590000000045,
+      "programs": {
+        "FundedNext Stellar 1-Step": {
+          "paths": 50000,
+          "phase1_pass_probability_percent": 2.104,
+          "all_evaluation_phases_pass_probability_percent": 2.104,
+          "first_payout_probability_percent": 1.1360000000000001,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            1.0431077839034508,
+            1.2288922160965494
+          ],
+          "first_payout_per_account_when_successful": {
+            "mean": 553.7351678239436,
+            "p10": 72.40672919999994,
+            "median": 380.3551360000001,
+            "p90": 1309.3014236
+          },
+          "unconditional_expected_first_payout_per_account": 6.290431506479999,
+          "first_payout_date_when_successful": {
+            "p10": "2026-11-20",
+            "median": "2027-01-04",
+            "p90": "2027-02-01"
+          },
+          "status_counts": {
+            "funded_max_loss_breach": 10,
+            "funded_unfinished": 474,
+            "payout": 568,
+            "phase1_max_loss_breach": 11201,
+            "phase1_unfinished": 37747
+          },
+          "historical_rolling_132_business_day_windows": {
+            "paths": 281,
+            "phase1_pass_probability_percent": 0.0,
+            "all_evaluation_phases_pass_probability_percent": 0.0,
+            "first_payout_probability_percent": 0.0,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.0,
+              0.0
+            ],
+            "first_payout_per_account_when_successful": {
+              "mean": 0.0
+            },
+            "unconditional_expected_first_payout_per_account": 0.0,
+            "first_payout_date_when_successful": null,
+            "status_counts": {
+              "phase1_max_loss_breach": 48,
+              "phase1_unfinished": 233
+            }
+          },
+          "correlated_account_payouts_when_successful": {
+            "one_account": {
+              "mean": 553.7351678239436,
+              "p10": 72.40672919999994,
+              "median": 380.3551360000001,
+              "p90": 1309.3014236
+            },
+            "four_correlated_accounts": {
+              "mean": 2214.9406712957743,
+              "p10": 289.6269167999998,
+              "median": 1521.4205440000003,
+              "p90": 5237.2056944
+            },
+            "ten_correlated_accounts_hypothetical": {
+              "mean": 5537.351678239436,
+              "p10": 724.0672919999995,
+              "median": 3803.551360000001,
+              "p90": 13093.014235999999
+            }
+          }
+        },
+        "BrightFunded 2-Step Bright": {
+          "paths": 50000,
+          "phase1_pass_probability_percent": 5.554,
+          "all_evaluation_phases_pass_probability_percent": 0.264,
+          "first_payout_probability_percent": 0.07200000000000001,
+          "monte_carlo_sampling_95pct_interval_percent": [
+            0.04848846872464493,
+            0.09551153127535508
+          ],
+          "first_payout_per_account_when_successful": {
+            "mean": 1075.6838666666667,
+            "p10": 73.05879999999988,
+            "median": 822.3519999999996,
+            "p90": 2543.258
+          },
+          "unconditional_expected_first_payout_per_account": 0.7744923839999999,
+          "first_payout_date_when_successful": {
+            "p10": "2026-12-18",
+            "median": "2027-01-19",
+            "p90": "2027-02-02"
+          },
+          "status_counts": {
+            "funded_unfinished": 96,
+            "payout": 36,
+            "phase1_max_loss_breach": 4915,
+            "phase1_unfinished": 42308,
+            "phase2_max_loss_breach": 18,
+            "phase2_unfinished": 2627
+          },
+          "historical_rolling_132_business_day_windows": {
+            "paths": 281,
+            "phase1_pass_probability_percent": 2.491103202846975,
+            "all_evaluation_phases_pass_probability_percent": 0.0,
+            "first_payout_probability_percent": 0.0,
+            "monte_carlo_sampling_95pct_interval_percent": [
+              0.0,
+              0.0
+            ],
+            "first_payout_per_account_when_successful": {
+              "mean": 0.0
+            },
+            "unconditional_expected_first_payout_per_account": 0.0,
+            "first_payout_date_when_successful": null,
+            "status_counts": {
+              "phase1_max_loss_breach": 34,
+              "phase1_unfinished": 240,
+              "phase2_unfinished": 7
+            }
+          },
+          "correlated_account_payouts_when_successful": {
+            "one_account": {
+              "mean": 1075.6838666666667,
+              "p10": 73.05879999999988,
+              "median": 822.3519999999996,
+              "p90": 2543.258
+            },
+            "four_correlated_accounts": {
+              "mean": 4302.735466666667,
+              "p10": 292.2351999999995,
+              "median": 3289.4079999999985,
+              "p90": 10173.032
+            },
+            "ten_correlated_accounts_hypothetical": {
+              "mean": 10756.838666666667,
+              "p10": 730.5879999999988,
+              "median": 8223.519999999997,
+              "p90": 25432.579999999998
+            }
+          }
+        }
+      }
+    }
+  }
+}
