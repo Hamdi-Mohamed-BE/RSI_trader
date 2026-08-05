@@ -120,6 +120,8 @@ def symbol_payload(original, account_currency: str) -> dict:
         "bid": bid,
         "ask": ask,
         "reference_price": reference_price,
+        "point": abs(float(field(item, "point"))),
+        "trade_stops_level": int(field(item, "trade_stops_level")),
         "trade_tick_size": tick_size,
         "trade_tick_value": tick_value,
         "trade_tick_value_loss": max(abs(float(field(item, "trade_tick_value_loss"))), tick_value),

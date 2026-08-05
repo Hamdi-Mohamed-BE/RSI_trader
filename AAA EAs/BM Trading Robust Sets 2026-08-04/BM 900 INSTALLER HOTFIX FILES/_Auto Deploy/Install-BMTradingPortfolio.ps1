@@ -1,17 +1,21 @@
 [CmdletBinding()]
 param(
     [string]$TargetTerminal,
-    [ValidateSet('100K', '900')]
-    [string]$AccountProfile = '100K',
-    [switch]$ValidateOnly
+    [ValidateSet('AUTO', '100K', '900')]
+    [string]$AccountProfile = 'AUTO',
+    [ValidateRange(0.1, 5.0)]
+    [double]$AdaptiveRiskPercent = 1.0,
+    [switch]$ValidateOnly,
+    [switch]$PreflightOnly
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $PackageRoot = Split-Path -Parent $PSScriptRoot
+$IsAdaptiveAccount = $AccountProfile -eq 'AUTO'
 $IsSmallAccount = $AccountProfile -eq '900'
-$ProfileName = if ($IsSmallAccount) { 'BM Trading 900 - AUTO' } else { 'BM Trading 100K - AUTO' }
+$ProfileName = if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - AUTO' } elseif ($IsSmallAccount) { 'BM Trading 900 - AUTO' } else { 'BM Trading 100K - AUTO' }
 $ExpertFolderName = $ProfileName
 $ProbePath = Join-Path $PSScriptRoot 'Probe-MT5.py'
 $Unicode = New-Object System.Text.UnicodeEncoding($false, $true)
@@ -26,12 +30,16 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 }
 
 function Get-PortfolioItems {
-    $atrSet = if ($IsSmallAccount) {
+    $atrSet = if ($IsAdaptiveAccount) {
+        'ATR Candle Breakout EA\BEST ROBUST OPTIMIZED - ATR Candle Breakout - XAUUSD H1.set'
+    } elseif ($IsSmallAccount) {
         'ATR Candle Breakout EA\PORTFOLIO 900 - ATR Candle Breakout - XAUUSD H1 - 18 USD risk.set'
     } else {
         'ATR Candle Breakout EA\PORTFOLIO 100K FINAL - ATR Candle Breakout - XAUUSD H1 - 146 USD risk.set'
     }
-    $goLongSet = if ($IsSmallAccount) {
+    $goLongSet = if ($IsAdaptiveAccount) {
+        'Go Long EA\BEST ROBUST RETAINED - Go Long - US30 D1.set'
+    } elseif ($IsSmallAccount) {
         'Go Long EA\PORTFOLIO 900 - Go Long - US30 D1 - 0.01 lot.set'
     } else {
         'Go Long EA\PORTFOLIO 100K FINAL - Go Long - US30 D1 - 0.50 lot.set'
@@ -218,7 +226,21 @@ function Read-SetInputs([string]$Path) {
 
 function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
-    if ($IsSmallAccount) {
+    if ($IsAdaptiveAccount) {
+        $riskAmount = ([double]$Item.EffectiveRisk).ToString('0.00', [Globalization.CultureInfo]::InvariantCulture)
+        $riskPercent = $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+        if ($inputs.Contains('RiskMoney')) { $inputs['RiskMoney'] = $riskAmount }
+        if ($inputs.Contains('InpRiskAmount')) { $inputs['InpRiskAmount'] = $riskAmount }
+        if ([bool]$Item.PercentRisk -and $inputs.Contains('InpRiskPercent')) { $inputs['InpRiskPercent'] = $riskPercent }
+        if ([bool]$Item.SmallDynamicRisk) {
+            $inputs['Volume'] = '0'
+            $inputs['Lots'] = ([double]$Item.EffectiveLot).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+            $inputs['RiskPercent'] = $riskPercent
+            $inputs['SlCalcMode'] = '1'
+            $inputs['SlValue'] = ([double]$Item.EffectiveStopPercent).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+            $inputs['Commentary'] = ('BM-AUTO-{0}PCT-HARD-SL' -f $riskPercent)
+        }
+    } elseif ($IsSmallAccount) {
         if ($inputs.Contains('RiskMoney')) { $inputs['RiskMoney'] = '40' }
         if ($inputs.Contains('InpRiskAmount')) { $inputs['InpRiskAmount'] = '40' }
         if ([bool]$Item.SmallDynamicRisk) {
@@ -461,11 +483,16 @@ Write-Host ('Data:    {0}' -f $dataRoot)
 if (-not [bool]$probe.terminal.connected) { Stop-WithMessage 'The selected MT5 terminal is not connected to its trading server.' }
 if (-not [bool]$probe.account.trade_allowed) { Stop-WithMessage 'Trading is not allowed on the selected account.' }
 if (-not [bool]$probe.account.trade_expert) { Stop-WithMessage 'This account currently blocks Expert Advisor trading.' }
+$balance = [double]$probe.account.balance
+if ($balance -le 0) { Stop-WithMessage "Account $login has no positive balance to size risk from." }
+if ([string]$probe.account.currency -ine 'USD' -and -not $IsAdaptiveAccount) {
+    Stop-WithMessage "Refusing to run: the legacy fixed-money settings require a USD account, but account $login uses $($probe.account.currency)."
+}
 
 $symbols = @($probe.symbols)
 foreach ($item in $portfolio) {
     $match = Find-BrokerSymbol $symbols $item.Aliases
-    if (-not $match -and $IsSmallAccount) {
+    if (-not $match -and ($IsAdaptiveAccount -or $IsSmallAccount)) {
         $match = Find-BrokerSymbol $symbols $item.Aliases -AllowFutures
     }
     if (-not $match) {
@@ -478,17 +505,20 @@ foreach ($item in $portfolio) {
     $item | Add-Member -NotePropertyName BrokerSymbol -NotePropertyValue ([string]$match.name)
     $brokerMinimum = [double]$match.volume_min
     $item | Add-Member -NotePropertyName BrokerVolumeMinimum -NotePropertyValue $brokerMinimum
-    if ($IsSmallAccount -and [bool]$item.SmallDynamicRisk) {
+    $targetRisk = if ($IsAdaptiveAccount) { [Math]::Round($balance * ($AdaptiveRiskPercent / 100.0), 2) } elseif ($IsSmallAccount) { 40.0 } else { 0.0 }
+    if ($IsAdaptiveAccount) {
+        $item | Add-Member -NotePropertyName EffectiveRisk -NotePropertyValue $targetRisk
+    }
+    if (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$item.SmallDynamicRisk) {
         $price = [Math]::Max([Math]::Max([double]$match.bid, [double]$match.ask), [double]$match.reference_price)
         $tickSize = [Math]::Abs([double]$match.trade_tick_size)
         $tickValue = [Math]::Max([Math]::Abs([double]$match.trade_tick_value_loss), [Math]::Abs([double]$match.trade_tick_value))
         $volumeStep = [Math]::Abs([double]$match.volume_step)
         $volumeMaximum = [double]$match.volume_max
         if ($price -le 0 -or $tickSize -le 0 -or $tickValue -le 0 -or $brokerMinimum -le 0 -or $volumeStep -le 0) {
-            Stop-WithMessage "Cannot calculate a broker-specific USD 40 stop for $($item.Label) on $($item.BrokerSymbol). Quote or contract data is missing."
+            Stop-WithMessage "Cannot calculate a broker-specific adaptive stop for $($item.Label) on $($item.BrokerSymbol). Quote or contract data is missing."
         }
 
-        $targetRisk = 40.0
         $preferredStopPercent = 0.75
         $preferredDistance = $price * ($preferredStopPercent / 100.0)
         $riskPerLot = ($preferredDistance / $tickSize) * $tickValue
@@ -498,27 +528,39 @@ foreach ($item in $portfolio) {
         $effectiveLot = [Math]::Min($volumeMaximum, [Math]::Max($brokerMinimum, $effectiveLot))
         $effectiveLot = [Math]::Round($effectiveLot, 8)
         $effectiveStopPercent = (($targetRisk * $tickSize) / ($tickValue * $effectiveLot * $price)) * 100.0
+        $point = [Math]::Abs([double]$match.point)
+        $stopsLevel = [Math]::Max(0, [double]$match.trade_stops_level)
+        $minimumStopDistance = [Math]::Max($tickSize, $point * $stopsLevel)
+        $minimumStopPercent = ($minimumStopDistance / $price) * 100.0
+        if ($effectiveStopPercent -lt $minimumStopPercent) {
+            $effectiveStopPercent = $minimumStopPercent
+        }
         if ($effectiveStopPercent -le 0) {
             Stop-WithMessage "The calculated hard stop for $($item.Label) is invalid."
         }
+        $effectiveRisk = (($price * ($effectiveStopPercent / 100.0)) / $tickSize) * $tickValue * $effectiveLot
         $item | Add-Member -NotePropertyName EffectiveLot -NotePropertyValue $effectiveLot
         $item | Add-Member -NotePropertyName EffectiveStopPercent -NotePropertyValue $effectiveStopPercent
-        $item | Add-Member -NotePropertyName EffectiveRisk -NotePropertyValue $targetRisk
-        Write-Host ('{0,-22} {1,-8} -> {2}; lot {3}, hard SL {4:N4}%, target ${5:N0}' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $effectiveLot, $effectiveStopPercent, $targetRisk) -ForegroundColor Yellow
-    } elseif ($IsSmallAccount -and [bool]$item.PercentRisk) {
+        if ($IsAdaptiveAccount) { $item.EffectiveRisk = $effectiveRisk } else { $item | Add-Member -NotePropertyName EffectiveRisk -NotePropertyValue $effectiveRisk }
+        $riskPctOfBalance = ($effectiveRisk / $balance) * 100.0
+        Write-Host ('{0,-28} {1,-8} -> {2}; lot {3}, hard SL {4:N4}%, planned {5:N2} {6} ({7:N2}%)' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $effectiveLot, $effectiveStopPercent, $effectiveRisk, [string]$probe.account.currency, $riskPctOfBalance) -ForegroundColor Yellow
+        if ($effectiveRisk -gt ($targetRisk * 1.05)) {
+            Write-Host ('  Broker minimum lot/stop raises this above the {0:N2} {1} target.' -f $targetRisk, [string]$probe.account.currency) -ForegroundColor Red
+        }
+    } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$item.PercentRisk) {
         $percentInputs = Read-SetInputs $item.SetFullPath
-        $riskText = if ($percentInputs.Contains('InpRiskPercent')) { [string]$percentInputs['InpRiskPercent'] } else { 'default' }
+        $riskText = if ($IsAdaptiveAccount) { $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture) } elseif ($percentInputs.Contains('InpRiskPercent')) { [string]$percentInputs['InpRiskPercent'] } else { 'default' }
         Write-Host ('{0,-42} {1,-8} -> {2}; equity risk {3}%' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $riskText)
+    } elseif ($IsAdaptiveAccount) {
+        Write-Host ('{0,-28} {1,-8} -> {2}; planned stop risk {3:N2} {4} ({5:N2}%)' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $targetRisk, [string]$probe.account.currency, $AdaptiveRiskPercent)
     } else {
         Write-Host ('{0,-22} {1,-8} -> {2}; requested stop risk $40' -f $item.Label, $item.Canonical, $item.BrokerSymbol)
     }
 }
 
-$balance = [double]$probe.account.balance
-if ([string]$probe.account.currency -ine 'USD') {
-    Stop-WithMessage "Refusing to run: these fixed-money settings require a USD account, but account $login uses $($probe.account.currency)."
-}
-if ($IsSmallAccount) {
+if ($IsAdaptiveAccount) {
+    Write-Host ('Adaptive balance accepted: {0:N2} {1}; planned risk per EA trade {2:N2}% ({3:N2} {1} at installation).' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
+} elseif ($IsSmallAccount) {
     if ($balance -lt 800 -or $balance -gt 1200) {
         Stop-WithMessage "Refusing to run: the small-account settings are for roughly USD 900, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Use an account between USD 800 and USD 1,200."
     }
@@ -526,17 +568,25 @@ if ($IsSmallAccount) {
     Stop-WithMessage "Refusing to run: these settings are for a USD 100,000 account, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Log into the correct 100K account and run the BAT again."
 }
 
+if ($PreflightOnly) {
+    Write-Host "`nAdaptive preflight passed. No terminal, profile, account or file was changed." -ForegroundColor Green
+    exit 0
+}
+
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
 Write-Host 'STRICT +20% SET: Weekend Direction was provisional and XAU Weakness previously failed validation.' -ForegroundColor Red
 Write-Host 'Their selected settings are enabled because you explicitly requested every +20% result.' -ForegroundColor Red
-if ($IsSmallAccount) {
+if ($IsAdaptiveAccount) {
+    Write-Host ('AUTO BALANCE: every EA targets {0:N2}% of the detected balance at its planned stop.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+    Write-Host 'Lot size and the Go Long hard stop are rebuilt from the active broker contract data.' -ForegroundColor Red
+} elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red
     Write-Host 'AAA Final EAs use their preset equity percentage (normally 1%; XAU Grid 0.5%).' -ForegroundColor Red
     Write-Host 'The installer adds broker-specific hard stops to the two index EAs; gaps can still lose more.' -ForegroundColor Red
 }
 Write-Host 'It does not delete your existing profiles or close any open positions.' -ForegroundColor Yellow
-$expected = if ($IsSmallAccount) { "RUN $login 900" } else { "RUN $login" }
+$expected = if ($IsAdaptiveAccount) { "RUN $login AUTO" } elseif ($IsSmallAccount) { "RUN $login 900" } else { "RUN $login" }
 $confirmation = Read-Host "Type exactly '$expected' to continue"
 if ($confirmation -cne $expected) { Stop-WithMessage 'Confirmation did not match. No portfolio files were installed.' }
 
@@ -593,11 +643,12 @@ if (Test-Path -LiteralPath $profileTargetFull) {
 for ($i = 0; $i -lt $portfolio.Count; $i++) {
     $item = $portfolio[$i]
     Copy-Item -LiteralPath $item.ExpertFullPath -Destination (Join-Path $expertsTarget $item.Expert) -Force
-    if ($IsSmallAccount) {
+    if ($IsAdaptiveAccount -or $IsSmallAccount) {
         $effectiveInputs = Get-EffectiveInputs $item
         $effectiveSetText = (@($effectiveInputs.Keys | ForEach-Object { '{0}={1}' -f $_, $effectiveInputs[$_] }) -join "`r`n") + "`r`n"
         $safeLabel = $item.Label -replace '[^A-Za-z0-9 -]', ''
-        $effectiveSetName = "LAST INSTALLED 900 - $safeLabel - $($item.BrokerSymbol).set"
+        $setProfileLabel = if ($IsAdaptiveAccount) { 'AUTO BALANCE' } else { '900' }
+        $effectiveSetName = "LAST INSTALLED $setProfileLabel - $safeLabel - $($item.BrokerSymbol).set"
         $effectiveSetSource = Join-Path (Split-Path -Parent $item.SetFullPath) $effectiveSetName
         [IO.File]::WriteAllText($effectiveSetSource, $effectiveSetText, [Text.UTF8Encoding]::new($true))
         Copy-Item -LiteralPath $effectiveSetSource -Destination (Join-Path $testerTarget $effectiveSetName) -Force
@@ -636,12 +687,14 @@ $manifest = @(
     ''
     'Charts:'
 ) + @($portfolio | ForEach-Object {
-    if ($IsSmallAccount -and [bool]$_.SmallDynamicRisk) {
-        '{0}: {1}, period {2}, {3}; lot {4}; hard SL {5:N4}%; target risk USD {6:N2}; set {7}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveLot, $_.EffectiveStopPercent, $_.EffectiveRisk, $_.EffectiveSetPath
-    } elseif ($IsSmallAccount -and [bool]$_.PercentRisk) {
+    if (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$_.SmallDynamicRisk) {
+        '{0}: {1}, period {2}, {3}; lot {4}; hard SL {5:N4}%; target risk {6:N2} {7}; set {8}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveLot, $_.EffectiveStopPercent, $_.EffectiveRisk, [string]$probe.account.currency, $_.EffectiveSetPath
+    } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$_.PercentRisk) {
         $riskInputs = Read-SetInputs $_.SetFullPath
-        $riskText = if ($riskInputs.Contains('InpRiskPercent')) { [string]$riskInputs['InpRiskPercent'] } else { 'default' }
+        $riskText = if ($IsAdaptiveAccount) { $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture) } elseif ($riskInputs.Contains('InpRiskPercent')) { [string]$riskInputs['InpRiskPercent'] } else { 'default' }
         '{0}: {1}, period {2}, {3}; equity risk {4}%; set {5}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $riskText, $_.EffectiveSetPath
+    } elseif ($IsAdaptiveAccount) {
+        '{0}: {1}, period {2}, {3}; planned stop risk {4:N2} {5} ({6:N2}%); set {7}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveRisk, [string]$probe.account.currency, $AdaptiveRiskPercent, $_.EffectiveSetPath
     } elseif ($IsSmallAccount) {
         '{0}: {1}, period {2}, {3}; requested stop risk USD 40; set {4}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveSetPath
     } else {

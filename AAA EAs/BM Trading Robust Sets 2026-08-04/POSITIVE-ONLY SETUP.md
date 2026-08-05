@@ -15,7 +15,9 @@ Removed from automatic launch for returning less than +20%: AMD, US100 Weakness,
 
 The BAT deletes stale lower-performing EX5 and SET files only from its own managed MT5 folders when it installs the new profile. Source projects and backtest reports remain available as recovery and audit evidence.
 
-The four native AAA settings files are automatically loaded with 1% live risk. ATR and Go Long continue to use the account-specific risk handling already built into the installer. “Auto-selected” means the BAT installs the saved selected configuration automatically; it does not re-optimize against the latest history every time it starts.
+The installer now accepts any positive account balance. By default, every retained EA targets 1% of the balance detected at installation. Fixed-money inputs, lot sizes, and the Go Long hard stop are regenerated from the live balance and broker contract data. For example, a $10,000 balance targets approximately $100 at the planned stop; a $900 balance targets approximately $9. Broker minimum lots and stop distances can force a higher real minimum, which the preflight prints before installation.
+
+The BAT automatically installs the selected strategy configuration. “Auto-selected” does not mean it re-optimizes against the latest history every time it starts; doing that would encourage overfitting. An advanced user can change the adaptive risk by passing `-AdaptiveRiskPercent`, from 0.1% through 5%.
 
 Important: Weekend Direction required its provisional mode to be enabled for the +88.32% test. XAU Weakness previously carried a failed-validation gate and produced 44.84% equity drawdown. Both are now enabled only because the requested rule was strictly based on return being at least +20%.
 

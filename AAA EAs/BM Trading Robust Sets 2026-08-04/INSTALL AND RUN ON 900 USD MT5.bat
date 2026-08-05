@@ -1,8 +1,8 @@
 @echo off
 setlocal
-title BM Trading +20 Percent Auto-Selected 900 USD - MT5 Installer
+title BM Trading +20 Percent - Any Balance Auto Risk
 
-powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Install-BMTradingPortfolio.ps1" -AccountProfile 900 %*
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Install-BMTradingPortfolio.ps1" -AccountProfile AUTO %*
 set "BM_EXIT=%ERRORLEVEL%"
 
 echo.
