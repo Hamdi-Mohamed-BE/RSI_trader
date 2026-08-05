@@ -26,11 +26,6 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 }
 
 function Get-PortfolioItems {
-    $rangeSet = if ($IsSmallAccount) {
-        'Range Breakout EA\PORTFOLIO 900 - Range Breakout - USDJPY M5 - 18 USD risk.set'
-    } else {
-        'Range Breakout EA\PORTFOLIO 100K FINAL - Range Breakout - USDJPY M5 - 245 USD risk.set'
-    }
     $atrSet = if ($IsSmallAccount) {
         'ATR Candle Breakout EA\PORTFOLIO 900 - ATR Candle Breakout - XAUUSD H1 - 18 USD risk.set'
     } else {
@@ -41,36 +36,44 @@ function Get-PortfolioItems {
     } else {
         'Go Long EA\PORTFOLIO 100K FINAL - Go Long - US30 D1 - 0.50 lot.set'
     }
-    $turnaroundSet = if ($IsSmallAccount) {
-        'Turnaround Tuesday EA\PORTFOLIO 900 - Turnaround Tuesday - UT100 D1 - 0.01 lot.set'
-    } else {
-        'Turnaround Tuesday EA\PORTFOLIO 100K FINAL - Turnaround Tuesday - UT100 D1 - 0.24 lot.set'
-    }
-
+    # Strict +20% portfolio selected from the independent 2025-08-05 through
+    # 2026-08-04 MT5 tests. Saved settings are loaded automatically by each chart.
     $items = @(
-        [pscustomobject]@{
-            Label = 'Range Breakout'; Canonical = 'USDJPY'; Aliases = @('USDJPY')
-            Period = 5; Expert = 'Range Breakout EA.ex5'
-            ExpertSource = 'Range Breakout EA\Range Breakout EA.ex5'
-            SetSource = $rangeSet; SmallDynamicRisk = $false
-        },
         [pscustomobject]@{
             Label = 'ATR Candle Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 60; Expert = 'ATR Candle Breakout EA.ex5'
             ExpertSource = 'ATR Candle Breakout EA\ATR Candle Breakout EA.ex5'
-            SetSource = $atrSet; SmallDynamicRisk = $false
+            SetSource = $atrSet; SmallDynamicRisk = $false; PercentRisk = $false
         },
         [pscustomobject]@{
             Label = 'Go Long'; Canonical = 'US30'; Aliases = @('US30', 'DJ30', 'WS30', 'DJI30', 'DOW30', 'DOWJONES')
             Period = 1440; Expert = 'Go Long EA.ex5'
             ExpertSource = 'Go Long EA\Go Long EA.ex5'
-            SetSource = $goLongSet; SmallDynamicRisk = $true
+            SetSource = $goLongSet; SmallDynamicRisk = $true; PercentRisk = $false
         },
         [pscustomobject]@{
-            Label = 'Turnaround Tuesday'; Canonical = 'NDX100'; Aliases = @('NDX100', 'NAS100', 'USTEC', 'US100', 'UT100', 'NASDAQ100', 'NQ100')
-            Period = 1440; Expert = 'Turnaround Tuesday EA.ex5'
-            ExpertSource = 'Turnaround Tuesday EA\Turnaround Tuesday EA.ex5'
-            SetSource = $turnaroundSet; SmallDynamicRisk = $true
+            Label = 'AAA Final EMA3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 240; Expert = 'AAA Final EMA3 EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final EMA3 EA\AAA Final EMA3 EA.ex5'
+            SetSource = 'AAA Final EAs\AAA Final EMA3 EA\AUTO SELECTED 20PCT PLUS - EMA3 - XAUUSD H4.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'AAA Final Asia Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 60; Expert = 'AAA Final Asia Breakout EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final Asia Breakout EA\AAA Final Asia Breakout EA.ex5'
+            SetSource = 'AAA Final EAs\AAA Final Asia Breakout EA\AUTO SELECTED 20PCT PLUS - Asia Breakout - XAUUSD H1.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'AAA Final Weekend Direction'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 15; Expert = 'AAA Final Weekend Direction EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final Weekend Direction EA\AAA Final Weekend Direction EA.ex5'
+            SetSource = 'AAA Final EAs\AAA Final Weekend Direction EA\AUTO SELECTED 20PCT PLUS - Weekend Direction - XAUUSD M15.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'AAA Final XAU Weakness'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 15; Expert = 'AAA Final XAU Weakness EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final XAU Weakness EA\AAA Final XAU Weakness EA.ex5'
+            SetSource = 'AAA Final EAs\AAA Final XAU Weakness EA\AUTO SELECTED 20PCT PLUS - XAU Weakness - XAUUSD M15.set'; SmallDynamicRisk = $false; PercentRisk = $true
         }
     )
 
@@ -233,10 +236,13 @@ function Get-EffectiveInputs([object]$Item) {
 function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
     $inputs = Get-EffectiveInputs $Item
     $inputLines = @($inputs.Keys | ForEach-Object { '{0}={1}' -f $_, $inputs[$_] }) -join "`r`n"
-    $left = if (($Index % 2) -eq 0) { 0 } else { 800 }
-    $top = if ($Index -lt 2) { 0 } else { 450 }
-    $right = $left + 800
-    $bottom = $top + 450
+    $columns = 4
+    $width = 480
+    $height = 280
+    $left = ($Index % $columns) * $width
+    $top = [Math]::Floor($Index / $columns) * $height
+    $right = $left + $width
+    $bottom = $top + $height
     $expertPath = 'Experts\' + $ExpertFolderName + '\' + $Item.Expert
     $expertName = [IO.Path]::GetFileNameWithoutExtension($Item.Expert)
 
@@ -499,6 +505,10 @@ foreach ($item in $portfolio) {
         $item | Add-Member -NotePropertyName EffectiveStopPercent -NotePropertyValue $effectiveStopPercent
         $item | Add-Member -NotePropertyName EffectiveRisk -NotePropertyValue $targetRisk
         Write-Host ('{0,-22} {1,-8} -> {2}; lot {3}, hard SL {4:N4}%, target ${5:N0}' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $effectiveLot, $effectiveStopPercent, $targetRisk) -ForegroundColor Yellow
+    } elseif ($IsSmallAccount -and [bool]$item.PercentRisk) {
+        $percentInputs = Read-SetInputs $item.SetFullPath
+        $riskText = if ($percentInputs.Contains('InpRiskPercent')) { [string]$percentInputs['InpRiskPercent'] } else { 'default' }
+        Write-Host ('{0,-42} {1,-8} -> {2}; equity risk {3}%' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $riskText)
     } else {
         Write-Host ('{0,-22} {1,-8} -> {2}; requested stop risk $40' -f $item.Label, $item.Canonical, $item.BrokerSymbol)
     }
@@ -518,8 +528,11 @@ if ($IsSmallAccount) {
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
+Write-Host 'STRICT +20% SET: Weekend Direction was provisional and XAU Weakness previously failed validation.' -ForegroundColor Red
+Write-Host 'Their selected settings are enabled because you explicitly requested every +20% result.' -ForegroundColor Red
 if ($IsSmallAccount) {
-    Write-Host 'SMALL ACCOUNT: all four EAs target approximately $40 loss per stopped trade.' -ForegroundColor Red
+    Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red
+    Write-Host 'AAA Final EAs use their preset equity percentage (normally 1%; XAU Grid 0.5%).' -ForegroundColor Red
     Write-Host 'The installer adds broker-specific hard stops to the two index EAs; gaps can still lose more.' -ForegroundColor Red
 }
 Write-Host 'It does not delete your existing profiles or close any open positions.' -ForegroundColor Yellow
@@ -539,6 +552,30 @@ $profileTarget = Join-Path $chartsRoot $ProfileName
 
 foreach ($directory in @($expertsTarget, $testerTarget, $chartsRoot)) {
     [void](New-Item -ItemType Directory -Path $directory -Force)
+}
+
+# These two folders are owned by this installer. Delete stale files from EAs
+# that no longer meet the strict +20% selection rule before rebuilding them.
+$expertsRootFull = [IO.Path]::GetFullPath((Join-Path $mql5Root 'Experts')).TrimEnd('\') + '\'
+$expertsTargetFull = [IO.Path]::GetFullPath($expertsTarget)
+$testerRootFull = [IO.Path]::GetFullPath((Join-Path $mql5Root 'Profiles\Tester')).TrimEnd('\') + '\'
+$testerTargetFull = [IO.Path]::GetFullPath($testerTarget)
+if (-not $expertsTargetFull.StartsWith($expertsRootFull, [StringComparison]::OrdinalIgnoreCase)) {
+    Stop-WithMessage "Refusing to clean an unsafe managed EA path: $expertsTargetFull"
+}
+if (-not $testerTargetFull.StartsWith($testerRootFull, [StringComparison]::OrdinalIgnoreCase)) {
+    Stop-WithMessage "Refusing to clean an unsafe managed settings path: $testerTargetFull"
+}
+$retainedExpertNames = @($portfolio | ForEach-Object { $_.Expert })
+foreach ($staleExpert in @(Get-ChildItem -LiteralPath $expertsTargetFull -File -ErrorAction SilentlyContinue)) {
+    if ($staleExpert.Name -notin $retainedExpertNames) {
+        Remove-Item -LiteralPath $staleExpert.FullName -Force
+        Write-Host "Deleted stale managed EA: $($staleExpert.Name)"
+    }
+}
+foreach ($staleSet in @(Get-ChildItem -LiteralPath $testerTargetFull -File -ErrorAction SilentlyContinue)) {
+    Remove-Item -LiteralPath $staleSet.FullName -Force
+    Write-Host "Deleted stale managed setting: $($staleSet.Name)"
 }
 
 $chartsRootFull = [IO.Path]::GetFullPath($chartsRoot).TrimEnd('\') + '\'
@@ -601,6 +638,10 @@ $manifest = @(
 ) + @($portfolio | ForEach-Object {
     if ($IsSmallAccount -and [bool]$_.SmallDynamicRisk) {
         '{0}: {1}, period {2}, {3}; lot {4}; hard SL {5:N4}%; target risk USD {6:N2}; set {7}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveLot, $_.EffectiveStopPercent, $_.EffectiveRisk, $_.EffectiveSetPath
+    } elseif ($IsSmallAccount -and [bool]$_.PercentRisk) {
+        $riskInputs = Read-SetInputs $_.SetFullPath
+        $riskText = if ($riskInputs.Contains('InpRiskPercent')) { [string]$riskInputs['InpRiskPercent'] } else { 'default' }
+        '{0}: {1}, period {2}, {3}; equity risk {4}%; set {5}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $riskText, $_.EffectiveSetPath
     } elseif ($IsSmallAccount) {
         '{0}: {1}, period {2}, {3}; requested stop risk USD 40; set {4}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveSetPath
     } else {
@@ -632,4 +673,4 @@ if ($missingExperts.Count -gt 0) {
 
 Write-Host "`nSUCCESS: MT5 is running the '$ProfileName' profile on account $login." -ForegroundColor Green
 Write-Host "Install record: $manifestPath"
-Write-Host 'Verify the four chart faces show the EA name and the toolbar Algo Trading button is green.' -ForegroundColor Yellow
+Write-Host "Verify all $($portfolio.Count) chart faces show the EA name and the toolbar Algo Trading button is green." -ForegroundColor Yellow
