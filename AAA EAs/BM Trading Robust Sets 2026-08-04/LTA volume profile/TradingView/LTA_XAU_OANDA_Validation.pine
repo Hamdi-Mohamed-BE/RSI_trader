@@ -1,0 +1,305 @@
+//@version=6
+strategy("LTA XAU OANDA Validation v1.0", overlay=true, initial_capital=10000, currency=currency.USD, pyramiding=0, process_orders_on_close=false, calc_on_order_fills=true, max_bars_back=1200, margin_long=100, margin_short=100)
+
+// Independent TradingView translation of the MT5 XAU training winner.
+// Feed used for validation: OANDA:XAUUSD, 15 minute.
+
+groupTest = "Test and risk"
+riskPct = input.float(2.5, "Risk per trade (%)", minval=0.1, maxval=2.5, step=0.25, group=groupTest)
+rewardRisk = input.float(3.0, "Reward / risk", minval=2.0, maxval=4.0, step=0.5, group=groupTest)
+useBreakEven = input.bool(false, "Move stop to breakeven at 1R", group=groupTest)
+useTrailing = input.bool(false, "Use R-based trailing stop", group=groupTest)
+trailStartR = input.float(1.5, "Trailing starts at R", minval=1.0, step=0.25, group=groupTest)
+trailDistanceR = input.float(1.0, "Trailing distance (R)", minval=0.25, step=0.25, group=groupTest)
+useDrawdownThrottle = input.bool(false, "Reduce risk during drawdown", group=groupTest)
+throttleStartPct = input.float(10.0, "Drawdown throttle starts (%)", minval=1.0, step=1.0, group=groupTest)
+throttleMultiplier = input.float(0.50, "Risk multiplier in drawdown", minval=0.1, maxval=1.0, step=0.1, group=groupTest)
+hardDrawdownStopPct = input.float(20.0, "Stop new entries at drawdown (%)", minval=5.0, maxval=50.0, step=1.0, group=groupTest)
+
+groupLTA = "Winning LTA configuration"
+profileBins = input.int(64, "Profile rows", minval=16, maxval=100, group=groupLTA)
+valueAreaPct = input.float(70.0, "Value area (%)", minval=50.0, maxval=90.0, group=groupLTA)
+touchBufferATR = input.float(0.24, "Key-level touch buffer (ATR)", minval=0.05, step=0.01, group=groupLTA)
+wickRatio = input.float(0.25, "Minimum confirmation wick ratio", minval=0.05, maxval=0.8, step=0.05, group=groupLTA)
+volumeMultiplier = input.float(1.0, "Confirmation volume multiplier", minval=0.5, maxval=2.0, step=0.1, group=groupLTA)
+stopBufferATR = input.float(0.12, "Stop buffer (ATR)", minval=0.02, step=0.01, group=groupLTA)
+
+int testStart = timestamp("GMT+0", 2025, 8, 5, 0, 0)
+int testEnd = timestamp("GMT+0", 2026, 8, 5, 0, 0)
+bool inTest = time >= testStart and time < testEnd
+
+f_trend() =>
+    float fast = ta.sma(close, 20)
+    float slow = ta.sma(close, 50)
+    float recentHigh = ta.highest(high, 10)
+    float priorHigh = ta.highest(high[10], 20)
+    float recentLow = ta.lowest(low, 10)
+    float priorLow = ta.lowest(low[10], 20)
+    int result = close > fast and fast > slow and recentHigh >= priorHigh ? 1 : close < fast and fast < slow and recentLow <= priorLow ? -1 : fast > slow ? 1 : fast < slow ? -1 : 0
+    result
+
+f_zones() =>
+    float atrNow = ta.atr(14)[1]
+    float avgVol = ta.sma(volume, 20)
+    float demandLow = na
+    float demandHigh = na
+    float supplyLow = na
+    float supplyHigh = na
+    for s = 1 to 160
+        float body = math.abs(close[s] - open[s])
+        float candleRange = high[s] - low[s]
+        float referenceVol = nz(avgVol[s + 1], volume[s])
+        bool volumeOK = volume[s] >= referenceVol * 1.05
+        bool bullExpansion = close[s] > open[s] and body >= atrNow * 0.75 and candleRange >= atrNow * 1.15 and volumeOK
+        bool bearExpansion = close[s] < open[s] and body >= atrNow * 0.75 and candleRange >= atrNow * 1.15 and volumeOK
+        float baseHigh = -1e20
+        float baseLow = 1e20
+        for b = 1 to 3
+            baseHigh := math.max(baseHigh, high[s + b])
+            baseLow := math.min(baseLow, low[s + b])
+        bool compactBase = baseHigh > baseLow and baseHigh - baseLow <= atrNow * 1.20
+        float priorHigh = -1e20
+        float priorLow = 1e20
+        for j = 4 to 21
+            priorHigh := math.max(priorHigh, high[s + j])
+            priorLow := math.min(priorLow, low[s + j])
+        if na(demandLow) and bullExpansion and compactBase and (close[s] > priorHigh or high[s] > priorHigh)
+            demandLow := baseLow
+            demandHigh := baseHigh
+        if na(supplyLow) and bearExpansion and compactBase and (close[s] < priorLow or low[s] < priorLow)
+            supplyLow := baseLow
+            supplyHigh := baseHigh
+    [demandLow, demandHigh, supplyLow, supplyHigh]
+
+f_profile(int periodKey, string periodTf, int scanBars) =>
+    float rangeHigh = -1e20
+    float rangeLow = 1e20
+    float totalVolume = 0.0
+    for i = 1 to scanBars
+        bool belongs = time(periodTf)[i] == periodKey
+        if belongs
+            rangeHigh := math.max(rangeHigh, high[i])
+            rangeLow := math.min(rangeLow, low[i])
+            totalVolume += volume[i]
+    float poc = na
+    float vah = na
+    float val = na
+    if rangeHigh > rangeLow and totalVolume > 0
+        float step = (rangeHigh - rangeLow) / profileBins
+        array<float> vols = array.new_float(profileBins, 0.0)
+        for i = 1 to scanBars
+            bool belongs = time(periodTf)[i] == periodKey
+            if belongs
+                int firstBin = int(math.floor((low[i] - rangeLow) / step))
+                int lastBin = int(math.floor((high[i] - rangeLow) / step))
+                firstBin := math.max(0, math.min(profileBins - 1, firstBin))
+                lastBin := math.max(0, math.min(profileBins - 1, lastBin))
+                int leftBin = math.min(firstBin, lastBin)
+                int rightBin = math.max(firstBin, lastBin)
+                float addVolume = volume[i] / math.max(1, rightBin - leftBin + 1)
+                for bin = leftBin to rightBin
+                    array.set(vols, bin, array.get(vols, bin) + addVolume)
+        int pocBin = 0
+        float maxVolume = array.get(vols, 0)
+        for bin = 1 to profileBins - 1
+            if array.get(vols, bin) > maxVolume
+                maxVolume := array.get(vols, bin)
+                pocBin := bin
+        float targetVolume = totalVolume * valueAreaPct / 100.0
+        int left = pocBin
+        int right = pocBin
+        float cumulative = array.get(vols, pocBin)
+        while cumulative < targetVolume and (left > 0 or right < profileBins - 1)
+            float leftVolume = left > 0 ? array.get(vols, left - 1) : -1.0
+            float rightVolume = right < profileBins - 1 ? array.get(vols, right + 1) : -1.0
+            if rightVolume > leftVolume
+                right += 1
+                cumulative += array.get(vols, right)
+            else
+                left -= 1
+                cumulative += array.get(vols, left)
+        poc := rangeLow + (pocBin + 0.5) * step
+        vah := rangeLow + (right + 1.0) * step
+        val := rangeLow + left * step
+    [poc, vah, val]
+
+f_level_mitigated(int direction, float level, float buffer) =>
+    bool result = false
+    if not na(level)
+        for i = 0 to 4
+            bool touched = low[i] <= level + buffer and high[i] >= level - buffer
+            bool held = direction > 0 ? close[i] >= level - buffer : close[i] <= level + buffer
+            result := result or (touched and held)
+    result
+
+f_zone_mitigated(int direction, float zoneLow, float zoneHigh, float buffer) =>
+    bool result = false
+    if not na(zoneLow) and not na(zoneHigh)
+        for i = 0 to 4
+            bool touched = low[i] <= zoneHigh + buffer and high[i] >= zoneLow - buffer
+            bool held = direction > 0 ? close[i] > zoneLow : close[i] < zoneHigh
+            result := result or (touched and held)
+    result
+
+f_profile_candidate(int direction, float poc, float vah, float val, float buffer) =>
+    array<float> levels = array.from(poc, vah, val)
+    float best = na
+    float bestDistance = 1e20
+    for i = 0 to 2
+        float level = array.get(levels, i)
+        bool mitigated = f_level_mitigated(direction, level, buffer)
+        bool sideOK = direction > 0 ? close >= level - buffer : close <= level + buffer
+        float distance = math.abs(close - level)
+        if mitigated and sideOK and distance < bestDistance
+            bestDistance := distance
+            best := level
+    best
+
+f_touches(float barLow, float barHigh, float candidateLow, float candidateHigh) =>
+    not na(candidateLow) and not na(candidateHigh) and barLow <= candidateHigh and barHigh >= candidateLow
+
+int macroTrend = request.security(syminfo.tickerid, "D", f_trend(), lookahead=barmerge.lookahead_off)
+int structureTrend = request.security(syminfo.tickerid, "60", f_trend(), lookahead=barmerge.lookahead_off)
+[demandLow, demandHigh, supplyLow, supplyHigh] = request.security(syminfo.tickerid, "240", f_zones(), lookahead=barmerge.lookahead_off)
+
+var float pdPoc = na
+var float pdVah = na
+var float pdVal = na
+var float pwPoc = na
+var float pwVah = na
+var float pwVal = na
+
+if timeframe.change("D")
+    [newPdPoc, newPdVah, newPdVal] = f_profile(time("D")[1], "D", 120)
+    pdPoc := newPdPoc
+    pdVah := newPdVah
+    pdVal := newPdVal
+
+if timeframe.change("W")
+    [newPwPoc, newPwVah, newPwVal] = f_profile(time("W")[1], "W", 700)
+    pwPoc := newPwPoc
+    pwVah := newPwVah
+    pwVal := newPwVal
+
+float atr = ta.atr(14)
+float keyBuffer = atr * touchBufferATR
+float stopBuffer = atr * stopBufferATR
+
+f_candidate(int direction) =>
+    float candidatePrice = na
+    float candidateLow = na
+    float candidateHigh = na
+    bool zoneCandidate = false
+    float zLow = direction > 0 ? demandLow : supplyLow
+    float zHigh = direction > 0 ? demandHigh : supplyHigh
+    if f_zone_mitigated(direction, zLow, zHigh, keyBuffer)
+        candidatePrice := (zLow + zHigh) * 0.5
+        candidateLow := zLow
+        candidateHigh := zHigh
+        zoneCandidate := true
+    else
+        float weekly = f_profile_candidate(direction, pwPoc, pwVah, pwVal, keyBuffer)
+        float daily = f_profile_candidate(direction, pdPoc, pdVah, pdVal, keyBuffer)
+        float selected = not na(weekly) ? weekly : daily
+        if not na(selected)
+            candidatePrice := selected
+            candidateLow := selected - keyBuffer
+            candidateHigh := selected + keyBuffer
+    [candidatePrice, candidateLow, candidateHigh, zoneCandidate]
+
+f_signal(int direction) =>
+    [candidatePrice, candidateLow, candidateHigh, zoneCandidate] = f_candidate(direction)
+    bool validCandidate = not na(candidatePrice)
+    float avgConfirmationVolume = ta.sma(volume[1], 20)
+    bool volumeOK = volume >= avgConfirmationVolume * volumeMultiplier
+    float rangeA = math.max(high - low, syminfo.mintick)
+    float rangeB = math.max(high[1] - low[1], syminfo.mintick)
+    bool touchA = f_touches(low, high, candidateLow, candidateHigh)
+    bool touchB = f_touches(low[1], high[1], candidateLow, candidateHigh)
+    float lowerWickA = math.min(open, close) - low
+    float lowerWickB = math.min(open[1], close[1]) - low[1]
+    float upperWickA = high - math.max(open, close)
+    float upperWickB = high[1] - math.max(open[1], close[1])
+    bool em1Long = validCandidate and volumeOK and (touchA or touchB) and (lowerWickA >= rangeA * wickRatio or lowerWickB >= rangeB * wickRatio) and close > open and close > close[1]
+    bool em1Short = validCandidate and volumeOK and (touchA or touchB) and (upperWickA >= rangeA * wickRatio or upperWickB >= rangeB * wickRatio) and close < open and close < close[1]
+    bool continuationTouch = f_touches(low[2], high[2], candidateLow, candidateHigh) or f_touches(low[1], high[1], candidateLow, candidateHigh)
+    bool em4Long = validCandidate and volumeOK and continuationTouch and (close[1] < open[1] or low[1] < low[2]) and close > open and close > math.max(high[2], high[1])
+    bool em4Short = validCandidate and volumeOK and continuationTouch and (close[1] > open[1] or high[1] > high[2]) and close < open and close < math.min(low[2], low[1])
+    bool valid = direction > 0 ? (em1Long or em4Long) : (em1Short or em4Short)
+    float rawStop = direction > 0 ? math.min(low, low[1]) - stopBuffer : math.max(high, high[1]) + stopBuffer
+    if direction > 0 and zoneCandidate
+        rawStop := math.min(rawStop, candidateLow - stopBuffer)
+    if direction < 0 and zoneCandidate
+        rawStop := math.max(rawStop, candidateHigh + stopBuffer)
+    [valid, rawStop]
+
+var float peakEquity = 10000.0
+peakEquity := math.max(peakEquity, strategy.equity)
+float drawdownPct = peakEquity > 0 ? 100.0 * (peakEquity - strategy.equity) / peakEquity : 0.0
+float effectiveRiskPct = useDrawdownThrottle and drawdownPct >= throttleStartPct ? riskPct * throttleMultiplier : riskPct
+bool hardStopped = drawdownPct >= hardDrawdownStopPct
+
+var int consecutiveLosses = 0
+var int processedClosedTrades = 0
+if timeframe.change("D")
+    consecutiveLosses := 0
+if strategy.closedtrades > processedClosedTrades
+    for tradeIndex = processedClosedTrades to strategy.closedtrades - 1
+        float closedProfit = strategy.closedtrades.profit(tradeIndex)
+        consecutiveLosses := closedProfit < 0 ? consecutiveLosses + 1 : 0
+    processedClosedTrades := strategy.closedtrades
+
+bool pausedToday = consecutiveLosses >= 2
+bool longAllowed = macroTrend == 1 and structureTrend == 1
+bool shortAllowed = macroTrend == -1 and structureTrend == -1
+[longSignal, longStop] = f_signal(1)
+[shortSignal, shortStop] = f_signal(-1)
+
+var float liveStop = na
+var float liveTarget = na
+var float initialR = na
+var int liveDirection = 0
+
+bool flat = strategy.position_size == 0
+bool mayEnter = inTest and flat and not pausedToday and not hardStopped
+if mayEnter and longAllowed and longSignal and longStop < close
+    float r = close - longStop
+    float riskCash = strategy.equity * effectiveRiskPct / 100.0
+    float qty = riskCash / math.max(r * syminfo.pointvalue, syminfo.mintick)
+    liveStop := longStop
+    liveTarget := close + r * rewardRisk
+    initialR := r
+    liveDirection := 1
+    strategy.entry("L", strategy.long, qty=qty)
+    strategy.exit("LX", "L", stop=liveStop, limit=liveTarget)
+else if mayEnter and shortAllowed and shortSignal and shortStop > close
+    float r = shortStop - close
+    float riskCash = strategy.equity * effectiveRiskPct / 100.0
+    float qty = riskCash / math.max(r * syminfo.pointvalue, syminfo.mintick)
+    liveStop := shortStop
+    liveTarget := close - r * rewardRisk
+    initialR := r
+    liveDirection := -1
+    strategy.entry("S", strategy.short, qty=qty)
+    strategy.exit("SX", "S", stop=liveStop, limit=liveTarget)
+
+if strategy.position_size != 0 and not na(initialR)
+    float entryPrice = strategy.position_avg_price
+    float openR = liveDirection > 0 ? (close - entryPrice) / initialR : (entryPrice - close) / initialR
+    if useBreakEven and openR >= 1.0
+        liveStop := liveDirection > 0 ? math.max(liveStop, entryPrice) : math.min(liveStop, entryPrice)
+    if useTrailing and openR >= trailStartR
+        float trailCandidate = liveDirection > 0 ? close - initialR * trailDistanceR : close + initialR * trailDistanceR
+        liveStop := liveDirection > 0 ? math.max(liveStop, trailCandidate) : math.min(liveStop, trailCandidate)
+    if liveDirection > 0
+        strategy.exit("LX", "L", stop=liveStop, limit=liveTarget)
+    else
+        strategy.exit("SX", "S", stop=liveStop, limit=liveTarget)
+
+if not inTest and strategy.position_size != 0
+    strategy.close_all(comment="End of test")
+
+plot(pdPoc, "PD POC", color=color.new(color.red, 20), style=plot.style_stepline)
+plot(pdVah, "PD VAH", color=color.new(color.blue, 35), style=plot.style_stepline)
+plot(pdVal, "PD VAL", color=color.new(color.purple, 35), style=plot.style_stepline)
+plot(pwPoc, "PW POC", color=color.new(color.orange, 15), linewidth=2, style=plot.style_stepline)

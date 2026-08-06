@@ -82,10 +82,19 @@ function Get-PortfolioItems {
             Period = 15; Expert = 'AAA Final XAU Weakness EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final XAU Weakness EA\AAA Final XAU Weakness EA.ex5'
             SetSource = 'AAA Final EAs\AAA Final XAU Weakness EA\AUTO SELECTED 20PCT PLUS - XAU Weakness - XAUUSD M15.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 15; Expert = 'LTA_Concepts_EA.ex5'
+            ExpertSource = 'LTA volume profile\EA\LTA_Concepts_EA.ex5'
+            SetSource = 'LTA volume profile\Best Settings\XAUUSD M15 - EXNESS FIXED 1.00pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0
         }
     )
 
     foreach ($item in $items) {
+        if (-not $item.PSObject.Properties['FixedPercentRisk']) {
+            $item | Add-Member -NotePropertyName FixedPercentRisk -NotePropertyValue 0.0
+        }
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
         $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $item.SetSource)
     }
@@ -250,6 +259,12 @@ function Get-EffectiveInputs([object]$Item) {
             $inputs['SlCalcMode'] = '1'
             $inputs['SlValue'] = ([double]$Item.EffectiveStopPercent).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
             $inputs['Commentary'] = 'BM900-DYNAMIC-40USD-HARD-SL'
+        }
+    }
+    if ([double]$Item.FixedPercentRisk -gt 0) {
+        $fixedRisk = ([double]$Item.FixedPercentRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+        foreach ($key in @('InpRiskPercent', 'InpMomentumRiskPercent', 'InpContrarianRiskPercent', 'InpAbsoluteRiskCapPercent')) {
+            if ($inputs.Contains($key)) { $inputs[$key] = $fixedRisk }
         }
     }
     return $inputs
@@ -547,6 +562,9 @@ foreach ($item in $portfolio) {
         if ($effectiveRisk -gt ($targetRisk * 1.05)) {
             Write-Host ('  Broker minimum lot/stop raises this above the {0:N2} {1} target.' -f $targetRisk, [string]$probe.account.currency) -ForegroundColor Red
         }
+    } elseif ([double]$item.FixedPercentRisk -gt 0) {
+        $fixedRiskText = ([double]$item.FixedPercentRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+        Write-Host ('{0,-42} {1,-8} -> {2}; fixed equity risk {3}%' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
     } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$item.PercentRisk) {
         $percentInputs = Read-SetInputs $item.SetFullPath
         $riskText = if ($IsAdaptiveAccount) { $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture) } elseif ($percentInputs.Contains('InpRiskPercent')) { [string]$percentInputs['InpRiskPercent'] } else { 'default' }
@@ -559,7 +577,7 @@ foreach ($item in $portfolio) {
 }
 
 if ($IsAdaptiveAccount) {
-    Write-Host ('Adaptive balance accepted: {0:N2} {1}; planned risk per EA trade {2:N2}% ({3:N2} {1} at installation).' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
+    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while LTA remains fixed at 1.00%.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
 } elseif ($IsSmallAccount) {
     if ($balance -lt 800 -or $balance -gt 1200) {
         Stop-WithMessage "Refusing to run: the small-account settings are for roughly USD 900, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Use an account between USD 800 and USD 1,200."
@@ -578,7 +596,7 @@ Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES
 Write-Host 'STRICT +20% SET: Weekend Direction was provisional and XAU Weakness previously failed validation.' -ForegroundColor Red
 Write-Host 'Their selected settings are enabled because you explicitly requested every +20% result.' -ForegroundColor Red
 if ($IsAdaptiveAccount) {
-    Write-Host ('AUTO BALANCE: every EA targets {0:N2}% of the detected balance at its planned stop.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+    Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA stays fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
     Write-Host 'Lot size and the Go Long hard stop are rebuilt from the active broker contract data.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red
@@ -655,6 +673,7 @@ for ($i = 0; $i -lt $portfolio.Count; $i++) {
         $item | Add-Member -NotePropertyName EffectiveSetPath -NotePropertyValue $effectiveSetSource
     } else {
         Copy-Item -LiteralPath $item.SetFullPath -Destination (Join-Path $testerTarget ([IO.Path]::GetFileName($item.SetFullPath))) -Force
+        $item | Add-Member -NotePropertyName EffectiveSetPath -NotePropertyValue $item.SetFullPath
     }
     $chartName = 'chart{0:D2}.chr' -f ($i + 1)
     $chartPath = Join-Path $profileTargetFull $chartName
@@ -689,6 +708,9 @@ $manifest = @(
 ) + @($portfolio | ForEach-Object {
     if (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$_.SmallDynamicRisk) {
         '{0}: {1}, period {2}, {3}; lot {4}; hard SL {5:N4}%; target risk {6:N2} {7}; set {8}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveLot, $_.EffectiveStopPercent, $_.EffectiveRisk, [string]$probe.account.currency, $_.EffectiveSetPath
+    } elseif ([double]$_.FixedPercentRisk -gt 0) {
+        $fixedRiskText = ([double]$_.FixedPercentRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+        '{0}: {1}, period {2}, {3}; fixed equity risk {4}%; set {5}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $fixedRiskText, $_.EffectiveSetPath
     } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$_.PercentRisk) {
         $riskInputs = Read-SetInputs $_.SetFullPath
         $riskText = if ($IsAdaptiveAccount) { $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture) } elseif ($riskInputs.Contains('InpRiskPercent')) { [string]$riskInputs['InpRiskPercent'] } else { 'default' }
