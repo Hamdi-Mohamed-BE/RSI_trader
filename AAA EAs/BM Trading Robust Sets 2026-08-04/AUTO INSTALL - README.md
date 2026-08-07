@@ -2,7 +2,7 @@
 
 All three BAT launcher names call the same any-balance synchronized installer. Open the target MT5 account and run **INSTALL AND RUN ON ACTIVE MT5.bat**.
 
-The BAT detects the active account, resolves XAUUSD, US30, USTEC and EURUSD broker symbols, asks for `RUN <account number> AUTO`, installs the exact corrected retest settings and opens an eleven-chart profile.
+The BAT detects the active account, resolves XAUUSD, US30, USTEC and EURUSD broker symbols, asks for `RUN <account number> AUTO`, installs the saved settings and opens a twelve-chart profile.
 
 ## Deployed charts
 
@@ -17,7 +17,8 @@ The BAT detects the active account, resolves XAUUSD, US30, USTEC and EURUSD brok
 - Nasdaq Overnight — USTEC M1
 - Turnaround Tuesday — USTEC D1
 - AAA Final US100 Weakness — USTEC M15
+- AAA Final News Pulse — XAUUSD M1, force-enabled temporary test
 
-The default planned risk is 1% per EA trade. LTA is fixed at 1%; other supported risk inputs adapt to the detected balance. Go Long and Turnaround Tuesday use broker-specific hard stops and lots.
+The default planned risk is 1% per EA trade. LTA is fixed at 1%; other supported risk inputs adapt to the detected balance. Go Long and Turnaround Tuesday use broker-specific hard stops and lots. News Pulse is force-enabled even though its corrected one-year retest returned -5.05%.
 
 The installer does not close positions or delete unrelated profiles. It backs up its previous managed profile and removes stale files only from its own managed folders. Multiple bots can trade simultaneously, so combined account exposure and drawdown can be much higher than 1%.

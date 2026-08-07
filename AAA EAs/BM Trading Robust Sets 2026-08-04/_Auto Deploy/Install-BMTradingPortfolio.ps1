@@ -37,8 +37,8 @@ function Get-PortfolioItems {
     } else {
         'ATR Candle Breakout EA\PORTFOLIO 100K FINAL - ATR Candle Breakout - XAUUSD H1 - 146 USD risk.set'
     }
-    # User-selected positive-return portfolio from the independent 2025-08-07
-    # through 2026-08-06 Exness MT5 retests at 1% planned risk per trade.
+    # User-selected positive-return portfolio plus News Pulse as an explicit
+    # temporary test inclusion. Risk defaults to 1% planned per EA trade.
     $items = @(
         [pscustomobject]@{
             Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -105,6 +105,12 @@ function Get-PortfolioItems {
             Period = 15; Expert = 'AAA Final US100 Weakness EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final US100 Weakness EA\AAA Final US100 Weakness EA.ex5'
             SetSource = 'AAA Final EAs\AAA Final US100 Weakness EA\RETEST INCLUDED 2026-08-07 - US100 Weakness - USTEC M15 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'AAA Final News Pulse - TEMP TEST'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
+            SetSource = 'AAA Final EAs\AAA Final News Pulse EA\TEMP TEST INCLUDED 2026-08-07 - News Pulse - XAUUSD M1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; ForceEnable = $true
         }
     )
 
@@ -114,6 +120,9 @@ function Get-PortfolioItems {
         }
         if (-not $item.PSObject.Properties['VolumeRiskMoney']) {
             $item | Add-Member -NotePropertyName VolumeRiskMoney -NotePropertyValue $false
+        }
+        if (-not $item.PSObject.Properties['ForceEnable']) {
+            $item | Add-Member -NotePropertyName ForceEnable -NotePropertyValue $false
         }
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
         $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $item.SetSource)
@@ -255,6 +264,9 @@ function Read-SetInputs([string]$Path) {
 
 function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
+    if ([bool]$Item.ForceEnable -and $inputs.Contains('InpEnableTrading')) {
+        $inputs['InpEnableTrading'] = 'true'
+    }
     if ($IsAdaptiveAccount) {
         $riskAmount = ([double]$Item.EffectiveRisk).ToString('0.00', [Globalization.CultureInfo]::InvariantCulture)
         $riskPercent = $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
@@ -621,7 +633,7 @@ if ($PreflightOnly) {
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
-Write-Host 'POSITIVE-RETURN SET: the eleven EAs you selected from the corrected Exness one-year retest are included.' -ForegroundColor Red
+Write-Host 'TWELVE-EA SET: eleven positive-return EAs plus News Pulse as your temporary forced test inclusion.' -ForegroundColor Red
 if ($IsAdaptiveAccount) {
     Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA stays fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
     Write-Host 'ATR fixed-money risk and percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red

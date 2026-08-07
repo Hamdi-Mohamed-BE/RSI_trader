@@ -1,6 +1,6 @@
 # User-selected positive-return setup
 
-The synchronized BAT launches the eleven EAs the user selected from the corrected independent Exness one-year retest.
+The synchronized BAT launches the eleven positive-return EAs selected by the user plus News Pulse as a forced temporary test inclusion.
 
 | Included EA | Symbol / chart | Return | Equity max DD | PF | Trades |
 |---|---|---:|---:|---:|---:|
@@ -15,9 +15,10 @@ The synchronized BAT launches the eleven EAs the user selected from the correcte
 | Nasdaq Overnight | USTEC M1 | +7.85% | 2.39% | 1.85 | 71 |
 | Turnaround Tuesday | USTEC D1 | +3.29% | 6.11% | 1.20 | 30 |
 | AAA Final US100 Weakness | USTEC M15 | +3.27% | 6.04% | 1.15 | 70 |
+| AAA Final News Pulse — TEMP TEST | XAUUSD M1 | -5.05% | 6.16% | 0.00 | 11 |
 
 Test basis: Exness, 2025-08-07 through 2026-08-06, USD 10,000 initial balance per independent test, 1% planned risk per trade, MT5 Every Tick generated from Exness M1 history with random execution delay.
 
 The installer accepts any positive balance and defaults to 1% planned risk. LTA remains fixed at 1.00%; percentage-risk inputs are adapted to 1%; Ninja Turtle's money-risk input is adapted to 1%; Go Long and Turnaround Tuesday receive broker-specific lots and hard stops targeting 1%.
 
-This is no longer a strict +20% portfolio: seven included bots returned less than +20% because the user explicitly requested every positive bot in the table. Eleven simultaneous trades could stack planned exposure to roughly 11% before gaps, slippage and correlations.
+This is no longer a strict +20% portfolio. News Pulse is force-enabled despite its negative retest and is clearly labelled as temporary. Twelve simultaneous trades could stack planned exposure to roughly 12% before gaps, slippage and correlations.
