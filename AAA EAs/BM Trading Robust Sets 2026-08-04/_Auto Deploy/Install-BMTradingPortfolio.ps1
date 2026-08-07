@@ -31,22 +31,21 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 
 function Get-PortfolioItems {
     $atrSet = if ($IsAdaptiveAccount) {
-        'ATR Candle Breakout EA\BEST ROBUST OPTIMIZED - ATR Candle Breakout - XAUUSD H1.set'
+        'ATR Candle Breakout EA\RETEST PASSED 2026-08-07 - ATR Candle Breakout - XAUUSD H1 - 1pct.set'
     } elseif ($IsSmallAccount) {
         'ATR Candle Breakout EA\PORTFOLIO 900 - ATR Candle Breakout - XAUUSD H1 - 18 USD risk.set'
     } else {
         'ATR Candle Breakout EA\PORTFOLIO 100K FINAL - ATR Candle Breakout - XAUUSD H1 - 146 USD risk.set'
     }
-    $goLongSet = if ($IsAdaptiveAccount) {
-        'Go Long EA\BEST ROBUST RETAINED - Go Long - US30 D1.set'
-    } elseif ($IsSmallAccount) {
-        'Go Long EA\PORTFOLIO 900 - Go Long - US30 D1 - 0.01 lot.set'
-    } else {
-        'Go Long EA\PORTFOLIO 100K FINAL - Go Long - US30 D1 - 0.50 lot.set'
-    }
-    # Strict +20% portfolio selected from the independent 2025-08-05 through
-    # 2026-08-04 MT5 tests. Saved settings are loaded automatically by each chart.
+    # User-selected positive-return portfolio from the independent 2025-08-07
+    # through 2026-08-06 Exness MT5 retests at 1% planned risk per trade.
     $items = @(
+        [pscustomobject]@{
+            Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 15; Expert = 'LTA_Concepts_EA.ex5'
+            ExpertSource = 'LTA volume profile\EA\LTA_Concepts_EA.ex5'
+            SetSource = 'LTA volume profile\Best Settings\RETEST PASSED 2026-08-07 - LTA - XAUUSD M15 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0
+        },
         [pscustomobject]@{
             Label = 'ATR Candle Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 60; Expert = 'ATR Candle Breakout EA.ex5'
@@ -54,46 +53,67 @@ function Get-PortfolioItems {
             SetSource = $atrSet; SmallDynamicRisk = $false; PercentRisk = $false
         },
         [pscustomobject]@{
+            Label = 'AAA Final Asia Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 60; Expert = 'AAA Final Asia Breakout EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final Asia Breakout EA\AAA Final Asia Breakout EA.ex5'
+            SetSource = 'AAA Final EAs\AAA Final Asia Breakout EA\RETEST PASSED 2026-08-07 - Asia Breakout - XAUUSD H1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'AAA Final DmC'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 60; Expert = 'AAA Final DmC EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final DmC EA\AAA Final DmC EA.ex5'
+            SetSource = 'AAA Final EAs\AAA Final DmC EA\RETEST PASSED 2026-08-07 - DmC - XAUUSD H1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
             Label = 'Go Long'; Canonical = 'US30'; Aliases = @('US30', 'DJ30', 'WS30', 'DJI30', 'DOW30', 'DOWJONES')
             Period = 1440; Expert = 'Go Long EA.ex5'
             ExpertSource = 'Go Long EA\Go Long EA.ex5'
-            SetSource = $goLongSet; SmallDynamicRisk = $true; PercentRisk = $false
+            SetSource = 'Go Long EA\RETEST INCLUDED 2026-08-07 - Go Long - US30 D1 - 1pct.set'; SmallDynamicRisk = $true; PercentRisk = $false
         },
         [pscustomobject]@{
             Label = 'AAA Final EMA3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 240; Expert = 'AAA Final EMA3 EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final EMA3 EA\AAA Final EMA3 EA.ex5'
-            SetSource = 'AAA Final EAs\AAA Final EMA3 EA\AUTO SELECTED 20PCT PLUS - EMA3 - XAUUSD H4.set'; SmallDynamicRisk = $false; PercentRisk = $true
-        },
-        [pscustomobject]@{
-            Label = 'AAA Final Asia Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
-            Period = 60; Expert = 'AAA Final Asia Breakout EA.ex5'
-            ExpertSource = 'AAA Final EAs\AAA Final Asia Breakout EA\AAA Final Asia Breakout EA.ex5'
-            SetSource = 'AAA Final EAs\AAA Final Asia Breakout EA\AUTO SELECTED 20PCT PLUS - Asia Breakout - XAUUSD H1.set'; SmallDynamicRisk = $false; PercentRisk = $true
-        },
-        [pscustomobject]@{
-            Label = 'AAA Final Weekend Direction'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
-            Period = 15; Expert = 'AAA Final Weekend Direction EA.ex5'
-            ExpertSource = 'AAA Final EAs\AAA Final Weekend Direction EA\AAA Final Weekend Direction EA.ex5'
-            SetSource = 'AAA Final EAs\AAA Final Weekend Direction EA\AUTO SELECTED 20PCT PLUS - Weekend Direction - XAUUSD M15.set'; SmallDynamicRisk = $false; PercentRisk = $true
+            SetSource = 'AAA Final EAs\AAA Final EMA3 EA\RETEST INCLUDED 2026-08-07 - EMA3 - XAUUSD H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
             Label = 'AAA Final XAU Weakness'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 15; Expert = 'AAA Final XAU Weakness EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final XAU Weakness EA\AAA Final XAU Weakness EA.ex5'
-            SetSource = 'AAA Final EAs\AAA Final XAU Weakness EA\AUTO SELECTED 20PCT PLUS - XAU Weakness - XAUUSD M15.set'; SmallDynamicRisk = $false; PercentRisk = $true
+            SetSource = 'AAA Final EAs\AAA Final XAU Weakness EA\RETEST INCLUDED 2026-08-07 - XAU Weakness - XAUUSD M15 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
-            Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
-            Period = 15; Expert = 'LTA_Concepts_EA.ex5'
-            ExpertSource = 'LTA volume profile\EA\LTA_Concepts_EA.ex5'
-            SetSource = 'LTA volume profile\Best Settings\XAUUSD M15 - EXNESS FIXED 1.00pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0
+            Label = 'Ninja Turtle Scalper'; Canonical = 'EURUSD'; Aliases = @('EURUSD')
+            Period = 5; Expert = 'Ninja Turtle Scalper EA.ex5'
+            ExpertSource = 'Ninja Turtle Scalper EA\Ninja Turtle Scalper EA.ex5'
+            SetSource = 'Ninja Turtle Scalper EA\RETEST INCLUDED 2026-08-07 - Ninja Turtle - EURUSD M5 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; VolumeRiskMoney = $true
+        },
+        [pscustomobject]@{
+            Label = 'Nasdaq Overnight'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 1; Expert = 'Nasdaq Overnight Negative Day EA.ex5'
+            ExpertSource = 'Nasdaq Overnight Negative Day EA\Nasdaq Overnight Negative Day EA.ex5'
+            SetSource = 'Nasdaq Overnight Negative Day EA\RETEST INCLUDED 2026-08-07 - Nasdaq Overnight - USTEC M1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'Turnaround Tuesday'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 1440; Expert = 'Turnaround Tuesday EA.ex5'
+            ExpertSource = 'Turnaround Tuesday EA\Turnaround Tuesday EA.ex5'
+            SetSource = 'Turnaround Tuesday EA\RETEST INCLUDED 2026-08-07 - Turnaround Tuesday - USTEC D1 - 1pct.set'; SmallDynamicRisk = $true; PercentRisk = $false
+        },
+        [pscustomobject]@{
+            Label = 'AAA Final US100 Weakness'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 15; Expert = 'AAA Final US100 Weakness EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final US100 Weakness EA\AAA Final US100 Weakness EA.ex5'
+            SetSource = 'AAA Final EAs\AAA Final US100 Weakness EA\RETEST INCLUDED 2026-08-07 - US100 Weakness - USTEC M15 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
         }
     )
 
     foreach ($item in $items) {
         if (-not $item.PSObject.Properties['FixedPercentRisk']) {
             $item | Add-Member -NotePropertyName FixedPercentRisk -NotePropertyValue 0.0
+        }
+        if (-not $item.PSObject.Properties['VolumeRiskMoney']) {
+            $item | Add-Member -NotePropertyName VolumeRiskMoney -NotePropertyValue $false
         }
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
         $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $item.SetSource)
@@ -240,6 +260,10 @@ function Get-EffectiveInputs([object]$Item) {
         $riskPercent = $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
         if ($inputs.Contains('RiskMoney')) { $inputs['RiskMoney'] = $riskAmount }
         if ($inputs.Contains('InpRiskAmount')) { $inputs['InpRiskAmount'] = $riskAmount }
+        if ([bool]$Item.VolumeRiskMoney) {
+            if ($inputs.Contains('VolumeMode')) { $inputs['VolumeMode'] = '1' }
+            if ($inputs.Contains('Volume')) { $inputs['Volume'] = $riskAmount }
+        }
         if ([bool]$Item.PercentRisk -and $inputs.Contains('InpRiskPercent')) { $inputs['InpRiskPercent'] = $riskPercent }
         if ([bool]$Item.SmallDynamicRisk) {
             $inputs['Volume'] = '0'
@@ -252,6 +276,10 @@ function Get-EffectiveInputs([object]$Item) {
     } elseif ($IsSmallAccount) {
         if ($inputs.Contains('RiskMoney')) { $inputs['RiskMoney'] = '40' }
         if ($inputs.Contains('InpRiskAmount')) { $inputs['InpRiskAmount'] = '40' }
+        if ([bool]$Item.VolumeRiskMoney) {
+            if ($inputs.Contains('VolumeMode')) { $inputs['VolumeMode'] = '1' }
+            if ($inputs.Contains('Volume')) { $inputs['Volume'] = '40' }
+        }
         if ([bool]$Item.SmallDynamicRisk) {
             $inputs['Volume'] = '0'
             $inputs['Lots'] = ([double]$Item.EffectiveLot).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
@@ -593,11 +621,10 @@ if ($PreflightOnly) {
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
-Write-Host 'STRICT +20% SET: Weekend Direction was provisional and XAU Weakness previously failed validation.' -ForegroundColor Red
-Write-Host 'Their selected settings are enabled because you explicitly requested every +20% result.' -ForegroundColor Red
+Write-Host 'POSITIVE-RETURN SET: the eleven EAs you selected from the corrected Exness one-year retest are included.' -ForegroundColor Red
 if ($IsAdaptiveAccount) {
     Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA stays fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
-    Write-Host 'Lot size and the Go Long hard stop are rebuilt from the active broker contract data.' -ForegroundColor Red
+    Write-Host 'ATR fixed-money risk and percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red
     Write-Host 'AAA Final EAs use their preset equity percentage (normally 1%; XAU Grid 0.5%).' -ForegroundColor Red
@@ -623,7 +650,7 @@ foreach ($directory in @($expertsTarget, $testerTarget, $chartsRoot)) {
 }
 
 # These two folders are owned by this installer. Delete stale files from EAs
-# that no longer meet the strict +20% selection rule before rebuilding them.
+# that are no longer in the user-selected portfolio before rebuilding them.
 $expertsRootFull = [IO.Path]::GetFullPath((Join-Path $mql5Root 'Experts')).TrimEnd('\') + '\'
 $expertsTargetFull = [IO.Path]::GetFullPath($expertsTarget)
 $testerRootFull = [IO.Path]::GetFullPath((Join-Path $mql5Root 'Profiles\Tester')).TrimEnd('\') + '\'
@@ -668,7 +695,7 @@ for ($i = 0; $i -lt $portfolio.Count; $i++) {
         $setProfileLabel = if ($IsAdaptiveAccount) { 'AUTO BALANCE' } else { '900' }
         $effectiveSetName = "LAST INSTALLED $setProfileLabel - $safeLabel - $($item.BrokerSymbol).set"
         $effectiveSetSource = Join-Path (Split-Path -Parent $item.SetFullPath) $effectiveSetName
-        [IO.File]::WriteAllText($effectiveSetSource, $effectiveSetText, [Text.UTF8Encoding]::new($true))
+        [IO.File]::WriteAllText($effectiveSetSource, $effectiveSetText, [Text.UTF8Encoding]::new($false))
         Copy-Item -LiteralPath $effectiveSetSource -Destination (Join-Path $testerTarget $effectiveSetName) -Force
         $item | Add-Member -NotePropertyName EffectiveSetPath -NotePropertyValue $effectiveSetSource
     } else {

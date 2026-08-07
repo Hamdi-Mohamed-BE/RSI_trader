@@ -1,6 +1,6 @@
 @echo off
 setlocal
-title BM Trading +20 Percent - Any Balance Auto Risk
+title BM Trading Positive Retest Portfolio - Any Balance Auto Risk
 
 powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Install-BMTradingPortfolio.ps1" -AccountProfile AUTO %*
 set "BM_EXIT=%ERRORLEVEL%"

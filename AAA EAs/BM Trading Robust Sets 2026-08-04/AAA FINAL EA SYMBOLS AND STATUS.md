@@ -9,6 +9,7 @@ Built 2026-08-05 from the rules and selected settings stored in each AAA Final p
 | DmC | AAA Final DmC EA | XAUUSD / GOLD alias | H1 | Enabled | 1.0% |
 | AMD | AAA Final AMD EA | XAUUSD / GOLD alias | M15 | Disabled: research gate | 1.0% if enabled |
 | US100 weekness | AAA Final US100 Weakness EA | US100 / NAS100 / USTEC / UT100 / NDX100 alias | M15 | Enabled | 1.0% total; OCO orders split it |
+| US100 weakness exact two-leg | AAA Final US100 Weakness Exact EA | USTEC / US100 alias | M15 | Disabled: latest-year validation failed; manual research only | 1.0% total split equally between two legs |
 | news pulse | AAA Final News Pulse EA | XAUUSD / GOLD alias | M1 | Enabled | 1.0% total; OCO orders split it |
 | weekend direction | AAA Final Weekend Direction EA | XAUUSD / GOLD alias | M15 | Disabled: provisional gate | 1.0% if enabled |
 | XAU Grid | AAA Final XAU Grid EA | XAUUSD / GOLD alias | M15 | Enabled | 0.5% total across grid legs |

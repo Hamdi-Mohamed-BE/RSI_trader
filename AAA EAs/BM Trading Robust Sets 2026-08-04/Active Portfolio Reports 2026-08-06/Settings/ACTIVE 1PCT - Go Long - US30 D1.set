@@ -1,0 +1,34 @@
+﻿; BM Trading preset generated 2026-08-04
+; Video logic for US30; no TP/SL/trailing and the broker minimum 0.10 lot because money sizing without an SL rounds below minimum.
+; saved automatically on 2026.08.04 11:49:09
+; this file contains last used input parameters for testing/optimizing Go Long EA expert advisor
+;
+; +--- General Settings ---+
+IsWaitNewHigh=false||false||0||true||N
+Volume=0||0||0||3||N
+Lots=0.24||0.01||0.001000||0.100000||N
+LotsPerMoney=1000||1000||1||10000||N
+RiskPercent=1.0||5.0||0.500000||50.000000||N
+RiskMoney=100.0||50.0||5.000000||500.000000||N
+TpCalcMode=0||0||0||2||N
+TpValue=0||0.0||0.000000||0.000000||N
+SlCalcMode=1||0||0||2||N
+SlValue=0.76430161||5.0||0.500000||50.000000||N
+; +--- Time Settings ---+
+TimeOpenHour=1||1||1||10||N
+TimeOpenMin=5||5||1||50||N
+IsClose=true||false||0||true||N
+TimeCloseHour=23||22||1||220||N
+TimeCloseMin=50||55||1||550||N
+; +--- Trailing Stop Settings ---+
+BeCalcMode=0||0||0||2||N
+BeTriggerValue=0||0.0||0.000000||0.000000||N
+BeBufferValue=0.05||0.05||0.005000||0.500000||N
+TslCalcMode=0||0||0||2||N
+TslTriggerValue=0||0.0||0.000000||0.000000||N
+TslValue=100.0||100.0||10.000000||1000.000000||N
+TslStepValue=10.0||10.0||1.000000||100.000000||N
+; +--- More Settings ---+
+Commentary=BM-ACTIVE-1PCT-HARD-SL
+Magic=220101||123454321||1||1234543210||N
+IsChartComment=true||false||0||true||N
