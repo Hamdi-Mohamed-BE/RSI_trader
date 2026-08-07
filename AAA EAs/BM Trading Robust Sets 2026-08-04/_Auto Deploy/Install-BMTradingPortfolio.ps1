@@ -47,6 +47,12 @@ function Get-PortfolioItems {
             SetSource = 'LTA volume profile\Best Settings\RETEST PASSED 2026-08-07 - LTA - XAUUSD M15 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0
         },
         [pscustomobject]@{
+            Label = 'ORB Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 5; Expert = 'ORB Volume Data EA.ex5'
+            ExpertSource = 'ORB Volume Data EA\ORB Volume Data EA.ex5'
+            SetSource = 'ORB Volume Data EA\Volume Profile Settings\VISUAL PROFILE - XAUUSD M5 - validated baseline.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0
+        },
+        [pscustomobject]@{
             Label = 'ATR Candle Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 60; Expert = 'ATR Candle Breakout EA.ex5'
             ExpertSource = 'ATR Candle Breakout EA\ATR Candle Breakout EA.ex5'
@@ -633,9 +639,9 @@ if ($PreflightOnly) {
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
-Write-Host 'TWELVE-EA SET: eleven positive-return EAs plus News Pulse as your temporary forced test inclusion.' -ForegroundColor Red
+Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse as your temporary forced test inclusion." -ForegroundColor Red
 if ($IsAdaptiveAccount) {
-    Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA stays fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+    Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA and ORB Volume Profile stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
     Write-Host 'ATR fixed-money risk and percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red

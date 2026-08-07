@@ -1,10 +1,11 @@
 # User-selected positive-return setup
 
-The synchronized BAT launches the eleven positive-return EAs selected by the user plus News Pulse as a forced temporary test inclusion.
+The synchronized BAT launches the twelve selected portfolio EAs plus News Pulse as a forced temporary test inclusion.
 
 | Included EA | Symbol / chart | Return | Equity max DD | PF | Trades |
 |---|---|---:|---:|---:|---:|
 | LTA Volume Profile | XAUUSD M15 | +82.05% | 14.39% | 1.37 | 246 |
+| ORB Volume Profile | XAUUSD M5 | +8.19% | 6.40% | 1.53 | 50 |
 | ATR Candle Breakout | XAUUSD H1 | +30.20% | 8.77% | 1.40 | 117 |
 | AAA Final Asia Breakout | XAUUSD H1 | +21.40% | 12.66% | 1.27 | 118 |
 | AAA Final DmC | XAUUSD H1 | +20.90% | 9.82% | 1.15 | 233 |
@@ -21,4 +22,4 @@ Test basis: Exness, 2025-08-07 through 2026-08-06, USD 10,000 initial balance pe
 
 The installer accepts any positive balance and defaults to 1% planned risk. LTA remains fixed at 1.00%; percentage-risk inputs are adapted to 1%; Ninja Turtle's money-risk input is adapted to 1%; Go Long and Turnaround Tuesday receive broker-specific lots and hard stops targeting 1%.
 
-This is no longer a strict +20% portfolio. News Pulse is force-enabled despite its negative retest and is clearly labelled as temporary. Twelve simultaneous trades could stack planned exposure to roughly 12% before gaps, slippage and correlations.
+This is no longer a strict +20% portfolio. ORB Volume Profile retains the validated baseline entry logic while displaying POC/VAH/VAL; its failed automatic profile filters are disabled. News Pulse is force-enabled despite its negative retest and is clearly labelled as temporary. Thirteen simultaneous trades could stack planned exposure to roughly 13% before gaps, slippage and correlations.

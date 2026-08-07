@@ -4,8 +4,10 @@ This MT5 Python script reads the latest closed 1-minute XAU candle, then builds 
 
 - Buy stops above the candle high.
 - Sell stops below the candle low.
-- Opposite side is cancelled after one side triggers.
-- Runner mode can trail the stop after the trade reaches a configured R multiple.
+- `KEEP_EVERYTHING_OPEN=true` keeps both stop ladders and all triggered trades open.
+- In that mode the bot adds no SL/TP, uses GTC pending orders, does not trail stops,
+  and does not cancel the opposite side. Positions must be closed manually.
+- With that mode disabled, optional OCO cancellation and runner trailing are available.
 
 Run:
 
@@ -19,6 +21,7 @@ Important settings:
 
 ```text
 PLACE_ORDERS=false
+KEEP_EVERYTHING_OPEN=true
 ORDER_SIDE=both
 ORDER_COUNT=4
 BUY_ORDER_COUNT=4
@@ -39,6 +42,10 @@ RUNNER_TRAIL_DISTANCE_R=1
 RUNNER_MONITOR_MINUTES=120
 SKIP_DUPLICATE_PENDING=false
 ```
+
+Warning: `KEEP_EVERYTHING_OPEN=true` creates unprotected positions with unlimited
+holding time. The configured SL, TP, expiration, runner, and OCO settings are all
+ignored until this switch is turned off.
 
 With the current 1:200 news-margin profile, if the last closed M1 high is `4100.00`, it prepares:
 

@@ -275,6 +275,12 @@ def improve_position_sl(symbol: str, position: Any, new_sl: float, deviation_poi
 
 
 def manage_runner_positions(symbol: str, config: GridConfig) -> None:
+    if config.keep_everything_open:
+        log(
+            "KEEP_EVERYTHING_OPEN is enabled; skipping opposite-order cancellation "
+            "and all automatic position management."
+        )
+        return
     if not config.manage_runner or config.runner_monitor_minutes <= 0:
         return
 
@@ -355,6 +361,7 @@ class GridConfig:
     sl_room_usd: float
     sl_distance_usd: float
     tp_distance_usd: float
+    keep_everything_open: bool
     manage_runner: bool
     runner_trail_start_r: float
     runner_trail_distance_r: float
@@ -396,6 +403,7 @@ def load_config() -> GridConfig:
         sl_room_usd=max(0.0, env_float("SL_ROOM_USD", 20.0)),
         sl_distance_usd=max(0.0, env_float("SL_DISTANCE_USD", 0.0)),
         tp_distance_usd=max(0.0, env_float("TP_DISTANCE_USD", 0.0)),
+        keep_everything_open=env_bool("KEEP_EVERYTHING_OPEN", False),
         manage_runner=env_bool("MANAGE_RUNNER", True),
         runner_trail_start_r=max(0.1, env_float("RUNNER_TRAIL_START_R", 7.0)),
         runner_trail_distance_r=max(0.1, env_float("RUNNER_TRAIL_DISTANCE_R", 1.0)),
@@ -432,21 +440,22 @@ def build_request(
         "type_time": mt5.ORDER_TIME_GTC,
         "type_filling": mt5.ORDER_FILLING_RETURN,
     }
-    if config.sl_mode == "opposite_candle":
-        sl = candle["low"] - config.sl_room_usd if is_buy else candle["high"] + config.sl_room_usd
-        request["sl"] = normalize_price(symbol, sl)
-    elif config.sl_distance_usd > 0:
-        sl = price - config.sl_distance_usd if is_buy else price + config.sl_distance_usd
-        request["sl"] = normalize_price(symbol, sl)
-    if config.tp_distance_usd > 0:
-        tp = price + config.tp_distance_usd if is_buy else price - config.tp_distance_usd
-        request["tp"] = normalize_price(symbol, tp)
-    if config.expiration_minutes > 0:
-        request["type_time"] = mt5.ORDER_TIME_SPECIFIED
-        # Some brokers expose server-local epoch values through MT5. Using the
-        # computer clock can therefore create an expiration already in the past
-        # from the trade server's perspective.
-        request["expiration"] = broker_time(symbol) + config.expiration_minutes * 60
+    if not config.keep_everything_open:
+        if config.sl_mode == "opposite_candle":
+            sl = candle["low"] - config.sl_room_usd if is_buy else candle["high"] + config.sl_room_usd
+            request["sl"] = normalize_price(symbol, sl)
+        elif config.sl_distance_usd > 0:
+            sl = price - config.sl_distance_usd if is_buy else price + config.sl_distance_usd
+            request["sl"] = normalize_price(symbol, sl)
+        if config.tp_distance_usd > 0:
+            tp = price + config.tp_distance_usd if is_buy else price - config.tp_distance_usd
+            request["tp"] = normalize_price(symbol, tp)
+        if config.expiration_minutes > 0:
+            request["type_time"] = mt5.ORDER_TIME_SPECIFIED
+            # Some brokers expose server-local epoch values through MT5. Using the
+            # computer clock can therefore create an expiration already in the past
+            # from the trade server's perspective.
+            request["expiration"] = broker_time(symbol) + config.expiration_minutes * 60
     return request
 
 
@@ -580,6 +589,10 @@ def main() -> int:
         print(
             f"Runner manager={config.manage_runner} trailStart={config.runner_trail_start_r:g}R "
             f"trailDistance={config.runner_trail_distance_r:g}R cancelOpposite={config.cancel_opposite_on_trigger}"
+        )
+        print(
+            f"KEEP_EVERYTHING_OPEN={config.keep_everything_open} "
+            "(when true: no SL/TP, no expiration, no trailing, no opposite-order cancellation)"
         )
         print(f"PLACE_ORDERS={config.place_orders}")
         print("")
