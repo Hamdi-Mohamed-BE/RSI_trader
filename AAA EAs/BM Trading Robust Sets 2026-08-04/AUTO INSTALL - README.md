@@ -18,8 +18,8 @@ The BAT detects the active account, resolves XAUUSD, US30, USTEC and EURUSD brok
 - Nasdaq Overnight — USTEC M1
 - Turnaround Tuesday — USTEC D1
 - AAA Final US100 Weakness — USTEC M15
-- AAA Final News Pulse — XAUUSD M1, force-enabled temporary test
+- AAA Final News Pulse — XAUUSD M1, force-enabled with the saved robust long-only 1% preset
 
-The default planned risk is 1% per EA trade. LTA and ORB Volume Profile are fixed at their tested 1%; other supported risk inputs adapt to the detected balance. The ORB profile is visual confirmation: its value-area, POC-bias and LVN entry filters remain disabled because they failed the locked final-year comparison. Go Long and Turnaround Tuesday use broker-specific hard stops and lots. News Pulse is force-enabled even though its corrected one-year retest returned -5.05%.
+The default planned risk is 1% per EA trade. LTA and ORB Volume Profile are fixed at their tested 1%; other supported risk inputs adapt to the detected balance. The ORB profile is visual confirmation: its value-area, POC-bias and LVN entry filters remain disabled because they failed the locked final-year comparison. Go Long and Turnaround Tuesday use broker-specific hard stops and lots. News Pulse uses its 9 Aug 2026 robust long-only preset: place one buy-stop 30 seconds before release, $6 entry offset, $6 stop, trail from 1.5R at $15 distance, and force-close at 60 seconds. Its planned event risk is 1% before gaps and slippage; no sell-stop is placed.
 
 The installer does not close positions or delete unrelated profiles. It backs up its previous managed profile and removes stale files only from its own managed folders. Multiple bots can trade simultaneously, so combined account exposure and drawdown can be much higher than 1%.

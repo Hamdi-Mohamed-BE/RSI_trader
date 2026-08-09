@@ -16,11 +16,17 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist "models\gold_news_direction.joblib" (
-  echo Trained direction models are missing. Running the full trainer first...
-  call train_model.bat
+if not exist "models\gold_news_v5.joblib" (
+  echo V5 NFP, CPI, and FOMC model is missing. Building it now...
+  if not exist "models\gold_news_v4.joblib" uv run python backtest_news_v4.py
   if errorlevel 1 (
-    echo Model training failed.
+    echo V4 base model training failed.
+    pause
+    exit /b 1
+  )
+  uv run python backtest_news_v5.py
+  if errorlevel 1 (
+    echo V5 model training failed.
     pause
     exit /b 1
   )

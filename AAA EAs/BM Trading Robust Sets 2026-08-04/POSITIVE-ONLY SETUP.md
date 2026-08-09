@@ -16,10 +16,10 @@ The synchronized BAT launches the twelve selected portfolio EAs plus News Pulse 
 | Nasdaq Overnight | USTEC M1 | +7.85% | 2.39% | 1.85 | 71 |
 | Turnaround Tuesday | USTEC D1 | +3.29% | 6.11% | 1.20 | 30 |
 | AAA Final US100 Weakness | USTEC M15 | +3.27% | 6.04% | 1.15 | 70 |
-| AAA Final News Pulse — TEMP TEST | XAUUSD M1 | -5.05% | 6.16% | 0.00 | 11 |
+| AAA Final News Pulse — robust long-only 60-second preset | XAUUSD M1 | +62.51% | 1.46% | 41.00 | 19 |
 
-Test basis: Exness, 2025-08-07 through 2026-08-06, USD 10,000 initial balance per independent test, 1% planned risk per trade, MT5 Every Tick generated from Exness M1 history with random execution delay.
+Portfolio rows other than News Pulse use the prior Exness 2025-08-07 through 2026-08-06 independent tests. The updated News Pulse row uses Exness 2025-08-07 through 2026-08-08, USD 10,000 initial balance, 1% planned buy-side risk, and MT5 Every Tick generated from Exness M1 history. Its separate random-delay stress test returned +62.66%, PF 42.76 and 1.98% maximal equity drawdown. These are generated-tick backtests, not live fills or broker real-tick proof.
 
 The installer accepts any positive balance and defaults to 1% planned risk. LTA remains fixed at 1.00%; percentage-risk inputs are adapted to 1%; Ninja Turtle's money-risk input is adapted to 1%; Go Long and Turnaround Tuesday receive broker-specific lots and hard stops targeting 1%.
 
-This is no longer a strict +20% portfolio. ORB Volume Profile retains the validated baseline entry logic while displaying POC/VAH/VAL; its failed automatic profile filters are disabled. News Pulse is force-enabled despite its negative retest and is clearly labelled as temporary. Thirteen simultaneous trades could stack planned exposure to roughly 13% before gaps, slippage and correlations.
+This is no longer a strict +20% portfolio. ORB Volume Profile retains the validated baseline entry logic while displaying POC/VAH/VAL; its failed automatic profile filters are disabled. News Pulse is long-only and places no sell-stop, so its planned event risk is 1%. Thirteen simultaneous EAs can still stack much more account exposure before gaps, slippage and correlations.

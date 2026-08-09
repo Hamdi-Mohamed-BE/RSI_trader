@@ -29,11 +29,15 @@ uv run python backtest_fomc_regime.py
 if errorlevel 1 goto :failed
 uv run python backtest_fomc_regime_walkforward.py
 if errorlevel 1 goto :failed
+uv run python backtest_news_v4.py
+if errorlevel 1 goto :failed
+uv run python backtest_news_v5.py
+if errorlevel 1 goto :failed
 uv run python official_nowcasts.py
 if errorlevel 1 echo Official nowcast refresh skipped; the validated model is still ready.
 
 echo.
-echo Binary gold-direction V2, FOMC ensemble, and regime audit reports completed.
+echo V5 NFP/CPI/FOMC model and legacy research reports completed.
 pause
 exit /b 0
 

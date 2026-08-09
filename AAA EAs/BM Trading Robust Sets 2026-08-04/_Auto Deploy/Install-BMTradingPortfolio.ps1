@@ -113,10 +113,10 @@ function Get-PortfolioItems {
             SetSource = 'AAA Final EAs\AAA Final US100 Weakness EA\RETEST INCLUDED 2026-08-07 - US100 Weakness - USTEC M15 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
-            Label = 'AAA Final News Pulse - TEMP TEST'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Label = 'AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
-            SetSource = 'AAA Final EAs\AAA Final News Pulse EA\TEMP TEST INCLUDED 2026-08-07 - News Pulse - XAUUSD M1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; ForceEnable = $true
+            SetSource = 'AAA Final EAs\AAA Final News Pulse EA\BEST ROBUST LONG ONLY 2026-08-09 - News Pulse - XAUUSD M1 - 1pct - 60sec.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
         }
     )
 
@@ -623,7 +623,7 @@ foreach ($item in $portfolio) {
 }
 
 if ($IsAdaptiveAccount) {
-    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while LTA remains fixed at 1.00%.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
+    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while LTA, ORB, and News Pulse remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
 } elseif ($IsSmallAccount) {
     if ($balance -lt 800 -or $balance -gt 1200) {
         Stop-WithMessage "Refusing to run: the small-account settings are for roughly USD 900, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Use an account between USD 800 and USD 1,200."
@@ -641,7 +641,7 @@ Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading,
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse as your temporary forced test inclusion." -ForegroundColor Red
 if ($IsAdaptiveAccount) {
-    Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA and ORB Volume Profile stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA, ORB Volume Profile, and News Pulse stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
     Write-Host 'ATR fixed-money risk and percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red

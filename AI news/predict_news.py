@@ -9,21 +9,17 @@ from pathlib import Path
 
 import joblib
 import MetaTrader5 as mt5
-import numpy as np
 
 from economic_context import EconomicContextStore
 from fomc_pipeline import (
-    combine_fomc_decision,
     fomc_release_phases,
-    model_probability_positive,
     pricing_context,
 )
-from gold_direction_rules import live_rule_probability
-from macro_regime import MacroRegimeStore
-from news_core import EVENTS, ROOT, complete_sides, extract_features, normalize_rows
+from news_core import ROOT, complete_sides, extract_features, normalize_rows
 from official_nowcasts import OfficialNowcastStore
 from point_in_time_store import context_for_prediction
 from point_in_time_store import save_macro_snapshot, save_market_snapshot
+from news_v5 import SUPPORTED_EVENTS, artifact_prediction
 
 
 PREDICTION_DIR = ROOT / "predictions"
@@ -244,116 +240,6 @@ def reason_lines(context: dict, event: str) -> list[str]:
     return reasons
 
 
-def _direction_vector(
-    profile: str,
-    features_15: list[float] | None,
-    features_30: list[float],
-    macro_features: list[float],
-) -> np.ndarray:
-    vector_30 = np.asarray(features_30, dtype=float)
-    vector_macro = np.asarray(macro_features, dtype=float)
-    if profile == "t30":
-        return vector_30
-    if profile == "t30_macro":
-        return np.concatenate((vector_30, vector_macro))
-    if features_15 is None:
-        raise RuntimeError(f"The {profile} model requires the canonical T-15 snapshot.")
-    vector_15 = np.asarray(features_15, dtype=float)
-    if profile == "t15":
-        return vector_15
-    dual = np.concatenate((vector_15, vector_30, vector_15 - vector_30))
-    if profile == "dual":
-        return dual
-    if profile == "dual_macro":
-        return np.concatenate((dual, vector_macro))
-    raise RuntimeError(f"Unsupported gold-direction feature profile: {profile}")
-
-
-def _impact_decision(
-    mode_artifact: dict,
-    event: str,
-    artifact: dict,
-    vector: np.ndarray,
-    features_30: list[float],
-    fomc_pricing: dict | None = None,
-) -> dict:
-    prior_probability = float(
-        artifact["event_prior_probability_positive"][event]
-    )
-    fomc_ensemble = artifact.get("fomc_ensemble")
-    if event == "FOMC" and fomc_ensemble:
-        model_probability = model_probability_positive(
-            fomc_ensemble["model"],
-            features_30,
-        )
-        result = combine_fomc_decision(
-            history_labels=artifact["event_direction_history"].get(
-                event,
-                [],
-            ),
-            model_probability_positive_value=model_probability,
-            pricing=fomc_pricing,
-        )
-        return {
-            **result,
-            "market_probability_positive": model_probability,
-            "historical_probability_positive": prior_probability,
-            "market_model_weight": 1.0,
-        }
-    rule_policy = artifact.get("direction_rule_policy")
-    if rule_policy:
-        rule = rule_policy["rules"][event]
-        reliability = float(rule_policy["reliability"][event])
-        probability_positive = live_rule_probability(
-            rule,
-            artifact["event_direction_history"].get(event, []),
-            reliability,
-        )
-        impact = (
-            "POSITIVE" if probability_positive >= 0.5 else "NEGATIVE"
-        )
-        return {
-            "gold_impact": impact,
-            "confidence": max(
-                probability_positive,
-                1 - probability_positive,
-            ),
-            "probability_positive": probability_positive,
-            "probability_negative": 1 - probability_positive,
-            "market_probability_positive": prior_probability,
-            "historical_probability_positive": prior_probability,
-            "market_model_weight": 0.0,
-            "direction_rule": rule,
-        }
-    model_weight = float(mode_artifact["model_weight"])
-    market_probability = prior_probability
-    if model_weight > 0:
-        model = mode_artifact["model"]
-        classes = list(model.classes_)
-        market_probability = float(
-            model.predict_proba(vector.reshape(1, -1))[0][classes.index("POSITIVE")]
-        )
-    probability_positive = (
-        model_weight * market_probability
-        + (1 - model_weight) * prior_probability
-    )
-    impact = "POSITIVE" if probability_positive >= 0.5 else "NEGATIVE"
-    raw_confidence = max(probability_positive, 1 - probability_positive)
-    confidence = float(
-        mode_artifact["confidence_calibrator"].predict([raw_confidence])[0]
-    )
-    return {
-        "gold_impact": impact,
-        "confidence": confidence,
-        "probability_positive": probability_positive,
-        "probability_negative": 1 - probability_positive,
-        "market_probability_positive": market_probability,
-        "historical_probability_positive": prior_probability,
-        "market_model_weight": model_weight,
-        "direction_rule": "legacy_event_model_blend",
-    }
-
-
 def make_prediction(
     event: str,
     release_utc: datetime,
@@ -371,14 +257,17 @@ def make_prediction(
     event = event.upper()
     now = datetime.now(timezone.utc)
     minutes_before = (release_utc - now).total_seconds() / 60
-    if event not in EVENTS:
+    if event not in SUPPORTED_EVENTS:
         return {
             "event": event,
             "release_time_utc": release_utc.isoformat(),
             "gold_impact": "UNKNOWN",
             "confidence_pct": 0.0,
             "data_quality": "unsupported event",
-            "reason": f"The trained archive does not yet cover {event}.",
+            "reason": (
+                f"V5 supports only {', '.join(SUPPORTED_EVENTS)}; "
+                f"{event} is intentionally disabled."
+            ),
         }
     if minutes_before <= 0:
         raise RuntimeError("Pre-release predictions cannot be generated after the event has started.")
@@ -388,10 +277,10 @@ def make_prediction(
         )
 
     lead = choose_lead(minutes_before)
-    artifact_path = ROOT / "models" / "gold_news_direction.joblib"
+    artifact_path = ROOT / "models" / "gold_news_v5.joblib"
     if not artifact_path.exists():
         raise RuntimeError(
-            "The gold direction artifact is missing. Run backtest_gold_direction.py first."
+            "The V5 gold direction artifact is missing. Run backtest_news_v5.py first."
         )
     artifact = joblib.load(artifact_path)
     if forecast or previous:
@@ -431,10 +320,8 @@ def make_prediction(
         features_30, context_30 = snapshot(30)
         features_15 = None
         context_15 = None
-        mode = "early" if lead == 30 else "final"
         if lead == 15:
             features_15, context_15 = snapshot(15)
-        mode_artifact = artifact[mode]
         fomc_pricing = (
             pricing_context(
                 current_lower=fomc_current_lower,
@@ -448,29 +335,15 @@ def make_prediction(
             if event == "FOMC"
             else None
         )
-        vector = np.empty(0, dtype=float)
-        if float(mode_artifact["model_weight"]) > 0:
-            profile = mode_artifact["candidate"]["profile"]
-            macro_features = (
-                MacroRegimeStore().features(release_utc)
-                if "macro" in profile
-                else []
-            )
-            vector = _direction_vector(
-                profile,
-                features_15,
-                features_30,
-                macro_features,
-            )
-        decision = _impact_decision(
-            mode_artifact,
-            event,
+        decision = artifact_prediction(
             artifact,
-            vector,
+            event,
+            lead,
+            features_15 or features_30,
             features_30,
-            fomc_pricing,
         )
-        direction = decision["gold_impact"]
+        direction = decision["prediction"]
+        bias = decision["bias"]
         confidence = decision["confidence"]
         context = context_15 or context_30
         expected = artifact["expected_release_range_by_event"].get(event, {})
@@ -488,16 +361,18 @@ def make_prediction(
         available_external = [
             name for name, value in external_context.items() if value is not None
         ]
-        invalidation = (
-            "A materially stronger-than-forecast USD release can reverse a POSITIVE gold forecast."
-            if direction == "POSITIVE"
-            else "A materially weaker-than-forecast USD release can reverse a NEGATIVE gold forecast."
-        )
-        model_name = mode_artifact["candidate"]["name"]
-        feature_profile = mode_artifact["candidate"]["profile"]
-        if event == "FOMC" and artifact.get("fomc_ensemble"):
-            model_name = "extra_trees_fomc_ensemble"
-            feature_profile = "t30_legacy_18"
+        if direction == "NO CALL":
+            invalidation = (
+                "No active direction: "
+                + ", ".join(decision["failed_gates"])
+                + ". The shadow bias is informational only."
+            )
+        else:
+            invalidation = (
+                "A materially stronger-than-forecast USD release can reverse a POSITIVE gold call."
+                if direction == "POSITIVE"
+                else "A materially weaker-than-forecast USD release can reverse a NEGATIVE gold call."
+            )
         result = {
             "generated_at_utc": now.isoformat(),
             "event": event,
@@ -506,7 +381,7 @@ def make_prediction(
             "symbol": symbol,
             "gold_impact": direction,
             "prediction": direction,
-            "directional_model_bias": direction,
+            "directional_model_bias": bias,
             "confidence_pct": round(100 * confidence, 2),
             "probabilities": {
                 "POSITIVE": round(100 * decision["probability_positive"], 2),
@@ -519,18 +394,18 @@ def make_prediction(
             "main_reasons": [
                 *reason_lines(context, event),
                 (
-                    f"The validated event rule is "
-                    f"{decision['direction_rule'].replace('_', ' ')}."
+                    f"V5 strategy: {decision['strategy'].replace('_', ' ')}."
+                ),
+                (
+                    "The confidence and agreement gates passed."
+                    if direction != "NO CALL"
+                    else "No active call because: " + ", ".join(decision["failed_gates"]) + "."
                 ),
                 *(
                     [
                         (
-                            "The FOMC history and T-30 components "
-                            f"{'agree' if decision['components_agree'] else 'disagree'}."
-                        ),
-                        (
-                            "FedWatch modal-versus-weighted pricing "
-                            f"{'resolved the conflict.' if decision['resolver'].startswith('fedwatch') else 'did not resolve the direction.'}"
+                            "The FOMC history and T-30 model "
+                            f"{'agree.' if not decision['failed_gates'] else 'do not agree.'}"
                         ),
                     ]
                     if event == "FOMC"
@@ -545,11 +420,11 @@ def make_prediction(
                 else "partial: live XAUUSD M1 is available; missing point-in-time context is not fabricated"
             ),
             "model": {
-                "name": "binary gold-impact model",
+                "name": "event-specific gold-impact V5",
                 "lead_minutes": lead,
-                "estimator": model_name,
-                "feature_profile": feature_profile,
-                "market_model_weight": decision["market_model_weight"],
+                "estimator": decision["strategy"],
+                "feature_profile": f"canonical_t{lead}",
+                "active_call_allowed": lead == 15,
                 "trained_through": artifact["trained_through"],
                 "artifact_version": artifact["artifact_version"],
             },
@@ -559,27 +434,16 @@ def make_prediction(
             "official_nowcast_context": official_nowcast,
             "captured_related_markets": sorted(captured_markets),
             "probability_context": {
-                "historical_event_positive_pct": round(
-                    100 * decision["historical_probability_positive"],
-                    2,
+                "market_model_positive_pct": round(100 * decision["probability_positive"], 2),
+                "shadow_bias": bias,
+                "history_bias": (
+                    "POSITIVE" if decision["history_bias"] == "BUY"
+                    else "NEGATIVE" if decision["history_bias"] == "SELL"
+                    else None
                 ),
-                "market_model_positive_pct": round(
-                    100 * decision["market_probability_positive"],
-                    2,
-                ),
-                "direction_rule": decision["direction_rule"],
-                **(
-                    {
-                        "confidence_tier": decision["confidence_tier"],
-                        "resolver": decision["resolver"],
-                        "history_direction": decision["history_direction"],
-                        "t30_model_direction": decision["model_direction"],
-                        "components_agree": decision["components_agree"],
-                        "fedwatch_pricing": decision["fedwatch_pricing"],
-                    }
-                    if event == "FOMC"
-                    else {}
-                ),
+                "gates": decision["gates"],
+                "failed_gates": decision["failed_gates"],
+                "fomc_pricing_context_only": fomc_pricing,
             },
             "fomc_release_phases": (
                 fomc_release_phases(release_utc)
@@ -611,7 +475,7 @@ def parse_release(value: str) -> datetime:
 def main() -> None:
     load_env()
     parser = argparse.ArgumentParser(description="Predict the immediate XAUUSD news impulse.")
-    parser.add_argument("--event", required=True, help="NFP, GDP, CPI, PPI, or FOMC")
+    parser.add_argument("--event", required=True, help="NFP, CPI, or FOMC")
     parser.add_argument("--release", required=True, type=parse_release, help="ISO-8601 release time")
     parser.add_argument("--forecast")
     parser.add_argument("--previous")

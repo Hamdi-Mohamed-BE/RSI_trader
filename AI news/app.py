@@ -8,9 +8,10 @@ from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse
 
 from calendar_provider import upcoming_us_events
-from news_core import EVENTS, ROOT
+from news_core import ROOT
 from predict_news import load_env, make_prediction
 from release_intelligence import analyze_release, build_pre_release_packet
+from news_v5 import SUPPORTED_EVENTS
 
 
 load_env()
@@ -19,7 +20,10 @@ app = FastAPI(title="Gold News Impulse Predictor", version="0.1.0")
 
 @app.get("/", response_class=HTMLResponse)
 def index() -> str:
-    options = "".join(f'<option value="{event}">{event}</option>' for event in EVENTS)
+    options = "".join(
+        f'<option value="{event}">{event}</option>'
+        for event in SUPPORTED_EVENTS
+    )
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -144,13 +148,11 @@ def health() -> dict:
         lead: (ROOT / "models" / f"gold_news_impulse_{lead}m.joblib").exists()
         for lead in (15, 30)
     }
-    direction_ready = (
-        ROOT / "models" / "gold_news_direction.joblib"
-    ).exists()
+    direction_ready = (ROOT / "models" / "gold_news_v5.joblib").exists()
     return {
         "status": "ok" if direction_ready else "model_missing",
         "models": {
-            "gold_direction_v2": direction_ready,
+            "gold_direction_v5": direction_ready,
             "fomc_ensemble": (
                 ROOT / "fomc_pipeline_backtest.json"
             ).exists(),
@@ -162,9 +164,12 @@ def health() -> dict:
 
 @app.get("/api/backtest")
 def backtest() -> dict:
-    path = ROOT / "gold_direction_v2.json"
+    path = ROOT / "news_v5_3m_results.json"
     if not path.exists():
-        raise HTTPException(status_code=404, detail="Run train_model.bat first.")
+        raise HTTPException(
+            status_code=404,
+            detail="Run run_news_v5_backtest.bat first.",
+        )
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -181,7 +186,14 @@ def fomc_backtest() -> dict:
 
 @app.get("/api/upcoming")
 def upcoming(days: int = 7) -> dict:
-    return upcoming_us_events(max(1, min(days, 30)))
+    payload = upcoming_us_events(max(1, min(days, 30)))
+    payload["events"] = [
+        event
+        for event in payload.get("events", [])
+        if event.get("event") in SUPPORTED_EVENTS
+    ]
+    payload["supported_events"] = list(SUPPORTED_EVENTS)
+    return payload
 
 
 @app.post("/api/predict")

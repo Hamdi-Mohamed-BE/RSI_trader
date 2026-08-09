@@ -1,0 +1,3480 @@
+{
+  "methodology": {
+    "symbol": "XAUUSD",
+    "data_source": "Dukascopy bid/ask ticks through T+5, then bid/ask M1 through T+60",
+    "window": [
+      "2021-08-01T00:00:00+00:00",
+      "2026-08-01T00:00:00+00:00"
+    ],
+    "development_end": "2025-08-01T00:00:00+00:00",
+    "scheduled_events": 236,
+    "usable_tick_events": 227,
+    "missing_tick_events": 9,
+    "events": [
+      "NFP",
+      "CPI",
+      "PPI",
+      "GDP",
+      "FOMC"
+    ],
+    "placement_leads_seconds": [
+      60,
+      30,
+      10
+    ],
+    "oco_cancellation_latency_ms": 250,
+    "same_m1_bar_policy": "stop wins",
+    "selection": "development only; net R minus drawdown, worst-year, worst-event-family, and dual-fill penalties"
+  },
+  "universal": {
+    "selected": {
+      "entry": {
+        "lead_seconds": 10,
+        "buy_offset_dollars": 0.25,
+        "sell_offset_dollars": 1.0,
+        "spread_multiplier": 1.5,
+        "expiry_seconds": 30,
+        "cancel_latency_ms": 250
+      },
+      "stop_dollars": 12.0,
+      "target_dollars": 7.0,
+      "reward_risk": 0.5833333333333334
+    },
+    "deployment_verdict": "rejected",
+    "development_selection_strict_pass": true,
+    "development": {
+      "events": 185,
+      "traded_events": 181,
+      "legs": 186,
+      "fill_rate_pct": 97.83783783783784,
+      "wins": 110,
+      "losses": 71,
+      "win_rate_pct": 60.773480662983424,
+      "profit_factor": 1.2119019235370037,
+      "net_r": 8.635833333333416,
+      "expectancy_r": 0.04771178637200782,
+      "max_drawdown_r": 4.40954166666658,
+      "largest_loss_r": -1.3703750000000052,
+      "target_hit_rate_pct": 53.591160220994475,
+      "dual_fill_rate_pct": 2.7624309392265194,
+      "pre_release_fill_rate_pct": 20.994475138121548,
+      "median_spread_dollars": 0.47200000000020736,
+      "median_entry_slippage_dollars": 0.3894999999999982,
+      "year_net_r": {
+        "2021": -2.027166666666593,
+        "2022": 5.86641666666668,
+        "2023": 4.292250000000136,
+        "2024": 1.6818333333332407,
+        "2025": -1.1775000000000475
+      },
+      "twelve_month_block_net_r": {
+        "1": 2.1566666666668084,
+        "2": 7.297583333333363,
+        "3": -1.3433333333333808,
+        "4": 0.5249166666666267
+      },
+      "event_net_r": {
+        "NFP": 5.931624999999999,
+        "CPI": 0.8113333333334742,
+        "PPI": -5.84183333333334,
+        "GDP": 3.0333750000000914,
+        "FOMC": 4.701333333333195
+      }
+    },
+    "holdout": {
+      "events": 42,
+      "traded_events": 40,
+      "legs": 41,
+      "fill_rate_pct": 95.23809523809524,
+      "wins": 18,
+      "losses": 22,
+      "win_rate_pct": 45.0,
+      "profit_factor": 0.3621236611662842,
+      "net_r": -14.963249999999826,
+      "expectancy_r": -0.37408124999999565,
+      "max_drawdown_r": 16.349833333333173,
+      "largest_loss_r": -2.3666666666666742,
+      "target_hit_rate_pct": 47.5,
+      "dual_fill_rate_pct": 2.5,
+      "pre_release_fill_rate_pct": 37.5,
+      "median_spread_dollars": 1.0335000000000036,
+      "median_entry_slippage_dollars": 0.3312500000001819,
+      "year_net_r": {
+        "2025": -4.543916666666632,
+        "2026": -10.419333333333194
+      },
+      "twelve_month_block_net_r": {
+        "5": -14.963249999999828
+      },
+      "event_net_r": {
+        "NFP": -2.2722499999999854,
+        "CPI": -5.570083333333287,
+        "PPI": -4.047750000000026,
+        "FOMC": -3.911999999999845,
+        "GDP": 0.838833333333317
+      }
+    },
+    "full": {
+      "events": 227,
+      "traded_events": 221,
+      "legs": 227,
+      "fill_rate_pct": 97.3568281938326,
+      "wins": 128,
+      "losses": 93,
+      "win_rate_pct": 57.918552036199095,
+      "profit_factor": 0.9014602708223602,
+      "net_r": -6.327416666666416,
+      "expectancy_r": -0.028630844645549394,
+      "max_drawdown_r": 17.379374999999868,
+      "largest_loss_r": -2.3666666666666742,
+      "target_hit_rate_pct": 52.48868778280543,
+      "dual_fill_rate_pct": 2.7149321266968327,
+      "pre_release_fill_rate_pct": 23.981900452488688,
+      "median_spread_dollars": 0.5099999999997635,
+      "median_entry_slippage_dollars": 0.3744999999994434,
+      "year_net_r": {
+        "2021": -2.027166666666593,
+        "2022": 5.86641666666668,
+        "2023": 4.292250000000136,
+        "2024": 1.6818333333332407,
+        "2025": -5.72141666666668,
+        "2026": -10.419333333333194
+      },
+      "twelve_month_block_net_r": {
+        "1": 2.1566666666668084,
+        "2": 7.297583333333363,
+        "3": -1.3433333333333808,
+        "4": 0.5249166666666267,
+        "5": -14.963249999999828
+      },
+      "event_net_r": {
+        "NFP": 3.6593750000000136,
+        "CPI": -4.758749999999813,
+        "PPI": -9.889583333333368,
+        "GDP": 3.8722083333334085,
+        "FOMC": 0.7893333333333494
+      }
+    },
+    "event_breakdown_full": {
+      "NFP": {
+        "events": 54,
+        "traded_events": 54,
+        "legs": 55,
+        "fill_rate_pct": 100.0,
+        "wins": 38,
+        "losses": 16,
+        "win_rate_pct": 70.37037037037037,
+        "profit_factor": 1.2807543044198235,
+        "net_r": 3.659375000000013,
+        "expectancy_r": 0.06776620370370395,
+        "max_drawdown_r": 3.464749999999981,
+        "largest_loss_r": -1.5047499999999825,
+        "target_hit_rate_pct": 70.37037037037037,
+        "dual_fill_rate_pct": 1.8518518518518519,
+        "pre_release_fill_rate_pct": 24.074074074074073,
+        "median_spread_dollars": 0.6229999999999336,
+        "median_entry_slippage_dollars": 0.7000000000000455,
+        "year_net_r": {
+          "2021": 1.7462500000000127,
+          "2022": 0.8156250000000682,
+          "2023": 0.4583333333333903,
+          "2024": 1.6887916666666078,
+          "2025": 1.2472916666666076,
+          "2026": -2.296916666666675
+        },
+        "twelve_month_block_net_r": {
+          "1": 1.5616250000000682,
+          "2": 2.324750000000051,
+          "3": -0.32033333333335656,
+          "4": 2.3655833333332343,
+          "5": -2.2722499999999854
+        },
+        "event_net_r": {
+          "NFP": 3.6593750000000136
+        }
+      },
+      "CPI": {
+        "events": 58,
+        "traded_events": 58,
+        "legs": 62,
+        "fill_rate_pct": 100.0,
+        "wins": 32,
+        "losses": 26,
+        "win_rate_pct": 55.172413793103445,
+        "profit_factor": 0.7782609961849561,
+        "net_r": -4.758749999999811,
+        "expectancy_r": -0.08204741379310018,
+        "max_drawdown_r": 10.087083333333206,
+        "largest_loss_r": -1.3703750000000052,
+        "target_hit_rate_pct": 62.06896551724138,
+        "dual_fill_rate_pct": 6.896551724137931,
+        "pre_release_fill_rate_pct": 31.03448275862069,
+        "median_spread_dollars": 0.523499999999899,
+        "median_entry_slippage_dollars": 0.3297500000001037,
+        "year_net_r": {
+          "2021": -1.7371249999999727,
+          "2022": 3.4413750000000123,
+          "2023": 2.8282500000000264,
+          "2024": -1.3057500000000266,
+          "2025": -5.839166666666605,
+          "2026": -2.1463333333332457
+        },
+        "twelve_month_block_net_r": {
+          "1": 0.5496666666667428,
+          "2": 3.9221666666666315,
+          "3": -1.1493333333333828,
+          "4": -2.511166666666516,
+          "5": -5.570083333333287
+        },
+        "event_net_r": {
+          "CPI": -4.758749999999813
+        }
+      },
+      "PPI": {
+        "events": 56,
+        "traded_events": 56,
+        "legs": 56,
+        "fill_rate_pct": 100.0,
+        "wins": 22,
+        "losses": 34,
+        "win_rate_pct": 39.285714285714285,
+        "profit_factor": 0.4504629447406763,
+        "net_r": -9.889583333333368,
+        "expectancy_r": -0.176599702380953,
+        "max_drawdown_r": 10.475416666666717,
+        "largest_loss_r": -1.131333333333335,
+        "target_hit_rate_pct": 21.428571428571427,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 19.642857142857142,
+        "median_spread_dollars": 0.47199999999998,
+        "median_entry_slippage_dollars": 0.2660000000001901,
+        "year_net_r": {
+          "2021": -1.3526249999999702,
+          "2022": -1.1356666666666795,
+          "2023": -2.555249999999944,
+          "2024": -0.4754583333333545,
+          "2025": -0.935666666666748,
+          "2026": -3.434916666666671
+        },
+        "twelve_month_block_net_r": {
+          "1": -1.2392083333332948,
+          "2": -2.4619166666666388,
+          "3": -0.5745000000000003,
+          "4": -1.566208333333407,
+          "5": -4.047750000000026
+        },
+        "event_net_r": {
+          "PPI": -9.889583333333368
+        }
+      },
+      "GDP": {
+        "events": 19,
+        "traded_events": 18,
+        "legs": 19,
+        "fill_rate_pct": 94.73684210526316,
+        "wins": 12,
+        "losses": 6,
+        "win_rate_pct": 66.66666666666667,
+        "profit_factor": 2.944774620181697,
+        "net_r": 3.8722083333334085,
+        "expectancy_r": 0.21512268518518937,
+        "max_drawdown_r": 0.5385833333333305,
+        "largest_loss_r": -0.48024999999999335,
+        "target_hit_rate_pct": 55.55555555555556,
+        "dual_fill_rate_pct": 5.555555555555555,
+        "pre_release_fill_rate_pct": 11.11111111111111,
+        "median_spread_dollars": 0.46299999999996544,
+        "median_entry_slippage_dollars": 0.3582499999998845,
+        "year_net_r": {
+          "2021": -0.48024999999999335,
+          "2022": 1.5292916666666467,
+          "2023": 1.4695833333333517,
+          "2024": 0.8195000000000618,
+          "2025": -0.3047499999999749,
+          "2026": 0.838833333333317
+        },
+        "twelve_month_block_net_r": {
+          "1": 1.3586249999999986,
+          "2": 0.5824166666666694,
+          "3": 0.8410000000000462,
+          "4": 0.25133333333337765,
+          "5": 0.838833333333317
+        },
+        "event_net_r": {
+          "GDP": 3.8722083333334085
+        }
+      },
+      "FOMC": {
+        "events": 40,
+        "traded_events": 35,
+        "legs": 35,
+        "fill_rate_pct": 87.5,
+        "wins": 24,
+        "losses": 11,
+        "win_rate_pct": 68.57142857142857,
+        "profit_factor": 1.0811285363117022,
+        "net_r": 0.7893333333333494,
+        "expectancy_r": 0.022552380952381414,
+        "max_drawdown_r": 4.466416666666532,
+        "largest_loss_r": -2.3666666666666742,
+        "target_hit_rate_pct": 57.142857142857146,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 25.714285714285715,
+        "median_spread_dollars": 0.6200000000001182,
+        "median_entry_slippage_dollars": 0.5299999999999727,
+        "year_net_r": {
+          "2021": -0.20341666666666924,
+          "2022": 1.2157916666666322,
+          "2023": 2.091333333333315,
+          "2024": 0.954749999999952,
+          "2025": 0.11087500000004069,
+          "2026": -3.37999999999992
+        },
+        "twelve_month_block_net_r": {
+          "1": -0.07404166666670642,
+          "2": 2.93016666666665,
+          "3": -0.14016666666668698,
+          "4": 1.9853749999999388,
+          "5": -3.911999999999845
+        },
+        "event_net_r": {
+          "FOMC": 0.7893333333333494
+        }
+      }
+    },
+    "lead_sensitivity_holdout": [
+      {
+        "lead_seconds": 60,
+        "holdout": {
+          "events": 42,
+          "traded_events": 41,
+          "legs": 42,
+          "fill_rate_pct": 97.61904761904762,
+          "wins": 26,
+          "losses": 15,
+          "win_rate_pct": 63.41463414634146,
+          "profit_factor": 1.0914929205569335,
+          "net_r": 1.362916666666326,
+          "expectancy_r": 0.033241869918690874,
+          "max_drawdown_r": 3.892000000000394,
+          "largest_loss_r": -1.3133333333333514,
+          "target_hit_rate_pct": 65.85365853658537,
+          "dual_fill_rate_pct": 2.4390243902439024,
+          "pre_release_fill_rate_pct": 85.36585365853658,
+          "median_spread_dollars": 0.6700000000000728,
+          "median_entry_slippage_dollars": 0.08999999999923602,
+          "year_net_r": {
+            "2025": 1.1725833333333635,
+            "2026": 0.19033333333296376
+          },
+          "twelve_month_block_net_r": {
+            "5": 1.3629166666663264
+          },
+          "event_net_r": {
+            "NFP": -1.3504166666666606,
+            "CPI": -0.2993333333334173,
+            "PPI": 0.7384166666665426,
+            "FOMC": 2.1517499999999927,
+            "GDP": 0.1224999999998696
+          }
+        }
+      },
+      {
+        "lead_seconds": 30,
+        "holdout": {
+          "events": 42,
+          "traded_events": 41,
+          "legs": 42,
+          "fill_rate_pct": 97.61904761904762,
+          "wins": 28,
+          "losses": 13,
+          "win_rate_pct": 68.29268292682927,
+          "profit_factor": 0.9926342325001444,
+          "net_r": -0.11225000000009366,
+          "expectancy_r": -0.002737804878051065,
+          "max_drawdown_r": 4.817250000000172,
+          "largest_loss_r": -2.226666666666688,
+          "target_hit_rate_pct": 68.29268292682927,
+          "dual_fill_rate_pct": 2.4390243902439024,
+          "pre_release_fill_rate_pct": 78.04878048780488,
+          "median_spread_dollars": 0.7699999999999818,
+          "median_entry_slippage_dollars": 0.09500000000116415,
+          "year_net_r": {
+            "2025": -1.1438333333333806,
+            "2026": 1.031583333333288
+          },
+          "twelve_month_block_net_r": {
+            "5": -0.11225000000009233
+          },
+          "event_net_r": {
+            "NFP": 1.972083333333444,
+            "CPI": -0.6842500000000211,
+            "PPI": 2.710583333333337,
+            "FOMC": -3.9428333333334344,
+            "GDP": -0.16783333333341932
+          }
+        }
+      },
+      {
+        "lead_seconds": 10,
+        "holdout": {
+          "events": 42,
+          "traded_events": 40,
+          "legs": 41,
+          "fill_rate_pct": 95.23809523809524,
+          "wins": 18,
+          "losses": 22,
+          "win_rate_pct": 45.0,
+          "profit_factor": 0.3621236611662842,
+          "net_r": -14.963249999999826,
+          "expectancy_r": -0.37408124999999565,
+          "max_drawdown_r": 16.349833333333173,
+          "largest_loss_r": -2.3666666666666742,
+          "target_hit_rate_pct": 47.5,
+          "dual_fill_rate_pct": 2.5,
+          "pre_release_fill_rate_pct": 37.5,
+          "median_spread_dollars": 1.0335000000000036,
+          "median_entry_slippage_dollars": 0.3312500000001819,
+          "year_net_r": {
+            "2025": -4.543916666666632,
+            "2026": -10.419333333333194
+          },
+          "twelve_month_block_net_r": {
+            "5": -14.963249999999828
+          },
+          "event_net_r": {
+            "NFP": -2.2722499999999854,
+            "CPI": -5.570083333333287,
+            "PPI": -4.047750000000026,
+            "FOMC": -3.911999999999845,
+            "GDP": 0.838833333333317
+          }
+        }
+      }
+    ],
+    "stress_tests": [
+      {
+        "name": "$0.25 adverse entry and exit slippage",
+        "holdout": {
+          "events": 42,
+          "traded_events": 40,
+          "legs": 41,
+          "fill_rate_pct": 95.23809523809524,
+          "wins": 18,
+          "losses": 22,
+          "win_rate_pct": 45.0,
+          "profit_factor": 0.31719312616257356,
+          "net_r": -16.67158333333316,
+          "expectancy_r": -0.416789583333329,
+          "max_drawdown_r": 17.933166666666505,
+          "largest_loss_r": -2.4083333333333408,
+          "target_hit_rate_pct": 47.5,
+          "dual_fill_rate_pct": 2.5,
+          "pre_release_fill_rate_pct": 37.5,
+          "median_spread_dollars": 1.0335000000000036,
+          "median_entry_slippage_dollars": 0.3312500000001819,
+          "year_net_r": {
+            "2025": -5.0439166666666315,
+            "2026": -11.627666666666531
+          },
+          "twelve_month_block_net_r": {
+            "5": -16.67158333333316
+          },
+          "event_net_r": {
+            "NFP": -2.647249999999985,
+            "CPI": -6.070083333333287,
+            "PPI": -4.506083333333359,
+            "FOMC": -4.2036666666665115,
+            "GDP": 0.7554999999999836
+          }
+        }
+      },
+      {
+        "name": "$0.50 adverse entry and exit slippage",
+        "holdout": {
+          "events": 42,
+          "traded_events": 40,
+          "legs": 41,
+          "fill_rate_pct": 95.23809523809524,
+          "wins": 17,
+          "losses": 23,
+          "win_rate_pct": 42.5,
+          "profit_factor": 0.27578722705632197,
+          "net_r": -18.379916666666496,
+          "expectancy_r": -0.4594979166666624,
+          "max_drawdown_r": 19.516499999999837,
+          "largest_loss_r": -2.4500000000000077,
+          "target_hit_rate_pct": 47.5,
+          "dual_fill_rate_pct": 2.5,
+          "pre_release_fill_rate_pct": 37.5,
+          "median_spread_dollars": 1.0335000000000036,
+          "median_entry_slippage_dollars": 0.3312500000001819,
+          "year_net_r": {
+            "2025": -5.5439166666666315,
+            "2026": -12.835999999999862
+          },
+          "twelve_month_block_net_r": {
+            "5": -18.379916666666492
+          },
+          "event_net_r": {
+            "NFP": -3.0222499999999854,
+            "CPI": -6.570083333333286,
+            "PPI": -4.964416666666694,
+            "FOMC": -4.495333333333178,
+            "GDP": 0.6721666666666503
+          }
+        }
+      },
+      {
+        "name": "500 ms opposite-order cancellation",
+        "holdout": {
+          "events": 42,
+          "traded_events": 40,
+          "legs": 42,
+          "fill_rate_pct": 95.23809523809524,
+          "wins": 18,
+          "losses": 22,
+          "win_rate_pct": 45.0,
+          "profit_factor": 0.3583340363902354,
+          "net_r": -15.211333333333188,
+          "expectancy_r": -0.3802833333333297,
+          "max_drawdown_r": 16.59791666666653,
+          "largest_loss_r": -2.3666666666666742,
+          "target_hit_rate_pct": 50.0,
+          "dual_fill_rate_pct": 5.0,
+          "pre_release_fill_rate_pct": 37.5,
+          "median_spread_dollars": 1.0335000000000036,
+          "median_entry_slippage_dollars": 0.35024999999996,
+          "year_net_r": {
+            "2025": -4.791999999999993,
+            "2026": -10.419333333333194
+          },
+          "twelve_month_block_net_r": {
+            "5": -15.211333333333188
+          },
+          "event_net_r": {
+            "NFP": -2.2722499999999854,
+            "CPI": -5.818166666666647,
+            "PPI": -4.047750000000026,
+            "FOMC": -3.911999999999845,
+            "GDP": 0.838833333333317
+          }
+        }
+      }
+    ],
+    "leaderboard_development": [
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.25,
+            "sell_offset_dollars": 1.0,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 30,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 7.0,
+          "reward_risk": 0.5833333333333334
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 110,
+          "losses": 71,
+          "win_rate_pct": 60.773480662983424,
+          "profit_factor": 1.2119019235370037,
+          "net_r": 8.635833333333416,
+          "expectancy_r": 0.04771178637200782,
+          "max_drawdown_r": 4.40954166666658,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 53.591160220994475,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 20.994475138121548,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.3894999999999982,
+          "year_net_r": {
+            "2021": -2.027166666666593,
+            "2022": 5.86641666666668,
+            "2023": 4.292250000000136,
+            "2024": 1.6818333333332407,
+            "2025": -1.1775000000000475
+          },
+          "twelve_month_block_net_r": {
+            "1": 2.1566666666668084,
+            "2": 7.297583333333363,
+            "3": -1.3433333333333808,
+            "4": 0.5249166666666267
+          },
+          "event_net_r": {
+            "NFP": 5.931624999999999,
+            "CPI": 0.8113333333334742,
+            "PPI": -5.84183333333334,
+            "GDP": 3.0333750000000914,
+            "FOMC": 4.701333333333195
+          }
+        },
+        "score": -10.420284760589258
+      },
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.25,
+            "sell_offset_dollars": 1.0,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 60,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 7.0,
+          "reward_risk": 0.5833333333333334
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 110,
+          "losses": 71,
+          "win_rate_pct": 60.773480662983424,
+          "profit_factor": 1.2119019235370037,
+          "net_r": 8.635833333333416,
+          "expectancy_r": 0.04771178637200782,
+          "max_drawdown_r": 4.40954166666658,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 53.591160220994475,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 20.994475138121548,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.3894999999999982,
+          "year_net_r": {
+            "2021": -2.027166666666593,
+            "2022": 5.86641666666668,
+            "2023": 4.292250000000136,
+            "2024": 1.6818333333332407,
+            "2025": -1.1775000000000475
+          },
+          "twelve_month_block_net_r": {
+            "1": 2.1566666666668084,
+            "2": 7.297583333333363,
+            "3": -1.3433333333333808,
+            "4": 0.5249166666666267
+          },
+          "event_net_r": {
+            "NFP": 5.931624999999999,
+            "CPI": 0.8113333333334742,
+            "PPI": -5.84183333333334,
+            "GDP": 3.0333750000000914,
+            "FOMC": 4.701333333333195
+          }
+        },
+        "score": -10.420284760589258
+      },
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.5,
+            "sell_offset_dollars": 1.0,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 30,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 7.0,
+          "reward_risk": 0.5833333333333334
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 110,
+          "losses": 71,
+          "win_rate_pct": 60.773480662983424,
+          "profit_factor": 1.211939810104256,
+          "net_r": 8.635708333333426,
+          "expectancy_r": 0.04771109576427307,
+          "max_drawdown_r": 4.410166666666574,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 53.591160220994475,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 20.441988950276244,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.3894999999999982,
+          "year_net_r": {
+            "2021": -2.0277916666665874,
+            "2022": 5.86108333333334,
+            "2023": 4.292250000000136,
+            "2024": 1.6876666666665878,
+            "2025": -1.1775000000000475
+          },
+          "twelve_month_block_net_r": {
+            "1": 2.1507083333334744,
+            "2": 7.297583333333363,
+            "3": -1.3375000000000337,
+            "4": 0.5249166666666267
+          },
+          "event_net_r": {
+            "NFP": 5.931624999999999,
+            "CPI": 0.8171666666668209,
+            "PPI": -5.847791666666674,
+            "GDP": 3.0333750000000914,
+            "FOMC": 4.701333333333195
+          }
+        },
+        "score": -10.421284760589215
+      },
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.5,
+            "sell_offset_dollars": 1.0,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 60,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 7.0,
+          "reward_risk": 0.5833333333333334
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 110,
+          "losses": 71,
+          "win_rate_pct": 60.773480662983424,
+          "profit_factor": 1.211939810104256,
+          "net_r": 8.635708333333426,
+          "expectancy_r": 0.04771109576427307,
+          "max_drawdown_r": 4.410166666666574,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 53.591160220994475,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 20.441988950276244,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.3894999999999982,
+          "year_net_r": {
+            "2021": -2.0277916666665874,
+            "2022": 5.86108333333334,
+            "2023": 4.292250000000136,
+            "2024": 1.6876666666665878,
+            "2025": -1.1775000000000475
+          },
+          "twelve_month_block_net_r": {
+            "1": 2.1507083333334744,
+            "2": 7.297583333333363,
+            "3": -1.3375000000000337,
+            "4": 0.5249166666666267
+          },
+          "event_net_r": {
+            "NFP": 5.931624999999999,
+            "CPI": 0.8171666666668209,
+            "PPI": -5.847791666666674,
+            "GDP": 3.0333750000000914,
+            "FOMC": 4.701333333333195
+          }
+        },
+        "score": -10.421284760589215
+      },
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.25,
+            "sell_offset_dollars": 1.5,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 30,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 7.0,
+          "reward_risk": 0.5833333333333334
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 107,
+          "losses": 74,
+          "win_rate_pct": 59.11602209944751,
+          "profit_factor": 1.1515084607871826,
+          "net_r": 6.347333333333417,
+          "expectancy_r": 0.03506813996316805,
+          "max_drawdown_r": 4.836958333333257,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 51.93370165745856,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 19.337016574585636,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.4580000000000837,
+          "year_net_r": {
+            "2021": -2.3439166666665865,
+            "2022": 5.7831666666666965,
+            "2023": 1.1218333333334287,
+            "2024": 1.5470833333332632,
+            "2025": 0.23916666666661973
+          },
+          "twelve_month_block_net_r": {
+            "1": 0.8616666666668313,
+            "2": 5.472583333333357,
+            "3": -1.9962500000000312,
+            "4": 2.0093333333332644
+          },
+          "event_net_r": {
+            "NFP": 5.718958333333321,
+            "CPI": 0.965000000000128,
+            "PPI": -6.399916666666683,
+            "GDP": 1.3738750000000925,
+            "FOMC": 4.689416666666564
+          }
+        },
+        "score": -15.55820142725592
+      },
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.25,
+            "sell_offset_dollars": 1.5,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 60,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 7.0,
+          "reward_risk": 0.5833333333333334
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 107,
+          "losses": 74,
+          "win_rate_pct": 59.11602209944751,
+          "profit_factor": 1.1515084607871826,
+          "net_r": 6.347333333333417,
+          "expectancy_r": 0.03506813996316805,
+          "max_drawdown_r": 4.836958333333257,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 51.93370165745856,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 19.337016574585636,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.4580000000000837,
+          "year_net_r": {
+            "2021": -2.3439166666665865,
+            "2022": 5.7831666666666965,
+            "2023": 1.1218333333334287,
+            "2024": 1.5470833333332632,
+            "2025": 0.23916666666661973
+          },
+          "twelve_month_block_net_r": {
+            "1": 0.8616666666668313,
+            "2": 5.472583333333357,
+            "3": -1.9962500000000312,
+            "4": 2.0093333333332644
+          },
+          "event_net_r": {
+            "NFP": 5.718958333333321,
+            "CPI": 0.965000000000128,
+            "PPI": -6.399916666666683,
+            "GDP": 1.3738750000000925,
+            "FOMC": 4.689416666666564
+          }
+        },
+        "score": -15.55820142725592
+      },
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.5,
+            "sell_offset_dollars": 1.5,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 30,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 7.0,
+          "reward_risk": 0.5833333333333334
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 107,
+          "losses": 74,
+          "win_rate_pct": 59.11602209944751,
+          "profit_factor": 1.1515339614214273,
+          "net_r": 6.347208333333427,
+          "expectancy_r": 0.035067449355433294,
+          "max_drawdown_r": 4.837583333333252,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 51.93370165745856,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 18.784530386740332,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.4580000000000837,
+          "year_net_r": {
+            "2021": -2.3445416666665815,
+            "2022": 5.777833333333357,
+            "2023": 1.1218333333334287,
+            "2024": 1.5529166666666103,
+            "2025": 0.23916666666661973
+          },
+          "twelve_month_block_net_r": {
+            "1": 0.8557083333334965,
+            "2": 5.472583333333357,
+            "3": -1.9904166666666836,
+            "4": 2.0093333333332644
+          },
+          "event_net_r": {
+            "NFP": 5.718958333333321,
+            "CPI": 0.9708333333334747,
+            "PPI": -6.405875000000017,
+            "GDP": 1.3738750000000925,
+            "FOMC": 4.689416666666564
+          }
+        },
+        "score": -15.559201427255879
+      },
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.5,
+            "sell_offset_dollars": 1.5,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 60,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 7.0,
+          "reward_risk": 0.5833333333333334
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 107,
+          "losses": 74,
+          "win_rate_pct": 59.11602209944751,
+          "profit_factor": 1.1515339614214273,
+          "net_r": 6.347208333333427,
+          "expectancy_r": 0.035067449355433294,
+          "max_drawdown_r": 4.837583333333252,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 51.93370165745856,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 18.784530386740332,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.4580000000000837,
+          "year_net_r": {
+            "2021": -2.3445416666665815,
+            "2022": 5.777833333333357,
+            "2023": 1.1218333333334287,
+            "2024": 1.5529166666666103,
+            "2025": 0.23916666666661973
+          },
+          "twelve_month_block_net_r": {
+            "1": 0.8557083333334965,
+            "2": 5.472583333333357,
+            "3": -1.9904166666666836,
+            "4": 2.0093333333332644
+          },
+          "event_net_r": {
+            "NFP": 5.718958333333321,
+            "CPI": 0.9708333333334747,
+            "PPI": -6.405875000000017,
+            "GDP": 1.3738750000000925,
+            "FOMC": 4.689416666666564
+          }
+        },
+        "score": -15.559201427255879
+      },
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.25,
+            "sell_offset_dollars": 1.0,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 30,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 5.0,
+          "reward_risk": 0.4166666666666667
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 117,
+          "losses": 64,
+          "win_rate_pct": 64.64088397790056,
+          "profit_factor": 1.1174066053986047,
+          "net_r": 4.285541666666617,
+          "expectancy_r": 0.023677025782688495,
+          "max_drawdown_r": 4.237624999999942,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 66.29834254143647,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 20.994475138121548,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.3894999999999982,
+          "year_net_r": {
+            "2021": -2.3616249999999464,
+            "2022": 2.8283749999999945,
+            "2023": 5.127333333333392,
+            "2024": -0.18629166666689373,
+            "2025": -1.1222499999999327
+          },
+          "twelve_month_block_net_r": {
+            "1": -0.18291666666654777,
+            "2": 5.387916666666627,
+            "3": -0.3109583333334542,
+            "4": -0.6085000000000114
+          },
+          "event_net_r": {
+            "NFP": 2.9584166666665896,
+            "CPI": -1.428916666666605,
+            "PPI": -2.9038750000001032,
+            "GDP": 3.0530416666668048,
+            "FOMC": 2.606874999999927
+          }
+        },
+        "score": -7.253076427256206
+      },
+      {
+        "selected": {
+          "entry": {
+            "lead_seconds": 10,
+            "buy_offset_dollars": 0.25,
+            "sell_offset_dollars": 1.0,
+            "spread_multiplier": 1.5,
+            "expiry_seconds": 60,
+            "cancel_latency_ms": 250
+          },
+          "stop_dollars": 12.0,
+          "target_dollars": 5.0,
+          "reward_risk": 0.4166666666666667
+        },
+        "performance": {
+          "events": 185,
+          "traded_events": 181,
+          "legs": 186,
+          "fill_rate_pct": 97.83783783783784,
+          "wins": 117,
+          "losses": 64,
+          "win_rate_pct": 64.64088397790056,
+          "profit_factor": 1.1174066053986047,
+          "net_r": 4.285541666666617,
+          "expectancy_r": 0.023677025782688495,
+          "max_drawdown_r": 4.237624999999942,
+          "largest_loss_r": -1.3703750000000052,
+          "target_hit_rate_pct": 66.29834254143647,
+          "dual_fill_rate_pct": 2.7624309392265194,
+          "pre_release_fill_rate_pct": 20.994475138121548,
+          "median_spread_dollars": 0.47200000000020736,
+          "median_entry_slippage_dollars": 0.3894999999999982,
+          "year_net_r": {
+            "2021": -2.3616249999999464,
+            "2022": 2.8283749999999945,
+            "2023": 5.127333333333392,
+            "2024": -0.18629166666689373,
+            "2025": -1.1222499999999327
+          },
+          "twelve_month_block_net_r": {
+            "1": -0.18291666666654777,
+            "2": 5.387916666666627,
+            "3": -0.3109583333334542,
+            "4": -0.6085000000000114
+          },
+          "event_net_r": {
+            "NFP": 2.9584166666665896,
+            "CPI": -1.428916666666605,
+            "PPI": -2.9038750000001032,
+            "GDP": 3.0530416666668048,
+            "FOMC": 2.606874999999927
+          }
+        },
+        "score": -7.253076427256206
+      }
+    ]
+  },
+  "event_specific": {
+    "NFP": {
+      "selected": {
+        "entry": {
+          "lead_seconds": 10,
+          "buy_offset_dollars": 4.0,
+          "sell_offset_dollars": 1.5,
+          "spread_multiplier": 1.0,
+          "expiry_seconds": 30,
+          "cancel_latency_ms": 250
+        },
+        "stop_dollars": 12.0,
+        "target_dollars": 7.0,
+        "reward_risk": 0.5833333333333334
+      },
+      "development_selection_strict_pass": true,
+      "development": {
+        "events": 45,
+        "traded_events": 43,
+        "legs": 44,
+        "fill_rate_pct": 95.55555555555556,
+        "wins": 32,
+        "losses": 11,
+        "win_rate_pct": 74.4186046511628,
+        "profit_factor": 2.9611319705187213,
+        "net_r": 9.401666666666681,
+        "expectancy_r": 0.21864341085271352,
+        "max_drawdown_r": 1.331166666666661,
+        "largest_loss_r": -1.0351666666666688,
+        "target_hit_rate_pct": 76.74418604651163,
+        "dual_fill_rate_pct": 2.3255813953488373,
+        "pre_release_fill_rate_pct": 9.30232558139535,
+        "median_spread_dollars": 0.52800000000002,
+        "median_entry_slippage_dollars": 0.6099999999999,
+        "year_net_r": {
+          "2021": -0.18783333333332553,
+          "2022": 0.5159166666667072,
+          "2023": 1.8534166666667224,
+          "2024": 4.304583333333274,
+          "2025": 2.915583333333302
+        },
+        "twelve_month_block_net_r": {
+          "1": -0.08074999999996639,
+          "2": 2.0899166666667197,
+          "3": 3.7816666666666756,
+          "4": 3.6108333333332516
+        },
+        "event_net_r": {
+          "NFP": 9.40166666666668
+        }
+      },
+      "holdout": {
+        "events": 9,
+        "traded_events": 9,
+        "legs": 9,
+        "fill_rate_pct": 100.0,
+        "wins": 7,
+        "losses": 2,
+        "win_rate_pct": 77.77777777777777,
+        "profit_factor": 1.2736452171834494,
+        "net_r": 0.7633333333332457,
+        "expectancy_r": 0.08481481481480507,
+        "max_drawdown_r": 1.542250000000043,
+        "largest_loss_r": -1.542250000000043,
+        "target_hit_rate_pct": 77.77777777777777,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 0.0,
+        "median_spread_dollars": 1.1099999999996726,
+        "median_entry_slippage_dollars": 2.3400000000001455,
+        "year_net_r": {
+          "2025": -0.11258333333330484,
+          "2026": 0.8759166666665503
+        },
+        "twelve_month_block_net_r": {
+          "5": 0.7633333333332456
+        },
+        "event_net_r": {
+          "NFP": 0.7633333333332456
+        }
+      },
+      "full": {
+        "events": 54,
+        "traded_events": 52,
+        "legs": 53,
+        "fill_rate_pct": 96.29629629629629,
+        "wins": 39,
+        "losses": 13,
+        "win_rate_pct": 75.0,
+        "profit_factor": 2.340410100876891,
+        "net_r": 10.164999999999925,
+        "expectancy_r": 0.1954807692307678,
+        "max_drawdown_r": 1.5422500000000436,
+        "largest_loss_r": -1.542250000000043,
+        "target_hit_rate_pct": 76.92307692307692,
+        "dual_fill_rate_pct": 1.9230769230769231,
+        "pre_release_fill_rate_pct": 7.6923076923076925,
+        "median_spread_dollars": 0.6510000000000673,
+        "median_entry_slippage_dollars": 0.6534999999998945,
+        "year_net_r": {
+          "2021": -0.18783333333332553,
+          "2022": 0.5159166666667072,
+          "2023": 1.8534166666667224,
+          "2024": 4.304583333333274,
+          "2025": 2.8029999999999973,
+          "2026": 0.8759166666665503
+        },
+        "twelve_month_block_net_r": {
+          "1": -0.08074999999996639,
+          "2": 2.0899166666667197,
+          "3": 3.7816666666666756,
+          "4": 3.6108333333332516,
+          "5": 0.7633333333332456
+        },
+        "event_net_r": {
+          "NFP": 10.164999999999926
+        }
+      },
+      "stress_tests": [
+        {
+          "name": "$0.25 adverse entry and exit slippage",
+          "holdout": {
+            "events": 9,
+            "traded_events": 9,
+            "legs": 9,
+            "fill_rate_pct": 100.0,
+            "wins": 7,
+            "losses": 2,
+            "win_rate_pct": 77.77777777777777,
+            "profit_factor": 1.1351743342808742,
+            "net_r": 0.38833333333324527,
+            "expectancy_r": 0.04314814814813836,
+            "max_drawdown_r": 1.5839166666667097,
+            "largest_loss_r": -1.5839166666667097,
+            "target_hit_rate_pct": 77.77777777777777,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 0.0,
+            "median_spread_dollars": 1.1099999999996726,
+            "median_entry_slippage_dollars": 2.3400000000001455,
+            "year_net_r": {
+              "2025": -0.23758333333330495,
+              "2026": 0.6259166666665502
+            },
+            "twelve_month_block_net_r": {
+              "5": 0.3883333333332454
+            },
+            "event_net_r": {
+              "NFP": 0.3883333333332454
+            }
+          }
+        },
+        {
+          "name": "$0.50 adverse entry and exit slippage",
+          "holdout": {
+            "events": 9,
+            "traded_events": 9,
+            "legs": 9,
+            "fill_rate_pct": 100.0,
+            "wins": 7,
+            "losses": 2,
+            "win_rate_pct": 77.77777777777777,
+            "profit_factor": 1.004510345605202,
+            "net_r": 0.013333333333245267,
+            "expectancy_r": 0.0014814814814716965,
+            "max_drawdown_r": 1.6255833333333765,
+            "largest_loss_r": -1.6255833333333765,
+            "target_hit_rate_pct": 77.77777777777777,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 0.0,
+            "median_spread_dollars": 1.1099999999996726,
+            "median_entry_slippage_dollars": 2.3400000000001455,
+            "year_net_r": {
+              "2025": -0.3625833333333048,
+              "2026": 0.3759166666665501
+            },
+            "twelve_month_block_net_r": {
+              "5": 0.01333333333324549
+            },
+            "event_net_r": {
+              "NFP": 0.01333333333324549
+            }
+          }
+        },
+        {
+          "name": "500 ms opposite-order cancellation",
+          "holdout": {
+            "events": 9,
+            "traded_events": 9,
+            "legs": 10,
+            "fill_rate_pct": 100.0,
+            "wins": 7,
+            "losses": 2,
+            "win_rate_pct": 77.77777777777777,
+            "profit_factor": 1.3740492458424196,
+            "net_r": 0.9671666666665715,
+            "expectancy_r": 0.10746296296295238,
+            "max_drawdown_r": 1.542250000000043,
+            "largest_loss_r": -1.542250000000043,
+            "target_hit_rate_pct": 88.88888888888889,
+            "dual_fill_rate_pct": 11.11111111111111,
+            "pre_release_fill_rate_pct": 0.0,
+            "median_spread_dollars": 1.1099999999996726,
+            "median_entry_slippage_dollars": 2.8969999999999345,
+            "year_net_r": {
+              "2025": 0.09125000000002115,
+              "2026": 0.8759166666665503
+            },
+            "twelve_month_block_net_r": {
+              "5": 0.9671666666665713
+            },
+            "event_net_r": {
+              "NFP": 0.9671666666665713
+            }
+          }
+        }
+      ],
+      "leaderboard_development": [
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 4.0,
+              "sell_offset_dollars": 1.5,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 12.0,
+            "target_dollars": 7.0,
+            "reward_risk": 0.5833333333333334
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 43,
+            "legs": 44,
+            "fill_rate_pct": 95.55555555555556,
+            "wins": 32,
+            "losses": 11,
+            "win_rate_pct": 74.4186046511628,
+            "profit_factor": 2.9611319705187213,
+            "net_r": 9.401666666666681,
+            "expectancy_r": 0.21864341085271352,
+            "max_drawdown_r": 1.331166666666661,
+            "largest_loss_r": -1.0351666666666688,
+            "target_hit_rate_pct": 76.74418604651163,
+            "dual_fill_rate_pct": 2.3255813953488373,
+            "pre_release_fill_rate_pct": 9.30232558139535,
+            "median_spread_dollars": 0.52800000000002,
+            "median_entry_slippage_dollars": 0.6099999999999,
+            "year_net_r": {
+              "2021": -0.18783333333332553,
+              "2022": 0.5159166666667072,
+              "2023": 1.8534166666667224,
+              "2024": 4.304583333333274,
+              "2025": 2.915583333333302
+            },
+            "twelve_month_block_net_r": {
+              "1": -0.08074999999996639,
+              "2": 2.0899166666667197,
+              "3": 3.7816666666666756,
+              "4": 3.6108333333332516
+            },
+            "event_net_r": {
+              "NFP": 9.40166666666668
+            }
+          },
+          "score": 7.676441860465204
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 4.0,
+              "sell_offset_dollars": 1.5,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 12.0,
+            "target_dollars": 7.0,
+            "reward_risk": 0.5833333333333334
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 43,
+            "legs": 44,
+            "fill_rate_pct": 95.55555555555556,
+            "wins": 32,
+            "losses": 11,
+            "win_rate_pct": 74.4186046511628,
+            "profit_factor": 2.9611319705187213,
+            "net_r": 9.401666666666681,
+            "expectancy_r": 0.21864341085271352,
+            "max_drawdown_r": 1.331166666666661,
+            "largest_loss_r": -1.0351666666666688,
+            "target_hit_rate_pct": 76.74418604651163,
+            "dual_fill_rate_pct": 2.3255813953488373,
+            "pre_release_fill_rate_pct": 9.30232558139535,
+            "median_spread_dollars": 0.52800000000002,
+            "median_entry_slippage_dollars": 0.6099999999999,
+            "year_net_r": {
+              "2021": -0.18783333333332553,
+              "2022": 0.5159166666667072,
+              "2023": 1.8534166666667224,
+              "2024": 4.304583333333274,
+              "2025": 2.915583333333302
+            },
+            "twelve_month_block_net_r": {
+              "1": -0.08074999999996639,
+              "2": 2.0899166666667197,
+              "3": 3.7816666666666756,
+              "4": 3.6108333333332516
+            },
+            "event_net_r": {
+              "NFP": 9.40166666666668
+            }
+          },
+          "score": 7.676441860465204
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 4.0,
+              "sell_offset_dollars": 1.5,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 5.0,
+            "reward_risk": 0.7142857142857143
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 43,
+            "legs": 44,
+            "fill_rate_pct": 95.55555555555556,
+            "wins": 30,
+            "losses": 13,
+            "win_rate_pct": 69.76744186046511,
+            "profit_factor": 2.328701568265693,
+            "net_r": 9.876428571428633,
+            "expectancy_r": 0.22968438538206123,
+            "max_drawdown_r": 2.657000000000023,
+            "largest_loss_r": -1.1971428571428728,
+            "target_hit_rate_pct": 79.06976744186046,
+            "dual_fill_rate_pct": 2.3255813953488373,
+            "pre_release_fill_rate_pct": 9.30232558139535,
+            "median_spread_dollars": 0.52800000000002,
+            "median_entry_slippage_dollars": 0.6099999999999,
+            "year_net_r": {
+              "2021": 0.9492857142857121,
+              "2022": -0.072285714285694,
+              "2023": 4.061571428571434,
+              "2024": 3.620428571428583,
+              "2025": 1.317428571428601
+            },
+            "twelve_month_block_net_r": {
+              "1": 0.9390000000000137,
+              "2": 2.0722857142857265,
+              "3": 6.471571428571451,
+              "4": 0.39357142857144417
+            },
+            "event_net_r": {
+              "NFP": 9.876428571428637
+            }
+          },
+          "score": 6.986870431893726
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 4.0,
+              "sell_offset_dollars": 1.5,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 5.0,
+            "reward_risk": 0.7142857142857143
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 43,
+            "legs": 44,
+            "fill_rate_pct": 95.55555555555556,
+            "wins": 30,
+            "losses": 13,
+            "win_rate_pct": 69.76744186046511,
+            "profit_factor": 2.328701568265693,
+            "net_r": 9.876428571428633,
+            "expectancy_r": 0.22968438538206123,
+            "max_drawdown_r": 2.657000000000023,
+            "largest_loss_r": -1.1971428571428728,
+            "target_hit_rate_pct": 79.06976744186046,
+            "dual_fill_rate_pct": 2.3255813953488373,
+            "pre_release_fill_rate_pct": 9.30232558139535,
+            "median_spread_dollars": 0.52800000000002,
+            "median_entry_slippage_dollars": 0.6099999999999,
+            "year_net_r": {
+              "2021": 0.9492857142857121,
+              "2022": -0.072285714285694,
+              "2023": 4.061571428571434,
+              "2024": 3.620428571428583,
+              "2025": 1.317428571428601
+            },
+            "twelve_month_block_net_r": {
+              "1": 0.9390000000000137,
+              "2": 2.0722857142857265,
+              "3": 6.471571428571451,
+              "4": 0.39357142857144417
+            },
+            "event_net_r": {
+              "NFP": 9.876428571428637
+            }
+          },
+          "score": 6.986870431893726
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 30,
+              "buy_offset_dollars": 4.0,
+              "sell_offset_dollars": 1.5,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 7.0,
+            "reward_risk": 1.0
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 43,
+            "legs": 43,
+            "fill_rate_pct": 95.55555555555556,
+            "wins": 28,
+            "losses": 15,
+            "win_rate_pct": 65.11627906976744,
+            "profit_factor": 1.8412901872589407,
+            "net_r": 10.313857142857191,
+            "expectancy_r": 0.239857142857144,
+            "max_drawdown_r": 2.4174285714285766,
+            "largest_loss_r": -1.349999999999974,
+            "target_hit_rate_pct": 65.11627906976744,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 18.6046511627907,
+            "median_spread_dollars": 0.5140000000001237,
+            "median_entry_slippage_dollars": 0.8140000000003056,
+            "year_net_r": {
+              "2021": 0.467428571428627,
+              "2022": 0.30057142857149965,
+              "2023": 4.250142857142854,
+              "2024": 3.9852857142856064,
+              "2025": 1.310428571428604
+            },
+            "twelve_month_block_net_r": {
+              "1": -0.5304285714285014,
+              "2": 6.166428571428631,
+              "3": 3.5895714285713565,
+              "4": 1.0882857142857052
+            },
+            "event_net_r": {
+              "NFP": 10.31385714285719
+            }
+          },
+          "score": 6.835571428571612
+        }
+      ]
+    },
+    "CPI": {
+      "selected": {
+        "entry": {
+          "lead_seconds": 10,
+          "buy_offset_dollars": 0.5,
+          "sell_offset_dollars": 4.0,
+          "spread_multiplier": 1.0,
+          "expiry_seconds": 30,
+          "cancel_latency_ms": 250
+        },
+        "stop_dollars": 12.0,
+        "target_dollars": 4.0,
+        "reward_risk": 0.3333333333333333
+      },
+      "development_selection_strict_pass": false,
+      "development": {
+        "events": 47,
+        "traded_events": 47,
+        "legs": 47,
+        "fill_rate_pct": 100.0,
+        "wins": 32,
+        "losses": 15,
+        "win_rate_pct": 68.08510638297872,
+        "profit_factor": 1.168668527671777,
+        "net_r": 1.6464999999999659,
+        "expectancy_r": 0.035031914893616296,
+        "max_drawdown_r": 3.334833333333336,
+        "largest_loss_r": -1.3011666666666695,
+        "target_hit_rate_pct": 78.72340425531915,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 29.78723404255319,
+        "median_spread_dollars": 0.47199999999998,
+        "median_entry_slippage_dollars": 0.14999999999986358,
+        "year_net_r": {
+          "2021": -2.6017500000000005,
+          "2022": 3.1602500000000004,
+          "2023": 0.12933333333332542,
+          "2024": 1.1034999999999968,
+          "2025": -0.1448333333333569
+        },
+        "twelve_month_block_net_r": {
+          "1": -0.7784166666666392,
+          "2": 0.9688333333333126,
+          "3": 1.2779166666666317,
+          "4": 0.17816666666666015
+        },
+        "event_net_r": {
+          "CPI": 1.6464999999999648
+        }
+      },
+      "holdout": {
+        "events": 11,
+        "traded_events": 11,
+        "legs": 11,
+        "fill_rate_pct": 100.0,
+        "wins": 6,
+        "losses": 5,
+        "win_rate_pct": 54.54545454545455,
+        "profit_factor": 0.8839227910322648,
+        "net_r": -0.4034166666666201,
+        "expectancy_r": -0.036674242424238196,
+        "max_drawdown_r": 2.280083333333285,
+        "largest_loss_r": -1.1253333333333255,
+        "target_hit_rate_pct": 72.72727272727273,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 45.45454545454545,
+        "median_spread_dollars": 0.7899999999999636,
+        "median_entry_slippage_dollars": 1.04300000000012,
+        "year_net_r": {
+          "2025": -1.3715833333333571,
+          "2026": 0.9681666666667372
+        },
+        "twelve_month_block_net_r": {
+          "5": -0.4034166666666197
+        },
+        "event_net_r": {
+          "CPI": -0.4034166666666197
+        }
+      },
+      "full": {
+        "events": 58,
+        "traded_events": 58,
+        "legs": 58,
+        "fill_rate_pct": 100.0,
+        "wins": 38,
+        "losses": 20,
+        "win_rate_pct": 65.51724137931035,
+        "profit_factor": 1.0939085655288778,
+        "net_r": 1.2430833333333453,
+        "expectancy_r": 0.021432471264368022,
+        "max_drawdown_r": 3.334833333333336,
+        "largest_loss_r": -1.3011666666666695,
+        "target_hit_rate_pct": 77.58620689655173,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 32.758620689655174,
+        "median_spread_dollars": 0.523499999999899,
+        "median_entry_slippage_dollars": 0.2319999999999709,
+        "year_net_r": {
+          "2021": -2.6017500000000005,
+          "2022": 3.1602500000000004,
+          "2023": 0.12933333333332542,
+          "2024": 1.1034999999999968,
+          "2025": -1.516416666666714,
+          "2026": 0.9681666666667372
+        },
+        "twelve_month_block_net_r": {
+          "1": -0.7784166666666392,
+          "2": 0.9688333333333126,
+          "3": 1.2779166666666317,
+          "4": 0.17816666666666015,
+          "5": -0.4034166666666197
+        },
+        "event_net_r": {
+          "CPI": 1.2430833333333446
+        }
+      },
+      "stress_tests": [
+        {
+          "name": "$0.25 adverse entry and exit slippage",
+          "holdout": {
+            "events": 11,
+            "traded_events": 11,
+            "legs": 11,
+            "fill_rate_pct": 100.0,
+            "wins": 6,
+            "losses": 5,
+            "win_rate_pct": 54.54545454545455,
+            "profit_factor": 0.7660671869698145,
+            "net_r": -0.8617499999999536,
+            "expectancy_r": -0.07834090909090487,
+            "max_drawdown_r": 2.696749999999952,
+            "largest_loss_r": -1.166999999999992,
+            "target_hit_rate_pct": 72.72727272727273,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 45.45454545454545,
+            "median_spread_dollars": 0.7899999999999636,
+            "median_entry_slippage_dollars": 1.04300000000012,
+            "year_net_r": {
+              "2025": -1.5382500000000239,
+              "2026": 0.6765000000000707
+            },
+            "twelve_month_block_net_r": {
+              "5": -0.8617499999999534
+            },
+            "event_net_r": {
+              "CPI": -0.8617499999999534
+            }
+          }
+        },
+        {
+          "name": "$0.50 adverse entry and exit slippage",
+          "holdout": {
+            "events": 11,
+            "traded_events": 11,
+            "legs": 11,
+            "fill_rate_pct": 100.0,
+            "wins": 5,
+            "losses": 6,
+            "win_rate_pct": 45.45454545454545,
+            "profit_factor": 0.6639512929845935,
+            "net_r": -1.3200833333332866,
+            "expectancy_r": -0.12000757575757151,
+            "max_drawdown_r": 3.1134166666666188,
+            "largest_loss_r": -1.2086666666666588,
+            "target_hit_rate_pct": 72.72727272727273,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 45.45454545454545,
+            "median_spread_dollars": 0.7899999999999636,
+            "median_entry_slippage_dollars": 1.04300000000012,
+            "year_net_r": {
+              "2025": -1.7049166666666908,
+              "2026": 0.3848333333334042
+            },
+            "twelve_month_block_net_r": {
+              "5": -1.3200833333332869
+            },
+            "event_net_r": {
+              "CPI": -1.3200833333332869
+            }
+          }
+        },
+        {
+          "name": "500 ms opposite-order cancellation",
+          "holdout": {
+            "events": 11,
+            "traded_events": 11,
+            "legs": 11,
+            "fill_rate_pct": 100.0,
+            "wins": 6,
+            "losses": 5,
+            "win_rate_pct": 54.54545454545455,
+            "profit_factor": 0.8839227910322648,
+            "net_r": -0.4034166666666201,
+            "expectancy_r": -0.036674242424238196,
+            "max_drawdown_r": 2.280083333333285,
+            "largest_loss_r": -1.1253333333333255,
+            "target_hit_rate_pct": 72.72727272727273,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 45.45454545454545,
+            "median_spread_dollars": 0.7899999999999636,
+            "median_entry_slippage_dollars": 1.04300000000012,
+            "year_net_r": {
+              "2025": -1.3715833333333571,
+              "2026": 0.9681666666667372
+            },
+            "twelve_month_block_net_r": {
+              "5": -0.4034166666666197
+            },
+            "event_net_r": {
+              "CPI": -0.4034166666666197
+            }
+          }
+        }
+      ],
+      "leaderboard_development": [
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.5,
+              "sell_offset_dollars": 4.0,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 12.0,
+            "target_dollars": 4.0,
+            "reward_risk": 0.3333333333333333
+          },
+          "performance": {
+            "events": 47,
+            "traded_events": 47,
+            "legs": 47,
+            "fill_rate_pct": 100.0,
+            "wins": 32,
+            "losses": 15,
+            "win_rate_pct": 68.08510638297872,
+            "profit_factor": 1.168668527671777,
+            "net_r": 1.6464999999999659,
+            "expectancy_r": 0.035031914893616296,
+            "max_drawdown_r": 3.334833333333336,
+            "largest_loss_r": -1.3011666666666695,
+            "target_hit_rate_pct": 78.72340425531915,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 29.78723404255319,
+            "median_spread_dollars": 0.47199999999998,
+            "median_entry_slippage_dollars": 0.14999999999986358,
+            "year_net_r": {
+              "2021": -2.6017500000000005,
+              "2022": 3.1602500000000004,
+              "2023": 0.12933333333332542,
+              "2024": 1.1034999999999968,
+              "2025": -0.1448333333333569
+            },
+            "twelve_month_block_net_r": {
+              "1": -0.7784166666666392,
+              "2": 0.9688333333333126,
+              "3": 1.2779166666666317,
+              "4": 0.17816666666666015
+            },
+            "event_net_r": {
+              "CPI": 1.6464999999999648
+            }
+          },
+          "score": -3.2451666666666488
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.5,
+              "sell_offset_dollars": 4.0,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 12.0,
+            "target_dollars": 4.0,
+            "reward_risk": 0.3333333333333333
+          },
+          "performance": {
+            "events": 47,
+            "traded_events": 47,
+            "legs": 47,
+            "fill_rate_pct": 100.0,
+            "wins": 32,
+            "losses": 15,
+            "win_rate_pct": 68.08510638297872,
+            "profit_factor": 1.168668527671777,
+            "net_r": 1.6464999999999659,
+            "expectancy_r": 0.035031914893616296,
+            "max_drawdown_r": 3.334833333333336,
+            "largest_loss_r": -1.3011666666666695,
+            "target_hit_rate_pct": 78.72340425531915,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 29.78723404255319,
+            "median_spread_dollars": 0.47199999999998,
+            "median_entry_slippage_dollars": 0.14999999999986358,
+            "year_net_r": {
+              "2021": -2.6017500000000005,
+              "2022": 3.1602500000000004,
+              "2023": 0.12933333333332542,
+              "2024": 1.1034999999999968,
+              "2025": -0.1448333333333569
+            },
+            "twelve_month_block_net_r": {
+              "1": -0.7784166666666392,
+              "2": 0.9688333333333126,
+              "3": 1.2779166666666317,
+              "4": 0.17816666666666015
+            },
+            "event_net_r": {
+              "CPI": 1.6464999999999648
+            }
+          },
+          "score": -3.2451666666666488
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.25,
+              "sell_offset_dollars": 4.0,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 12.0,
+            "target_dollars": 4.0,
+            "reward_risk": 0.3333333333333333
+          },
+          "performance": {
+            "events": 47,
+            "traded_events": 47,
+            "legs": 47,
+            "fill_rate_pct": 100.0,
+            "wins": 32,
+            "losses": 15,
+            "win_rate_pct": 68.08510638297872,
+            "profit_factor": 1.1671045672461735,
+            "net_r": 1.6324166666666606,
+            "expectancy_r": 0.03473226950354597,
+            "max_drawdown_r": 3.3380000000000036,
+            "largest_loss_r": -1.3011666666666695,
+            "target_hit_rate_pct": 78.72340425531915,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 34.04255319148936,
+            "median_spread_dollars": 0.47199999999998,
+            "median_entry_slippage_dollars": 0.165000000000191,
+            "year_net_r": {
+              "2021": -2.630749999999997,
+              "2022": 3.1482500000000186,
+              "2023": 0.1434999999999792,
+              "2024": 1.1162500000000173,
+              "2025": -0.1448333333333569
+            },
+            "twelve_month_block_net_r": {
+              "1": -0.8194166666666167,
+              "2": 0.9763333333333057,
+              "3": 1.2864999999999704,
+              "4": 0.1890000000000025
+            },
+            "event_net_r": {
+              "CPI": 1.6324166666666617
+            }
+          },
+          "score": -3.3444166666665764
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.25,
+              "sell_offset_dollars": 4.0,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 12.0,
+            "target_dollars": 4.0,
+            "reward_risk": 0.3333333333333333
+          },
+          "performance": {
+            "events": 47,
+            "traded_events": 47,
+            "legs": 47,
+            "fill_rate_pct": 100.0,
+            "wins": 32,
+            "losses": 15,
+            "win_rate_pct": 68.08510638297872,
+            "profit_factor": 1.1671045672461735,
+            "net_r": 1.6324166666666606,
+            "expectancy_r": 0.03473226950354597,
+            "max_drawdown_r": 3.3380000000000036,
+            "largest_loss_r": -1.3011666666666695,
+            "target_hit_rate_pct": 78.72340425531915,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 34.04255319148936,
+            "median_spread_dollars": 0.47199999999998,
+            "median_entry_slippage_dollars": 0.165000000000191,
+            "year_net_r": {
+              "2021": -2.630749999999997,
+              "2022": 3.1482500000000186,
+              "2023": 0.1434999999999792,
+              "2024": 1.1162500000000173,
+              "2025": -0.1448333333333569
+            },
+            "twelve_month_block_net_r": {
+              "1": -0.8194166666666167,
+              "2": 0.9763333333333057,
+              "3": 1.2864999999999704,
+              "4": 0.1890000000000025
+            },
+            "event_net_r": {
+              "CPI": 1.6324166666666617
+            }
+          },
+          "score": -3.3444166666665764
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.5,
+              "sell_offset_dollars": 4.0,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 12.0,
+            "target_dollars": 4.0,
+            "reward_risk": 0.3333333333333333
+          },
+          "performance": {
+            "events": 47,
+            "traded_events": 46,
+            "legs": 46,
+            "fill_rate_pct": 97.87234042553192,
+            "wins": 35,
+            "losses": 11,
+            "win_rate_pct": 76.08695652173913,
+            "profit_factor": 1.2179323050759507,
+            "net_r": 1.9222083333334385,
+            "expectancy_r": 0.041787137681161705,
+            "max_drawdown_r": 3.332916666666658,
+            "largest_loss_r": -1.3703750000000052,
+            "target_hit_rate_pct": 80.43478260869566,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 19.565217391304348,
+            "median_spread_dollars": 0.4714999999999918,
+            "median_entry_slippage_dollars": 0.35374999999976353,
+            "year_net_r": {
+              "2021": -2.6101666666666574,
+              "2022": 3.630708333333378,
+              "2023": 1.4695833333333135,
+              "2024": 0.8123749999999748,
+              "2025": -1.38029166666657
+            },
+            "twelve_month_block_net_r": {
+              "1": -0.772124999999922,
+              "2": 2.2373333333332917,
+              "3": 1.5183333333333164,
+              "4": -1.061333333333247
+            },
+            "event_net_r": {
+              "CPI": 1.9222083333334388
+            }
+          },
+          "score": -3.5333749999997135
+        }
+      ]
+    },
+    "PPI": {
+      "selected": {
+        "entry": {
+          "lead_seconds": 30,
+          "buy_offset_dollars": 0.25,
+          "sell_offset_dollars": 0.75,
+          "spread_multiplier": 1.5,
+          "expiry_seconds": 30,
+          "cancel_latency_ms": 250
+        },
+        "stop_dollars": 5.0,
+        "target_dollars": 5.0,
+        "reward_risk": 1.0
+      },
+      "development_selection_strict_pass": true,
+      "development": {
+        "events": 45,
+        "traded_events": 45,
+        "legs": 45,
+        "fill_rate_pct": 100.0,
+        "wins": 25,
+        "losses": 20,
+        "win_rate_pct": 55.55555555555556,
+        "profit_factor": 1.1915411341947904,
+        "net_r": 3.2194999999997442,
+        "expectancy_r": 0.07154444444443876,
+        "max_drawdown_r": 6.969300000000203,
+        "largest_loss_r": -1.2833999999999832,
+        "target_hit_rate_pct": 46.666666666666664,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 24.444444444444443,
+        "median_spread_dollars": 0.44800000000009277,
+        "median_entry_slippage_dollars": 0.25300000000015643,
+        "year_net_r": {
+          "2021": 0.048500000000012644,
+          "2022": -0.06519999999991333,
+          "2023": 0.7505999999999406,
+          "2024": 3.9269999999996794,
+          "2025": -1.4413999999999758
+        },
+        "twelve_month_block_net_r": {
+          "1": 0.4983000000000175,
+          "2": 0.7118000000000393,
+          "3": 6.599399999999832,
+          "4": -4.5900000000001455
+        },
+        "event_net_r": {
+          "PPI": 3.219499999999743
+        }
+      },
+      "holdout": {
+        "events": 11,
+        "traded_events": 11,
+        "legs": 11,
+        "fill_rate_pct": 100.0,
+        "wins": 5,
+        "losses": 6,
+        "win_rate_pct": 45.45454545454545,
+        "profit_factor": 0.6950130690199257,
+        "net_r": -2.3570000000002427,
+        "expectancy_r": -0.21427272727274935,
+        "max_drawdown_r": 4.485600000000158,
+        "largest_loss_r": -1.823999999999978,
+        "target_hit_rate_pct": 45.45454545454545,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 81.81818181818181,
+        "median_spread_dollars": 0.7899999999999636,
+        "median_entry_slippage_dollars": 0.0749999999998181,
+        "year_net_r": {
+          "2025": 0.9571999999999208,
+          "2026": -3.3142000000001643
+        },
+        "twelve_month_block_net_r": {
+          "5": -2.357000000000243
+        },
+        "event_net_r": {
+          "PPI": -2.357000000000243
+        }
+      },
+      "full": {
+        "events": 56,
+        "traded_events": 56,
+        "legs": 56,
+        "fill_rate_pct": 100.0,
+        "wins": 30,
+        "losses": 26,
+        "win_rate_pct": 53.57142857142857,
+        "profit_factor": 1.035151569492085,
+        "net_r": 0.8624999999994998,
+        "expectancy_r": 0.015401785714276781,
+        "max_drawdown_r": 8.925600000000303,
+        "largest_loss_r": -1.823999999999978,
+        "target_hit_rate_pct": 46.42857142857143,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 35.714285714285715,
+        "median_spread_dollars": 0.47199999999998,
+        "median_entry_slippage_dollars": 0.13700000000017099,
+        "year_net_r": {
+          "2021": 0.048500000000012644,
+          "2022": -0.06519999999991333,
+          "2023": 0.7505999999999406,
+          "2024": 3.9269999999996794,
+          "2025": -0.48420000000005503,
+          "2026": -3.3142000000001643
+        },
+        "twelve_month_block_net_r": {
+          "1": 0.4983000000000175,
+          "2": 0.7118000000000393,
+          "3": 6.599399999999832,
+          "4": -4.5900000000001455,
+          "5": -2.357000000000243
+        },
+        "event_net_r": {
+          "PPI": 0.8624999999994996
+        }
+      },
+      "stress_tests": [
+        {
+          "name": "$0.25 adverse entry and exit slippage",
+          "holdout": {
+            "events": 11,
+            "traded_events": 11,
+            "legs": 11,
+            "fill_rate_pct": 100.0,
+            "wins": 5,
+            "losses": 6,
+            "win_rate_pct": 45.45454545454545,
+            "profit_factor": 0.5849043010494225,
+            "net_r": -3.457000000000243,
+            "expectancy_r": -0.3142727272727494,
+            "max_drawdown_r": 5.385600000000159,
+            "largest_loss_r": -1.9239999999999782,
+            "target_hit_rate_pct": 45.45454545454545,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 81.81818181818181,
+            "median_spread_dollars": 0.7899999999999636,
+            "median_entry_slippage_dollars": 0.0749999999998181,
+            "year_net_r": {
+              "2025": 0.6571999999999206,
+              "2026": -4.114200000000165
+            },
+            "twelve_month_block_net_r": {
+              "5": -3.457000000000244
+            },
+            "event_net_r": {
+              "PPI": -3.457000000000244
+            }
+          }
+        },
+        {
+          "name": "$0.50 adverse entry and exit slippage",
+          "holdout": {
+            "events": 11,
+            "traded_events": 11,
+            "legs": 11,
+            "fill_rate_pct": 100.0,
+            "wins": 5,
+            "losses": 6,
+            "win_rate_pct": 45.45454545454545,
+            "profit_factor": 0.48959476714229183,
+            "net_r": -4.557000000000245,
+            "expectancy_r": -0.4142727272727495,
+            "max_drawdown_r": 6.285600000000159,
+            "largest_loss_r": -2.0239999999999783,
+            "target_hit_rate_pct": 45.45454545454545,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 81.81818181818181,
+            "median_spread_dollars": 0.7899999999999636,
+            "median_entry_slippage_dollars": 0.0749999999998181,
+            "year_net_r": {
+              "2025": 0.3571999999999208,
+              "2026": -4.914200000000164
+            },
+            "twelve_month_block_net_r": {
+              "5": -4.557000000000244
+            },
+            "event_net_r": {
+              "PPI": -4.557000000000244
+            }
+          }
+        },
+        {
+          "name": "500 ms opposite-order cancellation",
+          "holdout": {
+            "events": 11,
+            "traded_events": 11,
+            "legs": 11,
+            "fill_rate_pct": 100.0,
+            "wins": 5,
+            "losses": 6,
+            "win_rate_pct": 45.45454545454545,
+            "profit_factor": 0.6950130690199257,
+            "net_r": -2.3570000000002427,
+            "expectancy_r": -0.21427272727274935,
+            "max_drawdown_r": 4.485600000000158,
+            "largest_loss_r": -1.823999999999978,
+            "target_hit_rate_pct": 45.45454545454545,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 81.81818181818181,
+            "median_spread_dollars": 0.7899999999999636,
+            "median_entry_slippage_dollars": 0.0749999999998181,
+            "year_net_r": {
+              "2025": 0.9571999999999208,
+              "2026": -3.3142000000001643
+            },
+            "twelve_month_block_net_r": {
+              "5": -2.357000000000243
+            },
+            "event_net_r": {
+              "PPI": -2.357000000000243
+            }
+          }
+        }
+      ],
+      "leaderboard_development": [
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 30,
+              "buy_offset_dollars": 0.25,
+              "sell_offset_dollars": 0.75,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 5.0,
+            "target_dollars": 5.0,
+            "reward_risk": 1.0
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 45,
+            "legs": 45,
+            "fill_rate_pct": 100.0,
+            "wins": 25,
+            "losses": 20,
+            "win_rate_pct": 55.55555555555556,
+            "profit_factor": 1.1915411341947904,
+            "net_r": 3.2194999999997442,
+            "expectancy_r": 0.07154444444443876,
+            "max_drawdown_r": 6.969300000000203,
+            "largest_loss_r": -1.2833999999999832,
+            "target_hit_rate_pct": 46.666666666666664,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 24.444444444444443,
+            "median_spread_dollars": 0.44800000000009277,
+            "median_entry_slippage_dollars": 0.25300000000015643,
+            "year_net_r": {
+              "2021": 0.048500000000012644,
+              "2022": -0.06519999999991333,
+              "2023": 0.7505999999999406,
+              "2024": 3.9269999999996794,
+              "2025": -1.4413999999999758
+            },
+            "twelve_month_block_net_r": {
+              "1": 0.4983000000000175,
+              "2": 0.7118000000000393,
+              "3": 6.599399999999832,
+              "4": -4.5900000000001455
+            },
+            "event_net_r": {
+              "PPI": 3.219499999999743
+            }
+          },
+          "score": -12.92980000000075
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 30,
+              "buy_offset_dollars": 0.25,
+              "sell_offset_dollars": 0.75,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 5.0,
+            "target_dollars": 5.0,
+            "reward_risk": 1.0
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 45,
+            "legs": 45,
+            "fill_rate_pct": 100.0,
+            "wins": 25,
+            "losses": 20,
+            "win_rate_pct": 55.55555555555556,
+            "profit_factor": 1.1915411341947904,
+            "net_r": 3.2194999999997442,
+            "expectancy_r": 0.07154444444443876,
+            "max_drawdown_r": 6.969300000000203,
+            "largest_loss_r": -1.2833999999999832,
+            "target_hit_rate_pct": 46.666666666666664,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 24.444444444444443,
+            "median_spread_dollars": 0.44800000000009277,
+            "median_entry_slippage_dollars": 0.25300000000015643,
+            "year_net_r": {
+              "2021": 0.048500000000012644,
+              "2022": -0.06519999999991333,
+              "2023": 0.7505999999999406,
+              "2024": 3.9269999999996794,
+              "2025": -1.4413999999999758
+            },
+            "twelve_month_block_net_r": {
+              "1": 0.4983000000000175,
+              "2": 0.7118000000000393,
+              "3": 6.599399999999832,
+              "4": -4.5900000000001455
+            },
+            "event_net_r": {
+              "PPI": 3.219499999999743
+            }
+          },
+          "score": -12.92980000000075
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 30,
+              "buy_offset_dollars": 0.5,
+              "sell_offset_dollars": 0.75,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 1.5,
+            "reward_risk": 0.21428571428571427
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 45,
+            "legs": 45,
+            "fill_rate_pct": 100.0,
+            "wins": 37,
+            "losses": 8,
+            "win_rate_pct": 82.22222222222223,
+            "profit_factor": 1.7678990106936587,
+            "net_r": 3.8366428571429028,
+            "expectancy_r": 0.08525873015873117,
+            "max_drawdown_r": 1.3302142857143218,
+            "largest_loss_r": -1.0930714285714527,
+            "target_hit_rate_pct": 88.88888888888889,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 24.444444444444443,
+            "median_spread_dollars": 0.44800000000009277,
+            "median_entry_slippage_dollars": 0.25300000000015643,
+            "year_net_r": {
+              "2021": -0.22150000000004044,
+              "2022": 0.7357857142858067,
+              "2023": 1.0811428571428547,
+              "2024": 2.0890714285714176,
+              "2025": 0.15214285714286493
+            },
+            "twelve_month_block_net_r": {
+              "1": 0.5804999999999967,
+              "2": -0.02492857142851812,
+              "3": 3.254285714285711,
+              "4": 0.026785714285714274
+            },
+            "event_net_r": {
+              "PPI": 3.8366428571429037
+            }
+          },
+          "score": 2.4565714285715448
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 30,
+              "buy_offset_dollars": 0.5,
+              "sell_offset_dollars": 0.75,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 1.5,
+            "reward_risk": 0.21428571428571427
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 45,
+            "legs": 45,
+            "fill_rate_pct": 100.0,
+            "wins": 37,
+            "losses": 8,
+            "win_rate_pct": 82.22222222222223,
+            "profit_factor": 1.7678990106936587,
+            "net_r": 3.8366428571429028,
+            "expectancy_r": 0.08525873015873117,
+            "max_drawdown_r": 1.3302142857143218,
+            "largest_loss_r": -1.0930714285714527,
+            "target_hit_rate_pct": 88.88888888888889,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 24.444444444444443,
+            "median_spread_dollars": 0.44800000000009277,
+            "median_entry_slippage_dollars": 0.25300000000015643,
+            "year_net_r": {
+              "2021": -0.22150000000004044,
+              "2022": 0.7357857142858067,
+              "2023": 1.0811428571428547,
+              "2024": 2.0890714285714176,
+              "2025": 0.15214285714286493
+            },
+            "twelve_month_block_net_r": {
+              "1": 0.5804999999999967,
+              "2": -0.02492857142851812,
+              "3": 3.254285714285711,
+              "4": 0.026785714285714274
+            },
+            "event_net_r": {
+              "PPI": 3.8366428571429037
+            }
+          },
+          "score": 2.4565714285715448
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 30,
+              "buy_offset_dollars": 0.25,
+              "sell_offset_dollars": 0.75,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 1.5,
+            "reward_risk": 0.21428571428571427
+          },
+          "performance": {
+            "events": 45,
+            "traded_events": 45,
+            "legs": 45,
+            "fill_rate_pct": 100.0,
+            "wins": 37,
+            "losses": 8,
+            "win_rate_pct": 82.22222222222223,
+            "profit_factor": 1.7621375879224606,
+            "net_r": 3.8078571428572046,
+            "expectancy_r": 0.084619047619049,
+            "max_drawdown_r": 1.3302142857143218,
+            "largest_loss_r": -1.0930714285714527,
+            "target_hit_rate_pct": 88.88888888888889,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 24.444444444444443,
+            "median_spread_dollars": 0.44800000000009277,
+            "median_entry_slippage_dollars": 0.25300000000015643,
+            "year_net_r": {
+              "2021": -0.22235714285716301,
+              "2022": 0.7078571428572298,
+              "2023": 1.0811428571428547,
+              "2024": 2.0890714285714176,
+              "2025": 0.15214285714286493
+            },
+            "twelve_month_block_net_r": {
+              "1": 0.5796428571428742,
+              "2": -0.052857142857094974,
+              "3": 3.254285714285711,
+              "4": 0.026785714285714274
+            },
+            "event_net_r": {
+              "PPI": 3.8078571428572046
+            }
+          },
+          "score": 2.371928571428693
+        }
+      ]
+    },
+    "GDP": {
+      "selected": {
+        "entry": {
+          "lead_seconds": 60,
+          "buy_offset_dollars": 1.0,
+          "sell_offset_dollars": 0.5,
+          "spread_multiplier": 1.0,
+          "expiry_seconds": 30,
+          "cancel_latency_ms": 250
+        },
+        "stop_dollars": 5.0,
+        "target_dollars": 5.0,
+        "reward_risk": 1.0
+      },
+      "development_selection_strict_pass": true,
+      "development": {
+        "events": 16,
+        "traded_events": 16,
+        "legs": 16,
+        "fill_rate_pct": 100.0,
+        "wins": 13,
+        "losses": 3,
+        "win_rate_pct": 81.25,
+        "profit_factor": 3.591807573231874,
+        "net_r": 8.706400000000302,
+        "expectancy_r": 0.5441500000000189,
+        "max_drawdown_r": 1.325599999999986,
+        "largest_loss_r": -1.325599999999986,
+        "target_hit_rate_pct": 75.0,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 56.25,
+        "median_spread_dollars": 0.36400000000003274,
+        "median_entry_slippage_dollars": 0.2504999999996471,
+        "year_net_r": {
+          "2021": 1.0005999999999857,
+          "2022": 2.348400000000038,
+          "2023": 1.3742000000000645,
+          "2024": 3.9826000000000934,
+          "2025": 0.0006000000001221695
+        },
+        "twelve_month_block_net_r": {
+          "1": 1.87800000000002,
+          "2": 1.8592000000000553,
+          "3": 4.178600000000051,
+          "4": 0.7906000000001767
+        },
+        "event_net_r": {
+          "GDP": 8.706400000000304
+        }
+      },
+      "holdout": {
+        "events": 3,
+        "traded_events": 3,
+        "legs": 3,
+        "fill_rate_pct": 100.0,
+        "wins": 1,
+        "losses": 2,
+        "win_rate_pct": 33.333333333333336,
+        "profit_factor": 0.4394957983193473,
+        "net_r": -1.3340000000000145,
+        "expectancy_r": -0.4446666666666715,
+        "max_drawdown_r": 1.344000000000051,
+        "largest_loss_r": -1.344000000000051,
+        "target_hit_rate_pct": 33.333333333333336,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 100.0,
+        "median_spread_dollars": 0.6899999999995998,
+        "median_entry_slippage_dollars": 0.07600000000002183,
+        "year_net_r": {
+          "2025": -1.0360000000000582,
+          "2026": -0.2979999999999563
+        },
+        "twelve_month_block_net_r": {
+          "5": -1.3340000000000145
+        },
+        "event_net_r": {
+          "GDP": -1.3340000000000145
+        }
+      },
+      "full": {
+        "events": 19,
+        "traded_events": 19,
+        "legs": 19,
+        "fill_rate_pct": 100.0,
+        "wins": 14,
+        "losses": 5,
+        "win_rate_pct": 73.6842105263158,
+        "profit_factor": 2.28456927794819,
+        "net_r": 7.3724000000002885,
+        "expectancy_r": 0.38802105263159414,
+        "max_drawdown_r": 1.344000000000051,
+        "largest_loss_r": -1.344000000000051,
+        "target_hit_rate_pct": 68.42105263157895,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 63.1578947368421,
+        "median_spread_dollars": 0.3669999999999618,
+        "median_entry_slippage_dollars": 0.18000000000029104,
+        "year_net_r": {
+          "2021": 1.0005999999999857,
+          "2022": 2.348400000000038,
+          "2023": 1.3742000000000645,
+          "2024": 3.9826000000000934,
+          "2025": -1.0353999999999361,
+          "2026": -0.2979999999999563
+        },
+        "twelve_month_block_net_r": {
+          "1": 1.87800000000002,
+          "2": 1.8592000000000553,
+          "3": 4.178600000000051,
+          "4": 0.7906000000001767,
+          "5": -1.3340000000000145
+        },
+        "event_net_r": {
+          "GDP": 7.37240000000029
+        }
+      },
+      "stress_tests": [
+        {
+          "name": "$0.25 adverse entry and exit slippage",
+          "holdout": {
+            "events": 3,
+            "traded_events": 3,
+            "legs": 3,
+            "fill_rate_pct": 100.0,
+            "wins": 1,
+            "losses": 2,
+            "win_rate_pct": 33.333333333333336,
+            "profit_factor": 0.3666666666666878,
+            "net_r": -1.6340000000000148,
+            "expectancy_r": -0.5446666666666716,
+            "max_drawdown_r": 1.6340000000000148,
+            "largest_loss_r": -1.444000000000051,
+            "target_hit_rate_pct": 33.333333333333336,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 100.0,
+            "median_spread_dollars": 0.6899999999995998,
+            "median_entry_slippage_dollars": 0.07600000000002183,
+            "year_net_r": {
+              "2025": -1.1360000000000583,
+              "2026": -0.4979999999999565
+            },
+            "twelve_month_block_net_r": {
+              "5": -1.6340000000000148
+            },
+            "event_net_r": {
+              "GDP": -1.6340000000000148
+            }
+          }
+        },
+        {
+          "name": "$0.50 adverse entry and exit slippage",
+          "holdout": {
+            "events": 3,
+            "traded_events": 3,
+            "legs": 3,
+            "fill_rate_pct": 100.0,
+            "wins": 1,
+            "losses": 2,
+            "win_rate_pct": 33.333333333333336,
+            "profit_factor": 0.304316546762612,
+            "net_r": -1.9340000000000144,
+            "expectancy_r": -0.6446666666666715,
+            "max_drawdown_r": 1.9340000000000144,
+            "largest_loss_r": -1.5440000000000509,
+            "target_hit_rate_pct": 33.333333333333336,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 100.0,
+            "median_spread_dollars": 0.6899999999995998,
+            "median_entry_slippage_dollars": 0.07600000000002183,
+            "year_net_r": {
+              "2025": -1.2360000000000582,
+              "2026": -0.6979999999999563
+            },
+            "twelve_month_block_net_r": {
+              "5": -1.9340000000000144
+            },
+            "event_net_r": {
+              "GDP": -1.9340000000000144
+            }
+          }
+        },
+        {
+          "name": "500 ms opposite-order cancellation",
+          "holdout": {
+            "events": 3,
+            "traded_events": 3,
+            "legs": 3,
+            "fill_rate_pct": 100.0,
+            "wins": 1,
+            "losses": 2,
+            "win_rate_pct": 33.333333333333336,
+            "profit_factor": 0.4394957983193473,
+            "net_r": -1.3340000000000145,
+            "expectancy_r": -0.4446666666666715,
+            "max_drawdown_r": 1.344000000000051,
+            "largest_loss_r": -1.344000000000051,
+            "target_hit_rate_pct": 33.333333333333336,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 100.0,
+            "median_spread_dollars": 0.6899999999995998,
+            "median_entry_slippage_dollars": 0.07600000000002183,
+            "year_net_r": {
+              "2025": -1.0360000000000582,
+              "2026": -0.2979999999999563
+            },
+            "twelve_month_block_net_r": {
+              "5": -1.3340000000000145
+            },
+            "event_net_r": {
+              "GDP": -1.3340000000000145
+            }
+          }
+        }
+      ],
+      "leaderboard_development": [
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 60,
+              "buy_offset_dollars": 1.0,
+              "sell_offset_dollars": 0.5,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 5.0,
+            "target_dollars": 5.0,
+            "reward_risk": 1.0
+          },
+          "performance": {
+            "events": 16,
+            "traded_events": 16,
+            "legs": 16,
+            "fill_rate_pct": 100.0,
+            "wins": 13,
+            "losses": 3,
+            "win_rate_pct": 81.25,
+            "profit_factor": 3.591807573231874,
+            "net_r": 8.706400000000302,
+            "expectancy_r": 0.5441500000000189,
+            "max_drawdown_r": 1.325599999999986,
+            "largest_loss_r": -1.325599999999986,
+            "target_hit_rate_pct": 75.0,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 56.25,
+            "median_spread_dollars": 0.36400000000003274,
+            "median_entry_slippage_dollars": 0.2504999999996471,
+            "year_net_r": {
+              "2021": 1.0005999999999857,
+              "2022": 2.348400000000038,
+              "2023": 1.3742000000000645,
+              "2024": 3.9826000000000934,
+              "2025": 0.0006000000001221695
+            },
+            "twelve_month_block_net_r": {
+              "1": 1.87800000000002,
+              "2": 1.8592000000000553,
+              "3": 4.178600000000051,
+              "4": 0.7906000000001767
+            },
+            "event_net_r": {
+              "GDP": 8.706400000000304
+            }
+          },
+          "score": 7.380800000000317
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 60,
+              "buy_offset_dollars": 1.0,
+              "sell_offset_dollars": 0.5,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 5.0,
+            "target_dollars": 5.0,
+            "reward_risk": 1.0
+          },
+          "performance": {
+            "events": 16,
+            "traded_events": 16,
+            "legs": 16,
+            "fill_rate_pct": 100.0,
+            "wins": 13,
+            "losses": 3,
+            "win_rate_pct": 81.25,
+            "profit_factor": 3.591807573231874,
+            "net_r": 8.706400000000302,
+            "expectancy_r": 0.5441500000000189,
+            "max_drawdown_r": 1.325599999999986,
+            "largest_loss_r": -1.325599999999986,
+            "target_hit_rate_pct": 75.0,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 56.25,
+            "median_spread_dollars": 0.36400000000003274,
+            "median_entry_slippage_dollars": 0.2504999999996471,
+            "year_net_r": {
+              "2021": 1.0005999999999857,
+              "2022": 2.348400000000038,
+              "2023": 1.3742000000000645,
+              "2024": 3.9826000000000934,
+              "2025": 0.0006000000001221695
+            },
+            "twelve_month_block_net_r": {
+              "1": 1.87800000000002,
+              "2": 1.8592000000000553,
+              "3": 4.178600000000051,
+              "4": 0.7906000000001767
+            },
+            "event_net_r": {
+              "GDP": 8.706400000000304
+            }
+          },
+          "score": 7.380800000000317
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 60,
+              "buy_offset_dollars": 1.0,
+              "sell_offset_dollars": 0.5,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 5.0,
+            "target_dollars": 4.0,
+            "reward_risk": 0.8
+          },
+          "performance": {
+            "events": 16,
+            "traded_events": 16,
+            "legs": 16,
+            "fill_rate_pct": 100.0,
+            "wins": 14,
+            "losses": 2,
+            "win_rate_pct": 87.5,
+            "profit_factor": 5.115755310779178,
+            "net_r": 8.36980000000026,
+            "expectancy_r": 0.5231125000000163,
+            "max_drawdown_r": 1.027599999999984,
+            "largest_loss_r": -1.027599999999984,
+            "target_hit_rate_pct": 81.25,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 56.25,
+            "median_spread_dollars": 0.36400000000003274,
+            "median_entry_slippage_dollars": 0.2504999999996471,
+            "year_net_r": {
+              "2021": 0.8235999999999877,
+              "2022": 1.9484000000000377,
+              "2023": 2.57740000000008,
+              "2024": 3.2124000000000703,
+              "2025": -0.19199999999991635
+            },
+            "twelve_month_block_net_r": {
+              "1": 1.301000000000022,
+              "2": 3.2624000000000706,
+              "3": 3.4084000000000287,
+              "4": 0.3980000000001382
+            },
+            "event_net_r": {
+              "GDP": 8.369800000000259
+            }
+          },
+          "score": 7.342200000000277
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 60,
+              "buy_offset_dollars": 1.0,
+              "sell_offset_dollars": 0.5,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 5.0,
+            "target_dollars": 4.0,
+            "reward_risk": 0.8
+          },
+          "performance": {
+            "events": 16,
+            "traded_events": 16,
+            "legs": 16,
+            "fill_rate_pct": 100.0,
+            "wins": 14,
+            "losses": 2,
+            "win_rate_pct": 87.5,
+            "profit_factor": 5.115755310779178,
+            "net_r": 8.36980000000026,
+            "expectancy_r": 0.5231125000000163,
+            "max_drawdown_r": 1.027599999999984,
+            "largest_loss_r": -1.027599999999984,
+            "target_hit_rate_pct": 81.25,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 56.25,
+            "median_spread_dollars": 0.36400000000003274,
+            "median_entry_slippage_dollars": 0.2504999999996471,
+            "year_net_r": {
+              "2021": 0.8235999999999877,
+              "2022": 1.9484000000000377,
+              "2023": 2.57740000000008,
+              "2024": 3.2124000000000703,
+              "2025": -0.19199999999991635
+            },
+            "twelve_month_block_net_r": {
+              "1": 1.301000000000022,
+              "2": 3.2624000000000706,
+              "3": 3.4084000000000287,
+              "4": 0.3980000000001382
+            },
+            "event_net_r": {
+              "GDP": 8.369800000000259
+            }
+          },
+          "score": 7.342200000000277
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 60,
+              "buy_offset_dollars": 1.5,
+              "sell_offset_dollars": 0.75,
+              "spread_multiplier": 1.0,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 5.0,
+            "target_dollars": 4.0,
+            "reward_risk": 0.8
+          },
+          "performance": {
+            "events": 16,
+            "traded_events": 16,
+            "legs": 16,
+            "fill_rate_pct": 100.0,
+            "wins": 14,
+            "losses": 2,
+            "win_rate_pct": 87.5,
+            "profit_factor": 5.128574325694893,
+            "net_r": 8.143200000000297,
+            "expectancy_r": 0.5089500000000186,
+            "max_drawdown_r": 1.4379999999999198,
+            "largest_loss_r": -1.43799999999992,
+            "target_hit_rate_pct": 87.5,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 37.5,
+            "median_spread_dollars": 0.36400000000003274,
+            "median_entry_slippage_dollars": 0.2599999999998772,
+            "year_net_r": {
+              "2021": 0.7434000000000196,
+              "2022": 1.794399999999996,
+              "2023": 2.7536000000000964,
+              "2024": 3.4278000000000244,
+              "2025": -0.57599999999984
+            },
+            "twelve_month_block_net_r": {
+              "1": 3.0722000000000205,
+              "2": 1.423200000000088,
+              "3": 3.5337999999999736,
+              "4": 0.1140000000002146
+            },
+            "event_net_r": {
+              "GDP": 8.143200000000297
+            }
+          },
+          "score": 6.705200000000377
+        }
+      ]
+    },
+    "FOMC": {
+      "selected": {
+        "entry": {
+          "lead_seconds": 10,
+          "buy_offset_dollars": 0.25,
+          "sell_offset_dollars": 1.5,
+          "spread_multiplier": 1.5,
+          "expiry_seconds": 30,
+          "cancel_latency_ms": 250
+        },
+        "stop_dollars": 7.0,
+        "target_dollars": 30.0,
+        "reward_risk": 4.285714285714286
+      },
+      "development_selection_strict_pass": true,
+      "development": {
+        "events": 32,
+        "traded_events": 28,
+        "legs": 28,
+        "fill_rate_pct": 87.5,
+        "wins": 13,
+        "losses": 15,
+        "win_rate_pct": 46.42857142857143,
+        "profit_factor": 1.8893083396251014,
+        "net_r": 12.704214285714347,
+        "expectancy_r": 0.45372193877551237,
+        "max_drawdown_r": 4.190285714285697,
+        "largest_loss_r": -1.2810000000000141,
+        "target_hit_rate_pct": 10.714285714285714,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 17.857142857142858,
+        "median_spread_dollars": 0.5310000000001764,
+        "median_entry_slippage_dollars": 0.4639999999999418,
+        "year_net_r": {
+          "2021": -2.108285714285687,
+          "2022": 0.21599999999999242,
+          "2023": 4.32207142857143,
+          "2024": 11.520571428571397,
+          "2025": -1.246142857142786
+        },
+        "twelve_month_block_net_r": {
+          "1": -1.3251428571428336,
+          "2": 2.9215714285714314,
+          "3": 3.423214285714267,
+          "4": 7.684571428571482
+        },
+        "event_net_r": {
+          "FOMC": 12.704214285714349
+        }
+      },
+      "holdout": {
+        "events": 8,
+        "traded_events": 7,
+        "legs": 7,
+        "fill_rate_pct": 87.5,
+        "wins": 0,
+        "losses": 7,
+        "win_rate_pct": 0.0,
+        "profit_factor": 0.0,
+        "net_r": -11.022857142856992,
+        "expectancy_r": -1.5746938775509989,
+        "max_drawdown_r": 11.022857142856992,
+        "largest_loss_r": -4.05714285714287,
+        "target_hit_rate_pct": 0.0,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 28.571428571428573,
+        "median_spread_dollars": 0.9900000000002365,
+        "median_entry_slippage_dollars": 0.5169999999998254,
+        "year_net_r": {
+          "2025": -2.338714285714234,
+          "2026": -8.684142857142758
+        },
+        "twelve_month_block_net_r": {
+          "5": -11.022857142856992
+        },
+        "event_net_r": {
+          "FOMC": -11.022857142856992
+        }
+      },
+      "full": {
+        "events": 40,
+        "traded_events": 35,
+        "legs": 35,
+        "fill_rate_pct": 87.5,
+        "wins": 13,
+        "losses": 22,
+        "win_rate_pct": 37.142857142857146,
+        "profit_factor": 1.066434859179783,
+        "net_r": 1.6813571428573546,
+        "expectancy_r": 0.04803877551021013,
+        "max_drawdown_r": 13.314857142857038,
+        "largest_loss_r": -4.05714285714287,
+        "target_hit_rate_pct": 8.571428571428571,
+        "dual_fill_rate_pct": 0.0,
+        "pre_release_fill_rate_pct": 20.0,
+        "median_spread_dollars": 0.6200000000001182,
+        "median_entry_slippage_dollars": 0.4699999999997999,
+        "year_net_r": {
+          "2021": -2.108285714285687,
+          "2022": 0.21599999999999242,
+          "2023": 4.32207142857143,
+          "2024": 11.520571428571397,
+          "2025": -3.58485714285702,
+          "2026": -8.684142857142758
+        },
+        "twelve_month_block_net_r": {
+          "1": -1.3251428571428336,
+          "2": 2.9215714285714314,
+          "3": 3.423214285714267,
+          "4": 7.684571428571482,
+          "5": -11.022857142856992
+        },
+        "event_net_r": {
+          "FOMC": 1.6813571428573564
+        }
+      },
+      "stress_tests": [
+        {
+          "name": "$0.25 adverse entry and exit slippage",
+          "holdout": {
+            "events": 8,
+            "traded_events": 7,
+            "legs": 7,
+            "fill_rate_pct": 87.5,
+            "wins": 0,
+            "losses": 7,
+            "win_rate_pct": 0.0,
+            "profit_factor": 0.0,
+            "net_r": -11.522857142856992,
+            "expectancy_r": -1.6461224489795703,
+            "max_drawdown_r": 11.522857142856992,
+            "largest_loss_r": -4.128571428571441,
+            "target_hit_rate_pct": 0.0,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 28.571428571428573,
+            "median_spread_dollars": 0.9900000000002365,
+            "median_entry_slippage_dollars": 0.5169999999998254,
+            "year_net_r": {
+              "2025": -2.4815714285713772,
+              "2026": -9.041285714285614
+            },
+            "twelve_month_block_net_r": {
+              "5": -11.522857142856992
+            },
+            "event_net_r": {
+              "FOMC": -11.522857142856992
+            }
+          }
+        },
+        {
+          "name": "$0.50 adverse entry and exit slippage",
+          "holdout": {
+            "events": 8,
+            "traded_events": 7,
+            "legs": 7,
+            "fill_rate_pct": 87.5,
+            "wins": 0,
+            "losses": 7,
+            "win_rate_pct": 0.0,
+            "profit_factor": 0.0,
+            "net_r": -12.022857142856992,
+            "expectancy_r": -1.7175510204081417,
+            "max_drawdown_r": 12.022857142856992,
+            "largest_loss_r": -4.200000000000013,
+            "target_hit_rate_pct": 0.0,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 28.571428571428573,
+            "median_spread_dollars": 0.9900000000002365,
+            "median_entry_slippage_dollars": 0.5169999999998254,
+            "year_net_r": {
+              "2025": -2.6244285714285196,
+              "2026": -9.398428571428472
+            },
+            "twelve_month_block_net_r": {
+              "5": -12.022857142856992
+            },
+            "event_net_r": {
+              "FOMC": -12.022857142856992
+            }
+          }
+        },
+        {
+          "name": "500 ms opposite-order cancellation",
+          "holdout": {
+            "events": 8,
+            "traded_events": 7,
+            "legs": 7,
+            "fill_rate_pct": 87.5,
+            "wins": 0,
+            "losses": 7,
+            "win_rate_pct": 0.0,
+            "profit_factor": 0.0,
+            "net_r": -11.022857142856992,
+            "expectancy_r": -1.5746938775509989,
+            "max_drawdown_r": 11.022857142856992,
+            "largest_loss_r": -4.05714285714287,
+            "target_hit_rate_pct": 0.0,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 28.571428571428573,
+            "median_spread_dollars": 0.9900000000002365,
+            "median_entry_slippage_dollars": 0.5169999999998254,
+            "year_net_r": {
+              "2025": -2.338714285714234,
+              "2026": -8.684142857142758
+            },
+            "twelve_month_block_net_r": {
+              "5": -11.022857142856992
+            },
+            "event_net_r": {
+              "FOMC": -11.022857142856992
+            }
+          }
+        }
+      ],
+      "leaderboard_development": [
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.25,
+              "sell_offset_dollars": 1.5,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 30.0,
+            "reward_risk": 4.285714285714286
+          },
+          "performance": {
+            "events": 32,
+            "traded_events": 28,
+            "legs": 28,
+            "fill_rate_pct": 87.5,
+            "wins": 13,
+            "losses": 15,
+            "win_rate_pct": 46.42857142857143,
+            "profit_factor": 1.8893083396251014,
+            "net_r": 12.704214285714347,
+            "expectancy_r": 0.45372193877551237,
+            "max_drawdown_r": 4.190285714285697,
+            "largest_loss_r": -1.2810000000000141,
+            "target_hit_rate_pct": 10.714285714285714,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 17.857142857142858,
+            "median_spread_dollars": 0.5310000000001764,
+            "median_entry_slippage_dollars": 0.4639999999999418,
+            "year_net_r": {
+              "2021": -2.108285714285687,
+              "2022": 0.21599999999999242,
+              "2023": 4.32207142857143,
+              "2024": 11.520571428571397,
+              "2025": -1.246142857142786
+            },
+            "twelve_month_block_net_r": {
+              "1": -1.3251428571428336,
+              "2": 2.9215714285714314,
+              "3": 3.423214285714267,
+              "4": 7.684571428571482
+            },
+            "event_net_r": {
+              "FOMC": 12.704214285714349
+            }
+          },
+          "score": 5.863642857142983
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.25,
+              "sell_offset_dollars": 1.5,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 30.0,
+            "reward_risk": 4.285714285714286
+          },
+          "performance": {
+            "events": 32,
+            "traded_events": 28,
+            "legs": 28,
+            "fill_rate_pct": 87.5,
+            "wins": 13,
+            "losses": 15,
+            "win_rate_pct": 46.42857142857143,
+            "profit_factor": 1.8893083396251014,
+            "net_r": 12.704214285714347,
+            "expectancy_r": 0.45372193877551237,
+            "max_drawdown_r": 4.190285714285697,
+            "largest_loss_r": -1.2810000000000141,
+            "target_hit_rate_pct": 10.714285714285714,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 17.857142857142858,
+            "median_spread_dollars": 0.5310000000001764,
+            "median_entry_slippage_dollars": 0.4639999999999418,
+            "year_net_r": {
+              "2021": -2.108285714285687,
+              "2022": 0.21599999999999242,
+              "2023": 4.32207142857143,
+              "2024": 11.520571428571397,
+              "2025": -1.246142857142786
+            },
+            "twelve_month_block_net_r": {
+              "1": -1.3251428571428336,
+              "2": 2.9215714285714314,
+              "3": 3.423214285714267,
+              "4": 7.684571428571482
+            },
+            "event_net_r": {
+              "FOMC": 12.704214285714349
+            }
+          },
+          "score": 5.863642857142983
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.5,
+              "sell_offset_dollars": 1.5,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 30.0,
+            "reward_risk": 4.285714285714286
+          },
+          "performance": {
+            "events": 32,
+            "traded_events": 28,
+            "legs": 28,
+            "fill_rate_pct": 87.5,
+            "wins": 13,
+            "losses": 15,
+            "win_rate_pct": 46.42857142857143,
+            "profit_factor": 1.8893083396251014,
+            "net_r": 12.704214285714347,
+            "expectancy_r": 0.45372193877551237,
+            "max_drawdown_r": 4.190285714285697,
+            "largest_loss_r": -1.2810000000000141,
+            "target_hit_rate_pct": 10.714285714285714,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 17.857142857142858,
+            "median_spread_dollars": 0.5310000000001764,
+            "median_entry_slippage_dollars": 0.4639999999999418,
+            "year_net_r": {
+              "2021": -2.108285714285687,
+              "2022": 0.21599999999999242,
+              "2023": 4.32207142857143,
+              "2024": 11.520571428571397,
+              "2025": -1.246142857142786
+            },
+            "twelve_month_block_net_r": {
+              "1": -1.3251428571428336,
+              "2": 2.9215714285714314,
+              "3": 3.423214285714267,
+              "4": 7.684571428571482
+            },
+            "event_net_r": {
+              "FOMC": 12.704214285714349
+            }
+          },
+          "score": 5.863642857142983
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.5,
+              "sell_offset_dollars": 1.5,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 60,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 30.0,
+            "reward_risk": 4.285714285714286
+          },
+          "performance": {
+            "events": 32,
+            "traded_events": 28,
+            "legs": 28,
+            "fill_rate_pct": 87.5,
+            "wins": 13,
+            "losses": 15,
+            "win_rate_pct": 46.42857142857143,
+            "profit_factor": 1.8893083396251014,
+            "net_r": 12.704214285714347,
+            "expectancy_r": 0.45372193877551237,
+            "max_drawdown_r": 4.190285714285697,
+            "largest_loss_r": -1.2810000000000141,
+            "target_hit_rate_pct": 10.714285714285714,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 17.857142857142858,
+            "median_spread_dollars": 0.5310000000001764,
+            "median_entry_slippage_dollars": 0.4639999999999418,
+            "year_net_r": {
+              "2021": -2.108285714285687,
+              "2022": 0.21599999999999242,
+              "2023": 4.32207142857143,
+              "2024": 11.520571428571397,
+              "2025": -1.246142857142786
+            },
+            "twelve_month_block_net_r": {
+              "1": -1.3251428571428336,
+              "2": 2.9215714285714314,
+              "3": 3.423214285714267,
+              "4": 7.684571428571482
+            },
+            "event_net_r": {
+              "FOMC": 12.704214285714349
+            }
+          },
+          "score": 5.863642857142983
+        },
+        {
+          "selected": {
+            "entry": {
+              "lead_seconds": 10,
+              "buy_offset_dollars": 0.75,
+              "sell_offset_dollars": 1.0,
+              "spread_multiplier": 1.5,
+              "expiry_seconds": 30,
+              "cancel_latency_ms": 250
+            },
+            "stop_dollars": 7.0,
+            "target_dollars": 30.0,
+            "reward_risk": 4.285714285714286
+          },
+          "performance": {
+            "events": 32,
+            "traded_events": 28,
+            "legs": 28,
+            "fill_rate_pct": 87.5,
+            "wins": 13,
+            "losses": 15,
+            "win_rate_pct": 46.42857142857143,
+            "profit_factor": 1.8819792778148896,
+            "net_r": 12.634857142857072,
+            "expectancy_r": 0.45124489795918116,
+            "max_drawdown_r": 4.203714285714276,
+            "largest_loss_r": -1.3514285714285441,
+            "target_hit_rate_pct": 10.714285714285714,
+            "dual_fill_rate_pct": 0.0,
+            "pre_release_fill_rate_pct": 21.428571428571427,
+            "median_spread_dollars": 0.5310000000001764,
+            "median_entry_slippage_dollars": 0.48299999999994725,
+            "year_net_r": {
+              "2021": -2.137999999999985,
+              "2022": 0.16085714285713992,
+              "2023": 4.334714285714297,
+              "2024": 11.521714285714161,
+              "2025": -1.2444285714285406
+            },
+            "twelve_month_block_net_r": {
+              "1": -1.338571428571413,
+              "2": 2.8501428571428606,
+              "3": 3.4991428571428127,
+              "4": 7.624142857142813
+            },
+            "event_net_r": {
+              "FOMC": 12.634857142857074
+            }
+          },
+          "score": 5.753999999999969
+        }
+      ]
+    }
+  }
+}

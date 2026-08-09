@@ -13,6 +13,7 @@ releases. Every supported release receives one result:
 
 - `POSITIVE`: expected immediate effect on gold is upward.
 - `NEGATIVE`: expected immediate effect on gold is downward.
+- `NO CALL`: the directional bias failed a confidence or agreement gate.
 
 It does not produce trade calls and cannot place, modify, or manage orders.
 
@@ -34,10 +35,11 @@ lead, $20 stop, 4:1 reward/risk, and 720 market-minute maximum hold.
 ## Coverage
 
 - Nonfarm Payrolls
-- Advance GDP
 - CPI
-- PPI
 - FOMC statements
+
+PPI and GDP remain in older research files but are intentionally disabled in
+the live V5 predictor.
 
 The local archive contains XAUUSD M1 bid/ask release data from 2011 through
 2026. The historical target is the sign of the release-minute midpoint move.
@@ -46,18 +48,18 @@ M1 data cannot identify the exact ordering of a sub-minute spike.
 ## Pipeline
 
 1. Build canonical T-30 and T-15 XAUUSD features from completed M1 candles.
-2. Compare four compact event-history rules on data before July 2021.
-3. Approve a non-baseline event rule only when it also beats the baseline on
-   the separate July 2021-July 2024 guard window.
-4. Keep July 2024-July 2026 untouched as the final recent test.
-5. Load Cleveland Fed inflation nowcasts and Atlanta Fed GDPNow history as
-   context. Their decision weight remains zero until paired point-in-time
-   consensus history proves an improvement.
-6. Score every release as positive or negative; no selective abstention.
-7. For FOMC only, combine the validated five-meeting history rule with a
+2. Train expanding chronological price-action ensembles using NFP, CPI, and
+   FOMC only.
+3. Select NFP/CPI strategy, polarity, threshold, and optional history
+   agreement on pre-2023 development data plus a separate 2023-May 2026 guard
+   block.
+4. Freeze May 8-August 7, 2026 as the three-month evaluation window.
+5. Treat T-30 as preliminary context only. An active direction requires the
+   final T-15 confidence and agreement gates.
+6. Return `NO CALL` when any required gate fails.
+7. For FOMC, combine the five-meeting history rule with a
    dedicated T-30 ExtraTrees model trained on prior FOMC meetings.
-8. Mark history/model agreement as high confidence, capped at 65%. Mark
-   disagreements as low confidence.
+8. Call FOMC only when history and model agree, capped at 65% confidence.
 9. Optionally resolve an FOMC disagreement with a point-in-time FedWatch
    distribution from a 50bp cut through a 50bp hike. The modal target is
    compared with the probability-weighted target; this resolver is capped at
@@ -69,12 +71,36 @@ M1 data cannot identify the exact ordering of a sub-minute spike.
     Policy Event-Study Database. Current-meeting shock values are labels only;
     the model can use earlier shocks, never the shock it is trying to predict.
 
-The deployed V2 policy uses anti-persistence for NFP and expanding event
-history for GDP, CPI, and PPI. FOMC uses its isolated ensemble. Larger
-market-feature models remain disabled for the other events because they did
-not beat the compact rules on frozen data.
+The deployed V5 policy is event-specific. CPI can issue a `POSITIVE` gold call
+only while both its long-run and recent positive regimes remain active. FOMC
+keeps the isolated history/model agreement gate. NFP is shadow-bias only before
+publication because no stable pre-release directional edge survived validation.
+Forecast and previous values remain context-only because the repository does
+not contain a licensed point-in-time historical consensus archive.
 
 ## Results
+
+May 8-August 7, 2026 comparison:
+
+| Policy | Events | Calls | Correct | Call accuracy | Coverage |
+|---|---:|---:|---:|---:|---:|
+| Legacy forced direction | 9 | 9 | 5 | 55.56% | 100.00% |
+| V4 final T-15 | 9 | 1 | 1 | 100.00% | 11.11% |
+| V5 final T-15 | 9 | 4 | 3 | 75.00% | 44.44% |
+
+V5 improves practical coverage without reviving forced NFP guesses. Before the
+three-month window, the CPI positive-regime rule was correct on 36/56 releases
+and the frozen FOMC agreement rule on 23/35 calls, or 59/91 combined (64.84%).
+In the recent replay V5 made four calls and won three. Its 95% interval remains
+wide, so this is not proof of a stable 75% predictor.
+
+V5 was designed after the May-August outcomes were available. The replay is
+therefore retrospective rather than a pristine unseen holdout. Its next NFP,
+CPI, and FOMC releases are the real forward validation.
+
+The T-30 candidate scored 1/3 in this holdout and was not promoted.
+
+Older V2 research results are retained below for comparison:
 
 | Window | Events | Correct | Accuracy | 95% interval |
 |---|---:|---:|---:|---:|
@@ -150,7 +176,7 @@ saved separately at `models/gold_news_v3_candidate.joblib`.
 
 ## Run
 
-1. Run `train_model.bat` to rebuild models and reports.
+1. Run `run_news_v5_backtest.bat` to rebuild the V5 model and comparison report.
 2. Run `run.bat` to open `http://127.0.0.1:8799`.
 3. Query a supported event 8-30 minutes before its UTC release time.
 4. For FOMC, optionally enter the current target range and the point-in-time
@@ -182,6 +208,16 @@ can compare actual, forecast, previous, revisions, and official release text.
 
 ## Main artifacts
 
+- `models/gold_news_v5.joblib`
+- `news_v5.py`
+- `backtest_news_v5.py`
+- `NEWS_V5_3M_RESULTS.md`
+- `news_v5_3m_results.json`
+- `models/gold_news_v4.joblib`
+- `news_v4.py`
+- `backtest_news_v4.py`
+- `NEWS_V4_3M_RESULTS.md`
+- `news_v4_3m_results.json`
 - `models/gold_news_direction.joblib`
 - `backtest_gold_direction.py`
 - `backtest_gold_direction_v2.py`

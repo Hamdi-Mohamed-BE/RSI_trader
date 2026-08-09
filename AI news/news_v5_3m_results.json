@@ -1,0 +1,327 @@
+{
+  "status": "promoted_for_forward_validation",
+  "methodology": {
+    "window": "2026-05-08 through 2026-08-07",
+    "events": [
+      "NFP",
+      "CPI",
+      "FOMC"
+    ],
+    "target": "Sign of the XAUUSD release-minute bid/ask midpoint move.",
+    "v5_policy": "CPI calls POSITIVE only while preselected long-run and recent positive-regime gates pass. FOMC retains V4 history/model agreement. NFP is shadow-bias only.",
+    "researcher_warning": "V5 was designed after the May-August outcomes were available. The event replay is retrospective, not a pristine unseen holdout. Its next releases are the true forward test."
+  },
+  "pre_holdout_evidence": {
+    "cpi_positive_regime": {
+      "calls": 56,
+      "wins": 36,
+      "accuracy_pct": 64.29
+    },
+    "fomc_agreement": {
+      "calls": 35,
+      "wins": 23,
+      "accuracy_pct": 65.71
+    },
+    "combined": {
+      "calls": 91,
+      "wins": 59,
+      "accuracy_pct": 64.84
+    }
+  },
+  "metrics": {
+    "v4_final": {
+      "events": 9,
+      "calls": 1,
+      "wins": 1,
+      "losses": 0,
+      "accuracy_pct": 100.0,
+      "coverage_pct": 11.11,
+      "wilson_95_pct": [
+        20.65,
+        100.0
+      ]
+    },
+    "v5_final": {
+      "events": 9,
+      "calls": 4,
+      "wins": 3,
+      "losses": 1,
+      "accuracy_pct": 75.0,
+      "coverage_pct": 44.44,
+      "wilson_95_pct": [
+        30.06,
+        95.44
+      ]
+    }
+  },
+  "events": [
+    {
+      "release_utc": "2026-05-08T12:30:00+00:00",
+      "event": "NFP",
+      "actual": "NEGATIVE",
+      "release_move_usd": -2.236,
+      "t_plus_2_move_usd": null,
+      "legacy_prediction": "NEGATIVE",
+      "legacy_correct": true,
+      "point_in_time_macro_available": false,
+      "t30_prediction": "NO CALL",
+      "t30_bias": "NEGATIVE",
+      "t30_confidence_pct": 61.22,
+      "t30_history_bias": "POSITIVE",
+      "t30_failed_gates": [
+        "history_agreement"
+      ],
+      "t15_prediction": "NO CALL",
+      "t15_bias": "NEGATIVE",
+      "t15_confidence_pct": 58.4,
+      "t15_history_bias": "NEGATIVE",
+      "t15_failed_gates": [
+        "confidence"
+      ],
+      "v5_prediction": "NO CALL",
+      "v5_bias": "NEGATIVE",
+      "v5_confidence_pct": 58.4,
+      "v5_strategy": "nfp_shadow_bias_only",
+      "v5_failed_gates": [
+        "nfp_pre_release_edge"
+      ]
+    },
+    {
+      "release_utc": "2026-05-12T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "NEGATIVE",
+      "release_move_usd": -4.0535,
+      "t_plus_2_move_usd": null,
+      "legacy_prediction": "POSITIVE",
+      "legacy_correct": false,
+      "point_in_time_macro_available": false,
+      "t30_prediction": "NO CALL",
+      "t30_bias": "NEGATIVE",
+      "t30_confidence_pct": 60.49,
+      "t30_history_bias": "NEGATIVE",
+      "t30_failed_gates": [
+        "confidence"
+      ],
+      "t15_prediction": "NO CALL",
+      "t15_bias": "POSITIVE",
+      "t15_confidence_pct": 59.43,
+      "t15_history_bias": "NEGATIVE",
+      "t15_failed_gates": [
+        "confidence",
+        "history_agreement"
+      ],
+      "v5_prediction": "POSITIVE",
+      "v5_bias": "POSITIVE",
+      "v5_confidence_pct": 68.0,
+      "v5_strategy": "cpi_positive_regime",
+      "v5_failed_gates": []
+    },
+    {
+      "release_utc": "2026-06-05T12:30:00+00:00",
+      "event": "NFP",
+      "actual": "NEGATIVE",
+      "release_move_usd": -14.755,
+      "t_plus_2_move_usd": null,
+      "legacy_prediction": "POSITIVE",
+      "legacy_correct": false,
+      "point_in_time_macro_available": false,
+      "t30_prediction": "POSITIVE",
+      "t30_bias": "POSITIVE",
+      "t30_confidence_pct": 55.49,
+      "t30_history_bias": "POSITIVE",
+      "t30_failed_gates": [],
+      "t15_prediction": "NO CALL",
+      "t15_bias": "POSITIVE",
+      "t15_confidence_pct": 54.06,
+      "t15_history_bias": "POSITIVE",
+      "t15_failed_gates": [
+        "confidence"
+      ],
+      "v5_prediction": "NO CALL",
+      "v5_bias": "POSITIVE",
+      "v5_confidence_pct": 54.06,
+      "v5_strategy": "nfp_shadow_bias_only",
+      "v5_failed_gates": [
+        "nfp_pre_release_edge"
+      ]
+    },
+    {
+      "release_utc": "2026-06-10T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 27.8235,
+      "t_plus_2_move_usd": null,
+      "legacy_prediction": "POSITIVE",
+      "legacy_correct": true,
+      "point_in_time_macro_available": false,
+      "t30_prediction": "NO CALL",
+      "t30_bias": "NEGATIVE",
+      "t30_confidence_pct": 55.3,
+      "t30_history_bias": "NEGATIVE",
+      "t30_failed_gates": [
+        "confidence"
+      ],
+      "t15_prediction": "NO CALL",
+      "t15_bias": "NEGATIVE",
+      "t15_confidence_pct": 54.73,
+      "t15_history_bias": "NEGATIVE",
+      "t15_failed_gates": [
+        "confidence"
+      ],
+      "v5_prediction": "POSITIVE",
+      "v5_bias": "POSITIVE",
+      "v5_confidence_pct": 68.0,
+      "v5_strategy": "cpi_positive_regime",
+      "v5_failed_gates": []
+    },
+    {
+      "release_utc": "2026-06-17T18:00:00+00:00",
+      "event": "FOMC",
+      "actual": "NEGATIVE",
+      "release_move_usd": -31.935,
+      "t_plus_2_move_usd": null,
+      "legacy_prediction": "NEGATIVE",
+      "legacy_correct": true,
+      "point_in_time_macro_available": false,
+      "t30_prediction": "NEGATIVE",
+      "t30_bias": "NEGATIVE",
+      "t30_confidence_pct": 65.0,
+      "t30_history_bias": "NEGATIVE",
+      "t30_failed_gates": [],
+      "t15_prediction": "NEGATIVE",
+      "t15_bias": "NEGATIVE",
+      "t15_confidence_pct": 65.0,
+      "t15_history_bias": "NEGATIVE",
+      "t15_failed_gates": [],
+      "v5_prediction": "NEGATIVE",
+      "v5_bias": "NEGATIVE",
+      "v5_confidence_pct": 65.0,
+      "v5_strategy": "fomc_history_model_agreement",
+      "v5_failed_gates": []
+    },
+    {
+      "release_utc": "2026-07-02T12:30:00+00:00",
+      "event": "NFP",
+      "actual": "POSITIVE",
+      "release_move_usd": 52.13,
+      "t_plus_2_move_usd": null,
+      "legacy_prediction": "POSITIVE",
+      "legacy_correct": true,
+      "point_in_time_macro_available": false,
+      "t30_prediction": "NO CALL",
+      "t30_bias": "NEGATIVE",
+      "t30_confidence_pct": 53.62,
+      "t30_history_bias": "POSITIVE",
+      "t30_failed_gates": [
+        "confidence",
+        "history_agreement"
+      ],
+      "t15_prediction": "NO CALL",
+      "t15_bias": "NEGATIVE",
+      "t15_confidence_pct": 54.91,
+      "t15_history_bias": "POSITIVE",
+      "t15_failed_gates": [
+        "confidence",
+        "history_agreement"
+      ],
+      "v5_prediction": "NO CALL",
+      "v5_bias": "NEGATIVE",
+      "v5_confidence_pct": 54.91,
+      "v5_strategy": "nfp_shadow_bias_only",
+      "v5_failed_gates": [
+        "nfp_pre_release_edge"
+      ]
+    },
+    {
+      "release_utc": "2026-07-14T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 60.54,
+      "t_plus_2_move_usd": null,
+      "legacy_prediction": "POSITIVE",
+      "legacy_correct": true,
+      "point_in_time_macro_available": false,
+      "t30_prediction": "NEGATIVE",
+      "t30_bias": "NEGATIVE",
+      "t30_confidence_pct": 62.66,
+      "t30_history_bias": "NEGATIVE",
+      "t30_failed_gates": [],
+      "t15_prediction": "NO CALL",
+      "t15_bias": "POSITIVE",
+      "t15_confidence_pct": 51.87,
+      "t15_history_bias": "NEGATIVE",
+      "t15_failed_gates": [
+        "confidence",
+        "history_agreement"
+      ],
+      "v5_prediction": "POSITIVE",
+      "v5_bias": "POSITIVE",
+      "v5_confidence_pct": 68.0,
+      "v5_strategy": "cpi_positive_regime",
+      "v5_failed_gates": []
+    },
+    {
+      "release_utc": "2026-07-29T18:00:00+00:00",
+      "event": "FOMC",
+      "actual": "POSITIVE",
+      "release_move_usd": 32.425,
+      "t_plus_2_move_usd": null,
+      "legacy_prediction": "NEGATIVE",
+      "legacy_correct": false,
+      "point_in_time_macro_available": false,
+      "t30_prediction": "NO CALL",
+      "t30_bias": "POSITIVE",
+      "t30_confidence_pct": 54.29,
+      "t30_history_bias": "NEGATIVE",
+      "t30_failed_gates": [
+        "history_model_agreement"
+      ],
+      "t15_prediction": "NO CALL",
+      "t15_bias": "POSITIVE",
+      "t15_confidence_pct": 54.29,
+      "t15_history_bias": "NEGATIVE",
+      "t15_failed_gates": [
+        "history_model_agreement"
+      ],
+      "v5_prediction": "NO CALL",
+      "v5_bias": "POSITIVE",
+      "v5_confidence_pct": 54.29,
+      "v5_strategy": "fomc_history_model_agreement",
+      "v5_failed_gates": [
+        "history_model_agreement"
+      ]
+    },
+    {
+      "release_utc": "2026-08-07T12:30:00+00:00",
+      "event": "NFP",
+      "actual": "POSITIVE",
+      "release_move_usd": 43.17,
+      "t_plus_2_move_usd": null,
+      "legacy_prediction": "NEGATIVE",
+      "legacy_correct": false,
+      "point_in_time_macro_available": true,
+      "t30_prediction": null,
+      "t30_bias": null,
+      "t30_confidence_pct": null,
+      "t30_history_bias": null,
+      "t30_failed_gates": [
+        "point_in_time_snapshot_missing"
+      ],
+      "t15_prediction": "NO CALL",
+      "t15_bias": "POSITIVE",
+      "t15_confidence_pct": 56.46,
+      "t15_history_bias": "NEGATIVE",
+      "t15_failed_gates": [
+        "confidence",
+        "history_agreement"
+      ],
+      "v5_prediction": "NO CALL",
+      "v5_bias": "POSITIVE",
+      "v5_confidence_pct": 56.46,
+      "v5_strategy": "nfp_shadow_bias_only",
+      "v5_failed_gates": [
+        "nfp_pre_release_edge"
+      ]
+    }
+  ]
+}
