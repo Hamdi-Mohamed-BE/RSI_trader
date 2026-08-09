@@ -191,15 +191,28 @@ def latest_closed_m1(symbol: str) -> dict[str, float]:
     }
 
 
-def broker_stop_limits(symbol: str) -> tuple[float, float]:
-    info = mt5.symbol_info(symbol)
+def current_live_prices(symbol: str) -> tuple[float, float, int]:
+    """Return a fresh executable bid/ask snapshot for ladder anchoring."""
     tick = mt5.symbol_info_tick(symbol)
-    if info is None or tick is None:
-        raise RuntimeError(f"Missing symbol info/tick for {symbol}.")
+    if tick is None:
+        raise RuntimeError(f"Missing live tick for {symbol}: {mt5.last_error()}")
+    bid = float(getattr(tick, "bid", 0.0) or 0.0)
+    ask = float(getattr(tick, "ask", 0.0) or 0.0)
+    if bid <= 0 or ask <= 0 or ask < bid:
+        raise RuntimeError(f"Invalid live bid/ask for {symbol}: bid={bid}, ask={ask}")
+    return bid, ask, int(getattr(tick, "time", 0) or time.time())
+
+
+def broker_stop_limits(symbol: str, live_bid: float | None = None, live_ask: float | None = None) -> tuple[float, float]:
+    info = mt5.symbol_info(symbol)
+    if info is None:
+        raise RuntimeError(f"Missing symbol info for {symbol}.")
+    if live_bid is None or live_ask is None:
+        live_bid, live_ask, _ = current_live_prices(symbol)
     point = float(info.point or 0.01)
     stops_level = int(getattr(info, "trade_stops_level", 0) or 0)
-    min_buy_stop = float(tick.ask) + stops_level * point
-    max_sell_stop = float(tick.bid) - stops_level * point
+    min_buy_stop = live_ask + stops_level * point
+    max_sell_stop = live_bid - stops_level * point
     return min_buy_stop, max_sell_stop
 
 
@@ -275,12 +288,6 @@ def improve_position_sl(symbol: str, position: Any, new_sl: float, deviation_poi
 
 
 def manage_runner_positions(symbol: str, config: GridConfig) -> None:
-    if config.keep_everything_open:
-        log(
-            "KEEP_EVERYTHING_OPEN is enabled; skipping opposite-order cancellation "
-            "and all automatic position management."
-        )
-        return
     if not config.manage_runner or config.runner_monitor_minutes <= 0:
         return
 
@@ -361,7 +368,6 @@ class GridConfig:
     sl_room_usd: float
     sl_distance_usd: float
     tp_distance_usd: float
-    keep_everything_open: bool
     manage_runner: bool
     runner_trail_start_r: float
     runner_trail_distance_r: float
@@ -403,7 +409,6 @@ def load_config() -> GridConfig:
         sl_room_usd=max(0.0, env_float("SL_ROOM_USD", 20.0)),
         sl_distance_usd=max(0.0, env_float("SL_DISTANCE_USD", 0.0)),
         tp_distance_usd=max(0.0, env_float("TP_DISTANCE_USD", 0.0)),
-        keep_everything_open=env_bool("KEEP_EVERYTHING_OPEN", False),
         manage_runner=env_bool("MANAGE_RUNNER", True),
         runner_trail_start_r=max(0.1, env_float("RUNNER_TRAIL_START_R", 7.0)),
         runner_trail_distance_r=max(0.1, env_float("RUNNER_TRAIL_DISTANCE_R", 1.0)),
@@ -440,22 +445,21 @@ def build_request(
         "type_time": mt5.ORDER_TIME_GTC,
         "type_filling": mt5.ORDER_FILLING_RETURN,
     }
-    if not config.keep_everything_open:
-        if config.sl_mode == "opposite_candle":
-            sl = candle["low"] - config.sl_room_usd if is_buy else candle["high"] + config.sl_room_usd
-            request["sl"] = normalize_price(symbol, sl)
-        elif config.sl_distance_usd > 0:
-            sl = price - config.sl_distance_usd if is_buy else price + config.sl_distance_usd
-            request["sl"] = normalize_price(symbol, sl)
-        if config.tp_distance_usd > 0:
-            tp = price + config.tp_distance_usd if is_buy else price - config.tp_distance_usd
-            request["tp"] = normalize_price(symbol, tp)
-        if config.expiration_minutes > 0:
-            request["type_time"] = mt5.ORDER_TIME_SPECIFIED
-            # Some brokers expose server-local epoch values through MT5. Using the
-            # computer clock can therefore create an expiration already in the past
-            # from the trade server's perspective.
-            request["expiration"] = broker_time(symbol) + config.expiration_minutes * 60
+    if config.sl_mode == "opposite_candle":
+        sl = candle["low"] - config.sl_room_usd if is_buy else candle["high"] + config.sl_room_usd
+        request["sl"] = normalize_price(symbol, sl)
+    elif config.sl_distance_usd > 0:
+        sl = price - config.sl_distance_usd if is_buy else price + config.sl_distance_usd
+        request["sl"] = normalize_price(symbol, sl)
+    if config.tp_distance_usd > 0:
+        tp = price + config.tp_distance_usd if is_buy else price - config.tp_distance_usd
+        request["tp"] = normalize_price(symbol, tp)
+    if config.expiration_minutes > 0:
+        request["type_time"] = mt5.ORDER_TIME_SPECIFIED
+        # Some brokers expose server-local epoch values through MT5. Using the
+        # computer clock can therefore create an expiration already in the past
+        # from the trade server's perspective.
+        request["expiration"] = broker_time(symbol) + config.expiration_minutes * 60
     return request
 
 
@@ -550,12 +554,19 @@ def main() -> int:
         log("Discovering broker XAU symbol...")
         symbol = discover_xau_symbol(config.wanted_symbol)
         log(f"Resolved symbol {config.wanted_symbol} -> {symbol}")
-        log("Reading latest closed M1 candle...")
+        log("Reading latest closed M1 candle for the existing SL calculation...")
         candle = latest_closed_m1(symbol)
         candle_time = datetime.fromtimestamp(candle["time"], tz=timezone.utc).isoformat()
-        min_buy_price, max_sell_price = broker_stop_limits(symbol) if config.respect_broker_min_distance else (0.0, float("inf"))
-        buy_base_price = max(candle["high"] + config.buy_first_offset_usd, min_buy_price)
-        sell_base_price = min(candle["low"] - config.sell_first_offset_usd, max_sell_price)
+        log("Capturing fresh MT5 bid/ask for the pending-order anchors...")
+        live_bid, live_ask, live_tick_time = current_live_prices(symbol)
+        live_tick_iso = datetime.fromtimestamp(live_tick_time, tz=timezone.utc).isoformat()
+        min_buy_price, max_sell_price = (
+            broker_stop_limits(symbol, live_bid, live_ask)
+            if config.respect_broker_min_distance
+            else (0.0, float("inf"))
+        )
+        buy_base_price = max(live_ask + config.buy_first_offset_usd, min_buy_price)
+        sell_base_price = min(live_bid - config.sell_first_offset_usd, max_sell_price)
         if config.fixed_lot == "max":
             buy_lot = max_allowed_lot(symbol, "BUY", normalize_price(symbol, buy_base_price))
             sell_lot = max_allowed_lot(symbol, "SELL", normalize_price(symbol, sell_base_price))
@@ -570,15 +581,16 @@ def main() -> int:
         print("============================================================")
         print(f"Account: {account.login} | {account.server} | equity={account.equity:.2f}")
         print(f"Symbol: {config.wanted_symbol} -> {symbol}")
+        print(f"Live MT5 tick: {live_tick_iso} | Bid={live_bid:.3f} Ask={live_ask:.3f}")
         print(f"Latest closed M1 candle: {candle_time}")
         print(f"High={candle['high']:.3f} Low={candle['low']:.3f} Close={candle['close']:.3f}")
         print(f"Side={config.order_side} Lot={lot_label}")
         print(
-            f"BuyStops={config.buy_order_count} above high, firstOffset=${config.buy_first_offset_usd:g}, "
+            f"BuyStops={config.buy_order_count} above live ask, firstOffset=${config.buy_first_offset_usd:g}, "
             f"step=${config.buy_price_diff_usd:g}"
         )
         print(
-            f"SellStops={config.sell_order_count} below low, firstOffset=${config.sell_first_offset_usd:g}, "
+            f"SellStops={config.sell_order_count} below live bid, firstOffset=${config.sell_first_offset_usd:g}, "
             f"step=${config.sell_price_diff_usd:g}"
         )
         print(
@@ -589,10 +601,6 @@ def main() -> int:
         print(
             f"Runner manager={config.manage_runner} trailStart={config.runner_trail_start_r:g}R "
             f"trailDistance={config.runner_trail_distance_r:g}R cancelOpposite={config.cancel_opposite_on_trigger}"
-        )
-        print(
-            f"KEEP_EVERYTHING_OPEN={config.keep_everything_open} "
-            "(when true: no SL/TP, no expiration, no trailing, no opposite-order cancellation)"
         )
         print(f"PLACE_ORDERS={config.place_orders}")
         print("")
