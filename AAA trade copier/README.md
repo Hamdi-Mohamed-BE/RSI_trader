@@ -75,13 +75,14 @@ Open **Copy test** from the navigation or dashboard. Enter one synthetic master 
 - follower state and terminal health;
 - assigned risk profile;
 - master-to-follower symbol mapping;
+- automatic broker-symbol discovery by exact name, prefix/suffix, common alias, and base/profit currencies;
 - follower contract specification and volume step;
 - spread limit;
 - calculated follower volume and cash risk;
 - mapped entry, stop-loss, and take-profit prices;
 - the exact error for every failed follower.
 
-Before running the checks, the diagnostic now starts and logs into managed follower instances and refreshes the requested broker symbol specification. It does not place a broker order. It proves the database routing and risk configuration before the guarded MT5 execution layer is enabled.
+Before running the checks, the diagnostic now starts and logs into managed follower instances and refreshes the requested broker symbol specification. If a broker renames a symbol, such as `XAUUSDm`, the resolved `XAUUSD → XAUUSDm` route is saved automatically and reused by future tests and copier events. The first incoming trade for a new symbol runs the same discovery before routing. The diagnostic does not place a broker order. It proves the database routing and risk configuration before the guarded MT5 execution layer is enabled.
 
 ## MT5 demo integration
 

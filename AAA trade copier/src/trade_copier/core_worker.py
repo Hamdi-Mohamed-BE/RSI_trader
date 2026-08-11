@@ -79,6 +79,7 @@ async def consume_master(
     settings: Settings,
     server: WindowsNamedPipeServer,
     transport: WindowsNamedPipeTransport,
+    terminal_manager: TerminalManager,
 ) -> None:
     while True:
         logger.info("Waiting for master pipe=%s", settings.master_pipe_name)
@@ -91,6 +92,11 @@ async def consume_master(
                 if not isinstance(decoded, SourceTradeMessage):
                     raise ProtocolError("Master pipe accepts only source-trade messages.")
                 with SessionLocal() as session:
+                    terminal_manager.ensure_symbol_routing(
+                        session,
+                        decoded.symbol,
+                        actor="live-symbol-routing",
+                    )
                     core = CopierCore(settings=settings, transport=transport)
                     jobs = await core.process(session, decoded)
                     logger.info(
@@ -103,13 +109,7 @@ async def consume_master(
             await asyncio.sleep(1)
 
 
-async def watchdog(settings: Settings) -> None:
-    vault = build_credential_vault(settings.storage_dir / "vault")
-    terminal_manager = TerminalManager(
-        instances_root=settings.mt5_instances_dir,
-        vault=vault,
-        default_template_path=settings.mt5_template_path,
-    )
+async def watchdog(settings: Settings, terminal_manager: TerminalManager) -> None:
     while True:
         with SessionLocal() as session:
             detect_and_import_running_accounts(session, actor="connection-monitor")
@@ -134,10 +134,16 @@ async def run() -> None:
         )
     server = WindowsNamedPipeServer()
     transport = WindowsNamedPipeTransport(live_execution_permitted=settings.execution_is_permitted)
+    vault = build_credential_vault(settings.storage_dir / "vault")
+    terminal_manager = TerminalManager(
+        instances_root=settings.mt5_instances_dir,
+        vault=vault,
+        default_template_path=settings.mt5_template_path,
+    )
     await asyncio.gather(
         accept_followers(settings, server, transport),
-        consume_master(settings, server, transport),
-        watchdog(settings),
+        consume_master(settings, server, transport, terminal_manager),
+        watchdog(settings, terminal_manager),
     )
 
 

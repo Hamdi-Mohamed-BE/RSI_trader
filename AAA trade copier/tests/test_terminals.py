@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
-from trade_copier.models import Account, AccountSymbolSpec
+from trade_copier.models import Account, AccountSymbolSpec, SymbolMapping
 from trade_copier.services.credentials import MemoryCredentialVault
 from trade_copier.services.terminals import TerminalManager
 
@@ -17,8 +17,14 @@ class FakeMt5:
     ACCOUNT_MARGIN_MODE_RETAIL_HEDGING = 2
     SYMBOL_TRADE_MODE_DISABLED = 0
 
-    def __init__(self, *, login_succeeds: bool = True) -> None:
+    def __init__(
+        self,
+        *,
+        login_succeeds: bool = True,
+        actual_symbol: str = "XAUUSD",
+    ) -> None:
         self.login_succeeds = login_succeeds
+        self.actual_symbol = actual_symbol
         self.initialized_path = ""
         self.login_password = ""
         self.shutdown_called = False
@@ -49,15 +55,18 @@ class FakeMt5:
     def terminal_info() -> SimpleNamespace:
         return SimpleNamespace(connected=True, build=5000, trade_allowed=True)
 
-    @staticmethod
-    def symbol_select(symbol: str, selected: bool) -> bool:
-        return symbol == "XAUUSD" and selected
+    def symbol_select(self, symbol: str, selected: bool) -> bool:
+        return symbol == self.actual_symbol and selected
 
-    @staticmethod
-    def symbol_info(symbol: str) -> SimpleNamespace | None:
-        if symbol != "XAUUSD":
+    def symbol_info(self, symbol: str) -> SimpleNamespace | None:
+        if symbol != self.actual_symbol:
             return None
         return SimpleNamespace(
+            name=self.actual_symbol,
+            currency_base="XAU",
+            currency_profit="USD",
+            visible=True,
+            select=True,
             trade_tick_size=Decimal("0.01"),
             trade_tick_value_loss=Decimal("1"),
             volume_min=Decimal("0.01"),
@@ -67,6 +76,11 @@ class FakeMt5:
             spread=20,
             trade_mode=4,
         )
+
+    def symbols_get(self) -> tuple[SimpleNamespace, ...]:
+        info = self.symbol_info(self.actual_symbol)
+        assert info is not None
+        return (info,)
 
     @staticmethod
     def last_error() -> tuple[int, str]:
@@ -140,3 +154,56 @@ def test_manager_builds_isolated_instance_logs_in_and_syncs_symbol(
 
         manager.remove_instance(account)
         assert not managed_executable.parent.exists()
+
+
+def test_manager_auto_maps_broker_symbol_suffix(
+    client: TestClient,
+    session_factory: sessionmaker[Session],
+    tmp_path: Path,
+) -> None:
+    del client
+    template_dir = tmp_path / "Exness MT5"
+    template_dir.mkdir()
+    template_executable = template_dir / "terminal64.exe"
+    template_executable.write_bytes(b"fake terminal")
+    vault = MemoryCredentialVault()
+    connector = FakeMt5(actual_symbol="XAUUSDm")
+
+    with session_factory() as session:
+        account = Account(
+            display_name="Exness follower",
+            login="472077113",
+            broker_server="Exness-MT5Trial16",
+            role="follower",
+            state="active",
+            credential_ref=vault.store("broker-password"),
+        )
+        session.add(account)
+        session.commit()
+        session.refresh(account)
+        manager = TerminalManager(
+            instances_root=tmp_path / "instances",
+            vault=vault,
+            default_template_path=str(template_executable),
+            mt5_module=connector,
+            platform_name="nt",
+        )
+
+        manager.provision_and_connect(
+            session,
+            account,
+            actor="test",
+            symbol="XAUUSD",
+            master_symbol="XAUUSD",
+        )
+
+        mapping = session.scalar(
+            select(SymbolMapping).where(SymbolMapping.follower_account_id == account.id)
+        )
+        specification = session.scalar(
+            select(AccountSymbolSpec).where(AccountSymbolSpec.account_id == account.id)
+        )
+        assert mapping is not None
+        assert mapping.master_symbol == "XAUUSD"
+        assert mapping.follower_symbol == "XAUUSDm"
+        assert specification is not None and specification.symbol == "XAUUSDm"

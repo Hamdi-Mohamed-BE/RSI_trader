@@ -22,6 +22,20 @@ from .credentials import CredentialVault
 logger = logging.getLogger(__name__)
 ALLOWED_TERMINAL_NAMES = {"terminal.exe", "terminal64.exe"}
 PROJECT_DIR = Path(__file__).resolve().parents[3]
+SYMBOL_ALIASES: dict[str, set[str]] = {
+    "BTCUSD": {"XBTUSD"},
+    "GER40": {"DE40", "DAX", "DAX40"},
+    "NAS100": {"NASDAQ", "NASDAQ100", "NDX", "US100", "USTEC", "USTECH"},
+    "SPX500": {"SP500", "SPX", "US500"},
+    "UK100": {"FTSE", "FTSE100"},
+    "US30": {"DJ30", "DJI", "DOW", "WALLSTREET", "WS30"},
+    "XAGUSD": {"SILVER"},
+    "XAUUSD": {"GOLD"},
+}
+
+
+class SymbolResolutionError(ValueError):
+    pass
 
 
 class TerminalManager:
@@ -244,28 +258,166 @@ class TerminalManager:
                 continue
         return None
 
+    @staticmethod
+    def _normalized_symbol(value: str) -> str:
+        return re.sub(r"[^A-Z0-9]", "", value.upper())
+
+    @classmethod
+    def _symbol_match_score(cls, requested: str, candidate: Any) -> int:
+        target = cls._normalized_symbol(requested)
+        name = cls._normalized_symbol(str(getattr(candidate, "name", "")))
+        if not name:
+            return 0
+        aliases = {target, *SYMBOL_ALIASES.get(target, set())}
+        score = 0
+        for alias in aliases:
+            if name == alias:
+                score = max(score, 1_000)
+            elif name.startswith(alias):
+                score = max(score, 850 - (len(name) - len(alias)))
+            elif name.endswith(alias):
+                score = max(score, 825 - (len(name) - len(alias)))
+            elif alias in name:
+                score = max(score, 750 - (len(name) - len(alias)))
+
+        if len(target) == 6:
+            requested_base = target[:3].replace("XBT", "BTC")
+            requested_profit = target[3:].replace("XBT", "BTC")
+            candidate_base = cls._normalized_symbol(
+                str(getattr(candidate, "currency_base", ""))
+            ).replace("XBT", "BTC")
+            candidate_profit = cls._normalized_symbol(
+                str(getattr(candidate, "currency_profit", ""))
+            ).replace("XBT", "BTC")
+            if (candidate_base, candidate_profit) == (requested_base, requested_profit):
+                score = max(score, 950)
+
+        if bool(getattr(candidate, "visible", False)):
+            score += 10
+        if bool(getattr(candidate, "select", False)):
+            score += 5
+        return score
+
+    @staticmethod
+    def _is_tradable_symbol(connector: Any, info: Any) -> bool:
+        disabled_mode = getattr(connector, "SYMBOL_TRADE_MODE_DISABLED", 0)
+        return getattr(info, "trade_mode", disabled_mode) != disabled_mode
+
+    def _resolve_symbol(self, connector: Any, requested: str) -> tuple[str, Any]:
+        info = connector.symbol_info(requested)
+        if info is not None and self._is_tradable_symbol(connector, info):
+            resolved = str(getattr(info, "name", requested) or requested)
+            if connector.symbol_select(resolved, True) or bool(
+                getattr(info, "select", False)
+            ):
+                return resolved, connector.symbol_info(resolved) or info
+        else:
+            connector.symbol_select(requested, True)
+            info = connector.symbol_info(requested)
+            if info is not None and self._is_tradable_symbol(connector, info):
+                return str(getattr(info, "name", requested) or requested), info
+
+        try:
+            available = connector.symbols_get() or ()
+        except (AttributeError, RuntimeError, TypeError, ValueError):
+            available = ()
+        ranked = sorted(
+            (
+                (self._symbol_match_score(requested, candidate), candidate)
+                for candidate in available
+                if self._is_tradable_symbol(connector, candidate)
+            ),
+            key=lambda item: (
+                item[0],
+                -len(str(getattr(item[1], "name", ""))),
+                str(getattr(item[1], "name", "")),
+            ),
+            reverse=True,
+        )
+        for score, candidate in ranked:
+            if score < 700:
+                break
+            resolved = str(getattr(candidate, "name", ""))
+            if not resolved or not connector.symbol_select(resolved, True):
+                continue
+            resolved_info = connector.symbol_info(resolved)
+            if resolved_info is not None and self._is_tradable_symbol(
+                connector, resolved_info
+            ):
+                return resolved, resolved_info
+        raise SymbolResolutionError(
+            f"No tradable broker symbol matching {requested} was found on this account."
+        )
+
+    @staticmethod
+    def _save_auto_mapping(
+        session: Session,
+        account: Account,
+        master_symbol: str,
+        follower_symbol: str,
+        *,
+        actor: str,
+    ) -> None:
+        master_symbol = master_symbol.strip().upper()
+        mapping = session.scalar(
+            select(SymbolMapping).where(
+                SymbolMapping.follower_account_id == account.id,
+                SymbolMapping.master_symbol == master_symbol,
+            )
+        )
+        previous_symbol = mapping.follower_symbol if mapping else ""
+        if mapping is None:
+            mapping = SymbolMapping(
+                follower_account_id=account.id,
+                master_symbol=master_symbol,
+                follower_symbol=follower_symbol,
+            )
+        mapping.follower_symbol = follower_symbol
+        mapping.enabled = True
+        session.add(mapping)
+        if previous_symbol != follower_symbol:
+            record_audit(
+                session,
+                actor=actor,
+                action="symbol_mapping.auto_detected",
+                target_type="account",
+                target_id=account.id,
+                message=(
+                    f"Automatically mapped {master_symbol} to {follower_symbol} for "
+                    f"{account.display_name}."
+                ),
+                details={
+                    "master_symbol": master_symbol,
+                    "follower_symbol": follower_symbol,
+                },
+            )
+
     def _sync_symbol(
         self,
         session: Session,
         account: Account,
         connector: Any,
         symbol: str,
-    ) -> None:
-        info = connector.symbol_info(symbol)
-        if info is None:
-            connector.symbol_select(symbol, True)
-            info = connector.symbol_info(symbol)
-        if info is None:
-            raise ValueError(f"Symbol {symbol} is unavailable on {account.broker_server}.")
+        fallback_symbol: str | None = None,
+    ) -> str:
+        try:
+            resolved_symbol, info = self._resolve_symbol(connector, symbol)
+        except ValueError:
+            if not fallback_symbol or fallback_symbol.upper() == symbol.upper():
+                raise
+            resolved_symbol, info = self._resolve_symbol(connector, fallback_symbol)
 
         specification = session.scalar(
             select(AccountSymbolSpec).where(
                 AccountSymbolSpec.account_id == account.id,
-                AccountSymbolSpec.symbol == symbol,
+                AccountSymbolSpec.symbol == resolved_symbol,
             )
         )
         if specification is None:
-            specification = AccountSymbolSpec(account_id=account.id, symbol=symbol)
+            specification = AccountSymbolSpec(
+                account_id=account.id,
+                symbol=resolved_symbol,
+            )
         specification.tick_size = self._decimal_attribute(info, "trade_tick_size", "point")
         specification.tick_value = self._decimal_attribute(
             info,
@@ -281,6 +433,7 @@ class TerminalManager:
         disabled_mode = getattr(connector, "SYMBOL_TRADE_MODE_DISABLED", 0)
         specification.trading_enabled = getattr(info, "trade_mode", disabled_mode) != disabled_mode
         session.add(specification)
+        return resolved_symbol
 
     def _mark_failure(
         self,
@@ -306,6 +459,30 @@ class TerminalManager:
         )
         session.commit()
 
+    @staticmethod
+    def _mark_symbol_failure(
+        session: Session,
+        account: Account,
+        message: str,
+        *,
+        actor: str,
+    ) -> None:
+        terminal = account.terminal or TerminalInstance(account_id=account.id)
+        terminal.health = TerminalHealth.HEALTHY.value
+        terminal.last_error = message
+        account.health = TerminalHealth.HEALTHY.value
+        session.add(terminal)
+        record_audit(
+            session,
+            actor=actor,
+            action="symbol_mapping.auto_detect_failed",
+            target_type="account",
+            target_id=account.id,
+            severity=AuditSeverity.WARNING,
+            message=message,
+        )
+        session.commit()
+
     def connect(
         self,
         session: Session,
@@ -313,6 +490,7 @@ class TerminalManager:
         *,
         actor: str,
         symbol: str | None = None,
+        master_symbol: str | None = None,
     ) -> TerminalInstance:
         """Start the account's terminal and log in through the MT5 API."""
         self._require_windows()
@@ -387,8 +565,23 @@ class TerminalManager:
             terminal.last_error = ""
             terminal.last_seen_at = now
             session.add(terminal)
+            resolved_symbol = ""
             if symbol:
-                self._sync_symbol(session, account, connector, symbol)
+                resolved_symbol = self._sync_symbol(
+                    session,
+                    account,
+                    connector,
+                    symbol,
+                    master_symbol,
+                )
+                if master_symbol and account.role == AccountRole.FOLLOWER.value:
+                    self._save_auto_mapping(
+                        session,
+                        account,
+                        master_symbol,
+                        resolved_symbol,
+                        actor=actor,
+                    )
             record_audit(
                 session,
                 actor=actor,
@@ -396,11 +589,19 @@ class TerminalManager:
                 target_type="account",
                 target_id=account.id,
                 message=f"Managed MT5 logged into {account.masked_login}.",
-                details={"process_id": terminal.process_id, "symbol": symbol or ""},
+                details={
+                    "process_id": terminal.process_id,
+                    "requested_symbol": symbol or "",
+                    "resolved_symbol": resolved_symbol,
+                },
             )
             session.commit()
             session.refresh(terminal)
             return terminal
+        except SymbolResolutionError as exc:
+            message = f"Automatic symbol discovery failed: {exc!s}"
+            self._mark_symbol_failure(session, account, message, actor=actor)
+            raise ValueError(message) from exc
         except (OSError, RuntimeError, TypeError, ValueError) as exc:
             message = f"Automatic MT5 connection failed: {exc!s}"
             self._mark_failure(session, account, message, actor=actor)
@@ -417,6 +618,7 @@ class TerminalManager:
         actor: str,
         template_path: str = "",
         symbol: str | None = None,
+        master_symbol: str | None = None,
     ) -> TerminalInstance:
         try:
             self.provision(session, account, actor=actor, template_path=template_path)
@@ -424,7 +626,13 @@ class TerminalManager:
             message = f"Automatic MT5 instance build failed: {exc!s}"
             self._mark_failure(session, account, message, actor=actor)
             raise ValueError(message) from exc
-        return self.connect(session, account, actor=actor, symbol=symbol)
+        return self.connect(
+            session,
+            account,
+            actor=actor,
+            symbol=symbol,
+            master_symbol=master_symbol,
+        )
 
     def start(self, session: Session, account: Account, *, actor: str) -> TerminalInstance:
         """Compatibility action: build when needed, then start and log in."""
@@ -472,13 +680,73 @@ class TerminalManager:
                         actor=actor,
                         template_path=account.terminal_path,
                         symbol=follower_symbol,
+                        master_symbol=symbol,
                     )
                 else:
-                    self.connect(session, account, actor=actor, symbol=follower_symbol)
+                    self.connect(
+                        session,
+                        account,
+                        actor=actor,
+                        symbol=follower_symbol,
+                        master_symbol=symbol,
+                    )
             except (OSError, RuntimeError, ValueError) as exc:
                 logger.warning(
                     "MT5 copy-test preparation failed account=%s error=%s",
                     account.id,
+                    exc,
+                )
+
+    def ensure_symbol_routing(self, session: Session, symbol: str, *, actor: str) -> None:
+        """Discover and persist missing follower symbol mappings before live routing."""
+        followers = session.scalars(
+            select(Account).where(
+                Account.role == AccountRole.FOLLOWER.value,
+                Account.state == AccountState.ACTIVE.value,
+                Account.is_master.is_(False),
+            )
+        ).all()
+        for account in followers:
+            mapping = session.scalar(
+                select(SymbolMapping).where(
+                    SymbolMapping.follower_account_id == account.id,
+                    SymbolMapping.master_symbol == symbol,
+                    SymbolMapping.enabled.is_(True),
+                )
+            )
+            follower_symbol = mapping.follower_symbol if mapping else symbol
+            specification = session.scalar(
+                select(AccountSymbolSpec).where(
+                    AccountSymbolSpec.account_id == account.id,
+                    AccountSymbolSpec.symbol == follower_symbol,
+                    AccountSymbolSpec.trading_enabled.is_(True),
+                )
+            )
+            if specification is not None:
+                continue
+            try:
+                if account.credential_ref and not self._has_managed_executable(account):
+                    self.provision_and_connect(
+                        session,
+                        account,
+                        actor=actor,
+                        template_path=account.terminal_path,
+                        symbol=follower_symbol,
+                        master_symbol=symbol,
+                    )
+                else:
+                    self.connect(
+                        session,
+                        account,
+                        actor=actor,
+                        symbol=follower_symbol,
+                        master_symbol=symbol,
+                    )
+            except (OSError, RuntimeError, ValueError) as exc:
+                logger.warning(
+                    "Automatic symbol routing failed account=%s symbol=%s error=%s",
+                    account.id,
+                    symbol,
                     exc,
                 )
 
