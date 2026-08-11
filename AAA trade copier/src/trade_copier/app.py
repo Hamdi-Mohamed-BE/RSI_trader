@@ -13,7 +13,8 @@ from .config import Settings, get_settings
 from .database import SessionLocal, create_schema, engine
 from .routers import api, auth, web
 from .services.auth import bootstrap_admin
-from .services.demo import seed_demo
+from .services.demo_cleanup import remove_legacy_demo_seed
+from .services.mt5_discovery import detect_and_import_running_accounts
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 
@@ -33,8 +34,9 @@ def create_app(
         create_schema(selected_engine)
         with selected_factory() as session:
             bootstrap_admin(session, active_settings)
-            if active_settings.demo_mode:
-                seed_demo(session)
+            remove_legacy_demo_seed(session)
+            if active_settings.auto_detect_mt5 and active_settings.app_env != "test":
+                detect_and_import_running_accounts(session, actor="startup")
         yield
 
     application = FastAPI(

@@ -34,6 +34,22 @@ class AccountCreate(BaseModel):
         return str(path)
 
 
+class AccountUpdate(BaseModel):
+    display_name: str = Field(min_length=2, max_length=120)
+    broker_server: str = Field(min_length=2, max_length=160)
+    terminal_path: str = Field(default="", max_length=500)
+    role: AccountRole
+    state: AccountState
+    trade_mode: str = Field(max_length=32)
+    position_mode: str = Field(max_length=32)
+    risk_profile_id: str | None = None
+
+    @field_validator("terminal_path")
+    @classmethod
+    def validate_terminal_path(cls, value: str) -> str:
+        return AccountCreate.validate_terminal_path(value)
+
+
 class RiskProfileCreate(BaseModel):
     name: str = Field(min_length=2, max_length=120)
     mode: RiskMode = RiskMode.STOP_PERCENT

@@ -19,12 +19,19 @@ from ..models import (
     SourceTradeEvent,
     SymbolMapping,
 )
-from ..schemas import AccountCreate, RiskProfileCreate, SymbolMappingCreate
+from ..schemas import AccountCreate, AccountUpdate, RiskProfileCreate, SymbolMappingCreate
 from ..security import validate_csrf
-from ..services.accounts import create_account, ensure_system_state, select_master, set_global_pause
+from ..services.accounts import (
+    create_account,
+    delete_account,
+    ensure_system_state,
+    select_master,
+    set_global_pause,
+    update_account,
+)
 from ..services.audit import record_audit
-from ..services.credentials import WindowsDpapiVault
-from ..services.demo import simulate_market_trade
+from ..services.credentials import build_credential_vault
+from ..services.mt5_discovery import detect_and_import_running_accounts
 from ..services.terminals import TerminalManager
 from ..templating import page_context, templates
 
@@ -102,27 +109,6 @@ def unpause_system(
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
-@router.post("/demo/simulate", name="demo-simulate")
-async def demo_simulate(
-    request: Request,
-    csrf: Annotated[str, Form()],
-    session: Annotated[Session, Depends(request_session)],
-) -> Response:
-    user = _user(request, session)
-    validate_csrf(request, csrf)
-    if not request.app.state.settings.demo_mode:
-        return RedirectResponse("/?error=Demo+mode+is+disabled", status_code=303)
-    await simulate_market_trade(session, request.app.state.settings)
-    record_audit(
-        session,
-        actor=user.email,
-        action="demo.trade_simulated",
-        message="Administrator simulated a safe XAUUSD market event.",
-    )
-    session.commit()
-    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
-
-
 @router.get("/accounts", name="accounts")
 def accounts_page(
     request: Request, session: Annotated[Session, Depends(request_session)]
@@ -155,15 +141,15 @@ def account_create(
     display_name: Annotated[str, Form()],
     login: Annotated[str, Form()],
     broker_server: Annotated[str, Form()],
-    terminal_path: Annotated[str, Form()],
     role: Annotated[str, Form()],
     state: Annotated[str, Form()],
     trade_mode: Annotated[str, Form()],
     position_mode: Annotated[str, Form()],
-    risk_profile_id: Annotated[str, Form()],
-    mt5_password: Annotated[str, Form()],
     csrf: Annotated[str, Form()],
     session: Annotated[Session, Depends(request_session)],
+    terminal_path: Annotated[str, Form()] = "",
+    risk_profile_id: Annotated[str, Form()] = "",
+    mt5_password: Annotated[str, Form()] = "",
 ) -> Response:
     user = _user(request, session)
     validate_csrf(request, csrf)
@@ -180,11 +166,90 @@ def account_create(
             risk_profile_id=risk_profile_id or None,
             password=mt5_password,
         )
-        vault = WindowsDpapiVault(request.app.state.settings.storage_dir / "vault")
+        vault = build_credential_vault(request.app.state.settings.storage_dir / "vault")
         create_account(session, data, vault=vault, actor=user.email)
     except (ValidationError, ValueError, RuntimeError) as exc:
         return RedirectResponse(f"/accounts?error={exc!s}", status_code=303)
     return RedirectResponse("/accounts", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@router.post("/accounts/discover", name="account-discover")
+def account_discover(
+    request: Request,
+    csrf: Annotated[str, Form()],
+    session: Annotated[Session, Depends(request_session)],
+) -> Response:
+    user = _user(request, session)
+    validate_csrf(request, csrf)
+    accounts = detect_and_import_running_accounts(session, actor=user.email)
+    if not accounts:
+        return RedirectResponse(
+            "/accounts?error=No+running+and+logged-in+MT5+terminal+was+detected",
+            status_code=303,
+        )
+    return RedirectResponse(
+        f"/accounts?notice=Detected+{len(accounts)}+MT5+account(s)", status_code=303
+    )
+
+
+@router.post("/accounts/{account_id}/update", name="account-update")
+def account_update(
+    account_id: str,
+    request: Request,
+    display_name: Annotated[str, Form()],
+    broker_server: Annotated[str, Form()],
+    role: Annotated[str, Form()],
+    state: Annotated[str, Form()],
+    trade_mode: Annotated[str, Form()],
+    position_mode: Annotated[str, Form()],
+    csrf: Annotated[str, Form()],
+    session: Annotated[Session, Depends(request_session)],
+    terminal_path: Annotated[str, Form()] = "",
+    risk_profile_id: Annotated[str, Form()] = "",
+) -> Response:
+    user = _user(request, session)
+    validate_csrf(request, csrf)
+    account = session.get(Account, account_id)
+    if account is None:
+        return RedirectResponse("/accounts?error=Account+not+found", status_code=303)
+    try:
+        data = AccountUpdate(
+            display_name=display_name,
+            broker_server=broker_server,
+            terminal_path=terminal_path,
+            role=AccountRole(role),
+            state=AccountState(state),
+            trade_mode=trade_mode,
+            position_mode=position_mode,
+            risk_profile_id=risk_profile_id or None,
+        )
+        update_account(session, account, data, actor=user.email)
+    except (ValidationError, ValueError) as exc:
+        return RedirectResponse(f"/accounts?error={exc!s}", status_code=303)
+    return RedirectResponse("/accounts?notice=Account+updated", status_code=303)
+
+
+@router.post("/accounts/{account_id}/delete", name="account-delete")
+def account_delete(
+    account_id: str,
+    request: Request,
+    csrf: Annotated[str, Form()],
+    confirmation: Annotated[str, Form()],
+    session: Annotated[Session, Depends(request_session)],
+) -> Response:
+    user = _user(request, session)
+    validate_csrf(request, csrf)
+    if confirmation.strip().upper() != "DELETE":
+        return RedirectResponse("/accounts?error=Type+DELETE+to+confirm", status_code=303)
+    account = session.get(Account, account_id)
+    if account is None:
+        return RedirectResponse("/accounts?error=Account+not+found", status_code=303)
+    vault = build_credential_vault(request.app.state.settings.storage_dir / "vault")
+    try:
+        delete_account(session, account, vault=vault, actor=user.email)
+    except (RuntimeError, ValueError) as exc:
+        return RedirectResponse(f"/accounts?error={exc!s}", status_code=303)
+    return RedirectResponse("/accounts?notice=Account+deleted", status_code=303)
 
 
 @router.post("/accounts/{account_id}/terminal/start", name="account-terminal-start")

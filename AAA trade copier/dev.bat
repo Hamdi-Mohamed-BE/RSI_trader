@@ -17,7 +17,6 @@ if /I "%AAA_COMMAND%"=="core" goto core
 if /I "%AAA_COMMAND%"=="start" goto start
 if /I "%AAA_COMMAND%"=="create-admin" goto create_admin
 if /I "%AAA_COMMAND%"=="init-db" goto init_db
-if /I "%AAA_COMMAND%"=="seed-demo" goto seed_demo
 if /I "%AAA_COMMAND%"=="css" goto css
 if /I "%AAA_COMMAND%"=="compile-mt5" goto compile_mt5
 if /I "%AAA_COMMAND%"=="test" goto test
@@ -38,9 +37,8 @@ if errorlevel 1 (
   call npm.cmd run build || exit /b 1
 )
 uv run aaa-trade-copier init-db || exit /b 1
-uv run aaa-trade-copier seed-demo || exit /b 1
 echo.
-echo Setup is ready. Run: dev.bat create-admin
+echo Setup is ready with an empty trading database. Run: dev.bat create-admin
 exit /b 0
 
 :web
@@ -67,10 +65,6 @@ exit /b %errorlevel%
 
 :init_db
 uv run aaa-trade-copier init-db
-exit /b %errorlevel%
-
-:seed_demo
-uv run aaa-trade-copier seed-demo
 exit /b %errorlevel%
 
 :css
@@ -112,7 +106,7 @@ exit /b %errorlevel%
 :help
 echo AAA Trade Copier development commands
 echo.
-echo   dev.bat setup         Install dependencies and initialize safe demo data
+echo   dev.bat setup         Install dependencies and initialize an empty database
 echo   dev.bat create-admin  Create a dashboard administrator interactively
 echo   dev.bat start         Start the web dashboard and monitor in two windows
 echo   dev.bat web           Start only the web dashboard
@@ -121,6 +115,6 @@ echo   dev.bat test          Run the automated tests
 echo   dev.bat check         Run lint, type, and test checks
 echo   dev.bat css           Rebuild Tailwind CSS
 echo   dev.bat compile-mt5   Compile both MQL5 integration agents
-echo   dev.bat docker-up     Run the demo control plane in Docker
+echo   dev.bat docker-up     Run the web control plane in Docker
 echo   dev.bat docker-down   Stop the Docker demo
 exit /b 1

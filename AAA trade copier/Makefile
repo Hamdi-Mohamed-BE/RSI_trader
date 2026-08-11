@@ -5,7 +5,6 @@ setup:
 	npm install
 	npm run build
 	uv run aaa-trade-copier init-db
-	uv run aaa-trade-copier seed-demo
 
 web:
 	uv run aaa-trade-copier-web

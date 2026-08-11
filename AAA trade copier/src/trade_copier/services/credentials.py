@@ -114,3 +114,24 @@ class MemoryCredentialVault:
 
     def delete(self, reference: str) -> None:
         self.values.pop(reference, None)
+
+
+class SessionOnlyCredentialVault:
+    """Allows password-free account management where Windows DPAPI is unavailable."""
+
+    def store(self, secret: str) -> str:
+        del secret
+        raise RuntimeError("Storing MT5 passwords requires the native Windows application.")
+
+    def retrieve(self, reference: str) -> str:
+        del reference
+        raise RuntimeError("MT5 credentials are unavailable on this platform.")
+
+    def delete(self, reference: str) -> None:
+        del reference
+
+
+def build_credential_vault(vault_dir: Path) -> CredentialVault:
+    if os.name == "nt":
+        return WindowsDpapiVault(vault_dir)
+    return SessionOnlyCredentialVault()

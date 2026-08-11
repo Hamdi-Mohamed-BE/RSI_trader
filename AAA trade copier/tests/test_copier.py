@@ -11,6 +11,7 @@ from trade_copier.domain.enums import Side, TradeAction
 from trade_copier.domain.messages import SourceTradeMessage
 from trade_copier.models import Account, CopyJob, SourceTradeEvent
 from trade_copier.services.copier import CopierCore
+from trade_copier.services.demo import seed_demo
 from trade_copier.transport.base import TransportRouter
 from trade_copier.transport.memory import DemoFollowerTransport, RejectingTransport
 
@@ -23,6 +24,7 @@ async def test_duplicate_source_event_never_dispatches_twice(
 ) -> None:
     del client
     with session_factory() as session:
+        seed_demo(session)
         master = session.scalar(select(Account).where(Account.is_master.is_(True)))
         assert master is not None
         followers = session.scalars(

@@ -1,34 +1,110 @@
 {% extends "base.html" %}
 {% block title %}Accounts · {{ app_name }}{% endblock %}
 {% block content %}
-<p class="eyebrow">Terminal network</p><h1 class="page-title">Accounts and master selection</h1><p class="page-copy">Each account uses a dedicated portable terminal. Changing the master always returns the system to a paused monitor state.</p>
-
-<section class="mt-8 grid gap-4 xl:grid-cols-2">
-{% for account in accounts %}
-<article class="surface">
-    <div class="surface-header"><div><p class="eyebrow">{{ account.role|replace('_',' ') }}</p><h2 class="section-title">{{ account.display_name }}</h2></div>{% if account.is_master %}<span class="badge border-violet text-violet">Active master</span>{% else %}<span class="badge">{{ account.state }}</span>{% endif %}</div>
-    <dl class="mt-5 grid grid-cols-2 gap-4 text-sm"><div><dt class="data-label">Login</dt><dd>{{ account.masked_login }}</dd></div><div><dt class="data-label">Broker</dt><dd>{{ account.broker_server }}</dd></div><div><dt class="data-label">Health</dt><dd>{{ account.health }}</dd></div><div><dt class="data-label">Risk</dt><dd>{{ account.risk_profile.name if account.risk_profile else 'Not assigned' }}</dd></div><div><dt class="data-label">Mode</dt><dd>{{ account.trade_mode }} / {{ account.position_mode }}</dd></div><div><dt class="data-label">Terminal</dt><dd>{% if account.terminal and account.terminal.process_id %}PID {{ account.terminal.process_id }}{% elif account.terminal_path %}Ready to start{% else %}Not configured{% endif %}</dd></div><div class="col-span-2"><dt class="data-label">EA pipe</dt><dd class="break-all font-mono text-xs">{{ pipe_prefix }}_{{ account.id if account.role == 'follower' else 'not-used' }}</dd></div></dl>
-    {% if account.role == 'master_candidate' and not account.is_master %}<form class="mt-5 flex gap-2" method="post" action="/accounts/{{ account.id }}/master" hx-boost="false"><input type="hidden" name="csrf" value="{{ csrf_token }}"><input class="field" name="confirmation" placeholder="Type MASTER" required><button class="button-secondary" type="submit">Select master</button></form>{% endif %}
-    {% if account.terminal_path and not account.terminal %}<form class="mt-3 flex gap-2" method="post" action="/accounts/{{ account.id }}/terminal/start" hx-boost="false"><input type="hidden" name="csrf" value="{{ csrf_token }}"><input class="field" name="confirmation" placeholder="Type START" required><button class="button-secondary" type="submit">Start portable MT5</button></form>{% endif %}
-</article>
-{% endfor %}
+<section class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+    <div>
+        <p class="eyebrow">MT5 terminal network</p>
+        <h1 class="page-title">Accounts and master selection</h1>
+        <p class="page-copy">Detect terminals already running on this Windows machine or add another broker account manually. The first detected connected account becomes the paused master automatically.</p>
+    </div>
+    <form method="post" action="/accounts/discover" hx-boost="false">
+        <input type="hidden" name="csrf" value="{{ csrf_token }}">
+        <button class="button-primary" type="submit">Detect connected MT5</button>
+    </form>
 </section>
 
-<section class="surface mt-6">
-    <div><p class="eyebrow">Secure onboarding</p><h2 class="section-title">Add account</h2><p class="mt-2 text-sm text-muted">MT5 passwords are encrypted with Windows DPAPI into a user-bound vault file. SQLite stores only the opaque reference.</p></div>
+<section class="surface mt-8">
+    <div class="surface-header">
+        <div>
+            <p class="eyebrow">Add another account</p>
+            <h2 class="section-title">Manual account onboarding</h2>
+            <p class="mt-2 text-sm leading-6 text-muted">Use this when the MT5 terminal is not currently running. A saved MT5 session is preferred; passwords are optional and encrypted with Windows DPAPI.</p>
+        </div>
+        <span class="badge">{{ accounts|length }} configured</span>
+    </div>
     <form class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4" method="post" action="/accounts" hx-boost="false">
         <input type="hidden" name="csrf" value="{{ csrf_token }}">
-        <label class="field-label">Display name<input class="field" name="display_name" required></label>
+        <label class="field-label">Display name<input class="field" name="display_name" placeholder="My follower account" required></label>
         <label class="field-label">MT5 login<input class="field" name="login" inputmode="numeric" required></label>
-        <label class="field-label">Broker server<input class="field" name="broker_server" required></label>
-        <label class="field-label">Terminal executable<input class="field" name="terminal_path" placeholder="C:\...\terminal64.exe"></label>
-        <label class="field-label">Role<select class="field" name="role">{% for role in roles %}<option value="{{ role.value }}">{{ role.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
-        <label class="field-label">State<select class="field" name="state">{% for state in states %}<option value="{{ state.value }}">{{ state.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
-        <label class="field-label">Trade mode<select class="field" name="trade_mode"><option>demo</option><option>live</option></select></label>
-        <label class="field-label">Position mode<select class="field" name="position_mode"><option>hedging</option><option>netting</option></select></label>
-        <label class="field-label">Risk profile<select class="field" name="risk_profile_id"><option value="">None</option>{% for profile in profiles %}<option value="{{ profile.id }}">{{ profile.name }}</option>{% endfor %}</select></label>
-        <label class="field-label md:col-span-2">MT5 password (optional)<input class="field" type="password" name="mt5_password" autocomplete="new-password"><small>Prefer an MT5-saved session; secrets never return to the browser.</small></label>
-        <div class="flex items-end"><button class="button-primary w-full" type="submit">Add isolated account</button></div>
+        <label class="field-label">Broker server<input class="field" name="broker_server" placeholder="Broker-Demo" required></label>
+        <label class="field-label">Terminal executable<input class="field" name="terminal_path" placeholder="C:\MT5-Follower\terminal64.exe"></label>
+        <label class="field-label">Role<select class="field" name="role">{% for role in roles %}<option value="{{ role.value }}" {% if role.value == 'follower' %}selected{% endif %}>{{ role.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
+        <label class="field-label">State<select class="field" name="state">{% for item in states %}<option value="{{ item.value }}" {% if item.value == 'paused' %}selected{% endif %}>{{ item.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
+        <label class="field-label">Trade mode<select class="field" name="trade_mode"><option value="demo">Demo</option><option value="live">Live</option></select></label>
+        <label class="field-label">Position mode<select class="field" name="position_mode"><option value="hedging">Hedging</option><option value="netting">Netting</option></select></label>
+        <label class="field-label">Risk profile<select class="field" name="risk_profile_id"><option value="">Assign later</option>{% for profile in profiles %}<option value="{{ profile.id }}">{{ profile.name }}</option>{% endfor %}</select></label>
+        <label class="field-label md:col-span-2">MT5 password (optional)<input class="field" type="password" name="mt5_password" autocomplete="new-password"><small>Never returned to the browser or written to SQLite.</small></label>
+        <div class="flex items-end"><button class="button-primary w-full" type="submit">Add account</button></div>
     </form>
+</section>
+
+<section class="mt-8">
+    <div class="flex items-end justify-between gap-4">
+        <div><p class="eyebrow">Configured accounts</p><h2 class="section-title">Master and followers</h2></div>
+        <p class="text-sm text-muted">Newly discovered followers start paused.</p>
+    </div>
+    <div class="mt-4 grid gap-4 xl:grid-cols-2">
+    {% for account in accounts %}
+    <article class="surface">
+        <div class="surface-header">
+            <div>
+                <p class="eyebrow">{{ account.role|replace('_',' ') }}</p>
+                <h3 class="section-title">{{ account.display_name }}</h3>
+                <p class="mt-1 text-xs text-muted">{{ account.masked_login }} · {{ account.broker_server }}</p>
+            </div>
+            {% if account.is_master %}<span class="badge border-violet text-violet">Active master</span>{% else %}<span class="badge">{{ account.state }}</span>{% endif %}
+        </div>
+
+        <dl class="mt-5 grid grid-cols-2 gap-4 text-sm">
+            <div><dt class="data-label">Connection</dt><dd class="mt-1">{{ account.health }}</dd></div>
+            <div><dt class="data-label">Equity</dt><dd class="mt-1">{{ account.equity }} {{ account.account_currency }}</dd></div>
+            <div><dt class="data-label">Risk</dt><dd class="mt-1">{{ account.risk_profile.name if account.risk_profile else 'Not assigned' }}</dd></div>
+            <div><dt class="data-label">Mode</dt><dd class="mt-1">{{ account.trade_mode }} / {{ account.position_mode }}</dd></div>
+            <div><dt class="data-label">Terminal</dt><dd class="mt-1">{% if account.terminal and account.terminal.process_id %}Running · PID {{ account.terminal.process_id }}{% elif account.terminal_path %}Configured{% else %}Not configured{% endif %}</dd></div>
+            <div><dt class="data-label">Credential</dt><dd class="mt-1">{{ 'DPAPI vault' if account.credential_ref else 'MT5 saved session' }}</dd></div>
+            <div class="col-span-2"><dt class="data-label">EA identity</dt><dd class="mt-1 break-all font-mono text-xs">UUID {{ account.id }}</dd>{% if account.role == 'follower' %}<dd class="mt-1 break-all font-mono text-xs text-muted">Pipe {{ pipe_prefix }}_{{ account.id }}</dd>{% endif %}</div>
+        </dl>
+
+        <div class="mt-5 flex flex-wrap gap-2">
+            {% if account.role == 'master_candidate' and not account.is_master %}
+            <form class="flex gap-2" method="post" action="/accounts/{{ account.id }}/master" hx-boost="false"><input type="hidden" name="csrf" value="{{ csrf_token }}"><input class="field max-w-36" name="confirmation" placeholder="Type MASTER" required><button class="button-secondary" type="submit">Make master</button></form>
+            {% endif %}
+            {% if account.terminal_path and (not account.terminal or account.terminal.health == 'offline') %}
+            <form class="flex gap-2" method="post" action="/accounts/{{ account.id }}/terminal/start" hx-boost="false"><input type="hidden" name="csrf" value="{{ csrf_token }}"><input class="field max-w-32" name="confirmation" placeholder="Type START" required><button class="button-secondary" type="submit">Start MT5</button></form>
+            {% endif %}
+        </div>
+
+        <details class="mt-5 rounded-xl border border-line bg-void/40 p-4">
+            <summary class="cursor-pointer font-mono text-xs font-bold uppercase tracking-[0.1em] text-cyan">Edit and manage</summary>
+            <form class="mt-5 grid gap-4 md:grid-cols-2" method="post" action="/accounts/{{ account.id }}/update" hx-boost="false">
+                <input type="hidden" name="csrf" value="{{ csrf_token }}">
+                <label class="field-label">Display name<input class="field" name="display_name" value="{{ account.display_name }}" required></label>
+                <label class="field-label">Broker server<input class="field" name="broker_server" value="{{ account.broker_server }}" required></label>
+                <label class="field-label md:col-span-2">Terminal executable<input class="field" name="terminal_path" value="{{ account.terminal_path }}"></label>
+                <label class="field-label">Role<select class="field" name="role">{% for role in roles %}<option value="{{ role.value }}" {% if account.role == role.value %}selected{% endif %}>{{ role.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
+                <label class="field-label">State<select class="field" name="state">{% for item in states %}<option value="{{ item.value }}" {% if account.state == item.value %}selected{% endif %}>{{ item.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
+                <label class="field-label">Trade mode<select class="field" name="trade_mode"><option value="demo" {% if account.trade_mode == 'demo' %}selected{% endif %}>Demo</option><option value="live" {% if account.trade_mode == 'live' %}selected{% endif %}>Live</option></select></label>
+                <label class="field-label">Position mode<select class="field" name="position_mode"><option value="hedging" {% if account.position_mode == 'hedging' %}selected{% endif %}>Hedging</option><option value="netting" {% if account.position_mode == 'netting' %}selected{% endif %}>Netting</option></select></label>
+                <label class="field-label md:col-span-2">Risk profile<select class="field" name="risk_profile_id"><option value="">None</option>{% for profile in profiles %}<option value="{{ profile.id }}" {% if account.risk_profile_id == profile.id %}selected{% endif %}>{{ profile.name }}</option>{% endfor %}</select></label>
+                <div class="md:col-span-2"><button class="button-primary" type="submit">Save account</button></div>
+            </form>
+            <form class="mt-6 flex flex-col gap-3 border-t border-line pt-5 sm:flex-row" method="post" action="/accounts/{{ account.id }}/delete" hx-boost="false">
+                <input type="hidden" name="csrf" value="{{ csrf_token }}">
+                <input class="field max-w-48" name="confirmation" placeholder="Type DELETE" required>
+                <button class="button-danger" type="submit">Delete account</button>
+                <p class="self-center text-xs text-muted">Accounts with trade history must be disabled instead.</p>
+            </form>
+        </details>
+    </article>
+    {% else %}
+    <article class="surface xl:col-span-2">
+        <div class="mx-auto max-w-xl py-12 text-center">
+            <p class="eyebrow">Fresh workspace</p>
+            <h3 class="mt-3 text-2xl font-black">No MT5 accounts configured</h3>
+            <p class="mt-3 leading-7 text-muted">Start and log into your main MT5 terminal, then press <strong class="text-white">Detect connected MT5</strong>. Or use the manual form above to add followers one by one.</p>
+        </div>
+    </article>
+    {% endfor %}
+    </div>
 </section>
 {% endblock %}

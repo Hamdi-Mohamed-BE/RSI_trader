@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, sessionmaker
 
-from trade_copier.models import Account, CopyJob
+from trade_copier.models import Account
 
 from .conftest import extract_csrf
 
@@ -53,36 +53,86 @@ def test_authenticated_pages_render(logged_in_client: TestClient) -> None:
         assert expected in response.text
 
 
-def test_demo_simulation_creates_two_filled_jobs(
+def test_fresh_workspace_has_no_trading_accounts(
+    client: TestClient,
+    session_factory: sessionmaker[Session],
+) -> None:
+    del client
+    with session_factory() as session:
+        assert session.scalar(select(func.count(Account.id))) == 0
+
+
+def test_account_page_exposes_discovery_and_manual_onboarding(
+    logged_in_client: TestClient,
+) -> None:
+    response = logged_in_client.get("/accounts")
+    assert "Detect connected MT5" in response.text
+    assert "Add another account" in response.text
+    assert "No MT5 accounts configured" in response.text
+
+
+def test_manual_account_can_be_created_updated_and_deleted(
     logged_in_client: TestClient,
     session_factory: sessionmaker[Session],
 ) -> None:
-    page = logged_in_client.get("/")
+    page = logged_in_client.get("/accounts")
     response = logged_in_client.post(
-        "/demo/simulate",
-        data={"csrf": extract_csrf(page.text)},
+        "/accounts",
+        data={
+            "csrf": extract_csrf(page.text),
+            "display_name": "Follower One",
+            "login": "900001",
+            "broker_server": "Broker-Demo",
+            "terminal_path": "",
+            "role": "follower",
+            "state": "paused",
+            "trade_mode": "demo",
+            "position_mode": "hedging",
+            "risk_profile_id": "",
+            "mt5_password": "",
+        },
         follow_redirects=False,
     )
     assert response.status_code == 303
     with session_factory() as session:
-        assert session.scalar(select(func.count(CopyJob.id))) == 2
-        jobs = session.scalars(select(CopyJob).order_by(CopyJob.requested_volume)).all()
-        assert [str(job.requested_volume) for job in jobs] == ["0.1000", "0.2500"]
-        assert {job.status for job in jobs} == {"filled"}
+        account = session.scalar(select(Account).where(Account.login == "900001"))
+        assert account is not None
+        account_id = account.id
+
+    page = logged_in_client.get("/accounts")
+    response = logged_in_client.post(
+        f"/accounts/{account_id}/update",
+        data={
+            "csrf": extract_csrf(page.text),
+            "display_name": "Follower Renamed",
+            "broker_server": "Broker-Demo",
+            "terminal_path": "",
+            "role": "follower",
+            "state": "active",
+            "trade_mode": "demo",
+            "position_mode": "hedging",
+            "risk_profile_id": "",
+        },
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+
+    page = logged_in_client.get("/accounts")
+    response = logged_in_client.post(
+        f"/accounts/{account_id}/delete",
+        data={"csrf": extract_csrf(page.text), "confirmation": "DELETE"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    with session_factory() as session:
+        assert session.get(Account, account_id) is None
 
 
-def test_demo_accounts_are_masked_in_ui(logged_in_client: TestClient) -> None:
-    response = logged_in_client.get("/accounts")
-    assert "100001" not in response.text
-    assert "Encrypted" not in response.text
-    assert "Demo Master" in response.text
-
-
-def test_status_api_reports_seeded_accounts(logged_in_client: TestClient) -> None:
+def test_status_api_reports_fresh_workspace(logged_in_client: TestClient) -> None:
     response = logged_in_client.get("/api/status")
     assert response.status_code == 200
-    assert response.json()["accounts"] == 3
-    assert response.json()["execution_mode"] == "demo"
+    assert response.json()["accounts"] == 0
+    assert response.json()["execution_mode"] == "monitor"
 
 
 def test_csrf_is_required_for_state_change(logged_in_client: TestClient) -> None:
@@ -92,14 +142,3 @@ def test_csrf_is_required_for_state_change(logged_in_client: TestClient) -> None
         follow_redirects=False,
     )
     assert response.status_code == 403
-
-
-def test_demo_seed_contains_single_master(
-    client: TestClient, session_factory: sessionmaker[Session]
-) -> None:
-    # Entering TestClient runs the application lifespan, which creates and seeds
-    # the isolated test database used by this assertion.
-    del client
-    with session_factory() as session:
-        masters = session.scalars(select(Account).where(Account.is_master.is_(True))).all()
-        assert len(masters) == 1

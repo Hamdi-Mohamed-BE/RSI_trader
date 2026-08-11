@@ -24,7 +24,8 @@ class Settings(BaseSettings):
 
     safe_mode: bool = True
     live_execution_enabled: bool = False
-    demo_mode: bool = True
+    demo_mode: bool = False
+    auto_detect_mt5: bool = True
 
     admin_email: str = "admin@aaa.local"
     admin_password: str = ""

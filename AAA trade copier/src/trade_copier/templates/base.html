@@ -59,6 +59,11 @@
                 {{ request.query_params.get('error') }}
             </div>
             {% endif %}
+            {% if request.query_params.get('notice') %}
+            <div class="mb-6 rounded-xl border border-green/50 bg-green/10 px-4 py-3 text-sm text-green">
+                {{ request.query_params.get('notice') }}
+            </div>
+            {% endif %}
             {% block content %}{% endblock %}
         </main>
     </div>
@@ -68,4 +73,3 @@
 {% endif %}
 </body>
 </html>
-

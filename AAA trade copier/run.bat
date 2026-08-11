@@ -4,6 +4,8 @@ cd /d "%~dp0"
 
 rem Bind the web dashboard to every network interface for VPS access.
 set "WEB_HOST=0.0.0.0"
+set "DEMO_MODE=false"
+set "AUTO_DETECT_MT5=true"
 
 if not exist ".env" (
   echo First run detected. Preparing AAA Trade Copier...
@@ -14,6 +16,9 @@ if not exist ".venv\Scripts\aaa-trade-copier-web.exe" (
   echo Python environment is incomplete. Preparing AAA Trade Copier...
   call dev.bat setup || exit /b 1
 )
+
+echo Synchronizing application dependencies...
+uv sync --extra dev --extra windows || exit /b 1
 
 if not exist "src\trade_copier\static\css\app.css" (
   echo Compiled CSS is missing. Rebuilding the interface...

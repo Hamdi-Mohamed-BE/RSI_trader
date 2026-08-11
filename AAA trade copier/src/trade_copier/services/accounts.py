@@ -2,8 +2,8 @@ from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
 from ..domain.enums import AccountRole, AccountState, AuditSeverity, ExecutionMode, JobStatus
-from ..models import Account, CopyJob, RiskProfile, SystemState
-from ..schemas import AccountCreate
+from ..models import Account, CopyJob, RiskProfile, SourceTradeEvent, SystemState
+from ..schemas import AccountCreate, AccountUpdate
 from .audit import record_audit
 from .credentials import CredentialVault
 
@@ -27,6 +27,13 @@ def create_account(
 ) -> Account:
     if session.scalar(select(Account).where(Account.display_name == data.display_name.strip())):
         raise ValueError("An account with this display name already exists.")
+    if session.scalar(
+        select(Account).where(
+            Account.login == data.login.strip(),
+            Account.broker_server == data.broker_server.strip(),
+        )
+    ):
+        raise ValueError("This MT5 login and broker server are already configured.")
     if data.risk_profile_id and session.get(RiskProfile, data.risk_profile_id) is None:
         raise ValueError("Selected risk profile does not exist.")
 
@@ -44,6 +51,7 @@ def create_account(
         risk_profile_id=data.risk_profile_id,
     )
     session.add(account)
+    session.flush()
     record_audit(
         session,
         actor=actor,
@@ -109,3 +117,87 @@ def set_global_pause(session: Session, *, paused: bool, reason: str, actor: str)
     session.commit()
     session.refresh(state)
     return state
+
+
+def update_account(
+    session: Session,
+    account: Account,
+    data: AccountUpdate,
+    *,
+    actor: str,
+) -> Account:
+    duplicate_name = session.scalar(
+        select(Account.id).where(
+            Account.display_name == data.display_name.strip(),
+            Account.id != account.id,
+        )
+    )
+    if duplicate_name:
+        raise ValueError("An account with this display name already exists.")
+    if data.risk_profile_id and session.get(RiskProfile, data.risk_profile_id) is None:
+        raise ValueError("Selected risk profile does not exist.")
+    if account.is_master and data.role is not AccountRole.MASTER_CANDIDATE:
+        raise ValueError("Select another master before changing this account's role.")
+
+    account.display_name = data.display_name.strip()
+    account.broker_server = data.broker_server.strip()
+    account.terminal_path = data.terminal_path
+    account.role = data.role.value
+    account.state = data.state.value
+    account.trade_mode = data.trade_mode
+    account.position_mode = data.position_mode
+    account.risk_profile_id = data.risk_profile_id
+    record_audit(
+        session,
+        actor=actor,
+        action="account.updated",
+        target_type="account",
+        target_id=account.id,
+        message=f"Account {account.display_name} was updated.",
+    )
+    session.commit()
+    session.refresh(account)
+    return account
+
+
+def delete_account(
+    session: Session,
+    account: Account,
+    *,
+    vault: CredentialVault,
+    actor: str,
+) -> None:
+    has_source_history = session.scalar(
+        select(func.count(SourceTradeEvent.id)).where(
+            SourceTradeEvent.source_account_id == account.id
+        )
+    )
+    has_follower_history = session.scalar(
+        select(func.count(CopyJob.id)).where(CopyJob.follower_account_id == account.id)
+    )
+    if has_source_history or has_follower_history:
+        raise ValueError(
+            "Accounts with trade history cannot be deleted; disable the account instead."
+        )
+
+    if account.is_master:
+        state = ensure_system_state(session)
+        state.active_master_account_id = None
+        state.global_pause = True
+        state.execution_mode = ExecutionMode.MONITOR.value
+        state.reason = "Master account removed"
+    if account.credential_ref:
+        vault.delete(account.credential_ref)
+    display_name = account.display_name
+    account_id = account.id
+    session.delete(account)
+    record_audit(
+        session,
+        actor=actor,
+        action="account.deleted",
+        target_type="account",
+        target_id=account_id,
+        severity=AuditSeverity.WARNING,
+        message=f"Account {display_name} was deleted.",
+    )
+    session.commit()

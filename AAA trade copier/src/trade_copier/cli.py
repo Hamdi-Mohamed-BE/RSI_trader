@@ -5,14 +5,12 @@ from .config import get_settings
 from .database import SessionLocal, create_schema
 from .schemas import AdminCreate
 from .services.auth import bootstrap_admin, create_admin
-from .services.demo import seed_demo
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="aaa-trade-copier")
     subcommands = parser.add_subparsers(dest="command", required=True)
     subcommands.add_parser("init-db", help="Create the local database schema.")
-    subcommands.add_parser("seed-demo", help="Create safe demo accounts and configuration.")
     subcommands.add_parser(
         "ensure-admin", help="Create the administrator configured in .env when missing."
     )
@@ -30,10 +28,6 @@ def main() -> None:
         print("Database schema is ready.")
         return
     with SessionLocal() as session:
-        if args.command == "seed-demo":
-            seed_demo(session)
-            print("Safe demo data is ready.")
-            return
         if args.command == "ensure-admin":
             user = bootstrap_admin(session, settings)
             if user is None:

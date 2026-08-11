@@ -10,7 +10,8 @@ services:
       WEB_PORT: 8100
       SAFE_MODE: "true"
       LIVE_EXECUTION_ENABLED: "false"
-      DEMO_MODE: "true"
+      DEMO_MODE: "false"
+      AUTO_DETECT_MT5: "false"
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@aaa.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-AAA-Copier-Docker-2026!}
     ports:

@@ -10,13 +10,14 @@ A safe-by-default Windows control plane and copier-core MVP for copying MT5 trad
 - Account-specific stop-loss risk sizing that floors to broker volume steps and rejects unsafe minimum lots.
 - Cross-broker symbol mappings with relative SL/TP preservation.
 - Durable idempotency keys and explicit follower decisions; duplicate source events do not create duplicate jobs.
-- Safe demo simulator with live dashboard updates over WebSockets.
+- Fresh trading workspace with no sample accounts, risk profiles, mappings, or trades.
+- Automatic discovery of already-running, logged-in MT5 terminals on Windows.
 - Windows DPAPI credential vault; SQLite stores only opaque credential references.
 - Persistent Windows named-pipe listeners, newline-framed versioned messages, verified account/job acknowledgements, and timeouts.
 - MQL5 Publisher and Executor integration agents with disabled-by-default inputs.
 - Portable MT5 launcher that validates `terminal.exe`/`terminal64.exe` and never exposes a password in process arguments.
 - Modern Tailwind/HTMX/Alpine interface.
-- Normal Windows launcher, Makefile, and Docker demo control plane.
+- Normal Windows launcher, Makefile, and Docker web control plane.
 
 Live order placement is intentionally disabled. The Publisher can feed normalized master events into the core, but the first Executor agent rejects broker placement until demo-terminal qualification, restart/reconciliation testing, and the acceptance criteria in [PLAN.md](PLAN.md) pass.
 
@@ -30,7 +31,7 @@ run.bat
 
 `run.bat` binds the dashboard to `0.0.0.0`, so on a VPS it is also reachable at `http://YOUR-VPS-IP:8100`. Windows Firewall and the VPS provider firewall must allow inbound TCP port 8100. Change the default password and place the dashboard behind an HTTPS reverse proxy before treating it as an internet-facing service.
 
-The setup command creates an ignored `.env` if needed, installs Python and frontend dependencies, builds CSS, initializes SQLite, and creates safe demo data. This workspace already contains a local bootstrap administrator:
+The setup command creates an ignored `.env` if needed, installs Python and frontend dependencies, builds CSS, and initializes an empty SQLite trading database. This workspace contains only the requested local dashboard administrator:
 
 ```text
 Email:    admin@aaa.local
@@ -53,6 +54,17 @@ LIVE_EXECUTION_ENABLED=true
 ```
 
 Changing these flags is not enough to qualify the system for live use. The named-pipe transport remains guarded until the MT5 demo integration and acceptance tests are completed. Use demo accounts only during development.
+
+## Adding and managing MT5 accounts
+
+Open **Accounts** from the left navigation. The page provides two onboarding paths:
+
+1. Start MT5 and log into the intended main account, then press **Detect connected MT5**. When the trading database has no master, the first running connected terminal becomes the master automatically. Copying remains paused until reviewed.
+2. Use **Add another account** for followers or terminals that are not currently running.
+
+Every account card includes **Edit and manage** controls for its name, terminal path, role, enabled state, trade mode, position mode, risk profile, and deletion. Additional detected accounts are imported as paused followers. Detection never requests or stores an MT5 password; it reads the active saved terminal session.
+
+No sample accounts, risk profiles, mappings, trades, or performance records are created. Early development demo records are removed automatically by an exact one-time compatibility cleanup, without touching user-created accounts.
 
 ## MT5 demo integration
 
@@ -80,7 +92,7 @@ FastAPI dashboard <-> shared SQLite event journal
 dev.bat docker-up
 ```
 
-Docker runs the safe dashboard, SQLite journal, simulator, and reports on `http://127.0.0.1:8100`. Login defaults to `admin@aaa.local` / `AAA-Copier-Docker-2026!` unless overridden through environment variables.
+Docker runs the dashboard, empty SQLite journal, and reports on `http://127.0.0.1:8100`. Login defaults to `admin@aaa.local` / `AAA-Copier-Docker-2026!` unless overridden through environment variables. MT5 discovery is Windows-host-only and is disabled in the Linux container.
 
 MT5 and local Windows named pipes cannot run inside the Linux container. Run `dev.bat core` on the Windows host for terminal integration; Docker is for the control-plane demo and later web deployment only.
 
