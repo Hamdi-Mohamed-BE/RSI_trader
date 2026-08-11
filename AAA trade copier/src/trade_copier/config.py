@@ -32,6 +32,7 @@ class Settings(BaseSettings):
 
     heartbeat_timeout_seconds: int = Field(default=15, ge=5, le=300)
     mt5_discovery_interval_seconds: int = Field(default=5, ge=2, le=60)
+    mt5_template_path: str = ""
     max_follower_accounts: int = Field(default=10, ge=1, le=100)
     master_pipe_name: str = "aaa_trade_copier_master"
     follower_pipe_prefix: str = "aaa_trade_copier_follower"
@@ -47,6 +48,10 @@ class Settings(BaseSettings):
     @property
     def execution_is_permitted(self) -> bool:
         return not self.safe_mode and self.live_execution_enabled
+
+    @property
+    def mt5_instances_dir(self) -> Path:
+        return self.storage_dir / "mt5_instances"
 
     def validate_runtime_safety(self) -> None:
         if self.app_env == "production" and len(self.app_secret_key) < 32:

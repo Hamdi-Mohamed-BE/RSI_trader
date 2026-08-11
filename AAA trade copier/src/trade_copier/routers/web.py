@@ -33,6 +33,7 @@ from ..services.accounts import (
     create_account,
     delete_account,
     ensure_system_state,
+    replace_account_credential,
     select_master,
     set_global_pause,
     update_account,
@@ -49,6 +50,16 @@ router = APIRouter()
 
 def _user(request: Request, session: Session) -> AdminUser:
     return require_user(request, session)
+
+
+def _terminal_manager(request: Request) -> TerminalManager:
+    settings = request.app.state.settings
+    vault = build_credential_vault(settings.storage_dir / "vault")
+    return TerminalManager(
+        instances_root=settings.mt5_instances_dir,
+        vault=vault,
+        default_template_path=settings.mt5_template_path,
+    )
 
 
 @router.get("/", name="dashboard")
@@ -176,9 +187,21 @@ def account_create(
             password=mt5_password,
         )
         vault = build_credential_vault(request.app.state.settings.storage_dir / "vault")
-        create_account(session, data, vault=vault, actor=user.email)
+        account = create_account(session, data, vault=vault, actor=user.email)
     except (ValidationError, ValueError, RuntimeError) as exc:
         return RedirectResponse(f"/accounts?error={exc!s}", status_code=303)
+    if mt5_password:
+        try:
+            _terminal_manager(request).provision_and_connect(
+                session,
+                account,
+                actor=user.email,
+                template_path=terminal_path,
+            )
+        except (OSError, RuntimeError, ValueError) as exc:
+            return RedirectResponse(
+                f"/accounts?error=Account+saved,+but+{exc!s}", status_code=303
+            )
     return RedirectResponse("/accounts", status_code=status.HTTP_303_SEE_OTHER)
 
 
@@ -255,8 +278,14 @@ def account_delete(
         return RedirectResponse("/accounts?error=Account+not+found", status_code=303)
     vault = build_credential_vault(request.app.state.settings.storage_dir / "vault")
     try:
-        delete_account(session, account, vault=vault, actor=user.email)
-    except (RuntimeError, ValueError) as exc:
+        delete_account(
+            session,
+            account,
+            vault=vault,
+            actor=user.email,
+            instance_remover=_terminal_manager(request).remove_instance,
+        )
+    except (OSError, RuntimeError, ValueError) as exc:
         return RedirectResponse(f"/accounts?error={exc!s}", status_code=303)
     return RedirectResponse("/accounts?notice=Account+deleted", status_code=303)
 
@@ -277,10 +306,56 @@ def account_terminal_start(
     if account is None:
         return RedirectResponse("/accounts?error=Account+not+found", status_code=303)
     try:
-        TerminalManager().start(session, account, actor=user.email)
+        _terminal_manager(request).start(session, account, actor=user.email)
     except (OSError, RuntimeError, ValueError) as exc:
         return RedirectResponse(f"/accounts?error={exc!s}", status_code=303)
-    return RedirectResponse("/accounts", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(
+        "/accounts?notice=Managed+MT5+started+and+logged+in",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+@router.post(
+    "/accounts/{account_id}/terminal/provision",
+    name="account-terminal-provision",
+)
+def account_terminal_provision(
+    account_id: str,
+    request: Request,
+    csrf: Annotated[str, Form()],
+    session: Annotated[Session, Depends(request_session)],
+    mt5_password: Annotated[str, Form()] = "",
+    template_path: Annotated[str, Form()] = "",
+) -> Response:
+    user = _user(request, session)
+    validate_csrf(request, csrf)
+    account = session.get(Account, account_id)
+    if account is None:
+        return RedirectResponse("/accounts?error=Account+not+found", status_code=303)
+    vault = build_credential_vault(request.app.state.settings.storage_dir / "vault")
+    try:
+        if mt5_password:
+            replace_account_credential(
+                session,
+                account,
+                mt5_password,
+                vault=vault,
+                actor=user.email,
+            )
+        if not account.credential_ref:
+            raise ValueError("Enter the MT5 password so this instance can log in automatically.")
+        _terminal_manager(request).provision_and_connect(
+            session,
+            account,
+            actor=user.email,
+            template_path=template_path,
+        )
+    except (OSError, RuntimeError, ValueError) as exc:
+        return RedirectResponse(f"/accounts?error={exc!s}", status_code=303)
+    return RedirectResponse(
+        "/accounts?notice=Dedicated+MT5+instance+built+and+logged+in",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
 
 
 @router.post("/accounts/{account_id}/master", name="account-master")
@@ -359,6 +434,11 @@ def copy_test_run(
         )
         if request.app.state.settings.auto_detect_mt5:
             detect_and_import_running_accounts(session, actor="copy-test-refresh")
+        _terminal_manager(request).prepare_copy_test(
+            session,
+            data.symbol,
+            actor="copy-test-auto-connect",
+        )
         run = CopyTestRunner().run(session, data, actor=user.email)
     except (ValidationError, ValueError) as exc:
         return RedirectResponse(f"/copy-test?error={exc!s}", status_code=303)

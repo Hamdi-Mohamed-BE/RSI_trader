@@ -60,9 +60,11 @@ Changing these flags is not enough to qualify the system for live use. The named
 Open **Accounts** from the left navigation. The page provides two onboarding paths:
 
 1. Start MT5 and log into the intended main account, then press **Detect connected MT5**. When the trading database has no master, the first running connected terminal becomes the master automatically. Copying remains paused until reviewed.
-2. Use **Add another account** for followers or terminals that are not currently running.
+2. Use **Add another account** for each follower. Enter its login, broker server, and password. The app encrypts the password with Windows DPAPI, builds a unique portable terminal under `storage/mt5_instances/<account-id>`, installs the copier agents, launches that instance, and logs in through the native MT5 API.
 
-Every account card includes **Edit and manage** controls for its name, terminal path, role, enabled state, trade mode, position mode, risk profile, and deletion. Additional detected accounts are imported as paused followers. Detection never requests or stores an MT5 password; it reads the active saved terminal session.
+Every account card includes **Edit and manage** controls for its name, terminal path, role, enabled state, trade mode, position mode, risk profile, and deletion. Its **Build and connect MT5** action can create or repair the dedicated instance and safely replace its automatic-login password. Additional detected accounts are imported as paused followers. Detection never requests or stores an MT5 password; it reads the active saved terminal session.
+
+Passwords are never written to SQLite, audit details, generated instance files, or process command lines. They remain encrypted in the local DPAPI vault and are decrypted only in memory for the MT5 login call. Set `MT5_TEMPLATE_PATH` in `.env` when the correct broker terminal should be used as the default template; otherwise the app selects an installed MT5 automatically.
 
 No sample accounts, risk profiles, mappings, trades, or performance records are created. Early development demo records are removed automatically by an exact one-time compatibility cleanup, without touching user-created accounts.
 
@@ -79,7 +81,7 @@ Open **Copy test** from the navigation or dashboard. Enter one synthetic master 
 - mapped entry, stop-loss, and take-profit prices;
 - the exact error for every failed follower.
 
-The diagnostic does not place a broker order. It proves the database routing and risk configuration before the guarded MT5 execution layer is enabled.
+Before running the checks, the diagnostic now starts and logs into managed follower instances and refreshes the requested broker symbol specification. It does not place a broker order. It proves the database routing and risk configuration before the guarded MT5 execution layer is enabled.
 
 ## MT5 demo integration
 

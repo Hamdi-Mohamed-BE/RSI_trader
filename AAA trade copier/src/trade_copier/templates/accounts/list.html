@@ -5,7 +5,7 @@
     <div>
         <p class="eyebrow">MT5 terminal network</p>
         <h1 class="page-title">Accounts and master selection</h1>
-        <p class="page-copy">Detect terminals already running on this Windows machine or add another broker account manually. The first detected connected account becomes the paused master automatically.</p>
+        <p class="page-copy">Each manually added account receives its own isolated portable MT5 instance and automatic login. The first already-connected account can still be detected and selected as the master.</p>
     </div>
     <form method="post" action="/accounts/discover" hx-boost="false">
         <input type="hidden" name="csrf" value="{{ csrf_token }}">
@@ -18,7 +18,7 @@
         <div>
             <p class="eyebrow">Add another account</p>
             <h2 class="section-title">Manual account onboarding</h2>
-            <p class="mt-2 text-sm leading-6 text-muted">Use this when the MT5 terminal is not currently running. A saved MT5 session is preferred; passwords are optional and encrypted with Windows DPAPI.</p>
+            <p class="mt-2 text-sm leading-6 text-muted">Enter the broker login once. The password is encrypted with Windows DPAPI, then used only in memory to build and log into a dedicated MT5 instance.</p>
         </div>
         <span class="badge">{{ accounts|length }} configured</span>
     </div>
@@ -27,14 +27,14 @@
         <label class="field-label">Display name<input class="field" name="display_name" placeholder="My follower account" required></label>
         <label class="field-label">MT5 login<input class="field" name="login" inputmode="numeric" required></label>
         <label class="field-label">Broker server<input class="field" name="broker_server" placeholder="Broker-Demo" required></label>
-        <label class="field-label">Terminal executable<input class="field" name="terminal_path" placeholder="C:\MT5-Follower\terminal64.exe"></label>
+        <label class="field-label">MT5 template (optional)<input class="field" name="terminal_path" placeholder="C:\Program Files\MetaTrader 5\terminal64.exe"><small>Leave blank to detect an installed MT5 automatically.</small></label>
         <label class="field-label">Role<select class="field" name="role">{% for role in roles %}<option value="{{ role.value }}" {% if role.value == 'follower' %}selected{% endif %}>{{ role.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
         <label class="field-label">State<select class="field" name="state">{% for item in states %}<option value="{{ item.value }}" {% if item.value == 'paused' %}selected{% endif %}>{{ item.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
         <label class="field-label">Trade mode<select class="field" name="trade_mode"><option value="demo">Demo</option><option value="live">Live</option></select></label>
         <label class="field-label">Position mode<select class="field" name="position_mode"><option value="hedging">Hedging</option><option value="netting">Netting</option></select></label>
         <label class="field-label">Risk profile<select class="field" name="risk_profile_id"><option value="">Assign later</option>{% for profile in profiles %}<option value="{{ profile.id }}">{{ profile.name }}</option>{% endfor %}</select></label>
-        <label class="field-label md:col-span-2">MT5 password (optional)<input class="field" type="password" name="mt5_password" autocomplete="new-password"><small>Never returned to the browser or written to SQLite.</small></label>
-        <div class="flex items-end"><button class="button-primary w-full" type="submit">Add account</button></div>
+        <label class="field-label md:col-span-2">MT5 password<input class="field" type="password" name="mt5_password" autocomplete="new-password" required><small>Encrypted locally; never returned to the browser, written to SQLite, or placed in a command line.</small></label>
+        <div class="flex items-end"><button class="button-primary w-full" type="submit">Add, build and connect</button></div>
     </form>
 </section>
 
@@ -61,16 +61,19 @@
             <div><dt class="data-label">Risk</dt><dd class="mt-1">{{ account.risk_profile.name if account.risk_profile else 'Not assigned' }}</dd></div>
             <div><dt class="data-label">Mode</dt><dd class="mt-1">{{ account.trade_mode }} / {{ account.position_mode }}</dd></div>
             <div><dt class="data-label">Terminal</dt><dd class="mt-1">{% if account.terminal and account.terminal.process_id %}Running · PID {{ account.terminal.process_id }}{% elif account.terminal_path %}Configured{% else %}Not configured{% endif %}</dd></div>
-            <div><dt class="data-label">Credential</dt><dd class="mt-1">{{ 'DPAPI vault' if account.credential_ref else 'MT5 saved session' }}</dd></div>
+            <div><dt class="data-label">Credential</dt><dd class="mt-1">{{ 'Encrypted auto-login' if account.credential_ref else 'Password needed' }}</dd></div>
+            {% if account.terminal and account.terminal.portable_directory %}<div class="col-span-2"><dt class="data-label">Dedicated instance</dt><dd class="mt-1 break-all font-mono text-xs">{{ account.terminal.portable_directory }}</dd></div>{% endif %}
             <div class="col-span-2"><dt class="data-label">EA identity</dt><dd class="mt-1 break-all font-mono text-xs">UUID {{ account.id }}</dd>{% if account.role == 'follower' %}<dd class="mt-1 break-all font-mono text-xs text-muted">Pipe {{ pipe_prefix }}_{{ account.id }}</dd>{% endif %}</div>
         </dl>
+
+        {% if account.terminal and account.terminal.last_error %}<p class="mt-4 rounded-xl border border-red/40 bg-red/10 p-3 text-sm text-red">{{ account.terminal.last_error }}</p>{% endif %}
 
         <div class="mt-5 flex flex-wrap gap-2">
             {% if account.role == 'master_candidate' and not account.is_master %}
             <form class="flex gap-2" method="post" action="/accounts/{{ account.id }}/master" hx-boost="false"><input type="hidden" name="csrf" value="{{ csrf_token }}"><input class="field max-w-36" name="confirmation" placeholder="Type MASTER" required><button class="button-secondary" type="submit">Make master</button></form>
             {% endif %}
-            {% if account.terminal_path and (not account.terminal or account.terminal.health == 'offline') %}
-            <form class="flex gap-2" method="post" action="/accounts/{{ account.id }}/terminal/start" hx-boost="false"><input type="hidden" name="csrf" value="{{ csrf_token }}"><input class="field max-w-32" name="confirmation" placeholder="Type START" required><button class="button-secondary" type="submit">Start MT5</button></form>
+            {% if account.credential_ref and account.terminal_path and account.health != 'healthy' %}
+            <form method="post" action="/accounts/{{ account.id }}/terminal/start" hx-boost="false"><input type="hidden" name="csrf" value="{{ csrf_token }}"><input type="hidden" name="confirmation" value="START"><button class="button-secondary" type="submit">Reconnect MT5</button></form>
             {% endif %}
         </div>
 
@@ -87,6 +90,13 @@
                 <label class="field-label">Position mode<select class="field" name="position_mode"><option value="hedging" {% if account.position_mode == 'hedging' %}selected{% endif %}>Hedging</option><option value="netting" {% if account.position_mode == 'netting' %}selected{% endif %}>Netting</option></select></label>
                 <label class="field-label md:col-span-2">Risk profile<select class="field" name="risk_profile_id"><option value="">None</option>{% for profile in profiles %}<option value="{{ profile.id }}" {% if account.risk_profile_id == profile.id %}selected{% endif %}>{{ profile.name }}</option>{% endfor %}</select></label>
                 <div class="md:col-span-2"><button class="button-primary" type="submit">Save account</button></div>
+            </form>
+            <form class="mt-6 grid gap-4 border-t border-line pt-5 md:grid-cols-2" method="post" action="/accounts/{{ account.id }}/terminal/provision" hx-boost="false">
+                <input type="hidden" name="csrf" value="{{ csrf_token }}">
+                <div class="md:col-span-2"><p class="eyebrow">Dedicated MT5 instance</p><p class="mt-2 text-sm leading-6 text-muted">Build or repair this account's isolated portable terminal, install the copier agents, and log in automatically.</p></div>
+                <label class="field-label">MT5 template (optional)<input class="field" name="template_path" placeholder="C:\Program Files\MetaTrader 5\terminal64.exe"><small>Leave blank to auto-detect or reuse the managed copy.</small></label>
+                <label class="field-label">MT5 password{% if account.credential_ref %} (saved password will be used if blank){% endif %}<input class="field" type="password" name="mt5_password" autocomplete="new-password" {% if not account.credential_ref %}required{% endif %}><small>Entering a value safely replaces the stored credential.</small></label>
+                <div class="md:col-span-2"><button class="button-primary" type="submit">Build and connect MT5</button></div>
             </form>
             <form class="mt-6 flex flex-col gap-3 border-t border-line pt-5 sm:flex-row" method="post" action="/accounts/{{ account.id }}/delete" hx-boost="false">
                 <input type="hidden" name="csrf" value="{{ csrf_token }}">

@@ -136,6 +136,7 @@ class TerminalInstance(TimestampMixin, Base):
     terminal_build: Mapped[str] = mapped_column(String(32), default="")
     algo_trading_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     health: Mapped[str] = mapped_column(String(24), default=TerminalHealth.UNKNOWN.value)
+    last_error: Mapped[str] = mapped_column(Text, default="")
     last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     account: Mapped[Account] = relationship(back_populates="terminal")

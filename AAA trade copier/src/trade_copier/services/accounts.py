@@ -1,3 +1,6 @@
+from collections.abc import Callable
+from contextlib import suppress
+
 from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
@@ -160,12 +163,42 @@ def update_account(
     return account
 
 
+def replace_account_credential(
+    session: Session,
+    account: Account,
+    password: str,
+    *,
+    vault: CredentialVault,
+    actor: str,
+) -> Account:
+    """Replace an MT5 password without ever storing it in SQLite or audit details."""
+    if not password:
+        raise ValueError("Enter the MT5 password to configure automatic login.")
+    previous_reference = account.credential_ref
+    account.credential_ref = vault.store(password)
+    record_audit(
+        session,
+        actor=actor,
+        action="account.credential_updated",
+        target_type="account",
+        target_id=account.id,
+        message=f"Secure automatic-login credential updated for {account.display_name}.",
+    )
+    session.commit()
+    session.refresh(account)
+    if previous_reference:
+        with suppress(OSError):
+            vault.delete(previous_reference)
+    return account
+
+
 def delete_account(
     session: Session,
     account: Account,
     *,
     vault: CredentialVault,
     actor: str,
+    instance_remover: Callable[[Account], None] | None = None,
 ) -> None:
     has_source_history = session.scalar(
         select(func.count(SourceTradeEvent.id)).where(
@@ -180,6 +213,8 @@ def delete_account(
             "Accounts with trade history cannot be deleted; disable the account instead."
         )
 
+    if instance_remover is not None:
+        instance_remover(account)
     if account.is_master:
         state = ensure_system_state(session)
         state.active_master_account_id = None

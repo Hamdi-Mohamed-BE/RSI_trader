@@ -104,6 +104,8 @@ class CopyTestRunner:
             if follower.state != AccountState.ACTIVE.value:
                 raise ValueError(f"Follower state is {follower.state}; set it to active.")
             if follower.health != TerminalHealth.HEALTHY.value:
+                if follower.terminal is not None and follower.terminal.last_error:
+                    raise ValueError(follower.terminal.last_error)
                 if not follower.terminal_path:
                     raise ValueError(
                         "No MT5 terminal is assigned. Set terminal64.exe on the Accounts page."

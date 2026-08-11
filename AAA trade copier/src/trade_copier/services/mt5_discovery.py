@@ -73,7 +73,8 @@ def discover_running_mt5_accounts() -> list[DetectedMt5Account]:
     seen: set[tuple[str, str]] = set()
     for process_id, executable in terminals:
         try:
-            if not mt5.initialize(str(executable), timeout=5000):
+            portable = (executable.parent / ".aaa-instance.json").is_file()
+            if not mt5.initialize(str(executable), timeout=5000, portable=portable):
                 continue
             account = mt5.account_info()
             terminal = mt5.terminal_info()
@@ -181,6 +182,7 @@ def import_detected_accounts(
         terminal.process_id = detected.process_id
         terminal.portable_directory = str(Path(detected.terminal_path).parent)
         terminal.health = TerminalHealth.HEALTHY.value
+        terminal.last_error = ""
         terminal.last_seen_at = now
         session.add(terminal)
 

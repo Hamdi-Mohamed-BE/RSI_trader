@@ -68,6 +68,8 @@ def test_account_page_exposes_discovery_and_manual_onboarding(
     response = logged_in_client.get("/accounts")
     assert "Detect connected MT5" in response.text
     assert "Add another account" in response.text
+    assert "Add, build and connect" in response.text
+    assert "encrypted with Windows DPAPI" in response.text
     assert "No MT5 accounts configured" in response.text
 
 

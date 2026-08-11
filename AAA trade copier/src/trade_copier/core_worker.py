@@ -11,7 +11,9 @@ from .domain.messages import SourceTradeMessage
 from .models import Account
 from .services.accounts import ensure_system_state
 from .services.copier import CopierCore
+from .services.credentials import build_credential_vault
 from .services.mt5_discovery import detect_and_import_running_accounts
+from .services.terminals import TerminalManager
 from .transport.protocol import ProtocolError, decode_message
 from .transport.windows_named_pipe import WindowsNamedPipeTransport
 from .transport.windows_pipe_io import PyWin32PipeChannel, WindowsNamedPipeServer
@@ -102,9 +104,19 @@ async def consume_master(
 
 
 async def watchdog(settings: Settings) -> None:
+    vault = build_credential_vault(settings.storage_dir / "vault")
+    terminal_manager = TerminalManager(
+        instances_root=settings.mt5_instances_dir,
+        vault=vault,
+        default_template_path=settings.mt5_template_path,
+    )
     while True:
         with SessionLocal() as session:
             detect_and_import_running_accounts(session, actor="connection-monitor")
+            terminal_manager.reconnect_managed_accounts(
+                session,
+                actor="connection-monitor",
+            )
         mark_stale_accounts(settings)
         await asyncio.sleep(settings.mt5_discovery_interval_seconds)
 

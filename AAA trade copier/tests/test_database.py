@@ -20,9 +20,19 @@ def test_create_schema_upgrades_existing_copy_test_history(tmp_path: Path) -> No
                 "take_profit NUMERIC(20, 8))"
             )
         )
+        connection.execute(
+            text(
+                "CREATE TABLE terminal_instances ("
+                "id VARCHAR(36) PRIMARY KEY, account_id VARCHAR(36))"
+            )
+        )
 
     create_schema(engine)
 
     columns = {column["name"] for column in inspect(engine).get_columns("copy_test_runs")}
     assert {"order_type", "market_price"} <= columns
+    terminal_columns = {
+        column["name"] for column in inspect(engine).get_columns("terminal_instances")
+    }
+    assert "last_error" in terminal_columns
     engine.dispose()

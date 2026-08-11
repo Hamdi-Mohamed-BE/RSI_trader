@@ -54,6 +54,7 @@ def create_schema(active_engine: Engine | None = None) -> None:
     selected_engine = active_engine or engine
     Base.metadata.create_all(selected_engine)
     _upgrade_copy_test_schema(selected_engine)
+    _upgrade_terminal_schema(selected_engine)
 
 
 def _upgrade_copy_test_schema(selected_engine: Engine) -> None:
@@ -72,4 +73,19 @@ def _upgrade_copy_test_schema(selected_engine: Engine) -> None:
         if "market_price" not in columns:
             connection.execute(
                 text("ALTER TABLE copy_test_runs ADD COLUMN market_price NUMERIC(20, 8)")
+            )
+
+
+def _upgrade_terminal_schema(selected_engine: Engine) -> None:
+    """Add managed-terminal diagnostics to existing local databases."""
+    with selected_engine.begin() as connection:
+        columns = {
+            column["name"] for column in inspect(connection).get_columns("terminal_instances")
+        }
+        if "last_error" not in columns:
+            connection.execute(
+                text(
+                    "ALTER TABLE terminal_instances ADD COLUMN last_error "
+                    "TEXT NOT NULL DEFAULT ''"
+                )
             )
