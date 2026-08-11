@@ -54,7 +54,11 @@ exit /b %errorlevel%
 :start
 start "AAA Trade Copier Core" /D "%CD%" cmd /k call "%~f0" core
 start "AAA Trade Copier Web" /D "%CD%" cmd /k call "%~f0" web
-echo Open http://127.0.0.1:8100
+if "%WEB_HOST%"=="0.0.0.0" (
+  echo Open http://YOUR-VPS-IP:8100 remotely
+) else (
+  echo Open http://127.0.0.1:8100
+)
 exit /b 0
 
 :create_admin

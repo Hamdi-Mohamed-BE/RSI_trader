@@ -28,6 +28,8 @@ run.bat
 
 `run.bat` performs first-time setup when necessary, ensures the default administrator exists, starts the Copier Core and dashboard, and opens `http://127.0.0.1:8100` automatically. It never resets the password of an existing administrator.
 
+`run.bat` binds the dashboard to `0.0.0.0`, so on a VPS it is also reachable at `http://YOUR-VPS-IP:8100`. Windows Firewall and the VPS provider firewall must allow inbound TCP port 8100. Change the default password and place the dashboard behind an HTTPS reverse proxy before treating it as an internet-facing service.
+
 The setup command creates an ignored `.env` if needed, installs Python and frontend dependencies, builds CSS, initializes SQLite, and creates safe demo data. This workspace already contains a local bootstrap administrator:
 
 ```text
@@ -89,3 +91,13 @@ dev.bat check
 ```
 
 This runs formatting/lint rules, strict type checks, protocol/risk/security tests, duplicate-event tests, and full dashboard tests with warnings promoted to errors.
+
+## Deployment note: CSS and static assets
+
+The compiled stylesheet at `src/trade_copier/static/css/app.css` is committed to the repository so a normal VPS pull does not require Node.js. After pulling an update, restart the application with `run.bat` and hard-refresh the browser with `Ctrl+F5`.
+
+If the stylesheet is missing, `run.bat` attempts to rebuild it automatically. You can also rebuild it manually with:
+
+```bat
+dev.bat css
+```

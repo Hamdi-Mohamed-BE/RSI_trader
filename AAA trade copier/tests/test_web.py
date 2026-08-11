@@ -13,6 +13,13 @@ def test_health_is_public_and_safe(client: TestClient) -> None:
     assert response.json()["safe_mode"] is True
 
 
+def test_compiled_stylesheet_is_served(client: TestClient) -> None:
+    response = client.get("/static/css/app.css")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/css")
+    assert len(response.content) > 10_000
+
+
 def test_dashboard_requires_login(client: TestClient) -> None:
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 303
