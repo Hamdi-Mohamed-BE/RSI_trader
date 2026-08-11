@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Copy test · {{ app_name }}{% endblock %}
+{% block content %}
+<section class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+    <div>
+        <p class="eyebrow">Follower readiness</p>
+        <h1 class="page-title">Cross-account copy test</h1>
+        <p class="page-copy">Run one synthetic master trade through every configured follower. The test verifies routing, account state, terminal health, symbol contracts, spread limits, and calculated risk without placing a broker order.</p>
+    </div>
+    <span class="badge border-amber/50 text-amber">No live order</span>
+</section>
+
+<section class="surface mt-8">
+    <div><p class="eyebrow">Test trade</p><h2 class="section-title">Trade parameters</h2></div>
+    <form class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4" method="post" action="/copy-test" hx-boost="false">
+        <input type="hidden" name="csrf" value="{{ csrf_token }}">
+        <label class="field-label">Master symbol<input class="field" name="symbol" value="XAUUSD" required></label>
+        <label class="field-label">Side<select class="field" name="side">{% for side in sides %}<option value="{{ side.value }}">{{ side.value|title }}</option>{% endfor %}</select></label>
+        <label class="field-label">Master volume<input class="field" type="number" name="master_volume" value="0.10" min="0.01" step="0.01" required></label>
+        <label class="field-label">Entry price<input class="field" type="number" name="entry_price" placeholder="2400.00" min="0.00001" step="0.00001" required></label>
+        <label class="field-label">Stop loss<input class="field" type="number" name="stop_loss" placeholder="2390.00" min="0.00001" step="0.00001" required></label>
+        <label class="field-label">Take profit (optional)<input class="field" type="number" name="take_profit" min="0.00001" step="0.00001"></label>
+        <label class="field-label">Confirmation<input class="field" name="confirmation" placeholder="Type TEST" required><small>The test creates diagnostic records only.</small></label>
+        <div class="flex items-end"><button class="button-primary w-full" type="submit">Run across all followers</button></div>
+    </form>
+</section>
+
+<section class="mt-8">
+    <div><p class="eyebrow">Test history</p><h2 class="section-title">Per-account results</h2></div>
+    <div class="mt-4 grid gap-5">
+    {% for run in runs %}
+    <article class="surface {% if request.query_params.get('run') == run.id %}border-cyan{% endif %}">
+        <div class="surface-header">
+            <div><p class="eyebrow">{{ run.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p><h3 class="section-title">{{ run.side|upper }} {{ run.symbol }} · {{ run.master_volume }} lots</h3></div>
+            <span class="badge {% if run.failed_followers %}badge-failed{% else %}badge-filled{% endif %}">{{ run.status|replace('_',' ') }}</span>
+        </div>
+        <div class="mt-5 grid gap-3 sm:grid-cols-3">
+            <div class="account-row"><div><small>Followers</small><strong>{{ run.total_followers }}</strong></div></div>
+            <div class="account-row"><div><small>Passed</small><strong class="text-green">{{ run.passed_followers }}</strong></div></div>
+            <div class="account-row"><div><small>Errors</small><strong class="text-red">{{ run.failed_followers }}</strong></div></div>
+        </div>
+        {% if run.error %}<p class="mt-4 rounded-xl border border-red/40 bg-red/10 p-3 text-sm text-red">{{ run.error }}</p>{% endif %}
+        <div class="table-wrap mt-5">
+            <table><thead><tr><th>Follower</th><th>Status</th><th>Mapped symbol</th><th>Calculated volume</th><th>Risk cash</th><th>Error</th></tr></thead>
+            <tbody>
+            {% for result in run.results %}
+            <tr><td>{{ result.follower_account.display_name }}</td><td><span class="badge badge-{{ 'filled' if result.status == 'passed' else 'failed' }}">{{ result.status }}</span></td><td>{{ result.follower_symbol or '—' }}</td><td>{{ result.calculated_volume or '—' }}</td><td>{{ result.calculated_risk_cash or '—' }}</td><td class="max-w-xl text-red">{{ result.error or 'Ready for copy routing' }}</td></tr>
+            {% else %}<tr><td colspan="6" class="empty-cell">No follower results. {{ run.error }}</td></tr>{% endfor %}
+            </tbody></table>
+        </div>
+    </article>
+    {% else %}
+    <article class="surface"><p class="empty-state">No copy tests have been run yet.</p></article>
+    {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field, field_validator
 
-from .domain.enums import AccountRole, AccountState, RiskMode
+from .domain.enums import AccountRole, AccountState, RiskMode, Side
 
 
 class LoginInput(BaseModel):
@@ -70,6 +70,32 @@ class SymbolMappingCreate(BaseModel):
     follower_symbol: str = Field(min_length=2, max_length=32)
     price_offset: Decimal = Decimal("0")
     preserve_relative_stops: bool = True
+
+
+class CopyTestInput(BaseModel):
+    symbol: str = Field(min_length=2, max_length=32)
+    side: Side
+    master_volume: Decimal = Field(gt=0, le=Decimal("1000"))
+    entry_price: Decimal = Field(gt=0)
+    stop_loss: Decimal = Field(gt=0)
+    take_profit: Decimal | None = Field(default=None, gt=0)
+
+    @field_validator("symbol")
+    @classmethod
+    def normalize_symbol(cls, value: str) -> str:
+        return value.strip().upper()
+
+    @field_validator("stop_loss")
+    @classmethod
+    def validate_stop_loss(cls, value: Decimal) -> Decimal:
+        return value
+
+    def validate_prices(self) -> "CopyTestInput":
+        if self.side is Side.BUY and self.stop_loss >= self.entry_price:
+            raise ValueError("A buy stop loss must be below entry.")
+        if self.side is Side.SELL and self.stop_loss <= self.entry_price:
+            raise ValueError("A sell stop loss must be above entry.")
+        return self
 
 
 class AdminCreate(BaseModel):

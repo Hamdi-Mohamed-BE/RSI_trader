@@ -288,6 +288,56 @@ class AuditEvent(TimestampMixin, Base):
     ip_address: Mapped[str] = mapped_column(String(64), default="")
 
 
+class CopyTestRun(TimestampMixin, Base):
+    __tablename__ = "copy_test_runs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    master_account_id: Mapped[str | None] = mapped_column(
+        ForeignKey("accounts.id", ondelete="SET NULL"), nullable=True
+    )
+    symbol: Mapped[str] = mapped_column(String(32))
+    side: Mapped[str] = mapped_column(String(8))
+    master_volume: Mapped[Decimal] = mapped_column(Numeric(16, 4))
+    entry_price: Mapped[Decimal] = mapped_column(Numeric(20, 8))
+    stop_loss: Mapped[Decimal] = mapped_column(Numeric(20, 8))
+    take_profit: Mapped[Decimal | None] = mapped_column(Numeric(20, 8), nullable=True)
+    status: Mapped[str] = mapped_column(String(24), default="running")
+    total_followers: Mapped[int] = mapped_column(Integer, default=0)
+    passed_followers: Mapped[int] = mapped_column(Integer, default=0)
+    failed_followers: Mapped[int] = mapped_column(Integer, default=0)
+    error: Mapped[str] = mapped_column(Text, default="")
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    results: Mapped[list["CopyTestResult"]] = relationship(
+        back_populates="run", cascade="all, delete-orphan"
+    )
+
+
+class CopyTestResult(TimestampMixin, Base):
+    __tablename__ = "copy_test_results"
+    __table_args__ = (
+        UniqueConstraint("run_id", "follower_account_id", name="uq_copy_test_follower"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    run_id: Mapped[str] = mapped_column(
+        ForeignKey("copy_test_runs.id", ondelete="CASCADE"), index=True
+    )
+    follower_account_id: Mapped[str] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), index=True
+    )
+    status: Mapped[str] = mapped_column(String(24))
+    follower_symbol: Mapped[str] = mapped_column(String(32), default="")
+    calculated_volume: Mapped[Decimal | None] = mapped_column(Numeric(16, 4), nullable=True)
+    calculated_risk_cash: Mapped[Decimal | None] = mapped_column(Numeric(16, 2), nullable=True)
+    error: Mapped[str] = mapped_column(Text, default="")
+    checks: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+
+    run: Mapped[CopyTestRun] = relationship(back_populates="results")
+    follower_account: Mapped[Account] = relationship()
+
+
 def as_uuid(value: str) -> UUID:
     return UUID(value)
 
@@ -298,6 +348,8 @@ __all__ = [
     "AdminUser",
     "AuditEvent",
     "CopyJob",
+    "CopyTestResult",
+    "CopyTestRun",
     "ExecutionAcknowledgement",
     "RiskProfile",
     "SourceTradeEvent",

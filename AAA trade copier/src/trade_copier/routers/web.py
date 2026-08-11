@@ -9,17 +9,25 @@ from sqlalchemy.orm import Session, selectinload
 from starlette.responses import Response
 
 from ..dependencies import request_session, require_user
-from ..domain.enums import AccountRole, AccountState, JobStatus, RiskMode
+from ..domain.enums import AccountRole, AccountState, JobStatus, RiskMode, Side
 from ..models import (
     Account,
     AdminUser,
     AuditEvent,
     CopyJob,
+    CopyTestResult,
+    CopyTestRun,
     RiskProfile,
     SourceTradeEvent,
     SymbolMapping,
 )
-from ..schemas import AccountCreate, AccountUpdate, RiskProfileCreate, SymbolMappingCreate
+from ..schemas import (
+    AccountCreate,
+    AccountUpdate,
+    CopyTestInput,
+    RiskProfileCreate,
+    SymbolMappingCreate,
+)
 from ..security import validate_csrf
 from ..services.accounts import (
     create_account,
@@ -30,6 +38,7 @@ from ..services.accounts import (
     update_account,
 )
 from ..services.audit import record_audit
+from ..services.copy_test import CopyTestRunner
 from ..services.credentials import build_credential_vault
 from ..services.mt5_discovery import detect_and_import_running_accounts
 from ..services.terminals import TerminalManager
@@ -291,6 +300,57 @@ def account_master(
     except ValueError as exc:
         return RedirectResponse(f"/accounts?error={exc!s}", status_code=303)
     return RedirectResponse("/accounts", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@router.get("/copy-test", name="copy-test")
+def copy_test_page(
+    request: Request,
+    session: Annotated[Session, Depends(request_session)],
+) -> Response:
+    user = _user(request, session)
+    runs = session.scalars(
+        select(CopyTestRun)
+        .options(selectinload(CopyTestRun.results).selectinload(CopyTestResult.follower_account))
+        .order_by(CopyTestRun.created_at.desc())
+        .limit(20)
+    ).all()
+    return templates.TemplateResponse(
+        request,
+        "copy_test.html",
+        page_context(request, user=user, runs=runs, sides=list(Side)),
+    )
+
+
+@router.post("/copy-test", name="copy-test-run")
+def copy_test_run(
+    request: Request,
+    symbol: Annotated[str, Form()],
+    side: Annotated[str, Form()],
+    master_volume: Annotated[Decimal, Form()],
+    entry_price: Annotated[Decimal, Form()],
+    stop_loss: Annotated[Decimal, Form()],
+    confirmation: Annotated[str, Form()],
+    csrf: Annotated[str, Form()],
+    session: Annotated[Session, Depends(request_session)],
+    take_profit: Annotated[Decimal | None, Form()] = None,
+) -> Response:
+    user = _user(request, session)
+    validate_csrf(request, csrf)
+    if confirmation.strip().upper() != "TEST":
+        return RedirectResponse("/copy-test?error=Type+TEST+to+confirm", status_code=303)
+    try:
+        data = CopyTestInput(
+            symbol=symbol,
+            side=Side(side),
+            master_volume=master_volume,
+            entry_price=entry_price,
+            stop_loss=stop_loss,
+            take_profit=take_profit,
+        )
+        run = CopyTestRunner().run(session, data, actor=user.email)
+    except (ValidationError, ValueError) as exc:
+        return RedirectResponse(f"/copy-test?error={exc!s}", status_code=303)
+    return RedirectResponse(f"/copy-test?notice=Copy+test+finished&run={run.id}", status_code=303)
 
 
 @router.get("/trades", name="trades")

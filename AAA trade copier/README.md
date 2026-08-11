@@ -66,6 +66,20 @@ Every account card includes **Edit and manage** controls for its name, terminal 
 
 No sample accounts, risk profiles, mappings, trades, or performance records are created. Early development demo records are removed automatically by an exact one-time compatibility cleanup, without touching user-created accounts.
 
+## Cross-account copy test
+
+Open **Copy test** from the navigation or dashboard. Enter one synthetic master trade and type `TEST`. The runner checks every configured follower and records:
+
+- follower state and terminal health;
+- assigned risk profile;
+- master-to-follower symbol mapping;
+- follower contract specification and volume step;
+- spread limit;
+- calculated follower volume and cash risk;
+- the exact error for every failed follower.
+
+The diagnostic does not place a broker order. It proves the database routing and risk configuration before the guarded MT5 execution layer is enabled.
+
 ## MT5 demo integration
 
 The integration sources live in [mt5/README.md](mt5/README.md). Every follower account page shows the exact pipe name and account UUID required by its Executor EA. The master uses `aaa_trade_copier_master` and the active master account UUID.
