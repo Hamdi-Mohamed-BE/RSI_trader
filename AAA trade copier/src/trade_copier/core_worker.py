@@ -11,6 +11,7 @@ from .domain.messages import SourceTradeMessage
 from .models import Account
 from .services.accounts import ensure_system_state
 from .services.copier import CopierCore
+from .services.mt5_discovery import detect_and_import_running_accounts
 from .transport.protocol import ProtocolError, decode_message
 from .transport.windows_named_pipe import WindowsNamedPipeTransport
 from .transport.windows_pipe_io import PyWin32PipeChannel, WindowsNamedPipeServer
@@ -102,8 +103,10 @@ async def consume_master(
 
 async def watchdog(settings: Settings) -> None:
     while True:
+        with SessionLocal() as session:
+            detect_and_import_running_accounts(session, actor="connection-monitor")
         mark_stale_accounts(settings)
-        await asyncio.sleep(1)
+        await asyncio.sleep(settings.mt5_discovery_interval_seconds)
 
 
 async def run() -> None:

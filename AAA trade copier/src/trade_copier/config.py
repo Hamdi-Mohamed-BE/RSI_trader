@@ -30,7 +30,8 @@ class Settings(BaseSettings):
     admin_email: str = "admin@aaa.local"
     admin_password: str = ""
 
-    heartbeat_timeout_seconds: int = Field(default=5, ge=2, le=120)
+    heartbeat_timeout_seconds: int = Field(default=15, ge=5, le=300)
+    mt5_discovery_interval_seconds: int = Field(default=5, ge=2, le=60)
     max_follower_accounts: int = Field(default=10, ge=1, le=100)
     master_pipe_name: str = "aaa_trade_copier_master"
     follower_pipe_prefix: str = "aaa_trade_copier_follower"

@@ -1,6 +1,6 @@
 from collections.abc import Generator
 
-from sqlalchemy import Engine, create_engine, event
+from sqlalchemy import Engine, create_engine, event, inspect, text
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from .config import Settings, get_settings
@@ -51,4 +51,25 @@ def get_session() -> Generator[Session]:
 def create_schema(active_engine: Engine | None = None) -> None:
     from . import models  # noqa: F401
 
-    Base.metadata.create_all(active_engine or engine)
+    selected_engine = active_engine or engine
+    Base.metadata.create_all(selected_engine)
+    _upgrade_copy_test_schema(selected_engine)
+
+
+def _upgrade_copy_test_schema(selected_engine: Engine) -> None:
+    """Preserve existing local history while adding new copy-test fields."""
+    with selected_engine.begin() as connection:
+        columns = {
+            column["name"] for column in inspect(connection).get_columns("copy_test_runs")
+        }
+        if "order_type" not in columns:
+            connection.execute(
+                text(
+                    "ALTER TABLE copy_test_runs ADD COLUMN order_type "
+                    "VARCHAR(16) NOT NULL DEFAULT 'market'"
+                )
+            )
+        if "market_price" not in columns:
+            connection.execute(
+                text("ALTER TABLE copy_test_runs ADD COLUMN market_price NUMERIC(20, 8)")
+            )

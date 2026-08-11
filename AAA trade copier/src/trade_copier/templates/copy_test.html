@@ -15,14 +15,22 @@
     <form class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4" method="post" action="/copy-test" hx-boost="false">
         <input type="hidden" name="csrf" value="{{ csrf_token }}">
         <label class="field-label">Master symbol<input class="field" name="symbol" value="XAUUSD" required></label>
-        <label class="field-label">Side<select class="field" name="side">{% for side in sides %}<option value="{{ side.value }}">{{ side.value|title }}</option>{% endfor %}</select></label>
+        <label class="field-label">Direction<select class="field" name="side">{% for side in sides %}<option value="{{ side.value }}">{{ side.value|title }}</option>{% endfor %}</select><small>Choose Buy or Sell.</small></label>
+        <label class="field-label">Order type<select class="field" name="order_type">{% for order_type in order_types %}<option value="{{ order_type.value }}">{{ order_type.value|title }}</option>{% endfor %}</select><small>Market enters now; Limit and Stop are pending entries.</small></label>
         <label class="field-label">Master volume<input class="field" type="number" name="master_volume" value="0.10" min="0.01" step="0.01" required></label>
-        <label class="field-label">Entry price<input class="field" type="number" name="entry_price" placeholder="2400.00" min="0.00001" step="0.00001" required></label>
-        <label class="field-label">Stop loss<input class="field" type="number" name="stop_loss" placeholder="2390.00" min="0.00001" step="0.00001" required></label>
-        <label class="field-label">Take profit (optional)<input class="field" type="number" name="take_profit" min="0.00001" step="0.00001"></label>
+        <label class="field-label">Reference market price<input class="field" type="number" name="market_price" placeholder="2400.00" min="0.00001" step="0.00001"><small>Required for Limit and Stop so their position above or below market can be checked.</small></label>
+        <label class="field-label">Entry / trigger price<input class="field" type="number" name="entry_price" placeholder="2400.00" min="0.00001" step="0.00001" required><small>The requested entry price for this test.</small></label>
+        <label class="field-label">Stop loss (SL)<input class="field" type="number" name="stop_loss" placeholder="2390.00" min="0.00001" step="0.00001" required><small>Below entry for Buy; above entry for Sell.</small></label>
+        <label class="field-label">Take profit (TP)<input class="field" type="number" name="take_profit" placeholder="Optional" min="0.00001" step="0.00001"><small>Above entry for Buy; below entry for Sell.</small></label>
         <label class="field-label">Confirmation<input class="field" name="confirmation" placeholder="Type TEST" required><small>The test creates diagnostic records only.</small></label>
         <div class="flex items-end"><button class="button-primary w-full" type="submit">Run across all followers</button></div>
     </form>
+    <div class="mt-5 grid gap-3 text-xs text-muted sm:grid-cols-2 xl:grid-cols-4">
+        <p class="rounded-lg border border-line bg-void/50 p-3"><strong class="text-white">Buy Limit</strong><br>Entry below market</p>
+        <p class="rounded-lg border border-line bg-void/50 p-3"><strong class="text-white">Sell Limit</strong><br>Entry above market</p>
+        <p class="rounded-lg border border-line bg-void/50 p-3"><strong class="text-white">Buy Stop</strong><br>Entry above market</p>
+        <p class="rounded-lg border border-line bg-void/50 p-3"><strong class="text-white">Sell Stop</strong><br>Entry below market</p>
+    </div>
 </section>
 
 <section class="mt-8">
@@ -31,7 +39,7 @@
     {% for run in runs %}
     <article class="surface {% if request.query_params.get('run') == run.id %}border-cyan{% endif %}">
         <div class="surface-header">
-            <div><p class="eyebrow">{{ run.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p><h3 class="section-title">{{ run.side|upper }} {{ run.symbol }} · {{ run.master_volume }} lots</h3></div>
+            <div><p class="eyebrow">{{ run.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p><h3 class="section-title">{{ run.side|upper }} {{ run.order_type|upper }} {{ run.symbol }} · {{ run.master_volume }} lots</h3></div>
             <span class="badge {% if run.failed_followers %}badge-failed{% else %}badge-filled{% endif %}">{{ run.status|replace('_',' ') }}</span>
         </div>
         <div class="mt-5 grid gap-3 sm:grid-cols-3">
@@ -39,13 +47,19 @@
             <div class="account-row"><div><small>Passed</small><strong class="text-green">{{ run.passed_followers }}</strong></div></div>
             <div class="account-row"><div><small>Errors</small><strong class="text-red">{{ run.failed_followers }}</strong></div></div>
         </div>
+        <div class="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="account-row"><div><small>Market reference</small><strong>{{ run.market_price if run.market_price is not none else 'Not needed' }}</strong></div></div>
+            <div class="account-row"><div><small>Entry / trigger</small><strong>{{ run.entry_price }}</strong></div></div>
+            <div class="account-row"><div><small>Stop loss</small><strong>{{ run.stop_loss }}</strong></div></div>
+            <div class="account-row"><div><small>Take profit</small><strong>{{ run.take_profit if run.take_profit is not none else 'Not set' }}</strong></div></div>
+        </div>
         {% if run.error %}<p class="mt-4 rounded-xl border border-red/40 bg-red/10 p-3 text-sm text-red">{{ run.error }}</p>{% endif %}
         <div class="table-wrap mt-5">
-            <table><thead><tr><th>Follower</th><th>Status</th><th>Mapped symbol</th><th>Calculated volume</th><th>Risk cash</th><th>Error</th></tr></thead>
+            <table><thead><tr><th>Follower</th><th>Status</th><th>Mapped symbol</th><th>Entry / SL / TP</th><th>Calculated volume</th><th>Risk cash</th><th>Error</th></tr></thead>
             <tbody>
             {% for result in run.results %}
-            <tr><td>{{ result.follower_account.display_name }}</td><td><span class="badge badge-{{ 'filled' if result.status == 'passed' else 'failed' }}">{{ result.status }}</span></td><td>{{ result.follower_symbol or '—' }}</td><td>{{ result.calculated_volume or '—' }}</td><td>{{ result.calculated_risk_cash or '—' }}</td><td class="max-w-xl text-red">{{ result.error or 'Ready for copy routing' }}</td></tr>
-            {% else %}<tr><td colspan="6" class="empty-cell">No follower results. {{ run.error }}</td></tr>{% endfor %}
+            <tr><td>{{ result.follower_account.display_name }}</td><td><span class="badge badge-{{ 'filled' if result.status == 'passed' else 'failed' }}">{{ result.status }}</span></td><td>{{ result.follower_symbol or '—' }}</td><td class="font-mono text-xs"><span class="block">Entry {{ result.checks.get('entry_price', '—') }}</span><span class="block text-red">SL {{ result.checks.get('stop_loss', '—') }}</span><span class="block text-green">TP {{ result.checks.get('take_profit') or '—' }}</span></td><td>{{ result.calculated_volume or '—' }}</td><td>{{ result.calculated_risk_cash or '—' }}</td><td class="max-w-xl text-red">{{ result.error or 'Ready for copy routing' }}</td></tr>
+            {% else %}<tr><td colspan="7" class="empty-cell">No follower results. {{ run.error }}</td></tr>{% endfor %}
             </tbody></table>
         </div>
     </article>

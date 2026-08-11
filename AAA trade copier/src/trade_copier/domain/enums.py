@@ -42,6 +42,12 @@ class Side(StrEnum):
     SELL = "sell"
 
 
+class OrderType(StrEnum):
+    MARKET = "market"
+    LIMIT = "limit"
+    STOP = "stop"
+
+
 class RiskMode(StrEnum):
     STOP_PERCENT = "stop_percent"
     FIXED_CASH = "fixed_cash"

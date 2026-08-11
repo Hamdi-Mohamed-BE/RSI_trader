@@ -68,7 +68,7 @@ No sample accounts, risk profiles, mappings, trades, or performance records are 
 
 ## Cross-account copy test
 
-Open **Copy test** from the navigation or dashboard. Enter one synthetic master trade and type `TEST`. The runner checks every configured follower and records:
+Open **Copy test** from the navigation or dashboard. Enter one synthetic master trade and type `TEST`. Tests support Buy or Sell with Market, Limit, and Stop entries, plus stop-loss and optional take-profit prices. Limit and Stop tests also require a reference market price so the pending entry direction can be validated. The runner checks every configured follower and records:
 
 - follower state and terminal health;
 - assigned risk profile;
@@ -76,6 +76,7 @@ Open **Copy test** from the navigation or dashboard. Enter one synthetic master 
 - follower contract specification and volume step;
 - spread limit;
 - calculated follower volume and cash risk;
+- mapped entry, stop-loss, and take-profit prices;
 - the exact error for every failed follower.
 
 The diagnostic does not place a broker order. It proves the database routing and risk configuration before the guarded MT5 execution layer is enabled.

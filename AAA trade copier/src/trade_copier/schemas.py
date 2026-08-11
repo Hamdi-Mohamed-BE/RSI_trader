@@ -1,9 +1,9 @@
 from decimal import Decimal
 from pathlib import Path
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
-from .domain.enums import AccountRole, AccountState, RiskMode, Side
+from .domain.enums import AccountRole, AccountState, OrderType, RiskMode, Side
 
 
 class LoginInput(BaseModel):
@@ -75,7 +75,9 @@ class SymbolMappingCreate(BaseModel):
 class CopyTestInput(BaseModel):
     symbol: str = Field(min_length=2, max_length=32)
     side: Side
+    order_type: OrderType = OrderType.MARKET
     master_volume: Decimal = Field(gt=0, le=Decimal("1000"))
+    market_price: Decimal | None = Field(default=None, gt=0)
     entry_price: Decimal = Field(gt=0)
     stop_loss: Decimal = Field(gt=0)
     take_profit: Decimal | None = Field(default=None, gt=0)
@@ -85,16 +87,33 @@ class CopyTestInput(BaseModel):
     def normalize_symbol(cls, value: str) -> str:
         return value.strip().upper()
 
-    @field_validator("stop_loss")
-    @classmethod
-    def validate_stop_loss(cls, value: Decimal) -> Decimal:
-        return value
-
+    @model_validator(mode="after")
     def validate_prices(self) -> "CopyTestInput":
         if self.side is Side.BUY and self.stop_loss >= self.entry_price:
             raise ValueError("A buy stop loss must be below entry.")
         if self.side is Side.SELL and self.stop_loss <= self.entry_price:
             raise ValueError("A sell stop loss must be above entry.")
+        if self.take_profit is not None:
+            if self.side is Side.BUY and self.take_profit <= self.entry_price:
+                raise ValueError("A buy take profit must be above entry.")
+            if self.side is Side.SELL and self.take_profit >= self.entry_price:
+                raise ValueError("A sell take profit must be below entry.")
+
+        if self.order_type is OrderType.MARKET:
+            return self
+        if self.market_price is None:
+            raise ValueError("Reference market price is required for limit and stop orders.")
+
+        if self.order_type is OrderType.LIMIT:
+            if self.side is Side.BUY and self.entry_price >= self.market_price:
+                raise ValueError("A buy limit entry must be below the market price.")
+            if self.side is Side.SELL and self.entry_price <= self.market_price:
+                raise ValueError("A sell limit entry must be above the market price.")
+        if self.order_type is OrderType.STOP:
+            if self.side is Side.BUY and self.entry_price <= self.market_price:
+                raise ValueError("A buy stop entry must be above the market price.")
+            if self.side is Side.SELL and self.entry_price >= self.market_price:
+                raise ValueError("A sell stop entry must be below the market price.")
         return self
 
 

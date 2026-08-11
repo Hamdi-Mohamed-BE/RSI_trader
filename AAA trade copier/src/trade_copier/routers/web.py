@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session, selectinload
 from starlette.responses import Response
 
 from ..dependencies import request_session, require_user
-from ..domain.enums import AccountRole, AccountState, JobStatus, RiskMode, Side
+from ..domain.enums import AccountRole, AccountState, JobStatus, OrderType, RiskMode, Side
 from ..models import (
     Account,
     AdminUser,
@@ -317,7 +317,13 @@ def copy_test_page(
     return templates.TemplateResponse(
         request,
         "copy_test.html",
-        page_context(request, user=user, runs=runs, sides=list(Side)),
+        page_context(
+            request,
+            user=user,
+            runs=runs,
+            sides=list(Side),
+            order_types=list(OrderType),
+        ),
     )
 
 
@@ -332,6 +338,8 @@ def copy_test_run(
     confirmation: Annotated[str, Form()],
     csrf: Annotated[str, Form()],
     session: Annotated[Session, Depends(request_session)],
+    order_type: Annotated[str, Form()] = OrderType.MARKET.value,
+    market_price: Annotated[Decimal | None, Form()] = None,
     take_profit: Annotated[Decimal | None, Form()] = None,
 ) -> Response:
     user = _user(request, session)
@@ -342,11 +350,15 @@ def copy_test_run(
         data = CopyTestInput(
             symbol=symbol,
             side=Side(side),
+            order_type=OrderType(order_type),
             master_volume=master_volume,
+            market_price=market_price,
             entry_price=entry_price,
             stop_loss=stop_loss,
             take_profit=take_profit,
         )
+        if request.app.state.settings.auto_detect_mt5:
+            detect_and_import_running_accounts(session, actor="copy-test-refresh")
         run = CopyTestRunner().run(session, data, actor=user.email)
     except (ValidationError, ValueError) as exc:
         return RedirectResponse(f"/copy-test?error={exc!s}", status_code=303)

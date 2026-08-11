@@ -23,6 +23,7 @@ from .domain.enums import (
     AuditSeverity,
     ExecutionMode,
     JobStatus,
+    OrderType,
     RiskMode,
     TerminalHealth,
 )
@@ -297,7 +298,9 @@ class CopyTestRun(TimestampMixin, Base):
     )
     symbol: Mapped[str] = mapped_column(String(32))
     side: Mapped[str] = mapped_column(String(8))
+    order_type: Mapped[str] = mapped_column(String(16), default=OrderType.MARKET.value)
     master_volume: Mapped[Decimal] = mapped_column(Numeric(16, 4))
+    market_price: Mapped[Decimal | None] = mapped_column(Numeric(20, 8), nullable=True)
     entry_price: Mapped[Decimal] = mapped_column(Numeric(20, 8))
     stop_loss: Mapped[Decimal] = mapped_column(Numeric(20, 8))
     take_profit: Mapped[Decimal | None] = mapped_column(Numeric(20, 8), nullable=True)

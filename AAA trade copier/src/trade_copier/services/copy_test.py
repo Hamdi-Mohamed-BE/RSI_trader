@@ -20,13 +20,14 @@ class CopyTestRunner:
         self.snapshots = DatabaseSnapshotProvider()
 
     def run(self, session: Session, data: CopyTestInput, *, actor: str) -> CopyTestRun:
-        data.validate_prices()
         master = session.scalar(select(Account).where(Account.is_master.is_(True)))
         run = CopyTestRun(
             master_account_id=master.id if master else None,
             symbol=data.symbol,
             side=data.side.value,
+            order_type=data.order_type.value,
             master_volume=data.master_volume,
+            market_price=data.market_price,
             entry_price=data.entry_price,
             stop_loss=data.stop_loss,
             take_profit=data.take_profit,
@@ -72,7 +73,12 @@ class CopyTestRunner:
                 f"Copy test completed: {run.passed_followers} passed, "
                 f"{run.failed_followers} failed."
             ),
-            details={"symbol": run.symbol, "status": run.status},
+            details={
+                "symbol": run.symbol,
+                "side": run.side,
+                "order_type": run.order_type,
+                "status": run.status,
+            },
         )
         session.commit()
         session.refresh(run)
@@ -90,13 +96,27 @@ class CopyTestRunner:
             "account_state": follower.state,
             "terminal_health": follower.health,
             "risk_profile": bool(follower.risk_profile),
+            "side": data.side.value,
+            "order_type": data.order_type.value,
         }
         follower_symbol = data.symbol
         try:
             if follower.state != AccountState.ACTIVE.value:
                 raise ValueError(f"Follower state is {follower.state}; set it to active.")
             if follower.health != TerminalHealth.HEALTHY.value:
-                raise ValueError(f"Terminal health is {follower.health}; reconnect MT5 first.")
+                if not follower.terminal_path:
+                    raise ValueError(
+                        "No MT5 terminal is assigned. Set terminal64.exe on the Accounts page."
+                    )
+                if follower.terminal is None or follower.terminal.process_id is None:
+                    raise ValueError(
+                        "No running MT5 process is matched. Start this account's dedicated "
+                        "terminal, log in, then press Detect connected MT5."
+                    )
+                raise ValueError(
+                    f"MT5 process {follower.terminal.process_id} is not confirmed connected. "
+                    "Log into that terminal, enable Algo Trading, then detect accounts again."
+                )
             profile = follower.risk_profile
             if profile is None:
                 raise ValueError("No risk profile is assigned.")
@@ -113,8 +133,26 @@ class CopyTestRunner:
             price_offset = Decimal(mapping.price_offset) if mapping else Decimal("0")
             follower_symbol = mapping.follower_symbol if mapping else data.symbol
             entry = data.entry_price + price_offset
+            market = data.market_price + price_offset if data.market_price is not None else None
             stop_distance = abs(data.entry_price - data.stop_loss)
             stop = entry - stop_distance if data.side.value == "buy" else entry + stop_distance
+            target = None
+            if data.take_profit is not None:
+                target_distance = abs(data.take_profit - data.entry_price)
+                target = (
+                    entry + target_distance
+                    if data.side.value == "buy"
+                    else entry - target_distance
+                )
+            checks.update(
+                {
+                    "mapped_symbol": follower_symbol,
+                    "market_price": str(market) if market is not None else None,
+                    "entry_price": str(entry),
+                    "stop_loss": str(stop),
+                    "take_profit": str(target) if target is not None else None,
+                }
+            )
 
             snapshot = self.snapshots.get(session, follower, follower_symbol)
             spec = snapshot.contract
@@ -138,7 +176,6 @@ class CopyTestRunner:
             )
             checks.update(
                 {
-                    "mapped_symbol": follower_symbol,
                     "contract_spec": spec.symbol,
                     "spread_points": matching_spec.spread_points,
                     "volume_step": str(spec.volume_step),
