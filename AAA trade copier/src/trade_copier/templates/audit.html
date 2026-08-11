@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Audit trail · {{ app_name }}{% endblock %}
+{% block content %}
+<p class="eyebrow">Governance</p><h1 class="page-title">Configuration and decision audit</h1><p class="page-copy">Secrets are excluded. Identity, action, target, safety severity, and non-sensitive details remain searchable evidence.</p>
+<section class="surface mt-8"><div class="table-wrap"><table><thead><tr><th>Time</th><th>Severity</th><th>Actor</th><th>Action</th><th>Target</th><th>Message</th></tr></thead><tbody>{% for event in events %}<tr><td>{{ event.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td><td><span class="badge">{{ event.severity }}</span></td><td>{{ event.actor }}</td><td class="font-mono text-xs text-cyan">{{ event.action }}</td><td>{{ event.target_type }} {{ event.target_id[:8] }}</td><td>{{ event.message }}</td></tr>{% else %}<tr><td colspan="6" class="empty-cell">No audit events recorded.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}
+

@@ -1,6 +1,6 @@
 # MT5 Multi-Account Trade Copier — Project Plan
 
-Status: planning only. This document does not create, install, or run any trading software.
+Status: implementation in progress. The safe control plane, durable copier core, simulator, Windows named-pipe transport, and guarded MQL5 integration agents are implemented. Broker order placement remains disabled until the Phase 7 demo qualification criteria pass.
 
 ## 1. Objective
 

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Trade tree · {{ app_name }}{% endblock %}
+{% block content %}
+<p class="eyebrow">Durable execution journal</p><h1 class="page-title">Master-to-follower trade tree</h1><p class="page-copy">Every eligible event ends in an acknowledgement or an explicit rejection. Silent misses are not accepted.</p>
+<div class="mt-8 grid gap-5">
+{% for event in events %}
+<article class="surface">
+    <div class="surface-header"><div><p class="eyebrow">{{ event.action }} · sequence {{ event.sequence }}</p><h2 class="section-title">{{ event.side|upper }} {{ event.symbol }} at {{ event.entry_price }}</h2><p class="mt-1 text-sm text-muted">Source order {{ event.source_order_id }} · event {{ event.event_uid[:8] }}</p></div><span class="badge">{{ event.jobs|length }} follower jobs</span></div>
+    <div class="table-wrap mt-5"><table><thead><tr><th>Follower</th><th>Symbol</th><th>Volume</th><th>Risk cash</th><th>Status</th><th>Fill</th><th>Latency</th><th>Evidence</th></tr></thead><tbody>
+    {% for job in event.jobs %}<tr><td>{{ job.follower_account.display_name }}</td><td>{{ job.follower_symbol }}</td><td>{{ job.requested_volume }}</td><td>{{ job.risk_cash }}</td><td><span class="badge badge-{{ job.status }}">{{ job.status }}</span></td><td>{{ job.acknowledgement.filled_price if job.acknowledgement else '—' }}</td><td>{{ job.local_latency_ms or '—' }}{% if job.local_latency_ms %} ms{% endif %}</td><td class="max-w-sm text-muted">{{ job.rejection_reason or (job.acknowledgement.broker_order_id if job.acknowledgement else 'Awaiting acknowledgement') }}</td></tr>{% else %}<tr><td colspan="8" class="empty-cell">No eligible followers.</td></tr>{% endfor %}
+    </tbody></table></div>
+</article>
+{% else %}<article class="surface empty-state">No source trade events recorded.</article>{% endfor %}
+</div>
+{% endblock %}
+

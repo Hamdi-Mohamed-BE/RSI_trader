@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@source "../../src/trade_copier/templates/**/*.html";
+@source "../../src/trade_copier/static/js/**/*.js";
+
+@theme {
+    --color-void: #030812;
+    --color-panel: #071425;
+    --color-panel-2: #0b1a2e;
+    --color-line: #17324d;
+    --color-cyan: #0fe1f3;
+    --color-violet: #a855f7;
+    --color-green: #32d583;
+    --color-amber: #f8b84e;
+    --color-red: #ff5277;
+    --color-muted: #91a3ba;
+    --font-mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+}
+
+@layer base {
+    * { scrollbar-color: #17324d #030812; }
+    body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    button, input, select { font: inherit; }
+    table { @apply w-full border-collapse text-left text-sm; }
+    th { @apply border-b border-line px-4 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-muted; }
+    td { @apply border-b border-line/70 px-4 py-4 align-top; }
+}
+
+@layer components {
+    .cyber-grid {
+        background-image:
+            linear-gradient(rgba(23, 50, 77, .45) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(23, 50, 77, .45) 1px, transparent 1px);
+        background-size: 64px 64px;
+        mask-image: linear-gradient(to bottom, black, transparent 88%);
+    }
+    .nav-link { @apply rounded-lg border border-transparent px-4 py-3 text-sm font-semibold text-muted transition hover:border-line hover:bg-panel-2 hover:text-white; }
+    .button-primary { @apply inline-flex min-h-11 items-center justify-center rounded-lg border border-cyan bg-cyan px-5 py-2.5 font-mono text-sm font-bold uppercase tracking-[0.08em] text-void transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-cyan/50; }
+    .button-secondary { @apply inline-flex min-h-10 items-center justify-center rounded-lg border border-line bg-panel px-4 py-2 font-mono text-xs font-bold uppercase tracking-[0.08em] text-slate-100 transition hover:border-cyan hover:text-cyan; }
+    .button-danger { @apply inline-flex min-h-11 items-center justify-center rounded-lg border border-red bg-red/10 px-5 py-2.5 font-mono text-sm font-bold uppercase tracking-[0.08em] text-red transition hover:bg-red hover:text-void; }
+    .field-label { @apply grid gap-2 text-sm font-semibold text-slate-200; }
+    .field-label small { @apply font-normal leading-5 text-muted; }
+    .field { @apply min-h-11 w-full rounded-lg border border-line bg-void/80 px-3.5 py-2.5 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-cyan focus:ring-2 focus:ring-cyan/15; }
+    .eyebrow { @apply font-mono text-xs font-bold uppercase tracking-[0.18em] text-cyan; }
+    .page-title { @apply mt-2 text-3xl font-black tracking-tight text-white md:text-4xl; }
+    .page-copy { @apply mt-3 max-w-3xl text-base leading-7 text-muted; }
+    .section-title { @apply mt-1 text-xl font-bold text-white; }
+    .surface { @apply rounded-2xl border border-line bg-panel/90 p-5 shadow-2xl shadow-black/10 md:p-6; }
+    .surface-header { @apply flex items-start justify-between gap-4; }
+    .metric-card { @apply grid min-h-36 content-between rounded-2xl border border-line bg-panel p-5; }
+    .metric-card span { @apply font-mono text-xs uppercase tracking-[0.12em] text-muted; }
+    .metric-card strong { @apply mt-4 text-3xl font-black; }
+    .metric-card small { @apply mt-2 text-xs leading-5 text-muted; }
+    .data-label { @apply font-mono text-[11px] uppercase tracking-[0.12em] text-muted; }
+    .data-value { @apply mt-1 text-xl font-bold; }
+    .data-help { @apply mt-1 text-xs text-muted; }
+    .account-row { @apply flex items-center justify-between gap-4 rounded-xl border border-line bg-void/55 p-4; }
+    .account-row strong { @apply block text-sm text-white; }
+    .account-row small { @apply mt-1 block text-xs text-muted; }
+    .badge { @apply inline-flex rounded-full border border-line bg-void/60 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted; }
+    .badge-filled, .badge-acknowledged { @apply border-green/50 text-green; }
+    .badge-rejected, .badge-failed { @apply border-red/50 text-red; }
+    .badge-dispatched, .badge-queued { @apply border-cyan/50 text-cyan; }
+    .status-dot { @apply mt-2 block size-3 rounded-full bg-slate-600 shadow-[0_0_16px_currentColor]; }
+    .status-green { @apply bg-green text-green; }
+    .status-muted { @apply text-slate-600; }
+    .text-link { @apply text-sm font-semibold text-cyan hover:text-white; }
+    .table-wrap { @apply overflow-x-auto rounded-xl border border-line; }
+    .empty-cell { @apply py-10 text-center text-muted; }
+    .empty-state { @apply py-8 text-center text-sm text-muted; }
+}
+

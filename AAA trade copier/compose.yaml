@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    command: aaa-trade-copier-web
+    environment: &app-environment
+      APP_ENV: development
+      APP_SECRET_KEY: ${APP_SECRET_KEY:-docker-demo-only-change-this-secret}
+      DATABASE_URL: sqlite:////app/storage/trade_copier.db
+      WEB_HOST: 0.0.0.0
+      WEB_PORT: 8100
+      SAFE_MODE: "true"
+      LIVE_EXECUTION_ENABLED: "false"
+      DEMO_MODE: "true"
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@aaa.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-AAA-Copier-Docker-2026!}
+    ports:
+      - "8100:8100"
+    volumes:
+      - copier-data:/app/storage
+    restart: unless-stopped
+
+volumes:
+  copier-data:

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Log in · {{ app_name }}{% endblock %}
+{% block anonymous %}
+<main class="relative grid min-h-screen place-items-center overflow-hidden p-6">
+    <div class="absolute inset-0 cyber-grid opacity-60"></div>
+    <section class="relative w-full max-w-md rounded-2xl border border-line bg-panel/95 p-8 shadow-2xl shadow-cyan/5">
+        <div class="mb-8">
+            <span class="inline-grid size-12 place-items-center rounded-xl border border-cyan bg-cyan/10 font-black text-cyan">AAA</span>
+            <p class="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-cyan">Secure control plane</p>
+            <h1 class="mt-2 text-3xl font-bold">Trade Copier</h1>
+            <p class="mt-2 text-sm leading-6 text-muted">Sign in to manage local MT5 accounts, routing, risk, and demo execution.</p>
+        </div>
+        {% if error %}<div class="mb-5 rounded-lg border border-red/40 bg-red/10 px-4 py-3 text-sm text-red">{{ error }}</div>{% endif %}
+        <form method="post" action="/login" class="grid gap-5" hx-boost="false">
+            <input type="hidden" name="csrf" value="{{ csrf_token }}">
+            <label class="field-label">Email
+                <input class="field" type="email" name="email" autocomplete="username" required autofocus>
+            </label>
+            <label class="field-label">Password
+                <input class="field" type="password" name="password" autocomplete="current-password" required>
+            </label>
+            <button class="button-primary mt-2" type="submit">Enter dashboard</button>
+        </form>
+        <p class="mt-6 border-t border-line pt-5 text-xs leading-5 text-muted">Dashboard authentication is separate from MT5 credentials. Broker passwords are never stored in SQLite.</p>
+    </section>
+</main>
+{% endblock %}
+
