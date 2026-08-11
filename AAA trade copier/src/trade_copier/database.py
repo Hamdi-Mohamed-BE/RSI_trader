@@ -55,6 +55,7 @@ def create_schema(active_engine: Engine | None = None) -> None:
     Base.metadata.create_all(selected_engine)
     _upgrade_copy_test_schema(selected_engine)
     _upgrade_terminal_schema(selected_engine)
+    _upgrade_risk_profile_schema(selected_engine)
 
 
 def _upgrade_copy_test_schema(selected_engine: Engine) -> None:
@@ -87,5 +88,20 @@ def _upgrade_terminal_schema(selected_engine: Engine) -> None:
                 text(
                     "ALTER TABLE terminal_instances ADD COLUMN last_error "
                     "TEXT NOT NULL DEFAULT ''"
+                )
+            )
+
+
+def _upgrade_risk_profile_schema(selected_engine: Engine) -> None:
+    """Add explicit disabled daily-profit caps to existing profiles."""
+    with selected_engine.begin() as connection:
+        columns = {
+            column["name"] for column in inspect(connection).get_columns("risk_profiles")
+        }
+        if "max_daily_profit_percent" not in columns:
+            connection.execute(
+                text(
+                    "ALTER TABLE risk_profiles ADD COLUMN max_daily_profit_percent "
+                    "NUMERIC(8, 4) NOT NULL DEFAULT 0"
                 )
             )

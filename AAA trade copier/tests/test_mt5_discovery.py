@@ -8,6 +8,7 @@ from trade_copier.models import Account, CopyJob, RiskProfile, SourceTradeEvent,
 from trade_copier.services.demo import seed_demo
 from trade_copier.services.demo_cleanup import remove_legacy_demo_seed
 from trade_copier.services.mt5_discovery import DetectedMt5Account, import_detected_accounts
+from trade_copier.services.risk_profiles import DEFAULT_RISK_PROFILE_NAME
 
 
 def detected(login: str, server: str, process_id: int) -> DetectedMt5Account:
@@ -65,6 +66,10 @@ def test_legacy_demo_seed_is_removed_completely(
         seed_demo(session)
         assert remove_legacy_demo_seed(session) is True
         assert session.scalar(select(func.count(Account.id))) == 0
-        assert session.scalar(select(func.count(RiskProfile.id))) == 0
+        assert session.scalar(select(func.count(RiskProfile.id))) == 1
+        profile = session.scalar(
+            select(RiskProfile).where(RiskProfile.name == DEFAULT_RISK_PROFILE_NAME)
+        )
+        assert profile is not None
         assert session.scalar(select(func.count(SourceTradeEvent.id))) == 0
         assert session.scalar(select(func.count(CopyJob.id))) == 0

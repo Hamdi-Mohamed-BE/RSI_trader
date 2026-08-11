@@ -20,6 +20,7 @@ from ..domain.enums import (
 from ..models import Account, TerminalInstance
 from .accounts import ensure_system_state
 from .audit import record_audit
+from .risk_profiles import ensure_default_risk_profile
 
 logger = logging.getLogger(__name__)
 TERMINAL_NAMES = {"terminal.exe", "terminal64.exe"}
@@ -136,6 +137,7 @@ def import_detected_accounts(
     actor: str,
 ) -> list[Account]:
     imported: list[Account] = []
+    default_profile = ensure_default_risk_profile(session, actor=actor)
     active_master = session.scalar(select(Account).where(Account.is_master.is_(True)))
     state = ensure_system_state(session)
     now = datetime.now(UTC)
@@ -164,6 +166,9 @@ def import_detected_accounts(
             )
             session.add(account)
             session.flush()
+
+        if account.role == AccountRole.FOLLOWER.value and account.risk_profile_id is None:
+            account.risk_profile_id = default_profile.id
 
         account.terminal_path = detected.terminal_path
         account.account_currency = detected.currency

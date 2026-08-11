@@ -32,7 +32,7 @@
         <label class="field-label">State<select class="field" name="state">{% for item in states %}<option value="{{ item.value }}" {% if item.value == 'paused' %}selected{% endif %}>{{ item.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
         <label class="field-label">Trade mode<select class="field" name="trade_mode"><option value="demo">Demo</option><option value="live">Live</option></select></label>
         <label class="field-label">Position mode<select class="field" name="position_mode"><option value="hedging">Hedging</option><option value="netting">Netting</option></select></label>
-        <label class="field-label">Risk profile<select class="field" name="risk_profile_id"><option value="">Assign later</option>{% for profile in profiles %}<option value="{{ profile.id }}">{{ profile.name }}</option>{% endfor %}</select></label>
+        <label class="field-label">Risk profile<select class="field" name="risk_profile_id"><option value="">Automatic 1% default</option>{% for profile in profiles %}<option value="{{ profile.id }}">{{ profile.name }}</option>{% endfor %}</select></label>
         <label class="field-label md:col-span-2">MT5 password<input class="field" type="password" name="mt5_password" autocomplete="new-password" required><small>Encrypted locally; never returned to the browser, written to SQLite, or placed in a command line.</small></label>
         <div class="flex items-end"><button class="button-primary w-full" type="submit">Add, build and connect</button></div>
     </form>
@@ -88,7 +88,7 @@
                 <label class="field-label">State<select class="field" name="state">{% for item in states %}<option value="{{ item.value }}" {% if account.state == item.value %}selected{% endif %}>{{ item.value|replace('_',' ')|title }}</option>{% endfor %}</select></label>
                 <label class="field-label">Trade mode<select class="field" name="trade_mode"><option value="demo" {% if account.trade_mode == 'demo' %}selected{% endif %}>Demo</option><option value="live" {% if account.trade_mode == 'live' %}selected{% endif %}>Live</option></select></label>
                 <label class="field-label">Position mode<select class="field" name="position_mode"><option value="hedging" {% if account.position_mode == 'hedging' %}selected{% endif %}>Hedging</option><option value="netting" {% if account.position_mode == 'netting' %}selected{% endif %}>Netting</option></select></label>
-                <label class="field-label md:col-span-2">Risk profile<select class="field" name="risk_profile_id"><option value="">None</option>{% for profile in profiles %}<option value="{{ profile.id }}" {% if account.risk_profile_id == profile.id %}selected{% endif %}>{{ profile.name }}</option>{% endfor %}</select></label>
+                <label class="field-label md:col-span-2">Risk profile<select class="field" name="risk_profile_id"><option value="">Automatic 1% default</option>{% for profile in profiles %}<option value="{{ profile.id }}" {% if account.risk_profile_id == profile.id %}selected{% endif %}>{{ profile.name }}</option>{% endfor %}</select></label>
                 <div class="md:col-span-2"><button class="button-primary" type="submit">Save account</button></div>
             </form>
             <form class="mt-6 grid gap-4 border-t border-line pt-5 md:grid-cols-2" method="post" action="/accounts/{{ account.id }}/terminal/provision" hx-boost="false">

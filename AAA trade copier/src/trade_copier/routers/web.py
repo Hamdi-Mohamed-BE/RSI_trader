@@ -509,6 +509,7 @@ def risk_profile_create(
     max_open_positions: Annotated[int, Form()],
     csrf: Annotated[str, Form()],
     session: Annotated[Session, Depends(request_session)],
+    max_daily_profit_percent: Annotated[Decimal, Form()] = Decimal("0"),
 ) -> Response:
     user = _user(request, session)
     validate_csrf(request, csrf)
@@ -519,6 +520,7 @@ def risk_profile_create(
             risk_percent=risk_percent,
             max_total_open_risk_percent=max_total_open_risk_percent,
             max_daily_loss_percent=max_daily_loss_percent,
+            max_daily_profit_percent=max_daily_profit_percent,
             max_spread_points=max_spread_points,
             max_slippage_points=max_slippage_points,
             max_open_positions=max_open_positions,
@@ -532,6 +534,7 @@ def risk_profile_create(
         max_risk_per_trade_percent=data.risk_percent,
         max_total_open_risk_percent=data.max_total_open_risk_percent,
         max_daily_loss_percent=data.max_daily_loss_percent,
+        max_daily_profit_percent=data.max_daily_profit_percent,
         max_spread_points=data.max_spread_points,
         max_slippage_points=data.max_slippage_points,
         max_open_positions=data.max_open_positions,

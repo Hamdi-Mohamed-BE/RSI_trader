@@ -9,6 +9,7 @@ from ..models import Account, CopyJob, RiskProfile, SourceTradeEvent, SystemStat
 from ..schemas import AccountCreate, AccountUpdate
 from .audit import record_audit
 from .credentials import CredentialVault
+from .risk_profiles import ensure_default_risk_profile
 
 
 def ensure_system_state(session: Session) -> SystemState:
@@ -40,6 +41,13 @@ def create_account(
     if data.risk_profile_id and session.get(RiskProfile, data.risk_profile_id) is None:
         raise ValueError("Selected risk profile does not exist.")
 
+    risk_profile_id = data.risk_profile_id
+    if data.role is AccountRole.FOLLOWER and risk_profile_id is None:
+        risk_profile_id = ensure_default_risk_profile(
+            session,
+            actor=actor,
+            assign_missing=False,
+        ).id
     credential_ref = vault.store(data.password) if data.password else ""
     account = Account(
         display_name=data.display_name.strip(),
@@ -51,7 +59,7 @@ def create_account(
         credential_ref=credential_ref,
         trade_mode=data.trade_mode,
         position_mode=data.position_mode,
-        risk_profile_id=data.risk_profile_id,
+        risk_profile_id=risk_profile_id,
     )
     session.add(account)
     session.flush()
@@ -149,7 +157,14 @@ def update_account(
     account.state = data.state.value
     account.trade_mode = data.trade_mode
     account.position_mode = data.position_mode
-    account.risk_profile_id = data.risk_profile_id
+    risk_profile_id = data.risk_profile_id
+    if data.role is AccountRole.FOLLOWER and risk_profile_id is None:
+        risk_profile_id = ensure_default_risk_profile(
+            session,
+            actor=actor,
+            assign_missing=False,
+        ).id
+    account.risk_profile_id = risk_profile_id
     record_audit(
         session,
         actor=actor,

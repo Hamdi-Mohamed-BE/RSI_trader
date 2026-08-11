@@ -9,6 +9,7 @@ from ..models import Account, CopyTestResult, CopyTestRun, SymbolMapping
 from ..schemas import CopyTestInput
 from .audit import record_audit
 from .risk import RiskCalculator, RiskRejectedError
+from .risk_profiles import ensure_default_risk_profile
 from .snapshots import DatabaseSnapshotProvider, SnapshotUnavailableError
 
 
@@ -20,6 +21,7 @@ class CopyTestRunner:
         self.snapshots = DatabaseSnapshotProvider()
 
     def run(self, session: Session, data: CopyTestInput, *, actor: str) -> CopyTestRun:
+        ensure_default_risk_profile(session, actor=actor)
         master = session.scalar(select(Account).where(Account.is_master.is_(True)))
         run = CopyTestRun(
             master_account_id=master.id if master else None,

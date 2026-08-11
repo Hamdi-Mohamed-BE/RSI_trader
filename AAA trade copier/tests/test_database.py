@@ -26,6 +26,12 @@ def test_create_schema_upgrades_existing_copy_test_history(tmp_path: Path) -> No
                 "id VARCHAR(36) PRIMARY KEY, account_id VARCHAR(36))"
             )
         )
+        connection.execute(
+            text(
+                "CREATE TABLE risk_profiles ("
+                "id VARCHAR(36) PRIMARY KEY, name VARCHAR(120))"
+            )
+        )
 
     create_schema(engine)
 
@@ -35,4 +41,8 @@ def test_create_schema_upgrades_existing_copy_test_history(tmp_path: Path) -> No
         column["name"] for column in inspect(engine).get_columns("terminal_instances")
     }
     assert "last_error" in terminal_columns
+    risk_columns = {
+        column["name"] for column in inspect(engine).get_columns("risk_profiles")
+    }
+    assert "max_daily_profit_percent" in risk_columns
     engine.dispose()

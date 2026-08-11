@@ -71,6 +71,9 @@ class RiskProfile(TimestampMixin, Base):
         Numeric(8, 4), default=Decimal("5.0")
     )
     max_daily_loss_percent: Mapped[Decimal] = mapped_column(Numeric(8, 4), default=Decimal("3.0"))
+    max_daily_profit_percent: Mapped[Decimal] = mapped_column(
+        Numeric(8, 4), default=Decimal("0")
+    )
     max_spread_points: Mapped[int] = mapped_column(Integer, default=50)
     max_slippage_points: Mapped[int] = mapped_column(Integer, default=30)
     max_open_positions: Mapped[int] = mapped_column(Integer, default=10)

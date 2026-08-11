@@ -15,6 +15,7 @@ from .routers import api, auth, web
 from .services.auth import bootstrap_admin
 from .services.demo_cleanup import remove_legacy_demo_seed
 from .services.mt5_discovery import detect_and_import_running_accounts
+from .services.risk_profiles import ensure_default_risk_profile
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 
@@ -35,6 +36,7 @@ def create_app(
         with selected_factory() as session:
             bootstrap_admin(session, active_settings)
             remove_legacy_demo_seed(session)
+            ensure_default_risk_profile(session, actor="startup")
             if active_settings.auto_detect_mt5 and active_settings.app_env != "test":
                 detect_and_import_running_accounts(session, actor="startup")
         yield

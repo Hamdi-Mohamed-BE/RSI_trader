@@ -28,6 +28,7 @@ from .accounts import ensure_system_state
 from .audit import record_audit
 from .events import EventHub, event_hub
 from .risk import RiskCalculator, RiskRejectedError
+from .risk_profiles import ensure_default_risk_profile
 from .snapshots import DatabaseSnapshotProvider, SnapshotUnavailableError
 
 ENTRY_ACTIONS = {TradeAction.MARKET_OPEN, TradeAction.PENDING_CREATE, TradeAction.REVERSE}
@@ -138,6 +139,7 @@ class CopierCore:
         )
 
     async def process(self, session: Session, message: SourceTradeMessage) -> list[CopyJob]:
+        ensure_default_risk_profile(session, actor="copier-core")
         state = ensure_system_state(session)
         if not state.active_master_account_id:
             raise ValueError("No active master account is configured.")

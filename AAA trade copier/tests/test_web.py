@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, sessionmaker
 
-from trade_copier.models import Account
+from trade_copier.models import Account, RiskProfile
 
 from .conftest import extract_csrf
 
@@ -99,6 +99,8 @@ def test_manual_account_can_be_created_updated_and_deleted(
     with session_factory() as session:
         account = session.scalar(select(Account).where(Account.login == "900001"))
         assert account is not None
+        profile = session.get(RiskProfile, account.risk_profile_id)
+        assert profile is not None and profile.risk_percent == 1
         account_id = account.id
 
     page = logged_in_client.get("/accounts")

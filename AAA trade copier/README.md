@@ -66,7 +66,7 @@ Every account card includes **Edit and manage** controls for its name, terminal 
 
 Passwords are never written to SQLite, audit details, generated instance files, or process command lines. They remain encrypted in the local DPAPI vault and are decrypted only in memory for the MT5 login call. Set `MT5_TEMPLATE_PATH` in `.env` when the correct broker terminal should be used as the default template; otherwise the app selects an installed MT5 automatically.
 
-No sample accounts, risk profiles, mappings, trades, or performance records are created. Early development demo records are removed automatically by an exact one-time compatibility cleanup, without touching user-created accounts.
+No sample accounts, mappings, trades, or performance records are created. One system-managed **Automatic 1% per trade** risk profile is created and assigned only to followers that do not already have a custom profile. It risks at most 1% of each follower's own equity using the trade stop distance; daily loss and daily profit caps are disabled. Early development demo records are removed automatically by an exact one-time compatibility cleanup, without touching user-created accounts.
 
 ## Cross-account copy test
 
