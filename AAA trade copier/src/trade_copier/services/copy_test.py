@@ -14,7 +14,7 @@ from .snapshots import DatabaseSnapshotProvider, SnapshotUnavailableError
 
 
 class CopyTestRunner:
-    """Runs a no-order copy preflight against every configured follower."""
+    """Runs a copy preflight against every configured follower."""
 
     def __init__(self) -> None:
         self.risk = RiskCalculator()
@@ -33,6 +33,7 @@ class CopyTestRunner:
             entry_price=data.entry_price,
             stop_loss=data.stop_loss,
             take_profit=data.take_profit,
+            execute_demo=data.execute_demo,
             status="running",
         )
         session.add(run)

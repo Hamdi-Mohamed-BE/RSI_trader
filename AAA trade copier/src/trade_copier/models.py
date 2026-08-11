@@ -308,6 +308,7 @@ class CopyTestRun(TimestampMixin, Base):
     entry_price: Mapped[Decimal] = mapped_column(Numeric(20, 8))
     stop_loss: Mapped[Decimal] = mapped_column(Numeric(20, 8))
     take_profit: Mapped[Decimal | None] = mapped_column(Numeric(20, 8), nullable=True)
+    execute_demo: Mapped[bool] = mapped_column(Boolean, default=False)
     status: Mapped[str] = mapped_column(String(24), default="running")
     total_followers: Mapped[int] = mapped_column(Integer, default=0)
     passed_followers: Mapped[int] = mapped_column(Integer, default=0)

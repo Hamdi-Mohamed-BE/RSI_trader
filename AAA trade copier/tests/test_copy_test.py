@@ -10,7 +10,13 @@ from trade_copier.domain.enums import OrderType, Side
 from trade_copier.models import Account, CopyTestRun
 from trade_copier.schemas import CopyTestInput
 from trade_copier.services.copy_test import CopyTestRunner
+from trade_copier.services.copy_test_execution import CopyTestExecutionRunner
 from trade_copier.services.demo import seed_demo
+from trade_copier.services.demo_orders import (
+    DemoOrderExecutor,
+    DemoOrderOutcome,
+    DemoOrderRequest,
+)
 
 from .conftest import extract_csrf
 
@@ -59,7 +65,8 @@ def test_copy_test_ui_records_missing_master_error(
     page = logged_in_client.get("/copy-test")
     assert page.status_code == 200
     assert "Run across all followers" in page.text
-    assert "No live order" in page.text
+    assert "Demo only" in page.text
+    assert "Place and auto-clean demo orders" in page.text
     assert 'name="order_type"' in page.text
     assert "Buy Limit" in page.text
     assert "Sell Stop" in page.text
@@ -130,3 +137,70 @@ def test_copy_test_rejects_invalid_buy_limit() -> None:
             entry_price=Decimal("2410"),
             stop_loss=Decimal("2390"),
         )
+
+
+class RecordingDemoExecutor(DemoOrderExecutor):
+    def __init__(self) -> None:
+        self.requests: list[tuple[str, DemoOrderRequest]] = []
+
+    def execute(
+        self,
+        session: Session,
+        account: Account,
+        request: DemoOrderRequest,
+        *,
+        actor: str,
+    ) -> DemoOrderOutcome:
+        del session, actor
+        self.requests.append((account.display_name, request))
+        if account.display_name == "Follower Bravo":
+            return DemoOrderOutcome(success=False, message="Broker retcode 10030: invalid fill")
+        return DemoOrderOutcome(
+            success=True,
+            message="Demo order 123 placed and automatically closed.",
+            broker_order_id="123",
+            broker_deal_id="456",
+            cleanup_id="789",
+            broker_retcode=10009,
+        )
+
+
+def test_copy_test_demo_execution_records_real_outcomes(
+    logged_in_client: TestClient,
+    session_factory: sessionmaker[Session],
+) -> None:
+    with session_factory() as session:
+        seed_demo(session)
+        run = CopyTestRunner().run(
+            session,
+            CopyTestInput(
+                symbol="XAUUSD",
+                side=Side.BUY,
+                order_type=OrderType.MARKET,
+                master_volume=Decimal("0.10"),
+                entry_price=Decimal("2400"),
+                stop_loss=Decimal("2390"),
+                execute_demo=True,
+            ),
+            actor="test",
+        )
+        executor = RecordingDemoExecutor()
+
+        run = CopyTestExecutionRunner(executor).execute(session, run, actor="test")
+
+        assert len(executor.requests) == 2
+        assert run.execute_demo is True
+        assert run.passed_followers == 1
+        assert run.failed_followers == 1
+        assert run.status == "completed_with_errors"
+        completed = next(result for result in run.results if result.status == "passed")
+        failed = next(result for result in run.results if result.status == "failed")
+        assert completed.checks["broker_order_id"] == "123"
+        assert completed.checks["cleanup_id"] == "789"
+        assert "10030" in failed.error
+
+    page = logged_in_client.get("/copy-test")
+    assert page.status_code == 200
+    assert "Execution result" in page.text
+    assert "Demo order 123 placed and automatically closed." in page.text
+    assert "Ready for copy routing" not in page.text

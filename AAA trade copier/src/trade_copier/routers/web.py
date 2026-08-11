@@ -40,7 +40,9 @@ from ..services.accounts import (
 )
 from ..services.audit import record_audit
 from ..services.copy_test import CopyTestRunner
+from ..services.copy_test_execution import CopyTestExecutionRunner
 from ..services.credentials import build_credential_vault
+from ..services.demo_orders import DemoOrderExecutor
 from ..services.mt5_discovery import detect_and_import_running_accounts
 from ..services.terminals import TerminalManager
 from ..templating import page_context, templates
@@ -416,6 +418,7 @@ def copy_test_run(
     order_type: Annotated[str, Form()] = OrderType.MARKET.value,
     market_price: Annotated[Decimal | None, Form()] = None,
     take_profit: Annotated[Decimal | None, Form()] = None,
+    execute_demo: Annotated[bool, Form()] = False,
 ) -> Response:
     user = _user(request, session)
     validate_csrf(request, csrf)
@@ -431,6 +434,7 @@ def copy_test_run(
             entry_price=entry_price,
             stop_loss=stop_loss,
             take_profit=take_profit,
+            execute_demo=execute_demo,
         )
         if request.app.state.settings.auto_detect_mt5:
             detect_and_import_running_accounts(session, actor="copy-test-refresh")
@@ -440,9 +444,18 @@ def copy_test_run(
             actor="copy-test-auto-connect",
         )
         run = CopyTestRunner().run(session, data, actor=user.email)
+        if run.execute_demo:
+            settings = request.app.state.settings
+            vault = build_credential_vault(settings.storage_dir / "vault")
+            run = CopyTestExecutionRunner(DemoOrderExecutor(vault=vault)).execute(
+                session,
+                run,
+                actor=user.email,
+            )
     except (ValidationError, ValueError) as exc:
         return RedirectResponse(f"/copy-test?error={exc!s}", status_code=303)
-    return RedirectResponse(f"/copy-test?notice=Copy+test+finished&run={run.id}", status_code=303)
+    notice = "Demo+order+test+finished" if run.execute_demo else "Readiness+test+finished"
+    return RedirectResponse(f"/copy-test?notice={notice}&run={run.id}", status_code=303)
 
 
 @router.get("/trades", name="trades")

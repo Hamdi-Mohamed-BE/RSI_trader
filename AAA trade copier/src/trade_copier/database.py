@@ -75,6 +75,13 @@ def _upgrade_copy_test_schema(selected_engine: Engine) -> None:
             connection.execute(
                 text("ALTER TABLE copy_test_runs ADD COLUMN market_price NUMERIC(20, 8)")
             )
+        if "execute_demo" not in columns:
+            connection.execute(
+                text(
+                    "ALTER TABLE copy_test_runs ADD COLUMN execute_demo "
+                    "BOOLEAN NOT NULL DEFAULT FALSE"
+                )
+            )
 
 
 def _upgrade_terminal_schema(selected_engine: Engine) -> None:

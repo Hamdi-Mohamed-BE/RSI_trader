@@ -5,9 +5,9 @@
     <div>
         <p class="eyebrow">Follower readiness</p>
         <h1 class="page-title">Cross-account copy test</h1>
-        <p class="page-copy">Run one synthetic master trade through every configured follower. The test verifies routing, account state, terminal health, symbol contracts, spread limits, and calculated risk without placing a broker order.</p>
+        <p class="page-copy">Verify every follower, then optionally place an actual order on each demo account. Market orders are immediately closed and pending orders are immediately cancelled. Live-account execution is always blocked.</p>
     </div>
-    <span class="badge border-amber/50 text-amber">No live order</span>
+    <span class="badge border-amber/50 text-amber">Demo only · auto cleanup</span>
 </section>
 
 <section class="surface mt-8">
@@ -22,7 +22,11 @@
         <label class="field-label">Entry / trigger price<input class="field" type="number" name="entry_price" placeholder="2400.00" min="0.00001" step="0.00001" required><small>The requested entry price for this test.</small></label>
         <label class="field-label">Stop loss (SL)<input class="field" type="number" name="stop_loss" placeholder="2390.00" min="0.00001" step="0.00001" required><small>Below entry for Buy; above entry for Sell.</small></label>
         <label class="field-label">Take profit (TP)<input class="field" type="number" name="take_profit" placeholder="Optional" min="0.00001" step="0.00001"><small>Above entry for Buy; below entry for Sell.</small></label>
-        <label class="field-label">Confirmation<input class="field" name="confirmation" placeholder="Type TEST" required><small>The test creates diagnostic records only.</small></label>
+        <label class="field-label">Confirmation<input class="field" name="confirmation" placeholder="Type TEST" required><small>Required before the test can contact MT5.</small></label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-cyan/30 bg-cyan/5 p-4 text-sm text-white xl:col-span-2">
+            <input class="mt-1 size-4 accent-cyan" type="checkbox" name="execute_demo" value="true" checked>
+            <span><strong class="block">Place and auto-clean demo orders</strong><small class="mt-1 block text-muted">Send an actual order to every ready demo follower. Market positions are closed and pending orders are cancelled immediately. Live accounts are rejected.</small></span>
+        </label>
         <div class="flex items-end"><button class="button-primary w-full" type="submit">Run across all followers</button></div>
     </form>
     <div class="mt-5 grid gap-3 text-xs text-muted sm:grid-cols-2 xl:grid-cols-4">
@@ -39,7 +43,7 @@
     {% for run in runs %}
     <article class="surface {% if request.query_params.get('run') == run.id %}border-cyan{% endif %}">
         <div class="surface-header">
-            <div><p class="eyebrow">{{ run.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p><h3 class="section-title">{{ run.side|upper }} {{ run.order_type|upper }} {{ run.symbol }} · {{ run.master_volume }} lots</h3></div>
+            <div><p class="eyebrow">{{ run.created_at.strftime('%Y-%m-%d %H:%M:%S') }} · {{ 'Demo execution' if run.execute_demo else 'Readiness only' }}</p><h3 class="section-title">{{ run.side|upper }} {{ run.order_type|upper }} {{ run.symbol }} · {{ run.master_volume }} lots</h3></div>
             <span class="badge {% if run.failed_followers %}badge-failed{% else %}badge-filled{% endif %}">{{ run.status|replace('_',' ') }}</span>
         </div>
         <div class="mt-5 grid gap-3 sm:grid-cols-3">
@@ -55,10 +59,27 @@
         </div>
         {% if run.error %}<p class="mt-4 rounded-xl border border-red/40 bg-red/10 p-3 text-sm text-red">{{ run.error }}</p>{% endif %}
         <div class="table-wrap mt-5">
-            <table><thead><tr><th>Follower</th><th>Status</th><th>Mapped symbol</th><th>Entry / SL / TP</th><th>Calculated volume</th><th>Risk cash</th><th>Error</th></tr></thead>
+            <table><thead><tr><th>Follower</th><th>Status</th><th>Mapped symbol</th><th>Entry / SL / TP</th><th>Calculated volume</th><th>Risk cash</th><th>Execution result</th></tr></thead>
             <tbody>
             {% for result in run.results %}
-            <tr><td>{{ result.follower_account.display_name }}</td><td><span class="badge badge-{{ 'filled' if result.status == 'passed' else 'failed' }}">{{ result.status }}</span></td><td>{{ result.follower_symbol or '—' }}</td><td class="font-mono text-xs"><span class="block">Entry {{ result.checks.get('entry_price', '—') }}</span><span class="block text-red">SL {{ result.checks.get('stop_loss', '—') }}</span><span class="block text-green">TP {{ result.checks.get('take_profit') or '—' }}</span></td><td>{{ result.calculated_volume or '—' }}</td><td>{{ result.calculated_risk_cash or '—' }}</td><td class="max-w-xl text-red">{{ result.error or 'Ready for copy routing' }}</td></tr>
+            <tr>
+                <td>{{ result.follower_account.display_name }}</td>
+                <td><span class="badge badge-{{ 'filled' if result.status == 'passed' else 'failed' }}">{{ result.status }}</span></td>
+                <td>{{ result.follower_symbol or '—' }}</td>
+                <td class="font-mono text-xs"><span class="block">Entry {{ result.checks.get('entry_price', '—') }}</span><span class="block text-red">SL {{ result.checks.get('stop_loss', '—') }}</span><span class="block text-green">TP {{ result.checks.get('take_profit') or '—' }}</span></td>
+                <td>{{ result.calculated_volume or '—' }}</td>
+                <td>{{ result.calculated_risk_cash or '—' }}</td>
+                <td class="max-w-xl text-xs">
+                    {% if result.error %}
+                    <strong class="block text-red">{{ result.error }}</strong>
+                    {% elif result.checks.get('execution_status') == 'completed' %}
+                    <strong class="block text-green">{{ result.checks.get('execution_message') }}</strong>
+                    <span class="mt-1 block text-muted">Order {{ result.checks.get('broker_order_id') or '—' }} · Deal {{ result.checks.get('broker_deal_id') or '—' }} · Cleanup {{ result.checks.get('cleanup_id') or '—' }} · Retcode {{ result.checks.get('broker_retcode') }}</span>
+                    {% else %}
+                    <span class="text-muted">Readiness passed — no broker order requested.</span>
+                    {% endif %}
+                </td>
+            </tr>
             {% else %}<tr><td colspan="7" class="empty-cell">No follower results. {{ run.error }}</td></tr>{% endfor %}
             </tbody></table>
         </div>

@@ -82,6 +82,7 @@ class CopyTestInput(BaseModel):
     entry_price: Decimal = Field(gt=0)
     stop_loss: Decimal = Field(gt=0)
     take_profit: Decimal | None = Field(default=None, gt=0)
+    execute_demo: bool = False
 
     @field_validator("symbol")
     @classmethod

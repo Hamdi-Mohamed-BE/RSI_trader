@@ -36,7 +36,7 @@ def test_create_schema_upgrades_existing_copy_test_history(tmp_path: Path) -> No
     create_schema(engine)
 
     columns = {column["name"] for column in inspect(engine).get_columns("copy_test_runs")}
-    assert {"order_type", "market_price"} <= columns
+    assert {"order_type", "market_price", "execute_demo"} <= columns
     terminal_columns = {
         column["name"] for column in inspect(engine).get_columns("terminal_instances")
     }
