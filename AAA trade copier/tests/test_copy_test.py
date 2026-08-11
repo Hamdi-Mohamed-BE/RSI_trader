@@ -66,7 +66,7 @@ def test_copy_test_ui_records_missing_master_error(
     assert page.status_code == 200
     assert "Run across all followers" in page.text
     assert "Demo only" in page.text
-    assert "Place and auto-clean demo orders" in page.text
+    assert "Place demo orders and leave them open" in page.text
     assert 'name="order_type"' in page.text
     assert "Buy Limit" in page.text
     assert "Sell Stop" in page.text
@@ -157,10 +157,9 @@ class RecordingDemoExecutor(DemoOrderExecutor):
             return DemoOrderOutcome(success=False, message="Broker retcode 10030: invalid fill")
         return DemoOrderOutcome(
             success=True,
-            message="Demo order 123 placed and automatically closed.",
+            message="Demo position 123 placed and left open in MT5.",
             broker_order_id="123",
             broker_deal_id="456",
-            cleanup_id="789",
             broker_retcode=10009,
         )
 
@@ -196,11 +195,12 @@ def test_copy_test_demo_execution_records_real_outcomes(
         completed = next(result for result in run.results if result.status == "passed")
         failed = next(result for result in run.results if result.status == "failed")
         assert completed.checks["broker_order_id"] == "123"
-        assert completed.checks["cleanup_id"] == "789"
+        assert completed.checks["cleanup_id"] == ""
         assert "10030" in failed.error
 
     page = logged_in_client.get("/copy-test")
     assert page.status_code == 200
     assert "Execution result" in page.text
-    assert "Demo order 123 placed and automatically closed." in page.text
+    assert "Demo position 123 placed and left open in MT5." in page.text
+    assert "Order remains active" in page.text
     assert "Ready for copy routing" not in page.text

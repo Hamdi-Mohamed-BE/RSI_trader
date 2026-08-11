@@ -80,12 +80,12 @@ Open **Copy test** from the navigation or dashboard. Enter one synthetic master 
 - spread limit;
 - calculated follower volume and cash risk;
 - mapped entry, stop-loss, and take-profit prices;
-- broker order, deal, cleanup ticket, and return code when demo execution is selected;
+- broker order, deal, and return code when demo execution is selected;
 - the exact error for every failed follower.
 
 Before running the checks, the diagnostic starts and logs into managed follower instances and refreshes the requested broker symbol specification. If a broker renames a symbol, such as `XAUUSDm`, the resolved `XAUUSD → XAUUSDm` route is saved automatically and reused by future tests and copier events. The first incoming trade for a new symbol runs the same discovery before routing.
 
-The **Place and auto-clean demo orders** option sends an actual broker request only after a follower passes readiness. Market positions are immediately closed and pending orders are immediately cancelled. The broker-reported account mode must be demo; live accounts are always rejected. If cleanup fails, the result warns that exposure may remain and must be checked in MT5 immediately. Clear the option to run readiness checks without sending an order.
+The **Place demo orders and leave them open** option sends an actual broker request only after a follower passes readiness. Market positions and pending orders remain active until they are manually closed or cancelled in MT5. The broker-reported account mode must be demo; live accounts are always rejected. Clear the option to run readiness checks without sending an order.
 
 ## MT5 demo integration
 

@@ -5,9 +5,9 @@
     <div>
         <p class="eyebrow">Follower readiness</p>
         <h1 class="page-title">Cross-account copy test</h1>
-        <p class="page-copy">Verify every follower, then optionally place an actual order on each demo account. Market orders are immediately closed and pending orders are immediately cancelled. Live-account execution is always blocked.</p>
+        <p class="page-copy">Verify every follower, then optionally place an actual order on each demo account. Test positions and pending orders remain active until you manually close or cancel them in MT5. Live-account execution is always blocked.</p>
     </div>
-    <span class="badge border-amber/50 text-amber">Demo only · auto cleanup</span>
+    <span class="badge border-amber/50 text-amber">Demo only · orders stay open</span>
 </section>
 
 <section class="surface mt-8">
@@ -23,9 +23,9 @@
         <label class="field-label">Stop loss (SL)<input class="field" type="number" name="stop_loss" placeholder="2390.00" min="0.00001" step="0.00001" required><small>Below entry for Buy; above entry for Sell.</small></label>
         <label class="field-label">Take profit (TP)<input class="field" type="number" name="take_profit" placeholder="Optional" min="0.00001" step="0.00001"><small>Above entry for Buy; below entry for Sell.</small></label>
         <label class="field-label">Confirmation<input class="field" name="confirmation" placeholder="Type TEST" required><small>Required before the test can contact MT5.</small></label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-cyan/30 bg-cyan/5 p-4 text-sm text-white xl:col-span-2">
+        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-amber/40 bg-amber/10 p-4 text-sm text-white xl:col-span-2">
             <input class="mt-1 size-4 accent-cyan" type="checkbox" name="execute_demo" value="true" checked>
-            <span><strong class="block">Place and auto-clean demo orders</strong><small class="mt-1 block text-muted">Send an actual order to every ready demo follower. Market positions are closed and pending orders are cancelled immediately. Live accounts are rejected.</small></span>
+            <span><strong class="block">Place demo orders and leave them open</strong><small class="mt-1 block text-amber">Every successful position or pending order stays active in MT5 until you close or cancel it manually. Live accounts are rejected.</small></span>
         </label>
         <div class="flex items-end"><button class="button-primary w-full" type="submit">Run across all followers</button></div>
     </form>
@@ -74,7 +74,8 @@
                     <strong class="block text-red">{{ result.error }}</strong>
                     {% elif result.checks.get('execution_status') == 'completed' %}
                     <strong class="block text-green">{{ result.checks.get('execution_message') }}</strong>
-                    <span class="mt-1 block text-muted">Order {{ result.checks.get('broker_order_id') or '—' }} · Deal {{ result.checks.get('broker_deal_id') or '—' }} · Cleanup {{ result.checks.get('cleanup_id') or '—' }} · Retcode {{ result.checks.get('broker_retcode') }}</span>
+                    <span class="mt-1 block text-muted">Order {{ result.checks.get('broker_order_id') or '—' }} · Deal {{ result.checks.get('broker_deal_id') or '—' }} · Retcode {{ result.checks.get('broker_retcode') }}</span>
+                    {% if result.checks.get('cleanup_id') %}<span class="mt-1 block text-muted">Historical automatic cleanup {{ result.checks.get('cleanup_id') }}</span>{% else %}<strong class="mt-1 block text-amber">Order remains active — manage it in MT5.</strong>{% endif %}
                     {% else %}
                     <span class="text-muted">Readiness passed — no broker order requested.</span>
                     {% endif %}

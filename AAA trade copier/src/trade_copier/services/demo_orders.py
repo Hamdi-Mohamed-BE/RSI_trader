@@ -1,6 +1,5 @@
 import importlib
 import os
-import time
 from contextlib import suppress
 from dataclasses import dataclass
 from decimal import Decimal
@@ -41,7 +40,7 @@ class DemoOrderOutcome:
 
 
 class DemoOrderExecutor:
-    """Places and immediately cleans up an explicitly requested demo-account test order."""
+    """Places an explicitly requested demo-account test order and leaves it active."""
 
     def __init__(
         self,
@@ -174,72 +173,6 @@ class DemoOrderExecutor:
         }
         return int(getattr(connector, names[(side, order_type)]))
 
-    def _cleanup_market(
-        self,
-        connector: Any,
-        request: DemoOrderRequest,
-        position_ticket: int,
-        opened_volume: float,
-    ) -> Any:
-        position = None
-        for _ in range(10):
-            positions = (
-                connector.positions_get(ticket=position_ticket) or ()
-                if position_ticket > 0
-                else ()
-            )
-            if not positions:
-                positions = tuple(
-                    item
-                    for item in (connector.positions_get(symbol=request.symbol) or ())
-                    if int(getattr(item, "magic", 0)) == DEMO_TEST_MAGIC
-                )
-            if positions:
-                position = positions[-1]
-                break
-            time.sleep(0.2)
-        if position is None:
-            raise ValueError(
-                "The demo order was accepted, but its position was not found for automatic close."
-            )
-        tick = connector.symbol_info_tick(request.symbol)
-        if tick is None:
-            raise ValueError("The test position opened, but no close price was available.")
-        close_side = Side.SELL if request.side is Side.BUY else Side.BUY
-        price = tick.bid if close_side is Side.SELL else tick.ask
-        close_request: dict[str, object] = {
-            "action": int(connector.TRADE_ACTION_DEAL),
-            "symbol": request.symbol,
-            "volume": float(getattr(position, "volume", opened_volume)),
-            "type": self._order_type(connector, close_side, OrderType.MARKET),
-            "position": int(getattr(position, "ticket", position_ticket)),
-            "price": float(price),
-            "deviation": request.max_slippage_points,
-            "magic": DEMO_TEST_MAGIC,
-            "comment": "AAA copy test close",
-            "type_time": int(getattr(connector, "ORDER_TIME_GTC", 0)),
-        }
-        result = self._checked_send(connector, close_request, pending=False)
-        if result is None or int(getattr(result, "retcode", -1)) not in self._success_retcodes(
-            connector
-        ):
-            raise ValueError(f"Automatic close failed. {self._result_error(result)}")
-        return result
-
-    def _cleanup_pending(self, connector: Any, order_ticket: int) -> Any:
-        request: dict[str, object] = {
-            "action": int(connector.TRADE_ACTION_REMOVE),
-            "order": order_ticket,
-            "magic": DEMO_TEST_MAGIC,
-            "comment": "AAA copy test cancel",
-        }
-        result = connector.order_send(request)
-        if result is None or int(getattr(result, "retcode", -1)) not in self._success_retcodes(
-            connector
-        ):
-            raise ValueError(f"Automatic cancellation failed. {self._result_error(result)}")
-        return result
-
     def execute(
         self,
         session: Session,
@@ -310,39 +243,21 @@ class DemoOrderExecutor:
                     "The broker accepted the pending test without an order ticket; "
                     "verify the MT5 Orders tab immediately."
                 )
-            try:
-                cleanup = (
-                    self._cleanup_pending(connector, order_ticket)
-                    if is_pending
-                    else self._cleanup_market(
-                        connector,
-                        request,
-                        order_ticket,
-                        float(getattr(broker_result, "volume", float(request.volume))),
-                    )
-                )
-            except (RuntimeError, TypeError, ValueError) as cleanup_error:
-                accepted_id = order_ticket or deal_ticket
-                raise ValueError(
-                    f"Demo order {accepted_id} was accepted, but cleanup failed: "
-                    f"{cleanup_error} Check MT5 immediately because exposure may remain open."
-                ) from cleanup_error
-            action = "cancelled" if is_pending else "closed"
             accepted_id = order_ticket or deal_ticket
-            message = f"Demo order {accepted_id} placed and automatically {action}."
+            order_kind = "pending order" if is_pending else "position"
+            message = f"Demo {order_kind} {accepted_id} placed and left open in MT5."
             outcome = DemoOrderOutcome(
                 success=True,
                 message=message,
                 broker_order_id=str(order_ticket) if order_ticket else "",
                 broker_deal_id=str(deal_ticket) if deal_ticket else "",
                 executed_price=Decimal(str(getattr(broker_result, "price", entry))),
-                cleanup_id=str(getattr(cleanup, "deal", 0) or getattr(cleanup, "order", 0)),
                 broker_retcode=int(getattr(broker_result, "retcode", 0)),
             )
             record_audit(
                 session,
                 actor=actor,
-                action="copy_test.demo_order_completed",
+                action="copy_test.demo_order_placed",
                 target_type="account",
                 target_id=account.id,
                 message=message,
@@ -351,7 +266,7 @@ class DemoOrderExecutor:
                     "volume": str(request.volume),
                     "order": outcome.broker_order_id,
                     "deal": outcome.broker_deal_id,
-                    "cleanup": outcome.cleanup_id,
+                    "left_open": True,
                 },
             )
             return outcome

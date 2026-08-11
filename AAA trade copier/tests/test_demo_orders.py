@@ -8,11 +8,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from trade_copier.domain.enums import OrderType, Side
 from trade_copier.models import Account
 from trade_copier.services.credentials import MemoryCredentialVault
-from trade_copier.services.demo_orders import (
-    DEMO_TEST_MAGIC,
-    DemoOrderExecutor,
-    DemoOrderRequest,
-)
+from trade_copier.services.demo_orders import DemoOrderExecutor, DemoOrderRequest
 
 
 class FakeMt5:
@@ -40,7 +36,7 @@ class FakeMt5:
         self.trade_mode = trade_mode
         self.sent: list[dict[str, object]] = []
         self.shutdown_called = False
-        self.fail_close = False
+        self.reject_order = False
 
     def initialize(self, path: str, *, timeout: int, portable: bool) -> bool:
         return bool(path and timeout and portable)
@@ -76,8 +72,7 @@ class FakeMt5:
 
     def order_send(self, request: dict[str, object]) -> SimpleNamespace:
         self.sent.append(request)
-        comment = str(request.get("comment", ""))
-        if comment == "AAA copy test close" and self.fail_close:
+        if self.reject_order:
             return SimpleNamespace(retcode=10006, comment="Request rejected", order=0, deal=0)
         if request["action"] == self.TRADE_ACTION_PENDING:
             return SimpleNamespace(
@@ -88,20 +83,6 @@ class FakeMt5:
                 price=request["price"],
                 volume=request["volume"],
             )
-        if request["action"] == self.TRADE_ACTION_REMOVE:
-            return SimpleNamespace(
-                retcode=self.TRADE_RETCODE_DONE,
-                comment="Cancelled",
-                order=234,
-                deal=0,
-            )
-        if comment == "AAA copy test close":
-            return SimpleNamespace(
-                retcode=self.TRADE_RETCODE_DONE,
-                comment="Closed",
-                order=123,
-                deal=789,
-            )
         return SimpleNamespace(
             retcode=self.TRADE_RETCODE_DONE,
             comment="Done",
@@ -110,11 +91,6 @@ class FakeMt5:
             price=request["price"],
             volume=request["volume"],
         )
-
-    @staticmethod
-    def positions_get(**kwargs: object) -> tuple[SimpleNamespace, ...]:
-        del kwargs
-        return (SimpleNamespace(ticket=123, volume=0.05, magic=DEMO_TEST_MAGIC),)
 
     def shutdown(self) -> None:
         self.shutdown_called = True
@@ -159,7 +135,7 @@ def request(order_type: OrderType = OrderType.MARKET) -> DemoOrderRequest:
     )
 
 
-def test_market_demo_order_is_placed_and_closed(
+def test_market_demo_order_is_placed_and_left_open(
     client: TestClient,
     session_factory: sessionmaker[Session],
     tmp_path: Path,
@@ -178,15 +154,13 @@ def test_market_demo_order_is_placed_and_closed(
         assert outcome.success is True
         assert outcome.broker_order_id == "123"
         assert outcome.broker_deal_id == "456"
-        assert outcome.cleanup_id == "789"
-        assert [item["comment"] for item in connector.sent] == [
-            "AAA copy test open",
-            "AAA copy test close",
-        ]
+        assert outcome.cleanup_id == ""
+        assert "left open" in outcome.message
+        assert [item["comment"] for item in connector.sent] == ["AAA copy test open"]
         assert connector.shutdown_called is True
 
 
-def test_pending_demo_order_is_placed_and_cancelled(
+def test_pending_demo_order_is_placed_and_left_active(
     client: TestClient,
     session_factory: sessionmaker[Session],
     tmp_path: Path,
@@ -204,10 +178,10 @@ def test_pending_demo_order_is_placed_and_cancelled(
 
         assert outcome.success is True
         assert outcome.broker_order_id == "234"
-        assert outcome.cleanup_id == "234"
+        assert outcome.cleanup_id == ""
+        assert "left open" in outcome.message
         assert [item["action"] for item in connector.sent] == [
-            connector.TRADE_ACTION_PENDING,
-            connector.TRADE_ACTION_REMOVE,
+            connector.TRADE_ACTION_PENDING
         ]
 
 
@@ -232,7 +206,7 @@ def test_live_account_order_is_blocked(
         assert connector.sent == []
 
 
-def test_cleanup_failure_warns_that_exposure_may_remain(
+def test_broker_rejection_is_reported_without_a_second_request(
     client: TestClient,
     session_factory: sessionmaker[Session],
     tmp_path: Path,
@@ -240,7 +214,7 @@ def test_cleanup_failure_warns_that_exposure_may_remain(
     del client
     vault = MemoryCredentialVault()
     connector = FakeMt5()
-    connector.fail_close = True
+    connector.reject_order = True
     with session_factory() as session:
         account = build_account(session, tmp_path, vault)
         outcome = DemoOrderExecutor(
@@ -250,5 +224,6 @@ def test_cleanup_failure_warns_that_exposure_may_remain(
         ).execute(session, account, request(), actor="test")
 
         assert outcome.success is False
-        assert "exposure may remain open" in outcome.message
-        assert outcome.broker_order_id == "123"
+        assert "10006" in outcome.message
+        assert outcome.broker_order_id == ""
+        assert len(connector.sent) == 1
