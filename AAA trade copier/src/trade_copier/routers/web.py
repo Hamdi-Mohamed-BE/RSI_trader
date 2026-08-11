@@ -10,7 +10,15 @@ from sqlalchemy.orm import Session, selectinload
 from starlette.responses import Response
 
 from ..dependencies import request_session, require_user
-from ..domain.enums import AccountRole, AccountState, JobStatus, OrderType, RiskMode, Side
+from ..domain.enums import (
+    AccountRole,
+    AccountState,
+    ExecutionMode,
+    JobStatus,
+    OrderType,
+    RiskMode,
+    Side,
+)
 from ..models import (
     Account,
     AdminUser,
@@ -128,7 +136,26 @@ def unpause_system(
     validate_csrf(request, csrf)
     if confirmation.strip().upper() != "ENABLE":
         return RedirectResponse("/?error=Type+ENABLE+to+unpause", status_code=303)
-    set_global_pause(session, paused=False, reason="Enabled by administrator", actor=user.email)
+    active_accounts = session.scalars(
+        select(Account).where(Account.state == AccountState.ACTIVE.value)
+    ).all()
+    has_live_account = any(account.trade_mode != "demo" for account in active_accounts)
+    if has_live_account and not request.app.state.settings.execution_is_permitted:
+        return RedirectResponse(
+            "/?error=Live+accounts+are+blocked+by+the+environment+safety+gates",
+            status_code=303,
+        )
+    state = set_global_pause(
+        session,
+        paused=False,
+        reason="Continuous copying enabled by administrator",
+        actor=user.email,
+    )
+    state.execution_mode = (
+        ExecutionMode.LIVE.value if has_live_account else ExecutionMode.DEMO.value
+    )
+    session.add(state)
+    session.commit()
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
@@ -202,9 +229,7 @@ def account_create(
                 template_path=terminal_path,
             )
         except (OSError, RuntimeError, ValueError) as exc:
-            return RedirectResponse(
-                f"/accounts?error=Account+saved,+but+{exc!s}", status_code=303
-            )
+            return RedirectResponse(f"/accounts?error=Account+saved,+but+{exc!s}", status_code=303)
     return RedirectResponse("/accounts", status_code=status.HTTP_303_SEE_OTHER)
 
 

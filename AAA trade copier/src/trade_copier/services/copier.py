@@ -13,15 +13,18 @@ from ..domain.enums import (
     AuditSeverity,
     ExecutionMode,
     JobStatus,
+    OrderType,
     TradeAction,
 )
 from ..domain.messages import ExecutionAck, FollowerCommand, SourceTradeMessage
 from ..models import (
     Account,
+    AccountSymbolSpec,
     CopyJob,
     ExecutionAcknowledgement,
     SourceTradeEvent,
     SymbolMapping,
+    TradeLink,
 )
 from ..transport.base import FollowerTransport
 from .accounts import ensure_system_state
@@ -32,6 +35,7 @@ from .risk_profiles import ensure_default_risk_profile
 from .snapshots import DatabaseSnapshotProvider, SnapshotUnavailableError
 
 ENTRY_ACTIONS = {TradeAction.MARKET_OPEN, TradeAction.PENDING_CREATE, TradeAction.REVERSE}
+SUCCESS_STATUSES = {JobStatus.FILLED, JobStatus.ACKNOWLEDGED}
 
 
 class CopierCore:
@@ -119,6 +123,67 @@ class CopierCore:
         return mapping.follower_symbol, entry, stop, target
 
     @staticmethod
+    def _source_identity(message: SourceTradeMessage) -> tuple[str, str]:
+        if message.action in {TradeAction.PENDING_CREATE, TradeAction.CANCEL}:
+            return "pending", message.source_order_id
+        if message.action is TradeAction.MODIFY and not message.source_position_id:
+            return "pending", message.source_order_id
+        return "position", message.source_position_id or message.source_order_id
+
+    @classmethod
+    def _find_link(
+        cls,
+        session: Session,
+        master: Account,
+        follower: Account,
+        message: SourceTradeMessage,
+    ) -> TradeLink | None:
+        source_type, source_ticket = cls._source_identity(message)
+        return session.scalar(
+            select(TradeLink).where(
+                TradeLink.master_account_id == master.id,
+                TradeLink.follower_account_id == follower.id,
+                TradeLink.source_type == source_type,
+                TradeLink.source_ticket == source_ticket,
+                TradeLink.status == "active",
+            )
+        )
+
+    @staticmethod
+    def _floor_to_step(value: Decimal, step: Decimal) -> Decimal:
+        return (value // step) * step
+
+    def _lifecycle_volume(
+        self,
+        session: Session,
+        follower: Account,
+        message: SourceTradeMessage,
+        link: TradeLink,
+    ) -> Decimal:
+        if message.action is TradeAction.CLOSE:
+            return Decimal(link.follower_volume)
+        if message.action is not TradeAction.PARTIAL_CLOSE:
+            return Decimal(link.follower_volume)
+        previous = Decimal(str(message.metadata.get("previous_volume", link.source_volume)))
+        if previous <= 0:
+            raise RiskRejectedError("The master volume before partial close is unavailable.")
+        raw = Decimal(link.follower_volume) * message.volume / previous
+        specification = session.scalar(
+            select(AccountSymbolSpec).where(
+                AccountSymbolSpec.account_id == follower.id,
+                AccountSymbolSpec.symbol == link.follower_symbol,
+            )
+        )
+        if specification is None:
+            raise SnapshotUnavailableError("Follower volume specification is unavailable.")
+        volume = self._floor_to_step(raw, Decimal(specification.volume_step))
+        if volume < Decimal(specification.volume_min):
+            raise RiskRejectedError(
+                "The proportional partial close is below broker minimum volume."
+            )
+        return min(volume, Decimal(link.follower_volume))
+
+    @staticmethod
     def _rejected_job(
         event: SourceTradeEvent,
         follower: Account,
@@ -176,8 +241,13 @@ class CopierCore:
             )
             symbol, entry, stop, target = self._map_prices(message, mapping)
             rejection = ""
+            link = self._find_link(session, master, follower, message)
 
-            if message.action in ENTRY_ACTIONS and state.global_pause:
+            if message.action in ENTRY_ACTIONS and link is not None:
+                rejection = "This master trade is already linked to the follower."
+            elif message.action not in ENTRY_ACTIONS and link is None:
+                rejection = "No active follower ticket mapping exists for this master trade."
+            elif message.action in ENTRY_ACTIONS and state.global_pause:
                 rejection = f"System is paused: {state.reason}"
             elif message.action in ENTRY_ACTIONS and state.execution_mode == ExecutionMode.MONITOR:
                 rejection = "System is in monitor-only mode."
@@ -211,7 +281,34 @@ class CopierCore:
                     volume = decision.volume
                     cash_risk = decision.cash_risk
                 else:
-                    volume = message.volume
+                    assert link is not None
+                    symbol = link.follower_symbol
+                    if message.source_position_id:
+                        entry = Decimal(link.entry_price)
+                        if mapping is not None and not mapping.preserve_relative_stops:
+                            offset = Decimal(mapping.price_offset)
+                            stop = message.stop_loss + offset if message.stop_loss else None
+                            target = (
+                                message.take_profit + offset if message.take_profit else None
+                            )
+                        else:
+                            stop = None
+                            if message.stop_loss is not None:
+                                distance = abs(message.entry_price - message.stop_loss)
+                                stop = (
+                                    entry - distance
+                                    if message.side.value == "buy"
+                                    else entry + distance
+                                )
+                            target = None
+                            if message.take_profit is not None:
+                                distance = abs(message.take_profit - message.entry_price)
+                                target = (
+                                    entry + distance
+                                    if message.side.value == "buy"
+                                    else entry - distance
+                                )
+                    volume = self._lifecycle_volume(session, follower, message, link)
                     cash_risk = Decimal("0")
             except (RiskRejectedError, SnapshotUnavailableError) as exc:
                 job = self._rejected_job(source_event, follower, symbol=symbol, reason=str(exc))
@@ -240,13 +337,17 @@ class CopierCore:
                 follower_account_id=UUID(follower.id),
                 source_order_id=message.source_order_id,
                 source_position_id=message.source_position_id,
+                target_order_id=link.follower_order_id if link else None,
+                target_position_id=link.follower_position_id if link else None,
                 action=message.action,
                 side=message.side,
+                order_type=OrderType(str(message.metadata.get("order_type", "market"))),
                 symbol=symbol,
                 volume=volume,
                 entry_price=entry,
                 stop_loss=stop,
                 take_profit=target,
+                expiration_at=message.metadata.get("expiration_at"),
                 max_slippage_points=profile.max_slippage_points if profile else 30,
             )
             session.commit()
@@ -257,7 +358,16 @@ class CopierCore:
             elapsed_ms = Decimal(str((time.perf_counter() - started) * 1000)).quantize(
                 Decimal("0.001")
             )
-            self._record_ack(session, job, ack, elapsed_ms)
+            self._record_ack(
+                session,
+                job,
+                ack,
+                elapsed_ms,
+                master=master,
+                follower=follower,
+                message=message,
+                link=link,
+            )
 
         record_audit(
             session,
@@ -278,12 +388,17 @@ class CopierCore:
         )
         return jobs
 
-    @staticmethod
     def _record_ack(
+        self,
         session: Session,
         job: CopyJob,
         ack: ExecutionAck,
         local_latency_ms: Decimal,
+        *,
+        master: Account,
+        follower: Account,
+        message: SourceTradeMessage,
+        link: TradeLink | None,
     ) -> None:
         job.status = ack.status.value
         job.acknowledged_at = ack.received_at
@@ -303,4 +418,55 @@ class CopierCore:
                 received_at=ack.received_at,
             )
         )
+        if ack.status in SUCCESS_STATUSES:
+            source_type, source_ticket = self._source_identity(message)
+            if link is None and message.action in ENTRY_ACTIONS:
+                link = TradeLink(
+                    master_account_id=master.id,
+                    follower_account_id=follower.id,
+                    source_type=source_type,
+                    source_ticket=source_ticket,
+                    source_order_id=message.source_order_id,
+                    source_position_id=message.source_position_id or "",
+                    follower_symbol=job.follower_symbol,
+                    follower_order_id=ack.broker_order_id or "",
+                    follower_position_id=ack.broker_position_id or "",
+                    side=message.side.value,
+                    source_volume=message.volume,
+                    follower_volume=ack.filled_volume or job.requested_volume,
+                    entry_price=ack.filled_price or job.requested_price,
+                    stop_loss=job.stop_loss,
+                    take_profit=job.take_profit,
+                    status="active",
+                    last_source_event_id=job.source_event_id,
+                )
+                session.add(link)
+            elif link is not None:
+                link.last_source_event_id = job.source_event_id
+                link.stop_loss = job.stop_loss
+                link.take_profit = job.take_profit
+                link.last_error = ""
+                if ack.broker_order_id:
+                    link.follower_order_id = ack.broker_order_id
+                if ack.broker_position_id:
+                    link.follower_position_id = ack.broker_position_id
+                if message.action is TradeAction.PARTIAL_CLOSE:
+                    link.source_volume = max(
+                        Decimal("0"), Decimal(link.source_volume) - message.volume
+                    )
+                    link.follower_volume = max(
+                        Decimal("0"), Decimal(link.follower_volume) - job.requested_volume
+                    )
+                elif message.action is TradeAction.CLOSE:
+                    link.source_volume = Decimal("0")
+                    link.follower_volume = Decimal("0")
+                    link.status = "closed"
+                elif message.action is TradeAction.CANCEL:
+                    link.source_volume = Decimal("0")
+                    link.follower_volume = Decimal("0")
+                    link.status = "cancelled"
+                session.add(link)
+        elif link is not None:
+            link.last_error = ack.error
+            session.add(link)
         session.commit()

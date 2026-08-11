@@ -5,7 +5,7 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field, model_validator
 
-from .enums import JobStatus, Side, TradeAction
+from .enums import JobStatus, OrderType, Side, TradeAction
 
 
 class ContractSpec(BaseModel):
@@ -47,13 +47,19 @@ class SourceTradeMessage(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
     @model_validator(mode="after")
-    def require_stop_for_new_entries(self) -> "SourceTradeMessage":
+    def validate_stop_direction(self) -> "SourceTradeMessage":
         if self.action in {TradeAction.MARKET_OPEN, TradeAction.PENDING_CREATE}:
-            if self.stop_loss is None:
-                raise ValueError("A stop loss is required for new entries.")
-            if self.side is Side.BUY and self.stop_loss >= self.entry_price:
+            if (
+                self.stop_loss is not None
+                and self.side is Side.BUY
+                and self.stop_loss >= self.entry_price
+            ):
                 raise ValueError("A buy stop loss must be below entry.")
-            if self.side is Side.SELL and self.stop_loss <= self.entry_price:
+            if (
+                self.stop_loss is not None
+                and self.side is Side.SELL
+                and self.stop_loss <= self.entry_price
+            ):
                 raise ValueError("A sell stop loss must be above entry.")
         return self
 
@@ -66,13 +72,17 @@ class FollowerCommand(BaseModel):
     follower_account_id: UUID
     source_order_id: str
     source_position_id: str | None = None
+    target_order_id: str | None = None
+    target_position_id: str | None = None
     action: TradeAction
     side: Side
+    order_type: OrderType = OrderType.MARKET
     symbol: str
     volume: Decimal = Field(gt=0)
     entry_price: Decimal = Field(gt=0)
     stop_loss: Decimal | None = Field(default=None, gt=0)
     take_profit: Decimal | None = Field(default=None, gt=0)
+    expiration_at: datetime | None = None
     max_slippage_points: int = Field(default=30, ge=0)
     sent_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 

@@ -199,9 +199,7 @@ class DemoOrderExecutor:
             if not is_pending:
                 entry = Decimal(str(tick.ask if request.side is Side.BUY else tick.bid))
                 stop_distance = abs(request.entry_price - request.stop_loss)
-                stop = (
-                    entry - stop_distance if request.side is Side.BUY else entry + stop_distance
-                )
+                stop = entry - stop_distance if request.side is Side.BUY else entry + stop_distance
                 if request.take_profit is not None:
                     target_distance = abs(request.take_profit - request.entry_price)
                     target = (

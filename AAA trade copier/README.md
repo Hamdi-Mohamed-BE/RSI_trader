@@ -10,6 +10,8 @@ A safe-by-default Windows control plane and copier-core MVP for copying MT5 trad
 - Account-specific stop-loss risk sizing that floors to broker volume steps and rejects unsafe minimum lots.
 - Cross-broker symbol mappings with relative SL/TP preservation.
 - Durable idempotency keys and explicit follower decisions; duplicate source events do not create duplicate jobs.
+- Continuous master-terminal reconciliation captures positions and pending orders opened from MT5 desktop, mobile, web, scripts, and EAsâ€”not only orders submitted by the dashboard.
+- Persistent master-to-follower ticket links drive pending-order changes/cancellations, SL/TP changes, proportional partial closes, and full closes against the exact copied follower trade.
 - Fresh trading workspace with no sample accounts, risk profiles, mappings, or trades.
 - Automatic discovery of already-running, logged-in MT5 terminals on Windows.
 - Windows DPAPI credential vault; SQLite stores only opaque credential references.
@@ -19,7 +21,7 @@ A safe-by-default Windows control plane and copier-core MVP for copying MT5 trad
 - Modern Tailwind/HTMX/Alpine interface.
 - Normal Windows launcher, Makefile, and Docker web control plane.
 
-Live order placement is intentionally disabled. The Publisher can feed normalized master events into the core, but the first Executor agent rejects broker placement until demo-terminal qualification, restart/reconciliation testing, and the acceptance criteria in [PLAN.md](PLAN.md) pass.
+Continuous execution is enabled for verified **demo hedging accounts** after an administrator presses **Enable copying** on the dashboard. Live-account execution remains blocked unless both environment safety gates are explicitly enabled. The optional MQL named-pipe agents remain a separate qualification path; the default Windows runtime now performs continuous reconciliation directly through each isolated MT5 terminal.
 
 ## Quick start
 
@@ -55,6 +57,8 @@ LIVE_EXECUTION_ENABLED=true
 
 Changing these flags is not enough to qualify the system for live use. The named-pipe transport remains guarded until the MT5 demo integration and acceptance tests are completed. Use demo accounts only during development.
 
+Demo copying does not require weakening these environment gates. Keep their defaults, verify that every account is shown as `demo` and `hedging`, then type `ENABLE` on the dashboard. Pausing blocks new exposure while linked modifications, cancellations, and closes continue to be obeyed.
+
 ## Adding and managing MT5 accounts
 
 Open **Accounts** from the left navigation. The page provides two onboarding paths:
@@ -86,7 +90,7 @@ Open **Copy test** from the navigation or dashboard. Enter one master trade and 
 
 Before running the checks, the diagnostic connects to the active main MT5 and managed follower instances, then refreshes their requested broker symbol specifications. If a broker renames a symbol, such as `XAUUSDm`, the resolved `XAUUSD → XAUUSDm` route is saved automatically and reused by future tests and copier events. The first incoming trade for a new symbol runs the same discovery before routing.
 
-The **Place on master and all ready followers** option sends one broker request to the active main account, then sends the mapped and risk-sized request to every follower that passed readiness. Market positions and pending orders remain active until they are manually closed or cancelled in each MT5. Every broker-reported account mode must be demo; live accounts are always rejected. Clear the option to run readiness checks without sending an order.
+When continuous copying is enabled, **Place on master and all ready followers** sends only the master request; the background copier routes the followers and records their durable jobs. This prevents the same test from being copied twice. When continuous copying is paused, Copy Test retains its direct diagnostic execution behavior. Market positions and pending orders remain active until they are closed or cancelled in the master MT5, and followers then obey that lifecycle automatically.
 
 ## MT5 demo integration
 
@@ -98,15 +102,17 @@ Compile both agents with the locally installed MetaEditor:
 dev.bat compile-mt5
 ```
 
-The intended Windows process layout is:
+The default Windows process layout is:
 
 ```text
-Master MT5 Publisher -> master named pipe -> Copier Core
-Copier Core -> one follower named pipe per account -> Follower MT5 Executor
+Master MT5 (all open orders and positions) -> Copier Core reconciliation
+Copier Core -> persistent ticket mapping -> each isolated follower MT5
 FastAPI dashboard <-> shared SQLite event journal
 ```
 
-`dev.bat start` opens the Windows Copier Core and web dashboard. The core accepts master events, deduplicates them, applies routing and risk decisions, and records follower acknowledgements. Its real execution gate is derived from both environment safety flags.
+`dev.bat start` opens the Windows Copier Core and web dashboard. By default the core checks the master every 350 ms, detects opens and lifecycle changes, deduplicates them, applies symbol/risk routing, executes the correct follower action, and records the broker acknowledgement. `CONTINUOUS_COPY_POLL_MS` can be tuned in `.env`; keep it at or above 100 ms.
+
+The watcher sees the trading account itself, so a trade may originate from MT5 desktop, the broker's mobile/web interface, a script, or another EA. A stop loss is required before the default 1% risk profile can open a follower trade. If the master entry initially has no stop, the rejection is recorded and the copier retries after a valid stop is added.
 
 ## Docker scope
 

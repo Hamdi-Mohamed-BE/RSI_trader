@@ -71,9 +71,7 @@ class RiskProfile(TimestampMixin, Base):
         Numeric(8, 4), default=Decimal("5.0")
     )
     max_daily_loss_percent: Mapped[Decimal] = mapped_column(Numeric(8, 4), default=Decimal("3.0"))
-    max_daily_profit_percent: Mapped[Decimal] = mapped_column(
-        Numeric(8, 4), default=Decimal("0")
-    )
+    max_daily_profit_percent: Mapped[Decimal] = mapped_column(Numeric(8, 4), default=Decimal("0"))
     max_spread_points: Mapped[int] = mapped_column(Integer, default=50)
     max_slippage_points: Mapped[int] = mapped_column(Integer, default=30)
     max_open_positions: Mapped[int] = mapped_column(Integer, default=10)
@@ -279,6 +277,84 @@ class ExecutionAcknowledgement(TimestampMixin, Base):
     job: Mapped[CopyJob] = relationship(back_populates="acknowledgement")
 
 
+class MasterTradeState(TimestampMixin, Base):
+    """Latest broker state observed for one master order or position."""
+
+    __tablename__ = "master_trade_states"
+    __table_args__ = (
+        UniqueConstraint(
+            "master_account_id",
+            "source_type",
+            "source_ticket",
+            name="uq_master_trade_state",
+        ),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    master_account_id: Mapped[str] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), index=True
+    )
+    source_type: Mapped[str] = mapped_column(String(16))
+    source_ticket: Mapped[str] = mapped_column(String(64))
+    broker_ticket: Mapped[str] = mapped_column(String(64), default="")
+    symbol: Mapped[str] = mapped_column(String(32))
+    side: Mapped[str] = mapped_column(String(8))
+    order_type: Mapped[int] = mapped_column(Integer, default=0)
+    volume: Mapped[Decimal] = mapped_column(Numeric(16, 4))
+    entry_price: Mapped[Decimal] = mapped_column(Numeric(20, 8))
+    stop_loss: Mapped[Decimal | None] = mapped_column(Numeric(20, 8), nullable=True)
+    take_profit: Mapped[Decimal | None] = mapped_column(Numeric(20, 8), nullable=True)
+    expiration_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    status: Mapped[str] = mapped_column(String(24), default="active", index=True)
+    fingerprint: Mapped[str] = mapped_column(String(255))
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    last_dispatched_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    last_dispatch_failed: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class TradeLink(TimestampMixin, Base):
+    """Durable mapping from one master trade to its follower broker ticket."""
+
+    __tablename__ = "trade_links"
+    __table_args__ = (
+        UniqueConstraint(
+            "master_account_id",
+            "follower_account_id",
+            "source_type",
+            "source_ticket",
+            name="uq_master_follower_trade_link",
+        ),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    master_account_id: Mapped[str] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), index=True
+    )
+    follower_account_id: Mapped[str] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), index=True
+    )
+    source_type: Mapped[str] = mapped_column(String(16))
+    source_ticket: Mapped[str] = mapped_column(String(64))
+    source_order_id: Mapped[str] = mapped_column(String(64), default="")
+    source_position_id: Mapped[str] = mapped_column(String(64), default="")
+    follower_symbol: Mapped[str] = mapped_column(String(32))
+    follower_order_id: Mapped[str] = mapped_column(String(64), default="")
+    follower_position_id: Mapped[str] = mapped_column(String(64), default="")
+    side: Mapped[str] = mapped_column(String(8))
+    source_volume: Mapped[Decimal] = mapped_column(Numeric(16, 4))
+    follower_volume: Mapped[Decimal] = mapped_column(Numeric(16, 4))
+    entry_price: Mapped[Decimal] = mapped_column(Numeric(20, 8))
+    stop_loss: Mapped[Decimal | None] = mapped_column(Numeric(20, 8), nullable=True)
+    take_profit: Mapped[Decimal | None] = mapped_column(Numeric(20, 8), nullable=True)
+    status: Mapped[str] = mapped_column(String(24), default="active", index=True)
+    last_error: Mapped[str] = mapped_column(Text, default="")
+    last_source_event_id: Mapped[str | None] = mapped_column(
+        ForeignKey("source_trade_events.id", ondelete="SET NULL"), nullable=True
+    )
+
+
 class AuditEvent(TimestampMixin, Base):
     __tablename__ = "audit_events"
 
@@ -359,10 +435,12 @@ __all__ = [
     "CopyTestResult",
     "CopyTestRun",
     "ExecutionAcknowledgement",
+    "MasterTradeState",
     "RiskProfile",
     "SourceTradeEvent",
     "SymbolMapping",
     "SystemState",
     "TerminalInstance",
+    "TradeLink",
     "as_uuid",
 ]

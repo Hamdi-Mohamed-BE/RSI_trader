@@ -56,14 +56,13 @@ def create_schema(active_engine: Engine | None = None) -> None:
     _upgrade_copy_test_schema(selected_engine)
     _upgrade_terminal_schema(selected_engine)
     _upgrade_risk_profile_schema(selected_engine)
+    _upgrade_continuous_copy_schema(selected_engine)
 
 
 def _upgrade_copy_test_schema(selected_engine: Engine) -> None:
     """Preserve existing local history while adding new copy-test fields."""
     with selected_engine.begin() as connection:
-        columns = {
-            column["name"] for column in inspect(connection).get_columns("copy_test_runs")
-        }
+        columns = {column["name"] for column in inspect(connection).get_columns("copy_test_runs")}
         if "order_type" not in columns:
             connection.execute(
                 text(
@@ -93,8 +92,7 @@ def _upgrade_terminal_schema(selected_engine: Engine) -> None:
         if "last_error" not in columns:
             connection.execute(
                 text(
-                    "ALTER TABLE terminal_instances ADD COLUMN last_error "
-                    "TEXT NOT NULL DEFAULT ''"
+                    "ALTER TABLE terminal_instances ADD COLUMN last_error TEXT NOT NULL DEFAULT ''"
                 )
             )
 
@@ -102,13 +100,30 @@ def _upgrade_terminal_schema(selected_engine: Engine) -> None:
 def _upgrade_risk_profile_schema(selected_engine: Engine) -> None:
     """Add explicit disabled daily-profit caps to existing profiles."""
     with selected_engine.begin() as connection:
-        columns = {
-            column["name"] for column in inspect(connection).get_columns("risk_profiles")
-        }
+        columns = {column["name"] for column in inspect(connection).get_columns("risk_profiles")}
         if "max_daily_profit_percent" not in columns:
             connection.execute(
                 text(
                     "ALTER TABLE risk_profiles ADD COLUMN max_daily_profit_percent "
                     "NUMERIC(8, 4) NOT NULL DEFAULT 0"
+                )
+            )
+
+
+def _upgrade_continuous_copy_schema(selected_engine: Engine) -> None:
+    """Keep retry state additive for databases created by early copier builds."""
+    with selected_engine.begin() as connection:
+        tables = set(inspect(connection).get_table_names())
+        if "master_trade_states" not in tables:
+            return
+        columns = {
+            column["name"]
+            for column in inspect(connection).get_columns("master_trade_states")
+        }
+        if "last_dispatch_failed" not in columns:
+            connection.execute(
+                text(
+                    "ALTER TABLE master_trade_states ADD COLUMN last_dispatch_failed "
+                    "BOOLEAN NOT NULL DEFAULT FALSE"
                 )
             )

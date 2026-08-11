@@ -34,15 +34,16 @@ def test_protocol_rejects_unknown_message() -> None:
         decode_message(b'{"message_type":"unknown"}\n')
 
 
-def test_new_entry_requires_stop_loss() -> None:
-    with pytest.raises(ValueError, match="stop loss"):
-        SourceTradeMessage(
-            sequence=1,
-            source_account_id=uuid4(),
-            source_order_id="1",
-            action=TradeAction.MARKET_OPEN,
-            side=Side.BUY,
-            symbol="EURUSD",
-            volume=Decimal("1"),
-            entry_price=Decimal("1.1000"),
-        )
+def test_new_entry_without_stop_is_valid_protocol_input() -> None:
+    message = SourceTradeMessage(
+        sequence=1,
+        source_account_id=uuid4(),
+        source_order_id="1",
+        action=TradeAction.MARKET_OPEN,
+        side=Side.BUY,
+        symbol="EURUSD",
+        volume=Decimal("1"),
+        entry_price=Decimal("1.1000"),
+    )
+
+    assert message.stop_loss is None

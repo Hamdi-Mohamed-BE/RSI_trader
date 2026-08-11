@@ -180,9 +180,7 @@ def test_pending_demo_order_is_placed_and_left_active(
         assert outcome.broker_order_id == "234"
         assert outcome.cleanup_id == ""
         assert "left open" in outcome.message
-        assert [item["action"] for item in connector.sent] == [
-            connector.TRADE_ACTION_PENDING
-        ]
+        assert [item["action"] for item in connector.sent] == [connector.TRADE_ACTION_PENDING]
 
 
 def test_live_account_order_is_blocked(

@@ -237,9 +237,7 @@ class CopyTestRunner:
             if data.take_profit is not None:
                 target_distance = abs(data.take_profit - data.entry_price)
                 target = (
-                    entry + target_distance
-                    if data.side.value == "buy"
-                    else entry - target_distance
+                    entry + target_distance if data.side.value == "buy" else entry - target_distance
                 )
             checks.update(
                 {

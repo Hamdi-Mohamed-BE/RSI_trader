@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from ..domain.enums import OrderType, Side
 from ..models import Account, CopyTestResult, CopyTestRun
+from .accounts import ensure_system_state
 from .audit import record_audit
 from .demo_orders import DemoOrderExecutor, DemoOrderOutcome, DemoOrderRequest
 
@@ -72,18 +73,34 @@ class CopyTestExecutionRunner:
         if not run.execute_demo:
             return run
 
-        results = session.scalars(
-            select(CopyTestResult)
-            .options(
-                selectinload(CopyTestResult.follower_account).selectinload(
-                    Account.risk_profile
+        results = list(
+            session.scalars(
+                select(CopyTestResult)
+                .options(
+                    selectinload(CopyTestResult.follower_account).selectinload(Account.risk_profile)
                 )
-            )
-            .where(CopyTestResult.run_id == run.id)
-            .order_by(CopyTestResult.created_at)
-        ).all()
+                .where(CopyTestResult.run_id == run.id)
+                .order_by(CopyTestResult.created_at)
+            ).all()
+        )
+        results.sort(key=lambda item: not item.follower_account.is_master)
+        system = ensure_system_state(session)
+        continuous_active = not system.global_pause and system.execution_mode == "demo"
         for result in results:
             if result.status != "passed":
+                continue
+            if continuous_active and not result.follower_account.is_master:
+                checks = dict(result.checks or {})
+                checks.update(
+                    {
+                        "execution_status": "continuous_copier",
+                        "execution_message": (
+                            "The order was placed on the master; the continuous copier "
+                            "will route this follower without creating a duplicate."
+                        ),
+                    }
+                )
+                result.checks = checks
                 continue
             outcome = self._execute_result(session, run, result, actor=actor)
             checks = dict(result.checks or {})
@@ -94,9 +111,7 @@ class CopyTestExecutionRunner:
                     "broker_order_id": outcome.broker_order_id,
                     "broker_deal_id": outcome.broker_deal_id,
                     "executed_price": (
-                        str(outcome.executed_price)
-                        if outcome.executed_price is not None
-                        else None
+                        str(outcome.executed_price) if outcome.executed_price is not None else None
                     ),
                     "cleanup_id": outcome.cleanup_id,
                     "broker_retcode": outcome.broker_retcode,
@@ -115,10 +130,7 @@ class CopyTestExecutionRunner:
         run.error = (
             ""
             if run.failed_followers == 0
-            else (
-                f"{run.failed_followers} account check(s) failed readiness "
-                "or demo execution."
-            )
+            else (f"{run.failed_followers} account check(s) failed readiness or demo execution.")
         )
         run.completed_at = datetime.now(UTC)
         record_audit(

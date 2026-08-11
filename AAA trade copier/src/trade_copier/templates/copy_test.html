@@ -72,6 +72,8 @@
                 <td class="max-w-xl text-xs">
                     {% if result.error %}
                     <strong class="block text-red">{{ result.error }}</strong>
+                    {% elif result.checks.get('execution_status') == 'continuous_copier' %}
+                    <strong class="block text-cyan">{{ result.checks.get('execution_message') }}</strong>
                     {% elif result.checks.get('execution_status') == 'completed' %}
                     <strong class="block text-green">{{ result.checks.get('execution_message') }}</strong>
                     <span class="mt-1 block text-muted">Order {{ result.checks.get('broker_order_id') or '—' }} · Deal {{ result.checks.get('broker_deal_id') or '—' }} · Retcode {{ result.checks.get('broker_retcode') }}</span>

@@ -36,6 +36,8 @@ class Settings(BaseSettings):
     max_follower_accounts: int = Field(default=10, ge=1, le=100)
     master_pipe_name: str = "aaa_trade_copier_master"
     follower_pipe_prefix: str = "aaa_trade_copier_follower"
+    continuous_copy_enabled: bool = True
+    continuous_copy_poll_ms: int = Field(default=350, ge=100, le=5000)
 
     storage_dir: Path = Path("storage")
 

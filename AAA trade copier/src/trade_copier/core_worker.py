@@ -10,9 +10,11 @@ from .domain.enums import AccountRole, AccountState, TerminalHealth
 from .domain.messages import SourceTradeMessage
 from .models import Account
 from .services.accounts import ensure_system_state
+from .services.continuous_copier import ContinuousTradeCopier, MasterSnapshotReader
 from .services.copier import CopierCore
 from .services.credentials import build_credential_vault
 from .services.mt5_discovery import detect_and_import_running_accounts
+from .services.mt5_executor import Mt5FollowerExecutor, PythonMt5Transport
 from .services.terminals import TerminalManager
 from .transport.protocol import ProtocolError, decode_message
 from .transport.windows_named_pipe import WindowsNamedPipeTransport
@@ -121,6 +123,19 @@ async def watchdog(settings: Settings, terminal_manager: TerminalManager) -> Non
         await asyncio.sleep(settings.mt5_discovery_interval_seconds)
 
 
+async def continuous_copy_loop(
+    settings: Settings,
+    copier: ContinuousTradeCopier,
+) -> None:
+    while True:
+        try:
+            with SessionLocal() as session:
+                await copier.poll_once(session)
+        except (ArithmeticError, OSError, RuntimeError, TypeError, ValueError) as exc:
+            logger.warning("Continuous copier poll failed: %s", exc)
+        await asyncio.sleep(settings.continuous_copy_poll_ms / 1000)
+
+
 async def run() -> None:
     settings = get_settings()
     create_schema()
@@ -140,11 +155,31 @@ async def run() -> None:
         vault=vault,
         default_template_path=settings.mt5_template_path,
     )
-    await asyncio.gather(
+    tasks = [
         accept_followers(settings, server, transport),
         consume_master(settings, server, transport, terminal_manager),
         watchdog(settings, terminal_manager),
-    )
+    ]
+    if settings.continuous_copy_enabled:
+        python_transport = PythonMt5Transport(
+            session_factory=SessionLocal,
+            executor=Mt5FollowerExecutor(
+                vault=vault,
+                allow_live=settings.execution_is_permitted,
+            ),
+        )
+        continuous_core = CopierCore(settings=settings, transport=python_transport)
+        continuous_copier = ContinuousTradeCopier(
+            core=continuous_core,
+            reader=MasterSnapshotReader(vault=vault),
+            terminal_manager=terminal_manager,
+        )
+        tasks.append(continuous_copy_loop(settings, continuous_copier))
+        logger.info(
+            "Continuous master reconciliation enabled poll_ms=%d",
+            settings.continuous_copy_poll_ms,
+        )
+    await asyncio.gather(*tasks)
 
 
 def main() -> None:

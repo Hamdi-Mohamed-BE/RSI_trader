@@ -315,9 +315,7 @@ class TerminalManager:
         info = connector.symbol_info(requested)
         if info is not None and self._is_tradable_symbol(connector, info):
             resolved = str(getattr(info, "name", requested) or requested)
-            if connector.symbol_select(resolved, True) or bool(
-                getattr(info, "select", False)
-            ):
+            if connector.symbol_select(resolved, True) or bool(getattr(info, "select", False)):
                 return resolved, connector.symbol_info(resolved) or info
         else:
             connector.symbol_select(requested, True)
@@ -349,9 +347,7 @@ class TerminalManager:
             if not resolved or not connector.symbol_select(resolved, True):
                 continue
             resolved_info = connector.symbol_info(resolved)
-            if resolved_info is not None and self._is_tradable_symbol(
-                connector, resolved_info
-            ):
+            if resolved_info is not None and self._is_tradable_symbol(connector, resolved_info):
                 return resolved, resolved_info
         raise SymbolResolutionError(
             f"No tradable broker symbol matching {requested} was found on this account."
@@ -531,9 +527,7 @@ class TerminalManager:
             terminal.process_id = self._process_id(executable)
             terminal.portable_directory = str(executable.parent)
             terminal.terminal_build = str(getattr(terminal_info, "build", ""))
-            terminal.algo_trading_enabled = bool(
-                getattr(terminal_info, "trade_allowed", False)
-            )
+            terminal.algo_trading_enabled = bool(getattr(terminal_info, "trade_allowed", False))
             terminal.health = TerminalHealth.HEALTHY.value
             terminal.last_error = ""
             terminal.last_seen_at = now
@@ -665,9 +659,7 @@ class TerminalManager:
     def start(self, session: Session, account: Account, *, actor: str) -> TerminalInstance:
         """Compatibility action: build when needed, then start and log in."""
         executable = (
-            Path(account.terminal_path).expanduser().resolve()
-            if account.terminal_path
-            else None
+            Path(account.terminal_path).expanduser().resolve() if account.terminal_path else None
         )
         if (
             executable is None
@@ -790,9 +782,7 @@ class TerminalManager:
                 continue
             terminal = account.terminal
             running = bool(
-                terminal
-                and terminal.process_id
-                and self.is_running(terminal.process_id)
+                terminal and terminal.process_id and self.is_running(terminal.process_id)
             )
             if account.health == TerminalHealth.HEALTHY.value and running:
                 continue

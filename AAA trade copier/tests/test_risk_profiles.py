@@ -45,8 +45,6 @@ def test_default_profile_is_one_percent_with_daily_caps_disabled(
         assert follower.risk_profile_id == profile.id
         assert master.risk_profile_id is None
         assert (
-            session.scalar(
-                select(RiskProfile).where(RiskProfile.name == DEFAULT_RISK_PROFILE_NAME)
-            )
+            session.scalar(select(RiskProfile).where(RiskProfile.name == DEFAULT_RISK_PROFILE_NAME))
             is profile
         )

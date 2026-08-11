@@ -242,11 +242,9 @@ def test_copy_test_demo_execution_records_real_outcomes(
 
         run = CopyTestExecutionRunner(executor).execute(session, run, actor="test")
 
-        assert len(executor.requests) == 3
+        assert len(executor.requests) == 1
         assert [account_name for account_name, _ in executor.requests] == [
             "Demo Master",
-            "Follower Alpha",
-            "Follower Bravo",
         ]
         assert run.execute_demo is True
         assert run.total_followers == 3
@@ -254,27 +252,21 @@ def test_copy_test_demo_execution_records_real_outcomes(
         assert run.failed_followers == 0
         assert run.status == "passed"
         completed = next(
-            result
-            for result in run.results
-            if result.checks.get("execution_target") == "master"
+            result for result in run.results if result.checks.get("execution_target") == "master"
         )
         assert completed.checks["broker_order_id"] == "123"
         assert completed.checks["cleanup_id"] == ""
         follower_results = [
-            result
-            for result in run.results
-            if result.checks.get("execution_target") != "master"
+            result for result in run.results if not result.follower_account.is_master
         ]
         assert all(
-            result.checks.get("execution_status") == "completed"
-            for result in follower_results
+            result.checks["execution_status"] == "continuous_copier" for result in follower_results
         )
-        assert all(result.checks.get("broker_order_id") == "123" for result in follower_results)
 
     page = logged_in_client.get("/copy-test")
     assert page.status_code == 200
     assert "Execution result" in page.text
     assert "Demo position 123 placed and left open in MT5." in page.text
     assert "Order remains active" in page.text
-    assert "Follower readiness passed" not in page.text
+    assert "continuous copier" in page.text
     assert "Ready for copy routing" not in page.text
