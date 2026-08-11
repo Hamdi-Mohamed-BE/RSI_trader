@@ -66,9 +66,9 @@ def test_copy_test_ui_reports_missing_active_master(
 ) -> None:
     page = logged_in_client.get("/copy-test")
     assert page.status_code == 200
-    assert "Run on active master" in page.text
+    assert "Run on master + followers" in page.text
     assert "Demo only" in page.text
-    assert "Place on active master MT5 and leave open" in page.text
+    assert "Place on master and all ready followers" in page.text
     assert "Read automatically from active master MT5" in page.text
     assert 'name="order_type"' in page.text
     assert "Buy Limit" in page.text
@@ -242,8 +242,12 @@ def test_copy_test_demo_execution_records_real_outcomes(
 
         run = CopyTestExecutionRunner(executor).execute(session, run, actor="test")
 
-        assert len(executor.requests) == 1
-        assert executor.requests[0][0] == "Demo Master"
+        assert len(executor.requests) == 3
+        assert [account_name for account_name, _ in executor.requests] == [
+            "Demo Master",
+            "Follower Alpha",
+            "Follower Bravo",
+        ]
         assert run.execute_demo is True
         assert run.total_followers == 3
         assert run.passed_followers == 3
@@ -261,12 +265,16 @@ def test_copy_test_demo_execution_records_real_outcomes(
             for result in run.results
             if result.checks.get("execution_target") != "master"
         ]
-        assert all("execution_status" not in result.checks for result in follower_results)
+        assert all(
+            result.checks.get("execution_status") == "completed"
+            for result in follower_results
+        )
+        assert all(result.checks.get("broker_order_id") == "123" for result in follower_results)
 
     page = logged_in_client.get("/copy-test")
     assert page.status_code == 200
     assert "Execution result" in page.text
     assert "Demo position 123 placed and left open in MT5." in page.text
     assert "Order remains active" in page.text
-    assert "Follower readiness passed" in page.text
+    assert "Follower readiness passed" not in page.text
     assert "Ready for copy routing" not in page.text

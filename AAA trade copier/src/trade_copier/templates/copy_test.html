@@ -3,9 +3,9 @@
 {% block content %}
 <section class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
     <div>
-        <p class="eyebrow">Active master execution + follower readiness</p>
+        <p class="eyebrow">Master-to-follower execution test</p>
         <h1 class="page-title">Cross-account copy test</h1>
-        <p class="page-copy">Read the live Bid/Ask from the active main MT5, validate the entry against that quote, and place one actual demo order on the active master. Followers are checked for copy readiness without receiving a second direct test order.</p>
+        <p class="page-copy">Read the live Bid/Ask from the active main MT5, validate the entry, place it on the active master, then place the mapped and risk-sized order on every ready follower.</p>
     </div>
     <span class="badge border-amber/50 text-amber">Demo only · orders stay open</span>
 </section>
@@ -25,9 +25,9 @@
         <label class="field-label">Confirmation<input class="field" name="confirmation" placeholder="Type TEST" required><small>Required before the test can contact MT5.</small></label>
         <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-amber/40 bg-amber/10 p-4 text-sm text-white xl:col-span-2">
             <input class="mt-1 size-4 accent-cyan" type="checkbox" name="execute_demo" value="true" checked>
-            <span><strong class="block">Place on active master MT5 and leave open</strong><small class="mt-1 block text-amber">One successful position or pending order stays active on the main demo account until you close or cancel it manually. Live accounts are rejected.</small></span>
+            <span><strong class="block">Place on master and all ready followers</strong><small class="mt-1 block text-amber">Every successful master and follower order stays active until you close or cancel it manually in its MT5. Live accounts are rejected.</small></span>
         </label>
-        <div class="flex items-end"><button class="button-primary w-full" type="submit">Run on active master</button></div>
+        <div class="flex items-end"><button class="button-primary w-full" type="submit">Run on master + followers</button></div>
     </form>
     <div class="mt-5 grid gap-3 text-xs text-muted sm:grid-cols-2 xl:grid-cols-4">
         <p class="rounded-lg border border-line bg-void/50 p-3"><strong class="text-white">Buy Limit</strong><br>Entry below market</p>
@@ -59,7 +59,7 @@
         </div>
         {% if run.error %}<p class="mt-4 rounded-xl border border-red/40 bg-red/10 p-3 text-sm text-red">{{ run.error }}</p>{% endif %}
         <div class="table-wrap mt-5">
-            <table><thead><tr><th>Follower</th><th>Status</th><th>Mapped symbol</th><th>Entry / SL / TP</th><th>Calculated volume</th><th>Risk cash</th><th>Execution result</th></tr></thead>
+            <table><thead><tr><th>Account</th><th>Status</th><th>Mapped symbol</th><th>Entry / SL / TP</th><th>Calculated volume</th><th>Risk cash</th><th>Execution result</th></tr></thead>
             <tbody>
             {% for result in run.results %}
             <tr>
@@ -77,7 +77,7 @@
                     <span class="mt-1 block text-muted">Order {{ result.checks.get('broker_order_id') or '—' }} · Deal {{ result.checks.get('broker_deal_id') or '—' }} · Retcode {{ result.checks.get('broker_retcode') }}</span>
                     {% if result.checks.get('cleanup_id') %}<span class="mt-1 block text-muted">Historical automatic cleanup {{ result.checks.get('cleanup_id') }}</span>{% else %}<strong class="mt-1 block text-amber">Order remains active — manage it in MT5.</strong>{% endif %}
                     {% else %}
-                    <span class="text-muted">{% if result.checks.get('account_role') == 'active_master' %}Master readiness passed — no broker order requested.{% else %}Follower readiness passed — the test order is placed only on the active master.{% endif %}</span>
+                    <span class="text-muted">Readiness passed — broker execution was not requested for this run.</span>
                     {% endif %}
                 </td>
             </tr>

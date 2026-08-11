@@ -86,7 +86,7 @@ Open **Copy test** from the navigation or dashboard. Enter one master trade and 
 
 Before running the checks, the diagnostic connects to the active main MT5 and managed follower instances, then refreshes their requested broker symbol specifications. If a broker renames a symbol, such as `XAUUSDm`, the resolved `XAUUSD → XAUUSDm` route is saved automatically and reused by future tests and copier events. The first incoming trade for a new symbol runs the same discovery before routing.
 
-The **Place on active master MT5 and leave open** option sends one actual broker request to the active main account after its readiness check passes. Followers are checked for copy readiness but do not receive duplicate direct test orders. Market positions and pending orders remain active until they are manually closed or cancelled in MT5. The broker-reported master account mode must be demo; live accounts are always rejected. Clear the option to run readiness checks without sending an order.
+The **Place on master and all ready followers** option sends one broker request to the active main account, then sends the mapped and risk-sized request to every follower that passed readiness. Market positions and pending orders remain active until they are manually closed or cancelled in each MT5. Every broker-reported account mode must be demo; live accounts are always rejected. Clear the option to run readiness checks without sending an order.
 
 ## MT5 demo integration
 

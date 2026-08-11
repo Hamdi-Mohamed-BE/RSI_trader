@@ -83,7 +83,7 @@ class CopyTestExecutionRunner:
             .order_by(CopyTestResult.created_at)
         ).all()
         for result in results:
-            if result.status != "passed" or result.checks.get("execution_target") != "master":
+            if result.status != "passed":
                 continue
             outcome = self._execute_result(session, run, result, actor=actor)
             checks = dict(result.checks or {})
