@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA EAs\BM Trading Robust Sets 2026-08-04\Daily Bias AMD Validation 2026-08-10\download_missing_history.py", line 107, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA EAs\BM Trading Robust Sets 2026-08-04\Daily Bias AMD Validation 2026-08-10\download_missing_history.py", line 69, in main
+    frame["time"] = server_epoch_to_utc(frame["time"])
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA EAs\BM Trading Robust Sets 2026-08-04\Daily Bias AMD Validation 2026-08-10\download_missing_history.py", line 30, in server_epoch_to_utc
+    local = naive.dt.tz_localize("Europe/Helsinki", ambiguous="infer", nonexistent="shift_forward")
+  File "C:\Users\hama101\AppData\Roaming\Python\Python313\site-packages\pandas\core\accessor.py", line 127, in f
+    return self._delegate_method(name, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hama101\AppData\Roaming\Python\Python313\site-packages\pandas\core\indexes\accessors.py", line 126, in _delegate_method
+    result = method(*args, **kwargs)
+  File "C:\Users\hama101\AppData\Roaming\Python\Python313\site-packages\pandas\core\indexes\datetimes.py", line 543, in tz_localize
+    arr = self._data.tz_localize(tz, ambiguous, nonexistent)
+  File "C:\Users\hama101\AppData\Roaming\Python\Python313\site-packages\pandas\core\arrays\_mixins.py", line 83, in method
+    return meth(self, *args, **kwargs)
+  File "C:\Users\hama101\AppData\Roaming\Python\Python313\site-packages\pandas\core\arrays\datetimes.py", line 1107, in tz_localize
+    new_dates = tzconversion.tz_localize_to_utc(
+        self.asi8,
+    ...<3 lines>...
+        creso=self._creso,
+    )
+  File "pandas/_libs/tslibs/tzconversion.pyx", line 327, in pandas._libs.tslibs.tzconversion.tz_localize_to_utc
+  File "pandas/_libs/tslibs/tzconversion.pyx", line 658, in pandas._libs.tslibs.tzconversion._get_dst_hours
+ValueError: 2025-10-26 03:00:00 is an ambiguous time and cannot be inferred.

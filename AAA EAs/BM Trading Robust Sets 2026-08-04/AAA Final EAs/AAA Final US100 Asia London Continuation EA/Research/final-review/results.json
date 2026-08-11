@@ -1,0 +1,188 @@
+{
+  "fixed_configuration": {
+    "instrument": "US100 cash CFD",
+    "threshold_index_points": 20.0,
+    "threshold_broker_ticks_at_0_01": 2000,
+    "signal": "Asia and London individually aligned; first New York M15 extreme within 20 points of the same-side Asia extreme",
+    "entry": "New York opening-range breakout after 09:45, no later than 10:30 America/New_York",
+    "stop": "max(1.25 x first New York M15 range, 20 index points)",
+    "target_r": 2.0,
+    "trailing": "none",
+    "hard_exit": "16:00 America/New_York",
+    "risk_pct_of_equity": 1.0
+  },
+  "exness_ustec": {
+    "period": "2019-08-16 to 2026-07-24",
+    "base": {
+      "trades": 86,
+      "wins": 39,
+      "losses": 47,
+      "win_rate_pct": 45.348837209302324,
+      "profit_factor": 1.2616572788180909,
+      "mean_r": 0.12644659568988229,
+      "net_r": 10.874407229329877,
+      "return_pct": 10.774266891483686,
+      "max_closed_balance_dd_pct": 7.955871273986827,
+      "final_balance": 11077.42668914837
+    },
+    "directions": {
+      "long": {
+        "trades": 55,
+        "wins": 28,
+        "losses": 27,
+        "win_rate_pct": 50.90909090909091,
+        "profit_factor": 1.549975093473503,
+        "mean_r": 0.2443376075039527,
+        "net_r": 13.438568412717398,
+        "return_pct": 13.890820021757676,
+        "max_closed_balance_dd_pct": 4.422682625994298,
+        "final_balance": 11389.082002175768
+      },
+      "short": {
+        "trades": 31,
+        "wins": 11,
+        "losses": 20,
+        "win_rate_pct": 35.483870967741936,
+        "profit_factor": 0.8502668055882361,
+        "mean_r": -0.08271487688346842,
+        "net_r": -2.564161183387521,
+        "return_pct": -2.736439275508351,
+        "max_closed_balance_dd_pct": 7.307210305936607,
+        "final_balance": 9726.356072449165
+      }
+    },
+    "stress": {
+      "0.5": {
+        "trades": 86,
+        "wins": 39,
+        "losses": 47,
+        "win_rate_pct": 45.348837209302324,
+        "profit_factor": 1.2110836850186448,
+        "mean_r": 0.10456448608414937,
+        "net_r": 8.992545803236846,
+        "return_pct": 8.709717063593114,
+        "max_closed_balance_dd_pct": 8.802732409352169,
+        "final_balance": 10870.97170635931
+      },
+      "1.0": {
+        "trades": 86,
+        "wins": 38,
+        "losses": 48,
+        "win_rate_pct": 44.18604651162791,
+        "profit_factor": 1.1629041363393415,
+        "mean_r": 0.08268237647841642,
+        "net_r": 7.110684377143812,
+        "return_pct": 6.683082606126067,
+        "max_closed_balance_dd_pct": 9.642060410149211,
+        "final_balance": 10668.308260612606
+      },
+      "2.0": {
+        "trades": 86,
+        "wins": 37,
+        "losses": 49,
+        "win_rate_pct": 43.02325581395349,
+        "profit_factor": 1.073053288616618,
+        "mean_r": 0.03891815726695053,
+        "net_r": 3.3469615249577456,
+        "return_pct": 2.740827871456175,
+        "max_closed_balance_dd_pct": 11.298375383688555,
+        "final_balance": 10274.082787145617
+      }
+    },
+    "bootstrap": {
+      "method": "iid trade bootstrap; diagnostic only, not a forecast",
+      "samples": 50000,
+      "probability_positive_pct": 81.71000000000001,
+      "return_pct_p05": -7.758623284259976,
+      "return_pct_median": 10.767863370374675,
+      "return_pct_p95": 33.472207086044996
+    }
+  },
+  "mexatlantic_ut100": {
+    "period": "2022-02-17 to 2026-07-24",
+    "base": {
+      "trades": 34,
+      "wins": 18,
+      "losses": 16,
+      "win_rate_pct": 52.94117647058824,
+      "profit_factor": 1.931602124171203,
+      "mean_r": 0.4279065444912967,
+      "net_r": 14.548822512704088,
+      "return_pct": 15.243387605805548,
+      "max_closed_balance_dd_pct": 5.380097261455736,
+      "final_balance": 11524.338760580555
+    },
+    "directions": {
+      "long": {
+        "trades": 16,
+        "wins": 8,
+        "losses": 8,
+        "win_rate_pct": 50.0,
+        "profit_factor": 1.80540453074433,
+        "mean_r": 0.4027022653721655,
+        "net_r": 6.443236245954648,
+        "return_pct": 6.464165963452695,
+        "max_closed_balance_dd_pct": 2.0192069800000083,
+        "final_balance": 10646.416596345269
+      },
+      "short": {
+        "trades": 18,
+        "wins": 10,
+        "losses": 8,
+        "win_rate_pct": 55.55555555555556,
+        "profit_factor": 2.0641453650482715,
+        "mean_r": 0.4503103481527466,
+        "net_r": 8.10558626674944,
+        "return_pct": 8.246175192286342,
+        "max_closed_balance_dd_pct": 4.395850631625269,
+        "final_balance": 10824.617519228634
+      }
+    },
+    "stress": {
+      "0.5": {
+        "trades": 34,
+        "wins": 18,
+        "losses": 16,
+        "win_rate_pct": 52.94117647058824,
+        "profit_factor": 1.8790906933056402,
+        "mean_r": 0.4108175895629572,
+        "net_r": 13.967798045140546,
+        "return_pct": 14.578726310164548,
+        "max_closed_balance_dd_pct": 5.509938964759105,
+        "final_balance": 11457.872631016455
+      },
+      "1.0": {
+        "trades": 34,
+        "wins": 18,
+        "losses": 16,
+        "win_rate_pct": 52.94117647058824,
+        "profit_factor": 1.8283463900151726,
+        "mean_r": 0.39372863463461766,
+        "net_r": 13.386773577577001,
+        "return_pct": 13.91776289559541,
+        "max_closed_balance_dd_pct": 5.639627209454305,
+        "final_balance": 11391.77628955954
+      },
+      "2.0": {
+        "trades": 34,
+        "wins": 18,
+        "losses": 16,
+        "win_rate_pct": 52.94117647058824,
+        "profit_factor": 1.731813975724515,
+        "mean_r": 0.35955072477793854,
+        "net_r": 12.22472464244991,
+        "return_pct": 12.606850500624024,
+        "max_closed_balance_dd_pct": 5.898543939586965,
+        "final_balance": 11260.685050062402
+      }
+    },
+    "bootstrap": {
+      "method": "iid trade bootstrap; diagnostic only, not a forecast",
+      "samples": 50000,
+      "probability_positive_pct": 95.956,
+      "return_pct_p05": 0.7826615585952804,
+      "return_pct_median": 15.018405799527068,
+      "return_pct_p95": 31.643979362093173
+    }
+  }
+}

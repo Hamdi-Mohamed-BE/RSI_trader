@@ -1,0 +1,184 @@
+{
+  "manifest": {
+    "server": "MEXAtlantic-Demo",
+    "symbol": "UT100",
+    "digits": 2,
+    "point": 0.01,
+    "tick_size": 0.01,
+    "rows": 1617498,
+    "first_utc": "2022-01-02T23:00:00+00:00",
+    "last_utc": "2026-08-07T20:58:00+00:00",
+    "median_spread_points": 170.0,
+    "median_spread_index_points": 1.7,
+    "timezone_conversion": "Europe/Helsinki broker clock to UTC (UTC+2 winter / UTC+3 summer)",
+    "files": [
+      {
+        "file": "MEXAtlantic-UT100-M1-2022.csv.gz",
+        "rows": 350311,
+        "sha256": "26f7be2cde119de17d87dcf7ada96364b11e48227e1b3eb1a3b8dcdd53dc3974"
+      },
+      {
+        "file": "MEXAtlantic-UT100-M1-2023.csv.gz",
+        "rows": 349792,
+        "sha256": "6e3bdcd67a5726bdb7b86515ff8e1e784f46afad112946fd50b3c4bebef4cd3b"
+      },
+      {
+        "file": "MEXAtlantic-UT100-M1-2024.csv.gz",
+        "rows": 352436,
+        "sha256": "b02687898001afe81d6465f1c4b46bb530f90bb26c0ea4110abb5a191d006655"
+      },
+      {
+        "file": "MEXAtlantic-UT100-M1-2025.csv.gz",
+        "rows": 351497,
+        "sha256": "aa1d3691a82c289387c8ef9b45eea90fa18ef6adec54ec0b7f041b3674bee1be"
+      },
+      {
+        "file": "MEXAtlantic-UT100-M1-2026.csv.gz",
+        "rows": 213462,
+        "sha256": "f6f54d36d1b383db884beed140c8a902efebacd4b8957fd70d70b448eec35223"
+      }
+    ]
+  },
+  "quality": {
+    "valid_sessions": 1185,
+    "skipped": {
+      "insufficient_asia_bars": 11,
+      "incomplete_new_york_opening_range": 3,
+      "insufficient_london_bars": 1
+    }
+  },
+  "locked_signal": {
+    "proximity_threshold": 20.0,
+    "minimum_trend": 0.0,
+    "trend_definition": "asia_and_london_aligned",
+    "proximity_relation": "absolute",
+    "direction_mode": "both",
+    "maximum_opening_range": 400.0
+  },
+  "locked_execution": {
+    "entry_mode": "opening_range_breakout",
+    "entry_cutoff_minute": 630,
+    "stop_range_multiple": 1.25,
+    "minimum_stop_points": 20.0,
+    "reward_risk": 2.0,
+    "trailing_mode": "none",
+    "exit_minute": 960
+  },
+  "metrics": {
+    "trades": 34,
+    "wins": 18,
+    "losses": 16,
+    "win_rate_pct": 52.94117647058824,
+    "profit_factor": 1.931602124171203,
+    "mean_r": 0.4279065444912967,
+    "median_r": 0.35822462117229675,
+    "net_r": 14.548822512704088,
+    "gross_profit_r": 30.1658140751132,
+    "gross_loss_r": -15.616991562409115,
+    "return_pct": 15.243387605805548,
+    "max_closed_balance_dd_pct": 5.380097261455736,
+    "final_balance": 11524.338760580555,
+    "largest_win_r": 2.0000000000000484,
+    "largest_loss_r": -1.1428571428571614,
+    "average_win_r": 1.675878559728511,
+    "average_loss_r": -0.9760619726505697
+  },
+  "yearly": {
+    "2022": {
+      "trades": 2,
+      "wins": 1,
+      "losses": 1,
+      "win_rate_pct": 50.0,
+      "profit_factor": 2.0,
+      "mean_r": 0.5,
+      "median_r": 0.5,
+      "net_r": 1.0,
+      "gross_profit_r": 2.0,
+      "gross_loss_r": -1.0,
+      "return_pct": 0.9800000000000031,
+      "max_closed_balance_dd_pct": 1.0,
+      "final_balance": 10098.0,
+      "largest_win_r": 2.0,
+      "largest_loss_r": -1.0,
+      "average_win_r": 2.0,
+      "average_loss_r": -1.0
+    },
+    "2023": {
+      "trades": 12,
+      "wins": 8,
+      "losses": 4,
+      "win_rate_pct": 66.66666666666666,
+      "profit_factor": 3.10951060543599,
+      "mean_r": 0.7282834233052852,
+      "median_r": 1.3045226130653371,
+      "net_r": 8.739401079663422,
+      "gross_profit_r": 12.882258222520584,
+      "gross_loss_r": -4.14285714285716,
+      "return_pct": 8.977446467789395,
+      "max_closed_balance_dd_pct": 1.142857142857156,
+      "final_balance": 10897.74464677894,
+      "largest_win_r": 2.000000000000012,
+      "largest_loss_r": -1.1428571428571614,
+      "average_win_r": 1.610282277815073,
+      "average_loss_r": -1.03571428571429
+    },
+    "2024": {
+      "trades": 10,
+      "wins": 5,
+      "losses": 5,
+      "win_rate_pct": 50.0,
+      "profit_factor": 1.6886472491909412,
+      "mean_r": 0.3443236245954707,
+      "median_r": -0.27838187702265127,
+      "net_r": 3.4432362459547075,
+      "gross_profit_r": 8.44323624595471,
+      "gross_loss_r": -5.000000000000002,
+      "return_pct": 3.394480893296614,
+      "max_closed_balance_dd_pct": 2.970100000000023,
+      "final_balance": 10339.448089329662,
+      "largest_win_r": 2.0000000000000484,
+      "largest_loss_r": -1.000000000000009,
+      "average_win_r": 1.688647249190942,
+      "average_loss_r": -1.0000000000000004
+    },
+    "2025": {
+      "trades": 6,
+      "wins": 1,
+      "losses": 5,
+      "win_rate_pct": 16.666666666666664,
+      "profit_factor": 0.447013838310257,
+      "mean_r": -0.41235573659199715,
+      "median_r": -0.9999999999999855,
+      "net_r": -2.4741344195519828,
+      "gross_profit_r": 1.9999999999999378,
+      "gross_loss_r": -4.474134419551921,
+      "return_pct": -2.4837676442578283,
+      "max_closed_balance_dd_pct": 2.483767644257823,
+      "final_balance": 9751.623235574218,
+      "largest_win_r": 1.9999999999999378,
+      "largest_loss_r": -1.0,
+      "average_win_r": 1.9999999999999378,
+      "average_loss_r": -0.8948268839103841
+    },
+    "2026": {
+      "trades": 4,
+      "wins": 3,
+      "losses": 1,
+      "win_rate_pct": 75.0,
+      "profit_factor": 4.84031960663782,
+      "mean_r": 0.9600799016594855,
+      "median_r": 1.420159803318987,
+      "net_r": 3.840319606637942,
+      "gross_profit_r": 4.840319606637975,
+      "gross_loss_r": -1.000000000000032,
+      "return_pct": 3.865125833558647,
+      "max_closed_balance_dd_pct": 1.0000000000000364,
+      "final_balance": 10386.512583355865,
+      "largest_win_r": 2.0,
+      "largest_loss_r": -1.000000000000032,
+      "average_win_r": 1.6134398688793248,
+      "average_loss_r": -1.000000000000032
+    }
+  },
+  "note": "No MEXAtlantic parameter optimization was performed."
+}

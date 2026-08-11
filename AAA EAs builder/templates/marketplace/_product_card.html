@@ -1,0 +1,25 @@
+{% with test=product.performance %}
+  <article class="metric-card flex h-full flex-col">
+    <div class="flex items-start justify-between gap-4">
+      <div class="grid size-12 place-items-center rounded-lg border border-neon-cyan/40 bg-neon-cyan/5 font-mono text-lg text-neon-cyan">EA</div>
+      {% if test %}
+        <span class="status-badge {% if test.is_demo %}status-badge-amber{% else %}status-badge-cyan{% endif %}">
+          {% if test.is_demo %}Demo data{% else %}{{ test.get_verification_display }}{% endif %}
+        </span>
+      {% endif %}
+    </div>
+    <h3 class="mt-6 font-display text-xl font-semibold"><a class="hover:text-neon-cyan" href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+    <p class="mt-2 text-sm leading-6 text-muted">{{ product.summary }}</p>
+    {% if test %}
+      <div class="mt-6 grid grid-cols-3 gap-2 border-y border-grid py-4">
+        <div><div class="text-[10px] uppercase tracking-wider text-muted">PF</div><div class="mt-1 font-mono text-sm text-primary">{{ test.profit_factor }}</div></div>
+        <div><div class="text-[10px] uppercase tracking-wider text-muted">Drawdown</div><div class="mt-1 font-mono text-sm text-signal-red">{{ test.max_drawdown }}%</div></div>
+        <div><div class="text-[10px] uppercase tracking-wider text-muted">Trades</div><div class="mt-1 font-mono text-sm text-primary">{{ test.total_trades }}</div></div>
+      </div>
+    {% endif %}
+    <div class="mt-auto flex items-end justify-between gap-4 pt-5">
+      <div><div class="text-xs text-muted">From</div><div class="font-mono text-xl font-semibold text-primary">${{ product.price|floatformat:0 }}</div></div>
+      <a href="{{ product.get_absolute_url }}" class="btn-ghost">View evidence</a>
+    </div>
+  </article>
+{% endwith %}

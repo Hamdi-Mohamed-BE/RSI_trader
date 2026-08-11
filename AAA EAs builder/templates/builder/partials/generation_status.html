@@ -1,0 +1,38 @@
+<div id="generation-status" class="mt-6 space-y-5" {% if generation.status == "queued" or generation.status == "running" %}hx-get="{% url 'builder:generation-status' generation.project.pk generation.pk %}" hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>
+  <section class="glass-panel p-5 sm:p-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div><div class="eyebrow text-neon-violet">Agent workflow</div><div class="mt-2 text-lg text-primary">{{ generation.current_step|default:"Queued" }}</div></div>
+      <span class="status-badge {% if generation.status == 'succeeded' %}status-badge-cyan{% elif generation.status == 'failed' %}status-badge-amber{% endif %}">{{ generation.get_status_display }}</span>
+    </div>
+    <div class="mt-5 h-2 overflow-hidden rounded-full bg-grid"><div class="h-full bg-gradient-to-r from-neon-violet to-neon-cyan transition-all" style="width: {{ generation.progress }}%"></div></div>
+    <div class="mt-3 flex justify-between font-mono text-xs text-muted"><span>{{ generation.progress }}%</span><span>{{ generation.input_tokens|add:generation.output_tokens }} tokens</span></div>
+    {% if generation.error_summary %}<div class="mt-5 rounded-xl border border-signal-red/40 bg-signal-red/5 p-4 text-sm text-signal-red">{{ generation.error_summary }}</div>{% endif %}
+  </section>
+
+  {% if code_version %}
+    {% include "builder/partials/code_editor.html" with code_version=code_version %}
+
+    <div class="grid gap-5 lg:grid-cols-2">
+      <section class="glass-panel p-5"><div class="eyebrow">Explanation</div><p class="mt-4 whitespace-pre-line text-sm leading-7 text-muted">{{ code_version.explanation }}</p></section>
+      <section class="glass-panel p-5"><div class="eyebrow">Assumptions</div><ul class="mt-4 grid gap-2 text-sm leading-6 text-muted">{% for assumption in code_version.assumptions %}<li>• {{ assumption }}</li>{% empty %}<li>No additional assumptions were reported.</li>{% endfor %}</ul></section>
+    </div>
+
+    <section class="glass-panel p-5">
+      <div class="eyebrow">Diagnostics</div>
+      <div class="mt-4 grid gap-2">
+        {% for diagnostic in code_version.diagnostics %}
+          <div class="rounded-lg border border-grid bg-elevated/30 px-3 py-3 text-sm text-muted"><span class="font-mono text-xs uppercase {% if diagnostic.severity == 'error' %}text-signal-red{% else %}text-signal-amber{% endif %}">{{ diagnostic.severity }}</span><span class="ml-3">{{ diagnostic.message }}</span>{% if diagnostic.suggestion %}<p class="mt-2 text-xs">{{ diagnostic.suggestion }}</p>{% endif %}</div>
+        {% empty %}<div class="text-sm text-signal-green">No deterministic or reviewer diagnostics were reported.</div>{% endfor %}
+      </div>
+    </section>
+
+    <section class="glass-panel p-5">
+      <div class="flex flex-wrap items-center justify-between gap-3"><div class="eyebrow">MetaEditor compiler</div><span class="status-badge">{{ code_version.get_compilation_status_display }}</span></div>
+      <p class="mt-4 whitespace-pre-wrap font-mono text-xs leading-6 text-muted">{{ code_version.compiler_output|default:"No compiler output is available." }}</p>
+    </section>
+
+    <div class="flex flex-wrap justify-end gap-3"><a class="btn-ghost" href="{% url 'builder:detail' generation.project.pk %}">Back to project</a><a class="btn-primary" href="{% url 'builder:generate' generation.project.pk %}">Generate revision</a></div>
+  {% elif generation.status == "failed" %}
+    <div class="flex justify-end"><a class="btn-primary" href="{% url 'builder:generate' generation.project.pk %}">Try again</a></div>
+  {% endif %}
+</div>

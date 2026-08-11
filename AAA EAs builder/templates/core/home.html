@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}AAA EAs Builder — Build trading systems with AI{% endblock %}
+
+{% block content %}
+  <section class="page-shell relative grid gap-10 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:py-24">
+    <div>
+      <div class="eyebrow">AI strategy engineering for MT5 and Pine</div>
+      <h1 class="display-title mt-5">Build trading systems <span class="text-neon-cyan">with AI</span></h1>
+      <p class="mt-6 max-w-xl text-lg leading-8 text-muted">
+        Describe your edge in plain language. Turn it into structured rules, clear MQL5 or Pine code, and a validation trail you can inspect.
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href="{% if user.is_authenticated %}{% url 'builder:create' %}{% else %}{% url 'accounts:signup' %}{% endif %}" class="btn-primary">Build an EA <span aria-hidden="true">→</span></a>
+        <a href="{% url 'marketplace:list' %}" class="btn-secondary">Explore marketplace</a>
+      </div>
+      <div class="mt-9 grid max-w-xl grid-cols-3 overflow-hidden rounded-xl border border-grid bg-panel/65">
+        <div class="px-4 py-4"><div class="font-mono text-sm text-primary">MQL5</div><div class="mt-1 text-xs text-muted">Expert Advisors</div></div>
+        <div class="border-x border-grid px-4 py-4"><div class="font-mono text-sm text-primary">PINE</div><div class="mt-1 text-xs text-muted">Strategies</div></div>
+        <div class="px-4 py-4"><div class="font-mono text-sm text-primary">TRACE</div><div class="mt-1 text-xs text-muted">Every revision</div></div>
+      </div>
+    </div>
+
+    <div class="glass-panel overflow-hidden border-neon-cyan/30">
+      <div class="grid border-b border-grid xl:grid-cols-2">
+        <div class="border-b border-grid p-5 xl:border-r xl:border-b-0">
+          <div class="eyebrow">AI strategy request</div>
+          <div class="mt-4 rounded-lg border border-neon-cyan/55 bg-void/70 p-4 font-mono text-sm leading-6 text-slate-300">
+            Trend-following system on H1 using EMA 50/200 crossover, ATR-based risk, a time filter, and an ATR trailing stop.
+          </div>
+          <div class="mt-3 grid grid-cols-[1fr_auto] gap-3">
+            <div class="rounded-lg border border-grid bg-elevated/40 px-3 py-2 text-sm text-muted">MetaTrader 5 · MQL5</div>
+            <div class="rounded-lg border border-grid bg-elevated/40 px-3 py-2 font-mono text-sm text-primary">H1</div>
+          </div>
+          <a class="btn-primary mt-3 flex w-full justify-center" href="{% if user.is_authenticated %}{% url 'builder:create' %}{% else %}{% url 'accounts:signup' %}{% endif %}">Generate your EA</a>
+        </div>
+        <div class="p-5">
+          <div class="flex items-center justify-between">
+            <div class="eyebrow">Illustrative equity curve</div>
+            <span class="status-badge">Demo</span>
+          </div>
+          {{ demo_equity|json_script:"home-equity-data" }}
+          <canvas class="mt-4 h-52 w-full" data-chart-source="home-equity-data" aria-label="Illustrative equity chart"></canvas>
+          <div class="mt-2 flex justify-between font-mono text-[10px] text-muted"><span>START</span><span>HYPOTHETICAL</span><span>END</span></div>
+        </div>
+      </div>
+      <div class="p-5">
+        <div class="eyebrow">Controlled workflow</div>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div class="agent-node agent-node-complete">Analyze rules</div>
+          <div class="agent-node agent-node-complete">Generate code</div>
+          <div class="agent-node">Review risk</div>
+          <div class="agent-node">Compile & validate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-shell">
+    <div class="glass-panel grid divide-y divide-grid sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-5">
+      <div class="p-5"><div class="eyebrow">MQL5 + Pine</div><p class="mt-2 text-sm text-muted">Two platforms</p></div>
+      <div class="p-5"><div class="eyebrow">Versioned code</div><p class="mt-2 text-sm text-muted">Every revision saved</p></div>
+      <div class="p-5"><div class="eyebrow">Clear test data</div><p class="mt-2 text-sm text-muted">Inputs and periods shown</p></div>
+      <div class="p-5"><div class="eyebrow">Source included</div><p class="mt-2 text-sm text-muted">Download your code</p></div>
+      <div class="p-5"><div class="eyebrow text-signal-amber">Risk first</div><p class="mt-2 text-sm text-muted">No profit guarantees</p></div>
+    </div>
+  </section>
+
+  <section id="how-it-works" class="page-shell py-24">
+    <div class="max-w-2xl">
+      <div class="eyebrow">How it works</div>
+      <h2 class="section-title mt-4">From idea to inspectable source code</h2>
+      <p class="muted-copy mt-4">The workflow keeps strategy decisions, code changes, and validation states visible instead of hiding everything behind one prompt.</p>
+    </div>
+    <div class="mt-10 grid gap-5 lg:grid-cols-3">
+      <article class="metric-card"><div class="font-mono text-neon-cyan">01</div><h3 class="mt-6 font-display text-xl font-semibold">Describe your rules</h3><p class="muted-copy mt-3">Use a guided specification or explain entries, exits, risk, sessions, and filters in plain language.</p></article>
+      <article class="metric-card"><div class="font-mono text-neon-violet">02</div><h3 class="mt-6 font-display text-xl font-semibold">Build with specialists</h3><p class="muted-copy mt-3">A controlled agent workflow analyzes requirements, writes code, reviews risk, and responds to compiler diagnostics.</p></article>
+      <article class="metric-card"><div class="font-mono text-signal-green">03</div><h3 class="mt-6 font-display text-xl font-semibold">Validate before testing</h3><p class="muted-copy mt-3">See assumptions, warnings, code versions, and evidence status before moving into terminal backtests.</p></article>
+    </div>
+  </section>
+
+  <section class="border-y border-grid/70 bg-panel/35 py-20">
+    <div class="page-shell">
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div><div class="eyebrow">Marketplace preview</div><h2 class="section-title mt-4">Inspect the evidence before you buy</h2></div>
+        <a href="{% url 'marketplace:list' %}" class="btn-ghost">View marketplace →</a>
+      </div>
+      <div class="mt-9 grid gap-5 lg:grid-cols-3">
+        {% for product in featured_products %}
+          {% include "marketplace/_product_card.html" with product=product %}
+        {% empty %}
+          <div class="glass-panel p-8 lg:col-span-3">
+            <div class="eyebrow">Catalog preparing</div>
+            <p class="muted-copy mt-3">Run the demo-data setup to preview evidence-rich marketplace listings.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="page-shell py-24">
+    <div class="glass-panel relative overflow-hidden border-neon-cyan/30 px-6 py-12 text-center sm:px-12">
+      <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(0,229,255,.11),transparent_58%)]"></div>
+      <div class="eyebrow">Start with one clear strategy</div>
+      <h2 class="section-title mx-auto mt-4 max-w-2xl">Build the rules. Keep the source. Test responsibly.</h2>
+      <p class="muted-copy mx-auto mt-4 max-w-2xl">Generated systems require careful review, compilation, backtesting, forward testing, and independent risk decisions.</p>
+      <a href="{% if user.is_authenticated %}{% url 'builder:create' %}{% else %}{% url 'accounts:signup' %}{% endif %}" class="btn-primary mt-8">Create a project</a>
+    </div>
+  </section>
+{% endblock %}

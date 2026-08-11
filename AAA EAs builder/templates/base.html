@@ -1,0 +1,104 @@
+{% load static %}
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Build, validate, and explore MT5 Expert Advisors and Pine strategies with AI-assisted workflows.">
+    <title>{% block title %}AAA EAs Builder{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <script defer src="{% static 'vendor/htmx.min.js' %}"></script>
+    <script defer src="{% static 'vendor/alpine.min.js' %}"></script>
+  </head>
+  <body class="min-h-full antialiased" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <div class="pointer-events-none fixed inset-0 -z-10 cyber-grid opacity-55"></div>
+
+    <header class="sticky top-0 z-50 border-b border-grid/70 bg-void/85 backdrop-blur-xl" x-data="{ open: false }">
+      <nav class="page-shell flex h-[72px] items-center justify-between" aria-label="Primary navigation">
+        <a href="{% url 'core:home' %}" class="flex items-center gap-3" aria-label="AAA EAs Builder home">
+          <span class="font-display text-xl font-bold tracking-tight text-neon-cyan">AAA</span>
+          <span class="hidden text-sm font-semibold uppercase tracking-[0.12em] text-primary sm:inline">EAs Builder</span>
+        </a>
+
+        <div class="hidden items-center gap-1 lg:flex">
+          <a href="{% url 'builder:list' %}" class="nav-link {% if request.resolver_match.namespace == 'builder' %}nav-link-active{% endif %}">Builder</a>
+          <a href="{% url 'marketplace:list' %}" class="nav-link {% if request.resolver_match.namespace == 'marketplace' %}nav-link-active{% endif %}">Marketplace</a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'accounts:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}nav-link-active{% endif %}">Dashboard</a>
+          {% endif %}
+          <a href="{% url 'core:home' %}#how-it-works" class="nav-link">How it works</a>
+        </div>
+
+        <div class="hidden items-center gap-3 lg:flex">
+          {% if user.is_authenticated %}
+            <span class="hidden text-sm text-muted xl:inline">{{ user.first_name_or_email }}</span>
+            <form method="post" action="{% url 'accounts:logout' %}">
+              {% csrf_token %}
+              <button class="btn-ghost" type="submit">Log out</button>
+            </form>
+            <a href="{% url 'builder:create' %}" class="btn-primary">Build an EA</a>
+          {% else %}
+            <a href="{% url 'accounts:login' %}" class="btn-ghost">Log in</a>
+            <a href="{% url 'accounts:signup' %}" class="btn-primary">Start building</a>
+          {% endif %}
+        </div>
+
+        <button
+          type="button"
+          class="btn-ghost lg:hidden"
+          @click="open = !open"
+          :aria-expanded="open"
+          aria-controls="mobile-menu"
+        >
+          <span class="sr-only">Toggle menu</span>
+          <span aria-hidden="true">MENU</span>
+        </button>
+      </nav>
+
+      <div id="mobile-menu" class="border-t border-grid bg-panel px-4 py-4 lg:hidden" x-cloak x-show="open" x-transition>
+        <div class="grid gap-2">
+          <a href="{% url 'builder:list' %}" class="nav-link">Builder</a>
+          <a href="{% url 'marketplace:list' %}" class="nav-link">Marketplace</a>
+          {% if user.is_authenticated %}<a href="{% url 'accounts:dashboard' %}" class="nav-link">Dashboard</a>{% endif %}
+          <a href="{% url 'core:home' %}#how-it-works" class="nav-link">How it works</a>
+          <div class="mt-2 grid grid-cols-2 gap-2">
+            {% if user.is_authenticated %}
+              <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}<button class="btn-ghost w-full" type="submit">Log out</button>
+              </form>
+              <a href="{% url 'builder:create' %}" class="btn-primary">Build</a>
+            {% else %}
+              <a href="{% url 'accounts:login' %}" class="btn-ghost">Log in</a>
+              <a href="{% url 'accounts:signup' %}" class="btn-primary">Sign up</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {% if messages %}
+      <div class="page-shell pt-5" aria-live="polite">
+        {% for message in messages %}
+          <div class="glass-panel mb-3 border-neon-cyan/30 px-4 py-3 text-sm text-primary">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer class="mt-24 border-t border-grid/70 bg-panel/35">
+      <div class="page-shell grid gap-8 py-10 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+          <div class="font-display text-lg font-bold"><span class="text-neon-cyan">AAA</span> EAs Builder</div>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-muted">
+            AI-assisted trading code is not financial advice. Backtests are hypothetical unless clearly marked otherwise, and past performance does not guarantee future results.
+          </p>
+        </div>
+        <div class="text-xs text-muted">© {% now "Y" %} AAA EAs Builder</div>
+      </div>
+    </footer>
+
+    <script defer src="{% static 'js/app.js' %}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

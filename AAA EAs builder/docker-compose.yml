@@ -1,0 +1,67 @@
+name: aaa-eas-builder
+
+x-app: &app
+  build:
+    context: .
+  env_file:
+    - .env
+  environment:
+    DJANGO_SETTINGS_MODULE: config.settings.development
+    DATABASE_URL: sqlite:////app/storage/app.db
+    REDIS_URL: redis://redis:6379/0
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_RESULT_BACKEND: redis://redis:6379/1
+    GENERATION_RUN_INLINE: "false"
+  volumes:
+    - app_storage:/app/storage
+
+services:
+  web:
+    <<: *app
+    command: >-
+      sh -c "uv run python manage.py migrate --noinput &&
+      uv run python manage.py sync_llm_config &&
+      uv run python manage.py seed_demo &&
+      exec uv run gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --threads 4 --timeout 120"
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=3)"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+    restart: unless-stopped
+
+  worker:
+    <<: *app
+    command: uv run celery -A config worker --loglevel=INFO --concurrency=1
+    depends_on:
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  app_storage:
+  redis_data:

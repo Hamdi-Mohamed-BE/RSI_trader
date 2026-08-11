@@ -4,6 +4,7 @@ This MT5 Python script captures the current executable XAU bid/ask, then builds 
 
 - Buy stops above the current live ask.
 - Sell stops below the current live bid.
+- Each stop loss is calculated from its own pending-order entry price.
 - Opposite buy/sell pending orders remain active after one side triggers.
 - Runner mode can trail the stop after the trade reaches a configured R multiple.
 
@@ -14,8 +15,16 @@ Run `run_offset_study.bat` to measure the wrong-way fakeout and correct-directio
 Run:
 
 ```bat
+pre_install.bat
 run.bat
 ```
+
+Run `pre_install.bat` once on a new Windows machine. It installs Python 3.13
+and Node.js LTS through Windows Package Manager when they are missing, creates
+the local `.venv`, installs the MT5 Python connector and the locked Dukascopy
+Node dependency, and verifies both installations. It never starts the bot or
+places orders. A logged-in MetaTrader 5 terminal remains required for broker
+data and live execution.
 
 All settings are in `.env`.
 
@@ -34,8 +43,8 @@ BUY_PRICE_DIFF_USD=2.00
 SELL_PRICE_DIFF_USD=2.00
 BUY_FIRST_OFFSET_USD=12.00
 SELL_FIRST_OFFSET_USD=12.00
-SL_MODE=opposite_candle
-SL_ROOM_USD=20
+SL_MODE=fixed
+SL_DISTANCE_USD=6
 TP_DISTANCE_USD=0
 MANAGE_RUNNER=true
 RUNNER_TRAIL_START_R=7
@@ -43,6 +52,11 @@ RUNNER_TRAIL_DISTANCE_R=1
 RUNNER_MONITOR_MINUTES=120
 SKIP_DUPLICATE_PENDING=false
 ```
+
+With `SL_MODE=fixed`, every level uses its own order entry as the stop-loss
+anchor. A buy stop at `4112.00` with `SL_DISTANCE_USD=6` receives an SL at
+`4106.00`. A sell stop at `4078.00` receives an SL at `4084.00`. The setup
+candle high and low are not used in this mode.
 
 With the current 1:200 news-margin profile, if the live ask is `4100.00`, it prepares:
 

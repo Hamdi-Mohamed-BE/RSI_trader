@@ -1,0 +1,260 @@
+Testing 384 configurations without reading the 2025-2026 holdout during selection.
+Loading XAU...
+  contexts: M5=1183, M15=1183
+  XAU: 64/384 configurations
+  XAU: 128/384 configurations
+  XAU: 192/384 configurations
+  XAU: 256/384 configurations
+  XAU: 320/384 configurations
+  XAU: 384/384 configurations
+  selected XAU: Config(bias_mode='continuation', skip_third_directional_day=True, confirmation_minutes=15, confirmation_mode='close_break', entry_mode='market', asia_sweep_buffer_fraction=0.05, reward_risk=3.0, management='none')
+Loading BTC...
+  contexts: M5=1190, M15=1190
+  BTC: 64/384 configurations
+  BTC: 128/384 configurations
+  BTC: 192/384 configurations
+  BTC: 256/384 configurations
+  BTC: 320/384 configurations
+  BTC: 384/384 configurations
+  selected BTC: Config(bias_mode='continuation', skip_third_directional_day=True, confirmation_minutes=15, confirmation_mode='close_break', entry_mode='market', asia_sweep_buffer_fraction=0.0, reward_risk=3.0, management='be1')
+Loading EURUSD...
+  contexts: M5=1190, M15=1190
+  EURUSD: 64/384 configurations
+  EURUSD: 128/384 configurations
+  EURUSD: 192/384 configurations
+  EURUSD: 256/384 configurations
+  EURUSD: 320/384 configurations
+  EURUSD: 384/384 configurations
+  selected EURUSD: Config(bias_mode='continuation', skip_third_directional_day=True, confirmation_minutes=15, confirmation_mode='close_break', entry_mode='fib618', asia_sweep_buffer_fraction=0.0, reward_risk=2.0, management='be1')
+Loading GBPJPY...
+  contexts: M5=1190, M15=1190
+  GBPJPY: 64/384 configurations
+  GBPJPY: 128/384 configurations
+  GBPJPY: 192/384 configurations
+  GBPJPY: 256/384 configurations
+  GBPJPY: 320/384 configurations
+  GBPJPY: 384/384 configurations
+  selected GBPJPY: Config(bias_mode='continuation', skip_third_directional_day=False, confirmation_minutes=5, confirmation_mode='close_break', entry_mode='market', asia_sweep_buffer_fraction=0.0, reward_risk=3.0, management='none')
+Loading US30...
+  contexts: M5=1185, M15=1185
+  US30: 64/384 configurations
+  US30: 128/384 configurations
+  US30: 192/384 configurations
+  US30: 256/384 configurations
+  US30: 320/384 configurations
+  US30: 384/384 configurations
+  selected US30: Config(bias_mode='continuation', skip_third_directional_day=True, confirmation_minutes=5, confirmation_mode='body', entry_mode='fib618', asia_sweep_buffer_fraction=0.05, reward_risk=3.0, management='be1')
+Loading US100...
+  contexts: M5=1185, M15=1185
+  US100: 64/384 configurations
+  US100: 128/384 configurations
+  US100: 192/384 configurations
+  US100: 256/384 configurations
+  US100: 320/384 configurations
+  US100: 384/384 configurations
+  selected US100: Config(bias_mode='continuation', skip_third_directional_day=True, confirmation_minutes=5, confirmation_mode='body', entry_mode='fib618', asia_sweep_buffer_fraction=0.0, reward_risk=3.0, management='be1')
+Universal configuration locked: Config(bias_mode='continuation', skip_third_directional_day=True, confirmation_minutes=15, confirmation_mode='close_break', entry_mode='market', asia_sweep_buffer_fraction=0.0, reward_risk=2.0, management='none')
+{
+  "summary": [
+    {
+      "market": "XAU",
+      "bias_mode": "continuation",
+      "skip_third_directional_day": true,
+      "confirmation_minutes": 15,
+      "confirmation_mode": "close_break",
+      "entry_mode": "market",
+      "asia_sweep_buffer_fraction": 0.05,
+      "reward_risk": 3.0,
+      "management": "none",
+      "full_trades": 140,
+      "full_return_pct": 7.1878153781747,
+      "full_pf": 1.123884733833918,
+      "full_win_rate_pct": 42.142857142857146,
+      "full_max_dd_pct": 9.688426860603048,
+      "holdout_trades": 43,
+      "holdout_return_pct": -0.6706056323616205,
+      "holdout_pf": 0.9829764467589914,
+      "holdout_win_rate_pct": 41.86046511627907,
+      "holdout_max_dd_pct": 8.321578765303473,
+      "pass": false
+    },
+    {
+      "market": "BTC",
+      "bias_mode": "continuation",
+      "skip_third_directional_day": true,
+      "confirmation_minutes": 15,
+      "confirmation_mode": "close_break",
+      "entry_mode": "market",
+      "asia_sweep_buffer_fraction": 0.0,
+      "reward_risk": 3.0,
+      "management": "be1",
+      "full_trades": 135,
+      "full_return_pct": 12.332068292476372,
+      "full_pf": 1.2144808744617703,
+      "full_win_rate_pct": 36.2962962962963,
+      "full_max_dd_pct": 14.17510690184057,
+      "holdout_trades": 65,
+      "holdout_return_pct": 13.896191602108932,
+      "holdout_pf": 1.4603026289736762,
+      "holdout_win_rate_pct": 38.46153846153847,
+      "holdout_max_dd_pct": 7.834756723339087,
+      "pass": true
+    },
+    {
+      "market": "EURUSD",
+      "bias_mode": "continuation",
+      "skip_third_directional_day": true,
+      "confirmation_minutes": 15,
+      "confirmation_mode": "close_break",
+      "entry_mode": "fib618",
+      "asia_sweep_buffer_fraction": 0.0,
+      "reward_risk": 2.0,
+      "management": "be1",
+      "full_trades": 80,
+      "full_return_pct": -6.28332097700961,
+      "full_pf": 0.8655544898900177,
+      "full_win_rate_pct": 28.749999999999996,
+      "full_max_dd_pct": 12.54573206284379,
+      "holdout_trades": 26,
+      "holdout_return_pct": -5.793962041090362,
+      "holdout_pf": 0.6128614105274193,
+      "holdout_win_rate_pct": 19.230769230769234,
+      "holdout_max_dd_pct": 8.702712767187343,
+      "pass": false
+    },
+    {
+      "market": "GBPJPY",
+      "bias_mode": "continuation",
+      "skip_third_directional_day": false,
+      "confirmation_minutes": 5,
+      "confirmation_mode": "close_break",
+      "entry_mode": "market",
+      "asia_sweep_buffer_fraction": 0.0,
+      "reward_risk": 3.0,
+      "management": "none",
+      "full_trades": 321,
+      "full_return_pct": -13.821056993743063,
+      "full_pf": 0.9368845421625461,
+      "full_win_rate_pct": 35.82554517133956,
+      "full_max_dd_pct": 21.512697047639232,
+      "holdout_trades": 104,
+      "holdout_return_pct": -17.40233941722067,
+      "holdout_pf": 0.7209439721236034,
+      "holdout_win_rate_pct": 29.807692307692307,
+      "holdout_max_dd_pct": 17.8403326633711,
+      "pass": false
+    },
+    {
+      "market": "US30",
+      "bias_mode": "continuation",
+      "skip_third_directional_day": true,
+      "confirmation_minutes": 5,
+      "confirmation_mode": "body",
+      "entry_mode": "fib618",
+      "asia_sweep_buffer_fraction": 0.05,
+      "reward_risk": 3.0,
+      "management": "be1",
+      "full_trades": 68,
+      "full_return_pct": 8.577233269965646,
+      "full_pf": 1.2879863070139415,
+      "full_win_rate_pct": 20.588235294117645,
+      "full_max_dd_pct": 7.334763018019415,
+      "holdout_trades": 20,
+      "holdout_return_pct": -6.398750523251895,
+      "holdout_pf": 0.48141088421890355,
+      "holdout_win_rate_pct": 10.0,
+      "holdout_max_dd_pct": 6.398750523251892,
+      "pass": false
+    },
+    {
+      "market": "US100",
+      "bias_mode": "continuation",
+      "skip_third_directional_day": true,
+      "confirmation_minutes": 5,
+      "confirmation_mode": "body",
+      "entry_mode": "fib618",
+      "asia_sweep_buffer_fraction": 0.0,
+      "reward_risk": 3.0,
+      "management": "be1",
+      "full_trades": 76,
+      "full_return_pct": 1.0893617530949529,
+      "full_pf": 1.049169223049838,
+      "full_win_rate_pct": 18.421052631578945,
+      "full_max_dd_pct": 12.290343568999255,
+      "holdout_trades": 23,
+      "holdout_return_pct": -4.834346101908937,
+      "holdout_pf": 0.6000570704598769,
+      "holdout_win_rate_pct": 13.043478260869565,
+      "holdout_max_dd_pct": 7.551428936462516,
+      "pass": false
+    }
+  ],
+  "universal_config": {
+    "bias_mode": "continuation",
+    "skip_third_directional_day": true,
+    "confirmation_minutes": 15,
+    "confirmation_mode": "close_break",
+    "entry_mode": "market",
+    "asia_sweep_buffer_fraction": 0.0,
+    "reward_risk": 2.0,
+    "management": "none"
+  },
+  "universal_periods": {
+    "train_2022_2023": {
+      "trades": 444,
+      "wins": 173,
+      "losses": 271,
+      "win_rate_pct": 38.96396396396396,
+      "profit_factor": 0.9074611216198936,
+      "mean_r": -0.048381325320831996,
+      "net_r": -21.481308442449407,
+      "return_pct": -21.644092782188373,
+      "max_closed_balance_dd_pct": 26.44547957589723,
+      "final_balance": 7835.590721781163,
+      "gross_profit": 18211.7149397757,
+      "gross_loss": -20376.12421799453
+    },
+    "validation_2024": {
+      "trades": 245,
+      "wins": 95,
+      "losses": 150,
+      "win_rate_pct": 38.775510204081634,
+      "profit_factor": 0.892638381889965,
+      "mean_r": -0.057719415514343765,
+      "net_r": -14.141256801014222,
+      "return_pct": -14.607760501252798,
+      "max_closed_balance_dd_pct": 22.770286057808903,
+      "final_balance": 8539.22394987472,
+      "gross_profit": 9959.792494719119,
+      "gross_loss": -11420.568544844407
+    },
+    "holdout_2025_2026": {
+      "trades": 349,
+      "wins": 151,
+      "losses": 198,
+      "win_rate_pct": 43.26647564469914,
+      "profit_factor": 1.1313282276278238,
+      "mean_r": 0.0639838104772298,
+      "net_r": 22.330349856553198,
+      "return_pct": 22.020323585795754,
+      "max_closed_balance_dd_pct": 14.875203914763441,
+      "final_balance": 12202.032358579576,
+      "gross_profit": 21585.840459548795,
+      "gross_loss": -19383.80810096924
+    },
+    "full_2022_2026": {
+      "trades": 1038,
+      "wins": 419,
+      "losses": 619,
+      "win_rate_pct": 40.36608863198459,
+      "profit_factor": 0.9751027828709355,
+      "mean_r": -0.012805602492206582,
+      "net_r": -13.292215386910431,
+      "return_pct": -18.356367493917013,
+      "max_closed_balance_dd_pct": 40.73876706875751,
+      "final_balance": 8164.363250608299,
+      "gross_profit": 40458.8571905877,
+      "gross_loss": -42294.49393997933
+    }
+  }
+}

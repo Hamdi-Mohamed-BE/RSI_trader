@@ -388,9 +388,12 @@ def load_config() -> GridConfig:
     order_side = os.getenv("ORDER_SIDE", "both").strip().lower()
     if order_side not in {"buy", "sell", "both"}:
         raise ValueError("ORDER_SIDE must be buy, sell, or both.")
-    sl_mode = os.getenv("SL_MODE", "opposite_candle").strip().lower()
+    sl_mode = os.getenv("SL_MODE", "fixed").strip().lower()
     if sl_mode not in {"fixed", "opposite_candle"}:
         raise ValueError("SL_MODE must be fixed or opposite_candle.")
+    sl_distance_usd = max(0.0, env_float("SL_DISTANCE_USD", 6.0))
+    if sl_mode == "fixed" and sl_distance_usd <= 0:
+        raise ValueError("SL_DISTANCE_USD must be greater than zero when SL_MODE=fixed.")
     return GridConfig(
         wanted_symbol=os.getenv("XAU_SYMBOL", "XAUUSD").strip() or "XAUUSD",
         place_orders=env_bool("PLACE_ORDERS", False),
@@ -407,7 +410,7 @@ def load_config() -> GridConfig:
         sell_first_offset_usd=env_float("SELL_FIRST_OFFSET_USD", first_offset),
         sl_mode=sl_mode,
         sl_room_usd=max(0.0, env_float("SL_ROOM_USD", 20.0)),
-        sl_distance_usd=max(0.0, env_float("SL_DISTANCE_USD", 0.0)),
+        sl_distance_usd=sl_distance_usd,
         tp_distance_usd=max(0.0, env_float("TP_DISTANCE_USD", 0.0)),
         manage_runner=env_bool("MANAGE_RUNNER", True),
         runner_trail_start_r=max(0.1, env_float("RUNNER_TRAIL_START_R", 7.0)),
@@ -430,7 +433,7 @@ def build_request(
     lot: float,
     config: GridConfig,
     index: int,
-    candle: dict[str, float],
+    candle: dict[str, float] | None,
 ) -> dict[str, Any]:
     is_buy = side == "BUY"
     request: dict[str, Any] = {
@@ -445,14 +448,17 @@ def build_request(
         "type_time": mt5.ORDER_TIME_GTC,
         "type_filling": mt5.ORDER_FILLING_RETURN,
     }
+    entry_price = float(request["price"])
     if config.sl_mode == "opposite_candle":
+        if candle is None:
+            raise ValueError("A setup candle is required when SL_MODE=opposite_candle.")
         sl = candle["low"] - config.sl_room_usd if is_buy else candle["high"] + config.sl_room_usd
         request["sl"] = normalize_price(symbol, sl)
     elif config.sl_distance_usd > 0:
-        sl = price - config.sl_distance_usd if is_buy else price + config.sl_distance_usd
+        sl = entry_price - config.sl_distance_usd if is_buy else entry_price + config.sl_distance_usd
         request["sl"] = normalize_price(symbol, sl)
     if config.tp_distance_usd > 0:
-        tp = price + config.tp_distance_usd if is_buy else price - config.tp_distance_usd
+        tp = entry_price + config.tp_distance_usd if is_buy else entry_price - config.tp_distance_usd
         request["tp"] = normalize_price(symbol, tp)
     if config.expiration_minutes > 0:
         request["type_time"] = mt5.ORDER_TIME_SPECIFIED
@@ -471,7 +477,7 @@ def handle_ladder(
     price_diff: float,
     lot: float,
     config: GridConfig,
-    candle: dict[str, float],
+    candle: dict[str, float] | None,
 ) -> tuple[int, int, int]:
     placed = 0
     blocked = 0
@@ -554,9 +560,14 @@ def main() -> int:
         log("Discovering broker XAU symbol...")
         symbol = discover_xau_symbol(config.wanted_symbol)
         log(f"Resolved symbol {config.wanted_symbol} -> {symbol}")
-        log("Reading latest closed M1 candle for the existing SL calculation...")
-        candle = latest_closed_m1(symbol)
-        candle_time = datetime.fromtimestamp(candle["time"], tz=timezone.utc).isoformat()
+        candle: dict[str, float] | None = None
+        candle_time = ""
+        if config.sl_mode == "opposite_candle":
+            log("Reading latest closed M1 candle for the optional opposite-candle SL calculation...")
+            candle = latest_closed_m1(symbol)
+            candle_time = datetime.fromtimestamp(candle["time"], tz=timezone.utc).isoformat()
+        else:
+            log("Entry-relative SL enabled; the setup candle is not used for stop placement.")
         log("Capturing fresh MT5 bid/ask for the pending-order anchors...")
         live_bid, live_ask, live_tick_time = current_live_prices(symbol)
         live_tick_iso = datetime.fromtimestamp(live_tick_time, tz=timezone.utc).isoformat()
@@ -582,8 +593,11 @@ def main() -> int:
         print(f"Account: {account.login} | {account.server} | equity={account.equity:.2f}")
         print(f"Symbol: {config.wanted_symbol} -> {symbol}")
         print(f"Live MT5 tick: {live_tick_iso} | Bid={live_bid:.3f} Ask={live_ask:.3f}")
-        print(f"Latest closed M1 candle: {candle_time}")
-        print(f"High={candle['high']:.3f} Low={candle['low']:.3f} Close={candle['close']:.3f}")
+        if candle is not None:
+            print(f"Latest closed M1 candle: {candle_time}")
+            print(f"High={candle['high']:.3f} Low={candle['low']:.3f} Close={candle['close']:.3f}")
+        else:
+            print(f"SL source: each pending-order entry price +/- ${config.sl_distance_usd:g}")
         print(f"Side={config.order_side} Lot={lot_label}")
         print(
             f"BuyStops={config.buy_order_count} above live ask, firstOffset=${config.buy_first_offset_usd:g}, "
@@ -593,11 +607,16 @@ def main() -> int:
             f"SellStops={config.sell_order_count} below live bid, firstOffset=${config.sell_first_offset_usd:g}, "
             f"step=${config.sell_price_diff_usd:g}"
         )
-        print(
-            f"SL mode={config.sl_mode} "
-            f"SL room=${config.sl_room_usd:g} fixed SL distance=${config.sl_distance_usd:g} "
-            f"TP distance=${config.tp_distance_usd:g}"
-        )
+        if config.sl_mode == "fixed":
+            print(
+                f"SL mode=fixed entry-relative distance=${config.sl_distance_usd:g} "
+                f"TP distance=${config.tp_distance_usd:g}"
+            )
+        else:
+            print(
+                f"SL mode=opposite_candle room=${config.sl_room_usd:g} "
+                f"TP distance=${config.tp_distance_usd:g}"
+            )
         print(
             f"Runner manager={config.manage_runner} trailStart={config.runner_trail_start_r:g}R "
             f"trailDistance={config.runner_trail_distance_r:g}R cancelOpposite={config.cancel_opposite_on_trigger}"

@@ -1,0 +1,501 @@
+{
+  "methodology": {
+    "initial_balance": 10000.0,
+    "risk_fraction": 0.01,
+    "selection": "2022-2023 training plus 2024 validation",
+    "untouched_holdout": "2025-01-01 through 2026-08-09",
+    "costs": "Observed M1 broker spread included; no commission or swap; same-minute ambiguity resolved stop-first."
+  },
+  "markets": {
+    "XAU": {
+      "config": {
+        "bias_mode": "continuation",
+        "skip_third_directional_day": true,
+        "confirmation_minutes": 15,
+        "confirmation_mode": "close_break",
+        "entry_mode": "market",
+        "asia_sweep_buffer_fraction": 0.05,
+        "reward_risk": 3.0,
+        "management": "none"
+      },
+      "period_metrics": {
+        "train_2022_2023": {
+          "trades": 60,
+          "wins": 27,
+          "losses": 33,
+          "win_rate_pct": 45.0,
+          "profit_factor": 1.1829304091730326,
+          "mean_r": 0.08145495045658367,
+          "net_r": 4.887297027395021,
+          "return_pct": 4.544427412246055,
+          "max_closed_balance_dd_pct": 9.688426860603048,
+          "final_balance": 10454.442741224606,
+          "gross_profit": 3015.1368958615,
+          "gross_loss": -2560.6941546368957
+        },
+        "validation_2024": {
+          "trades": 37,
+          "wins": 14,
+          "losses": 23,
+          "win_rate_pct": 37.83783783783784,
+          "profit_factor": 1.2029654909588807,
+          "mean_r": 0.09444442010168336,
+          "net_r": 3.494443543762284,
+          "return_pct": 3.2206866344177243,
+          "max_closed_balance_dd_pct": 5.564160327198497,
+          "final_balance": 10322.068663441773,
+          "gross_profit": 2052.637364643661,
+          "gross_loss": -1730.5687012018875
+        },
+        "holdout_2025_2026": {
+          "trades": 43,
+          "wins": 18,
+          "losses": 25,
+          "win_rate_pct": 41.86046511627907,
+          "profit_factor": 0.9829764467589914,
+          "mean_r": -0.008257523362008213,
+          "net_r": -0.3550735045663531,
+          "return_pct": -0.6706056323616205,
+          "max_closed_balance_dd_pct": 8.321578765303473,
+          "final_balance": 9932.939436763838,
+          "gross_profit": 2031.6244166767676,
+          "gross_loss": -2098.684979912934
+        },
+        "full_2022_2026": {
+          "trades": 140,
+          "wins": 59,
+          "losses": 81,
+          "win_rate_pct": 42.142857142857146,
+          "profit_factor": 1.123884733833918,
+          "mean_r": 0.057333336189935365,
+          "net_r": 8.026667066590951,
+          "return_pct": 7.1878153781747,
+          "max_closed_balance_dd_pct": 9.688426860603048,
+          "final_balance": 10718.78153781747,
+          "gross_profit": 7353.410766589984,
+          "gross_loss": -6634.629228772523
+        }
+      }
+    },
+    "BTC": {
+      "config": {
+        "bias_mode": "continuation",
+        "skip_third_directional_day": true,
+        "confirmation_minutes": 15,
+        "confirmation_mode": "close_break",
+        "entry_mode": "market",
+        "asia_sweep_buffer_fraction": 0.0,
+        "reward_risk": 3.0,
+        "management": "be1"
+      },
+      "period_metrics": {
+        "train_2022_2023": {
+          "trades": 46,
+          "wins": 13,
+          "losses": 31,
+          "win_rate_pct": 28.26086956521739,
+          "profit_factor": 0.6918825242179554,
+          "mean_r": -0.14900158770123784,
+          "net_r": -6.854073034256941,
+          "return_pct": -6.872220847746724,
+          "max_closed_balance_dd_pct": 13.070532021934811,
+          "final_balance": 9312.777915225328,
+          "gross_profit": 1528.6776310619296,
+          "gross_loss": -2215.8997158366064
+        },
+        "validation_2024": {
+          "trades": 24,
+          "wins": 11,
+          "losses": 9,
+          "win_rate_pct": 45.83333333333333,
+          "profit_factor": 1.8007548664201674,
+          "mean_r": 0.24587882383611578,
+          "net_r": 5.901091772066779,
+          "return_pct": 5.904717572359908,
+          "max_closed_balance_dd_pct": 3.5636955463768194,
+          "final_balance": 10590.471757235991,
+          "gross_profit": 1336.615089469145,
+          "gross_loss": -746.1433322331549
+        },
+        "holdout_2025_2026": {
+          "trades": 65,
+          "wins": 25,
+          "losses": 32,
+          "win_rate_pct": 38.46153846153847,
+          "profit_factor": 1.4603026289736762,
+          "mean_r": 0.2104323569298869,
+          "net_r": 13.67810320044265,
+          "return_pct": 13.896191602108932,
+          "max_closed_balance_dd_pct": 7.834756723339087,
+          "final_balance": 11389.619160210894,
+          "gross_profit": 4468.039043679586,
+          "gross_loss": -3078.4198834687013
+        },
+        "full_2022_2026": {
+          "trades": 135,
+          "wins": 49,
+          "losses": 72,
+          "win_rate_pct": 36.2962962962963,
+          "profit_factor": 1.2144808744617703,
+          "mean_r": 0.09426016250557398,
+          "net_r": 12.725121938252487,
+          "return_pct": 12.332068292476372,
+          "max_closed_balance_dd_pct": 14.17510690184057,
+          "final_balance": 11233.206829247638,
+          "gross_profit": 7180.117556685256,
+          "gross_loss": -5946.91072743762
+        }
+      }
+    },
+    "EURUSD": {
+      "config": {
+        "bias_mode": "continuation",
+        "skip_third_directional_day": true,
+        "confirmation_minutes": 15,
+        "confirmation_mode": "close_break",
+        "entry_mode": "fib618",
+        "asia_sweep_buffer_fraction": 0.0,
+        "reward_risk": 2.0,
+        "management": "be1"
+      },
+      "period_metrics": {
+        "train_2022_2023": {
+          "trades": 30,
+          "wins": 11,
+          "losses": 16,
+          "win_rate_pct": 36.666666666666664,
+          "profit_factor": 1.1139599860587035,
+          "mean_r": 0.0607786592313085,
+          "net_r": 1.8233597769392549,
+          "return_pct": 1.5905553224848434,
+          "max_closed_balance_dd_pct": 10.680845449319396,
+          "final_balance": 10159.055532248485,
+          "gross_profit": 1745.9415022208204,
+          "gross_loss": -1586.8859699723346
+        },
+        "validation_2024": {
+          "trades": 24,
+          "wins": 7,
+          "losses": 13,
+          "win_rate_pct": 29.166666666666668,
+          "profit_factor": 0.8513935861777105,
+          "mean_r": -0.08049514082040678,
+          "net_r": -1.9318833796897628,
+          "return_pct": -2.076975892451993,
+          "max_closed_balance_dd_pct": 9.561792499119548,
+          "final_balance": 9792.3024107548,
+          "gross_profit": 1066.218406451126,
+          "gross_loss": -1273.9159956963233
+        },
+        "holdout_2025_2026": {
+          "trades": 26,
+          "wins": 5,
+          "losses": 15,
+          "win_rate_pct": 19.230769230769234,
+          "profit_factor": 0.6128614105274193,
+          "mean_r": -0.22334918623418118,
+          "net_r": -5.8070788420887105,
+          "return_pct": -5.793962041090362,
+          "max_closed_balance_dd_pct": 8.702712767187343,
+          "final_balance": 9420.603795890964,
+          "gross_profit": 892.5875464338101,
+          "gross_loss": -1471.9837505428497
+        },
+        "full_2022_2026": {
+          "trades": 80,
+          "wins": 23,
+          "losses": 44,
+          "win_rate_pct": 28.749999999999996,
+          "profit_factor": 0.8655544898900177,
+          "mean_r": -0.07394503056049023,
+          "net_r": -5.915602444839219,
+          "return_pct": -6.28332097700961,
+          "max_closed_balance_dd_pct": 12.54573206284379,
+          "final_balance": 9371.66790229904,
+          "gross_profit": 3717.0696489700586,
+          "gross_loss": -4345.401746671015
+        }
+      }
+    },
+    "GBPJPY": {
+      "config": {
+        "bias_mode": "continuation",
+        "skip_third_directional_day": false,
+        "confirmation_minutes": 5,
+        "confirmation_mode": "close_break",
+        "entry_mode": "market",
+        "asia_sweep_buffer_fraction": 0.0,
+        "reward_risk": 3.0,
+        "management": "none"
+      },
+      "period_metrics": {
+        "train_2022_2023": {
+          "trades": 144,
+          "wins": 53,
+          "losses": 91,
+          "win_rate_pct": 36.80555555555556,
+          "profit_factor": 1.0411769711051801,
+          "mean_r": 0.024836692735339005,
+          "net_r": 3.576483753888817,
+          "return_pct": 2.0875305643251574,
+          "max_closed_balance_dd_pct": 11.075401186465026,
+          "final_balance": 10208.753056432515,
+          "gross_profit": 8921.327805142912,
+          "gross_loss": -8712.574748710405
+        },
+        "validation_2024": {
+          "trades": 73,
+          "wins": 31,
+          "losses": 42,
+          "win_rate_pct": 42.465753424657535,
+          "profit_factor": 1.0756761056504307,
+          "mean_r": 0.03787989429852639,
+          "net_r": 2.7652322837924266,
+          "return_pct": 2.202311320397765,
+          "max_closed_balance_dd_pct": 8.407919541501323,
+          "final_balance": 10220.231132039777,
+          "gross_profit": 3924.1060701982897,
+          "gross_loss": -3703.8749381585167
+        },
+        "holdout_2025_2026": {
+          "trades": 104,
+          "wins": 31,
+          "losses": 73,
+          "win_rate_pct": 29.807692307692307,
+          "profit_factor": 0.7209439721236034,
+          "mean_r": -0.17557583604898847,
+          "net_r": -18.2598869490948,
+          "return_pct": -17.40233941722067,
+          "max_closed_balance_dd_pct": 17.8403326633711,
+          "final_balance": 8259.766058277934,
+          "gross_profit": 4356.33082066035,
+          "gross_loss": -6096.564762382414
+        },
+        "full_2022_2026": {
+          "trades": 321,
+          "wins": 115,
+          "losses": 206,
+          "win_rate_pct": 35.82554517133956,
+          "profit_factor": 0.9368845421625461,
+          "mean_r": -0.03712825829100796,
+          "net_r": -11.918170911413554,
+          "return_pct": -13.821056993743063,
+          "max_closed_balance_dd_pct": 21.512697047639232,
+          "final_balance": 8617.894300625694,
+          "gross_profit": 17472.56408990596,
+          "gross_loss": -18854.66978928027
+        }
+      }
+    },
+    "US30": {
+      "config": {
+        "bias_mode": "continuation",
+        "skip_third_directional_day": true,
+        "confirmation_minutes": 5,
+        "confirmation_mode": "body",
+        "entry_mode": "fib618",
+        "asia_sweep_buffer_fraction": 0.05,
+        "reward_risk": 3.0,
+        "management": "be1"
+      },
+      "period_metrics": {
+        "train_2022_2023": {
+          "trades": 29,
+          "wins": 8,
+          "losses": 12,
+          "win_rate_pct": 27.586206896551722,
+          "profit_factor": 1.8402589499813313,
+          "mean_r": 0.34769335861296463,
+          "net_r": 10.083107399775974,
+          "return_pct": 10.194899264398183,
+          "max_closed_balance_dd_pct": 3.9403990000000007,
+          "final_balance": 11019.48992643982,
+          "gross_profit": 2340.472205811749,
+          "gross_loss": -1320.9822793719297
+        },
+        "validation_2024": {
+          "trades": 19,
+          "wins": 4,
+          "losses": 7,
+          "win_rate_pct": 21.052631578947366,
+          "profit_factor": 1.8025082044401677,
+          "mean_r": 0.28119000277852385,
+          "net_r": 5.342610052791953,
+          "return_pct": 5.2678208126936354,
+          "max_closed_balance_dd_pct": 1.9900000000000002,
+          "final_balance": 10526.782081269363,
+          "gross_profit": 1219.3401570083322,
+          "gross_loss": -692.5580757389722
+        },
+        "holdout_2025_2026": {
+          "trades": 20,
+          "wins": 2,
+          "losses": 13,
+          "win_rate_pct": 10.0,
+          "profit_factor": 0.48141088421890355,
+          "mean_r": -0.3231682951804351,
+          "net_r": -6.463365903608702,
+          "return_pct": -6.398750523251895,
+          "max_closed_balance_dd_pct": 6.398750523251892,
+          "final_balance": 9360.12494767481,
+          "gross_profit": 576.5032140183963,
+          "gross_loss": -1216.3782663435886
+        },
+        "full_2022_2026": {
+          "trades": 68,
+          "wins": 14,
+          "losses": 32,
+          "win_rate_pct": 20.588235294117645,
+          "profit_factor": 1.2879863070139415,
+          "mean_r": 0.1317992874846945,
+          "net_r": 8.962351548959225,
+          "return_pct": 8.577233269965646,
+          "max_closed_balance_dd_pct": 7.334763018019415,
+          "final_balance": 10857.723326996564,
+          "gross_profit": 4352.865260646546,
+          "gross_loss": -3495.1419336499785
+        }
+      }
+    },
+    "US100": {
+      "config": {
+        "bias_mode": "continuation",
+        "skip_third_directional_day": true,
+        "confirmation_minutes": 5,
+        "confirmation_mode": "body",
+        "entry_mode": "fib618",
+        "asia_sweep_buffer_fraction": 0.0,
+        "reward_risk": 3.0,
+        "management": "be1"
+      },
+      "period_metrics": {
+        "train_2022_2023": {
+          "trades": 43,
+          "wins": 9,
+          "losses": 21,
+          "win_rate_pct": 20.930232558139537,
+          "profit_factor": 1.2199322098726422,
+          "mean_r": 0.10740875365873216,
+          "net_r": 4.618576407325483,
+          "return_pct": 4.2341407590627655,
+          "max_closed_balance_dd_pct": 9.561792499119564,
+          "final_balance": 10423.414075906278,
+          "gross_profit": 2703.0723325316494,
+          "gross_loss": -2279.658256625372
+        },
+        "validation_2024": {
+          "trades": 10,
+          "wins": 2,
+          "losses": 4,
+          "win_rate_pct": 20.0,
+          "profit_factor": 1.5,
+          "mean_r": 0.2,
+          "net_r": 2.0,
+          "return_pct": 1.9096307009000002,
+          "max_closed_balance_dd_pct": 1.9900000000000035,
+          "final_balance": 10190.96307009,
+          "gross_profit": 596.8809000000001,
+          "gross_loss": -405.91782991
+        },
+        "holdout_2025_2026": {
+          "trades": 23,
+          "wins": 3,
+          "losses": 12,
+          "win_rate_pct": 13.043478260869565,
+          "profit_factor": 0.6000570704598769,
+          "mean_r": -0.20866587628180336,
+          "net_r": -4.799315154481477,
+          "return_pct": -4.834346101908937,
+          "max_closed_balance_dd_pct": 7.551428936462516,
+          "final_balance": 9516.565389809106,
+          "gross_profit": 710.2168165767463,
+          "gross_loss": -1193.6514267676394
+        },
+        "full_2022_2026": {
+          "trades": 76,
+          "wins": 14,
+          "losses": 37,
+          "win_rate_pct": 18.421052631578945,
+          "profit_factor": 1.049169223049838,
+          "mean_r": 0.02393764806373691,
+          "net_r": 1.819261252844005,
+          "return_pct": 1.0893617530949529,
+          "max_closed_balance_dd_pct": 12.290343568999255,
+          "final_balance": 10108.936175309495,
+          "gross_profit": 4079.6511807774114,
+          "gross_loss": -3970.715005467916
+        }
+      }
+    }
+  },
+  "universal": {
+    "config": {
+      "bias_mode": "continuation",
+      "skip_third_directional_day": true,
+      "confirmation_minutes": 15,
+      "confirmation_mode": "close_break",
+      "entry_mode": "market",
+      "asia_sweep_buffer_fraction": 0.0,
+      "reward_risk": 2.0,
+      "management": "none"
+    },
+    "period_metrics": {
+      "train_2022_2023": {
+        "trades": 444,
+        "wins": 173,
+        "losses": 271,
+        "win_rate_pct": 38.96396396396396,
+        "profit_factor": 0.9074611216198936,
+        "mean_r": -0.048381325320831996,
+        "net_r": -21.481308442449407,
+        "return_pct": -21.644092782188373,
+        "max_closed_balance_dd_pct": 26.44547957589723,
+        "final_balance": 7835.590721781163,
+        "gross_profit": 18211.7149397757,
+        "gross_loss": -20376.12421799453
+      },
+      "validation_2024": {
+        "trades": 245,
+        "wins": 95,
+        "losses": 150,
+        "win_rate_pct": 38.775510204081634,
+        "profit_factor": 0.892638381889965,
+        "mean_r": -0.057719415514343765,
+        "net_r": -14.141256801014222,
+        "return_pct": -14.607760501252798,
+        "max_closed_balance_dd_pct": 22.770286057808903,
+        "final_balance": 8539.22394987472,
+        "gross_profit": 9959.792494719119,
+        "gross_loss": -11420.568544844407
+      },
+      "holdout_2025_2026": {
+        "trades": 349,
+        "wins": 151,
+        "losses": 198,
+        "win_rate_pct": 43.26647564469914,
+        "profit_factor": 1.1313282276278238,
+        "mean_r": 0.0639838104772298,
+        "net_r": 22.330349856553198,
+        "return_pct": 22.020323585795754,
+        "max_closed_balance_dd_pct": 14.875203914763441,
+        "final_balance": 12202.032358579576,
+        "gross_profit": 21585.840459548795,
+        "gross_loss": -19383.80810096924
+      },
+      "full_2022_2026": {
+        "trades": 1038,
+        "wins": 419,
+        "losses": 619,
+        "win_rate_pct": 40.36608863198459,
+        "profit_factor": 0.9751027828709355,
+        "mean_r": -0.012805602492206582,
+        "net_r": -13.292215386910431,
+        "return_pct": -18.356367493917013,
+        "max_closed_balance_dd_pct": 40.73876706875751,
+        "final_balance": 8164.363250608299,
+        "gross_profit": 40458.8571905877,
+        "gross_loss": -42294.49393997933
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Generate {{ project.name }} — AAA EAs Builder{% endblock %}
+
+{% block content %}
+  <section class="page-shell grid gap-8 py-12 lg:grid-cols-[0.7fr_1.3fr] lg:py-16">
+    <div>
+      <a class="font-mono text-xs text-muted hover:text-neon-cyan" href="{% url 'builder:detail' project.pk %}">← {{ project.name|upper }}</a>
+      <div class="eyebrow mt-7">AI generation</div>
+      <h1 class="mt-3 font-display text-4xl font-semibold">Generate {{ project.get_artifact_type_display }}</h1>
+      <p class="muted-copy mt-4">Four specialized agents will formalize the rules, write complete code, review it, and repair critical findings.</p>
+      <div class="glass-panel mt-7 p-5">
+        <div class="eyebrow text-neon-violet">Pinned workflow</div>
+        {% if workflow %}
+          <div class="mt-3 text-primary">{{ workflow.name }} v{{ workflow.version }}</div>
+          <div class="mt-2 text-xs text-muted">Maximum repair loops: {{ workflow.max_repair_loops }} · Token budget: {{ workflow.token_budget }}</div>
+        {% else %}
+          <div class="mt-3 text-signal-amber">No published workflow supports this artifact.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <form method="post" class="glass-panel p-6 sm:p-8">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-error mb-5 rounded-lg border border-signal-red/40 bg-signal-red/5 p-3">{{ form.non_field_errors }}</div>{% endif %}
+      {% for field in form %}
+        <div class="mb-6">
+          {% if field.name == "acknowledge_testing" %}
+            <label class="flex items-start gap-3 text-sm leading-6 text-muted">{{ field }}<span>{{ field.label }}</span></label>
+          {% else %}
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+          {% endif %}
+          {% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}
+          {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+      {% endfor %}
+      <div class="rounded-xl border border-signal-amber/30 bg-signal-amber/5 p-4 text-xs leading-6 text-muted">Generated output is source code, not financial advice or proof of profitability. Static checks do not replace compilation, backtesting, forward testing, or professional review.</div>
+      <div class="mt-8 flex flex-col-reverse gap-3 border-t border-grid pt-6 sm:flex-row sm:justify-end">
+        <a href="{% url 'builder:detail' project.pk %}" class="btn-ghost">Cancel</a>
+        <button class="btn-primary" type="submit" {% if not workflow %}disabled{% endif %}>Start generation</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

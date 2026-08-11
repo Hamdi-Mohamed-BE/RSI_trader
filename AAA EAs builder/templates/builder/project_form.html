@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Edit {{ object.name }}{% else %}New strategy project{% endif %} — AAA EAs Builder{% endblock %}
+
+{% block content %}
+  <section class="page-shell grid gap-8 py-12 lg:grid-cols-[0.7fr_1.3fr] lg:py-16">
+    <div>
+      <div class="eyebrow">Strategy specification</div>
+      <h1 class="mt-3 font-display text-4xl font-semibold">{% if object %}Refine the project brief{% else %}Define the trading idea{% endif %}</h1>
+      <p class="muted-copy mt-4">Write observable rules. Include the conditions for entering, exiting, sizing risk, and doing nothing.</p>
+      <div class="glass-panel mt-7 p-5">
+        <div class="eyebrow text-signal-amber">Useful details</div>
+        <ul class="mt-4 space-y-3 text-sm leading-6 text-muted"><li>• Long and short entry rules</li><li>• Stop loss, take profit, and trailing behavior</li><li>• Risk per trade and maximum positions</li><li>• Session, spread, weekday, and volatility filters</li><li>• Conditions that invalidate a signal</li></ul>
+      </div>
+    </div>
+    <form method="post" class="glass-panel p-6 sm:p-8">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-error rounded-lg border border-signal-red/40 bg-signal-red/5 p-3">{{ form.non_field_errors }}</div>{% endif %}
+      <div class="grid gap-5 sm:grid-cols-2">
+        {% for field in form %}
+          <div class="{% if field.name == 'name' or field.name == 'description' %}sm:col-span-2{% endif %}"><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}{% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}</div>
+        {% endfor %}
+      </div>
+      <div class="mt-8 flex flex-col-reverse gap-3 border-t border-grid pt-6 sm:flex-row sm:justify-end"><a href="{% if object %}{% url 'builder:detail' object.pk %}{% else %}{% url 'builder:list' %}{% endif %}" class="btn-ghost">Cancel</a><button class="btn-primary" type="submit">{% if object %}Save changes{% else %}Create workspace{% endif %}</button></div>
+    </form>
+  </section>
+{% endblock %}

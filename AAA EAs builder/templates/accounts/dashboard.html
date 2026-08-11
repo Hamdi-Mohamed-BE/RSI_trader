@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — AAA EAs Builder{% endblock %}
+
+{% block content %}
+  <section class="page-shell py-12 sm:py-16">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+      <div><div class="eyebrow">Command center</div><h1 class="mt-3 font-display text-4xl font-semibold">Good to see you, {{ user.first_name_or_email }}</h1><p class="muted-copy mt-3">Continue a strategy project or start a new build.</p></div>
+      <a href="{% url 'builder:create' %}" class="btn-primary">New project</a>
+    </div>
+
+    <div class="mt-9 grid gap-4 sm:grid-cols-3">
+      <div class="metric-card"><div class="text-xs uppercase tracking-wider text-muted">Projects</div><div class="metric-value">{{ project_count }}</div></div>
+      <div class="metric-card"><div class="text-xs uppercase tracking-wider text-muted">Generation runs</div><div class="metric-value">{{ generation_count }}</div></div>
+      <div class="metric-card"><div class="text-xs uppercase tracking-wider text-muted">Risk posture</div><div class="mt-2 font-mono text-xl text-signal-amber">TEST FIRST</div></div>
+    </div>
+
+    <section class="mt-10">
+      <div class="flex items-center justify-between border-b border-grid pb-4"><h2 class="font-display text-2xl font-semibold">Recent projects</h2><a class="text-sm text-neon-cyan hover:text-cyan-300" href="{% url 'builder:list' %}">View all →</a></div>
+      <div class="mt-5 grid gap-4 lg:grid-cols-2">
+        {% for project in projects %}
+          <a class="glass-panel group p-5 transition hover:border-neon-cyan/50" href="{% url 'builder:detail' project.pk %}">
+            <div class="flex items-start justify-between gap-4"><div><div class="eyebrow">{{ project.get_artifact_type_display }}</div><h3 class="mt-2 font-display text-xl font-semibold group-hover:text-neon-cyan">{{ project.name }}</h3></div><span class="status-badge">{{ project.get_status_display }}</span></div>
+            <div class="mt-5 flex gap-2 font-mono text-xs text-muted"><span>{{ project.symbol }}</span><span>·</span><span>{{ project.timeframe }}</span><span>·</span><span>Updated {{ project.updated_at|timesince }} ago</span></div>
+          </a>
+        {% empty %}
+          <div class="glass-panel p-8 lg:col-span-2"><div class="eyebrow">No projects yet</div><h3 class="mt-3 font-display text-2xl font-semibold">Turn your first rule set into a structured project</h3><p class="muted-copy mt-3">Start with entries, exits, position sizing, and the conditions where the system must stay out of the market.</p><a class="btn-primary mt-6" href="{% url 'builder:create' %}">Create project</a></div>
+        {% endfor %}
+      </div>
+    </section>
+  </section>
+{% endblock %}

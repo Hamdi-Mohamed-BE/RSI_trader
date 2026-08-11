@@ -1,0 +1,70 @@
+[project]
+name = "aaa-eas-builder"
+version = "0.1.0"
+description = "AI-assisted MT5 EA and Pine strategy builder with a curated marketplace."
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "argon2-cffi>=25.1,<26",
+    "celery[redis]>=5.6,<6",
+    "cryptography>=45,<47",
+    "django>=5.2,<5.3",
+    "django-environ>=0.12,<1",
+    "django-unfold>=0.70,<1",
+    "djangorestframework>=3.16,<4",
+    "gunicorn>=23,<24",
+    "langchain>=1.0,<2",
+    "langchain-google-genai>=4,<5",
+    "langgraph>=1.0,<2",
+    "psycopg[binary]>=3.2,<4",
+    "whitenoise>=6.9,<7",
+]
+
+[dependency-groups]
+dev = [
+    "django-stubs>=5.2,<6",
+    "mypy>=1.17,<2",
+    "pytest>=8.4,<9",
+    "pytest-cov>=6.2,<7",
+    "pytest-django>=4.11,<5",
+    "ruff>=0.12,<1",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py", "*_tests.py"]
+addopts = "--strict-markers --disable-warnings --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["B", "DJ", "E", "F", "I", "UP"]
+ignore = ["DJ001"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*.py" = ["E501", "I001"]
+
+[tool.mypy]
+python_version = "3.13"
+plugins = ["mypy_django_plugin.main"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings.test"
+
+[tool.coverage.run]
+branch = true
+source = ["apps", "config"]
+omit = ["*/migrations/*", "*/tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 70

@@ -1,0 +1,66 @@
+<div class="vscode-shell" data-code-editor data-language="{{ code_version.language }}" data-filename="{{ code_version.filename }}">
+  <div class="vscode-titlebar" aria-hidden="true">
+    <div class="vscode-window-controls"><span></span><span></span><span></span></div>
+    <div class="vscode-title">{{ code_version.filename }} — AAA EAs Builder</div>
+    <div class="vscode-layout-controls"><span></span><span></span></div>
+  </div>
+
+  <div class="vscode-tabs">
+    <div class="vscode-tab vscode-tab-active">
+      <span class="vscode-file-icon">{% if code_version.language == "mql5" %}M{% else %}P{% endif %}</span>
+      <span class="vscode-tab-name">{{ code_version.filename }}</span>
+      <span class="vscode-tab-close" aria-hidden="true">×</span>
+    </div>
+    <div class="vscode-editor-actions">
+      <button class="vscode-action" type="button" data-copy-code aria-label="Copy source code" title="Copy source code">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 8h11v11H8z"></path><path d="M5 15H4V4h11v1"></path></svg>
+        <span data-copy-label>Copy</span>
+      </button>
+      <a class="vscode-action" href="{% url 'builder:download' code_version.project_id code_version.pk %}" aria-label="Download {{ code_version.filename }}" title="Download source">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14"></path></svg>
+        <span>Download</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="vscode-workbench">
+    <aside class="vscode-activitybar" aria-hidden="true">
+      <svg class="vscode-activity-active" viewBox="0 0 24 24"><path d="M4 4h6l2 2h8v14H4z"></path></svg>
+      <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="5"></circle><path d="m14 14 6 6"></path></svg>
+      <svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="8" r="2"></circle><circle cx="8" cy="19" r="2"></circle><path d="M8 6.5 16 8M7 7v10m3-1 6-6"></path></svg>
+      <div class="vscode-activity-spacer"></div>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1A8 8 0 0 0 15 6l-.3-2.5h-4L10.5 6A8 8 0 0 0 9 7L6.6 6 4.5 9.5 6.6 11a7 7 0 0 0 0 2l-2 1.5 2 3.5L9 17a8 8 0 0 0 1.5 1l.3 2.5h4L15 18a8 8 0 0 0 1.5-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1Z"></path></svg>
+    </aside>
+
+    <aside class="vscode-explorer" aria-label="Project files">
+      <div class="vscode-explorer-title">Explorer</div>
+      <div class="vscode-explorer-group"><span class="vscode-chevron">⌄</span> {{ code_version.project.name|upper }}</div>
+      <div class="vscode-file vscode-file-active">
+        <span class="vscode-file-icon">{% if code_version.language == "mql5" %}M{% else %}P{% endif %}</span>
+        <span>{{ code_version.filename }}</span>
+      </div>
+      <div class="vscode-outline"><span class="vscode-chevron">›</span> Outline</div>
+      <div class="vscode-outline"><span class="vscode-chevron">›</span> Timeline</div>
+    </aside>
+
+    <div class="vscode-editor-pane">
+      <div class="vscode-breadcrumbs">
+        <span>{{ code_version.project.name }}</span><span>›</span><span>{{ code_version.filename }}</span>
+        <span>›</span><span class="vscode-symbol">◇ source</span>
+      </div>
+      <div class="vscode-code-scroll" tabindex="0" aria-label="Read-only source code for {{ code_version.filename }}">
+        <ol class="vscode-code-lines" data-code-lines></ol>
+        <pre hidden aria-hidden="true"><code data-raw-source>{{ code_version.source_code }}</code></pre>
+        <noscript><pre class="code-panel"><code>{{ code_version.source_code }}</code></pre></noscript>
+      </div>
+    </div>
+  </div>
+
+  <div class="vscode-statusbar">
+    <div class="vscode-status-left"><span>⑂ main</span><span>↻ 0</span><span>△ {{ code_version.diagnostics|length }}</span></div>
+    <div class="vscode-status-right">
+      <span data-cursor-position>Ln 1, Col 1</span><span>Spaces: 4</span><span>UTF-8</span><span>LF</span>
+      <span>{% if code_version.language == "mql5" %}MQL5{% else %}Pine Script{% endif %}</span><span>Read-only</span>
+    </div>
+  </div>
+</div>

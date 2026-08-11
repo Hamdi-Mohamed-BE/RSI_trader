@@ -1,6 +1,6 @@
 # AAA Final native MT5 EAs
 
-Built 2026-08-05 from the rules and selected settings stored in each AAA Final project. These are native MT5 ports; they do not run the Python workers. No backtest or optimization was run during this conversion.
+Built from the rules and selected settings stored in each AAA Final project. These are native MT5 ports; they do not run the Python workers. The two research additions dated 2026-08-10 were optimized and independently replayed before their rejection gates were set.
 
 | AAA Final project | Native MT5 EA | Broker symbol class | Chart | Preset trading status | Preset equity risk |
 |---|---|---|---:|---|---:|
@@ -15,6 +15,8 @@ Built 2026-08-05 from the rules and selected settings stored in each AAA Final p
 | XAU Grid | AAA Final XAU Grid EA | XAUUSD / GOLD alias | M15 | Enabled | 0.5% total across grid legs |
 | XAU weakness | AAA Final XAU Weakness EA | XAUUSD / GOLD alias | M15 | Disabled: validation gate | 1.0% if enabled |
 | XAU US100 weakness | AAA Final XAU US100 Weakness Research EA | XAUUSD / GOLD alias | M15 | Disabled: research-only; its report failed validation | 1.0% total if enabled |
+| Apex Pulse transparent research | AAA Final Apex Pulse Research EA | EURUSD | M1 | Disabled: 2025-2026 holdout failed | 1.0% if manually enabled |
+| IVB fixed-range volume profile | AAA Final IVB FRVP EA | US30 / DJ30 / WS30 alias class | M1 | Disabled: complete Exness return missed portfolio gate | 1.0% if manually enabled |
 
 ## Saved locations
 

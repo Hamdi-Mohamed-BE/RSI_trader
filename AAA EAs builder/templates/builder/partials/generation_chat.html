@@ -1,0 +1,46 @@
+<div id="generation-chat-thread" class="copilot-thread" data-chat-scroll {% if chat_has_pending %}hx-get="{% url 'builder:generation-chat-thread' generation.project.pk generation.pk %}" hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>
+  {% for message in chat_messages %}
+    <article class="copilot-message {% if message.role == 'user' %}copilot-message-user{% else %}copilot-message-assistant{% endif %}">
+      <div class="copilot-avatar" aria-hidden="true">{% if message.role == "user" %}YOU{% else %}AI{% endif %}</div>
+      <div class="copilot-message-body">
+        <div class="copilot-message-meta"><span>{% if message.role == "user" %}You{% else %}Generation Copilot{% endif %}</span><time datetime="{{ message.created_at|date:'c' }}">{{ message.created_at|date:"H:i" }}</time>{% if message.output_tokens %}<span>{{ message.input_tokens|add:message.output_tokens }} tokens</span>{% endif %}</div>
+        {% if message.status == "pending" or message.status == "running" %}
+          <div class="copilot-thinking"><span></span><span></span><span></span><em>Reading the project context and latest source…</em></div>
+        {% elif message.status == "failed" %}
+          <div class="copilot-error">{{ message.error_summary }}</div>
+        {% else %}
+          <div class="copilot-content">{{ message.content|linebreaksbr }}</div>
+        {% endif %}
+
+        {% if message.proposal %}
+          <div class="copilot-proposal">
+            <div class="copilot-proposal-header">
+              <div><div class="eyebrow">Code revision proposal</div><div class="mt-2 text-sm text-primary">Based on v{{ message.proposal.base_version.version }} · {{ message.proposal.base_version.filename }}</div></div>
+              <span class="status-badge {% if message.proposal.status == 'applied' %}status-badge-green{% else %}status-badge-amber{% endif %}">{{ message.proposal.get_status_display }}</span>
+            </div>
+            {% if message.proposal.change_summary %}
+              <ul class="copilot-change-list">{% for change in message.proposal.change_summary %}<li>{{ change }}</li>{% endfor %}</ul>
+            {% endif %}
+            <div class="copilot-proposal-stats"><span>{{ message.proposal.source_code|length }} characters</span><span>{{ message.proposal.diagnostics|length }} diagnostics after local checks</span></div>
+            {% if message.proposal.diagnostics %}
+              <div class="copilot-proposal-diagnostics">
+                {% for diagnostic in message.proposal.diagnostics %}<div><span class="{% if diagnostic.severity == 'error' %}text-signal-red{% else %}text-signal-amber{% endif %}">{{ diagnostic.severity|upper }}</span> {{ diagnostic.message }}</div>{% endfor %}
+              </div>
+            {% endif %}
+            <details class="copilot-code-preview"><summary>Preview complete proposed source</summary><pre class="code-panel"><code>{{ message.proposal.source_code }}</code></pre></details>
+            <div class="copilot-proposal-footer">
+              <p>Applying creates a new immutable version and reruns local validation. It never overwrites the base version.</p>
+              {% if message.proposal.status == "proposed" %}
+                <form method="post" action="{% url 'builder:apply-proposal' generation.project.pk generation.pk message.proposal.pk %}">{% csrf_token %}<button class="btn-primary" type="submit">Apply as new version</button></form>
+              {% elif message.proposal.applied_version %}
+                <span class="status-badge status-badge-green">Applied as v{{ message.proposal.applied_version.version }}</span>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </article>
+  {% empty %}
+    <div class="copilot-empty"><div class="copilot-empty-icon">AI</div><div><h3>Ask about this run</h3><p>I can explain progress and diagnostics, inspect the latest source, or prepare a complete fix for you to review.</p></div></div>
+  {% endfor %}
+</div>

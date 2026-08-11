@@ -1,0 +1,106 @@
+{
+  "signal": {
+    "proximity_threshold": 20.0,
+    "minimum_trend": 0.0,
+    "trend_definition": "asia_and_london_aligned",
+    "proximity_relation": "absolute",
+    "direction_mode": "both",
+    "maximum_opening_range": 400.0
+  },
+  "selected_execution": {
+    "entry_mode": "opening_range_breakout",
+    "entry_cutoff_minute": 630,
+    "stop_range_multiple": 1.25,
+    "minimum_stop_points": 20.0,
+    "reward_risk": 2.0,
+    "trailing_mode": "none",
+    "exit_minute": 960
+  },
+  "quality": {
+    "valid_sessions": 1813,
+    "skipped": {
+      "insufficient_asia_bars": 21,
+      "insufficient_london_bars": 4,
+      "incomplete_new_york_opening_range": 5
+    }
+  },
+  "metrics": {
+    "training_2019_2023": {
+      "trades": 66,
+      "wins": 30,
+      "losses": 36,
+      "win_rate_pct": 45.45454545454545,
+      "profit_factor": 1.1948940388996299,
+      "mean_r": 0.09635738254538656,
+      "median_r": -0.38938643772917525,
+      "net_r": 6.359587247995513,
+      "gross_profit_r": 38.990586553575575,
+      "gross_loss_r": -32.63099930558006,
+      "return_pct": 6.0585414002906735,
+      "max_closed_balance_dd_pct": 7.955871273986827,
+      "final_balance": 10605.854140029067,
+      "largest_win_r": 2.0000000000000253,
+      "largest_loss_r": -1.0023769100169415,
+      "average_win_r": 1.299686218452519,
+      "average_loss_r": -0.9064166473772239
+    },
+    "validation_2024": {
+      "trades": 11,
+      "wins": 5,
+      "losses": 6,
+      "win_rate_pct": 45.45454545454545,
+      "profit_factor": 1.484177590504908,
+      "mean_r": 0.19535199806519732,
+      "median_r": -0.19357571478998914,
+      "net_r": 2.1488719787171706,
+      "gross_profit_r": 6.587061644778118,
+      "gross_loss_r": -4.438189666060947,
+      "return_pct": 2.090123799044985,
+      "max_closed_balance_dd_pct": 2.229090818866766,
+      "final_balance": 10209.012379904498,
+      "largest_win_r": 2.000000000000028,
+      "largest_loss_r": -1.0000000000000198,
+      "average_win_r": 1.3174123289556237,
+      "average_loss_r": -0.7396982776768245
+    },
+    "holdout_2025_2026": {
+      "trades": 9,
+      "wins": 4,
+      "losses": 5,
+      "win_rate_pct": 44.44444444444444,
+      "profit_factor": 1.5268730940937933,
+      "mean_r": 0.26288311140191034,
+      "median_r": -0.4905462608345339,
+      "net_r": 2.365948002617193,
+      "gross_profit_r": 6.8564942634517045,
+      "gross_loss_r": -4.4905462608345115,
+      "return_pct": 2.3079786099157396,
+      "max_closed_balance_dd_pct": 4.411615780878065,
+      "final_balance": 10230.797860991574,
+      "largest_win_r": 2.0,
+      "largest_loss_r": -1.0000000000000075,
+      "average_win_r": 1.7141235658629261,
+      "average_loss_r": -0.8981092521669023
+    },
+    "full": {
+      "trades": 86,
+      "wins": 39,
+      "losses": 47,
+      "win_rate_pct": 45.348837209302324,
+      "profit_factor": 1.2616572788180906,
+      "mean_r": 0.1264465956898823,
+      "median_r": -0.31432355713878257,
+      "net_r": 10.87440722932988,
+      "gross_profit_r": 52.43414246180539,
+      "gross_loss_r": -41.55973523247552,
+      "return_pct": 10.774266891483663,
+      "max_closed_balance_dd_pct": 7.955871273986827,
+      "final_balance": 11077.426689148366,
+      "largest_win_r": 2.000000000000028,
+      "largest_loss_r": -1.0023769100169415,
+      "average_win_r": 1.3444651913283434,
+      "average_loss_r": -0.8842496857973514
+    }
+  },
+  "selection_note": "Only execution parameters were selected on 2019-2024. The 20-point signal was locked before evaluation."
+}

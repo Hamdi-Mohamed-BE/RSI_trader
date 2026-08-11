@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }} — AAA EAs Builder{% endblock %}
+
+{% block content %}
+  <section class="page-shell py-6 sm:py-8">
+    <div class="flex flex-col gap-4 border-b border-grid pb-5 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex flex-wrap items-center gap-3">
+        <a class="font-mono text-xs text-muted hover:text-neon-cyan" href="{% url 'builder:list' %}">← PROJECTS</a>
+        <span class="text-grid">/</span>
+        <h1 class="font-display text-xl font-semibold">{{ project.name }}</h1>
+        <span class="status-badge status-badge-cyan">{{ project.get_artifact_type_display }}</span>
+        <span class="status-badge">{{ project.symbol }} · {{ project.timeframe }}</span>
+      </div>
+      <div class="flex gap-3">
+        <a href="{% url 'builder:edit' project.pk %}" class="btn-ghost">Edit spec</a>
+        {% if workflow_ready %}
+          <a href="{% url 'builder:generate' project.pk %}" class="btn-primary">
+            {% if latest_version %}Generate revision{% else %}Generate code{% endif %}
+          </a>
+        {% else %}
+          <button class="btn-primary" type="button" disabled title="Publish a workflow in admin">Workflow required</button>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="mt-5 grid gap-5 xl:grid-cols-[220px_minmax(0,1fr)_310px]">
+      <aside class="glass-panel p-4">
+        <div class="eyebrow">Project</div>
+        <nav class="mt-4 grid gap-1" aria-label="Project sections">
+          <a class="rounded-lg bg-neon-cyan/8 px-3 py-2 text-sm text-neon-cyan" href="#workspace">Code</a>
+          <a class="rounded-lg px-3 py-2 text-sm text-muted hover:bg-elevated/40 hover:text-primary" href="#specification">Strategy spec</a>
+          <a class="rounded-lg px-3 py-2 text-sm text-muted hover:bg-elevated/40 hover:text-primary" href="#versions">Versions</a>
+        </nav>
+        <div class="mt-8 border-t border-grid pt-5">
+          <div class="text-xs text-muted">Latest version</div>
+          <div class="mt-2 font-mono text-sm text-primary">{% if latest_version %}v{{ latest_version.version }}{% else %}No code yet{% endif %}</div>
+          <div class="mt-5 text-xs text-muted">Workflow</div>
+          <div class="mt-2 text-sm {% if workflow_ready %}text-signal-green{% else %}text-signal-amber{% endif %}">
+            {% if workflow_ready %}Published workflow ready{% else %}Admin setup required{% endif %}
+          </div>
+        </div>
+      </aside>
+
+      <div class="min-w-0 space-y-5">
+        <section id="workspace" class="glass-panel overflow-hidden">
+          {% if latest_version %}
+            {% include "builder/partials/code_editor.html" with code_version=latest_version %}
+          {% else %}
+            <div class="flex items-center justify-between border-b border-grid px-5 py-4"><div><div class="eyebrow">Code workspace</div><div class="mt-2 font-mono text-xs text-muted">Awaiting first generation</div></div></div>
+            <div class="grid min-h-[480px] place-items-center p-8 text-center">
+              <div class="max-w-xl">
+                <div class="mx-auto grid size-16 place-items-center rounded-xl border border-neon-violet/40 bg-neon-violet/5 font-mono text-neon-violet">&lt;/&gt;</div>
+                <h2 class="mt-6 font-display text-2xl font-semibold">Ready for the first generation</h2>
+                <p class="muted-copy mt-3">The AI workflow will design the rules, generate complete source, review it, and attempt bounded repairs.</p>
+                {% if workflow_ready %}<a class="btn-primary mt-6 inline-flex" href="{% url 'builder:generate' project.pk %}">Generate {{ project.get_artifact_type_display }}</a>{% endif %}
+              </div>
+            </div>
+          {% endif %}
+        </section>
+
+        <section id="specification" class="glass-panel p-6">
+          <div class="flex items-center justify-between"><div class="eyebrow">Strategy specification</div><a class="text-sm text-neon-cyan" href="{% url 'builder:edit' project.pk %}">Edit</a></div>
+          <p class="mt-5 whitespace-pre-line text-sm leading-7 text-slate-300">{{ project.description }}</p>
+        </section>
+
+        <section class="glass-panel p-5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div><div class="eyebrow">Validation</div><p class="mt-2 text-sm text-muted">AI review and deterministic source checks. Compilation is reported separately.</p></div>
+            {% if latest_version %}<span class="status-badge">{{ latest_version.get_validation_status_display }}</span>{% else %}<span class="status-badge">Not run</span>{% endif %}
+          </div>
+          {% if latest_version.diagnostics %}
+            <div class="mt-4 grid gap-2">
+              {% for diagnostic in latest_version.diagnostics %}
+                <div class="rounded-lg border border-grid bg-elevated/30 px-3 py-2 text-xs text-muted"><span class="font-mono uppercase text-primary">{{ diagnostic.severity }}</span> · {{ diagnostic.message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </section>
+
+        <section id="versions" class="glass-panel p-5">
+          <div class="eyebrow">Versions</div>
+          <div class="mt-4 grid gap-2">
+            {% for version in versions %}
+              <div class="flex items-center justify-between rounded-lg border border-grid bg-elevated/25 px-4 py-3">
+                <div><span class="font-mono text-sm text-primary">v{{ version.version }}</span><span class="ml-3 text-xs text-muted">{{ version.created_at|date:"M j, Y H:i" }}</span></div>
+                {% if version.generation_id %}<a class="text-sm text-neon-cyan" href="{% url 'builder:generation-detail' project.pk version.generation_id %}">View run</a>{% else %}<span class="text-xs text-muted">Admin version</span>{% endif %}
+              </div>
+            {% empty %}<p class="text-sm text-muted">No generated versions yet.</p>{% endfor %}
+          </div>
+        </section>
+      </div>
+
+      <aside class="glass-panel h-fit p-4">
+        <div class="flex items-center justify-between"><div class="eyebrow text-neon-violet">Latest agent run</div><span class="status-badge">{% if latest_generation %}{{ latest_generation.get_status_display }}{% else %}Idle{% endif %}</span></div>
+        <div class="mt-5 grid gap-3">
+          <div class="agent-node">Strategy Architect</div><div class="agent-node">Code Generator</div><div class="agent-node">Code Reviewer</div><div class="agent-node">Code Repairer</div>
+        </div>
+        {% if latest_generation %}
+          <div class="mt-6 border-t border-grid pt-5">
+            <div class="flex justify-between text-xs text-muted"><span>{{ latest_generation.current_step }}</span><span class="font-mono">{{ latest_generation.progress }}%</span></div>
+            <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-grid"><div class="h-full bg-neon-cyan" style="width: {{ latest_generation.progress }}%"></div></div>
+            <a class="mt-4 inline-block text-sm text-neon-cyan" href="{% url 'builder:generation-detail' project.pk latest_generation.pk %}">Open run details →</a>
+          </div>
+        {% else %}
+          <p class="mt-5 text-xs leading-5 text-muted">Each run pins its workflow, prompts, models, tools, and limits for reproducibility.</p>
+        {% endif %}
+      </aside>
+    </div>
+  </section>
+{% endblock %}

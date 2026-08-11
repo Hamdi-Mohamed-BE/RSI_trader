@@ -1,0 +1,177 @@
+{
+  "market": "US30",
+  "data": {
+    "symbol": "US30",
+    "digits": 2,
+    "point": 0.01,
+    "tick_size": 0.01,
+    "tick_value": 0.01,
+    "contract_size": 1.0,
+    "minimum_volume": 0.1,
+    "volume_step": 0.1,
+    "rows": 1616366,
+    "first_utc": "2022-01-02T23:00:00+00:00",
+    "last_utc": "2026-08-07T20:58:00+00:00",
+    "median_positive_spread_points": 210.0,
+    "median_spread_price": 2.1,
+    "tick_volume_sum": 134834855,
+    "real_volume_sum": 0,
+    "volume_note": "Broker quote-tick activity; real exchange volume is unavailable",
+    "files": [
+      {
+        "file": "MEXAtlantic-US30-US30-M1-2022.csv.gz",
+        "rows": 350237,
+        "sha256": "3613af214b7bd02df722947b777bb5bd3f1dfcf3089aa93fe03ceb03d84fe0cb"
+      },
+      {
+        "file": "MEXAtlantic-US30-US30-M1-2023.csv.gz",
+        "rows": 349152,
+        "sha256": "e7dfb046a2c558158c20a94c21875f63a42df5b46347b17c281f5f39f3b5c184"
+      },
+      {
+        "file": "MEXAtlantic-US30-US30-M1-2024.csv.gz",
+        "rows": 352179,
+        "sha256": "0b99ecb2de028045429234eb540b2ea585c53742c4fc5b9fb349324ba4ab73e5"
+      },
+      {
+        "file": "MEXAtlantic-US30-US30-M1-2025.csv.gz",
+        "rows": 351355,
+        "sha256": "65d0adda60b1281669b23c99fc2a85a2220de69b325c1d7904de09b46d3db943"
+      },
+      {
+        "file": "MEXAtlantic-US30-US30-M1-2026.csv.gz",
+        "rows": 213443,
+        "sha256": "1641bc8a8ac9ac8c155caab3b198c932168b605a398d6c9bafff8b8da6b514fa"
+      }
+    ]
+  },
+  "selected_signal": {
+    "session": "new_york_0930",
+    "opening_minutes": 30,
+    "bins": 24,
+    "reload_zone": "vah",
+    "minimum_breakout_relative_volume": 1.1,
+    "acceptance_closes": 1,
+    "retest_bars": 6
+  },
+  "selected_outcome": {
+    "stop_mode": "signal_candle",
+    "reward_risk": 3.0,
+    "management": "none",
+    "no_progress_minutes": 0
+  },
+  "period_metrics": {
+    "train_2022_2023": {
+      "trades": 30,
+      "wins": 12,
+      "losses": 18,
+      "win_rate_pct": 40.0,
+      "profit_factor": 2.0,
+      "mean_r": 0.6,
+      "net_r": 18.0,
+      "return_pct": 18.98170806104178,
+      "max_closed_balance_dd_pct": 4.95729647392424,
+      "final_balance": 11898.170806104177
+    },
+    "validation_2024": {
+      "trades": 17,
+      "wins": 6,
+      "losses": 11,
+      "win_rate_pct": 35.294117647058826,
+      "profit_factor": 1.6363636363636365,
+      "mean_r": 0.4117647058823529,
+      "net_r": 7.0,
+      "return_pct": 6.908069866788602,
+      "max_closed_balance_dd_pct": 4.900995010000002,
+      "final_balance": 10690.806986678861
+    },
+    "holdout_2025_2026": {
+      "trades": 25,
+      "wins": 10,
+      "losses": 15,
+      "win_rate_pct": 40.0,
+      "profit_factor": 1.8501792114695297,
+      "mean_r": 0.5101075268817178,
+      "net_r": 12.752688172042944,
+      "return_pct": 13.062760190473831,
+      "max_closed_balance_dd_pct": 6.091910646360326,
+      "final_balance": 11306.276019047384
+    },
+    "full_2022_2026": {
+      "trades": 72,
+      "wins": 28,
+      "losses": 44,
+      "win_rate_pct": 38.88888888888889,
+      "profit_factor": 1.8580156402737034,
+      "mean_r": 0.5243428912783742,
+      "net_r": 37.752688172042944,
+      "return_pct": 43.81701538808227,
+      "max_closed_balance_dd_pct": 6.091910646360307,
+      "final_balance": 14381.701538808227
+    }
+  },
+  "yearly": {
+    "2022": {
+      "trades": 19,
+      "wins": 8,
+      "losses": 11,
+      "win_rate_pct": 42.10526315789473,
+      "profit_factor": 2.1818181818181817,
+      "mean_r": 0.6842105263157895,
+      "net_r": 13.0,
+      "return_pct": 13.418771321676036,
+      "max_closed_balance_dd_pct": 4.900995010000011,
+      "final_balance": 11341.877132167603
+    },
+    "2023": {
+      "trades": 11,
+      "wins": 4,
+      "losses": 7,
+      "win_rate_pct": 36.36363636363637,
+      "profit_factor": 1.7142857142857142,
+      "mean_r": 0.45454545454545453,
+      "net_r": 5.0,
+      "return_pct": 4.904776056503235,
+      "max_closed_balance_dd_pct": 4.900995009999993,
+      "final_balance": 10490.477605650323
+    },
+    "2024": {
+      "trades": 17,
+      "wins": 6,
+      "losses": 11,
+      "win_rate_pct": 35.294117647058826,
+      "profit_factor": 1.6363636363636365,
+      "mean_r": 0.4117647058823529,
+      "net_r": 7.0,
+      "return_pct": 6.908069866788602,
+      "max_closed_balance_dd_pct": 4.900995010000002,
+      "final_balance": 10690.806986678861
+    },
+    "2025": {
+      "trades": 15,
+      "wins": 4,
+      "losses": 11,
+      "win_rate_pct": 26.666666666666668,
+      "profit_factor": 0.8866080156402677,
+      "mean_r": -0.08315412186380376,
+      "net_r": -1.2473118279570565,
+      "return_pct": -1.427571329677646,
+      "max_closed_balance_dd_pct": 6.091910646360326,
+      "final_balance": 9857.242867032235
+    },
+    "2026": {
+      "trades": 10,
+      "wins": 6,
+      "losses": 4,
+      "win_rate_pct": 60.0,
+      "profit_factor": 4.5,
+      "mean_r": 1.4,
+      "net_r": 14.0,
+      "return_pct": 14.700187177709424,
+      "max_closed_balance_dd_pct": 1.9900000000000089,
+      "final_balance": 11470.018717770943
+    }
+  },
+  "volume_note": "FRVP uses MEXAtlantic M1 quote-tick activity, not CME real volume.",
+  "selection_note": "Selected on 2022-2023 training and 2024 validation; 2025-2026 untouched."
+}

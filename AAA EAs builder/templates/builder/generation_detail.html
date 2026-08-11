@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Generation — {{ generation.project.name }}{% endblock %}
+
+{% block content %}
+  <section class="page-shell py-8">
+    <a class="font-mono text-xs text-muted hover:text-neon-cyan" href="{% url 'builder:detail' generation.project.pk %}">← {{ generation.project.name|upper }}</a>
+    <div class="mt-5 flex flex-col gap-3 border-b border-grid pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <div><div class="eyebrow">Generation run</div><h1 class="mt-2 font-display text-3xl font-semibold">{{ generation.project.name }}</h1></div>
+      <div class="font-mono text-xs text-muted">{{ generation.pk }}</div>
+    </div>
+    {% include "builder/partials/generation_status.html" %}
+
+    <section id="generation-chat" class="copilot-shell mt-6">
+      <div class="copilot-header">
+        <div>
+          <div class="eyebrow text-neon-violet">Project-aware copilot</div>
+          <h2 class="mt-2 font-display text-xl font-semibold">Chat with this generation</h2>
+          <p class="mt-2 max-w-3xl text-sm leading-6 text-muted">The copilot receives the live run status, strategy specification, pinned workflow, latest complete source, version history, diagnostics, compiler output, and this conversation through the configured AI gateway.</p>
+        </div>
+        <div class="flex flex-wrap gap-2"><span class="status-badge status-badge-cyan">Context synced</span><span class="status-badge">Explicit apply only</span></div>
+      </div>
+
+      <div class="copilot-quick-actions" aria-label="Suggested copilot requests">
+        <button type="button" data-chat-prompt="Explain every current validation and compiler diagnostic in plain language. Do not change the code yet.">Explain failures</button>
+        <button type="button" data-chat-prompt="Fix every current error and warning. Return a complete replacement source file while preserving the strategy behavior.">Fix all diagnostics</button>
+        <button type="button" data-chat-prompt="Review the latest code for risk sizing, order safety, repainting, and resource handling. Propose a complete improved source file if changes are needed.">Improve safety</button>
+        <button type="button" data-chat-prompt="Summarize the current generation progress, model workflow, code version, validation state, and what I should do next.">Summarize progress</button>
+      </div>
+
+      {% include "builder/partials/generation_chat.html" %}
+
+      <form class="copilot-composer" method="post" action="{% url 'builder:generation-chat' generation.project.pk generation.pk %}">
+        {% csrf_token %}
+        <label class="sr-only" for="{{ chat_form.message.id_for_label }}">{{ chat_form.message.label }}</label>
+        {{ chat_form.message }}
+        <div class="copilot-composer-footer">
+          <p>Ask questions freely. Code changes remain proposals until you apply them.</p>
+          <button class="btn-primary" type="submit"><span>Send</span><span aria-hidden="true">↗</span></button>
+        </div>
+      </form>
+    </section>
+  </section>
+{% endblock %}

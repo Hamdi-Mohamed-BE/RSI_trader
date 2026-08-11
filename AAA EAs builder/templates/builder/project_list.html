@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Your projects — AAA EAs Builder{% endblock %}
+
+{% block content %}
+  <section class="page-shell py-12 sm:py-16">
+    <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <div><div class="eyebrow">Private workspace</div><h1 class="mt-3 font-display text-4xl font-semibold">Strategy projects</h1><p class="muted-copy mt-3">Specifications, generations, code versions, and validation results stay grouped by project.</p></div>
+      <a href="{% url 'builder:create' %}" class="btn-primary">New project</a>
+    </div>
+    <div class="mt-9 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      {% for project in projects %}
+        <article class="metric-card flex min-h-64 flex-col">
+          <div class="flex items-start justify-between gap-3"><span class="status-badge status-badge-cyan">{{ project.get_artifact_type_display }}</span><span class="status-badge">{{ project.get_status_display }}</span></div>
+          <h2 class="mt-6 font-display text-2xl font-semibold"><a class="hover:text-neon-cyan" href="{% url 'builder:detail' project.pk %}">{{ project.name }}</a></h2>
+          <p class="mt-3 line-clamp-3 text-sm leading-6 text-muted">{{ project.description }}</p>
+          <div class="mt-auto flex items-end justify-between gap-3 pt-6"><div class="font-mono text-xs text-muted">{{ project.symbol }} · {{ project.timeframe }}</div><a class="btn-ghost" href="{% url 'builder:detail' project.pk %}">Open</a></div>
+        </article>
+      {% empty %}
+        <div class="glass-panel p-10 md:col-span-2 xl:col-span-3"><div class="eyebrow">Start here</div><h2 class="mt-3 font-display text-3xl font-semibold">Describe one strategy clearly</h2><p class="muted-copy mt-3 max-w-2xl">A focused first project makes it easier to validate entries, exits, position sizing, filters, and code behavior.</p><a href="{% url 'builder:create' %}" class="btn-primary mt-7">Create your first project</a></div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}
