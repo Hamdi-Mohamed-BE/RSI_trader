@@ -83,6 +83,11 @@ class FakeMt5:
         return (info,)
 
     @staticmethod
+    def symbol_info_tick(symbol: str) -> SimpleNamespace:
+        del symbol
+        return SimpleNamespace(bid=Decimal("4371.80"), ask=Decimal("4372.10"))
+
+    @staticmethod
     def last_error() -> tuple[int, str]:
         return 100, "test login rejected"
 
@@ -151,6 +156,11 @@ def test_manager_builds_isolated_instance_logs_in_and_syncs_symbol(
         assert specification is not None
         assert specification.symbol == "XAUUSD"
         assert specification.tick_size == Decimal("0.01")
+
+        quote = manager.current_quote(account, "XAUUSD")
+        assert quote.symbol == "XAUUSD"
+        assert quote.bid == Decimal("4371.80")
+        assert quote.ask == Decimal("4372.10")
 
         manager.remove_instance(account)
         assert not managed_executable.parent.exists()

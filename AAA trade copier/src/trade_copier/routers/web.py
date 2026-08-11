@@ -1,5 +1,6 @@
 from decimal import Decimal
 from typing import Annotated
+from urllib.parse import quote_plus
 
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import RedirectResponse
@@ -416,7 +417,6 @@ def copy_test_run(
     csrf: Annotated[str, Form()],
     session: Annotated[Session, Depends(request_session)],
     order_type: Annotated[str, Form()] = OrderType.MARKET.value,
-    market_price: Annotated[Decimal | None, Form()] = None,
     take_profit: Annotated[Decimal | None, Form()] = None,
     execute_demo: Annotated[bool, Form()] = False,
 ) -> Response:
@@ -430,7 +430,7 @@ def copy_test_run(
             side=Side(side),
             order_type=OrderType(order_type),
             master_volume=master_volume,
-            market_price=market_price,
+            market_price=None,
             entry_price=entry_price,
             stop_loss=stop_loss,
             take_profit=take_profit,
@@ -438,12 +438,31 @@ def copy_test_run(
         )
         if request.app.state.settings.auto_detect_mt5:
             detect_and_import_running_accounts(session, actor="copy-test-refresh")
-        _terminal_manager(request).prepare_copy_test(
+        terminal_manager = _terminal_manager(request)
+        terminal_manager.prepare_copy_test(
             session,
             data.symbol,
             actor="copy-test-auto-connect",
         )
-        run = CopyTestRunner().run(session, data, actor=user.email)
+        master = session.scalar(
+            select(Account).where(
+                Account.is_master.is_(True),
+                Account.state == AccountState.ACTIVE.value,
+            )
+        )
+        if master is None:
+            raise ValueError("No active master MT5 account is configured.")
+        quote = terminal_manager.current_quote(master, data.symbol)
+        live_market_price = quote.ask if data.side is Side.BUY else quote.bid
+        data = CopyTestInput.model_validate(
+            {**data.model_dump(), "market_price": live_market_price}
+        )
+        run = CopyTestRunner().run(
+            session,
+            data,
+            actor=user.email,
+            master_broker_symbol=quote.symbol,
+        )
         if run.execute_demo:
             settings = request.app.state.settings
             vault = build_credential_vault(settings.storage_dir / "vault")
@@ -452,8 +471,12 @@ def copy_test_run(
                 run,
                 actor=user.email,
             )
-    except (ValidationError, ValueError) as exc:
-        return RedirectResponse(f"/copy-test?error={exc!s}", status_code=303)
+    except ValidationError as exc:
+        message = str(exc.errors()[0].get("msg", "Invalid Copy Test input."))
+        message = message.removeprefix("Value error, ")
+        return RedirectResponse(f"/copy-test?error={quote_plus(message)}", status_code=303)
+    except ValueError as exc:
+        return RedirectResponse(f"/copy-test?error={quote_plus(str(exc))}", status_code=303)
     notice = "Demo+order+test+finished" if run.execute_demo else "Readiness+test+finished"
     return RedirectResponse(f"/copy-test?notice={notice}&run={run.id}", status_code=303)
 

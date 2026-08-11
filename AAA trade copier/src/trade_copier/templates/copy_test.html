@@ -3,9 +3,9 @@
 {% block content %}
 <section class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
     <div>
-        <p class="eyebrow">Follower readiness</p>
+        <p class="eyebrow">Active master execution + follower readiness</p>
         <h1 class="page-title">Cross-account copy test</h1>
-        <p class="page-copy">Verify every follower, then optionally place an actual order on each demo account. Test positions and pending orders remain active until you manually close or cancel them in MT5. Live-account execution is always blocked.</p>
+        <p class="page-copy">Read the live Bid/Ask from the active main MT5, validate the entry against that quote, and place one actual demo order on the active master. Followers are checked for copy readiness without receiving a second direct test order.</p>
     </div>
     <span class="badge border-amber/50 text-amber">Demo only · orders stay open</span>
 </section>
@@ -18,16 +18,16 @@
         <label class="field-label">Direction<select class="field" name="side">{% for side in sides %}<option value="{{ side.value }}">{{ side.value|title }}</option>{% endfor %}</select><small>Choose Buy or Sell.</small></label>
         <label class="field-label">Order type<select class="field" name="order_type">{% for order_type in order_types %}<option value="{{ order_type.value }}">{{ order_type.value|title }}</option>{% endfor %}</select><small>Market enters now; Limit and Stop are pending entries.</small></label>
         <label class="field-label">Master volume<input class="field" type="number" name="master_volume" value="0.10" min="0.01" step="0.01" required></label>
-        <label class="field-label">Reference market price<input class="field" type="number" name="market_price" placeholder="2400.00" min="0.00001" step="0.00001"><small>Required for Limit and Stop so their position above or below market can be checked.</small></label>
+        <div class="field-label">Live market reference<div class="field flex items-center text-muted">Read automatically from active master MT5</div><small>Buy orders use the live Ask; Sell orders use the live Bid.</small></div>
         <label class="field-label">Entry / trigger price<input class="field" type="number" name="entry_price" placeholder="2400.00" min="0.00001" step="0.00001" required><small>The requested entry price for this test.</small></label>
         <label class="field-label">Stop loss (SL)<input class="field" type="number" name="stop_loss" placeholder="2390.00" min="0.00001" step="0.00001" required><small>Below entry for Buy; above entry for Sell.</small></label>
         <label class="field-label">Take profit (TP)<input class="field" type="number" name="take_profit" placeholder="Optional" min="0.00001" step="0.00001"><small>Above entry for Buy; below entry for Sell.</small></label>
         <label class="field-label">Confirmation<input class="field" name="confirmation" placeholder="Type TEST" required><small>Required before the test can contact MT5.</small></label>
         <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-amber/40 bg-amber/10 p-4 text-sm text-white xl:col-span-2">
             <input class="mt-1 size-4 accent-cyan" type="checkbox" name="execute_demo" value="true" checked>
-            <span><strong class="block">Place demo orders and leave them open</strong><small class="mt-1 block text-amber">Every successful position or pending order stays active in MT5 until you close or cancel it manually. Live accounts are rejected.</small></span>
+            <span><strong class="block">Place on active master MT5 and leave open</strong><small class="mt-1 block text-amber">One successful position or pending order stays active on the main demo account until you close or cancel it manually. Live accounts are rejected.</small></span>
         </label>
-        <div class="flex items-end"><button class="button-primary w-full" type="submit">Run across all followers</button></div>
+        <div class="flex items-end"><button class="button-primary w-full" type="submit">Run on active master</button></div>
     </form>
     <div class="mt-5 grid gap-3 text-xs text-muted sm:grid-cols-2 xl:grid-cols-4">
         <p class="rounded-lg border border-line bg-void/50 p-3"><strong class="text-white">Buy Limit</strong><br>Entry below market</p>
@@ -47,7 +47,7 @@
             <span class="badge {% if run.failed_followers %}badge-failed{% else %}badge-filled{% endif %}">{{ run.status|replace('_',' ') }}</span>
         </div>
         <div class="mt-5 grid gap-3 sm:grid-cols-3">
-            <div class="account-row"><div><small>Followers</small><strong>{{ run.total_followers }}</strong></div></div>
+            <div class="account-row"><div><small>Accounts checked</small><strong>{{ run.total_followers }}</strong></div></div>
             <div class="account-row"><div><small>Passed</small><strong class="text-green">{{ run.passed_followers }}</strong></div></div>
             <div class="account-row"><div><small>Errors</small><strong class="text-red">{{ run.failed_followers }}</strong></div></div>
         </div>
@@ -63,7 +63,7 @@
             <tbody>
             {% for result in run.results %}
             <tr>
-                <td>{{ result.follower_account.display_name }}</td>
+                <td>{{ result.follower_account.display_name }}<small class="mt-1 block text-muted">{{ 'Active master order' if result.checks.get('account_role') == 'active_master' else 'Follower readiness' }}</small></td>
                 <td><span class="badge badge-{{ 'filled' if result.status == 'passed' else 'failed' }}">{{ result.status }}</span></td>
                 <td>{{ result.follower_symbol or '—' }}</td>
                 <td class="font-mono text-xs"><span class="block">Entry {{ result.checks.get('entry_price', '—') }}</span><span class="block text-red">SL {{ result.checks.get('stop_loss', '—') }}</span><span class="block text-green">TP {{ result.checks.get('take_profit') or '—' }}</span></td>
@@ -77,7 +77,7 @@
                     <span class="mt-1 block text-muted">Order {{ result.checks.get('broker_order_id') or '—' }} · Deal {{ result.checks.get('broker_deal_id') or '—' }} · Retcode {{ result.checks.get('broker_retcode') }}</span>
                     {% if result.checks.get('cleanup_id') %}<span class="mt-1 block text-muted">Historical automatic cleanup {{ result.checks.get('cleanup_id') }}</span>{% else %}<strong class="mt-1 block text-amber">Order remains active — manage it in MT5.</strong>{% endif %}
                     {% else %}
-                    <span class="text-muted">Readiness passed — no broker order requested.</span>
+                    <span class="text-muted">{% if result.checks.get('account_role') == 'active_master' %}Master readiness passed — no broker order requested.{% else %}Follower readiness passed — the test order is placed only on the active master.{% endif %}</span>
                     {% endif %}
                 </td>
             </tr>

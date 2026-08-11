@@ -70,8 +70,9 @@ No sample accounts, mappings, trades, or performance records are created. One sy
 
 ## Cross-account copy test
 
-Open **Copy test** from the navigation or dashboard. Enter one synthetic master trade and type `TEST`. Tests support Buy or Sell with Market, Limit, and Stop entries, plus stop-loss and optional take-profit prices. Limit and Stop tests also require a reference market price so the pending entry direction can be validated. The runner checks every configured follower and records:
+Open **Copy test** from the navigation or dashboard. Enter one master trade and type `TEST`. Tests support Buy or Sell with Market, Limit, and Stop entries, plus stop-loss and optional take-profit prices. The app reads the active main MT5 account's live Ask for Buy validation and live Bid for Sell validation; users do not enter a reference market price. The runner checks the active master and every configured follower and records:
 
+- active master state, terminal health, broker symbol, and live quote;
 - follower state and terminal health;
 - assigned risk profile;
 - master-to-follower symbol mapping;
@@ -83,9 +84,9 @@ Open **Copy test** from the navigation or dashboard. Enter one synthetic master 
 - broker order, deal, and return code when demo execution is selected;
 - the exact error for every failed follower.
 
-Before running the checks, the diagnostic starts and logs into managed follower instances and refreshes the requested broker symbol specification. If a broker renames a symbol, such as `XAUUSDm`, the resolved `XAUUSD → XAUUSDm` route is saved automatically and reused by future tests and copier events. The first incoming trade for a new symbol runs the same discovery before routing.
+Before running the checks, the diagnostic connects to the active main MT5 and managed follower instances, then refreshes their requested broker symbol specifications. If a broker renames a symbol, such as `XAUUSDm`, the resolved `XAUUSD → XAUUSDm` route is saved automatically and reused by future tests and copier events. The first incoming trade for a new symbol runs the same discovery before routing.
 
-The **Place demo orders and leave them open** option sends an actual broker request only after a follower passes readiness. Market positions and pending orders remain active until they are manually closed or cancelled in MT5. The broker-reported account mode must be demo; live accounts are always rejected. Clear the option to run readiness checks without sending an order.
+The **Place on active master MT5 and leave open** option sends one actual broker request to the active main account after its readiness check passes. Followers are checked for copy readiness but do not receive duplicate direct test orders. Market positions and pending orders remain active until they are manually closed or cancelled in MT5. The broker-reported master account mode must be demo; live accounts are always rejected. Clear the option to run readiness checks without sending an order.
 
 ## MT5 demo integration
 

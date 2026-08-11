@@ -5,6 +5,7 @@ import os
 import re
 import shutil
 from contextlib import suppress
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -32,6 +33,13 @@ SYMBOL_ALIASES: dict[str, set[str]] = {
     "XAGUSD": {"SILVER"},
     "XAUUSD": {"GOLD"},
 }
+
+
+@dataclass(frozen=True)
+class TerminalQuote:
+    symbol: str
+    bid: Decimal
+    ask: Decimal
 
 
 class SymbolResolutionError(ValueError):
@@ -494,47 +502,12 @@ class TerminalManager:
     ) -> TerminalInstance:
         """Start the account's terminal and log in through the MT5 API."""
         self._require_windows()
-        if not account.terminal_path:
-            raise ValueError("This account has no managed MT5 instance yet.")
-        executable = self._validated_executable_path(account.terminal_path)
         connector = self._connector()
         try:
-            initialized = bool(
-                connector.initialize(
-                    str(executable),
-                    timeout=60_000,
-                    portable=True,
-                )
+            executable, account_info, terminal_info = self._open_account_connection(
+                connector,
+                account,
             )
-            if not initialized:
-                raise ValueError(f"MT5 could not start: {self._last_error(connector)}")
-
-            if account.credential_ref:
-                if self.vault is None:
-                    raise ValueError("The secure MT5 credential vault is unavailable.")
-                password = self.vault.retrieve(account.credential_ref)
-                logged_in = bool(
-                    connector.login(
-                        int(account.login),
-                        password=password,
-                        server=account.broker_server,
-                        timeout=60_000,
-                    )
-                )
-                if not logged_in:
-                    raise ValueError(f"MT5 login was rejected: {self._last_error(connector)}")
-
-            account_info = connector.account_info()
-            terminal_info = connector.terminal_info()
-            if account_info is None or terminal_info is None:
-                raise ValueError("MT5 started but did not return account or terminal information.")
-            if not bool(getattr(terminal_info, "connected", False)):
-                raise ValueError("MT5 started but is not connected to the broker.")
-            if str(account_info.login) != account.login:
-                raise ValueError(
-                    "MT5 opened a different saved account. Enter this account's password to "
-                    "replace the saved session."
-                )
 
             account.account_currency = str(getattr(account_info, "currency", "USD") or "USD")
             account.balance = Decimal(str(account_info.balance))
@@ -610,6 +583,61 @@ class TerminalManager:
             with suppress(AttributeError, RuntimeError):
                 connector.shutdown()
 
+    def _open_account_connection(
+        self,
+        connector: Any,
+        account: Account,
+    ) -> tuple[Path, Any, Any]:
+        self._require_windows()
+        if not account.terminal_path:
+            raise ValueError("This account has no managed MT5 instance yet.")
+        executable = self._validated_executable_path(account.terminal_path)
+        if not connector.initialize(str(executable), timeout=60_000, portable=True):
+            raise ValueError(f"MT5 could not start: {self._last_error(connector)}")
+        if account.credential_ref:
+            if self.vault is None:
+                raise ValueError("The secure MT5 credential vault is unavailable.")
+            password = self.vault.retrieve(account.credential_ref)
+            if not connector.login(
+                int(account.login),
+                password=password,
+                server=account.broker_server,
+                timeout=60_000,
+            ):
+                raise ValueError(f"MT5 login was rejected: {self._last_error(connector)}")
+        account_info = connector.account_info()
+        terminal_info = connector.terminal_info()
+        if account_info is None or terminal_info is None:
+            raise ValueError("MT5 started but did not return account or terminal information.")
+        if not bool(getattr(terminal_info, "connected", False)):
+            raise ValueError("MT5 started but is not connected to the broker.")
+        if str(account_info.login) != account.login:
+            raise ValueError(
+                "MT5 opened a different saved account. Enter this account's password to "
+                "replace the saved session."
+            )
+        return executable, account_info, terminal_info
+
+    def current_quote(self, account: Account, symbol: str) -> TerminalQuote:
+        """Read the current broker Bid/Ask from the exact active account terminal."""
+        connector = self._connector()
+        try:
+            self._open_account_connection(connector, account)
+            resolved_symbol, _ = self._resolve_symbol(connector, symbol)
+            tick = connector.symbol_info_tick(resolved_symbol)
+            if tick is None:
+                raise ValueError(f"MT5 returned no live tick for {resolved_symbol}.")
+            bid = Decimal(str(getattr(tick, "bid", "0")))
+            ask = Decimal(str(getattr(tick, "ask", "0")))
+            if bid <= 0 or ask <= 0:
+                raise ValueError(f"MT5 returned an invalid live price for {resolved_symbol}.")
+            return TerminalQuote(symbol=resolved_symbol, bid=bid, ask=ask)
+        except (OSError, RuntimeError, TypeError, ValueError) as exc:
+            raise ValueError(f"Could not read the active master MT5 price: {exc!s}") from exc
+        finally:
+            with suppress(AttributeError, RuntimeError):
+                connector.shutdown()
+
     def provision_and_connect(
         self,
         session: Session,
@@ -655,7 +683,7 @@ class TerminalManager:
         for account in accounts:
             if account.state == AccountState.DISABLED.value:
                 continue
-            follower_symbol: str | None = None
+            account_symbol = symbol
             if account.role == AccountRole.FOLLOWER.value:
                 mapping = session.scalar(
                     select(SymbolMapping).where(
@@ -664,7 +692,7 @@ class TerminalManager:
                         SymbolMapping.enabled.is_(True),
                     )
                 )
-                follower_symbol = mapping.follower_symbol if mapping else symbol
+                account_symbol = mapping.follower_symbol if mapping else symbol
             try:
                 if not account.credential_ref and not account.terminal_path:
                     message = (
@@ -679,16 +707,20 @@ class TerminalManager:
                         account,
                         actor=actor,
                         template_path=account.terminal_path,
-                        symbol=follower_symbol,
-                        master_symbol=symbol,
+                        symbol=account_symbol,
+                        master_symbol=(
+                            symbol if account.role == AccountRole.FOLLOWER.value else None
+                        ),
                     )
                 else:
                     self.connect(
                         session,
                         account,
                         actor=actor,
-                        symbol=follower_symbol,
-                        master_symbol=symbol,
+                        symbol=account_symbol,
+                        master_symbol=(
+                            symbol if account.role == AccountRole.FOLLOWER.value else None
+                        ),
                     )
             except (OSError, RuntimeError, ValueError) as exc:
                 logger.warning(

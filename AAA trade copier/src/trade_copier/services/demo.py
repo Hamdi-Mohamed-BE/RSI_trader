@@ -73,7 +73,11 @@ def seed_demo(session: Session) -> None:
     )
     session.add_all([master, follower_a, follower_b])
     session.flush()
-    for account, symbol in [(follower_a, "XAUUSD"), (follower_b, "GOLD")]:
+    for account, symbol in [
+        (master, "XAUUSD"),
+        (follower_a, "XAUUSD"),
+        (follower_b, "GOLD"),
+    ]:
         session.add(
             AccountSymbolSpec(
                 account_id=account.id,

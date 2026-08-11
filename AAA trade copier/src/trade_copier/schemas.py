@@ -104,18 +104,30 @@ class CopyTestInput(BaseModel):
         if self.order_type is OrderType.MARKET:
             return self
         if self.market_price is None:
-            raise ValueError("Reference market price is required for limit and stop orders.")
+            return self
 
         if self.order_type is OrderType.LIMIT:
             if self.side is Side.BUY and self.entry_price >= self.market_price:
-                raise ValueError("A buy limit entry must be below the market price.")
+                raise ValueError(
+                    f"Buy Limit entry {self.entry_price} must be below the live "
+                    f"Ask price {self.market_price}."
+                )
             if self.side is Side.SELL and self.entry_price <= self.market_price:
-                raise ValueError("A sell limit entry must be above the market price.")
+                raise ValueError(
+                    f"Sell Limit entry {self.entry_price} must be above the live "
+                    f"Bid price {self.market_price}."
+                )
         if self.order_type is OrderType.STOP:
             if self.side is Side.BUY and self.entry_price <= self.market_price:
-                raise ValueError("A buy stop entry must be above the market price.")
+                raise ValueError(
+                    f"Buy Stop entry {self.entry_price} must be above the live "
+                    f"Ask price {self.market_price}."
+                )
             if self.side is Side.SELL and self.entry_price >= self.market_price:
-                raise ValueError("A sell stop entry must be below the market price.")
+                raise ValueError(
+                    f"Sell Stop entry {self.entry_price} must be below the live "
+                    f"Bid price {self.market_price}."
+                )
         return self
 
 
