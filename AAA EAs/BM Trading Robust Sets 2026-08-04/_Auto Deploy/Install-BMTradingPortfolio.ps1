@@ -89,12 +89,6 @@ function Get-PortfolioItems {
             SetSource = 'AAA Final EAs\AAA Final XAU Weakness EA\RETEST INCLUDED 2026-08-07 - XAU Weakness - XAUUSD M15 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
-            Label = 'Ninja Turtle Scalper'; Canonical = 'EURUSD'; Aliases = @('EURUSD')
-            Period = 5; Expert = 'Ninja Turtle Scalper EA.ex5'
-            ExpertSource = 'Ninja Turtle Scalper EA\Ninja Turtle Scalper EA.ex5'
-            SetSource = 'Ninja Turtle Scalper EA\RETEST INCLUDED 2026-08-07 - Ninja Turtle - EURUSD M5 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; VolumeRiskMoney = $true
-        },
-        [pscustomobject]@{
             Label = 'Nasdaq Overnight'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 1; Expert = 'Nasdaq Overnight Negative Day EA.ex5'
             ExpertSource = 'Nasdaq Overnight Negative Day EA\Nasdaq Overnight Negative Day EA.ex5'

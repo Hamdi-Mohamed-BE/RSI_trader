@@ -50,6 +50,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
 echo Ensuring the default dashboard user is ready...
 uv run aaa-trade-copier ensure-admin || exit /b 1
 
+echo Installing and attaching required MT5 integration agents...
+uv run aaa-trade-copier bootstrap-mt5-agents || exit /b 1
+
 echo Starting AAA Trade Copier...
 call dev.bat start || exit /b 1
 

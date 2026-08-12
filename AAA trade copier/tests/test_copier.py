@@ -225,8 +225,6 @@ async def test_pending_cancellation_targets_the_mapped_follower_order(
         assert transport.commands[1].target_order_id == expected_order
         assert transport.commands[1].entry_price == Decimal("2385")
         assert transport.commands[2].target_order_id == expected_order
-        link = session.scalar(
-            select(TradeLink).where(TradeLink.follower_account_id == follower.id)
-        )
+        link = session.scalar(select(TradeLink).where(TradeLink.follower_account_id == follower.id))
         assert link is not None
         assert link.status == "cancelled"

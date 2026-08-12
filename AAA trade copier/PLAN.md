@@ -1,6 +1,6 @@
 # MT5 Multi-Account Trade Copier — Project Plan
 
-Status: implementation in progress. The fresh control plane, automatic MT5 discovery, durable copier core, continuous Windows MT5 reconciliation, complete lifecycle ticket mapping, and guarded MQL5 integration agents are implemented. Demo hedging-account execution is available; live execution remains gated until the Phase 7 qualification criteria pass.
+Status: implementation in progress. The fresh control plane, automatic MT5 discovery and agent attachment, durable copier core, continuous Windows MT5 reconciliation, complete lifecycle ticket mapping, and guarded MQL5 integration agents are implemented. Demo hedging-account execution is available; live execution remains gated until the Phase 7 qualification criteria pass.
 
 ## 1. Objective
 

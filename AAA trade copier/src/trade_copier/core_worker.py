@@ -16,6 +16,7 @@ from .services.credentials import build_credential_vault
 from .services.mt5_discovery import detect_and_import_running_accounts
 from .services.mt5_executor import Mt5FollowerExecutor, PythonMt5Transport
 from .services.terminals import TerminalManager
+from .transport.base import FollowerTransport
 from .transport.protocol import ProtocolError, decode_message
 from .transport.windows_named_pipe import WindowsNamedPipeTransport
 from .transport.windows_pipe_io import PyWin32PipeChannel, WindowsNamedPipeServer
@@ -80,7 +81,7 @@ async def accept_followers(
 async def consume_master(
     settings: Settings,
     server: WindowsNamedPipeServer,
-    transport: WindowsNamedPipeTransport,
+    transport: FollowerTransport,
     terminal_manager: TerminalManager,
 ) -> None:
     while True:
@@ -148,26 +149,28 @@ async def run() -> None:
             settings.execution_is_permitted,
         )
     server = WindowsNamedPipeServer()
-    transport = WindowsNamedPipeTransport(live_execution_permitted=settings.execution_is_permitted)
+    pipe_transport = WindowsNamedPipeTransport(
+        live_execution_permitted=settings.execution_is_permitted
+    )
     vault = build_credential_vault(settings.storage_dir / "vault")
     terminal_manager = TerminalManager(
         instances_root=settings.mt5_instances_dir,
         vault=vault,
         default_template_path=settings.mt5_template_path,
     )
+    python_transport = PythonMt5Transport(
+        session_factory=SessionLocal,
+        executor=Mt5FollowerExecutor(
+            vault=vault,
+            allow_live=settings.execution_is_permitted,
+        ),
+    )
     tasks = [
-        accept_followers(settings, server, transport),
-        consume_master(settings, server, transport, terminal_manager),
+        accept_followers(settings, server, pipe_transport),
+        consume_master(settings, server, python_transport, terminal_manager),
         watchdog(settings, terminal_manager),
     ]
     if settings.continuous_copy_enabled:
-        python_transport = PythonMt5Transport(
-            session_factory=SessionLocal,
-            executor=Mt5FollowerExecutor(
-                vault=vault,
-                allow_live=settings.execution_is_permitted,
-            ),
-        )
         continuous_core = CopierCore(settings=settings, transport=python_transport)
         continuous_copier = ContinuousTradeCopier(
             core=continuous_core,

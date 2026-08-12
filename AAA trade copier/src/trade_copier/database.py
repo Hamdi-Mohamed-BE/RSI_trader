@@ -117,8 +117,7 @@ def _upgrade_continuous_copy_schema(selected_engine: Engine) -> None:
         if "master_trade_states" not in tables:
             return
         columns = {
-            column["name"]
-            for column in inspect(connection).get_columns("master_trade_states")
+            column["name"] for column in inspect(connection).get_columns("master_trade_states")
         }
         if "last_dispatch_failed" not in columns:
             connection.execute(

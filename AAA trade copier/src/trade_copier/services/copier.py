@@ -288,9 +288,7 @@ class CopierCore:
                         if mapping is not None and not mapping.preserve_relative_stops:
                             offset = Decimal(mapping.price_offset)
                             stop = message.stop_loss + offset if message.stop_loss else None
-                            target = (
-                                message.take_profit + offset if message.take_profit else None
-                            )
+                            target = message.take_profit + offset if message.take_profit else None
                         else:
                             stop = None
                             if message.stop_loss is not None:

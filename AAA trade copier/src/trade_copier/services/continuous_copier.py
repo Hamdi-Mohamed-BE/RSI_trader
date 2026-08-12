@@ -412,9 +412,8 @@ class ContinuousTradeCopier:
                 continue
 
             previous_volume = Decimal(current_state.volume)
-            if (
-                trade.fingerprint != current_state.fingerprint
-                and not self._retry_ready(current_state)
+            if trade.fingerprint != current_state.fingerprint and not self._retry_ready(
+                current_state
             ):
                 current_state.last_seen_at = datetime.now(UTC)
                 session.add(current_state)

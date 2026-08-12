@@ -1,8 +1,10 @@
 # MT5 integration agents
 
-This directory contains the versioned MQL5 protocol include and the optional master/follower low-latency integration agents. The normal Windows launcher currently uses the qualified Python MT5 reconciliation path, which does not require attaching these EAs.
+This directory contains the versioned MQL5 protocol include and the master/follower integration agents. `run.bat` automatically installs both agents into each terminal's actual data directory and attaches the Master Publisher to the detected active master using MT5's supported startup configuration. The default follower execution path remains the isolated Python MT5 connection, so no follower chart EA needs to be attached manually.
 
 ## Installation
+
+Normally, run `run.bat` and let the automatic bootstrap do this. For manual installation:
 
 1. Copy `Include/AAA/CopierProtocol.mqh` into the terminal's `MQL5/Include/AAA` directory.
 2. Copy the appropriate file from `Experts` into `MQL5/Experts`.

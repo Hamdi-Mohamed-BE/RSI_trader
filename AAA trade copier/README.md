@@ -31,6 +31,8 @@ run.bat
 
 `run.bat` performs first-time setup when necessary, ensures the default administrator exists, starts the Copier Core and dashboard, and opens `http://127.0.0.1:8100` automatically. It never resets the password of an existing administrator.
 
+Before starting the services, `run.bat` also bootstraps MT5 integration on Windows. It detects the logged-in active master, copies the versioned agents into that terminal's actual `TERMINAL_DATA_PATH`, writes a secret-free Publisher preset containing the account UUID and local pipe name, and uses MT5's supported `/config:` startup mechanism to attach `AAA_Master_Publisher` to an M1 control chart. The exact master terminal is restarted only when the attachment is missing or stale. Follower agent files are installed for compatibility, but no follower chart EA is required by the default isolated-Python executor.
+
 `run.bat` binds the dashboard to `0.0.0.0`, so on a VPS it is also reachable at `http://YOUR-VPS-IP:8100`. Windows Firewall and the VPS provider firewall must allow inbound TCP port 8100. Change the default password and place the dashboard behind an HTTPS reverse proxy before treating it as an internet-facing service.
 
 The setup command creates an ignored `.env` if needed, installs Python and frontend dependencies, builds CSS, and initializes an empty SQLite trading database. This workspace contains only the requested local dashboard administrator:
@@ -58,6 +60,14 @@ LIVE_EXECUTION_ENABLED=true
 Changing these flags is not enough to qualify the system for live use. The named-pipe transport remains guarded until the MT5 demo integration and acceptance tests are completed. Use demo accounts only during development.
 
 Demo copying does not require weakening these environment gates. Keep their defaults, verify that every account is shown as `demo` and `hedging`, then type `ENABLE` on the dashboard. Pausing blocks new exposure while linked modifications, cancellations, and closes continue to be obeyed.
+
+Automatic agent setup is enabled by default:
+
+```dotenv
+AUTO_INSTALL_MT5_AGENTS=true
+```
+
+The active master must already be logged into MT5 when `run.bat` starts. The generated startup configuration does not contain the MT5 password; MT5 reuses its own saved account authorization. If no logged-in terminal is detected, the bootstrap reports that it was skipped and the Python reconciliation path remains available.
 
 ## Adding and managing MT5 accounts
 

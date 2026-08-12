@@ -38,6 +38,7 @@ class Settings(BaseSettings):
     follower_pipe_prefix: str = "aaa_trade_copier_follower"
     continuous_copy_enabled: bool = True
     continuous_copy_poll_ms: int = Field(default=350, ge=100, le=5000)
+    auto_install_mt5_agents: bool = True
 
     storage_dir: Path = Path("storage")
 
