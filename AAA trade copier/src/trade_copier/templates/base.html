@@ -32,11 +32,12 @@
         </nav>
         <div class="mt-8 rounded-xl border border-line bg-void/60 p-4">
             <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">Execution gate</p>
-            {% if safe_mode %}
-            <p class="mt-2 text-sm font-semibold text-amber">Safe mode locked</p>
-            <p class="mt-1 text-xs leading-5 text-muted">Live broker execution is disabled by environment policy.</p>
-            {% else %}
+            {% if live_execution_permitted %}
             <p class="mt-2 text-sm font-semibold text-green">Environment gate open</p>
+            <p class="mt-1 text-xs leading-5 text-muted">Live broker execution may be enabled with dashboard confirmation.</p>
+            {% else %}
+            <p class="mt-2 text-sm font-semibold text-amber">Live execution locked</p>
+            <p class="mt-1 text-xs leading-5 text-muted">Requires SAFE_MODE=false and LIVE_EXECUTION_ENABLED=true.</p>
             {% endif %}
         </div>
     </aside>

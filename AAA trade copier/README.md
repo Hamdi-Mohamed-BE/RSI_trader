@@ -21,7 +21,7 @@ A safe-by-default Windows control plane and copier-core MVP for copying MT5 trad
 - Modern Tailwind/HTMX/Alpine interface.
 - Normal Windows launcher, Makefile, and Docker web control plane.
 
-Continuous execution is enabled for verified **demo hedging accounts** after an administrator presses **Enable copying** on the dashboard. Live-account execution remains blocked unless both environment safety gates are explicitly enabled. The optional MQL named-pipe agents remain a separate qualification path; the default Windows runtime now performs continuous reconciliation directly through each isolated MT5 terminal.
+Continuous execution supports verified **demo and live hedging accounts**. Demo copying requires the dashboard confirmation `ENABLE`. Live copying requires both environment safety gates plus the stronger dashboard confirmation `ENABLE LIVE`. The optional MQL named-pipe agents remain a separate integration path; the default Windows runtime performs continuous reconciliation directly through each isolated MT5 terminal.
 
 ## Quick start
 
@@ -57,7 +57,7 @@ SAFE_MODE=false
 LIVE_EXECUTION_ENABLED=true
 ```
 
-Changing these flags is not enough to qualify the system for live use. The named-pipe transport remains guarded until the MT5 demo integration and acceptance tests are completed. Use demo accounts only during development.
+After changing these flags, restart with `run.bat`, verify every account, symbol route, stop-loss, and 1% risk profile, then type `ENABLE LIVE` on the dashboard. Existing unlinked master positions are baselined during recovery and are not opened retroactively on followers; only new positions created after live activation are copied. Linked positions continue to receive modifications and closes.
 
 Demo copying does not require weakening these environment gates. Keep their defaults, verify that every account is shown as `demo` and `hedging`, then type `ENABLE` on the dashboard. Pausing blocks new exposure while linked modifications, cancellations, and closes continue to be obeyed.
 

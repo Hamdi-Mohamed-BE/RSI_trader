@@ -79,6 +79,10 @@ def dashboard(request: Request, session: Annotated[Session, Depends(request_sess
     state = ensure_system_state(session)
     accounts = session.scalars(select(Account).order_by(Account.display_name)).all()
     master = next((account for account in accounts if account.is_master), None)
+    has_live_account = any(
+        account.state == AccountState.ACTIVE.value and account.trade_mode != "demo"
+        for account in accounts
+    )
     recent_jobs = session.scalars(
         select(CopyJob)
         .options(
@@ -108,6 +112,7 @@ def dashboard(request: Request, session: Annotated[Session, Depends(request_sess
             job_total=job_total,
             filled_total=filled_total,
             healthy_count=sum(account.health == "healthy" for account in accounts),
+            has_live_account=has_live_account,
         ),
     )
 
@@ -134,8 +139,6 @@ def unpause_system(
 ) -> Response:
     user = _user(request, session)
     validate_csrf(request, csrf)
-    if confirmation.strip().upper() != "ENABLE":
-        return RedirectResponse("/?error=Type+ENABLE+to+unpause", status_code=303)
     active_accounts = session.scalars(
         select(Account).where(Account.state == AccountState.ACTIVE.value)
     ).all()
@@ -145,10 +148,21 @@ def unpause_system(
             "/?error=Live+accounts+are+blocked+by+the+environment+safety+gates",
             status_code=303,
         )
+    required_confirmation = "ENABLE LIVE" if has_live_account else "ENABLE"
+    if confirmation.strip().upper() != required_confirmation:
+        encoded_confirmation = required_confirmation.replace(" ", "+")
+        return RedirectResponse(
+            f"/?error=Type+{encoded_confirmation}+to+enable+copying",
+            status_code=303,
+        )
     state = set_global_pause(
         session,
         paused=False,
-        reason="Continuous copying enabled by administrator",
+        reason=(
+            "Live copying enabled by administrator"
+            if has_live_account
+            else "Demo copying enabled by administrator"
+        ),
         actor=user.email,
     )
     state.execution_mode = (

@@ -10,11 +10,17 @@
     <div class="flex flex-wrap gap-3">
         <a class="button-secondary" href="/copy-test">Run copy test</a>
         {% if state.global_pause %}
+        {% if has_live_account and not live_execution_permitted %}
+        <div class="rounded-xl border border-red/50 bg-red/10 px-4 py-3 text-sm text-red">
+            Live execution locked. Set SAFE_MODE=false and LIVE_EXECUTION_ENABLED=true, then restart.
+        </div>
+        {% else %}
         <form class="flex gap-2" method="post" action="/system/unpause" hx-boost="false">
             <input type="hidden" name="csrf" value="{{ csrf_token }}">
-            <input class="field w-32" name="confirmation" placeholder="Type ENABLE" required>
-            <button class="button-primary" type="submit">Enable copying</button>
+            <input class="field {% if has_live_account %}w-40{% else %}w-32{% endif %}" name="confirmation" placeholder="Type {{ 'ENABLE LIVE' if has_live_account else 'ENABLE' }}" required>
+            <button class="{{ 'button-danger' if has_live_account else 'button-primary' }}" type="submit">{{ 'Enable live copying' if has_live_account else 'Enable demo copying' }}</button>
         </form>
+        {% endif %}
         {% else %}
         <form method="post" action="/system/pause" hx-boost="false">
             <input type="hidden" name="csrf" value="{{ csrf_token }}">

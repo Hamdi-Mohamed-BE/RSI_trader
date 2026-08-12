@@ -8,7 +8,7 @@ from trade_copier.domain.enums import ExecutionMode
 from trade_copier.models import Account, MasterTradeState
 from trade_copier.services.accounts import ensure_system_state
 from trade_copier.services.demo import seed_demo
-from trade_copier.services.runtime_state import recover_enabled_demo_mode
+from trade_copier.services.runtime_state import recover_enabled_execution_mode
 
 
 def _master_state(master: Account) -> MasterTradeState:
@@ -44,7 +44,14 @@ def test_demo_recovery_baselines_existing_unlinked_master_trades(
         system.global_pause = False
         session.commit()
 
-        assert recover_enabled_demo_mode(session, snapshot_reconciled=True) is True
+        assert (
+            recover_enabled_execution_mode(
+                session,
+                live_execution_permitted=False,
+                snapshot_reconciled=True,
+            )
+            is ExecutionMode.DEMO
+        )
 
         assert system.execution_mode == ExecutionMode.DEMO.value
         assert system.global_pause is False
@@ -67,8 +74,25 @@ def test_demo_recovery_does_not_enable_when_an_active_account_is_live(
         system.global_pause = False
         session.commit()
 
-        assert recover_enabled_demo_mode(session, snapshot_reconciled=True) is False
+        assert (
+            recover_enabled_execution_mode(
+                session,
+                live_execution_permitted=False,
+                snapshot_reconciled=True,
+            )
+            is None
+        )
         assert system.execution_mode == ExecutionMode.MONITOR.value
+
+        assert (
+            recover_enabled_execution_mode(
+                session,
+                live_execution_permitted=True,
+                snapshot_reconciled=True,
+            )
+            is ExecutionMode.LIVE
+        )
+        assert system.execution_mode == ExecutionMode.LIVE.value
 
 
 def test_demo_recovery_requires_a_completed_master_snapshot(
@@ -83,5 +107,11 @@ def test_demo_recovery_requires_a_completed_master_snapshot(
         system.global_pause = False
         session.commit()
 
-        assert recover_enabled_demo_mode(session) is False
+        assert (
+            recover_enabled_execution_mode(
+                session,
+                live_execution_permitted=True,
+            )
+            is None
+        )
         assert system.execution_mode == ExecutionMode.MONITOR.value

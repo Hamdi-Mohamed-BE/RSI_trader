@@ -16,5 +16,6 @@ def page_context(request: Request, **values: Any) -> dict[str, Any]:
         "csrf_token": csrf_token(request),
         "app_name": request.app.state.settings.app_name,
         "safe_mode": request.app.state.settings.safe_mode,
+        "live_execution_permitted": request.app.state.settings.execution_is_permitted,
         **values,
     }

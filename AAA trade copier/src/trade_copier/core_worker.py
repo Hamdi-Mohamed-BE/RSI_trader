@@ -15,7 +15,7 @@ from .services.copier import CopierCore
 from .services.credentials import build_credential_vault
 from .services.mt5_discovery import detect_and_import_running_accounts
 from .services.mt5_executor import Mt5FollowerExecutor, PythonMt5Transport
-from .services.runtime_state import recover_enabled_demo_mode
+from .services.runtime_state import recover_enabled_execution_mode
 from .services.terminals import TerminalManager
 from .transport.base import FollowerTransport
 from .transport.protocol import ProtocolError, decode_message
@@ -133,10 +133,15 @@ async def continuous_copy_loop(
         try:
             with SessionLocal() as session:
                 await copier.poll_once(session)
-                recovered = recover_enabled_demo_mode(session, snapshot_reconciled=True)
-                if recovered:
+                recovered_mode = recover_enabled_execution_mode(
+                    session,
+                    live_execution_permitted=settings.execution_is_permitted,
+                    snapshot_reconciled=True,
+                )
+                if recovered_mode is not None:
                     logger.warning(
-                        "Recovered enabled demo execution after baselining the master snapshot"
+                        "Recovered enabled %s execution after baselining the master snapshot",
+                        recovered_mode.value,
                     )
         except (ArithmeticError, OSError, RuntimeError, TypeError, ValueError) as exc:
             logger.warning("Continuous copier poll failed: %s", exc)

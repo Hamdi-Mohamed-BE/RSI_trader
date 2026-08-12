@@ -15,7 +15,7 @@ from trade_copier.services.continuous_copier import (
     ObservedMasterTrade,
 )
 from trade_copier.services.demo import seed_demo
-from trade_copier.services.runtime_state import recover_enabled_demo_mode
+from trade_copier.services.runtime_state import recover_enabled_execution_mode
 
 
 class SequenceReader:
@@ -212,7 +212,14 @@ async def test_baseline_trade_stays_ignored_after_demo_mode_is_enabled(
         session.commit()
 
         await copier.poll_once(session)
-        assert recover_enabled_demo_mode(session, snapshot_reconciled=True) is True
+        assert (
+            recover_enabled_execution_mode(
+                session,
+                live_execution_permitted=False,
+                snapshot_reconciled=True,
+            )
+            is ExecutionMode.DEMO
+        )
         await copier.poll_once(session)
 
         assert [message.source_order_id for message in core.messages] == [

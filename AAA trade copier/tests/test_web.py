@@ -2,7 +2,10 @@ from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, sessionmaker
 
+from trade_copier.domain.enums import ExecutionMode
 from trade_copier.models import Account, RiskProfile
+from trade_copier.services.accounts import ensure_system_state
+from trade_copier.services.demo import seed_demo
 
 from .conftest import extract_csrf
 
@@ -146,3 +149,72 @@ def test_csrf_is_required_for_state_change(logged_in_client: TestClient) -> None
         follow_redirects=False,
     )
     assert response.status_code == 403
+
+
+def test_live_copying_is_locked_when_environment_gates_are_closed(
+    logged_in_client: TestClient,
+    session_factory: sessionmaker[Session],
+) -> None:
+    with session_factory() as session:
+        seed_demo(session)
+        follower = session.scalar(select(Account).where(Account.role == "follower"))
+        assert follower is not None
+        follower.trade_mode = "live"
+        system = ensure_system_state(session)
+        system.global_pause = True
+        system.execution_mode = ExecutionMode.MONITOR.value
+        session.commit()
+
+    page = logged_in_client.get("/")
+    assert "Live execution locked" in page.text
+    response = logged_in_client.post(
+        "/system/unpause",
+        data={"csrf": extract_csrf(page.text), "confirmation": "ENABLE LIVE"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert "safety+gates" in response.headers["location"]
+    with session_factory() as session:
+        system = ensure_system_state(session)
+        assert system.global_pause is True
+        assert system.execution_mode == ExecutionMode.MONITOR.value
+
+
+def test_live_copying_requires_strong_confirmation_and_opens_live_mode(
+    logged_in_client: TestClient,
+    session_factory: sessionmaker[Session],
+) -> None:
+    logged_in_client.app.state.settings.safe_mode = False
+    logged_in_client.app.state.settings.live_execution_enabled = True
+    with session_factory() as session:
+        seed_demo(session)
+        follower = session.scalar(select(Account).where(Account.role == "follower"))
+        assert follower is not None
+        follower.trade_mode = "live"
+        system = ensure_system_state(session)
+        system.global_pause = True
+        system.execution_mode = ExecutionMode.MONITOR.value
+        session.commit()
+
+    page = logged_in_client.get("/")
+    assert "Type ENABLE LIVE" in page.text
+    rejected = logged_in_client.post(
+        "/system/unpause",
+        data={"csrf": extract_csrf(page.text), "confirmation": "ENABLE"},
+        follow_redirects=False,
+    )
+    assert rejected.status_code == 303
+    assert "Type+ENABLE+LIVE" in rejected.headers["location"]
+
+    page = logged_in_client.get("/")
+    enabled = logged_in_client.post(
+        "/system/unpause",
+        data={"csrf": extract_csrf(page.text), "confirmation": "ENABLE LIVE"},
+        follow_redirects=False,
+    )
+    assert enabled.status_code == 303
+    with session_factory() as session:
+        system = ensure_system_state(session)
+        assert system.global_pause is False
+        assert system.execution_mode == ExecutionMode.LIVE.value
+        assert system.reason == "Live copying enabled by administrator"
