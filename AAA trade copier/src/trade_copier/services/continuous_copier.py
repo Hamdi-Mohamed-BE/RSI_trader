@@ -11,7 +11,15 @@ from uuid import UUID, uuid4
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from ..domain.enums import AccountRole, AccountState, JobStatus, OrderType, Side, TradeAction
+from ..domain.enums import (
+    AccountRole,
+    AccountState,
+    ExecutionMode,
+    JobStatus,
+    OrderType,
+    Side,
+    TradeAction,
+)
 from ..domain.messages import SourceTradeMessage
 from ..models import Account, MasterTradeState, SourceTradeEvent, TradeLink
 from .accounts import ensure_system_state
@@ -245,6 +253,7 @@ class ContinuousTradeCopier:
 
     @staticmethod
     def _update_state(state: MasterTradeState, trade: ObservedMasterTrade) -> None:
+        preserve_baseline = state.status == "baseline"
         state.broker_ticket = trade.broker_ticket
         state.symbol = trade.symbol
         state.side = trade.side.value
@@ -255,8 +264,15 @@ class ContinuousTradeCopier:
         state.take_profit = trade.take_profit
         state.expiration_at = trade.expiration_at
         state.fingerprint = trade.fingerprint
-        state.status = "active"
+        state.status = "baseline" if preserve_baseline else "active"
         state.last_seen_at = datetime.now(UTC)
+
+    @staticmethod
+    def _entry_copying_enabled(global_pause: bool, execution_mode: str) -> bool:
+        return not global_pause and execution_mode in {
+            ExecutionMode.DEMO.value,
+            ExecutionMode.LIVE.value,
+        }
 
     async def _dispatch(
         self,
@@ -331,7 +347,7 @@ class ContinuousTradeCopier:
         states = session.scalars(
             select(MasterTradeState).where(
                 MasterTradeState.master_account_id == master.id,
-                MasterTradeState.status == "active",
+                MasterTradeState.status.in_(("active", "baseline")),
             )
         ).all()
         states_by_key = {(state.source_type, state.source_ticket): state for state in states}
@@ -351,6 +367,12 @@ class ContinuousTradeCopier:
         # First obey closes and cancellations. They are processed even when new entries are paused.
         for key, state in list(states_by_key.items()):
             if key in observed_by_key:
+                continue
+            if state.status == "baseline":
+                state.status = "closed" if state.source_type == "position" else "cancelled"
+                state.last_dispatch_failed = False
+                session.add(state)
+                session.commit()
                 continue
             if not self._retry_ready(state):
                 continue
@@ -379,6 +401,10 @@ class ContinuousTradeCopier:
         for key, trade in observed_by_key.items():
             current_state = states_by_key.get(key)
             if current_state is None:
+                entry_enabled = self._entry_copying_enabled(
+                    system.global_pause,
+                    system.execution_mode,
+                )
                 current_state = MasterTradeState(
                     master_account_id=master.id,
                     source_type=trade.source_type,
@@ -393,10 +419,14 @@ class ContinuousTradeCopier:
                     take_profit=trade.take_profit,
                     expiration_at=trade.expiration_at,
                     fingerprint=trade.fingerprint,
+                    status="active" if entry_enabled else "baseline",
                     last_seen_at=datetime.now(UTC),
                 )
                 session.add(current_state)
                 session.flush()
+                if not entry_enabled:
+                    session.commit()
+                    continue
                 action = (
                     TradeAction.MARKET_OPEN
                     if trade.source_type == "position"
@@ -409,6 +439,13 @@ class ContinuousTradeCopier:
                     action=action,
                 )
                 await self._dispatch(session, master, message, current_state)
+                continue
+
+            if current_state.status == "baseline":
+                self._update_state(current_state, trade)
+                current_state.last_dispatch_failed = False
+                session.add(current_state)
+                session.commit()
                 continue
 
             previous_volume = Decimal(current_state.volume)
@@ -449,7 +486,7 @@ class ContinuousTradeCopier:
             session.commit()
 
         # Retry an active trade only when at least one enabled follower still has no link.
-        if system.global_pause:
+        if not self._entry_copying_enabled(system.global_pause, system.execution_mode):
             return
         follower_ids = set(
             session.scalars(

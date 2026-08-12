@@ -7,13 +7,15 @@ from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
-from trade_copier.domain.enums import OrderType, Side, TradeAction
+from trade_copier.domain.enums import ExecutionMode, OrderType, Side, TradeAction
 from trade_copier.models import Account, MasterTradeState, TradeLink
+from trade_copier.services.accounts import ensure_system_state
 from trade_copier.services.continuous_copier import (
     ContinuousTradeCopier,
     ObservedMasterTrade,
 )
 from trade_copier.services.demo import seed_demo
+from trade_copier.services.runtime_state import recover_enabled_demo_mode
 
 
 class SequenceReader:
@@ -152,3 +154,67 @@ async def test_failed_close_keeps_mapping_active_for_a_bounded_retry(
         assert [message.action for message in core.messages] == [TradeAction.CLOSE]
         assert state.status == "active"
         assert state.last_dispatch_failed is True
+
+
+@pytest.mark.asyncio
+async def test_monitor_mode_baselines_master_trade_without_dispatching(
+    client: TestClient,
+    session_factory: sessionmaker[Session],
+) -> None:
+    del client
+    core = RecordingCore()
+    copier = ContinuousTradeCopier(
+        core=core,  # type: ignore[arg-type]
+        reader=SequenceReader([[observed()], [observed()]]),  # type: ignore[arg-type]
+        terminal_manager=NoopTerminalManager(),  # type: ignore[arg-type]
+    )
+    with session_factory() as session:
+        seed_demo(session)
+        system = ensure_system_state(session)
+        system.execution_mode = ExecutionMode.MONITOR.value
+        system.global_pause = False
+        session.commit()
+
+        await copier.poll_once(session)
+        await copier.poll_once(session)
+
+        state = session.scalar(select(MasterTradeState))
+        assert state is not None
+        assert state.status == "baseline"
+        assert core.messages == []
+
+
+@pytest.mark.asyncio
+async def test_baseline_trade_stays_ignored_after_demo_mode_is_enabled(
+    client: TestClient,
+    session_factory: sessionmaker[Session],
+) -> None:
+    del client
+    second_trade = observed(stop_loss="2380")
+    second_trade = ObservedMasterTrade(
+        **{
+            **second_trade.__dict__,
+            "source_ticket": "MASTER-POSITION-2",
+            "broker_ticket": "7002",
+        }
+    )
+    core = RecordingCore()
+    copier = ContinuousTradeCopier(
+        core=core,  # type: ignore[arg-type]
+        reader=SequenceReader([[observed()], [observed(), second_trade]]),  # type: ignore[arg-type]
+        terminal_manager=NoopTerminalManager(),  # type: ignore[arg-type]
+    )
+    with session_factory() as session:
+        seed_demo(session)
+        system = ensure_system_state(session)
+        system.execution_mode = ExecutionMode.MONITOR.value
+        system.global_pause = False
+        session.commit()
+
+        await copier.poll_once(session)
+        assert recover_enabled_demo_mode(session, snapshot_reconciled=True) is True
+        await copier.poll_once(session)
+
+        assert [message.source_order_id for message in core.messages] == [
+            "MASTER-POSITION-2"
+        ]
