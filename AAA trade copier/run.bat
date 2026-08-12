@@ -6,6 +6,8 @@ rem Bind the web dashboard to every network interface for VPS access.
 set "WEB_HOST=0.0.0.0"
 set "DEMO_MODE=false"
 set "AUTO_DETECT_MT5=true"
+set "CONTINUOUS_COPY_ENABLED=true"
+set "CONTINUOUS_COPY_POLL_MS=1000"
 set "AAA_DATABASE_PATH=%CD:\=/%/storage/trade_copier.db"
 set "DATABASE_URL=sqlite:///%AAA_DATABASE_PATH%"
 

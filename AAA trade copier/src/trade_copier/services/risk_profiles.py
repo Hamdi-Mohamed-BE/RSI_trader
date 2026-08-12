@@ -8,6 +8,7 @@ from ..models import Account, RiskProfile
 from .audit import record_audit
 
 DEFAULT_RISK_PROFILE_NAME = "Automatic 1% per trade"
+LEGACY_DEFAULT_RISK_PROFILE_NAME = "Exact master copy"
 
 
 def ensure_default_risk_profile(
@@ -20,6 +21,14 @@ def ensure_default_risk_profile(
     profile = session.scalar(
         select(RiskProfile).where(RiskProfile.name == DEFAULT_RISK_PROFILE_NAME)
     )
+    legacy_profile = session.scalar(
+        select(RiskProfile).where(RiskProfile.name == LEGACY_DEFAULT_RISK_PROFILE_NAME)
+    )
+    migrated = False
+    if profile is None and legacy_profile is not None:
+        profile = legacy_profile
+        profile.name = DEFAULT_RISK_PROFILE_NAME
+        migrated = True
     created = profile is None
     if profile is None:
         profile = RiskProfile(name=DEFAULT_RISK_PROFILE_NAME)
@@ -37,21 +46,43 @@ def ensure_default_risk_profile(
     profile.max_spread_points = 10_000
     profile.max_slippage_points = 30
     profile.max_open_positions = 1_000
-    profile.reject_without_stop = True
+    profile.reject_without_stop = False
     profile.enabled = True
 
-    if created:
+    if legacy_profile is not None and legacy_profile.id != profile.id:
+        legacy_accounts = session.scalars(
+            select(Account).where(Account.risk_profile_id == legacy_profile.id)
+        ).all()
+        for account in legacy_accounts:
+            account.risk_profile_id = profile.id
+            session.add(account)
+        migrated = migrated or bool(legacy_accounts)
+
+    if created or migrated:
         record_audit(
             session,
             actor=actor,
-            action="risk_profile.default_created",
+            action=(
+                "risk_profile.default_created"
+                if created
+                else "risk_profile.default_migrated"
+            ),
             target_type="risk_profile",
             target_id=profile.id,
-            message="Created the automatic 1% risk profile with daily caps disabled.",
+            message=(
+                "Configured 1% stop-risk sizing with exact master lots when no SL exists."
+            ),
             details={
-                "risk_percent": "1",
+                "volume_mode_with_stop": "one_percent_stop_risk",
+                "volume_mode_without_stop": "exact_master_lots",
                 "daily_loss_cap": "disabled",
                 "daily_profit_cap": "disabled",
+                "stop_loss_required": False,
+                "legacy_profile_id": (
+                    legacy_profile.id
+                    if legacy_profile is not None and legacy_profile.id != profile.id
+                    else ""
+                ),
             },
         )
 
@@ -74,7 +105,7 @@ def ensure_default_risk_profile(
                 target_type="risk_profile",
                 target_id=profile.id,
                 message=(
-                    f"Assigned the automatic 1% profile to {len(assigned_accounts)} "
+                    f"Assigned automatic hybrid risk to {len(assigned_accounts)} "
                     "follower account(s)."
                 ),
                 details={"account_ids": assigned_accounts},

@@ -280,6 +280,25 @@ class CopierCore:
                     )
                     volume = decision.volume
                     cash_risk = decision.cash_risk
+                    if decision.sizing_method == "mirror_lots_no_stop":
+                        record_audit(
+                            session,
+                            actor="copier-core",
+                            action="risk.no_stop_mirror",
+                            target_type="account",
+                            target_id=follower.id,
+                            severity=AuditSeverity.WARNING,
+                            message=(
+                                f"{follower.display_name}: no master SL, so master volume "
+                                f"{message.volume} is mirrored as follower volume {volume}."
+                            ),
+                            details={
+                                "master_volume": str(message.volume),
+                                "follower_volume": str(volume),
+                                "sizing_method": "mirror_lots_no_stop",
+                                "symbol": symbol,
+                            },
+                        )
                 else:
                     assert link is not None
                     symbol = link.follower_symbol

@@ -5,7 +5,7 @@ from urllib.parse import quote_plus
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 from starlette.responses import Response
 
@@ -99,6 +99,19 @@ def dashboard(request: Request, session: Annotated[Session, Depends(request_sess
         )
         or 0
     )
+    watcher_events = session.scalars(
+        select(AuditEvent)
+        .where(
+            or_(
+                AuditEvent.action.like("master.watcher.%"),
+                AuditEvent.action.like("master.change.%"),
+                AuditEvent.action.like("copier.dispatch.%"),
+                AuditEvent.action.like("risk.no_stop_mirror%"),
+            )
+        )
+        .order_by(AuditEvent.created_at.desc())
+        .limit(12)
+    ).all()
     return templates.TemplateResponse(
         request,
         "dashboard.html",
@@ -113,6 +126,7 @@ def dashboard(request: Request, session: Annotated[Session, Depends(request_sess
             filled_total=filled_total,
             healthy_count=sum(account.health == "healthy" for account in accounts),
             has_live_account=has_live_account,
+            watcher_events=watcher_events,
         ),
     )
 

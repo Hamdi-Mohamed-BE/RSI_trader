@@ -47,6 +47,23 @@ def test_stop_risk_calculates_follower_volume() -> None:
     assert decision.cash_risk == Decimal("100.00")
 
 
+def test_mirror_lots_copies_master_volume_without_stop() -> None:
+    risk_profile = profile()
+    risk_profile.mode = RiskMode.MIRROR_LOTS.value
+    decision = RiskCalculator().calculate_volume(
+        snapshot=snapshot(equity="5000"),
+        profile=risk_profile,
+        master_volume=Decimal("0.10"),
+        master_equity=Decimal("10000"),
+        entry_price=Decimal("215"),
+        stop_loss=None,
+    )
+
+    assert decision.volume == Decimal("0.10")
+    assert decision.cash_risk == Decimal("0.00")
+    assert decision.sizing_method == "mirror_lots"
+
+
 def test_volume_is_floored_not_rounded_up() -> None:
     decision = RiskCalculator().calculate_volume(
         snapshot=snapshot(equity="12345"),
@@ -69,4 +86,50 @@ def test_minimum_volume_that_exceeds_risk_is_rejected() -> None:
             master_equity=Decimal("100000"),
             entry_price=Decimal("2400"),
             stop_loss=Decimal("2390"),
+        )
+
+
+def test_no_stop_entry_mirrors_master_lots_when_enabled() -> None:
+    risk_profile = profile()
+    risk_profile.reject_without_stop = False
+    decision = RiskCalculator().calculate_volume(
+        snapshot=snapshot(equity="5000"),
+        profile=risk_profile,
+        master_volume=Decimal("0.10"),
+        master_equity=Decimal("10000"),
+        entry_price=Decimal("215"),
+        stop_loss=None,
+    )
+
+    assert decision.volume == Decimal("0.10")
+    assert decision.cash_risk == Decimal("0.00")
+    assert decision.sizing_method == "mirror_lots_no_stop"
+
+
+def test_no_stop_fallback_uses_broker_minimum_for_very_small_trade() -> None:
+    risk_profile = profile()
+    risk_profile.reject_without_stop = False
+    decision = RiskCalculator().calculate_volume(
+        snapshot=snapshot(equity="1000"),
+        profile=risk_profile,
+        master_volume=Decimal("0.01"),
+        master_equity=Decimal("10000"),
+        entry_price=Decimal("215"),
+        stop_loss=None,
+    )
+
+    assert decision.volume == Decimal("0.01")
+
+
+def test_no_stop_entry_remains_rejected_when_profile_requires_stop() -> None:
+    risk_profile = profile()
+    risk_profile.reject_without_stop = True
+    with pytest.raises(RiskRejectedError, match="no stop loss"):
+        RiskCalculator().calculate_volume(
+            snapshot=snapshot(),
+            profile=risk_profile,
+            master_volume=Decimal("0.10"),
+            master_equity=Decimal("10000"),
+            entry_price=Decimal("215"),
+            stop_loss=None,
         )

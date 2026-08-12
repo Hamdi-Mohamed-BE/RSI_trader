@@ -6,10 +6,11 @@ from sqlalchemy import select
 
 from .config import Settings, get_settings
 from .database import SessionLocal, create_schema
-from .domain.enums import AccountRole, AccountState, TerminalHealth
+from .domain.enums import AccountRole, AccountState, AuditSeverity, TerminalHealth
 from .domain.messages import SourceTradeMessage
 from .models import Account
 from .services.accounts import ensure_system_state
+from .services.audit import record_audit
 from .services.continuous_copier import ContinuousTradeCopier, MasterSnapshotReader
 from .services.copier import CopierCore
 from .services.credentials import build_credential_vault
@@ -27,6 +28,18 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
 )
 logger = logging.getLogger("aaa.copier_core")
+
+
+def configure_file_logging(settings: Settings) -> None:
+    log_path = (settings.storage_dir / "copier-core.log").resolve()
+    for handler in logging.getLogger().handlers:
+        if isinstance(handler, logging.FileHandler) and handler.baseFilename == str(log_path):
+            return
+    file_handler = logging.FileHandler(log_path, encoding="utf-8")
+    file_handler.setFormatter(
+        logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s")
+    )
+    logging.getLogger().addHandler(file_handler)
 
 
 def mark_stale_accounts(settings: Settings) -> None:
@@ -129,10 +142,53 @@ async def continuous_copy_loop(
     settings: Settings,
     copier: ContinuousTradeCopier,
 ) -> None:
+    last_problem = ""
+    watcher_started = False
     while True:
         try:
             with SessionLocal() as session:
-                await copier.poll_once(session)
+                poll_result = await copier.poll_once(session)
+                if poll_result is None:
+                    problem = (
+                        "Master watcher is idle because no active master account is available."
+                    )
+                    if problem != last_problem:
+                        logger.warning(problem)
+                        record_audit(
+                            session,
+                            actor="master-watcher",
+                            action="master.watcher.idle",
+                            severity=AuditSeverity.WARNING,
+                            message=problem,
+                        )
+                        session.commit()
+                    last_problem = problem
+                    await asyncio.sleep(settings.continuous_copy_poll_ms / 1000)
+                    continue
+                if not watcher_started or last_problem:
+                    action = (
+                        "master.watcher.recovered"
+                        if last_problem
+                        else "master.watcher.started"
+                    )
+                    message = (
+                        f"Watching master {poll_result.master_name} ({poll_result.master_login}) "
+                        f"every {settings.continuous_copy_poll_ms} ms; snapshot contains "
+                        f"{poll_result.position_count} positions and "
+                        f"{poll_result.pending_count} pending orders."
+                    )
+                    logger.info(message)
+                    record_audit(
+                        session,
+                        actor="master-watcher",
+                        action=action,
+                        target_type="account",
+                        target_id=poll_result.master_id,
+                        message=message,
+                    )
+                    session.commit()
+                    watcher_started = True
+                    last_problem = ""
                 recovered_mode = recover_enabled_execution_mode(
                     session,
                     live_execution_permitted=settings.execution_is_permitted,
@@ -144,12 +200,25 @@ async def continuous_copy_loop(
                         recovered_mode.value,
                     )
         except (ArithmeticError, OSError, RuntimeError, TypeError, ValueError) as exc:
-            logger.warning("Continuous copier poll failed: %s", exc)
+            problem = str(exc) or type(exc).__name__
+            logger.warning("Continuous copier poll failed: %s", problem)
+            if problem != last_problem:
+                with SessionLocal() as error_session:
+                    record_audit(
+                        error_session,
+                        actor="master-watcher",
+                        action="master.watcher.failed",
+                        severity=AuditSeverity.WARNING,
+                        message=f"Master watcher failed: {problem}",
+                    )
+                    error_session.commit()
+            last_problem = problem
         await asyncio.sleep(settings.continuous_copy_poll_ms / 1000)
 
 
 async def run() -> None:
     settings = get_settings()
+    configure_file_logging(settings)
     create_schema()
     with SessionLocal() as session:
         state = ensure_system_state(session)

@@ -49,6 +49,7 @@ class OrderType(StrEnum):
 
 
 class RiskMode(StrEnum):
+    MIRROR_LOTS = "mirror_lots"
     STOP_PERCENT = "stop_percent"
     FIXED_CASH = "fixed_cash"
     EQUITY_PROPORTIONAL = "equity_proportional"

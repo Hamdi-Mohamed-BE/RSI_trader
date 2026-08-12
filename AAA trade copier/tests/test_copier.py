@@ -7,9 +7,9 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session, sessionmaker
 
 from trade_copier.config import Settings
-from trade_copier.domain.enums import Side, TradeAction
+from trade_copier.domain.enums import RiskMode, Side, TradeAction
 from trade_copier.domain.messages import SourceTradeMessage
-from trade_copier.models import Account, CopyJob, SourceTradeEvent, TradeLink
+from trade_copier.models import Account, CopyJob, RiskProfile, SourceTradeEvent, TradeLink
 from trade_copier.services.copier import CopierCore
 from trade_copier.services.demo import seed_demo
 from trade_copier.transport.base import TransportRouter
@@ -57,6 +57,58 @@ async def test_duplicate_source_event_never_dispatches_twice(
         assert session.scalar(select(func.count(SourceTradeEvent.id))) == 1
         assert session.scalar(select(func.count(CopyJob.id))) == 2
         assert sum(len(transport.commands) for transport in transports.values()) == 2
+
+
+@pytest.mark.asyncio
+async def test_exact_copy_opens_phone_style_trade_without_stop_loss(
+    client: TestClient,
+    settings: Settings,
+    session_factory: sessionmaker[Session],
+) -> None:
+    del client
+    with session_factory() as session:
+        seed_demo(session)
+        master = session.scalar(select(Account).where(Account.is_master.is_(True)))
+        followers = session.scalars(
+            select(Account).where(Account.role == "follower").order_by(Account.display_name)
+        ).all()
+        assert master is not None and followers
+        for follower in followers:
+            profile = session.get(RiskProfile, follower.risk_profile_id)
+            assert profile is not None
+            profile.mode = RiskMode.STOP_PERCENT.value
+            profile.reject_without_stop = False
+        session.commit()
+
+        transports = {follower.id: DemoFollowerTransport() for follower in followers}
+        router = TransportRouter(RejectingTransport())
+        for account_id, transport in transports.items():
+            router.register(account_id, transport)
+        core = CopierCore(settings=settings, transport=router)
+        jobs = await core.process(
+            session,
+            SourceTradeMessage(
+                sequence=43,
+                source_account_id=UUID(master.id),
+                source_order_id="PHONE-ORDER",
+                source_position_id="PHONE-POSITION",
+                action=TradeAction.MARKET_OPEN,
+                side=Side.BUY,
+                symbol="XAUUSD",
+                volume=Decimal("0.10"),
+                entry_price=Decimal("4400"),
+                stop_loss=None,
+                take_profit=None,
+            ),
+        )
+
+        assert all(job.status == "filled" for job in jobs)
+        assert all(
+            transport.commands[0].volume == Decimal("0.10")
+            and transport.commands[0].stop_loss is None
+            and transport.commands[0].take_profit is None
+            for transport in transports.values()
+        )
 
 
 @pytest.mark.asyncio

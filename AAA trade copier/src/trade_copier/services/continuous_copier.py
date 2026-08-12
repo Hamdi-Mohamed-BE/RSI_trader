@@ -1,4 +1,5 @@
 import importlib
+import logging
 import os
 from contextlib import suppress
 from dataclasses import dataclass
@@ -23,9 +24,12 @@ from ..domain.enums import (
 from ..domain.messages import SourceTradeMessage
 from ..models import Account, MasterTradeState, SourceTradeEvent, TradeLink
 from .accounts import ensure_system_state
+from .audit import record_audit
 from .copier import CopierCore
 from .credentials import CredentialVault
 from .terminals import TerminalManager
+
+logger = logging.getLogger("aaa.master_watcher")
 
 
 @dataclass(frozen=True)
@@ -58,6 +62,15 @@ class ObservedMasterTrade:
             self.expiration_at.isoformat() if self.expiration_at else "",
         )
         return "|".join(values)
+
+
+@dataclass(frozen=True)
+class MasterPollResult:
+    master_id: str
+    master_name: str
+    master_login: str
+    position_count: int
+    pending_count: int
 
 
 class MasterSnapshotReader:
@@ -200,6 +213,45 @@ class ContinuousTradeCopier:
         return self._sequence
 
     @staticmethod
+    def _record_change(
+        session: Session,
+        master: Account,
+        *,
+        action: str,
+        trade: MasterTradeState | ObservedMasterTrade,
+        note: str = "",
+    ) -> None:
+        message = (
+            f"Detected {action} on master {master.display_name}: "
+            f"{trade.side} {trade.symbol} ticket {trade.source_ticket}, "
+            f"volume {trade.volume}, SL {trade.stop_loss or 'none'}, "
+            f"TP {trade.take_profit or 'none'}."
+        )
+        if note:
+            message = f"{message} {note}"
+        logger.info(message)
+        record_audit(
+            session,
+            actor="master-watcher",
+            action=f"master.change.{action}",
+            target_type="account",
+            target_id=master.id,
+            message=message,
+            details={
+                "source_type": trade.source_type,
+                "source_ticket": trade.source_ticket,
+                "broker_ticket": trade.broker_ticket,
+                "symbol": trade.symbol,
+                "side": str(trade.side),
+                "volume": str(trade.volume),
+                "entry_price": str(trade.entry_price),
+                "stop_loss": str(trade.stop_loss or ""),
+                "take_profit": str(trade.take_profit or ""),
+            },
+        )
+        session.commit()
+
+    @staticmethod
     def _message(
         state_or_trade: MasterTradeState | ObservedMasterTrade,
         *,
@@ -290,11 +342,60 @@ class ContinuousTradeCopier:
         state.last_dispatched_at = datetime.now(UTC)
         session.add(state)
         session.commit()
-        completed = all(
+        completed = bool(jobs) and all(
             job.status in {JobStatus.FILLED.value, JobStatus.ACKNOWLEDGED.value}
             or job.rejection_reason == "This master trade is already linked to the follower."
             for job in jobs
         )
+        if not jobs:
+            result_message = (
+                f"Master {message.action.value} ticket {message.source_order_id} produced no "
+                "follower jobs because no eligible active followers were found."
+            )
+            logger.warning(result_message)
+            record_audit(
+                session,
+                actor="master-watcher",
+                action="copier.dispatch.no_followers",
+                target_type="account",
+                target_id=master.id,
+                message=result_message,
+            )
+        for job in jobs:
+            follower_id = str(getattr(job, "follower_account_id", "") or "")
+            follower = session.get(Account, follower_id) if follower_id else None
+            follower_name = (
+                follower.display_name if follower is not None else follower_id or "unknown follower"
+            )
+            reason = str(getattr(job, "rejection_reason", "") or "").strip()
+            job_status = str(getattr(job, "status", JobStatus.FAILED.value))
+            result_message = (
+                f"Copy {message.action.value} for master ticket {message.source_order_id} -> "
+                f"{follower_name}: {job_status}"
+            )
+            if reason:
+                result_message = f"{result_message}. {reason}"
+            log_method = logger.info if job_status in {
+                JobStatus.FILLED.value,
+                JobStatus.ACKNOWLEDGED.value,
+            } else logger.warning
+            log_method(result_message)
+            record_audit(
+                session,
+                actor="master-watcher",
+                action=f"copier.dispatch.{job_status}",
+                target_type="account",
+                target_id=follower_id or master.id,
+                message=result_message,
+                details={
+                    "source_order_id": message.source_order_id,
+                    "source_position_id": message.source_position_id or "",
+                    "symbol": str(getattr(job, "follower_symbol", message.symbol)),
+                    "requested_volume": str(getattr(job, "requested_volume", "")),
+                    "status": job_status,
+                    "reason": reason,
+                },
+            )
         state.last_dispatch_failed = not completed
         session.add(state)
         session.commit()
@@ -335,14 +436,21 @@ class ContinuousTradeCopier:
         session.add(pending_state)
         session.commit()
 
-    async def poll_once(self, session: Session) -> None:
+    async def poll_once(self, session: Session) -> MasterPollResult | None:
         system = ensure_system_state(session)
         if not system.active_master_account_id:
-            return
+            return None
         master = session.get(Account, system.active_master_account_id)
         if master is None or not master.is_master or master.state != AccountState.ACTIVE.value:
-            return
+            return None
         observed = self.reader.read(master)
+        poll_result = MasterPollResult(
+            master_id=master.id,
+            master_name=master.display_name,
+            master_login=master.login,
+            position_count=sum(trade.source_type == "position" for trade in observed),
+            pending_count=sum(trade.source_type == "pending" for trade in observed),
+        )
         observed_by_key = {(trade.source_type, trade.source_ticket): trade for trade in observed}
         states = session.scalars(
             select(MasterTradeState).where(
@@ -360,6 +468,12 @@ class ContinuousTradeCopier:
             pending_state = states_by_key.get(("pending", position.source_ticket))
             if pending_state is None:
                 continue
+            self._record_change(
+                session,
+                master,
+                action="pending_filled",
+                trade=position,
+            )
             self._transition_pending_link(session, master, pending_state, position)
             states_by_key.pop(("pending", position.source_ticket))
             states_by_key[("position", position.source_ticket)] = pending_state
@@ -377,6 +491,12 @@ class ContinuousTradeCopier:
             if not self._retry_ready(state):
                 continue
             action = TradeAction.CLOSE if state.source_type == "position" else TradeAction.CANCEL
+            self._record_change(
+                session,
+                master,
+                action=action.value,
+                trade=state,
+            )
             message = self._message(
                 state,
                 master=master,
@@ -425,12 +545,28 @@ class ContinuousTradeCopier:
                 session.add(current_state)
                 session.flush()
                 if not entry_enabled:
+                    self._record_change(
+                        session,
+                        master,
+                        action="baselined",
+                        trade=trade,
+                        note=(
+                            f"Not copied because execution mode is {system.execution_mode} "
+                            f"and pause is {system.global_pause}."
+                        ),
+                    )
                     session.commit()
                     continue
                 action = (
                     TradeAction.MARKET_OPEN
                     if trade.source_type == "position"
                     else TradeAction.PENDING_CREATE
+                )
+                self._record_change(
+                    session,
+                    master,
+                    action=action.value,
+                    trade=trade,
                 )
                 message = self._message(
                     trade,
@@ -457,6 +593,13 @@ class ContinuousTradeCopier:
                 session.commit()
                 continue
             if trade.source_type == "position" and trade.volume < previous_volume:
+                self._record_change(
+                    session,
+                    master,
+                    action=TradeAction.PARTIAL_CLOSE.value,
+                    trade=trade,
+                    note=f"Previous volume was {previous_volume}.",
+                )
                 message = self._message(
                     trade,
                     master=master,
@@ -467,6 +610,12 @@ class ContinuousTradeCopier:
                 )
                 completed = await self._dispatch(session, master, message, current_state)
             elif trade.fingerprint != current_state.fingerprint:
+                self._record_change(
+                    session,
+                    master,
+                    action=TradeAction.MODIFY.value,
+                    trade=trade,
+                )
                 message = self._message(
                     trade,
                     master=master,
@@ -487,7 +636,7 @@ class ContinuousTradeCopier:
 
         # Retry an active trade only when at least one enabled follower still has no link.
         if not self._entry_copying_enabled(system.global_pause, system.execution_mode):
-            return
+            return poll_result
         follower_ids = set(
             session.scalars(
                 select(Account.id).where(
@@ -498,7 +647,7 @@ class ContinuousTradeCopier:
             ).all()
         )
         if not follower_ids:
-            return
+            return poll_result
         retry_before = datetime.now(UTC) - timedelta(seconds=self.retry_seconds)
         for state in session.scalars(
             select(MasterTradeState).where(
@@ -536,3 +685,4 @@ class ContinuousTradeCopier:
                 action=action,
             )
             await self._dispatch(session, master, message, state)
+        return poll_result

@@ -70,6 +70,29 @@
 </section>
 
 <section class="surface mt-6">
+    <div class="surface-header">
+        <div><p class="eyebrow">One-second master loop</p><h2 class="section-title">Master watcher activity</h2></div>
+        <a class="text-link" href="/audit">Full audit log →</a>
+    </div>
+    <div class="mt-5 grid gap-3">
+        {% for event in watcher_events %}
+        <div class="account-row">
+            <div>
+                <strong class="font-mono text-xs text-cyan">{{ event.action }}</strong>
+                <small>{{ event.message }}</small>
+            </div>
+            <div class="text-right">
+                <span class="badge">{{ event.severity }}</span>
+                <small class="mt-1 block text-muted">{{ event.created_at.strftime('%H:%M:%S') }}</small>
+            </div>
+        </div>
+        {% else %}
+        <p class="empty-state">No watcher log yet. Restart with run.bat and wait for the watcher-started entry.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="surface mt-6">
     <div class="surface-header"><div><p class="eyebrow">Execution journal</p><h2 class="section-title">Latest follower jobs</h2></div><a class="text-link" href="/trades">Open trade tree →</a></div>
     <div class="table-wrap mt-5"><table><thead><tr><th>Created</th><th>Source</th><th>Follower</th><th>Symbol</th><th>Volume</th><th>Status</th><th>Local latency</th></tr></thead>
     <tbody>{% for job in recent_jobs %}<tr><td>{{ job.created_at.strftime('%H:%M:%S') }}</td><td>{{ job.source_event.action }}</td><td>{{ job.follower_account.display_name }}</td><td>{{ job.follower_symbol }}</td><td>{{ job.requested_volume }}</td><td><span class="badge badge-{{ job.status }}">{{ job.status }}</span></td><td>{{ job.local_latency_ms or '—' }}{% if job.local_latency_ms %} ms{% endif %}</td></tr>{% else %}<tr><td colspan="7" class="empty-cell">No copy jobs recorded yet. Add or detect MT5 accounts to begin configuration.</td></tr>{% endfor %}</tbody></table></div>

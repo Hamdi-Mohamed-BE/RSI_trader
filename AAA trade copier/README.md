@@ -10,7 +10,7 @@ A safe-by-default Windows control plane and copier-core MVP for copying MT5 trad
 - Account-specific stop-loss risk sizing that floors to broker volume steps and rejects unsafe minimum lots.
 - Cross-broker symbol mappings with relative SL/TP preservation.
 - Durable idempotency keys and explicit follower decisions; duplicate source events do not create duplicate jobs.
-- Continuous master-terminal reconciliation captures positions and pending orders opened from MT5 desktop, mobile, web, scripts, and EAsâ€”not only orders submitted by the dashboard.
+- A one-second master-terminal watcher captures positions and pending orders opened from MT5 desktop, mobile, web, scripts, and EAs—not only orders submitted by the dashboard.
 - Persistent master-to-follower ticket links drive pending-order changes/cancellations, SL/TP changes, proportional partial closes, and full closes against the exact copied follower trade.
 - Fresh trading workspace with no sample accounts, risk profiles, mappings, or trades.
 - Automatic discovery of already-running, logged-in MT5 terminals on Windows.
@@ -57,7 +57,11 @@ SAFE_MODE=false
 LIVE_EXECUTION_ENABLED=true
 ```
 
-After changing these flags, restart with `run.bat`, verify every account, symbol route, stop-loss, and 1% risk profile, then type `ENABLE LIVE` on the dashboard. Existing unlinked master positions are baselined during recovery and are not opened retroactively on followers; only new positions created after live activation are copied. Linked positions continue to receive modifications and closes.
+After changing these flags, restart with `run.bat`, verify every account and symbol route, then type `ENABLE LIVE` on the dashboard. Existing unlinked master positions are baselined during recovery and are not opened retroactively on followers; only new positions created after live activation are copied. Linked positions continue to receive modifications and closes.
+
+The dashboard's **Master watcher activity** panel records the initial master connection, every detected market or pending entry, SL/TP or pending-order modification, partial close, full close, cancellation, follower result, connection error, and recovery. The same records remain available in the Audit trail.
+
+The Copier Core console writes the same operational evidence to `storage/copier-core.log`. This file is retained across application restarts and contains no MT5 passwords.
 
 Demo copying does not require weakening these environment gates. Keep their defaults, verify that every account is shown as `demo` and `hedging`, then type `ENABLE` on the dashboard. Pausing blocks new exposure while linked modifications, cancellations, and closes continue to be obeyed.
 
@@ -80,7 +84,7 @@ Every account card includes **Edit and manage** controls for its name, terminal 
 
 Passwords are never written to SQLite, audit details, generated instance files, or process command lines. They remain encrypted in the local DPAPI vault and are decrypted only in memory for the MT5 login call. Set `MT5_TEMPLATE_PATH` in `.env` when the correct broker terminal should be used as the default template; otherwise the app selects an installed MT5 automatically.
 
-No sample accounts, mappings, trades, or performance records are created. One system-managed **Automatic 1% per trade** risk profile is created and assigned only to followers that do not already have a custom profile. It risks at most 1% of each follower's own equity using the trade stop distance; daily loss and daily profit caps are disabled. Early development demo records are removed automatically by an exact one-time compatibility cleanup, without touching user-created accounts.
+No sample accounts, mappings, trades, or performance records are created. One system-managed **Automatic 1% per trade** profile is assigned to followers without a custom policy. When the master trade has an SL, volume is calculated to risk 1% of the follower's equity. With no SL, the exact master lot size is copied. TP is optional and daily caps are disabled. Existing temporary exact-copy defaults are migrated automatically. Early development demo records are removed by an exact one-time compatibility cleanup without touching user-created accounts.
 
 ## Cross-account copy test
 
@@ -120,9 +124,9 @@ Copier Core -> persistent ticket mapping -> each isolated follower MT5
 FastAPI dashboard <-> shared SQLite event journal
 ```
 
-`dev.bat start` opens the Windows Copier Core and web dashboard. By default the core checks the master every 350 ms, detects opens and lifecycle changes, deduplicates them, applies symbol/risk routing, executes the correct follower action, and records the broker acknowledgement. `CONTINUOUS_COPY_POLL_MS` can be tuned in `.env`; keep it at or above 100 ms.
+`dev.bat start` opens the Windows Copier Core and web dashboard. The core checks the complete master snapshot every second, detects opens and lifecycle changes, deduplicates them, applies symbol and hybrid volume routing, executes the correct follower action, and records the broker acknowledgement. `run.bat` fixes `CONTINUOUS_COPY_POLL_MS` at 1000 ms.
 
-The watcher sees the trading account itself, so a trade may originate from MT5 desktop, the broker's mobile/web interface, a script, or another EA. A stop loss is required before the default 1% risk profile can open a follower trade. If the master entry initially has no stop, the rejection is recorded and the copier retries after a valid stop is added.
+The watcher sees the trading account itself, so a trade may originate from MT5 desktop, the broker's mobile/web interface, a script, or another EA. New trades without SL use the same lot size as the master; trades with SL use the 1% follower-equity rule. Later SL/TP changes, pending-price changes, partial closes, full closes, and cancellations are applied to the linked follower orders.
 
 ## Docker scope
 

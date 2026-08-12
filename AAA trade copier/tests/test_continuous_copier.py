@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
 from trade_copier.domain.enums import ExecutionMode, OrderType, Side, TradeAction
-from trade_copier.models import Account, MasterTradeState, TradeLink
+from trade_copier.models import Account, AuditEvent, MasterTradeState, TradeLink
 from trade_copier.services.accounts import ensure_system_state
 from trade_copier.services.continuous_copier import (
     ContinuousTradeCopier,
@@ -34,7 +34,7 @@ class RecordingCore:
     async def process(self, session: Session, message: Any) -> list[Any]:
         del session
         self.messages.append(message)
-        return []
+        return [SimpleNamespace(status="filled", rejection_reason="")]
 
 
 class FailingCore(RecordingCore):
@@ -93,6 +93,16 @@ async def test_master_reconciliation_emits_open_modify_and_close(
         state = session.scalar(select(MasterTradeState))
         assert state is not None
         assert state.status == "closed"
+        detected_actions = session.scalars(
+            select(AuditEvent.action)
+            .where(AuditEvent.action.like("master.change.%"))
+            .order_by(AuditEvent.created_at)
+        ).all()
+        assert detected_actions == [
+            "master.change.market_open",
+            "master.change.modify",
+            "master.change.close",
+        ]
 
 
 @pytest.mark.asyncio
