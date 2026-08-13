@@ -235,3 +235,119 @@ async def test_baseline_trade_stays_ignored_after_demo_mode_is_enabled(
         assert [message.source_order_id for message in core.messages] == [
             "MASTER-POSITION-2"
         ]
+
+
+@pytest.mark.asyncio
+async def test_filled_pending_merges_existing_publisher_position_without_unique_error(
+    client: TestClient,
+    session_factory: sessionmaker[Session],
+) -> None:
+    del client
+    position = observed()
+    core = RecordingCore()
+    copier = ContinuousTradeCopier(
+        core=core,  # type: ignore[arg-type]
+        reader=SequenceReader([[position]]),  # type: ignore[arg-type]
+        terminal_manager=NoopTerminalManager(),  # type: ignore[arg-type]
+    )
+    with session_factory() as session:
+        seed_demo(session)
+        master = session.scalar(select(Account).where(Account.is_master.is_(True)))
+        follower = session.scalar(select(Account).where(Account.role == "follower"))
+        assert master is not None and follower is not None
+        for account in session.scalars(select(Account).where(Account.role == "follower")):
+            account.state = "paused"
+
+        pending_state = MasterTradeState(
+            master_account_id=master.id,
+            source_type="pending",
+            source_ticket=position.source_ticket,
+            broker_ticket=position.source_ticket,
+            symbol=position.symbol,
+            side=position.side.value,
+            order_type=2,
+            volume=position.volume,
+            entry_price=position.entry_price,
+            stop_loss=position.stop_loss,
+            take_profit=position.take_profit,
+            fingerprint="pending-state",
+        )
+        publisher_state = MasterTradeState(
+            master_account_id=master.id,
+            source_type="position",
+            source_ticket=position.source_ticket,
+            broker_ticket=position.broker_ticket,
+            symbol=position.symbol,
+            side=position.side.value,
+            order_type=position.broker_order_type,
+            volume=position.volume,
+            entry_price=position.entry_price,
+            stop_loss=position.stop_loss,
+            take_profit=position.take_profit,
+            fingerprint=position.fingerprint,
+        )
+        pending_link = TradeLink(
+            master_account_id=master.id,
+            follower_account_id=follower.id,
+            source_type="pending",
+            source_ticket=position.source_ticket,
+            source_order_id=position.source_ticket,
+            follower_symbol="XAUUSD",
+            follower_order_id="FOLLOWER-PENDING-1",
+            side="buy",
+            source_volume=Decimal("1"),
+            follower_volume=Decimal("0.1"),
+            entry_price=Decimal("2400"),
+            status="active",
+        )
+        publisher_link = TradeLink(
+            master_account_id=master.id,
+            follower_account_id=follower.id,
+            source_type="position",
+            source_ticket=position.source_ticket,
+            source_order_id=position.source_ticket,
+            source_position_id=position.source_ticket,
+            follower_symbol="XAUUSD",
+            follower_order_id="FOLLOWER-DUPLICATE-ORDER",
+            follower_position_id="FOLLOWER-DUPLICATE-POSITION",
+            side="buy",
+            source_volume=Decimal("1"),
+            follower_volume=Decimal("0.1"),
+            entry_price=Decimal("2400"),
+            status="active",
+        )
+        session.add_all(
+            [pending_state, publisher_state, pending_link, publisher_link]
+        )
+        session.commit()
+        pending_state_id = pending_state.id
+        pending_link_id = pending_link.id
+
+        await copier.poll_once(session)
+        session.expire_all()
+
+        states = session.scalars(
+            select(MasterTradeState).where(
+                MasterTradeState.master_account_id == master.id,
+                MasterTradeState.source_ticket == position.source_ticket,
+            )
+        ).all()
+        links = session.scalars(
+            select(TradeLink).where(
+                TradeLink.master_account_id == master.id,
+                TradeLink.follower_account_id == follower.id,
+                TradeLink.source_ticket == position.source_ticket,
+            )
+        ).all()
+        assert len(states) == 1
+        assert states[0].id == pending_state_id
+        assert states[0].source_type == "position"
+        assert len(links) == 1
+        assert links[0].id == pending_link_id
+        assert links[0].source_type == "position"
+        assert links[0].follower_order_id == "FOLLOWER-PENDING-1"
+        assert session.scalar(
+            select(AuditEvent).where(
+                AuditEvent.action == "master.pending_fill_conflict_merged"
+            )
+        )

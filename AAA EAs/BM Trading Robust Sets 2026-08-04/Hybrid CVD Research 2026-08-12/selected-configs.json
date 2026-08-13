@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "xau",
+    "Label": "Hybrid CVD XAU",
+    "Symbol": "XAUUSD",
+    "Period": "M5",
+    "Values": {
+      "InpEnableShort": false
+    }
+  },
+  {
+    "Id": "us30",
+    "Label": "Hybrid CVD US30",
+    "Symbol": "US30",
+    "Period": "M5",
+    "Values": {
+      "InpSignalMode": 1,
+      "InpFastCVDMinutes": 60,
+      "InpDivergenceLookback": 18,
+      "InpDivergenceMinImprovement": 0.05,
+      "InpStopATR": 2.0,
+      "InpRewardRisk": 2.0,
+      "InpSessionStartUTC": 7,
+      "InpSessionEndUTC": 20
+    }
+  },
+  {
+    "Id": "us100",
+    "Label": "Hybrid CVD US100",
+    "Symbol": "USTEC",
+    "Period": "M5",
+    "Values": {
+      "InpSignalTimeframe": 15,
+      "InpFastCVDMinutes": 60,
+      "InpFastCVDMinRatio": 0.08,
+      "InpBreakoutLookback": 4,
+      "InpStopATR": 1.5,
+      "InpRewardRisk": 2.5,
+      "InpEnableShort": false
+    }
+  }
+]

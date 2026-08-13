@@ -31,7 +31,7 @@ run.bat
 
 `run.bat` performs first-time setup when necessary, ensures the default administrator exists, starts the Copier Core and dashboard, and opens `http://127.0.0.1:8100` automatically. It never resets the password of an existing administrator.
 
-Before starting the services, `run.bat` also bootstraps MT5 integration on Windows. It detects the logged-in active master, copies the versioned agents into that terminal's actual `TERMINAL_DATA_PATH`, writes a secret-free Publisher preset containing the account UUID and local pipe name, and uses MT5's supported `/config:` startup mechanism to attach `AAA_Master_Publisher` to an M1 control chart. The exact master terminal is restarted only when the attachment is missing or stale. Follower agent files are installed for compatibility, but no follower chart EA is required by the default isolated-Python executor.
+Before starting the services, `run.bat` also bootstraps MT5 integration on Windows. It detects the logged-in active master and copies the versioned agents into that terminal's actual `TERMINAL_DATA_PATH`. The Publisher may remain attached for legacy compatibility, but while the one-second snapshot watcher is enabled its pipe events are deliberately not consumed. This makes the watcher the single master-event source and prevents duplicate EA/poller trades. No follower chart EA is required by the isolated-Python executor.
 
 `run.bat` binds the dashboard to `0.0.0.0`, so on a VPS it is also reachable at `http://YOUR-VPS-IP:8100`. Windows Firewall and the VPS provider firewall must allow inbound TCP port 8100. Change the default password and place the dashboard behind an HTTPS reverse proxy before treating it as an internet-facing service.
 

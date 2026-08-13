@@ -1,0 +1,131 @@
+{
+  "selection": {
+    "status": "NO ROBUST TRAINING CANDIDATE; least-bad setting retained only for final falsification",
+    "parameters": {
+      "timeframe": 15,
+      "lookback": 48,
+      "delta_bars": 1,
+      "delta_threshold": 0.05,
+      "book_bars": 1,
+      "book_threshold": 0.0,
+      "book5_threshold": -0.1,
+      "replenishment_threshold": 0.03,
+      "close_location": 0.55,
+      "relative_volume": 0.8,
+      "max_sweep_atr": 2.0,
+      "stop_atr": 1.0,
+      "reward_risk": 1.5,
+      "max_hold": 12,
+      "break_even_r": 1.5,
+      "direction": "both",
+      "signal_model": "reversal"
+    },
+    "training": {
+      "initial": 10000.0,
+      "final": 11288.267267936535,
+      "net": 1288.267267936535,
+      "return_pct": 12.88267267936536,
+      "annualized_return_pct": 8.39592635129922,
+      "profit_factor": 4.358192317309525,
+      "win_rate_pct": 78.94736842105263,
+      "trades": 19.0,
+      "wins": 15.0,
+      "losses": 4.0,
+      "max_drawdown_pct": 1.9062824857911955,
+      "max_drawdown_amount": 207.43315653820537,
+      "average_trade": 67.80354041771234,
+      "total_fees": 446.03812963537837,
+      "total_funding_pnl": 0.0,
+      "largest_win": 148.91673545391782,
+      "largest_loss": -129.67789710316123
+    },
+    "segments": [
+      {
+        "return_pct": 4.850167236557401,
+        "profit_factor": 4.740164935508645,
+        "trades": 7
+      },
+      {
+        "return_pct": 3.0280118186548854,
+        "profit_factor": 999.0,
+        "trades": 3
+      },
+      {
+        "return_pct": 4.496762848628877,
+        "profit_factor": 2.912894315100179,
+        "trades": 9
+      }
+    ],
+    "cost_model": {
+      "taker_fee_each_side": 0.0005,
+      "slippage_each_side": 0.0001,
+      "funding": "actual Binance historical funding rates and mark prices"
+    },
+    "final_window_not_opened": [
+      "2026-02-11T00:00:00+00:00",
+      "2026-08-10T23:59:59+00:00"
+    ]
+  },
+  "final_window": [
+    "2026-02-11T00:00:00+00:00",
+    "2026-08-10T23:59:59+00:00"
+  ],
+  "tests": {
+    "full_order_flow": {
+      "initial": 10000.0,
+      "final": 10000.0,
+      "net": 0.0,
+      "return_pct": 0.0,
+      "profit_factor": 0.0,
+      "win_rate_pct": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "max_drawdown_pct": 0.0,
+      "max_drawdown_amount": 0.0,
+      "average_trade": 0.0,
+      "total_fees": 0.0,
+      "total_funding_pnl": 0.0,
+      "largest_win": 0.0,
+      "largest_loss": 0.0
+    },
+    "cvd_without_book": {
+      "initial": 10000.0,
+      "final": 5550.170616309011,
+      "net": -4449.829383690989,
+      "return_pct": -44.49829383690989,
+      "annualized_return_pct": -69.5195446898225,
+      "profit_factor": 0.4609427585234353,
+      "win_rate_pct": 37.4331550802139,
+      "trades": 187,
+      "wins": 70,
+      "losses": 117,
+      "max_drawdown_pct": 45.08702308937107,
+      "max_drawdown_amount": 4508.702308937107,
+      "average_trade": -23.79587905717106,
+      "total_fees": 3794.3445143267695,
+      "total_funding_pnl": 0.0,
+      "largest_win": 133.45600865618246,
+      "largest_loss": -254.2425497947722
+    },
+    "price_sweep_only": {
+      "initial": 10000.0,
+      "final": 3293.994446625777,
+      "net": -6706.005553374223,
+      "return_pct": -67.06005553374223,
+      "annualized_return_pct": -89.36381235224925,
+      "profit_factor": 0.4938390601241036,
+      "win_rate_pct": 37.735849056603776,
+      "trades": 371,
+      "wins": 140,
+      "losses": 231,
+      "max_drawdown_pct": 67.52298599598724,
+      "max_drawdown_amount": 6789.585111075459,
+      "average_trade": -18.075486666776897,
+      "total_fees": 5706.0253242194485,
+      "total_funding_pnl": 0.0,
+      "largest_win": 122.9350577845339,
+      "largest_loss": -232.1671570505367
+    }
+  }
+}

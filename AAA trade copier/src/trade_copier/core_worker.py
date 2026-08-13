@@ -3,6 +3,7 @@ import logging
 from datetime import UTC, datetime
 
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 from .config import Settings, get_settings
 from .database import SessionLocal, create_schema
@@ -199,7 +200,14 @@ async def continuous_copy_loop(
                         "Recovered enabled %s execution after baselining the master snapshot",
                         recovered_mode.value,
                     )
-        except (ArithmeticError, OSError, RuntimeError, TypeError, ValueError) as exc:
+        except (
+            ArithmeticError,
+            OSError,
+            RuntimeError,
+            SQLAlchemyError,
+            TypeError,
+            ValueError,
+        ) as exc:
             problem = str(exc) or type(exc).__name__
             logger.warning("Continuous copier poll failed: %s", problem)
             if problem != last_problem:
@@ -245,11 +253,7 @@ async def run() -> None:
             allow_live=settings.execution_is_permitted,
         ),
     )
-    tasks = [
-        accept_followers(settings, server, pipe_transport),
-        consume_master(settings, server, python_transport, terminal_manager),
-        watchdog(settings, terminal_manager),
-    ]
+    tasks = [watchdog(settings, terminal_manager)]
     if settings.continuous_copy_enabled:
         continuous_core = CopierCore(settings=settings, transport=python_transport)
         continuous_copier = ContinuousTradeCopier(
@@ -259,9 +263,17 @@ async def run() -> None:
         )
         tasks.append(continuous_copy_loop(settings, continuous_copier))
         logger.info(
-            "Continuous master reconciliation enabled poll_ms=%d",
+            "Snapshot watcher is the only master event source poll_ms=%d",
             settings.continuous_copy_poll_ms,
         )
+    else:
+        tasks.extend(
+            [
+                accept_followers(settings, server, pipe_transport),
+                consume_master(settings, server, python_transport, terminal_manager),
+            ]
+        )
+        logger.warning("Snapshot watcher disabled; using legacy named-pipe agents")
     await asyncio.gather(*tasks)
 
 

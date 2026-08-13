@@ -23,6 +23,15 @@ def test_compiled_stylesheet_is_served(client: TestClient) -> None:
     assert len(response.content) > 10_000
 
 
+def test_status_indicator_uses_http_polling_without_websocket_rejection_spam(
+    client: TestClient,
+) -> None:
+    response = client.get("/static/js/app.js")
+    assert response.status_code == 200
+    assert 'window.fetch("/api/status"' in response.text
+    assert "new WebSocket" not in response.text
+
+
 def test_dashboard_requires_login(client: TestClient) -> None:
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 303

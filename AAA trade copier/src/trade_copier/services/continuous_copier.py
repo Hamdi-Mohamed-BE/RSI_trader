@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 from ..domain.enums import (
     AccountRole,
     AccountState,
+    AuditSeverity,
     ExecutionMode,
     JobStatus,
     OrderType,
@@ -320,6 +321,25 @@ class ContinuousTradeCopier:
         state.last_seen_at = datetime.now(UTC)
 
     @staticmethod
+    def _position_from_state(state: MasterTradeState) -> ObservedMasterTrade:
+        return ObservedMasterTrade(
+            source_type="position",
+            source_ticket=state.source_ticket,
+            broker_ticket=state.broker_ticket,
+            symbol=state.symbol,
+            side=Side(state.side),
+            order_type=OrderType.MARKET,
+            broker_order_type=state.order_type,
+            volume=Decimal(state.volume),
+            entry_price=Decimal(state.entry_price),
+            stop_loss=(Decimal(state.stop_loss) if state.stop_loss is not None else None),
+            take_profit=(
+                Decimal(state.take_profit) if state.take_profit is not None else None
+            ),
+            expiration_at=state.expiration_at,
+        )
+
+    @staticmethod
     def _entry_copying_enabled(global_pause: bool, execution_mode: str) -> bool:
         return not global_pause and execution_mode in {
             ExecutionMode.DEMO.value,
@@ -417,7 +437,7 @@ class ContinuousTradeCopier:
         master: Account,
         pending_state: MasterTradeState,
         position: ObservedMasterTrade,
-    ) -> None:
+    ) -> MasterTradeState:
         links = session.scalars(
             select(TradeLink).where(
                 TradeLink.master_account_id == master.id,
@@ -426,15 +446,70 @@ class ContinuousTradeCopier:
                 TradeLink.status == "active",
             )
         ).all()
+        removed_link_ids: list[str] = []
+        for link in links:
+            conflicting = session.scalar(
+                select(TradeLink).where(
+                    TradeLink.master_account_id == master.id,
+                    TradeLink.follower_account_id == link.follower_account_id,
+                    TradeLink.source_type == "position",
+                    TradeLink.source_ticket == position.source_ticket,
+                    TradeLink.id != link.id,
+                )
+            )
+            if conflicting is None:
+                continue
+            removed_link_ids.append(conflicting.id)
+            session.delete(conflicting)
+
+        # Delete conflicting position rows before changing the pending keys. An
+        # older Publisher event may already have inserted those keys.
+        if removed_link_ids:
+            session.flush()
         for link in links:
             link.source_type = "position"
             link.source_position_id = position.source_ticket
             link.source_volume = position.volume
             session.add(link)
+
+        conflicting_state = session.scalar(
+            select(MasterTradeState).where(
+                MasterTradeState.master_account_id == master.id,
+                MasterTradeState.source_type == "position",
+                MasterTradeState.source_ticket == position.source_ticket,
+                MasterTradeState.id != pending_state.id,
+            )
+        )
+        removed_state_id = ""
+        if conflicting_state is not None:
+            removed_state_id = conflicting_state.id
+            session.delete(conflicting_state)
+            session.flush()
+
         pending_state.source_type = "position"
         ContinuousTradeCopier._update_state(pending_state, position)
         session.add(pending_state)
+        if removed_link_ids or removed_state_id:
+            record_audit(
+                session,
+                actor="master-watcher",
+                action="master.pending_fill_conflict_merged",
+                target_type="account",
+                target_id=master.id,
+                severity=AuditSeverity.WARNING,
+                message=(
+                    f"Merged duplicate Publisher/watcher records for filled pending ticket "
+                    f"{position.source_ticket}; copying continues from the pending-order link."
+                ),
+                details={
+                    "source_ticket": position.source_ticket,
+                    "removed_trade_link_ids": removed_link_ids,
+                    "removed_master_state_id": removed_state_id,
+                    "review_follower_for_legacy_duplicate": bool(removed_link_ids),
+                },
+            )
         session.commit()
+        return pending_state
 
     async def poll_once(self, session: Session) -> MasterPollResult | None:
         system = ensure_system_state(session)
@@ -461,12 +536,18 @@ class ContinuousTradeCopier:
         states_by_key = {(state.source_type, state.source_ticket): state for state in states}
 
         # A filled pending order normally keeps its ticket as the position identifier.
-        # Convert the durable mapping instead of opening a duplicate market position.
-        for position in [trade for trade in observed if trade.source_type == "position"]:
-            if ("position", position.source_ticket) in states_by_key:
-                continue
-            pending_state = states_by_key.get(("pending", position.source_ticket))
-            if pending_state is None:
+        # Merge even if the position closed while the core was down: the stored
+        # position state is enough to repair the Publisher/watcher collision.
+        pending_states = [
+            state for state in states if state.source_type == "pending"
+        ]
+        for pending_state in pending_states:
+            position_key = ("position", pending_state.source_ticket)
+            position_state = states_by_key.get(position_key)
+            position = observed_by_key.get(position_key)
+            if position is None and position_state is not None:
+                position = self._position_from_state(position_state)
+            if position is None:
                 continue
             self._record_change(
                 session,
@@ -474,9 +555,15 @@ class ContinuousTradeCopier:
                 action="pending_filled",
                 trade=position,
             )
-            self._transition_pending_link(session, master, pending_state, position)
+            canonical_state = self._transition_pending_link(
+                session,
+                master,
+                pending_state,
+                position,
+            )
             states_by_key.pop(("pending", position.source_ticket))
-            states_by_key[("position", position.source_ticket)] = pending_state
+            states_by_key.pop(position_key, None)
+            states_by_key[("position", position.source_ticket)] = canonical_state
 
         # First obey closes and cancellations. They are processed even when new entries are paused.
         for key, state in list(states_by_key.items()):
