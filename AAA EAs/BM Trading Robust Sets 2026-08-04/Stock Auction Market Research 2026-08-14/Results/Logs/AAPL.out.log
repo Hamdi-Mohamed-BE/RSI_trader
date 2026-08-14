@@ -1,0 +1,52 @@
+
+=== AAPL: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "AAPL",
+  "status": "REJECT",
+  "pattern": {
+    "model": "failed_auction",
+    "timeframe_minutes": 240,
+    "lookback_days": 40,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 10,
+    "shift_threshold_atr": 0.0,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 0
+  },
+  "execution": {
+    "stop_buffer_atr": 0.0,
+    "reward_risk": 0.0,
+    "minimum_reward_risk": 1.0,
+    "maximum_hold_hours": 72,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 1,
+    "wins": 1,
+    "losses": 0,
+    "win_rate_pct": 100.0,
+    "profit_factor": 999.0,
+    "net_r": 0.1477756286266993,
+    "mean_r": 0.1477756286266993,
+    "return_pct": 0.14777562862668958,
+    "max_drawdown_pct": 2.26690792393569,
+    "final_balance": 10014.77756286267
+  },
+  "full": {
+    "trades": 24,
+    "wins": 9,
+    "losses": 15,
+    "win_rate_pct": 37.5,
+    "profit_factor": 2.1249215705041977,
+    "net_r": 16.836141947923718,
+    "mean_r": 0.7015059144968215,
+    "return_pct": 17.384344265995576,
+    "max_drawdown_pct": 7.768619436521234,
+    "final_balance": 11738.434426599557
+  },
+  "cagr": 3.5391593821739065
+}

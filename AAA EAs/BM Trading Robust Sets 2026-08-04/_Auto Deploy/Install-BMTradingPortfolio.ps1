@@ -143,6 +143,54 @@ function Get-PortfolioItems {
             SetSource = 'Global Macro Auction Market Research 2026-08-14\Presets\ACTIVE USER APPROVED - Auction Market - ETHUSD H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
         },
         [pscustomobject]@{
+            Label = 'Auction Stock SP500'; Canonical = 'SP500'; Aliases = @('US500', 'SPX500', 'SP500', 'S&P500')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Stock Auction Market Research Exness 2026-08-14\Presets\ACTIVE EXPERIMENTAL - Auction Stock - SP500 H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Stock NVDA'; Canonical = 'NVDA'; Aliases = @('NVDA', 'NVIDIA')
+            Period = 1440; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Stock Auction Market Research Exness 2026-08-14\Presets\ACTIVE EXPERIMENTAL - Auction Stock - NVDA D1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Stock MSFT'; Canonical = 'MSFT'; Aliases = @('MSFT', 'MICROSOFT')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Stock Auction Market Research Exness 2026-08-14\Presets\ACTIVE EXPERIMENTAL - Auction Stock - MSFT H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Stock AMZN'; Canonical = 'AMZN'; Aliases = @('AMZN', 'AMAZON')
+            Period = 1440; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Stock Auction Market Research Exness 2026-08-14\Presets\ACTIVE EXPERIMENTAL - Auction Stock - AMZN D1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Stock GOOGL'; Canonical = 'GOOGL'; Aliases = @('GOOGL', 'GOOG', 'GOOGLE')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Stock Auction Market Research Exness 2026-08-14\Presets\ACTIVE EXPERIMENTAL - Auction Stock - GOOGL H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Stock META'; Canonical = 'META'; Aliases = @('META', 'FACEBOOK')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Stock Auction Market Research Exness 2026-08-14\Presets\ACTIVE EXPERIMENTAL - Auction Stock - META H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Stock AVGO'; Canonical = 'AVGO'; Aliases = @('AVGO', 'BROADCOM')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Stock Auction Market Research Exness 2026-08-14\Presets\ACTIVE EXPERIMENTAL - Auction Stock - AVGO H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Stock INTC'; Canonical = 'INTC'; Aliases = @('INTC', 'INTEL')
+            Period = 1440; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Stock Auction Market Research Exness 2026-08-14\Presets\ACTIVE EXPERIMENTAL - Auction Stock - INTC D1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
             Label = 'AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
@@ -159,6 +207,9 @@ function Get-PortfolioItems {
         }
         if (-not $item.PSObject.Properties['ForceEnable']) {
             $item | Add-Member -NotePropertyName ForceEnable -NotePropertyValue $false
+        }
+        if (-not $item.PSObject.Properties['OptionalSymbol']) {
+            $item | Add-Member -NotePropertyName OptionalSymbol -NotePropertyValue $false
         }
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
         $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $item.SetSource)
@@ -581,15 +632,20 @@ if ([string]$probe.account.currency -ine 'USD' -and -not $IsAdaptiveAccount) {
 }
 
 $symbols = @($probe.symbols)
+$resolvedPortfolio = [Collections.Generic.List[object]]::new()
 foreach ($item in $portfolio) {
     $match = Find-BrokerSymbol $symbols $item.Aliases
     if (-not $match -and ($IsAdaptiveAccount -or $IsSmallAccount)) {
         $match = Find-BrokerSymbol $symbols $item.Aliases -AllowFutures
     }
     if (-not $match) {
+        if ([bool]$item.OptionalSymbol) {
+            Write-Warning ("SKIPPED {0}: no tradable broker symbol matched {1}. The remaining EAs will still install." -f $item.Label, $item.Canonical)
+            continue
+        }
         $hints = @($symbols | Where-Object {
             $name = ([string]$_.name).ToUpperInvariant()
-            $name -match 'JPY|XAU|XAG|GOLD|SILVER|US30|DOW|NAS|NDX|USTEC|US100|UT100|BTC|BITCOIN|ETH|ETHEREUM'
+            $name -match 'JPY|XAU|XAG|GOLD|SILVER|US30|DOW|NAS|NDX|USTEC|US100|UT100|BTC|BITCOIN|ETH|ETHEREUM|US500|SPX|NVDA|AAPL|MSFT|AMZN|GOOG|META|AVGO|AMD|INTC|TSLA|JPM'
         } | Select-Object -First 30 -ExpandProperty name) -join ', '
         Stop-WithMessage "No tradable broker symbol matched $($item.Canonical). Possible symbols: $hints"
     }
@@ -650,10 +706,14 @@ foreach ($item in $portfolio) {
     } else {
         Write-Host ('{0,-22} {1,-8} -> {2}; requested stop risk $40' -f $item.Label, $item.Canonical, $item.BrokerSymbol)
     }
+    [void]$resolvedPortfolio.Add($item)
 }
+$portfolio = @($resolvedPortfolio)
+if ($portfolio.Count -eq 0) { Stop-WithMessage 'No portfolio symbols were available on this broker.' }
 
 if ($IsAdaptiveAccount) {
-    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while LTA, ORB, News Pulse, and the six Auction Market charts remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
+    $fixedAuctionCount = @($portfolio | Where-Object { $_.Label -like 'Auction Market *' -or $_.Label -like 'Auction Stock *' }).Count
+    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while LTA, ORB, News Pulse, and the {4} available Auction Market charts remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0), $fixedAuctionCount) -ForegroundColor Green
 } elseif ($IsSmallAccount) {
     if ($balance -lt 800 -or $balance -gt 1200) {
         Stop-WithMessage "Refusing to run: the small-account settings are for roughly USD 900, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Use an account between USD 800 and USD 1,200."
@@ -669,10 +729,11 @@ if ($PreflightOnly) {
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
-Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse and six user-approved Auction Market charts." -ForegroundColor Red
+Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse and the available Auction Market/stock charts." -ForegroundColor Red
 if ($IsAdaptiveAccount) {
 Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA, ORB Volume Profile, News Pulse, and each Auction Market chart stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
-    Write-Host 'AUCTION MARKET: six simultaneous stopped trades can lose about 6% before gaps/slippage, in addition to the other EAs.' -ForegroundColor Red
+    $auctionCount = @($portfolio | Where-Object { $_.Label -like 'Auction Market *' -or $_.Label -like 'Auction Stock *' }).Count
+    Write-Host ("AUCTION MARKET: {0} simultaneous stopped trades can lose about {0}% before gaps/slippage, in addition to the other EAs." -f $auctionCount) -ForegroundColor Red
     Write-Host 'ATR fixed-money risk and percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red

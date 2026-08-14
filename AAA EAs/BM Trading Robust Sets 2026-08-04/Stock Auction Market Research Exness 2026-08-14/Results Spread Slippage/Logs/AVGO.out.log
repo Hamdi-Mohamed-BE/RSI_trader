@@ -1,0 +1,52 @@
+
+=== AVGO: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "AVGO",
+  "status": "REJECT",
+  "pattern": {
+    "model": "failed_auction",
+    "timeframe_minutes": 240,
+    "lookback_days": 20,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 10,
+    "shift_threshold_atr": 0.25,
+    "entry_tolerance_atr": 0.1,
+    "retest_expiry_bars": 0
+  },
+  "execution": {
+    "stop_buffer_atr": 0.0,
+    "reward_risk": 0.0,
+    "minimum_reward_risk": 1.0,
+    "maximum_hold_hours": 336,
+    "management": 1
+  },
+  "confirmation": {
+    "trades": 3,
+    "wins": 1,
+    "losses": 2,
+    "win_rate_pct": 33.333333333333336,
+    "profit_factor": 3.2241332562586096,
+    "net_r": 2.241350211568386,
+    "mean_r": 0.747116737189462,
+    "return_pct": 2.2086526805341844,
+    "max_drawdown_pct": 3.516133415992897,
+    "final_balance": 10220.865268053418
+  },
+  "full": {
+    "trades": 24,
+    "wins": 6,
+    "losses": 18,
+    "win_rate_pct": 25.0,
+    "profit_factor": 3.2503419486262164,
+    "net_r": 18.992633099468687,
+    "mean_r": 0.791359712477862,
+    "return_pct": 20.011048797968133,
+    "max_drawdown_pct": 7.703793376696436,
+    "final_balance": 12001.104879796812
+  },
+  "cagr": 4.037686601163926
+}

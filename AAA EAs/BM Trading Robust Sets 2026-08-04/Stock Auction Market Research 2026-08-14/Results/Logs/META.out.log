@@ -1,0 +1,52 @@
+
+=== META: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "META",
+  "status": "REJECT",
+  "pattern": {
+    "model": "breakout_retest",
+    "timeframe_minutes": 1440,
+    "lookback_days": 10,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.0,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 6
+  },
+  "execution": {
+    "stop_buffer_atr": 0.1,
+    "reward_risk": 3.0,
+    "minimum_reward_risk": 0.0,
+    "maximum_hold_hours": 168,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 1,
+    "wins": 0,
+    "losses": 1,
+    "win_rate_pct": 0.0,
+    "profit_factor": 0.0,
+    "net_r": -1.0002912351532476,
+    "mean_r": -1.0002912351532476,
+    "return_pct": -1.00029123515325,
+    "max_drawdown_pct": 1.2853106817278077,
+    "final_balance": 9899.970876484675
+  },
+  "full": {
+    "trades": 21,
+    "wins": 12,
+    "losses": 9,
+    "win_rate_pct": 57.142857142857146,
+    "profit_factor": 3.9583063926033533,
+    "net_r": 26.861876371991844,
+    "mean_r": 1.2791369700948496,
+    "return_pct": 30.06706243316963,
+    "max_drawdown_pct": 5.005410587963093,
+    "final_balance": 13006.706243316963
+  },
+  "cagr": 6.50693146604111
+}

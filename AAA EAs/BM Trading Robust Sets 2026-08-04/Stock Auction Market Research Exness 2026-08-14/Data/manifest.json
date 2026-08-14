@@ -1,0 +1,709 @@
+{
+  "created_utc": "2026-08-14T12:25:02.545093+00:00",
+  "server": "Exness-MT5Trial16",
+  "account_group": "Zero (inferred from broker symbol paths)",
+  "terminal": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
+  "timezone": "MetaTrader5 Python epoch interpreted as UTC",
+  "missing_symbols_do_not_abort": true,
+  "commission_warning": "US500 commission is published exact. Stock commission uses Exness's published $0.50/lot/side minimum because the instrument-specific Personal Area contract table was unavailable.",
+  "instruments": {
+    "SP500": {
+      "status": "READY",
+      "symbol": "US500",
+      "path": "Zero\\Indices\\US500",
+      "aliases": [
+        "US500",
+        "SPX500",
+        "SP500",
+        "S&P500"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 0.01,
+      "contract_size": 1.0,
+      "minimum_volume": 0.14,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -146.1,
+      "swap_short": 0.0,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness US500 Zero-account published specification",
+      "commission_confidence": "published exact value",
+      "rows": 1584814,
+      "first_utc": "2022-01-02T23:30:00+00:00",
+      "last_utc": "2026-08-14T12:25:00+00:00",
+      "median_positive_spread_points": 93.0,
+      "median_spread_price": 0.93,
+      "tick_volume_sum": 93907521,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-SP500-US500-M1-2022.csv.gz",
+          "rows": 329880,
+          "sha256": "57bab1cf40c0679987a41de75862d66c79806d08f3b296b7ea9862e099f89dba"
+        },
+        {
+          "file": "Exness-SP500-US500-M1-2023.csv.gz",
+          "rows": 335705,
+          "sha256": "d855e561c22214ad02f2e237a0d702b2ff70f1d01fcb4e700d5e2c97e13288ea"
+        },
+        {
+          "file": "Exness-SP500-US500-M1-2024.csv.gz",
+          "rows": 350020,
+          "sha256": "ee0a42e9d0fd053377fece98441d5f599da4c6d44aecacf0d38842b35b6f1236"
+        },
+        {
+          "file": "Exness-SP500-US500-M1-2025.csv.gz",
+          "rows": 349434,
+          "sha256": "c429ac1317f028735a90ad37caee6ea6d54a12da2580be927761aae8a64e30f5"
+        },
+        {
+          "file": "Exness-SP500-US500-M1-2026.csv.gz",
+          "rows": 219775,
+          "sha256": "d835992dc390d0012718b8f76fbe3f96e18622f8a37b913f91406db086a0e7f3"
+        }
+      ]
+    },
+    "NVDA": {
+      "status": "READY",
+      "symbol": "NVDA",
+      "path": "Zero\\Stocks\\NVDA",
+      "aliases": [
+        "NVDA",
+        "NVIDIA"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -3.6,
+      "swap_short": -3.1,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 670327,
+      "first_utc": "2022-01-03T11:00:00+00:00",
+      "last_utc": "2026-08-14T12:26:00+00:00",
+      "median_positive_spread_points": 6.0,
+      "median_spread_price": 0.06,
+      "tick_volume_sum": 38941357,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-NVDA-NVDA-M1-2022.csv.gz",
+          "rows": 145050,
+          "sha256": "1bd46986aa0e2ff4ae36663d53710d3e405b13a42c2e2894183a71e86ff0afff"
+        },
+        {
+          "file": "Exness-NVDA-NVDA-M1-2023.csv.gz",
+          "rows": 143667,
+          "sha256": "7198fb600a6f60b20f3473e61744e14feac151a99d87db55ef333e34992fd6a1"
+        },
+        {
+          "file": "Exness-NVDA-NVDA-M1-2024.csv.gz",
+          "rows": 146369,
+          "sha256": "881229bc24af4e02b733881607ddf110b7c09c39c56764f940b2bf78018eb887"
+        },
+        {
+          "file": "Exness-NVDA-NVDA-M1-2025.csv.gz",
+          "rows": 145076,
+          "sha256": "fe8ba325f6adf99a0252d622b65f9df83be5c51e14bf0f4873ab28a3238cbcf0"
+        },
+        {
+          "file": "Exness-NVDA-NVDA-M1-2026.csv.gz",
+          "rows": 90165,
+          "sha256": "887316d2db627de332cd21e0fec948c5915e9ebfc75d90b0b2500c10118f6b40"
+        }
+      ]
+    },
+    "AAPL": {
+      "status": "READY",
+      "symbol": "AAPL",
+      "path": "Zero\\Stocks\\AAPL",
+      "aliases": [
+        "AAPL",
+        "APPLE"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -4.9,
+      "swap_short": -4.0,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 664158,
+      "first_utc": "2022-01-03T11:01:00+00:00",
+      "last_utc": "2026-08-14T12:26:00+00:00",
+      "median_positive_spread_points": 6.0,
+      "median_spread_price": 0.06,
+      "tick_volume_sum": 37096277,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-AAPL-AAPL-M1-2022.csv.gz",
+          "rows": 145294,
+          "sha256": "0a6b08b2e993efb5acd649344346f5f5cb4939e94b6e383c71107322a5a8ec23"
+        },
+        {
+          "file": "Exness-AAPL-AAPL-M1-2023.csv.gz",
+          "rows": 143463,
+          "sha256": "624761cecb7eb76ff3f6a312c9ad5efa9c2ba75846376c8ca2476ee53f171a75"
+        },
+        {
+          "file": "Exness-AAPL-AAPL-M1-2024.csv.gz",
+          "rows": 144571,
+          "sha256": "f91eaa3ab4fe843d986e793bb295cadbba894e04f1f0cb7b2dfb85e19576c67c"
+        },
+        {
+          "file": "Exness-AAPL-AAPL-M1-2025.csv.gz",
+          "rows": 142664,
+          "sha256": "84842fd26ef38244c8fe4587612ab582123c154344dfac87899f492dbd51edde"
+        },
+        {
+          "file": "Exness-AAPL-AAPL-M1-2026.csv.gz",
+          "rows": 88166,
+          "sha256": "90e6a7139c4ff94d63c5c6f511604bf705397c28e5972de43b9e0f2a622a696d"
+        }
+      ]
+    },
+    "MSFT": {
+      "status": "READY",
+      "symbol": "MSFT",
+      "path": "Zero\\Stocks\\MSFT",
+      "aliases": [
+        "MSFT",
+        "MICROSOFT"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -8.0,
+      "swap_short": -6.8,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 658230,
+      "first_utc": "2022-01-03T11:01:00+00:00",
+      "last_utc": "2026-08-14T12:26:00+00:00",
+      "median_positive_spread_points": 20.0,
+      "median_spread_price": 0.2,
+      "tick_volume_sum": 32069320,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-MSFT-MSFT-M1-2022.csv.gz",
+          "rows": 143306,
+          "sha256": "07590568367256b7d57f9dc47ebb1930dbe246f986ac10a28f4a69fb3cfca47c"
+        },
+        {
+          "file": "Exness-MSFT-MSFT-M1-2023.csv.gz",
+          "rows": 141605,
+          "sha256": "c246555a60d916d6c3489377b8c92bf5dc1c688f460a3d24abfdc7e2b2530236"
+        },
+        {
+          "file": "Exness-MSFT-MSFT-M1-2024.csv.gz",
+          "rows": 144122,
+          "sha256": "b7cc372d1c321e2c5248e4fcb38afd2181261d11f598fc82edc115b042aaeff6"
+        },
+        {
+          "file": "Exness-MSFT-MSFT-M1-2025.csv.gz",
+          "rows": 140343,
+          "sha256": "b219cae838020956c5d530a2055c7d65d43c9b970f4ed2a55ed2fc28f33b062c"
+        },
+        {
+          "file": "Exness-MSFT-MSFT-M1-2026.csv.gz",
+          "rows": 88854,
+          "sha256": "2100f0febf699e1b5f6a1da3964cb0c8fb581f68141b9fb9da6e370e14c4f079"
+        }
+      ]
+    },
+    "AMZN": {
+      "status": "READY",
+      "symbol": "AMZN",
+      "path": "Zero\\Stocks\\AMZN",
+      "aliases": [
+        "AMZN",
+        "AMAZON"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -4.4,
+      "swap_short": -3.6,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 662109,
+      "first_utc": "2022-01-03T11:01:00+00:00",
+      "last_utc": "2026-08-14T12:26:00+00:00",
+      "median_positive_spread_points": 5.0,
+      "median_spread_price": 0.05,
+      "tick_volume_sum": 43741682,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-AMZN-AMZN-M1-2022.csv.gz",
+          "rows": 142904,
+          "sha256": "8a8dfaed86b67a78565edcc28db401df38e699dca6fdf850d02a8889f7f0ee5a"
+        },
+        {
+          "file": "Exness-AMZN-AMZN-M1-2023.csv.gz",
+          "rows": 142202,
+          "sha256": "7aebe8056ee81d8734e77d0302d6c7ac4d9a053dec54b0577dc724e9895fbdb0"
+        },
+        {
+          "file": "Exness-AMZN-AMZN-M1-2024.csv.gz",
+          "rows": 144218,
+          "sha256": "bb90fdfaacf44b84ae0f16215532cd6014f8344448630d0ed376d8c6da67554a"
+        },
+        {
+          "file": "Exness-AMZN-AMZN-M1-2025.csv.gz",
+          "rows": 143658,
+          "sha256": "22c106dcc13464d80a727bddd43bfc2a4d9c727ec67083c1a92e14a333e21771"
+        },
+        {
+          "file": "Exness-AMZN-AMZN-M1-2026.csv.gz",
+          "rows": 89127,
+          "sha256": "590a1f7afbc101030c63771d1c329d68660a56165bc89ec811d3596cab6793e2"
+        }
+      ]
+    },
+    "GOOGL": {
+      "status": "READY",
+      "symbol": "GOOGL",
+      "path": "Zero\\Stocks\\GOOGL",
+      "aliases": [
+        "GOOGL",
+        "GOOG",
+        "ALPHABET"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -5.5,
+      "swap_short": -4.6,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 420114,
+      "first_utc": "2022-01-03T14:40:00+00:00",
+      "last_utc": "2026-08-13T19:44:00+00:00",
+      "median_positive_spread_points": 12.0,
+      "median_spread_price": 0.12,
+      "tick_volume_sum": 17164983,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-GOOGL-GOOGL-M1-2022.csv.gz",
+          "rows": 91408,
+          "sha256": "6315e7c9b2a2ca9712c6fc184775a3b1d52b6a0c9b50524b0ad9384564d54b3f"
+        },
+        {
+          "file": "Exness-GOOGL-GOOGL-M1-2023.csv.gz",
+          "rows": 90843,
+          "sha256": "93cdab10623f032a8dc2b51454396e8e264e1a1ce6f4523d83f346a8225cd3e1"
+        },
+        {
+          "file": "Exness-GOOGL-GOOGL-M1-2024.csv.gz",
+          "rows": 91360,
+          "sha256": "e15d50214006334c6dcdd5603f134bccce3fbe2f19575365d72f0e281f747174"
+        },
+        {
+          "file": "Exness-GOOGL-GOOGL-M1-2025.csv.gz",
+          "rows": 90353,
+          "sha256": "53f4e72b1b489b2593ddcfc89f643dce16fec2be46f8537a86aa2b8462002973"
+        },
+        {
+          "file": "Exness-GOOGL-GOOGL-M1-2026.csv.gz",
+          "rows": 56150,
+          "sha256": "07b5d1751b0f25d9c56412e3b17d741081b90313eb273e6a7793c36843ed3c30"
+        }
+      ]
+    },
+    "META": {
+      "status": "READY",
+      "symbol": "META",
+      "path": "Zero\\Stocks\\META",
+      "aliases": [
+        "META",
+        "FACEBOOK"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -9.4,
+      "swap_short": -7.8,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 652061,
+      "first_utc": "2022-01-03T11:04:00+00:00",
+      "last_utc": "2026-08-14T12:27:00+00:00",
+      "median_positive_spread_points": 40.0,
+      "median_spread_price": 0.4,
+      "tick_volume_sum": 26760830,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-META-META-M1-2022.csv.gz",
+          "rows": 141388,
+          "sha256": "a1f06082b01c6ff1e1dffa95723e9dfe852e477a8ddf00b10cdf3461f7e897c7"
+        },
+        {
+          "file": "Exness-META-META-M1-2023.csv.gz",
+          "rows": 138886,
+          "sha256": "82ce5e3cdfc34bb22511126ab0ba2d6d582205bae427fc294bb8fc31b226d45f"
+        },
+        {
+          "file": "Exness-META-META-M1-2024.csv.gz",
+          "rows": 142472,
+          "sha256": "41bee1b3470413ce402da2756f7f2e3009e5262dd494576952a8113e0857d55d"
+        },
+        {
+          "file": "Exness-META-META-M1-2025.csv.gz",
+          "rows": 141520,
+          "sha256": "117f7b5db8612d5a44669974bded4084a45de434de4328cf92027064ce016a6a"
+        },
+        {
+          "file": "Exness-META-META-M1-2026.csv.gz",
+          "rows": 87795,
+          "sha256": "e778c9d1b930dc255b58b2ef9c0b1ccd307f3c12150010efb5b92203395f2e39"
+        }
+      ]
+    },
+    "AVGO": {
+      "status": "READY",
+      "symbol": "AVGO",
+      "path": "Zero\\Stocks\\AVGO",
+      "aliases": [
+        "AVGO",
+        "BROADCOM"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -6.8,
+      "swap_short": -16.5,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 420048,
+      "first_utc": "2022-01-03T14:40:00+00:00",
+      "last_utc": "2026-08-13T19:44:00+00:00",
+      "median_positive_spread_points": 9.0,
+      "median_spread_price": 0.09,
+      "tick_volume_sum": 16346132,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-AVGO-AVGO-M1-2022.csv.gz",
+          "rows": 91407,
+          "sha256": "b20d4b49545cc9c3e50ed12022d38e50fcdb634839f63990a1a57a7e37774819"
+        },
+        {
+          "file": "Exness-AVGO-AVGO-M1-2023.csv.gz",
+          "rows": 90809,
+          "sha256": "bca39fc513503506e71b2069b3356903970fedb5c8240102336648d24af94a05"
+        },
+        {
+          "file": "Exness-AVGO-AVGO-M1-2024.csv.gz",
+          "rows": 91329,
+          "sha256": "d161bd83b857f0fcb2b89d9cbc55b7d9c9c6ae21e76c3d0acf876186999264d7"
+        },
+        {
+          "file": "Exness-AVGO-AVGO-M1-2025.csv.gz",
+          "rows": 90353,
+          "sha256": "25016a3fe1e5d6b8453eaac1356eec09903380c8648164a409e2c05deb75bc00"
+        },
+        {
+          "file": "Exness-AVGO-AVGO-M1-2026.csv.gz",
+          "rows": 56150,
+          "sha256": "72a011da61c41cc83489f1fac4b63addfab459b40bc5b5bb1756779cfda6a250"
+        }
+      ]
+    },
+    "AMD": {
+      "status": "READY",
+      "symbol": "AMD",
+      "path": "Zero\\Stocks\\AMD",
+      "aliases": [
+        "AMD"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -7.9,
+      "swap_short": -6.5,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 660306,
+      "first_utc": "2022-01-03T11:01:00+00:00",
+      "last_utc": "2026-08-14T12:28:00+00:00",
+      "median_positive_spread_points": 16.0,
+      "median_spread_price": 0.16,
+      "tick_volume_sum": 23360231,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-AMD-AMD-M1-2022.csv.gz",
+          "rows": 142462,
+          "sha256": "f6893f14e0ae446b85421467638fdca965e166d305edcd23cb56c56ce51e6ff7"
+        },
+        {
+          "file": "Exness-AMD-AMD-M1-2023.csv.gz",
+          "rows": 139806,
+          "sha256": "3bc301456b0f8854df5d7efe2cb9086898da7fc479950153ce6636c671627aab"
+        },
+        {
+          "file": "Exness-AMD-AMD-M1-2024.csv.gz",
+          "rows": 144534,
+          "sha256": "62504af7aae6c027b2302450a0380e8910b90665224824687ee1e9f7a0c8a5e6"
+        },
+        {
+          "file": "Exness-AMD-AMD-M1-2025.csv.gz",
+          "rows": 143639,
+          "sha256": "d3b65a4a3582235b535dfe01644a71146e9f75ff4b307152094f6000f9cfe167"
+        },
+        {
+          "file": "Exness-AMD-AMD-M1-2026.csv.gz",
+          "rows": 89865,
+          "sha256": "d96b803897519eec4b6b080c446981c840a2cdc627450540f21125f152d13a2d"
+        }
+      ]
+    },
+    "INTC": {
+      "status": "READY",
+      "symbol": "INTC",
+      "path": "Zero\\Stocks\\INTC",
+      "aliases": [
+        "INTC",
+        "INTEL"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -1.6,
+      "swap_short": -21.6,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 641259,
+      "first_utc": "2022-01-03T11:12:00+00:00",
+      "last_utc": "2026-08-14T12:28:00+00:00",
+      "median_positive_spread_points": 7.0,
+      "median_spread_price": 0.07,
+      "tick_volume_sum": 10055226,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-INTC-INTC-M1-2022.csv.gz",
+          "rows": 136697,
+          "sha256": "768da32184b00ad057153d747c086089954b27e384acb940ab1d097027890f58"
+        },
+        {
+          "file": "Exness-INTC-INTC-M1-2023.csv.gz",
+          "rows": 132008,
+          "sha256": "83810e86a844a5cfa385e62c62cfab1cf661163aab78034d74975bc6dbe8be52"
+        },
+        {
+          "file": "Exness-INTC-INTC-M1-2024.csv.gz",
+          "rows": 140365,
+          "sha256": "fa2828c295534f2ebaa6cca0442c2fa6db1bbe062edd639fb1d18b0511b26ffc"
+        },
+        {
+          "file": "Exness-INTC-INTC-M1-2025.csv.gz",
+          "rows": 142594,
+          "sha256": "c083702dd7980c867cff516a307915d2c245d859d256f3a514c5a9f57047c261"
+        },
+        {
+          "file": "Exness-INTC-INTC-M1-2026.csv.gz",
+          "rows": 89595,
+          "sha256": "2f078d31da07e2b05335a80e650d56efabab51314e65b0c043992f34c6befcaa"
+        }
+      ]
+    },
+    "TSLA": {
+      "status": "READY",
+      "symbol": "TSLA",
+      "path": "Zero\\Stocks\\TSLA",
+      "aliases": [
+        "TSLA",
+        "TESLA"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -5.3,
+      "swap_short": -4.4,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 672462,
+      "first_utc": "2022-01-03T11:00:00+00:00",
+      "last_utc": "2026-08-14T12:28:00+00:00",
+      "median_positive_spread_points": 7.0,
+      "median_spread_price": 0.07,
+      "tick_volume_sum": 94302556,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-TSLA-TSLA-M1-2022.csv.gz",
+          "rows": 145585,
+          "sha256": "378acf2f2c5859da1aca25765d28e97a3fa24b7079a96087a1f3a251385a0a1b"
+        },
+        {
+          "file": "Exness-TSLA-TSLA-M1-2023.csv.gz",
+          "rows": 145372,
+          "sha256": "c32e476da5aa552c9b6cad38454437cdb6ebdf1c21385d8d169ce21b5da405d6"
+        },
+        {
+          "file": "Exness-TSLA-TSLA-M1-2024.csv.gz",
+          "rows": 146365,
+          "sha256": "16d80ec02e8d83211acd04e2bf4136f1e554aab5954a1e3a9436647dfe129692"
+        },
+        {
+          "file": "Exness-TSLA-TSLA-M1-2025.csv.gz",
+          "rows": 145062,
+          "sha256": "b67597e1a7acafd9fc46aaa323b6240f777c0dfaa22f678a635bf55ec18d33b4"
+        },
+        {
+          "file": "Exness-TSLA-TSLA-M1-2026.csv.gz",
+          "rows": 90078,
+          "sha256": "94df4adfd56a143950f883e2ee203eb512a41e310c13fa46a693cff462e19897"
+        }
+      ]
+    },
+    "JPM": {
+      "status": "READY",
+      "symbol": "JPM",
+      "path": "Zero\\Stocks\\JPM",
+      "aliases": [
+        "JPM",
+        "JPMORGAN"
+      ],
+      "digits": 2,
+      "point": 0.01,
+      "tick_size": 0.01,
+      "tick_value": 1.0,
+      "contract_size": 100.0,
+      "minimum_volume": 0.01,
+      "volume_step": 0.01,
+      "swap_mode": 1,
+      "swap_long": -5.9,
+      "swap_short": -4.9,
+      "swap_rollover_three_day": 5,
+      "commission_usd_per_lot_per_side": 0.5,
+      "commission_source": "Exness stock Zero-account published minimum",
+      "commission_confidence": "lower-bound estimate; instrument-specific PA table unavailable",
+      "rows": 420115,
+      "first_utc": "2022-01-03T14:40:00+00:00",
+      "last_utc": "2026-08-13T19:44:00+00:00",
+      "median_positive_spread_points": 8.0,
+      "median_spread_price": 0.08,
+      "tick_volume_sum": 13092023,
+      "real_volume_sum": 0,
+      "missing_years": [],
+      "files": [
+        {
+          "file": "Exness-JPM-JPM-M1-2022.csv.gz",
+          "rows": 91408,
+          "sha256": "2a441b02a1bd43d21876a83b04dad89932882046709f4614a42745f8043ce6c1"
+        },
+        {
+          "file": "Exness-JPM-JPM-M1-2023.csv.gz",
+          "rows": 90847,
+          "sha256": "2f49ed5e2d2835ec014e200fafdfd2a2d5833bead5b524247c42f7a18d9ed071"
+        },
+        {
+          "file": "Exness-JPM-JPM-M1-2024.csv.gz",
+          "rows": 91359,
+          "sha256": "af04d93d703721ac675ef769ef70e1db05074ded4151de89d6794fe3a8700d90"
+        },
+        {
+          "file": "Exness-JPM-JPM-M1-2025.csv.gz",
+          "rows": 90351,
+          "sha256": "103fa1e3b9bd92dc46655238f39a3f473e0c82068583c2dc4d03564508ef20b0"
+        },
+        {
+          "file": "Exness-JPM-JPM-M1-2026.csv.gz",
+          "rows": 56150,
+          "sha256": "08dde41c13ce753d710ac9b5b7edc8ffe245f81447369bf21e6155a3d6ccca06"
+        }
+      ]
+    }
+  }
+}

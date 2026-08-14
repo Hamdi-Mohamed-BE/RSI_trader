@@ -1,0 +1,52 @@
+
+=== AMZN: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "AMZN",
+  "status": "REJECT",
+  "pattern": {
+    "model": "breakout_retest",
+    "timeframe_minutes": 1440,
+    "lookback_days": 10,
+    "regime_mode": "balanced_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.5,
+    "entry_tolerance_atr": 0.1,
+    "retest_expiry_bars": 3
+  },
+  "execution": {
+    "stop_buffer_atr": 0.0,
+    "reward_risk": 3.0,
+    "minimum_reward_risk": 0.0,
+    "maximum_hold_hours": 72,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 1,
+    "wins": 0,
+    "losses": 1,
+    "win_rate_pct": 0.0,
+    "profit_factor": 0.0,
+    "net_r": -1.002169197396961,
+    "mean_r": -1.002169197396961,
+    "return_pct": -1.0021691973969626,
+    "max_drawdown_pct": 2.3773567147385744,
+    "final_balance": 9899.783080260304
+  },
+  "full": {
+    "trades": 23,
+    "wins": 13,
+    "losses": 10,
+    "win_rate_pct": 56.52173913043478,
+    "profit_factor": 3.443206106788873,
+    "net_r": 23.26623885214403,
+    "mean_r": 1.0115756022671318,
+    "return_pct": 25.572897458110265,
+    "max_drawdown_pct": 2.869377846875531,
+    "final_balance": 12557.289745811027
+  },
+  "cagr": 5.06285745828432
+}

@@ -1,0 +1,149 @@
+{
+  "instrument": "MSFT",
+  "broker_symbol": "MSFT.OQ",
+  "strategy_name": "Global Macro Auction Market technical execution layer",
+  "source_transcript": "C:\\Users\\hama101\\.codex\\attachments\\cb26eed0-1dc7-4e80-885f-ab1123dbcada\\pasted-text.txt",
+  "scope_warning": "This test covers the objective volume-profile entry layer only. The video's discretionary macro scenario, intermarket selection, COT interpretation, and VIX context were not encoded.",
+  "data": {
+    "server": "MEXAtlantic-Demo",
+    "first_utc": "2022-01-03T16:30:00+00:00",
+    "last_utc": "2026-08-13T22:53:00+00:00",
+    "m1_rows": 443697,
+    "median_spread_price": 0.06,
+    "real_volume_sum": 0,
+    "volume_warning": "CFD real volume is unavailable; profiles use broker quote-tick activity."
+  },
+  "selection_gate_passed_2022_2025": true,
+  "selected_pattern": {
+    "model": "failed_auction",
+    "timeframe_minutes": 1440,
+    "lookback_days": 80,
+    "regime_mode": "balanced_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.25,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 0
+  },
+  "selected_execution": {
+    "stop_buffer_atr": 0.25,
+    "reward_risk": 0.0,
+    "minimum_reward_risk": 1.5,
+    "maximum_hold_hours": 336,
+    "management": 1
+  },
+  "development_2022_2024": {
+    "trades": 15,
+    "wins": 4,
+    "losses": 11,
+    "win_rate_pct": 26.666666666666668,
+    "profit_factor": 3.303585245777966,
+    "net_r": 11.6022007721192,
+    "mean_r": 0.7734800514746134,
+    "return_pct": 11.847106254110518,
+    "max_drawdown_pct": 5.7427926006940275,
+    "final_balance": 11184.710625411051
+  },
+  "validation_2025": {
+    "trades": 6,
+    "wins": 2,
+    "losses": 4,
+    "win_rate_pct": 33.333333333333336,
+    "profit_factor": 183.7198801721174,
+    "net_r": 3.7181992075318884,
+    "mean_r": 0.6196998679219814,
+    "return_pct": 3.7516760499635593,
+    "max_drawdown_pct": 2.438903916098542,
+    "final_balance": 10375.167604996355
+  },
+  "confirmation_2026": {
+    "trades": 3,
+    "wins": 0,
+    "losses": 3,
+    "win_rate_pct": 0.0,
+    "profit_factor": 0.0,
+    "net_r": -2.005572531838534,
+    "mean_r": -0.6685241772795113,
+    "return_pct": -1.9955034490700352,
+    "max_drawdown_pct": 3.0417668249793297,
+    "final_balance": 9800.449655092996
+  },
+  "full_2022_2026": {
+    "trades": 24,
+    "wins": 6,
+    "losses": 18,
+    "win_rate_pct": 25.0,
+    "profit_factor": 2.885283757447889,
+    "net_r": 13.314827447812554,
+    "mean_r": 0.5547844769921898,
+    "return_pct": 13.727600348700753,
+    "max_drawdown_pct": 5.7427926006940275,
+    "final_balance": 11372.760034870076
+  },
+  "full_cagr_pct": 2.8305772690472297,
+  "yearly": {
+    "2022": {
+      "trades": 8,
+      "wins": 1,
+      "losses": 7,
+      "win_rate_pct": 12.5,
+      "profit_factor": 1.1370046269040273,
+      "net_r": 0.4147508120770529,
+      "mean_r": 0.05184385150963161,
+      "return_pct": 0.34228008272165766,
+      "max_drawdown_pct": 2.9966028088064376,
+      "final_balance": 10034.228008272166
+    },
+    "2023": {
+      "trades": 2,
+      "wins": 1,
+      "losses": 1,
+      "win_rate_pct": 50.0,
+      "profit_factor": 2815.9252280183555,
+      "net_r": 6.417699466760591,
+      "mean_r": 3.2088497333802954,
+      "return_pct": 6.417553098758932,
+      "max_drawdown_pct": 0.002279882748898672,
+      "final_balance": 10641.755309875893
+    },
+    "2024": {
+      "trades": 5,
+      "wins": 2,
+      "losses": 3,
+      "win_rate_pct": 40.0,
+      "profit_factor": 3.376523850037628,
+      "net_r": 4.769750493281557,
+      "mean_r": 0.9539500986563114,
+      "return_pct": 4.743605282093832,
+      "max_drawdown_pct": 1.994768628059701,
+      "final_balance": 10474.360528209383
+    },
+    "2025": {
+      "trades": 6,
+      "wins": 2,
+      "losses": 4,
+      "win_rate_pct": 33.33333333333333,
+      "profit_factor": 183.7198801721174,
+      "net_r": 3.7181992075318884,
+      "mean_r": 0.6196998679219814,
+      "return_pct": 3.751676049963537,
+      "max_drawdown_pct": 0.01296442548544879,
+      "final_balance": 10375.167604996353
+    },
+    "2026": {
+      "trades": 3,
+      "wins": 0,
+      "losses": 3,
+      "win_rate_pct": 0.0,
+      "profit_factor": 0.0,
+      "net_r": -2.005572531838534,
+      "mean_r": -0.6685241772795113,
+      "return_pct": -1.995503449070024,
+      "max_drawdown_pct": 1.9955034490700199,
+      "final_balance": 9800.449655092998
+    }
+  },
+  "research_status": "FAILED_CONFIRMATION",
+  "final_status": "REJECT",
+  "asset_class": "US equity/index CFD",
+  "direction_rule": "long only, as specified by the video for US equities"
+}

@@ -1,0 +1,52 @@
+
+=== AMD: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "AMD",
+  "status": "REJECT",
+  "pattern": {
+    "model": "breakout_retest",
+    "timeframe_minutes": 1440,
+    "lookback_days": 10,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.0,
+    "entry_tolerance_atr": 0.1,
+    "retest_expiry_bars": 6
+  },
+  "execution": {
+    "stop_buffer_atr": 0.25,
+    "reward_risk": 3.0,
+    "minimum_reward_risk": 0.0,
+    "maximum_hold_hours": 72,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 3,
+    "wins": 2,
+    "losses": 1,
+    "win_rate_pct": 66.66666666666667,
+    "profit_factor": 8.62280944244254,
+    "net_r": 4.68239439998178,
+    "mean_r": 1.5607981333272598,
+    "return_pct": 4.7183438477439665,
+    "max_drawdown_pct": 1.4394323836869185,
+    "final_balance": 10471.834384774396
+  },
+  "full": {
+    "trades": 22,
+    "wins": 12,
+    "losses": 10,
+    "win_rate_pct": 54.54545454545455,
+    "profit_factor": 3.472634653491936,
+    "net_r": 21.601164060775897,
+    "mean_r": 0.9818710936716317,
+    "return_pct": 23.531764470866467,
+    "max_drawdown_pct": 5.097927760766032,
+    "final_balance": 12353.176447086647
+  },
+  "cagr": 4.692349284518538
+}

@@ -1,0 +1,52 @@
+
+=== TSLA: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "TSLA",
+  "status": "REJECT",
+  "pattern": {
+    "model": "failed_auction",
+    "timeframe_minutes": 240,
+    "lookback_days": 40,
+    "regime_mode": "balanced_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.25,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 0
+  },
+  "execution": {
+    "stop_buffer_atr": 0.1,
+    "reward_risk": 0.0,
+    "minimum_reward_risk": 1.5,
+    "maximum_hold_hours": 168,
+    "management": 1
+  },
+  "confirmation": {
+    "trades": 8,
+    "wins": 1,
+    "losses": 7,
+    "win_rate_pct": 12.5,
+    "profit_factor": 0.9387007350593294,
+    "net_r": -0.18569557747881316,
+    "mean_r": -0.023211947184851645,
+    "return_pct": -0.2402995142708142,
+    "max_drawdown_pct": 4.343501974255414,
+    "final_balance": 9975.970048572919
+  },
+  "full": {
+    "trades": 40,
+    "wins": 7,
+    "losses": 33,
+    "win_rate_pct": 17.5,
+    "profit_factor": 3.106127747201963,
+    "net_r": 46.71289850557249,
+    "mean_r": 1.1678224626393123,
+    "return_pct": 46.99418294042728,
+    "max_drawdown_pct": 22.142751151546936,
+    "final_balance": 14699.418294042727
+  },
+  "cagr": 8.718204680833242
+}

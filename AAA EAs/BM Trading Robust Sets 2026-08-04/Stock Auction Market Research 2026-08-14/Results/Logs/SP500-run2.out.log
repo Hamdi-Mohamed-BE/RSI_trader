@@ -1,0 +1,52 @@
+
+=== SP500: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "SP500",
+  "status": "REJECT",
+  "pattern": {
+    "model": "breakout_retest",
+    "timeframe_minutes": 1440,
+    "lookback_days": 20,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 10,
+    "shift_threshold_atr": 0.0,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 6
+  },
+  "execution": {
+    "stop_buffer_atr": 0.25,
+    "reward_risk": 3.0,
+    "minimum_reward_risk": 0.0,
+    "maximum_hold_hours": 168,
+    "management": 1
+  },
+  "confirmation": {
+    "trades": 6,
+    "wins": 1,
+    "losses": 5,
+    "win_rate_pct": 16.666666666666668,
+    "profit_factor": 0.9924675136803628,
+    "net_r": -0.02273613673835584,
+    "mean_r": -0.0037893561230593065,
+    "return_pct": -0.081883589982501,
+    "max_drawdown_pct": 4.351840654428777,
+    "final_balance": 9991.81164100175
+  },
+  "full": {
+    "trades": 32,
+    "wins": 17,
+    "losses": 15,
+    "win_rate_pct": 53.125,
+    "profit_factor": 4.0363025610846295,
+    "net_r": 28.864921538984238,
+    "mean_r": 0.9020287980932574,
+    "return_pct": 32.75997404190167,
+    "max_drawdown_pct": 4.50201845955094,
+    "final_balance": 13275.997404190168
+  },
+  "cagr": 6.336737861760788
+}

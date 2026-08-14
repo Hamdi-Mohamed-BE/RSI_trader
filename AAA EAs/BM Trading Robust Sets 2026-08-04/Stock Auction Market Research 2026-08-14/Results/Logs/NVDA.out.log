@@ -1,0 +1,52 @@
+
+=== NVDA: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "NVDA",
+  "status": "REJECT",
+  "pattern": {
+    "model": "breakout_retest",
+    "timeframe_minutes": 1440,
+    "lookback_days": 10,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.25,
+    "entry_tolerance_atr": 0.1,
+    "retest_expiry_bars": 3
+  },
+  "execution": {
+    "stop_buffer_atr": 0.0,
+    "reward_risk": 2.0,
+    "minimum_reward_risk": 0.0,
+    "maximum_hold_hours": 336,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 2,
+    "wins": 1,
+    "losses": 1,
+    "win_rate_pct": 50.0,
+    "profit_factor": 1.9921903695408805,
+    "net_r": 0.9948082860832024,
+    "mean_r": 0.4974041430416012,
+    "return_pct": 0.9747811149160679,
+    "max_drawdown_pct": 1.4611000709101993,
+    "final_balance": 10097.478111491608
+  },
+  "full": {
+    "trades": 22,
+    "wins": 14,
+    "losses": 8,
+    "win_rate_pct": 63.63636363636363,
+    "profit_factor": 3.3500323677628083,
+    "net_r": 19.467144956388633,
+    "mean_r": 0.8848702252903924,
+    "return_pct": 21.10943180946645,
+    "max_drawdown_pct": 5.150273807743585,
+    "final_balance": 12110.943180946646
+  },
+  "cagr": 4.243430253573011
+}

@@ -1,0 +1,52 @@
+
+=== AMD: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "AMD",
+  "status": "REJECT",
+  "pattern": {
+    "model": "failed_auction",
+    "timeframe_minutes": 240,
+    "lookback_days": 40,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.0,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 0
+  },
+  "execution": {
+    "stop_buffer_atr": 0.25,
+    "reward_risk": 0.0,
+    "minimum_reward_risk": 1.5,
+    "maximum_hold_hours": 72,
+    "management": 1
+  },
+  "confirmation": {
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "win_rate_pct": 0.0,
+    "profit_factor": 0.0,
+    "net_r": 0.0,
+    "mean_r": 0.0,
+    "return_pct": 0.0,
+    "max_drawdown_pct": 0.0,
+    "final_balance": 10000.0
+  },
+  "full": {
+    "trades": 18,
+    "wins": 2,
+    "losses": 16,
+    "win_rate_pct": 11.11111111111111,
+    "profit_factor": 1.056488496481752,
+    "net_r": 0.5225781203049723,
+    "mean_r": 0.029032117794720685,
+    "return_pct": 0.2127035784839304,
+    "max_drawdown_pct": 6.581335944875984,
+    "final_balance": 10021.270357848392
+  },
+  "cagr": 0.046094165297883016
+}

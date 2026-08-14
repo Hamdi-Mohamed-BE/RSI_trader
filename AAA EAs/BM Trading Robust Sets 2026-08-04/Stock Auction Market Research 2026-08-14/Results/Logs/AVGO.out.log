@@ -1,0 +1,52 @@
+
+=== AVGO: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "AVGO",
+  "status": "REJECT",
+  "pattern": {
+    "model": "breakout_retest",
+    "timeframe_minutes": 1440,
+    "lookback_days": 40,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.0,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 6
+  },
+  "execution": {
+    "stop_buffer_atr": 0.1,
+    "reward_risk": 2.0,
+    "minimum_reward_risk": 0.0,
+    "maximum_hold_hours": 168,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "win_rate_pct": 0.0,
+    "profit_factor": 0.0,
+    "net_r": 0.0,
+    "mean_r": 0.0,
+    "return_pct": 0.0,
+    "max_drawdown_pct": 0.0,
+    "final_balance": 10000.0
+  },
+  "full": {
+    "trades": 21,
+    "wins": 13,
+    "losses": 8,
+    "win_rate_pct": 61.904761904761905,
+    "profit_factor": 2.880196067963642,
+    "net_r": 15.608753477748738,
+    "mean_r": 0.7432739751308923,
+    "return_pct": 16.569249123988115,
+    "max_drawdown_pct": 6.223406541614894,
+    "final_balance": 11656.924912398812
+  },
+  "cagr": 3.3827278963143526
+}

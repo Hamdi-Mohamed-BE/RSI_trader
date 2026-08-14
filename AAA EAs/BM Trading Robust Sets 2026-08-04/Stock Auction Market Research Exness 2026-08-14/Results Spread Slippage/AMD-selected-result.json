@@ -1,0 +1,150 @@
+{
+  "instrument": "AMD",
+  "broker_symbol": "AMD",
+  "strategy_name": "Global Macro Auction Market technical execution layer",
+  "source_transcript": "C:\\Users\\hama101\\.codex\\attachments\\cb26eed0-1dc7-4e80-885f-ab1123dbcada\\pasted-text.txt",
+  "scope_warning": "This test covers the objective volume-profile entry layer only. The video's discretionary macro scenario, intermarket selection, COT interpretation, and VIX context were not encoded.",
+  "data": {
+    "server": "Exness-MT5Trial16",
+    "first_utc": "2022-01-03T11:01:00+00:00",
+    "last_utc": "2026-08-14T12:28:00+00:00",
+    "m1_rows": 660306,
+    "median_spread_price": 0.16,
+    "real_volume_sum": 0,
+    "volume_warning": "CFD real volume is unavailable; profiles use broker quote-tick activity."
+  },
+  "selection_gate_passed_2022_2025": false,
+  "selected_pattern": {
+    "model": "failed_auction",
+    "timeframe_minutes": 240,
+    "lookback_days": 40,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.0,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 0
+  },
+  "selected_execution": {
+    "stop_buffer_atr": 0.25,
+    "reward_risk": 0.0,
+    "minimum_reward_risk": 1.5,
+    "maximum_hold_hours": 72,
+    "management": 1
+  },
+  "development_2022_2024": {
+    "trades": 13,
+    "wins": 2,
+    "losses": 11,
+    "win_rate_pct": 15.384615384615385,
+    "profit_factor": 1.1953560616511076,
+    "net_r": 1.5972966567625273,
+    "mean_r": 0.12286897359711749,
+    "return_pct": 1.3007696590101592,
+    "max_drawdown_pct": 5.263093735163679,
+    "final_balance": 10130.076965901017
+  },
+  "validation_2025": {
+    "trades": 5,
+    "wins": 0,
+    "losses": 5,
+    "win_rate_pct": 0.0,
+    "profit_factor": 0.0,
+    "net_r": -1.074718536457555,
+    "mean_r": -0.21494370729151102,
+    "return_pct": -1.0740945840676086,
+    "max_drawdown_pct": 3.0798592760435852,
+    "final_balance": 9892.59054159324
+  },
+  "confirmation_2026": {
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "win_rate_pct": 0.0,
+    "profit_factor": 0.0,
+    "net_r": 0.0,
+    "mean_r": 0.0,
+    "return_pct": 0.0,
+    "max_drawdown_pct": 0.0,
+    "final_balance": 10000.0
+  },
+  "full_2022_2026": {
+    "trades": 18,
+    "wins": 2,
+    "losses": 16,
+    "win_rate_pct": 11.11111111111111,
+    "profit_factor": 1.056488496481752,
+    "net_r": 0.5225781203049723,
+    "mean_r": 0.029032117794720685,
+    "return_pct": 0.2127035784839304,
+    "max_drawdown_pct": 6.581335944875984,
+    "final_balance": 10021.270357848392
+  },
+  "full_cagr_pct": 0.046094165297883016,
+  "yearly": {
+    "2022": {
+      "trades": 4,
+      "wins": 1,
+      "losses": 3,
+      "win_rate_pct": 25.0,
+      "profit_factor": 2.212885392342161,
+      "net_r": 3.709151653486429,
+      "mean_r": 0.9272879133716072,
+      "return_pct": 3.5353694090358267,
+      "max_drawdown_pct": 2.03726931860348,
+      "final_balance": 10353.536940903583
+    },
+    "2023": {
+      "trades": 4,
+      "wins": 1,
+      "losses": 3,
+      "win_rate_pct": 25.0,
+      "profit_factor": 1.465258013701169,
+      "net_r": 0.9545978978870675,
+      "mean_r": 0.23864947447176688,
+      "return_pct": 0.9039994272280305,
+      "max_drawdown_pct": 1.0389362143467589,
+      "final_balance": 10090.399942722803
+    },
+    "2024": {
+      "trades": 5,
+      "wins": 0,
+      "losses": 5,
+      "win_rate_pct": 0.0,
+      "profit_factor": 0.0,
+      "net_r": -3.0664528946109684,
+      "mean_r": -0.6132905789221936,
+      "return_pct": -3.034860320339705,
+      "max_drawdown_pct": 3.0348603203397033,
+      "final_balance": 9696.51396796603
+    },
+    "2025": {
+      "trades": 5,
+      "wins": 0,
+      "losses": 5,
+      "win_rate_pct": 0.0,
+      "profit_factor": 0.0,
+      "net_r": -1.074718536457555,
+      "mean_r": -0.21494370729151102,
+      "return_pct": -1.0740945840675864,
+      "max_drawdown_pct": 1.0740945840675886,
+      "final_balance": 9892.590541593241
+    },
+    "2026": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate_pct": 0.0,
+      "profit_factor": 0.0,
+      "net_r": 0.0,
+      "mean_r": 0.0,
+      "return_pct": 0.0,
+      "max_drawdown_pct": 0.0,
+      "final_balance": 10000.0
+    }
+  },
+  "research_status": "FAILED_CONFIRMATION",
+  "final_status": "REJECT",
+  "asset_class": "US equity/index CFD",
+  "broker": "Exness-MT5Trial16 Zero demo",
+  "direction_rule": "long only"
+}
