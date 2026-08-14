@@ -1,0 +1,47 @@
+
+=== US100: anchored POC pullback research ===
+{
+  "instrument": "US100",
+  "status": "REJECT",
+  "pattern": {
+    "timeframe_minutes": 30,
+    "pivot_bars": 3,
+    "minimum_leg_atr": 3.5,
+    "structure_mode": 1,
+    "reaction_mode": 2,
+    "poc_tolerance_atr": 0.05,
+    "expiry_bars": 12
+  },
+  "execution": {
+    "stop_mode": 0,
+    "stop_buffer_atr": 0.0,
+    "reward_risk": 2.0,
+    "maximum_hold_hours": 72,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 42,
+    "wins": 14,
+    "losses": 28,
+    "win_rate_pct": 33.333333333333336,
+    "profit_factor": 0.9009166017086868,
+    "net_r": -2.772803659899825,
+    "mean_r": -0.06601913475951965,
+    "return_pct": -3.1058621980185497,
+    "max_drawdown_pct": 9.552765410635624,
+    "final_balance": 9689.413780198145
+  },
+  "full": {
+    "trades": 292,
+    "wins": 119,
+    "losses": 173,
+    "win_rate_pct": 40.75342465753425,
+    "profit_factor": 1.2441527847042235,
+    "net_r": 41.577134785436286,
+    "mean_r": 0.14238744789532976,
+    "return_pct": 47.27371488935903,
+    "max_drawdown_pct": 12.4219588292847,
+    "final_balance": 14727.371488935903
+  },
+  "cagr": 8.792170935882115
+}

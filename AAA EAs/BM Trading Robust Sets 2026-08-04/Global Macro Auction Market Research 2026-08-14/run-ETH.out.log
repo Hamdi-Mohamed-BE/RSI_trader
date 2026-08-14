@@ -1,0 +1,52 @@
+
+=== ETH: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "ETH",
+  "status": "REJECT",
+  "pattern": {
+    "model": "failed_auction",
+    "timeframe_minutes": 240,
+    "lookback_days": 80,
+    "regime_mode": "balanced_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.5,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 0
+  },
+  "execution": {
+    "stop_buffer_atr": 0.0,
+    "reward_risk": 0.0,
+    "minimum_reward_risk": 1.0,
+    "maximum_hold_hours": 336,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 6,
+    "wins": 3,
+    "losses": 3,
+    "win_rate_pct": 50.0,
+    "profit_factor": 7.1037313218404705,
+    "net_r": 18.92585606466014,
+    "mean_r": 3.1543093441100236,
+    "return_pct": 19.04066041820791,
+    "max_drawdown_pct": 5.8262759672453726,
+    "final_balance": 11904.066041820792
+  },
+  "full": {
+    "trades": 68,
+    "wins": 16,
+    "losses": 52,
+    "win_rate_pct": 23.529411764705884,
+    "profit_factor": 2.088663464044819,
+    "net_r": 57.71742768317005,
+    "mean_r": 0.8487857012230889,
+    "return_pct": 65.3993521953092,
+    "max_drawdown_pct": 14.700886255070431,
+    "final_balance": 16539.935219530922
+  },
+  "cagr": 11.55386989299927
+}

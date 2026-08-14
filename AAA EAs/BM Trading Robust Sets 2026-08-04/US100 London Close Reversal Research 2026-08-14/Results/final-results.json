@@ -1,0 +1,175 @@
+{
+  "selection": {
+    "status": "Passed training and 2024 validation gate",
+    "parameters": {
+      "london_close": "17:00",
+      "candle_lookback": 1,
+      "min_net_body_points": 25.0,
+      "stop_points": 25.0,
+      "reward_risk": 2.5,
+      "max_hold_minutes": 360,
+      "management": "breakeven_1R"
+    },
+    "training_2022_2023": {
+      "trades": 145.0,
+      "wins": 38.0,
+      "losses": 107.0,
+      "win_rate_pct": 26.20689655172414,
+      "profit_factor": 1.3673705525021722,
+      "mean_r": 0.17517241379310447,
+      "net_r": 25.400000000000148,
+      "return_pct": 26.986595786372234,
+      "max_drawdown_pct": 13.933708858793754,
+      "final_balance": 12698.659578637224
+    },
+    "validation_2024": {
+      "trades": 90.0,
+      "wins": 24.0,
+      "losses": 66.0,
+      "win_rate_pct": 26.666666666666668,
+      "profit_factor": 1.2087591240875897,
+      "mean_r": 0.11439999999999913,
+      "net_r": 10.295999999999921,
+      "return_pct": 9.763174004990338,
+      "max_drawdown_pct": 8.486491298839702,
+      "final_balance": 10976.317400499034
+    },
+    "holdout_locked": [
+      "2025-01-01",
+      "2026-08-07"
+    ],
+    "execution": {
+      "entry": "next available M1 bar after the selected Europe/London close",
+      "spread": "recorded broker spread on each M1 bar",
+      "slippage_price_each_market_fill": 0.5,
+      "same_bar_stop_target": "stop first",
+      "risk_fraction": 0.01
+    }
+  },
+  "parameters": {
+    "london_close": "17:00",
+    "candle_lookback": 1,
+    "min_net_body_points": 25.0,
+    "stop_points": 25.0,
+    "reward_risk": 2.5,
+    "max_hold_minutes": 360,
+    "management": "breakeven_1R"
+  },
+  "periods": {
+    "training_2022_2023": {
+      "trades": 145,
+      "wins": 38,
+      "losses": 107,
+      "win_rate_pct": 26.20689655172414,
+      "profit_factor": 1.3673705525021722,
+      "mean_r": 0.17517241379310447,
+      "net_r": 25.400000000000148,
+      "return_pct": 26.986595786372234,
+      "max_drawdown_pct": 13.933708858793754,
+      "final_balance": 12698.659578637224
+    },
+    "validation_2024": {
+      "trades": 90,
+      "wins": 24,
+      "losses": 66,
+      "win_rate_pct": 26.666666666666668,
+      "profit_factor": 1.2087591240875897,
+      "mean_r": 0.11439999999999913,
+      "net_r": 10.295999999999921,
+      "return_pct": 9.763174004990338,
+      "max_drawdown_pct": 8.486491298839702,
+      "final_balance": 10976.317400499034
+    },
+    "holdout_2025_2026": {
+      "trades": 183,
+      "wins": 32,
+      "losses": 151,
+      "win_rate_pct": 17.48633879781421,
+      "profit_factor": 0.8789277081960007,
+      "mean_r": -0.060218579234972654,
+      "net_r": -11.019999999999996,
+      "return_pct": -11.719133222051992,
+      "max_drawdown_pct": 17.22012321729247,
+      "final_balance": 8828.086677794801
+    },
+    "full_2022_2026": {
+      "trades": 418,
+      "wins": 94,
+      "losses": 324,
+      "win_rate_pct": 22.48803827751196,
+      "profit_factor": 1.1177964483482914,
+      "mean_r": 0.05903349282296669,
+      "net_r": 24.676000000000077,
+      "return_pct": 23.049860729422946,
+      "max_drawdown_pct": 17.220123217292443,
+      "final_balance": 12304.986072942294
+    }
+  },
+  "yearly": [
+    {
+      "year": 2022,
+      "trades": 84,
+      "wins": 18,
+      "losses": 66,
+      "win_rate_pct": 21.428571428571427,
+      "profit_factor": 0.9929390997352162,
+      "mean_r": -0.003809523809523802,
+      "net_r": -0.3199999999999994,
+      "return_pct": -1.0977282907580377,
+      "max_drawdown_pct": 10.466199796702723,
+      "final_balance": 9890.227170924196
+    },
+    {
+      "year": 2023,
+      "trades": 61,
+      "wins": 20,
+      "losses": 41,
+      "win_rate_pct": 32.78688524590164,
+      "profit_factor": 2.079764903442492,
+      "mean_r": 0.4216393442622975,
+      "net_r": 25.720000000000148,
+      "return_pct": 28.396035391071894,
+      "max_drawdown_pct": 5.9848530364006916,
+      "final_balance": 12839.60353910719
+    },
+    {
+      "year": 2024,
+      "trades": 90,
+      "wins": 24,
+      "losses": 66,
+      "win_rate_pct": 26.666666666666668,
+      "profit_factor": 1.2087591240875897,
+      "mean_r": 0.11439999999999913,
+      "net_r": 10.295999999999921,
+      "return_pct": 9.763174004990338,
+      "max_drawdown_pct": 8.486491298839702,
+      "final_balance": 10976.317400499034
+    },
+    {
+      "year": 2025,
+      "trades": 112,
+      "wins": 21,
+      "losses": 91,
+      "win_rate_pct": 18.75,
+      "profit_factor": 1.0753789430561245,
+      "mean_r": 0.03285714285714288,
+      "net_r": 3.6800000000000033,
+      "return_pct": 2.8274639558502512,
+      "max_drawdown_pct": 12.246351314231447,
+      "final_balance": 10282.746395585025
+    },
+    {
+      "year": 2026,
+      "trades": 71,
+      "wins": 11,
+      "losses": 60,
+      "win_rate_pct": 15.492957746478872,
+      "profit_factor": 0.6516587677725117,
+      "mean_r": -0.2070422535211267,
+      "net_r": -14.699999999999996,
+      "return_pct": -14.146606964991292,
+      "max_drawdown_pct": 17.220123217292464,
+      "final_balance": 8585.33930350087
+    }
+  ]
+}

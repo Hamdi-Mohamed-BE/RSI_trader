@@ -1,0 +1,67 @@
+{
+  "status": "Passed positive-return and PF>=1.02 gate in every year 2022-2025",
+  "parameters": {
+    "london_close": "17:00",
+    "candle_lookback": 1,
+    "min_net_body_points": 25.0,
+    "stop_points": 50.0,
+    "reward_risk": 2.0,
+    "max_hold_minutes": 90,
+    "management": "breakeven_1R"
+  },
+  "development_years": {
+    "2022": {
+      "trades": 84.0,
+      "wins": 33.0,
+      "losses": 51.0,
+      "win_rate_pct": 39.285714285714285,
+      "profit_factor": 1.3473568322808407,
+      "mean_r": 0.1337166666666638,
+      "net_r": 11.232199999999759,
+      "return_pct": 11.307582475143075,
+      "max_drawdown_pct": 6.839645556369385,
+      "final_balance": 11130.758247514308
+    },
+    "2023": {
+      "trades": 61.0,
+      "wins": 30.0,
+      "losses": 31.0,
+      "win_rate_pct": 49.18032786885246,
+      "profit_factor": 1.3410207755559005,
+      "mean_r": 0.11490163934426909,
+      "net_r": 7.009000000000414,
+      "return_pct": 6.968469675739741,
+      "max_drawdown_pct": 4.166489238321107,
+      "final_balance": 10696.846967573974
+    },
+    "2024": {
+      "trades": 90.0,
+      "wins": 40.0,
+      "losses": 50.0,
+      "win_rate_pct": 44.44444444444444,
+      "profit_factor": 1.1992230548820983,
+      "mean_r": 0.08034444444445116,
+      "net_r": 7.231000000000604,
+      "return_pct": 6.95728942101026,
+      "max_drawdown_pct": 9.125033658278788,
+      "final_balance": 10695.728942101026
+    },
+    "2025": {
+      "trades": 112.0,
+      "wins": 42.0,
+      "losses": 70.0,
+      "win_rate_pct": 37.5,
+      "profit_factor": 1.2620103801623588,
+      "mean_r": 0.10547321428571522,
+      "net_r": 11.813000000000105,
+      "return_pct": 11.75181700672503,
+      "max_drawdown_pct": 15.785802960696326,
+      "final_balance": 11175.181700672503
+    }
+  },
+  "confirmation_locked": [
+    "2026-01-01",
+    "2026-08-07"
+  ],
+  "note": "The earlier selected configuration's 2026 result was already observed; this second selection uses no 2026 values but is confirmatory, not a pristine first holdout."
+}

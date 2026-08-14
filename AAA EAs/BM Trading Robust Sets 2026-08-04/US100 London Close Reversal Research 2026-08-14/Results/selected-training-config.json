@@ -1,0 +1,47 @@
+{
+  "status": "Passed training and 2024 validation gate",
+  "parameters": {
+    "london_close": "17:00",
+    "candle_lookback": 1,
+    "min_net_body_points": 25.0,
+    "stop_points": 25.0,
+    "reward_risk": 2.5,
+    "max_hold_minutes": 360,
+    "management": "breakeven_1R"
+  },
+  "training_2022_2023": {
+    "trades": 145.0,
+    "wins": 38.0,
+    "losses": 107.0,
+    "win_rate_pct": 26.20689655172414,
+    "profit_factor": 1.3673705525021722,
+    "mean_r": 0.17517241379310447,
+    "net_r": 25.400000000000148,
+    "return_pct": 26.986595786372234,
+    "max_drawdown_pct": 13.933708858793754,
+    "final_balance": 12698.659578637224
+  },
+  "validation_2024": {
+    "trades": 90.0,
+    "wins": 24.0,
+    "losses": 66.0,
+    "win_rate_pct": 26.666666666666668,
+    "profit_factor": 1.2087591240875897,
+    "mean_r": 0.11439999999999913,
+    "net_r": 10.295999999999921,
+    "return_pct": 9.763174004990338,
+    "max_drawdown_pct": 8.486491298839702,
+    "final_balance": 10976.317400499034
+  },
+  "holdout_locked": [
+    "2025-01-01",
+    "2026-08-07"
+  ],
+  "execution": {
+    "entry": "next available M1 bar after the selected Europe/London close",
+    "spread": "recorded broker spread on each M1 bar",
+    "slippage_price_each_market_fill": 0.5,
+    "same_bar_stop_target": "stop first",
+    "risk_fraction": 0.01
+  }
+}

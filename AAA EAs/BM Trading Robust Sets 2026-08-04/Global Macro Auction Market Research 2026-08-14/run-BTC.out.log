@@ -1,0 +1,52 @@
+
+=== BTC: global-macro auction-market technical layer ===
+  calculating 10-day composite profiles
+  calculating 20-day composite profiles
+  calculating 40-day composite profiles
+  calculating 80-day composite profiles
+{
+  "instrument": "BTC",
+  "status": "REJECT",
+  "pattern": {
+    "model": "failed_auction",
+    "timeframe_minutes": 240,
+    "lookback_days": 40,
+    "regime_mode": "migrating_value",
+    "shift_lag_days": 5,
+    "shift_threshold_atr": 0.0,
+    "entry_tolerance_atr": 0.0,
+    "retest_expiry_bars": 0
+  },
+  "execution": {
+    "stop_buffer_atr": 0.1,
+    "reward_risk": 0.0,
+    "minimum_reward_risk": 1.0,
+    "maximum_hold_hours": 336,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 13,
+    "wins": 2,
+    "losses": 11,
+    "win_rate_pct": 15.384615384615385,
+    "profit_factor": 1.2698568887522577,
+    "net_r": 2.9972863464702924,
+    "mean_r": 0.23056048819002248,
+    "return_pct": 2.4048682273376087,
+    "max_drawdown_pct": 9.390024504414365,
+    "final_balance": 10240.486822733761
+  },
+  "full": {
+    "trades": 66,
+    "wins": 19,
+    "losses": 47,
+    "win_rate_pct": 28.78787878787879,
+    "profit_factor": 1.8114445115380386,
+    "net_r": 38.68149432245634,
+    "mean_r": 0.5860832473099445,
+    "return_pct": 42.86853303857527,
+    "max_drawdown_pct": 13.117421555402109,
+    "final_balance": 14286.853303857528
+  },
+  "cagr": 8.065186334302886
+}

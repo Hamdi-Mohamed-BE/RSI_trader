@@ -1,0 +1,47 @@
+
+=== XAG: anchored POC pullback research ===
+{
+  "instrument": "XAG",
+  "status": "REJECT",
+  "pattern": {
+    "timeframe_minutes": 60,
+    "pivot_bars": 5,
+    "minimum_leg_atr": 3.5,
+    "structure_mode": 1,
+    "reaction_mode": 3,
+    "poc_tolerance_atr": 0.05,
+    "expiry_bars": 12
+  },
+  "execution": {
+    "stop_mode": 0,
+    "stop_buffer_atr": 0.1,
+    "reward_risk": 2.5,
+    "maximum_hold_hours": 72,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 23,
+    "wins": 10,
+    "losses": 13,
+    "win_rate_pct": 43.47826086956522,
+    "profit_factor": 1.4516182005413274,
+    "net_r": 5.110651367007883,
+    "mean_r": 0.2222022333481688,
+    "return_pct": 4.9944382644646845,
+    "max_drawdown_pct": 5.142217384829037,
+    "final_balance": 10499.443826446468
+  },
+  "full": {
+    "trades": 163,
+    "wins": 76,
+    "losses": 87,
+    "win_rate_pct": 46.625766871165645,
+    "profit_factor": 1.4760537697945588,
+    "net_r": 38.052030758596416,
+    "mean_r": 0.2334480414637817,
+    "return_pct": 43.93954036147076,
+    "max_drawdown_pct": 12.558475390011639,
+    "final_balance": 14393.954036147077
+  },
+  "cagr": 8.235898136974896
+}

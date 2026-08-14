@@ -1,0 +1,47 @@
+
+=== ETH: anchored POC pullback research ===
+{
+  "instrument": "ETH",
+  "status": "REJECT",
+  "pattern": {
+    "timeframe_minutes": 60,
+    "pivot_bars": 2,
+    "minimum_leg_atr": 3.5,
+    "structure_mode": 1,
+    "reaction_mode": 2,
+    "poc_tolerance_atr": 0.05,
+    "expiry_bars": 12
+  },
+  "execution": {
+    "stop_mode": 0,
+    "stop_buffer_atr": 0.1,
+    "reward_risk": 1.5,
+    "maximum_hold_hours": 6,
+    "management": 1
+  },
+  "confirmation": {
+    "trades": 34,
+    "wins": 15,
+    "losses": 19,
+    "win_rate_pct": 44.11764705882353,
+    "profit_factor": 1.0695223071411963,
+    "net_r": 0.46125907212047884,
+    "mean_r": 0.013566443297661143,
+    "return_pct": 0.40987897245350347,
+    "max_drawdown_pct": 3.0682928503088083,
+    "final_balance": 10040.98789724535
+  },
+  "full": {
+    "trades": 193,
+    "wins": 68,
+    "losses": 125,
+    "win_rate_pct": 35.233160621761655,
+    "profit_factor": 0.7165696012823775,
+    "net_r": -14.712228054116338,
+    "mean_r": -0.07622916090215719,
+    "return_pct": -13.991310253159451,
+    "max_drawdown_pct": 19.42431541030817,
+    "final_balance": 8600.868974684056
+  },
+  "cagr": -3.2219485209512677
+}

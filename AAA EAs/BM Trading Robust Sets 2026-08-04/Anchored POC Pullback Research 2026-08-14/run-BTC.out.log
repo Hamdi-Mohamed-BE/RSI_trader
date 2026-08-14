@@ -1,0 +1,47 @@
+
+=== BTC: anchored POC pullback research ===
+{
+  "instrument": "BTC",
+  "status": "REJECT",
+  "pattern": {
+    "timeframe_minutes": 60,
+    "pivot_bars": 2,
+    "minimum_leg_atr": 3.5,
+    "structure_mode": 1,
+    "reaction_mode": 3,
+    "poc_tolerance_atr": 0.05,
+    "expiry_bars": 24
+  },
+  "execution": {
+    "stop_mode": 0,
+    "stop_buffer_atr": 0.1,
+    "reward_risk": 2.5,
+    "maximum_hold_hours": 72,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 45,
+    "wins": 10,
+    "losses": 35,
+    "win_rate_pct": 22.22222222222222,
+    "profit_factor": 0.5465194327240098,
+    "net_r": -13.957520934926121,
+    "mean_r": -0.31016713188724715,
+    "return_pct": -13.310789413539082,
+    "max_drawdown_pct": 18.680164323293226,
+    "final_balance": 8668.921058646092
+  },
+  "full": {
+    "trades": 224,
+    "wins": 82,
+    "losses": 142,
+    "win_rate_pct": 36.607142857142854,
+    "profit_factor": 1.142632168293949,
+    "net_r": 17.353324520117802,
+    "mean_r": 0.0774701987505259,
+    "return_pct": 16.507813920967674,
+    "max_drawdown_pct": 18.680164323293145,
+    "final_balance": 11650.781392096767
+  },
+  "cagr": 3.3776603897185176
+}

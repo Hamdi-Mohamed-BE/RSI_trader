@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA EAs\BM Trading Robust Sets 2026-08-04\FVG Volume Research 2026-08-14\backtest_fvg_volume.py", line 767, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA EAs\BM Trading Robust Sets 2026-08-04\FVG Volume Research 2026-08-14\backtest_fvg_volume.py", line 760, in main
+    outputs = {asset: analyze_asset(asset) for asset in args.assets}
+                      ~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\hama101\Desktop\geek\ai trader\AAA EAs\BM Trading Robust Sets 2026-08-04\FVG Volume Research 2026-08-14\backtest_fvg_volume.py", line 635, in analyze_asset
+    screen = pd.DataFrame(screen_rows).sort_values("robust_score", ascending=False)
+  File "C:\Users\hama101\AppData\Roaming\Python\Python313\site-packages\pandas\core\frame.py", line 8347, in sort_values
+    k = self._get_label_or_level_values(by[0], axis=axis)
+  File "C:\Users\hama101\AppData\Roaming\Python\Python313\site-packages\pandas\core\generic.py", line 1776, in _get_label_or_level_values
+    raise KeyError(key)
+KeyError: 'robust_score'

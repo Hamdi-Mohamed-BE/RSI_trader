@@ -107,6 +107,42 @@ function Get-PortfolioItems {
             SetSource = 'AAA Final EAs\AAA Final US100 Weakness EA\RETEST INCLUDED 2026-08-07 - US100 Weakness - USTEC M15 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
+            Label = 'Auction Market XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 1440; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Global Macro Auction Market Research 2026-08-14\Presets\ACTIVE USER APPROVED - Auction Market - XAUUSD D1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Market XAG'; Canonical = 'XAGUSD'; Aliases = @('XAGUSD', 'SILVER')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Global Macro Auction Market Research 2026-08-14\Presets\ACTIVE USER APPROVED - Auction Market - XAGUSD H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Market US30'; Canonical = 'US30'; Aliases = @('US30', 'DJ30', 'WS30', 'DJI30', 'DOW30', 'DOWJONES')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Global Macro Auction Market Research 2026-08-14\Presets\ACTIVE USER APPROVED - Auction Market - US30 H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Market US100'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Global Macro Auction Market Research 2026-08-14\Presets\ACTIVE USER APPROVED - Auction Market - US100 H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Market BTC'; Canonical = 'BTCUSD'; Aliases = @('BTCUSD', 'BTCUSDT', 'BITCOIN')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Global Macro Auction Market Research 2026-08-14\Presets\ACTIVE USER APPROVED - Auction Market - BTCUSD H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+        },
+        [pscustomobject]@{
+            Label = 'Auction Market ETH'; Canonical = 'ETHUSD'; Aliases = @('ETHUSD', 'ETHUSDT', 'ETHEREUM')
+            Period = 240; Expert = 'Auction Market Value Area EA.ex5'
+            ExpertSource = 'Global Macro Auction Market Research 2026-08-14\EA\Auction Market Value Area EA.ex5'
+            SetSource = 'Global Macro Auction Market Research 2026-08-14\Presets\ACTIVE USER APPROVED - Auction Market - ETHUSD H4 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+        },
+        [pscustomobject]@{
             Label = 'AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
@@ -553,7 +589,7 @@ foreach ($item in $portfolio) {
     if (-not $match) {
         $hints = @($symbols | Where-Object {
             $name = ([string]$_.name).ToUpperInvariant()
-            $name -match 'JPY|XAU|GOLD|US30|DOW|NAS|NDX|USTEC|US100|UT100'
+            $name -match 'JPY|XAU|XAG|GOLD|SILVER|US30|DOW|NAS|NDX|USTEC|US100|UT100|BTC|BITCOIN|ETH|ETHEREUM'
         } | Select-Object -First 30 -ExpandProperty name) -join ', '
         Stop-WithMessage "No tradable broker symbol matched $($item.Canonical). Possible symbols: $hints"
     }
@@ -617,7 +653,7 @@ foreach ($item in $portfolio) {
 }
 
 if ($IsAdaptiveAccount) {
-    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while LTA, ORB, and News Pulse remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
+    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while LTA, ORB, News Pulse, and the six Auction Market charts remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
 } elseif ($IsSmallAccount) {
     if ($balance -lt 800 -or $balance -gt 1200) {
         Stop-WithMessage "Refusing to run: the small-account settings are for roughly USD 900, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Use an account between USD 800 and USD 1,200."
@@ -633,9 +669,10 @@ if ($PreflightOnly) {
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
-Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse as your temporary forced test inclusion." -ForegroundColor Red
+Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse and six user-approved Auction Market charts." -ForegroundColor Red
 if ($IsAdaptiveAccount) {
-Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA, ORB Volume Profile, and News Pulse stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA, ORB Volume Profile, News Pulse, and each Auction Market chart stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+    Write-Host 'AUCTION MARKET: six simultaneous stopped trades can lose about 6% before gaps/slippage, in addition to the other EAs.' -ForegroundColor Red
     Write-Host 'ATR fixed-money risk and percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red

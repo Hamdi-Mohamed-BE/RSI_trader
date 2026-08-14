@@ -1,0 +1,48 @@
+
+=== XAG: VAH engulfing research ===
+{
+  "instrument": "XAG",
+  "status": "REJECT",
+  "pattern": {
+    "timeframe_minutes": 60,
+    "pivot_bars": 5,
+    "minimum_leg_atr": 3.5,
+    "structure_mode": 0,
+    "value_area_pct": 0.8,
+    "vah_tolerance_atr": 0.15,
+    "reaction_mode": 1,
+    "expiry_bars": 48
+  },
+  "execution": {
+    "stop_mode": 1,
+    "stop_buffer_atr": 0.25,
+    "reward_risk": 3.0,
+    "maximum_hold_hours": 72,
+    "management": 0
+  },
+  "confirmation": {
+    "trades": 6,
+    "wins": 2,
+    "losses": 4,
+    "win_rate_pct": 33.333333333333336,
+    "profit_factor": 0.7774170634457033,
+    "net_r": -0.895869664315643,
+    "mean_r": -0.14931161071927382,
+    "return_pct": -0.9556614219893511,
+    "max_drawdown_pct": 5.39259808096395,
+    "final_balance": 9904.433857801065
+  },
+  "full": {
+    "trades": 36,
+    "wins": 15,
+    "losses": 21,
+    "win_rate_pct": 41.666666666666664,
+    "profit_factor": 1.887192095843304,
+    "net_r": 18.439491840090632,
+    "mean_r": 0.5122081066691843,
+    "return_pct": 19.46465660955681,
+    "max_drawdown_pct": 7.188005230928514,
+    "final_balance": 11946.46566095568
+  },
+  "cagr": 3.9401975266278866
+}
