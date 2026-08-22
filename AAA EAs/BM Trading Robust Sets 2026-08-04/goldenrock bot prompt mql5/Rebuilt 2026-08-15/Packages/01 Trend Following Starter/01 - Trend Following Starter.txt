@@ -1,0 +1,322 @@
+============================================================
+GOLDENROCK - MQL5 EXPERT ADVISOR GENERATION PROMPT
+============================================================
+
+STRATEGY:
+Trend Following Starter
+
+CATEGORY:
+Classic / Beginner
+
+DIFFICULTY:
+Beginner
+
+AUTOMATION DIFFICULTY:
+Easy
+
+TARGET:
+MetaTrader 5 / MQL5 Expert Advisor
+
+OUTPUT MODE:
+Direct Complete Code
+
+VERSION:
+Baseline V1
+============================================================
+
+You are a senior quantitative trading-system architect, institutional market-structure researcher, execution engineer, and senior MQL5 developer specializing in MetaTrader 5 Expert Advisors.
+
+You combine discretionary trading logic with deterministic systematic implementation.
+
+Your responsibility is to convert the strategy specification below into a complete, compilable, testable MT5 Expert Advisor.
+
+Do not ask me questions before the first implementation.
+If any strategy component remains subjective or underspecified, choose a conservative deterministic baseline implementation, expose the meaningful threshold as an MQL5 input when appropriate, document the assumption briefly in the source code, and continue.
+Generate the complete Expert Advisor now.
+Do not return pseudocode.
+Do not return an implementation plan instead of code.
+Do not leave TODO sections.
+Do not omit functions because they are complex.
+Do not silently invent unavailable market data.
+Return a complete baseline .mq5 Expert Advisor suitable for compilation and Strategy Tester research.
+
+FINAL RESPONSE CONTRACT
+
+Return exactly:
+1. Filename
+2. One complete MQL5 code block
+3. Compact Implementation Notes only if technically necessary
+
+The MQL5 source code is the primary deliverable.
+Do not provide a long explanation before the code.
+Do not ask clarification questions.
+Do not provide pseudocode.
+Do not provide incomplete fragments.
+Do not use TODO placeholders.
+
+# STRATEGY IDENTITY
+Strategy Name:
+Trend Following Starter
+Category:
+Classic / Beginner
+Trading Style:
+Intraday
+Setup Type:
+Trend Following
+Markets:
+EURUSD / XAUUSD
+Timeframes:
+M15 / H1
+Difficulty:
+Beginner
+Automation Difficulty:
+Easy
+
+# PRIMARY MISSION
+Convert this strategy into ONE complete MetaTrader 5 Expert Advisor written in native MQL5.
+The first implementation should be deterministic, measurable, compilable, backtestable, configurable, debuggable, non-repainting, and suitable as a research baseline.
+
+# STRICT RESPONSE BEHAVIOR
+The coding AI MUST generate implementation immediately; not ask clarification questions first; not return a tutorial; not return pseudocode; not merely describe architecture; not stop at a specification; not provide Pine Script; not provide MQL4.
+
+# AVAILABLE SETUP VARIANTS
+- Pullback Continuation
+- Breakout Retest Continuation
+- Dynamic Moving Average Pullback
+
+- Pullback Continuation
+  Setup type: Trend Following
+  Difficulty: Beginner
+  Automation difficulty: Easy
+  Best markets: EURUSD / XAUUSD
+  Best timeframes: M15 / H1
+  Best sessions: London or New York session only.
+  Market regime: Directional or expanding market with sufficient liquidity
+  Entry trigger: Pullback Continuation: Enter in the higher-timeframe trend direction after a pullback into support/resistance or a dynamic moving-average zone. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Wait for a bullish or bearish confirmation candle and continuation structure. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop below or above the pullback swing.
+  Target logic: Target the next structure level or minimum 1:2 risk/reward.
+  Trade management: Move stop to breakeven after 1R and trail if the trend expands.
+  Avoid conditions: Avoid ranging markets and low-liquidity periods.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: fails in ranging markets; late entries after extended trend; vague trend definition; false pullbacks during news
+  Failure modes: Signal failure: fails in ranging markets. Log the condition and suppress duplicate entries.; Signal failure: late entries after extended trend. Log the condition and suppress duplicate entries.; Signal failure: vague trend definition. Log the condition and suppress duplicate entries.; Signal failure: false pullbacks during news. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a simple backtestable trend-following baseline with an objective trend filter, pullback condition, stop, target, and session filter.
+  Prompt enhancement block: Implement Pullback Continuation with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- Breakout Retest Continuation
+  Setup type: Trend Following
+  Difficulty: Beginner
+  Automation difficulty: Easy
+  Best markets: EURUSD / XAUUSD
+  Best timeframes: M15 / H1
+  Best sessions: London or New York session only.
+  Market regime: Directional or expanding market with sufficient liquidity
+  Entry trigger: Breakout Retest Continuation: Enter in the higher-timeframe trend direction after a pullback into support/resistance or a dynamic moving-average zone. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Wait for a bullish or bearish confirmation candle and continuation structure. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop below or above the pullback swing.
+  Target logic: Target the next structure level or minimum 1:2 risk/reward.
+  Trade management: Move stop to breakeven after 1R and trail if the trend expands.
+  Avoid conditions: Avoid ranging markets and low-liquidity periods.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: failed breakouts; late retests; over-filtering; low volatility chop
+  Failure modes: Signal failure: failed breakouts. Log the condition and suppress duplicate entries.; Signal failure: late retests. Log the condition and suppress duplicate entries.; Signal failure: over-filtering. Log the condition and suppress duplicate entries.; Signal failure: low volatility chop. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a simple backtestable trend-following baseline with an objective trend filter, pullback condition, stop, target, and session filter.
+  Prompt enhancement block: Implement Breakout Retest Continuation with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- Dynamic Moving Average Pullback
+  Setup type: Trend Following
+  Difficulty: Beginner
+  Automation difficulty: Easy
+  Best markets: EURUSD / XAUUSD
+  Best timeframes: M15 / H1
+  Best sessions: London or New York session only.
+  Market regime: Directional or expanding market with sufficient liquidity
+  Entry trigger: Dynamic Moving Average Pullback: Enter in the higher-timeframe trend direction after a pullback into support/resistance or a dynamic moving-average zone. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Wait for a bullish or bearish confirmation candle and continuation structure. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop below or above the pullback swing.
+  Target logic: Target the next structure level or minimum 1:2 risk/reward.
+  Trade management: Move stop to breakeven after 1R and trail if the trend expands.
+  Avoid conditions: Avoid ranging markets and low-liquidity periods.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: indicator lag; whipsaw during range; over-optimized MA settings
+  Failure modes: Signal failure: indicator lag. Log the condition and suppress duplicate entries.; Signal failure: whipsaw during range. Log the condition and suppress duplicate entries.; Signal failure: over-optimized MA settings. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a simple backtestable trend-following baseline with an objective trend filter, pullback condition, stop, target, and session filter.
+  Prompt enhancement block: Implement Dynamic Moving Average Pullback with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+# STRATEGY OBJECTIVE
+Trend Following Starter. Simple directional educational model for beginners.
+
+# COMPLETE STRATEGY BLUEPRINT
+## 1. Strategy Identity
+- Name: Trend Following Starter
+- Market: EURUSD / XAUUSD
+- Timeframe: M15 / H1
+- Style: Intraday
+- Setup Type: Trend Following
+
+## 2. Strategy Objective
+A beginner-friendly directional model using trend bias, pullback, and confirmation.
+
+## 3. Market Conditions
+Operate outside these avoid conditions: Avoid ranging markets and low-liquidity periods.
+
+## 4. Entry Conditions
+Enter in the higher-timeframe trend direction after a pullback into support/resistance or a dynamic moving-average zone.
+
+## 5. Confirmation Conditions
+Wait for a bullish or bearish confirmation candle and continuation structure.
+
+## 6. Stop Loss Logic
+Place the stop below or above the pullback swing.
+
+## 7. Take Profit Logic
+Target the next structure level or minimum 1:2 risk/reward.
+
+## 8. Risk Management Rules
+Risk 0.5% to 1% per trade.
+
+## 9. Session Filter
+London or New York session only.
+
+## 10. News Filter
+Avoid major high-impact news.
+
+## 11. Invalidation Logic
+Invalidate if structure breaks against the trend.
+
+## 12. Trade Management
+Move stop to breakeven after 1R and trail if the trend expands.
+
+## 13. Avoid Conditions
+Avoid ranging markets and low-liquidity periods.
+
+## 14. Backtesting Notes
+Simple directional educational model for beginners.
+
+## 15. Automation Notes
+Convert every rule into observable variables, exact thresholds, state transitions, timing, conflict handling, spread/slippage constraints, and reproducible tests.
+
+## 16. Quality Engine Summary
+- Logic Clarity Score: strategy-specific
+- Automation Readiness Score: strategy-specific
+- Main Risks: Trend ambiguity and ranging conditions
+
+## 17. Disclaimer
+Educational and research-based only. This blueprint does not guarantee profitable trading and requires backtesting, validation, forward testing, and risk management.
+
+# MARKET MODEL
+Define the exact market context needed by the strategy. Include only relevant concepts for Trend Following Starter.
+
+# ENTRY ENGINE
+Transform the entry concept into programmable boolean rules. No subjective language.
+
+# CONFIRMATION ENGINE
+Use objective variables appropriate to this strategy.
+
+# LONG AND SHORT SYMMETRY
+Implement BOTH buy and sell logic unless the template is explicitly directional.
+
+# STOP-LOSS ENGINE
+Convert the original stop concept into exact executable logic.
+
+# TAKE-PROFIT ENGINE
+Convert targets into executable logic.
+
+# RISK ENGINE
+Use percentage-risk sizing with broker-safe volume normalization.
+
+# POSITION SIZING SAFETY
+Handle SYMBOL_TRADE_TICK_SIZE, SYMBOL_TRADE_TICK_VALUE, SYMBOL_VOLUME_MIN, SYMBOL_VOLUME_MAX, SYMBOL_VOLUME_STEP, SYMBOL_POINT, SYMBOL_DIGITS correctly.
+
+# SESSION ENGINE
+Use server-time-aware logic. Handle overnight ranges correctly.
+
+# NEWS FILTER
+Do not fabricate news data.
+
+# SPREAD FILTER
+Include a maximum-spread protection mechanism.
+
+# SLIPPAGE / DEVIATION CONTROL
+Expose a configurable deviation parameter.
+
+# POSITION STATE
+Prevent duplicate or uncontrolled entries.
+
+# NEW-BAR / EVENT CONTROL
+Use reliable new-bar detection where candle-based.
+
+# SIGNAL STATE MACHINE
+Use explicit states where appropriate.
+
+# MULTI-TIMEFRAME SAFETY
+Use closed candles and avoid future leakage.
+
+# NON-REPAINTING REQUIREMENT
+Strictly prohibit future-data leakage.
+
+# INDICATOR HANDLE MANAGEMENT
+Create and release handles correctly.
+
+# PRICE DATA SAFETY
+Validate copied data and guard against unavailable symbols/timeframes.
+
+# ORDER EXECUTION
+Prefer native MQL5 trade structures. Check trade results.
+
+# TRADE RESULT LOGGING
+Log failed trade operations with diagnostics.
+
+# TRADE MANAGEMENT
+Implement the strategy's trade-management logic only.
+
+# PARTIAL CLOSE SAFETY
+Respect minimum lot and volume step.
+
+# INVALIDATION ENGINE
+Distinguish setup invalidation, hard stop, and timeout.
+
+# SETUP EXPIRY
+Implement stale-signal expiry where appropriate.
+
+# COOLDOWN LOGIC
+Prevent immediate repeated entries following stop-out or invalidation.
+
+# STRATEGY-SPECIFIC REQUIREMENTS
+- Define trend calculation and timeframe.
+- Separate pullback setup from continuation trigger.
+- Define ranging-market invalidation and trailing behavior.
+
+# UNAVAILABLE DATA POLICY
+If the source strategy asks for data standard MT5 does not reliably expose, separate Native MT5 implementation, Proxy implementation, and External-data extension point. Choose a compile-safe default.
+
+# NO PROFIT CLAIMS
+Never claim guaranteed profitability, a specific win rate, or expected monthly returns.
+
+# BACKTEST INTEGRITY
+Keep behavior deterministic, strategy tester compatible, and transaction-cost aware.
+
+# CODE QUALITY
+Use clean function decomposition, meaningful naming, reusable helpers, and no monolithic OnTick.
+
+# COMPILATION SELF-AUDIT
+Inspect for undeclared identifiers, wrong signatures, invalid enums, bad CopyBuffer usage, handle leaks, incorrect CTrade calls, and unsafe lot calculations. Fix issues before output.
+
+# LOGIC SELF-AUDIT
+Verify BUY and SELL coherence, non-repainting behavior, no duplicate loops, correct stop side, valid target side, and working session/spread/cooldown logic.
+
+# DOWNSTREAM AI FINAL RESPONSE CONTRACT
+Return exactly: Filename, one complete MQL5 code block, compact implementation notes only if needed.
+
+# FINAL DISCLAIMER
+This prompt is educational and research-based only. Use it to generate a compile-safe MT5 Expert Advisor baseline for research.

@@ -1,0 +1,409 @@
+{
+  "individual_mt5_5y": [
+    {
+      "id": "02-orb-volume-profile",
+      "strategy": "ORB Volume Profile",
+      "chart": "XAUUSD M5",
+      "return_pct": 57.068200000000004,
+      "equity_dd_pct": 6.31,
+      "profit_factor": 1.41,
+      "win_rate_pct": 41.53,
+      "trades": 301
+    },
+    {
+      "id": "07-aaa-final-ema3",
+      "strategy": "AAA Final EMA3",
+      "chart": "XAUUSD H4",
+      "return_pct": 32.098499999999994,
+      "equity_dd_pct": 8.7,
+      "profit_factor": 1.36,
+      "win_rate_pct": 49.73,
+      "trades": 187
+    },
+    {
+      "id": "10-nasdaq-overnight",
+      "strategy": "Nasdaq Overnight",
+      "chart": "USTEC M1",
+      "return_pct": 7.837999999999999,
+      "equity_dd_pct": 4.82,
+      "profit_factor": 1.28,
+      "win_rate_pct": 56.08,
+      "trades": 189
+    }
+  ],
+  "portfolio_scenarios": [
+    {
+      "scenario": "high_win_core_1pct",
+      "weights_pct_per_trade": {
+        "07-aaa-final-ema3": 1.0,
+        "10-nasdaq-overnight": 1.0
+      },
+      "initial": 10000.0,
+      "final": 13993.65000000004,
+      "net": 3993.6500000000397,
+      "return_pct": 39.93650000000039,
+      "cagr_pct": 6.956108298668395,
+      "realized_max_dd_amount": 879.3700000000008,
+      "realized_max_dd_pct": 8.793700000000008,
+      "conservative_sum_of_individual_equity_dd_pct": 13.52,
+      "profit_factor": 1.3373399838664037,
+      "win_rate_pct": 52.92553191489362,
+      "wins": 199,
+      "trades": 376,
+      "active_days": 517,
+      "max_realized_daily_loss_pct": 1.8151000000000002
+    },
+    {
+      "scenario": "balanced_035pct",
+      "weights_pct_per_trade": {
+        "02-orb-volume-profile": 0.35,
+        "07-aaa-final-ema3": 0.35,
+        "10-nasdaq-overnight": 0.35
+      },
+      "initial": 10000.0,
+      "final": 13395.164499999915,
+      "net": 3395.1644999999153,
+      "return_pct": 33.95164499999914,
+      "cagr_pct": 6.024559972884047,
+      "realized_max_dd_amount": 378.06999999999425,
+      "realized_max_dd_pct": 3.571576347392169,
+      "conservative_sum_of_individual_equity_dd_pct": 6.940499999999999,
+      "profit_factor": 1.3785141580848266,
+      "win_rate_pct": 47.85819793205317,
+      "wins": 324,
+      "trades": 677,
+      "active_days": 692,
+      "max_realized_daily_loss_pct": 0.886585
+    },
+    {
+      "scenario": "balanced_050pct",
+      "weights_pct_per_trade": {
+        "02-orb-volume-profile": 0.5,
+        "07-aaa-final-ema3": 0.5,
+        "10-nasdaq-overnight": 0.5
+      },
+      "initial": 10000.0,
+      "final": 14850.23499999998,
+      "net": 4850.234999999981,
+      "return_pct": 48.50234999999981,
+      "cagr_pct": 8.235439409342082,
+      "realized_max_dd_amount": 540.1000000000004,
+      "realized_max_dd_pct": 4.984099973607614,
+      "conservative_sum_of_individual_equity_dd_pct": 9.915,
+      "profit_factor": 1.3785141580848268,
+      "win_rate_pct": 47.85819793205317,
+      "wins": 324,
+      "trades": 677,
+      "active_days": 692,
+      "max_realized_daily_loss_pct": 1.26655
+    },
+    {
+      "scenario": "balanced_075pct",
+      "weights_pct_per_trade": {
+        "02-orb-volume-profile": 0.75,
+        "07-aaa-final-ema3": 0.75,
+        "10-nasdaq-overnight": 0.75
+      },
+      "initial": 10000.0,
+      "final": 17275.352499999954,
+      "net": 7275.352499999954,
+      "return_pct": 72.75352499999954,
+      "cagr_pct": 11.562164584637769,
+      "realized_max_dd_amount": 747.5025000000023,
+      "realized_max_dd_pct": 7.475025000000023,
+      "conservative_sum_of_individual_equity_dd_pct": 14.872499999999999,
+      "profit_factor": 1.3785141580848268,
+      "win_rate_pct": 47.85819793205317,
+      "wins": 324,
+      "trades": 677,
+      "active_days": 692,
+      "max_realized_daily_loss_pct": 1.8998249999999999
+    },
+    {
+      "scenario": "balanced_100pct",
+      "weights_pct_per_trade": {
+        "02-orb-volume-profile": 1.0,
+        "07-aaa-final-ema3": 1.0,
+        "10-nasdaq-overnight": 1.0
+      },
+      "initial": 10000.0,
+      "final": 19700.47000000002,
+      "net": 9700.47000000002,
+      "return_pct": 97.00470000000018,
+      "cagr_pct": 14.534004804250467,
+      "realized_max_dd_amount": 996.6699999999983,
+      "realized_max_dd_pct": 9.966699999999982,
+      "conservative_sum_of_individual_equity_dd_pct": 19.83,
+      "profit_factor": 1.3785141580848268,
+      "win_rate_pct": 47.85819793205317,
+      "wins": 324,
+      "trades": 677,
+      "active_days": 692,
+      "max_realized_daily_loss_pct": 2.5331
+    },
+    {
+      "scenario": "ftmo_eligible_035pct",
+      "weights_pct_per_trade": {
+        "02-orb-volume-profile": 0.35,
+        "07-aaa-final-ema3": 0.35
+      },
+      "initial": 10000.0,
+      "final": 13120.83449999996,
+      "net": 3120.834499999961,
+      "return_pct": 31.208344999999603,
+      "cagr_pct": 5.586395893230556,
+      "realized_max_dd_amount": 348.834499999999,
+      "realized_max_dd_pct": 3.48834499999999,
+      "conservative_sum_of_individual_equity_dd_pct": 5.253499999999999,
+      "profit_factor": 1.3911760370475008,
+      "win_rate_pct": 44.67213114754098,
+      "wins": 218,
+      "trades": 488,
+      "active_days": 521,
+      "max_realized_daily_loss_pct": 0.886095
+    },
+    {
+      "scenario": "ftmo_eligible_050pct",
+      "weights_pct_per_trade": {
+        "02-orb-volume-profile": 0.5,
+        "07-aaa-final-ema3": 0.5
+      },
+      "initial": 10000.0,
+      "final": 14458.334999999995,
+      "net": 4458.3349999999955,
+      "return_pct": 44.58334999999995,
+      "cagr_pct": 7.657659175234577,
+      "realized_max_dd_amount": 498.3349999999991,
+      "realized_max_dd_pct": 4.983349999999991,
+      "conservative_sum_of_individual_equity_dd_pct": 7.504999999999999,
+      "profit_factor": 1.391176037047501,
+      "win_rate_pct": 44.67213114754098,
+      "wins": 218,
+      "trades": 488,
+      "active_days": 521,
+      "max_realized_daily_loss_pct": 1.2658500000000001
+    },
+    {
+      "scenario": "ftmo_eligible_075pct",
+      "weights_pct_per_trade": {
+        "02-orb-volume-profile": 0.75,
+        "07-aaa-final-ema3": 0.75
+      },
+      "initial": 10000.0,
+      "final": 16687.502499999973,
+      "net": 6687.502499999973,
+      "return_pct": 66.87502499999974,
+      "cagr_pct": 10.791851304498735,
+      "realized_max_dd_amount": 747.5025000000023,
+      "realized_max_dd_pct": 7.475025000000023,
+      "conservative_sum_of_individual_equity_dd_pct": 11.2575,
+      "profit_factor": 1.391176037047501,
+      "win_rate_pct": 44.67213114754098,
+      "wins": 218,
+      "trades": 488,
+      "active_days": 521,
+      "max_realized_daily_loss_pct": 1.898775
+    }
+  ],
+  "monte_carlo": {
+    "ftmo_eligible_035pct": {
+      "nominal": {
+        "model": "20-day block bootstrap; phase targets 10% then 5%; static 10% loss; 5% daily loss; 4 trading-day minimum; first funded payout modelled at +2% after 10 trading days; 80% trader split",
+        "stressed": false,
+        "paths": 20000,
+        "checkpoints": {
+          "1_year": {
+            "phase1_passed_or_better_pct": 24.735,
+            "phase2_passed_or_better_pct": 4.5249999999999995,
+            "first_payout_pct": 1.7049999999999998,
+            "failed_pct": 0.0
+          },
+          "2_year": {
+            "phase1_passed_or_better_pct": 68.72,
+            "phase2_passed_or_better_pct": 35.475,
+            "first_payout_pct": 23.095,
+            "failed_pct": 0.03
+          },
+          "3_year": {
+            "phase1_passed_or_better_pct": 88.46000000000001,
+            "phase2_passed_or_better_pct": 67.77499999999999,
+            "first_payout_pct": 55.875,
+            "failed_pct": 0.055
+          }
+        },
+        "median_trading_days_to_first_payout_if_paid": 541.0,
+        "p10_p90_trading_days_to_first_payout_if_paid": [
+          332.0,
+          711.0
+        ],
+        "median_gross_first_payout_pct_if_paid": 2.289001271208324,
+        "median_net_first_payout_pct_at_80_split_if_paid": 1.8312010169666593
+      },
+      "execution_stress": {
+        "model": "20-day block bootstrap; phase targets 10% then 5%; static 10% loss; 5% daily loss; 4 trading-day minimum; first funded payout modelled at +2% after 10 trading days; 80% trader split",
+        "stressed": true,
+        "paths": 20000,
+        "checkpoints": {
+          "1_year": {
+            "phase1_passed_or_better_pct": 9.095,
+            "phase2_passed_or_better_pct": 0.84,
+            "first_payout_pct": 0.25,
+            "failed_pct": 0.1
+          },
+          "2_year": {
+            "phase1_passed_or_better_pct": 30.85,
+            "phase2_passed_or_better_pct": 8.67,
+            "first_payout_pct": 4.415,
+            "failed_pct": 1.2850000000000001
+          },
+          "3_year": {
+            "phase1_passed_or_better_pct": 49.095,
+            "phase2_passed_or_better_pct": 22.05,
+            "first_payout_pct": 14.180000000000001,
+            "failed_pct": 2.8899999999999997
+          }
+        },
+        "median_trading_days_to_first_payout_if_paid": 587.0,
+        "p10_p90_trading_days_to_first_payout_if_paid": [
+          366.0,
+          725.0
+        ],
+        "median_gross_first_payout_pct_if_paid": 2.2689636150171166,
+        "median_net_first_payout_pct_at_80_split_if_paid": 1.8151708920136933
+      }
+    },
+    "ftmo_eligible_050pct": {
+      "nominal": {
+        "model": "20-day block bootstrap; phase targets 10% then 5%; static 10% loss; 5% daily loss; 4 trading-day minimum; first funded payout modelled at +2% after 10 trading days; 80% trader split",
+        "stressed": false,
+        "paths": 20000,
+        "checkpoints": {
+          "1_year": {
+            "phase1_passed_or_better_pct": 48.315000000000005,
+            "phase2_passed_or_better_pct": 18.759999999999998,
+            "first_payout_pct": 10.66,
+            "failed_pct": 0.255
+          },
+          "2_year": {
+            "phase1_passed_or_better_pct": 83.59,
+            "phase2_passed_or_better_pct": 62.355000000000004,
+            "first_payout_pct": 51.2,
+            "failed_pct": 0.685
+          },
+          "3_year": {
+            "phase1_passed_or_better_pct": 94.20500000000001,
+            "phase2_passed_or_better_pct": 84.80499999999999,
+            "first_payout_pct": 78.77,
+            "failed_pct": 1.125
+          }
+        },
+        "median_trading_days_to_first_payout_if_paid": 429.0,
+        "p10_p90_trading_days_to_first_payout_if_paid": [
+          228.0,
+          663.0
+        ],
+        "median_gross_first_payout_pct_if_paid": 2.4166408668954587,
+        "median_net_first_payout_pct_at_80_split_if_paid": 1.933312693516367
+      },
+      "execution_stress": {
+        "model": "20-day block bootstrap; phase targets 10% then 5%; static 10% loss; 5% daily loss; 4 trading-day minimum; first funded payout modelled at +2% after 10 trading days; 80% trader split",
+        "stressed": true,
+        "paths": 20000,
+        "checkpoints": {
+          "1_year": {
+            "phase1_passed_or_better_pct": 24.04,
+            "phase2_passed_or_better_pct": 6.215,
+            "first_payout_pct": 2.93,
+            "failed_pct": 2.04
+          },
+          "2_year": {
+            "phase1_passed_or_better_pct": 48.945,
+            "phase2_passed_or_better_pct": 25.335,
+            "first_payout_pct": 17.255000000000003,
+            "failed_pct": 7.215000000000001
+          },
+          "3_year": {
+            "phase1_passed_or_better_pct": 62.505,
+            "phase2_passed_or_better_pct": 42.455,
+            "first_payout_pct": 33.77,
+            "failed_pct": 12.21
+          }
+        },
+        "median_trading_days_to_first_payout_if_paid": 499.0,
+        "p10_p90_trading_days_to_first_payout_if_paid": [
+          263.0,
+          704.0
+        ],
+        "median_gross_first_payout_pct_if_paid": 2.393969395548723,
+        "median_net_first_payout_pct_at_80_split_if_paid": 1.9151755164389783
+      }
+    },
+    "ftmo_eligible_075pct": {
+      "nominal": {
+        "model": "20-day block bootstrap; phase targets 10% then 5%; static 10% loss; 5% daily loss; 4 trading-day minimum; first funded payout modelled at +2% after 10 trading days; 80% trader split",
+        "stressed": false,
+        "paths": 20000,
+        "checkpoints": {
+          "1_year": {
+            "phase1_passed_or_better_pct": 69.025,
+            "phase2_passed_or_better_pct": 44.005,
+            "first_payout_pct": 32.324999999999996,
+            "failed_pct": 2.82
+          },
+          "2_year": {
+            "phase1_passed_or_better_pct": 87.92999999999999,
+            "phase2_passed_or_better_pct": 79.25,
+            "first_payout_pct": 73.625,
+            "failed_pct": 6.25
+          },
+          "3_year": {
+            "phase1_passed_or_better_pct": 91.24,
+            "phase2_passed_or_better_pct": 89.125,
+            "first_payout_pct": 87.36,
+            "failed_pct": 7.535
+          }
+        },
+        "median_trading_days_to_first_payout_if_paid": 304.0,
+        "p10_p90_trading_days_to_first_payout_if_paid": [
+          139.0,
+          566.0
+        ],
+        "median_gross_first_payout_pct_if_paid": 2.645345349804773,
+        "median_net_first_payout_pct_at_80_split_if_paid": 2.1162762798438184
+      },
+      "execution_stress": {
+        "model": "20-day block bootstrap; phase targets 10% then 5%; static 10% loss; 5% daily loss; 4 trading-day minimum; first funded payout modelled at +2% after 10 trading days; 80% trader split",
+        "stressed": true,
+        "paths": 20000,
+        "checkpoints": {
+          "1_year": {
+            "phase1_passed_or_better_pct": 41.295,
+            "phase2_passed_or_better_pct": 20.345,
+            "first_payout_pct": 13.095,
+            "failed_pct": 11.755
+          },
+          "2_year": {
+            "phase1_passed_or_better_pct": 56.684999999999995,
+            "phase2_passed_or_better_pct": 42.725,
+            "first_payout_pct": 36.3,
+            "failed_pct": 25.89
+          },
+          "3_year": {
+            "phase1_passed_or_better_pct": 59.93000000000001,
+            "phase2_passed_or_better_pct": 53.690000000000005,
+            "first_payout_pct": 50.21,
+            "failed_pct": 33.410000000000004
+          }
+        },
+        "median_trading_days_to_first_payout_if_paid": 374.5,
+        "p10_p90_trading_days_to_first_payout_if_paid": [
+          164.0,
+          647.0
+        ],
+        "median_gross_first_payout_pct_if_paid": 2.627314975088013,
+        "median_net_first_payout_pct_at_80_split_if_paid": 2.1018519800704105
+      }
+    }
+  },
+  "ftmo_eligibility_note": "Nasdaq Overnight is excluded from the FTMO portfolio because its close-to-open holding logic may conflict with FTMO's current gap-trading prohibition."
+}

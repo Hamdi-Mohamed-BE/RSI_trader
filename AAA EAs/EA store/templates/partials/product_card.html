@@ -1,0 +1,32 @@
+<article class="product-card group" data-asset="{{ product.asset_group }}" data-evidence="{{ product.evidence.status|lower if product.evidence else 'pending' }}" data-search="{{ (product.label ~ ' ' ~ product.strategy ~ ' ' ~ product.canonical)|lower }}">
+  <div class="flex items-start justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <span class="asset-icon accent-{{ product.accent }}">{{ product.canonical[:2] }}</span>
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">{{ product.category }} · {{ product.canonical }} {{ product.timeframe }}</p>
+        <h3 class="mt-1 text-lg font-bold leading-tight text-white group-hover:text-mint">{{ product.label }}</h3>
+      </div>
+    </div>
+    {% if product.optional_symbol %}<span class="badge badge-neutral">Optional</span>{% endif %}
+  </div>
+  <p class="mt-5 min-h-[48px] text-sm leading-6 text-muted">{{ product.tagline }}</p>
+  {% if product.evidence %}
+  <div class="mt-5 grid grid-cols-3 gap-2">
+    <div class="mini-stat"><span>Return</span><strong class="{{ 'text-mint' if product.evidence.return_pct >= 0 else 'text-red-300' }}">{{ product.evidence.return_pct|percent(true) }}</strong></div>
+    <div class="mini-stat"><span>PF</span><strong>{{ '%.2f'|format(product.evidence.profit_factor) }}</strong></div>
+    <div class="mini-stat"><span>Max DD</span><strong>{{ product.evidence.drawdown_pct|percent }}</strong></div>
+  </div>
+  <div class="mt-4 flex items-center justify-between">
+    {% if product.evidence.status == 'Validated evidence' %}<span class="badge badge-good">Validated evidence</span>
+    {% elif product.evidence.status == 'Research evidence' %}<span class="badge badge-warn">Research evidence</span>
+    {% else %}<span class="badge badge-bad">Experimental</span>{% endif %}
+    <span class="font-mono text-[10px] text-muted">{{ product.evidence.trades }} trades</span>
+  </div>
+  {% else %}
+  <div class="mt-5"><span class="badge badge-neutral">Evidence pending</span></div>
+  {% endif %}
+  <div class="mt-6 flex items-end justify-between border-t border-white/10 pt-5">
+    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ product.price|money }}</strong></div>
+    <a href="/eas/{{ product.slug }}" class="card-link">View details <span aria-hidden="true">→</span></a>
+  </div>
+</article>

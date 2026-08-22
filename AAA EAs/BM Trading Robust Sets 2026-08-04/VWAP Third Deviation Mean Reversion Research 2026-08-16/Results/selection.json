@@ -1,0 +1,39 @@
+{
+  "decision": "REJECT",
+  "selected_config": {
+    "anchor": 1,
+    "entry_sigma": 3.5,
+    "reward_to_risk": 0.5,
+    "moving_target": 0,
+    "maximum_trades_per_day": 3,
+    "anchor_name": "Electronic day 18:00 NY",
+    "target_mode": "fixed entry-time VWAP"
+  },
+  "literal_config": {
+    "anchor": 0,
+    "entry_sigma": 3.0,
+    "reward_to_risk": 0.5,
+    "moving_target": 1,
+    "maximum_trades_per_day": 3,
+    "anchor_name": "US RTH 09:30 NY",
+    "target_mode": "moving VWAP"
+  },
+  "data": {
+    "broker": "Exness-MT5Trial16",
+    "symbol": "US500",
+    "first_utc": "2022-01-02 23:30:00+00:00",
+    "last_utc": "2026-08-10 23:59:00+00:00",
+    "rows": 1579928
+  },
+  "execution": {
+    "risk_fraction": 0.01,
+    "initial_balance": 10000.0,
+    "actual_m1_spread_used": true,
+    "zero_spread_fallback_price": 0.93,
+    "commission_usd_per_lot_per_side": 0.5,
+    "stop_and_market_slippage_points": 0.25,
+    "same_minute_target_credited": false
+  },
+  "grid_configurations": 108,
+  "eligible_prelock_configurations": 0
+}

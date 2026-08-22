@@ -1,0 +1,92 @@
+Parsing current BAT evidence...
+Loading M5 confirmation data: global:BTC
+Loading M5 confirmation data: global:ETH
+Loading M5 confirmation data: global:US100
+Loading M5 confirmation data: global:US30
+Loading M5 confirmation data: global:XAG
+Loading M5 confirmation data: global:XAU
+Loading M5 confirmation data: native:US30
+Loading M5 confirmation data: native:USTEC
+Loading M5 confirmation data: native:XAUUSD
+Loading M5 confirmation data: stock:AMZN
+Loading M5 confirmation data: stock:AVGO
+Loading M5 confirmation data: stock:GOOGL
+Loading M5 confirmation data: stock:INTC
+Loading M5 confirmation data: stock:META
+Loading M5 confirmation data: stock:MSFT
+Loading M5 confirmation data: stock:NVDA
+Loading M5 confirmation data: stock:SP500
+Running pre-lock optimization grid...
+{
+  "active_eas": 26,
+  "source_trades": 7838,
+  "selected": {
+    "decision": "REJECT",
+    "mode": "entry",
+    "wait_minutes": 60,
+    "hard_loss_cap_r": 1.0,
+    "rationale": "This was the strongest Fast Alpha candidate that passed the development gates, but it did not beat the unchanged baseline in validation, so it is rejected.",
+    "locked_start": "2025-08-11 00:00:00+00:00",
+    "test_end": "2026-08-11 00:00:00+00:00"
+  },
+  "full_baseline": {
+    "initial": 10000.0,
+    "final": 2086209.2264230319,
+    "return_pct": 20762.09226423032,
+    "closed_equity_max_dd_pct": 88.96203647768726,
+    "profit_factor": 1.3244923833569617,
+    "win_rate_pct": 36.29752487879561,
+    "wins": 2845,
+    "losses": 4993,
+    "trades": 7838,
+    "net_r": 641.7663762480693,
+    "average_r": 0.08187884361419612,
+    "median_entry_delay_minutes": 0.0,
+    "median_stop_delay_minutes": 0.0
+  },
+  "full_fast": {
+    "initial": 10000.0,
+    "final": 487395.9205548686,
+    "return_pct": 4773.9592055486855,
+    "closed_equity_max_dd_pct": 89.25080490157305,
+    "profit_factor": 1.19185760693785,
+    "win_rate_pct": 36.69976482884766,
+    "wins": 2809,
+    "losses": 4845,
+    "trades": 7654,
+    "net_r": 500.4349139085411,
+    "average_r": 0.06538214187464608,
+    "median_entry_delay_minutes": 10.0,
+    "median_stop_delay_minutes": 0.0
+  },
+  "locked_baseline": {
+    "initial": 10000.0,
+    "final": 318463.98564225214,
+    "return_pct": 3084.6398564225215,
+    "closed_equity_max_dd_pct": 19.591234670914474,
+    "profit_factor": 1.3438913914169213,
+    "win_rate_pct": 40.66193853427896,
+    "wins": 688,
+    "losses": 1004,
+    "trades": 1692,
+    "net_r": 369.0147688880567,
+    "average_r": 0.21809383504022262,
+    "median_entry_delay_minutes": 0.0,
+    "median_stop_delay_minutes": 0.0
+  },
+  "locked_fast": {
+    "initial": 10000.0,
+    "final": 126301.30713905653,
+    "return_pct": 1163.0130713905653,
+    "closed_equity_max_dd_pct": 25.757388829518963,
+    "profit_factor": 1.2117524459990032,
+    "win_rate_pct": 41.37086903304773,
+    "wins": 676,
+    "losses": 958,
+    "trades": 1634,
+    "net_r": 274.8721408198751,
+    "average_r": 0.1682204044185282,
+    "median_entry_delay_minutes": 9.366666666666667,
+    "median_stop_delay_minutes": 0.0
+  }
+}

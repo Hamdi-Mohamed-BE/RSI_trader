@@ -1,0 +1,327 @@
+============================================================
+GOLDENROCK - MQL5 EXPERT ADVISOR GENERATION PROMPT
+============================================================
+
+STRATEGY:
+SNR + ICT Model
+
+CATEGORY:
+Support/Resistance + ICT
+
+DIFFICULTY:
+Intermediate / Advanced
+
+AUTOMATION DIFFICULTY:
+Hard
+
+TARGET:
+MetaTrader 5 / MQL5 Expert Advisor
+
+OUTPUT MODE:
+Direct Complete Code
+
+VERSION:
+Baseline V1
+============================================================
+
+You are a senior quantitative trading-system architect, institutional market-structure researcher, execution engineer, and senior MQL5 developer specializing in MetaTrader 5 Expert Advisors.
+
+You combine discretionary trading logic with deterministic systematic implementation.
+
+Your responsibility is to convert the strategy specification below into a complete, compilable, testable MT5 Expert Advisor.
+
+Do not ask me questions before the first implementation.
+If any strategy component remains subjective or underspecified, choose a conservative deterministic baseline implementation, expose the meaningful threshold as an MQL5 input when appropriate, document the assumption briefly in the source code, and continue.
+Generate the complete Expert Advisor now.
+Do not return pseudocode.
+Do not return an implementation plan instead of code.
+Do not leave TODO sections.
+Do not omit functions because they are complex.
+Do not silently invent unavailable market data.
+Return a complete baseline .mq5 Expert Advisor suitable for compilation and Strategy Tester research.
+
+FINAL RESPONSE CONTRACT
+
+Return exactly:
+1. Filename
+2. One complete MQL5 code block
+3. Compact Implementation Notes only if technically necessary
+
+The MQL5 source code is the primary deliverable.
+Do not provide a long explanation before the code.
+Do not ask clarification questions.
+Do not provide pseudocode.
+Do not provide incomplete fragments.
+Do not use TODO placeholders.
+
+# STRATEGY IDENTITY
+Strategy Name:
+SNR + ICT Model
+Category:
+Support/Resistance + ICT
+Trading Style:
+Intraday
+Setup Type:
+SNR + ICT
+Markets:
+Gold / FX / NAS100
+Timeframes:
+H4 to M5
+Difficulty:
+Intermediate / Advanced
+Automation Difficulty:
+Hard
+
+# PRIMARY MISSION
+Convert this strategy into ONE complete MetaTrader 5 Expert Advisor written in native MQL5.
+The first implementation should be deterministic, measurable, compilable, backtestable, configurable, debuggable, non-repainting, and suitable as a research baseline.
+
+# STRICT RESPONSE BEHAVIOR
+The coding AI MUST generate implementation immediately; not ask clarification questions first; not return a tutorial; not return pseudocode; not merely describe architecture; not stop at a specification; not provide Pine Script; not provide MQL4.
+
+# AVAILABLE SETUP VARIANTS
+- SNR Sweep + FVG Confirmation
+- Support/Resistance Flip + Displacement
+- Liquidity Above/Below SNR + Reversal
+
+- SNR Sweep + FVG Confirmation
+  Setup type: SNR + ICT
+  Difficulty: Intermediate / Advanced
+  Automation difficulty: Hard
+  Best markets: Gold / FX / NAS100
+  Best timeframes: H4 to M5
+  Best sessions: London / New York preferred.
+  Market regime: Extended or liquidity-seeking market with confirmed rejection
+  Entry trigger: SNR Sweep + FVG Confirmation: Identify key support or resistance, observe liquidity around the level, then wait for ICT-style displacement or FVG confirmation. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Require a sweep of the level, market-structure shift, and FVG or retest confirmation. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the swept support/resistance level.
+  Target logic: Target the next liquidity pool or opposing support/resistance zone.
+  Trade management: Take a partial at the first target and manage around reaction levels.
+  Avoid conditions: Avoid buying resistance or selling support without liquidity context.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: drawing too many levels; buying resistance / selling support without context; false displacement; subjective level quality
+  Failure modes: Signal failure: drawing too many levels. Log the condition and suppress duplicate entries.; Signal failure: buying resistance / selling support without context. Log the condition and suppress duplicate entries.; Signal failure: false displacement. Log the condition and suppress duplicate entries.; Signal failure: subjective level quality. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for SNR Sweep + FVG Confirmation with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement SNR Sweep + FVG Confirmation with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- Support/Resistance Flip + Displacement
+  Setup type: SNR + ICT
+  Difficulty: Intermediate / Advanced
+  Automation difficulty: Hard
+  Best markets: Gold / FX / NAS100
+  Best timeframes: H4 to M5
+  Best sessions: London / New York preferred.
+  Market regime: Directional or expanding market with sufficient liquidity
+  Entry trigger: Support/Resistance Flip + Displacement: Identify key support or resistance, observe liquidity around the level, then wait for ICT-style displacement or FVG confirmation. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Require a sweep of the level, market-structure shift, and FVG or retest confirmation. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the swept support/resistance level.
+  Target logic: Target the next liquidity pool or opposing support/resistance zone.
+  Trade management: Take a partial at the first target and manage around reaction levels.
+  Avoid conditions: Avoid buying resistance or selling support without liquidity context.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: drawing too many levels; buying resistance / selling support without context; false displacement; subjective level quality
+  Failure modes: Signal failure: drawing too many levels. Log the condition and suppress duplicate entries.; Signal failure: buying resistance / selling support without context. Log the condition and suppress duplicate entries.; Signal failure: false displacement. Log the condition and suppress duplicate entries.; Signal failure: subjective level quality. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for Support/Resistance Flip + Displacement with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement Support/Resistance Flip + Displacement with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- Liquidity Above/Below SNR + Reversal
+  Setup type: SNR + ICT
+  Difficulty: Intermediate / Advanced
+  Automation difficulty: Hard
+  Best markets: Gold / FX / NAS100
+  Best timeframes: H4 to M5
+  Best sessions: London / New York preferred.
+  Market regime: Extended or liquidity-seeking market with confirmed rejection
+  Entry trigger: Liquidity Above/Below SNR + Reversal: Identify key support or resistance, observe liquidity around the level, then wait for ICT-style displacement or FVG confirmation. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Require a sweep of the level, market-structure shift, and FVG or retest confirmation. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the swept support/resistance level.
+  Target logic: Target the next liquidity pool or opposing support/resistance zone.
+  Trade management: Take a partial at the first target and manage around reaction levels.
+  Avoid conditions: Avoid buying resistance or selling support without liquidity context.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: drawing too many levels; buying resistance / selling support without context; false displacement; subjective level quality
+  Failure modes: Signal failure: drawing too many levels. Log the condition and suppress duplicate entries.; Signal failure: buying resistance / selling support without context. Log the condition and suppress duplicate entries.; Signal failure: false displacement. Log the condition and suppress duplicate entries.; Signal failure: subjective level quality. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for Liquidity Above/Below SNR + Reversal with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement Liquidity Above/Below SNR + Reversal with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+# STRATEGY OBJECTIVE
+SNR + ICT Hybrid Model. Hybrid research model connecting classic levels with ICT-style confirmation.
+
+# COMPLETE STRATEGY BLUEPRINT
+## 1. Strategy Identity
+- Name: SNR + ICT Hybrid Model
+- Market: XAUUSD / EURUSD / GBPUSD / NAS100
+- Timeframe: H4 / H1 key levels, M15 / M5 execution
+- Style: Intraday
+- Setup Type: SNR + ICT
+
+## 2. Strategy Objective
+A hybrid of classic support/resistance with ICT-style liquidity and displacement confirmation.
+
+## 3. Market Conditions
+Operate outside these avoid conditions: Avoid buying resistance or selling support without liquidity context.
+
+## 4. Entry Conditions
+Identify key support or resistance, observe liquidity around the level, then wait for ICT-style displacement or FVG confirmation.
+
+## 5. Confirmation Conditions
+Require a sweep of the level, market-structure shift, and FVG or retest confirmation.
+
+## 6. Stop Loss Logic
+Place the stop beyond the swept support/resistance level.
+
+## 7. Take Profit Logic
+Target the next liquidity pool or opposing support/resistance zone.
+
+## 8. Risk Management Rules
+Risk 0.5% to 1% per trade.
+
+## 9. Session Filter
+London / New York preferred.
+
+## 10. News Filter
+Avoid entry immediately before red-folder news.
+
+## 11. Invalidation Logic
+Invalidate if price accepts beyond the SNR level without rejection.
+
+## 12. Trade Management
+Take a partial at the first target and manage around reaction levels.
+
+## 13. Avoid Conditions
+Avoid buying resistance or selling support without liquidity context.
+
+## 14. Backtesting Notes
+Hybrid research model connecting classic levels with ICT-style confirmation.
+
+## 15. Automation Notes
+Convert every rule into observable variables, exact thresholds, state transitions, timing, conflict handling, spread/slippage constraints, and reproducible tests.
+
+## 16. Quality Engine Summary
+- Logic Clarity Score: strategy-specific
+- Automation Readiness Score: strategy-specific
+- Main Risks: Level selection and confirmation overlap
+
+## 17. Disclaimer
+Educational and research-based only. This blueprint does not guarantee profitable trading and requires backtesting, validation, forward testing, and risk management.
+
+# MARKET MODEL
+Define the exact market context needed by the strategy. Include only relevant concepts for SNR + ICT Model.
+
+# ENTRY ENGINE
+Transform the entry concept into programmable boolean rules. No subjective language.
+
+# CONFIRMATION ENGINE
+Use objective variables appropriate to this strategy.
+
+# LONG AND SHORT SYMMETRY
+Implement BOTH buy and sell logic unless the template is explicitly directional.
+
+# STOP-LOSS ENGINE
+Convert the original stop concept into exact executable logic.
+
+# TAKE-PROFIT ENGINE
+Convert targets into executable logic.
+
+# RISK ENGINE
+Use percentage-risk sizing with broker-safe volume normalization.
+
+# POSITION SIZING SAFETY
+Handle SYMBOL_TRADE_TICK_SIZE, SYMBOL_TRADE_TICK_VALUE, SYMBOL_VOLUME_MIN, SYMBOL_VOLUME_MAX, SYMBOL_VOLUME_STEP, SYMBOL_POINT, SYMBOL_DIGITS correctly.
+
+# SESSION ENGINE
+Use server-time-aware logic. Handle overnight ranges correctly.
+
+# NEWS FILTER
+Do not fabricate news data.
+
+# SPREAD FILTER
+Include a maximum-spread protection mechanism.
+
+# SLIPPAGE / DEVIATION CONTROL
+Expose a configurable deviation parameter.
+
+# POSITION STATE
+Prevent duplicate or uncontrolled entries.
+
+# NEW-BAR / EVENT CONTROL
+Use reliable new-bar detection where candle-based.
+
+# SIGNAL STATE MACHINE
+Use explicit states where appropriate.
+
+# MULTI-TIMEFRAME SAFETY
+Use closed candles and avoid future leakage.
+
+# NON-REPAINTING REQUIREMENT
+Strictly prohibit future-data leakage.
+
+# INDICATOR HANDLE MANAGEMENT
+Create and release handles correctly.
+
+# PRICE DATA SAFETY
+Validate copied data and guard against unavailable symbols/timeframes.
+
+# ORDER EXECUTION
+Prefer native MQL5 trade structures. Check trade results.
+
+# TRADE RESULT LOGGING
+Log failed trade operations with diagnostics.
+
+# TRADE MANAGEMENT
+Implement the strategy's trade-management logic only.
+
+# PARTIAL CLOSE SAFETY
+Respect minimum lot and volume step.
+
+# INVALIDATION ENGINE
+Distinguish setup invalidation, hard stop, and timeout.
+
+# SETUP EXPIRY
+Implement stale-signal expiry where appropriate.
+
+# COOLDOWN LOGIC
+Prevent immediate repeated entries following stop-out or invalidation.
+
+# STRATEGY-SPECIFIC REQUIREMENTS
+- Define draw on liquidity and buy-side / sell-side liquidity.
+- Define kill-zone time filter and session timing.
+- Define displacement condition and FVG criteria.
+- Define OTE or entry-zone logic if used.
+- Define market structure shift.
+- Define invalidation if displacement fails.
+- Avoid random FVG entries without context.
+- WARNING: ICT-style logic can be highly contextual. Ask clarification questions before coding if any time, liquidity, or displacement rule is vague.
+
+# UNAVAILABLE DATA POLICY
+If the source strategy asks for data standard MT5 does not reliably expose, separate Native MT5 implementation, Proxy implementation, and External-data extension point. Choose a compile-safe default.
+
+# NO PROFIT CLAIMS
+Never claim guaranteed profitability, a specific win rate, or expected monthly returns.
+
+# BACKTEST INTEGRITY
+Keep behavior deterministic, strategy tester compatible, and transaction-cost aware.
+
+# CODE QUALITY
+Use clean function decomposition, meaningful naming, reusable helpers, and no monolithic OnTick.
+
+# COMPILATION SELF-AUDIT
+Inspect for undeclared identifiers, wrong signatures, invalid enums, bad CopyBuffer usage, handle leaks, incorrect CTrade calls, and unsafe lot calculations. Fix issues before output.
+
+# LOGIC SELF-AUDIT
+Verify BUY and SELL coherence, non-repainting behavior, no duplicate loops, correct stop side, valid target side, and working session/spread/cooldown logic.
+
+# DOWNSTREAM AI FINAL RESPONSE CONTRACT
+Return exactly: Filename, one complete MQL5 code block, compact implementation notes only if needed.
+
+# FINAL DISCLAIMER
+This prompt is educational and research-based only. Use it to generate a compile-safe MT5 Expert Advisor baseline for research.

@@ -1,0 +1,70 @@
+{
+  "strategy": "EURUSD post-release CPI/NFP continuation with pullback entry",
+  "symbol": "EURUSD",
+  "timeframe": "M1",
+  "initial_balance_usd": 10000,
+  "risk_per_trade_pct": 0.5,
+  "candidate": {
+    "signal_delay_minutes": 3,
+    "minimum_body_fraction": 0.5,
+    "retracement_fraction": 0.2,
+    "reward_risk": 1.5,
+    "entry_expiry_minutes": 30,
+    "force_exit_minutes": 45
+  },
+  "tests": [
+    {
+      "name": "training selection",
+      "dates": "2021-08-11 to 2024-12-31",
+      "model": "MT5 one-minute OHLC",
+      "return_pct": 2.73,
+      "profit_factor": 2.65,
+      "win_rate_pct": 62.5,
+      "max_equity_drawdown_pct": 1.06,
+      "trades": 24
+    },
+    {
+      "name": "locked unseen validation",
+      "dates": "2025-01-01 to 2026-08-10",
+      "model": "MT5 one-minute OHLC",
+      "return_pct": -0.02,
+      "profit_factor": 0.99,
+      "win_rate_pct": 45.45,
+      "max_equity_drawdown_pct": 1.31,
+      "trades": 11
+    },
+    {
+      "name": "last year",
+      "dates": "2025-08-11 to 2026-08-10",
+      "model": "MT5 one-minute OHLC",
+      "return_pct": 0.23,
+      "profit_factor": 1.25,
+      "win_rate_pct": 42.86,
+      "max_equity_drawdown_pct": 1.02,
+      "trades": 7
+    },
+    {
+      "name": "real-tick execution validation",
+      "dates": "2026-01-01 to 2026-08-10",
+      "model": "MT5 every tick based on real ticks",
+      "return_pct": 0.85,
+      "profit_factor": 3.55,
+      "win_rate_pct": 60.0,
+      "max_equity_drawdown_pct": 0.41,
+      "trades": 5
+    },
+    {
+      "name": "full-period diagnostic",
+      "dates": "2021-08-11 to 2026-08-10",
+      "model": "MT5 one-minute OHLC",
+      "return_pct": 2.69,
+      "net_profit_usd": 269.08,
+      "profit_factor": 1.92,
+      "win_rate_pct": 57.14,
+      "max_equity_drawdown_pct": 1.86,
+      "trades": 35
+    }
+  ],
+  "decision": "REJECT_FOR_PROP_AND_ACTIVE_BAT",
+  "reason": "The locked unseen window was flat with PF 0.99; the positive 2026 real-tick result contains only five trades."
+}

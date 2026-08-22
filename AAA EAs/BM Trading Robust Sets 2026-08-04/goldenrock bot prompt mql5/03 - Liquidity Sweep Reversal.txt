@@ -1,0 +1,348 @@
+============================================================
+GOLDENROCK - MQL5 EXPERT ADVISOR GENERATION PROMPT
+============================================================
+
+STRATEGY:
+Liquidity Sweep Reversal
+
+CATEGORY:
+Liquidity / Reversal
+
+DIFFICULTY:
+Intermediate
+
+AUTOMATION DIFFICULTY:
+Hard
+
+TARGET:
+MetaTrader 5 / MQL5 Expert Advisor
+
+OUTPUT MODE:
+Direct Complete Code
+
+VERSION:
+Baseline V1
+============================================================
+
+You are a senior quantitative trading-system architect, institutional market-structure researcher, execution engineer, and senior MQL5 developer specializing in MetaTrader 5 Expert Advisors.
+
+You combine discretionary trading logic with deterministic systematic implementation.
+
+Your responsibility is to convert the strategy specification below into a complete, compilable, testable MT5 Expert Advisor.
+
+Do not ask me questions before the first implementation.
+If any strategy component remains subjective or underspecified, choose a conservative deterministic baseline implementation, expose the meaningful threshold as an MQL5 input when appropriate, document the assumption briefly in the source code, and continue.
+Generate the complete Expert Advisor now.
+Do not return pseudocode.
+Do not return an implementation plan instead of code.
+Do not leave TODO sections.
+Do not omit functions because they are complex.
+Do not silently invent unavailable market data.
+Return a complete baseline .mq5 Expert Advisor suitable for compilation and Strategy Tester research.
+
+FINAL RESPONSE CONTRACT
+
+Return exactly:
+1. Filename
+2. One complete MQL5 code block
+3. Compact Implementation Notes only if technically necessary
+
+The MQL5 source code is the primary deliverable.
+Do not provide a long explanation before the code.
+Do not ask clarification questions.
+Do not provide pseudocode.
+Do not provide incomplete fragments.
+Do not use TODO placeholders.
+
+# STRATEGY IDENTITY
+Strategy Name:
+Liquidity Sweep Reversal
+Category:
+Liquidity / Reversal
+Trading Style:
+Intraday / Swing
+Setup Type:
+Liquidity Sweep
+Markets:
+Gold / FX / US30
+Timeframes:
+M5 / M15 / H1
+Difficulty:
+Intermediate
+Automation Difficulty:
+Hard
+
+# PRIMARY MISSION
+Convert this strategy into ONE complete MetaTrader 5 Expert Advisor written in native MQL5.
+The first implementation should be deterministic, measurable, compilable, backtestable, configurable, debuggable, non-repainting, and suitable as a research baseline.
+
+# STRICT RESPONSE BEHAVIOR
+The coding AI MUST generate implementation immediately; not ask clarification questions first; not return a tutorial; not return pseudocode; not merely describe architecture; not stop at a specification; not provide Pine Script; not provide MQL4.
+
+# AVAILABLE SETUP VARIANTS
+- Buy-Side Liquidity Sweep Sell
+- Sell-Side Liquidity Sweep Buy
+- Sweep + Market Structure Shift + Retest
+- Double Sweep Reversal
+
+- Buy-Side Liquidity Sweep Sell
+  Setup type: Liquidity Sweep
+  Difficulty: Intermediate
+  Automation difficulty: Hard
+  Best markets: Gold / FX / US30
+  Best timeframes: M5 / M15 / H1
+  Best sessions: Best during London and New York high-liquidity sessions.
+  Market regime: Extended or liquidity-seeking market with confirmed rejection
+  Entry trigger: Buy-Side Liquidity Sweep Sell: Look for a sweep of external liquidity above highs or below lows, followed by rejection. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Wait for a reclaim of internal structure or a break in the opposite direction. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the sweep extreme.
+  Target logic: Target internal liquidity first, then opposite-side liquidity.
+  Trade management: Take a partial at the first target and hold the remainder for a structure move.
+  Avoid conditions: Avoid random mid-range entries without a clear sweep.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: sweep becomes real breakout; unclear rejection; early short before confirmation
+  Failure modes: Signal failure: sweep becomes real breakout. Log the condition and suppress duplicate entries.; Signal failure: unclear rejection. Log the condition and suppress duplicate entries.; Signal failure: early short before confirmation. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for Buy-Side Liquidity Sweep Sell with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement Buy-Side Liquidity Sweep Sell with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- Sell-Side Liquidity Sweep Buy
+  Setup type: Liquidity Sweep
+  Difficulty: Intermediate
+  Automation difficulty: Hard
+  Best markets: Gold / FX / US30
+  Best timeframes: M5 / M15 / H1
+  Best sessions: Best during London and New York high-liquidity sessions.
+  Market regime: Extended or liquidity-seeking market with confirmed rejection
+  Entry trigger: Sell-Side Liquidity Sweep Buy: Look for a sweep of external liquidity above highs or below lows, followed by rejection. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Wait for a reclaim of internal structure or a break in the opposite direction. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the sweep extreme.
+  Target logic: Target internal liquidity first, then opposite-side liquidity.
+  Trade management: Take a partial at the first target and hold the remainder for a structure move.
+  Avoid conditions: Avoid random mid-range entries without a clear sweep.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: sweep continues lower; weak reclaim; entering against HTF pressure
+  Failure modes: Signal failure: sweep continues lower. Log the condition and suppress duplicate entries.; Signal failure: weak reclaim. Log the condition and suppress duplicate entries.; Signal failure: entering against HTF pressure. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for Sell-Side Liquidity Sweep Buy with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement Sell-Side Liquidity Sweep Buy with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- Sweep + Market Structure Shift + Retest
+  Setup type: Liquidity Sweep
+  Difficulty: Intermediate
+  Automation difficulty: Hard
+  Best markets: Gold / FX / US30
+  Best timeframes: M5 / M15 / H1
+  Best sessions: Best during London and New York high-liquidity sessions.
+  Market regime: Extended or liquidity-seeking market with confirmed rejection
+  Entry trigger: Sweep + Market Structure Shift + Retest: Look for a sweep of external liquidity above highs or below lows, followed by rejection. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Wait for a reclaim of internal structure or a break in the opposite direction. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the sweep extreme.
+  Target logic: Target internal liquidity first, then opposite-side liquidity.
+  Trade management: Take a partial at the first target and hold the remainder for a structure move.
+  Avoid conditions: Avoid random mid-range entries without a clear sweep.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: MSS too subjective; retest misses; late entry after move
+  Failure modes: Signal failure: MSS too subjective. Log the condition and suppress duplicate entries.; Signal failure: retest misses. Log the condition and suppress duplicate entries.; Signal failure: late entry after move. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for Sweep + Market Structure Shift + Retest with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement Sweep + Market Structure Shift + Retest with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- Double Sweep Reversal
+  Setup type: Liquidity Sweep
+  Difficulty: Intermediate
+  Automation difficulty: Hard
+  Best markets: Gold / FX / US30
+  Best timeframes: M5 / M15 / H1
+  Best sessions: Best during London and New York high-liquidity sessions.
+  Market regime: Extended or liquidity-seeking market with confirmed rejection
+  Entry trigger: Double Sweep Reversal: Look for a sweep of external liquidity above highs or below lows, followed by rejection. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Wait for a reclaim of internal structure or a break in the opposite direction. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the sweep extreme.
+  Target logic: Target internal liquidity first, then opposite-side liquidity.
+  Trade management: Take a partial at the first target and hold the remainder for a structure move.
+  Avoid conditions: Avoid random mid-range entries without a clear sweep.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: rare setup; difficult to code objectively; high false positives
+  Failure modes: Signal failure: rare setup. Log the condition and suppress duplicate entries.; Signal failure: difficult to code objectively. Log the condition and suppress duplicate entries.; Signal failure: high false positives. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for Double Sweep Reversal with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement Double Sweep Reversal with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+# STRATEGY OBJECTIVE
+Liquidity Sweep Reversal. Scenario-based stop-hunt and reversal research model.
+
+# COMPLETE STRATEGY BLUEPRINT
+## 1. Strategy Identity
+- Name: Liquidity Sweep Reversal
+- Market: XAUUSD / GBPJPY / EURUSD / US30
+- Timeframe: M5 / M15 / H1
+- Style: Intraday / Swing
+- Setup Type: Liquidity Sweep
+
+## 2. Strategy Objective
+A reversal model based on a stop hunt, liquidity sweep, rejection, and structure reclaim.
+
+## 3. Market Conditions
+Operate outside these avoid conditions: Avoid random mid-range entries without a clear sweep.
+
+## 4. Entry Conditions
+Look for a sweep of external liquidity above highs or below lows, followed by rejection.
+
+## 5. Confirmation Conditions
+Wait for a reclaim of internal structure or a break in the opposite direction.
+
+## 6. Stop Loss Logic
+Place the stop beyond the sweep extreme.
+
+## 7. Take Profit Logic
+Target internal liquidity first, then opposite-side liquidity.
+
+## 8. Risk Management Rules
+Risk 0.5% to 1%.
+
+## 9. Session Filter
+Best during London and New York high-liquidity sessions.
+
+## 10. News Filter
+Use caution during major economic releases.
+
+## 11. Invalidation Logic
+Invalidate if price continues and accepts beyond the swept liquidity.
+
+## 12. Trade Management
+Take a partial at the first target and hold the remainder for a structure move.
+
+## 13. Avoid Conditions
+Avoid random mid-range entries without a clear sweep.
+
+## 14. Backtesting Notes
+Scenario-based stop-hunt and reversal research model.
+
+## 15. Automation Notes
+Convert every rule into observable variables, exact thresholds, state transitions, timing, conflict handling, spread/slippage constraints, and reproducible tests.
+
+## 16. Quality Engine Summary
+- Logic Clarity Score: strategy-specific
+- Automation Readiness Score: strategy-specific
+- Main Risks: Subjective sweep and reclaim definitions
+
+## 17. Disclaimer
+Educational and research-based only. This blueprint does not guarantee profitable trading and requires backtesting, validation, forward testing, and risk management.
+
+# MARKET MODEL
+Define the exact market context needed by the strategy. Include only relevant concepts for Liquidity Sweep Reversal.
+
+# ENTRY ENGINE
+Transform the entry concept into programmable boolean rules. No subjective language.
+
+# CONFIRMATION ENGINE
+Use objective variables appropriate to this strategy.
+
+# LONG AND SHORT SYMMETRY
+Implement BOTH buy and sell logic unless the template is explicitly directional.
+
+# STOP-LOSS ENGINE
+Convert the original stop concept into exact executable logic.
+
+# TAKE-PROFIT ENGINE
+Convert targets into executable logic.
+
+# RISK ENGINE
+Use percentage-risk sizing with broker-safe volume normalization.
+
+# POSITION SIZING SAFETY
+Handle SYMBOL_TRADE_TICK_SIZE, SYMBOL_TRADE_TICK_VALUE, SYMBOL_VOLUME_MIN, SYMBOL_VOLUME_MAX, SYMBOL_VOLUME_STEP, SYMBOL_POINT, SYMBOL_DIGITS correctly.
+
+# SESSION ENGINE
+Use server-time-aware logic. Handle overnight ranges correctly.
+
+# NEWS FILTER
+Do not fabricate news data.
+
+# SPREAD FILTER
+Include a maximum-spread protection mechanism.
+
+# SLIPPAGE / DEVIATION CONTROL
+Expose a configurable deviation parameter.
+
+# POSITION STATE
+Prevent duplicate or uncontrolled entries.
+
+# NEW-BAR / EVENT CONTROL
+Use reliable new-bar detection where candle-based.
+
+# SIGNAL STATE MACHINE
+Use explicit states where appropriate.
+
+# MULTI-TIMEFRAME SAFETY
+Use closed candles and avoid future leakage.
+
+# NON-REPAINTING REQUIREMENT
+Strictly prohibit future-data leakage.
+
+# INDICATOR HANDLE MANAGEMENT
+Create and release handles correctly.
+
+# PRICE DATA SAFETY
+Validate copied data and guard against unavailable symbols/timeframes.
+
+# ORDER EXECUTION
+Prefer native MQL5 trade structures. Check trade results.
+
+# TRADE RESULT LOGGING
+Log failed trade operations with diagnostics.
+
+# TRADE MANAGEMENT
+Implement the strategy's trade-management logic only.
+
+# PARTIAL CLOSE SAFETY
+Respect minimum lot and volume step.
+
+# INVALIDATION ENGINE
+Distinguish setup invalidation, hard stop, and timeout.
+
+# SETUP EXPIRY
+Implement stale-signal expiry where appropriate.
+
+# COOLDOWN LOGIC
+Prevent immediate repeated entries following stop-out or invalidation.
+
+# STRATEGY-SPECIFIC REQUIREMENTS
+- Define external liquidity and sweep condition.
+- Define wick/body acceptance and rejection criteria.
+- Define structure reclaim.
+- Define stop beyond sweep extreme and target liquidity pools.
+- Define invalidation if price accepts beyond the sweep.
+
+# UNAVAILABLE DATA POLICY
+If the source strategy asks for data standard MT5 does not reliably expose, separate Native MT5 implementation, Proxy implementation, and External-data extension point. Choose a compile-safe default.
+
+# NO PROFIT CLAIMS
+Never claim guaranteed profitability, a specific win rate, or expected monthly returns.
+
+# BACKTEST INTEGRITY
+Keep behavior deterministic, strategy tester compatible, and transaction-cost aware.
+
+# CODE QUALITY
+Use clean function decomposition, meaningful naming, reusable helpers, and no monolithic OnTick.
+
+# COMPILATION SELF-AUDIT
+Inspect for undeclared identifiers, wrong signatures, invalid enums, bad CopyBuffer usage, handle leaks, incorrect CTrade calls, and unsafe lot calculations. Fix issues before output.
+
+# LOGIC SELF-AUDIT
+Verify BUY and SELL coherence, non-repainting behavior, no duplicate loops, correct stop side, valid target side, and working session/spread/cooldown logic.
+
+# DOWNSTREAM AI FINAL RESPONSE CONTRACT
+Return exactly: Filename, one complete MQL5 code block, compact implementation notes only if needed.
+
+# FINAL DISCLAIMER
+This prompt is educational and research-based only. Use it to generate a compile-safe MT5 Expert Advisor baseline for research.

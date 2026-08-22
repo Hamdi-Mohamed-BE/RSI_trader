@@ -1,0 +1,351 @@
+============================================================
+GOLDENROCK - MQL5 EXPERT ADVISOR GENERATION PROMPT
+============================================================
+
+STRATEGY:
+ICT Model
+
+CATEGORY:
+ICT / Time-Based Liquidity
+
+DIFFICULTY:
+Advanced / Institutional
+
+AUTOMATION DIFFICULTY:
+Very Hard
+
+TARGET:
+MetaTrader 5 / MQL5 Expert Advisor
+
+OUTPUT MODE:
+Direct Complete Code
+
+VERSION:
+Baseline V1
+============================================================
+
+You are a senior quantitative trading-system architect, institutional market-structure researcher, execution engineer, and senior MQL5 developer specializing in MetaTrader 5 Expert Advisors.
+
+You combine discretionary trading logic with deterministic systematic implementation.
+
+Your responsibility is to convert the strategy specification below into a complete, compilable, testable MT5 Expert Advisor.
+
+Do not ask me questions before the first implementation.
+If any strategy component remains subjective or underspecified, choose a conservative deterministic baseline implementation, expose the meaningful threshold as an MQL5 input when appropriate, document the assumption briefly in the source code, and continue.
+Generate the complete Expert Advisor now.
+Do not return pseudocode.
+Do not return an implementation plan instead of code.
+Do not leave TODO sections.
+Do not omit functions because they are complex.
+Do not silently invent unavailable market data.
+Return a complete baseline .mq5 Expert Advisor suitable for compilation and Strategy Tester research.
+
+FINAL RESPONSE CONTRACT
+
+Return exactly:
+1. Filename
+2. One complete MQL5 code block
+3. Compact Implementation Notes only if technically necessary
+
+The MQL5 source code is the primary deliverable.
+Do not provide a long explanation before the code.
+Do not ask clarification questions.
+Do not provide pseudocode.
+Do not provide incomplete fragments.
+Do not use TODO placeholders.
+
+# STRATEGY IDENTITY
+Strategy Name:
+ICT Model
+Category:
+ICT / Time-Based Liquidity
+Trading Style:
+Intraday
+Setup Type:
+ICT
+Markets:
+Gold / Indices / FX
+Timeframes:
+Daily to M5
+Difficulty:
+Advanced / Institutional
+Automation Difficulty:
+Very Hard
+
+# PRIMARY MISSION
+Convert this strategy into ONE complete MetaTrader 5 Expert Advisor written in native MQL5.
+The first implementation should be deterministic, measurable, compilable, backtestable, configurable, debuggable, non-repainting, and suitable as a research baseline.
+
+# STRICT RESPONSE BEHAVIOR
+The coding AI MUST generate implementation immediately; not ask clarification questions first; not return a tutorial; not return pseudocode; not merely describe architecture; not stop at a specification; not provide Pine Script; not provide MQL4.
+
+# AVAILABLE SETUP VARIANTS
+- Kill Zone Sweep + FVG
+- Draw on Liquidity + Displacement
+- OTE + Market Structure Shift
+- Session Manipulation + Expansion
+
+- Kill Zone Sweep + FVG
+  Setup type: ICT
+  Difficulty: Advanced / Institutional
+  Automation difficulty: Very Hard
+  Best markets: Gold / Indices / FX
+  Best timeframes: Daily to M5
+  Best sessions: London kill zone / New York kill zone.
+  Market regime: Extended or liquidity-seeking market with confirmed rejection
+  Entry trigger: Kill Zone Sweep + FVG: Identify the draw on liquidity, wait for kill-zone manipulation and displacement, then enter near an FVG or optimal trade entry zone. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Require a liquidity sweep, displacement, FVG formation, and market-structure shift. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the manipulation extreme or invalidation swing.
+  Target logic: Target opposing liquidity, the session-range objective, or next draw on liquidity.
+  Trade management: Scale at liquidity targets and avoid holding through high-impact events without a plan.
+  Avoid conditions: Avoid random FVG entries without draw-on-liquidity and timing context.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: time-window dependency; subjective draw on liquidity; random FVG entries; fails when session does not expand; hard to automate without strict definitions
+  Failure modes: Signal failure: time-window dependency. Log the condition and suppress duplicate entries.; Signal failure: subjective draw on liquidity. Log the condition and suppress duplicate entries.; Signal failure: random FVG entries. Log the condition and suppress duplicate entries.; Signal failure: fails when session does not expand. Log the condition and suppress duplicate entries.; Signal failure: hard to automate without strict definitions. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for Kill Zone Sweep + FVG with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement Kill Zone Sweep + FVG with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- Draw on Liquidity + Displacement
+  Setup type: ICT
+  Difficulty: Advanced / Institutional
+  Automation difficulty: Very Hard
+  Best markets: Gold / Indices / FX
+  Best timeframes: Daily to M5
+  Best sessions: London kill zone / New York kill zone.
+  Market regime: Directional or expanding market with sufficient liquidity
+  Entry trigger: Draw on Liquidity + Displacement: Identify the draw on liquidity, wait for kill-zone manipulation and displacement, then enter near an FVG or optimal trade entry zone. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Require a liquidity sweep, displacement, FVG formation, and market-structure shift. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the manipulation extreme or invalidation swing.
+  Target logic: Target opposing liquidity, the session-range objective, or next draw on liquidity.
+  Trade management: Scale at liquidity targets and avoid holding through high-impact events without a plan.
+  Avoid conditions: Avoid random FVG entries without draw-on-liquidity and timing context.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: time-window dependency; subjective draw on liquidity; random FVG entries; fails when session does not expand; hard to automate without strict definitions
+  Failure modes: Signal failure: time-window dependency. Log the condition and suppress duplicate entries.; Signal failure: subjective draw on liquidity. Log the condition and suppress duplicate entries.; Signal failure: random FVG entries. Log the condition and suppress duplicate entries.; Signal failure: fails when session does not expand. Log the condition and suppress duplicate entries.; Signal failure: hard to automate without strict definitions. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for Draw on Liquidity + Displacement with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement Draw on Liquidity + Displacement with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- OTE + Market Structure Shift
+  Setup type: ICT
+  Difficulty: Advanced / Institutional
+  Automation difficulty: Very Hard
+  Best markets: Gold / Indices / FX
+  Best timeframes: Daily to M5
+  Best sessions: London kill zone / New York kill zone.
+  Market regime: Directional or expanding market with sufficient liquidity
+  Entry trigger: OTE + Market Structure Shift: Identify the draw on liquidity, wait for kill-zone manipulation and displacement, then enter near an FVG or optimal trade entry zone. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Require a liquidity sweep, displacement, FVG formation, and market-structure shift. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the manipulation extreme or invalidation swing.
+  Target logic: Target opposing liquidity, the session-range objective, or next draw on liquidity.
+  Trade management: Scale at liquidity targets and avoid holding through high-impact events without a plan.
+  Avoid conditions: Avoid random FVG entries without draw-on-liquidity and timing context.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: time-window dependency; subjective draw on liquidity; random FVG entries; fails when session does not expand; hard to automate without strict definitions
+  Failure modes: Signal failure: time-window dependency. Log the condition and suppress duplicate entries.; Signal failure: subjective draw on liquidity. Log the condition and suppress duplicate entries.; Signal failure: random FVG entries. Log the condition and suppress duplicate entries.; Signal failure: fails when session does not expand. Log the condition and suppress duplicate entries.; Signal failure: hard to automate without strict definitions. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for OTE + Market Structure Shift with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement OTE + Market Structure Shift with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+- Session Manipulation + Expansion
+  Setup type: ICT
+  Difficulty: Advanced / Institutional
+  Automation difficulty: Very Hard
+  Best markets: Gold / Indices / FX
+  Best timeframes: Daily to M5
+  Best sessions: London kill zone / New York kill zone.
+  Market regime: Directional or expanding market with sufficient liquidity
+  Entry trigger: Session Manipulation + Expansion: Identify the draw on liquidity, wait for kill-zone manipulation and displacement, then enter near an FVG or optimal trade entry zone. Encode the trigger as a completed-bar boolean condition with no hindsight labels.
+  Confirmation trigger: Require a liquidity sweep, displacement, FVG formation, and market-structure shift. Require a completed candle and one objective structure, close, or retest event before entry.
+  Stop logic: Place the stop beyond the manipulation extreme or invalidation swing.
+  Target logic: Target opposing liquidity, the session-range objective, or next draw on liquidity.
+  Trade management: Scale at liquidity targets and avoid holding through high-impact events without a plan.
+  Avoid conditions: Avoid random FVG entries without draw-on-liquidity and timing context.
+  Data requirements: Reliable OHLCV, session timestamps, spread/slippage assumptions, and enough history for regime-separated testing.
+  Common weaknesses: time-window dependency; subjective draw on liquidity; random FVG entries; fails when session does not expand; hard to automate without strict definitions
+  Failure modes: Signal failure: time-window dependency. Log the condition and suppress duplicate entries.; Signal failure: subjective draw on liquidity. Log the condition and suppress duplicate entries.; Signal failure: random FVG entries. Log the condition and suppress duplicate entries.; Signal failure: fails when session does not expand. Log the condition and suppress duplicate entries.; Signal failure: hard to automate without strict definitions. Log the condition and suppress duplicate entries.
+  Optimization risks: Do not tune thresholds for maximum historical profit. Freeze a baseline, constrain parameters, and reserve unseen data.
+  Backtest rules: Use completed bars; one signal per setup; model spread, commission and slippage; separate regimes and sessions; report rejected signals and out-of-sample results.
+  Minimum backtest sample: 100
+  First-code objective: Generate a clean, backtestable baseline for Session Manipulation + Expansion with explicit entries, exits, stops, targets, session filters, and diagnostic logs.
+  Prompt enhancement block: Implement Session Manipulation + Expansion with named inputs, observable boolean conditions, completed-bar confirmation, explicit state transitions, cost assumptions, failure logs, and a reproducible baseline test report.
+
+# STRATEGY OBJECTIVE
+ICT Liquidity & Time Model. ICT-style educational model based on liquidity, time, displacement, and FVGs.
+
+# COMPLETE STRATEGY BLUEPRINT
+## 1. Strategy Identity
+- Name: ICT Liquidity & Time Model
+- Market: XAUUSD / NAS100 / US30 / EURUSD / GBPUSD
+- Timeframe: Daily draw / H4 bias / H1 context / M15-M5 execution
+- Style: Intraday
+- Setup Type: ICT
+
+## 2. Strategy Objective
+A time-based liquidity model using draw, kill-zone manipulation, displacement, and fair value gaps.
+
+## 3. Market Conditions
+Operate outside these avoid conditions: Avoid random FVG entries without draw-on-liquidity and timing context.
+
+## 4. Entry Conditions
+Identify the draw on liquidity, wait for kill-zone manipulation and displacement, then enter near an FVG or optimal trade entry zone.
+
+## 5. Confirmation Conditions
+Require a liquidity sweep, displacement, FVG formation, and market-structure shift.
+
+## 6. Stop Loss Logic
+Place the stop beyond the manipulation extreme or invalidation swing.
+
+## 7. Take Profit Logic
+Target opposing liquidity, the session-range objective, or next draw on liquidity.
+
+## 8. Risk Management Rules
+Risk 0.25% to 0.5% per trade.
+
+## 9. Session Filter
+London kill zone / New York kill zone.
+
+## 10. News Filter
+Avoid major releases unless using post-news confirmation.
+
+## 11. Invalidation Logic
+Invalidate if displacement fails or price accepts against the expected draw.
+
+## 12. Trade Management
+Scale at liquidity targets and avoid holding through high-impact events without a plan.
+
+## 13. Avoid Conditions
+Avoid random FVG entries without draw-on-liquidity and timing context.
+
+## 14. Backtesting Notes
+ICT-style educational model based on liquidity, time, displacement, and FVGs.
+
+## 15. Automation Notes
+Convert every rule into observable variables, exact thresholds, state transitions, timing, conflict handling, spread/slippage constraints, and reproducible tests.
+
+## 16. Quality Engine Summary
+- Logic Clarity Score: strategy-specific
+- Automation Readiness Score: strategy-specific
+- Main Risks: Terminology ambiguity and time-zone errors
+
+## 17. Disclaimer
+Educational and research-based only. This blueprint does not guarantee profitable trading and requires backtesting, validation, forward testing, and risk management.
+
+# MARKET MODEL
+Define the exact market context needed by the strategy. Include only relevant concepts for ICT Model.
+
+# ENTRY ENGINE
+Transform the entry concept into programmable boolean rules. No subjective language.
+
+# CONFIRMATION ENGINE
+Use objective variables appropriate to this strategy.
+
+# LONG AND SHORT SYMMETRY
+Implement BOTH buy and sell logic unless the template is explicitly directional.
+
+# STOP-LOSS ENGINE
+Convert the original stop concept into exact executable logic.
+
+# TAKE-PROFIT ENGINE
+Convert targets into executable logic.
+
+# RISK ENGINE
+Use percentage-risk sizing with broker-safe volume normalization.
+
+# POSITION SIZING SAFETY
+Handle SYMBOL_TRADE_TICK_SIZE, SYMBOL_TRADE_TICK_VALUE, SYMBOL_VOLUME_MIN, SYMBOL_VOLUME_MAX, SYMBOL_VOLUME_STEP, SYMBOL_POINT, SYMBOL_DIGITS correctly.
+
+# SESSION ENGINE
+Use server-time-aware logic. Handle overnight ranges correctly.
+
+# NEWS FILTER
+Do not fabricate news data.
+
+# SPREAD FILTER
+Include a maximum-spread protection mechanism.
+
+# SLIPPAGE / DEVIATION CONTROL
+Expose a configurable deviation parameter.
+
+# POSITION STATE
+Prevent duplicate or uncontrolled entries.
+
+# NEW-BAR / EVENT CONTROL
+Use reliable new-bar detection where candle-based.
+
+# SIGNAL STATE MACHINE
+Use explicit states where appropriate.
+
+# MULTI-TIMEFRAME SAFETY
+Use closed candles and avoid future leakage.
+
+# NON-REPAINTING REQUIREMENT
+Strictly prohibit future-data leakage.
+
+# INDICATOR HANDLE MANAGEMENT
+Create and release handles correctly.
+
+# PRICE DATA SAFETY
+Validate copied data and guard against unavailable symbols/timeframes.
+
+# ORDER EXECUTION
+Prefer native MQL5 trade structures. Check trade results.
+
+# TRADE RESULT LOGGING
+Log failed trade operations with diagnostics.
+
+# TRADE MANAGEMENT
+Implement the strategy's trade-management logic only.
+
+# PARTIAL CLOSE SAFETY
+Respect minimum lot and volume step.
+
+# INVALIDATION ENGINE
+Distinguish setup invalidation, hard stop, and timeout.
+
+# SETUP EXPIRY
+Implement stale-signal expiry where appropriate.
+
+# COOLDOWN LOGIC
+Prevent immediate repeated entries following stop-out or invalidation.
+
+# STRATEGY-SPECIFIC REQUIREMENTS
+- Define draw on liquidity and buy-side / sell-side liquidity.
+- Define kill-zone time filter and session timing.
+- Define displacement condition and FVG criteria.
+- Define OTE or entry-zone logic if used.
+- Define market structure shift.
+- Define invalidation if displacement fails.
+- Avoid random FVG entries without context.
+- WARNING: ICT-style logic can be highly contextual. Ask clarification questions before coding if any time, liquidity, or displacement rule is vague.
+
+# UNAVAILABLE DATA POLICY
+If the source strategy asks for data standard MT5 does not reliably expose, separate Native MT5 implementation, Proxy implementation, and External-data extension point. Choose a compile-safe default.
+
+# NO PROFIT CLAIMS
+Never claim guaranteed profitability, a specific win rate, or expected monthly returns.
+
+# BACKTEST INTEGRITY
+Keep behavior deterministic, strategy tester compatible, and transaction-cost aware.
+
+# CODE QUALITY
+Use clean function decomposition, meaningful naming, reusable helpers, and no monolithic OnTick.
+
+# COMPILATION SELF-AUDIT
+Inspect for undeclared identifiers, wrong signatures, invalid enums, bad CopyBuffer usage, handle leaks, incorrect CTrade calls, and unsafe lot calculations. Fix issues before output.
+
+# LOGIC SELF-AUDIT
+Verify BUY and SELL coherence, non-repainting behavior, no duplicate loops, correct stop side, valid target side, and working session/spread/cooldown logic.
+
+# DOWNSTREAM AI FINAL RESPONSE CONTRACT
+Return exactly: Filename, one complete MQL5 code block, compact implementation notes only if needed.
+
+# FINAL DISCLAIMER
+This prompt is educational and research-based only. Use it to generate a compile-safe MT5 Expert Advisor baseline for research.

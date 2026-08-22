@@ -1,0 +1,211 @@
+<div id="sec-mt5-results">
+  <style>
+    #sec-mt5-results { color: var(--foreground); position: relative; width: 100%; }
+    #sec-mt5-results .sec-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+    #sec-mt5-results .sec-heading-copy { min-width: 240px; flex: 1; }
+    #sec-mt5-results .sec-heading h2 { margin: 0 0 4px; }
+    #sec-mt5-results .sec-control { min-width: 180px; }
+    #sec-mt5-results .sec-control label { display: block; margin-bottom: 4px; }
+    #sec-mt5-results .sec-selected { margin: 10px 0 4px; }
+    #sec-mt5-results .sec-chart-wrap { position: relative; width: 100%; min-height: 340px; }
+    #sec-mt5-results .sec-chart { display: block; width: 100%; height: 340px; }
+    #sec-mt5-results .sec-chart .sec-frame { fill: none; stroke: var(--border); }
+    #sec-mt5-results .sec-chart .sec-axis path,
+    #sec-mt5-results .sec-chart .sec-axis line { stroke: var(--border); }
+    #sec-mt5-results .sec-chart .sec-axis text { fill: var(--muted-foreground); font-size: 12px; }
+    #sec-mt5-results .sec-chart .sec-grid line { stroke: var(--border); stroke-opacity: 0.55; }
+    #sec-mt5-results .sec-chart .sec-grid path { display: none; }
+    #sec-mt5-results .sec-chart .sec-axis-title { fill: var(--foreground); font-size: 12px; }
+    #sec-mt5-results .sec-chart .sec-line { fill: none; stroke: var(--viz-series-1); stroke-width: 2; vector-effect: non-scaling-stroke; }
+    #sec-mt5-results .sec-chart .sec-baseline { stroke: var(--border); stroke-dasharray: 5 5; }
+    #sec-mt5-results .sec-chart .sec-guide { stroke: var(--muted-foreground); stroke-width: 1; pointer-events: none; }
+    #sec-mt5-results .sec-chart .sec-marker { fill: var(--background); stroke: var(--viz-series-1); stroke-width: 2; pointer-events: none; }
+    #sec-mt5-results .tooltip { display: none; position: absolute; pointer-events: none; color: var(--popover-foreground); background: var(--popover); border: 1px solid var(--border); padding: 6px 8px; white-space: nowrap; z-index: 2; }
+    #sec-mt5-results .sec-table-wrap { margin-top: 14px; }
+    #sec-mt5-results .sec-positive { color: var(--green); }
+    #sec-mt5-results .sec-negative { color: var(--destructive); }
+    #sec-mt5-results .sec-invalid { color: var(--yellow); }
+    #sec-mt5-results .sec-status { margin-top: 8px; }
+    @media (max-width: 480px) {
+      #sec-mt5-results .sec-control { width: 100%; }
+      #sec-mt5-results .sec-chart-wrap,
+      #sec-mt5-results .sec-chart { min-height: 300px; height: 300px; }
+    }
+  </style>
+
+  <div class="sec-heading">
+    <div class="sec-heading-copy">
+      <h2>Sweep–Engulf Continuation EA</h2>
+      <div class="text-small text-muted">Native MT5 • Exness • H1 • 20 Aug 2025–19 Aug 2026 • $10,000 • 0.5% risk/trade</div>
+    </div>
+    <div class="sec-control">
+      <label class="form-label" for="sec-mt5-symbol">Instrument</label>
+      <select class="form-select" id="sec-mt5-symbol"></select>
+    </div>
+  </div>
+
+  <div class="sec-selected" id="sec-mt5-selected" aria-live="polite"></div>
+  <div class="sec-chart-wrap" id="sec-mt5-chart-wrap">
+    <svg class="sec-chart" id="sec-mt5-chart" role="img" aria-labelledby="sec-mt5-chart-title sec-mt5-chart-desc">
+      <title id="sec-mt5-chart-title">MT5 realized balance curve</title>
+      <desc id="sec-mt5-chart-desc">Realized account balance through the one-year MetaTrader 5 backtest for the selected instrument.</desc>
+    </svg>
+    <div class="tooltip" id="sec-mt5-tooltip" role="tooltip"></div>
+  </div>
+  <div class="sec-status text-small text-muted" id="sec-mt5-status"></div>
+
+  <div class="table-responsive sec-table-wrap">
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th class="text-end">Return</th>
+          <th class="text-end">PF</th>
+          <th class="text-end">Win rate</th>
+          <th class="text-end">Max equity DD</th>
+          <th class="text-end">Trades</th>
+          <th class="text-end">History</th>
+        </tr>
+      </thead>
+      <tbody id="sec-mt5-rows"></tbody>
+    </table>
+  </div>
+  <div class="text-small text-muted">Locked setup: any previous-candle direction, EMA 50 trend filter, signal-extreme stop + 0.10 ATR buffer, 1.5R target. Broker spread, commission and swap are reflected by MT5.</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script>
+    (() => {
+      const root = document.getElementById("sec-mt5-results");
+      const payload = __PAYLOAD__;
+      const select = root.querySelector("#sec-mt5-symbol");
+      const selected = root.querySelector("#sec-mt5-selected");
+      const status = root.querySelector("#sec-mt5-status");
+      const wrap = root.querySelector("#sec-mt5-chart-wrap");
+      const tooltip = root.querySelector("#sec-mt5-tooltip");
+      const svg = d3.select(root.querySelector("#sec-mt5-chart"));
+      const valid = payload.results.filter(d => d.status === "valid");
+      const defaultResult = valid.slice().sort((a, b) => b.return_pct - a.return_pct)[0] || payload.results[0];
+      let current = defaultResult;
+
+      payload.results.forEach(d => {
+        const option = document.createElement("option");
+        option.value = d.symbol;
+        option.textContent = d.status === "valid" ? d.symbol : `${d.symbol} — no valid data`;
+        select.appendChild(option);
+      });
+      select.value = defaultResult.symbol;
+
+      d3.select(root.querySelector("#sec-mt5-rows"))
+        .selectAll("tr")
+        .data(payload.results)
+        .join("tr")
+        .html(d => {
+          const validRow = d.status === "valid";
+          const returnClass = !validRow ? "sec-invalid" : d.return_pct >= 0 ? "sec-positive" : "sec-negative";
+          const signedReturn = validRow ? `${d.return_pct >= 0 ? "+" : ""}${d.return_pct.toFixed(2)}%` : "n/a";
+          return `<td>${d.symbol}</td><td class="text-end text-nowrap ${returnClass}">${signedReturn}</td><td class="text-end">${validRow ? d.profit_factor.toFixed(2) : "n/a"}</td><td class="text-end text-nowrap">${validRow ? d.win_rate.toFixed(2) + "%" : "n/a"}</td><td class="text-end text-nowrap">${validRow ? d.equity_dd_pct.toFixed(2) + "%" : "n/a"}</td><td class="text-end">${validRow ? d.trades : "—"}</td><td class="text-end text-nowrap">${validRow ? d.history_quality_pct.toFixed(0) + "%" : "0%"}</td>`;
+        });
+
+      function formatSelected(d) {
+        if (d.status !== "valid") {
+          selected.textContent = `${d.symbol}: no valid result`;
+          status.textContent = "Exness returned zero bars for this test window, so no performance claim is made.";
+          return;
+        }
+        const sign = d.return_pct >= 0 ? "+" : "";
+        selected.textContent = `${d.symbol} • Return ${sign}${d.return_pct.toFixed(2)}% • PF ${d.profit_factor.toFixed(2)} • Win rate ${d.win_rate.toFixed(2)}% • Max equity DD ${d.equity_dd_pct.toFixed(2)}% • ${d.trades} trades`;
+        status.textContent = `Final balance $${d.final_balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} • ${d.wins} wins / ${d.losses} losses • Long ${d.long_trades} (${d.long_win_rate.toFixed(2)}% won) • Short ${d.short_trades} (${d.short_win_rate.toFixed(2)}% won) • History quality ${d.history_quality_pct.toFixed(0)}%`;
+      }
+
+      function interpolateBalance(data, at) {
+        const index = d3.bisector(d => d.date).left(data, at);
+        if (index <= 0) return data[0].balance;
+        if (index >= data.length) return data[data.length - 1].balance;
+        const a = data[index - 1];
+        const b = data[index];
+        const span = b.date - a.date;
+        const ratio = span > 0 ? (at - a.date) / span : 0;
+        return a.balance + (b.balance - a.balance) * ratio;
+      }
+
+      function draw(animate = false) {
+        const d = current;
+        formatSelected(d);
+        svg.selectAll("*").remove();
+        tooltip.style.display = "none";
+        if (d.status !== "valid") return;
+
+        const width = Math.max(320, Math.floor(wrap.clientWidth));
+        const height = width <= 480 ? 300 : 340;
+        const margin = {top: 12, right: 18, bottom: 48, left: 72};
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+        svg.attr("viewBox", `0 0 ${width} ${height}`).attr("height", height);
+
+        const data = d.series
+          .map(p => ({date: new Date(p.date.replace(" ", "T")), balance: +p.balance}))
+          .filter(p => !Number.isNaN(p.date.valueOf()))
+          .sort((a, b) => a.date - b.date);
+        const x = d3.scaleTime().domain(d3.extent(data, p => p.date)).range([0, innerWidth]);
+        const extent = d3.extent(data, p => p.balance);
+        const padding = Math.max(25, (extent[1] - extent[0]) * 0.1);
+        const y = d3.scaleLinear().domain([extent[0] - padding, extent[1] + padding]).nice().range([innerHeight, 0]);
+        const chart = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+        chart.append("rect").attr("class", "sec-frame").attr("data-chart-frame", "true").attr("width", innerWidth).attr("height", innerHeight);
+        chart.append("g").attr("class", "sec-grid").call(d3.axisLeft(y).ticks(6).tickSize(-innerWidth).tickFormat(""));
+        chart.append("g").attr("class", "sec-axis").attr("transform", `translate(0,${innerHeight})`).call(d3.axisBottom(x).ticks(width <= 480 ? 4 : 6).tickFormat(d3.timeFormat("%b %y")));
+        chart.append("g").attr("class", "sec-axis").call(d3.axisLeft(y).ticks(6).tickFormat(v => "$" + d3.format(",.0f")(v)));
+        svg.append("text").attr("class", "sec-axis-title").attr("data-axis", "x").attr("x", margin.left + innerWidth / 2).attr("y", height - 5).attr("text-anchor", "middle").text("Backtest date");
+        svg.append("text").attr("class", "sec-axis-title").attr("data-axis", "y").attr("transform", `translate(16,${margin.top + innerHeight / 2}) rotate(-90)`).attr("text-anchor", "middle").text("Realized balance (USD)");
+
+        chart.append("line").attr("class", "sec-baseline").attr("x1", 0).attr("x2", innerWidth).attr("y1", y(d.initial_balance)).attr("y2", y(d.initial_balance));
+        const line = d3.line().x(p => x(p.date)).y(p => y(p.balance)).curve(d3.curveMonotoneX);
+        const path = chart.append("path").datum(data).attr("class", "sec-line");
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        path.attr("d", line);
+        if (animate && !reducedMotion) {
+          path.attr("stroke-dasharray", function() { const length = this.getTotalLength(); return `${length} ${length}`; })
+            .attr("stroke-dashoffset", function() { return this.getTotalLength(); })
+            .transition().duration(350).attr("stroke-dashoffset", 0);
+        }
+
+        const guide = chart.append("line").attr("class", "sec-guide").attr("data-chart-hover-guide", "true").attr("y1", 0).attr("y2", innerHeight).style("display", "none");
+        const marker = chart.append("circle").attr("class", "sec-marker").attr("data-chart-hover-marker", "true").attr("r", 4).style("display", "none");
+        chart.append("rect")
+          .attr("data-chart-hit", "true")
+          .attr("data-chart-hover-overlay", "cross-series")
+          .attr("width", innerWidth)
+          .attr("height", innerHeight)
+          .attr("fill", "transparent")
+          .on("mousemove", event => {
+            const [pointerX, pointerY] = d3.pointer(event);
+            const clampedX = Math.max(0, Math.min(innerWidth, pointerX));
+            const at = x.invert(clampedX);
+            const balance = interpolateBalance(data, at);
+            guide.style("display", null).attr("x1", clampedX).attr("x2", clampedX);
+            marker.style("display", null).attr("cx", clampedX).attr("cy", y(balance));
+            tooltip.style.display = "block";
+            tooltip.textContent = `${d3.timeFormat("%d %b %Y")(at)} • $${balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            const tooltipWidth = tooltip.offsetWidth;
+            const left = Math.min(width - tooltipWidth - 4, margin.left + clampedX + 10);
+            const top = Math.max(4, Math.min(height - 34, margin.top + pointerY - 30));
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
+          })
+          .on("mouseleave", () => {
+            guide.style("display", "none");
+            marker.style("display", "none");
+            tooltip.style.display = "none";
+          });
+      }
+
+      select.addEventListener("change", () => {
+        current = payload.results.find(d => d.symbol === select.value) || defaultResult;
+        draw(true);
+      });
+      new ResizeObserver(() => draw(false)).observe(wrap);
+      draw(false);
+    })();
+  </script>
+</div>

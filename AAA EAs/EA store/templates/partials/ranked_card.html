@@ -1,0 +1,32 @@
+<article class="product-card group relative">
+  <div class="absolute right-5 top-5 font-mono text-xs text-muted">#{{ '%02d'|format(rank) }}</div>
+  <div class="flex items-center gap-3 pr-12">
+    <span class="asset-icon accent-{{ product.accent }}">{{ product.canonical[:2] }}</span>
+    <div>
+      <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">{{ product.canonical }} · {{ product.timeframe }}</p>
+      <h3 class="mt-1 text-lg font-bold leading-tight text-white group-hover:text-mint">{{ product.label }}</h3>
+    </div>
+  </div>
+  <div class="mt-6 rounded-2xl border border-mint/15 bg-mint/[.045] p-4">
+    <span class="block font-mono text-[9px] uppercase tracking-[.18em] text-muted">Last-year return</span>
+    {% if product.one_year_return_pct is not none %}
+    <strong class="mt-2 block text-3xl text-mint">{{ product.one_year_return_pct|percent(true) }}</strong>
+    {% else %}
+    <strong class="mt-2 block text-2xl text-muted">Not available</strong>
+    {% endif %}
+    <span class="mt-2 block text-[10px] leading-4 text-muted">11 Aug 2025 – 10 Aug 2026{% if product.one_year_note %} · balance-curve slice{% endif %}</span>
+  </div>
+  {% if product.one_year_evidence %}
+  <div class="mt-4 grid grid-cols-3 gap-2">
+    <div class="mini-stat"><span>PF</span><strong>{{ '%.2f'|format(product.one_year_evidence.profit_factor) }}</strong></div>
+    <div class="mini-stat"><span>Max DD</span><strong>{{ product.one_year_evidence.drawdown_pct|percent }}</strong></div>
+    <div class="mini-stat"><span>Trades</span><strong>{{ product.one_year_evidence.trades }}</strong></div>
+  </div>
+  {% else %}
+  <p class="mt-4 min-h-[44px] text-xs leading-5 text-muted">{{ product.one_year_note or 'A separate one-year statistics report is not available.' }}</p>
+  {% endif %}
+  <div class="mt-6 flex items-end justify-between border-t border-white/10 pt-5">
+    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ product.price|money }}</strong></div>
+    <a href="/eas/{{ product.slug }}" class="card-link">View details <span aria-hidden="true">→</span></a>
+  </div>
+</article>

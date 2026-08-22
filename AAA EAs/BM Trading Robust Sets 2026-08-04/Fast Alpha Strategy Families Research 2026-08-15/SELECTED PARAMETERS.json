@@ -1,0 +1,70 @@
+{
+  "risk_fraction_per_trade": 0.01,
+  "fast_alpha": {
+    "entry": "wait up to 30 minutes for one completed opposite-colour M5 candle",
+    "stop_exit": "after stop is crossed, wait up to 30 minutes for one completed M5 candle favourable to the position",
+    "standalone_trading": false
+  },
+  "trend_swing_XAU": {
+    "signal_timeframe": "H4",
+    "channel_lookback_bars": 80,
+    "ema_period": 50,
+    "atr_period": 14,
+    "stop_atr": 2.5,
+    "reward_risk": 3.0,
+    "maximum_hold_days": 20,
+    "preferred_variant": "fast_alpha"
+  },
+  "orb_XAU": {
+    "execution_timeframe": "M5",
+    "session_timezone": "America/New_York",
+    "session_open": "09:30",
+    "opening_range_minutes": 15,
+    "opening_tick_volume_ratio": 0.8,
+    "breakout_tick_volume_ratio": 1.2,
+    "breakout_minimum_body_ratio": 0.7,
+    "stop": "opposite side of opening range",
+    "reward_risk": 3.0,
+    "forced_exit": "15:55 America/New_York",
+    "preferred_variant": "baseline"
+  },
+  "vwap_US100": {
+    "execution_timeframe": "M15",
+    "session_timezone": "America/New_York",
+    "earliest_entry": "10:30",
+    "vwap_volume": "broker tick-volume proxy",
+    "entry_band_atr": 0.25,
+    "stop": "session open",
+    "reward_risk": 1.5,
+    "forced_exit": "15:55 America/New_York",
+    "preferred_variant": "research_only_fast_alpha"
+  },
+  "supply_demand_US30": {
+    "signal_timeframe": "H1",
+    "impulse_atr": 1.2,
+    "zone_expiry_bars": 6,
+    "stop_buffer_atr": 0.3,
+    "reward_risk": 2.0,
+    "maximum_hold_days": 7,
+    "preferred_variant": "reject"
+  },
+  "paper_atr_open_US100": {
+    "execution_timeframe": "M15",
+    "session_timezone": "America/New_York",
+    "band_daily_atr": 0.7,
+    "stop": "session open",
+    "forced_exit": "15:55 America/New_York",
+    "preferred_variant": "watch_only"
+  },
+  "economic_data_trend_US100": {
+    "data": ["UNRATE", "CPIAUCSL", "INDPRO", "FEDFUNDS"],
+    "assumed_publication_lag_days": 20,
+    "trend_months": 3,
+    "daily_ema_period": 100,
+    "price_confirmation": false,
+    "stop_atr": 2.5,
+    "reward_risk": 4.0,
+    "maximum_hold_days": 90,
+    "preferred_variant": "invalid_until_ALFRED_vintage_retest"
+  }
+}
