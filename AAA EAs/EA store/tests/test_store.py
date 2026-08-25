@@ -120,6 +120,20 @@ def test_api_and_evidence_chart() -> None:
     assert chart.headers["content-type"] == "image/png"
     assert chart.headers["cache-control"].startswith("no-store")
 
+    for item in get_sellable_catalog():
+        series = client.get(f"/api/evidence/{item.slug}/series")
+        assert series.status_code == 200, item.label
+        payload = series.json()
+        assert payload["label"] == item.label
+        assert len(payload["series"]) >= 2
+        assert all(set(point) >= {"time", "balance"} for point in payload["series"])
+        assert series.headers["cache-control"].startswith("no-store")
+
+    detail = client.get(f"/eas/{product.slug}")
+    assert f'/api/evidence/{product.slug}/series' in detail.text
+    assert f'/evidence/{product.slug}.png' not in detail.text
+    assert "/static/evidence.js" in detail.text
+
 
 def test_portfolio_page_shows_one_year_only() -> None:
     response = client.get("/portfolio")
@@ -134,6 +148,12 @@ def test_portfolio_page_shows_one_year_only() -> None:
     chart = client.get("/portfolio/equity.png?period=1y")
     assert chart.status_code == 200
     assert chart.headers["cache-control"].startswith("no-store")
+    series = client.get("/api/portfolio/equity-series")
+    assert series.status_code == 200
+    assert len(series.json()["series"]) >= 2
+    assert "/api/portfolio/equity-series" in response.text
+    assert "/portfolio/equity.png" not in response.text
+    assert "/static/evidence.js" in response.text
 
 
 def test_every_public_ea_uses_one_year_evidence_only() -> None:

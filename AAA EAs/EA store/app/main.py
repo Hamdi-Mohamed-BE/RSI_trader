@@ -24,6 +24,7 @@ from .catalog import (
     get_sellable_catalog,
     package_buy_url,
 )
+from .evidence_series import portfolio_equity_series, product_equity_series
 from .mt5_live import live_mt5
 
 
@@ -247,6 +248,25 @@ async def evidence_chart(slug: str) -> FileResponse:
     )
 
 
+@app.get("/api/evidence/{slug}/series", name="evidence_series")
+async def evidence_series(slug: str) -> JSONResponse:
+    product = get_product(slug)
+    if product is None or product.evidence is None:
+        raise HTTPException(status_code=404, detail="Evidence series not found")
+    series = product_equity_series(product)
+    if len(series) < 2:
+        raise HTTPException(status_code=404, detail="Evidence series not found")
+    return JSONResponse(
+        {
+            "label": product.label,
+            "period": product.evidence.period,
+            "currency": "USD",
+            "series": series,
+        },
+        headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
+    )
+
+
 @app.get("/portfolio/equity.png", name="portfolio_chart")
 async def portfolio_chart() -> FileResponse:
     audit = _portfolio_audit()
@@ -261,6 +281,22 @@ async def portfolio_chart() -> FileResponse:
     )
 
 
+@app.get("/api/portfolio/equity-series", name="portfolio_equity_series")
+async def api_portfolio_equity_series() -> JSONResponse:
+    series = [dict(point) for point in portfolio_equity_series()]
+    if len(series) < 2:
+        raise HTTPException(status_code=404, detail="Portfolio equity series not found")
+    return JSONResponse(
+        {
+            "label": "Active BAT portfolio",
+            "period": _portfolio_audit().get("period"),
+            "currency": "USD",
+            "series": series,
+        },
+        headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
+    )
+
+
 @app.get("/api/eas")
 async def api_eas() -> JSONResponse:
     payload = [product.model_dump(mode="json") for product in get_sellable_catalog()]
@@ -268,7 +304,7 @@ async def api_eas() -> JSONResponse:
         evidence = product.get("evidence")
         if evidence:
             evidence.pop("chart_path", None)
-            evidence["chart_url"] = f"/evidence/{product['slug']}.png?period=1y"
+            evidence["series_url"] = f"/api/evidence/{product['slug']}/series"
     return JSONResponse(payload)
 
 

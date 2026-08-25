@@ -8,7 +8,10 @@
   {% if portfolio.available %}
   <div class="success-banner"><div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-mint/10 text-2xl text-mint">↗</div><div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-3"><h2 class="text-xl font-bold">One-year combined core audit</h2><span class="badge badge-good">PROFITABLE PERIOD</span></div><div class="mt-4 flex flex-wrap items-end gap-x-10 gap-y-4"><div><span class="block font-mono text-[9px] uppercase tracking-[.16em] text-muted">Net return</span><strong class="mt-1 block text-4xl text-mint">{{ portfolio.return_pct|percent(true) }}</strong></div><div><span class="block font-mono text-[9px] uppercase tracking-[.16em] text-muted">Final balance</span><strong class="mt-1 block text-2xl">{{ portfolio.final|money }}</strong></div><div><span class="block font-mono text-[9px] uppercase tracking-[.16em] text-muted">Starting balance</span><strong class="mt-1 block text-2xl">{{ portfolio.initial|money }}</strong></div></div><p class="mt-4 max-w-4xl text-sm leading-7 text-[#b7d5cc]">From {{ portfolio.period }}, the chronological realized cash-flow overlay finished {{ portfolio.net|money }} above its starting balance. Results are historical and the overlay is not a native simultaneous multi-EA MT5 test.</p></div></div>
   <div class="mt-6 grid gap-5 lg:grid-cols-[1fr_330px]">
-    <div class="chart-panel"><img src="/portfolio/equity.png?period=1y" alt="One-year combined realized balance curve" class="w-full rounded-xl bg-white"></div>
+    <div class="chart-panel" data-equity-graph data-series-url="/api/portfolio/equity-series" data-chart-label="Combined active BAT portfolio balance curve">
+      <div class="chart-loading" data-chart-status>Loading portfolio curve…</div>
+      <svg class="evidence-chart hidden" data-chart-svg role="img" aria-label="One-year combined realized balance curve" viewBox="0 0 1000 360" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
     <aside class="evidence-note"><p class="font-mono text-[10px] uppercase tracking-[.18em] text-mint">One-year audit</p><dl class="mt-5 space-y-4 text-sm"><div class="flex justify-between"><dt class="text-muted">Period</dt><dd>{{ portfolio.period }}</dd></div><div class="flex justify-between"><dt class="text-muted">Core EAs</dt><dd>{{ portfolio.tested_eas }}</dd></div><div class="flex justify-between"><dt class="text-muted">Trades</dt><dd>{{ portfolio.trades }}</dd></div><div class="flex justify-between"><dt class="text-muted">Profit factor</dt><dd class="text-mint">{{ '%.2f'|format(portfolio.profit_factor) }}</dd></div><div class="flex justify-between"><dt class="text-muted">Win rate</dt><dd>{{ portfolio.win_rate_pct|percent }}</dd></div><div class="flex justify-between"><dt class="text-muted">Realized DD</dt><dd>{{ portfolio.realized_balance_dd_pct|percent }}</dd></div></dl><p class="mt-6 border-t border-white/10 pt-5 text-xs leading-5 text-muted">Every-tick Exness history, exact BAT presets and random execution delay. Shared margin and floating equity interaction are not captured by this cash-flow overlay.</p></aside>
   </div>
   {% endif %}
@@ -26,3 +29,4 @@
   </div>
 </section>
 {% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='evidence.js') }}" defer></script>{% endblock %}
