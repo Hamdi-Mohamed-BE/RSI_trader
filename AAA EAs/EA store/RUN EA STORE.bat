@@ -20,9 +20,10 @@ if errorlevel 1 (
 )
 
 echo.
-echo Store: http://127.0.0.1:8080
+echo Local store: http://127.0.0.1:8080
+echo Public store: http://YOUR-VPS-IP:8080
 echo Press Ctrl+C in this window to stop the store.
 start "" /min powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:8080'"
-uv run uvicorn app.main:app --host 127.0.0.1 --port 8080
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8080
 
 endlocal
