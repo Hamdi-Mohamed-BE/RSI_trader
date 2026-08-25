@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -115,6 +114,46 @@ CORE_META: dict[str, dict[str, Any]] = {
         "risk_note": "Dynamic 1% of current equity, sized from entry to the opposite-range stop. Gap, spread and execution slippage can make realized risk differ from the calculation.",
         "price": 449,
         "accent": "emerald",
+        "featured": True,
+    },
+    "US100 ORB 0.5R": {
+        "strategy": "Selective New York opening-range retest",
+        "tagline": "A high-selectivity US100 ORB using relative tick volume, VWAP, candle quality and a fixed 0.5R target.",
+        "description": "The active USTEC M5 preset builds the first 30 minutes of the New York cash session, waits for a qualified breakout and accepts an entry only when the next closed M5 candle retests the broken boundary. It deliberately trades infrequently in exchange for a historically high closed-trade win rate.",
+        "session": "09:30-11:30 New York / M5",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, the selected 0.5R preset, optimization constraints and native MT5 validation reports were reviewed together.",
+        "logic": [
+            {"title": "Build the 30-minute New York opening range", "detail": "The EA measures the USTEC high, low and broker tick activity from 09:30 through 10:00 New York time, with automatic US daylight-saving and live broker-server conversion."},
+            {"title": "Reject weak or abnormal opening sessions", "detail": "Opening activity must reach 0.60 of its 20-session median and opening-range width must remain between 0.05 and 0.35 of the historical daily ATR, removing very quiet and unusually expanded opens."},
+            {"title": "Demand a strong volume-backed breakout", "detail": "A completed M5 breakout candle needs at least 0.70 relative tick volume, a real body covering at least 75% of its range, a small daily-ATR boundary buffer and directional agreement with session VWAP."},
+            {"title": "Enter only on the immediate retest", "detail": "The selected preset allows one closed M5 retest bar after the breakout. Price must return to the broken range edge without exceeding the configured pre-retest excursion or tolerance limits."},
+            {"title": "Apply the time-direction schedule", "detail": "Both directions are permitted from 10:00 to 10:29 New York, only longs from 10:30 to 10:59, and only shorts from 11:00 until the 11:30 entry cutoff."},
+            {"title": "Risk to the opposite range and target 0.5R", "detail": "The stop is placed beyond the opposite opening-range boundary with a five-percent range buffer, excessive ATR-sized stops and wide spreads are rejected, take profit is 0.5R, and exposure is closed by 15:55 New York."},
+        ],
+        "risk_note": "The BAT version uses the installer's adaptive equity-risk percentage and disables the research-only USD 300 fixed-risk override. The exact one-year comparison used 1% risk; a smaller shared portfolio risk is appropriate when several EAs run together.",
+        "price": 449,
+        "accent": "mint",
+        "featured": True,
+    },
+    "US100 ORB 2R": {
+        "strategy": "Selective New York opening-range retest",
+        "tagline": "The higher-payoff US100 ORB variant, targeting 2R after a volume- and VWAP-qualified retest.",
+        "description": "The active USTEC M5 preset builds the first 30 minutes of the New York cash session, waits for a strong breakout and permits up to three completed M5 candles for a retest entry. It uses the same selective time-direction schedule as the 0.5R edition, but demands stronger breakout activity and manages the position toward a 2R target.",
+        "session": "09:30-11:30 New York / M5",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, the V3 2R preset and its native MT5 validation reports were reviewed together.",
+        "logic": [
+            {"title": "Build the 30-minute New York opening range", "detail": "The EA measures the USTEC high, low and broker tick activity from 09:30 through 10:00 New York time, using automatic US daylight-saving and live broker-server conversion."},
+            {"title": "Reject weak or abnormal opening sessions", "detail": "Opening activity must reach 0.60 of its 20-session median and range width must remain between 0.05 and 0.35 of the historical daily ATR, excluding unusually quiet or expanded opens."},
+            {"title": "Demand the stronger 2R breakout threshold", "detail": "A completed M5 breakout candle needs at least 0.90 relative tick volume, a body covering at least 75% of its range, a daily-ATR boundary buffer and directional agreement with session VWAP."},
+            {"title": "Allow a measured three-bar retest window", "detail": "After the qualified breakout, as many as three completed M5 candles may retest the broken opening-range edge, but excessive pre-retest excursion or a tolerance violation cancels the setup."},
+            {"title": "Apply the selective time-direction schedule", "detail": "Both directions are permitted from 10:00 to 10:29 New York, only longs from 10:30 to 10:59, and only shorts from 11:00 until the 11:30 entry cutoff."},
+            {"title": "Protect at 1R and target 2R", "detail": "The stop starts beyond the opposite range boundary with a five-percent buffer, moves to break-even at 1R, targets 2R, rejects excessive stop or spread conditions and closes exposure by 15:55 New York."},
+        ],
+        "risk_note": "Dynamic equity risk controlled by the installer's adaptive percentage, defaulting to 1%. The 2R and 0.5R editions can signal on the same session, so their combined risk must be treated as additive.",
+        "price": 449,
+        "accent": "cyan",
         "featured": True,
     },
     "ATR Candle Breakout": {
@@ -291,21 +330,21 @@ CORE_META: dict[str, dict[str, Any]] = {
         "accent": "pink",
     },
     "Nasdaq 5M Open EMA ATR": {
-        "strategy": "US-open momentum",
-        "tagline": "Trade the first Nasdaq M5 close against EMA 12, then let a wide ATR trail decide the exit.",
-        "description": "This EA makes one decision per New York trading day. After the 09:30-09:35 M5 candle closes, it buys above EMA 12 or sells below EMA 12. It has no profit target: a 4x ATR initial stop, a 5x ATR ratcheting trail and a session-end close manage the position.",
+        "strategy": "Literal US-open EMA/ATR hold",
+        "tagline": "Trade the first Nasdaq M5 close against EMA 12 and hold until the ATR stop or trail ends the position.",
+        "description": "This is the literal version of the one-candle US-open experiment. After the 09:30-09:35 New York M5 candle closes, it buys above EMA 12 or sells below EMA 12. It has no take profit and no session-close exit: a 3x ATR initial stop and 4x ATR ratcheting trail are the only exits.",
         "session": "09:30 New York",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable MQ5 source and the locked active preset were reviewed. ATR(14) is the indicator; 4 and 5 are distance multipliers, not ATR periods.",
+        "logic_audit_note": "Readable MQ5 source and the exact literal-hold BAT preset were reviewed. ATR(14) is the volatility indicator; 3 and 4 are stop-distance multipliers, not ATR periods.",
         "logic": [
             {"title": "Wait for the opening candle to finish", "detail": "The signal is evaluated only when the closed M5 candle is timestamped 09:30 New York, meaning entry occurs just after the 09:30-09:35 bar has completed. Weekends are rejected and New York DST is calculated automatically."},
             {"title": "Make one EMA decision", "detail": "Close above the 12-period M5 EMA triggers a long; close below it triggers a short. Equality produces no trade. Both directions are active and only one entry is allowed per New York date."},
-            {"title": "Set a 4x ATR emergency stop", "detail": "The initial stop is four times M5 ATR(14) from entry, widened if necessary to satisfy the broker's minimum stop distance. No fixed take profit is placed."},
-            {"title": "Begin trailing immediately", "detail": "TrailStartR is zero. The EA tracks the most favorable M5 high or low since entry and proposes a stop five times the current M5 ATR(14) behind that extreme."},
+            {"title": "Set a 3x ATR emergency stop", "detail": "The initial stop is three times M5 ATR(14) from entry, widened only when required by the broker's minimum stop or freeze distance. No fixed take profit is placed."},
+            {"title": "Begin the 4x ATR trail immediately", "detail": "TrailStartR is zero. The EA tracks the most favorable M5 high or low since entry and proposes a stop four times the current M5 ATR(14) behind that extreme."},
             {"title": "Only ratchet the stop", "detail": "A trailing update is accepted only if it improves the existing stop and remains outside the broker freeze/stops distance. The trail never loosens."},
-            {"title": "Flatten before the close", "detail": "Any position still open at 15:55 New York is closed. Risk is dynamically sized to 1% of current equity; the active spread-to-ATR filter is disabled."},
+            {"title": "Hold until volatility exits the trade", "detail": "Session closing is disabled, so a surviving position may continue overnight or across a weekend until its hard stop or improving ATR trail closes it. Only one entry is permitted per New York date and live risk is 1% of current equity."},
         ],
-        "risk_note": "Dynamic 1% of current equity to a 4x ATR(14) initial stop. There is no take profit; realized outcomes depend on the 5x ATR trail, 15:55 close, gaps and execution.",
+        "risk_note": "Dynamic 1% of current equity to a 3x ATR(14) initial stop. There is no take profit or time exit; overnight and weekend gaps can exceed the intended risk, and the public one-year maximum equity drawdown was 20.91%.",
         "price": 499,
         "accent": "cyan",
         "featured": True,
@@ -422,62 +461,65 @@ def _one_year_evidence() -> dict[str, Evidence]:
 
 
 def _nasdaq_open_one_year_evidence() -> Evidence | None:
-    """Build comparable one-year statistics from the locked balance series."""
-    path = PACKAGE_ROOT / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "validation-results.json"
+    path = PACKAGE_ROOT / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "literal-hold-results.json"
     if not path.exists():
         return None
     rows = _load_json(path)
-    row = next((item for item in rows if item.get("case") == "eod-sl4-tr5"), rows[0])
-    series = row.get("series", [])
-    start = datetime(2025, 8, 11)
-    end = datetime(2026, 8, 11)
-
-    def point_time(point: dict[str, Any]) -> datetime:
-        return datetime.fromisoformat(str(point["date"]))
-
-    baseline_candidates = [point for point in series if point_time(point) < start]
-    period_points = [point for point in series if start <= point_time(point) < end]
-    if not baseline_candidates or not period_points:
+    row = next((item for item in rows if item.get("case") == "literal-hold-website-one-year"), None)
+    if row is None:
         return None
-    baseline = max(baseline_candidates, key=point_time)
-    baseline_balance = float(baseline["balance"])
-    period_balances = [10_000.0] + [
-        10_000.0 + float(point["balance"]) - baseline_balance for point in period_points
-    ]
-    peak = period_balances[0]
-    drawdown = 0.0
-    for balance in period_balances:
-        peak = max(peak, balance)
-        drawdown = max(drawdown, (peak - balance) / peak * 100.0)
-
-    # The locked series records one entry balance and one closing balance per
-    # trade, followed by a final summary point. Include only complete trades
-    # whose entries fall inside the public comparison year.
-    pnl: list[float] = []
-    for index in range(1, len(series) - 1, 2):
-        entry = series[index]
-        if start <= point_time(entry) < end:
-            pnl.append(float(series[index + 1]["balance"]) - float(series[index - 1]["balance"]))
-    if not pnl:
-        return None
-    gross_profit = sum(value for value in pnl if value > 0)
-    gross_loss = -sum(value for value in pnl if value < 0)
-    profit_factor = gross_profit / gross_loss if gross_loss else float("inf")
-    return_pct = (period_balances[-1] / period_balances[0] - 1.0) * 100.0
-    chart = STORE_ROOT / "static" / "generated" / "nasdaq-5m-open-one-year.png"
+    profit_factor = float(row["profit_factor"])
+    return_pct = float(row["return_pct"])
+    drawdown = float(row["equity_dd_pct"])
+    trades = int(row["trades"])
+    chart = Path(str(row["graph"]))
     return Evidence(
         label="Latest complete one-year MT5 backtest",
         period="2025-08-11 to 2026-08-10",
         return_pct=return_pct,
         profit_factor=profit_factor,
         drawdown_pct=drawdown,
-        win_rate_pct=sum(value > 0 for value in pnl) / len(pnl) * 100.0,
-        trades=len(pnl),
+        win_rate_pct=float(row["win_rate"]),
+        trades=trades,
         history_quality=f"{row.get('history_quality_pct', 100):.0f}%",
-        source_note="Exness USTEC, one-year slice of the locked every-tick validation with commission, swap and random execution delay. PF, win rate, trades and realized balance drawdown are recalculated from complete trades inside this period.",
+        source_note="Exness USTEC, synchronized Every Tick MT5 test with commission, swap and random execution delay using the literal EMA12 / ATR3 / Trail4 hold preset.",
         chart_path=chart if chart.exists() else None,
-        status=_status_for(profit_factor, return_pct, drawdown, len(pnl)),
+        status=_status_for(profit_factor, return_pct, drawdown, trades),
         caution="One historical year is not a guarantee of future performance.",
+    )
+
+
+def _us100_orb_one_year_evidence(version: str) -> Evidence | None:
+    result_files = {
+        "0.5R": "native-rr05-bat-one-year-results.json",
+        "2R": "native-v3-time-direction-results.json",
+    }
+    path = PACKAGE_ROOT / "US100 Selective ORB Research 2026-08-21" / result_files[version]
+    if not path.exists():
+        return None
+    rows = _load_json(path)
+    row = next((item for item in rows if item.get("case") == "one-year-2025-2026"), None)
+    if row is None:
+        return None
+    chart = Path(str(row["graph"]))
+    trade_count = int(row["trades"])
+    caution = (
+        f"Only {trade_count} trades occurred in this one-year window, so the displayed win rate and profit factor "
+        "are not statistically dependable."
+    )
+    return Evidence(
+        label="Latest complete one-year MT5 backtest",
+        period="2025-08-11 to 2026-08-10" if version == "0.5R" else "2025-08-21 to 2026-08-20",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["equity_dd_pct"]),
+        win_rate_pct=float(row["win_rate"]),
+        trades=trade_count,
+        history_quality=f"{float(row.get('history_quality_pct', 100)):.0f}%",
+        source_note=f"Exness USTEC M5, synchronized MT5 Every Tick history, random execution delay and the exact {version} BAT adaptive-risk preset at 1% risk.",
+        chart_path=chart if chart.exists() else None,
+        status=_status_for(float(row["profit_factor"]), float(row["return_pct"]), float(row["equity_dd_pct"]), trade_count),
+        caution=caution,
     )
 
 
@@ -567,12 +609,18 @@ def _buy_url(label: str, price: int) -> str:
 def get_catalog() -> list[Product]:
     one_year = _one_year_evidence()
     nasdaq_open = _nasdaq_open_one_year_evidence()
+    us100_orb_rr05 = _us100_orb_one_year_evidence("0.5R")
+    us100_orb_rr20 = _us100_orb_one_year_evidence("2R")
     products: list[Product] = []
     for item in parse_installer_items():
         meta = _meta_for(item)
         evidence = one_year.get(item["label"])
         if item["label"] == "Nasdaq 5M Open EMA ATR":
             evidence = nasdaq_open
+        elif item["label"] == "US100 ORB 0.5R":
+            evidence = us100_orb_rr05
+        elif item["label"] == "US100 ORB 2R":
+            evidence = us100_orb_rr20
         one_year_result = evidence
         limitations = [
             "Historical returns are not guaranteed and live execution can differ.",

@@ -139,6 +139,23 @@
     return node;
   }
 
+  function curveSinceAugust(data) {
+    const start = new Date('2026-08-01T00:00:00Z');
+    const backend = (data.equity_series || []).filter((point) => new Date(point.time) >= start);
+    if (backend.some((point) => new Date(point.time).getTime() <= start.getTime() + 60000)) return backend;
+
+    const closed = (data.trades || [])
+      .filter((trade) => trade.close_time && new Date(trade.close_time) >= start)
+      .sort((first, second) => new Date(first.close_time) - new Date(second.close_time));
+    let balance = Number(data.account?.balance || 0) - closed.reduce((total, trade) => total + Number(trade.net_profit || 0), 0);
+    const history = [{ time: start.toISOString(), balance, equity: null, floating: null, source: 'client-reconstructed-history' }];
+    closed.forEach((trade) => {
+      balance += Number(trade.net_profit || 0);
+      history.push({ time: trade.close_time, balance, equity: null, floating: null, source: 'client-reconstructed-history' });
+    });
+    return [...history, ...backend].sort((first, second) => new Date(first.time) - new Date(second.time));
+  }
+
   function renderChart(series) {
     const svg = byId('equity-chart');
     const empty = byId('chart-empty');
@@ -151,11 +168,18 @@
     svg.classList.remove('hidden');
     svg.replaceChildren();
     const width = 1000, height = 320, left = 72, right = 20, top = 22, bottom = 38;
-    const values = series.flatMap((point) => [Number(point.balance), Number(point.equity)]);
+    const values = series.flatMap((point) => {
+      const result = [Number(point.balance)];
+      if (point.equity != null) result.push(Number(point.equity));
+      return result;
+    });
     let min = Math.min(...values), max = Math.max(...values);
     const padding = Math.max((max - min) * 0.12, 1);
     min -= padding; max += padding;
-    const x = (index) => left + index / (series.length - 1) * (width - left - right);
+    const timestamps = series.map((point) => new Date(point.time).getTime());
+    const firstTimestamp = Math.min(...timestamps), lastTimestamp = Math.max(...timestamps);
+    const timeSpan = Math.max(lastTimestamp - firstTimestamp, 1);
+    const x = (point) => left + (new Date(point.time).getTime() - firstTimestamp) / timeSpan * (width - left - right);
     const y = (value) => top + (max - value) / (max - min) * (height - top - bottom);
     for (let index = 0; index < 5; index += 1) {
       const yy = top + index / 4 * (height - top - bottom);
@@ -163,10 +187,15 @@
       svg.appendChild(svgNode('line', { x1: left, y1: yy, x2: width - right, y2: yy, stroke: 'rgba(255,255,255,.09)', 'stroke-width': 1 }));
       svg.appendChild(svgNode('text', { x: left - 10, y: yy + 4, fill: '#789089', 'font-size': 11, 'text-anchor': 'end' }, money(value)));
     }
-    const balancePoints = series.map((point, index) => `${x(index)},${y(Number(point.balance))}`).join(' ');
-    const equityPoints = series.map((point, index) => `${x(index)},${y(Number(point.equity))}`).join(' ');
+    const balancePoints = series.map((point) => `${x(point)},${y(Number(point.balance))}`).join(' ');
+    const recordedEquity = series.filter((point) => point.equity != null);
+    const equityPoints = recordedEquity.map((point) => `${x(point)},${y(Number(point.equity))}`).join(' ');
     svg.appendChild(svgNode('polyline', { points: balancePoints, fill: 'none', stroke: '#63d9ff', 'stroke-width': 2, 'stroke-linejoin': 'round' }));
-    svg.appendChild(svgNode('polyline', { points: equityPoints, fill: 'none', stroke: '#7ef7c7', 'stroke-width': 3, 'stroke-linejoin': 'round' }));
+    if (recordedEquity.length >= 2) {
+      svg.appendChild(svgNode('polyline', { points: equityPoints, fill: 'none', stroke: '#7ef7c7', 'stroke-width': 3, 'stroke-linejoin': 'round' }));
+    } else if (recordedEquity.length === 1) {
+      svg.appendChild(svgNode('circle', { cx: x(recordedEquity[0]), cy: y(Number(recordedEquity[0].equity)), r: 4, fill: '#7ef7c7' }));
+    }
     svg.appendChild(svgNode('text', { x: left, y: height - 10, fill: '#789089', 'font-size': 11 }, dateTime(series[0].time)));
     svg.appendChild(svgNode('text', { x: width - right, y: height - 10, fill: '#789089', 'font-size': 11, 'text-anchor': 'end' }, dateTime(series.at(-1).time)));
   }
@@ -203,7 +232,7 @@
     state.trades = data.trades || [];
     updateTradeFilter(state.trades);
     renderTrades();
-    renderChart(data.equity_series || []);
+    renderChart(curveSinceAugust(data));
   }
 
   async function refresh() {

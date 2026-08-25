@@ -4,7 +4,10 @@ param(
     [int]$TimeoutSeconds = 1200,
     [string]$CaseRegex = '',
     [string]$SetName = 'RESEARCH - US100 USTEC M5 - OR30 Retest RV - 1pct.set',
-    [string]$RunTag = 'baseline'
+    [string]$RunTag = 'baseline',
+    [string]$CustomFromDate = '',
+    [string]$CustomToDate = '',
+    [string]$CustomCaseSlug = 'custom-period'
 )
 
 Set-StrictMode -Version Latest
@@ -30,6 +33,11 @@ $cases = @(
     [pscustomobject]@{ Slug='one-year-2025-2026'; Label='One Year'; From='2025.08.21'; To='2026.08.20' },
     [pscustomobject]@{ Slug='full-2020-2026'; Label='Full'; From='2020.01.01'; To='2026.08.20' }
 )
+if ($CustomFromDate -and $CustomToDate) {
+    $cases = @([pscustomobject]@{ Slug=$CustomCaseSlug; Label='Custom'; From=$CustomFromDate; To=$CustomToDate })
+} elseif ($CustomFromDate -or $CustomToDate) {
+    throw 'CustomFromDate and CustomToDate must be provided together.'
+}
 if ($CaseRegex) {
     $cases = @($cases | Where-Object Slug -Match $CaseRegex)
     if ($cases.Count -eq 0) { throw "CaseRegex selected no cases: $CaseRegex" }

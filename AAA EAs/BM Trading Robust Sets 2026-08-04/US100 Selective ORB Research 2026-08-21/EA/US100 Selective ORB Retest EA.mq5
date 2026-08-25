@@ -35,6 +35,7 @@ input double          InpMaximumPreRetestExcursionRange=0.60;
 
 input group "Risk and exits"
 input double          InpRiskPercent=1.00;
+input double          InpFixedRiskMoney=0.00; // >0 overrides percent risk
 input double          InpStopBufferRange=0.05;
 input double          InpMaximumStopDailyATR=0.80;
 input double          InpRewardRisk=2.00;
@@ -42,6 +43,7 @@ input double          InpBreakEvenAtR=1.00;
 input double          InpMaximumSpreadRangePercent=10.0;
 input int             InpMaximumDeviationPoints=50;
 input long            InpMagic=86260821;
+input bool            InpOptimizeForWinRate=false;
 
 input group "Broker clock"
 input bool            InpUseAutomaticLiveServerOffset=true;
@@ -168,7 +170,8 @@ double LotsForRisk(const ENUM_ORDER_TYPE type,const double entry,const double st
    if(!OrderCalcProfit(type,_Symbol,1.0,entry,stop,one_lot)) return 0.0;
    one_lot=MathAbs(one_lot);
    if(one_lot<=0.0) return 0.0;
-   double cash=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0;
+   double cash=(InpFixedRiskMoney>0.0 ? InpFixedRiskMoney : AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0);
+   if(cash<=0.0) return 0.0;
    return NormalizeLots(cash/one_lot);
 }
 
@@ -552,7 +555,7 @@ int OnInit()
       InpShortOnlyStartHour<0 || InpShortOnlyStartHour>23 || InpShortOnlyStartMinute<0 || InpShortOnlyStartMinute>59 ||
       InpShortOnlyStartHour*60+InpShortOnlyStartMinute<=InpLongOnlyStartHour*60+InpLongOnlyStartMinute ||
       InpRetestToleranceRange<0.0 || InpMaximumPreRetestExcursionRange<=0.0 ||
-      InpRiskPercent<=0.0 || InpRiskPercent>3.0 || InpStopBufferRange<0.0 ||
+       InpFixedRiskMoney<0.0 || (InpFixedRiskMoney<=0.0 && (InpRiskPercent<=0.0 || InpRiskPercent>3.0)) || InpStopBufferRange<0.0 ||
       InpMaximumStopDailyATR<=0.0 || InpRewardRisk<=0.0 || InpMaximumSpreadRangePercent<=0.0)
       return INIT_PARAMETERS_INCORRECT;
    trade.SetExpertMagicNumber((ulong)InpMagic);
@@ -582,6 +585,14 @@ double OnTester()
    double profit=TesterStatistics(STAT_PROFIT);
    double factor=TesterStatistics(STAT_PROFIT_FACTOR);
    double drawdown=TesterStatistics(STAT_EQUITY_DDREL_PERCENT);
+   double wins=TesterStatistics(STAT_PROFIT_TRADES);
+   double win_rate=(trades>0.0 ? 100.0*wins/trades : 0.0);
+   if(InpOptimizeForWinRate)
+   {
+      if(trades<24.0 || profit<=0.0 || factor<=1.0 || drawdown<=0.0 || win_rate<66.67)
+         return -1000.0+win_rate+MathMin(24.0,trades)/100.0;
+      return (win_rate-66.67)*MathSqrt(trades)*MathMin(3.0,factor)/(1.0+drawdown);
+   }
    if(trades<25.0 || profit<=0.0 || factor<=1.0 || drawdown<=0.0) return -1000.0+trades;
    return (profit/drawdown)*MathMin(2.0,MathSqrt(trades/60.0))*MathMin(2.5,factor);
 }

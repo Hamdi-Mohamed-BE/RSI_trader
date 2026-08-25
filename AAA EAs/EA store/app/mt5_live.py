@@ -22,6 +22,7 @@ from .catalog import PACKAGE_ROOT, STORE_ROOT, get_catalog
 DEFAULT_TERMINAL = Path(r"C:\Program Files\MetaTrader 5\terminal64.exe")
 POLL_SECONDS = 5.0
 HISTORY_FROM = datetime(2000, 1, 1, tzinfo=timezone.utc)
+CURVE_FROM = datetime(2026, 8, 1, tzinfo=timezone.utc)
 MAGIC_PATTERN = re.compile(r"(?im)^(?:Inp)?Magic(?:Number)?\s*=\s*(\d+)")
 
 
@@ -209,6 +210,68 @@ def summarize_eas(trades: list[dict[str, Any]], positions: list[dict[str, Any]])
     return result
 
 
+def reconstruct_balance_history(
+    deals: list[Any], current_balance: float, start: datetime, end: datetime
+) -> list[dict[str, Any]]:
+    """Rebuild the balance ledger from a known current balance and MT5 deal cash flows."""
+    start_timestamp = start.timestamp()
+    end_timestamp = end.timestamp()
+    changes: list[tuple[float, float]] = []
+    for deal in deals:
+        timestamp = _float(getattr(deal, "time_msc", 0)) / 1000.0
+        if timestamp <= 0:
+            timestamp = _float(getattr(deal, "time", 0))
+        if timestamp < start_timestamp or timestamp > end_timestamp:
+            continue
+        delta = sum(
+            _float(getattr(deal, field, 0.0))
+            for field in ("profit", "commission", "swap", "fee")
+        )
+        if abs(delta) > 1e-9:
+            changes.append((timestamp, delta))
+
+    changes.sort(key=lambda item: item[0])
+    balance = current_balance - sum(delta for _, delta in changes)
+    series = [
+        {
+            "time": start.isoformat(),
+            "balance": round(balance, 2),
+            "equity": None,
+            "floating": None,
+            "source": "reconstructed-ledger",
+        }
+    ]
+    for timestamp, delta in changes:
+        balance += delta
+        series.append(
+            {
+                "time": _iso(timestamp),
+                "balance": round(balance, 2),
+                "equity": None,
+                "floating": None,
+                "source": "reconstructed-ledger",
+            }
+        )
+    series.append(
+        {
+            "time": end.isoformat(),
+            "balance": round(current_balance, 2),
+            "equity": None,
+            "floating": None,
+            "source": "reconstructed-ledger",
+        }
+    )
+    return series
+
+
+def merge_account_curve(
+    balance_history: list[dict[str, Any]], recorded_equity: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    combined = [*balance_history, *recorded_equity]
+    combined.sort(key=lambda point: str(point["time"]))
+    return combined
+
+
 class LiveMT5Service:
     def __init__(self, terminal_path: Path | None = None, database_path: Path | None = None) -> None:
         configured = os.getenv("EA_STORE_MT5_TERMINAL")
@@ -233,6 +296,8 @@ class LiveMT5Service:
             "trades": [],
             "ea_summary": [],
             "equity_series": [],
+            "curve_started": CURVE_FROM.isoformat(),
+            "equity_recorded_from": None,
         }
 
     def start(self) -> None:
@@ -300,11 +365,13 @@ class LiveMT5Service:
                 ),
             )
 
-    def _load_equity(self, account_key: str, maximum: int = 720) -> list[dict[str, Any]]:
+    def _load_equity(
+        self, account_key: str, from_timestamp: float, maximum: int = 620
+    ) -> list[dict[str, Any]]:
         with sqlite3.connect(self.database_path) as connection:
             rows = connection.execute(
-                "SELECT timestamp, balance, equity, floating FROM equity_snapshots WHERE account_key=? ORDER BY timestamp",
-                (account_key,),
+                "SELECT timestamp, balance, equity, floating FROM equity_snapshots WHERE account_key=? AND timestamp>=? ORDER BY timestamp",
+                (account_key, from_timestamp),
             ).fetchall()
         if len(rows) > maximum:
             step = max(1, len(rows) // (maximum - 1))
@@ -313,7 +380,13 @@ class LiveMT5Service:
                 sampled.append(rows[-1])
             rows = sampled
         return [
-            {"time": _iso(row[0]), "balance": row[1], "equity": row[2], "floating": row[3]}
+            {
+                "time": _iso(row[0]),
+                "balance": row[1],
+                "equity": row[2],
+                "floating": row[3],
+                "source": "recorded-equity",
+            }
             for row in rows
         ]
 
@@ -364,7 +437,11 @@ class LiveMT5Service:
         trades = reconstruct_trades(deals_raw, self.magic_map)
         account_key = hashlib.sha256(str(account.login).encode("utf-8")).hexdigest()[:16]
         self._save_equity(account_key, now.timestamp(), account)
-        equity_series = self._load_equity(account_key)
+        recorded_equity = self._load_equity(account_key, CURVE_FROM.timestamp())
+        balance_history = reconstruct_balance_history(
+            deals_raw, _float(account.balance), CURVE_FROM, now
+        )
+        equity_series = merge_account_curve(balance_history, recorded_equity)
         first_deal = min((int(deal.time) for deal in deals_raw), default=None)
         account_payload = {
             "login": _mask_login(account.login),
@@ -386,6 +463,8 @@ class LiveMT5Service:
             "message": "Live read-only MT5 connection",
             "last_update": now.isoformat(),
             "monitoring_started": self._started_at,
+            "curve_started": CURVE_FROM.isoformat(),
+            "equity_recorded_from": recorded_equity[0]["time"] if recorded_equity else None,
             "account": account_payload,
             "positions": positions,
             "orders": orders,

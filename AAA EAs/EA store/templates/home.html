@@ -68,7 +68,9 @@
   <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
     {% for product in ranked_products %}{% set rank = loop.index %}{% include "partials/ranked_card.html" %}{% endfor %}
   </div>
+  {% if development_count %}
   <div class="mt-8 rounded-3xl border border-amber-300/20 bg-amber-300/[.055] p-6 sm:p-8"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div><span class="badge badge-warn">IN DEVELOPMENT</span><h3 class="mt-4 text-xl font-bold">Auction Market research engine</h3><p class="mt-3 max-w-4xl text-sm leading-7 text-[#c7c0a7]">{{ development_count }} symbol presets remain in the BAT for controlled development and testing. They are not included in this sales list, ranking or package price until forward validation and portfolio-level risk review are complete.</p></div><span class="font-mono text-sm text-amber-200">NOT FOR SALE</span></div></div>
+  {% endif %}
 </section>
 
 <section class="border-y border-white/10 bg-[#091411]">

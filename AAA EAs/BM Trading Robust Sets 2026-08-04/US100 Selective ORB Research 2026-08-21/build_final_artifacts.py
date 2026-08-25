@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--results", default="native-selected-results.json")
 parser.add_argument("--output", default="US100 Selective ORB - Full Equity and Drawdown.png")
 parser.add_argument("--version", default="US100 Selective ORB")
+parser.add_argument("--risk-label", default="1% risk per trade")
 args = parser.parse_args()
 RESULTS = json.loads((ROOT / args.results).read_text(encoding="utf-8"))
 FULL = next(item for item in RESULTS if item["case"] == "full-2020-2026")
@@ -57,7 +58,7 @@ axis.annotate(
 )
 axis.set_ylabel("Balance (USD)")
 axis.set_title(
-    f"{args.version} — Exness USTEC M5, 1% risk per trade\n"
+    f"{args.version} — Exness USTEC M5, {args.risk_label}\n"
     "MT5 Every Tick, recorded spread, random execution delay",
     loc="left",
     fontsize=15,

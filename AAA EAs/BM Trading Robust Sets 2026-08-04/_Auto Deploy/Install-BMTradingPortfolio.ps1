@@ -37,8 +37,8 @@ function Get-PortfolioItems {
     } else {
         'ATR Candle Breakout EA\PORTFOLIO 100K FINAL - ATR Candle Breakout - XAUUSD H1 - 146 USD risk.set'
     }
-    # User-selected portfolio plus News Pulse and the validated Nasdaq open
-    # EMA/ATR strategy. Risk defaults to 1% planned per EA trade.
+    # User-selected portfolio plus News Pulse and the literal Nasdaq open
+    # EMA/ATR hold strategy. Risk defaults to 1% planned per EA trade.
     $items = @(
         [pscustomobject]@{
             Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -50,7 +50,19 @@ function Get-PortfolioItems {
             Label = 'ORB Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 5; Expert = 'ORB Volume Data EA.ex5'
             ExpertSource = 'ORB Volume Data EA\ORB Volume Data EA.ex5'
-            SetSource = 'ORB Volume Data EA\Volume Profile Settings\VISUAL PROFILE - XAUUSD M5 - validated baseline.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0
+            SetSource = 'ORB Volume Data EA\Volume Profile Settings\VISUAL PROFILE - XAUUSD M5 - validated baseline.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'US100 ORB 0.5R'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 5; Expert = 'US100 Selective ORB Retest EA.ex5'
+            ExpertSource = 'US100 Selective ORB Research 2026-08-21\EA\US100 Selective ORB Retest EA.ex5'
+            SetSource = 'US100 Selective ORB Research 2026-08-21\Sets\BAT AUTO BALANCE - US100 USTEC M5 - OR30 RR05.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'US100 ORB 2R'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 5; Expert = 'US100 Selective ORB Retest EA.ex5'
+            ExpertSource = 'US100 Selective ORB Research 2026-08-21\EA\US100 Selective ORB Retest EA.ex5'
+            SetSource = 'US100 Selective ORB Research 2026-08-21\Sets\BAT AUTO BALANCE - US100 USTEC M5 - OR30 RR20.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
             Label = 'ATR Candle Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -110,7 +122,7 @@ function Get-PortfolioItems {
             Label = 'Nasdaq 5M Open EMA ATR'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 5; Expert = 'Nasdaq 5M Open EMA ATR EA.ex5'
             ExpertSource = 'Nasdaq 5M Open EMA ATR Research 2026-08-20\EA\Nasdaq 5M Open EMA ATR EA.ex5'
-            SetSource = 'Nasdaq 5M Open EMA ATR Research 2026-08-20\Sets\BEST - USTEC M5 - 1pct - EMA12 ATR4 Trail5.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+            SetSource = 'Nasdaq 5M Open EMA ATR Research 2026-08-20\Sets\LITERAL - USTEC M5 - 1pct - EMA12 ATR3 Trail4 HOLD.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
         },
         [pscustomobject]@{
             Label = 'AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -634,7 +646,7 @@ $portfolio = @($resolvedPortfolio)
 if ($portfolio.Count -eq 0) { Stop-WithMessage 'No portfolio symbols were available on this broker.' }
 
 if ($IsAdaptiveAccount) {
-    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while LTA, ORB, News Pulse, and Nasdaq 5M Open EMA ATR remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
+    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs, including all ORBs, target {2:N2}% ({3:N2} {1} at installation), while LTA, News Pulse, and Nasdaq 5M Open EMA ATR remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
 } elseif ($IsSmallAccount) {
     if ($balance -lt 800 -or $balance -gt 1200) {
         Stop-WithMessage "Refusing to run: the small-account settings are for roughly USD 900, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Use an account between USD 800 and USD 1,200."
@@ -650,9 +662,9 @@ if ($PreflightOnly) {
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
-Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse and Nasdaq 5M Open EMA ATR." -ForegroundColor Red
+Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse and the literal Nasdaq 5M Open EMA ATR hold." -ForegroundColor Red
 if ($IsAdaptiveAccount) {
-Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; LTA, ORB Volume Profile, News Pulse, and Nasdaq 5M Open EMA ATR stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+Write-Host ('AUTO BALANCE: adaptive EAs, including all ORBs, target {0:N2}% of the detected balance; LTA, News Pulse, and Nasdaq 5M Open EMA ATR stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
     Write-Host 'ATR fixed-money risk and percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red

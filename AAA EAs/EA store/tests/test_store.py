@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date, datetime, timezone
 from urllib.parse import parse_qs, urlparse
 from types import SimpleNamespace
 
@@ -14,7 +15,7 @@ from app.catalog import (
     parse_installer_items,
 )
 from app.main import app
-from app.mt5_live import reconstruct_trades
+from app.mt5_live import reconstruct_balance_history, reconstruct_trades
 
 
 client = TestClient(app)
@@ -24,13 +25,13 @@ def test_catalogue_is_synchronized_with_active_installer() -> None:
     installer_items = parse_installer_items()
     products = get_catalog()
 
-    assert len(installer_items) == 27
+    assert len(installer_items) == 15
     assert len(products) == len(installer_items)
     assert [product.installer_label for product in products] == [item["label"] for item in installer_items]
     assert len({product.slug for product in products}) == len(products)
     assert all("aaa" not in product.label.lower() for product in products)
-    assert len(get_sellable_catalog()) == 13
-    assert len(get_development_catalog()) == 14
+    assert len(get_sellable_catalog()) == 15
+    assert len(get_development_catalog()) == 0
 
 
 def test_every_active_entry_has_local_ea_and_set_files() -> None:
@@ -83,7 +84,10 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "previous D1 open and close" in by_name["DmC"].logic[0].detail
     assert "display" in by_name["ORB Volume Profile"].logic[2].title.lower()
     assert "all three profile entry filters are OFF" in by_name["ORB Volume Profile"].logic[2].detail
+    assert "0.90 relative tick volume" in by_name["US100 ORB 2R"].logic[2].detail
+    assert "targets 2R" in by_name["US100 ORB 2R"].logic[5].detail
     assert "ATR(14)" in by_name["Nasdaq 5M Open EMA ATR"].logic[2].detail
+    assert "no take profit or time exit" in by_name["Nasdaq 5M Open EMA ATR"].risk_note.lower()
     assert "sell side is disabled" in by_name["News Pulse"].logic[2].detail
 
 
@@ -101,13 +105,13 @@ def test_detail_page_renders_code_based_logic_details() -> None:
 def test_api_and_evidence_chart() -> None:
     health = client.get("/api/health")
     assert health.status_code == 200
-    assert health.json()["active_entries"] == 27
-    assert health.json()["available_entries"] == 13
-    assert health.json()["development_entries"] == 14
+    assert health.json()["active_entries"] == 15
+    assert health.json()["available_entries"] == 15
+    assert health.json()["development_entries"] == 0
 
     payload = client.get("/api/eas")
     assert payload.status_code == 200
-    assert len(payload.json()) == 13
+    assert len(payload.json()) == 15
     assert all(not item["development"] for item in payload.json())
 
     product = next(item for item in get_catalog() if item.evidence and item.evidence.chart_path)
@@ -132,10 +136,13 @@ def test_portfolio_page_shows_one_year_only() -> None:
     assert chart.headers["cache-control"].startswith("no-store")
 
 
-def test_every_public_ea_uses_the_same_one_year_window() -> None:
+def test_every_public_ea_uses_one_year_evidence_only() -> None:
     products = get_sellable_catalog()
     assert all(product.evidence is not None for product in products)
-    assert all(product.evidence.period == "2025-08-11 to 2026-08-10" for product in products if product.evidence)
+    for product in products:
+        start_text, end_text = product.evidence.period.split(" to ")
+        duration = (date.fromisoformat(end_text) - date.fromisoformat(start_text)).days
+        assert 364 <= duration <= 366
     assert all(product.one_year_evidence == product.evidence for product in products)
     for route in ("/", "/eas", "/portfolio", "/risk", *(f"/eas/{product.slug}" for product in products)):
         response = client.get(route)
@@ -157,18 +164,16 @@ def test_home_ranks_all_available_eas_by_last_year_return() -> None:
     ranked = sorted(products, key=lambda product: product.one_year_return_pct or float("-inf"), reverse=True)
     response = client.get("/store")
     assert response.status_code == 200
-    assert response.text.count("Last-year return") == 13
+    assert response.text.count("Last-year return") == 15
     positions = [response.text.index(f">{product.label}</h3>") for product in ranked]
     assert positions == sorted(positions)
-    assert "Auction Market research engine" in response.text
-    assert "NOT FOR SALE" in response.text
+    assert "Auction Market research engine" not in response.text
+    assert "NOT FOR SALE" not in response.text
     assert "Auction Market XAU" not in response.text
 
 
 def test_development_builds_are_not_public_products() -> None:
-    product = get_development_catalog()[0]
-    assert product.buy_url == ""
-    assert client.get(f"/eas/{product.slug}").status_code == 404
+    assert get_development_catalog() == []
 
 
 def test_live_dashboard_and_read_only_api_render() -> None:
@@ -183,6 +188,23 @@ def test_live_dashboard_and_read_only_api_render() -> None:
     assert api.status_code == 200
     assert api.headers["cache-control"].startswith("no-store")
     assert set(api.json()) >= {"connected", "account", "positions", "orders", "trades", "ea_summary", "equity_series"}
+    assert "Balance history since 1 August 2026" in client.get("/").text
+    live_script = client.get("/static/live.js")
+    assert live_script.status_code == 200
+    assert "2026-08-01T00:00:00Z" in live_script.text
+
+
+def test_balance_history_is_reconstructed_from_august_cash_flows() -> None:
+    start = datetime(2026, 8, 1, tzinfo=timezone.utc)
+    end = datetime(2026, 8, 5, tzinfo=timezone.utc)
+    deals = [
+        SimpleNamespace(time_msc=datetime(2026, 8, 2, tzinfo=timezone.utc).timestamp() * 1000, profit=100, commission=-2, swap=0, fee=0),
+        SimpleNamespace(time_msc=datetime(2026, 8, 3, tzinfo=timezone.utc).timestamp() * 1000, profit=-50, commission=-1, swap=0, fee=0),
+    ]
+    series = reconstruct_balance_history(deals, 1047, start, end)
+    assert series[0]["balance"] == 1000
+    assert series[-1]["balance"] == 1047
+    assert all(point["equity"] is None for point in series)
 
 
 def test_mt5_deals_are_reconstructed_and_attributed() -> None:
