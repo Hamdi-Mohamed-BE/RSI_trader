@@ -1,0 +1,55 @@
+{
+  "config": {
+    "value_area_pct": 70,
+    "profile_bins": 64,
+    "signal_window_bars": 4,
+    "entry_mode": "retest",
+    "stop_mode": "atr",
+    "reward_risk": 1.5,
+    "breakout_buffer_atr": 0.0,
+    "minimum_relative_volume": 0.0,
+    "require_directional_candle": true,
+    "retest_bars": 4,
+    "retest_tolerance_atr": 0.08,
+    "stop_buffer_atr": 0.0,
+    "atr_stop_multiple": 1.0
+  },
+  "slug": "va70-b64-w4-retest-atr-rr15-buf0-rv0-dir1",
+  "training": {
+    "initial_balance": 10000.0,
+    "final_balance": 10367.48420565442,
+    "return_pct": 3.674842056544203,
+    "profit_factor": 1.0413302646761622,
+    "win_rate_pct": 52.96912114014252,
+    "max_drawdown_pct": 7.559880358275556,
+    "trades": 421,
+    "wins": 223,
+    "losses": 198
+  },
+  "validation": {
+    "initial_balance": 10000.0,
+    "final_balance": 10205.02926745604,
+    "return_pct": 2.0502926745604055,
+    "profit_factor": 1.0681838715436147,
+    "win_rate_pct": 49.358974358974365,
+    "max_drawdown_pct": 7.335724986240252,
+    "trades": 156,
+    "wins": 77,
+    "losses": 79
+  },
+  "locked": {
+    "initial_balance": 10000.0,
+    "final_balance": 10480.8048103089,
+    "return_pct": 4.808048103089013,
+    "profit_factor": 1.232775986808997,
+    "win_rate_pct": 56.25,
+    "max_drawdown_pct": 3.4472806324597505,
+    "trades": 128,
+    "wins": 72,
+    "losses": 56
+  },
+  "score": 6.200484587047039,
+  "eligible": true,
+  "eligible_candidates": 3,
+  "selection_rule": "Training and validation only; locked segment was never used for selection."
+}

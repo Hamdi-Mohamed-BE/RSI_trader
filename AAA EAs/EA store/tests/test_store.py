@@ -25,12 +25,12 @@ def test_catalogue_is_synchronized_with_active_installer() -> None:
     installer_items = parse_installer_items()
     products = get_catalog()
 
-    assert len(installer_items) == 15
+    assert len(installer_items) == 18
     assert len(products) == len(installer_items)
     assert [product.installer_label for product in products] == [item["label"] for item in installer_items]
     assert len({product.slug for product in products}) == len(products)
     assert all("aaa" not in product.label.lower() for product in products)
-    assert len(get_sellable_catalog()) == 15
+    assert len(get_sellable_catalog()) == 18
     assert len(get_development_catalog()) == 0
 
 
@@ -86,9 +86,14 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "all three profile entry filters are OFF" in by_name["ORB Volume Profile"].logic[2].detail
     assert "0.90 relative tick volume" in by_name["US100 ORB 2R"].logic[2].detail
     assert "targets 2R" in by_name["US100 ORB 2R"].logic[5].detail
+    assert "09:30 through 10:00" in by_name["US100 Fabio ORB 1R"].logic[0].detail
+    assert "does not require a green breakout candle" in by_name["US100 Fabio ORB 1R"].logic[1].detail
+    assert "nominal 1:1 reward-to-risk" in by_name["US100 Fabio ORB 1R"].logic[4].detail
     assert "ATR(14)" in by_name["Nasdaq 5M Open EMA ATR"].logic[2].detail
     assert "no take profit or time exit" in by_name["Nasdaq 5M Open EMA ATR"].risk_note.lower()
     assert "sell side is disabled" in by_name["News Pulse"].logic[2].detail
+    assert "preceding twelve M15 bars" in by_name["BTC Top Down FVG Liquidity"].logic[1].detail
+    assert "target is 3R" in by_name["ETH Top Down FVG Liquidity"].logic[5].detail
 
 
 def test_detail_page_renders_code_based_logic_details() -> None:
@@ -105,13 +110,13 @@ def test_detail_page_renders_code_based_logic_details() -> None:
 def test_api_and_evidence_chart() -> None:
     health = client.get("/api/health")
     assert health.status_code == 200
-    assert health.json()["active_entries"] == 15
-    assert health.json()["available_entries"] == 15
+    assert health.json()["active_entries"] == 18
+    assert health.json()["available_entries"] == 18
     assert health.json()["development_entries"] == 0
 
     payload = client.get("/api/eas")
     assert payload.status_code == 200
-    assert len(payload.json()) == 15
+    assert len(payload.json()) == 18
     assert all(not item["development"] for item in payload.json())
 
     product = next(item for item in get_catalog() if item.evidence and item.evidence.chart_path)
@@ -184,7 +189,7 @@ def test_home_ranks_all_available_eas_by_last_year_return() -> None:
     ranked = sorted(products, key=lambda product: product.one_year_return_pct or float("-inf"), reverse=True)
     response = client.get("/store")
     assert response.status_code == 200
-    assert response.text.count("Last-year return") == 15
+    assert response.text.count("Last-year return") == 18
     positions = [response.text.index(f">{product.label}</h3>") for product in ranked]
     assert positions == sorted(positions)
     assert "Auction Market research engine" not in response.text

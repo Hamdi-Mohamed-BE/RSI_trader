@@ -35,6 +35,27 @@ CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
     ),
 }
 
+CUSTOM_REPORTS: dict[str, Path] = {
+    "US100 Fabio ORB 1R": (
+        PACKAGE_ROOT
+        / "US100 Fabio ORB Volatility Target Research 2026-08-26"
+        / "Backtest Reports"
+        / "literal-one-year-every-tick.htm"
+    ),
+    "BTC Top Down FVG Liquidity": (
+        PACKAGE_ROOT
+        / "Top Down FVG Liquidity Research 2026-08-27"
+        / "Backtest Reports"
+        / "btcusd-locked-year.htm"
+    ),
+    "ETH Top Down FVG Liquidity": (
+        PACKAGE_ROOT
+        / "Top Down FVG Liquidity Research 2026-08-27"
+        / "Backtest Reports"
+        / "ethusd-locked-year.htm"
+    ),
+}
+
 INSTALLER_LABEL_ALIASES = {
     "AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s": "AAA Final News Pulse — long only",
 }
@@ -145,6 +166,9 @@ def _custom_series(label: str) -> tuple[dict[str, Any], ...]:
 
 
 def product_equity_series(product: Product) -> list[dict[str, Any]]:
+    custom_report = CUSTOM_REPORTS.get(product.label)
+    if custom_report is not None and custom_report.is_file():
+        return [dict(point) for point in parse_mt5_balance_series(custom_report)]
     custom = _custom_series(product.label)
     if custom:
         return [dict(point) for point in custom]

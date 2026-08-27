@@ -1,0 +1,54 @@
+{
+  "config": {
+    "orb_minutes": 15,
+    "setup_window_minutes": 90,
+    "confirmation": "side_only",
+    "trend_filter": "ema",
+    "extension_buffer_atr": 0.0,
+    "touch_tolerance_atr": 0.01,
+    "first_touch_only": true,
+    "stop_mode": "atr",
+    "stop_buffer_atr": 0.01,
+    "atr_stop_multiple": 0.25,
+    "target_mode": "rr20",
+    "vwap_slope_bars": 3
+  },
+  "slug": "orb15-side_only-ema-eb0-tt001-ft1-atr-rr20",
+  "training": {
+    "initial_balance": 10000.0,
+    "final_balance": 10706.361534196925,
+    "return_pct": 7.063615341969243,
+    "profit_factor": 1.0310815657047532,
+    "win_rate_pct": 39.130434782608695,
+    "max_drawdown_pct": 14.87775575224195,
+    "trades": 345,
+    "wins": 135,
+    "losses": 210
+  },
+  "validation": {
+    "initial_balance": 10000.0,
+    "final_balance": 13417.983576130277,
+    "return_pct": 34.17983576130277,
+    "profit_factor": 1.442584840665865,
+    "win_rate_pct": 47.61904761904761,
+    "max_drawdown_pct": 6.0164043767003275,
+    "trades": 126,
+    "wins": 60,
+    "losses": 66
+  },
+  "locked": {
+    "initial_balance": 10000.0,
+    "final_balance": 10043.81676740148,
+    "return_pct": 0.43816767401481105,
+    "profit_factor": 1.0075218325280249,
+    "win_rate_pct": 38.38383838383838,
+    "max_drawdown_pct": 10.150366657709382,
+    "trades": 99,
+    "wins": 38,
+    "losses": 61
+  },
+  "score": 4.050211375289288,
+  "eligible": true,
+  "eligible_candidates": 2,
+  "selection_rule": "Training and validation only; locked data was not used for selection."
+}

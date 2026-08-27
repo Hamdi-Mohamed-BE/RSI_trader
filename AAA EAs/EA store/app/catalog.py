@@ -77,6 +77,46 @@ class Product(BaseModel):
 
 
 CORE_META: dict[str, dict[str, Any]] = {
+    "BTC Top Down FVG Liquidity": {
+        "strategy": "Liquidity sweep and fair-value-gap retest",
+        "tagline": "BTCUSD M15 reversals aligned with the H4 trend and entered from a three-candle imbalance retest.",
+        "description": "The BTCUSD build looks for a sweep beyond the prior 12-bar liquidity range, a decisive reversal candle, and a genuine three-candle fair-value gap. It waits for price to retrace to the gap midpoint before entering in the H4 trend direction, with a structural stop and a fixed 2R target.",
+        "session": "Continuous crypto market / M15 execution",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source and the exact locked BTCUSD BAT preset were reviewed together.",
+        "logic": [
+            {"title": "Align with the H4 trend", "detail": "A long requires the last completed H4 close above the 20 EMA while the 20 EMA is above the 50 EMA; a short requires the exact inverse. Both trade directions remain enabled."},
+            {"title": "Sweep a 12-bar liquidity extreme", "detail": "The sweep candle must trade beyond the highest high or lowest low of the preceding twelve M15 bars by at least 0.02 ATR. It must then close back inside that prior range."},
+            {"title": "Demand reversal displacement", "detail": "The next M15 candle must reverse away from the sweep, have a real body of at least 0.90 ATR, and close beyond the sweep candle's opposite extreme to establish directional displacement."},
+            {"title": "Confirm a three-candle imbalance", "detail": "The completion candle must leave a fair-value gap between its low and the sweep high for longs, or its high and the sweep low for shorts. Gap width must remain between 0.03 and 1.00 ATR."},
+            {"title": "Enter the midpoint retest", "detail": "The EA arms the gap for six M15 bars and enters only when live Ask or Bid retraces to the gap midpoint without first invalidating the structural stop or crossing through the far side of the zone."},
+            {"title": "Risk 1% toward a 2R target", "detail": "Position size risks 1% of current equity to the sweep extreme plus a 0.10 ATR buffer. Stops outside 0.30 to 3.00 ATR are rejected, the target is 2R, and any survivor exits after 96 M15 bars."},
+        ],
+        "risk_note": "Dynamic 1% of current equity per trade. The EA allows up to two entries per broker day, filters spread above 15% of M15 ATR and can trade weekends because the locked BTC preset leaves the weekday-only filter disabled.",
+        "price": 349,
+        "accent": "orange",
+        "featured": True,
+    },
+    "ETH Top Down FVG Liquidity": {
+        "strategy": "Liquidity sweep and fair-value-gap retest",
+        "tagline": "ETHUSD M15 imbalance retests filtered by the H4 trend and managed with a wider 3R objective.",
+        "description": "The ETHUSD build converts a liquidity sweep, reversal displacement and three-candle fair-value gap into a rules-based retest entry. It uses the H4 20/50 EMA regime for direction, waits only three M15 bars for the midpoint retrace, and targets three times the structural risk.",
+        "session": "Continuous crypto market / M15 execution",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source and the exact locked ETHUSD BAT preset were reviewed together.",
+        "logic": [
+            {"title": "Align with the H4 trend", "detail": "A long requires the last completed H4 close above the 20 EMA with the fast EMA above the 50 EMA; a short requires price below the fast EMA and the fast EMA below the slow EMA."},
+            {"title": "Sweep a 24-bar liquidity extreme", "detail": "The setup begins only after an M15 candle trades at least 0.02 ATR beyond the prior twenty-four-bar high or low and then closes back inside the swept range."},
+            {"title": "Confirm directional displacement", "detail": "The following candle must reverse from the sweep, form a body of at least 0.60 ATR, and close beyond the sweep candle's opposite extreme before the EA will recognize a setup."},
+            {"title": "Require a valid fair-value gap", "detail": "A third candle must leave a non-overlapping three-candle gap measuring between 0.03 and 1.00 M15 ATR. The exact gap boundaries become the temporary entry zone."},
+            {"title": "Wait three bars for a midpoint retest", "detail": "The setup expires after three M15 bars. Before expiry, live price must retrace to the gap midpoint without reaching the planned structural stop or invalidating the opposite boundary of the zone."},
+            {"title": "Risk 1% toward a 3R target", "detail": "The stop sits beyond the swept extreme with a 0.10 ATR buffer, must measure 0.30 to 3.00 ATR, and sizes the order to 1% equity risk. The target is 3R and the maximum hold is 96 M15 bars."},
+        ],
+        "risk_note": "Dynamic 1% of current equity per trade, with a maximum of two entries per broker day and a 15%-of-ATR spread ceiling. The weekend filter is disabled in the locked ETH preset.",
+        "price": 349,
+        "accent": "violet",
+        "featured": True,
+    },
     "LTA Volume Profile": {
         "strategy": "Momentum at auction reference levels",
         "tagline": "D1/H1 trend momentum entered from H4 zones or prior-day and prior-week profile levels.",
@@ -154,6 +194,26 @@ CORE_META: dict[str, dict[str, Any]] = {
         "risk_note": "Dynamic equity risk controlled by the installer's adaptive percentage, defaulting to 1%. The 2R and 0.5R editions can signal on the same session, so their combined risk must be treated as additive.",
         "price": 449,
         "accent": "cyan",
+        "featured": True,
+    },
+    "US100 Fabio ORB 1R": {
+        "strategy": "Direct long-only New York opening-range breakout",
+        "tagline": "A volatility-targeted US100 break of the first 30 New York minutes, protected at the range low and targeting 1R.",
+        "description": "The active USTEC M5 preset is the literal, conservative version of the Fabio opening-range idea. It builds the 09:30-10:00 New York range, waits for a completed M5 close above that range, then opens one long with the opposite range boundary as its stop and an equal-distance target.",
+        "session": "09:30-15:00 New York / M5",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, the exact literal BAT preset and the native MT5 Every Tick report were reviewed together.",
+        "logic": [
+            {"title": "Build the first 30 New York minutes", "detail": "The EA measures the USTEC high and low from 09:30 through 10:00 New York time on M5 data. US daylight-saving rules are calculated internally and live server offset can be detected automatically."},
+            {"title": "Wait for a completed close above the range", "detail": "After 10:00, a fully closed M5 candle must finish above the opening-range high. The literal preset does not require a green breakout candle and applies no additional point buffer."},
+            {"title": "Enter one long on the next evaluation", "detail": "The selected configuration is long-only and submits a market buy after the completed breakout is detected. It permits no second entry on the same New York trading date."},
+            {"title": "Size from current equity", "detail": "Volume is calculated from the distance between market entry and the opening-range low. The BAT installer rewrites the active risk percentage for the detected account, defaulting to 1%."},
+            {"title": "Use the range low and a 1R target", "detail": "The initial stop is placed at the opening-range low with no extra stop buffer. Take profit is set one initial-risk distance above entry, producing a nominal 1:1 reward-to-risk target before costs and slippage."},
+            {"title": "Enforce time and execution controls", "detail": "Entries are limited to weekdays and breakout closes before the 15:00 New York cutoff. The EA rejects spread above 10% of stop distance, closes remaining exposure at 15:00 and converts server time independently of the VPS clock."},
+        ],
+        "risk_note": "Dynamic equity risk from entry to the opening-range low, defaulting to 1% in the installer. Gap, slippage and broker stop execution can exceed the planned amount; the largest loss in the latest $10,000 test was $264.09.",
+        "price": 449,
+        "accent": "amber",
         "featured": True,
     },
     "ATR Candle Breakout": {
@@ -523,6 +583,65 @@ def _us100_orb_one_year_evidence(version: str) -> Evidence | None:
     )
 
 
+def _fabio_orb_one_year_evidence() -> Evidence | None:
+    path = PACKAGE_ROOT / "US100 Fabio ORB Volatility Target Research 2026-08-26" / "native-results.json"
+    if not path.exists():
+        return None
+    rows = _load_json(path)
+    row = next((item for item in rows if item.get("id") == "literal-one-year-every-tick"), None)
+    if row is None:
+        return None
+    profit_factor = float(row["profit_factor"])
+    return_pct = float(row["return_pct"])
+    drawdown = float(row["equity_dd_pct"])
+    trades = int(row["trades"])
+    chart = Path(str(row["chart_path"]))
+    return Evidence(
+        label="Latest complete one-year MT5 backtest",
+        period=f"{row['from_date']} to {row['to_date']}",
+        return_pct=return_pct,
+        profit_factor=profit_factor,
+        drawdown_pct=drawdown,
+        win_rate_pct=float(row["win_rate_pct"]),
+        trades=trades,
+        history_quality=str(row.get("history_quality", "100%")),
+        source_note="Exness USTEC M5, synchronized 100% MT5 Every Tick history, random execution delay and the exact literal ORB30 long-only 1R preset at 1% risk.",
+        chart_path=chart if chart.exists() else None,
+        status=_status_for(profit_factor, return_pct, drawdown, trades),
+        caution="The older training segment produced only PF 1.04. This setup remains a forward-test candidate, and one historical year does not guarantee future performance.",
+    )
+
+
+def _top_down_fvg_one_year_evidence(symbol: str) -> Evidence | None:
+    path = PACKAGE_ROOT / "Top Down FVG Liquidity Research 2026-08-27" / "native-results.json"
+    if not path.exists():
+        return None
+    rows = _load_json(path)
+    row_id = f"{symbol.lower()}-locked-year"
+    row = next((item for item in rows if item.get("id") == row_id), None)
+    if row is None:
+        return None
+    profit_factor = float(row["profit_factor"])
+    return_pct = float(row["return_pct"])
+    drawdown = float(row["equity_dd_pct"])
+    trades = int(row["trades"])
+    chart = Path(str(row["chart_path"]))
+    return Evidence(
+        label="Latest complete one-year MT5 backtest",
+        period=f"{row['from_date']} to {row['to_date']}",
+        return_pct=return_pct,
+        profit_factor=profit_factor,
+        drawdown_pct=drawdown,
+        win_rate_pct=float(row["win_rate_pct"]),
+        trades=trades,
+        history_quality=str(row.get("history_quality", "100%")),
+        source_note=f"Exness {symbol} M15, MT5 Every Tick history, broker spread, commission, swap and random execution delay using the selected 1% risk preset.",
+        chart_path=chart if chart.exists() else None,
+        status=_status_for(profit_factor, return_pct, drawdown, trades),
+        caution=f"Only {trades} trades occurred in this locked one-year window. Treat the result as forward-test evidence, not proof of a stable future edge.",
+    )
+
+
 def _meta_for(item: dict[str, Any]) -> dict[str, Any]:
     label = item["label"]
     canonical = item["canonical"]
@@ -611,6 +730,9 @@ def get_catalog() -> list[Product]:
     nasdaq_open = _nasdaq_open_one_year_evidence()
     us100_orb_rr05 = _us100_orb_one_year_evidence("0.5R")
     us100_orb_rr20 = _us100_orb_one_year_evidence("2R")
+    fabio_orb = _fabio_orb_one_year_evidence()
+    btc_fvg = _top_down_fvg_one_year_evidence("BTCUSD")
+    eth_fvg = _top_down_fvg_one_year_evidence("ETHUSD")
     products: list[Product] = []
     for item in parse_installer_items():
         meta = _meta_for(item)
@@ -621,6 +743,12 @@ def get_catalog() -> list[Product]:
             evidence = us100_orb_rr05
         elif item["label"] == "US100 ORB 2R":
             evidence = us100_orb_rr20
+        elif item["label"] == "US100 Fabio ORB 1R":
+            evidence = fabio_orb
+        elif item["label"] == "BTC Top Down FVG Liquidity":
+            evidence = btc_fvg
+        elif item["label"] == "ETH Top Down FVG Liquidity":
+            evidence = eth_fvg
         one_year_result = evidence
         limitations = [
             "Historical returns are not guaranteed and live execution can differ.",

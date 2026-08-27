@@ -19,6 +19,7 @@ $ProfileName = if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - AUTO' } elsei
 $ExpertFolderName = $ProfileName
 $ProbePath = Join-Path $PSScriptRoot 'Probe-MT5.py'
 $Unicode = New-Object System.Text.UnicodeEncoding($false, $true)
+$Script:ManagedMagicCsv = ''
 
 function Write-Stage([string]$Message) {
     Write-Host "`n=== $Message ===" -ForegroundColor Cyan
@@ -47,6 +48,18 @@ function Get-PortfolioItems {
             SetSource = 'LTA volume profile\Best Settings\RETEST PASSED 2026-08-07 - LTA - XAUUSD M15 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0
         },
         [pscustomobject]@{
+            Label = 'BTC Top Down FVG Liquidity'; Canonical = 'BTCUSD'; Aliases = @('BTCUSD', 'BITCOIN', 'BTC')
+            Period = 15; Expert = 'Top Down FVG Liquidity EA.ex5'
+            ExpertSource = 'Top Down FVG Liquidity Research 2026-08-27\EA\Top Down FVG Liquidity EA.ex5'
+            SetSource = 'Top Down FVG Liquidity Research 2026-08-27\Sets\SELECTED - BTCUSD M15 - Top Down FVG Liquidity - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'ETH Top Down FVG Liquidity'; Canonical = 'ETHUSD'; Aliases = @('ETHUSD', 'ETHEREUM', 'ETH')
+            Period = 15; Expert = 'Top Down FVG Liquidity EA.ex5'
+            ExpertSource = 'Top Down FVG Liquidity Research 2026-08-27\EA\Top Down FVG Liquidity EA.ex5'
+            SetSource = 'Top Down FVG Liquidity Research 2026-08-27\Sets\SELECTED - ETHUSD M15 - Top Down FVG Liquidity - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
             Label = 'ORB Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 5; Expert = 'ORB Volume Data EA.ex5'
             ExpertSource = 'ORB Volume Data EA\ORB Volume Data EA.ex5'
@@ -63,6 +76,12 @@ function Get-PortfolioItems {
             Period = 5; Expert = 'US100 Selective ORB Retest EA.ex5'
             ExpertSource = 'US100 Selective ORB Research 2026-08-21\EA\US100 Selective ORB Retest EA.ex5'
             SetSource = 'US100 Selective ORB Research 2026-08-21\Sets\BAT AUTO BALANCE - US100 USTEC M5 - OR30 RR20.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'US100 Fabio ORB 1R'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 5; Expert = 'US100 Fabio ORB Volatility Target EA.ex5'
+            ExpertSource = 'US100 Fabio ORB Volatility Target Research 2026-08-26\EA\US100 Fabio ORB Volatility Target EA.ex5'
+            SetSource = 'US100 Fabio ORB Volatility Target Research 2026-08-26\Sets\LITERAL - USTEC M5 - ORB30 direct long RR1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
             Label = 'ATR Candle Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -148,7 +167,19 @@ function Get-PortfolioItems {
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
         $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $item.SetSource)
     }
-    return $items
+    # Internal risk controller: installed as the first chart but intentionally
+    # excluded from the public EA catalogue parsed from the literal $items list.
+    $guard = New-Object PSObject -Property @{
+        Label = 'Portfolio Daily Guard'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+        Period = 1; Expert = 'Portfolio Daily Guard EA.ex5'
+        ExpertSource = 'Portfolio Daily Guard EA\Portfolio Daily Guard EA.ex5'
+        SetSource = 'Portfolio Daily Guard EA\ACTIVE BAT - Portfolio Daily Guard - 2pct win 2pct loss.set'
+        SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.0
+        VolumeRiskMoney = $false; ForceEnable = $false; OptionalSymbol = $false
+    }
+    $guard | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $guard.ExpertSource)
+    $guard | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $guard.SetSource)
+    return (@($guard) + @($items))
 }
 
 function Get-Mt5Candidates {
@@ -285,6 +316,9 @@ function Read-SetInputs([string]$Path) {
 
 function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
+    if ($Item.Label -eq 'Portfolio Daily Guard' -and $inputs.Contains('InpManagedMagicCsv') -and $Script:ManagedMagicCsv) {
+        $inputs['InpManagedMagicCsv'] = $Script:ManagedMagicCsv
+    }
     if ([bool]$Item.ForceEnable -and $inputs.Contains('InpEnableTrading')) {
         $inputs['InpEnableTrading'] = 'true'
     }
@@ -504,6 +538,21 @@ foreach ($item in $portfolio) {
     if ($inputs.Count -eq 0) { Stop-WithMessage "No settings could be read from: $($item.SetFullPath)" }
     Write-Host ('OK  {0}: {1} inputs' -f $item.Label, $inputs.Count)
 }
+$managedMagics = [Collections.Generic.List[string]]::new()
+foreach ($item in @($portfolio | Where-Object { $_.Label -ne 'Portfolio Daily Guard' })) {
+    $inputs = Read-SetInputs $item.SetFullPath
+    foreach ($key in @($inputs.Keys)) {
+        if ([string]$key -notmatch '^(?:Inp)?Magic(?:Number)?$') { continue }
+        $value = [string]$inputs[$key]
+        $parsedMagic = 0L
+        if ([long]::TryParse($value, [ref]$parsedMagic) -and $parsedMagic -gt 0 -and -not $managedMagics.Contains([string]$parsedMagic)) {
+            [void]$managedMagics.Add([string]$parsedMagic)
+        }
+    }
+}
+if ($managedMagics.Count -eq 0) { Stop-WithMessage 'No managed EA magic numbers were found for the Portfolio Daily Guard.' }
+$Script:ManagedMagicCsv = $managedMagics -join ','
+Write-Host ('OK  Portfolio Daily Guard scope: {0} unique EA magic numbers' -f $managedMagics.Count)
 
 Write-Stage 'Finding MT5'
 $candidates = @(Get-Mt5Candidates)
