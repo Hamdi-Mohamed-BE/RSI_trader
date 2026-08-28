@@ -1,0 +1,222 @@
+{
+  "as_of": "2026-08-28",
+  "selected_configs": {
+    "xau": {
+      "window": 40,
+      "threshold": 0.05,
+      "signal_gate": 0.05,
+      "atr_period": 14,
+      "atr_multiple": 4.0,
+      "reward_risk": 3.0,
+      "risk_pct": 1.0,
+      "max_leverage": 2.0,
+      "direction_mode": "long_only"
+    },
+    "us100": {
+      "window": 20,
+      "threshold": 0.02,
+      "signal_gate": 0.0,
+      "atr_period": 14,
+      "atr_multiple": 2.0,
+      "reward_risk": 0.0,
+      "risk_pct": 1.0,
+      "max_leverage": 2.0,
+      "direction_mode": "long_only"
+    },
+    "btc": {
+      "window": 40,
+      "threshold": 0.02,
+      "signal_gate": 0.0,
+      "atr_period": 14,
+      "atr_multiple": 2.0,
+      "reward_risk": 0.0,
+      "risk_pct": 1.0,
+      "max_leverage": 2.0,
+      "direction_mode": "long_only"
+    },
+    "eth": {
+      "window": 60,
+      "threshold": 0.05,
+      "signal_gate": 0.0,
+      "atr_period": 14,
+      "atr_multiple": 4.0,
+      "reward_risk": 0.0,
+      "risk_pct": 1.0,
+      "max_leverage": 2.0,
+      "direction_mode": "long_only"
+    },
+    "us30": {
+      "window": 20,
+      "threshold": 0.05,
+      "signal_gate": 0.0,
+      "atr_period": 14,
+      "atr_multiple": 4.0,
+      "reward_risk": 3.0,
+      "risk_pct": 1.0,
+      "max_leverage": 2.0,
+      "direction_mode": "long_only"
+    }
+  },
+  "signals": {
+    "xau": {
+      "current_regime": "Bull",
+      "signal": 0.9209486166007905,
+      "next_probabilities": {
+        "bear": 0.0,
+        "sideways": 0.07905138339920949,
+        "bull": 0.9209486166007905
+      },
+      "transition_matrix": [
+        [
+          0.7963800904977375,
+          0.20361990950226244,
+          0.0
+        ],
+        [
+          0.031982942430703626,
+          0.9253731343283582,
+          0.042643923240938165
+        ],
+        [
+          0.0,
+          0.07905138339920949,
+          0.9209486166007905
+        ]
+      ],
+      "stationary_distribution": {
+        "bear": 0.09258483452031949,
+        "sideways": 0.5894428152492671,
+        "bull": 0.3179723502304135
+      },
+      "market_data_through": "2026-08-28"
+    },
+    "us100": {
+      "current_regime": "Bull",
+      "signal": 0.8924818108326596,
+      "next_probabilities": {
+        "bear": 0.004042037186742118,
+        "sideways": 0.09943411479385611,
+        "bull": 0.8965238480194018
+      },
+      "transition_matrix": [
+        [
+          0.856353591160221,
+          0.13812154696132597,
+          0.0055248618784530384
+        ],
+        [
+          0.11605723370429252,
+          0.685214626391097,
+          0.1987281399046105
+        ],
+        [
+          0.004042037186742118,
+          0.09943411479385611,
+          0.8965238480194018
+        ]
+      ],
+      "stationary_distribution": {
+        "bear": 0.2254047322540472,
+        "sideways": 0.2611041926110421,
+        "bull": 0.5134910751349107
+      },
+      "market_data_through": "2026-08-28"
+    },
+    "btc": {
+      "current_regime": "Bull",
+      "signal": 0.9220994475138122,
+      "next_probabilities": {
+        "bear": 0.016574585635359115,
+        "sideways": 0.044751381215469614,
+        "bull": 0.9386740331491713
+      },
+      "transition_matrix": [
+        [
+          0.9201438848920863,
+          0.05539568345323741,
+          0.02446043165467626
+        ],
+        [
+          0.28321678321678323,
+          0.44405594405594406,
+          0.2727272727272727
+        ],
+        [
+          0.016574585635359115,
+          0.044751381215469614,
+          0.9386740331491713
+        ]
+      ],
+      "stationary_distribution": {
+        "bear": 0.3973492942208641,
+        "sideways": 0.0815403017354911,
+        "bull": 0.5211104040436448
+      },
+      "market_data_through": "2026-08-28"
+    },
+    "eth": {
+      "current_regime": "Bull",
+      "signal": 0.9573210768220617,
+      "next_probabilities": {
+        "bear": 0.0026263952724885093,
+        "sideways": 0.03742613263296126,
+        "bull": 0.9599474720945502
+      },
+      "transition_matrix": [
+        [
+          0.9606953892668179,
+          0.037037037037037035,
+          0.0022675736961451248
+        ],
+        [
+          0.15584415584415584,
+          0.6558441558441559,
+          0.18831168831168832
+        ],
+        [
+          0.0026263952724885093,
+          0.03742613263296126,
+          0.9599474720945502
+        ]
+      ],
+      "stationary_distribution": {
+        "bear": 0.41946734305643557,
+        "sideways": 0.09765377298668328,
+        "bull": 0.48287888395688117
+      },
+      "market_data_through": "2026-08-28"
+    },
+    "us30": {
+      "current_regime": "Sideways",
+      "signal": 0.01580020387359837,
+      "next_probabilities": {
+        "bear": 0.019367991845056064,
+        "sideways": 0.9454638124362895,
+        "bull": 0.035168195718654434
+      },
+      "transition_matrix": [
+        [
+          0.7764705882352941,
+          0.2235294117647059,
+          0.0
+        ],
+        [
+          0.019367991845056064,
+          0.9454638124362895,
+          0.035168195718654434
+        ],
+        [
+          0.0,
+          0.2490974729241877,
+          0.7509025270758123
+        ]
+      ],
+      "stationary_distribution": {
+        "bear": 0.07056870070568683,
+        "sideways": 0.8144458281444584,
+        "bull": 0.11498547114985479
+      },
+      "market_data_through": "2026-08-28"
+    }
+  }
+}

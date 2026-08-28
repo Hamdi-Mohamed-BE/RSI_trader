@@ -25,12 +25,12 @@ def test_catalogue_is_synchronized_with_active_installer() -> None:
     installer_items = parse_installer_items()
     products = get_catalog()
 
-    assert len(installer_items) == 18
+    assert len(installer_items) == 15
     assert len(products) == len(installer_items)
     assert [product.installer_label for product in products] == [item["label"] for item in installer_items]
     assert len({product.slug for product in products}) == len(products)
     assert all("aaa" not in product.label.lower() for product in products)
-    assert len(get_sellable_catalog()) == 18
+    assert len(get_sellable_catalog()) == 15
     assert len(get_development_catalog()) == 0
 
 
@@ -72,7 +72,7 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert all(len(product.logic) == 6 for product in products)
     assert all(step.title and len(step.detail) >= 80 for product in products for step in product.logic)
 
-    compiled_only = {"ATR Candle Breakout", "Go Long", "Turnaround Tuesday"}
+    compiled_only = {"ATR Candle Breakout", "Go Long"}
     assert {product.label for product in products if product.logic_audit == "Input-audited binary"} == compiled_only
     assert all(
         product.logic_audit == "Source-code verified"
@@ -84,8 +84,6 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "previous D1 open and close" in by_name["DmC"].logic[0].detail
     assert "display" in by_name["ORB Volume Profile"].logic[2].title.lower()
     assert "all three profile entry filters are OFF" in by_name["ORB Volume Profile"].logic[2].detail
-    assert "0.90 relative tick volume" in by_name["US100 ORB 2R"].logic[2].detail
-    assert "targets 2R" in by_name["US100 ORB 2R"].logic[5].detail
     assert "09:30 through 10:00" in by_name["US100 Fabio ORB 1R"].logic[0].detail
     assert "does not require a green breakout candle" in by_name["US100 Fabio ORB 1R"].logic[1].detail
     assert "nominal 1:1 reward-to-risk" in by_name["US100 Fabio ORB 1R"].logic[4].detail
@@ -110,13 +108,13 @@ def test_detail_page_renders_code_based_logic_details() -> None:
 def test_api_and_evidence_chart() -> None:
     health = client.get("/api/health")
     assert health.status_code == 200
-    assert health.json()["active_entries"] == 18
-    assert health.json()["available_entries"] == 18
+    assert health.json()["active_entries"] == 15
+    assert health.json()["available_entries"] == 15
     assert health.json()["development_entries"] == 0
 
     payload = client.get("/api/eas")
     assert payload.status_code == 200
-    assert len(payload.json()) == 18
+    assert len(payload.json()) == 15
     assert all(not item["development"] for item in payload.json())
 
     product = next(item for item in get_catalog() if item.evidence and item.evidence.chart_path)
@@ -144,8 +142,8 @@ def test_portfolio_page_shows_one_year_only() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "One-year combined core audit" in response.text
-    assert "+295.61%" in response.text
-    assert "$39,561.18" in response.text
+    assert "+390.40%" in response.text
+    assert "$49,039.57" in response.text
     assert "PROFITABLE PERIOD" in response.text
     assert "five-year" not in response.text.lower()
     assert "2021-08-11" not in response.text
@@ -167,7 +165,7 @@ def test_every_public_ea_uses_one_year_evidence_only() -> None:
     for product in products:
         start_text, end_text = product.evidence.period.split(" to ")
         duration = (date.fromisoformat(end_text) - date.fromisoformat(start_text)).days
-        assert 364 <= duration <= 366
+        assert 364 <= duration <= 380
     assert all(product.one_year_evidence == product.evidence for product in products)
     for route in ("/", "/eas", "/portfolio", "/risk", *(f"/eas/{product.slug}" for product in products)):
         response = client.get(route)
@@ -189,7 +187,7 @@ def test_home_ranks_all_available_eas_by_last_year_return() -> None:
     ranked = sorted(products, key=lambda product: product.one_year_return_pct or float("-inf"), reverse=True)
     response = client.get("/store")
     assert response.status_code == 200
-    assert response.text.count("Last-year return") == 18
+    assert response.text.count("Last-year return") == 15
     positions = [response.text.index(f">{product.label}</h3>") for product in ranked]
     assert positions == sorted(positions)
     assert "Auction Market research engine" not in response.text

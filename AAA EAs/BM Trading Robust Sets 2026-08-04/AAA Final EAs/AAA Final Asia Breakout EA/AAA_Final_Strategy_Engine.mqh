@@ -14,12 +14,24 @@
 #define AAA_ID_XAU_WEAKNESS     9
 #define AAA_ID_XAU_US100_PORT  10
 
+#ifndef AAA_DEFAULT_MARKOV_FILTER
+#define AAA_DEFAULT_MARKOV_FILTER false
+#endif
+
 input bool   InpEnableTrading = AAA_DEFAULT_ENABLED;
 input double InpRiskPercent   = AAA_DEFAULT_RISK;
 input double InpRewardRisk    = AAA_DEFAULT_RR;
 input long   InpMagic         = AAA_DEFAULT_MAGIC;
 input int    InpMaxSpreadPoints = 0;
 input int    InpTesterServerClockMode = 1; // 1 = EET/EEST (MEX Atlantic); live trading ignores this
+
+input group "No-lookahead D1 Markov regime filter"
+input bool   InpUseMarkovRegimeFilter = AAA_DEFAULT_MARKOV_FILTER;
+input int    InpMarkovReturnWindow = 40;
+input double InpMarkovThreshold = 0.05;
+input double InpMarkovSignalGate = 0.05;
+input int    InpMarkovMinLabels = 252;
+input int    InpMarkovHistoryBars = 2600;
 
 input group "EMA3"
 input int    InpPivotBars=5;
@@ -62,6 +74,45 @@ bool AAA_LoadRates(const ENUM_TIMEFRAMES timeframe,const int count,MqlRates &rat
    return CopyRates(_Symbol,timeframe,0,count,rates)>=count;
 }
 
+int AAA_MarkovStateAt(MqlRates &daily[],const int index)
+{
+   double older=daily[index+InpMarkovReturnWindow].close;
+   if(older<=0.0) return 1;
+   double rolling_return=daily[index].close/older-1.0;
+   if(rolling_return>InpMarkovThreshold) return 2;
+   if(rolling_return<-InpMarkovThreshold) return 0;
+   return 1;
+}
+
+bool AAA_MarkovAllowsDirection(const int direction)
+{
+   if(!InpUseMarkovRegimeFilter) return true;
+   int available=Bars(_Symbol,PERIOD_D1);
+   int requested=MathMin(InpMarkovHistoryBars,available-1);
+   if(requested<=InpMarkovReturnWindow+InpMarkovMinLabels) return false;
+   MqlRates daily[];
+   ArraySetAsSeries(daily,true);
+   int copied=CopyRates(_Symbol,PERIOD_D1,1,requested,daily);
+   int labels=copied-InpMarkovReturnWindow;
+   if(labels<=InpMarkovMinLabels) return false;
+   double counts[3][3];
+   for(int row=0;row<3;row++) for(int col=0;col<3;col++) counts[row][col]=0.0;
+   int oldest=labels-1;
+   // Count only transitions ending before the newest completed D1 state.
+   // This matches the research walk-forward rule and prevents lookahead.
+   for(int newer=oldest-1;newer>=1;newer--)
+   {
+      int from=AAA_MarkovStateAt(daily,newer+1);
+      int to=AAA_MarkovStateAt(daily,newer);
+      counts[from][to]+=1.0;
+   }
+   int state=AAA_MarkovStateAt(daily,0);
+   double total=counts[state][0]+counts[state][1]+counts[state][2];
+   if(total<=0.0) return false;
+   double signal=(counts[state][2]-counts[state][0])/total;
+   return (direction>0 ? signal>InpMarkovSignalGate : signal<-InpMarkovSignalGate);
+}
+
 void AAA_RunEMA3()
 {
    if(InpUseTrailing) AAA_TrailR(_Symbol,InpMagic,InpTrailStartR,InpTrailDistanceR);
@@ -95,9 +146,9 @@ void AAA_RunAsiaBreakout()
    MqlRates r[]; if(!AAA_LoadRates(PERIOD_H1,3,r)) return;
    double buffer=(high-low)*InpAsiaBufferPercent;
    double midpoint=(high+low)/2.0;
-   if(r[1].close>high+buffer && r[1].low<=high+buffer)
+   if(r[1].close>high+buffer && r[1].low<=high+buffer && AAA_MarkovAllowsDirection(1))
       AAA_SendMarket(_Symbol,1,midpoint,InpRewardRisk,InpRiskPercent,InpMagic,"AAA Asia confirmed retest");
-   else if(r[1].close<low-buffer && r[1].high>=low-buffer)
+   else if(r[1].close<low-buffer && r[1].high>=low-buffer && AAA_MarkovAllowsDirection(-1))
       AAA_SendMarket(_Symbol,-1,midpoint,InpRewardRisk,InpRiskPercent,InpMagic,"AAA Asia confirmed retest");
 }
 

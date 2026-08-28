@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from .catalog import (
+    FILTERED_AUDIT_ROOT,
     INSTALLER_PATH,
     PACKAGE_ROOT,
     STORE_ROOT,
@@ -77,8 +78,8 @@ def _base_context(request: Request, active: str) -> dict[str, Any]:
 
 
 def _portfolio_audit() -> dict[str, Any]:
-    path = PACKAGE_ROOT / "Active BAT Backtest 2026-08-12" / "portfolio-results.json"
-    chart = PACKAGE_ROOT / "Active BAT Backtest 2026-08-12" / "Charts" / "combined-realized-balance.png"
+    path = FILTERED_AUDIT_ROOT / "portfolio-results.json"
+    chart = FILTERED_AUDIT_ROOT / "selected-portfolio-equity.png"
     if not path.exists():
         return {"available": False, "chart": None}
     data = json.loads(path.read_text(encoding="utf-8-sig"))
@@ -95,7 +96,7 @@ def _portfolio_audit() -> dict[str, Any]:
         "trades": int(combined["trades"]),
         "realized_balance_dd_pct": float(combined["realized_balance_dd_pct"]),
         "verdict": "PROFITABLE ONE-YEAR OVERLAY",
-        "period": "2025-08-11 to 2026-08-10",
+        "period": str(combined.get("period", "2025-08-11 to 2026-08-21")),
         "chart": chart if chart.exists() else None,
     }
 

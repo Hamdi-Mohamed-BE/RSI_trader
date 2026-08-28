@@ -7,4 +7,5 @@
 #define AAA_DEFAULT_RISK 1.0
 #define AAA_DEFAULT_RR 2.0
 #define AAA_DEFAULT_MAGIC 4080402
+#define AAA_DEFAULT_MARKOV_FILTER true
 #include "AAA_Final_Strategy_Engine.mqh"

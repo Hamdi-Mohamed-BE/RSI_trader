@@ -7,7 +7,7 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
-from .catalog import PACKAGE_ROOT, Product
+from .catalog import BOOKMAPER_ROOT, FILTERED_AUDIT_ROOT, PACKAGE_ROOT, Product
 
 
 ACTIVE_AUDIT_ROOT = PACKAGE_ROOT / "Active BAT Backtest 2026-08-12"
@@ -166,6 +166,23 @@ def _custom_series(label: str) -> tuple[dict[str, Any], ...]:
 
 
 def product_equity_series(product: Product) -> list[dict[str, Any]]:
+    if product.label == "XAU Markov Regime":
+        path = BOOKMAPER_ROOT / "artifacts" / "standalone-results.json"
+        if path.is_file():
+            row = _load_json(path).get("xau", {}).get("optimized", {})
+            return [
+                {"time": str(point["date"]), "balance": round(float(point["equity"]), 2)}
+                for point in row.get("equity", [])
+            ]
+    native_filtered = {
+        "Asia Breakout": "asia.htm",
+        "DmC": "dmc.htm",
+        "XAU Weakness": "xau-weakness.htm",
+    }
+    if product.label in native_filtered:
+        path = PACKAGE_ROOT / "_Backtests" / "MT5-DMC-20260811" / "reports" / "selected-regime-20260828" / native_filtered[product.label]
+        if path.is_file():
+            return [dict(point) for point in parse_mt5_balance_series(path)]
     custom_report = CUSTOM_REPORTS.get(product.label)
     if custom_report is not None and custom_report.is_file():
         return [dict(point) for point in parse_mt5_balance_series(custom_report)]
@@ -180,6 +197,10 @@ def product_equity_series(product: Product) -> list[dict[str, Any]]:
 
 @lru_cache(maxsize=1)
 def portfolio_equity_series() -> tuple[dict[str, Any], ...]:
+    filtered_path = FILTERED_AUDIT_ROOT / "portfolio-results.json"
+    if filtered_path.is_file():
+        data = _load_json(filtered_path)
+        return tuple(_sample(data.get("combined", {}).get("series", [])))
     events: list[tuple[str, float]] = []
     for row in _active_bot_rows():
         filename = row.get("file")

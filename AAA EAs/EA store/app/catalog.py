@@ -13,6 +13,8 @@ from pydantic import BaseModel, ConfigDict
 STORE_ROOT = Path(__file__).resolve().parents[1]
 EAS_ROOT = STORE_ROOT.parent
 PACKAGE_ROOT = EAS_ROOT / "BM Trading Robust Sets 2026-08-04"
+BOOKMAPER_ROOT = EAS_ROOT / "BookMaper"
+FILTERED_AUDIT_ROOT = PACKAGE_ROOT / "Selected Portfolio Audit 2026-08-28"
 INSTALLER_PATH = PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1"
 WHATSAPP_NUMBER = "21693830957"
 
@@ -136,6 +138,26 @@ CORE_META: dict[str, dict[str, Any]] = {
         "price": 399,
         "accent": "cyan",
     },
+    "XAU Markov Regime": {
+        "strategy": "No-lookahead Markov regime continuation",
+        "tagline": "A long-only XAUUSD D1 regime model using transition persistence, ATR risk and a fixed 3R objective.",
+        "description": "The locked XAU build converts forty-day returns into Bull, Sideways and Bear states, estimates transition probabilities from prior states only, and trades only when Bull persistence exceeds Bear persistence by more than five percentage points.",
+        "session": "Daily / XAUUSD",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "The Python no-lookahead research engine, locked proxy evidence, readable MQ5 port and exact BAT preset were reviewed together.",
+        "logic": [
+            {"title": "Label the completed D1 history", "detail": "Each completed daily close is compared with the close forty bars earlier. Returns above +5% are Bull, below -5% are Bear, and all values between those thresholds are Sideways."},
+            {"title": "Build transitions without the newest outcome", "detail": "The EA counts historical state-to-state transitions in chronological order but deliberately excludes the transition into the newest state, matching the research engine's no-lookahead forecast."},
+            {"title": "Demand a persistent bullish edge", "detail": "From the current state row, the EA calculates Bull probability minus Bear probability. A new long is permitted only when that signal is greater than the locked +0.05 gate."},
+            {"title": "Enter once at the new daily bar", "detail": "The model evaluates only when a new broker D1 candle begins. It places no short positions and does not re-enter intraday after a stop or target has closed the day's position."},
+            {"title": "Size from a four-ATR stop", "detail": "The initial stop is four times D1 ATR(14). Volume targets 1% of current equity while also capping notional exposure at two times equity and skipping a broker minimum lot that exceeds either limit."},
+            {"title": "Target 3R and trail once per day", "detail": "Take profit is three times initial stop distance. On each later D1 close the stop may ratchet to four ATR below that close, and an invalid regime can close the surviving position."},
+        ],
+        "risk_note": "Dynamic 1% equity risk with a two-times-notional cap. The displayed PF 5.50 is based on only ten proxy trades and is not an MT5 tick result, so this remains a forward-test candidate.",
+        "price": 399,
+        "accent": "gold",
+        "featured": True,
+    },
     "ORB Volume Profile": {
         "strategy": "New York opening-range breakout",
         "tagline": "A direct 15-minute New York ORB filtered by range quality and broker quote activity.",
@@ -239,7 +261,7 @@ CORE_META: dict[str, dict[str, Any]] = {
     "AAA Final Asia Breakout": {
         "strategy": "Asia-range close and retest breakout",
         "tagline": "An H1 gold breakout of the 00:00-08:00 UTC range with a same-candle threshold retest.",
-        "description": "The source code defines a precise session breakout, not a generic Asia model. It measures the 00:00-08:00 UTC range, then accepts only an H1 candle that closes outside a buffered boundary while its wick also touches that breakout threshold.",
+        "description": "The source code measures the 00:00-08:00 UTC range and accepts only an H1 candle that closes outside a buffered boundary while its wick touches that threshold. The retained build then checks a no-lookahead D1 Markov regime before permitting the directional entry.",
         "session": "08:00-13:59 UTC / H1",
         "logic_audit": "Source-code verified",
         "logic_audit_note": "The strategy wrapper, shared execution engine and exact active preset were reviewed.",
@@ -247,18 +269,18 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Measure the Asian range", "detail": "M15 bars from 00:00 through 07:59 UTC define the current day's high, low and midpoint. Broker time is converted to UTC; the preset uses the EET/EEST tester clock model."},
             {"title": "Evaluate only the London transition", "detail": "Signals are checked on each new H1 bar from 08:00 through 13:59 UTC. The EA allows no new setup if it already has exposure or has opened a trade that UTC day."},
             {"title": "Require a buffered close and touch", "detail": "The buffer is 3% of the Asian range. A buy requires the closed H1 candle above range high plus buffer while that candle's low touched the threshold. A sell is the mirror condition below range low."},
-            {"title": "Enter at market with a midpoint stop", "detail": "The order is sent when the confirming H1 candle has closed. Both long and short stops are placed at the Asian range midpoint."},
-            {"title": "Target 3R", "detail": "Take profit is three times the distance from market entry to the midpoint stop. Lot size targets 1% of current account equity."},
-            {"title": "Trail only after a large move", "detail": "The source hard-codes trailing to start at +2R and then keep the stop 0.5R behind current price. These values override the generic 1.5R/1R fields visible elsewhere in the shared input panel."},
+            {"title": "Apply the completed-D1 Markov gate", "detail": "Before entry, the EA labels completed D1 returns over forty bars as Bull, Sideways or Bear and builds transition probabilities without counting the newest transition. Longs require Bull-minus-Bear probability above +0.05; shorts require it below -0.05."},
+            {"title": "Enter with a midpoint stop", "detail": "The order is sent at market after the H1 confirmation and regime direction both pass. Long and short stops use the Asian range midpoint, while volume targets 1% of current equity."},
+            {"title": "Target 3R and trail after +2R", "detail": "Take profit is three times the entry-to-midpoint risk. After price reaches +2R, the stop follows at a distance of 0.5R; these hard-coded trailing values override the generic shared inputs."},
         ],
-        "risk_note": "Dynamic 1% of current equity with one trade per UTC day. Actual loss can exceed the planned amount if price gaps through the midpoint stop.",
+        "risk_note": "Dynamic 1% of current equity with one trade per UTC day. The embedded D1 Markov gate uses a 40-bar return window, 5% state threshold and 0.05 direction gate. Actual loss can exceed plan if price gaps through the midpoint stop.",
         "price": 249,
         "accent": "violet",
     },
     "AAA Final DmC": {
         "strategy": "Previous-day body rejection",
         "tagline": "Trades H1 rejection candles at the real-body edges of the previous daily candle.",
-        "description": "The installed DmC source does not implement a multi-stage displacement/FVG model. It uses the open and close of the previous D1 candle as two reaction levels and enters when the last H1 candle probes one edge, closes back through it and finishes in the reversal direction.",
+        "description": "DmC uses the open and close of the previous D1 candle as reaction levels and enters when the last H1 candle probes one edge, closes back through it and finishes in the reversal direction. The retained build also requires the completed-D1 Markov transition signal to agree with that entry.",
         "session": "All sessions / H1",
         "logic_audit": "Source-code verified",
         "logic_audit_note": "The wrapper, shared strategy engine and exact XAUUSD preset were reviewed. The public explanation follows the implemented conditions rather than the strategy name.",
@@ -266,11 +288,11 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Map yesterday's real body", "detail": "The EA takes the higher and lower of the previous D1 open and close. Daily wicks are not used as the reaction levels."},
             {"title": "Look for a lower-body rejection", "detail": "A buy requires the previous closed H1 candle to trade at or below the lower body edge, close back above it and be bullish."},
             {"title": "Look for an upper-body rejection", "detail": "A sell requires the previous closed H1 candle to trade at or above the upper body edge, close back below it and be bearish."},
-            {"title": "Limit frequency", "detail": "Checks happen once per new H1 bar. The EA will not enter while it has an order or position and will not open more than one trade per UTC day."},
+            {"title": "Gate direction without lookahead", "detail": "The EA classifies completed D1 returns with a forty-bar window and 5% threshold, then calculates transition probabilities while excluding the newest transition. A buy needs signal above +0.05 and a sell below -0.05; checks still occur once per H1 bar and only once per UTC day."},
             {"title": "Use a fixed XAUUSD price-distance stop", "detail": "The active stop is 22.5 XAUUSD price units below a buy entry or above a sell entry. The take profit is 1.7 times that initial risk distance."},
             {"title": "Size from current equity", "detail": "Volume targets 1% of current equity through the broker's contract calculation. The generic trailing inputs are not called by this strategy, so the active DmC implementation does not trail."},
         ],
-        "risk_note": "Dynamic 1% of current equity with a 22.5-price-unit stop and 1.7R target. There is no spread cap or trailing logic in the active DmC code path.",
+        "risk_note": "Dynamic 1% of current equity with a 22.5-price-unit stop and 1.7R target. The embedded D1 Markov gate uses locked 40-bar / 5% / 0.05 inputs. There is no spread cap or trailing logic in this DmC path.",
         "price": 199,
         "accent": "rose",
     },
@@ -316,19 +338,19 @@ CORE_META: dict[str, dict[str, Any]] = {
     "AAA Final XAU Weakness": {
         "strategy": "Repeated-level continuation breakout",
         "tagline": "M15 pending breakouts from equal highs or lows after a strong directional impulse.",
-        "description": "Despite its name, the active code is not a general weakness oscillator or reversal model. It searches recent M15 bars for two similar highs or two similar lows and, after a qualifying prior impulse, places a stop order for continuation through that repeated level.",
+        "description": "The active code searches recent M15 bars for two similar highs or two similar lows and, after a qualifying prior impulse, prepares a continuation stop through that repeated level. The retained build permits the pending order only when its direction agrees with the no-lookahead D1 Markov regime.",
         "session": "No session filter / M15",
         "logic_audit": "Source-code verified",
         "logic_audit_note": "The wrapper, shared strategy engine and active XAUUSD M15 preset were reviewed.",
         "logic": [
             {"title": "Find a repeated M15 level", "detail": "The EA scans 36 bars for two highs or two lows separated by at least four candles. The two prices must be within 0.20 ATR(14). If both exist, the source checks the equal-high case first."},
             {"title": "Confirm the preceding impulse", "detail": "A repeated high is tradable only after an upward move of at least 2 ATR; a repeated low requires a downward move of at least 2 ATR. The impulse is measured from older bars around the first level."},
-            {"title": "Place a continuation stop", "detail": "For equal highs, a buy stop is placed 0.05 ATR above resistance. For equal lows, a sell stop is placed 0.05 ATR below support."},
+            {"title": "Gate and place the continuation stop", "detail": "A forty-bar completed-D1 Markov model must show Bull-minus-Bear probability above +0.05 for the equal-high buy or below -0.05 for the equal-low sell. The allowed pending stop is then placed 0.05 ATR beyond the repeated level."},
             {"title": "Anchor the stop to the intervening range", "detail": "The long stop goes below the lowest price in the pattern range by 0.05 ATR; the short stop goes above its highest price by the same buffer. Target is fixed at 2R."},
             {"title": "Expire stale orders", "detail": "The pending order expires after eight M15 bars, or two hours. No new setup is evaluated while that order or its resulting position remains active; same-magic cleanup removes any stray pending order after a fill."},
             {"title": "Size but do not trail", "detail": "Each setup targets 1% of current equity. The generic trailing input is visible but this strategy code path never calls the trailing function. There is no session or once-per-day filter."},
         ],
-        "risk_note": "Dynamic 1% of current equity per pending setup with a structure-based stop and 2R target. This preset has no spread cap and no trailing stop in its active code path.",
+        "risk_note": "Dynamic 1% of current equity per pending setup with a structure-based stop and 2R target. The embedded D1 Markov gate uses locked 40-bar / 5% / 0.05 inputs. This preset has no spread cap or trailing stop.",
         "price": 149,
         "accent": "red",
     },
@@ -518,6 +540,81 @@ def _one_year_evidence() -> dict[str, Evidence]:
             caution="One historical year is not a guarantee of future performance.",
         )
     return result
+
+
+def _filtered_markov_evidence() -> dict[str, Evidence]:
+    path = BOOKMAPER_ROOT / "artifacts" / "active-ea-regime-filter.json"
+    if not path.exists():
+        return {}
+    data = _load_json(path)
+    native_path = FILTERED_AUDIT_ROOT / "native-filter-validation.json"
+    native_rows = {
+        str(row["label"]): row for row in (_load_json(native_path) if native_path.exists() else [])
+    }
+    installer_aliases = {
+        "Asia Breakout": "AAA Final Asia Breakout",
+        "DmC": "AAA Final DmC",
+        "EMA3": "AAA Final EMA3",
+        "News Pulse": "AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s",
+        "XAU Weakness": "AAA Final XAU Weakness",
+    }
+    result: dict[str, Evidence] = {}
+    for row in data.get("by_ea", []):
+        baseline = row.get("baseline", {})
+        research_filtered = row.get("filtered", {})
+        return_pct = float(research_filtered.get("return_pct", 0.0))
+        pf = float(research_filtered.get("profit_factor", 0.0))
+        if (
+            return_pct <= float(baseline.get("return_pct", 0.0))
+            or pf <= float(baseline.get("profit_factor", 0.0))
+        ):
+            continue
+        native = native_rows.get(str(row["ea"]))
+        metrics = native or research_filtered
+        return_pct = float(metrics["return_pct"])
+        pf = float(metrics["profit_factor"])
+        label = installer_aliases.get(str(row["ea"]), str(row["ea"]))
+        dd = float(metrics.get("equity_dd_pct", metrics.get("max_equity_dd_pct", 0.0)))
+        trades = int(metrics["trades"])
+        result[label] = Evidence(
+            label="Native MT5 embedded-Markov validation" if native else "Embedded Markov-filter locked-year overlay",
+            period="2025-08-11 to 2026-08-21",
+            return_pct=return_pct,
+            profit_factor=pf,
+            drawdown_pct=dd,
+            win_rate_pct=float(metrics["win_rate_pct"]),
+            trades=trades,
+            history_quality=str(metrics.get("history_quality", "Underlying saved MT5 reports")),
+            source_note="Fresh Exness Every Tick test of the rebuilt EX5 with the completed-D1 Markov gate running inside the EA, including broker spread, commission, swap and random execution delay." if native else "Prior-D1 Markov direction veto applied before entry to saved net MT5 trade cash flows, including original commission and swap.",
+            chart_path=None,
+            status=_status_for(pf, return_pct, dd, trades),
+            caution="The filter is embedded in this EA and evaluates completed broker D1 bars before entry. One historical test is not a guarantee of future performance.",
+        )
+    return result
+
+
+def _xau_markov_evidence() -> Evidence | None:
+    path = BOOKMAPER_ROOT / "artifacts" / "standalone-results.json"
+    if not path.exists():
+        return None
+    row = _load_json(path).get("xau", {}).get("optimized")
+    if not row:
+        return None
+    metrics = row["metrics"]
+    return Evidence(
+        label="Locked one-year proxy validation",
+        period="2025-08-11 to 2026-08-21",
+        return_pct=float(metrics["return_pct"]),
+        profit_factor=float(metrics["profit_factor"]),
+        drawdown_pct=float(metrics["max_equity_dd_pct"]),
+        win_rate_pct=float(metrics["win_rate_pct"]),
+        trades=int(metrics["trades"]),
+        history_quality="Fresh Yahoo GC=F daily proxy",
+        source_note="Locked out-of-sample daily proxy test with 1% risk, a 4x ATR stop, 3R target, two-times notional cap and a conservative 5 bps round-trip cost assumption.",
+        chart_path=None,
+        status="Research evidence",
+        caution="Only ten trades occurred and GC=F is not Exness XAUUSD. Treat PF 5.50 as preliminary research, not a live-performance claim.",
+    )
 
 
 def _nasdaq_open_one_year_evidence() -> Evidence | None:
@@ -727,6 +824,8 @@ def _buy_url(label: str, price: int) -> str:
 @lru_cache(maxsize=1)
 def get_catalog() -> list[Product]:
     one_year = _one_year_evidence()
+    filtered = _filtered_markov_evidence()
+    xau_markov = _xau_markov_evidence()
     nasdaq_open = _nasdaq_open_one_year_evidence()
     us100_orb_rr05 = _us100_orb_one_year_evidence("0.5R")
     us100_orb_rr20 = _us100_orb_one_year_evidence("2R")
@@ -749,6 +848,10 @@ def get_catalog() -> list[Product]:
             evidence = btc_fvg
         elif item["label"] == "ETH Top Down FVG Liquidity":
             evidence = eth_fvg
+        if item["label"] in filtered:
+            evidence = filtered[item["label"]]
+        elif item["label"] == "XAU Markov Regime":
+            evidence = xau_markov
         one_year_result = evidence
         limitations = [
             "Historical returns are not guaranteed and live execution can differ.",
