@@ -162,8 +162,7 @@ foreach ($symbolCase in $symbols) {
     }
 }
 
-$python = 'C:\Users\hama101\Desktop\geek\ai trader\AAA EAs\EA store\.venv\Scripts\python.exe'
-if (-not (Test-Path -LiteralPath $python)) { $python = (Get-Command python.exe -ErrorAction Stop).Source }
+$python = (Get-Command python.exe -ErrorAction Stop).Source
 & $python (Join-Path $researchRoot 'Select-Winners.py') --reports $developmentOutput --output (Join-Path $outputRoot 'selected.json')
 if ($LASTEXITCODE -ne 0) { throw 'Winner selection failed.' }
 $selected = Get-Content -LiteralPath (Join-Path $outputRoot 'selected.json') -Raw | ConvertFrom-Json

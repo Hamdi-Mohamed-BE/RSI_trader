@@ -23,7 +23,7 @@ SOURCE_FILTERED = {
     "Nasdaq 5M Candle Momentum",
     "News Pulse",
 }
-VENDOR_UNCHANGED = {"ATR Candle Breakout", "Go Long"}
+VENDOR_UNCHANGED: set[str] = set()
 NATIVE_SAFE_LABEL = "Nasdaq 5M Candle Momentum"
 NATIVE_SAFE_REPORT = PACKAGE / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "Backtest Reports" / "982 Claim Recheck" / "Portfolio Window" / "portfolio-full-safe.htm"
 PARSER_PATH = PACKAGE / "BAT Portfolio Backtest 2026-08-09" / "Build-BAT-Portfolio-Report.py"
@@ -127,7 +127,7 @@ def main() -> None:
     safe = {
         "label": "Full Safe per-EA deployment",
         "period": "2025-08-11 to 2026-08-21",
-        "tested_eas": 15,
+        "tested_eas": 13,
         "individually_filtered_eas": len(SOURCE_FILTERED),
         "safe_by_design_eas": 1,
         "vendor_unchanged_eas": len(VENDOR_UNCHANGED),
@@ -145,13 +145,13 @@ def main() -> None:
         "wins": wins,
         "losses": losses,
         "series": series,
-        "caution": "ATR Candle Breakout and Go Long remain unchanged because only vendor EX5 binaries are available.",
+        "caution": "Every active non-standalone strategy in this mode uses its own embedded completed-D1 filter.",
     }
     standard = dict(current["combined"])
     standard["label"] = "Standard current selective configuration"
     standard["individually_filtered_eas"] = 3
     standard["safe_by_design_eas"] = 1
-    standard["vendor_unchanged_eas"] = 2
+    standard["vendor_unchanged_eas"] = 0
     output = {"standard": standard, "safe": safe}
     (ROOT / "deployment-mode-results.json").write_text(json.dumps(output, indent=2), encoding="utf-8")
     print(json.dumps({key: {k: v for k, v in value.items() if k != "series"} for key, value in output.items()}, indent=2))

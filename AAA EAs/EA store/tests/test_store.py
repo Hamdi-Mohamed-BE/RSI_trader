@@ -25,12 +25,12 @@ def test_catalogue_is_synchronized_with_active_installer() -> None:
     installer_items = parse_installer_items()
     products = get_catalog()
 
-    assert len(installer_items) == 15
+    assert len(installer_items) == 13
     assert len(products) == len(installer_items)
     assert [product.installer_label for product in products] == [item["label"] for item in installer_items]
     assert len({product.slug for product in products}) == len(products)
     assert all("aaa" not in product.label.lower() for product in products)
-    assert len(get_sellable_catalog()) == 15
+    assert len(get_sellable_catalog()) == 13
     assert len(get_development_catalog()) == 0
 
 
@@ -72,7 +72,7 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert all(len(product.logic) == 6 for product in products)
     assert all(step.title and len(step.detail) >= 80 for product in products for step in product.logic)
 
-    compiled_only = {"ATR Candle Breakout", "Go Long"}
+    compiled_only: set[str] = set()
     assert {product.label for product in products if product.logic_audit == "Input-audited binary"} == compiled_only
     assert all(
         product.logic_audit == "Source-code verified"
@@ -109,13 +109,13 @@ def test_detail_page_renders_code_based_logic_details() -> None:
 def test_api_and_evidence_chart() -> None:
     health = client.get("/api/health")
     assert health.status_code == 200
-    assert health.json()["active_entries"] == 15
-    assert health.json()["available_entries"] == 15
+    assert health.json()["active_entries"] == 13
+    assert health.json()["available_entries"] == 13
     assert health.json()["development_entries"] == 0
 
     payload = client.get("/api/eas")
     assert payload.status_code == 200
-    assert len(payload.json()) == 15
+    assert len(payload.json()) == 13
     assert all(not item["development"] for item in payload.json())
 
     product = next(item for item in get_catalog() if item.evidence and item.evidence.chart_path)
@@ -143,8 +143,8 @@ def test_portfolio_page_shows_one_year_only() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "One-year combined core audit" in response.text
-    assert "+416.93%" in response.text
-    assert "$51,693.32" in response.text
+    assert "+369.58%" in response.text
+    assert "$46,958.16" in response.text
     assert "PROFITABLE PERIOD" in response.text
     assert "five-year" not in response.text.lower()
     assert "2021-08-11" not in response.text
@@ -188,7 +188,7 @@ def test_home_ranks_all_available_eas_by_last_year_return() -> None:
     ranked = sorted(products, key=lambda product: product.one_year_return_pct or float("-inf"), reverse=True)
     response = client.get("/store")
     assert response.status_code == 200
-    assert response.text.count("Last-year return") == 15
+    assert response.text.count("Last-year return") == 13
     positions = [response.text.index(f">{product.label}</h3>") for product in ranked]
     assert positions == sorted(positions)
     assert "Auction Market research engine" not in response.text

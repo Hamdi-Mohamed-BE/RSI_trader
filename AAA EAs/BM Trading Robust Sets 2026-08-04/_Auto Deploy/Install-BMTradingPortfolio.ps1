@@ -37,15 +37,8 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 }
 
 function Get-PortfolioItems {
-    $atrSet = if ($IsAdaptiveAccount) {
-        'ATR Candle Breakout EA\RETEST PASSED 2026-08-07 - ATR Candle Breakout - XAUUSD H1 - 1pct.set'
-    } elseif ($IsSmallAccount) {
-        'ATR Candle Breakout EA\PORTFOLIO 900 - ATR Candle Breakout - XAUUSD H1 - 18 USD risk.set'
-    } else {
-        'ATR Candle Breakout EA\PORTFOLIO 100K FINAL - ATR Candle Breakout - XAUUSD H1 - 146 USD risk.set'
-    }
-    # User-selected portfolio plus News Pulse and the literal Nasdaq open
-    # EMA/ATR hold strategy. Risk defaults to 1% planned per EA trade.
+    # User-selected portfolio plus News Pulse and the locked Nasdaq candle
+    # momentum strategy. Risk defaults to 1% planned per EA trade.
     $items = @(
         [pscustomobject]@{
             Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -78,12 +71,6 @@ function Get-PortfolioItems {
             SetSource = 'US100 Fabio ORB Volatility Target Research 2026-08-26\Sets\LITERAL - USTEC M5 - ORB30 direct long RR1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
-            Label = 'ATR Candle Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
-            Period = 60; Expert = 'ATR Candle Breakout EA.ex5'
-            ExpertSource = 'ATR Candle Breakout EA\ATR Candle Breakout EA.ex5'
-            SetSource = $atrSet; SmallDynamicRisk = $false; PercentRisk = $false
-        },
-        [pscustomobject]@{
             Label = 'XAU Markov Regime'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 1440; Expert = 'XAU Markov Regime EA.ex5'
             ExpertSource = 'XAU Markov Regime EA\XAU Markov Regime EA.ex5'
@@ -100,12 +87,6 @@ function Get-PortfolioItems {
             Period = 60; Expert = 'AAA Final DmC EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final DmC EA\AAA Final DmC EA.ex5'
             SetSource = 'AAA Final EAs\AAA Final DmC EA\RETEST PASSED 2026-08-07 - DmC - XAUUSD H1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
-        },
-        [pscustomobject]@{
-            Label = 'Go Long'; Canonical = 'US30'; Aliases = @('US30', 'DJ30', 'WS30', 'DJI30', 'DOW30', 'DOWJONES')
-            Period = 1440; Expert = 'Go Long EA.ex5'
-            ExpertSource = 'Go Long EA\Go Long EA.ex5'
-            SetSource = 'Go Long EA\RETEST INCLUDED 2026-08-07 - Go Long - US30 D1 - 1pct.set'; SmallDynamicRisk = $true; PercentRisk = $false
         },
         [pscustomobject]@{
             Label = 'AAA Final EMA3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -152,7 +133,7 @@ function Get-PortfolioItems {
         if (-not $item.PSObject.Properties['OptionalSymbol']) {
             $item | Add-Member -NotePropertyName OptionalSymbol -NotePropertyValue $false
         }
-        $supportsSafeFilter = $item.Label -notin @('ATR Candle Breakout', 'Go Long', 'XAU Markov Regime')
+        $supportsSafeFilter = $item.Label -ne 'XAU Markov Regime'
         $item | Add-Member -NotePropertyName SupportsSafeFilter -NotePropertyValue $supportsSafeFilter
         $item | Add-Member -NotePropertyName SafeByDesign -NotePropertyValue ($item.Label -eq 'XAU Markov Regime')
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
@@ -525,23 +506,8 @@ foreach ($item in $portfolio) {
 if ($IsFullSafe) {
     $embeddedCount = @($portfolio | Where-Object { $_.SupportsSafeFilter }).Count
     Write-Host ("FULL SAFE: the completed-D1 Markov gate will be enabled independently inside {0} source-backed EA charts." -f $embeddedCount) -ForegroundColor Green
-    Write-Warning 'ATR Candle Breakout and Go Long are vendor EX5-only products. They remain present and use their normal inputs because their source code is unavailable; the installer cannot truthfully embed the gate into those binaries.'
 }
 
-function Get-IniValue([string]$Path, [string]$Section, [string]$Key) {
-    $insideSection = $false
-    foreach ($line in Get-Content -LiteralPath $Path) {
-        $trimmed = $line.Trim()
-        if ($trimmed -match '^\[(.+)\]$') {
-            $insideSection = $Matches[1] -ieq $Section
-            continue
-        }
-        if ($insideSection -and $trimmed -match ('^' + [regex]::Escape($Key) + '\s*=\s*(.*)$')) {
-            return [string]$Matches[1]
-        }
-    }
-    return $null
-}
 Write-Stage 'Finding MT5'
 $candidates = @(Get-Mt5Candidates)
 if ($ValidateOnly) {
@@ -583,23 +549,6 @@ if (-not $probe.ok) { Stop-WithMessage ([string]$probe.error) }
 $dataRoot = [IO.Path]::GetFullPath([string]$probe.terminal.data_path)
 if (-not (Test-Path -LiteralPath (Join-Path $dataRoot 'MQL5'))) {
     Stop-WithMessage "MT5 reported an invalid data folder: $dataRoot"
-}
-
-# ATR Candle Breakout and Go Long are vendor EX5 products. They remove
-# themselves during OnInit when the BM Trading licence server is not on MT5's
-# explicit WebRequest allow-list. MetaQuotes intentionally requires the user
-# to approve allowed URLs in the terminal UI, so do not pretend that copying
-# the EX5/chart alone is a successful attachment.
-$commonIni = Join-Path $dataRoot 'config\common.ini'
-if (-not (Test-Path -LiteralPath $commonIni)) { Stop-WithMessage "MT5 common settings were not found: $commonIni" }
-$usesBmTradingLicence = @($portfolio | Where-Object { $_.Label -in @('ATR Candle Breakout', 'Go Long') }).Count -gt 0
-if ($usesBmTradingLicence) {
-    $webRequestEnabled = (Get-IniValue $commonIni 'Experts' 'WebRequest') -eq '1'
-    $webRequestUrls = [string](Get-IniValue $commonIni 'Experts' 'WebRequestUrl')
-    $bmTradingAllowed = $webRequestUrls -match '(?i)(^|[;,\s])https?://(www\.)?bmtrading\.de([/;,\s]|$)'
-    if (-not $webRequestEnabled -or -not $bmTradingAllowed) {
-        Stop-WithMessage "ATR Candle Breakout and Go Long are in this BAT, but MT5 will remove both during licence startup until their trusted URL is approved. In this MT5 open Tools > Options > Expert Advisors, enable 'Allow WebRequest for listed URL', add https://bmtrading.de (and https://www.bmtrading.de if it redirects), click OK, then run the BAT again. MetaQuotes requires this approval in the MT5 UI and does not allow the installer to add it silently."
-    }
 }
 
 $login = [string]$probe.account.login
@@ -717,15 +666,14 @@ if ($PreflightOnly) {
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse and the locked Nasdaq 5M Candle Momentum replacement." -ForegroundColor Red
-$modeMessage = if ($IsFullSafe) { 'MODE: FULL SAFE — independent completed-D1 Markov gates enabled in every source-backed strategy; vendor ATR Candle Breakout and Go Long remain unchanged.' } else { 'MODE: STANDARD — current default/selective configuration.' }
+$modeMessage = if ($IsFullSafe) { 'MODE: FULL SAFE — independent completed-D1 Markov gates enabled in every eligible strategy.' } else { 'MODE: STANDARD — current default/selective configuration.' }
 Write-Host $modeMessage -ForegroundColor Red
 if ($IsAdaptiveAccount) {
 Write-Host ('AUTO BALANCE: adaptive EAs, including all ORBs, target {0:N2}% of the detected balance; LTA, News Pulse, and Nasdaq 5M Candle Momentum stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
-    Write-Host 'ATR fixed-money risk and percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
+    Write-Host 'Adaptive percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
-    Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red
-    Write-Host 'AAA Final EAs use their preset equity percentage (normally 1%; XAU Grid 0.5%).' -ForegroundColor Red
-    Write-Host 'The installer adds broker-specific hard stops to the two index EAs; gaps can still lose more.' -ForegroundColor Red
+    Write-Host 'SMALL ACCOUNT: eligible EAs use their configured percentage or installer-adjusted risk.' -ForegroundColor Red
+    Write-Host 'Gaps and execution slippage can still exceed planned risk.' -ForegroundColor Red
 }
 Write-Host 'It does not delete your existing profiles or close any open positions.' -ForegroundColor Yellow
 $modeToken = if ($IsFullSafe) { ' SAFE' } else { '' }

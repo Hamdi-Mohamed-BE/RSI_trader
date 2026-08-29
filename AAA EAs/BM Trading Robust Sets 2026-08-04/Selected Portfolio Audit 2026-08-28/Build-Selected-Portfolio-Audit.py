@@ -22,13 +22,11 @@ PERIOD = "2025-08-11 to 2026-08-21"
 # Keep an EA when either version returned at least +5%. Use the filter only when
 # both return and profit factor improved. This is the exact user-approved rule.
 VARIANTS = {
-    "ATR Candle Breakout": "base",
     "Asia Breakout": "filtered",
     "BTC Top Down FVG Liquidity": "base",
     "DmC": "filtered",
     "EMA3": "base",
     "ETH Top Down FVG Liquidity": "base",
-    "Go Long": "base",
     "LTA Volume Profile": "base",
     "Nasdaq 5M Candle Momentum": "base",
     "Nasdaq Overnight": "base",

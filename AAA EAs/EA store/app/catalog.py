@@ -920,7 +920,7 @@ def get_catalog() -> list[Product]:
         elif item["label"] == "XAU Markov Regime":
             evidence = xau_markov
         one_year_result = evidence
-        safe_supported = item["label"] not in {"ATR Candle Breakout", "Go Long"}
+        safe_supported = True
         safe_evidence = all_safe.get(item["label"]) if safe_supported else None
         if item["label"] in filtered:
             safe_evidence = filtered[item["label"]]
