@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "SafeRegimeFilter.mqh"
 
 enum ENUM_ORB_SESSION_ZONE
 {
@@ -567,6 +568,7 @@ bool SpreadOK()
 bool EnterTrade(const int direction,const MqlRates &signal)
 {
    if(!InpEnableTrading || g_traded_today || !SpreadOK()) return false;
+   if(!HAMA_SafeRegimeAllowsDirection(direction)) return false;
    ulong existing=0;
    if(SelectOurPosition(existing)) return false;
    MqlTick tick;

@@ -71,7 +71,9 @@ class Product(BaseModel):
     accent: str
     featured: bool = False
     development: bool = False
+    safe_filter_supported: bool = False
     evidence: Evidence | None = None
+    safe_evidence: Evidence | None = None
     one_year_evidence: Evidence | None = None
     one_year_return_pct: float | None = None
     one_year_note: str | None = None
@@ -411,22 +413,22 @@ CORE_META: dict[str, dict[str, Any]] = {
         "price": 149,
         "accent": "pink",
     },
-    "Nasdaq 5M Open EMA ATR": {
-        "strategy": "Literal US-open EMA/ATR hold",
-        "tagline": "Trade the first Nasdaq M5 close against EMA 12 and hold until the ATR stop or trail ends the position.",
-        "description": "This is the literal version of the one-candle US-open experiment. After the 09:30-09:35 New York M5 candle closes, it buys above EMA 12 or sells below EMA 12. It has no take profit and no session-close exit: a 3x ATR initial stop and 4x ATR ratcheting trail are the only exits.",
+    "Nasdaq 5M Candle Momentum": {
+        "strategy": "US-open five-minute momentum",
+        "tagline": "Let the completed 09:30 Nasdaq candle choose direction, then manage the trade with a delayed volatility trail.",
+        "description": "After the 09:30-09:35 New York M5 candle closes, this EA buys above EMA 12 or sells below EMA 12. It starts with a 4x ATR emergency stop, waits for +1R before activating a 6x ATR Chandelier-style trail, and closes any remaining position at 15:55 New York.",
         "session": "09:30 New York",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable MQ5 source and the exact literal-hold BAT preset were reviewed. ATR(14) is the volatility indicator; 3 and 4 are stop-distance multipliers, not ATR periods.",
+        "logic_audit_note": "Readable MQ5 source, the locked replacement preset and native Standard/Full Safe MT5 reports were reviewed. ATR(14) is the volatility indicator; 4 and 6 are distance multipliers.",
         "logic": [
             {"title": "Wait for the opening candle to finish", "detail": "The signal is evaluated only when the closed M5 candle is timestamped 09:30 New York, meaning entry occurs just after the 09:30-09:35 bar has completed. Weekends are rejected and New York DST is calculated automatically."},
             {"title": "Make one EMA decision", "detail": "Close above the 12-period M5 EMA triggers a long; close below it triggers a short. Equality produces no trade. Both directions are active and only one entry is allowed per New York date."},
-            {"title": "Set a 3x ATR emergency stop", "detail": "The initial stop is three times M5 ATR(14) from entry, widened only when required by the broker's minimum stop or freeze distance. No fixed take profit is placed."},
-            {"title": "Begin the 4x ATR trail immediately", "detail": "TrailStartR is zero. The EA tracks the most favorable M5 high or low since entry and proposes a stop four times the current M5 ATR(14) behind that extreme."},
-            {"title": "Only ratchet the stop", "detail": "A trailing update is accepted only if it improves the existing stop and remains outside the broker freeze/stops distance. The trail never loosens."},
-            {"title": "Hold until volatility exits the trade", "detail": "Session closing is disabled, so a surviving position may continue overnight or across a weekend until its hard stop or improving ATR trail closes it. Only one entry is permitted per New York date and live risk is 1% of current equity."},
+            {"title": "Set a 4x ATR emergency stop", "detail": "The initial stop is four times M5 ATR(14) from entry, widened only when required by the broker's minimum stop or freeze distance. Volume targets 1% of current equity and no fixed take profit is placed."},
+            {"title": "Wait for one full unit of profit", "detail": "The EA stores the original entry-to-stop distance as 1R. It does not trail until favorable movement reaches at least +1R, which avoids tightening the stop immediately after entry."},
+            {"title": "Ratchet a 6x ATR Chandelier trail", "detail": "After +1R, the EA tracks the most favorable M5 high or low since entry and proposes a stop six times current M5 ATR(14) behind that extreme. A change is accepted only when it tightens the existing stop and respects broker distance limits."},
+            {"title": "Finish the position by 15:55", "detail": "The position exits through the original stop, the improving volatility trail, or a forced close at 15:55 New York. Only one entry is permitted per New York date and New York daylight-saving changes are handled automatically."},
         ],
-        "risk_note": "Dynamic 1% of current equity to a 3x ATR(14) initial stop. There is no take profit or time exit; overnight and weekend gaps can exceed the intended risk, and the public one-year maximum equity drawdown was 20.91%.",
+        "risk_note": "Dynamic 1% of current equity to a 4x ATR(14) initial stop. There is no take profit. The +1R activation, 6x ATR trail and 15:55 New York forced close bound the intended session lifecycle, but gaps and slippage can still exceed planned risk.",
         "price": 499,
         "accent": "cyan",
         "featured": True,
@@ -593,6 +595,44 @@ def _filtered_markov_evidence() -> dict[str, Evidence]:
     return result
 
 
+def _all_markov_safe_evidence() -> dict[str, Evidence]:
+    path = BOOKMAPER_ROOT / "artifacts" / "active-ea-regime-filter.json"
+    if not path.exists():
+        return {}
+    aliases = {
+        "Asia Breakout": "AAA Final Asia Breakout",
+        "DmC": "AAA Final DmC",
+        "EMA3": "AAA Final EMA3",
+        "News Pulse": "AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s",
+        "XAU Weakness": "AAA Final XAU Weakness",
+    }
+    result: dict[str, Evidence] = {}
+    for row in _load_json(path).get("by_ea", []):
+        metrics = row.get("filtered", {})
+        if not metrics:
+            continue
+        label = aliases.get(str(row["ea"]), str(row["ea"]))
+        ret = float(metrics["return_pct"])
+        pf = float(metrics["profit_factor"])
+        dd = float(metrics.get("max_equity_dd_pct", 0.0))
+        trades = int(metrics["trades"])
+        result[label] = Evidence(
+            label="Full Safe completed-D1 regime overlay",
+            period="2025-08-11 to 2026-08-21",
+            return_pct=ret,
+            profit_factor=pf,
+            drawdown_pct=dd,
+            win_rate_pct=float(metrics["win_rate_pct"]),
+            trades=trades,
+            history_quality="Original net MT5 trades with no-lookahead entry veto",
+            source_note="The EA keeps its original setup and costs, but independently rejects entries whose direction disagrees with its own completed-D1 40-bar Markov forecast.",
+            chart_path=None,
+            status=_status_for(pf, ret, dd, trades),
+            caution="This is a historical per-trade veto overlay. The Full Safe EX5 should be forward-tested on the target broker before live use.",
+        )
+    return result
+
+
 def _xau_markov_evidence() -> Evidence | None:
     path = BOOKMAPER_ROOT / "artifacts" / "standalone-results.json"
     if not path.exists():
@@ -618,11 +658,11 @@ def _xau_markov_evidence() -> Evidence | None:
 
 
 def _nasdaq_open_one_year_evidence() -> Evidence | None:
-    path = PACKAGE_ROOT / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "literal-hold-results.json"
+    path = PACKAGE_ROOT / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "claim-982-final-results.json"
     if not path.exists():
         return None
     rows = _load_json(path)
-    row = next((item for item in rows if item.get("case") == "literal-hold-website-one-year"), None)
+    row = next((item for item in rows if item.get("case") == "last-year-2025-2026"), None)
     if row is None:
         return None
     profit_factor = float(row["profit_factor"])
@@ -632,17 +672,42 @@ def _nasdaq_open_one_year_evidence() -> Evidence | None:
     chart = Path(str(row["graph"]))
     return Evidence(
         label="Latest complete one-year MT5 backtest",
-        period="2025-08-11 to 2026-08-10",
+        period="2025-08-28 to 2026-08-27",
         return_pct=return_pct,
         profit_factor=profit_factor,
         drawdown_pct=drawdown,
         win_rate_pct=float(row["win_rate"]),
         trades=trades,
         history_quality=f"{row.get('history_quality_pct', 100):.0f}%",
-        source_note="Exness USTEC, synchronized Every Tick MT5 test with commission, swap and random execution delay using the literal EMA12 / ATR3 / Trail4 hold preset.",
+        source_note="Exness USTEC, synchronized Every Tick MT5 test with commission, swap and random execution delay using the locked EMA12 / ATR4 / +1R activation / Trail6 / 15:55 close preset.",
         chart_path=chart if chart.exists() else None,
         status=_status_for(profit_factor, return_pct, drawdown, trades),
         caution="One historical year is not a guarantee of future performance.",
+    )
+
+
+def _nasdaq_open_safe_evidence() -> Evidence | None:
+    path = PACKAGE_ROOT / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "claim-982-safe-results.json"
+    if not path.exists():
+        return None
+    rows = _load_json(path)
+    row = next((item for item in rows if item.get("case") == "last-year-full-safe"), None)
+    if row is None:
+        return None
+    chart = Path(str(row["graph"]))
+    return Evidence(
+        label="Native MT5 Full Safe validation",
+        period="2025-08-28 to 2026-08-27",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["equity_dd_pct"]),
+        win_rate_pct=float(row["win_rate"]),
+        trades=int(row["trades"]),
+        history_quality=f"{row.get('history_quality_pct', 100):.0f}%",
+        source_note="The same Exness USTEC Every Tick test with the completed-D1 40-bar Markov direction gate enabled inside this EA. Spread, commission, swap and random execution delay remain included.",
+        chart_path=chart if chart.exists() else None,
+        status=_status_for(float(row["profit_factor"]), float(row["return_pct"]), float(row["equity_dd_pct"]), int(row["trades"])),
+        caution="Full Safe reduced last-year drawdown and improved PF, but accepted only 40 of 256 trades and reduced return materially. Forward-test both modes before choosing one.",
     )
 
 
@@ -825,8 +890,10 @@ def _buy_url(label: str, price: int) -> str:
 def get_catalog() -> list[Product]:
     one_year = _one_year_evidence()
     filtered = _filtered_markov_evidence()
+    all_safe = _all_markov_safe_evidence()
     xau_markov = _xau_markov_evidence()
     nasdaq_open = _nasdaq_open_one_year_evidence()
+    nasdaq_open_safe = _nasdaq_open_safe_evidence()
     us100_orb_rr05 = _us100_orb_one_year_evidence("0.5R")
     us100_orb_rr20 = _us100_orb_one_year_evidence("2R")
     fabio_orb = _fabio_orb_one_year_evidence()
@@ -836,7 +903,7 @@ def get_catalog() -> list[Product]:
     for item in parse_installer_items():
         meta = _meta_for(item)
         evidence = one_year.get(item["label"])
-        if item["label"] == "Nasdaq 5M Open EMA ATR":
+        if item["label"] == "Nasdaq 5M Candle Momentum":
             evidence = nasdaq_open
         elif item["label"] == "US100 ORB 0.5R":
             evidence = us100_orb_rr05
@@ -853,6 +920,14 @@ def get_catalog() -> list[Product]:
         elif item["label"] == "XAU Markov Regime":
             evidence = xau_markov
         one_year_result = evidence
+        safe_supported = item["label"] not in {"ATR Candle Breakout", "Go Long"}
+        safe_evidence = all_safe.get(item["label"]) if safe_supported else None
+        if item["label"] in filtered:
+            safe_evidence = filtered[item["label"]]
+        elif item["label"] == "Nasdaq 5M Candle Momentum":
+            safe_evidence = nasdaq_open_safe
+        elif item["label"] == "XAU Markov Regime":
+            safe_evidence = xau_markov
         limitations = [
             "Historical returns are not guaranteed and live execution can differ.",
             "Broker symbol names, spread, slippage and contract size affect results.",
@@ -861,6 +936,8 @@ def get_catalog() -> list[Product]:
             limitations.append("This BAT entry is optional and only installs when the broker exposes a compatible symbol.")
         if evidence and evidence.caution:
             limitations.append(evidence.caution)
+        if not safe_supported:
+            limitations.append("This vendor EX5 has no readable source, so Full Safe cannot be embedded; it remains on its standard inputs in both installers.")
         price = int(meta["price"])
         display_label = (
             "News Pulse"
@@ -895,7 +972,9 @@ def get_catalog() -> list[Product]:
                 accent=meta["accent"],
                 featured=bool(meta.get("featured", False)),
                 development=development,
+                safe_filter_supported=safe_supported,
                 evidence=evidence,
+                safe_evidence=safe_evidence,
                 one_year_evidence=one_year_result,
                 one_year_return_pct=one_year_result.return_pct if one_year_result else None,
                 one_year_note=None,

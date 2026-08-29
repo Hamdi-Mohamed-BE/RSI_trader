@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "SafeRegimeFilter.mqh"
 
 input group "New York opening range"
 input int             InpCashOpenHour=9;
@@ -223,6 +224,7 @@ bool SpreadOK(const double risk)
 bool EnterTrade(const int direction)
 {
    if(g_traded_today) return false;
+   if(!HAMA_SafeRegimeAllowsDirection(direction)) return false;
    ulong existing=0;
    if(SelectOurPosition(existing)) return false;
    MqlTick tick;

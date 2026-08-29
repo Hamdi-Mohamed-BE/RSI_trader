@@ -3,6 +3,7 @@
 #property strict
 
 #include "AAA_Final_Common.mqh"
+#include "SafeRegimeFilter.mqh"
 
 input group "Trading"
 input bool   InpEnableTrading=true;
@@ -392,11 +393,18 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
    double side_risk=InpRiskPercent;
    double buy_lots=0.0;
    double sell_lots=0.0;
-   if(InpEnableBuySide)
+   bool allow_buy=InpEnableBuySide && HAMA_SafeRegimeAllowsDirection(1);
+   bool allow_sell=InpEnableSellSide && HAMA_SafeRegimeAllowsDirection(-1);
+   if(allow_buy)
       buy_lots=AAA_LotsForRisk(_Symbol,ORDER_TYPE_BUY,buy_entry,buy_sl,side_risk);
-   if(InpEnableSellSide)
+   if(allow_sell)
       sell_lots=AAA_LotsForRisk(_Symbol,ORDER_TYPE_SELL,sell_entry,sell_sl,side_risk);
-   if((InpEnableBuySide && buy_lots<=0.0) || (InpEnableSellSide && sell_lots<=0.0))
+   if(!allow_buy && !allow_sell)
+   {
+      Print("News Pulse: both order directions were vetoed by this EA's completed-D1 Safe Mode gate.");
+      return false;
+   }
+   if((allow_buy && buy_lots<=0.0) || (allow_sell && sell_lots<=0.0))
    {
       Print("News Pulse: broker contract data or minimum lot prevents risk-based sizing.");
       return false;
@@ -409,13 +417,13 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
    AAA_Trade.SetDeviationInPoints(InpMaxDeviationPoints);
    bool buy_ok=false;
    bool sell_ok=false;
-   if(InpEnableBuySide)
+   if(allow_buy)
    {
       buy_ok=AAA_Trade.BuyStop(buy_lots,buy_entry,_Symbol,buy_sl,0.0,ORDER_TIME_SPECIFIED,expiry,prefix+"B");
       if(!buy_ok)
          Print("News Pulse: buy-stop placement failed: ",AAA_Trade.ResultRetcodeDescription());
    }
-   if(InpEnableSellSide)
+   if(allow_sell)
    {
       sell_ok=AAA_Trade.SellStop(sell_lots,sell_entry,_Symbol,sell_sl,0.0,ORDER_TIME_SPECIFIED,expiry,prefix+"S");
       if(!sell_ok)
@@ -425,17 +433,17 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
 
    g_active_event_time=event_time;
    g_last_event_id=event_id;
-   g_event_buy_entry=InpEnableBuySide ? buy_entry : 0.0;
-   g_event_sell_entry=InpEnableSellSide ? sell_entry : 0.0;
+   g_event_buy_entry=allow_buy ? buy_entry : 0.0;
+   g_event_sell_entry=allow_sell ? sell_entry : 0.0;
    g_event_max_ask=tick.ask;
    g_event_min_bid=tick.bid;
    NP_SaveState();
-   string side_mode=InpEnableBuySide && InpEnableSellSide ? "two-sided" :
-                    (InpEnableBuySide ? "long-only" : "short-only");
-   double enabled_sides=(InpEnableBuySide ? 1.0 : 0.0)+(InpEnableSellSide ? 1.0 : 0.0);
+   string side_mode=allow_buy && allow_sell ? "two-sided" :
+                    (allow_buy ? "long-only" : "short-only");
+   double enabled_sides=(allow_buy ? 1.0 : 0.0)+(allow_sell ? 1.0 : 0.0);
    Print("News Pulse: ",kind," ",side_mode," orders placed. Buy ",
-         (InpEnableBuySide ? DoubleToString(buy_entry,_Digits) : "disabled"),
-         ", sell ",(InpEnableSellSide ? DoubleToString(sell_entry,_Digits) : "disabled"),
+         (allow_buy ? DoubleToString(buy_entry,_Digits) : "disabled"),
+         ", sell ",(allow_sell ? DoubleToString(sell_entry,_Digits) : "disabled"),
          ", SL distance $",DoubleToString(InpStopLossPrice,2),
          ", risk per triggered trade ",DoubleToString(InpRiskPercent,2),
          "%; up to ",DoubleToString(InpRiskPercent*enabled_sides,2),"% planned event risk. Server placement=",

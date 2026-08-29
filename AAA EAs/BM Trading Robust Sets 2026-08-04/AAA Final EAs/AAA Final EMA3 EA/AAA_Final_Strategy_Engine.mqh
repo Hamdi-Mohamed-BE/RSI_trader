@@ -2,6 +2,7 @@
 #define AAA_FINAL_STRATEGY_ENGINE_MQH
 
 #include "AAA_Final_Common.mqh"
+#include "SafeRegimeFilter.mqh"
 
 #define AAA_ID_EMA3             1
 #define AAA_ID_ASIA             2
@@ -77,9 +78,9 @@ void AAA_RunEMA3()
    if(trend==EMPTY_VALUE || trend_old==EMPTY_VALUE) return;
    double prior_high=-DBL_MAX,prior_low=DBL_MAX;
    for(int i=2;i<2+InpPivotBars;i++) { prior_high=MathMax(prior_high,r[i].high); prior_low=MathMin(prior_low,r[i].low); }
-   if(r[1].close>prior_high && r[1].close>trend && fast>medium && trend>trend_old)
+   if(r[1].close>prior_high && r[1].close>trend && fast>medium && trend>trend_old && HAMA_SafeRegimeAllowsDirection(1))
       AAA_SendMarket(_Symbol,1,prior_low,InpRewardRisk,InpRiskPercent,InpMagic,"AAA EMA3");
-   else if(r[1].close<prior_low && r[1].close<trend && fast<medium && trend<trend_old)
+   else if(r[1].close<prior_low && r[1].close<trend && fast<medium && trend<trend_old && HAMA_SafeRegimeAllowsDirection(-1))
       AAA_SendMarket(_Symbol,-1,prior_high,InpRewardRisk,InpRiskPercent,InpMagic,"AAA EMA3");
 }
 

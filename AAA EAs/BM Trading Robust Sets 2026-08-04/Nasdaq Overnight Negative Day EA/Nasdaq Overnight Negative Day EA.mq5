@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "SafeRegimeFilter.mqh"
 
 enum ENUM_NEGATIVE_DAY_DEFINITION
 {
@@ -250,6 +251,7 @@ bool CloseDuePosition(const MqlDateTime &now_ny)
 void TryEntry(const MqlDateTime &now_ny)
 {
    if(!InpEnableTrading || !SpreadOK()) return;
+   if(!HAMA_SafeRegimeAllowsDirection(1)) return;
    if(now_ny.day_of_week<1 || now_ny.day_of_week>5) return;
    if(now_ny.day_of_week==5 && !InpAllowFridayEntry) return;
    int minute_of_day=now_ny.hour*60+now_ny.min;

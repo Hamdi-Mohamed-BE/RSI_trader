@@ -13,6 +13,8 @@ from .catalog import BOOKMAPER_ROOT, FILTERED_AUDIT_ROOT, PACKAGE_ROOT, Product
 ACTIVE_AUDIT_ROOT = PACKAGE_ROOT / "Active BAT Backtest 2026-08-12"
 ACTIVE_REPORTS_ROOT = ACTIVE_AUDIT_ROOT / "MT5 Reports"
 ACTIVE_RESULTS_PATH = ACTIVE_AUDIT_ROOT / "portfolio-results.json"
+DEPLOYMENT_MODES_PATH = FILTERED_AUDIT_ROOT / "deployment-mode-results.json"
+REGIME_FILTER_PATH = BOOKMAPER_ROOT / "artifacts" / "active-ea-regime-filter.json"
 
 CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
     "US100 ORB 0.5R": (
@@ -27,11 +29,20 @@ CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
         / "native-v3-time-direction-results.json",
         "one-year-2025-2026",
     ),
-    "Nasdaq 5M Open EMA ATR": (
+    "Nasdaq 5M Candle Momentum": (
         PACKAGE_ROOT
         / "Nasdaq 5M Open EMA ATR Research 2026-08-20"
-        / "literal-hold-results.json",
-        "literal-hold-website-one-year",
+        / "claim-982-final-results.json",
+        "last-year-2025-2026",
+    ),
+}
+
+SAFE_CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
+    "Nasdaq 5M Candle Momentum": (
+        PACKAGE_ROOT
+        / "Nasdaq 5M Open EMA ATR Research 2026-08-20"
+        / "claim-982-safe-results.json",
+        "last-year-full-safe",
     ),
 }
 
@@ -165,7 +176,46 @@ def _custom_series(label: str) -> tuple[dict[str, Any], ...]:
     return tuple(_normalise_json_series(selected.get("series", [])))
 
 
-def product_equity_series(product: Product) -> list[dict[str, Any]]:
+def _safe_overlay_series(product: Product) -> list[dict[str, Any]]:
+    if not product.safe_filter_supported:
+        return []
+    safe_custom = SAFE_CUSTOM_SERIES.get(product.label)
+    if safe_custom is not None:
+        path, case_name = safe_custom
+        if path.is_file():
+            rows = _load_json(path)
+            selected = next((row for row in rows if row.get("case") == case_name), None)
+            if selected is not None:
+                return _normalise_json_series(selected.get("series", []))
+    if not REGIME_FILTER_PATH.is_file():
+        return []
+    if product.label in {"Asia Breakout", "DmC", "XAU Weakness", "XAU Markov Regime"}:
+        return product_equity_series(product, "standard")
+    aliases = {
+        "News Pulse": "News Pulse",
+    }
+    wanted = aliases.get(product.label, product.label)
+    data = _load_json(REGIME_FILTER_PATH)
+    events = [
+        row for row in data.get("decisions", [])
+        if row.get("bot") == wanted and row.get("accepted")
+    ]
+    events.sort(key=lambda row: (str(row.get("close_time")), str(row.get("open_time"))))
+    if not events:
+        return []
+    balance = 10_000.0
+    series = [{"time": "2025-08-11T00:00:00", "balance": balance}]
+    for event in events:
+        balance += float(event.get("base_net", 0.0))
+        series.append({"time": str(event["close_time"]), "balance": round(balance, 2)})
+    return _sample(series)
+
+
+def product_equity_series(product: Product, mode: str = "standard") -> list[dict[str, Any]]:
+    if mode == "safe":
+        safe = _safe_overlay_series(product)
+        if safe:
+            return safe
     if product.label == "XAU Markov Regime":
         path = BOOKMAPER_ROOT / "artifacts" / "standalone-results.json"
         if path.is_file():
@@ -195,8 +245,12 @@ def product_equity_series(product: Product) -> list[dict[str, Any]]:
     return [dict(point) for point in parse_mt5_balance_series(report)]
 
 
-@lru_cache(maxsize=1)
-def portfolio_equity_series() -> tuple[dict[str, Any], ...]:
+@lru_cache(maxsize=2)
+def portfolio_equity_series(mode: str = "standard") -> tuple[dict[str, Any], ...]:
+    if DEPLOYMENT_MODES_PATH.is_file():
+        data = _load_json(DEPLOYMENT_MODES_PATH)
+        selected = data.get(mode, data.get("standard", {}))
+        return tuple(_sample(selected.get("series", [])))
     filtered_path = FILTERED_AUDIT_ROOT / "portfolio-results.json"
     if filtered_path.is_file():
         data = _load_json(filtered_path)

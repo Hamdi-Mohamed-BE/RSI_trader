@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "SafeRegimeFilter.mqh"
 
 input group "US open signal"
 input ENUM_TIMEFRAMES InpSignalTimeframe=PERIOD_M5;
@@ -207,6 +208,7 @@ bool CurrentSpreadPasses(const double atr)
 
 bool SendEntry(const int direction,const double atr)
 {
+   if(!HAMA_SafeRegimeAllowsDirection(direction)) return false;
    MqlTick tick;
    if(!SymbolInfoTick(_Symbol,tick)) return false;
    double entry=(direction>0 ? tick.ask : tick.bid);

@@ -1,12 +1,12 @@
 ﻿# Selected active BAT — final one-year audit
 
 - Active EAs: **15**
-- Initial / final: **$10,000.00 / $49,039.57**
-- Net return: **+390.40%**
-- Profit factor: **1.43**
-- Win rate: **43.00%**
-- Realized balance DD: **24.07%**
-- Trades: **1756**
+- Initial / final: **$10,000.00 / $51,693.32**
+- Net return: **+416.93%**
+- Profit factor: **1.44**
+- Win rate: **44.61%**
+- Realized balance DD: **21.50%**
+- Trades: **1764**
 
 The combined result is a chronological cash-flow overlay, not a simultaneous multi-EA MT5 test. It includes saved net MT5 trade cash flows for the existing EAs. The standalone XAU Markov row is a GC=F daily proxy and is labelled separately.
 
@@ -15,6 +15,7 @@ The combined result is a chronological cash-flow overlay, not a simultaneous mul
 | LTA Volume Profile | XAUUSD | base | +86.65% | 1.39 | 32.38% | 11.79% | 244 |
 | DmC | XAUUSD | filtered-native | +67.37% | 1.70 | 50.62% | 8.63% | 160 |
 | News Pulse | XAUUSD | base | +62.51% | 45.72 | 84.21% | 1.02% | 19 |
+| Nasdaq 5M Candle Momentum | USTEC | base-native | +32.15% | 1.18 | 40.75% | 11.84% | 265 |
 | Asia Breakout | XAUUSD | filtered-native | +31.96% | 1.75 | 44.12% | 5.88% | 68 |
 | ATR Candle Breakout | XAUUSD | base | +30.39% | 1.39 | 26.05% | 8.56% | 119 |
 | Go Long | US30 | base | +16.96% | 1.20 | 50.64% | 7.74% | 312 |
@@ -26,4 +27,3 @@ The combined result is a chronological cash-flow overlay, not a simultaneous mul
 | US100 Fabio ORB 1R | USTEC | base | +9.08% | 1.20 | 59.01% | 7.72% | 161 |
 | Nasdaq Overnight | USTEC | base | +7.76% | 1.81 | 58.33% | 1.78% | 72 |
 | XAU Markov Regime | XAUUSD | standalone | +6.00% | 5.50 | 70.00% | 1.85% | 10 |
-| Nasdaq 5M Open EMA ATR | USTEC | base | +5.61% | 1.04 | 29.57% | 19.08% | 257 |

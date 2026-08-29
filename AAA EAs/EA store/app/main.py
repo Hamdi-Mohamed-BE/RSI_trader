@@ -77,13 +77,14 @@ def _base_context(request: Request, active: str) -> dict[str, Any]:
     }
 
 
-def _portfolio_audit() -> dict[str, Any]:
-    path = FILTERED_AUDIT_ROOT / "portfolio-results.json"
+def _portfolio_audit(mode: str = "standard") -> dict[str, Any]:
+    modes_path = FILTERED_AUDIT_ROOT / "deployment-mode-results.json"
+    path = modes_path if modes_path.exists() else FILTERED_AUDIT_ROOT / "portfolio-results.json"
     chart = FILTERED_AUDIT_ROOT / "selected-portfolio-equity.png"
     if not path.exists():
         return {"available": False, "chart": None}
     data = json.loads(path.read_text(encoding="utf-8-sig"))
-    combined = data["combined"]
+    combined = data.get(mode, data.get("combined", {}))
     return {
         "available": True,
         "tested_eas": int(combined["tested_eas"]),
@@ -97,6 +98,12 @@ def _portfolio_audit() -> dict[str, Any]:
         "realized_balance_dd_pct": float(combined["realized_balance_dd_pct"]),
         "verdict": "PROFITABLE ONE-YEAR OVERLAY",
         "period": str(combined.get("period", "2025-08-11 to 2026-08-21")),
+        "mode": mode,
+        "label": str(combined.get("label", "Standard current selective configuration")),
+        "individually_filtered_eas": int(combined.get("individually_filtered_eas", 3)),
+        "safe_by_design_eas": int(combined.get("safe_by_design_eas", 1)),
+        "vendor_unchanged_eas": int(combined.get("vendor_unchanged_eas", 2)),
+        "caution": combined.get("caution"),
         "chart": chart if chart.exists() else None,
     }
 
@@ -157,19 +164,34 @@ async def catalogue(
 
 
 @app.get("/eas/{slug}", response_class=HTMLResponse)
-async def product_detail(request: Request, slug: str) -> HTMLResponse:
+async def product_detail(
+    request: Request,
+    slug: str,
+    mode: str = Query(default="standard", pattern=r"^(standard|safe)$"),
+) -> HTMLResponse:
     product = get_product(slug)
     if product is None:
         raise HTTPException(status_code=404, detail="EA not found")
     related = [
         item for item in get_sellable_catalog() if item.slug != product.slug and item.asset_group == product.asset_group
     ][:3]
-    context = _base_context(request, "catalogue") | {"product": product, "related": related}
+    if mode == "safe" and not product.safe_filter_supported:
+        mode = "standard"
+    display_evidence = product.safe_evidence if mode == "safe" else product.evidence
+    context = _base_context(request, "catalogue") | {
+        "product": product,
+        "related": related,
+        "selected_mode": mode,
+        "display_evidence": display_evidence,
+    }
     return templates.TemplateResponse(request=request, name="detail.html", context=context)
 
 
 @app.get("/portfolio", response_class=HTMLResponse)
-async def portfolio(request: Request) -> HTMLResponse:
+async def portfolio(
+    request: Request,
+    mode: str = Query(default="standard", pattern=r"^(standard|safe)$"),
+) -> HTMLResponse:
     products = get_sellable_catalog()
     groups: dict[str, list[Product]] = {}
     for product in products:
@@ -177,7 +199,10 @@ async def portfolio(request: Request) -> HTMLResponse:
     context = _base_context(request, "portfolio") | {
         "products": products,
         "groups": groups,
-        "portfolio": _portfolio_audit(),
+        "portfolio": _portfolio_audit(mode),
+        "standard_portfolio": _portfolio_audit("standard"),
+        "safe_portfolio": _portfolio_audit("safe"),
+        "selected_mode": mode,
         "full_price": sum(product.price for product in products),
         "package_price": 1990,
         "package_url": package_buy_url("Complete Available EA Portfolio", 1990),
@@ -250,20 +275,34 @@ async def evidence_chart(slug: str) -> FileResponse:
 
 
 @app.get("/api/evidence/{slug}/series", name="evidence_series")
-async def evidence_series(slug: str) -> JSONResponse:
+async def evidence_series(
+    slug: str,
+    mode: str = Query(default="standard", pattern=r"^(standard|safe|compare)$"),
+) -> JSONResponse:
     product = get_product(slug)
     if product is None or product.evidence is None:
         raise HTTPException(status_code=404, detail="Evidence series not found")
-    series = product_equity_series(product)
+    if mode == "safe" and not product.safe_filter_supported:
+        raise HTTPException(status_code=409, detail="This vendor binary does not support embedded Safe mode")
+    selected_mode = "standard" if mode == "compare" else mode
+    series = product_equity_series(product, selected_mode)
     if len(series) < 2:
         raise HTTPException(status_code=404, detail="Evidence series not found")
+    payload: dict[str, Any] = {
+        "label": product.label,
+        "period": product.evidence.period,
+        "currency": "USD",
+        "series": series,
+    }
+    if mode == "compare" and product.safe_filter_supported:
+        safe = product_equity_series(product, "safe")
+        if len(safe) >= 2:
+            payload["datasets"] = [
+                {"label": "Standard", "color": "#7ef7c7", "series": series},
+                {"label": "Full Safe", "color": "#68a7ff", "series": safe},
+            ]
     return JSONResponse(
-        {
-            "label": product.label,
-            "period": product.evidence.period,
-            "currency": "USD",
-            "series": series,
-        },
+        payload,
         headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
     )
 
@@ -283,17 +322,26 @@ async def portfolio_chart() -> FileResponse:
 
 
 @app.get("/api/portfolio/equity-series", name="portfolio_equity_series")
-async def api_portfolio_equity_series() -> JSONResponse:
-    series = [dict(point) for point in portfolio_equity_series()]
+async def api_portfolio_equity_series(
+    mode: str = Query(default="compare", pattern=r"^(standard|safe|compare)$"),
+) -> JSONResponse:
+    selected_mode = "standard" if mode == "compare" else mode
+    series = [dict(point) for point in portfolio_equity_series(selected_mode)]
     if len(series) < 2:
         raise HTTPException(status_code=404, detail="Portfolio equity series not found")
+    payload: dict[str, Any] = {
+        "label": "Active BAT portfolio",
+        "period": _portfolio_audit(selected_mode).get("period"),
+        "currency": "USD",
+        "series": series,
+    }
+    if mode == "compare":
+        payload["datasets"] = [
+            {"label": "Standard", "color": "#7ef7c7", "series": [dict(point) for point in portfolio_equity_series("standard")]},
+            {"label": "Full Safe", "color": "#68a7ff", "series": [dict(point) for point in portfolio_equity_series("safe")]},
+        ]
     return JSONResponse(
-        {
-            "label": "Active BAT portfolio",
-            "period": _portfolio_audit().get("period"),
-            "currency": "USD",
-            "series": series,
-        },
+        payload,
         headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
     )
 
@@ -306,6 +354,10 @@ async def api_eas() -> JSONResponse:
         if evidence:
             evidence.pop("chart_path", None)
             evidence["series_url"] = f"/api/evidence/{product['slug']}/series"
+        safe_evidence = product.get("safe_evidence")
+        if safe_evidence:
+            safe_evidence.pop("chart_path", None)
+            safe_evidence["series_url"] = f"/api/evidence/{product['slug']}/series?mode=safe"
     return JSONResponse(payload)
 
 

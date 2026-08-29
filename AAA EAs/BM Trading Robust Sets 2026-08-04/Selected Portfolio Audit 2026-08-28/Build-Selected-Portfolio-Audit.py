@@ -30,7 +30,7 @@ VARIANTS = {
     "ETH Top Down FVG Liquidity": "base",
     "Go Long": "base",
     "LTA Volume Profile": "base",
-    "Nasdaq 5M Open EMA ATR": "base",
+    "Nasdaq 5M Candle Momentum": "base",
     "Nasdaq Overnight": "base",
     "News Pulse": "base",
     "ORB Volume Profile": "base",
@@ -42,6 +42,18 @@ NATIVE_CASES = {
     "Asia Breakout": {"id": "asia", "label": "Asia Breakout", "symbol": "XAUUSD", "period": "H1", "chart": "XAUUSD H1", "set_source": "embedded Markov filter"},
     "DmC": {"id": "dmc", "label": "DmC", "symbol": "XAUUSD", "period": "H1", "chart": "XAUUSD H1", "set_source": "embedded Markov filter"},
     "XAU Weakness": {"id": "xau-weakness", "label": "XAU Weakness", "symbol": "XAUUSD", "period": "M15", "chart": "XAUUSD M15", "set_source": "embedded Markov filter"},
+}
+
+NATIVE_BASE_CASES = {
+    "Nasdaq 5M Candle Momentum": {
+        "report": PACKAGE / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "Backtest Reports" / "982 Claim Recheck" / "Portfolio Window" / "portfolio-standard.htm",
+        "id": "nasdaq-5m-candle-momentum",
+        "label": "Nasdaq 5M Candle Momentum",
+        "symbol": "USTEC",
+        "period": "M5",
+        "chart": "USTEC M5",
+        "set_source": "locked 982-claim replacement preset",
+    }
 }
 
 spec = importlib.util.spec_from_file_location("selected_portfolio_mt5_parser", PARSER_PATH)
@@ -72,9 +84,27 @@ def main() -> None:
     selected: list[dict] = []
     events: list[dict] = []
     for label, variant in VARIANTS.items():
-        row = rows[label]
+        row = rows.get(label)
         native = None
-        if variant == "filtered":
+        if label in NATIVE_BASE_CASES:
+            case = NATIVE_BASE_CASES[label]
+            native = mt5_parser.parse_report(case["report"], case)
+            metrics = {
+                "return_pct": native["return_pct"],
+                "profit_factor": native["profit_factor"],
+                "win_rate_pct": native["win_rate_pct"],
+                "max_equity_dd_pct": native["balance_dd_pct"],
+                "trades": native["trades"],
+                "final_balance": native["final"],
+                "net_profit": native["net"],
+                "gross_profit": native["gross_profit"],
+                "gross_loss": native["gross_loss"],
+                "wins": native["wins"],
+                "losses": native["losses"],
+            }
+            symbol = case["symbol"]
+        elif variant == "filtered":
+            assert row is not None
             case = NATIVE_CASES[label]
             native = mt5_parser.parse_report(NATIVE_REPORT_ROOT / f"{case['id']}.htm", case)
             metrics = {
@@ -90,13 +120,16 @@ def main() -> None:
                 "wins": native["wins"],
                 "losses": native["losses"],
             }
+            symbol = row["symbol"]
         else:
+            assert row is not None
             metrics = row["baseline"]
+            symbol = row["symbol"]
         selected.append(
             {
                 "label": label,
-                "symbol": row["symbol"],
-                "variant": "filtered-native" if native else variant,
+                "symbol": symbol,
+                "variant": ("filtered-native" if variant == "filtered" else "base-native") if native else variant,
                 "return_pct": float(metrics["return_pct"]),
                 "profit_factor": float(metrics["profit_factor"]),
                 "win_rate_pct": float(metrics["win_rate_pct"]),

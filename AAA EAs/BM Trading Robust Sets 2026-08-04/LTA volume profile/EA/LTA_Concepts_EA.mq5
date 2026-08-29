@@ -9,6 +9,7 @@
 #property description "Auditable mechanical LTA implementation: profiles, supply/demand, EM1-EM4 and 2/2/2 controls."
 
 #include <Trade/Trade.mqh>
+#include "SafeRegimeFilter.mqh"
 
 enum ENUM_LTA_BIAS
 {
@@ -959,6 +960,9 @@ bool EntryModel4Continuation(const int dir, const CandidateLevel &level, double 
 bool PlaceSignal(const TradeSignal &signal)
 {
    if(!signal.valid)
+      return false;
+
+   if(!HAMA_SafeRegimeAllowsDirection(signal.dir))
       return false;
 
    if(g_last_trade_bar == g_last_bar_time)

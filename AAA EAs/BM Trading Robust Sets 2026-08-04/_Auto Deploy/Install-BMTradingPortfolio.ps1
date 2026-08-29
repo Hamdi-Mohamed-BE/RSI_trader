@@ -5,6 +5,8 @@ param(
     [string]$AccountProfile = 'AUTO',
     [ValidateRange(0.1, 5.0)]
     [double]$AdaptiveRiskPercent = 1.0,
+    [ValidateSet('STANDARD', 'SAFE')]
+    [string]$SafetyMode = 'STANDARD',
     [switch]$ValidateOnly,
     [switch]$PreflightOnly
 )
@@ -15,7 +17,12 @@ $ErrorActionPreference = 'Stop'
 $PackageRoot = Split-Path -Parent $PSScriptRoot
 $IsAdaptiveAccount = $AccountProfile -eq 'AUTO'
 $IsSmallAccount = $AccountProfile -eq '900'
-$ProfileName = if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - AUTO' } elseif ($IsSmallAccount) { 'BM Trading 900 - AUTO' } else { 'BM Trading 100K - AUTO' }
+$IsFullSafe = $SafetyMode -eq 'SAFE'
+$ProfileName = if ($IsFullSafe) {
+    if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - FULL SAFE' } elseif ($IsSmallAccount) { 'BM Trading 900 - FULL SAFE' } else { 'BM Trading 100K - FULL SAFE' }
+} else {
+    if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - AUTO' } elseif ($IsSmallAccount) { 'BM Trading 900 - AUTO' } else { 'BM Trading 100K - AUTO' }
+}
 $ExpertFolderName = $ProfileName
 $ProbePath = Join-Path $PSScriptRoot 'Probe-MT5.py'
 $Unicode = New-Object System.Text.UnicodeEncoding($false, $true)
@@ -119,10 +126,10 @@ function Get-PortfolioItems {
             SetSource = 'Nasdaq Overnight Negative Day EA\RETEST INCLUDED 2026-08-07 - Nasdaq Overnight - USTEC M1 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
-            Label = 'Nasdaq 5M Open EMA ATR'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Label = 'Nasdaq 5M Candle Momentum'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 5; Expert = 'Nasdaq 5M Open EMA ATR EA.ex5'
             ExpertSource = 'Nasdaq 5M Open EMA ATR Research 2026-08-20\EA\Nasdaq 5M Open EMA ATR EA.ex5'
-            SetSource = 'Nasdaq 5M Open EMA ATR Research 2026-08-20\Sets\LITERAL - USTEC M5 - 1pct - EMA12 ATR3 Trail4 HOLD.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+            SetSource = 'Nasdaq 5M Open EMA ATR Research 2026-08-20\Sets\SELECTED - USTEC M5 - 982 claim recheck - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
         },
         [pscustomobject]@{
             Label = 'AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -145,6 +152,9 @@ function Get-PortfolioItems {
         if (-not $item.PSObject.Properties['OptionalSymbol']) {
             $item | Add-Member -NotePropertyName OptionalSymbol -NotePropertyValue $false
         }
+        $supportsSafeFilter = $item.Label -notin @('ATR Candle Breakout', 'Go Long', 'XAU Markov Regime')
+        $item | Add-Member -NotePropertyName SupportsSafeFilter -NotePropertyValue $supportsSafeFilter
+        $item | Add-Member -NotePropertyName SafeByDesign -NotePropertyValue ($item.Label -eq 'XAU Markov Regime')
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
         $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $item.SetSource)
     }
@@ -328,6 +338,14 @@ function Get-EffectiveInputs([object]$Item) {
             if ($inputs.Contains($key)) { $inputs[$key] = $fixedRisk }
         }
     }
+    if ($IsFullSafe -and [bool]$Item.SupportsSafeFilter) {
+        $inputs['InpUseMarkovRegimeFilter'] = 'true'
+        $inputs['InpMarkovReturnWindow'] = '40'
+        $inputs['InpMarkovThreshold'] = '0.05'
+        $inputs['InpMarkovSignalGate'] = '0.05'
+        $inputs['InpMarkovMinLabels'] = '252'
+        $inputs['InpMarkovHistoryBars'] = '2600'
+    }
     return $inputs
 }
 
@@ -504,6 +522,26 @@ foreach ($item in $portfolio) {
     if ($inputs.Count -eq 0) { Stop-WithMessage "No settings could be read from: $($item.SetFullPath)" }
     Write-Host ('OK  {0}: {1} inputs' -f $item.Label, $inputs.Count)
 }
+if ($IsFullSafe) {
+    $embeddedCount = @($portfolio | Where-Object { $_.SupportsSafeFilter }).Count
+    Write-Host ("FULL SAFE: the completed-D1 Markov gate will be enabled independently inside {0} source-backed EA charts." -f $embeddedCount) -ForegroundColor Green
+    Write-Warning 'ATR Candle Breakout and Go Long are vendor EX5-only products. They remain present and use their normal inputs because their source code is unavailable; the installer cannot truthfully embed the gate into those binaries.'
+}
+
+function Get-IniValue([string]$Path, [string]$Section, [string]$Key) {
+    $insideSection = $false
+    foreach ($line in Get-Content -LiteralPath $Path) {
+        $trimmed = $line.Trim()
+        if ($trimmed -match '^\[(.+)\]$') {
+            $insideSection = $Matches[1] -ieq $Section
+            continue
+        }
+        if ($insideSection -and $trimmed -match ('^' + [regex]::Escape($Key) + '\s*=\s*(.*)$')) {
+            return [string]$Matches[1]
+        }
+    }
+    return $null
+}
 Write-Stage 'Finding MT5'
 $candidates = @(Get-Mt5Candidates)
 if ($ValidateOnly) {
@@ -545,6 +583,23 @@ if (-not $probe.ok) { Stop-WithMessage ([string]$probe.error) }
 $dataRoot = [IO.Path]::GetFullPath([string]$probe.terminal.data_path)
 if (-not (Test-Path -LiteralPath (Join-Path $dataRoot 'MQL5'))) {
     Stop-WithMessage "MT5 reported an invalid data folder: $dataRoot"
+}
+
+# ATR Candle Breakout and Go Long are vendor EX5 products. They remove
+# themselves during OnInit when the BM Trading licence server is not on MT5's
+# explicit WebRequest allow-list. MetaQuotes intentionally requires the user
+# to approve allowed URLs in the terminal UI, so do not pretend that copying
+# the EX5/chart alone is a successful attachment.
+$commonIni = Join-Path $dataRoot 'config\common.ini'
+if (-not (Test-Path -LiteralPath $commonIni)) { Stop-WithMessage "MT5 common settings were not found: $commonIni" }
+$usesBmTradingLicence = @($portfolio | Where-Object { $_.Label -in @('ATR Candle Breakout', 'Go Long') }).Count -gt 0
+if ($usesBmTradingLicence) {
+    $webRequestEnabled = (Get-IniValue $commonIni 'Experts' 'WebRequest') -eq '1'
+    $webRequestUrls = [string](Get-IniValue $commonIni 'Experts' 'WebRequestUrl')
+    $bmTradingAllowed = $webRequestUrls -match '(?i)(^|[;,\s])https?://(www\.)?bmtrading\.de([/;,\s]|$)'
+    if (-not $webRequestEnabled -or -not $bmTradingAllowed) {
+        Stop-WithMessage "ATR Candle Breakout and Go Long are in this BAT, but MT5 will remove both during licence startup until their trusted URL is approved. In this MT5 open Tools > Options > Expert Advisors, enable 'Allow WebRequest for listed URL', add https://bmtrading.de (and https://www.bmtrading.de if it redirects), click OK, then run the BAT again. MetaQuotes requires this approval in the MT5 UI and does not allow the installer to add it silently."
+    }
 }
 
 $login = [string]$probe.account.login
@@ -645,7 +700,7 @@ $portfolio = @($resolvedPortfolio)
 if ($portfolio.Count -eq 0) { Stop-WithMessage 'No portfolio symbols were available on this broker.' }
 
 if ($IsAdaptiveAccount) {
-    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs, including all ORBs, target {2:N2}% ({3:N2} {1} at installation), while LTA, News Pulse, and Nasdaq 5M Open EMA ATR remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
+    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs, including all ORBs, target {2:N2}% ({3:N2} {1} at installation), while LTA, News Pulse, and Nasdaq 5M Candle Momentum remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
 } elseif ($IsSmallAccount) {
     if ($balance -lt 800 -or $balance -gt 1200) {
         Stop-WithMessage "Refusing to run: the small-account settings are for roughly USD 900, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Use an account between USD 800 and USD 1,200."
@@ -661,9 +716,11 @@ if ($PreflightOnly) {
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
-Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse and the literal Nasdaq 5M Open EMA ATR hold." -ForegroundColor Red
+Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse and the locked Nasdaq 5M Candle Momentum replacement." -ForegroundColor Red
+$modeMessage = if ($IsFullSafe) { 'MODE: FULL SAFE — independent completed-D1 Markov gates enabled in every source-backed strategy; vendor ATR Candle Breakout and Go Long remain unchanged.' } else { 'MODE: STANDARD — current default/selective configuration.' }
+Write-Host $modeMessage -ForegroundColor Red
 if ($IsAdaptiveAccount) {
-Write-Host ('AUTO BALANCE: adaptive EAs, including all ORBs, target {0:N2}% of the detected balance; LTA, News Pulse, and Nasdaq 5M Open EMA ATR stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+Write-Host ('AUTO BALANCE: adaptive EAs, including all ORBs, target {0:N2}% of the detected balance; LTA, News Pulse, and Nasdaq 5M Candle Momentum stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
     Write-Host 'ATR fixed-money risk and percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: the two retained BM EAs target approximately $40 per stopped trade.' -ForegroundColor Red
@@ -671,7 +728,8 @@ Write-Host ('AUTO BALANCE: adaptive EAs, including all ORBs, target {0:N2}% of t
     Write-Host 'The installer adds broker-specific hard stops to the two index EAs; gaps can still lose more.' -ForegroundColor Red
 }
 Write-Host 'It does not delete your existing profiles or close any open positions.' -ForegroundColor Yellow
-$expected = if ($IsAdaptiveAccount) { "RUN $login AUTO" } elseif ($IsSmallAccount) { "RUN $login 900" } else { "RUN $login" }
+$modeToken = if ($IsFullSafe) { ' SAFE' } else { '' }
+$expected = if ($IsAdaptiveAccount) { "RUN $login AUTO$modeToken" } elseif ($IsSmallAccount) { "RUN $login 900$modeToken" } else { "RUN $login$modeToken" }
 $confirmation = Read-Host "Type exactly '$expected' to continue"
 if ($confirmation -cne $expected) { Stop-WithMessage 'Confirmation did not match. No portfolio files were installed.' }
 
@@ -752,8 +810,6 @@ for ($i = 0; $i -lt $portfolio.Count; $i++) {
 $orderText = ((1..$portfolio.Count | ForEach-Object { 'chart{0:D2}.chr' -f $_ }) -join "`r`n") + "`r`n"
 [IO.File]::WriteAllText((Join-Path $profileTargetFull 'order.wnd'), $orderText, $Unicode)
 
-$commonIni = Join-Path $dataRoot 'config\common.ini'
-if (-not (Test-Path -LiteralPath $commonIni)) { Stop-WithMessage "MT5 common settings were not found: $commonIni" }
 $commonBackup = $commonIni + '.bm-auto-backup-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
 Copy-Item -LiteralPath $commonIni -Destination $commonBackup
 Set-IniValue $commonIni 'Experts' 'Enabled' '1'
@@ -767,6 +823,7 @@ $manifest = @(
     'Data folder: ' + $dataRoot
     'Profile: ' + $ProfileName
     'Account preset: ' + $AccountProfile
+    'Safety mode: ' + $SafetyMode
     'Account: ' + $login
     'Balance at install: ' + $balance.ToString('N2') + ' ' + [string]$probe.account.currency
     'Server: ' + [string]$probe.account.server

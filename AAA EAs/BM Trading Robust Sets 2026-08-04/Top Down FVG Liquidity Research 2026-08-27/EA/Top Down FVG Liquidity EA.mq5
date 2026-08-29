@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "SafeRegimeFilter.mqh"
 
 enum ENUM_TDFVG_BIAS_MODE
 {
@@ -174,6 +175,7 @@ void ClearPending()
 bool SendEntry(const int direction,const double planned_stop,const double atr)
 {
    if(!InpEnableTrading || !SpreadPasses(atr) || TradesToday()>=InpMaximumTradesPerBrokerDay) return false;
+   if(!HAMA_SafeRegimeAllowsDirection(direction)) return false;
    ulong ticket=0;
    if(SelectOurPosition(ticket)) return false;
    MqlTick tick;

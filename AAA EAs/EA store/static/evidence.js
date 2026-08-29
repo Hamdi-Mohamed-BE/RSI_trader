@@ -23,25 +23,32 @@
   function drawChart(shell, payload) {
     const svg = shell.querySelector('[data-chart-svg]');
     const status = shell.querySelector('[data-chart-status]');
-    const series = (payload.series || [])
-      .map((point) => ({ time: new Date(point.time), balance: Number(point.balance) }))
-      .filter((point) => Number.isFinite(point.time.getTime()) && Number.isFinite(point.balance))
-      .sort((first, second) => first.time - second.time);
-
-    if (series.length < 2) throw new Error('Not enough balance points to draw this curve.');
+    const rawDatasets = payload.datasets?.length
+      ? payload.datasets
+      : [{ label: payload.label || 'Equity', color: '#7ef7c7', series: payload.series || [] }];
+    const datasets = rawDatasets.map((dataset, index) => ({
+      label: dataset.label || `Series ${index + 1}`,
+      color: dataset.color || (index ? '#68a7ff' : '#7ef7c7'),
+      series: (dataset.series || [])
+        .map((point) => ({ time: new Date(point.time), balance: Number(point.balance) }))
+        .filter((point) => Number.isFinite(point.time.getTime()) && Number.isFinite(point.balance))
+        .sort((first, second) => first.time - second.time),
+    })).filter((dataset) => dataset.series.length >= 2);
+    if (!datasets.length) throw new Error('Not enough balance points to draw this curve.');
+    const allPoints = datasets.flatMap((dataset) => dataset.series);
 
     status.classList.add('hidden');
     svg.classList.remove('hidden');
     svg.replaceChildren();
 
     const width = 1000, height = 360, left = 78, right = 28, top = 28, bottom = 48;
-    const balances = series.map((point) => point.balance);
+    const balances = allPoints.map((point) => point.balance);
     let minimum = Math.min(...balances), maximum = Math.max(...balances);
     const padding = Math.max((maximum - minimum) * 0.12, Math.abs(maximum) * 0.01, 1);
     minimum -= padding;
     maximum += padding;
-    const firstTime = series[0].time.getTime();
-    const lastTime = series.at(-1).time.getTime();
+    const firstTime = Math.min(...allPoints.map((point) => point.time.getTime()));
+    const lastTime = Math.max(...allPoints.map((point) => point.time.getTime()));
     const timeSpan = Math.max(lastTime - firstTime, 1);
     const plotWidth = width - left - right;
     const plotHeight = height - top - bottom;
@@ -69,23 +76,31 @@
       }, money(value, payload.currency || 'USD')));
     }
 
-    const linePoints = series.map((point) => `${x(point).toFixed(2)},${y(point.balance).toFixed(2)}`).join(' ');
-    const areaPoints = `${left},${top + plotHeight} ${linePoints} ${width - right},${top + plotHeight}`;
-    svg.appendChild(svgNode('polygon', { points: areaPoints, fill: `url(#${gradientId})` }));
-    svg.appendChild(svgNode('polyline', {
-      points: linePoints, fill: 'none', stroke: '#7ef7c7', 'stroke-width': 3,
-      'stroke-linecap': 'round', 'stroke-linejoin': 'round',
-    }));
-
-    const finalPoint = series.at(-1);
-    svg.appendChild(svgNode('circle', {
-      cx: x(finalPoint), cy: y(finalPoint.balance), r: 5, fill: '#7ef7c7',
-      stroke: '#07100f', 'stroke-width': 3,
-    }));
+    datasets.forEach((dataset, index) => {
+      const linePoints = dataset.series.map((point) => `${x(point).toFixed(2)},${y(point.balance).toFixed(2)}`).join(' ');
+      if (datasets.length === 1) {
+        const areaPoints = `${left},${top + plotHeight} ${linePoints} ${width - right},${top + plotHeight}`;
+        svg.appendChild(svgNode('polygon', { points: areaPoints, fill: `url(#${gradientId})` }));
+      }
+      svg.appendChild(svgNode('polyline', {
+        points: linePoints, fill: 'none', stroke: dataset.color,
+        'stroke-width': index ? 2.5 : 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round',
+      }));
+      const finalPoint = dataset.series.at(-1);
+      svg.appendChild(svgNode('circle', {
+        cx: x(finalPoint), cy: y(finalPoint.balance), r: 5, fill: dataset.color,
+        stroke: '#07100f', 'stroke-width': 3,
+      }));
+      const legendX = left + index * 180;
+      svg.appendChild(svgNode('line', { x1: legendX, y1: 14, x2: legendX + 22, y2: 14, stroke: dataset.color, 'stroke-width': 4 }));
+      svg.appendChild(svgNode('text', { x: legendX + 30, y: 18, fill: '#c9dbd6', 'font-size': 11, 'font-family': 'IBM Plex Mono, monospace' }, dataset.label));
+    });
+    const firstPoint = allPoints.reduce((earliest, point) => point.time < earliest.time ? point : earliest, allPoints[0]);
+    const finalPoint = datasets[0].series.at(-1);
     svg.appendChild(svgNode('text', {
       x: left, y: height - 14, fill: '#789089', 'font-size': 11,
       'font-family': 'IBM Plex Mono, monospace',
-    }, shortDate(series[0].time)));
+    }, shortDate(firstPoint.time)));
     svg.appendChild(svgNode('text', {
       x: width - right, y: height - 14, fill: '#789089', 'font-size': 11,
       'font-family': 'IBM Plex Mono, monospace', 'text-anchor': 'end',

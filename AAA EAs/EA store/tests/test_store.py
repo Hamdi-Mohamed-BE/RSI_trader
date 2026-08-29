@@ -87,8 +87,9 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "09:30 through 10:00" in by_name["US100 Fabio ORB 1R"].logic[0].detail
     assert "does not require a green breakout candle" in by_name["US100 Fabio ORB 1R"].logic[1].detail
     assert "nominal 1:1 reward-to-risk" in by_name["US100 Fabio ORB 1R"].logic[4].detail
-    assert "ATR(14)" in by_name["Nasdaq 5M Open EMA ATR"].logic[2].detail
-    assert "no take profit or time exit" in by_name["Nasdaq 5M Open EMA ATR"].risk_note.lower()
+    assert "four times" in by_name["Nasdaq 5M Candle Momentum"].logic[2].detail
+    assert "+1R" in by_name["Nasdaq 5M Candle Momentum"].logic[3].detail
+    assert "15:55" in by_name["Nasdaq 5M Candle Momentum"].logic[5].detail
     assert "sell side is disabled" in by_name["News Pulse"].logic[2].detail
     assert "preceding twelve M15 bars" in by_name["BTC Top Down FVG Liquidity"].logic[1].detail
     assert "target is 3R" in by_name["ETH Top Down FVG Liquidity"].logic[5].detail
@@ -142,8 +143,8 @@ def test_portfolio_page_shows_one_year_only() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "One-year combined core audit" in response.text
-    assert "+390.40%" in response.text
-    assert "$49,039.57" in response.text
+    assert "+416.93%" in response.text
+    assert "$51,693.32" in response.text
     assert "PROFITABLE PERIOD" in response.text
     assert "five-year" not in response.text.lower()
     assert "2021-08-11" not in response.text
