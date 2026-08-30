@@ -550,6 +550,11 @@ $dataRoot = [IO.Path]::GetFullPath([string]$probe.terminal.data_path)
 if (-not (Test-Path -LiteralPath (Join-Path $dataRoot 'MQL5'))) {
     Stop-WithMessage "MT5 reported an invalid data folder: $dataRoot"
 }
+$commonIni = Join-Path $dataRoot 'config\common.ini'
+if (-not (Test-Path -LiteralPath $commonIni)) {
+    Write-Warning "MT5 common.ini was not found at $commonIni. The portfolio will still be installed, and MT5 will keep its current Algo Trading settings."
+    $commonIni = $null
+}
 
 $login = [string]$probe.account.login
 Write-Host ('Account: {0}' -f $login) -ForegroundColor Yellow
@@ -758,12 +763,16 @@ for ($i = 0; $i -lt $portfolio.Count; $i++) {
 $orderText = ((1..$portfolio.Count | ForEach-Object { 'chart{0:D2}.chr' -f $_ }) -join "`r`n") + "`r`n"
 [IO.File]::WriteAllText((Join-Path $profileTargetFull 'order.wnd'), $orderText, $Unicode)
 
-$commonBackup = $commonIni + '.bm-auto-backup-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
-Copy-Item -LiteralPath $commonIni -Destination $commonBackup
-Set-IniValue $commonIni 'Experts' 'Enabled' '1'
-Set-IniValue $commonIni 'Experts' 'Account' '0'
-Set-IniValue $commonIni 'Experts' 'Profile' '0'
-Set-IniValue $commonIni 'Experts' 'Chart' '0'
+if ($commonIni) {
+    $commonBackup = $commonIni + '.bm-auto-backup-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
+    Copy-Item -LiteralPath $commonIni -Destination $commonBackup
+    Set-IniValue $commonIni 'Experts' 'Enabled' '1'
+    Set-IniValue $commonIni 'Experts' 'Account' '0'
+    Set-IniValue $commonIni 'Experts' 'Profile' '0'
+    Set-IniValue $commonIni 'Experts' 'Chart' '0'
+} else {
+    Write-Warning 'Skipped automatic Algo Trading preference update because common.ini is unavailable. EA installation remains complete.'
+}
 
 $manifest = @(
     'Installed: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss zzz')
