@@ -26,6 +26,15 @@ SOURCE_FILTERED = {
 VENDOR_UNCHANGED: set[str] = set()
 NATIVE_SAFE_LABEL = "Nasdaq 5M Candle Momentum"
 NATIVE_SAFE_REPORT = PACKAGE / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "Backtest Reports" / "982 Claim Recheck" / "Portfolio Window" / "portfolio-full-safe.htm"
+ENGINEERED_ROOT = PACKAGE / "Engineered Liquidity Sweep Research 2026-08-30" / "Improvement Reports"
+ENGINEERED_STANDARD_REPORTS = {
+    "Engineered Liquidity XAU": ENGINEERED_ROOT / "xauusd--rr2--locked.htm",
+    "Engineered Liquidity BTC": ENGINEERED_ROOT / "btcusd--displacement--locked.htm",
+}
+ENGINEERED_SAFE_REPORTS = {
+    "Engineered Liquidity XAU": ENGINEERED_ROOT / "xauusd--safe-rr2--locked.htm",
+    "Engineered Liquidity BTC": ENGINEERED_ROOT / "btcusd--safe-displacement--locked.htm",
+}
 PARSER_PATH = PACKAGE / "BAT Portfolio Backtest 2026-08-09" / "Build-BAT-Portfolio-Report.py"
 
 spec = importlib.util.spec_from_file_location("deployment_mode_mt5_parser", PARSER_PATH)
@@ -62,6 +71,14 @@ def main() -> None:
         "set_source": "native Full Safe replacement preset",
     }
     native_safe = mt5_parser.parse_report(NATIVE_SAFE_REPORT, safe_case)
+    engineered_standard = {}
+    engineered_safe = {}
+    for label, path in ENGINEERED_STANDARD_REPORTS.items():
+        case = {"id": label.lower().replace(" ", "-"), "label": label, "symbol": "XAUUSD" if "XAU" in label else "BTCUSD", "period": "H1" if "XAU" in label else "M30", "chart": label, "set_source": "active improved preset"}
+        engineered_standard[label] = mt5_parser.parse_report(path, case)
+    for label, path in ENGINEERED_SAFE_REPORTS.items():
+        case = {"id": label.lower().replace(" ", "-") + "-safe", "label": label, "symbol": "XAUUSD" if "XAU" in label else "BTCUSD", "period": "H1" if "XAU" in label else "M30", "chart": label, "set_source": "active improved Full Safe preset"}
+        engineered_safe[label] = mt5_parser.parse_report(path, case)
 
     events: list[dict] = []
     for decision in filter_data["decisions"]:
@@ -98,6 +115,16 @@ def main() -> None:
                 "net": float(trade["net"]),
             }
         )
+    for label, report in engineered_safe.items():
+        for deal in report["deals"]:
+            events.append(
+                {
+                    "time": deal["time"].isoformat(),
+                    "open_time": deal["time"].isoformat(),
+                    "bot": label,
+                    "net": float(deal["cashflow"]),
+                }
+            )
     events.sort(key=lambda item: (item["time"], item["open_time"], item["bot"]))
 
     balance = INITIAL
@@ -118,6 +145,7 @@ def main() -> None:
         }
     )
     metric_rows.append(xau["metrics"])
+    metric_rows.extend(engineered_safe.values())
     gross_profit = sum(float(row["gross_profit"]) for row in metric_rows)
     gross_loss = sum(float(row["gross_loss"]) for row in metric_rows)
     trades = sum(int(row["trades"]) for row in metric_rows)
@@ -126,9 +154,9 @@ def main() -> None:
     dd_amount, dd_pct = max_drawdown(series)
     safe = {
         "label": "Full Safe per-EA deployment",
-        "period": "2025-08-11 to 2026-08-21",
-        "tested_eas": 13,
-        "individually_filtered_eas": len(SOURCE_FILTERED),
+        "period": "2025-08-11 to 2026-08-28",
+        "tested_eas": 15,
+        "individually_filtered_eas": len(SOURCE_FILTERED) + len(engineered_safe),
         "safe_by_design_eas": 1,
         "vendor_unchanged_eas": len(VENDOR_UNCHANGED),
         "initial": INITIAL,
@@ -147,11 +175,51 @@ def main() -> None:
         "series": series,
         "caution": "Every active non-standalone strategy in this mode uses its own embedded completed-D1 filter.",
     }
-    standard = dict(current["combined"])
-    standard["label"] = "Standard current selective configuration"
-    standard["individually_filtered_eas"] = 3
-    standard["safe_by_design_eas"] = 1
-    standard["vendor_unchanged_eas"] = 0
+    standard_events: list[dict] = []
+    previous = float(current["combined"]["series"][0]["balance"])
+    for point in current["combined"]["series"][1:]:
+        balance_point = float(point["balance"])
+        standard_events.append({"time": point["time"], "open_time": point["time"], "bot": "existing portfolio", "net": balance_point - previous})
+        previous = balance_point
+    for label, report in engineered_standard.items():
+        for deal in report["deals"]:
+            standard_events.append({"time": deal["time"].isoformat(), "open_time": deal["time"].isoformat(), "bot": label, "net": float(deal["cashflow"])})
+    standard_events.sort(key=lambda item: (item["time"], item["open_time"], item["bot"]))
+    standard_balance = INITIAL
+    standard_series = [{"time": "2025-08-11T00:00:00", "balance": INITIAL}]
+    for event in standard_events:
+        standard_balance += event["net"]
+        standard_series.append({"time": event["time"], "balance": round(standard_balance, 2)})
+    standard_dd_amount, standard_dd_pct = max_drawdown(standard_series)
+    existing = current["combined"]
+    standard_gross_profit = float(existing["gross_profit"]) + sum(float(row["gross_profit"]) for row in engineered_standard.values())
+    standard_gross_loss = float(existing["gross_loss"]) + sum(float(row["gross_loss"]) for row in engineered_standard.values())
+    standard_trades = int(existing["trades"]) + sum(int(row["trades"]) for row in engineered_standard.values())
+    standard_wins = int(existing["wins"]) + sum(int(row["wins"]) for row in engineered_standard.values())
+    standard_losses = int(existing["losses"]) + sum(int(row["losses"]) for row in engineered_standard.values())
+    standard = {
+        "period": "2025-08-11 to 2026-08-28",
+        "tested_eas": 15,
+        "initial": INITIAL,
+        "final": round(standard_balance, 2),
+        "net": round(standard_balance - INITIAL, 2),
+        "return_pct": round((standard_balance / INITIAL - 1.0) * 100.0, 4),
+        "realized_balance_dd_amount": round(standard_dd_amount, 2),
+        "realized_balance_dd_pct": round(standard_dd_pct, 4),
+        "gross_profit": round(standard_gross_profit, 2),
+        "gross_loss": round(standard_gross_loss, 2),
+        "profit_factor": round(standard_gross_profit / abs(standard_gross_loss), 4),
+        "trades": standard_trades,
+        "wins": standard_wins,
+        "losses": standard_losses,
+        "win_rate_pct": round(standard_wins / standard_trades * 100.0, 4),
+        "series": standard_series,
+        "label": "Standard current selective configuration",
+        "individually_filtered_eas": 3,
+        "safe_by_design_eas": 1,
+        "vendor_unchanged_eas": 0,
+        "caution": "Includes the post-hoc BTC displacement candidate; this combined cash-flow overlay is not an independently locked portfolio test.",
+    }
     output = {"standard": standard, "safe": safe}
     (ROOT / "deployment-mode-results.json").write_text(json.dumps(output, indent=2), encoding="utf-8")
     print(json.dumps({key: {k: v for k, v in value.items() if k != "series"} for key, value in output.items()}, indent=2))

@@ -7,6 +7,9 @@ param(
     [double]$AdaptiveRiskPercent = 1.0,
     [ValidateSet('STANDARD', 'SAFE')]
     [string]$SafetyMode = 'STANDARD',
+    [ValidateSet('DEFAULT', 'PERCENT', 'FIXED_USD')]
+    [string]$RiskMode = 'DEFAULT',
+    [double]$RiskValue = 0.0,
     [switch]$ValidateOnly,
     [switch]$PreflightOnly
 )
@@ -18,6 +21,9 @@ $PackageRoot = Split-Path -Parent $PSScriptRoot
 $IsAdaptiveAccount = $AccountProfile -eq 'AUTO'
 $IsSmallAccount = $AccountProfile -eq '900'
 $IsFullSafe = $SafetyMode -eq 'SAFE'
+$UsesDynamicRisk = $RiskMode -ne 'DEFAULT'
+$EffectiveAdaptiveRiskPercent = $AdaptiveRiskPercent
+$RequestedRiskMoney = 0.0
 $ProfileName = if ($IsFullSafe) {
     if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - FULL SAFE' } elseif ($IsSmallAccount) { 'BM Trading 900 - FULL SAFE' } else { 'BM Trading 100K - FULL SAFE' }
 } else {
@@ -57,6 +63,18 @@ function Get-PortfolioItems {
             Period = 15; Expert = 'Top Down FVG Liquidity EA.ex5'
             ExpertSource = 'Top Down FVG Liquidity Research 2026-08-27\EA\Top Down FVG Liquidity EA.ex5'
             SetSource = 'Top Down FVG Liquidity Research 2026-08-27\Sets\SELECTED - ETHUSD M15 - Top Down FVG Liquidity - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'Engineered Liquidity XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 60; Expert = 'Engineered Liquidity Sweep EA.ex5'
+            ExpertSource = 'Engineered Liquidity Sweep Research 2026-08-30\EA\Engineered Liquidity Sweep EA.ex5'
+            SetSource = 'Engineered Liquidity Sweep Research 2026-08-30\Sets\XAUUSD - h1-d1-reclaim - locked.set'; SmallDynamicRisk = $false; PercentRisk = $true
+        },
+        [pscustomobject]@{
+            Label = 'Engineered Liquidity BTC'; Canonical = 'BTCUSD'; Aliases = @('BTCUSD', 'BITCOIN', 'BTC')
+            Period = 30; Expert = 'Engineered Liquidity Sweep EA.ex5'
+            ExpertSource = 'Engineered Liquidity Sweep Research 2026-08-30\EA\Engineered Liquidity Sweep EA.ex5'
+            SetSource = 'Engineered Liquidity Sweep Research 2026-08-30\Sets\BTCUSD - m30-h4-reclaim - locked.set'; SmallDynamicRisk = $false; PercentRisk = $true; OptionalSymbol = $true
         },
         [pscustomobject]@{
             Label = 'ORB Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -281,7 +299,7 @@ function Get-EffectiveInputs([object]$Item) {
     }
     if ($IsAdaptiveAccount) {
         $riskAmount = ([double]$Item.EffectiveRisk).ToString('0.00', [Globalization.CultureInfo]::InvariantCulture)
-        $riskPercent = $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+        $riskPercent = $EffectiveAdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
         if ($inputs.Contains('RiskMoney')) { $inputs['RiskMoney'] = $riskAmount }
         if ($inputs.Contains('InpRiskAmount')) { $inputs['InpRiskAmount'] = $riskAmount }
         if ([bool]$Item.VolumeRiskMoney) {
@@ -313,10 +331,28 @@ function Get-EffectiveInputs([object]$Item) {
             $inputs['Commentary'] = 'BM900-DYNAMIC-40USD-HARD-SL'
         }
     }
-    if ([double]$Item.FixedPercentRisk -gt 0) {
+    if ([double]$Item.FixedPercentRisk -gt 0 -and -not $UsesDynamicRisk) {
         $fixedRisk = ([double]$Item.FixedPercentRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
         foreach ($key in @('InpRiskPercent', 'InpMomentumRiskPercent', 'InpContrarianRiskPercent', 'InpAbsoluteRiskCapPercent')) {
             if ($inputs.Contains($key)) { $inputs[$key] = $fixedRisk }
+        }
+    }
+    if ($UsesDynamicRisk) {
+        $dynamicPercent = $EffectiveAdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+        $dynamicMoney = $RequestedRiskMoney.ToString('0.00', [Globalization.CultureInfo]::InvariantCulture)
+        foreach ($key in @('InpRiskPercent', 'InpMomentumRiskPercent', 'InpContrarianRiskPercent', 'InpAbsoluteRiskCapPercent', 'RiskPercent')) {
+            if ($inputs.Contains($key)) { $inputs[$key] = $dynamicPercent }
+        }
+        foreach ($key in @('RiskMoney', 'InpRiskAmount')) {
+            if ($inputs.Contains($key)) { $inputs[$key] = $dynamicMoney }
+        }
+        if ($inputs.Contains('InpRiskMode')) {
+            $inputs['InpRiskMode'] = if ($RiskMode -eq 'FIXED_USD') { '1' } else { '0' }
+        }
+        if ($inputs.Contains('InpFixedRiskMoney')) { $inputs['InpFixedRiskMoney'] = $dynamicMoney }
+        if ([bool]$Item.VolumeRiskMoney) {
+            if ($inputs.Contains('VolumeMode')) { $inputs['VolumeMode'] = '1' }
+            if ($inputs.Contains('Volume')) { $inputs['Volume'] = $dynamicMoney }
         }
     }
     if ($IsFullSafe -and [bool]$Item.SupportsSafeFilter) {
@@ -569,6 +605,22 @@ if (-not [bool]$probe.account.trade_allowed) { Stop-WithMessage 'Trading is not 
 if (-not [bool]$probe.account.trade_expert) { Stop-WithMessage 'This account currently blocks Expert Advisor trading.' }
 $balance = [double]$probe.account.balance
 if ($balance -le 0) { Stop-WithMessage "Account $login has no positive balance to size risk from." }
+if ($UsesDynamicRisk) {
+    if ($RiskValue -le 0.0) { Stop-WithMessage 'Dynamic risk must be greater than zero.' }
+    if ($RiskMode -eq 'PERCENT') {
+        if ($RiskValue -gt 10.0) { Stop-WithMessage 'Dynamic percentage risk cannot exceed 10% per EA trade.' }
+        $EffectiveAdaptiveRiskPercent = $RiskValue
+        $RequestedRiskMoney = [Math]::Round($balance * ($RiskValue / 100.0), 2)
+    } else {
+        $RequestedRiskMoney = $RiskValue
+        $EffectiveAdaptiveRiskPercent = ($RiskValue / $balance) * 100.0
+        if ($EffectiveAdaptiveRiskPercent -gt 10.0) { Stop-WithMessage ('The chosen fixed risk is {0:N2}% of this balance. The dynamic installer caps planned risk at 10% per EA trade.' -f $EffectiveAdaptiveRiskPercent) }
+    }
+    Write-Host ('Dynamic risk: {0:N2} {1} per EA trade, equivalent to {2:N4}% of the current balance.' -f $RequestedRiskMoney, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent) -ForegroundColor Cyan
+    if ($RiskMode -eq 'FIXED_USD') {
+        Write-Host 'Exact fixed cash is used where the EA supports it; percentage-only EAs receive the current-balance equivalent and will drift as equity changes.' -ForegroundColor Yellow
+    }
+}
 if ([string]$probe.account.currency -ine 'USD' -and -not $IsAdaptiveAccount) {
     Stop-WithMessage "Refusing to run: the legacy fixed-money settings require a USD account, but account $login uses $($probe.account.currency)."
 }
@@ -594,7 +646,7 @@ foreach ($item in $portfolio) {
     $item | Add-Member -NotePropertyName BrokerSymbol -NotePropertyValue ([string]$match.name)
     $brokerMinimum = [double]$match.volume_min
     $item | Add-Member -NotePropertyName BrokerVolumeMinimum -NotePropertyValue $brokerMinimum
-    $targetRisk = if ($IsAdaptiveAccount) { [Math]::Round($balance * ($AdaptiveRiskPercent / 100.0), 2) } elseif ($IsSmallAccount) { 40.0 } else { 0.0 }
+    $targetRisk = if ($IsAdaptiveAccount) { [Math]::Round($balance * ($EffectiveAdaptiveRiskPercent / 100.0), 2) } elseif ($IsSmallAccount) { 40.0 } else { 0.0 }
     if ($IsAdaptiveAccount) {
         $item | Add-Member -NotePropertyName EffectiveRisk -NotePropertyValue $targetRisk
     }
@@ -636,15 +688,18 @@ foreach ($item in $portfolio) {
         if ($effectiveRisk -gt ($targetRisk * 1.05)) {
             Write-Host ('  Broker minimum lot/stop raises this above the {0:N2} {1} target.' -f $targetRisk, [string]$probe.account.currency) -ForegroundColor Red
         }
+    } elseif ($UsesDynamicRisk) {
+        $exactText = if ($RiskMode -eq 'FIXED_USD' -and $item.Label -in @('Engineered Liquidity XAU', 'Engineered Liquidity BTC')) { 'exact fixed cash' } elseif ($RiskMode -eq 'FIXED_USD') { 'current-balance percent equivalent' } else { 'dynamic equity percentage' }
+        Write-Host ('{0,-42} {1,-8} -> {2}; {3:N2} {4} ({5:N4}%), {6}' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $RequestedRiskMoney, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent, $exactText) -ForegroundColor Cyan
     } elseif ([double]$item.FixedPercentRisk -gt 0) {
         $fixedRiskText = ([double]$item.FixedPercentRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
         Write-Host ('{0,-42} {1,-8} -> {2}; fixed equity risk {3}%' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
     } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$item.PercentRisk) {
         $percentInputs = Read-SetInputs $item.SetFullPath
-        $riskText = if ($IsAdaptiveAccount) { $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture) } elseif ($percentInputs.Contains('InpRiskPercent')) { [string]$percentInputs['InpRiskPercent'] } else { 'default' }
+        $riskText = if ($IsAdaptiveAccount) { $EffectiveAdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture) } elseif ($percentInputs.Contains('InpRiskPercent')) { [string]$percentInputs['InpRiskPercent'] } else { 'default' }
         Write-Host ('{0,-42} {1,-8} -> {2}; equity risk {3}%' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $riskText)
     } elseif ($IsAdaptiveAccount) {
-        Write-Host ('{0,-28} {1,-8} -> {2}; planned stop risk {3:N2} {4} ({5:N2}%)' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $targetRisk, [string]$probe.account.currency, $AdaptiveRiskPercent)
+        Write-Host ('{0,-28} {1,-8} -> {2}; planned stop risk {3:N2} {4} ({5:N2}%)' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $targetRisk, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent)
     } else {
         Write-Host ('{0,-22} {1,-8} -> {2}; requested stop risk $40' -f $item.Label, $item.Canonical, $item.BrokerSymbol)
     }
@@ -654,7 +709,11 @@ $portfolio = @($resolvedPortfolio)
 if ($portfolio.Count -eq 0) { Stop-WithMessage 'No portfolio symbols were available on this broker.' }
 
 if ($IsAdaptiveAccount) {
-    Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs, including all ORBs, target {2:N2}% ({3:N2} {1} at installation), while LTA, News Pulse, and Nasdaq 5M Candle Momentum remain fixed at 1.00% per trade.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
+    if ($UsesDynamicRisk) {
+        Write-Host ('Adaptive balance accepted: {0:N2} {1}; Dynamic Config targets {2:N4}% or approximately {3:N2} {1} per EA trade.' -f $balance, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent, $RequestedRiskMoney) -ForegroundColor Green
+    } else {
+        Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while preset-fixed entries remain at their configured risk.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
+    }
 } elseif ($IsSmallAccount) {
     if ($balance -lt 800 -or $balance -gt 1200) {
         Stop-WithMessage "Refusing to run: the small-account settings are for roughly USD 900, but account $login has a balance of $($balance.ToString('N2')) $($probe.account.currency). Use an account between USD 800 and USD 1,200."
@@ -674,7 +733,11 @@ Write-Host "$($portfolio.Count)-EA SET: selected portfolio plus News Pulse and t
 $modeMessage = if ($IsFullSafe) { 'MODE: FULL SAFE — independent completed-D1 Markov gates enabled in every eligible strategy.' } else { 'MODE: STANDARD — current default/selective configuration.' }
 Write-Host $modeMessage -ForegroundColor Red
 if ($IsAdaptiveAccount) {
-Write-Host ('AUTO BALANCE: adaptive EAs, including all ORBs, target {0:N2}% of the detected balance; LTA, News Pulse, and Nasdaq 5M Candle Momentum stay fixed at 1.00%.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+    if ($UsesDynamicRisk) {
+        Write-Host ('DYNAMIC RISK: target {0:N2} {1} ({2:N4}% of detected balance) per EA trade.' -f $RequestedRiskMoney, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent) -ForegroundColor Red
+    } else {
+        Write-Host ('AUTO BALANCE: adaptive EAs target {0:N2}% of the detected balance; preset-fixed entries keep their supplied risk.' -f $AdaptiveRiskPercent) -ForegroundColor Red
+    }
     Write-Host 'Adaptive percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: eligible EAs use their configured percentage or installer-adjusted risk.' -ForegroundColor Red
@@ -781,23 +844,27 @@ $manifest = @(
     'Profile: ' + $ProfileName
     'Account preset: ' + $AccountProfile
     'Safety mode: ' + $SafetyMode
+    'Risk mode: ' + $RiskMode
+    'Requested risk value: ' + $RiskValue.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
     'Account: ' + $login
     'Balance at install: ' + $balance.ToString('N2') + ' ' + [string]$probe.account.currency
     'Server: ' + [string]$probe.account.server
     ''
     'Charts:'
 ) + @($portfolio | ForEach-Object {
-    if (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$_.SmallDynamicRisk) {
+    if ($UsesDynamicRisk) {
+        '{0}: {1}, period {2}, {3}; dynamic target {4:N2} {5} ({6:N4}% at install); set {7}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $RequestedRiskMoney, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent, $_.EffectiveSetPath
+    } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$_.SmallDynamicRisk) {
         '{0}: {1}, period {2}, {3}; lot {4}; hard SL {5:N4}%; target risk {6:N2} {7}; set {8}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveLot, $_.EffectiveStopPercent, $_.EffectiveRisk, [string]$probe.account.currency, $_.EffectiveSetPath
     } elseif ([double]$_.FixedPercentRisk -gt 0) {
         $fixedRiskText = ([double]$_.FixedPercentRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
         '{0}: {1}, period {2}, {3}; fixed equity risk {4}%; set {5}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $fixedRiskText, $_.EffectiveSetPath
     } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$_.PercentRisk) {
         $riskInputs = Read-SetInputs $_.SetFullPath
-        $riskText = if ($IsAdaptiveAccount) { $AdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture) } elseif ($riskInputs.Contains('InpRiskPercent')) { [string]$riskInputs['InpRiskPercent'] } else { 'default' }
+        $riskText = if ($IsAdaptiveAccount) { $EffectiveAdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture) } elseif ($riskInputs.Contains('InpRiskPercent')) { [string]$riskInputs['InpRiskPercent'] } else { 'default' }
         '{0}: {1}, period {2}, {3}; equity risk {4}%; set {5}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $riskText, $_.EffectiveSetPath
     } elseif ($IsAdaptiveAccount) {
-        '{0}: {1}, period {2}, {3}; planned stop risk {4:N2} {5} ({6:N2}%); set {7}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveRisk, [string]$probe.account.currency, $AdaptiveRiskPercent, $_.EffectiveSetPath
+        '{0}: {1}, period {2}, {3}; planned stop risk {4:N2} {5} ({6:N2}%); set {7}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveRisk, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent, $_.EffectiveSetPath
     } elseif ($IsSmallAccount) {
         '{0}: {1}, period {2}, {3}; requested stop risk USD 40; set {4}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveSetPath
     } else {

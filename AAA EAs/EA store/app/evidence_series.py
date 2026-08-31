@@ -46,7 +46,34 @@ SAFE_CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
     ),
 }
 
+SAFE_CUSTOM_REPORTS: dict[str, Path] = {
+    "Engineered Liquidity XAU": (
+        PACKAGE_ROOT
+        / "Engineered Liquidity Sweep Research 2026-08-30"
+        / "Improvement Reports"
+        / "xauusd--safe-rr2--locked.htm"
+    ),
+    "Engineered Liquidity BTC": (
+        PACKAGE_ROOT
+        / "Engineered Liquidity Sweep Research 2026-08-30"
+        / "Improvement Reports"
+        / "btcusd--safe-displacement--locked.htm"
+    ),
+}
+
 CUSTOM_REPORTS: dict[str, Path] = {
+    "Engineered Liquidity XAU": (
+        PACKAGE_ROOT
+        / "Engineered Liquidity Sweep Research 2026-08-30"
+        / "Improvement Reports"
+        / "xauusd--rr2--locked.htm"
+    ),
+    "Engineered Liquidity BTC": (
+        PACKAGE_ROOT
+        / "Engineered Liquidity Sweep Research 2026-08-30"
+        / "Improvement Reports"
+        / "btcusd--displacement--locked.htm"
+    ),
     "US100 Fabio ORB 1R": (
         PACKAGE_ROOT
         / "US100 Fabio ORB Volatility Target Research 2026-08-26"
@@ -179,6 +206,9 @@ def _custom_series(label: str) -> tuple[dict[str, Any], ...]:
 def _safe_overlay_series(product: Product) -> list[dict[str, Any]]:
     if not product.safe_filter_supported:
         return []
+    native_report = SAFE_CUSTOM_REPORTS.get(product.label)
+    if native_report is not None and native_report.is_file():
+        return [dict(point) for point in parse_mt5_balance_series(native_report)]
     safe_custom = SAFE_CUSTOM_SERIES.get(product.label)
     if safe_custom is not None:
         path, case_name = safe_custom

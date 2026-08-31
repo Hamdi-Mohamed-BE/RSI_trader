@@ -18,7 +18,7 @@ FILTERED_AUDIT_ROOT = PACKAGE_ROOT / "Selected Portfolio Audit 2026-08-28"
 INSTALLER_PATH = PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1"
 WHATSAPP_NUMBER = "21693830957"
 
-TIMEFRAMES = {1: "M1", 5: "M5", 15: "M15", 60: "H1", 240: "H4", 1440: "D1"}
+TIMEFRAMES = {1: "M1", 5: "M5", 15: "M15", 30: "M30", 60: "H1", 240: "H4", 1440: "D1"}
 
 
 class Evidence(BaseModel):
@@ -413,6 +413,45 @@ CORE_META: dict[str, dict[str, Any]] = {
         "price": 149,
         "accent": "pink",
     },
+    "Engineered Liquidity XAU": {
+        "strategy": "Trend-aligned engineered-liquidity reclaim",
+        "tagline": "XAUUSD H1 swing sweeps reclaimed in the direction of the completed D1 EMA trend.",
+        "description": "The gold build waits for price to run a confirmed H1 swing against the dominant completed-D1 trend, reclaim that level with a directional candle, and then targets opposing H1 liquidity only when the available structural reward is acceptable.",
+        "session": "All sessions / H1 execution",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, exact locked XAUUSD preset and native development/locked MT5 reports were reviewed together.",
+        "logic": [
+            {"title": "Establish the completed-D1 trend", "detail": "The last completed D1 close must be above EMA20 with EMA20 above EMA50 and rising for longs, or below EMA20 with EMA20 below EMA50 and falling for shorts."},
+            {"title": "Find the nearest confirmed swing", "detail": "The EA searches the latest 32 completed H1 bars for a two-bars-left/two-bars-right confirmed low in an uptrend or high in a downtrend. The signal candle itself cannot define that swing."},
+            {"title": "Require a sweep and reclaim", "detail": "The completed H1 signal candle must pierce the swing by 0.01 to 0.75 ATR(14), close back through the level and finish in the intended direction. The improved gold preset does not require a close through the entire prior candle."},
+            {"title": "Place a structural stop", "detail": "For a long, the stop goes below the sweep candle low by 0.08 ATR; for a short it goes above the sweep high by the same buffer. Broker minimum stop and freeze distances are enforced."},
+            {"title": "Target opposing liquidity", "detail": "The target is the highest high or lowest low among the preceding 32 completed H1 bars. The improved entry is rejected unless that target offers between 2R and 8R after the live spread-adjusted market entry."},
+            {"title": "Limit exposure and holding time", "detail": "The preset permits both directions, at most two entries per broker day and one open position for this symbol/magic. Any survivor is closed after 24 H1 bars."},
+        ],
+        "risk_note": "Default deployment risks 1% of current equity. Dynamic Config can instead use an exact fixed USD amount for this EA. Spread must remain at or below 0.08 of H1 ATR; gaps and slippage can exceed planned risk.",
+        "price": 349,
+        "accent": "gold",
+        "featured": True,
+    },
+    "Engineered Liquidity BTC": {
+        "strategy": "Trend-aligned engineered-liquidity reclaim",
+        "tagline": "BTCUSD M30 swing reclaims filtered by the completed H4 EMA trend.",
+        "description": "The crypto build applies the same objective swing-sweep framework on M30 with an H4 trend filter and now requires a complete displacement close. That rule improved both examined years, but it was adopted after reviewing the original locked failure, so this remains a forward-test candidate rather than an independently validated edge.",
+        "session": "Continuous crypto market / M30 execution",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, exact locked BTCUSD preset and native development/locked MT5 reports were reviewed together.",
+        "logic": [
+            {"title": "Establish the completed-H4 trend", "detail": "Longs require the last completed H4 close above a rising EMA20 with EMA20 above EMA50; shorts require the exact inverse."},
+            {"title": "Find confirmed M30 liquidity", "detail": "The EA searches the latest 36 completed M30 bars for the nearest two-sided confirmed swing low in an uptrend or swing high in a downtrend."},
+            {"title": "Demand a displacement reclaim", "detail": "A completed M30 candle must sweep the selected swing by 0.01 to 0.75 ATR(14), close back through it, finish in the intended direction and close beyond the prior M30 candle's opposite extreme."},
+            {"title": "Use sweep structure for the stop", "detail": "The initial stop is beyond the sweep candle extreme with a 0.08 ATR buffer and is widened only for broker minimum-distance rules."},
+            {"title": "Target the opposite 36-bar extreme", "detail": "The target is the opposing high or low in the previous 36 completed M30 bars. Trades outside the 1.5R-to-8R structural reward window are rejected."},
+            {"title": "Bound frequency and duration", "detail": "Both directions are enabled, no more than two entries are allowed per broker day, and open exposure is closed after 48 M30 bars if neither stop nor target has resolved it."},
+        ],
+        "risk_note": "Default deployment risks 1% of current equity; Dynamic Config can use exact fixed USD risk for this EA. The displacement improvement is post-hoc and must be demo/forward-tested before any live decision.",
+        "price": 149,
+        "accent": "orange",
+    },
     "Nasdaq 5M Candle Momentum": {
         "strategy": "US-open five-minute momentum",
         "tagline": "Let the completed 09:30 Nasdaq candle choose direction, then manage the trade with a delayed volatility trail.",
@@ -804,6 +843,88 @@ def _top_down_fvg_one_year_evidence(symbol: str) -> Evidence | None:
     )
 
 
+def _engineered_liquidity_evidence(symbol: str, safe: bool = False) -> Evidence | None:
+    root = PACKAGE_ROOT / "Engineered Liquidity Sweep Research 2026-08-30"
+    improvement_path = root / "IMPROVEMENT RESULTS.json"
+    production_case = "rr2" if symbol == "XAUUSD" else "displacement"
+    safe_case = "safe-rr2" if symbol == "XAUUSD" else "safe-displacement"
+    rows = _load_json(improvement_path) if improvement_path.exists() else []
+    wanted_case = safe_case if safe else production_case
+    row = next(
+        (
+            item
+            for item in rows
+            if item.get("symbol") == symbol
+            and item.get("case") == wanted_case
+            and item.get("phase") == "locked"
+        ),
+        None,
+    )
+    if safe:
+        if row is None:
+            return None
+        chart = Path(str(row.get("chart_path", "")))
+        return Evidence(
+            label="Native MT5 Full Safe validation",
+            period=f"{row['from_date']} to {row['to_date']}",
+            return_pct=float(row["return_pct"]),
+            profit_factor=float(row["profit_factor"]),
+            drawdown_pct=float(row["equity_dd_pct"]),
+            win_rate_pct=float(row["win_rate_pct"]),
+            trades=int(row["trades"]),
+            history_quality=str(row.get("history_quality", "100%")),
+            source_note="Exness MT5 Every Tick locked-year test with the completed-D1 no-lookahead Markov direction gate enabled inside this EA; broker costs and random execution delay remain included.",
+            chart_path=chart if chart.is_file() else None,
+            status=_status_for(float(row["profit_factor"]), float(row["return_pct"]), float(row["equity_dd_pct"]), int(row["trades"])),
+            caution="Safe mode is a completed-D1 direction veto, not a guarantee. It can reduce trades and may not improve every market regime.",
+        )
+
+    if row is not None:
+        report = Path(str(row["report_path"]))
+        return_pct = float(row["return_pct"])
+        profit_factor = float(row["profit_factor"])
+        drawdown = float(row["equity_dd_pct"])
+        win_rate = float(row["win_rate_pct"])
+        trades = int(row["trades"])
+        history_quality = str(row.get("history_quality", "100%"))
+    else:
+        path = root / "RESULTS.json"
+        if not path.exists():
+            return None
+        legacy = next((item for item in _load_json(path) if item.get("market") == symbol), None)
+        if legacy is None:
+            return None
+        report = Path(str(legacy["locked_report"]))
+        return_pct = float(legacy["locked_return_pct"])
+        profit_factor = float(legacy["locked_pf"])
+        drawdown = float(legacy["locked_equity_dd_pct"])
+        win_rate = float(legacy["locked_win_rate_pct"])
+        trades = int(legacy["locked_trades"])
+        history_quality = str(legacy.get("history_quality", "100%"))
+    return Evidence(
+        label="Locked one-year MT5 validation" if symbol == "XAUUSD" else "Post-hoc robustness candidate",
+        period="2025-08-29 to 2026-08-28",
+        return_pct=return_pct,
+        profit_factor=profit_factor,
+        drawdown_pct=drawdown,
+        win_rate_pct=win_rate,
+        trades=trades,
+        history_quality=history_quality,
+        source_note=(
+            f"Exness {symbol}, MT5 Every Tick history, broker spread, commission, swap and random execution delay. The 2R XAU improvement was selected on the preceding development year."
+            if symbol == "XAUUSD"
+            else f"Exness {symbol}, MT5 Every Tick history with broker costs and random execution delay. The displacement rule repaired both tested years, but it was adopted after reviewing the original locked failure and therefore needs a fresh forward test."
+        ),
+        chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+        status=_status_for(profit_factor, return_pct, drawdown, trades) if symbol == "XAUUSD" else "Research evidence",
+        caution=(
+            "The locked year confirmed a positive result, but one year is not a guarantee of future performance."
+            if symbol == "XAUUSD"
+            else "The original BTC reclaim failed locked validation (-14.17%, PF 0.92, 40.78% DD). Requiring full displacement improved the same period post-hoc, so this remains demo-only until new forward data exists."
+        ),
+    )
+
+
 def _meta_for(item: dict[str, Any]) -> dict[str, Any]:
     label = item["label"]
     canonical = item["canonical"]
@@ -899,6 +1020,10 @@ def get_catalog() -> list[Product]:
     fabio_orb = _fabio_orb_one_year_evidence()
     btc_fvg = _top_down_fvg_one_year_evidence("BTCUSD")
     eth_fvg = _top_down_fvg_one_year_evidence("ETHUSD")
+    xau_engineered = _engineered_liquidity_evidence("XAUUSD")
+    btc_engineered = _engineered_liquidity_evidence("BTCUSD")
+    xau_engineered_safe = _engineered_liquidity_evidence("XAUUSD", safe=True)
+    btc_engineered_safe = _engineered_liquidity_evidence("BTCUSD", safe=True)
     products: list[Product] = []
     for item in parse_installer_items():
         meta = _meta_for(item)
@@ -915,6 +1040,10 @@ def get_catalog() -> list[Product]:
             evidence = btc_fvg
         elif item["label"] == "ETH Top Down FVG Liquidity":
             evidence = eth_fvg
+        elif item["label"] == "Engineered Liquidity XAU":
+            evidence = xau_engineered
+        elif item["label"] == "Engineered Liquidity BTC":
+            evidence = btc_engineered
         if item["label"] in filtered:
             evidence = filtered[item["label"]]
         elif item["label"] == "XAU Markov Regime":
@@ -928,6 +1057,10 @@ def get_catalog() -> list[Product]:
             safe_evidence = nasdaq_open_safe
         elif item["label"] == "XAU Markov Regime":
             safe_evidence = xau_markov
+        elif item["label"] == "Engineered Liquidity XAU":
+            safe_evidence = xau_engineered_safe
+        elif item["label"] == "Engineered Liquidity BTC":
+            safe_evidence = btc_engineered_safe
         limitations = [
             "Historical returns are not guaranteed and live execution can differ.",
             "Broker symbol names, spread, slippage and contract size affect results.",

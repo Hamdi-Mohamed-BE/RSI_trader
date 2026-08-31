@@ -37,6 +37,10 @@ int g_daily_slow=INVALID_HANDLE;
 datetime g_last_anchor_bar=0;
 long g_day_key=0;
 int g_day_trades=0;
+bool g_parent_ready=false;
+double g_parent_high=0.0;
+double g_parent_low=0.0;
+datetime g_parent_time=0;
 
 double NormalizePrice(const double price)
 {
@@ -164,6 +168,14 @@ bool SendTrade(const int direction,const double raw_stop,const double raw_target
    return false;
 }
 
+void SetParent(const MqlRates &bar)
+{
+   g_parent_high=bar.high;
+   g_parent_low=bar.low;
+   g_parent_time=bar.time;
+   g_parent_ready=(g_parent_high>g_parent_low && g_parent_time>0);
+}
+
 void EvaluateConfirmedCRT()
 {
    int required=MathMax(20,InpATRPeriod+5);
@@ -174,9 +186,10 @@ void EvaluateConfirmedCRT()
    double atr=0.0;
    if(!BufferValue(g_atr,0,1,atr) || atr<=0.0) return;
    MqlRates sweep=rates[1];
-   MqlRates parent=rates[2];
-   double parent_range=parent.high-parent.low;
-   if(parent_range<InpMinimumParentRangeATR*atr || parent_range>InpMaximumParentRangeATR*atr) return;
+   if(!g_parent_ready) SetParent(rates[2]);
+   if(!g_parent_ready) return;
+   double parent_range=g_parent_high-g_parent_low;
+   bool parent_range_valid=(parent_range>=InpMinimumParentRangeATR*atr && parent_range<=InpMaximumParentRangeATR*atr);
 
    long today=DateKey(sweep.time);
    if(today!=g_day_key)
@@ -188,27 +201,36 @@ void EvaluateConfirmedCRT()
    double sweep_buffer=InpSweepBufferATR*atr;
    double stop_buffer=InpStopBufferATR*atr;
    double maximum_depth=InpMaximumSweepDepthATR*atr;
-   bool swept_low=sweep.low<parent.low-sweep_buffer;
-   bool swept_high=sweep.high>parent.high+sweep_buffer;
-   bool close_inside=sweep.close>parent.low && sweep.close<parent.high;
-   if(!close_inside) return;
-   if(InpExcludeDoubleSweep && swept_low && swept_high) return;
+   bool swept_low=sweep.low<=g_parent_low-sweep_buffer;
+   bool swept_high=sweep.high>=g_parent_high+sweep_buffer;
+   bool close_inside=sweep.close>g_parent_low && sweep.close<g_parent_high;
+   bool close_outside=sweep.close>=g_parent_high || sweep.close<=g_parent_low;
+   if(close_outside || (InpExcludeDoubleSweep && swept_low && swept_high))
+   {
+      SetParent(sweep);
+      return;
+   }
+   if(!close_inside || (!swept_low && !swept_high)) return;
 
    int trend=DailyTrend();
-   if(trend==99) return;
-   if(swept_low && parent.low-sweep.low<=maximum_depth &&
+   if(trend==99)
+   {
+      SetParent(sweep);
+      return;
+   }
+   if(parent_range_valid && swept_low && g_parent_low-sweep.low<=maximum_depth &&
       (!InpRequireDirectionalClose || sweep.close>sweep.open) &&
       (!InpUseDailyTrendFilter || trend>0))
    {
-      SendTrade(1,sweep.low-stop_buffer,parent.high,atr,"CRT low sweep reclaim");
-      return;
+      SendTrade(1,sweep.low-stop_buffer,g_parent_high,atr,"CRT low sweep reclaim");
    }
-   if(swept_high && sweep.high-parent.high<=maximum_depth &&
+   else if(parent_range_valid && swept_high && sweep.high-g_parent_high<=maximum_depth &&
       (!InpRequireDirectionalClose || sweep.close<sweep.open) &&
       (!InpUseDailyTrendFilter || trend<0))
    {
-      SendTrade(-1,sweep.high+stop_buffer,parent.low,atr,"CRT high sweep reclaim");
+      SendTrade(-1,sweep.high+stop_buffer,g_parent_low,atr,"CRT high sweep reclaim");
    }
+   SetParent(sweep);
 }
 
 void ManagePosition()
