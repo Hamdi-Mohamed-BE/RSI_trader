@@ -98,6 +98,12 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 9
     assert sum(product.exit_mode == "Current EA exits" for product in products) == 3
     assert all(product.deployment_session == "All day / native strategy window" for product in products)
+    assert all("Applied BAT overlay" in product.logic[-1].detail for product in products if product.exit_mode == "Dynamic 50/20")
+    assert all("Dynamic 50/20 overlay is disabled" in product.logic[-1].detail for product in products if product.exit_mode == "Current EA exits")
+    recommended_bat = PACKAGE_ROOT / "BEST RECOMMENDED 2026-09-01.bat"
+    assert recommended_bat.is_file()
+    bat_text = recommended_bat.read_text(encoding="utf-8")
+    assert "-SafetyMode STANDARD" in bat_text
 
 
 def test_detail_page_renders_code_based_logic_details() -> None:

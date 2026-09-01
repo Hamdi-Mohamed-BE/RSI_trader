@@ -1152,6 +1152,19 @@ def get_catalog() -> list[Product]:
         development = item["label"].startswith("Auction ")
         selected_config = SELECTED_CONFIGS.get(item["label"])
         exit_mode = selected_config[2] if selected_config else "Current EA exits"
+        logic_steps = [dict(step) for step in meta["logic"]]
+        if logic_steps:
+            if exit_mode == "Dynamic 50/20":
+                logic_steps[-1]["detail"] += (
+                    " Applied BAT overlay: on each newly completed M15 candle, a close at least 50% of the "
+                    "original entry-to-target path moves the stop to lock 20% of that path. If the trade has "
+                    "no target, the original stop distance is used as the reference."
+                )
+            else:
+                logic_steps[-1]["detail"] += (
+                    " The Dynamic 50/20 overlay is disabled in this selected preset, so the EA retains its "
+                    "original stop and exit behavior."
+                )
         products.append(
             Product(
                 label=display_label,
@@ -1168,14 +1181,17 @@ def get_catalog() -> list[Product]:
                 asset_group=meta["asset_group"],
                 strategy=meta["strategy"],
                 tagline=meta["tagline"],
-                description=meta["description"],
+                description=(
+                    meta["description"]
+                    + f" The dated Best Recommended installer applies {exit_mode.lower()} and does not add a research-session restriction."
+                ),
                 session=meta["session"],
                 exit_mode=exit_mode,
                 deployment_session="All day / native strategy window",
                 risk_note=meta["risk_note"],
                 logic_audit=meta["logic_audit"],
                 logic_audit_note=meta["logic_audit_note"],
-                logic=meta["logic"],
+                logic=logic_steps,
                 limitations=limitations,
                 price=price,
                 accent=meta["accent"],
