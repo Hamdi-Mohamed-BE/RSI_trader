@@ -7,7 +7,14 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
-from .catalog import BOOKMAPER_ROOT, FILTERED_AUDIT_ROOT, PACKAGE_ROOT, Product
+from .catalog import (
+    BOOKMAPER_ROOT,
+    FILTERED_AUDIT_ROOT,
+    PACKAGE_ROOT,
+    SELECTED_CONFIGS,
+    SELECTED_PORTFOLIO_ROOT,
+    Product,
+)
 
 
 ACTIVE_AUDIT_ROOT = PACKAGE_ROOT / "Active BAT Backtest 2026-08-12"
@@ -15,6 +22,7 @@ ACTIVE_REPORTS_ROOT = ACTIVE_AUDIT_ROOT / "MT5 Reports"
 ACTIVE_RESULTS_PATH = ACTIVE_AUDIT_ROOT / "portfolio-results.json"
 DEPLOYMENT_MODES_PATH = FILTERED_AUDIT_ROOT / "deployment-mode-results.json"
 REGIME_FILTER_PATH = BOOKMAPER_ROOT / "artifacts" / "active-ea-regime-filter.json"
+SELECTED_RESULTS_PATH = SELECTED_PORTFOLIO_ROOT / "locked-results.json"
 
 CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
     "US100 ORB 0.5R": (
@@ -187,6 +195,54 @@ def _active_report_for(installer_label: str) -> Path | None:
     return None
 
 
+@lru_cache(maxsize=1)
+def _selected_rows() -> dict[tuple[str, str], dict[str, Any]]:
+    if not SELECTED_RESULTS_PATH.is_file():
+        return {}
+    return {
+        (str(row.get("EaId")), str(row.get("Variant"))): row
+        for row in _load_json(SELECTED_RESULTS_PATH)
+        if row.get("Stage") == "Locked" and row.get("status") == "valid"
+    }
+
+
+def _selected_product_series(product: Product, use_current: bool = False) -> list[dict[str, Any]]:
+    config = SELECTED_CONFIGS.get(product.installer_label)
+    if config is None:
+        return []
+    ea_id, selected_variant, _exit_mode = config
+    variant = "current" if use_current else selected_variant
+    row = _selected_rows().get((ea_id, variant))
+    if row is None:
+        return []
+    return _normalise_json_series(row.get("series", []))
+
+
+def _selected_portfolio_series(use_current: bool = False) -> tuple[dict[str, Any], ...]:
+    events: list[tuple[str, float]] = []
+    for ea_id, selected_variant, _exit_mode in SELECTED_CONFIGS.values():
+        variant = "current" if use_current else selected_variant
+        row = _selected_rows().get((ea_id, variant))
+        if row is None:
+            continue
+        series = _normalise_json_series(row.get("series", []))
+        for previous, current in zip(series, series[1:]):
+            events.append(
+                (
+                    str(current["time"]),
+                    float(current["balance"]) - float(previous["balance"]),
+                )
+            )
+    if not events:
+        return ()
+    balance = 10_000.0
+    combined = [{"time": "2025-09-01T00:00:00", "balance": balance}]
+    for timestamp, delta in sorted(events, key=lambda item: item[0]):
+        balance += delta
+        combined.append({"time": timestamp, "balance": round(balance, 2)})
+    return tuple(_sample(combined))
+
+
 @lru_cache(maxsize=8)
 def _custom_series(label: str) -> tuple[dict[str, Any], ...]:
     config = CUSTOM_SERIES.get(label)
@@ -246,6 +302,9 @@ def product_equity_series(product: Product, mode: str = "standard") -> list[dict
         safe = _safe_overlay_series(product)
         if safe:
             return safe
+    selected = _selected_product_series(product, use_current=mode == "current")
+    if selected:
+        return selected
     if product.label == "XAU Markov Regime":
         path = BOOKMAPER_ROOT / "artifacts" / "standalone-results.json"
         if path.is_file():
@@ -275,8 +334,12 @@ def product_equity_series(product: Product, mode: str = "standard") -> list[dict
     return [dict(point) for point in parse_mt5_balance_series(report)]
 
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=4)
 def portfolio_equity_series(mode: str = "standard") -> tuple[dict[str, Any], ...]:
+    if mode in {"standard", "current"}:
+        selected = _selected_portfolio_series(use_current=mode == "current")
+        if selected:
+            return selected
     if DEPLOYMENT_MODES_PATH.is_file():
         data = _load_json(DEPLOYMENT_MODES_PATH)
         selected = data.get(mode, data.get("standard", {}))

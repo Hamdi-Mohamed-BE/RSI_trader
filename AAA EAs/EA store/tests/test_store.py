@@ -83,9 +83,6 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "previous D1 open and close" in by_name["DmC"].logic[0].detail
     assert "display" in by_name["ORB Volume Profile"].logic[2].title.lower()
     assert "all three profile entry filters are OFF" in by_name["ORB Volume Profile"].logic[2].detail
-    assert "09:30 through 10:00" in by_name["US100 Fabio ORB 1R"].logic[0].detail
-    assert "does not require a green breakout candle" in by_name["US100 Fabio ORB 1R"].logic[1].detail
-    assert "nominal 1:1 reward-to-risk" in by_name["US100 Fabio ORB 1R"].logic[4].detail
     assert "four times" in by_name["Nasdaq 5M Candle Momentum"].logic[2].detail
     assert "+1R" in by_name["Nasdaq 5M Candle Momentum"].logic[3].detail
     assert "15:55" in by_name["Nasdaq 5M Candle Momentum"].logic[5].detail
@@ -93,7 +90,14 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "preceding twelve M15 bars" in by_name["BTC Top Down FVG Liquidity"].logic[1].detail
     assert "target is 3R" in by_name["ETH Top Down FVG Liquidity"].logic[5].detail
     assert "between 2R and 8R" in by_name["Engineered Liquidity XAU"].logic[4].detail
-    assert "close beyond the prior M30 candle" in by_name["Engineered Liquidity BTC"].logic[2].detail
+
+
+def test_recommended_exit_settings_are_synced_per_ea() -> None:
+    products = get_sellable_catalog()
+    assert len(products) == 12
+    assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 9
+    assert sum(product.exit_mode == "Current EA exits" for product in products) == 3
+    assert all(product.deployment_session == "All day / native strategy window" for product in products)
 
 
 def test_detail_page_renders_code_based_logic_details() -> None:
@@ -144,10 +148,12 @@ def test_api_and_evidence_chart() -> None:
 def test_portfolio_page_shows_one_year_only() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
-    assert "One-year combined core audit" in response.text
-    assert "+409.86%" in response.text
-    assert "$50,985.67" in response.text
+    assert "Locked one-year combined audit" in response.text
+    assert "+397.20%" in response.text
+    assert "$49,719.62" in response.text
     assert "PROFITABLE PERIOD" in response.text
+    assert "10,000 block-bootstrap paths" in response.text
+    assert "Dynamic 50/20" in response.text
     assert "five-year" not in response.text.lower()
     assert "2021-08-11" not in response.text
     assert "Longer-history risk context" not in response.text

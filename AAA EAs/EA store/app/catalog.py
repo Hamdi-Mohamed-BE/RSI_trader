@@ -15,6 +15,7 @@ EAS_ROOT = STORE_ROOT.parent
 PACKAGE_ROOT = EAS_ROOT / "BM Trading Robust Sets 2026-08-04"
 BOOKMAPER_ROOT = EAS_ROOT / "BookMaper"
 FILTERED_AUDIT_ROOT = PACKAGE_ROOT / "Selected Portfolio Audit 2026-08-28"
+SELECTED_PORTFOLIO_ROOT = PACKAGE_ROOT / "Dynamic Trailing Session Research 2026-09-01"
 INSTALLER_PATH = PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1"
 WHATSAPP_NUMBER = "21693830957"
 
@@ -62,6 +63,8 @@ class Product(BaseModel):
     tagline: str
     description: str
     session: str
+    exit_mode: str = "Current EA exits"
+    deployment_session: str = "All day"
     risk_note: str
     logic_audit: str
     logic_audit_note: str
@@ -78,6 +81,26 @@ class Product(BaseModel):
     one_year_return_pct: float | None = None
     one_year_note: str | None = None
     buy_url: str = ""
+
+
+SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
+    "LTA Volume Profile": ("lta-xau", "current", "Current EA exits"),
+    "BTC Top Down FVG Liquidity": ("topdown-btc", "current", "Current EA exits"),
+    "ETH Top Down FVG Liquidity": ("topdown-eth", "dynamic-only", "Dynamic 50/20"),
+    "Engineered Liquidity XAU": ("engineered-xau", "dynamic-only", "Dynamic 50/20"),
+    "ORB Volume Profile": ("orb-volume-xau", "dynamic-only", "Dynamic 50/20"),
+    "AAA Final Asia Breakout": ("asia-xau", "dynamic-only", "Dynamic 50/20"),
+    "AAA Final DmC": ("dmc-xau", "dynamic-only", "Dynamic 50/20"),
+    "AAA Final EMA3": ("ema3-xau", "dynamic-only", "Dynamic 50/20"),
+    "AAA Final XAU Weakness": ("weakness-xau", "dynamic-only", "Dynamic 50/20"),
+    "Nasdaq Overnight": ("overnight-ustec", "current", "Current EA exits"),
+    "Nasdaq 5M Candle Momentum": ("momentum-ustec", "dynamic-only", "Dynamic 50/20"),
+    "AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s": (
+        "news-xau",
+        "dynamic-only",
+        "Dynamic 50/20",
+    ),
+}
 
 
 CORE_META: dict[str, dict[str, Any]] = {
@@ -583,6 +606,52 @@ def _one_year_evidence() -> dict[str, Evidence]:
     return result
 
 
+@lru_cache(maxsize=1)
+def _selected_portfolio_evidence() -> dict[str, Evidence]:
+    """Evidence for the exact per-EA configurations installed by the active BAT."""
+    results_path = SELECTED_PORTFOLIO_ROOT / "locked-results.json"
+    if not results_path.exists():
+        return {}
+    rows = _load_json(results_path)
+    by_case = {
+        (str(row.get("EaId")), str(row.get("Variant"))): row
+        for row in rows
+        if row.get("Stage") == "Locked" and row.get("status") == "valid"
+    }
+    result: dict[str, Evidence] = {}
+    for installer_label, (ea_id, variant, exit_mode) in SELECTED_CONFIGS.items():
+        row = by_case.get((ea_id, variant))
+        if row is None:
+            continue
+        ret = float(row["return_pct"])
+        pf = float(row["profit_factor"])
+        dd = float(row["equity_dd_pct"])
+        trades = int(row["trades"])
+        report = Path(str(row.get("report", "")))
+        chart = report.with_suffix(".png") if report else None
+        result[installer_label] = Evidence(
+            label=f"Applied locked-year MT5 configuration — {exit_mode}",
+            period="2025-09-01 to 2026-08-31",
+            return_pct=ret,
+            profit_factor=pf,
+            drawdown_pct=dd,
+            win_rate_pct=float(row["win_rate"]),
+            trades=trades,
+            history_quality=f"{float(row.get('history_quality_pct', 0.0)):.0f}%",
+            source_note=(
+                f"Exness {row['Symbol']}, MT5 Every Tick, broker spread, commission, swap and random execution delay. "
+                f"The installed selection uses {exit_mode.lower()} with no added research-session restriction."
+            ),
+            chart_path=chart if chart and chart.is_file() else None,
+            status=_status_for(pf, ret, dd, trades),
+            caution=(
+                "This setting was selected after comparing exit and session variants. It is historical evidence, "
+                "not a guarantee, and the combined portfolio still needs shared-margin forward observation."
+            ),
+        )
+    return result
+
+
 def _filtered_markov_evidence() -> dict[str, Evidence]:
     path = BOOKMAPER_ROOT / "artifacts" / "active-ea-regime-filter.json"
     if not path.exists():
@@ -1009,6 +1078,7 @@ def _buy_url(label: str, price: int) -> str:
 
 @lru_cache(maxsize=1)
 def get_catalog() -> list[Product]:
+    selected = _selected_portfolio_evidence()
     one_year = _one_year_evidence()
     filtered = _filtered_markov_evidence()
     all_safe = _all_markov_safe_evidence()
@@ -1048,6 +1118,8 @@ def get_catalog() -> list[Product]:
             evidence = filtered[item["label"]]
         elif item["label"] == "XAU Markov Regime":
             evidence = xau_markov
+        if item["label"] in selected:
+            evidence = selected[item["label"]]
         one_year_result = evidence
         safe_supported = True
         safe_evidence = all_safe.get(item["label"]) if safe_supported else None
@@ -1078,6 +1150,8 @@ def get_catalog() -> list[Product]:
             else re.sub(r"^AAA Final\s+", "", item["label"]).strip()
         )
         development = item["label"].startswith("Auction ")
+        selected_config = SELECTED_CONFIGS.get(item["label"])
+        exit_mode = selected_config[2] if selected_config else "Current EA exits"
         products.append(
             Product(
                 label=display_label,
@@ -1096,6 +1170,8 @@ def get_catalog() -> list[Product]:
                 tagline=meta["tagline"],
                 description=meta["description"],
                 session=meta["session"],
+                exit_mode=exit_mode,
+                deployment_session="All day / native strategy window",
                 risk_note=meta["risk_note"],
                 logic_audit=meta["logic_audit"],
                 logic_audit_note=meta["logic_audit_note"],

@@ -2,6 +2,7 @@
 #define AAA_FINAL_COMMON_MQH
 
 #include <Trade/Trade.mqh>
+#include "DynamicTrailingSessionFilter.mqh"
 
 CTrade AAA_Trade;
 int AAA_TesterServerOffsetMode=1; // 1 = EET/EEST broker clock, used only in the Strategy Tester
@@ -276,6 +277,7 @@ bool AAA_TradedToday(const string symbol,const long magic)
 
 bool AAA_SendMarket(const string symbol,const int direction,const double stop,const double reward_risk,const double risk_percent,const long magic,const string comment)
 {
+   if(!DTS_EntrySessionAllowed()) return false;
    MqlTick tick;
    if(!SymbolInfoTick(symbol,tick)) return false;
    double entry=(direction>0 ? tick.ask : tick.bid);
@@ -298,6 +300,7 @@ bool AAA_SendMarket(const string symbol,const int direction,const double stop,co
 
 bool AAA_SendPending(const string symbol,const ENUM_ORDER_TYPE type,const double entry,const double stop,const double reward_risk,const double risk_percent,const long magic,const datetime expiry,const string comment)
 {
+   if(!DTS_EntrySessionAllowed()) return false;
    int direction=(type==ORDER_TYPE_BUY_STOP || type==ORDER_TYPE_BUY_LIMIT ? 1 : -1);
    double price=AAA_Price(symbol,entry);
    double sl=AAA_Price(symbol,stop);

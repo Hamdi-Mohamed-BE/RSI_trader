@@ -16,6 +16,7 @@ from .catalog import (
     FILTERED_AUDIT_ROOT,
     INSTALLER_PATH,
     PACKAGE_ROOT,
+    SELECTED_PORTFOLIO_ROOT,
     STORE_ROOT,
     WHATSAPP_NUMBER,
     Product,
@@ -78,6 +79,35 @@ def _base_context(request: Request, active: str) -> dict[str, Any]:
 
 
 def _portfolio_audit(mode: str = "standard") -> dict[str, Any]:
+    selected_path = SELECTED_PORTFOLIO_ROOT / "selected-portfolio-results.json"
+    if selected_path.exists() and mode in {"standard", "current"}:
+        data = json.loads(selected_path.read_text(encoding="utf-8-sig"))
+        key = "selected_portfolio" if mode == "standard" else "same_12_all_current"
+        combined = data[key]
+        chart = SELECTED_PORTFOLIO_ROOT / "Charts" / "SELECTED PORTFOLIO - equity comparison.png"
+        return {
+            "available": True,
+            "tested_eas": len(data.get("per_ea", [])),
+            "initial": float(combined["starting_balance"]),
+            "final": float(combined["final_balance"]),
+            "net": float(combined["net_profit"]),
+            "return_pct": float(combined["return_pct"]),
+            "profit_factor": float(combined["profit_factor"]),
+            "win_rate_pct": float(combined["win_rate_pct"]),
+            "trades": int(combined["trades"]),
+            "realized_balance_dd_pct": float(combined["realized_dd_pct"]),
+            "sharpe_ratio": float(combined["sharpe_ratio"]),
+            "recovery_factor": float(combined["recovery_factor"]),
+            "verdict": "PROFITABLE LOCKED-YEAR OVERLAY",
+            "period": f"{combined['start_date']} to {combined['end_date']}",
+            "mode": mode,
+            "label": "Applied per-EA configuration" if mode == "standard" else "Same 12 EAs — original exits",
+            "individually_filtered_eas": sum(1 for value in data.get("selected_setup", {}).values() if value == "dynamic-only") if mode == "standard" else 0,
+            "safe_by_design_eas": 0,
+            "vendor_unchanged_eas": 0,
+            "caution": "Arithmetic overlay of separate locked MT5 tests; not a native shared-margin simultaneous run.",
+            "chart": chart if chart.exists() else None,
+        }
     modes_path = FILTERED_AUDIT_ROOT / "deployment-mode-results.json"
     path = modes_path if modes_path.exists() else FILTERED_AUDIT_ROOT / "portfolio-results.json"
     chart = FILTERED_AUDIT_ROOT / "selected-portfolio-equity.png"
@@ -106,6 +136,17 @@ def _portfolio_audit(mode: str = "standard") -> dict[str, Any]:
         "caution": combined.get("caution"),
         "chart": chart if chart.exists() else None,
     }
+
+
+def _portfolio_monte_carlo() -> dict[str, Any]:
+    path = SELECTED_PORTFOLIO_ROOT / "selected-portfolio-results.json"
+    if not path.exists():
+        return {"available": False}
+    data = json.loads(path.read_text(encoding="utf-8-sig"))
+    monte = data.get("monte_carlo", {})
+    if not monte:
+        return {"available": False}
+    return {"available": True, **monte}
 
 
 @app.get("/store", response_class=HTMLResponse)
@@ -190,7 +231,7 @@ async def product_detail(
 @app.get("/portfolio", response_class=HTMLResponse)
 async def portfolio(
     request: Request,
-    mode: str = Query(default="standard", pattern=r"^(standard|safe)$"),
+    mode: str = Query(default="standard", pattern=r"^(standard|current|safe)$"),
 ) -> HTMLResponse:
     products = get_sellable_catalog()
     groups: dict[str, list[Product]] = {}
@@ -201,7 +242,8 @@ async def portfolio(
         "groups": groups,
         "portfolio": _portfolio_audit(mode),
         "standard_portfolio": _portfolio_audit("standard"),
-        "safe_portfolio": _portfolio_audit("safe"),
+        "current_portfolio": _portfolio_audit("current"),
+        "monte_carlo": _portfolio_monte_carlo(),
         "selected_mode": mode,
         "full_price": sum(product.price for product in products),
         "package_price": 1990,
@@ -323,7 +365,7 @@ async def portfolio_chart() -> FileResponse:
 
 @app.get("/api/portfolio/equity-series", name="portfolio_equity_series")
 async def api_portfolio_equity_series(
-    mode: str = Query(default="compare", pattern=r"^(standard|safe|compare)$"),
+    mode: str = Query(default="compare", pattern=r"^(standard|current|safe|compare)$"),
 ) -> JSONResponse:
     selected_mode = "standard" if mode == "compare" else mode
     series = [dict(point) for point in portfolio_equity_series(selected_mode)]
@@ -337,8 +379,8 @@ async def api_portfolio_equity_series(
     }
     if mode == "compare":
         payload["datasets"] = [
-            {"label": "Standard", "color": "#7ef7c7", "series": [dict(point) for point in portfolio_equity_series("standard")]},
-            {"label": "Full Safe", "color": "#68a7ff", "series": [dict(point) for point in portfolio_equity_series("safe")]},
+            {"label": "Applied per-EA setup", "color": "#7ef7c7", "series": [dict(point) for point in portfolio_equity_series("standard")]},
+            {"label": "Same 12 — original exits", "color": "#68a7ff", "series": [dict(point) for point in portfolio_equity_series("current")]},
         ]
     return JSONResponse(
         payload,
