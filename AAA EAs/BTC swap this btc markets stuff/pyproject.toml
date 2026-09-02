@@ -1,0 +1,28 @@
+[project]
+name = "btc-cme-basis-research"
+version = "0.1.0"
+description = "No-lookahead research harness for BTC spot versus CME Bitcoin futures reopen-basis strategies"
+requires-python = ">=3.11"
+dependencies = [
+  "matplotlib>=3.9",
+  "MetaTrader5>=5.0.5735",
+  "numpy>=2.1",
+  "pandas>=2.2",
+  "pyarrow>=18",
+  "scipy>=1.14",
+  "yfinance>=0.2.65",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.3"]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/btc_basis"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

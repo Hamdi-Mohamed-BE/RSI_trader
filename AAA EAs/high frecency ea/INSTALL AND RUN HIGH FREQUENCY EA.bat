@@ -12,7 +12,10 @@ echo.
 echo SAFER RECOMMENDED PRESET WILL BE APPLIED AUTOMATICALLY:
 echo   Fixed lot: 0.01 ^(dynamic scaling disabled^)
 echo   Session: 13:00-21:00 server time
+echo   Previous-M1 breakout with range and volume confirmation
+echo   Virtual one-shot OCO ^(prevents two broker orders filling together^)
 echo   Entry / SL / trail: 0.40 / 0.50 / 0.80 start, 0.45 distance
+echo   5-minute cooldown after a loss, 12 trades/day, $3 daily loss guard
 echo WARNING: the EA can place real trades immediately after MT5 restarts.
 echo.
 

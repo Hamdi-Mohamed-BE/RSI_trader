@@ -1,0 +1,184 @@
+{
+  "data": {
+    "spot_rows": 17307,
+    "futures_rows": 13873,
+    "spot_start": "2024-09-03 00:00:00+00:00",
+    "spot_end": "2026-09-02 01:00:00+00:00",
+    "futures_start": "2024-04-10 04:00:00+00:00",
+    "futures_end": "2026-09-02 00:00:00+00:00",
+    "development": [
+      "2024-09-03 00:00:00+00:00",
+      "2025-11-01 00:00:00+00:00"
+    ],
+    "locked_validation": [
+      "2025-11-01 00:00:00+00:00",
+      "2026-05-29 00:00:00+00:00"
+    ]
+  },
+  "market_structure": {
+    "legacy_cutoff": "2026-05-29 00:00:00+00:00",
+    "current_version_status": "not validated: CME moved crypto futures to 24/7 on 2026-05-29; Yahoo continuous data is not sufficient for the short maintenance-pause variant"
+  },
+  "directional": {
+    "cost_bps_round_trip": 12.0,
+    "locked_config": {
+      "mode": "directional",
+      "lookback_hours": 168,
+      "minimum_gap_hours": 30.0,
+      "minimum_spot_move": 0.005,
+      "entry_z": 0.5,
+      "exit_z": 0.25,
+      "stop_z_extension": 1.0,
+      "maximum_hold_hours": 24,
+      "stop_return": 0.015,
+      "risk_per_trade": 0.01,
+      "maximum_position_fraction": 1.0,
+      "round_trip_cost_bps": 12.0,
+      "roll_exclusion_days": 7,
+      "legacy_cutoff": "2026-05-29 00:00:00+00:00"
+    },
+    "development": {
+      "trades": 7,
+      "return_pct": 4.726968387997421,
+      "profit_factor": 3.3261085866431874,
+      "win_rate_pct": 57.14285714285714,
+      "max_drawdown_pct": 1.9638139822104939,
+      "sharpe": 2.743833153959992,
+      "recovery_factor": 2.4070346941295764,
+      "average_trade_pct": 0.6752983392456423,
+      "maximum_loss_streak": 2,
+      "average_holding_hours": 8.142857142857142,
+      "long_trades": 3,
+      "short_trades": 4
+    },
+    "validation": {
+      "trades": 13,
+      "return_pct": 2.873499906991861,
+      "profit_factor": 1.6026277445472537,
+      "win_rate_pct": 53.84615384615385,
+      "max_drawdown_pct": 2.2326114401525987,
+      "sharpe": 1.2978838381706217,
+      "recovery_factor": 1.2870577724870287,
+      "average_trade_pct": 0.22532704038375115,
+      "maximum_loss_streak": 3,
+      "average_holding_hours": 3.4615384615384617,
+      "long_trades": 6,
+      "short_trades": 7
+    },
+    "full_legacy": {
+      "trades": 20,
+      "return_pct": 7.736297727221886,
+      "profit_factor": 2.110743739057417,
+      "win_rate_pct": 55.00000000000001,
+      "max_drawdown_pct": 2.2326114401525987,
+      "sharpe": 1.9360647964637294,
+      "recovery_factor": 3.465133962895537,
+      "average_trade_pct": 0.3828169949854131,
+      "maximum_loss_streak": 3,
+      "average_holding_hours": 5.1,
+      "long_trades": 9,
+      "short_trades": 11
+    },
+    "monte_carlo_full": {
+      "simulations": 10000,
+      "trades": 20,
+      "loss_probability_pct": 10.97,
+      "return_p5_pct": -2.1696671945412884,
+      "return_median_pct": 7.574792493160154,
+      "return_p95_pct": 19.576951542379557,
+      "max_drawdown_median_pct": 2.8312101692783367,
+      "max_drawdown_p95_pct": 6.183227474609274
+    },
+    "monte_carlo_validation": {
+      "simulations": 10000,
+      "trades": 13,
+      "loss_probability_pct": 26.369999999999997,
+      "return_p5_pct": -3.8969309367290976,
+      "return_median_pct": 2.7098801674064976,
+      "return_p95_pct": 10.829810831630756,
+      "max_drawdown_median_pct": 2.3855459235097576,
+      "max_drawdown_p95_pct": 5.326514419709646
+    }
+  },
+  "hedged": {
+    "cost_bps_round_trip": 32.0,
+    "locked_config": {
+      "mode": "hedged",
+      "lookback_hours": 168,
+      "minimum_gap_hours": 30.0,
+      "minimum_spot_move": 0.005,
+      "entry_z": 0.5,
+      "exit_z": 0.0,
+      "stop_z_extension": 1.0,
+      "maximum_hold_hours": 48,
+      "stop_return": 0.015,
+      "risk_per_trade": 0.01,
+      "maximum_position_fraction": 1.0,
+      "round_trip_cost_bps": 32.0,
+      "roll_exclusion_days": 7,
+      "legacy_cutoff": "2026-05-29 00:00:00+00:00"
+    },
+    "development": {
+      "trades": 7,
+      "return_pct": 0.5409933276696366,
+      "profit_factor": 2.196629675429075,
+      "win_rate_pct": 57.14285714285714,
+      "max_drawdown_pct": 0.33029509567020776,
+      "sharpe": 2.2597879117029787,
+      "recovery_factor": 1.6379090539382586,
+      "average_trade_pct": 0.07736727681132881,
+      "maximum_loss_streak": 1,
+      "average_holding_hours": 13.0,
+      "long_trades": 3,
+      "short_trades": 4
+    },
+    "validation": {
+      "trades": 13,
+      "return_pct": 3.1418488067398,
+      "profit_factor": 6.357995110999815,
+      "win_rate_pct": 69.23076923076923,
+      "max_drawdown_pct": 0.4122606775843307,
+      "sharpe": 4.514100246862925,
+      "recovery_factor": 7.621024700074902,
+      "average_trade_pct": 0.2389150643164343,
+      "maximum_loss_streak": 2,
+      "average_holding_hours": 10.384615384615385,
+      "long_trades": 6,
+      "short_trades": 7
+    },
+    "full_legacy": {
+      "trades": 20,
+      "return_pct": 3.6998393268193652,
+      "profit_factor": 4.533493115697339,
+      "win_rate_pct": 65.0,
+      "max_drawdown_pct": 0.4122606775843307,
+      "sharpe": 3.8366618481242867,
+      "recovery_factor": 8.974514252726754,
+      "average_trade_pct": 0.18237333868964736,
+      "maximum_loss_streak": 2,
+      "average_holding_hours": 11.3,
+      "long_trades": 9,
+      "short_trades": 11
+    },
+    "monte_carlo_full": {
+      "simulations": 10000,
+      "trades": 20,
+      "loss_probability_pct": 0.5700000000000001,
+      "return_p5_pct": 1.2117215284187866,
+      "return_median_pct": 3.6720872948400873,
+      "return_p95_pct": 6.3262366534134475,
+      "max_drawdown_median_pct": 0.4122606775843307,
+      "max_drawdown_p95_pct": 0.9177444875149346
+    },
+    "monte_carlo_validation": {
+      "simulations": 10000,
+      "trades": 13,
+      "loss_probability_pct": 0.65,
+      "return_p5_pct": 0.9738682665316167,
+      "return_median_pct": 3.1212751910867587,
+      "return_p95_pct": 5.4650777836294875,
+      "max_drawdown_median_pct": 0.3356780777756141,
+      "max_drawdown_p95_pct": 0.716023314623826
+    }
+  }
+}

@@ -16,6 +16,7 @@ PACKAGE_ROOT = EAS_ROOT / "BM Trading Robust Sets 2026-08-04"
 BOOKMAPER_ROOT = EAS_ROOT / "BookMaper"
 FILTERED_AUDIT_ROOT = PACKAGE_ROOT / "Selected Portfolio Audit 2026-08-28"
 SELECTED_PORTFOLIO_ROOT = PACKAGE_ROOT / "Dynamic Trailing Session Research 2026-09-01"
+RSI_VWAP_ROOT = PACKAGE_ROOT / "RSI VWAP Research 2026-09-02"
 INSTALLER_PATH = PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1"
 WHATSAPP_NUMBER = "21693830957"
 
@@ -100,10 +101,31 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
         "dynamic-only",
         "Dynamic 50/20",
     ),
+    "XAU RSI VWAP": ("rsi-vwap-xau", "current", "Current EA exits"),
 }
 
 
 CORE_META: dict[str, dict[str, Any]] = {
+    "XAU RSI VWAP": {
+        "strategy": "RSI-of-VWAP pullback continuation",
+        "tagline": "A long-only XAUUSD H1 pullback model built from session VWAP momentum and a structural swing stop.",
+        "description": "This locked XAUUSD build calculates a broker-volume VWAP that resets each broker day, applies Wilder RSI to that VWAP series, and buys only when the completed H1 signal crosses up from an unusually oversold reading. The selected setup uses a recent-swing stop and a compact 0.5R target.",
+        "session": "All broker sessions / H1",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, the exact selected SET and its locked MT5 Every Tick report were reviewed together.",
+        "logic": [
+            {"title": "Rebuild the daily anchored VWAP", "detail": "On every new H1 bar, the EA reconstructs VWAP from completed chart bars and resets the cumulative price-volume calculation at each broker-day boundary. Real volume is used when available, otherwise broker tick volume is used."},
+            {"title": "Measure momentum on VWAP rather than price", "detail": "A 16-period Wilder RSI is calculated from the reconstructed VWAP series. This deliberately smooths the input and asks whether accepted value, rather than one candle's close, is recovering from an extreme."},
+            {"title": "Enter only the completed oversold cross", "detail": "The selected build is long-only. It requires the prior completed RSI-of-VWAP value to be at or below 18 and the newest completed value to cross above 18; the signal is evaluated once when the next H1 bar begins."},
+            {"title": "Place the stop beyond recent structure", "detail": "The stop is placed below the lowest low of the preceding five completed H1 candles with an additional 0.10 ATR(14) buffer. Broker minimum stop distance is enforced before position size is calculated."},
+            {"title": "Size the trade from current equity", "detail": "OrderCalcProfit measures the one-lot loss from entry to the structural stop, then volume is rounded down to target 1% of current equity. The dynamic BAT can replace that percentage without changing the signal rules."},
+            {"title": "Take the compact continuation objective", "detail": "The locked target is 0.5 times initial risk. A break-even rule is configured at 0.75R, which is beyond the target and therefore does not activate in normal fills; ATR trailing and maximum-hold exits are disabled."},
+        ],
+        "risk_note": "Dynamic equity risk, default 1%, with no spread ceiling in the locked research preset. The 0.5R target needs a win rate above roughly 66.7% before costs; the locked year achieved 72.73% over only 44 trades.",
+        "price": 249,
+        "accent": "gold",
+        "featured": False,
+    },
     "BTC Top Down FVG Liquidity": {
         "strategy": "Liquidity sweep and fair-value-gap retest",
         "tagline": "BTCUSD M15 reversals aligned with the H4 trend and entered from a three-candle imbalance retest.",
@@ -554,6 +576,7 @@ def parse_installer_items() -> list[dict[str, Any]]:
                 "expert_source": _extract_string(block, "ExpertSource"),
                 "set_source": set_source,
                 "optional_symbol": bool(re.search(r"\bOptionalSymbol\s*=\s*\$true", block)),
+                "supports_safe_filter": not bool(re.search(r"\bSupportsSafeFilter\s*=\s*\$false", block)),
             }
         )
     if not items:
@@ -912,6 +935,40 @@ def _top_down_fvg_one_year_evidence(symbol: str) -> Evidence | None:
     )
 
 
+def _rsi_vwap_xau_evidence() -> Evidence | None:
+    path = RSI_VWAP_ROOT / "final-audit.json"
+    if not path.exists():
+        return None
+    data = _load_json(path)
+    row = next(
+        (
+            item for item in data.get("rows", [])
+            if item.get("symbol") == "xauusd"
+            and item.get("timeframe") == "h1"
+            and item.get("variant") == "optimized"
+        ),
+        None,
+    )
+    if row is None:
+        return None
+    report = Path(str(row["path"]))
+    trades = int(row["trades"])
+    return Evidence(
+        label="Locked one-year MT5 research candidate",
+        period=f"{data['period']['from']} to {data['period']['to']}",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["equity_dd_pct"]),
+        win_rate_pct=float(row["win_rate_pct"]),
+        trades=trades,
+        history_quality=str(row.get("history_quality", "99%")),
+        source_note="Exness XAUUSD H1, native MT5 Every Tick history, broker spread, commission, swap and random execution delay using the exact 1% risk locked preset.",
+        chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+        status="Research evidence",
+        caution="The locked result contains only 44 trades and its Monte Carlo return P5 was -1.71%. Treat it as a demo forward-test candidate, not a proven production edge.",
+    )
+
+
 def _engineered_liquidity_evidence(symbol: str, safe: bool = False) -> Evidence | None:
     root = PACKAGE_ROOT / "Engineered Liquidity Sweep Research 2026-08-30"
     improvement_path = root / "IMPROVEMENT RESULTS.json"
@@ -1094,6 +1151,7 @@ def get_catalog() -> list[Product]:
     btc_engineered = _engineered_liquidity_evidence("BTCUSD")
     xau_engineered_safe = _engineered_liquidity_evidence("XAUUSD", safe=True)
     btc_engineered_safe = _engineered_liquidity_evidence("BTCUSD", safe=True)
+    rsi_vwap_xau = _rsi_vwap_xau_evidence()
     products: list[Product] = []
     for item in parse_installer_items():
         meta = _meta_for(item)
@@ -1114,6 +1172,8 @@ def get_catalog() -> list[Product]:
             evidence = xau_engineered
         elif item["label"] == "Engineered Liquidity BTC":
             evidence = btc_engineered
+        elif item["label"] == "XAU RSI VWAP":
+            evidence = rsi_vwap_xau
         if item["label"] in filtered:
             evidence = filtered[item["label"]]
         elif item["label"] == "XAU Markov Regime":
@@ -1121,7 +1181,7 @@ def get_catalog() -> list[Product]:
         if item["label"] in selected:
             evidence = selected[item["label"]]
         one_year_result = evidence
-        safe_supported = True
+        safe_supported = bool(item["supports_safe_filter"])
         safe_evidence = all_safe.get(item["label"]) if safe_supported else None
         if item["label"] in filtered:
             safe_evidence = filtered[item["label"]]
@@ -1142,7 +1202,7 @@ def get_catalog() -> list[Product]:
         if evidence and evidence.caution:
             limitations.append(evidence.caution)
         if not safe_supported:
-            limitations.append("This vendor EX5 has no readable source, so Full Safe cannot be embedded; it remains on its standard inputs in both installers.")
+            limitations.append("No embedded Markov-gate version has been validated for this EA, so Full Safe installs it with the same locked native inputs as Standard mode.")
         price = int(meta["price"])
         display_label = (
             "News Pulse"

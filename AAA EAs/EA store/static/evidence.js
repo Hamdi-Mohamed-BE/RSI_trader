@@ -110,6 +110,13 @@
       fill: '#baffdf', 'font-size': 12, 'font-weight': 700,
       'font-family': 'IBM Plex Mono, monospace', 'text-anchor': 'end',
     }, money(finalPoint.balance, payload.currency || 'USD')));
+    if (payload.notice) {
+      svg.appendChild(svgNode('text', {
+        x: left, y: height - 30, fill: '#d4b968', 'font-size': 10,
+        'font-family': 'IBM Plex Mono, monospace',
+      }, payload.notice));
+      shell.title = payload.notice;
+    }
   }
 
   async function loadChart(shell) {

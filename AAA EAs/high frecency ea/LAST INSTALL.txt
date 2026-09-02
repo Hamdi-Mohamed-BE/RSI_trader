@@ -1,4 +1,4 @@
-﻿Installed: 2026-09-01 18:53:12 +01:00
+﻿Installed: 2026-09-02 11:12:40 +01:00
 Terminal: C:\Program Files\MetaTrader 5\terminal64.exe
 Data folder: C:\Users\hama101\AppData\Roaming\MetaQuotes\Terminal\D0E8209F77C8CF37AD8BF550E51FF075
 Profile: HIGH FREQUENCY OCO - XAUUSD M1
@@ -10,7 +10,15 @@ Dynamic equity scaling: disabled
 Minimum lot: 0.01
 Maximum lot: 0.01
 Session filter: enabled, 13:00-21:00 server time
-Preset: SAFER RECOMMENDED 50 USD AUDIT
+Order mode: virtual one-shot OCO; no simultaneous broker pending pair
+Trigger: previous M1 high/low plus offset
+Range filter: previous M1 range >= 0.5 ATR
+Volume filter: previous M1 tick volume >= 1.0x 20-bar average
+Maximum spread: 0.25 price units
+Cooldown after win/loss: 60 / 300 seconds
+Maximum trades/day: 12
+Daily loss guard: 3.00 USD
+Preset: LIVE GUARD V1.20
 Settings: C:\Users\hama101\Desktop\geek\ai trader\AAA EAs\high frecency ea\Settings\LAST INSTALLED - XAUUSD M1 - Current Price OCO.set
 Main portfolio BAT changed: no
 EA website changed: no

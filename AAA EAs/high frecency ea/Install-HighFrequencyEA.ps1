@@ -159,6 +159,17 @@ $setText = [regex]::Replace($setText, '(?m)^InpMaximumConfiguredLot=.*$', 'InpMa
 $setText = [regex]::Replace($setText, '(?m)^InpUseSessionFilter=.*$', 'InpUseSessionFilter=true')
 $setText = [regex]::Replace($setText, '(?m)^InpSessionStartHour=.*$', 'InpSessionStartHour=13')
 $setText = [regex]::Replace($setText, '(?m)^InpSessionEndHour=.*$', 'InpSessionEndHour=21')
+$setText = [regex]::Replace($setText, '(?m)^InpUseVirtualOCO=.*$', 'InpUseVirtualOCO=true')
+$setText = [regex]::Replace($setText, '(?m)^InpUsePreviousBarTriggers=.*$', 'InpUsePreviousBarTriggers=true')
+$setText = [regex]::Replace($setText, '(?m)^InpMinimumPreviousRangeATR=.*$', 'InpMinimumPreviousRangeATR=0.5')
+$setText = [regex]::Replace($setText, '(?m)^InpMinimumVolumeRatio=.*$', 'InpMinimumVolumeRatio=1.0')
+$setText = [regex]::Replace($setText, '(?m)^InpMaximumSpreadPrice=.*$', 'InpMaximumSpreadPrice=0.25')
+$setText = [regex]::Replace($setText, '(?m)^InpCooldownAfterWinSeconds=.*$', 'InpCooldownAfterWinSeconds=60')
+$setText = [regex]::Replace($setText, '(?m)^InpCooldownAfterLossSeconds=.*$', 'InpCooldownAfterLossSeconds=300')
+$setText = [regex]::Replace($setText, '(?m)^InpMaximumTradesPerDay=.*$', 'InpMaximumTradesPerDay=12')
+$setText = [regex]::Replace($setText, '(?m)^InpMaximumDailyLossMoney=.*$', 'InpMaximumDailyLossMoney=3.00')
+$setText = [regex]::Replace($setText, '(?m)^InpBrokerSafetyBufferPrice=.*$', 'InpBrokerSafetyBufferPrice=0.10')
+$setText = [regex]::Replace($setText, '(?m)^InpMinimumTrailStepPrice=.*$', 'InpMinimumTrailStepPrice=0.10')
 $generatedLocalSet = Join-Path $PackageRoot "Settings\$GeneratedSetName"
 [IO.File]::WriteAllText($generatedLocalSet, $setText.TrimEnd() + "`r`n", [Text.UTF8Encoding]::new($false))
 $inputLines = (($setText -split '\r?\n') | Where-Object { $_.Trim() -ne '' }) -join "`r`n"
@@ -313,7 +324,15 @@ $manifest = @(
     'Minimum lot: 0.01'
     'Maximum lot: 0.01'
     'Session filter: enabled, 13:00-21:00 server time'
-    'Preset: SAFER RECOMMENDED 50 USD AUDIT'
+    'Order mode: virtual one-shot OCO; no simultaneous broker pending pair'
+    'Trigger: previous M1 high/low plus offset'
+    'Range filter: previous M1 range >= 0.5 ATR'
+    'Volume filter: previous M1 tick volume >= 1.0x 20-bar average'
+    'Maximum spread: 0.25 price units'
+    'Cooldown after win/loss: 60 / 300 seconds'
+    'Maximum trades/day: 12'
+    'Daily loss guard: 3.00 USD'
+    'Preset: LIVE GUARD V1.20'
     'Settings: ' + $generatedLocalSet
     'Main portfolio BAT changed: no'
     'EA website changed: no'

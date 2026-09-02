@@ -94,9 +94,9 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
 
 def test_recommended_exit_settings_are_synced_per_ea() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 12
+    assert len(products) == 13
     assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 9
-    assert sum(product.exit_mode == "Current EA exits" for product in products) == 3
+    assert sum(product.exit_mode == "Current EA exits" for product in products) == 4
     assert all(product.deployment_session == "All day / native strategy window" for product in products)
     assert all("Applied BAT overlay" in product.logic[-1].detail for product in products if product.exit_mode == "Dynamic 50/20")
     assert all("Dynamic 50/20 overlay is disabled" in product.logic[-1].detail for product in products if product.exit_mode == "Current EA exits")
@@ -104,6 +104,12 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert recommended_bat.is_file()
     bat_text = recommended_bat.read_text(encoding="utf-8")
     assert "-SafetyMode STANDARD" in bat_text
+
+    rsi_vwap = next(product for product in products if product.label == "XAU RSI VWAP")
+    assert rsi_vwap.timeframe == "H1"
+    assert rsi_vwap.exit_mode == "Current EA exits"
+    assert rsi_vwap.safe_filter_supported is False
+    assert "0.5 times initial risk" in rsi_vwap.logic[-1].detail
 
 
 def test_detail_page_renders_code_based_logic_details() -> None:

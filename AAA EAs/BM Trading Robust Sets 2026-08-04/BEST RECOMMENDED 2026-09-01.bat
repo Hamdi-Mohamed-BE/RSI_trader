@@ -2,9 +2,9 @@
 setlocal
 title BM Trading - Best Recommended 2026-09-01
 
-echo Applying the locked 12-EA recommended portfolio...
+echo Applying the locked 13-EA recommended portfolio...
 echo - 9 EAs use Dynamic 50-20 stop management
-echo - 3 EAs retain their original exits
+echo - 4 EAs retain their original exits
 echo - Research session filters are disabled
 echo - Engineered Liquidity BTC, US100 Fabio ORB and XAU Markov are excluded
 echo.

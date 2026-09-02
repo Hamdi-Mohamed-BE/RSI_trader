@@ -2,7 +2,8 @@
 setlocal
 title BM Trading +20 Percent - Any Balance Auto Risk
 
-powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Install-BMTradingPortfolio.ps1" -AccountProfile AUTO %*
+rem This compatibility launcher now delegates to the maintained parent installer.
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\_Auto Deploy\Install-BMTradingPortfolio.ps1" -AccountProfile AUTO %*
 set "BM_EXIT=%ERRORLEVEL%"
 
 echo.

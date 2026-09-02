@@ -1,4 +1,8 @@
-# OCO small-balance audit — $50
+# SUPERSEDED — generated-tick result, not live-valid
+
+This report used MT5 `Model=0`, which generates intra-minute ticks from M1 bars. The EA frequently closes in seconds, so the result is not suitable evidence for live trading. The 2026-09-01 demo session later recorded 891 trades, PF 0.48 and -$214.95. Use `Live Diagnosis 2026-09-01\DIAGNOSIS AND FIX.md` and the Model=4 real-tick reports instead.
+
+# Former OCO small-balance audit — $50
 
 ## Decision
 

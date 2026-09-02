@@ -101,7 +101,7 @@ def _portfolio_audit(mode: str = "standard") -> dict[str, Any]:
             "verdict": "PROFITABLE LOCKED-YEAR OVERLAY",
             "period": f"{combined['start_date']} to {combined['end_date']}",
             "mode": mode,
-            "label": "Applied per-EA configuration" if mode == "standard" else "Same 12 EAs — original exits",
+            "label": "Applied per-EA configuration" if mode == "standard" else "Original audited 12 — original exits",
             "individually_filtered_eas": sum(1 for value in data.get("selected_setup", {}).values() if value == "dynamic-only") if mode == "standard" else 0,
             "safe_by_design_eas": 0,
             "vendor_unchanged_eas": 0,
@@ -336,6 +336,9 @@ async def evidence_series(
         "currency": "USD",
         "series": series,
     }
+    if all(bool(point.get("summary")) for point in series):
+        payload["series_kind"] = "summary"
+        payload["notice"] = "Start-to-finish return line — the detailed trade-by-trade MT5 curve is not archived on this server."
     if mode == "compare" and product.safe_filter_supported:
         safe = product_equity_series(product, "safe")
         if len(safe) >= 2:
@@ -380,7 +383,7 @@ async def api_portfolio_equity_series(
     if mode == "compare":
         payload["datasets"] = [
             {"label": "Applied per-EA setup", "color": "#7ef7c7", "series": [dict(point) for point in portfolio_equity_series("standard")]},
-            {"label": "Same 12 — original exits", "color": "#68a7ff", "series": [dict(point) for point in portfolio_equity_series("current")]},
+            {"label": "Audited 12 — original exits", "color": "#68a7ff", "series": [dict(point) for point in portfolio_equity_series("current")]},
         ]
     return JSONResponse(
         payload,

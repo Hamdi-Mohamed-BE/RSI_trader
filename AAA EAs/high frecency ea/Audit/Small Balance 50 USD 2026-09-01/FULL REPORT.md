@@ -1,4 +1,8 @@
-# OCO small-balance audit — $50
+# SUPERSEDED — generated-tick study, not live-valid
+
+This study used MT5 `Model=0` generated ticks. Because the EA operates on a sub-minute horizon, the headline result must not be used as evidence of live profitability. See `Live Diagnosis 2026-09-01\DIAGNOSIS AND FIX.md` for the live failure and Model=4 reality check.
+
+# Former OCO small-balance audit — $50
 
 ## Decision
 

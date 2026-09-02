@@ -79,7 +79,7 @@ Login=$activeLogin
 Deposit=10000
 Currency=USD
 Leverage=1:2000
-Model=0
+Model=4
 ExecutionMode=1
 Optimization=0
 FromDate=$($FromDate.ToString('yyyy.MM.dd'))
@@ -94,7 +94,7 @@ Visual=0
 [IO.File]::WriteAllText($configPath,$config,[Text.UTF8Encoding]::new($true))
 Get-ChildItem -LiteralPath $PortableReportRoot -Filter ($ReportName + '*') -ErrorAction SilentlyContinue | Remove-Item -Force
 
-Write-Host "Running verified MT5 Every Tick test" -ForegroundColor Cyan
+Write-Host "Running verified MT5 real-tick test" -ForegroundColor Cyan
 Write-Host "EA:     XAU M1 Current Price OCO EA"
 Write-Host "Symbol: $symbol (auto-detected; the current tester UI selection is ignored)" -ForegroundColor Yellow
 Write-Host "Period: $($FromDate.ToString('yyyy-MM-dd')) through $($ToDate.ToString('yyyy-MM-dd'))"

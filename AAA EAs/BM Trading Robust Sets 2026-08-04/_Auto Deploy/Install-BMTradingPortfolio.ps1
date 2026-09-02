@@ -43,9 +43,10 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 }
 
 function Get-PortfolioItems {
-    # Locked 2026-09-01 selected portfolio. Each EA owns its selected exit mode:
+    # Locked selected portfolio. Each EA owns its selected exit mode:
     # current exits for LTA, BTC Top Down and Nasdaq Overnight; M15 50%/20%
-    # dynamic protection for the other nine EAs. Session filtering is disabled.
+    # dynamic protection for nine EAs. XAU RSI VWAP keeps its locked native exits.
+    # Session filtering is disabled.
     # Risk defaults to 1% planned per EA trade.
     $items = @(
         [pscustomobject]@{
@@ -119,6 +120,12 @@ function Get-PortfolioItems {
             Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\12 News Pulse Long Only - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+        },
+        [pscustomobject]@{
+            Label = 'XAU RSI VWAP'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 60; Expert = 'RSI VWAP Managed EA.ex5'
+            ExpertSource = 'RSI VWAP Research 2026-09-02\EA\RSI VWAP Managed EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\13 XAU RSI VWAP - CURRENT - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true; SupportsSafeFilter = $false
         }
     )
 
@@ -135,7 +142,9 @@ function Get-PortfolioItems {
         if (-not $item.PSObject.Properties['OptionalSymbol']) {
             $item | Add-Member -NotePropertyName OptionalSymbol -NotePropertyValue $false
         }
-        $item | Add-Member -NotePropertyName SupportsSafeFilter -NotePropertyValue $true
+        if (-not $item.PSObject.Properties['SupportsSafeFilter']) {
+            $item | Add-Member -NotePropertyName SupportsSafeFilter -NotePropertyValue $true
+        }
         $item | Add-Member -NotePropertyName SafeByDesign -NotePropertyValue $false
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
         $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $item.SetSource)

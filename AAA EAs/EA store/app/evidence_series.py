@@ -70,6 +70,13 @@ SAFE_CUSTOM_REPORTS: dict[str, Path] = {
 }
 
 CUSTOM_REPORTS: dict[str, Path] = {
+    "XAU RSI VWAP": (
+        PACKAGE_ROOT
+        / "RSI VWAP Research 2026-09-02"
+        / "Backtest Reports"
+        / "Locked Last Year Every Tick 2025-2026"
+        / "xauusd--h1--optimized--locked.htm"
+    ),
     "Engineered Liquidity XAU": (
         PACKAGE_ROOT
         / "Engineered Liquidity Sweep Research 2026-08-30"
@@ -110,6 +117,7 @@ ROW_RE = re.compile(r"<tr\b[^>]*>(.*?)</tr>", re.IGNORECASE | re.DOTALL)
 CELL_RE = re.compile(r"<td\b[^>]*>(.*?)</td>", re.IGNORECASE | re.DOTALL)
 TAG_RE = re.compile(r"<[^>]+>")
 TIME_RE = re.compile(r"^\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2}$")
+DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
 
 def _load_json(path: Path) -> Any:
@@ -176,6 +184,22 @@ def _normalise_json_series(values: list[dict[str, Any]]) -> list[dict[str, Any]]
         text_time = str(timestamp).replace(" ", "T", 1)
         series.append({"time": text_time, "balance": round(float(balance), 2)})
     return _sample(series)
+
+
+def _summary_performance_series(product: Product, mode: str) -> list[dict[str, Any]]:
+    """Honest two-point fallback when the detailed MT5 deal path is not deployed."""
+    evidence = product.safe_evidence if mode == "safe" and product.safe_evidence else product.evidence
+    if evidence is None:
+        return []
+    dates = DATE_RE.findall(evidence.period)
+    if len(dates) < 2:
+        return []
+    initial = 10_000.0
+    final = initial * (1.0 + float(evidence.return_pct) / 100.0)
+    return [
+        {"time": f"{dates[0]}T00:00:00", "balance": initial, "summary": True},
+        {"time": f"{dates[-1]}T23:59:59", "balance": round(final, 2), "summary": True},
+    ]
 
 
 @lru_cache(maxsize=1)
@@ -321,17 +345,22 @@ def product_equity_series(product: Product, mode: str = "standard") -> list[dict
     if product.label in native_filtered:
         path = PACKAGE_ROOT / "_Backtests" / "MT5-DMC-20260811" / "reports" / "selected-regime-20260828" / native_filtered[product.label]
         if path.is_file():
-            return [dict(point) for point in parse_mt5_balance_series(path)]
+            parsed = [dict(point) for point in parse_mt5_balance_series(path)]
+            if parsed:
+                return parsed
     custom_report = CUSTOM_REPORTS.get(product.label)
     if custom_report is not None and custom_report.is_file():
-        return [dict(point) for point in parse_mt5_balance_series(custom_report)]
+        parsed = [dict(point) for point in parse_mt5_balance_series(custom_report)]
+        if parsed:
+            return parsed
     custom = _custom_series(product.label)
     if custom:
         return [dict(point) for point in custom]
     report = _active_report_for(product.installer_label)
     if report is None:
-        return []
-    return [dict(point) for point in parse_mt5_balance_series(report)]
+        return _summary_performance_series(product, mode)
+    parsed = [dict(point) for point in parse_mt5_balance_series(report)]
+    return parsed if parsed else _summary_performance_series(product, mode)
 
 
 @lru_cache(maxsize=4)
