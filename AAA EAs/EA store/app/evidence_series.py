@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import math
 import re
+import statistics
+from datetime import date, datetime, time
 from functools import lru_cache
 from html import unescape
 from pathlib import Path
@@ -70,6 +73,13 @@ SAFE_CUSTOM_REPORTS: dict[str, Path] = {
 }
 
 CUSTOM_REPORTS: dict[str, Path] = {
+    "XAU Trend Progression": (
+        PACKAGE_ROOT
+        / "Trend Progression Research 2026-09-02"
+        / "Backtest Reports"
+        / "locked"
+        / "xauusd--h4--optimized--locked.htm"
+    ),
     "XAU RSI VWAP": (
         PACKAGE_ROOT
         / "RSI VWAP Research 2026-09-02"
@@ -245,6 +255,10 @@ def _selected_product_series(product: Product, use_current: bool = False) -> lis
 def _selected_portfolio_series(use_current: bool = False) -> tuple[dict[str, Any], ...]:
     events: list[tuple[str, float]] = []
     for ea_id, selected_variant, _exit_mode in SELECTED_CONFIGS.values():
+        # The public combined audit was locked before XAU RSI VWAP was added.
+        # Keep its separate evidence out of this historical 12-EA overlay.
+        if ea_id == "rsi-vwap-xau":
+            continue
         variant = "current" if use_current else selected_variant
         row = _selected_rows().get((ea_id, variant))
         if row is None:
@@ -264,7 +278,7 @@ def _selected_portfolio_series(use_current: bool = False) -> tuple[dict[str, Any
     for timestamp, delta in sorted(events, key=lambda item: item[0]):
         balance += delta
         combined.append({"time": timestamp, "balance": round(balance, 2)})
-    return tuple(_sample(combined))
+    return tuple(_sample(combined, maximum=5_000))
 
 
 @lru_cache(maxsize=8)
@@ -372,11 +386,11 @@ def portfolio_equity_series(mode: str = "standard") -> tuple[dict[str, Any], ...
     if DEPLOYMENT_MODES_PATH.is_file():
         data = _load_json(DEPLOYMENT_MODES_PATH)
         selected = data.get(mode, data.get("standard", {}))
-        return tuple(_sample(selected.get("series", [])))
+        return tuple(_sample(selected.get("series", []), maximum=5_000))
     filtered_path = FILTERED_AUDIT_ROOT / "portfolio-results.json"
     if filtered_path.is_file():
         data = _load_json(filtered_path)
-        return tuple(_sample(data.get("combined", {}).get("series", [])))
+        return tuple(_sample(data.get("combined", {}).get("series", []), maximum=5_000))
     events: list[tuple[str, float]] = []
     for row in _active_bot_rows():
         filename = row.get("file")
@@ -393,4 +407,142 @@ def portfolio_equity_series(mode: str = "standard") -> tuple[dict[str, Any], ...
     for timestamp, delta in sorted(events, key=lambda item: item[0]):
         balance += delta
         combined.append({"time": timestamp, "balance": round(balance, 2)})
-    return tuple(_sample(combined))
+    return tuple(_sample(combined, maximum=5_000))
+
+
+def _point_datetime(value: str) -> datetime:
+    return datetime.fromisoformat(str(value).replace("Z", "+00:00")).replace(tzinfo=None)
+
+
+def _date_bounds(from_date: date | None, to_date: date | None) -> tuple[datetime | None, datetime | None]:
+    start = datetime.combine(from_date, time.min) if from_date else None
+    end = datetime.combine(to_date, time.max) if to_date else None
+    return start, end
+
+
+def _trade_events(
+    series: list[dict[str, Any]],
+    expected_trades: int | None,
+    label: str,
+) -> list[dict[str, Any]]:
+    """Reconstruct closed-trade cash flow from archived MT5 balance events.
+
+    MT5 reports record a small entry commission balance event followed by the
+    close event. Selecting the largest expected deltas identifies the closes;
+    intervening costs are rolled into that trade's net outcome.
+    """
+    if len(series) < 2 or all(bool(point.get("summary")) for point in series):
+        return []
+    deltas = [
+        {
+            "index": index,
+            "time": str(series[index]["time"]),
+            "delta": float(series[index]["balance"]) - float(series[index - 1]["balance"]),
+        }
+        for index in range(1, len(series))
+    ]
+    nonzero = [item for item in deltas if abs(float(item["delta"])) > 1e-9]
+    count = min(max(int(expected_trades or len(nonzero)), 0), len(nonzero))
+    close_indexes = {
+        int(item["index"])
+        for item in sorted(nonzero, key=lambda item: abs(float(item["delta"])), reverse=True)[:count]
+    }
+    pending = 0.0
+    trades: list[dict[str, Any]] = []
+    for item in deltas:
+        pending += float(item["delta"])
+        if int(item["index"]) not in close_indexes:
+            continue
+        trades.append(
+            {
+                "number": len(trades) + 1,
+                "close_time": str(item["time"]),
+                "ea": label,
+                "net_profit": round(pending, 2),
+                "result": "Win" if pending > 0 else "Loss" if pending < 0 else "Flat",
+                "source": "Reconstructed from archived MT5 balance events",
+            }
+        )
+        pending = 0.0
+    return trades
+
+
+def analyse_equity_series(
+    series: list[dict[str, Any]] | tuple[dict[str, Any], ...],
+    *,
+    expected_trades: int | None,
+    label: str,
+    from_date: date | None = None,
+    to_date: date | None = None,
+) -> dict[str, Any]:
+    ordered = sorted((dict(point) for point in series), key=lambda point: _point_datetime(str(point["time"])))
+    if len(ordered) < 2:
+        return {"series": [], "trades": [], "stats": None}
+    start, end = _date_bounds(from_date, to_date)
+    available_start = _point_datetime(str(ordered[0]["time"]))
+    available_end = _point_datetime(str(ordered[-1]["time"]))
+    start = max(start or available_start, available_start)
+    end = min(end or available_end, available_end)
+    if start > end:
+        return {"series": [], "trades": [], "stats": None}
+
+    anchor = ordered[0]
+    for point in ordered:
+        if _point_datetime(str(point["time"])) < start:
+            anchor = point
+        else:
+            break
+    sliced = [{"time": start.isoformat(), "balance": round(float(anchor["balance"]), 2)}]
+    sliced.extend(
+        point for point in ordered
+        if start < _point_datetime(str(point["time"])) <= end
+    )
+    if len(sliced) == 1:
+        sliced.append({"time": end.isoformat(), "balance": sliced[0]["balance"]})
+
+    all_trades = _trade_events(ordered, expected_trades, label)
+    trades = [
+        trade for trade in all_trades
+        if start <= _point_datetime(str(trade["close_time"])) <= end
+    ]
+    initial = float(sliced[0]["balance"])
+    final = float(sliced[-1]["balance"])
+    peak = initial
+    max_drawdown_cash = 0.0
+    max_drawdown_pct = 0.0
+    for point in sliced:
+        balance = float(point["balance"])
+        peak = max(peak, balance)
+        drawdown_cash = peak - balance
+        max_drawdown_cash = max(max_drawdown_cash, drawdown_cash)
+        if peak:
+            max_drawdown_pct = max(max_drawdown_pct, drawdown_cash / peak * 100.0)
+
+    summary_only = all(bool(point.get("summary")) for point in ordered)
+    outcomes = [float(trade["net_profit"]) for trade in trades]
+    gross_profit = sum(value for value in outcomes if value > 0)
+    gross_loss = -sum(value for value in outcomes if value < 0)
+    profit_factor = gross_profit / gross_loss if gross_loss > 0 else (999.0 if gross_profit > 0 else None)
+    win_rate = (sum(value > 0 for value in outcomes) / len(outcomes) * 100.0) if outcomes else None
+    sharpe = None
+    if len(outcomes) > 1:
+        deviation = statistics.pstdev(outcomes)
+        if deviation > 0:
+            sharpe = statistics.mean(outcomes) / deviation * math.sqrt(len(outcomes))
+    net = final - initial
+    stats = {
+        "initial_balance": round(initial, 2),
+        "final_balance": round(final, 2),
+        "net_profit": round(net, 2),
+        "return_pct": round((net / initial * 100.0) if initial else 0.0, 2),
+        "profit_factor": None if summary_only or profit_factor is None else round(profit_factor, 2),
+        "win_rate_pct": None if summary_only or win_rate is None else round(win_rate, 2),
+        "max_drawdown_pct": round(max_drawdown_pct, 2),
+        "max_drawdown_cash": round(max_drawdown_cash, 2),
+        "trades": None if summary_only else len(trades),
+        "sharpe_ratio": None if summary_only or sharpe is None else round(sharpe, 2),
+        "recovery_factor": None if max_drawdown_cash <= 0 else round(net / max_drawdown_cash, 2),
+        "from": start.date().isoformat(),
+        "to": end.date().isoformat(),
+    }
+    return {"series": _sample(sliced), "trades": trades[-250:], "stats": stats}

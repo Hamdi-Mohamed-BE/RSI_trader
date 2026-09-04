@@ -5,7 +5,9 @@ param(
     [double]$RiskValue = 0.0,
     [ValidateSet('', 'STANDARD', 'SAFE')]
     [string]$SafetyMode = '',
+    [string]$TargetTerminal = '',
     [switch]$ValidateOnly,
+    [switch]$PreflightOnly,
     [switch]$Yes
 )
 
@@ -18,17 +20,27 @@ function Stop-Dynamic([string]$Message) {
     exit 1
 }
 
+if ($ValidateOnly -and -not $RiskMode) {
+    $RiskMode = 'PERCENT'
+    $RiskValue = 1.0
+}
+if ($ValidateOnly -and -not $SafetyMode) {
+    $SafetyMode = 'STANDARD'
+}
+
 if (-not $RiskMode) {
     Write-Host "`nChoose risk sizing for every EA trade:" -ForegroundColor Cyan
-    Write-Host '  [1] Percentage of current equity (compounds automatically)'
+    Write-Host '  [1] Percentage of current equity (default: 1%)'
     Write-Host '  [2] Fixed USD target (exact where supported; converted for percentage-only EAs)'
-    $choice = Read-Host 'Enter 1 or 2'
+    $choice = (Read-Host 'Enter 1 or 2 [1]').Trim()
+    if (-not $choice) { $choice = '1' }
     $RiskMode = switch ($choice) { '1' { 'PERCENT' } '2' { 'FIXED_USD' } default { Stop-Dynamic 'Risk type must be 1 or 2.' } }
 }
 
 if ($RiskValue -le 0.0) {
-    $label = if ($RiskMode -eq 'PERCENT') { 'Risk per trade in percent (example: 0.5)' } else { 'Risk per trade in USD (example: 50)' }
-    $raw = Read-Host $label
+    $label = if ($RiskMode -eq 'PERCENT') { 'Risk per trade in percent [1]' } else { 'Risk per trade in USD (example: 50)' }
+    $raw = (Read-Host $label).Trim()
+    if (-not $raw -and $RiskMode -eq 'PERCENT') { $raw = '1' }
     $parsed = 0.0
     if (-not [double]::TryParse($raw, [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$parsed)) {
         Stop-Dynamic 'Risk value must be a number. Use a dot for decimals.'
@@ -46,12 +58,14 @@ if (-not $SafetyMode) {
 Write-Host "`nDynamic configuration" -ForegroundColor Green
 Write-Host ('  Risk: {0} {1}' -f $RiskValue, $(if ($RiskMode -eq 'PERCENT') { '%' } else { 'USD per EA trade' }))
 Write-Host ('  Mode: {0}' -f $SafetyMode)
-if (-not $Yes) {
+if (-not $Yes -and -not $ValidateOnly) {
     $confirm = (Read-Host 'Install and run this configuration now? (Y/N)').Trim().ToUpperInvariant()
     if ($confirm -notin @('Y', 'YES')) { Stop-Dynamic 'Cancelled by user.' }
 }
 
 $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $installer, '-AccountProfile', 'AUTO', '-RiskMode', $RiskMode, '-RiskValue', $RiskValue, '-SafetyMode', $SafetyMode)
 if ($ValidateOnly) { $arguments += '-ValidateOnly' }
+if ($PreflightOnly) { $arguments += '-PreflightOnly' }
+if ($TargetTerminal) { $arguments += @('-TargetTerminal', $TargetTerminal) }
 & powershell.exe @arguments
 exit $LASTEXITCODE

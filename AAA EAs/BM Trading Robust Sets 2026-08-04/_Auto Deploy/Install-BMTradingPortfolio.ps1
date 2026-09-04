@@ -45,7 +45,8 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 function Get-PortfolioItems {
     # Locked selected portfolio. Each EA owns its selected exit mode:
     # current exits for LTA, BTC Top Down and Nasdaq Overnight; M15 50%/20%
-    # dynamic protection for nine EAs. XAU RSI VWAP keeps its locked native exits.
+    # dynamic protection for nine EAs. XAU RSI VWAP and XAU Trend Progression
+    # keep their locked native exits.
     # Session filtering is disabled.
     # Risk defaults to 1% planned per EA trade.
     $items = @(
@@ -126,6 +127,12 @@ function Get-PortfolioItems {
             Period = 60; Expert = 'RSI VWAP Managed EA.ex5'
             ExpertSource = 'RSI VWAP Research 2026-09-02\EA\RSI VWAP Managed EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\13 XAU RSI VWAP - CURRENT - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'XAU Trend Progression'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 240; Expert = 'Trend Progression EA.ex5'
+            ExpertSource = 'Trend Progression Research 2026-09-02\EA\Trend Progression EA.ex5'
+            SetSource = 'Trend Progression Research 2026-09-02\Sets\TrendProgression-xauusd--h4--optimized--locked.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
         }
     )
 
@@ -144,6 +151,9 @@ function Get-PortfolioItems {
         }
         if (-not $item.PSObject.Properties['SupportsSafeFilter']) {
             $item | Add-Member -NotePropertyName SupportsSafeFilter -NotePropertyValue $true
+        }
+        if (-not $item.PSObject.Properties['LockRisk']) {
+            $item | Add-Member -NotePropertyName LockRisk -NotePropertyValue $false
         }
         $item | Add-Member -NotePropertyName SafeByDesign -NotePropertyValue $false
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
@@ -323,13 +333,13 @@ function Get-EffectiveInputs([object]$Item) {
             $inputs['Commentary'] = 'BM900-DYNAMIC-40USD-HARD-SL'
         }
     }
-    if ([double]$Item.FixedPercentRisk -gt 0 -and -not $UsesDynamicRisk) {
+    if ([double]$Item.FixedPercentRisk -gt 0 -and (-not $UsesDynamicRisk -or [bool]$Item.LockRisk)) {
         $fixedRisk = ([double]$Item.FixedPercentRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
         foreach ($key in @('InpRiskPercent', 'InpMomentumRiskPercent', 'InpContrarianRiskPercent', 'InpAbsoluteRiskCapPercent')) {
             if ($inputs.Contains($key)) { $inputs[$key] = $fixedRisk }
         }
     }
-    if ($UsesDynamicRisk) {
+    if ($UsesDynamicRisk -and -not [bool]$Item.LockRisk) {
         $dynamicPercent = $EffectiveAdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
         $dynamicMoney = $RequestedRiskMoney.ToString('0.00', [Globalization.CultureInfo]::InvariantCulture)
         foreach ($key in @('InpRiskPercent', 'InpMomentumRiskPercent', 'InpContrarianRiskPercent', 'InpAbsoluteRiskCapPercent', 'RiskPercent')) {
@@ -467,6 +477,44 @@ fixed_height=-1
 </window>
 </chart>
 "@
+}
+
+function Test-ManagedProfile([string]$ProfilePath, [object[]]$ExpectedPortfolio, [string]$Stage) {
+    $chartFiles = @(Get-ChildItem -LiteralPath $ProfilePath -Filter 'chart*.chr' -File -ErrorAction SilentlyContinue | Sort-Object Name)
+    if ($chartFiles.Count -ne $ExpectedPortfolio.Count) {
+        Stop-WithMessage ("{0}: profile contains {1} chart files, but {2} were expected." -f $Stage, $chartFiles.Count, $ExpectedPortfolio.Count)
+    }
+
+    $problems = [Collections.Generic.List[string]]::new()
+    for ($index = 0; $index -lt $ExpectedPortfolio.Count; $index++) {
+        $item = $ExpectedPortfolio[$index]
+        $chartName = 'chart{0:D2}.chr' -f ($index + 1)
+        $chartPath = Join-Path $ProfilePath $chartName
+        if (-not (Test-Path -LiteralPath $chartPath)) {
+            [void]$problems.Add("$chartName is missing")
+            continue
+        }
+        $text = Get-Content -LiteralPath $chartPath -Raw
+        $expectedName = [IO.Path]::GetFileNameWithoutExtension([string]$item.Expert)
+        $expectedPath = 'Experts\' + $ExpertFolderName + '\' + [string]$item.Expert
+        $checks = @(
+            @{ Label = 'symbol'; Token = "symbol=$($item.BrokerSymbol)" },
+            @{ Label = 'period'; Token = "period_size=$($item.Period)" },
+            @{ Label = 'EA name'; Token = "name=$expectedName" },
+            @{ Label = 'EA path'; Token = "path=$expectedPath" },
+            @{ Label = 'enabled expert mode'; Token = 'expertmode=1' },
+            @{ Label = 'expert attachment'; Token = '<expert>' }
+        )
+        foreach ($check in $checks) {
+            if (-not $text.Contains([string]$check.Token)) {
+                [void]$problems.Add(("{0}: wrong or missing {1} (expected '{2}')" -f $chartName, $check.Label, $check.Token))
+            }
+        }
+    }
+    if ($problems.Count -gt 0) {
+        Stop-WithMessage ("$Stage profile verification failed:`n - " + ($problems -join "`n - "))
+    }
+    Write-Host ("{0}: verified all {1} exact symbol, timeframe and EA attachments." -f $Stage, $ExpectedPortfolio.Count) -ForegroundColor Green
 }
 
 function Set-IniValue([string]$Path, [string]$Section, [string]$Key, [string]$Value) {
@@ -680,7 +728,7 @@ foreach ($item in $portfolio) {
         if ($effectiveRisk -gt ($targetRisk * 1.05)) {
             Write-Host ('  Broker minimum lot/stop raises this above the {0:N2} {1} target.' -f $targetRisk, [string]$probe.account.currency) -ForegroundColor Red
         }
-    } elseif ($UsesDynamicRisk) {
+    } elseif ($UsesDynamicRisk -and -not [bool]$item.LockRisk) {
         $exactText = if ($RiskMode -eq 'FIXED_USD' -and $item.Label -eq 'Engineered Liquidity XAU') { 'exact fixed cash' } elseif ($RiskMode -eq 'FIXED_USD') { 'current-balance percent equivalent' } else { 'dynamic equity percentage' }
         Write-Host ('{0,-42} {1,-8} -> {2}; {3:N2} {4} ({5:N4}%), {6}' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $RequestedRiskMoney, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent, $exactText) -ForegroundColor Cyan
     } elseif ([double]$item.FixedPercentRisk -gt 0) {
@@ -701,7 +749,7 @@ $portfolio = @($resolvedPortfolio)
 if ($portfolio.Count -eq 0) { Stop-WithMessage 'No portfolio symbols were available on this broker.' }
 
 if ($IsAdaptiveAccount) {
-    if ($UsesDynamicRisk) {
+    if ($UsesDynamicRisk -and -not [bool]$_.LockRisk) {
         Write-Host ('Adaptive balance accepted: {0:N2} {1}; Dynamic Config targets {2:N4}% or approximately {3:N2} {1} per EA trade.' -f $balance, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent, $RequestedRiskMoney) -ForegroundColor Green
     } else {
         Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while preset-fixed entries remain at their configured risk.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green
@@ -818,6 +866,8 @@ for ($i = 0; $i -lt $portfolio.Count; $i++) {
 $orderText = ((1..$portfolio.Count | ForEach-Object { 'chart{0:D2}.chr' -f $_ }) -join "`r`n") + "`r`n"
 [IO.File]::WriteAllText((Join-Path $profileTargetFull 'order.wnd'), $orderText, $Unicode)
 
+Test-ManagedProfile $profileTargetFull $portfolio 'Before MT5 start'
+
 if ($commonIni) {
     $commonBackup = $commonIni + '.bm-auto-backup-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
     Copy-Item -LiteralPath $commonIni -Destination $commonBackup
@@ -876,15 +926,7 @@ $runningNow = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Wh
 })
 if ($runningNow.Count -eq 0) { Stop-WithMessage 'The files were installed, but MT5 did not remain running.' }
 
-$missingExperts = @()
-foreach ($chartFile in @(Get-ChildItem -LiteralPath $profileTargetFull -Filter 'chart*.chr' -File)) {
-    if (-not (Select-String -LiteralPath $chartFile.FullName -SimpleMatch '<expert>' -Quiet)) {
-        $missingExperts += $chartFile.Name
-    }
-}
-if ($missingExperts.Count -gt 0) {
-    Stop-WithMessage ('MT5 opened, but these charts lost their EA attachment: ' + ($missingExperts -join ', '))
-}
+Test-ManagedProfile $profileTargetFull $portfolio 'After MT5 start'
 
 Write-Host "`nSUCCESS: MT5 is running the '$ProfileName' profile on account $login." -ForegroundColor Green
 Write-Host "Install record: $manifestPath"

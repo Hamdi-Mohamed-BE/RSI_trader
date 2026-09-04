@@ -61,6 +61,11 @@ body { min-height: 100vh; overflow-x: hidden; font-family: Manrope, sans-serif; 
 .evidence-chart { display:block; width:100%; height:auto; min-height:260px; }
 .evidence-chart.hidden { display:none; }
 .chart-loading { color:#789089; font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; }
+.evidence-controls { display:grid; gap:.75rem; align-items:end; border:1px solid rgba(255,255,255,.09); border-radius:18px; padding:1rem; background:rgba(255,255,255,.025); }
+.evidence-controls label span { display:block; margin-bottom:.4rem; color:#789089; font-family:"IBM Plex Mono",monospace; font-size:9px; letter-spacing:.13em; text-transform:uppercase; }
+.evidence-controls input { width:100%; min-height:44px; border:1px solid rgba(255,255,255,.1); border-radius:11px; padding:0 .8rem; color:#e8f4f0; color-scheme:dark; background:#0b1715; outline:none; }
+.evidence-controls input:focus { border-color:rgba(126,247,199,.45); }
+.evidence-controls p { color:#789089; font-size:10px; line-height:1.5; }
 .logic-list { display:grid; gap:.7rem; }.logic-list li { display:flex; gap:1rem; border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:1.1rem; background:rgba(255,255,255,.02); }.logic-list li>span {color:#7ef7c7;font-family:"DM Mono",monospace;font-size:.65rem}.logic-list h3 {font-size:.9rem;font-weight:700}.logic-list p {margin-top:.35rem;color:#748984;font-size:.7rem;line-height:1.2rem}
 .risk-list-item { display:flex;align-items:flex-start;gap:.8rem;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem;background:rgba(255,255,255,.02); }.risk-list-item span {display:grid;width:24px;height:24px;flex:none;place-items:center;border-radius:8px;color:#f7d98e;background:rgba(251,191,36,.08);font-size:.7rem}.risk-list-item p {color:#a2b4af;font-size:.8rem;line-height:1.45rem}
 .failure-banner { display:flex;gap:1rem;border:1px solid rgba(248,113,113,.22);border-radius:20px;padding:1.3rem;background:rgba(248,113,113,.055); }
@@ -93,6 +98,7 @@ body { min-height: 100vh; overflow-x: hidden; font-family: Manrope, sans-serif; 
 .whatsapp-float { position:fixed;right:1rem;bottom:1rem;z-index:60;display:flex;align-items:center;gap:.5rem;border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:.72rem 1rem;color:#07100f;background:#7ef7c7;box-shadow:0 10px 40px rgba(0,0,0,.35);font-size:.72rem;font-weight:800;transition:.2s}.whatsapp-float:hover{transform:translateY(-2px);background:#a6ffdf}
 @media (min-width:640px){.stats-strip{grid-template-columns:repeat(5,1fr)}.stats-strip>div{border-right:1px solid rgba(255,255,255,.08);border-bottom:0}.stats-strip>div:last-child{border-right:0}}
 @media (min-width:768px){.filter-panel{grid-template-columns:minmax(260px,1fr) 180px 180px auto}}
+@media (min-width:768px){.evidence-controls{grid-template-columns:180px 180px auto minmax(260px,1fr)}.evidence-controls p{padding-bottom:.7rem;text-align:right}}
 @media (min-width:1024px){.cta-panel{grid-template-columns:1fr auto}}
 @media (max-width:639px){.section-heading-row{align-items:start;flex-direction:column}.whatsapp-float span{display:none}.whatsapp-float{width:48px;height:48px;justify-content:center;padding:0}.failure-banner,.success-banner{flex-direction:column}.chart-panel{min-height:180px}.page-title{font-size:2.65rem}}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}

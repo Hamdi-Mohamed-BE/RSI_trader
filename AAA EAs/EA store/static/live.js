@@ -156,6 +156,29 @@
     return [...history, ...backend].sort((first, second) => new Date(first.time) - new Date(second.time));
   }
 
+  function curveSinceFirstTenK(data) {
+    const complete = curveSinceAugust(data);
+    const crossing = complete.findIndex((point, index) => (
+      Number(point.balance) >= 10000 && (index === 0 || Number(complete[index - 1].balance) < 10000)
+    ));
+    if (crossing < 0) return complete;
+    if (crossing === 0) return complete;
+    const previous = complete[crossing - 1];
+    const current = complete[crossing];
+    const low = Number(previous.balance), high = Number(current.balance);
+    const ratio = high === low ? 1 : Math.max(0, Math.min(1, (10000 - low) / (high - low)));
+    const previousTime = new Date(previous.time).getTime();
+    const currentTime = new Date(current.time).getTime();
+    const anchor = {
+      time: new Date(previousTime + (currentTime - previousTime) * ratio).toISOString(),
+      balance: 10000,
+      equity: null,
+      floating: null,
+      source: 'first-10k-ledger-crossing',
+    };
+    return [anchor, ...complete.slice(crossing)];
+  }
+
   function renderChart(series) {
     const svg = byId('equity-chart');
     const empty = byId('chart-empty');
@@ -232,7 +255,7 @@
     state.trades = data.trades || [];
     updateTradeFilter(state.trades);
     renderTrades();
-    renderChart(curveSinceAugust(data));
+    renderChart(curveSinceFirstTenK(data));
   }
 
   async function refresh() {

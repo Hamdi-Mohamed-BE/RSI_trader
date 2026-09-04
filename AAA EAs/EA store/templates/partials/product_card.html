@@ -11,10 +11,11 @@
   </div>
   <p class="mt-5 min-h-[48px] text-sm leading-6 text-muted">{{ product.tagline }}</p>
   {% if product.evidence %}
-  <div class="mt-5 grid grid-cols-3 gap-2">
+  <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
     <div class="mini-stat"><span>Return</span><strong class="{{ 'text-mint' if product.evidence.return_pct >= 0 else 'text-red-300' }}">{{ product.evidence.return_pct|percent(true) }}</strong></div>
     <div class="mini-stat"><span>PF</span><strong>{{ '%.2f'|format(product.evidence.profit_factor) }}</strong></div>
     <div class="mini-stat"><span>Max DD</span><strong>{{ product.evidence.drawdown_pct|percent }}</strong></div>
+    <div class="mini-stat"><span>Win rate</span><strong>{{ product.evidence.win_rate_pct|percent }}</strong></div>
   </div>
   <div class="mt-4 flex items-center justify-between">
     {% if product.evidence.status == 'Validated evidence' %}<span class="badge badge-good">Validated evidence</span>

@@ -94,9 +94,9 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
 
 def test_recommended_exit_settings_are_synced_per_ea() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 13
+    assert len(products) == 14
     assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 9
-    assert sum(product.exit_mode == "Current EA exits" for product in products) == 4
+    assert sum(product.exit_mode == "Current EA exits" for product in products) == 5
     assert all(product.deployment_session == "All day / native strategy window" for product in products)
     assert all("Applied BAT overlay" in product.logic[-1].detail for product in products if product.exit_mode == "Dynamic 50/20")
     assert all("Dynamic 50/20 overlay is disabled" in product.logic[-1].detail for product in products if product.exit_mode == "Current EA exits")
@@ -110,6 +110,16 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert rsi_vwap.exit_mode == "Current EA exits"
     assert rsi_vwap.safe_filter_supported is False
     assert "0.5 times initial risk" in rsi_vwap.logic[-1].detail
+
+    trend = next(product for product in products if product.label == "XAU Trend Progression")
+    assert trend.timeframe == "H4"
+    assert trend.exit_mode == "Current EA exits"
+    assert trend.safe_filter_supported is False
+    assert trend.evidence is not None
+    assert trend.evidence.return_pct == 16.1025
+    assert trend.evidence.profit_factor == 2.74
+    assert trend.evidence.trades == 25
+    assert "default and validated value is 1%" in trend.logic[4].detail
 
 
 def test_detail_page_renders_code_based_logic_details() -> None:
@@ -232,10 +242,40 @@ def test_live_dashboard_and_read_only_api_render() -> None:
     assert api.status_code == 200
     assert api.headers["cache-control"].startswith("no-store")
     assert set(api.json()) >= {"connected", "account", "positions", "orders", "trades", "ea_summary", "equity_series"}
-    assert "Balance history since 1 August 2026" in client.get("/").text
+    assert "Balance history since first reaching $10,000" in client.get("/").text
     live_script = client.get("/static/live.js")
     assert live_script.status_code == 200
     assert "2026-08-01T00:00:00Z" in live_script.text
+    assert "curveSinceFirstTenK" in live_script.text
+
+
+def test_dynamic_evidence_periods_and_pricing_bundle() -> None:
+    product = next(item for item in get_sellable_catalog() if item.evidence and item.evidence.trades > 20)
+    response = client.get(
+        f"/api/evidence/{product.slug}/series",
+        params={"from": "2026-01-01", "to": "2026-06-30"},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["stats"]["from"] == "2026-01-01"
+    assert payload["stats"]["to"] == "2026-06-30"
+    assert set(payload["stats"]) >= {"return_pct", "profit_factor", "win_rate_pct", "max_drawdown_pct", "trades", "sharpe_ratio", "recovery_factor"}
+    assert all("source" in trade for trade in payload["trades"])
+
+    portfolio = client.get(
+        "/api/portfolio/equity-series",
+        params={"mode": "compare", "from": "2026-01-01", "to": "2026-06-30"},
+    )
+    assert portfolio.status_code == 200
+    assert len(portfolio.json()["datasets"]) == 2
+    assert all(dataset.get("stats") for dataset in portfolio.json()["datasets"])
+
+    detail = client.get(f"/eas/{product.slug}")
+    assert 'data-chart-from' in detail.text
+    assert 'data-backtest-trades-body' in detail.text
+    pricing = client.get("/pricing")
+    assert "Choose 3 + bonus EA" in pricing.text
+    assert "$499" in pricing.text
 
 
 def test_balance_history_is_reconstructed_from_august_cash_flows() -> None:

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from collections import Counter
 from contextlib import asynccontextmanager
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -26,7 +26,7 @@ from .catalog import (
     get_sellable_catalog,
     package_buy_url,
 )
-from .evidence_series import portfolio_equity_series, product_equity_series
+from .evidence_series import analyse_equity_series, portfolio_equity_series, product_equity_series
 from .mt5_live import live_mt5
 
 
@@ -265,12 +265,20 @@ async def pricing(request: Request) -> HTMLResponse:
             "featured": False,
         },
         {
+            "name": "Choose 3 + bonus EA",
+            "price": "$499",
+            "description": "Choose any three available EAs and receive one additional available EA selected by us at no extra cost.",
+            "features": ["4 EA licenses in total", "You choose the first 3", "One random available bonus EA", "WhatsApp compatibility check"],
+            "url": package_buy_url("Choose 3 plus Random Bonus EA", 499),
+            "featured": True,
+        },
+        {
             "name": "Complete Available Portfolio",
             "price": "$1,990",
             "description": f"All {len(products)} currently available EAs. Development builds are excluded.",
             "features": ["All available EAs and presets", "Installer and symbol mapping", "1 live + 1 demo MT5 account", "Priority WhatsApp setup support"],
             "url": package_buy_url("Complete Available EA Portfolio", 1990),
-            "featured": True,
+            "featured": False,
         },
     ]
     context = _base_context(request, "pricing") | {
@@ -320,6 +328,8 @@ async def evidence_chart(slug: str) -> FileResponse:
 async def evidence_series(
     slug: str,
     mode: str = Query(default="standard", pattern=r"^(standard|safe|compare)$"),
+    from_date: date | None = Query(default=None, alias="from"),
+    to_date: date | None = Query(default=None, alias="to"),
 ) -> JSONResponse:
     product = get_product(slug)
     if product is None or product.evidence is None:
@@ -327,7 +337,16 @@ async def evidence_series(
     if mode == "safe" and not product.safe_filter_supported:
         raise HTTPException(status_code=409, detail="This vendor binary does not support embedded Safe mode")
     selected_mode = "standard" if mode == "compare" else mode
-    series = product_equity_series(product, selected_mode)
+    raw_series = product_equity_series(product, selected_mode)
+    evidence = product.safe_evidence if selected_mode == "safe" and product.safe_evidence else product.evidence
+    analysed = analyse_equity_series(
+        raw_series,
+        expected_trades=evidence.trades if evidence else None,
+        label=product.label,
+        from_date=from_date,
+        to_date=to_date,
+    )
+    series = analysed["series"]
     if len(series) < 2:
         raise HTTPException(status_code=404, detail="Evidence series not found")
     payload: dict[str, Any] = {
@@ -335,16 +354,28 @@ async def evidence_series(
         "period": product.evidence.period,
         "currency": "USD",
         "series": series,
+        "stats": analysed["stats"],
+        "trades": analysed["trades"],
+        "available_from": str(raw_series[0]["time"])[:10],
+        "available_to": str(raw_series[-1]["time"])[:10],
     }
     if all(bool(point.get("summary")) for point in series):
         payload["series_kind"] = "summary"
         payload["notice"] = "Start-to-finish return line — the detailed trade-by-trade MT5 curve is not archived on this server."
     if mode == "compare" and product.safe_filter_supported:
-        safe = product_equity_series(product, "safe")
-        if len(safe) >= 2:
+        safe_raw = product_equity_series(product, "safe")
+        safe_evidence = product.safe_evidence or product.evidence
+        safe = analyse_equity_series(
+            safe_raw,
+            expected_trades=safe_evidence.trades if safe_evidence else None,
+            label=f"{product.label} — Full Safe",
+            from_date=from_date,
+            to_date=to_date,
+        )
+        if len(safe["series"]) >= 2:
             payload["datasets"] = [
-                {"label": "Standard", "color": "#7ef7c7", "series": series},
-                {"label": "Full Safe", "color": "#68a7ff", "series": safe},
+                {"label": "Standard", "color": "#7ef7c7", "series": series, "stats": analysed["stats"], "trades": analysed["trades"]},
+                {"label": "Full Safe", "color": "#68a7ff", "series": safe["series"], "stats": safe["stats"], "trades": safe["trades"]},
             ]
     return JSONResponse(
         payload,
@@ -369,9 +400,20 @@ async def portfolio_chart() -> FileResponse:
 @app.get("/api/portfolio/equity-series", name="portfolio_equity_series")
 async def api_portfolio_equity_series(
     mode: str = Query(default="compare", pattern=r"^(standard|current|safe|compare)$"),
+    from_date: date | None = Query(default=None, alias="from"),
+    to_date: date | None = Query(default=None, alias="to"),
 ) -> JSONResponse:
     selected_mode = "standard" if mode == "compare" else mode
-    series = [dict(point) for point in portfolio_equity_series(selected_mode)]
+    audit = _portfolio_audit(selected_mode)
+    raw_series = [dict(point) for point in portfolio_equity_series(selected_mode)]
+    analysed = analyse_equity_series(
+        raw_series,
+        expected_trades=int(audit.get("trades", 0)),
+        label="Active BAT portfolio",
+        from_date=from_date,
+        to_date=to_date,
+    )
+    series = analysed["series"]
     if len(series) < 2:
         raise HTTPException(status_code=404, detail="Portfolio equity series not found")
     payload: dict[str, Any] = {
@@ -379,11 +421,24 @@ async def api_portfolio_equity_series(
         "period": _portfolio_audit(selected_mode).get("period"),
         "currency": "USD",
         "series": series,
+        "stats": analysed["stats"],
+        "trades": analysed["trades"],
+        "available_from": str(raw_series[0]["time"])[:10],
+        "available_to": str(raw_series[-1]["time"])[:10],
     }
     if mode == "compare":
+        current_audit = _portfolio_audit("current")
+        current_raw = [dict(point) for point in portfolio_equity_series("current")]
+        current = analyse_equity_series(
+            current_raw,
+            expected_trades=int(current_audit.get("trades", 0)),
+            label="Audited 12 — original exits",
+            from_date=from_date,
+            to_date=to_date,
+        )
         payload["datasets"] = [
-            {"label": "Applied per-EA setup", "color": "#7ef7c7", "series": [dict(point) for point in portfolio_equity_series("standard")]},
-            {"label": "Audited 12 — original exits", "color": "#68a7ff", "series": [dict(point) for point in portfolio_equity_series("current")]},
+            {"label": "Applied per-EA setup", "color": "#7ef7c7", "series": series, "stats": analysed["stats"], "trades": analysed["trades"]},
+            {"label": "Audited 12 — original exits", "color": "#68a7ff", "series": current["series"], "stats": current["stats"], "trades": current["trades"]},
         ]
     return JSONResponse(
         payload,

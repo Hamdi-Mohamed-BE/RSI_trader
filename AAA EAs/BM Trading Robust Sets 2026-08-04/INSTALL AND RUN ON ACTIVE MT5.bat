@@ -2,7 +2,7 @@
 setlocal
 title BM Trading Positive Retest Portfolio - Any Balance Auto Risk
 
-powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Install-BMTradingPortfolio.ps1" -AccountProfile AUTO %*
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Start-Dynamic-Portfolio.ps1" -SafetyMode STANDARD %*
 set "BM_EXIT=%ERRORLEVEL%"
 
 echo.

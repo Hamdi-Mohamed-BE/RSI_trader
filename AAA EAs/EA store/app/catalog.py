@@ -17,6 +17,7 @@ BOOKMAPER_ROOT = EAS_ROOT / "BookMaper"
 FILTERED_AUDIT_ROOT = PACKAGE_ROOT / "Selected Portfolio Audit 2026-08-28"
 SELECTED_PORTFOLIO_ROOT = PACKAGE_ROOT / "Dynamic Trailing Session Research 2026-09-01"
 RSI_VWAP_ROOT = PACKAGE_ROOT / "RSI VWAP Research 2026-09-02"
+TREND_PROGRESSION_ROOT = PACKAGE_ROOT / "Trend Progression Research 2026-09-02"
 INSTALLER_PATH = PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1"
 WHATSAPP_NUMBER = "21693830957"
 
@@ -106,6 +107,26 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
 
 
 CORE_META: dict[str, dict[str, Any]] = {
+    "XAU Trend Progression": {
+        "strategy": "H4 trend-pullback continuation",
+        "tagline": "An optimized long-only XAUUSD H4 continuation model with structural risk and a 3R objective.",
+        "description": "This locked optimized build follows established XAUUSD H4 uptrends, waits for price to pull back into the 20 EMA area, and enters only after the completed signal candle confirms continuation. It uses a five-bar structural stop, a 3R target and a small locked-profit break-even move after +1R.",
+        "session": "All broker sessions / H4",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, the exact optimized 1% SET and its locked MT5 Every Tick report were reviewed together.",
+        "logic": [
+            {"title": "Confirm the established H4 uptrend", "detail": "The completed signal candle must close above the 50 EMA, the 20 EMA must be above the 50 EMA, and the 50 EMA must be higher than it was three H4 bars earlier. Shorts are disabled in the promoted XAUUSD preset."},
+            {"title": "Require genuine multi-bar momentum", "detail": "The close must be at least 0.50 ATR above the close from twenty-four H4 bars earlier. Signal bodies smaller than 0.05 ATR and total candle ranges larger than 2.50 ATR are rejected."},
+            {"title": "Wait for the pullback to value", "detail": "The completed H4 signal candle must touch the 20 EMA within a tolerance of 0.25 ATR. The range-leadership filter is disabled, so the EA does not require price to finish in a fixed percentile of its 48-bar range."},
+            {"title": "Accept objective bullish confirmation", "detail": "The optimized preset uses the EA's any-confirmation mode: a bullish body, bullish engulfing pattern or bullish pin-bar can confirm that the pullback is attempting to resume upward."},
+            {"title": "Place the structural stop and size from chosen risk", "detail": "The stop goes below the lowest low of the latest five completed H4 candles with a 0.10 ATR buffer. OrderCalcProfit measures the one-lot loss to that stop, and volume is rounded down from the risk selected when the BAT starts. The default and validated value is 1% of current equity."},
+            {"title": "Target 3R and protect after +1R", "detail": "Take profit is three times the original stop distance. Once price reaches +1R, the stop can advance to entry plus 0.05R. ATR trailing, Dynamic 50/20, maximum-hold exits, session filtering and the experimental regime gate are disabled."},
+        ],
+        "risk_note": "Every BAT asks for risk before installation; the default and validated value is 1% of current equity per trade. The selected model is long-only, so it can remain inactive during extended bearish or non-trending gold conditions.",
+        "price": 349,
+        "accent": "gold",
+        "featured": True,
+    },
     "XAU RSI VWAP": {
         "strategy": "RSI-of-VWAP pullback continuation",
         "tagline": "A long-only XAUUSD H1 pullback model built from session VWAP momentum and a structural swing stop.",
@@ -969,6 +990,32 @@ def _rsi_vwap_xau_evidence() -> Evidence | None:
     )
 
 
+def _trend_progression_xau_evidence() -> Evidence | None:
+    path = TREND_PROGRESSION_ROOT / "final-audit.json"
+    if not path.exists():
+        return None
+    data = _load_json(path)
+    row = data.get("symbols", {}).get("xauusd", {}).get("optimized_locked")
+    if not row:
+        return None
+    report = Path(str(row["path"]))
+    trades = int(row["trades"])
+    return Evidence(
+        label="Locked optimized one-year MT5 validation",
+        period=f"{data['test_design']['locked'].replace(' to ', ' to ')}",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["equity_dd_pct"]),
+        win_rate_pct=float(row["win_rate_pct"]),
+        trades=trades,
+        history_quality=str(row.get("history_quality", "99%")),
+        source_note="Exness XAUUSD H4, native MT5 Every Tick history, broker spread, commission, swap and random execution delay using the exact optimized 1% risk preset.",
+        chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+        status="Validated evidence",
+        caution="The locked year contains only 25 trades. Its 10,000-path Monte Carlo P5 was positive, but the sample remains small and does not guarantee the next year.",
+    )
+
+
 def _engineered_liquidity_evidence(symbol: str, safe: bool = False) -> Evidence | None:
     root = PACKAGE_ROOT / "Engineered Liquidity Sweep Research 2026-08-30"
     improvement_path = root / "IMPROVEMENT RESULTS.json"
@@ -1152,6 +1199,7 @@ def get_catalog() -> list[Product]:
     xau_engineered_safe = _engineered_liquidity_evidence("XAUUSD", safe=True)
     btc_engineered_safe = _engineered_liquidity_evidence("BTCUSD", safe=True)
     rsi_vwap_xau = _rsi_vwap_xau_evidence()
+    trend_progression_xau = _trend_progression_xau_evidence()
     products: list[Product] = []
     for item in parse_installer_items():
         meta = _meta_for(item)
@@ -1174,6 +1222,8 @@ def get_catalog() -> list[Product]:
             evidence = btc_engineered
         elif item["label"] == "XAU RSI VWAP":
             evidence = rsi_vwap_xau
+        elif item["label"] == "XAU Trend Progression":
+            evidence = trend_progression_xau
         if item["label"] in filtered:
             evidence = filtered[item["label"]]
         elif item["label"] == "XAU Markov Regime":

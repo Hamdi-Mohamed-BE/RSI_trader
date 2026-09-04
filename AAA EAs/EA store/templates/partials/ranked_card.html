@@ -17,10 +17,11 @@
     <span class="mt-2 block text-[10px] leading-4 text-muted">11 Aug 2025 – 10 Aug 2026{% if product.one_year_note %} · balance-curve slice{% endif %}</span>
   </div>
   {% if product.one_year_evidence %}
-  <div class="mt-4 grid grid-cols-3 gap-2">
+  <div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
     <div class="mini-stat"><span>PF</span><strong>{{ '%.2f'|format(product.one_year_evidence.profit_factor) }}</strong></div>
     <div class="mini-stat"><span>Max DD</span><strong>{{ product.one_year_evidence.drawdown_pct|percent }}</strong></div>
     <div class="mini-stat"><span>Trades</span><strong>{{ product.one_year_evidence.trades }}</strong></div>
+    <div class="mini-stat"><span>Win rate</span><strong>{{ product.one_year_evidence.win_rate_pct|percent }}</strong></div>
   </div>
   {% else %}
   <p class="mt-4 min-h-[44px] text-xs leading-5 text-muted">{{ product.one_year_note or 'A separate one-year statistics report is not available.' }}</p>

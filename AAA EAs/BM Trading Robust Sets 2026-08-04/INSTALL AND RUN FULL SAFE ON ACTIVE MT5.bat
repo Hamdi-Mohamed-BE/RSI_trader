@@ -2,7 +2,7 @@
 setlocal
 title BM Trading Full Safe Portfolio - Per-EA Regime Gates
 
-powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Install-BMTradingPortfolio.ps1" -AccountProfile AUTO -SafetyMode SAFE %*
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Start-Dynamic-Portfolio.ps1" -SafetyMode SAFE %*
 set "BM_EXIT=%ERRORLEVEL%"
 
 echo.

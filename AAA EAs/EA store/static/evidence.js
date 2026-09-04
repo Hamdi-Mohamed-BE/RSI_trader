@@ -20,6 +20,59 @@
     }).format(new Date(value));
   }
 
+  function metric(value, kind) {
+    if (value == null || !Number.isFinite(Number(value))) return '—';
+    if (kind === 'return_pct') return `${Number(value) >= 0 ? '+' : ''}${Number(value).toFixed(2)}%`;
+    if (kind === 'win_rate_pct' || kind === 'max_drawdown_pct') return `${Number(value).toFixed(2)}%`;
+    if (kind === 'trades') return Math.round(Number(value)).toLocaleString('en-US');
+    return Number(value).toFixed(2);
+  }
+
+  function selectedEvidence(shell, payload) {
+    if (!payload.datasets?.length) return payload;
+    const wanted = shell.dataset.selectedDataset;
+    return payload.datasets.find((dataset) => dataset.label === wanted) || payload.datasets[0];
+  }
+
+  function renderPeriodEvidence(shell, payload) {
+    const root = shell.closest('section') || document;
+    const selected = selectedEvidence(shell, payload);
+    const stats = selected.stats || payload.stats;
+    root.querySelectorAll('[data-dynamic-stat]').forEach((node) => {
+      const key = node.dataset.dynamicStat;
+      node.textContent = metric(stats?.[key], key);
+      if (key === 'return_pct' && stats?.[key] != null) {
+        node.classList.toggle('text-mint', Number(stats[key]) >= 0);
+        node.classList.toggle('text-red-300', Number(stats[key]) < 0);
+      }
+    });
+    const body = root.querySelector('[data-backtest-trades-body]');
+    if (body) {
+      body.replaceChildren();
+      const trades = selected.trades || payload.trades || [];
+      if (!trades.length) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="5" class="empty-table">No reconstructable closed trades in this selected period.</td>';
+        body.appendChild(row);
+      } else {
+        [...trades].reverse().forEach((trade) => {
+          const row = document.createElement('tr');
+          const resultClass = Number(trade.net_profit) >= 0 ? 'pnl-positive' : 'pnl-negative';
+          row.innerHTML = `<td>${shortDate(trade.close_time)}</td><td class="table-ea">${trade.ea}</td><td>${trade.result}</td><td class="${resultClass}">${money(Number(trade.net_profit))}</td><td>${trade.source}</td>`;
+          body.appendChild(row);
+        });
+      }
+    }
+    const note = root.querySelector('[data-range-note]');
+    if (note && stats) {
+      const extras = [
+        stats.sharpe_ratio == null ? null : `Sharpe ${Number(stats.sharpe_ratio).toFixed(2)}`,
+        stats.recovery_factor == null ? null : `Recovery ${Number(stats.recovery_factor).toFixed(2)}`,
+      ].filter(Boolean).join(' · ');
+      note.textContent = `${stats.from} to ${stats.to}${extras ? ` · ${extras}` : ''}. Trade rows are reconstructed from archived MT5 balance events.`;
+    }
+  }
+
   function drawChart(shell, payload) {
     const svg = shell.querySelector('[data-chart-svg]');
     const status = shell.querySelector('[data-chart-status]');
@@ -122,9 +175,27 @@
   async function loadChart(shell) {
     const status = shell.querySelector('[data-chart-status]');
     try {
-      const response = await fetch(shell.dataset.seriesUrl, { cache: 'no-store' });
+      const root = shell.closest('section') || document;
+      const fromInput = root.querySelector('[data-chart-from]');
+      const toInput = root.querySelector('[data-chart-to]');
+      const url = new URL(shell.dataset.seriesUrl, window.location.origin);
+      if (fromInput?.value) url.searchParams.set('from', fromInput.value);
+      if (toInput?.value) url.searchParams.set('to', toInput.value);
+      status.classList.remove('hidden');
+      status.textContent = 'Loading selected evidence…';
+      const response = await fetch(url, { cache: 'no-store' });
       if (!response.ok) throw new Error(`The curve endpoint returned ${response.status}.`);
-      drawChart(shell, await response.json());
+      const payload = await response.json();
+      if (fromInput && toInput) {
+        fromInput.min = payload.available_from;
+        fromInput.max = payload.available_to;
+        toInput.min = payload.available_from;
+        toInput.max = payload.available_to;
+        if (!fromInput.value) fromInput.value = payload.available_from;
+        if (!toInput.value) toInput.value = payload.available_to;
+      }
+      drawChart(shell, payload);
+      renderPeriodEvidence(shell, payload);
     } catch (error) {
       status.classList.remove('hidden');
       status.textContent = 'Equity curve is temporarily unavailable.';
@@ -132,5 +203,9 @@
     }
   }
 
-  document.querySelectorAll('[data-equity-graph]').forEach(loadChart);
+  document.querySelectorAll('[data-equity-graph]').forEach((shell) => {
+    const root = shell.closest('section') || document;
+    root.querySelector('[data-chart-apply]')?.addEventListener('click', () => loadChart(shell));
+    loadChart(shell);
+  });
 })();
