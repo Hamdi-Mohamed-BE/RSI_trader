@@ -749,7 +749,8 @@ $portfolio = @($resolvedPortfolio)
 if ($portfolio.Count -eq 0) { Stop-WithMessage 'No portfolio symbols were available on this broker.' }
 
 if ($IsAdaptiveAccount) {
-    if ($UsesDynamicRisk -and -not [bool]$_.LockRisk) {
+    $hasDynamicRiskItems = $UsesDynamicRisk -and @($portfolio | Where-Object { -not [bool]$_.LockRisk }).Count -gt 0
+    if ($hasDynamicRiskItems) {
         Write-Host ('Adaptive balance accepted: {0:N2} {1}; Dynamic Config targets {2:N4}% or approximately {3:N2} {1} per EA trade.' -f $balance, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent, $RequestedRiskMoney) -ForegroundColor Green
     } else {
         Write-Host ('Adaptive balance accepted: {0:N2} {1}; adaptive EAs target {2:N2}% ({3:N2} {1} at installation), while preset-fixed entries remain at their configured risk.' -f $balance, [string]$probe.account.currency, $AdaptiveRiskPercent, ($balance * $AdaptiveRiskPercent / 100.0)) -ForegroundColor Green

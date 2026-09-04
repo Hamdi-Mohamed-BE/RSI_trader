@@ -50,6 +50,7 @@ input double             InpKeyTouchBufferATR      = 0.18;
 
 input group "Transcript POC First-Retest Research"
 input bool               InpUseTranscriptPOCMode   = false;
+input bool               InpRequireTranscriptPOCConfirmation = false;
 input bool               InpUseHeavyVolumeZoneEdge = true;
 input bool               InpRequireFirstRetest     = true;
 input double             InpMinimumDepartureATR    = 1.00;
@@ -181,6 +182,11 @@ SDZone        g_supply_zone;
 //+------------------------------------------------------------------+
 int OnInit()
 {
+   if(InpUseTranscriptPOCMode && InpRequireTranscriptPOCConfirmation)
+   {
+      Print("Choose either standalone transcript mode or the LTA confirmation gate, not both.");
+      return INIT_PARAMETERS_INCORRECT;
+   }
    if(InpProfileBins < 12)
       return INIT_PARAMETERS_INCORRECT;
    if(InpRewardRisk < 1.0)
@@ -619,6 +625,20 @@ bool BuildSignal(TradeSignal &signal)
       ResetCandidate(candidate);
       if(!FindCandidateLevel(dir, candidate))
          continue;
+
+      // Hybrid mode deliberately leaves the original LTA candidate and all
+      // EM1-EM4 entry logic untouched.  The completed prior-day heavy-volume
+      // first-retest setup is only a directional/time confirmation gate.
+      if(InpRequireTranscriptPOCConfirmation)
+      {
+         CandidateLevel transcript_confirmation;
+         ResetCandidate(transcript_confirmation);
+         double confirmation_buffer = GetATRValue(InpExecutionTF, 14, 1) * InpKeyTouchBufferATR;
+         if(confirmation_buffer <= 0.0)
+            confirmation_buffer = SymbolInfoDouble(_Symbol, SYMBOL_POINT) * 20.0;
+         if(!FindTranscriptPOCLevel(dir, g_prev_day_profile, confirmation_buffer, transcript_confirmation))
+            continue;
+      }
 
       string model = "";
       double sl = 0.0;
