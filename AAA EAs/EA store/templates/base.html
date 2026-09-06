@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Evidence-first MetaTrader 5 Expert Advisors from Calyx.">
   <meta name="theme-color" content="#07100f">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Calyx">
+  <meta property="og:image" content="{{ request.url_for('static', path='images/calyx-logo.jpg') }}?v=20260906-calyx-logo">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image" content="{{ request.url_for('static', path='images/calyx-logo.jpg') }}?v=20260906-calyx-logo">
   <title>{% block title %}Calyx{% endblock %}</title>
+  <link rel="icon" type="image/jpeg" href="{{ url_for('static', path='images/calyx-logo.jpg') }}?v=20260906-calyx-logo">
+  <link rel="apple-touch-icon" href="{{ url_for('static', path='images/calyx-logo.jpg') }}?v=20260906-calyx-logo">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,7 +31,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', path='site.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='site.css') }}?v=20260906-calyx-logo">
   {% block head %}{% endblock %}
 </head>
 <body class="bg-ink text-white antialiased">
@@ -32,10 +39,8 @@
   <header class="sticky top-0 z-50 border-b border-white/10 bg-ink/85 backdrop-blur-xl">
     <nav class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8" aria-label="Primary navigation">
       <a href="/" class="group flex items-center gap-3" aria-label="Calyx home">
-        <span class="logo-mark grid h-10 w-10 place-items-center rounded-xl border border-mint/30 bg-mint/10 text-mint">
-          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <path d="M4 16l4-5 3 3 5-8 4 4"/><path d="M4 20h16"/>
-          </svg>
+        <span class="logo-mark calyx-logo-mark h-11 w-11 rounded-xl border border-mint/30">
+          <img src="{{ url_for('static', path='images/calyx-logo.jpg') }}?v=20260906-calyx-logo" alt="" width="44" height="44">
         </span>
         <span>
           <span class="block text-sm font-extrabold tracking-[.16em]">CALYX</span>
@@ -76,10 +81,8 @@
     <div class="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-[1.2fr_.8fr_.8fr] lg:px-8">
       <div>
         <div class="mb-4 flex items-center gap-3">
-          <span class="logo-mark grid h-9 w-9 place-items-center rounded-xl border border-mint/30 bg-mint/10 text-mint">
-            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 16l4-5 3 3 5-8 4 4"/><path d="M4 20h16"/></svg>
-          </span>
-          <span class="font-extrabold tracking-[.14em]">CALYX TRADING SYSTEMS</span>
+          <img class="footer-brand-logo" src="{{ url_for('static', path='images/calyx-logo.jpg') }}?v=20260906-calyx-logo" alt="Calyx trading systems logo" width="72" height="108" loading="lazy">
+          <span><span class="block font-extrabold tracking-[.14em]">CALYX</span><span class="mt-1 block font-mono text-[9px] uppercase tracking-[.2em] text-muted">Trading Systems</span></span>
         </div>
         <p class="max-w-md text-sm leading-6 text-muted">MT5 automation presented with its real historical evidence, limitations and exact active-installer status. No guaranteed returns. No hidden research bots.</p>
       </div>

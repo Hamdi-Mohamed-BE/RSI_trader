@@ -78,6 +78,17 @@ def test_calyx_dns_installer_defaults_are_safe_and_complete() -> None:
     assert "Calyx EA Store" in installer
 
 
+def test_calyx_logo_is_used_for_branding_and_favicon() -> None:
+    logo = STORE_ROOT / "static" / "images" / "calyx-logo.jpg"
+    response = client.get("/eas")
+
+    assert logo.is_file() and logo.stat().st_size > 0
+    assert response.status_code == 200
+    assert 'rel="icon" type="image/jpeg"' in response.text
+    assert response.text.count("images/calyx-logo.jpg") >= 5
+    assert "Calyx trading systems logo" in response.text
+
+
 def test_every_product_detail_page_renders() -> None:
     for product in get_sellable_catalog():
         response = client.get(f"/eas/{product.slug}")
