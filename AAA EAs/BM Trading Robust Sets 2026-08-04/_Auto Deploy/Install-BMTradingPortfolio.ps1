@@ -857,7 +857,7 @@ if ($PreflightOnly) {
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-EA SET: locked per-EA signal, exit and session selections; rejected EAs removed." -ForegroundColor Red
-$modeMessage = if ($IsFullSafe) { 'MODE: FULL SAFE — independent completed-D1 Markov gates enabled in every eligible strategy.' } else { 'MODE: STANDARD — current default/selective configuration.' }
+$modeMessage = if ($IsFullSafe) { 'MODE: FULL SAFE - independent completed-D1 Markov gates enabled in every eligible strategy.' } else { 'MODE: STANDARD - current default/selective configuration.' }
 Write-Host $modeMessage -ForegroundColor Red
 if ($IsAdaptiveAccount) {
     if ($UsesDynamicRisk) {
@@ -872,9 +872,11 @@ if ($IsAdaptiveAccount) {
 }
 Write-Host 'It does not delete your existing profiles or close any open positions.' -ForegroundColor Yellow
 $modeToken = if ($IsFullSafe) { ' SAFE' } else { '' }
-$expected = if ($IsAdaptiveAccount) { "RUN $login AUTO$modeToken" } elseif ($IsSmallAccount) { "RUN $login 900$modeToken" } else { "RUN $login$modeToken" }
+$expected = "RUN $login"
+$legacyExpected = if ($IsAdaptiveAccount) { "RUN $login AUTO$modeToken" } elseif ($IsSmallAccount) { "RUN $login 900$modeToken" } else { "RUN $login$modeToken" }
 $confirmation = if ($Yes) { $expected } else { Read-Host "Type exactly '$expected' to continue" }
-if ($confirmation -cne $expected) { Stop-WithMessage 'Confirmation did not match. No portfolio files were installed.' }
+$confirmation = $confirmation.Trim()
+if ($confirmation -ine $expected -and $confirmation -ine $legacyExpected) { Stop-WithMessage "Confirmation did not match. Type '$expected'. No portfolio files were installed." }
 
 Write-Stage 'Closing MT5 cleanly'
 Close-TargetTerminal $terminalPath

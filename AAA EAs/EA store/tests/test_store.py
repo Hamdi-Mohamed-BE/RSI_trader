@@ -89,6 +89,17 @@ def test_calyx_logo_is_used_for_branding_and_favicon() -> None:
     assert "Calyx trading systems logo" in response.text
 
 
+def test_live_installer_uses_simple_account_confirmation() -> None:
+    installer_path = PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1"
+    installer = installer_path.read_text(encoding="utf-8")
+
+    assert '$expected = "RUN $login"' in installer
+    assert "$confirmation = $confirmation.Trim()" in installer
+    assert "$confirmation -ine $expected" in installer
+    assert "MODE: STANDARD - current default/selective configuration." in installer
+    assert "â€”" not in installer
+
+
 def test_every_product_detail_page_renders() -> None:
     for product in get_sellable_catalog():
         response = client.get(f"/eas/{product.slug}")
