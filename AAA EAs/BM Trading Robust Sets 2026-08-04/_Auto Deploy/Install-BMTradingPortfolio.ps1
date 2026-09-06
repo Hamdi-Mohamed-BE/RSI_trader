@@ -10,8 +10,10 @@ param(
     [ValidateSet('DEFAULT', 'PERCENT', 'FIXED_USD')]
     [string]$RiskMode = 'DEFAULT',
     [double]$RiskValue = 0.0,
+    [switch]$UseRecommendedSelections,
     [switch]$ValidateOnly,
-    [switch]$PreflightOnly
+    [switch]$PreflightOnly,
+    [switch]$Yes
 )
 
 Set-StrictMode -Version Latest
@@ -24,7 +26,9 @@ $IsFullSafe = $SafetyMode -eq 'SAFE'
 $UsesDynamicRisk = $RiskMode -ne 'DEFAULT'
 $EffectiveAdaptiveRiskPercent = $AdaptiveRiskPercent
 $RequestedRiskMoney = 0.0
-$ProfileName = if ($IsFullSafe) {
+$ProfileName = if ($UseRecommendedSelections) {
+    if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - BEST RECOMMENDED' } elseif ($IsSmallAccount) { 'BM Trading 900 - BEST RECOMMENDED' } else { 'BM Trading 100K - BEST RECOMMENDED' }
+} elseif ($IsFullSafe) {
     if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - FULL SAFE' } elseif ($IsSmallAccount) { 'BM Trading 900 - FULL SAFE' } else { 'BM Trading 100K - FULL SAFE' }
 } else {
     if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - AUTO' } elseif ($IsSmallAccount) { 'BM Trading 900 - AUTO' } else { 'BM Trading 100K - AUTO' }
@@ -44,11 +48,12 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 
 function Get-PortfolioItems {
     # Locked selected portfolio. Each EA owns its selected exit mode:
-    # current exits for LTA, BTC Top Down and Nasdaq Overnight; M15 50%/20%
-    # dynamic protection for nine EAs. XAU RSI VWAP and XAU Trend Progression
-    # keep their locked native exits.
-    # Session filtering is disabled.
-    # Risk defaults to 1% planned per EA trade.
+    # Each strategy keeps its selected exit. The three News Pulse instances
+    # use their native 60-second lifecycle and source-locked 0.75% risk per
+    # pending side (1.50% maximum planned event exposure).
+    # No portfolio-wide session overlay is applied.
+    # Risk defaults to 1% planned per EA trade except News Pulse, whose hard
+    # event cap cannot be changed by the portfolio risk prompt.
     $items = @(
         [pscustomobject]@{
             Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -61,6 +66,12 @@ function Get-PortfolioItems {
             Period = 15; Expert = 'Top Down FVG Liquidity EA.ex5'
             ExpertSource = 'Top Down FVG Liquidity Research 2026-08-27\EA\Top Down FVG Liquidity EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\02 BTC Top Down FVG Liquidity - CURRENT - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true; OptionalSymbol = $true
+        },
+        [pscustomobject]@{
+            Label = 'BTC POC Fibonacci'; Canonical = 'BTCUSD'; Aliases = @('BTCUSD', 'BITCOIN', 'BTC')
+            Period = 15; Expert = 'POC Fibonacci Volume Profile EA.ex5'
+            ExpertSource = 'POC Fibonacci Volume Profile Research 2026-09-04\EA\POC Fibonacci Volume Profile EA.ex5'
+            SetSource = 'POC Fibonacci Volume Profile Research 2026-09-04\Sets\POCFib-btcusd--optimized--locked.set'; SmallDynamicRisk = $false; PercentRisk = $true; OptionalSymbol = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'ETH Top Down FVG Liquidity'; Canonical = 'ETHUSD'; Aliases = @('ETHUSD', 'ETHEREUM', 'ETH')
@@ -81,34 +92,70 @@ function Get-PortfolioItems {
             SetSource = 'Selected Portfolio Settings 2026-09-01\05 ORB Volume Profile - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
+            Label = 'ORB Volume Profile High Win 0.75R'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 5; Expert = 'ORB Volume Data EA.ex5'
+            ExpertSource = 'ORB Volume Data EA\ORB Volume Data EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\05B ORB Volume Profile High Win 0.75R - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'ORB Volume Profile Volume Confirmed'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 5; Expert = 'ORB Volume Data EA.ex5'
+            ExpertSource = 'ORB Volume Data EA\ORB Volume Data EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\05C ORB Volume Profile Volume Confirmed - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'XAU ORB New York M30'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 30; Expert = 'ORB Volume Data EA.ex5'
+            ExpertSource = 'ORB Volume Data EA\ORB Volume Data EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\14 XAU ORB New York M30 - LOCKED STANDALONE.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'XAU ORB London NY Overlap M30'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 30; Expert = 'ORB Volume Data EA.ex5'
+            ExpertSource = 'ORB Volume Data EA\ORB Volume Data EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\15 XAU ORB London NY Overlap M30 - LOCKED STANDALONE.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'US100 ORB New York M30'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 30; Expert = 'ORB Volume Data EA.ex5'
+            ExpertSource = 'ORB Volume Data EA\ORB Volume Data EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\16 US100 ORB New York M30 - LOCKED STANDALONE.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'US100 H1 ORB 13UTC'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 15; Expert = 'ORB Volume Data EA.ex5'
+            ExpertSource = 'ORB Volume Data EA\ORB Volume Data EA.ex5'
+            SetSource = 'ORB H1 Range Research 2026-09-05\Sets\USTEC - overlap-1300 - H1 opening range - RR6 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'US100 Selective ORB V3'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 5; Expert = 'US100 Selective ORB Retest EA.ex5'
+            ExpertSource = 'US100 Selective ORB Research 2026-08-21\EA\US100 Selective ORB Retest EA.ex5'
+            SetSource = 'US100 Selective ORB Research 2026-08-21\Sets\BEST V3 - US100 USTEC M5 - TIME DIRECTION OR30 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
             Label = 'AAA Final Asia Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 60; Expert = 'AAA Final Asia Breakout EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final Asia Breakout EA\AAA Final Asia Breakout EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\06 Asia Breakout - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
-            Label = 'AAA Final DmC'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
-            Period = 60; Expert = 'AAA Final DmC EA.ex5'
-            ExpertSource = 'AAA Final EAs\AAA Final DmC EA\AAA Final DmC EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\07 DmC - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true
-        },
-        [pscustomobject]@{
             Label = 'AAA Final EMA3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 240; Expert = 'AAA Final EMA3 EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final EMA3 EA\AAA Final EMA3 EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\08 EMA3 - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true
+            SetSource = 'Selected Portfolio Settings 2026-09-01\08 EMA3 - H4 PIVOT 1.7R - DYNAMIC 60-20 ONLY.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
             Label = 'AAA Final XAU Weakness'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
-            Period = 15; Expert = 'AAA Final XAU Weakness EA.ex5'
+            Period = 30; Expert = 'AAA Final XAU Weakness EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final XAU Weakness EA\AAA Final XAU Weakness EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\09 XAU Weakness - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true
+            SetSource = 'Selected Portfolio Settings 2026-09-01\09 XAU Weakness - M30 STRUCTURE 4R - DYNAMIC 50-20.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
             Label = 'Nasdaq Overnight'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 1; Expert = 'Nasdaq Overnight Negative Day EA.ex5'
             ExpertSource = 'Nasdaq Overnight Negative Day EA\Nasdaq Overnight Negative Day EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\10 Nasdaq Overnight - CURRENT - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true
+            SetSource = 'Selected Portfolio Settings 2026-09-01\10 Nasdaq Overnight - CURRENT - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'Nasdaq 5M Candle Momentum'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
@@ -117,10 +164,22 @@ function Get-PortfolioItems {
             SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
         },
         [pscustomobject]@{
-            Label = 'AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Label = 'News Pulse XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\12 News Pulse Long Only - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+            SetSource = 'Selected Portfolio Settings 2026-09-01\12A News Pulse XAU Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'News Pulse XAG'; Canonical = 'XAGUSD'; Aliases = @('XAGUSD', 'SILVER', 'XAG')
+            Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\12B News Pulse XAG Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'News Pulse EURUSD'; Canonical = 'EURUSD'; Aliases = @('EURUSD')
+            Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\12C News Pulse EURUSD Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'XAU RSI VWAP'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -133,6 +192,12 @@ function Get-PortfolioItems {
             Period = 240; Expert = 'Trend Progression EA.ex5'
             ExpertSource = 'Trend Progression Research 2026-09-02\EA\Trend Progression EA.ex5'
             SetSource = 'Trend Progression Research 2026-09-02\Sets\TrendProgression-xauusd--h4--optimized--locked.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'XAU Elliott Wave 1-2-3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 240; Expert = 'Elliott Wave 123 EA.ex5'
+            ExpertSource = 'Elliott Wave Research 2026-09-05\EA\Elliott Wave 123 EA.ex5'
+            SetSource = 'Elliott Wave Research 2026-09-05\Sets\ElliottWave-xauusd--h4--optimized--locked.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
         }
     )
 
@@ -152,12 +217,18 @@ function Get-PortfolioItems {
         if (-not $item.PSObject.Properties['SupportsSafeFilter']) {
             $item | Add-Member -NotePropertyName SupportsSafeFilter -NotePropertyValue $true
         }
+        if (-not $item.PSObject.Properties['SafeSetSource']) {
+            $item | Add-Member -NotePropertyName SafeSetSource -NotePropertyValue ''
+        }
         if (-not $item.PSObject.Properties['LockRisk']) {
             $item | Add-Member -NotePropertyName LockRisk -NotePropertyValue $false
         }
+        $usesDedicatedSafePreset = [bool]$item.SafeSetSource -and ($IsFullSafe -or $UseRecommendedSelections)
+        $selectedSetSource = if ($usesDedicatedSafePreset) { [string]$item.SafeSetSource } else { [string]$item.SetSource }
+        $item | Add-Member -NotePropertyName UsesDedicatedSafePreset -NotePropertyValue $usesDedicatedSafePreset
         $item | Add-Member -NotePropertyName SafeByDesign -NotePropertyValue $false
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
-        $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $item.SetSource)
+        $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $selectedSetSource)
     }
     return @($items)
 }
@@ -357,7 +428,7 @@ function Get-EffectiveInputs([object]$Item) {
             if ($inputs.Contains('Volume')) { $inputs['Volume'] = $dynamicMoney }
         }
     }
-    if ($IsFullSafe -and [bool]$Item.SupportsSafeFilter) {
+    if ($IsFullSafe -and [bool]$Item.SupportsSafeFilter -and -not [bool]$Item.UsesDedicatedSafePreset) {
         $inputs['InpUseMarkovRegimeFilter'] = 'true'
         $inputs['InpMarkovReturnWindow'] = '40'
         $inputs['InpMarkovThreshold'] = '0.05'
@@ -580,8 +651,19 @@ foreach ($item in $portfolio) {
     Write-Host ('OK  {0}: {1} inputs' -f $item.Label, $inputs.Count)
 }
 if ($IsFullSafe) {
-    $embeddedCount = @($portfolio | Where-Object { $_.SupportsSafeFilter }).Count
-    Write-Host ("FULL SAFE: the completed-D1 Markov gate will be enabled independently inside {0} source-backed EA charts." -f $embeddedCount) -ForegroundColor Green
+    $embeddedCount = @($portfolio | Where-Object { $_.SupportsSafeFilter -and -not $_.UsesDedicatedSafePreset }).Count
+    $dedicatedCount = @($portfolio | Where-Object { $_.UsesDedicatedSafePreset }).Count
+    Write-Host ("FULL SAFE: the completed-D1 Markov gate will be enabled independently inside {0} compatible EA charts." -f $embeddedCount) -ForegroundColor Green
+    if ($dedicatedCount -gt 0) {
+        Write-Host ("{0} EA uses its own audited Safe preset instead of the Markov gate." -f $dedicatedCount) -ForegroundColor Green
+    }
+}
+if ($UseRecommendedSelections) {
+    $recommendedCount = @($portfolio | Where-Object { $_.UsesDedicatedSafePreset }).Count
+    Write-Host 'BEST RECOMMENDED: selected per-EA portfolio settings are active; each EA keeps its own configured session.' -ForegroundColor Green
+    if ($recommendedCount -gt 0) {
+        Write-Host ("{0} EA uses an additional audited dedicated recommendation." -f $recommendedCount) -ForegroundColor Green
+    }
 }
 
 Write-Stage 'Finding MT5'
@@ -733,7 +815,11 @@ foreach ($item in $portfolio) {
         Write-Host ('{0,-42} {1,-8} -> {2}; {3:N2} {4} ({5:N4}%), {6}' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $RequestedRiskMoney, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent, $exactText) -ForegroundColor Cyan
     } elseif ([double]$item.FixedPercentRisk -gt 0) {
         $fixedRiskText = ([double]$item.FixedPercentRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
-        Write-Host ('{0,-42} {1,-8} -> {2}; fixed equity risk {3}%' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
+        if ($item.Label -like 'News Pulse *') {
+            Write-Host ('{0,-42} {1,-8} -> {2}; HARD {3}% per pending stop / 1.50% total event cap' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
+        } else {
+            Write-Host ('{0,-42} {1,-8} -> {2}; fixed equity risk {3}%' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
+        }
     } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$item.PercentRisk) {
         $percentInputs = Read-SetInputs $item.SetFullPath
         $riskText = if ($IsAdaptiveAccount) { $EffectiveAdaptiveRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture) } elseif ($percentInputs.Contains('InpRiskPercent')) { [string]$percentInputs['InpRiskPercent'] } else { 'default' }
@@ -770,7 +856,7 @@ if ($PreflightOnly) {
 
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
-Write-Host "$($portfolio.Count)-EA SET: locked 2026-09-01 per-EA exit selections; all-day entries; rejected EAs removed." -ForegroundColor Red
+Write-Host "$($portfolio.Count)-EA SET: locked per-EA signal, exit and session selections; rejected EAs removed." -ForegroundColor Red
 $modeMessage = if ($IsFullSafe) { 'MODE: FULL SAFE — independent completed-D1 Markov gates enabled in every eligible strategy.' } else { 'MODE: STANDARD — current default/selective configuration.' }
 Write-Host $modeMessage -ForegroundColor Red
 if ($IsAdaptiveAccount) {
@@ -787,7 +873,7 @@ if ($IsAdaptiveAccount) {
 Write-Host 'It does not delete your existing profiles or close any open positions.' -ForegroundColor Yellow
 $modeToken = if ($IsFullSafe) { ' SAFE' } else { '' }
 $expected = if ($IsAdaptiveAccount) { "RUN $login AUTO$modeToken" } elseif ($IsSmallAccount) { "RUN $login 900$modeToken" } else { "RUN $login$modeToken" }
-$confirmation = Read-Host "Type exactly '$expected' to continue"
+$confirmation = if ($Yes) { $expected } else { Read-Host "Type exactly '$expected' to continue" }
 if ($confirmation -cne $expected) { Stop-WithMessage 'Confirmation did not match. No portfolio files were installed.' }
 
 Write-Stage 'Closing MT5 cleanly'
@@ -887,6 +973,7 @@ $manifest = @(
     'Profile: ' + $ProfileName
     'Account preset: ' + $AccountProfile
     'Safety mode: ' + $SafetyMode
+    'Recommended selections: ' + [bool]$UseRecommendedSelections
     'Risk mode: ' + $RiskMode
     'Requested risk value: ' + $RiskValue.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
     'Account: ' + $login

@@ -7,12 +7,15 @@ This is the default research and validation workflow for every new EA idea and e
 - Convert the trading idea into exact, non-repainting rules.
 - Define the signal timeframe, entry timing, trade direction, maximum simultaneous positions, expiry rules and broker-time/session conversion.
 - Use automatic broker-symbol discovery where the deployment must support suffixes such as `m`, `.`, or other broker variants.
-- If the strategy does not specify markets, test: US30, US100, BTC, XAU, XAG and GBPJPY.
+- **XAG is a mandatory validation market for every strategy and every material EA revision**, even when the idea specifies another primary market. Use the same frozen logic and parameters first; market-specific optimization may be reported separately and must not replace the frozen cross-market check.
+- If the strategy does not specify markets, test the complete default basket: US30, US100, BTC, XAU, XAG and GBPJPY.
+- XAG validation may be marked technically inapplicable only when the strategy depends on data or market structure that does not exist for silver. The final report must state the exact reason; weak or negative XAG performance is not a reason to omit it.
 
 ## 2. Data and test periods
 
 - Use real MT5 broker history rather than cached synthetic results.
 - Include broker spread, commission, swap and random execution delay.
+- Resolve the broker's actual silver symbol automatically (`XAGUSD`, `XAGUSDm`, `SILVER`, or another suffix/alias), and record the resolved symbol, test model and history quality in the report.
 - Prefer three years when reliable tick history is available; never use less than one year for a final decision unless the strategy depends on rare or newly available data.
 - Split chronologically:
   - development/in-sample: choose broad parameter regions;
@@ -92,6 +95,8 @@ For every tested setting and market, provide equity graphs and a comparison tabl
 
 Also show development versus locked out-of-sample results and the Monte Carlo distribution/fan chart.
 
+Every final research report must include a clearly labelled **XAG validation** row and equity curve. Run `Assert-EAResearchMarkets.ps1` against the final summary CSV before calling the research complete. A missing XAG result is a failed pipeline check; a present but negative XAG result is valid evidence and must remain visible.
+
 ## 10. Selection rule
 
-The recommended configuration must be profitable and reasonably consistent across time, neighbouring parameters and realistic cost assumptions. Prefer lower drawdown, stronger locked profit factor, adequate trade count and better Monte Carlo survival over the highest headline return. Do not add an EA to the active BAT or website unless the user explicitly approves it after seeing the final locked evidence.
+The recommended configuration must be profitable and reasonably consistent across time, neighbouring parameters and realistic cost assumptions. Prefer lower drawdown, stronger locked profit factor, adequate trade count and better Monte Carlo survival over the highest headline return. XAG validation measures portability; it does not automatically disqualify a strategy that is honestly scoped to another primary market. Do not add an XAG instance—or any EA—to the active BAT or website unless that exact market/configuration passes its own locked evidence and the user explicitly approves it.

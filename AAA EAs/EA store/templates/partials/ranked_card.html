@@ -8,13 +8,13 @@
     </div>
   </div>
   <div class="mt-6 rounded-2xl border border-mint/15 bg-mint/[.045] p-4">
-    <span class="block font-mono text-[9px] uppercase tracking-[.18em] text-muted">Last-year return</span>
+    <span class="block font-mono text-[9px] uppercase tracking-[.18em] text-muted">Three-year return</span>
     {% if product.one_year_return_pct is not none %}
     <strong class="mt-2 block text-3xl text-mint">{{ product.one_year_return_pct|percent(true) }}</strong>
     {% else %}
     <strong class="mt-2 block text-2xl text-muted">Not available</strong>
     {% endif %}
-    <span class="mt-2 block text-[10px] leading-4 text-muted">11 Aug 2025 – 10 Aug 2026{% if product.one_year_note %} · balance-curve slice{% endif %}</span>
+    <span class="mt-2 block text-[10px] leading-4 text-muted">{{ product.one_year_evidence.period if product.one_year_evidence else 'Cached three-year evidence unavailable' }}</span>
   </div>
   {% if product.one_year_evidence %}
   <div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -24,7 +24,7 @@
     <div class="mini-stat"><span>Win rate</span><strong>{{ product.one_year_evidence.win_rate_pct|percent }}</strong></div>
   </div>
   {% else %}
-  <p class="mt-4 min-h-[44px] text-xs leading-5 text-muted">{{ product.one_year_note or 'A separate one-year statistics report is not available.' }}</p>
+  <p class="mt-4 min-h-[44px] text-xs leading-5 text-muted">{{ product.one_year_note or 'A separate three-year statistics report is not available.' }}</p>
   {% endif %}
   <div class="mt-6 flex items-end justify-between border-t border-white/10 pt-5">
     <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ product.price|money }}</strong></div>

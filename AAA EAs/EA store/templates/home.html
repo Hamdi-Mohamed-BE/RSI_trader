@@ -35,12 +35,12 @@
             <a href="/eas/{{ product.slug }}" class="signal-row group">
               <span class="asset-icon accent-{{ product.accent }} h-9 w-9 text-[10px]">{{ product.canonical[:2] }}</span>
               <span class="min-w-0 flex-1"><strong class="block truncate text-sm">{{ product.label }}</strong><span class="font-mono text-[10px] text-muted">{{ product.canonical }} · {{ product.timeframe }}</span></span>
-              {% if product.one_year_return_pct is not none %}<span class="text-right"><strong class="block font-mono text-sm {{ 'text-mint' if product.one_year_return_pct >= 0 else 'text-red-300' }}">{{ product.one_year_return_pct|percent(true) }}</strong><span class="text-[9px] text-muted">LAST 1Y</span></span>{% endif %}
+              {% if product.one_year_return_pct is not none %}<span class="text-right"><strong class="block font-mono text-sm {{ 'text-mint' if product.one_year_return_pct >= 0 else 'text-red-300' }}">{{ product.one_year_return_pct|percent(true) }}</strong><span class="text-[9px] text-muted">LAST 3Y</span></span>{% endif %}
             </a>
             {% endfor %}
           </div>
           <div class="mt-6 rounded-2xl border border-mint/20 bg-mint/[.055] p-4">
-            <div class="flex gap-3"><span class="text-mint">↗</span><p class="text-xs leading-5 text-[#b7d5cc]">The latest complete one-year core cash-flow overlay returned <strong class="text-mint">{{ portfolio.return_pct|percent(true) }}</strong> with a {{ '%.2f'|format(portfolio.profit_factor) }} profit factor. Review the audit methodology and portfolio-risk notes before combining systems.</p></div>
+            <div class="flex gap-3"><span class="text-mint">↗</span><p class="text-xs leading-5 text-[#b7d5cc]">The cached three-year core cash-flow overlay returned <strong class="text-mint">{{ portfolio.return_pct|percent(true) }}</strong> with a {{ '%.2f'|format(portfolio.profit_factor) }} profit factor. Review the audit methodology and portfolio-risk notes before combining systems.</p></div>
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@
 
 <section class="mx-auto max-w-7xl px-5 py-24 lg:px-8">
   <div class="section-heading-row">
-    <div><p class="eyebrow-simple">All available systems</p><h2 class="section-title">Ranked by last-year return.</h2><p class="mt-4 max-w-2xl text-sm leading-6 text-muted">The latest complete comparison window is 11 August 2025 to 10 August 2026. Ranking by return does not mean ranking by safety.</p></div>
+    <div><p class="eyebrow-simple">All available systems</p><h2 class="section-title">Ranked by three-year return.</h2><p class="mt-4 max-w-2xl text-sm leading-6 text-muted">The default comparison uses each EA's precomputed three-year MT5 evidence. Ranking by return does not mean ranking by safety.</p></div>
     <a href="/eas" class="text-sm font-semibold text-mint hover:text-white">Open catalogue →</a>
   </div>
   <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">

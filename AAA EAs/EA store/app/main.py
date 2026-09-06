@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from collections import Counter
 from contextlib import asynccontextmanager
-from datetime import date, datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -26,8 +26,19 @@ from .catalog import (
     get_sellable_catalog,
     package_buy_url,
 )
-from .evidence_series import analyse_equity_series, portfolio_equity_series, product_equity_series
+from .evidence_cache import (
+    DEFAULT_PERIOD,
+    PERIOD_OPTIONS,
+    cache_manifest,
+    load_cached_trade,
+    load_portfolio_cache,
+    load_portfolio_summary,
+    load_product_cache,
+    load_product_summary,
+    validate_period,
+)
 from .mt5_live import live_mt5
+from .mt5_evidence_jobs import mt5_evidence_jobs
 
 
 @asynccontextmanager
@@ -62,6 +73,36 @@ templates.env.filters["money"] = money
 templates.env.filters["percent"] = percent
 
 
+def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> Product:
+    cached = load_product_summary(product.slug, "standard", period)
+    if not cached or not cached.get("stats") or product.evidence is None:
+        return product
+    stats = cached["stats"]
+    evidence = product.evidence.model_copy(
+        update={
+            "label": f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
+            "period": str(cached["period"]),
+            "return_pct": float(stats.get("return_pct") or 0),
+            "profit_factor": float(stats.get("profit_factor") or 0),
+            "win_rate_pct": float(stats.get("win_rate_pct") or 0),
+            "drawdown_pct": float(stats.get("max_drawdown_pct") or 0),
+            "trades": int(stats.get("trades") or 0),
+            "sharpe_ratio": stats.get("sharpe_ratio"),
+            "recovery_factor": stats.get("recovery_factor"),
+            "history_quality": str(cached.get("history_quality") or "Native MT5 report"),
+            "source_note": str(cached.get("notice")),
+        }
+    )
+    changes: dict[str, Any] = {"evidence": evidence}
+    if period == DEFAULT_PERIOD:
+        changes.update({"one_year_evidence": evidence, "one_year_return_pct": evidence.return_pct})
+    return product.model_copy(update=changes)
+
+
+def _display_catalog(period: str = DEFAULT_PERIOD) -> list[Product]:
+    return [_cached_display_product(product, period) for product in get_sellable_catalog()]
+
+
 def _base_context(request: Request, active: str) -> dict[str, Any]:
     products = get_sellable_catalog()
     development = get_development_catalog()
@@ -78,7 +119,33 @@ def _base_context(request: Request, active: str) -> dict[str, Any]:
     }
 
 
-def _portfolio_audit(mode: str = "standard") -> dict[str, Any]:
+def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> dict[str, Any]:
+    cached = load_portfolio_summary("standard", period) if mode == "standard" else None
+    if cached and cached.get("stats"):
+        combined = cached["stats"]
+        return {
+            "available": True,
+            "tested_eas": int(cached.get("included_ea_count", 0)),
+            "initial": float(combined["initial_balance"]),
+            "final": float(combined["final_balance"]),
+            "net": float(combined["net_profit"]),
+            "return_pct": float(combined["return_pct"]),
+            "profit_factor": float(combined["profit_factor"] or 0),
+            "win_rate_pct": float(combined["win_rate_pct"] or 0),
+            "trades": int(combined["trades"]),
+            "realized_balance_dd_pct": float(combined["max_drawdown_pct"]),
+            "sharpe_ratio": float(combined.get("sharpe_ratio") or 0),
+            "recovery_factor": float(combined.get("recovery_factor") or 0),
+            "verdict": "PRECOMPUTED RECOMMENDED PORTFOLIO",
+            "period": str(cached["period"]),
+            "mode": mode,
+            "label": "Recommended active configuration",
+            "individually_filtered_eas": sum(1 for product in get_sellable_catalog() if product.exit_mode == "Dynamic 50/20"),
+            "safe_by_design_eas": 0,
+            "vendor_unchanged_eas": 0,
+            "caution": cached.get("notice"),
+            "chart": None,
+        }
     selected_path = SELECTED_PORTFOLIO_ROOT / "selected-portfolio-results.json"
     if selected_path.exists() and mode in {"standard", "current"}:
         data = json.loads(selected_path.read_text(encoding="utf-8-sig"))
@@ -138,20 +205,25 @@ def _portfolio_audit(mode: str = "standard") -> dict[str, Any]:
     }
 
 
-def _portfolio_monte_carlo() -> dict[str, Any]:
-    path = SELECTED_PORTFOLIO_ROOT / "selected-portfolio-results.json"
-    if not path.exists():
+def _portfolio_monte_carlo(period: str = DEFAULT_PERIOD) -> dict[str, Any]:
+    cached = load_portfolio_summary("standard", period)
+    if not cached or not cached.get("monte_carlo"):
         return {"available": False}
-    data = json.loads(path.read_text(encoding="utf-8-sig"))
-    monte = data.get("monte_carlo", {})
-    if not monte:
-        return {"available": False}
-    return {"available": True, **monte}
+    return {"available": True, **cached["monte_carlo"]}
+
+
+def _cached_portfolio_rows() -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for option in PERIOD_OPTIONS:
+        payload = load_portfolio_summary("standard", option["value"])
+        if payload and payload.get("stats"):
+            rows.append({"key": option["value"], "label": option["label"], **payload["stats"]})
+    return rows
 
 
 @app.get("/store", response_class=HTMLResponse)
 async def storefront(request: Request) -> HTMLResponse:
-    products = get_sellable_catalog()
+    products = _display_catalog()
     ranked_products = sorted(
         products,
         key=lambda product: product.one_year_return_pct if product.one_year_return_pct is not None else float("-inf"),
@@ -174,11 +246,19 @@ async def storefront(request: Request) -> HTMLResponse:
 async def catalogue(
     request: Request,
     q: str = Query(default="", max_length=80),
-    asset: str = Query(default="all", pattern=r"^(all|metals|indices|crypto|stocks)$"),
+    asset: str = Query(default="all", pattern=r"^(all|metals|indices|crypto|forex|stocks)$"),
+    symbol: str = Query(default="all", max_length=20),
     evidence: str = Query(default="all", pattern=r"^(all|validated|research|experimental)$"),
+    sort: str = Query(
+        default="recommended",
+        pattern=r"^(recommended|pf-desc|win-desc|dd-asc|return-desc|sharpe-desc|recovery-desc|trades-desc|name-asc)$",
+    ),
 ) -> HTMLResponse:
-    products = get_sellable_catalog()
+    all_products = _display_catalog()
+    catalogue_order = {product.slug: index for index, product in enumerate(all_products)}
+    products = list(all_products)
     query = q.strip().lower()
+    selected_symbol = symbol.strip().upper()
     if query:
         products = [
             product
@@ -187,19 +267,38 @@ async def catalogue(
         ]
     if asset != "all":
         products = [product for product in products if product.asset_group == asset]
+    if selected_symbol != "ALL":
+        products = [product for product in products if product.canonical.upper() == selected_symbol]
     if evidence != "all":
         products = [
             product
             for product in products
             if product.evidence and product.evidence.status.lower().startswith(evidence)
         ]
+    sort_rules = {
+        "pf-desc": (lambda product: product.evidence.profit_factor if product.evidence else float("-inf"), True),
+        "win-desc": (lambda product: product.evidence.win_rate_pct if product.evidence else float("-inf"), True),
+        "dd-asc": (lambda product: product.evidence.drawdown_pct if product.evidence else float("inf"), False),
+        "return-desc": (lambda product: product.evidence.return_pct if product.evidence else float("-inf"), True),
+        "sharpe-desc": (lambda product: product.evidence.sharpe_ratio if product.evidence and product.evidence.sharpe_ratio is not None else float("-inf"), True),
+        "recovery-desc": (lambda product: product.evidence.recovery_factor if product.evidence and product.evidence.recovery_factor is not None else float("-inf"), True),
+        "trades-desc": (lambda product: product.evidence.trades if product.evidence else -1, True),
+        "name-asc": (lambda product: product.label.lower(), False),
+    }
+    if sort in sort_rules:
+        sort_key, reverse = sort_rules[sort]
+        products.sort(key=sort_key, reverse=reverse)
     context = _base_context(request, "catalogue") | {
         "products": products,
         "query": q,
         "selected_asset": asset,
+        "selected_symbol": selected_symbol.lower(),
         "selected_evidence": evidence,
+        "selected_sort": sort,
         "result_count": len(products),
-        "groups": Counter(product.asset_group for product in get_sellable_catalog()),
+        "groups": Counter(product.asset_group for product in all_products),
+        "symbols": Counter(product.canonical for product in all_products),
+        "catalogue_order": catalogue_order,
     }
     return templates.TemplateResponse(request=request, name="catalogue.html", context=context)
 
@@ -209,20 +308,41 @@ async def product_detail(
     request: Request,
     slug: str,
     mode: str = Query(default="standard", pattern=r"^(standard|safe)$"),
+    period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
 ) -> HTMLResponse:
     product = get_product(slug)
     if product is None:
         raise HTTPException(status_code=404, detail="EA not found")
     related = [
-        item for item in get_sellable_catalog() if item.slug != product.slug and item.asset_group == product.asset_group
+        item for item in _display_catalog() if item.slug != product.slug and item.asset_group == product.asset_group
     ][:3]
     if mode == "safe" and not product.safe_filter_supported:
         mode = "standard"
     display_evidence = product.safe_evidence if mode == "safe" else product.evidence
+    cached = load_product_summary(product.slug, mode, period)
+    if cached and cached.get("stats") and display_evidence is not None:
+        stats = cached["stats"]
+        display_evidence = display_evidence.model_copy(
+            update={
+                "label": f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
+                "period": str(cached["period"]),
+                "return_pct": float(stats.get("return_pct") or 0),
+                "profit_factor": float(stats.get("profit_factor") or 0),
+                "win_rate_pct": float(stats.get("win_rate_pct") or 0),
+                "drawdown_pct": float(stats.get("max_drawdown_pct") or 0),
+                "trades": int(stats.get("trades") or 0),
+                "sharpe_ratio": stats.get("sharpe_ratio"),
+                "recovery_factor": stats.get("recovery_factor"),
+                "history_quality": str(cached.get("history_quality") or "Native MT5 report"),
+                "source_note": str(cached.get("notice")),
+            }
+        )
     context = _base_context(request, "catalogue") | {
         "product": product,
         "related": related,
         "selected_mode": mode,
+        "selected_period": period,
+        "period_options": PERIOD_OPTIONS,
         "display_evidence": display_evidence,
     }
     return templates.TemplateResponse(request=request, name="detail.html", context=context)
@@ -232,19 +352,23 @@ async def product_detail(
 async def portfolio(
     request: Request,
     mode: str = Query(default="standard", pattern=r"^(standard|current|safe)$"),
+    period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
 ) -> HTMLResponse:
-    products = get_sellable_catalog()
+    products = _display_catalog(period)
     groups: dict[str, list[Product]] = {}
     for product in products:
         groups.setdefault(product.category, []).append(product)
     context = _base_context(request, "portfolio") | {
         "products": products,
         "groups": groups,
-        "portfolio": _portfolio_audit(mode),
-        "standard_portfolio": _portfolio_audit("standard"),
+        "portfolio": _portfolio_audit("standard", period),
+        "standard_portfolio": _portfolio_audit("standard", period),
         "current_portfolio": _portfolio_audit("current"),
-        "monte_carlo": _portfolio_monte_carlo(),
-        "selected_mode": mode,
+        "monte_carlo": _portfolio_monte_carlo(period),
+        "selected_mode": "standard",
+        "selected_period": period,
+        "period_options": PERIOD_OPTIONS,
+        "portfolio_period_rows": _cached_portfolio_rows(),
         "full_price": sum(product.price for product in products),
         "package_price": 1990,
         "package_url": package_buy_url("Complete Available EA Portfolio", 1990),
@@ -328,8 +452,7 @@ async def evidence_chart(slug: str) -> FileResponse:
 async def evidence_series(
     slug: str,
     mode: str = Query(default="standard", pattern=r"^(standard|safe|compare)$"),
-    from_date: date | None = Query(default=None, alias="from"),
-    to_date: date | None = Query(default=None, alias="to"),
+    period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
 ) -> JSONResponse:
     product = get_product(slug)
     if product is None or product.evidence is None:
@@ -337,50 +460,84 @@ async def evidence_series(
     if mode == "safe" and not product.safe_filter_supported:
         raise HTTPException(status_code=409, detail="This vendor binary does not support embedded Safe mode")
     selected_mode = "standard" if mode == "compare" else mode
-    raw_series = product_equity_series(product, selected_mode)
-    evidence = product.safe_evidence if selected_mode == "safe" and product.safe_evidence else product.evidence
-    analysed = analyse_equity_series(
-        raw_series,
-        expected_trades=evidence.trades if evidence else None,
-        label=product.label,
-        from_date=from_date,
-        to_date=to_date,
-    )
-    series = analysed["series"]
-    if len(series) < 2:
-        raise HTTPException(status_code=404, detail="Evidence series not found")
-    payload: dict[str, Any] = {
-        "label": product.label,
-        "period": product.evidence.period,
-        "currency": "USD",
-        "series": series,
-        "stats": analysed["stats"],
-        "trades": analysed["trades"],
-        "available_from": str(raw_series[0]["time"])[:10],
-        "available_to": str(raw_series[-1]["time"])[:10],
-    }
-    if all(bool(point.get("summary")) for point in series):
-        payload["series_kind"] = "summary"
-        payload["notice"] = "Start-to-finish return line — the detailed trade-by-trade MT5 curve is not archived on this server."
+    payload = load_product_cache(product.slug, selected_mode, period)
+    if payload is None:
+        raise HTTPException(status_code=503, detail=f"The {period} {selected_mode} evidence cache is not ready yet.")
     if mode == "compare" and product.safe_filter_supported:
-        safe_raw = product_equity_series(product, "safe")
-        safe_evidence = product.safe_evidence or product.evidence
-        safe = analyse_equity_series(
-            safe_raw,
-            expected_trades=safe_evidence.trades if safe_evidence else None,
-            label=f"{product.label} — Full Safe",
-            from_date=from_date,
-            to_date=to_date,
-        )
-        if len(safe["series"]) >= 2:
+        safe = load_product_cache(product.slug, "safe", period)
+        if safe is not None:
             payload["datasets"] = [
-                {"label": "Standard", "color": "#7ef7c7", "series": series, "stats": analysed["stats"], "trades": analysed["trades"]},
-                {"label": "Full Safe", "color": "#68a7ff", "series": safe["series"], "stats": safe["stats"], "trades": safe["trades"]},
+                {"label": "Standard", "color": "#7ef7c7", "series": payload["series"], "stats": payload["stats"], "trades": payload["trades"]},
+                {"label": product.safe_mode_label, "color": "#68a7ff", "series": safe["series"], "stats": safe["stats"], "trades": safe["trades"]},
             ]
     return JSONResponse(
         payload,
+        headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"},
+    )
+
+
+@app.post("/api/evidence/{slug}/refresh", name="refresh_evidence")
+async def refresh_evidence(slug: str) -> JSONResponse:
+    if get_product(slug) is None:
+        raise HTTPException(status_code=404, detail="EA not found")
+    raise HTTPException(
+        status_code=410,
+        detail="Custom MT5 date-range refreshes were retired. Use the fixed 6m, 1y, 3y or 5y evidence cache.",
+    )
+
+
+@app.get("/api/evidence/jobs/{job_id}", name="evidence_job")
+async def evidence_job(job_id: str) -> JSONResponse:
+    job = mt5_evidence_jobs.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Evidence job not found")
+    return JSONResponse(job, headers={"Cache-Control": "no-store"})
+
+
+@app.get("/api/evidence/jobs/{job_id}/trades/{trade_number}/chart", name="evidence_trade_chart")
+async def evidence_trade_chart(job_id: str, trade_number: int) -> JSONResponse:
+    trade = mt5_evidence_jobs.get_trade(job_id, trade_number)
+    if trade is None:
+        raise HTTPException(status_code=404, detail="Fresh MT5 trade not found. Run Update from MT5 first.")
+    try:
+        opened = datetime.fromisoformat(str(trade["open_time"])).replace(tzinfo=timezone.utc)
+        closed = datetime.fromisoformat(str(trade["close_time"])).replace(tzinfo=timezone.utc)
+        duration = max(closed - opened, timedelta(minutes=5))
+        timeframe = "M1" if duration <= timedelta(hours=3) else "M5" if duration <= timedelta(days=1) else "M15"
+        padding = max(timedelta(minutes=30), min(duration / 4, timedelta(days=1)))
+        market = live_mt5.price_bars(str(trade["symbol"]), timeframe, opened - padding, closed + padding)
+    except (KeyError, TypeError, ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return JSONResponse(
+        {**market, "trade": trade},
         headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
     )
+
+
+@app.get("/api/evidence/{slug}/cached-trades/{period}/{trade_number}/chart", name="cached_evidence_trade_chart")
+async def cached_evidence_trade_chart(
+    slug: str,
+    period: str,
+    trade_number: int,
+    mode: str = Query(default="standard", pattern=r"^(standard|safe)$"),
+) -> JSONResponse:
+    try:
+        validate_period(period)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    trade = load_cached_trade(slug, mode, period, trade_number)
+    if trade is None:
+        raise HTTPException(status_code=404, detail="Cached MT5 trade not found.")
+    try:
+        opened = datetime.fromisoformat(str(trade["open_time"])).replace(tzinfo=timezone.utc)
+        closed = datetime.fromisoformat(str(trade["close_time"])).replace(tzinfo=timezone.utc)
+        duration = max(closed - opened, timedelta(minutes=5))
+        timeframe = "M1" if duration <= timedelta(hours=3) else "M5" if duration <= timedelta(days=1) else "M15"
+        padding = max(timedelta(minutes=30), min(duration / 4, timedelta(days=1)))
+        market = live_mt5.price_bars(str(trade["symbol"]), timeframe, opened - padding, closed + padding)
+    except (KeyError, TypeError, ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return JSONResponse({**market, "trade": trade}, headers={"Cache-Control": "no-store"})
 
 
 @app.get("/portfolio/equity.png", name="portfolio_chart")
@@ -399,56 +556,21 @@ async def portfolio_chart() -> FileResponse:
 
 @app.get("/api/portfolio/equity-series", name="portfolio_equity_series")
 async def api_portfolio_equity_series(
-    mode: str = Query(default="compare", pattern=r"^(standard|current|safe|compare)$"),
-    from_date: date | None = Query(default=None, alias="from"),
-    to_date: date | None = Query(default=None, alias="to"),
+    mode: str = Query(default="standard", pattern=r"^(standard)$"),
+    period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
 ) -> JSONResponse:
-    selected_mode = "standard" if mode == "compare" else mode
-    audit = _portfolio_audit(selected_mode)
-    raw_series = [dict(point) for point in portfolio_equity_series(selected_mode)]
-    analysed = analyse_equity_series(
-        raw_series,
-        expected_trades=int(audit.get("trades", 0)),
-        label="Active BAT portfolio",
-        from_date=from_date,
-        to_date=to_date,
-    )
-    series = analysed["series"]
-    if len(series) < 2:
-        raise HTTPException(status_code=404, detail="Portfolio equity series not found")
-    payload: dict[str, Any] = {
-        "label": "Active BAT portfolio",
-        "period": _portfolio_audit(selected_mode).get("period"),
-        "currency": "USD",
-        "series": series,
-        "stats": analysed["stats"],
-        "trades": analysed["trades"],
-        "available_from": str(raw_series[0]["time"])[:10],
-        "available_to": str(raw_series[-1]["time"])[:10],
-    }
-    if mode == "compare":
-        current_audit = _portfolio_audit("current")
-        current_raw = [dict(point) for point in portfolio_equity_series("current")]
-        current = analyse_equity_series(
-            current_raw,
-            expected_trades=int(current_audit.get("trades", 0)),
-            label="Audited 12 — original exits",
-            from_date=from_date,
-            to_date=to_date,
-        )
-        payload["datasets"] = [
-            {"label": "Applied per-EA setup", "color": "#7ef7c7", "series": series, "stats": analysed["stats"], "trades": analysed["trades"]},
-            {"label": "Audited 12 — original exits", "color": "#68a7ff", "series": current["series"], "stats": current["stats"], "trades": current["trades"]},
-        ]
+    payload = load_portfolio_cache(mode, period)
+    if payload is None:
+        raise HTTPException(status_code=503, detail=f"The recommended portfolio {period} cache is not ready yet.")
     return JSONResponse(
         payload,
-        headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
+        headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"},
     )
 
 
 @app.get("/api/eas")
 async def api_eas() -> JSONResponse:
-    payload = [product.model_dump(mode="json") for product in get_sellable_catalog()]
+    payload = [product.model_dump(mode="json") for product in _display_catalog()]
     for product in payload:
         evidence = product.get("evidence")
         if evidence:
@@ -461,11 +583,20 @@ async def api_eas() -> JSONResponse:
     return JSONResponse(payload)
 
 
+@app.get("/api/evidence-cache/manifest")
+async def api_evidence_cache_manifest() -> JSONResponse:
+    manifest = cache_manifest()
+    if manifest is None:
+        raise HTTPException(status_code=503, detail="Evidence cache generation has not completed.")
+    return JSONResponse(manifest, headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"})
+
+
 @app.get("/api/health")
 async def api_health() -> dict[str, Any]:
     products = get_catalog()
     sellable = get_sellable_catalog()
     live_state = live_mt5.snapshot()
+    manifest = cache_manifest() or {}
     return {
         "status": "ok",
         "catalogue_source": str(INSTALLER_PATH),
@@ -475,6 +606,9 @@ async def api_health() -> dict[str, Any]:
         "whatsapp_checkout": True,
         "live_mt5_telemetry": bool(live_state["connected"]),
         "live_mt5_last_update": live_state["last_update"],
+        "evidence_cache_generated_at": manifest.get("generated_at"),
+        "evidence_cache_recommended_eas": manifest.get("recommended_ea_count"),
+        "evidence_cache_failures": len(manifest.get("failures", [])),
     }
 
 

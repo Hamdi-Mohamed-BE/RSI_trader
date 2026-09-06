@@ -14,6 +14,7 @@ enum ENUM_NEGATIVE_DAY_DEFINITION
 
 input group "Core strategy (New York time)"
 input bool   InpEnableTrading=true;
+input bool   InpRequireNegativeDay=true;       // False tests the unconditional overnight "Go Long" calendar rule
 input ENUM_NEGATIVE_DAY_DEFINITION InpNegativeDayDefinition=NEGATIVE_CLOSE_TO_CLOSE;
 input double InpNegativeDayThresholdPercent=0.0; // Enter when the selected day return is below -threshold
 input bool   InpAllowFridayEntry=true;           // Friday close is held to Monday pre-open
@@ -21,6 +22,8 @@ input int    InpCashOpenHour=9;
 input int    InpCashOpenMinute=30;
 input int    InpCashCloseHour=16;
 input int    InpCashCloseMinute=0;
+input int    InpEntryHour=16;
+input int    InpEntryMinute=0;
 input int    InpExitHour=9;
 input int    InpExitMinute=29;
 input int    InpEntryWindowMinutes=10;
@@ -30,6 +33,7 @@ input int    InpMinimumCashSessionBars=300;
 input group "Risk and execution"
 input double InpRiskPercent=1.0;
 input double InpEmergencyStopPercent=2.0;
+input double InpRewardRisk=0.0; // 0 keeps the calendar exit; positive values add a fixed R target
 input int    InpMaxSpreadPoints=0;
 input int    InpMaxDeviationPoints=30;
 input long   InpMagic=84081601;
@@ -253,26 +257,31 @@ void TryEntry(const MqlDateTime &now_ny)
 {
    if(!DTS_EntrySessionAllowed()) return;
    if(!InpEnableTrading || !SpreadOK()) return;
-   if(!HAMA_SafeRegimeAllowsDirection(1)) return;
    if(now_ny.day_of_week<1 || now_ny.day_of_week>5) return;
    if(now_ny.day_of_week==5 && !InpAllowFridayEntry) return;
    int minute_of_day=now_ny.hour*60+now_ny.min;
-   int close_minute=InpCashCloseHour*60+InpCashCloseMinute;
-   if(minute_of_day<close_minute || minute_of_day>=close_minute+InpEntryWindowMinutes) return;
+   int entry_minute=InpEntryHour*60+InpEntryMinute;
+   if(minute_of_day<entry_minute || minute_of_day>=entry_minute+InpEntryWindowMinutes) return;
    ulong ticket=0; datetime opened=0;
    if(SelectOurPosition(ticket,opened) || TradedOnNewYorkDate(now_ny)) return;
    int today_key=DateKey(now_ny);
    if(g_last_evaluated_ny_date==today_key) return;
 
    double cash_return=0.0; int bars=0;
-   if(!NegativeDayReturn(now_ny,cash_return,bars)) return;
+   bool has_cash_return=NegativeDayReturn(now_ny,cash_return,bars);
+   if(InpRequireNegativeDay && !has_cash_return) return;
    g_last_evaluated_ny_date=today_key;
-   if(cash_return>=-MathAbs(InpNegativeDayThresholdPercent)) return;
+   if(InpRequireNegativeDay && cash_return>=-MathAbs(InpNegativeDayThresholdPercent)) return;
+   // The Markov calculation copies a long completed-D1 history. Evaluate it
+   // only once, after the time/day/signal gates have produced a valid entry.
+   if(!HAMA_SafeRegimeAllowsDirection(1)) return;
 
    MqlTick tick;
    if(!SymbolInfoTick(_Symbol,tick) || tick.ask<=0.0) return;
    double stop=NormalizeDouble(tick.ask*(1.0-MathAbs(InpEmergencyStopPercent)/100.0),
                                (int)SymbolInfoInteger(_Symbol,SYMBOL_DIGITS));
+   double target=(InpRewardRisk>0.0 ? NormalizeDouble(tick.ask+(tick.ask-stop)*InpRewardRisk,
+                                                      (int)SymbolInfoInteger(_Symbol,SYMBOL_DIGITS)) : 0.0);
    double lots=LotsForRisk(tick.ask,stop);
    if(lots<=0.0)
    {
@@ -282,8 +291,10 @@ void TryEntry(const MqlDateTime &now_ny)
    trade.SetExpertMagicNumber((ulong)InpMagic);
    trade.SetTypeFillingBySymbol(_Symbol);
    trade.SetDeviationInPoints(InpMaxDeviationPoints);
-   string comment=StringFormat("Overnight after %.3f%% cash day",cash_return);
-   if(!trade.Buy(lots,_Symbol,0.0,stop,0.0,comment))
+   string comment=(InpRequireNegativeDay
+                   ? StringFormat("Overnight after %.3f%% cash day",cash_return)
+                   : "Overnight unconditional Go Long");
+   if(!trade.Buy(lots,_Symbol,0.0,stop,target,comment))
       Print("Nasdaq overnight entry failed: ",trade.ResultRetcode()," ",trade.ResultRetcodeDescription());
 }
 
@@ -300,7 +311,9 @@ void ProcessStrategy()
 int OnInit()
 {
    if(!DTS_InputsValid()) return INIT_PARAMETERS_INCORRECT;
-   if(InpRiskPercent<=0.0 || InpRiskPercent>5.0 || InpEmergencyStopPercent<=0.0)
+   if(InpRiskPercent<=0.0 || InpRiskPercent>5.0 || InpEmergencyStopPercent<=0.0 ||
+      InpRewardRisk<0.0 || InpEntryHour<0 || InpEntryHour>23 || InpEntryMinute<0 || InpEntryMinute>59 ||
+      InpExitHour<0 || InpExitHour>23 || InpExitMinute<0 || InpExitMinute>59)
    {
       Print("Invalid risk settings");
       return INIT_PARAMETERS_INCORRECT;

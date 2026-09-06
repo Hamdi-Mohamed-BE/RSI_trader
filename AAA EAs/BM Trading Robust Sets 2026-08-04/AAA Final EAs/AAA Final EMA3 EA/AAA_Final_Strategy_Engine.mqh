@@ -30,6 +30,16 @@ input bool   InpUseTrailing=true;
 input double InpTrailStartR=1.5;
 input double InpTrailDistanceR=1.0;
 
+input group "EMA3 research and portable stop"
+input ENUM_TIMEFRAMES InpEMA3SignalTimeframe=PERIOD_H4;
+input int    InpEMA3StopMode=0; // 0=pivot structure, 1=ATR, 2=signal candle, 3=fixed price distance
+input int    InpEMA3ATRPeriod=14;
+input double InpEMA3StopATR=1.5;
+input double InpEMA3SignalBufferATR=0.10;
+input double InpEMA3FixedStopPrice=22.5;
+input int    InpEMA3FastEMA=20;
+input int    InpEMA3MediumEMA=50;
+
 input group "Session strategies"
 input double InpAsiaBufferPercent=0.03;
 input double InpAMDStopBufferRange=0.03;
@@ -66,22 +76,37 @@ bool AAA_LoadRates(const ENUM_TIMEFRAMES timeframe,const int count,MqlRates &rat
 void AAA_RunEMA3()
 {
    if(InpUseTrailing) AAA_TrailR(_Symbol,InpMagic,InpTrailStartR,InpTrailDistanceR);
-   if(!AAA_NewBar(_Symbol,PERIOD_H4,g_last_bar) || !InpEnableTrading || !AAA_SpreadOK()) return;
+   ENUM_TIMEFRAMES signal_timeframe=InpEMA3SignalTimeframe;
+   if(!AAA_NewBar(_Symbol,signal_timeframe,g_last_bar) || !InpEnableTrading || !AAA_SpreadOK()) return;
    if(AAA_HasExposure(_Symbol,InpMagic)) return;
    MqlRates r[];
    int needed=MathMax(InpPivotBars+3,12);
-   if(!AAA_LoadRates(PERIOD_H4,needed,r)) return;
-   double trend=AAA_MA(_Symbol,PERIOD_H4,InpTrendEMA,1);
-   double trend_old=AAA_MA(_Symbol,PERIOD_H4,InpTrendEMA,1+InpTrendSlopeBars);
-   double fast=AAA_MA(_Symbol,PERIOD_H4,20,1);
-   double medium=AAA_MA(_Symbol,PERIOD_H4,50,1);
-   if(trend==EMPTY_VALUE || trend_old==EMPTY_VALUE) return;
+   if(!AAA_LoadRates(signal_timeframe,needed,r)) return;
+   double trend=AAA_MA(_Symbol,signal_timeframe,InpTrendEMA,1);
+   double trend_old=AAA_MA(_Symbol,signal_timeframe,InpTrendEMA,1+InpTrendSlopeBars);
+   double fast=AAA_MA(_Symbol,signal_timeframe,InpEMA3FastEMA,1);
+   double medium=AAA_MA(_Symbol,signal_timeframe,InpEMA3MediumEMA,1);
+   double atr=AAA_ATR(_Symbol,signal_timeframe,InpEMA3ATRPeriod,1);
+   if(trend==EMPTY_VALUE || trend_old==EMPTY_VALUE || fast==EMPTY_VALUE || medium==EMPTY_VALUE || atr<=0.0) return;
    double prior_high=-DBL_MAX,prior_low=DBL_MAX;
    for(int i=2;i<2+InpPivotBars;i++) { prior_high=MathMax(prior_high,r[i].high); prior_low=MathMin(prior_low,r[i].low); }
+   MqlTick tick; if(!SymbolInfoTick(_Symbol,tick)) return;
    if(r[1].close>prior_high && r[1].close>trend && fast>medium && trend>trend_old && HAMA_SafeRegimeAllowsDirection(1))
-      AAA_SendMarket(_Symbol,1,prior_low,InpRewardRisk,InpRiskPercent,InpMagic,"AAA EMA3");
+     {
+      double stop=prior_low;
+      if(InpEMA3StopMode==1) stop=tick.ask-InpEMA3StopATR*atr;
+      else if(InpEMA3StopMode==2) stop=r[1].low-InpEMA3SignalBufferATR*atr;
+      else if(InpEMA3StopMode==3) stop=tick.ask-InpEMA3FixedStopPrice;
+      if(stop<tick.ask) AAA_SendMarket(_Symbol,1,stop,InpRewardRisk,InpRiskPercent,InpMagic,"AAA EMA3");
+     }
    else if(r[1].close<prior_low && r[1].close<trend && fast<medium && trend<trend_old && HAMA_SafeRegimeAllowsDirection(-1))
-      AAA_SendMarket(_Symbol,-1,prior_high,InpRewardRisk,InpRiskPercent,InpMagic,"AAA EMA3");
+     {
+      double stop=prior_high;
+      if(InpEMA3StopMode==1) stop=tick.bid+InpEMA3StopATR*atr;
+      else if(InpEMA3StopMode==2) stop=r[1].high+InpEMA3SignalBufferATR*atr;
+      else if(InpEMA3StopMode==3) stop=tick.bid+InpEMA3FixedStopPrice;
+      if(stop>tick.bid) AAA_SendMarket(_Symbol,-1,stop,InpRewardRisk,InpRiskPercent,InpMagic,"AAA EMA3");
+     }
 }
 
 void AAA_RunAsiaBreakout()

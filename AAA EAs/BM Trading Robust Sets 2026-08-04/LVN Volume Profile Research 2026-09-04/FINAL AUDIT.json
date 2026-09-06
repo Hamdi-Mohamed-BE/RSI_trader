@@ -1,0 +1,1797 @@
+{
+  "test_design": {
+    "development": "2023-09-01 to 2025-08-31",
+    "locked": "2025-09-01 to 2026-09-01",
+    "full": "2023-09-01 to 2026-09-01",
+    "development_model": "MT5 1-minute OHLC for parameter search",
+    "final_model": "MT5 Every Tick with broker spread, commission, swap and random delay",
+    "risk_per_trade_pct": 1.0,
+    "monte_carlo": "10,000 five-trade block-bootstrap paths"
+  },
+  "development_raw_vs_confirmed": {
+    "xauusd": {
+      "raw": {
+        "symbol": "xauusd",
+        "variant": "raw20",
+        "path": "Backtest Reports\\screen\\xauusd--raw20--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8325.73,
+        "net_profit": -1674.27,
+        "return_pct": -16.7427,
+        "profit_factor": 0.9,
+        "win_rate_pct": 40.28,
+        "trades": 360,
+        "max_drawdown_pct": 32.61,
+        "sharpe": -1.98,
+        "recovery_factor": -0.51,
+        "expected_payoff": -4.65,
+        "history_quality": "98%",
+        "commission": -491.75,
+        "swap": -136.79,
+        "score": -47.38902618789391,
+        "selection_score": -47.38902618789391
+      },
+      "confirmed": {
+        "symbol": "xauusd",
+        "variant": "auto10",
+        "path": "Backtest Reports\\screen\\xauusd--auto10--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 9340.48,
+        "net_profit": -659.52,
+        "return_pct": -6.595199999999999,
+        "profit_factor": 0.97,
+        "win_rate_pct": 40.79,
+        "trades": 380,
+        "max_drawdown_pct": 14.33,
+        "sharpe": -0.73,
+        "recovery_factor": -0.43,
+        "expected_payoff": -1.74,
+        "history_quality": "98%",
+        "commission": -551.32,
+        "swap": -124.47,
+        "score": -19.8392104898165,
+        "selection_score": -19.8392104898165
+      }
+    },
+    "xagusd": {
+      "raw": {
+        "symbol": "xagusd",
+        "variant": "raw20",
+        "path": "Backtest Reports\\screen\\xagusd--raw20--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 6768.52,
+        "net_profit": -3231.48,
+        "return_pct": -32.3148,
+        "profit_factor": 0.58,
+        "win_rate_pct": 32.87,
+        "trades": 143,
+        "max_drawdown_pct": 36.85,
+        "sharpe": -5.0,
+        "recovery_factor": -0.88,
+        "expected_payoff": -22.6,
+        "history_quality": "98%",
+        "commission": -768.91,
+        "swap": -54.12,
+        "score": -74.23202610530008,
+        "selection_score": -74.23202610530008
+      },
+      "confirmed": {
+        "symbol": "xagusd",
+        "variant": "bounce10",
+        "path": "Backtest Reports\\screen\\xagusd--bounce10--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8732.69,
+        "net_profit": -1267.31,
+        "return_pct": -12.673099999999998,
+        "profit_factor": 0.53,
+        "win_rate_pct": 28.21,
+        "trades": 39,
+        "max_drawdown_pct": 14.15,
+        "sharpe": -5.0,
+        "recovery_factor": -0.9,
+        "expected_payoff": -32.5,
+        "history_quality": "98%",
+        "commission": -260.88,
+        "swap": -23.78,
+        "score": -36.734139269231626,
+        "selection_score": -36.734139269231626
+      }
+    },
+    "btcusd": {
+      "raw": {
+        "symbol": "btcusd",
+        "variant": "raw20",
+        "path": "Backtest Reports\\screen\\btcusd--raw20--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8978.67,
+        "net_profit": -1021.33,
+        "return_pct": -10.2133,
+        "profit_factor": 0.96,
+        "win_rate_pct": 39.92,
+        "trades": 511,
+        "max_drawdown_pct": 31.47,
+        "sharpe": -0.83,
+        "recovery_factor": -0.3,
+        "expected_payoff": -2.0,
+        "history_quality": "100%",
+        "commission": -902.76,
+        "swap": -36.52,
+        "score": -38.18016393424306,
+        "selection_score": -38.18016393424306
+      },
+      "confirmed": {
+        "symbol": "btcusd",
+        "variant": "breakout10",
+        "path": "Backtest Reports\\screen\\btcusd--breakout10--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 10553.8,
+        "net_profit": 553.8,
+        "return_pct": 5.538,
+        "profit_factor": 1.02,
+        "win_rate_pct": 41.34,
+        "trades": 433,
+        "max_drawdown_pct": 29.55,
+        "sharpe": 0.48,
+        "recovery_factor": 0.13,
+        "expected_payoff": 1.28,
+        "history_quality": "100%",
+        "commission": -727.57,
+        "swap": -90.99,
+        "score": -18.936368472445842,
+        "selection_score": -18.936368472445842
+      }
+    },
+    "us30": {
+      "raw": {
+        "symbol": "us30",
+        "variant": "raw20",
+        "path": "Backtest Reports\\screen\\us30--raw20--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8686.99,
+        "net_profit": -1313.01,
+        "return_pct": -13.1301,
+        "profit_factor": 0.94,
+        "win_rate_pct": 39.18,
+        "trades": 365,
+        "max_drawdown_pct": 18.08,
+        "sharpe": -1.46,
+        "recovery_factor": -0.71,
+        "expected_payoff": -3.6,
+        "history_quality": "98%",
+        "commission": -479.37,
+        "swap": -66.3,
+        "score": -30.58410484461705,
+        "selection_score": -30.58410484461705
+      },
+      "confirmed": {
+        "symbol": "us30",
+        "variant": "bounce10",
+        "path": "Backtest Reports\\screen\\us30--bounce10--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 9535.87,
+        "net_profit": -464.13,
+        "return_pct": -4.6413,
+        "profit_factor": 0.95,
+        "win_rate_pct": 40.72,
+        "trades": 167,
+        "max_drawdown_pct": 13.96,
+        "sharpe": -1.11,
+        "recovery_factor": -0.31,
+        "expected_payoff": -2.78,
+        "history_quality": "98%",
+        "commission": -179.72,
+        "swap": -59.31,
+        "score": -18.063819532650605,
+        "selection_score": -18.063819532650605
+      }
+    },
+    "ustec": {
+      "raw": {
+        "symbol": "ustec",
+        "variant": "raw20",
+        "path": "Backtest Reports\\screen\\ustec--raw20--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 7233.75,
+        "net_profit": -2766.25,
+        "return_pct": -27.6625,
+        "profit_factor": 0.87,
+        "win_rate_pct": 38.33,
+        "trades": 420,
+        "max_drawdown_pct": 40.46,
+        "sharpe": -2.76,
+        "recovery_factor": -0.66,
+        "expected_payoff": -6.59,
+        "history_quality": "98%",
+        "commission": -665.34,
+        "swap": -211.27,
+        "score": -66.02564480800208,
+        "selection_score": -66.02564480800208
+      },
+      "confirmed": {
+        "symbol": "ustec",
+        "variant": "retest10",
+        "path": "Backtest Reports\\screen\\ustec--retest10--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8146.73,
+        "net_profit": -1853.27,
+        "return_pct": -18.5327,
+        "profit_factor": 0.75,
+        "win_rate_pct": 33.33,
+        "trades": 114,
+        "max_drawdown_pct": 26.88,
+        "sharpe": -5.0,
+        "recovery_factor": -0.62,
+        "expected_payoff": -16.26,
+        "history_quality": "98%",
+        "commission": -179.35,
+        "swap": -122.33,
+        "score": -48.79988486942136,
+        "selection_score": -48.79988486942136
+      }
+    },
+    "gbpjpy": {
+      "raw": {
+        "symbol": "gbpjpy",
+        "variant": "raw20",
+        "path": "Backtest Reports\\screen\\gbpjpy--raw20--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 4825.2,
+        "net_profit": -5174.8,
+        "return_pct": -51.748000000000005,
+        "profit_factor": 0.74,
+        "win_rate_pct": 35.25,
+        "trades": 417,
+        "max_drawdown_pct": 54.63,
+        "sharpe": -5.0,
+        "recovery_factor": -0.91,
+        "expected_payoff": -12.41,
+        "history_quality": "100%",
+        "commission": -1214.6,
+        "swap": -40.33,
+        "score": -105.86526111340706,
+        "selection_score": -105.86526111340706
+      },
+      "confirmed": {
+        "symbol": "gbpjpy",
+        "variant": "retest10",
+        "path": "Backtest Reports\\screen\\gbpjpy--retest10--screen.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 11707.97,
+        "net_profit": 1707.97,
+        "return_pct": 17.0797,
+        "profit_factor": 1.3,
+        "win_rate_pct": 48.45,
+        "trades": 97,
+        "max_drawdown_pct": 11.23,
+        "sharpe": 6.01,
+        "recovery_factor": 1.4,
+        "expected_payoff": 17.61,
+        "history_quality": "100%",
+        "commission": -358.74,
+        "swap": -25.92,
+        "score": 15.68007117360989,
+        "selection_score": 15.68007117360989
+      }
+    }
+  },
+  "symbols": {
+    "xauusd": {
+      "selected": {
+        "screen": "auto10",
+        "stop": "swing5",
+        "rr": "rr200",
+        "trailing": "none",
+        "session": "all"
+      },
+      "baseline_locked": {
+        "symbol": "xauusd",
+        "variant": "baseline",
+        "path": "Backtest Reports\\locked\\xauusd--baseline--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 9070.11,
+        "net_profit": -929.89,
+        "return_pct": -9.2989,
+        "profit_factor": 0.89,
+        "win_rate_pct": 38.24,
+        "trades": 170,
+        "max_drawdown_pct": 23.81,
+        "sharpe": -2.47,
+        "recovery_factor": -0.37,
+        "expected_payoff": -5.47,
+        "history_quality": "99%",
+        "commission": -60.39,
+        "swap": -15.36,
+        "score": -32.917805795071416
+      },
+      "optimized_locked": {
+        "symbol": "xauusd",
+        "variant": "optimized",
+        "path": "Backtest Reports\\locked\\xauusd--optimized--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 9838.49,
+        "net_profit": -161.51,
+        "return_pct": -1.6151,
+        "profit_factor": 0.98,
+        "win_rate_pct": 37.5,
+        "trades": 136,
+        "max_drawdown_pct": 16.5,
+        "sharpe": -0.32,
+        "recovery_factor": -0.09,
+        "expected_payoff": -1.19,
+        "history_quality": "99%",
+        "commission": -34.09,
+        "swap": -34.29,
+        "score": -16.154032487810234
+      },
+      "optimized_full": {
+        "symbol": "xauusd",
+        "variant": "optimized",
+        "path": "Backtest Reports\\full\\xauusd--optimized--full.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 12593.57,
+        "net_profit": 2593.57,
+        "return_pct": 25.9357,
+        "profit_factor": 1.09,
+        "win_rate_pct": 38.96,
+        "trades": 444,
+        "max_drawdown_pct": 19.38,
+        "sharpe": 1.19,
+        "recovery_factor": 1.01,
+        "expected_payoff": 5.84,
+        "history_quality": "98%",
+        "commission": -368.31,
+        "swap": -346.28,
+        "score": 11.742832354892633
+      },
+      "monte_carlo": {
+        "samples": 10000,
+        "trades": 136,
+        "probability_profitable_pct": 44.97,
+        "ruin_probability_pct": 0.0,
+        "drawdown_10pct_probability": 75.47,
+        "drawdown_20pct_probability": 21.91,
+        "return_p5_pct": -23.480129999999896,
+        "return_median_pct": -1.741499999999869,
+        "return_p95_pct": 20.797205000000144,
+        "max_dd_median_pct": 13.819613219608016,
+        "max_dd_p95_pct": 28.60814651647846,
+        "fan": [
+          {
+            "trade": 0,
+            "p5": 10000.0,
+            "p25": 10000.0,
+            "p50": 10000.0,
+            "p75": 10000.0,
+            "p95": 10000.0
+          },
+          {
+            "trade": 7,
+            "p5": 9500.329999999998,
+            "p25": 9767.15,
+            "p50": 9973.060000000001,
+            "p75": 10187.887499999999,
+            "p95": 10505.596500000001
+          },
+          {
+            "trade": 14,
+            "p5": 9293.847000000002,
+            "p25": 9658.434999999998,
+            "p50": 9958.029999999999,
+            "p75": 10265.760000000004,
+            "p95": 10693.589500000002
+          },
+          {
+            "trade": 20,
+            "p5": 9141.9115,
+            "p25": 9616.9125,
+            "p50": 9953.355000000001,
+            "p75": 10298.937500000002,
+            "p95": 10801.451000000006
+          },
+          {
+            "trade": 27,
+            "p5": 9041.214500000004,
+            "p25": 9552.807500000003,
+            "p50": 9955.545000000006,
+            "p75": 10343.180000000008,
+            "p95": 10931.456
+          },
+          {
+            "trade": 34,
+            "p5": 8895.678500000004,
+            "p25": 9500.345000000001,
+            "p50": 9952.200000000008,
+            "p75": 10401.772500000001,
+            "p95": 11068.285000000009
+          },
+          {
+            "trade": 41,
+            "p5": 8770.092999999999,
+            "p25": 9455.280000000004,
+            "p50": 9957.325000000006,
+            "p75": 10449.71000000001,
+            "p95": 11192.529500000004
+          },
+          {
+            "trade": 48,
+            "p5": 8624.1105,
+            "p25": 9396.685000000005,
+            "p50": 9960.765000000007,
+            "p75": 10516.337500000005,
+            "p95": 11259.161000000011
+          },
+          {
+            "trade": 54,
+            "p5": 8555.888500000001,
+            "p25": 9374.864999999998,
+            "p50": 9950.530000000004,
+            "p75": 10541.76250000001,
+            "p95": 11350.806500000008
+          },
+          {
+            "trade": 61,
+            "p5": 8503.289,
+            "p25": 9339.702500000007,
+            "p50": 9942.16,
+            "p75": 10570.230000000005,
+            "p95": 11411.275499999998
+          },
+          {
+            "trade": 68,
+            "p5": 8397.862999999994,
+            "p25": 9287.022500000003,
+            "p50": 9919.610000000008,
+            "p75": 10580.197500000007,
+            "p95": 11505.040000000006
+          },
+          {
+            "trade": 75,
+            "p5": 8331.173999999997,
+            "p25": 9260.992500000004,
+            "p50": 9925.550000000003,
+            "p75": 10596.932500000012,
+            "p95": 11591.73650000001
+          },
+          {
+            "trade": 82,
+            "p5": 8298.777500000002,
+            "p25": 9211.147500000003,
+            "p50": 9925.125000000002,
+            "p75": 10601.365000000005,
+            "p95": 11663.351000000008
+          },
+          {
+            "trade": 88,
+            "p5": 8229.431,
+            "p25": 9187.50500000001,
+            "p50": 9886.750000000007,
+            "p75": 10612.380000000012,
+            "p95": 11650.123500000007
+          },
+          {
+            "trade": 95,
+            "p5": 8168.338499999998,
+            "p25": 9173.982500000002,
+            "p50": 9908.315000000008,
+            "p75": 10648.497500000009,
+            "p95": 11777.33
+          },
+          {
+            "trade": 102,
+            "p5": 8055.792999999998,
+            "p25": 9135.000000000005,
+            "p50": 9874.66000000001,
+            "p75": 10663.532500000016,
+            "p95": 11846.82250000001
+          },
+          {
+            "trade": 109,
+            "p5": 7934.559499999994,
+            "p25": 9083.165000000008,
+            "p50": 9851.795000000013,
+            "p75": 10696.10750000001,
+            "p95": 11872.045500000022
+          },
+          {
+            "trade": 116,
+            "p5": 7845.911000000007,
+            "p25": 9058.920000000006,
+            "p50": 9840.425000000012,
+            "p75": 10676.235000000019,
+            "p95": 11936.24700000001
+          },
+          {
+            "trade": 122,
+            "p5": 7781.480000000008,
+            "p25": 9002.66000000001,
+            "p50": 9874.125000000007,
+            "p75": 10722.43250000001,
+            "p95": 11957.088000000022
+          },
+          {
+            "trade": 129,
+            "p5": 7731.560000000008,
+            "p25": 8968.7775,
+            "p50": 9871.51500000001,
+            "p75": 10740.305000000008,
+            "p95": 12013.867500000017
+          },
+          {
+            "trade": 136,
+            "p5": 7580.902999999993,
+            "p25": 8941.670000000013,
+            "p50": 9859.090000000013,
+            "p75": 10781.032500000012,
+            "p95": 12127.815000000006
+          }
+        ]
+      },
+      "decision": "REJECT"
+    },
+    "xagusd": {
+      "selected": {
+        "screen": "bounce10",
+        "stop": "swing5",
+        "rr": "rr200",
+        "trailing": "none",
+        "session": "asia"
+      },
+      "baseline_locked": {
+        "symbol": "xagusd",
+        "variant": "baseline",
+        "path": "Backtest Reports\\locked\\xagusd--baseline--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8951.11,
+        "net_profit": -1048.89,
+        "return_pct": -10.488900000000001,
+        "profit_factor": 0.91,
+        "win_rate_pct": 39.09,
+        "trades": 197,
+        "max_drawdown_pct": 22.41,
+        "sharpe": -2.4,
+        "recovery_factor": -0.41,
+        "expected_payoff": -5.32,
+        "history_quality": "99%",
+        "commission": -542.5,
+        "swap": -3.69,
+        "score": -32.612628153654896
+      },
+      "optimized_locked": {
+        "symbol": "xagusd",
+        "variant": "optimized",
+        "path": "Backtest Reports\\locked\\xagusd--optimized--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 9501.36,
+        "net_profit": -498.64,
+        "return_pct": -4.9864,
+        "profit_factor": 0.82,
+        "win_rate_pct": 30.43,
+        "trades": 46,
+        "max_drawdown_pct": 11.94,
+        "sharpe": -3.81,
+        "recovery_factor": -0.39,
+        "expected_payoff": -10.84,
+        "history_quality": "99%",
+        "commission": -109.85,
+        "swap": -3.69,
+        "score": -20.51081126468606
+      },
+      "optimized_full": {
+        "symbol": "xagusd",
+        "variant": "optimized",
+        "path": "Backtest Reports\\full\\xagusd--optimized--full.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 9916.51,
+        "net_profit": -83.49,
+        "return_pct": -0.8348999999999999,
+        "profit_factor": 0.97,
+        "win_rate_pct": 34.55,
+        "trades": 55,
+        "max_drawdown_pct": 12.03,
+        "sharpe": -0.49,
+        "recovery_factor": -0.06,
+        "expected_payoff": -1.52,
+        "history_quality": "98%",
+        "commission": -174.96,
+        "swap": -9.43,
+        "score": -11.814410489816503
+      },
+      "monte_carlo": {
+        "samples": 10000,
+        "trades": 46,
+        "probability_profitable_pct": 25.580000000000002,
+        "ruin_probability_pct": 0.0,
+        "drawdown_10pct_probability": 53.790000000000006,
+        "drawdown_20pct_probability": 3.7900000000000005,
+        "return_p5_pct": -17.14191999999995,
+        "return_median_pct": -5.328749999999964,
+        "return_p95_pct": 8.591310000000053,
+        "max_dd_median_pct": 10.417878343208123,
+        "max_dd_p95_pct": 19.08217133032219,
+        "fan": [
+          {
+            "trade": 0,
+            "p5": 10000.0,
+            "p25": 10000.0,
+            "p50": 10000.0,
+            "p75": 10000.0,
+            "p95": 10000.0
+          },
+          {
+            "trade": 2,
+            "p5": 9793.75,
+            "p25": 9822.62,
+            "p50": 10006.97,
+            "p75": 10088.22,
+            "p95": 10363.6
+          },
+          {
+            "trade": 5,
+            "p5": 9578.25,
+            "p25": 9789.660000000002,
+            "p50": 9851.380000000001,
+            "p75": 10067.960000000001,
+            "p95": 10391.29
+          },
+          {
+            "trade": 7,
+            "p5": 9447.783500000001,
+            "p25": 9662.78,
+            "p50": 9881.415,
+            "p75": 10135.750000000002,
+            "p95": 10471.561500000002
+          },
+          {
+            "trade": 9,
+            "p5": 9403.408000000003,
+            "p25": 9669.360000000002,
+            "p50": 9890.685000000001,
+            "p75": 10086.067500000001,
+            "p95": 10533.8235
+          },
+          {
+            "trade": 12,
+            "p5": 9247.225500000002,
+            "p25": 9604.847500000003,
+            "p50": 9842.89,
+            "p75": 10145.3025,
+            "p95": 10547.265500000001
+          },
+          {
+            "trade": 14,
+            "p5": 9184.536000000002,
+            "p25": 9529.730000000001,
+            "p50": 9806.470000000001,
+            "p75": 10099.102500000003,
+            "p95": 10598.6095
+          },
+          {
+            "trade": 16,
+            "p5": 9110.536000000004,
+            "p25": 9510.682500000006,
+            "p50": 9797.860000000002,
+            "p75": 10135.625000000004,
+            "p95": 10647.948500000002
+          },
+          {
+            "trade": 18,
+            "p5": 9072.978500000003,
+            "p25": 9447.615000000005,
+            "p50": 9766.420000000002,
+            "p75": 10159.0,
+            "p95": 10697.058000000003
+          },
+          {
+            "trade": 21,
+            "p5": 8962.29,
+            "p25": 9396.085000000003,
+            "p50": 9731.110000000004,
+            "p75": 10142.035000000002,
+            "p95": 10716.970000000003
+          },
+          {
+            "trade": 23,
+            "p5": 8908.838000000003,
+            "p25": 9375.422500000004,
+            "p50": 9721.405000000004,
+            "p75": 10110.5825,
+            "p95": 10712.309000000003
+          },
+          {
+            "trade": 25,
+            "p5": 8844.966500000004,
+            "p25": 9337.467500000002,
+            "p50": 9694.115000000002,
+            "p75": 10113.575000000004,
+            "p95": 10722.309000000003
+          },
+          {
+            "trade": 28,
+            "p5": 8753.852000000004,
+            "p25": 9277.205000000002,
+            "p50": 9663.005000000005,
+            "p75": 10104.035000000003,
+            "p95": 10799.597000000005
+          },
+          {
+            "trade": 30,
+            "p5": 8683.921000000006,
+            "p25": 9236.975000000004,
+            "p50": 9641.245000000006,
+            "p75": 10104.052500000005,
+            "p95": 10793.278500000004
+          },
+          {
+            "trade": 32,
+            "p5": 8651.374500000009,
+            "p25": 9209.490000000009,
+            "p50": 9608.650000000001,
+            "p75": 10079.080000000005,
+            "p95": 10805.311500000002
+          },
+          {
+            "trade": 34,
+            "p5": 8564.229000000007,
+            "p25": 9154.735000000004,
+            "p50": 9598.815000000002,
+            "p75": 10073.325000000003,
+            "p95": 10825.226000000002
+          },
+          {
+            "trade": 37,
+            "p5": 8501.984500000004,
+            "p25": 9104.200000000004,
+            "p50": 9577.505000000005,
+            "p75": 10046.052500000003,
+            "p95": 10826.311000000005
+          },
+          {
+            "trade": 39,
+            "p5": 8466.327000000005,
+            "p25": 9058.0275,
+            "p50": 9565.055000000006,
+            "p75": 10043.717500000006,
+            "p95": 10827.125000000002
+          },
+          {
+            "trade": 41,
+            "p5": 8423.296500000006,
+            "p25": 9028.597500000005,
+            "p50": 9544.345000000005,
+            "p75": 10054.460000000006,
+            "p95": 10830.843500000008
+          },
+          {
+            "trade": 44,
+            "p5": 8351.139500000012,
+            "p25": 8992.850000000006,
+            "p50": 9516.755000000005,
+            "p75": 10032.910000000005,
+            "p95": 10867.502000000004
+          },
+          {
+            "trade": 46,
+            "p5": 8302.128000000012,
+            "p25": 8975.07250000001,
+            "p50": 9501.755000000005,
+            "p75": 10022.025000000009,
+            "p95": 10903.191000000008
+          }
+        ]
+      },
+      "decision": "REJECT"
+    },
+    "btcusd": {
+      "selected": {
+        "screen": "breakout10",
+        "stop": "signal",
+        "rr": "rr150",
+        "trailing": "be100",
+        "session": "newyork"
+      },
+      "baseline_locked": {
+        "symbol": "btcusd",
+        "variant": "baseline",
+        "path": "Backtest Reports\\locked\\btcusd--baseline--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8022.39,
+        "net_profit": -1977.61,
+        "return_pct": -19.7761,
+        "profit_factor": 0.83,
+        "win_rate_pct": 37.05,
+        "trades": 224,
+        "max_drawdown_pct": 27.04,
+        "sharpe": -3.51,
+        "recovery_factor": -0.73,
+        "expected_payoff": -8.83,
+        "history_quality": "100%",
+        "commission": -251.56,
+        "swap": -22.92,
+        "score": -47.884054938297915
+      },
+      "optimized_locked": {
+        "symbol": "btcusd",
+        "variant": "optimized",
+        "path": "Backtest Reports\\locked\\btcusd--optimized--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 10427.13,
+        "net_profit": 427.13,
+        "return_pct": 4.2713,
+        "profit_factor": 1.07,
+        "win_rate_pct": 47.27,
+        "trades": 110,
+        "max_drawdown_pct": 13.91,
+        "sharpe": 1.38,
+        "recovery_factor": 0.28,
+        "expected_payoff": 3.88,
+        "history_quality": "100%",
+        "commission": -124.51,
+        "swap": -29.72,
+        "score": -5.607296218314221
+      },
+      "optimized_full": {
+        "symbol": "btcusd",
+        "variant": "optimized",
+        "path": "Backtest Reports\\full\\btcusd--optimized--full.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 13724.84,
+        "net_profit": 3724.84,
+        "return_pct": 37.248400000000004,
+        "profit_factor": 1.16,
+        "win_rate_pct": 47.71,
+        "trades": 371,
+        "max_drawdown_pct": 15.65,
+        "sharpe": 3.27,
+        "recovery_factor": 1.85,
+        "expected_payoff": 10.04,
+        "history_quality": "100%",
+        "commission": -530.11,
+        "swap": -106.08,
+        "score": 28.82694006141928
+      },
+      "monte_carlo": {
+        "samples": 10000,
+        "trades": 110,
+        "probability_profitable_pct": 62.86000000000001,
+        "ruin_probability_pct": 0.0,
+        "drawdown_10pct_probability": 55.38999999999999,
+        "drawdown_20pct_probability": 9.01,
+        "return_p5_pct": -16.281715000000137,
+        "return_median_pct": 4.067499999999864,
+        "return_p95_pct": 24.11650499999989,
+        "max_dd_median_pct": 10.673143707468249,
+        "max_dd_p95_pct": 22.612928989579075,
+        "fan": [
+          {
+            "trade": 0,
+            "p5": 10000.0,
+            "p25": 10000.0,
+            "p50": 10000.0,
+            "p75": 10000.0,
+            "p95": 10000.0
+          },
+          {
+            "trade": 6,
+            "p5": 9484.5875,
+            "p25": 9876.0475,
+            "p50": 10001.324999999999,
+            "p75": 10228.317499999997,
+            "p95": 10455.485999999999
+          },
+          {
+            "trade": 11,
+            "p5": 9375.586999999998,
+            "p25": 9751.492499999998,
+            "p50": 10072.189999999999,
+            "p75": 10329.422499999999,
+            "p95": 10630.600999999997
+          },
+          {
+            "trade": 16,
+            "p5": 9274.883999999996,
+            "p25": 9721.429999999997,
+            "p50": 10064.869999999995,
+            "p75": 10366.612500000003,
+            "p95": 10789.6255
+          },
+          {
+            "trade": 22,
+            "p5": 9196.346000000001,
+            "p25": 9696.454999999996,
+            "p50": 10086.274999999998,
+            "p75": 10455.502499999995,
+            "p95": 10937.425
+          },
+          {
+            "trade": 28,
+            "p5": 9091.490999999995,
+            "p25": 9662.519999999997,
+            "p50": 10094.004999999996,
+            "p75": 10519.414999999997,
+            "p95": 11040.835999999996
+          },
+          {
+            "trade": 33,
+            "p5": 9006.914499999993,
+            "p25": 9647.337499999996,
+            "p50": 10101.429999999997,
+            "p75": 10580.209999999995,
+            "p95": 11146.8885
+          },
+          {
+            "trade": 38,
+            "p5": 8913.804999999995,
+            "p25": 9639.342499999997,
+            "p50": 10115.384999999995,
+            "p75": 10637.404999999999,
+            "p95": 11265.9895
+          },
+          {
+            "trade": 44,
+            "p5": 8828.103999999996,
+            "p25": 9598.74749999999,
+            "p50": 10138.674999999992,
+            "p75": 10681.857499999993,
+            "p95": 11399.628499999992
+          },
+          {
+            "trade": 50,
+            "p5": 8774.50049999999,
+            "p25": 9588.29999999999,
+            "p50": 10153.584999999995,
+            "p75": 10704.554999999997,
+            "p95": 11481.614499999996
+          },
+          {
+            "trade": 55,
+            "p5": 8732.859499999988,
+            "p25": 9583.984999999988,
+            "p50": 10180.259999999995,
+            "p75": 10775.97499999999,
+            "p95": 11544.863999999996
+          },
+          {
+            "trade": 60,
+            "p5": 8692.57799999999,
+            "p25": 9572.272499999988,
+            "p50": 10213.364999999993,
+            "p75": 10808.592499999995,
+            "p95": 11616.117499999988
+          },
+          {
+            "trade": 66,
+            "p5": 8639.24999999999,
+            "p25": 9553.56249999999,
+            "p50": 10221.349999999991,
+            "p75": 10871.267499999994,
+            "p95": 11716.300499999992
+          },
+          {
+            "trade": 72,
+            "p5": 8665.900999999989,
+            "p25": 9556.972499999989,
+            "p50": 10237.244999999992,
+            "p75": 10915.714999999993,
+            "p95": 11794.120999999996
+          },
+          {
+            "trade": 77,
+            "p5": 8579.51649999998,
+            "p25": 9552.249999999987,
+            "p50": 10232.14499999999,
+            "p75": 10956.022499999986,
+            "p95": 11855.887499999988
+          },
+          {
+            "trade": 82,
+            "p5": 8553.004499999988,
+            "p25": 9556.072499999987,
+            "p50": 10264.514999999992,
+            "p75": 11013.94749999999,
+            "p95": 11910.446499999987
+          },
+          {
+            "trade": 88,
+            "p5": 8504.761999999988,
+            "p25": 9534.869999999984,
+            "p50": 10268.724999999988,
+            "p75": 11026.167499999989,
+            "p95": 12042.69699999999
+          },
+          {
+            "trade": 94,
+            "p5": 8478.883999999982,
+            "p25": 9568.497499999983,
+            "p50": 10303.30499999999,
+            "p75": 11066.979999999987,
+            "p95": 12168.558499999988
+          },
+          {
+            "trade": 99,
+            "p5": 8518.334999999981,
+            "p25": 9539.74749999999,
+            "p50": 10322.16999999998,
+            "p75": 11103.804999999993,
+            "p95": 12252.725999999993
+          },
+          {
+            "trade": 104,
+            "p5": 8448.63649999998,
+            "p25": 9560.419999999984,
+            "p50": 10344.66499999998,
+            "p75": 11119.887499999986,
+            "p95": 12322.484999999984
+          },
+          {
+            "trade": 110,
+            "p5": 8433.68299999998,
+            "p25": 9554.139999999983,
+            "p50": 10357.19499999998,
+            "p75": 11196.322499999991,
+            "p95": 12358.597499999987
+          }
+        ]
+      },
+      "decision": "WATCH / insufficient robustness"
+    },
+    "us30": {
+      "selected": {
+        "screen": "bounce10",
+        "stop": "atr200",
+        "rr": "rr150",
+        "trailing": "dynamic5020-atr",
+        "session": "all"
+      },
+      "baseline_locked": {
+        "symbol": "us30",
+        "variant": "baseline",
+        "path": "Backtest Reports\\locked\\us30--baseline--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 11197.33,
+        "net_profit": 1197.33,
+        "return_pct": 11.9733,
+        "profit_factor": 1.14,
+        "win_rate_pct": 44.22,
+        "trades": 147,
+        "max_drawdown_pct": 10.64,
+        "sharpe": 2.69,
+        "recovery_factor": 1.08,
+        "expected_payoff": 8.15,
+        "history_quality": "100%",
+        "commission": -148.6,
+        "swap": -67.37,
+        "score": 6.897139148876848
+      },
+      "optimized_locked": {
+        "symbol": "us30",
+        "variant": "optimized",
+        "path": "Backtest Reports\\locked\\us30--optimized--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 10415.0,
+        "net_profit": 415.0,
+        "return_pct": 4.15,
+        "profit_factor": 1.11,
+        "win_rate_pct": 54.02,
+        "trades": 87,
+        "max_drawdown_pct": 10.39,
+        "sharpe": 2.31,
+        "recovery_factor": 0.38,
+        "expected_payoff": 4.77,
+        "history_quality": "100%",
+        "commission": -62.22,
+        "swap": -89.26,
+        "score": -1.5636798161090857
+      },
+      "optimized_full": {
+        "symbol": "us30",
+        "variant": "optimized",
+        "path": "Backtest Reports\\full\\us30--optimized--full.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 11298.04,
+        "net_profit": 1298.04,
+        "return_pct": 12.9804,
+        "profit_factor": 1.11,
+        "win_rate_pct": 54.76,
+        "trades": 252,
+        "max_drawdown_pct": 10.37,
+        "sharpe": 2.36,
+        "recovery_factor": 1.1,
+        "expected_payoff": 5.15,
+        "history_quality": "98%",
+        "commission": -193.12,
+        "swap": -138.26,
+        "score": 7.573220183890914
+      },
+      "monte_carlo": {
+        "samples": 10000,
+        "trades": 87,
+        "probability_profitable_pct": 66.27,
+        "ruin_probability_pct": 0.0,
+        "drawdown_10pct_probability": 39.26,
+        "drawdown_20pct_probability": 3.61,
+        "return_p5_pct": -13.389539999999926,
+        "return_median_pct": 4.502000000000135,
+        "return_p95_pct": 21.207095000000123,
+        "max_dd_median_pct": 8.700039903038244,
+        "max_dd_p95_pct": 18.80506343927434,
+        "fan": [
+          {
+            "trade": 0,
+            "p5": 10000.0,
+            "p25": 10000.0,
+            "p50": 10000.0,
+            "p75": 10000.0,
+            "p95": 10000.0
+          },
+          {
+            "trade": 4,
+            "p5": 9592.85,
+            "p25": 9841.17,
+            "p50": 10069.25,
+            "p75": 10211.960000000001,
+            "p95": 10363.510000000002
+          },
+          {
+            "trade": 9,
+            "p5": 9459.0005,
+            "p25": 9817.490000000002,
+            "p50": 10061.170000000002,
+            "p75": 10294.9875,
+            "p95": 10578.5385
+          },
+          {
+            "trade": 13,
+            "p5": 9402.9395,
+            "p25": 9786.577500000003,
+            "p50": 10060.900000000001,
+            "p75": 10341.3,
+            "p95": 10698.921500000004
+          },
+          {
+            "trade": 17,
+            "p5": 9293.2765,
+            "p25": 9744.175000000003,
+            "p50": 10087.175000000003,
+            "p75": 10404.575000000004,
+            "p95": 10857.173500000004
+          },
+          {
+            "trade": 22,
+            "p5": 9205.955000000002,
+            "p25": 9732.802500000003,
+            "p50": 10104.495000000004,
+            "p75": 10482.417500000003,
+            "p95": 10972.642
+          },
+          {
+            "trade": 26,
+            "p5": 9140.039500000003,
+            "p25": 9701.145000000002,
+            "p50": 10120.900000000003,
+            "p75": 10539.482500000007,
+            "p95": 11078.189000000004
+          },
+          {
+            "trade": 30,
+            "p5": 9099.147500000001,
+            "p25": 9693.145000000004,
+            "p50": 10142.510000000004,
+            "p75": 10581.822499999998,
+            "p95": 11193.739000000003
+          },
+          {
+            "trade": 35,
+            "p5": 8998.056499999997,
+            "p25": 9688.760000000002,
+            "p50": 10169.185000000003,
+            "p75": 10652.530000000006,
+            "p95": 11273.182000000006
+          },
+          {
+            "trade": 39,
+            "p5": 8991.539000000006,
+            "p25": 9709.705000000002,
+            "p50": 10194.080000000005,
+            "p75": 10699.465000000007,
+            "p95": 11357.227499999999
+          },
+          {
+            "trade": 44,
+            "p5": 8895.714500000006,
+            "p25": 9692.035000000003,
+            "p50": 10212.310000000005,
+            "p75": 10755.022500000005,
+            "p95": 11453.559500000008
+          },
+          {
+            "trade": 48,
+            "p5": 8898.692500000003,
+            "p25": 9704.61,
+            "p50": 10251.340000000006,
+            "p75": 10767.225000000008,
+            "p95": 11469.903000000006
+          },
+          {
+            "trade": 52,
+            "p5": 8865.992000000007,
+            "p25": 9689.032500000005,
+            "p50": 10260.130000000005,
+            "p75": 10820.245000000006,
+            "p95": 11580.894000000006
+          },
+          {
+            "trade": 57,
+            "p5": 8840.594000000001,
+            "p25": 9699.587500000007,
+            "p50": 10288.745000000006,
+            "p75": 10883.927500000005,
+            "p95": 11661.870000000006
+          },
+          {
+            "trade": 61,
+            "p5": 8768.706000000002,
+            "p25": 9709.360000000006,
+            "p50": 10328.595000000003,
+            "p75": 10916.257500000007,
+            "p95": 11721.368000000004
+          },
+          {
+            "trade": 65,
+            "p5": 8804.611500000005,
+            "p25": 9705.62000000001,
+            "p50": 10343.620000000008,
+            "p75": 10934.155000000006,
+            "p95": 11803.149000000012
+          },
+          {
+            "trade": 70,
+            "p5": 8798.115500000005,
+            "p25": 9715.737500000007,
+            "p50": 10372.50500000001,
+            "p75": 10988.210000000014,
+            "p95": 11872.512500000008
+          },
+          {
+            "trade": 74,
+            "p5": 8755.237500000001,
+            "p25": 9737.705000000002,
+            "p50": 10411.830000000005,
+            "p75": 11037.73500000001,
+            "p95": 11917.740500000007
+          },
+          {
+            "trade": 78,
+            "p5": 8750.491500000006,
+            "p25": 9734.297500000006,
+            "p50": 10415.92500000001,
+            "p75": 11096.930000000017,
+            "p95": 12020.313000000006
+          },
+          {
+            "trade": 83,
+            "p5": 8687.634500000011,
+            "p25": 9731.715000000011,
+            "p50": 10414.675000000008,
+            "p75": 11131.090000000011,
+            "p95": 12092.827000000008
+          },
+          {
+            "trade": 87,
+            "p5": 8617.739000000007,
+            "p25": 9719.460000000012,
+            "p50": 10443.465000000015,
+            "p75": 11157.21000000001,
+            "p95": 12132.494000000017
+          }
+        ]
+      },
+      "decision": "WATCH / insufficient robustness"
+    },
+    "ustec": {
+      "selected": {
+        "screen": "retest10",
+        "stop": "swing8",
+        "rr": "rr300",
+        "trailing": "dynamic5020",
+        "session": "overlap"
+      },
+      "baseline_locked": {
+        "symbol": "ustec",
+        "variant": "baseline",
+        "path": "Backtest Reports\\locked\\ustec--baseline--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8459.0,
+        "net_profit": -1541.0,
+        "return_pct": -15.409999999999998,
+        "profit_factor": 0.84,
+        "win_rate_pct": 37.04,
+        "trades": 162,
+        "max_drawdown_pct": 22.65,
+        "sharpe": -3.89,
+        "recovery_factor": -0.63,
+        "expected_payoff": -9.51,
+        "history_quality": "100%",
+        "commission": -183.42,
+        "swap": -40.47,
+        "score": -39.89274064573733
+      },
+      "optimized_locked": {
+        "symbol": "ustec",
+        "variant": "optimized",
+        "path": "Backtest Reports\\locked\\ustec--optimized--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 9957.4,
+        "net_profit": -42.6,
+        "return_pct": -0.426,
+        "profit_factor": 0.94,
+        "win_rate_pct": 55.0,
+        "trades": 20,
+        "max_drawdown_pct": 3.91,
+        "sharpe": -0.49,
+        "recovery_factor": -0.11,
+        "expected_payoff": -2.13,
+        "history_quality": "100%",
+        "commission": -8.23,
+        "swap": -8.92,
+        "score": -11.89800484461705
+      },
+      "optimized_full": {
+        "symbol": "ustec",
+        "variant": "optimized",
+        "path": "Backtest Reports\\full\\ustec--optimized--full.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 10118.61,
+        "net_profit": 118.61,
+        "return_pct": 1.1861,
+        "profit_factor": 1.03,
+        "win_rate_pct": 51.22,
+        "trades": 82,
+        "max_drawdown_pct": 10.25,
+        "sharpe": 0.39,
+        "recovery_factor": 0.1,
+        "expected_payoff": 1.45,
+        "history_quality": "98%",
+        "commission": -51.32,
+        "swap": -88.34,
+        "score": -6.844194373101468
+      },
+      "monte_carlo": {
+        "samples": 10000,
+        "trades": 20,
+        "probability_profitable_pct": 43.86,
+        "ruin_probability_pct": 0.0,
+        "drawdown_10pct_probability": 0.03,
+        "drawdown_20pct_probability": 0.0,
+        "return_p5_pct": -6.310599999999978,
+        "return_median_pct": -0.6233999999999651,
+        "return_p95_pct": 6.672175000000042,
+        "max_dd_median_pct": 3.915999797702934,
+        "max_dd_p95_pct": 7.00191897023341,
+        "fan": [
+          {
+            "trade": 0,
+            "p5": 10000.0,
+            "p25": 10000.0,
+            "p50": 10000.0,
+            "p75": 10000.0,
+            "p95": 10000.0
+          },
+          {
+            "trade": 1,
+            "p5": 9894.4,
+            "p25": 9900.75,
+            "p50": 10019.34,
+            "p75": 10019.77,
+            "p95": 10296.74
+          },
+          {
+            "trade": 2,
+            "p5": 9794.779999999999,
+            "p25": 9915.380000000001,
+            "p50": 9960.140000000001,
+            "p75": 10039.62,
+            "p95": 10441.53
+          },
+          {
+            "trade": 3,
+            "p5": 9735.31,
+            "p25": 9915.92,
+            "p50": 9939.93,
+            "p75": 10050.87,
+            "p95": 10460.68
+          },
+          {
+            "trade": 4,
+            "p5": 9754.46,
+            "p25": 9840.1,
+            "p50": 9935.87,
+            "p75": 10070.220000000001,
+            "p95": 10356.910000000002
+          },
+          {
+            "trade": 5,
+            "p5": 9774.07,
+            "p25": 9836.52,
+            "p50": 9927.310000000001,
+            "p75": 10230.570000000002,
+            "p95": 10376.760000000002
+          },
+          {
+            "trade": 6,
+            "p5": 9727.090000000002,
+            "p25": 9832.91,
+            "p50": 9918.4,
+            "p75": 10155.839999999998,
+            "p95": 10395.730000000001
+          },
+          {
+            "trade": 7,
+            "p5": 9677.09,
+            "p25": 9796.28,
+            "p50": 9923.665,
+            "p75": 10170.84,
+            "p95": 10414.630000000001
+          },
+          {
+            "trade": 8,
+            "p5": 9649.970000000001,
+            "p25": 9784.120000000003,
+            "p50": 9910.320000000002,
+            "p75": 10189.99,
+            "p95": 10431.070000000002
+          },
+          {
+            "trade": 9,
+            "p5": 9614.640000000001,
+            "p25": 9770.265000000003,
+            "p50": 9914.26,
+            "p75": 10188.595000000003,
+            "p95": 10446.980000000003
+          },
+          {
+            "trade": 10,
+            "p5": 9610.573,
+            "p25": 9748.490000000002,
+            "p50": 9933.565000000002,
+            "p75": 10185.982500000002,
+            "p95": 10506.15
+          },
+          {
+            "trade": 11,
+            "p5": 9583.139500000003,
+            "p25": 9747.397500000003,
+            "p50": 9945.680000000002,
+            "p75": 10169.580000000002,
+            "p95": 10527.165
+          },
+          {
+            "trade": 12,
+            "p5": 9541.318500000001,
+            "p25": 9732.250000000002,
+            "p50": 9955.830000000002,
+            "p75": 10178.8125,
+            "p95": 10552.632000000001
+          },
+          {
+            "trade": 13,
+            "p5": 9513.6365,
+            "p25": 9713.725000000004,
+            "p50": 9956.970000000003,
+            "p75": 10183.970000000003,
+            "p95": 10569.329499999998
+          },
+          {
+            "trade": 14,
+            "p5": 9497.872500000001,
+            "p25": 9694.410000000002,
+            "p50": 9958.410000000003,
+            "p75": 10177.382500000003,
+            "p95": 10570.175500000003
+          },
+          {
+            "trade": 15,
+            "p5": 9478.150000000001,
+            "p25": 9691.970000000003,
+            "p50": 9951.03,
+            "p75": 10197.487500000003,
+            "p95": 10582.316500000003
+          },
+          {
+            "trade": 16,
+            "p5": 9450.555,
+            "p25": 9694.505000000005,
+            "p50": 9956.320000000003,
+            "p75": 10202.660000000003,
+            "p95": 10596.751000000004
+          },
+          {
+            "trade": 17,
+            "p5": 9428.675500000001,
+            "p25": 9682.062500000004,
+            "p50": 9942.545000000002,
+            "p75": 10212.587500000005,
+            "p95": 10602.624499999998
+          },
+          {
+            "trade": 18,
+            "p5": 9405.276000000002,
+            "p25": 9673.562500000002,
+            "p50": 9935.295000000002,
+            "p75": 10223.327500000003,
+            "p95": 10624.110000000004
+          },
+          {
+            "trade": 19,
+            "p5": 9391.508000000002,
+            "p25": 9665.835000000005,
+            "p50": 9933.100000000004,
+            "p75": 10233.015000000003,
+            "p95": 10641.893000000002
+          },
+          {
+            "trade": 20,
+            "p5": 9382.239000000001,
+            "p25": 9670.310000000003,
+            "p50": 9936.635000000004,
+            "p75": 10232.820000000003,
+            "p95": 10648.395500000004
+          }
+        ]
+      },
+      "decision": "REJECT"
+    },
+    "gbpjpy": {
+      "selected": {
+        "screen": "retest10",
+        "stop": "atr150",
+        "rr": "rr100",
+        "trailing": "atr100-200",
+        "session": "all"
+      },
+      "baseline_locked": {
+        "symbol": "gbpjpy",
+        "variant": "baseline",
+        "path": "Backtest Reports\\locked\\gbpjpy--baseline--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8110.66,
+        "net_profit": -1889.34,
+        "return_pct": -18.8934,
+        "profit_factor": 0.8,
+        "win_rate_pct": 36.81,
+        "trades": 144,
+        "max_drawdown_pct": 23.15,
+        "sharpe": -5.0,
+        "recovery_factor": -0.77,
+        "expected_payoff": -13.12,
+        "history_quality": "100%",
+        "commission": -590.33,
+        "swap": -32.85,
+        "score": -45.268122615770515
+      },
+      "optimized_locked": {
+        "symbol": "gbpjpy",
+        "variant": "optimized",
+        "path": "Backtest Reports\\locked\\gbpjpy--optimized--locked.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 8299.06,
+        "net_profit": -1700.94,
+        "return_pct": -17.0094,
+        "profit_factor": 0.5,
+        "win_rate_pct": 34.55,
+        "trades": 55,
+        "max_drawdown_pct": 19.19,
+        "sharpe": -5.0,
+        "recovery_factor": -0.88,
+        "expected_payoff": -30.93,
+        "history_quality": "100%",
+        "commission": -172.21,
+        "swap": 0.0,
+        "score": -45.696666166719346
+      },
+      "optimized_full": {
+        "symbol": "gbpjpy",
+        "variant": "optimized",
+        "path": "Backtest Reports\\full\\gbpjpy--optimized--full.htm",
+        "initial_balance": 10000.0,
+        "final_balance": 10782.28,
+        "net_profit": 782.28,
+        "return_pct": 7.822799999999999,
+        "profit_factor": 1.09,
+        "win_rate_pct": 53.95,
+        "trades": 152,
+        "max_drawdown_pct": 19.99,
+        "sharpe": 2.43,
+        "recovery_factor": 0.3,
+        "expected_payoff": 5.15,
+        "history_quality": "100%",
+        "commission": -504.58,
+        "swap": -10.96,
+        "score": -6.2070676451073705
+      },
+      "monte_carlo": {
+        "samples": 10000,
+        "trades": 55,
+        "probability_profitable_pct": 0.33,
+        "ruin_probability_pct": 0.0,
+        "drawdown_10pct_probability": 95.05,
+        "drawdown_20pct_probability": 38.54,
+        "return_p5_pct": -26.420399999999965,
+        "return_median_pct": -17.123650000000005,
+        "return_p95_pct": -7.161850000000008,
+        "max_dd_median_pct": 18.448703052196215,
+        "max_dd_p95_pct": 27.14155136860968,
+        "fan": [
+          {
+            "trade": 0,
+            "p5": 10000.0,
+            "p25": 10000.0,
+            "p50": 10000.0,
+            "p75": 10000.0,
+            "p95": 10000.0
+          },
+          {
+            "trade": 3,
+            "p5": 9702.62,
+            "p25": 9767.48,
+            "p50": 9897.76,
+            "p75": 10070.849999999999,
+            "p95": 10088.72
+          },
+          {
+            "trade": 6,
+            "p5": 9498.047999999997,
+            "p25": 9630.95,
+            "p50": 9796.794999999998,
+            "p75": 9972.42,
+            "p95": 10156.38
+          },
+          {
+            "trade": 8,
+            "p5": 9425.900000000001,
+            "p25": 9606.930000000002,
+            "p50": 9780.365000000002,
+            "p75": 9955.9075,
+            "p95": 10145.4085
+          },
+          {
+            "trade": 11,
+            "p5": 9280.161000000002,
+            "p25": 9497.705,
+            "p50": 9677.470000000005,
+            "p75": 9859.37,
+            "p95": 10063.708499999999
+          },
+          {
+            "trade": 14,
+            "p5": 9091.294,
+            "p25": 9389.697500000002,
+            "p50": 9579.975000000002,
+            "p75": 9765.814999999999,
+            "p95": 10111.472999999998
+          },
+          {
+            "trade": 16,
+            "p5": 9030.104500000001,
+            "p25": 9264.187500000002,
+            "p50": 9533.880000000001,
+            "p75": 9742.525000000001,
+            "p95": 10094.816
+          },
+          {
+            "trade": 19,
+            "p5": 8868.248500000005,
+            "p25": 9163.8375,
+            "p50": 9434.94,
+            "p75": 9652.720000000001,
+            "p95": 10015.139499999994
+          },
+          {
+            "trade": 22,
+            "p5": 8725.87,
+            "p25": 9056.514999999998,
+            "p50": 9340.525000000001,
+            "p75": 9564.864999999998,
+            "p95": 9925.291499999998
+          },
+          {
+            "trade": 25,
+            "p5": 8591.710500000003,
+            "p25": 8948.217499999999,
+            "p50": 9256.915000000005,
+            "p75": 9476.48,
+            "p95": 9863.468999999996
+          },
+          {
+            "trade": 28,
+            "p5": 8463.239000000003,
+            "p25": 8843.160000000005,
+            "p50": 9154.165,
+            "p75": 9400.020000000004,
+            "p95": 9873.99
+          },
+          {
+            "trade": 30,
+            "p5": 8390.726,
+            "p25": 8780.330000000005,
+            "p50": 9050.064999999999,
+            "p75": 9362.657500000003,
+            "p95": 9756.476000000002
+          },
+          {
+            "trade": 33,
+            "p5": 8236.868000000002,
+            "p25": 8679.625000000005,
+            "p50": 8973.559999999998,
+            "p75": 9272.002500000002,
+            "p95": 9765.363000000001
+          },
+          {
+            "trade": 36,
+            "p5": 8121.652000000003,
+            "p25": 8588.755000000005,
+            "p50": 8872.850000000004,
+            "p75": 9182.7425,
+            "p95": 9686.607999999998
+          },
+          {
+            "trade": 38,
+            "p5": 8058.925999999999,
+            "p25": 8485.940000000002,
+            "p50": 8808.91,
+            "p75": 9155.615000000005,
+            "p95": 9657.9815
+          },
+          {
+            "trade": 41,
+            "p5": 7927.591500000002,
+            "p25": 8385.257500000003,
+            "p50": 8718.2,
+            "p75": 9061.627499999999,
+            "p95": 9576.035000000002
+          },
+          {
+            "trade": 44,
+            "p5": 7822.835499999993,
+            "p25": 8279.767500000002,
+            "p50": 8607.88,
+            "p75": 8977.795000000002,
+            "p95": 9483.391999999996
+          },
+          {
+            "trade": 47,
+            "p5": 7706.952,
+            "p25": 8169.315,
+            "p50": 8542.410000000003,
+            "p75": 8872.437500000005,
+            "p95": 9504.747000000001
+          },
+          {
+            "trade": 50,
+            "p5": 7555.650000000002,
+            "p25": 8084.317500000002,
+            "p50": 8438.305000000002,
+            "p75": 8796.030000000004,
+            "p95": 9404.595500000001
+          },
+          {
+            "trade": 52,
+            "p5": 7496.690000000004,
+            "p25": 8018.729999999997,
+            "p50": 8385.655000000002,
+            "p75": 8751.517500000002,
+            "p95": 9311.921999999999
+          },
+          {
+            "trade": 55,
+            "p5": 7391.440000000004,
+            "p25": 7922.577500000008,
+            "p50": 8287.974999999995,
+            "p75": 8654.964999999998,
+            "p95": 9239.765999999996
+          }
+        ]
+      },
+      "decision": "REJECT"
+    }
+  }
+}

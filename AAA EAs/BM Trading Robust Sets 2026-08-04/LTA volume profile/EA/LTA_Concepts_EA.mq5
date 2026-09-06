@@ -5,7 +5,7 @@
 //|  and 2/2/2 risk controls.                                         |
 //+------------------------------------------------------------------+
 #property strict
-#property version   "1.10"
+#property version   "1.11"
 #property description "Auditable mechanical LTA implementation: profiles, supply/demand, EM1-EM4 and 2/2/2 controls."
 
 #include <Trade/Trade.mqh>
@@ -47,6 +47,12 @@ input int                InpSwingProfileBars       = 96;
 input int                InpInternalSwingBars      = 32;
 input int                InpMitigationLookbackBars = 5;
 input double             InpKeyTouchBufferATR      = 0.18;
+
+input group "Optional Completed-Profile Confirmation"
+input bool               InpUsePOCFirstRetestConfirmation = false;
+input double             InpPOCHeavyZoneVolumeFraction = 0.50;
+input double             InpPOCMinimumDepartureATR = 0.50;
+input int                InpPOCRetestSignalBars    = 3;
 
 input group "Supply And Demand"
 input int                InpZoneLookbackBars       = 220;
@@ -112,6 +118,8 @@ struct ProfileLevels
    double   val;
    double   hvn;
    double   lvn;
+   double   hvn_low;
+   double   hvn_high;
 };
 
 struct SDZone
@@ -293,6 +301,8 @@ void ResetProfile(ProfileLevels &p, const string name)
    p.val = 0.0;
    p.hvn = 0.0;
    p.lvn = 0.0;
+   p.hvn_low = 0.0;
+   p.hvn_high = 0.0;
 }
 
 void ResetZone(SDZone &z)
@@ -471,6 +481,15 @@ bool CalculateProfileFromRates(const string name,
    profile.val = NormalizePrice(lo + (double)left * step);
    profile.hvn = profile.poc;
    profile.lvn = NormalizePrice(lo + ((double)lvn_bin + 0.5) * step);
+   double heavy_threshold = max_vol * ClampDouble(InpPOCHeavyZoneVolumeFraction, 0.10, 1.00);
+   int heavy_left = poc_bin;
+   int heavy_right = poc_bin;
+   while(heavy_left > 0 && volumes[heavy_left - 1] >= heavy_threshold)
+      heavy_left--;
+   while(heavy_right < bins - 1 && volumes[heavy_right + 1] >= heavy_threshold)
+      heavy_right++;
+   profile.hvn_low = NormalizePrice(lo + (double)heavy_left * step);
+   profile.hvn_high = NormalizePrice(lo + ((double)heavy_right + 1.0) * step);
    return true;
 }
 
@@ -601,6 +620,12 @@ bool BuildSignal(TradeSignal &signal)
       if(!FindCandidateLevel(dir, candidate))
          continue;
 
+      // Optional confirmation only: the original LTA candidate and EM1-EM4
+      // entry remain authoritative.  This gate asks whether the same direction
+      // is also the first retest of the prior completed profile's heavy zone.
+      if(InpUsePOCFirstRetestConfirmation && !POCFirstRetestConfirms(dir))
+         continue;
+
       string model = "";
       double sl = 0.0;
 
@@ -702,6 +727,63 @@ bool FindCandidateLevel(const int dir, CandidateLevel &candidate)
    if(InpUseSwingProfile && FindProfileLevel(dir, g_swing_profile, "SWING", buffer, candidate))
       return true;
 
+   return false;
+}
+
+bool POCFirstRetestConfirms(const int dir)
+{
+   const ProfileLevels profile = g_prev_day_profile;
+   if(!profile.valid || profile.poc <= 0.0 || profile.hvn_low >= profile.hvn_high)
+      return false;
+
+   double atr = GetATRValue(InpExecutionTF, 14, 1);
+   if(atr <= 0.0)
+      return false;
+   double buffer = atr * InpKeyTouchBufferATR;
+   if(buffer <= 0.0)
+      buffer = SymbolInfoDouble(_Symbol, SYMBOL_POINT) * 20.0;
+   double zone_low = profile.hvn_low;
+   double zone_high = profile.hvn_high;
+   int signal_bars = MaxInt(InpPOCRetestSignalBars, 2);
+   datetime cutoff = iTime(_Symbol, InpExecutionTF, signal_bars);
+   if(cutoff <= profile.to_time)
+      return false;
+
+   MqlRates history[];
+   int copied = CopyRates(_Symbol, InpExecutionTF, profile.to_time, cutoff, history);
+   if(copied <= 0)
+      return false;
+
+   bool departed = false;
+   for(int i = 0; i < copied; i++)
+   {
+      bool was_departed = departed;
+      if(dir > 0 && history[i].high >= zone_high + InpPOCMinimumDepartureATR * atr)
+         departed = true;
+      if(dir < 0 && history[i].low <= zone_low - InpPOCMinimumDepartureATR * atr)
+         departed = true;
+      bool touched = (history[i].low <= zone_high && history[i].high >= zone_low);
+      if(was_departed && touched)
+         return false;
+   }
+   if(!departed)
+      return false;
+
+   MqlRates recent[];
+   int recent_count = CopyRates(_Symbol, InpExecutionTF, 1, signal_bars, recent);
+   if(recent_count <= 0)
+      return false;
+   ArraySetAsSeries(recent, true);
+   for(int i = 0; i < recent_count; i++)
+   {
+      bool touched = (recent[i].low <= zone_high && recent[i].high >= zone_low);
+      if(!touched)
+         continue;
+      if(dir > 0 && recent[i].close >= zone_low - buffer)
+         return true;
+      if(dir < 0 && recent[i].close <= zone_high + buffer)
+         return true;
+   }
    return false;
 }
 

@@ -1,5 +1,5 @@
 #property copyright "AAA Final News Pulse - NFP/CPI/FOMC straddle"
-#property version   "2.11"
+#property version   "2.12"
 #property strict
 
 #include "AAA_Final_Common.mqh"
@@ -10,7 +10,7 @@ input group "Trading"
 input bool   InpEnableTrading=true;
 input bool   InpEnableBuySide=true;
 input bool   InpEnableSellSide=true;
-input double InpRiskPercent=1.0;              // risk per triggered trade on each enabled side
+input double InpRiskPercent=0.75;             // locked compatibility value; EA rejects any other value
 input long   InpMagic=860301;
 input int    InpMaxDeviationPoints=100;
 
@@ -35,6 +35,8 @@ input group "Tester"
 input int    InpTesterServerClockMode=0;        // 0 = Exness tester timestamps are UTC; live uses calendar server time
 
 datetime g_active_event_time=0;
+const double NP_TOTAL_EVENT_RISK_PERCENT=1.50;
+const double NP_RISK_PER_STOP_PERCENT=0.75;
 long     g_last_event_id=0;
 string   g_active_state_key="";
 string   g_last_state_key="";
@@ -392,7 +394,9 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
    double sell_entry=AAA_Price(_Symbol,tick.bid-InpEntryOffsetPrice);
    double buy_sl=AAA_Price(_Symbol,buy_entry-InpStopLossPrice);
    double sell_sl=AAA_Price(_Symbol,sell_entry+InpStopLossPrice);
-   double side_risk=InpRiskPercent;
+   // This is intentionally a source-level portfolio invariant. Each side is
+   // capped at 0.75%, so a two-sided event cannot plan more than 1.50% total.
+   double side_risk=NP_RISK_PER_STOP_PERCENT;
    double buy_lots=0.0;
    double sell_lots=0.0;
    bool allow_buy=InpEnableBuySide && HAMA_SafeRegimeAllowsDirection(1);
@@ -447,8 +451,8 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
          (allow_buy ? DoubleToString(buy_entry,_Digits) : "disabled"),
          ", sell ",(allow_sell ? DoubleToString(sell_entry,_Digits) : "disabled"),
          ", SL distance $",DoubleToString(InpStopLossPrice,2),
-         ", risk per triggered trade ",DoubleToString(InpRiskPercent,2),
-         "%; up to ",DoubleToString(InpRiskPercent*enabled_sides,2),"% planned event risk. Server placement=",
+         ", hard risk per enabled stop ",DoubleToString(NP_RISK_PER_STOP_PERCENT,2),
+         "%; up to ",DoubleToString(NP_RISK_PER_STOP_PERCENT*enabled_sides,2),"% planned event risk. Server placement=",
          TimeToString(placement_time,TIME_DATE|TIME_SECONDS),", event=",
          TimeToString(event_time,TIME_DATE|TIME_SECONDS),", lead=",seconds_before,"s.");
    return true;
@@ -517,12 +521,13 @@ int OnInit()
 {
    if(!DTS_InputsValid()) return INIT_PARAMETERS_INCORRECT;
    if((!InpEnableBuySide && !InpEnableSellSide) ||
-      InpRiskPercent<=0.0 || InpEntryOffsetPrice<=0.0 || InpStopLossPrice<=0.0 ||
+      MathAbs(InpRiskPercent-NP_RISK_PER_STOP_PERCENT)>0.000001 ||
+      InpEntryOffsetPrice<=0.0 || InpStopLossPrice<=0.0 ||
       InpTrailStartR<=0.0 || InpTrailDistancePrice<=0.0 || InpPlacementLeadSeconds<=0 ||
       InpForceCloseSecondsAfterEvent<=0 || InpMaxQuoteAgeSeconds<=0 ||
       InpCalendarLookaheadDays<=0 || InpCalendarRefreshSeconds<=0)
    {
-      Print("News Pulse: invalid risk, distance, or timing input.");
+      Print("News Pulse: invalid distance/timing input, or InpRiskPercent was changed. This build hard-locks 0.75% per stop / 1.50% total event exposure.");
       return INIT_PARAMETERS_INCORRECT;
    }
    AAA_TesterServerOffsetMode=InpTesterServerClockMode;
@@ -537,10 +542,10 @@ int OnInit()
    EventSetTimer(1);
    string side_mode=InpEnableBuySide && InpEnableSellSide ? "two-sided" :
                     (InpEnableBuySide ? "long-only" : "short-only");
-   Print("AAA Final News Pulse v2.11 loaded on ",_Symbol,
+   Print("AAA Final News Pulse v2.12 loaded on ",_Symbol,
          ". Watches NFP/CPI/FOMC; places at T-",InpPlacementLeadSeconds,
-         "s; mode=",side_mode,"; ",DoubleToString(InpRiskPercent,2),
-         "% risk per triggered enabled side; hard exit at T+",
+         "s; mode=",side_mode,"; hard risk ",DoubleToString(NP_RISK_PER_STOP_PERCENT,2),
+         "% per stop / ",DoubleToString(NP_TOTAL_EVENT_RISK_PERCENT,2),"% maximum planned event exposure; hard exit at T+",
          InpForceCloseSecondsAfterEvent,
          "s. Live timing is broker-quote/calendar anchored; VPS local timezone is ignored.");
    return INIT_SUCCEEDED;

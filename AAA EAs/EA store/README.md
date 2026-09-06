@@ -4,7 +4,7 @@ A FastAPI storefront generated from the Expert Advisors currently listed in:
 
 `..\BM Trading Robust Sets 2026-08-04\_Auto Deploy\Install-BMTradingPortfolio.ps1`
 
-The installer currently contains 27 entries. The public store offers 13 EAs; 14 Auction Market research presets are marked as development builds and excluded from the catalogue, ranking, API, pricing and purchase package.
+The public catalogue is generated directly from every active entry in the recommended installer. At the time of this audit it contains 24 EAs, and the count updates automatically when the installer changes.
 
 ## Run locally
 
@@ -22,7 +22,7 @@ Then open <http://127.0.0.1:8080>.
 ## Pages
 
 - `/` — store landing page
-- `/eas` — searchable catalogue of the 13 available EAs
+- `/eas` — searchable catalogue of all recommended EAs
 - `/eas/{slug}` — logic, risk notes, historical statistics and equity graph
 - `/portfolio` — available EA portfolio and the combined core audit
 - `/live` — read-only active MT5 account, equity curve, positions, orders and complete reconstructed trade history
@@ -30,6 +30,8 @@ Then open <http://127.0.0.1:8080>.
 - `/risk` — disclosure and responsible-use page
 - `/api/eas` — JSON catalogue
 - `/api/live/portfolio` — uncached live MT5 snapshot used by the dashboard
+- `/api/portfolio/equity-series?period=3y` — cached recommended-portfolio evidence (website default)
+- `/api/evidence/{slug}/series?period=3y` — cached per-EA evidence (website default)
 - `/api/health` — sync status
 
 ## Catalogue and pricing
@@ -40,7 +42,17 @@ Descriptions and prices are in `app\catalog.py`. Public names remove the interna
 
 ## Evidence
 
-Available historical results and graph files are read from the existing research folders. The home page ranks all 13 available EAs by the latest complete one-year window, 11 August 2025 through 10 August 2026. The portfolio page leads with that profitable one-year cash-flow overlay and keeps the failed five-year reconstruction in a compact longer-history disclosure. Each page identifies the period and test scope. Individual results must not be added together as if they were a safe simultaneous portfolio.
+The website exposes four fixed periods: 6 months, 1 year, 3 years and 5 years. The 3-year period is the website default. Each period is generated as an independent native MT5 Every Tick run using the exact active compiled EA and recommended SET. Statistics, sampled balance curves and complete parsed trade ledgers are stored under `data\evidence-cache\v1`; public endpoints read those files instead of starting MT5 on demand.
+
+Portfolio caches also include drawdown, monthly P/L, asset contribution, trade allocation, directional and per-EA breakdowns. Cached trades include reconstructed favorable price movement using 1 pip = 10 broker points (while index and crypto moves remain displayed as points), plus an estimated realized R based on the configured equity-risk budget at entry. The R value is explicitly an estimate because closed MT5 deals do not preserve every original stop after break-even or trailing-stop changes.
+
+Rebuild the resumable cache after changing an EA or SET:
+
+```powershell
+uv run python tools\precompute_evidence_cache.py --period all
+```
+
+Add `--safe` to generate the compatible Full Safe variants too. The portfolio curve is a chronological realized-cash-flow overlay of the separate per-EA native tests. It is not a simultaneous shared-margin portfolio test, and each page states that limitation.
 
 This is a catalogue, not a profit guarantee or financial advice.
 

@@ -18,7 +18,7 @@ Every numbered EA folder contains:
 | `02 ORB Volume Profile` | ORB Volume Profile | XAUUSD M5 |
 | `03 ATR Candle Breakout` | ATR Candle Breakout | XAUUSD H1 |
 | `04 AAA Final Asia Breakout` | AAA Final Asia Breakout | XAUUSD H1 |
-| `05 AAA Final DmC` | AAA Final DmC | XAUUSD H1 |
+| `05 AAA Final DmC` | AAA Final DmC | Archived files only — not installed by active BATs |
 | `06 Go Long` | Go Long | US30 D1 |
 | `07 AAA Final EMA3` | AAA Final EMA3 | XAUUSD H4 |
 | `08 AAA Final XAU Weakness` | AAA Final XAU Weakness | XAUUSD M15 |

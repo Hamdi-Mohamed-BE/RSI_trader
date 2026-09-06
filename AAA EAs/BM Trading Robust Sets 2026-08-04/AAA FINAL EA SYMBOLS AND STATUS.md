@@ -6,7 +6,7 @@ Built from the rules and selected settings stored in each AAA Final project. The
 |---|---|---|---:|---|---:|
 | EMA3 | AAA Final EMA3 EA | XAUUSD / GOLD alias | H4 | Enabled | 1.0% |
 | asia breakout | AAA Final Asia Breakout EA | XAUUSD / GOLD alias | H1 | Enabled | 1.0% |
-| DmC | AAA Final DmC EA | XAUUSD / GOLD alias | H1 | Enabled | 1.0% |
+| DmC | AAA Final DmC EA | XAUUSD / GOLD alias | H1 | Removed from every active BAT and the website; files retained | Not deployed |
 | AMD | AAA Final AMD EA | XAUUSD / GOLD alias | M15 | Disabled: research gate | 1.0% if enabled |
 | US100 weekness | AAA Final US100 Weakness EA | US100 / NAS100 / USTEC / UT100 / NDX100 alias | M15 | Enabled | 1.0% total; OCO orders split it |
 | US100 weakness exact two-leg | AAA Final US100 Weakness Exact EA | USTEC / US100 alias | M15 | Disabled: latest-year validation failed; manual research only | 1.0% total split equally between two legs |

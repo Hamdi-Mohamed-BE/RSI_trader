@@ -46,6 +46,13 @@ input double InpAsiaBufferPercent=0.03;
 input double InpAMDStopBufferRange=0.03;
 input double InpDmCFixedStopPrice=22.5;
 
+input group "DmC research and portable stop"
+input ENUM_TIMEFRAMES InpDmCSignalTimeframe=PERIOD_H1;
+input int    InpDmCStopMode=0; // 0=fixed price distance, 1=ATR distance, 2=signal candle extreme
+input int    InpDmCATRPeriod=14;
+input double InpDmCStopATR=1.0;
+input double InpDmCSignalBufferATR=0.10;
+
 input group "News and weekend safety gates"
 input bool   InpUseEconomicCalendar=true;
 input int    InpNewsExpiryMinutes=15;
@@ -154,17 +161,31 @@ void AAA_RunAsiaBreakout()
 
 void AAA_RunDmC()
 {
-   if(!AAA_NewBar(_Symbol,PERIOD_H1,g_last_bar) || !InpEnableTrading || !AAA_SpreadOK()) return;
+   if(!AAA_NewBar(_Symbol,InpDmCSignalTimeframe,g_last_bar) || !InpEnableTrading || !AAA_SpreadOK()) return;
    if(AAA_HasExposure(_Symbol,InpMagic) || AAA_TradedToday(_Symbol,InpMagic)) return;
    MqlRates day[],hour[];
-   if(!AAA_LoadRates(PERIOD_D1,3,day) || !AAA_LoadRates(PERIOD_H1,3,hour)) return;
+   if(!AAA_LoadRates(PERIOD_D1,3,day) || !AAA_LoadRates(InpDmCSignalTimeframe,3,hour)) return;
    double body_high=MathMax(day[1].open,day[1].close);
    double body_low=MathMin(day[1].open,day[1].close);
    MqlTick tick; if(!SymbolInfoTick(_Symbol,tick)) return;
+   double atr=AAA_ATR(_Symbol,InpDmCSignalTimeframe,InpDmCATRPeriod,1);
+   if((InpDmCStopMode==1 || InpDmCStopMode==2) && (atr==EMPTY_VALUE || atr<=0.0)) return;
+   double long_stop=tick.ask-InpDmCFixedStopPrice;
+   double short_stop=tick.bid+InpDmCFixedStopPrice;
+   if(InpDmCStopMode==1)
+     {
+      long_stop=tick.ask-InpDmCStopATR*atr;
+      short_stop=tick.bid+InpDmCStopATR*atr;
+     }
+   else if(InpDmCStopMode==2)
+     {
+      long_stop=hour[1].low-InpDmCSignalBufferATR*atr;
+      short_stop=hour[1].high+InpDmCSignalBufferATR*atr;
+     }
    if(hour[1].low<=body_low && hour[1].close>body_low && hour[1].close>hour[1].open && AAA_MarkovAllowsDirection(1))
-      AAA_SendMarket(_Symbol,1,tick.ask-InpDmCFixedStopPrice,InpRewardRisk,InpRiskPercent,InpMagic,"AAA DmC body reaction");
+      AAA_SendMarket(_Symbol,1,long_stop,InpRewardRisk,InpRiskPercent,InpMagic,"AAA DmC body reaction");
    else if(hour[1].high>=body_high && hour[1].close<body_high && hour[1].close<hour[1].open && AAA_MarkovAllowsDirection(-1))
-      AAA_SendMarket(_Symbol,-1,tick.bid+InpDmCFixedStopPrice,InpRewardRisk,InpRiskPercent,InpMagic,"AAA DmC body reaction");
+      AAA_SendMarket(_Symbol,-1,short_stop,InpRewardRisk,InpRiskPercent,InpMagic,"AAA DmC body reaction");
 }
 
 void AAA_RunAMD()

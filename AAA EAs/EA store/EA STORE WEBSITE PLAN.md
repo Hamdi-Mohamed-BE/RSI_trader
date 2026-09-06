@@ -79,7 +79,7 @@ Every EA will have its own detailed page.
 Provide selectable periods:
 
 - Last year.
-- Last three years.
+- Any custom range from 7 days through 10 years (subject to available broker history).
 - Full available history.
 - Locked out-of-sample validation.
 - Live account performance.

@@ -57,6 +57,22 @@ input int    InpGridLevels=3;
 input double InpGridRiskPercent=0.5;
 input double InpWeaknessATRImpulse=2.0;
 
+input group "XAU weakness research"
+input ENUM_TIMEFRAMES InpWeaknessTimeframe=PERIOD_M15;
+input int    InpWeaknessATRPeriod=14;
+input double InpWeaknessToleranceATR=0.20;
+input double InpWeaknessBreakoutBufferATR=0.05;
+input int    InpWeaknessStopMode=0; // 0=structure, 1=ATR, 2=signal candle
+input double InpWeaknessStopATR=1.50;
+input int    InpWeaknessNewerMinBars=4;
+input int    InpWeaknessNewerMaxBars=16;
+input int    InpWeaknessMinSeparationBars=4;
+input int    InpWeaknessMaxSpanBars=16;
+input int    InpWeaknessLookbackBars=30;
+input int    InpWeaknessExpiryBars=8;
+input bool   InpWeaknessAllowLong=true;
+input bool   InpWeaknessAllowShort=true;
+
 datetime g_last_bar=0;
 long g_last_event_id=0;
 
@@ -324,37 +340,58 @@ void AAA_RunXAUGrid()
 void AAA_RunXAUWeakness()
 {
    AAA_ManageOCO(_Symbol,InpMagic);
-   if(!AAA_NewBar(_Symbol,PERIOD_M15,g_last_bar) || !InpEnableTrading || !AAA_SpreadOK()) return;
+   if(InpUseTrailing) AAA_TrailR(_Symbol,InpMagic,InpTrailStartR,InpTrailDistanceR);
+   if(!AAA_NewBar(_Symbol,InpWeaknessTimeframe,g_last_bar) || !InpEnableTrading || !AAA_SpreadOK()) return;
    if(AAA_HasExposure(_Symbol,InpMagic)) return;
-   MqlRates r[]; if(!AAA_LoadRates(PERIOD_M15,36,r)) return;
-   double atr=AAA_ATR(_Symbol,PERIOD_M15,14,1);
+   int lookback=MathMax(12,InpWeaknessLookbackBars);
+   int rates_needed=lookback+6;
+   MqlRates r[]; if(!AAA_LoadRates(InpWeaknessTimeframe,rates_needed,r)) return;
+   double atr=AAA_ATR(_Symbol,InpWeaknessTimeframe,MathMax(2,InpWeaknessATRPeriod),1);
    if(atr<=0.0) return;
-   double tolerance=0.20*atr;
+   double tolerance=MathMax(0.0,InpWeaknessToleranceATR)*atr;
    int first_high=-1,second_high=-1,first_low=-1,second_low=-1;
-   for(int newer=4;newer<=16;newer++)
+   int newer_min=MathMax(2,InpWeaknessNewerMinBars);
+   int newer_max=MathMin(MathMax(newer_min,InpWeaknessNewerMaxBars),lookback-1);
+   int min_separation=MathMax(1,InpWeaknessMinSeparationBars);
+   int max_span=MathMax(min_separation,InpWeaknessMaxSpanBars);
+   for(int newer=newer_min;newer<=newer_max;newer++)
    {
-      for(int older=newer+4;older<=MathMin(newer+16,30);older++)
+      for(int older=newer+min_separation;older<=MathMin(newer+max_span,lookback);older++)
       {
          if(first_high<0 && MathAbs(r[newer].high-r[older].high)<=tolerance){ second_high=newer; first_high=older; }
          if(first_low<0 && MathAbs(r[newer].low-r[older].low)<=tolerance){ second_low=newer; first_low=older; }
       }
    }
-   datetime expiry=TimeCurrent()+8*15*60;
-   if(first_high>0)
+   int timeframe_seconds=PeriodSeconds(InpWeaknessTimeframe);
+   if(timeframe_seconds<=0) timeframe_seconds=15*60;
+   datetime expiry=TimeCurrent()+MathMax(1,InpWeaknessExpiryBars)*timeframe_seconds;
+   if(first_high>0 && InpWeaknessAllowLong)
    {
       double resistance=MathMax(r[first_high].high,r[second_high].high);
       double range_low=DBL_MAX; for(int i=1;i<=first_high;i++) range_low=MathMin(range_low,r[i].low);
-      double impulse=r[first_high+1].close-r[MathMin(first_high+12,35)].open;
+      double impulse=r[first_high+1].close-r[MathMin(first_high+12,rates_needed-1)].open;
       if(impulse>=InpWeaknessATRImpulse*atr && AAA_MarkovAllowsDirection(1))
-         AAA_SendPending(_Symbol,ORDER_TYPE_BUY_STOP,resistance+0.05*atr,range_low-0.05*atr,2.0,InpRiskPercent,InpMagic,expiry,"AAA XAU weakness breakout");
+      {
+         double entry=resistance+MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
+         double stop=range_low-MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
+         if(InpWeaknessStopMode==1) stop=entry-MathMax(0.1,InpWeaknessStopATR)*atr;
+         else if(InpWeaknessStopMode==2) stop=r[1].low-MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
+         AAA_SendPending(_Symbol,ORDER_TYPE_BUY_STOP,entry,stop,InpRewardRisk,InpRiskPercent,InpMagic,expiry,"AAA XAU weakness breakout");
+      }
    }
-   else if(first_low>0)
+   else if(first_low>0 && InpWeaknessAllowShort)
    {
       double support=MathMin(r[first_low].low,r[second_low].low);
       double range_high=-DBL_MAX; for(int i=1;i<=first_low;i++) range_high=MathMax(range_high,r[i].high);
-      double impulse=r[MathMin(first_low+12,35)].open-r[first_low+1].close;
+      double impulse=r[MathMin(first_low+12,rates_needed-1)].open-r[first_low+1].close;
       if(impulse>=InpWeaknessATRImpulse*atr && AAA_MarkovAllowsDirection(-1))
-         AAA_SendPending(_Symbol,ORDER_TYPE_SELL_STOP,support-0.05*atr,range_high+0.05*atr,2.0,InpRiskPercent,InpMagic,expiry,"AAA XAU weakness breakout");
+      {
+         double entry=support-MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
+         double stop=range_high+MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
+         if(InpWeaknessStopMode==1) stop=entry+MathMax(0.1,InpWeaknessStopATR)*atr;
+         else if(InpWeaknessStopMode==2) stop=r[1].high+MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
+         AAA_SendPending(_Symbol,ORDER_TYPE_SELL_STOP,entry,stop,InpRewardRisk,InpRiskPercent,InpMagic,expiry,"AAA XAU weakness breakout");
+      }
    }
 }
 

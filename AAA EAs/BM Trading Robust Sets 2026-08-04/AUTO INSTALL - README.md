@@ -18,7 +18,6 @@ For Dynamic Config, Engineered Liquidity XAU supports exact fixed cash risk. Per
 - Engineered Liquidity XAU — XAUUSD H1 — dynamic 50%/20% M15 protection, all day
 - ORB Volume Profile — XAUUSD M5 — dynamic 50%/20% M15 protection, all day
 - Asia Breakout — XAUUSD H1 — dynamic 50%/20% M15 protection, all day
-- DmC — XAUUSD H1 — dynamic 50%/20% M15 protection, all day
 - EMA3 — XAUUSD H4 — dynamic 50%/20% M15 protection, all day
 - XAU Weakness — XAUUSD M15 — dynamic 50%/20% M15 protection, all day
 - Nasdaq Overnight — USTEC M1 — current exit logic, all day

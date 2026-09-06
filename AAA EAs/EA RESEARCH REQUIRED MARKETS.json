@@ -1,0 +1,30 @@
+{
+  "policy_version": "2026-09-04",
+  "mandatory_cross_market_validation": [
+    {
+      "market": "XAG",
+      "canonical_symbol": "XAGUSD",
+      "accepted_symbol_patterns": [
+        "XAG",
+        "XAGUSD",
+        "XAGUSDm",
+        "SILVER"
+      ]
+    }
+  ],
+  "default_market_basket_when_unspecified": [
+    "US30",
+    "US100",
+    "BTC",
+    "XAU",
+    "XAG",
+    "GBPJPY"
+  ],
+  "rules": {
+    "frozen_parameters_first": true,
+    "market_specific_optimization_is_separate": true,
+    "negative_result_must_remain_visible": true,
+    "missing_xag_blocks_research_completion": true,
+    "xag_live_deployment_requires_own_locked_evidence_and_user_approval": true
+  }
+}

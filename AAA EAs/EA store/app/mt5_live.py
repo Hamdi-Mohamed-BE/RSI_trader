@@ -279,6 +279,7 @@ class LiveMT5Service:
         self.database_path = database_path or STORE_ROOT / "data" / "live-telemetry.sqlite3"
         self.magic_map = load_magic_map()
         self._lock = threading.RLock()
+        self._connector_lock = threading.RLock()
         self._stop = threading.Event()
         self._thread: threading.Thread | None = None
         self._started_at: str | None = None
@@ -315,7 +316,8 @@ class LiveMT5Service:
             self._thread.join(timeout=10)
         if mt5 is not None:
             try:
-                mt5.shutdown()
+                with self._connector_lock:
+                    mt5.shutdown()
             except Exception:
                 pass
 
@@ -329,6 +331,85 @@ class LiveMT5Service:
                 "ea_summary": [dict(item) for item in self._state["ea_summary"]],
                 "equity_series": [dict(item) for item in self._state["equity_series"]],
             }
+
+    def price_bars(
+        self,
+        symbol: str,
+        timeframe: str,
+        start: datetime,
+        end: datetime,
+    ) -> dict[str, Any]:
+        """Load broker candles from the currently connected read-only MT5 terminal."""
+        if mt5 is None:
+            raise RuntimeError("The MetaTrader 5 Python connector is unavailable.")
+        timeframe_map = {
+            "M1": mt5.TIMEFRAME_M1,
+            "M5": mt5.TIMEFRAME_M5,
+            "M15": mt5.TIMEFRAME_M15,
+            "M30": mt5.TIMEFRAME_M30,
+            "H1": mt5.TIMEFRAME_H1,
+            "H4": mt5.TIMEFRAME_H4,
+            "D1": mt5.TIMEFRAME_D1,
+        }
+        selected_timeframe = timeframe_map.get(timeframe.upper(), mt5.TIMEFRAME_M5)
+        with self._connector_lock:
+            terminal = mt5.terminal_info()
+            if terminal is None or not terminal.connected:
+                raise RuntimeError("The website is not connected to an active MT5 terminal.")
+            resolved = self._resolve_symbol_locked(symbol)
+            mt5.symbol_select(resolved, True)
+            rates = mt5.copy_rates_range(resolved, selected_timeframe, start, end)
+            if rates is None or len(rates) == 0:
+                raise RuntimeError(f"No {timeframe} broker candles were returned for {resolved}.")
+            bars = [
+                {
+                    "time": _iso(int(row["time"])),
+                    "open": float(row["open"]),
+                    "high": float(row["high"]),
+                    "low": float(row["low"]),
+                    "close": float(row["close"]),
+                    "tick_volume": int(row["tick_volume"]),
+                }
+                for row in rates
+            ]
+        maximum = 500
+        if len(bars) > maximum:
+            step = max(1, len(bars) // maximum)
+            bars = bars[::step]
+            if bars[-1]["time"] != _iso(int(rates[-1]["time"])):
+                row = rates[-1]
+                bars.append(
+                    {
+                        "time": _iso(int(row["time"])),
+                        "open": float(row["open"]),
+                        "high": float(row["high"]),
+                        "low": float(row["low"]),
+                        "close": float(row["close"]),
+                        "tick_volume": int(row["tick_volume"]),
+                    }
+                )
+        return {"symbol": str(resolved), "timeframe": timeframe.upper(), "bars": bars}
+
+    def _resolve_symbol_locked(self, symbol: str) -> str:
+        available = list(mt5.symbols_get() or [])
+        wanted = symbol.upper()
+        exact = next((str(row.name) for row in available if str(row.name).upper() == wanted), None)
+        resolved = exact or next(
+            (str(row.name) for row in available if str(row.name).upper().startswith(wanted)),
+            None,
+        )
+        if not resolved:
+            raise RuntimeError(f"MT5 has no compatible symbol for {symbol}.")
+        return resolved
+
+    def resolve_symbol(self, symbol: str) -> str:
+        if mt5 is None:
+            raise RuntimeError("The MetaTrader 5 Python connector is unavailable.")
+        with self._connector_lock:
+            terminal = mt5.terminal_info()
+            if terminal is None or not terminal.connected:
+                raise RuntimeError("The website is not connected to an active MT5 terminal.")
+            return self._resolve_symbol_locked(symbol)
 
     def _initialize_database(self) -> None:
         self.database_path.parent.mkdir(parents=True, exist_ok=True)
@@ -403,14 +484,16 @@ class LiveMT5Service:
         while not self._stop.is_set():
             try:
                 if not initialized:
-                    initialized = bool(mt5.initialize(path=str(self.terminal_path), timeout=60_000))
+                    with self._connector_lock:
+                        initialized = bool(mt5.initialize(path=str(self.terminal_path), timeout=60_000))
                     if not initialized:
                         raise RuntimeError(f"MT5 connection failed: {mt5.last_error()}")
                 self._poll()
             except Exception as exc:
                 initialized = False
                 try:
-                    mt5.shutdown()
+                    with self._connector_lock:
+                        mt5.shutdown()
                 except Exception:
                     pass
                 with self._lock:
@@ -424,14 +507,15 @@ class LiveMT5Service:
             self._stop.wait(POLL_SECONDS)
 
     def _poll(self) -> None:
-        account = mt5.account_info()
-        terminal = mt5.terminal_info()
-        if account is None or terminal is None or not terminal.connected:
-            raise RuntimeError("MT5 is not connected to an active account.")
         now = datetime.now(timezone.utc)
-        positions_raw = list(mt5.positions_get() or [])
-        orders_raw = list(mt5.orders_get() or [])
-        deals_raw = list(mt5.history_deals_get(HISTORY_FROM, now) or [])
+        with self._connector_lock:
+            account = mt5.account_info()
+            terminal = mt5.terminal_info()
+            if account is None or terminal is None or not terminal.connected:
+                raise RuntimeError("MT5 is not connected to an active account.")
+            positions_raw = list(mt5.positions_get() or [])
+            orders_raw = list(mt5.orders_get() or [])
+            deals_raw = list(mt5.history_deals_get(HISTORY_FROM, now) or [])
         positions = serialize_positions(positions_raw, self.magic_map)
         orders = serialize_orders(orders_raw, self.magic_map)
         trades = reconstruct_trades(deals_raw, self.magic_map)

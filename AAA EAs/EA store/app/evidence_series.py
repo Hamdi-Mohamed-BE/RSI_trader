@@ -40,11 +40,35 @@ CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
         / "native-v3-time-direction-results.json",
         "one-year-2025-2026",
     ),
+    "US100 Selective ORB V3": (
+        PACKAGE_ROOT
+        / "US100 Selective ORB Research 2026-08-21"
+        / "native-v3-time-direction-results.json",
+        "one-year-2025-2026",
+    ),
     "Nasdaq 5M Candle Momentum": (
         PACKAGE_ROOT
         / "Nasdaq 5M Open EMA ATR Research 2026-08-20"
         / "claim-982-final-results.json",
         "last-year-2025-2026",
+    ),
+    "EMA3": (
+        PACKAGE_ROOT
+        / "Active Portfolio Full Pipeline 2026-09-05"
+        / "08 EMA3"
+        / "Backtest Reports"
+        / "ThreeYear"
+        / "results.json",
+        "manage-dynamic6020-only",
+    ),
+    "XAU Weakness": (
+        PACKAGE_ROOT
+        / "Active Portfolio Full Pipeline 2026-09-05"
+        / "09 XAU Weakness"
+        / "Backtest Reports"
+        / "ThreeYear"
+        / "results.json",
+        "selected-m30-rr400-dynamic5020",
     ),
 }
 
@@ -55,9 +79,35 @@ SAFE_CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
         / "claim-982-safe-results.json",
         "last-year-full-safe",
     ),
+    "EMA3": (
+        PACKAGE_ROOT
+        / "Active Portfolio Full Pipeline 2026-09-05"
+        / "08 EMA3"
+        / "Backtest Reports"
+        / "ThreeYear"
+        / "results.json",
+        "manage-dynamic6020-only-safe",
+    ),
+    "XAU Weakness": (
+        PACKAGE_ROOT
+        / "Active Portfolio Full Pipeline 2026-09-05"
+        / "09 XAU Weakness"
+        / "Backtest Reports"
+        / "ThreeYear"
+        / "results.json",
+        "selected-m30-rr400-safe5020",
+    ),
 }
 
 SAFE_CUSTOM_REPORTS: dict[str, Path] = {
+    "ETH Top Down FVG Liquidity": (
+        PACKAGE_ROOT
+        / "Active Portfolio Full Pipeline 2026-09-05"
+        / "03 ETH Top Down FVG"
+        / "Backtest Reports"
+        / "Locked"
+        / "eth-locked-combo-rr4-dynamic5020-safe.htm"
+    ),
     "Engineered Liquidity XAU": (
         PACKAGE_ROOT
         / "Engineered Liquidity Sweep Research 2026-08-30"
@@ -73,9 +123,88 @@ SAFE_CUSTOM_REPORTS: dict[str, Path] = {
 }
 
 CUSTOM_REPORTS: dict[str, Path] = {
+    "BTC Top Down FVG Liquidity": (
+        PACKAGE_ROOT
+        / "Active Portfolio Full Pipeline 2026-09-05"
+        / "02 BTC Top Down FVG"
+        / "Backtest Reports"
+        / "Locked"
+        / "btc-locked-rr-200.htm"
+    ),
+    "News Pulse XAU": (
+        PACKAGE_ROOT
+        / "News Pulse Direction Research 2026-09-05"
+        / "Backtest Reports"
+        / "Hard 1.5 Full"
+        / "xauusd__two-sided__hard1p5__native60.htm"
+    ),
+    "News Pulse XAG": (
+        PACKAGE_ROOT
+        / "News Pulse Direction Research 2026-09-05"
+        / "Backtest Reports"
+        / "Hard 1.5 Full"
+        / "xagusd__two-sided__hard1p5__native60.htm"
+    ),
+    "News Pulse EURUSD": (
+        PACKAGE_ROOT
+        / "News Pulse Direction Research 2026-09-05"
+        / "Backtest Reports"
+        / "Hard 1.5 Full"
+        / "eurusd__two-sided__hard1p5__native60.htm"
+    ),
+    "XAU ORB New York M30": (
+        PACKAGE_ROOT
+        / "ORB Session Matrix Research 2026-09-05"
+        / "Backtest Reports"
+        / "locked"
+        / "xauusd--new-york--development-selected--locked.htm"
+    ),
+    "XAU ORB London NY Overlap M30": (
+        PACKAGE_ROOT
+        / "ORB Session Matrix Research 2026-09-05"
+        / "Backtest Reports"
+        / "locked"
+        / "xauusd--overlap--development-selected--locked.htm"
+    ),
+    "US100 ORB New York M30": (
+        PACKAGE_ROOT
+        / "ORB Session Matrix Research 2026-09-05"
+        / "Backtest Reports"
+        / "locked"
+        / "ustec--new-york--development-selected--locked.htm"
+    ),
+    "US100 H1 ORB 13UTC": (
+        PACKAGE_ROOT
+        / "ORB H1 Range Research 2026-09-05"
+        / "Backtest Reports"
+        / "locked-rr-extension"
+        / "ustec--overlap-1300--rr6--locked-rr-extension.htm"
+    ),
+    "US100 Selective ORB V3": (
+        PACKAGE_ROOT
+        / "US100 Selective ORB Research 2026-08-21"
+        / "Backtest Reports"
+        / "v3-time-direction"
+        / "One Year"
+        / "one-year-2025-2026.htm"
+    ),
+    "BTC POC Fibonacci": (
+        PACKAGE_ROOT
+        / "POC Fibonacci Volume Profile Research 2026-09-04"
+        / "Backtest Reports"
+        / "locked"
+        / "btcusd--optimized--locked.htm"
+    ),
     "XAU Trend Progression": (
         PACKAGE_ROOT
         / "Trend Progression Research 2026-09-02"
+        / "Backtest Reports"
+        / "locked"
+        / "xauusd--h4--optimized--locked.htm"
+    ),
+    "XAU Elliott Wave 1-2-3": (
+        PACKAGE_ROOT
+        / "Elliott Wave Research 2026-09-05"
         / "Backtest Reports"
         / "locked"
         / "xauusd--h4--optimized--locked.htm"
@@ -113,15 +242,22 @@ CUSTOM_REPORTS: dict[str, Path] = {
     ),
     "ETH Top Down FVG Liquidity": (
         PACKAGE_ROOT
-        / "Top Down FVG Liquidity Research 2026-08-27"
+        / "Active Portfolio Full Pipeline 2026-09-05"
+        / "03 ETH Top Down FVG"
         / "Backtest Reports"
-        / "ethusd-locked-year.htm"
+        / "Locked"
+        / "eth-locked-combo-rr4-dynamic5020.htm"
+    ),
+    "Nasdaq Overnight": (
+        PACKAGE_ROOT
+        / "US100 Overnight Optimization 2026-09-04"
+        / "Backtest Reports"
+        / "locked"
+        / "locked--current-negative-close-open.htm"
     ),
 }
 
-INSTALLER_LABEL_ALIASES = {
-    "AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s": "AAA Final News Pulse — long only",
-}
+INSTALLER_LABEL_ALIASES: dict[str, str] = {}
 
 ROW_RE = re.compile(r"<tr\b[^>]*>(.*?)</tr>", re.IGNORECASE | re.DOTALL)
 CELL_RE = re.compile(r"<td\b[^>]*>(.*?)</td>", re.IGNORECASE | re.DOTALL)
@@ -254,7 +390,7 @@ def _selected_product_series(product: Product, use_current: bool = False) -> lis
 
 def _selected_portfolio_series(use_current: bool = False) -> tuple[dict[str, Any], ...]:
     events: list[tuple[str, float]] = []
-    for ea_id, selected_variant, _exit_mode in SELECTED_CONFIGS.values():
+    for installer_label, (ea_id, selected_variant, _exit_mode) in SELECTED_CONFIGS.items():
         # The public combined audit was locked before XAU RSI VWAP was added.
         # Keep its separate evidence out of this historical 12-EA overlay.
         if ea_id == "rsi-vwap-xau":
@@ -262,6 +398,16 @@ def _selected_portfolio_series(use_current: bool = False) -> tuple[dict[str, Any
         variant = "current" if use_current else selected_variant
         row = _selected_rows().get((ea_id, variant))
         if row is None:
+            report = CUSTOM_REPORTS.get(installer_label)
+            if report is not None and report.is_file():
+                series = [dict(point) for point in parse_mt5_balance_series(report)]
+                for previous, current in zip(series, series[1:]):
+                    events.append(
+                        (
+                            str(current["time"]),
+                            float(current["balance"]) - float(previous["balance"]),
+                        )
+                    )
             continue
         series = _normalise_json_series(row.get("series", []))
         for previous, current in zip(series, series[1:]):
@@ -313,7 +459,7 @@ def _safe_overlay_series(product: Product) -> list[dict[str, Any]]:
                 return _normalise_json_series(selected.get("series", []))
     if not REGIME_FILTER_PATH.is_file():
         return []
-    if product.label in {"Asia Breakout", "DmC", "XAU Weakness", "XAU Markov Regime"}:
+    if product.label in {"Asia Breakout", "XAU Weakness", "XAU Markov Regime"}:
         return product_equity_series(product, "standard")
     aliases = {
         "News Pulse": "News Pulse",
@@ -340,6 +486,21 @@ def product_equity_series(product: Product, mode: str = "standard") -> list[dict
         safe = _safe_overlay_series(product)
         if safe:
             return safe
+    if product.label in {"EMA3", "XAU Weakness"} and mode != "safe":
+        # Focused pipeline steps promoted independently audited configurations.
+        # Prefer those exact three-year series over the older portfolio audit.
+        custom = [dict(point) for point in _custom_series(product.label)]
+        if custom:
+            return custom
+    if product.label == "Nasdaq Overnight" and mode != "safe":
+        # The fresh optimization is newer than the selected-portfolio audit.
+        # Load the exact active native report so the graph and trade table do
+        # not fall back to the older archived portfolio curve.
+        current_report = CUSTOM_REPORTS[product.label]
+        if current_report.is_file():
+            parsed = [dict(point) for point in parse_mt5_balance_series(current_report)]
+            if parsed:
+                return parsed
     selected = _selected_product_series(product, use_current=mode == "current")
     if selected:
         return selected
@@ -353,7 +514,6 @@ def product_equity_series(product: Product, mode: str = "standard") -> list[dict
             ]
     native_filtered = {
         "Asia Breakout": "asia.htm",
-        "DmC": "dmc.htm",
         "XAU Weakness": "xau-weakness.htm",
     }
     if product.label in native_filtered:
