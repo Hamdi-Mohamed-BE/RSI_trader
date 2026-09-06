@@ -51,7 +51,7 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(
-    title="HAMA Algo Systems",
+    title="Calyx",
     description="Evidence-first MT5 Expert Advisor catalogue synchronized with the active installer.",
     version="0.1.0",
     lifespan=lifespan,

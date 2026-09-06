@@ -1878,7 +1878,7 @@ def _meta_for(item: dict[str, Any]) -> dict[str, Any]:
 
 def _buy_url(label: str, price: int) -> str:
     text = (
-        f"Hello Hama, I want to buy {label} for USD {price}. "
+        f"Hello Calyx, I want to buy {label} for USD {price}. "
         "Please confirm compatibility, license terms and delivery details."
     )
     return f"https://wa.me/{WHATSAPP_NUMBER}?text={quote_plus(text)}"
@@ -2117,7 +2117,7 @@ def get_product(slug: str) -> Product | None:
 
 def package_buy_url(package_name: str, price: int) -> str:
     text = (
-        f"Hello Hama, I am interested in the {package_name} for USD {price}. "
+        f"Hello Calyx, I am interested in the {package_name} for USD {price}. "
         "Please confirm the included EAs, compatibility, license and delivery terms."
     )
     return f"https://wa.me/{WHATSAPP_NUMBER}?text={quote_plus(text)}"

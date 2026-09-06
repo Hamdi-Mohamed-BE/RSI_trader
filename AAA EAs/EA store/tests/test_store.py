@@ -22,6 +22,7 @@ from app.trade_metrics import enrich_trades, pip_spec
 
 
 client = TestClient(app)
+STORE_ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_catalogue_is_synchronized_with_active_installer() -> None:
@@ -58,7 +59,22 @@ def test_public_pages_render() -> None:
     for route in ("/", "/store", "/eas", "/portfolio", "/live", "/pricing", "/risk"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "HAMA Algo Systems" in response.text
+        assert "Calyx" in response.text
+
+
+def test_calyx_dns_installer_defaults_are_safe_and_complete() -> None:
+    batch = (STORE_ROOT / "configDns.bat").read_text(encoding="utf-8")
+    installer = (STORE_ROOT / "tools" / "Configure-DnsHttps.ps1").read_text(encoding="utf-8")
+
+    assert "calyx.duckdns.org" in batch
+    assert "51.91.121.15" in batch
+    assert "RunAs" in batch
+    assert "calyx.duckdns.org" in installer
+    assert "1.1.1.1" in installer and "8.8.8.8" in installer
+    assert "reverse_proxy 127.0.0.1:8080" in installer
+    assert "FINAL LINK:" in installer
+    assert "Calyx Caddy HTTPS" in installer
+    assert "Calyx EA Store" in installer
 
 
 def test_every_product_detail_page_renders() -> None:

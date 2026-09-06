@@ -1,4 +1,4 @@
-# HAMA Algo Systems — EA Store
+# Calyx — EA Store
 
 A FastAPI storefront generated from the Expert Advisors currently listed in:
 
@@ -18,6 +18,20 @@ uv run uvicorn app.main:app --host 127.0.0.1 --port 8080
 ```
 
 Then open <http://127.0.0.1:8080>.
+
+## One-click Windows VPS DNS and HTTPS
+
+After claiming a DuckDNS hostname and pointing it to the VPS IPv4 address, run
+`configDns.bat` as Administrator on the Windows VPS. Its default hostname is
+`calyx.duckdns.org`; a different hostname can be supplied as the
+first argument.
+
+The installer does not store a DuckDNS token. It verifies DNS, prepares the
+Python environment, downloads the latest official Windows AMD64 Caddy archive
+and verifies its published SHA-256 checksum, opens Windows firewall ports 80
+and 443, installs automatic startup tasks, binds the EA Store privately to
+`127.0.0.1:8080`, and prints the final HTTPS link. Caddy and website logs are
+stored under `C:\Calyx-Caddy`.
 
 ## Pages
 

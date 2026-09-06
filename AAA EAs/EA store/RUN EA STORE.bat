@@ -10,7 +10,7 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo Preparing HAMA Algo Systems...
+echo Preparing Calyx...
 uv sync
 if errorlevel 1 (
   echo.

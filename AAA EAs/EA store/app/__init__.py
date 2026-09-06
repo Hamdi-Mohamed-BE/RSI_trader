@@ -1,1 +1,1 @@
-"""HAMA Algo Systems storefront."""
+"""Calyx storefront."""
