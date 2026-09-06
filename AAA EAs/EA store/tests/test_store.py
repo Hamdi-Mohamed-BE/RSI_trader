@@ -455,6 +455,11 @@ def test_fixed_cached_evidence_periods_and_pricing_bundle() -> None:
     assert 'data-trade-chart-panel' in detail.text
     assert 'Price chart' in detail.text
     assert 'changing periods does not launch a tester job' in detail.text
+    assert all(label in detail.text for label in ("Last 6 months", "Last 1 year", "Last 3 years", "Last 5 years"))
+    assert 'value="3y" selected' in detail.text
+    portfolio_page = client.get("/portfolio")
+    assert all(label in portfolio_page.text for label in ("Last 6 months", "Last 1 year", "Last 3 years", "Last 5 years"))
+    assert 'value="3y" selected' in portfolio_page.text
     assert MAX_DAYS == 366 * 5
     pricing = client.get("/pricing")
     assert "Choose 3 + bonus EA" in pricing.text
