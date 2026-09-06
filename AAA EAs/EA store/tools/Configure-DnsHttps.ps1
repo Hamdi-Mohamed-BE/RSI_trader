@@ -170,9 +170,12 @@ try {
         throw "No checksum was published for $($zipAsset.name)."
     }
     $expectedHash = ($checksumLine.Trim() -split '\s+')[0].ToLowerInvariant()
-    $actualHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $zipPath).Hash.ToLowerInvariant()
+    if ($expectedHash -notmatch '^[0-9a-f]{128}$') {
+        throw "The published checksum for $($zipAsset.name) is not a valid SHA-512 hash."
+    }
+    $actualHash = (Get-FileHash -Algorithm SHA512 -LiteralPath $zipPath).Hash.ToLowerInvariant()
     if ($actualHash -ne $expectedHash) {
-        throw 'The downloaded Caddy archive failed SHA-256 verification.'
+        throw 'The downloaded Caddy archive failed SHA-512 verification.'
     }
     Expand-Archive -LiteralPath $zipPath -DestinationPath $extractRoot -Force
     Copy-Item -LiteralPath (Join-Path $extractRoot 'caddy.exe') -Destination $CaddyExe -Force

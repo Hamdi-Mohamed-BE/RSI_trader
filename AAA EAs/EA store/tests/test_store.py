@@ -72,6 +72,7 @@ def test_calyx_dns_installer_defaults_are_safe_and_complete() -> None:
     assert "calyx.duckdns.org" in installer
     assert "1.1.1.1" in installer and "8.8.8.8" in installer
     assert "reverse_proxy 127.0.0.1:8080" in installer
+    assert "Get-FileHash -Algorithm SHA512" in installer
     assert "FINAL LINK:" in installer
     assert "Calyx Caddy HTTPS" in installer
     assert "Calyx EA Store" in installer

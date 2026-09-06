@@ -28,7 +28,7 @@ first argument.
 
 The installer does not store a DuckDNS token. It verifies DNS, prepares the
 Python environment, downloads the latest official Windows AMD64 Caddy archive
-and verifies its published SHA-256 checksum, opens Windows firewall ports 80
+and verifies its published SHA-512 checksum, opens Windows firewall ports 80
 and 443, installs automatic startup tasks, binds the EA Store privately to
 `127.0.0.1:8080`, and prints the final HTTPS link. Caddy and website logs are
 stored under `C:\Calyx-Caddy`.
