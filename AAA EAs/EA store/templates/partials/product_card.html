@@ -1,4 +1,4 @@
-<article class="product-card group" data-order="{{ catalogue_order.get(product.slug, 0) if catalogue_order is defined else 0 }}" data-asset="{{ product.asset_group }}" data-symbol="{{ product.canonical|lower }}" data-evidence="{{ product.evidence.status|lower if product.evidence else 'pending' }}" data-return="{{ product.evidence.return_pct if product.evidence else '' }}" data-pf="{{ product.evidence.profit_factor if product.evidence else '' }}" data-dd="{{ product.evidence.drawdown_pct if product.evidence else '' }}" data-win="{{ product.evidence.win_rate_pct if product.evidence else '' }}" data-sharpe="{{ product.evidence.sharpe_ratio if product.evidence and product.evidence.sharpe_ratio is not none else '' }}" data-recovery="{{ product.evidence.recovery_factor if product.evidence and product.evidence.recovery_factor is not none else '' }}" data-trades="{{ product.evidence.trades if product.evidence else '' }}" data-label="{{ product.label|lower }}" data-search="{{ (product.label ~ ' ' ~ product.strategy ~ ' ' ~ product.canonical)|lower }}">
+<a href="/eas/{{ product.slug }}" class="product-card group" aria-label="View {{ product.label }} details" data-order="{{ catalogue_order.get(product.slug, 0) if catalogue_order is defined else 0 }}" data-asset="{{ product.asset_group }}" data-symbol="{{ product.canonical|lower }}" data-evidence="{{ product.evidence.status|lower if product.evidence else 'pending' }}" data-return="{{ product.evidence.return_pct if product.evidence else '' }}" data-pf="{{ product.evidence.profit_factor if product.evidence else '' }}" data-dd="{{ product.evidence.drawdown_pct if product.evidence else '' }}" data-win="{{ product.evidence.win_rate_pct if product.evidence else '' }}" data-sharpe="{{ product.evidence.sharpe_ratio if product.evidence and product.evidence.sharpe_ratio is not none else '' }}" data-recovery="{{ product.evidence.recovery_factor if product.evidence and product.evidence.recovery_factor is not none else '' }}" data-trades="{{ product.evidence.trades if product.evidence else '' }}" data-label="{{ product.label|lower }}" data-search="{{ (product.label ~ ' ' ~ product.strategy ~ ' ' ~ product.canonical)|lower }}">
   <div class="flex items-start justify-between gap-4">
     <div class="flex items-center gap-3">
       <span class="asset-icon accent-{{ product.accent }}">{{ product.canonical[:2] }}</span>
@@ -7,7 +7,7 @@
         <h3 class="mt-1 text-lg font-bold leading-tight text-white group-hover:text-mint">{{ product.label }}</h3>
       </div>
     </div>
-    {% if product.optional_symbol %}<span class="badge badge-neutral">Optional</span>{% endif %}
+    <div class="flex flex-col items-end gap-2">{% if product.recommended_safe_mode %}<span class="badge badge-safe">Running in Safe mode</span>{% endif %}{% if product.optional_symbol %}<span class="badge badge-neutral">Optional</span>{% endif %}</div>
   </div>
   <p class="mt-5 min-h-[48px] text-sm leading-6 text-muted">{{ product.tagline }}</p>
   {% if product.evidence %}
@@ -23,11 +23,17 @@
     {% else %}<span class="badge badge-bad">Experimental</span>{% endif %}
     <span class="font-mono text-[10px] text-muted">{{ product.evidence.trades }} trades</span>
   </div>
+  {% if product.evidence.max_win_streak is not none and product.evidence.max_loss_streak is not none %}
+  <div class="mt-3 flex items-center justify-between rounded-xl border border-white/[.07] bg-white/[.025] px-3 py-2 font-mono text-[10px] uppercase tracking-[.08em] text-muted">
+    <span>Max win streak <strong class="ml-1 text-mint">{{ product.evidence.max_win_streak }}</strong></span>
+    <span>Max losing streak <strong class="ml-1 text-red-300">{{ product.evidence.max_loss_streak }}</strong></span>
+  </div>
+  {% endif %}
   {% else %}
   <div class="mt-5"><span class="badge badge-neutral">Evidence pending</span></div>
   {% endif %}
   <div class="mt-6 flex items-end justify-between border-t border-white/10 pt-5">
     <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ product.price|money }}</strong></div>
-    <a href="/eas/{{ product.slug }}" class="card-link">View details <span aria-hidden="true">→</span></a>
+    <span class="card-link">View details <span aria-hidden="true">→</span></span>
   </div>
-</article>
+</a>

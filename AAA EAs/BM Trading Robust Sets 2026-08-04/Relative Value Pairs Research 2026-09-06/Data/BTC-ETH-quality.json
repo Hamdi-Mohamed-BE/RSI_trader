@@ -1,0 +1,24 @@
+{
+  "synchronized_bars": 341632,
+  "unmatched_bars": [
+    44,
+    5
+  ],
+  "start": "2023-06-01 00:00:00+00:00",
+  "end": "2026-08-31 23:55:00+00:00",
+  "costs": [
+    {
+      "symbol": "BTCUSD",
+      "zero_spread_floor_points": 1570.0,
+      "commission_bps_per_side": 1.0,
+      "swap_source": "current broker snapshot applied to history, not historical schedule"
+    },
+    {
+      "symbol": "ETHUSD",
+      "zero_spread_floor_points": 140.0,
+      "commission_bps_per_side": 1.0,
+      "swap_source": "current broker snapshot applied to history, not historical schedule"
+    }
+  ],
+  "execution": "M5 bid opens with historical spread floored at training positive median; 1bp per side per leg; M5 marked equity; broker lot rounding; no forward fill"
+}

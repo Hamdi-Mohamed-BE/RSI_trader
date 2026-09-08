@@ -14,6 +14,7 @@ from .catalog import (
     BOOKMAPER_ROOT,
     FILTERED_AUDIT_ROOT,
     PACKAGE_ROOT,
+    REGIME_SWITCH_ROOT,
     SELECTED_CONFIGS,
     SELECTED_PORTFOLIO_ROOT,
     Product,
@@ -48,9 +49,10 @@ CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
     ),
     "Nasdaq 5M Candle Momentum": (
         PACKAGE_ROOT
-        / "Nasdaq 5M Open EMA ATR Research 2026-08-20"
-        / "claim-982-final-results.json",
-        "last-year-2025-2026",
+        / "Active Portfolio Full Pipeline 2026-09-05"
+        / "11 Nasdaq 5M Candle Momentum"
+        / "all-results.json",
+        "ustec-full-fixed-rr2.5",
     ),
     "EMA3": (
         PACKAGE_ROOT
@@ -75,9 +77,12 @@ CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
 SAFE_CUSTOM_SERIES: dict[str, tuple[Path, str]] = {
     "Nasdaq 5M Candle Momentum": (
         PACKAGE_ROOT
-        / "Nasdaq 5M Open EMA ATR Research 2026-08-20"
-        / "claim-982-safe-results.json",
-        "last-year-full-safe",
+        / "Active Portfolio Full Pipeline 2026-09-05"
+        / "11 Nasdaq 5M Candle Momentum"
+        / "Reports"
+        / "full"
+        / "ustec-full-fixed-rr2.5-safe.json",
+        "ustec-full-fixed-rr2.5-safe",
     ),
     "EMA3": (
         PACKAGE_ROOT
@@ -208,6 +213,27 @@ CUSTOM_REPORTS: dict[str, Path] = {
         / "Backtest Reports"
         / "locked"
         / "xauusd--h4--optimized--locked.htm"
+    ),
+    "XAU Slow Trend": (
+        PACKAGE_ROOT
+        / "Slow Multi Asset Trend Research 2026-09-06"
+        / "Native"
+        / "xauusd-selected-test-model0"
+        / "xauusd-selected-test-model0.htm"
+    ),
+    "XAG Session VWAP Snapback": (
+        PACKAGE_ROOT
+        / "Session VWAP Snapback Research 2026-09-06"
+        / "Native"
+        / "xagusd-frozen-locked-model0"
+        / "xagusd-frozen-locked-model0.htm"
+    ),
+    "US100 Month End Flow": (
+        PACKAGE_ROOT
+        / "Month End Institutional Flow Research 2026-09-06"
+        / "Native"
+        / "ustec-frozen-locked-model0"
+        / "ustec-frozen-locked-model0.htm"
     ),
     "XAU RSI VWAP": (
         PACKAGE_ROOT
@@ -388,12 +414,41 @@ def _selected_product_series(product: Product, use_current: bool = False) -> lis
     return _normalise_json_series(row.get("series", []))
 
 
+@lru_cache(maxsize=2)
+def _regime_switch_series(scope: str = "full") -> tuple[dict[str, Any], ...]:
+    path = REGIME_SWITCH_ROOT / "true-switch-trades.json"
+    if not path.is_file():
+        return ()
+    trades = _load_json(path).get("XAUUSD", {}).get(scope, [])
+    if not trades:
+        return ()
+    balance = 10_000.0
+    start = "2023-09-01T00:00:00+00:00" if scope == "full" else "2025-09-01T00:00:00+00:00"
+    series = [{"time": start, "balance": balance}]
+    for trade in sorted(trades, key=lambda row: str(row.get("exit_time", ""))):
+        balance *= 1.0 + float(trade.get("return_fraction", 0.0))
+        series.append({"time": str(trade["exit_time"]), "balance": round(balance, 2)})
+    return tuple(series)
+
+
 def _selected_portfolio_series(use_current: bool = False) -> tuple[dict[str, Any], ...]:
     events: list[tuple[str, float]] = []
     for installer_label, (ea_id, selected_variant, _exit_mode) in SELECTED_CONFIGS.items():
         # The public combined audit was locked before XAU RSI VWAP was added.
         # Keep its separate evidence out of this historical 12-EA overlay.
         if ea_id == "rsi-vwap-xau":
+            continue
+        if ea_id == "regime-switch-xau":
+            series = [dict(point) for point in _regime_switch_series("full")]
+            for previous, current in zip(series, series[1:]):
+                events.append((str(current["time"]), float(current["balance"]) - float(previous["balance"])))
+            continue
+        if installer_label == "Nasdaq 5M Candle Momentum":
+            # Step 11 supersedes the older selected-portfolio reconstruction
+            # with the frozen fixed-2.5R native MT5 series.
+            series = [dict(point) for point in _custom_series(installer_label)]
+            for previous, current in zip(series, series[1:]):
+                events.append((str(current["time"]), float(current["balance"]) - float(previous["balance"])))
             continue
         variant = "current" if use_current else selected_variant
         row = _selected_rows().get((ea_id, variant))
@@ -453,7 +508,8 @@ def _safe_overlay_series(product: Product) -> list[dict[str, Any]]:
     if safe_custom is not None:
         path, case_name = safe_custom
         if path.is_file():
-            rows = _load_json(path)
+            data = _load_json(path)
+            rows = data if isinstance(data, list) else [data]
             selected = next((row for row in rows if row.get("case") == case_name), None)
             if selected is not None:
                 return _normalise_json_series(selected.get("series", []))
@@ -486,12 +542,14 @@ def product_equity_series(product: Product, mode: str = "standard") -> list[dict
         safe = _safe_overlay_series(product)
         if safe:
             return safe
-    if product.label in {"EMA3", "XAU Weakness"} and mode != "safe":
+    if product.label in {"EMA3", "XAU Weakness", "Nasdaq 5M Candle Momentum"} and mode != "safe":
         # Focused pipeline steps promoted independently audited configurations.
         # Prefer those exact three-year series over the older portfolio audit.
         custom = [dict(point) for point in _custom_series(product.label)]
         if custom:
             return custom
+    if product.label == "XAU Regime Switch":
+        return [dict(point) for point in _regime_switch_series("full")]
     if product.label == "Nasdaq Overnight" and mode != "safe":
         # The fresh optimization is newer than the selected-portfolio audit.
         # Load the exact active native report so the graph and trade table do

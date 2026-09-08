@@ -32,6 +32,7 @@ body { min-height: 100vh; overflow-x: hidden; font-family: Manrope, sans-serif; 
 .signal-row:hover { border-color: rgba(126,247,199,.25); background: rgba(126,247,199,.04); transform: translateX(2px); }
 .badge { display: inline-flex; align-items: center; width: fit-content; white-space: nowrap; border-radius: 999px; padding: .36rem .55rem; font-family: "DM Mono",monospace; font-size: .56rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
 .badge-good { color: #9ff9d4; border: 1px solid rgba(126,247,199,.22); background: rgba(126,247,199,.07); }
+.badge-safe { color:#68a7ff; border:1px solid rgba(104,167,255,.42); background:rgba(104,167,255,.13); box-shadow:inset 0 0 18px rgba(104,167,255,.04); }
 .badge-warn { color: #f7d98e; border: 1px solid rgba(251,191,36,.22); background: rgba(251,191,36,.07); }
 .badge-bad { color: #fca5a5; border: 1px solid rgba(248,113,113,.22); background: rgba(248,113,113,.07); }
 .badge-neutral { color: #a8bbb6; border: 1px solid rgba(255,255,255,.11); background: rgba(255,255,255,.035); }
@@ -44,6 +45,7 @@ body { min-height: 100vh; overflow-x: hidden; font-family: Manrope, sans-serif; 
 .section-title { margin-top:.65rem; max-width:700px; font-size:clamp(2rem,4vw,3.25rem); font-weight:800; letter-spacing:-.04em; line-height:1.05; }
 .product-card { display:flex; min-height:365px; flex-direction:column; border:1px solid rgba(255,255,255,.09); border-radius:20px; padding:1.25rem; background:linear-gradient(145deg,rgba(14,31,27,.78),rgba(8,18,16,.84)); transition:transform .2s,border-color .2s,box-shadow .2s; }
 .product-card:hover { transform:translateY(-4px); border-color:rgba(126,247,199,.2); box-shadow:0 20px 60px rgba(0,0,0,.24); }
+.product-card:focus-visible { outline:2px solid #7ef7c7; outline-offset:4px; border-color:rgba(126,247,199,.45); box-shadow:0 0 0 5px rgba(126,247,199,.08); }
 .mini-stat { border:1px solid rgba(255,255,255,.065); border-radius:11px; padding:.6rem; background:rgba(255,255,255,.018); }
 .mini-stat span { display:block; color:#6f8681; font-size:.57rem; text-transform:uppercase; letter-spacing:.08em; }.mini-stat strong { display:block; margin-top:.25rem; font-family:"DM Mono",monospace; font-size:.78rem; }
 .card-link { display:inline-flex; align-items:center; gap:.35rem; color:#9beed0; font-size:.75rem; font-weight:700; }.card-link:hover { color:#fff; }
@@ -162,6 +164,7 @@ body { min-height: 100vh; overflow-x: hidden; font-family: Manrope, sans-serif; 
 .footer-heading {margin-bottom:1rem;color:#fff;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
 .whatsapp-float { position:fixed;right:1rem;bottom:1rem;z-index:60;display:flex;align-items:center;gap:.5rem;border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:.72rem 1rem;color:#07100f;background:#7ef7c7;box-shadow:0 10px 40px rgba(0,0,0,.35);font-size:.72rem;font-weight:800;transition:.2s}.whatsapp-float:hover{transform:translateY(-2px);background:#a6ffdf}
 @media (min-width:640px){.stats-strip{grid-template-columns:repeat(5,1fr)}.stats-strip>div{border-right:1px solid rgba(255,255,255,.08);border-bottom:0}.stats-strip>div:last-child{border-right:0}}
+@media (min-width:1024px){.stats-strip-expanded{grid-template-columns:repeat(7,1fr)}}
 @media (min-width:640px){.analysis-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.direction-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (min-width:768px){.filter-panel{grid-template-columns:minmax(260px,1.5fr) repeat(2,minmax(160px,1fr))}.filter-panel .button-secondary{min-height:46px}}
 @media (min-width:768px){.evidence-controls{grid-template-columns:220px auto minmax(300px,1fr)}.evidence-controls p{padding-bottom:.7rem;text-align:right}}

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>YT Stream Copy</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080b10;--panel:#111722;--line:#253044;--text:#eef4ff;--muted:#8b9bb4;--cyan:#3ddbd9;--green:#3ddd8e;--red:#ff6577;--amber:#ffc857}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#132338 0,var(--bg) 34%);font-family:Inter,Segoe UI,sans-serif;color:var(--text)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:22px 28px;border-bottom:1px solid var(--line);background:#0a0f17cc;position:sticky;top:0;z-index:3;backdrop-filter:blur(16px)}
+    h1{font-size:20px;margin:0;letter-spacing:.04em}.status{display:flex;gap:9px;align-items:center;color:var(--muted)}.dot{width:9px;height:9px;border-radius:50%;background:var(--red)}.dot.live{background:var(--green);box-shadow:0 0 14px var(--green)}
+    main{max-width:1500px;margin:auto;padding:24px;display:grid;gap:18px}.card{background:linear-gradient(160deg,#151c28,#0e141e);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 18px 45px #0004}
+    .controls{display:grid;grid-template-columns:1fr auto auto;gap:10px}input,select,button,textarea{font:inherit;color:inherit;border:1px solid var(--line);background:#0a1019;border-radius:10px;padding:11px 13px}button{cursor:pointer;font-weight:700}button.primary{background:var(--cyan);color:#071115;border:0}button.danger{color:var(--red)}button.good{color:var(--green)}
+    .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.metric small{color:var(--muted);display:block;margin-bottom:8px}.metric strong{font-size:20px}
+    .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}h2{font-size:15px;margin:0 0 14px;color:#cad7e9;text-transform:uppercase;letter-spacing:.08em}
+    table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #202a3b}th{color:var(--muted)}.tag{border:1px solid var(--line);padding:4px 7px;border-radius:999px;font-size:11px}.buy{color:var(--green)}.sell{color:var(--red)}
+    .scroll{max-height:510px;overflow:auto}.line{border-left:2px solid var(--line);padding:5px 0 12px 12px;margin-left:4px}.line time{font-size:11px;color:var(--muted)}.line p{margin:4px 0;font-size:13px;line-height:1.5}
+    .editor{display:none;margin-top:12px;grid-template-columns:repeat(5,1fr);gap:8px}.editor.open{display:grid}.empty{color:var(--muted);padding:28px;text-align:center}.note{color:var(--muted);font-size:12px;margin:10px 0 0}
+    @media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.editor{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header><h1>YT STREAM COPY</h1><div class="status"><span id="dot" class="dot"></span><span id="status">Stopped</span></div></header>
+<main>
+  <section class="card"><div class="controls"><input id="url" placeholder="Paste a YouTube livestream URL"><button class="primary" onclick="startSession()">Start monitoring</button><button class="danger" onclick="stopSession()">Stop</button></div><p class="note">Explicit entries are mirrored immediately on paper using the current MT5 quote. Without an SL the temporary volume is 0.04 lot; once an SL is detected it is replaced by 1% risk sizing. Prepared comments use “Stream {channel}”. Nothing is submitted to MT5.</p></section>
+  <section class="metrics">
+    <div class="card metric"><small>CHANNEL</small><strong id="channel">—</strong></div><div class="card metric"><small>MT5 ACCOUNT</small><strong id="account">—</strong></div><div class="card metric"><small>EQUITY</small><strong id="equity">—</strong></div><div class="card metric"><small>RISK / IDEA</small><strong id="risk">1%</strong></div><div class="card metric"><small>DETECTOR</small><strong id="detector">Idle</strong></div>
+  </section>
+  <section class="grid">
+    <div class="card"><h2>Trade ideas</h2><div class="scroll"><table><thead><tr><th>Status</th><th>Symbol</th><th>Side</th><th>Entry</th><th>SL</th><th>TP</th><th>Confidence</th><th>Volume</th><th></th></tr></thead><tbody id="signals"></tbody></table><div id="noSignals" class="empty">No detected ideas yet</div></div></div>
+    <div class="card"><h2>Live transcript</h2><div id="transcript" class="scroll"><div class="empty">Start a stream to begin</div></div><textarea id="manual" rows="3" style="width:100%;margin-top:12px" placeholder="Testing: paste or type a spoken sentence"></textarea><button onclick="inject()" style="margin-top:8px">Add test transcript</button></div>
+  </section>
+  <section class="card"><h2>Trading screen reader</h2><div id="screenReads" class="scroll"><div class="empty">No screen text captured yet</div></div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id); const api=async(url,opt={})=>{const r=await fetch(url,{headers:{'Content-Type':'application/json'},...opt});if(!r.ok)throw new Error((await r.json()).detail||r.statusText);return r.json()};
+async function startSession(){try{await api('/api/session/start',{method:'POST',body:JSON.stringify({url:$('url').value})});await refresh()}catch(e){alert(e.message)}}
+async function stopSession(){await api('/api/session/stop',{method:'POST'});await refresh()}
+async function inject(){if(!$('manual').value.trim())return;try{await api('/api/transcript',{method:'POST',body:JSON.stringify({text:$('manual').value})});$('manual').value='';await refresh()}catch(e){alert(e.message)}}
+async function approve(id){try{const x=await api(`/api/signals/${id}/approve`,{method:'POST'});alert(`Prepared ${x.volume} lot on ${x.broker_symbol}\nRisk: $${x.risk_cash}\nComment: ${x.comment}`);await refresh()}catch(e){alert(e.message)}}
+async function reject(id){await api(`/api/signals/${id}/reject`,{method:'POST'});await refresh()}
+async function edit(id){const row=document.querySelector(`[data-id='${id}']`), cells=['symbol','side','entry','stop_loss','take_profit'];const body={};for(const k of cells){const v=prompt(k.replace('_',' '),row.dataset[k]||'');if(v!==null&&v!=='')body[k]=['entry','stop_loss','take_profit'].includes(k)?Number(v):v}await api(`/api/signals/${id}`,{method:'PATCH',body:JSON.stringify(body)});await refresh()}
+function n(v){return v===null||v===undefined?'—':v}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function refresh(){let d;try{d=await api('/api/dashboard')}catch{return}const running=d.worker.running;$('dot').className='dot'+(running?' live':'');$('status').textContent=running?'Monitoring':'Stopped';$('detector').textContent=d.worker.error?'Error':running?'Listening':'Idle';$('channel').textContent=d.session?.channel||'—';$('account').textContent=d.mt5.connected?`${d.mt5.login} · ${d.mt5.server}`:'Disconnected';$('equity').textContent=d.mt5.connected?`$${d.mt5.equity.toLocaleString(undefined,{minimumFractionDigits:2})}`:'—';$('risk').textContent=d.mt5.connected?`$${(d.mt5.equity*d.risk_percent/100).toFixed(2)} · ${d.risk_percent}%`:`${d.risk_percent}%`;
+const tbody=$('signals');tbody.innerHTML=d.signals.map(s=>`<tr data-id="${s.id}" data-symbol="${esc(s.symbol)}" data-side="${esc(s.side)}" data-entry="${n(s.entry)}" data-stop_loss="${n(s.stop_loss)}" data-take_profit="${n(s.take_profit)}"><td><span class="tag">${esc(s.status)}</span></td><td>${esc(n(s.symbol))}</td><td class="${s.side||''}">${esc(n(s.side))}</td><td>${n(s.entry)}</td><td>${n(s.stop_loss)}</td><td>${n(s.take_profit)}</td><td>${Math.round(s.confidence*100)}%</td><td>${n(s.volume)}</td><td><button onclick="edit(${s.id})">Edit</button> <button class="good" onclick="approve(${s.id})">Approve</button> <button class="danger" onclick="reject(${s.id})">Reject</button></td></tr>`).join('');$('noSignals').style.display=d.signals.length?'none':'block';$('transcript').innerHTML=d.transcripts.length?d.transcripts.map(t=>`<div class="line"><time>${esc(t.created_at)}</time><p>${esc(t.text)}</p></div>`).join(''):'<div class="empty">No transcript yet</div>';$('screenReads').innerHTML=d.screen_reads?.length?d.screen_reads.map(x=>`<div class="line"><time>${esc(x.created_at)}</time><p>${esc(x.text)}</p><small>Detected prices: ${esc((x.prices||[]).join(', ')||'none')}</small></div>`).join(''):'<div class="empty">No screen text captured yet</div>'}
+setInterval(refresh,2000);refresh();
+</script></body></html>

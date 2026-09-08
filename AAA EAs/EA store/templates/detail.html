@@ -6,7 +6,7 @@
   <div class="mx-auto max-w-7xl px-5 py-8 lg:px-8"><a href="/eas" class="text-xs font-semibold text-muted hover:text-white">← Back to catalogue</a></div>
   <div class="mx-auto grid max-w-7xl items-end gap-10 px-5 pb-16 lg:grid-cols-[1fr_auto] lg:px-8 lg:pb-20">
     <div>
-      <div class="flex flex-wrap items-center gap-3"><span class="asset-icon accent-{{ product.accent }} h-12 w-12">{{ product.canonical[:2] }}</span><span class="badge badge-neutral">{{ product.category }}</span>{% if product.optional_symbol %}<span class="badge badge-neutral">Optional broker symbol</span>{% endif %}</div>
+      <div class="flex flex-wrap items-center gap-3"><span class="asset-icon accent-{{ product.accent }} h-12 w-12">{{ product.canonical[:2] }}</span><span class="badge badge-neutral">{{ product.category }}</span>{% if product.recommended_safe_mode %}<span class="badge badge-safe">Running in Safe mode</span>{% endif %}{% if product.optional_symbol %}<span class="badge badge-neutral">Optional broker symbol</span>{% endif %}</div>
       <p class="mt-7 font-mono text-xs uppercase tracking-[.18em] text-muted">{{ product.canonical }} · {{ product.timeframe }} · {{ product.session }}</p>
       <h1 class="mt-3 max-w-4xl text-4xl font-extrabold tracking-[-.04em] sm:text-6xl">{{ product.label }}</h1>
       <p class="mt-6 max-w-3xl text-lg leading-8 text-[#a9bcb7]">{{ product.tagline }}</p>
@@ -23,15 +23,17 @@
   {% if display_evidence %}
   <div class="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[.025] p-2">
     <div class="flex flex-wrap gap-2"><a href="/eas/{{ product.slug }}?mode=standard&period={{ selected_period }}" class="rounded-xl px-5 py-3 text-sm font-bold {{ 'bg-mint text-ink' if selected_mode == 'standard' else 'text-muted hover:bg-white/5 hover:text-white' }}">Standard mode</a>{% if product.safe_filter_supported %}<a href="/eas/{{ product.slug }}?mode=safe&period={{ selected_period }}" class="rounded-xl px-5 py-3 text-sm font-bold {{ 'bg-[#68a7ff] text-ink' if selected_mode == 'safe' else 'text-muted hover:bg-white/5 hover:text-white' }}">{{ product.safe_mode_label }}</a>{% else %}<span class="cursor-not-allowed rounded-xl px-5 py-3 text-sm font-bold text-white/25" title="No validated Safe-mode configuration">Full Safe unavailable</span>{% endif %}</div>
-    <p class="px-3 text-xs text-muted">{{ product.safe_mode_note if selected_mode == 'safe' else 'Current default installer configuration.' }}</p>
+    <p class="px-3 text-xs text-muted">{% if selected_mode == 'safe' %}{{ product.safe_mode_note }}{% if product.recommended_safe_mode %} This is the Best Recommended BAT default.{% endif %}{% elif product.recommended_safe_mode %}Unfiltered Standard mode is available for comparison; the Best Recommended BAT defaults this EA to Safe mode.{% else %}Current default installer configuration.{% endif %}</p>
   </div>
-  <div class="mb-12 flex flex-wrap items-center justify-between gap-4"><div><p class="eyebrow-simple">Precomputed MT5 evidence · {{ product.safe_mode_label if selected_mode == 'safe' else 'Standard' }}</p><h2 class="mt-2 text-2xl font-bold" data-dynamic-evidence-title>{{ display_evidence.label }}</h2></div>{% if display_evidence.status == 'Validated evidence' %}<span class="badge badge-good">Validated evidence</span>{% elif display_evidence.status == 'Research evidence' %}<span class="badge badge-warn">Research evidence</span>{% else %}<span class="badge badge-bad">Experimental</span>{% endif %}</div>
-  <div class="stats-strip">
+  <div class="mb-12 flex flex-wrap items-center justify-between gap-4"><div><p class="eyebrow-simple">Precomputed MT5 evidence · {% if product.safe_filter_supported %}Standard vs {{ product.safe_mode_label }}{% else %}Standard{% endif %}</p><h2 class="mt-2 text-2xl font-bold" data-dynamic-evidence-title>{{ display_evidence.label }}</h2>{% if product.safe_filter_supported %}<p class="mt-2 text-xs text-muted">Both cached equity curves are shown together; the statistics and trades follow the selected mode above.</p>{% endif %}</div>{% if display_evidence.status == 'Validated evidence' %}<span class="badge badge-good">Validated evidence</span>{% elif display_evidence.status == 'Research evidence' %}<span class="badge badge-warn">Research evidence</span>{% else %}<span class="badge badge-bad">Experimental</span>{% endif %}</div>
+  <div class="stats-strip stats-strip-expanded">
     <div><span>Total return</span><strong data-dynamic-stat="return_pct" class="{{ 'text-mint' if display_evidence.return_pct >= 0 else 'text-red-300' }}">{{ display_evidence.return_pct|percent(true) }}</strong></div>
     <div><span>Profit factor</span><strong data-dynamic-stat="profit_factor">{{ '%.2f'|format(display_evidence.profit_factor) }}</strong></div>
     <div><span>Win rate</span><strong data-dynamic-stat="win_rate_pct">{{ display_evidence.win_rate_pct|percent }}</strong></div>
     <div><span>Max DD</span><strong data-dynamic-stat="max_drawdown_pct">{{ display_evidence.drawdown_pct|percent }}</strong></div>
     <div><span>Trades</span><strong data-dynamic-stat="trades">{{ display_evidence.trades }}</strong></div>
+    <div title="Longest run of consecutive profitable trades"><span>Max win streak</span><strong data-dynamic-stat="max_win_streak">{{ streak_stats.get('max_win_streak', '—') }}</strong></div>
+    <div title="Longest run of consecutive losing trades"><span>Max losing streak</span><strong data-dynamic-stat="max_loss_streak">{{ streak_stats.get('max_loss_streak', '—') }}</strong></div>
   </div>
   <div class="evidence-controls mt-5" data-chart-controls>
     <label><span>Evidence period</span><select data-chart-period>
@@ -48,7 +50,7 @@
     </div>
   </div>
   <div class="mt-5 grid gap-5 lg:grid-cols-[1fr_330px]">
-    <div class="chart-panel" data-equity-graph data-series-url="/api/evidence/{{ product.slug }}/series?mode={{ selected_mode }}" data-selected-dataset="{{ product.safe_mode_label if selected_mode == 'safe' else 'Standard' }}" data-chart-label="{{ product.label }} cached equity curve">
+    <div class="chart-panel" data-equity-graph data-series-url="/api/evidence/{{ product.slug }}/series?mode={{ 'compare' if product.safe_filter_supported else selected_mode }}" data-selected-dataset="{{ product.safe_mode_label if selected_mode == 'safe' else 'Standard' }}" data-chart-label="{{ product.label }} cached {% if product.safe_filter_supported %}Standard versus Safe comparison{% else %}equity curve{% endif %}">
       <div class="chart-loading" data-chart-status>Loading equity curve…</div>
       <svg class="evidence-chart hidden" data-chart-svg role="img" aria-label="Cached equity curve for {{ product.label }}" viewBox="0 0 1000 360" preserveAspectRatio="xMidYMid meet"></svg>
     </div>
@@ -94,4 +96,4 @@
 
 {% if related %}<section class="border-t border-white/10"><div class="mx-auto max-w-7xl px-5 py-20 lg:px-8"><div class="section-heading-row"><div><p class="eyebrow-simple">Related systems</p><h2 class="mt-2 text-2xl font-bold">More {{ product.category|lower }} setups</h2></div></div><div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{% for product in related %}{% include "partials/product_card.html" %}{% endfor %}</div></div></section>{% endif %}
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', path='evidence.js') }}?v=20260906-equity-hover-pips" defer></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='evidence.js') }}?v=20260908-streaks" defer></script>{% endblock %}

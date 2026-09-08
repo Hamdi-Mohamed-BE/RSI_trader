@@ -18,7 +18,7 @@ from app.catalog import (
 from app.main import _display_catalog, app
 from app.mt5_evidence_jobs import MAX_DAYS, _materialized_values, _native_trades, _same_setting, _set_values
 from app.mt5_live import reconstruct_balance_history, reconstruct_trades
-from app.trade_metrics import enrich_trades, pip_spec
+from app.trade_metrics import enrich_trades, outcome_streaks, pip_spec
 
 
 client = TestClient(app)
@@ -97,6 +97,7 @@ def test_live_installer_uses_simple_account_confirmation() -> None:
     assert "$confirmation = $confirmation.Trim()" in installer
     assert "$confirmation -ine $expected" in installer
     assert "MODE: STANDARD - current default/selective configuration." in installer
+    assert "MODE: BEST RECOMMENDED - evidence-selected EAs use Safe mode" in installer
     assert "â€”" not in installer
 
 
@@ -106,6 +107,43 @@ def test_every_product_detail_page_renders() -> None:
         assert response.status_code == 200
         assert product.label in response.text
         assert product.buy_url.replace("&", "&amp;") in response.text
+
+
+def test_recommended_safe_eas_default_to_safe_evidence_and_are_tagged() -> None:
+    expected = {"lta-volume-profile", "ema3", "xau-weakness"}
+    products = {product.slug: product for product in _display_catalog()}
+    assert {slug for slug, product in products.items() if product.recommended_safe_mode} == expected
+
+    catalogue = client.get("/eas")
+    assert catalogue.status_code == 200
+    assert catalogue.text.count("Running in Safe mode</span>") == len(expected)
+    assert catalogue.text.count('class="product-card group"') == len(_display_catalog())
+    assert catalogue.text.count('aria-label="View ') >= len(_display_catalog())
+
+    for slug in expected:
+        detail = client.get(f"/eas/{slug}")
+        assert detail.status_code == 200
+        assert "Running in Safe mode" in detail.text
+        assert f'/api/evidence/{slug}/series?mode=compare' in detail.text
+        assert "Both cached equity curves are shown together" in detail.text
+        assert "This is the Best Recommended BAT default." in detail.text
+
+    standard = client.get("/eas/lta-volume-profile", params={"mode": "standard"})
+    assert standard.status_code == 200
+    assert "/api/evidence/lta-volume-profile/series?mode=compare" in standard.text
+
+    comparison = client.get("/api/evidence/lta-volume-profile/series", params={"mode": "compare", "period": "3y"})
+    assert comparison.status_code == 200
+    datasets = comparison.json()["datasets"]
+    assert [dataset["label"] for dataset in datasets] == ["Standard", "Full Safe"]
+    assert all(len(dataset["series"]) >= 2 for dataset in datasets)
+
+    lta_source = (PACKAGE_ROOT / "LTA volume profile" / "EA" / "LTA_Concepts_EA.mq5").read_text(encoding="utf-8")
+    ema3_source = (PACKAGE_ROOT / "AAA Final EAs" / "AAA Final EMA3 EA" / "AAA_Final_Strategy_Engine.mqh").read_text(encoding="utf-8")
+    weakness_source = (PACKAGE_ROOT / "AAA Final EAs" / "AAA Final XAU Weakness EA" / "AAA_Final_Strategy_Engine.mqh").read_text(encoding="utf-8")
+    assert 'comment = "Safe " + comment;' in lta_source
+    assert '"Safe AAA EMA3"' in ema3_source
+    assert '"Safe AAA XAU weakness breakout"' in weakness_source
 
 
 def test_sellable_logic_is_specific_and_audit_labeled() -> None:
@@ -126,7 +164,7 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "display" in by_name["ORB Volume Profile"].logic[2].title.lower()
     assert "all three profile entry filters are OFF" in by_name["ORB Volume Profile"].logic[2].detail
     assert "four times" in by_name["Nasdaq 5M Candle Momentum"].logic[2].detail
-    assert "+1R" in by_name["Nasdaq 5M Candle Momentum"].logic[3].detail
+    assert "2.5 times" in by_name["Nasdaq 5M Candle Momentum"].logic[3].detail
     assert "15:55" in by_name["Nasdaq 5M Candle Momentum"].logic[5].detail
     assert "buy stop" in by_name["News Pulse XAU"].logic[2].detail
     assert "sell stop" in by_name["News Pulse XAU"].logic[2].detail
@@ -138,8 +176,8 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
 
 def test_recommended_exit_settings_are_synced_per_ea() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 24
-    assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 8
+    assert len(products) == 28
+    assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 7
     assert sum(product.exit_mode == "Dynamic 60/20 only" for product in products) == 1
     assert sum(product.exit_mode == "Current EA exits" for product in products) == 5
     assert sum(product.exit_mode == "Native 60-second exit" for product in products) == 3
@@ -150,6 +188,12 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert sum(product.exit_mode == "Nominal 6R / timed flat" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 2R / BE at 1R" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 3R / no trailing" for product in products) == 1
+    assert sum(product.exit_mode == "Fixed 6R / no trailing" for product in products) == 1
+    assert sum(product.exit_mode == "Fixed 1R / no trailing" for product in products) == 1
+    assert sum(product.exit_mode == "Fixed 2.5R / six-hour exit" for product in products) == 1
+    assert sum(product.exit_mode == "Fixed 2.5R / no trailing" for product in products) == 1
+    safe_defaults = {product.label for product in products if product.recommended_safe_mode}
+    assert safe_defaults == {"LTA Volume Profile", "EMA3", "XAU Weakness"}
     standalone_orbs = {
         "XAU ORB New York M30",
         "XAU ORB London NY Overlap M30",
@@ -160,7 +204,7 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert all(
         product.deployment_session == "All day / native strategy window"
         for product in products
-        if product.label != "BTC POC Fibonacci" and product.label not in standalone_orbs
+        if product.label not in {"BTC POC Fibonacci", "XAU Regime Switch", "XAG Session VWAP Snapback", "US100 Month End Flow"} and product.label not in standalone_orbs
     )
     ema3 = next(product for product in products if product.label == "EMA3")
     assert ema3.exit_mode == "Dynamic 60/20 only"
@@ -256,6 +300,71 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert rsi_vwap.exit_mode == "Current EA exits"
     assert rsi_vwap.safe_filter_supported is False
     assert "0.5 times initial risk" in rsi_vwap.logic[-1].detail
+
+    slow_trend = next(product for product in products if product.label == "XAU Slow Trend")
+    assert slow_trend.timeframe == "H4"
+    assert slow_trend.exit_mode == "Fixed 6R / no trailing"
+    assert slow_trend.safe_filter_supported is False
+    assert slow_trend.evidence is not None
+    assert slow_trend.evidence.return_pct == 28.6246
+    assert slow_trend.evidence.profit_factor == 2.17
+    assert slow_trend.evidence.win_rate_pct == 31.43
+    assert slow_trend.evidence.trades == 35
+    slow_set = (PACKAGE_ROOT / slow_trend.set_source).read_text(encoding="utf-8-sig")
+    assert "InpRiskPercent=1.0" in slow_set
+    assert "InpMagic=969060311" in slow_set
+    assert "InpTesterOnly=false" in slow_set
+
+    regime_switch = next(product for product in products if product.label == "XAU Regime Switch")
+    assert regime_switch.timeframe == "M5"
+    assert regime_switch.deployment_session == "H4 trend all day / M5 VWAP 10:00-11:45 New York"
+    assert regime_switch.exit_mode == "6R trend / 3R VWAP regime switch"
+    assert regime_switch.safe_filter_supported is False
+    assert regime_switch.evidence is not None
+    assert regime_switch.evidence.status == "Validated demo-forward evidence"
+    assert regime_switch.evidence.return_pct == 29.28
+    assert regime_switch.evidence.profit_factor == 2.09
+    assert regime_switch.evidence.win_rate_pct == 30.56
+    assert regime_switch.evidence.drawdown_pct == 8.43
+    assert regime_switch.evidence.trades == 36
+    regime_set = (PACKAGE_ROOT / regime_switch.set_source).read_text(encoding="utf-8-sig")
+    assert "InpRiskPercent=1.0" in regime_set
+    assert "InpMagic=969070101" in regime_set
+    assert "InpTesterOnly=false" in regime_set
+    assert "InpDemoOnly=true" in regime_set
+
+    snapback = next(product for product in products if product.label == "XAG Session VWAP Snapback")
+    assert snapback.timeframe == "M30"
+    assert snapback.deployment_session == "09:30-16:00 New York / M30"
+    assert snapback.exit_mode == "Fixed 1R / no trailing"
+    assert snapback.safe_filter_supported is False
+    assert snapback.evidence is not None
+    assert snapback.evidence.return_pct == 3.9319
+    assert snapback.evidence.profit_factor == 2.57
+    assert snapback.evidence.win_rate_pct == 60.0
+    assert snapback.evidence.drawdown_pct == 3.6
+    assert snapback.evidence.trades == 15
+    snapback_set = (PACKAGE_ROOT / snapback.set_source).read_text(encoding="utf-8-sig")
+    assert "InpRiskPercent=1.0" in snapback_set
+    assert "InpTesterOnly=false" in snapback_set
+    assert "InpSession=3" in snapback_set
+
+    month_end = next(product for product in products if product.label == "US100 Month End Flow")
+    assert month_end.timeframe == "M30"
+    assert month_end.deployment_session == "First three business days, after 10:30 New York / M30"
+    assert month_end.exit_mode == "Fixed 2.5R / six-hour exit"
+    assert month_end.safe_filter_supported is False
+    assert month_end.evidence is not None
+    assert round(month_end.evidence.return_pct, 4) == 5.5281
+    assert month_end.evidence.profit_factor == 1.34
+    assert month_end.evidence.win_rate_pct == 47.06
+    assert month_end.evidence.drawdown_pct == 5.74
+    assert month_end.evidence.trades == 34
+    month_end_set = (PACKAGE_ROOT / month_end.set_source).read_text(encoding="utf-8-sig")
+    assert "InpRiskPercent=1.0" in month_end_set
+    assert "InpTesterOnly=false" in month_end_set
+    assert "InpCalendarWindow=5" in month_end_set
+    assert "InpRewardRisk=2.5" in month_end_set
 
     trend = next(product for product in products if product.label == "XAU Trend Progression")
     assert trend.timeframe == "H4"
@@ -359,7 +468,7 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "Precomputed recommended-portfolio evidence" in response.text
-    assert "24 EAs, synchronized" in response.text
+    assert "28 EAs, synchronized" in response.text
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     for value in ("6m", "1y", "3y", "5y"):
@@ -372,7 +481,7 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     series = client.get("/api/portfolio/equity-series")
     assert series.status_code == 200
     assert len(series.json()["series"]) >= 2
-    assert series.json()["included_ea_count"] == 24
+    assert series.json()["included_ea_count"] == 28
     assert series.headers["x-evidence-cache"] == "HIT"
     assert "/api/portfolio/equity-series" in response.text
     assert "/portfolio/equity.png" not in response.text
@@ -424,7 +533,7 @@ def test_ea_catalogue_supports_metric_sorting_and_symbol_filtering() -> None:
     assert "Lowest drawdown" in page.text
     assert "Highest return" in page.text
     assert 'id="asset-filter"' in page.text
-    assert "XAUUSD (14)" in page.text
+    assert "XAUUSD (16)" in page.text
     assert 'data-pf=' in page.text
     assert 'data-win=' in page.text
     assert 'data-dd=' in page.text
@@ -432,7 +541,7 @@ def test_ea_catalogue_supports_metric_sorting_and_symbol_filtering() -> None:
     xag = client.get("/eas", params={"symbol": "xagusd"})
     assert xag.status_code == 200
     assert "News Pulse XAG" in xag.text
-    assert 'id="visible-count" class="text-white">1<' in xag.text
+    assert 'id="visible-count" class="text-white">2<' in xag.text
 
     pf_sorted = client.get("/eas", params={"sort": "pf-desc"})
     products = sorted(
@@ -476,7 +585,7 @@ def test_fixed_cached_evidence_periods_and_pricing_bundle() -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["period_key"] == "6m"
-    assert set(payload["stats"]) >= {"return_pct", "profit_factor", "win_rate_pct", "max_drawdown_pct", "trades", "sharpe_ratio", "recovery_factor"}
+    assert set(payload["stats"]) >= {"return_pct", "profit_factor", "win_rate_pct", "max_drawdown_pct", "trades", "sharpe_ratio", "recovery_factor", "max_win_streak", "max_loss_streak"}
     assert all("source" in trade for trade in payload["trades"])
 
     portfolio = client.get(
@@ -493,6 +602,8 @@ def test_fixed_cached_evidence_periods_and_pricing_bundle() -> None:
     assert 'Show cached period' in detail.text
     assert 'data-trade-chart-panel' in detail.text
     assert 'Price chart' in detail.text
+    assert 'Max win streak' in detail.text
+    assert 'Max losing streak' in detail.text
     assert 'changing periods does not launch a tester job' in detail.text
     assert all(label in detail.text for label in ("Last 6 months", "Last 1 year", "Last 3 years", "Last 5 years"))
     assert 'value="3y" selected' in detail.text
@@ -536,9 +647,20 @@ def test_cached_trades_include_price_move_and_estimated_r_without_mt5_rerun() ->
     assert "Hover or tap the equity curve" in evidence_js
 
 
+def test_outcome_streaks_are_ordered_and_break_even_is_neutral() -> None:
+    trades = [
+        {"number": 4, "close_time": "2026-01-04T00:00:00", "net_profit": -1},
+        {"number": 2, "close_time": "2026-01-02T00:00:00", "net_profit": 2},
+        {"number": 1, "close_time": "2026-01-01T00:00:00", "net_profit": 1},
+        {"number": 3, "close_time": "2026-01-03T00:00:00", "net_profit": 0},
+        {"number": 5, "close_time": "2026-01-05T00:00:00", "net_profit": -2},
+    ]
+    assert outcome_streaks(trades) == {"max_win_streak": 2, "max_loss_streak": 2}
+
+
 def test_all_recommended_eas_and_portfolio_have_every_fixed_cache() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 24
+    assert len(products) == 28
     periods = ("6m", "1y", "3y", "5y")
     for period in periods:
         portfolio = client.get("/api/portfolio/equity-series", params={"period": period})

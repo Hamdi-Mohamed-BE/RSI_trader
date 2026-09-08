@@ -1,0 +1,5629 @@
+{
+  "protocol": "development-only selection, then untouched locked year",
+  "config": {
+    "rebalance": "monthly",
+    "horizon": "1-3-6m",
+    "slots": 4,
+    "absolute_gate": true,
+    "rank_method": "raw",
+    "direction": "long-only",
+    "trend": "none",
+    "indicator_tf": "D1",
+    "session": "london",
+    "stop_mode": 0,
+    "stop_atr": 1.5,
+    "exit_mode": 0,
+    "rr": 2.0,
+    "max_hold_days": 0,
+    "manage": 0
+  },
+  "description": "monthly rebalance, 1-3-6m, top 4, raw, positive momentum required, long-only, none, D1 ATR 1.5 ATR; rank change; none; london",
+  "screened_configurations": 467,
+  "development": {
+    "metrics": {
+      "return_pct": 220.40878165185717,
+      "profit_factor": 2.766006354946827,
+      "win_rate": 40.526315789473685,
+      "max_dd_pct": 9.821270951315796,
+      "trades": 190,
+      "sharpe": 1.2298044838945879,
+      "recovery": 22.44198156678776,
+      "expectancy_r": 0.673951333595148,
+      "final_balance": 32040.878165185717,
+      "profitable_assets": 6,
+      "max_standalone_mtm_dd_pct": 15.468870796744339
+    },
+    "standalone": {
+      "XAUUSD": {
+        "return_pct": 38.934742076911945,
+        "profit_factor": 7.9263196690385245,
+        "win_rate": 47.368421052631575,
+        "max_dd_pct": 8.03402847670247,
+        "trades": 19,
+        "sharpe": 0.9115781566288059,
+        "recovery": 4.846229035634751,
+        "expectancy_r": 1.833027040265547,
+        "avg_win_r": 4.454817041493309,
+        "avg_loss_r": -0.5265839608394384,
+        "longs": 19,
+        "shorts": 0,
+        "first_half_return": 4.671863398583298,
+        "second_half_return": 32.733609172369384
+      },
+      "XAGUSD": {
+        "return_pct": -5.841696940722175,
+        "profit_factor": 0.6218535899504819,
+        "win_rate": 27.27272727272727,
+        "max_dd_pct": 11.22092444430658,
+        "trades": 33,
+        "sharpe": -0.49154578989435344,
+        "recovery": -0.5206074570519198,
+        "expectancy_r": -0.1768988434993894,
+        "avg_win_r": 1.1538904677435033,
+        "avg_loss_r": -0.675944835215474,
+        "longs": 33,
+        "shorts": 0,
+        "first_half_return": -4.580324923499946,
+        "second_half_return": -1.321920260377074
+      },
+      "BTCUSD": {
+        "return_pct": 51.696371398612406,
+        "profit_factor": 6.670070852558183,
+        "win_rate": 43.47826086956522,
+        "max_dd_pct": 12.984659000254872,
+        "trades": 23,
+        "sharpe": 0.6288182544922709,
+        "recovery": 3.981342243766099,
+        "expectancy_r": 2.0988921982506143,
+        "avg_win_r": 5.562734746298924,
+        "avg_loss_r": -0.5656020694788544,
+        "longs": 23,
+        "shorts": 0,
+        "first_half_return": 3.523363571789395,
+        "second_half_return": 46.533464683473966
+      },
+      "ETHUSD": {
+        "return_pct": 19.72486538786753,
+        "profit_factor": 3.237572754254343,
+        "win_rate": 31.818181818181817,
+        "max_dd_pct": 15.468870796744339,
+        "trades": 22,
+        "sharpe": 0.5529937791290374,
+        "recovery": 1.2751328553354349,
+        "expectancy_r": 0.886385664635286,
+        "avg_win_r": 3.925305791514574,
+        "avg_loss_r": -0.5317770612417152,
+        "longs": 22,
+        "shorts": 0,
+        "first_half_return": 11.902568114176827,
+        "second_half_return": 6.990275027208881
+      },
+      "USTEC": {
+        "return_pct": 14.820019481968849,
+        "profit_factor": 2.190415585142965,
+        "win_rate": 41.935483870967744,
+        "max_dd_pct": 8.85037100732119,
+        "trades": 31,
+        "sharpe": 0.6824120802995431,
+        "recovery": 1.6745082742530744,
+        "expectancy_r": 0.46479528954162824,
+        "avg_win_r": 1.98332948834587,
+        "avg_loss_r": -0.6319238540392133,
+        "longs": 31,
+        "shorts": 0,
+        "first_half_return": 12.282495006944426,
+        "second_half_return": 2.2599466416091563
+      },
+      "US30": {
+        "return_pct": 5.687199855876712,
+        "profit_factor": 1.4009742041397129,
+        "win_rate": 45.16129032258064,
+        "max_dd_pct": 5.407591539284695,
+        "trades": 31,
+        "sharpe": 0.32176353791235696,
+        "recovery": 1.0517066266120023,
+        "expectancy_r": 0.19251625756688748,
+        "avg_win_r": 1.4043737206950593,
+        "avg_loss_r": -0.8054840061857244,
+        "longs": 31,
+        "shorts": 0,
+        "first_half_return": 3.4934974145323094,
+        "second_half_return": 2.119652438218167
+      },
+      "EURUSD": {
+        "return_pct": 9.83575759361688,
+        "profit_factor": 3.7477954532531017,
+        "win_rate": 56.25,
+        "max_dd_pct": 4.29939682977899,
+        "trades": 16,
+        "sharpe": 0.7983280614112961,
+        "recovery": 2.287706388368548,
+        "expectancy_r": 0.5985013179357126,
+        "avg_win_r": 1.4414453038624033,
+        "avg_loss_r": -0.48528380682717553,
+        "longs": 16,
+        "shorts": 0,
+        "first_half_return": 9.877773743902086,
+        "second_half_return": -0.03823898942759696
+      },
+      "GBPJPY": {
+        "return_pct": -1.5483291096165752,
+        "profit_factor": 0.8576275262619841,
+        "win_rate": 36.36363636363637,
+        "max_dd_pct": 7.623199482517684,
+        "trades": 22,
+        "sharpe": -0.14247121191185025,
+        "recovery": -0.20310751583601674,
+        "expectancy_r": -0.062967263330806,
+        "avg_win_r": 1.147878654519602,
+        "avg_loss_r": -0.7548792163881821,
+        "longs": 22,
+        "shorts": 0,
+        "first_half_return": 3.640934399449658,
+        "second_half_return": -5.0069632613171215
+      }
+    },
+    "trades": [
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2023-01-02T08:00:00+00:00",
+        "exit_time": "2023-01-03T08:15:00+00:00",
+        "r": -1.0215156249999926,
+        "return_fraction": -0.010215156249999927,
+        "side": "long",
+        "signal_strength": 0.05449659681222102
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-01-03T08:00:00+00:00",
+        "exit_time": "2023-01-04T18:00:00+00:00",
+        "r": -1.0221249999999997,
+        "return_fraction": -0.010221249999999998,
+        "side": "long",
+        "signal_strength": 0.16938087354437195
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-01-03T08:00:00+00:00",
+        "exit_time": "2023-01-12T00:00:00+00:00",
+        "r": 0.9389182283512976,
+        "return_fraction": 0.009389182283512976,
+        "side": "long",
+        "signal_strength": 0.007456536002732218
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-01-12T08:00:00+00:00",
+        "exit_time": "2023-01-13T00:00:00+00:00",
+        "r": 0.26559262943496975,
+        "return_fraction": 0.0026559262943496977,
+        "side": "long",
+        "signal_strength": 0.06971636537894622
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2023-01-04T08:00:00+00:00",
+        "exit_time": "2023-01-15T22:00:00+00:00",
+        "r": 2.024833090155002,
+        "return_fraction": 0.020248330901550017,
+        "side": "long",
+        "signal_strength": 0.03626806755871451
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-01-05T08:00:00+00:00",
+        "exit_time": "2023-01-23T15:00:00+00:00",
+        "r": -1.0474374999999998,
+        "return_fraction": -0.010474374999999998,
+        "side": "long",
+        "signal_strength": 0.16602725293899753
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-01-03T08:00:00+00:00",
+        "exit_time": "2023-02-03T00:00:00+00:00",
+        "r": 2.3489137053097053,
+        "return_fraction": 0.023489137053097055,
+        "side": "long",
+        "signal_strength": 0.0634542215946366
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-01-24T08:00:00+00:00",
+        "exit_time": "2023-02-03T13:45:00+00:00",
+        "r": -1.0353593749999996,
+        "return_fraction": -0.010353593749999997,
+        "side": "long",
+        "signal_strength": 0.0889917512786006
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-02-03T08:00:00+00:00",
+        "exit_time": "2023-02-21T14:30:00+00:00",
+        "r": -1.0474062499999983,
+        "return_fraction": -0.010474062499999983,
+        "side": "long",
+        "signal_strength": 0.08794817972131047
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-02-06T08:00:00+00:00",
+        "exit_time": "2023-02-21T18:15:00+00:00",
+        "r": -1.0431406250000046,
+        "return_fraction": -0.010431406250000046,
+        "side": "long",
+        "signal_strength": 0.04647533679781215
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-02-22T08:00:00+00:00",
+        "exit_time": "2023-02-24T14:30:00+00:00",
+        "r": -1.023406250000002,
+        "return_fraction": -0.010234062500000021,
+        "side": "long",
+        "signal_strength": 0.022140271157308797
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-01-13T08:00:00+00:00",
+        "exit_time": "2023-03-11T00:00:00+00:00",
+        "r": 2.3039331853504534,
+        "return_fraction": 0.023039331853504534,
+        "side": "long",
+        "signal_strength": 0.052545930248126316
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2023-03-10T08:00:00+00:00",
+        "exit_time": "2023-03-13T00:00:00+00:00",
+        "r": 0.7988904370869394,
+        "return_fraction": 0.007988904370869394,
+        "side": "long",
+        "signal_strength": 0.026879614783084014
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-02-22T08:00:00+00:00",
+        "exit_time": "2023-03-13T12:45:00+00:00",
+        "r": -1.0487968749999996,
+        "return_fraction": -0.010487968749999996,
+        "side": "long",
+        "signal_strength": 0.05132461002651859
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-03-14T08:00:00+00:00",
+        "exit_time": "2023-03-29T00:00:00+00:00",
+        "r": 1.936322559165334,
+        "return_fraction": 0.01936322559165334,
+        "side": "long",
+        "signal_strength": 0.040490836414169
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-02-27T08:00:00+00:00",
+        "exit_time": "2023-03-30T00:00:00+00:00",
+        "r": 5.4540230278178745,
+        "return_fraction": 0.054540230278178746,
+        "side": "long",
+        "signal_strength": 0.021615781905815753
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-03-30T08:00:00+00:00",
+        "exit_time": "2023-04-06T00:00:00+00:00",
+        "r": 0.1532279504148664,
+        "return_fraction": 0.001532279504148664,
+        "side": "long",
+        "signal_strength": 0.0685570408082305
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-04-06T08:00:00+00:00",
+        "exit_time": "2023-04-16T22:00:00+00:00",
+        "r": -0.39085031240560597,
+        "return_fraction": -0.0039085031240560595,
+        "side": "long",
+        "signal_strength": 0.07151269452405046
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-04-17T08:00:00+00:00",
+        "exit_time": "2023-04-18T00:00:00+00:00",
+        "r": -0.12640028453086627,
+        "return_fraction": -0.0012640028453086627,
+        "side": "long",
+        "signal_strength": 0.07064785281592707
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-04-18T08:00:00+00:00",
+        "exit_time": "2023-04-23T22:00:00+00:00",
+        "r": -0.5200288929262866,
+        "return_fraction": -0.005200288929262866,
+        "side": "long",
+        "signal_strength": 0.0676992646696077
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-04-24T08:00:00+00:00",
+        "exit_time": "2023-04-26T00:00:00+00:00",
+        "r": 0.4198020543673266,
+        "return_fraction": 0.004198020543673266,
+        "side": "long",
+        "signal_strength": 0.0643440068720086
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-03-29T08:00:00+00:00",
+        "exit_time": "2023-05-12T00:00:00+00:00",
+        "r": 1.1711968847483645,
+        "return_fraction": 0.011711968847483645,
+        "side": "long",
+        "signal_strength": 0.0798538451455567
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-05-12T08:00:00+00:00",
+        "exit_time": "2023-05-17T00:00:00+00:00",
+        "r": -0.49629955979455553,
+        "return_fraction": -0.0049629955979455555,
+        "side": "long",
+        "signal_strength": 0.06567971917629302
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-03-13T08:00:00+00:00",
+        "exit_time": "2023-06-06T00:00:00+00:00",
+        "r": 2.237493910964325,
+        "return_fraction": 0.02237493910964325,
+        "side": "long",
+        "signal_strength": 0.07323283526248238
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-06-07T08:00:00+00:00",
+        "exit_time": "2023-06-08T00:00:00+00:00",
+        "r": -0.3493455698893577,
+        "return_fraction": -0.0034934556988935775,
+        "side": "long",
+        "signal_strength": 0.046398055139233514
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-06-08T08:00:00+00:00",
+        "exit_time": "2023-06-09T00:00:00+00:00",
+        "r": 0.2178509346830911,
+        "return_fraction": 0.002178509346830911,
+        "side": "long",
+        "signal_strength": 0.0008781944619959455
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-06-09T08:00:00+00:00",
+        "exit_time": "2023-06-10T00:00:00+00:00",
+        "r": -0.04357337193785517,
+        "return_fraction": -0.0004357337193785517,
+        "side": "long",
+        "signal_strength": 0.01816144609222733
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-03-13T08:00:00+00:00",
+        "exit_time": "2023-06-11T00:00:00+00:00",
+        "r": 1.155030262323746,
+        "return_fraction": 0.01155030262323746,
+        "side": "long",
+        "signal_strength": 0.05427505828930145
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-06-12T08:00:00+00:00",
+        "exit_time": "2023-06-15T01:45:00+00:00",
+        "r": -1.0241093750000003,
+        "return_fraction": -0.010241093750000003,
+        "side": "long",
+        "signal_strength": 0.024491144097147022
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-06-12T08:00:00+00:00",
+        "exit_time": "2023-06-20T00:00:00+00:00",
+        "r": 0.5197535751400286,
+        "return_fraction": 0.005197535751400286,
+        "side": "long",
+        "signal_strength": 0.009404223242472776
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-06-15T08:00:00+00:00",
+        "exit_time": "2023-06-21T00:00:00+00:00",
+        "r": -0.3025109354233045,
+        "return_fraction": -0.003025109354233045,
+        "side": "long",
+        "signal_strength": 0.013870102045027302
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-06-21T08:00:00+00:00",
+        "exit_time": "2023-06-22T00:00:00+00:00",
+        "r": -0.230697353211065,
+        "return_fraction": -0.00230697353211065,
+        "side": "long",
+        "signal_strength": 0.01262541036831911
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-05-17T08:00:00+00:00",
+        "exit_time": "2023-07-13T00:00:00+00:00",
+        "r": 4.5185639068134416,
+        "return_fraction": 0.045185639068134414,
+        "side": "long",
+        "signal_strength": 0.04221631497068747
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-06-22T08:00:00+00:00",
+        "exit_time": "2023-07-19T00:00:00+00:00",
+        "r": -0.20648585876273243,
+        "return_fraction": -0.002064858587627324,
+        "side": "long",
+        "signal_strength": 0.03479969432553569
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-07-19T08:00:00+00:00",
+        "exit_time": "2023-07-20T00:00:00+00:00",
+        "r": 0.10834012866724978,
+        "return_fraction": 0.0010834012866724977,
+        "side": "long",
+        "signal_strength": 0.05757921534890623
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-06-20T08:00:00+00:00",
+        "exit_time": "2023-07-22T00:00:00+00:00",
+        "r": 2.290596685679644,
+        "return_fraction": 0.02290596685679644,
+        "side": "long",
+        "signal_strength": 0.027862411064535325
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-07-20T08:00:00+00:00",
+        "exit_time": "2023-07-22T00:00:00+00:00",
+        "r": -0.259589116109258,
+        "return_fraction": -0.00259589116109258,
+        "side": "long",
+        "signal_strength": 0.06746602033845056
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-07-24T08:00:00+00:00",
+        "exit_time": "2023-07-25T00:00:00+00:00",
+        "r": -0.5948992503129473,
+        "return_fraction": -0.005948992503129473,
+        "side": "long",
+        "signal_strength": 0.0567058978356215
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-07-24T08:00:00+00:00",
+        "exit_time": "2023-07-27T17:00:00+00:00",
+        "r": -1.0250625000000053,
+        "return_fraction": -0.010250625000000053,
+        "side": "long",
+        "signal_strength": 0.058738137257072796
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-07-28T08:00:00+00:00",
+        "exit_time": "2023-07-29T00:00:00+00:00",
+        "r": 0.14027067307980878,
+        "return_fraction": 0.001402706730798088,
+        "side": "long",
+        "signal_strength": 0.03562594503755296
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-07-13T08:00:00+00:00",
+        "exit_time": "2023-08-03T00:00:00+00:00",
+        "r": -0.8197044505226856,
+        "return_fraction": -0.008197044505226856,
+        "side": "long",
+        "signal_strength": 0.06558264990901062
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-07-25T08:00:00+00:00",
+        "exit_time": "2023-08-04T19:30:00+00:00",
+        "r": -1.0357187499999922,
+        "return_fraction": -0.010357187499999922,
+        "side": "long",
+        "signal_strength": 0.06116911208489586
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-08-07T08:00:00+00:00",
+        "exit_time": "2023-08-16T19:00:00+00:00",
+        "r": -1.0341874999999945,
+        "return_fraction": -0.010341874999999945,
+        "side": "long",
+        "signal_strength": 0.036524443953614504
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-08-03T08:00:00+00:00",
+        "exit_time": "2023-08-17T15:30:00+00:00",
+        "r": -1.04146875,
+        "return_fraction": -0.0104146875,
+        "side": "long",
+        "signal_strength": 0.01922505768341218
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-08-17T08:00:00+00:00",
+        "exit_time": "2023-08-18T00:00:00+00:00",
+        "r": -0.801633305763036,
+        "return_fraction": -0.008016333057630361,
+        "side": "long",
+        "signal_strength": 0.012199439667589998
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-08-24T08:00:00+00:00",
+        "exit_time": "2023-08-25T00:00:00+00:00",
+        "r": -0.8046801508116204,
+        "return_fraction": -0.008046801508116205,
+        "side": "long",
+        "signal_strength": 0.0025357232994423413
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-08-24T08:00:00+00:00",
+        "exit_time": "2023-09-05T08:30:00+00:00",
+        "r": -1.038031250000001,
+        "return_fraction": -0.010380312500000011,
+        "side": "long",
+        "signal_strength": 0.01850715988480175
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-08-28T08:00:00+00:00",
+        "exit_time": "2023-09-21T00:00:00+00:00",
+        "r": -0.032578571149621996,
+        "return_fraction": -0.00032578571149621994,
+        "side": "long",
+        "signal_strength": 0.005281635119572626
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-04-26T08:00:00+00:00",
+        "exit_time": "2023-09-22T00:00:00+00:00",
+        "r": 6.635370943338488,
+        "return_fraction": 0.06635370943338488,
+        "side": "long",
+        "signal_strength": 0.06397929782773436
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-02T08:00:00+00:00",
+        "exit_time": "2023-10-02T21:45:00+00:00",
+        "r": -1.0208593749999997,
+        "return_fraction": -0.010208593749999996,
+        "side": "long",
+        "signal_strength": 0.010586345075353392
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-07-31T08:00:00+00:00",
+        "exit_time": "2023-10-03T14:00:00+00:00",
+        "r": -1.1163749999999963,
+        "return_fraction": -0.011163749999999964,
+        "side": "long",
+        "signal_strength": 0.05060797303492568
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-03T08:00:00+00:00",
+        "exit_time": "2023-10-04T00:00:00+00:00",
+        "r": -0.1415567573100416,
+        "return_fraction": -0.001415567573100416,
+        "side": "long",
+        "signal_strength": 0.006406915885390697
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-05T08:00:00+00:00",
+        "exit_time": "2023-10-06T00:00:00+00:00",
+        "r": -0.22766939440682826,
+        "return_fraction": -0.0022766939440682825,
+        "side": "long",
+        "signal_strength": 0.009790180531993287
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-07T08:00:00+00:00",
+        "exit_time": "2023-10-11T00:00:00+00:00",
+        "r": -0.4971288501004312,
+        "return_fraction": -0.004971288501004312,
+        "side": "long",
+        "signal_strength": 0.010373277694826169
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-10-10T08:00:00+00:00",
+        "exit_time": "2023-10-19T20:00:00+00:00",
+        "r": -1.0342500000000012,
+        "return_fraction": -0.010342500000000013,
+        "side": "long",
+        "signal_strength": 0.0004224595046231766
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-10-04T08:00:00+00:00",
+        "exit_time": "2023-10-20T00:00:00+00:00",
+        "r": 0.9981655762574778,
+        "return_fraction": 0.009981655762574778,
+        "side": "long",
+        "signal_strength": 0.0008309909252729059
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-10-23T08:00:00+00:00",
+        "exit_time": "2023-10-26T14:15:00+00:00",
+        "r": -1.0248906250000016,
+        "return_fraction": -0.010248906250000016,
+        "side": "long",
+        "signal_strength": 0.006284009509798402
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-10-27T08:00:00+00:00",
+        "exit_time": "2023-11-01T00:00:00+00:00",
+        "r": -0.05411878002663902,
+        "return_fraction": -0.0005411878002663902,
+        "side": "long",
+        "signal_strength": 0.01890865627117533
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-11-01T08:00:00+00:00",
+        "exit_time": "2023-11-02T00:00:00+00:00",
+        "r": -0.30533072488361157,
+        "return_fraction": -0.0030533072488361157,
+        "side": "long",
+        "signal_strength": 0.00199175786212832
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-11-03T08:00:00+00:00",
+        "exit_time": "2023-11-12T22:00:00+00:00",
+        "r": 0.8776657622333099,
+        "return_fraction": 0.0087766576223331,
+        "side": "long",
+        "signal_strength": 0.0015909944108658328
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-10-18T08:00:00+00:00",
+        "exit_time": "2023-11-12T23:00:00+00:00",
+        "r": -0.012687256761871001,
+        "return_fraction": -0.00012687256761871002,
+        "side": "long",
+        "signal_strength": 0.004782215032546313
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-11-13T08:00:00+00:00",
+        "exit_time": "2023-11-17T00:00:00+00:00",
+        "r": 0.8303068359491732,
+        "return_fraction": 0.008303068359491732,
+        "side": "long",
+        "signal_strength": 0.012508358762328545
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-11-17T08:00:00+00:00",
+        "exit_time": "2023-11-24T00:00:00+00:00",
+        "r": 0.6730485705642769,
+        "return_fraction": 0.0067304857056427695,
+        "side": "long",
+        "signal_strength": 0.026495783517966203
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-11-24T08:00:00+00:00",
+        "exit_time": "2023-11-28T00:00:00+00:00",
+        "r": 0.1040198547049082,
+        "return_fraction": 0.001040198547049082,
+        "side": "long",
+        "signal_strength": 0.03158936369939238
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-11-13T08:00:00+00:00",
+        "exit_time": "2023-11-30T00:00:00+00:00",
+        "r": 1.6165751806473567,
+        "return_fraction": 0.016165751806473568,
+        "side": "long",
+        "signal_strength": 0.033613163457179324
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-11-30T08:00:00+00:00",
+        "exit_time": "2023-12-05T14:45:00+00:00",
+        "r": -1.027921875,
+        "return_fraction": -0.010279218750000001,
+        "side": "long",
+        "signal_strength": 0.056130441267829644
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-11-28T08:00:00+00:00",
+        "exit_time": "2023-12-06T17:15:00+00:00",
+        "r": -1.0325781249999992,
+        "return_fraction": -0.010325781249999992,
+        "side": "long",
+        "signal_strength": 0.05022063415781908
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-12-07T08:00:00+00:00",
+        "exit_time": "2023-12-08T00:00:00+00:00",
+        "r": -0.14847311786544162,
+        "return_fraction": -0.0014847311786544163,
+        "side": "long",
+        "signal_strength": 0.052152159733129734
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-12-06T08:00:00+00:00",
+        "exit_time": "2023-12-10T23:00:00+00:00",
+        "r": -0.6674088458491452,
+        "return_fraction": -0.006674088458491452,
+        "side": "long",
+        "signal_strength": 0.054622042086872845
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-12-08T08:00:00+00:00",
+        "exit_time": "2024-03-07T00:00:00+00:00",
+        "r": 7.025507369575137,
+        "return_fraction": 0.07025507369575137,
+        "side": "long",
+        "signal_strength": 0.04812843903511174
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-03-07T08:00:00+00:00",
+        "exit_time": "2024-03-14T00:00:00+00:00",
+        "r": 0.5826551930558581,
+        "return_fraction": 0.005826551930558581,
+        "side": "long",
+        "signal_strength": 0.06760455684148614
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-12-11T08:00:00+00:00",
+        "exit_time": "2024-03-17T22:00:00+00:00",
+        "r": 6.476860498637959,
+        "return_fraction": 0.06476860498637958,
+        "side": "long",
+        "signal_strength": 0.04938484449905572
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-03-14T08:00:00+00:00",
+        "exit_time": "2024-03-22T00:00:00+00:00",
+        "r": -0.32808327120530056,
+        "return_fraction": -0.0032808327120530056,
+        "side": "long",
+        "signal_strength": 0.094239437777432
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-03-18T08:00:00+00:00",
+        "exit_time": "2024-03-25T00:00:00+00:00",
+        "r": 0.4952140981870332,
+        "return_fraction": 0.004952140981870332,
+        "side": "long",
+        "signal_strength": 0.0719451383837386
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-03-25T08:00:00+00:00",
+        "exit_time": "2024-03-26T00:00:00+00:00",
+        "r": -0.07215343158836672,
+        "return_fraction": -0.0007215343158836672,
+        "side": "long",
+        "signal_strength": 0.06786182771299594
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-03-22T08:00:00+00:00",
+        "exit_time": "2024-03-28T00:00:00+00:00",
+        "r": -0.23491820312992046,
+        "return_fraction": -0.0023491820312992046,
+        "side": "long",
+        "signal_strength": 0.08118330108092085
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-03-28T08:00:00+00:00",
+        "exit_time": "2024-03-31T22:00:00+00:00",
+        "r": 0.22637076978880788,
+        "return_fraction": 0.0022637076978880787,
+        "side": "long",
+        "signal_strength": 0.06598569737922039
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-04-01T08:00:00+00:00",
+        "exit_time": "2024-04-02T13:00:00+00:00",
+        "r": -1.0218124999999982,
+        "return_fraction": -0.010218124999999982,
+        "side": "long",
+        "signal_strength": 0.07383003321181116
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-10-24T08:00:00+00:00",
+        "exit_time": "2024-05-01T00:00:00+00:00",
+        "r": 15.431235566162403,
+        "return_fraction": 0.15431235566162405,
+        "side": "long",
+        "signal_strength": 0.04434214432130972
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-05-01T08:00:00+00:00",
+        "exit_time": "2024-05-01T20:15:00+00:00",
+        "r": -1.0207656249999957,
+        "return_fraction": -0.010207656249999957,
+        "side": "long",
+        "signal_strength": 0.046356087534674704
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-05-03T08:00:00+00:00",
+        "exit_time": "2024-05-05T21:00:00+00:00",
+        "r": -0.22172051929142153,
+        "return_fraction": -0.0022172051929142153,
+        "side": "long",
+        "signal_strength": 0.02529662983608487
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-05-07T08:00:00+00:00",
+        "exit_time": "2024-05-08T00:00:00+00:00",
+        "r": 0.06567195946996107,
+        "return_fraction": 0.0006567195946996107,
+        "side": "long",
+        "signal_strength": 0.03355130364189613
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-16T08:00:00+00:00",
+        "exit_time": "2024-05-14T00:00:00+00:00",
+        "r": 39.99152285326028,
+        "return_fraction": 0.3999152285326028,
+        "side": "long",
+        "signal_strength": 0.0006856806001640792
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-05-14T08:00:00+00:00",
+        "exit_time": "2024-05-16T00:00:00+00:00",
+        "r": -0.28205254386546036,
+        "return_fraction": -0.0028205254386546035,
+        "side": "long",
+        "signal_strength": 0.044701390367077855
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-05-08T08:00:00+00:00",
+        "exit_time": "2024-05-21T00:00:00+00:00",
+        "r": 1.3823770661258283,
+        "return_fraction": 0.013823770661258283,
+        "side": "long",
+        "signal_strength": 0.03870449102746608
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-03-26T08:00:00+00:00",
+        "exit_time": "2024-06-06T00:00:00+00:00",
+        "r": 5.151858109504398,
+        "return_fraction": 0.05151858109504398,
+        "side": "long",
+        "signal_strength": 0.06407332115850273
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-06-06T08:00:00+00:00",
+        "exit_time": "2024-06-07T00:00:00+00:00",
+        "r": -0.08157874936589316,
+        "return_fraction": -0.0008157874936589316,
+        "side": "long",
+        "signal_strength": 0.0569425337548932
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-06-07T08:00:00+00:00",
+        "exit_time": "2024-06-07T12:30:00+00:00",
+        "r": -1.0202812499999965,
+        "return_fraction": -0.010202812499999965,
+        "side": "long",
+        "signal_strength": 0.060944114939855354
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-05-21T08:00:00+00:00",
+        "exit_time": "2024-06-14T16:00:00+00:00",
+        "r": -1.0565,
+        "return_fraction": -0.010565,
+        "side": "long",
+        "signal_strength": 0.18119976434806054
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-05-16T08:00:00+00:00",
+        "exit_time": "2024-06-24T00:00:00+00:00",
+        "r": -0.7683518942334251,
+        "return_fraction": -0.007683518942334251,
+        "side": "long",
+        "signal_strength": 0.09410324818080458
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-06-15T08:00:00+00:00",
+        "exit_time": "2024-06-24T09:30:00+00:00",
+        "r": -1.0335937499999999,
+        "return_fraction": -0.0103359375,
+        "side": "long",
+        "signal_strength": 0.1121398708945418
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-06-25T08:00:00+00:00",
+        "exit_time": "2024-06-28T00:00:00+00:00",
+        "r": 0.043243079697359174,
+        "return_fraction": 0.00043243079697359175,
+        "side": "long",
+        "signal_strength": 0.045107334580256786
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-06-28T08:00:00+00:00",
+        "exit_time": "2024-06-30T00:00:00+00:00",
+        "r": -0.32195418172169193,
+        "return_fraction": -0.0032195418172169194,
+        "side": "long",
+        "signal_strength": 0.04631564693737586
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-06-24T08:00:00+00:00",
+        "exit_time": "2024-07-03T00:00:00+00:00",
+        "r": 1.623575524253813,
+        "return_fraction": 0.01623575524253813,
+        "side": "long",
+        "signal_strength": 0.04286741887438803
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-07-03T08:00:00+00:00",
+        "exit_time": "2024-07-04T00:00:00+00:00",
+        "r": -0.35665138279123415,
+        "return_fraction": -0.0035665138279123414,
+        "side": "long",
+        "signal_strength": 0.05190215392882012
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-04T08:00:00+00:00",
+        "exit_time": "2024-07-11T13:00:00+00:00",
+        "r": -1.0308125000000037,
+        "return_fraction": -0.010308125000000038,
+        "side": "long",
+        "signal_strength": 0.05235890126654157
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-12T08:00:00+00:00",
+        "exit_time": "2024-07-17T08:00:00+00:00",
+        "r": -1.0274999999999987,
+        "return_fraction": -0.010274999999999987,
+        "side": "long",
+        "signal_strength": 0.04782000050552099
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-17T08:00:00+00:00",
+        "exit_time": "2024-07-17T23:15:00+00:00",
+        "r": -1.0209531249999932,
+        "return_fraction": -0.010209531249999933,
+        "side": "long",
+        "signal_strength": 0.047077199061747343
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-07-18T08:00:00+00:00",
+        "exit_time": "2024-07-18T19:00:00+00:00",
+        "r": -1.0206875000000017,
+        "return_fraction": -0.010206875000000018,
+        "side": "long",
+        "signal_strength": 0.04776979001245272
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-19T08:00:00+00:00",
+        "exit_time": "2024-07-21T21:00:00+00:00",
+        "r": -0.09297782175794879,
+        "return_fraction": -0.0009297782175794879,
+        "side": "long",
+        "signal_strength": 0.036251866708452256
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-04-03T08:00:00+00:00",
+        "exit_time": "2024-07-21T22:00:00+00:00",
+        "r": 3.530688757955001,
+        "return_fraction": 0.035306887579550014,
+        "side": "long",
+        "signal_strength": 0.08143109901052759
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-23T08:00:00+00:00",
+        "exit_time": "2024-07-24T00:00:00+00:00",
+        "r": -0.31743054463611675,
+        "return_fraction": -0.0031743054463611677,
+        "side": "long",
+        "signal_strength": 0.026800015996112758
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-07-23T08:00:00+00:00",
+        "exit_time": "2024-07-24T19:45:00+00:00",
+        "r": -1.0222343749999954,
+        "return_fraction": -0.010222343749999955,
+        "side": "long",
+        "signal_strength": 0.029637875941194807
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-07-24T08:00:00+00:00",
+        "exit_time": "2024-07-25T00:00:00+00:00",
+        "r": -0.21855690584872167,
+        "return_fraction": -0.002185569058487217,
+        "side": "long",
+        "signal_strength": 0.020519985299736452
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-06-10T08:00:00+00:00",
+        "exit_time": "2024-07-26T00:00:00+00:00",
+        "r": -0.5185813531263765,
+        "return_fraction": -0.005185813531263766,
+        "side": "long",
+        "signal_strength": 0.048594582983497135
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2024-07-26T08:00:00+00:00",
+        "exit_time": "2024-07-30T00:00:00+00:00",
+        "r": -0.5281265724122984,
+        "return_fraction": -0.005281265724122984,
+        "side": "long",
+        "signal_strength": 0.002145873019898602
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-07-26T08:00:00+00:00",
+        "exit_time": "2024-08-01T00:00:00+00:00",
+        "r": -0.6529188709510022,
+        "return_fraction": -0.006529188709510022,
+        "side": "long",
+        "signal_strength": 0.038637064445503876
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-08-01T08:00:00+00:00",
+        "exit_time": "2024-08-01T16:30:00+00:00",
+        "r": -1.0205312500000032,
+        "return_fraction": -0.010205312500000032,
+        "side": "long",
+        "signal_strength": 0.01853721788946366
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-08-01T08:00:00+00:00",
+        "exit_time": "2024-08-02T00:00:00+00:00",
+        "r": -0.3305278236016255,
+        "return_fraction": -0.003305278236016255,
+        "side": "long",
+        "signal_strength": 0.0031878028255145907
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-07-25T08:00:00+00:00",
+        "exit_time": "2024-08-02T15:15:00+00:00",
+        "r": -1.0324531249999995,
+        "return_fraction": -0.010324531249999996,
+        "side": "long",
+        "signal_strength": 0.010887386661536595
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-08-02T08:00:00+00:00",
+        "exit_time": "2024-08-03T00:00:00+00:00",
+        "r": -0.753654163234495,
+        "return_fraction": -0.00753654163234495,
+        "side": "long",
+        "signal_strength": 0.0016438796841013504
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-08-09T08:00:00+00:00",
+        "exit_time": "2024-08-13T00:00:00+00:00",
+        "r": -0.16771871540896865,
+        "return_fraction": -0.0016771871540896867,
+        "side": "long",
+        "signal_strength": 0.001725598549137788
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2024-08-05T08:00:00+00:00",
+        "exit_time": "2024-08-27T00:00:00+00:00",
+        "r": 3.0250346039987277,
+        "return_fraction": 0.030250346039987278,
+        "side": "long",
+        "signal_strength": 0.006151141994738501
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-08-27T08:00:00+00:00",
+        "exit_time": "2024-08-30T16:45:00+00:00",
+        "r": -1.0250468750000008,
+        "return_fraction": -0.010250468750000009,
+        "side": "long",
+        "signal_strength": 0.06406627604053247
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-09-02T08:00:00+00:00",
+        "exit_time": "2024-09-03T00:00:00+00:00",
+        "r": -0.01999118648529944,
+        "return_fraction": -0.0001999118648529944,
+        "side": "long",
+        "signal_strength": 0.03540306653102832
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-08-14T08:00:00+00:00",
+        "exit_time": "2024-09-06T00:00:00+00:00",
+        "r": -0.2525591169228873,
+        "return_fraction": -0.002525591169228873,
+        "side": "long",
+        "signal_strength": 0.0004760455949638619
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-09-06T08:00:00+00:00",
+        "exit_time": "2024-09-06T16:15:00+00:00",
+        "r": -1.0205156250000003,
+        "return_fraction": -0.010205156250000003,
+        "side": "long",
+        "signal_strength": 0.014156213414712631
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2024-09-03T08:00:00+00:00",
+        "exit_time": "2024-09-19T00:00:00+00:00",
+        "r": 0.7182848407510695,
+        "return_fraction": 0.007182848407510695,
+        "side": "long",
+        "signal_strength": 0.024889742094861528
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-09-19T08:00:00+00:00",
+        "exit_time": "2024-10-16T00:00:00+00:00",
+        "r": 0.9295273570267429,
+        "return_fraction": 0.00929527357026743,
+        "side": "long",
+        "signal_strength": 0.01693118845572451
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-08-14T08:00:00+00:00",
+        "exit_time": "2024-10-29T00:00:00+00:00",
+        "r": 3.0864037668155784,
+        "return_fraction": 0.030864037668155785,
+        "side": "long",
+        "signal_strength": 0.011062029347053423
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-10-29T08:00:00+00:00",
+        "exit_time": "2024-10-31T13:45:00+00:00",
+        "r": -1.0233593750000027,
+        "return_fraction": -0.010233593750000028,
+        "side": "long",
+        "signal_strength": 0.03863489315799861
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-09-13T08:00:00+00:00",
+        "exit_time": "2024-11-07T00:00:00+00:00",
+        "r": 0.8693286276969808,
+        "return_fraction": 0.008693286276969808,
+        "side": "long",
+        "signal_strength": 0.01195767436331704
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-11-01T08:00:00+00:00",
+        "exit_time": "2024-11-08T00:00:00+00:00",
+        "r": 3.5852979878893962,
+        "return_fraction": 0.035852979878893965,
+        "side": "long",
+        "signal_strength": 0.01916466503655238
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-07-01T08:00:00+00:00",
+        "exit_time": "2024-11-10T23:00:00+00:00",
+        "r": 9.070324380857809,
+        "return_fraction": 0.09070324380857808,
+        "side": "long",
+        "signal_strength": 0.04675724909413432
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-11-11T08:00:00+00:00",
+        "exit_time": "2024-11-15T15:00:00+00:00",
+        "r": -1.026437499999997,
+        "return_fraction": -0.01026437499999997,
+        "side": "long",
+        "signal_strength": 0.07296872688995466
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-11-07T08:00:00+00:00",
+        "exit_time": "2024-11-15T17:45:00+00:00",
+        "r": -1.0326093749999998,
+        "return_fraction": -0.01032609375,
+        "side": "long",
+        "signal_strength": 0.051901013303807565
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-11-18T08:00:00+00:00",
+        "exit_time": "2024-11-24T23:00:00+00:00",
+        "r": 0.8525590878178652,
+        "return_fraction": 0.008525590878178653,
+        "side": "long",
+        "signal_strength": 0.018226698471329354
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-11-18T08:00:00+00:00",
+        "exit_time": "2024-12-11T00:00:00+00:00",
+        "r": 1.4798121196096428,
+        "return_fraction": 0.014798121196096428,
+        "side": "long",
+        "signal_strength": 0.051605477022920766
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-12-11T08:00:00+00:00",
+        "exit_time": "2024-12-13T00:00:00+00:00",
+        "r": -0.7511297053075595,
+        "return_fraction": -0.007511297053075595,
+        "side": "long",
+        "signal_strength": 0.07746185932633105
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-12-13T08:00:00+00:00",
+        "exit_time": "2024-12-17T19:30:00+00:00",
+        "r": -1.0267187500000021,
+        "return_fraction": -0.010267187500000021,
+        "side": "long",
+        "signal_strength": 0.04679421366265315
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-12-18T08:00:00+00:00",
+        "exit_time": "2024-12-18T19:45:00+00:00",
+        "r": -1.0207343749999997,
+        "return_fraction": -0.010207343749999999,
+        "side": "long",
+        "signal_strength": 0.026811163124894136
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-12-19T08:00:00+00:00",
+        "exit_time": "2025-01-02T13:00:00+00:00",
+        "r": -1.0413124999999974,
+        "return_fraction": -0.010413124999999974,
+        "side": "long",
+        "signal_strength": 0.014019751094749837
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-01-03T08:00:00+00:00",
+        "exit_time": "2025-01-05T22:00:00+00:00",
+        "r": 0.16505981647473178,
+        "return_fraction": 0.0016505981647473179,
+        "side": "long",
+        "signal_strength": 0.0072149381931965
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-01-07T08:00:00+00:00",
+        "exit_time": "2025-01-08T11:30:00+00:00",
+        "r": -1.0217187500000011,
+        "return_fraction": -0.010217187500000011,
+        "side": "long",
+        "signal_strength": 0.010825597534880119
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-11-25T08:00:00+00:00",
+        "exit_time": "2025-01-13T00:00:00+00:00",
+        "r": -0.23656365542572555,
+        "return_fraction": -0.0023656365542572555,
+        "side": "long",
+        "signal_strength": 0.05101731200804501
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-01-13T08:00:00+00:00",
+        "exit_time": "2025-01-13T16:00:00+00:00",
+        "r": -1.0205000000000006,
+        "return_fraction": -0.010205000000000006,
+        "side": "long",
+        "signal_strength": 0.026474190138042964
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-01-14T08:00:00+00:00",
+        "exit_time": "2025-01-16T00:00:00+00:00",
+        "r": 0.747178390358922,
+        "return_fraction": 0.00747178390358922,
+        "side": "long",
+        "signal_strength": 0.02358489509531128
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-01-16T08:00:00+00:00",
+        "exit_time": "2025-01-19T23:00:00+00:00",
+        "r": -0.747071020131253,
+        "return_fraction": -0.00747071020131253,
+        "side": "long",
+        "signal_strength": 0.03776926747751497
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-11-08T08:00:00+00:00",
+        "exit_time": "2025-01-27T00:00:00+00:00",
+        "r": 1.5111794631424522,
+        "return_fraction": 0.015111794631424523,
+        "side": "long",
+        "signal_strength": 0.08309172778727321
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-01-20T08:00:00+00:00",
+        "exit_time": "2025-01-27T10:00:00+00:00",
+        "r": -1.0306249999999997,
+        "return_fraction": -0.010306249999999998,
+        "side": "long",
+        "signal_strength": 0.04322118088014929
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-01-27T08:00:00+00:00",
+        "exit_time": "2025-02-05T00:00:00+00:00",
+        "r": 0.8736612985039598,
+        "return_fraction": 0.008736612985039598,
+        "side": "long",
+        "signal_strength": 0.027833558841033484
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-02-05T08:00:00+00:00",
+        "exit_time": "2025-02-07T00:00:00+00:00",
+        "r": -0.12404205739249362,
+        "return_fraction": -0.0012404205739249361,
+        "side": "long",
+        "signal_strength": 0.04297921755503196
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-02-07T08:00:00+00:00",
+        "exit_time": "2025-02-09T23:00:00+00:00",
+        "r": -0.8918604388449612,
+        "return_fraction": -0.008918604388449613,
+        "side": "long",
+        "signal_strength": 0.032360987955139316
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-02-10T08:00:00+00:00",
+        "exit_time": "2025-02-11T00:00:00+00:00",
+        "r": -0.12896401562140736,
+        "return_fraction": -0.0012896401562140737,
+        "side": "long",
+        "signal_strength": 0.0200008472494988
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-02-11T08:00:00+00:00",
+        "exit_time": "2025-02-13T00:00:00+00:00",
+        "r": 0.09588538607845566,
+        "return_fraction": 0.0009588538607845567,
+        "side": "long",
+        "signal_strength": 0.023851834573323714
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-02-13T08:00:00+00:00",
+        "exit_time": "2025-02-25T16:00:00+00:00",
+        "r": -1.0385,
+        "return_fraction": -0.010385,
+        "side": "long",
+        "signal_strength": 0.038275399574309706
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-01-28T08:00:00+00:00",
+        "exit_time": "2025-02-26T00:00:00+00:00",
+        "r": -0.16710413414083067,
+        "return_fraction": -0.0016710413414083066,
+        "side": "long",
+        "signal_strength": 0.02287022136599268
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-10-16T08:00:00+00:00",
+        "exit_time": "2025-02-27T00:00:00+00:00",
+        "r": 4.941469480058769,
+        "return_fraction": 0.049414694800587695,
+        "side": "long",
+        "signal_strength": 0.046999923557494196
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-02-26T08:00:00+00:00",
+        "exit_time": "2025-02-27T00:00:00+00:00",
+        "r": -0.0833160645786444,
+        "return_fraction": -0.0008331606457864441,
+        "side": "long",
+        "signal_strength": 0.00013580868598878545
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-02-26T08:00:00+00:00",
+        "exit_time": "2025-02-27T00:00:00+00:00",
+        "r": -0.48099706996805386,
+        "return_fraction": -0.0048099706996805386,
+        "side": "long",
+        "signal_strength": 0.003611879867473692
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-03-03T08:00:00+00:00",
+        "exit_time": "2025-03-03T20:00:00+00:00",
+        "r": -1.020749999999999,
+        "return_fraction": -0.01020749999999999,
+        "side": "long",
+        "signal_strength": 0.015295477315844833
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2025-03-02T08:00:00+00:00",
+        "exit_time": "2025-03-08T00:00:00+00:00",
+        "r": 0.05984859101032639,
+        "return_fraction": 0.000598485910103264,
+        "side": "long",
+        "signal_strength": 0.011833713239066207
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-03-18T08:00:00+00:00",
+        "exit_time": "2025-04-03T12:45:00+00:00",
+        "r": -1.0442968749999981,
+        "return_fraction": -0.010442968749999981,
+        "side": "long",
+        "signal_strength": 0.004951034877398855
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-03-04T08:00:00+00:00",
+        "exit_time": "2025-04-04T13:00:00+00:00",
+        "r": -1.0668124999999982,
+        "return_fraction": -0.010668124999999981,
+        "side": "long",
+        "signal_strength": 0.004583875652724949
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-04-14T08:00:00+00:00",
+        "exit_time": "2025-04-15T00:00:00+00:00",
+        "r": 0.030479933579671964,
+        "return_fraction": 0.00030479933579671966,
+        "side": "long",
+        "signal_strength": 0.004801105738149847
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-04-17T08:00:00+00:00",
+        "exit_time": "2025-05-11T22:00:00+00:00",
+        "r": 0.013277719622853783,
+        "return_fraction": 0.00013277719622853783,
+        "side": "long",
+        "signal_strength": 0.006499647727183329
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-03-05T08:00:00+00:00",
+        "exit_time": "2025-05-12T00:00:00+00:00",
+        "r": 4.668983775688013,
+        "return_fraction": 0.04668983775688013,
+        "side": "long",
+        "signal_strength": 0.010726012374428233
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-05-12T08:00:00+00:00",
+        "exit_time": "2025-05-13T00:00:00+00:00",
+        "r": 0.4339879328891376,
+        "return_fraction": 0.004339879328891376,
+        "side": "long",
+        "signal_strength": 0.03441372808553537
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-05-13T08:00:00+00:00",
+        "exit_time": "2025-05-22T00:00:00+00:00",
+        "r": 0.4158166214457327,
+        "return_fraction": 0.004158166214457327,
+        "side": "long",
+        "signal_strength": 0.06393761649082495
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-05-22T08:00:00+00:00",
+        "exit_time": "2025-05-23T00:00:00+00:00",
+        "r": -0.3108195276050457,
+        "return_fraction": -0.0031081952760504575,
+        "side": "long",
+        "signal_strength": 0.04486306183248436
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-05-23T08:00:00+00:00",
+        "exit_time": "2025-05-25T22:00:00+00:00",
+        "r": -0.4018800409480664,
+        "return_fraction": -0.004018800409480664,
+        "side": "long",
+        "signal_strength": 0.047487335997059336
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-05-26T08:00:00+00:00",
+        "exit_time": "2025-05-28T23:30:00+00:00",
+        "r": -1.023968749999998,
+        "return_fraction": -0.010239687499999981,
+        "side": "long",
+        "signal_strength": 0.05148096245787312
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-05-29T08:00:00+00:00",
+        "exit_time": "2025-05-30T00:00:00+00:00",
+        "r": -0.9286262308326493,
+        "return_fraction": -0.009286262308326493,
+        "side": "long",
+        "signal_strength": 0.05778083699706027
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-05-30T08:00:00+00:00",
+        "exit_time": "2025-06-03T00:00:00+00:00",
+        "r": 0.8022059079296212,
+        "return_fraction": 0.008022059079296212,
+        "side": "long",
+        "signal_strength": 0.05115569447133597
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-06-02T08:00:00+00:00",
+        "exit_time": "2025-06-03T00:00:00+00:00",
+        "r": 0.48937205257039185,
+        "return_fraction": 0.004893720525703919,
+        "side": "long",
+        "signal_strength": 0.046383756449145115
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-03T08:00:00+00:00",
+        "exit_time": "2025-06-04T00:00:00+00:00",
+        "r": -0.1020750834192136,
+        "return_fraction": -0.0010207508341921361,
+        "side": "long",
+        "signal_strength": 0.06765001672315127
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-06-04T08:00:00+00:00",
+        "exit_time": "2025-06-05T00:00:00+00:00",
+        "r": 0.2404553767620198,
+        "return_fraction": 0.002404553767620198,
+        "side": "long",
+        "signal_strength": 0.05286973652558689
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-05T08:00:00+00:00",
+        "exit_time": "2025-06-05T20:30:00+00:00",
+        "r": -1.0207812499999993,
+        "return_fraction": -0.010207812499999993,
+        "side": "long",
+        "signal_strength": 0.06477945802645468
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2025-04-24T08:00:00+00:00",
+        "exit_time": "2025-06-06T00:00:00+00:00",
+        "r": 1.7193990374936705,
+        "return_fraction": 0.017193990374936706,
+        "side": "long",
+        "signal_strength": 0.010243832940625863
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-06-06T08:00:00+00:00",
+        "exit_time": "2025-06-08T21:00:00+00:00",
+        "r": -0.26422311563448736,
+        "return_fraction": -0.0026422311563448738,
+        "side": "long",
+        "signal_strength": 0.05205369889819004
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2025-01-09T08:00:00+00:00",
+        "exit_time": "2025-06-09T00:00:00+00:00",
+        "r": 16.52731972464241,
+        "return_fraction": 0.16527319724642411,
+        "side": "long",
+        "signal_strength": 0.030787867765385477
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-06-06T08:00:00+00:00",
+        "exit_time": "2025-06-10T00:00:00+00:00",
+        "r": 0.29974821226163484,
+        "return_fraction": 0.0029974821226163486,
+        "side": "long",
+        "signal_strength": 0.0525695344660933
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2025-06-10T08:00:00+00:00",
+        "exit_time": "2025-06-11T00:00:00+00:00",
+        "r": -0.04710077733913361,
+        "return_fraction": -0.00047100777339133607,
+        "side": "long",
+        "signal_strength": 0.102941784738364
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-06-11T08:00:00+00:00",
+        "exit_time": "2025-06-12T00:00:00+00:00",
+        "r": -0.16702697928262056,
+        "return_fraction": -0.0016702697928262056,
+        "side": "long",
+        "signal_strength": 0.10375535913465965
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-09T08:00:00+00:00",
+        "exit_time": "2025-06-21T21:30:00+00:00",
+        "r": -1.0388437500000012,
+        "return_fraction": -0.010388437500000012,
+        "side": "long",
+        "signal_strength": 0.11182230817026233
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2025-06-12T08:00:00+00:00",
+        "exit_time": "2025-06-24T00:00:00+00:00",
+        "r": -0.059854588317787005,
+        "return_fraction": -0.00059854588317787,
+        "side": "long",
+        "signal_strength": 0.08647856189083215
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-24T08:00:00+00:00",
+        "exit_time": "2025-06-26T00:00:00+00:00",
+        "r": 0.07985361411080122,
+        "return_fraction": 0.0007985361411080122,
+        "side": "long",
+        "signal_strength": 0.0731375889606291
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-06-26T08:00:00+00:00",
+        "exit_time": "2025-06-27T00:00:00+00:00",
+        "r": -0.16501699255976224,
+        "return_fraction": -0.0016501699255976224,
+        "side": "long",
+        "signal_strength": 0.055955804692370915
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-27T08:00:00+00:00",
+        "exit_time": "2025-06-29T00:00:00+00:00",
+        "r": -0.053139240066120016,
+        "return_fraction": -0.0005313924006612002,
+        "side": "long",
+        "signal_strength": 0.06200913467574976
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-06-03T08:00:00+00:00",
+        "exit_time": "2025-06-30T00:00:00+00:00",
+        "r": 1.3441836877697644,
+        "return_fraction": 0.013441836877697644,
+        "side": "long",
+        "signal_strength": 0.07464826386825842
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-06-30T08:00:00+00:00",
+        "exit_time": "2025-07-01T00:00:00+00:00",
+        "r": 0.5085371239806902,
+        "return_fraction": 0.005085371239806902,
+        "side": "long",
+        "signal_strength": 0.05796858371234806
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-30T08:00:00+00:00",
+        "exit_time": "2025-07-02T00:00:00+00:00",
+        "r": -0.410650291220331,
+        "return_fraction": -0.00410650291220331,
+        "side": "long",
+        "signal_strength": 0.07026103865254685
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-07-02T08:00:00+00:00",
+        "exit_time": "2025-07-03T00:00:00+00:00",
+        "r": 0.18578257840954782,
+        "return_fraction": 0.0018578257840954782,
+        "side": "long",
+        "signal_strength": 0.06090268360560683
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-07-01T08:00:00+00:00",
+        "exit_time": "2025-08-20T00:00:00+00:00",
+        "r": 0.9647333015280648,
+        "return_fraction": 0.009647333015280648,
+        "side": "long",
+        "signal_strength": 0.06162225242787398
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-08-20T08:00:00+00:00",
+        "exit_time": "2025-08-21T00:00:00+00:00",
+        "r": 0.07359447926915123,
+        "return_fraction": 0.0007359447926915124,
+        "side": "long",
+        "signal_strength": 0.060638924162691434
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2025-06-23T08:00:00+00:00",
+        "exit_time": "2025-08-26T00:00:00+00:00",
+        "r": 1.7365760183117835,
+        "return_fraction": 0.017365760183117834,
+        "side": "long",
+        "signal_strength": 0.057918528022296516
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-07-03T08:00:00+00:00",
+        "exit_time": "2025-08-31T23:45:00+00:00",
+        "r": 8.799747286387184,
+        "return_fraction": 0.08799747286387184,
+        "side": "long",
+        "signal_strength": 0.12748668772013677
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-08-26T08:00:00+00:00",
+        "exit_time": "2025-08-31T23:45:00+00:00",
+        "r": 0.7567874747947525,
+        "return_fraction": 0.007567874747947526,
+        "side": "long",
+        "signal_strength": 0.08407939465434466
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-06-23T08:00:00+00:00",
+        "exit_time": "2025-08-31T23:45:00+00:00",
+        "r": 3.84834742868519,
+        "return_fraction": 0.0384834742868519,
+        "side": "long",
+        "signal_strength": 0.05185709674007343
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-08-21T08:00:00+00:00",
+        "exit_time": "2025-08-31T23:45:00+00:00",
+        "r": 2.02713736390169,
+        "return_fraction": 0.0202713736390169,
+        "side": "long",
+        "signal_strength": 0.0652913461767989
+      }
+    ],
+    "rejected_by_risk_cap": 7
+  },
+  "locked": {
+    "metrics": {
+      "return_pct": 47.80069216231653,
+      "profit_factor": 2.4404346967749535,
+      "win_rate": 35.714285714285715,
+      "max_dd_pct": 8.560712856935758,
+      "trades": 84,
+      "sharpe": 0.9856316530741064,
+      "recovery": 5.583728009705307,
+      "expectancy_r": 0.5384707069862906,
+      "final_balance": 14780.069216231652,
+      "profitable_assets": 5,
+      "max_standalone_mtm_dd_pct": 32.65835148491644
+    },
+    "standalone": {
+      "XAUUSD": {
+        "return_pct": 15.546271856237892,
+        "profit_factor": 12.553819988791036,
+        "win_rate": 33.33333333333333,
+        "max_dd_pct": 16.03277220250273,
+        "trades": 6,
+        "sharpe": 1.1601488510950857,
+        "recovery": 0.9696558810840651,
+        "expectancy_r": 2.6213811251905623,
+        "avg_win_r": 8.442362449048437,
+        "avg_loss_r": -0.28910953673837414,
+        "longs": 6,
+        "shorts": 0,
+        "first_half_return": 16.246110557155834,
+        "second_half_return": -0.6020319282629472
+      },
+      "XAGUSD": {
+        "return_pct": 30.833282765385995,
+        "profit_factor": 14.39488056901989,
+        "win_rate": 33.33333333333333,
+        "max_dd_pct": 32.65835148491644,
+        "trades": 6,
+        "sharpe": 1.1761622069243023,
+        "recovery": 0.9441163244148019,
+        "expectancy_r": 5.228719170488122,
+        "avg_win_r": 16.555821033255604,
+        "avg_loss_r": -0.4348317608956205,
+        "longs": 6,
+        "shorts": 0,
+        "first_half_return": 31.635092049281454,
+        "second_half_return": -0.6091151465866362
+      },
+      "BTCUSD": {
+        "return_pct": -0.5957703004752513,
+        "profit_factor": 0.6383895434622435,
+        "win_rate": 40.0,
+        "max_dd_pct": 2.7725951605350296,
+        "trades": 5,
+        "sharpe": -0.3576437812384565,
+        "recovery": -0.21487821552724815,
+        "expectancy_r": -0.11742731305927005,
+        "avg_win_r": 0.5327392244183504,
+        "avg_loss_r": -0.5508716713776837,
+        "longs": 5,
+        "shorts": 0,
+        "first_half_return": -0.7572211049539423,
+        "second_half_return": 0.16268267200520992
+      },
+      "ETHUSD": {
+        "return_pct": -3.088810548129972,
+        "profit_factor": 0.41864364895882145,
+        "win_rate": 18.181818181818183,
+        "max_dd_pct": 5.703370478817527,
+        "trades": 11,
+        "sharpe": -0.9233016635288072,
+        "recovery": -0.541576346758798,
+        "expectancy_r": -0.2814907250122705,
+        "avg_win_r": 1.1654189471156835,
+        "avg_loss_r": -0.6030262077073715,
+        "longs": 11,
+        "shorts": 0,
+        "first_half_return": -3.133923450651621,
+        "second_half_return": 0.04657244737136246
+      },
+      "USTEC": {
+        "return_pct": 2.9335299130239356,
+        "profit_factor": 1.6416662158788888,
+        "win_rate": 46.15384615384615,
+        "max_dd_pct": 5.831202328037765,
+        "trades": 13,
+        "sharpe": 0.5186916544764391,
+        "recovery": 0.5030746230359471,
+        "expectancy_r": 0.23145581600985293,
+        "avg_win_r": 1.254546445079916,
+        "avg_loss_r": -0.645479008907344,
+        "longs": 13,
+        "shorts": 0,
+        "first_half_return": 1.2785300093603125,
+        "second_half_return": 1.6341073507984971
+      },
+      "US30": {
+        "return_pct": 1.7911221909167718,
+        "profit_factor": 1.4068722264864504,
+        "win_rate": 46.15384615384615,
+        "max_dd_pct": 4.693361916173988,
+        "trades": 13,
+        "sharpe": 0.3119323851541628,
+        "recovery": 0.38162882447746294,
+        "expectancy_r": 0.14620564854737672,
+        "avg_win_r": 1.053241871585552,
+        "avg_loss_r": -0.6312539711996307,
+        "longs": 13,
+        "shorts": 0,
+        "first_half_return": -1.6296993960725148,
+        "second_half_return": 3.4774942904389983
+      },
+      "EURUSD": {
+        "return_pct": -4.541179458100664,
+        "profit_factor": 0.028588368018352513,
+        "win_rate": 13.333333333333334,
+        "max_dd_pct": 4.781852415459598,
+        "trades": 15,
+        "sharpe": -3.221023624474363,
+        "recovery": -0.9496695137263448,
+        "expectancy_r": -0.3089431457473931,
+        "avg_win_r": 0.06922643184695892,
+        "avg_loss_r": -0.3671230807619088,
+        "longs": 15,
+        "shorts": 0,
+        "first_half_return": -3.1524042917254302,
+        "second_half_return": -1.4339800138751135
+      },
+      "GBPJPY": {
+        "return_pct": -0.7346718390259244,
+        "profit_factor": 0.9057789794432682,
+        "win_rate": 44.44444444444444,
+        "max_dd_pct": 5.594119227298577,
+        "trades": 18,
+        "sharpe": -0.15565013538991535,
+        "recovery": -0.13132931372660434,
+        "expectancy_r": -0.036059950578577894,
+        "avg_win_r": 0.8738086048435858,
+        "avg_loss_r": -0.7639547949163088,
+        "longs": 18,
+        "shorts": 0,
+        "first_half_return": 1.6292032684262825,
+        "second_half_return": -2.325980162619845
+      }
+    },
+    "trades": [
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-09-01T08:00:00+00:00",
+        "exit_time": "2025-09-02T12:45:00+00:00",
+        "r": -1.0217968749999966,
+        "return_fraction": -0.010217968749999966,
+        "side": "long",
+        "signal_strength": 0.07571453469958955
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-09-01T08:00:00+00:00",
+        "exit_time": "2025-09-02T13:30:00+00:00",
+        "r": -1.021843750000005,
+        "return_fraction": -0.01021843750000005,
+        "side": "long",
+        "signal_strength": 0.0674029495971752
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-09-01T08:00:00+00:00",
+        "exit_time": "2025-09-22T06:00:00+00:00",
+        "r": -1.0513749999999995,
+        "return_fraction": -0.010513749999999995,
+        "side": "long",
+        "signal_strength": 0.4984194282088259
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-09-22T08:00:00+00:00",
+        "exit_time": "2025-09-25T12:15:00+00:00",
+        "r": -1.0247656250000008,
+        "return_fraction": -0.010247656250000008,
+        "side": "long",
+        "signal_strength": 0.2524165684578555
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-09-03T08:00:00+00:00",
+        "exit_time": "2025-10-05T22:00:00+00:00",
+        "r": 3.630340001411035,
+        "return_fraction": 0.03630340001411035,
+        "side": "long",
+        "signal_strength": 0.06346089730488025
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-09-26T08:00:00+00:00",
+        "exit_time": "2025-10-10T21:00:00+00:00",
+        "r": -1.0418124999999998,
+        "return_fraction": -0.010418124999999999,
+        "side": "long",
+        "signal_strength": 0.10499571924460449
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-10-11T08:00:00+00:00",
+        "exit_time": "2025-10-25T00:00:00+00:00",
+        "r": 0.42460528424776495,
+        "return_fraction": 0.0042460528424776494,
+        "side": "long",
+        "signal_strength": 0.07850708708613148
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-10-26T08:00:00+00:00",
+        "exit_time": "2025-10-31T00:00:00+00:00",
+        "r": -0.47239776729701277,
+        "return_fraction": -0.004723977672970127,
+        "side": "long",
+        "signal_strength": 0.07586803049318232
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-10-31T08:00:00+00:00",
+        "exit_time": "2025-11-02T23:00:00+00:00",
+        "r": -0.005404130407635238,
+        "return_fraction": -5.404130407635238e-05,
+        "side": "long",
+        "signal_strength": 0.053397722859119534
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-11-04T08:00:00+00:00",
+        "exit_time": "2025-11-18T00:00:00+00:00",
+        "r": -0.5792081863729918,
+        "return_fraction": -0.005792081863729918,
+        "side": "long",
+        "signal_strength": 0.045134585040571606
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-10-13T08:00:00+00:00",
+        "exit_time": "2025-11-19T00:00:00+00:00",
+        "r": -0.4868949926121048,
+        "return_fraction": -0.004868949926121048,
+        "side": "long",
+        "signal_strength": 0.05522156365198732
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-11-19T08:00:00+00:00",
+        "exit_time": "2025-11-20T00:00:00+00:00",
+        "r": 0.23491464882813648,
+        "return_fraction": 0.002349146488281365,
+        "side": "long",
+        "signal_strength": 0.00825616050041878
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-11-20T08:00:00+00:00",
+        "exit_time": "2025-11-20T17:00:00+00:00",
+        "r": -1.0205624999999996,
+        "return_fraction": -0.010205624999999996,
+        "side": "long",
+        "signal_strength": 0.02587620266497161
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-11-24T08:00:00+00:00",
+        "exit_time": "2025-11-25T00:00:00+00:00",
+        "r": 0.016459774680618506,
+        "return_fraction": 0.00016459774680618506,
+        "side": "long",
+        "signal_strength": 0.007281158985751407
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-11-18T08:00:00+00:00",
+        "exit_time": "2025-11-30T22:00:00+00:00",
+        "r": 1.4243457141140432,
+        "return_fraction": 0.014243457141140432,
+        "side": "long",
+        "signal_strength": 0.01681609877988773
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-12-01T08:00:00+00:00",
+        "exit_time": "2025-12-02T00:00:00+00:00",
+        "r": -0.2804318982040973,
+        "return_fraction": -0.002804318982040973,
+        "side": "long",
+        "signal_strength": 0.03254494740489936
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-12-02T08:00:00+00:00",
+        "exit_time": "2025-12-05T00:00:00+00:00",
+        "r": 0.44836718152907684,
+        "return_fraction": 0.004483671815290769,
+        "side": "long",
+        "signal_strength": 0.025294035078036264
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-11-25T08:00:00+00:00",
+        "exit_time": "2025-12-17T00:00:00+00:00",
+        "r": 0.2444578731586848,
+        "return_fraction": 0.002444578731586848,
+        "side": "long",
+        "signal_strength": 0.011669474886293966
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-12-17T08:00:00+00:00",
+        "exit_time": "2025-12-25T22:00:00+00:00",
+        "r": 2.1183300868445194,
+        "return_fraction": 0.021183300868445193,
+        "side": "long",
+        "signal_strength": 0.026389264558705106
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-12-26T08:00:00+00:00",
+        "exit_time": "2025-12-28T23:00:00+00:00",
+        "r": 0.001213639663057587,
+        "return_fraction": 1.213639663057587e-05,
+        "side": "long",
+        "signal_strength": 0.042176034571683285
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-12-29T08:00:00+00:00",
+        "exit_time": "2026-01-08T00:00:00+00:00",
+        "r": 0.23237267378780846,
+        "return_fraction": 0.0023237267378780845,
+        "side": "long",
+        "signal_strength": 0.03844055775376483
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-01-08T08:00:00+00:00",
+        "exit_time": "2026-01-09T00:00:00+00:00",
+        "r": -0.20943240767095359,
+        "return_fraction": -0.0020943240767095357,
+        "side": "long",
+        "signal_strength": 0.04282392871459494
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-09T08:00:00+00:00",
+        "exit_time": "2026-01-11T22:00:00+00:00",
+        "r": 0.21444243238085137,
+        "return_fraction": 0.0021444243238085137,
+        "side": "long",
+        "signal_strength": 0.03818151148162889
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-01-12T08:00:00+00:00",
+        "exit_time": "2026-01-13T00:00:00+00:00",
+        "r": 0.4086828639612792,
+        "return_fraction": 0.004086828639612792,
+        "side": "long",
+        "signal_strength": 0.03684424127624203
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-13T08:00:00+00:00",
+        "exit_time": "2026-01-14T16:45:00+00:00",
+        "r": -1.0220468749999958,
+        "return_fraction": -0.010220468749999958,
+        "side": "long",
+        "signal_strength": 0.03883017551439121
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-15T08:00:00+00:00",
+        "exit_time": "2026-01-16T02:30:00+00:00",
+        "r": -1.0211562500000044,
+        "return_fraction": -0.010211562500000045,
+        "side": "long",
+        "signal_strength": 0.04192639548083279
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-16T08:00:00+00:00",
+        "exit_time": "2026-01-26T04:15:00+00:00",
+        "r": -1.034765624999994,
+        "return_fraction": -0.01034765624999994,
+        "side": "long",
+        "signal_strength": 0.036296346647218126
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-26T08:00:00+00:00",
+        "exit_time": "2026-01-27T00:00:00+00:00",
+        "r": 0.3062265352730541,
+        "return_fraction": 0.003062265352730541,
+        "side": "long",
+        "signal_strength": 0.03295520036435167
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-12-05T08:00:00+00:00",
+        "exit_time": "2026-01-28T00:00:00+00:00",
+        "r": 1.3634052272589852,
+        "return_fraction": 0.013634052272589852,
+        "side": "long",
+        "signal_strength": 0.03871576852769767
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-01-28T08:00:00+00:00",
+        "exit_time": "2026-01-29T00:00:00+00:00",
+        "r": -0.1281088242337262,
+        "return_fraction": -0.001281088242337262,
+        "side": "long",
+        "signal_strength": 0.02820285620611627
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-01-27T08:00:00+00:00",
+        "exit_time": "2026-01-29T15:45:00+00:00",
+        "r": -1.0234843749999971,
+        "return_fraction": -0.01023484374999997,
+        "side": "long",
+        "signal_strength": 0.02939188066678207
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-01-30T08:00:00+00:00",
+        "exit_time": "2026-02-01T23:00:00+00:00",
+        "r": -0.3882664339893258,
+        "return_fraction": -0.003882664339893258,
+        "side": "long",
+        "signal_strength": 0.031044062068329357
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-02-02T08:00:00+00:00",
+        "exit_time": "2026-02-11T00:00:00+00:00",
+        "r": -0.6351288934394315,
+        "return_fraction": -0.006351288934394315,
+        "side": "long",
+        "signal_strength": 0.029425884479024913
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-02-11T08:00:00+00:00",
+        "exit_time": "2026-02-17T13:45:00+00:00",
+        "r": -1.0293593749999932,
+        "return_fraction": -0.010293593749999932,
+        "side": "long",
+        "signal_strength": 0.01856024943332044
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-02-18T08:00:00+00:00",
+        "exit_time": "2026-02-19T00:00:00+00:00",
+        "r": -0.5574947605176499,
+        "return_fraction": -0.005574947605176499,
+        "side": "long",
+        "signal_strength": 0.005082602862867136
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-02-19T08:00:00+00:00",
+        "exit_time": "2026-02-22T22:00:00+00:00",
+        "r": -0.2285147881521565,
+        "return_fraction": -0.002285147881521565,
+        "side": "long",
+        "signal_strength": 0.006972107938551117
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-02-23T08:00:00+00:00",
+        "exit_time": "2026-02-25T00:00:00+00:00",
+        "r": -0.5776122288564807,
+        "return_fraction": -0.0057761222885648065,
+        "side": "long",
+        "signal_strength": 0.008097601890498548
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-02-25T08:00:00+00:00",
+        "exit_time": "2026-03-01T22:15:00+00:00",
+        "r": -0.5617978662884048,
+        "return_fraction": -0.005617978662884048,
+        "side": "long",
+        "signal_strength": 0.006363530277152481
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-01-29T08:00:00+00:00",
+        "exit_time": "2026-03-01T23:00:00+00:00",
+        "r": -1.0674374999999974,
+        "return_fraction": -0.010674374999999974,
+        "side": "long",
+        "signal_strength": 0.02758663978753319
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-03-02T08:00:00+00:00",
+        "exit_time": "2026-03-03T00:00:00+00:00",
+        "r": -0.27992293031397886,
+        "return_fraction": -0.0027992293031397887,
+        "side": "long",
+        "signal_strength": 0.0013806000170893595
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-03-03T08:00:00+00:00",
+        "exit_time": "2026-03-04T00:00:00+00:00",
+        "r": 0.012193151644028368,
+        "return_fraction": 0.00012193151644028368,
+        "side": "long",
+        "signal_strength": 0.0025881773647258182
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-03-05T08:00:00+00:00",
+        "exit_time": "2026-03-05T19:30:00+00:00",
+        "r": -1.0207187500000006,
+        "return_fraction": -0.010207187500000006,
+        "side": "long",
+        "signal_strength": 0.0033099789248966535
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-09-01T08:00:00+00:00",
+        "exit_time": "2026-03-20T00:00:00+00:00",
+        "r": 33.03732152091415,
+        "return_fraction": 0.3303732152091415,
+        "side": "long",
+        "signal_strength": 0.11285925668806203
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2025-09-03T08:00:00+00:00",
+        "exit_time": "2026-03-22T22:00:00+00:00",
+        "r": 16.838902010026057,
+        "return_fraction": 0.16838902010026058,
+        "side": "long",
+        "signal_strength": 0.05674918207243367
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-04-08T08:00:00+00:00",
+        "exit_time": "2026-04-10T00:00:00+00:00",
+        "r": -0.06048068713335604,
+        "return_fraction": -0.0006048068713335604,
+        "side": "long",
+        "signal_strength": 0.0022133015374314817
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-04-10T08:00:00+00:00",
+        "exit_time": "2026-04-13T00:00:00+00:00",
+        "r": -0.3679154780790304,
+        "return_fraction": -0.0036791547807903044,
+        "side": "long",
+        "signal_strength": 0.012877684849009615
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-03-02T08:00:00+00:00",
+        "exit_time": "2026-04-19T21:00:00+00:00",
+        "r": 1.9123039561701582,
+        "return_fraction": 0.019123039561701582,
+        "side": "long",
+        "signal_strength": 0.001457673131700657
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-04-20T08:00:00+00:00",
+        "exit_time": "2026-04-22T00:00:00+00:00",
+        "r": 0.2388468127933949,
+        "return_fraction": 0.002388468127933949,
+        "side": "long",
+        "signal_strength": 0.028420892567575476
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-04-08T08:00:00+00:00",
+        "exit_time": "2026-04-22T00:00:00+00:00",
+        "r": -0.344727045680974,
+        "return_fraction": -0.0034472704568097403,
+        "side": "long",
+        "signal_strength": 0.02653186831320462
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-04-22T08:00:00+00:00",
+        "exit_time": "2026-04-23T00:00:00+00:00",
+        "r": -0.07218422952555609,
+        "return_fraction": -0.0007218422952555609,
+        "side": "long",
+        "signal_strength": 0.03222637030469555
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2026-04-23T08:00:00+00:00",
+        "exit_time": "2026-04-25T00:00:00+00:00",
+        "r": -0.2127136198890301,
+        "return_fraction": -0.002127136198890301,
+        "side": "long",
+        "signal_strength": 0.040694678327056116
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-04-08T08:00:00+00:00",
+        "exit_time": "2026-04-26T22:00:00+00:00",
+        "r": -0.2677872052707768,
+        "return_fraction": -0.0026778720527077682,
+        "side": "long",
+        "signal_strength": 0.04462395614406691
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2026-04-27T08:00:00+00:00",
+        "exit_time": "2026-04-28T00:00:00+00:00",
+        "r": -0.1172250236957173,
+        "return_fraction": -0.001172250236957173,
+        "side": "long",
+        "signal_strength": 0.02397595772902547
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-04-27T08:00:00+00:00",
+        "exit_time": "2026-04-30T10:15:00+00:00",
+        "r": -1.0246406249999995,
+        "return_fraction": -0.010246406249999996,
+        "side": "long",
+        "signal_strength": 0.025867928377177597
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-05-01T08:00:00+00:00",
+        "exit_time": "2026-05-06T04:45:00+00:00",
+        "r": -1.027296875,
+        "return_fraction": -0.01027296875,
+        "side": "long",
+        "signal_strength": 0.009180248118655416
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-05-06T08:00:00+00:00",
+        "exit_time": "2026-05-08T00:00:00+00:00",
+        "r": 0.33408025864917457,
+        "return_fraction": 0.0033408025864917457,
+        "side": "long",
+        "signal_strength": 0.007838733967210758
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2026-04-22T08:00:00+00:00",
+        "exit_time": "2026-05-14T00:00:00+00:00",
+        "r": 0.27515865740466827,
+        "return_fraction": 0.002751586574046683,
+        "side": "long",
+        "signal_strength": 0.03199974408788676
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-05-14T08:00:00+00:00",
+        "exit_time": "2026-05-15T00:00:00+00:00",
+        "r": -0.5595500633112241,
+        "return_fraction": -0.005595500633112241,
+        "side": "long",
+        "signal_strength": 0.00634629468591513
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2026-05-15T08:00:00+00:00",
+        "exit_time": "2026-05-16T00:00:00+00:00",
+        "r": -0.5601441741766657,
+        "return_fraction": -0.005601441741766657,
+        "side": "long",
+        "signal_strength": 0.01963573368033265
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-05-08T08:00:00+00:00",
+        "exit_time": "2026-05-17T22:00:00+00:00",
+        "r": -0.7883359615423774,
+        "return_fraction": -0.007883359615423774,
+        "side": "long",
+        "signal_strength": 0.016578000764093655
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-05-18T08:00:00+00:00",
+        "exit_time": "2026-05-20T00:00:00+00:00",
+        "r": -0.3451965841213212,
+        "return_fraction": -0.003451965841213212,
+        "side": "long",
+        "signal_strength": 0.0022459300672097466
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-05-21T08:00:00+00:00",
+        "exit_time": "2026-05-22T00:00:00+00:00",
+        "r": 0.10090374459778709,
+        "return_fraction": 0.001009037445977871,
+        "side": "long",
+        "signal_strength": 0.0023799092163156598
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-05-25T08:00:00+00:00",
+        "exit_time": "2026-05-26T00:00:00+00:00",
+        "r": -0.045068368617742036,
+        "return_fraction": -0.00045068368617742034,
+        "side": "long",
+        "signal_strength": 0.00039771229182775726
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-05-26T08:00:00+00:00",
+        "exit_time": "2026-05-27T00:00:00+00:00",
+        "r": -0.16319347192836103,
+        "return_fraction": -0.0016319347192836104,
+        "side": "long",
+        "signal_strength": 0.0041357118214521045
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-04-14T08:00:00+00:00",
+        "exit_time": "2026-07-30T00:00:00+00:00",
+        "r": 2.5015481758149565,
+        "return_fraction": 0.025015481758149567,
+        "side": "long",
+        "signal_strength": 0.014671406689333597
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-05-22T08:00:00+00:00",
+        "exit_time": "2026-08-02T21:00:00+00:00",
+        "r": -1.0120159217575453,
+        "return_fraction": -0.010120159217575453,
+        "side": "long",
+        "signal_strength": 0.00470729422430656
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-03T08:00:00+00:00",
+        "exit_time": "2026-08-05T00:00:00+00:00",
+        "r": 0.03754911909613076,
+        "return_fraction": 0.0003754911909613076,
+        "side": "long",
+        "signal_strength": 0.00253941253389344
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-06T08:00:00+00:00",
+        "exit_time": "2026-08-07T00:00:00+00:00",
+        "r": -0.28652736679705143,
+        "return_fraction": -0.002865273667970514,
+        "side": "long",
+        "signal_strength": 6.906300942647609e-05
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2026-08-08T08:00:00+00:00",
+        "exit_time": "2026-08-10T00:00:00+00:00",
+        "r": -0.06292396495638475,
+        "return_fraction": -0.0006292396495638475,
+        "side": "long",
+        "signal_strength": 0.015035950904115388
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2026-08-07T08:00:00+00:00",
+        "exit_time": "2026-08-11T00:00:00+00:00",
+        "r": -0.34839379789564445,
+        "return_fraction": -0.0034839379789564444,
+        "side": "long",
+        "signal_strength": 0.005240600741300903
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-10T08:00:00+00:00",
+        "exit_time": "2026-08-11T00:00:00+00:00",
+        "r": -0.23349243798376654,
+        "return_fraction": -0.0023349243798376656,
+        "side": "long",
+        "signal_strength": 0.0060015680858696826
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-08-11T08:00:00+00:00",
+        "exit_time": "2026-08-12T00:00:00+00:00",
+        "r": 0.07432054559706279,
+        "return_fraction": 0.0007432054559706279,
+        "side": "long",
+        "signal_strength": 0.007794069169594973
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-12T08:00:00+00:00",
+        "exit_time": "2026-08-13T00:00:00+00:00",
+        "r": -0.1714449713520679,
+        "return_fraction": -0.001714449713520679,
+        "side": "long",
+        "signal_strength": 0.0002497447825059029
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-08-13T08:00:00+00:00",
+        "exit_time": "2026-08-14T00:00:00+00:00",
+        "r": -0.043075835581372,
+        "return_fraction": -0.00043075835581372,
+        "side": "long",
+        "signal_strength": 0.005472975514427099
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-17T08:00:00+00:00",
+        "exit_time": "2026-08-19T00:00:00+00:00",
+        "r": -0.4983414516664558,
+        "return_fraction": -0.004983414516664559,
+        "side": "long",
+        "signal_strength": 0.001439437946477688
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-08-11T08:00:00+00:00",
+        "exit_time": "2026-08-19T00:00:00+00:00",
+        "r": -0.22839695502136526,
+        "return_fraction": -0.0022839695502136527,
+        "side": "long",
+        "signal_strength": 0.01873016404559871
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-07-31T08:00:00+00:00",
+        "exit_time": "2026-08-21T00:00:00+00:00",
+        "r": 0.7410361164704831,
+        "return_fraction": 0.00741036116470483,
+        "side": "long",
+        "signal_strength": 0.020476686415587936
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-04-28T08:00:00+00:00",
+        "exit_time": "2026-08-25T00:00:00+00:00",
+        "r": 4.453631614308149,
+        "return_fraction": 0.04453631614308149,
+        "side": "long",
+        "signal_strength": 0.026383501890491847
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-08-25T08:00:00+00:00",
+        "exit_time": "2026-08-30T22:00:00+00:00",
+        "r": -0.6401280411879554,
+        "return_fraction": -0.006401280411879554,
+        "side": "long",
+        "signal_strength": 0.03849950028680848
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-08-20T08:00:00+00:00",
+        "exit_time": "2026-08-30T22:00:00+00:00",
+        "r": -0.4201206743227962,
+        "return_fraction": -0.0042012067432279625,
+        "side": "long",
+        "signal_strength": 0.028633603598084454
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2026-08-21T08:00:00+00:00",
+        "exit_time": "2026-08-31T23:45:00+00:00",
+        "r": 0.7903197914320326,
+        "return_fraction": 0.007903197914320325,
+        "side": "long",
+        "signal_strength": 0.08023993661822364
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2026-08-20T08:00:00+00:00",
+        "exit_time": "2026-08-31T23:45:00+00:00",
+        "r": 1.906232609983602,
+        "return_fraction": 0.01906232609983602,
+        "side": "long",
+        "signal_strength": 0.12346255235432156
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-08-31T08:00:00+00:00",
+        "exit_time": "2026-08-31T23:45:00+00:00",
+        "r": -0.4437335834126874,
+        "return_fraction": -0.004437335834126874,
+        "side": "long",
+        "signal_strength": 0.032621756189943396
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-08-31T08:00:00+00:00",
+        "exit_time": "2026-08-31T23:45:00+00:00",
+        "r": 0.04582288807081506,
+        "return_fraction": 0.00045822888070815065,
+        "side": "long",
+        "signal_strength": 0.024295902885897797
+      }
+    ],
+    "rejected_by_risk_cap": 3
+  },
+  "full_context": {
+    "metrics": {
+      "return_pct": 381.6339458220999,
+      "profit_factor": 2.7734146073218815,
+      "win_rate": 39.097744360902254,
+      "max_dd_pct": 9.821270951315796,
+      "trades": 266,
+      "sharpe": 1.1576068597139426,
+      "recovery": 38.85789809830782,
+      "expectancy_r": 0.6607986631756192,
+      "final_balance": 48163.39458220999,
+      "profitable_assets": 7,
+      "max_standalone_mtm_dd_pct": 32.50169522815612
+    },
+    "standalone": {
+      "XAUUSD": {
+        "return_pct": 60.533914782951626,
+        "profit_factor": 9.08119406458238,
+        "win_rate": 44.0,
+        "max_dd_pct": 16.03277220250273,
+        "trades": 25,
+        "sharpe": 0.8365224926885225,
+        "recovery": 3.7756361793440956,
+        "expectancy_r": 2.0222320206475506,
+        "avg_win_r": 5.179825297412422,
+        "avg_loss_r": -0.4587341253819915,
+        "longs": 25,
+        "shorts": 0,
+        "first_half_return": 5.096970151159441,
+        "second_half_return": 52.74837566873529
+      },
+      "XAGUSD": {
+        "return_pct": 24.04359959740181,
+        "profit_factor": 2.3637383311888,
+        "win_rate": 26.31578947368421,
+        "max_dd_pct": 32.50169522815612,
+        "trades": 38,
+        "sharpe": 0.31757416526143817,
+        "recovery": 0.73976447777939,
+        "expectancy_r": 0.7143274294816472,
+        "avg_win_r": 4.510644540905646,
+        "avg_loss_r": -0.6415001103126379,
+        "longs": 38,
+        "shorts": 0,
+        "first_half_return": -6.540899706766423,
+        "second_half_return": 32.7250093444164
+      },
+      "BTCUSD": {
+        "return_pct": 50.792609470920816,
+        "profit_factor": 5.37238557768177,
+        "win_rate": 42.857142857142854,
+        "max_dd_pct": 12.984659000254872,
+        "trades": 28,
+        "sharpe": 0.52254270855532,
+        "recovery": 3.9117399594339615,
+        "expectancy_r": 1.7031208569452778,
+        "avg_win_r": 4.724402159318828,
+        "avg_loss_r": -0.5628401198348849,
+        "longs": 28,
+        "shorts": 0,
+        "first_half_return": 43.095484362763095,
+        "second_half_return": 5.379013280841627
+      },
+      "ETHUSD": {
+        "return_pct": 16.626948684091005,
+        "profit_factor": 2.4463372765503313,
+        "win_rate": 27.586206896551722,
+        "max_dd_pct": 15.468870796744339,
+        "trades": 29,
+        "sharpe": 0.4248725672280976,
+        "recovery": 1.0748650565748084,
+        "expectancy_r": 0.577092503042306,
+        "avg_win_r": 3.3777026564023673,
+        "avg_loss_r": -0.4898066029996225,
+        "longs": 29,
+        "shorts": 0,
+        "first_half_return": 12.627714053878814,
+        "second_half_return": 3.5508441805886415
+      },
+      "USTEC": {
+        "return_pct": 18.401183881352456,
+        "profit_factor": 2.113008358094505,
+        "win_rate": 42.857142857142854,
+        "max_dd_pct": 8.85037100732119,
+        "trades": 42,
+        "sharpe": 0.617271682863469,
+        "recovery": 2.079142655842411,
+        "expectancy_r": 0.4207454369825602,
+        "avg_win_r": 1.8079163285180435,
+        "avg_loss_r": -0.6196327316690521,
+        "longs": 42,
+        "shorts": 0,
+        "first_half_return": 11.407699903767643,
+        "second_half_return": 6.277379376493442
+      },
+      "US30": {
+        "return_pct": 7.90679929221656,
+        "profit_factor": 1.4450303136923415,
+        "win_rate": 46.51162790697674,
+        "max_dd_pct": 6.47863105326797,
+        "trades": 43,
+        "sharpe": 0.33302681891582603,
+        "recovery": 1.2204429033241813,
+        "expectancy_r": 0.18985384202068273,
+        "avg_win_r": 1.262693868022204,
+        "avg_loss_r": -0.7430505284154227,
+        "longs": 43,
+        "shorts": 0,
+        "first_half_return": 6.962912961151502,
+        "second_half_return": 0.8824426195347623
+      },
+      "EURUSD": {
+        "return_pct": 4.847918732126311,
+        "profit_factor": 1.5563279610823944,
+        "win_rate": 35.483870967741936,
+        "max_dd_pct": 7.398242707659508,
+        "trades": 31,
+        "sharpe": 0.33079762597907464,
+        "recovery": 0.6552797635453607,
+        "expectancy_r": 0.15941528712130656,
+        "avg_win_r": 1.1919509634959589,
+        "avg_loss_r": -0.4084793348847522,
+        "longs": 31,
+        "shorts": 0,
+        "first_half_return": 9.632080288093615,
+        "second_half_return": -4.363833599978573
+      },
+      "GBPJPY": {
+        "return_pct": -2.271625810698663,
+        "profit_factor": 0.8775522415135714,
+        "win_rate": 40.0,
+        "max_dd_pct": 8.30186582171275,
+        "trades": 40,
+        "sharpe": -0.12971726850359885,
+        "recovery": -0.2736283456614583,
+        "expectancy_r": -0.050858972592303354,
+        "avg_win_r": 1.010843629681594,
+        "avg_loss_r": -0.7586607074415683,
+        "longs": 40,
+        "shorts": 0,
+        "first_half_return": 0.5176563670531431,
+        "second_half_return": -2.7749176399083586
+      }
+    },
+    "trades": [
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2023-01-02T08:00:00+00:00",
+        "exit_time": "2023-01-03T08:15:00+00:00",
+        "r": -1.0215156249999926,
+        "return_fraction": -0.010215156249999927,
+        "side": "long",
+        "signal_strength": 0.05449659681222102
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-01-03T08:00:00+00:00",
+        "exit_time": "2023-01-04T18:00:00+00:00",
+        "r": -1.0221249999999997,
+        "return_fraction": -0.010221249999999998,
+        "side": "long",
+        "signal_strength": 0.16938087354437195
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-01-03T08:00:00+00:00",
+        "exit_time": "2023-01-12T00:00:00+00:00",
+        "r": 0.9389182283512976,
+        "return_fraction": 0.009389182283512976,
+        "side": "long",
+        "signal_strength": 0.007456536002732218
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-01-12T08:00:00+00:00",
+        "exit_time": "2023-01-13T00:00:00+00:00",
+        "r": 0.26559262943496975,
+        "return_fraction": 0.0026559262943496977,
+        "side": "long",
+        "signal_strength": 0.06971636537894622
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2023-01-04T08:00:00+00:00",
+        "exit_time": "2023-01-15T22:00:00+00:00",
+        "r": 2.024833090155002,
+        "return_fraction": 0.020248330901550017,
+        "side": "long",
+        "signal_strength": 0.03626806755871451
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-01-05T08:00:00+00:00",
+        "exit_time": "2023-01-23T15:00:00+00:00",
+        "r": -1.0474374999999998,
+        "return_fraction": -0.010474374999999998,
+        "side": "long",
+        "signal_strength": 0.16602725293899753
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-01-03T08:00:00+00:00",
+        "exit_time": "2023-02-03T00:00:00+00:00",
+        "r": 2.3489137053097053,
+        "return_fraction": 0.023489137053097055,
+        "side": "long",
+        "signal_strength": 0.0634542215946366
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-01-24T08:00:00+00:00",
+        "exit_time": "2023-02-03T13:45:00+00:00",
+        "r": -1.0353593749999996,
+        "return_fraction": -0.010353593749999997,
+        "side": "long",
+        "signal_strength": 0.0889917512786006
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-02-03T08:00:00+00:00",
+        "exit_time": "2023-02-21T14:30:00+00:00",
+        "r": -1.0474062499999983,
+        "return_fraction": -0.010474062499999983,
+        "side": "long",
+        "signal_strength": 0.08794817972131047
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-02-06T08:00:00+00:00",
+        "exit_time": "2023-02-21T18:15:00+00:00",
+        "r": -1.0431406250000046,
+        "return_fraction": -0.010431406250000046,
+        "side": "long",
+        "signal_strength": 0.04647533679781215
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-02-22T08:00:00+00:00",
+        "exit_time": "2023-02-24T14:30:00+00:00",
+        "r": -1.023406250000002,
+        "return_fraction": -0.010234062500000021,
+        "side": "long",
+        "signal_strength": 0.022140271157308797
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-01-13T08:00:00+00:00",
+        "exit_time": "2023-03-11T00:00:00+00:00",
+        "r": 2.3039331853504534,
+        "return_fraction": 0.023039331853504534,
+        "side": "long",
+        "signal_strength": 0.052545930248126316
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2023-03-10T08:00:00+00:00",
+        "exit_time": "2023-03-13T00:00:00+00:00",
+        "r": 0.7988904370869394,
+        "return_fraction": 0.007988904370869394,
+        "side": "long",
+        "signal_strength": 0.026879614783084014
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-02-22T08:00:00+00:00",
+        "exit_time": "2023-03-13T12:45:00+00:00",
+        "r": -1.0487968749999996,
+        "return_fraction": -0.010487968749999996,
+        "side": "long",
+        "signal_strength": 0.05132461002651859
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-03-14T08:00:00+00:00",
+        "exit_time": "2023-03-29T00:00:00+00:00",
+        "r": 1.936322559165334,
+        "return_fraction": 0.01936322559165334,
+        "side": "long",
+        "signal_strength": 0.040490836414169
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-02-27T08:00:00+00:00",
+        "exit_time": "2023-03-30T00:00:00+00:00",
+        "r": 5.4540230278178745,
+        "return_fraction": 0.054540230278178746,
+        "side": "long",
+        "signal_strength": 0.021615781905815753
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-03-30T08:00:00+00:00",
+        "exit_time": "2023-04-06T00:00:00+00:00",
+        "r": 0.1532279504148664,
+        "return_fraction": 0.001532279504148664,
+        "side": "long",
+        "signal_strength": 0.0685570408082305
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-04-06T08:00:00+00:00",
+        "exit_time": "2023-04-16T22:00:00+00:00",
+        "r": -0.39085031240560597,
+        "return_fraction": -0.0039085031240560595,
+        "side": "long",
+        "signal_strength": 0.07151269452405046
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-04-17T08:00:00+00:00",
+        "exit_time": "2023-04-18T00:00:00+00:00",
+        "r": -0.12640028453086627,
+        "return_fraction": -0.0012640028453086627,
+        "side": "long",
+        "signal_strength": 0.07064785281592707
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-04-18T08:00:00+00:00",
+        "exit_time": "2023-04-23T22:00:00+00:00",
+        "r": -0.5200288929262866,
+        "return_fraction": -0.005200288929262866,
+        "side": "long",
+        "signal_strength": 0.0676992646696077
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-04-24T08:00:00+00:00",
+        "exit_time": "2023-04-26T00:00:00+00:00",
+        "r": 0.4198020543673266,
+        "return_fraction": 0.004198020543673266,
+        "side": "long",
+        "signal_strength": 0.0643440068720086
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-03-29T08:00:00+00:00",
+        "exit_time": "2023-05-12T00:00:00+00:00",
+        "r": 1.1711968847483645,
+        "return_fraction": 0.011711968847483645,
+        "side": "long",
+        "signal_strength": 0.0798538451455567
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-05-12T08:00:00+00:00",
+        "exit_time": "2023-05-17T00:00:00+00:00",
+        "r": -0.49629955979455553,
+        "return_fraction": -0.0049629955979455555,
+        "side": "long",
+        "signal_strength": 0.06567971917629302
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-03-13T08:00:00+00:00",
+        "exit_time": "2023-06-06T00:00:00+00:00",
+        "r": 2.237493910964325,
+        "return_fraction": 0.02237493910964325,
+        "side": "long",
+        "signal_strength": 0.07323283526248238
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-06-07T08:00:00+00:00",
+        "exit_time": "2023-06-08T00:00:00+00:00",
+        "r": -0.3493455698893577,
+        "return_fraction": -0.0034934556988935775,
+        "side": "long",
+        "signal_strength": 0.046398055139233514
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-06-08T08:00:00+00:00",
+        "exit_time": "2023-06-09T00:00:00+00:00",
+        "r": 0.2178509346830911,
+        "return_fraction": 0.002178509346830911,
+        "side": "long",
+        "signal_strength": 0.0008781944619959455
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-06-09T08:00:00+00:00",
+        "exit_time": "2023-06-10T00:00:00+00:00",
+        "r": -0.04357337193785517,
+        "return_fraction": -0.0004357337193785517,
+        "side": "long",
+        "signal_strength": 0.01816144609222733
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-03-13T08:00:00+00:00",
+        "exit_time": "2023-06-11T00:00:00+00:00",
+        "r": 1.155030262323746,
+        "return_fraction": 0.01155030262323746,
+        "side": "long",
+        "signal_strength": 0.05427505828930145
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-06-12T08:00:00+00:00",
+        "exit_time": "2023-06-15T01:45:00+00:00",
+        "r": -1.0241093750000003,
+        "return_fraction": -0.010241093750000003,
+        "side": "long",
+        "signal_strength": 0.024491144097147022
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-06-12T08:00:00+00:00",
+        "exit_time": "2023-06-20T00:00:00+00:00",
+        "r": 0.5197535751400286,
+        "return_fraction": 0.005197535751400286,
+        "side": "long",
+        "signal_strength": 0.009404223242472776
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-06-15T08:00:00+00:00",
+        "exit_time": "2023-06-21T00:00:00+00:00",
+        "r": -0.3025109354233045,
+        "return_fraction": -0.003025109354233045,
+        "side": "long",
+        "signal_strength": 0.013870102045027302
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-06-21T08:00:00+00:00",
+        "exit_time": "2023-06-22T00:00:00+00:00",
+        "r": -0.230697353211065,
+        "return_fraction": -0.00230697353211065,
+        "side": "long",
+        "signal_strength": 0.01262541036831911
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-05-17T08:00:00+00:00",
+        "exit_time": "2023-07-13T00:00:00+00:00",
+        "r": 4.5185639068134416,
+        "return_fraction": 0.045185639068134414,
+        "side": "long",
+        "signal_strength": 0.04221631497068747
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-06-22T08:00:00+00:00",
+        "exit_time": "2023-07-19T00:00:00+00:00",
+        "r": -0.20648585876273243,
+        "return_fraction": -0.002064858587627324,
+        "side": "long",
+        "signal_strength": 0.03479969432553569
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-07-19T08:00:00+00:00",
+        "exit_time": "2023-07-20T00:00:00+00:00",
+        "r": 0.10834012866724978,
+        "return_fraction": 0.0010834012866724977,
+        "side": "long",
+        "signal_strength": 0.05757921534890623
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-06-20T08:00:00+00:00",
+        "exit_time": "2023-07-22T00:00:00+00:00",
+        "r": 2.290596685679644,
+        "return_fraction": 0.02290596685679644,
+        "side": "long",
+        "signal_strength": 0.027862411064535325
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-07-20T08:00:00+00:00",
+        "exit_time": "2023-07-22T00:00:00+00:00",
+        "r": -0.259589116109258,
+        "return_fraction": -0.00259589116109258,
+        "side": "long",
+        "signal_strength": 0.06746602033845056
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-07-24T08:00:00+00:00",
+        "exit_time": "2023-07-25T00:00:00+00:00",
+        "r": -0.5948992503129473,
+        "return_fraction": -0.005948992503129473,
+        "side": "long",
+        "signal_strength": 0.0567058978356215
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-07-24T08:00:00+00:00",
+        "exit_time": "2023-07-27T17:00:00+00:00",
+        "r": -1.0250625000000053,
+        "return_fraction": -0.010250625000000053,
+        "side": "long",
+        "signal_strength": 0.058738137257072796
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-07-28T08:00:00+00:00",
+        "exit_time": "2023-07-29T00:00:00+00:00",
+        "r": 0.14027067307980878,
+        "return_fraction": 0.001402706730798088,
+        "side": "long",
+        "signal_strength": 0.03562594503755296
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-07-13T08:00:00+00:00",
+        "exit_time": "2023-08-03T00:00:00+00:00",
+        "r": -0.8197044505226856,
+        "return_fraction": -0.008197044505226856,
+        "side": "long",
+        "signal_strength": 0.06558264990901062
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-07-25T08:00:00+00:00",
+        "exit_time": "2023-08-04T19:30:00+00:00",
+        "r": -1.0357187499999922,
+        "return_fraction": -0.010357187499999922,
+        "side": "long",
+        "signal_strength": 0.06116911208489586
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-08-07T08:00:00+00:00",
+        "exit_time": "2023-08-16T19:00:00+00:00",
+        "r": -1.0341874999999945,
+        "return_fraction": -0.010341874999999945,
+        "side": "long",
+        "signal_strength": 0.036524443953614504
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-08-03T08:00:00+00:00",
+        "exit_time": "2023-08-17T15:30:00+00:00",
+        "r": -1.04146875,
+        "return_fraction": -0.0104146875,
+        "side": "long",
+        "signal_strength": 0.01922505768341218
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-08-17T08:00:00+00:00",
+        "exit_time": "2023-08-18T00:00:00+00:00",
+        "r": -0.801633305763036,
+        "return_fraction": -0.008016333057630361,
+        "side": "long",
+        "signal_strength": 0.012199439667589998
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-08-24T08:00:00+00:00",
+        "exit_time": "2023-08-25T00:00:00+00:00",
+        "r": -0.8046801508116204,
+        "return_fraction": -0.008046801508116205,
+        "side": "long",
+        "signal_strength": 0.0025357232994423413
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-08-24T08:00:00+00:00",
+        "exit_time": "2023-09-05T08:30:00+00:00",
+        "r": -1.038031250000001,
+        "return_fraction": -0.010380312500000011,
+        "side": "long",
+        "signal_strength": 0.01850715988480175
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-08-28T08:00:00+00:00",
+        "exit_time": "2023-09-21T00:00:00+00:00",
+        "r": -0.032578571149621996,
+        "return_fraction": -0.00032578571149621994,
+        "side": "long",
+        "signal_strength": 0.005281635119572626
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-04-26T08:00:00+00:00",
+        "exit_time": "2023-09-22T00:00:00+00:00",
+        "r": 6.635370943338488,
+        "return_fraction": 0.06635370943338488,
+        "side": "long",
+        "signal_strength": 0.06397929782773436
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-02T08:00:00+00:00",
+        "exit_time": "2023-10-02T21:45:00+00:00",
+        "r": -1.0208593749999997,
+        "return_fraction": -0.010208593749999996,
+        "side": "long",
+        "signal_strength": 0.010586345075353392
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-07-31T08:00:00+00:00",
+        "exit_time": "2023-10-03T14:00:00+00:00",
+        "r": -1.1163749999999963,
+        "return_fraction": -0.011163749999999964,
+        "side": "long",
+        "signal_strength": 0.05060797303492568
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-03T08:00:00+00:00",
+        "exit_time": "2023-10-04T00:00:00+00:00",
+        "r": -0.1415567573100416,
+        "return_fraction": -0.001415567573100416,
+        "side": "long",
+        "signal_strength": 0.006406915885390697
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-05T08:00:00+00:00",
+        "exit_time": "2023-10-06T00:00:00+00:00",
+        "r": -0.22766939440682826,
+        "return_fraction": -0.0022766939440682825,
+        "side": "long",
+        "signal_strength": 0.009790180531993287
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-07T08:00:00+00:00",
+        "exit_time": "2023-10-11T00:00:00+00:00",
+        "r": -0.4971288501004312,
+        "return_fraction": -0.004971288501004312,
+        "side": "long",
+        "signal_strength": 0.010373277694826169
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-10-10T08:00:00+00:00",
+        "exit_time": "2023-10-19T20:00:00+00:00",
+        "r": -1.0342500000000012,
+        "return_fraction": -0.010342500000000013,
+        "side": "long",
+        "signal_strength": 0.0004224595046231766
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-10-04T08:00:00+00:00",
+        "exit_time": "2023-10-20T00:00:00+00:00",
+        "r": 0.9981655762574778,
+        "return_fraction": 0.009981655762574778,
+        "side": "long",
+        "signal_strength": 0.0008309909252729059
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-10-23T08:00:00+00:00",
+        "exit_time": "2023-10-26T14:15:00+00:00",
+        "r": -1.0248906250000016,
+        "return_fraction": -0.010248906250000016,
+        "side": "long",
+        "signal_strength": 0.006284009509798402
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-10-27T08:00:00+00:00",
+        "exit_time": "2023-11-01T00:00:00+00:00",
+        "r": -0.05411878002663902,
+        "return_fraction": -0.0005411878002663902,
+        "side": "long",
+        "signal_strength": 0.01890865627117533
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-11-01T08:00:00+00:00",
+        "exit_time": "2023-11-02T00:00:00+00:00",
+        "r": -0.30533072488361157,
+        "return_fraction": -0.0030533072488361157,
+        "side": "long",
+        "signal_strength": 0.00199175786212832
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-11-03T08:00:00+00:00",
+        "exit_time": "2023-11-12T22:00:00+00:00",
+        "r": 0.8776657622333099,
+        "return_fraction": 0.0087766576223331,
+        "side": "long",
+        "signal_strength": 0.0015909944108658328
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-10-18T08:00:00+00:00",
+        "exit_time": "2023-11-12T23:00:00+00:00",
+        "r": -0.012687256761871001,
+        "return_fraction": -0.00012687256761871002,
+        "side": "long",
+        "signal_strength": 0.004782215032546313
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-11-13T08:00:00+00:00",
+        "exit_time": "2023-11-17T00:00:00+00:00",
+        "r": 0.8303068359491732,
+        "return_fraction": 0.008303068359491732,
+        "side": "long",
+        "signal_strength": 0.012508358762328545
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-11-17T08:00:00+00:00",
+        "exit_time": "2023-11-24T00:00:00+00:00",
+        "r": 0.6730485705642769,
+        "return_fraction": 0.0067304857056427695,
+        "side": "long",
+        "signal_strength": 0.026495783517966203
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2023-11-24T08:00:00+00:00",
+        "exit_time": "2023-11-28T00:00:00+00:00",
+        "r": 0.1040198547049082,
+        "return_fraction": 0.001040198547049082,
+        "side": "long",
+        "signal_strength": 0.03158936369939238
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-11-13T08:00:00+00:00",
+        "exit_time": "2023-11-30T00:00:00+00:00",
+        "r": 1.6165751806473567,
+        "return_fraction": 0.016165751806473568,
+        "side": "long",
+        "signal_strength": 0.033613163457179324
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-11-30T08:00:00+00:00",
+        "exit_time": "2023-12-05T14:45:00+00:00",
+        "r": -1.027921875,
+        "return_fraction": -0.010279218750000001,
+        "side": "long",
+        "signal_strength": 0.056130441267829644
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-11-28T08:00:00+00:00",
+        "exit_time": "2023-12-06T17:15:00+00:00",
+        "r": -1.0325781249999992,
+        "return_fraction": -0.010325781249999992,
+        "side": "long",
+        "signal_strength": 0.05022063415781908
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2023-12-07T08:00:00+00:00",
+        "exit_time": "2023-12-08T00:00:00+00:00",
+        "r": -0.14847311786544162,
+        "return_fraction": -0.0014847311786544163,
+        "side": "long",
+        "signal_strength": 0.052152159733129734
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2023-12-06T08:00:00+00:00",
+        "exit_time": "2023-12-10T23:00:00+00:00",
+        "r": -0.6674088458491452,
+        "return_fraction": -0.006674088458491452,
+        "side": "long",
+        "signal_strength": 0.054622042086872845
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2023-12-08T08:00:00+00:00",
+        "exit_time": "2024-03-07T00:00:00+00:00",
+        "r": 7.025507369575137,
+        "return_fraction": 0.07025507369575137,
+        "side": "long",
+        "signal_strength": 0.04812843903511174
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-03-07T08:00:00+00:00",
+        "exit_time": "2024-03-14T00:00:00+00:00",
+        "r": 0.5826551930558581,
+        "return_fraction": 0.005826551930558581,
+        "side": "long",
+        "signal_strength": 0.06760455684148614
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2023-12-11T08:00:00+00:00",
+        "exit_time": "2024-03-17T22:00:00+00:00",
+        "r": 6.476860498637959,
+        "return_fraction": 0.06476860498637958,
+        "side": "long",
+        "signal_strength": 0.04938484449905572
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-03-14T08:00:00+00:00",
+        "exit_time": "2024-03-22T00:00:00+00:00",
+        "r": -0.32808327120530056,
+        "return_fraction": -0.0032808327120530056,
+        "side": "long",
+        "signal_strength": 0.094239437777432
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-03-18T08:00:00+00:00",
+        "exit_time": "2024-03-25T00:00:00+00:00",
+        "r": 0.4952140981870332,
+        "return_fraction": 0.004952140981870332,
+        "side": "long",
+        "signal_strength": 0.0719451383837386
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-03-25T08:00:00+00:00",
+        "exit_time": "2024-03-26T00:00:00+00:00",
+        "r": -0.07215343158836672,
+        "return_fraction": -0.0007215343158836672,
+        "side": "long",
+        "signal_strength": 0.06786182771299594
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-03-22T08:00:00+00:00",
+        "exit_time": "2024-03-28T00:00:00+00:00",
+        "r": -0.23491820312992046,
+        "return_fraction": -0.0023491820312992046,
+        "side": "long",
+        "signal_strength": 0.08118330108092085
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-03-28T08:00:00+00:00",
+        "exit_time": "2024-03-31T22:00:00+00:00",
+        "r": 0.22637076978880788,
+        "return_fraction": 0.0022637076978880787,
+        "side": "long",
+        "signal_strength": 0.06598569737922039
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-04-01T08:00:00+00:00",
+        "exit_time": "2024-04-02T13:00:00+00:00",
+        "r": -1.0218124999999982,
+        "return_fraction": -0.010218124999999982,
+        "side": "long",
+        "signal_strength": 0.07383003321181116
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2023-10-24T08:00:00+00:00",
+        "exit_time": "2024-05-01T00:00:00+00:00",
+        "r": 15.431235566162403,
+        "return_fraction": 0.15431235566162405,
+        "side": "long",
+        "signal_strength": 0.04434214432130972
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-05-01T08:00:00+00:00",
+        "exit_time": "2024-05-01T20:15:00+00:00",
+        "r": -1.0207656249999957,
+        "return_fraction": -0.010207656249999957,
+        "side": "long",
+        "signal_strength": 0.046356087534674704
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-05-03T08:00:00+00:00",
+        "exit_time": "2024-05-05T21:00:00+00:00",
+        "r": -0.22172051929142153,
+        "return_fraction": -0.0022172051929142153,
+        "side": "long",
+        "signal_strength": 0.02529662983608487
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-05-07T08:00:00+00:00",
+        "exit_time": "2024-05-08T00:00:00+00:00",
+        "r": 0.06567195946996107,
+        "return_fraction": 0.0006567195946996107,
+        "side": "long",
+        "signal_strength": 0.03355130364189613
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2023-10-16T08:00:00+00:00",
+        "exit_time": "2024-05-14T00:00:00+00:00",
+        "r": 39.99152285326028,
+        "return_fraction": 0.3999152285326028,
+        "side": "long",
+        "signal_strength": 0.0006856806001640792
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-05-14T08:00:00+00:00",
+        "exit_time": "2024-05-16T00:00:00+00:00",
+        "r": -0.28205254386546036,
+        "return_fraction": -0.0028205254386546035,
+        "side": "long",
+        "signal_strength": 0.044701390367077855
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-05-08T08:00:00+00:00",
+        "exit_time": "2024-05-21T00:00:00+00:00",
+        "r": 1.3823770661258283,
+        "return_fraction": 0.013823770661258283,
+        "side": "long",
+        "signal_strength": 0.03870449102746608
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-03-26T08:00:00+00:00",
+        "exit_time": "2024-06-06T00:00:00+00:00",
+        "r": 5.151858109504398,
+        "return_fraction": 0.05151858109504398,
+        "side": "long",
+        "signal_strength": 0.06407332115850273
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-06-06T08:00:00+00:00",
+        "exit_time": "2024-06-07T00:00:00+00:00",
+        "r": -0.08157874936589316,
+        "return_fraction": -0.0008157874936589316,
+        "side": "long",
+        "signal_strength": 0.0569425337548932
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-06-07T08:00:00+00:00",
+        "exit_time": "2024-06-07T12:30:00+00:00",
+        "r": -1.0202812499999965,
+        "return_fraction": -0.010202812499999965,
+        "side": "long",
+        "signal_strength": 0.060944114939855354
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-05-21T08:00:00+00:00",
+        "exit_time": "2024-06-14T16:00:00+00:00",
+        "r": -1.0565,
+        "return_fraction": -0.010565,
+        "side": "long",
+        "signal_strength": 0.18119976434806054
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-05-16T08:00:00+00:00",
+        "exit_time": "2024-06-24T00:00:00+00:00",
+        "r": -0.7683518942334251,
+        "return_fraction": -0.007683518942334251,
+        "side": "long",
+        "signal_strength": 0.09410324818080458
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-06-15T08:00:00+00:00",
+        "exit_time": "2024-06-24T09:30:00+00:00",
+        "r": -1.0335937499999999,
+        "return_fraction": -0.0103359375,
+        "side": "long",
+        "signal_strength": 0.1121398708945418
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-06-25T08:00:00+00:00",
+        "exit_time": "2024-06-28T00:00:00+00:00",
+        "r": 0.043243079697359174,
+        "return_fraction": 0.00043243079697359175,
+        "side": "long",
+        "signal_strength": 0.045107334580256786
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-06-28T08:00:00+00:00",
+        "exit_time": "2024-06-30T00:00:00+00:00",
+        "r": -0.32195418172169193,
+        "return_fraction": -0.0032195418172169194,
+        "side": "long",
+        "signal_strength": 0.04631564693737586
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-06-24T08:00:00+00:00",
+        "exit_time": "2024-07-03T00:00:00+00:00",
+        "r": 1.623575524253813,
+        "return_fraction": 0.01623575524253813,
+        "side": "long",
+        "signal_strength": 0.04286741887438803
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-07-03T08:00:00+00:00",
+        "exit_time": "2024-07-04T00:00:00+00:00",
+        "r": -0.35665138279123415,
+        "return_fraction": -0.0035665138279123414,
+        "side": "long",
+        "signal_strength": 0.05190215392882012
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-04T08:00:00+00:00",
+        "exit_time": "2024-07-11T13:00:00+00:00",
+        "r": -1.0308125000000037,
+        "return_fraction": -0.010308125000000038,
+        "side": "long",
+        "signal_strength": 0.05235890126654157
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-12T08:00:00+00:00",
+        "exit_time": "2024-07-17T08:00:00+00:00",
+        "r": -1.0274999999999987,
+        "return_fraction": -0.010274999999999987,
+        "side": "long",
+        "signal_strength": 0.04782000050552099
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-17T08:00:00+00:00",
+        "exit_time": "2024-07-17T23:15:00+00:00",
+        "r": -1.0209531249999932,
+        "return_fraction": -0.010209531249999933,
+        "side": "long",
+        "signal_strength": 0.047077199061747343
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-07-18T08:00:00+00:00",
+        "exit_time": "2024-07-18T19:00:00+00:00",
+        "r": -1.0206875000000017,
+        "return_fraction": -0.010206875000000018,
+        "side": "long",
+        "signal_strength": 0.04776979001245272
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-19T08:00:00+00:00",
+        "exit_time": "2024-07-21T21:00:00+00:00",
+        "r": -0.09297782175794879,
+        "return_fraction": -0.0009297782175794879,
+        "side": "long",
+        "signal_strength": 0.036251866708452256
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-04-03T08:00:00+00:00",
+        "exit_time": "2024-07-21T22:00:00+00:00",
+        "r": 3.530688757955001,
+        "return_fraction": 0.035306887579550014,
+        "side": "long",
+        "signal_strength": 0.08143109901052759
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-07-23T08:00:00+00:00",
+        "exit_time": "2024-07-24T00:00:00+00:00",
+        "r": -0.31743054463611675,
+        "return_fraction": -0.0031743054463611677,
+        "side": "long",
+        "signal_strength": 0.026800015996112758
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-07-23T08:00:00+00:00",
+        "exit_time": "2024-07-24T19:45:00+00:00",
+        "r": -1.0222343749999954,
+        "return_fraction": -0.010222343749999955,
+        "side": "long",
+        "signal_strength": 0.029637875941194807
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-07-24T08:00:00+00:00",
+        "exit_time": "2024-07-25T00:00:00+00:00",
+        "r": -0.21855690584872167,
+        "return_fraction": -0.002185569058487217,
+        "side": "long",
+        "signal_strength": 0.020519985299736452
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-06-10T08:00:00+00:00",
+        "exit_time": "2024-07-26T00:00:00+00:00",
+        "r": -0.5185813531263765,
+        "return_fraction": -0.005185813531263766,
+        "side": "long",
+        "signal_strength": 0.048594582983497135
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2024-07-26T08:00:00+00:00",
+        "exit_time": "2024-07-30T00:00:00+00:00",
+        "r": -0.5281265724122984,
+        "return_fraction": -0.005281265724122984,
+        "side": "long",
+        "signal_strength": 0.002145873019898602
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-07-26T08:00:00+00:00",
+        "exit_time": "2024-08-01T00:00:00+00:00",
+        "r": -0.6529188709510022,
+        "return_fraction": -0.006529188709510022,
+        "side": "long",
+        "signal_strength": 0.038637064445503876
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-08-01T08:00:00+00:00",
+        "exit_time": "2024-08-01T16:30:00+00:00",
+        "r": -1.0205312500000032,
+        "return_fraction": -0.010205312500000032,
+        "side": "long",
+        "signal_strength": 0.01853721788946366
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-08-01T08:00:00+00:00",
+        "exit_time": "2024-08-02T00:00:00+00:00",
+        "r": -0.3305278236016255,
+        "return_fraction": -0.003305278236016255,
+        "side": "long",
+        "signal_strength": 0.0031878028255145907
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-07-25T08:00:00+00:00",
+        "exit_time": "2024-08-02T15:15:00+00:00",
+        "r": -1.0324531249999995,
+        "return_fraction": -0.010324531249999996,
+        "side": "long",
+        "signal_strength": 0.010887386661536595
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-08-02T08:00:00+00:00",
+        "exit_time": "2024-08-03T00:00:00+00:00",
+        "r": -0.753654163234495,
+        "return_fraction": -0.00753654163234495,
+        "side": "long",
+        "signal_strength": 0.0016438796841013504
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-08-09T08:00:00+00:00",
+        "exit_time": "2024-08-13T00:00:00+00:00",
+        "r": -0.16771871540896865,
+        "return_fraction": -0.0016771871540896867,
+        "side": "long",
+        "signal_strength": 0.001725598549137788
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2024-08-05T08:00:00+00:00",
+        "exit_time": "2024-08-27T00:00:00+00:00",
+        "r": 3.0250346039987277,
+        "return_fraction": 0.030250346039987278,
+        "side": "long",
+        "signal_strength": 0.006151141994738501
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-08-27T08:00:00+00:00",
+        "exit_time": "2024-08-30T16:45:00+00:00",
+        "r": -1.0250468750000008,
+        "return_fraction": -0.010250468750000009,
+        "side": "long",
+        "signal_strength": 0.06406627604053247
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-09-02T08:00:00+00:00",
+        "exit_time": "2024-09-03T00:00:00+00:00",
+        "r": -0.01999118648529944,
+        "return_fraction": -0.0001999118648529944,
+        "side": "long",
+        "signal_strength": 0.03540306653102832
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-08-14T08:00:00+00:00",
+        "exit_time": "2024-09-06T00:00:00+00:00",
+        "r": -0.2525591169228873,
+        "return_fraction": -0.002525591169228873,
+        "side": "long",
+        "signal_strength": 0.0004760455949638619
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-09-06T08:00:00+00:00",
+        "exit_time": "2024-09-06T16:15:00+00:00",
+        "r": -1.0205156250000003,
+        "return_fraction": -0.010205156250000003,
+        "side": "long",
+        "signal_strength": 0.014156213414712631
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2024-09-03T08:00:00+00:00",
+        "exit_time": "2024-09-19T00:00:00+00:00",
+        "r": 0.7182848407510695,
+        "return_fraction": 0.007182848407510695,
+        "side": "long",
+        "signal_strength": 0.024889742094861528
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-09-19T08:00:00+00:00",
+        "exit_time": "2024-10-16T00:00:00+00:00",
+        "r": 0.9295273570267429,
+        "return_fraction": 0.00929527357026743,
+        "side": "long",
+        "signal_strength": 0.01693118845572451
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-08-14T08:00:00+00:00",
+        "exit_time": "2024-10-29T00:00:00+00:00",
+        "r": 3.0864037668155784,
+        "return_fraction": 0.030864037668155785,
+        "side": "long",
+        "signal_strength": 0.011062029347053423
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-10-29T08:00:00+00:00",
+        "exit_time": "2024-10-31T13:45:00+00:00",
+        "r": -1.0233593750000027,
+        "return_fraction": -0.010233593750000028,
+        "side": "long",
+        "signal_strength": 0.03863489315799861
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-09-13T08:00:00+00:00",
+        "exit_time": "2024-11-07T00:00:00+00:00",
+        "r": 0.8693286276969808,
+        "return_fraction": 0.008693286276969808,
+        "side": "long",
+        "signal_strength": 0.01195767436331704
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-11-01T08:00:00+00:00",
+        "exit_time": "2024-11-08T00:00:00+00:00",
+        "r": 3.5852979878893962,
+        "return_fraction": 0.035852979878893965,
+        "side": "long",
+        "signal_strength": 0.01916466503655238
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2024-07-01T08:00:00+00:00",
+        "exit_time": "2024-11-10T23:00:00+00:00",
+        "r": 9.070324380857809,
+        "return_fraction": 0.09070324380857808,
+        "side": "long",
+        "signal_strength": 0.04675724909413432
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-11-11T08:00:00+00:00",
+        "exit_time": "2024-11-15T15:00:00+00:00",
+        "r": -1.026437499999997,
+        "return_fraction": -0.01026437499999997,
+        "side": "long",
+        "signal_strength": 0.07296872688995466
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-11-07T08:00:00+00:00",
+        "exit_time": "2024-11-15T17:45:00+00:00",
+        "r": -1.0326093749999998,
+        "return_fraction": -0.01032609375,
+        "side": "long",
+        "signal_strength": 0.051901013303807565
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-11-18T08:00:00+00:00",
+        "exit_time": "2024-11-24T23:00:00+00:00",
+        "r": 0.8525590878178652,
+        "return_fraction": 0.008525590878178653,
+        "side": "long",
+        "signal_strength": 0.018226698471329354
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-11-18T08:00:00+00:00",
+        "exit_time": "2024-12-11T00:00:00+00:00",
+        "r": 1.4798121196096428,
+        "return_fraction": 0.014798121196096428,
+        "side": "long",
+        "signal_strength": 0.051605477022920766
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2024-12-11T08:00:00+00:00",
+        "exit_time": "2024-12-13T00:00:00+00:00",
+        "r": -0.7511297053075595,
+        "return_fraction": -0.007511297053075595,
+        "side": "long",
+        "signal_strength": 0.07746185932633105
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-12-13T08:00:00+00:00",
+        "exit_time": "2024-12-17T19:30:00+00:00",
+        "r": -1.0267187500000021,
+        "return_fraction": -0.010267187500000021,
+        "side": "long",
+        "signal_strength": 0.04679421366265315
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2024-12-18T08:00:00+00:00",
+        "exit_time": "2024-12-18T19:45:00+00:00",
+        "r": -1.0207343749999997,
+        "return_fraction": -0.010207343749999999,
+        "side": "long",
+        "signal_strength": 0.026811163124894136
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2024-12-19T08:00:00+00:00",
+        "exit_time": "2025-01-02T13:00:00+00:00",
+        "r": -1.0413124999999974,
+        "return_fraction": -0.010413124999999974,
+        "side": "long",
+        "signal_strength": 0.014019751094749837
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-01-03T08:00:00+00:00",
+        "exit_time": "2025-01-05T22:00:00+00:00",
+        "r": 0.16505981647473178,
+        "return_fraction": 0.0016505981647473179,
+        "side": "long",
+        "signal_strength": 0.0072149381931965
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-01-07T08:00:00+00:00",
+        "exit_time": "2025-01-08T11:30:00+00:00",
+        "r": -1.0217187500000011,
+        "return_fraction": -0.010217187500000011,
+        "side": "long",
+        "signal_strength": 0.010825597534880119
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2024-11-25T08:00:00+00:00",
+        "exit_time": "2025-01-13T00:00:00+00:00",
+        "r": -0.23656365542572555,
+        "return_fraction": -0.0023656365542572555,
+        "side": "long",
+        "signal_strength": 0.05101731200804501
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-01-13T08:00:00+00:00",
+        "exit_time": "2025-01-13T16:00:00+00:00",
+        "r": -1.0205000000000006,
+        "return_fraction": -0.010205000000000006,
+        "side": "long",
+        "signal_strength": 0.026474190138042964
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-01-14T08:00:00+00:00",
+        "exit_time": "2025-01-16T00:00:00+00:00",
+        "r": 0.747178390358922,
+        "return_fraction": 0.00747178390358922,
+        "side": "long",
+        "signal_strength": 0.02358489509531128
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-01-16T08:00:00+00:00",
+        "exit_time": "2025-01-19T23:00:00+00:00",
+        "r": -0.747071020131253,
+        "return_fraction": -0.00747071020131253,
+        "side": "long",
+        "signal_strength": 0.03776926747751497
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2024-11-08T08:00:00+00:00",
+        "exit_time": "2025-01-27T00:00:00+00:00",
+        "r": 1.5111794631424522,
+        "return_fraction": 0.015111794631424523,
+        "side": "long",
+        "signal_strength": 0.08309172778727321
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-01-20T08:00:00+00:00",
+        "exit_time": "2025-01-27T10:00:00+00:00",
+        "r": -1.0306249999999997,
+        "return_fraction": -0.010306249999999998,
+        "side": "long",
+        "signal_strength": 0.04322118088014929
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-01-27T08:00:00+00:00",
+        "exit_time": "2025-02-05T00:00:00+00:00",
+        "r": 0.8736612985039598,
+        "return_fraction": 0.008736612985039598,
+        "side": "long",
+        "signal_strength": 0.027833558841033484
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-02-05T08:00:00+00:00",
+        "exit_time": "2025-02-07T00:00:00+00:00",
+        "r": -0.12404205739249362,
+        "return_fraction": -0.0012404205739249361,
+        "side": "long",
+        "signal_strength": 0.04297921755503196
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-02-07T08:00:00+00:00",
+        "exit_time": "2025-02-09T23:00:00+00:00",
+        "r": -0.8918604388449612,
+        "return_fraction": -0.008918604388449613,
+        "side": "long",
+        "signal_strength": 0.032360987955139316
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-02-10T08:00:00+00:00",
+        "exit_time": "2025-02-11T00:00:00+00:00",
+        "r": -0.12896401562140736,
+        "return_fraction": -0.0012896401562140737,
+        "side": "long",
+        "signal_strength": 0.0200008472494988
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-02-11T08:00:00+00:00",
+        "exit_time": "2025-02-13T00:00:00+00:00",
+        "r": 0.09588538607845566,
+        "return_fraction": 0.0009588538607845567,
+        "side": "long",
+        "signal_strength": 0.023851834573323714
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-02-13T08:00:00+00:00",
+        "exit_time": "2025-02-25T16:00:00+00:00",
+        "r": -1.0385,
+        "return_fraction": -0.010385,
+        "side": "long",
+        "signal_strength": 0.038275399574309706
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-01-28T08:00:00+00:00",
+        "exit_time": "2025-02-26T00:00:00+00:00",
+        "r": -0.16710413414083067,
+        "return_fraction": -0.0016710413414083066,
+        "side": "long",
+        "signal_strength": 0.02287022136599268
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2024-10-16T08:00:00+00:00",
+        "exit_time": "2025-02-27T00:00:00+00:00",
+        "r": 4.941469480058769,
+        "return_fraction": 0.049414694800587695,
+        "side": "long",
+        "signal_strength": 0.046999923557494196
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-02-26T08:00:00+00:00",
+        "exit_time": "2025-02-27T00:00:00+00:00",
+        "r": -0.0833160645786444,
+        "return_fraction": -0.0008331606457864441,
+        "side": "long",
+        "signal_strength": 0.00013580868598878545
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-02-26T08:00:00+00:00",
+        "exit_time": "2025-02-27T00:00:00+00:00",
+        "r": -0.48099706996805386,
+        "return_fraction": -0.0048099706996805386,
+        "side": "long",
+        "signal_strength": 0.003611879867473692
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-03-03T08:00:00+00:00",
+        "exit_time": "2025-03-03T20:00:00+00:00",
+        "r": -1.020749999999999,
+        "return_fraction": -0.01020749999999999,
+        "side": "long",
+        "signal_strength": 0.015295477315844833
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2025-03-02T08:00:00+00:00",
+        "exit_time": "2025-03-08T00:00:00+00:00",
+        "r": 0.05984859101032639,
+        "return_fraction": 0.000598485910103264,
+        "side": "long",
+        "signal_strength": 0.011833713239066207
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-03-18T08:00:00+00:00",
+        "exit_time": "2025-04-03T12:45:00+00:00",
+        "r": -1.0442968749999981,
+        "return_fraction": -0.010442968749999981,
+        "side": "long",
+        "signal_strength": 0.004951034877398855
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-03-04T08:00:00+00:00",
+        "exit_time": "2025-04-04T13:00:00+00:00",
+        "r": -1.0668124999999982,
+        "return_fraction": -0.010668124999999981,
+        "side": "long",
+        "signal_strength": 0.004583875652724949
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-04-14T08:00:00+00:00",
+        "exit_time": "2025-04-15T00:00:00+00:00",
+        "r": 0.030479933579671964,
+        "return_fraction": 0.00030479933579671966,
+        "side": "long",
+        "signal_strength": 0.004801105738149847
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-04-17T08:00:00+00:00",
+        "exit_time": "2025-05-11T22:00:00+00:00",
+        "r": 0.013277719622853783,
+        "return_fraction": 0.00013277719622853783,
+        "side": "long",
+        "signal_strength": 0.006499647727183329
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-03-05T08:00:00+00:00",
+        "exit_time": "2025-05-12T00:00:00+00:00",
+        "r": 4.668983775688013,
+        "return_fraction": 0.04668983775688013,
+        "side": "long",
+        "signal_strength": 0.010726012374428233
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-05-12T08:00:00+00:00",
+        "exit_time": "2025-05-13T00:00:00+00:00",
+        "r": 0.4339879328891376,
+        "return_fraction": 0.004339879328891376,
+        "side": "long",
+        "signal_strength": 0.03441372808553537
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-05-13T08:00:00+00:00",
+        "exit_time": "2025-05-22T00:00:00+00:00",
+        "r": 0.4158166214457327,
+        "return_fraction": 0.004158166214457327,
+        "side": "long",
+        "signal_strength": 0.06393761649082495
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-05-22T08:00:00+00:00",
+        "exit_time": "2025-05-23T00:00:00+00:00",
+        "r": -0.3108195276050457,
+        "return_fraction": -0.0031081952760504575,
+        "side": "long",
+        "signal_strength": 0.04486306183248436
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-05-23T08:00:00+00:00",
+        "exit_time": "2025-05-25T22:00:00+00:00",
+        "r": -0.4018800409480664,
+        "return_fraction": -0.004018800409480664,
+        "side": "long",
+        "signal_strength": 0.047487335997059336
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-05-26T08:00:00+00:00",
+        "exit_time": "2025-05-28T23:30:00+00:00",
+        "r": -1.023968749999998,
+        "return_fraction": -0.010239687499999981,
+        "side": "long",
+        "signal_strength": 0.05148096245787312
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-05-29T08:00:00+00:00",
+        "exit_time": "2025-05-30T00:00:00+00:00",
+        "r": -0.9286262308326493,
+        "return_fraction": -0.009286262308326493,
+        "side": "long",
+        "signal_strength": 0.05778083699706027
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-05-30T08:00:00+00:00",
+        "exit_time": "2025-06-03T00:00:00+00:00",
+        "r": 0.8022059079296212,
+        "return_fraction": 0.008022059079296212,
+        "side": "long",
+        "signal_strength": 0.05115569447133597
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-06-02T08:00:00+00:00",
+        "exit_time": "2025-06-03T00:00:00+00:00",
+        "r": 0.48937205257039185,
+        "return_fraction": 0.004893720525703919,
+        "side": "long",
+        "signal_strength": 0.046383756449145115
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-03T08:00:00+00:00",
+        "exit_time": "2025-06-04T00:00:00+00:00",
+        "r": -0.1020750834192136,
+        "return_fraction": -0.0010207508341921361,
+        "side": "long",
+        "signal_strength": 0.06765001672315127
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-06-04T08:00:00+00:00",
+        "exit_time": "2025-06-05T00:00:00+00:00",
+        "r": 0.2404553767620198,
+        "return_fraction": 0.002404553767620198,
+        "side": "long",
+        "signal_strength": 0.05286973652558689
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-05T08:00:00+00:00",
+        "exit_time": "2025-06-05T20:30:00+00:00",
+        "r": -1.0207812499999993,
+        "return_fraction": -0.010207812499999993,
+        "side": "long",
+        "signal_strength": 0.06477945802645468
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2025-04-24T08:00:00+00:00",
+        "exit_time": "2025-06-06T00:00:00+00:00",
+        "r": 1.7193990374936705,
+        "return_fraction": 0.017193990374936706,
+        "side": "long",
+        "signal_strength": 0.010243832940625863
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-06-06T08:00:00+00:00",
+        "exit_time": "2025-06-08T21:00:00+00:00",
+        "r": -0.26422311563448736,
+        "return_fraction": -0.0026422311563448738,
+        "side": "long",
+        "signal_strength": 0.05205369889819004
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2025-01-09T08:00:00+00:00",
+        "exit_time": "2025-06-09T00:00:00+00:00",
+        "r": 16.52731972464241,
+        "return_fraction": 0.16527319724642411,
+        "side": "long",
+        "signal_strength": 0.030787867765385477
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-06-06T08:00:00+00:00",
+        "exit_time": "2025-06-10T00:00:00+00:00",
+        "r": 0.29974821226163484,
+        "return_fraction": 0.0029974821226163486,
+        "side": "long",
+        "signal_strength": 0.0525695344660933
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2025-06-10T08:00:00+00:00",
+        "exit_time": "2025-06-11T00:00:00+00:00",
+        "r": -0.04710077733913361,
+        "return_fraction": -0.00047100777339133607,
+        "side": "long",
+        "signal_strength": 0.102941784738364
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-06-11T08:00:00+00:00",
+        "exit_time": "2025-06-12T00:00:00+00:00",
+        "r": -0.16702697928262056,
+        "return_fraction": -0.0016702697928262056,
+        "side": "long",
+        "signal_strength": 0.10375535913465965
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-09T08:00:00+00:00",
+        "exit_time": "2025-06-21T21:30:00+00:00",
+        "r": -1.0388437500000012,
+        "return_fraction": -0.010388437500000012,
+        "side": "long",
+        "signal_strength": 0.11182230817026233
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2025-06-12T08:00:00+00:00",
+        "exit_time": "2025-06-24T00:00:00+00:00",
+        "r": -0.059854588317787005,
+        "return_fraction": -0.00059854588317787,
+        "side": "long",
+        "signal_strength": 0.08647856189083215
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-24T08:00:00+00:00",
+        "exit_time": "2025-06-26T00:00:00+00:00",
+        "r": 0.07985361411080122,
+        "return_fraction": 0.0007985361411080122,
+        "side": "long",
+        "signal_strength": 0.0731375889606291
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-06-26T08:00:00+00:00",
+        "exit_time": "2025-06-27T00:00:00+00:00",
+        "r": -0.16501699255976224,
+        "return_fraction": -0.0016501699255976224,
+        "side": "long",
+        "signal_strength": 0.055955804692370915
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-27T08:00:00+00:00",
+        "exit_time": "2025-06-29T00:00:00+00:00",
+        "r": -0.053139240066120016,
+        "return_fraction": -0.0005313924006612002,
+        "side": "long",
+        "signal_strength": 0.06200913467574976
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-06-03T08:00:00+00:00",
+        "exit_time": "2025-06-30T00:00:00+00:00",
+        "r": 1.3441836877697644,
+        "return_fraction": 0.013441836877697644,
+        "side": "long",
+        "signal_strength": 0.07464826386825842
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-06-30T08:00:00+00:00",
+        "exit_time": "2025-07-01T00:00:00+00:00",
+        "r": 0.5085371239806902,
+        "return_fraction": 0.005085371239806902,
+        "side": "long",
+        "signal_strength": 0.05796858371234806
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-06-30T08:00:00+00:00",
+        "exit_time": "2025-07-02T00:00:00+00:00",
+        "r": -0.410650291220331,
+        "return_fraction": -0.00410650291220331,
+        "side": "long",
+        "signal_strength": 0.07026103865254685
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2025-07-02T08:00:00+00:00",
+        "exit_time": "2025-07-03T00:00:00+00:00",
+        "r": 0.18578257840954782,
+        "return_fraction": 0.0018578257840954782,
+        "side": "long",
+        "signal_strength": 0.06090268360560683
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-07-01T08:00:00+00:00",
+        "exit_time": "2025-08-20T00:00:00+00:00",
+        "r": 0.9647333015280648,
+        "return_fraction": 0.009647333015280648,
+        "side": "long",
+        "signal_strength": 0.06162225242787398
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-08-20T08:00:00+00:00",
+        "exit_time": "2025-08-21T00:00:00+00:00",
+        "r": 0.07359447926915123,
+        "return_fraction": 0.0007359447926915124,
+        "side": "long",
+        "signal_strength": 0.060638924162691434
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2025-06-23T08:00:00+00:00",
+        "exit_time": "2025-08-26T00:00:00+00:00",
+        "r": 1.7365760183117835,
+        "return_fraction": 0.017365760183117834,
+        "side": "long",
+        "signal_strength": 0.057918528022296516
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-08-26T08:00:00+00:00",
+        "exit_time": "2025-09-03T00:00:00+00:00",
+        "r": 0.02998151599469446,
+        "return_fraction": 0.0002998151599469446,
+        "side": "long",
+        "signal_strength": 0.08407939465434466
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-06-23T08:00:00+00:00",
+        "exit_time": "2025-10-05T22:00:00+00:00",
+        "r": 6.7106193244451955,
+        "return_fraction": 0.06710619324445195,
+        "side": "long",
+        "signal_strength": 0.05185709674007343
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-07-03T08:00:00+00:00",
+        "exit_time": "2025-10-25T00:00:00+00:00",
+        "r": 6.437995387020503,
+        "return_fraction": 0.06437995387020502,
+        "side": "long",
+        "signal_strength": 0.12748668772013677
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2025-10-26T08:00:00+00:00",
+        "exit_time": "2025-10-31T00:00:00+00:00",
+        "r": -0.47239776729701277,
+        "return_fraction": -0.004723977672970127,
+        "side": "long",
+        "signal_strength": 0.07586803049318232
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-10-31T08:00:00+00:00",
+        "exit_time": "2025-11-02T23:00:00+00:00",
+        "r": -0.005404130407635238,
+        "return_fraction": -5.404130407635238e-05,
+        "side": "long",
+        "signal_strength": 0.053397722859119534
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-11-04T08:00:00+00:00",
+        "exit_time": "2025-11-18T00:00:00+00:00",
+        "r": -0.5792081863729918,
+        "return_fraction": -0.005792081863729918,
+        "side": "long",
+        "signal_strength": 0.045134585040571606
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-10-13T08:00:00+00:00",
+        "exit_time": "2025-11-19T00:00:00+00:00",
+        "r": -0.4868949926121048,
+        "return_fraction": -0.004868949926121048,
+        "side": "long",
+        "signal_strength": 0.05522156365198732
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-11-19T08:00:00+00:00",
+        "exit_time": "2025-11-20T00:00:00+00:00",
+        "r": 0.23491464882813648,
+        "return_fraction": 0.002349146488281365,
+        "side": "long",
+        "signal_strength": 0.00825616050041878
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-11-20T08:00:00+00:00",
+        "exit_time": "2025-11-20T17:00:00+00:00",
+        "r": -1.0205624999999996,
+        "return_fraction": -0.010205624999999996,
+        "side": "long",
+        "signal_strength": 0.02587620266497161
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-11-24T08:00:00+00:00",
+        "exit_time": "2025-11-25T00:00:00+00:00",
+        "r": 0.016459774680618506,
+        "return_fraction": 0.00016459774680618506,
+        "side": "long",
+        "signal_strength": 0.007281158985751407
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-11-18T08:00:00+00:00",
+        "exit_time": "2025-11-30T22:00:00+00:00",
+        "r": 1.4243457141140432,
+        "return_fraction": 0.014243457141140432,
+        "side": "long",
+        "signal_strength": 0.01681609877988773
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-12-01T08:00:00+00:00",
+        "exit_time": "2025-12-02T00:00:00+00:00",
+        "r": -0.2804318982040973,
+        "return_fraction": -0.002804318982040973,
+        "side": "long",
+        "signal_strength": 0.03254494740489936
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-12-02T08:00:00+00:00",
+        "exit_time": "2025-12-05T00:00:00+00:00",
+        "r": 0.44836718152907684,
+        "return_fraction": 0.004483671815290769,
+        "side": "long",
+        "signal_strength": 0.025294035078036264
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-11-25T08:00:00+00:00",
+        "exit_time": "2025-12-17T00:00:00+00:00",
+        "r": 0.2444578731586848,
+        "return_fraction": 0.002444578731586848,
+        "side": "long",
+        "signal_strength": 0.011669474886293966
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-12-17T08:00:00+00:00",
+        "exit_time": "2025-12-25T22:00:00+00:00",
+        "r": 2.1183300868445194,
+        "return_fraction": 0.021183300868445193,
+        "side": "long",
+        "signal_strength": 0.026389264558705106
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2025-12-26T08:00:00+00:00",
+        "exit_time": "2025-12-28T23:00:00+00:00",
+        "r": 0.001213639663057587,
+        "return_fraction": 1.213639663057587e-05,
+        "side": "long",
+        "signal_strength": 0.042176034571683285
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2025-12-29T08:00:00+00:00",
+        "exit_time": "2026-01-08T00:00:00+00:00",
+        "r": 0.23237267378780846,
+        "return_fraction": 0.0023237267378780845,
+        "side": "long",
+        "signal_strength": 0.03844055775376483
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-01-08T08:00:00+00:00",
+        "exit_time": "2026-01-09T00:00:00+00:00",
+        "r": -0.20943240767095359,
+        "return_fraction": -0.0020943240767095357,
+        "side": "long",
+        "signal_strength": 0.04282392871459494
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-09T08:00:00+00:00",
+        "exit_time": "2026-01-11T22:00:00+00:00",
+        "r": 0.21444243238085137,
+        "return_fraction": 0.0021444243238085137,
+        "side": "long",
+        "signal_strength": 0.03818151148162889
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-01-12T08:00:00+00:00",
+        "exit_time": "2026-01-13T00:00:00+00:00",
+        "r": 0.4086828639612792,
+        "return_fraction": 0.004086828639612792,
+        "side": "long",
+        "signal_strength": 0.03684424127624203
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-13T08:00:00+00:00",
+        "exit_time": "2026-01-14T16:45:00+00:00",
+        "r": -1.0220468749999958,
+        "return_fraction": -0.010220468749999958,
+        "side": "long",
+        "signal_strength": 0.03883017551439121
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-15T08:00:00+00:00",
+        "exit_time": "2026-01-16T02:30:00+00:00",
+        "r": -1.0211562500000044,
+        "return_fraction": -0.010211562500000045,
+        "side": "long",
+        "signal_strength": 0.04192639548083279
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-16T08:00:00+00:00",
+        "exit_time": "2026-01-26T04:15:00+00:00",
+        "r": -1.034765624999994,
+        "return_fraction": -0.01034765624999994,
+        "side": "long",
+        "signal_strength": 0.036296346647218126
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-01-26T08:00:00+00:00",
+        "exit_time": "2026-01-27T00:00:00+00:00",
+        "r": 0.3062265352730541,
+        "return_fraction": 0.003062265352730541,
+        "side": "long",
+        "signal_strength": 0.03295520036435167
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2025-12-05T08:00:00+00:00",
+        "exit_time": "2026-01-28T00:00:00+00:00",
+        "r": 1.3634052272589852,
+        "return_fraction": 0.013634052272589852,
+        "side": "long",
+        "signal_strength": 0.03871576852769767
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-01-28T08:00:00+00:00",
+        "exit_time": "2026-01-29T00:00:00+00:00",
+        "r": -0.1281088242337262,
+        "return_fraction": -0.001281088242337262,
+        "side": "long",
+        "signal_strength": 0.02820285620611627
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-01-27T08:00:00+00:00",
+        "exit_time": "2026-01-29T15:45:00+00:00",
+        "r": -1.0234843749999971,
+        "return_fraction": -0.01023484374999997,
+        "side": "long",
+        "signal_strength": 0.02939188066678207
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-01-30T08:00:00+00:00",
+        "exit_time": "2026-02-01T23:00:00+00:00",
+        "r": -0.3882664339893258,
+        "return_fraction": -0.003882664339893258,
+        "side": "long",
+        "signal_strength": 0.031044062068329357
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-02-02T08:00:00+00:00",
+        "exit_time": "2026-02-11T00:00:00+00:00",
+        "r": -0.6351288934394315,
+        "return_fraction": -0.006351288934394315,
+        "side": "long",
+        "signal_strength": 0.029425884479024913
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-02-11T08:00:00+00:00",
+        "exit_time": "2026-02-17T13:45:00+00:00",
+        "r": -1.0293593749999932,
+        "return_fraction": -0.010293593749999932,
+        "side": "long",
+        "signal_strength": 0.01856024943332044
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-02-18T08:00:00+00:00",
+        "exit_time": "2026-02-19T00:00:00+00:00",
+        "r": -0.5574947605176499,
+        "return_fraction": -0.005574947605176499,
+        "side": "long",
+        "signal_strength": 0.005082602862867136
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-02-19T08:00:00+00:00",
+        "exit_time": "2026-02-22T22:00:00+00:00",
+        "r": -0.2285147881521565,
+        "return_fraction": -0.002285147881521565,
+        "side": "long",
+        "signal_strength": 0.006972107938551117
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-02-23T08:00:00+00:00",
+        "exit_time": "2026-02-25T00:00:00+00:00",
+        "r": -0.5776122288564807,
+        "return_fraction": -0.0057761222885648065,
+        "side": "long",
+        "signal_strength": 0.008097601890498548
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-02-25T08:00:00+00:00",
+        "exit_time": "2026-03-01T22:15:00+00:00",
+        "r": -0.5617978662884048,
+        "return_fraction": -0.005617978662884048,
+        "side": "long",
+        "signal_strength": 0.006363530277152481
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-01-29T08:00:00+00:00",
+        "exit_time": "2026-03-01T23:00:00+00:00",
+        "r": -1.0674374999999974,
+        "return_fraction": -0.010674374999999974,
+        "side": "long",
+        "signal_strength": 0.02758663978753319
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-03-02T08:00:00+00:00",
+        "exit_time": "2026-03-03T00:00:00+00:00",
+        "r": -0.27992293031397886,
+        "return_fraction": -0.0027992293031397887,
+        "side": "long",
+        "signal_strength": 0.0013806000170893595
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-03-03T08:00:00+00:00",
+        "exit_time": "2026-03-04T00:00:00+00:00",
+        "r": 0.012193151644028368,
+        "return_fraction": 0.00012193151644028368,
+        "side": "long",
+        "signal_strength": 0.0025881773647258182
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-03-05T08:00:00+00:00",
+        "exit_time": "2026-03-05T19:30:00+00:00",
+        "r": -1.0207187500000006,
+        "return_fraction": -0.010207187500000006,
+        "side": "long",
+        "signal_strength": 0.0033099789248966535
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2025-08-21T08:00:00+00:00",
+        "exit_time": "2026-03-20T00:00:00+00:00",
+        "r": 36.674248017669555,
+        "return_fraction": 0.3667424801766956,
+        "side": "long",
+        "signal_strength": 0.0652913461767989
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2025-09-03T08:00:00+00:00",
+        "exit_time": "2026-03-22T22:00:00+00:00",
+        "r": 16.838902010026057,
+        "return_fraction": 0.16838902010026058,
+        "side": "long",
+        "signal_strength": 0.05674918207243367
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-04-08T08:00:00+00:00",
+        "exit_time": "2026-04-10T00:00:00+00:00",
+        "r": -0.06048068713335604,
+        "return_fraction": -0.0006048068713335604,
+        "side": "long",
+        "signal_strength": 0.0022133015374314817
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-04-10T08:00:00+00:00",
+        "exit_time": "2026-04-13T00:00:00+00:00",
+        "r": -0.3679154780790304,
+        "return_fraction": -0.0036791547807903044,
+        "side": "long",
+        "signal_strength": 0.012877684849009615
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-03-02T08:00:00+00:00",
+        "exit_time": "2026-04-19T21:00:00+00:00",
+        "r": 1.9123039561701582,
+        "return_fraction": 0.019123039561701582,
+        "side": "long",
+        "signal_strength": 0.001457673131700657
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-04-20T08:00:00+00:00",
+        "exit_time": "2026-04-22T00:00:00+00:00",
+        "r": 0.2388468127933949,
+        "return_fraction": 0.002388468127933949,
+        "side": "long",
+        "signal_strength": 0.028420892567575476
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-04-08T08:00:00+00:00",
+        "exit_time": "2026-04-22T00:00:00+00:00",
+        "r": -0.344727045680974,
+        "return_fraction": -0.0034472704568097403,
+        "side": "long",
+        "signal_strength": 0.02653186831320462
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-04-22T08:00:00+00:00",
+        "exit_time": "2026-04-23T00:00:00+00:00",
+        "r": -0.07218422952555609,
+        "return_fraction": -0.0007218422952555609,
+        "side": "long",
+        "signal_strength": 0.03222637030469555
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2026-04-23T08:00:00+00:00",
+        "exit_time": "2026-04-25T00:00:00+00:00",
+        "r": -0.2127136198890301,
+        "return_fraction": -0.002127136198890301,
+        "side": "long",
+        "signal_strength": 0.040694678327056116
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-04-08T08:00:00+00:00",
+        "exit_time": "2026-04-26T22:00:00+00:00",
+        "r": -0.2677872052707768,
+        "return_fraction": -0.0026778720527077682,
+        "side": "long",
+        "signal_strength": 0.04462395614406691
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2026-04-27T08:00:00+00:00",
+        "exit_time": "2026-04-28T00:00:00+00:00",
+        "r": -0.1172250236957173,
+        "return_fraction": -0.001172250236957173,
+        "side": "long",
+        "signal_strength": 0.02397595772902547
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-04-27T08:00:00+00:00",
+        "exit_time": "2026-04-30T10:15:00+00:00",
+        "r": -1.0246406249999995,
+        "return_fraction": -0.010246406249999996,
+        "side": "long",
+        "signal_strength": 0.025867928377177597
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-05-01T08:00:00+00:00",
+        "exit_time": "2026-05-06T04:45:00+00:00",
+        "r": -1.027296875,
+        "return_fraction": -0.01027296875,
+        "side": "long",
+        "signal_strength": 0.009180248118655416
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-05-06T08:00:00+00:00",
+        "exit_time": "2026-05-08T00:00:00+00:00",
+        "r": 0.33408025864917457,
+        "return_fraction": 0.0033408025864917457,
+        "side": "long",
+        "signal_strength": 0.007838733967210758
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2026-04-22T08:00:00+00:00",
+        "exit_time": "2026-05-14T00:00:00+00:00",
+        "r": 0.27515865740466827,
+        "return_fraction": 0.002751586574046683,
+        "side": "long",
+        "signal_strength": 0.03199974408788676
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-05-14T08:00:00+00:00",
+        "exit_time": "2026-05-15T00:00:00+00:00",
+        "r": -0.5595500633112241,
+        "return_fraction": -0.005595500633112241,
+        "side": "long",
+        "signal_strength": 0.00634629468591513
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2026-05-15T08:00:00+00:00",
+        "exit_time": "2026-05-16T00:00:00+00:00",
+        "r": -0.5601441741766657,
+        "return_fraction": -0.005601441741766657,
+        "side": "long",
+        "signal_strength": 0.01963573368033265
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-05-08T08:00:00+00:00",
+        "exit_time": "2026-05-17T22:00:00+00:00",
+        "r": -0.7883359615423774,
+        "return_fraction": -0.007883359615423774,
+        "side": "long",
+        "signal_strength": 0.016578000764093655
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-05-18T08:00:00+00:00",
+        "exit_time": "2026-05-20T00:00:00+00:00",
+        "r": -0.3451965841213212,
+        "return_fraction": -0.003451965841213212,
+        "side": "long",
+        "signal_strength": 0.0022459300672097466
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-05-21T08:00:00+00:00",
+        "exit_time": "2026-05-22T00:00:00+00:00",
+        "r": 0.10090374459778709,
+        "return_fraction": 0.001009037445977871,
+        "side": "long",
+        "signal_strength": 0.0023799092163156598
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-05-25T08:00:00+00:00",
+        "exit_time": "2026-05-26T00:00:00+00:00",
+        "r": -0.045068368617742036,
+        "return_fraction": -0.00045068368617742034,
+        "side": "long",
+        "signal_strength": 0.00039771229182775726
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-05-26T08:00:00+00:00",
+        "exit_time": "2026-05-27T00:00:00+00:00",
+        "r": -0.16319347192836103,
+        "return_fraction": -0.0016319347192836104,
+        "side": "long",
+        "signal_strength": 0.0041357118214521045
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-04-14T08:00:00+00:00",
+        "exit_time": "2026-07-30T00:00:00+00:00",
+        "r": 2.5015481758149565,
+        "return_fraction": 0.025015481758149567,
+        "side": "long",
+        "signal_strength": 0.014671406689333597
+      },
+      {
+        "symbol": "GBPJPY",
+        "entry_time": "2026-05-22T08:00:00+00:00",
+        "exit_time": "2026-08-02T21:00:00+00:00",
+        "r": -1.0120159217575453,
+        "return_fraction": -0.010120159217575453,
+        "side": "long",
+        "signal_strength": 0.00470729422430656
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-03T08:00:00+00:00",
+        "exit_time": "2026-08-05T00:00:00+00:00",
+        "r": 0.03754911909613076,
+        "return_fraction": 0.0003754911909613076,
+        "side": "long",
+        "signal_strength": 0.00253941253389344
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-06T08:00:00+00:00",
+        "exit_time": "2026-08-07T00:00:00+00:00",
+        "r": -0.28652736679705143,
+        "return_fraction": -0.002865273667970514,
+        "side": "long",
+        "signal_strength": 6.906300942647609e-05
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2026-08-08T08:00:00+00:00",
+        "exit_time": "2026-08-10T00:00:00+00:00",
+        "r": -0.06292396495638475,
+        "return_fraction": -0.0006292396495638475,
+        "side": "long",
+        "signal_strength": 0.015035950904115388
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2026-08-07T08:00:00+00:00",
+        "exit_time": "2026-08-11T00:00:00+00:00",
+        "r": -0.34839379789564445,
+        "return_fraction": -0.0034839379789564444,
+        "side": "long",
+        "signal_strength": 0.005240600741300903
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-10T08:00:00+00:00",
+        "exit_time": "2026-08-11T00:00:00+00:00",
+        "r": -0.23349243798376654,
+        "return_fraction": -0.0023349243798376656,
+        "side": "long",
+        "signal_strength": 0.0060015680858696826
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-08-11T08:00:00+00:00",
+        "exit_time": "2026-08-12T00:00:00+00:00",
+        "r": 0.07432054559706279,
+        "return_fraction": 0.0007432054559706279,
+        "side": "long",
+        "signal_strength": 0.007794069169594973
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-12T08:00:00+00:00",
+        "exit_time": "2026-08-13T00:00:00+00:00",
+        "r": -0.1714449713520679,
+        "return_fraction": -0.001714449713520679,
+        "side": "long",
+        "signal_strength": 0.0002497447825059029
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-08-13T08:00:00+00:00",
+        "exit_time": "2026-08-14T00:00:00+00:00",
+        "r": -0.043075835581372,
+        "return_fraction": -0.00043075835581372,
+        "side": "long",
+        "signal_strength": 0.005472975514427099
+      },
+      {
+        "symbol": "EURUSD",
+        "entry_time": "2026-08-17T08:00:00+00:00",
+        "exit_time": "2026-08-19T00:00:00+00:00",
+        "r": -0.4983414516664558,
+        "return_fraction": -0.004983414516664559,
+        "side": "long",
+        "signal_strength": 0.001439437946477688
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-08-11T08:00:00+00:00",
+        "exit_time": "2026-08-19T00:00:00+00:00",
+        "r": -0.22839695502136526,
+        "return_fraction": -0.0022839695502136527,
+        "side": "long",
+        "signal_strength": 0.01873016404559871
+      },
+      {
+        "symbol": "USTEC",
+        "entry_time": "2026-07-31T08:00:00+00:00",
+        "exit_time": "2026-08-21T00:00:00+00:00",
+        "r": 0.7410361164704831,
+        "return_fraction": 0.00741036116470483,
+        "side": "long",
+        "signal_strength": 0.020476686415587936
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-04-28T08:00:00+00:00",
+        "exit_time": "2026-08-25T00:00:00+00:00",
+        "r": 4.453631614308149,
+        "return_fraction": 0.04453631614308149,
+        "side": "long",
+        "signal_strength": 0.026383501890491847
+      },
+      {
+        "symbol": "XAGUSD",
+        "entry_time": "2026-08-25T08:00:00+00:00",
+        "exit_time": "2026-08-30T22:00:00+00:00",
+        "r": -0.6401280411879554,
+        "return_fraction": -0.006401280411879554,
+        "side": "long",
+        "signal_strength": 0.03849950028680848
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-08-20T08:00:00+00:00",
+        "exit_time": "2026-08-30T22:00:00+00:00",
+        "r": -0.4201206743227962,
+        "return_fraction": -0.0042012067432279625,
+        "side": "long",
+        "signal_strength": 0.028633603598084454
+      },
+      {
+        "symbol": "BTCUSD",
+        "entry_time": "2026-08-21T08:00:00+00:00",
+        "exit_time": "2026-08-31T23:45:00+00:00",
+        "r": 0.7903197914320326,
+        "return_fraction": 0.007903197914320325,
+        "side": "long",
+        "signal_strength": 0.08023993661822364
+      },
+      {
+        "symbol": "ETHUSD",
+        "entry_time": "2026-08-20T08:00:00+00:00",
+        "exit_time": "2026-08-31T23:45:00+00:00",
+        "r": 1.906232609983602,
+        "return_fraction": 0.01906232609983602,
+        "side": "long",
+        "signal_strength": 0.12346255235432156
+      },
+      {
+        "symbol": "US30",
+        "entry_time": "2026-08-31T08:00:00+00:00",
+        "exit_time": "2026-08-31T23:45:00+00:00",
+        "r": -0.4437335834126874,
+        "return_fraction": -0.004437335834126874,
+        "side": "long",
+        "signal_strength": 0.032621756189943396
+      },
+      {
+        "symbol": "XAUUSD",
+        "entry_time": "2026-08-31T08:00:00+00:00",
+        "exit_time": "2026-08-31T23:45:00+00:00",
+        "r": 0.04582288807081506,
+        "return_fraction": 0.00045822888070815065,
+        "side": "long",
+        "signal_strength": 0.024295902885897797
+      }
+    ],
+    "rejected_by_risk_cap": 10
+  },
+  "locked_assets": [
+    {
+      "symbol": "XAUUSD",
+      "return_pct": 15.546271856237892,
+      "profit_factor": 12.553819988791036,
+      "win_rate": 33.33333333333333,
+      "max_dd_pct": 1.1516305946872474,
+      "trades": 6,
+      "sharpe": 1.1601488510950857,
+      "recovery": 13.499356415118383,
+      "expectancy_r": 2.6213811251905623,
+      "final_balance": 11554.627185623789,
+      "profitable_assets": 1,
+      "standalone_mtm_dd_pct": 16.03277220250273,
+      "standalone_trades": 6
+    },
+    {
+      "symbol": "XAGUSD",
+      "return_pct": 30.833282765385995,
+      "profit_factor": 14.39488056901989,
+      "win_rate": 33.33333333333333,
+      "max_dd_pct": 1.656707103188082,
+      "trades": 6,
+      "sharpe": 1.1761622069243023,
+      "recovery": 18.611185227643443,
+      "expectancy_r": 5.228719170488122,
+      "final_balance": 13083.3282765386,
+      "profitable_assets": 1,
+      "standalone_mtm_dd_pct": 32.65835148491644,
+      "standalone_trades": 6
+    },
+    {
+      "symbol": "BTCUSD",
+      "return_pct": 0.438288964865996,
+      "profit_factor": 1.7019034564530398,
+      "win_rate": 50.0,
+      "max_dd_pct": 0.6227156742091955,
+      "trades": 4,
+      "sharpe": 0.6612167070106983,
+      "recovery": 0.7038348045801027,
+      "expectancy_r": 0.11060257742591259,
+      "final_balance": 10043.828896486599,
+      "profitable_assets": 1,
+      "standalone_mtm_dd_pct": 2.7725951605350296,
+      "standalone_trades": 5
+    },
+    {
+      "symbol": "ETHUSD",
+      "return_pct": -1.9556501200325371,
+      "profit_factor": 0.5344961143223995,
+      "win_rate": 22.22222222222222,
+      "max_dd_pct": 3.7896433133745133,
+      "trades": 9,
+      "sharpe": -0.6068786986805738,
+      "recovery": -0.5160512370994397,
+      "expectancy_r": -0.21531615994955974,
+      "final_balance": 9804.434987996747,
+      "profitable_assets": 0,
+      "standalone_mtm_dd_pct": 5.703370478817527,
+      "standalone_trades": 11
+    },
+    {
+      "symbol": "USTEC",
+      "return_pct": 2.9335299130239356,
+      "profit_factor": 1.6416662158788888,
+      "win_rate": 46.15384615384615,
+      "max_dd_pct": 2.8162753353556447,
+      "trades": 13,
+      "sharpe": 0.5186916544764392,
+      "recovery": 1.041634628616127,
+      "expectancy_r": 0.23145581600985293,
+      "final_balance": 10293.352991302394,
+      "profitable_assets": 1,
+      "standalone_mtm_dd_pct": 5.831202328037765,
+      "standalone_trades": 13
+    },
+    {
+      "symbol": "US30",
+      "return_pct": 1.7911221909167718,
+      "profit_factor": 1.4068722264864504,
+      "win_rate": 46.15384615384615,
+      "max_dd_pct": 2.3478756917429733,
+      "trades": 13,
+      "sharpe": 0.3119323851541628,
+      "recovery": 0.7628692597379851,
+      "expectancy_r": 0.14620564854737672,
+      "final_balance": 10179.112219091678,
+      "profitable_assets": 1,
+      "standalone_mtm_dd_pct": 4.693361916173988,
+      "standalone_trades": 13
+    },
+    {
+      "symbol": "EURUSD",
+      "return_pct": -4.541179458100664,
+      "profit_factor": 0.028588368018352513,
+      "win_rate": 13.333333333333334,
+      "max_dd_pct": 4.541179458100664,
+      "trades": 15,
+      "sharpe": -3.221023624474363,
+      "recovery": -1.0,
+      "expectancy_r": -0.3089431457473931,
+      "final_balance": 9545.882054189933,
+      "profitable_assets": 0,
+      "standalone_mtm_dd_pct": 4.781852415459598,
+      "standalone_trades": 15
+    },
+    {
+      "symbol": "GBPJPY",
+      "return_pct": -0.7346718390259244,
+      "profit_factor": 0.9057789794432682,
+      "win_rate": 44.44444444444444,
+      "max_dd_pct": 5.011625339518677,
+      "trades": 18,
+      "sharpe": -0.15565013538991543,
+      "recovery": -0.14659352789857258,
+      "expectancy_r": -0.036059950578577894,
+      "final_balance": 9926.532816097408,
+      "profitable_assets": 0,
+      "standalone_mtm_dd_pct": 5.594119227298577,
+      "standalone_trades": 18
+    }
+  ],
+  "six_month_stability": [
+    {
+      "period": "2023-01\u21922023-07",
+      "return_pct": 31.174511678187233,
+      "profit_factor": 3.5632746663761834,
+      "win_rate": 52.77777777777778,
+      "max_dd_pct": 4.085196481227804,
+      "trades": 36,
+      "sharpe": 1.7031780133956769,
+      "recovery": 7.63109236518723,
+      "expectancy_r": 0.7792937525002954,
+      "final_balance": 13117.451167818723,
+      "profitable_assets": 7,
+      "max_standalone_mtm_dd_pct": 8.867272538486414
+    },
+    {
+      "period": "2023-07\u21922024-01",
+      "return_pct": 12.505685270710455,
+      "profit_factor": 1.6342183075135412,
+      "win_rate": 27.27272727272727,
+      "max_dd_pct": 16.138862324472868,
+      "trades": 44,
+      "sharpe": 0.6642677750075668,
+      "recovery": 0.7748802250916357,
+      "expectancy_r": 0.30538423742243426,
+      "final_balance": 11250.568527071046,
+      "profitable_assets": 4,
+      "max_standalone_mtm_dd_pct": 5.974282031716049
+    },
+    {
+      "period": "2024-01\u21922024-07",
+      "return_pct": 25.02022900118577,
+      "profit_factor": 2.8438268445085435,
+      "win_rate": 43.75,
+      "max_dd_pct": 5.0333658882023125,
+      "trades": 32,
+      "sharpe": 1.9418481240688539,
+      "recovery": 4.970874273183793,
+      "expectancy_r": 0.7259790282637375,
+      "final_balance": 12502.022900118576,
+      "profitable_assets": 6,
+      "max_standalone_mtm_dd_pct": 8.597804577991008
+    },
+    {
+      "period": "2024-07\u21922025-01",
+      "return_pct": 13.885061000178123,
+      "profit_factor": 1.6948446011953449,
+      "win_rate": 32.55813953488372,
+      "max_dd_pct": 11.28414216754442,
+      "trades": 43,
+      "sharpe": 1.0495373704948756,
+      "recovery": 1.2304932704689324,
+      "expectancy_r": 0.32500167363162924,
+      "final_balance": 11388.506100017812,
+      "profitable_assets": 5,
+      "max_standalone_mtm_dd_pct": 7.398239057649947
+    },
+    {
+      "period": "2025-01\u21922025-07",
+      "return_pct": 12.629529104409798,
+      "profit_factor": 1.680044859877134,
+      "win_rate": 40.74074074074074,
+      "max_dd_pct": 11.304344844640745,
+      "trades": 54,
+      "sharpe": 0.8531799220452948,
+      "recovery": 1.1172278692822528,
+      "expectancy_r": 0.24788759806623795,
+      "final_balance": 11262.95291044098,
+      "profitable_assets": 4,
+      "max_standalone_mtm_dd_pct": 8.03402847670246
+    },
+    {
+      "period": "2025-07\u21922026-01",
+      "return_pct": 79.86511747823373,
+      "profit_factor": 23.473200351243676,
+      "win_rate": 72.0,
+      "max_dd_pct": 2.3119203862244975,
+      "trades": 25,
+      "sharpe": 1.4976874233931528,
+      "recovery": 34.5449254888306,
+      "expectancy_r": 2.607947702589003,
+      "final_balance": 17986.511747823373,
+      "profitable_assets": 7,
+      "max_standalone_mtm_dd_pct": 9.965917209774599
+    },
+    {
+      "period": "2026-01\u21922026-07",
+      "return_pct": -1.5474418092901732,
+      "profit_factor": 0.9097345727309736,
+      "win_rate": 29.166666666666668,
+      "max_dd_pct": 11.574705750427016,
+      "trades": 48,
+      "sharpe": -0.12006556544040951,
+      "recovery": -0.13369167585388378,
+      "expectancy_r": -0.02468904814024318,
+      "final_balance": 9845.255819070982,
+      "profitable_assets": 3,
+      "max_standalone_mtm_dd_pct": 10.628715576034441
+    },
+    {
+      "period": "2026-07\u21922026-09",
+      "return_pct": -4.070179988076683,
+      "profit_factor": 0.5320778593740559,
+      "win_rate": 29.166666666666668,
+      "max_dd_pct": 7.163681705183588,
+      "trades": 24,
+      "sharpe": -2.058992978653343,
+      "recovery": -0.5681687371915939,
+      "expectancy_r": -0.170318845672499,
+      "final_balance": 9592.982001192331,
+      "profitable_assets": 3,
+      "max_standalone_mtm_dd_pct": 4.5565249515144295
+    }
+  ],
+  "monte_carlo": {
+    "paths": 10000,
+    "return_p5": -12.309791205901805,
+    "return_median": 42.42513748397576,
+    "return_p95": 225.08955465832102,
+    "dd_median": 9.137938003274577,
+    "dd_p95": 17.200818478676545,
+    "profitable_probability_pct": 79.62
+  },
+  "cost_stress_extra_0_05pct_per_trade": {
+    "return_pct": 41.744103686519885,
+    "profit_factor": 2.1640947493579406,
+    "win_rate": 29.761904761904763,
+    "max_dd_pct": 9.523922039221123,
+    "trades": 84,
+    "sharpe": 0.8950738766727745,
+    "recovery": 4.383079104869885,
+    "expectancy_r": 0.5384707069862906,
+    "final_balance": 14174.410368651988,
+    "profitable_assets": 5
+  },
+  "risk_sensitivity": [
+    {
+      "risk_percent": 0.5,
+      "return_pct": 23.30647264761476,
+      "profit_factor": 2.497005171550022,
+      "win_rate": 35.714285714285715,
+      "max_dd_pct": 4.3628134431157655,
+      "trades": 84,
+      "sharpe": 0.9856316530741064,
+      "recovery": 5.342074088542762,
+      "expectancy_r": 0.5384707069862906,
+      "final_balance": 12330.647264761476,
+      "profitable_assets": 5
+    },
+    {
+      "risk_percent": 1.0,
+      "return_pct": 47.80069216231653,
+      "profit_factor": 2.4404346967749535,
+      "win_rate": 35.714285714285715,
+      "max_dd_pct": 8.560712856935758,
+      "trades": 84,
+      "sharpe": 0.9856316530741064,
+      "recovery": 5.583728009705307,
+      "expectancy_r": 0.5384707069862906,
+      "final_balance": 14780.069216231652,
+      "profitable_assets": 5
+    }
+  ],
+  "predecessor_locked": {
+    "return_pct": -6.622820972917309,
+    "profit_factor": 0.7772529422830345,
+    "win_rate": 15.714285714285714,
+    "max_dd_pct": 20.14628276985444,
+    "trades": 70,
+    "sharpe": -0.2965376802512244,
+    "recovery": -0.32873662345429094,
+    "expectancy_r": -0.0831746570509911,
+    "final_balance": 9337.71790270827,
+    "profitable_assets": 2,
+    "max_standalone_mtm_dd_pct": 40.1706159727575
+  },
+  "basic_gate": false,
+  "improves_rejected_predecessor": true,
+  "eligible_for_portfolio_fit": false,
+  "decision": "REJECT / DO NOT ADD",
+  "production_changed": false
+}

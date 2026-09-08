@@ -1,0 +1,1422 @@
+{
+  "strategy": "Weekend Gap Overreaction Reversal \u2014 raw paper rules",
+  "generated_at": "2026-09-08T00:23:37.479429+00:00",
+  "settings": {
+    "rolling_weeks": 260,
+    "tail_quantile": 0.05,
+    "round_trip_cost_pct": 0.08,
+    "timeframe": "W1",
+    "entry": "broker weekly open, opposite an extreme weekend gap",
+    "exit": "broker weekly close"
+  },
+  "results": [
+    {
+      "symbol": "EURUSD",
+      "broker_symbol": "EURUSDm",
+      "history_from": "2014-01-12",
+      "test_from": "2019-01-13",
+      "test_to": "2026-09-04",
+      "round_trip_cost_pct": 0.08,
+      "trades": 41,
+      "wins": 20,
+      "losses": 21,
+      "win_rate_pct": 48.78,
+      "profit_factor": 1.42,
+      "total_return_pct": 7.78,
+      "cagr_pct": 0.99,
+      "max_drawdown_pct": 4.41,
+      "sharpe_ratio": 0.29,
+      "average_trade_pct": 0.19,
+      "average_win_pct": 1.34,
+      "average_loss_pct": -0.9,
+      "best_trade_pct": 4.44,
+      "worst_trade_pct": -4.27,
+      "max_win_streak": 5,
+      "max_loss_streak": 4,
+      "long_trades": 23,
+      "short_trades": 18,
+      "trades_detail": [
+        {
+          "week": "2019-05-05",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.242232,
+          "gross_return_pct": 0.533376,
+          "net_return_pct": 0.453376
+        },
+        {
+          "week": "2020-02-23",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.239976,
+          "gross_return_pct": 1.886078,
+          "net_return_pct": 1.806078
+        },
+        {
+          "week": "2020-03-08",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.471916,
+          "gross_return_pct": 2.115091,
+          "net_return_pct": 2.035091
+        },
+        {
+          "week": "2020-12-13",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.194748,
+          "gross_return_pct": -1.011542,
+          "net_return_pct": -1.091542
+        },
+        {
+          "week": "2020-12-20",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.245962,
+          "gross_return_pct": -0.333808,
+          "net_return_pct": -0.413808
+        },
+        {
+          "week": "2021-03-21",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.248963,
+          "gross_return_pct": -0.681292,
+          "net_return_pct": -0.761292
+        },
+        {
+          "week": "2022-02-27",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -1.213965,
+          "gross_return_pct": -1.837433,
+          "net_return_pct": -1.917433
+        },
+        {
+          "week": "2022-04-10",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.216762,
+          "gross_return_pct": 0.823906,
+          "net_return_pct": 0.743906
+        },
+        {
+          "week": "2022-09-04",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.29677,
+          "gross_return_pct": 1.205972,
+          "net_return_pct": 1.125972
+        },
+        {
+          "week": "2022-09-11",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.436068,
+          "gross_return_pct": 0.753281,
+          "net_return_pct": 0.673281
+        },
+        {
+          "week": "2022-09-25",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.209701,
+          "gross_return_pct": 1.354663,
+          "net_return_pct": 1.274663
+        },
+        {
+          "week": "2022-11-06",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.512447,
+          "gross_return_pct": 4.516871,
+          "net_return_pct": 4.436871
+        },
+        {
+          "week": "2022-11-13",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.240758,
+          "gross_return_pct": -0.063892,
+          "net_return_pct": -0.143892
+        },
+        {
+          "week": "2022-11-27",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.215787,
+          "gross_return_pct": 1.648119,
+          "net_return_pct": 1.568119
+        },
+        {
+          "week": "2023-03-12",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.317198,
+          "gross_return_pct": 0.070273,
+          "net_return_pct": -0.009727
+        },
+        {
+          "week": "2023-03-19",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.1368,
+          "gross_return_pct": -0.747205,
+          "net_return_pct": -0.827205
+        },
+        {
+          "week": "2023-10-08",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.34256,
+          "gross_return_pct": -0.396231,
+          "net_return_pct": -0.476231
+        },
+        {
+          "week": "2023-12-24",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.382097,
+          "gross_return_pct": 0.600675,
+          "net_return_pct": 0.520675
+        },
+        {
+          "week": "2024-03-31",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.133562,
+          "gross_return_pct": -0.443983,
+          "net_return_pct": -0.523983
+        },
+        {
+          "week": "2024-06-09",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.360802,
+          "gross_return_pct": -0.562158,
+          "net_return_pct": -0.642158
+        },
+        {
+          "week": "2024-06-30",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.201419,
+          "gross_return_pct": -0.971615,
+          "net_return_pct": -1.051615
+        },
+        {
+          "week": "2024-07-07",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.352128,
+          "gross_return_pct": 0.973067,
+          "net_return_pct": 0.893067
+        },
+        {
+          "week": "2024-11-03",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.412687,
+          "gross_return_pct": 1.472684,
+          "net_return_pct": 1.392684
+        },
+        {
+          "week": "2024-11-24",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.542775,
+          "gross_return_pct": -0.970911,
+          "net_return_pct": -1.050911
+        },
+        {
+          "week": "2025-02-02",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -1.171092,
+          "gross_return_pct": 0.864435,
+          "net_return_pct": 0.784435
+        },
+        {
+          "week": "2025-02-09",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.437701,
+          "gross_return_pct": 2.03768,
+          "net_return_pct": 1.95768
+        },
+        {
+          "week": "2025-03-02",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.216635,
+          "gross_return_pct": -4.186624,
+          "net_return_pct": -4.266624
+        },
+        {
+          "week": "2025-04-06",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.658909,
+          "gross_return_pct": 4.277766,
+          "net_return_pct": 4.197766
+        },
+        {
+          "week": "2025-04-13",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.375801,
+          "gross_return_pct": 0.625746,
+          "net_return_pct": 0.545746
+        },
+        {
+          "week": "2025-05-11",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.476775,
+          "gross_return_pct": -0.290321,
+          "net_return_pct": -0.370321
+        },
+        {
+          "week": "2025-07-27",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.113224,
+          "gross_return_pct": 1.41322,
+          "net_return_pct": 1.33322
+        },
+        {
+          "week": "2025-10-19",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.103804,
+          "gross_return_pct": 0.315539,
+          "net_return_pct": 0.235539
+        },
+        {
+          "week": "2026-01-25",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.27525,
+          "gross_return_pct": 0.089375,
+          "net_return_pct": 0.009375
+        },
+        {
+          "week": "2026-03-01",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.431779,
+          "gross_return_pct": -1.246281,
+          "net_return_pct": -1.326281
+        },
+        {
+          "week": "2026-03-08",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.542082,
+          "gross_return_pct": -1.200492,
+          "net_return_pct": -1.280492
+        },
+        {
+          "week": "2026-03-22",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.302122,
+          "gross_return_pct": -0.226284,
+          "net_return_pct": -0.306284
+        },
+        {
+          "week": "2026-04-12",
+          "symbol": "EURUSD",
+          "side": "Long",
+          "gap_pct": -0.524186,
+          "gross_return_pct": 0.857361,
+          "net_return_pct": 0.777361
+        },
+        {
+          "week": "2026-05-03",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.19435,
+          "gross_return_pct": -0.357666,
+          "net_return_pct": -0.437666
+        },
+        {
+          "week": "2026-05-24",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.172236,
+          "gross_return_pct": -0.327827,
+          "net_return_pct": -0.407827
+        },
+        {
+          "week": "2026-07-26",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.143244,
+          "gross_return_pct": -1.2391,
+          "net_return_pct": -1.3191
+        },
+        {
+          "week": "2026-08-02",
+          "symbol": "EURUSD",
+          "side": "Short",
+          "gap_pct": 0.158613,
+          "gross_return_pct": -0.09873,
+          "net_return_pct": -0.17873
+        }
+      ]
+    },
+    {
+      "symbol": "GBPUSD",
+      "broker_symbol": "GBPUSDm",
+      "history_from": "2014-01-12",
+      "test_from": "2019-01-13",
+      "test_to": "2026-09-04",
+      "round_trip_cost_pct": 0.08,
+      "trades": 41,
+      "wins": 20,
+      "losses": 21,
+      "win_rate_pct": 48.78,
+      "profit_factor": 1.44,
+      "total_return_pct": 10.12,
+      "cagr_pct": 1.27,
+      "max_drawdown_pct": 6.83,
+      "sharpe_ratio": 0.29,
+      "average_trade_pct": 0.26,
+      "average_win_pct": 1.72,
+      "average_loss_pct": -1.14,
+      "best_trade_pct": 6.01,
+      "worst_trade_pct": -6.83,
+      "max_win_streak": 7,
+      "max_loss_streak": 4,
+      "long_trades": 24,
+      "short_trades": 17,
+      "trades_detail": [
+        {
+          "week": "2019-03-03",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.377938,
+          "gross_return_pct": 1.809924,
+          "net_return_pct": 1.729924
+        },
+        {
+          "week": "2019-03-10",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.38029,
+          "gross_return_pct": 2.52364,
+          "net_return_pct": 2.44364
+        },
+        {
+          "week": "2019-05-05",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.248542,
+          "gross_return_pct": -1.066939,
+          "net_return_pct": -1.146939
+        },
+        {
+          "week": "2019-08-11",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.183609,
+          "gross_return_pct": -0.816767,
+          "net_return_pct": -0.896767
+        },
+        {
+          "week": "2020-03-08",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.221274,
+          "gross_return_pct": 6.087096,
+          "net_return_pct": 6.007096
+        },
+        {
+          "week": "2020-03-22",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.350392,
+          "gross_return_pct": -6.753826,
+          "net_return_pct": -6.833826
+        },
+        {
+          "week": "2020-04-05",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.307812,
+          "gross_return_pct": 1.778574,
+          "net_return_pct": 1.698574
+        },
+        {
+          "week": "2020-12-13",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.824023,
+          "gross_return_pct": -1.352477,
+          "net_return_pct": -1.432477
+        },
+        {
+          "week": "2020-12-20",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.71752,
+          "gross_return_pct": 0.960134,
+          "net_return_pct": 0.880134
+        },
+        {
+          "week": "2022-02-27",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.613315,
+          "gross_return_pct": -0.690975,
+          "net_return_pct": -0.770975
+        },
+        {
+          "week": "2022-09-04",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.294026,
+          "gross_return_pct": 0.953941,
+          "net_return_pct": 0.873941
+        },
+        {
+          "week": "2022-09-11",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.28867,
+          "gross_return_pct": 1.733826,
+          "net_return_pct": 1.653826
+        },
+        {
+          "week": "2022-09-25",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.454534,
+          "gross_return_pct": 3.353797,
+          "net_return_pct": 3.273797
+        },
+        {
+          "week": "2022-10-16",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.318846,
+          "gross_return_pct": -0.730305,
+          "net_return_pct": -0.810305
+        },
+        {
+          "week": "2022-10-23",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.678441,
+          "gross_return_pct": -2.119877,
+          "net_return_pct": -2.199877
+        },
+        {
+          "week": "2022-10-30",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.250865,
+          "gross_return_pct": -1.825589,
+          "net_return_pct": -1.905589
+        },
+        {
+          "week": "2022-11-06",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.57136,
+          "gross_return_pct": 4.637015,
+          "net_return_pct": 4.557015
+        },
+        {
+          "week": "2023-03-12",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.237415,
+          "gross_return_pct": -0.980872,
+          "net_return_pct": -1.060872
+        },
+        {
+          "week": "2023-03-19",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.161623,
+          "gross_return_pct": -0.257404,
+          "net_return_pct": -0.337404
+        },
+        {
+          "week": "2023-10-08",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.363482,
+          "gross_return_pct": -0.407611,
+          "net_return_pct": -0.487611
+        },
+        {
+          "week": "2024-07-07",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.271943,
+          "gross_return_pct": 1.635445,
+          "net_return_pct": 1.555445
+        },
+        {
+          "week": "2024-07-14",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.235873,
+          "gross_return_pct": -0.350368,
+          "net_return_pct": -0.430368
+        },
+        {
+          "week": "2024-11-03",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.364673,
+          "gross_return_pct": 0.360925,
+          "net_return_pct": 0.280925
+        },
+        {
+          "week": "2024-11-24",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.398976,
+          "gross_return_pct": -1.207261,
+          "net_return_pct": -1.287261
+        },
+        {
+          "week": "2025-02-02",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.711868,
+          "gross_return_pct": 0.792432,
+          "net_return_pct": 0.712432
+        },
+        {
+          "week": "2025-02-09",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.278582,
+          "gross_return_pct": 1.774899,
+          "net_return_pct": 1.694899
+        },
+        {
+          "week": "2025-03-23",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.302375,
+          "gross_return_pct": 0.473661,
+          "net_return_pct": 0.393661
+        },
+        {
+          "week": "2025-04-06",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.574493,
+          "gross_return_pct": 2.023139,
+          "net_return_pct": 1.943139
+        },
+        {
+          "week": "2025-05-11",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.335059,
+          "gross_return_pct": 0.150841,
+          "net_return_pct": 0.070841
+        },
+        {
+          "week": "2025-10-26",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.082606,
+          "gross_return_pct": 1.293378,
+          "net_return_pct": 1.213378
+        },
+        {
+          "week": "2026-01-18",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.272455,
+          "gross_return_pct": 2.265062,
+          "net_return_pct": 2.185062
+        },
+        {
+          "week": "2026-01-25",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.109146,
+          "gross_return_pct": -0.187424,
+          "net_return_pct": -0.267424
+        },
+        {
+          "week": "2026-03-01",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.616558,
+          "gross_return_pct": 0.053715,
+          "net_return_pct": -0.026285
+        },
+        {
+          "week": "2026-03-08",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.529307,
+          "gross_return_pct": -0.892763,
+          "net_return_pct": -0.972763
+        },
+        {
+          "week": "2026-03-15",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.12623,
+          "gross_return_pct": -0.770497,
+          "net_return_pct": -0.850497
+        },
+        {
+          "week": "2026-04-12",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.594575,
+          "gross_return_pct": 1.020065,
+          "net_return_pct": 0.940065
+        },
+        {
+          "week": "2026-04-19",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.297082,
+          "gross_return_pct": 0.387301,
+          "net_return_pct": 0.307301
+        },
+        {
+          "week": "2026-05-03",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.128814,
+          "gross_return_pct": -0.279531,
+          "net_return_pct": -0.359531
+        },
+        {
+          "week": "2026-05-10",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.611452,
+          "gross_return_pct": -1.662103,
+          "net_return_pct": -1.742103
+        },
+        {
+          "week": "2026-06-21",
+          "symbol": "GBPUSD",
+          "side": "Long",
+          "gap_pct": -0.330771,
+          "gross_return_pct": 0.05383,
+          "net_return_pct": -0.02617
+        },
+        {
+          "week": "2026-08-02",
+          "symbol": "GBPUSD",
+          "side": "Short",
+          "gap_pct": 0.087498,
+          "gross_return_pct": -0.003706,
+          "net_return_pct": -0.083706
+        }
+      ]
+    },
+    {
+      "symbol": "NZDUSD",
+      "broker_symbol": "NZDUSDm",
+      "history_from": "2014-01-12",
+      "test_from": "2019-01-13",
+      "test_to": "2026-09-04",
+      "round_trip_cost_pct": 0.08,
+      "trades": 44,
+      "wins": 23,
+      "losses": 21,
+      "win_rate_pct": 52.27,
+      "profit_factor": 1.18,
+      "total_return_pct": 5.04,
+      "cagr_pct": 0.65,
+      "max_drawdown_pct": 10.42,
+      "sharpe_ratio": 0.15,
+      "average_trade_pct": 0.13,
+      "average_win_pct": 1.71,
+      "average_loss_pct": -1.59,
+      "best_trade_pct": 6.26,
+      "worst_trade_pct": -5.26,
+      "max_win_streak": 5,
+      "max_loss_streak": 4,
+      "long_trades": 30,
+      "short_trades": 14,
+      "trades_detail": [
+        {
+          "week": "2019-01-27",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.30605,
+          "gross_return_pct": 1.075016,
+          "net_return_pct": 0.995016
+        },
+        {
+          "week": "2019-05-05",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.561553,
+          "gross_return_pct": -0.133214,
+          "net_return_pct": -0.213214
+        },
+        {
+          "week": "2020-01-26",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.362454,
+          "gross_return_pct": -1.807961,
+          "net_return_pct": -1.887961
+        },
+        {
+          "week": "2020-02-23",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.57485,
+          "gross_return_pct": -1.061151,
+          "net_return_pct": -1.141151
+        },
+        {
+          "week": "2020-03-01",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.734252,
+          "gross_return_pct": 2.47694,
+          "net_return_pct": 2.39694
+        },
+        {
+          "week": "2020-03-08",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.653607,
+          "gross_return_pct": -4.054867,
+          "net_return_pct": -4.134867
+        },
+        {
+          "week": "2020-03-15",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.642599,
+          "gross_return_pct": -5.178945,
+          "net_return_pct": -5.258945
+        },
+        {
+          "week": "2020-03-22",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.719257,
+          "gross_return_pct": 6.341334,
+          "net_return_pct": 6.261334
+        },
+        {
+          "week": "2020-04-05",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.221669,
+          "gross_return_pct": -3.416736,
+          "net_return_pct": -3.496736
+        },
+        {
+          "week": "2020-06-21",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.361262,
+          "gross_return_pct": 0.592226,
+          "net_return_pct": 0.512226
+        },
+        {
+          "week": "2020-12-20",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.418346,
+          "gross_return_pct": -0.23212,
+          "net_return_pct": -0.31212
+        },
+        {
+          "week": "2020-12-27",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.221135,
+          "gross_return_pct": -1.046767,
+          "net_return_pct": -1.126767
+        },
+        {
+          "week": "2021-03-21",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.373383,
+          "gross_return_pct": -1.955867,
+          "net_return_pct": -2.035867
+        },
+        {
+          "week": "2021-11-28",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.246598,
+          "gross_return_pct": 1.105394,
+          "net_return_pct": 1.025394
+        },
+        {
+          "week": "2021-12-26",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.190817,
+          "gross_return_pct": -0.362207,
+          "net_return_pct": -0.442207
+        },
+        {
+          "week": "2022-02-27",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.9804,
+          "gross_return_pct": 2.726579,
+          "net_return_pct": 2.646579
+        },
+        {
+          "week": "2022-04-17",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.269287,
+          "gross_return_pct": 1.977038,
+          "net_return_pct": 1.897038
+        },
+        {
+          "week": "2022-09-04",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.636872,
+          "gross_return_pct": 0.507171,
+          "net_return_pct": 0.427171
+        },
+        {
+          "week": "2022-09-11",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.400559,
+          "gross_return_pct": -1.45247,
+          "net_return_pct": -1.53247
+        },
+        {
+          "week": "2022-11-06",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -1.005289,
+          "gross_return_pct": 4.232263,
+          "net_return_pct": 4.152263
+        },
+        {
+          "week": "2022-11-13",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.476812,
+          "gross_return_pct": 1.041307,
+          "net_return_pct": 0.961307
+        },
+        {
+          "week": "2022-11-27",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.515337,
+          "gross_return_pct": 3.14024,
+          "net_return_pct": 3.06024
+        },
+        {
+          "week": "2022-12-04",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.439479,
+          "gross_return_pct": 0.485901,
+          "net_return_pct": 0.405901
+        },
+        {
+          "week": "2023-01-01",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.43714,
+          "gross_return_pct": 0.365344,
+          "net_return_pct": 0.285344
+        },
+        {
+          "week": "2023-10-08",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.527299,
+          "gross_return_pct": -1.24872,
+          "net_return_pct": -1.32872
+        },
+        {
+          "week": "2023-10-15",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.190175,
+          "gross_return_pct": 1.139968,
+          "net_return_pct": 1.059968
+        },
+        {
+          "week": "2023-12-03",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.494067,
+          "gross_return_pct": -0.919362,
+          "net_return_pct": -0.999362
+        },
+        {
+          "week": "2023-12-24",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.46174,
+          "gross_return_pct": 0.815499,
+          "net_return_pct": 0.735499
+        },
+        {
+          "week": "2024-11-03",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.526973,
+          "gross_return_pct": 0.46552,
+          "net_return_pct": 0.38552
+        },
+        {
+          "week": "2024-11-24",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.166117,
+          "gross_return_pct": -1.286768,
+          "net_return_pct": -1.366768
+        },
+        {
+          "week": "2025-02-02",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.993152,
+          "gross_return_pct": 1.403075,
+          "net_return_pct": 1.323075
+        },
+        {
+          "week": "2025-02-09",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.579527,
+          "gross_return_pct": 1.841385,
+          "net_return_pct": 1.761385
+        },
+        {
+          "week": "2025-04-06",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.424485,
+          "gross_return_pct": 4.553613,
+          "net_return_pct": 4.473613
+        },
+        {
+          "week": "2025-06-22",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.630589,
+          "gross_return_pct": 1.879238,
+          "net_return_pct": 1.799238
+        },
+        {
+          "week": "2025-10-26",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.430571,
+          "gross_return_pct": 0.831572,
+          "net_return_pct": 0.751572
+        },
+        {
+          "week": "2026-03-01",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.820596,
+          "gross_return_pct": -0.797067,
+          "net_return_pct": -0.877067
+        },
+        {
+          "week": "2026-03-08",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.560949,
+          "gross_return_pct": -1.597232,
+          "net_return_pct": -1.677232
+        },
+        {
+          "week": "2026-03-15",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.243955,
+          "gross_return_pct": -0.715421,
+          "net_return_pct": -0.795421
+        },
+        {
+          "week": "2026-04-12",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.696376,
+          "gross_return_pct": 1.463179,
+          "net_return_pct": 1.383179
+        },
+        {
+          "week": "2026-05-10",
+          "symbol": "NZDUSD",
+          "side": "Long",
+          "gap_pct": -0.500808,
+          "gross_return_pct": -1.657822,
+          "net_return_pct": -1.737822
+        },
+        {
+          "week": "2026-06-28",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.074468,
+          "gross_return_pct": -1.242445,
+          "net_return_pct": -1.322445
+        },
+        {
+          "week": "2026-07-26",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.177747,
+          "gross_return_pct": -1.531061,
+          "net_return_pct": -1.611061
+        },
+        {
+          "week": "2026-08-02",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.076388,
+          "gross_return_pct": -0.001697,
+          "net_return_pct": -0.081697
+        },
+        {
+          "week": "2026-08-30",
+          "symbol": "NZDUSD",
+          "side": "Short",
+          "gap_pct": 0.143662,
+          "gross_return_pct": 0.694151,
+          "net_return_pct": 0.614151
+        }
+      ]
+    },
+    {
+      "symbol": "GBPJPY",
+      "broker_symbol": "GBPJPYm",
+      "history_from": "2013-04-14",
+      "test_from": "2019-01-13",
+      "test_to": "2026-09-04",
+      "round_trip_cost_pct": 0.08,
+      "trades": 36,
+      "wins": 16,
+      "losses": 20,
+      "win_rate_pct": 44.44,
+      "profit_factor": 0.55,
+      "total_return_pct": -9.57,
+      "cagr_pct": -1.31,
+      "max_drawdown_pct": 13.43,
+      "sharpe_ratio": -0.42,
+      "average_trade_pct": -0.27,
+      "average_win_pct": 0.75,
+      "average_loss_pct": -1.08,
+      "best_trade_pct": 4.42,
+      "worst_trade_pct": -3.25,
+      "max_win_streak": 5,
+      "max_loss_streak": 5,
+      "long_trades": 21,
+      "short_trades": 15,
+      "trades_detail": [
+        {
+          "week": "2019-05-05",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.68357,
+          "gross_return_pct": -1.642886,
+          "net_return_pct": -1.722886
+        },
+        {
+          "week": "2019-08-25",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.536834,
+          "gross_return_pct": 0.3806,
+          "net_return_pct": 0.3006
+        },
+        {
+          "week": "2019-10-06",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.461529,
+          "gross_return_pct": 4.504024,
+          "net_return_pct": 4.424024
+        },
+        {
+          "week": "2020-03-08",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.587235,
+          "gross_return_pct": -3.154791,
+          "net_return_pct": -3.234791
+        },
+        {
+          "week": "2020-04-05",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.528263,
+          "gross_return_pct": -0.987975,
+          "net_return_pct": -1.067975
+        },
+        {
+          "week": "2020-12-13",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.812992,
+          "gross_return_pct": -0.747689,
+          "net_return_pct": -0.827689
+        },
+        {
+          "week": "2020-12-20",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.608009,
+          "gross_return_pct": 1.120359,
+          "net_return_pct": 1.040359
+        },
+        {
+          "week": "2021-11-28",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.261822,
+          "gross_return_pct": 1.417667,
+          "net_return_pct": 1.337667
+        },
+        {
+          "week": "2022-02-27",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.582107,
+          "gross_return_pct": -1.2832,
+          "net_return_pct": -1.3632
+        },
+        {
+          "week": "2022-10-16",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.248055,
+          "gross_return_pct": -0.056388,
+          "net_return_pct": -0.136388
+        },
+        {
+          "week": "2022-10-23",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.76626,
+          "gross_return_pct": -1.891373,
+          "net_return_pct": -1.971373
+        },
+        {
+          "week": "2022-12-18",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.450489,
+          "gross_return_pct": -3.173249,
+          "net_return_pct": -3.253249
+        },
+        {
+          "week": "2023-01-01",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.498174,
+          "gross_return_pct": 1.243472,
+          "net_return_pct": 1.163472
+        },
+        {
+          "week": "2023-02-05",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.644301,
+          "gross_return_pct": 0.440512,
+          "net_return_pct": 0.360512
+        },
+        {
+          "week": "2023-03-19",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.191626,
+          "gross_return_pct": 0.639591,
+          "net_return_pct": 0.559591
+        },
+        {
+          "week": "2023-04-02",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.28724,
+          "gross_return_pct": 0.109616,
+          "net_return_pct": 0.029616
+        },
+        {
+          "week": "2023-09-10",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.457039,
+          "gross_return_pct": -0.178871,
+          "net_return_pct": -0.258871
+        },
+        {
+          "week": "2023-10-08",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.451047,
+          "gross_return_pct": -0.13749,
+          "net_return_pct": -0.21749
+        },
+        {
+          "week": "2023-12-24",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.765743,
+          "gross_return_pct": 0.067448,
+          "net_return_pct": -0.012552
+        },
+        {
+          "week": "2024-04-28",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.395093,
+          "gross_return_pct": -2.645763,
+          "net_return_pct": -2.725763
+        },
+        {
+          "week": "2024-10-27",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.41557,
+          "gross_return_pct": 0.310274,
+          "net_return_pct": 0.230274
+        },
+        {
+          "week": "2025-02-02",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.735487,
+          "gross_return_pct": -1.645623,
+          "net_return_pct": -1.725623
+        },
+        {
+          "week": "2025-04-06",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -1.507808,
+          "gross_return_pct": 0.539255,
+          "net_return_pct": 0.459255
+        },
+        {
+          "week": "2025-04-13",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.216548,
+          "gross_return_pct": -0.321015,
+          "net_return_pct": -0.401015
+        },
+        {
+          "week": "2025-05-11",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.149318,
+          "gross_return_pct": 0.140946,
+          "net_return_pct": 0.060946
+        },
+        {
+          "week": "2025-05-18",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.281652,
+          "gross_return_pct": 0.045626,
+          "net_return_pct": -0.034374
+        },
+        {
+          "week": "2025-06-22",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.770189,
+          "gross_return_pct": -0.945302,
+          "net_return_pct": -1.025302
+        },
+        {
+          "week": "2025-07-20",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.483781,
+          "gross_return_pct": -0.100214,
+          "net_return_pct": -0.180214
+        },
+        {
+          "week": "2025-09-07",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.382091,
+          "gross_return_pct": -0.180171,
+          "net_return_pct": -0.260171
+        },
+        {
+          "week": "2025-10-05",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.942501,
+          "gross_return_pct": -0.657449,
+          "net_return_pct": -0.737449
+        },
+        {
+          "week": "2025-10-12",
+          "symbol": "GBPJPY",
+          "side": "Short",
+          "gap_pct": 0.268033,
+          "gross_return_pct": 0.136306,
+          "net_return_pct": 0.056306
+        },
+        {
+          "week": "2026-01-18",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.386615,
+          "gross_return_pct": 0.843559,
+          "net_return_pct": 0.763559
+        },
+        {
+          "week": "2026-01-25",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.405657,
+          "gross_return_pct": 0.102093,
+          "net_return_pct": 0.022093
+        },
+        {
+          "week": "2026-03-01",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.394215,
+          "gross_return_pct": 0.93787,
+          "net_return_pct": 0.85787
+        },
+        {
+          "week": "2026-04-12",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.340588,
+          "gross_return_pct": 0.340701,
+          "net_return_pct": 0.260701
+        },
+        {
+          "week": "2026-05-10",
+          "symbol": "GBPJPY",
+          "side": "Long",
+          "gap_pct": -0.567774,
+          "gross_return_pct": -0.39325,
+          "net_return_pct": -0.47325
+        }
+      ]
+    }
+  ]
+}

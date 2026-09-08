@@ -1,0 +1,55 @@
+[
+  {
+    "id": "xauusd--baseline-standard--full",
+    "case": "baseline-standard",
+    "phase": "full",
+    "purpose": "Frozen current LTA control, Safe gate off",
+    "from": "2021.09.01",
+    "to": "2026.09.01",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\full\\xauusd--baseline-standard--full.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\full\\xauusd--baseline-standard--full.set",
+    "overrides": {}
+  },
+  {
+    "id": "xauusd--baseline-safe--full",
+    "case": "baseline-safe",
+    "phase": "full",
+    "purpose": "Frozen current LTA control, current recommended Safe gate on",
+    "from": "2021.09.01",
+    "to": "2026.09.01",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\full\\xauusd--baseline-safe--full.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\full\\xauusd--baseline-safe--full.set",
+    "overrides": {
+      "InpUseMarkovRegimeFilter": "true"
+    }
+  },
+  {
+    "id": "xauusd--auction-confirm--full",
+    "case": "auction-confirm",
+    "phase": "full",
+    "purpose": "Auction acceptance/rejection as confirmation gate",
+    "from": "2021.09.01",
+    "to": "2026.09.01",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\full\\xauusd--auction-confirm--full.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\full\\xauusd--auction-confirm--full.set",
+    "overrides": {
+      "InpUseMultipleVolumeNodes": "true",
+      "InpBookAuctionMode": "1"
+    }
+  },
+  {
+    "id": "xauusd--execution-guard--full",
+    "case": "execution-guard",
+    "phase": "full",
+    "purpose": "Measured spread ceiling and 21:00-23:00 UTC rollover block",
+    "from": "2021.09.01",
+    "to": "2026.09.01",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\full\\xauusd--execution-guard--full.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\full\\xauusd--execution-guard--full.set",
+    "overrides": {
+      "InpMaxSpreadPoints": "500",
+      "InpBookBrokerUtcOffsetMinutes": "180",
+      "InpBlockRolloverWindow": "true"
+    }
+  }
+]

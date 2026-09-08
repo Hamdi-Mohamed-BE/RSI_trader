@@ -31,7 +31,9 @@
     if (kind === 'return_pct') return `${Number(value) >= 0 ? '+' : ''}${Number(value).toFixed(2)}%`;
     if (kind === 'win_rate_pct' || kind === 'max_drawdown_pct') return `${Number(value).toFixed(2)}%`;
     if (kind === 'initial_balance' || kind === 'final_balance' || kind === 'net_profit') return money(Number(value));
-    if (kind === 'trades') return Math.round(Number(value)).toLocaleString('en-US');
+    if (kind === 'trades' || kind === 'max_win_streak' || kind === 'max_loss_streak') {
+      return Math.round(Number(value)).toLocaleString('en-US');
+    }
     return Number(value).toFixed(2);
   }
 

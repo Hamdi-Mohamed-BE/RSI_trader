@@ -4,7 +4,7 @@ A FastAPI storefront generated from the Expert Advisors currently listed in:
 
 `..\BM Trading Robust Sets 2026-08-04\_Auto Deploy\Install-BMTradingPortfolio.ps1`
 
-The public catalogue is generated directly from every active entry in the recommended installer. At the time of this audit it contains 24 EAs, and the count updates automatically when the installer changes.
+The public catalogue is generated directly from every active entry in the recommended installer. At the time of this audit it contains 28 EAs, and the count updates automatically when the installer changes.
 
 ## Run locally
 
@@ -66,7 +66,7 @@ Rebuild the resumable cache after changing an EA or SET:
 uv run python tools\precompute_evidence_cache.py --period all
 ```
 
-Add `--safe` to generate the compatible Full Safe variants too. The portfolio curve is a chronological realized-cash-flow overlay of the separate per-EA native tests. It is not a simultaneous shared-margin portfolio test, and each page states that limitation.
+Add `--safe` to generate the compatible Full Safe variants too. The Best Recommended portfolio currently defaults LTA Volume Profile, EMA3 and XAU Weakness to their validated Safe evidence; every other EA keeps its stronger Standard configuration. The portfolio curve selects those modes from the existing per-EA caches and chronologically overlays their separate native results. It is not a simultaneous shared-margin portfolio test, and each page states that limitation.
 
 This is a catalogue, not a profit guarantee or financial advice.
 

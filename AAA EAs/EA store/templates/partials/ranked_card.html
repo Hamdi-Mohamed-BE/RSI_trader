@@ -1,4 +1,4 @@
-<article class="product-card group relative">
+<a href="/eas/{{ product.slug }}" class="product-card group relative" aria-label="View {{ product.label }} details">
   <div class="absolute right-5 top-5 font-mono text-xs text-muted">#{{ '%02d'|format(rank) }}</div>
   <div class="flex items-center gap-3 pr-12">
     <span class="asset-icon accent-{{ product.accent }}">{{ product.canonical[:2] }}</span>
@@ -7,6 +7,7 @@
       <h3 class="mt-1 text-lg font-bold leading-tight text-white group-hover:text-mint">{{ product.label }}</h3>
     </div>
   </div>
+  {% if product.recommended_safe_mode %}<div class="mt-4"><span class="badge badge-safe">Running in Safe mode</span></div>{% endif %}
   <div class="mt-6 rounded-2xl border border-mint/15 bg-mint/[.045] p-4">
     <span class="block font-mono text-[9px] uppercase tracking-[.18em] text-muted">Three-year return</span>
     {% if product.one_year_return_pct is not none %}
@@ -28,6 +29,6 @@
   {% endif %}
   <div class="mt-6 flex items-end justify-between border-t border-white/10 pt-5">
     <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ product.price|money }}</strong></div>
-    <a href="/eas/{{ product.slug }}" class="card-link">View details <span aria-hidden="true">→</span></a>
+    <span class="card-link">View details <span aria-hidden="true">→</span></span>
   </div>
-</article>
+</a>

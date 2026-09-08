@@ -1,0 +1,28 @@
+{
+  "updated": "2026-09-06",
+  "step": 1,
+  "title": "Close-Drive Intraday Momentum",
+  "status": "research_completed_not_recommended",
+  "scope_note": "Completed focused US-close study, not the full cross-session/adaptive-RR pipeline. User chose to proceed to Step 2 without expanding Step 1.",
+  "not_tested": ["Adaptive RR", "Asia sessions", "London sessions", "Full cross-product of every setting"],
+  "markets": ["USTEC", "US30"],
+  "default_risk_percent": 1.0,
+  "native_report_count": 68,
+  "development_configurations_per_market": 31,
+  "development_period": ["2023-09-01", "2025-09-01"],
+  "held_out_period": ["2025-09-01", "2026-09-01"],
+  "full_context_period": ["2023-09-01", "2026-09-01"],
+  "held_out_model": "MT5 generated Every Tick, random delay (-1)",
+  "real_tick_validation": false,
+  "verification": "68 native reports reconciled; source fingerprints, NY/DST entry times, single daily entry and holding duration checked",
+  "decision": "Do not add either tested candidate to the active system; held-out net return is negative and PF is below 1 on both markets.",
+  "production_changes": false,
+  "results": "summary.json",
+  "report": "REPORT.md",
+  "next_step": {
+    "step": 2,
+    "title": "Relative-Value Pairs: BTC/ETH and XAU/XAG",
+    "status": "research_completed_not_recommended",
+    "report": "../Relative Value Pairs Research 2026-09-06/REPORT.md"
+  }
+}

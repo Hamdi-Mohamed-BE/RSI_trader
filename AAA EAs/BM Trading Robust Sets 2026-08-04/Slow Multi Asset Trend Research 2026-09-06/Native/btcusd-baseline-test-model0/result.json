@@ -1,0 +1,211 @@
+{
+  "case": "btcusd-baseline-test-model0",
+  "period": "M15 (2025.09.01 - 2026.09.01)",
+  "history_quality_pct": 100.0,
+  "bars": 35038,
+  "ticks": 47331646,
+  "initial_stop_atr": 0.0,
+  "trailing_atr": 0.0,
+  "trail_start_r": 0.0,
+  "close_at_session_end": false,
+  "initial_balance": 10000.0,
+  "final_balance": 10109.55,
+  "net_profit": 109.55,
+  "return_pct": 1.0955,
+  "gross_profit": 562.93,
+  "gross_loss": -453.38,
+  "profit_factor": 1.24,
+  "equity_dd_amount": 309.22,
+  "equity_dd_pct": 2.97,
+  "balance_dd_amount": 200.2,
+  "balance_dd_pct": 1.99,
+  "trades": 15,
+  "wins": 6,
+  "losses": 9,
+  "win_rate": 40.0,
+  "long_trades": 7,
+  "long_win_rate": 28.57,
+  "short_trades": 8,
+  "short_win_rate": 50.0,
+  "largest_win": 223.89,
+  "largest_loss": -99.29,
+  "average_win": 93.82,
+  "average_loss": -50.28,
+  "expected_payoff": 7.3,
+  "recovery_factor": 0.35,
+  "sharpe_ratio": 0.13,
+  "commission": -0.8799999999999999,
+  "swap": -6.940000000000001,
+  "score": -4.8445,
+  "status": "valid",
+  "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Slow Multi Asset Trend Research 2026-09-06\\Native\\btcusd-baseline-test-model0\\btcusd-baseline-test-model0.htm",
+  "graph": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Slow Multi Asset Trend Research 2026-09-06\\Native\\btcusd-baseline-test-model0\\btcusd-baseline-test-model0.png",
+  "series": [
+    {
+      "date": "2025-09-01",
+      "balance": 10000.0
+    },
+    {
+      "date": "2025-09-02 00:00:05",
+      "balance": 9999.96
+    },
+    {
+      "date": "2025-09-13 00:00:05",
+      "balance": 10066.58
+    },
+    {
+      "date": "2025-09-14 00:00:07",
+      "balance": 10066.54
+    },
+    {
+      "date": "2025-09-25 17:14:57",
+      "balance": 10007.43
+    },
+    {
+      "date": "2025-09-25 17:15:00",
+      "balance": 10007.34
+    },
+    {
+      "date": "2025-09-26 00:00:06",
+      "balance": 9984.21
+    },
+    {
+      "date": "2025-09-29 00:00:06",
+      "balance": 9984.17
+    },
+    {
+      "date": "2025-10-10 21:17:43",
+      "balance": 9924.94
+    },
+    {
+      "date": "2025-10-10 21:17:44",
+      "balance": 9924.9
+    },
+    {
+      "date": "2025-10-11 00:00:03",
+      "balance": 9988.12
+    },
+    {
+      "date": "2025-10-27 00:00:01",
+      "balance": 9988.08
+    },
+    {
+      "date": "2025-10-30 00:00:14",
+      "balance": 9942.45
+    },
+    {
+      "date": "2025-11-01 00:00:03",
+      "balance": 9942.41
+    },
+    {
+      "date": "2025-11-04 00:00:02",
+      "balance": 9912.45
+    },
+    {
+      "date": "2025-11-29 00:00:07",
+      "balance": 9912.41
+    },
+    {
+      "date": "2026-01-17 00:00:06",
+      "balance": 9866.42
+    },
+    {
+      "date": "2026-01-18 00:00:03",
+      "balance": 9866.38
+    },
+    {
+      "date": "2026-01-20 00:00:02",
+      "balance": 9891.82
+    },
+    {
+      "date": "2026-01-21 00:00:05",
+      "balance": 9891.78
+    },
+    {
+      "date": "2026-01-23 00:00:08",
+      "balance": 9879.92
+    },
+    {
+      "date": "2026-01-24 00:00:01",
+      "balance": 9879.88
+    },
+    {
+      "date": "2026-04-10 00:00:05",
+      "balance": 10057.18
+    },
+    {
+      "date": "2026-05-18 00:00:04",
+      "balance": 10057.14
+    },
+    {
+      "date": "2026-05-20 00:00:07",
+      "balance": 10063.6
+    },
+    {
+      "date": "2026-05-23 00:00:02",
+      "balance": 10063.51
+    },
+    {
+      "date": "2026-08-07 00:00:06",
+      "balance": 10287.4
+    },
+    {
+      "date": "2026-08-11 00:00:07",
+      "balance": 10287.27
+    },
+    {
+      "date": "2026-08-19 15:24:41",
+      "balance": 10187.98
+    },
+    {
+      "date": "2026-08-19 15:24:42",
+      "balance": 10187.85
+    },
+    {
+      "date": "2026-08-19 15:28:02",
+      "balance": 10109.55
+    }
+  ],
+  "symbol": "BTCUSD",
+  "label": "baseline",
+  "stage": "test",
+  "model": 0,
+  "execution_mode": -1,
+  "config": {
+    "tf": "D1",
+    "horizon": "1-3-6m",
+    "trend": "ema200-rising",
+    "direction": "both",
+    "session": "all-day",
+    "stop_mode": 0,
+    "stop_atr": 2.5,
+    "exit_mode": 0,
+    "rr": 2.0,
+    "max_hold_days": 0,
+    "manage": 0
+  },
+  "inputs": {
+    "InpSignalTimeframe": 16408,
+    "InpHorizonMode": 3,
+    "InpTrendMode": 3,
+    "InpAllowLong": true,
+    "InpAllowShort": true,
+    "InpSessionMinuteUTC": -1,
+    "InpStopMode": 0,
+    "InpStopATR": 2.5,
+    "InpExitMode": 0,
+    "InpRewardRisk": 2.0,
+    "InpMaximumHoldDays": 0,
+    "InpManagement": 0,
+    "InpRiskPercent": 1.0,
+    "InpMaximumDeviationPoints": 100,
+    "InpMagic": 969060312,
+    "InpTesterOnly": true
+  },
+  "fingerprint": "3e10681f957af77120c594b675b2af6bbaf93f8f2f693200cc692293c88f5603",
+  "elapsed_seconds": 29.94,
+  "audit": {
+    "trades": 15,
+    "max_holding_days": 76.00004629629629
+  }
+}

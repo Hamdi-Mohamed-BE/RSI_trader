@@ -97,7 +97,7 @@ void AAA_RunEMA3()
       if(InpEMA3StopMode==1) stop=tick.ask-InpEMA3StopATR*atr;
       else if(InpEMA3StopMode==2) stop=r[1].low-InpEMA3SignalBufferATR*atr;
       else if(InpEMA3StopMode==3) stop=tick.ask-InpEMA3FixedStopPrice;
-      if(stop<tick.ask) AAA_SendMarket(_Symbol,1,stop,InpRewardRisk,InpRiskPercent,InpMagic,"AAA EMA3");
+      if(stop<tick.ask) AAA_SendMarket(_Symbol,1,stop,InpRewardRisk,InpRiskPercent,InpMagic,(InpUseMarkovRegimeFilter ? "Safe AAA EMA3" : "AAA EMA3"));
      }
    else if(r[1].close<prior_low && r[1].close<trend && fast<medium && trend<trend_old && HAMA_SafeRegimeAllowsDirection(-1))
      {
@@ -105,7 +105,7 @@ void AAA_RunEMA3()
       if(InpEMA3StopMode==1) stop=tick.bid+InpEMA3StopATR*atr;
       else if(InpEMA3StopMode==2) stop=r[1].high+InpEMA3SignalBufferATR*atr;
       else if(InpEMA3StopMode==3) stop=tick.bid+InpEMA3FixedStopPrice;
-      if(stop>tick.bid) AAA_SendMarket(_Symbol,-1,stop,InpRewardRisk,InpRiskPercent,InpMagic,"AAA EMA3");
+      if(stop>tick.bid) AAA_SendMarket(_Symbol,-1,stop,InpRewardRisk,InpRiskPercent,InpMagic,(InpUseMarkovRegimeFilter ? "Safe AAA EMA3" : "AAA EMA3"));
      }
 }
 

@@ -19,6 +19,10 @@ SELECTED_PORTFOLIO_ROOT = PACKAGE_ROOT / "Dynamic Trailing Session Research 2026
 RSI_VWAP_ROOT = PACKAGE_ROOT / "RSI VWAP Research 2026-09-02"
 TREND_PROGRESSION_ROOT = PACKAGE_ROOT / "Trend Progression Research 2026-09-02"
 ELLIOTT_WAVE_ROOT = PACKAGE_ROOT / "Elliott Wave Research 2026-09-05"
+SLOW_TREND_ROOT = PACKAGE_ROOT / "Slow Multi Asset Trend Research 2026-09-06"
+SESSION_VWAP_ROOT = PACKAGE_ROOT / "Session VWAP Snapback Research 2026-09-06"
+MONTH_END_FLOW_ROOT = PACKAGE_ROOT / "Month End Institutional Flow Research 2026-09-06"
+REGIME_SWITCH_ROOT = PACKAGE_ROOT / "Regime Switch Overlay Research 2026-09-06"
 POC_FIB_ROOT = PACKAGE_ROOT / "POC Fibonacci Volume Profile Research 2026-09-04"
 OVERNIGHT_OPTIMIZATION_ROOT = PACKAGE_ROOT / "US100 Overnight Optimization 2026-09-04"
 ORB_SESSION_AUDIT_ROOT = PACKAGE_ROOT / "ORB Session Matrix Research 2026-09-05"
@@ -58,6 +62,8 @@ class Evidence(BaseModel):
     trades: int
     sharpe_ratio: float | None = None
     recovery_factor: float | None = None
+    max_win_streak: int | None = None
+    max_loss_streak: int | None = None
     history_quality: str = "Not stated"
     source_note: str
     chart_path: Path | None = None
@@ -102,6 +108,7 @@ class Product(BaseModel):
     featured: bool = False
     development: bool = False
     safe_filter_supported: bool = False
+    recommended_safe_mode: bool = False
     safe_mode_label: str = "Full Safe"
     safe_mode_note: str = "Independent completed-D1 Markov gate enabled inside this EA."
     evidence: Evidence | None = None
@@ -129,13 +136,17 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "AAA Final EMA3": ("ema3-xau", "dynamic-only", "Dynamic 60/20 only"),
     "AAA Final XAU Weakness": ("weakness-xau", "dynamic-only", "Dynamic 50/20"),
     "Nasdaq Overnight": ("overnight-ustec", "current", "Current EA exits"),
-    "Nasdaq 5M Candle Momentum": ("momentum-ustec", "dynamic-only", "Dynamic 50/20"),
+    "Nasdaq 5M Candle Momentum": ("momentum-ustec", "current", "Fixed 2.5R / no trailing"),
     "News Pulse XAU": ("news-xau-hard-1p5", "current", "Native 60-second exit"),
     "News Pulse XAG": ("news-xag-hard-1p5", "current", "Native 60-second exit"),
     "News Pulse EURUSD": ("news-eurusd-hard-1p5", "current", "Native 60-second exit"),
     "XAU RSI VWAP": ("rsi-vwap-xau", "current", "Current EA exits"),
     "BTC POC Fibonacci": ("pocfib-btc", "current", "Fixed 5R / no trailing"),
     "XAU Elliott Wave 1-2-3": ("elliott-xau", "current", "Fixed 3R / no trailing"),
+    "XAU Slow Trend": ("slow-trend-xau", "current", "Fixed 6R / no trailing"),
+    "XAU Regime Switch": ("regime-switch-xau", "current", "6R trend / 3R VWAP regime switch"),
+    "XAG Session VWAP Snapback": ("session-vwap-xag", "current", "Fixed 1R / no trailing"),
+    "US100 Month End Flow": ("month-end-flow-us100", "current", "Fixed 2.5R / six-hour exit"),
 }
 
 
@@ -199,6 +210,66 @@ CORE_META: dict[str, dict[str, Any]] = {
         "price": 349,
         "accent": "gold",
         "featured": True,
+    },
+    "XAU Slow Trend": {
+        "strategy": "Slow multi-horizon time-series momentum",
+        "tagline": "A selective XAUUSD H4 trend model combining one-, three- and six-month momentum.",
+        "description": "The promoted XAUUSD build votes across completed one-, three- and six-month momentum horizons, aligns the result with EMA100, and trades the accepted direction from H4 data. It uses a 1.5 ATR stop, fixed 6R objective, no trailing and a hard 1% equity-risk rule.",
+        "session": "All broker sessions / H4",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, the frozen optimized SET, untouched locked-year native MT5 report, three-year context and rolling walk-forward audit were reviewed together.",
+        "logic": [
+            {"title": "Vote across three slow horizons", "detail": "The EA compares the latest completed H4 close with scaled 21-, 63- and 126-trading-day lookbacks. Their signs are averaged, and a trade requires a non-zero majority direction."},
+            {"title": "Confirm direction with EMA100", "detail": "A long requires the completed H4 close above the scaled EMA100; a short requires it below. Both directions remain enabled in the locked XAU preset."},
+            {"title": "Use completed data and avoid late attachment entries", "detail": "Signals use the last completed H4 candle. On a live attach or terminal restart, the EA records the existing signal and waits for the next completed H4 candle rather than entering an old setup late."},
+            {"title": "Place the ATR stop", "detail": "The initial stop is 1.5 times H4 ATR(14) from entry. Volume is rounded down from the calculated one-lot loss so the planned loss targets exactly 1% of current equity; undersized broker-minimum trades are skipped."},
+            {"title": "Leave the wide winner intact", "detail": "The target is fixed at six times original risk. Break-even, ATR trailing, chandelier trailing, Dynamic 50/20 and maximum-hold exits are disabled in the promoted configuration."},
+            {"title": "Isolate this chart from other XAU EAs", "detail": "Magic number 969060311 uniquely identifies this strategy. On hedging accounts it scans all positions and manages only its own matching XAU position."},
+        ],
+        "risk_note": "Hard-locked to 1% of current equity per trade. The BAT still asks for portfolio risk, but this EA intentionally remains at the validated 1% and refuses a different risk input. The locked year had 35 trades, so it should begin on demo forward testing.",
+        "price": 399,
+        "accent": "emerald",
+        "featured": True,
+    },
+    "XAG Session VWAP Snapback": {
+        "strategy": "New York session VWAP liquidity snapback",
+        "tagline": "A selective XAGUSD M30 mean-reversion model for stretched New York-session prices.",
+        "description": "The promoted XAGUSD build reconstructs the active New York session VWAP and volume-weighted deviation from completed M30 candles. It waits for price to stretch 2.5 standard deviations from accepted value, requires a completed rejection candle, and trades the snapback only while ADX remains at or below 20.",
+        "session": "09:30-16:00 New York / M30",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, the frozen SET, untouched locked-year native MT5 report, three-year context, sensitivity grids and 10,000-path block bootstrap were reviewed together.",
+        "logic": [
+            {"title": "Build the active New York session profile", "detail": "For every completed M30 signal candle, the EA rebuilds VWAP and its volume-weighted price deviation from the start of the current 09:30-16:00 New York session using broker tick volume."},
+            {"title": "Wait for an exceptional stretch", "detail": "Price must reach at least 2.5 session standard deviations above or below VWAP. This keeps entries away from the middle of accepted value and avoids ordinary session noise."},
+            {"title": "Require a completed rejection candle", "detail": "A stretched candle must close back toward VWAP with a directionally rejecting body and wick. Both long and short snapbacks are enabled, with no more than one entry per New York session."},
+            {"title": "Trade only a quiet regime", "detail": "M30 ADX(14) must be at or below 20. This prevents the mean-reversion entry from fading stronger directional sessions, where a VWAP extension is more likely to continue."},
+            {"title": "Use the locked ATR stop and 1R target", "detail": "The initial stop is 1.25 M30 ATR from entry and the target is exactly one original risk unit. Break-even, ATR trailing and Dynamic 50/20 are disabled because the no-management version was selected before the locked year."},
+            {"title": "Hard-limit each trade to 1% equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the stop, and the order volume is rounded down to target exactly 1% of current equity. Broker minimum-stop and volume-step rules are enforced; undersized trades are skipped."},
+        ],
+        "risk_note": "Hard-locked to 1% of current equity per trade. The untouched year returned +3.93% with PF 2.57 and 3.60% drawdown, but it produced only 15 trades; this is therefore a demo-forward/watch allocation, not a statistically mature core strategy.",
+        "price": 299,
+        "accent": "silver",
+        "featured": False,
+    },
+    "US100 Month End Flow": {
+        "strategy": "Turn-of-month institutional equity flow",
+        "tagline": "A selective US100 M30 long-only model for the first three business days of each month.",
+        "description": "The promoted USTEC build trades the documented turn-of-month equity-flow tendency without using future calendar information. It enters long after the first New York trading hour on each of the first three business days, protects the position with a 1.5 ATR stop, targets 2.5R and closes any survivor after six hours.",
+        "session": "First three business days, after 10:30 New York / M30",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, the frozen production SET, untouched locked-year native MT5 report, three-year context, sensitivity grids, rolling audit and 10,000-path Monte Carlo simulation were reviewed together.",
+        "logic": [
+            {"title": "Identify the month window without look-ahead", "detail": "The EA derives business-day position from the known weekday calendar only. It activates on the first three Monday-to-Friday trading days of the month and does not inspect future prices or future bars."},
+            {"title": "Wait through the New York opening hour", "detail": "On an eligible day, the strategy waits until the first completed M30 candle after the initial New York trading hour and submits at most one long entry for that calendar day."},
+            {"title": "Keep the selected signal deliberately simple", "detail": "The frozen US100 configuration is long-only and does not add a moving-average, candle-pattern or trend confirmation. Those alternatives were tested before the locked year and were not selected."},
+            {"title": "Use a volatility-scaled protective stop", "detail": "The initial stop is placed 1.5 times M30 ATR(14) below entry. A spread-to-risk ceiling and broker stop-distance checks reject trades whose execution cost or placement is unsuitable."},
+            {"title": "Target 2.5R and time-limit exposure", "detail": "The take-profit objective is fixed at 2.5 times original risk. Break-even, ATR trailing and Dynamic 50/20 are disabled, while any position still open after six hours is closed."},
+            {"title": "Hard-limit each entry to 1% equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the ATR stop and volume is rounded down to target exactly 1% of current equity. Broker minimum-volume constraints are respected and undersized trades are skipped."},
+        ],
+        "risk_note": "Hard-locked to 1% of current equity per trade. The untouched year returned +5.53% with PF 1.34, 47.06% wins and 5.74% equity drawdown across 34 trades. Monte Carlo return P5 was -5.24%, so this is a demo-forward candidate rather than a proven live-capital core.",
+        "price": 299,
+        "accent": "indigo",
+        "featured": False,
     },
     "XAU RSI VWAP": {
         "strategy": "RSI-of-VWAP pullback continuation",
@@ -674,20 +745,20 @@ CORE_META: dict[str, dict[str, Any]] = {
     },
     "Nasdaq 5M Candle Momentum": {
         "strategy": "US-open five-minute momentum",
-        "tagline": "Let the completed 09:30 Nasdaq candle choose direction, then manage the trade with a delayed volatility trail.",
-        "description": "After the 09:30-09:35 New York M5 candle closes, this EA buys above EMA 12 or sells below EMA 12. It starts with a 4x ATR emergency stop, waits for +1R before activating a 6x ATR Chandelier-style trail, and closes any remaining position at 15:55 New York.",
+        "tagline": "Let the completed 09:30 Nasdaq candle choose direction, then hold for the validated 2.5R objective.",
+        "description": "After the 09:30-09:35 New York M5 candle closes, this EA buys above EMA 12 or sells below EMA 12. The optimized version uses a 4x ATR initial stop, a fixed 2.5R target, no trailing stop, and closes any unresolved position at 15:55 New York.",
         "session": "09:30 New York",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable MQ5 source, the locked replacement preset and native Standard/Full Safe MT5 reports were reviewed. ATR(14) is the volatility indicator; 4 and 6 are distance multipliers.",
+        "logic_audit_note": "Readable MQ5 source, all development configurations, the frozen untouched year and exact three-year Every Tick MT5 reports were reviewed. ATR(14) is the volatility indicator and risk remained fixed at 1%.",
         "logic": [
             {"title": "Wait for the opening candle to finish", "detail": "The signal is evaluated only when the closed M5 candle is timestamped 09:30 New York, meaning entry occurs just after the 09:30-09:35 bar has completed. Weekends are rejected and New York DST is calculated automatically."},
             {"title": "Make one EMA decision", "detail": "Close above the 12-period M5 EMA triggers a long; close below it triggers a short. Equality produces no trade. Both directions are active and only one entry is allowed per New York date."},
-            {"title": "Set a 4x ATR emergency stop", "detail": "The initial stop is four times M5 ATR(14) from entry, widened only when required by the broker's minimum stop or freeze distance. Volume targets 1% of current equity and no fixed take profit is placed."},
-            {"title": "Wait for one full unit of profit", "detail": "The EA stores the original entry-to-stop distance as 1R. It does not trail until favorable movement reaches at least +1R, which avoids tightening the stop immediately after entry."},
-            {"title": "Ratchet a 6x ATR Chandelier trail", "detail": "After +1R, the EA tracks the most favorable M5 high or low since entry and proposes a stop six times current M5 ATR(14) behind that extreme. A change is accepted only when it tightens the existing stop and respects broker distance limits."},
-            {"title": "Finish the position by 15:55", "detail": "The position exits through the original stop, the improving volatility trail, or a forced close at 15:55 New York. Only one entry is permitted per New York date and New York daylight-saving changes are handled automatically."},
+            {"title": "Set a 4x ATR initial stop", "detail": "The initial stop is four times M5 ATR(14) from entry, widened only when required by the broker's minimum stop or freeze distance. Volume is calculated so that the planned loss at that stop is exactly 1% of current equity."},
+            {"title": "Target 2.5R", "detail": "The take profit is placed 2.5 times the original entry-to-stop distance from entry. The exit objective was selected on the development window before the untouched locked year was opened."},
+            {"title": "Leave the position untrailed", "detail": "ATR trailing, Dynamic 50/20 and breakeven are disabled in the selected configuration. The full 2.5R payoff is preserved instead of tightening the stop during normal opening-session volatility."},
+            {"title": "Finish the position by 15:55", "detail": "The position exits through the original stop, the 2.5R target, or a forced close at 15:55 New York. Only one entry is permitted per New York date and New York daylight-saving changes are handled automatically."},
         ],
-        "risk_note": "Dynamic 1% of current equity to a 4x ATR(14) initial stop. There is no take profit. The +1R activation, 6x ATR trail and 15:55 New York forced close bound the intended session lifecycle, but gaps and slippage can still exceed planned risk.",
+        "risk_note": "Hard-capped at 1% of current equity to the 4x ATR(14) initial stop. The target is fixed at 2.5R and any unresolved position is closed at 15:55 New York, but gaps and slippage can still exceed planned risk.",
         "price": 499,
         "accent": "cyan",
         "featured": True,
@@ -797,6 +868,27 @@ _orb_volume_confirmed_logic[3] = {
 _orb_volume_confirmed_meta["logic"] = _orb_volume_confirmed_logic
 CORE_META["ORB Volume Profile Volume Confirmed"] = _orb_volume_confirmed_meta
 
+CORE_META["XAU Regime Switch"] = {
+    "strategy": "Causal Markov trend / mean-reversion switch",
+    "tagline": "A demo-stage XAUUSD model that changes behaviour instead of forcing one style into every regime.",
+    "description": "This XAUUSD build uses completed D1 data to classify Bull, Bear and Sideways regimes without lookahead. Directional regimes enable the frozen H4 multi-horizon slow-trend setup; sufficiently persistent Sideways regimes enable the frozen M5 New York-overlap VWAP snapback setup. Native combined-EA history is now available, but the EA remains restricted to demo forward testing because its latest six-month slice is negative.",
+    "session": "H4 trend all day / M5 VWAP 10:00-11:45 New York",
+    "logic_audit": "Source-code verified",
+    "logic_audit_note": "Readable combined MQ5 source compiled with zero errors and warnings. Its 5,380-configuration no-lookahead overlay screen, untouched locked year, mandatory XAG portability check, 10,000-path Monte Carlo audit and native MT5 Every Tick confirmation were reviewed together.",
+    "logic": [
+        {"title": "Classify the completed daily regime", "detail": "The EA compares the latest completed D1 close with the close forty trading days earlier. Moves above +2% are Bull, below -2% are Bear, and the middle band is Sideways; the current day is never used."},
+        {"title": "Forecast persistence without lookahead", "detail": "A Laplace-smoothed three-state transition matrix is rebuilt from 126 historical transitions. The transition into the newest completed label is deliberately excluded before calculating Bull, Bear and Sideways probabilities."},
+        {"title": "Trade slow momentum in directional regimes", "detail": "Bull or Bear regimes can activate the H4 one-, three- and six-month momentum vote when its direction agrees with the Markov probability signal and the completed close agrees with EMA100. The stop is 1.5 H4 ATR and the target is fixed at 6R."},
+        {"title": "Trade VWAP snapback only in persistent Sideways regimes", "detail": "When the current state is Sideways and its next-state probability is at least 50%, the EA may fade a completed M5 two-deviation stretch back inside the 09:30 New York session VWAP bands. M5 ADX must be at or below 20."},
+        {"title": "Use the frozen mean-reversion exit", "detail": "The VWAP leg trades only from 10:00 through 11:45 New York, permits one entry per session, uses a 1.5 M5 ATR stop and fixed 3R target, and closes any surviving VWAP position at 12:00 New York."},
+        {"title": "Hard-lock risk and enforce demo use", "detail": "Both legs share one unique magic number and cannot overlap. Volume uses OrderCalcProfit so the planned stop loss equals 1% of current equity; the EA refuses a changed risk input and refuses to start on a real-money account while the recommended demo lock is enabled."},
+    ],
+    "risk_note": "Hard-locked to 1% of current equity per trade and installed with Demo Only enabled. Native MT5 returned +29.28% over one year and +88.30% over three years, but the latest six months returned -4.95%; forward testing is required before reconsidering the real-account lock.",
+    "price": 449,
+    "accent": "purple",
+    "featured": True,
+}
+
 
 def slugify(value: str) -> str:
     value = value.lower().replace("&", " and ")
@@ -837,6 +929,7 @@ def parse_installer_items() -> list[dict[str, Any]]:
                 "safe_set_source": safe_set_source or None,
                 "optional_symbol": bool(re.search(r"\bOptionalSymbol\s*=\s*\$true", block)),
                 "supports_safe_filter": not bool(re.search(r"\bSupportsSafeFilter\s*=\s*\$false", block)),
+                "recommended_safe_mode": bool(re.search(r"\bRecommendedSafe\s*=\s*\$true", block)),
             }
         )
     if not items:
@@ -1101,56 +1194,58 @@ def _xau_markov_evidence() -> Evidence | None:
 
 
 def _nasdaq_open_one_year_evidence() -> Evidence | None:
-    path = PACKAGE_ROOT / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "claim-982-final-results.json"
+    cache = STORE_ROOT / "data" / "evidence-cache" / "v1" / "products" / "nasdaq-5m-candle-momentum" / "standard" / "3y.json"
+    path = PACKAGE_ROOT / "Active Portfolio Full Pipeline 2026-09-05" / "11 Nasdaq 5M Candle Momentum" / "Reports" / "full" / "ustec-full-fixed-rr2.5.json"
     if not path.exists():
         return None
-    rows = _load_json(path)
-    row = next((item for item in rows if item.get("case") == "last-year-2025-2026"), None)
-    if row is None:
-        return None
+    cached = _load_json(cache) if cache.exists() else None
+    row = cached["stats"] if cached else _load_json(path)
     profit_factor = float(row["profit_factor"])
     return_pct = float(row["return_pct"])
-    drawdown = float(row["equity_dd_pct"])
+    drawdown = float(row.get("max_drawdown_pct", row.get("equity_dd_pct")))
     trades = int(row["trades"])
-    chart = Path(str(row["graph"]))
+    chart = PACKAGE_ROOT / "Active Portfolio Full Pipeline 2026-09-05" / "11 Nasdaq 5M Candle Momentum" / "Charts" / "locked-and-three-year-comparison.png"
     return Evidence(
-        label="Latest complete one-year MT5 backtest",
-        period="2025-08-28 to 2026-08-27",
+        label="Exact three-year optimized MT5 validation",
+        period=str(cached["period"]) if cached else "2023-09-01 to 2026-09-01",
         return_pct=return_pct,
         profit_factor=profit_factor,
         drawdown_pct=drawdown,
-        win_rate_pct=float(row["win_rate"]),
+        win_rate_pct=float(row.get("win_rate_pct", row.get("win_rate"))),
         trades=trades,
-        history_quality=f"{row.get('history_quality_pct', 100):.0f}%",
-        source_note="Exness USTEC, synchronized Every Tick MT5 test with commission, swap and random execution delay using the locked EMA12 / ATR4 / +1R activation / Trail6 / 15:55 close preset.",
+        sharpe_ratio=float(row["sharpe_ratio"]),
+        recovery_factor=float(row["recovery_factor"]),
+        history_quality=str(row.get("history_quality", f"{row.get('history_quality_pct', 100):.0f}%")),
+        source_note="Exness USTEC, synchronized Every Tick MT5 test with commission, swap and random execution delay using the frozen EMA12 / ATR4 / fixed 2.5R / no-trailing / 15:55 close preset.",
         chart_path=chart if chart.exists() else None,
         status=_status_for(profit_factor, return_pct, drawdown, trades),
-        caution="One historical year is not a guarantee of future performance.",
+        caution="The 2.5R exit was selected on the first two years and confirmed on the untouched final year. Historical performance is not a guarantee.",
     )
 
 
 def _nasdaq_open_safe_evidence() -> Evidence | None:
-    path = PACKAGE_ROOT / "Nasdaq 5M Open EMA ATR Research 2026-08-20" / "claim-982-safe-results.json"
+    cache = STORE_ROOT / "data" / "evidence-cache" / "v1" / "products" / "nasdaq-5m-candle-momentum" / "safe" / "3y.json"
+    path = PACKAGE_ROOT / "Active Portfolio Full Pipeline 2026-09-05" / "11 Nasdaq 5M Candle Momentum" / "Reports" / "full" / "ustec-full-fixed-rr2.5-safe.json"
     if not path.exists():
         return None
-    rows = _load_json(path)
-    row = next((item for item in rows if item.get("case") == "last-year-full-safe"), None)
-    if row is None:
-        return None
-    chart = Path(str(row["graph"]))
+    cached = _load_json(cache) if cache.exists() else None
+    row = cached["stats"] if cached else _load_json(path)
+    chart = PACKAGE_ROOT / "Active Portfolio Full Pipeline 2026-09-05" / "11 Nasdaq 5M Candle Momentum" / "Charts" / "locked-and-three-year-comparison.png"
     return Evidence(
-        label="Native MT5 Full Safe validation",
-        period="2025-08-28 to 2026-08-27",
+        label="Exact three-year Full Safe comparison",
+        period=str(cached["period"]) if cached else "2023-09-01 to 2026-09-01",
         return_pct=float(row["return_pct"]),
         profit_factor=float(row["profit_factor"]),
-        drawdown_pct=float(row["equity_dd_pct"]),
-        win_rate_pct=float(row["win_rate"]),
+        drawdown_pct=float(row.get("max_drawdown_pct", row.get("equity_dd_pct"))),
+        win_rate_pct=float(row.get("win_rate_pct", row.get("win_rate"))),
         trades=int(row["trades"]),
-        history_quality=f"{row.get('history_quality_pct', 100):.0f}%",
-        source_note="The same Exness USTEC Every Tick test with the completed-D1 40-bar Markov direction gate enabled inside this EA. Spread, commission, swap and random execution delay remain included.",
+        sharpe_ratio=float(row["sharpe_ratio"]),
+        recovery_factor=float(row["recovery_factor"]),
+        history_quality=str(row.get("history_quality", f"{row.get('history_quality_pct', 100):.0f}%")),
+        source_note="The optimized fixed-2.5R Exness USTEC Every Tick test with the completed-D1 40-bar Markov direction gate enabled. Spread, commission, swap and random execution delay remain included.",
         chart_path=chart if chart.exists() else None,
-        status=_status_for(float(row["profit_factor"]), float(row["return_pct"]), float(row["equity_dd_pct"]), int(row["trades"])),
-        caution="Full Safe reduced last-year drawdown and improved PF, but accepted only 40 of 256 trades and reduced return materially. Forward-test both modes before choosing one.",
+        status=_status_for(float(row["profit_factor"]), float(row["return_pct"]), float(row.get("max_drawdown_pct", row.get("equity_dd_pct"))), int(row["trades"])),
+        caution="Full Safe accepted only 189 trades, reduced return materially and did not improve exact three-year drawdown. Standard therefore remains the recommended mode.",
     )
 
 
@@ -1576,6 +1671,156 @@ def _elliott_wave_xau_evidence() -> Evidence | None:
     )
 
 
+def _slow_trend_xau_evidence() -> Evidence | None:
+    path = SLOW_TREND_ROOT / "summary.json"
+    if not path.is_file():
+        return None
+    data = _load_json(path)
+    row = next((item for item in data.get("native", []) if item.get("symbol") == "XAUUSD"), None)
+    if row is None:
+        return None
+    report = SLOW_TREND_ROOT / "Native" / "xauusd-selected-test-model0" / "xauusd-selected-test-model0.htm"
+    trades = int(row["locked_trades"])
+    return Evidence(
+        label="Untouched locked-year MT5 validation — optimized slow trend",
+        period="2025-09-01 to 2026-09-01",
+        return_pct=float(row["locked_return"]),
+        profit_factor=float(row["locked_pf"]),
+        drawdown_pct=float(row["locked_equity_dd"]),
+        win_rate_pct=float(row["locked_win_rate"]),
+        trades=trades,
+        sharpe_ratio=float(row["locked_sharpe"]),
+        recovery_factor=float(row["locked_recovery"]),
+        history_quality="99%",
+        source_note="Exness XAUUSD H4, native MT5 generated Every Tick history, broker spread, commission, swap and random execution delay using the frozen 1% configuration selected before the locked year.",
+        chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+        status="Validated evidence",
+        caution=f"The locked year contains {trades} trades and is historical evidence, not a forecast. The wide 6R target creates a deliberately lower win rate and requires patient demo forward testing.",
+    )
+
+
+def _regime_switch_xau_evidence() -> Evidence | None:
+    native_cache = (
+        STORE_ROOT
+        / "data"
+        / "evidence-cache"
+        / "v1"
+        / "products"
+        / "xau-regime-switch"
+        / "standard"
+        / "1y.json"
+    )
+    if native_cache.is_file():
+        payload = _load_json(native_cache)
+        row = payload.get("stats", {})
+        trades = int(row.get("trades", 0))
+        if trades > 0:
+            return Evidence(
+                label="Native MT5 Every Tick validation — XAU regime switch",
+                period=str(payload.get("period", "2025-09-01 to 2026-09-01")),
+                return_pct=float(row["return_pct"]),
+                profit_factor=float(row["profit_factor"]),
+                drawdown_pct=float(row["max_drawdown_pct"]),
+                win_rate_pct=float(row["win_rate_pct"]),
+                trades=trades,
+                sharpe_ratio=float(row["sharpe_ratio"]),
+                recovery_factor=float(row["recovery_factor"]),
+                history_quality=str(row.get("history_quality", payload.get("history_quality", "99%"))),
+                source_note="Exness XAUUSD M5, native MT5 Every Tick history, broker spread, commission, swap and random execution delay using the compiled combined EA and frozen hard-1% SET.",
+                chart_path=None,
+                status="Validated demo-forward evidence",
+                caution="The native one-year result confirms the combined implementation, but its most recent six-month slice was negative. Keep this EA on demo until forward evidence shows the recent weakness has ended.",
+            )
+
+    path = REGIME_SWITCH_ROOT / "results.json"
+    monte_carlo_path = REGIME_SWITCH_ROOT / "true-switch-monte-carlo.json"
+    if not path.is_file() or not monte_carlo_path.is_file():
+        return None
+    data = _load_json(path).get("XAUUSD", {}).get("best_by_mode", {}).get("regime-switch", {})
+    row = data.get("locked")
+    monte_carlo = _load_json(monte_carlo_path).get("XAUUSD", {})
+    if not row:
+        return None
+    chart = REGIME_SWITCH_ROOT / "Charts" / "true-switch-locked.png"
+    return Evidence(
+        label="Untouched locked-year ledger overlay — XAU regime switch",
+        period="2025-09-01 to 2026-09-01",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["max_dd_pct"]),
+        win_rate_pct=float(row["win_rate"]),
+        trades=int(row["trades"]),
+        sharpe_ratio=float(row["sharpe"]),
+        recovery_factor=float(row["recovery"]),
+        history_quality="Native component ledgers",
+        source_note="The H4 trend and M5 VWAP components came from separate native Exness MT5 broker-cost ledgers. Their frozen signals were combined using completed-D1 causal regime decisions selected before the displayed locked year was opened, at fixed 1% risk.",
+        chart_path=chart if chart.is_file() else None,
+        status="Demo-stage overlay evidence",
+        caution=(
+            f"The 10,000-path return P5 was {float(monte_carlo.get('return_p5', 0.0)):+.2f}% and P95 drawdown was "
+            f"{float(monte_carlo.get('dd_p95', 0.0)):.2f}%. This is not yet a native tick-by-tick report from the new combined EA, so demo forward testing and native confirmation are mandatory before real capital."
+        ),
+    )
+
+
+def _session_vwap_xag_evidence() -> Evidence | None:
+    path = SESSION_VWAP_ROOT / "Native" / "xagusd-frozen-locked-model0" / "result.json"
+    if not path.is_file():
+        return None
+    row = _load_json(path)
+    report = path.parent / "xagusd-frozen-locked-model0.htm"
+    trades = int(row["trades"])
+    return Evidence(
+        label="Untouched locked-year MT5 validation — XAG session VWAP snapback",
+        period="2025-09-01 to 2026-09-01",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["equity_dd_pct"]),
+        win_rate_pct=float(row["win_rate"]),
+        trades=trades,
+        sharpe_ratio=float(row["sharpe_ratio"]),
+        recovery_factor=float(row["recovery_factor"]),
+        history_quality=f"{float(row['history_quality_pct']):.0f}%",
+        source_note="Exness XAGUSD M30 signals tested with native MT5 generated Every Tick history, broker spread, commission, swap and random execution delay. The 2.5-sigma New York rejection setup, ADX20 filter, 1.25 ATR stop, fixed 1R target, no trailing and 1% equity risk were frozen before this year was opened.",
+        chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+        status="Validated watch evidence",
+        caution=(
+            f"Only {trades} locked-year trades occurred. A 10,000-path five-trade block bootstrap was positive "
+            "in 99.91% of paths with a +1.78% return P5 and 2.74% P95 drawdown, but that simulation reuses "
+            "the same small trade sample and does not remove the sample-size uncertainty."
+        ),
+    )
+
+
+def _month_end_flow_us100_evidence() -> Evidence | None:
+    path = MONTH_END_FLOW_ROOT / "Native" / "ustec-frozen-locked-model0" / "result.json"
+    if not path.is_file():
+        return None
+    row = _load_json(path)
+    report = path.parent / "ustec-frozen-locked-model0.htm"
+    trades = int(row["trades"])
+    return Evidence(
+        label="Untouched locked-year MT5 validation — US100 month-end flow",
+        period="2025-09-01 to 2026-09-01",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["equity_dd_pct"]),
+        win_rate_pct=float(row["win_rate"]),
+        trades=trades,
+        sharpe_ratio=float(row["sharpe_ratio"]),
+        recovery_factor=float(row["recovery_factor"]),
+        history_quality=f"{float(row['history_quality_pct']):.0f}%",
+        source_note="Exness USTEC M30 signals tested with native MT5 Every Tick history, broker spread, commission, swap and random execution delay. The first-three-business-days window, New York first-hour timing, long-only direction, 1.5 ATR stop, fixed 2.5R target, six-hour exit and 1% equity risk were frozen before this year was opened.",
+        chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+        status="Validated demo-forward evidence",
+        caution=(
+            f"Only {trades} locked-year trades occurred. The 10,000-path block bootstrap had a 78.38% "
+            "profit probability, -5.24% return P5 and 9.20% P95 drawdown; this is historical evidence "
+            "with a meaningful downside tail, not a forecast."
+        ),
+    )
+
+
 def _news_pulse_hard_evidence(label: str) -> Evidence | None:
     assets = {
         "News Pulse XAU": "xauusd",
@@ -1912,6 +2157,10 @@ def get_catalog() -> list[Product]:
     rsi_vwap_xau = _rsi_vwap_xau_evidence()
     trend_progression_xau = _trend_progression_xau_evidence()
     elliott_wave_xau = _elliott_wave_xau_evidence()
+    slow_trend_xau = _slow_trend_xau_evidence()
+    regime_switch_xau = _regime_switch_xau_evidence()
+    session_vwap_xag = _session_vwap_xag_evidence()
+    month_end_flow_us100 = _month_end_flow_us100_evidence()
     orb_h1_us100 = _orb_h1_us100_evidence()
     selective_orb_v3 = _selective_orb_v3_evidence()
     orb_volume_high_win = _orb_volume_high_win_evidence()
@@ -1951,6 +2200,14 @@ def get_catalog() -> list[Product]:
             evidence = trend_progression_xau
         elif item["label"] == "XAU Elliott Wave 1-2-3":
             evidence = elliott_wave_xau
+        elif item["label"] == "XAU Slow Trend":
+            evidence = slow_trend_xau
+        elif item["label"] == "XAU Regime Switch":
+            evidence = regime_switch_xau
+        elif item["label"] == "XAG Session VWAP Snapback":
+            evidence = session_vwap_xag
+        elif item["label"] == "US100 Month End Flow":
+            evidence = month_end_flow_us100
         elif item["label"] == "US100 H1 ORB 13UTC":
             evidence = orb_h1_us100
         elif item["label"] == "US100 Selective ORB V3":
@@ -1983,6 +2240,9 @@ def get_catalog() -> list[Product]:
             # The overnight EA was independently re-optimized after the selected
             # portfolio audit. Prefer its fresh exact-active locked result.
             evidence = nasdaq_overnight
+        if item["label"] == "Nasdaq 5M Candle Momentum" and nasdaq_open is not None:
+            # Step 11 supersedes the older selected-portfolio reconstruction.
+            evidence = nasdaq_open
         one_year_result = evidence
         safe_supported = bool(item["supports_safe_filter"])
         safe_evidence = all_safe.get(item["label"]) if safe_supported else None
@@ -2006,6 +2266,7 @@ def get_catalog() -> list[Product]:
             # Supersede the older portfolio-wide filter comparison with the
             # exact M30/4R Full Safe audit promoted in Step 8.
             safe_evidence = xau_weakness_safe
+        recommended_safe_mode = bool(item["recommended_safe_mode"] and safe_supported and safe_evidence is not None)
         limitations = [
             "Historical returns are not guaranteed and live execution can differ.",
             "Broker symbol names, spread, slippage and contract size affect results.",
@@ -2033,12 +2294,17 @@ def get_catalog() -> list[Product]:
         if is_poc_fib:
             deployment_session = "New York broker-session window"
             deployment_note = " The dated Best Recommended installer preserves its optimized fixed 5R exit, disables trailing, and keeps its selected New York broker-session restriction."
+        elif item["label"] in {"XAU Regime Switch", "XAG Session VWAP Snapback", "US100 Month End Flow"}:
+            deployment_session = meta["session"]
+            deployment_note = f" Every portfolio BAT installs this selected calendar/session configuration on its own chart with {exit_mode.lower()} and its locked 1% risk rule."
         elif is_standalone_orb:
             deployment_session = meta["session"]
             deployment_note = f" Every portfolio BAT installs this standalone session as its own chart with {exit_mode.lower()} and a unique magic number."
         else:
             deployment_session = "All day / native strategy window"
             deployment_note = f" The dated Best Recommended installer applies {exit_mode.lower()} and does not add a research-session restriction."
+        if recommended_safe_mode:
+            deployment_note += " Its independently validated completed-D1 Safe gate is enabled by default in the Best Recommended portfolio."
         logic_steps = [dict(step) for step in meta["logic"]]
         if logic_steps:
             if exit_mode == "Dynamic 50/20":
@@ -2092,6 +2358,7 @@ def get_catalog() -> list[Product]:
                 featured=bool(meta.get("featured", False)),
                 development=development,
                 safe_filter_supported=safe_supported,
+                recommended_safe_mode=recommended_safe_mode,
                 evidence=evidence,
                 safe_evidence=safe_evidence,
                 one_year_evidence=one_year_result,

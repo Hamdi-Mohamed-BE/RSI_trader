@@ -58,7 +58,7 @@ function Get-PortfolioItems {
         [pscustomobject]@{
             Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 15; Expert = 'LTA_Concepts_EA.ex5'
-            ExpertSource = 'LTA volume profile\EA\LTA_Concepts_EA.ex5'
+            ExpertSource = 'LTA volume profile\EA\LTA_Concepts_EA.ex5'; RecommendedSafe = $true
             SetSource = 'Selected Portfolio Settings 2026-09-01\01 LTA Volume Profile - CURRENT - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0
         },
         [pscustomobject]@{
@@ -142,13 +142,13 @@ function Get-PortfolioItems {
         [pscustomobject]@{
             Label = 'AAA Final EMA3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 240; Expert = 'AAA Final EMA3 EA.ex5'
-            ExpertSource = 'AAA Final EAs\AAA Final EMA3 EA\AAA Final EMA3 EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final EMA3 EA\AAA Final EMA3 EA.ex5'; RecommendedSafe = $true
             SetSource = 'Selected Portfolio Settings 2026-09-01\08 EMA3 - H4 PIVOT 1.7R - DYNAMIC 60-20 ONLY.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
             Label = 'AAA Final XAU Weakness'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 30; Expert = 'AAA Final XAU Weakness EA.ex5'
-            ExpertSource = 'AAA Final EAs\AAA Final XAU Weakness EA\AAA Final XAU Weakness EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final XAU Weakness EA\AAA Final XAU Weakness EA.ex5'; RecommendedSafe = $true
             SetSource = 'Selected Portfolio Settings 2026-09-01\09 XAU Weakness - M30 STRUCTURE 4R - DYNAMIC 50-20.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
@@ -160,8 +160,8 @@ function Get-PortfolioItems {
         [pscustomobject]@{
             Label = 'Nasdaq 5M Candle Momentum'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 5; Expert = 'Nasdaq 5M Open EMA ATR EA.ex5'
-            ExpertSource = 'Nasdaq 5M Open EMA ATR Research 2026-08-20\EA\Nasdaq 5M Open EMA ATR EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+            ExpertSource = 'Active Portfolio Full Pipeline 2026-09-05\11 Nasdaq 5M Candle Momentum\EA\Nasdaq 5M Candle Momentum Audit EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
         },
         [pscustomobject]@{
             Label = 'News Pulse XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -198,6 +198,30 @@ function Get-PortfolioItems {
             Period = 240; Expert = 'Elliott Wave 123 EA.ex5'
             ExpertSource = 'Elliott Wave Research 2026-09-05\EA\Elliott Wave 123 EA.ex5'
             SetSource = 'Elliott Wave Research 2026-09-05\Sets\ElliottWave-xauusd--h4--optimized--locked.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'XAU Slow Trend'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 240; Expert = 'Calyx Slow Trend EA.ex5'
+            ExpertSource = 'Slow Multi Asset Trend Research 2026-09-06\EA\Calyx Slow Trend EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\17 XAU Slow Trend H4 - LOCKED 6R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; LockRisk = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'XAU Regime Switch'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 5; Expert = 'Calyx XAU Regime Switch EA.ex5'
+            ExpertSource = 'Regime Switch Overlay Research 2026-09-06\EA\Calyx XAU Regime Switch EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\20 XAU Regime Switch - DEMO - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'XAG Session VWAP Snapback'; Canonical = 'XAGUSD'; Aliases = @('XAGUSD', 'SILVER', 'XAG')
+            Period = 30; Expert = 'Calyx Session VWAP Snapback EA.ex5'
+            ExpertSource = 'Session VWAP Snapback Research 2026-09-06\EA\Calyx Session VWAP Snapback EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\18 XAG Session VWAP Snapback M30 - NY - LOCKED 1R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; LockRisk = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'US100 Month End Flow'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 30; Expert = 'Calyx Month End Flow EA.ex5'
+            ExpertSource = 'Month End Institutional Flow Research 2026-09-06\EA\Calyx Month End Flow EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\19 US100 Month End Flow M30 - FIRST3 NY - LOCKED 2P5R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; LockRisk = $true; SupportsSafeFilter = $false
         }
     )
 
@@ -220,13 +244,17 @@ function Get-PortfolioItems {
         if (-not $item.PSObject.Properties['SafeSetSource']) {
             $item | Add-Member -NotePropertyName SafeSetSource -NotePropertyValue ''
         }
+        if (-not $item.PSObject.Properties['RecommendedSafe']) {
+            $item | Add-Member -NotePropertyName RecommendedSafe -NotePropertyValue $false
+        }
         if (-not $item.PSObject.Properties['LockRisk']) {
             $item | Add-Member -NotePropertyName LockRisk -NotePropertyValue $false
         }
-        $usesDedicatedSafePreset = [bool]$item.SafeSetSource -and ($IsFullSafe -or $UseRecommendedSelections)
+        $safeByDesign = [bool]$UseRecommendedSelections -and [bool]$item.RecommendedSafe
+        $usesDedicatedSafePreset = [bool]$item.SafeSetSource -and ($IsFullSafe -or $safeByDesign)
         $selectedSetSource = if ($usesDedicatedSafePreset) { [string]$item.SafeSetSource } else { [string]$item.SetSource }
         $item | Add-Member -NotePropertyName UsesDedicatedSafePreset -NotePropertyValue $usesDedicatedSafePreset
-        $item | Add-Member -NotePropertyName SafeByDesign -NotePropertyValue $false
+        $item | Add-Member -NotePropertyName SafeByDesign -NotePropertyValue $safeByDesign
         $item | Add-Member -NotePropertyName ExpertFullPath -NotePropertyValue (Join-Path $PackageRoot $item.ExpertSource)
         $item | Add-Member -NotePropertyName SetFullPath -NotePropertyValue (Join-Path $PackageRoot $selectedSetSource)
     }
@@ -428,7 +456,7 @@ function Get-EffectiveInputs([object]$Item) {
             if ($inputs.Contains('Volume')) { $inputs['Volume'] = $dynamicMoney }
         }
     }
-    if ($IsFullSafe -and [bool]$Item.SupportsSafeFilter -and -not [bool]$Item.UsesDedicatedSafePreset) {
+    if (($IsFullSafe -or [bool]$Item.SafeByDesign) -and [bool]$Item.SupportsSafeFilter -and -not [bool]$Item.UsesDedicatedSafePreset) {
         $inputs['InpUseMarkovRegimeFilter'] = 'true'
         $inputs['InpMarkovReturnWindow'] = '40'
         $inputs['InpMarkovThreshold'] = '0.05'
@@ -659,10 +687,11 @@ if ($IsFullSafe) {
     }
 }
 if ($UseRecommendedSelections) {
-    $recommendedCount = @($portfolio | Where-Object { $_.UsesDedicatedSafePreset }).Count
+    $recommendedSafe = @($portfolio | Where-Object { $_.SafeByDesign })
+    $recommendedCount = $recommendedSafe.Count
     Write-Host 'BEST RECOMMENDED: selected per-EA portfolio settings are active; each EA keeps its own configured session.' -ForegroundColor Green
     if ($recommendedCount -gt 0) {
-        Write-Host ("{0} EA uses an additional audited dedicated recommendation." -f $recommendedCount) -ForegroundColor Green
+        Write-Host ("{0} evidence-selected EAs default to Safe mode: {1}." -f $recommendedCount, (($recommendedSafe | ForEach-Object { $_.Label }) -join ', ')) -ForegroundColor Green
     }
 }
 
@@ -857,7 +886,13 @@ if ($PreflightOnly) {
 Write-Host "`nThis will close and restart the selected MT5, enable Algo Trading, switch to a new" -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-chart profile, and the EAs may place REAL TRADES immediately." -ForegroundColor Yellow
 Write-Host "$($portfolio.Count)-EA SET: locked per-EA signal, exit and session selections; rejected EAs removed." -ForegroundColor Red
-$modeMessage = if ($IsFullSafe) { 'MODE: FULL SAFE - independent completed-D1 Markov gates enabled in every eligible strategy.' } else { 'MODE: STANDARD - current default/selective configuration.' }
+$modeMessage = if ($IsFullSafe) {
+    'MODE: FULL SAFE - independent completed-D1 Markov gates enabled in every eligible strategy.'
+} elseif ($UseRecommendedSelections) {
+    'MODE: BEST RECOMMENDED - evidence-selected EAs use Safe mode; all others keep their stronger Standard inputs.'
+} else {
+    'MODE: STANDARD - current default/selective configuration.'
+}
 Write-Host $modeMessage -ForegroundColor Red
 if ($IsAdaptiveAccount) {
     if ($UsesDynamicRisk) {
@@ -976,6 +1011,7 @@ $manifest = @(
     'Account preset: ' + $AccountProfile
     'Safety mode: ' + $SafetyMode
     'Recommended selections: ' + [bool]$UseRecommendedSelections
+    'Recommended Safe EAs: ' + ((@($portfolio | Where-Object { $_.SafeByDesign }) | ForEach-Object { $_.Label }) -join ', ')
     'Risk mode: ' + $RiskMode
     'Requested risk value: ' + $RiskValue.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
     'Account: ' + $login

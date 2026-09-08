@@ -1063,6 +1063,8 @@ bool PlaceSignal(const TradeSignal &signal)
    string side = (signal.dir > 0 ? "BUY" : "SELL");
    string mode = (signal.contrarian ? "CONTRA" : "MOM");
    string comment = "LTA " + signal.model + " " + signal.level_name + " " + mode;
+   if(InpUseMarkovRegimeFilter)
+      comment = "Safe " + comment;
 
    bool ok = false;
    if(signal.dir > 0)

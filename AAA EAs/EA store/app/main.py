@@ -74,11 +74,13 @@ templates.env.filters["percent"] = percent
 
 
 def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> Product:
-    cached = load_product_summary(product.slug, "standard", period)
-    if not cached or not cached.get("stats") or product.evidence is None:
+    mode = "safe" if product.recommended_safe_mode else "standard"
+    base_evidence = product.safe_evidence if mode == "safe" else product.evidence
+    cached = load_product_summary(product.slug, mode, period)
+    if not cached or not cached.get("stats") or base_evidence is None:
         return product
     stats = cached["stats"]
-    evidence = product.evidence.model_copy(
+    evidence = base_evidence.model_copy(
         update={
             "label": f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
             "period": str(cached["period"]),
@@ -89,6 +91,8 @@ def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> P
             "trades": int(stats.get("trades") or 0),
             "sharpe_ratio": stats.get("sharpe_ratio"),
             "recovery_factor": stats.get("recovery_factor"),
+            "max_win_streak": stats.get("max_win_streak"),
+            "max_loss_streak": stats.get("max_loss_streak"),
             "history_quality": str(cached.get("history_quality") or "Native MT5 report"),
             "source_note": str(cached.get("notice")),
         }
@@ -141,7 +145,7 @@ def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> di
             "mode": mode,
             "label": "Recommended active configuration",
             "individually_filtered_eas": sum(1 for product in get_sellable_catalog() if product.exit_mode == "Dynamic 50/20"),
-            "safe_by_design_eas": 0,
+            "safe_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_safe_mode),
             "vendor_unchanged_eas": 0,
             "caution": cached.get("notice"),
             "chart": None,
@@ -170,7 +174,7 @@ def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> di
             "mode": mode,
             "label": "Applied per-EA configuration" if mode == "standard" else "Original audited 12 — original exits",
             "individually_filtered_eas": sum(1 for value in data.get("selected_setup", {}).values() if value == "dynamic-only") if mode == "standard" else 0,
-            "safe_by_design_eas": 0,
+            "safe_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_safe_mode),
             "vendor_unchanged_eas": 0,
             "caution": "Arithmetic overlay of separate locked MT5 tests; not a native shared-margin simultaneous run.",
             "chart": chart if chart.exists() else None,
@@ -307,12 +311,14 @@ async def catalogue(
 async def product_detail(
     request: Request,
     slug: str,
-    mode: str = Query(default="standard", pattern=r"^(standard|safe)$"),
+    mode: str | None = Query(default=None, pattern=r"^(standard|safe)$"),
     period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
 ) -> HTMLResponse:
     product = get_product(slug)
     if product is None:
         raise HTTPException(status_code=404, detail="EA not found")
+    if mode is None:
+        mode = "safe" if product.recommended_safe_mode else "standard"
     related = [
         item for item in _display_catalog() if item.slug != product.slug and item.asset_group == product.asset_group
     ][:3]
@@ -333,6 +339,8 @@ async def product_detail(
                 "trades": int(stats.get("trades") or 0),
                 "sharpe_ratio": stats.get("sharpe_ratio"),
                 "recovery_factor": stats.get("recovery_factor"),
+                "max_win_streak": stats.get("max_win_streak"),
+                "max_loss_streak": stats.get("max_loss_streak"),
                 "history_quality": str(cached.get("history_quality") or "Native MT5 report"),
                 "source_note": str(cached.get("notice")),
             }
@@ -344,6 +352,7 @@ async def product_detail(
         "selected_period": period,
         "period_options": PERIOD_OPTIONS,
         "display_evidence": display_evidence,
+        "streak_stats": (cached or {}).get("stats", {}),
     }
     return templates.TemplateResponse(request=request, name="detail.html", context=context)
 

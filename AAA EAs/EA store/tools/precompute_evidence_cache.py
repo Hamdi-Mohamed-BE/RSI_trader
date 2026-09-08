@@ -30,7 +30,7 @@ from app.evidence_cache import (  # noqa: E402
 from app.evidence_series import parse_mt5_balance_series  # noqa: E402
 from app.mt5_evidence_jobs import _native_metrics, _native_trades, mt5_evidence_jobs  # noqa: E402
 from app.mt5_live import live_mt5  # noqa: E402
-from app.trade_metrics import enrich_trades  # noqa: E402
+from app.trade_metrics import enrich_trades, outcome_streaks  # noqa: E402
 
 
 PERIOD_MONTHS = {"6m": 6, "1y": 12, "3y": 36, "5y": 60}
@@ -166,6 +166,7 @@ def product_payload(product: Product, mode: str, period: str, start: date, end: 
         trade["cache_period"] = period
         trade["source"] = "Precomputed native MT5 deals"
     trades = enrich_trades(trades, product.slug)
+    native.update(outcome_streaks(trades))
     initial = float(native.get("initial_balance", 10_000) or 10_000)
     if not series:
         series = [{"time": f"{start.isoformat()}T00:00:00", "balance": initial}]
@@ -341,8 +342,9 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
     all_trades: list[dict[str, Any]] = []
     included: list[dict[str, Any]] = []
     for product in products:
-        payload_path = product_cache_path(product.slug, "standard", period)
-        trades_path = product_trades_path(product.slug, "standard", period)
+        selected_mode = "safe" if product.recommended_safe_mode else "standard"
+        payload_path = product_cache_path(product.slug, selected_mode, period)
+        trades_path = product_trades_path(product.slug, selected_mode, period)
         if not payload_path.is_file() or not trades_path.is_file():
             continue
         payload = json.loads(payload_path.read_text(encoding="utf-8-sig"))
@@ -354,6 +356,7 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
                 "label": product.label,
                 "symbol": product.canonical,
                 "timeframe": product.timeframe,
+                "mode": selected_mode,
                 "net_profit": payload["stats"].get("net_profit"),
                 "return_pct": payload["stats"].get("return_pct"),
                 "profit_factor": payload["stats"].get("profit_factor"),
@@ -368,10 +371,10 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
     first_trade_at = min((str(trade["open_time"]) for trade in all_trades), default=None)
     last_trade_at = max((str(trade["close_time"]) for trade in all_trades), default=None)
     payload = {
-        "label": "Recommended 24-EA portfolio",
+        "label": f"Recommended {len(included)}-EA portfolio",
         "period": f"{start.isoformat()} to {end.isoformat()}",
         "period_key": period,
-        "mode": "standard",
+        "mode": "recommended",
         "currency": "USD",
         "series": sample_series(series),
         "stats": stats,
@@ -384,7 +387,7 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
         "analytics": analytics,
         "included_ea_count": len(included),
         "expected_ea_count": len(products),
-        "notice": "Precomputed chronological cash-flow overlay of separate native MT5 tests; this is not a simultaneous shared-margin MT5 run.",
+        "notice": "Precomputed chronological cash-flow overlay of separate native MT5 tests using each EA's recommended Standard or Safe mode; this is not a simultaneous shared-margin MT5 run.",
         "source": "precomputed-native-mt5-cache",
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -445,17 +448,25 @@ def main() -> int:
         start = subtract_months(args.end, PERIOD_MONTHS[period])
         portfolio_end = args.end
         if args.portfolio_only and full_catalog:
-            reference_path = product_cache_path(full_catalog[0].slug, "standard", period)
+            reference_mode = "safe" if full_catalog[0].recommended_safe_mode else "standard"
+            reference_path = product_cache_path(full_catalog[0].slug, reference_mode, period)
             if reference_path.is_file():
                 reference = json.loads(reference_path.read_text(encoding="utf-8-sig"))
                 start = date.fromisoformat(str(reference["available_from"]))
                 portfolio_end = date.fromisoformat(str(reference["available_to"]))
-        if all(product_cache_path(product.slug, "standard", period).is_file() for product in full_catalog):
+        if all(
+            product_cache_path(
+                product.slug,
+                "safe" if product.recommended_safe_mode else "standard",
+                period,
+            ).is_file()
+            for product in full_catalog
+        ):
             portfolio = build_portfolio(full_catalog, period, start, portfolio_end)
             portfolio_rows.append({"period": period, "stats": portfolio["stats"], "included_ea_count": portfolio["included_ea_count"]})
             print(f"PORTFOLIO {period}: {portfolio['stats']}", flush=True)
         else:
-            print(f"PORTFOLIO {period}: waiting for all {len(full_catalog)} standard EA caches", flush=True)
+            print(f"PORTFOLIO {period}: waiting for all {len(full_catalog)} recommended-mode EA caches", flush=True)
 
     manifest = {
         "cache_version": "v1",
@@ -463,14 +474,20 @@ def main() -> int:
         "end_date": str(portfolio_rows[-1]["stats"]["to"]) if portfolio_rows else args.end.isoformat(),
         "periods": PERIOD_OPTIONS,
         "recommended_eas": [
-            {"slug": product.slug, "label": product.label, "symbol": product.canonical, "timeframe": product.timeframe}
+            {
+                "slug": product.slug,
+                "label": product.label,
+                "symbol": product.canonical,
+                "timeframe": product.timeframe,
+                "mode": "safe" if product.recommended_safe_mode else "standard",
+            }
             for product in full_catalog
         ],
         "recommended_ea_count": len(full_catalog),
         "generated_runs": generated,
         "portfolio": portfolio_rows,
         "failures": failures,
-        "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA and SET. Portfolio curves chronologically overlay realized cash flows from those separate tests.",
+        "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard or Safe mode. Portfolio curves chronologically overlay realized cash flows from those separate tests.",
     }
     write_json(CACHE_ROOT / "manifest.json", manifest)
     print(f"MANIFEST {CACHE_ROOT / 'manifest.json'}", flush=True)

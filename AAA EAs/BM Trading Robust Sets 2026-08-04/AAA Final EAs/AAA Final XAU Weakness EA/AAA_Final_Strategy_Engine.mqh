@@ -224,13 +224,13 @@ void AAA_RunReferencePairOCO()
    double half_risk=InpRiskPercent/2.0;
    if(eval[1].close>eval[1].open && london_high>ref_high && london_high>ref_low)
    {
-      AAA_SendPending(_Symbol,ORDER_TYPE_SELL_LIMIT,ref_high,london_high,InpRewardRisk,half_risk,InpMagic,expiry,"AAA weakness limit");
-      AAA_SendPending(_Symbol,ORDER_TYPE_SELL_STOP,ref_low,london_high,InpRewardRisk,half_risk,InpMagic,expiry,"AAA weakness stop");
+      AAA_SendPending(_Symbol,ORDER_TYPE_SELL_LIMIT,ref_high,london_high,InpRewardRisk,half_risk,InpMagic,expiry,(InpUseMarkovRegimeFilter ? "Safe AAA weakness limit" : "AAA weakness limit"));
+      AAA_SendPending(_Symbol,ORDER_TYPE_SELL_STOP,ref_low,london_high,InpRewardRisk,half_risk,InpMagic,expiry,(InpUseMarkovRegimeFilter ? "Safe AAA weakness stop" : "AAA weakness stop"));
    }
    else if(eval[1].close<eval[1].open && london_low<ref_low && london_low<ref_high)
    {
-      AAA_SendPending(_Symbol,ORDER_TYPE_BUY_LIMIT,ref_low,london_low,InpRewardRisk,half_risk,InpMagic,expiry,"AAA weakness limit");
-      AAA_SendPending(_Symbol,ORDER_TYPE_BUY_STOP,ref_high,london_low,InpRewardRisk,half_risk,InpMagic,expiry,"AAA weakness stop");
+      AAA_SendPending(_Symbol,ORDER_TYPE_BUY_LIMIT,ref_low,london_low,InpRewardRisk,half_risk,InpMagic,expiry,(InpUseMarkovRegimeFilter ? "Safe AAA weakness limit" : "AAA weakness limit"));
+      AAA_SendPending(_Symbol,ORDER_TYPE_BUY_STOP,ref_high,london_low,InpRewardRisk,half_risk,InpMagic,expiry,(InpUseMarkovRegimeFilter ? "Safe AAA weakness stop" : "AAA weakness stop"));
    }
 }
 
@@ -376,7 +376,7 @@ void AAA_RunXAUWeakness()
          double stop=range_low-MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
          if(InpWeaknessStopMode==1) stop=entry-MathMax(0.1,InpWeaknessStopATR)*atr;
          else if(InpWeaknessStopMode==2) stop=r[1].low-MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
-         AAA_SendPending(_Symbol,ORDER_TYPE_BUY_STOP,entry,stop,InpRewardRisk,InpRiskPercent,InpMagic,expiry,"AAA XAU weakness breakout");
+         AAA_SendPending(_Symbol,ORDER_TYPE_BUY_STOP,entry,stop,InpRewardRisk,InpRiskPercent,InpMagic,expiry,(InpUseMarkovRegimeFilter ? "Safe AAA XAU weakness breakout" : "AAA XAU weakness breakout"));
       }
    }
    else if(first_low>0 && InpWeaknessAllowShort)
@@ -390,7 +390,7 @@ void AAA_RunXAUWeakness()
          double stop=range_high+MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
          if(InpWeaknessStopMode==1) stop=entry+MathMax(0.1,InpWeaknessStopATR)*atr;
          else if(InpWeaknessStopMode==2) stop=r[1].high+MathMax(0.0,InpWeaknessBreakoutBufferATR)*atr;
-         AAA_SendPending(_Symbol,ORDER_TYPE_SELL_STOP,entry,stop,InpRewardRisk,InpRiskPercent,InpMagic,expiry,"AAA XAU weakness breakout");
+         AAA_SendPending(_Symbol,ORDER_TYPE_SELL_STOP,entry,stop,InpRewardRisk,InpRiskPercent,InpMagic,expiry,(InpUseMarkovRegimeFilter ? "Safe AAA XAU weakness breakout" : "AAA XAU weakness breakout"));
       }
    }
 }

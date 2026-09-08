@@ -1,0 +1,31 @@
+[project]
+name = "yt-stream-copy"
+version = "0.1.0"
+description = "Local YouTube livestream trade monitor with MT5 risk sizing"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "fastapi>=0.116",
+  "uvicorn[standard]>=0.35",
+  "python-dotenv>=1.1",
+  "python-multipart>=0.0.20",
+  "requests>=2.32",
+  "yt-dlp>=2026.7.4",
+  "faster-whisper>=1.2",
+  "rapidocr>=3.4",
+  "onnxruntime>=1.22",
+  "MetaTrader5>=5.0.5120; sys_platform == 'win32'",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/yt_stream_copy"]
+
+[dependency-groups]
+dev = ["pytest>=8.4", "httpx>=0.28"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

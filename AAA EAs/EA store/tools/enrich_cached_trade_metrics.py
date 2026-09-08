@@ -10,8 +10,13 @@ if str(STORE_ROOT) not in sys.path:
     sys.path.insert(0, str(STORE_ROOT))
 
 from app.catalog import get_sellable_catalog  # noqa: E402
-from app.evidence_cache import PERIOD_OPTIONS, product_trades_path, write_json  # noqa: E402
-from app.trade_metrics import enrich_trades  # noqa: E402
+from app.evidence_cache import (  # noqa: E402
+    PERIOD_OPTIONS,
+    product_cache_path,
+    product_trades_path,
+    write_json,
+)
+from app.trade_metrics import enrich_trades, outcome_streaks  # noqa: E402
 
 
 def main() -> int:
@@ -24,10 +29,16 @@ def main() -> int:
                 if not path.is_file():
                     continue
                 trades = json.loads(path.read_text(encoding="utf-8-sig"))
-                write_json(path, enrich_trades(trades, product.slug))
+                enriched = enrich_trades(trades, product.slug)
+                write_json(path, enriched)
+                summary_path = product_cache_path(product.slug, mode, option["value"])
+                if summary_path.is_file():
+                    summary = json.loads(summary_path.read_text(encoding="utf-8-sig"))
+                    summary.setdefault("stats", {}).update(outcome_streaks(enriched))
+                    write_json(summary_path, summary)
                 updated += 1
-                print(f"ENRICHED {product.label} | {mode} | {option['value']} | {len(trades)} trades")
-    print(f"DONE {updated} cached trade ledgers enriched; no MT5 backtest was run.")
+                print(f"ENRICHED {product.label} | {mode} | {option['value']} | {len(trades)} trades + streaks")
+    print(f"DONE {updated} cached trade ledgers and summaries enriched; no MT5 backtest was run.")
     return 0
 
 

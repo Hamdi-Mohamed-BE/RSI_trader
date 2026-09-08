@@ -1,0 +1,115 @@
+{
+  "case": "us30-baseline-test-model0",
+  "period": "M15 (2025.09.01 - 2026.09.01)",
+  "history_quality_pct": 100.0,
+  "bars": 23611,
+  "ticks": 67122621,
+  "initial_stop_atr": 0.0,
+  "trailing_atr": 0.0,
+  "trail_start_r": 0.0,
+  "close_at_session_end": false,
+  "initial_balance": 10000.0,
+  "final_balance": 10177.28,
+  "net_profit": 177.28,
+  "return_pct": 1.7728000000000002,
+  "gross_profit": 233.61,
+  "gross_loss": -56.33,
+  "profit_factor": 4.15,
+  "equity_dd_amount": 394.6,
+  "equity_dd_pct": 3.81,
+  "balance_dd_amount": 56.26,
+  "balance_dd_pct": 0.56,
+  "trades": 3,
+  "wins": 2,
+  "losses": 1,
+  "win_rate": 66.67,
+  "long_trades": 2,
+  "long_win_rate": 100.0,
+  "short_trades": 1,
+  "short_win_rate": 0.0,
+  "largest_win": 174.4,
+  "largest_loss": -56.19,
+  "average_win": 116.81,
+  "average_loss": -56.19,
+  "expected_payoff": 59.09,
+  "recovery_factor": 0.45,
+  "sharpe_ratio": 0.01,
+  "commission": -0.14,
+  "swap": -278.9,
+  "score": -5.8472,
+  "status": "valid",
+  "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Slow Multi Asset Trend Research 2026-09-06\\Native\\us30-baseline-test-model0\\us30-baseline-test-model0.htm",
+  "graph": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Slow Multi Asset Trend Research 2026-09-06\\Native\\us30-baseline-test-model0\\us30-baseline-test-model0.png",
+  "series": [
+    {
+      "date": "2025-09-01",
+      "balance": 10000.0
+    },
+    {
+      "date": "2025-09-01 00:00:13",
+      "balance": 9999.93
+    },
+    {
+      "date": "2026-03-06 00:00:17",
+      "balance": 10059.14
+    },
+    {
+      "date": "2026-03-26 00:00:06",
+      "balance": 10059.11
+    },
+    {
+      "date": "2026-04-08 00:00:08",
+      "balance": 10002.92
+    },
+    {
+      "date": "2026-04-19 22:00:01",
+      "balance": 10002.88
+    },
+    {
+      "date": "2026-08-31 23:59:59",
+      "balance": 10177.28
+    }
+  ],
+  "symbol": "US30",
+  "label": "baseline",
+  "stage": "test",
+  "model": 0,
+  "execution_mode": -1,
+  "config": {
+    "tf": "D1",
+    "horizon": "1-3-6m",
+    "trend": "ema200-rising",
+    "direction": "both",
+    "session": "all-day",
+    "stop_mode": 0,
+    "stop_atr": 2.5,
+    "exit_mode": 0,
+    "rr": 2.0,
+    "max_hold_days": 0,
+    "manage": 0
+  },
+  "inputs": {
+    "InpSignalTimeframe": 16408,
+    "InpHorizonMode": 3,
+    "InpTrendMode": 3,
+    "InpAllowLong": true,
+    "InpAllowShort": true,
+    "InpSessionMinuteUTC": -1,
+    "InpStopMode": 0,
+    "InpStopATR": 2.5,
+    "InpExitMode": 0,
+    "InpRewardRisk": 2.0,
+    "InpMaximumHoldDays": 0,
+    "InpManagement": 0,
+    "InpRiskPercent": 1.0,
+    "InpMaximumDeviationPoints": 100,
+    "InpMagic": 969060315,
+    "InpTesterOnly": true
+  },
+  "fingerprint": "8eb55560ba1bc7a72be04b5f916c0d53f4509b82c680f8b55190dbce9b343dc5",
+  "elapsed_seconds": 38.95,
+  "audit": {
+    "trades": 3,
+    "max_holding_days": 186.0000462962963
+  }
+}

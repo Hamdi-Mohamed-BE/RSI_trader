@@ -1,0 +1,91 @@
+[
+  {
+    "id": "xauusd--baseline-standard--validation",
+    "case": "baseline-standard",
+    "phase": "validation",
+    "purpose": "Frozen current LTA control, Safe gate off",
+    "from": "2024.09.01",
+    "to": "2025.08.31",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\validation\\xauusd--baseline-standard--validation.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\validation\\xauusd--baseline-standard--validation.set",
+    "overrides": {}
+  },
+  {
+    "id": "xauusd--baseline-safe--validation",
+    "case": "baseline-safe",
+    "phase": "validation",
+    "purpose": "Frozen current LTA control, current recommended Safe gate on",
+    "from": "2024.09.01",
+    "to": "2025.08.31",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\validation\\xauusd--baseline-safe--validation.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\validation\\xauusd--baseline-safe--validation.set",
+    "overrides": {
+      "InpUseMarkovRegimeFilter": "true"
+    }
+  },
+  {
+    "id": "xauusd--fixed-range--validation",
+    "case": "fixed-range",
+    "phase": "validation",
+    "purpose": "Completed consolidation fixed-range profile",
+    "from": "2024.09.01",
+    "to": "2025.08.31",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\validation\\xauusd--fixed-range--validation.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\validation\\xauusd--fixed-range--validation.set",
+    "overrides": {
+      "InpUseFixedRangeProfile": "true"
+    }
+  },
+  {
+    "id": "xauusd--auction-confirm--validation",
+    "case": "auction-confirm",
+    "phase": "validation",
+    "purpose": "Auction acceptance/rejection as confirmation gate",
+    "from": "2024.09.01",
+    "to": "2025.08.31",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\validation\\xauusd--auction-confirm--validation.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\validation\\xauusd--auction-confirm--validation.set",
+    "overrides": {
+      "InpBookAuctionMode": "1",
+      "InpUseMultipleVolumeNodes": "true"
+    }
+  },
+  {
+    "id": "xauusd--execution-guard--validation",
+    "case": "execution-guard",
+    "phase": "validation",
+    "purpose": "Measured spread ceiling and 21:00-23:00 UTC rollover block",
+    "from": "2024.09.01",
+    "to": "2025.08.31",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\validation\\xauusd--execution-guard--validation.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\validation\\xauusd--execution-guard--validation.set",
+    "overrides": {
+      "InpMaxSpreadPoints": "500",
+      "InpBookBrokerUtcOffsetMinutes": "180",
+      "InpBlockRolloverWindow": "true"
+    }
+  },
+  {
+    "id": "xauusd--book-full-stack--validation",
+    "case": "book-full-stack",
+    "phase": "validation",
+    "purpose": "All implementable book-fidelity changes together",
+    "from": "2024.09.01",
+    "to": "2025.08.31",
+    "report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Backtest Reports\\validation\\xauusd--book-full-stack--validation.htm",
+    "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\LTA Book Fidelity Research 2026-09-07\\Sets\\validation\\xauusd--book-full-stack--validation.set",
+    "overrides": {
+      "InpMaxSpreadPoints": "500",
+      "InpUseFixedRangeProfile": "true",
+      "InpUseBookZoneQuality": "true",
+      "InpUseSwingProfile": "true",
+      "InpBlockRolloverWindow": "true",
+      "InpBookProfileMode": "1",
+      "InpUseMultipleVolumeNodes": "true",
+      "InpUseStructuralSwingProfile": "true",
+      "InpBookTargetMode": "1",
+      "InpBookBrokerUtcOffsetMinutes": "180",
+      "InpBookAuctionMode": "2"
+    }
+  }
+]

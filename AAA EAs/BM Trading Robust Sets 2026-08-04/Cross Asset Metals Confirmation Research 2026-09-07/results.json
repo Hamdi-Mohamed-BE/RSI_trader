@@ -1,0 +1,561 @@
+{
+  "step": 4,
+  "title": "XAU/XAG Cross-Asset Confirmation",
+  "decision": "REJECT_DO_NOT_ADD",
+  "selected_rule": "ratio-continuation-60d-0.25",
+  "risk_per_trade_pct": 1.0,
+  "max_concurrent_metals_positions": 4,
+  "summaries": {
+    "development": {
+      "baseline": {
+        "return_pct": 567.3662,
+        "pf": 1.1979,
+        "win_rate": 39.2523,
+        "dd_pct": 29.9849,
+        "trades": 1391,
+        "sharpe": 1.3895,
+        "recovery": 18.9217,
+        "final_equity": 66736.62
+      },
+      "selected": {
+        "return_pct": 652.0411,
+        "pf": 1.4993,
+        "win_rate": 45.1169,
+        "dd_pct": 17.7171,
+        "trades": 727,
+        "sharpe": 2.762,
+        "recovery": 36.803,
+        "final_equity": 75204.11
+      }
+    },
+    "locked": {
+      "baseline": {
+        "return_pct": 908.0671,
+        "pf": 1.5414,
+        "win_rate": 43.6556,
+        "dd_pct": 18.1382,
+        "trades": 662,
+        "sharpe": 4.0231,
+        "recovery": 50.0639,
+        "final_equity": 100806.71
+      },
+      "selected": {
+        "return_pct": 92.3709,
+        "pf": 1.7717,
+        "win_rate": 46.4912,
+        "dd_pct": 14.9428,
+        "trades": 228,
+        "sharpe": 4.3033,
+        "recovery": 6.1816,
+        "final_equity": 19237.09
+      }
+    },
+    "three_year": {
+      "baseline": {
+        "return_pct": 6433.7986,
+        "pf": 1.4681,
+        "win_rate": 40.6235,
+        "dd_pct": 29.9849,
+        "trades": 2053,
+        "sharpe": 2.4674,
+        "recovery": 214.5679,
+        "final_equity": 653379.86
+      },
+      "selected": {
+        "return_pct": 1346.7083,
+        "pf": 1.6105,
+        "win_rate": 45.445,
+        "dd_pct": 17.7171,
+        "trades": 955,
+        "sharpe": 3.1968,
+        "recovery": 76.0119,
+        "final_equity": 144670.83
+      }
+    },
+    "cost_stress_locked": {
+      "return_pct": 71.6937,
+      "pf": 1.598,
+      "win_rate": 44.7368,
+      "dd_pct": 15.9851,
+      "trades": 228,
+      "sharpe": 3.6154,
+      "recovery": 4.485,
+      "final_equity": 17169.37
+    }
+  },
+  "monte_carlo": {
+    "return_p5": 27.4211,
+    "return_median": 93.9685,
+    "return_p95": 196.7798,
+    "dd_median": 10.6752,
+    "dd_p95": 18.8098,
+    "profit_probability": 99.6
+  },
+  "gate_checks": {
+    "non_baseline": true,
+    "locked_min_trades": true,
+    "locked_retention_40pct": false,
+    "locked_return_improves": false,
+    "locked_pf_improves": true,
+    "locked_dd_not_worse": true,
+    "cost_stress_positive": true,
+    "monte_carlo_p5_positive": true,
+    "four_of_six_positive_halves": true
+  },
+  "per_ea_locked": [
+    {
+      "slug": "lta-volume-profile",
+      "strategy": "LTA Volume Profile",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 102.0499,
+        "pf": 1.4292,
+        "win_rate": 33.4694,
+        "dd_pct": 12.4677,
+        "trades": 245,
+        "sharpe": 3.2804,
+        "recovery": 8.1851,
+        "final_equity": 20204.99
+      },
+      "selected": {
+        "return_pct": 32.5132,
+        "pf": 1.9075,
+        "win_rate": 38.5965,
+        "dd_pct": 7.1837,
+        "trades": 57,
+        "sharpe": 5.7862,
+        "recovery": 4.526,
+        "final_equity": 13251.32
+      }
+    },
+    {
+      "slug": "engineered-liquidity-xau",
+      "strategy": "Engineered Liquidity XAU",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 32.1945,
+        "pf": 1.5648,
+        "win_rate": 42.5,
+        "dd_pct": 7.675,
+        "trades": 80,
+        "sharpe": 2.7493,
+        "recovery": 4.1947,
+        "final_equity": 13219.45
+      },
+      "selected": {
+        "return_pct": 3.4084,
+        "pf": 1.5793,
+        "win_rate": 50.0,
+        "dd_pct": 2.7249,
+        "trades": 12,
+        "sharpe": 2.922,
+        "recovery": 1.2509,
+        "final_equity": 10340.84
+      }
+    },
+    {
+      "slug": "orb-volume-profile",
+      "strategy": "ORB Volume Profile",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 12.9384,
+        "pf": 1.8449,
+        "win_rate": 44.898,
+        "dd_pct": 5.1569,
+        "trades": 49,
+        "sharpe": 3.4518,
+        "recovery": 2.509,
+        "final_equity": 11293.84
+      },
+      "selected": {
+        "return_pct": 6.2557,
+        "pf": 2.5185,
+        "win_rate": 47.0588,
+        "dd_pct": 1.3563,
+        "trades": 17,
+        "sharpe": 5.0978,
+        "recovery": 4.6122,
+        "final_equity": 10625.57
+      }
+    },
+    {
+      "slug": "orb-volume-profile-high-win-0-75r",
+      "strategy": "ORB High-Win 0.75R",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 6.1866,
+        "pf": 1.5681,
+        "win_rate": 69.3878,
+        "dd_pct": 2.8199,
+        "trades": 49,
+        "sharpe": 3.1174,
+        "recovery": 2.1939,
+        "final_equity": 10618.66
+      },
+      "selected": {
+        "return_pct": 3.1371,
+        "pf": 1.984,
+        "win_rate": 70.5882,
+        "dd_pct": 1.1773,
+        "trades": 17,
+        "sharpe": 4.8486,
+        "recovery": 2.6646,
+        "final_equity": 10313.71
+      }
+    },
+    {
+      "slug": "orb-volume-profile-volume-confirmed",
+      "strategy": "ORB Volume-Confirmed",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 12.4856,
+        "pf": 2.8125,
+        "win_rate": 47.8261,
+        "dd_pct": 2.2399,
+        "trades": 23,
+        "sharpe": 6.2016,
+        "recovery": 5.5742,
+        "final_equity": 11248.56
+      },
+      "selected": {
+        "return_pct": 5.8486,
+        "pf": 3.8985,
+        "win_rate": 50.0,
+        "dd_pct": 1.2667,
+        "trades": 10,
+        "sharpe": 7.2994,
+        "recovery": 4.6171,
+        "final_equity": 10584.86
+      }
+    },
+    {
+      "slug": "xau-orb-new-york-m30",
+      "strategy": "XAU ORB New York M30",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 1.9531,
+        "pf": 2.1996,
+        "win_rate": 41.6667,
+        "dd_pct": 1.4059,
+        "trades": 12,
+        "sharpe": 3.8682,
+        "recovery": 1.3892,
+        "final_equity": 10195.31
+      },
+      "selected": {
+        "return_pct": -1.1485,
+        "pf": 0.0,
+        "win_rate": 0.0,
+        "dd_pct": 1.1485,
+        "trades": 4,
+        "sharpe": -9.5058,
+        "recovery": -1.0,
+        "final_equity": 9885.15
+      }
+    },
+    {
+      "slug": "xau-orb-london-ny-overlap-m30",
+      "strategy": "XAU ORB London\u2013NY M30",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 5.3346,
+        "pf": 2.2468,
+        "win_rate": 41.6667,
+        "dd_pct": 2.7934,
+        "trades": 24,
+        "sharpe": 4.9063,
+        "recovery": 1.9097,
+        "final_equity": 10533.46
+      },
+      "selected": {
+        "return_pct": 3.4308,
+        "pf": 3.6665,
+        "win_rate": 55.5556,
+        "dd_pct": 1.2767,
+        "trades": 9,
+        "sharpe": 8.4429,
+        "recovery": 2.6873,
+        "final_equity": 10343.08
+      }
+    },
+    {
+      "slug": "asia-breakout",
+      "strategy": "Asia Breakout",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 30.0677,
+        "pf": 1.8273,
+        "win_rate": 47.6923,
+        "dd_pct": 5.0984,
+        "trades": 65,
+        "sharpe": 4.336,
+        "recovery": 5.8974,
+        "final_equity": 13006.77
+      },
+      "selected": {
+        "return_pct": -1.6631,
+        "pf": 0.7144,
+        "win_rate": 36.3636,
+        "dd_pct": 3.9164,
+        "trades": 11,
+        "sharpe": -2.525,
+        "recovery": -0.4246,
+        "final_equity": 9833.69
+      }
+    },
+    {
+      "slug": "ema3",
+      "strategy": "EMA3",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 13.4559,
+        "pf": 2.0195,
+        "win_rate": 66.6667,
+        "dd_pct": 3.2817,
+        "trades": 42,
+        "sharpe": 4.9598,
+        "recovery": 4.1003,
+        "final_equity": 11345.59
+      },
+      "selected": {
+        "return_pct": 3.715,
+        "pf": 2.5541,
+        "win_rate": 62.5,
+        "dd_pct": 1.7721,
+        "trades": 8,
+        "sharpe": 6.5598,
+        "recovery": 2.0964,
+        "final_equity": 10371.5
+      }
+    },
+    {
+      "slug": "xau-weakness",
+      "strategy": "XAU Weakness",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 82.4427,
+        "pf": 1.8266,
+        "win_rate": 42.7419,
+        "dd_pct": 11.4574,
+        "trades": 124,
+        "sharpe": 4.2675,
+        "recovery": 7.1956,
+        "final_equity": 18244.27
+      },
+      "selected": {
+        "return_pct": 14.4647,
+        "pf": 1.6437,
+        "win_rate": 42.5,
+        "dd_pct": 6.0074,
+        "trades": 40,
+        "sharpe": 3.3725,
+        "recovery": 2.4078,
+        "final_equity": 11446.47
+      }
+    },
+    {
+      "slug": "xau-rsi-vwap",
+      "strategy": "XAU RSI VWAP",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 4.3136,
+        "pf": 1.4518,
+        "win_rate": 72.7273,
+        "dd_pct": 1.9219,
+        "trades": 44,
+        "sharpe": 2.7392,
+        "recovery": 2.2445,
+        "final_equity": 10431.36
+      },
+      "selected": {
+        "return_pct": 2.5644,
+        "pf": 1.4883,
+        "win_rate": 72.0,
+        "dd_pct": 1.9219,
+        "trades": 25,
+        "sharpe": 2.9127,
+        "recovery": 1.3343,
+        "final_equity": 10256.44
+      }
+    },
+    {
+      "slug": "xau-trend-progression",
+      "strategy": "XAU Trend Progression",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 18.4141,
+        "pf": 2.7888,
+        "win_rate": 60.0,
+        "dd_pct": 2.8132,
+        "trades": 25,
+        "sharpe": 6.4401,
+        "recovery": 6.5456,
+        "final_equity": 11841.41
+      },
+      "selected": {
+        "return_pct": 2.7774,
+        "pf": 2.4427,
+        "win_rate": 71.4286,
+        "dd_pct": 1.8811,
+        "trades": 7,
+        "sharpe": 4.5979,
+        "recovery": 1.4765,
+        "final_equity": 10277.74
+      }
+    },
+    {
+      "slug": "xau-elliott-wave-1-2-3",
+      "strategy": "XAU Elliott Wave 1-2-3",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 21.2378,
+        "pf": 3.5103,
+        "win_rate": 55.5556,
+        "dd_pct": 2.6267,
+        "trades": 18,
+        "sharpe": 8.9695,
+        "recovery": 8.0852,
+        "final_equity": 12123.78
+      },
+      "selected": {
+        "return_pct": -1.113,
+        "pf": 0.6978,
+        "win_rate": 20.0,
+        "dd_pct": 3.5907,
+        "trades": 5,
+        "sharpe": -2.2608,
+        "recovery": -0.31,
+        "final_equity": 9888.7
+      }
+    },
+    {
+      "slug": "xau-slow-trend",
+      "strategy": "XAU Slow Trend",
+      "symbol": "XAUUSD",
+      "baseline": {
+        "return_pct": 36.0319,
+        "pf": 2.2476,
+        "win_rate": 27.7778,
+        "dd_pct": 8.4297,
+        "trades": 36,
+        "sharpe": 4.9429,
+        "recovery": 4.2744,
+        "final_equity": 13603.19
+      },
+      "selected": {
+        "return_pct": 0.0251,
+        "pf": 1.0047,
+        "win_rate": 12.5,
+        "dd_pct": 4.4462,
+        "trades": 8,
+        "sharpe": 0.025,
+        "recovery": 0.0056,
+        "final_equity": 10002.51
+      }
+    },
+    {
+      "slug": "xag-session-vwap-snapback",
+      "strategy": "XAG Session VWAP Snapback",
+      "symbol": "XAGUSD",
+      "baseline": {
+        "return_pct": 4.0216,
+        "pf": 2.6836,
+        "win_rate": 53.3333,
+        "dd_pct": 1.8712,
+        "trades": 15,
+        "sharpe": 5.4125,
+        "recovery": 2.1492,
+        "final_equity": 10402.16
+      },
+      "selected": {
+        "return_pct": 0.5573,
+        "pf": 2.5855,
+        "win_rate": 40.0,
+        "dd_pct": 0.2099,
+        "trades": 5,
+        "sharpe": 3.9862,
+        "recovery": 2.6552,
+        "final_equity": 10055.73
+      }
+    }
+  ],
+  "six_month_stability": [
+    {
+      "from": "2023-09-01",
+      "to": "2024-03-01",
+      "return_pct": 36.2039,
+      "pf": 1.3363,
+      "win_rate": 43.1034,
+      "dd_pct": 17.7171,
+      "trades": 174,
+      "sharpe": 1.9232,
+      "recovery": 2.0434,
+      "final_equity": 13620.39
+    },
+    {
+      "from": "2024-03-01",
+      "to": "2024-09-01",
+      "return_pct": 66.6638,
+      "pf": 1.4063,
+      "win_rate": 45.8763,
+      "dd_pct": 14.4707,
+      "trades": 194,
+      "sharpe": 2.9057,
+      "recovery": 4.6068,
+      "final_equity": 16666.38
+    },
+    {
+      "from": "2024-09-01",
+      "to": "2025-03-01",
+      "return_pct": 103.2227,
+      "pf": 1.7562,
+      "win_rate": 48.913,
+      "dd_pct": 7.4961,
+      "trades": 184,
+      "sharpe": 4.6399,
+      "recovery": 13.7702,
+      "final_equity": 20322.27
+    },
+    {
+      "from": "2025-03-01",
+      "to": "2025-09-01",
+      "return_pct": 32.7244,
+      "pf": 1.2964,
+      "win_rate": 40.6417,
+      "dd_pct": 11.8027,
+      "trades": 187,
+      "sharpe": 1.9492,
+      "recovery": 2.7726,
+      "final_equity": 13272.44
+    },
+    {
+      "from": "2025-09-01",
+      "to": "2026-03-01",
+      "return_pct": 20.4293,
+      "pf": 1.9703,
+      "win_rate": 47.4576,
+      "dd_pct": 7.5689,
+      "trades": 59,
+      "sharpe": 5.5457,
+      "recovery": 2.6991,
+      "final_equity": 12042.93
+    },
+    {
+      "from": "2026-03-01",
+      "to": "2026-09-01",
+      "return_pct": 62.2189,
+      "pf": 1.755,
+      "win_rate": 46.7456,
+      "dd_pct": 14.2049,
+      "trades": 169,
+      "sharpe": 4.1633,
+      "recovery": 4.3801,
+      "final_equity": 16221.89
+    }
+  ],
+  "limitations": [
+    "The cross-asset condition is a veto on existing native MT5 trades; it cannot create replacement entries after a skipped trade.",
+    "Daily XAU/XAG closes are broker CFD data, not centralized futures settlement data.",
+    "A passing veto screen still requires copied-EA native MT5 replay before deployment."
+  ]
+}

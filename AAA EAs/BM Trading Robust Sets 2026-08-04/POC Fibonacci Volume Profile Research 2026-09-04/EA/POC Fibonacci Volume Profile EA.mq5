@@ -89,6 +89,7 @@ input int                       InpNewYorkStartHour=13;
 input int                       InpNewYorkEndHour=21;
 input int                       InpOverlapStartHour=13;
 input int                       InpOverlapEndHour=16;
+input bool                      InpWeekdaysOnly=false;
 
 input group "Risk and execution"
 input double                    InpRiskPercent=1.00;
@@ -137,9 +138,10 @@ bool HourAllowed(const int hour,const int startHour,const int endHour)
 
 bool SessionAllows(const datetime when)
 {
-   if(InpSession==POCFIB_ALL_DAY) return true;
    MqlDateTime value;
    TimeToStruct(when,value);
+   if(InpWeekdaysOnly && (value.day_of_week==0 || value.day_of_week==6)) return false;
+   if(InpSession==POCFIB_ALL_DAY) return true;
    if(InpSession==POCFIB_ASIA) return HourAllowed(value.hour,InpAsiaStartHour,InpAsiaEndHour);
    if(InpSession==POCFIB_LONDON) return HourAllowed(value.hour,InpLondonStartHour,InpLondonEndHour);
    if(InpSession==POCFIB_NEW_YORK) return HourAllowed(value.hour,InpNewYorkStartHour,InpNewYorkEndHour);

@@ -1,5 +1,5 @@
 #property copyright "Evidence-driven opening range breakout research EA"
-#property version   "1.10"
+#property version   "1.20"
 #property strict
 
 #include <Trade/Trade.mqh>
@@ -21,7 +21,15 @@ enum ENUM_ORB_ENTRY_MODE
 enum ENUM_ORB_STOP_MODE
 {
    ORB_STOP_SIGNAL_CANDLE=0,
-   ORB_STOP_OPPOSITE_RANGE=1
+   ORB_STOP_OPPOSITE_RANGE=1,
+   ORB_STOP_DAILY_ATR=2
+};
+
+enum ENUM_ORB_TRADE_DIRECTION
+{
+   ORB_DIRECTION_BOTH=0,
+   ORB_DIRECTION_LONG_ONLY=1,
+   ORB_DIRECTION_SHORT_ONLY=2
 };
 
 input group "Session and opening range"
@@ -64,6 +72,9 @@ input bool                  InpShowProfileLevels=true;
 
 input group "Breakout and entry"
 input ENUM_ORB_ENTRY_MODE   InpEntryMode=ORB_BREAK_AND_RETEST;
+input ENUM_ORB_TRADE_DIRECTION InpTradeDirection=ORB_DIRECTION_BOTH;
+input bool                  InpUsePaperStopEntry=false;
+input bool                  InpRequireOpeningCandleDirection=false;
 input double                InpBreakoutBodyMinimum=0.55;
 input double                InpBreakoutBufferATR=0.03;
 input int                   InpRetestBars=3;
@@ -74,6 +85,8 @@ input group "Stops, target, and management"
 input ENUM_ORB_STOP_MODE    InpStopMode=ORB_STOP_SIGNAL_CANDLE;
 input double                InpStopBufferATR=0.10;
 input double                InpMaximumStopATR=2.00;
+input double                InpDailyATRStopFraction=0.10;
+input bool                  InpUseFixedTarget=true;
 input double                InpRewardRisk=2.00;
 input double                InpBreakEvenAtR=1.00;
 input double                InpTrailStartAtR=0.0;
@@ -92,6 +105,7 @@ input int                   InpManualLiveServerUTCOffsetHours=0;
 
 CTrade trade;
 int g_atr_handle=INVALID_HANDLE;
+int g_daily_atr_handle=INVALID_HANDLE;
 int g_fast_ema_handle=INVALID_HANDLE;
 int g_slow_ema_handle=INVALID_HANDLE;
 datetime g_last_signal_bar=0;
@@ -100,6 +114,9 @@ bool g_range_ready=false;
 bool g_traded_today=false;
 double g_range_high=0.0;
 double g_range_low=0.0;
+double g_range_open=0.0;
+double g_range_close=0.0;
+int g_opening_direction=0;
 double g_range_volume=0.0;
 double g_opening_relative_volume=0.0;
 double g_atr=0.0;
@@ -270,7 +287,8 @@ bool TradedOnSessionDate(const MqlDateTime &session_date)
    return false;
 }
 
-double OpeningWindowVolume(const MqlDateTime &session_date,double &high,double &low,int &bars)
+double OpeningWindowVolume(const MqlDateTime &session_date,double &high,double &low,int &bars,
+                           double &window_open,double &window_close)
 {
    datetime from=SessionAnchor(session_date);
    datetime to=from+InpOpeningRangeMinutes*60-1;
@@ -278,6 +296,8 @@ double OpeningWindowVolume(const MqlDateTime &session_date,double &high,double &
    bars=CopyRates(_Symbol,PERIOD_M1,from,to,rates);
    if(bars<=0) return 0.0;
    high=-DBL_MAX; low=DBL_MAX;
+   window_open=rates[0].open;
+   window_close=rates[bars-1].close;
    double volume=0.0;
    for(int i=0;i<bars;i++)
    {
@@ -299,8 +319,8 @@ double PreviousOpeningVolumeMedian(const MqlDateTime &current_date)
       PreviousCalendarDay(candidate);
       attempts++;
       if(InpWeekdaysOnly && (candidate.day_of_week==0 || candidate.day_of_week==6)) continue;
-      double high=0.0,low=0.0; int bars=0;
-      double volume=OpeningWindowVolume(candidate,high,low,bars);
+      double high=0.0,low=0.0,window_open=0.0,window_close=0.0; int bars=0;
+      double volume=OpeningWindowVolume(candidate,high,low,bars,window_open,window_close);
       if(bars<MathMax(1,InpOpeningRangeMinutes/2) || volume<=0.0) continue;
       ArrayResize(samples,found+1);
       samples[found]=volume;
@@ -493,7 +513,7 @@ bool LatestIndicatorValue(const int handle,double &value)
 bool BuildOpeningRange(const MqlDateTime &session_date)
 {
    int bars=0;
-   g_range_volume=OpeningWindowVolume(session_date,g_range_high,g_range_low,bars);
+   g_range_volume=OpeningWindowVolume(session_date,g_range_high,g_range_low,bars,g_range_open,g_range_close);
    if(bars<MathMax(1,InpOpeningRangeMinutes/2) || g_range_volume<=0.0 || g_range_high<=g_range_low)
       return false;
    if((ProfileFilterEnabled() || InpShowProfileLevels) && !g_profile_ready)
@@ -505,6 +525,7 @@ bool BuildOpeningRange(const MqlDateTime &session_date)
    double median=PreviousOpeningVolumeMedian(session_date);
    if(median<=0.0) return false;
    g_opening_relative_volume=g_range_volume/median;
+   g_opening_direction=(g_range_close>g_range_open ? 1 : (g_range_close<g_range_open ? -1 : 0));
    UpdateProfileDisplay();
    double width=g_range_high-g_range_low;
    double ratio=width/g_atr;
@@ -558,6 +579,14 @@ bool TrendAllows(const int direction)
    return (direction>0 ? fast>slow : fast<slow);
 }
 
+bool DirectionAllows(const int direction)
+{
+   if(InpTradeDirection==ORB_DIRECTION_LONG_ONLY && direction<0) return false;
+   if(InpTradeDirection==ORB_DIRECTION_SHORT_ONLY && direction>0) return false;
+   if(InpRequireOpeningCandleDirection && direction!=g_opening_direction) return false;
+   return true;
+}
+
 bool SpreadOK()
 {
    MqlTick tick;
@@ -579,7 +608,14 @@ bool EnterTrade(const int direction,const MqlRates &signal)
    double entry=(direction>0 ? tick.ask : tick.bid);
    double buffer=InpStopBufferATR*g_atr;
    double stop=0.0;
-   if(InpStopMode==ORB_STOP_OPPOSITE_RANGE)
+   if(InpStopMode==ORB_STOP_DAILY_ATR)
+   {
+      double daily_atr=0.0;
+      if(!LatestIndicatorValue(g_daily_atr_handle,daily_atr)) return false;
+      stop=(direction>0 ? entry-InpDailyATRStopFraction*daily_atr
+                        : entry+InpDailyATRStopFraction*daily_atr);
+   }
+   else if(InpStopMode==ORB_STOP_OPPOSITE_RANGE)
       stop=(direction>0 ? g_range_low-buffer : g_range_high+buffer);
    else
       stop=(direction>0 ? signal.low-buffer : signal.high+buffer);
@@ -589,7 +625,9 @@ bool EnterTrade(const int direction,const MqlRates &signal)
    double point=SymbolInfoDouble(_Symbol,SYMBOL_POINT);
    double minimum=SymbolInfoInteger(_Symbol,SYMBOL_TRADE_STOPS_LEVEL)*point;
    if(risk<minimum) return false;
-   double target=NormalizePrice(direction>0 ? entry+InpRewardRisk*risk : entry-InpRewardRisk*risk);
+   double target=(InpUseFixedTarget
+                  ? NormalizePrice(direction>0 ? entry+InpRewardRisk*risk : entry-InpRewardRisk*risk)
+                  : 0.0);
    ENUM_ORDER_TYPE order_type=(direction>0 ? ORDER_TYPE_BUY : ORDER_TYPE_SELL);
    double lots=LotsForRisk(order_type,entry,stop);
    if(lots<=0.0)
@@ -657,7 +695,7 @@ void EvaluateClosedSignalBar(const MqlDateTime &session_date,const datetime rang
    int direction=0;
    if(bar.close>g_range_high+buffer && bar.close>bar.open) direction=1;
    else if(bar.close<g_range_low-buffer && bar.close<bar.open) direction=-1;
-   if(direction==0 || !TrendAllows(direction) || !ProfileAllows(direction,bar.close)) return;
+   if(direction==0 || !DirectionAllows(direction) || !TrendAllows(direction) || !ProfileAllows(direction,bar.close)) return;
    if(InpRequireVWAP)
    {
       double vwap=SessionVWAP(range_start,bar.time+PeriodSeconds(InpSignalTimeframe)-1);
@@ -674,12 +712,34 @@ void EvaluateClosedSignalBar(const MqlDateTime &session_date,const datetime rang
    }
 }
 
+void EvaluatePaperTickBreakout(const datetime range_start,const datetime trade_end)
+{
+   MqlTick tick;
+   if(!SymbolInfoTick(_Symbol,tick)) return;
+   int direction=0;
+   if(tick.ask>=g_range_high) direction=1;
+   else if(tick.bid<=g_range_low) direction=-1;
+   if(direction==0 || !DirectionAllows(direction) || !TrendAllows(direction)) return;
+   double breakout_price=(direction>0 ? tick.ask : tick.bid);
+   if(!ProfileAllows(direction,breakout_price)) return;
+   if(InpRequireVWAP)
+   {
+      double vwap=SessionVWAP(range_start,TimeCurrent());
+      if(vwap<=0.0 || (direction>0 && breakout_price<=vwap) || (direction<0 && breakout_price>=vwap)) return;
+   }
+   MqlRates signal[];
+   ArraySetAsSeries(signal,true);
+   if(CopyRates(_Symbol,InpSignalTimeframe,1,1,signal)!=1) return;
+   EnterTrade(direction,signal[0]);
+}
+
 void ResetSession(const MqlDateTime &session_date)
 {
    g_session_date_key=DateKey(session_date);
    g_range_ready=false;
    g_traded_today=TradedOnSessionDate(session_date);
-   g_range_high=0.0; g_range_low=0.0; g_range_volume=0.0;
+   g_range_high=0.0; g_range_low=0.0; g_range_open=0.0; g_range_close=0.0;
+   g_opening_direction=0; g_range_volume=0.0;
    g_opening_relative_volume=0.0; g_atr=0.0;
    g_breakout_direction=0; g_breakout_age=0;
    g_profile_ready=false; g_profile_tick_count=0;
@@ -753,13 +813,19 @@ void ProcessStrategy()
    if(new_bar) g_last_signal_bar=current_bar;
    if(DateKey(now_session)!=g_session_date_key) ResetSession(now_session);
    ManagePosition(now_session,new_bar);
-   if(!new_bar || g_traded_today) return;
+   if(g_traded_today) return;
    if(InpWeekdaysOnly && (now_session.day_of_week==0 || now_session.day_of_week==6)) return;
    datetime range_start=SessionAnchor(now_session);
    datetime range_end=range_start+InpOpeningRangeMinutes*60;
    datetime trade_end=range_end+InpTradeWindowMinutes*60;
    if(now_server<range_end || now_server>=trade_end) return;
    if(!g_range_ready && !BuildOpeningRange(now_session)) return;
+   if(InpUsePaperStopEntry)
+   {
+      EvaluatePaperTickBreakout(range_start,trade_end);
+      return;
+   }
+   if(!new_bar) return;
    EvaluateClosedSignalBar(now_session,range_start,range_end,trade_end);
 }
 
@@ -772,15 +838,18 @@ int OnInit()
       InpATRPeriod<2 || InpMinRangeATR<=0.0 || InpMaxRangeATR<=InpMinRangeATR ||
       InpBreakoutBodyMinimum<0.0 || InpBreakoutBodyMinimum>1.0 ||
       InpRetestBodyMinimum<0.0 || InpRetestBodyMinimum>1.0 ||
-      InpRewardRisk<=0.0 || InpMaximumStopATR<=0.0 || InpFastEMA<2 || InpSlowEMA<=InpFastEMA ||
+      InpRewardRisk<=0.0 || InpMaximumStopATR<=0.0 || InpDailyATRStopFraction<=0.0 ||
+      InpFastEMA<2 || InpSlowEMA<=InpFastEMA ||
       InpProfileStartHour<0 || InpProfileStartHour>23 || InpProfileStartMinute<0 || InpProfileStartMinute>59 ||
       InpProfileBins<12 || InpProfileBins>200 || InpProfileValueAreaPercent<50.0 ||
       InpProfileValueAreaPercent>95.0 || InpMaxBoundaryNodeRatio<=0.0 || InpMinimumProfileTicks<10)
       return INIT_PARAMETERS_INCORRECT;
    g_atr_handle=iATR(_Symbol,InpATRTimeframe,InpATRPeriod);
+   g_daily_atr_handle=iATR(_Symbol,PERIOD_D1,InpATRPeriod);
    g_fast_ema_handle=iMA(_Symbol,InpATRTimeframe,InpFastEMA,0,MODE_EMA,PRICE_CLOSE);
    g_slow_ema_handle=iMA(_Symbol,InpATRTimeframe,InpSlowEMA,0,MODE_EMA,PRICE_CLOSE);
-   if(g_atr_handle==INVALID_HANDLE || g_fast_ema_handle==INVALID_HANDLE || g_slow_ema_handle==INVALID_HANDLE)
+   if(g_atr_handle==INVALID_HANDLE || g_daily_atr_handle==INVALID_HANDLE ||
+      g_fast_ema_handle==INVALID_HANDLE || g_slow_ema_handle==INVALID_HANDLE)
       return INIT_FAILED;
    g_last_signal_bar=iTime(_Symbol,InpSignalTimeframe,0);
    EventSetTimer(10);
@@ -791,6 +860,7 @@ void OnDeinit(const int reason)
 {
    EventKillTimer();
    if(g_atr_handle!=INVALID_HANDLE) IndicatorRelease(g_atr_handle);
+   if(g_daily_atr_handle!=INVALID_HANDLE) IndicatorRelease(g_daily_atr_handle);
    if(g_fast_ema_handle!=INVALID_HANDLE) IndicatorRelease(g_fast_ema_handle);
    if(g_slow_ema_handle!=INVALID_HANDLE) IndicatorRelease(g_slow_ema_handle);
    DeleteProfileObjects();

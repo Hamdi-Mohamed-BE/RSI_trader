@@ -2,7 +2,7 @@
 setlocal
 cd /d "%~dp0"
 echo Rebuilding fixed native MT5 evidence for every recommended EA...
-echo Periods: 6 months, 1 year, 3 years, 5 years, 10 years
+echo Periods: 6 months, 1 year, 3 years, 5 years
 echo This is resumable and reuses unchanged completed source reports.
 uv run python tools\precompute_evidence_cache.py --period all --safe
 if errorlevel 1 (

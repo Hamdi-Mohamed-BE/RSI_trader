@@ -33,6 +33,42 @@ def _timestamp(value: Any) -> datetime:
         return datetime.min
 
 
+def outcome_streaks(trades: list[dict[str, Any]]) -> dict[str, int]:
+    """Return the longest consecutive winning and losing runs by close time.
+
+    Break-even rows are neutral: they end either active streak and are not
+    counted as wins or losses.
+    """
+    ordered = sorted(
+        enumerate(trades),
+        key=lambda item: (
+            _timestamp(item[1].get("close_time")),
+            int(item[1].get("number") or item[0]),
+        ),
+    )
+    current_wins = 0
+    current_losses = 0
+    maximum_wins = 0
+    maximum_losses = 0
+    for _, trade in ordered:
+        outcome = float(trade.get("net_profit") or 0.0)
+        if outcome > 0:
+            current_wins += 1
+            current_losses = 0
+            maximum_wins = max(maximum_wins, current_wins)
+        elif outcome < 0:
+            current_losses += 1
+            current_wins = 0
+            maximum_losses = max(maximum_losses, current_losses)
+        else:
+            current_wins = 0
+            current_losses = 0
+    return {
+        "max_win_streak": maximum_wins,
+        "max_loss_streak": maximum_losses,
+    }
+
+
 def enrich_trades(
     trades: list[dict[str, Any]],
     slug: str,
