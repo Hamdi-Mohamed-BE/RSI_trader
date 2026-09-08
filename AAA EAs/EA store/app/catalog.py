@@ -30,6 +30,7 @@ ORB_H1_AUDIT_ROOT = PACKAGE_ROOT / "ORB H1 Range Research 2026-09-05"
 SELECTIVE_ORB_ROOT = PACKAGE_ROOT / "US100 Selective ORB Research 2026-08-21"
 NEWS_PULSE_ROOT = PACKAGE_ROOT / "News Pulse Direction Research 2026-09-05"
 ACTIVE_PIPELINE_ROOT = PACKAGE_ROOT / "Active Portfolio Full Pipeline 2026-09-05"
+SELL_NASDAQ_15M_ROOT = PACKAGE_ROOT / "Sell Nasdaq 15min Research 2026-09-08"
 INSTALLER_PATH = PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1"
 WHATSAPP_NUMBER = "21693830957"
 
@@ -46,6 +47,7 @@ STANDALONE_ORB_LABELS = frozenset(
         *ORB_SESSION_PRODUCTS,
         "US100 H1 ORB 13UTC",
         "US100 Selective ORB V3",
+        "Sell Nasdaq 15min",
     }
 )
 
@@ -137,6 +139,7 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "AAA Final XAU Weakness": ("weakness-xau", "dynamic-only", "Dynamic 50/20"),
     "Nasdaq Overnight": ("overnight-ustec", "current", "Current EA exits"),
     "Nasdaq 5M Candle Momentum": ("momentum-ustec", "current", "Fixed 2.5R / no trailing"),
+    "Sell Nasdaq 15min": ("sell-nasdaq-15min", "current", "Fixed 2.22R / no trailing"),
     "News Pulse XAU": ("news-xau-hard-1p5", "current", "Native 60-second exit"),
     "News Pulse XAG": ("news-xag-hard-1p5", "current", "Native 60-second exit"),
     "News Pulse EURUSD": ("news-eurusd-hard-1p5", "current", "Native 60-second exit"),
@@ -214,7 +217,7 @@ CORE_META: dict[str, dict[str, Any]] = {
     "XAU Slow Trend": {
         "strategy": "Slow multi-horizon time-series momentum",
         "tagline": "A selective XAUUSD H4 trend model combining one-, three- and six-month momentum.",
-        "description": "The promoted XAUUSD build votes across completed one-, three- and six-month momentum horizons, aligns the result with EMA100, and trades the accepted direction from H4 data. It uses a 1.5 ATR stop, fixed 6R objective, no trailing and a hard 1% equity-risk rule.",
+        "description": "The promoted XAUUSD build votes across completed one-, three- and six-month momentum horizons, aligns the result with EMA100, and trades the accepted direction from H4 data. It uses a 1.5 ATR stop, fixed 6R objective, no trailing and percentage-based equity risk.",
         "session": "All broker sessions / H4",
         "logic_audit": "Source-code verified",
         "logic_audit_note": "Readable MQ5 source, the frozen optimized SET, untouched locked-year native MT5 report, three-year context and rolling walk-forward audit were reviewed together.",
@@ -222,11 +225,11 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Vote across three slow horizons", "detail": "The EA compares the latest completed H4 close with scaled 21-, 63- and 126-trading-day lookbacks. Their signs are averaged, and a trade requires a non-zero majority direction."},
             {"title": "Confirm direction with EMA100", "detail": "A long requires the completed H4 close above the scaled EMA100; a short requires it below. Both directions remain enabled in the locked XAU preset."},
             {"title": "Use completed data and avoid late attachment entries", "detail": "Signals use the last completed H4 candle. On a live attach or terminal restart, the EA records the existing signal and waits for the next completed H4 candle rather than entering an old setup late."},
-            {"title": "Place the ATR stop", "detail": "The initial stop is 1.5 times H4 ATR(14) from entry. Volume is rounded down from the calculated one-lot loss so the planned loss targets exactly 1% of current equity; undersized broker-minimum trades are skipped."},
+            {"title": "Place the ATR stop", "detail": "The initial stop is 1.5 times H4 ATR(14) from entry. Volume is rounded down from the calculated one-lot loss so the planned loss targets the percentage selected in the BAT; undersized broker-minimum trades are skipped."},
             {"title": "Leave the wide winner intact", "detail": "The target is fixed at six times original risk. Break-even, ATR trailing, chandelier trailing, Dynamic 50/20 and maximum-hold exits are disabled in the promoted configuration."},
             {"title": "Isolate this chart from other XAU EAs", "detail": "Magic number 969060311 uniquely identifies this strategy. On hedging accounts it scans all positions and manages only its own matching XAU position."},
         ],
-        "risk_note": "Hard-locked to 1% of current equity per trade. The BAT still asks for portfolio risk, but this EA intentionally remains at the validated 1% and refuses a different risk input. The locked year had 35 trades, so it should begin on demo forward testing.",
+        "risk_note": "Every BAT applies the user's selected equity-risk percentage to this EA; pressing Enter defaults to the validated 1%. The locked year had 35 trades, so it should begin on demo forward testing.",
         "price": 399,
         "accent": "emerald",
         "featured": True,
@@ -244,9 +247,9 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Require a completed rejection candle", "detail": "A stretched candle must close back toward VWAP with a directionally rejecting body and wick. Both long and short snapbacks are enabled, with no more than one entry per New York session."},
             {"title": "Trade only a quiet regime", "detail": "M30 ADX(14) must be at or below 20. This prevents the mean-reversion entry from fading stronger directional sessions, where a VWAP extension is more likely to continue."},
             {"title": "Use the locked ATR stop and 1R target", "detail": "The initial stop is 1.25 M30 ATR from entry and the target is exactly one original risk unit. Break-even, ATR trailing and Dynamic 50/20 are disabled because the no-management version was selected before the locked year."},
-            {"title": "Hard-limit each trade to 1% equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the stop, and the order volume is rounded down to target exactly 1% of current equity. Broker minimum-stop and volume-step rules are enforced; undersized trades are skipped."},
+            {"title": "Apply the BAT-selected equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the stop, and the order volume is rounded down to target the percentage selected in the BAT. Broker minimum-stop and volume-step rules are enforced; undersized trades are skipped."},
         ],
-        "risk_note": "Hard-locked to 1% of current equity per trade. The untouched year returned +3.93% with PF 2.57 and 3.60% drawdown, but it produced only 15 trades; this is therefore a demo-forward/watch allocation, not a statistically mature core strategy.",
+        "risk_note": "Every BAT applies the user's selected equity-risk percentage; pressing Enter defaults to the validated 1%. The untouched year returned +3.93% with PF 2.57 and 3.60% drawdown, but it produced only 15 trades; this is therefore a demo-forward/watch allocation, not a statistically mature core strategy.",
         "price": 299,
         "accent": "silver",
         "featured": False,
@@ -264,11 +267,31 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Keep the selected signal deliberately simple", "detail": "The frozen US100 configuration is long-only and does not add a moving-average, candle-pattern or trend confirmation. Those alternatives were tested before the locked year and were not selected."},
             {"title": "Use a volatility-scaled protective stop", "detail": "The initial stop is placed 1.5 times M30 ATR(14) below entry. A spread-to-risk ceiling and broker stop-distance checks reject trades whose execution cost or placement is unsuitable."},
             {"title": "Target 2.5R and time-limit exposure", "detail": "The take-profit objective is fixed at 2.5 times original risk. Break-even, ATR trailing and Dynamic 50/20 are disabled, while any position still open after six hours is closed."},
-            {"title": "Hard-limit each entry to 1% equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the ATR stop and volume is rounded down to target exactly 1% of current equity. Broker minimum-volume constraints are respected and undersized trades are skipped."},
+            {"title": "Apply the BAT-selected equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the ATR stop and volume is rounded down to target the percentage selected in the BAT. Broker minimum-volume constraints are respected and undersized trades are skipped."},
         ],
-        "risk_note": "Hard-locked to 1% of current equity per trade. The untouched year returned +5.53% with PF 1.34, 47.06% wins and 5.74% equity drawdown across 34 trades. Monte Carlo return P5 was -5.24%, so this is a demo-forward candidate rather than a proven live-capital core.",
+        "risk_note": "Every BAT applies the user's selected equity-risk percentage; pressing Enter defaults to the validated 1%. The untouched year returned +5.53% with PF 1.34, 47.06% wins and 5.74% equity drawdown across 34 trades. Monte Carlo return P5 was -5.24%, so this is a demo-forward candidate rather than a proven live-capital core.",
         "price": 299,
         "accent": "indigo",
+        "featured": False,
+    },
+    "Sell Nasdaq 15min": {
+        "strategy": "New York M15 bearish opening-break continuation",
+        "tagline": "A sell-only USTEC setup built from the completed 09:30 New York M15 candle.",
+        "description": "The promoted Standard version waits for the first fifteen-minute Nasdaq cash-session candle to close bearish, then places a sell stop at that candle's low. It trades Tuesday through Friday, accepts only a 400-to-2,400-pip setup range, leaves the prior London-candle confirmation off, and uses fixed 450-pip risk against a 1,000-pip objective. Its dedicated London Safe version restores the original 600/1,000 exits and requires the preceding 09:15-09:30 New York candle to close bearish.",
+        "session": "09:30-15:55 New York / M15",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, 73 native MT5 pipeline cases, the exact selected SET, untouched locked-year Every Tick evidence, three-year Every Tick context and a 10,000-path block-bootstrap audit were reviewed together.",
+        "logic": [
+            {"title": "Anchor the setup to the Nasdaq cash open", "detail": "The EA converts broker time to New York time with automatic US daylight-saving handling and observes the completed 09:30-09:45 New York M15 candle on USTEC."},
+            {"title": "Require a completed bearish opening candle", "detail": "A setup exists only when that first New York M15 candle closes below its open. The selected pipeline version does not require the preceding 09:15-09:30 candle to be bearish."},
+            {"title": "Apply the selected day and range filters", "detail": "Entries are permitted Tuesday through Friday; Monday is disabled. The opening candle must span 400 to 2,400 strategy pips, equivalent to roughly 40 to 240 USTEC index points under the project's ten-points-per-pip convention."},
+            {"title": "Place one sell stop below the setup", "detail": "Immediately after the qualifying candle closes, the EA places one sell stop exactly at its low with no extra entry buffer. The pending order has thirty minutes to trigger and only one setup is allowed per New York trading day."},
+            {"title": "Size the fixed stop from selected equity risk", "detail": "The protective stop is 450 strategy pips above entry. OrderCalcProfit measures the broker-specific one-lot loss and the installer applies the user's selected equity-risk percentage, defaulting to 1%."},
+            {"title": "Hold for the fixed 1,000-pip objective", "detail": "Take profit is 1,000 strategy pips below entry, a nominal 2.22R target. Break-even, trailing and Dynamic 50/20 are disabled; any surviving position is closed at 15:55 New York."},
+        ],
+        "risk_note": "Every BAT applies the user's selected equity-risk percentage; pressing Enter defaults to the validated 1%. The selected setup is sell-only and may cluster with other US100 strategies. Its untouched year returned +7.07% with PF 1.14, 35.62% wins and 8.75% drawdown, while the locked-trade Monte Carlo return P5 was -12.01%; begin with demo forward testing.",
+        "price": 349,
+        "accent": "sky",
         "featured": False,
     },
     "XAU RSI VWAP": {
@@ -505,7 +528,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Apply the time-direction schedule", "detail": "Both directions are permitted from 10:00 to 10:29 New York, only longs from 10:30 to 10:59, and only shorts from 11:00 until the 11:30 entry cutoff."},
             {"title": "Risk to the opposite range and target 0.5R", "detail": "The stop is placed beyond the opposite opening-range boundary with a five-percent range buffer, excessive ATR-sized stops and wide spreads are rejected, take profit is 0.5R, and exposure is closed by 15:55 New York."},
         ],
-        "risk_note": "The BAT version uses the installer's adaptive equity-risk percentage and disables the research-only USD 300 fixed-risk override. The exact one-year comparison used 1% risk; a smaller shared portfolio risk is appropriate when several EAs run together.",
+        "risk_note": "The BAT version uses the user's selected equity-risk percentage and disables the research-only USD 300 fixed-risk override; pressing Enter defaults to 1%. The exact one-year comparison used 1% risk; a smaller shared portfolio risk is appropriate when several EAs run together.",
         "price": 449,
         "accent": "mint",
         "featured": True,
@@ -563,9 +586,9 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Require a strong directional close", "detail": "A bullish candidate must finish near its own high and a bearish candidate near its own low; the permitted distance is 25% of candle range. Trend, higher-timeframe ATR, time-of-day and support/resistance filters are all disabled in the active preset."},
             {"title": "Enter in the expansion direction", "detail": "The vendor manual defines buys from qualified bullish candles and sells from qualified bearish candles. Because the product is EX5-only, the exact order-call timing cannot be source-audited here."},
             {"title": "Use percentage-of-price exits", "detail": "Stop loss is 0.5% of entry price and take profit is 2.0% of entry price, producing a nominal 4:1 reward-to-risk distance before spread and slippage. Trailing stop is disabled."},
-            {"title": "Size from a fixed cash-risk input", "detail": "The EA itself consumes a fixed account-currency risk amount. The installer rewrites that amount to approximately 1% of detected balance at deployment; it does not continuously compound with equity unless reinstalled."},
+            {"title": "Size from a fixed cash-risk input", "detail": "The EA itself consumes a fixed account-currency risk amount. The installer rewrites that amount from the risk selected in the BAT; it does not continuously compound with equity unless reinstalled."},
         ],
-        "risk_note": "Approximately 1% of the balance detected when the BAT is installed, expressed as a fixed cash-risk input. It is not continuously recalculated from live equity inside the compiled EA.",
+        "risk_note": "The BAT-selected percentage of the detected balance is expressed as a fixed cash-risk input, defaulting to 1%. It is not continuously recalculated from live equity inside the compiled EA.",
         "price": 399,
         "accent": "amber",
         "featured": True,
@@ -758,7 +781,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Leave the position untrailed", "detail": "ATR trailing, Dynamic 50/20 and breakeven are disabled in the selected configuration. The full 2.5R payoff is preserved instead of tightening the stop during normal opening-session volatility."},
             {"title": "Finish the position by 15:55", "detail": "The position exits through the original stop, the 2.5R target, or a forced close at 15:55 New York. Only one entry is permitted per New York date and New York daylight-saving changes are handled automatically."},
         ],
-        "risk_note": "Hard-capped at 1% of current equity to the 4x ATR(14) initial stop. The target is fixed at 2.5R and any unresolved position is closed at 15:55 New York, but gaps and slippage can still exceed planned risk.",
+        "risk_note": "Every BAT applies the user's selected equity-risk percentage to the 4x ATR(14) initial stop; pressing Enter defaults to the validated 1%. The target is fixed at 2.5R and any unresolved position is closed at 15:55 New York, but gaps and slippage can still exceed planned risk.",
         "price": 499,
         "accent": "cyan",
         "featured": True,
@@ -819,6 +842,7 @@ CORE_META.update(
         "News Pulse EURUSD": _news_pulse_meta("EURUSD", "0.0006 (six pips)", "0.0006", "0.0015"),
     }
 )
+
 
 _orb_high_win_meta = dict(CORE_META["ORB Volume Profile"])
 _orb_high_win_meta.update(
@@ -881,9 +905,9 @@ CORE_META["XAU Regime Switch"] = {
         {"title": "Trade slow momentum in directional regimes", "detail": "Bull or Bear regimes can activate the H4 one-, three- and six-month momentum vote when its direction agrees with the Markov probability signal and the completed close agrees with EMA100. The stop is 1.5 H4 ATR and the target is fixed at 6R."},
         {"title": "Trade VWAP snapback only in persistent Sideways regimes", "detail": "When the current state is Sideways and its next-state probability is at least 50%, the EA may fade a completed M5 two-deviation stretch back inside the 09:30 New York session VWAP bands. M5 ADX must be at or below 20."},
         {"title": "Use the frozen mean-reversion exit", "detail": "The VWAP leg trades only from 10:00 through 11:45 New York, permits one entry per session, uses a 1.5 M5 ATR stop and fixed 3R target, and closes any surviving VWAP position at 12:00 New York."},
-        {"title": "Hard-lock risk and enforce demo use", "detail": "Both legs share one unique magic number and cannot overlap. Volume uses OrderCalcProfit so the planned stop loss equals 1% of current equity; the EA refuses a changed risk input and refuses to start on a real-money account while the recommended demo lock is enabled."},
+            {"title": "Apply selected risk and enforce demo use", "detail": "Both legs share one unique magic number and cannot overlap. Volume uses OrderCalcProfit so the planned stop loss follows the percentage selected in the BAT; the EA still refuses to start on a real-money account while the recommended demo lock is enabled."},
     ],
-    "risk_note": "Hard-locked to 1% of current equity per trade and installed with Demo Only enabled. Native MT5 returned +29.28% over one year and +88.30% over three years, but the latest six months returned -4.95%; forward testing is required before reconsidering the real-account lock.",
+    "risk_note": "Every BAT applies the user's selected equity-risk percentage; pressing Enter defaults to the validated 1%. Demo Only remains enabled. Native MT5 returned +29.28% over one year and +88.30% over three years, but the latest six months returned -4.95%; forward testing is required before reconsidering the real-account lock.",
     "price": 449,
     "accent": "purple",
     "featured": True,
@@ -1963,6 +1987,74 @@ def _selective_orb_v3_evidence() -> Evidence | None:
     )
 
 
+def _sell_nasdaq_15m_evidence() -> Evidence | None:
+    path = SELL_NASDAQ_15M_ROOT / "FINAL AUDIT.json"
+    if not path.is_file():
+        return None
+    data = _load_json(path)
+    row = data.get("final", {}).get("selected_full")
+    locked = data.get("final", {}).get("selected_locked", {})
+    monte_carlo = data.get("monte_carlo", {})
+    if not row:
+        return None
+    chart = SELL_NASDAQ_15M_ROOT / "Charts" / "LOCKED EQUITY AND MONTE CARLO.png"
+    return Evidence(
+        label="Exact three-year pipeline-selected MT5 configuration",
+        period="2023-09-01 to 2026-09-01",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["max_drawdown_pct"]),
+        win_rate_pct=float(row["win_rate_pct"]),
+        trades=int(row["trades"]),
+        sharpe_ratio=float(row["sharpe"]),
+        recovery_factor=float(row["recovery_factor"]),
+        history_quality=str(row.get("history_quality", "98%")),
+        source_note="Exness USTEC M15, native MT5 Every Tick broker history and costs using the selected Tuesday-Friday 450/1000 configuration at 1% equity risk.",
+        chart_path=chart if chart.is_file() else None,
+        status="Research evidence",
+        caution=(
+            f"The untouched year returned {float(locked.get('return_pct', 0.0)):+.2f}% with PF "
+            f"{float(locked.get('profit_factor', 0.0)):.2f} over {int(locked.get('trades', 0))} trades, and the "
+            f"10,000-path locked-trade Monte Carlo return P5 was {float(monte_carlo.get('return_p5_pct', 0.0)):+.2f}%. "
+            "Treat this as a demo-forward candidate rather than a proven live-capital edge."
+        ),
+    )
+
+
+def _sell_nasdaq_15m_safe_evidence() -> Evidence | None:
+    path = SELL_NASDAQ_15M_ROOT / "FINAL AUDIT.json"
+    if not path.is_file():
+        return None
+    data = _load_json(path)
+    row = data.get("safe_audit", {}).get("raw_london_standard_full")
+    locked = data.get("final", {}).get("raw_london", {})
+    monte_carlo = data.get("safe_audit", {}).get("standard_raw_london_monte_carlo", {})
+    if not row:
+        return None
+    chart = SELL_NASDAQ_15M_ROOT / "Charts" / "LOCKED EQUITY AND MONTE CARLO.png"
+    return Evidence(
+        label="Exact three-year London-confirmed Safe preset",
+        period="2023-09-01 to 2026-09-01",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["max_drawdown_pct"]),
+        win_rate_pct=float(row["win_rate_pct"]),
+        trades=int(row["trades"]),
+        sharpe_ratio=float(row["sharpe"]),
+        recovery_factor=float(row["recovery_factor"]),
+        history_quality=str(row.get("history_quality", "98%")),
+        source_note="Exness USTEC M15, native MT5 Every Tick broker history and costs using the dedicated bearish-London 600/1000 Safe preset at 1% equity risk.",
+        chart_path=chart if chart.is_file() else None,
+        status="Research evidence",
+        caution=(
+            f"The untouched year returned {float(locked.get('return_pct', 0.0)):+.2f}% with PF "
+            f"{float(locked.get('profit_factor', 0.0)):.2f}, {float(locked.get('win_rate_pct', 0.0)):.2f}% wins and "
+            f"{float(locked.get('max_drawdown_pct', 0.0)):.2f}% drawdown. Its locked-trade Monte Carlo return P5 was "
+            f"{float(monte_carlo.get('return_p5_pct', 0.0)):+.2f}%, so Safe means a more selective preset, not guaranteed safety."
+        ),
+    )
+
+
 def _engineered_liquidity_evidence(symbol: str, safe: bool = False) -> Evidence | None:
     root = PACKAGE_ROOT / "Engineered Liquidity Sweep Research 2026-08-30"
     improvement_path = root / "IMPROVEMENT RESULTS.json"
@@ -2163,6 +2255,8 @@ def get_catalog() -> list[Product]:
     month_end_flow_us100 = _month_end_flow_us100_evidence()
     orb_h1_us100 = _orb_h1_us100_evidence()
     selective_orb_v3 = _selective_orb_v3_evidence()
+    sell_nasdaq_15m = _sell_nasdaq_15m_evidence()
+    sell_nasdaq_15m_safe = _sell_nasdaq_15m_safe_evidence()
     orb_volume_high_win = _orb_volume_high_win_evidence()
     orb_volume_confirmed = _orb_volume_confirmed_evidence()
     news_pulse_evidence = {
@@ -2212,6 +2306,8 @@ def get_catalog() -> list[Product]:
             evidence = orb_h1_us100
         elif item["label"] == "US100 Selective ORB V3":
             evidence = selective_orb_v3
+        elif item["label"] == "Sell Nasdaq 15min":
+            evidence = sell_nasdaq_15m
         elif item["label"] == "ORB Volume Profile High Win 0.75R":
             evidence = orb_volume_high_win
         elif item["label"] == "ORB Volume Profile Volume Confirmed":
@@ -2262,6 +2358,8 @@ def get_catalog() -> list[Product]:
             safe_evidence = ema3_xau_safe
         elif item["label"] == "AAA Final XAU Weakness" and xau_weakness_safe is not None:
             safe_evidence = xau_weakness_safe
+        elif item["label"] == "Sell Nasdaq 15min":
+            safe_evidence = sell_nasdaq_15m_safe
         if item["label"] == "AAA Final XAU Weakness" and xau_weakness_safe is not None:
             # Supersede the older portfolio-wide filter comparison with the
             # exact M30/4R Full Safe audit promoted in Step 8.
@@ -2296,7 +2394,7 @@ def get_catalog() -> list[Product]:
             deployment_note = " The dated Best Recommended installer preserves its optimized fixed 5R exit, disables trailing, and keeps its selected New York broker-session restriction."
         elif item["label"] in {"XAU Regime Switch", "XAG Session VWAP Snapback", "US100 Month End Flow"}:
             deployment_session = meta["session"]
-            deployment_note = f" Every portfolio BAT installs this selected calendar/session configuration on its own chart with {exit_mode.lower()} and its locked 1% risk rule."
+            deployment_note = f" Every portfolio BAT installs this selected calendar/session configuration on its own chart with {exit_mode.lower()}; the user's selected risk applies and defaults to 1%."
         elif is_standalone_orb:
             deployment_session = meta["session"]
             deployment_note = f" Every portfolio BAT installs this standalone session as its own chart with {exit_mode.lower()} and a unique magic number."
@@ -2359,6 +2457,12 @@ def get_catalog() -> list[Product]:
                 development=development,
                 safe_filter_supported=safe_supported,
                 recommended_safe_mode=recommended_safe_mode,
+                safe_mode_label="London Safe" if item["label"] == "Sell Nasdaq 15min" else "Full Safe",
+                safe_mode_note=(
+                    "Dedicated 600/1000 preset requiring the preceding bearish London candle; the rejected Markov gate stays off."
+                    if item["label"] == "Sell Nasdaq 15min"
+                    else "Independent completed-D1 Markov gate enabled inside this EA."
+                ),
                 evidence=evidence,
                 safe_evidence=safe_evidence,
                 one_year_evidence=one_year_result,

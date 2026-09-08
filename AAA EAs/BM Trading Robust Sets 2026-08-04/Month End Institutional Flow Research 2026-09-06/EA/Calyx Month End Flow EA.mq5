@@ -241,7 +241,7 @@ void Process()
 int OnInit()
 {
    if(InpTesterOnly && !(bool)MQLInfoInteger(MQL_TESTER)){Print("Research build: live/demo chart attachment is disabled.");return INIT_FAILED;}
-   if(InpMaximumHoldHours<1 || InpStopValue<=0 || InpRewardRisk<0.5 || InpRiskPercent!=1.0 || InpMagic<=0)return INIT_PARAMETERS_INCORRECT;
+   if(InpMaximumHoldHours<1 || InpStopValue<=0 || InpRewardRisk<0.5 || InpRiskPercent<=0.0 || InpRiskPercent>10.0 || InpMagic<=0)return INIT_PARAMETERS_INCORRECT;
    g_atr_handle=iATR(_Symbol,InpSignalTimeframe,14);g_ema20_handle=iMA(_Symbol,PERIOD_D1,20,0,MODE_EMA,PRICE_CLOSE);g_ema50_handle=iMA(_Symbol,PERIOD_D1,50,0,MODE_EMA,PRICE_CLOSE);
    if(g_atr_handle==INVALID_HANDLE || g_ema20_handle==INVALID_HANDLE || g_ema50_handle==INVALID_HANDLE)return INIT_FAILED;
    g_last_bar=iTime(_Symbol,InpSignalTimeframe,0);EventSetTimer(10);return INIT_SUCCEEDED;

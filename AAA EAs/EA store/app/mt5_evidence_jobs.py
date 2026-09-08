@@ -151,7 +151,7 @@ def _native_trades(path: Path, label: str) -> list[dict[str, Any]]:
     return trades
 
 
-def _set_values(source: Path, safe: bool) -> str:
+def _set_values(source: Path, safe: bool, overrides: dict[str, str] | None = None) -> str:
     lines = source.read_text(encoding="utf-8-sig", errors="ignore").splitlines()
     if safe:
         safe_values = {
@@ -174,6 +174,18 @@ def _set_values(source: Path, safe: bool) -> str:
                 break
             if not found:
                 lines.append(f"{name}={value}")
+    for name, value in (overrides or {}).items():
+        found = False
+        for index, line in enumerate(lines):
+            if not line.strip().startswith(f"{name}="):
+                continue
+            prefix, raw = line.split("=", 1)
+            suffix = f"||{raw.split('||', 1)[1]}" if "||" in raw else ""
+            lines[index] = f"{prefix}={value}{suffix}"
+            found = True
+            break
+        if not found:
+            lines.append(f"{name}={value}")
     return "\n".join(lines) + "\n"
 
 
@@ -225,7 +237,36 @@ class MT5EvidenceJobs:
         self._active_job: str | None = None
         self._last_started: dict[str, float] = {}
 
-    def start(self, slug: str, mode: str, start: date, end: date, broker_symbol: str | None = None) -> dict[str, Any]:
+    def _stop_stale_isolated_terminal(self) -> None:
+        """Stop only this portable tester if MT5 left its GUI process behind."""
+        environment = os.environ.copy()
+        environment["EA_STORE_TESTER_TO_STOP"] = str(self.tester_terminal.resolve())
+        script = (
+            "$target=$env:EA_STORE_TESTER_TO_STOP; "
+            "Get-CimInstance Win32_Process | "
+            "Where-Object { $_.Name -match '^terminal(64)?\\.exe$' -and $_.ExecutablePath -ieq $target } | "
+            "ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"
+        )
+        subprocess.run(
+            ["powershell.exe", "-NoLogo", "-NoProfile", "-Command", script],
+            check=False,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            env=environment,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+    def start(
+        self,
+        slug: str,
+        mode: str,
+        start: date,
+        end: date,
+        broker_symbol: str | None = None,
+        *,
+        tester_start: date | None = None,
+        input_overrides: dict[str, str] | None = None,
+    ) -> dict[str, Any]:
         product = get_product(slug)
         if product is None or product.evidence is None:
             raise ValueError("Unknown EA evidence request.")
@@ -270,7 +311,7 @@ class MT5EvidenceJobs:
             self._last_started[key] = now
         threading.Thread(
             target=self._run,
-            args=(job_id, product, start, end, mode, broker_symbol or product.canonical),
+            args=(job_id, product, start, end, mode, broker_symbol or product.canonical, tester_start or start, input_overrides or {}),
             name=f"mt5-evidence-{job_id[:8]}",
             daemon=True,
         ).start()
@@ -300,7 +341,17 @@ class MT5EvidenceJobs:
             job.update(changes)
             job["updated_at"] = datetime.now(timezone.utc).isoformat()
 
-    def _run(self, job_id: str, product: Product, start: date, end: date, mode: str, broker_symbol: str) -> None:
+    def _run(
+        self,
+        job_id: str,
+        product: Product,
+        start: date,
+        end: date,
+        mode: str,
+        broker_symbol: str,
+        tester_start: date,
+        input_overrides: dict[str, str],
+    ) -> None:
         process: subprocess.Popen[Any] | None = None
         cleanup_files: list[Path] = []
         cleanup_report_prefix: tuple[Path, str] | None = None
@@ -326,12 +377,14 @@ class MT5EvidenceJobs:
             for path in (expert_folder, tester_sets, report_folder, config_folder, saved_folder):
                 path.mkdir(parents=True, exist_ok=True)
 
+            self._stop_stale_isolated_terminal()
+
             expert_name = f"{product.slug}-{job_id[:8]}"
             copied_expert = expert_folder / f"{expert_name}.ex5"
             shutil.copy2(expert_source, copied_expert)
             cleanup_files.append(copied_expert)
             set_name = f"{product.slug}-{job_id[:8]}.set"
-            materialized_set = _set_values(set_source, mode == "safe" and not dedicated_safe)
+            materialized_set = _set_values(set_source, mode == "safe" and not dedicated_safe, input_overrides)
             # Write bytes directly. On Windows, write_text translated explicit
             # CRLF into CR-CR-LF, which made MT5 silently fall back to defaults.
             copied_set = tester_sets / set_name
@@ -356,7 +409,7 @@ class MT5EvidenceJobs:
                 f"Period={product.timeframe}\r\n"
                 f"Login={login}\r\nDeposit=10000\r\nCurrency=USD\r\nLeverage=1:2000\r\n"
                 "Model=0\r\nExecutionMode=1\r\nOptimization=0\r\n"
-                f"FromDate={start.strftime('%Y.%m.%d')}\r\n"
+                f"FromDate={tester_start.strftime('%Y.%m.%d')}\r\n"
                 f"ToDate={end.strftime('%Y.%m.%d')}\r\n"
                 "ForwardMode=0\r\n"
                 f"Report=reports\\ea-store-dynamic\\{report_name}.htm\r\n"

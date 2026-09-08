@@ -446,7 +446,7 @@ int OnInit()
       InpEMAPeriod<2 || InpATRPeriod<2 || InpInitialStopATR<=0.0 || InpSignalStopBufferATR<0.0 ||
       InpRewardRisk<=0.0 || InpAdaptiveStrongRR<=0.0 || InpAdaptiveStrongBodyATR<=0.0 ||
       InpTrailingATR<=0.0 || InpTrailStartR<0.0 || InpBreakEvenTriggerR<0.0 || InpBreakEvenLockR<0.0 ||
-      InpRiskPercent<=0.0 || InpRiskPercent>1.0 || InpMaximumHoldingMinutes<0 ||
+      InpRiskPercent<=0.0 || InpRiskPercent>10.0 || InpMaximumHoldingMinutes<0 ||
       InpCloseHourNY<0 || InpCloseHourNY>23 || InpCloseMinuteNY<0 || InpCloseMinuteNY>59 ||
       InpMinimumBodyATR<0.0 || InpMaximumBodyATR<0.0 || InpMinimumBodyFraction<0.0 || InpMinimumBodyFraction>1.0 ||
       InpMinimumEMADistanceATR<0.0 || InpMaximumEMADistanceATR<0.0 || InpRelativeVolumePeriod<0 || InpMinimumRelativeVolume<0.0)

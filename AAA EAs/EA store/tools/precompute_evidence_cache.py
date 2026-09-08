@@ -64,7 +64,7 @@ def source_fingerprint(product: Product, mode: str, start: date, end: date) -> d
     set_relative = product.safe_set_source if mode == "safe" and product.safe_set_source else product.set_source
     expert = PACKAGE_ROOT / product.expert_source
     settings = PACKAGE_ROOT / str(set_relative)
-    return {
+    fingerprint = {
         "slug": product.slug,
         "mode": mode,
         "from": start.isoformat(),
@@ -74,6 +74,7 @@ def source_fingerprint(product: Product, mode: str, start: date, end: date) -> d
         "expert_sha256": file_hash(expert),
         "settings_sha256": file_hash(settings),
     }
+    return fingerprint
 
 
 def source_paths(product: Product, mode: str, period: str) -> tuple[Path, Path]:

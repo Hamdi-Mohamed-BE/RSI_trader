@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, timezone
 from pathlib import Path
+import re
 from urllib.parse import parse_qs, urlparse
 from types import SimpleNamespace
 
@@ -44,6 +45,42 @@ def test_every_active_entry_has_local_ea_and_set_files() -> None:
             if not relative_path or not (PACKAGE_ROOT / relative_path).is_file():
                 missing.append(f"{product.label}: {relative_path or '<empty>'}")
     assert missing == []
+
+
+def test_portfolio_risk_policy_has_only_news_exception() -> None:
+    installer = (PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1").read_text(encoding="utf-8-sig")
+    assert installer.count("LockRisk = $true") == 3
+    assert installer.count("PercentRisk = $false") == 3
+
+    risk_keys = {
+        "InpRiskPercent",
+        "InpMomentumRiskPercent",
+        "InpContrarianRiskPercent",
+        "InpAbsoluteRiskCapPercent",
+        "RiskPercent",
+    }
+    for item in parse_installer_items():
+        values = _materialized_values(_set_values(PACKAGE_ROOT / item["set_source"], safe=False))
+        present = risk_keys & values.keys()
+        assert present, item["label"]
+        expected = 0.75 if item["label"].startswith("News Pulse ") else 1.0
+        assert all(abs(float(values[key]) - expected) < 1e-9 for key in present), item["label"]
+
+        if item["label"].startswith("News Pulse "):
+            continue
+        source = (PACKAGE_ROOT / item["expert_source"]).with_suffix(".mq5").read_text(
+            encoding="utf-8-sig", errors="ignore"
+        )
+        lower_limits = re.findall(
+            r"(?:InpRiskPercent|InpMomentumRiskPercent|InpContrarianRiskPercent)\s*>\s*([0-9.]+)",
+            source,
+        )
+        assert all(float(value) >= 10.0 for value in lower_limits), item["label"]
+        positive_floors = re.findall(
+            r"(?:InpRiskPercent|InpMomentumRiskPercent|InpContrarianRiskPercent)\s*<\s*([0-9.]+)",
+            source,
+        )
+        assert all(float(value) <= 0.0 for value in positive_floors), item["label"]
 
 
 def test_purchase_links_use_store_whatsapp_number() -> None:
@@ -172,11 +209,13 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "preceding twelve M15 bars" in by_name["BTC Top Down FVG Liquidity"].logic[1].detail
     assert "target is 4R" in by_name["ETH Top Down FVG Liquidity"].logic[5].detail
     assert "between 2R and 8R" in by_name["Engineered Liquidity XAU"].logic[4].detail
+    assert "09:30-09:45" in by_name["Sell Nasdaq 15min"].logic[0].detail
+    assert "2.22R" in by_name["Sell Nasdaq 15min"].logic[5].detail
 
 
 def test_recommended_exit_settings_are_synced_per_ea() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 28
+    assert len(products) == 29
     assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 7
     assert sum(product.exit_mode == "Dynamic 60/20 only" for product in products) == 1
     assert sum(product.exit_mode == "Current EA exits" for product in products) == 5
@@ -192,6 +231,7 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert sum(product.exit_mode == "Fixed 1R / no trailing" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 2.5R / six-hour exit" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 2.5R / no trailing" for product in products) == 1
+    assert sum(product.exit_mode == "Fixed 2.22R / no trailing" for product in products) == 1
     safe_defaults = {product.label for product in products if product.recommended_safe_mode}
     assert safe_defaults == {"LTA Volume Profile", "EMA3", "XAU Weakness"}
     standalone_orbs = {
@@ -200,6 +240,7 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
         "US100 ORB New York M30",
         "US100 H1 ORB 13UTC",
         "US100 Selective ORB V3",
+        "Sell Nasdaq 15min",
     }
     assert all(
         product.deployment_session == "All day / native strategy window"
@@ -283,6 +324,32 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert round(selective_v3.evidence.return_pct, 4) == 1.5376
     assert selective_v3.evidence.profit_factor == 1.53
     assert selective_v3.evidence.trades == 5
+    sell_nasdaq = next(product for product in products if product.label == "Sell Nasdaq 15min")
+    assert sell_nasdaq.timeframe == "M15"
+    assert sell_nasdaq.deployment_session == "09:30-15:55 New York / M15"
+    assert sell_nasdaq.exit_mode == "Fixed 2.22R / no trailing"
+    assert sell_nasdaq.safe_filter_supported is True
+    assert sell_nasdaq.safe_mode_label == "London Safe"
+    assert sell_nasdaq.recommended_safe_mode is False
+    assert sell_nasdaq.evidence is not None
+    assert round(sell_nasdaq.evidence.return_pct, 4) == 90.1637
+    assert sell_nasdaq.evidence.profit_factor == 1.42
+    assert sell_nasdaq.evidence.win_rate_pct == 42.22
+    assert sell_nasdaq.evidence.drawdown_pct == 11.57
+    assert sell_nasdaq.evidence.trades == 225
+    assert sell_nasdaq.safe_evidence is not None
+    assert round(sell_nasdaq.safe_evidence.return_pct, 4) == 32.6238
+    assert sell_nasdaq.safe_evidence.profit_factor == 1.33
+    assert sell_nasdaq.safe_evidence.win_rate_pct == 45.62
+    assert sell_nasdaq.safe_evidence.drawdown_pct == 6.07
+    sell_nasdaq_set = (PACKAGE_ROOT / sell_nasdaq.set_source).read_text(encoding="utf-8-sig")
+    assert "InpRiskPercent=1.0" in sell_nasdaq_set
+    assert "InpStopPips=450.0" in sell_nasdaq_set
+    assert "InpTargetPips=1000.0" in sell_nasdaq_set
+    safe_set = (PACKAGE_ROOT / str(sell_nasdaq.safe_set_source)).read_text(encoding="utf-8-sig")
+    assert "InpRequirePriorLondonBearish=true" in safe_set
+    assert "InpStopPips=600.0" in safe_set
+    assert "InpTargetPips=1000.0" in safe_set
     recommended_bat = PACKAGE_ROOT / "BEST RECOMMENDED 2026-09-01.bat"
     assert recommended_bat.is_file()
     bat_text = recommended_bat.read_text(encoding="utf-8")
@@ -468,7 +535,7 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "Precomputed recommended-portfolio evidence" in response.text
-    assert "28 EAs, synchronized" in response.text
+    assert "29 EAs, synchronized" in response.text
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     for value in ("6m", "1y", "3y", "5y"):
@@ -481,7 +548,7 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     series = client.get("/api/portfolio/equity-series")
     assert series.status_code == 200
     assert len(series.json()["series"]) >= 2
-    assert series.json()["included_ea_count"] == 28
+    assert series.json()["included_ea_count"] == 29
     assert series.headers["x-evidence-cache"] == "HIT"
     assert "/api/portfolio/equity-series" in response.text
     assert "/portfolio/equity.png" not in response.text
@@ -599,6 +666,12 @@ def test_fixed_cached_evidence_periods_and_pricing_bundle() -> None:
     detail = client.get(f"/eas/{product.slug}")
     assert 'data-chart-period' in detail.text
     assert 'data-backtest-trades-body' in detail.text
+    assert detail.text.index('How the installed version actually works.') < detail.text.index('data-trade-history-section')
+    assert 'data-trade-pagination' in detail.text
+    assert 'data-trade-page-size' in detail.text
+    assert 'data-trade-page-prev' in detail.text
+    assert 'data-trade-page-next' in detail.text
+    assert '<option value="10" selected>10</option>' in detail.text
     assert 'Show cached period' in detail.text
     assert 'data-trade-chart-panel' in detail.text
     assert 'Price chart' in detail.text
@@ -660,7 +733,7 @@ def test_outcome_streaks_are_ordered_and_break_even_is_neutral() -> None:
 
 def test_all_recommended_eas_and_portfolio_have_every_fixed_cache() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 28
+    assert len(products) == 29
     periods = ("6m", "1y", "3y", "5y")
     for period in periods:
         portfolio = client.get("/api/portfolio/equity-series", params={"period": period})

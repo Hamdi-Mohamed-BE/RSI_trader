@@ -311,7 +311,7 @@ void ProcessStrategy()
 int OnInit()
 {
    if(!DTS_InputsValid()) return INIT_PARAMETERS_INCORRECT;
-   if(InpRiskPercent<=0.0 || InpRiskPercent>5.0 || InpEmergencyStopPercent<=0.0 ||
+   if(InpRiskPercent<=0.0 || InpRiskPercent>10.0 || InpEmergencyStopPercent<=0.0 ||
       InpRewardRisk<0.0 || InpEntryHour<0 || InpEntryHour>23 || InpEntryMinute<0 || InpEntryMinute>59 ||
       InpExitHour<0 || InpExitHour>23 || InpExitMinute<0 || InpExitMinute>59)
    {

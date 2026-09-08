@@ -329,7 +329,7 @@ void DrawStatus()
    int state=1;double sideways=0.0,signal=0.0;
    if(!CurrentRegime(state,sideways,signal)){Comment("Calyx XAU Regime Switch\nWaiting for D1 regime history");return;}
    const string name=state==0?"BEAR":state==2?"BULL":"SIDEWAYS";
-   Comment(StringFormat("Calyx XAU Regime Switch — DEMO STAGE\nRegime: %s | P(sideways): %.1f%% | signal: %+.3f\nRisk: %.2f%% hard locked",name,100.0*sideways,signal,InpRiskPercent));
+   Comment(StringFormat("Calyx XAU Regime Switch — DEMO STAGE\nRegime: %s | P(sideways): %.1f%% | signal: %+.3f\nRisk: %.2f%% selected by portfolio BAT",name,100.0*sideways,signal,InpRiskPercent));
 }
 
 void Process()
@@ -350,7 +350,7 @@ int OnInit()
       Print("Calyx XAU Regime Switch is demo-stage and will not start on a real-money account while InpDemoOnly=true.");
       return INIT_FAILED;
    }
-   if(InpRiskPercent<=0.0 || MathAbs(InpRiskPercent-1.0)>1e-9 || InpRegimeReturnWindow<2 || InpRegimeHistory<60 || InpRegimeThreshold<=0.0 || InpSidewaysProbability<0.0 || InpSidewaysProbability>1.0)return INIT_PARAMETERS_INCORRECT;
+   if(InpRiskPercent<=0.0 || InpRiskPercent>10.0 || InpRegimeReturnWindow<2 || InpRegimeHistory<60 || InpRegimeThreshold<=0.0 || InpSidewaysProbability<0.0 || InpSidewaysProbability>1.0)return INIT_PARAMETERS_INCORRECT;
    g_trend_atr=iATR(_Symbol,InpTrendTimeframe,14);
    g_trend_ema=iMA(_Symbol,InpTrendTimeframe,ScaleTrendBars(100),0,MODE_EMA,PRICE_CLOSE);
    g_vwap_atr=iATR(_Symbol,InpVWAPTimeframe,14);

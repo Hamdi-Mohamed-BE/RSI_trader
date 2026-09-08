@@ -555,7 +555,7 @@ int OnInit()
       InpShortOnlyStartHour<0 || InpShortOnlyStartHour>23 || InpShortOnlyStartMinute<0 || InpShortOnlyStartMinute>59 ||
       InpShortOnlyStartHour*60+InpShortOnlyStartMinute<=InpLongOnlyStartHour*60+InpLongOnlyStartMinute ||
       InpRetestToleranceRange<0.0 || InpMaximumPreRetestExcursionRange<=0.0 ||
-       InpFixedRiskMoney<0.0 || (InpFixedRiskMoney<=0.0 && (InpRiskPercent<=0.0 || InpRiskPercent>3.0)) || InpStopBufferRange<0.0 ||
+       InpFixedRiskMoney<0.0 || (InpFixedRiskMoney<=0.0 && (InpRiskPercent<=0.0 || InpRiskPercent>10.0)) || InpStopBufferRange<0.0 ||
       InpMaximumStopDailyATR<=0.0 || InpRewardRisk<=0.0 || InpMaximumSpreadRangePercent<=0.0)
       return INIT_PARAMETERS_INCORRECT;
    trade.SetExpertMagicNumber((ulong)InpMagic);

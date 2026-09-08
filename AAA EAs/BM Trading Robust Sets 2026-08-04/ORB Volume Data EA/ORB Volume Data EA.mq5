@@ -833,7 +833,7 @@ int OnInit()
 {
    if(!DTS_InputsValid())
       return INIT_PARAMETERS_INCORRECT;
-   if(InpRiskPercent<=0.0 || InpRiskPercent>5.0 || InpOpeningRangeMinutes<5 ||
+   if(InpRiskPercent<=0.0 || InpRiskPercent>10.0 || InpOpeningRangeMinutes<5 ||
       InpTradeWindowMinutes<5 || InpRelativeVolumeDays<2 || InpBarVolumeLookback<2 ||
       InpATRPeriod<2 || InpMinRangeATR<=0.0 || InpMaxRangeATR<=InpMinRangeATR ||
       InpBreakoutBodyMinimum<0.0 || InpBreakoutBodyMinimum>1.0 ||

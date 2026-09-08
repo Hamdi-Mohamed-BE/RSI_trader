@@ -216,7 +216,7 @@ void TryEntry(const int signal,const double strength,const datetime stamp)
 int OnInit()
 {
    if(InpTesterOnly && !MQLInfoInteger(MQL_TESTER)) return INIT_FAILED;
-   if(InpRiskPercent<=0.0 || MathAbs(InpRiskPercent-1.0)>1e-9) return INIT_PARAMETERS_INCORRECT;
+   if(InpRiskPercent<=0.0 || InpRiskPercent>10.0) return INIT_PARAMETERS_INCORRECT;
    atrHandle=iATR(_Symbol,InpSignalTimeframe,14);if(atrHandle==INVALID_HANDLE) return INIT_FAILED;
    const int ema=EmaLength();if(ema>0){emaHandle=iMA(_Symbol,InpSignalTimeframe,ema,0,MODE_EMA,PRICE_CLOSE);if(emaHandle==INVALID_HANDLE)return INIT_FAILED;}
    trade.SetExpertMagicNumber(InpMagic);trade.SetDeviationInPoints(InpMaximumDeviationPoints);trade.SetTypeFillingBySymbol(_Symbol);

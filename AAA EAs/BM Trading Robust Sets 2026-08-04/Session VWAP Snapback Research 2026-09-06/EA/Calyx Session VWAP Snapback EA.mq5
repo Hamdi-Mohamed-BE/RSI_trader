@@ -296,7 +296,7 @@ void Process()
 int OnInit()
 {
    if(InpTesterOnly && !(bool)MQLInfoInteger(MQL_TESTER)){Print("Research build: live/demo chart attachment is disabled.");return INIT_FAILED;}
-   if(InpDeviationSigma<=0 || InpStopValue<0 || InpRewardRisk<=0 || InpMaximumTradesPerSession<1 || InpRiskPercent!=1.0 || InpMagic<=0)return INIT_PARAMETERS_INCORRECT;
+   if(InpDeviationSigma<=0 || InpStopValue<0 || InpRewardRisk<=0 || InpMaximumTradesPerSession<1 || InpRiskPercent<=0.0 || InpRiskPercent>10.0 || InpMagic<=0)return INIT_PARAMETERS_INCORRECT;
    g_atr_handle=iATR(_Symbol,InpSignalTimeframe,14);g_adx_handle=iADX(_Symbol,InpSignalTimeframe,14);g_ema_handle=iMA(_Symbol,InpSignalTimeframe,50,0,MODE_EMA,PRICE_CLOSE);
    if(g_atr_handle==INVALID_HANDLE || g_adx_handle==INVALID_HANDLE || g_ema_handle==INVALID_HANDLE)return INIT_FAILED;
    datetime from,to;if(SessionBounds(TimeCurrent(),from,to)){g_session_key=DateKey(TimeCurrent());g_trades_session=TradesInSession(from,to);}g_last_bar=iTime(_Symbol,InpSignalTimeframe,0);EventSetTimer(10);return INIT_SUCCEEDED;

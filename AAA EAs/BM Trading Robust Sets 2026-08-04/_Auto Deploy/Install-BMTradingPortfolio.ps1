@@ -59,7 +59,7 @@ function Get-PortfolioItems {
             Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 15; Expert = 'LTA_Concepts_EA.ex5'
             ExpertSource = 'LTA volume profile\EA\LTA_Concepts_EA.ex5'; RecommendedSafe = $true
-            SetSource = 'Selected Portfolio Settings 2026-09-01\01 LTA Volume Profile - CURRENT - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0
+            SetSource = 'Selected Portfolio Settings 2026-09-01\01 LTA Volume Profile - CURRENT - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0
         },
         [pscustomobject]@{
             Label = 'BTC Top Down FVG Liquidity'; Canonical = 'BTCUSD'; Aliases = @('BTCUSD', 'BITCOIN', 'BTC')
@@ -161,7 +161,14 @@ function Get-PortfolioItems {
             Label = 'Nasdaq 5M Candle Momentum'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 5; Expert = 'Nasdaq 5M Open EMA ATR EA.ex5'
             ExpertSource = 'Active Portfolio Full Pipeline 2026-09-05\11 Nasdaq 5M Candle Momentum\EA\Nasdaq 5M Candle Momentum Audit EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; ForceEnable = $true
+            SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true
+        },
+        [pscustomobject]@{
+            Label = 'Sell Nasdaq 15min'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 15; Expert = 'Sell Nasdaq 15min EA.ex5'
+            ExpertSource = 'Sell Nasdaq 15min Research 2026-09-08\EA\Sell Nasdaq 15min EA.ex5'
+            SetSource = 'Sell Nasdaq 15min Research 2026-09-08\Sets\Sell Nasdaq 15min - selected research - 1pct.set'
+            SafeSetSource = 'Sell Nasdaq 15min Research 2026-09-08\Sets\Sell Nasdaq 15min - safe London 600-1000 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $true
         },
         [pscustomobject]@{
             Label = 'News Pulse XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -203,25 +210,25 @@ function Get-PortfolioItems {
             Label = 'XAU Slow Trend'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 240; Expert = 'Calyx Slow Trend EA.ex5'
             ExpertSource = 'Slow Multi Asset Trend Research 2026-09-06\EA\Calyx Slow Trend EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\17 XAU Slow Trend H4 - LOCKED 6R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; LockRisk = $true; SupportsSafeFilter = $false
+            SetSource = 'Selected Portfolio Settings 2026-09-01\17 XAU Slow Trend H4 - LOCKED 6R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'XAU Regime Switch'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 5; Expert = 'Calyx XAU Regime Switch EA.ex5'
             ExpertSource = 'Regime Switch Overlay Research 2026-09-06\EA\Calyx XAU Regime Switch EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\20 XAU Regime Switch - DEMO - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
+            SetSource = 'Selected Portfolio Settings 2026-09-01\20 XAU Regime Switch - DEMO - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'XAG Session VWAP Snapback'; Canonical = 'XAGUSD'; Aliases = @('XAGUSD', 'SILVER', 'XAG')
             Period = 30; Expert = 'Calyx Session VWAP Snapback EA.ex5'
             ExpertSource = 'Session VWAP Snapback Research 2026-09-06\EA\Calyx Session VWAP Snapback EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\18 XAG Session VWAP Snapback M30 - NY - LOCKED 1R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; LockRisk = $true; SupportsSafeFilter = $false
+            SetSource = 'Selected Portfolio Settings 2026-09-01\18 XAG Session VWAP Snapback M30 - NY - LOCKED 1R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'US100 Month End Flow'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 30; Expert = 'Calyx Month End Flow EA.ex5'
             ExpertSource = 'Month End Institutional Flow Research 2026-09-06\EA\Calyx Month End Flow EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\19 US100 Month End Flow M30 - FIRST3 NY - LOCKED 2P5R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 1.0; LockRisk = $true; SupportsSafeFilter = $false
+            SetSource = 'Selected Portfolio Settings 2026-09-01\19 US100 Month End Flow M30 - FIRST3 NY - LOCKED 2P5R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
         }
     )
 
@@ -465,6 +472,44 @@ function Get-EffectiveInputs([object]$Item) {
         $inputs['InpMarkovHistoryBars'] = '2600'
     }
     return $inputs
+}
+
+function Assert-EffectiveRiskInputs([object[]]$Items) {
+    $percentKeys = @(
+        'InpRiskPercent',
+        'InpMomentumRiskPercent',
+        'InpContrarianRiskPercent',
+        'InpAbsoluteRiskCapPercent',
+        'RiskPercent'
+    )
+    foreach ($item in $Items) {
+        $inputs = Get-EffectiveInputs $item
+        $presentPercentKeys = @($percentKeys | Where-Object { $inputs.Contains($_) })
+        $isNews = $item.Label -like 'News Pulse *'
+        if ($presentPercentKeys.Count -eq 0 -and -not $inputs.Contains('RiskMoney') -and -not $inputs.Contains('InpRiskAmount')) {
+            Stop-WithMessage "Risk audit failed for $($item.Label): its selected SET has no supported risk input."
+        }
+
+        $expectedPercent = if ($isNews) { 0.75 } elseif ($UsesDynamicRisk) { $EffectiveAdaptiveRiskPercent } else { 1.0 }
+        foreach ($key in $presentPercentKeys) {
+            $actual = 0.0
+            if (-not [double]::TryParse([string]$inputs[$key], [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$actual)) {
+                Stop-WithMessage "Risk audit failed for $($item.Label): $key is not numeric."
+            }
+            if ([Math]::Abs($actual - $expectedPercent) -gt 0.0000001) {
+                Stop-WithMessage ("Risk audit failed for {0}: {1} is {2}, expected {3}." -f $item.Label, $key, $actual, $expectedPercent)
+            }
+        }
+
+        if ($isNews -and -not [bool]$item.LockRisk) {
+            Stop-WithMessage "Risk audit failed for $($item.Label): News Pulse must remain locked at 0.75% per pending stop."
+        }
+        if (-not $isNews -and [bool]$item.LockRisk) {
+            Stop-WithMessage "Risk audit failed for $($item.Label): a non-News EA must follow the user's selected risk."
+        }
+    }
+    $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
+    Write-Host ("Risk audit passed: every non-News EA uses {0}; all News Pulse entries remain 0.7500% per pending stop." -f $modeText) -ForegroundColor Green
 }
 
 function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
@@ -862,6 +907,8 @@ foreach ($item in $portfolio) {
 }
 $portfolio = @($resolvedPortfolio)
 if ($portfolio.Count -eq 0) { Stop-WithMessage 'No portfolio symbols were available on this broker.' }
+
+Assert-EffectiveRiskInputs $portfolio
 
 if ($IsAdaptiveAccount) {
     $hasDynamicRiskItems = $UsesDynamicRisk -and @($portfolio | Where-Object { -not [bool]$_.LockRisk }).Count -gt 0

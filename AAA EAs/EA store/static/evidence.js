@@ -169,8 +169,97 @@
     return payload.datasets.find((dataset) => dataset.label === wanted) || payload.datasets[0];
   }
 
+  const paginatedTradeTables = new WeakMap();
+
+  function tradeRow(trade, supportsTradeCharts) {
+    const row = document.createElement('tr');
+    const resultClass = Number(trade.net_profit) >= 0 ? 'pnl-positive' : 'pnl-negative';
+    let chartButton = '';
+    if (trade.cache_slug && trade.cache_period && trade.number) {
+      chartButton = `<button type="button" class="trade-chart-button" data-trade-chart-cache="${escapeHtml(trade.cache_slug)}" data-trade-chart-mode="${escapeHtml(trade.cache_mode || 'standard')}" data-trade-chart-period="${escapeHtml(trade.cache_period)}" data-trade-chart-number="${Number(trade.number)}">View trade</button>`;
+    } else if (trade.job_id && trade.number) {
+      chartButton = `<button type="button" class="trade-chart-button" data-trade-chart-job="${escapeHtml(trade.job_id)}" data-trade-chart-number="${Number(trade.number)}">View trade</button>`;
+    }
+    const chartAction = supportsTradeCharts
+      ? `<td>${chartButton || '<span class="text-muted">Chart unavailable</span>'}</td>`
+      : '';
+    const rValue = signedValue(trade.estimated_r, 'R');
+    const priceMove = trade.price_move == null
+      ? '—'
+      : `${signedValue(trade.price_move)} ${escapeHtml(trade.price_move_unit || 'points')}`;
+    row.innerHTML = `<td>${shortDate(trade.close_time)}</td><td class="table-ea">${escapeHtml(trade.ea)}</td><td>${escapeHtml(trade.result)}</td><td class="${resultClass}">${money(Number(trade.net_profit))}</td><td class="${resultClass}" title="Estimated from the configured equity-risk budget at entry">${rValue}</td><td class="${Number(trade.price_move) >= 0 ? 'pnl-positive' : 'pnl-negative'}">${priceMove}</td><td>${escapeHtml(trade.source)}</td>${chartAction}`;
+    return row;
+  }
+
+  function renderTradePage(state) {
+    const { body, pagination, supportsTradeCharts } = state;
+    const total = state.trades.length;
+    const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
+    state.page = Math.max(1, Math.min(state.page, totalPages));
+    const start = (state.page - 1) * state.pageSize;
+    const pageTrades = state.trades.slice(start, start + state.pageSize);
+    body.replaceChildren();
+    if (!pageTrades.length) {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td colspan="${supportsTradeCharts ? 8 : 7}" class="empty-table">No closed trades in this selected period.</td>`;
+      body.appendChild(row);
+    } else {
+      pageTrades.forEach((trade) => body.appendChild(tradeRow(trade, supportsTradeCharts)));
+    }
+    if (!pagination) return;
+    const summary = pagination.querySelector('[data-trade-page-summary]');
+    const previous = pagination.querySelector('[data-trade-page-prev]');
+    const next = pagination.querySelector('[data-trade-page-next]');
+    if (summary) {
+      const firstRow = total ? start + 1 : 0;
+      const lastRow = Math.min(start + state.pageSize, total);
+      summary.textContent = total
+        ? `Showing ${firstRow}–${lastRow} of ${total.toLocaleString('en-US')} trades · Page ${state.page} of ${totalPages}`
+        : 'No trades in this period';
+    }
+    if (previous) previous.disabled = state.page <= 1;
+    if (next) next.disabled = state.page >= totalPages;
+  }
+
+  function renderTradeTable(root, body, trades, supportsTradeCharts, payloadKey) {
+    const pagination = root.querySelector('[data-trade-pagination]');
+    if (!pagination) {
+      const state = { body, pagination:null, supportsTradeCharts, trades:[...trades].reverse(), page:1, pageSize:Math.max(trades.length, 1) };
+      renderTradePage(state);
+      return;
+    }
+    let state = paginatedTradeTables.get(pagination);
+    if (!state) {
+      const sizeInput = pagination.querySelector('[data-trade-page-size]');
+      state = {
+        body, pagination, supportsTradeCharts, trades:[], page:1,
+        pageSize:Number(sizeInput?.value) || 10, payloadKey:'',
+      };
+      pagination.querySelector('[data-trade-page-prev]')?.addEventListener('click', () => {
+        state.page -= 1;
+        renderTradePage(state);
+      });
+      pagination.querySelector('[data-trade-page-next]')?.addEventListener('click', () => {
+        state.page += 1;
+        renderTradePage(state);
+      });
+      sizeInput?.addEventListener('change', () => {
+        state.pageSize = Number(sizeInput.value) || 10;
+        state.page = 1;
+        renderTradePage(state);
+      });
+      paginatedTradeTables.set(pagination, state);
+    }
+    state.body = body;
+    state.supportsTradeCharts = supportsTradeCharts;
+    state.trades = [...trades].reverse();
+    if (state.payloadKey !== payloadKey) state.page = 1;
+    state.payloadKey = payloadKey;
+    renderTradePage(state);
+  }
+
   function renderPeriodEvidence(shell, payload) {
-    const root = shell.closest('section') || document;
+    const root = shell.closest('[data-evidence-scope]') || shell.closest('section') || document;
     const selected = selectedEvidence(shell, payload);
     const stats = selected.stats || payload.stats;
     root.querySelectorAll('[data-dynamic-stat]').forEach((node) => {
@@ -195,34 +284,10 @@
     }
     const body = root.querySelector('[data-backtest-trades-body]');
     if (body) {
-      body.replaceChildren();
       const trades = selected.trades || payload.trades || [];
       const supportsTradeCharts = Boolean(root.querySelector('[data-trade-chart-panel]'));
-      if (!trades.length) {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td colspan="${supportsTradeCharts ? 8 : 7}" class="empty-table">No closed trades in this selected period.</td>`;
-        body.appendChild(row);
-      } else {
-        [...trades].reverse().forEach((trade) => {
-          const row = document.createElement('tr');
-          const resultClass = Number(trade.net_profit) >= 0 ? 'pnl-positive' : 'pnl-negative';
-          let chartButton = '';
-          if (trade.cache_slug && trade.cache_period && trade.number) {
-            chartButton = `<button type="button" class="trade-chart-button" data-trade-chart-cache="${escapeHtml(trade.cache_slug)}" data-trade-chart-mode="${escapeHtml(trade.cache_mode || 'standard')}" data-trade-chart-period="${escapeHtml(trade.cache_period)}" data-trade-chart-number="${Number(trade.number)}">View trade</button>`;
-          } else if (trade.job_id && trade.number) {
-            chartButton = `<button type="button" class="trade-chart-button" data-trade-chart-job="${escapeHtml(trade.job_id)}" data-trade-chart-number="${Number(trade.number)}">View trade</button>`;
-          }
-          const chartAction = supportsTradeCharts
-            ? `<td>${chartButton || '<span class="text-muted">Chart unavailable</span>'}</td>`
-            : '';
-          const rValue = signedValue(trade.estimated_r, 'R');
-          const priceMove = trade.price_move == null
-            ? '—'
-            : `${signedValue(trade.price_move)} ${escapeHtml(trade.price_move_unit || 'points')}`;
-          row.innerHTML = `<td>${shortDate(trade.close_time)}</td><td class="table-ea">${escapeHtml(trade.ea)}</td><td>${escapeHtml(trade.result)}</td><td class="${resultClass}">${money(Number(trade.net_profit))}</td><td class="${resultClass}" title="Estimated from the configured equity-risk budget at entry">${rValue}</td><td class="${Number(trade.price_move) >= 0 ? 'pnl-positive' : 'pnl-negative'}">${priceMove}</td><td>${escapeHtml(trade.source)}</td>${chartAction}`;
-          body.appendChild(row);
-        });
-      }
+      const payloadKey = `${payload.period_key || payload.period || ''}|${selected.label || ''}|${trades.length}`;
+      renderTradeTable(root, body, trades, supportsTradeCharts, payloadKey);
     }
     const note = root.querySelector('[data-range-note]');
     if (note && stats) {
@@ -552,7 +617,7 @@
 
   async function loadChart(shell) {
     const status = shell.querySelector('[data-chart-status]');
-    const root = shell.closest('section') || document;
+    const root = shell.closest('[data-evidence-scope]') || shell.closest('section') || document;
     const applyButton = root.querySelector('[data-chart-apply]');
     const progress = root.querySelector('[data-evidence-progress]');
     const progressText = root.querySelector('[data-evidence-progress-text]');
