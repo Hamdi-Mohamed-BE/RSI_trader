@@ -154,6 +154,55 @@
         "XAGUSD": {"return_pct": -11.40, "profit_factor": 0.86, "win_rate_pct": 50.94, "max_drawdown_pct": 13.71, "trades": 958}
       },
       "production_action": "none"
+    },
+    {
+      "id": "ict-amd-nasdaq",
+      "status": "rejected-raw-complete",
+      "paper": "Veer Taylor, Evaluating the Predictive Validity of ICT's Accumulation-Manipulation-Distribution (AMD) Model (2026)",
+      "asset": "USTEC",
+      "scope": "paper-exact raw M15 CFD reproduction with the published 106.38-point Asia threshold locked across windows",
+      "author_code_parity": "exact: 1157 days and all 8 accepted trades matched",
+      "full_4_5y": {
+        "return_pct_gross": 5.03,
+        "return_pct_paper_cost": 3.46,
+        "profit_factor_gross": 2.19,
+        "profit_factor_paper_cost": 1.70,
+        "win_rate_pct": 50.00,
+        "max_drawdown_pct_paper_cost": 2.35,
+        "sharpe_paper_cost": 0.34,
+        "recovery_factor_paper_cost": 1.47,
+        "trades": 8
+      },
+      "three_year": {
+        "return_pct_gross": 0.59,
+        "return_pct_paper_cost": -0.36,
+        "profit_factor_gross": 1.19,
+        "profit_factor_paper_cost": 0.90,
+        "win_rate_pct": 40.00,
+        "max_drawdown_pct_paper_cost": 2.35,
+        "sharpe_paper_cost": -0.06,
+        "recovery_factor_paper_cost": -0.15,
+        "trades": 5
+      },
+      "latest_year": {
+        "return_pct_gross": 0.71,
+        "return_pct_paper_cost": 0.29,
+        "profit_factor_gross": 1.70,
+        "profit_factor_paper_cost": 1.24,
+        "win_rate_pct": 50.00,
+        "max_drawdown_pct_paper_cost": 1.19,
+        "sharpe_paper_cost": 0.16,
+        "recovery_factor_paper_cost": 0.24,
+        "trades": 2
+      },
+      "directional_audit": {
+        "bullish_accuracy_pct": 46.88,
+        "bearish_accuracy_pct": 40.08,
+        "prior_day_uptrend_bullish_accuracy_pct": 45.08,
+        "prior_day_downtrend_bearish_accuracy_pct": 45.57
+      },
+      "reason": "Only eight accepted trades in 4.5 years, the three-year result is negative after the paper's costs, and the reported trend-regime improvement disappears when the regime is shifted to information available before entry.",
+      "production_action": "none"
     }
   ],
   "queue": [

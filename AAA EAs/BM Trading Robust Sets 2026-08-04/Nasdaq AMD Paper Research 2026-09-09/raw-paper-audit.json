@@ -1,0 +1,133 @@
+{
+  "strategy": "ICT AMD raw mechanical reproduction on Exness USTEC CFD",
+  "paper": "Evaluating the Predictive Validity of ICT's Accumulation-Manipulation-Distribution (AMD) Model",
+  "paper_url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7150238",
+  "author_code_url": "https://github.com/veertaylor19/amd-backtest",
+  "author_code_commit": "811e37337a9b8cd02c686a99d4559088acd065dc",
+  "source_pdf_sha256": "4d93b87813689f0b17dcf684348bf42d60d4fe43193b589626c2e0a7c52e4a22",
+  "source_data_sha256": "4bb8fe89a08397da574189a850764a7d20fd10f4bb755df296bd0ab3805addb1",
+  "source_data": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Slow Multi Asset Trend Research 2026-09-06\\Data\\USTEC-M15.npz",
+  "time_zone": "America/New_York with DST via zoneinfo",
+  "sample_note": "The paper ends 2026-07-01, so full means the paper-matched 4.5-year window rather than an invented five-year window.",
+  "raw_rules": {
+    "asia": "19:00-00:00 prior calendar day",
+    "asia_range_filter": "published 106.38-point cutoff, locked across every reporting window",
+    "london": "02:00-05:00",
+    "manipulation": "10 point unilateral breach before 04:00 plus close back before 05:00",
+    "distribution_entry": "first M15 open at or after 09:40 through 10:30 reclaimed inside Asia boundary",
+    "target": "unswept opposite Asia boundary",
+    "stop": "4 points beyond London extreme",
+    "minimum_rr": 1.5,
+    "macro_exclusions": "author's FOMC and NFP date file",
+    "same_bar_ambiguity": "loss",
+    "forced_exit": "none; mark to market only if sample ends first"
+  },
+  "risk_model_for_metrics": "1% current equity per accepted setup, compounded from $10,000",
+  "cost_tracks": {
+    "gross_raw": "No costs, matching the paper's primary raw result.",
+    "paper_cost_6_points": "Author's fixed six NQ points round trip.",
+    "exness_historical_spread": "Historical USTEC entry-bar spread; zero/missing bars use the period positive-spread median. No commission, swap or delay is invented."
+  },
+  "regime_warning": "same_day uses the day's 4PM close and is lookahead for a morning decision; prior_day is the tradeable audit.",
+  "author_code_parity_check": {
+    "status": "exact",
+    "trading_days": 1157,
+    "valid_trades": 8,
+    "trade_dates_and_outcomes": "all eight dates, directions, outcomes and R-multiples matched commit 811e37337a9b8cd02c686a99d4559088acd065dc"
+  },
+  "periods": [
+    {
+      "period": "full",
+      "start": "2022-01-01",
+      "end_exclusive": "2026-07-01",
+      "locked_asia_range_threshold": 106.38,
+      "sample_asia_range_75th_percentile_diagnostic": 104.52000000000044,
+      "fallback_positive_median_spread_points": 2.67,
+      "stages": {
+        "trading_days": 1157,
+        "asia_range_pass": 877,
+        "timely_breach": 655,
+        "unilateral_breach": 633,
+        "closeback": 387,
+        "target_intact": 169,
+        "ny_entry": 60,
+        "rr_pass": 8,
+        "macro_pass": 8
+      },
+      "filtered_reasons": {
+        "asia_range_too_wide": 280,
+        "bilateral_breach": 22,
+        "late_breach": 94,
+        "no_close_back": 246,
+        "no_manipulation": 128,
+        "no_ny_entry": 109,
+        "rr_below_1_5": 52,
+        "target_pre_swept": 218
+      },
+      "raw_directional_signals": 481,
+      "valid_trades": 8
+    },
+    {
+      "period": "3y",
+      "start": "2023-07-01",
+      "end_exclusive": "2026-07-01",
+      "locked_asia_range_threshold": 106.38,
+      "sample_asia_range_75th_percentile_diagnostic": 114.54999999999927,
+      "fallback_positive_median_spread_points": 2.99,
+      "stages": {
+        "trading_days": 771,
+        "asia_range_pass": 553,
+        "timely_breach": 410,
+        "unilateral_breach": 397,
+        "closeback": 249,
+        "target_intact": 109,
+        "ny_entry": 38,
+        "rr_pass": 5,
+        "macro_pass": 5
+      },
+      "filtered_reasons": {
+        "asia_range_too_wide": 218,
+        "bilateral_breach": 13,
+        "late_breach": 61,
+        "no_close_back": 148,
+        "no_manipulation": 82,
+        "no_ny_entry": 71,
+        "rr_below_1_5": 33,
+        "target_pre_swept": 140
+      },
+      "raw_directional_signals": 312,
+      "valid_trades": 5
+    },
+    {
+      "period": "1y",
+      "start": "2025-07-01",
+      "end_exclusive": "2026-07-01",
+      "locked_asia_range_threshold": 106.38,
+      "sample_asia_range_75th_percentile_diagnostic": 166.95500000000084,
+      "fallback_positive_median_spread_points": 0.08,
+      "stages": {
+        "trading_days": 258,
+        "asia_range_pass": 134,
+        "timely_breach": 103,
+        "unilateral_breach": 101,
+        "closeback": 69,
+        "target_intact": 32,
+        "ny_entry": 13,
+        "rr_pass": 2,
+        "macro_pass": 2
+      },
+      "filtered_reasons": {
+        "asia_range_too_wide": 124,
+        "bilateral_breach": 2,
+        "late_breach": 19,
+        "no_close_back": 32,
+        "no_manipulation": 12,
+        "no_ny_entry": 19,
+        "rr_below_1_5": 11,
+        "target_pre_swept": 37
+      },
+      "raw_directional_signals": 110,
+      "valid_trades": 2
+    }
+  ]
+}
