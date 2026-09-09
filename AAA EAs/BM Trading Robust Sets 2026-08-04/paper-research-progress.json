@@ -66,8 +66,25 @@
     },
     {
       "id": "post-fomc-fx-reversal",
-      "status": "deferred",
-      "reason": "Overlaps existing News Pulse event exposure."
+      "status": "raw-complete-awaiting-review",
+      "assets": ["EURUSD", "GBPUSD", "AUDUSD", "NZDUSD", "USDJPY", "USDCHF", "USDCAD"],
+      "native_mt5_cases": 21,
+      "raw_rule": "long USD from 12 to 24 hours after scheduled FOMC statements",
+      "five_year_equal_weight": {
+        "return_pct": 0.12,
+        "pooled_profit_factor": 1.02,
+        "pooled_win_rate_pct": 50.71,
+        "trades": 280,
+        "worst_pair_drawdown_pct": 2.68
+      },
+      "latest_year_equal_weight": {
+        "return_pct": -1.46,
+        "pooled_profit_factor": 0.35,
+        "pooled_win_rate_pct": 46.43,
+        "trades": 56,
+        "worst_pair_drawdown_pct": 2.55
+      },
+      "production_action": "none"
     },
     {
       "id": "value-area-reversion-youtube-short-j5xykuSD3I",
