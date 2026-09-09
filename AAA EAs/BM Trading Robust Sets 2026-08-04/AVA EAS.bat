@@ -3,7 +3,7 @@ setlocal
 title Calyx - Ava EAs
 echo.
 echo ============================================================
-echo   CALYX AVA EAS - PF 1.40+ WITH DMC FUTURES DEMO
+echo   CALYX AVA EAS - 9-EA PF 1.40+ WITH DMC FUTURES DEMO
 echo ============================================================
 echo   Minimum broker contract sizing. No 1%% risk is forced.
 echo   Ava netting protection is enabled.

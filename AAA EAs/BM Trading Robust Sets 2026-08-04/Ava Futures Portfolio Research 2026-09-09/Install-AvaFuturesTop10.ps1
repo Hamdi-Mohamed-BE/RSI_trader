@@ -33,8 +33,18 @@ function Read-SetInputs([string]$Path, [bool]$SafeMode) {
         $value = ($matches[2] -split '\|\|', 2)[0].Trim()
         if ($key) { $inputs[$key] = $value }
     }
-    if ($SafeMode -and $inputs.Contains('InpUseMarkovRegimeFilter')) {
-        $inputs['InpUseMarkovRegimeFilter'] = 'true'
+    if ($SafeMode) {
+        $safeInputs = [ordered]@{
+            InpUseMarkovRegimeFilter = 'true'
+            InpMarkovReturnWindow = '40'
+            InpMarkovThreshold = '0.05'
+            InpMarkovSignalGate = '0.05'
+            InpMarkovMinLabels = '252'
+            InpMarkovHistoryBars = '2600'
+        }
+        foreach ($entry in $safeInputs.GetEnumerator()) {
+            $inputs[$entry.Key] = $entry.Value
+        }
     }
     return $inputs
 }
@@ -180,6 +190,7 @@ $portfolio = @(
     [pscustomobject]@{ Label='News Pulse XAG'; Symbol='SILZ26'; Period=1; Expert='AAA Final News Pulse EA.ex5'; ExpertSource=(Join-Path $PSScriptRoot 'EA\News Pulse\AAA Final News Pulse EA.ex5'); SetSource=(Join-Path $PackageRoot 'Selected Portfolio Settings 2026-09-01\12B News Pulse XAG Two Sided - HARD 1.5 TOTAL.set'); SafeMode=$false },
     [pscustomobject]@{ Label='News Pulse XAU'; Symbol='MGCZ26'; Period=1; Expert='AAA Final News Pulse EA.ex5'; ExpertSource=(Join-Path $PSScriptRoot 'EA\News Pulse\AAA Final News Pulse EA.ex5'); SetSource=(Join-Path $PackageRoot 'Selected Portfolio Settings 2026-09-01\12A News Pulse XAU Two Sided - HARD 1.5 TOTAL.set'); SafeMode=$false },
     [pscustomobject]@{ Label='XAU Trend Progression'; Symbol='MGCZ26'; Period=240; Expert='Trend Progression EA.ex5'; ExpertSource=(Join-Path $PSScriptRoot 'EA\Trend Progression\Trend Progression EA.ex5'); SetSource=(Join-Path $PackageRoot 'Trend Progression Research 2026-09-02\Sets\TrendProgression-xauusd--h4--optimized--locked.set'); SafeMode=$false },
+    [pscustomobject]@{ Label='Safe LTA Volume Profile'; Symbol='MGCZ26'; Period=15; Expert='LTA_Concepts_EA.ex5'; ExpertSource=(Join-Path $PSScriptRoot 'EA\LTA\LTA_Concepts_EA.ex5'); SetSource=(Join-Path $PackageRoot 'Selected Portfolio Settings 2026-09-01\01 LTA Volume Profile - CURRENT - ALL DAY.set'); SafeMode=$true },
     [pscustomobject]@{ Label='DMC Fresh Reaction XAU'; Symbol='MGCZ26'; Period=60; Expert='Calyx DMC Fresh Reaction EA.ex5'; ExpertSource=(Join-Path $PSScriptRoot 'EA\DMC Fresh Reaction\Calyx DMC Fresh Reaction EA.ex5'); SetSource=(Join-Path $PackageRoot 'Selected Portfolio Settings 2026-09-01\21 DMC Fresh Reaction XAU - ASIA 3R - DYNAMIC 50-20.set'); SafeMode=$false },
     [pscustomobject]@{ Label='XAU ORB London NY Overlap M30'; Symbol='MGCZ26'; Period=30; Expert='ORB Volume Data EA.ex5'; ExpertSource=(Join-Path $PSScriptRoot 'EA\ORB Volume Data\ORB Volume Data EA.ex5'); SetSource=(Join-Path $PackageRoot 'Selected Portfolio Settings 2026-09-01\15 XAU ORB London NY Overlap M30 - LOCKED STANDALONE.set'); SafeMode=$false },
     [pscustomobject]@{ Label='US100 H1 ORB 13UTC'; Symbol='MNQZ26'; Period=15; Expert='ORB Volume Data EA.ex5'; ExpertSource=(Join-Path $PSScriptRoot 'EA\ORB Volume Data\ORB Volume Data EA.ex5'); SetSource=(Join-Path $PackageRoot 'ORB H1 Range Research 2026-09-05\Sets\USTEC - overlap-1300 - H1 opening range - RR6 - 1pct.set'); SafeMode=$false },

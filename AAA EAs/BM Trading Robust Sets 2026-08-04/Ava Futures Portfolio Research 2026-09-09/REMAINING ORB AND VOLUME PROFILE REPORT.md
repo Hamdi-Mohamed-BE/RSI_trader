@@ -15,7 +15,7 @@ Generated 2026-09-09 from isolated Ava MT5 Every Tick tests. The active Ava demo
 ## Decision
 
 - Only **LTA Volume Profile Safe** passes the requested PF 1.40 threshold.
-- LTA Safe is the only candidate for a later Ava portfolio addition. Its PF margin is narrow and Gold history quality is 68%, so it should remain demo-only.
+- **Installed in the Ava demo portfolio:** LTA Volume Profile Safe. Its PF margin is narrow and Gold history quality is 68%, so it remains demo-only and uses one broker-minimum contract.
 - Do not add ORB Volume Profile Standard, Volume Confirmed, or US100 Selective ORB V3 to Ava.
 - Keep the already active ORB selections: XAU London/NY Overlap M30, US100 H1 ORB 13UTC, and US100 New York M30.
 
