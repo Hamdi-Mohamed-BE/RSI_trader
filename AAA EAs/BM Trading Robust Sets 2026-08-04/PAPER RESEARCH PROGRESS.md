@@ -12,12 +12,15 @@ Last updated: 2026-09-09
 | 6 | Post-FOMC FX Reversal | Raw timing implication tested on seven FX CFDs plus raw transfer to XAU, XAG, BTC and US100 over 5y, 3y and 1y | Raw complete — awaiting review | FX transfer failed recently. Non-FX five-year basket: +2.32%, pooled PF 1.53, win rate 50.62%; XAU and BTC stay positive in every window, while US100 fails latest year. No production change. |
 | 7 | Value Area Reversion / “Stupid Simple Order Flow” | Raw reconstruction and full 456-case pipeline on XAUUSD, XAGUSD, BTCUSD and USTEC | XAU/BTC watch only; XAG/US100 rejected | XAU optimized locked: +6.90%, PF 1.54, win rate 63.16%, DD 4.28%, 38 trades, but latest year -0.42%. BTC optimized locked: +3.30%, PF 1.34, win rate 56.67%, DD 5.71%, only 30 trades. Neither clears production gates. |
 | 8 | Precious-metals Night Effect | Publicly auditable raw momentum branch mapped to Exness XAUUSD and XAGUSD CFDs over 5y, 3y and 1y | Rejected | XAU: -18.52%, PF 0.84, win rate 47.34%, DD 19.86% over 5y. XAG: -94.29%, PF 0.15, win rate 27.65%, DD 94.29%. Every period is negative before commission. No production change. |
+| 9 | ICT AMD Nasdaq | Paper-exact raw M15 USTEC reproduction with author-code parity | Rejected | Only 8 trades in 4.5y. Three-year after-cost result -0.36%, PF 0.90, win rate 40.00%, DD 2.35%. No production change. |
+| 10 | Bitcoin OBV Walk-Forward | All 9,900 published OBV rules; monthly trailing-12m Best 1 and Best 50 selection on BTCUSD | Raw complete — reject for production | Best 1 / Sharpe after paper-cost stress: +87.33%, PF 1.56, win rate 43.75%, DD 21.84%, 96 trades over 2023-01-01–2026-08-31. It decayed to -6.20%, PF 0.75 in 2026 YTD and underperformed buy-and-hold risk-adjusted. |
 
 ## Current non-paper queue
 
 1. **DMC Fresh-Reaction research — complete, awaiting production decision.** The approved isolated filter was implemented and tested in 100 native MT5 cases. XAU candidate: locked +6.88%, PF 1.90, win rate 46.67%, DD 3.11%, 15 trades; three-year +36.18%, PF 2.49, win rate 60.00%, DD 4.08%, 55 trades. US100 candidate: locked +3.68%, PF 1.88, win rate 66.67%, DD 2.99%, 12 trades; three-year +17.94%, PF 1.99, win rate 65.22%, DD 4.39%, 46 trades. Both are watch/demo candidates because the locked samples are small. US30 and BTC were rejected. No active EA, BAT, portfolio or website change was made.
 2. **Post-FOMC reversal — raw CFD tests complete, awaiting review.** All seven FX pairs lost in the latest year. The raw non-FX transfer is promising on XAU and BTC, secondary on XAG, and rejected on US100. No production action before review.
 3. **Precious-metals Night Effect — raw CFD transfer rejected.** The accessible paper rules lose on both XAUUSD and XAGUSD in 5y, 3y and 1y native tests. No pipeline or production action is warranted.
+4. **Bitcoin OBV Walk-Forward — raw transfer complete, production rejected.** The published selector reduces drawdown but trails buy-and-hold and fails the latest period. No EA, BAT, website or portfolio change was made.
 
 ## Pipeline control
 

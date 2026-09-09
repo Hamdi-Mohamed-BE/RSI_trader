@@ -203,6 +203,42 @@
       },
       "reason": "Only eight accepted trades in 4.5 years, the three-year result is negative after the paper's costs, and the reported trend-regime improvement disappears when the regime is shifted to information available before entry.",
       "production_action": "none"
+    },
+    {
+      "id": "bitcoin-obv-walk-forward",
+      "status": "raw-complete-production-rejected",
+      "paper": "Deprez and Froemmel, Are simple technical trading rules profitable in bitcoin markets? (2024)",
+      "asset": "BTCUSD",
+      "scope": "9,900 published OBV rules across M10, M30, H1 and D1 with trailing-12-month monthly Best 1 and Best 50 walk-forward selection",
+      "data": {
+        "source": "Exness demo BTCUSD M5; MT5 tick-volume proxy",
+        "bars": 490205,
+        "source_start": "2022-01-01",
+        "source_end": "2026-08-31",
+        "oos_start": "2023-01-01",
+        "oos_end": "2026-08-31"
+      },
+      "best1_sharpe_paper_cost": {
+        "return_pct": 87.33,
+        "profit_factor": 1.56,
+        "win_rate_pct": 43.75,
+        "max_drawdown_pct": 21.84,
+        "sharpe": 0.78,
+        "recovery_factor": 4.00,
+        "trades": 96
+      },
+      "latest_ytd": {
+        "year": 2026,
+        "return_pct": -6.20,
+        "profit_factor": 0.75,
+        "win_rate_pct": 45.45,
+        "max_drawdown_pct": 14.98,
+        "sharpe": -0.43,
+        "recovery_factor": -0.41,
+        "trades": 11
+      },
+      "reason": "The method reduced drawdown versus buy-and-hold but had lower total return and Sharpe, while 2026 YTD was negative with PF below 1.",
+      "production_action": "none"
     }
   ],
   "queue": [
