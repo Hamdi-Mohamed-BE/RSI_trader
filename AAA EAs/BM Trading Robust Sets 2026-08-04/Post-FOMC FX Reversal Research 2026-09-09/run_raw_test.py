@@ -148,7 +148,15 @@ def set_text(values: dict[str, object]) -> str:
     return "\n".join(f"{key}={render(value)}" for key, value in values.items()) + "\n"
 
 
-def run_case(symbol: str, usd_is_base: bool, period: str, start: str, end: str, sequence: int) -> dict:
+def run_case(
+    symbol: str,
+    usd_is_base: bool,
+    period: str,
+    start: str,
+    end: str,
+    sequence: int,
+    total_cases: int = 21,
+) -> dict:
     values = settings(usd_is_base, 260909600 + sequence)
     signature = hashlib.sha256(json.dumps(values, sort_keys=True).encode() + SOURCE.read_bytes()).hexdigest()[:8]
     case_id = f"{symbol.lower()}--raw-usd-long-12h24h--{period}--{signature}"
@@ -197,7 +205,7 @@ Visual=0
 """
     ini_path = CONFIGS / f"{case_id}.ini"
     ini_path.write_text(ini, encoding="utf-8-sig")
-    print(f"START {sequence:02d}/21 {period:2s} {symbol}", flush=True)
+    print(f"START {sequence:02d}/{total_cases} {period:2s} {symbol}", flush=True)
     stop_stale_isolated_terminal()
     process = subprocess.Popen(
         f'"{TERMINAL}" /portable /config:"{ini_path}"',
@@ -245,7 +253,17 @@ def main() -> None:
     for period, start, end in PERIODS:
         for symbol, usd_is_base in PAIRS:
             sequence += 1
-            rows.append(run_case(symbol, usd_is_base, period, start, end, sequence))
+            rows.append(
+                run_case(
+                    symbol,
+                    usd_is_base,
+                    period,
+                    start,
+                    end,
+                    sequence,
+                    len(PAIRS) * len(PERIODS),
+                )
+            )
 
     audit = {
         "strategy": "Post-FOMC FX Reversal - raw paper implication",
