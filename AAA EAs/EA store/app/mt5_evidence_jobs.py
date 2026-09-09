@@ -266,12 +266,15 @@ class MT5EvidenceJobs:
         *,
         tester_start: date | None = None,
         input_overrides: dict[str, str] | None = None,
+        expert_source_override: Path | None = None,
     ) -> dict[str, Any]:
         product = get_product(slug)
         if product is None or product.evidence is None:
             raise ValueError("Unknown EA evidence request.")
         if mode == "safe" and not product.safe_filter_supported:
             raise ValueError("This EA has no validated Safe-mode configuration.")
+        if mode == "dynamic" and not product.dynamic_mode_supported:
+            raise ValueError("This EA has no saved Dynamic London configuration.")
         if start > end:
             raise ValueError("The From date must be earlier than the To date.")
         if (end - start).days > MAX_DAYS:
@@ -311,7 +314,7 @@ class MT5EvidenceJobs:
             self._last_started[key] = now
         threading.Thread(
             target=self._run,
-            args=(job_id, product, start, end, mode, broker_symbol or product.canonical, tester_start or start, input_overrides or {}),
+            args=(job_id, product, start, end, mode, broker_symbol or product.canonical, tester_start or start, input_overrides or {}, expert_source_override),
             name=f"mt5-evidence-{job_id[:8]}",
             daemon=True,
         ).start()
@@ -351,6 +354,7 @@ class MT5EvidenceJobs:
         broker_symbol: str,
         tester_start: date,
         input_overrides: dict[str, str],
+        expert_source_override: Path | None,
     ) -> None:
         process: subprocess.Popen[Any] | None = None
         cleanup_files: list[Path] = []
@@ -360,9 +364,21 @@ class MT5EvidenceJobs:
             tester_root = self.tester_terminal.parent
             if not self.tester_terminal.is_file():
                 raise RuntimeError(f"Isolated MT5 tester not found: {self.tester_terminal}")
-            expert_source = PACKAGE_ROOT / product.expert_source
+            dynamic_mode = mode == "dynamic"
+            expert_relative = product.dynamic_expert_source if dynamic_mode else product.expert_source
+            if not expert_relative:
+                raise RuntimeError(f"No compiled EA is configured for {mode} mode.")
+            expert_source = expert_source_override or (PACKAGE_ROOT / expert_relative)
             dedicated_safe = mode == "safe" and bool(product.safe_set_source)
-            selected_set_source = product.safe_set_source if dedicated_safe else product.set_source
+            selected_set_source = (
+                product.dynamic_set_source
+                if dynamic_mode
+                else product.safe_set_source
+                if dedicated_safe
+                else product.set_source
+            )
+            if not selected_set_source:
+                raise RuntimeError(f"No settings file is configured for {mode} mode.")
             set_source = PACKAGE_ROOT / str(selected_set_source)
             if not expert_source.is_file():
                 raise RuntimeError(f"Compiled EA is missing: {expert_source}")
@@ -399,6 +415,8 @@ class MT5EvidenceJobs:
             cleanup_report_prefix = (report_folder, report_name)
             server = os.getenv("EA_STORE_TESTER_SERVER", "Exness-MT5Trial16")
             login = os.getenv("EA_STORE_TESTER_LOGIN", "472334559")
+            deposit = os.getenv("EA_STORE_TESTER_DEPOSIT", "10000")
+            leverage = os.getenv("EA_STORE_TESTER_LEVERAGE", "2000")
             config = (
                 "[Common]\r\n"
                 f"Login={login}\r\nServer={server}\r\n\r\n"
@@ -407,7 +425,7 @@ class MT5EvidenceJobs:
                 f"ExpertParameters={set_name}\r\n"
                 f"Symbol={broker_symbol}\r\n"
                 f"Period={product.timeframe}\r\n"
-                f"Login={login}\r\nDeposit=10000\r\nCurrency=USD\r\nLeverage=1:2000\r\n"
+                f"Login={login}\r\nDeposit={deposit}\r\nCurrency=USD\r\nLeverage=1:{leverage}\r\n"
                 "Model=0\r\nExecutionMode=1\r\nOptimization=0\r\n"
                 f"FromDate={tester_start.strftime('%Y.%m.%d')}\r\n"
                 f"ToDate={end.strftime('%Y.%m.%d')}\r\n"

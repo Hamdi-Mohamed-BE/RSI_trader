@@ -4,7 +4,7 @@ A FastAPI storefront generated from the Expert Advisors currently listed in:
 
 `..\BM Trading Robust Sets 2026-08-04\_Auto Deploy\Install-BMTradingPortfolio.ps1`
 
-The public catalogue is generated directly from every active entry in the recommended installer. At the time of this audit it contains 28 EAs, and the count updates automatically when the installer changes.
+The public catalogue is generated directly from every active entry in the recommended installer. At the time of this audit it contains 33 EAs, and the count updates automatically when the installer changes.
 
 ## Run locally
 

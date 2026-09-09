@@ -140,6 +140,24 @@ function Get-PortfolioItems {
             SetSource = 'Selected Portfolio Settings 2026-09-01\06 Asia Breakout - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true
         },
         [pscustomobject]@{
+            Label = 'DMC Current XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 60; Expert = 'AAA Final DmC EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final DmC EA\AAA Final DmC EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\07 DmC - ASIA 3R - DYNAMIC 50-20.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'DMC Fresh Reaction XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 60; Expert = 'Calyx DMC Fresh Reaction EA.ex5'
+            ExpertSource = 'AAA Final EAs\Calyx DMC Fresh Reaction EA\Calyx DMC Fresh Reaction EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\21 DMC Fresh Reaction XAU - ASIA 3R - DYNAMIC 50-20.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'DMC Fresh Reaction US100'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 60; Expert = 'Calyx DMC Fresh Reaction EA.ex5'
+            ExpertSource = 'AAA Final EAs\Calyx DMC Fresh Reaction EA\Calyx DMC Fresh Reaction EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\22 DMC Fresh Reaction US100 - NEW YORK 2R - DYNAMIC 50-20.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
             Label = 'AAA Final EMA3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 240; Expert = 'AAA Final EMA3 EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final EMA3 EA\AAA Final EMA3 EA.ex5'; RecommendedSafe = $true
@@ -169,6 +187,12 @@ function Get-PortfolioItems {
             ExpertSource = 'Sell Nasdaq 15min Research 2026-09-08\EA\Sell Nasdaq 15min EA.ex5'
             SetSource = 'Sell Nasdaq 15min Research 2026-09-08\Sets\Sell Nasdaq 15min - selected research - 1pct.set'
             SafeSetSource = 'Sell Nasdaq 15min Research 2026-09-08\Sets\Sell Nasdaq 15min - safe London 600-1000 - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $true
+        },
+        [pscustomobject]@{
+            Label = 'USDJPY London Open Momentum'; Canonical = 'USDJPY'; Aliases = @('USDJPY')
+            Period = 15; Expert = 'Calyx London Open FX Momentum Pipeline EA.ex5'
+            ExpertSource = 'London Open FX Momentum Research 2026-09-08\Pipeline\EA\Calyx London Open FX Momentum Pipeline EA.ex5'
+            SetSource = 'London Open FX Momentum Research 2026-09-08\Pipeline\Sets\London Open FX Momentum - USDJPY - pipeline selected - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'News Pulse XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -524,14 +548,16 @@ function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
     $bottom = $top + $height
     $expertPath = 'Experts\' + $ExpertFolderName + '\' + $Item.Expert
     $expertName = [IO.Path]::GetFileNameWithoutExtension($Item.Expert)
+    $periodType = if ($Item.Period -lt 60) { 0 } elseif ($Item.Period -lt 1440) { 1 } else { 2 }
+    $periodSize = if ($periodType -eq 0) { $Item.Period } elseif ($periodType -eq 1) { [int]($Item.Period / 60) } else { [int]($Item.Period / 1440) }
 
     return @"
 <chart>
 id=$Id
 symbol=$Symbol
 description=$Symbol
-period_type=0
-period_size=$($Item.Period)
+period_type=$periodType
+period_size=$periodSize
 digits=5
 tick_size=0.000000
 position_time=0
@@ -641,9 +667,12 @@ function Test-ManagedProfile([string]$ProfilePath, [object[]]$ExpectedPortfolio,
         $text = Get-Content -LiteralPath $chartPath -Raw
         $expectedName = [IO.Path]::GetFileNameWithoutExtension([string]$item.Expert)
         $expectedPath = 'Experts\' + $ExpertFolderName + '\' + [string]$item.Expert
+        $expectedPeriodType = if ($item.Period -lt 60) { 0 } elseif ($item.Period -lt 1440) { 1 } else { 2 }
+        $expectedPeriodSize = if ($expectedPeriodType -eq 0) { $item.Period } elseif ($expectedPeriodType -eq 1) { [int]($item.Period / 60) } else { [int]($item.Period / 1440) }
         $checks = @(
             @{ Label = 'symbol'; Token = "symbol=$($item.BrokerSymbol)" },
-            @{ Label = 'period'; Token = "period_size=$($item.Period)" },
+            @{ Label = 'period type'; Token = "period_type=$expectedPeriodType" },
+            @{ Label = 'period'; Token = "period_size=$expectedPeriodSize" },
             @{ Label = 'EA name'; Token = "name=$expectedName" },
             @{ Label = 'EA path'; Token = "path=$expectedPath" },
             @{ Label = 'enabled expert mode'; Token = 'expertmode=1' },

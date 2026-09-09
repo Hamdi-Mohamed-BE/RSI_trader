@@ -46,18 +46,45 @@ class StreamWorker:
             from faster_whisper import WhisperModel
             work = self.data_dir / f"session-{session_id}"
             work.mkdir(parents=True, exist_ok=True)
-            media_url = None
-            while not self.stop_event.is_set() and not media_url:
+            audio_url = None
+            video_url = None
+            while not self.stop_event.is_set() and not audio_url:
                 try:
-                    with YoutubeDL({"quiet": True, "no_warnings": True,
-                                    "format": "best[height<=720]/best", "noplaylist": True}) as ydl:
+                    # Do not request a combined "best" format. YouTube live streams
+                    # commonly expose separate HLS audio-only and video-only tracks.
+                    with YoutubeDL({"quiet": True, "no_warnings": True, "noplaylist": True}) as ydl:
                         info = ydl.extract_info(url, download=False)
-                    media_url = info.get("url")
+                    formats = [item for item in info.get("formats", []) if item.get("url")]
+                    # Live HLS audio entries may report ``acodec=None`` even though
+                    # yt-dlp labels them audio-only. Treat a track with no video and
+                    # no height as audio, and prefer the final (higher quality) HLS
+                    # variant when bitrate metadata is unavailable.
+                    audio = [
+                        item for item in formats
+                        if item.get("acodec") not in (None, "none")
+                        or (item.get("vcodec") == "none" and item.get("height") is None)
+                    ]
+                    video = [
+                        item for item in formats
+                        if item.get("vcodec") not in (None, "none")
+                        and (item.get("height") or 0) <= 720
+                    ]
+                    if audio:
+                        audio_url = max(
+                            enumerate(audio),
+                            key=lambda pair: (pair[1].get("abr") or pair[1].get("tbr") or 0, pair[0]),
+                        )[1]["url"]
+                    if video:
+                        video_url = max(video, key=lambda item: (item.get("height") or 0, item.get("tbr") or 0))["url"]
+                    elif info.get("url"):
+                        video_url = info["url"]
+                    if audio_url:
+                        self.error = None
                 except Exception as exc:
                     message = str(exc).lower()
                     if "will begin" not in message and "upcoming" not in message and "no video formats" not in message:
                         self.error = str(exc)
-                if not media_url:
+                if not audio_url:
                     time.sleep(10)
             if self.stop_event.is_set():
                 return
@@ -68,12 +95,12 @@ class StreamWorker:
             frames = work / "frames"
             frames.mkdir(parents=True, exist_ok=True)
             self.process = subprocess.Popen([
-                ffmpeg, "-hide_banner", "-loglevel", "error", "-i", media_url, "-vn", "-ac", "1", "-ar", "16000",
+                ffmpeg, "-hide_banner", "-loglevel", "error", "-i", audio_url, "-vn", "-ac", "1", "-ar", "16000",
                 "-f", "segment", "-segment_time", str(self.chunk_seconds), "-reset_timestamps", "1", pattern,
             ])
-            if self.on_frame:
+            if self.on_frame and video_url:
                 self.frame_process = subprocess.Popen([
-                    ffmpeg, "-hide_banner", "-loglevel", "error", "-i", media_url, "-an",
+                    ffmpeg, "-hide_banner", "-loglevel", "error", "-i", video_url, "-an",
                     "-vf", f"fps=1/{max(1, self.frame_seconds)}", "-q:v", "3",
                     str(frames / "frame-%06d.jpg"),
                 ])

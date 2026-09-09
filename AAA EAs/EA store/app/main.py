@@ -311,7 +311,7 @@ async def catalogue(
 async def product_detail(
     request: Request,
     slug: str,
-    mode: str | None = Query(default=None, pattern=r"^(standard|safe)$"),
+    mode: str | None = Query(default=None, pattern=r"^(standard|safe|dynamic)$"),
     period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
 ) -> HTMLResponse:
     product = get_product(slug)
@@ -324,7 +324,15 @@ async def product_detail(
     ][:3]
     if mode == "safe" and not product.safe_filter_supported:
         mode = "standard"
-    display_evidence = product.safe_evidence if mode == "safe" else product.evidence
+    if mode == "dynamic" and not product.dynamic_mode_supported:
+        mode = "standard"
+    display_evidence = (
+        product.safe_evidence
+        if mode == "safe"
+        else product.dynamic_evidence
+        if mode == "dynamic"
+        else product.evidence
+    )
     cached = load_product_summary(product.slug, mode, period)
     if cached and cached.get("stats") and display_evidence is not None:
         stats = cached["stats"]
@@ -460,7 +468,7 @@ async def evidence_chart(slug: str) -> FileResponse:
 @app.get("/api/evidence/{slug}/series", name="evidence_series")
 async def evidence_series(
     slug: str,
-    mode: str = Query(default="standard", pattern=r"^(standard|safe|compare)$"),
+    mode: str = Query(default="standard", pattern=r"^(standard|safe|dynamic|compare)$"),
     period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
 ) -> JSONResponse:
     product = get_product(slug)
@@ -468,6 +476,8 @@ async def evidence_series(
         raise HTTPException(status_code=404, detail="Evidence series not found")
     if mode == "safe" and not product.safe_filter_supported:
         raise HTTPException(status_code=409, detail="This vendor binary does not support embedded Safe mode")
+    if mode == "dynamic" and not product.dynamic_mode_supported:
+        raise HTTPException(status_code=409, detail="This EA has no saved Dynamic London configuration")
     selected_mode = "standard" if mode == "compare" else mode
     payload = load_product_cache(product.slug, selected_mode, period)
     if payload is None:
@@ -479,6 +489,12 @@ async def evidence_series(
                 {"label": "Standard", "color": "#7ef7c7", "series": payload["series"], "stats": payload["stats"], "trades": payload["trades"]},
                 {"label": product.safe_mode_label, "color": "#68a7ff", "series": safe["series"], "stats": safe["stats"], "trades": safe["trades"]},
             ]
+            if product.dynamic_mode_supported:
+                dynamic = load_product_cache(product.slug, "dynamic", period)
+                if dynamic is not None:
+                    payload["datasets"].append(
+                        {"label": product.dynamic_mode_label, "color": "#f2bd5b", "series": dynamic["series"], "stats": dynamic["stats"], "trades": dynamic["trades"]}
+                    )
     return JSONResponse(
         payload,
         headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"},
@@ -528,7 +544,7 @@ async def cached_evidence_trade_chart(
     slug: str,
     period: str,
     trade_number: int,
-    mode: str = Query(default="standard", pattern=r"^(standard|safe)$"),
+    mode: str = Query(default="standard", pattern=r"^(standard|safe|dynamic)$"),
 ) -> JSONResponse:
     try:
         validate_period(period)
@@ -589,6 +605,10 @@ async def api_eas() -> JSONResponse:
         if safe_evidence:
             safe_evidence.pop("chart_path", None)
             safe_evidence["series_url"] = f"/api/evidence/{product['slug']}/series?mode=safe"
+        dynamic_evidence = product.get("dynamic_evidence")
+        if dynamic_evidence:
+            dynamic_evidence.pop("chart_path", None)
+            dynamic_evidence["series_url"] = f"/api/evidence/{product['slug']}/series?mode=dynamic"
     return JSONResponse(payload)
 
 

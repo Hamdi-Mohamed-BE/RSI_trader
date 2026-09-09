@@ -61,8 +61,17 @@ def file_hash(path: Path) -> str:
 
 
 def source_fingerprint(product: Product, mode: str, start: date, end: date) -> dict[str, Any]:
-    set_relative = product.safe_set_source if mode == "safe" and product.safe_set_source else product.set_source
-    expert = PACKAGE_ROOT / product.expert_source
+    set_relative = (
+        product.dynamic_set_source
+        if mode == "dynamic"
+        else product.safe_set_source
+        if mode == "safe" and product.safe_set_source
+        else product.set_source
+    )
+    expert_relative = product.dynamic_expert_source if mode == "dynamic" else product.expert_source
+    if not set_relative or not expert_relative:
+        raise ValueError(f"Missing source files for {product.label} {mode} mode.")
+    expert = PACKAGE_ROOT / expert_relative
     settings = PACKAGE_ROOT / str(set_relative)
     fingerprint = {
         "slug": product.slug,
@@ -402,6 +411,7 @@ def main() -> int:
     parser.add_argument("--period", choices=["all", *PERIOD_MONTHS], default="all")
     parser.add_argument("--slug", action="append", help="Limit generation to one or more EA slugs.")
     parser.add_argument("--safe", action="store_true", help="Also generate Safe mode for compatible EAs.")
+    parser.add_argument("--dynamic", action="store_true", help="Also generate saved Dynamic London mode when available.")
     parser.add_argument("--force", action="store_true", help="Ignore reusable native source reports.")
     parser.add_argument("--portfolio-only", action="store_true", help="Only rebuild portfolio caches from existing EA caches.")
     parser.add_argument("--end", type=date.fromisoformat, default=date.today())
@@ -422,7 +432,11 @@ def main() -> int:
         removed = cleanup_stale_dynamic_artifacts()
         print(f"CLEANUP removed {removed} stale isolated-tester artifacts", flush=True)
         for product in products:
-            modes = ["standard"] + (["safe"] if args.safe and product.safe_filter_supported else [])
+            modes = (
+                ["standard"]
+                + (["safe"] if args.safe and product.safe_filter_supported else [])
+                + (["dynamic"] if args.dynamic and product.dynamic_mode_supported else [])
+            )
             for mode in modes:
                 for period in periods:
                     start = subtract_months(args.end, PERIOD_MONTHS[period])

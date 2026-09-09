@@ -1,0 +1,46 @@
+{
+  "title": "DMC Playlist Strategy Review",
+  "playlist_id": "PLtfjD7dzYgl27KB4jeel_wGiUE-EkOPfE",
+  "reviewed_entries": 26,
+  "accessible_entries": 24,
+  "unavailable_entries": [6, 20],
+  "strategy_relevant_entries": [1, 7, 10, 11, 14, 16, 18, 22, 24],
+  "excluded_entries": [2, 3, 4, 5, 8, 9, 12, 13, 15, 17, 19, 21, 23, 25, 26],
+  "current_code_changed": false,
+  "system_changed": false,
+  "recommendation": {
+    "name": "DMC Fresh-Reaction Filter",
+    "status": "awaiting-user-approval",
+    "baseline": {
+      "asset": "XAUUSD",
+      "signal_timeframe": "H1",
+      "session": "Asia",
+      "stop_price_distance": 22.5,
+      "reward_risk": 3.0,
+      "management": "Dynamic 50/20",
+      "risk_default_pct": 1.0
+    },
+    "new_testable_components": [
+      "previous-day body first-touch freshness gate",
+      "separate one-candle rejection and two-candle regain modes",
+      "room-to-next-structural-level entry gate",
+      "optional M15 break-and-first-retest confirmation",
+      "used-level consumption state"
+    ],
+    "not_recommended": [
+      "DCA or martingale",
+      "no-stop trading",
+      "full multi-timeframe rewrite",
+      "monthly or weekly levels as immediate standalone entry generators",
+      "blind limits by default",
+      "deployment before locked validation"
+    ]
+  },
+  "prior_video_rewrite_evidence": {
+    "xau_video_baseline_return_pct": -8.74,
+    "xau_video_baseline_profit_factor": 0.92,
+    "ustec_selected_oos_return_pct": -3.16,
+    "ustec_selected_oos_profit_factor": 0.92,
+    "conclusion": "Do not replace the retained DMC with the broad playlist clone."
+  }
+}

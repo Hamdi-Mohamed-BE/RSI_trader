@@ -281,6 +281,15 @@ CUSTOM_REPORTS: dict[str, Path] = {
         / "locked"
         / "locked--current-negative-close-open.htm"
     ),
+    "USDJPY London Open Momentum": (
+        PACKAGE_ROOT
+        / "London Open FX Momentum Research 2026-09-08"
+        / "Pipeline"
+        / "Backtest Reports"
+        / "USDJPY"
+        / "final"
+        / "usdjpy--final--selected-latest--m0--20250901-20260901--46e01de1e9.htm"
+    ),
 }
 
 INSTALLER_LABEL_ALIASES: dict[str, str] = {}
@@ -360,7 +369,13 @@ def _normalise_json_series(values: list[dict[str, Any]]) -> list[dict[str, Any]]
 
 def _summary_performance_series(product: Product, mode: str) -> list[dict[str, Any]]:
     """Honest two-point fallback when the detailed MT5 deal path is not deployed."""
-    evidence = product.safe_evidence if mode == "safe" and product.safe_evidence else product.evidence
+    evidence = (
+        product.safe_evidence
+        if mode == "safe" and product.safe_evidence
+        else product.dynamic_evidence
+        if mode == "dynamic" and product.dynamic_evidence
+        else product.evidence
+    )
     if evidence is None:
         return []
     dates = DATE_RE.findall(evidence.period)

@@ -31,6 +31,8 @@ SELECTIVE_ORB_ROOT = PACKAGE_ROOT / "US100 Selective ORB Research 2026-08-21"
 NEWS_PULSE_ROOT = PACKAGE_ROOT / "News Pulse Direction Research 2026-09-05"
 ACTIVE_PIPELINE_ROOT = PACKAGE_ROOT / "Active Portfolio Full Pipeline 2026-09-05"
 SELL_NASDAQ_15M_ROOT = PACKAGE_ROOT / "Sell Nasdaq 15min Research 2026-09-08"
+LONDON_OPEN_FX_MOMENTUM_ROOT = PACKAGE_ROOT / "London Open FX Momentum Research 2026-09-08"
+DMC_FRESH_REACTION_ROOT = PACKAGE_ROOT / "DMC Fresh Reaction Research 2026-09-09"
 INSTALLER_PATH = PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1"
 WHATSAPP_NUMBER = "21693830957"
 
@@ -91,6 +93,8 @@ class Product(BaseModel):
     expert_source: str
     set_source: str
     safe_set_source: str | None = None
+    dynamic_expert_source: str | None = None
+    dynamic_set_source: str | None = None
     optional_symbol: bool = False
     category: str
     asset_group: str
@@ -113,8 +117,12 @@ class Product(BaseModel):
     recommended_safe_mode: bool = False
     safe_mode_label: str = "Full Safe"
     safe_mode_note: str = "Independent completed-D1 Markov gate enabled inside this EA."
+    dynamic_mode_supported: bool = False
+    dynamic_mode_label: str = "Dynamic London"
+    dynamic_mode_note: str = "Research preset using volatility-scaled exits."
     evidence: Evidence | None = None
     safe_evidence: Evidence | None = None
+    dynamic_evidence: Evidence | None = None
     one_year_evidence: Evidence | None = None
     one_year_return_pct: float | None = None
     one_year_note: str | None = None
@@ -135,11 +143,15 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "US100 H1 ORB 13UTC": ("orb-h1-us100-13utc", "current", "Nominal 6R / timed flat"),
     "US100 Selective ORB V3": ("orb-selective-us100-v3", "current", "Fixed 2R / BE at 1R"),
     "AAA Final Asia Breakout": ("asia-xau", "dynamic-only", "Dynamic 50/20"),
+    "DMC Current XAU": ("dmc-current-xau", "current", "Dynamic 50/20"),
+    "DMC Fresh Reaction XAU": ("dmc-fresh-reaction-xau", "current", "Dynamic 50/20"),
+    "DMC Fresh Reaction US100": ("dmc-fresh-reaction-us100", "current", "Dynamic 50/20"),
     "AAA Final EMA3": ("ema3-xau", "dynamic-only", "Dynamic 60/20 only"),
     "AAA Final XAU Weakness": ("weakness-xau", "dynamic-only", "Dynamic 50/20"),
     "Nasdaq Overnight": ("overnight-ustec", "current", "Current EA exits"),
     "Nasdaq 5M Candle Momentum": ("momentum-ustec", "current", "Fixed 2.5R / no trailing"),
     "Sell Nasdaq 15min": ("sell-nasdaq-15min", "current", "Fixed 2.22R / no trailing"),
+    "USDJPY London Open Momentum": ("london-open-momentum-usdjpy", "current", "Time exit / BE at 0.75R"),
     "News Pulse XAU": ("news-xau-hard-1p5", "current", "Native 60-second exit"),
     "News Pulse XAG": ("news-xag-hard-1p5", "current", "Native 60-second exit"),
     "News Pulse EURUSD": ("news-eurusd-hard-1p5", "current", "Native 60-second exit"),
@@ -154,6 +166,86 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
 
 
 CORE_META: dict[str, dict[str, Any]] = {
+    "DMC Current XAU": {
+        "strategy": "Prior-day body rejection",
+        "tagline": "The established XAUUSD DMC baseline, retained as a higher-frequency control beside the selective builds.",
+        "description": "This original XAUUSD H1 DMC configuration trades rejection from the completed prior-day real-body high or low during Asia. It deliberately keeps the freshness and higher-timeframe proximity gates disabled, uses a fixed 22.5-price-unit stop, targets 3R and protects progress with Dynamic 50/20.",
+        "session": "00:00-08:00 UTC Asia window / H1",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "The retained production source, exact selected SET and native MT5 Every Tick comparison reports were reviewed during the 100-case DMC fresh-reaction pipeline.",
+        "logic": [
+            {"title": "Map yesterday's real body", "detail": "After a new broker day begins, the EA stores the open and close of the last completed D1 candle and treats the higher and lower body prices as reaction boundaries."},
+            {"title": "Wait for an H1 rejection", "detail": "A completed H1 candle must test beyond one mapped body boundary and close back on the accepted side with a directional candle body before an entry can qualify."},
+            {"title": "Trade the established Asia window", "detail": "The production SET permits signals from 00:00 through 08:00 UTC after converting the configured broker offset; entries outside that window are rejected."},
+            {"title": "Keep the baseline filters unchanged", "detail": "Fresh-touch counting and weekly or monthly proximity confirmation remain disabled, preserving the original signal population as the comparison control."},
+            {"title": "Use fixed protection and chosen risk", "detail": "The initial protective distance is 22.5 XAU price units and volume is calculated from the percentage selected in the BAT; pressing Enter keeps the 1% default."},
+            {"title": "Target 3R and apply Dynamic 50/20", "detail": "The initial objective is three times risk; after a completed M15 candle reaches halfway toward target, the stop can lock twenty percent of the original path."},
+        ],
+        "risk_note": "Every BAT applies the user's selected equity-risk percentage and defaults to the tested 1%. Its three-year result was +46.72%, PF 1.27, 40.80% wins and 12.49% drawdown over 250 trades; it overlaps strongly with the two selective DMC variants.",
+        "price": 299,
+        "accent": "gold",
+        "featured": False,
+    },
+    "DMC Fresh Reaction XAU": {
+        "strategy": "Fresh multi-timeframe body rejection",
+        "tagline": "A selective XAUUSD DMC build that demands a fresh daily level aligned with weekly or monthly structure.",
+        "description": "This pipeline-selected XAUUSD H1 version keeps the DMC rejection idea but admits no more than one earlier M15 touch of the daily-body level. It also requires a completed weekly or monthly body boundary nearby, uses a fixed 30-price-unit stop, targets 3R and applies Dynamic 50/20.",
+        "session": "00:00-08:00 UTC Asia window / H1",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable production MQ5, 100 native MT5 Every Tick pipeline cases, a locked year and an exact three-year validation were reviewed together.",
+        "logic": [
+            {"title": "Map the completed daily body", "detail": "The EA builds the candidate reaction levels from the open and close of the last completed D1 candle, never from the still-forming current daily bar."},
+            {"title": "Require a fresh level", "detail": "Completed M15 candles since the day opened are scanned with a 0.05 D1-ATR tolerance, and the setup survives only when the boundary has no more than one prior touch."},
+            {"title": "Demand higher-timeframe confluence", "detail": "A completed W1 or MN1 real-body boundary must lie within 0.25 of D1 ATR from the daily reaction price, giving the level independent structural support."},
+            {"title": "Confirm rejection during Asia", "detail": "Inside 00:00-08:00 UTC, a completed H1 candle must sweep the selected boundary, close back through it and print the correct directional candle body."},
+            {"title": "Use the selected fixed stop and risk", "detail": "The protective distance is fixed at 30 XAU price units while OrderCalcProfit sizes volume from the BAT-selected equity percentage, defaulting to the tested 1%."},
+            {"title": "Target 3R and protect at 50/20", "detail": "The trade begins with a three-times-risk objective; a completed M15 close halfway toward target permits the stop to lock twenty percent of the original route."},
+        ],
+        "risk_note": "Every BAT follows the user's selected equity-risk percentage and defaults to the tested 1%. Three years returned +36.18%, PF 2.49, 60.00% wins and 4.08% drawdown over 55 trades; the locked year contained only 15 trades, so demo-forward confirmation remains important.",
+        "price": 349,
+        "accent": "teal",
+        "featured": True,
+    },
+    "DMC Fresh Reaction US100": {
+        "strategy": "Fresh multi-timeframe index rejection",
+        "tagline": "The DMC fresh-reaction concept transferred to US100 with a New York window and volatility-scaled protection.",
+        "description": "This selective USTEC H1 deployment requires a fresh prior-day body level plus nearby completed weekly or monthly body structure. It trades during New York, uses a 1.5 ATR stop, targets 2R and applies Dynamic 50/20.",
+        "session": "13:00-21:00 UTC New York window / H1",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable production MQ5, native MT5 transfer testing, locked-year validation and an exact three-year Every Tick report were reviewed together.",
+        "logic": [
+            {"title": "Map the completed daily body", "detail": "At each new broker day, the EA records the prior completed D1 open and close as the upper and lower body reaction levels for US100."},
+            {"title": "Reject repeatedly tested levels", "detail": "It scans completed M15 history since the day opened and accepts only a boundary with no more than one earlier touch inside a 0.05 D1-ATR tolerance."},
+            {"title": "Align with larger structure", "detail": "At least one completed weekly or monthly real-body boundary must be within 0.25 D1 ATR of the candidate daily level before the signal can proceed."},
+            {"title": "Confirm in the New York window", "detail": "From 13:00 through 21:00 UTC, a completed H1 candle must sweep the chosen boundary, close back on the accepted side and agree directionally."},
+            {"title": "Scale the stop to index volatility", "detail": "The initial stop is 1.5 times H1 ATR(14), and volume targets the risk percentage selected by the BAT; pressing Enter retains the tested 1% default."},
+            {"title": "Target 2R and apply Dynamic 50/20", "detail": "The objective is two times initial risk, while a completed M15 close halfway to target can advance the stop to lock twenty percent of the original path."},
+        ],
+        "risk_note": "Every BAT follows the user's selected equity-risk percentage and defaults to the tested 1%. Three years returned +17.94%, PF 1.99, 65.22% wins and 4.39% drawdown over 46 trades; its locked year contained 12 trades, so it remains a selective demo-forward allocation.",
+        "price": 349,
+        "accent": "sky",
+        "featured": True,
+    },
+    "USDJPY London Open Momentum": {
+        "strategy": "London-open intraday momentum continuation",
+        "tagline": "A selective USDJPY continuation model built from the first completed London trading hour.",
+        "description": "This pipeline-selected USDJPY M15 deployment measures the completed 08:00-09:00 London move and follows its direction only on Wednesday through Friday. It requires a meaningful move and acceptable formation activity, uses a wide volatility-scaled protective stop, protects the trade at +0.75R and closes remaining exposure at 16:00 London.",
+        "session": "08:00-16:00 Europe/London / M15",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, 144 native MT5 pipeline cases, independent Every Tick validation windows and a 10,000-path latest-year Monte Carlo audit were reviewed together.",
+        "logic": [
+            {"title": "Measure the completed London opening hour", "detail": "The EA converts broker time to Europe/London with daylight-saving handling and builds the 08:00-09:00 range from completed M5 candles."},
+            {"title": "Follow the opening direction", "detail": "A positive opening-hour return produces a long signal and a negative return produces a short signal. Both directions are enabled."},
+            {"title": "Demand meaningful participation", "detail": "The absolute opening move must measure at least 0.20 of M15 ATR, and formation tick activity must reach at least 25% of the median activity from the previous twenty comparable windows."},
+            {"title": "Trade only the selected weekdays", "detail": "The promoted configuration trades Wednesday, Thursday and Friday. Monday and Tuesday were removed during development selection and were not reintroduced after seeing the validation periods."},
+            {"title": "Use volatility-scaled protection", "detail": "The initial stop is five times M15 ATR(14). OrderCalcProfit sizes volume from current equity using the percentage selected in the BAT; pressing Enter keeps the 1% default."},
+            {"title": "Protect and close intraday", "detail": "At +0.75R the stop advances to breakeven. Fixed and adaptive profit targets remain disabled, and any surviving position is closed thirty seconds before 16:00 London."},
+        ],
+        "risk_note": "Every BAT applies the user's selected equity-risk percentage; pressing Enter defaults to the tested 1%. The latest unseen year returned +12.72% with PF 1.33, 51.85% wins and 10.13% drawdown, but the preceding validation year produced only PF 1.09. Treat it as a demo/watch allocation, not a proven core strategy.",
+        "price": 249,
+        "accent": "sky",
+        "featured": False,
+    },
     "BTC POC Fibonacci": {
         "strategy": "POC and 0.618 Fibonacci confluence",
         "tagline": "A selective BTCUSD M15 profile-retracement model retained as a demo-watch candidate.",
@@ -2055,6 +2147,143 @@ def _sell_nasdaq_15m_safe_evidence() -> Evidence | None:
     )
 
 
+def _sell_nasdaq_15m_dynamic_evidence() -> Evidence | None:
+    path = SELL_NASDAQ_15M_ROOT / "Dynamic Exit Research" / "DYNAMIC EXIT AUDIT.json"
+    if not path.is_file():
+        return None
+    data = _load_json(path)
+    branch = data.get("london_safe", {})
+    row = branch.get("full")
+    locked = branch.get("locked", {})
+    monte_carlo = branch.get("monte_carlo", {})
+    if not row:
+        return None
+    return Evidence(
+        label="Exact three-year Dynamic London research preset",
+        period="2023-09-01 to 2026-09-01",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["max_drawdown_pct"]),
+        win_rate_pct=float(row["win_rate_pct"]),
+        trades=int(row["trades"]),
+        sharpe_ratio=float(row["sharpe"]),
+        recovery_factor=float(row["recovery_factor"]),
+        history_quality=str(row.get("history_quality", "98%")),
+        source_note=(
+            "Exness USTEC M15, native MT5 Every Tick broker history and costs. Dynamic London requires "
+            "the preceding bearish London candle, sizes its stop at ATR(14) × 2.5 and targets 3R at 1% equity risk."
+        ),
+        status="Research evidence",
+        caution=(
+            f"The untouched year returned {float(locked.get('return_pct', 0.0)):+.2f}% with PF "
+            f"{float(locked.get('profit_factor', 0.0)):.2f}, {float(locked.get('win_rate_pct', 0.0)):.2f}% wins and "
+            f"{float(locked.get('max_drawdown_pct', 0.0)):.2f}% drawdown. Its locked-trade Monte Carlo return P5 was "
+            f"{float(monte_carlo.get('return_p5_pct', 0.0)):+.2f}%. It is saved for comparison and demo-forward testing, "
+            "but is not the recommended portfolio default."
+        ),
+    )
+
+
+def _london_open_usdjpy_evidence() -> Evidence | None:
+    path = LONDON_OPEN_FX_MOMENTUM_ROOT / "Pipeline" / "FINAL AUDIT.json"
+    if not path.is_file():
+        return None
+    data = _load_json(path)
+    symbol = next((item for item in data.get("symbols", []) if item.get("symbol") == "USDJPY"), None)
+    if not symbol:
+        return None
+    row = symbol.get("final", {}).get("selected-latest")
+    validation = symbol.get("final", {}).get("selected-validation", {})
+    monte_carlo = symbol.get("monte_carlo", {})
+    if not row:
+        return None
+    report = Path(str(row["path"]))
+    return Evidence(
+        label="Untouched latest-year MT5 validation — USDJPY London-open momentum",
+        period="2025-09-01 to 2026-09-01",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["profit_factor"]),
+        drawdown_pct=float(row["max_drawdown_pct"]),
+        win_rate_pct=float(row["win_rate_pct"]),
+        trades=int(row["trades"]),
+        sharpe_ratio=float(row["sharpe"]),
+        recovery_factor=float(row["recovery_factor"]),
+        history_quality=str(row.get("history_quality", "100%")),
+        source_note=(
+            "Exness USDJPY M15, native MT5 generated Every Tick history, broker spread, commission, swap "
+            "and random execution delay. The configuration was selected only on the earlier development "
+            "window and retains 1% equity risk in this displayed validation."
+        ),
+        chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+        status="Demo-forward watch evidence",
+        caution=(
+            f"The preceding independent validation year returned {float(validation.get('return_pct', 0.0)):+.2f}% "
+            f"with PF {float(validation.get('profit_factor', 0.0)):.2f} and "
+            f"{float(validation.get('max_drawdown_pct', 0.0)):.2f}% drawdown. Latest-year Monte Carlo return P5 "
+            f"was {float(monte_carlo.get('return_p5_pct', 0.0)):+.2f}%, so this remains a watch allocation."
+        ),
+    )
+
+
+def _dmc_evidence() -> dict[str, Evidence]:
+    pipeline_path = DMC_FRESH_REACTION_ROOT / "pipeline-progress.json"
+    transfer_path = DMC_FRESH_REACTION_ROOT / "transfer-us100.json"
+    if not pipeline_path.is_file() or not transfer_path.is_file():
+        return {}
+    pipeline = _load_json(pipeline_path)
+    transfer = _load_json(transfer_path)
+    specifications = {
+        "DMC Current XAU": (
+            pipeline.get("final", {}).get("baseline", {}).get("three_year"),
+            pipeline.get("final", {}).get("baseline", {}).get("locked", {}),
+            "Original XAUUSD DMC baseline using the Asia H1 rejection, fixed 22.5-unit stop, 3R target and Dynamic 50/20.",
+            "Validated evidence",
+        ),
+        "DMC Fresh Reaction XAU": (
+            pipeline.get("final", {}).get("candidate", {}).get("three_year"),
+            pipeline.get("final", {}).get("candidate", {}).get("locked", {}),
+            "Fresh XAUUSD DMC using no more than one earlier M15 touch, W1/MN1 body proximity, Asia H1 rejection, fixed 30-unit stop, 3R and Dynamic 50/20.",
+            "Demo-forward watch evidence",
+        ),
+        "DMC Fresh Reaction US100": (
+            transfer.get("finals", {}).get("candidate-three-year"),
+            transfer.get("finals", {}).get("candidate-locked", {}),
+            "Fresh USTEC DMC using no more than one earlier M15 touch, W1/MN1 body proximity, New York H1 rejection, 1.5 ATR stop, 2R and Dynamic 50/20.",
+            "Demo-forward watch evidence",
+        ),
+    }
+    result: dict[str, Evidence] = {}
+    for label, (row, locked, source_detail, status) in specifications.items():
+        if not row:
+            continue
+        report = Path(str(row.get("path", "")))
+        result[label] = Evidence(
+            label="Exact three-year native MT5 DMC configuration",
+            period="2023-09-01 to 2026-09-01",
+            return_pct=float(row["return_pct"]),
+            profit_factor=float(row["profit_factor"]),
+            drawdown_pct=float(row["max_drawdown_pct"]),
+            win_rate_pct=float(row["win_rate_pct"]),
+            trades=int(row["trades"]),
+            sharpe_ratio=float(row["sharpe"]),
+            recovery_factor=float(row["recovery_factor"]),
+            history_quality=str(row.get("history_quality", "98%")),
+            source_note=(
+                f"Exness {row['symbol']} H1, native MT5 Every Tick broker history and costs at the tested 1% risk. "
+                + source_detail
+            ),
+            chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+            status=status,
+            caution=(
+                f"The untouched year returned {float(locked.get('return_pct', 0.0)):+.2f}% with PF "
+                f"{float(locked.get('profit_factor', 0.0)):.2f}, {float(locked.get('win_rate_pct', 0.0)):.2f}% wins, "
+                f"{float(locked.get('max_drawdown_pct', 0.0)):.2f}% drawdown and {int(locked.get('trades', 0))} trades. "
+                "Run the three DMC entries on demo first because their signals can overlap and create correlated portfolio exposure."
+            ),
+        )
+    return result
+
+
 def _engineered_liquidity_evidence(symbol: str, safe: bool = False) -> Evidence | None:
     root = PACKAGE_ROOT / "Engineered Liquidity Sweep Research 2026-08-30"
     improvement_path = root / "IMPROVEMENT RESULTS.json"
@@ -2257,6 +2486,9 @@ def get_catalog() -> list[Product]:
     selective_orb_v3 = _selective_orb_v3_evidence()
     sell_nasdaq_15m = _sell_nasdaq_15m_evidence()
     sell_nasdaq_15m_safe = _sell_nasdaq_15m_safe_evidence()
+    sell_nasdaq_15m_dynamic = _sell_nasdaq_15m_dynamic_evidence()
+    london_open_usdjpy = _london_open_usdjpy_evidence()
+    dmc_evidence = _dmc_evidence()
     orb_volume_high_win = _orb_volume_high_win_evidence()
     orb_volume_confirmed = _orb_volume_confirmed_evidence()
     news_pulse_evidence = {
@@ -2308,6 +2540,10 @@ def get_catalog() -> list[Product]:
             evidence = selective_orb_v3
         elif item["label"] == "Sell Nasdaq 15min":
             evidence = sell_nasdaq_15m
+        elif item["label"] == "USDJPY London Open Momentum":
+            evidence = london_open_usdjpy
+        elif item["label"] in dmc_evidence:
+            evidence = dmc_evidence[item["label"]]
         elif item["label"] == "ORB Volume Profile High Win 0.75R":
             evidence = orb_volume_high_win
         elif item["label"] == "ORB Volume Profile Volume Confirmed":
@@ -2392,7 +2628,7 @@ def get_catalog() -> list[Product]:
         if is_poc_fib:
             deployment_session = "New York broker-session window"
             deployment_note = " The dated Best Recommended installer preserves its optimized fixed 5R exit, disables trailing, and keeps its selected New York broker-session restriction."
-        elif item["label"] in {"XAU Regime Switch", "XAG Session VWAP Snapback", "US100 Month End Flow"}:
+        elif item["label"] in {"XAU Regime Switch", "XAG Session VWAP Snapback", "US100 Month End Flow", "USDJPY London Open Momentum", "DMC Current XAU", "DMC Fresh Reaction XAU", "DMC Fresh Reaction US100"}:
             deployment_session = meta["session"]
             deployment_note = f" Every portfolio BAT installs this selected calendar/session configuration on its own chart with {exit_mode.lower()}; the user's selected risk applies and defaults to 1%."
         elif is_standalone_orb:
@@ -2432,6 +2668,16 @@ def get_catalog() -> list[Product]:
                 expert_source=item["expert_source"],
                 set_source=item["set_source"],
                 safe_set_source=item["safe_set_source"],
+                dynamic_expert_source=(
+                    r"Sell Nasdaq 15min Research 2026-09-08\Dynamic Exit Research\EA\Sell Nasdaq 15min Dynamic Exit Research EA.ex5"
+                    if item["label"] == "Sell Nasdaq 15min"
+                    else None
+                ),
+                dynamic_set_source=(
+                    r"Sell Nasdaq 15min Research 2026-09-08\Dynamic Exit Research\Sets\Sell Nasdaq 15min - london-safe dynamic exit candidate - 1pct.set"
+                    if item["label"] == "Sell Nasdaq 15min"
+                    else None
+                ),
                 optional_symbol=item["optional_symbol"],
                 slug=slugify(display_label),
                 timeframe=TIMEFRAMES.get(item["period_minutes"], f"{item['period_minutes']}m"),
@@ -2463,8 +2709,15 @@ def get_catalog() -> list[Product]:
                     if item["label"] == "Sell Nasdaq 15min"
                     else "Independent completed-D1 Markov gate enabled inside this EA."
                 ),
+                dynamic_mode_supported=bool(item["label"] == "Sell Nasdaq 15min" and sell_nasdaq_15m_dynamic),
+                dynamic_mode_label="Dynamic London",
+                dynamic_mode_note=(
+                    "Saved research preset: bearish London confirmation, ATR(14) × 2.5 stop and 3R target. "
+                    "Available for comparison and future demo testing; it is not the Best Recommended BAT default."
+                ),
                 evidence=evidence,
                 safe_evidence=safe_evidence,
+                dynamic_evidence=sell_nasdaq_15m_dynamic if item["label"] == "Sell Nasdaq 15min" else None,
                 one_year_evidence=one_year_result,
                 one_year_return_pct=one_year_result.return_pct if one_year_result else None,
                 one_year_note=None,

@@ -6,7 +6,9 @@ Built from the rules and selected settings stored in each AAA Final project. The
 |---|---|---|---:|---|---:|
 | EMA3 | AAA Final EMA3 EA | XAUUSD / GOLD alias | H4 | Enabled | 1.0% |
 | asia breakout | AAA Final Asia Breakout EA | XAUUSD / GOLD alias | H1 | Enabled | 1.0% |
-| DmC | AAA Final DmC EA | XAUUSD / GOLD alias | H1 | Removed from every active BAT and the website; files retained | Not deployed |
+| DMC Current XAU | AAA Final DmC EA | XAUUSD / GOLD alias | H1 | Enabled as the retained Asia baseline: fixed 22.5 stop, 3R, Dynamic 50/20 | User-selected risk; defaults to 1.0% |
+| DMC Fresh Reaction XAU | Calyx DMC Fresh Reaction EA | XAUUSD / GOLD alias | H1 | Enabled: Asia, max one prior M15 touch, W1/MN1 proximity, fixed 30 stop, 3R, Dynamic 50/20 | User-selected risk; defaults to 1.0% |
+| DMC Fresh Reaction US100 | Calyx DMC Fresh Reaction EA | USTEC / US100 / NAS100 alias | H1 | Enabled: New York, max one prior M15 touch, W1/MN1 proximity, 1.5 ATR stop, 2R, Dynamic 50/20 | User-selected risk; defaults to 1.0% |
 | AMD | AAA Final AMD EA | XAUUSD / GOLD alias | M15 | Disabled: research gate | 1.0% if enabled |
 | US100 weekness | AAA Final US100 Weakness EA | US100 / NAS100 / USTEC / UT100 / NDX100 alias | M15 | Enabled | 1.0% total; OCO orders split it |
 | US100 weakness exact two-leg | AAA Final US100 Weakness Exact EA | USTEC / US100 alias | M15 | Disabled: latest-year validation failed; manual research only | 1.0% total split equally between two legs |

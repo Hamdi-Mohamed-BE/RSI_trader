@@ -175,6 +175,27 @@ def test_recommended_safe_eas_default_to_safe_evidence_and_are_tagged() -> None:
     assert [dataset["label"] for dataset in datasets] == ["Standard", "Full Safe"]
     assert all(len(dataset["series"]) >= 2 for dataset in datasets)
 
+    dynamic_detail = client.get("/eas/sell-nasdaq-15min", params={"mode": "dynamic", "period": "3y"})
+    assert dynamic_detail.status_code == 200
+    assert "Dynamic London" in dynamic_detail.text
+    assert "ATR(14) × 2.5 stop and 3R target" in dynamic_detail.text
+    assert 'data-selected-dataset="Dynamic London"' in dynamic_detail.text
+    dynamic_comparison = client.get(
+        "/api/evidence/sell-nasdaq-15min/series",
+        params={"mode": "compare", "period": "3y"},
+    )
+    assert dynamic_comparison.status_code == 200
+    dynamic_datasets = dynamic_comparison.json()["datasets"]
+    assert [dataset["label"] for dataset in dynamic_datasets] == ["Standard", "London Safe", "Dynamic London"]
+    assert all(len(dataset["series"]) >= 2 for dataset in dynamic_datasets)
+    for period in ("6m", "1y", "3y", "5y"):
+        dynamic = client.get(
+            "/api/evidence/sell-nasdaq-15min/series",
+            params={"mode": "dynamic", "period": period},
+        )
+        assert dynamic.status_code == 200
+        assert dynamic.json()["mode"] == "dynamic"
+
     lta_source = (PACKAGE_ROOT / "LTA volume profile" / "EA" / "LTA_Concepts_EA.mq5").read_text(encoding="utf-8")
     ema3_source = (PACKAGE_ROOT / "AAA Final EAs" / "AAA Final EMA3 EA" / "AAA_Final_Strategy_Engine.mqh").read_text(encoding="utf-8")
     weakness_source = (PACKAGE_ROOT / "AAA Final EAs" / "AAA Final XAU Weakness EA" / "AAA_Final_Strategy_Engine.mqh").read_text(encoding="utf-8")
@@ -197,7 +218,10 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     )
 
     by_name = {product.label: product for product in products}
-    assert "DmC" not in by_name
+    assert {"DMC Current XAU", "DMC Fresh Reaction XAU", "DMC Fresh Reaction US100"} <= set(by_name)
+    assert by_name["DMC Current XAU"].evidence.win_rate_pct == 40.8
+    assert by_name["DMC Fresh Reaction XAU"].evidence.win_rate_pct == 60.0
+    assert by_name["DMC Fresh Reaction US100"].evidence.win_rate_pct == 65.22
     assert "display" in by_name["ORB Volume Profile"].logic[2].title.lower()
     assert "all three profile entry filters are OFF" in by_name["ORB Volume Profile"].logic[2].detail
     assert "four times" in by_name["Nasdaq 5M Candle Momentum"].logic[2].detail
@@ -211,12 +235,14 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "between 2R and 8R" in by_name["Engineered Liquidity XAU"].logic[4].detail
     assert "09:30-09:45" in by_name["Sell Nasdaq 15min"].logic[0].detail
     assert "2.22R" in by_name["Sell Nasdaq 15min"].logic[5].detail
+    assert "08:00-09:00" in by_name["USDJPY London Open Momentum"].logic[0].detail
+    assert "0.75R" in by_name["USDJPY London Open Momentum"].logic[5].detail
 
 
 def test_recommended_exit_settings_are_synced_per_ea() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 29
-    assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 7
+    assert len(products) == 33
+    assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 10
     assert sum(product.exit_mode == "Dynamic 60/20 only" for product in products) == 1
     assert sum(product.exit_mode == "Current EA exits" for product in products) == 5
     assert sum(product.exit_mode == "Native 60-second exit" for product in products) == 3
@@ -232,6 +258,7 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert sum(product.exit_mode == "Fixed 2.5R / six-hour exit" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 2.5R / no trailing" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 2.22R / no trailing" for product in products) == 1
+    assert sum(product.exit_mode == "Time exit / BE at 0.75R" for product in products) == 1
     safe_defaults = {product.label for product in products if product.recommended_safe_mode}
     assert safe_defaults == {"LTA Volume Profile", "EMA3", "XAU Weakness"}
     standalone_orbs = {
@@ -245,8 +272,12 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert all(
         product.deployment_session == "All day / native strategy window"
         for product in products
-        if product.label not in {"BTC POC Fibonacci", "XAU Regime Switch", "XAG Session VWAP Snapback", "US100 Month End Flow"} and product.label not in standalone_orbs
+            if product.label not in {"BTC POC Fibonacci", "XAU Regime Switch", "XAG Session VWAP Snapback", "US100 Month End Flow", "USDJPY London Open Momentum", "DMC Current XAU", "DMC Fresh Reaction XAU", "DMC Fresh Reaction US100"} and product.label not in standalone_orbs
     )
+    london_open = next(product for product in products if product.label == "USDJPY London Open Momentum")
+    assert london_open.deployment_session == "08:00-16:00 Europe/London / M15"
+    assert london_open.evidence is not None
+    assert london_open.evidence.win_rate_pct == 51.85
     ema3 = next(product for product in products if product.label == "EMA3")
     assert ema3.exit_mode == "Dynamic 60/20 only"
     assert "Native R-trailing is disabled" in ema3.logic[-1].detail
@@ -342,6 +373,13 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert sell_nasdaq.safe_evidence.profit_factor == 1.33
     assert sell_nasdaq.safe_evidence.win_rate_pct == 45.62
     assert sell_nasdaq.safe_evidence.drawdown_pct == 6.07
+    assert sell_nasdaq.dynamic_mode_supported is True
+    assert sell_nasdaq.dynamic_mode_label == "Dynamic London"
+    assert sell_nasdaq.dynamic_evidence is not None
+    assert round(sell_nasdaq.dynamic_evidence.return_pct, 3) == 95.359
+    assert sell_nasdaq.dynamic_evidence.profit_factor == 1.78
+    assert sell_nasdaq.dynamic_evidence.win_rate_pct == 44.38
+    assert sell_nasdaq.dynamic_evidence.drawdown_pct == 7.82
     sell_nasdaq_set = (PACKAGE_ROOT / sell_nasdaq.set_source).read_text(encoding="utf-8-sig")
     assert "InpRiskPercent=1.0" in sell_nasdaq_set
     assert "InpStopPips=450.0" in sell_nasdaq_set
@@ -350,6 +388,14 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert "InpRequirePriorLondonBearish=true" in safe_set
     assert "InpStopPips=600.0" in safe_set
     assert "InpTargetPips=1000.0" in safe_set
+    dynamic_set = (PACKAGE_ROOT / str(sell_nasdaq.dynamic_set_source)).read_text(encoding="utf-8-sig")
+    assert (PACKAGE_ROOT / str(sell_nasdaq.dynamic_expert_source)).is_file()
+    assert "InpRequirePriorLondonBearish=true" in dynamic_set
+    assert "InpStopMode=3" in dynamic_set
+    assert "InpAtrPeriod=14" in dynamic_set
+    assert "InpStopAtrMultiple=2.5" in dynamic_set
+    assert "InpTargetMode=1" in dynamic_set
+    assert "InpTargetRMultiple=3.0" in dynamic_set
     recommended_bat = PACKAGE_ROOT / "BEST RECOMMENDED 2026-09-01.bat"
     assert recommended_bat.is_file()
     bat_text = recommended_bat.read_text(encoding="utf-8")
@@ -535,7 +581,7 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "Precomputed recommended-portfolio evidence" in response.text
-    assert "29 EAs, synchronized" in response.text
+    assert "33 EAs, synchronized" in response.text
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     for value in ("6m", "1y", "3y", "5y"):
@@ -548,7 +594,7 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     series = client.get("/api/portfolio/equity-series")
     assert series.status_code == 200
     assert len(series.json()["series"]) >= 2
-    assert series.json()["included_ea_count"] == 29
+    assert series.json()["included_ea_count"] == 33
     assert series.headers["x-evidence-cache"] == "HIT"
     assert "/api/portfolio/equity-series" in response.text
     assert "/portfolio/equity.png" not in response.text
@@ -600,7 +646,7 @@ def test_ea_catalogue_supports_metric_sorting_and_symbol_filtering() -> None:
     assert "Lowest drawdown" in page.text
     assert "Highest return" in page.text
     assert 'id="asset-filter"' in page.text
-    assert "XAUUSD (16)" in page.text
+    assert "XAUUSD (18)" in page.text
     assert 'data-pf=' in page.text
     assert 'data-win=' in page.text
     assert 'data-dd=' in page.text
@@ -733,7 +779,7 @@ def test_outcome_streaks_are_ordered_and_break_even_is_neutral() -> None:
 
 def test_all_recommended_eas_and_portfolio_have_every_fixed_cache() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 29
+    assert len(products) == 33
     periods = ("6m", "1y", "3y", "5y")
     for period in periods:
         portfolio = client.get("/api/portfolio/equity-series", params={"period": period})
