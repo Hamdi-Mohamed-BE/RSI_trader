@@ -239,6 +239,39 @@
       },
       "reason": "The method reduced drawdown versus buy-and-hold but had lower total return and Sharpe, while 2026 YTD was negative with PF below 1.",
       "production_action": "none"
+    },
+    {
+      "id": "fx-fixing-reversal",
+      "status": "raw-complete-production-rejected",
+      "paper": "Krohn, Mueller and Whelan, Foreign Exchange Fixings and Returns around the Clock (2024)",
+      "assets": ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "NZDUSD", "USDCHF", "USDCAD"],
+      "scope": "paper-exact Tokyo, ECB and London fixing windows with DST-aware clocks and gross, half-spread and full-spread cost tests",
+      "data": {
+        "source": "Exness demo M5 bid OHLC and historical spread",
+        "start": "2021-09-01",
+        "end": "2026-08-31",
+        "unique_trades": 31895
+      },
+      "five_year_full_spread": {
+        "return_pct": -34.60,
+        "profit_factor": 0.89,
+        "win_rate_pct": 46.95,
+        "max_drawdown_pct": 34.60,
+        "sharpe": -1.52,
+        "recovery_factor": -1.00,
+        "trades": 31895
+      },
+      "latest_year_full_spread": {
+        "return_pct": -9.98,
+        "profit_factor": 0.83,
+        "win_rate_pct": 46.10,
+        "max_drawdown_pct": 10.63,
+        "sharpe": -2.35,
+        "recovery_factor": -0.94,
+        "trades": 6009
+      },
+      "reason": "Gross PF was only 1.05, half the observed spread made the portfolio negative, every full pair version lost, and the latest year was negative even before spread.",
+      "production_action": "none"
     }
   ],
   "queue": [

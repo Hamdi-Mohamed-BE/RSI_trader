@@ -14,6 +14,7 @@ Last updated: 2026-09-09
 | 8 | Precious-metals Night Effect | Publicly auditable raw momentum branch mapped to Exness XAUUSD and XAGUSD CFDs over 5y, 3y and 1y | Rejected | XAU: -18.52%, PF 0.84, win rate 47.34%, DD 19.86% over 5y. XAG: -94.29%, PF 0.15, win rate 27.65%, DD 94.29%. Every period is negative before commission. No production change. |
 | 9 | ICT AMD Nasdaq | Paper-exact raw M15 USTEC reproduction with author-code parity | Rejected | Only 8 trades in 4.5y. Three-year after-cost result -0.36%, PF 0.90, win rate 40.00%, DD 2.35%. No production change. |
 | 10 | Bitcoin OBV Walk-Forward | All 9,900 published OBV rules; monthly trailing-12m Best 1 and Best 50 selection on BTCUSD | Raw complete — reject for production | Best 1 / Sharpe after paper-cost stress: +87.33%, PF 1.56, win rate 43.75%, DD 21.84%, 96 trades over 2023-01-01–2026-08-31. It decayed to -6.20%, PF 0.75 in 2026 YTD and underperformed buy-and-hold risk-adjusted. |
+| 11 | FX Fixing Reversal | Paper-exact Tokyo, ECB and London fixing windows on seven FX CFDs with DST-aware clocks and three spread assumptions | Raw complete — reject for production | Five-year full-spread portfolio: -34.60%, PF 0.89, win rate 46.95%, DD 34.60%, Sharpe -1.52, 31,895 trades. Latest year: -9.98%, PF 0.83. Even half-spread costs erase the gross edge. No production change. |
 
 ## Current non-paper queue
 
@@ -21,6 +22,7 @@ Last updated: 2026-09-09
 2. **Post-FOMC reversal — raw CFD tests complete, awaiting review.** All seven FX pairs lost in the latest year. The raw non-FX transfer is promising on XAU and BTC, secondary on XAG, and rejected on US100. No production action before review.
 3. **Precious-metals Night Effect — raw CFD transfer rejected.** The accessible paper rules lose on both XAUUSD and XAGUSD in 5y, 3y and 1y native tests. No pipeline or production action is warranted.
 4. **Bitcoin OBV Walk-Forward — raw transfer complete, production rejected.** The published selector reduces drawdown but trails buy-and-hold and fails the latest period. No EA, BAT, website or portfolio change was made.
+5. **FX Fixing Reversal — paper-exact raw transfer rejected.** Full observed spread turns the weak gross edge into -34.60% over five years, and every full pair implementation loses. No optimization or production action is warranted.
 
 ## Pipeline control
 
