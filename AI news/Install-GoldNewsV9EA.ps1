@@ -1,12 +1,16 @@
 [CmdletBinding()]
 param(
-    [switch]$ValidateOnly
+    [switch]$ValidateOnly,
+    [switch]$RuntimeOnly,
+    [string]$TargetTerminal = '',
+    [switch]$IsolatedProfile
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $PackageRoot = $PSScriptRoot
-$ProfileName = 'GOLD NEWS V9 - XAU AUTO'
+$DedicatedProfileName = 'GOLD NEWS V9 - XAU AUTO'
+$ProfileName = $DedicatedProfileName
 $ExpertFolderName = 'Gold News V9'
 $ExpertBaseName = 'GoldNewsV9EA'
 $ApiBaseUrl = 'http://127.0.0.1:8799'
@@ -14,6 +18,7 @@ $ApiPort = 8799
 $Unicode = [Text.UnicodeEncoding]::new($false, $true)
 $NewLine = [Environment]::NewLine
 $env:PYTHONDONTWRITEBYTECODE = '1'
+$UvPath = ''
 
 function Stop-Install([string]$Message) {
     Write-Host ''
@@ -72,6 +77,47 @@ function Set-IniValue(
         (($lines -join $NewLine) + $NewLine),
         $Unicode
     )
+}
+
+function Get-IniValue(
+    [string]$Path,
+    [string]$Section,
+    [string]$Key
+) {
+    $insideSection = $false
+    foreach ($line in Get-Content -LiteralPath $Path) {
+        $trimmed = $line.Trim()
+        if ($trimmed -match '^\[(.+)\]$') {
+            $insideSection = $Matches[1] -ieq $Section
+            continue
+        }
+        if ($insideSection -and $trimmed -match ('^' + [regex]::Escape($Key) + '\s*=\s*(.*)$')) {
+            return $Matches[1].Trim()
+        }
+    }
+    return ''
+}
+
+function Resolve-Uv([switch]$AllowInstall) {
+    $uv = Get-Command uv.exe -ErrorAction SilentlyContinue
+    if ($uv) { return $uv.Source }
+    if (-not $AllowInstall) {
+        Stop-Install 'uv is required for validation but was not found. Run INSTALL_AND_RUN_GOLD_NEWS_V9.bat once to install it.'
+    }
+
+    Write-Host 'uv was not found; installing it now...' -ForegroundColor Yellow
+    try {
+        $installScript = Invoke-RestMethod -Uri 'https://astral.sh/uv/install.ps1' -TimeoutSec 60
+        & ([ScriptBlock]::Create([string]$installScript))
+    } catch {
+        Stop-Install ("uv could not be installed automatically: {0}" -f $_.Exception.Message)
+    }
+    $env:PATH = "$env:USERPROFILE\.local\bin;$env:USERPROFILE\.cargo\bin;$env:PATH"
+    $uv = Get-Command uv.exe -ErrorAction SilentlyContinue
+    if (-not $uv) {
+        Stop-Install 'uv installation finished, but uv.exe is still unavailable in this session.'
+    }
+    return $uv.Source
 }
 
 function Close-Terminal([int]$ProcessId) {
@@ -139,10 +185,7 @@ function Ensure-LocalApi {
         Start-Sleep -Seconds 2
     }
 
-    $uv = Get-Command uv.exe -ErrorAction SilentlyContinue
-    if (-not $uv) {
-        Stop-Install 'uv is not available after dependency setup.'
-    }
+    if (-not $UvPath) { $script:UvPath = Resolve-Uv -AllowInstall }
     $tmp = Join-Path $PackageRoot 'tmp'
     [void](New-Item -ItemType Directory -Path $tmp -Force)
     $stdout = Join-Path $tmp 'gold-news-v9-server.out.log'
@@ -153,7 +196,7 @@ function Ensure-LocalApi {
     Write-Host 'Checking that the prediction application imports correctly...'
     Push-Location $PackageRoot
     try {
-        & $uv.Source run --quiet python -c "import app; print('Prediction application import OK')"
+        & $UvPath run --quiet python -c "import app; print('Prediction application import OK')"
         if ($LASTEXITCODE -ne 0) {
             Stop-Install 'The prediction application could not be imported. The error is shown above.'
         }
@@ -173,7 +216,7 @@ function Ensure-LocalApi {
         '--port',
         [string]$ApiPort
     )
-    $serverProcess = Start-Process -FilePath $uv.Source -ArgumentList $arguments -WorkingDirectory $PackageRoot -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
+    $serverProcess = Start-Process -FilePath $UvPath -ArgumentList $arguments -WorkingDirectory $PackageRoot -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
 
     $deadline = (Get-Date).AddSeconds(30)
     do {
@@ -214,6 +257,7 @@ foreach ($required in @(
         Stop-Install "Missing package file: $required"
     }
 }
+$UvPath = Resolve-Uv -AllowInstall:(-not $ValidateOnly)
 
 Write-Stage 'Finding the active MT5 and broker gold symbol'
 $tempRoot = [IO.Path]::GetFullPath($env:TEMP).TrimEnd('\') + '\'
@@ -226,8 +270,15 @@ $running = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where
     )) -and
     $_.ExecutablePath -notmatch '(?i)\\_Backtests\\'
 })
+if ($TargetTerminal) {
+    $requestedTerminal = [IO.Path]::GetFullPath($TargetTerminal)
+    $running = @($running | Where-Object {
+        [IO.Path]::GetFullPath([string]$_.ExecutablePath) -ieq $requestedTerminal
+    })
+}
 if ($running.Count -eq 0) {
-    Stop-Install 'No active MT5 was found. Open and log into the target account, then run the BAT again.'
+    $targetHint = if ($TargetTerminal) { " at $TargetTerminal" } else { '' }
+    Stop-Install "No active MT5 was found$targetHint. Open and log into the target account, then run the BAT again."
 }
 if ($running.Count -gt 1) {
     Write-Host 'More than one MT5 is open:' -ForegroundColor Yellow
@@ -240,7 +291,7 @@ if ($running.Count -gt 1) {
 $target = $running[0]
 $terminalPath = [IO.Path]::GetFullPath([string]$target.ExecutablePath)
 $probeOutput = @(
-    & uv run --quiet python $probe --terminal $terminalPath 2>&1
+    & $UvPath run --project $PackageRoot --quiet python $probe --terminal $terminalPath 2>&1
 )
 if ($LASTEXITCODE -ne 0 -or $probeOutput.Count -eq 0) {
     Stop-Install ('MT5 probe failed: ' + ($probeOutput -join ' '))
@@ -262,9 +313,29 @@ Write-Host 'Trading:  ENABLED on both demo and real accounts' -ForegroundColor Y
 Write-Host 'Comment:  AI news {event} {buy/sell} {confidence%}'
 $env:GOLD_NEWS_MT5_COMMON_PATH = [string]$probeResult.commondata_path
 
+$commonIni = Join-Path $dataRoot 'config\common.ini'
+$chartsRoot = Join-Path $dataRoot 'MQL5\Profiles\Charts'
+if (-not $IsolatedProfile -and (Test-Path -LiteralPath $commonIni)) {
+    $activeProfile = Get-IniValue $commonIni 'Charts' 'ProfileLast'
+    $activeProfilePath = if ($activeProfile) { Join-Path $chartsRoot $activeProfile } else { '' }
+    $isPlainProfileName = $activeProfile -and ([IO.Path]::GetFileName($activeProfile) -eq $activeProfile)
+    if ($isPlainProfileName -and (Test-Path -LiteralPath $activeProfilePath -PathType Container)) {
+        $ProfileName = $activeProfile
+    }
+}
+Write-Host "Profile:  $ProfileName"
+
 if ($ValidateOnly) {
     Write-Host ''
     Write-Host 'VALIDATION PASSED: no MT5 files or settings were changed.' -ForegroundColor Green
+    exit 0
+}
+
+if ($RuntimeOnly) {
+    Write-Stage 'Starting the local prediction server'
+    Ensure-LocalApi
+    Write-Host ''
+    Write-Host 'SUCCESS: Gold News V9 prediction runtime is ready.' -ForegroundColor Green
     exit 0
 }
 
@@ -310,7 +381,6 @@ Close-Terminal ([int]$target.ProcessId)
 $mql5Root = Join-Path $dataRoot 'MQL5'
 $expertsTarget = Join-Path $mql5Root "Experts\$ExpertFolderName"
 $presetsTarget = Join-Path $mql5Root 'Profiles\Presets'
-$chartsRoot = Join-Path $mql5Root 'Profiles\Charts'
 $profileTarget = Join-Path $chartsRoot $ProfileName
 foreach ($directory in @($expertsTarget, $presetsTarget, $chartsRoot)) {
     [void](New-Item -ItemType Directory -Path $directory -Force)
@@ -324,10 +394,14 @@ if (-not $profileTargetFull.StartsWith(
 )) {
     Stop-Install "Unsafe profile target: $profileTargetFull"
 }
-if (Test-Path -LiteralPath $profileTargetFull) {
+if ((Test-Path -LiteralPath $profileTargetFull) -and $IsolatedProfile) {
     $backup = $profileTargetFull + '.backup-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
     Move-Item -LiteralPath $profileTargetFull -Destination $backup
     Write-Host "Previous profile backed up to: $backup"
+} elseif (Test-Path -LiteralPath $profileTargetFull) {
+    $backup = $profileTargetFull + '.backup-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
+    Copy-Item -LiteralPath $profileTargetFull -Destination $backup -Recurse
+    Write-Host "Existing profile preserved; backup copied to: $backup"
 }
 [void](New-Item -ItemType Directory -Path $profileTargetFull -Force)
 
@@ -430,18 +504,38 @@ fixed_height=-1
 </window>
 </chart>
 "@
+$profileCharts = @(Get-ChildItem -LiteralPath $profileTargetFull -Filter 'chart*.chr' -File -ErrorAction SilentlyContinue | Sort-Object Name)
+$goldChart = $profileCharts | Where-Object {
+    Select-String -LiteralPath $_.FullName -Pattern '(^|\\)GoldNewsV9EA(?:\.ex5)?$|name=GoldNewsV9EA$' -Quiet
+} | Select-Object -First 1
+if ($goldChart) {
+    $chartName = $goldChart.Name
+    Write-Host "Refreshing existing Gold News chart: $chartName"
+} else {
+    $usedNumbers = @($profileCharts | ForEach-Object {
+        if ($_.BaseName -match '^chart(\d+)$') { [int]$Matches[1] }
+    })
+    $nextChartNumber = if ($usedNumbers.Count -gt 0) { ([int]($usedNumbers | Measure-Object -Maximum).Maximum) + 1 } else { 1 }
+    $chartName = 'chart{0:D2}.chr' -f $nextChartNumber
+    Write-Host "Adding Gold News chart without removing $($profileCharts.Count) existing chart(s): $chartName"
+}
+$chartPath = Join-Path $profileTargetFull $chartName
 [IO.File]::WriteAllText(
-    (Join-Path $profileTargetFull 'chart01.chr'),
+    $chartPath,
     $chartText.TrimStart(),
     $Unicode
 )
-[IO.File]::WriteAllText(
-    (Join-Path $profileTargetFull 'order.wnd'),
-    ('chart01.chr' + $NewLine),
-    $Unicode
+$orderPath = Join-Path $profileTargetFull 'order.wnd'
+$orderEntries = @(
+    if (Test-Path -LiteralPath $orderPath) {
+        Get-Content -LiteralPath $orderPath | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+    } else {
+        $profileCharts | Select-Object -ExpandProperty Name
+    }
 )
+if ($chartName -notin $orderEntries) { $orderEntries += $chartName }
+[IO.File]::WriteAllText($orderPath, (($orderEntries -join $NewLine) + $NewLine), $Unicode)
 
-$commonIni = Join-Path $dataRoot 'config\common.ini'
 if (-not (Test-Path -LiteralPath $commonIni)) {
     Stop-Install "MT5 common.ini was not found: $commonIni"
 }
@@ -461,6 +555,7 @@ $manifest = @(
     'Account: ' + [string]$probeResult.login
     'Account mode: ' + [string]$probeResult.account_trade_mode
     'Profile: ' + $ProfileName
+    'Profile mode: ' + $(if ($IsolatedProfile) { 'isolated' } else { 'preserve active profile' })
     'Symbol: ' + $symbol
     'Timeframe: M1'
     'EA: ' + $ExpertBaseName + '.ex5'
@@ -493,7 +588,6 @@ $runningNow = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Wh
 if ($runningNow.Count -eq 0) {
     Stop-Install 'Files were installed, but MT5 did not remain running.'
 }
-$chartPath = Join-Path $profileTargetFull 'chart01.chr'
 if (-not (Select-String -LiteralPath $chartPath -SimpleMatch '<expert>' -Quiet)) {
     Stop-Install 'MT5 opened, but the chart lost its EA attachment.'
 }

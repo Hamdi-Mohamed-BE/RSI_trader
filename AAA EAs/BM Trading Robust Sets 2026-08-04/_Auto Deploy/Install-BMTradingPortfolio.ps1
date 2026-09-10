@@ -35,6 +35,8 @@ $ProfileName = if ($UseRecommendedSelections) {
 }
 $ExpertFolderName = $ProfileName
 $ProbePath = Join-Path $PSScriptRoot 'Probe-MT5.py'
+$GoldNewsRoot = [IO.Path]::GetFullPath((Join-Path $PackageRoot '..\..\AI news'))
+$GoldNewsRuntimeInstaller = Join-Path $GoldNewsRoot 'Install-GoldNewsV9EA.ps1'
 $Unicode = New-Object System.Text.UnicodeEncoding($false, $true)
 
 function Write-Stage([string]$Message) {
@@ -53,6 +55,8 @@ function Get-PortfolioItems {
     # 0.75% risk per pending side (1.50% maximum planned event exposure).
     # Live events come from MT5's USD calendar; Strategy Tester schedules are
     # generated from FXMacroData and fail closed outside verified coverage.
+    # Gold News V9 uses the local v9 prediction runtime and follows the risk
+    # selected for the rest of the non-News-Pulse portfolio.
     # No portfolio-wide session overlay is applied.
     # Risk defaults to 1% planned per EA trade except News Pulse, whose hard
     # event cap cannot be changed by the portfolio risk prompt.
@@ -199,6 +203,12 @@ function Get-PortfolioItems {
             Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\12A News Pulse XAU Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'Gold News V9 Direction'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 1; Expert = 'GoldNewsV9EA.ex5'
+            ExpertSource = '..\..\AI news\mt5\GoldNewsV9EA.ex5'
+            SetSource = '..\..\AI news\mt5\GoldNewsV9EA-Auto.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'News Pulse XAG'; Canonical = 'XAGUSD'; Aliases = @('XAGUSD', 'SILVER', 'XAG')
@@ -999,6 +1009,15 @@ $confirmation = if ($Yes) { $expected } else { Read-Host "Type exactly '$expecte
 $confirmation = $confirmation.Trim()
 if ($confirmation -ine $expected -and $confirmation -ine $legacyExpected) { Stop-WithMessage "Confirmation did not match. Type '$expected'. No portfolio files were installed." }
 
+Write-Stage 'Starting Gold News V9 prediction service'
+if (-not (Test-Path -LiteralPath $GoldNewsRuntimeInstaller)) {
+    Stop-WithMessage "Missing Gold News runtime installer: $GoldNewsRuntimeInstaller"
+}
+& powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File $GoldNewsRuntimeInstaller -RuntimeOnly -TargetTerminal $terminalPath
+if ($LASTEXITCODE -ne 0) {
+    Stop-WithMessage 'Gold News V9 prediction service did not start. MT5 and its profiles were not changed.'
+}
+
 Write-Stage 'Closing MT5 cleanly'
 Close-TargetTerminal $terminalPath
 
@@ -1104,6 +1123,7 @@ $manifest = @(
     'Account: ' + $login
     'Balance at install: ' + $balance.ToString('N2') + ' ' + [string]$probe.account.currency
     'Server: ' + [string]$probe.account.server
+    'Gold News runtime: http://127.0.0.1:8799'
     ''
     'Charts:'
 ) + @($portfolio | ForEach-Object {

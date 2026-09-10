@@ -1,7 +1,7 @@
 @echo off
 setlocal
-title Calyx 31-EA Portfolio - Any Balance Auto Risk
-echo Applying the current 31-EA Standard portfolio. DMC Current XAU is retained; approved removals are excluded.
+title Calyx 32-EA Portfolio - Any Balance Auto Risk
+echo Applying the current 32-EA Standard portfolio. Gold News V9 and DMC Current XAU are retained; approved removals are excluded.
 echo.
 
 powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Start-Dynamic-Portfolio.ps1" -SafetyMode STANDARD %*

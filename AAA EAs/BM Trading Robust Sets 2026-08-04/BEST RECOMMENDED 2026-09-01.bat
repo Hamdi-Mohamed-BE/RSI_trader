@@ -2,7 +2,7 @@
 setlocal
 title BM Trading - Best Recommended 2026-09-01
 
-echo Applying the locked 31-EA recommended portfolio...
+echo Applying the locked 32-EA recommended portfolio...
 echo - 8 EAs use Dynamic 50-20 stop management
 echo - 1 EA uses its optimized Dynamic 60-20 stop management
 echo - Sell Nasdaq 15min now defaults to evidence-selected Dynamic London exits
@@ -24,6 +24,7 @@ echo - DMC Fresh Reaction US100 uses the same freshness logic in New York with 1
 echo - Full Safe switches Sell Nasdaq 15min to the original London-confirmed 600/1000 preset
 echo - XAU Weakness uses M30 structure stops, 4R and Dynamic 50-20 with its D1 Safe gate enabled
 echo - News Pulse v2.13 XAU, XAG and EURUSD use verified event timing and two stops at 0.75%% each, hard-capped at 1.50%% total
+echo - Gold News V9 Direction runs on XAUUSD M1 with the local prediction service and remains attached after every shared install
 echo - Every non-News EA follows the risk selected below; pressing Enter defaults to 1%%
 echo - Approved portfolio audit removals: Engineered Liquidity XAU, ORB Volume High Win 0.75R, XAG VWAP Snapback and XAU Squeeze High Win 0.75R
 echo - DMC Current XAU was explicitly retained after review

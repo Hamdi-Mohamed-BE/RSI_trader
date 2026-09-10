@@ -3,6 +3,9 @@ setlocal
 cd /d "%~dp0"
 set "PYTHONDONTWRITEBYTECODE=1"
 
+echo Gold News V9 will be added to the active MT5 profile without removing existing charts or EAs.
+echo.
+
 where uv >nul 2>nul
 if errorlevel 1 (
   echo Installing uv...
