@@ -4,7 +4,9 @@ A FastAPI storefront generated from the Expert Advisors currently listed in:
 
 `..\BM Trading Robust Sets 2026-08-04\_Auto Deploy\Install-BMTradingPortfolio.ps1`
 
-The public catalogue is generated directly from every active entry in the recommended installer. At the time of this audit it contains 33 EAs, and the count updates automatically when the installer changes.
+The public catalogue is generated directly from every active entry in the recommended installer. After the approved 2026-09-10 portfolio audit it contains 31 EAs, and the count updates automatically when the installer changes.
+
+The 2026-09-10 full portfolio audit keeps four evidence-selected Safe defaults (LTA Volume Profile, EMA3, XAU Weakness and XAU Squeeze Momentum Standard), promotes Sell Nasdaq 15min to its Dynamic London preset, and retains DMC Current XAU by explicit user decision. Engineered Liquidity XAU, ORB Volume Profile High Win 0.75R, XAG Session VWAP Snapback and XAU Squeeze Momentum High Win 0.75R were removed from the active catalogue and every main portfolio BAT; their research evidence remains archived.
 
 ## Run locally
 
@@ -66,7 +68,7 @@ Rebuild the resumable cache after changing an EA or SET:
 uv run python tools\precompute_evidence_cache.py --period all
 ```
 
-Add `--safe` to generate the compatible Full Safe variants too. The Best Recommended portfolio currently defaults LTA Volume Profile, EMA3 and XAU Weakness to their validated Safe evidence; every other EA keeps its stronger Standard configuration. The portfolio curve selects those modes from the existing per-EA caches and chronologically overlays their separate native results. It is not a simultaneous shared-margin portfolio test, and each page states that limitation.
+Add `--safe` to generate the compatible Full Safe variants too. The Best Recommended portfolio currently defaults LTA Volume Profile, EMA3, XAU Weakness and XAU Squeeze Momentum Standard to Safe evidence, and Sell Nasdaq 15min to Dynamic London; every other active EA uses Standard. The portfolio curve selects those modes from the existing per-EA caches and chronologically overlays their separate native results. It is not a simultaneous shared-margin portfolio test, and each page states that limitation.
 
 This is a catalogue, not a profit guarantee or financial advice.
 

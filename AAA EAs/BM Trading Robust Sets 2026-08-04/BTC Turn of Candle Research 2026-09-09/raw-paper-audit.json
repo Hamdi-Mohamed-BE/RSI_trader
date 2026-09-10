@@ -1,0 +1,123 @@
+{
+  "strategy": "BTC Turn-of-the-Candle - raw paper reproduction",
+  "paper": "Shanaev, Vasenin and Stepanov (2023), Turn-of-the-candle effect in bitcoin returns",
+  "paper_url": "https://doi.org/10.1016/j.heliyon.2023.e14236",
+  "instrument": "Exness BTCUSD CFD, native MT5 Every Tick",
+  "paper_rule": "Buy BTC at the opening of minutes 00, 15, 30 and 45 of every hour and close after one M1 candle.",
+  "exposure": "100% unlevered notional allocation, recalculated from current balance for every entry, matching the paper's fully invested simulation.",
+  "costs": "Native Exness spread and account commission with random execution delay; no artificial fee reduction or exchange-volume tier.",
+  "implementation_notes": [
+    "All calendar days and all hours are eligible, subject only to actual broker quote availability.",
+    "There is no signal filter, stop-loss, take-profit, trailing stop, direction filter or session filter.",
+    "Each position is held for exactly one M1 bar and is closed at the first tick of the following minute.",
+    "Minute-of-hour is invariant to the whole-hour Exness server offset, so 00/15/30/45 needs no timezone conversion.",
+    "The isolated Exness tester archive begins in September 2021, so paper-era-available covers only the accessible final four months of the paper's 2021 simulation."
+  ],
+  "generated_utc": "2026-09-09T21:53:20.666968+00:00",
+  "rows": [
+    {
+      "period": "paper-era-available",
+      "config": {
+        "InpEnableTrading": true,
+        "InpPaperCapitalAllocationPercent": 100.0,
+        "InpHoldMinutes": 1,
+        "InpMaxDeviationBrokerPoints": 100,
+        "InpMagic": 981009921
+      },
+      "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\BTC Turn of Candle Research 2026-09-09\\Backtest Reports\\paper-era-available\\btcusd--raw-turn-minute--paper-era-available.htm",
+      "initial_balance": 10000.0,
+      "final_balance": 458.1200000000008,
+      "net_profit": -9541.88,
+      "return_pct": -95.41879999999999,
+      "profit_factor": 0.25,
+      "win_rate_pct": 28.81,
+      "trades": 5532,
+      "max_drawdown_pct": 95.43,
+      "sharpe": -5.0,
+      "recovery_factor": -1.0,
+      "expected_payoff": -1.72,
+      "history_quality": "100%",
+      "commission": -1388.75,
+      "swap": 0.0,
+      "score": -197.26983233343867
+    },
+    {
+      "period": "latest-1y",
+      "config": {
+        "InpEnableTrading": true,
+        "InpPaperCapitalAllocationPercent": 100.0,
+        "InpHoldMinutes": 1,
+        "InpMaxDeviationBrokerPoints": 100,
+        "InpMagic": 981009921
+      },
+      "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\BTC Turn of Candle Research 2026-09-09\\Backtest Reports\\latest-1y\\btcusd--raw-turn-minute--latest-1y.htm",
+      "initial_balance": 10000.0,
+      "final_balance": 1245.3799999999992,
+      "net_profit": -8754.62,
+      "return_pct": -87.54620000000001,
+      "profit_factor": 0.78,
+      "win_rate_pct": 49.22,
+      "trades": 35035,
+      "max_drawdown_pct": 87.59,
+      "sharpe": -5.0,
+      "recovery_factor": -1.0,
+      "expected_payoff": -0.25,
+      "history_quality": "100%",
+      "commission": -7367.0,
+      "swap": 0.0,
+      "score": -169.07923631158198
+    },
+    {
+      "period": "recent-3y",
+      "config": {
+        "InpEnableTrading": true,
+        "InpPaperCapitalAllocationPercent": 100.0,
+        "InpHoldMinutes": 1,
+        "InpMaxDeviationBrokerPoints": 100,
+        "InpMagic": 981009921
+      },
+      "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\BTC Turn of Candle Research 2026-09-09\\Backtest Reports\\recent-3y\\btcusd--raw-turn-minute--recent-3y.htm",
+      "initial_balance": 10000.0,
+      "final_balance": 392.0599999999995,
+      "net_profit": -9607.94,
+      "return_pct": -96.0794,
+      "profit_factor": 0.16,
+      "win_rate_pct": 24.33,
+      "trades": 9508,
+      "max_drawdown_pct": 96.09,
+      "sharpe": -5.0,
+      "recovery_factor": -1.0,
+      "expected_payoff": -1.01,
+      "history_quality": "100%",
+      "commission": -3631.15,
+      "swap": 0.0,
+      "score": -203.84687756497974
+    },
+    {
+      "period": "full-5y",
+      "config": {
+        "InpEnableTrading": true,
+        "InpPaperCapitalAllocationPercent": 100.0,
+        "InpHoldMinutes": 1,
+        "InpMaxDeviationBrokerPoints": 100,
+        "InpMagic": 981009921
+      },
+      "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\BTC Turn of Candle Research 2026-09-09\\Backtest Reports\\full-5y\\btcusd--raw-turn-minute--full-5y.htm",
+      "initial_balance": 10000.0,
+      "final_balance": 156.53000000000065,
+      "net_profit": -9843.47,
+      "return_pct": -98.43469999999999,
+      "profit_factor": 0.26,
+      "win_rate_pct": 31.1,
+      "trades": 7319,
+      "max_drawdown_pct": 98.44,
+      "sharpe": -5.0,
+      "recovery_factor": -1.0,
+      "expected_payoff": -1.34,
+      "history_quality": "100%",
+      "commission": -1460.23,
+      "swap": 0.0,
+      "score": -202.3735837755993
+    }
+  ]
+}

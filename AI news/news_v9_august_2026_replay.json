@@ -1,0 +1,44 @@
+{
+  "metrics": {
+    "starting_balance_usd": 100.0,
+    "ending_balance_usd": 347.41,
+    "net_profit_usd": 247.41,
+    "executed_trades": 2,
+    "wins": 1,
+    "losses": 1,
+    "win_rate_pct": 50.0,
+    "profit_factor": 3.23,
+    "maximum_realized_drawdown_pct": 24.25,
+    "maximum_tick_equity_drawdown_pct": 48.98
+  },
+  "trades": [
+    {
+      "release_utc": "2026-08-07T12:30:00+00:00",
+      "event": "NFP",
+      "v9_direction": "POSITIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "confidence_pct": 56.46,
+      "actual_direction": "POSITIVE",
+      "actual_release_move_usd": 46.95,
+      "lot": 0.06,
+      "captured_move_usd": 59.767,
+      "pnl_usd": 358.6,
+      "balance_after_usd": 458.6,
+      "exit_reason": "TIME_EXIT_T_PLUS_900s"
+    },
+    {
+      "release_utc": "2026-08-12T12:30:00+00:00",
+      "event": "CPI",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "confidence_pct": 68.0,
+      "actual_direction": "NEGATIVE",
+      "actual_release_move_usd": -33.192,
+      "lot": 0.24,
+      "captured_move_usd": -4.633,
+      "pnl_usd": -111.19,
+      "balance_after_usd": 347.41,
+      "exit_reason": "STOP_LOSS"
+    }
+  ]
+}

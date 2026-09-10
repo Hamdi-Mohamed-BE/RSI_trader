@@ -1,0 +1,748 @@
+{
+  "strategy": "Raw monthly 1/3/12 time-series momentum",
+  "decision": "RESEARCH ONLY - await user review",
+  "paper": "Hurst, Ooi and Pedersen (2017), A Century of Evidence on Trend-Following Investing",
+  "paper_url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2993026",
+  "generated_utc": "2026-09-09T19:28:37.309665+00:00",
+  "rules": {
+    "signal": "Equal-weighted votes from completed 1-, 3- and 12-month returns",
+    "direction": "Long for a positive horizon return; short for a negative horizon return",
+    "execution": "Rebalance at the first available broker quote of each following month",
+    "risk": "Equal asset risk and 10% annualized ex-ante portfolio volatility target",
+    "risk_estimation_deviation": "252 aligned daily observations because the local common broker archive cannot support the paper's rolling three-year monthly covariance and a three-year evaluation simultaneously",
+    "exits": "Monthly rebalance only; no SL, TP or management overlay",
+    "costs": "Recorded broker spread with a 20th-percentile floor; separate extra five-basis-point one-way turnover stress"
+  },
+  "data": {
+    "XAUUSD": {
+      "broker": "Exness-MT5Trial16",
+      "point": 0.001,
+      "spread_floor_points": 111.0,
+      "bars": 110084,
+      "first_utc": "2022-01-02T23:00:00+00:00",
+      "last_utc": "2026-08-31T23:45:00+00:00"
+    },
+    "XAGUSD": {
+      "broker": "Exness-MT5Trial16",
+      "point": 0.001,
+      "spread_floor_points": 23.0,
+      "bars": 110053,
+      "first_utc": "2022-01-02T23:00:00+00:00",
+      "last_utc": "2026-08-31T23:45:00+00:00"
+    },
+    "EURUSD": {
+      "broker": "Exness-MT5Trial16",
+      "point": 1e-05,
+      "spread_floor_points": 5.0,
+      "bars": 116069,
+      "first_utc": "2022-01-02T22:00:00+00:00",
+      "last_utc": "2026-08-31T23:45:00+00:00"
+    },
+    "GBPUSD": {
+      "broker": "JustMarkets demo",
+      "point": 1e-05,
+      "spread_floor_points": 1.0,
+      "bars": 99999,
+      "first_utc": "2022-09-01T02:00:00+00:00",
+      "last_utc": "2026-09-08T14:45:00+00:00"
+    },
+    "USDJPY": {
+      "broker": "JustMarkets demo",
+      "point": 0.001,
+      "spread_floor_points": 2.0,
+      "bars": 99999,
+      "first_utc": "2022-09-01T02:00:00+00:00",
+      "last_utc": "2026-09-08T14:45:00+00:00"
+    },
+    "BTCUSD": {
+      "broker": "Exness-MT5Trial16",
+      "point": 0.01,
+      "spread_floor_points": 775.0,
+      "bars": 163431,
+      "first_utc": "2022-01-01T00:00:00+00:00",
+      "last_utc": "2026-08-31T23:45:00+00:00"
+    }
+  },
+  "portfolio": {
+    "Metals only": {
+      "observed_spread": {
+        "full": {
+          "return_pct": 49.81590426563456,
+          "annualized_return_pct": 12.243036137410645,
+          "annualized_volatility_pct": 11.919672346868753,
+          "profit_factor": 2.194143459125459,
+          "win_rate_pct": 59.523809523809526,
+          "max_drawdown_pct": 18.124152989817098,
+          "sharpe": 1.0308887361055994,
+          "recovery_factor": 2.748592129719011,
+          "months": 42,
+          "best_month_pct": 9.589980766033623,
+          "worst_month_pct": -5.693583019050377
+        },
+        "latest_12_months": {
+          "return_pct": 36.767490397160074,
+          "annualized_return_pct": 36.767490397160074,
+          "annualized_volatility_pct": 12.596843010193401,
+          "profit_factor": 7.05466435015661,
+          "win_rate_pct": 75.0,
+          "max_drawdown_pct": 4.992971340036945,
+          "sharpe": 2.575122854694096,
+          "recovery_factor": 7.363849678513881,
+          "months": 12,
+          "best_month_pct": 8.323551865626033,
+          "worst_month_pct": -4.635441145235626
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": 48.15595890497486,
+          "annualized_return_pct": 11.886294901296711,
+          "annualized_volatility_pct": 11.946818844281792,
+          "profit_factor": 2.145222187420768,
+          "win_rate_pct": 59.523809523809526,
+          "max_drawdown_pct": 18.503450737403515,
+          "sharpe": 1.0019215659887495,
+          "recovery_factor": 2.6025393635161653,
+          "months": 42,
+          "best_month_pct": 9.567829194772758,
+          "worst_month_pct": -5.7508609828060635
+        },
+        "latest_12_months": {
+          "return_pct": 36.55733850616731,
+          "annualized_return_pct": 36.55733850616731,
+          "annualized_volatility_pct": 12.610343049953782,
+          "profit_factor": 6.9752875181486145,
+          "win_rate_pct": 75.0,
+          "max_drawdown_pct": 4.996373332135951,
+          "sharpe": 2.559973062909306,
+          "recovery_factor": 7.316774803643235,
+          "months": 12,
+          "best_month_pct": 8.310216155633265,
+          "worst_month_pct": -4.637891115970147
+        }
+      },
+      "average_monthly_turnover": 0.530134192349463,
+      "average_gross_exposure": 0.6782954149184226,
+      "maximum_gross_exposure": 1.8249451096650962
+    },
+    "FX only": {
+      "observed_spread": {
+        "full": {
+          "return_pct": -9.598907688146186,
+          "annualized_return_pct": -3.4989838693465503,
+          "annualized_volatility_pct": 11.13807361423822,
+          "profit_factor": 0.8337328525131309,
+          "win_rate_pct": 52.94117647058824,
+          "max_drawdown_pct": 15.769651270543307,
+          "sharpe": -0.2650715348960013,
+          "recovery_factor": -0.6086949878261625,
+          "months": 34,
+          "best_month_pct": 6.435215512014947,
+          "worst_month_pct": -6.338701353736019
+        },
+        "latest_12_months": {
+          "return_pct": -0.3662381385759472,
+          "annualized_return_pct": -0.3662381385759472,
+          "annualized_volatility_pct": 8.716700043368476,
+          "profit_factor": 0.9984490171399264,
+          "win_rate_pct": 50.0,
+          "max_drawdown_pct": 7.438279401151393,
+          "sharpe": -0.002271075326301164,
+          "recovery_factor": -0.049236942957433964,
+          "months": 12,
+          "best_month_pct": 4.306952403033634,
+          "worst_month_pct": -3.510445540396148
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": -12.319353218050432,
+          "annualized_return_pct": -4.534075974038998,
+          "annualized_volatility_pct": 11.063956047555875,
+          "profit_factor": 0.778508830163309,
+          "win_rate_pct": 50.0,
+          "max_drawdown_pct": 16.60653759479712,
+          "sharpe": -0.36465585254901534,
+          "recovery_factor": -0.7418375532964875,
+          "months": 34,
+          "best_month_pct": 6.277258192696321,
+          "worst_month_pct": -6.359975842739664
+        },
+        "latest_12_months": {
+          "return_pct": -1.4391428162389475,
+          "annualized_return_pct": -1.4391428162389475,
+          "annualized_volatility_pct": 8.692576270417433,
+          "profit_factor": 0.9174575515764287,
+          "win_rate_pct": 41.66666666666667,
+          "max_drawdown_pct": 7.9796354039026625,
+          "sharpe": -0.12691914652249814,
+          "recovery_factor": -0.18035195136047125,
+          "months": 12,
+          "best_month_pct": 4.193586695242627,
+          "worst_month_pct": -3.550775321692984
+        }
+      },
+      "average_monthly_turnover": 1.8035834272925724,
+      "average_gross_exposure": 1.8515847490146489,
+      "maximum_gross_exposure": 3.255765547904533
+    },
+    "Metals + FX": {
+      "observed_spread": {
+        "full": {
+          "return_pct": 43.67537288960086,
+          "annualized_return_pct": 13.644050841270406,
+          "annualized_volatility_pct": 11.848571952162029,
+          "profit_factor": 2.1922987670735106,
+          "win_rate_pct": 61.76470588235294,
+          "max_drawdown_pct": 7.182255479502231,
+          "sharpe": 1.142177080536385,
+          "recovery_factor": 6.0810107652461,
+          "months": 34,
+          "best_month_pct": 7.883897028051193,
+          "worst_month_pct": -4.972254297646512
+        },
+        "latest_12_months": {
+          "return_pct": 22.35244463433508,
+          "annualized_return_pct": 22.35244463433508,
+          "annualized_volatility_pct": 12.520026167407913,
+          "profit_factor": 3.0571581094837863,
+          "win_rate_pct": 66.66666666666666,
+          "max_drawdown_pct": 7.106228237845247,
+          "sharpe": 1.68191899963219,
+          "recovery_factor": 3.1454723780604033,
+          "months": 12,
+          "best_month_pct": 6.07608158099509,
+          "worst_month_pct": -4.283521722968789
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": 39.93251561368834,
+          "annualized_return_pct": 12.590227600237402,
+          "annualized_volatility_pct": 11.822234755704004,
+          "profit_factor": 2.0761939159392395,
+          "win_rate_pct": 61.76470588235294,
+          "max_drawdown_pct": 7.729019014519,
+          "sharpe": 1.0648989976130412,
+          "recovery_factor": 5.166569721031208,
+          "months": 34,
+          "best_month_pct": 7.7420899935077765,
+          "worst_month_pct": -5.119743135491985
+        },
+        "latest_12_months": {
+          "return_pct": 21.389595848842635,
+          "annualized_return_pct": 21.389595848842635,
+          "annualized_volatility_pct": 12.545782264387139,
+          "profit_factor": 2.918612497684989,
+          "win_rate_pct": 66.66666666666666,
+          "max_drawdown_pct": 7.536580735824938,
+          "sharpe": 1.6146968250374758,
+          "recovery_factor": 2.838103458132911,
+          "months": 12,
+          "best_month_pct": 6.049742372357339,
+          "worst_month_pct": -4.319600815992991
+        }
+      },
+      "average_monthly_turnover": 1.5728022999174556,
+      "average_gross_exposure": 1.7016245248725899,
+      "maximum_gross_exposure": 3.7879143894748415
+    },
+    "All six assets": {
+      "observed_spread": {
+        "full": {
+          "return_pct": 65.27546726758725,
+          "annualized_return_pct": 19.402859398361194,
+          "annualized_volatility_pct": 13.015978655552853,
+          "profit_factor": 2.852932054200783,
+          "win_rate_pct": 70.58823529411765,
+          "max_drawdown_pct": 7.913227175592519,
+          "sharpe": 1.4343868044756862,
+          "recovery_factor": 8.248906017626066,
+          "months": 34,
+          "best_month_pct": 11.200836095599378,
+          "worst_month_pct": -4.791731796167472
+        },
+        "latest_12_months": {
+          "return_pct": 24.310532986171186,
+          "annualized_return_pct": 24.310532986171186,
+          "annualized_volatility_pct": 13.884188738735014,
+          "profit_factor": 3.021277366986663,
+          "win_rate_pct": 75.0,
+          "max_drawdown_pct": 7.913227175592519,
+          "sharpe": 1.6448100732132114,
+          "recovery_factor": 3.072138894376034,
+          "months": 12,
+          "best_month_pct": 6.495158433325204,
+          "worst_month_pct": -4.696672513760872
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": 61.43986911714674,
+          "annualized_return_pct": 18.417414713493805,
+          "annualized_volatility_pct": 13.01631342102843,
+          "profit_factor": 2.7279841541943406,
+          "win_rate_pct": 70.58823529411765,
+          "max_drawdown_pct": 8.044819663295556,
+          "sharpe": 1.3698048135962582,
+          "recovery_factor": 7.6371965673097435,
+          "months": 34,
+          "best_month_pct": 11.110462318428697,
+          "worst_month_pct": -4.931393631425136
+        },
+        "latest_12_months": {
+          "return_pct": 23.353403675730355,
+          "annualized_return_pct": 23.353403675730355,
+          "annualized_volatility_pct": 13.91018332156803,
+          "profit_factor": 2.9210985154659506,
+          "win_rate_pct": 75.0,
+          "max_drawdown_pct": 8.044819663295543,
+          "sharpe": 1.5854319564200552,
+          "recovery_factor": 2.9029120170685943,
+          "months": 12,
+          "best_month_pct": 6.478798612949797,
+          "worst_month_pct": -4.735069612314733
+        }
+      },
+      "average_monthly_turnover": 1.4002320857664456,
+      "average_gross_exposure": 1.5545202834717997,
+      "maximum_gross_exposure": 2.3454536486173567
+    },
+    "BTCUSD alone": {
+      "observed_spread": {
+        "full": {
+          "return_pct": 39.95703677746825,
+          "annualized_return_pct": 10.081105544452162,
+          "annualized_volatility_pct": 10.273804370620304,
+          "profit_factor": 2.5091069448208443,
+          "win_rate_pct": 59.523809523809526,
+          "max_drawdown_pct": 7.068810500532408,
+          "sharpe": 0.9868046573071871,
+          "recovery_factor": 5.6525828177822515,
+          "months": 42,
+          "best_month_pct": 12.598999318044015,
+          "worst_month_pct": -4.414070946709484
+        },
+        "latest_12_months": {
+          "return_pct": 7.219301788015597,
+          "annualized_return_pct": 7.219301788015597,
+          "annualized_volatility_pct": 7.274089264199296,
+          "profit_factor": 2.135793220982628,
+          "win_rate_pct": 58.333333333333336,
+          "max_drawdown_pct": 2.4244283275873246,
+          "sharpe": 0.9939164493706435,
+          "recovery_factor": 2.9777336396658516,
+          "months": 12,
+          "best_month_pct": 4.940807023081007,
+          "worst_month_pct": -1.8922511074838162
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": 39.585283696926396,
+          "annualized_return_pct": 9.997484228965137,
+          "annualized_volatility_pct": 10.279120447211572,
+          "profit_factor": 2.4901539706270603,
+          "win_rate_pct": 57.14285714285714,
+          "max_drawdown_pct": 7.128489516681469,
+          "sharpe": 0.9788934666655909,
+          "recovery_factor": 5.553109618004259,
+          "months": 42,
+          "best_month_pct": 12.597951367307111,
+          "worst_month_pct": -4.42256548627311
+        },
+        "latest_12_months": {
+          "return_pct": 7.141221844426249,
+          "annualized_return_pct": 7.141221844426249,
+          "annualized_volatility_pct": 7.27876378933674,
+          "profit_factor": 2.118720263610441,
+          "win_rate_pct": 58.333333333333336,
+          "max_drawdown_pct": 2.4440154302320494,
+          "sharpe": 0.9832544854786202,
+          "recovery_factor": 2.9219217506119506,
+          "months": 12,
+          "best_month_pct": 4.9403591069008375,
+          "worst_month_pct": -1.900861415160422
+        }
+      },
+      "average_monthly_turnover": 0.1267902539115891,
+      "average_gross_exposure": 0.17986011269087862,
+      "maximum_gross_exposure": 0.3413258896837093
+    }
+  },
+  "individual": {
+    "XAUUSD": {
+      "observed_spread": {
+        "full": {
+          "return_pct": 57.34079793427056,
+          "annualized_return_pct": 13.82571453011867,
+          "annualized_volatility_pct": 9.882187564505566,
+          "profit_factor": 3.182493144251016,
+          "win_rate_pct": 61.904761904761905,
+          "max_drawdown_pct": 8.029572538605102,
+          "sharpe": 1.3646713528363712,
+          "recovery_factor": 7.141201808512688,
+          "months": 42,
+          "best_month_pct": 9.320731654449414,
+          "worst_month_pct": -4.963413664098291
+        },
+        "latest_12_months": {
+          "return_pct": 24.696774540622624,
+          "annualized_return_pct": 24.696774540622624,
+          "annualized_volatility_pct": 11.4782811554176,
+          "profit_factor": 5.264209297567253,
+          "win_rate_pct": 75.0,
+          "max_drawdown_pct": 5.151186973794886,
+          "sharpe": 1.9925500944755907,
+          "recovery_factor": 4.794385190492994,
+          "months": 12,
+          "best_month_pct": 7.623537718912629,
+          "worst_month_pct": -4.963413664098291
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": 56.39573728203333,
+          "annualized_return_pct": 13.629954279366153,
+          "annualized_volatility_pct": 9.885098495889547,
+          "profit_factor": 3.131106227923808,
+          "win_rate_pct": 61.904761904761905,
+          "max_drawdown_pct": 8.249732176529745,
+          "sharpe": 1.3467047713495217,
+          "recovery_factor": 6.836068865663011,
+          "months": 42,
+          "best_month_pct": 9.288443129616835,
+          "worst_month_pct": -4.9651228380142145
+        },
+        "latest_12_months": {
+          "return_pct": 24.595572387438548,
+          "annualized_return_pct": 24.595572387438548,
+          "annualized_volatility_pct": 11.472563613172195,
+          "profit_factor": 5.2356172471027955,
+          "win_rate_pct": 75.0,
+          "max_drawdown_pct": 5.166732473996937,
+          "sharpe": 1.9862877744765854,
+          "recovery_factor": 4.76037273290669,
+          "months": 12,
+          "best_month_pct": 7.6022553051828545,
+          "worst_month_pct": -4.9651228380142145
+        }
+      },
+      "average_absolute_exposure": 0.5342969253852335,
+      "maximum_absolute_exposure": 0.9446462553612562,
+      "direction_changes": 9
+    },
+    "XAGUSD": {
+      "observed_spread": {
+        "full": {
+          "return_pct": 26.89945491829462,
+          "annualized_return_pct": 7.043408727401901,
+          "annualized_volatility_pct": 10.568255623497276,
+          "profit_factor": 1.8470829902195562,
+          "win_rate_pct": 42.857142857142854,
+          "max_drawdown_pct": 13.213814890991982,
+          "sharpe": 0.6960924492935593,
+          "recovery_factor": 2.0357069582253877,
+          "months": 42,
+          "best_month_pct": 9.915625979524378,
+          "worst_month_pct": -5.3854707973341
+        },
+        "latest_12_months": {
+          "return_pct": 36.507712259358,
+          "annualized_return_pct": 36.507712259358,
+          "annualized_volatility_pct": 13.94921967833698,
+          "profit_factor": 7.233694370023835,
+          "win_rate_pct": 58.333333333333336,
+          "max_drawdown_pct": 5.1423340247150335,
+          "sharpe": 2.3221639901979727,
+          "recovery_factor": 7.099443965307389,
+          "months": 12,
+          "best_month_pct": 9.915625979524378,
+          "worst_month_pct": -3.8367446826890204
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": 26.42709482921102,
+          "annualized_return_pct": 6.929414326064842,
+          "annualized_volatility_pct": 10.575314361590522,
+          "profit_factor": 1.8291448382210114,
+          "win_rate_pct": 42.857142857142854,
+          "max_drawdown_pct": 13.36806958083654,
+          "sharpe": 0.6855651738805086,
+          "recovery_factor": 1.9768819027614066,
+          "months": 42,
+          "best_month_pct": 9.914409886212464,
+          "worst_month_pct": -5.408945419326759
+        },
+        "latest_12_months": {
+          "return_pct": 36.456770268749224,
+          "annualized_return_pct": 36.456770268749224,
+          "annualized_volatility_pct": 13.953065972705714,
+          "profit_factor": 7.197059749066396,
+          "win_rate_pct": 58.333333333333336,
+          "max_drawdown_pct": 5.165844245439278,
+          "sharpe": 2.31881413234847,
+          "recovery_factor": 7.057272448919747,
+          "months": 12,
+          "best_month_pct": 9.914409886212464,
+          "worst_month_pct": -3.8391233061247183
+        }
+      },
+      "average_absolute_exposure": 0.23205420888733427,
+      "maximum_absolute_exposure": 0.452045827370135,
+      "direction_changes": 15
+    },
+    "EURUSD": {
+      "observed_spread": {
+        "full": {
+          "return_pct": -5.064762690981073,
+          "annualized_return_pct": -1.4740349913525685,
+          "annualized_volatility_pct": 7.70186795769055,
+          "profit_factor": 0.8850933117999726,
+          "win_rate_pct": 42.857142857142854,
+          "max_drawdown_pct": 13.325905753549094,
+          "sharpe": -0.15548202243159728,
+          "recovery_factor": -0.38006892624406957,
+          "months": 42,
+          "best_month_pct": 7.222067117437277,
+          "worst_month_pct": -4.439274083383148
+        },
+        "latest_12_months": {
+          "return_pct": -1.4121590874295986,
+          "annualized_return_pct": -1.4121590874295986,
+          "annualized_volatility_pct": 3.676029710517833,
+          "profit_factor": 0.7748996294136983,
+          "win_rate_pct": 50.0,
+          "max_drawdown_pct": 4.064883184569945,
+          "sharpe": -0.36975202834337567,
+          "recovery_factor": -0.34740459277896857,
+          "months": 12,
+          "best_month_pct": 1.2159521244158507,
+          "worst_month_pct": -2.204480937525137
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": -7.052301166257502,
+          "annualized_return_pct": -2.0678416064761507,
+          "annualized_volatility_pct": 7.663982596632908,
+          "profit_factor": 0.832301824039238,
+          "win_rate_pct": 42.857142857142854,
+          "max_drawdown_pct": 14.487284612080176,
+          "sharpe": -0.23536030888413376,
+          "recovery_factor": -0.4867924773409203,
+          "months": 42,
+          "best_month_pct": 7.117068870464896,
+          "worst_month_pct": -4.443471649707914
+        },
+        "latest_12_months": {
+          "return_pct": -1.8714003423299208,
+          "annualized_return_pct": -1.8714003423299208,
+          "annualized_volatility_pct": 3.68965280593783,
+          "profit_factor": 0.7108873248108224,
+          "win_rate_pct": 50.0,
+          "max_drawdown_pct": 4.3449698961383625,
+          "sharpe": -0.49462254376774456,
+          "recovery_factor": -0.43070501915172016,
+          "months": 12,
+          "best_month_pct": 1.1669210125190617,
+          "worst_month_pct": -2.2675894484090438
+        }
+      },
+      "average_absolute_exposure": 1.0028813629454305,
+      "maximum_absolute_exposure": 1.9547257161879419,
+      "direction_changes": 17
+    },
+    "GBPUSD": {
+      "observed_spread": {
+        "full": {
+          "return_pct": -7.2075276386705855,
+          "annualized_return_pct": -2.532121559116818,
+          "annualized_volatility_pct": 7.677317713843131,
+          "profit_factor": 0.7908534444015961,
+          "win_rate_pct": 45.714285714285715,
+          "max_drawdown_pct": 8.242800656105754,
+          "sharpe": -0.29619857490212537,
+          "recovery_factor": -0.8744027593742302,
+          "months": 35,
+          "best_month_pct": 4.804704604682966,
+          "worst_month_pct": -5.58777901068882
+        },
+        "latest_12_months": {
+          "return_pct": -2.2235897496117984,
+          "annualized_return_pct": -2.2235897496117984,
+          "annualized_volatility_pct": 4.683863753300557,
+          "profit_factor": 0.7056209314374184,
+          "win_rate_pct": 41.66666666666667,
+          "max_drawdown_pct": 5.624719468331407,
+          "sharpe": -0.45811836235997394,
+          "recovery_factor": -0.39532456011916167,
+          "months": 12,
+          "best_month_pct": 2.43640800714736,
+          "worst_month_pct": -2.917653560972809
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": -8.610780877836788,
+          "annualized_return_pct": -3.04001046616702,
+          "annualized_volatility_pct": 7.6386216766857595,
+          "profit_factor": 0.7491106729375828,
+          "win_rate_pct": 45.714285714285715,
+          "max_drawdown_pct": 8.845578956450007,
+          "sharpe": -0.3663014101735416,
+          "recovery_factor": -0.9734558834679771,
+          "months": 35,
+          "best_month_pct": 4.704561538531244,
+          "worst_month_pct": -5.58892321772042
+        },
+        "latest_12_months": {
+          "return_pct": -2.726004261251558,
+          "annualized_return_pct": -2.726004261251558,
+          "annualized_volatility_pct": 4.637318172742523,
+          "profit_factor": 0.6461868281097013,
+          "win_rate_pct": 41.66666666666667,
+          "max_drawdown_pct": 5.810316538955496,
+          "sharpe": -0.5740011901773948,
+          "recovery_factor": -0.4691662223520793,
+          "months": 12,
+          "best_month_pct": 2.388280275961275,
+          "worst_month_pct": -2.918069816451688
+        }
+      },
+      "average_absolute_exposure": 0.8917041419232212,
+      "maximum_absolute_exposure": 1.6373553300165413,
+      "direction_changes": 15
+    },
+    "USDJPY": {
+      "observed_spread": {
+        "full": {
+          "return_pct": -10.773057296578559,
+          "annualized_return_pct": -3.8327484195022743,
+          "annualized_volatility_pct": 9.074123854703197,
+          "profit_factor": 0.724803317974456,
+          "win_rate_pct": 48.57142857142857,
+          "max_drawdown_pct": 16.66364263642588,
+          "sharpe": -0.3851919900944445,
+          "recovery_factor": -0.6465007400620318,
+          "months": 35,
+          "best_month_pct": 4.986267835158883,
+          "worst_month_pct": -8.137487607223932
+        },
+        "latest_12_months": {
+          "return_pct": 3.940435806924536,
+          "annualized_return_pct": 3.940435806924536,
+          "annualized_volatility_pct": 6.877479695203678,
+          "profit_factor": 1.658729844357269,
+          "win_rate_pct": 66.66666666666666,
+          "max_drawdown_pct": 4.130971430181207,
+          "sharpe": 0.5944583098462849,
+          "recovery_factor": 0.9538763154195155,
+          "months": 12,
+          "best_month_pct": 4.042175713173999,
+          "worst_month_pct": -4.130971430181201
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": -11.771536789991599,
+          "annualized_return_pct": -4.2030770998301765,
+          "annualized_volatility_pct": 9.076794054349518,
+          "profit_factor": 0.6991620394432746,
+          "win_rate_pct": 48.57142857142857,
+          "max_drawdown_pct": 17.14390801017991,
+          "sharpe": -0.42739911057273033,
+          "recovery_factor": -0.6866308885349688,
+          "months": 35,
+          "best_month_pct": 4.983857132459395,
+          "worst_month_pct": -8.178230237704037
+        },
+        "latest_12_months": {
+          "return_pct": 3.608850665115293,
+          "annualized_return_pct": 3.608850665115293,
+          "annualized_volatility_pct": 6.858735930922792,
+          "profit_factor": 1.5967272101950987,
+          "win_rate_pct": 66.66666666666666,
+          "max_drawdown_pct": 4.13296235212518,
+          "sharpe": 0.5491841886618296,
+          "recovery_factor": 0.8731874035241605,
+          "months": 12,
+          "best_month_pct": 4.008831608901284,
+          "worst_month_pct": -4.132962352125168
+        }
+      },
+      "average_absolute_exposure": 0.7214736530144331,
+      "maximum_absolute_exposure": 1.2457461090910147,
+      "direction_changes": 8
+    },
+    "BTCUSD": {
+      "observed_spread": {
+        "full": {
+          "return_pct": 39.95703677746825,
+          "annualized_return_pct": 10.081105544452162,
+          "annualized_volatility_pct": 10.273804370620304,
+          "profit_factor": 2.5091069448208443,
+          "win_rate_pct": 59.523809523809526,
+          "max_drawdown_pct": 7.068810500532408,
+          "sharpe": 0.9868046573071871,
+          "recovery_factor": 5.6525828177822515,
+          "months": 42,
+          "best_month_pct": 12.598999318044015,
+          "worst_month_pct": -4.414070946709484
+        },
+        "latest_12_months": {
+          "return_pct": 7.219301788015597,
+          "annualized_return_pct": 7.219301788015597,
+          "annualized_volatility_pct": 7.274089264199296,
+          "profit_factor": 2.135793220982628,
+          "win_rate_pct": 58.333333333333336,
+          "max_drawdown_pct": 2.4244283275873246,
+          "sharpe": 0.9939164493706435,
+          "recovery_factor": 2.9777336396658516,
+          "months": 12,
+          "best_month_pct": 4.940807023081007,
+          "worst_month_pct": -1.8922511074838162
+        }
+      },
+      "cost_stress": {
+        "full": {
+          "return_pct": 39.585283696926396,
+          "annualized_return_pct": 9.997484228965137,
+          "annualized_volatility_pct": 10.279120447211572,
+          "profit_factor": 2.4901539706270603,
+          "win_rate_pct": 57.14285714285714,
+          "max_drawdown_pct": 7.128489516681469,
+          "sharpe": 0.9788934666655909,
+          "recovery_factor": 5.553109618004259,
+          "months": 42,
+          "best_month_pct": 12.597951367307111,
+          "worst_month_pct": -4.42256548627311
+        },
+        "latest_12_months": {
+          "return_pct": 7.141221844426249,
+          "annualized_return_pct": 7.141221844426249,
+          "annualized_volatility_pct": 7.27876378933674,
+          "profit_factor": 2.118720263610441,
+          "win_rate_pct": 58.333333333333336,
+          "max_drawdown_pct": 2.4440154302320494,
+          "sharpe": 0.9832544854786202,
+          "recovery_factor": 2.9219217506119506,
+          "months": 12,
+          "best_month_pct": 4.9403591069008375,
+          "worst_month_pct": -1.900861415160422
+        }
+      },
+      "average_absolute_exposure": 0.17986011269087862,
+      "maximum_absolute_exposure": 0.3413258896837093,
+      "direction_changes": 11
+    }
+  },
+  "limitations": [
+    "The common local evaluation has only 35 monthly observations after the 12-month signal warm-up.",
+    "XAUUSD, XAGUSD, EURUSD and BTCUSD use archived Exness bars; GBPUSD and USDJPY use archived JustMarkets bars because matching Exness M15 archives were unavailable.",
+    "The paper trades futures and currency forwards. This transfer uses CFD spot-price returns, so futures roll yield and FX forward carry are absent.",
+    "Historical overnight financing is unavailable. BTCUSD in particular must not be deployed from these price-only results because live CFD swap can be material.",
+    "Profit factor and win rate are measured across monthly portfolio returns, not conventional stop-to-exit EA trades."
+  ]
+}

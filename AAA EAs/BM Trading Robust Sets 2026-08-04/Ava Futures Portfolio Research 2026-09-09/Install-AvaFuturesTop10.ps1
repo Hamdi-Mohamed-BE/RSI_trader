@@ -206,6 +206,7 @@ foreach ($item in $portfolio) {
 Write-Host "`nCalyx Ava EAs - current futures PF 1.40+ plus DMC" -ForegroundColor Cyan
 Write-Host "Account data: $DataRoot"
 Write-Host 'Sizing: exactly one broker-minimum contract per entry. No 1% target is forced.' -ForegroundColor Yellow
+Write-Host 'News Pulse v2.13: MT5 live calendar, FXMacroData-verified tester calendar, hard 0.75% per pending side.' -ForegroundColor Cyan
 Write-Host 'Important: one minimum contract can risk more than 1%. News Pulse can maintain two pending stops for an event.' -ForegroundColor Yellow
 Write-Host 'Ava netting guard: only one Calyx EA may own a given contract at a time.' -ForegroundColor Green
 foreach ($item in $portfolio) {

@@ -1,0 +1,216 @@
+{
+  "label": "XAU Squeeze Momentum \u2014 final standard 1% locked",
+  "verdict": "WATCH_ONLY",
+  "metadata": {
+    "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\XAU Squeeze Momentum Research 2026-09-10\\Backtest Reports\\XAU\\candidate-locked\\xau--candidate-locked--overall-1pct-real--m4e0--3d9bdaef9965.htm",
+    "initial_balance": 10000.0,
+    "reported_net_profit": 386.88,
+    "reported_profit_factor": 1.79,
+    "reported_win_rate_pct": 50.0,
+    "reported_max_drawdown_pct": 2.43,
+    "reported_trades": 18,
+    "reported_sharpe": 8.94,
+    "reported_recovery": 1.51,
+    "history_quality": "67% real ticks"
+  },
+  "metrics": {
+    "trades": 18,
+    "wins": 9,
+    "losses": 9,
+    "win_rate_pct": 50.0,
+    "win_rate_wilson_95_pct": [
+      29.031021505169978,
+      70.96897849483001
+    ],
+    "net_profit": 386.87999999999994,
+    "return_pct": 3.8687999999999994,
+    "profit_factor": 1.7872695453990475,
+    "expected_payoff": 21.49333333333333,
+    "max_win_streak": 6,
+    "max_loss_streak": 4,
+    "daily_expected_shortfall_95_pct": 0.015599908803474937,
+    "recent_half_profit_factor": 0.9273184389463458,
+    "profitable_thirds": 1,
+    "tested_configurations": 135,
+    "annualized_sharpe": 1.1638724252642259,
+    "probabilistic_sharpe_pct": 88.35352422365568,
+    "deflated_sharpe_pct": 7.470800925731763,
+    "multiple_test_benchmark_sharpe": 2.570453562496017,
+    "daily_skewness": 3.6102107001535177,
+    "daily_kurtosis": 31.70712250111812
+  },
+  "bootstrap": {
+    "paths": 10000,
+    "block_length": 5,
+    "probability_profit_pct": 86.42,
+    "return_p05_pct": -1.8019435480640378,
+    "return_p50_pct": 3.812855000689519,
+    "return_p95_pct": 10.141243027723286,
+    "max_drawdown_p50_pct": 1.8985931192917762,
+    "max_drawdown_p95_pct": 4.162945129740508,
+    "profit_factor_p05": 0.6358461736635529,
+    "profit_factor_p50": 1.7096726979849253,
+    "profit_factor_p95": 5.453835449044069,
+    "closed_pnl_daily_limit_breach_pct": 0.0,
+    "closed_pnl_total_limit_breach_pct": 0.0,
+    "breach_scope": "closed-trade P&L proxy; floating drawdown is not recoverable from an MT5 summary report"
+  },
+  "subperiods": [
+    {
+      "part": 1,
+      "start": "2025-09-15T00:39:41",
+      "end": "2025-11-10T23:22:14",
+      "trades": 6,
+      "net_profit": 499.64,
+      "profit_factor": 11.470243084660519,
+      "win_rate_pct": 83.33333333333334
+    },
+    {
+      "part": 2,
+      "start": "2025-11-13T14:43:41",
+      "end": "2026-02-20T15:06:45",
+      "trades": 6,
+      "net_profit": -84.28999999999999,
+      "profit_factor": 0.6308898230863549,
+      "win_rate_pct": 33.33333333333333
+    },
+    {
+      "part": 3,
+      "start": "2026-03-01T23:09:40",
+      "end": "2026-07-22T02:28:28",
+      "trades": 6,
+      "net_profit": -28.47000000000002,
+      "profit_factor": 0.8677904708832545,
+      "win_rate_pct": 33.33333333333333
+    }
+  ],
+  "cost_stress": {
+    "extra_cost_per_trade": 0.05,
+    "net_profit": 385.97999999999996,
+    "return_pct": 3.8597999999999995,
+    "profit_factor": 1.7847195397157785
+  },
+  "gates": {
+    "minimum_30_closed_trades": false,
+    "positive_locked_return": true,
+    "profit_factor_above_1": true,
+    "bootstrap_return_p05_positive": false,
+    "bootstrap_pf_p05_above_1": false,
+    "deflated_sharpe_95pct": false,
+    "recent_half_pf_above_1": false,
+    "two_of_three_subperiods_profitable": false,
+    "closed_pnl_total_breach_below_5pct": true,
+    "cost_stress_supplied": true,
+    "cost_stress_pf_above_1": true
+  },
+  "trades": [
+    {
+      "closed_at": "2025-09-15T00:39:41",
+      "pnl": -47.720000000000006,
+      "commission": -0.17,
+      "swap": -1.6
+    },
+    {
+      "closed_at": "2025-09-17T01:37:19",
+      "pnl": 42.449999999999996,
+      "commission": -0.17,
+      "swap": -3.2
+    },
+    {
+      "closed_at": "2025-09-30T00:25:02",
+      "pnl": 119.34,
+      "commission": -0.11,
+      "swap": -2.14
+    },
+    {
+      "closed_at": "2025-10-08T16:11:40",
+      "pnl": 135.51,
+      "commission": -0.11,
+      "swap": -1.07
+    },
+    {
+      "closed_at": "2025-10-16T14:06:42",
+      "pnl": 96.42,
+      "commission": -0.06,
+      "swap": -1.6
+    },
+    {
+      "closed_at": "2025-11-10T23:22:14",
+      "pnl": 153.64,
+      "commission": -0.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-13T14:43:41",
+      "pnl": 6.36,
+      "commission": -0.06,
+      "swap": -1.6
+    },
+    {
+      "closed_at": "2025-11-28T05:09:40",
+      "pnl": -62.18,
+      "commission": -0.17,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-10T12:00:00",
+      "pnl": -31.5,
+      "commission": -0.11,
+      "swap": -1.07
+    },
+    {
+      "closed_at": "2026-01-28T03:04:17",
+      "pnl": 137.71,
+      "commission": -0.06,
+      "swap": -0.53
+    },
+    {
+      "closed_at": "2026-02-11T13:30:52",
+      "pnl": -89.81,
+      "commission": -0.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-20T15:06:45",
+      "pnl": -44.870000000000005,
+      "commission": -0.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-01T23:09:40",
+      "pnl": 108.36,
+      "commission": -0.06,
+      "swap": -0.53
+    },
+    {
+      "closed_at": "2026-04-19T22:01:34",
+      "pnl": -106.24000000000001,
+      "commission": -0.06,
+      "swap": -0.53
+    },
+    {
+      "closed_at": "2026-04-21T10:00:00",
+      "pnl": -23.29,
+      "commission": -0.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-05T00:12:10",
+      "pnl": -53.1,
+      "commission": -0.06,
+      "swap": -0.53
+    },
+    {
+      "closed_at": "2026-06-17T18:03:10",
+      "pnl": -32.71,
+      "commission": -0.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-22T02:28:28",
+      "pnl": 78.50999999999999,
+      "commission": -0.06,
+      "swap": -0.53
+    }
+  ]
+}

@@ -22,6 +22,9 @@ This is the default research and validation workflow for every new EA idea and e
   - validation/walk-forward: reject unstable settings;
   - final locked out-of-sample: run once without changing the selected settings.
 - Show one-year and three-year results when both are available.
+- Record the exact data source, broker server, timezone/DST conversion, symbol mapping, test model, spread/commission/swap assumptions, code hash and settings hash for every frozen run.
+- When bars overlap the label or holding horizon, use a chronological purge/embargo between development, walk-forward and locked windows so information cannot leak across a boundary.
+- Macro/fundamental fields must be joined by the timestamp when they were released and known (`announcement_datetime`), never merely by the observation period they describe.
 
 ## 3. Reward-to-risk search
 
@@ -78,6 +81,18 @@ Resolve daylight-saving time using the actual market timezone. A filtered result
 - Report probability of profit, probability of ruin or account-rule breach, median return, 5th/95th percentile return, median maximum drawdown and 95th-percentile maximum drawdown.
 - Include parameter-neighbour stability, chronological walk-forward checks and cost/slippage stress tests.
 - Flag small samples and strategies whose result depends on a handful of trades.
+- Count every parameter/configuration tried. Report Probabilistic Sharpe and Deflated Sharpe so repeated searches do not receive the same confidence as a single preregistered test.
+- Report a 95% Wilson interval for win rate and block-bootstrap confidence intervals for profit factor and return. A headline win rate or PF without uncertainty is incomplete evidence.
+- Report 95% Expected Shortfall, recent-half PF and at least three chronological subperiods. A candidate must not rely on one isolated subperiod.
+- Stress prop-firm daily-loss and total-loss rules. Closed-P&L simulation is only a proxy; promotion requires native MT5 equity-path evidence that includes floating loss.
+- Run broker-specific cost stress using measured extra spread/slippage/commission. If the cost amount is unknown, mark the gate incomplete instead of assuming zero.
+
+## 8A. Optional macro overlay
+
+- First prove the price-only/raw strategy. Macro data may then be tested as a single incremental filter, not mixed into the initial parameter search.
+- Use FXMacroData only when its response says the source, coverage, freshness and point-in-time fields are suitable. Save a fetch receipt and response hash with the research evidence.
+- The anonymous FXMacroData tier is useful for current USD context and recent checks, but it is not enough for a multi-year macro backtest. Do not silently accept a shortened/freemium history.
+- Freeze the macro rule before the locked period. Compare baseline versus overlay on the same trades, costs and dates; keep it only when locked evidence and parameter-neighbour stability improve.
 
 ## 9. Required output
 
@@ -100,3 +115,5 @@ Every final research report must include a clearly labelled **XAG validation** r
 ## 10. Selection rule
 
 The recommended configuration must be profitable and reasonably consistent across time, neighbouring parameters and realistic cost assumptions. Prefer lower drawdown, stronger locked profit factor, adequate trade count and better Monte Carlo survival over the highest headline return. XAG validation measures portability; it does not automatically disqualify a strategy that is honestly scoped to another primary market. Do not add an XAG instance—or any EA—to the active BAT or website unless that exact market/configuration passes its own locked evidence and the user explicitly approves it.
+
+Run the common post-backtest gate in `Calyx Research Pipeline/calyx_pipeline.py` against the untouched MT5 report before calling a result proven. `PASS_FOR_FORWARD_TEST` permits isolated demo monitoring only; it does not authorize website, BAT, recommended portfolio or live-account changes.

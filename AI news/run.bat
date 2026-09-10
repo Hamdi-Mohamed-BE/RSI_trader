@@ -16,17 +16,21 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist "models\gold_news_v5.joblib" (
-  echo V5 NFP, CPI, and FOMC model is missing. Building it now...
-  if not exist "models\gold_news_v4.joblib" uv run python backtest_news_v4.py
+if not exist "models\gold_news_v9_direction.joblib" (
+  echo V9 NFP, CPI, and FOMC direction model is missing. Building it now...
+  uv run python train_news_v9_direction.py
   if errorlevel 1 (
-    echo V4 base model training failed.
+    echo V9 model training failed.
     pause
     exit /b 1
   )
-  uv run python backtest_news_v5.py
+)
+
+if not exist "models\gold_news_v8_move_range.joblib" (
+  echo V8 gold move-range model is missing. Building it now...
+  uv run python backtest_news_v8_move_execution_3m.py
   if errorlevel 1 (
-    echo V5 model training failed.
+    echo V8 move-range model training failed.
     pause
     exit /b 1
   )

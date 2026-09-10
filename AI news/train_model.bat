@@ -33,11 +33,17 @@ uv run python backtest_news_v4.py
 if errorlevel 1 goto :failed
 uv run python backtest_news_v5.py
 if errorlevel 1 goto :failed
+uv run python backtest_news_v7_full_coverage.py
+if errorlevel 1 goto :failed
+uv run python backtest_news_v8_move_execution_3m.py
+if errorlevel 1 goto :failed
+uv run python train_news_v9_direction.py
+if errorlevel 1 goto :failed
 uv run python official_nowcasts.py
 if errorlevel 1 echo Official nowcast refresh skipped; the validated model is still ready.
 
 echo.
-echo V5 NFP/CPI/FOMC model and legacy research reports completed.
+echo V9 direction/action-tier and V8 move-range models plus research reports completed.
 pause
 exit /b 0
 

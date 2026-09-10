@@ -11,6 +11,7 @@ import joblib
 import MetaTrader5 as mt5
 
 from economic_context import EconomicContextStore
+from fxmacrodata import FXMacroDataClient
 from fomc_pipeline import (
     fomc_release_phases,
     pricing_context,
@@ -19,7 +20,8 @@ from news_core import ROOT, complete_sides, extract_features, normalize_rows
 from official_nowcasts import OfficialNowcastStore
 from point_in_time_store import context_for_prediction
 from point_in_time_store import save_macro_snapshot, save_market_snapshot
-from news_v5 import SUPPORTED_EVENTS, artifact_prediction
+from news_v8_move_range import artifact_move_range
+from news_v9_direction import SUPPORTED_EVENTS, artifact_prediction
 
 
 PREDICTION_DIR = ROOT / "predictions"
@@ -265,7 +267,7 @@ def make_prediction(
             "confidence_pct": 0.0,
             "data_quality": "unsupported event",
             "reason": (
-                f"V5 supports only {', '.join(SUPPORTED_EVENTS)}; "
+                f"V9 supports only {', '.join(SUPPORTED_EVENTS)}; "
                 f"{event} is intentionally disabled."
             ),
         }
@@ -276,13 +278,35 @@ def make_prediction(
             f"Query is {minutes_before:.1f} minutes before release; the supported window is 8-30 minutes."
         )
 
+    PREDICTION_DIR.mkdir(exist_ok=True)
+    filename = f"{release_utc.strftime('%Y%m%dT%H%M%SZ')}-{event.lower()}.json"
+    path = PREDICTION_DIR / filename
+    if path.exists():
+        locked = json.loads(path.read_text(encoding="utf-8"))
+        if (
+            locked.get("event") != event
+            or locked.get("release_time_utc") != release_utc.isoformat()
+        ):
+            raise RuntimeError(f"Locked prediction identity mismatch: {path}")
+        locked["saved_to"] = str(path)
+        locked["reused_locked_prediction"] = True
+        return locked
+
     lead = choose_lead(minutes_before)
-    artifact_path = ROOT / "models" / "gold_news_v5.joblib"
+    artifact_path = ROOT / "models" / "gold_news_v9_direction.joblib"
+    magnitude_path = ROOT / "models" / "gold_news_v8_move_range.joblib"
     if not artifact_path.exists():
         raise RuntimeError(
-            "The V5 gold direction artifact is missing. Run backtest_news_v5.py first."
+            "The V9 direction artifact is missing. Run "
+            "backtest_news_v9_direction_3m.py first."
+        )
+    if not magnitude_path.exists():
+        raise RuntimeError(
+            "The V8 move-range model is missing. Run "
+            "backtest_news_v8_move_execution_3m.py first."
         )
     artifact = joblib.load(artifact_path)
+    magnitude_artifact = joblib.load(magnitude_path)
     if forecast or previous:
         save_macro_snapshot(
             event=event,
@@ -346,7 +370,13 @@ def make_prediction(
         bias = decision["bias"]
         confidence = decision["confidence"]
         context = context_15 or context_30
-        expected = artifact["expected_release_range_by_event"].get(event, {})
+        expected = artifact_move_range(
+            magnitude_artifact,
+            event=event,
+            direction=direction,
+            current_atr=float(context["atr_30m"]),
+            current_spread=float(context["spread"]),
+        )
         external_context = context_for_prediction(event, release_utc, now)
         economic_context = EconomicContextStore().context(
             event,
@@ -358,21 +388,24 @@ def make_prediction(
             event,
             release_utc,
         )
+        fxmacrodata_context = FXMacroDataClient.from_env().context(
+            event,
+            release_utc,
+            now,
+        )
+        if fxmacrodata_context.get("event_time_verification") == "mismatch":
+            raise RuntimeError(
+                "FXMacroData's official calendar does not match the requested "
+                "release time. Check the date and UTC conversion before predicting."
+            )
         available_external = [
             name for name, value in external_context.items() if value is not None
         ]
-        if direction == "NO CALL":
-            invalidation = (
-                "No active direction: "
-                + ", ".join(decision["failed_gates"])
-                + ". The shadow bias is informational only."
-            )
-        else:
-            invalidation = (
-                "A materially stronger-than-forecast USD release can reverse a POSITIVE gold call."
-                if direction == "POSITIVE"
-                else "A materially weaker-than-forecast USD release can reverse a NEGATIVE gold call."
-            )
+        invalidation = (
+            "A materially stronger-than-forecast USD release can reverse a POSITIVE gold call."
+            if direction == "POSITIVE"
+            else "A materially weaker-than-forecast USD release can reverse a NEGATIVE gold call."
+        )
         result = {
             "generated_at_utc": now.isoformat(),
             "event": event,
@@ -383,29 +416,43 @@ def make_prediction(
             "prediction": direction,
             "directional_model_bias": bias,
             "confidence_pct": round(100 * confidence, 2),
+            "confidence_tier": decision["confidence_tier"],
+            "coverage_mode": decision["coverage_mode"],
+            "action_tier": decision["action_tier"],
             "probabilities": {
                 "POSITIVE": round(100 * decision["probability_positive"], 2),
                 "NEGATIVE": round(100 * decision["probability_negative"], 2),
             },
+            "probability_note": (
+                "These are bounded validation-reliability scores adjusted by model "
+                "agreement, not guaranteed event probabilities."
+            ),
             "expected_impulse_range_usd": {
-                "median": expected.get("median_usd"),
+                "minimum_absolute_move": expected["minimum_usd"],
+                "median_absolute_move": expected["median_usd"],
+                "maximum_absolute_move": expected["maximum_usd"],
+                "signed_low": expected["range_low_usd"],
+                "signed_point_estimate": expected["point_estimate_usd"],
+                "signed_high": expected["range_high_usd"],
+                "display": expected["display"],
+                "nominal_central_coverage_pct": expected[
+                    "central_coverage_target_pct"
+                ],
             },
             "expected_reaction_window": "release minute; the trained archive is M1 bid/ask",
             "main_reasons": [
                 *reason_lines(context, event),
                 (
-                    f"V5 strategy: {decision['strategy'].replace('_', ' ')}."
+                    f"V9 direction strategy: {decision['strategy'].replace('_', ' ')}."
                 ),
-                (
-                    "The confidence and agreement gates passed."
-                    if direction != "NO CALL"
-                    else "No active call because: " + ", ".join(decision["failed_gates"]) + "."
-                ),
+                f"Action tier: {decision['action_tier'].replace('_', ' ')}.",
+                "Every supported release receives a direction; the action tier communicates whether the original validation gate passed.",
                 *(
                     [
                         (
-                            "The FOMC history and T-30 model "
-                            f"{'agree.' if not decision['failed_gates'] else 'do not agree.'}"
+                            "The FOMC primary rule has "
+                            f"{decision['confirmation']['agreeing_votes']} of "
+                            f"{decision['confirmation']['total_votes']} price-model confirmations."
                         ),
                     ]
                     if event == "FOMC"
@@ -420,22 +467,26 @@ def make_prediction(
                 else "partial: live XAUUSD M1 is available; missing point-in-time context is not fabricated"
             ),
             "model": {
-                "name": "event-specific gold-impact V5",
+                "name": "event-specific gold-impact V9 direction and action tier",
                 "lead_minutes": lead,
                 "estimator": decision["strategy"],
                 "feature_profile": f"canonical_t{lead}",
-                "active_call_allowed": lead == 15,
+                "active_call_allowed": decision["active_call_allowed"],
                 "trained_through": artifact["trained_through"],
                 "artifact_version": artifact["artifact_version"],
+                "magnitude_artifact_version": magnitude_artifact[
+                    "artifact_version"
+                ],
             },
             "market_context": context,
             "point_in_time_context": external_context,
             "economic_consensus_context": economic_context,
+            "fxmacrodata_context": fxmacrodata_context,
             "official_nowcast_context": official_nowcast,
             "captured_related_markets": sorted(captured_markets),
             "probability_context": {
-                "market_model_positive_pct": round(100 * decision["probability_positive"], 2),
-                "shadow_bias": bias,
+                "full_coverage_positive_score_pct": round(100 * decision["probability_positive"], 2),
+                "primary_direction": bias,
                 "history_bias": (
                     "POSITIVE" if decision["history_bias"] == "BUY"
                     else "NEGATIVE" if decision["history_bias"] == "SELL"
@@ -443,6 +494,7 @@ def make_prediction(
                 ),
                 "gates": decision["gates"],
                 "failed_gates": decision["failed_gates"],
+                "confirmation": decision["confirmation"],
                 "fomc_pricing_context_only": fomc_pricing,
             },
             "fomc_release_phases": (
@@ -455,11 +507,6 @@ def make_prediction(
     finally:
         mt5.shutdown()
 
-    PREDICTION_DIR.mkdir(exist_ok=True)
-    filename = f"{release_utc.strftime('%Y%m%dT%H%M%SZ')}-{event.lower()}.json"
-    path = PREDICTION_DIR / filename
-    if path.exists():
-        raise RuntimeError(f"A prediction is already permanently saved for this event: {path}")
     path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     result["saved_to"] = str(path)
     return result

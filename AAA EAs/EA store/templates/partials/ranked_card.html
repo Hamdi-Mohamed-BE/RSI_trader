@@ -7,7 +7,7 @@
       <h3 class="mt-1 text-lg font-bold leading-tight text-white group-hover:text-mint">{{ product.label }}</h3>
     </div>
   </div>
-  {% if product.recommended_safe_mode %}<div class="mt-4"><span class="badge badge-safe">Running in Safe mode</span></div>{% endif %}
+  {% if product.recommended_dynamic_mode %}<div class="mt-4"><span class="badge badge-dynamic">Running in Dynamic mode</span></div>{% elif product.recommended_safe_mode %}<div class="mt-4"><span class="badge badge-safe">Running in Safe mode</span></div>{% endif %}
   <div class="mt-6 rounded-2xl border border-mint/15 bg-mint/[.045] p-4">
     <span class="block font-mono text-[9px] uppercase tracking-[.18em] text-muted">Three-year return</span>
     {% if product.one_year_return_pct is not none %}

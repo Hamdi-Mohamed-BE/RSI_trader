@@ -1,0 +1,895 @@
+{
+  "status": "v9_one_year_chronological_replay",
+  "window": {
+    "start": "2025-09-10T00:00:00+00:00",
+    "end_exclusive": "2026-09-10T00:00:00+00:00"
+  },
+  "methodology": {
+    "target": "Sign of the XAUUSD release-minute bid/ask midpoint move.",
+    "events": [
+      "NFP",
+      "CPI",
+      "FOMC"
+    ],
+    "prediction_cutoff": "T-15 minutes",
+    "training": "Models and policy selection use samples before the one-year window.",
+    "v9_direction": "V5 event-specific bias promoted to a full direction.",
+    "action_tier": "The V5 active gate is retained as TRADE versus LOW_CONFIDENCE."
+  },
+  "data_audit": {
+    "t15": {
+      "calendar_events": 721,
+      "usable_samples": 704,
+      "skipped": 17,
+      "imputed_sides": 135,
+      "skipped_examples": [
+        {
+          "event": "NFP",
+          "release_utc": "2012-04-06T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2012-12-07T13:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-05-16T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2013-06-07T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-09-17T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-01-16T13:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2015-04-03T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-05-22T12:30:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-06-17T18:00:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-07-29T18:00:00+00:00"
+        },
+        {
+          "event": "GDP",
+          "release_utc": "2015-07-30T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-10-15T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2017-04-14T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2020-04-10T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2021-04-02T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2023-04-07T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2026-04-03T12:30:00+00:00"
+        }
+      ]
+    },
+    "t30": {
+      "calendar_events": 721,
+      "usable_samples": 704,
+      "skipped": 17,
+      "imputed_sides": 135,
+      "skipped_examples": [
+        {
+          "event": "NFP",
+          "release_utc": "2012-04-06T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2012-12-07T13:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-05-16T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2013-06-07T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2013-09-17T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-01-16T13:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2015-04-03T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-05-22T12:30:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-06-17T18:00:00+00:00"
+        },
+        {
+          "event": "FOMC",
+          "release_utc": "2015-07-29T18:00:00+00:00"
+        },
+        {
+          "event": "GDP",
+          "release_utc": "2015-07-30T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2015-10-15T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2017-04-14T12:30:00+00:00"
+        },
+        {
+          "event": "CPI",
+          "release_utc": "2020-04-10T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2021-04-02T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2023-04-07T12:30:00+00:00"
+        },
+        {
+          "event": "NFP",
+          "release_utc": "2026-04-03T12:30:00+00:00"
+        }
+      ]
+    },
+    "august_7_snapshot_generated_at_utc": "2026-08-07T12:17:14.103292+00:00"
+  },
+  "direction_metrics": {
+    "v1_event_history": {
+      "events": 29,
+      "calls": 29,
+      "wins": 18,
+      "losses": 11,
+      "accuracy_pct": 62.07,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        44.0,
+        77.31
+      ]
+    },
+    "v2_event_rules": {
+      "events": 29,
+      "calls": 29,
+      "wins": 20,
+      "losses": 9,
+      "accuracy_pct": 68.97,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        50.77,
+        82.72
+      ]
+    },
+    "v4_active": {
+      "events": 29,
+      "calls": 5,
+      "wins": 5,
+      "losses": 0,
+      "accuracy_pct": 100.0,
+      "coverage_pct": 17.24,
+      "wilson_95_pct": [
+        56.55,
+        100.0
+      ]
+    },
+    "v4_shadow": {
+      "events": 29,
+      "calls": 29,
+      "wins": 19,
+      "losses": 10,
+      "accuracy_pct": 65.52,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        47.35,
+        80.06
+      ]
+    },
+    "v5_v6_active": {
+      "events": 29,
+      "calls": 14,
+      "wins": 11,
+      "losses": 3,
+      "accuracy_pct": 78.57,
+      "coverage_pct": 48.28,
+      "wilson_95_pct": [
+        52.41,
+        92.43
+      ]
+    },
+    "v7_v8_full": {
+      "events": 29,
+      "calls": 29,
+      "wins": 20,
+      "losses": 9,
+      "accuracy_pct": 68.97,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        50.77,
+        82.72
+      ]
+    },
+    "v9_full": {
+      "events": 29,
+      "calls": 29,
+      "wins": 21,
+      "losses": 8,
+      "accuracy_pct": 72.41,
+      "coverage_pct": 100.0,
+      "wilson_95_pct": [
+        54.28,
+        85.3
+      ]
+    },
+    "v9_trade_tier": {
+      "events": 29,
+      "calls": 14,
+      "wins": 11,
+      "losses": 3,
+      "accuracy_pct": 78.57,
+      "coverage_pct": 48.28,
+      "wilson_95_pct": [
+        52.41,
+        92.43
+      ]
+    },
+    "v9_low_confidence_tier": {
+      "events": 29,
+      "calls": 15,
+      "wins": 10,
+      "losses": 5,
+      "accuracy_pct": 66.67,
+      "coverage_pct": 51.72,
+      "wilson_95_pct": [
+        41.71,
+        84.82
+      ]
+    }
+  },
+  "event_metrics": {
+    "NFP": {
+      "v7_v8_full": {
+        "events": 10,
+        "calls": 10,
+        "wins": 7,
+        "losses": 3,
+        "accuracy_pct": 70.0,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          39.68,
+          89.22
+        ]
+      },
+      "v9_full": {
+        "events": 10,
+        "calls": 10,
+        "wins": 7,
+        "losses": 3,
+        "accuracy_pct": 70.0,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          39.68,
+          89.22
+        ]
+      },
+      "v9_trade_tier": {
+        "events": 10,
+        "calls": 0,
+        "wins": 0,
+        "losses": 0,
+        "accuracy_pct": 0.0,
+        "coverage_pct": 0.0,
+        "wilson_95_pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "CPI": {
+      "v7_v8_full": {
+        "events": 11,
+        "calls": 11,
+        "wins": 8,
+        "losses": 3,
+        "accuracy_pct": 72.73,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          43.44,
+          90.25
+        ]
+      },
+      "v9_full": {
+        "events": 11,
+        "calls": 11,
+        "wins": 8,
+        "losses": 3,
+        "accuracy_pct": 72.73,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          43.44,
+          90.25
+        ]
+      },
+      "v9_trade_tier": {
+        "events": 11,
+        "calls": 11,
+        "wins": 8,
+        "losses": 3,
+        "accuracy_pct": 72.73,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          43.44,
+          90.25
+        ]
+      }
+    },
+    "FOMC": {
+      "v7_v8_full": {
+        "events": 8,
+        "calls": 8,
+        "wins": 5,
+        "losses": 3,
+        "accuracy_pct": 62.5,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          30.57,
+          86.32
+        ]
+      },
+      "v9_full": {
+        "events": 8,
+        "calls": 8,
+        "wins": 6,
+        "losses": 2,
+        "accuracy_pct": 75.0,
+        "coverage_pct": 100.0,
+        "wilson_95_pct": [
+          40.93,
+          92.85
+        ]
+      },
+      "v9_trade_tier": {
+        "events": 8,
+        "calls": 3,
+        "wins": 3,
+        "losses": 0,
+        "accuracy_pct": 100.0,
+        "coverage_pct": 37.5,
+        "wilson_95_pct": [
+          43.85,
+          100.0
+        ]
+      }
+    }
+  },
+  "events": [
+    {
+      "release_utc": "2025-09-11T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 7.8665,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2025-09-17T18:00:00+00:00",
+      "event": "FOMC",
+      "actual": "NEGATIVE",
+      "release_move_usd": -4.59,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "POSITIVE",
+      "confidence_pct": 58.06
+    },
+    {
+      "release_utc": "2025-10-24T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 29.2865,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2025-10-29T18:00:00+00:00",
+      "event": "FOMC",
+      "actual": "NEGATIVE",
+      "release_move_usd": -6.4465,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NEGATIVE",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "NEGATIVE",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "NEGATIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "NEGATIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 65.0
+    },
+    {
+      "release_utc": "2025-11-20T13:30:00+00:00",
+      "event": "NFP",
+      "actual": "NEGATIVE",
+      "release_move_usd": -3.955,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "POSITIVE",
+      "confidence_pct": 51.66
+    },
+    {
+      "release_utc": "2025-12-10T19:00:00+00:00",
+      "event": "FOMC",
+      "actual": "POSITIVE",
+      "release_move_usd": 16.72,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "POSITIVE",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 65.0
+    },
+    {
+      "release_utc": "2025-12-16T13:30:00+00:00",
+      "event": "NFP",
+      "actual": "POSITIVE",
+      "release_move_usd": 4.415,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "POSITIVE",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "POSITIVE",
+      "confidence_pct": 70.07
+    },
+    {
+      "release_utc": "2025-12-18T13:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 9.758,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2026-01-09T13:30:00+00:00",
+      "event": "NFP",
+      "actual": "NEGATIVE",
+      "release_move_usd": -2.25,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NEGATIVE",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "NEGATIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "NEGATIVE",
+      "confidence_pct": 76.13
+    },
+    {
+      "release_utc": "2026-01-13T13:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 9.94,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2026-01-28T19:00:00+00:00",
+      "event": "FOMC",
+      "actual": "POSITIVE",
+      "release_move_usd": 7.313,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "POSITIVE",
+      "confidence_pct": 56.58
+    },
+    {
+      "release_utc": "2026-02-11T13:30:00+00:00",
+      "event": "NFP",
+      "actual": "NEGATIVE",
+      "release_move_usd": -60.0015,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "NEGATIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "NEGATIVE",
+      "confidence_pct": 59.78
+    },
+    {
+      "release_utc": "2026-02-13T13:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 27.565,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2026-03-06T13:30:00+00:00",
+      "event": "NFP",
+      "actual": "POSITIVE",
+      "release_move_usd": 35.54,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "NEGATIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "NEGATIVE",
+      "confidence_pct": 54.65
+    },
+    {
+      "release_utc": "2026-03-11T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "NEGATIVE",
+      "release_move_usd": -3.4885,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2026-03-18T18:00:00+00:00",
+      "event": "FOMC",
+      "actual": "POSITIVE",
+      "release_move_usd": 5.7665,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "POSITIVE",
+      "confidence_pct": 56.44
+    },
+    {
+      "release_utc": "2026-04-10T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 13.5965,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2026-04-29T18:00:00+00:00",
+      "event": "FOMC",
+      "actual": "NEGATIVE",
+      "release_move_usd": -3.5435,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "POSITIVE",
+      "confidence_pct": 58.29
+    },
+    {
+      "release_utc": "2026-05-08T12:30:00+00:00",
+      "event": "NFP",
+      "actual": "NEGATIVE",
+      "release_move_usd": -2.236,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "NEGATIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "NEGATIVE",
+      "confidence_pct": 61.11
+    },
+    {
+      "release_utc": "2026-05-12T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "NEGATIVE",
+      "release_move_usd": -4.0535,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2026-06-05T12:30:00+00:00",
+      "event": "NFP",
+      "actual": "NEGATIVE",
+      "release_move_usd": -14.755,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "NEGATIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "NEGATIVE",
+      "confidence_pct": 50.92
+    },
+    {
+      "release_utc": "2026-06-10T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 27.8235,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2026-06-17T18:00:00+00:00",
+      "event": "FOMC",
+      "actual": "NEGATIVE",
+      "release_move_usd": -31.935,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NEGATIVE",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "NEGATIVE",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "NEGATIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "NEGATIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 65.0
+    },
+    {
+      "release_utc": "2026-07-02T12:30:00+00:00",
+      "event": "NFP",
+      "actual": "POSITIVE",
+      "release_move_usd": 52.13,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "NEGATIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "NEGATIVE",
+      "confidence_pct": 58.83
+    },
+    {
+      "release_utc": "2026-07-14T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "POSITIVE",
+      "release_move_usd": 60.54,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2026-07-29T18:00:00+00:00",
+      "event": "FOMC",
+      "actual": "POSITIVE",
+      "release_move_usd": 32.425,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "POSITIVE",
+      "confidence_pct": 56.43
+    },
+    {
+      "release_utc": "2026-08-07T12:30:00+00:00",
+      "event": "NFP",
+      "actual": "POSITIVE",
+      "release_move_usd": 46.95,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "POSITIVE",
+      "confidence_pct": 65.39
+    },
+    {
+      "release_utc": "2026-08-12T12:30:00+00:00",
+      "event": "CPI",
+      "actual": "NEGATIVE",
+      "release_move_usd": -33.192,
+      "v1_direction": "POSITIVE",
+      "v2_direction": "POSITIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "POSITIVE",
+      "v5_active": "POSITIVE",
+      "v7_direction": "POSITIVE",
+      "v9_direction": "POSITIVE",
+      "action_tier": "TRADE",
+      "v9_trade_direction": "POSITIVE",
+      "v9_low_confidence_direction": "NO CALL",
+      "confidence_pct": 68.0
+    },
+    {
+      "release_utc": "2026-09-04T12:30:00+00:00",
+      "event": "NFP",
+      "actual": "NEGATIVE",
+      "release_move_usd": -69.73,
+      "v1_direction": "NEGATIVE",
+      "v2_direction": "NEGATIVE",
+      "v4_active": "NO CALL",
+      "v4_shadow": "NEGATIVE",
+      "v5_active": "NO CALL",
+      "v7_direction": "NEGATIVE",
+      "v9_direction": "NEGATIVE",
+      "action_tier": "LOW_CONFIDENCE",
+      "v9_trade_direction": "NO CALL",
+      "v9_low_confidence_direction": "NEGATIVE",
+      "confidence_pct": 69.34
+    }
+  ]
+}

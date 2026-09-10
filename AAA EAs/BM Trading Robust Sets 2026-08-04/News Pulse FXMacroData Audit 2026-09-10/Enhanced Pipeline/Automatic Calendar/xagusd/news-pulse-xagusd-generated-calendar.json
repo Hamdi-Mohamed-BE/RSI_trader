@@ -1,0 +1,160 @@
+{
+  "label": "News Pulse XAGUSD \u2014 generated calendar",
+  "verdict": "WATCH_ONLY",
+  "metadata": {
+    "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse FXMacroData Audit 2026-09-10\\Schedule Replay Reports\\xagusd--fxmacrodata_schedule.htm",
+    "initial_balance": 10000.0,
+    "reported_net_profit": 9333.57,
+    "reported_profit_factor": 43.43,
+    "reported_win_rate_pct": 88.89,
+    "reported_max_drawdown_pct": 2.51,
+    "reported_trades": 9,
+    "reported_sharpe": 17.46,
+    "reported_recovery": 24.6,
+    "history_quality": "100%"
+  },
+  "metrics": {
+    "trades": 9,
+    "wins": 7,
+    "losses": 2,
+    "win_rate_pct": 77.77777777777779,
+    "win_rate_wilson_95_pct": [
+      45.2588969106989,
+      93.67748928821533
+    ],
+    "net_profit": 9333.57,
+    "return_pct": 93.3357,
+    "profit_factor": 65.33838836423794,
+    "expected_payoff": 1037.0633333333333,
+    "max_win_streak": 4,
+    "max_loss_streak": 1,
+    "daily_expected_shortfall_95_pct": -0.0,
+    "recent_half_profit_factor": 31.914730819604323,
+    "profitable_thirds": 3,
+    "tested_configurations": 178,
+    "annualized_sharpe": 5.482520349971568,
+    "probabilistic_sharpe_pct": 99.99994802431209,
+    "deflated_sharpe_pct": 98.44893288753404,
+    "multiple_test_benchmark_sharpe": 3.0614154140348306,
+    "daily_skewness": 3.0288116994428824,
+    "daily_kurtosis": 11.278705526306508
+  },
+  "bootstrap": {
+    "paths": 10000,
+    "block_length": 5,
+    "probability_profit_pct": 99.97,
+    "return_p05_pct": 33.040687005336025,
+    "return_p50_pct": 90.15486211301332,
+    "return_p95_pct": 193.43663308396978,
+    "max_drawdown_p50_pct": 0.0,
+    "max_drawdown_p95_pct": 0.0,
+    "profit_factor_p05": 19.738988074722545,
+    "profit_factor_p50": 65.33838836423794,
+    "profit_factor_p95": "Infinity",
+    "closed_pnl_daily_limit_breach_pct": 0.0,
+    "closed_pnl_total_limit_breach_pct": 0.0,
+    "breach_scope": "closed-trade P&L proxy; floating drawdown is not recoverable from an MT5 summary report"
+  },
+  "subperiods": [
+    {
+      "part": 1,
+      "start": "2026-06-17T18:01:00",
+      "end": "2026-07-14T12:31:00",
+      "trades": 3,
+      "net_profit": 3917.3199999999997,
+      "profit_factor": "Infinity",
+      "win_rate_pct": 100.0
+    },
+    {
+      "part": 2,
+      "start": "2026-07-29T18:00:56",
+      "end": "2026-08-07T12:30:45",
+      "trades": 3,
+      "net_profit": 2035.74,
+      "profit_factor": 15.929158110882955,
+      "win_rate_pct": 66.66666666666666
+    },
+    {
+      "part": 3,
+      "start": "2026-08-12T12:30:19",
+      "end": "2026-09-04T12:30:45",
+      "trades": 3,
+      "net_profit": 3380.51,
+      "profit_factor": 389.11825487944907,
+      "win_rate_pct": 66.66666666666666
+    }
+  ],
+  "cost_stress": {
+    "status": "not_run",
+    "reason": "supply --extra-cost-per-trade from broker evidence"
+  },
+  "gates": {
+    "minimum_30_closed_trades": false,
+    "positive_locked_return": true,
+    "profit_factor_above_1": true,
+    "bootstrap_return_p05_positive": true,
+    "bootstrap_pf_p05_above_1": true,
+    "deflated_sharpe_95pct": true,
+    "recent_half_pf_above_1": true,
+    "two_of_three_subperiods_profitable": true,
+    "closed_pnl_total_breach_below_5pct": true,
+    "cost_stress_supplied": false,
+    "cost_stress_pf_above_1": false
+  },
+  "trades": [
+    {
+      "closed_at": "2026-06-17T18:01:00",
+      "pnl": 904.95,
+      "commission": -8.55,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-02T12:31:00",
+      "pnl": 1629.5,
+      "commission": -9.5,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-14T12:31:00",
+      "pnl": 1382.87,
+      "commission": -10.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-29T18:00:56",
+      "pnl": 931.4499999999999,
+      "commission": -12.35,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-07T12:30:00",
+      "pnl": -136.36,
+      "commission": -25.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-07T12:30:45",
+      "pnl": 1240.65,
+      "commission": 0.0,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-12T12:30:19",
+      "pnl": -8.709999999999997,
+      "commission": -27.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-12T12:30:48",
+      "pnl": 694.55,
+      "commission": 0.0,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-04T12:30:45",
+      "pnl": 2694.67,
+      "commission": -14.73,
+      "swap": 0.0
+    }
+  ]
+}

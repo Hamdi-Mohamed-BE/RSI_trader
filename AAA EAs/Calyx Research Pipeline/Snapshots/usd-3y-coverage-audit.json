@@ -1,0 +1,142 @@
+{
+  "currency": "USD",
+  "start": "2023-09-01",
+  "end": "2026-09-01",
+  "authenticated": false,
+  "verdict": "NOT_READY_FOR_MULTIYEAR_BACKTEST_FREE_KEY_LIMIT",
+  "rule": "Only announcement_datetime may release a value to a strategy. Observation dates never authorize availability.",
+  "indicators": [
+    {
+      "indicator": "inflation",
+      "status": "exploratory_only",
+      "rows": 2,
+      "requested_start": "2023-09-01",
+      "requested_end": "2026-09-01",
+      "earliest_returned_release": 1784032200,
+      "latest_returned_release": 1786537800,
+      "freemium_window": {
+        "applied": true,
+        "max_days": 90,
+        "cutoff_date": "2026-06-12",
+        "message": "Anonymous access returns the most recent 90 days. Supply an API key for the full history."
+      },
+      "quality": {
+        "point_in_time_safe": true,
+        "has_announcement_datetime": true,
+        "is_official": true,
+        "is_proxy": false,
+        "is_fallback": false,
+        "is_stale": false,
+        "latest_available_date": "2026-07-31"
+      },
+      "all_rows_have_announcement_datetime": true,
+      "receipt": {
+        "source": "FXMacroData",
+        "source_url": "https://api.fxmacrodata.com/v1/announcements/usd/inflation?start_date=2023-09-01&end_date=2026-09-01&limit=100&official_only=true",
+        "fetched_at_utc": "2026-09-10T01:44:08.547249+00:00",
+        "sha256": "722891301b540b73adf0cfbb1eb42d8c007daa096c5dc0bc329d1e54bfa3ddff",
+        "http_status": 200,
+        "authenticated": false
+      }
+    },
+    {
+      "indicator": "employment",
+      "status": "exploratory_only",
+      "rows": 3,
+      "requested_start": "2023-09-01",
+      "requested_end": "2026-09-01",
+      "earliest_returned_release": 1782995400,
+      "latest_returned_release": 1788525000,
+      "freemium_window": {
+        "applied": true,
+        "max_days": 90,
+        "cutoff_date": "2026-06-12",
+        "message": "Anonymous access returns the most recent 90 days. Supply an API key for the full history."
+      },
+      "quality": {
+        "point_in_time_safe": true,
+        "has_announcement_datetime": true,
+        "is_official": true,
+        "is_proxy": false,
+        "is_fallback": false,
+        "is_stale": false,
+        "latest_available_date": "2026-08-31"
+      },
+      "all_rows_have_announcement_datetime": true,
+      "receipt": {
+        "source": "FXMacroData",
+        "source_url": "https://api.fxmacrodata.com/v1/announcements/usd/employment?start_date=2023-09-01&end_date=2026-09-01&limit=100&official_only=true",
+        "fetched_at_utc": "2026-09-10T01:44:08.670910+00:00",
+        "sha256": "dd4939a083f319f0a54617891bb1bd89cb89310724f5266131660188137e0682",
+        "http_status": 200,
+        "authenticated": false
+      }
+    },
+    {
+      "indicator": "non_farm_payrolls",
+      "status": "exploratory_only",
+      "rows": 3,
+      "requested_start": "2023-09-01",
+      "requested_end": "2026-09-01",
+      "earliest_returned_release": 1782995400,
+      "latest_returned_release": 1788525000,
+      "freemium_window": {
+        "applied": true,
+        "max_days": 90,
+        "cutoff_date": "2026-06-12",
+        "message": "Anonymous access returns the most recent 90 days. Supply an API key for the full history."
+      },
+      "quality": {
+        "point_in_time_safe": true,
+        "has_announcement_datetime": true,
+        "is_official": true,
+        "is_proxy": false,
+        "is_fallback": false,
+        "is_stale": false,
+        "latest_available_date": "2026-08-31"
+      },
+      "all_rows_have_announcement_datetime": true,
+      "receipt": {
+        "source": "FXMacroData",
+        "source_url": "https://api.fxmacrodata.com/v1/announcements/usd/non_farm_payrolls?start_date=2023-09-01&end_date=2026-09-01&limit=100&official_only=true",
+        "fetched_at_utc": "2026-09-10T01:44:08.794564+00:00",
+        "sha256": "c9cd5290986a923b4ea170e16ae553e77cf67cbab78c12a0082165c823376d28",
+        "http_status": 200,
+        "authenticated": false
+      }
+    },
+    {
+      "indicator": "policy_rate",
+      "status": "exploratory_only",
+      "rows": 2,
+      "requested_start": "2023-09-01",
+      "requested_end": "2026-09-01",
+      "earliest_returned_release": 1781719200,
+      "latest_returned_release": 1785348000,
+      "freemium_window": {
+        "applied": true,
+        "max_days": 90,
+        "cutoff_date": "2026-06-12",
+        "message": "Anonymous access returns the most recent 90 days. Supply an API key for the full history."
+      },
+      "quality": {
+        "point_in_time_safe": false,
+        "has_announcement_datetime": true,
+        "is_official": true,
+        "is_proxy": false,
+        "is_fallback": false,
+        "is_stale": false,
+        "latest_available_date": "2026-07-29"
+      },
+      "all_rows_have_announcement_datetime": true,
+      "receipt": {
+        "source": "FXMacroData",
+        "source_url": "https://api.fxmacrodata.com/v1/announcements/usd/policy_rate?start_date=2023-09-01&end_date=2026-09-01&limit=100&official_only=true",
+        "fetched_at_utc": "2026-09-10T01:44:08.915499+00:00",
+        "sha256": "e4a67e0eb417918954cec065c798953427773d6b74292e5356da835388d7fb2e",
+        "http_status": 200,
+        "authenticated": false
+      }
+    }
+  ]
+}

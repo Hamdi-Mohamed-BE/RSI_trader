@@ -1,0 +1,228 @@
+{
+  "schema_version": 1,
+  "generator_version": "1.0",
+  "generated_at_utc": "2026-09-10T06:22:27.969149+00:00",
+  "provider": "FXMacroData MCP",
+  "authenticated": false,
+  "coverage": {
+    "start_date": "2026-06-12",
+    "end_date": "2026-09-10",
+    "start_date_key": 20260612,
+    "end_date_key": 20260910,
+    "start_epoch_utc": 1781222400,
+    "end_epoch_utc": 1789084799,
+    "complete_for_requested_window": true
+  },
+  "event_count": 7,
+  "event_count_by_kind": {
+    "CPI": 2,
+    "FOMC": 2,
+    "NFP": 3
+  },
+  "calendar_sha256": "57ef253ff6db4ab24aff1d70a231e48d8d33cb3e2c50c38235b1444bc97d44fd",
+  "events": [
+    {
+      "kind": "FOMC",
+      "epoch": 1781719200,
+      "utc_time": "2026-06-17T18:00:00+00:00",
+      "source": "Federal Reserve",
+      "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm",
+      "release_date_confirmed": null,
+      "calendar_point_in_time_safe": null,
+      "actual_value": 3.75,
+      "actual_point_in_time_safe": false
+    },
+    {
+      "kind": "NFP",
+      "epoch": 1782995400,
+      "utc_time": "2026-07-02T12:30:00+00:00",
+      "source": "BLS",
+      "source_url": "https://www.bls.gov/news.release/archives/empsit_07022026.htm",
+      "release_date_confirmed": null,
+      "calendar_point_in_time_safe": null,
+      "actual_value": 158881000.0,
+      "actual_point_in_time_safe": true
+    },
+    {
+      "kind": "CPI",
+      "epoch": 1784032200,
+      "utc_time": "2026-07-14T12:30:00+00:00",
+      "source": "BLS",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_07142026.htm",
+      "release_date_confirmed": null,
+      "calendar_point_in_time_safe": null,
+      "actual_value": 3.5,
+      "actual_point_in_time_safe": true
+    },
+    {
+      "kind": "FOMC",
+      "epoch": 1785348000,
+      "utc_time": "2026-07-29T18:00:00+00:00",
+      "source": "Federal Reserve",
+      "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+      "release_date_confirmed": true,
+      "calendar_point_in_time_safe": true,
+      "actual_value": 3.75,
+      "actual_point_in_time_safe": false
+    },
+    {
+      "kind": "NFP",
+      "epoch": 1786105800,
+      "utc_time": "2026-08-07T12:30:00+00:00",
+      "source": "BLS",
+      "source_url": "https://www.bls.gov/news.release/archives/empsit_08072026.htm",
+      "release_date_confirmed": true,
+      "calendar_point_in_time_safe": true,
+      "actual_value": 158858000.0,
+      "actual_point_in_time_safe": true
+    },
+    {
+      "kind": "CPI",
+      "epoch": 1786537800,
+      "utc_time": "2026-08-12T12:30:00+00:00",
+      "source": "BLS",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_08122026.htm",
+      "release_date_confirmed": true,
+      "calendar_point_in_time_safe": true,
+      "actual_value": 3.4,
+      "actual_point_in_time_safe": true
+    },
+    {
+      "kind": "NFP",
+      "epoch": 1788525000,
+      "utc_time": "2026-09-04T12:30:00+00:00",
+      "source": "BLS",
+      "source_url": "https://www.bls.gov/news.release/archives/empsit_09042026.htm",
+      "release_date_confirmed": true,
+      "calendar_point_in_time_safe": true,
+      "actual_value": 159075000.0,
+      "actual_point_in_time_safe": true
+    }
+  ],
+  "receipts": [
+    {
+      "source": "FXMacroData MCP",
+      "tool": "release_calendar",
+      "endpoint": "https://mcp.fxmacrodata.com",
+      "fetched_at_utc": "2026-09-10T06:22:27.077740+00:00",
+      "http_status": 200,
+      "sha256": "c1859e8af473fab98126b54a154507240f3a1df6b70aa86b728fc3b9e3a0f565",
+      "authenticated": false
+    },
+    {
+      "source": "FXMacroData MCP",
+      "tool": "indicator_query",
+      "endpoint": "https://mcp.fxmacrodata.com",
+      "fetched_at_utc": "2026-09-10T06:22:27.364001+00:00",
+      "http_status": 200,
+      "sha256": "e0f9803ac100a53b23242ed5fb6ea75c7fef822444bcfead71c590fa24d1d498",
+      "authenticated": false
+    },
+    {
+      "source": "FXMacroData MCP",
+      "tool": "indicator_query",
+      "endpoint": "https://mcp.fxmacrodata.com",
+      "fetched_at_utc": "2026-09-10T06:22:27.667937+00:00",
+      "http_status": 200,
+      "sha256": "0f3012fbaa7433c73d011974b1249f8cc0e100cc1220bacaa2d02e0e8667adb5",
+      "authenticated": false
+    },
+    {
+      "source": "FXMacroData MCP",
+      "tool": "indicator_query",
+      "endpoint": "https://mcp.fxmacrodata.com",
+      "fetched_at_utc": "2026-09-10T06:22:27.968895+00:00",
+      "http_status": 200,
+      "sha256": "757a2f993fc3dbf64ef8dad1610bdf8fcbe790acb59ea976b1d11c87f2615aea",
+      "authenticated": false
+    }
+  ],
+  "quality": {
+    "release_calendar": {
+      "is_official": true,
+      "is_proxy": false,
+      "is_fallback": false,
+      "is_stale": false,
+      "has_announcement_datetime": true,
+      "point_in_time_safe": true,
+      "latest_available_date": "2026-09-10",
+      "data_lag_days": 0,
+      "source_name": "Official release calendars",
+      "source_type": "official",
+      "is_derived": false,
+      "row_count": 64,
+      "announcement_datetime_count": 64,
+      "missing_announcement_datetime_count": 0,
+      "has_assumed_release_times": false,
+      "assumed_release_time_count": 0,
+      "quality_scope": "scheduled_releases"
+    },
+    "indicators": {
+      "NFP": {
+        "is_official": true,
+        "is_proxy": false,
+        "is_fallback": false,
+        "is_stale": false,
+        "has_announcement_datetime": true,
+        "point_in_time_safe": true,
+        "latest_available_date": "2026-08-31",
+        "data_lag_days": 10,
+        "source_name": "BLS",
+        "source_type": "official",
+        "is_derived": false,
+        "row_count": 3,
+        "announcement_datetime_count": 3,
+        "missing_announcement_datetime_count": 0,
+        "has_assumed_release_times": false,
+        "assumed_release_time_count": 0,
+        "quality_scope": "full_result",
+        "stale_after_days": 95,
+        "requested_window_has_data": true,
+        "page_includes_latest_available": true
+      },
+      "CPI": {
+        "is_official": true,
+        "is_proxy": false,
+        "is_fallback": false,
+        "is_stale": false,
+        "has_announcement_datetime": true,
+        "point_in_time_safe": true,
+        "latest_available_date": "2026-07-31",
+        "data_lag_days": 41,
+        "source_name": "BLS",
+        "source_type": "official",
+        "is_derived": false,
+        "row_count": 2,
+        "announcement_datetime_count": 2,
+        "missing_announcement_datetime_count": 0,
+        "has_assumed_release_times": false,
+        "assumed_release_time_count": 0,
+        "quality_scope": "full_result",
+        "stale_after_days": 95,
+        "requested_window_has_data": true,
+        "page_includes_latest_available": true
+      },
+      "FOMC": {
+        "is_official": true,
+        "is_proxy": false,
+        "is_fallback": false,
+        "is_stale": false,
+        "has_announcement_datetime": true,
+        "point_in_time_safe": false,
+        "latest_available_date": "2026-07-29",
+        "data_lag_days": 43,
+        "source_name": "Federal Reserve",
+        "source_type": "official",
+        "is_derived": false,
+        "row_count": 2,
+        "announcement_datetime_count": 2,
+        "missing_announcement_datetime_count": 0,
+        "has_assumed_release_times": true,
+        "assumed_release_time_count": 1,
+        "quality_scope": "full_result",
+        "requested_window_has_data": true,
+        "page_includes_latest_available": true
+      }
+    }
+  }
+}

@@ -1,10 +1,11 @@
 #property copyright "AAA Final News Pulse - NFP/CPI/FOMC straddle"
-#property version   "2.12"
+#property version   "2.13"
 #property strict
 
 #include "AAA_Final_Common.mqh"
 #include "SafeRegimeFilter.mqh"
 #include "DynamicTrailingSessionFilter.mqh"
+#include "NewsPulseTesterCalendar.mqh"
 
 input group "Trading"
 input bool   InpEnableTrading=true;
@@ -33,6 +34,8 @@ input int    InpForceCloseSecondsAfterEvent=120;
 
 input group "Tester"
 input int    InpTesterServerClockMode=0;        // 0 = Exness tester timestamps are UTC; live uses calendar server time
+input int    InpTesterFromDateUTC=0;            // required in Strategy Tester: YYYYMMDD; generated-calendar coverage gate
+input int    InpTesterToDateUTC=0;              // required in Strategy Tester: YYYYMMDD; generated-calendar coverage gate
 
 datetime g_active_event_time=0;
 const double NP_TOTAL_EVENT_RISK_PERCENT=1.50;
@@ -55,6 +58,12 @@ datetime g_cached_event_time=0;
 long     g_cached_event_id=0;
 string   g_cached_event_kind="";
 ulong    g_last_calendar_refresh_ms=0;
+bool     g_tester_calendar_boundary_violation=false;
+int      g_tester_expected_event_count=0;
+int      g_tester_attempted_event_count=0;
+int      g_tester_successful_event_count=0;
+long     g_tester_last_attempted_event_id=0;
+long     g_tester_last_successful_event_id=0;
 
 void NP_RecordBrokerQuote()
 {
@@ -221,44 +230,107 @@ void NP_TrailPositions()
    }
 }
 
-bool NP_DateInList(const int key,const int &dates[])
+int NP_UTCDateKeyFromUTC(const datetime utc_time)
 {
-   for(int i=0;i<ArraySize(dates);i++) if(dates[i]==key) return true;
+   MqlDateTime part;
+   TimeToStruct(utc_time,part);
+   return part.year*10000+part.mon*100+part.day;
+}
+
+bool NP_TesterKindEnabled(const string kind)
+{
+   if(kind=="NFP") return InpWatchNFP;
+   if(kind=="CPI") return InpWatchCPI;
+   if(kind=="FOMC") return InpWatchFOMC;
    return false;
 }
 
-void NP_ConsiderTesterEvent(const bool enabled,const bool date_match,const int hour,const int minute,
-                            const string kind,const datetime now,const MqlDateTime &ny,
-                            datetime &best_time,string &best_kind)
+int NP_TesterExpectedEventCount()
 {
-   if(!enabled || !date_match) return;
-   MqlDateTime release=ny;
-   release.hour=hour; release.min=minute; release.sec=0;
-   datetime candidate=AAA_NewYorkToServer(StructToTime(release));
-   if(candidate<=now || candidate>now+InpPlacementLeadSeconds) return;
-   if(best_time==0 || candidate<best_time) { best_time=candidate; best_kind=kind; }
+   int expected=0;
+   int total=NP_GeneratedCalendarEventCount();
+   for(int i=0;i<total;i++)
+   {
+      int key=NP_UTCDateKeyFromUTC((datetime)NP_GENERATED_EVENT_UTC_EPOCHS[i]);
+      if(key<InpTesterFromDateUTC || key>InpTesterToDateUTC) continue;
+      if(NP_TesterKindEnabled(NP_GENERATED_EVENT_KINDS[i])) expected++;
+   }
+   return expected;
+}
+
+bool NP_ValidateTesterCalendar()
+{
+   if(!(bool)MQLInfoInteger(MQL_TESTER)) return true;
+   if(InpTesterFromDateUTC<=0 || InpTesterToDateUTC<=0)
+   {
+      Print("News Pulse tester blocked: InpTesterFromDateUTC and InpTesterToDateUTC are required. ",
+            "Generate the FXMacroData calendar through the Calyx pipeline and pass the exact test window.");
+      return false;
+   }
+   if(InpTesterFromDateUTC>InpTesterToDateUTC ||
+      InpTesterFromDateUTC<NP_TESTER_CALENDAR_COVERAGE_START_DATE ||
+      InpTesterToDateUTC>NP_TESTER_CALENDAR_COVERAGE_END_DATE)
+   {
+      Print("News Pulse tester blocked: requested UTC window ",InpTesterFromDateUTC,"..",InpTesterToDateUTC,
+            " is outside verified generated-calendar coverage ",NP_TESTER_CALENDAR_COVERAGE_START_DATE,"..",
+            NP_TESTER_CALENDAR_COVERAGE_END_DATE,".");
+      return false;
+   }
+   if(NP_GeneratedCalendarEventCount()!=ArraySize(NP_GENERATED_EVENT_KINDS) ||
+      NP_GeneratedCalendarEventCount()!=NP_TESTER_CALENDAR_EXPECTED_EVENTS)
+   {
+      Print("News Pulse tester blocked: generated calendar arrays or manifest count are inconsistent.");
+      return false;
+   }
+   g_tester_expected_event_count=NP_TesterExpectedEventCount();
+   if(g_tester_expected_event_count<=0)
+   {
+      Print("News Pulse tester blocked: no enabled NFP/CPI/FOMC events exist in the requested verified window.");
+      return false;
+   }
+   Print("News Pulse tester calendar accepted: provider=",NP_GeneratedCalendarProvider(),
+         ", coverage=",NP_TESTER_CALENDAR_COVERAGE_START_DATE,"..",NP_TESTER_CALENDAR_COVERAGE_END_DATE,
+         ", requested=",InpTesterFromDateUTC,"..",InpTesterToDateUTC,
+         ", enabled events=",g_tester_expected_event_count,
+         ", SHA-256=",NP_GeneratedCalendarHash(),".");
+   return true;
 }
 
 bool NP_FindTesterEvent(datetime &event_time,long &event_id,string &kind)
 {
-   // MT5's economic calendar is unavailable in the Strategy Tester. These are
-   // official release/decision dates covering the portfolio's current test year.
-   int nfp_dates[]={20250905,20251120,20251216,20260109,20260211,20260306,
-                    20260403,20260508,20260605,20260702,20260807};
-   int cpi_dates[]={20250812,20250911,20251024,20251218,20260113,20260213,
-                    20260311,20260410,20260512,20260610,20260714,20260812};
-   int fomc_dates[]={20250917,20251029,20251210,20260128,20260318,20260429,
-                     20260617,20260729};
-
+   // MT5 does not expose its economic calendar in Strategy Tester. Exact UTC
+   // release epochs are generated from FXMacroData with a coverage manifest.
+   // Manual date/time assumptions and silent partial schedules are forbidden.
    datetime now=TimeCurrent();
-   MqlDateTime ny;
-   TimeToStruct(AAA_ToNewYork(now),ny);
-   int key=ny.year*10000+ny.mon*100+ny.day;
+   int now_key=NP_UTCDateKeyFromUTC(AAA_ToUTC(now));
+   if(now_key<NP_TESTER_CALENDAR_COVERAGE_START_DATE || now_key>NP_TESTER_CALENDAR_COVERAGE_END_DATE)
+   {
+      if(!g_tester_calendar_boundary_violation)
+      {
+         g_tester_calendar_boundary_violation=true;
+         Print("News Pulse tester stopped: runtime date ",now_key,
+               " escaped generated-calendar coverage ",NP_TESTER_CALENDAR_COVERAGE_START_DATE,"..",
+               NP_TESTER_CALENDAR_COVERAGE_END_DATE,". This partial report must not be used.");
+         ExpertRemove();
+      }
+      return false;
+   }
+
    datetime best=0;
    string best_kind="";
-   NP_ConsiderTesterEvent(InpWatchNFP,NP_DateInList(key,nfp_dates),8,30,"NFP",now,ny,best,best_kind);
-   NP_ConsiderTesterEvent(InpWatchCPI,NP_DateInList(key,cpi_dates),8,30,"CPI",now,ny,best,best_kind);
-   NP_ConsiderTesterEvent(InpWatchFOMC,NP_DateInList(key,fomc_dates),14,0,"FOMC",now,ny,best,best_kind);
+   int total=NP_GeneratedCalendarEventCount();
+   for(int i=0;i<total;i++)
+   {
+      string candidate_kind=NP_GENERATED_EVENT_KINDS[i];
+      if(!NP_TesterKindEnabled(candidate_kind)) continue;
+      datetime candidate=AAA_ToServer((datetime)NP_GENERATED_EVENT_UTC_EPOCHS[i]);
+      if(candidate<=now || candidate>now+InpPlacementLeadSeconds) continue;
+      if(best==0 || candidate<best)
+      {
+         best=candidate;
+         best_kind=candidate_kind;
+      }
+   }
    if(best<=0) return false;
    event_time=best;
    event_id=(long)best;
@@ -437,6 +509,12 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
    }
    if(!buy_ok && !sell_ok) return false;
 
+   if((bool)MQLInfoInteger(MQL_TESTER) && event_id!=g_tester_last_successful_event_id)
+   {
+      g_tester_successful_event_count++;
+      g_tester_last_successful_event_id=event_id;
+   }
+
    g_active_event_time=event_time;
    g_last_event_id=event_id;
    g_event_buy_entry=allow_buy ? buy_entry : 0.0;
@@ -514,6 +592,11 @@ void NP_Run()
    if(event_id==g_attempt_event_id && now-g_last_placement_attempt<5) return;
    g_attempt_event_id=event_id;
    g_last_placement_attempt=now;
+   if((bool)MQLInfoInteger(MQL_TESTER) && event_id!=g_tester_last_attempted_event_id)
+   {
+      g_tester_attempted_event_count++;
+      g_tester_last_attempted_event_id=event_id;
+   }
    NP_SendStraddle(event_time,event_id,kind);
 }
 
@@ -531,6 +614,7 @@ int OnInit()
       return INIT_PARAMETERS_INCORRECT;
    }
    AAA_TesterServerOffsetMode=InpTesterServerClockMode;
+   if(!NP_ValidateTesterCalendar()) return INIT_PARAMETERS_INCORRECT;
    AAA_Trade.SetExpertMagicNumber((ulong)InpMagic);
    AAA_Trade.SetTypeFillingBySymbol(_Symbol);
    AAA_Trade.SetDeviationInPoints(InpMaxDeviationPoints);
@@ -542,7 +626,7 @@ int OnInit()
    EventSetTimer(1);
    string side_mode=InpEnableBuySide && InpEnableSellSide ? "two-sided" :
                     (InpEnableBuySide ? "long-only" : "short-only");
-   Print("AAA Final News Pulse v2.12 loaded on ",_Symbol,
+   Print("AAA Final News Pulse v2.13 loaded on ",_Symbol,
          ". Watches NFP/CPI/FOMC; places at T-",InpPlacementLeadSeconds,
          "s; mode=",side_mode,"; hard risk ",DoubleToString(NP_RISK_PER_STOP_PERCENT,2),
          "% per stop / ",DoubleToString(NP_TOTAL_EVENT_RISK_PERCENT,2),"% maximum planned event exposure; hard exit at T+",
@@ -555,6 +639,19 @@ void OnDeinit(const int reason)
 {
    EventKillTimer();
    NP_SaveState();
+   if((bool)MQLInfoInteger(MQL_TESTER))
+      Print("News Pulse tester calendar audit: expected=",g_tester_expected_event_count,
+            ", attempted=",g_tester_attempted_event_count,
+            ", successfully placed=",g_tester_successful_event_count,
+            ", boundary violation=",(g_tester_calendar_boundary_violation ? "YES" : "NO"),".");
+}
+
+double OnTester()
+{
+   if(g_tester_calendar_boundary_violation) return -1.0;
+   // The runner asserts this equals the manifest's enabled event count. A
+   // smaller value makes the report fail rather than silently omit releases.
+   return (double)g_tester_successful_event_count;
 }
 
 void OnTick()

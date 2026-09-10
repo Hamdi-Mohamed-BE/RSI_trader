@@ -7,6 +7,7 @@ echo   CALYX AVA EAS - 9-EA PF 1.40+ WITH DMC FUTURES DEMO
 echo ============================================================
 echo   Minimum broker contract sizing. No 1%% risk is forced.
 echo   Ava netting protection is enabled.
+echo   News Pulse v2.13 uses MT5 live events and a verified tester calendar.
 echo.
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0Ava Futures Portfolio Research 2026-09-09\Install-AvaFuturesTop10.ps1"
 if errorlevel 1 (

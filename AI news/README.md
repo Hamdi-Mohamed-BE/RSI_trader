@@ -9,11 +9,11 @@ evaluation. `run_weekend_direction_predict.bat` produces an informational
 Friday estimate and never sends an MT5 order.
 
 Prediction-only application for the immediate XAUUSD effect of high-impact USD
-releases. Every supported release receives one result:
+releases. The deployed V9 model always returns one direction plus an action tier:
 
 - `POSITIVE`: expected immediate effect on gold is upward.
 - `NEGATIVE`: expected immediate effect on gold is downward.
-- `NO CALL`: the directional bias failed a confidence or agreement gate.
+- Action tier: `TRADE` or `LOW_CONFIDENCE`; this is informational and never sends an order.
 
 It does not produce trade calls and cannot place, modify, or manage orders.
 
@@ -38,47 +38,89 @@ lead, $20 stop, 4:1 reward/risk, and 720 market-minute maximum hold.
 - CPI
 - FOMC statements
 
-PPI and GDP remain in older research files but are intentionally disabled in
-the live V5 predictor.
+## V9 direction and action tier
+
+V9 promotes the frozen V5/V6 event-specific model bias to a direction for every
+NFP, CPI, and FOMC release. The original validation gate remains visible as
+`TRADE` or `LOW_CONFIDENCE`. Point-in-time consensus and official-nowcast inputs
+remain context-only when their historical provenance or validation is incomplete.
+
+The latest three-month retrospective scored 6/8 directions (75.00%), compared
+with V7 at 5/8 (62.50%). This is not an untouched holdout: V5/V6 was designed
+after part of that period was visible, so future locked releases are required.
+Run `run_news_v9_direction_backtest.bat` to rebuild the report and live artifact.
+
+## V7 full coverage
+
+V7 preserves the three event rules that survived the earlier chronological V2
+development and 2021-2024 guard process:
+
+- NFP: opposite of the previous NFP release-minute direction.
+- CPI: expanding CPI direction majority with Bayesian smoothing.
+- FOMC: opposite of the majority of the last five FOMC reactions.
+
+T-15 and T-30 price-action ensembles now act as confirmation diagnostics. They
+can raise or lower the confidence tier but cannot rewrite the validated primary
+direction. This provides 100% coverage without pretending every direction is a
+high-confidence forecast. Run `run_news_v7_full_coverage_backtest.bat` to rebuild
+the model, one-year report, and three-month breakdown.
+
+Current replay: 20/29 correct (68.97%) over the latest year at 100% coverage.
+NFP scored 70.00%, CPI 72.73%, and FOMC 62.50%. The 95% interval is wide
+(50.77-82.72%), so the next releases remain prospective validation rather than
+proof of a stable 69% edge.
 
 The local archive contains XAUUSD M1 bid/ask release data from 2011 through
 2026. The historical target is the sign of the release-minute midpoint move.
 M1 data cannot identify the exact ordering of a sub-minute spike.
 
-## Pipeline
+## V7 pipeline
 
 1. Build canonical T-30 and T-15 XAUUSD features from completed M1 candles.
-2. Train expanding chronological price-action ensembles using NFP, CPI, and
-   FOMC only.
-3. Select NFP/CPI strategy, polarity, threshold, and optional history
-   agreement on pre-2023 development data plus a separate 2023-May 2026 guard
-   block.
-4. Freeze May 8-August 7, 2026 as the three-month evaluation window.
-5. Treat T-30 as preliminary context only. An active direction requires the
-   final T-15 confidence and agreement gates.
-6. Return `NO CALL` when any required gate fails.
-7. For FOMC, combine the five-meeting history rule with a
-   dedicated T-30 ExtraTrees model trained on prior FOMC meetings.
-8. Call FOMC only when history and model agree, capped at 65% confidence.
-9. Optionally resolve an FOMC disagreement with a point-in-time FedWatch
+2. Apply the frozen event-specific direction rule to every supported release.
+3. Train chronological T-15 and T-30 price-action ensembles as confirmations.
+4. Keep the primary direction when confirmations conflict; lower its confidence tier.
+5. Cap displayed confidence at 68% because the archive does not support stronger claims.
+6. Optionally inspect an FOMC disagreement with a point-in-time FedWatch
    distribution from a 50bp cut through a 50bp hike. The modal target is
    compared with the probability-weighted target; this resolver is capped at
-   60% and refuses near-tied distributions.
-10. Treat the statement and the press conference 30 minutes later as separate
-    shocks. A deterministic post-release statement diff can compare two
-    official Federal Reserve statement URLs.
-11. Audit FOMC behavior against the official San Francisco Fed U.S. Monetary
-    Policy Event-Study Database. Current-meeting shock values are labels only;
-    the model can use earlier shocks, never the shock it is trying to predict.
+   60% and remains context-only until chronologically validated.
+7. Treat the statement and the press conference 30 minutes later as separate
+   shocks. A deterministic post-release statement diff can compare two
+   official Federal Reserve statement URLs.
+8. Audit FOMC behavior against the official San Francisco Fed U.S. Monetary
+   Policy Event-Study Database. Current-meeting shock values are labels only;
+   the model can use earlier shocks, never the shock it is trying to predict.
+9. Query FXMacroData for the official USD release calendar, lagged release
+   history, source provenance, and point-in-time quality flags. The target
+   release actual is always excluded before T-15.
 
-The deployed V5 policy is event-specific. CPI can issue a `POSITIVE` gold call
+## FXMacroData integration
+
+`fxmacrodata.py` is a direct REST adapter for the same data service exposed by
+the configured `https://mcp.fxmacrodata.com` MCP server. It keeps the prediction
+app useful when the MCP was not loaded into the current Codex task.
+
+- Anonymous access supplies official recent announcements and release calendars.
+- Add `FXMACRODATA_API_KEY` to `.env` for entitled endpoints.
+- Forecasts are accepted only when their provenance says
+  `stored_at_generation` and their timestamp is no later than the prediction
+  cutoff. Retrospective reconstructions are rejected.
+- FXMacroData currently has zero directional weight. Its archive must first pass
+  a chronological promotion test; timing and provenance alone do not create a
+  gold-direction edge.
+- Run `run_news_v6_fxmacro_backtest.bat` for the June 10-September 9, 2026 audit.
+- Run `run_news_v6_fxmacro_1y_backtest.bat` for the September 10, 2025-
+  September 9, 2026 retrospective policy replay.
+
+The legacy selective V5 policy is event-specific. CPI can issue a `POSITIVE` gold call
 only while both its long-run and recent positive regimes remain active. FOMC
 keeps the isolated history/model agreement gate. NFP is shadow-bias only before
 publication because no stable pre-release directional edge survived validation.
 Forecast and previous values remain context-only because the repository does
 not contain a licensed point-in-time historical consensus archive.
 
-## Results
+## Legacy selective results
 
 May 8-August 7, 2026 comparison:
 
@@ -176,17 +218,30 @@ saved separately at `models/gold_news_v3_candidate.joblib`.
 
 ## Run
 
-1. Run `run_news_v5_backtest.bat` to rebuild the V5 model and comparison report.
-2. Run `run.bat` to open `http://127.0.0.1:8799`.
-3. Query a supported event 8-30 minutes before its UTC release time.
-4. For FOMC, optionally enter the current target range and the point-in-time
+1. Run `run_news_v9_direction_backtest.bat` to rebuild the V9 direction report and live model.
+2. Run `run_news_v9_direction_1y_backtest.bat` to rebuild the chronological one-year V9 direction comparison.
+3. Run `run_news_v9_risk_1pct_1y.bat` for the $10,000 one-year replay at 1% current-balance risk.
+4. Run `run_news_v8_move_execution_backtest.bat` to rebuild the V8 move-range model and three-month execution report.
+5. Run `run_news_v8_dynamic_compounding_3m.bat` to replay 0.06 lot for every complete $100 of balance.
+6. Run `run_news_v8_one_year_backtest.bat` to replay the older fixed-lot settings over the latest completed year.
+7. Run `run.bat` to open `http://127.0.0.1:8799`.
+8. Query a supported event 8-30 minutes before its UTC release time.
+9. For FOMC, optionally enter the current target range and the point-in-time
    probabilities from a 50bp cut through a 50bp hike.
+
+The MT5 implementation contract is in `MT5_V9_NEWS_EA_SPEC.md`. The isolated
+August 2026 supported-event replay is in `NEWS_V9_AUGUST_2026_REPLAY.md`.
 
 Run `uv run python refresh_usmpd.py` to refresh the official SF Fed event-study
 workbook and monetary-policy-surprise history before rerunning FOMC research.
 
 Each prediction is saved under `predictions/`. The optional post-release form
 can compare actual, forecast, previous, revisions, and official release text.
+
+Live output now includes a signed 25th-to-90th percentile gold-price move range.
+The magnitude forecast uses a pre-release volatility-regime guard and only
+earlier NFP, CPI, and FOMC outcomes. It is an expected range, not a guaranteed
+minimum or maximum.
 
 ## Data integrity
 
@@ -208,7 +263,33 @@ can compare actual, forecast, previous, revisions, and official release text.
 
 ## Main artifacts
 
-- `models/gold_news_v5.joblib`
+- `models/gold_news_v9_direction.joblib`
+- `news_v9_direction.py`
+- `train_news_v9_direction.py`
+- `backtest_news_v9_direction_3m.py`
+- `run_news_v9_direction_backtest.bat`
+- `NEWS_V9_DIRECTION_3M_RESULTS.md`
+- `news_v9_direction_3m_results.json`
+- `models/gold_news_v8_move_range.joblib`
+- `news_v8_move_range.py`
+- `backtest_news_v8_move_execution_3m.py`
+- `NEWS_V8_MOVE_EXECUTION_3M_RESULTS.md`
+- `news_v8_move_execution_3m_results.json`
+- `backtest_news_v8_dynamic_compounding_3m.py`
+- `run_news_v8_dynamic_compounding_3m.bat`
+- `NEWS_V8_DYNAMIC_006_PER_100_3M_RESULTS.md`
+- `news_v8_dynamic_006_per_100_3m_results.json`
+- `backtest_news_v8_one_year.py`
+- `run_news_v8_one_year_backtest.bat`
+- `NEWS_V8_ONE_YEAR_RESULTS.md`
+- `news_v8_one_year_results.json`
+- `news_v8_one_year_trades.csv`
+- `models/gold_news_v7_full_coverage.joblib`
+- `news_v7_full_coverage.py`
+- `backtest_news_v7_full_coverage.py`
+- `NEWS_V7_FULL_COVERAGE_RESULTS.md`
+- `news_v7_full_coverage_results.json`
+- `models/gold_news_v5.joblib` (selective legacy benchmark)
 - `news_v5.py`
 - `backtest_news_v5.py`
 - `NEWS_V5_3M_RESULTS.md`

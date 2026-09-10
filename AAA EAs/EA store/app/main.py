@@ -73,9 +73,22 @@ templates.env.filters["money"] = money
 templates.env.filters["percent"] = percent
 
 
+def _recommended_mode(product: Product) -> str:
+    if product.recommended_dynamic_mode and product.dynamic_mode_supported:
+        return "dynamic"
+    if product.recommended_safe_mode and product.safe_filter_supported:
+        return "safe"
+    return "standard"
+
+
 def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> Product:
-    mode = "safe" if product.recommended_safe_mode else "standard"
-    base_evidence = product.safe_evidence if mode == "safe" else product.evidence
+    # News Pulse v2.13 currently has a shorter but release-complete calendar
+    # audit. Do not let the older fixed-period cache replace those current,
+    # explicitly watch-only figures on catalogue cards.
+    if product.label.startswith("News Pulse "):
+        return product
+    mode = _recommended_mode(product)
+    base_evidence = product.dynamic_evidence if mode == "dynamic" else product.safe_evidence if mode == "safe" else product.evidence
     cached = load_product_summary(product.slug, mode, period)
     if not cached or not cached.get("stats") or base_evidence is None:
         return product
@@ -146,6 +159,7 @@ def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> di
             "label": "Recommended active configuration",
             "individually_filtered_eas": sum(1 for product in get_sellable_catalog() if product.exit_mode == "Dynamic 50/20"),
             "safe_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_safe_mode),
+            "dynamic_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_dynamic_mode),
             "vendor_unchanged_eas": 0,
             "caution": cached.get("notice"),
             "chart": None,
@@ -175,6 +189,7 @@ def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> di
             "label": "Applied per-EA configuration" if mode == "standard" else "Original audited 12 — original exits",
             "individually_filtered_eas": sum(1 for value in data.get("selected_setup", {}).values() if value == "dynamic-only") if mode == "standard" else 0,
             "safe_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_safe_mode),
+            "dynamic_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_dynamic_mode),
             "vendor_unchanged_eas": 0,
             "caution": "Arithmetic overlay of separate locked MT5 tests; not a native shared-margin simultaneous run.",
             "chart": chart if chart.exists() else None,
@@ -318,7 +333,7 @@ async def product_detail(
     if product is None:
         raise HTTPException(status_code=404, detail="EA not found")
     if mode is None:
-        mode = "safe" if product.recommended_safe_mode else "standard"
+        mode = _recommended_mode(product)
     related = [
         item for item in _display_catalog() if item.slug != product.slug and item.asset_group == product.asset_group
     ][:3]
@@ -336,9 +351,14 @@ async def product_detail(
     cached = load_product_summary(product.slug, mode, period)
     if cached and cached.get("stats") and display_evidence is not None:
         stats = cached["stats"]
+        is_news_legacy = product.label.startswith("News Pulse ")
         display_evidence = display_evidence.model_copy(
             update={
-                "label": f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
+                "label": (
+                    f"Historical pre-v2.13 calendar replay — {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)}"
+                    if is_news_legacy
+                    else f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration"
+                ),
                 "period": str(cached["period"]),
                 "return_pct": float(stats.get("return_pct") or 0),
                 "profit_factor": float(stats.get("profit_factor") or 0),
@@ -350,7 +370,12 @@ async def product_detail(
                 "max_win_streak": stats.get("max_win_streak"),
                 "max_loss_streak": stats.get("max_loss_streak"),
                 "history_quality": str(cached.get("history_quality") or "Native MT5 report"),
-                "source_note": str(cached.get("notice")),
+                "source_note": (
+                    "Historical MT5 report generated before the v2.13 FXMacroData calendar integrity gate. "
+                    "It is retained only as long-horizon context and is not claimed as a v2.13 validation."
+                    if is_news_legacy
+                    else str(cached.get("notice"))
+                ),
             }
         )
     context = _base_context(request, "catalogue") | {
@@ -360,6 +385,9 @@ async def product_detail(
         "selected_period": period,
         "period_options": PERIOD_OPTIONS,
         "display_evidence": display_evidence,
+        "verified_schedule_evidence": (
+            product.evidence if product.label.startswith("News Pulse ") else None
+        ),
         "streak_stats": (cached or {}).get("stats", {}),
     }
     return templates.TemplateResponse(request=request, name="detail.html", context=context)
@@ -372,6 +400,8 @@ async def portfolio(
     period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
 ) -> HTMLResponse:
     products = _display_catalog(period)
+    audit_path = STORE_ROOT / "data" / "portfolio-consistency-audit.json"
+    consistency_audit = json.loads(audit_path.read_text(encoding="utf-8-sig")) if audit_path.is_file() else None
     groups: dict[str, list[Product]] = {}
     for product in products:
         groups.setdefault(product.category, []).append(product)
@@ -386,6 +416,7 @@ async def portfolio(
         "selected_period": period,
         "period_options": PERIOD_OPTIONS,
         "portfolio_period_rows": _cached_portfolio_rows(),
+        "consistency_audit": consistency_audit,
         "full_price": sum(product.price for product in products),
         "package_price": 1990,
         "package_url": package_buy_url("Complete Available EA Portfolio", 1990),

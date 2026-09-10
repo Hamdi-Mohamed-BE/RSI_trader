@@ -11,7 +11,7 @@ from calendar_provider import upcoming_us_events
 from news_core import ROOT
 from predict_news import load_env, make_prediction
 from release_intelligence import analyze_release, build_pre_release_packet
-from news_v5 import SUPPORTED_EVENTS
+from news_v9_direction import SUPPORTED_EVENTS
 
 
 load_env()
@@ -148,11 +148,13 @@ def health() -> dict:
         lead: (ROOT / "models" / f"gold_news_impulse_{lead}m.joblib").exists()
         for lead in (15, 30)
     }
-    direction_ready = (ROOT / "models" / "gold_news_v5.joblib").exists()
+    direction_ready = (ROOT / "models" / "gold_news_v9_direction.joblib").exists()
+    magnitude_ready = (ROOT / "models" / "gold_news_v8_move_range.joblib").exists()
     return {
-        "status": "ok" if direction_ready else "model_missing",
+        "status": "ok" if direction_ready and magnitude_ready else "model_missing",
         "models": {
-            "gold_direction_v5": direction_ready,
+            "gold_direction_v9_action_tier": direction_ready,
+            "gold_move_range_v8": magnitude_ready,
             "fomc_ensemble": (
                 ROOT / "fomc_pipeline_backtest.json"
             ).exists(),
@@ -164,11 +166,11 @@ def health() -> dict:
 
 @app.get("/api/backtest")
 def backtest() -> dict:
-    path = ROOT / "news_v5_3m_results.json"
+    path = ROOT / "news_v9_direction_3m_results.json"
     if not path.exists():
         raise HTTPException(
             status_code=404,
-            detail="Run run_news_v5_backtest.bat first.",
+            detail="Run run_news_v9_direction_backtest.bat first.",
         )
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -194,6 +196,93 @@ def upcoming(days: int = 7) -> dict:
     ]
     payload["supported_events"] = list(SUPPORTED_EVENTS)
     return payload
+
+
+@app.get("/api/ea/next")
+def ea_next_event(days: int = 30) -> dict:
+    payload = upcoming_us_events(max(1, min(days, 30)))
+    now = datetime.now(timezone.utc)
+    unique: dict[tuple[str, str], dict] = {}
+    for item in payload.get("events", []):
+        event = str(item.get("event") or "").upper()
+        if event not in SUPPORTED_EVENTS:
+            continue
+        try:
+            release = datetime.fromisoformat(
+                str(item["release_time"]).replace("Z", "+00:00")
+            ).astimezone(timezone.utc)
+        except (KeyError, TypeError, ValueError):
+            continue
+        if release <= now:
+            continue
+        key = (event, release.isoformat())
+        candidate = {
+            "event": event,
+            "release_utc": release.isoformat(),
+            "provider_name": item.get("provider_name"),
+            "forecast": item.get("forecast"),
+            "previous": item.get("previous"),
+        }
+        existing = unique.get(key)
+        if existing is None or str(candidate.get("provider_name", "")).upper().startswith(event):
+            unique[key] = candidate
+    if not unique:
+        return {
+            "status": "NO_EVENT",
+            "server_time_utc": now.isoformat(),
+            "supported_events": list(SUPPORTED_EVENTS),
+            "provider_status": payload.get("status"),
+            "message": payload.get("message", "No supported event was found."),
+        }
+    selected = min(unique.values(), key=lambda row: row["release_utc"])
+    return {
+        "status": "OK",
+        "server_time_utc": now.isoformat(),
+        **selected,
+        "provider": payload.get("provider"),
+    }
+
+
+@app.post("/api/ea/signal")
+def ea_signal(
+    event: str = Form(...),
+    release: str = Form(...),
+    forecast: str | None = Form(None),
+    previous: str | None = Form(None),
+) -> dict:
+    try:
+        parsed = datetime.fromisoformat(
+            release.replace("Z", "+00:00")
+        ).astimezone(timezone.utc)
+        result = make_prediction(
+            event,
+            parsed,
+            forecast=forecast or None,
+            previous=previous or None,
+        )
+        expected = result.get("expected_impulse_range_usd", {})
+        model = result.get("model", {})
+        return {
+            "status": "OK",
+            "generated_at_utc": result["generated_at_utc"],
+            "event": result["event"],
+            "release_utc": result["release_time_utc"],
+            "symbol": result["symbol"],
+            "direction": result["gold_impact"],
+            "confidence_pct": result["confidence_pct"],
+            "confidence_tier": result["confidence_tier"],
+            "action_tier": result["action_tier"],
+            "active_call_allowed": model.get("active_call_allowed", False),
+            "artifact_version": model.get("artifact_version"),
+            "expected_min_abs_usd": expected.get("minimum_absolute_move"),
+            "expected_median_abs_usd": expected.get("median_absolute_move"),
+            "expected_max_abs_usd": expected.get("maximum_absolute_move"),
+            "reused_locked_prediction": result.get(
+                "reused_locked_prediction", False
+            ),
+        }
+    except Exception as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
 
 
 @app.post("/api/predict")

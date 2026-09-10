@@ -352,7 +352,13 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
     all_trades: list[dict[str, Any]] = []
     included: list[dict[str, Any]] = []
     for product in products:
-        selected_mode = "safe" if product.recommended_safe_mode else "standard"
+        selected_mode = (
+            "dynamic"
+            if product.recommended_dynamic_mode and product.dynamic_mode_supported
+            else "safe"
+            if product.recommended_safe_mode
+            else "standard"
+        )
         payload_path = product_cache_path(product.slug, selected_mode, period)
         trades_path = product_trades_path(product.slug, selected_mode, period)
         if not payload_path.is_file() or not trades_path.is_file():
@@ -463,7 +469,13 @@ def main() -> int:
         start = subtract_months(args.end, PERIOD_MONTHS[period])
         portfolio_end = args.end
         if args.portfolio_only and full_catalog:
-            reference_mode = "safe" if full_catalog[0].recommended_safe_mode else "standard"
+            reference_mode = (
+                "dynamic"
+                if full_catalog[0].recommended_dynamic_mode and full_catalog[0].dynamic_mode_supported
+                else "safe"
+                if full_catalog[0].recommended_safe_mode
+                else "standard"
+            )
             reference_path = product_cache_path(full_catalog[0].slug, reference_mode, period)
             if reference_path.is_file():
                 reference = json.loads(reference_path.read_text(encoding="utf-8-sig"))
@@ -472,7 +484,11 @@ def main() -> int:
         if all(
             product_cache_path(
                 product.slug,
-                "safe" if product.recommended_safe_mode else "standard",
+                "dynamic"
+                if product.recommended_dynamic_mode and product.dynamic_mode_supported
+                else "safe"
+                if product.recommended_safe_mode
+                else "standard",
                 period,
             ).is_file()
             for product in full_catalog
@@ -494,7 +510,13 @@ def main() -> int:
                 "label": product.label,
                 "symbol": product.canonical,
                 "timeframe": product.timeframe,
-                "mode": "safe" if product.recommended_safe_mode else "standard",
+                "mode": (
+                    "dynamic"
+                    if product.recommended_dynamic_mode and product.dynamic_mode_supported
+                    else "safe"
+                    if product.recommended_safe_mode
+                    else "standard"
+                ),
             }
             for product in full_catalog
         ],
@@ -502,7 +524,7 @@ def main() -> int:
         "generated_runs": generated,
         "portfolio": portfolio_rows,
         "failures": failures,
-        "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard or Safe mode. Portfolio curves chronologically overlay realized cash flows from those separate tests.",
+        "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard, Safe or Dynamic mode. Portfolio curves chronologically overlay realized cash flows from those separate tests.",
     }
     write_json(CACHE_ROOT / "manifest.json", manifest)
     print(f"MANIFEST {CACHE_ROOT / 'manifest.json'}", flush=True)

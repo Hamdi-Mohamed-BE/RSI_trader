@@ -1,7 +1,7 @@
 {
   "cache_version": "v1",
-  "generated_at": "2026-09-09T07:32:05.471854+00:00",
-  "end_date": "2026-09-01",
+  "generated_at": "2026-09-10T14:45:16.547226+00:00",
+  "end_date": "2026-09-05",
   "periods": [
     {
       "value": "6m",
@@ -50,22 +50,8 @@
       "mode": "standard"
     },
     {
-      "slug": "engineered-liquidity-xau",
-      "label": "Engineered Liquidity XAU",
-      "symbol": "XAUUSD",
-      "timeframe": "H1",
-      "mode": "standard"
-    },
-    {
       "slug": "orb-volume-profile",
       "label": "ORB Volume Profile",
-      "symbol": "XAUUSD",
-      "timeframe": "M5",
-      "mode": "standard"
-    },
-    {
-      "slug": "orb-volume-profile-high-win-0-75r",
-      "label": "ORB Volume Profile High Win 0.75R",
       "symbol": "XAUUSD",
       "timeframe": "M5",
       "mode": "standard"
@@ -173,7 +159,7 @@
       "label": "Sell Nasdaq 15min",
       "symbol": "USTEC",
       "timeframe": "M15",
-      "mode": "standard"
+      "mode": "dynamic"
     },
     {
       "slug": "usdjpy-london-open-momentum",
@@ -181,6 +167,13 @@
       "symbol": "USDJPY",
       "timeframe": "M15",
       "mode": "standard"
+    },
+    {
+      "slug": "xau-squeeze-momentum-standard",
+      "label": "XAU Squeeze Momentum Standard",
+      "symbol": "XAUUSD",
+      "timeframe": "H1",
+      "mode": "safe"
     },
     {
       "slug": "news-pulse-xau",
@@ -239,13 +232,6 @@
       "mode": "standard"
     },
     {
-      "slug": "xag-session-vwap-snapback",
-      "label": "XAG Session VWAP Snapback",
-      "symbol": "XAGUSD",
-      "timeframe": "M30",
-      "mode": "standard"
-    },
-    {
       "slug": "us100-month-end-flow",
       "label": "US100 Month End Flow",
       "symbol": "USTEC",
@@ -253,351 +239,86 @@
       "mode": "standard"
     }
   ],
-  "recommended_ea_count": 33,
-  "generated_runs": [
-    {
-      "slug": "dmc-current-xau",
-      "mode": "standard",
-      "period": "6m",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 10589.92,
-        "net_profit": 589.92,
-        "return_pct": 5.9,
-        "profit_factor": 1.19,
-        "win_rate_pct": 41.38,
-        "max_drawdown_pct": 8.74,
-        "trades": 58,
-        "sharpe_ratio": 1.86,
-        "recovery_factor": 0.61,
-        "history_quality": "100%",
-        "max_win_streak": 3,
-        "max_loss_streak": 7,
-        "from": "2026-03-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-current-xau",
-      "mode": "standard",
-      "period": "1y",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 11208.42,
-        "net_profit": 1208.42,
-        "return_pct": 12.08,
-        "profit_factor": 1.18,
-        "win_rate_pct": 40.52,
-        "max_drawdown_pct": 9.96,
-        "trades": 116,
-        "sharpe_ratio": 1.8,
-        "recovery_factor": 1.01,
-        "history_quality": "99%",
-        "max_win_streak": 5,
-        "max_loss_streak": 7,
-        "from": "2025-09-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-current-xau",
-      "mode": "standard",
-      "period": "3y",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 14671.9,
-        "net_profit": 4671.9,
-        "return_pct": 46.72,
-        "profit_factor": 1.27,
-        "win_rate_pct": 40.8,
-        "max_drawdown_pct": 12.49,
-        "trades": 250,
-        "sharpe_ratio": 1.52,
-        "recovery_factor": 2.89,
-        "history_quality": "98%",
-        "max_win_streak": 6,
-        "max_loss_streak": 9,
-        "from": "2023-09-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-current-xau",
-      "mode": "standard",
-      "period": "5y",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 11158.22,
-        "net_profit": 1158.22,
-        "return_pct": 11.58,
-        "profit_factor": 1.06,
-        "win_rate_pct": 37.97,
-        "max_drawdown_pct": 29.05,
-        "trades": 345,
-        "sharpe_ratio": 0.27,
-        "recovery_factor": 0.38,
-        "history_quality": "98%",
-        "max_win_streak": 5,
-        "max_loss_streak": 12,
-        "from": "2021-09-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-fresh-reaction-xau",
-      "mode": "standard",
-      "period": "6m",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 9969.16,
-        "net_profit": -30.84,
-        "return_pct": -0.31,
-        "profit_factor": 0.97,
-        "win_rate_pct": 33.33,
-        "max_drawdown_pct": 4.87,
-        "trades": 15,
-        "sharpe_ratio": -0.14,
-        "recovery_factor": -0.06,
-        "history_quality": "100%",
-        "max_win_streak": 1,
-        "max_loss_streak": 3,
-        "from": "2026-03-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-fresh-reaction-xau",
-      "mode": "standard",
-      "period": "1y",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 10687.96,
-        "net_profit": 687.96,
-        "return_pct": 6.88,
-        "profit_factor": 1.9,
-        "win_rate_pct": 46.67,
-        "max_drawdown_pct": 3.11,
-        "trades": 15,
-        "sharpe_ratio": 2.62,
-        "recovery_factor": 2.03,
-        "history_quality": "99%",
-        "max_win_streak": 2,
-        "max_loss_streak": 3,
-        "from": "2025-09-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-fresh-reaction-xau",
-      "mode": "standard",
-      "period": "3y",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 13618.1,
-        "net_profit": 3618.1,
-        "return_pct": 36.18,
-        "profit_factor": 2.49,
-        "win_rate_pct": 60.0,
-        "max_drawdown_pct": 4.08,
-        "trades": 55,
-        "sharpe_ratio": 3.77,
-        "recovery_factor": 7.24,
-        "history_quality": "98%",
-        "max_win_streak": 6,
-        "max_loss_streak": 3,
-        "from": "2023-09-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-fresh-reaction-xau",
-      "mode": "standard",
-      "period": "5y",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 12167.93,
-        "net_profit": 2167.93,
-        "return_pct": 21.68,
-        "profit_factor": 1.53,
-        "win_rate_pct": 49.41,
-        "max_drawdown_pct": 15.18,
-        "trades": 85,
-        "sharpe_ratio": 1.31,
-        "recovery_factor": 1.37,
-        "history_quality": "98%",
-        "max_win_streak": 7,
-        "max_loss_streak": 11,
-        "from": "2021-09-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-fresh-reaction-us100",
-      "mode": "standard",
-      "period": "6m",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 10124.78,
-        "net_profit": 124.78,
-        "return_pct": 1.25,
-        "profit_factor": 1.41,
-        "win_rate_pct": 50.0,
-        "max_drawdown_pct": 2.35,
-        "trades": 6,
-        "sharpe_ratio": 0.28,
-        "recovery_factor": 0.51,
-        "history_quality": "100%",
-        "max_win_streak": 2,
-        "max_loss_streak": 1,
-        "from": "2026-03-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-fresh-reaction-us100",
-      "mode": "standard",
-      "period": "1y",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 10368.33,
-        "net_profit": 368.33,
-        "return_pct": 3.68,
-        "profit_factor": 1.88,
-        "win_rate_pct": 66.67,
-        "max_drawdown_pct": 2.99,
-        "trades": 12,
-        "sharpe_ratio": 1.38,
-        "recovery_factor": 1.18,
-        "history_quality": "100%",
-        "max_win_streak": 4,
-        "max_loss_streak": 1,
-        "from": "2025-09-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-fresh-reaction-us100",
-      "mode": "standard",
-      "period": "3y",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 11793.83,
-        "net_profit": 1793.83,
-        "return_pct": 17.94,
-        "profit_factor": 1.99,
-        "win_rate_pct": 65.22,
-        "max_drawdown_pct": 4.39,
-        "trades": 46,
-        "sharpe_ratio": 6.15,
-        "recovery_factor": 3.93,
-        "history_quality": "98%",
-        "max_win_streak": 8,
-        "max_loss_streak": 2,
-        "from": "2023-09-01",
-        "to": "2026-09-01"
-      }
-    },
-    {
-      "slug": "dmc-fresh-reaction-us100",
-      "mode": "standard",
-      "period": "5y",
-      "stats": {
-        "initial_balance": 10000.0,
-        "final_balance": 11422.77,
-        "net_profit": 1422.77,
-        "return_pct": 14.23,
-        "profit_factor": 1.39,
-        "win_rate_pct": 58.54,
-        "max_drawdown_pct": 7.57,
-        "trades": 82,
-        "sharpe_ratio": 2.74,
-        "recovery_factor": 1.81,
-        "history_quality": "98%",
-        "max_win_streak": 8,
-        "max_loss_streak": 3,
-        "from": "2021-09-01",
-        "to": "2026-09-01"
-      }
-    }
-  ],
+  "recommended_ea_count": 31,
+  "generated_runs": [],
   "portfolio": [
     {
       "period": "6m",
       "stats": {
         "initial_balance": 10000.0,
-        "final_balance": 38342.49,
-        "net_profit": 28342.49,
-        "return_pct": 283.42,
-        "profit_factor": 1.64,
-        "win_rate_pct": 43.74,
-        "max_drawdown_pct": 12.44,
-        "max_drawdown_cash": 2171.91,
-        "trades": 951,
+        "final_balance": 37438.63,
+        "net_profit": 27438.63,
+        "return_pct": 274.39,
+        "profit_factor": 1.69,
+        "win_rate_pct": 43.49,
+        "max_drawdown_pct": 11.42,
+        "max_drawdown_cash": 1995.91,
+        "trades": 853,
         "sharpe_ratio": 4.96,
-        "recovery_factor": 13.05,
-        "from": "2026-03-01",
-        "to": "2026-09-01"
+        "recovery_factor": 13.75,
+        "from": "2026-03-05",
+        "to": "2026-09-05"
       },
-      "included_ea_count": 33
+      "included_ea_count": 31
     },
     {
       "period": "1y",
       "stats": {
         "initial_balance": 10000.0,
-        "final_balance": 94083.06,
-        "net_profit": 84083.06,
-        "return_pct": 840.83,
-        "profit_factor": 1.83,
-        "win_rate_pct": 45.52,
-        "max_drawdown_pct": 9.32,
-        "max_drawdown_cash": 2756.5,
-        "trades": 1852,
-        "sharpe_ratio": 8.04,
-        "recovery_factor": 30.5,
-        "from": "2025-09-01",
-        "to": "2026-09-01"
+        "final_balance": 91887.88,
+        "net_profit": 81887.88,
+        "return_pct": 818.88,
+        "profit_factor": 1.88,
+        "win_rate_pct": 45.53,
+        "max_drawdown_pct": 7.99,
+        "max_drawdown_cash": 2536.67,
+        "trades": 1700,
+        "sharpe_ratio": 8.0,
+        "recovery_factor": 32.28,
+        "from": "2025-09-05",
+        "to": "2026-09-05"
       },
-      "included_ea_count": 33
+      "included_ea_count": 31
     },
     {
       "period": "3y",
       "stats": {
         "initial_balance": 10000.0,
-        "final_balance": 203174.33,
-        "net_profit": 193174.33,
-        "return_pct": 1931.74,
-        "profit_factor": 1.62,
-        "win_rate_pct": 45.88,
-        "max_drawdown_pct": 15.0,
-        "max_drawdown_cash": 4369.21,
-        "trades": 4791,
-        "sharpe_ratio": 11.55,
-        "recovery_factor": 44.21,
-        "from": "2023-09-01",
-        "to": "2026-09-01"
+        "final_balance": 196191.4,
+        "net_profit": 186191.4,
+        "return_pct": 1861.91,
+        "profit_factor": 1.67,
+        "win_rate_pct": 45.54,
+        "max_drawdown_pct": 14.14,
+        "max_drawdown_cash": 4003.12,
+        "trades": 4328,
+        "sharpe_ratio": 11.54,
+        "recovery_factor": 46.51,
+        "from": "2023-09-05",
+        "to": "2026-09-05"
       },
-      "included_ea_count": 33
+      "included_ea_count": 31
     },
     {
       "period": "5y",
       "stats": {
         "initial_balance": 10000.0,
-        "final_balance": 201425.74,
-        "net_profit": 191425.74,
-        "return_pct": 1914.26,
-        "profit_factor": 1.42,
-        "win_rate_pct": 43.12,
-        "max_drawdown_pct": 54.48,
-        "max_drawdown_cash": 8500.9,
-        "trades": 7539,
-        "sharpe_ratio": 10.58,
-        "recovery_factor": 22.52,
-        "from": "2021-09-01",
-        "to": "2026-09-01"
+        "final_balance": 199346.74,
+        "net_profit": 189346.74,
+        "return_pct": 1893.47,
+        "profit_factor": 1.47,
+        "win_rate_pct": 42.88,
+        "max_drawdown_pct": 49.88,
+        "max_drawdown_cash": 5183.45,
+        "trades": 6737,
+        "sharpe_ratio": 10.82,
+        "recovery_factor": 36.53,
+        "from": "2021-09-05",
+        "to": "2026-09-05"
       },
-      "included_ea_count": 33
+      "included_ea_count": 31
     }
   ],
   "failures": [],
-  "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard or Safe mode. Portfolio curves chronologically overlay realized cash flows from those separate tests."
+  "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard, Safe or Dynamic mode. Portfolio curves chronologically overlay realized cash flows from those separate tests."
 }
