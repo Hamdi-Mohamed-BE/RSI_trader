@@ -6,14 +6,14 @@ Evidence cutoff: **2026-09-05**. Four removals were applied after explicit user 
 
 | Scenario | Horizon | Return | PF | Win rate | Max DD | Trades |
 |---|---:|---:|---:|---:|---:|---:|
-| Active 31 before Sell Nasdaq mode change | 6m | +276.44% | 1.68 | 43.11% | 12.73% | 863 |
-| Active 31 before Sell Nasdaq mode change | 1y | +810.33% | 1.85 | 45.06% | 9.52% | 1720 |
-| Active 31 before Sell Nasdaq mode change | 3y | +1855.11% | 1.65 | 45.42% | 12.29% | 4392 |
-| Active 31 before Sell Nasdaq mode change | 5y | +1876.56% | 1.45 | 42.72% | 59.23% | 6842 |
-| Recommended active 31 | 6m | +274.39% | 1.69 | 43.49% | 11.42% | 853 |
-| Recommended active 31 | 1y | +818.88% | 1.88 | 45.53% | 7.99% | 1700 |
-| Recommended active 31 | 3y | +1861.91% | 1.67 | 45.54% | 14.14% | 4328 |
-| Recommended active 31 | 5y | +1893.47% | 1.47 | 42.88% | 49.88% | 6737 |
+| Active 32 before Sell Nasdaq mode change | 6m | +276.44% | 1.68 | 43.11% | 12.73% | 863 |
+| Active 32 before Sell Nasdaq mode change | 1y | +810.33% | 1.85 | 45.06% | 9.52% | 1720 |
+| Active 32 before Sell Nasdaq mode change | 3y | +1855.11% | 1.65 | 45.42% | 12.29% | 4392 |
+| Active 32 before Sell Nasdaq mode change | 5y | +1876.56% | 1.45 | 42.72% | 59.23% | 6842 |
+| Recommended active 32 | 6m | +274.39% | 1.69 | 43.49% | 11.42% | 853 |
+| Recommended active 32 | 1y | +818.88% | 1.88 | 45.53% | 7.99% | 1700 |
+| Recommended active 32 | 3y | +1861.91% | 1.67 | 45.54% | 14.14% | 4328 |
+| Recommended active 32 | 5y | +1893.47% | 1.47 | 42.88% | 49.88% | 6737 |
 
 ## Applied mode recommendations
 

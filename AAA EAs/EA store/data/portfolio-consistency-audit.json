@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T14:45:49.570420+00:00",
+  "generated_at": "2026-09-10T22:49:26.374170+00:00",
   "evidence_end": "2026-09-05",
   "method": "All saved native MT5 evidence modes were compared over 6m, 1y, 3y and 5y. Portfolio curves are chronological closed-deal cash-flow overlays on a $10,000 reference balance.",
   "applied_mode_changes": [
@@ -10,7 +10,7 @@
       "to": "dynamic"
     }
   ],
-  "active_ea_count": 31,
+  "active_ea_count": 32,
   "applied_exclusions": [
     {
       "slug": "engineered-liquidity-xau",
@@ -155,6 +155,96 @@
         "max_drawdown_pct": 49.88,
         "trades": 6737,
         "net_profit": 189346.74
+      }
+    }
+  },
+  "adaptive_overlay_comparison": {
+    "6m": {
+      "current": {
+        "return_pct": 274.39,
+        "profit_factor": 1.69,
+        "win_rate_pct": 43.49,
+        "max_drawdown_pct": 11.42,
+        "trades": 853,
+        "commission": -765.3,
+        "swap": -206.92,
+        "total_costs": -972.22
+      },
+      "recommended_adaptive": {
+        "return_pct": 248.55,
+        "profit_factor": 1.91,
+        "win_rate_pct": 43.49,
+        "max_drawdown_pct": 7.42,
+        "trades": 791,
+        "commission": -595.36,
+        "swap": -118.3,
+        "total_costs": -713.66
+      }
+    },
+    "1y": {
+      "current": {
+        "return_pct": 818.88,
+        "profit_factor": 1.88,
+        "win_rate_pct": 45.53,
+        "max_drawdown_pct": 7.99,
+        "trades": 1700,
+        "commission": -1690.91,
+        "swap": -468.28,
+        "total_costs": -2159.19
+      },
+      "recommended_adaptive": {
+        "return_pct": 674.4,
+        "profit_factor": 2.08,
+        "win_rate_pct": 45.75,
+        "max_drawdown_pct": 6.06,
+        "trades": 1517,
+        "commission": -1253.41,
+        "swap": -228.29,
+        "total_costs": -1481.7
+      }
+    },
+    "3y": {
+      "current": {
+        "return_pct": 1861.91,
+        "profit_factor": 1.67,
+        "win_rate_pct": 45.54,
+        "max_drawdown_pct": 14.14,
+        "trades": 4328,
+        "commission": -4418.31,
+        "swap": -2414.48,
+        "total_costs": -6832.79
+      },
+      "recommended_adaptive": {
+        "return_pct": 1382.52,
+        "profit_factor": 1.8,
+        "win_rate_pct": 45.72,
+        "max_drawdown_pct": 8.4,
+        "trades": 3797,
+        "commission": -2924.09,
+        "swap": -1669.79,
+        "total_costs": -4593.88
+      }
+    },
+    "5y": {
+      "current": {
+        "return_pct": 1893.47,
+        "profit_factor": 1.47,
+        "win_rate_pct": 42.88,
+        "max_drawdown_pct": 49.88,
+        "trades": 6737,
+        "commission": -6924.38,
+        "swap": -3139.8,
+        "total_costs": -10064.18
+      },
+      "recommended_adaptive": {
+        "return_pct": 1315.16,
+        "profit_factor": 1.65,
+        "win_rate_pct": 42.65,
+        "max_drawdown_pct": 13.79,
+        "trades": 6207,
+        "commission": -3525.68,
+        "swap": -1724.65,
+        "total_costs": -5250.33
       }
     }
   },
@@ -2462,6 +2552,35 @@
       "5y_win_rate_pct": 64.71,
       "5y_max_drawdown_pct": 1.79,
       "5y_trades": 34
+    },
+    {
+      "slug": "gold-news-v9-direction",
+      "label": "Gold News V9 Direction",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 0.0,
+      "6m_profit_factor": 0.0,
+      "6m_win_rate_pct": 0.0,
+      "6m_max_drawdown_pct": 0.0,
+      "6m_trades": 0,
+      "1y_return_pct": 0.0,
+      "1y_profit_factor": 0.0,
+      "1y_win_rate_pct": 0.0,
+      "1y_max_drawdown_pct": 0.0,
+      "1y_trades": 0,
+      "3y_return_pct": 0.0,
+      "3y_profit_factor": 0.0,
+      "3y_win_rate_pct": 0.0,
+      "3y_max_drawdown_pct": 0.0,
+      "3y_trades": 0,
+      "5y_return_pct": 0.0,
+      "5y_profit_factor": 0.0,
+      "5y_win_rate_pct": 0.0,
+      "5y_max_drawdown_pct": 0.0,
+      "5y_trades": 0
     },
     {
       "slug": "news-pulse-xag",

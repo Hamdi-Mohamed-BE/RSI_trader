@@ -590,7 +590,10 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert "32 EAs with the approved adaptive risk overlay" in response.text
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
-    assert "Approved consistency portfolio is active" in response.text
+    assert "Recommended Adaptive is the active website profile" in response.text
+    assert "+1,315.16%" in response.text
+    assert "49.88%" in response.text
+    assert "13.79%" in response.text
     assert "Approved removals" in response.text
     assert "DMC Current XAU was reviewed separately and remains active" in response.text
     for value in ("6m", "1y", "3y", "5y"):

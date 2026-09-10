@@ -84,7 +84,8 @@ def finite(value: Any, default: float = 0.0) -> float:
 
 
 def payload(slug: str, mode: str, period: str) -> dict[str, Any]:
-    return read_json(PRODUCTS / slug / mode / f"{period}.json")
+    path = PRODUCTS / slug / mode / f"{period}.json"
+    return read_json(path) if path.is_file() else {}
 
 
 def trades(slug: str, mode: str, period: str) -> list[dict[str, Any]]:
@@ -141,6 +142,28 @@ def normalized_period_stats(slug: str, mode: str, period: str) -> dict[str, Any]
         "trade_coverage_to": data.get("trade_coverage_to"),
         "history_quality": data.get("history_quality") or stats.get("history_quality"),
     }
+
+
+def cached_portfolio_comparison() -> dict[str, Any]:
+    comparison: dict[str, Any] = {}
+    for period in PERIODS:
+        current = read_json(CACHE / "portfolio" / "current" / f"{period}.json").get("stats", {})
+        adaptive = read_json(CACHE / "portfolio" / "standard" / f"{period}.json").get("stats", {})
+        fields = (
+            "return_pct",
+            "profit_factor",
+            "win_rate_pct",
+            "max_drawdown_pct",
+            "trades",
+            "commission",
+            "swap",
+            "total_costs",
+        )
+        comparison[period] = {
+            "current": {key: current.get(key) for key in fields},
+            "recommended_adaptive": {key: adaptive.get(key) for key in fields},
+        }
+    return comparison
 
 
 def open_minute(row: dict[str, Any]) -> str:
@@ -281,7 +304,8 @@ def main() -> None:
     one_at_a_time: list[dict[str, Any]] = []
     for item in current:
         slug = item["slug"]
-        folders = sorted(path.name for path in (PRODUCTS / slug).iterdir() if path.is_dir())
+        product_root = PRODUCTS / slug
+        folders = sorted(path.name for path in product_root.iterdir() if path.is_dir()) if product_root.is_dir() else []
         if len(folders) < 2:
             continue
         for mode in folders:
@@ -324,7 +348,8 @@ def main() -> None:
     mode_comparisons: list[dict[str, Any]] = []
     for item in current:
         slug = item["slug"]
-        folders = sorted(path.name for path in (PRODUCTS / slug).iterdir() if path.is_dir())
+        product_root = PRODUCTS / slug
+        folders = sorted(path.name for path in product_root.iterdir() if path.is_dir()) if product_root.is_dir() else []
         if len(folders) < 2:
             continue
         for mode in folders:
@@ -376,6 +401,7 @@ def main() -> None:
             if slug in labels
         ],
         "scenarios": scenarios,
+        "adaptive_overlay_comparison": cached_portfolio_comparison(),
         "one_at_a_time_mode_replacements": one_at_a_time,
         "eligible_mode_interaction_grid": interaction_grid,
         "mode_comparisons": mode_comparisons,
