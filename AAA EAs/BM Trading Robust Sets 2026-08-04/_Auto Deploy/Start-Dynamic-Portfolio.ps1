@@ -7,6 +7,7 @@ param(
     [string]$SafetyMode = '',
     [string]$TargetTerminal = '',
     [switch]$UseRecommendedSelections,
+    [switch]$UseAdaptiveProfile,
     [switch]$ValidateOnly,
     [switch]$PreflightOnly,
     [switch]$Yes
@@ -68,6 +69,7 @@ if (-not $Yes -and -not $ValidateOnly) {
 
 $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $installer, '-AccountProfile', 'AUTO', '-RiskMode', $RiskMode, '-RiskValue', $RiskValue, '-SafetyMode', $SafetyMode)
 if ($UseRecommendedSelections) { $arguments += '-UseRecommendedSelections' }
+if ($UseAdaptiveProfile) { $arguments += '-UseAdaptiveProfile' }
 if ($Yes) { $arguments += '-Yes' }
 if ($ValidateOnly) { $arguments += '-ValidateOnly' }
 if ($PreflightOnly) { $arguments += '-PreflightOnly' }

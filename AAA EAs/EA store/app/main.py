@@ -137,12 +137,12 @@ def _base_context(request: Request, active: str) -> dict[str, Any]:
 
 
 def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> dict[str, Any]:
-    cached = load_portfolio_summary("standard", period) if mode == "standard" else None
+    cached = load_portfolio_summary(mode, period) if mode in {"standard", "current"} else None
     if cached and cached.get("stats"):
         combined = cached["stats"]
         return {
             "available": True,
-            "tested_eas": int(cached.get("included_ea_count", 0)),
+            "tested_eas": int(cached.get("tested_ea_count", cached.get("included_ea_count", 0))),
             "initial": float(combined["initial_balance"]),
             "final": float(combined["final_balance"]),
             "net": float(combined["net_profit"]),
@@ -153,10 +153,10 @@ def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> di
             "realized_balance_dd_pct": float(combined["max_drawdown_pct"]),
             "sharpe_ratio": float(combined.get("sharpe_ratio") or 0),
             "recovery_factor": float(combined.get("recovery_factor") or 0),
-            "verdict": "PRECOMPUTED RECOMMENDED PORTFOLIO",
+            "verdict": "PRECOMPUTED RECOMMENDED ADAPTIVE PORTFOLIO" if mode == "standard" else "PRECOMPUTED CURRENT PORTFOLIO",
             "period": str(cached["period"]),
             "mode": mode,
-            "label": "Recommended active configuration",
+            "label": "Recommended adaptive configuration" if mode == "standard" else "Current configuration",
             "individually_filtered_eas": sum(1 for product in get_sellable_catalog() if product.exit_mode == "Dynamic 50/20"),
             "safe_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_safe_mode),
             "dynamic_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_dynamic_mode),

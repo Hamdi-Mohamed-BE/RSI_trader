@@ -18,6 +18,7 @@ if str(STORE_ROOT) not in sys.path:
     sys.path.insert(0, str(STORE_ROOT))
 
 from app.catalog import PACKAGE_ROOT, Product, get_sellable_catalog  # noqa: E402
+from app.adaptive_portfolio import RULES as ADAPTIVE_RULES, simulate_adaptive_portfolio  # noqa: E402
 from app.evidence_cache import (  # noqa: E402
     CACHE_ROOT,
     PERIOD_OPTIONS,
@@ -177,6 +178,14 @@ def product_payload(product: Product, mode: str, period: str, start: date, end: 
         trade["source"] = "Precomputed native MT5 deals"
     trades = enrich_trades(trades, product.slug)
     native.update(outcome_streaks(trades))
+    native.update(
+        {
+            "gross_profit_before_costs": round(sum(float(trade.get("gross_profit") or 0.0) for trade in trades), 2),
+            "commission": round(sum(float(trade.get("commission") or 0.0) for trade in trades), 2),
+            "swap": round(sum(float(trade.get("swap") or 0.0) for trade in trades), 2),
+            "total_costs": round(sum(float(trade.get("total_costs") or 0.0) for trade in trades), 2),
+        }
+    )
     initial = float(native.get("initial_balance", 10_000) or 10_000)
     if not series:
         series = [{"time": f"{start.isoformat()}T00:00:00", "balance": initial}]
@@ -251,6 +260,10 @@ def portfolio_metrics(trades: list[dict[str, Any]], start: date, end: date) -> t
         "trades": len(outcomes),
         "sharpe_ratio": round(sharpe, 2) if sharpe is not None else None,
         "recovery_factor": round(net / maximum_drawdown_cash, 2) if maximum_drawdown_cash else None,
+        "gross_profit_before_costs": round(sum(float(row.get("gross_profit") if row.get("gross_profit") is not None else float(row.get("net_profit") or 0.0) - float(row.get("commission") or 0.0) - float(row.get("swap") or 0.0)) for row in ordered), 2),
+        "commission": round(sum(float(row.get("commission") or 0.0) for row in ordered), 2),
+        "swap": round(sum(float(row.get("swap") or 0.0) for row in ordered), 2),
+        "total_costs": round(sum(float(row.get("commission") or 0.0) + float(row.get("swap") or 0.0) for row in ordered), 2),
         "from": start.isoformat(),
         "to": end.isoformat(),
     }
@@ -362,6 +375,16 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
         payload_path = product_cache_path(product.slug, selected_mode, period)
         trades_path = product_trades_path(product.slug, selected_mode, period)
         if not payload_path.is_file() or not trades_path.is_file():
+            included.append(
+                {
+                    "slug": product.slug,
+                    "label": product.label,
+                    "symbol": product.canonical,
+                    "timeframe": product.timeframe,
+                    "mode": selected_mode,
+                    "available": False,
+                }
+            )
             continue
         payload = json.loads(payload_path.read_text(encoding="utf-8-sig"))
         product_trades = json.loads(trades_path.read_text(encoding="utf-8-sig"))
@@ -373,6 +396,7 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
                 "symbol": product.canonical,
                 "timeframe": product.timeframe,
                 "mode": selected_mode,
+                "available": True,
                 "net_profit": payload["stats"].get("net_profit"),
                 "return_pct": payload["stats"].get("return_pct"),
                 "profit_factor": payload["stats"].get("profit_factor"),
@@ -381,34 +405,98 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
                 "trades": payload["stats"].get("trades"),
             }
         )
-    stats, series = portfolio_metrics(all_trades, start, end)
-    analytics = portfolio_analytics(all_trades, series, float(stats["initial_balance"]))
-    included.sort(key=lambda row: float(row.get("net_profit") or 0.0), reverse=True)
+    current_stats, current_series = portfolio_metrics(all_trades, start, end)
+    current_analytics = portfolio_analytics(all_trades, current_series, float(current_stats["initial_balance"]))
+    adaptive_trades, activations, skipped_by_ea = simulate_adaptive_portfolio(all_trades)
+    stats, series = portfolio_metrics(adaptive_trades, start, end)
+    analytics = portfolio_analytics(adaptive_trades, series, float(stats["initial_balance"]))
+
+    comparison_rows: list[dict[str, Any]] = []
+    for row in included:
+        slug = str(row["slug"])
+        if not row.get("available"):
+            comparison_rows.append({**row, "current": {}, "recommended": {}, "skipped_trades": 0})
+            continue
+        current_ea_trades = [trade for trade in all_trades if str(trade.get("cache_slug") or "") == slug]
+        adaptive_ea_trades = [trade for trade in adaptive_trades if str(trade.get("cache_slug") or "") == slug]
+        current_ea, _ = portfolio_metrics(current_ea_trades, start, end)
+        recommended_ea, _ = portfolio_metrics(adaptive_ea_trades, start, end)
+        comparison_rows.append(
+            {
+                **row,
+                "net_profit": recommended_ea["net_profit"],
+                "return_pct": recommended_ea["return_pct"],
+                "profit_factor": recommended_ea["profit_factor"],
+                "win_rate_pct": recommended_ea["win_rate_pct"],
+                "max_drawdown_pct": recommended_ea["max_drawdown_pct"],
+                "trades": recommended_ea["trades"],
+                "current": current_ea,
+                "recommended": recommended_ea,
+                "skipped_trades": int(skipped_by_ea.get(slug, 0)),
+            }
+        )
+    comparison_rows.sort(key=lambda row: float(row["recommended"].get("net_profit") or 0.0), reverse=True)
     first_trade_at = min((str(trade["open_time"]) for trade in all_trades), default=None)
     last_trade_at = max((str(trade["close_time"]) for trade in all_trades), default=None)
-    payload = {
-        "label": f"Recommended {len(included)}-EA portfolio",
+    tested_count = sum(bool(row.get("available")) for row in included)
+    current_payload = {
+        "label": f"Current {tested_count}-EA tested portfolio",
         "period": f"{start.isoformat()} to {end.isoformat()}",
         "period_key": period,
-        "mode": "recommended",
+        "mode": "current",
         "currency": "USD",
-        "series": sample_series(series),
-        "stats": stats,
+        "series": sample_series(current_series),
+        "stats": current_stats,
         "available_from": start.isoformat(),
         "available_to": end.isoformat(),
         "cached_trade_count": len(all_trades),
         "trade_coverage_from": first_trade_at,
         "trade_coverage_to": last_trade_at,
         "included_eas": included,
-        "analytics": analytics,
+        "analytics": current_analytics,
         "included_ea_count": len(included),
+        "tested_ea_count": tested_count,
         "expected_ea_count": len(products),
-        "notice": "Precomputed chronological cash-flow overlay of separate native MT5 tests using each EA's recommended Standard or Safe mode; this is not a simultaneous shared-margin MT5 run.",
+        "notice": "Current chronological cash-flow overlay of separate native MT5 tests using each EA's selected mode. Commission and swap are included in every net result.",
         "source": "precomputed-native-mt5-cache",
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
+    payload = {
+        "label": f"Recommended adaptive {tested_count}-EA tested portfolio",
+        "period": f"{start.isoformat()} to {end.isoformat()}",
+        "period_key": period,
+        "mode": "recommended-adaptive",
+        "currency": "USD",
+        "series": sample_series(series),
+        "stats": stats,
+        "datasets": [
+            {"label": "Recommended adaptive", "color": "#7ef7c7", "series": sample_series(series), "stats": stats},
+            {"label": "Current profile", "color": "#68a7ff", "series": sample_series(current_series), "stats": current_stats},
+        ],
+        "available_from": start.isoformat(),
+        "available_to": end.isoformat(),
+        "cached_trade_count": len(adaptive_trades),
+        "trade_coverage_from": first_trade_at,
+        "trade_coverage_to": last_trade_at,
+        "included_eas": comparison_rows,
+        "analytics": analytics,
+        "included_ea_count": len(included),
+        "tested_ea_count": tested_count,
+        "expected_ea_count": len(products),
+        "candidate_trade_count": len(all_trades),
+        "skipped_trade_count": len(all_trades) - len(adaptive_trades),
+        "adaptive_activations": activations,
+        "adaptive_rules": list(ADAPTIVE_RULES),
+        "notice": "Recommended adaptive replay of the existing native MT5 trade ledger. Net P/L includes commission and swap; scaled costs are proportional to modelled position size. This is not a simultaneous shared-margin MT5 run.",
+        "source": "adaptive-replay-of-native-mt5-cache",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    write_json(portfolio_cache_path("current", period), current_payload)
+    write_json(portfolio_trades_path("current", period), sorted(all_trades, key=lambda row: str(row["close_time"])))
     write_json(portfolio_cache_path("standard", period), payload)
-    write_json(portfolio_trades_path("standard", period), sorted(all_trades, key=lambda row: str(row["close_time"])))
+    write_json(portfolio_trades_path("standard", period), adaptive_trades)
+    write_json(portfolio_cache_path("recommended-adaptive", period), payload)
+    write_json(portfolio_trades_path("recommended-adaptive", period), adaptive_trades)
     return payload
 
 
@@ -420,6 +508,7 @@ def main() -> int:
     parser.add_argument("--dynamic", action="store_true", help="Also generate saved Dynamic London mode when available.")
     parser.add_argument("--force", action="store_true", help="Ignore reusable native source reports.")
     parser.add_argument("--portfolio-only", action="store_true", help="Only rebuild portfolio caches from existing EA caches.")
+    parser.add_argument("--reparse-cached-sources", action="store_true", help="Rebuild existing product caches from retained native reports without launching MT5.")
     parser.add_argument("--end", type=date.fromisoformat, default=date.today())
     args = parser.parse_args()
 
@@ -434,7 +523,24 @@ def main() -> int:
     failures: list[dict[str, str]] = []
     generated: list[dict[str, Any]] = []
 
-    if not args.portfolio_only:
+    if args.reparse_cached_sources:
+        for product in products:
+            modes = ["standard"] + (["safe"] if product.safe_filter_supported else []) + (["dynamic"] if product.dynamic_mode_supported else [])
+            for mode in modes:
+                for period in periods:
+                    report, _ = source_paths(product, mode, period)
+                    summary_path = product_cache_path(product.slug, mode, period)
+                    if not report.is_file() or not summary_path.is_file():
+                        continue
+                    old_summary = json.loads(summary_path.read_text(encoding="utf-8-sig"))
+                    start = date.fromisoformat(str(old_summary["available_from"]))
+                    end = date.fromisoformat(str(old_summary["available_to"]))
+                    payload, trades = product_payload(product, mode, period, start, end, report)
+                    write_json(summary_path, payload)
+                    write_json(product_trades_path(product.slug, mode, period), trades)
+                    generated.append({"slug": product.slug, "mode": mode, "period": period, "stats": payload["stats"]})
+                    print(f"REPARSED {product.label} {mode} {period}: {len(trades)} trades with broker costs", flush=True)
+    elif not args.portfolio_only:
         removed = cleanup_stale_dynamic_artifacts()
         print(f"CLEANUP removed {removed} stale isolated-tester artifacts", flush=True)
         for product in products:
@@ -468,7 +574,7 @@ def main() -> int:
     for period in periods:
         start = subtract_months(args.end, PERIOD_MONTHS[period])
         portfolio_end = args.end
-        if args.portfolio_only and full_catalog:
+        if (args.portfolio_only or args.reparse_cached_sources) and full_catalog:
             reference_mode = (
                 "dynamic"
                 if full_catalog[0].recommended_dynamic_mode and full_catalog[0].dynamic_mode_supported
@@ -481,23 +587,9 @@ def main() -> int:
                 reference = json.loads(reference_path.read_text(encoding="utf-8-sig"))
                 start = date.fromisoformat(str(reference["available_from"]))
                 portfolio_end = date.fromisoformat(str(reference["available_to"]))
-        if all(
-            product_cache_path(
-                product.slug,
-                "dynamic"
-                if product.recommended_dynamic_mode and product.dynamic_mode_supported
-                else "safe"
-                if product.recommended_safe_mode
-                else "standard",
-                period,
-            ).is_file()
-            for product in full_catalog
-        ):
-            portfolio = build_portfolio(full_catalog, period, start, portfolio_end)
-            portfolio_rows.append({"period": period, "stats": portfolio["stats"], "included_ea_count": portfolio["included_ea_count"]})
-            print(f"PORTFOLIO {period}: {portfolio['stats']}", flush=True)
-        else:
-            print(f"PORTFOLIO {period}: waiting for all {len(full_catalog)} recommended-mode EA caches", flush=True)
+        portfolio = build_portfolio(full_catalog, period, start, portfolio_end)
+        portfolio_rows.append({"period": period, "stats": portfolio["stats"], "included_ea_count": portfolio["included_ea_count"], "tested_ea_count": portfolio["tested_ea_count"]})
+        print(f"PORTFOLIO {period}: {portfolio['stats']}", flush=True)
 
     manifest = {
         "cache_version": "v1",
@@ -521,10 +613,14 @@ def main() -> int:
             for product in full_catalog
         ],
         "recommended_ea_count": len(full_catalog),
+        "tested_ea_count": portfolio_rows[-1]["tested_ea_count"] if portfolio_rows else 0,
+        "active_portfolio_mode": "recommended-adaptive",
+        "adaptive_rules": list(ADAPTIVE_RULES),
+        "cost_accounting": "Commission and swap are parsed separately from native MT5 entry and exit deals and are included in net P/L. Adaptive costs scale linearly with the modelled position size.",
         "generated_runs": generated,
         "portfolio": portfolio_rows,
         "failures": failures,
-        "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard, Safe or Dynamic mode. Portfolio curves chronologically overlay realized cash flows from those separate tests.",
+        "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard, Safe or Dynamic mode. The current portfolio chronologically overlays those realized cash flows; the website default applies the approved Recommended Adaptive rules to the same signals without claiming a shared-margin MT5 run.",
     }
     write_json(CACHE_ROOT / "manifest.json", manifest)
     print(f"MANIFEST {CACHE_ROOT / 'manifest.json'}", flush=True)

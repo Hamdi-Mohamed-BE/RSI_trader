@@ -206,15 +206,17 @@ def test_recommended_safe_eas_default_to_safe_evidence_and_are_tagged() -> None:
 
 def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     products = get_sellable_catalog()
-    assert all(len(product.logic) == 6 for product in products)
-    assert all(step.title and len(step.detail) >= 80 for product in products for step in product.logic)
+    runtime_only = {"Gold News V9 Direction"}
+    assert all(len(product.logic) == 6 for product in products if product.label not in runtime_only)
+    assert all(step.title and len(step.detail) >= 80 for product in products if product.label not in runtime_only for step in product.logic)
 
     compiled_only: set[str] = set()
     assert {product.label for product in products if product.logic_audit == "Input-audited binary"} == compiled_only
+    assert {product.label for product in products if product.logic_audit == "Preset summary"} == runtime_only
     assert all(
         product.logic_audit == "Source-code verified"
         for product in products
-        if product.label not in compiled_only
+        if product.label not in compiled_only | runtime_only
     )
 
     by_name = {product.label: product for product in products}
@@ -241,10 +243,10 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
 
 def test_recommended_exit_settings_are_synced_per_ea() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 31
+    assert len(products) == 32
     assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 8
     assert sum(product.exit_mode == "Dynamic 60/20 only" for product in products) == 1
-    assert sum(product.exit_mode == "Current EA exits" for product in products) == 5
+    assert sum(product.exit_mode == "Current EA exits" for product in products) == 6
     assert sum(product.exit_mode == "Native 60-second exit" for product in products) == 3
     assert sum(product.exit_mode == "Fixed 5R / no trailing" for product in products) == 1
     assert sum(product.exit_mode == "Native 1.5R / BE at 0.5R" for product in products) == 1
@@ -412,6 +414,11 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     bat_text = recommended_bat.read_text(encoding="utf-8")
     assert "-SafetyMode STANDARD" in bat_text
     assert "-UseRecommendedSelections" in bat_text
+    adaptive_bat = PACKAGE_ROOT / "RECOMMENDED ADAPTIVE.bat"
+    assert adaptive_bat.is_file()
+    adaptive_bat_text = adaptive_bat.read_text(encoding="utf-8")
+    assert "-UseRecommendedSelections" in adaptive_bat_text
+    assert "-UseAdaptiveProfile" in adaptive_bat_text
     assert "RecommendedDynamic = $true" in (PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1").read_text(encoding="utf-8")
 
     btc_fvg = next(product for product in products if product.label == "BTC Top Down FVG Liquidity")
@@ -559,6 +566,9 @@ def test_api_and_evidence_chart() -> None:
 
     for item in get_sellable_catalog():
         series = client.get(f"/api/evidence/{item.slug}/series")
+        if item.evidence is None:
+            assert series.status_code == 404, item.label
+            continue
         assert series.status_code == 200, item.label
         payload = series.json()
         assert payload["label"] == item.label
@@ -577,7 +587,7 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "Precomputed recommended-portfolio evidence" in response.text
-    assert "31 EAs, synchronized" in response.text
+    assert "32 EAs with the approved adaptive risk overlay" in response.text
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     assert "Approved consistency portfolio is active" in response.text
@@ -593,7 +603,9 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     series = client.get("/api/portfolio/equity-series")
     assert series.status_code == 200
     assert len(series.json()["series"]) >= 2
-    assert series.json()["included_ea_count"] == 31
+    assert series.json()["included_ea_count"] == 32
+    assert series.json()["tested_ea_count"] == 31
+    assert series.json()["mode"] == "recommended-adaptive"
     assert series.headers["x-evidence-cache"] == "HIT"
     assert "/api/portfolio/equity-series" in response.text
     assert "/portfolio/equity.png" not in response.text
@@ -602,8 +614,9 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
 
 def test_every_public_ea_uses_supported_evidence_period() -> None:
     products = get_sellable_catalog()
-    assert all(product.evidence is not None for product in products)
-    for product in products:
+    runtime_only = [product for product in products if product.evidence is None]
+    assert [product.label for product in runtime_only] == ["Gold News V9 Direction"]
+    for product in (product for product in products if product.evidence is not None):
         start_text, end_text = product.evidence.period.split(" to ")
         duration = (date.fromisoformat(end_text) - date.fromisoformat(start_text)).days
         if product.evidence.status == "Watch only — verified schedule":
@@ -612,7 +625,7 @@ def test_every_public_ea_uses_supported_evidence_period() -> None:
             assert "not enough evidence" in (product.evidence.caution or "")
         else:
             assert 364 <= duration <= 3660
-    assert all(product.one_year_evidence == product.evidence for product in products)
+    assert all(product.one_year_evidence == product.evidence for product in products if product.evidence is not None)
     for route in ("/", "/eas", "/portfolio", "/risk", *(f"/eas/{product.slug}" for product in products)):
         response = client.get(route)
         assert "five-year" not in response.text.lower()
@@ -628,7 +641,7 @@ def test_missing_product_returns_branded_404() -> None:
 def test_home_ranks_all_available_eas_by_default_three_year_return() -> None:
     products = _display_catalog()
     returns = [product.one_year_return_pct for product in products]
-    assert all(value is not None for value in returns)
+    assert sum(value is None for value in returns) == 1
 
     ranked = sorted(products, key=lambda product: product.one_year_return_pct or float("-inf"), reverse=True)
     response = client.get("/store")
@@ -650,7 +663,7 @@ def test_ea_catalogue_supports_metric_sorting_and_symbol_filtering() -> None:
     assert "Lowest drawdown" in page.text
     assert "Highest return" in page.text
     assert 'id="asset-filter"' in page.text
-    assert "XAUUSD (17)" in page.text
+    assert "XAUUSD (18)" in page.text
     assert 'data-pf=' in page.text
     assert 'data-win=' in page.text
     assert 'data-dd=' in page.text
@@ -703,7 +716,7 @@ def test_fixed_cached_evidence_periods_and_pricing_bundle() -> None:
     payload = response.json()
     assert payload["period_key"] == "6m"
     assert set(payload["stats"]) >= {"return_pct", "profit_factor", "win_rate_pct", "max_drawdown_pct", "trades", "sharpe_ratio", "recovery_factor", "max_win_streak", "max_loss_streak"}
-    assert all("source" in trade for trade in payload["trades"])
+    assert all(set(trade) >= {"source", "commission", "swap", "gross_profit"} for trade in payload["trades"])
 
     portfolio = client.get(
         "/api/portfolio/equity-series",
@@ -711,6 +724,11 @@ def test_fixed_cached_evidence_periods_and_pricing_bundle() -> None:
     )
     assert portfolio.status_code == 200
     assert portfolio.json()["included_ea_count"] == len(get_sellable_catalog())
+    assert portfolio.json()["tested_ea_count"] == len(get_sellable_catalog()) - 1
+    assert portfolio.json()["mode"] == "recommended-adaptive"
+    assert set(portfolio.json()["stats"]) >= {"commission", "swap", "total_costs", "gross_profit_before_costs"}
+    assert [dataset["label"] for dataset in portfolio.json()["datasets"]] == ["Recommended adaptive", "Current profile"]
+    assert all(set(row) >= {"current", "recommended", "skipped_trades"} for row in portfolio.json()["included_eas"])
     assert set(portfolio.json()["analytics"]) >= {"trade_stats", "drawdown_series", "assets", "monthly_pnl", "directions"}
 
     detail = client.get(f"/eas/{product.slug}")
@@ -783,14 +801,14 @@ def test_outcome_streaks_are_ordered_and_break_even_is_neutral() -> None:
 
 def test_all_recommended_eas_and_portfolio_have_every_fixed_cache() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 31
+    assert len(products) == 32
     periods = ("6m", "1y", "3y", "5y")
     for period in periods:
         portfolio = client.get("/api/portfolio/equity-series", params={"period": period})
         assert portfolio.status_code == 200, period
         assert portfolio.json()["included_ea_count"] == len(products)
         assert portfolio.json()["stats"]["trades"] == portfolio.json()["cached_trade_count"]
-    for product in products:
+    for product in (product for product in products if product.evidence is not None):
         for period in periods:
             response = client.get(f"/api/evidence/{product.slug}/series", params={"period": period})
             assert response.status_code == 200, f"{product.label} {period}"

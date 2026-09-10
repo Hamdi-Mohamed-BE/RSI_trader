@@ -187,7 +187,10 @@
     const priceMove = trade.price_move == null
       ? '—'
       : `${signedValue(trade.price_move)} ${escapeHtml(trade.price_move_unit || 'points')}`;
-    row.innerHTML = `<td>${shortDate(trade.close_time)}</td><td class="table-ea">${escapeHtml(trade.ea)}</td><td>${escapeHtml(trade.result)}</td><td class="${resultClass}">${money(Number(trade.net_profit))}</td><td class="${resultClass}" title="Estimated from the configured equity-risk budget at entry">${rValue}</td><td class="${Number(trade.price_move) >= 0 ? 'pnl-positive' : 'pnl-negative'}">${priceMove}</td><td>${escapeHtml(trade.source)}</td>${chartAction}`;
+    const commission = Number(trade.commission || 0);
+    const swap = Number(trade.swap || 0);
+    const costTitle = escapeHtml(trade.cost_basis || 'Native MT5 deal cost');
+    row.innerHTML = `<td>${shortDate(trade.close_time)}</td><td class="table-ea">${escapeHtml(trade.ea)}</td><td>${escapeHtml(trade.result)}</td><td class="${resultClass}">${money(Number(trade.net_profit))}</td><td class="${commission < 0 ? 'pnl-negative' : ''}" title="${costTitle}">${money(commission)}</td><td class="${swap < 0 ? 'pnl-negative' : swap > 0 ? 'pnl-positive' : ''}" title="${costTitle}">${money(swap)}</td><td class="${resultClass}" title="Estimated from the configured equity-risk budget at entry">${rValue}</td><td class="${Number(trade.price_move) >= 0 ? 'pnl-positive' : 'pnl-negative'}">${priceMove}</td><td>${escapeHtml(trade.source)}</td>${chartAction}`;
     return row;
   }
 
@@ -201,7 +204,7 @@
     body.replaceChildren();
     if (!pageTrades.length) {
       const row = document.createElement('tr');
-      row.innerHTML = `<td colspan="${supportsTradeCharts ? 8 : 7}" class="empty-table">No closed trades in this selected period.</td>`;
+      row.innerHTML = `<td colspan="${supportsTradeCharts ? 10 : 9}" class="empty-table">No closed trades in this selected period.</td>`;
       body.appendChild(row);
     } else {
       pageTrades.forEach((trade) => body.appendChild(tradeRow(trade, supportsTradeCharts)));
@@ -295,7 +298,7 @@
         stats.sharpe_ratio == null ? null : `Sharpe ${Number(stats.sharpe_ratio).toFixed(2)}`,
         stats.recovery_factor == null ? null : `Recovery ${Number(stats.recovery_factor).toFixed(2)}`,
       ].filter(Boolean).join(' · ');
-      const tradeSource = payload.source === 'precomputed-native-mt5-cache' || payload.source === 'native-mt5-background-job'
+      const tradeSource = ['precomputed-native-mt5-cache', 'native-mt5-background-job', 'adaptive-replay-of-native-mt5-cache'].includes(payload.source)
         ? 'Trade rows are parsed directly from native MT5 deals.'
         : 'Trade rows are reconstructed from archived MT5 balance events.';
       const displayLimit = Number(payload.cached_trade_count) > Number(payload.displayed_trade_count)
@@ -426,7 +429,7 @@
     (analytics.directions||[]).forEach((row)=>{const card=document.createElement('div');const isLong=row.side==='Long';card.className=`direction-card ${isLong?'long':'short'}`;card.innerHTML=`<div class="direction-card-header"><strong>${isLong?'↗ Bullish (LONG)':'↘ Bearish (SHORT)'}</strong><span>${Number(row.trades).toLocaleString('en-US')} trades · ${Number(row.trade_share_pct).toFixed(1)}%</span></div><div class="direction-metrics"><div><span>Win rate</span><strong>${Number(row.win_rate_pct||0).toFixed(2)}%</strong></div><div><span>Wins</span><strong>${Number(row.wins).toLocaleString('en-US')}</strong></div><div><span>Average P/L</span><strong class="${Number(row.avg_pnl)>=0?'pnl-positive':'pnl-negative'}">${money(Number(row.avg_pnl||0))}</strong></div></div>`;directionGrid.appendChild(card);const share=container.querySelector(isLong?'[data-direction-long-share]':'[data-direction-short-share]');if(share)share.style.width=`${Number(row.trade_share_pct||0)}%`;});
     const assetBody=container.querySelector('[data-asset-breakdown-body]');assetBody.replaceChildren();(analytics.assets||[]).forEach((row)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${escapeHtml(row.symbol)}</td><td class="${Number(row.return_contribution_pct)>=0?'pnl-positive':'pnl-negative'}">${signedValue(row.return_contribution_pct,'%')}</td><td>${Number(row.win_rate_pct||0).toFixed(2)}%</td><td>${Number(row.trades).toLocaleString('en-US')}</td><td class="${Number(row.net_profit)>=0?'pnl-positive':'pnl-negative'}">${money(Number(row.net_profit))}</td>`;assetBody.appendChild(tr);});
     drawAllocation(container.querySelector('[data-analysis-chart="allocation"]'),analytics.assets,container.querySelector('[data-allocation-legend]'));
-    const eaBody=container.querySelector('[data-ea-breakdown-body]');eaBody.replaceChildren();(payload.included_eas||[]).forEach((row)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${escapeHtml(row.label)}</td><td>${escapeHtml(row.symbol)}</td><td class="${Number(row.return_pct)>=0?'pnl-positive':'pnl-negative'}">${signedValue(row.return_pct,'%')}</td><td>${metric(row.profit_factor,'profit_factor')}</td><td>${metric(row.win_rate_pct,'win_rate_pct')}</td><td>${metric(row.max_drawdown_pct,'max_drawdown_pct')}</td><td>${metric(row.trades,'trades')}</td>`;eaBody.appendChild(tr);});
+    const eaBody=container.querySelector('[data-ea-breakdown-body]');eaBody.replaceChildren();(payload.included_eas||[]).forEach((row)=>{const tr=document.createElement('tr');const current=row.current||row;const recommended=row.recommended||row;tr.innerHTML=`<td>${escapeHtml(row.label)}</td><td>${escapeHtml(row.symbol)}</td><td class="${Number(current.return_pct)>=0?'pnl-positive':'pnl-negative'}">${signedValue(current.return_pct,'%')}</td><td>${metric(current.profit_factor,'profit_factor')}</td><td>${metric(current.win_rate_pct,'win_rate_pct')}</td><td>${metric(current.max_drawdown_pct,'max_drawdown_pct')}</td><td>${metric(current.trades,'trades')}</td><td class="${Number(recommended.return_pct)>=0?'pnl-positive':'pnl-negative'}">${signedValue(recommended.return_pct,'%')}</td><td>${metric(recommended.profit_factor,'profit_factor')}</td><td>${metric(recommended.win_rate_pct,'win_rate_pct')}</td><td>${metric(recommended.max_drawdown_pct,'max_drawdown_pct')}</td><td>${metric(recommended.trades,'trades')}</td><td>${Number(row.skipped_trades||0).toLocaleString('en-US')}</td>`;eaBody.appendChild(tr);});
   }
 
   function drawTradeChart(panel, payload) {
@@ -485,7 +488,7 @@
     svg.appendChild(svgNode('text', { x:left, y:height-18, fill:'#789089', 'font-size':11, 'font-family':'IBM Plex Mono, monospace' }, bars[0].time.toLocaleString('en-GB')));
     svg.appendChild(svgNode('text', { x:width-right, y:height-18, fill:'#789089', 'font-size':11, 'font-family':'IBM Plex Mono, monospace', 'text-anchor':'end' }, bars.at(-1).time.toLocaleString('en-GB')));
     panel.querySelector('[data-trade-chart-title]').textContent = `${payload.symbol} ${payload.timeframe} · ${trade.side} trade`;
-    panel.querySelector('[data-trade-chart-meta]').textContent = `${shortDate(trade.close_time)} · ${trade.volume} lots · ${money(Number(trade.net_profit))} net · ${rValue} estimated · ${priceMove} · broker MT5 candles`;
+    panel.querySelector('[data-trade-chart-meta]').textContent = `${shortDate(trade.close_time)} · ${trade.volume} lots · ${money(Number(trade.net_profit))} net · ${money(Number(trade.commission || 0))} commission · ${money(Number(trade.swap || 0))} swap · ${rValue} estimated · ${priceMove} · broker MT5 candles`;
     status.classList.add('hidden');
     svg.classList.remove('hidden');
   }

@@ -98,8 +98,8 @@
     <div><p class="eyebrow-simple">Closed-trade evidence</p><h2 class="mt-2 text-2xl font-bold">Trade history for the selected period.</h2></div>
     <p class="max-w-xl text-xs leading-6 text-muted">Newest trades appear first. Change the page size or move between pages without reloading the MT5 evidence.</p>
   </div>
-  <p class="metric-disclosure">Pips/points are reconstructed from cached entry and exit prices using 1 pip = 10 broker points. Est. R uses the configured risk and reconstructed balance at entry because MT5 history does not retain the EA's original stop after trailing or break-even changes.</p>
-  <div class="mt-5 live-table-shell" data-backtest-trades><table class="live-table"><thead><tr><th>Closed</th><th>EA / mode</th><th>Result</th><th>Net P/L</th><th>Est. R</th><th>Pips / points</th><th>Evidence source</th><th>Price chart</th></tr></thead><tbody data-backtest-trades-body><tr><td colspan="8" class="empty-table">Loading trades for this period…</td></tr></tbody></table></div>
+  <p class="metric-disclosure">Net P/L includes the exact commission and swap parsed from the MT5 Deals table. Pips/points are reconstructed from cached entry and exit prices using 1 pip = 10 broker points. Est. R uses the configured risk and reconstructed balance at entry because MT5 history does not retain the EA's original stop after trailing or break-even changes.</p>
+  <div class="mt-5 live-table-shell" data-backtest-trades><table class="live-table"><thead><tr><th>Closed</th><th>EA / mode</th><th>Result</th><th>Net P/L</th><th>Commission</th><th>Swap</th><th>Est. R</th><th>Pips / points</th><th>Evidence source</th><th>Price chart</th></tr></thead><tbody data-backtest-trades-body><tr><td colspan="10" class="empty-table">Loading trades for this period…</td></tr></tbody></table></div>
   <nav class="trade-pagination" data-trade-pagination aria-label="Trade history pages">
     <label><span>Rows per page</span><select data-trade-page-size><option value="10" selected>10</option><option value="25">25</option><option value="50">50</option></select></label>
     <p data-trade-page-summary aria-live="polite">Loading trades…</p>
@@ -120,4 +120,4 @@
 
 {% if related %}<section class="border-t border-white/10"><div class="mx-auto max-w-7xl px-5 py-20 lg:px-8"><div class="section-heading-row"><div><p class="eyebrow-simple">Related systems</p><h2 class="mt-2 text-2xl font-bold">More {{ product.category|lower }} setups</h2></div></div><div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{% for product in related %}{% include "partials/product_card.html" %}{% endfor %}</div></div></section>{% endif %}
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', path='evidence.js') }}?v=20260908-trade-pagination" defer></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='evidence.js') }}?v=20260910-adaptive-costs" defer></script>{% endblock %}

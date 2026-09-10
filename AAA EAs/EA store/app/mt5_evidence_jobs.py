@@ -110,7 +110,9 @@ def _native_trades(path: Path, label: str) -> list[dict[str, Any]]:
                     "volume": volume,
                     "remaining": volume,
                     "price": price,
-                    "costs": commission + swap + profit,
+                    "commission": commission,
+                    "swap": swap,
+                    "profit": profit,
                     "comment": cells[12],
                 }
             )
@@ -125,7 +127,10 @@ def _native_trades(path: Path, label: str) -> list[dict[str, Any]]:
             matched = min(remaining_exit, float(entry["remaining"]))
             share = matched / volume if volume > 0 else 1.0
             entry_share = matched / float(entry["volume"]) if float(entry["volume"]) > 0 else 1.0
-            net = (commission + swap + profit) * share + float(entry["costs"]) * entry_share
+            matched_commission = commission * share + float(entry["commission"]) * entry_share
+            matched_swap = swap * share + float(entry["swap"]) * entry_share
+            matched_gross_profit = profit * share + float(entry["profit"]) * entry_share
+            net = matched_gross_profit + matched_commission + matched_swap
             trades.append(
                 {
                     "number": len(trades) + 1,
@@ -137,6 +142,10 @@ def _native_trades(path: Path, label: str) -> list[dict[str, Any]]:
                     "close_time": timestamp,
                     "open_price": float(entry["price"]),
                     "close_price": price,
+                    "gross_profit": round(matched_gross_profit, 2),
+                    "commission": round(matched_commission, 2),
+                    "swap": round(matched_swap, 2),
+                    "total_costs": round(matched_commission + matched_swap, 2),
                     "net_profit": round(net, 2),
                     "result": "Win" if net > 0 else "Loss" if net < 0 else "Flat",
                     "source": "Native MT5 deals",
