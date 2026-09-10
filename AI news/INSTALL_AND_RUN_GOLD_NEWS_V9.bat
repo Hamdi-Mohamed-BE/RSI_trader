@@ -1,6 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
+set "PYTHONDONTWRITEBYTECODE=1"
 
 where uv >nul 2>nul
 if errorlevel 1 (
@@ -32,6 +33,16 @@ if "%RESULT%"=="0" (
   echo Gold News V9 setup completed.
 ) else (
   echo Gold News V9 setup stopped with an error.
+  if exist "%~dp0tmp\gold-news-v9-server.err.log" (
+    echo.
+    echo === Prediction server error log ===
+    type "%~dp0tmp\gold-news-v9-server.err.log"
+  )
+  if exist "%~dp0tmp\gold-news-v9-server.out.log" (
+    echo.
+    echo === Prediction server output log ===
+    type "%~dp0tmp\gold-news-v9-server.out.log"
+  )
 )
 pause
 exit /b %RESULT%

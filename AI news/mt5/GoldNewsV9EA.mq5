@@ -1,5 +1,5 @@
 #property copyright "Gold News V9"
-#property version   "1.00"
+#property version   "1.10"
 #property strict
 #property description "Consumes the local Gold News V9 API for NFP, CPI, and FOMC."
 
@@ -18,10 +18,12 @@ enum ENUM_GNV9_STATE
 
 input bool   InpEnableTrading=true;
 input bool   InpRequireDemoAccount=false;
+input bool   InpUseFileBridge=true;
 input string InpApiBaseUrl="http://127.0.0.1:8799";
 input int    InpHttpTimeoutMs=5000;
 input int    InpCalendarPollSeconds=60;
 input int    InpPredictionLeadMinutes=15;
+input int    InpSignalPollSeconds=5;
 input int    InpEntryLeadSeconds=10;
 input int    InpExitAfterReleaseSeconds=900;
 input double InpStopDistanceUSD=20.00;
@@ -42,6 +44,7 @@ input long   InpMagicNumber=90915001;
 input int    InpTimerMilliseconds=250;
 
 const string STATE_FILE="GoldNewsV9EA\\state.tsv";
+const string BRIDGE_FILE="GoldNewsV9EA\\bridge.json";
 const int MIN_PREDICTION_LEAD_SECONDS=480;
 const int MAX_PREDICTION_LEAD_SECONDS=1800;
 
@@ -58,6 +61,7 @@ string signal_tier="";
 double signal_confidence=0.0;
 ulong position_ticket=0;
 datetime last_calendar_poll=0;
+datetime last_signal_poll=0;
 string last_status="Starting";
 
 string Upper(string value)
@@ -311,7 +315,38 @@ void ResetEvent()
    signal_tier="";
    signal_confidence=0.0;
    position_ticket=0;
+   last_signal_poll=0;
    SaveState();
+  }
+
+bool ReadBridge(string &response)
+  {
+   ResetLastError();
+   int handle=FileOpen(
+      BRIDGE_FILE,
+      FILE_READ|FILE_TXT|FILE_ANSI|FILE_COMMON|FILE_SHARE_READ|FILE_SHARE_WRITE
+   );
+   if(handle==INVALID_HANDLE)
+     {
+      SetStatus("Waiting for local prediction bridge file.");
+      return false;
+     }
+   response="";
+   while(!FileIsEnding(handle))
+      response+=FileReadString(handle);
+   FileClose(handle);
+   if(JsonValue(response,"bridge_status")!="OK")
+     {
+      SetStatus("Local prediction bridge is not ready.");
+      return false;
+     }
+   long heartbeat=(long)StringToInteger(JsonValue(response,"heartbeat_epoch"));
+   if(heartbeat<=0 || MathAbs((double)(TimeGMT()-heartbeat))>180.0)
+     {
+      SetStatus("Local prediction bridge heartbeat is stale.");
+      return false;
+     }
+   return true;
   }
 
 bool HttpRequest(
@@ -377,12 +412,19 @@ bool ApiHealthy()
 bool FetchNextEvent()
   {
    last_calendar_poll=TimeGMT();
-   if(!ApiHealthy())
-      return false;
-
    string response="";
-   if(!HttpRequest("GET","/api/ea/next?days=30","",response))
-      return false;
+   if(InpUseFileBridge)
+     {
+      if(!ReadBridge(response))
+         return false;
+     }
+   else
+     {
+      if(!ApiHealthy())
+         return false;
+      if(!HttpRequest("GET","/api/ea/next?days=30","",response))
+         return false;
+     }
    if(JsonValue(response,"status")!="OK")
      {
       SetStatus("No supported NFP, CPI, or FOMC event found.");
@@ -414,6 +456,7 @@ bool FetchNextEvent()
 
 bool RequestSignal()
   {
+   last_signal_poll=TimeGMT();
    string body=
       "event="+UrlEncode(event_name)+
       "&release="+UrlEncode(release_iso);
@@ -423,7 +466,14 @@ bool RequestSignal()
       body+="&previous="+UrlEncode(event_previous);
 
    string response="";
-   if(!HttpRequest("POST","/api/ea/signal",body,response))
+   if(InpUseFileBridge)
+     {
+      if(!ReadBridge(response))
+         return false;
+      if(JsonValue(response,"signal_status")!="READY")
+         return false;
+     }
+   else if(!HttpRequest("POST","/api/ea/signal",body,response))
       return false;
    if(JsonValue(response,"status")!="OK")
      {
@@ -771,7 +821,8 @@ void RenderStatus()
    Comment(
       "Gold News V9 EA\n",
       "Symbol: ",trade_symbol,"\n",
-      "Server: ",InpApiBaseUrl,"\n",
+       "Server: ",InpApiBaseUrl,"\n",
+       "Connection: ",InpUseFileBridge ? "LOCAL FILE BRIDGE" : "HTTP API","\n",
       "State: ",StateName(),"\n",
       "Event: ",event_name,"  ",when,"\n",
       "Signal: ",signal_direction,"  ",signal_tier,"  ",
@@ -787,7 +838,7 @@ int OnInit()
        InpStopDistanceUSD<=0 ||
        InpTakeProfitDistanceUSD<0 ||
        InpPredictionLeadMinutes*60<MIN_PREDICTION_LEAD_SECONDS ||
-      InpPredictionLeadMinutes*60>MAX_PREDICTION_LEAD_SECONDS)
+       InpPredictionLeadMinutes*60>MAX_PREDICTION_LEAD_SECONDS)
      {
       Print("Gold News V9: invalid risk, stop, or prediction lead input.");
       return INIT_PARAMETERS_INCORRECT;
@@ -836,10 +887,11 @@ void OnTimer()
 
    if(state==GNV9_SCHEDULED)
      {
-      long seconds_to_release=(long)(release_utc-now);
-      if(seconds_to_release<=InpPredictionLeadMinutes*60 &&
-         seconds_to_release>=MIN_PREDICTION_LEAD_SECONDS)
-         RequestSignal();
+       long seconds_to_release=(long)(release_utc-now);
+       if(seconds_to_release<=InpPredictionLeadMinutes*60 &&
+          seconds_to_release>=MIN_PREDICTION_LEAD_SECONDS &&
+          (last_signal_poll==0 || now-last_signal_poll>=InpSignalPollSeconds))
+          RequestSignal();
       else if(seconds_to_release<MIN_PREDICTION_LEAD_SECONDS)
         {
          state=GNV9_SKIPPED;

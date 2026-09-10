@@ -2,12 +2,18 @@ from __future__ import annotations
 
 import json
 import os
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse
 
-from calendar_provider import upcoming_us_events
+from ea_file_bridge import (
+    file_bridge_status,
+    next_event_payload,
+    start_file_bridge,
+    stop_file_bridge,
+)
 from news_core import ROOT
 from predict_news import load_env, make_prediction
 from release_intelligence import analyze_release, build_pre_release_packet
@@ -15,7 +21,22 @@ from news_v9_direction import SUPPORTED_EVENTS
 
 
 load_env()
-app = FastAPI(title="Gold News Impulse Predictor", version="0.1.0")
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    start_file_bridge()
+    try:
+        yield
+    finally:
+        stop_file_bridge()
+
+
+app = FastAPI(
+    title="Gold News Impulse Predictor",
+    version="0.2.0",
+    lifespan=lifespan,
+)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -55,7 +76,7 @@ def index() -> str:
   </style>
 </head>
 <body>
-  <header><strong>Gold News AI</strong><span>Prediction only</span></header>
+  <header><strong>Gold News AI</strong><span>Prediction + MT5 bridge</span></header>
   <main>
     <h1>XAUUSD News Impulse</h1>
     <p>Estimate whether a supported USD release will be positive or negative for gold.</p>
@@ -102,7 +123,7 @@ def index() -> str:
       </form>
       <pre id="release-output">Waiting for published data.</pre>
     </div>
-    <p class="notice">Prediction and analysis only. No order placement or account management exists.</p>
+    <p class="notice">This service computes and publishes signals. The attached MT5 EA owns order placement and risk controls.</p>
     </section>
   </main>
   <script>
@@ -144,10 +165,6 @@ def index() -> str:
 
 @app.get("/api/health")
 def health() -> dict:
-    legacy_models = {
-        lead: (ROOT / "models" / f"gold_news_impulse_{lead}m.joblib").exists()
-        for lead in (15, 30)
-    }
     direction_ready = (ROOT / "models" / "gold_news_v9_direction.joblib").exists()
     magnitude_ready = (ROOT / "models" / "gold_news_v8_move_range.joblib").exists()
     return {
@@ -155,35 +172,11 @@ def health() -> dict:
         "models": {
             "gold_direction_v9_action_tier": direction_ready,
             "gold_move_range_v8": magnitude_ready,
-            "fomc_ensemble": (
-                ROOT / "fomc_pipeline_backtest.json"
-            ).exists(),
-            "legacy_research": legacy_models,
         },
-        "trade_execution": False,
+        "ea_signal_api": True,
+        "server_places_orders": False,
+        "mt5_file_bridge": file_bridge_status(),
     }
-
-
-@app.get("/api/backtest")
-def backtest() -> dict:
-    path = ROOT / "news_v9_direction_3m_results.json"
-    if not path.exists():
-        raise HTTPException(
-            status_code=404,
-            detail="Run run_news_v9_direction_backtest.bat first.",
-        )
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-@app.get("/api/fomc-backtest")
-def fomc_backtest() -> dict:
-    path = ROOT / "fomc_pipeline_backtest.json"
-    if not path.exists():
-        raise HTTPException(
-            status_code=404,
-            detail="Run backtest_fomc_pipeline.py first.",
-        )
-    return json.loads(path.read_text(encoding="utf-8"))
 
 
 @app.get("/api/upcoming")
@@ -200,47 +193,7 @@ def upcoming(days: int = 7) -> dict:
 
 @app.get("/api/ea/next")
 def ea_next_event(days: int = 30) -> dict:
-    payload = upcoming_us_events(max(1, min(days, 30)))
-    now = datetime.now(timezone.utc)
-    unique: dict[tuple[str, str], dict] = {}
-    for item in payload.get("events", []):
-        event = str(item.get("event") or "").upper()
-        if event not in SUPPORTED_EVENTS:
-            continue
-        try:
-            release = datetime.fromisoformat(
-                str(item["release_time"]).replace("Z", "+00:00")
-            ).astimezone(timezone.utc)
-        except (KeyError, TypeError, ValueError):
-            continue
-        if release <= now:
-            continue
-        key = (event, release.isoformat())
-        candidate = {
-            "event": event,
-            "release_utc": release.isoformat(),
-            "provider_name": item.get("provider_name"),
-            "forecast": item.get("forecast"),
-            "previous": item.get("previous"),
-        }
-        existing = unique.get(key)
-        if existing is None or str(candidate.get("provider_name", "")).upper().startswith(event):
-            unique[key] = candidate
-    if not unique:
-        return {
-            "status": "NO_EVENT",
-            "server_time_utc": now.isoformat(),
-            "supported_events": list(SUPPORTED_EVENTS),
-            "provider_status": payload.get("status"),
-            "message": payload.get("message", "No supported event was found."),
-        }
-    selected = min(unique.values(), key=lambda row: row["release_utc"])
-    return {
-        "status": "OK",
-        "server_time_utc": now.isoformat(),
-        **selected,
-        "provider": payload.get("provider"),
-    }
+    return next_event_payload(days)
 
 
 @app.post("/api/ea/signal")

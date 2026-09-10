@@ -13,6 +13,7 @@ $ApiBaseUrl = 'http://127.0.0.1:8799'
 $ApiPort = 8799
 $Unicode = [Text.UnicodeEncoding]::new($false, $true)
 $NewLine = [Environment]::NewLine
+$env:PYTHONDONTWRITEBYTECODE = '1'
 
 function Stop-Install([string]$Message) {
     Write-Host ''
@@ -93,10 +94,32 @@ function Test-EaApi {
     try {
         $health = Invoke-RestMethod -Uri "$ApiBaseUrl/api/health" -TimeoutSec 3
         $next = Invoke-RestMethod -Uri "$ApiBaseUrl/api/ea/next?days=1" -TimeoutSec 3
-        return $health.status -eq 'ok' -and $null -ne $next.status
+        return $health.status -eq 'ok' -and
+            $health.mt5_file_bridge.status -in @('starting', 'ready') -and
+            $null -ne $next.status
     } catch {
         return $false
     }
+}
+
+function Show-ServerLogs([string]$Stdout, [string]$Stderr) {
+    Write-Host ''
+    Write-Host '=== Prediction server error log ===' -ForegroundColor Red
+    if (Test-Path -LiteralPath $Stderr) {
+        $errorText = Get-Content -LiteralPath $Stderr -Raw
+        Write-Host ($errorText.Trim())
+    } else {
+        Write-Host '(no stderr log was created)'
+    }
+    Write-Host ''
+    Write-Host '=== Prediction server output log ===' -ForegroundColor Yellow
+    if (Test-Path -LiteralPath $Stdout) {
+        $outputText = Get-Content -LiteralPath $Stdout -Raw
+        Write-Host ($outputText.Trim())
+    } else {
+        Write-Host '(no stdout log was created)'
+    }
+    Write-Host ''
 }
 
 function Ensure-LocalApi {
@@ -124,8 +147,25 @@ function Ensure-LocalApi {
     [void](New-Item -ItemType Directory -Path $tmp -Force)
     $stdout = Join-Path $tmp 'gold-news-v9-server.out.log'
     $stderr = Join-Path $tmp 'gold-news-v9-server.err.log'
+    [IO.File]::WriteAllText($stdout, '', [Text.UTF8Encoding]::new($false))
+    [IO.File]::WriteAllText($stderr, '', [Text.UTF8Encoding]::new($false))
+
+    Write-Host 'Checking that the prediction application imports correctly...'
+    Push-Location $PackageRoot
+    try {
+        & $uv.Source run --quiet python -c "import app; print('Prediction application import OK')"
+        if ($LASTEXITCODE -ne 0) {
+            Stop-Install 'The prediction application could not be imported. The error is shown above.'
+        }
+    } finally {
+        Pop-Location
+    }
     $arguments = @(
         'run',
+        '--quiet',
+        'python',
+        '-u',
+        '-m',
         'uvicorn',
         'app:app',
         '--host',
@@ -133,7 +173,7 @@ function Ensure-LocalApi {
         '--port',
         [string]$ApiPort
     )
-    Start-Process -FilePath $uv.Source -ArgumentList $arguments -WorkingDirectory $PackageRoot -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+    $serverProcess = Start-Process -FilePath $uv.Source -ArgumentList $arguments -WorkingDirectory $PackageRoot -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
 
     $deadline = (Get-Date).AddSeconds(30)
     do {
@@ -142,15 +182,34 @@ function Ensure-LocalApi {
             Write-Host "Local prediction server started at $ApiBaseUrl"
             return
         }
+        if ($serverProcess.HasExited) {
+            Show-ServerLogs $stdout $stderr
+            Stop-Install "The prediction server exited with code $($serverProcess.ExitCode)."
+        }
     } while ((Get-Date) -lt $deadline)
-    Stop-Install "The prediction server did not start. Check $stderr"
+    Show-ServerLogs $stdout $stderr
+    Stop-Install 'The prediction server did not become ready within 30 seconds.'
 }
 
 $mq5Source = Join-Path $PackageRoot "mt5\$ExpertBaseName.mq5"
 $ex5Source = Join-Path $PackageRoot "mt5\$ExpertBaseName.ex5"
 $presetSource = Join-Path $PackageRoot "mt5\$ExpertBaseName-Auto.set"
 $probe = Join-Path $PackageRoot 'mt5_installer_probe.py'
-foreach ($required in @($mq5Source, $presetSource, $probe)) {
+$appSource = Join-Path $PackageRoot 'app.py'
+$bridgeSource = Join-Path $PackageRoot 'ea_file_bridge.py'
+$projectFile = Join-Path $PackageRoot 'pyproject.toml'
+$directionModel = Join-Path $PackageRoot 'models\gold_news_v9_direction.joblib'
+$moveModel = Join-Path $PackageRoot 'models\gold_news_v8_move_range.joblib'
+foreach ($required in @(
+    $mq5Source,
+    $presetSource,
+    $probe,
+    $appSource,
+    $bridgeSource,
+    $projectFile,
+    $directionModel,
+    $moveModel
+)) {
     if (-not (Test-Path -LiteralPath $required)) {
         Stop-Install "Missing package file: $required"
     }
@@ -168,7 +227,7 @@ $running = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where
     $_.ExecutablePath -notmatch '(?i)\\_Backtests\\'
 })
 if ($running.Count -eq 0) {
-    Stop-Install 'No active MT5 was found. Open and log into the target demo account, then run the BAT again.'
+    Stop-Install 'No active MT5 was found. Open and log into the target account, then run the BAT again.'
 }
 if ($running.Count -gt 1) {
     Write-Host 'More than one MT5 is open:' -ForegroundColor Yellow
@@ -198,8 +257,10 @@ Write-Host "Data:     $dataRoot"
 Write-Host "Server:   $($probeResult.server)"
 Write-Host "Symbol:   $symbol"
 Write-Host "API:      $ApiBaseUrl"
-Write-Host "Trading:  ENABLED on $($probeResult.account_trade_mode) accounts" -ForegroundColor Yellow
+Write-Host "Account:  $($probeResult.account_trade_mode)" -ForegroundColor Yellow
+Write-Host 'Trading:  ENABLED on both demo and real accounts' -ForegroundColor Yellow
 Write-Host 'Comment:  AI news {event} {buy/sell} {confidence%}'
+$env:GOLD_NEWS_MT5_COMMON_PATH = [string]$probeResult.commondata_path
 
 if ($ValidateOnly) {
     Write-Host ''
@@ -390,8 +451,6 @@ Set-IniValue $commonIni 'Experts' 'Enabled' '1'
 Set-IniValue $commonIni 'Experts' 'Account' '0'
 Set-IniValue $commonIni 'Experts' 'Profile' '0'
 Set-IniValue $commonIni 'Experts' 'Chart' '0'
-Set-IniValue $commonIni 'Experts' 'WebRequest' '1'
-Set-IniValue $commonIni 'Experts' 'WebRequestUrl' $ApiBaseUrl
 
 $manifestPath = Join-Path $PackageRoot 'LAST_GOLD_NEWS_V9_INSTALL.txt'
 $manifest = @(
