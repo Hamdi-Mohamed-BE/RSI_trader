@@ -263,7 +263,28 @@ minimum or maximum.
 
 ## Main artifacts
 
+### One-click MT5 demo installer
+
+Run `INSTALL_AND_RUN_GOLD_NEWS_V9.bat` while exactly one logged-in MT5
+terminal is open. It installs dependencies with `uv`, discovers the broker's
+XAUUSD/GOLD symbol, compiles and installs the EA, starts the local API on port
+8799, enables the MT5 WebRequest allowlist, and opens an M1 chart with the EA
+attached.
+
+The installed default uses V9 predictions for NFP, CPI, and FOMC only. It enters
+at T-10 seconds, risks 1% at a $20 gold-price stop, targets a $4 gold-price move,
+and exits any remaining position at T+15 minutes. Trading is enabled on both
+demo and real accounts. Trade comments use
+`AI news {event} {buy/sell} {confidence%}`.
+
 - `models/gold_news_v9_direction.joblib`
+- `mt5/GoldNewsV9EA.mq5`
+- `mt5/GoldNewsV9EA.ex5`
+- `mt5/GoldNewsV9EA-Auto.set`
+- `INSTALL_AND_RUN_GOLD_NEWS_V9.bat`
+- `Install-GoldNewsV9EA.ps1`
+- `backtest_news_v9_execution_v2_1y.py`
+- `NEWS_V9_EXECUTION_V2_1Y_RESULTS.md`
 - `news_v9_direction.py`
 - `train_news_v9_direction.py`
 - `backtest_news_v9_direction_3m.py`

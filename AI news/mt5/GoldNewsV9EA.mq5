@@ -17,7 +17,7 @@ enum ENUM_GNV9_STATE
   };
 
 input bool   InpEnableTrading=true;
-input bool   InpRequireDemoAccount=true;
+input bool   InpRequireDemoAccount=false;
 input string InpApiBaseUrl="http://127.0.0.1:8799";
 input int    InpHttpTimeoutMs=5000;
 input int    InpCalendarPollSeconds=60;
@@ -784,8 +784,9 @@ void RenderStatus()
 int OnInit()
   {
    if(InpRiskPercent<=0 || InpRiskPercent>10 ||
-      InpStopDistanceUSD<=0 ||
-      InpPredictionLeadMinutes*60<MIN_PREDICTION_LEAD_SECONDS ||
+       InpStopDistanceUSD<=0 ||
+       InpTakeProfitDistanceUSD<0 ||
+       InpPredictionLeadMinutes*60<MIN_PREDICTION_LEAD_SECONDS ||
       InpPredictionLeadMinutes*60>MAX_PREDICTION_LEAD_SECONDS)
      {
       Print("Gold News V9: invalid risk, stop, or prediction lead input.");

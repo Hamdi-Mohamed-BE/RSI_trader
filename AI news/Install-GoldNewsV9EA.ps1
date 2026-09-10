@@ -191,10 +191,6 @@ try {
 } catch {
     Stop-Install ('MT5 probe returned invalid data: ' + ($probeOutput -join ' '))
 }
-if ($probeResult.account_trade_mode -ne 'DEMO') {
-    Stop-Install "The active account is not demo. Detected mode: $($probeResult.account_trade_mode)"
-}
-
 $dataRoot = [IO.Path]::GetFullPath([string]$probeResult.data_path)
 $symbol = [string]$probeResult.symbol
 Write-Host "Terminal: $terminalPath"
@@ -202,7 +198,7 @@ Write-Host "Data:     $dataRoot"
 Write-Host "Server:   $($probeResult.server)"
 Write-Host "Symbol:   $symbol"
 Write-Host "API:      $ApiBaseUrl"
-Write-Host 'Trading:  ENABLED, with the demo-account lock enabled' -ForegroundColor Yellow
+Write-Host "Trading:  ENABLED on $($probeResult.account_trade_mode) accounts" -ForegroundColor Yellow
 Write-Host 'Comment:  AI news {event} {buy/sell} {confidence%}'
 
 if ($ValidateOnly) {
@@ -412,7 +408,7 @@ $manifest = @(
     'API: ' + $ApiBaseUrl
     'Events: NFP, CPI, FOMC'
     'Trading enabled: true'
-    'Demo-account lock: true'
+    'Demo-account lock: false'
     'Risk: 1% of current balance'
     'Stop: 20.00 USD in gold price'
     'Target: 4.00 USD in gold price'
@@ -445,6 +441,6 @@ if (-not (Select-String -LiteralPath $chartPath -SimpleMatch '<expert>' -Quiet))
 
 Write-Host ''
 Write-Host "SUCCESS: Gold News V9 is attached to $symbol M1." -ForegroundColor Green
-Write-Host 'Live execution is enabled and locked to demo accounts.' -ForegroundColor Yellow
+Write-Host 'Live execution is enabled for both demo and real accounts.' -ForegroundColor Yellow
 Write-Host "Local prediction server: $ApiBaseUrl"
 Write-Host "Install manifest: $manifestPath"

@@ -3,7 +3,7 @@
 ## 1. Objective
 
 Build a MetaTrader 5 Expert Advisor that consumes the existing local Gold News
-V9 prediction service and, when explicitly enabled, trades the immediate
+V9 prediction service and trades the immediate
 XAUUSD reaction to three USD events:
 
 - NFP
@@ -24,27 +24,30 @@ The current one-year 1% risk replay uses:
 | Setting | Value |
 |---|---|
 | Prediction snapshot | T-15 minutes |
-| Entry time | T-5 seconds |
+| Entry time | T-10 seconds |
 | Direction | POSITIVE = buy XAUUSD, NEGATIVE = sell XAUUSD |
-| Initial stop | $4.00 in XAUUSD price, measured from actual fill |
-| Take profit | None |
+| Initial stop | $20.00 in XAUUSD price, measured from actual fill |
+| Take profit | $4.00 in XAUUSD price, measured from actual fill |
 | Trailing stop | None |
 | Time exit | T+900 seconds, or 15 minutes after release |
-| Position size | 1% of current balance at the nominal $4.00 stop |
+| Position size | 1% of current balance at the nominal $20.00 stop |
 | Events | NFP, CPI, FOMC |
 | Simulated starting balance | $10,000 |
 
-The $4.00 setting is a gold price distance, not a fixed $4 account loss. The EA
+The $20.00 stop and $4.00 target are gold price distances, not fixed account
+cash amounts. The EA
 must use OrderCalcProfit to find the one-lot cash loss between the estimated
 entry and stop, then size the lot so that this nominal loss equals 1% of current
 balance. It must not assume a contract size. Stop gaps can make the realized
 loss exceed 1%.
 
-The September 10, 2025 through September 9, 2026 replay produced 29 trades,
-48.28% trade win rate, 8.19 profit factor, 153.05% return, 4.53% maximum
-closed-balance drawdown, and 10.53% maximum tick-equity drawdown. The direction
-model itself was correct on 21/29 releases, or 72.41%. Full details are in
-NEWS_V9_RISK_1PCT_1Y_RESULTS.md.
+The execution V2 configuration was selected on the first 20 releases and then
+tested unchanged on nine later releases. The holdout produced 8/9 trade wins
+(88.89%), a 1.883 profit factor, +0.89% return, 1.00% closed-balance drawdown,
+and 1.02% tick-equity drawdown. Across the full year it produced 27/29 wins
+(93.10%), a 3.170 profit factor, and +4.69% return. The direction model itself
+was correct on 21/29 releases, or 72.41%. Full details are in
+NEWS_V9_EXECUTION_V2_1Y_RESULTS.md.
 
 These settings are a retrospective research result, not a profit guarantee.
 Live news execution can be materially worse because of spread expansion,
@@ -271,7 +274,7 @@ State behavior:
 3. REQUESTING_PREDICTION: call the API at T-15 minutes.
 4. ARMED: a valid, persistent prediction is stored in memory and terminal
    Global Variables.
-5. ENTRY_SENT: at T-5 seconds, send one market order in the predicted direction.
+5. ENTRY_SENT: at T-10 seconds, send one market order in the predicted direction.
 6. POSITION_OPEN: confirm the resulting position/deal and manage only that
    position.
 7. EXIT_SENT: at T+900 seconds, request a full close.
@@ -303,7 +306,7 @@ Action-tier behavior:
 - When TradeLowConfidence is false, accept only action_tier = TRADE.
 - When TradeLowConfidence is true, accept TRADE and LOW_CONFIDENCE.
 - The historical full-coverage replay traded both tiers.
-- The safer preset must default TradeLowConfidence to false.
+- The full-coverage demo preset defaults TradeLowConfidence to true.
 
 Do not infer a direction from confidence, probabilities, text explanations, or
 the move-range signs. Use only gold_impact.
@@ -324,7 +327,7 @@ At release UTC minus EntryLeadSeconds:
 
 Default:
 
-    EntryLeadSeconds = 5
+    EntryLeadSeconds = 10
 
 If the order is not accepted before release, do not chase it after release.
 Set the event to EXPIRED. A separate research mode may test other timing, but
@@ -337,16 +340,19 @@ POSITIVE gold impact:
     Side = BUY
     Requested price = current Ask
     Initial SL = actual fill price - StopDistanceUSD
+    Initial TP = actual fill price + TakeProfitDistanceUSD
 
 NEGATIVE gold impact:
 
     Side = SELL
     Requested price = current Bid
     Initial SL = actual fill price + StopDistanceUSD
+    Initial TP = actual fill price - TakeProfitDistanceUSD
 
 Default:
 
-    StopDistanceUSD = 4.00
+    StopDistanceUSD = 20.00
+    TakeProfitDistanceUSD = 4.00
 
 Normalize every price to SYMBOL_DIGITS. Respect SYMBOL_TRADE_STOPS_LEVEL and
 SYMBOL_TRADE_FREEZE_LEVEL. If the broker does not allow the stop with the
@@ -354,8 +360,8 @@ entry order, send the market order and immediately add the stop using the
 confirmed fill price. If that modification fails, close the position and mark
 the event ERROR_UNPROTECTED_POSITION.
 
-Do not place a take profit. Do not trail. At release UTC plus 900 seconds, close
-the complete EA-owned position at market.
+Place both SL and TP from the confirmed fill. Do not trail. If neither level is
+reached, close the complete EA-owned position at release UTC plus 900 seconds.
 
 ## 11. Position Sizing
 
@@ -441,7 +447,7 @@ modify or close manual trades or positions from another EA.
 
 Suggested comment:
 
-    GNV9|NFP_20260904T123000Z|POS
+    AI news NFP buy 69.3%
 
 Keep the comment short enough for broker limits and store the full EVENT_ID
 separately.
@@ -457,15 +463,16 @@ Suggested MQL5 inputs:
        SIZE_FIXED_LOT = 2
       };
 
-    input bool   EnableTrading = false;
-    input bool   RequireDemoAccount = true;
+    input bool   EnableTrading = true;
+    input bool   RequireDemoAccount = false;
     input long   MagicNumber = 90915001;
     input string ApiBaseUrl = "http://127.0.0.1:8799";
     input int    HttpTimeoutMs = 5000;
     input int    PredictionLeadMinutes = 15;
-    input int    EntryLeadSeconds = 5;
+    input int    EntryLeadSeconds = 10;
     input int    ExitAfterReleaseSeconds = 900;
-    input double StopDistanceUSD = 4.00;
+    input double StopDistanceUSD = 20.00;
+    input double TakeProfitDistanceUSD = 4.00;
     input ENUM_POSITION_SIZING_MODE PositionSizingMode = SIZE_RISK_PERCENT;
     input double RiskPercent = 1.00;
     input double BalanceStepUSD = 100.00;
@@ -477,7 +484,7 @@ Suggested MQL5 inputs:
     input int    MaxSpreadPoints = 0;
     input int    MaxDeviationPoints = 100;
     input int    MaxSignalAgeMinutes = 20;
-    input bool   TradeLowConfidence = false;
+    input bool   TradeLowConfidence = true;
     input bool   EnableNFP = true;
     input bool   EnableCPI = true;
     input bool   EnableFOMC = true;
@@ -596,7 +603,7 @@ Replay mode must:
 
 - Use tester time for scheduling.
 - Never call the internet or Python.
-- Preserve the T-15 prediction and T-5 entry timing.
+- Preserve the T-15 prediction and T-10 entry timing.
 - Use tester ticks for fills, stops, and T+15 exit.
 - Write the same audit schema as live mode.
 - Refuse fixture events other than NFP, CPI, and FOMC.
@@ -609,13 +616,13 @@ predictions folder, not recreated after observing the event outcome.
 The builder should demonstrate:
 
 1. MQ5 compiles with zero errors and zero warnings.
-2. Trading is disabled by default.
+2. Trading is enabled by default on both demo and real accounts.
 3. PPI and GDP are rejected.
 4. POSITIVE creates one buy and NEGATIVE creates one sell.
 5. An event cannot create a duplicate trade after restart.
-6. Entry is sent once at T-5 seconds and never chased after release.
-7. Stop is based on confirmed fill, not the earlier quote.
-8. Position closes at T+900 seconds.
+6. Entry is sent once at T-10 seconds and never chased after release.
+7. Stop and target are based on confirmed fill, not the earlier quote.
+8. Position closes at its stop, target, or T+900 seconds.
 9. Lot calculation rounds downward and respects min/max/step.
 10. Insufficient margin fails closed.
 11. High spread fails closed when limits are configured.
@@ -654,7 +661,7 @@ The builder should demonstrate:
             else:
                 persist SKIPPED with reason
 
-        if state == ARMED and now_utc >= release_utc - 5 seconds:
+        if state == ARMED and now_utc >= release_utc - 10 seconds:
             if now_utc >= release_utc:
                 persist EXPIRED
                 return
@@ -662,11 +669,11 @@ The builder should demonstrate:
             persist ENTRY_SENT before order dispatch
             send one market order
             confirm deal or reconcile history
-            attach $4 stop from actual fill
+            attach $20 stop and $4 target from actual fill
             persist POSITION_OPEN
 
         if state == POSITION_OPEN:
-            verify stop remains present
+            verify stop and target remain present
             if now_utc >= release_utc + 900 seconds:
                 close full EA-owned position
                 persist CLOSED and final audit
@@ -684,10 +691,12 @@ The builder should demonstrate:
 
 One-year 1% risk reproduction:
 
-    EnableTrading = false until manually enabled on demo
+    EnableTrading = true
+    RequireDemoAccount = false
     TradeLowConfidence = true
-    StopDistanceUSD = 4.00
-    EntryLeadSeconds = 5
+    StopDistanceUSD = 20.00
+    TakeProfitDistanceUSD = 4.00
+    EntryLeadSeconds = 10
     ExitAfterReleaseSeconds = 900
     PositionSizingMode = SIZE_RISK_PERCENT
     RiskPercent = 1.00
