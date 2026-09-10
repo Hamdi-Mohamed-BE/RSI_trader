@@ -414,8 +414,9 @@ $manifest = @(
     'Trading enabled: true'
     'Demo-account lock: true'
     'Risk: 1% of current balance'
-    'Stop: 4.00 USD in gold price'
-    'Entry: T-5 seconds'
+    'Stop: 20.00 USD in gold price'
+    'Target: 4.00 USD in gold price'
+    'Entry: T-10 seconds'
     'Exit: T+15 minutes'
     'Trade comment: AI news {event} {buy/sell} {confidence%}'
     'common.ini backup: ' + $commonBackup

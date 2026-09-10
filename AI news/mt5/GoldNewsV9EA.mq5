@@ -22,9 +22,10 @@ input string InpApiBaseUrl="http://127.0.0.1:8799";
 input int    InpHttpTimeoutMs=5000;
 input int    InpCalendarPollSeconds=60;
 input int    InpPredictionLeadMinutes=15;
-input int    InpEntryLeadSeconds=5;
+input int    InpEntryLeadSeconds=10;
 input int    InpExitAfterReleaseSeconds=900;
-input double InpStopDistanceUSD=4.00;
+input double InpStopDistanceUSD=20.00;
+input double InpTakeProfitDistanceUSD=4.00;
 input double InpRiskPercent=1.00;
 input double InpMaxLot=1.00;
 input double InpMarginReservePercent=10.0;
@@ -615,6 +616,12 @@ bool OpenPredictedTrade()
       is_buy ? entry-InpStopDistanceUSD : entry+InpStopDistanceUSD,
       digits
    );
+   double target=0.0;
+   if(InpTakeProfitDistanceUSD>0)
+      target=NormalizeDouble(
+         is_buy ? entry+InpTakeProfitDistanceUSD : entry-InpTakeProfitDistanceUSD,
+         digits
+      );
    double risk_budget=0.0;
    double nominal_risk=0.0;
    double lot=RiskSizedLot(
@@ -648,8 +655,8 @@ bool OpenPredictedTrade()
       "AI news "+event_name+(is_buy ? " buy " : " sell ")+
       DoubleToString(signal_confidence,1)+"%";
    bool sent=is_buy
-      ? trade.Buy(lot,trade_symbol,0.0,stop,0.0,comment)
-      : trade.Sell(lot,trade_symbol,0.0,stop,0.0,comment);
+      ? trade.Buy(lot,trade_symbol,0.0,stop,target,comment)
+      : trade.Sell(lot,trade_symbol,0.0,stop,target,comment);
    if(!sent)
      {
       SetStatus(
@@ -680,9 +687,15 @@ bool OpenPredictedTrade()
       is_buy ? fill-InpStopDistanceUSD : fill+InpStopDistanceUSD,
       digits
    );
-   if(!trade.PositionModify(position_ticket,exact_stop,0.0))
+   double exact_target=0.0;
+   if(InpTakeProfitDistanceUSD>0)
+      exact_target=NormalizeDouble(
+         is_buy ? fill+InpTakeProfitDistanceUSD : fill-InpTakeProfitDistanceUSD,
+         digits
+      );
+   if(!trade.PositionModify(position_ticket,exact_stop,exact_target))
      {
-      SetStatus("Could not attach exact stop after fill.");
+      SetStatus("Could not attach exact stop and target after fill.");
       if(InpCloseUnprotectedPosition)
          trade.PositionClose(position_ticket,InpMaxDeviationPoints);
       state=GNV9_DONE;
@@ -694,7 +707,8 @@ bool OpenPredictedTrade()
    SaveState();
    SetStatus(
       event_name+" position opened, lot "+DoubleToString(lot,2)+
-      ", nominal risk $"+DoubleToString(nominal_risk,2)+"."
+      ", nominal risk $"+DoubleToString(nominal_risk,2)+
+      ", TP $"+DoubleToString(InpTakeProfitDistanceUSD,2)+"."
    );
    return true;
   }
@@ -719,7 +733,10 @@ void ManagePosition()
       state=GNV9_DONE;
       position_ticket=0;
       SaveState();
-      SetStatus(event_name+" closed at the T+15 time exit.");
+      SetStatus(
+         event_name+" closed at T+"+
+         IntegerToString(InpExitAfterReleaseSeconds)+" seconds."
+      );
      }
    else
       SetStatus(
