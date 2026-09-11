@@ -4,6 +4,8 @@ import argparse
 import hashlib
 import json
 import math
+import os
+import re
 import shutil
 import statistics
 import sys
@@ -20,12 +22,8 @@ if str(STORE_ROOT) not in sys.path:
 from app.catalog import PACKAGE_ROOT, Product, get_sellable_catalog  # noqa: E402
 from app.adaptive_portfolio import RULES as ADAPTIVE_RULES, simulate_adaptive_portfolio  # noqa: E402
 from app.evidence_cache import (  # noqa: E402
-    CACHE_ROOT,
+    CACHE_ROOT as DEFAULT_CACHE_ROOT,
     PERIOD_OPTIONS,
-    portfolio_cache_path,
-    portfolio_trades_path,
-    product_cache_path,
-    product_trades_path,
     write_json,
 )
 from app.evidence_series import parse_mt5_balance_series  # noqa: E402
@@ -35,6 +33,32 @@ from app.trade_metrics import enrich_trades, outcome_streaks  # noqa: E402
 
 
 PERIOD_MONTHS = {"6m": 6, "1y": 12, "3y": 36, "5y": 60}
+CACHE_ROOT = Path(os.getenv("EA_STORE_CACHE_ROOT", str(DEFAULT_CACHE_ROOT))).resolve()
+NEWS_PULSE_SLUGS = {"news-pulse-xau", "news-pulse-xag", "news-pulse-eurusd"}
+
+
+def product_cache_path(slug: str, mode: str, period: str) -> Path:
+    return CACHE_ROOT / "products" / slug / mode / f"{period}.json"
+
+
+def product_trades_path(slug: str, mode: str, period: str) -> Path:
+    return CACHE_ROOT / "products" / slug / mode / f"{period}.trades.json"
+
+
+def portfolio_cache_path(mode: str, period: str) -> Path:
+    return CACHE_ROOT / "portfolio" / mode / f"{period}.json"
+
+
+def portfolio_trades_path(mode: str, period: str) -> Path:
+    return CACHE_ROOT / "portfolio" / mode / f"{period}.trades.json"
+
+
+def recommended_mode(product: Product) -> str:
+    if product.recommended_dynamic_mode and product.dynamic_mode_supported:
+        return "dynamic"
+    if product.recommended_safe_mode and product.safe_filter_supported:
+        return "safe"
+    return "standard"
 
 
 def subtract_months(value: date, months: int) -> date:
@@ -93,10 +117,31 @@ def source_paths(product: Product, mode: str, period: str) -> tuple[Path, Path]:
 
 
 def resolve_symbol(product: Product) -> str:
+    suffix = os.getenv("EA_STORE_TESTER_SYMBOL_SUFFIX", "")
+    if suffix:
+        return f"{product.canonical}{suffix}"
     try:
         return live_mt5.resolve_symbol(product.canonical)
     except RuntimeError:
         return product.canonical
+
+
+def news_pulse_calendar_window(product: Product) -> tuple[date, date]:
+    """Return the exact verified calendar window compiled into News Pulse."""
+    if product.slug not in NEWS_PULSE_SLUGS or not product.expert_source:
+        raise ValueError(f"{product.label} is not a News Pulse product.")
+    include = (PACKAGE_ROOT / product.expert_source).parent / "NewsPulseTesterCalendar.mqh"
+    text = include.read_text(encoding="utf-8-sig")
+    values: dict[str, date] = {}
+    for key, name in (
+        ("NP_TESTER_CALENDAR_COVERAGE_START_DATE", "start"),
+        ("NP_TESTER_CALENDAR_COVERAGE_END_DATE", "end"),
+    ):
+        match = re.search(rf"^#define\s+{key}\s+(\d{{8}})\s*$", text, flags=re.MULTILINE)
+        if not match:
+            raise RuntimeError(f"News Pulse calendar is missing {key}: {include}")
+        values[name] = datetime.strptime(match.group(1), "%Y%m%d").date()
+    return values["start"], values["end"]
 
 
 def cleanup_stale_dynamic_artifacts() -> int:
@@ -136,15 +181,29 @@ def run_native(product: Product, mode: str, period: str, start: date, end: date,
         except (OSError, json.JSONDecodeError):
             pass
 
+    input_overrides: dict[str, str] = {}
+    if product.slug in NEWS_PULSE_SLUGS:
+        coverage_start, coverage_end = news_pulse_calendar_window(product)
+        if start < coverage_start or end > coverage_end:
+            raise RuntimeError(
+                "News Pulse cannot be backtested outside its verified FXMacroData calendar: "
+                f"requested {start} to {end}, available {coverage_start} to {coverage_end}. "
+                "Authenticate FXMacroData and regenerate the calendar for a longer window."
+            )
+        input_overrides = {
+            "InpTesterFromDateUTC": start.strftime("%Y%m%d"),
+            "InpTesterToDateUTC": end.strftime("%Y%m%d"),
+        }
+
     symbol = resolve_symbol(product)
     print(f"RUN {product.label} | {mode} | {period} | {symbol} {product.timeframe} | {start} to {end}", flush=True)
     try:
-        job = mt5_evidence_jobs.start(product.slug, mode, start, end, symbol)
+        job = mt5_evidence_jobs.start(product.slug, mode, start, end, symbol, input_overrides=input_overrides)
     except ValueError as exc:
         if "wait a few seconds" not in str(exc).lower():
             raise
         time.sleep(10)
-        job = mt5_evidence_jobs.start(product.slug, mode, start, end, symbol)
+        job = mt5_evidence_jobs.start(product.slug, mode, start, end, symbol, input_overrides=input_overrides)
     last_stage = ""
     while job["status"] in {"queued", "running"}:
         if job.get("stage") != last_stage:
@@ -506,6 +565,7 @@ def main() -> int:
     parser.add_argument("--slug", action="append", help="Limit generation to one or more EA slugs.")
     parser.add_argument("--safe", action="store_true", help="Also generate Safe mode for compatible EAs.")
     parser.add_argument("--dynamic", action="store_true", help="Also generate saved Dynamic London mode when available.")
+    parser.add_argument("--recommended-only", action="store_true", help="Generate only each EA's selected recommended Standard, Safe or Dynamic mode.")
     parser.add_argument("--force", action="store_true", help="Ignore reusable native source reports.")
     parser.add_argument("--portfolio-only", action="store_true", help="Only rebuild portfolio caches from existing EA caches.")
     parser.add_argument("--reparse-cached-sources", action="store_true", help="Rebuild existing product caches from retained native reports without launching MT5.")
@@ -544,7 +604,7 @@ def main() -> int:
         removed = cleanup_stale_dynamic_artifacts()
         print(f"CLEANUP removed {removed} stale isolated-tester artifacts", flush=True)
         for product in products:
-            modes = (
+            modes = [recommended_mode(product)] if args.recommended_only else (
                 ["standard"]
                 + (["safe"] if args.safe and product.safe_filter_supported else [])
                 + (["dynamic"] if args.dynamic and product.dynamic_mode_supported else [])

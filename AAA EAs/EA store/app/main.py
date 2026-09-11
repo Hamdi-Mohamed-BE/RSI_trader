@@ -413,9 +413,7 @@ async def portfolio(
         "groups": groups,
         "portfolio": _portfolio_audit("standard", period),
         "standard_portfolio": _portfolio_audit("standard", period),
-        "current_portfolio": _portfolio_audit("current", period),
         "adaptive_portfolio_5y": _portfolio_audit("standard", "5y"),
-        "current_portfolio_5y": _portfolio_audit("current", "5y"),
         "monte_carlo": _portfolio_monte_carlo(period),
         "selected_mode": "standard",
         "selected_period": period,
@@ -623,6 +621,11 @@ async def api_portfolio_equity_series(
     payload = load_portfolio_cache(mode, period)
     if payload is None:
         raise HTTPException(status_code=503, detail=f"The recommended portfolio {period} cache is not ready yet.")
+    # Keep the previous profile in the private cache for audits and broker
+    # comparisons, but publish only the approved Recommended Adaptive view.
+    payload.pop("datasets", None)
+    for row in payload.get("included_eas", []):
+        row.pop("current", None)
     return JSONResponse(
         payload,
         headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"},

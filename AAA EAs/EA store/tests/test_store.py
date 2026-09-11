@@ -592,8 +592,9 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert "Dynamic 50/20" in response.text
     assert "Recommended Adaptive is the active website profile" in response.text
     assert "+1,315.16%" in response.text
-    assert "49.88%" in response.text
     assert "13.79%" in response.text
+    assert "Current · 5Y return" not in response.text
+    assert "Current → adaptive PF" not in response.text
     assert "Approved removals" in response.text
     assert "DMC Current XAU was reviewed separately and remains active" in response.text
     for value in ("6m", "1y", "3y", "5y"):
@@ -730,8 +731,9 @@ def test_fixed_cached_evidence_periods_and_pricing_bundle() -> None:
     assert portfolio.json()["tested_ea_count"] == len(get_sellable_catalog()) - 1
     assert portfolio.json()["mode"] == "recommended-adaptive"
     assert set(portfolio.json()["stats"]) >= {"commission", "swap", "total_costs", "gross_profit_before_costs"}
-    assert [dataset["label"] for dataset in portfolio.json()["datasets"]] == ["Recommended adaptive", "Current profile"]
-    assert all(set(row) >= {"current", "recommended", "skipped_trades"} for row in portfolio.json()["included_eas"])
+    assert "datasets" not in portfolio.json()
+    assert all("current" not in row for row in portfolio.json()["included_eas"])
+    assert all(set(row) >= {"recommended", "skipped_trades"} for row in portfolio.json()["included_eas"])
     assert set(portfolio.json()["analytics"]) >= {"trade_stats", "drawdown_series", "assets", "monthly_pnl", "directions"}
 
     detail = client.get(f"/eas/{product.slug}")
