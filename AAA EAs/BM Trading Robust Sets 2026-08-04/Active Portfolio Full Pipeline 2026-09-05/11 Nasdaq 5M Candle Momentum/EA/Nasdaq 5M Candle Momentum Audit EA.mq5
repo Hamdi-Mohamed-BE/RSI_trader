@@ -78,10 +78,12 @@ double NormalizeLots(const double raw_lots)
    double minimum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN);
    double maximum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX);
    double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP);
-   if(step<=0.0) return 0.0;
-   double lots=MathFloor(raw_lots/step+1e-9)*step;
-   if(lots<minimum) return 0.0;
-   return MathMin(lots,maximum);
+   if(raw_lots<=0.0 || minimum<=0.0 || maximum<=0.0 || step<=0.0) return 0.0;
+   double lots=MathCeil((MathMin(raw_lots,maximum)-1e-12)/step)*step;
+   lots=MathMax(minimum,MathMin(maximum,lots));
+   if(lots>raw_lots+1e-12)
+      PrintFormat("Risk sizing rounded %.8f lots up to broker-valid %.8f lots; actual risk exceeds the selected target.",raw_lots,lots);
+   return lots;
   }
 
 double LotsForRisk(const ENUM_ORDER_TYPE type,const double entry,const double stop)

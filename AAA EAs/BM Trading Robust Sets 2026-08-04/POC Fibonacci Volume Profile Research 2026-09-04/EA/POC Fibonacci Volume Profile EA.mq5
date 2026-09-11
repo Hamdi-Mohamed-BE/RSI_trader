@@ -340,9 +340,12 @@ double LotsForRisk(const ENUM_ORDER_TYPE type,const double entry,const double st
    double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP);
    double minimum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN);
    double maximum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX);
-   if(step<=0.0) step=minimum;
-   double lots=MathFloor((riskCash/loss)/step)*step;
+   if(minimum<=0.0 || maximum<=0.0 || step<=0.0) return 0.0;
+   const double requested=riskCash/loss;
+   double lots=MathCeil((MathMin(requested,maximum)-1e-12)/step)*step;
    lots=MathMax(minimum,MathMin(maximum,lots));
+   if(lots>requested+1e-12)
+      PrintFormat("POC Fibonacci risk sizing rounded %.8f lots up to broker-valid %.8f lots; actual risk %.2f exceeds target %.2f.",requested,lots,loss*lots,riskCash);
    int digits=step>=1.0 ? 0 : step>=0.1 ? 1 : step>=0.01 ? 2 : 3;
    return NormalizeDouble(lots,digits);
 }

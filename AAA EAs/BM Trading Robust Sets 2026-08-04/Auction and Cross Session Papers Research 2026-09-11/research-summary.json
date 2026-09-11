@@ -1,0 +1,188 @@
+{
+  "treasury": {
+    "strategy": "Treasury Auction-Conditioned FX — core calendar raw",
+    "portfolio_gross_paper_style": {
+      "count": 151,
+      "return_pct": 2.681521437180434,
+      "profit_factor": 1.1016313924302406,
+      "win_rate_pct": 44.370860927152314,
+      "max_drawdown_pct": 5.941948602896774,
+      "sharpe": 0.5549558943526284,
+      "mean_bps": 1.898292302173355,
+      "gross_gain_pct": 31.070515679616804,
+      "gross_loss_pct": 28.204094303335047
+    },
+    "portfolio": {
+      "count": 151,
+      "return_pct": -1.9534709024722763,
+      "profit_factor": 0.9429318316361283,
+      "win_rate_pct": 42.384105960264904,
+      "max_drawdown_pct": 7.188670411345832,
+      "sharpe": -0.34079278993918066,
+      "mean_bps": -1.161665163541185,
+      "gross_gain_pct": 28.98306268858308,
+      "gross_loss_pct": 30.73717708553026
+    },
+    "portfolio_0_5pip_stress": {
+      "count": 151,
+      "return_pct": -2.5422829924959367,
+      "profit_factor": 0.9242006320349223,
+      "win_rate_pct": 41.72185430463576,
+      "max_drawdown_pct": 7.336755550301488,
+      "sharpe": -0.45781558809297174,
+      "mean_bps": -1.5605174446869354,
+      "gross_gain_pct": 28.730702954039643,
+      "gross_loss_pct": 31.08708429551692
+    },
+    "by_symbol": [
+      {
+        "scope": "EURUSD",
+        "count": 151,
+        "return_pct": -5.407996735213372,
+        "profit_factor": 0.8411091759963377,
+        "win_rate_pct": 43.04635761589404,
+        "max_drawdown_pct": 9.345220058306413,
+        "sharpe": -1.0357760581913715,
+        "mean_bps": -3.5356735383174516,
+        "gross_gain_pct": 28.261984839791182,
+        "gross_loss_pct": 33.60085188265053
+      },
+      {
+        "scope": "GBPUSD",
+        "count": 151,
+        "return_pct": -0.29798184508776915,
+        "profit_factor": 0.9992362418822477,
+        "win_rate_pct": 48.34437086092716,
+        "max_drawdown_pct": 7.152332810004214,
+        "sharpe": -0.004371992056977482,
+        "mean_bps": -0.01666304875149121,
+        "gross_gain_pct": 32.91878142680527,
+        "gross_loss_pct": 32.94394263042001
+      },
+      {
+        "scope": "USDJPY",
+        "count": 151,
+        "return_pct": -0.2605336074432474,
+        "profit_factor": 1.0028291995513634,
+        "win_rate_pct": 43.04635761589404,
+        "max_drawdown_pct": 8.1354815496282,
+        "sharpe": 0.015315722654395765,
+        "mean_bps": 0.06734109644538731,
+        "gross_gain_pct": 36.04296589725317,
+        "gross_loss_pct": 35.94128084162063
+      }
+    ],
+    "events": 151,
+    "legs": 453,
+    "costs_pct_of_initial": {
+      "spread": 2.8856941953989255,
+      "commission": 0.9467678392219625,
+      "swap": -0.788073738608067
+    },
+    "paper_rule": "Long EURUSD and GBPUSD; short USDJPY from 17:00 ET on the auction day to 17:00 ET on the immediately following macro day.",
+    "calendar_scope": "BLS CPI + Employment Situation, BEA GDP, DOL Initial Jobless Claims; ADP/ISM/Conference Board omitted."
+  },
+  "metals": {
+    "strategy": "Gold/Silver Cross-Session Momentum",
+    "primary": [
+      {
+        "symbol": "XAUUSD",
+        "window": "paper-sample",
+        "variant": "long-only-all",
+        "cost_model": "broker",
+        "count": 365,
+        "return_pct": 52.62045429596236,
+        "profit_factor": 1.4578314049032328,
+        "win_rate_pct": 40.821917808219176,
+        "max_drawdown_pct": 15.51319444109145,
+        "sharpe": 1.4393446395217935,
+        "mean_bps": 12.012598747844097,
+        "gross_gain_pct": 160.99334486614717,
+        "gross_loss_pct": 117.14735943651624
+      },
+      {
+        "symbol": "XAUUSD",
+        "window": "five-year-transfer",
+        "variant": "long-only-all",
+        "cost_model": "broker",
+        "count": 906,
+        "return_pct": 63.3429987516871,
+        "profit_factor": 1.2421732360655662,
+        "win_rate_pct": 36.75496688741722,
+        "max_drawdown_pct": 15.513194441091493,
+        "sharpe": 0.8115641609272949,
+        "mean_bps": 5.726759953223731,
+        "gross_gain_pct": 309.0084051176309,
+        "gross_loss_pct": 257.1239599414239
+      },
+      {
+        "symbol": "XAGUSD",
+        "window": "paper-sample",
+        "variant": "long-only-all",
+        "cost_model": "broker",
+        "count": 368,
+        "return_pct": 24.228869069299574,
+        "profit_factor": 1.1323224426984344,
+        "win_rate_pct": 40.76086956521739,
+        "max_drawdown_pct": 30.815379208586823,
+        "sharpe": 0.46327587112127994,
+        "mean_bps": 7.526992276367242,
+        "gross_gain_pct": 276.44039896765315,
+        "gross_loss_pct": 248.74106739062177
+      },
+      {
+        "symbol": "XAGUSD",
+        "window": "five-year-transfer",
+        "variant": "long-only-all",
+        "cost_model": "broker",
+        "count": 917,
+        "return_pct": -34.13338159249611,
+        "profit_factor": 0.9391883281671529,
+        "win_rate_pct": 35.55070883315158,
+        "max_drawdown_pct": 56.09966681483607,
+        "sharpe": -0.2318459896921895,
+        "mean_bps": -3.2875057475940683,
+        "gross_gain_pct": 552.812216004124,
+        "gross_loss_pct": 582.9586437095617
+      }
+    ],
+    "decomposition": {
+      "XAUUSD": {
+        "paper-sample": {
+          "sessions": 1471,
+          "gross_log_return_approx_pct": {
+            "Asia": 23.543393284933323,
+            "Europe": 15.255470420964578,
+            "US": 23.505126888260964
+          }
+        },
+        "five-year-transfer": {
+          "sessions": 3599,
+          "gross_log_return_approx_pct": {
+            "Asia": 27.004027367422758,
+            "Europe": 15.35460058854241,
+            "US": 40.00450545998668
+          }
+        }
+      },
+      "XAGUSD": {
+        "paper-sample": {
+          "sessions": 1473,
+          "gross_log_return_approx_pct": {
+            "Asia": 53.95921129694627,
+            "Europe": 0.6539432224243802,
+            "US": 24.602413403949587
+          }
+        },
+        "five-year-transfer": {
+          "sessions": 3601,
+          "gross_log_return_approx_pct": {
+            "Asia": 53.03178418023722,
+            "Europe": -4.448872955212446,
+            "US": 48.72137218475536
+          }
+        }
+      }
+    }
+  }
+}

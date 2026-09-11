@@ -26,6 +26,8 @@ echo - XAU Weakness uses M30 structure stops, 4R and Dynamic 50-20 with its D1 S
 echo - News Pulse v2.14 XAU, XAG and BTC use only high-impact primary NFP, CPI and FOMC events, with two stops at 0.75%% each and a 1.50%% total cap
 echo - Gold News V9 Direction runs on XAUUSD M1 with the local prediction service and remains attached after every shared install
 echo - Every non-News EA follows the risk selected below; pressing Enter defaults to 1%%
+echo - Entry lots round UP to the broker step; below-minimum requests use minimum lot and are never skipped for sizing
+echo - Actual stop risk can exceed the selected target when the broker lot step or minimum requires it
 echo - Approved portfolio audit removals: Engineered Liquidity XAU, ORB Volume High Win 0.75R, XAG VWAP Snapback and XAU Squeeze High Win 0.75R
 echo - DMC Current XAU was explicitly retained after review
 echo - Earlier rejected research builds such as Engineered Liquidity BTC, US100 Fabio ORB and XAU Markov remain excluded

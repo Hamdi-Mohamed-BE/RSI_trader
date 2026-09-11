@@ -927,7 +927,10 @@ foreach ($item in $portfolio) {
         $preferredDistance = $price * ($preferredStopPercent / 100.0)
         $riskPerLot = ($preferredDistance / $tickSize) * $tickValue
         $rawLot = $targetRisk / $riskPerLot
-        $steps = [Math]::Round(($rawLot - $brokerMinimum) / $volumeStep, 0, [MidpointRounding]::AwayFromZero)
+        # Shared portfolio policy: round requested entry volume upward and use
+        # the broker minimum when the requested volume is smaller. Do not skip
+        # a valid signal merely because the selected risk is not representable.
+        $steps = [Math]::Ceiling((($rawLot - $brokerMinimum) / $volumeStep) - 1e-12)
         $effectiveLot = $brokerMinimum + ([Math]::Max(0, $steps) * $volumeStep)
         $effectiveLot = [Math]::Min($volumeMaximum, [Math]::Max($brokerMinimum, $effectiveLot))
         $effectiveLot = [Math]::Round($effectiveLot, 8)
@@ -1008,6 +1011,8 @@ $modeMessage = if ($IsFullSafe) {
     'MODE: STANDARD - current default/selective configuration.'
 }
 Write-Host $modeMessage -ForegroundColor Red
+Write-Host 'LOT POLICY: requested entry volume rounds UP to the broker step; below-minimum requests use minimum lot and are not skipped.' -ForegroundColor Red
+Write-Host 'Actual stop risk can therefore exceed the selected target; gaps and execution slippage can increase it further.' -ForegroundColor Red
 if ($IsAdaptiveAccount) {
     if ($UsesDynamicRisk) {
         Write-Host ('DYNAMIC RISK: target {0:N2} {1} ({2:N4}% of detected balance) per EA trade.' -f $RequestedRiskMoney, [string]$probe.account.currency, $EffectiveAdaptiveRiskPercent) -ForegroundColor Red
@@ -1017,7 +1022,6 @@ if ($IsAdaptiveAccount) {
     Write-Host 'Adaptive percentage-risk EA inputs are rebuilt from the active balance.' -ForegroundColor Red
 } elseif ($IsSmallAccount) {
     Write-Host 'SMALL ACCOUNT: eligible EAs use their configured percentage or installer-adjusted risk.' -ForegroundColor Red
-    Write-Host 'Gaps and execution slippage can still exceed planned risk.' -ForegroundColor Red
 }
 Write-Host 'It does not delete your existing profiles or close any open positions.' -ForegroundColor Yellow
 $modeToken = if ($IsFullSafe) { ' SAFE' } else { '' }
@@ -1139,6 +1143,7 @@ $manifest = @(
     'Recommended Dynamic EAs: ' + ((@($portfolio | Where-Object { $_.DynamicByDesign }) | ForEach-Object { $_.Label }) -join ', ')
     'Risk mode: ' + $RiskMode
     'Requested risk value: ' + $RiskValue.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+    'Entry volume policy: round up to broker step; use broker minimum when required; never skip solely for lot sizing'
     'Account: ' + $login
     'Balance at install: ' + $balance.ToString('N2') + ' ' + [string]$probe.account.currency
     'Server: ' + [string]$probe.account.server

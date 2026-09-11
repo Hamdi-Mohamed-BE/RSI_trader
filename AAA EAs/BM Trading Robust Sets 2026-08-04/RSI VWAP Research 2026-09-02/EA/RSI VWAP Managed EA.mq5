@@ -64,14 +64,21 @@ int VolumeDigits(const double step)
    return 4;
   }
 
-double NormalizeVolume(const double requested)
+double NormalizeVolume(const double requested,const bool round_up=true)
   {
    const double minimum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN);
    const double maximum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX);
    const double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP);
-   if(step<=0.0) return 0.0;
-   double volume=MathFloor(requested/step+1e-9)*step;
-   volume=MathMax(minimum,MathMin(maximum,volume));
+   if(requested<=0.0 || minimum<=0.0 || maximum<=0.0 || step<=0.0) return 0.0;
+   if(!round_up && requested<minimum) return 0.0;
+   double volume=round_up
+      ? MathCeil((MathMin(requested,maximum)-1e-12)/step)*step
+      : MathFloor((MathMin(requested,maximum)+1e-12)/step)*step;
+   volume=MathMin(maximum,volume);
+   if(round_up) volume=MathMax(minimum,volume);
+   else if(volume<minimum) return 0.0;
+   if(round_up && volume>requested+1e-12)
+      PrintFormat("RSI VWAP risk sizing rounded %.8f lots up to broker-valid %.8f lots; actual risk exceeds the selected target.",requested,volume);
    return NormalizeDouble(volume,VolumeDigits(step));
   }
 
@@ -248,7 +255,7 @@ void CloseBySignal(const ulong ticket)
       trade.PositionClose(ticket,InpMaximumDeviationPoints);
       return;
      }
-   const double requested=NormalizeVolume(current*InpSignalClosePercent/100.0);
+   const double requested=NormalizeVolume(current*InpSignalClosePercent/100.0,false);
    if(requested>=current-minimum/2.0) trade.PositionClose(ticket,InpMaximumDeviationPoints);
    else if(requested>=minimum) trade.PositionClosePartial(ticket,requested,InpMaximumDeviationPoints);
   }

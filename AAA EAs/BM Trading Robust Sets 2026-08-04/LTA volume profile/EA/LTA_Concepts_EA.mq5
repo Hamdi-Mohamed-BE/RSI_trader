@@ -1384,13 +1384,15 @@ double NormalizeVolume(const double volume)
    if(step <= 0.0)
       step = 0.01;
 
-   // Never force the broker minimum lot when it would exceed the requested
-   // monetary risk.  Skipping the trade is the only honest risk-safe choice.
-   if(volume < min_vol)
+   if(min_vol <= 0.0 || max_vol <= 0.0 || volume <= 0.0)
       return 0.0;
 
-   double v = MathFloor(volume / step + 1e-9) * step;
-   v = MathMin(max_vol, v);
+   // Portfolio policy: never skip a valid signal solely because the exact
+   // risk size is below the broker minimum or between volume steps.
+   double v = MathCeil((MathMin(volume, max_vol) - 1e-12) / step) * step;
+   v = MathMax(min_vol, MathMin(max_vol, v));
+   if(v > volume + 1e-12)
+      PrintFormat("LTA risk sizing rounded %.8f lots up to broker-valid %.8f lots; actual risk exceeds the selected target.", volume, v);
 
    int digits = 2;
    if(step < 0.01)

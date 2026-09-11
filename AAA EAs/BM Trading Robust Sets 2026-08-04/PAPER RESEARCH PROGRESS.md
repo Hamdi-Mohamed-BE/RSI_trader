@@ -1,6 +1,6 @@
 # Calyx paper research progress
 
-Last updated: 2026-09-09
+Last updated: 2026-09-11
 
 | # | Research idea | Scope completed | Status | Key evidence / next action |
 |---:|---|---|---|---|
@@ -15,6 +15,8 @@ Last updated: 2026-09-09
 | 9 | ICT AMD Nasdaq | Paper-exact raw M15 USTEC reproduction with author-code parity | Rejected | Only 8 trades in 4.5y. Three-year after-cost result -0.36%, PF 0.90, win rate 40.00%, DD 2.35%. No production change. |
 | 10 | Bitcoin OBV Walk-Forward | All 9,900 published OBV rules; monthly trailing-12m Best 1 and Best 50 selection on BTCUSD | Raw complete — reject for production | Best 1 / Sharpe after paper-cost stress: +87.33%, PF 1.56, win rate 43.75%, DD 21.84%, 96 trades over 2023-01-01–2026-08-31. It decayed to -6.20%, PF 0.75 in 2026 YTD and underperformed buy-and-hold risk-adjusted. |
 | 11 | FX Fixing Reversal | Paper-exact Tokyo, ECB and London fixing windows on seven FX CFDs with DST-aware clocks and three spread assumptions | Raw complete — reject for production | Five-year full-spread portfolio: -34.60%, PF 0.89, win rate 46.95%, DD 34.60%, Sharpe -1.52, 31,895 trades. Latest year: -9.98%, PF 0.83. Even half-spread costs erase the gross edge. No production change. |
+| 12 | Treasury Auction-Conditioned FX | Core-calendar raw replication on EURUSD, GBPUSD and USDJPY using coupon Treasury auctions and official CPI, Employment Situation, GDP and Initial Claims schedules | Raw complete — skip pipeline | Five-year equal-weight portfolio: -1.95%, PF 0.94, win rate 42.38%, DD 7.19%, 151 events / 453 legs. A further 0.5-pip stress falls to -2.54%, PF 0.92. The recent gross edge is too small to cover execution costs. |
+| 13 | Gold/Silver Cross-Session Momentum | Raw XAU/XAG transfer plus approved 1,830-case locked full pipeline on XAUUSD only | XAU research gate failed; XAG rejected | Corrected XAU raw result after spread, commission and rollover swap: +63.34%, PF 1.24, win rate 36.75%, DD 15.51% over five years. The selected XAU candidate returned +17.70%, PF 1.21, win rate 31.36%, DD 13.88% across 118 locked trades and +200.14% over five years at dynamic 1% risk, but failed because Monte Carlo P5 was -16.29% and only 50% of parameter neighbours were profitable. No deployment. |
 
 ## Current non-paper queue
 
@@ -23,6 +25,7 @@ Last updated: 2026-09-09
 3. **Precious-metals Night Effect — raw CFD transfer rejected.** The accessible paper rules lose on both XAUUSD and XAGUSD in 5y, 3y and 1y native tests. No pipeline or production action is warranted.
 4. **Bitcoin OBV Walk-Forward — raw transfer complete, production rejected.** The published selector reduces drawdown but trails buy-and-hold and fails the latest period. No EA, BAT, website or portfolio change was made.
 5. **FX Fixing Reversal — paper-exact raw transfer rejected.** Full observed spread turns the weak gross edge into -34.60% over five years, and every full pair implementation loses. No optimization or production action is warranted.
+6. **Crazy Horse ORB — raw reconstruction rejected pending missing rules.** The stated-minimum and H1-EMA200 proxy both lose over five years on XAUUSD and USTEC after recorded spread and commission. The best five-year win rate is 53.30%, not 80%; no pipeline or production change is warranted without the proprietary HTF, stop, range-extension and shelf-trailing definitions.
 
 ## Pipeline control
 

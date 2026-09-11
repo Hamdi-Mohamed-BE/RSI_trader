@@ -97,9 +97,11 @@ double NormalizeVolume(const double requested)
    const double minimum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN);
    const double maximum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX);
    const double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP);
-   if(step<=0.0 || requested<minimum) return 0.0;
-   double volume=MathFloor(requested/step+1e-9)*step;
+   if(requested<=0.0 || minimum<=0.0 || maximum<=0.0 || step<=0.0) return 0.0;
+   double volume=MathCeil((MathMin(requested,maximum)-1e-12)/step)*step;
    volume=MathMax(minimum,MathMin(maximum,volume));
+   if(volume>requested+1e-12)
+      PrintFormat("Risk sizing rounded %.8f lots up to broker-valid %.8f lots; actual risk exceeds the selected target.",requested,volume);
    return NormalizeDouble(volume,VolumeDigits(step));
   }
 

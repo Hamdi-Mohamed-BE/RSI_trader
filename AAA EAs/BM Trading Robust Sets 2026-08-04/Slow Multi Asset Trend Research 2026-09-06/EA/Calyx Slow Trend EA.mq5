@@ -1,5 +1,5 @@
 #property strict
-#property version   "1.10"
+#property version   "1.20"
 #property description "Calyx slow time-series momentum EA for the locked XAUUSD portfolio configuration."
 
 #include <Trade/Trade.mqh>
@@ -138,9 +138,33 @@ double VolumeForRisk(const int side,const double entry,const double stop)
    if(!OrderCalcProfit(kind,_Symbol,1.0,entry,stop,loss) || loss==0.0) return 0.0;
    const double cash=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0;
    const double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP),minimum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN),maximum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX);
-   double volume=MathFloor((cash/MathAbs(loss))/step+1e-9)*step;
-   if(volume<minimum) return 0.0;
-   return MathMin(volume,maximum);
+   if(step<=0.0 || minimum<=0.0 || maximum<=0.0) return 0.0;
+   const double oneLotLoss=MathAbs(loss),requested=cash/oneLotLoss;
+   double volume=MathCeil((MathMin(requested,maximum)-1e-12)/step)*step;
+   volume=MathMax(minimum,MathMin(maximum,volume));
+   if(volume>requested+1e-12)
+      PrintFormat("Slow Trend risk sizing rounded %.8f lots up to broker-valid %.8f lots; actual risk %.2f exceeds target %.2f.",requested,volume,oneLotLoss*volume,cash);
+   return volume;
+}
+
+void RestoreLastEntryTime()
+{
+   // Broker deal history survives terminal/VPS restarts, unlike a RAM-only
+   // timestamp.  Rebuild the cooldown state before evaluating new signals.
+   const datetime now=TimeCurrent();
+   const datetime from=now-30*86400;
+   if(!HistorySelect(from,now)) return;
+   for(int index=HistoryDealsTotal()-1;index>=0;index--)
+   {
+      const ulong deal=HistoryDealGetTicket(index);
+      if(deal==0) continue;
+      if(HistoryDealGetString(deal,DEAL_SYMBOL)!=_Symbol) continue;
+      if((ulong)HistoryDealGetInteger(deal,DEAL_MAGIC)!=InpMagic) continue;
+      const ENUM_DEAL_ENTRY entryType=(ENUM_DEAL_ENTRY)HistoryDealGetInteger(deal,DEAL_ENTRY);
+      if(entryType!=DEAL_ENTRY_IN && entryType!=DEAL_ENTRY_INOUT) continue;
+      lastEntryTime=(datetime)HistoryDealGetInteger(deal,DEAL_TIME);
+      return;
+   }
 }
 
 bool SessionAllowed()
@@ -220,6 +244,7 @@ int OnInit()
    atrHandle=iATR(_Symbol,InpSignalTimeframe,14);if(atrHandle==INVALID_HANDLE) return INIT_FAILED;
    const int ema=EmaLength();if(ema>0){emaHandle=iMA(_Symbol,InpSignalTimeframe,ema,0,MODE_EMA,PRICE_CLOSE);if(emaHandle==INVALID_HANDLE)return INIT_FAILED;}
    trade.SetExpertMagicNumber(InpMagic);trade.SetDeviationInPoints(InpMaximumDeviationPoints);trade.SetTypeFillingBySymbol(_Symbol);
+   RestoreLastEntryTime();
    // A live attach or terminal restart must wait for the next completed signal
    // candle instead of entering late on a signal that formed before startup.
    if(!MQLInfoInteger(MQL_TESTER)) lastSignalStamp=iTime(_Symbol,InpSignalTimeframe,1);

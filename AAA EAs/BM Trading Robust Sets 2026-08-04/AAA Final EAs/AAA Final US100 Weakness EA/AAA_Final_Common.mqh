@@ -16,8 +16,11 @@ double AAA_Volume(const string symbol,const double raw)
    double minimum=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MIN);
    double maximum=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MAX);
    double step=SymbolInfoDouble(symbol,SYMBOL_VOLUME_STEP);
-   if(minimum<=0.0 || step<=0.0 || raw<minimum) return 0.0;
-   double lots=MathFloor((MathMin(raw,maximum)+1e-12)/step)*step;
+   if(minimum<=0.0 || maximum<=0.0 || step<=0.0 || raw<=0.0) return 0.0;
+   double lots=MathCeil((MathMin(raw,maximum)-1e-12)/step)*step;
+   lots=MathMax(minimum,MathMin(maximum,lots));
+   if(lots>raw+1e-12)
+      PrintFormat("Risk sizing rounded %.8f lots up to broker-valid %.8f lots; actual risk exceeds the selected target.",raw,lots);
    return NormalizeDouble(lots,8);
 }
 

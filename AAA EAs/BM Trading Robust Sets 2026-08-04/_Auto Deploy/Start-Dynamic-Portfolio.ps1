@@ -34,6 +34,8 @@ if (-not $RiskMode) {
     Write-Host "`nChoose risk sizing for every non-News EA trade:" -ForegroundColor Cyan
     Write-Host '  [1] Percentage of current equity (default: 1%)'
     Write-Host '  [2] Fixed USD target (exact where supported; converted for percentage-only EAs)'
+    Write-Host '  Broker-valid lots are rounded UP. If the target is below minimum lot, minimum lot is used; the trade is not skipped.' -ForegroundColor Yellow
+    Write-Host '  This means actual stop risk can exceed the selected value on coarse/minimum-lot contracts.' -ForegroundColor Yellow
     Write-Host '  News Pulse v2.14 is the only exception: high-impact primary events only; 0.75% per pending stop, 1.50% total event cap.' -ForegroundColor Yellow
     $choice = (Read-Host 'Enter 1 or 2 [1]').Trim()
     if (-not $choice) { $choice = '1' }
@@ -60,6 +62,7 @@ if (-not $SafetyMode) {
 
 Write-Host "`nDynamic configuration" -ForegroundColor Green
 Write-Host ('  Non-News risk: {0} {1}' -f $RiskValue, $(if ($RiskMode -eq 'PERCENT') { '%' } else { 'USD per EA trade' }))
+Write-Host '  Lot policy: round UP to the broker step; use minimum lot when required; never skip solely because of lot sizing' -ForegroundColor Yellow
 Write-Host '  News Pulse v2.14: high-impact primary NFP/CPI/FOMC only; fixed 0.75% per pending stop / 1.50% total event cap'
 Write-Host ('  Mode: {0}' -f $SafetyMode)
 if (-not $Yes -and -not $ValidateOnly) {

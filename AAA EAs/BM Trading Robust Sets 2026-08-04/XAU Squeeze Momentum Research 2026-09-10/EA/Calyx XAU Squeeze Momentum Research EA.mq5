@@ -188,14 +188,21 @@ bool SessionAllowed(const datetime bar_time)
    return part.hour>=InpSessionStartHourUTC || part.hour<InpSessionEndHourUTC;
 }
 
-double NormalizeLots(const double requested)
+double NormalizeLots(const double requested,const bool round_up=true)
 {
    double minimum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN);
    double maximum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX);
    double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP);
-   if(minimum<=0.0 || maximum<=0.0 || step<=0.0 || requested<minimum) return 0.0;
-   double lots=MathFloor((MathMin(requested,maximum)+1e-12)/step)*step;
-   if(lots<minimum) return 0.0;
+   if(requested<=0.0 || minimum<=0.0 || maximum<=0.0 || step<=0.0) return 0.0;
+   if(!round_up && requested<minimum) return 0.0;
+   double lots=round_up
+      ? MathCeil((MathMin(requested,maximum)-1e-12)/step)*step
+      : MathFloor((MathMin(requested,maximum)+1e-12)/step)*step;
+   lots=MathMin(maximum,lots);
+   if(round_up) lots=MathMax(minimum,lots);
+   else if(lots<minimum) return 0.0;
+   if(round_up && lots>requested+1e-12)
+      PrintFormat("Squeeze Momentum risk sizing rounded %.8f lots up to broker-valid %.8f lots; actual risk exceeds the selected target.",requested,lots);
    int digits=(int)MathMax(0,MathRound(-MathLog10(step)));
    return NormalizeDouble(lots,digits);
 }
@@ -312,7 +319,7 @@ void ManageIntrabar()
       double current=PositionGetDouble(POSITION_VOLUME);
       double minimum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN);
       double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP);
-      double close_lots=NormalizeLots(g_initial_volume*InpPartialExitFraction);
+      double close_lots=NormalizeLots(g_initial_volume*InpPartialExitFraction,false);
       if(close_lots>=minimum && current-close_lots>=minimum-step*0.1)
       {
          ulong ticket=(ulong)PositionGetInteger(POSITION_TICKET);

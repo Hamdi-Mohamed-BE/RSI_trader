@@ -608,10 +608,12 @@ double NormalizeVolume(double raw)
    );
    if(step<=0.0)
       return 0.0;
-   double volume=MathFloor((raw+1e-12)/step)*step;
-   volume=MathMin(volume,maximum);
-   if(volume<minimum)
+   if(raw<=0.0 || minimum<=0.0 || maximum<=0.0)
       return 0.0;
+   double volume=MathCeil((MathMin(raw,maximum)-1e-12)/step)*step;
+   volume=MathMax(minimum,MathMin(volume,maximum));
+   if(volume>raw+1e-12)
+      PrintFormat("Gold News V9 risk sizing rounded %.8f lots up to broker-valid %.8f lots; actual risk exceeds the selected target.",raw,volume);
    int digits=(int)MathMax(0,MathRound(-MathLog10(step)));
    return NormalizeDouble(volume,digits);
   }
