@@ -8,6 +8,7 @@
 #property description "Completed volume-profile POC plus Fibonacci retracement confluence."
 
 #include <Trade/Trade.mqh>
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_POCFIB_CONFIRMATION
 {
@@ -93,6 +94,7 @@ input bool                      InpWeekdaysOnly=false;
 
 input group "Risk and execution"
 input double                    InpRiskPercent=1.00;
+input bool                      InpAdaptivePortfolioControls=false;
 input int                       InpMaximumTradesPerDay=2;
 input double                    InpMaximumSpreadATR=0.20;
 input ulong                     InpMagic=94041001;
@@ -331,7 +333,9 @@ double StopPrice(const MqlRates &rates[],const int direction,const double entry,
 
 double LotsForRisk(const ENUM_ORDER_TYPE type,const double entry,const double stop)
 {
-   double riskCash=AccountInfoDouble(ACCOUNT_BALANCE)*InpRiskPercent/100.0;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,(long)InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   double riskCash=AccountInfoDouble(ACCOUNT_BALANCE)*InpRiskPercent*adaptive/100.0;
    if(riskCash<=0.0) return 0.0;
    double loss=0.0;
    if(!OrderCalcProfit(type,_Symbol,1.0,entry,stop,loss)) return 0.0;

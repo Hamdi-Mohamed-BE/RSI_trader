@@ -1,17 +1,19 @@
 #property copyright "AAA Final News Pulse - NFP/CPI/FOMC straddle"
-#property version   "2.14"
+#property version   "2.15"
 #property strict
 
 #include "AAA_Final_Common.mqh"
 #include "SafeRegimeFilter.mqh"
 #include "DynamicTrailingSessionFilter.mqh"
 #include "NewsPulseTesterCalendar.mqh"
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 input group "Trading"
 input bool   InpEnableTrading=true;
 input bool   InpEnableBuySide=true;
 input bool   InpEnableSellSide=true;
 input double InpRiskPercent=0.75;             // locked compatibility value; EA rejects any other value
+input bool   InpAdaptivePortfolioControls=false;
 input long   InpMagic=860301;
 input int    InpMaxDeviationPoints=100;
 
@@ -45,6 +47,7 @@ string   g_active_state_key="";
 string   g_last_state_key="";
 datetime g_last_calendar_warning=0;
 datetime g_last_quote_warning=0;
+const int NP_REPEAT_WARNING_SECONDS=900;
 long     g_attempt_event_id=0;
 datetime g_last_placement_attempt=0;
 double   g_event_buy_entry=0.0;
@@ -98,8 +101,8 @@ bool NP_GetFreshBrokerPlacementTime(datetime &server_now)
    if(!(bool)TerminalInfoInteger(TERMINAL_CONNECTED) || !SymbolInfoTick(_Symbol,tick) ||
       tick.time<=0 || g_last_quote_arrival_ms==0)
    {
-      datetime warn_now=NP_ServerNow();
-      if(warn_now-g_last_quote_warning>=60)
+      datetime warn_now=TimeLocal();
+      if(g_last_quote_warning==0 || warn_now-g_last_quote_warning>=NP_REPEAT_WARNING_SECONDS)
       {
          Print("News Pulse: placement blocked because a fresh broker-stamped quote or connection is unavailable.");
          g_last_quote_warning=warn_now;
@@ -110,8 +113,8 @@ bool NP_GetFreshBrokerPlacementTime(datetime &server_now)
    ulong age_ms=GetTickCount64()-g_last_quote_arrival_ms;
    if(age_ms>(ulong)InpMaxQuoteAgeSeconds*1000)
    {
-      datetime warn_now=NP_ServerNow();
-      if(warn_now-g_last_quote_warning>=60)
+      datetime warn_now=TimeLocal();
+      if(g_last_quote_warning==0 || warn_now-g_last_quote_warning>=NP_REPEAT_WARNING_SECONDS)
       {
          Print("News Pulse: placement blocked; broker quote age is ",DoubleToString((double)age_ms/1000.0,1),
                "s (maximum ",InpMaxQuoteAgeSeconds,"s). Waiting for a fresh ",_Symbol," tick.");
@@ -486,7 +489,13 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
    double sell_sl=AAA_Price(_Symbol,sell_entry+InpStopLossPrice);
    // This is intentionally a source-level portfolio invariant. Each side is
    // capped at 0.75%, so a two-sided event cannot plan more than 1.50% total.
-   double side_risk=NP_RISK_PER_STOP_PERCENT;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0)
+   {
+      Print("News Pulse: placement blocked by the Recommended Adaptive daily-entry stop.");
+      return false;
+   }
+   double side_risk=NP_RISK_PER_STOP_PERCENT*adaptive;
    double buy_lots=0.0;
    double sell_lots=0.0;
    bool allow_buy=InpEnableBuySide && HAMA_SafeRegimeAllowsDirection(1);
@@ -502,7 +511,7 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
    }
    if((allow_buy && buy_lots<=0.0) || (allow_sell && sell_lots<=0.0))
    {
-      Print("News Pulse: broker contract data or minimum lot prevents risk-based sizing.");
+      Print("News Pulse: broker contract data prevents risk-based sizing.");
       return false;
    }
 

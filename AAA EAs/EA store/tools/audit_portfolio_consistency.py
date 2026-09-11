@@ -54,9 +54,9 @@ WATCHLIST = {
     "nasdaq-5m-candle-momentum": "Large historical return but thin edge: PF 1.12 over 5Y and 1.18 over 3Y.",
     "xau-regime-switch": "Strong long history but last six months are -4.95% with PF 0.43.",
     "xau-slow-trend": "Strong 3Y/5Y evidence but last six months are -7.13% with PF 0.48.",
-    "news-pulse-xau": "Mandatory News Pulse exposure retained at fixed risk, but the verified event ledger is short (34 trades).",
-    "news-pulse-xag": "Mandatory News Pulse exposure retained at fixed risk, but the verified event ledger is short (38 trades).",
-    "news-pulse-btc": "Mandatory News Pulse exposure retained at fixed risk; the 43-trade historical sample passed locked, delay-stress and current seven-event FXMacroData verification, but remains small.",
+    "news-pulse-xau": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades).",
+    "news-pulse-xag": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades).",
+    "news-pulse-btc": "Mandatory News Pulse exposure retained at fixed risk; the complete three-year native MT5 sample has 125 trades, but event execution remains high-slippage risk.",
     "us100-selective-orb-v3": "Only 34 trades exist in the 5Y view; retain as low-frequency evidence, not as a high-capacity core.",
     "xau-squeeze-momentum-standard": "Safe mode has strong PF/DD but only 48 trades in 5Y and no trades in the latest six months.",
 }
@@ -148,7 +148,7 @@ def cached_portfolio_comparison() -> dict[str, Any]:
     comparison: dict[str, Any] = {}
     for period in PERIODS:
         current = read_json(CACHE / "portfolio" / "current" / f"{period}.json").get("stats", {})
-        adaptive = read_json(CACHE / "portfolio" / "standard" / f"{period}.json").get("stats", {})
+        adaptive = read_json(CACHE / "portfolio" / "recommended-adaptive" / f"{period}.json").get("stats", {})
         fields = (
             "return_pct",
             "profit_factor",
@@ -414,7 +414,7 @@ def main() -> None:
             "The component tests used separate balances; the combined curve is not a shared-margin MT5 simulation.",
             "Closed-deal drawdown can understate live equity drawdown and gap/slippage risk.",
             "Nested 6m/1y/3y/5y windows are evidence views, not four independent out-of-sample tests.",
-            "News Pulse has a much shorter verified event ledger than its displayed chart horizon and must remain at its fixed 0.75% per triggered stop / 1.50% event cap.",
+            "News Pulse XAU and XAG have short release-verified ledgers; BTC has complete native three-year coverage. Every News Pulse chart remains fixed at 0.75% per triggered stop / 1.50% event cap before adaptive tapering.",
         ],
     }
 
@@ -427,7 +427,7 @@ def main() -> None:
         writer.writerows(rows)
 
     lines = [
-        "# Portfolio consistency audit — 2026-09-11",
+        "# Portfolio consistency audit — 2026-09-12",
         "",
         f"Evidence cutoff: **{manifest.get('end_date')}**. Four removals were applied after explicit user approval; DMC Current XAU was retained.",
         "",

@@ -3,6 +3,7 @@
 #property description "Calyx XAU demo-stage Markov switch: H4 slow trend in directional regimes and M5 session VWAP snapback in sideways regimes."
 
 #include <Trade/Trade.mqh>
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 input group "Frozen causal regime switch"
 input int      InpRegimeReturnWindow=40;
@@ -26,6 +27,7 @@ input int      InpMaximumVWAPTradesPerSession=1;
 
 input group "Execution and safety"
 input double   InpRiskPercent=1.00;
+input bool     InpAdaptivePortfolioControls=false;
 input double   InpMaximumSpreadRiskPercent=25.00;
 input int      InpMaximumDeviationPoints=100;
 input long     InpMagic=969070101;
@@ -149,7 +151,9 @@ double LotsForRisk(const ENUM_ORDER_TYPE type,const double entry,const double st
 {
    double pnl=0.0;
    if(!OrderCalcProfit(type,_Symbol,1.0,entry,stop,pnl) || pnl==0.0)return 0.0;
-   return NormalizeVolume(AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0/MathAbs(pnl));
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   return NormalizeVolume(AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0/MathAbs(pnl));
 }
 
 bool SelectOurPosition(ulong &ticket,string &comment)

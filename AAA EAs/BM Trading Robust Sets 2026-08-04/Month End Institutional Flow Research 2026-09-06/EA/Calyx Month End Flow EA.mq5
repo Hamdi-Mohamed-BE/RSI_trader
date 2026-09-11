@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_MF_WINDOW { MF_CLASSIC=0, MF_LAST1=1, MF_LAST2=2, MF_LAST3=3, MF_FIRST1=4, MF_FIRST3=5, MF_LAST2_FIRST2=6, MF_LAST3_FIRST3=7 };
 enum ENUM_MF_ENTRY { MF_LONDON_OPEN=0, MF_NY_OPEN=1, MF_NY_FIRST_HOUR=2, MF_NY_POWER_HOUR=3 };
@@ -27,6 +28,7 @@ input double InpStopValue=1.5;
 input double InpRewardRisk=2.5;
 input ENUM_MF_MANAGEMENT InpManagement=MF_MANAGE_NONE;
 input double InpRiskPercent=1.0;
+input bool InpAdaptivePortfolioControls=false;
 
 input group "Execution and safety"
 input double InpMaximumSpreadRiskPercent=20.0;
@@ -163,7 +165,9 @@ double NormalizeVolume(const double raw)
 double LotsForRisk(const ENUM_ORDER_TYPE type,const double entry,const double stop)
 {
    double pnl=0;if(!OrderCalcProfit(type,_Symbol,1.0,entry,stop,pnl) || pnl==0)return 0.0;
-   return NormalizeVolume(AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0/MathAbs(pnl));
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   return NormalizeVolume(AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0/MathAbs(pnl));
 }
 
 bool SelectOurPosition(ulong &ticket)

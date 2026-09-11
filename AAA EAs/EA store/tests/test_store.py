@@ -13,6 +13,7 @@ from app.catalog import (
     WHATSAPP_NUMBER,
     get_catalog,
     get_development_catalog,
+    get_product,
     get_sellable_catalog,
     parse_installer_items,
 )
@@ -29,7 +30,7 @@ STORE_ROOT = Path(__file__).resolve().parents[1]
 def test_news_pulse_live_calendar_rejects_secondary_cpi_events() -> None:
     path = PACKAGE_ROOT / "AAA Final EAs/AAA Final News Pulse EA/AAA Final News Pulse EA.mq5"
     source = path.read_text(encoding="utf-8-sig")
-    assert '#property version   "2.14"' in source
+    assert '#property version   "2.15"' in source
     assert 'if(event.importance!=CALENDAR_IMPORTANCE_HIGH) continue;' in source
     assert 'StringFind(normalized_name,"cpi")==0' in source
     assert 'StringFind(normalized_name,"core cpi")==0' in source
@@ -59,7 +60,7 @@ def test_every_active_entry_has_local_ea_and_set_files() -> None:
 
 def test_portfolio_risk_policy_has_only_news_exception() -> None:
     installer = (PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1").read_text(encoding="utf-8-sig")
-    assert installer.count("LockRisk = $true") == 3
+    assert installer.count("LockRisk = $true") == 4
     assert installer.count("PercentRisk = $false") == 3
 
     risk_keys = {
@@ -73,10 +74,11 @@ def test_portfolio_risk_policy_has_only_news_exception() -> None:
         values = _materialized_values(_set_values(PACKAGE_ROOT / item["set_source"], safe=False))
         present = risk_keys & values.keys()
         assert present, item["label"]
-        expected = 0.75 if item["label"].startswith("News Pulse ") else 1.0
+        is_news = item["label"].startswith("News Pulse ") or item["label"] == "Gold News V9 Direction"
+        expected = 0.75 if is_news else 1.0
         assert all(abs(float(values[key]) - expected) < 1e-9 for key in present), item["label"]
 
-        if item["label"].startswith("News Pulse "):
+        if is_news:
             continue
         source = (PACKAGE_ROOT / item["expert_source"]).with_suffix(".mq5").read_text(
             encoding="utf-8-sig", errors="ignore"
@@ -241,7 +243,7 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "15:55" in by_name["Nasdaq 5M Candle Momentum"].logic[5].detail
     assert "buy stop" in by_name["News Pulse XAU"].logic[2].detail
     assert "sell stop" in by_name["News Pulse XAU"].logic[2].detail
-    assert "exactly 0.75%" in by_name["News Pulse XAU"].logic[3].detail
+    assert "maximum base risk of 0.75%" in by_name["News Pulse XAU"].logic[3].detail
     assert "preceding twelve M15 bars" in by_name["BTC Top Down FVG Liquidity"].logic[1].detail
     assert "target is 4R" in by_name["ETH Top Down FVG Liquidity"].logic[5].detail
     assert "09:30-09:45" in by_name["Sell Nasdaq 15min"].logic[0].detail
@@ -324,11 +326,16 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert {product.label for product in news_products} == {"News Pulse XAU", "News Pulse XAG", "News Pulse BTC"}
     assert all(product.safe_filter_supported is False for product in news_products)
     assert all(product.evidence is not None for product in news_products)
-    assert all(product.evidence.status == "Watch only — verified schedule" for product in news_products)
-    assert next(product for product in news_products if product.label == "News Pulse BTC").evidence.trades == 8
+    btc_news = next(product for product in news_products if product.label == "News Pulse BTC")
+    assert all(
+        product.evidence.status == "Watch only — verified schedule"
+        for product in news_products
+        if product.label != "News Pulse BTC"
+    )
+    assert btc_news.evidence.status == "Watch only — official 3Y schedule"
+    assert btc_news.evidence.trades == 125
     assert all(product.evidence.trades == 9 for product in news_products if product.label != "News Pulse BTC")
-    assert all("v2.14" in product.logic_audit_note for product in news_products)
-
+    assert all("v2.15" in product.logic_audit_note for product in news_products)
     xau_ny = next(product for product in products if product.label == "XAU ORB New York M30")
     assert xau_ny.deployment_session == "09:30 New York / M30"
     assert xau_ny.exit_mode == "Native 1.5R / BE at 0.5R"
@@ -430,7 +437,15 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     adaptive_bat_text = adaptive_bat.read_text(encoding="utf-8")
     assert "-UseRecommendedSelections" in adaptive_bat_text
     assert "-UseAdaptiveProfile" in adaptive_bat_text
-    assert "RecommendedDynamic = $true" in (PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1").read_text(encoding="utf-8")
+    installer_text = (PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1").read_text(encoding="utf-8")
+    assert "RecommendedDynamic = $true" in installer_text
+    assert "$inputs['InpAdaptivePortfolioControls'] = 'true'" in installer_text
+    adaptive_header = (PACKAGE_ROOT / "_Shared" / "CalyxAdaptivePortfolio.mqh").read_text(encoding="utf-8")
+    assert "CALYX_DAILY_STOP_PERCENT=2.0" in adaptive_header
+    assert "CALYX_SOFT_DRAWDOWN_PERCENT=4.0" in adaptive_header
+    assert "CALYX_HARD_DRAWDOWN_PERCENT=7.0" in adaptive_header
+    assert "CALYX_SOFT_LOSS_STREAK=3" in adaptive_header
+    assert "CALYX_HARD_LOSS_STREAK=5" in adaptive_header
 
     btc_fvg = next(product for product in products if product.label == "BTC Top Down FVG Liquidity")
     assert btc_fvg.deployment_session == "All day / native strategy window"
@@ -526,6 +541,41 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert "16:00-to-09:29" in overnight.evidence.source_note
 
 
+def test_news_pulse_cards_details_and_series_use_the_same_verified_evidence() -> None:
+    expected = {
+        "news-pulse-xau": (35.32, 20.82, 77.78, 1.78, 9, "2026-06-12 to 2026-09-10"),
+        "news-pulse-xag": (93.34, 43.43, 88.89, 2.51, 9, "2026-06-12 to 2026-09-10"),
+        "news-pulse-btc": (984.8666, 9.33, 76.80, 3.41, 125, "2023-09-11 to 2026-09-10"),
+    }
+    for slug, (return_pct, profit_factor, win_rate, drawdown, trades, evidence_period) in expected.items():
+        product = get_product(slug)
+        assert product is not None
+        card = client.get("/eas", params={"q": product.label})
+        detail = client.get(f"/eas/{slug}")
+        series = client.get(f"/api/evidence/{slug}/series", params={"period": "3y"})
+        assert card.status_code == detail.status_code == series.status_code == 200
+        for page in (card.text, detail.text):
+            assert f"{return_pct:+,.2f}%" in page
+            assert f"{profit_factor:.2f}" in page
+            assert f"{win_rate:.2f}%" in page
+            assert f"{drawdown:.2f}%" in page
+            assert evidence_period in page
+        assert "Watch only" in card.text
+        assert "Older pre-calendar-fix results are excluded" in detail.text
+        assert "Historical pre-v2.13 calendar replay" not in detail.text
+        payload = series.json()
+        assert payload["period"] == evidence_period
+        assert payload["period_key"] == "verified"
+        assert payload["stats"]["trades"] == trades
+        assert len(payload["trades"]) == trades
+        assert len(payload["series"]) >= 2
+        if slug == "news-pulse-btc":
+            assert payload["stats"]["commission"] == -2298.82
+            assert payload["stats"]["swap"] == 0.0
+            assert payload["stats"]["max_win_streak"] == 16
+            assert payload["stats"]["max_loss_streak"] == 3
+
+
 def test_nasdaq_overnight_uses_fresh_native_curve_and_active_inputs() -> None:
     product = next(product for product in get_sellable_catalog() if product.label == "Nasdaq Overnight")
     response = client.get(f"/api/evidence/{product.slug}/series")
@@ -598,12 +648,12 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "Precomputed recommended-portfolio evidence" in response.text
-    assert "32 EAs with the approved adaptive risk overlay" in response.text
+    assert "32 EAs with the approved adaptive risk controls" in response.text
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     assert "Recommended Adaptive is the active website profile" in response.text
-    assert "+1,405.44%" in response.text
-    assert "13.79%" in response.text
+    assert "+2,016.58%" in response.text
+    assert "13.81%" in response.text
     assert "Current · 5Y return" not in response.text
     assert "Current → adaptive PF" not in response.text
     assert "Approved removals" in response.text
@@ -621,6 +671,9 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert series.json()["included_ea_count"] == 32
     assert series.json()["tested_ea_count"] == 31
     assert series.json()["mode"] == "recommended-adaptive"
+    assert series.json()["stats"]["return_pct"] == 2016.58
+    assert series.json()["stats"]["profit_factor"] == 2.11
+    assert series.json()["stats"]["max_drawdown_pct"] == 6.73
     assert series.headers["x-evidence-cache"] == "HIT"
     assert "/api/portfolio/equity-series" in response.text
     assert "/portfolio/equity.png" not in response.text
@@ -829,7 +882,8 @@ def test_all_recommended_eas_and_portfolio_have_every_fixed_cache() -> None:
             response = client.get(f"/api/evidence/{product.slug}/series", params={"period": period})
             assert response.status_code == 200, f"{product.label} {period}"
             payload = response.json()
-            assert payload["period_key"] == period
+            expected_period_key = "verified" if product.label.startswith("News Pulse ") else period
+            assert payload["period_key"] == expected_period_key
             assert payload["stats"]["trades"] == payload["cached_trade_count"]
 
     manifest = client.get("/api/evidence-cache/manifest")

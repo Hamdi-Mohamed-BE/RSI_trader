@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "..\..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_TESTER_SERVER_CLOCK
 {
@@ -62,6 +63,7 @@ input double InpMaximumSpreadAtrPct=0.0;       // Current spread / M15 ATR; 0 di
 
 input group "Risk and execution"
 input double InpRiskPercent=1.0;              // Calyx default and installer-controlled risk
+input bool   InpAdaptivePortfolioControls=false;
 input int    InpAtrPeriod=14;
 input ENUM_PIPELINE_STOP InpStopMode=PIPELINE_STOP_ATR;
 input double InpStopAtrMultiple=10.0;
@@ -220,7 +222,9 @@ double LotsForRisk(const ENUM_ORDER_TYPE type,const double entry,const double st
    if(!OrderCalcProfit(type,_Symbol,1.0,entry,stop,one_lot)) return 0.0;
    double loss=MathAbs(one_lot);
    if(loss<=0.0) return 0.0;
-   return NormalizeVolume((AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0)/loss);
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   return NormalizeVolume((AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0)/loss);
 }
 
 bool HasPosition()

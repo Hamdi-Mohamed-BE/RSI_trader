@@ -4,6 +4,7 @@
 
 #include <Trade/Trade.mqh>
 #include "SafeRegimeFilter.mqh"
+#include "..\..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_TESTER_SERVER_CLOCK
 {
@@ -52,6 +53,7 @@ input bool   InpTradeFriday=true;
 
 input group "Risk and exits"
 input double InpRiskPercent=1.0;
+input bool   InpAdaptivePortfolioControls=false;
 input ENUM_STOP_DISTANCE_MODE InpStopMode=STOP_FIXED_PIPS;
 input double InpStopPips=600.0;               // 1 pip = 10 broker points
 input double InpStopRangeMultiple=1.0;
@@ -243,7 +245,9 @@ double LotsForRisk(const double entry,const double stop)
    if(!OrderCalcProfit(ORDER_TYPE_SELL,_Symbol,1.0,entry,stop,one_lot)) return 0.0;
    double loss=MathAbs(one_lot);
    if(loss<=0.0) return 0.0;
-   return NormalizeVolume((AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0)/loss);
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   return NormalizeVolume((AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0)/loss);
 }
 
 bool SpreadOK()

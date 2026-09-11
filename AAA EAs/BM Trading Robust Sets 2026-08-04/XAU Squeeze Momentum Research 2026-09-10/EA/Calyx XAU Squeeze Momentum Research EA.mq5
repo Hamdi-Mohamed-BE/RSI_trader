@@ -4,10 +4,12 @@
 
 #include <Trade/Trade.mqh>
 #include "SafeRegimeFilter.mqh"
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 input group "Trading"
 input bool   InpEnableTrading=true;
 input double InpRiskPercent=5.0;
+input bool   InpAdaptivePortfolioControls=false;
 input double InpMaximumEffectiveLeverage=9.8;
 input long   InpMagic=1091010;
 input string InpTradeComment="SQZ-H1-STD";
@@ -214,7 +216,9 @@ double LotsForRiskAndLeverage(const double entry,const double stop)
    if(equity<=0.0 || !OrderCalcProfit(ORDER_TYPE_BUY,_Symbol,1.0,entry,stop,one_lot_loss)) return 0.0;
    one_lot_loss=MathAbs(one_lot_loss);
    if(one_lot_loss<=0.0) return 0.0;
-   double risk_lots=equity*(InpRiskPercent/100.0)/one_lot_loss;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   double risk_lots=equity*(InpRiskPercent*adaptive/100.0)/one_lot_loss;
    double contract=SymbolInfoDouble(_Symbol,SYMBOL_TRADE_CONTRACT_SIZE);
    double leverage_lots=(contract>0.0 && entry>0.0)
                         ? equity*InpMaximumEffectiveLeverage/(contract*entry)

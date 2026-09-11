@@ -1,9 +1,10 @@
 #property copyright "Gold News V9"
-#property version   "1.12"
+#property version   "1.13"
 #property strict
 #property description "Consumes the local Gold News V9 API for NFP, CPI, and FOMC."
 
 #include <Trade\Trade.mqh>
+#include "..\..\AAA EAs\BM Trading Robust Sets 2026-08-04\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_GNV9_STATE
   {
@@ -28,7 +29,8 @@ input int    InpEntryLeadSeconds=10;
 input int    InpExitAfterReleaseSeconds=900;
 input double InpStopDistanceUSD=20.00;
 input double InpTakeProfitDistanceUSD=4.00;
-input double InpRiskPercent=1.00;
+input double InpRiskPercent=0.75;
+input bool   InpAdaptivePortfolioControls=false;
 input double InpMaxLot=1.00;
 input double InpMarginReservePercent=10.0;
 input double InpMaxSpreadUSD=0.0;
@@ -67,6 +69,9 @@ datetime last_signal_poll=0;
 datetime last_symbol_sync_attempt=0;
 datetime last_runtime_write=0;
 string last_status="Starting";
+string last_printed_status="";
+datetime last_status_print=0;
+const int REPEATED_STATUS_LOG_SECONDS=900;
 
 string Upper(string value)
   {
@@ -251,7 +256,13 @@ string StateName()
 void SetStatus(string text)
   {
    last_status=text;
-   Print("Gold News V9: ",text);
+   datetime now=TimeLocal();
+   if(text!=last_printed_status || last_status_print==0 || now-last_status_print>=REPEATED_STATUS_LOG_SECONDS)
+     {
+      Print("Gold News V9: ",text);
+      last_printed_status=text;
+      last_status_print=now;
+     }
   }
 
 void SaveRuntimeHeartbeat()
@@ -699,7 +710,14 @@ double RiskSizedLot(
    double &nominal_risk
 )
   {
-   risk_budget=AccountInfoDouble(ACCOUNT_BALANCE)*InpRiskPercent/100.0;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagicNumber);
+   if(adaptive<=0.0)
+     {
+      risk_budget=0.0;
+      nominal_risk=0.0;
+      return 0.0;
+     }
+   risk_budget=AccountInfoDouble(ACCOUNT_BALANCE)*InpRiskPercent*adaptive/100.0;
    double one_lot_profit=0.0;
    if(!OrderCalcProfit(
       order_type,

@@ -54,15 +54,15 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 function Get-PortfolioItems {
     # Locked selected portfolio. Each EA owns its selected exit mode:
     # Each strategy keeps its selected exit. The three News Pulse instances
-    # use News Pulse v2.14, its native 60-second lifecycle and source-locked
+    # use News Pulse v2.15, its native 60-second lifecycle and source-locked
     # 0.75% risk per pending side (1.50% maximum planned event exposure).
     # Live events come from MT5's USD calendar; Strategy Tester schedules are
     # generated from FXMacroData and fail closed outside verified coverage.
-    # Gold News V9 uses the local v9 prediction runtime and follows the risk
-    # selected for the rest of the non-News-Pulse portfolio.
+    # Gold News V9 uses the local v9 prediction runtime and is locked to the
+    # same 0.75% base risk as the other news entries.
     # No portfolio-wide session overlay is applied.
-    # Risk defaults to 1% planned per EA trade except News Pulse, whose hard
-    # event cap cannot be changed by the portfolio risk prompt.
+    # Risk defaults to 1% planned per EA trade except the news EAs, whose 0.75%
+    # base risk cannot be changed by the portfolio risk prompt.
     $items = @(
         [pscustomobject]@{
             Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -211,7 +211,7 @@ function Get-PortfolioItems {
             Label = 'Gold News V9 Direction'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 1; Expert = 'GoldNewsV9EA.ex5'
             ExpertSource = '..\..\AI news\mt5\GoldNewsV9EA.ex5'
-            SetSource = '..\..\AI news\mt5\GoldNewsV9EA-Auto.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
+            SetSource = '..\..\AI news\mt5\GoldNewsV9EA-Auto.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'News Pulse XAG'; Canonical = 'XAGUSD'; Aliases = @('XAGUSD', 'SILVER', 'XAG')
@@ -447,6 +447,10 @@ function Read-SetInputs([string]$Path) {
 
     function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
+    # Every current Calyx EA exposes the same native portfolio-governor switch.
+    # Only the Recommended Adaptive BAT enables it; the evidence SETs and all
+    # other BAT profiles keep their original standalone entry sizing.
+    if ($UseAdaptiveProfile) { $inputs['InpAdaptivePortfolioControls'] = 'true' }
     if ([bool]$Item.ForceEnable -and $inputs.Contains('InpEnableTrading')) {
         $inputs['InpEnableTrading'] = 'true'
     }
@@ -529,8 +533,11 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
     )
     foreach ($item in $Items) {
         $inputs = Get-EffectiveInputs $item
+        if ($UseAdaptiveProfile -and (-not $inputs.Contains('InpAdaptivePortfolioControls') -or [string]$inputs['InpAdaptivePortfolioControls'] -ne 'true')) {
+            Stop-WithMessage "Risk audit failed for $($item.Label): the native Recommended Adaptive switch is not set correctly."
+        }
         $presentPercentKeys = @($percentKeys | Where-Object { $inputs.Contains($_) })
-        $isNews = $item.Label -like 'News Pulse *'
+        $isNews = ($item.Label -like 'News Pulse *') -or ($item.Label -eq 'Gold News V9 Direction')
         if ($presentPercentKeys.Count -eq 0 -and -not $inputs.Contains('RiskMoney') -and -not $inputs.Contains('InpRiskAmount')) {
             Stop-WithMessage "Risk audit failed for $($item.Label): its selected SET has no supported risk input."
         }
@@ -547,15 +554,15 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
         }
 
         if ($isNews -and -not [bool]$item.LockRisk) {
-            Stop-WithMessage "Risk audit failed for $($item.Label): News Pulse must remain locked at 0.75% per pending stop."
+            Stop-WithMessage "Risk audit failed for $($item.Label): news EAs must remain locked at 0.75% per planned entry."
         }
         if (-not $isNews -and [bool]$item.LockRisk) {
             Stop-WithMessage "Risk audit failed for $($item.Label): a non-News EA must follow the user's selected risk."
         }
     }
     $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
-    $adaptiveText = if ($UseAdaptiveProfile) { '; Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
-    Write-Host ("Risk audit passed: every non-News EA uses {0}{1}; all News Pulse entries remain 0.7500% per pending stop." -f $modeText, $adaptiveText) -ForegroundColor Green
+    $adaptiveText = if ($UseAdaptiveProfile) { '; native daily-stop/drawdown/loss-streak controls are enabled and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
+    Write-Host ("Risk audit passed: every non-News EA uses {0}{1}; all news entries remain locked at 0.7500% per planned entry." -f $modeText, $adaptiveText) -ForegroundColor Green
 }
 
 function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {

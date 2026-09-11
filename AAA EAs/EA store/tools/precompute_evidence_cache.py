@@ -35,13 +35,12 @@ from app.trade_metrics import enrich_trades, outcome_streaks  # noqa: E402
 PERIOD_MONTHS = {"6m": 6, "1y": 12, "3y": 36, "5y": 60}
 CACHE_ROOT = Path(os.getenv("EA_STORE_CACHE_ROOT", str(DEFAULT_CACHE_ROOT))).resolve()
 NEWS_PULSE_SLUGS = {"news-pulse-xau", "news-pulse-xag", "news-pulse-btc"}
-LEGACY_NEWS_PULSE_REPORTS = {
+REVIEWED_NEWS_PULSE_REPORTS = {
     "news-pulse-btc": (
         PACKAGE_ROOT
-        / "News Pulse Crypto Extension 2026-09-11"
+        / "News Pulse BTC Official 3Y Research 2026-09-11"
         / "Backtest Reports"
-        / "Full"
-        / "btcusd__two-sided__e75-s75__lead30-close60-trail150.htm"
+        / "btcusd__official-3y.htm"
     ),
 }
 
@@ -92,6 +91,20 @@ def file_hash(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def reviewed_report_end(report: Path) -> date | None:
+    """Read the audited end date stored next to a reviewed News Pulse report."""
+    results = report.parent.parent / "OFFICIAL 3Y RESULTS.json"
+    if not results.is_file():
+        return None
+    raw = str(json.loads(results.read_text(encoding="utf-8-sig")).get("to") or "")
+    for pattern in ("%Y.%m.%d", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(raw, pattern).date()
+        except ValueError:
+            continue
+    return None
 
 
 def source_fingerprint(product: Product, mode: str, start: date, end: date) -> dict[str, Any]:
@@ -191,24 +204,23 @@ def run_native(product: Product, mode: str, period: str, start: date, end: date,
             pass
 
     # News Pulse v2.13 intentionally refuses long-horizon tester runs outside
-    # its current FXMacroData coverage. Import the reviewed pre-v2.13 BTC
-    # report as clearly labelled historical context instead of weakening that
-    # integrity gate or fabricating missing release dates.
-    legacy_report = LEGACY_NEWS_PULSE_REPORTS.get(product.slug)
-    if mode == "standard" and legacy_report is not None:
-        if not legacy_report.is_file():
-            raise RuntimeError(f"Missing reviewed historical News Pulse report: {legacy_report}")
+    # its current FXMacroData coverage. Reuse the locked official-calendar BTC
+    # replay so every website period and the portfolio share one audited source.
+    reviewed_report = REVIEWED_NEWS_PULSE_REPORTS.get(product.slug)
+    if mode == "standard" and reviewed_report is not None:
+        if not reviewed_report.is_file():
+            raise RuntimeError(f"Missing reviewed News Pulse report: {reviewed_report}")
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(legacy_report, report_path)
+        shutil.copy2(reviewed_report, report_path)
         write_json(
             metadata_path,
             {
                 **fingerprint,
-                "source": "reviewed-historical-pre-v2.13-report",
-                "source_report_sha256": file_hash(legacy_report),
+                "source": "official-calendar-three-year-replay",
+                "source_report_sha256": file_hash(reviewed_report),
             },
         )
-        print(f"IMPORT {product.label} {mode} {period}: reviewed pre-v2.13 report", flush=True)
+        print(f"IMPORT {product.label} {mode} {period}: official-calendar three-year replay", flush=True)
         return report_path
 
     input_overrides: dict[str, str] = {}
@@ -258,13 +270,31 @@ def product_payload(product: Product, mode: str, period: str, start: date, end: 
     parse_mt5_balance_series.cache_clear()
     series = [dict(point) for point in parse_mt5_balance_series(report)]
     native = _native_metrics(report)
-    trades = _native_trades(report, f"{product.label} — {mode.title()}")
-    all_trade_count = len(trades)
+    all_trades = _native_trades(report, f"{product.label} — {mode.title()}")
+    all_trade_count = len(all_trades)
     trades = [
         trade
-        for trade in trades
+        for trade in all_trades
         if start.isoformat() <= str(trade.get("close_time") or "")[:10] <= end.isoformat()
     ]
+    # A reviewed multi-year report compounds from its own initial balance. When
+    # it is sliced into 6m/1y website windows, rebase cash P/L and costs to the
+    # site's $10k reference balance; otherwise a late slice inherits the much
+    # larger position sizes accumulated earlier in the full report.
+    if product.slug in REVIEWED_NEWS_PULSE_REPORTS and len(trades) != all_trade_count:
+        initial = float(native.get("initial_balance", 10_000) or 10_000)
+        balance_at_window_start = initial + sum(
+            float(trade.get("net_profit") or 0.0)
+            for trade in all_trades
+            if str(trade.get("close_time") or "")[:10] < start.isoformat()
+        )
+        rebase_multiplier = initial / balance_at_window_start if balance_at_window_start > 0 else 1.0
+        for trade in trades:
+            for field in ("gross_profit", "commission", "swap", "total_costs", "net_profit"):
+                if trade.get(field) is not None:
+                    trade[field] = round(float(trade[field]) * rebase_multiplier, 2)
+            trade["window_rebase_multiplier"] = round(rebase_multiplier, 8)
+            trade["cost_basis"] = "Rebased from the official multi-year MT5 replay to a USD 10,000 window start"
     for number, trade in enumerate(trades, 1):
         trade["number"] = number
         trade["cache_slug"] = product.slug
@@ -309,9 +339,10 @@ def product_payload(product: Product, mode: str, period: str, start: date, end: 
         "trade_coverage_from": first_trade_at,
         "trade_coverage_to": last_trade_at,
         "notice": (
-            "Historical pre-v2.13 MT5 replay imported from the reviewed full-pipeline BTC report; retained as "
-            "long-horizon context while the current EA keeps its strict FXMacroData calendar gate."
-            if product.slug in LEGACY_NEWS_PULSE_REPORTS
+            "Official-calendar three-year MT5 replay using 94 verified NFP, CPI and FOMC releases. Shorter "
+            "windows rebase the compounded cash ledger to USD 10,000; the 5-year view contains only the "
+            "available three-year BTC coverage and does not fabricate earlier events."
+            if product.slug in REVIEWED_NEWS_PULSE_REPORTS
             else "Precomputed native MT5 Every Tick result using the exact active recommended EA and SET file."
         ),
         "source": "precomputed-native-mt5-cache",
@@ -490,7 +521,11 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
             )
             continue
         payload = json.loads(payload_path.read_text(encoding="utf-8-sig"))
-        product_trades = json.loads(trades_path.read_text(encoding="utf-8-sig"))
+        product_trades = [
+            trade
+            for trade in json.loads(trades_path.read_text(encoding="utf-8-sig"))
+            if start.isoformat() <= str(trade.get("close_time") or "")[:10] <= end.isoformat()
+        ]
         all_trades.extend(product_trades)
         included.append(
             {
@@ -633,12 +668,16 @@ def main() -> int:
             for mode in modes:
                 for period in periods:
                     report, _ = source_paths(product, mode, period)
+                    if mode == "standard" and product.slug in REVIEWED_NEWS_PULSE_REPORTS:
+                        report = REVIEWED_NEWS_PULSE_REPORTS[product.slug]
                     summary_path = product_cache_path(product.slug, mode, period)
                     if not report.is_file() or not summary_path.is_file():
                         continue
                     old_summary = json.loads(summary_path.read_text(encoding="utf-8-sig"))
                     start = date.fromisoformat(str(old_summary["available_from"]))
                     end = date.fromisoformat(str(old_summary["available_to"]))
+                    if mode == "standard" and product.slug in REVIEWED_NEWS_PULSE_REPORTS:
+                        end = max(end, reviewed_report_end(report) or end)
                     payload, trades = product_payload(product, mode, period, start, end, report)
                     write_json(summary_path, payload)
                     write_json(product_trades_path(product.slug, mode, period), trades)

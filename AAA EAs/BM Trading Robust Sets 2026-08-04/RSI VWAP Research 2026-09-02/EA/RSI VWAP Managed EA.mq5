@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_RV_EXIT_MODE
   {
@@ -31,6 +32,7 @@ input int               InpRSILength=16;
 input double            InpOversold=18.0;
 input double            InpOverbought=80.0;
 input double            InpRiskPercent=1.0;
+input bool              InpAdaptivePortfolioControls=false;
 input ENUM_RV_EXIT_MODE InpExitMode=RV_EXIT_FIXED_RR;
 input ENUM_RV_STOP_MODE InpStopMode=RV_STOP_ATR;
 input int               InpATRPeriod=14;
@@ -241,7 +243,9 @@ double RiskVolume(const double entry,const double stop)
    if(!OrderCalcProfit(ORDER_TYPE_BUY,_Symbol,1.0,entry,stop,loss)) return 0.0;
    loss=MathAbs(loss);
    if(loss<=0.0) return 0.0;
-   const double risk_money=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   const double risk_money=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0;
    return NormalizeVolume(risk_money/loss);
   }
 

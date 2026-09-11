@@ -5,6 +5,7 @@
 #include <Trade/Trade.mqh>
 #include "SafeRegimeFilter.mqh"
 #include "DynamicTrailingSessionFilter.mqh"
+#include "..\..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_N5_STOP_MODE
   {
@@ -59,6 +60,7 @@ input int  InpServerUtcOffsetHours=0;
 input group "Risk and execution"
 input bool   InpEnableTrading=true;
 input double InpRiskPercent=1.00;
+input bool   InpAdaptivePortfolioControls=false;
 input double InpMaximumSpreadATR=0.00;
 input long   InpMagic=862020;
 input int    InpMaximumDeviationPoints=50;
@@ -90,7 +92,9 @@ double LotsForRisk(const ENUM_ORDER_TYPE type,const double entry,const double st
   {
    // The research executable is hard-capped at one percent per trade.
    double applied_risk=MathMin(InpRiskPercent,1.00);
-   double cash=AccountInfoDouble(ACCOUNT_EQUITY)*applied_risk/100.0;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   double cash=AccountInfoDouble(ACCOUNT_EQUITY)*applied_risk*adaptive/100.0;
    double one_lot=0.0;
    if(cash<=0.0 || !OrderCalcProfit(type,_Symbol,1.0,entry,stop,one_lot)) return 0.0;
    one_lot=MathAbs(one_lot);

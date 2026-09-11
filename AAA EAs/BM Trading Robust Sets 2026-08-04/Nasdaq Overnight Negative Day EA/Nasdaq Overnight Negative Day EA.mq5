@@ -5,6 +5,7 @@
 #include <Trade/Trade.mqh>
 #include "SafeRegimeFilter.mqh"
 #include "DynamicTrailingSessionFilter.mqh"
+#include "..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_NEGATIVE_DAY_DEFINITION
 {
@@ -32,6 +33,7 @@ input int    InpMinimumCashSessionBars=300;
 
 input group "Risk and execution"
 input double InpRiskPercent=1.0;
+input bool   InpAdaptivePortfolioControls=false;
 input double InpEmergencyStopPercent=2.0;
 input double InpRewardRisk=0.0; // 0 keeps the calendar exit; positive values add a fixed R target
 input int    InpMaxSpreadPoints=0;
@@ -143,7 +145,9 @@ double LotsForRisk(const double entry,const double stop)
    if(!OrderCalcProfit(ORDER_TYPE_BUY,_Symbol,1.0,entry,stop,one_lot_result)) return 0.0;
    double one_lot_loss=MathAbs(one_lot_result);
    if(one_lot_loss<=0.0) return 0.0;
-   double risk_cash=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   double risk_cash=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0;
    return NormalizeVolume(risk_cash/one_lot_loss);
 }
 

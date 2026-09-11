@@ -4,6 +4,7 @@ import json
 from collections import Counter
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +16,8 @@ from fastapi.templating import Jinja2Templates
 from .catalog import (
     FILTERED_AUDIT_ROOT,
     INSTALLER_PATH,
+    NEWS_PULSE_BTC_3Y_ROOT,
+    NEWS_PULSE_CALENDAR_ROOT,
     PACKAGE_ROOT,
     SELECTED_PORTFOLIO_ROOT,
     STORE_ROOT,
@@ -37,8 +40,10 @@ from .evidence_cache import (
     load_product_summary,
     validate_period,
 )
+from .evidence_series import parse_mt5_balance_series
 from .mt5_live import live_mt5
-from .mt5_evidence_jobs import mt5_evidence_jobs
+from .mt5_evidence_jobs import _native_trades, mt5_evidence_jobs
+from .trade_metrics import enrich_trades, outcome_streaks
 
 
 @asynccontextmanager
@@ -82,7 +87,7 @@ def _recommended_mode(product: Product) -> str:
 
 
 def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> Product:
-    # News Pulse v2.14 currently has a shorter but release-complete calendar
+    # News Pulse v2.15 currently has a shorter but release-complete calendar
     # audit. Do not let the older fixed-period cache replace those current,
     # explicitly watch-only figures on catalogue cards.
     if product.label.startswith("News Pulse "):
@@ -118,6 +123,88 @@ def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> P
 
 def _display_catalog(period: str = DEFAULT_PERIOD) -> list[Product]:
     return [_cached_display_product(product, period) for product in get_sellable_catalog()]
+
+
+@lru_cache(maxsize=4)
+def _verified_news_payload(slug: str) -> dict[str, Any] | None:
+    """Return the corrected FXMacroData schedule replay used on News cards.
+
+    Older fixed-period cache files predate the calendar integrity gate.  They
+    must never replace these figures on a current News Pulse detail page.
+    """
+    product = get_product(slug)
+    if product is None or product.evidence is None or not product.label.startswith("News Pulse "):
+        return None
+
+    if product.label == "News Pulse BTC":
+        path = NEWS_PULSE_BTC_3Y_ROOT / "OFFICIAL 3Y RESULTS.json"
+        if not path.is_file():
+            return None
+        row = json.loads(path.read_text(encoding="utf-8-sig"))
+        report = NEWS_PULSE_BTC_3Y_ROOT / "Backtest Reports" / "btcusd__official-3y.htm"
+        initial_balance = float(row["initial_balance"])
+    else:
+        asset = "xauusd" if product.label == "News Pulse XAU" else "xagusd"
+        path = NEWS_PULSE_CALENDAR_ROOT / "schedule-replay-results.json"
+        if not path.is_file():
+            return None
+        audit = json.loads(path.read_text(encoding="utf-8-sig"))
+        row = next((item for item in audit.get("results", []) if item.get("asset") == asset), None)
+        if row is None:
+            return None
+        replay = row["fxmacrodata_schedule"]
+        report = NEWS_PULSE_CALENDAR_ROOT / "Schedule Replay Reports" / f"{asset}--fxmacrodata_schedule.htm"
+        initial_balance = float(replay["metrics"]["initial_balance"])
+
+    if not report.is_file():
+        return None
+    evidence = product.evidence
+    start, end = evidence.period.split(" to ", 1)
+    trades = enrich_trades(_native_trades(report, product.label), slug, starting_balance=initial_balance)
+    streaks = outcome_streaks(trades)
+    commission = round(sum(float(trade.get("commission") or 0) for trade in trades), 2)
+    swap = round(sum(float(trade.get("swap") or 0) for trade in trades), 2)
+    net_profit = initial_balance * evidence.return_pct / 100.0
+    stats = {
+        "initial_balance": round(initial_balance, 2),
+        "final_balance": round(initial_balance + net_profit, 2),
+        "net_profit": round(net_profit, 2),
+        "return_pct": evidence.return_pct,
+        "profit_factor": evidence.profit_factor,
+        "win_rate_pct": evidence.win_rate_pct,
+        "max_drawdown_pct": evidence.drawdown_pct,
+        "trades": evidence.trades,
+        "sharpe_ratio": evidence.sharpe_ratio,
+        "recovery_factor": evidence.recovery_factor,
+        "history_quality": evidence.history_quality,
+        "max_win_streak": streaks["max_win_streak"],
+        "max_loss_streak": streaks["max_loss_streak"],
+        "commission": commission,
+        "swap": swap,
+        "total_costs": round(commission + swap, 2),
+        "from": start,
+        "to": end,
+    }
+    return {
+        "label": product.label,
+        "period": evidence.period,
+        "period_key": "verified",
+        "mode": "standard",
+        "currency": "USD",
+        "series": list(parse_mt5_balance_series(report)),
+        "stats": stats,
+        "trades": trades,
+        "available_from": start,
+        "available_to": end,
+        "cached_trade_count": len(trades),
+        "displayed_trade_count": len(trades),
+        "trade_coverage_from": trades[0]["open_time"] if trades else None,
+        "trade_coverage_to": trades[-1]["close_time"] if trades else None,
+        "notice": evidence.source_note,
+        "source": "verified-news-schedule-replay",
+        "generated_at": datetime.fromtimestamp(report.stat().st_mtime, timezone.utc).isoformat(),
+        "history_quality": evidence.history_quality,
+    }
 
 
 def _base_context(request: Request, active: str) -> dict[str, Any]:
@@ -351,15 +438,15 @@ async def product_detail(
         if mode == "dynamic"
         else product.evidence
     )
-    cached = load_product_summary(product.slug, mode, period)
+    is_news_pulse = product.label.startswith("News Pulse ")
+    cached = _verified_news_payload(product.slug) if is_news_pulse else load_product_summary(product.slug, mode, period)
     if cached and cached.get("stats") and display_evidence is not None:
         stats = cached["stats"]
-        is_news_legacy = product.label.startswith("News Pulse ")
         display_evidence = display_evidence.model_copy(
             update={
                 "label": (
-                    f"Historical pre-v2.13 calendar replay — {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)}"
-                    if is_news_legacy
+                    f"{product.evidence.label} — current schedule evidence"
+                    if is_news_pulse
                     else f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration"
                 ),
                 "period": str(cached["period"]),
@@ -373,12 +460,7 @@ async def product_detail(
                 "max_win_streak": stats.get("max_win_streak"),
                 "max_loss_streak": stats.get("max_loss_streak"),
                 "history_quality": str(cached.get("history_quality") or "Native MT5 report"),
-                "source_note": (
-                    "Historical MT5 report generated before the v2.13 FXMacroData calendar integrity gate. "
-                    "It is retained only as long-horizon context and is not claimed as a v2.13 validation."
-                    if is_news_legacy
-                    else str(cached.get("notice"))
-                ),
+                "source_note": str(cached.get("notice")),
             }
         )
     context = _base_context(request, "catalogue") | {
@@ -388,9 +470,7 @@ async def product_detail(
         "selected_period": period,
         "period_options": PERIOD_OPTIONS,
         "display_evidence": display_evidence,
-        "verified_schedule_evidence": (
-            product.evidence if product.label.startswith("News Pulse ") else None
-        ),
+        "is_news_pulse": is_news_pulse,
         "streak_stats": (cached or {}).get("stats", {}),
     }
     return templates.TemplateResponse(request=request, name="detail.html", context=context)
@@ -512,6 +592,14 @@ async def evidence_series(
         raise HTTPException(status_code=409, detail="This vendor binary does not support embedded Safe mode")
     if mode == "dynamic" and not product.dynamic_mode_supported:
         raise HTTPException(status_code=409, detail="This EA has no saved Dynamic London configuration")
+    if product.label.startswith("News Pulse "):
+        verified_payload = _verified_news_payload(product.slug)
+        if verified_payload is None:
+            raise HTTPException(status_code=503, detail="The corrected News Pulse schedule evidence is not ready yet.")
+        return JSONResponse(
+            verified_payload,
+            headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"},
+        )
     selected_mode = "standard" if mode == "compare" else mode
     payload = load_product_cache(product.slug, selected_mode, period)
     if payload is None:

@@ -11,6 +11,7 @@
 #include <Trade/Trade.mqh>
 #include "SafeRegimeFilter.mqh"
 #include "DynamicTrailingSessionFilter.mqh"
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_LTA_BIAS
 {
@@ -79,6 +80,7 @@ input group "Risk And Trade Management"
 input double             InpMomentumRiskPercent    = 2.0;
 input double             InpContrarianRiskPercent  = 1.0;
 input double             InpAbsoluteRiskCapPercent = 2.5;
+input bool               InpAdaptivePortfolioControls = false;
 input double             InpRewardRisk             = 2.0;
 input int                InpMaxConsecutiveLosses   = 2;
 input bool               InpMoveContrarianBEAt1R   = true;
@@ -1359,7 +1361,9 @@ double CalculateRiskVolume(const int dir,
 {
    double cap = ClampDouble(InpAbsoluteRiskCapPercent, 0.01, 2.5);
    double risk_pct = ClampDouble(risk_percent, 0.01, cap);
-   double risk_money = AccountInfoDouble(ACCOUNT_EQUITY) * risk_pct / 100.0;
+   const double adaptive_multiplier=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagicNumber);
+   if(adaptive_multiplier<=0.0) return 0.0;
+   double risk_money = AccountInfoDouble(ACCOUNT_EQUITY) * risk_pct * adaptive_multiplier / 100.0;
    if(risk_money <= 0.0)
       return 0.0;
 

@@ -2,6 +2,7 @@
 #define AAA_FINAL_COMMON_MQH
 
 #include <Trade/Trade.mqh>
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 #include "DynamicTrailingSessionFilter.mqh"
 
 CTrade AAA_Trade;
@@ -32,7 +33,9 @@ double AAA_LotsForRisk(const string symbol,const ENUM_ORDER_TYPE type,const doub
    if(!OrderCalcProfit(type,symbol,1.0,entry,stop,one_lot_result)) return 0.0;
    double loss=MathAbs(one_lot_result);
    if(loss<=0.0) return 0.0;
-   double risk_cash=AccountInfoDouble(ACCOUNT_EQUITY)*risk_percent/100.0;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   double risk_cash=AccountInfoDouble(ACCOUNT_EQUITY)*risk_percent*adaptive/100.0;
    return AAA_Volume(symbol,risk_cash/loss);
 }
 

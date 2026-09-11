@@ -8,4 +8,5 @@
 #define AAA_DEFAULT_RR 3.0
 #define AAA_DEFAULT_MAGIC 290729
 #define AAA_DEFAULT_MARKOV_FILTER true
+input bool InpAdaptivePortfolioControls=false;
 #include "AAA_Final_Strategy_Engine.mqh"

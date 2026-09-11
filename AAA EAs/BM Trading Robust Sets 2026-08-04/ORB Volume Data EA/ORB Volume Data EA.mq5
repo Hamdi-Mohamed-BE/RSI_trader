@@ -5,6 +5,7 @@
 #include <Trade/Trade.mqh>
 #include "SafeRegimeFilter.mqh"
 #include "DynamicTrailingSessionFilter.mqh"
+#include "..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_ORB_SESSION_ZONE
 {
@@ -94,6 +95,7 @@ input double                InpTrailCandleBufferATR=0.10;
 
 input group "Risk and execution"
 input double                InpRiskPercent=1.0;
+input bool                  InpAdaptivePortfolioControls=false;
 input double                InpMaxSpreadRangePercent=12.0;
 input int                   InpMaxDeviationPoints=30;
 input long                  InpMagic=86080701;
@@ -252,7 +254,9 @@ double LotsForRisk(const ENUM_ORDER_TYPE order_type,const double entry,const dou
    if(!OrderCalcProfit(order_type,_Symbol,1.0,entry,stop,result)) return 0.0;
    double one_lot_loss=MathAbs(result);
    if(one_lot_loss<=0.0) return 0.0;
-   double risk_cash=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   double risk_cash=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0;
    return NormalizeVolume(risk_cash/one_lot_loss);
 }
 

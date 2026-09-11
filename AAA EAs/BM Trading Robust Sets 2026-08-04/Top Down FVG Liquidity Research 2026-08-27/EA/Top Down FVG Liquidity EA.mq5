@@ -5,6 +5,7 @@
 #include <Trade/Trade.mqh>
 #include "SafeRegimeFilter.mqh"
 #include "DynamicTrailingSessionFilter.mqh"
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_TDFVG_BIAS_MODE
 {
@@ -42,6 +43,7 @@ input int                   InpMaximumHoldingBars=96;
 
 input group "Risk and execution"
 input double                InpRiskPercent=1.00;
+input bool                  InpAdaptivePortfolioControls=false;
 input double                InpMaximumSpreadATRPercent=15.0;
 input int                   InpMaximumTradesPerBrokerDay=2;
 input bool                  InpWeekdaysOnly=false;
@@ -92,7 +94,9 @@ double LotsForRisk(const ENUM_ORDER_TYPE order_type,const double entry,const dou
    if(!OrderCalcProfit(order_type,_Symbol,1.0,entry,stop,one_lot_loss)) return 0.0;
    one_lot_loss=MathAbs(one_lot_loss);
    if(one_lot_loss<=0.0) return 0.0;
-   return NormalizeVolume(AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0/one_lot_loss);
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   return NormalizeVolume(AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0/one_lot_loss);
 }
 
 bool ReadValue(const int handle,const int shift,double &value)

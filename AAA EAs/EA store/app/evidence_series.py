@@ -152,10 +152,9 @@ CUSTOM_REPORTS: dict[str, Path] = {
     ),
     "News Pulse BTC": (
         PACKAGE_ROOT
-        / "News Pulse Crypto Extension 2026-09-11"
+        / "News Pulse BTC Official 3Y Research 2026-09-11"
         / "Backtest Reports"
-        / "Full"
-        / "btcusd__two-sided__e75-s75__lead30-close60-trail150.htm"
+        / "btcusd__official-3y.htm"
     ),
     "XAU ORB New York M30": (
         PACKAGE_ROOT

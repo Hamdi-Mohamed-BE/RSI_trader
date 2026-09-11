@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 enum ENUM_TP_STOP_MODE
   {
@@ -36,6 +37,7 @@ enum ENUM_TP_SESSION
   };
 
 input double                    InpRiskPercent=1.0;
+input bool                      InpAdaptivePortfolioControls=false;
 input bool                      InpAllowLong=true;
 input bool                      InpAllowShort=true;
 input int                       InpFastEMA=20;
@@ -301,7 +303,9 @@ double RiskVolume(const int direction,const double entry,const double stop)
    if(!OrderCalcProfit(type,_Symbol,1.0,entry,stop,loss)) return 0.0;
    loss=MathAbs(loss);
    if(loss<=0.0) return 0.0;
-   return NormalizeVolume(AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0/loss);
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   return NormalizeVolume(AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0/loss);
   }
 
 double OriginalRisk(const long type,const double entry,const double stop,const double tp)

@@ -17,9 +17,13 @@
     <div class="mini-stat"><span>Max DD</span><strong>{{ product.evidence.drawdown_pct|percent }}</strong></div>
     <div class="mini-stat"><span>Win rate</span><strong>{{ product.evidence.win_rate_pct|percent }}</strong></div>
   </div>
+  {% if product.evidence.status.startswith('Watch only') %}
+  <p class="mt-3 font-mono text-[10px] uppercase tracking-[.08em] text-amber-200/80">Verified window · {{ product.evidence.period }}</p>
+  {% endif %}
   <div class="mt-4 flex items-center justify-between">
     {% if product.evidence.status == 'Validated evidence' %}<span class="badge badge-good">Validated evidence</span>
     {% elif product.evidence.status == 'Research evidence' %}<span class="badge badge-warn">Research evidence</span>
+    {% elif product.evidence.status.startswith('Watch only') %}<span class="badge badge-warn">Watch only</span>
     {% else %}<span class="badge badge-bad">Experimental</span>{% endif %}
     <span class="font-mono text-[10px] text-muted">{{ product.evidence.trades }} trades</span>
   </div>

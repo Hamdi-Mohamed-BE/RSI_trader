@@ -3,6 +3,7 @@
 #property description "Calyx slow time-series momentum EA for the locked XAUUSD portfolio configuration."
 
 #include <Trade/Trade.mqh>
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 input ENUM_TIMEFRAMES InpSignalTimeframe=PERIOD_H4;
 input int InpHorizonMode=3;             // 0=1m, 1=3m, 2=6m, 3=1/3/6m, 4=3/6/12m
@@ -17,6 +18,7 @@ input double InpRewardRisk=6.0;
 input int InpMaximumHoldDays=0;
 input int InpManagement=0;              // 0=none, 1=BE, 2=ATR trail, 3=chandelier trail, 4=M15 50-to-20
 input double InpRiskPercent=1.0;
+input bool InpAdaptivePortfolioControls=false;
 input int InpMaximumDeviationPoints=100;
 input ulong InpMagic=969060311;
 input bool InpTesterOnly=false;
@@ -136,7 +138,9 @@ double VolumeForRisk(const int side,const double entry,const double stop)
    double loss=0.0;
    const ENUM_ORDER_TYPE kind=side>0 ? ORDER_TYPE_BUY : ORDER_TYPE_SELL;
    if(!OrderCalcProfit(kind,_Symbol,1.0,entry,stop,loss) || loss==0.0) return 0.0;
-   const double cash=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0;
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,(long)InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   const double cash=AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent*adaptive/100.0;
    const double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP),minimum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN),maximum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX);
    if(step<=0.0 || minimum<=0.0 || maximum<=0.0) return 0.0;
    const double oneLotLoss=MathAbs(loss),requested=cash/oneLotLoss;

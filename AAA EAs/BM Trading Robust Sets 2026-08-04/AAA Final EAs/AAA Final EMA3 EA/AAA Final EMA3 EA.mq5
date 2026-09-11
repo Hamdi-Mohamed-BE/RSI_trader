@@ -7,4 +7,5 @@
 #define AAA_DEFAULT_RISK 1.0
 #define AAA_DEFAULT_RR 1.7
 #define AAA_DEFAULT_MAGIC 3082026
+input bool InpAdaptivePortfolioControls=false;
 #include "AAA_Final_Strategy_Engine.mqh"

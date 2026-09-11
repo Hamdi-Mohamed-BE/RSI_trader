@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 input group "New York opening range"
 input int             InpOpeningRangeMinutes=30;
@@ -36,6 +37,7 @@ input double          InpMaximumPreRetestExcursionRange=0.60;
 input group "Risk and exits"
 input double          InpRiskPercent=1.00;
 input double          InpFixedRiskMoney=0.00; // >0 overrides percent risk
+input bool            InpAdaptivePortfolioControls=false;
 input double          InpStopBufferRange=0.05;
 input double          InpMaximumStopDailyATR=0.80;
 input double          InpRewardRisk=2.00;
@@ -173,7 +175,9 @@ double LotsForRisk(const ENUM_ORDER_TYPE type,const double entry,const double st
    if(!OrderCalcProfit(type,_Symbol,1.0,entry,stop,one_lot)) return 0.0;
    one_lot=MathAbs(one_lot);
    if(one_lot<=0.0) return 0.0;
-   double cash=(InpFixedRiskMoney>0.0 ? InpFixedRiskMoney : AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0);
+   const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
+   if(adaptive<=0.0) return 0.0;
+   double cash=(InpFixedRiskMoney>0.0 ? InpFixedRiskMoney : AccountInfoDouble(ACCOUNT_EQUITY)*InpRiskPercent/100.0)*adaptive;
    if(cash<=0.0) return 0.0;
    return NormalizeLots(cash/one_lot);
 }

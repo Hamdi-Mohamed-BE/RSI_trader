@@ -31,6 +31,7 @@ SELECTIVE_ORB_ROOT = PACKAGE_ROOT / "US100 Selective ORB Research 2026-08-21"
 NEWS_PULSE_ROOT = PACKAGE_ROOT / "News Pulse Direction Research 2026-09-05"
 NEWS_PULSE_CALENDAR_ROOT = PACKAGE_ROOT / "News Pulse FXMacroData Audit 2026-09-10"
 NEWS_PULSE_CRYPTO_ROOT = PACKAGE_ROOT / "News Pulse Crypto Extension 2026-09-11"
+NEWS_PULSE_BTC_3Y_ROOT = PACKAGE_ROOT / "News Pulse BTC Official 3Y Research 2026-09-11"
 ACTIVE_PIPELINE_ROOT = PACKAGE_ROOT / "Active Portfolio Full Pipeline 2026-09-05"
 SELL_NASDAQ_15M_ROOT = PACKAGE_ROOT / "Sell Nasdaq 15min Research 2026-09-08"
 LONDON_OPEN_FX_MOMENTUM_ROOT = PACKAGE_ROOT / "London Open FX Momentum Research 2026-09-08"
@@ -263,7 +264,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Wait for volatility compression to release", "detail": "A completed H1 candle must be the first bar after Bollinger Bands with length 24 and multiplier 1.8 expand back outside Keltner Channels using length 24 and multiplier 1.3."},
             {"title": "Confirm positive strengthening momentum", "detail": "LazyBear-style linear-regression momentum over 28 completed H1 observations must be above zero and stronger than its immediately preceding completed value before a long can qualify."},
             {"title": "Align with the long-term trend", "detail": "The completed signal close must remain above the 200-hour simple moving average. The promoted configuration is deliberately long-only and trades Monday through Friday."},
-            {"title": "Size from current equity and broker economics", "detail": "OrderCalcProfit measures the one-lot loss to the initial stop, then volume is rounded down to broker limits from the BAT-selected equity-risk percentage; pressing Enter keeps the tested 1% default."},
+            {"title": "Size from current equity and broker economics", "detail": "OrderCalcProfit measures the one-lot loss to the initial stop, then volume is rounded up to the broker step from the BAT-selected equity-risk percentage; pressing Enter keeps the tested 1% default. If the requested volume is below the broker minimum, the minimum lot is used, so actual risk can exceed the target."},
             {"title": "Use ATR-scaled protection and reward", "detail": "Standard places the initial stop 3.5 Wilder ATR(14) below entry and the take profit at 1.5 times initial risk, while maximum effective exposure is capped near 9.8 times equity."},
             {"title": "Rachet the stop and monitor momentum", "detail": "On each completed H1 bar, the stop trails 3.5 ATR below the highest completed high. The position exits early if momentum turns negative or loses more than half of its preceding strength."},
         ],
@@ -324,7 +325,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Require genuine multi-bar momentum", "detail": "The close must be at least 0.50 ATR above the close from twenty-four H4 bars earlier. Signal bodies smaller than 0.05 ATR and total candle ranges larger than 2.50 ATR are rejected."},
             {"title": "Wait for the pullback to value", "detail": "The completed H4 signal candle must touch the 20 EMA within a tolerance of 0.25 ATR. The range-leadership filter is disabled, so the EA does not require price to finish in a fixed percentile of its 48-bar range."},
             {"title": "Accept objective bullish confirmation", "detail": "The optimized preset uses the EA's any-confirmation mode: a bullish body, bullish engulfing pattern or bullish pin-bar can confirm that the pullback is attempting to resume upward."},
-            {"title": "Place the structural stop and size from chosen risk", "detail": "The stop goes below the lowest low of the latest five completed H4 candles with a 0.10 ATR buffer. OrderCalcProfit measures the one-lot loss to that stop, and volume is rounded down from the risk selected when the BAT starts. The default and validated value is 1% of current equity."},
+            {"title": "Place the structural stop and size from chosen risk", "detail": "The stop goes below the lowest low of the latest five completed H4 candles with a 0.10 ATR buffer. OrderCalcProfit measures the one-lot loss to that stop, and volume is rounded up to the broker step from the risk selected when the BAT starts. The default and validated value is 1% of current equity; the broker minimum lot is used when necessary, even if that exceeds the target."},
             {"title": "Target 3R and protect after +1R", "detail": "Take profit is three times the original stop distance. Once price reaches +1R, the stop can advance to entry plus 0.05R. ATR trailing, Dynamic 50/20, maximum-hold exits, session filtering and the experimental regime gate are disabled."},
         ],
         "risk_note": "Every BAT asks for risk before installation; the default and validated value is 1% of current equity per trade. The selected model is long-only, so it can remain inactive during extended bearish or non-trending gold conditions.",
@@ -363,7 +364,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Vote across three slow horizons", "detail": "The EA compares the latest completed H4 close with scaled 21-, 63- and 126-trading-day lookbacks. Their signs are averaged, and a trade requires a non-zero majority direction."},
             {"title": "Confirm direction with EMA100", "detail": "A long requires the completed H4 close above the scaled EMA100; a short requires it below. Both directions remain enabled in the locked XAU preset."},
             {"title": "Use completed data and avoid late attachment entries", "detail": "Signals use the last completed H4 candle. On a live attach or terminal restart, the EA records the existing signal and waits for the next completed H4 candle rather than entering an old setup late."},
-            {"title": "Place the ATR stop", "detail": "The initial stop is 1.5 times H4 ATR(14) from entry. Volume is rounded down from the calculated one-lot loss so the planned loss targets the percentage selected in the BAT; undersized broker-minimum trades are skipped."},
+            {"title": "Place the ATR stop", "detail": "The initial stop is 1.5 times H4 ATR(14) from entry. Volume is rounded up to the broker step from the calculated one-lot loss so the planned loss targets the percentage selected in the BAT. If the requested size is below the broker minimum, the minimum lot is used and the trade is not skipped for sizing."},
             {"title": "Leave the wide winner intact", "detail": "The target is fixed at six times original risk. Break-even, ATR trailing, chandelier trailing, Dynamic 50/20 and maximum-hold exits are disabled in the promoted configuration."},
             {"title": "Isolate this chart from other XAU EAs", "detail": "Magic number 969060311 uniquely identifies this strategy. On hedging accounts it scans all positions and manages only its own matching XAU position."},
         ],
@@ -385,7 +386,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Require a completed rejection candle", "detail": "A stretched candle must close back toward VWAP with a directionally rejecting body and wick. Both long and short snapbacks are enabled, with no more than one entry per New York session."},
             {"title": "Trade only a quiet regime", "detail": "M30 ADX(14) must be at or below 20. This prevents the mean-reversion entry from fading stronger directional sessions, where a VWAP extension is more likely to continue."},
             {"title": "Use the locked ATR stop and 1R target", "detail": "The initial stop is 1.25 M30 ATR from entry and the target is exactly one original risk unit. Break-even, ATR trailing and Dynamic 50/20 are disabled because the no-management version was selected before the locked year."},
-            {"title": "Apply the BAT-selected equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the stop, and the order volume is rounded down to target the percentage selected in the BAT. Broker minimum-stop and volume-step rules are enforced; undersized trades are skipped."},
+            {"title": "Apply the BAT-selected equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the stop, and order volume is rounded up to the broker step to target the percentage selected in the BAT. Broker minimum-stop rules are enforced; if the requested volume is below the broker minimum, the minimum lot is used and actual risk can exceed the target."},
         ],
         "risk_note": "Every BAT applies the user's selected equity-risk percentage; pressing Enter defaults to the validated 1%. The untouched year returned +3.93% with PF 2.57 and 3.60% drawdown, but it produced only 15 trades; this is therefore a demo-forward/watch allocation, not a statistically mature core strategy.",
         "price": 299,
@@ -405,7 +406,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Keep the selected signal deliberately simple", "detail": "The frozen US100 configuration is long-only and does not add a moving-average, candle-pattern or trend confirmation. Those alternatives were tested before the locked year and were not selected."},
             {"title": "Use a volatility-scaled protective stop", "detail": "The initial stop is placed 1.5 times M30 ATR(14) below entry. A spread-to-risk ceiling and broker stop-distance checks reject trades whose execution cost or placement is unsuitable."},
             {"title": "Target 2.5R and time-limit exposure", "detail": "The take-profit objective is fixed at 2.5 times original risk. Break-even, ATR trailing and Dynamic 50/20 are disabled, while any position still open after six hours is closed."},
-            {"title": "Apply the BAT-selected equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the ATR stop and volume is rounded down to target the percentage selected in the BAT. Broker minimum-volume constraints are respected and undersized trades are skipped."},
+            {"title": "Apply the BAT-selected equity risk", "detail": "OrderCalcProfit measures the one-lot loss to the ATR stop and volume is rounded up to the broker step to target the percentage selected in the BAT. If the requested volume is below the broker minimum, the minimum lot is used and the trade is not skipped for sizing."},
         ],
         "risk_note": "Every BAT applies the user's selected equity-risk percentage; pressing Enter defaults to the validated 1%. The untouched year returned +5.53% with PF 1.34, 47.06% wins and 5.74% equity drawdown across 34 trades. Monte Carlo return P5 was -5.24%, so this is a demo-forward candidate rather than a proven live-capital core.",
         "price": 299,
@@ -444,7 +445,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Measure momentum on VWAP rather than price", "detail": "A 16-period Wilder RSI is calculated from the reconstructed VWAP series. This deliberately smooths the input and asks whether accepted value, rather than one candle's close, is recovering from an extreme."},
             {"title": "Enter only the completed oversold cross", "detail": "The selected build is long-only. It requires the prior completed RSI-of-VWAP value to be at or below 18 and the newest completed value to cross above 18; the signal is evaluated once when the next H1 bar begins."},
             {"title": "Place the stop beyond recent structure", "detail": "The stop is placed below the lowest low of the preceding five completed H1 candles with an additional 0.10 ATR(14) buffer. Broker minimum stop distance is enforced before position size is calculated."},
-            {"title": "Size the trade from current equity", "detail": "OrderCalcProfit measures the one-lot loss from entry to the structural stop, then volume is rounded down to target 1% of current equity. The dynamic BAT can replace that percentage without changing the signal rules."},
+            {"title": "Size the trade from current equity", "detail": "OrderCalcProfit measures the one-lot loss from entry to the structural stop, then volume is rounded up to the broker step to target 1% of current equity. The dynamic BAT can replace that percentage without changing the signal rules; the broker minimum lot is used when necessary."},
             {"title": "Take the compact continuation objective", "detail": "The locked target is 0.5 times initial risk. A break-even rule is configured at 0.75R, which is beyond the target and therefore does not activate in normal fills; ATR trailing and maximum-hold exits are disabled."},
         ],
         "risk_note": "Dynamic equity risk, default 1%, with no spread ceiling in the locked research preset. The 0.5R target needs a win rate above roughly 66.7% before costs; the locked year achieved 72.73% over only 44 trades.",
@@ -507,7 +508,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Place a structural 3R trade", "detail": "Entry is at market. The stop sits beyond the confirming candles and, for a zone trade, beyond the zone, with a 0.12 ATR buffer. The take profit is three times the initial stop distance."},
             {"title": "Apply the active safety rules", "detail": "Each trade risks 1% of current equity, both directions are enabled and only one position is allowed per symbol. New entries pause after two consecutive losses while daily P/L is non-positive. Session, break-even and time-based dead-trade exits are disabled. The POC first-retest confirmation is explicitly OFF in every active BAT, preserving the stronger-return baseline; its safer H50/D0.50/3-bar preset remains optional research only."},
         ],
-        "risk_note": "Dynamic 1% of current equity per trade, capped at 1% by the active preset. Position size is rounded down and the trade is skipped if the broker minimum lot would exceed the requested risk.",
+        "risk_note": "Dynamic 1% of current equity per trade, capped at 1% by the active preset. Position size is rounded up to the broker step; if the requested size is smaller, the broker minimum lot is used and actual risk can exceed the target.",
         "price": 399,
         "accent": "cyan",
     },
@@ -523,7 +524,7 @@ CORE_META: dict[str, dict[str, Any]] = {
             {"title": "Build transitions without the newest outcome", "detail": "The EA counts historical state-to-state transitions in chronological order but deliberately excludes the transition into the newest state, matching the research engine's no-lookahead forecast."},
             {"title": "Demand a persistent bullish edge", "detail": "From the current state row, the EA calculates Bull probability minus Bear probability. A new long is permitted only when that signal is greater than the locked +0.05 gate."},
             {"title": "Enter once at the new daily bar", "detail": "The model evaluates only when a new broker D1 candle begins. It places no short positions and does not re-enter intraday after a stop or target has closed the day's position."},
-            {"title": "Size from a four-ATR stop", "detail": "The initial stop is four times D1 ATR(14). Volume targets 1% of current equity while also capping notional exposure at two times equity and skipping a broker minimum lot that exceeds either limit."},
+            {"title": "Size from a four-ATR stop", "detail": "The initial stop is four times D1 ATR(14). Volume targets 1% of current equity while also capping notional exposure at two times equity. The broker minimum lot is used when the calculated size is smaller, so actual risk can exceed the target rather than skipping the trade for sizing."},
             {"title": "Target 3R and trail once per day", "detail": "Take profit is three times initial stop distance. On each later D1 close the stop may ratchet to four ATR below that close, and an invalid regime can close the surviving position."},
         ],
         "risk_note": "Dynamic 1% equity risk with a two-times-notional cap. The displayed PF 5.50 is based on only ten proxy trades and is not an MT5 tick result, so this remains a forward-test candidate.",
@@ -954,16 +955,16 @@ def _news_pulse_meta(symbol: str, entry: str, stop: str, trail: str) -> dict[str
         "description": f"This {symbol} M1 configuration watches NFP, CPI and FOMC in MT5's USD economic calendar. Thirty seconds before release it places both a buy stop and a sell stop using the market-specific optimized geometry, then removes pending exposure and closes positions sixty seconds after the event.",
         "session": "NFP, CPI and FOMC",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable News Pulse v2.14 source, exact hard-risk SET, native MT5 Every Tick report and the FXMacroData-verified tester calendar were reviewed together. The v2.14 live gate only accepts high-impact primary CPI/Core CPI names, preventing secondary Median CPI and inflation-expectation releases from creating another straddle.",
+        "logic_audit_note": "Readable News Pulse v2.15 source, exact hard-risk SET, native MT5 Every Tick report and the FXMacroData-verified tester calendar were reviewed together. The v2.15 live gate only accepts high-impact primary CPI/Core CPI names, preventing secondary Median CPI and inflation-expectation releases from creating another straddle.",
         "logic": [
-            {"title": "Find only primary high-impact USD events", "detail": "Live trading scans MT5's native USD calendar but accepts only high-impact target releases. CPI must begin with CPI, Core CPI, Consumer Price Index or Core Consumer Price Index, so Cleveland Fed Median CPI and inflation-expectation events cannot qualify. The schedule is cached eight days ahead and refreshed every 300 seconds. Strategy Tester uses a generated FXMacroData UTC calendar and version 2.14 rejects missing, incomplete or out-of-range schedules."},
+            {"title": "Find only primary high-impact USD events", "detail": "Live trading scans MT5's native USD calendar but accepts only high-impact target releases. CPI must begin with CPI, Core CPI, Consumer Price Index or Core Consumer Price Index, so Cleveland Fed Median CPI and inflation-expectation events cannot qualify. The schedule is cached eight days ahead and refreshed every 300 seconds. Strategy Tester uses a generated FXMacroData UTC calendar and version 2.15 rejects missing, incomplete or out-of-range schedules."},
             {"title": "Anchor timing to broker data", "detail": "Calendar timestamps and quote timestamps share broker-server time. VPS local timezone is ignored, and placement is blocked unless MT5 is connected and a broker-stamped quote arrived during the preceding five seconds."},
             {"title": "Place both breakout stops", "detail": f"During the final thirty seconds before release, the EA places a buy stop {entry} above Ask and a sell stop {entry} below Bid on {symbol}. Buy and sell use independent pending orders and a symbol-specific magic number."},
-            {"title": "Hard-lock total planned risk", "detail": f"Each pending direction receives exactly 0.75% equity risk to its {stop} initial stop. The compiled EA rejects any different risk input, making the combined planned event exposure no more than 1.50% before gaps and slippage."},
+            {"title": "Hard-lock maximum planned risk", "detail": f"Each pending direction uses a maximum base risk of 0.75% equity to its {stop} initial stop. Recommended Adaptive may taper that base lower, but the BAT cannot raise it; combined planned event exposure is therefore no more than 1.50% before gaps and slippage."},
             {"title": "Retain the optimized native trail", "detail": f"After favorable movement reaches 1.5R, the native manager may tighten the stop using a {trail} trailing distance. Dynamic 50/20 and the experimental regime gate are disabled because this exact configuration was validated without them."},
             {"title": "Force the event lifecycle to finish", "detail": "At sixty seconds after release, the EA deletes any unfilled pending order and closes any remaining News Pulse position. Account, symbol and magic-number state allow that lifecycle to recover after a terminal restart."},
         ],
-        "risk_note": "Risk is not controlled by the BAT prompt for this EA. Version 2.14 hard-locks 0.75% per pending stop and 1.50% maximum planned event exposure. News gaps, spread expansion, slippage, rejections or a market jumping over the stop can still produce a larger realized loss.",
+        "risk_note": "Risk is not controlled by the BAT prompt for this EA. Version 2.15 caps base risk at 0.75% per pending stop and 1.50% maximum planned event exposure; Recommended Adaptive may reduce it. News gaps, spread expansion, slippage, rejections or a market jumping over the stop can still produce a larger realized loss.",
         "price": 549,
         "accent": "yellow",
         "featured": symbol in {"XAUUSD", "XAGUSD", "BTCUSD"},
@@ -1986,37 +1987,35 @@ def _month_end_flow_us100_evidence() -> Evidence | None:
 
 def _news_pulse_hard_evidence(label: str) -> Evidence | None:
     if label == "News Pulse BTC":
-        verified_path = NEWS_PULSE_CRYPTO_ROOT / "VERIFIED RESULTS.json"
+        verified_path = NEWS_PULSE_BTC_3Y_ROOT / "OFFICIAL 3Y RESULTS.json"
         if verified_path.is_file():
-            verified = _load_json(verified_path)
-            result = next((item for item in verified if item.get("asset") == "btcusd"), None)
-            if result is not None:
-                report = Path(str(result["report"]))
-                return Evidence(
-                    label="FXMacroData-verified calendar replay",
-                    period=f"{str(result['from']).replace('.', '-')} to {str(result['to']).replace('.', '-')}",
-                    return_pct=float(result["return_pct"]),
-                    profit_factor=float(result["profit_factor"]),
-                    drawdown_pct=float(result["max_drawdown_pct"]),
-                    win_rate_pct=float(result["win_rate_pct"]),
-                    trades=int(result["trades"]),
-                    sharpe_ratio=float(result["sharpe_ratio"]),
-                    recovery_factor=float(result["recovery_factor"]),
-                    history_quality=f"{float(result['history_quality_pct']):.0f}%",
-                    source_note=(
-                        "Exness BTCUSD M1 generated-tick replay using News Pulse v2.13, the exact FXMacroData "
-                        "UTC schedule, all 7 enabled NFP/CPI/FOMC events in the declared coverage window, "
-                        "0.75% risk per pending stop and a 1.50% maximum planned event exposure. Live trading "
-                        "continues to use MT5's native calendar."
-                    ),
-                    chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
-                    status="Watch only — verified schedule",
-                    caution=(
-                        "Only 8 trades across 7 scheduled events are present. The wider one-year optimization "
-                        "sample is retained as historical pre-v2.13 context; this is not enough evidence to prove "
-                        "future news execution."
-                    ),
-                )
+            result = _load_json(verified_path)
+            report = NEWS_PULSE_BTC_3Y_ROOT / "Backtest Reports" / "btcusd__official-3y.htm"
+            return Evidence(
+                label="Official-calendar three-year replay",
+                period=f"{str(result['from']).replace('.', '-')} to {str(result['to']).replace('.', '-')}",
+                return_pct=float(result["return_pct"]),
+                profit_factor=float(result["profit_factor"]),
+                drawdown_pct=float(result["max_drawdown_pct"]),
+                win_rate_pct=float(result["win_rate_pct"]),
+                trades=int(result["trades"]),
+                sharpe_ratio=float(result["sharpe_ratio"]),
+                recovery_factor=float(result["recovery_factor"]),
+                history_quality=f"{float(result['history_quality_pct']):.0f}%",
+                source_note=(
+                    "Exness BTCUSD M1 generated Every Tick replay using News Pulse v2.14 and 94 exact official "
+                    "BLS/Federal Reserve NFP, CPI and FOMC timestamps. All 94 event straddles were placed with no "
+                    "calendar-boundary violation. The report includes broker spread, $2,298.82 commission, zero "
+                    "swap and random execution delay at 0.75% risk per pending stop."
+                ),
+                chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+                status="Watch only — official 3Y schedule",
+                caution=(
+                    "The full window contains 125 trades from 92 triggered events, but Model 0 generates "
+                    "intra-minute ticks and the BTC parameters were selected using part of this history. Treat "
+                    "this as complete research evidence, not real-tick validation or a return guarantee."
+                ),
+            )
     assets = {
         "News Pulse XAU": "xauusd",
         "News Pulse XAG": "xagusd",
