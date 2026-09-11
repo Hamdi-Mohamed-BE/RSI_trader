@@ -3,9 +3,18 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-from datetime import datetime, timezone
+import sys
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
+
+
+STORE_ROOT = Path(__file__).resolve().parents[1]
+if str(STORE_ROOT) not in sys.path:
+    sys.path.insert(0, str(STORE_ROOT))
+
+from app.adaptive_portfolio import simulate_adaptive_portfolio  # noqa: E402
+from tools.precompute_evidence_cache import portfolio_metrics  # noqa: E402
 
 
 PERIOD_ORDER = {"6m": 0, "1y": 1, "3y": 2, "5y": 3}
@@ -79,13 +88,25 @@ def build(old_root: Path, new_root: Path) -> dict[str, Any]:
     rows.sort(key=lambda row: (str(row["label"]), PERIOD_ORDER.get(str(row["period"]), 99)))
     portfolio_rows: list[dict[str, Any]] = []
     for period in PERIOD_ORDER:
-        old_path = old_root / "portfolio" / "standard" / f"{period}.json"
-        new_path = new_root / "portfolio" / "standard" / f"{period}.json"
-        if not old_path.is_file() or not new_path.is_file():
+        common_rows = [row for row in rows if row["period"] == period]
+        if not common_rows:
             continue
-        old_stats = _read(old_path).get("stats", {})
-        new_stats = _read(new_path).get("stats", {})
-        row: dict[str, Any] = {"period": period}
+        old_trades: list[dict[str, Any]] = []
+        new_trades: list[dict[str, Any]] = []
+        for common in common_rows:
+            relative = Path("products") / str(common["slug"]) / str(common["mode"]) / f"{period}.trades.json"
+            old_trade_path = old_root / relative
+            new_trade_path = new_root / relative
+            if old_trade_path.is_file() and new_trade_path.is_file():
+                old_trades.extend(_read(old_trade_path))
+                new_trades.extend(_read(new_trade_path))
+        start = date.fromisoformat(str(common_rows[0]["from"]))
+        end = date.fromisoformat(str(common_rows[0]["to"]))
+        old_adaptive, _, _ = simulate_adaptive_portfolio(old_trades)
+        new_adaptive, _, _ = simulate_adaptive_portfolio(new_trades)
+        old_stats, _ = portfolio_metrics(old_adaptive, start, end)
+        new_stats, _ = portfolio_metrics(new_adaptive, start, end)
+        row: dict[str, Any] = {"period": period, "common_ea_count": len(common_rows)}
         for metric in METRICS:
             old_value = _number(old_stats.get(metric))
             new_value = _number(new_stats.get(metric))
@@ -103,6 +124,7 @@ def build(old_root: Path, new_root: Path) -> dict[str, Any]:
         "new_account": "Exness Raw Spread 474572294 / Exness-MT5Trial15",
         "execution_model": "Native MT5 Every Tick, broker Bid/Ask spread, commission, swap and random execution delay",
         "warning": "Treat rows with low MT5 history quality or short trade samples as provisional.",
+        "portfolio_scope": "Like-for-like Recommended Adaptive replay of only the EAs with long-window evidence on both accounts. News Pulse is compared separately over its verified calendar.",
         "rows": rows,
         "portfolio": portfolio_rows,
         "missing": missing,
@@ -125,7 +147,7 @@ def write_markdown(path: Path, payload: dict[str, Any]) -> None:
         "",
         payload["execution_model"] + ".",
         "",
-        "## Recommended Adaptive portfolio",
+        f"## Recommended Adaptive portfolio ({payload['portfolio'][0]['common_ea_count']} common EAs)",
         "",
         "| Period | Return old / raw | PF old / raw | WR old / raw | DD old / raw | Trades old / raw | Raw costs |",
         "|---|---:|---:|---:|---:|---:|---:|",
