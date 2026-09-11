@@ -834,6 +834,7 @@ try { $probe = $probeText | ConvertFrom-Json } catch { Stop-WithMessage "MT5 ret
 if (-not $probe.ok) { Stop-WithMessage ([string]$probe.error) }
 
 $dataRoot = [IO.Path]::GetFullPath([string]$probe.terminal.data_path)
+$commonDataRoot = [IO.Path]::GetFullPath([string]$probe.terminal.commondata_path)
 if (-not (Test-Path -LiteralPath (Join-Path $dataRoot 'MQL5'))) {
     Stop-WithMessage "MT5 reported an invalid data folder: $dataRoot"
 }
@@ -1168,14 +1169,23 @@ $manifestPath = Join-Path $PSScriptRoot 'LAST INSTALL.txt'
 [IO.File]::WriteAllText($manifestPath, (($manifest -join "`r`n") + "`r`n"), [Text.UTF8Encoding]::new($true))
 
 Write-Stage "Starting the $($portfolio.Count)-EA profile"
+$goldNewsHeartbeat = Join-Path $commonDataRoot 'Files\GoldNewsV9EA\runtime.tsv'
+Remove-Item -LiteralPath $goldNewsHeartbeat -Force -ErrorAction SilentlyContinue
 $arguments = '/profile:"' + $ProfileName + '"'
 Start-Process -FilePath $terminalPath -ArgumentList $arguments
-Start-Sleep -Seconds 12
-
-$runningNow = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
-    $_.Name -match '^terminal(64)?\.exe$' -and $_.ExecutablePath -ieq $terminalPath
-})
-if ($runningNow.Count -eq 0) { Stop-WithMessage 'The files were installed, but MT5 did not remain running.' }
+$heartbeatDeadline = (Get-Date).AddSeconds(30)
+do {
+    Start-Sleep -Milliseconds 500
+    $runningNow = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
+        $_.Name -match '^terminal(64)?\.exe$' -and $_.ExecutablePath -ieq $terminalPath
+    })
+    if ($runningNow.Count -eq 0) { Stop-WithMessage 'The files were installed, but MT5 did not remain running.' }
+    $goldNewsReady = (Test-Path -LiteralPath $goldNewsHeartbeat) -and
+        (Get-Item -LiteralPath $goldNewsHeartbeat).Length -gt 0
+} while (-not $goldNewsReady -and (Get-Date) -lt $heartbeatDeadline)
+if (-not $goldNewsReady) {
+    Stop-WithMessage 'MT5 opened, but Gold News V9 did not publish its runtime heartbeat. Check the MT5 Experts journal.'
+}
 
 Test-ManagedProfile $profileTargetFull $portfolio 'After MT5 start'
 

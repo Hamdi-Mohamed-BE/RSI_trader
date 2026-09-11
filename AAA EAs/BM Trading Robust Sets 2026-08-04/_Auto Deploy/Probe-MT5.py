@@ -178,6 +178,7 @@ def main() -> None:
                     "company": terminal_dict.get("company", ""),
                     "path": terminal_dict.get("path", ""),
                     "data_path": terminal_dict.get("data_path", ""),
+                    "commondata_path": terminal_dict.get("commondata_path", ""),
                     "connected": bool(terminal_dict.get("connected", False)),
                     "trade_allowed": bool(terminal_dict.get("trade_allowed", False)),
                 },

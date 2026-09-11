@@ -578,15 +578,25 @@ $manifest = @(
 )
 
 Write-Stage 'Opening MT5 with the EA attached'
+$runtimeHeartbeat = Join-Path ([string]$probeResult.commondata_path) 'Files\GoldNewsV9EA\runtime.tsv'
+Remove-Item -LiteralPath $runtimeHeartbeat -Force -ErrorAction SilentlyContinue
 $profileArgument = '/profile:"' + $ProfileName + '"'
 Start-Process -FilePath $terminalPath -ArgumentList $profileArgument
-Start-Sleep -Seconds 12
-$runningNow = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
-    $_.Name -match '^terminal(64)?\.exe$' -and
-    $_.ExecutablePath -ieq $terminalPath
-})
-if ($runningNow.Count -eq 0) {
-    Stop-Install 'Files were installed, but MT5 did not remain running.'
+$heartbeatDeadline = (Get-Date).AddSeconds(30)
+do {
+    Start-Sleep -Milliseconds 500
+    $runningNow = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
+        $_.Name -match '^terminal(64)?\.exe$' -and
+        $_.ExecutablePath -ieq $terminalPath
+    })
+    if ($runningNow.Count -eq 0) {
+        Stop-Install 'Files were installed, but MT5 did not remain running.'
+    }
+    $heartbeatReady = (Test-Path -LiteralPath $runtimeHeartbeat) -and
+        (Get-Item -LiteralPath $runtimeHeartbeat).Length -gt 0
+} while (-not $heartbeatReady -and (Get-Date) -lt $heartbeatDeadline)
+if (-not $heartbeatReady) {
+    Stop-Install 'MT5 opened, but Gold News V9 did not publish its runtime heartbeat. Check the MT5 Experts journal.'
 }
 if (-not (Select-String -LiteralPath $chartPath -SimpleMatch '<expert>' -Quiet)) {
     Stop-Install 'MT5 opened, but the chart lost its EA attachment.'

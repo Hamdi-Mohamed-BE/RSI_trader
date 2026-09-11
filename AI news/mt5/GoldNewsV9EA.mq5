@@ -1,5 +1,5 @@
 #property copyright "Gold News V9"
-#property version   "1.10"
+#property version   "1.11"
 #property strict
 #property description "Consumes the local Gold News V9 API for NFP, CPI, and FOMC."
 
@@ -45,8 +45,10 @@ input int    InpTimerMilliseconds=250;
 
 const string STATE_FILE="GoldNewsV9EA\\state.tsv";
 const string BRIDGE_FILE="GoldNewsV9EA\\bridge.json";
+const string RUNTIME_FILE="GoldNewsV9EA\\runtime.tsv";
 const int MIN_PREDICTION_LEAD_SECONDS=480;
 const int MAX_PREDICTION_LEAD_SECONDS=1800;
+const int SYMBOL_SYNC_RETRY_SECONDS=5;
 
 CTrade trade;
 ENUM_GNV9_STATE state=GNV9_IDLE;
@@ -62,6 +64,8 @@ double signal_confidence=0.0;
 ulong position_ticket=0;
 datetime last_calendar_poll=0;
 datetime last_signal_poll=0;
+datetime last_symbol_sync_attempt=0;
+datetime last_runtime_write=0;
 string last_status="Starting";
 
 string Upper(string value)
@@ -248,6 +252,63 @@ void SetStatus(string text)
   {
    last_status=text;
    Print("Gold News V9: ",text);
+  }
+
+void SaveRuntimeHeartbeat()
+  {
+   datetime now=TimeGMT();
+   if(last_runtime_write>0 && now-last_runtime_write<5)
+      return;
+   last_runtime_write=now;
+   FolderCreate("GoldNewsV9EA",FILE_COMMON);
+   int handle=FileOpen(
+      RUNTIME_FILE,
+      FILE_WRITE|FILE_CSV|FILE_ANSI|FILE_COMMON,
+      '\t'
+   );
+   if(handle==INVALID_HANDLE)
+      return;
+   FileWrite(
+      handle,
+      (long)now,
+      StateName(),
+      trade_symbol,
+      last_status
+   );
+   FileClose(handle);
+  }
+
+bool EnsureTradeSymbolReady()
+  {
+   MqlTick tick;
+   if(trade_symbol!="" &&
+      SymbolIsSynchronized(trade_symbol) &&
+      SymbolInfoTick(trade_symbol,tick) &&
+      tick.ask>0 && tick.bid>0)
+     {
+      trade.SetTypeFillingBySymbol(trade_symbol);
+      return true;
+     }
+
+   datetime now=TimeGMT();
+   if(last_symbol_sync_attempt>0 &&
+      now-last_symbol_sync_attempt<SYMBOL_SYNC_RETRY_SECONDS)
+      return false;
+   last_symbol_sync_attempt=now;
+
+   string resolved=ResolveGoldSymbol();
+   if(resolved=="" ||
+      !SymbolIsSynchronized(resolved) ||
+      !SymbolInfoTick(resolved,tick) ||
+      tick.ask<=0 || tick.bid<=0)
+     {
+      SetStatus("Waiting for the broker gold symbol to synchronize.");
+      return false;
+     }
+   trade_symbol=resolved;
+   trade.SetTypeFillingBySymbol(trade_symbol);
+   SetStatus("Broker gold symbol synchronized: "+trade_symbol+".");
+   return true;
   }
 
 void SaveState()
@@ -575,6 +636,8 @@ bool FindOurPosition(ulong &ticket)
 
 bool TradingChecks(MqlTick &tick)
   {
+   if(!EnsureTradeSymbolReady())
+      return false;
    if(!InpEnableTrading)
      {
       SetStatus("Armed, but live trading is disabled in EA inputs.");
@@ -843,18 +906,15 @@ int OnInit()
       Print("Gold News V9: invalid risk, stop, or prediction lead input.");
       return INIT_PARAMETERS_INCORRECT;
      }
-   trade_symbol=ResolveGoldSymbol();
-   if(trade_symbol=="")
-     {
-      Print("Gold News V9: no tradable XAUUSD symbol was discovered.");
-      return INIT_FAILED;
-     }
+   // Do not query broker symbol properties during initialization. MT5 can take
+   // minutes to synchronize them after an account switch and remove the EA.
+   trade_symbol=IsGoldSymbol(_Symbol) ? _Symbol : "";
    trade.SetExpertMagicNumber(InpMagicNumber);
-   trade.SetTypeFillingBySymbol(trade_symbol);
    LoadState();
    ReconcileState();
    EventSetMillisecondTimer(MathMax(100,InpTimerMilliseconds));
-   SetStatus("Initialized on "+trade_symbol+".");
+   SetStatus("Initialized; broker symbol synchronization runs in the background.");
+   SaveRuntimeHeartbeat();
    RenderStatus();
    return INIT_SUCCEEDED;
   }
@@ -862,6 +922,7 @@ int OnInit()
 void OnDeinit(const int reason)
   {
    SaveState();
+   SaveRuntimeHeartbeat();
    EventKillTimer();
    Comment("");
   }
@@ -869,6 +930,7 @@ void OnDeinit(const int reason)
 void OnTimer()
   {
    datetime now=TimeGMT();
+   EnsureTradeSymbolReady();
    if(state==GNV9_POSITION_OPEN)
       ManagePosition();
 
@@ -919,6 +981,7 @@ void OnTimer()
          SetStatus("Entry time was missed; no post-release chase.");
         }
      }
+   SaveRuntimeHeartbeat();
    RenderStatus();
   }
 
