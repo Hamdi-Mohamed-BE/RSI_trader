@@ -23,7 +23,7 @@ echo - DMC Fresh Reaction XAU adds M15 freshness plus W1/MN1 proximity, fixed 30
 echo - DMC Fresh Reaction US100 uses the same freshness logic in New York with 1.5 ATR stop, 2R and Dynamic 50-20
 echo - Full Safe switches Sell Nasdaq 15min to the original London-confirmed 600/1000 preset
 echo - XAU Weakness uses M30 structure stops, 4R and Dynamic 50-20 with its D1 Safe gate enabled
-echo - News Pulse v2.13 XAU, XAG and EURUSD use verified event timing and two stops at 0.75%% each, hard-capped at 1.50%% total
+echo - News Pulse v2.14 XAU, XAG and BTC use only high-impact primary NFP, CPI and FOMC events, with two stops at 0.75%% each and a 1.50%% total cap
 echo - Gold News V9 Direction runs on XAUUSD M1 with the local prediction service and remains attached after every shared install
 echo - Every non-News EA follows the risk selected below; pressing Enter defaults to 1%%
 echo - Approved portfolio audit removals: Engineered Liquidity XAU, ORB Volume High Win 0.75R, XAG VWAP Snapback and XAU Squeeze High Win 0.75R

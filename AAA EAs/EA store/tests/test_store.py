@@ -26,6 +26,16 @@ client = TestClient(app)
 STORE_ROOT = Path(__file__).resolve().parents[1]
 
 
+def test_news_pulse_live_calendar_rejects_secondary_cpi_events() -> None:
+    path = PACKAGE_ROOT / "AAA Final EAs/AAA Final News Pulse EA/AAA Final News Pulse EA.mq5"
+    source = path.read_text(encoding="utf-8-sig")
+    assert '#property version   "2.14"' in source
+    assert 'if(event.importance!=CALENDAR_IMPORTANCE_HIGH) continue;' in source
+    assert 'StringFind(normalized_name,"cpi")==0' in source
+    assert 'StringFind(normalized_name,"core cpi")==0' in source
+    assert 'StringFind(name,"cpi")>=0' not in source
+
+
 def test_catalogue_is_synchronized_with_active_installer() -> None:
     installer_items = parse_installer_items()
     products = get_catalog()
@@ -311,12 +321,13 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert all("Dynamic 50/20 overlay is disabled" in product.logic[-1].detail for product in products if product.exit_mode == "Current EA exits")
     assert all("Dynamic 50/20 overlay is disabled" in product.logic[-1].detail for product in products if product.exit_mode == "Native 60-second exit")
     news_products = [product for product in products if product.label.startswith("News Pulse ")]
-    assert {product.label for product in news_products} == {"News Pulse XAU", "News Pulse XAG", "News Pulse EURUSD"}
+    assert {product.label for product in news_products} == {"News Pulse XAU", "News Pulse XAG", "News Pulse BTC"}
     assert all(product.safe_filter_supported is False for product in news_products)
     assert all(product.evidence is not None for product in news_products)
     assert all(product.evidence.status == "Watch only — verified schedule" for product in news_products)
-    assert all(product.evidence.trades == 9 for product in news_products)
-    assert all("v2.13" in product.logic_audit_note for product in news_products)
+    assert next(product for product in news_products if product.label == "News Pulse BTC").evidence.trades == 8
+    assert all(product.evidence.trades == 9 for product in news_products if product.label != "News Pulse BTC")
+    assert all("v2.14" in product.logic_audit_note for product in news_products)
 
     xau_ny = next(product for product in products if product.label == "XAU ORB New York M30")
     assert xau_ny.deployment_session == "09:30 New York / M30"
@@ -591,7 +602,7 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     assert "Recommended Adaptive is the active website profile" in response.text
-    assert "+1,315.16%" in response.text
+    assert "+1,405.44%" in response.text
     assert "13.79%" in response.text
     assert "Current · 5Y return" not in response.text
     assert "Current → adaptive PF" not in response.text

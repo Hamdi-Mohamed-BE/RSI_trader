@@ -150,12 +150,12 @@ CUSTOM_REPORTS: dict[str, Path] = {
         / "Hard 1.5 Full"
         / "xagusd__two-sided__hard1p5__native60.htm"
     ),
-    "News Pulse EURUSD": (
+    "News Pulse BTC": (
         PACKAGE_ROOT
-        / "News Pulse Direction Research 2026-09-05"
+        / "News Pulse Crypto Extension 2026-09-11"
         / "Backtest Reports"
-        / "Hard 1.5 Full"
-        / "eurusd__two-sided__hard1p5__native60.htm"
+        / "Full"
+        / "btcusd__two-sided__e75-s75__lead30-close60-trail150.htm"
     ),
     "XAU ORB New York M30": (
         PACKAGE_ROOT

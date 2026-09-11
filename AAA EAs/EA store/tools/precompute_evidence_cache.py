@@ -34,7 +34,16 @@ from app.trade_metrics import enrich_trades, outcome_streaks  # noqa: E402
 
 PERIOD_MONTHS = {"6m": 6, "1y": 12, "3y": 36, "5y": 60}
 CACHE_ROOT = Path(os.getenv("EA_STORE_CACHE_ROOT", str(DEFAULT_CACHE_ROOT))).resolve()
-NEWS_PULSE_SLUGS = {"news-pulse-xau", "news-pulse-xag", "news-pulse-eurusd"}
+NEWS_PULSE_SLUGS = {"news-pulse-xau", "news-pulse-xag", "news-pulse-btc"}
+LEGACY_NEWS_PULSE_REPORTS = {
+    "news-pulse-btc": (
+        PACKAGE_ROOT
+        / "News Pulse Crypto Extension 2026-09-11"
+        / "Backtest Reports"
+        / "Full"
+        / "btcusd__two-sided__e75-s75__lead30-close60-trail150.htm"
+    ),
+}
 
 
 def product_cache_path(slug: str, mode: str, period: str) -> Path:
@@ -181,6 +190,27 @@ def run_native(product: Product, mode: str, period: str, start: date, end: date,
         except (OSError, json.JSONDecodeError):
             pass
 
+    # News Pulse v2.13 intentionally refuses long-horizon tester runs outside
+    # its current FXMacroData coverage. Import the reviewed pre-v2.13 BTC
+    # report as clearly labelled historical context instead of weakening that
+    # integrity gate or fabricating missing release dates.
+    legacy_report = LEGACY_NEWS_PULSE_REPORTS.get(product.slug)
+    if mode == "standard" and legacy_report is not None:
+        if not legacy_report.is_file():
+            raise RuntimeError(f"Missing reviewed historical News Pulse report: {legacy_report}")
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(legacy_report, report_path)
+        write_json(
+            metadata_path,
+            {
+                **fingerprint,
+                "source": "reviewed-historical-pre-v2.13-report",
+                "source_report_sha256": file_hash(legacy_report),
+            },
+        )
+        print(f"IMPORT {product.label} {mode} {period}: reviewed pre-v2.13 report", flush=True)
+        return report_path
+
     input_overrides: dict[str, str] = {}
     if product.slug in NEWS_PULSE_SLUGS:
         coverage_start, coverage_end = news_pulse_calendar_window(product)
@@ -229,6 +259,12 @@ def product_payload(product: Product, mode: str, period: str, start: date, end: 
     series = [dict(point) for point in parse_mt5_balance_series(report)]
     native = _native_metrics(report)
     trades = _native_trades(report, f"{product.label} — {mode.title()}")
+    all_trade_count = len(trades)
+    trades = [
+        trade
+        for trade in trades
+        if start.isoformat() <= str(trade.get("close_time") or "")[:10] <= end.isoformat()
+    ]
     for number, trade in enumerate(trades, 1):
         trade["number"] = number
         trade["cache_slug"] = product.slug
@@ -236,6 +272,9 @@ def product_payload(product: Product, mode: str, period: str, start: date, end: 
         trade["cache_period"] = period
         trade["source"] = "Precomputed native MT5 deals"
     trades = enrich_trades(trades, product.slug)
+    if len(trades) != all_trade_count:
+        native, series = portfolio_metrics(trades, start, end)
+        native["history_quality"] = "100%"
     native.update(outcome_streaks(trades))
     native.update(
         {
@@ -269,7 +308,12 @@ def product_payload(product: Product, mode: str, period: str, start: date, end: 
         "cached_trade_count": len(trades),
         "trade_coverage_from": first_trade_at,
         "trade_coverage_to": last_trade_at,
-        "notice": "Precomputed native MT5 Every Tick result using the exact active recommended EA and SET file.",
+        "notice": (
+            "Historical pre-v2.13 MT5 replay imported from the reviewed full-pipeline BTC report; retained as "
+            "long-horizon context while the current EA keeps its strict FXMacroData calendar gate."
+            if product.slug in LEGACY_NEWS_PULSE_REPORTS
+            else "Precomputed native MT5 Every Tick result using the exact active recommended EA and SET file."
+        ),
         "source": "precomputed-native-mt5-cache",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "history_quality": native.get("history_quality"),

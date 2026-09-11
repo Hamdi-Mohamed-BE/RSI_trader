@@ -15,7 +15,7 @@ CACHE = STORE / "data" / "evidence-cache" / "v1"
 PRODUCTS = CACHE / "products"
 MANIFEST = CACHE / "manifest.json"
 PACKAGE = STORE.parent / "BM Trading Robust Sets 2026-08-04"
-OUTPUT = PACKAGE / "Portfolio Consistency Audit 2026-09-10"
+OUTPUT = PACKAGE / "Portfolio Consistency Audit 2026-09-11"
 STORE_AUDIT = STORE / "data" / "portfolio-consistency-audit.json"
 PERIODS = ("6m", "1y", "3y", "5y")
 
@@ -56,7 +56,7 @@ WATCHLIST = {
     "xau-slow-trend": "Strong 3Y/5Y evidence but last six months are -7.13% with PF 0.48.",
     "news-pulse-xau": "Mandatory News Pulse exposure retained at fixed risk, but the verified event ledger is short (34 trades).",
     "news-pulse-xag": "Mandatory News Pulse exposure retained at fixed risk, but the verified event ledger is short (38 trades).",
-    "news-pulse-eurusd": "Mandatory News Pulse exposure retained at fixed risk, but the verified event ledger is short (35 trades).",
+    "news-pulse-btc": "Mandatory News Pulse exposure retained at fixed risk; the 43-trade historical sample passed locked, delay-stress and current seven-event FXMacroData verification, but remains small.",
     "us100-selective-orb-v3": "Only 34 trades exist in the 5Y view; retain as low-frequency evidence, not as a high-capacity core.",
     "xau-squeeze-momentum-standard": "Safe mode has strong PF/DD but only 48 trades in 5Y and no trades in the latest six months.",
 }
@@ -427,7 +427,7 @@ def main() -> None:
         writer.writerows(rows)
 
     lines = [
-        "# Portfolio consistency audit — 2026-09-10",
+        "# Portfolio consistency audit — 2026-09-11",
         "",
         f"Evidence cutoff: **{manifest.get('end_date')}**. Four removals were applied after explicit user approval; DMC Current XAU was retained.",
         "",

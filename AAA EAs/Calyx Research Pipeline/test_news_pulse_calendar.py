@@ -3,7 +3,13 @@ from __future__ import annotations
 import unittest
 from datetime import date
 
-from news_pulse_calendar import CalendarCoverageError, _assert_complete_coverage, _calendar_include
+from news_pulse_calendar import (
+    CalendarCoverageError,
+    _assert_complete_coverage,
+    _assert_official_event_times,
+    _calendar_include,
+    _merge_with_base,
+)
 
 
 def payload(*, cutoff: str | None = None) -> dict:
@@ -26,10 +32,49 @@ def payload(*, cutoff: str | None = None) -> dict:
 
 
 class NewsPulseCalendarTests(unittest.TestCase):
+    def test_confirmed_official_event_times_are_sufficient_for_news_pulse(self) -> None:
+        calendar = payload()
+        calendar["data_quality"]["point_in_time_safe"] = False
+        calendar["data"] = [
+            {
+                "release": "inflation",
+                "announcement_datetime": 1789129800,
+                "release_date_confirmed": True,
+            }
+        ]
+        _assert_official_event_times(date(2026, 9, 5), date(2026, 9, 10), calendar)
+
     def test_complete_window_is_accepted(self) -> None:
         calendar = payload()
         indicators = {kind: payload(cutoff="2026-06-12") for kind in ("NFP", "CPI", "FOMC")}
         _assert_complete_coverage(date(2026, 6, 12), date(2026, 9, 10), calendar, indicators)
+
+    def test_verified_base_events_survive_calendar_extension(self) -> None:
+        base = {
+            "provider": "FXMacroData MCP",
+            "coverage": {
+                "start_date": "2026-06-12",
+                "end_date": "2026-09-10",
+                "complete_for_requested_window": True,
+            },
+            "events": [{"kind": "NFP", "epoch": 1788525000, "source": "BLS"}],
+            "receipts": [],
+            "calendar_sha256": "old",
+        }
+        extension = {
+            "provider": "FXMacroData MCP",
+            "coverage": {
+                "start_date": "2026-09-04",
+                "end_date": "2026-09-11",
+                "complete_for_requested_window": True,
+            },
+            "events": [{"kind": "CPI", "epoch": 1789129800, "source": "BLS"}],
+            "receipts": [],
+        }
+        merged = _merge_with_base(extension, base)
+        self.assertEqual(merged["event_count"], 2)
+        self.assertEqual(merged["coverage"]["start_date"], "2026-06-12")
+        self.assertEqual(merged["coverage"]["end_date"], "2026-09-11")
 
     def test_window_before_anonymous_cutoff_fails_closed(self) -> None:
         calendar = payload()

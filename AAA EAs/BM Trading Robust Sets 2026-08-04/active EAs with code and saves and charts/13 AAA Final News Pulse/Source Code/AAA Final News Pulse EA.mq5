@@ -1,5 +1,5 @@
 #property copyright "AAA Final News Pulse - NFP/CPI/FOMC straddle"
-#property version   "2.13"
+#property version   "2.14"
 #property strict
 
 #include "AAA_Final_Common.mqh"
@@ -338,15 +338,27 @@ bool NP_FindTesterEvent(datetime &event_time,long &event_id,string &kind)
    return true;
 }
 
+bool NP_IsPrimaryCPIName(const string normalized_name)
+{
+   // The live MT5 calendar also contains secondary series such as Cleveland
+   // Fed Median CPI and CPI expectations. News Pulse is intentionally limited
+   // to the main headline/core CPI family released by the BLS.
+   return (StringFind(normalized_name,"cpi")==0 ||
+           StringFind(normalized_name,"core cpi")==0 ||
+           StringFind(normalized_name,"consumer price index")==0 ||
+           StringFind(normalized_name,"core consumer price index")==0);
+}
+
 string NP_EventKind(const string original_name)
 {
    string name=original_name;
    StringToLower(name);
+   StringTrimLeft(name);
+   StringTrimRight(name);
    if(InpWatchNFP &&
       (StringFind(name,"nonfarm payroll")>=0 || StringFind(name,"non-farm payroll")>=0) &&
       StringFind(name,"private")<0) return "NFP";
-   if(InpWatchCPI &&
-      (StringFind(name,"consumer price index")>=0 || StringFind(name,"cpi")>=0)) return "CPI";
+   if(InpWatchCPI && NP_IsPrimaryCPIName(name)) return "CPI";
    if(InpWatchFOMC &&
       (StringFind(name,"fomc statement")>=0 || StringFind(name,"federal funds rate")>=0 ||
        StringFind(name,"fed interest rate decision")>=0 || StringFind(name,"federal reserve interest rate decision")>=0)) return "FOMC";
@@ -381,12 +393,16 @@ bool NP_RefreshLiveCalendarCache(const datetime now)
    datetime best=0;
    long best_id=0;
    string best_kind="";
+   string best_name="";
    for(int i=0;i<total;i++)
    {
       // Calendar values and now are both broker trade-server timestamps.
       if(values[i].time<=now) continue;
       MqlCalendarEvent event;
       if(!CalendarEventById(values[i].event_id,event)) continue;
+      // News Pulse is a top-tier release strategy. Medium/low-importance
+      // derivative indicators must never create another straddle.
+      if(event.importance!=CALENDAR_IMPORTANCE_HIGH) continue;
       string candidate_kind=NP_EventKind(event.name);
       if(candidate_kind=="") continue;
       if(best==0 || values[i].time<best)
@@ -397,6 +413,7 @@ bool NP_RefreshLiveCalendarCache(const datetime now)
          // the unique occurrence key, so future monthly releases are not skipped.
          best_id=(long)values[i].time;
          best_kind=candidate_kind;
+         best_name=event.name;
       }
    }
    if(best<=0)
@@ -413,7 +430,8 @@ bool NP_RefreshLiveCalendarCache(const datetime now)
    g_cached_event_kind=best_kind;
    if(changed)
       Print("News Pulse: cached next ",best_kind," for broker-server time ",
-            TimeToString(best,TIME_DATE|TIME_SECONDS),"; VPS local timezone is not used.");
+            TimeToString(best,TIME_DATE|TIME_SECONDS)," from calendar event '",best_name,
+            "'; VPS local timezone is not used.");
    return true;
 }
 

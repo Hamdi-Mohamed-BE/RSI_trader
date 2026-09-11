@@ -21,12 +21,13 @@ from app.mt5_evidence_jobs import mt5_evidence_jobs  # noqa: E402
 from tools.precompute_evidence_cache import news_pulse_calendar_window  # noqa: E402
 
 
-SLUGS = ("news-pulse-xau", "news-pulse-xag", "news-pulse-eurusd")
+SLUGS = ("news-pulse-xau", "news-pulse-xag", "news-pulse-btc")
 OLD_RESULTS = (
     PACKAGE_ROOT
     / "News Pulse FXMacroData Audit 2026-09-10"
     / "schedule-replay-results.json"
 )
+CRYPTO_RESULTS = PACKAGE_ROOT / "News Pulse Crypto Extension 2026-09-11" / "VERIFIED RESULTS.json"
 
 
 def _costs(trades: list[dict[str, Any]]) -> dict[str, float]:
@@ -81,10 +82,12 @@ def main() -> int:
     start, end = news_pulse_calendar_window(first_product)
     old_payload = json.loads(OLD_RESULTS.read_text(encoding="utf-8-sig"))
     old_by_asset = {row["asset"]: row["fxmacrodata_schedule"] for row in old_payload["results"]}
+    crypto_payload = json.loads(CRYPTO_RESULTS.read_text(encoding="utf-8-sig"))
+    crypto_by_asset = {row["asset"]: row for row in crypto_payload}
     asset_by_slug = {
         "news-pulse-xau": "xauusd",
         "news-pulse-xag": "xagusd",
-        "news-pulse-eurusd": "eurusd",
+        "news-pulse-btc": "btcusd",
     }
 
     args.output.mkdir(parents=True, exist_ok=True)
@@ -105,14 +108,25 @@ def main() -> int:
             if args.retain_reports:
                 shutil.copy2(retained, report_root / f"{slug}.htm")
         raw_stats = result["stats"]
-        old = old_by_asset[asset_by_slug[slug]]["metrics"]
-        old_stats = {
-            "return_pct": round(float(old["reported_net_profit"]) / float(old["initial_balance"]) * 100, 2),
-            "profit_factor": float(old["reported_profit_factor"]),
-            "win_rate_pct": float(old["reported_win_rate_pct"]),
-            "max_drawdown_pct": float(old["reported_max_drawdown_pct"]),
-            "trades": int(old["reported_trades"]),
-        }
+        asset = asset_by_slug[slug]
+        if asset in crypto_by_asset:
+            old = crypto_by_asset[asset]
+            old_stats = {
+                "return_pct": round(float(old["return_pct"]), 2),
+                "profit_factor": float(old["profit_factor"]),
+                "win_rate_pct": float(old["win_rate_pct"]),
+                "max_drawdown_pct": float(old["max_drawdown_pct"]),
+                "trades": int(old["trades"]),
+            }
+        else:
+            old = old_by_asset[asset]["metrics"]
+            old_stats = {
+                "return_pct": round(float(old["reported_net_profit"]) / float(old["initial_balance"]) * 100, 2),
+                "profit_factor": float(old["reported_profit_factor"]),
+                "win_rate_pct": float(old["reported_win_rate_pct"]),
+                "max_drawdown_pct": float(old["reported_max_drawdown_pct"]),
+                "trades": int(old["reported_trades"]),
+            }
         rows.append(
             {
                 "slug": slug,

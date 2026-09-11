@@ -30,6 +30,7 @@ ORB_H1_AUDIT_ROOT = PACKAGE_ROOT / "ORB H1 Range Research 2026-09-05"
 SELECTIVE_ORB_ROOT = PACKAGE_ROOT / "US100 Selective ORB Research 2026-08-21"
 NEWS_PULSE_ROOT = PACKAGE_ROOT / "News Pulse Direction Research 2026-09-05"
 NEWS_PULSE_CALENDAR_ROOT = PACKAGE_ROOT / "News Pulse FXMacroData Audit 2026-09-10"
+NEWS_PULSE_CRYPTO_ROOT = PACKAGE_ROOT / "News Pulse Crypto Extension 2026-09-11"
 ACTIVE_PIPELINE_ROOT = PACKAGE_ROOT / "Active Portfolio Full Pipeline 2026-09-05"
 SELL_NASDAQ_15M_ROOT = PACKAGE_ROOT / "Sell Nasdaq 15min Research 2026-09-08"
 LONDON_OPEN_FX_MOMENTUM_ROOT = PACKAGE_ROOT / "London Open FX Momentum Research 2026-09-08"
@@ -159,7 +160,7 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "XAU Squeeze Momentum High Win 0.75R": ("squeeze-momentum-xau-high-win", "current", "3 ATR stop / 0.75R / ATR ratchet"),
     "News Pulse XAU": ("news-xau-hard-1p5", "current", "Native 60-second exit"),
     "News Pulse XAG": ("news-xag-hard-1p5", "current", "Native 60-second exit"),
-    "News Pulse EURUSD": ("news-eurusd-hard-1p5", "current", "Native 60-second exit"),
+    "News Pulse BTC": ("news-btc-hard-1p5", "current", "Native 60-second exit"),
     "XAU RSI VWAP": ("rsi-vwap-xau", "current", "Current EA exits"),
     "BTC POC Fibonacci": ("pocfib-btc", "current", "Fixed 5R / no trailing"),
     "XAU Elliott Wave 1-2-3": ("elliott-xau", "current", "Fixed 3R / no trailing"),
@@ -953,19 +954,19 @@ def _news_pulse_meta(symbol: str, entry: str, stop: str, trail: str) -> dict[str
         "description": f"This {symbol} M1 configuration watches NFP, CPI and FOMC in MT5's USD economic calendar. Thirty seconds before release it places both a buy stop and a sell stop using the market-specific optimized geometry, then removes pending exposure and closes positions sixty seconds after the event.",
         "session": "NFP, CPI and FOMC",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable News Pulse v2.13 source, exact hard-risk SET, native MT5 Every Tick report and the FXMacroData-verified tester calendar were reviewed together.",
+        "logic_audit_note": "Readable News Pulse v2.14 source, exact hard-risk SET, native MT5 Every Tick report and the FXMacroData-verified tester calendar were reviewed together. The v2.14 live gate only accepts high-impact primary CPI/Core CPI names, preventing secondary Median CPI and inflation-expectation releases from creating another straddle.",
         "logic": [
-            {"title": "Find only target USD events", "detail": "Live trading scans MT5's native USD economic calendar for non-private Nonfarm Payrolls, Consumer Price Index, FOMC statements and Federal Reserve rate decisions. The schedule is cached eight days ahead and refreshed every 300 seconds. Strategy Tester uses a generated FXMacroData UTC calendar and version 2.13 rejects missing, incomplete or out-of-range schedules."},
+            {"title": "Find only primary high-impact USD events", "detail": "Live trading scans MT5's native USD calendar but accepts only high-impact target releases. CPI must begin with CPI, Core CPI, Consumer Price Index or Core Consumer Price Index, so Cleveland Fed Median CPI and inflation-expectation events cannot qualify. The schedule is cached eight days ahead and refreshed every 300 seconds. Strategy Tester uses a generated FXMacroData UTC calendar and version 2.14 rejects missing, incomplete or out-of-range schedules."},
             {"title": "Anchor timing to broker data", "detail": "Calendar timestamps and quote timestamps share broker-server time. VPS local timezone is ignored, and placement is blocked unless MT5 is connected and a broker-stamped quote arrived during the preceding five seconds."},
             {"title": "Place both breakout stops", "detail": f"During the final thirty seconds before release, the EA places a buy stop {entry} above Ask and a sell stop {entry} below Bid on {symbol}. Buy and sell use independent pending orders and a symbol-specific magic number."},
             {"title": "Hard-lock total planned risk", "detail": f"Each pending direction receives exactly 0.75% equity risk to its {stop} initial stop. The compiled EA rejects any different risk input, making the combined planned event exposure no more than 1.50% before gaps and slippage."},
             {"title": "Retain the optimized native trail", "detail": f"After favorable movement reaches 1.5R, the native manager may tighten the stop using a {trail} trailing distance. Dynamic 50/20 and the experimental regime gate are disabled because this exact configuration was validated without them."},
             {"title": "Force the event lifecycle to finish", "detail": "At sixty seconds after release, the EA deletes any unfilled pending order and closes any remaining News Pulse position. Account, symbol and magic-number state allow that lifecycle to recover after a terminal restart."},
         ],
-        "risk_note": "Risk is not controlled by the BAT prompt for this EA. Version 2.13 hard-locks 0.75% per pending stop and 1.50% maximum planned event exposure. News gaps, spread expansion, slippage, rejections or a market jumping over the stop can still produce a larger realized loss.",
+        "risk_note": "Risk is not controlled by the BAT prompt for this EA. Version 2.14 hard-locks 0.75% per pending stop and 1.50% maximum planned event exposure. News gaps, spread expansion, slippage, rejections or a market jumping over the stop can still produce a larger realized loss.",
         "price": 549,
         "accent": "yellow",
-        "featured": symbol in {"XAUUSD", "XAGUSD"},
+        "featured": symbol in {"XAUUSD", "XAGUSD", "BTCUSD"},
     }
 
 
@@ -976,7 +977,7 @@ CORE_META.update(
     {
         "News Pulse XAU": _news_pulse_meta("XAUUSD", "6.0 price units", "6.0-unit", "15.0-unit"),
         "News Pulse XAG": _news_pulse_meta("XAGUSD", "0.08 price units", "0.08-unit", "0.20-unit"),
-        "News Pulse EURUSD": _news_pulse_meta("EURUSD", "0.0006 (six pips)", "0.0006", "0.0015"),
+        "News Pulse BTC": _news_pulse_meta("BTCUSD", "75 price units", "75-unit", "112.5-unit"),
     }
 )
 
@@ -1984,10 +1985,41 @@ def _month_end_flow_us100_evidence() -> Evidence | None:
 
 
 def _news_pulse_hard_evidence(label: str) -> Evidence | None:
+    if label == "News Pulse BTC":
+        verified_path = NEWS_PULSE_CRYPTO_ROOT / "VERIFIED RESULTS.json"
+        if verified_path.is_file():
+            verified = _load_json(verified_path)
+            result = next((item for item in verified if item.get("asset") == "btcusd"), None)
+            if result is not None:
+                report = Path(str(result["report"]))
+                return Evidence(
+                    label="FXMacroData-verified calendar replay",
+                    period=f"{str(result['from']).replace('.', '-')} to {str(result['to']).replace('.', '-')}",
+                    return_pct=float(result["return_pct"]),
+                    profit_factor=float(result["profit_factor"]),
+                    drawdown_pct=float(result["max_drawdown_pct"]),
+                    win_rate_pct=float(result["win_rate_pct"]),
+                    trades=int(result["trades"]),
+                    sharpe_ratio=float(result["sharpe_ratio"]),
+                    recovery_factor=float(result["recovery_factor"]),
+                    history_quality=f"{float(result['history_quality_pct']):.0f}%",
+                    source_note=(
+                        "Exness BTCUSD M1 generated-tick replay using News Pulse v2.13, the exact FXMacroData "
+                        "UTC schedule, all 7 enabled NFP/CPI/FOMC events in the declared coverage window, "
+                        "0.75% risk per pending stop and a 1.50% maximum planned event exposure. Live trading "
+                        "continues to use MT5's native calendar."
+                    ),
+                    chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
+                    status="Watch only — verified schedule",
+                    caution=(
+                        "Only 8 trades across 7 scheduled events are present. The wider one-year optimization "
+                        "sample is retained as historical pre-v2.13 context; this is not enough evidence to prove "
+                        "future news execution."
+                    ),
+                )
     assets = {
         "News Pulse XAU": "xauusd",
         "News Pulse XAG": "xagusd",
-        "News Pulse EURUSD": "eurusd",
     }
     asset = assets.get(label)
     verified_path = NEWS_PULSE_CALENDAR_ROOT / "schedule-replay-results.json"
@@ -2676,7 +2708,7 @@ def get_catalog() -> list[Product]:
     orb_volume_confirmed = _orb_volume_confirmed_evidence()
     news_pulse_evidence = {
         label: _news_pulse_hard_evidence(label)
-        for label in ("News Pulse XAU", "News Pulse XAG", "News Pulse EURUSD")
+        for label in ("News Pulse XAU", "News Pulse XAG", "News Pulse BTC")
     }
     orb_session_evidence = {
         label: _orb_session_evidence(label) for label in ORB_SESSION_PRODUCTS

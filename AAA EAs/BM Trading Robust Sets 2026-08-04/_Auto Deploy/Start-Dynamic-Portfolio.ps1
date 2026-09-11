@@ -34,7 +34,7 @@ if (-not $RiskMode) {
     Write-Host "`nChoose risk sizing for every non-News EA trade:" -ForegroundColor Cyan
     Write-Host '  [1] Percentage of current equity (default: 1%)'
     Write-Host '  [2] Fixed USD target (exact where supported; converted for percentage-only EAs)'
-    Write-Host '  News Pulse is the only exception: 0.75% per pending stop, 1.50% total event cap.' -ForegroundColor Yellow
+    Write-Host '  News Pulse v2.14 is the only exception: high-impact primary events only; 0.75% per pending stop, 1.50% total event cap.' -ForegroundColor Yellow
     $choice = (Read-Host 'Enter 1 or 2 [1]').Trim()
     if (-not $choice) { $choice = '1' }
     $RiskMode = switch ($choice) { '1' { 'PERCENT' } '2' { 'FIXED_USD' } default { Stop-Dynamic 'Risk type must be 1 or 2.' } }
@@ -60,7 +60,7 @@ if (-not $SafetyMode) {
 
 Write-Host "`nDynamic configuration" -ForegroundColor Green
 Write-Host ('  Non-News risk: {0} {1}' -f $RiskValue, $(if ($RiskMode -eq 'PERCENT') { '%' } else { 'USD per EA trade' }))
-Write-Host '  News Pulse: fixed 0.75% per pending stop / 1.50% total event cap'
+Write-Host '  News Pulse v2.14: high-impact primary NFP/CPI/FOMC only; fixed 0.75% per pending stop / 1.50% total event cap'
 Write-Host ('  Mode: {0}' -f $SafetyMode)
 if (-not $Yes -and -not $ValidateOnly) {
     $confirm = (Read-Host 'Install and run this configuration now? (Y/N)').Trim().ToUpperInvariant()

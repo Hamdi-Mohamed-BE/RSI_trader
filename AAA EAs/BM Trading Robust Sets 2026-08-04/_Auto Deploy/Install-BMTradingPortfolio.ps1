@@ -54,7 +54,7 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 function Get-PortfolioItems {
     # Locked selected portfolio. Each EA owns its selected exit mode:
     # Each strategy keeps its selected exit. The three News Pulse instances
-    # use News Pulse v2.13, its native 60-second lifecycle and source-locked
+    # use News Pulse v2.14, its native 60-second lifecycle and source-locked
     # 0.75% risk per pending side (1.50% maximum planned event exposure).
     # Live events come from MT5's USD calendar; Strategy Tester schedules are
     # generated from FXMacroData and fail closed outside verified coverage.
@@ -220,10 +220,10 @@ function Get-PortfolioItems {
             SetSource = 'Selected Portfolio Settings 2026-09-01\12B News Pulse XAG Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
-            Label = 'News Pulse EURUSD'; Canonical = 'EURUSD'; Aliases = @('EURUSD')
+            Label = 'News Pulse BTC'; Canonical = 'BTCUSD'; Aliases = @('BTCUSD', 'BITCOIN', 'BTC')
             Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\12C News Pulse EURUSD Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
+            SetSource = 'Selected Portfolio Settings 2026-09-01\12C News Pulse BTC Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'XAU RSI VWAP'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')

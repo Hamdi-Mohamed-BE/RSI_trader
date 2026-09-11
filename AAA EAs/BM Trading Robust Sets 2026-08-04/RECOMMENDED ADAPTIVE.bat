@@ -5,7 +5,7 @@ title Calyx - Recommended Adaptive
 echo Applying the approved Recommended Adaptive portfolio...
 echo - Every EA keeps its evidence-selected Standard, Safe or Dynamic preset.
 echo - Every non-News EA follows the risk you select; pressing Enter defaults to 1%%.
-echo - News Pulse remains locked at 0.75%% per pending stop.
+echo - News Pulse v2.14 uses only high-impact primary NFP, CPI and FOMC events and remains locked at 0.75%% per pending stop.
 echo - Nasdaq 5M Candle Momentum is installed at 0.25x your selected risk.
 echo - Website evidence also models the approved daily-entry stop, drawdown taper and per-EA loss-streak taper.
 echo - Those three shared portfolio-governor rules are evidence overlays and are not falsely presented as native controls inside compiled EAs.

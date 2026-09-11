@@ -82,7 +82,7 @@ def _recommended_mode(product: Product) -> str:
 
 
 def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> Product:
-    # News Pulse v2.13 currently has a shorter but release-complete calendar
+    # News Pulse v2.14 currently has a shorter but release-complete calendar
     # audit. Do not let the older fixed-period cache replace those current,
     # explicitly watch-only figures on catalogue cards.
     if product.label.startswith("News Pulse "):
