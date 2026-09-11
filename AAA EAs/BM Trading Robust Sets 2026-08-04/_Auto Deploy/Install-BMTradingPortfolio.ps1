@@ -743,6 +743,23 @@ function Set-IniValue([string]$Path, [string]$Section, [string]$Key, [string]$Va
     [IO.File]::WriteAllText($Path, (($lines -join "`r`n") + "`r`n"), $Unicode)
 }
 
+function Test-RuntimeHeartbeat([string]$Path, [string]$ExpectedSymbol, [int]$MaxAgeSeconds = 120) {
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $false }
+    try {
+        $line = [string](Get-Content -LiteralPath $Path -TotalCount 1 -ErrorAction Stop)
+        $parts = @($line -split "`t", 4)
+        if ($parts.Count -lt 3) { return $false }
+        [long]$epoch = 0
+        if (-not [long]::TryParse($parts[0].Trim(), [ref]$epoch)) { return $false }
+        $ageSeconds = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - $epoch
+        return $ageSeconds -ge -5 -and
+            $ageSeconds -le $MaxAgeSeconds -and
+            $parts[2].Trim() -ieq $ExpectedSymbol
+    } catch {
+        return $false
+    }
+}
+
 function Close-TargetTerminal([string]$ExecutablePath) {
     $targets = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
         $_.Name -match '^terminal(64)?\.exe$' -and $_.ExecutablePath -ieq $ExecutablePath
@@ -1126,6 +1143,7 @@ if ($commonIni) {
     Set-IniValue $commonIni 'Experts' 'Account' '0'
     Set-IniValue $commonIni 'Experts' 'Profile' '0'
     Set-IniValue $commonIni 'Experts' 'Chart' '0'
+    Set-IniValue $commonIni 'Charts' 'ProfileLast' $ProfileName
 } else {
     Write-Warning 'Skipped automatic Algo Trading preference update because common.ini is unavailable. EA installation remains complete.'
 }
@@ -1175,21 +1193,23 @@ $manifestPath = Join-Path $PSScriptRoot 'LAST INSTALL.txt'
 
 Write-Stage "Starting the $($portfolio.Count)-EA profile"
 $goldNewsHeartbeat = Join-Path $commonDataRoot 'Files\GoldNewsV9EA\runtime.tsv'
+$goldNewsItem = @($portfolio | Where-Object { $_.Label -eq 'Gold News V9 Direction' }) | Select-Object -First 1
+if (-not $goldNewsItem) { Stop-WithMessage 'Gold News V9 is missing from the managed portfolio.' }
+$goldNewsExpectedSymbol = [string]$goldNewsItem.BrokerSymbol
 Remove-Item -LiteralPath $goldNewsHeartbeat -Force -ErrorAction SilentlyContinue
 $arguments = '/profile:"' + $ProfileName + '"'
 Start-Process -FilePath $terminalPath -ArgumentList $arguments
-$heartbeatDeadline = (Get-Date).AddSeconds(30)
+$heartbeatDeadline = (Get-Date).AddSeconds(90)
 do {
     Start-Sleep -Milliseconds 500
     $runningNow = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
         $_.Name -match '^terminal(64)?\.exe$' -and $_.ExecutablePath -ieq $terminalPath
     })
     if ($runningNow.Count -eq 0) { Stop-WithMessage 'The files were installed, but MT5 did not remain running.' }
-    $goldNewsReady = (Test-Path -LiteralPath $goldNewsHeartbeat) -and
-        (Get-Item -LiteralPath $goldNewsHeartbeat).Length -gt 0
+    $goldNewsReady = Test-RuntimeHeartbeat $goldNewsHeartbeat $goldNewsExpectedSymbol
 } while (-not $goldNewsReady -and (Get-Date) -lt $heartbeatDeadline)
 if (-not $goldNewsReady) {
-    Stop-WithMessage 'MT5 opened, but Gold News V9 did not publish its runtime heartbeat. Check the MT5 Experts journal.'
+    Stop-WithMessage ("MT5 opened, but Gold News V9 did not publish a fresh runtime heartbeat for broker symbol '{0}'. Check the MT5 Experts journal." -f $goldNewsExpectedSymbol)
 }
 
 Test-ManagedProfile $profileTargetFull $portfolio 'After MT5 start'

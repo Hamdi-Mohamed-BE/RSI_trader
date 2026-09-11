@@ -1,5 +1,5 @@
 #property copyright "Gold News V9"
-#property version   "1.11"
+#property version   "1.12"
 #property strict
 #property description "Consumes the local Gold News V9 API for NFP, CPI, and FOMC."
 
@@ -742,11 +742,17 @@ bool OpenPredictedTrade()
    double lot=RiskSizedLot(
       order_type,entry,stop,risk_budget,nominal_risk
    );
-   if(lot<=0 || nominal_risk>risk_budget+0.01)
+   if(lot<=0)
      {
       SetStatus("Risk-based lot calculation failed.");
       return false;
      }
+   if(nominal_risk>risk_budget+0.01)
+      PrintFormat(
+         "Gold News V9: actual risk %.2f exceeds selected risk %.2f because of broker minimum/step volume; trade remains enabled.",
+         nominal_risk,
+         risk_budget
+      );
 
    double margin=0.0;
    if(!OrderCalcMargin(order_type,trade_symbol,lot,entry,margin))

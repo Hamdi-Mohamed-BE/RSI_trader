@@ -98,6 +98,27 @@ function Get-IniValue(
     return ''
 }
 
+function Test-RuntimeHeartbeat(
+    [string]$Path,
+    [string]$ExpectedSymbol,
+    [int]$MaxAgeSeconds = 120
+) {
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $false }
+    try {
+        $line = [string](Get-Content -LiteralPath $Path -TotalCount 1 -ErrorAction Stop)
+        $parts = @($line -split "`t", 4)
+        if ($parts.Count -lt 3) { return $false }
+        [long]$epoch = 0
+        if (-not [long]::TryParse($parts[0].Trim(), [ref]$epoch)) { return $false }
+        $ageSeconds = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - $epoch
+        return $ageSeconds -ge -5 -and
+            $ageSeconds -le $MaxAgeSeconds -and
+            $parts[2].Trim() -ieq $ExpectedSymbol
+    } catch {
+        return $false
+    }
+}
+
 function Resolve-Uv([switch]$AllowInstall) {
     $uv = Get-Command uv.exe -ErrorAction SilentlyContinue
     if ($uv) { return $uv.Source }
@@ -545,6 +566,7 @@ Set-IniValue $commonIni 'Experts' 'Enabled' '1'
 Set-IniValue $commonIni 'Experts' 'Account' '0'
 Set-IniValue $commonIni 'Experts' 'Profile' '0'
 Set-IniValue $commonIni 'Experts' 'Chart' '0'
+Set-IniValue $commonIni 'Charts' 'ProfileLast' $ProfileName
 
 $manifestPath = Join-Path $PackageRoot 'LAST_GOLD_NEWS_V9_INSTALL.txt'
 $manifest = @(
@@ -582,7 +604,7 @@ $runtimeHeartbeat = Join-Path ([string]$probeResult.commondata_path) 'Files\Gold
 Remove-Item -LiteralPath $runtimeHeartbeat -Force -ErrorAction SilentlyContinue
 $profileArgument = '/profile:"' + $ProfileName + '"'
 Start-Process -FilePath $terminalPath -ArgumentList $profileArgument
-$heartbeatDeadline = (Get-Date).AddSeconds(30)
+$heartbeatDeadline = (Get-Date).AddSeconds(90)
 do {
     Start-Sleep -Milliseconds 500
     $runningNow = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
@@ -592,11 +614,10 @@ do {
     if ($runningNow.Count -eq 0) {
         Stop-Install 'Files were installed, but MT5 did not remain running.'
     }
-    $heartbeatReady = (Test-Path -LiteralPath $runtimeHeartbeat) -and
-        (Get-Item -LiteralPath $runtimeHeartbeat).Length -gt 0
+    $heartbeatReady = Test-RuntimeHeartbeat $runtimeHeartbeat $symbol
 } while (-not $heartbeatReady -and (Get-Date) -lt $heartbeatDeadline)
 if (-not $heartbeatReady) {
-    Stop-Install 'MT5 opened, but Gold News V9 did not publish its runtime heartbeat. Check the MT5 Experts journal.'
+    Stop-Install ("MT5 opened, but Gold News V9 did not publish a fresh runtime heartbeat for broker symbol '{0}'. Check the MT5 Experts journal." -f $symbol)
 }
 if (-not (Select-String -LiteralPath $chartPath -SimpleMatch '<expert>' -Quiet)) {
     Stop-Install 'MT5 opened, but the chart lost its EA attachment.'
