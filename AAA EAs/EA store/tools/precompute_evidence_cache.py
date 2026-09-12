@@ -616,7 +616,7 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
         "skipped_trade_count": len(all_trades) - len(adaptive_trades),
         "adaptive_activations": activations,
         "adaptive_rules": list(ADAPTIVE_RULES),
-        "notice": "Recommended adaptive replay of the existing native MT5 trade ledger. Net P/L includes commission and swap; scaled costs are proportional to modelled position size. This is not a simultaneous shared-margin MT5 run.",
+        "notice": "Recommended adaptive replay of the existing native MT5 trade ledger. The four news EAs are exempt: no adaptive entry skips or risk scaling. Non-News controls are unchanged and still count news P/L in account-wide checks. Net P/L includes commission and swap; scaled non-News costs are proportional to modelled position size. Gold News V9 contributes only when evidence exists. This is not a simultaneous shared-margin MT5 run.",
         "source": "adaptive-replay-of-native-mt5-cache",
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -721,6 +721,16 @@ def main() -> int:
         portfolio_rows.append({"period": period, "stats": portfolio["stats"], "included_ea_count": portfolio["included_ea_count"], "tested_ea_count": portfolio["tested_ea_count"]})
         print(f"PORTFOLIO {period}: {portfolio['stats']}", flush=True)
 
+    # Portfolio-only/partial refreshes must not erase the source-run inventory.
+    manifest_path = CACHE_ROOT / "manifest.json"
+    previous_manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig")) if manifest_path.is_file() else {}
+    current_slugs = {product.slug for product in full_catalog}
+    run_inventory = {
+        (row["slug"], row["mode"], row["period"]): row
+        for row in previous_manifest.get("generated_runs", [])
+        if row.get("slug") in current_slugs
+    }
+    run_inventory.update({(row["slug"], row["mode"], row["period"]): row for row in generated})
     manifest = {
         "cache_version": "v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -747,7 +757,7 @@ def main() -> int:
         "active_portfolio_mode": "recommended-adaptive",
         "adaptive_rules": list(ADAPTIVE_RULES),
         "cost_accounting": "Commission and swap are parsed separately from native MT5 entry and exit deals and are included in net P/L. Adaptive costs scale linearly with the modelled position size.",
-        "generated_runs": generated,
+        "generated_runs": [run_inventory[key] for key in sorted(run_inventory)],
         "portfolio": portfolio_rows,
         "failures": failures,
         "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard, Safe or Dynamic mode. The current portfolio chronologically overlays those realized cash flows; the website default applies the approved Recommended Adaptive rules to the same signals without claiming a shared-margin MT5 run.",

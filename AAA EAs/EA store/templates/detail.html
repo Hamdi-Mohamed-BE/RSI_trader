@@ -2,6 +2,9 @@
 {% block title %}{{ product.label }} — Calyx{% endblock %}
 {% block content %}
 {% set selected_period = selected_period|default('3y', true) %}
+{% if product.slug in ['news-pulse-xau', 'news-pulse-xag', 'news-pulse-btc', 'gold-news-v9-direction'] %}
+<div class="mx-auto max-w-7xl px-5 pt-8 text-sm leading-7 text-amber-100/80 lg:px-8">Recommended Adaptive exemption: this news EA keeps its locked 0.75% planned risk per entry and bypasses adaptive daily stops, drawdown tapers and loss-streak tapers. Its own signal filters, broker constraints and exits are unchanged. Reapply the updated BAT to activate this on MT5.</div>
+{% endif %}
 {% set selected_dataset = product.safe_mode_label if selected_mode == 'safe' else product.dynamic_mode_label if selected_mode == 'dynamic' else 'Standard' %}
 <section class="page-hero overflow-hidden">
   <div class="mx-auto max-w-7xl px-5 py-8 lg:px-8"><a href="/eas" class="text-xs font-semibold text-muted hover:text-white">← Back to catalogue</a></div>

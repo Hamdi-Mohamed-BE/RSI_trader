@@ -445,12 +445,20 @@ function Read-SetInputs([string]$Path) {
     return $result
 }
 
-    function Get-EffectiveInputs([object]$Item) {
+function Test-NewsAdaptiveExemption([object]$Item) {
+    return [string]$Item.Label -in @('News Pulse XAU', 'News Pulse XAG', 'News Pulse BTC', 'Gold News V9 Direction')
+}
+
+function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
     # Every current Calyx EA exposes the same native portfolio-governor switch.
-    # Only the Recommended Adaptive BAT enables it; the evidence SETs and all
-    # other BAT profiles keep their original standalone entry sizing.
-    if ($UseAdaptiveProfile) { $inputs['InpAdaptivePortfolioControls'] = 'true' }
+    # The four news EAs always retain their locked standalone risk. Override
+    # even a stale SET with the governor enabled; all shared BATs use this path.
+    if (Test-NewsAdaptiveExemption $Item) {
+        $inputs['InpAdaptivePortfolioControls'] = 'false'
+    } elseif ($UseAdaptiveProfile) {
+        $inputs['InpAdaptivePortfolioControls'] = 'true'
+    }
     if ([bool]$Item.ForceEnable -and $inputs.Contains('InpEnableTrading')) {
         $inputs['InpEnableTrading'] = 'true'
     }
@@ -533,7 +541,9 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
     )
     foreach ($item in $Items) {
         $inputs = Get-EffectiveInputs $item
-        if ($UseAdaptiveProfile -and (-not $inputs.Contains('InpAdaptivePortfolioControls') -or [string]$inputs['InpAdaptivePortfolioControls'] -ne 'true')) {
+        $newsAdaptiveExempt = Test-NewsAdaptiveExemption $item
+        $expectedAdaptive = if ($newsAdaptiveExempt) { 'false' } else { 'true' }
+        if (($UseAdaptiveProfile -or $newsAdaptiveExempt) -and (-not $inputs.Contains('InpAdaptivePortfolioControls') -or [string]$inputs['InpAdaptivePortfolioControls'] -ne $expectedAdaptive)) {
             Stop-WithMessage "Risk audit failed for $($item.Label): the native Recommended Adaptive switch is not set correctly."
         }
         $presentPercentKeys = @($percentKeys | Where-Object { $inputs.Contains($_) })
@@ -561,8 +571,8 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
         }
     }
     $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
-    $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls are enabled and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
-    Write-Host ("Risk audit passed: every non-News EA uses {0}{1}; all news entries remain locked at 0.7500% per planned entry." -f $modeText, $adaptiveText) -ForegroundColor Green
+    $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls apply to non-News EAs and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
+    Write-Host ("Risk audit passed: every non-News EA uses {0}{1}; all four news EAs bypass adaptive controls and remain locked at 0.7500% per planned entry." -f $modeText, $adaptiveText) -ForegroundColor Green
 }
 
 function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {

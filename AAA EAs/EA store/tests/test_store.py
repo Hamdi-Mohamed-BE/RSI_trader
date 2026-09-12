@@ -688,8 +688,10 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     assert "Recommended Adaptive is the active website profile" in response.text
-    assert "+2,241.10%" in response.text
-    assert "10.10%" in response.text
+    assert "+2,288.14%" in response.text
+    assert "9.54%" in response.text
+    assert "All four news EAs are exempt" in response.text
+    assert "Gold News V9 remains evidence pending" in response.text
     assert "Current · 5Y return" not in response.text
     assert "Current → adaptive PF" not in response.text
     assert "Approved removals" in response.text
@@ -707,9 +709,9 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert series.json()["included_ea_count"] == 32
     assert series.json()["tested_ea_count"] == 31
     assert series.json()["mode"] == "recommended-adaptive"
-    assert series.json()["stats"]["return_pct"] == 2241.10
+    assert series.json()["stats"]["return_pct"] == 2288.14
     assert series.json()["stats"]["profit_factor"] == 2.09
-    assert series.json()["stats"]["max_drawdown_pct"] == 8.27
+    assert series.json()["stats"]["max_drawdown_pct"] == 8.57
     assert series.headers["x-evidence-cache"] == "HIT"
     assert "/api/portfolio/equity-series" in response.text
     assert "/portfolio/equity.png" not in response.text

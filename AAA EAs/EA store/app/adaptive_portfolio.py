@@ -12,13 +12,26 @@ SOFT_DRAWDOWN_PCT = 4.0
 HARD_DRAWDOWN_PCT = 7.0
 SOFT_LOSS_STREAK = 3
 HARD_LOSS_STREAK = 5
+NEWS_ADAPTIVE_EXEMPTIONS = {
+    "news-pulse-xau": "News Pulse XAU",
+    "news-pulse-xag": "News Pulse XAG",
+    "news-pulse-btc": "News Pulse BTC",
+    "gold-news-v9-direction": "Gold News V9 Direction",
+}
+
+
+def is_news_adaptive_exempt(row: dict[str, Any]) -> bool:
+    slug = str(row.get("cache_slug") or "")
+    label = str(row.get("ea") or "").split(" — ", 1)[0]
+    return slug in NEWS_ADAPTIVE_EXEMPTIONS or (not slug and label in NEWS_ADAPTIVE_EXEMPTIONS.values())
 
 RULES = (
     "Nasdaq 5M Candle Momentum uses 0.25x the selected non-News risk.",
-    "No new entries are accepted after closed P/L reaches -5% for the current day (-$500 on the $10,000 reference balance).",
-    "Portfolio risk tapers to 0.5x beyond 4% closed-equity drawdown and 0.25x beyond 7%.",
-    "An EA tapers to 0.5x after three consecutive losses and 0.25x after five; its next win resets the taper.",
-    "News Pulse keeps its 0.75% base risk per pending stop; adaptive drawdown and loss controls multiply that base without resetting it to 1%.",
+    "Non-News entries stop after closed P/L reaches -5% for the current day (-$500 on the $10,000 reference balance).",
+    "Non-News risk tapers to 0.5x beyond 4% closed-equity drawdown and 0.25x beyond 7%.",
+    "A non-News EA tapers to 0.5x after three consecutive losses and 0.25x after five; its next win resets the taper.",
+    "News Pulse XAU, XAG, BTC and Gold News V9 Direction bypass all adaptive entry stops and risk tapers. Their locked 0.75% planned risk per entry is unchanged (1.50% combined for two-sided News Pulse).",
+    "News profits and losses still count toward account-wide daily P/L and drawdown for non-News controls. News signal filters, broker constraints and native exits remain unchanged.",
 )
 
 
@@ -63,32 +76,36 @@ def simulate_adaptive_portfolio(
         if event_kind == "open":
             multiplier = 1.0
             reasons: list[str] = []
+            news_exempt = is_news_adaptive_exempt(row)
+            if news_exempt:
+                counters["news_exempt_entries"] += 1
+                reasons.append("News exemption: original locked risk; no adaptive controls")
             if slug == NASDAQ_CANDLE_SLUG:
                 multiplier *= 0.25
                 counters["nasdaq_scaled"] += 1
                 reasons.append("Nasdaq 5M allocation 0.25x")
 
-            if daily_closed[at.date()] <= -daily_entry_stop_cash:
+            if not news_exempt and daily_closed[at.date()] <= -daily_entry_stop_cash:
                 counters["daily_stop_skips"] += 1
                 skipped_by_ea[slug] += 1
                 continue
 
             drawdown_pct = 100.0 * (peak - balance) / peak if peak else 0.0
-            if drawdown_pct >= HARD_DRAWDOWN_PCT:
+            if not news_exempt and drawdown_pct >= HARD_DRAWDOWN_PCT:
                 multiplier *= 0.25
                 counters["hard_dd_taper"] += 1
                 reasons.append("portfolio DD >= 7%")
-            elif drawdown_pct >= SOFT_DRAWDOWN_PCT:
+            elif not news_exempt and drawdown_pct >= SOFT_DRAWDOWN_PCT:
                 multiplier *= 0.5
                 counters["soft_dd_taper"] += 1
                 reasons.append("portfolio DD >= 4%")
 
             streak = loss_streak[slug]
-            if streak >= HARD_LOSS_STREAK:
+            if not news_exempt and streak >= HARD_LOSS_STREAK:
                 multiplier *= 0.25
                 counters["hard_ea_taper"] += 1
                 reasons.append("EA loss streak >= 5")
-            elif streak >= SOFT_LOSS_STREAK:
+            elif not news_exempt and streak >= SOFT_LOSS_STREAK:
                 multiplier *= 0.5
                 counters["soft_ea_taper"] += 1
                 reasons.append("EA loss streak >= 3")
