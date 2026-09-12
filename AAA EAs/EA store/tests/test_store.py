@@ -441,7 +441,7 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert "RecommendedDynamic = $true" in installer_text
     assert "$inputs['InpAdaptivePortfolioControls'] = 'true'" in installer_text
     adaptive_header = (PACKAGE_ROOT / "_Shared" / "CalyxAdaptivePortfolio.mqh").read_text(encoding="utf-8")
-    assert "CALYX_DAILY_STOP_PERCENT=2.0" in adaptive_header
+    assert "CALYX_DAILY_STOP_PERCENT=5.0" in adaptive_header
     assert "CALYX_SOFT_DRAWDOWN_PERCENT=4.0" in adaptive_header
     assert "CALYX_HARD_DRAWDOWN_PERCENT=7.0" in adaptive_header
     assert "CALYX_SOFT_LOSS_STREAK=3" in adaptive_header
@@ -652,8 +652,8 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     assert "Recommended Adaptive is the active website profile" in response.text
-    assert "+2,016.58%" in response.text
-    assert "13.81%" in response.text
+    assert "+2,451.63%" in response.text
+    assert "13.70%" in response.text
     assert "Current · 5Y return" not in response.text
     assert "Current → adaptive PF" not in response.text
     assert "Approved removals" in response.text
@@ -671,9 +671,9 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert series.json()["included_ea_count"] == 32
     assert series.json()["tested_ea_count"] == 31
     assert series.json()["mode"] == "recommended-adaptive"
-    assert series.json()["stats"]["return_pct"] == 2016.58
-    assert series.json()["stats"]["profit_factor"] == 2.11
-    assert series.json()["stats"]["max_drawdown_pct"] == 6.73
+    assert series.json()["stats"]["return_pct"] == 2451.63
+    assert series.json()["stats"]["profit_factor"] == 2.21
+    assert series.json()["stats"]["max_drawdown_pct"] == 7.77
     assert series.headers["x-evidence-cache"] == "HIT"
     assert "/api/portfolio/equity-series" in response.text
     assert "/portfolio/equity.png" not in response.text

@@ -3,7 +3,7 @@
 
 // Native live implementation of the Recommended Adaptive portfolio governor.
 // It changes entry risk only. Existing positions and their stops are never altered.
-const double CALYX_DAILY_STOP_PERCENT=2.0;   // $200 on the website's $10,000 reference balance
+const double CALYX_DAILY_STOP_PERCENT=5.0;   // $500 on the website's $10,000 reference balance
 const double CALYX_SOFT_DRAWDOWN_PERCENT=4.0;
 const double CALYX_HARD_DRAWDOWN_PERCENT=7.0;
 const int    CALYX_SOFT_LOSS_STREAK=3;

@@ -9,7 +9,7 @@ echo - Entry lots round UP to the broker step; below-minimum requests use minimu
 echo - Actual stop risk can exceed the selected target when the broker lot step or minimum requires it.
 echo - News Pulse v2.15 uses only high-impact primary NFP, CPI and FOMC events and uses at most 0.75%% per pending stop before adaptive tapering.
 echo - Nasdaq 5M Candle Momentum is installed at 0.25x your selected risk.
-echo - The compiled EAs natively enforce the approved daily-entry stop, drawdown taper and per-EA loss-streak taper on new entries.
+echo - The compiled EAs block new entries after a 5%% daily closed loss and enforce the approved drawdown and per-EA loss-streak tapers.
 echo - Existing positions and their protective stops are never changed by the shared portfolio governor.
 echo.
 

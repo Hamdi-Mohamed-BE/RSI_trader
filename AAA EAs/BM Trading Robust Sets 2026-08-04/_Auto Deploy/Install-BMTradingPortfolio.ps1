@@ -561,7 +561,7 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
         }
     }
     $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
-    $adaptiveText = if ($UseAdaptiveProfile) { '; native daily-stop/drawdown/loss-streak controls are enabled and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
+    $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls are enabled and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
     Write-Host ("Risk audit passed: every non-News EA uses {0}{1}; all news entries remain locked at 0.7500% per planned entry." -f $modeText, $adaptiveText) -ForegroundColor Green
 }
 
@@ -983,8 +983,11 @@ foreach ($item in $portfolio) {
         Write-Host ('{0,-42} {1,-8} -> {2}; {3:N2} {4} ({5:N4}%), {6}' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $targetRisk, [string]$probe.account.currency, $effectiveItemRiskPercent, $exactText) -ForegroundColor Cyan
     } elseif ([double]$item.FixedPercentRisk -gt 0) {
         $fixedRiskText = ([double]$item.EffectiveRiskPercent).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
-        if ($item.Label -like 'News Pulse *') {
-            Write-Host ('{0,-42} {1,-8} -> {2}; HARD {3}% per pending stop / 1.50% total event cap' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
+        $isFixedNews = ($item.Label -like 'News Pulse *') -or ($item.Label -eq 'Gold News V9 Direction')
+        if ($isFixedNews -and $UseAdaptiveProfile) {
+            Write-Host ('{0,-42} {1,-8} -> {2}; MAX {3}% per planned entry before adaptive taper' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
+        } elseif ($isFixedNews) {
+            Write-Host ('{0,-42} {1,-8} -> {2}; HARD {3}% per planned entry' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
         } else {
             Write-Host ('{0,-42} {1,-8} -> {2}; fixed equity risk {3}%' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
         }

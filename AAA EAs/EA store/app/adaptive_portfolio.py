@@ -7,7 +7,7 @@ from typing import Any
 
 STARTING_BALANCE = 10_000.0
 NASDAQ_CANDLE_SLUG = "nasdaq-5m-candle-momentum"
-DAILY_ENTRY_STOP_CASH = 200.0
+DAILY_ENTRY_STOP_PERCENT = 5.0
 SOFT_DRAWDOWN_PCT = 4.0
 HARD_DRAWDOWN_PCT = 7.0
 SOFT_LOSS_STREAK = 3
@@ -15,7 +15,7 @@ HARD_LOSS_STREAK = 5
 
 RULES = (
     "Nasdaq 5M Candle Momentum uses 0.25x the selected non-News risk.",
-    "No new entries are accepted after closed P/L reaches -$200 for the current day on the $10,000 reference balance.",
+    "No new entries are accepted after closed P/L reaches -5% for the current day (-$500 on the $10,000 reference balance).",
     "Portfolio risk tapers to 0.5x beyond 4% closed-equity drawdown and 0.25x beyond 7%.",
     "An EA tapers to 0.5x after three consecutive losses and 0.25x after five; its next win resets the taper.",
     "News Pulse keeps its 0.75% base risk per pending stop; adaptive drawdown and loss controls multiply that base without resetting it to 1%.",
@@ -49,6 +49,7 @@ def simulate_adaptive_portfolio(
         events.append((row["_close_dt"], 0, "close", identifier))
     events.sort(key=lambda item: (item[0], item[1], item[3]))
 
+    daily_entry_stop_cash = float(starting_balance) * DAILY_ENTRY_STOP_PERCENT / 100.0
     accepted: dict[int, dict[str, Any]] = {}
     loss_streak: defaultdict[str, int] = defaultdict(int)
     daily_closed: defaultdict[object, float] = defaultdict(float)
@@ -67,7 +68,7 @@ def simulate_adaptive_portfolio(
                 counters["nasdaq_scaled"] += 1
                 reasons.append("Nasdaq 5M allocation 0.25x")
 
-            if daily_closed[at.date()] <= -DAILY_ENTRY_STOP_CASH:
+            if daily_closed[at.date()] <= -daily_entry_stop_cash:
                 counters["daily_stop_skips"] += 1
                 skipped_by_ea[slug] += 1
                 continue
