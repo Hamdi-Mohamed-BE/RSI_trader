@@ -1,0 +1,65 @@
+{
+  "study": "Janus raw CFD adaptation",
+  "upstream_commit": "535996d8d4dff9f0f8cd3ccc30dc50ef34c6776c",
+  "source_url": "https://github.com/karimkhemkapital/janus-anti-fragility-strategy",
+  "classification": "Private non-commercial research; not integrated into Calyx or any BAT",
+  "broker_server": "Exness-MT5Trial16",
+  "growth_leg": "USTEC",
+  "defensive_leg": "XAUUSD",
+  "raw_history_from": "2019-07-16",
+  "raw_history_to": "2026-09-11",
+  "display_from": "2023-09-11",
+  "display_to": "2026-09-11",
+  "common_daily_bars": 2221,
+  "display_daily_bars": 935,
+  "parameters": {
+    "risk_free_rate": 0.02,
+    "smooth_window": 21,
+    "smooth_polyorder": 3,
+    "normalization_window": 252,
+    "stress_window": 63,
+    "stress_baseline_window": 252,
+    "rolling_fragility_window": 252,
+    "confirmation_min_days": 3,
+    "confirmation_max_days": 30,
+    "entry_h2_threshold": 0.0,
+    "exit_mode": "acceleration",
+    "exit_acceleration_threshold": 0.0,
+    "execution_lag_days": 1,
+    "base_cost_bps_per_turnover": 12.0,
+    "stress_cost_bps_per_turnover": 33.0
+  },
+  "strategy": {
+    "gross": {"return_pct": 51.1258, "cagr_pct": 11.7725, "sharpe_zero_rf": 0.6668, "max_drawdown_pct": 25.3002, "calmar": 0.4653, "final_balance_10k": 15112.58},
+    "repository_base_cost": {"return_pct": 46.1102, "cagr_pct": 10.7604, "sharpe_zero_rf": 0.6202, "max_drawdown_pct": 25.3121, "calmar": 0.4251, "final_balance_10k": 14611.02},
+    "repository_stress_cost": {"return_pct": 37.7324, "cagr_pct": 9.0116, "sharpe_zero_rf": 0.5384, "max_drawdown_pct": 25.33, "calmar": 0.3558, "final_balance_10k": 13773.24}
+  },
+  "trade_statistics_base_cost": {
+    "holding_trades": 13,
+    "wins": 9,
+    "losses": 4,
+    "win_rate_pct": 69.23,
+    "profit_factor": 4.7095,
+    "average_win_10k": 650.45,
+    "average_loss_10k": -310.76,
+    "max_win_streak": 5,
+    "max_loss_streak": 1
+  },
+  "allocation": {
+    "allocation_switches": 12,
+    "stress_entries": 6,
+    "stress_exits": 6,
+    "effective_ustec_exposure_pct": 77.11,
+    "effective_xau_exposure_pct": 22.89,
+    "latest_signal_regime": "Normal / US100",
+    "latest_effective_holding": "USTEC",
+    "latest_signal_date": "2026-09-11"
+  },
+  "benchmarks": {
+    "USTEC_buy_and_hold": {"return_pct": 91.8385, "cagr_pct": 19.1946, "sharpe_zero_rf": 0.9914, "max_drawdown_pct": 25.3002, "calmar": 0.7587, "final_balance_10k": 19183.85},
+    "XAUUSD_buy_and_hold": {"return_pct": 126.6688, "cagr_pct": 24.6765, "sharpe_zero_rf": 1.2292, "max_drawdown_pct": 27.7012, "calmar": 0.8908, "final_balance_10k": 22666.88}
+  },
+  "cost_note": "Raw repository percentage cost model; not the broker's exact historical commission or swap ledger.",
+  "trade_count_note": "Each uninterrupted effective holding is counted as one trade; the final holding is marked closed on the test end date."
+}
+

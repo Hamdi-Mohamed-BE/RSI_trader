@@ -54,9 +54,9 @@ WATCHLIST = {
     "nasdaq-5m-candle-momentum": "Large historical return but thin edge: PF 1.12 over 5Y and 1.18 over 3Y.",
     "xau-regime-switch": "Strong long history but last six months are -4.95% with PF 0.43.",
     "xau-slow-trend": "Strong 3Y/5Y evidence but last six months are -7.13% with PF 0.48.",
-    "news-pulse-xau": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades).",
-    "news-pulse-xag": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades).",
-    "news-pulse-btc": "Mandatory News Pulse exposure retained at fixed risk; the complete three-year native MT5 sample has 125 trades, but event execution remains high-slippage risk.",
+    "news-pulse-xau": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",
+    "news-pulse-xag": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",
+    "news-pulse-btc": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",
     "us100-selective-orb-v3": "Only 34 trades exist in the 5Y view; retain as low-frequency evidence, not as a high-capacity core.",
     "xau-squeeze-momentum-standard": "Safe mode has strong PF/DD but only 48 trades in 5Y and no trades in the latest six months.",
 }

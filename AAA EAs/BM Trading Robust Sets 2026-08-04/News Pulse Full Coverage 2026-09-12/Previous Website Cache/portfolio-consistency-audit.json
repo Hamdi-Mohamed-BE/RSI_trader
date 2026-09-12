@@ -1,0 +1,2959 @@
+{
+  "generated_at": "2026-09-12T00:08:30.139208+00:00",
+  "evidence_end": "2026-09-05",
+  "method": "All saved native MT5 evidence modes were compared over 6m, 1y, 3y and 5y. Portfolio curves are chronological closed-deal cash-flow overlays on a $10,000 reference balance.",
+  "applied_mode_changes": [
+    {
+      "slug": "sell-nasdaq-15min",
+      "label": "Sell Nasdaq 15min",
+      "from": "standard",
+      "to": "dynamic"
+    }
+  ],
+  "active_ea_count": 32,
+  "applied_exclusions": [
+    {
+      "slug": "engineered-liquidity-xau",
+      "label": "Engineered Liquidity XAU",
+      "reason": "Weak consistency: 5Y PF 1.17 with 39.68% drawdown."
+    },
+    {
+      "slug": "orb-volume-profile-high-win-0-75r",
+      "label": "ORB Volume Profile High Win 0.75R",
+      "reason": "Duplicate core ORB entries with materially weaker 5Y PF and return."
+    },
+    {
+      "slug": "xag-session-vwap-snapback",
+      "label": "XAG Session VWAP Snapback",
+      "reason": "No demonstrated long-window edge: 5Y return +0.04% with PF 1.00."
+    },
+    {
+      "slug": "xau-squeeze-momentum-high-win-0-75r",
+      "label": "XAU Squeeze Momentum High Win 0.75R",
+      "reason": "Near-duplicate squeeze exposure with weaker evidence than Standard Safe."
+    }
+  ],
+  "exclusions_require_user_approval": [],
+  "retained_by_user": [
+    {
+      "slug": "dmc-current-xau",
+      "label": "DMC Current XAU",
+      "reason": "Explicit user decision: keep DMC Current XAU active."
+    }
+  ],
+  "watchlist": [
+    {
+      "slug": "btc-top-down-fvg-liquidity",
+      "label": "BTC Top Down FVG Liquidity",
+      "reason": "5Y PF is only 1.21, although recent performance improved."
+    },
+    {
+      "slug": "nasdaq-5m-candle-momentum",
+      "label": "Nasdaq 5M Candle Momentum",
+      "reason": "Large historical return but thin edge: PF 1.12 over 5Y and 1.18 over 3Y."
+    },
+    {
+      "slug": "xau-regime-switch",
+      "label": "XAU Regime Switch",
+      "reason": "Strong long history but last six months are -4.95% with PF 0.43."
+    },
+    {
+      "slug": "xau-slow-trend",
+      "label": "XAU Slow Trend",
+      "reason": "Strong 3Y/5Y evidence but last six months are -7.13% with PF 0.48."
+    },
+    {
+      "slug": "news-pulse-xau",
+      "label": "News Pulse XAU",
+      "reason": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades)."
+    },
+    {
+      "slug": "news-pulse-xag",
+      "label": "News Pulse XAG",
+      "reason": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades)."
+    },
+    {
+      "slug": "news-pulse-btc",
+      "label": "News Pulse BTC",
+      "reason": "Mandatory News Pulse exposure retained at fixed risk; the complete three-year native MT5 sample has 125 trades, but event execution remains high-slippage risk."
+    },
+    {
+      "slug": "us100-selective-orb-v3",
+      "label": "US100 Selective ORB V3",
+      "reason": "Only 34 trades exist in the 5Y view; retain as low-frequency evidence, not as a high-capacity core."
+    },
+    {
+      "slug": "xau-squeeze-momentum-standard",
+      "label": "XAU Squeeze Momentum Standard",
+      "reason": "Safe mode has strong PF/DD but only 48 trades in 5Y and no trades in the latest six months."
+    }
+  ],
+  "scenarios": {
+    "pre_mode_active": {
+      "6m": {
+        "return_pct": 291.81,
+        "profit_factor": 1.72,
+        "win_rate_pct": 43.84,
+        "max_drawdown_pct": 12.37,
+        "trades": 869,
+        "net_profit": 29180.99
+      },
+      "1y": {
+        "return_pct": 871.32,
+        "profit_factor": 1.91,
+        "win_rate_pct": 45.38,
+        "max_drawdown_pct": 8.18,
+        "trades": 1730,
+        "net_profit": 87132.42
+      },
+      "3y": {
+        "return_pct": 2784.66,
+        "profit_factor": 1.94,
+        "win_rate_pct": 46.1,
+        "max_drawdown_pct": 11.88,
+        "trades": 4482,
+        "net_profit": 278466.19
+      },
+      "5y": {
+        "return_pct": 2806.11,
+        "profit_factor": 1.66,
+        "win_rate_pct": 43.19,
+        "max_drawdown_pct": 59.23,
+        "trades": 6932,
+        "net_profit": 280611.25
+      }
+    },
+    "recommended_active": {
+      "6m": {
+        "return_pct": 289.75,
+        "profit_factor": 1.73,
+        "win_rate_pct": 44.24,
+        "max_drawdown_pct": 11.08,
+        "trades": 859,
+        "net_profit": 28975.15
+      },
+      "1y": {
+        "return_pct": 879.87,
+        "profit_factor": 1.94,
+        "win_rate_pct": 45.85,
+        "max_drawdown_pct": 7.42,
+        "trades": 1710,
+        "net_profit": 87987.48
+      },
+      "3y": {
+        "return_pct": 2791.47,
+        "profit_factor": 1.97,
+        "win_rate_pct": 46.22,
+        "max_drawdown_pct": 13.73,
+        "trades": 4418,
+        "net_profit": 279146.82
+      },
+      "5y": {
+        "return_pct": 2823.02,
+        "profit_factor": 1.68,
+        "win_rate_pct": 43.36,
+        "max_drawdown_pct": 49.88,
+        "trades": 6827,
+        "net_profit": 282302.16
+      }
+    }
+  },
+  "adaptive_overlay_comparison": {
+    "6m": {
+      "current": {
+        "return_pct": 287.37,
+        "profit_factor": 1.73,
+        "win_rate_pct": 44.34,
+        "max_drawdown_pct": 11.29,
+        "trades": 848,
+        "commission": -814.75,
+        "swap": -206.92,
+        "total_costs": -1021.67
+      },
+      "recommended_adaptive": {
+        "return_pct": 259.69,
+        "profit_factor": 1.9,
+        "win_rate_pct": 44.34,
+        "max_drawdown_pct": 7.61,
+        "trades": 848,
+        "commission": -667.08,
+        "swap": -133.72,
+        "total_costs": -800.8
+      }
+    },
+    "1y": {
+      "current": {
+        "return_pct": 877.45,
+        "profit_factor": 1.94,
+        "win_rate_pct": 45.89,
+        "max_drawdown_pct": 7.56,
+        "trades": 1702,
+        "commission": -1844.25,
+        "swap": -468.28,
+        "total_costs": -2312.53
+      },
+      "recommended_adaptive": {
+        "return_pct": 776.4,
+        "profit_factor": 2.12,
+        "win_rate_pct": 45.81,
+        "max_drawdown_pct": 5.57,
+        "trades": 1681,
+        "commission": -1541.18,
+        "swap": -277.21,
+        "total_costs": -1818.39
+      }
+    },
+    "3y": {
+      "current": {
+        "return_pct": 2793.54,
+        "profit_factor": 1.98,
+        "win_rate_pct": 46.25,
+        "max_drawdown_pct": 11.66,
+        "trades": 4415,
+        "commission": -6576.19,
+        "swap": -2414.48,
+        "total_costs": -8990.67
+      },
+      "recommended_adaptive": {
+        "return_pct": 2451.63,
+        "profit_factor": 2.21,
+        "win_rate_pct": 46.38,
+        "max_drawdown_pct": 7.77,
+        "trades": 4304,
+        "commission": -5140.35,
+        "swap": -1841.57,
+        "total_costs": -6981.92
+      }
+    },
+    "5y": {
+      "current": {
+        "return_pct": 2828.14,
+        "profit_factor": 1.68,
+        "win_rate_pct": 43.38,
+        "max_drawdown_pct": 47.54,
+        "trades": 6819,
+        "commission": -9074.98,
+        "swap": -3124.63,
+        "total_costs": -12199.61
+      },
+      "recommended_adaptive": {
+        "return_pct": 2421.59,
+        "profit_factor": 2.07,
+        "win_rate_pct": 43.38,
+        "max_drawdown_pct": 13.7,
+        "trades": 6722,
+        "commission": -5713.83,
+        "swap": -1836.36,
+        "total_costs": -7550.19
+      }
+    }
+  },
+  "one_at_a_time_mode_replacements": [
+    {
+      "slug": "lta-volume-profile",
+      "label": "LTA Volume Profile",
+      "from": "safe",
+      "to": "standard",
+      "portfolio": {
+        "6m": {
+          "return_pct": 293.81,
+          "profit_factor": 1.7,
+          "win_rate_pct": 43.55,
+          "max_drawdown_pct": 12.55,
+          "trades": 884,
+          "net_profit": 29381.24
+        },
+        "1y": {
+          "return_pct": 872.12,
+          "profit_factor": 1.9,
+          "win_rate_pct": 45.21,
+          "max_drawdown_pct": 8.18,
+          "trades": 1745,
+          "net_profit": 87211.52
+        },
+        "3y": {
+          "return_pct": 2702.57,
+          "profit_factor": 1.9,
+          "win_rate_pct": 44.71,
+          "max_drawdown_pct": 15.72,
+          "trades": 4760,
+          "net_profit": 270257.46
+        },
+        "5y": {
+          "return_pct": 2718.81,
+          "profit_factor": 1.61,
+          "win_rate_pct": 41.77,
+          "max_drawdown_pct": 77.65,
+          "trades": 7486,
+          "net_profit": 271881.18
+        }
+      }
+    },
+    {
+      "slug": "btc-top-down-fvg-liquidity",
+      "label": "BTC Top Down FVG Liquidity",
+      "from": "standard",
+      "to": "safe",
+      "portfolio": {
+        "6m": {
+          "return_pct": 284.67,
+          "profit_factor": 1.7,
+          "win_rate_pct": 43.63,
+          "max_drawdown_pct": 12.56,
+          "trades": 864,
+          "net_profit": 28467.35
+        },
+        "1y": {
+          "return_pct": 860.28,
+          "profit_factor": 1.91,
+          "win_rate_pct": 45.27,
+          "max_drawdown_pct": 8.3,
+          "trades": 1714,
+          "net_profit": 86027.93
+        },
+        "3y": {
+          "return_pct": 2767.84,
+          "profit_factor": 1.94,
+          "win_rate_pct": 46.06,
+          "max_drawdown_pct": 11.88,
+          "trades": 4446,
+          "net_profit": 276783.62
+        },
+        "5y": {
+          "return_pct": 2790.42,
+          "profit_factor": 1.66,
+          "win_rate_pct": 43.17,
+          "max_drawdown_pct": 59.23,
+          "trades": 6892,
+          "net_profit": 279042.44
+        }
+      }
+    },
+    {
+      "slug": "eth-top-down-fvg-liquidity",
+      "label": "ETH Top Down FVG Liquidity",
+      "from": "standard",
+      "to": "safe",
+      "portfolio": {
+        "6m": {
+          "return_pct": 289.74,
+          "profit_factor": 1.72,
+          "win_rate_pct": 43.8,
+          "max_drawdown_pct": 12.17,
+          "trades": 863,
+          "net_profit": 28974.48
+        },
+        "1y": {
+          "return_pct": 866.18,
+          "profit_factor": 1.91,
+          "win_rate_pct": 45.35,
+          "max_drawdown_pct": 8.18,
+          "trades": 1722,
+          "net_profit": 86618.1
+        },
+        "3y": {
+          "return_pct": 2777.26,
+          "profit_factor": 1.94,
+          "win_rate_pct": 46.13,
+          "max_drawdown_pct": 11.88,
+          "trades": 4466,
+          "net_profit": 277726.01
+        },
+        "5y": {
+          "return_pct": 2804.86,
+          "profit_factor": 1.66,
+          "win_rate_pct": 43.24,
+          "max_drawdown_pct": 58.22,
+          "trades": 6911,
+          "net_profit": 280486.36
+        }
+      }
+    },
+    {
+      "slug": "orb-volume-profile",
+      "label": "ORB Volume Profile",
+      "from": "standard",
+      "to": "safe",
+      "portfolio": {
+        "6m": {
+          "return_pct": 280.06,
+          "profit_factor": 1.7,
+          "win_rate_pct": 43.6,
+          "max_drawdown_pct": 10.82,
+          "trades": 851,
+          "net_profit": 28006.28
+        },
+        "1y": {
+          "return_pct": 858.08,
+          "profit_factor": 1.9,
+          "win_rate_pct": 45.26,
+          "max_drawdown_pct": 8.47,
+          "trades": 1708,
+          "net_profit": 85808.31
+        },
+        "3y": {
+          "return_pct": 2734.89,
+          "profit_factor": 1.94,
+          "win_rate_pct": 46.01,
+          "max_drawdown_pct": 12.99,
+          "trades": 4358,
+          "net_profit": 273488.9
+        },
+        "5y": {
+          "return_pct": 2760.46,
+          "profit_factor": 1.66,
+          "win_rate_pct": 43.23,
+          "max_drawdown_pct": 60.36,
+          "trades": 6699,
+          "net_profit": 276045.96
+        }
+      }
+    },
+    {
+      "slug": "asia-breakout",
+      "label": "Asia Breakout",
+      "from": "standard",
+      "to": "safe",
+      "portfolio": {
+        "6m": {
+          "return_pct": 291.81,
+          "profit_factor": 1.72,
+          "win_rate_pct": 43.84,
+          "max_drawdown_pct": 12.37,
+          "trades": 869,
+          "net_profit": 29180.99
+        },
+        "1y": {
+          "return_pct": 871.32,
+          "profit_factor": 1.91,
+          "win_rate_pct": 45.38,
+          "max_drawdown_pct": 8.18,
+          "trades": 1730,
+          "net_profit": 87132.42
+        },
+        "3y": {
+          "return_pct": 2784.66,
+          "profit_factor": 1.94,
+          "win_rate_pct": 46.1,
+          "max_drawdown_pct": 11.88,
+          "trades": 4482,
+          "net_profit": 278466.19
+        },
+        "5y": {
+          "return_pct": 2806.11,
+          "profit_factor": 1.66,
+          "win_rate_pct": 43.19,
+          "max_drawdown_pct": 59.23,
+          "trades": 6932,
+          "net_profit": 280611.25
+        }
+      }
+    },
+    {
+      "slug": "ema3",
+      "label": "EMA3",
+      "from": "safe",
+      "to": "standard",
+      "portfolio": {
+        "6m": {
+          "return_pct": 293.08,
+          "profit_factor": 1.72,
+          "win_rate_pct": 43.86,
+          "max_drawdown_pct": 12.37,
+          "trades": 871,
+          "net_profit": 29308.2
+        },
+        "1y": {
+          "return_pct": 872.15,
+          "profit_factor": 1.91,
+          "win_rate_pct": 45.38,
+          "max_drawdown_pct": 8.18,
+          "trades": 1732,
+          "net_profit": 87214.78
+        },
+        "3y": {
+          "return_pct": 2791.62,
+          "profit_factor": 1.93,
+          "win_rate_pct": 46.18,
+          "max_drawdown_pct": 11.54,
+          "trades": 4539,
+          "net_profit": 279161.71
+        },
+        "5y": {
+          "return_pct": 2822.46,
+          "profit_factor": 1.65,
+          "win_rate_pct": 43.37,
+          "max_drawdown_pct": 61.36,
+          "trades": 7039,
+          "net_profit": 282245.53
+        }
+      }
+    },
+    {
+      "slug": "xau-weakness",
+      "label": "XAU Weakness",
+      "from": "safe",
+      "to": "standard",
+      "portfolio": {
+        "6m": {
+          "return_pct": 300.45,
+          "profit_factor": 1.7,
+          "win_rate_pct": 43.67,
+          "max_drawdown_pct": 11.16,
+          "trades": 909,
+          "net_profit": 30045.4
+        },
+        "1y": {
+          "return_pct": 881.27,
+          "profit_factor": 1.89,
+          "win_rate_pct": 45.25,
+          "max_drawdown_pct": 8.18,
+          "trades": 1768,
+          "net_profit": 88127.05
+        },
+        "3y": {
+          "return_pct": 2885.7,
+          "profit_factor": 1.9,
+          "win_rate_pct": 45.61,
+          "max_drawdown_pct": 14.16,
+          "trades": 4692,
+          "net_profit": 288569.57
+        },
+        "5y": {
+          "return_pct": 2821.34,
+          "profit_factor": 1.62,
+          "win_rate_pct": 42.44,
+          "max_drawdown_pct": 67.36,
+          "trades": 7356,
+          "net_profit": 282134.04
+        }
+      }
+    },
+    {
+      "slug": "nasdaq-5m-candle-momentum",
+      "label": "Nasdaq 5M Candle Momentum",
+      "from": "standard",
+      "to": "safe",
+      "portfolio": {
+        "6m": {
+          "return_pct": 293.14,
+          "profit_factor": 1.84,
+          "win_rate_pct": 44.68,
+          "max_drawdown_pct": 10.06,
+          "trades": 770,
+          "net_profit": 29313.83
+        },
+        "1y": {
+          "return_pct": 841.8,
+          "profit_factor": 2.06,
+          "win_rate_pct": 46.07,
+          "max_drawdown_pct": 8.04,
+          "trades": 1515,
+          "net_profit": 84179.76
+        },
+        "3y": {
+          "return_pct": 2694.56,
+          "profit_factor": 2.1,
+          "win_rate_pct": 46.92,
+          "max_drawdown_pct": 8.4,
+          "trades": 3909,
+          "net_profit": 269455.51
+        },
+        "5y": {
+          "return_pct": 2691.55,
+          "profit_factor": 1.76,
+          "win_rate_pct": 43.64,
+          "max_drawdown_pct": 49.97,
+          "trades": 6033,
+          "net_profit": 269154.68
+        }
+      }
+    },
+    {
+      "slug": "sell-nasdaq-15min",
+      "label": "Sell Nasdaq 15min",
+      "from": "standard",
+      "to": "dynamic",
+      "portfolio": {
+        "6m": {
+          "return_pct": 289.75,
+          "profit_factor": 1.73,
+          "win_rate_pct": 44.24,
+          "max_drawdown_pct": 11.08,
+          "trades": 859,
+          "net_profit": 28975.15
+        },
+        "1y": {
+          "return_pct": 879.87,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.85,
+          "max_drawdown_pct": 7.42,
+          "trades": 1710,
+          "net_profit": 87987.48
+        },
+        "3y": {
+          "return_pct": 2791.47,
+          "profit_factor": 1.97,
+          "win_rate_pct": 46.22,
+          "max_drawdown_pct": 13.73,
+          "trades": 4418,
+          "net_profit": 279146.82
+        },
+        "5y": {
+          "return_pct": 2823.02,
+          "profit_factor": 1.68,
+          "win_rate_pct": 43.36,
+          "max_drawdown_pct": 49.88,
+          "trades": 6827,
+          "net_profit": 282302.16
+        }
+      }
+    },
+    {
+      "slug": "sell-nasdaq-15min",
+      "label": "Sell Nasdaq 15min",
+      "from": "standard",
+      "to": "safe",
+      "portfolio": {
+        "6m": {
+          "return_pct": 293.99,
+          "profit_factor": 1.74,
+          "win_rate_pct": 44.24,
+          "max_drawdown_pct": 11.07,
+          "trades": 859,
+          "net_profit": 29399.33
+        },
+        "1y": {
+          "return_pct": 876.47,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.85,
+          "max_drawdown_pct": 7.42,
+          "trades": 1710,
+          "net_profit": 87646.68
+        },
+        "3y": {
+          "return_pct": 2730.59,
+          "profit_factor": 1.96,
+          "win_rate_pct": 46.29,
+          "max_drawdown_pct": 13.91,
+          "trades": 4418,
+          "net_profit": 273058.93
+        },
+        "5y": {
+          "return_pct": 2749.1,
+          "profit_factor": 1.67,
+          "win_rate_pct": 43.43,
+          "max_drawdown_pct": 52.92,
+          "trades": 6827,
+          "net_profit": 274909.95
+        }
+      }
+    },
+    {
+      "slug": "xau-squeeze-momentum-standard",
+      "label": "XAU Squeeze Momentum Standard",
+      "from": "safe",
+      "to": "standard",
+      "portfolio": {
+        "6m": {
+          "return_pct": 290.44,
+          "profit_factor": 1.71,
+          "win_rate_pct": 43.71,
+          "max_drawdown_pct": 12.37,
+          "trades": 874,
+          "net_profit": 29044.11
+        },
+        "1y": {
+          "return_pct": 869.96,
+          "profit_factor": 1.91,
+          "win_rate_pct": 45.3,
+          "max_drawdown_pct": 8.18,
+          "trades": 1735,
+          "net_profit": 86995.54
+        },
+        "3y": {
+          "return_pct": 2784.81,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.92,
+          "max_drawdown_pct": 11.88,
+          "trades": 4530,
+          "net_profit": 278480.91
+        },
+        "5y": {
+          "return_pct": 2816.33,
+          "profit_factor": 1.66,
+          "win_rate_pct": 43.11,
+          "max_drawdown_pct": 57.64,
+          "trades": 7012,
+          "net_profit": 281633.29
+        }
+      }
+    }
+  ],
+  "eligible_mode_interaction_grid": [
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "standard",
+        "sell-nasdaq-15min": "dynamic",
+        "xau-squeeze-momentum-standard": "safe"
+      },
+      "return_retention_min": 0.9929,
+      "mean_profit_factor": 1.83,
+      "mean_drawdown_pct": 20.5275,
+      "robust_rank_score": 16.0003,
+      "portfolio": {
+        "6m": {
+          "return_pct": 289.75,
+          "profit_factor": 1.73,
+          "win_rate_pct": 44.24,
+          "max_drawdown_pct": 11.08,
+          "trades": 859,
+          "net_profit": 28975.15
+        },
+        "1y": {
+          "return_pct": 879.87,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.85,
+          "max_drawdown_pct": 7.42,
+          "trades": 1710,
+          "net_profit": 87987.48
+        },
+        "3y": {
+          "return_pct": 2791.47,
+          "profit_factor": 1.97,
+          "win_rate_pct": 46.22,
+          "max_drawdown_pct": 13.73,
+          "trades": 4418,
+          "net_profit": 279146.82
+        },
+        "5y": {
+          "return_pct": 2823.02,
+          "profit_factor": 1.68,
+          "win_rate_pct": 43.36,
+          "max_drawdown_pct": 49.88,
+          "trades": 6827,
+          "net_profit": 282302.16
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "standard",
+        "sell-nasdaq-15min": "dynamic",
+        "xau-squeeze-momentum-standard": "standard"
+      },
+      "return_retention_min": 0.9882,
+      "mean_profit_factor": 1.8275,
+      "mean_drawdown_pct": 20.1375,
+      "robust_rank_score": 15.9993,
+      "portfolio": {
+        "6m": {
+          "return_pct": 288.38,
+          "profit_factor": 1.72,
+          "win_rate_pct": 44.1,
+          "max_drawdown_pct": 11.08,
+          "trades": 864,
+          "net_profit": 28838.27
+        },
+        "1y": {
+          "return_pct": 878.51,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.77,
+          "max_drawdown_pct": 7.42,
+          "trades": 1715,
+          "net_profit": 87850.6
+        },
+        "3y": {
+          "return_pct": 2791.62,
+          "profit_factor": 1.97,
+          "win_rate_pct": 46.04,
+          "max_drawdown_pct": 13.73,
+          "trades": 4466,
+          "net_profit": 279161.54
+        },
+        "5y": {
+          "return_pct": 2833.24,
+          "profit_factor": 1.68,
+          "win_rate_pct": 43.27,
+          "max_drawdown_pct": 48.32,
+          "trades": 6907,
+          "net_profit": 283324.2
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "safe",
+        "sell-nasdaq-15min": "dynamic",
+        "xau-squeeze-momentum-standard": "safe"
+      },
+      "return_retention_min": 0.9859,
+      "mean_profit_factor": 1.8325,
+      "mean_drawdown_pct": 20.235,
+      "robust_rank_score": 15.9861,
+      "portfolio": {
+        "6m": {
+          "return_pct": 287.69,
+          "profit_factor": 1.73,
+          "win_rate_pct": 44.2,
+          "max_drawdown_pct": 10.89,
+          "trades": 853,
+          "net_profit": 28768.64
+        },
+        "1y": {
+          "return_pct": 874.73,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.83,
+          "max_drawdown_pct": 7.42,
+          "trades": 1702,
+          "net_profit": 87473.16
+        },
+        "3y": {
+          "return_pct": 2784.07,
+          "profit_factor": 1.98,
+          "win_rate_pct": 46.25,
+          "max_drawdown_pct": 13.73,
+          "trades": 4402,
+          "net_profit": 278406.64
+        },
+        "5y": {
+          "return_pct": 2821.77,
+          "profit_factor": 1.68,
+          "win_rate_pct": 43.4,
+          "max_drawdown_pct": 48.9,
+          "trades": 6806,
+          "net_profit": 282177.27
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "safe",
+        "sell-nasdaq-15min": "dynamic",
+        "xau-squeeze-momentum-standard": "standard"
+      },
+      "return_retention_min": 0.9812,
+      "mean_profit_factor": 1.83,
+      "mean_drawdown_pct": 19.845,
+      "robust_rank_score": 15.9851,
+      "portfolio": {
+        "6m": {
+          "return_pct": 286.32,
+          "profit_factor": 1.73,
+          "win_rate_pct": 44.06,
+          "max_drawdown_pct": 10.89,
+          "trades": 858,
+          "net_profit": 28631.76
+        },
+        "1y": {
+          "return_pct": 873.36,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.75,
+          "max_drawdown_pct": 7.42,
+          "trades": 1707,
+          "net_profit": 87336.28
+        },
+        "3y": {
+          "return_pct": 2784.21,
+          "profit_factor": 1.97,
+          "win_rate_pct": 46.07,
+          "max_drawdown_pct": 13.73,
+          "trades": 4450,
+          "net_profit": 278421.36
+        },
+        "5y": {
+          "return_pct": 2831.99,
+          "profit_factor": 1.68,
+          "win_rate_pct": 43.32,
+          "max_drawdown_pct": 47.34,
+          "trades": 6886,
+          "net_profit": 283199.31
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "safe",
+        "sell-nasdaq-15min": "safe",
+        "xau-squeeze-momentum-standard": "standard"
+      },
+      "return_retention_min": 0.978,
+      "mean_profit_factor": 1.8225,
+      "mean_drawdown_pct": 20.645,
+      "robust_rank_score": 15.7955,
+      "portfolio": {
+        "6m": {
+          "return_pct": 290.56,
+          "profit_factor": 1.73,
+          "win_rate_pct": 44.06,
+          "max_drawdown_pct": 10.88,
+          "trades": 858,
+          "net_profit": 29055.94
+        },
+        "1y": {
+          "return_pct": 869.95,
+          "profit_factor": 1.93,
+          "win_rate_pct": 45.75,
+          "max_drawdown_pct": 7.42,
+          "trades": 1707,
+          "net_profit": 86995.48
+        },
+        "3y": {
+          "return_pct": 2723.33,
+          "profit_factor": 1.96,
+          "win_rate_pct": 46.13,
+          "max_drawdown_pct": 13.91,
+          "trades": 4450,
+          "net_profit": 272333.47
+        },
+        "5y": {
+          "return_pct": 2758.07,
+          "profit_factor": 1.67,
+          "win_rate_pct": 43.39,
+          "max_drawdown_pct": 50.37,
+          "trades": 6886,
+          "net_profit": 275807.1
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "standard",
+        "sell-nasdaq-15min": "safe",
+        "xau-squeeze-momentum-standard": "standard"
+      },
+      "return_retention_min": 0.9806,
+      "mean_profit_factor": 1.8225,
+      "mean_drawdown_pct": 20.94,
+      "robust_rank_score": 15.7779,
+      "portfolio": {
+        "6m": {
+          "return_pct": 292.62,
+          "profit_factor": 1.73,
+          "win_rate_pct": 44.1,
+          "max_drawdown_pct": 11.07,
+          "trades": 864,
+          "net_profit": 29262.45
+        },
+        "1y": {
+          "return_pct": 875.1,
+          "profit_factor": 1.93,
+          "win_rate_pct": 45.77,
+          "max_drawdown_pct": 7.42,
+          "trades": 1715,
+          "net_profit": 87509.8
+        },
+        "3y": {
+          "return_pct": 2730.74,
+          "profit_factor": 1.96,
+          "win_rate_pct": 46.1,
+          "max_drawdown_pct": 13.91,
+          "trades": 4466,
+          "net_profit": 273073.65
+        },
+        "5y": {
+          "return_pct": 2759.32,
+          "profit_factor": 1.67,
+          "win_rate_pct": 43.35,
+          "max_drawdown_pct": 51.36,
+          "trades": 6907,
+          "net_profit": 275931.99
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "safe",
+        "sell-nasdaq-15min": "safe",
+        "xau-squeeze-momentum-standard": "safe"
+      },
+      "return_retention_min": 0.9779,
+      "mean_profit_factor": 1.8275,
+      "mean_drawdown_pct": 21.035,
+      "robust_rank_score": 15.7615,
+      "portfolio": {
+        "6m": {
+          "return_pct": 291.93,
+          "profit_factor": 1.74,
+          "win_rate_pct": 44.2,
+          "max_drawdown_pct": 10.88,
+          "trades": 853,
+          "net_profit": 29192.82
+        },
+        "1y": {
+          "return_pct": 871.32,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.83,
+          "max_drawdown_pct": 7.42,
+          "trades": 1702,
+          "net_profit": 87132.36
+        },
+        "3y": {
+          "return_pct": 2723.19,
+          "profit_factor": 1.96,
+          "win_rate_pct": 46.32,
+          "max_drawdown_pct": 13.91,
+          "trades": 4402,
+          "net_profit": 272318.75
+        },
+        "5y": {
+          "return_pct": 2747.85,
+          "profit_factor": 1.67,
+          "win_rate_pct": 43.48,
+          "max_drawdown_pct": 51.93,
+          "trades": 6806,
+          "net_profit": 274785.06
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "standard",
+        "sell-nasdaq-15min": "safe",
+        "xau-squeeze-momentum-standard": "safe"
+      },
+      "return_retention_min": 0.9797,
+      "mean_profit_factor": 1.8275,
+      "mean_drawdown_pct": 21.33,
+      "robust_rank_score": 15.7348,
+      "portfolio": {
+        "6m": {
+          "return_pct": 293.99,
+          "profit_factor": 1.74,
+          "win_rate_pct": 44.24,
+          "max_drawdown_pct": 11.07,
+          "trades": 859,
+          "net_profit": 29399.33
+        },
+        "1y": {
+          "return_pct": 876.47,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.85,
+          "max_drawdown_pct": 7.42,
+          "trades": 1710,
+          "net_profit": 87646.68
+        },
+        "3y": {
+          "return_pct": 2730.59,
+          "profit_factor": 1.96,
+          "win_rate_pct": 46.29,
+          "max_drawdown_pct": 13.91,
+          "trades": 4418,
+          "net_profit": 273058.93
+        },
+        "5y": {
+          "return_pct": 2749.1,
+          "profit_factor": 1.67,
+          "win_rate_pct": 43.43,
+          "max_drawdown_pct": 52.92,
+          "trades": 6827,
+          "net_profit": 274909.95
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "standard",
+        "sell-nasdaq-15min": "standard",
+        "xau-squeeze-momentum-standard": "standard"
+      },
+      "return_retention_min": 0.9953,
+      "mean_profit_factor": 1.805,
+      "mean_drawdown_pct": 22.5175,
+      "robust_rank_score": 15.6004,
+      "portfolio": {
+        "6m": {
+          "return_pct": 290.44,
+          "profit_factor": 1.71,
+          "win_rate_pct": 43.71,
+          "max_drawdown_pct": 12.37,
+          "trades": 874,
+          "net_profit": 29044.11
+        },
+        "1y": {
+          "return_pct": 869.96,
+          "profit_factor": 1.91,
+          "win_rate_pct": 45.3,
+          "max_drawdown_pct": 8.18,
+          "trades": 1735,
+          "net_profit": 86995.54
+        },
+        "3y": {
+          "return_pct": 2784.81,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.92,
+          "max_drawdown_pct": 11.88,
+          "trades": 4530,
+          "net_profit": 278480.91
+        },
+        "5y": {
+          "return_pct": 2816.33,
+          "profit_factor": 1.66,
+          "win_rate_pct": 43.11,
+          "max_drawdown_pct": 57.64,
+          "trades": 7012,
+          "net_profit": 281633.29
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "standard",
+        "sell-nasdaq-15min": "standard",
+        "xau-squeeze-momentum-standard": "safe"
+      },
+      "return_retention_min": 1.0,
+      "mean_profit_factor": 1.8075,
+      "mean_drawdown_pct": 22.915,
+      "robust_rank_score": 15.6003,
+      "portfolio": {
+        "6m": {
+          "return_pct": 291.81,
+          "profit_factor": 1.72,
+          "win_rate_pct": 43.84,
+          "max_drawdown_pct": 12.37,
+          "trades": 869,
+          "net_profit": 29180.99
+        },
+        "1y": {
+          "return_pct": 871.32,
+          "profit_factor": 1.91,
+          "win_rate_pct": 45.38,
+          "max_drawdown_pct": 8.18,
+          "trades": 1730,
+          "net_profit": 87132.42
+        },
+        "3y": {
+          "return_pct": 2784.66,
+          "profit_factor": 1.94,
+          "win_rate_pct": 46.1,
+          "max_drawdown_pct": 11.88,
+          "trades": 4482,
+          "net_profit": 278466.19
+        },
+        "5y": {
+          "return_pct": 2806.11,
+          "profit_factor": 1.66,
+          "win_rate_pct": 43.19,
+          "max_drawdown_pct": 59.23,
+          "trades": 6932,
+          "net_profit": 280611.25
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "safe",
+        "sell-nasdaq-15min": "standard",
+        "xau-squeeze-momentum-standard": "standard"
+      },
+      "return_retention_min": 0.9882,
+      "mean_profit_factor": 1.805,
+      "mean_drawdown_pct": 22.215,
+      "robust_rank_score": 15.5752,
+      "portfolio": {
+        "6m": {
+          "return_pct": 288.38,
+          "profit_factor": 1.71,
+          "win_rate_pct": 43.66,
+          "max_drawdown_pct": 12.17,
+          "trades": 868,
+          "net_profit": 28837.6
+        },
+        "1y": {
+          "return_pct": 864.81,
+          "profit_factor": 1.91,
+          "win_rate_pct": 45.28,
+          "max_drawdown_pct": 8.18,
+          "trades": 1727,
+          "net_profit": 86481.22
+        },
+        "3y": {
+          "return_pct": 2777.41,
+          "profit_factor": 1.94,
+          "win_rate_pct": 45.95,
+          "max_drawdown_pct": 11.88,
+          "trades": 4514,
+          "net_profit": 277740.73
+        },
+        "5y": {
+          "return_pct": 2815.08,
+          "profit_factor": 1.66,
+          "win_rate_pct": 43.16,
+          "max_drawdown_pct": 56.63,
+          "trades": 6991,
+          "net_profit": 281508.4
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "safe",
+        "sell-nasdaq-15min": "standard",
+        "xau-squeeze-momentum-standard": "safe"
+      },
+      "return_retention_min": 0.9929,
+      "mean_profit_factor": 1.8075,
+      "mean_drawdown_pct": 22.6125,
+      "robust_rank_score": 15.5747,
+      "portfolio": {
+        "6m": {
+          "return_pct": 289.74,
+          "profit_factor": 1.72,
+          "win_rate_pct": 43.8,
+          "max_drawdown_pct": 12.17,
+          "trades": 863,
+          "net_profit": 28974.48
+        },
+        "1y": {
+          "return_pct": 866.18,
+          "profit_factor": 1.91,
+          "win_rate_pct": 45.35,
+          "max_drawdown_pct": 8.18,
+          "trades": 1722,
+          "net_profit": 86618.1
+        },
+        "3y": {
+          "return_pct": 2777.26,
+          "profit_factor": 1.94,
+          "win_rate_pct": 46.13,
+          "max_drawdown_pct": 11.88,
+          "trades": 4466,
+          "net_profit": 277726.01
+        },
+        "5y": {
+          "return_pct": 2804.86,
+          "profit_factor": 1.66,
+          "win_rate_pct": 43.24,
+          "max_drawdown_pct": 58.22,
+          "trades": 6911,
+          "net_profit": 280486.36
+        }
+      }
+    }
+  ],
+  "mode_comparisons": [
+    {
+      "slug": "lta-volume-profile",
+      "label": "LTA Volume Profile",
+      "mode": "safe",
+      "current": true,
+      "recommended": true,
+      "6m": {
+        "return_pct": 29.7,
+        "profit_factor": 1.38,
+        "max_drawdown_pct": 7.77,
+        "trades": 107
+      },
+      "1y": {
+        "return_pct": 91.86,
+        "profit_factor": 1.42,
+        "max_drawdown_pct": 14.58,
+        "trades": 236
+      },
+      "3y": {
+        "return_pct": 163.31,
+        "profit_factor": 1.33,
+        "max_drawdown_pct": 20.57,
+        "trades": 437
+      },
+      "5y": {
+        "return_pct": 128.3,
+        "profit_factor": 1.23,
+        "max_drawdown_pct": 20.52,
+        "trades": 609
+      }
+    },
+    {
+      "slug": "lta-volume-profile",
+      "label": "LTA Volume Profile",
+      "mode": "standard",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": 31.71,
+        "profit_factor": 1.35,
+        "max_drawdown_pct": 7.96,
+        "trades": 122
+      },
+      "1y": {
+        "return_pct": 92.65,
+        "profit_factor": 1.39,
+        "max_drawdown_pct": 14.58,
+        "trades": 251
+      },
+      "3y": {
+        "return_pct": 81.22,
+        "profit_factor": 1.15,
+        "max_drawdown_pct": 29.33,
+        "trades": 715
+      },
+      "5y": {
+        "return_pct": 41.0,
+        "profit_factor": 1.06,
+        "max_drawdown_pct": 38.15,
+        "trades": 1163
+      }
+    },
+    {
+      "slug": "btc-top-down-fvg-liquidity",
+      "label": "BTC Top Down FVG Liquidity",
+      "mode": "safe",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": 1.73,
+        "profit_factor": 1.42,
+        "max_drawdown_pct": 2.38,
+        "trades": 7
+      },
+      "1y": {
+        "return_pct": 1.7,
+        "profit_factor": 1.28,
+        "max_drawdown_pct": 3.68,
+        "trades": 10
+      },
+      "3y": {
+        "return_pct": -1.42,
+        "profit_factor": 0.96,
+        "max_drawdown_pct": 8.6,
+        "trades": 53
+      },
+      "5y": {
+        "return_pct": -0.78,
+        "profit_factor": 0.98,
+        "max_drawdown_pct": 8.87,
+        "trades": 77
+      }
+    },
+    {
+      "slug": "btc-top-down-fvg-liquidity",
+      "label": "BTC Top Down FVG Liquidity",
+      "mode": "standard",
+      "current": true,
+      "recommended": true,
+      "6m": {
+        "return_pct": 8.87,
+        "profit_factor": 2.68,
+        "max_drawdown_pct": 2.05,
+        "trades": 12
+      },
+      "1y": {
+        "return_pct": 12.74,
+        "profit_factor": 1.92,
+        "max_drawdown_pct": 3.84,
+        "trades": 26
+      },
+      "3y": {
+        "return_pct": 15.41,
+        "profit_factor": 1.29,
+        "max_drawdown_pct": 8.05,
+        "trades": 89
+      },
+      "5y": {
+        "return_pct": 14.91,
+        "profit_factor": 1.21,
+        "max_drawdown_pct": 10.25,
+        "trades": 117
+      }
+    },
+    {
+      "slug": "eth-top-down-fvg-liquidity",
+      "label": "ETH Top Down FVG Liquidity",
+      "mode": "safe",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": 10.68,
+        "profit_factor": 2.69,
+        "max_drawdown_pct": 5.22,
+        "trades": 9
+      },
+      "1y": {
+        "return_pct": 6.27,
+        "profit_factor": 1.51,
+        "max_drawdown_pct": 5.8,
+        "trades": 18
+      },
+      "3y": {
+        "return_pct": 14.37,
+        "profit_factor": 1.82,
+        "max_drawdown_pct": 6.19,
+        "trades": 28
+      },
+      "5y": {
+        "return_pct": 21.68,
+        "profit_factor": 1.86,
+        "max_drawdown_pct": 6.19,
+        "trades": 38
+      }
+    },
+    {
+      "slug": "eth-top-down-fvg-liquidity",
+      "label": "ETH Top Down FVG Liquidity",
+      "mode": "standard",
+      "current": true,
+      "recommended": true,
+      "6m": {
+        "return_pct": 12.74,
+        "profit_factor": 2.24,
+        "max_drawdown_pct": 4.45,
+        "trades": 15
+      },
+      "1y": {
+        "return_pct": 11.41,
+        "profit_factor": 1.65,
+        "max_drawdown_pct": 6.68,
+        "trades": 26
+      },
+      "3y": {
+        "return_pct": 21.77,
+        "profit_factor": 1.72,
+        "max_drawdown_pct": 6.68,
+        "trades": 44
+      },
+      "5y": {
+        "return_pct": 22.93,
+        "profit_factor": 1.54,
+        "max_drawdown_pct": 7.45,
+        "trades": 59
+      }
+    },
+    {
+      "slug": "orb-volume-profile",
+      "label": "ORB Volume Profile",
+      "mode": "safe",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": 1.04,
+        "profit_factor": 1.16,
+        "max_drawdown_pct": 3.22,
+        "trades": 21
+      },
+      "1y": {
+        "return_pct": 0.29,
+        "profit_factor": 1.03,
+        "max_drawdown_pct": 4.08,
+        "trades": 29
+      },
+      "3y": {
+        "return_pct": -0.3,
+        "profit_factor": 0.98,
+        "max_drawdown_pct": 5.11,
+        "trades": 47
+      },
+      "5y": {
+        "return_pct": 13.54,
+        "profit_factor": 1.48,
+        "max_drawdown_pct": 5.34,
+        "trades": 71
+      }
+    },
+    {
+      "slug": "orb-volume-profile",
+      "label": "ORB Volume Profile",
+      "mode": "standard",
+      "current": true,
+      "recommended": true,
+      "6m": {
+        "return_pct": 12.78,
+        "profit_factor": 2.07,
+        "max_drawdown_pct": 4.14,
+        "trades": 39
+      },
+      "1y": {
+        "return_pct": 13.53,
+        "profit_factor": 1.91,
+        "max_drawdown_pct": 5.98,
+        "trades": 51
+      },
+      "3y": {
+        "return_pct": 49.48,
+        "profit_factor": 1.69,
+        "max_drawdown_pct": 5.85,
+        "trades": 171
+      },
+      "5y": {
+        "return_pct": 59.19,
+        "profit_factor": 1.43,
+        "max_drawdown_pct": 6.14,
+        "trades": 304
+      }
+    },
+    {
+      "slug": "asia-breakout",
+      "label": "Asia Breakout",
+      "mode": "safe",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": 4.93,
+        "profit_factor": 1.43,
+        "max_drawdown_pct": 5.17,
+        "trades": 25
+      },
+      "1y": {
+        "return_pct": 29.3,
+        "profit_factor": 1.72,
+        "max_drawdown_pct": 6.2,
+        "trades": 72
+      },
+      "3y": {
+        "return_pct": 45.52,
+        "profit_factor": 1.57,
+        "max_drawdown_pct": 6.27,
+        "trades": 131
+      },
+      "5y": {
+        "return_pct": 45.5,
+        "profit_factor": 1.4,
+        "max_drawdown_pct": 6.27,
+        "trades": 187
+      }
+    },
+    {
+      "slug": "asia-breakout",
+      "label": "Asia Breakout",
+      "mode": "standard",
+      "current": true,
+      "recommended": true,
+      "6m": {
+        "return_pct": 4.93,
+        "profit_factor": 1.43,
+        "max_drawdown_pct": 5.17,
+        "trades": 25
+      },
+      "1y": {
+        "return_pct": 29.3,
+        "profit_factor": 1.72,
+        "max_drawdown_pct": 6.2,
+        "trades": 72
+      },
+      "3y": {
+        "return_pct": 45.52,
+        "profit_factor": 1.57,
+        "max_drawdown_pct": 6.27,
+        "trades": 131
+      },
+      "5y": {
+        "return_pct": 45.5,
+        "profit_factor": 1.4,
+        "max_drawdown_pct": 6.27,
+        "trades": 187
+      }
+    },
+    {
+      "slug": "ema3",
+      "label": "EMA3",
+      "mode": "safe",
+      "current": true,
+      "recommended": true,
+      "6m": {
+        "return_pct": -0.3,
+        "profit_factor": 0.96,
+        "max_drawdown_pct": 3.83,
+        "trades": 16
+      },
+      "1y": {
+        "return_pct": 16.27,
+        "profit_factor": 2.71,
+        "max_drawdown_pct": 3.33,
+        "trades": 37
+      },
+      "3y": {
+        "return_pct": 33.56,
+        "profit_factor": 2.3,
+        "max_drawdown_pct": 3.95,
+        "trades": 77
+      },
+      "5y": {
+        "return_pct": 30.93,
+        "profit_factor": 1.86,
+        "max_drawdown_pct": 5.03,
+        "trades": 102
+      }
+    },
+    {
+      "slug": "ema3",
+      "label": "EMA3",
+      "mode": "standard",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": 0.97,
+        "profit_factor": 1.12,
+        "max_drawdown_pct": 3.67,
+        "trades": 18
+      },
+      "1y": {
+        "return_pct": 17.09,
+        "profit_factor": 2.55,
+        "max_drawdown_pct": 3.52,
+        "trades": 39
+      },
+      "3y": {
+        "return_pct": 40.52,
+        "profit_factor": 1.74,
+        "max_drawdown_pct": 7.75,
+        "trades": 134
+      },
+      "5y": {
+        "return_pct": 47.27,
+        "profit_factor": 1.53,
+        "max_drawdown_pct": 7.5,
+        "trades": 209
+      }
+    },
+    {
+      "slug": "xau-weakness",
+      "label": "XAU Weakness",
+      "mode": "safe",
+      "current": true,
+      "recommended": true,
+      "6m": {
+        "return_pct": 3.61,
+        "profit_factor": 1.37,
+        "max_drawdown_pct": 5.73,
+        "trades": 18
+      },
+      "1y": {
+        "return_pct": 56.93,
+        "profit_factor": 1.97,
+        "max_drawdown_pct": 5.76,
+        "trades": 85
+      },
+      "3y": {
+        "return_pct": 127.19,
+        "profit_factor": 1.88,
+        "max_drawdown_pct": 6.82,
+        "trades": 181
+      },
+      "5y": {
+        "return_pct": 122.15,
+        "profit_factor": 1.65,
+        "max_drawdown_pct": 14.4,
+        "trades": 244
+      }
+    },
+    {
+      "slug": "xau-weakness",
+      "label": "XAU Weakness",
+      "mode": "standard",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": 12.25,
+        "profit_factor": 1.39,
+        "max_drawdown_pct": 12.98,
+        "trades": 58
+      },
+      "1y": {
+        "return_pct": 66.87,
+        "profit_factor": 1.75,
+        "max_drawdown_pct": 13.06,
+        "trades": 123
+      },
+      "3y": {
+        "return_pct": 228.23,
+        "profit_factor": 1.58,
+        "max_drawdown_pct": 13.65,
+        "trades": 391
+      },
+      "5y": {
+        "return_pct": 137.38,
+        "profit_factor": 1.29,
+        "max_drawdown_pct": 37.99,
+        "trades": 668
+      }
+    },
+    {
+      "slug": "nasdaq-5m-candle-momentum",
+      "label": "Nasdaq 5M Candle Momentum",
+      "mode": "safe",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": 1.15,
+        "profit_factor": 1.06,
+        "max_drawdown_pct": 8.91,
+        "trades": 30
+      },
+      "1y": {
+        "return_pct": 13.09,
+        "profit_factor": 1.56,
+        "max_drawdown_pct": 8.9,
+        "trades": 40
+      },
+      "3y": {
+        "return_pct": 21.76,
+        "profit_factor": 1.19,
+        "max_drawdown_pct": 18.53,
+        "trades": 189
+      },
+      "5y": {
+        "return_pct": -8.83,
+        "profit_factor": 0.96,
+        "max_drawdown_pct": 39.81,
+        "trades": 373
+      }
+    },
+    {
+      "slug": "nasdaq-5m-candle-momentum",
+      "label": "Nasdaq 5M Candle Momentum",
+      "mode": "standard",
+      "current": true,
+      "recommended": true,
+      "6m": {
+        "return_pct": -0.18,
+        "profit_factor": 1.0,
+        "max_drawdown_pct": 11.25,
+        "trades": 129
+      },
+      "1y": {
+        "return_pct": 42.61,
+        "profit_factor": 1.23,
+        "max_drawdown_pct": 12.63,
+        "trades": 255
+      },
+      "3y": {
+        "return_pct": 111.87,
+        "profit_factor": 1.18,
+        "max_drawdown_pct": 12.63,
+        "trades": 762
+      },
+      "5y": {
+        "return_pct": 105.74,
+        "profit_factor": 1.12,
+        "max_drawdown_pct": 12.63,
+        "trades": 1272
+      }
+    },
+    {
+      "slug": "sell-nasdaq-15min",
+      "label": "Sell Nasdaq 15min",
+      "mode": "dynamic",
+      "current": false,
+      "recommended": true,
+      "6m": {
+        "return_pct": -1.65,
+        "profit_factor": 0.85,
+        "max_drawdown_pct": 6.07,
+        "trades": 21
+      },
+      "1y": {
+        "return_pct": 13.28,
+        "profit_factor": 1.44,
+        "max_drawdown_pct": 7.81,
+        "trades": 52
+      },
+      "3y": {
+        "return_pct": 94.91,
+        "profit_factor": 1.78,
+        "max_drawdown_pct": 7.82,
+        "trades": 159
+      },
+      "5y": {
+        "return_pct": 106.38,
+        "profit_factor": 1.52,
+        "max_drawdown_pct": 17.87,
+        "trades": 268
+      }
+    },
+    {
+      "slug": "sell-nasdaq-15min",
+      "label": "Sell Nasdaq 15min",
+      "mode": "safe",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": 2.59,
+        "profit_factor": 1.21,
+        "max_drawdown_pct": 4.34,
+        "trades": 21
+      },
+      "1y": {
+        "return_pct": 9.87,
+        "profit_factor": 1.32,
+        "max_drawdown_pct": 4.52,
+        "trades": 52
+      },
+      "3y": {
+        "return_pct": 34.03,
+        "profit_factor": 1.35,
+        "max_drawdown_pct": 6.07,
+        "trades": 159
+      },
+      "5y": {
+        "return_pct": 32.46,
+        "profit_factor": 1.2,
+        "max_drawdown_pct": 14.23,
+        "trades": 268
+      }
+    },
+    {
+      "slug": "sell-nasdaq-15min",
+      "label": "Sell Nasdaq 15min",
+      "mode": "standard",
+      "current": true,
+      "recommended": false,
+      "6m": {
+        "return_pct": 0.41,
+        "profit_factor": 1.02,
+        "max_drawdown_pct": 8.74,
+        "trades": 31
+      },
+      "1y": {
+        "return_pct": 4.73,
+        "profit_factor": 1.1,
+        "max_drawdown_pct": 8.75,
+        "trades": 72
+      },
+      "3y": {
+        "return_pct": 88.1,
+        "profit_factor": 1.41,
+        "max_drawdown_pct": 11.57,
+        "trades": 223
+      },
+      "5y": {
+        "return_pct": 89.47,
+        "profit_factor": 1.28,
+        "max_drawdown_pct": 24.06,
+        "trades": 373
+      }
+    },
+    {
+      "slug": "xau-squeeze-momentum-standard",
+      "label": "XAU Squeeze Momentum Standard",
+      "mode": "safe",
+      "current": true,
+      "recommended": true,
+      "6m": {
+        "return_pct": 0.0,
+        "profit_factor": 0.0,
+        "max_drawdown_pct": 0.0,
+        "trades": 0
+      },
+      "1y": {
+        "return_pct": 6.26,
+        "profit_factor": 3.27,
+        "max_drawdown_pct": 1.58,
+        "trades": 14
+      },
+      "3y": {
+        "return_pct": 22.6,
+        "profit_factor": 3.89,
+        "max_drawdown_pct": 3.36,
+        "trades": 38
+      },
+      "5y": {
+        "return_pct": 23.0,
+        "profit_factor": 3.16,
+        "max_drawdown_pct": 3.35,
+        "trades": 48
+      }
+    },
+    {
+      "slug": "xau-squeeze-momentum-standard",
+      "label": "XAU Squeeze Momentum Standard",
+      "mode": "standard",
+      "current": false,
+      "recommended": false,
+      "6m": {
+        "return_pct": -1.37,
+        "profit_factor": 0.36,
+        "max_drawdown_pct": 2.24,
+        "trades": 5
+      },
+      "1y": {
+        "return_pct": 4.89,
+        "profit_factor": 1.99,
+        "max_drawdown_pct": 2.4,
+        "trades": 19
+      },
+      "3y": {
+        "return_pct": 22.75,
+        "profit_factor": 1.87,
+        "max_drawdown_pct": 5.69,
+        "trades": 86
+      },
+      "5y": {
+        "return_pct": 33.22,
+        "profit_factor": 1.83,
+        "max_drawdown_pct": 5.69,
+        "trades": 128
+      }
+    }
+  ],
+  "per_ea_recommendations": [
+    {
+      "slug": "lta-volume-profile",
+      "label": "LTA Volume Profile",
+      "symbol": "XAUUSD",
+      "current_mode": "safe",
+      "recommended_mode": "safe",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 29.7,
+      "6m_profit_factor": 1.38,
+      "6m_win_rate_pct": 31.78,
+      "6m_max_drawdown_pct": 7.77,
+      "6m_trades": 107,
+      "1y_return_pct": 91.86,
+      "1y_profit_factor": 1.42,
+      "1y_win_rate_pct": 32.63,
+      "1y_max_drawdown_pct": 14.58,
+      "1y_trades": 236,
+      "3y_return_pct": 163.31,
+      "3y_profit_factor": 1.33,
+      "3y_win_rate_pct": 31.35,
+      "3y_max_drawdown_pct": 20.57,
+      "3y_trades": 437,
+      "5y_return_pct": 128.3,
+      "5y_profit_factor": 1.23,
+      "5y_win_rate_pct": 29.23,
+      "5y_max_drawdown_pct": 20.52,
+      "5y_trades": 609
+    },
+    {
+      "slug": "btc-top-down-fvg-liquidity",
+      "label": "BTC Top Down FVG Liquidity",
+      "symbol": "BTCUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "watch",
+      "reason": "5Y PF is only 1.21, although recent performance improved.",
+      "6m_return_pct": 8.87,
+      "6m_profit_factor": 2.68,
+      "6m_win_rate_pct": 58.33,
+      "6m_max_drawdown_pct": 2.05,
+      "6m_trades": 12,
+      "1y_return_pct": 12.74,
+      "1y_profit_factor": 1.92,
+      "1y_win_rate_pct": 50.0,
+      "1y_max_drawdown_pct": 3.84,
+      "1y_trades": 26,
+      "3y_return_pct": 15.41,
+      "3y_profit_factor": 1.29,
+      "3y_win_rate_pct": 41.57,
+      "3y_max_drawdown_pct": 8.05,
+      "3y_trades": 89,
+      "5y_return_pct": 14.91,
+      "5y_profit_factor": 1.21,
+      "5y_win_rate_pct": 40.17,
+      "5y_max_drawdown_pct": 10.25,
+      "5y_trades": 117
+    },
+    {
+      "slug": "btc-poc-fibonacci",
+      "label": "BTC POC Fibonacci",
+      "symbol": "BTCUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 2.94,
+      "6m_profit_factor": 1.27,
+      "6m_win_rate_pct": 28.57,
+      "6m_max_drawdown_pct": 9.33,
+      "6m_trades": 14,
+      "1y_return_pct": 8.37,
+      "1y_profit_factor": 1.4,
+      "1y_win_rate_pct": 26.92,
+      "1y_max_drawdown_pct": 9.32,
+      "1y_trades": 26,
+      "3y_return_pct": 28.54,
+      "3y_profit_factor": 1.52,
+      "3y_win_rate_pct": 33.8,
+      "3y_max_drawdown_pct": 9.32,
+      "3y_trades": 71,
+      "5y_return_pct": 44.3,
+      "5y_profit_factor": 1.47,
+      "5y_win_rate_pct": 33.33,
+      "5y_max_drawdown_pct": 14.1,
+      "5y_trades": 114
+    },
+    {
+      "slug": "eth-top-down-fvg-liquidity",
+      "label": "ETH Top Down FVG Liquidity",
+      "symbol": "ETHUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 12.74,
+      "6m_profit_factor": 2.24,
+      "6m_win_rate_pct": 46.67,
+      "6m_max_drawdown_pct": 4.45,
+      "6m_trades": 15,
+      "1y_return_pct": 11.41,
+      "1y_profit_factor": 1.65,
+      "1y_win_rate_pct": 42.31,
+      "1y_max_drawdown_pct": 6.68,
+      "1y_trades": 26,
+      "3y_return_pct": 21.77,
+      "3y_profit_factor": 1.72,
+      "3y_win_rate_pct": 43.18,
+      "3y_max_drawdown_pct": 6.68,
+      "3y_trades": 44,
+      "5y_return_pct": 22.93,
+      "5y_profit_factor": 1.54,
+      "5y_win_rate_pct": 38.98,
+      "5y_max_drawdown_pct": 7.45,
+      "5y_trades": 59
+    },
+    {
+      "slug": "orb-volume-profile",
+      "label": "ORB Volume Profile",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 12.78,
+      "6m_profit_factor": 2.07,
+      "6m_win_rate_pct": 51.28,
+      "6m_max_drawdown_pct": 4.14,
+      "6m_trades": 39,
+      "1y_return_pct": 13.53,
+      "1y_profit_factor": 1.91,
+      "1y_win_rate_pct": 49.02,
+      "1y_max_drawdown_pct": 5.98,
+      "1y_trades": 51,
+      "3y_return_pct": 49.48,
+      "3y_profit_factor": 1.69,
+      "3y_win_rate_pct": 46.78,
+      "3y_max_drawdown_pct": 5.85,
+      "3y_trades": 171,
+      "5y_return_pct": 59.19,
+      "5y_profit_factor": 1.43,
+      "5y_win_rate_pct": 43.75,
+      "5y_max_drawdown_pct": 6.14,
+      "5y_trades": 304
+    },
+    {
+      "slug": "orb-volume-profile-volume-confirmed",
+      "label": "ORB Volume Profile Volume Confirmed",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 10.82,
+      "6m_profit_factor": 3.14,
+      "6m_win_rate_pct": 50.0,
+      "6m_max_drawdown_pct": 2.97,
+      "6m_trades": 16,
+      "1y_return_pct": 12.57,
+      "1y_profit_factor": 2.88,
+      "1y_win_rate_pct": 52.17,
+      "1y_max_drawdown_pct": 2.92,
+      "1y_trades": 23,
+      "3y_return_pct": 25.92,
+      "3y_profit_factor": 2.01,
+      "3y_win_rate_pct": 45.59,
+      "3y_max_drawdown_pct": 5.64,
+      "3y_trades": 68,
+      "5y_return_pct": 34.62,
+      "5y_profit_factor": 1.69,
+      "5y_win_rate_pct": 43.33,
+      "5y_max_drawdown_pct": 5.67,
+      "5y_trades": 120
+    },
+    {
+      "slug": "xau-orb-new-york-m30",
+      "label": "XAU ORB New York M30",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 2.29,
+      "6m_profit_factor": 3.21,
+      "6m_win_rate_pct": 50.0,
+      "6m_max_drawdown_pct": 2.64,
+      "6m_trades": 8,
+      "1y_return_pct": 2.44,
+      "1y_profit_factor": 3.04,
+      "1y_win_rate_pct": 45.45,
+      "1y_max_drawdown_pct": 2.64,
+      "1y_trades": 11,
+      "3y_return_pct": 13.41,
+      "3y_profit_factor": 2.36,
+      "3y_win_rate_pct": 49.02,
+      "3y_max_drawdown_pct": 3.43,
+      "3y_trades": 51,
+      "5y_return_pct": 12.14,
+      "5y_profit_factor": 1.67,
+      "5y_win_rate_pct": 39.29,
+      "5y_max_drawdown_pct": 6.14,
+      "5y_trades": 84
+    },
+    {
+      "slug": "xau-orb-london-ny-overlap-m30",
+      "label": "XAU ORB London NY Overlap M30",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 4.76,
+      "6m_profit_factor": 5.39,
+      "6m_win_rate_pct": 50.0,
+      "6m_max_drawdown_pct": 1.81,
+      "6m_trades": 12,
+      "1y_return_pct": 5.21,
+      "1y_profit_factor": 2.16,
+      "1y_win_rate_pct": 41.67,
+      "1y_max_drawdown_pct": 3.96,
+      "1y_trades": 24,
+      "3y_return_pct": 28.1,
+      "3y_profit_factor": 2.51,
+      "3y_win_rate_pct": 56.96,
+      "3y_max_drawdown_pct": 3.88,
+      "3y_trades": 79,
+      "5y_return_pct": 24.31,
+      "5y_profit_factor": 1.62,
+      "5y_win_rate_pct": 49.25,
+      "5y_max_drawdown_pct": 6.12,
+      "5y_trades": 134
+    },
+    {
+      "slug": "us100-orb-new-york-m30",
+      "label": "US100 ORB New York M30",
+      "symbol": "USTEC",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 3.32,
+      "6m_profit_factor": 1.49,
+      "6m_win_rate_pct": 46.15,
+      "6m_max_drawdown_pct": 3.31,
+      "6m_trades": 13,
+      "1y_return_pct": 9.66,
+      "1y_profit_factor": 1.68,
+      "1y_win_rate_pct": 48.15,
+      "1y_max_drawdown_pct": 4.76,
+      "1y_trades": 27,
+      "3y_return_pct": 36.94,
+      "3y_profit_factor": 2.15,
+      "3y_win_rate_pct": 50.79,
+      "3y_max_drawdown_pct": 4.77,
+      "3y_trades": 63,
+      "5y_return_pct": 40.09,
+      "5y_profit_factor": 1.78,
+      "5y_win_rate_pct": 48.96,
+      "5y_max_drawdown_pct": 8.02,
+      "5y_trades": 96
+    },
+    {
+      "slug": "us100-h1-orb-13utc",
+      "label": "US100 H1 ORB 13UTC",
+      "symbol": "USTEC",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 3.84,
+      "6m_profit_factor": 1.32,
+      "6m_win_rate_pct": 54.29,
+      "6m_max_drawdown_pct": 3.56,
+      "6m_trades": 35,
+      "1y_return_pct": 23.56,
+      "1y_profit_factor": 1.73,
+      "1y_win_rate_pct": 51.39,
+      "1y_max_drawdown_pct": 6.8,
+      "1y_trades": 72,
+      "3y_return_pct": 106.2,
+      "3y_profit_factor": 1.94,
+      "3y_win_rate_pct": 54.14,
+      "3y_max_drawdown_pct": 6.81,
+      "3y_trades": 181,
+      "5y_return_pct": 92.93,
+      "5y_profit_factor": 1.57,
+      "5y_win_rate_pct": 48.79,
+      "5y_max_drawdown_pct": 17.82,
+      "5y_trades": 289
+    },
+    {
+      "slug": "us100-selective-orb-v3",
+      "label": "US100 Selective ORB V3",
+      "symbol": "USTEC",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "watch",
+      "reason": "Only 34 trades exist in the 5Y view; retain as low-frequency evidence, not as a high-capacity core.",
+      "6m_return_pct": -0.74,
+      "6m_profit_factor": 0.74,
+      "6m_win_rate_pct": 66.67,
+      "6m_max_drawdown_pct": 3.7,
+      "6m_trades": 3,
+      "1y_return_pct": 1.75,
+      "1y_profit_factor": 1.6,
+      "1y_win_rate_pct": 80.0,
+      "1y_max_drawdown_pct": 3.68,
+      "1y_trades": 5,
+      "3y_return_pct": 6.11,
+      "3y_profit_factor": 2.17,
+      "3y_win_rate_pct": 55.0,
+      "3y_max_drawdown_pct": 3.66,
+      "3y_trades": 20,
+      "5y_return_pct": 17.2,
+      "5y_profit_factor": 3.16,
+      "5y_win_rate_pct": 67.65,
+      "5y_max_drawdown_pct": 3.67,
+      "5y_trades": 34
+    },
+    {
+      "slug": "asia-breakout",
+      "label": "Asia Breakout",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 4.93,
+      "6m_profit_factor": 1.43,
+      "6m_win_rate_pct": 44.0,
+      "6m_max_drawdown_pct": 5.17,
+      "6m_trades": 25,
+      "1y_return_pct": 29.3,
+      "1y_profit_factor": 1.72,
+      "1y_win_rate_pct": 45.83,
+      "1y_max_drawdown_pct": 6.2,
+      "1y_trades": 72,
+      "3y_return_pct": 45.52,
+      "3y_profit_factor": 1.57,
+      "3y_win_rate_pct": 47.33,
+      "3y_max_drawdown_pct": 6.27,
+      "3y_trades": 131,
+      "5y_return_pct": 45.5,
+      "5y_profit_factor": 1.4,
+      "5y_win_rate_pct": 43.85,
+      "5y_max_drawdown_pct": 6.27,
+      "5y_trades": 187
+    },
+    {
+      "slug": "dmc-current-xau",
+      "label": "DMC Current XAU",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "retained by user",
+      "reason": "Explicitly retained by the user after the portfolio audit; continue monitoring its weak 5Y PF and drawdown.",
+      "6m_return_pct": 5.9,
+      "6m_profit_factor": 1.19,
+      "6m_win_rate_pct": 41.38,
+      "6m_max_drawdown_pct": 8.74,
+      "6m_trades": 58,
+      "1y_return_pct": 12.08,
+      "1y_profit_factor": 1.18,
+      "1y_win_rate_pct": 40.52,
+      "1y_max_drawdown_pct": 9.96,
+      "1y_trades": 116,
+      "3y_return_pct": 46.72,
+      "3y_profit_factor": 1.27,
+      "3y_win_rate_pct": 40.8,
+      "3y_max_drawdown_pct": 12.49,
+      "3y_trades": 250,
+      "5y_return_pct": 11.58,
+      "5y_profit_factor": 1.06,
+      "5y_win_rate_pct": 37.97,
+      "5y_max_drawdown_pct": 29.05,
+      "5y_trades": 345
+    },
+    {
+      "slug": "dmc-fresh-reaction-xau",
+      "label": "DMC Fresh Reaction XAU",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": -0.31,
+      "6m_profit_factor": 0.97,
+      "6m_win_rate_pct": 33.33,
+      "6m_max_drawdown_pct": 4.87,
+      "6m_trades": 15,
+      "1y_return_pct": 6.88,
+      "1y_profit_factor": 1.9,
+      "1y_win_rate_pct": 46.67,
+      "1y_max_drawdown_pct": 3.11,
+      "1y_trades": 15,
+      "3y_return_pct": 36.18,
+      "3y_profit_factor": 2.49,
+      "3y_win_rate_pct": 60.0,
+      "3y_max_drawdown_pct": 4.08,
+      "3y_trades": 55,
+      "5y_return_pct": 21.68,
+      "5y_profit_factor": 1.53,
+      "5y_win_rate_pct": 49.41,
+      "5y_max_drawdown_pct": 15.18,
+      "5y_trades": 85
+    },
+    {
+      "slug": "dmc-fresh-reaction-us100",
+      "label": "DMC Fresh Reaction US100",
+      "symbol": "USTEC",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 1.25,
+      "6m_profit_factor": 1.41,
+      "6m_win_rate_pct": 50.0,
+      "6m_max_drawdown_pct": 2.35,
+      "6m_trades": 6,
+      "1y_return_pct": 3.68,
+      "1y_profit_factor": 1.88,
+      "1y_win_rate_pct": 66.67,
+      "1y_max_drawdown_pct": 2.99,
+      "1y_trades": 12,
+      "3y_return_pct": 17.94,
+      "3y_profit_factor": 1.99,
+      "3y_win_rate_pct": 65.22,
+      "3y_max_drawdown_pct": 4.39,
+      "3y_trades": 46,
+      "5y_return_pct": 14.23,
+      "5y_profit_factor": 1.39,
+      "5y_win_rate_pct": 58.54,
+      "5y_max_drawdown_pct": 7.57,
+      "5y_trades": 82
+    },
+    {
+      "slug": "ema3",
+      "label": "EMA3",
+      "symbol": "XAUUSD",
+      "current_mode": "safe",
+      "recommended_mode": "safe",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": -0.3,
+      "6m_profit_factor": 0.96,
+      "6m_win_rate_pct": 43.75,
+      "6m_max_drawdown_pct": 3.83,
+      "6m_trades": 16,
+      "1y_return_pct": 16.27,
+      "1y_profit_factor": 2.71,
+      "1y_win_rate_pct": 70.27,
+      "1y_max_drawdown_pct": 3.33,
+      "1y_trades": 37,
+      "3y_return_pct": 33.56,
+      "3y_profit_factor": 2.3,
+      "3y_win_rate_pct": 64.94,
+      "3y_max_drawdown_pct": 3.95,
+      "3y_trades": 77,
+      "5y_return_pct": 30.93,
+      "5y_profit_factor": 1.86,
+      "5y_win_rate_pct": 60.78,
+      "5y_max_drawdown_pct": 5.03,
+      "5y_trades": 102
+    },
+    {
+      "slug": "xau-weakness",
+      "label": "XAU Weakness",
+      "symbol": "XAUUSD",
+      "current_mode": "safe",
+      "recommended_mode": "safe",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 3.61,
+      "6m_profit_factor": 1.37,
+      "6m_win_rate_pct": 38.89,
+      "6m_max_drawdown_pct": 5.73,
+      "6m_trades": 18,
+      "1y_return_pct": 56.93,
+      "1y_profit_factor": 1.97,
+      "1y_win_rate_pct": 42.35,
+      "1y_max_drawdown_pct": 5.76,
+      "1y_trades": 85,
+      "3y_return_pct": 127.19,
+      "3y_profit_factor": 1.88,
+      "3y_win_rate_pct": 43.09,
+      "3y_max_drawdown_pct": 6.82,
+      "3y_trades": 181,
+      "5y_return_pct": 122.15,
+      "5y_profit_factor": 1.65,
+      "5y_win_rate_pct": 38.93,
+      "5y_max_drawdown_pct": 14.4,
+      "5y_trades": 244
+    },
+    {
+      "slug": "nasdaq-overnight",
+      "label": "Nasdaq Overnight",
+      "symbol": "USTEC",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 5.88,
+      "6m_profit_factor": 1.63,
+      "6m_win_rate_pct": 62.07,
+      "6m_max_drawdown_pct": 2.38,
+      "6m_trades": 58,
+      "1y_return_pct": 8.28,
+      "1y_profit_factor": 1.8,
+      "1y_win_rate_pct": 62.5,
+      "1y_max_drawdown_pct": 2.4,
+      "1y_trades": 72,
+      "3y_return_pct": 7.77,
+      "3y_profit_factor": 1.29,
+      "3y_win_rate_pct": 55.62,
+      "3y_max_drawdown_pct": 4.86,
+      "3y_trades": 178,
+      "5y_return_pct": 8.4,
+      "5y_profit_factor": 1.28,
+      "5y_win_rate_pct": 56.28,
+      "5y_max_drawdown_pct": 4.83,
+      "5y_trades": 199
+    },
+    {
+      "slug": "nasdaq-5m-candle-momentum",
+      "label": "Nasdaq 5M Candle Momentum",
+      "symbol": "USTEC",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "watch",
+      "reason": "Large historical return but thin edge: PF 1.12 over 5Y and 1.18 over 3Y.",
+      "6m_return_pct": -0.18,
+      "6m_profit_factor": 1.0,
+      "6m_win_rate_pct": 37.21,
+      "6m_max_drawdown_pct": 11.25,
+      "6m_trades": 129,
+      "1y_return_pct": 42.61,
+      "1y_profit_factor": 1.23,
+      "1y_win_rate_pct": 41.57,
+      "1y_max_drawdown_pct": 12.63,
+      "1y_trades": 255,
+      "3y_return_pct": 111.87,
+      "3y_profit_factor": 1.18,
+      "3y_win_rate_pct": 40.68,
+      "3y_max_drawdown_pct": 12.63,
+      "3y_trades": 762,
+      "5y_return_pct": 105.74,
+      "5y_profit_factor": 1.12,
+      "5y_win_rate_pct": 38.99,
+      "5y_max_drawdown_pct": 12.63,
+      "5y_trades": 1272
+    },
+    {
+      "slug": "sell-nasdaq-15min",
+      "label": "Sell Nasdaq 15min",
+      "symbol": "USTEC",
+      "current_mode": "standard",
+      "recommended_mode": "dynamic",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": -1.65,
+      "6m_profit_factor": 0.85,
+      "6m_win_rate_pct": 42.86,
+      "6m_max_drawdown_pct": 6.07,
+      "6m_trades": 21,
+      "1y_return_pct": 13.28,
+      "1y_profit_factor": 1.44,
+      "1y_win_rate_pct": 46.15,
+      "1y_max_drawdown_pct": 7.81,
+      "1y_trades": 52,
+      "3y_return_pct": 94.91,
+      "3y_profit_factor": 1.78,
+      "3y_win_rate_pct": 44.03,
+      "3y_max_drawdown_pct": 7.82,
+      "3y_trades": 159,
+      "5y_return_pct": 106.38,
+      "5y_profit_factor": 1.52,
+      "5y_win_rate_pct": 41.42,
+      "5y_max_drawdown_pct": 17.87,
+      "5y_trades": 268
+    },
+    {
+      "slug": "usdjpy-london-open-momentum",
+      "label": "USDJPY London Open Momentum",
+      "symbol": "USDJPY",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 7.4,
+      "6m_profit_factor": 1.36,
+      "6m_win_rate_pct": 53.03,
+      "6m_max_drawdown_pct": 10.14,
+      "6m_trades": 66,
+      "1y_return_pct": 12.72,
+      "1y_profit_factor": 1.33,
+      "1y_win_rate_pct": 51.85,
+      "1y_max_drawdown_pct": 10.13,
+      "1y_trades": 135,
+      "3y_return_pct": 77.92,
+      "3y_profit_factor": 1.44,
+      "3y_win_rate_pct": 52.67,
+      "3y_max_drawdown_pct": 12.0,
+      "3y_trades": 412,
+      "5y_return_pct": 178.41,
+      "5y_profit_factor": 1.46,
+      "5y_win_rate_pct": 53.97,
+      "5y_max_drawdown_pct": 12.12,
+      "5y_trades": 693
+    },
+    {
+      "slug": "xau-squeeze-momentum-standard",
+      "label": "XAU Squeeze Momentum Standard",
+      "symbol": "XAUUSD",
+      "current_mode": "safe",
+      "recommended_mode": "safe",
+      "decision": "watch",
+      "reason": "Safe mode has strong PF/DD but only 48 trades in 5Y and no trades in the latest six months.",
+      "6m_return_pct": 0.0,
+      "6m_profit_factor": 0.0,
+      "6m_win_rate_pct": 0.0,
+      "6m_max_drawdown_pct": 0.0,
+      "6m_trades": 0,
+      "1y_return_pct": 6.26,
+      "1y_profit_factor": 3.27,
+      "1y_win_rate_pct": 64.29,
+      "1y_max_drawdown_pct": 1.58,
+      "1y_trades": 14,
+      "3y_return_pct": 22.6,
+      "3y_profit_factor": 3.89,
+      "3y_win_rate_pct": 65.79,
+      "3y_max_drawdown_pct": 3.36,
+      "3y_trades": 38,
+      "5y_return_pct": 23.0,
+      "5y_profit_factor": 3.16,
+      "5y_win_rate_pct": 60.42,
+      "5y_max_drawdown_pct": 3.35,
+      "5y_trades": 48
+    },
+    {
+      "slug": "news-pulse-xau",
+      "label": "News Pulse XAU",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "watch",
+      "reason": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades).",
+      "6m_return_pct": 34.71,
+      "6m_profit_factor": 10.66,
+      "6m_win_rate_pct": 58.82,
+      "6m_max_drawdown_pct": 1.77,
+      "6m_trades": 17,
+      "1y_return_pct": 55.04,
+      "1y_profit_factor": 9.0,
+      "1y_win_rate_pct": 63.64,
+      "1y_max_drawdown_pct": 1.79,
+      "1y_trades": 33,
+      "3y_return_pct": 55.54,
+      "3y_profit_factor": 9.03,
+      "3y_win_rate_pct": 64.71,
+      "3y_max_drawdown_pct": 1.79,
+      "3y_trades": 34,
+      "5y_return_pct": 55.54,
+      "5y_profit_factor": 9.03,
+      "5y_win_rate_pct": 64.71,
+      "5y_max_drawdown_pct": 1.79,
+      "5y_trades": 34
+    },
+    {
+      "slug": "gold-news-v9-direction",
+      "label": "Gold News V9 Direction",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 0.0,
+      "6m_profit_factor": 0.0,
+      "6m_win_rate_pct": 0.0,
+      "6m_max_drawdown_pct": 0.0,
+      "6m_trades": 0,
+      "1y_return_pct": 0.0,
+      "1y_profit_factor": 0.0,
+      "1y_win_rate_pct": 0.0,
+      "1y_max_drawdown_pct": 0.0,
+      "1y_trades": 0,
+      "3y_return_pct": 0.0,
+      "3y_profit_factor": 0.0,
+      "3y_win_rate_pct": 0.0,
+      "3y_max_drawdown_pct": 0.0,
+      "3y_trades": 0,
+      "5y_return_pct": 0.0,
+      "5y_profit_factor": 0.0,
+      "5y_win_rate_pct": 0.0,
+      "5y_max_drawdown_pct": 0.0,
+      "5y_trades": 0
+    },
+    {
+      "slug": "news-pulse-xag",
+      "label": "News Pulse XAG",
+      "symbol": "XAGUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "watch",
+      "reason": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades).",
+      "6m_return_pct": 90.72,
+      "6m_profit_factor": 12.82,
+      "6m_win_rate_pct": 60.0,
+      "6m_max_drawdown_pct": 2.47,
+      "6m_trades": 20,
+      "1y_return_pct": 221.04,
+      "1y_profit_factor": 13.46,
+      "1y_win_rate_pct": 62.16,
+      "1y_max_drawdown_pct": 2.52,
+      "1y_trades": 37,
+      "3y_return_pct": 221.19,
+      "3y_profit_factor": 13.41,
+      "3y_win_rate_pct": 63.16,
+      "3y_max_drawdown_pct": 2.52,
+      "3y_trades": 38,
+      "5y_return_pct": 221.19,
+      "5y_profit_factor": 13.41,
+      "5y_win_rate_pct": 63.16,
+      "5y_max_drawdown_pct": 2.52,
+      "5y_trades": 38
+    },
+    {
+      "slug": "news-pulse-btc",
+      "label": "News Pulse BTC",
+      "symbol": "BTCUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "watch",
+      "reason": "Mandatory News Pulse exposure retained at fixed risk; the complete three-year native MT5 sample has 125 trades, but event execution remains high-slippage risk.",
+      "6m_return_pct": 37.13,
+      "6m_profit_factor": 9.33,
+      "6m_win_rate_pct": 78.26,
+      "6m_max_drawdown_pct": 2.84,
+      "6m_trades": 23,
+      "1y_return_pct": 111.46,
+      "1y_profit_factor": 9.42,
+      "1y_win_rate_pct": 75.0,
+      "1y_max_drawdown_pct": 2.84,
+      "1y_trades": 44,
+      "3y_return_pct": 984.87,
+      "3y_profit_factor": 9.33,
+      "3y_win_rate_pct": 76.8,
+      "3y_max_drawdown_pct": 3.41,
+      "3y_trades": 125,
+      "5y_return_pct": 984.87,
+      "5y_profit_factor": 9.33,
+      "5y_win_rate_pct": 76.8,
+      "5y_max_drawdown_pct": 3.41,
+      "5y_trades": 125
+    },
+    {
+      "slug": "xau-rsi-vwap",
+      "label": "XAU RSI VWAP",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 2.28,
+      "6m_profit_factor": 1.31,
+      "6m_win_rate_pct": 69.7,
+      "6m_max_drawdown_pct": 2.75,
+      "6m_trades": 33,
+      "1y_return_pct": 4.07,
+      "1y_profit_factor": 1.38,
+      "1y_win_rate_pct": 71.74,
+      "1y_max_drawdown_pct": 3.5,
+      "1y_trades": 46,
+      "3y_return_pct": 22.42,
+      "3y_profit_factor": 1.74,
+      "3y_win_rate_pct": 76.87,
+      "3y_max_drawdown_pct": 2.92,
+      "3y_trades": 134,
+      "5y_return_pct": 26.11,
+      "5y_profit_factor": 1.37,
+      "5y_win_rate_pct": 73.46,
+      "5y_max_drawdown_pct": 5.34,
+      "5y_trades": 260
+    },
+    {
+      "slug": "xau-trend-progression",
+      "label": "XAU Trend Progression",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 1.27,
+      "6m_profit_factor": 1.29,
+      "6m_win_rate_pct": 40.0,
+      "6m_max_drawdown_pct": 3.32,
+      "6m_trades": 10,
+      "1y_return_pct": 16.85,
+      "1y_profit_factor": 2.85,
+      "1y_win_rate_pct": 60.0,
+      "1y_max_drawdown_pct": 3.05,
+      "1y_trades": 25,
+      "3y_return_pct": 72.47,
+      "3y_profit_factor": 2.72,
+      "3y_win_rate_pct": 62.22,
+      "3y_max_drawdown_pct": 5.92,
+      "3y_trades": 90,
+      "5y_return_pct": 83.9,
+      "5y_profit_factor": 2.27,
+      "5y_win_rate_pct": 58.7,
+      "5y_max_drawdown_pct": 5.54,
+      "5y_trades": 138
+    },
+    {
+      "slug": "xau-elliott-wave-1-2-3",
+      "label": "XAU Elliott Wave 1-2-3",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 7.39,
+      "6m_profit_factor": 1.9,
+      "6m_win_rate_pct": 40.0,
+      "6m_max_drawdown_pct": 3.98,
+      "6m_trades": 15,
+      "1y_return_pct": 23.82,
+      "1y_profit_factor": 3.15,
+      "1y_win_rate_pct": 54.17,
+      "1y_max_drawdown_pct": 3.77,
+      "1y_trades": 24,
+      "3y_return_pct": 69.85,
+      "3y_profit_factor": 2.47,
+      "3y_win_rate_pct": 45.71,
+      "3y_max_drawdown_pct": 6.83,
+      "3y_trades": 70,
+      "5y_return_pct": 72.3,
+      "5y_profit_factor": 1.88,
+      "5y_win_rate_pct": 37.93,
+      "5y_max_drawdown_pct": 10.59,
+      "5y_trades": 116
+    },
+    {
+      "slug": "xau-slow-trend",
+      "label": "XAU Slow Trend",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "watch",
+      "reason": "Strong 3Y/5Y evidence but last six months are -7.13% with PF 0.48.",
+      "6m_return_pct": -7.13,
+      "6m_profit_factor": 0.48,
+      "6m_win_rate_pct": 13.04,
+      "6m_max_drawdown_pct": 9.16,
+      "6m_trades": 23,
+      "1y_return_pct": 11.5,
+      "1y_profit_factor": 1.43,
+      "1y_win_rate_pct": 23.08,
+      "1y_max_drawdown_pct": 13.12,
+      "1y_trades": 39,
+      "3y_return_pct": 122.85,
+      "3y_profit_factor": 1.78,
+      "3y_win_rate_pct": 24.48,
+      "3y_max_drawdown_pct": 12.38,
+      "3y_trades": 143,
+      "5y_return_pct": 86.18,
+      "5y_profit_factor": 1.42,
+      "5y_win_rate_pct": 19.18,
+      "5y_max_drawdown_pct": 12.63,
+      "5y_trades": 245
+    },
+    {
+      "slug": "xau-regime-switch",
+      "label": "XAU Regime Switch",
+      "symbol": "XAUUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "watch",
+      "reason": "Strong long history but last six months are -4.95% with PF 0.43.",
+      "6m_return_pct": -4.95,
+      "6m_profit_factor": 0.43,
+      "6m_win_rate_pct": 13.33,
+      "6m_max_drawdown_pct": 6.25,
+      "6m_trades": 15,
+      "1y_return_pct": 29.28,
+      "1y_profit_factor": 2.09,
+      "1y_win_rate_pct": 30.56,
+      "1y_max_drawdown_pct": 8.43,
+      "1y_trades": 36,
+      "3y_return_pct": 88.3,
+      "3y_profit_factor": 1.93,
+      "3y_win_rate_pct": 30.77,
+      "3y_max_drawdown_pct": 10.39,
+      "3y_trades": 117,
+      "5y_return_pct": 96.19,
+      "5y_profit_factor": 1.59,
+      "5y_win_rate_pct": 27.96,
+      "5y_max_drawdown_pct": 10.21,
+      "5y_trades": 211
+    },
+    {
+      "slug": "us100-month-end-flow",
+      "label": "US100 Month End Flow",
+      "symbol": "USTEC",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "keep",
+      "reason": "Passes the current consistency review.",
+      "6m_return_pct": 10.47,
+      "6m_profit_factor": 2.58,
+      "6m_win_rate_pct": 52.94,
+      "6m_max_drawdown_pct": 3.5,
+      "6m_trades": 17,
+      "1y_return_pct": 5.41,
+      "1y_profit_factor": 1.33,
+      "1y_win_rate_pct": 47.06,
+      "1y_max_drawdown_pct": 5.75,
+      "1y_trades": 34,
+      "3y_return_pct": 36.62,
+      "3y_profit_factor": 1.61,
+      "3y_win_rate_pct": 50.0,
+      "3y_max_drawdown_pct": 9.12,
+      "3y_trades": 104,
+      "5y_return_pct": 37.84,
+      "5y_profit_factor": 1.37,
+      "5y_win_rate_pct": 44.57,
+      "5y_max_drawdown_pct": 9.13,
+      "5y_trades": 175
+    }
+  ],
+  "top_entry_overlaps": [
+    {
+      "left": "orb-volume-profile",
+      "right": "orb-volume-profile-volume-confirmed",
+      "exact_same_minute_side": 109,
+      "overlap_of_smaller_pct": 90.83
+    },
+    {
+      "left": "dmc-current-xau",
+      "right": "dmc-fresh-reaction-xau",
+      "exact_same_minute_side": 40,
+      "overlap_of_smaller_pct": 47.06
+    },
+    {
+      "left": "asia-breakout",
+      "right": "xau-squeeze-momentum-standard",
+      "exact_same_minute_side": 6,
+      "overlap_of_smaller_pct": 12.5
+    }
+  ],
+  "top_daily_pnl_correlations": [
+    {
+      "left": "news-pulse-xau",
+      "right": "news-pulse-xag",
+      "daily_pnl_correlation": 0.8951
+    },
+    {
+      "left": "orb-volume-profile",
+      "right": "orb-volume-profile-volume-confirmed",
+      "daily_pnl_correlation": 0.6809
+    },
+    {
+      "left": "nasdaq-5m-candle-momentum",
+      "right": "sell-nasdaq-15min",
+      "daily_pnl_correlation": 0.2902
+    },
+    {
+      "left": "news-pulse-xau",
+      "right": "news-pulse-btc",
+      "daily_pnl_correlation": 0.2549
+    },
+    {
+      "left": "us100-h1-orb-13utc",
+      "right": "sell-nasdaq-15min",
+      "daily_pnl_correlation": 0.2497
+    },
+    {
+      "left": "xau-slow-trend",
+      "right": "xau-regime-switch",
+      "daily_pnl_correlation": 0.2476
+    },
+    {
+      "left": "asia-breakout",
+      "right": "ema3",
+      "daily_pnl_correlation": 0.2408
+    },
+    {
+      "left": "xau-squeeze-momentum-standard",
+      "right": "xau-regime-switch",
+      "daily_pnl_correlation": 0.23
+    },
+    {
+      "left": "xau-squeeze-momentum-standard",
+      "right": "xau-trend-progression",
+      "daily_pnl_correlation": 0.2281
+    },
+    {
+      "left": "xau-weakness",
+      "right": "xau-regime-switch",
+      "daily_pnl_correlation": 0.2216
+    },
+    {
+      "left": "asia-breakout",
+      "right": "xau-weakness",
+      "daily_pnl_correlation": 0.2215
+    },
+    {
+      "left": "xau-squeeze-momentum-standard",
+      "right": "news-pulse-xau",
+      "daily_pnl_correlation": -0.2099
+    },
+    {
+      "left": "xau-weakness",
+      "right": "xau-squeeze-momentum-standard",
+      "daily_pnl_correlation": 0.2049
+    },
+    {
+      "left": "us100-h1-orb-13utc",
+      "right": "nasdaq-5m-candle-momentum",
+      "daily_pnl_correlation": 0.2035
+    },
+    {
+      "left": "xau-squeeze-momentum-standard",
+      "right": "news-pulse-xag",
+      "daily_pnl_correlation": -0.1934
+    },
+    {
+      "left": "xau-weakness",
+      "right": "xau-trend-progression",
+      "daily_pnl_correlation": 0.192
+    },
+    {
+      "left": "lta-volume-profile",
+      "right": "ema3",
+      "daily_pnl_correlation": 0.1817
+    },
+    {
+      "left": "lta-volume-profile",
+      "right": "asia-breakout",
+      "daily_pnl_correlation": 0.1756
+    },
+    {
+      "left": "news-pulse-xag",
+      "right": "news-pulse-btc",
+      "daily_pnl_correlation": 0.1741
+    },
+    {
+      "left": "lta-volume-profile",
+      "right": "xau-weakness",
+      "daily_pnl_correlation": 0.1731
+    }
+  ],
+  "recommended_mode_exposure": {
+    "max_reserved_risk_pct": 14.0,
+    "max_reserved_risk_by_symbol_pct": {
+      "BTCUSD": 2.5,
+      "ETHUSD": 1.0,
+      "USDJPY": 1.0,
+      "USTEC": 4.0,
+      "XAGUSD": 1.5,
+      "XAUUSD": 13.0
+    },
+    "warning": "Conservative: risk remains reserved until close; floating P/L and shared-margin effects are unavailable."
+  },
+  "limitations": [
+    "No historical result guarantees future profitability.",
+    "The component tests used separate balances; the combined curve is not a shared-margin MT5 simulation.",
+    "Closed-deal drawdown can understate live equity drawdown and gap/slippage risk.",
+    "Nested 6m/1y/3y/5y windows are evidence views, not four independent out-of-sample tests.",
+    "News Pulse XAU and XAG have short release-verified ledgers; BTC has complete native three-year coverage. Every News Pulse chart remains fixed at 0.75% per triggered stop / 1.50% event cap before adaptive tapering."
+  ]
+}

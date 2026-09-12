@@ -9,6 +9,8 @@ from urllib.parse import quote_plus
 
 from pydantic import BaseModel, ConfigDict
 
+from .news_evidence import load_news_summary
+
 
 STORE_ROOT = Path(__file__).resolve().parents[1]
 EAS_ROOT = STORE_ROOT.parent
@@ -955,9 +957,9 @@ def _news_pulse_meta(symbol: str, entry: str, stop: str, trail: str) -> dict[str
         "description": f"This {symbol} M1 configuration watches NFP, CPI and FOMC in MT5's USD economic calendar. Thirty seconds before release it places both a buy stop and a sell stop using the market-specific optimized geometry, then removes pending exposure and closes positions sixty seconds after the event.",
         "session": "NFP, CPI and FOMC",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable News Pulse v2.15 source, exact hard-risk SET, native MT5 Every Tick report and the FXMacroData-verified tester calendar were reviewed together. The v2.15 live gate only accepts high-impact primary CPI/Core CPI names, preventing secondary Median CPI and inflation-expectation releases from creating another straddle.",
+        "logic_audit_note": "Readable News Pulse v2.15 source and the exact hard-risk SET were checked against independent native MT5 runs using official BLS/Federal Reserve release times. The research calendar lookup matched the untouched six-month controls trade for trade. The v2.15 live gate only accepts high-impact primary CPI/Core CPI names, preventing secondary Median CPI and inflation-expectation releases from creating another straddle. Live event discovery is unchanged; historical real-tick coverage is disclosed separately.",
         "logic": [
-            {"title": "Find only primary high-impact USD events", "detail": "Live trading scans MT5's native USD calendar but accepts only high-impact target releases. CPI must begin with CPI, Core CPI, Consumer Price Index or Core Consumer Price Index, so Cleveland Fed Median CPI and inflation-expectation events cannot qualify. The schedule is cached eight days ahead and refreshed every 300 seconds. Strategy Tester uses a generated FXMacroData UTC calendar and version 2.15 rejects missing, incomplete or out-of-range schedules."},
+            {"title": "Find only primary high-impact USD events", "detail": "Live trading scans MT5's native USD calendar but accepts only high-impact target releases. CPI must begin with CPI, Core CPI, Consumer Price Index or Core Consumer Price Index, so Cleveland Fed Median CPI and inflation-expectation events cannot qualify. The schedule is cached eight days ahead and refreshed every 300 seconds. Strategy Tester uses a coverage-checked UTC calendar and version 2.15 rejects missing or out-of-range schedules. The current website history uses independently run 6-month, 1-year, 3-year and 5-year windows with official BLS/Federal Reserve release timestamps; real-tick coverage is disclosed separately."},
             {"title": "Anchor timing to broker data", "detail": "Calendar timestamps and quote timestamps share broker-server time. VPS local timezone is ignored, and placement is blocked unless MT5 is connected and a broker-stamped quote arrived during the preceding five seconds."},
             {"title": "Place both breakout stops", "detail": f"During the final thirty seconds before release, the EA places a buy stop {entry} above Ask and a sell stop {entry} below Bid on {symbol}. Buy and sell use independent pending orders and a symbol-specific magic number."},
             {"title": "Hard-lock maximum planned risk", "detail": f"Each pending direction uses a maximum base risk of 0.75% equity to its {stop} initial stop. Recommended Adaptive may taper that base lower, but the BAT cannot raise it; combined planned event exposure is therefore no more than 1.50% before gaps and slippage."},
@@ -1986,6 +1988,26 @@ def _month_end_flow_us100_evidence() -> Evidence | None:
 
 
 def _news_pulse_hard_evidence(label: str) -> Evidence | None:
+    slug={"News Pulse XAU":"news-pulse-xau","News Pulse XAG":"news-pulse-xag","News Pulse BTC":"news-pulse-btc"}.get(label)
+    payload=load_news_summary(slug) if slug else None
+    if payload:
+        stats=payload['stats']
+        return Evidence(
+            label="Official-calendar independent 3-year MT5 run",
+            period=payload['period'], return_pct=stats['return_pct'],
+            profit_factor=stats['profit_factor'] or 0.0, drawdown_pct=stats['max_drawdown_pct'],
+            win_rate_pct=stats['win_rate_pct'], trades=stats['trades'],
+            sharpe_ratio=stats.get('sharpe_ratio'), recovery_factor=stats.get('recovery_factor'),
+            max_win_streak=stats.get('max_win_streak'), max_loss_streak=stats.get('max_loss_streak'),
+            history_quality=payload['history_quality'],source_note=payload['notice'],
+            status="Watch only — full calendar coverage",
+            caution="Full calendar coverage is not full real-tick coverage or proof of live news execution. Review the tick-history and event-execution disclosures for each period.",
+        )
+    # A short legacy audit is not a substitute for a missing full-period run.
+    return None
+
+
+def _legacy_news_pulse_hard_evidence(label: str) -> Evidence | None:
     if label == "News Pulse BTC":
         verified_path = NEWS_PULSE_BTC_3Y_ROOT / "OFFICIAL 3Y RESULTS.json"
         if verified_path.is_file():

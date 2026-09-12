@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, timezone
 from pathlib import Path
+import json
 import re
 from urllib.parse import parse_qs, urlparse
 from types import SimpleNamespace
@@ -19,7 +20,7 @@ from app.catalog import (
 )
 from app.main import _display_catalog, app
 from app.mt5_evidence_jobs import MAX_DAYS, _materialized_values, _native_trades, _same_setting, _set_values
-from app.mt5_live import reconstruct_balance_history, reconstruct_trades
+from app.mt5_live import live_mt5, reconstruct_balance_history, reconstruct_trades
 from app.trade_metrics import enrich_trades, outcome_streaks, pip_spec
 
 
@@ -326,15 +327,11 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert {product.label for product in news_products} == {"News Pulse XAU", "News Pulse XAG", "News Pulse BTC"}
     assert all(product.safe_filter_supported is False for product in news_products)
     assert all(product.evidence is not None for product in news_products)
-    btc_news = next(product for product in news_products if product.label == "News Pulse BTC")
     assert all(
-        product.evidence.status == "Watch only — verified schedule"
+        product.evidence.status == "Watch only — full calendar coverage"
         for product in news_products
-        if product.label != "News Pulse BTC"
     )
-    assert btc_news.evidence.status == "Watch only — official 3Y schedule"
-    assert btc_news.evidence.trades == 125
-    assert all(product.evidence.trades == 9 for product in news_products if product.label != "News Pulse BTC")
+    assert all(product.evidence.trades > 30 for product in news_products)
     assert all("v2.15" in product.logic_audit_note for product in news_products)
     xau_ny = next(product for product in products if product.label == "XAU ORB New York M30")
     assert xau_ny.deployment_session == "09:30 New York / M30"
@@ -542,12 +539,13 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
 
 
 def test_news_pulse_cards_details_and_series_use_the_same_verified_evidence() -> None:
-    expected = {
-        "news-pulse-xau": (35.32, 20.82, 77.78, 1.78, 9, "2026-06-12 to 2026-09-10"),
-        "news-pulse-xag": (93.34, 43.43, 88.89, 2.51, 9, "2026-06-12 to 2026-09-10"),
-        "news-pulse-btc": (984.8666, 9.33, 76.80, 3.41, 125, "2023-09-11 to 2026-09-10"),
-    }
-    for slug, (return_pct, profit_factor, win_rate, drawdown, trades, evidence_period) in expected.items():
+    for slug in ("news-pulse-xau", "news-pulse-xag", "news-pulse-btc"):
+        result_path = PACKAGE_ROOT / 'News Pulse Full Coverage 2026-09-12' / f'{slug}-3y-model4.json'
+        result = json.loads(result_path.read_text())
+        stats = result['stats']
+        return_pct, profit_factor = stats['return_pct'], stats['profit_factor']
+        win_rate, drawdown, trades = stats['win_rate_pct'], stats['max_drawdown_pct'], stats['trades']
+        evidence_period = '2023-09-05 to 2026-09-05'
         product = get_product(slug)
         assert product is not None
         card = client.get("/eas", params={"q": product.label})
@@ -565,15 +563,53 @@ def test_news_pulse_cards_details_and_series_use_the_same_verified_evidence() ->
         assert "Historical pre-v2.13 calendar replay" not in detail.text
         payload = series.json()
         assert payload["period"] == evidence_period
-        assert payload["period_key"] == "verified"
+        assert payload["period_key"] == "3y"
+        assert payload["independent_native_run"] is True
+        assert 'data-chart-period' in detail.text
         assert payload["stats"]["trades"] == trades
         assert len(payload["trades"]) == trades
         assert len(payload["series"]) >= 2
-        if slug == "news-pulse-btc":
-            assert payload["stats"]["commission"] == -2298.82
-            assert payload["stats"]["swap"] == 0.0
-            assert payload["stats"]["max_win_streak"] == 16
-            assert payload["stats"]["max_loss_streak"] == 3
+        assert all(trade["cache_slug"] == slug and trade['cache_period']=='3y' for trade in payload["trades"])
+        assert payload['stats']['commission'] == stats['commission']
+        assert payload['stats']['swap'] == stats['swap']
+        assert payload['stats']['max_win_streak'] == stats['max_win_streak']
+        assert payload['stats']['max_loss_streak'] == stats['max_loss_streak']
+
+
+def test_period_matched_news_trade_chart_is_available(monkeypatch) -> None:
+    series = client.get("/api/evidence/news-pulse-xau/series").json()
+    trade = series["trades"][0]
+
+    def fake_price_bars(symbol, timeframe, start, end):
+        assert symbol == trade["symbol"]
+        assert timeframe in {"M1", "M5", "M15"}
+        assert start < end
+        return {
+            "symbol": symbol,
+            "timeframe": timeframe,
+            "bars": [
+                {"time": start.isoformat(), "open": 1, "high": 2, "low": 0.5, "close": 1.5, "tick_volume": 1},
+                {"time": end.isoformat(), "open": 1.5, "high": 2.5, "low": 1, "close": 2, "tick_volume": 1},
+            ],
+        }
+
+    monkeypatch.setattr(live_mt5, "price_bars", fake_price_bars)
+    response = client.get(
+        f"/api/evidence/news-pulse-xau/cached-trades/3y/{trade['number']}/chart"
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["trade"]["number"] == trade["number"]
+    assert len(payload["bars"]) == 2
+    assert response.headers["cache-control"].startswith("no-store")
+
+    missing = client.get("/api/evidence/news-pulse-xau/cached-trades/3y/999999/chart")
+    assert missing.status_code == 404
+
+    evidence_js = (Path(__file__).resolve().parents[1] / "static" / "evidence.js").read_text(encoding="utf-8")
+    assert "data-trade-chart-verified-news" in evidence_js
+    assert "[data-trade-chart-job],[data-trade-chart-cache],[data-trade-chart-verified-news]" in evidence_js
+    assert "/verified-trades/" in evidence_js
 
 
 def test_nasdaq_overnight_uses_fresh_native_curve_and_active_inputs() -> None:
@@ -652,8 +688,8 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     assert "Recommended Adaptive is the active website profile" in response.text
-    assert "+2,451.63%" in response.text
-    assert "13.70%" in response.text
+    assert "+2,241.10%" in response.text
+    assert "10.10%" in response.text
     assert "Current · 5Y return" not in response.text
     assert "Current → adaptive PF" not in response.text
     assert "Approved removals" in response.text
@@ -671,9 +707,9 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     assert series.json()["included_ea_count"] == 32
     assert series.json()["tested_ea_count"] == 31
     assert series.json()["mode"] == "recommended-adaptive"
-    assert series.json()["stats"]["return_pct"] == 2451.63
-    assert series.json()["stats"]["profit_factor"] == 2.21
-    assert series.json()["stats"]["max_drawdown_pct"] == 7.77
+    assert series.json()["stats"]["return_pct"] == 2241.10
+    assert series.json()["stats"]["profit_factor"] == 2.09
+    assert series.json()["stats"]["max_drawdown_pct"] == 8.27
     assert series.headers["x-evidence-cache"] == "HIT"
     assert "/api/portfolio/equity-series" in response.text
     assert "/portfolio/equity.png" not in response.text
@@ -687,12 +723,7 @@ def test_every_public_ea_uses_supported_evidence_period() -> None:
     for product in (product for product in products if product.evidence is not None):
         start_text, end_text = product.evidence.period.split(" to ")
         duration = (date.fromisoformat(end_text) - date.fromisoformat(start_text)).days
-        if product.evidence.status == "Watch only — verified schedule":
-            assert duration >= 89
-            assert product.evidence.trades < 30
-            assert "not enough evidence" in (product.evidence.caution or "")
-        else:
-            assert 364 <= duration <= 3660
+        assert 364 <= duration <= 3660
     assert all(product.one_year_evidence == product.evidence for product in products if product.evidence is not None)
     for route in ("/", "/eas", "/portfolio", "/risk", *(f"/eas/{product.slug}" for product in products)):
         response = client.get(route)
@@ -882,8 +913,7 @@ def test_all_recommended_eas_and_portfolio_have_every_fixed_cache() -> None:
             response = client.get(f"/api/evidence/{product.slug}/series", params={"period": period})
             assert response.status_code == 200, f"{product.label} {period}"
             payload = response.json()
-            expected_period_key = "verified" if product.label.startswith("News Pulse ") else period
-            assert payload["period_key"] == expected_period_key
+            assert payload["period_key"] == period
             assert payload["stats"]["trades"] == payload["cached_trade_count"]
 
     manifest = client.get("/api/evidence-cache/manifest")

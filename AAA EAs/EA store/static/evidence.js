@@ -177,6 +177,8 @@
     let chartButton = '';
     if (trade.cache_slug && trade.cache_period && trade.number) {
       chartButton = `<button type="button" class="trade-chart-button" data-trade-chart-cache="${escapeHtml(trade.cache_slug)}" data-trade-chart-mode="${escapeHtml(trade.cache_mode || 'standard')}" data-trade-chart-period="${escapeHtml(trade.cache_period)}" data-trade-chart-number="${Number(trade.number)}">View trade</button>`;
+    } else if (trade.verified_news_slug && trade.number) {
+      chartButton = `<button type="button" class="trade-chart-button" data-trade-chart-verified-news="${escapeHtml(trade.verified_news_slug)}" data-trade-chart-number="${Number(trade.number)}">View trade</button>`;
     } else if (trade.job_id && trade.number) {
       chartButton = `<button type="button" class="trade-chart-button" data-trade-chart-job="${escapeHtml(trade.job_id)}" data-trade-chart-number="${Number(trade.number)}">View trade</button>`;
     }
@@ -278,6 +280,9 @@
     });
     root.querySelectorAll('[data-dynamic-source]').forEach((node) => {
       node.textContent = payload.notice || 'Precomputed native MT5 evidence.';
+    });
+    root.querySelectorAll('[data-dynamic-history-quality]').forEach((node) => {
+      node.textContent = payload.history_quality || stats?.history_quality || 'Not reported';
     });
     const evidenceTitle = root.querySelector('[data-dynamic-evidence-title]');
     const periodInput = root.querySelector('[data-chart-period]');
@@ -507,7 +512,9 @@
     try {
       const url = button.dataset.tradeChartCache
         ? `/api/evidence/${encodeURIComponent(button.dataset.tradeChartCache)}/cached-trades/${encodeURIComponent(button.dataset.tradeChartPeriod)}/${encodeURIComponent(button.dataset.tradeChartNumber)}/chart?mode=${encodeURIComponent(button.dataset.tradeChartMode || 'standard')}`
-        : `/api/evidence/jobs/${encodeURIComponent(button.dataset.tradeChartJob)}/trades/${encodeURIComponent(button.dataset.tradeChartNumber)}/chart`;
+        : button.dataset.tradeChartVerifiedNews
+          ? `/api/evidence/${encodeURIComponent(button.dataset.tradeChartVerifiedNews)}/verified-trades/${encodeURIComponent(button.dataset.tradeChartNumber)}/chart`
+          : `/api/evidence/jobs/${encodeURIComponent(button.dataset.tradeChartJob)}/trades/${encodeURIComponent(button.dataset.tradeChartNumber)}/chart`;
       const response = await fetch(url, { cache:'no-store' });
       if (!response.ok) throw new Error(await responseMessage(response));
       drawTradeChart(panel, await response.json());
@@ -640,12 +647,22 @@
       url.searchParams.set('period', periodInput?.value || '3y');
       status.classList.remove('hidden');
       status.textContent = 'Loading precomputed evidence…';
-      const response = await fetch(url);
+      const response = await fetch(url, { cache: 'no-store' });
       if (!response.ok) throw new Error(`The curve endpoint returned ${response.status}.`);
       const payload = await response.json();
       drawChart(shell, payload);
       renderPeriodEvidence(shell, payload);
       renderPortfolioAnalytics(root, payload);
+      if (periodInput && window.location.pathname.startsWith('/eas/')) {
+        const pageUrl = new URL(window.location.href);
+        pageUrl.searchParams.set('period', payload.period_key);
+        window.history.replaceState(null, '', pageUrl);
+        root.querySelectorAll('a[href*="?mode="]').forEach((link) => {
+          const modeUrl = new URL(link.href);
+          modeUrl.searchParams.set('period', payload.period_key);
+          link.href = modeUrl.toString();
+        });
+      }
       if (progress) {
         progress.classList.add('is-complete');
         if (progressText) progressText.textContent = `Cached native MT5 evidence loaded through ${payload.available_to}.`;
@@ -683,7 +700,7 @@
     loadChart(shell);
   });
   document.addEventListener('click', (event) => {
-    const tradeButton = event.target.closest('[data-trade-chart-job],[data-trade-chart-cache]');
+    const tradeButton = event.target.closest('[data-trade-chart-job],[data-trade-chart-cache],[data-trade-chart-verified-news]');
     if (tradeButton) openTradeChart(tradeButton);
     const closeButton = event.target.closest('[data-trade-chart-close]');
     if (closeButton) closeButton.closest('[data-trade-chart-panel]')?.classList.add('hidden');

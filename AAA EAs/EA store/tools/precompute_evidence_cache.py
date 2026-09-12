@@ -30,19 +30,13 @@ from app.evidence_series import parse_mt5_balance_series  # noqa: E402
 from app.mt5_evidence_jobs import _native_metrics, _native_trades, mt5_evidence_jobs  # noqa: E402
 from app.mt5_live import live_mt5  # noqa: E402
 from app.trade_metrics import enrich_trades, outcome_streaks  # noqa: E402
+from app.news_evidence import news_payload_from_result  # noqa: E402
 
 
 PERIOD_MONTHS = {"6m": 6, "1y": 12, "3y": 36, "5y": 60}
 CACHE_ROOT = Path(os.getenv("EA_STORE_CACHE_ROOT", str(DEFAULT_CACHE_ROOT))).resolve()
 NEWS_PULSE_SLUGS = {"news-pulse-xau", "news-pulse-xag", "news-pulse-btc"}
-REVIEWED_NEWS_PULSE_REPORTS = {
-    "news-pulse-btc": (
-        PACKAGE_ROOT
-        / "News Pulse BTC Official 3Y Research 2026-09-11"
-        / "Backtest Reports"
-        / "btcusd__official-3y.htm"
-    ),
-}
+NEWS_RESEARCH_ROOT = PACKAGE_ROOT / "News Pulse Full Coverage 2026-09-12"
 
 
 def product_cache_path(slug: str, mode: str, period: str) -> Path:
@@ -93,18 +87,44 @@ def file_hash(path: Path) -> str:
     return digest.hexdigest()
 
 
-def reviewed_report_end(report: Path) -> date | None:
-    """Read the audited end date stored next to a reviewed News Pulse report."""
-    results = report.parent.parent / "OFFICIAL 3Y RESULTS.json"
-    if not results.is_file():
-        return None
-    raw = str(json.loads(results.read_text(encoding="utf-8-sig")).get("to") or "")
-    for pattern in ("%Y.%m.%d", "%Y-%m-%d"):
-        try:
-            return datetime.strptime(raw, pattern).date()
-        except ValueError:
+def independent_news_result(product: Product, mode: str, period: str, start: date, end: date) -> tuple[dict[str, Any], Path]:
+    """Never substitute or rebase another News Pulse window during a refresh."""
+    from app.mt5_evidence_jobs import _set_values
+
+    path = NEWS_RESEARCH_ROOT / f"{product.slug}-{period}-model4.json"
+    if mode != "standard" or not path.is_file():
+        raise RuntimeError(f"Run the audited News Pulse coverage runner for {product.slug} {period} first.")
+    result = json.loads(path.read_text(encoding="utf-8-sig"))
+    if (result['slug'] != product.slug or result['period_key'] != period
+            or result['from_date'] != start.isoformat() or result['to_exclusive'] != end.isoformat()):
+        raise RuntimeError('News Pulse source dates differ from the requested window; an independent run is required.')
+    report = (NEWS_RESEARCH_ROOT / result['source_report']).resolve()
+    if NEWS_RESEARCH_ROOT.resolve() not in report.parents or file_hash(report) != result['source_report_sha256']:
+        raise RuntimeError('News Pulse native report identity failed validation.')
+    manifest = result.get('build') or json.loads((NEWS_RESEARCH_ROOT / 'BUILD MANIFEST.json').read_text())
+    original_source = (PACKAGE_ROOT / product.expert_source).with_suffix('.mq5')
+    if file_hash(original_source) != manifest['source_sha256']:
+        raise RuntimeError('News Pulse source changed after the audited runs; rerun before publishing.')
+    for name,digest in manifest['dependencies'].items():
+        dependency = (NEWS_RESEARCH_ROOT / name if name=='NewsPulseTesterCalendar.mqh'
+                      else PACKAGE_ROOT / '_Shared' / name if name=='CalyxAdaptivePortfolio.mqh'
+                      else original_source.parent / name)
+        if not dependency.is_file() or file_hash(dependency)!=digest:
+            raise RuntimeError(f'News Pulse dependency {name} changed after the audited run.')
+    if manifest.get('indexed_lookup') and not (NEWS_RESEARCH_ROOT/'LOOKUP PARITY.json').is_file():
+        raise RuntimeError('The faster historical lookup has not passed native control-run parity.')
+    expected_settings = _set_values(PACKAGE_ROOT / product.set_source, False, {
+        'InpAdaptivePortfolioControls': 'false', 'InpTesterFromDateUTC': start.strftime('%Y%m%d'),
+        'InpTesterToDateUTC': end.strftime('%Y%m%d'),
+    })
+    for line in expected_settings.splitlines():
+        if not line.strip() or line.lstrip().startswith(';') or '=' not in line:
             continue
-    return None
+        key, value = line.split('=', 1)
+        if result['settings'].get(key.strip()) != value.split('||')[0].strip():
+            raise RuntimeError(f'News Pulse audited input {key} no longer matches the current preset.')
+    news_payload_from_result(result)  # Reconcile dates, fees and ledger before reuse.
+    return result, report
 
 
 def source_fingerprint(product: Product, mode: str, start: date, end: date) -> dict[str, Any]:
@@ -195,6 +215,16 @@ def cleanup_stale_dynamic_artifacts() -> int:
 def run_native(product: Product, mode: str, period: str, start: date, end: date, *, force: bool) -> Path:
     report_path, metadata_path = source_paths(product, mode, period)
     fingerprint = source_fingerprint(product, mode, start, end)
+    if product.slug in NEWS_PULSE_SLUGS:
+        if force:
+            raise RuntimeError('Use the audited News Pulse coverage runner for fresh official-calendar tests; generic refresh cannot extend its calendar.')
+        result, reviewed_report = independent_news_result(product, mode, period, start, end)
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(reviewed_report, report_path)
+        write_json(metadata_path, {**fingerprint, 'source_report_sha256': result['source_report_sha256'],
+                                  'source': 'independent-official-calendar-window'})
+        print(f"IMPORT {product.label} {period}: exact independent window", flush=True)
+        return report_path
     if not force and report_path.is_file() and metadata_path.is_file():
         try:
             if json.loads(metadata_path.read_text(encoding="utf-8-sig")) == fingerprint:
@@ -202,26 +232,6 @@ def run_native(product: Product, mode: str, period: str, start: date, end: date,
                 return report_path
         except (OSError, json.JSONDecodeError):
             pass
-
-    # News Pulse v2.13 intentionally refuses long-horizon tester runs outside
-    # its current FXMacroData coverage. Reuse the locked official-calendar BTC
-    # replay so every website period and the portfolio share one audited source.
-    reviewed_report = REVIEWED_NEWS_PULSE_REPORTS.get(product.slug)
-    if mode == "standard" and reviewed_report is not None:
-        if not reviewed_report.is_file():
-            raise RuntimeError(f"Missing reviewed News Pulse report: {reviewed_report}")
-        report_path.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(reviewed_report, report_path)
-        write_json(
-            metadata_path,
-            {
-                **fingerprint,
-                "source": "official-calendar-three-year-replay",
-                "source_report_sha256": file_hash(reviewed_report),
-            },
-        )
-        print(f"IMPORT {product.label} {mode} {period}: official-calendar three-year replay", flush=True)
-        return report_path
 
     input_overrides: dict[str, str] = {}
     if product.slug in NEWS_PULSE_SLUGS:
@@ -267,6 +277,11 @@ def run_native(product: Product, mode: str, period: str, start: date, end: date,
 
 
 def product_payload(product: Product, mode: str, period: str, start: date, end: date, report: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    if product.slug in NEWS_PULSE_SLUGS:
+        result, reviewed_report = independent_news_result(product, mode, period, start, end)
+        if file_hash(report) != file_hash(reviewed_report):
+            raise RuntimeError('Refusing to replace audited News Pulse evidence with a different report.')
+        return news_payload_from_result(result), result['trades']
     parse_mt5_balance_series.cache_clear()
     series = [dict(point) for point in parse_mt5_balance_series(report)]
     native = _native_metrics(report)
@@ -277,24 +292,6 @@ def product_payload(product: Product, mode: str, period: str, start: date, end: 
         for trade in all_trades
         if start.isoformat() <= str(trade.get("close_time") or "")[:10] <= end.isoformat()
     ]
-    # A reviewed multi-year report compounds from its own initial balance. When
-    # it is sliced into 6m/1y website windows, rebase cash P/L and costs to the
-    # site's $10k reference balance; otherwise a late slice inherits the much
-    # larger position sizes accumulated earlier in the full report.
-    if product.slug in REVIEWED_NEWS_PULSE_REPORTS and len(trades) != all_trade_count:
-        initial = float(native.get("initial_balance", 10_000) or 10_000)
-        balance_at_window_start = initial + sum(
-            float(trade.get("net_profit") or 0.0)
-            for trade in all_trades
-            if str(trade.get("close_time") or "")[:10] < start.isoformat()
-        )
-        rebase_multiplier = initial / balance_at_window_start if balance_at_window_start > 0 else 1.0
-        for trade in trades:
-            for field in ("gross_profit", "commission", "swap", "total_costs", "net_profit"):
-                if trade.get(field) is not None:
-                    trade[field] = round(float(trade[field]) * rebase_multiplier, 2)
-            trade["window_rebase_multiplier"] = round(rebase_multiplier, 8)
-            trade["cost_basis"] = "Rebased from the official multi-year MT5 replay to a USD 10,000 window start"
     for number, trade in enumerate(trades, 1):
         trade["number"] = number
         trade["cache_slug"] = product.slug
@@ -338,13 +335,7 @@ def product_payload(product: Product, mode: str, period: str, start: date, end: 
         "cached_trade_count": len(trades),
         "trade_coverage_from": first_trade_at,
         "trade_coverage_to": last_trade_at,
-        "notice": (
-            "Official-calendar three-year MT5 replay using 94 verified NFP, CPI and FOMC releases. Shorter "
-            "windows rebase the compounded cash ledger to USD 10,000; the 5-year view contains only the "
-            "available three-year BTC coverage and does not fabricate earlier events."
-            if product.slug in REVIEWED_NEWS_PULSE_REPORTS
-            else "Precomputed native MT5 Every Tick result using the exact active recommended EA and SET file."
-        ),
+        "notice": "Precomputed native MT5 Every Tick result using the exact active recommended EA and SET file.",
         "source": "precomputed-native-mt5-cache",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "history_quality": native.get("history_quality"),
@@ -668,16 +659,12 @@ def main() -> int:
             for mode in modes:
                 for period in periods:
                     report, _ = source_paths(product, mode, period)
-                    if mode == "standard" and product.slug in REVIEWED_NEWS_PULSE_REPORTS:
-                        report = REVIEWED_NEWS_PULSE_REPORTS[product.slug]
                     summary_path = product_cache_path(product.slug, mode, period)
                     if not report.is_file() or not summary_path.is_file():
                         continue
                     old_summary = json.loads(summary_path.read_text(encoding="utf-8-sig"))
                     start = date.fromisoformat(str(old_summary["available_from"]))
                     end = date.fromisoformat(str(old_summary["available_to"]))
-                    if mode == "standard" and product.slug in REVIEWED_NEWS_PULSE_REPORTS:
-                        end = max(end, reviewed_report_end(report) or end)
                     payload, trades = product_payload(product, mode, period, start, end, report)
                     write_json(summary_path, payload)
                     write_json(product_trades_path(product.slug, mode, period), trades)

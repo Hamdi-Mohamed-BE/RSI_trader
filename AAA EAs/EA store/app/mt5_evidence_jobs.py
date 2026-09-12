@@ -77,9 +77,9 @@ def _native_metrics(path: Path) -> dict[str, Any]:
 def _native_trades(path: Path, label: str) -> list[dict[str, Any]]:
     """Read completed positions directly from the MT5 Deals table.
 
-    The tested EAs hold one position per symbol, so an exit deal can be paired
-    with the oldest still-open entry deal for the same symbol. Entry costs are
-    apportioned when an EA closes a position in more than one deal.
+    Pair exits with the opposite deal side, not just the symbol. News Pulse
+    can hold a long and a short simultaneously. Within each side, entries are
+    matched FIFO; entry costs are apportioned for partial closes.
     """
     text = _read_report(path)
     marker = text.lower().find("<b>deals</b>")
@@ -87,7 +87,7 @@ def _native_trades(path: Path, label: str) -> list[dict[str, Any]]:
         return []
     row_re = re.compile(r"<tr\b[^>]*>(.*?)</tr>", re.I | re.S)
     cell_re = re.compile(r"<td\b[^>]*>(.*?)</td>", re.I | re.S)
-    entries: dict[str, list[dict[str, Any]]] = {}
+    entries: dict[tuple[str, str], list[dict[str, Any]]] = {}
     trades: list[dict[str, Any]] = []
     for row_html in row_re.findall(text[marker:]):
         cells = [_clean(cell) for cell in cell_re.findall(row_html)]
@@ -103,7 +103,7 @@ def _native_trades(path: Path, label: str) -> list[dict[str, Any]]:
         profit = _number(cells[10])
         timestamp = cells[0].replace(".", "-", 2).replace(" ", "T", 1)
         if direction in {"in", "in/out"}:
-            entries.setdefault(symbol, []).append(
+            entries.setdefault((symbol, deal_type), []).append(
                 {
                     "time": timestamp,
                     "type": deal_type,
@@ -121,7 +121,8 @@ def _native_trades(path: Path, label: str) -> list[dict[str, Any]]:
         if direction not in {"out", "out by", "in/out"}:
             continue
         remaining_exit = volume
-        queue = entries.get(symbol, [])
+        entry_type = "sell" if deal_type == "buy" else "buy"
+        queue = entries.get((symbol, entry_type), [])
         while remaining_exit > 1e-9 and queue:
             entry = queue[0]
             matched = min(remaining_exit, float(entry["remaining"]))

@@ -27,6 +27,7 @@ from .catalog import (
     get_catalog,
     get_product,
     get_sellable_catalog,
+    _legacy_news_pulse_hard_evidence,
     package_buy_url,
 )
 from .evidence_cache import (
@@ -44,6 +45,7 @@ from .evidence_series import parse_mt5_balance_series
 from .mt5_live import live_mt5
 from .mt5_evidence_jobs import _native_trades, mt5_evidence_jobs
 from .trade_metrics import enrich_trades, outcome_streaks
+from .news_evidence import load_news_summary
 
 
 @asynccontextmanager
@@ -87,14 +89,9 @@ def _recommended_mode(product: Product) -> str:
 
 
 def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> Product:
-    # News Pulse v2.15 currently has a shorter but release-complete calendar
-    # audit. Do not let the older fixed-period cache replace those current,
-    # explicitly watch-only figures on catalogue cards.
-    if product.label.startswith("News Pulse "):
-        return product
     mode = _recommended_mode(product)
     base_evidence = product.dynamic_evidence if mode == "dynamic" else product.safe_evidence if mode == "safe" else product.evidence
-    cached = load_product_summary(product.slug, mode, period)
+    cached = load_news_summary(product.slug, period) if product.label.startswith("News Pulse ") else load_product_summary(product.slug, mode, period)
     if not cached or not cached.get("stats") or base_evidence is None:
         return product
     stats = cached["stats"]
@@ -127,10 +124,9 @@ def _display_catalog(period: str = DEFAULT_PERIOD) -> list[Product]:
 
 @lru_cache(maxsize=4)
 def _verified_news_payload(slug: str) -> dict[str, Any] | None:
-    """Return the corrected FXMacroData schedule replay used on News cards.
+    """Retain old trade identities for bookmarked legacy chart endpoints only.
 
-    Older fixed-period cache files predate the calendar integrity gate.  They
-    must never replace these figures on a current News Pulse detail page.
+    Current cards/details use independently tested, period-matched caches.
     """
     product = get_product(slug)
     if product is None or product.evidence is None or not product.label.startswith("News Pulse "):
@@ -158,9 +154,19 @@ def _verified_news_payload(slug: str) -> dict[str, Any] | None:
 
     if not report.is_file():
         return None
-    evidence = product.evidence
+    # Retain the archived chart endpoint for old browser tabs; its trade IDs
+    # must keep referring to the old replay, not the newly published periods.
+    evidence = _legacy_news_pulse_hard_evidence(product.label)
+    if evidence is None:
+        return None
     start, end = evidence.period.split(" to ", 1)
     trades = enrich_trades(_native_trades(report, product.label), slug, starting_balance=initial_balance)
+    for trade in trades:
+        # Verified News Pulse evidence is rebuilt directly from the corrected
+        # schedule report, so it is not addressable through the fixed-period
+        # cache or a temporary MT5 job.  Give the browser an explicit stable
+        # identifier for the verified-trade chart endpoint.
+        trade["verified_news_slug"] = slug
     streaks = outcome_streaks(trades)
     commission = round(sum(float(trade.get("commission") or 0) for trade in trades), 2)
     swap = round(sum(float(trade.get("swap") or 0) for trade in trades), 2)
@@ -439,16 +445,12 @@ async def product_detail(
         else product.evidence
     )
     is_news_pulse = product.label.startswith("News Pulse ")
-    cached = _verified_news_payload(product.slug) if is_news_pulse else load_product_summary(product.slug, mode, period)
+    cached = load_news_summary(product.slug, period) if is_news_pulse else load_product_summary(product.slug, mode, period)
     if cached and cached.get("stats") and display_evidence is not None:
         stats = cached["stats"]
         display_evidence = display_evidence.model_copy(
             update={
-                "label": (
-                    f"{product.evidence.label} — current schedule evidence"
-                    if is_news_pulse
-                    else f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration"
-                ),
+                "label": f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
                 "period": str(cached["period"]),
                 "return_pct": float(stats.get("return_pct") or 0),
                 "profit_factor": float(stats.get("profit_factor") or 0),
@@ -593,13 +595,8 @@ async def evidence_series(
     if mode == "dynamic" and not product.dynamic_mode_supported:
         raise HTTPException(status_code=409, detail="This EA has no saved Dynamic London configuration")
     if product.label.startswith("News Pulse "):
-        verified_payload = _verified_news_payload(product.slug)
-        if verified_payload is None:
-            raise HTTPException(status_code=503, detail="The corrected News Pulse schedule evidence is not ready yet.")
-        return JSONResponse(
-            verified_payload,
-            headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"},
-        )
+        if load_news_summary(product.slug, period) is None:
+            raise HTTPException(status_code=503, detail=f"The verified {period} News Pulse evidence is not ready yet.")
     selected_mode = "standard" if mode == "compare" else mode
     payload = load_product_cache(product.slug, selected_mode, period)
     if payload is None:
@@ -646,6 +643,39 @@ async def evidence_trade_chart(job_id: str, trade_number: int) -> JSONResponse:
     trade = mt5_evidence_jobs.get_trade(job_id, trade_number)
     if trade is None:
         raise HTTPException(status_code=404, detail="Fresh MT5 trade not found. Run Update from MT5 first.")
+    try:
+        opened = datetime.fromisoformat(str(trade["open_time"])).replace(tzinfo=timezone.utc)
+        closed = datetime.fromisoformat(str(trade["close_time"])).replace(tzinfo=timezone.utc)
+        duration = max(closed - opened, timedelta(minutes=5))
+        timeframe = "M1" if duration <= timedelta(hours=3) else "M5" if duration <= timedelta(days=1) else "M15"
+        padding = max(timedelta(minutes=30), min(duration / 4, timedelta(days=1)))
+        market = live_mt5.price_bars(str(trade["symbol"]), timeframe, opened - padding, closed + padding)
+    except (KeyError, TypeError, ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return JSONResponse(
+        {**market, "trade": trade},
+        headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
+    )
+
+
+@app.get(
+    "/api/evidence/{slug}/verified-trades/{trade_number}/chart",
+    name="verified_news_trade_chart",
+)
+async def verified_news_trade_chart(slug: str, trade_number: int) -> JSONResponse:
+    payload = _verified_news_payload(slug)
+    if payload is None:
+        raise HTTPException(status_code=404, detail="Verified News Pulse evidence not found.")
+    trade = next(
+        (
+            dict(row)
+            for row in payload.get("trades", [])
+            if int(row.get("number", -1)) == trade_number
+        ),
+        None,
+    )
+    if trade is None:
+        raise HTTPException(status_code=404, detail="Verified News Pulse trade not found.")
     try:
         opened = datetime.fromisoformat(str(trade["open_time"])).replace(tzinfo=timezone.utc)
         closed = datetime.fromisoformat(str(trade["close_time"])).replace(tzinfo=timezone.utc)
