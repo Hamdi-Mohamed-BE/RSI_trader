@@ -161,7 +161,7 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "USDJPY London Open Momentum": ("london-open-momentum-usdjpy", "current", "Time exit / BE at 0.75R"),
     "XAU Squeeze Momentum Standard": ("squeeze-momentum-xau-standard", "current", "3.5 ATR stop / 1.5R / ATR ratchet"),
     "XAU Squeeze Momentum High Win 0.75R": ("squeeze-momentum-xau-high-win", "current", "3 ATR stop / 0.75R / ATR ratchet"),
-    "News Pulse XAU": ("news-xau-hard-1p5", "current", "Native 60-second exit"),
+    "News Pulse XAU": ("news-xau-t15-o4-s4", "current", "Native 60-second exit"),
     "News Pulse XAG": ("news-xag-hard-1p5", "current", "Native 60-second exit"),
     "News Pulse BTC": ("news-btc-hard-1p5", "current", "Native 60-second exit"),
     "XAU RSI VWAP": ("rsi-vwap-xau", "current", "Current EA exits"),
@@ -950,23 +950,36 @@ CORE_META: dict[str, dict[str, Any]] = {
 }
 
 
-def _news_pulse_meta(symbol: str, entry: str, stop: str, trail: str) -> dict[str, Any]:
+def _news_pulse_meta(
+    symbol: str,
+    entry: str,
+    stop: str,
+    trail: str,
+    *,
+    lead_seconds: int = 30,
+    trailing_enabled: bool = True,
+) -> dict[str, Any]:
+    trail_step = (
+        {"title": "Retain the optimized native trail", "detail": f"After favorable movement reaches 1.5R, the native manager may tighten the stop using a {trail} trailing distance. Dynamic 50/20 and the experimental regime gate are disabled because this exact configuration was validated without them."}
+        if trailing_enabled
+        else {"title": "Leave the initial stop unchanged", "detail": "Trailing is disabled for the approved XAU profile. A triggered position keeps its initial hard stop while the news move develops, unless the stop is hit or the sixty-second event exit closes it."}
+    )
     return {
         "strategy": "Scheduled two-sided news momentum",
         "tagline": f"A two-sided {symbol} event breakout with a source-locked 1.50% maximum planned exposure.",
-        "description": f"This {symbol} M1 configuration watches NFP, CPI and FOMC in MT5's USD economic calendar. Thirty seconds before release it places both a buy stop and a sell stop using the market-specific optimized geometry, then removes pending exposure and closes positions sixty seconds after the event.",
+        "description": f"This {symbol} M1 configuration watches NFP, CPI and FOMC in MT5's USD economic calendar. {lead_seconds} seconds before release it places both a buy stop and a sell stop using the market-specific optimized geometry, then removes pending exposure and closes positions sixty seconds after the event.",
         "session": "NFP, CPI and FOMC",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable News Pulse v2.15 source and the exact hard-risk SET were checked against independent native MT5 runs using official BLS/Federal Reserve release times. The research calendar lookup matched the untouched six-month controls trade for trade. The v2.15 live gate only accepts high-impact primary CPI/Core CPI names, preventing secondary Median CPI and inflation-expectation releases from creating another straddle. Live event discovery is unchanged; historical real-tick coverage is disclosed separately.",
+        "logic_audit_note": "Readable News Pulse v2.16 source and the exact hard-risk SET were checked against independent native MT5 runs using official BLS/Federal Reserve release times. The live gate accepts only high-impact primary CPI/Core CPI names, preventing secondary Median CPI and inflation-expectation releases from creating another straddle. XAU uses the approved T-15, live-quote, 4-unit offset, 4-unit stop and no-trailing profile. Historical real-tick coverage is disclosed separately.",
         "logic": [
-            {"title": "Find only primary high-impact USD events", "detail": "Live trading scans MT5's native USD calendar but accepts only high-impact target releases. CPI must begin with CPI, Core CPI, Consumer Price Index or Core Consumer Price Index, so Cleveland Fed Median CPI and inflation-expectation events cannot qualify. The schedule is cached eight days ahead and refreshed every 300 seconds. Strategy Tester uses a coverage-checked UTC calendar and version 2.15 rejects missing or out-of-range schedules. The current website history uses independently run 6-month, 1-year, 3-year and 5-year windows with official BLS/Federal Reserve release timestamps; real-tick coverage is disclosed separately."},
+            {"title": "Find only primary high-impact USD events", "detail": "Live trading scans MT5's native USD calendar but accepts only high-impact target releases. CPI must begin with CPI, Core CPI, Consumer Price Index or Core Consumer Price Index, so Cleveland Fed Median CPI and inflation-expectation events cannot qualify. The schedule is cached eight days ahead and refreshed every 300 seconds. Strategy Tester uses a coverage-checked UTC calendar and version 2.16 rejects missing or out-of-range schedules. The current website history uses independently run 6-month, 1-year, 3-year and 5-year windows with official BLS/Federal Reserve release timestamps; real-tick coverage is disclosed separately."},
             {"title": "Anchor timing to broker data", "detail": "Calendar timestamps and quote timestamps share broker-server time. VPS local timezone is ignored, and placement is blocked unless MT5 is connected and a broker-stamped quote arrived during the preceding five seconds."},
-            {"title": "Place both breakout stops", "detail": f"During the final thirty seconds before release, the EA places a buy stop {entry} above Ask and a sell stop {entry} below Bid on {symbol}. Buy and sell use independent pending orders and a symbol-specific magic number."},
-            {"title": "Hard-lock maximum planned risk", "detail": f"Each pending direction uses a maximum base risk of 0.75% equity to its {stop} initial stop. Recommended Adaptive may taper that base lower, but the BAT cannot raise it; combined planned event exposure is therefore no more than 1.50% before gaps and slippage."},
-            {"title": "Retain the optimized native trail", "detail": f"After favorable movement reaches 1.5R, the native manager may tighten the stop using a {trail} trailing distance. Dynamic 50/20 and the experimental regime gate are disabled because this exact configuration was validated without them."},
+            {"title": "Place both breakout stops", "detail": f"During the final {lead_seconds} seconds before release, the EA places a buy stop {entry} above Ask and a sell stop {entry} below Bid on {symbol}. Both independent pending orders remain armed after the first fill, allowing the opposite side to trigger during a reversal."},
+            {"title": "Hard-lock maximum planned risk", "detail": f"Each pending direction uses 0.75% equity to its {stop} initial stop. News Pulse bypasses the adaptive portfolio's entry stops and risk taper, so the BAT cannot change that hard-coded risk. Combined planned event exposure is 1.50% before gaps and slippage."},
+            trail_step,
             {"title": "Force the event lifecycle to finish", "detail": "At sixty seconds after release, the EA deletes any unfilled pending order and closes any remaining News Pulse position. Account, symbol and magic-number state allow that lifecycle to recover after a terminal restart."},
         ],
-        "risk_note": "Risk is not controlled by the BAT prompt for this EA. Version 2.15 caps base risk at 0.75% per pending stop and 1.50% maximum planned event exposure; Recommended Adaptive may reduce it. News gaps, spread expansion, slippage, rejections or a market jumping over the stop can still produce a larger realized loss.",
+        "risk_note": "Risk is not controlled by the BAT prompt or Recommended Adaptive for this EA. Version 2.16 hard-locks 0.75% per pending stop and 1.50% maximum planned event exposure. News gaps, spread expansion, slippage, rejections or a market jumping over the stop can still produce a larger realized loss.",
         "price": 549,
         "accent": "yellow",
         "featured": symbol in {"XAUUSD", "XAGUSD", "BTCUSD"},
@@ -978,7 +991,7 @@ def _news_pulse_meta(symbol: str, entry: str, stop: str, trail: str) -> dict[str
 CORE_META.pop("AAA Final News Pulse - NFP CPI FOMC - LONG ONLY ROBUST 60s", None)
 CORE_META.update(
     {
-        "News Pulse XAU": _news_pulse_meta("XAUUSD", "6.0 price units", "6.0-unit", "15.0-unit"),
+        "News Pulse XAU": _news_pulse_meta("XAUUSD", "4.0 price units", "4.0-unit", "disabled", lead_seconds=15, trailing_enabled=False),
         "News Pulse XAG": _news_pulse_meta("XAGUSD", "0.08 price units", "0.08-unit", "0.20-unit"),
         "News Pulse BTC": _news_pulse_meta("BTCUSD", "75 price units", "75-unit", "112.5-unit"),
     }

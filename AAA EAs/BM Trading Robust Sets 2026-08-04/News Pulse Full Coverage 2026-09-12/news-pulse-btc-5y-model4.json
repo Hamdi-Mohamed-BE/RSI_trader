@@ -8210,7 +8210,7 @@
       "balance": 253958.92
     }
   ],
-  "source_report_sha256": "d5d41840f065c44f80cd855ea9d429d339eab289dce8f634370aee4a922989fb",
+  "source_report_sha256": "d33a869578e89da64e514e7d00e61f4b1a5d00995993f6876175c84c2ebc0c5d",
   "source_report": "Backtest Reports\\news-pulse-btc-5y-model4.htm",
   "settings": {
     "InpUseMarkovRegimeFilter": "false",
@@ -8241,6 +8241,7 @@
     "InpCalendarRefreshSeconds": "300",
     "InpEntryOffsetPrice": "75",
     "InpStopLossPrice": "75",
+    "InpUseTrailingStop": "true",
     "InpTrailStartR": "1.5",
     "InpTrailDistancePrice": "112.5",
     "InpForceCloseSecondsAfterEvent": "60",
@@ -8250,18 +8251,18 @@
   },
   "build": {
     "source_path": "AAA Final EAs\\AAA Final News Pulse EA\\AAA Final News Pulse EA.mq5",
-    "source_sha256": "895f66f0189f7bc8c7411aa1cddcc7c82dfc56d9110864cc3d0c00143a13920f",
-    "research_source_sha256": "cb06fd7e37b719ef5bc1c5442e004ee4be3a4a366ed0d2bd1319f24e54b580bf",
-    "compiled_sha256": "ce388dc036472200ab3d68e7ba2b4d58e6b7ac5db3254a14fba1dbbf95c27c2b",
+    "source_sha256": "101d9530b8a29f90fe98084ae06b0a6933a38e3b69d5e88b8288e802383d17e3",
+    "research_source_sha256": "35fefc6c7269ea050c34224eb164aab36259bdcc07f197a4063b3dac77c79975",
+    "compiled_sha256": "1f4959d0053418d103538524b701c2f632417fdf60c6ff61f8f4dfd706f27988",
     "indexed_lookup": true,
-    "changes": "Include relocation, verified tester calendar expansion; equivalent binary-search historical lookup; production strategy and live files unchanged",
+    "changes": "News Pulse v2.16 production source with verified tester calendar expansion; equivalent binary-search historical lookup",
     "dependencies": {
-      "AAA_Final_Common.mqh": "4be16d2124c69817d431019a7c26d7a9cc2a1d7ade30fe0ae86d8cb09821557b",
-      "AAA_Final_Strategy_Engine.mqh": "716e48e44d66819ef8b2e70d3f844c224f8c6743e9c36294db2631c805011360",
-      "CalyxAdaptivePortfolio.mqh": "3adaecf62184cdf1568995c92da8e6e39a69bb6392bc8bce735e6f853daee06a",
-      "DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+      "AAA_Final_Common.mqh": "de2a6eae1a1437a213fdc585049474d493f028457932f420ccde5a6d7c5fd286",
+      "AAA_Final_Strategy_Engine.mqh": "6d14a3f2d809b2b10eeb1fb514c53e7b4d9cc9d8ff1a42ea97ec2555f3cb1050",
+      "CalyxAdaptivePortfolio.mqh": "8e7f976b8515e81a37a803da16f1c268e4d11bd3146f44dd7765d76a1e8127c8",
+      "DynamicTrailingSessionFilter.mqh": "8a838ffeb60e331512e2ed25c0f4b50a4793668ce0bb87f65bdffa859e2eeee4",
       "NewsPulseTesterCalendar.mqh": "1e3fefa23f62122f0eb472d3a519ada470eae5260ac7ab80e26cabf050f3467f",
-      "SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72"
+      "SafeRegimeFilter.mqh": "29923a64684ccdc0d59cede9addb9c50825116599937c48725e8999790385633"
     }
   }
 }

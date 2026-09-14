@@ -9,6 +9,7 @@ echo - Entry lots round UP to the broker step; below-minimum requests use minimu
 echo - Actual stop risk can exceed the selected target when the broker lot step or minimum requires it.
 echo - News Pulse XAU, XAG, BTC and Gold News V9 bypass ALL adaptive entry stops and risk tapers.
 echo - Their locked risk stays 0.75%% per planned entry; two-sided News Pulse reserves 1.50%% combined. Signal and broker checks remain active.
+echo - News Pulse XAU uses the approved T-15 / $4 offset / $4 stop / no-trailing profile and keeps both pending sides armed.
 echo - Nasdaq 5M Candle Momentum is installed at 0.25x your selected risk.
 echo - Non-News EAs block new entries after a 5%% daily closed loss and enforce the approved drawdown and per-EA loss-streak tapers.
 echo - News profits and losses still count toward account-wide controls for non-News EAs.

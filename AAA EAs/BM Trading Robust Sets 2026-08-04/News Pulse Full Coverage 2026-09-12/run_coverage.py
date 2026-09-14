@@ -4,6 +4,7 @@ import argparse
 import configparser
 import hashlib
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -16,7 +17,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parent
 PACKAGE=ROOT.parent
 STORE=PACKAGE.parent/'EA store'
-TESTER=PACKAGE/'_Backtests'/'MT5-DMC-20260811'
+TESTER=Path(os.environ.get('CALYX_MT5_TESTER', PACKAGE/'_Backtests'/'MT5-DMC-20260811'))
 NAME='News Pulse Full Coverage'
 FOLDER=Path('AAA Research')/'News Full Coverage 20260912'
 WINDOWS={'6m':'2026-03-05','1y':'2025-09-05','3y':'2023-09-05','5y':'2021-09-05'}
@@ -77,9 +78,9 @@ def prepare(indexed_lookup=False):
     subprocess.run(f'"{TESTER / "MetaEditor64.exe"}" /portable /compile:"{target / (NAME+".mq5")}" /log:"{log}"',cwd=TESTER,startupinfo=hidden(),timeout=120)
     assert '0 errors, 0 warnings' in log.read_text(encoding='utf-16'),log.read_text(encoding='utf-16')
     shutil.copy2(target/(NAME+'.ex5'),ROOT/'EA'/(NAME+'.ex5'))
-    identity=dict(source_path=str(source.relative_to(PACKAGE)),source_sha256=sha(source),research_source_sha256=sha(ROOT/'EA'/(NAME+'.mq5')),compiled_sha256=sha(ROOT/'EA'/(NAME+'.ex5')),indexed_lookup=indexed_lookup,changes='Include relocation, verified tester calendar expansion'+('; equivalent binary-search historical lookup' if indexed_lookup else '')+'; production strategy and live files unchanged',dependencies={p.name:sha(p) for p in (ROOT/'EA').glob('*.mqh')})
+    identity=dict(source_path=str(source.relative_to(PACKAGE)),source_sha256=sha(source),research_source_sha256=sha(ROOT/'EA'/(NAME+'.mq5')),compiled_sha256=sha(ROOT/'EA'/(NAME+'.ex5')),indexed_lookup=indexed_lookup,changes='News Pulse v2.16 production source with verified tester calendar expansion'+('; equivalent binary-search historical lookup' if indexed_lookup else ''),dependencies={p.name:sha(p) for p in (ROOT/'EA').glob('*.mqh')})
     (ROOT/'BUILD MANIFEST.json').write_text(json.dumps(identity,indent=2),encoding='utf-8')
-    print('COMPILED current News Pulse v2.15 + official five-year calendar',flush=True)
+    print('COMPILED News Pulse v2.16 + official five-year calendar',flush=True)
 
 def parse_result(slug,period,model,report,journal):
     calendar=json.loads((ROOT/'OFFICIAL CALENDAR.json').read_text())
@@ -94,6 +95,12 @@ def parse_result(slug,period,model,report,journal):
     inputs=_report_inputs(report)
     assert inputs['InpRiskPercent']=='0.75'
     assert inputs['InpAdaptivePortfolioControls']=='false'
+    if slug == 'news-pulse-xau':
+        assert inputs['InpPlacementLeadSeconds']=='15'
+        assert inputs['InpEntryOffsetPrice']=='4'
+        assert inputs['InpStopLossPrice']=='4'
+        assert inputs['InpUseTrailingStop']=='false'
+        assert inputs['InpForceCloseSecondsAfterEvent']=='60'
     assert inputs['InpTesterFromDateUTC']==start.replace('-','')
     assert inputs['InpTesterToDateUTC']==END.replace('-','')
     product=get_product(slug)
@@ -137,7 +144,10 @@ def run(slug,period,model):
     set_name=tag+'.set'
     (ROOT/'Sets'/set_name).write_text(settings,encoding='utf-8')
     shutil.copy2(ROOT/'Sets'/set_name,TESTER/'MQL5'/'Profiles'/'Tester'/set_name)
-    reference=configparser.ConfigParser();reference.read(TESTER/'backtest-configs'/'xauusd-closing-momentum-20260912'/'6m.ini',encoding='utf-16')
+    reference_path=next((TESTER/'backtest-configs').rglob('*.ini'),None)
+    if reference_path is None: raise FileNotFoundError('No MT5 tester reference config found under '+str(TESTER/'backtest-configs'))
+    reference_encoding='utf-16' if reference_path.read_bytes().startswith((b'\xff\xfe',b'\xfe\xff')) else 'utf-8-sig'
+    reference=configparser.ConfigParser();reference.read(reference_path,encoding=reference_encoding)
     common=dict(reference['Common'])
     config='[Common]\n'+''.join(f'{k}={v}\n' for k,v in common.items())+'\n[Experts]\nEnabled=0\nAllowLiveTrading=0\nAllowDllImport=0\n\n[Tester]\n'
     config+=f'Expert={FOLDER}\\{NAME}\nExpertParameters={set_name}\nSymbol={product.canonical}\nPeriod=M1\nDeposit=10000\nCurrency=USD\nLeverage=1:2000\nModel={model}\nExecutionMode=1\nOptimization=0\nFromDate={start.replace("-",".")}\nToDate={END.replace("-",".")}\nForwardMode=0\nReport=reports\\news-full-coverage\\{tag}.htm\nReplaceReport=1\nShutdownTerminal=1\nUseCloud=0\nVisual=0\n'
@@ -156,6 +166,7 @@ def run(slug,period,model):
         if path.stat().st_mtime<started:continue
         data=path.read_bytes()[offsets.get(path,0):]
         journal+=data.decode('utf-16-le',errors='replace')
+    journal=journal.replace('\r\n','\n').replace('\r','\n')
     (ROOT/'Audit'/(tag+'-journal.txt')).write_text(journal,encoding='utf-8')
     for path in report.parent.glob(tag+'*'):shutil.copy2(path,ROOT/'Backtest Reports'/path.name)
     result=parse_result(slug,period,model,ROOT/'Backtest Reports'/report.name,journal)

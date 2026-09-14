@@ -76,7 +76,7 @@ def main():
         write_json(audit_path,audit)
     write_json(ROOT/'PUBLISHED RESULTS.json',{'runs':[{k:v for k,v in r.items() if k not in ('trades','series','settings')} for _,_,r,_ in rows],'portfolio':portfolio})
     lines=['# News Pulse — full independent period coverage','',
-           'Current v2.15 trading rules and recommended presets. USD 10,000 restarted per run; 0.75% planned risk per pending side. Actual costs and fills may exceed planned risk. No live trading or installer changes.','',
+           'News Pulse v2.16 trading rules and current production presets. XAU uses the approved T-15, live Ask/Bid, 4-unit offset, 4-unit stop, no-trailing profile while both pending sides remain armed. USD 10,000 restarted per run; 0.75% planned risk per pending side. Actual costs and fills may exceed planned risk.','',
            '| EA | Period | Net return | Net PF | Win rate | Max equity DD | Trades | Events / placed | Tick quality | Commission | Swap |',
            '|---|---|---:|---:|---:|---:|---:|---:|---|---:|---:|']
     for slug,period,result,payload in rows:
@@ -84,7 +84,7 @@ def main():
         lines.append(f"| {result['label']} | {period} | {s['return_pct']:+.2f}% | {s['profit_factor']} | {s['win_rate_pct']:.2f}% | {s['max_drawdown_pct']:.2f}% | {s['trades']} | {result['calendar_expected']} / {result['calendar_placed']} | {s['history_quality']} | ${s['commission']:,.2f} | ${s['swap']:,.2f} |")
     lines+=['','## Coverage and method','',*[f'- {p}: {s} to {run.END}, end exclusive.' for p,s in run.WINDOWS.items()],
             '', 'All 158 scheduled releases across the five-year window are sourced to BLS or Federal Reserve receipts. Event coverage and tick coverage are distinct: Model 4 can generate older ticks when broker real ticks are unavailable. Scheduled events without trades remain in the audit, not fabricated as fills. The tester journal confirms fixed 1 ms execution delay, not a random-delay stress test.',
-            '', 'The research harness uses a faster, equivalent historical-calendar lookup. All three six-month native controls matched every trade field and statistic against the untouched strategy lookup (LOOKUP PARITY.json). No entry, exit, sizing or live EA rules were changed. The website deal importer now pairs exits to the correct long/short side when both news orders fill.',
+            '', 'The research harness uses a faster, equivalent historical-calendar lookup. All three six-month native controls matched every trade field and statistic against the untouched strategy lookup (LOOKUP PARITY.json). XAU now uses the approved T-15 / 4-unit / no-trailing production profile; XAG and BTC retain their prior presets. Both pending directions remain independently eligible to fill. The website deal importer pairs exits to the correct long/short side when both news orders fill.',
             '', 'Cards, detail statistics, period selector, equity curves, trade lists and reconstructed portfolio overlays now use these period-matched records. The adaptive portfolio remains a chronological overlay of separate tests, not a joint-margin native portfolio backtest.',
             '', 'Sources: OFFICIAL CALENDAR.json and bls-source-receipts.json. Native HTML reports are in Backtest Reports, per-run journals in Audit, and the previous website files are preserved in Previous Website Cache.']
     (ROOT/'RESULTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
