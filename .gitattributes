@@ -1,3 +1,12 @@
+# Preserve audited artifact bytes: source/report hashes must survive a checkout
+# even when a Windows machine enables core.autocrlf.
+"AAA EAs/BM Trading Robust Sets 2026-08-04/Gold Overnight Value Area EA/EA/*.mq5" -text whitespace=cr-at-eol
+"AAA EAs/BM Trading Robust Sets 2026-08-04/News Pulse Event Parameters Research 2026-09-19/Deployment/*.mqh" -text whitespace=cr-at-eol
+"AAA EAs/BM Trading Robust Sets 2026-08-04/News Pulse Multi Asset Event Parameters 2026-09-19/Deployment/*.mqh" -text whitespace=cr-at-eol
+"AAA EAs/BM Trading Robust Sets 2026-08-04/AAA Final EAs/AAA Final News Pulse XAU Event Specific EA/*.mq5" -text whitespace=cr-at-eol
+"AAA EAs/BM Trading Robust Sets 2026-08-04/AAA Final EAs/AAA Final News Pulse Multi Asset Event EA/*.mq5" -text whitespace=cr-at-eol
+"AAA EAs/BM Trading Robust Sets 2026-08-04/AAA Final EAs/AAA Final News Pulse EA/*.mqh" -text whitespace=cr-at-eol
+"AAA EAs/BM Trading Robust Sets 2026-08-04/_Shared/CalyxAdaptivePortfolio.mqh" -text whitespace=cr-at-eol
 AAA[[:space:]]EAs/BM[[:space:]]Trading[[:space:]]Robust[[:space:]]Sets[[:space:]]2026-08-04/3[[:space:]]way[[:space:]]gold[[:space:]]Full[[:space:]]Optimization[[:space:]]2026-09-13/Data/prices.npz filter=lfs diff=lfs merge=lfs -text
 AAA[[:space:]]EAs/BM[[:space:]]Trading[[:space:]]Robust[[:space:]]Sets[[:space:]]2026-08-04/XAU[[:space:]]Capped[[:space:]]Recovery[[:space:]]Research[[:space:]]2026-09-13/Audit/selected-5y-d1-equity.csv filter=lfs diff=lfs merge=lfs -text
 AAA[[:space:]]EAs/BM[[:space:]]Trading[[:space:]]Robust[[:space:]]Sets[[:space:]]2026-08-04/XAU[[:space:]]Capped[[:space:]]Recovery[[:space:]]Research[[:space:]]2026-09-13/Audit/baseline-5y-d1-equity.csv filter=lfs diff=lfs merge=lfs -text

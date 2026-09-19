@@ -1,14 +1,24 @@
 # Calyx — EA Store
 
+## Raw Gold Value Area and current website publication — 2026-09-19
+
+The maintained normal MT5 roster now contains **34 EAs**, including raw Gold Overnight Value Area. The optimized Gold candidate is not deployed. Its four independent native windows end September 18; the one-year result is +22.26%, 200 trades, 74% wins. Production parity matched all 200 original one-year trades. Gold News V9 remains evidence-pending, so 33 EAs contribute tested portfolio ledgers.
+
+News Pulse XAU continues to use the approved v2.16 event-specific settings, both pending directions, 0.75% target risk per side and adaptive exemption. Its website-native windows end September 5 exclusive: 6m +167.04% (22 trades), 1y +300.00% (40), 3y +1,029.12% (121), 5y +2,394.29% (194). Those are hindsight-fitted backtests, not forecasts. The September-19 research comparison has different dates and must not replace these website-window figures.
+
+The portfolio now uses the **intersection** of component histories, ending August 30, rather than extending missing data to the newest EA's date. Exact start/end dates and limitations are displayed. The manifest, per-EA ledgers and portfolio totals include raw Gold. The regular production risks have **not** been replaced by the separate $71.43 FTMO research proposal.
+
+Audited artifact paths in the root `.gitattributes` preserve exact bytes across Windows checkouts; line-ending conversion must not invalidate native source/report fingerprints. Restart the website after pulling changed catalogue/installer code. Updating or pushing files does not deploy new settings to attached MT5 charts.
+
 ## XAG / BTC / EURUSD event-specific promotion — 2026-09-19
 
-The user explicitly selected the **full-year optimized** NFP/CPI/FOMC combinations, not the earlier-selected variants. XAG, BTC and the restored EURUSD use the dedicated v2.17 multi-asset event EA. XAU stays on its approved v2.16 source and settings. The maintained BAT roster now has **33 EAs**, including **five adaptive-exempt news EAs** (four News Pulse charts plus Gold News V9).
+The user explicitly selected the **full-year optimized** NFP/CPI/FOMC combinations, not the earlier-selected variants. XAG, BTC and the restored EURUSD use the dedicated v2.17 multi-asset event EA. XAU stays on its approved v2.16 source and settings. That promotion had 33 EAs; raw Gold subsequently brings the current roster to **34**, including **five adaptive-exempt news EAs** (four News Pulse charts plus Gold News V9).
 
 All four News Pulse charts retain both pending directions and 0.75% planned equity risk per side. Four simultaneous straddles therefore plan 6% combined risk before rounding, costs and gaps; Gold News V9 adds exposure. This is not a realized loss cap or a prop-firm-safe configuration. Ordinary non-news risk controls are unchanged.
 
 The canonical event map is `AAA Final EAs/AAA Final News Pulse Multi Asset Event EA/EVENT PARAMETERS.json`. Matching source generation, exact production/research parity checks, twelve independent website-period native runs, build/SET hashes and publication are retained in `News Pulse Multi Asset Event Parameters 2026-09-19/Deployment`. `publish_deployment.py` republishes completed reports and rebuilds current/recommended-adaptive portfolio overlays without starting MT5. Previous caches remain backed up there.
 
-All website windows end on **2026-09-05**, matching the rest of the portfolio. Original full-year optimization comparisons end on **2026-09-19** and are not interchangeable. Results are hindsight-optimized, include recorded commissions/swaps, and show real/generated tick quality. Portfolio ledgers are independently sized overlays, not shared-margin or floating-equity simulations. Gold News V9 remains evidence-pending.
+The four News Pulse website windows end on **2026-09-05 exclusive**. Original full-year optimization comparisons end on **2026-09-19** and are not interchangeable. Other products have their own documented cutoffs; the current portfolio uses their common intersection as described above. Results are hindsight-optimized, include recorded commissions/swaps, and show real/generated tick quality. Portfolio ledgers are independently sized overlays, not shared-margin or floating-equity simulations. Gold News V9 remains evidence-pending.
 
 Updating files does not update attached MT5 charts. Reapply `RECOMMENDED ADAPTIVE.bat` (or another maintained BAT) when ready; this promotion does not itself restart or attach anything to the trading terminal.
 
@@ -24,7 +34,7 @@ A FastAPI storefront generated from the Expert Advisors currently listed in:
 
 `..\BM Trading Robust Sets 2026-08-04\_Auto Deploy\Install-BMTradingPortfolio.ps1`
 
-The public catalogue is generated directly from every active entry in the recommended installer. It now contains 33 EAs; the count updates automatically when the installer changes.
+The public catalogue is generated directly from every active entry in the recommended installer. It now contains 34 EAs; the count updates automatically when the installer changes.
 
 The 2026-09-10 full portfolio audit keeps four evidence-selected Safe defaults (LTA Volume Profile, EMA3, XAU Weakness and XAU Squeeze Momentum Standard), promotes Sell Nasdaq 15min to its Dynamic London preset, and retains DMC Current XAU by explicit user decision. Engineered Liquidity XAU, ORB Volume Profile High Win 0.75R, XAG Session VWAP Snapback and XAU Squeeze Momentum High Win 0.75R were removed from the active catalogue and every main portfolio BAT; their research evidence remains archived.
 
