@@ -57,6 +57,7 @@ WATCHLIST = {
     "news-pulse-xau": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",
     "news-pulse-xag": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",
     "news-pulse-btc": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",
+    "news-pulse-eurusd": "User-restored News Pulse with full-year hindsight-fitted event settings. Extremely tight stops, generated historical ticks and live news execution invalidate any guaranteed-risk or forward-return claim.",
     "us100-selective-orb-v3": "Only 34 trades exist in the 5Y view; retain as low-frequency evidence, not as a high-capacity core.",
     "xau-squeeze-momentum-standard": "Safe mode has strong PF/DD but only 48 trades in 5Y and no trades in the latest six months.",
 }
@@ -227,7 +228,9 @@ def overlap_and_correlation(selection: list[dict[str, Any]]) -> tuple[list[dict[
 def exposure(selection: list[dict[str, Any]]) -> dict[str, Any]:
     events: list[tuple[str, int, float, str]] = []
     for item in selection:
-        risk = 1.5 if item["slug"].startswith("news-pulse-") else 1.0
+        # Each row is a triggered side, not a two-sided event. Reserving 1.5%
+        # per row double-counted the News Pulse nominal exposure.
+        risk = .75 if item["slug"].startswith("news-pulse-") or item['slug']=='gold-news-v9-direction' else 1.0
         for row in trades(item["slug"], item["mode"], "5y"):
             symbol = str(row.get("symbol", "")).upper()
             events.append((str(row.get("open_time", "")), 1, risk, symbol))
@@ -250,7 +253,7 @@ def exposure(selection: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "max_reserved_risk_pct": round(max_total, 2),
         "max_reserved_risk_by_symbol_pct": dict(sorted((key, round(value, 2)) for key, value in max_symbol.items())),
-        "warning": "Conservative: risk remains reserved until close; floating P/L and shared-margin effects are unavailable.",
+        "warning": "Nominal selected-mode exposure: 0.75% per triggered News side and 1% per ordinary trade, retained until close. Excludes unfilled pending orders, lot rounding, gaps, floating P/L, shared margin and adaptive non-News tapers. Not a realized-risk cap.",
     }
 
 
@@ -414,7 +417,7 @@ def main() -> None:
             "The component tests used separate balances; the combined curve is not a shared-margin MT5 simulation.",
             "Closed-deal drawdown can understate live equity drawdown and gap/slippage risk.",
             "Nested 6m/1y/3y/5y windows are evidence views, not four independent out-of-sample tests.",
-            "News Pulse XAU and XAG have short release-verified ledgers; BTC has complete native three-year coverage. Every News Pulse chart remains fixed at 0.75% per triggered stop / 1.50% event cap before adaptive tapering.",
+            "All four News Pulse charts have independently replayed 6m/1y/3y/5y histories. Their event settings are hindsight-fitted on overlapping data; five-year multi-asset runs have only 13% real ticks. Each side targets 0.75% before rounding/gaps/costs, with no adaptive taper. Four straddles plan 6% combined; Gold News V9 adds exposure.",
         ],
     }
 

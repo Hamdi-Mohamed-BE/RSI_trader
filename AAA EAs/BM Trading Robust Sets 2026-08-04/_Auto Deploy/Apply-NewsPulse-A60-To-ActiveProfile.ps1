@@ -1,4 +1,5 @@
 $ErrorActionPreference = 'Stop'
+throw 'Retired legacy XAU patch. Run RECOMMENDED ADAPTIVE.bat or a maintained portfolio BAT to install XAU event-specific v2.16 with both pending sides retained.'
 
 $chartPath = 'C:\Users\hama101\AppData\Roaming\MetaQuotes\Terminal\D0E8209F77C8CF37AD8BF550E51FF075\MQL5\Profiles\Charts\BM Trading ANY BALANCE - AUTO\chart13.chr'
 $backupPath = 'C:\Users\hama101\AppData\Roaming\MetaQuotes\Terminal\D0E8209F77C8CF37AD8BF550E51FF075\MQL5\Profiles\Charts\BM Trading ANY BALANCE - AUTO.backup-20260809-222440\chart13.before-news-pulse-a60.chr'

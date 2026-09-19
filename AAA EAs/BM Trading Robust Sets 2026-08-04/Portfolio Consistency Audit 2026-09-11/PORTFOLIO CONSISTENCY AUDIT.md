@@ -6,14 +6,14 @@ Evidence cutoff: **2026-09-05**. Four removals were applied after explicit user 
 
 | Scenario | Horizon | Return | PF | Win rate | Max DD | Trades |
 |---|---:|---:|---:|---:|---:|---:|
-| Active 32 before Sell Nasdaq mode change | 6m | +291.81% | 1.72 | 43.84% | 12.37% | 869 |
-| Active 32 before Sell Nasdaq mode change | 1y | +871.32% | 1.91 | 45.38% | 8.18% | 1730 |
-| Active 32 before Sell Nasdaq mode change | 3y | +2784.66% | 1.94 | 46.10% | 11.88% | 4482 |
-| Active 32 before Sell Nasdaq mode change | 5y | +2806.11% | 1.66 | 43.19% | 59.23% | 6932 |
-| Recommended active 32 | 6m | +289.75% | 1.73 | 44.24% | 11.08% | 859 |
-| Recommended active 32 | 1y | +879.87% | 1.94 | 45.85% | 7.42% | 1710 |
-| Recommended active 32 | 3y | +2791.47% | 1.97 | 46.22% | 13.73% | 4418 |
-| Recommended active 32 | 5y | +2823.02% | 1.68 | 43.36% | 49.88% | 6827 |
+| Active 33 before Sell Nasdaq mode change | 6m | +1394.94% | 3.80 | 43.57% | 10.56% | 902 |
+| Active 33 before Sell Nasdaq mode change | 1y | +10127.48% | 6.60 | 45.36% | 5.06% | 1788 |
+| Active 33 before Sell Nasdaq mode change | 3y | +51828.26% | 7.81 | 45.62% | 13.54% | 4790 |
+| Active 33 before Sell Nasdaq mode change | 5y | +92002.22% | 7.37 | 43.10% | 37.74% | 7550 |
+| Recommended active 33 | 6m | +1392.88% | 3.86 | 43.95% | 9.42% | 892 |
+| Recommended active 33 | 1y | +10136.03% | 6.67 | 45.81% | 4.54% | 1768 |
+| Recommended active 33 | 3y | +51835.07% | 7.90 | 45.73% | 15.39% | 4726 |
+| Recommended active 33 | 5y | +92019.13% | 7.42 | 43.25% | 37.04% | 7445 |
 
 ## Applied mode recommendations
 
@@ -42,9 +42,10 @@ DMC Current XAU remains active by explicit user decision.
 | Nasdaq 5M Candle Momentum | Large historical return but thin edge: PF 1.12 over 5Y and 1.18 over 3Y. |
 | XAU Regime Switch | Strong long history but last six months are -4.95% with PF 0.43. |
 | XAU Slow Trend | Strong 3Y/5Y evidence but last six months are -7.13% with PF 0.48. |
-| News Pulse XAU | Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades). |
-| News Pulse XAG | Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades). |
-| News Pulse BTC | Mandatory News Pulse exposure retained at fixed risk; the complete three-year native MT5 sample has 125 trades, but event execution remains high-slippage risk. |
+| News Pulse XAU | Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations. |
+| News Pulse XAG | Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations. |
+| News Pulse BTC | Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations. |
+| News Pulse EURUSD | User-restored News Pulse with full-year hindsight-fitted event settings. Extremely tight stops, generated historical ticks and live news execution invalidate any guaranteed-risk or forward-return claim. |
 | US100 Selective ORB V3 | Only 34 trades exist in the 5Y view; retain as low-frequency evidence, not as a high-capacity core. |
 | XAU Squeeze Momentum Standard | Safe mode has strong PF/DD but only 48 trades in 5Y and no trades in the latest six months. |
 

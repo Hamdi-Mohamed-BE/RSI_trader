@@ -39,6 +39,11 @@
       <option value="name-asc" {% if selected_sort == 'name-asc' %}selected{% endif %}>EA name A–Z</option>
     </select>
     <button class="button-secondary justify-center" type="submit">Apply</button>
+    <label class="text-xs text-muted">Evidence period
+      <select name="period" aria-label="Evidence period">
+        {% for option in period_options %}<option value="{{ option.value }}" {% if selected_period == option.value %}selected{% endif %}>{{ option.label }}</option>{% endfor %}
+      </select>
+    </label>
   </form>
   <div class="mt-6 flex items-center justify-between"><p class="text-sm text-muted"><strong id="visible-count" class="text-white">{{ result_count }}</strong> active setup{% if result_count != 1 %}s{% endif %}</p><a href="/eas" class="text-xs font-semibold text-muted hover:text-white">Clear filters</a></div>
   <div id="product-grid" class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3" aria-live="polite">

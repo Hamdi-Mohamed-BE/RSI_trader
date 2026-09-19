@@ -1,0 +1,107 @@
+{
+  "status": "PASS_WITH_MODEL_LIMITATIONS",
+  "rows": [
+    {
+      "period": "3y",
+      "checks": [
+        "observer replay has identical complete deal ledger",
+        "deposit, trade count, gross/net P&L, fees, win rate and PF reconcile",
+        "every leg matches 100 oz/lot price P&L and exact doubling; baskets do not overlap",
+        "ask-based add triggers, actual fills, bid-based exits and daily $300 flat-only cutoff verified",
+        "flat $6000 milestone independently reconstructed and compared with first nonpositive equity, not just delayed stop-out",
+        "native account specification, exposure, per-tick DD and actual tick coverage checked"
+      ],
+      "check_count": 6,
+      "passed": true,
+      "native_stopout_exit_deals": 4,
+      "residual_test_end_exit_deals": 3,
+      "actual_execution_tick_quality": "generated ticks: execution ended before available real ticks begin 2026-01-01",
+      "first_nonpositive_equity": "2023.09.28 14:58:19",
+      "equity_at_first_nonpositive": -1.27,
+      "elapsed_days_to_nonpositive_equity": 23.62383101851852,
+      "secured_3000_before_nonpositive_equity": false,
+      "native_stopout_delay_seconds": 41.0,
+      "first_flat_6000_balance": null,
+      "native_dd_pct": 103.23,
+      "per_tick_dd_pct": 103.22559662
+    },
+    {
+      "period": "6m",
+      "checks": [
+        "observer replay has identical complete deal ledger",
+        "deposit, trade count, gross/net P&L, fees, win rate and PF reconcile",
+        "every leg matches 100 oz/lot price P&L and exact doubling; baskets do not overlap",
+        "ask-based add triggers, actual fills, bid-based exits and daily $300 flat-only cutoff verified",
+        "flat $6000 milestone independently reconstructed and compared with first nonpositive equity, not just delayed stop-out",
+        "native account specification, exposure, per-tick DD and actual tick coverage checked"
+      ],
+      "check_count": 6,
+      "passed": true,
+      "native_stopout_exit_deals": 4,
+      "residual_test_end_exit_deals": 3,
+      "actual_execution_tick_quality": "real ticks (native report 100%)",
+      "first_nonpositive_equity": "2026.03.05 06:12:21",
+      "equity_at_first_nonpositive": -25.69,
+      "elapsed_days_to_nonpositive_equity": 0.2585763888888889,
+      "secured_3000_before_nonpositive_equity": false,
+      "native_stopout_delay_seconds": 25719.0,
+      "first_flat_6000_balance": null,
+      "native_dd_pct": 110.78,
+      "per_tick_dd_pct": 120.81514196
+    },
+    {
+      "period": "1y",
+      "checks": [
+        "observer replay has identical complete deal ledger",
+        "deposit, trade count, gross/net P&L, fees, win rate and PF reconcile",
+        "every leg matches 100 oz/lot price P&L and exact doubling; baskets do not overlap",
+        "ask-based add triggers, actual fills, bid-based exits and daily $300 flat-only cutoff verified",
+        "flat $6000 milestone independently reconstructed and compared with first nonpositive equity, not just delayed stop-out",
+        "native account specification, exposure, per-tick DD and actual tick coverage checked"
+      ],
+      "check_count": 6,
+      "passed": true,
+      "native_stopout_exit_deals": 7,
+      "residual_test_end_exit_deals": 6,
+      "actual_execution_tick_quality": "generated ticks: execution ended before available real ticks begin 2026-01-01",
+      "first_nonpositive_equity": "2025.10.21 08:14:42",
+      "equity_at_first_nonpositive": -88.79,
+      "elapsed_days_to_nonpositive_equity": 46.34354166666667,
+      "secured_3000_before_nonpositive_equity": true,
+      "native_stopout_delay_seconds": 18.0,
+      "first_flat_6000_balance": 15804.22,
+      "native_dd_pct": 105.39,
+      "per_tick_dd_pct": 105.39475788
+    },
+    {
+      "period": "5y",
+      "checks": [
+        "observer replay has identical complete deal ledger",
+        "deposit, trade count, gross/net P&L, fees, win rate and PF reconcile",
+        "every leg matches 100 oz/lot price P&L and exact doubling; baskets do not overlap",
+        "ask-based add triggers, actual fills, bid-based exits and daily $300 flat-only cutoff verified",
+        "flat $6000 milestone independently reconstructed and compared with first nonpositive equity, not just delayed stop-out",
+        "native account specification, exposure, per-tick DD and actual tick coverage checked"
+      ],
+      "check_count": 6,
+      "passed": true,
+      "native_stopout_exit_deals": 4,
+      "residual_test_end_exit_deals": 3,
+      "actual_execution_tick_quality": "generated ticks: execution ended before available real ticks begin 2026-01-01",
+      "first_nonpositive_equity": "2021.09.16 12:15:39",
+      "equity_at_first_nonpositive": -7.93,
+      "elapsed_days_to_nonpositive_equity": 10.590729166666666,
+      "secured_3000_before_nonpositive_equity": false,
+      "native_stopout_delay_seconds": 921.0,
+      "first_flat_6000_balance": null,
+      "native_dd_pct": 120.2,
+      "per_tick_dd_pct": 120.20393907
+    }
+  ],
+  "limitations": [
+    "Native stop-out lags first nonpositive equity in these runs; no recovery after insolvency is accepted as safe survival.",
+    "Static native 1:2000 leverage; historical equity-based and high-margin broker changes are not reconstructed.",
+    "Three older executed intervals use generated ticks, not a complete historical real-tick record.",
+    "No negative-balance protection or withdrawals; native negative balances do not establish personal debt."
+  ]
+}

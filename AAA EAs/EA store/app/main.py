@@ -97,7 +97,7 @@ def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> P
     stats = cached["stats"]
     evidence = base_evidence.model_copy(
         update={
-            "label": f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
+            "label": cached.get("evidence_label") or f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
             "period": str(cached["period"]),
             "return_pct": float(stats.get("return_pct") or 0),
             "profit_factor": float(stats.get("profit_factor") or 0),
@@ -139,7 +139,7 @@ def _verified_news_payload(slug: str) -> dict[str, Any] | None:
         row = json.loads(path.read_text(encoding="utf-8-sig"))
         report = NEWS_PULSE_BTC_3Y_ROOT / "Backtest Reports" / "btcusd__official-3y.htm"
         initial_balance = float(row["initial_balance"])
-    else:
+    elif product.label in {"News Pulse XAU", "News Pulse XAG"}:
         asset = "xauusd" if product.label == "News Pulse XAU" else "xagusd"
         path = NEWS_PULSE_CALENDAR_ROOT / "schedule-replay-results.json"
         if not path.is_file():
@@ -151,6 +151,9 @@ def _verified_news_payload(slug: str) -> dict[str, Any] | None:
         replay = row["fxmacrodata_schedule"]
         report = NEWS_PULSE_CALENDAR_ROOT / "Schedule Replay Reports" / f"{asset}--fxmacrodata_schedule.htm"
         initial_balance = float(replay["metrics"]["initial_balance"])
+    else:
+        # EURUSD has no matching legacy chart identity; never return XAG history.
+        return None
 
     if not report.is_file():
         return None
@@ -364,12 +367,13 @@ async def catalogue(
     asset: str = Query(default="all", pattern=r"^(all|metals|indices|crypto|forex|stocks)$"),
     symbol: str = Query(default="all", max_length=20),
     evidence: str = Query(default="all", pattern=r"^(all|validated|research|experimental)$"),
+    period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
     sort: str = Query(
         default="recommended",
         pattern=r"^(recommended|pf-desc|win-desc|dd-asc|return-desc|sharpe-desc|recovery-desc|trades-desc|name-asc)$",
     ),
 ) -> HTMLResponse:
-    all_products = _display_catalog()
+    all_products = _display_catalog(period)
     catalogue_order = {product.slug: index for index, product in enumerate(all_products)}
     products = list(all_products)
     query = q.strip().lower()
@@ -388,7 +392,8 @@ async def catalogue(
         products = [
             product
             for product in products
-            if product.evidence and product.evidence.status.lower().startswith(evidence)
+            if product.evidence and (product.evidence.status.lower().startswith(evidence)
+                or (evidence == 'experimental' and product.evidence.status.startswith('User-approved')))
         ]
     sort_rules = {
         "pf-desc": (lambda product: product.evidence.profit_factor if product.evidence else float("-inf"), True),
@@ -410,6 +415,8 @@ async def catalogue(
         "selected_symbol": selected_symbol.lower(),
         "selected_evidence": evidence,
         "selected_sort": sort,
+        "selected_period": period,
+        "period_options": PERIOD_OPTIONS,
         "result_count": len(products),
         "groups": Counter(product.asset_group for product in all_products),
         "symbols": Counter(product.canonical for product in all_products),
@@ -431,7 +438,7 @@ async def product_detail(
     if mode is None:
         mode = _recommended_mode(product)
     related = [
-        item for item in _display_catalog() if item.slug != product.slug and item.asset_group == product.asset_group
+        item for item in _display_catalog(period) if item.slug != product.slug and item.asset_group == product.asset_group
     ][:3]
     if mode == "safe" and not product.safe_filter_supported:
         mode = "standard"
@@ -450,7 +457,7 @@ async def product_detail(
         stats = cached["stats"]
         display_evidence = display_evidence.model_copy(
             update={
-                "label": f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
+                "label": cached.get("evidence_label") or f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
                 "period": str(cached["period"]),
                 "return_pct": float(stats.get("return_pct") or 0),
                 "profit_factor": float(stats.get("profit_factor") or 0),

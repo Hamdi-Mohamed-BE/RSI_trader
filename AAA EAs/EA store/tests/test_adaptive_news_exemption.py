@@ -65,7 +65,7 @@ def test_published_portfolio_retains_every_news_trade_at_original_risk(period):
             assert source[field] == accepted[identity][field]
 
 
-def test_all_four_selected_news_presets_explicitly_disable_governor():
+def test_all_five_selected_news_presets_explicitly_disable_governor():
     for slug in NEWS_ADAPTIVE_EXEMPTIONS:
         product = get_product(slug)
         text = (PACKAGE_ROOT/product.set_source).read_text(encoding='utf-8-sig')
@@ -74,7 +74,7 @@ def test_all_four_selected_news_presets_explicitly_disable_governor():
 
 
 @pytest.mark.skipif(sys.platform != 'win32', reason='PowerShell installer contract')
-def test_shared_installer_exempts_exactly_four_news_even_with_stale_true_input():
+def test_shared_installer_exempts_exactly_five_news_even_with_stale_true_input():
     # Load only pure input-building functions, never the installer entry point.
     script = r'''
 $ErrorActionPreference = 'Stop'
@@ -103,9 +103,9 @@ foreach ($UseAdaptiveProfile in @($true,$false)) {
       if ($inputs['InpAdaptivePortfolioControls'] -ne 'false' -or $inputs['InpRiskPercent'] -ne '0.75') { throw "News exemption failed: $($item.Label)" }
     } elseif ($UseAdaptiveProfile -and $inputs['InpAdaptivePortfolioControls'] -ne 'true') { throw "Non-News controls disabled: $($item.Label)" }
   }
-  if ($items.Count -ne 32 -or $exemptCount -ne 4) { throw 'Wrong exemption scope' }
+  if ($items.Count -ne 33 -or $exemptCount -ne 5) { throw 'Wrong exemption scope' }
 }
-Write-Output 'PASS: 32 EAs, exactly 4 news exemptions, both profile paths, stale true inputs overridden'
+Write-Output 'PASS: 33 EAs, exactly 5 news exemptions, both profile paths, stale true inputs overridden'
 '''
     import os
     result = subprocess.run(['powershell.exe', '-NoProfile', '-NonInteractive', '-Command', script],

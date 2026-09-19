@@ -53,8 +53,8 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 
 function Get-PortfolioItems {
     # Locked selected portfolio. Each EA owns its selected exit mode:
-    # Each strategy keeps its selected exit. The three News Pulse instances
-    # use News Pulse v2.15, its native 60-second lifecycle and source-locked
+    # Each strategy keeps its selected exit. The four News Pulse instances
+    # use source-locked risk; XAU v2.16 is unchanged and XAG/BTC/EURUSD use v2.17,
     # 0.75% risk per pending side (1.50% maximum planned event exposure).
     # Live events come from MT5's USD calendar; Strategy Tester schedules are
     # generated from FXMacroData and fail closed outside verified coverage.
@@ -203,8 +203,8 @@ function Get-PortfolioItems {
         },
         [pscustomobject]@{
             Label = 'News Pulse XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
-            Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
-            ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
+            Period = 1; Expert = 'AAA Final News Pulse XAU Event Specific EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final News Pulse XAU Event Specific EA\AAA Final News Pulse XAU Event Specific EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\12A News Pulse XAU Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
@@ -215,15 +215,21 @@ function Get-PortfolioItems {
         },
         [pscustomobject]@{
             Label = 'News Pulse XAG'; Canonical = 'XAGUSD'; Aliases = @('XAGUSD', 'SILVER', 'XAG')
-            Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
-            ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
+            Period = 1; Expert = 'AAA Final News Pulse Multi Asset Event EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final News Pulse Multi Asset Event EA\AAA Final News Pulse Multi Asset Event EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\12B News Pulse XAG Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'News Pulse BTC'; Canonical = 'BTCUSD'; Aliases = @('BTCUSD', 'BITCOIN', 'BTC')
-            Period = 1; Expert = 'AAA Final News Pulse EA.ex5'
-            ExpertSource = 'AAA Final EAs\AAA Final News Pulse EA\AAA Final News Pulse EA.ex5'
+            Period = 1; Expert = 'AAA Final News Pulse Multi Asset Event EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final News Pulse Multi Asset Event EA\AAA Final News Pulse Multi Asset Event EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\12C News Pulse BTC Two Sided - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = 'News Pulse EURUSD'; Canonical = 'EURUSD'; Aliases = @('EURUSD')
+            Period = 1; Expert = 'AAA Final News Pulse Multi Asset Event EA.ex5'
+            ExpertSource = 'AAA Final EAs\AAA Final News Pulse Multi Asset Event EA\AAA Final News Pulse Multi Asset Event EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\12D News Pulse EURUSD Event Specific - HARD 1.5 TOTAL.set'; SmallDynamicRisk = $false; PercentRisk = $false; FixedPercentRisk = 0.75; LockRisk = $true; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'XAU RSI VWAP'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -446,13 +452,27 @@ function Read-SetInputs([string]$Path) {
 }
 
 function Test-NewsAdaptiveExemption([object]$Item) {
-    return [string]$Item.Label -in @('News Pulse XAU', 'News Pulse XAG', 'News Pulse BTC', 'Gold News V9 Direction')
+    return [string]$Item.Label -in @('News Pulse XAU', 'News Pulse XAG', 'News Pulse BTC', 'News Pulse EURUSD', 'Gold News V9 Direction')
 }
 
 function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
+    # All Standard/Safe/Dynamic/Recommended Adaptive BATs share this guard.
+    if ($Item.Label -eq 'News Pulse XAU') {
+        $inputs['InpUseXauEventSpecific'] = 'true'
+    }
+    if ($Item.Label -in @('News Pulse XAG', 'News Pulse BTC', 'News Pulse EURUSD')) {
+        $inputs['InpUseAssetEventSpecific'] = 'true'
+    }
+    if ($Item.Label -like 'News Pulse *') {
+        $inputs['InpEnableBuySide'] = 'true'
+        $inputs['InpEnableSellSide'] = 'true'
+        $inputs['InpUseDynamicTrailingSL'] = 'false'
+        $inputs['InpResearchSession'] = '0'
+        $inputs['InpUseMarkovRegimeFilter'] = 'false'
+    }
     # Every current Calyx EA exposes the same native portfolio-governor switch.
-    # The four news EAs always retain their locked standalone risk. Override
+    # All five news EAs always retain their locked standalone risk. Override
     # even a stale SET with the governor enabled; all shared BATs use this path.
     if (Test-NewsAdaptiveExemption $Item) {
         $inputs['InpAdaptivePortfolioControls'] = 'false'
@@ -572,7 +592,7 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
     }
     $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
     $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls apply to non-News EAs and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
-    Write-Host ("Risk audit passed: every non-News EA uses {0}{1}; all four news EAs bypass adaptive controls and remain locked at 0.7500% per planned entry." -f $modeText, $adaptiveText) -ForegroundColor Green
+    Write-Host ("Risk audit passed: every non-News EA uses {0}{1}; all five news EAs bypass adaptive controls and remain locked at 0.7500% per planned entry. Four simultaneous News Pulse straddles plan 6% combined before rounding, gaps and fees." -f $modeText, $adaptiveText) -ForegroundColor Green
 }
 
 function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
@@ -994,7 +1014,7 @@ foreach ($item in $portfolio) {
     } elseif ([double]$item.FixedPercentRisk -gt 0) {
         $fixedRiskText = ([double]$item.EffectiveRiskPercent).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
         $isFixedNews = ($item.Label -like 'News Pulse *') -or ($item.Label -eq 'Gold News V9 Direction')
-        if ($isFixedNews -and $UseAdaptiveProfile) {
+        if ($isFixedNews -and $UseAdaptiveProfile -and -not (Test-NewsAdaptiveExemption $item)) {
             Write-Host ('{0,-42} {1,-8} -> {2}; MAX {3}% per planned entry before adaptive taper' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
         } elseif ($isFixedNews) {
             Write-Host ('{0,-42} {1,-8} -> {2}; HARD {3}% per planned entry' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow

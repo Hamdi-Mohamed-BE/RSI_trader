@@ -1,0 +1,345 @@
+{
+  "stats": {
+    "NativeBaseline": {
+      "initial_balance": 10000.0,
+      "final_balance": 13591.91,
+      "net_profit": 3591.91,
+      "return_pct": 35.92,
+      "profit_factor": 4.175197128814398,
+      "win_rate_pct": 57.57575757575758,
+      "max_drawdown_pct": 3.62,
+      "trades": 33,
+      "sharpe_ratio": 334.63,
+      "recovery_factor": 7.61,
+      "history_quality": "71% real ticks",
+      "native_win_rate_pct": 60.61,
+      "commission": -27.68,
+      "swap": 0.0
+    },
+    "NativeFullBestV2": {
+      "initial_balance": 10000.0,
+      "final_balance": 36210.11,
+      "net_profit": 26210.11,
+      "return_pct": 262.1,
+      "profit_factor": 10.969801631830197,
+      "win_rate_pct": 65.78947368421052,
+      "max_drawdown_pct": 6.6,
+      "trades": 38,
+      "sharpe_ratio": 277.82,
+      "recovery_factor": 19.26,
+      "history_quality": "71% real ticks",
+      "native_win_rate_pct": 65.79,
+      "commission": -133.94,
+      "swap": 0.0
+    },
+    "NativeTrainSelectedV2": {
+      "initial_balance": 10000.0,
+      "final_balance": 17499.27,
+      "net_profit": 7499.27,
+      "return_pct": 74.99,
+      "profit_factor": 2.8594491527525006,
+      "win_rate_pct": 61.53846153846154,
+      "max_drawdown_pct": 11.72,
+      "trades": 39,
+      "sharpe_ratio": 201.5,
+      "recovery_factor": 3.78,
+      "history_quality": "71% real ticks",
+      "native_win_rate_pct": 61.54,
+      "commission": -121.44,
+      "swap": 0.0
+    },
+    "NativeBaselineHoldout": {
+      "initial_balance": 10000.0,
+      "final_balance": 11933.73,
+      "net_profit": 1933.73,
+      "return_pct": 19.34,
+      "profit_factor": 3.840045235577488,
+      "win_rate_pct": 62.5,
+      "max_drawdown_pct": 3.38,
+      "trades": 16,
+      "sharpe_ratio": 117.63,
+      "recovery_factor": 4.63,
+      "history_quality": "100% real ticks",
+      "native_win_rate_pct": 62.5,
+      "commission": -12.76,
+      "swap": 0.0
+    },
+    "NativeTrainHoldoutV2": {
+      "initial_balance": 10000.0,
+      "final_balance": 10569.98,
+      "net_profit": 569.98,
+      "return_pct": 5.7,
+      "profit_factor": 1.298811527190182,
+      "win_rate_pct": 46.666666666666664,
+      "max_drawdown_pct": 9.61,
+      "trades": 15,
+      "sharpe_ratio": 10.76,
+      "recovery_factor": 0.59,
+      "history_quality": "100% real ticks",
+      "native_win_rate_pct": 46.67,
+      "commission": -31.759999999999998,
+      "swap": 0.0
+    },
+    "NativeBaselineDelay250": {
+      "initial_balance": 10000.0,
+      "final_balance": 13600.46,
+      "net_profit": 3600.46,
+      "return_pct": 36.0,
+      "profit_factor": 4.174756853512508,
+      "win_rate_pct": 54.54545454545455,
+      "max_drawdown_pct": 3.34,
+      "trades": 33,
+      "sharpe_ratio": 267.76,
+      "recovery_factor": 7.67,
+      "history_quality": "71% real ticks",
+      "native_win_rate_pct": 60.61,
+      "commission": -27.58,
+      "swap": 0.0
+    },
+    "NativeFullBestDelay250V2": {
+      "initial_balance": 10000.0,
+      "final_balance": 43106.88,
+      "net_profit": 33106.88,
+      "return_pct": 331.07,
+      "profit_factor": 11.7533162701867,
+      "win_rate_pct": 66.66666666666667,
+      "max_drawdown_pct": 6.79,
+      "trades": 39,
+      "sharpe_ratio": 260.61,
+      "recovery_factor": 20.58,
+      "history_quality": "71% real ticks",
+      "native_win_rate_pct": 66.67,
+      "commission": -156.55,
+      "swap": 0.0
+    }
+  },
+  "families": {
+    "NFP": {
+      "current_trades": 11,
+      "current_net": 1481.56,
+      "fitted_trades": 11,
+      "fitted_net": 13762.71,
+      "fitted_win_rate": 63.63636363636363
+    },
+    "CPI": {
+      "current_trades": 13,
+      "current_net": 1561.78,
+      "fitted_trades": 13,
+      "fitted_net": 8150.13,
+      "fitted_win_rate": 61.53846153846154
+    },
+    "FOMC": {
+      "current_trades": 9,
+      "current_net": 548.57,
+      "fitted_trades": 14,
+      "fitted_net": 4297.27,
+      "fitted_win_rate": 71.42857142857143
+    }
+  },
+  "selected": {
+    "NFP": {
+      "full": {
+        "index": 1091,
+        "params": [
+          10.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          0.0,
+          4.0,
+          60.0
+        ],
+        "selection_score_stressed_return_minus_2DD": 57.37964188309251,
+        "base": {
+          "balance": 17743.68,
+          "return_pct": 77.43677000000014,
+          "dd": 7.2112226554238505,
+          "trades": 11,
+          "win_rate": 63.63636363636363,
+          "pf": 11.652385400231815,
+          "max_side_risk_usd": 110.00000000000001
+        },
+        "stress": {
+          "balance": 17336.82,
+          "return_pct": 73.36822999999976,
+          "dd": 7.994294058453623,
+          "trades": 11,
+          "win_rate": 63.63636363636363,
+          "pf": 10.311658065941126,
+          "max_side_risk_usd": 108.0
+        },
+        "events": 11
+      },
+      "train": {
+        "index": 4587,
+        "params": [
+          120.0,
+          0.0,
+          8.0,
+          2.0,
+          7.5,
+          1.5,
+          6.0,
+          300.0
+        ],
+        "selection_score_stressed_return_minus_2DD": 10.11260301962519,
+        "base": {
+          "balance": 11786.2,
+          "return_pct": 17.862039999999723,
+          "dd": 2.443736864217065,
+          "trades": 7,
+          "win_rate": 85.71428571428571,
+          "pf": 29.29854245882202,
+          "max_side_risk_usd": 88.0
+        },
+        "stress": {
+          "balance": 11616.89,
+          "return_pct": 16.168869999999515,
+          "dd": 3.028133490187162,
+          "trades": 7,
+          "win_rate": 57.142857142857146,
+          "pf": 11.719219040040178,
+          "max_side_risk_usd": 86.0
+        },
+        "events": 7
+      }
+    },
+    "CPI": {
+      "full": {
+        "index": 410,
+        "params": [
+          5.0,
+          2.0,
+          1.0,
+          2.0,
+          0.0,
+          1.0,
+          10.0,
+          300.0
+        ],
+        "selection_score_stressed_return_minus_2DD": 45.255197664105935,
+        "base": {
+          "balance": 16258.23,
+          "return_pct": 62.582340000000514,
+          "dd": 5.5930411378007365,
+          "trades": 13,
+          "win_rate": 61.53846153846154,
+          "pf": 9.282557253121162,
+          "max_side_risk_usd": 126.0
+        },
+        "stress": {
+          "balance": 15712.37,
+          "return_pct": 57.12366000000084,
+          "dd": 5.934231167947451,
+          "trades": 13,
+          "win_rate": 61.53846153846154,
+          "pf": 7.641413395682124,
+          "max_side_risk_usd": 122.0
+        },
+        "events": 11
+      },
+      "train": {
+        "index": 2441,
+        "params": [
+          30.0,
+          2.0,
+          1.0,
+          2.0,
+          8.0,
+          0.0,
+          8.0,
+          600.0
+        ],
+        "selection_score_stressed_return_minus_2DD": 12.72160752634672,
+        "base": {
+          "balance": 12209.78,
+          "return_pct": 22.097809999999992,
+          "dd": 3.9377040639639636,
+          "trades": 8,
+          "win_rate": 62.5,
+          "pf": 7.581998683470031,
+          "max_side_risk_usd": 94.0
+        },
+        "stress": {
+          "balance": 12062.08,
+          "return_pct": 20.62082000000031,
+          "dd": 3.949606236826796,
+          "trades": 8,
+          "win_rate": 62.5,
+          "pf": 6.45045621306189,
+          "max_side_risk_usd": 94.0
+        },
+        "events": 7
+      }
+    },
+    "FOMC": {
+      "full": {
+        "index": 3228,
+        "params": [
+          60.0,
+          0.0,
+          1.0,
+          2.0,
+          5.5,
+          0.5,
+          4.0,
+          120.0
+        ],
+        "selection_score_stressed_return_minus_2DD": 15.430721662267205,
+        "base": {
+          "balance": 12475.36,
+          "return_pct": 24.75361000000008,
+          "dd": 2.4563851512617965,
+          "trades": 14,
+          "win_rate": 71.42857142857143,
+          "pf": 8.897450213440294,
+          "max_side_risk_usd": 92.0
+        },
+        "stress": {
+          "balance": 12122.65,
+          "return_pct": 21.22651000000038,
+          "dd": 2.8978941688665882,
+          "trades": 14,
+          "win_rate": 71.42857142857143,
+          "pf": 6.206863986028278,
+          "max_side_risk_usd": 88.0
+        },
+        "events": 8
+      },
+      "train": {
+        "index": 225,
+        "params": [
+          5.0,
+          1.0,
+          2.0,
+          2.0,
+          8.0,
+          2.0,
+          2.0,
+          120.0
+        ],
+        "selection_score_stressed_return_minus_2DD": 6.599927349165713,
+        "base": {
+          "balance": 11324.31,
+          "return_pct": 13.24311999999989,
+          "dd": 2.1621533824316614,
+          "trades": 9,
+          "win_rate": 66.66666666666667,
+          "pf": 5.590352132935846,
+          "max_side_risk_usd": 86.0
+        },
+        "stress": {
+          "balance": 11073.78,
+          "return_pct": 10.737820000000266,
+          "dd": 2.068946325417276,
+          "trades": 9,
+          "win_rate": 66.66666666666667,
+          "pf": 4.141863146129407,
+          "max_side_risk_usd": 84.0
+        },
+        "events": 5
+      }
+    }
+  }
+}

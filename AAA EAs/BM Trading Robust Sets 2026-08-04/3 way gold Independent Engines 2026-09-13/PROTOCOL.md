@@ -1,0 +1,13 @@
+# Independently optimized 3 way gold engines
+
+User extension 2026-09-13: each engine must keep its own best validated signal/exit settings, then combine them on one shared account. The preceding optimized version forced a common ATR period, direction and management. This version removes those constraints.
+
+Reuse the same broker cache and all5,152 engine search results. For each engine, promote the top24 distinct development structures/settings, evaluate only2024-09-05 to2025-09-05 in approximate M1 screening, then take three candidates to native MT5 for development2021-09-05 to2024-09-05 and validation2024-09-05 to2025-09-05. Eligibility per engine: >=50 development and15 validation trades, profitable andPF>1.05 in both, equityDD<=15%, no stopout. Rank the lower split score. If none qualifies, identify its best exploratory candidate as unqualified rather than call it recommended.
+
+Freeze each engine's chosen settings before any new combined last-year diagnostic. Combine all three with their own ATR, direction, stop, target, break-even/trailing and trigger. Keep the same nominal0.30% equity risk per engine and max one position per engine on a shared $10,000 hedging account. Risk rounding/minlot policy unchanged. This is not summing standalone returns.
+
+New native EA must exactly reproduce both raw6m and prior optimized6m trade ledgers when overrides inherit common values. Test combined6m/1y/3y/5y/2019–2026, each selected engine alone5y, and combined latest-year delay100/500ms. Compare against raw and the preceding shared-parameter optimized candidate. Save all individual sets and the assembled combined set. Do not deploy, change website/BATs, push or switch accounts.
+
+Before assembly, a deduplication audit found three trend-change candidates with identical ledgers: a 0.5R TP made their 1.5R management trigger inactive. Two additional effective alternatives received native development/validation tests before final freezing, bringing individual selection to 22 native tests. Their results did not replace the selected candidate. This avoids treating duplicate exit behavior as separate robustness evidence.
+
+The earlier historical aggregates, including latest-year results for other candidates, were already seen. This extension is additional exploratory multiple testing, not fresh unseen out-of-sample proof. No parameters are chosen using the new individual/combined latest-year or five-year diagnostics. Native real ticks are available from 2026-01-01 onward; older missing real ticks are generated. Native recorded spread/commission/swap are included; live historical fees, margin changes, daily loss limits and broker execution are not fully reconstructed. Report failure and weak recent periods honestly.

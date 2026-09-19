@@ -1,5 +1,7 @@
 ﻿# Ground-Up Trading Agent MCP Setup Prompt
 
+> Compatibility note (2026-09-14): the canonical current MCP, skill, repository, EA, research, deployment, and evidence instructions are in `CALYX_ACTIVE_EA_AND_RESEARCH_ROOT.md`. This guide remains historical detail only; the canonical file wins whenever they conflict.
+
 Use this file to configure a fresh Codex/agent so it can work like our trading assistant from zero.
 
 The agent must be able to connect to MT5, control TradingView when available, scan markets with our LTA/top-down rules, calculate risk correctly, and only manage approved orders.

@@ -1,0 +1,114 @@
+{
+  "columns": [
+    "lead_seconds",
+    "anchor_0_quote_1_activeM1_2_closedM1",
+    "entry_offset_price",
+    "stop_price",
+    "tp_r_0_none",
+    "trail_start_r_0_off",
+    "trail_distance_price",
+    "close_seconds_after_event"
+  ],
+  "values": [
+    [
+      5,
+      10,
+      15,
+      30,
+      45,
+      60,
+      90,
+      120
+    ],
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0.01,
+      0.02,
+      0.04,
+      0.06,
+      0.08,
+      0.12,
+      0.16,
+      0.2,
+      0.24,
+      0.3,
+      0.4
+    ],
+    [
+      0.02,
+      0.04,
+      0.06,
+      0.08,
+      0.12,
+      0.16,
+      0.2,
+      0.24,
+      0.3,
+      0.4
+    ],
+    [
+      0,
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      3.5,
+      4.0,
+      4.5,
+      5.0,
+      5.5,
+      6.0,
+      6.5,
+      7.0,
+      7.5,
+      8.0
+    ],
+    [
+      0,
+      0.5,
+      1,
+      1.5,
+      2,
+      3
+    ],
+    [
+      0.02,
+      0.04,
+      0.06,
+      0.08,
+      0.12,
+      0.16,
+      0.2,
+      0.3,
+      0.4
+    ],
+    [
+      60,
+      120,
+      180,
+      300,
+      600
+    ]
+  ],
+  "candidate_count": 6060,
+  "seed": 20260919,
+  "risk_per_side_percent": 0.75,
+  "holdout_from": "2026-05-19",
+  "selection": "Top 100 raw return minus twice approximate DD, reranked with moderate cost stress",
+  "stress": {
+    "extra_spread": 0.005,
+    "adverse_slippage": 0.005,
+    "delay_ms": 100
+  },
+  "severe": {
+    "extra_spread": 0.01,
+    "adverse_slippage": 0.015,
+    "delay_ms": 250
+  }
+}

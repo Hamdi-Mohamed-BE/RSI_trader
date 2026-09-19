@@ -1,4 +1,6 @@
 @echo off
+rem XAU News Pulse v2.16: NFP/CPI/FOMC event-specific settings via shared installer; both pending sides retained.
+rem XAG/BTC/EURUSD News Pulse v2.17: approved full-year event combinations, adaptive exempt; no OCO.
 setlocal
 title Calyx Full Safe 32-EA Portfolio - Per-EA Regime Gates
 echo Applying Full Safe to the current 32-EA portfolio. Gold News V9 and DMC Current XAU are retained; approved removals are excluded.

@@ -1,0 +1,63 @@
+{
+  "start": "2026.07.19",
+  "end_exclusive": "2026.09.19",
+  "account": 10000,
+  "requested_risk_percent": 1,
+  "variants": [
+    "current",
+    "rr050",
+    "rr075"
+  ],
+  "broker": "Exness-MT5Trial16",
+  "model": 4,
+  "execution_delay": 0,
+  "scope": "Each EA standalone. No combined portfolio, no optimization.",
+  "rules_source": "https://ftmo.com/en/trading-objectives/",
+  "risk_policy": "Preserve deployed round-up/minimum-lot policy; record actual initial risk, which can exceed 1%.",
+  "management": "Preserve current BE/trailing settings. Dynamic 50/20 uses fractions of TP distance, so its effective R trigger changes with TP.",
+  "no_live_changes": true,
+  "eas": [
+    {
+      "slug": "vp",
+      "name": "XAU ORB Volume Profile",
+      "symbol": "XAUUSD",
+      "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\05 ORB Volume Profile - DYNAMIC 50-20 - ALL DAY.set"
+    },
+    {
+      "slug": "vpc",
+      "name": "XAU ORB Volume Confirmed",
+      "symbol": "XAUUSD",
+      "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\05C ORB Volume Profile Volume Confirmed - DYNAMIC 50-20 - ALL DAY.set"
+    },
+    {
+      "slug": "xny",
+      "name": "XAU ORB New York M30",
+      "symbol": "XAUUSD",
+      "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\14 XAU ORB New York M30 - LOCKED STANDALONE.set"
+    },
+    {
+      "slug": "xov",
+      "name": "XAU ORB London/NY Overlap M30",
+      "symbol": "XAUUSD",
+      "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\15 XAU ORB London NY Overlap M30 - LOCKED STANDALONE.set"
+    },
+    {
+      "slug": "uny",
+      "name": "US100 ORB New York M30",
+      "symbol": "USTEC",
+      "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\16 US100 ORB New York M30 - LOCKED STANDALONE.set"
+    },
+    {
+      "slug": "uh1",
+      "name": "US100 H1 ORB 13UTC",
+      "symbol": "USTEC",
+      "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB H1 Range Research 2026-09-05\\Sets\\USTEC - overlap-1300 - H1 opening range - RR6 - 1pct.set"
+    },
+    {
+      "slug": "usel",
+      "name": "US100 Selective ORB V3",
+      "symbol": "USTEC",
+      "set": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US100 Selective ORB Research 2026-08-21\\Sets\\BEST V3 - US100 USTEC M5 - TIME DIRECTION OR30 - 1pct.set"
+    }
+  ]
+}

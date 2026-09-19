@@ -4,14 +4,15 @@
 {% set selected_period = selected_period|default('3y', true) %}
 <section class="page-hero">
   <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-20">
-    <div class="max-w-4xl"><p class="eyebrow-simple">Recommended adaptive BAT configuration</p><h1 class="page-title">{{ product_count }} EAs with the approved adaptive risk controls.</h1><p class="page-lead">Every listed system keeps its selected compiled EA, symbol, timeframe and recommended SET. The BAT enables the 5% daily closed-loss stop, drawdown taper and loss-streak taper for non-News EAs only. All four news EAs are exempt.</p></div>
+    <div class="max-w-4xl"><p class="eyebrow-simple">Recommended adaptive BAT configuration</p><h1 class="page-title">{{ product_count }} EAs with the approved adaptive risk controls.</h1><p class="page-lead">Every listed system keeps its selected compiled EA, symbol, timeframe and recommended SET. The BAT enables the 5% daily closed-loss stop, drawdown taper and loss-streak taper for non-News EAs only. All five news EAs are exempt.</p></div>
   </div>
 </section>
 
 <section class="mx-auto max-w-7xl px-5 py-14 lg:px-8">
   <div class="mb-8 rounded-2xl border border-amber-300/30 bg-amber-300/[.04] p-5 text-sm leading-7">
     <strong>News exemption: original locked risk, no adaptive controls.</strong>
-    <p>News Pulse XAU, XAG, BTC and Gold News V9 Direction bypass adaptive daily entry stops, portfolio drawdown tapers and per-EA loss-streak tapers. Their planned risk remains 0.75% per entry (1.50% combined for each two-sided News Pulse chart). Their own signal filters, broker constraints and protective exits remain active. Minimum lots, gaps and costs can exceed planned risk.</p>
+    <p>News Pulse XAU, XAG, BTC, EURUSD and Gold News V9 Direction bypass adaptive daily entry stops, portfolio drawdown tapers and per-EA loss-streak tapers. Their planned risk remains 0.75% per entry (1.50% combined for each two-sided News Pulse chart). Four simultaneous straddles plan 6% combined before rounding, fees and gaps; Gold News V9 adds exposure. Their signal filters, broker constraints and protective exits remain active.</p>
+    <p class="mt-3 text-amber-200">News Pulse event settings are hindsight-optimized on overlapping history. The portfolio is an overlay of separately sized backtests, not a shared-margin or floating-equity account simulation. Tight news stops can lose far more than planned risk. These figures are not a forecast or proof of prop-firm safety.</p>
     <p class="mt-2 text-muted">News profits and losses still affect account-wide controls for non-News EAs. Reapply RECOMMENDED ADAPTIVE.bat to activate these settings in MT5; a website update alone does not change attached charts. Gold News V9 remains evidence pending and is not assigned invented backtest results.</p>
   </div>
   <div class="mb-8 grid gap-4">

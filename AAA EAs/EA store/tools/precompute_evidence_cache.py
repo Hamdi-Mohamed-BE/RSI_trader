@@ -30,12 +30,13 @@ from app.evidence_series import parse_mt5_balance_series  # noqa: E402
 from app.mt5_evidence_jobs import _native_metrics, _native_trades, mt5_evidence_jobs  # noqa: E402
 from app.mt5_live import live_mt5  # noqa: E402
 from app.trade_metrics import enrich_trades, outcome_streaks  # noqa: E402
-from app.news_evidence import news_payload_from_result  # noqa: E402
+from app.news_evidence import news_payload_from_result, load_news_summary  # noqa: E402
+from app.news_profiles import MULTI_PROFILE, MULTI_SLUGS  # noqa: E402
 
 
 PERIOD_MONTHS = {"6m": 6, "1y": 12, "3y": 36, "5y": 60}
 CACHE_ROOT = Path(os.getenv("EA_STORE_CACHE_ROOT", str(DEFAULT_CACHE_ROOT))).resolve()
-NEWS_PULSE_SLUGS = {"news-pulse-xau", "news-pulse-xag", "news-pulse-btc"}
+NEWS_PULSE_SLUGS = {"news-pulse-xau", "news-pulse-xag", "news-pulse-btc", "news-pulse-eurusd"}
 NEWS_RESEARCH_ROOT = PACKAGE_ROOT / "News Pulse Full Coverage 2026-09-12"
 
 
@@ -91,24 +92,48 @@ def independent_news_result(product: Product, mode: str, period: str, start: dat
     """Never substitute or rebase another News Pulse window during a refresh."""
     from app.mt5_evidence_jobs import _set_values
 
-    path = NEWS_RESEARCH_ROOT / f"{product.slug}-{period}-model4.json"
+    research_root=(PACKAGE_ROOT/'News Pulse Event Parameters Research 2026-09-19'/'Deployment'
+                   if product.slug=='news-pulse-xau' else NEWS_RESEARCH_ROOT)
+    if product.slug in MULTI_SLUGS:
+        research_root=PACKAGE_ROOT/'News Pulse Multi Asset Event Parameters 2026-09-19'/'Deployment'
+    path = research_root / f"{product.slug}-{period}-model4.json"
     if mode != "standard" or not path.is_file():
         raise RuntimeError(f"Run the audited News Pulse coverage runner for {product.slug} {period} first.")
     result = json.loads(path.read_text(encoding="utf-8-sig"))
     if (result['slug'] != product.slug or result['period_key'] != period
             or result['from_date'] != start.isoformat() or result['to_exclusive'] != end.isoformat()):
         raise RuntimeError('News Pulse source dates differ from the requested window; an independent run is required.')
-    report = (NEWS_RESEARCH_ROOT / result['source_report']).resolve()
-    if NEWS_RESEARCH_ROOT.resolve() not in report.parents or file_hash(report) != result['source_report_sha256']:
+    report = (research_root / result['source_report']).resolve()
+    if research_root.resolve() not in report.parents or file_hash(report) != result['source_report_sha256']:
         raise RuntimeError('News Pulse native report identity failed validation.')
-    manifest = result.get('build') or json.loads((NEWS_RESEARCH_ROOT / 'BUILD MANIFEST.json').read_text())
+    manifest = result.get('build') or json.loads((research_root / 'BUILD MANIFEST.json').read_text())
     original_source = (PACKAGE_ROOT / product.expert_source).with_suffix('.mq5')
     if file_hash(original_source) != manifest['source_sha256']:
         raise RuntimeError('News Pulse source changed after the audited runs; rerun before publishing.')
+    if product.slug=='news-pulse-xau':
+        if result.get('strategy_profile')!='xau-event-specific-2026-09-19':
+            raise RuntimeError('Stale XAU profile evidence.')
+        parity=json.loads((research_root/'PARITY.json').read_text())
+        if not parity.get('passed') or parity['source_sha256']!=manifest['source_sha256']:
+            raise RuntimeError('XAU production/research parity is not current.')
+        if file_hash(research_root/'NewsPulseTesterCalendar.mqh')!=manifest['calendar_sha256']:
+            raise RuntimeError('XAU calendar changed after native testing.')
+    if product.slug in MULTI_SLUGS:
+        if result.get('strategy_profile')!=MULTI_PROFILE:
+            raise RuntimeError('Stale multi-asset event-specific evidence.')
+        parity=json.loads((research_root/(product.slug.removeprefix('news-pulse-').upper()+'-PARITY.json')).read_text())
+        if not parity.get('passed') or parity['source_sha256']!=manifest['source_sha256']:
+            raise RuntimeError('Multi-asset production/research parity is not current.')
+        if file_hash(research_root/'NewsPulseTesterCalendar.mqh')!=manifest['calendar_sha256']:
+            raise RuntimeError('Multi-asset calendar changed after native testing.')
     for name,digest in manifest['dependencies'].items():
         dependency = (NEWS_RESEARCH_ROOT / name if name=='NewsPulseTesterCalendar.mqh'
                       else PACKAGE_ROOT / '_Shared' / name if name=='CalyxAdaptivePortfolio.mqh'
                       else original_source.parent / name)
+        if product.slug=='news-pulse-xau' or product.slug in MULTI_SLUGS:
+            dependency=(PACKAGE_ROOT/name).resolve()
+            if PACKAGE_ROOT.resolve() not in dependency.parents:
+                raise RuntimeError('Invalid dependency path.')
         if not dependency.is_file() or file_hash(dependency)!=digest:
             raise RuntimeError(f'News Pulse dependency {name} changed after the audited run.')
     if manifest.get('indexed_lookup') and not (NEWS_RESEARCH_ROOT/'LOOKUP PARITY.json').is_file():
@@ -511,6 +536,8 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
                 }
             )
             continue
+        if product.slug in NEWS_PULSE_SLUGS and load_news_summary(product.slug, period) is None:
+            raise RuntimeError(f'Refusing to rebuild portfolio with stale News Pulse evidence: {product.slug} {period}')
         payload = json.loads(payload_path.read_text(encoding="utf-8-sig"))
         product_trades = [
             trade
@@ -616,7 +643,7 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
         "skipped_trade_count": len(all_trades) - len(adaptive_trades),
         "adaptive_activations": activations,
         "adaptive_rules": list(ADAPTIVE_RULES),
-        "notice": "Recommended adaptive replay of the existing native MT5 trade ledger. The four news EAs are exempt: no adaptive entry skips or risk scaling. Non-News controls are unchanged and still count news P/L in account-wide checks. Net P/L includes commission and swap; scaled non-News costs are proportional to modelled position size. Gold News V9 contributes only when evidence exists. This is not a simultaneous shared-margin MT5 run.",
+        "notice": "Recommended adaptive replay of separately sized native MT5 trade ledgers. All five news EAs are exempt: no adaptive entry skips or risk scaling. Non-News controls are unchanged and still count news P/L in account-wide checks. Net P/L includes commission and swap; scaled non-News costs are proportional to modelled position size. Gold News V9 contributes only when evidence exists. This is not a simultaneous shared-margin/floating-equity MT5 run. News Pulse settings are hindsight-optimized; four straddles plan 6% combined risk before costs, rounding and gaps. Portfolio DD is closed-balance overlay DD, not account equity DD or proof of prop-firm safety.",
         "source": "adaptive-replay-of-native-mt5-cache",
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }

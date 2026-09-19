@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import threading
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -17,6 +18,8 @@ from predict_news import make_prediction
 LOGGER = logging.getLogger("gold_news.ea_file_bridge")
 BRIDGE_RELATIVE_PATH = Path("GoldNewsV9EA") / "bridge.json"
 POLL_SECONDS = 5.0
+WRITE_RETRY_SECONDS = 2.0
+WRITE_RETRY_INTERVAL_SECONDS = 0.05
 _thread: threading.Thread | None = None
 _stop_event = threading.Event()
 _status_lock = threading.Lock()
@@ -94,6 +97,12 @@ def _resolve_common_files() -> Path:
     if configured:
         return Path(configured).expanduser().resolve() / "Files"
 
+    appdata = os.getenv("APPDATA", "").strip()
+    if appdata:
+        common = Path(appdata) / "MetaQuotes" / "Terminal" / "Common"
+        if common.is_dir():
+            return common.resolve() / "Files"
+
     import MetaTrader5 as mt5
 
     terminal = os.getenv("MT5_PATH", r"C:\Program Files\MetaTrader 5\terminal64.exe")
@@ -143,12 +152,27 @@ def _signal_fields(prediction: dict[str, Any]) -> dict[str, Any]:
 
 def _write_snapshot(path: Path, snapshot: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(".tmp")
-    temporary.write_text(
-        json.dumps(snapshot, separators=(",", ":")) + "\n",
-        encoding="ascii",
+    temporary = path.with_name(
+        f".{path.name}.{os.getpid()}.{threading.get_ident()}.tmp"
     )
-    os.replace(temporary, path)
+    payload = json.dumps(snapshot, separators=(",", ":")) + "\n"
+    temporary.write_text(payload, encoding="ascii")
+
+    deadline = time.monotonic() + WRITE_RETRY_SECONDS
+    try:
+        while True:
+            try:
+                os.replace(temporary, path)
+                return
+            except PermissionError:
+                # MT5 can hold the shared file open for a few milliseconds while
+                # reading it. Keep the atomic replace, but wait for that handle
+                # instead of letting one transient Windows lock stale the bridge.
+                if time.monotonic() >= deadline:
+                    raise
+                time.sleep(WRITE_RETRY_INTERVAL_SECONDS)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def _bridge_loop(path: Path) -> None:

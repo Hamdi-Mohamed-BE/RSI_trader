@@ -61,8 +61,8 @@ def test_every_active_entry_has_local_ea_and_set_files() -> None:
 
 def test_portfolio_risk_policy_has_only_news_exception() -> None:
     installer = (PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1").read_text(encoding="utf-8-sig")
-    assert installer.count("LockRisk = $true") == 4
-    assert installer.count("PercentRisk = $false") == 3
+    assert installer.count("LockRisk = $true") == 5
+    assert installer.count("PercentRisk = $false") == 4
 
     risk_keys = {
         "InpRiskPercent",
@@ -242,9 +242,10 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "four times" in by_name["Nasdaq 5M Candle Momentum"].logic[2].detail
     assert "2.5 times" in by_name["Nasdaq 5M Candle Momentum"].logic[3].detail
     assert "15:55" in by_name["Nasdaq 5M Candle Momentum"].logic[5].detail
-    assert "buy stop" in by_name["News Pulse XAU"].logic[2].detail
-    assert "sell stop" in by_name["News Pulse XAU"].logic[2].detail
-    assert "maximum base risk of 0.75%" in by_name["News Pulse XAU"].logic[3].detail
+    assert "T-5 seconds" in by_name["News Pulse XAU"].logic[2].title
+    assert "5.5R TP" in by_name["News Pulse XAU"].logic[3].detail
+    assert "0.75% of equity per pending side" in by_name["News Pulse XAU"].risk_note
+    assert "Filling one side never cancels the other" in by_name["News Pulse XAU"].logic[4].detail
     assert "preceding twelve M15 bars" in by_name["BTC Top Down FVG Liquidity"].logic[1].detail
     assert "target is 4R" in by_name["ETH Top Down FVG Liquidity"].logic[5].detail
     assert "09:30-09:45" in by_name["Sell Nasdaq 15min"].logic[0].detail
@@ -256,11 +257,12 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
 
 def test_recommended_exit_settings_are_synced_per_ea() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 32
+    assert len(products) == 33
     assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 8
     assert sum(product.exit_mode == "Dynamic 60/20 only" for product in products) == 1
     assert sum(product.exit_mode == "Current EA exits" for product in products) == 6
-    assert sum(product.exit_mode == "Native 60-second exit" for product in products) == 3
+    assert sum(product.exit_mode == "Native 60-second exit" for product in products) == 0
+    assert sum(product.exit_mode == "Event-specific NFP / CPI / FOMC exits" for product in products) == 4
     assert sum(product.exit_mode == "Fixed 5R / no trailing" for product in products) == 1
     assert sum(product.exit_mode == "Native 1.5R / BE at 0.5R" for product in products) == 1
     assert sum(product.exit_mode == "Native 1R / BE at 0.5R" for product in products) == 1
@@ -324,15 +326,15 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert all("Dynamic 50/20 overlay is disabled" in product.logic[-1].detail for product in products if product.exit_mode == "Current EA exits")
     assert all("Dynamic 50/20 overlay is disabled" in product.logic[-1].detail for product in products if product.exit_mode == "Native 60-second exit")
     news_products = [product for product in products if product.label.startswith("News Pulse ")]
-    assert {product.label for product in news_products} == {"News Pulse XAU", "News Pulse XAG", "News Pulse BTC"}
+    assert {product.label for product in news_products} == {"News Pulse XAU", "News Pulse XAG", "News Pulse BTC", "News Pulse EURUSD"}
     assert all(product.safe_filter_supported is False for product in news_products)
     assert all(product.evidence is not None for product in news_products)
     assert all(
-        product.evidence.status == "Watch only — full calendar coverage"
+        product.evidence.status == "User-approved — hindsight optimized"
         for product in news_products
     )
     assert all(product.evidence.trades > 30 for product in news_products)
-    assert all("v2.15" in product.logic_audit_note for product in news_products)
+    assert all(("v2.16" if product.label=="News Pulse XAU" else "v2.17") in product.logic_audit_note for product in news_products)
     xau_ny = next(product for product in products if product.label == "XAU ORB New York M30")
     assert xau_ny.deployment_session == "09:30 New York / M30"
     assert xau_ny.exit_mode == "Native 1.5R / BE at 0.5R"
@@ -539,8 +541,10 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
 
 
 def test_news_pulse_cards_details_and_series_use_the_same_verified_evidence() -> None:
-    for slug in ("news-pulse-xau", "news-pulse-xag", "news-pulse-btc"):
-        result_path = PACKAGE_ROOT / 'News Pulse Full Coverage 2026-09-12' / f'{slug}-3y-model4.json'
+    for slug in ("news-pulse-xau", "news-pulse-xag", "news-pulse-btc", "news-pulse-eurusd"):
+        result_root=(PACKAGE_ROOT/'News Pulse Event Parameters Research 2026-09-19'/'Deployment'
+                     if slug=='news-pulse-xau' else PACKAGE_ROOT/'News Pulse Multi Asset Event Parameters 2026-09-19'/'Deployment')
+        result_path = result_root / f'{slug}-3y-model4.json'
         result = json.loads(result_path.read_text())
         stats = result['stats']
         return_pct, profit_factor = stats['return_pct'], stats['profit_factor']
@@ -558,7 +562,7 @@ def test_news_pulse_cards_details_and_series_use_the_same_verified_evidence() ->
             assert f"{win_rate:.2f}%" in page
             assert f"{drawdown:.2f}%" in page
             assert evidence_period in page
-        assert "Watch only" in card.text
+        assert "Experimental" in card.text
         assert "Older pre-calendar-fix results are excluded" in detail.text
         assert "Historical pre-v2.13 calendar replay" not in detail.text
         payload = series.json()
@@ -684,13 +688,14 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "Precomputed recommended-portfolio evidence" in response.text
-    assert "32 EAs with the approved adaptive risk controls" in response.text
+    assert "33 EAs with the approved adaptive risk controls" in response.text
     assert "CACHED NATIVE MT5 DATA" in response.text
     assert "Dynamic 50/20" in response.text
     assert "Recommended Adaptive is the active website profile" in response.text
-    assert "+2,288.14%" in response.text
-    assert "9.54%" in response.text
-    assert "All four news EAs are exempt" in response.text
+    expected=json.loads((STORE_ROOT/'data/evidence-cache/v1/portfolio/standard/5y.json').read_text())['stats']
+    assert f"{expected['return_pct']:+,.2f}%" in response.text
+    assert f"{expected['max_drawdown_pct']:.2f}%" in response.text
+    assert "All five news EAs are exempt" in response.text
     assert "Gold News V9 remains evidence pending" in response.text
     assert "Current · 5Y return" not in response.text
     assert "Current → adaptive PF" not in response.text
@@ -706,12 +711,13 @@ def test_portfolio_page_shows_fixed_cached_periods() -> None:
     series = client.get("/api/portfolio/equity-series")
     assert series.status_code == 200
     assert len(series.json()["series"]) >= 2
-    assert series.json()["included_ea_count"] == 32
-    assert series.json()["tested_ea_count"] == 31
+    assert series.json()["included_ea_count"] == 33
+    assert series.json()["tested_ea_count"] == 32
     assert series.json()["mode"] == "recommended-adaptive"
-    assert series.json()["stats"]["return_pct"] == 2288.14
-    assert series.json()["stats"]["profit_factor"] == 2.09
-    assert series.json()["stats"]["max_drawdown_pct"] == 8.57
+    default_stats=json.loads((STORE_ROOT/'data/evidence-cache/v1/portfolio/standard/3y.json').read_text())['stats']
+    assert series.json()["stats"]["return_pct"] == default_stats['return_pct']
+    assert series.json()["stats"]["profit_factor"] == default_stats['profit_factor']
+    assert series.json()["stats"]["max_drawdown_pct"] == default_stats['max_drawdown_pct']
     assert series.headers["x-evidence-cache"] == "HIT"
     assert "/api/portfolio/equity-series" in response.text
     assert "/portfolio/equity.png" not in response.text
@@ -903,7 +909,7 @@ def test_outcome_streaks_are_ordered_and_break_even_is_neutral() -> None:
 
 def test_all_recommended_eas_and_portfolio_have_every_fixed_cache() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 32
+    assert len(products) == 33
     periods = ("6m", "1y", "3y", "5y")
     for period in periods:
         portfolio = client.get("/api/portfolio/equity-series", params={"period": period})

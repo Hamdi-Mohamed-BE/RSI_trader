@@ -16,6 +16,7 @@ NEWS_ADAPTIVE_EXEMPTIONS = {
     "news-pulse-xau": "News Pulse XAU",
     "news-pulse-xag": "News Pulse XAG",
     "news-pulse-btc": "News Pulse BTC",
+    "news-pulse-eurusd": "News Pulse EURUSD",
     "gold-news-v9-direction": "Gold News V9 Direction",
 }
 
@@ -30,7 +31,7 @@ RULES = (
     "Non-News entries stop after closed P/L reaches -5% for the current day (-$500 on the $10,000 reference balance).",
     "Non-News risk tapers to 0.5x beyond 4% closed-equity drawdown and 0.25x beyond 7%.",
     "A non-News EA tapers to 0.5x after three consecutive losses and 0.25x after five; its next win resets the taper.",
-    "News Pulse XAU, XAG, BTC and Gold News V9 Direction bypass all adaptive entry stops and risk tapers. Their locked 0.75% planned risk per entry is unchanged (1.50% combined for two-sided News Pulse).",
+    "News Pulse XAU, XAG, BTC, EURUSD and Gold News V9 Direction bypass all adaptive entry stops and risk tapers. Their locked 0.75% planned risk per entry is unchanged (1.50% combined per two-sided News Pulse; four concurrent straddles plan 6% before costs, gaps and rounding).",
     "News profits and losses still count toward account-wide daily P/L and drawdown for non-News controls. News signal filters, broker constraints and native exits remain unchanged.",
 )
 

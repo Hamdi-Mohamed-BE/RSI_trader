@@ -1,0 +1,170 @@
+{
+  "initial_balance": 10000.0,
+  "final_balance": 10574.76,
+  "net_profit": 574.76,
+  "return_pct": 5.75,
+  "profit_factor": 1.9217396882417086,
+  "win_rate_pct": 68.91891891891892,
+  "max_drawdown_pct": 1.2069774,
+  "trades": 74,
+  "sharpe_ratio": 4.05,
+  "recovery_factor": 4.91,
+  "history_quality": "71% real ticks",
+  "slug": "overnight",
+  "label": "Nasdaq Overnight",
+  "chart_period_minutes": 1,
+  "symbol": "US500",
+  "fingerprint": "4d7584b56fb92f455d825a5556c61ad763adaa831716b680557821664dfd05d4",
+  "native_equity_dd_pct": 1.15,
+  "tick_observed_equity_dd_pct": 1.2069774,
+  "balance_dd_pct": 0.95,
+  "min_equity": 9977.46,
+  "max_margin": 13.34,
+  "commission": -13.44,
+  "swap": -108.47,
+  "max_initial_risk_pct": 1.060082935098017,
+  "average_trade_usd": 7.7670270270270265,
+  "report_sha256": "884a2d9dda86111d121092599663880ff149420167a933a8614567c1d39c7215",
+  "real_tick_start_lines": [
+    "RM\t0\t20:33:23.551\tCore 01\tUS500 : real ticks begin from 2026.01.01 00:00:00",
+    "US500 : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "warnings": [],
+  "overnight_trades": 74,
+  "market_closed_messages_present": true,
+  "late_session_exits": 0,
+  "max_win_streak": 6,
+  "max_loss_streak": 3,
+  "months": [
+    {
+      "month": "2025-09",
+      "trades": 3,
+      "wins": 2,
+      "net_profit": -6.13,
+      "commission": -0.57,
+      "swap": -3.39
+    },
+    {
+      "month": "2025-10",
+      "trades": 9,
+      "wins": 8,
+      "net_profit": 142.61,
+      "commission": -1.71,
+      "swap": -14.68
+    },
+    {
+      "month": "2026-03",
+      "trades": 11,
+      "wins": 7,
+      "net_profit": 173.68,
+      "commission": -2.14,
+      "swap": -19.79
+    },
+    {
+      "month": "2026-04",
+      "trades": 6,
+      "wins": 4,
+      "net_profit": 54.16,
+      "commission": -1.09,
+      "swap": -8.85
+    },
+    {
+      "month": "2026-05",
+      "trades": 6,
+      "wins": 5,
+      "net_profit": 34.82,
+      "commission": -1.08,
+      "swap": -8.49
+    },
+    {
+      "month": "2026-06",
+      "trades": 10,
+      "wins": 7,
+      "net_profit": 97.48,
+      "commission": -1.79,
+      "swap": -14.84
+    },
+    {
+      "month": "2026-07",
+      "trades": 11,
+      "wins": 8,
+      "net_profit": -12.47,
+      "commission": -1.98,
+      "swap": -13.75
+    },
+    {
+      "month": "2026-08",
+      "trades": 9,
+      "wins": 6,
+      "net_profit": 54.28,
+      "commission": -1.53,
+      "swap": -13.31
+    },
+    {
+      "month": "2026-09",
+      "trades": 9,
+      "wins": 4,
+      "net_profit": 36.33,
+      "commission": -1.55,
+      "swap": -11.37
+    }
+  ],
+  "entry_date_segments": [
+    {
+      "segment": "Before real-tick availability",
+      "trades": 12,
+      "net_profit": 136.48,
+      "profit_factor": 4.946790052053211,
+      "win_rate_pct": 83.33333333333333
+    },
+    {
+      "segment": "Real-tick-available dates",
+      "trades": 62,
+      "net_profit": 438.28,
+      "profit_factor": 1.7441339264491154,
+      "win_rate_pct": 66.12903225806451
+    }
+  ],
+  "tested_inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "false",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpRequireNegativeDay": "true",
+    "InpNegativeDayDefinition": "0",
+    "InpNegativeDayThresholdPercent": "0",
+    "InpAllowFridayEntry": "true",
+    "InpCashOpenHour": "9",
+    "InpCashOpenMinute": "30",
+    "InpCashCloseHour": "16",
+    "InpCashCloseMinute": "0",
+    "InpEntryHour": "16",
+    "InpEntryMinute": "0",
+    "InpExitHour": "9",
+    "InpExitMinute": "29",
+    "InpEntryWindowMinutes": "10",
+    "InpExitWindowMinutes": "31",
+    "InpMinimumCashSessionBars": "300",
+    "InpRiskPercent": "1",
+    "InpAdaptivePortfolioControls": "false",
+    "InpEmergencyStopPercent": "2",
+    "InpRewardRisk": "0",
+    "InpMaxSpreadPoints": "0",
+    "InpMaxDeviationPoints": "30",
+    "InpMagic": "84081601",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpStudyCase": "sp500-overnight-20260919",
+    "InpStudyLogin": "472334559",
+    "InpStudyServer": "Exness-MT5Trial16"
+  }
+}

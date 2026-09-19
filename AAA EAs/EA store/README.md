@@ -1,10 +1,30 @@
 # Calyx — EA Store
 
+## XAG / BTC / EURUSD event-specific promotion — 2026-09-19
+
+The user explicitly selected the **full-year optimized** NFP/CPI/FOMC combinations, not the earlier-selected variants. XAG, BTC and the restored EURUSD use the dedicated v2.17 multi-asset event EA. XAU stays on its approved v2.16 source and settings. The maintained BAT roster now has **33 EAs**, including **five adaptive-exempt news EAs** (four News Pulse charts plus Gold News V9).
+
+All four News Pulse charts retain both pending directions and 0.75% planned equity risk per side. Four simultaneous straddles therefore plan 6% combined risk before rounding, costs and gaps; Gold News V9 adds exposure. This is not a realized loss cap or a prop-firm-safe configuration. Ordinary non-news risk controls are unchanged.
+
+The canonical event map is `AAA Final EAs/AAA Final News Pulse Multi Asset Event EA/EVENT PARAMETERS.json`. Matching source generation, exact production/research parity checks, twelve independent website-period native runs, build/SET hashes and publication are retained in `News Pulse Multi Asset Event Parameters 2026-09-19/Deployment`. `publish_deployment.py` republishes completed reports and rebuilds current/recommended-adaptive portfolio overlays without starting MT5. Previous caches remain backed up there.
+
+All website windows end on **2026-09-05**, matching the rest of the portfolio. Original full-year optimization comparisons end on **2026-09-19** and are not interchangeable. Results are hindsight-optimized, include recorded commissions/swaps, and show real/generated tick quality. Portfolio ledgers are independently sized overlays, not shared-margin or floating-equity simulations. Gold News V9 remains evidence-pending.
+
+Updating files does not update attached MT5 charts. Reapply `RECOMMENDED ADAPTIVE.bat` (or another maintained BAT) when ready; this promotion does not itself restart or attach anything to the trading terminal.
+
+## XAU event-specific promotion — 2026-09-19
+
+News Pulse XAU uses a dedicated v2.16 build with separate NFP/CPI/FOMC timing, anchors, stops and exits. All maintained portfolio BATs select it; both pending sides remain enabled, 0.75% equity risk per side and adaptive exemption are unchanged. The later XAG/BTC/EURUSD promotion above does not modify XAU.
+
+Four independent native runs replace XAU's cached results and feed the rebuilt portfolio ledgers. Website periods retain the 2026-09-05 cutoff; the September-19 research comparison uses different dates. Current source-matched reports are under `News Pulse Event Parameters Research 2026-09-19/Deployment`, and `independent_news_result` rejects old XAU evidence during future rebuilds. Card, detail and API disclosures identify hindsight optimization and real/generated tick percentages. Multi-year figures are not live execution evidence or forecasts.
+
+To republish the retained runs without starting MT5, run `publish_deployment.py` in that research directory. The production executable was matched to the selected research run before publication; the parity and build manifests are retained there. Installing into an already running live terminal still requires rerunning a maintained BAT.
+
 A FastAPI storefront generated from the Expert Advisors currently listed in:
 
 `..\BM Trading Robust Sets 2026-08-04\_Auto Deploy\Install-BMTradingPortfolio.ps1`
 
-The public catalogue is generated directly from every active entry in the recommended installer. After the approved 2026-09-10 portfolio audit it contains 31 EAs, and the count updates automatically when the installer changes.
+The public catalogue is generated directly from every active entry in the recommended installer. It now contains 33 EAs; the count updates automatically when the installer changes.
 
 The 2026-09-10 full portfolio audit keeps four evidence-selected Safe defaults (LTA Volume Profile, EMA3, XAU Weakness and XAU Squeeze Momentum Standard), promotes Sell Nasdaq 15min to its Dynamic London preset, and retains DMC Current XAU by explicit user decision. Engineered Liquidity XAU, ORB Volume Profile High Win 0.75R, XAG Session VWAP Snapback and XAU Squeeze Momentum High Win 0.75R were removed from the active catalogue and every main portfolio BAT; their research evidence remains archived.
 

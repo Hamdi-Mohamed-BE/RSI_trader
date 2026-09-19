@@ -161,9 +161,10 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "USDJPY London Open Momentum": ("london-open-momentum-usdjpy", "current", "Time exit / BE at 0.75R"),
     "XAU Squeeze Momentum Standard": ("squeeze-momentum-xau-standard", "current", "3.5 ATR stop / 1.5R / ATR ratchet"),
     "XAU Squeeze Momentum High Win 0.75R": ("squeeze-momentum-xau-high-win", "current", "3 ATR stop / 0.75R / ATR ratchet"),
-    "News Pulse XAU": ("news-xau-hard-1p5", "current", "Native 60-second exit"),
-    "News Pulse XAG": ("news-xag-hard-1p5", "current", "Native 60-second exit"),
-    "News Pulse BTC": ("news-btc-hard-1p5", "current", "Native 60-second exit"),
+    "News Pulse XAU": ("news-xau-event-specific-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
+    "News Pulse XAG": ("news-xag-event-full-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
+    "News Pulse BTC": ("news-btc-event-full-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
+    "News Pulse EURUSD": ("news-eurusd-event-full-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
     "XAU RSI VWAP": ("rsi-vwap-xau", "current", "Current EA exits"),
     "BTC POC Fibonacci": ("pocfib-btc", "current", "Fixed 5R / no trailing"),
     "XAU Elliott Wave 1-2-3": ("elliott-xau", "current", "Fixed 3R / no trailing"),
@@ -984,6 +985,25 @@ CORE_META.update(
     }
 )
 
+from .news_profiles import event_profile_meta
+for _news_asset in ('XAG', 'BTC', 'EURUSD'):
+    CORE_META['News Pulse '+_news_asset] = event_profile_meta(_news_asset)
+
+CORE_META["News Pulse XAU"].update({
+    "strategy": "Event-specific two-sided news breakout",
+    "tagline": "Separate NFP, CPI and FOMC settings; both pending directions retained.",
+    "description": "Approved XAU event-specific combination (2026-09-19). NFP places 10 seconds before release using the previous closed M1 high/low plus a $2 offset, $2 SL, no TP and no trailing, closing at T+60s. CPI uses T-5s, closed M1 high/low plus $1, $2 SL, no TP, trailing from 1R at $10 distance, and T+300s exit. FOMC uses T-60s, current Ask/Bid plus $1, $2 SL, 5.5R TP, trailing from 0.5R at $4 distance and T+120s exit. All dollar distances are gold price units, not cash risk.",
+    "logic_audit_note": "Production v2.16 remains the dedicated XAU build, unchanged by the separate v2.17 XAG/BTC/EURUSD promotion. It retains the high-impact primary event filter, fresh broker quote timing, independent pending sides and account/symbol/magic restart recovery. Website periods are independent native runs of the promoted configuration, not old results relabelled as new.",
+    "logic": [
+        {"title":"Primary high-impact events only", "detail":"Native MT5 calendar high-importance NFP, headline/core CPI and FOMC decision/statement. Cleveland Median CPI and secondary inflation series are not accepted."},
+        {"title":"NFP: closed M1, T-10 seconds", "detail":"Prior closed M1 high adjusted by current spread for buy, low for sell; $2 offset and $2 SL. No TP or trailing. Close at T+60 seconds."},
+        {"title":"CPI: closed M1, T-5 seconds", "detail":"Prior closed M1 high/low anchors; $1 offset and $2 SL. No TP. Trail from +1R with $10 distance. Close at T+300 seconds."},
+        {"title":"FOMC: quote, T-60 seconds", "detail":"Current Ask/Bid anchors; $1 offset, $2 SL, 5.5R TP. Trail from +0.5R with $4 distance. Close at T+120 seconds."},
+        {"title":"Keep both pending directions", "detail":"Filling one side never cancels the other. Broker-invalid entries can still be rejected, including a previous-M1 level already crossed by price. Pending orders expire at the event-specific deadline."},
+        {"title":"Research limitations", "detail":"Selected after examining the last year: +262.10%, 38 trades, 65.79% net wins, PF 10.97, 6.60% equity DD in the September-19-aligned research run. Only 71% real ticks. Earlier-selected parameters returned +5.70% on later validation versus +19.34% for the old preset. This is hindsight-optimized evidence, not a forward-profit forecast."},
+    ],
+    "risk_note": "0.75% of equity per pending side, nominal 1.50% event risk, unchanged in every BAT including Recommended Adaptive. News bypasses adaptive controls. Lot rounding, commission and news gaps can exceed the planned risk; $2 stops are particularly execution-sensitive. These in-sample optimized settings were user-approved despite weaker chronological validation.",
+})
 
 _orb_high_win_meta = dict(CORE_META["ORB Volume Profile"])
 _orb_high_win_meta.update(
@@ -1988,20 +2008,20 @@ def _month_end_flow_us100_evidence() -> Evidence | None:
 
 
 def _news_pulse_hard_evidence(label: str) -> Evidence | None:
-    slug={"News Pulse XAU":"news-pulse-xau","News Pulse XAG":"news-pulse-xag","News Pulse BTC":"news-pulse-btc"}.get(label)
+    slug={"News Pulse XAU":"news-pulse-xau","News Pulse XAG":"news-pulse-xag","News Pulse BTC":"news-pulse-btc","News Pulse EURUSD":"news-pulse-eurusd"}.get(label)
     payload=load_news_summary(slug) if slug else None
     if payload:
         stats=payload['stats']
         return Evidence(
-            label="Official-calendar independent 3-year MT5 run",
+            label=payload.get('evidence_label',"Official-calendar independent 3-year MT5 run"),
             period=payload['period'], return_pct=stats['return_pct'],
             profit_factor=stats['profit_factor'] or 0.0, drawdown_pct=stats['max_drawdown_pct'],
             win_rate_pct=stats['win_rate_pct'], trades=stats['trades'],
             sharpe_ratio=stats.get('sharpe_ratio'), recovery_factor=stats.get('recovery_factor'),
             max_win_streak=stats.get('max_win_streak'), max_loss_streak=stats.get('max_loss_streak'),
             history_quality=payload['history_quality'],source_note=payload['notice'],
-            status="Watch only — full calendar coverage",
-            caution="Full calendar coverage is not full real-tick coverage or proof of live news execution. Review the tick-history and event-execution disclosures for each period.",
+            status="User-approved — hindsight optimized",
+            caution="Event-specific settings were selected using overlapping history, not untouched validation or a forward-return forecast. Full calendar coverage is not full real-tick coverage or proof of live news execution. Review the tick-history and event-execution disclosures for each period.",
         )
     # A short legacy audit is not a substitute for a missing full-period run.
     return None
@@ -2729,7 +2749,7 @@ def get_catalog() -> list[Product]:
     orb_volume_confirmed = _orb_volume_confirmed_evidence()
     news_pulse_evidence = {
         label: _news_pulse_hard_evidence(label)
-        for label in ("News Pulse XAU", "News Pulse XAG", "News Pulse BTC")
+        for label in ("News Pulse XAU", "News Pulse XAG", "News Pulse BTC", "News Pulse EURUSD")
     }
     orb_session_evidence = {
         label: _orb_session_evidence(label) for label in ORB_SESSION_PRODUCTS

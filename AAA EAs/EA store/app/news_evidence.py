@@ -6,9 +6,11 @@ from datetime import date, datetime, timezone
 from calendar import monthrange
 from pathlib import Path
 from typing import Any
+from .news_profiles import MULTI_PROFILE, MULTI_SLUGS
 
-NEWS_SLUGS=frozenset({'news-pulse-xau','news-pulse-xag','news-pulse-btc'})
+NEWS_SLUGS=frozenset({'news-pulse-xau','news-pulse-xag','news-pulse-btc','news-pulse-eurusd'})
 NEWS_EVIDENCE_VERSION=1
+XAU_PROFILE='xau-event-specific-2026-09-19'
 CACHE_ROOT=Path(__file__).resolve().parents[1]/'data'/'evidence-cache'/'v1'
 
 def load_news_summary(slug: str, period: str='3y') -> dict[str, Any] | None:
@@ -35,6 +37,10 @@ def load_news_summary(slug: str, period: str='3y') -> dict[str, Any] | None:
         if start!=expected_start or payload['stats']['from']!=str(start) or payload['stats']['to']!=str(end):
             return None
     except (KeyError,TypeError,ValueError):
+        return None
+    if slug=='news-pulse-xau' and payload.get('strategy_profile')!=XAU_PROFILE:
+        return None
+    if slug in MULTI_SLUGS and payload.get('strategy_profile')!=MULTI_PROFILE:
         return None
     return payload
 
@@ -66,7 +72,37 @@ def news_payload_from_result(result: dict[str, Any]) -> dict[str, Any]:
         "PF and win rate are calculated after recorded fees; drawdown is native relative equity drawdown. "
         "No multi-year slicing or window rebasing; portfolio adaptive scaling is calculated separately."
     )
+    if result.get('strategy_profile')==XAU_PROFILE:
+        notice=(
+            f"Independent native MT5 run of approved XAU event-specific v2.16, {start} to {end} (end exclusive), $10,000 start. "
+            f"Official calendar: {result['calendar_expected']} releases; {result['calendar_attempted']} attempted; {result['calendar_placed']} placed. "
+            f"MT5 reports {stats['history_quality']}; missing real ticks may be generated. "
+            "Historical Exness bid/ask spread, recorded commission/swap and native gap fills included; fixed 1ms simulation is not a live-slippage guarantee. "
+            "0.75% planned equity risk per pending side; both sides retained, adaptive exempt. Rounding, costs and gaps can exceed 1.50%. "
+            "HINDSIGHT-OPTIMIZED: NFP/CPI/FOMC settings were selected using September-2025 to September-2026 history, overlapping these results. "
+            "Earlier-selected settings returned +5.70% on later validation versus +19.34% for the previous preset. "
+            "No future profitability claim. Each website period is a separate fresh-balance native run; dates differ from the September-19 research comparison. "
+            "Calendar verification concerns release times, not verified historical-vintage data availability."
+        )
+    multi=result.get('strategy_profile')==MULTI_PROFILE
+    if multi:
+        notice=(
+            f"Independent native MT5 v2.17 full-year optimized {result['label']} run, {start} to {end} (end exclusive), $10,000 start. "
+            f"Official calendar: {result['calendar_expected']} releases; {result['calendar_attempted']} attempted; {result['calendar_placed']} placed. "
+            f"MT5 history quality: {stats['history_quality']}; missing real ticks may be generated. "
+            "Historical Exness bid/ask spread and recorded commission/swap included. Native gap fills and fixed 1ms simulated delay are not a live-liquidity or slippage guarantee. "
+            "HINDSIGHT-OPTIMIZED: parameters were selected using 2025-09-19 to 2026-09-19, overlapping these results. "
+            "0.75% planned equity risk per side; both directions retained, no adaptive taper. Tight stops, rounding, fees and news gaps can produce much larger losses. "
+            "Every website period is an independent fresh-balance run ending 2026-09-05, not the September-19 research comparison. "
+            "These historical returns are not expected future returns or evidence of prop-firm safety. Calendar verification covers release times, not historical data vintages."
+        )
     return {
+        'strategy_profile':result.get('strategy_profile','news-pulse-v2.15'),
+        'optimization_in_sample':result.get('optimization_in_sample',False),
+        'event_parameters':result.get('parameters'),
+        'selection_window':result.get('selection_window'),
+        'source_sha256':result.get('build',{}).get('source_sha256'),
+        'evidence_label':('Hindsight-optimized event-specific — independent period replay' if multi else 'Hindsight-optimized XAU event-specific — independent period replay' if result.get('strategy_profile')==XAU_PROFILE else 'Official-calendar native period replay'),
         'label': result['label'], 'period': f'{start} to {end}', 'period_key': result['period_key'],
         'mode': 'standard', 'currency': 'USD', 'series': series, 'stats': stats,
         'available_from': start, 'available_to': end, 'cached_trade_count': len(trades),

@@ -1,4 +1,6 @@
 @echo off
+rem XAU News Pulse v2.16: NFP/CPI/FOMC event-specific settings via shared installer; both pending sides retained.
+rem XAG/BTC/EURUSD News Pulse v2.17: approved full-year event combinations, adaptive exempt; no OCO.
 setlocal
 title Calyx 32-EA Portfolio - Any Balance Auto Risk
 echo Applying the current 32-EA Standard portfolio. Gold News V9 and DMC Current XAU are retained; approved removals are excluded.

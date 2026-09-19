@@ -1,4 +1,9 @@
 InpEnableTrading=true
+InpUseXauEventSpecific=true
+; ACTIVE v2.16: NFP T-10s closed-M1 offset2 SL2 noTP noTrail close60s.
+; CPI T-5s closed-M1 offset1 SL2 noTP trail1R/distance10 close300s.
+; FOMC T-60s quote offset1 SL2 TP5.5R trail0.5R/distance4 close120s.
+; Geometry inputs below are compatibility fallbacks; event-specific source rules override them on XAU/GOLD.
 InpEnableBuySide=true
 InpEnableSellSide=true
 InpRiskPercent=0.75

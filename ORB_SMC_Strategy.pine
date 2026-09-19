@@ -1,0 +1,505 @@
+//@version=5
+// ═══════════════════════════════════════════════════════════════════════════
+// ORB + SMC Strategy  |  Opening Range Breakout with Smart Money Concepts
+// ═══════════════════════════════════════════════════════════════════════════
+// Features:
+//  • NYSE 09:30 ORB range (high/low of first N-minute candle)
+//  • Configurable ORB length: 5 / 15 / 30 minutes (default 15)
+//  • Breakout = candle CLOSE beyond ORB high/low (not just a wick)
+//  • Entry modes: Immediate | Retest (preferred) | Retest + BOS
+//  • Optional Fair Value Gap (FVG) confluence on the chart TF
+//  • Optional false-breakout (failed breakout) counter-trend entries
+//  • Previous day high/low plotted as external liquidity caution zones
+//  • Session window, one trade per direction per day, ATR-based stops
+//
+// How to use:
+//  1. Add to any chart (recommended chart TF: 1–5 min for scalping)
+//  2. Set "ORB Minutes" to match the range you want (15 is most popular)
+//  3. Prefer "Retest" entry + enable FVG filter for higher-probability setups
+//  4. Always review previous day H/L — ORB is a bias tool, not a full system
+// ═══════════════════════════════════════════════════════════════════════════
+
+strategy(
+     title              = "ORB + SMC Strategy",
+     shorttitle         = "ORB-SMC",
+     overlay            = true,
+     initial_capital    = 10000,
+     default_qty_type   = strategy.percent_of_equity,
+     default_qty_value  = 10,
+     commission_type    = strategy.commission.percent,
+     commission_value   = 0.02,
+     pyramiding         = 0,
+     calc_on_every_tick = false,
+     process_orders_on_close = true,
+     max_bars_back      = 5000
+ )
+
+// ─── Inputs ────────────────────────────────────────────────────────────────
+g_orb  = "Opening Range"
+g_ent  = "Entry Logic"
+g_fvg  = "Fair Value Gap (SMC)"
+g_risk = "Risk Management"
+g_vis  = "Visuals"
+g_filt = "Filters"
+
+orbMinutes = input.int(15, "ORB Minutes", options = [5, 15, 30], group = g_orb,
+     tooltip = "Length of the first candle after 09:30 used as the opening range. 15m is the most balanced.")
+sessionTZ  = input.string("America/New_York", "Session Timezone", group = g_orb)
+orbStartH  = input.int(9,  "Session Open Hour",   minval = 0, maxval = 23, group = g_orb)
+orbStartM  = input.int(30, "Session Open Minute", minval = 0, maxval = 59, group = g_orb)
+tradeUntilH = input.int(11, "Stop Taking New Trades After (Hour)", minval = 0, maxval = 23, group = g_orb,
+     tooltip = "No new entries after this hour (NY time). Keeps trades in the high-liquidity window.")
+tradeUntilM = input.int(30, "Stop Taking New Trades After (Minute)", minval = 0, maxval = 59, group = g_orb)
+
+entryMode = input.string("Retest", "Entry Mode",
+     options = ["Immediate", "Retest", "Retest + BOS"], group = g_ent,
+     tooltip = "Immediate = enter on breakout close. Retest = wait for pullback to ORB level. Retest + BOS = wait for retest then break of breakout swing.")
+tradeLongs  = input.bool(true,  "Trade Long Breakouts",  group = g_ent)
+tradeShorts = input.bool(true,  "Trade Short Breakouts", group = g_ent)
+tradeFalseBreak = input.bool(true, "Trade False Breakouts (fade)", group = g_ent,
+     tooltip = "When price wicks beyond ORB then closes back inside, look for a counter-trend entry with FVG if enabled.")
+oneTradePerDir = input.bool(true, "One Trade Per Direction Per Day", group = g_ent)
+
+useFvgFilter = input.bool(true,  "Require FVG Confluence", group = g_fvg,
+     tooltip = "For retest entries, require an overlapping Fair Value Gap near the ORB level.")
+fvgLookback  = input.int(20, "FVG Lookback Bars", minval = 5, maxval = 100, group = g_fvg)
+fvgMinSize   = input.float(0.0, "Min FVG Size (points, 0 = any)", minval = 0.0, step = 0.1, group = g_fvg)
+
+slMode     = input.string("ORB + Buffer", "Stop Loss Mode",
+     options = ["ORB + Buffer", "ATR", "Fixed Points"], group = g_risk)
+slBuffer   = input.float(0.25, "SL Buffer (points beyond ORB/ATR)", minval = 0.0, step = 0.05, group = g_risk)
+atrLen     = input.int(14, "ATR Length", minval = 1, group = g_risk)
+atrMult    = input.float(1.0, "ATR Multiplier (for ATR SL)", minval = 0.1, step = 0.1, group = g_risk)
+fixedSL    = input.float(2.0, "Fixed SL (points)", minval = 0.1, step = 0.1, group = g_risk)
+tpMode     = input.string("Risk Multiple", "Take Profit Mode",
+     options = ["Risk Multiple", "Fixed Points", "Previous Day Level"], group = g_risk)
+rrMultiple = input.float(2.0, "Reward : Risk Multiple", minval = 0.5, step = 0.25, group = g_risk)
+fixedTP    = input.float(4.0, "Fixed TP (points)", minval = 0.1, step = 0.1, group = g_risk)
+useTrail   = input.bool(false, "Trail Stop After 1R", group = g_risk)
+trailATR   = input.float(1.0, "Trail ATR Mult", minval = 0.1, step = 0.1, group = g_risk)
+
+showOrbBox   = input.bool(true,  "Show ORB Range Box", group = g_vis)
+showOrbLines = input.bool(true,  "Show ORB High/Low Lines", group = g_vis)
+showPDHL     = input.bool(true,  "Show Previous Day High/Low", group = g_vis)
+showFvg      = input.bool(true,  "Show Active FVGs", group = g_vis)
+showSignals  = input.bool(true,  "Show Entry Markers", group = g_vis)
+colOrbUp     = input.color(color.new(color.teal, 85), "ORB Box (Bullish Bias)", group = g_vis)
+colOrbDn     = input.color(color.new(color.red, 85),  "ORB Box (Bearish Bias)", group = g_vis)
+colOrbMid    = input.color(color.new(color.gray, 80), "ORB Box (Neutral)", group = g_vis)
+colLong      = input.color(color.teal, "Long Marker", group = g_vis)
+colShort     = input.color(color.red,  "Short Marker", group = g_vis)
+
+useBodyFilter = input.bool(false, "Breakout Candle Must Be Strong Body", group = g_filt,
+     tooltip = "Require breakout candle body ≥ 50% of its range.")
+minOrbSize    = input.float(0.0, "Min ORB Range (points, 0 = off)", minval = 0.0, step = 0.1, group = g_filt)
+maxOrbSize    = input.float(0.0, "Max ORB Range (points, 0 = off)", minval = 0.0, step = 0.1, group = g_filt)
+
+// ─── Session / time helpers ────────────────────────────────────────────────
+isInTZ() =>
+    true  // chart is evaluated in exchange TZ; we use hour/minute in sessionTZ via timestamp
+
+// Current time components in selected timezone
+nyHour   = hour(time, sessionTZ)
+nyMinute = minute(time, sessionTZ)
+nyHM     = nyHour * 60 + nyMinute
+
+orbStartHM  = orbStartH * 60 + orbStartM
+orbEndHM    = orbStartHM + orbMinutes
+tradeEndHM  = tradeUntilH * 60 + tradeUntilM
+
+// First bar of the ORB window (candle that starts at session open)
+isOrbStartBar = nyHM == orbStartHM and nyHM[1] != orbStartHM
+
+// Last bar of the ORB window (when the opening-range candle has closed)
+// On chart TF, the ORB "candle" spans multiple bars if chart TF < orbMinutes.
+orbBarsNeeded = math.max(1, int(orbMinutes * 60 / timeframe.in_seconds()))
+// Detect when we are at the close of the ORB period
+isOrbCloseBar = nyHM == orbEndHM and nyHM[1] != orbEndHM
+
+// Within trading window (after ORB formed, before cutoff)
+inTradeWindow = nyHM >= orbEndHM and nyHM < tradeEndHM
+
+// New day detection (NY calendar day)
+nyDay = dayofmonth(time, sessionTZ)
+newDay = ta.change(nyDay) != 0
+
+// ─── Build ORB high / low from the opening range window ────────────────────
+var float orbHigh = na
+var float orbLow  = na
+var int   orbStartBarIndex = na
+var int   orbEndBarIndex   = na
+var bool  orbReady = false
+var int   orbDayId = na
+
+// Track running high/low during the ORB formation window
+var float runHigh = na
+var float runLow  = na
+var bool  inOrbWindow = false
+
+if newDay
+    orbHigh := na
+    orbLow  := na
+    orbReady := false
+    runHigh := na
+    runLow  := na
+    inOrbWindow := false
+    orbStartBarIndex := na
+    orbEndBarIndex := na
+
+// Enter ORB window
+if isOrbStartBar
+    inOrbWindow := true
+    runHigh := high
+    runLow  := low
+    orbStartBarIndex := bar_index
+    orbReady := false
+
+// Accumulate while inside [09:30, 09:30+orbMinutes)
+if inOrbWindow and nyHM >= orbStartHM and nyHM < orbEndHM
+    runHigh := math.max(nz(runHigh, high), high)
+    runLow  := math.min(nz(runLow, low), low)
+
+// Close ORB when the window ends
+if isOrbCloseBar and inOrbWindow
+    orbHigh := runHigh
+    orbLow  := runLow
+    orbEndBarIndex := bar_index
+    orbReady := not na(orbHigh) and not na(orbLow) and orbHigh > orbLow
+    inOrbWindow := false
+    orbDayId := nyDay
+
+orbRange = orbReady ? (orbHigh - orbLow) : na
+orbValidSize = orbReady and (minOrbSize == 0 or orbRange >= minOrbSize) and (maxOrbSize == 0 or orbRange <= maxOrbSize)
+
+// ─── Previous day high / low (external liquidity) ──────────────────────────
+pdh = request.security(syminfo.tickerid, "D", high[1], lookahead = barmerge.lookahead_on)
+pdl = request.security(syminfo.tickerid, "D", low[1],  lookahead = barmerge.lookahead_on)
+
+nearPDH = orbReady and not na(pdh) and math.abs(orbHigh - pdh) <= orbRange * 0.5
+nearPDL = orbReady and not na(pdl) and math.abs(orbLow  - pdl) <= orbRange * 0.5
+
+// ─── Fair Value Gaps (3-candle imbalance) ──────────────────────────────────
+// Bullish FVG: low > high[2]  (gap up between candle 1 high and candle 3 low)
+// Bearish FVG: high < low[2]  (gap down between candle 1 low and candle 3 high)
+bullFvgTop  = low
+bullFvgBot  = high[2]
+bearFvgTop  = low[2]
+bearFvgBot  = high
+
+isBullFvg = low > high[2] and (fvgMinSize == 0 or (low - high[2]) >= fvgMinSize)
+isBearFvg = high < low[2] and (fvgMinSize == 0 or (low[2] - high) >= fvgMinSize)
+
+// Store recent FVGs as boxes / levels for confluence checks
+var float lastBullFvgTop = na
+var float lastBullFvgBot = na
+var int   lastBullFvgBar = na
+var float lastBearFvgTop = na
+var float lastBearFvgBot = na
+var int   lastBearFvgBar = na
+
+if isBullFvg
+    lastBullFvgTop := bullFvgTop
+    lastBullFvgBot := bullFvgBot
+    lastBullFvgBar := bar_index
+
+if isBearFvg
+    lastBearFvgTop := bearFvgTop
+    lastBearFvgBot := bearFvgBot
+    lastBearFvgBar := bar_index
+
+// Invalidate FVG if price fully closes through it
+if not na(lastBullFvgBot) and close < lastBullFvgBot
+    lastBullFvgTop := na
+    lastBullFvgBot := na
+    lastBullFvgBar := na
+
+if not na(lastBearFvgTop) and close > lastBearFvgTop
+    lastBearFvgTop := na
+    lastBearFvgBot := na
+    lastBearFvgBar := na
+
+// FVG still "fresh" within lookback
+bullFvgActive = not na(lastBullFvgBar) and (bar_index - lastBullFvgBar) <= fvgLookback and not na(lastBullFvgBot)
+bearFvgActive = not na(lastBearFvgBar) and (bar_index - lastBearFvgBar) <= fvgLookback and not na(lastBearFvgTop)
+
+// Confluence: FVG overlaps ORB level (gap zone intersects ORB high or low)
+bullFvgNearOrb = bullFvgActive and not na(orbHigh) and lastBullFvgBot <= orbHigh and lastBullFvgTop >= orbLow
+bearFvgNearOrb = bearFvgActive and not na(orbLow)  and lastBearFvgBot <= orbHigh and lastBearFvgTop >= orbLow
+
+// ─── Breakout & false-breakout detection ───────────────────────────────────
+var bool brokeHigh = false
+var bool brokeLow  = false
+var float breakoutSwingHigh = na  // highest high during initial breakout leg
+var float breakoutSwingLow  = na
+var bool falseBreakHigh = false
+var bool falseBreakLow  = false
+var bool retestLongDone  = false
+var bool retestShortDone = false
+var bool bosLongArmed    = false
+var bool bosShortArmed   = false
+var int  longTradesToday  = 0
+var int  shortTradesToday = 0
+
+if newDay
+    brokeHigh := false
+    brokeLow  := false
+    breakoutSwingHigh := na
+    breakoutSwingLow  := na
+    falseBreakHigh := false
+    falseBreakLow  := false
+    retestLongDone  := false
+    retestShortDone := false
+    bosLongArmed    := false
+    bosShortArmed   := false
+    longTradesToday  := 0
+    shortTradesToday := 0
+
+strongBody = math.abs(close - open) >= (high - low) * 0.5
+bodyOk = not useBodyFilter or strongBody
+
+// Confirmed breakout: close beyond ORB (after ORB is ready)
+bullBreak = orbReady and orbValidSize and inTradeWindow and close > orbHigh and close[1] <= orbHigh and bodyOk
+bearBreak = orbReady and orbValidSize and inTradeWindow and close < orbLow  and close[1] >= orbLow  and bodyOk
+
+if bullBreak
+    brokeHigh := true
+    breakoutSwingHigh := high
+    falseBreakHigh := false
+
+if bearBreak
+    brokeLow := true
+    breakoutSwingLow := low
+    falseBreakLow := false
+
+// Update breakout swing extremes while in breakout state before retest
+if brokeHigh and not retestLongDone
+    breakoutSwingHigh := math.max(nz(breakoutSwingHigh, high), high)
+
+if brokeLow and not retestShortDone
+    breakoutSwingLow := math.min(nz(breakoutSwingLow, low), low)
+
+// False breakout: wick beyond ORB but close back inside (on a single bar, after ORB ready)
+wickAbove = orbReady and inTradeWindow and high > orbHigh and close < orbHigh and close > orbLow
+wickBelow = orbReady and inTradeWindow and low  < orbLow  and close > orbLow  and close < orbHigh
+
+if wickAbove and not brokeHigh
+    falseBreakHigh := true
+
+if wickBelow and not brokeLow
+    falseBreakLow := true
+
+// Retest detection: after breakout, price returns to touch ORB level from the outside
+retestLong  = brokeHigh and not retestLongDone and low <= orbHigh and close >= orbLow
+retestShort = brokeLow  and not retestShortDone and high >= orbLow and close <= orbHigh
+
+// Rejection on retest (preferred): close back in breakout direction
+retestLongReject  = retestLong  and close > orbHigh
+retestShortReject = retestShort and close < orbLow
+
+// BOS after retest: break the swing high/low of the initial breakout leg
+bosLong  = bosLongArmed  and not na(breakoutSwingHigh) and close > breakoutSwingHigh
+bosShort = bosShortArmed and not na(breakoutSwingLow)  and close < breakoutSwingLow
+
+if retestLongReject
+    retestLongDone := true
+    bosLongArmed   := true
+
+if retestShortReject
+    retestShortDone := true
+    bosShortArmed   := true
+
+// ─── Entry conditions by mode ──────────────────────────────────────────────
+canLong  = tradeLongs  and (not oneTradePerDir or longTradesToday  == 0) and strategy.position_size == 0
+canShort = tradeShorts and (not oneTradePerDir or shortTradesToday == 0) and strategy.position_size == 0
+
+fvgLongOk  = not useFvgFilter or bullFvgNearOrb
+fvgShortOk = not useFvgFilter or bearFvgNearOrb
+
+longSignal  = false
+shortSignal = false
+longIsFalse = false
+shortIsFalse = false
+
+if entryMode == "Immediate"
+    longSignal  := bullBreak and canLong
+    shortSignal := bearBreak and canShort
+else if entryMode == "Retest"
+    longSignal  := retestLongReject  and canLong  and fvgLongOk
+    shortSignal := retestShortReject and canShort and fvgShortOk
+else  // Retest + BOS
+    longSignal  := bosLong  and canLong  and fvgLongOk
+    shortSignal := bosShort and canShort and fvgShortOk
+
+// False-breakout fades (counter-trend), optional FVG on the opposing side
+if tradeFalseBreak and canShort and falseBreakHigh and fvgShortOk and close < orbHigh
+    // Wick above ORB high, close inside → short from resistance
+    shortSignal := true
+    shortIsFalse := true
+    falseBreakHigh := false  // consume
+
+if tradeFalseBreak and canLong and falseBreakLow and fvgLongOk and close > orbLow
+    longSignal := true
+    longIsFalse := true
+    falseBreakLow := false
+
+// ─── Risk: SL / TP ─────────────────────────────────────────────────────────
+atr = ta.atr(atrLen)
+
+calcLongSL(float entry) =>
+    float sl = na
+    if slMode == "ORB + Buffer"
+        sl := orbLow - slBuffer
+    else if slMode == "ATR"
+        sl := entry - atr * atrMult - slBuffer
+    else
+        sl := entry - fixedSL
+    sl
+
+calcShortSL(float entry) =>
+    float sl = na
+    if slMode == "ORB + Buffer"
+        sl := orbHigh + slBuffer
+    else if slMode == "ATR"
+        sl := entry + atr * atrMult + slBuffer
+    else
+        sl := entry + fixedSL
+    sl
+
+calcLongTP(float entry, float sl) =>
+    float risk = entry - sl
+    float tp = na
+    if tpMode == "Risk Multiple"
+        tp := entry + risk * rrMultiple
+    else if tpMode == "Fixed Points"
+        tp := entry + fixedTP
+    else
+        // Aim toward previous day high if above, else R-multiple fallback
+        tp := not na(pdh) and pdh > entry ? pdh : entry + risk * rrMultiple
+    tp
+
+calcShortTP(float entry, float sl) =>
+    float risk = sl - entry
+    float tp = na
+    if tpMode == "Risk Multiple"
+        tp := entry - risk * rrMultiple
+    else if tpMode == "Fixed Points"
+        tp := entry - fixedTP
+    else
+        tp := not na(pdl) and pdl < entry ? pdl : entry - risk * rrMultiple
+    tp
+
+// ─── Execute trades ────────────────────────────────────────────────────────
+if longSignal
+    entry = close
+    sl = calcLongSL(entry)
+    tp = calcLongTP(entry, sl)
+    // Guard: SL must be below entry
+    if sl < entry and tp > entry
+        strategy.entry("Long", strategy.long, comment = longIsFalse ? "ORB False-BO Long" : "ORB Long")
+        strategy.exit("Long Exit", "Long", stop = sl, limit = tp)
+        longTradesToday += 1
+        if longIsFalse
+            falseBreakLow := false
+
+if shortSignal
+    entry = close
+    sl = calcShortSL(entry)
+    tp = calcShortTP(entry, sl)
+    if sl > entry and tp < entry
+        strategy.entry("Short", strategy.short, comment = shortIsFalse ? "ORB False-BO Short" : "ORB Short")
+        strategy.exit("Short Exit", "Short", stop = sl, limit = tp)
+        shortTradesToday += 1
+        if shortIsFalse
+            falseBreakHigh := false
+
+// Optional ATR trail after 1R
+if useTrail and strategy.position_size > 0
+    longEntry = strategy.position_avg_price
+    // Approximate 1R using ORB low
+    rLevel = longEntry + (longEntry - (orbLow - slBuffer))
+    if high >= rLevel
+        strategy.exit("Long Trail", "Long", stop = close - atr * trailATR)
+
+if useTrail and strategy.position_size < 0
+    shortEntry = strategy.position_avg_price
+    rLevel = shortEntry - ((orbHigh + slBuffer) - shortEntry)
+    if low <= rLevel
+        strategy.exit("Short Trail", "Short", stop = close + atr * trailATR)
+
+// Flatten if still in position after trade window (optional safety — disabled by default logic)
+// Users can add a time-based exit if desired.
+
+// ─── Visuals ───────────────────────────────────────────────────────────────
+var box orbBox = na
+var line orbHiLine = na
+var line orbLoLine = na
+
+if showOrbBox and isOrbCloseBar and orbReady
+    if not na(orbBox)
+        box.delete(orbBox)
+    biasCol = brokeHigh ? colOrbUp : brokeLow ? colOrbDn : colOrbMid
+    orbBox := box.new(orbStartBarIndex, orbHigh, bar_index + 50, orbLow,
+         border_color = color.new(color.gray, 50),
+         bgcolor = biasCol,
+         extend = extend.right)
+
+// Update box color / right edge as bias develops
+if showOrbBox and orbReady and not na(orbBox)
+    box.set_right(orbBox, bar_index + 5)
+    biasCol = brokeHigh and not brokeLow ? colOrbUp : brokeLow and not brokeHigh ? colOrbDn : colOrbMid
+    box.set_bgcolor(orbBox, biasCol)
+
+plot(showOrbLines and orbReady ? orbHigh : na, "ORB High", color = color.teal, linewidth = 2, style = plot.style_linebr)
+plot(showOrbLines and orbReady ? orbLow  : na, "ORB Low",  color = color.red,  linewidth = 2, style = plot.style_linebr)
+
+plot(showPDHL ? pdh : na, "Prev Day High", color = color.new(color.orange, 30), style = plot.style_linebr, linewidth = 1)
+plot(showPDHL ? pdl : na, "Prev Day Low",  color = color.new(color.blue, 30),   style = plot.style_linebr, linewidth = 1)
+
+// FVG markers
+plotshape(showFvg and isBullFvg, title = "Bull FVG", style = shape.triangleup,
+     location = location.belowbar, color = color.new(color.teal, 30), size = size.tiny)
+plotshape(showFvg and isBearFvg, title = "Bear FVG", style = shape.triangledown,
+     location = location.abovebar, color = color.new(color.red, 30), size = size.tiny)
+
+plotshape(showSignals and longSignal,  title = "Long",  style = shape.labelup,
+     location = location.belowbar, color = colLong, text = "L", textcolor = color.white, size = size.small)
+plotshape(showSignals and shortSignal, title = "Short", style = shape.labeldown,
+     location = location.abovebar, color = colShort, text = "S", textcolor = color.white, size = size.small)
+
+// Caution label when ORB sits against previous day levels
+var label cautionLbl = na
+if showPDHL and isOrbCloseBar and orbReady and (nearPDH or nearPDL)
+    if not na(cautionLbl)
+        label.delete(cautionLbl)
+    msg = nearPDH and nearPDL ? "⚠ ORB near PDH & PDL" : nearPDH ? "⚠ ORB near Prev Day High" : "⚠ ORB near Prev Day Low"
+    cautionLbl := label.new(bar_index, orbHigh, msg, style = label.style_label_down,
+         color = color.new(color.orange, 20), textcolor = color.white, size = size.small)
+
+// ─── Alerts ────────────────────────────────────────────────────────────────
+alertcondition(bullBreak,  title = "ORB Bullish Breakout", message = "ORB: close above opening range high")
+alertcondition(bearBreak,  title = "ORB Bearish Breakout", message = "ORB: close below opening range low")
+alertcondition(longSignal, title = "ORB Long Entry",       message = "ORB-SMC: long entry signal")
+alertcondition(shortSignal,title = "ORB Short Entry",      message = "ORB-SMC: short entry signal")
+alertcondition(wickAbove and not brokeHigh, title = "ORB False Break High", message = "ORB: false breakout above high")
+alertcondition(wickBelow and not brokeLow,  title = "ORB False Break Low",  message = "ORB: false breakout below low")
+
+// ─── Dashboard ─────────────────────────────────────────────────────────────
+var table dash = table.new(position.top_right, 2, 8, bgcolor = color.new(#1a1a2e, 20), border_width = 1)
+if barstate.islast
+    table.cell(dash, 0, 0, "ORB-SMC", text_color = color.white, text_size = size.small)
+    table.cell(dash, 1, 0, str.tostring(orbMinutes) + "m", text_color = color.aqua, text_size = size.small)
+    table.cell(dash, 0, 1, "ORB High", text_color = color.gray, text_size = size.tiny)
+    table.cell(dash, 1, 1, orbReady ? str.tostring(orbHigh, format.mintick) : "—", text_color = color.teal, text_size = size.tiny)
+    table.cell(dash, 0, 2, "ORB Low", text_color = color.gray, text_size = size.tiny)
+    table.cell(dash, 1, 2, orbReady ? str.tostring(orbLow, format.mintick) : "—", text_color = color.red, text_size = size.tiny)
+    table.cell(dash, 0, 3, "Range", text_color = color.gray, text_size = size.tiny)
+    table.cell(dash, 1, 3, orbReady ? str.tostring(orbRange, format.mintick) : "—", text_color = color.white, text_size = size.tiny)
+    table.cell(dash, 0, 4, "Break", text_color = color.gray, text_size = size.tiny)
+    brTxt = brokeHigh and brokeLow ? "Both" : brokeHigh ? "High ↑" : brokeLow ? "Low ↓" : "None"
+    table.cell(dash, 1, 4, brTxt, text_color = color.yellow, text_size = size.tiny)
+    table.cell(dash, 0, 5, "Mode", text_color = color.gray, text_size = size.tiny)
+    table.cell(dash, 1, 5, entryMode, text_color = color.white, text_size = size.tiny)
+    table.cell(dash, 0, 6, "FVG Filter", text_color = color.gray, text_size = size.tiny)
+    table.cell(dash, 1, 6, useFvgFilter ? "ON" : "OFF", text_color = useFvgFilter ? color.lime : color.gray, text_size = size.tiny)
+    table.cell(dash, 0, 7, "PDH/PDL", text_color = color.gray, text_size = size.tiny)
+    table.cell(dash, 1, 7, nearPDH or nearPDL ? "⚠ Near" : "OK", text_color = nearPDH or nearPDL ? color.orange : color.lime, text_size = size.tiny)

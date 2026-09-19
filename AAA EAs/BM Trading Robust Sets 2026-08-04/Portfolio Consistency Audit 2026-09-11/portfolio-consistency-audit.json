@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T00:08:30.139208+00:00",
+  "generated_at": "2026-09-19T17:40:17.725092+00:00",
   "evidence_end": "2026-09-05",
   "method": "All saved native MT5 evidence modes were compared over 6m, 1y, 3y and 5y. Portfolio curves are chronological closed-deal cash-flow overlays on a $10,000 reference balance.",
   "applied_mode_changes": [
@@ -10,7 +10,7 @@
       "to": "dynamic"
     }
   ],
-  "active_ea_count": 32,
+  "active_ea_count": 33,
   "applied_exclusions": [
     {
       "slug": "engineered-liquidity-xau",
@@ -65,17 +65,22 @@
     {
       "slug": "news-pulse-xau",
       "label": "News Pulse XAU",
-      "reason": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades)."
+      "reason": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations."
     },
     {
       "slug": "news-pulse-xag",
       "label": "News Pulse XAG",
-      "reason": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades)."
+      "reason": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations."
     },
     {
       "slug": "news-pulse-btc",
       "label": "News Pulse BTC",
-      "reason": "Mandatory News Pulse exposure retained at fixed risk; the complete three-year native MT5 sample has 125 trades, but event execution remains high-slippage risk."
+      "reason": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations."
+    },
+    {
+      "slug": "news-pulse-eurusd",
+      "label": "News Pulse EURUSD",
+      "reason": "User-restored News Pulse with full-year hindsight-fitted event settings. Extremely tight stops, generated historical ticks and live news execution invalidate any guaranteed-risk or forward-return claim."
     },
     {
       "slug": "us100-selective-orb-v3",
@@ -91,160 +96,160 @@
   "scenarios": {
     "pre_mode_active": {
       "6m": {
-        "return_pct": 291.81,
-        "profit_factor": 1.72,
-        "win_rate_pct": 43.84,
-        "max_drawdown_pct": 12.37,
-        "trades": 869,
-        "net_profit": 29180.99
+        "return_pct": 1394.94,
+        "profit_factor": 3.8,
+        "win_rate_pct": 43.57,
+        "max_drawdown_pct": 10.56,
+        "trades": 902,
+        "net_profit": 139494.23
       },
       "1y": {
-        "return_pct": 871.32,
-        "profit_factor": 1.91,
-        "win_rate_pct": 45.38,
-        "max_drawdown_pct": 8.18,
-        "trades": 1730,
-        "net_profit": 87132.42
+        "return_pct": 10127.48,
+        "profit_factor": 6.6,
+        "win_rate_pct": 45.36,
+        "max_drawdown_pct": 5.06,
+        "trades": 1788,
+        "net_profit": 1012748.28
       },
       "3y": {
-        "return_pct": 2784.66,
-        "profit_factor": 1.94,
-        "win_rate_pct": 46.1,
-        "max_drawdown_pct": 11.88,
-        "trades": 4482,
-        "net_profit": 278466.19
+        "return_pct": 51828.26,
+        "profit_factor": 7.81,
+        "win_rate_pct": 45.62,
+        "max_drawdown_pct": 13.54,
+        "trades": 4790,
+        "net_profit": 5182826.27
       },
       "5y": {
-        "return_pct": 2806.11,
-        "profit_factor": 1.66,
-        "win_rate_pct": 43.19,
-        "max_drawdown_pct": 59.23,
-        "trades": 6932,
-        "net_profit": 280611.25
+        "return_pct": 92002.22,
+        "profit_factor": 7.37,
+        "win_rate_pct": 43.1,
+        "max_drawdown_pct": 37.74,
+        "trades": 7550,
+        "net_profit": 9200222.47
       }
     },
     "recommended_active": {
       "6m": {
-        "return_pct": 289.75,
-        "profit_factor": 1.73,
-        "win_rate_pct": 44.24,
-        "max_drawdown_pct": 11.08,
-        "trades": 859,
-        "net_profit": 28975.15
+        "return_pct": 1392.88,
+        "profit_factor": 3.86,
+        "win_rate_pct": 43.95,
+        "max_drawdown_pct": 9.42,
+        "trades": 892,
+        "net_profit": 139288.39
       },
       "1y": {
-        "return_pct": 879.87,
-        "profit_factor": 1.94,
-        "win_rate_pct": 45.85,
-        "max_drawdown_pct": 7.42,
-        "trades": 1710,
-        "net_profit": 87987.48
+        "return_pct": 10136.03,
+        "profit_factor": 6.67,
+        "win_rate_pct": 45.81,
+        "max_drawdown_pct": 4.54,
+        "trades": 1768,
+        "net_profit": 1013603.34
       },
       "3y": {
-        "return_pct": 2791.47,
-        "profit_factor": 1.97,
-        "win_rate_pct": 46.22,
-        "max_drawdown_pct": 13.73,
-        "trades": 4418,
-        "net_profit": 279146.82
+        "return_pct": 51835.07,
+        "profit_factor": 7.9,
+        "win_rate_pct": 45.73,
+        "max_drawdown_pct": 15.39,
+        "trades": 4726,
+        "net_profit": 5183506.9
       },
       "5y": {
-        "return_pct": 2823.02,
-        "profit_factor": 1.68,
-        "win_rate_pct": 43.36,
-        "max_drawdown_pct": 49.88,
-        "trades": 6827,
-        "net_profit": 282302.16
+        "return_pct": 92019.13,
+        "profit_factor": 7.42,
+        "win_rate_pct": 43.25,
+        "max_drawdown_pct": 37.04,
+        "trades": 7445,
+        "net_profit": 9201913.38
       }
     }
   },
   "adaptive_overlay_comparison": {
     "6m": {
       "current": {
-        "return_pct": 287.37,
-        "profit_factor": 1.73,
-        "win_rate_pct": 44.34,
-        "max_drawdown_pct": 11.29,
-        "trades": 848,
-        "commission": -814.75,
+        "return_pct": 1390.51,
+        "profit_factor": 3.88,
+        "win_rate_pct": 44.04,
+        "max_drawdown_pct": 9.57,
+        "trades": 881,
+        "commission": -3665.61,
         "swap": -206.92,
-        "total_costs": -1021.67
+        "total_costs": -3872.53
       },
       "recommended_adaptive": {
-        "return_pct": 259.69,
-        "profit_factor": 1.9,
-        "win_rate_pct": 44.34,
-        "max_drawdown_pct": 7.61,
-        "trades": 848,
-        "commission": -667.08,
-        "swap": -133.72,
-        "total_costs": -800.8
+        "return_pct": 1350.29,
+        "profit_factor": 4.73,
+        "win_rate_pct": 43.96,
+        "max_drawdown_pct": 9.48,
+        "trades": 878,
+        "commission": -3520.31,
+        "swap": -131.5,
+        "total_costs": -3651.81
       }
     },
     "1y": {
       "current": {
-        "return_pct": 877.45,
-        "profit_factor": 1.94,
-        "win_rate_pct": 45.89,
-        "max_drawdown_pct": 7.56,
-        "trades": 1702,
-        "commission": -1844.25,
+        "return_pct": 10133.61,
+        "profit_factor": 6.68,
+        "win_rate_pct": 45.85,
+        "max_drawdown_pct": 4.6,
+        "trades": 1760,
+        "commission": -34463.26,
         "swap": -468.28,
-        "total_costs": -2312.53
+        "total_costs": -34931.54
       },
       "recommended_adaptive": {
-        "return_pct": 776.4,
-        "profit_factor": 2.12,
-        "win_rate_pct": 45.81,
-        "max_drawdown_pct": 5.57,
-        "trades": 1681,
-        "commission": -1541.18,
-        "swap": -277.21,
-        "total_costs": -1818.39
+        "return_pct": 10037.75,
+        "profit_factor": 7.52,
+        "win_rate_pct": 45.73,
+        "max_drawdown_pct": 4.19,
+        "trades": 1743,
+        "commission": -34191.13,
+        "swap": -275.78,
+        "total_costs": -34466.91
       }
     },
     "3y": {
       "current": {
-        "return_pct": 2793.54,
-        "profit_factor": 1.98,
-        "win_rate_pct": 46.25,
-        "max_drawdown_pct": 11.66,
-        "trades": 4415,
-        "commission": -6576.19,
+        "return_pct": 51837.14,
+        "profit_factor": 7.9,
+        "win_rate_pct": 45.75,
+        "max_drawdown_pct": 13.32,
+        "trades": 4723,
+        "commission": -148947.66,
         "swap": -2414.48,
-        "total_costs": -8990.67
+        "total_costs": -151362.14
       },
       "recommended_adaptive": {
-        "return_pct": 2451.63,
-        "profit_factor": 2.21,
-        "win_rate_pct": 46.38,
-        "max_drawdown_pct": 7.77,
-        "trades": 4304,
-        "commission": -5140.35,
-        "swap": -1841.57,
-        "total_costs": -6981.92
+        "return_pct": 51553.69,
+        "profit_factor": 8.68,
+        "win_rate_pct": 45.76,
+        "max_drawdown_pct": 11.15,
+        "trades": 4633,
+        "commission": -147902.2,
+        "swap": -1824.71,
+        "total_costs": -149726.91
       }
     },
     "5y": {
       "current": {
-        "return_pct": 2828.14,
-        "profit_factor": 1.68,
-        "win_rate_pct": 43.38,
-        "max_drawdown_pct": 47.54,
-        "trades": 6819,
-        "commission": -9074.98,
+        "return_pct": 92024.25,
+        "profit_factor": 7.43,
+        "win_rate_pct": 43.27,
+        "max_drawdown_pct": 35.65,
+        "trades": 7437,
+        "commission": -293597.37,
         "swap": -3124.63,
-        "total_costs": -12199.61
+        "total_costs": -296722.0
       },
       "recommended_adaptive": {
-        "return_pct": 2421.59,
-        "profit_factor": 2.07,
-        "win_rate_pct": 43.38,
-        "max_drawdown_pct": 13.7,
-        "trades": 6722,
-        "commission": -5713.83,
-        "swap": -1836.36,
-        "total_costs": -7550.19
+        "return_pct": 91783.99,
+        "profit_factor": 8.0,
+        "win_rate_pct": 43.22,
+        "max_drawdown_pct": 17.08,
+        "trades": 7307,
+        "commission": -291844.95,
+        "swap": -2397.52,
+        "total_costs": -294242.47
       }
     }
   },
@@ -256,36 +261,36 @@
       "to": "standard",
       "portfolio": {
         "6m": {
-          "return_pct": 293.81,
-          "profit_factor": 1.7,
-          "win_rate_pct": 43.55,
-          "max_drawdown_pct": 12.55,
-          "trades": 884,
-          "net_profit": 29381.24
+          "return_pct": 1396.94,
+          "profit_factor": 3.73,
+          "win_rate_pct": 43.29,
+          "max_drawdown_pct": 10.69,
+          "trades": 917,
+          "net_profit": 139694.48
         },
         "1y": {
-          "return_pct": 872.12,
-          "profit_factor": 1.9,
-          "win_rate_pct": 45.21,
-          "max_drawdown_pct": 8.18,
-          "trades": 1745,
-          "net_profit": 87211.52
+          "return_pct": 10128.27,
+          "profit_factor": 6.55,
+          "win_rate_pct": 45.2,
+          "max_drawdown_pct": 5.06,
+          "trades": 1803,
+          "net_profit": 1012827.38
         },
         "3y": {
-          "return_pct": 2702.57,
-          "profit_factor": 1.9,
-          "win_rate_pct": 44.71,
-          "max_drawdown_pct": 15.72,
-          "trades": 4760,
-          "net_profit": 270257.46
+          "return_pct": 51746.18,
+          "profit_factor": 7.77,
+          "win_rate_pct": 44.34,
+          "max_drawdown_pct": 17.38,
+          "trades": 5068,
+          "net_profit": 5174617.54
         },
         "5y": {
-          "return_pct": 2718.81,
-          "profit_factor": 1.61,
-          "win_rate_pct": 41.77,
-          "max_drawdown_pct": 77.65,
-          "trades": 7486,
-          "net_profit": 271881.18
+          "return_pct": 91914.92,
+          "profit_factor": 7.28,
+          "win_rate_pct": 41.79,
+          "max_drawdown_pct": 46.75,
+          "trades": 8104,
+          "net_profit": 9191492.4
         }
       }
     },
@@ -296,36 +301,36 @@
       "to": "safe",
       "portfolio": {
         "6m": {
-          "return_pct": 284.67,
-          "profit_factor": 1.7,
-          "win_rate_pct": 43.63,
-          "max_drawdown_pct": 12.56,
-          "trades": 864,
-          "net_profit": 28467.35
+          "return_pct": 1387.81,
+          "profit_factor": 3.79,
+          "win_rate_pct": 43.37,
+          "max_drawdown_pct": 10.7,
+          "trades": 897,
+          "net_profit": 138780.59
         },
         "1y": {
-          "return_pct": 860.28,
-          "profit_factor": 1.91,
-          "win_rate_pct": 45.27,
-          "max_drawdown_pct": 8.3,
-          "trades": 1714,
-          "net_profit": 86027.93
+          "return_pct": 10116.44,
+          "profit_factor": 6.62,
+          "win_rate_pct": 45.26,
+          "max_drawdown_pct": 5.11,
+          "trades": 1772,
+          "net_profit": 1011643.79
         },
         "3y": {
-          "return_pct": 2767.84,
-          "profit_factor": 1.94,
-          "win_rate_pct": 46.06,
-          "max_drawdown_pct": 11.88,
-          "trades": 4446,
-          "net_profit": 276783.62
+          "return_pct": 51811.44,
+          "profit_factor": 7.83,
+          "win_rate_pct": 45.58,
+          "max_drawdown_pct": 13.54,
+          "trades": 4754,
+          "net_profit": 5181143.7
         },
         "5y": {
-          "return_pct": 2790.42,
-          "profit_factor": 1.66,
-          "win_rate_pct": 43.17,
-          "max_drawdown_pct": 59.23,
-          "trades": 6892,
-          "net_profit": 279042.44
+          "return_pct": 91986.54,
+          "profit_factor": 7.38,
+          "win_rate_pct": 43.08,
+          "max_drawdown_pct": 37.74,
+          "trades": 7510,
+          "net_profit": 9198653.66
         }
       }
     },
@@ -336,36 +341,36 @@
       "to": "safe",
       "portfolio": {
         "6m": {
-          "return_pct": 289.74,
-          "profit_factor": 1.72,
-          "win_rate_pct": 43.8,
-          "max_drawdown_pct": 12.17,
-          "trades": 863,
-          "net_profit": 28974.48
+          "return_pct": 1392.88,
+          "profit_factor": 3.81,
+          "win_rate_pct": 43.53,
+          "max_drawdown_pct": 10.41,
+          "trades": 896,
+          "net_profit": 139287.72
         },
         "1y": {
-          "return_pct": 866.18,
-          "profit_factor": 1.91,
-          "win_rate_pct": 45.35,
-          "max_drawdown_pct": 8.18,
-          "trades": 1722,
-          "net_profit": 86618.1
+          "return_pct": 10122.34,
+          "profit_factor": 6.62,
+          "win_rate_pct": 45.34,
+          "max_drawdown_pct": 5.06,
+          "trades": 1780,
+          "net_profit": 1012233.96
         },
         "3y": {
-          "return_pct": 2777.26,
-          "profit_factor": 1.94,
-          "win_rate_pct": 46.13,
-          "max_drawdown_pct": 11.88,
-          "trades": 4466,
-          "net_profit": 277726.01
+          "return_pct": 51820.86,
+          "profit_factor": 7.82,
+          "win_rate_pct": 45.64,
+          "max_drawdown_pct": 13.54,
+          "trades": 4774,
+          "net_profit": 5182086.09
         },
         "5y": {
-          "return_pct": 2804.86,
-          "profit_factor": 1.66,
-          "win_rate_pct": 43.24,
-          "max_drawdown_pct": 58.22,
-          "trades": 6911,
-          "net_profit": 280486.36
+          "return_pct": 92000.98,
+          "profit_factor": 7.38,
+          "win_rate_pct": 43.14,
+          "max_drawdown_pct": 37.74,
+          "trades": 7529,
+          "net_profit": 9200097.58
         }
       }
     },
@@ -376,36 +381,36 @@
       "to": "safe",
       "portfolio": {
         "6m": {
-          "return_pct": 280.06,
-          "profit_factor": 1.7,
-          "win_rate_pct": 43.6,
-          "max_drawdown_pct": 10.82,
-          "trades": 851,
-          "net_profit": 28006.28
+          "return_pct": 1383.2,
+          "profit_factor": 3.8,
+          "win_rate_pct": 43.33,
+          "max_drawdown_pct": 9.24,
+          "trades": 884,
+          "net_profit": 138319.52
         },
         "1y": {
-          "return_pct": 858.08,
-          "profit_factor": 1.9,
-          "win_rate_pct": 45.26,
-          "max_drawdown_pct": 8.47,
-          "trades": 1708,
-          "net_profit": 85808.31
+          "return_pct": 10114.24,
+          "profit_factor": 6.61,
+          "win_rate_pct": 45.24,
+          "max_drawdown_pct": 5.25,
+          "trades": 1766,
+          "net_profit": 1011424.17
         },
         "3y": {
-          "return_pct": 2734.89,
-          "profit_factor": 1.94,
-          "win_rate_pct": 46.01,
-          "max_drawdown_pct": 12.99,
-          "trades": 4358,
-          "net_profit": 273488.9
+          "return_pct": 51778.49,
+          "profit_factor": 7.85,
+          "win_rate_pct": 45.52,
+          "max_drawdown_pct": 14.65,
+          "trades": 4666,
+          "net_profit": 5177848.98
         },
         "5y": {
-          "return_pct": 2760.46,
-          "profit_factor": 1.66,
-          "win_rate_pct": 43.23,
-          "max_drawdown_pct": 60.36,
-          "trades": 6699,
-          "net_profit": 276045.96
+          "return_pct": 91956.57,
+          "profit_factor": 7.41,
+          "win_rate_pct": 43.13,
+          "max_drawdown_pct": 36.85,
+          "trades": 7317,
+          "net_profit": 9195657.18
         }
       }
     },
@@ -416,36 +421,36 @@
       "to": "safe",
       "portfolio": {
         "6m": {
-          "return_pct": 291.81,
-          "profit_factor": 1.72,
-          "win_rate_pct": 43.84,
-          "max_drawdown_pct": 12.37,
-          "trades": 869,
-          "net_profit": 29180.99
+          "return_pct": 1394.94,
+          "profit_factor": 3.8,
+          "win_rate_pct": 43.57,
+          "max_drawdown_pct": 10.56,
+          "trades": 902,
+          "net_profit": 139494.23
         },
         "1y": {
-          "return_pct": 871.32,
-          "profit_factor": 1.91,
-          "win_rate_pct": 45.38,
-          "max_drawdown_pct": 8.18,
-          "trades": 1730,
-          "net_profit": 87132.42
+          "return_pct": 10127.48,
+          "profit_factor": 6.6,
+          "win_rate_pct": 45.36,
+          "max_drawdown_pct": 5.06,
+          "trades": 1788,
+          "net_profit": 1012748.28
         },
         "3y": {
-          "return_pct": 2784.66,
-          "profit_factor": 1.94,
-          "win_rate_pct": 46.1,
-          "max_drawdown_pct": 11.88,
-          "trades": 4482,
-          "net_profit": 278466.19
+          "return_pct": 51828.26,
+          "profit_factor": 7.81,
+          "win_rate_pct": 45.62,
+          "max_drawdown_pct": 13.54,
+          "trades": 4790,
+          "net_profit": 5182826.27
         },
         "5y": {
-          "return_pct": 2806.11,
-          "profit_factor": 1.66,
-          "win_rate_pct": 43.19,
-          "max_drawdown_pct": 59.23,
-          "trades": 6932,
-          "net_profit": 280611.25
+          "return_pct": 92002.22,
+          "profit_factor": 7.37,
+          "win_rate_pct": 43.1,
+          "max_drawdown_pct": 37.74,
+          "trades": 7550,
+          "net_profit": 9200222.47
         }
       }
     },
@@ -456,36 +461,36 @@
       "to": "standard",
       "portfolio": {
         "6m": {
-          "return_pct": 293.08,
-          "profit_factor": 1.72,
-          "win_rate_pct": 43.86,
-          "max_drawdown_pct": 12.37,
-          "trades": 871,
-          "net_profit": 29308.2
+          "return_pct": 1396.21,
+          "profit_factor": 3.79,
+          "win_rate_pct": 43.58,
+          "max_drawdown_pct": 10.56,
+          "trades": 904,
+          "net_profit": 139621.44
         },
         "1y": {
-          "return_pct": 872.15,
-          "profit_factor": 1.91,
-          "win_rate_pct": 45.38,
-          "max_drawdown_pct": 8.18,
-          "trades": 1732,
-          "net_profit": 87214.78
+          "return_pct": 10128.31,
+          "profit_factor": 6.6,
+          "win_rate_pct": 45.36,
+          "max_drawdown_pct": 5.06,
+          "trades": 1790,
+          "net_profit": 1012830.64
         },
         "3y": {
-          "return_pct": 2791.62,
-          "profit_factor": 1.93,
-          "win_rate_pct": 46.18,
-          "max_drawdown_pct": 11.54,
-          "trades": 4539,
-          "net_profit": 279161.71
+          "return_pct": 51835.22,
+          "profit_factor": 7.79,
+          "win_rate_pct": 45.7,
+          "max_drawdown_pct": 13.29,
+          "trades": 4847,
+          "net_profit": 5183521.79
         },
         "5y": {
-          "return_pct": 2822.46,
-          "profit_factor": 1.65,
-          "win_rate_pct": 43.37,
-          "max_drawdown_pct": 61.36,
-          "trades": 7039,
-          "net_profit": 282245.53
+          "return_pct": 92018.57,
+          "profit_factor": 7.35,
+          "win_rate_pct": 43.27,
+          "max_drawdown_pct": 38.53,
+          "trades": 7657,
+          "net_profit": 9201856.75
         }
       }
     },
@@ -496,36 +501,36 @@
       "to": "standard",
       "portfolio": {
         "6m": {
-          "return_pct": 300.45,
-          "profit_factor": 1.7,
-          "win_rate_pct": 43.67,
-          "max_drawdown_pct": 11.16,
-          "trades": 909,
-          "net_profit": 30045.4
+          "return_pct": 1403.59,
+          "profit_factor": 3.7,
+          "win_rate_pct": 43.42,
+          "max_drawdown_pct": 9.53,
+          "trades": 942,
+          "net_profit": 140358.64
         },
         "1y": {
-          "return_pct": 881.27,
-          "profit_factor": 1.89,
-          "win_rate_pct": 45.25,
-          "max_drawdown_pct": 8.18,
-          "trades": 1768,
-          "net_profit": 88127.05
+          "return_pct": 10137.43,
+          "profit_factor": 6.52,
+          "win_rate_pct": 45.24,
+          "max_drawdown_pct": 5.06,
+          "trades": 1826,
+          "net_profit": 1013742.91
         },
         "3y": {
-          "return_pct": 2885.7,
-          "profit_factor": 1.9,
-          "win_rate_pct": 45.61,
-          "max_drawdown_pct": 14.16,
-          "trades": 4692,
-          "net_profit": 288569.57
+          "return_pct": 51929.3,
+          "profit_factor": 7.61,
+          "win_rate_pct": 45.18,
+          "max_drawdown_pct": 17.33,
+          "trades": 5000,
+          "net_profit": 5192929.65
         },
         "5y": {
-          "return_pct": 2821.34,
-          "profit_factor": 1.62,
-          "win_rate_pct": 42.44,
-          "max_drawdown_pct": 67.36,
-          "trades": 7356,
-          "net_profit": 282134.04
+          "return_pct": 92017.45,
+          "profit_factor": 7.25,
+          "win_rate_pct": 42.41,
+          "max_drawdown_pct": 37.91,
+          "trades": 7974,
+          "net_profit": 9201745.26
         }
       }
     },
@@ -536,36 +541,36 @@
       "to": "safe",
       "portfolio": {
         "6m": {
-          "return_pct": 293.14,
-          "profit_factor": 1.84,
-          "win_rate_pct": 44.68,
-          "max_drawdown_pct": 10.06,
-          "trades": 770,
-          "net_profit": 29313.83
+          "return_pct": 1396.27,
+          "profit_factor": 4.16,
+          "win_rate_pct": 44.33,
+          "max_drawdown_pct": 8.61,
+          "trades": 803,
+          "net_profit": 139627.07
         },
         "1y": {
-          "return_pct": 841.8,
-          "profit_factor": 2.06,
-          "win_rate_pct": 46.07,
-          "max_drawdown_pct": 8.04,
-          "trades": 1515,
-          "net_profit": 84179.76
+          "return_pct": 10097.96,
+          "profit_factor": 7.13,
+          "win_rate_pct": 46.03,
+          "max_drawdown_pct": 4.97,
+          "trades": 1573,
+          "net_profit": 1009795.62
         },
         "3y": {
-          "return_pct": 2694.56,
-          "profit_factor": 2.1,
-          "win_rate_pct": 46.92,
-          "max_drawdown_pct": 8.4,
-          "trades": 3909,
-          "net_profit": 269455.51
+          "return_pct": 51738.16,
+          "profit_factor": 8.28,
+          "win_rate_pct": 46.31,
+          "max_drawdown_pct": 10.05,
+          "trades": 4217,
+          "net_profit": 5173815.59
         },
         "5y": {
-          "return_pct": 2691.55,
-          "profit_factor": 1.76,
-          "win_rate_pct": 43.64,
-          "max_drawdown_pct": 49.97,
-          "trades": 6033,
-          "net_profit": 269154.68
+          "return_pct": 91887.66,
+          "profit_factor": 7.68,
+          "win_rate_pct": 43.5,
+          "max_drawdown_pct": 31.39,
+          "trades": 6651,
+          "net_profit": 9188765.9
         }
       }
     },
@@ -576,36 +581,36 @@
       "to": "dynamic",
       "portfolio": {
         "6m": {
-          "return_pct": 289.75,
-          "profit_factor": 1.73,
-          "win_rate_pct": 44.24,
-          "max_drawdown_pct": 11.08,
-          "trades": 859,
-          "net_profit": 28975.15
+          "return_pct": 1392.88,
+          "profit_factor": 3.86,
+          "win_rate_pct": 43.95,
+          "max_drawdown_pct": 9.42,
+          "trades": 892,
+          "net_profit": 139288.39
         },
         "1y": {
-          "return_pct": 879.87,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.85,
-          "max_drawdown_pct": 7.42,
-          "trades": 1710,
-          "net_profit": 87987.48
+          "return_pct": 10136.03,
+          "profit_factor": 6.67,
+          "win_rate_pct": 45.81,
+          "max_drawdown_pct": 4.54,
+          "trades": 1768,
+          "net_profit": 1013603.34
         },
         "3y": {
-          "return_pct": 2791.47,
-          "profit_factor": 1.97,
-          "win_rate_pct": 46.22,
-          "max_drawdown_pct": 13.73,
-          "trades": 4418,
-          "net_profit": 279146.82
+          "return_pct": 51835.07,
+          "profit_factor": 7.9,
+          "win_rate_pct": 45.73,
+          "max_drawdown_pct": 15.39,
+          "trades": 4726,
+          "net_profit": 5183506.9
         },
         "5y": {
-          "return_pct": 2823.02,
-          "profit_factor": 1.68,
-          "win_rate_pct": 43.36,
-          "max_drawdown_pct": 49.88,
-          "trades": 6827,
-          "net_profit": 282302.16
+          "return_pct": 92019.13,
+          "profit_factor": 7.42,
+          "win_rate_pct": 43.25,
+          "max_drawdown_pct": 37.04,
+          "trades": 7445,
+          "net_profit": 9201913.38
         }
       }
     },
@@ -616,36 +621,36 @@
       "to": "safe",
       "portfolio": {
         "6m": {
-          "return_pct": 293.99,
-          "profit_factor": 1.74,
-          "win_rate_pct": 44.24,
-          "max_drawdown_pct": 11.07,
-          "trades": 859,
-          "net_profit": 29399.33
+          "return_pct": 1397.13,
+          "profit_factor": 3.86,
+          "win_rate_pct": 43.95,
+          "max_drawdown_pct": 9.41,
+          "trades": 892,
+          "net_profit": 139712.57
         },
         "1y": {
-          "return_pct": 876.47,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.85,
-          "max_drawdown_pct": 7.42,
-          "trades": 1710,
-          "net_profit": 87646.68
+          "return_pct": 10132.63,
+          "profit_factor": 6.67,
+          "win_rate_pct": 45.81,
+          "max_drawdown_pct": 4.54,
+          "trades": 1768,
+          "net_profit": 1013262.54
         },
         "3y": {
-          "return_pct": 2730.59,
-          "profit_factor": 1.96,
-          "win_rate_pct": 46.29,
-          "max_drawdown_pct": 13.91,
-          "trades": 4418,
-          "net_profit": 273058.93
+          "return_pct": 51774.19,
+          "profit_factor": 7.91,
+          "win_rate_pct": 45.79,
+          "max_drawdown_pct": 15.57,
+          "trades": 4726,
+          "net_profit": 5177419.01
         },
         "5y": {
-          "return_pct": 2749.1,
-          "profit_factor": 1.67,
-          "win_rate_pct": 43.43,
-          "max_drawdown_pct": 52.92,
-          "trades": 6827,
-          "net_profit": 274909.95
+          "return_pct": 91945.21,
+          "profit_factor": 7.43,
+          "win_rate_pct": 43.32,
+          "max_drawdown_pct": 38.02,
+          "trades": 7445,
+          "net_profit": 9194521.17
         }
       }
     },
@@ -656,36 +661,36 @@
       "to": "standard",
       "portfolio": {
         "6m": {
-          "return_pct": 290.44,
-          "profit_factor": 1.71,
-          "win_rate_pct": 43.71,
-          "max_drawdown_pct": 12.37,
-          "trades": 874,
-          "net_profit": 29044.11
+          "return_pct": 1393.57,
+          "profit_factor": 3.78,
+          "win_rate_pct": 43.44,
+          "max_drawdown_pct": 10.56,
+          "trades": 907,
+          "net_profit": 139357.35
         },
         "1y": {
-          "return_pct": 869.96,
-          "profit_factor": 1.91,
-          "win_rate_pct": 45.3,
-          "max_drawdown_pct": 8.18,
-          "trades": 1735,
-          "net_profit": 86995.54
+          "return_pct": 10126.11,
+          "profit_factor": 6.6,
+          "win_rate_pct": 45.29,
+          "max_drawdown_pct": 5.06,
+          "trades": 1793,
+          "net_profit": 1012611.4
         },
         "3y": {
-          "return_pct": 2784.81,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.92,
-          "max_drawdown_pct": 11.88,
-          "trades": 4530,
-          "net_profit": 278480.91
+          "return_pct": 51828.41,
+          "profit_factor": 7.8,
+          "win_rate_pct": 45.45,
+          "max_drawdown_pct": 13.54,
+          "trades": 4838,
+          "net_profit": 5182840.99
         },
         "5y": {
-          "return_pct": 2816.33,
-          "profit_factor": 1.66,
-          "win_rate_pct": 43.11,
-          "max_drawdown_pct": 57.64,
-          "trades": 7012,
-          "net_profit": 281633.29
+          "return_pct": 92012.45,
+          "profit_factor": 7.36,
+          "win_rate_pct": 43.03,
+          "max_drawdown_pct": 37.35,
+          "trades": 7630,
+          "net_profit": 9201244.51
         }
       }
     }
@@ -693,46 +698,46 @@
   "eligible_mode_interaction_grid": [
     {
       "modes": {
-        "eth-top-down-fvg-liquidity": "standard",
-        "sell-nasdaq-15min": "dynamic",
+        "eth-top-down-fvg-liquidity": "safe",
+        "sell-nasdaq-15min": "safe",
         "xau-squeeze-momentum-standard": "safe"
       },
-      "return_retention_min": 0.9929,
-      "mean_profit_factor": 1.83,
-      "mean_drawdown_pct": 20.5275,
-      "robust_rank_score": 16.0003,
+      "return_retention_min": 0.9988,
+      "mean_profit_factor": 6.4775,
+      "mean_drawdown_pct": 16.9475,
+      "robust_rank_score": 39.8335,
       "portfolio": {
         "6m": {
-          "return_pct": 289.75,
-          "profit_factor": 1.73,
-          "win_rate_pct": 44.24,
-          "max_drawdown_pct": 11.08,
-          "trades": 859,
-          "net_profit": 28975.15
+          "return_pct": 1395.06,
+          "profit_factor": 3.87,
+          "win_rate_pct": 43.91,
+          "max_drawdown_pct": 9.66,
+          "trades": 886,
+          "net_profit": 139506.06
         },
         "1y": {
-          "return_pct": 879.87,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.85,
-          "max_drawdown_pct": 7.42,
-          "trades": 1710,
-          "net_profit": 87987.48
+          "return_pct": 10127.48,
+          "profit_factor": 6.68,
+          "win_rate_pct": 45.8,
+          "max_drawdown_pct": 4.54,
+          "trades": 1760,
+          "net_profit": 1012748.22
         },
         "3y": {
-          "return_pct": 2791.47,
-          "profit_factor": 1.97,
-          "win_rate_pct": 46.22,
-          "max_drawdown_pct": 13.73,
-          "trades": 4418,
-          "net_profit": 279146.82
+          "return_pct": 51766.79,
+          "profit_factor": 7.92,
+          "win_rate_pct": 45.82,
+          "max_drawdown_pct": 15.57,
+          "trades": 4710,
+          "net_profit": 5176678.83
         },
         "5y": {
-          "return_pct": 2823.02,
-          "profit_factor": 1.68,
+          "return_pct": 91943.96,
+          "profit_factor": 7.44,
           "win_rate_pct": 43.36,
-          "max_drawdown_pct": 49.88,
-          "trades": 6827,
-          "net_profit": 282302.16
+          "max_drawdown_pct": 38.02,
+          "trades": 7424,
+          "net_profit": 9194396.28
         }
       }
     },
@@ -740,44 +745,44 @@
       "modes": {
         "eth-top-down-fvg-liquidity": "standard",
         "sell-nasdaq-15min": "dynamic",
-        "xau-squeeze-momentum-standard": "standard"
+        "xau-squeeze-momentum-standard": "safe"
       },
-      "return_retention_min": 0.9882,
-      "mean_profit_factor": 1.8275,
-      "mean_drawdown_pct": 20.1375,
-      "robust_rank_score": 15.9993,
+      "return_retention_min": 0.9985,
+      "mean_profit_factor": 6.4625,
+      "mean_drawdown_pct": 16.5975,
+      "robust_rank_score": 39.8081,
       "portfolio": {
         "6m": {
-          "return_pct": 288.38,
-          "profit_factor": 1.72,
-          "win_rate_pct": 44.1,
-          "max_drawdown_pct": 11.08,
-          "trades": 864,
-          "net_profit": 28838.27
+          "return_pct": 1392.88,
+          "profit_factor": 3.86,
+          "win_rate_pct": 43.95,
+          "max_drawdown_pct": 9.42,
+          "trades": 892,
+          "net_profit": 139288.39
         },
         "1y": {
-          "return_pct": 878.51,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.77,
-          "max_drawdown_pct": 7.42,
-          "trades": 1715,
-          "net_profit": 87850.6
+          "return_pct": 10136.03,
+          "profit_factor": 6.67,
+          "win_rate_pct": 45.81,
+          "max_drawdown_pct": 4.54,
+          "trades": 1768,
+          "net_profit": 1013603.34
         },
         "3y": {
-          "return_pct": 2791.62,
-          "profit_factor": 1.97,
-          "win_rate_pct": 46.04,
-          "max_drawdown_pct": 13.73,
-          "trades": 4466,
-          "net_profit": 279161.54
+          "return_pct": 51835.07,
+          "profit_factor": 7.9,
+          "win_rate_pct": 45.73,
+          "max_drawdown_pct": 15.39,
+          "trades": 4726,
+          "net_profit": 5183506.9
         },
         "5y": {
-          "return_pct": 2833.24,
-          "profit_factor": 1.68,
-          "win_rate_pct": 43.27,
-          "max_drawdown_pct": 48.32,
-          "trades": 6907,
-          "net_profit": 283324.2
+          "return_pct": 92019.13,
+          "profit_factor": 7.42,
+          "win_rate_pct": 43.25,
+          "max_drawdown_pct": 37.04,
+          "trades": 7445,
+          "net_profit": 9201913.38
         }
       }
     },
@@ -787,87 +792,87 @@
         "sell-nasdaq-15min": "dynamic",
         "xau-squeeze-momentum-standard": "safe"
       },
-      "return_retention_min": 0.9859,
-      "mean_profit_factor": 1.8325,
-      "mean_drawdown_pct": 20.235,
-      "robust_rank_score": 15.9861,
+      "return_retention_min": 0.997,
+      "mean_profit_factor": 6.4725,
+      "mean_drawdown_pct": 16.845,
+      "robust_rank_score": 39.8062,
       "portfolio": {
         "6m": {
-          "return_pct": 287.69,
-          "profit_factor": 1.73,
-          "win_rate_pct": 44.2,
-          "max_drawdown_pct": 10.89,
-          "trades": 853,
-          "net_profit": 28768.64
+          "return_pct": 1390.82,
+          "profit_factor": 3.87,
+          "win_rate_pct": 43.91,
+          "max_drawdown_pct": 10.41,
+          "trades": 886,
+          "net_profit": 139081.88
         },
         "1y": {
-          "return_pct": 874.73,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.83,
-          "max_drawdown_pct": 7.42,
-          "trades": 1702,
-          "net_profit": 87473.16
+          "return_pct": 10130.89,
+          "profit_factor": 6.68,
+          "win_rate_pct": 45.8,
+          "max_drawdown_pct": 4.54,
+          "trades": 1760,
+          "net_profit": 1013089.02
         },
         "3y": {
-          "return_pct": 2784.07,
-          "profit_factor": 1.98,
-          "win_rate_pct": 46.25,
-          "max_drawdown_pct": 13.73,
-          "trades": 4402,
-          "net_profit": 278406.64
+          "return_pct": 51827.67,
+          "profit_factor": 7.91,
+          "win_rate_pct": 45.75,
+          "max_drawdown_pct": 15.39,
+          "trades": 4710,
+          "net_profit": 5182766.72
         },
         "5y": {
-          "return_pct": 2821.77,
-          "profit_factor": 1.68,
-          "win_rate_pct": 43.4,
-          "max_drawdown_pct": 48.9,
-          "trades": 6806,
-          "net_profit": 282177.27
+          "return_pct": 92017.88,
+          "profit_factor": 7.43,
+          "win_rate_pct": 43.29,
+          "max_drawdown_pct": 37.04,
+          "trades": 7424,
+          "net_profit": 9201788.49
         }
       }
     },
     {
       "modes": {
-        "eth-top-down-fvg-liquidity": "safe",
-        "sell-nasdaq-15min": "dynamic",
-        "xau-squeeze-momentum-standard": "standard"
+        "eth-top-down-fvg-liquidity": "standard",
+        "sell-nasdaq-15min": "safe",
+        "xau-squeeze-momentum-standard": "safe"
       },
-      "return_retention_min": 0.9812,
-      "mean_profit_factor": 1.83,
-      "mean_drawdown_pct": 19.845,
-      "robust_rank_score": 15.9851,
+      "return_retention_min": 0.999,
+      "mean_profit_factor": 6.4675,
+      "mean_drawdown_pct": 16.885,
+      "robust_rank_score": 39.7943,
       "portfolio": {
         "6m": {
-          "return_pct": 286.32,
-          "profit_factor": 1.73,
-          "win_rate_pct": 44.06,
-          "max_drawdown_pct": 10.89,
-          "trades": 858,
-          "net_profit": 28631.76
+          "return_pct": 1397.13,
+          "profit_factor": 3.86,
+          "win_rate_pct": 43.95,
+          "max_drawdown_pct": 9.41,
+          "trades": 892,
+          "net_profit": 139712.57
         },
         "1y": {
-          "return_pct": 873.36,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.75,
-          "max_drawdown_pct": 7.42,
-          "trades": 1707,
-          "net_profit": 87336.28
+          "return_pct": 10132.63,
+          "profit_factor": 6.67,
+          "win_rate_pct": 45.81,
+          "max_drawdown_pct": 4.54,
+          "trades": 1768,
+          "net_profit": 1013262.54
         },
         "3y": {
-          "return_pct": 2784.21,
-          "profit_factor": 1.97,
-          "win_rate_pct": 46.07,
-          "max_drawdown_pct": 13.73,
-          "trades": 4450,
-          "net_profit": 278421.36
+          "return_pct": 51774.19,
+          "profit_factor": 7.91,
+          "win_rate_pct": 45.79,
+          "max_drawdown_pct": 15.57,
+          "trades": 4726,
+          "net_profit": 5177419.01
         },
         "5y": {
-          "return_pct": 2831.99,
-          "profit_factor": 1.68,
+          "return_pct": 91945.21,
+          "profit_factor": 7.43,
           "win_rate_pct": 43.32,
-          "max_drawdown_pct": 47.34,
-          "trades": 6886,
-          "net_profit": 283199.31
+          "max_drawdown_pct": 38.02,
+          "trades": 7445,
+          "net_profit": 9194521.17
         }
       }
     },
@@ -877,42 +882,132 @@
         "sell-nasdaq-15min": "safe",
         "xau-squeeze-momentum-standard": "standard"
       },
-      "return_retention_min": 0.978,
-      "mean_profit_factor": 1.8225,
-      "mean_drawdown_pct": 20.645,
-      "robust_rank_score": 15.7955,
+      "return_retention_min": 0.9988,
+      "mean_profit_factor": 6.465,
+      "mean_drawdown_pct": 16.8675,
+      "robust_rank_score": 39.783,
       "portfolio": {
         "6m": {
-          "return_pct": 290.56,
-          "profit_factor": 1.73,
-          "win_rate_pct": 44.06,
-          "max_drawdown_pct": 10.88,
-          "trades": 858,
-          "net_profit": 29055.94
+          "return_pct": 1393.69,
+          "profit_factor": 3.86,
+          "win_rate_pct": 43.77,
+          "max_drawdown_pct": 9.71,
+          "trades": 891,
+          "net_profit": 139369.18
         },
         "1y": {
-          "return_pct": 869.95,
-          "profit_factor": 1.93,
-          "win_rate_pct": 45.75,
-          "max_drawdown_pct": 7.42,
-          "trades": 1707,
-          "net_profit": 86995.48
+          "return_pct": 10126.11,
+          "profit_factor": 6.67,
+          "win_rate_pct": 45.72,
+          "max_drawdown_pct": 4.54,
+          "trades": 1765,
+          "net_profit": 1012611.34
         },
         "3y": {
-          "return_pct": 2723.33,
-          "profit_factor": 1.96,
-          "win_rate_pct": 46.13,
-          "max_drawdown_pct": 13.91,
-          "trades": 4450,
-          "net_profit": 272333.47
+          "return_pct": 51766.94,
+          "profit_factor": 7.9,
+          "win_rate_pct": 45.65,
+          "max_drawdown_pct": 15.57,
+          "trades": 4758,
+          "net_profit": 5176693.55
         },
         "5y": {
-          "return_pct": 2758.07,
-          "profit_factor": 1.67,
-          "win_rate_pct": 43.39,
-          "max_drawdown_pct": 50.37,
-          "trades": 6886,
-          "net_profit": 275807.1
+          "return_pct": 91954.18,
+          "profit_factor": 7.43,
+          "win_rate_pct": 43.28,
+          "max_drawdown_pct": 37.65,
+          "trades": 7504,
+          "net_profit": 9195418.32
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "safe",
+        "sell-nasdaq-15min": "dynamic",
+        "xau-squeeze-momentum-standard": "standard"
+      },
+      "return_retention_min": 0.9961,
+      "mean_profit_factor": 6.46,
+      "mean_drawdown_pct": 16.765,
+      "robust_rank_score": 39.7459,
+      "portfolio": {
+        "6m": {
+          "return_pct": 1389.45,
+          "profit_factor": 3.86,
+          "win_rate_pct": 43.77,
+          "max_drawdown_pct": 10.47,
+          "trades": 891,
+          "net_profit": 138945.0
+        },
+        "1y": {
+          "return_pct": 10129.52,
+          "profit_factor": 6.67,
+          "win_rate_pct": 45.72,
+          "max_drawdown_pct": 4.54,
+          "trades": 1765,
+          "net_profit": 1012952.14
+        },
+        "3y": {
+          "return_pct": 51827.81,
+          "profit_factor": 7.89,
+          "win_rate_pct": 45.59,
+          "max_drawdown_pct": 15.39,
+          "trades": 4758,
+          "net_profit": 5182781.44
+        },
+        "5y": {
+          "return_pct": 92028.11,
+          "profit_factor": 7.42,
+          "win_rate_pct": 43.22,
+          "max_drawdown_pct": 36.66,
+          "trades": 7504,
+          "net_profit": 9202810.53
+        }
+      }
+    },
+    {
+      "modes": {
+        "eth-top-down-fvg-liquidity": "standard",
+        "sell-nasdaq-15min": "dynamic",
+        "xau-squeeze-momentum-standard": "standard"
+      },
+      "return_retention_min": 0.9975,
+      "mean_profit_factor": 6.4475,
+      "mean_drawdown_pct": 16.5025,
+      "robust_rank_score": 39.7376,
+      "portfolio": {
+        "6m": {
+          "return_pct": 1391.52,
+          "profit_factor": 3.84,
+          "win_rate_pct": 43.81,
+          "max_drawdown_pct": 9.42,
+          "trades": 897,
+          "net_profit": 139151.51
+        },
+        "1y": {
+          "return_pct": 10134.66,
+          "profit_factor": 6.66,
+          "win_rate_pct": 45.74,
+          "max_drawdown_pct": 4.54,
+          "trades": 1773,
+          "net_profit": 1013466.46
+        },
+        "3y": {
+          "return_pct": 51835.22,
+          "profit_factor": 7.88,
+          "win_rate_pct": 45.56,
+          "max_drawdown_pct": 15.39,
+          "trades": 4774,
+          "net_profit": 5183521.62
+        },
+        "5y": {
+          "return_pct": 92029.35,
+          "profit_factor": 7.41,
+          "win_rate_pct": 43.18,
+          "max_drawdown_pct": 36.66,
+          "trades": 7525,
+          "net_profit": 9202935.42
         }
       }
     },
@@ -922,177 +1017,87 @@
         "sell-nasdaq-15min": "safe",
         "xau-squeeze-momentum-standard": "standard"
       },
-      "return_retention_min": 0.9806,
-      "mean_profit_factor": 1.8225,
-      "mean_drawdown_pct": 20.94,
-      "robust_rank_score": 15.7779,
+      "return_retention_min": 0.999,
+      "mean_profit_factor": 6.4525,
+      "mean_drawdown_pct": 16.7925,
+      "robust_rank_score": 39.7332,
       "portfolio": {
         "6m": {
-          "return_pct": 292.62,
-          "profit_factor": 1.73,
-          "win_rate_pct": 44.1,
-          "max_drawdown_pct": 11.07,
-          "trades": 864,
-          "net_profit": 29262.45
+          "return_pct": 1395.76,
+          "profit_factor": 3.84,
+          "win_rate_pct": 43.81,
+          "max_drawdown_pct": 9.41,
+          "trades": 897,
+          "net_profit": 139575.69
         },
         "1y": {
-          "return_pct": 875.1,
-          "profit_factor": 1.93,
-          "win_rate_pct": 45.77,
-          "max_drawdown_pct": 7.42,
-          "trades": 1715,
-          "net_profit": 87509.8
+          "return_pct": 10131.26,
+          "profit_factor": 6.66,
+          "win_rate_pct": 45.74,
+          "max_drawdown_pct": 4.54,
+          "trades": 1773,
+          "net_profit": 1013125.66
         },
         "3y": {
-          "return_pct": 2730.74,
-          "profit_factor": 1.96,
-          "win_rate_pct": 46.1,
-          "max_drawdown_pct": 13.91,
-          "trades": 4466,
-          "net_profit": 273073.65
+          "return_pct": 51774.34,
+          "profit_factor": 7.89,
+          "win_rate_pct": 45.62,
+          "max_drawdown_pct": 15.57,
+          "trades": 4774,
+          "net_profit": 5177433.73
         },
         "5y": {
-          "return_pct": 2759.32,
-          "profit_factor": 1.67,
-          "win_rate_pct": 43.35,
-          "max_drawdown_pct": 51.36,
-          "trades": 6907,
-          "net_profit": 275931.99
+          "return_pct": 91955.43,
+          "profit_factor": 7.42,
+          "win_rate_pct": 43.24,
+          "max_drawdown_pct": 37.65,
+          "trades": 7525,
+          "net_profit": 9195543.21
         }
       }
     },
     {
       "modes": {
         "eth-top-down-fvg-liquidity": "safe",
-        "sell-nasdaq-15min": "safe",
-        "xau-squeeze-momentum-standard": "safe"
-      },
-      "return_retention_min": 0.9779,
-      "mean_profit_factor": 1.8275,
-      "mean_drawdown_pct": 21.035,
-      "robust_rank_score": 15.7615,
-      "portfolio": {
-        "6m": {
-          "return_pct": 291.93,
-          "profit_factor": 1.74,
-          "win_rate_pct": 44.2,
-          "max_drawdown_pct": 10.88,
-          "trades": 853,
-          "net_profit": 29192.82
-        },
-        "1y": {
-          "return_pct": 871.32,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.83,
-          "max_drawdown_pct": 7.42,
-          "trades": 1702,
-          "net_profit": 87132.36
-        },
-        "3y": {
-          "return_pct": 2723.19,
-          "profit_factor": 1.96,
-          "win_rate_pct": 46.32,
-          "max_drawdown_pct": 13.91,
-          "trades": 4402,
-          "net_profit": 272318.75
-        },
-        "5y": {
-          "return_pct": 2747.85,
-          "profit_factor": 1.67,
-          "win_rate_pct": 43.48,
-          "max_drawdown_pct": 51.93,
-          "trades": 6806,
-          "net_profit": 274785.06
-        }
-      }
-    },
-    {
-      "modes": {
-        "eth-top-down-fvg-liquidity": "standard",
-        "sell-nasdaq-15min": "safe",
-        "xau-squeeze-momentum-standard": "safe"
-      },
-      "return_retention_min": 0.9797,
-      "mean_profit_factor": 1.8275,
-      "mean_drawdown_pct": 21.33,
-      "robust_rank_score": 15.7348,
-      "portfolio": {
-        "6m": {
-          "return_pct": 293.99,
-          "profit_factor": 1.74,
-          "win_rate_pct": 44.24,
-          "max_drawdown_pct": 11.07,
-          "trades": 859,
-          "net_profit": 29399.33
-        },
-        "1y": {
-          "return_pct": 876.47,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.85,
-          "max_drawdown_pct": 7.42,
-          "trades": 1710,
-          "net_profit": 87646.68
-        },
-        "3y": {
-          "return_pct": 2730.59,
-          "profit_factor": 1.96,
-          "win_rate_pct": 46.29,
-          "max_drawdown_pct": 13.91,
-          "trades": 4418,
-          "net_profit": 273058.93
-        },
-        "5y": {
-          "return_pct": 2749.1,
-          "profit_factor": 1.67,
-          "win_rate_pct": 43.43,
-          "max_drawdown_pct": 52.92,
-          "trades": 6827,
-          "net_profit": 274909.95
-        }
-      }
-    },
-    {
-      "modes": {
-        "eth-top-down-fvg-liquidity": "standard",
         "sell-nasdaq-15min": "standard",
-        "xau-squeeze-momentum-standard": "standard"
+        "xau-squeeze-momentum-standard": "safe"
       },
-      "return_retention_min": 0.9953,
-      "mean_profit_factor": 1.805,
-      "mean_drawdown_pct": 22.5175,
-      "robust_rank_score": 15.6004,
+      "return_retention_min": 0.9985,
+      "mean_profit_factor": 6.4075,
+      "mean_drawdown_pct": 16.6875,
+      "robust_rank_score": 39.5196,
       "portfolio": {
         "6m": {
-          "return_pct": 290.44,
-          "profit_factor": 1.71,
-          "win_rate_pct": 43.71,
-          "max_drawdown_pct": 12.37,
-          "trades": 874,
-          "net_profit": 29044.11
+          "return_pct": 1392.88,
+          "profit_factor": 3.81,
+          "win_rate_pct": 43.53,
+          "max_drawdown_pct": 10.41,
+          "trades": 896,
+          "net_profit": 139287.72
         },
         "1y": {
-          "return_pct": 869.96,
-          "profit_factor": 1.91,
-          "win_rate_pct": 45.3,
-          "max_drawdown_pct": 8.18,
-          "trades": 1735,
-          "net_profit": 86995.54
+          "return_pct": 10122.34,
+          "profit_factor": 6.62,
+          "win_rate_pct": 45.34,
+          "max_drawdown_pct": 5.06,
+          "trades": 1780,
+          "net_profit": 1012233.96
         },
         "3y": {
-          "return_pct": 2784.81,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.92,
-          "max_drawdown_pct": 11.88,
-          "trades": 4530,
-          "net_profit": 278480.91
+          "return_pct": 51820.86,
+          "profit_factor": 7.82,
+          "win_rate_pct": 45.64,
+          "max_drawdown_pct": 13.54,
+          "trades": 4774,
+          "net_profit": 5182086.09
         },
         "5y": {
-          "return_pct": 2816.33,
-          "profit_factor": 1.66,
-          "win_rate_pct": 43.11,
-          "max_drawdown_pct": 57.64,
-          "trades": 7012,
-          "net_profit": 281633.29
+          "return_pct": 92000.98,
+          "profit_factor": 7.38,
+          "win_rate_pct": 43.14,
+          "max_drawdown_pct": 37.74,
+          "trades": 7529,
+          "net_profit": 9200097.58
         }
       }
     },
@@ -1103,41 +1108,41 @@
         "xau-squeeze-momentum-standard": "safe"
       },
       "return_retention_min": 1.0,
-      "mean_profit_factor": 1.8075,
-      "mean_drawdown_pct": 22.915,
-      "robust_rank_score": 15.6003,
+      "mean_profit_factor": 6.395,
+      "mean_drawdown_pct": 16.725,
+      "robust_rank_score": 39.4662,
       "portfolio": {
         "6m": {
-          "return_pct": 291.81,
-          "profit_factor": 1.72,
-          "win_rate_pct": 43.84,
-          "max_drawdown_pct": 12.37,
-          "trades": 869,
-          "net_profit": 29180.99
+          "return_pct": 1394.94,
+          "profit_factor": 3.8,
+          "win_rate_pct": 43.57,
+          "max_drawdown_pct": 10.56,
+          "trades": 902,
+          "net_profit": 139494.23
         },
         "1y": {
-          "return_pct": 871.32,
-          "profit_factor": 1.91,
-          "win_rate_pct": 45.38,
-          "max_drawdown_pct": 8.18,
-          "trades": 1730,
-          "net_profit": 87132.42
+          "return_pct": 10127.48,
+          "profit_factor": 6.6,
+          "win_rate_pct": 45.36,
+          "max_drawdown_pct": 5.06,
+          "trades": 1788,
+          "net_profit": 1012748.28
         },
         "3y": {
-          "return_pct": 2784.66,
-          "profit_factor": 1.94,
-          "win_rate_pct": 46.1,
-          "max_drawdown_pct": 11.88,
-          "trades": 4482,
-          "net_profit": 278466.19
+          "return_pct": 51828.26,
+          "profit_factor": 7.81,
+          "win_rate_pct": 45.62,
+          "max_drawdown_pct": 13.54,
+          "trades": 4790,
+          "net_profit": 5182826.27
         },
         "5y": {
-          "return_pct": 2806.11,
-          "profit_factor": 1.66,
-          "win_rate_pct": 43.19,
-          "max_drawdown_pct": 59.23,
-          "trades": 6932,
-          "net_profit": 280611.25
+          "return_pct": 92002.22,
+          "profit_factor": 7.37,
+          "win_rate_pct": 43.1,
+          "max_drawdown_pct": 37.74,
+          "trades": 7550,
+          "net_profit": 9200222.47
         }
       }
     },
@@ -1147,87 +1152,87 @@
         "sell-nasdaq-15min": "standard",
         "xau-squeeze-momentum-standard": "standard"
       },
-      "return_retention_min": 0.9882,
-      "mean_profit_factor": 1.805,
-      "mean_drawdown_pct": 22.215,
-      "robust_rank_score": 15.5752,
+      "return_retention_min": 0.9975,
+      "mean_profit_factor": 6.3925,
+      "mean_drawdown_pct": 16.59,
+      "robust_rank_score": 39.4494,
       "portfolio": {
         "6m": {
-          "return_pct": 288.38,
-          "profit_factor": 1.71,
-          "win_rate_pct": 43.66,
-          "max_drawdown_pct": 12.17,
-          "trades": 868,
-          "net_profit": 28837.6
+          "return_pct": 1391.51,
+          "profit_factor": 3.8,
+          "win_rate_pct": 43.4,
+          "max_drawdown_pct": 10.41,
+          "trades": 901,
+          "net_profit": 139150.84
         },
         "1y": {
-          "return_pct": 864.81,
-          "profit_factor": 1.91,
-          "win_rate_pct": 45.28,
-          "max_drawdown_pct": 8.18,
-          "trades": 1727,
-          "net_profit": 86481.22
+          "return_pct": 10120.97,
+          "profit_factor": 6.61,
+          "win_rate_pct": 45.27,
+          "max_drawdown_pct": 5.06,
+          "trades": 1785,
+          "net_profit": 1012097.08
         },
         "3y": {
-          "return_pct": 2777.41,
-          "profit_factor": 1.94,
-          "win_rate_pct": 45.95,
-          "max_drawdown_pct": 11.88,
-          "trades": 4514,
-          "net_profit": 277740.73
+          "return_pct": 51821.01,
+          "profit_factor": 7.8,
+          "win_rate_pct": 45.48,
+          "max_drawdown_pct": 13.54,
+          "trades": 4822,
+          "net_profit": 5182100.81
         },
         "5y": {
-          "return_pct": 2815.08,
-          "profit_factor": 1.66,
-          "win_rate_pct": 43.16,
-          "max_drawdown_pct": 56.63,
-          "trades": 6991,
-          "net_profit": 281508.4
+          "return_pct": 92011.2,
+          "profit_factor": 7.36,
+          "win_rate_pct": 43.07,
+          "max_drawdown_pct": 37.35,
+          "trades": 7609,
+          "net_profit": 9201119.62
         }
       }
     },
     {
       "modes": {
-        "eth-top-down-fvg-liquidity": "safe",
+        "eth-top-down-fvg-liquidity": "standard",
         "sell-nasdaq-15min": "standard",
-        "xau-squeeze-momentum-standard": "safe"
+        "xau-squeeze-momentum-standard": "standard"
       },
-      "return_retention_min": 0.9929,
-      "mean_profit_factor": 1.8075,
-      "mean_drawdown_pct": 22.6125,
-      "robust_rank_score": 15.5747,
+      "return_retention_min": 0.999,
+      "mean_profit_factor": 6.385,
+      "mean_drawdown_pct": 16.6275,
+      "robust_rank_score": 39.4211,
       "portfolio": {
         "6m": {
-          "return_pct": 289.74,
-          "profit_factor": 1.72,
-          "win_rate_pct": 43.8,
-          "max_drawdown_pct": 12.17,
-          "trades": 863,
-          "net_profit": 28974.48
+          "return_pct": 1393.57,
+          "profit_factor": 3.78,
+          "win_rate_pct": 43.44,
+          "max_drawdown_pct": 10.56,
+          "trades": 907,
+          "net_profit": 139357.35
         },
         "1y": {
-          "return_pct": 866.18,
-          "profit_factor": 1.91,
-          "win_rate_pct": 45.35,
-          "max_drawdown_pct": 8.18,
-          "trades": 1722,
-          "net_profit": 86618.1
+          "return_pct": 10126.11,
+          "profit_factor": 6.6,
+          "win_rate_pct": 45.29,
+          "max_drawdown_pct": 5.06,
+          "trades": 1793,
+          "net_profit": 1012611.4
         },
         "3y": {
-          "return_pct": 2777.26,
-          "profit_factor": 1.94,
-          "win_rate_pct": 46.13,
-          "max_drawdown_pct": 11.88,
-          "trades": 4466,
-          "net_profit": 277726.01
+          "return_pct": 51828.41,
+          "profit_factor": 7.8,
+          "win_rate_pct": 45.45,
+          "max_drawdown_pct": 13.54,
+          "trades": 4838,
+          "net_profit": 5182840.99
         },
         "5y": {
-          "return_pct": 2804.86,
-          "profit_factor": 1.66,
-          "win_rate_pct": 43.24,
-          "max_drawdown_pct": 58.22,
-          "trades": 6911,
-          "net_profit": 280486.36
+          "return_pct": 92012.45,
+          "profit_factor": 7.36,
+          "win_rate_pct": 43.03,
+          "max_drawdown_pct": 37.35,
+          "trades": 7630,
+          "net_profit": 9201244.51
         }
       }
     }
@@ -2531,27 +2536,27 @@
       "current_mode": "standard",
       "recommended_mode": "standard",
       "decision": "watch",
-      "reason": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades).",
-      "6m_return_pct": 34.71,
-      "6m_profit_factor": 10.66,
-      "6m_win_rate_pct": 58.82,
-      "6m_max_drawdown_pct": 1.77,
-      "6m_trades": 17,
-      "1y_return_pct": 55.04,
-      "1y_profit_factor": 9.0,
-      "1y_win_rate_pct": 63.64,
-      "1y_max_drawdown_pct": 1.79,
-      "1y_trades": 33,
-      "3y_return_pct": 55.54,
-      "3y_profit_factor": 9.03,
-      "3y_win_rate_pct": 64.71,
-      "3y_max_drawdown_pct": 1.79,
-      "3y_trades": 34,
-      "5y_return_pct": 55.54,
-      "5y_profit_factor": 9.03,
-      "5y_win_rate_pct": 64.71,
-      "5y_max_drawdown_pct": 1.79,
-      "5y_trades": 34
+      "reason": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",
+      "6m_return_pct": 167.04,
+      "6m_profit_factor": 14.96,
+      "6m_win_rate_pct": 59.09,
+      "6m_max_drawdown_pct": 6.67,
+      "6m_trades": 22,
+      "1y_return_pct": 300.0,
+      "1y_profit_factor": 13.58,
+      "1y_win_rate_pct": 65.0,
+      "1y_max_drawdown_pct": 6.68,
+      "1y_trades": 40,
+      "3y_return_pct": 1029.12,
+      "3y_profit_factor": 11.12,
+      "3y_win_rate_pct": 65.29,
+      "3y_max_drawdown_pct": 6.61,
+      "3y_trades": 121,
+      "5y_return_pct": 2394.29,
+      "5y_profit_factor": 10.64,
+      "5y_win_rate_pct": 65.46,
+      "5y_max_drawdown_pct": 6.6,
+      "5y_trades": 194
     },
     {
       "slug": "gold-news-v9-direction",
@@ -2589,27 +2594,27 @@
       "current_mode": "standard",
       "recommended_mode": "standard",
       "decision": "watch",
-      "reason": "Mandatory News Pulse exposure retained at fixed risk, but the release-verified schedule ledger is short (9 trades).",
-      "6m_return_pct": 90.72,
-      "6m_profit_factor": 12.82,
-      "6m_win_rate_pct": 60.0,
-      "6m_max_drawdown_pct": 2.47,
-      "6m_trades": 20,
-      "1y_return_pct": 221.04,
-      "1y_profit_factor": 13.46,
-      "1y_win_rate_pct": 62.16,
-      "1y_max_drawdown_pct": 2.52,
-      "1y_trades": 37,
-      "3y_return_pct": 221.19,
-      "3y_profit_factor": 13.41,
-      "3y_win_rate_pct": 63.16,
-      "3y_max_drawdown_pct": 2.52,
-      "3y_trades": 38,
-      "5y_return_pct": 221.19,
-      "5y_profit_factor": 13.41,
-      "5y_win_rate_pct": 63.16,
-      "5y_max_drawdown_pct": 2.52,
-      "5y_trades": 38
+      "reason": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",
+      "6m_return_pct": 400.72,
+      "6m_profit_factor": 12.38,
+      "6m_win_rate_pct": 44.44,
+      "6m_max_drawdown_pct": 8.79,
+      "6m_trades": 18,
+      "1y_return_pct": 2079.63,
+      "1y_profit_factor": 12.41,
+      "1y_win_rate_pct": 50.0,
+      "1y_max_drawdown_pct": 11.42,
+      "1y_trades": 34,
+      "3y_return_pct": 3719.67,
+      "3y_profit_factor": 10.89,
+      "3y_win_rate_pct": 46.67,
+      "3y_max_drawdown_pct": 11.54,
+      "3y_trades": 90,
+      "5y_return_pct": 5340.19,
+      "5y_profit_factor": 10.24,
+      "5y_win_rate_pct": 42.45,
+      "5y_max_drawdown_pct": 17.97,
+      "5y_trades": 139
     },
     {
       "slug": "news-pulse-btc",
@@ -2618,27 +2623,56 @@
       "current_mode": "standard",
       "recommended_mode": "standard",
       "decision": "watch",
-      "reason": "Mandatory News Pulse exposure retained at fixed risk; the complete three-year native MT5 sample has 125 trades, but event execution remains high-slippage risk.",
-      "6m_return_pct": 37.13,
-      "6m_profit_factor": 9.33,
-      "6m_win_rate_pct": 78.26,
-      "6m_max_drawdown_pct": 2.84,
-      "6m_trades": 23,
-      "1y_return_pct": 111.46,
-      "1y_profit_factor": 9.42,
-      "1y_win_rate_pct": 75.0,
-      "1y_max_drawdown_pct": 2.84,
-      "1y_trades": 44,
-      "3y_return_pct": 984.87,
-      "3y_profit_factor": 9.33,
-      "3y_win_rate_pct": 76.8,
-      "3y_max_drawdown_pct": 3.41,
-      "3y_trades": 125,
-      "5y_return_pct": 984.87,
-      "5y_profit_factor": 9.33,
-      "5y_win_rate_pct": 76.8,
-      "5y_max_drawdown_pct": 3.41,
-      "5y_trades": 125
+      "reason": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",
+      "6m_return_pct": 303.43,
+      "6m_profit_factor": 9.41,
+      "6m_win_rate_pct": 55.17,
+      "6m_max_drawdown_pct": 9.97,
+      "6m_trades": 29,
+      "1y_return_pct": 6344.62,
+      "1y_profit_factor": 11.52,
+      "1y_win_rate_pct": 65.38,
+      "1y_max_drawdown_pct": 12.21,
+      "1y_trades": 52,
+      "3y_return_pct": 24256.27,
+      "3y_profit_factor": 14.26,
+      "3y_win_rate_pct": 44.22,
+      "3y_max_drawdown_pct": 32.35,
+      "3y_trades": 147,
+      "5y_return_pct": 43775.44,
+      "5y_profit_factor": 9.65,
+      "5y_win_rate_pct": 42.56,
+      "5y_max_drawdown_pct": 25.13,
+      "5y_trades": 242
+    },
+    {
+      "slug": "news-pulse-eurusd",
+      "label": "News Pulse EURUSD",
+      "symbol": "EURUSD",
+      "current_mode": "standard",
+      "recommended_mode": "standard",
+      "decision": "watch",
+      "reason": "User-restored News Pulse with full-year hindsight-fitted event settings. Extremely tight stops, generated historical ticks and live news execution invalidate any guaranteed-risk or forward-return claim.",
+      "6m_return_pct": 394.5,
+      "6m_profit_factor": 18.37,
+      "6m_win_rate_pct": 62.5,
+      "6m_max_drawdown_pct": 5.86,
+      "6m_trades": 24,
+      "1y_return_pct": 919.45,
+      "1y_profit_factor": 12.94,
+      "1y_win_rate_pct": 56.52,
+      "1y_max_drawdown_pct": 21.12,
+      "1y_trades": 46,
+      "3y_return_pct": 21300.13,
+      "3y_profit_factor": 9.64,
+      "3y_win_rate_pct": 50.34,
+      "3y_max_drawdown_pct": 18.36,
+      "3y_trades": 147,
+      "5y_return_pct": 38947.79,
+      "5y_profit_factor": 9.82,
+      "5y_win_rate_pct": 46.67,
+      "5y_max_drawdown_pct": 16.52,
+      "5y_trades": 240
     },
     {
       "slug": "xau-rsi-vwap",
@@ -2839,7 +2873,7 @@
     {
       "left": "news-pulse-xau",
       "right": "news-pulse-xag",
-      "daily_pnl_correlation": 0.8951
+      "daily_pnl_correlation": 0.8783
     },
     {
       "left": "orb-volume-profile",
@@ -2850,11 +2884,6 @@
       "left": "nasdaq-5m-candle-momentum",
       "right": "sell-nasdaq-15min",
       "daily_pnl_correlation": 0.2902
-    },
-    {
-      "left": "news-pulse-xau",
-      "right": "news-pulse-btc",
-      "daily_pnl_correlation": 0.2549
     },
     {
       "left": "us100-h1-orb-13utc",
@@ -2892,9 +2921,14 @@
       "daily_pnl_correlation": 0.2215
     },
     {
-      "left": "xau-squeeze-momentum-standard",
-      "right": "news-pulse-xau",
-      "daily_pnl_correlation": -0.2099
+      "left": "news-pulse-xau",
+      "right": "news-pulse-eurusd",
+      "daily_pnl_correlation": 0.2203
+    },
+    {
+      "left": "usdjpy-london-open-momentum",
+      "right": "news-pulse-eurusd",
+      "daily_pnl_correlation": 0.2084
     },
     {
       "left": "xau-weakness",
@@ -2907,9 +2941,9 @@
       "daily_pnl_correlation": 0.2035
     },
     {
-      "left": "xau-squeeze-momentum-standard",
-      "right": "news-pulse-xag",
-      "daily_pnl_correlation": -0.1934
+      "left": "news-pulse-xag",
+      "right": "news-pulse-eurusd",
+      "daily_pnl_correlation": 0.1943
     },
     {
       "left": "xau-weakness",
@@ -2927,33 +2961,34 @@
       "daily_pnl_correlation": 0.1756
     },
     {
-      "left": "news-pulse-xag",
-      "right": "news-pulse-btc",
-      "daily_pnl_correlation": 0.1741
-    },
-    {
       "left": "lta-volume-profile",
       "right": "xau-weakness",
       "daily_pnl_correlation": 0.1731
+    },
+    {
+      "left": "news-pulse-xau",
+      "right": "news-pulse-btc",
+      "daily_pnl_correlation": 0.1671
     }
   ],
   "recommended_mode_exposure": {
     "max_reserved_risk_pct": 14.0,
     "max_reserved_risk_by_symbol_pct": {
-      "BTCUSD": 2.5,
+      "BTCUSD": 2.75,
       "ETHUSD": 1.0,
+      "EURUSD": 1.5,
       "USDJPY": 1.0,
       "USTEC": 4.0,
       "XAGUSD": 1.5,
       "XAUUSD": 13.0
     },
-    "warning": "Conservative: risk remains reserved until close; floating P/L and shared-margin effects are unavailable."
+    "warning": "Nominal selected-mode exposure: 0.75% per triggered News side and 1% per ordinary trade, retained until close. Excludes unfilled pending orders, lot rounding, gaps, floating P/L, shared margin and adaptive non-News tapers. Not a realized-risk cap."
   },
   "limitations": [
     "No historical result guarantees future profitability.",
     "The component tests used separate balances; the combined curve is not a shared-margin MT5 simulation.",
     "Closed-deal drawdown can understate live equity drawdown and gap/slippage risk.",
     "Nested 6m/1y/3y/5y windows are evidence views, not four independent out-of-sample tests.",
-    "News Pulse XAU and XAG have short release-verified ledgers; BTC has complete native three-year coverage. Every News Pulse chart remains fixed at 0.75% per triggered stop / 1.50% event cap before adaptive tapering."
+    "All four News Pulse charts have independently replayed 6m/1y/3y/5y histories. Their event settings are hindsight-fitted on overlapping data; five-year multi-asset runs have only 13% real ticks. Each side targets 0.75% before rounding/gaps/costs, with no adaptive taper. Four straddles plan 6% combined; Gold News V9 adds exposure."
   ]
 }
