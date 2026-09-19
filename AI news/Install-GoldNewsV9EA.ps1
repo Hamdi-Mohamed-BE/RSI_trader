@@ -190,9 +190,24 @@ function Show-ServerLogs([string]$Stdout, [string]$Stderr) {
 }
 
 function Ensure-LocalApi {
+    $supervisors = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.Name -match '^(?i:pythonw?|uv)\.exe$' -and
+            [string]$_.CommandLine -match '(?i)server_supervisor\.py'
+        } |
+        Sort-Object CreationDate)
     if (Test-EaApi) {
-        Write-Host "Local prediction server is ready at $ApiBaseUrl"
-        return
+        if ($supervisors.Count -gt 0) {
+            Write-Host "Supervised local prediction server is ready at $ApiBaseUrl"
+            return
+        }
+        Write-Host 'Replacing the unsupervised prediction process with the watchdog...' -ForegroundColor Yellow
+    } elseif ($supervisors.Count -gt 0) {
+        Write-Host 'Restarting the unhealthy prediction watchdog...' -ForegroundColor Yellow
+        $supervisors | Sort-Object CreationDate -Descending | ForEach-Object {
+            Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
+        }
+        Start-Sleep -Seconds 2
     }
 
     $listener = Get-NetTCPConnection -LocalPort $ApiPort -State Listen -ErrorAction SilentlyContinue |
@@ -229,15 +244,11 @@ function Ensure-LocalApi {
         '--quiet',
         'python',
         '-u',
-        '-m',
-        'uvicorn',
-        'app:app',
-        '--host',
-        '127.0.0.1',
-        '--port',
-        [string]$ApiPort
+        'server_supervisor.py'
     )
-    $serverProcess = Start-Process -FilePath $UvPath -ArgumentList $arguments -WorkingDirectory $PackageRoot -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
+    $supervisorOut = Join-Path $tmp 'gold-news-v9-supervisor.out.log'
+    $supervisorErr = Join-Path $tmp 'gold-news-v9-supervisor.err.log'
+    $serverProcess = Start-Process -FilePath $UvPath -ArgumentList $arguments -WorkingDirectory $PackageRoot -WindowStyle Hidden -RedirectStandardOutput $supervisorOut -RedirectStandardError $supervisorErr -PassThru
 
     $deadline = (Get-Date).AddSeconds(30)
     do {
@@ -255,12 +266,23 @@ function Ensure-LocalApi {
     Stop-Install 'The prediction server did not become ready within 30 seconds.'
 }
 
+function Register-ServerAutostart {
+    $launcher = Join-Path $PackageRoot 'Start-GoldNewsV9Server.ps1'
+    $runKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+    $command = 'powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $launcher + '"'
+    New-Item -Path $runKey -Force | Out-Null
+    New-ItemProperty -Path $runKey -Name 'GoldNewsV9Server' -Value $command -PropertyType String -Force | Out-Null
+    Write-Host 'Prediction watchdog registered to start at Windows sign-in.'
+}
+
 $mq5Source = Join-Path $PackageRoot "mt5\$ExpertBaseName.mq5"
 $ex5Source = Join-Path $PackageRoot "mt5\$ExpertBaseName.ex5"
 $presetSource = Join-Path $PackageRoot "mt5\$ExpertBaseName-Auto.set"
 $probe = Join-Path $PackageRoot 'mt5_installer_probe.py'
 $appSource = Join-Path $PackageRoot 'app.py'
 $bridgeSource = Join-Path $PackageRoot 'ea_file_bridge.py'
+$supervisorSource = Join-Path $PackageRoot 'server_supervisor.py'
+$serverLauncher = Join-Path $PackageRoot 'Start-GoldNewsV9Server.ps1'
 $projectFile = Join-Path $PackageRoot 'pyproject.toml'
 $directionModel = Join-Path $PackageRoot 'models\gold_news_v9_direction.joblib'
 $moveModel = Join-Path $PackageRoot 'models\gold_news_v8_move_range.joblib'
@@ -270,6 +292,8 @@ foreach ($required in @(
     $probe,
     $appSource,
     $bridgeSource,
+    $supervisorSource,
+    $serverLauncher,
     $projectFile,
     $directionModel,
     $moveModel
@@ -279,6 +303,15 @@ foreach ($required in @(
     }
 }
 $UvPath = Resolve-Uv -AllowInstall:(-not $ValidateOnly)
+
+if ($RuntimeOnly) {
+    Write-Stage 'Starting the local prediction server'
+    Ensure-LocalApi
+    Register-ServerAutostart
+    Write-Host ''
+    Write-Host 'SUCCESS: Gold News V9 prediction runtime is ready.' -ForegroundColor Green
+    exit 0
+}
 
 Write-Stage 'Finding the active MT5 and broker gold symbol'
 $tempRoot = [IO.Path]::GetFullPath($env:TEMP).TrimEnd('\') + '\'
@@ -352,14 +385,6 @@ if ($ValidateOnly) {
     exit 0
 }
 
-if ($RuntimeOnly) {
-    Write-Stage 'Starting the local prediction server'
-    Ensure-LocalApi
-    Write-Host ''
-    Write-Host 'SUCCESS: Gold News V9 prediction runtime is ready.' -ForegroundColor Green
-    exit 0
-}
-
 Write-Stage 'Compiling the EA'
 $metaEditor = Join-Path (Split-Path -Parent $terminalPath) 'MetaEditor64.exe'
 if (-not (Test-Path -LiteralPath $metaEditor)) {
@@ -369,10 +394,9 @@ $buildRoot = Join-Path $env:LOCALAPPDATA (
     'GoldNewsV9Build-' + (Get-Date -Format 'yyyyMMddHHmmss')
 )
 [void](New-Item -ItemType Directory -Path $buildRoot)
-$buildMq5 = Join-Path $buildRoot "$ExpertBaseName.mq5"
-$buildEx5 = Join-Path $buildRoot "$ExpertBaseName.ex5"
+$buildMq5 = $mq5Source
+$buildEx5 = $ex5Source
 $buildLog = Join-Path $buildRoot 'compile.log'
-Copy-Item -LiteralPath $mq5Source -Destination $buildMq5
 & $metaEditor "/compile:$buildMq5" "/log:$buildLog"
 $compileDeadline = (Get-Date).AddSeconds(30)
 do {
@@ -390,12 +414,12 @@ $compileText = Get-Content -LiteralPath $buildLog -Raw
 if ($compileText -notmatch 'Result:\s+0 errors,\s+0 warnings') {
     Stop-Install "EA compilation failed. Check $buildLog"
 }
-Copy-Item -LiteralPath $buildEx5 -Destination $ex5Source -Force
 Copy-Item -LiteralPath $buildLog -Destination (Join-Path $PackageRoot 'mt5\compile.log') -Force
 Write-Host 'EA compiled with 0 errors and 0 warnings.'
 
 Write-Stage 'Starting the local prediction server'
 Ensure-LocalApi
+Register-ServerAutostart
 
 Write-Stage 'Installing the EA and auto-attach profile'
 Close-Terminal ([int]$target.ProcessId)
@@ -585,7 +609,7 @@ $manifest = @(
     'Events: NFP, CPI, FOMC'
     'Trading enabled: true'
     'Demo-account lock: false'
-    'Risk: 1% of current balance'
+    'Risk: 0.75% of current balance'
     'Stop: 20.00 USD in gold price'
     'Target: 4.00 USD in gold price'
     'Entry: T-10 seconds'

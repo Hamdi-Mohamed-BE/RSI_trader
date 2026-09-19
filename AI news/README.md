@@ -18,7 +18,7 @@ defaults are:
 - Events: NFP, CPI, and FOMC
 - Prediction lock: T-15 minutes
 - Entry: T-10 seconds
-- Risk: 1% of current balance
+- Risk: 0.75% of current balance
 - Stop: $20.00 in XAUUSD price
 - Target: $4.00 in XAUUSD price
 - Time exit: T+15 minutes
@@ -30,10 +30,20 @@ The server writes a heartbeat, next event, and locked prediction to:
 
 `<MT5 Common Data>\Files\GoldNewsV9EA\bridge.json`
 
-The EA reads this shared file directly. This is the default because MT5 does not
-allow software to configure its WebRequest allow-list reliably. The HTTP API at
-`http://127.0.0.1:8799` remains available for the dashboard and optional manual
-integration.
+The EA reads this shared file directly. If the file is stale or temporarily
+locked, EA version 1.14 falls back to the HTTP API at
+`http://127.0.0.1:8799`. A watchdog restarts an exited or unhealthy server and
+is registered to start at Windows sign-in.
+
+## Automatic On-Demand Prediction
+
+Double-click `RUN_AUTO_PREDICTION.bat`. It discovers the next supported NFP,
+CPI, or FOMC release, refreshes the calendar while waiting, runs at T-15, and
+prints a compact XAUUSD direction and move-range report. MT5 must be open and
+connected.
+
+Full predictions are written to `predictions`. The readable runner log, latest
+report, CSV summary, and JSONL audit log are written to `logs`.
 
 ## Logs
 
@@ -42,6 +52,7 @@ also stored in:
 
 - `tmp\gold-news-v9-server.err.log`
 - `tmp\gold-news-v9-server.out.log`
+- `tmp\gold-news-v9-supervisor.log`
 
 The EA writes status messages to the active terminal's MQL5 Experts journal.
 After a successful launch it should report `Initialized` and `Scheduled <event>`.
@@ -50,7 +61,10 @@ After a successful launch it should report `Initialized` and `Scheduled <event>`
 
 - `app.py`: local FastAPI service
 - `ea_file_bridge.py`: MT5 shared-file bridge
+- `server_supervisor.py`: prediction-server watchdog
+- `Start-GoldNewsV9Server.ps1`: Windows sign-in launcher
 - `predict_news.py`: live prediction orchestration
+- `run_prediction_automatic.py`: automatic next-event runner and result logger
 - `calendar_provider.py`: supported-event calendar feed
 - `models\gold_news_v9_direction.joblib`: direction model
 - `models\gold_news_v8_move_range.joblib`: move-range model
@@ -59,6 +73,7 @@ After a successful launch it should report `Initialized` and `Scheduled <event>`
 - `mt5\GoldNewsV9EA-Auto.set`: live defaults
 - `Install-GoldNewsV9EA.ps1`: installer implementation
 - `INSTALL_AND_RUN_GOLD_NEWS_V9.bat`: one-click launcher
+- `RUN_AUTO_PREDICTION.bat`: one-click automatic on-demand prediction
 
 The remaining Python modules in the folder are dependencies imported by the
 prediction pipeline.

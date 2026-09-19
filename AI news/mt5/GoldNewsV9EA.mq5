@@ -1,5 +1,5 @@
 #property copyright "Gold News V9"
-#property version   "1.13"
+#property version   "1.14"
 #property strict
 #property description "Consumes the local Gold News V9 API for NFP, CPI, and FOMC."
 
@@ -488,7 +488,12 @@ bool FetchNextEvent()
    if(InpUseFileBridge)
      {
       if(!ReadBridge(response))
-         return false;
+        {
+         Print("Gold News V9: file bridge unavailable; trying HTTP calendar fallback.");
+         if(!ApiHealthy() ||
+            !HttpRequest("GET","/api/ea/next?days=30","",response))
+            return false;
+        }
      }
    else
      {
@@ -540,10 +545,14 @@ bool RequestSignal()
    string response="";
    if(InpUseFileBridge)
      {
-      if(!ReadBridge(response))
-         return false;
-      if(JsonValue(response,"signal_status")!="READY")
-         return false;
+      bool bridge_ready=ReadBridge(response) &&
+                        JsonValue(response,"signal_status")=="READY";
+      if(!bridge_ready)
+        {
+         Print("Gold News V9: file signal unavailable; trying HTTP signal fallback.");
+         if(!HttpRequest("POST","/api/ea/signal",body,response))
+            return false;
+        }
      }
    else if(!HttpRequest("POST","/api/ea/signal",body,response))
       return false;
