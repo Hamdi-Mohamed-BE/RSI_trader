@@ -36,7 +36,11 @@ if (-not $RiskMode) {
     Write-Host '  [2] Fixed USD target (exact where supported; converted for percentage-only EAs)'
     Write-Host '  Broker-valid lots are rounded UP. If the target is below minimum lot, minimum lot is used; the trade is not skipped.' -ForegroundColor Yellow
     Write-Host '  This means actual stop risk can exceed the selected value on coarse/minimum-lot contracts.' -ForegroundColor Yellow
+<<<<<<< HEAD
     Write-Host '  News Pulse: XAU v2.16 unchanged; XAG/BTC/EURUSD v2.17 full-year fitted event settings. Each retains 0.75% per side and bypasses adaptive controls.' -ForegroundColor Yellow
+=======
+    Write-Host '  News Pulse v2.16 is the only exception: high-impact primary events only; 0.75% per pending stop, 1.50% total planned-risk cap.' -ForegroundColor Yellow
+>>>>>>> d5323f478a2f736894ed9925d3710b161ba99b82
     $choice = (Read-Host 'Enter 1 or 2 [1]').Trim()
     if (-not $choice) { $choice = '1' }
     $RiskMode = switch ($choice) { '1' { 'PERCENT' } '2' { 'FIXED_USD' } default { Stop-Dynamic 'Risk type must be 1 or 2.' } }
@@ -63,8 +67,13 @@ if (-not $SafetyMode) {
 Write-Host "`nDynamic configuration" -ForegroundColor Green
 Write-Host ('  Non-News risk: {0} {1}' -f $RiskValue, $(if ($RiskMode -eq 'PERCENT') { '%' } else { 'USD per EA trade' }))
 Write-Host '  Lot policy: round UP to the broker step; use minimum lot when required; never skip solely because of lot sizing' -ForegroundColor Yellow
+<<<<<<< HEAD
 Write-Host '  News Pulse XAU v2.16: NFP T-10s, CPI T-5s, FOMC T-60s. XAG/BTC/EURUSD use approved v2.17 per-event combinations; both sides retained; 0.75% per side.'
 Write-Host '  Four simultaneous straddles plan 6% combined before rounding, costs and gaps. Results are hindsight-optimized, not a forecast or prop-firm-safe claim.' -ForegroundColor Yellow
+=======
+Write-Host '  News Pulse v2.16: high-impact primary NFP/CPI/FOMC only; fixed 0.75% per pending stop / 1.50% total planned-risk cap'
+Write-Host '  XAU profile: T-15, live Ask/Bid +/- $4, $4 stop, no trailing; both pending sides remain armed'
+>>>>>>> d5323f478a2f736894ed9925d3710b161ba99b82
 Write-Host ('  Mode: {0}' -f $SafetyMode)
 if (-not $Yes -and -not $ValidateOnly) {
     $confirm = (Read-Host 'Install and run this configuration now? (Y/N)').Trim().ToUpperInvariant()

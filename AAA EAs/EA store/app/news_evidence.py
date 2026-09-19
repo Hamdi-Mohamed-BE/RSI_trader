@@ -60,14 +60,21 @@ def news_payload_from_result(result: dict[str, Any]) -> dict[str, Any]:
     if not series or series[0]['time'][:10] > start:
         series.insert(0, {'time': start+'T00:00:00', 'balance': stats['initial_balance']})
     series.append({'time': end+'T00:00:00', 'balance': stats['final_balance']})
+    xau_profile = result.get('slug') == 'news-pulse-xau'
+    settings_note = (
+        "XAU production profile: T-15, live Ask/Bid, 4-unit offset, 4-unit stop, no TP or trailing, "
+        "both pending sides remain armed until the 60-second cleanup. "
+        if xau_profile else
+        "Current market-specific production geometry and native trailing are retained. "
+    )
     notice = (
-        f"Independent native MT5 run of current News Pulse v2.15, {start} to {end} (end exclusive), "
+        f"Independent native MT5 run of current News Pulse v2.16, {start} to {end} (end exclusive), "
         f"starting from $10,000. Official BLS/Federal Reserve calendar: {result['calendar_expected']} releases; "
         f"{result['calendar_attempted']} attempted and {result['calendar_placed']} event straddles placed. "
         f"{len(result['events_without_closed_trades'])} scheduled events produced no closed trade. "
         f"MT5 reports {stats['history_quality']}; real-tick mode was requested, but older missing ticks may be generated. "
         "Original Exness XAUUSD/XAGUSD/BTCUSD evidence account; broker spread and recorded commission/swap included. "
-        "Fixed 1 ms simulated delay, not a live-slippage guarantee. Settings are unchanged: 0.75% planned risk "
+        "Fixed 1 ms simulated delay, not a live-slippage guarantee. " + settings_note + "Risk is 0.75% planned "
         "per pending stop / 1.50% combined; rounding, gaps and costs can exceed that budget. "
         "PF and win rate are calculated after recorded fees; drawdown is native relative equity drawdown. "
         "No multi-year slicing or window rebasing; portfolio adaptive scaling is calculated separately."

@@ -53,8 +53,13 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 
 function Get-PortfolioItems {
     # Locked selected portfolio. Each EA owns its selected exit mode:
+<<<<<<< HEAD
     # Each strategy keeps its selected exit. The four News Pulse instances
     # use source-locked risk; XAU v2.16 is unchanged and XAG/BTC/EURUSD use v2.17,
+=======
+    # Each strategy keeps its selected exit. The three News Pulse instances
+    # use News Pulse v2.16, its native 60-second lifecycle and source-locked
+>>>>>>> d5323f478a2f736894ed9925d3710b161ba99b82
     # 0.75% risk per pending side (1.50% maximum planned event exposure).
     # Live events come from MT5's USD calendar; Strategy Tester schedules are
     # generated from FXMacroData and fail closed outside verified coverage.

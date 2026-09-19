@@ -1,5 +1,5 @@
 #property copyright "AAA Final News Pulse - NFP/CPI/FOMC straddle"
-#property version   "2.15"
+#property version   "2.16"
 #property strict
 
 #include "AAA_Final_Common.mqh"
@@ -30,6 +30,7 @@ input int    InpCalendarRefreshSeconds=300;     // refresh cached server-time ev
 input group "Order geometry - symbol price units"
 input double InpEntryOffsetPrice=12.0;         // buy above Ask / sell below Bid
 input double InpStopLossPrice=10.0;            // one R
+input bool   InpUseTrailingStop=true;           // false keeps the initial stop until the hard event exit
 input double InpTrailStartR=3.0;               // start trailing after +3R
 input double InpTrailDistancePrice=10.0;        // trail one R behind current price
 input int    InpForceCloseSecondsAfterEvent=120;
@@ -204,6 +205,7 @@ void NP_ClosePositions()
 
 void NP_TrailPositions()
 {
+   if(!InpUseTrailingStop) return;
    MqlTick tick;
    if(!SymbolInfoTick(_Symbol,tick)) return;
    double point=SymbolInfoDouble(_Symbol,SYMBOL_POINT);
@@ -643,7 +645,7 @@ int OnInit()
    if((!InpEnableBuySide && !InpEnableSellSide) ||
       MathAbs(InpRiskPercent-NP_RISK_PER_STOP_PERCENT)>0.000001 ||
       InpEntryOffsetPrice<=0.0 || InpStopLossPrice<=0.0 ||
-      InpTrailStartR<=0.0 || InpTrailDistancePrice<=0.0 || InpPlacementLeadSeconds<=0 ||
+      (InpUseTrailingStop && (InpTrailStartR<=0.0 || InpTrailDistancePrice<=0.0)) || InpPlacementLeadSeconds<=0 ||
       InpForceCloseSecondsAfterEvent<=0 || InpMaxQuoteAgeSeconds<=0 ||
       InpCalendarLookaheadDays<=0 || InpCalendarRefreshSeconds<=0)
    {
@@ -663,7 +665,7 @@ int OnInit()
    EventSetTimer(1);
    string side_mode=InpEnableBuySide && InpEnableSellSide ? "two-sided" :
                     (InpEnableBuySide ? "long-only" : "short-only");
-   Print("AAA Final News Pulse v2.13 loaded on ",_Symbol,
+   Print("AAA Final News Pulse v2.16 loaded on ",_Symbol,
          ". Watches NFP/CPI/FOMC; places at T-",InpPlacementLeadSeconds,
          "s; mode=",side_mode,"; hard risk ",DoubleToString(NP_RISK_PER_STOP_PERCENT,2),
          "% per stop / ",DoubleToString(NP_TOTAL_EVENT_RISK_PERCENT,2),"% maximum planned event exposure; hard exit at T+",

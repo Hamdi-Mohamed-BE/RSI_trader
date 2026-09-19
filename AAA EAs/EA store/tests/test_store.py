@@ -31,7 +31,8 @@ STORE_ROOT = Path(__file__).resolve().parents[1]
 def test_news_pulse_live_calendar_rejects_secondary_cpi_events() -> None:
     path = PACKAGE_ROOT / "AAA Final EAs/AAA Final News Pulse EA/AAA Final News Pulse EA.mq5"
     source = path.read_text(encoding="utf-8-sig")
-    assert '#property version   "2.15"' in source
+    assert '#property version   "2.16"' in source
+    assert "InpUseTrailingStop" in source
     assert 'if(event.importance!=CALENDAR_IMPORTANCE_HIGH) continue;' in source
     assert 'StringFind(normalized_name,"cpi")==0' in source
     assert 'StringFind(normalized_name,"core cpi")==0' in source

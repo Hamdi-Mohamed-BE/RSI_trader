@@ -13,6 +13,7 @@ echo - News Pulse XAU, XAG, BTC, EURUSD and Gold News V9 bypass ALL adaptive ent
 echo - Four simultaneous News Pulse straddles plan 6%% combined risk before rounding, fees and gaps; Gold News V9 adds exposure.
 echo - Event-specific News Pulse results are hindsight optimized, not a forecast or proof of prop-firm safety.
 echo - Their locked risk stays 0.75%% per planned entry; two-sided News Pulse reserves 1.50%% combined. Signal and broker checks remain active.
+echo - News Pulse XAU uses the approved T-15 / $4 offset / $4 stop / no-trailing profile and keeps both pending sides armed.
 echo - Nasdaq 5M Candle Momentum is installed at 0.25x your selected risk.
 echo - Non-News EAs block new entries after a 5%% daily closed loss and enforce the approved drawdown and per-EA loss-streak tapers.
 echo - News profits and losses still count toward account-wide controls for non-News EAs.
