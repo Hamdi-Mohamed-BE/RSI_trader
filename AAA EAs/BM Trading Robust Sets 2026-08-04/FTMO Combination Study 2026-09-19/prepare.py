@@ -9,7 +9,7 @@ sys.path.insert(0,str(STORE))
 from app.mt5_evidence_jobs import _read_report,_clean,_number
 from app.catalog import get_catalog
 CACHE=STORE/'data/evidence-cache/v1'
-END=datetime(2026,9,5,tzinfo=timezone.utc).timestamp()
+END=datetime(2026,8,31,tzinfo=timezone.utc).timestamp()
 SPLIT=datetime(2024,9,19,tzinfo=timezone.utc).timestamp()
 DAY=86400;WEEK=604800;RAW='gold-overnight-value-area/standard'
 SPECS={'XAUUSD':(100,15),'XAGUSD':(5000,15),'USTEC':(1,15),'USDJPY':(100000,30),'EURUSD':(100000,30),'BTCUSD':(1,1),'ETHUSD':(10,1)}

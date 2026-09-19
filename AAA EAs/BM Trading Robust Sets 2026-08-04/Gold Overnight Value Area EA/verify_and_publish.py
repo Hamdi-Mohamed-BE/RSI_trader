@@ -66,14 +66,14 @@ def publish():
     from app.gold_value_area import payload,SLUG
     from app.evidence_cache import CACHE_ROOT,write_json
     from app.catalog import get_sellable_catalog
-    from tools.precompute_evidence_cache import build_portfolio
+    from tools.precompute_evidence_cache import build_portfolio,common_cached_window
     before={};published={}
     for period in ('6m','1y','3y','5y'):
         out,rows=payload(period);folder=CACHE_ROOT/'products'/SLUG/'standard'
         write_json(folder/(period+'.json'),out);write_json(folder/(period+'.trades.json'),rows)
         existing=read(CACHE_ROOT/'portfolio/standard'/f'{period}.json')
         before[period]=existing['stats']
-        rebuilt=build_portfolio(get_sellable_catalog(),period,date.fromisoformat(existing['available_from']),date.fromisoformat(existing['available_to']))
+        rebuilt=build_portfolio(get_sellable_catalog(),period,*common_cached_window(get_sellable_catalog(),period))
         published[period]=dict(raw=out['stats'],portfolio=rebuilt['stats'],portfolio_period=rebuilt['period'])
     save(ROOT/'publication.json',dict(before=before,after=published,source_sha256=sha(SOURCE),published_at=datetime.now(timezone.utc).isoformat()))
     print('PRODUCT AND PORTFOLIO CACHE PUBLISHED',flush=True)

@@ -1,6 +1,6 @@
 """Immutable native raw Gold VA evidence; no terminal access or strategy fitting."""
 from __future__ import annotations
-import json
+import json,hashlib
 from datetime import date, datetime, timezone
 from pathlib import Path
 from .catalog import PACKAGE_ROOT
@@ -28,8 +28,15 @@ def catalog_evidence():
                 status='Experimental', caution='High win rate, variable sub-1R targets; weak five-year expectancy.')
 
 def payload(period: str):
+    production=PACKAGE_ROOT/'Gold Overnight Value Area EA'
+    verified=read(production/'parity.json')
+    source=production/'EA/Gold Overnight Value Area EA.mq5'
+    assert verified['passed'] and hashlib.sha256(source.read_bytes()).hexdigest()==verified['source_sha256'], 'Gold source changed since native parity'
+    assert hashlib.sha256(source.with_suffix('.ex5').read_bytes()).hexdigest()==verified['binary_sha256'], 'Gold executable changed since native parity'
     r = evidence(period)
     folder = ROOT / 'native' / r['case']
+    report=folder/(r['case']+'.htm')
+    assert hashlib.sha256(report.read_bytes()).hexdigest()==r['report_sha256'], 'Gold native report identity mismatch'
     run = read(folder / 'run.json')
     start = run['start'].replace('.', '-')
     end_exclusive = run['end_exclusive'].replace('.', '-')

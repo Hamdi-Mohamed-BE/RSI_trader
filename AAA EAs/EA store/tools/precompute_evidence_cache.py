@@ -10,7 +10,7 @@ import shutil
 import statistics
 import sys
 import time
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -62,6 +62,30 @@ def recommended_mode(product: Product) -> str:
     if product.recommended_safe_mode and product.safe_filter_supported:
         return "safe"
     return "standard"
+
+
+def common_cached_window(products: list[Product], period: str) -> tuple[date, date]:
+    """Intersection of documented coverage, never the first catalog row's dates."""
+    starts,ends=[],[]
+    for product in products:
+        path=product_cache_path(product.slug,recommended_mode(product),period)
+        if not path.is_file():continue
+        p=json.loads(path.read_text(encoding='utf-8-sig'))
+        starts.append(date.fromisoformat(p['available_from']))
+        # Generic tester 'to' is an exclusive date. Audited imports may expose it explicitly.
+        ends.append(date.fromisoformat(p.get('end_exclusive',p['available_to']))-timedelta(days=1))
+    if not starts or max(starts)>min(ends):raise RuntimeError('No common cached coverage')
+    return max(starts),min(ends)
+
+
+def gold_raw_result(mode: str, period: str, start: date, end: date):
+    from app.gold_value_area import payload, ROOT, evidence
+    if mode!='standard':raise RuntimeError('Only the approved raw Gold mode is available')
+    p,rows=payload(period)
+    if start.isoformat()!=p['available_from'] or end.isoformat()!=p['end_exclusive']:
+        raise RuntimeError('Gold raw evidence dates differ. Run its audited pipeline for a new window; do not rebase a saved test.')
+    case=evidence(period)['case']
+    return p,rows,ROOT/'native'/case/(case+'.htm')
 
 
 def subtract_months(value: date, months: int) -> date:
@@ -238,6 +262,9 @@ def cleanup_stale_dynamic_artifacts() -> int:
 
 
 def run_native(product: Product, mode: str, period: str, start: date, end: date, *, force: bool) -> Path:
+    if product.slug=='gold-overnight-value-area':
+        if force:raise RuntimeError('Use the audited Gold Value Area pipeline for fresh runs')
+        return gold_raw_result(mode,period,start,end)[2]
     report_path, metadata_path = source_paths(product, mode, period)
     fingerprint = source_fingerprint(product, mode, start, end)
     if product.slug in NEWS_PULSE_SLUGS:
@@ -302,6 +329,10 @@ def run_native(product: Product, mode: str, period: str, start: date, end: date,
 
 
 def product_payload(product: Product, mode: str, period: str, start: date, end: date, report: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    if product.slug=='gold-overnight-value-area':
+        p,rows,verified=gold_raw_result(mode,period,start,end)
+        if file_hash(report)!=file_hash(verified):raise RuntimeError('Gold report identity mismatch')
+        return p,rows
     if product.slug in NEWS_PULSE_SLUGS:
         result, reviewed_report = independent_news_result(product, mode, period, start, end)
         if file_hash(report) != file_hash(reviewed_report):
@@ -545,6 +576,7 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
             if start.isoformat() <= str(trade.get("close_time") or "")[:10] <= end.isoformat()
         ]
         all_trades.extend(product_trades)
+        window_stats,_=portfolio_metrics(product_trades,start,end)
         included.append(
             {
                 "slug": product.slug,
@@ -553,12 +585,14 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
                 "timeframe": product.timeframe,
                 "mode": selected_mode,
                 "available": True,
-                "net_profit": payload["stats"].get("net_profit"),
-                "return_pct": payload["stats"].get("return_pct"),
-                "profit_factor": payload["stats"].get("profit_factor"),
-                "win_rate_pct": payload["stats"].get("win_rate_pct"),
-                "max_drawdown_pct": payload["stats"].get("max_drawdown_pct"),
-                "trades": payload["stats"].get("trades"),
+                "source_coverage_from": payload['available_from'],
+                "source_coverage_to": payload['available_to'],
+                "net_profit": window_stats['net_profit'],
+                "return_pct": window_stats['return_pct'],
+                "profit_factor": window_stats['profit_factor'],
+                "win_rate_pct": window_stats['win_rate_pct'],
+                "max_drawdown_pct": window_stats['max_drawdown_pct'],
+                "trades": len(product_trades),
             }
         )
     current_stats, current_series = portfolio_metrics(all_trades, start, end)
@@ -647,6 +681,8 @@ def build_portfolio(products: list[Product], period: str, start: date, end: date
         "source": "adaptive-replay-of-native-mt5-cache",
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
+    coverage_notice=' Portfolio dates are the common intersection of available component histories; this is shorter than the nominal period. Components retain their independently sized native cash flows, not a fresh same-start account test.'
+    for p in (current_payload,payload):p['notice']+=coverage_notice
     write_json(portfolio_cache_path("current", period), current_payload)
     write_json(portfolio_trades_path("current", period), sorted(all_trades, key=lambda row: str(row["close_time"])))
     write_json(portfolio_cache_path("standard", period), payload)
@@ -732,18 +768,7 @@ def main() -> int:
         start = subtract_months(args.end, PERIOD_MONTHS[period])
         portfolio_end = args.end
         if (args.portfolio_only or args.reparse_cached_sources) and full_catalog:
-            reference_mode = (
-                "dynamic"
-                if full_catalog[0].recommended_dynamic_mode and full_catalog[0].dynamic_mode_supported
-                else "safe"
-                if full_catalog[0].recommended_safe_mode
-                else "standard"
-            )
-            reference_path = product_cache_path(full_catalog[0].slug, reference_mode, period)
-            if reference_path.is_file():
-                reference = json.loads(reference_path.read_text(encoding="utf-8-sig"))
-                start = date.fromisoformat(str(reference["available_from"]))
-                portfolio_end = date.fromisoformat(str(reference["available_to"]))
+            start,portfolio_end=common_cached_window(full_catalog,period)
         portfolio = build_portfolio(full_catalog, period, start, portfolio_end)
         portfolio_rows.append({"period": period, "stats": portfolio["stats"], "included_ea_count": portfolio["included_ea_count"], "tested_ea_count": portfolio["tested_ea_count"]})
         print(f"PORTFOLIO {period}: {portfolio['stats']}", flush=True)
@@ -758,6 +783,15 @@ def main() -> int:
         if row.get("slug") in current_slugs
     }
     run_inventory.update({(row["slug"], row["mode"], row["period"]): row for row in generated})
+    # Imported audited products (including raw Gold VA) also belong in inventory.
+    for product in full_catalog:
+        modes=['standard']+(['safe'] if product.safe_filter_supported else [])+(['dynamic'] if product.dynamic_mode_supported else [])
+        for mode in modes:
+            for period in PERIOD_MONTHS:
+                path=product_cache_path(product.slug,mode,period)
+                if not path.is_file():continue
+                cached=json.loads(path.read_text(encoding='utf-8-sig'))
+                run_inventory[product.slug,mode,period]=dict(slug=product.slug,mode=mode,period=period,stats=cached['stats'],available_from=cached['available_from'],available_to=cached['available_to'])
     manifest = {
         "cache_version": "v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),

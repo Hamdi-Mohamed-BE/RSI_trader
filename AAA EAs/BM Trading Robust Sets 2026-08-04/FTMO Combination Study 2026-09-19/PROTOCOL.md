@@ -8,7 +8,7 @@ Research only. The user approved raw Gold Overnight Value Area integration and r
 - Screen non-news modes on data before 2024-09-19. Pick one mode per strategy, requiring at least 50 training trades and positive stressed expectancy. Rank high-win candidates separately from expectancy candidates.
 - Evaluate frozen small combinations, the new raw Gold EA, and Gold/Silver news additions. Do not select a portfolio simply to print 70%.
 - Existing EA parameters were researched retrospectively. News parameters explicitly fitted 2025-09-19 to 2026-09-19. None of these results establish an independently calibrated future payout probability.
-- Broad comparison ends at the common cached evidence boundary, 2026-09-05 exclusive; most existing EA histories do not run to September 19. Show exact dates, not 'today'.
+- Broad comparison ends at the earliest cached evidence boundary, 2026-08-31 exclusive (Month End Flow ends first). Windows begin 2026-06-30, 2026-04-30 and 2026-02-28. The joint bootstrap uses 26 complete weeks, March 2–August 30. Most existing histories do not run to September 19. Show exact dates, not 'today'.
 
 ## Account model
 

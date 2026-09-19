@@ -17,13 +17,19 @@ def business(t,n):
 def rounded(v):return max(.01,math.ceil(v/.01-1e-10)*.01)
 def margin(sym,lot,price):
     contract,lev=SPECS[sym];return lot*contract*(1 if sym=='USDJPY' else price)/lev
+
+def entry_charge(r,commission,extra):
+    # The admission decision must not depend on a future crypto exit price.
+    if r['symbol'] in ('BTCUSD','ETHUSD'):
+        return -.000325*SPECS[r['symbol']][0]*r['open_price']-extra/2
+    return (commission-extra)/2
 def shifted_data(data,keys,start,end,sample=None,block_weeks=1):
     rr=[r for k in keys for r in data['rows'][k]]
     pp=[p for p in data['placements'] if p['key'] in keys]
     if sample is None:return [dict(r) for r in rr if start<=r['op']<end],[dict(p) for p in pp if start<=p['op']<end]
     anchor=datetime.fromtimestamp(start,timezone.utc).replace(hour=0,minute=0,second=0,microsecond=0)
     anchor=(anchor-timedelta(days=anchor.weekday())).timestamp()
-    source=datetime(2026,3,9,tzinfo=timezone.utc).timestamp();out=[];places=[]
+    source=datetime(2026,3,2,tzinfo=timezone.utc).timestamp();out=[];places=[]
     for i,j in enumerate(sample):
         src=source+j*WEEK;target=anchor+i*block_weeks*WEEK
         so=datetime.fromtimestamp(src+2*DAY+43200,NY).utcoffset().total_seconds()
@@ -52,13 +58,13 @@ def replay(rows,places,start,end,*,news_risk=10.,stress=False,guards=True,challe
     bal=peak=anchor=CAPITAL;phase=1 if challenge else 3;ready=start
     active={};pending={};days=set();counts=Counter();by=defaultdict(Counter);log=[];passes=[]
     first=funded=request=receipt=breach=None;reward=dd=daily=closeddd=maxmargin=maxrisk=0.
-    today_count=0;today_losses=0;ws=ls=mw=ml=0;last_entry=start;expired=None
+    today_count=0;max_daily_entries=0;today_losses=0;ws=ls=mw=ml=0;last_entry=start;expired=None
     def held():return list(active.values())+list(pending.values())
     def envelope():return sum(p['env'] for p in active.values())
-    def gate(t):
+    def gate(t,slots=1):
         if t<ready:return 'phase_wait'
         if challenge and phase<3 and bal>=CAPITAL*(1.10 if phase==1 else 1.05) and len(days)>=4:return 'target_wait'
-        if guards and today_count>=7:return 'daily_trade_limit'
+        if guards and today_count+len(pending)+slots>7:return 'daily_trade_limit'
         if guards and today_losses>=3:return 'three_losses_stop'
         return None
     def admit(sym,marg,risk,entryfee,env):
@@ -75,7 +81,7 @@ def replay(rows,places,start,end,*,news_risk=10.,stress=False,guards=True,challe
     for t,kind,i in events:
         if kind==-1:anchor=bal;today_count=today_losses=0
         elif kind==0:
-            p=places[i];reason=gate(t)
+            p=places[i];reason=gate(t,2)
             if reason:counts[reason]+=1;continue
             sym=p['symbol'];contract=SPECS[sym][0];riskunit=p['sl']*contract
             lot=rounded(news_risk/riskunit);risk=lot*riskunit
@@ -99,14 +105,15 @@ def replay(rows,places,start,end,*,news_risk=10.,stress=False,guards=True,challe
                 if any(p['key']==key for p in active.values()):counts['same_ea_overlap']+=1;continue
                 lot=rounded(RISK/r['unit_risk']);risk=lot*r['unit_risk'];marg=margin(sym,lot,r['open_price'])
                 env=risk*(1.25 if stress else 1.)
-                reason=admit(sym,marg,risk,(c-x)/2*lot,env)
+                reason=admit(sym,marg,risk,entry_charge(r,c,x)*lot,env)
                 if reason:counts[reason+'_rejected']+=1;continue
                 p=dict(lot=lot,risk=risk,margin=marg,env=env,key=key,group='metals' if sym in ('XAUUSD','XAGUSD') else sym)
-            fee=(c-x)/2*p['lot'];bal+=fee;p.update(phase=phase,opened=t,entryfee=fee)
+            fee=entry_charge(r,c,x)*p['lot'];bal+=fee;p.update(phase=phase,opened=t,entryfee=fee)
             active[i]=p;today_count+=1;last_entry=t;counts['opened']+=1;by[key]['opened']+=1;days.add(datetime.fromtimestamp(t,PRAGUE).date())
+            max_daily_entries=max(max_daily_entries,today_count)
             if phase==3 and first is None:first=t
         elif kind==2 and i in active:
-            p=active.pop(i);r=rows[i];g,c,s,x=r['_costs'];lot=p['lot'];delta=(g+s+(c-x)/2)*lot;bal+=delta
+            p=active.pop(i);r=rows[i];g,c,s,x=r['_costs'];lot=p['lot'];delta=(g+s+c-x)*lot-p['entryfee'];bal+=delta
             net=delta+p['entryfee'];counts['closed']+=1;by[r['key']]['trades']+=1;by[r['key']]['net']+=net;by[r['key']]['wins']+=net>0
             by[r['key']]['positive']+=max(0,net);by[r['key']]['negative']+=max(0,-net);today_losses+=net<0
             ws=ws+1 if net>0 else 0;ls=ls+1 if net<0 else 0;mw=max(mw,ws);ml=max(ml,ls)
@@ -127,14 +134,18 @@ def replay(rows,places,start,end,*,news_risk=10.,stress=False,guards=True,challe
     wins=sum(v['wins'] for v in by.values());trades=counts['closed'];pos=sum(v['positive'] for v in by.values());neg=sum(v['negative'] for v in by.values())
     return dict(funded=funded is not None and funded<end,payout=receipt is not None and receipt<end,eligible=request is not None and request<end,breach=breach is not None,inactive=expired is not None,
                 funded_at=iso(funded),request_at=iso(request),receipt_at=iso(receipt),breach_at=iso(breach),reward=reward,balance=bal,phase=phase,passes=passes,trades=trades,win_rate=100*wins/trades if trades else 0,pf=pos/neg if neg else None,
-                model_dd_pct=dd,closed_dd_pct=closeddd,worst_daily_usd=daily,max_margin=maxmargin,max_open_risk=maxrisk,max_win_streak=mw,max_loss_streak=ml,counts=dict(counts),by_ea=dict(by),log=log)
+                model_dd_pct=dd,closed_dd_pct=closeddd,worst_daily_usd=daily,max_margin=maxmargin,max_open_risk=maxrisk,max_daily_entries=max_daily_entries,max_win_streak=mw,max_loss_streak=ml,counts=dict(counts),by_ea=dict(by),log=log)
 def aggregate(rr):
     n=len(rr);pct=lambda k:100*sum(r[k] for r in rr)/n
     paid=[r['reward'] for r in rr if r['payout']]
     return dict(paths=n,funded_pct=pct('funded'),payout_pct=pct('payout'),eligible_pct=pct('eligible'),breach_pct=pct('breach'),inactive_pct=pct('inactive'),
                 unfinished_pct=100*sum(not(r['payout'] or r['breach'] or r['inactive']) for r in rr)/n,
                 median_reward_if_paid=statistics.median(paid) if paid else None,median_trades=statistics.median(r['trades'] for r in rr),p95_model_dd_pct=sorted(r['model_dd_pct'] for r in rr)[int(.95*(n-1))])
-def window(months):return datetime(2026,9-months,5,tzinfo=timezone.utc).timestamp(),END
+def window(months):
+    import calendar
+    d=datetime.fromtimestamp(END,timezone.utc);m=d.month-months
+    y=d.year+(m-1)//12;m=(m-1)%12+1
+    return d.replace(year=y,month=m,day=min(d.day,calendar.monthrange(y,m)[1])).timestamp(),END
 def plans(audit):
     ranked=audit['ranked'];high=['xau-rsi-vwap/standard','nasdaq-overnight/standard']
     result=[dict(name='Raw Gold',keys=[RAW],news_risk=RISK),dict(name='Raw + XAU/XAG news, literal risk',keys=[RAW]+NEWS,news_risk=RISK),

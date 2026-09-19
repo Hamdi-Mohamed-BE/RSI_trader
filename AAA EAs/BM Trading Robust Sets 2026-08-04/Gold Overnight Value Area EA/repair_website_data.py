@@ -35,7 +35,10 @@ def main():
             _,meta=source_paths(product,'standard',period)
             write_json(meta,source_fingerprint(product,'standard',start,date(2026,9,5)))
             published.append(dict(slug=slug,period=period,report_sha256=result['source_report_sha256'],trades=len(result['trades'])))
-    write_json(ROOT/'website-repair.json',dict(damaged_files=[str(f.relative_to(STORE)) for f,_ in damaged],backup=str(backup),regenerated=published))
+    restored=[str(f.relative_to(STORE)) for f,_ in damaged]
+    if not restored and backup.is_file():
+        with zipfile.ZipFile(backup) as z:restored=z.namelist()
+    write_json(ROOT/'website-repair.json',dict(damaged_files=restored,backup=str(backup),regenerated=published))
     get_catalog.cache_clear()
     print('Repaired',len(damaged),'generated JSON files; independently verified',len(published),'news windows.',flush=True)
 if __name__=='__main__':main()
