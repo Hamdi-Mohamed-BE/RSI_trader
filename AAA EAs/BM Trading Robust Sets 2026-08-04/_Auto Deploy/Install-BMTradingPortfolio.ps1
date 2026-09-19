@@ -53,13 +53,8 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 
 function Get-PortfolioItems {
     # Locked selected portfolio. Each EA owns its selected exit mode:
-<<<<<<< HEAD
     # Each strategy keeps its selected exit. The four News Pulse instances
     # use source-locked risk; XAU v2.16 is unchanged and XAG/BTC/EURUSD use v2.17,
-=======
-    # Each strategy keeps its selected exit. The three News Pulse instances
-    # use News Pulse v2.16, its native 60-second lifecycle and source-locked
->>>>>>> d5323f478a2f736894ed9925d3710b161ba99b82
     # 0.75% risk per pending side (1.50% maximum planned event exposure).
     # Live events come from MT5's USD calendar; Strategy Tester schedules are
     # generated from FXMacroData and fail closed outside verified coverage.
@@ -69,6 +64,12 @@ function Get-PortfolioItems {
     # Risk defaults to 1% planned per EA trade except the news EAs, whose 0.75%
     # base risk cannot be changed by the portfolio risk prompt.
     $items = @(
+        [pscustomobject]@{
+            Label = 'Gold Overnight Value Area'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 5; Expert = 'Gold Overnight Value Area EA.ex5'
+            ExpertSource = 'Gold Overnight Value Area EA\EA\Gold Overnight Value Area EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\24 Gold Overnight Value Area - RAW - 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
         [pscustomobject]@{
             Label = 'LTA Volume Profile'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 15; Expert = 'LTA_Concepts_EA.ex5'

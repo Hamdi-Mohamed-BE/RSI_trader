@@ -25,6 +25,9 @@ def reference_profile(r,count,percent):
 
 def verify():
     m1,m5=load();build=json.loads((ROOT/'build.json').read_text());manifest=json.loads((ROOT/'manifest.json').read_text())
+    import frozen_parser
+    parser_meta=json.loads((ROOT/'parser-isolation.json').read_text())
+    assert sha(ROOT/'frozen_parser.py')==parser_meta['parser_sha256']
     for name in ('M1','M5'):assert sha(ROOT/'data'/(name+'.npz'))==manifest['files'][name]
     assert sha(ROOT/'Gold Overnight Value Area Research.mq5')==build['source_sha256']
     assert sha(ROOT/'Gold Overnight Value Area Research.ex5')==build['binary_sha256']
@@ -32,6 +35,14 @@ def verify():
     for folder in sorted((ROOT/'native').iterdir()):
         if not (folder/'summary.json').exists():continue
         stats=json.loads((folder/'summary.json').read_text());run=json.loads((folder/'run.json').read_text());trades=json.loads((folder/'trades.json').read_text());c=run['config']
+        replay={};frozen_parser.save=lambda path,obj:replay.update({str(path):obj})
+        parsed=frozen_parser.parse_case(folder)
+        assert replay[str(folder/'trades.json')]==trades,(folder.name,'Parser replay ledger differs')
+        for key in ('trades','net_profit','commission','swap','profit_factor','return_pct','max_drawdown_pct'):
+            assert parsed[key]==stats[key],(folder.name,'Parser replay metric differs',key)
+        journal=(folder/'journal.txt').read_text()
+        assert f"testing with execution delay {run['delay']} milliseconds" in journal,(folder.name,'Execution delay not confirmed by tester')
+        assert run['build']['source_sha256']==build['source_sha256'] and run['build']['binary_sha256']==build['binary_sha256']
         audit=list(csv.DictReader((folder/'audit.csv').open(encoding='utf-8-sig')))
         profiles={r['ny_day']:r for r in audit if r['kind']=='profile'};diffs=[];signals=0
         for day,row in profiles.items():
@@ -133,5 +144,8 @@ class Tests(unittest.TestCase):
 
 if __name__=='__main__':
     import sys
-    if '--unit' in sys.argv:unittest.main(argv=[sys.argv[0]])
+    if '--unit' in sys.argv:
+        result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Tests))
+        save(ROOT/'unit-tests.json',dict(tests_run=result.testsRun,passed=result.wasSuccessful(),failures=len(result.failures),errors=len(result.errors)))
+        if not result.wasSuccessful():sys.exit(1)
     else:verify()

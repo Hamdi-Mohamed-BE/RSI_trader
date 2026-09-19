@@ -137,6 +137,7 @@ class Product(BaseModel):
 
 
 SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
+    "Gold Overnight Value Area": ("gold-overnight-va-raw", "current", "Opposite value-area stop / overnight extreme TP / 16:00 NY exit"),
     "LTA Volume Profile": ("lta-xau", "current", "Current EA exits"),
     "BTC Top Down FVG Liquidity": ("topdown-btc", "current", "Current EA exits"),
     "ETH Top Down FVG Liquidity": ("topdown-eth", "dynamic-only", "Dynamic 50/20"),
@@ -161,16 +162,10 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "USDJPY London Open Momentum": ("london-open-momentum-usdjpy", "current", "Time exit / BE at 0.75R"),
     "XAU Squeeze Momentum Standard": ("squeeze-momentum-xau-standard", "current", "3.5 ATR stop / 1.5R / ATR ratchet"),
     "XAU Squeeze Momentum High Win 0.75R": ("squeeze-momentum-xau-high-win", "current", "3 ATR stop / 0.75R / ATR ratchet"),
-<<<<<<< HEAD
     "News Pulse XAU": ("news-xau-event-specific-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
     "News Pulse XAG": ("news-xag-event-full-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
     "News Pulse BTC": ("news-btc-event-full-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
     "News Pulse EURUSD": ("news-eurusd-event-full-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
-=======
-    "News Pulse XAU": ("news-xau-t15-o4-s4", "current", "Native 60-second exit"),
-    "News Pulse XAG": ("news-xag-hard-1p5", "current", "Native 60-second exit"),
-    "News Pulse BTC": ("news-btc-hard-1p5", "current", "Native 60-second exit"),
->>>>>>> d5323f478a2f736894ed9925d3710b161ba99b82
     "XAU RSI VWAP": ("rsi-vwap-xau", "current", "Current EA exits"),
     "BTC POC Fibonacci": ("pocfib-btc", "current", "Fixed 5R / no trailing"),
     "XAU Elliott Wave 1-2-3": ("elliott-xau", "current", "Fixed 3R / no trailing"),
@@ -182,6 +177,25 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
 
 
 CORE_META: dict[str, dict[str, Any]] = {
+    "Gold Overnight Value Area": {
+        "strategy": "Overnight value-area breakout — raw",
+        "tagline": "The approved raw gold model: overnight value, a completed M5 breakout and the overnight extreme as target.",
+        "description": "Builds a 64-bin, 70% tick-volume profile from 18:00 to 09:30 New York. The first completed M5 close outside value selects direction. A valid trade targets the overnight high or low, with its stop beyond the opposite value-area edge. This is the raw model, not the optimized candidate.",
+        "session": "09:35–16:00 America/New_York, DST-aware",
+        "logic_audit": "Raw source and native MT5 evidence",
+        "logic_audit_note": "Research reports are preserved separately. Production adds restart protection, automatic live broker-time conversion and the existing optional Adaptive governor; no optimized entry or exit filters.",
+        "logic": [
+            {"title": "Build overnight value", "detail": "Completed M1 HLC3 prices weighted by broker tick volume; 64 bins and a contiguous 70% value area. This is not exchange-traded gold volume."},
+            {"title": "Wait for the first M5 close", "detail": "After 09:30 NY, buy above VAH or sell below VAL on a completed M5 candle. One attempt per day; invalid stop/target geometry consumes the attempt."},
+            {"title": "Use structural protection", "detail": "Stop one tick beyond the opposite value-area edge; target the overnight high/low. RR varies and can be below 1R. No trailing or break-even."},
+            {"title": "Exit on schedule", "detail": "Close at 16:00 NY or the broker's earlier session cutoff; retry if the market is unavailable. An exit time is not a guaranteed fill."},
+            {"title": "Follow selected sizing", "detail": "Default 1% equity, or the BAT's selected percentage/fixed amount. Lots round up, so minimum lot can exceed the risk target. Adaptive mode applies the existing non-news controls."},
+        ],
+        "risk_note": "Raw 1% standalone evidence is not an FTMO recommendation. Five-year equity drawdown is about 28.9%. A high win rate does not guarantee positive expectancy; live spread, gaps, fees and lot rounding matter.",
+        "price": 199,
+        "accent": "gold",
+        "featured": False,
+    },
     "DMC Current XAU": {
         "strategy": "Prior-day body rejection",
         "tagline": "The established XAUUSD DMC baseline, retained as a higher-frequency control beside the selective builds.",
@@ -2779,6 +2793,9 @@ def get_catalog() -> list[Product]:
         evidence = one_year.get(item["label"])
         if item["label"] == "Nasdaq 5M Candle Momentum":
             evidence = nasdaq_open
+        elif item["label"] == "Gold Overnight Value Area":
+            from .gold_value_area import catalog_evidence
+            evidence = Evidence(**catalog_evidence())
         elif item["label"] == "US100 ORB 0.5R":
             evidence = us100_orb_rr05
         elif item["label"] == "US100 ORB 2R":

@@ -4,7 +4,7 @@ from datetime import datetime,timezone
 from data import ROOT,RAW,PACKAGE,NORMAL,save,sha
 import MetaTrader5 as mt
 from build import SOURCE,TESTER
-spec=importlib.util.spec_from_file_location('onvp_native_parser',RAW/'run_raw.py');legacy=importlib.util.module_from_spec(spec);spec.loader.exec_module(legacy)
+import frozen_parser as legacy
 DEFAULT=dict(bins=64,va=70,stop=0,min_r=0.,entry_end=960,exit=960,target_r=0.,be=0.,trail=0.)
 WINDOWS={'train':('2021.09.19','2024.09.19'),'validation':('2024.09.19','2025.09.19'),'5y':('2021.09.19','2026.09.19'),'3y':('2023.09.19','2026.09.19'),'1y':('2025.09.19','2026.09.19'),'6m':('2026.03.19','2026.09.19')}
 def ident(c):return hashlib.sha256(json.dumps(c,sort_keys=True).encode()).hexdigest()[:10]

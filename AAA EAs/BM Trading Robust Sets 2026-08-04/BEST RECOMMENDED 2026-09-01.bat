@@ -2,9 +2,11 @@
 rem XAU News Pulse v2.16: NFP/CPI/FOMC event-specific settings via shared installer; both pending sides retained.
 rem XAG/BTC/EURUSD News Pulse v2.17: approved full-year event combinations, adaptive exempt; no OCO.
 setlocal
+rem Includes Gold Overnight Value Area RAW via the shared normal-MT5 installer.
+echo Gold Overnight Value Area RAW included: M5, overnight extreme TP, opposite value-area SL.
 title BM Trading - Best Recommended 2026-09-01
 
-echo Applying the locked 32-EA recommended portfolio...
+echo Applying the locked managed EA recommended portfolio...
 echo - 8 EAs use Dynamic 50-20 stop management
 echo - 1 EA uses its optimized Dynamic 60-20 stop management
 echo - Sell Nasdaq 15min now defaults to evidence-selected Dynamic London exits

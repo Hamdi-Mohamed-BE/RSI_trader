@@ -1,0 +1,865 @@
+{
+  "cost_overlays": [
+    {
+      "extra_roundtrip_usd_per_ounce": 0.1,
+      "commission_multiplier": 1.5,
+      "net_profit": 4089.285,
+      "return_pct": 40.892849999999996,
+      "profit_factor": 1.3220516782495597,
+      "closed_balance_dd_pct": 11.338180343485332,
+      "win_rate_pct": 43.30708661417323
+    },
+    {
+      "extra_roundtrip_usd_per_ounce": 0.25,
+      "commission_multiplier": 1.5,
+      "net_profit": 2674.4849999999997,
+      "return_pct": 26.744849999999996,
+      "profit_factor": 1.196718471817319,
+      "closed_balance_dd_pct": 14.841105694943108,
+      "win_rate_pct": 43.044619422572175
+    },
+    {
+      "extra_roundtrip_usd_per_ounce": 0.5,
+      "commission_multiplier": 1.5,
+      "net_profit": 316.4850000000001,
+      "return_pct": 3.1648500000000013,
+      "profit_factor": 1.0209652834223322,
+      "closed_balance_dd_pct": 30.38365489235304,
+      "win_rate_pct": 42.51968503937008
+    }
+  ],
+  "weekly_bootstrap": {
+    "paths": 5000,
+    "seed": 9192026,
+    "weeks_per_path": 52,
+    "blocks": 261,
+    "probability_negative_sample_pct": 11.84,
+    "return_percentiles": {
+      "p05": -2.7754824734060244,
+      "p50": 8.354756288308074,
+      "p95": 22.448189566942002
+    },
+    "closed_balance_dd_percentiles": {
+      "p05": 2.4950403017790626,
+      "p50": 4.641691598856452,
+      "p95": 9.111441651793745
+    },
+    "limitation": "Historical weekly block resampling; not future pass/profit probability. Preserves within-week trade order, not longer regimes or floating equity. Uses realized percentage returns, not re-sized broker lots. Includes research/selection bias."
+  },
+  "missed_winners": [
+    {
+      "missed_winner_fraction": 0.05,
+      "paths": 1000,
+      "return_percentiles": [
+        39.240845,
+        44.033100000000005,
+        46.45499
+      ],
+      "closed_balance_dd_p95": 11.5446292514494
+    },
+    {
+      "missed_winner_fraction": 0.1,
+      "paths": 1000,
+      "return_percentiles": [
+        29.624245000000002,
+        35.4815,
+        39.222595
+      ],
+      "closed_balance_dd_p95": 13.375735771459203
+    }
+  ],
+  "breakdown": {
+    "monthly": [
+      {
+        "label": "2021-09",
+        "trades": 1,
+        "net_profit": 57.28,
+        "return_on_period_start_pct": 0.5728000000000001,
+        "win_rate_pct": 100.0,
+        "profit_factor": null,
+        "commission": -1.71,
+        "swap": 0.0,
+        "ending_balance": 10057.28
+      },
+      {
+        "label": "2021-10",
+        "trades": 4,
+        "net_profit": -64.59,
+        "return_on_period_start_pct": -0.6422213560724171,
+        "win_rate_pct": 25.0,
+        "profit_factor": 0.46553578816714936,
+        "commission": -16.06,
+        "swap": 0.0,
+        "ending_balance": 9992.69
+      },
+      {
+        "label": "2021-11",
+        "trades": 10,
+        "net_profit": -20.66,
+        "return_on_period_start_pct": -0.20675113507974355,
+        "win_rate_pct": 40.0,
+        "profit_factor": 0.9251991310644457,
+        "commission": -14.97,
+        "swap": 0.0,
+        "ending_balance": 9972.03
+      },
+      {
+        "label": "2021-12",
+        "trades": 7,
+        "net_profit": -305.65,
+        "return_on_period_start_pct": -3.0650730092067513,
+        "win_rate_pct": 42.857142857142854,
+        "profit_factor": 0.27842961354139617,
+        "commission": -16.8,
+        "swap": 0.0,
+        "ending_balance": 9666.38
+      },
+      {
+        "label": "2022-01",
+        "trades": 8,
+        "net_profit": 189.08,
+        "return_on_period_start_pct": 1.9560580072374563,
+        "win_rate_pct": 50.0,
+        "profit_factor": 2.7992197164335333,
+        "commission": -10.9,
+        "swap": 0.0,
+        "ending_balance": 9855.46
+      },
+      {
+        "label": "2022-02",
+        "trades": 11,
+        "net_profit": 468.79,
+        "return_on_period_start_pct": 4.756652657511673,
+        "win_rate_pct": 63.63636363636363,
+        "profit_factor": 3.1954292136936258,
+        "commission": -16.35,
+        "swap": 0.0,
+        "ending_balance": 10324.25
+      },
+      {
+        "label": "2022-03",
+        "trades": 5,
+        "net_profit": -128.16,
+        "return_on_period_start_pct": -1.2413492505508874,
+        "win_rate_pct": 40.0,
+        "profit_factor": 0.6016040287233051,
+        "commission": -6.89,
+        "swap": 0.0,
+        "ending_balance": 10196.09
+      },
+      {
+        "label": "2022-04",
+        "trades": 7,
+        "net_profit": 284.67,
+        "return_on_period_start_pct": 2.7919526014383944,
+        "win_rate_pct": 57.14285714285714,
+        "profit_factor": 49.249152542372876,
+        "commission": -8.76,
+        "swap": 0.0,
+        "ending_balance": 10480.76
+      },
+      {
+        "label": "2022-05",
+        "trades": 6,
+        "net_profit": 61.56,
+        "return_on_period_start_pct": 0.5873619851995465,
+        "win_rate_pct": 66.66666666666666,
+        "profit_factor": 1.2793990831933917,
+        "commission": -8.76,
+        "swap": 0.0,
+        "ending_balance": 10542.32
+      },
+      {
+        "label": "2022-06",
+        "trades": 8,
+        "net_profit": -107.7,
+        "return_on_period_start_pct": -1.0215967642795891,
+        "win_rate_pct": 25.0,
+        "profit_factor": 0.5352349717343461,
+        "commission": -14.5,
+        "swap": 0.0,
+        "ending_balance": 10434.62
+      },
+      {
+        "label": "2022-07",
+        "trades": 7,
+        "net_profit": 146.29,
+        "return_on_period_start_pct": 1.401967680663024,
+        "win_rate_pct": 57.14285714285714,
+        "profit_factor": 1.9257688900139225,
+        "commission": -8.49,
+        "swap": 0.0,
+        "ending_balance": 10580.91
+      },
+      {
+        "label": "2022-08",
+        "trades": 8,
+        "net_profit": -78.49,
+        "return_on_period_start_pct": -0.7418076517048157,
+        "win_rate_pct": 25.0,
+        "profit_factor": 0.6588874402433724,
+        "commission": -13.82,
+        "swap": 0.0,
+        "ending_balance": 10502.42
+      },
+      {
+        "label": "2022-09",
+        "trades": 6,
+        "net_profit": -138.74,
+        "return_on_period_start_pct": -1.3210288676324122,
+        "win_rate_pct": 33.33333333333333,
+        "profit_factor": 0.38181170075301873,
+        "commission": -7.0,
+        "swap": 0.0,
+        "ending_balance": 10363.68
+      },
+      {
+        "label": "2022-10",
+        "trades": 6,
+        "net_profit": 129.59,
+        "return_on_period_start_pct": 1.2504245596158894,
+        "win_rate_pct": 33.33333333333333,
+        "profit_factor": 2.1142734307824593,
+        "commission": -11.63,
+        "swap": 0.0,
+        "ending_balance": 10493.27
+      },
+      {
+        "label": "2022-11",
+        "trades": 6,
+        "net_profit": -106.6,
+        "return_on_period_start_pct": -1.0158892318600397,
+        "win_rate_pct": 33.33333333333333,
+        "profit_factor": 0.5224014336917562,
+        "commission": -10.19,
+        "swap": 0.0,
+        "ending_balance": 10386.67
+      },
+      {
+        "label": "2022-12",
+        "trades": 4,
+        "net_profit": 43.31,
+        "return_on_period_start_pct": 0.4169767596351859,
+        "win_rate_pct": 50.0,
+        "profit_factor": 1.1983967017865322,
+        "commission": -4.91,
+        "swap": 0.0,
+        "ending_balance": 10429.98
+      },
+      {
+        "label": "2023-01",
+        "trades": 8,
+        "net_profit": 56.19,
+        "return_on_period_start_pct": 0.5387354529922397,
+        "win_rate_pct": 37.5,
+        "profit_factor": 1.3636893203883496,
+        "commission": -9.59,
+        "swap": 0.0,
+        "ending_balance": 10486.17
+      },
+      {
+        "label": "2023-02",
+        "trades": 9,
+        "net_profit": 292.71,
+        "return_on_period_start_pct": 2.791390946360778,
+        "win_rate_pct": 55.55555555555556,
+        "profit_factor": 2.065446074327521,
+        "commission": -16.35,
+        "swap": 0.0,
+        "ending_balance": 10778.88
+      },
+      {
+        "label": "2023-03",
+        "trades": 10,
+        "net_profit": 293.55,
+        "return_on_period_start_pct": 2.723381278945493,
+        "win_rate_pct": 70.0,
+        "profit_factor": 2.2587907375643224,
+        "commission": -17.36,
+        "swap": 0.0,
+        "ending_balance": 11072.43
+      },
+      {
+        "label": "2023-04",
+        "trades": 4,
+        "net_profit": 86.51,
+        "return_on_period_start_pct": 0.7813099744139268,
+        "win_rate_pct": 75.0,
+        "profit_factor": 1.729119258322798,
+        "commission": -2.37,
+        "swap": 0.0,
+        "ending_balance": 11158.94
+      },
+      {
+        "label": "2023-05",
+        "trades": 11,
+        "net_profit": -309.51,
+        "return_on_period_start_pct": -2.773650543868862,
+        "win_rate_pct": 27.27272727272727,
+        "profit_factor": 0.4205668713494083,
+        "commission": -13.79,
+        "swap": 0.0,
+        "ending_balance": 10849.43
+      },
+      {
+        "label": "2023-06",
+        "trades": 4,
+        "net_profit": 371.92,
+        "return_on_period_start_pct": 3.4280141906072497,
+        "win_rate_pct": 50.0,
+        "profit_factor": 72.11281070745699,
+        "commission": -6.01,
+        "swap": 0.0,
+        "ending_balance": 11221.35
+      },
+      {
+        "label": "2023-07",
+        "trades": 8,
+        "net_profit": -145.03,
+        "return_on_period_start_pct": -1.2924469872163333,
+        "win_rate_pct": 25.0,
+        "profit_factor": 0.47631255867696976,
+        "commission": -14.09,
+        "swap": 0.0,
+        "ending_balance": 11076.32
+      },
+      {
+        "label": "2023-08",
+        "trades": 9,
+        "net_profit": -444.54,
+        "return_on_period_start_pct": -4.01342684212807,
+        "win_rate_pct": 22.22222222222222,
+        "profit_factor": 0.24177454843166352,
+        "commission": -31.97,
+        "swap": 0.0,
+        "ending_balance": 10631.78
+      },
+      {
+        "label": "2023-09",
+        "trades": 8,
+        "net_profit": -208.21,
+        "return_on_period_start_pct": -1.9583738564943967,
+        "win_rate_pct": 37.5,
+        "profit_factor": 0.5490654711628008,
+        "commission": -18.83,
+        "swap": 0.0,
+        "ending_balance": 10423.57
+      },
+      {
+        "label": "2023-10",
+        "trades": 12,
+        "net_profit": 34.76,
+        "return_on_period_start_pct": 0.3334749994483655,
+        "win_rate_pct": 41.66666666666667,
+        "profit_factor": 1.102749039314218,
+        "commission": -17.8,
+        "swap": 0.0,
+        "ending_balance": 10458.33
+      },
+      {
+        "label": "2023-11",
+        "trades": 6,
+        "net_profit": -36.53,
+        "return_on_period_start_pct": -0.34929094798117877,
+        "win_rate_pct": 16.666666666666664,
+        "profit_factor": 0.6918079811018307,
+        "commission": -10.35,
+        "swap": 0.0,
+        "ending_balance": 10421.8
+      },
+      {
+        "label": "2023-12",
+        "trades": 3,
+        "net_profit": 458.48,
+        "return_on_period_start_pct": 4.399240054501143,
+        "win_rate_pct": 33.33333333333333,
+        "profit_factor": 115.0497512437811,
+        "commission": -7.05,
+        "swap": 0.0,
+        "ending_balance": 10880.28
+      },
+      {
+        "label": "2024-01",
+        "trades": 8,
+        "net_profit": -41.94,
+        "return_on_period_start_pct": -0.3854680210435758,
+        "win_rate_pct": 25.0,
+        "profit_factor": 0.8210979823401442,
+        "commission": -14.88,
+        "swap": 0.0,
+        "ending_balance": 10838.34
+      },
+      {
+        "label": "2024-02",
+        "trades": 9,
+        "net_profit": -11.96,
+        "return_on_period_start_pct": -0.11034900178440629,
+        "win_rate_pct": 33.33333333333333,
+        "profit_factor": 0.9531549880537384,
+        "commission": -19.99,
+        "swap": 0.0,
+        "ending_balance": 10826.38
+      },
+      {
+        "label": "2024-03",
+        "trades": 7,
+        "net_profit": 203.74,
+        "return_on_period_start_pct": 1.881884803600096,
+        "win_rate_pct": 42.857142857142854,
+        "profit_factor": 1.8699030784338844,
+        "commission": -6.79,
+        "swap": 0.0,
+        "ending_balance": 11030.12
+      },
+      {
+        "label": "2024-04",
+        "trades": 4,
+        "net_profit": 252.29,
+        "return_on_period_start_pct": 2.2872824593023466,
+        "win_rate_pct": 50.0,
+        "profit_factor": 196.57364341085272,
+        "commission": -3.69,
+        "swap": 0.0,
+        "ending_balance": 11282.41
+      },
+      {
+        "label": "2024-05",
+        "trades": 7,
+        "net_profit": 463.27,
+        "return_on_period_start_pct": 4.106126262030896,
+        "win_rate_pct": 85.71428571428571,
+        "profit_factor": 499.1397849462366,
+        "commission": -6.39,
+        "swap": 0.0,
+        "ending_balance": 11745.68
+      },
+      {
+        "label": "2024-06",
+        "trades": 3,
+        "net_profit": -123.23,
+        "return_on_period_start_pct": -1.0491516881100116,
+        "win_rate_pct": 0.0,
+        "profit_factor": 0.0,
+        "commission": -3.2,
+        "swap": 0.0,
+        "ending_balance": 11622.45
+      },
+      {
+        "label": "2024-07",
+        "trades": 6,
+        "net_profit": 597.74,
+        "return_on_period_start_pct": 5.142977599387393,
+        "win_rate_pct": 66.66666666666666,
+        "profit_factor": 135.93002257336343,
+        "commission": -11.57,
+        "swap": 0.0,
+        "ending_balance": 12220.19
+      },
+      {
+        "label": "2024-08",
+        "trades": 4,
+        "net_profit": -59.72,
+        "return_on_period_start_pct": -0.48869943920675535,
+        "win_rate_pct": 25.0,
+        "profit_factor": 0.5354698195395147,
+        "commission": -4.75,
+        "swap": 0.0,
+        "ending_balance": 12160.47
+      },
+      {
+        "label": "2024-09",
+        "trades": 9,
+        "net_profit": 168.52,
+        "return_on_period_start_pct": 1.3858017000987626,
+        "win_rate_pct": 55.55555555555556,
+        "profit_factor": 1.6091231114002744,
+        "commission": -9.64,
+        "swap": 0.0,
+        "ending_balance": 12328.99
+      },
+      {
+        "label": "2024-10",
+        "trades": 6,
+        "net_profit": 56.04,
+        "return_on_period_start_pct": 0.454538449621583,
+        "win_rate_pct": 50.0,
+        "profit_factor": 1.3405030987969375,
+        "commission": -7.5,
+        "swap": 0.0,
+        "ending_balance": 12385.03
+      },
+      {
+        "label": "2024-11",
+        "trades": 4,
+        "net_profit": -16.29,
+        "return_on_period_start_pct": -0.13152975810312934,
+        "win_rate_pct": 25.0,
+        "profit_factor": 0.8760556950467929,
+        "commission": -5.41,
+        "swap": 0.0,
+        "ending_balance": 12368.74
+      },
+      {
+        "label": "2024-12",
+        "trades": 2,
+        "net_profit": 76.96,
+        "return_on_period_start_pct": 0.6222137420626516,
+        "win_rate_pct": 50.0,
+        "profit_factor": 117.60606060606061,
+        "commission": -2.09,
+        "swap": 0.0,
+        "ending_balance": 12445.7
+      },
+      {
+        "label": "2025-01",
+        "trades": 3,
+        "net_profit": -197.63,
+        "return_on_period_start_pct": -1.5879380026836576,
+        "win_rate_pct": 0.0,
+        "profit_factor": 0.0,
+        "commission": -3.25,
+        "swap": 0.0,
+        "ending_balance": 12248.07
+      },
+      {
+        "label": "2025-02",
+        "trades": 6,
+        "net_profit": -46.89,
+        "return_on_period_start_pct": -0.3828358263791765,
+        "win_rate_pct": 33.33333333333333,
+        "profit_factor": 0.7949357124114405,
+        "commission": -6.4,
+        "swap": 0.0,
+        "ending_balance": 12201.18
+      },
+      {
+        "label": "2025-03",
+        "trades": 5,
+        "net_profit": 2.91,
+        "return_on_period_start_pct": 0.023850152198393898,
+        "win_rate_pct": 40.0,
+        "profit_factor": 1.0127157526764257,
+        "commission": -6.12,
+        "swap": 0.0,
+        "ending_balance": 12204.09
+      },
+      {
+        "label": "2025-04",
+        "trades": 7,
+        "net_profit": 208.04,
+        "return_on_period_start_pct": 1.704674416527574,
+        "win_rate_pct": 42.857142857142854,
+        "profit_factor": 1.7929864684581664,
+        "commission": -3.99,
+        "swap": 0.0,
+        "ending_balance": 12412.13
+      },
+      {
+        "label": "2025-05",
+        "trades": 3,
+        "net_profit": -192.16,
+        "return_on_period_start_pct": -1.5481629663885246,
+        "win_rate_pct": 33.33333333333333,
+        "profit_factor": 0.2907916589776712,
+        "commission": -0.94,
+        "swap": 0.0,
+        "ending_balance": 12219.97
+      },
+      {
+        "label": "2025-06",
+        "trades": 4,
+        "net_profit": 499.96,
+        "return_on_period_start_pct": 4.091335739776776,
+        "win_rate_pct": 25.0,
+        "profit_factor": 4.6718566392479435,
+        "commission": -6.0,
+        "swap": 0.0,
+        "ending_balance": 12719.93
+      },
+      {
+        "label": "2025-07",
+        "trades": 5,
+        "net_profit": 8.77,
+        "return_on_period_start_pct": 0.06894692030537902,
+        "win_rate_pct": 40.0,
+        "profit_factor": 1.0636244921648288,
+        "commission": -9.59,
+        "swap": 0.0,
+        "ending_balance": 12728.7
+      },
+      {
+        "label": "2025-08",
+        "trades": 8,
+        "net_profit": 104.11,
+        "return_on_period_start_pct": 0.8179154194851009,
+        "win_rate_pct": 37.5,
+        "profit_factor": 1.3786368926389292,
+        "commission": -8.33,
+        "swap": 0.0,
+        "ending_balance": 12832.81
+      },
+      {
+        "label": "2025-09",
+        "trades": 5,
+        "net_profit": 468.92,
+        "return_on_period_start_pct": 3.654071088093722,
+        "win_rate_pct": 60.0,
+        "profit_factor": 222.188679245283,
+        "commission": -4.36,
+        "swap": 0.0,
+        "ending_balance": 13301.73
+      },
+      {
+        "label": "2025-10",
+        "trades": 6,
+        "net_profit": 160.99,
+        "return_on_period_start_pct": 1.2102936986391994,
+        "win_rate_pct": 66.66666666666666,
+        "profit_factor": 2.1266708657008886,
+        "commission": -3.09,
+        "swap": 0.0,
+        "ending_balance": 13462.72
+      },
+      {
+        "label": "2025-11",
+        "trades": 5,
+        "net_profit": -283.03,
+        "return_on_period_start_pct": -2.102324047443607,
+        "win_rate_pct": 0.0,
+        "profit_factor": 0.0,
+        "commission": -4.42,
+        "swap": 0.0,
+        "ending_balance": 13179.69
+      },
+      {
+        "label": "2025-12",
+        "trades": 7,
+        "net_profit": 77.59,
+        "return_on_period_start_pct": 0.5887088391305106,
+        "win_rate_pct": 42.857142857142854,
+        "profit_factor": 1.18933626159102,
+        "commission": -5.78,
+        "swap": 0.0,
+        "ending_balance": 13257.28
+      },
+      {
+        "label": "2026-01",
+        "trades": 9,
+        "net_profit": 151.28,
+        "return_on_period_start_pct": 1.1411088850804996,
+        "win_rate_pct": 33.33333333333333,
+        "profit_factor": 1.4850272523244632,
+        "commission": -4.09,
+        "swap": 0.0,
+        "ending_balance": 13408.56
+      },
+      {
+        "label": "2026-02",
+        "trades": 7,
+        "net_profit": 214.33,
+        "return_on_period_start_pct": 1.5984565083797215,
+        "win_rate_pct": 42.857142857142854,
+        "profit_factor": 2.385724445593845,
+        "commission": -2.99,
+        "swap": 0.0,
+        "ending_balance": 13622.89
+      },
+      {
+        "label": "2026-03",
+        "trades": 7,
+        "net_profit": 82.93,
+        "return_on_period_start_pct": 0.6087548236827864,
+        "win_rate_pct": 42.857142857142854,
+        "profit_factor": 1.290066456803078,
+        "commission": -2.32,
+        "swap": 0.0,
+        "ending_balance": 13705.82
+      },
+      {
+        "label": "2026-04",
+        "trades": 8,
+        "net_profit": 239.72,
+        "return_on_period_start_pct": 1.7490379999153645,
+        "win_rate_pct": 50.0,
+        "profit_factor": 1.782171756721483,
+        "commission": -3.43,
+        "swap": 0.0,
+        "ending_balance": 13945.54
+      },
+      {
+        "label": "2026-05",
+        "trades": 6,
+        "net_profit": 747.21,
+        "return_on_period_start_pct": 5.35805712794198,
+        "win_rate_pct": 83.33333333333334,
+        "profit_factor": 598.768,
+        "commission": -3.37,
+        "swap": 0.0,
+        "ending_balance": 14692.75
+      },
+      {
+        "label": "2026-06",
+        "trades": 8,
+        "net_profit": 74.21,
+        "return_on_period_start_pct": 0.5050790355787721,
+        "win_rate_pct": 50.0,
+        "profit_factor": 1.1916036250032274,
+        "commission": -4.36,
+        "swap": 0.0,
+        "ending_balance": 14766.96
+      },
+      {
+        "label": "2026-07",
+        "trades": 1,
+        "net_profit": 90.65,
+        "return_on_period_start_pct": 0.6138704242443943,
+        "win_rate_pct": 100.0,
+        "profit_factor": null,
+        "commission": -0.44,
+        "swap": 0.0,
+        "ending_balance": 14857.61
+      },
+      {
+        "label": "2026-08",
+        "trades": 5,
+        "net_profit": 335.44,
+        "return_on_period_start_pct": 2.2576982435263817,
+        "win_rate_pct": 60.0,
+        "profit_factor": 3.0885374509681838,
+        "commission": -2.87,
+        "swap": 0.0,
+        "ending_balance": 15193.05
+      },
+      {
+        "label": "2026-09",
+        "trades": 1,
+        "net_profit": 99.3,
+        "return_on_period_start_pct": 0.6535883183429265,
+        "win_rate_pct": 100.0,
+        "profit_factor": null,
+        "commission": -0.39,
+        "swap": 0.0,
+        "ending_balance": 15292.35
+      }
+    ],
+    "yearly": [
+      {
+        "label": "2021",
+        "trades": 22,
+        "net_profit": -333.62,
+        "return_on_period_start_pct": -3.3362000000000003,
+        "win_rate_pct": 40.909090909090914,
+        "profit_factor": 0.5934636381360889,
+        "commission": -49.54,
+        "swap": 0.0,
+        "ending_balance": 9666.38
+      },
+      {
+        "label": "2022",
+        "trades": 82,
+        "net_profit": 763.6,
+        "return_on_period_start_pct": 7.899544607184904,
+        "win_rate_pct": 45.1219512195122,
+        "profit_factor": 1.3365922895857394,
+        "commission": -122.2,
+        "swap": 0.0,
+        "ending_balance": 10429.98
+      },
+      {
+        "label": "2023",
+        "trades": 92,
+        "net_profit": 450.3,
+        "return_on_period_start_pct": 4.317362065890828,
+        "win_rate_pct": 40.21739130434783,
+        "profit_factor": 1.144964394710071,
+        "commission": -165.56,
+        "swap": 0.0,
+        "ending_balance": 10880.28
+      },
+      {
+        "label": "2024",
+        "trades": 69,
+        "net_profit": 1565.42,
+        "return_on_period_start_pct": 14.387681199380896,
+        "win_rate_pct": 44.927536231884055,
+        "profit_factor": 2.0062350551513126,
+        "commission": -95.9,
+        "swap": 0.0,
+        "ending_balance": 12445.7
+      },
+      {
+        "label": "2025",
+        "trades": 64,
+        "net_profit": 811.58,
+        "return_on_period_start_pct": 6.520967080999862,
+        "win_rate_pct": 37.5,
+        "profit_factor": 1.3151473260744628,
+        "commission": -62.27,
+        "swap": 0.0,
+        "ending_balance": 13257.28
+      },
+      {
+        "label": "2026",
+        "trades": 52,
+        "net_profit": 2035.07,
+        "return_on_period_start_pct": 15.350584735330324,
+        "win_rate_pct": 51.92307692307693,
+        "profit_factor": 2.265496355993334,
+        "commission": -24.26,
+        "swap": 0.0,
+        "ending_balance": 15292.35
+      }
+    ],
+    "direction": [
+      {
+        "label": "Long",
+        "trades": 155,
+        "net_profit": 1438.89,
+        "return_on_period_start_pct": 14.306949791593752,
+        "win_rate_pct": 41.935483870967744,
+        "profit_factor": 1.2985019822129837,
+        "commission": -227.09,
+        "swap": 0.0,
+        "ending_balance": 14597.25
+      },
+      {
+        "label": "Short",
+        "trades": 226,
+        "net_profit": 3853.46,
+        "return_on_period_start_pct": 38.534600000000005,
+        "win_rate_pct": 44.24778761061947,
+        "profit_factor": 1.5416537231612608,
+        "commission": -292.64,
+        "swap": 0.0,
+        "ending_balance": 15292.35
+      }
+    ]
+  },
+  "initial_risk_percentiles": {
+    "min": 0.9963207601830811,
+    "p50": 1.0239086144148213,
+    "p95": 1.1161071383047805,
+    "max": 1.9171346994831653
+  },
+  "initial_rr_percentiles": {
+    "min": 0.5014359563469257,
+    "p50": 0.8377331925378347,
+    "p95": 2.729051467460859,
+    "max": 6.24801412180173
+  },
+  "minimum_lot_trades": 0,
+  "risk_over_1_1_pct_trades": 29,
+  "gross_breakeven_net_loss_count": 6,
+  "top_five_net_profit": 2060.06,
+  "without_best_five": {
+    "net_profit": 3232.29,
+    "return_pct": 32.3229,
+    "profit_factor": 1.2708330889462758,
+    "closed_balance_dd_pct": 12.68852653802808,
+    "win_rate_pct": 42.5531914893617
+  },
+  "average_win_usd": 104.40587878787879,
+  "average_loss_usd": -55.25287037037037,
+  "median_entry_slippage_price": 0.0,
+  "p95_absolute_entry_slippage_price": 0.18000000000029104
+}
