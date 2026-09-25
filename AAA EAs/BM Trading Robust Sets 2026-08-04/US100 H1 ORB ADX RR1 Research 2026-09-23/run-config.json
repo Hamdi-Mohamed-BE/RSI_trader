@@ -1,0 +1,134 @@
+{
+  "purpose": "Native MT5 study requested 2026-09-23: US100 H1 ORB 13UTC with ADX/DMI entry filters, plus 5/15/30-minute opening ranges at 1:1 reward/risk. Last year only. Research only.",
+  "isolated_tester": "_Backtests/MT5-DMC-20260811",
+  "profile": "Calyx Research Empty",
+  "login": 472334559,
+  "server": "Exness-MT5Trial16",
+  "account_verification": {
+    "isolated_tester_common_ini": "Config/common.ini Login=472334559, Server=Exness-MT5Trial16 (read 2026-09-23; password not read)",
+    "history": "Bases/Exness-MT5Trial16 holds USTEC history; real ticks USTEC 202601..202609 only",
+    "prior_symbol_check": "Nasdaq 5M DI Filter Research 2026-09-23/run-config.json: same server, USTEC digits 2, volume min 0.05 / step 0.01, demo, hedging, 1:2000, verified via normal MT5 MCP earlier the same day",
+    "note": "Normal MT5 terminal and Ava connector not used or changed by this study."
+  },
+  "symbol": "USTEC",
+  "deposit": 10000,
+  "currency": "USD",
+  "leverage": "1:2000",
+  "model": 4,
+  "model_label": "Every tick based on real ticks (bars-generated where real ticks are missing)",
+  "execution_delay_ms": 150,
+  "start_date": "2025.09.23",
+  "end_date": "2026.09.23",
+  "timeout_seconds": 1500,
+  "expert_dir": "AAA Research\\US100 ORB ADX 20260923",
+  "production_ex5": "ORB Volume Data EA/ORB Volume Data EA.ex5",
+  "production_expert_file": "US100 ORB Production v120.ex5",
+  "research_source": "EA/ORB ADX Research EA.mq5",
+  "research_expert_file": "US100 ORB ADX Research v121.ex5",
+  "base_set": "ORB H1 Range Research 2026-09-05/Sets/USTEC - overlap-1300 - H1 opening range - RR6 - 1pct.set",
+  "tester_overrides": {
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpRiskPercent": "1.0"
+  },
+  "variants": {
+    "H1-RR6": {
+      "label": "Current: 60-min range, M15 candles, 6R (installed)",
+      "period": "M15",
+      "overrides": {}
+    },
+    "H1-RR1": {
+      "label": "60-min range, M15 candles, 1R (reference)",
+      "period": "M15",
+      "overrides": {
+        "InpRewardRisk": "1.0"
+      }
+    },
+    "OR5-RR1": {
+      "label": "5-min range, M5 candles, 1R",
+      "period": "M5",
+      "overrides": {
+        "InpOpeningRangeMinutes": "5",
+        "InpSignalTimeframe": "5",
+        "InpATRTimeframe": "5",
+        "InpRewardRisk": "1.0"
+      }
+    },
+    "OR15-RR1": {
+      "label": "15-min range, M15 candles, 1R",
+      "period": "M15",
+      "overrides": {
+        "InpOpeningRangeMinutes": "15",
+        "InpSignalTimeframe": "15",
+        "InpATRTimeframe": "15",
+        "InpRewardRisk": "1.0"
+      }
+    },
+    "OR30-RR1": {
+      "label": "30-min range, M30 candles, 1R",
+      "period": "M30",
+      "overrides": {
+        "InpOpeningRangeMinutes": "30",
+        "InpSignalTimeframe": "30",
+        "InpATRTimeframe": "30",
+        "InpRewardRisk": "1.0"
+      }
+    }
+  },
+  "filters": {
+    "none": {
+      "label": "No ADX filter",
+      "overrides": {
+        "InpAdxFilterMode": "0"
+      }
+    },
+    "adx20": {
+      "label": "ADX >= 20",
+      "overrides": {
+        "InpAdxFilterMode": "1",
+        "InpAdxMinimum": "20"
+      }
+    },
+    "adx25": {
+      "label": "ADX >= 25",
+      "overrides": {
+        "InpAdxFilterMode": "1",
+        "InpAdxMinimum": "25"
+      }
+    },
+    "di": {
+      "label": "+DI/-DI agrees with trade",
+      "overrides": {
+        "InpAdxFilterMode": "2"
+      }
+    },
+    "di-adx20": {
+      "label": "DI agrees and ADX >= 20",
+      "overrides": {
+        "InpAdxFilterMode": "3",
+        "InpAdxMinimum": "20"
+      }
+    }
+  },
+  "common_research_overrides": {
+    "InpAdxTimeframe": "0",
+    "InpAdxPeriod": "14"
+  },
+  "notes": [
+    "Everything not listed stays as the installed SET: 13:00 UTC session, 60-min trade window after the range, flat 20:00 UTC, direct breakout on a closed candle, stop beyond the opposite side of the range, range 0.35-4.0 ATR, max stop 3 ATR, 1% risk.",
+    "For the 5/15/30-minute ranges the signal candles and the range-size ATR use the same timeframe as the range, mirroring the installed 60-min range which measures range size against H1 ATR.",
+    "ADX(14) and DI are read on the just-closed breakout candle (signal timeframe).",
+    "25 research configurations are tried on the same year; picking the best of them is in-sample selection, not validation."
+  ],
+  "validation": {
+    "purpose": "2026-09-25: check the pre-registered ADX>=20 filter on data never used to choose it. Same EA build, SET and tester settings; only the dates differ.",
+    "start_date": "2021.09.23",
+    "end_date": "2025.09.23",
+    "cases": [
+      "H1-RR6-none",
+      "H1-RR6-adx20",
+      "H1-RR1-none",
+      "H1-RR1-adx20"
+    ]
+  }
+}

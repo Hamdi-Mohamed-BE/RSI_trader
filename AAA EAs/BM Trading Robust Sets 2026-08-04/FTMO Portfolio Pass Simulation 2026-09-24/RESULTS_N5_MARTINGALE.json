@@ -1,0 +1,870 @@
+{
+ "seed": 20260926,
+ "paths": 5000,
+ "results": [
+  {
+   "scenario": "M1. Martingale from 1%",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 28.0,
+   "pass_phase2_given_phase1_pct": 45.9,
+   "pass_both_pct": 12.8,
+   "breach_phase1_pct": 72.0,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 15.1,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    8.0,
+    9.0,
+    11.0
+   ],
+   "phase2_days_p25_median_p75": [
+    4.0,
+    4.0,
+    8.0
+   ],
+   "both_days_p25_median_p75": [
+    12.0,
+    14.0,
+    19.0
+   ],
+   "funded_within_30d_pct": 12.7,
+   "within_60d_pct": 12.8,
+   "within_90d_pct": 12.8,
+   "within_180d_pct": 12.8,
+   "within_365d_pct": 12.8,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 72,
+   "average_risk_multiplier": 2.487
+  },
+  {
+   "scenario": "M2. Martingale from 0.5%",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 32.7,
+   "pass_phase2_given_phase1_pct": 53.1,
+   "pass_both_pct": 17.4,
+   "breach_phase1_pct": 67.3,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 15.3,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    15.0,
+    17.0,
+    22.0
+   ],
+   "phase2_days_p25_median_p75": [
+    5.0,
+    9.0,
+    11.0
+   ],
+   "both_days_p25_median_p75": [
+    21.0,
+    27.0,
+    32.0
+   ],
+   "funded_within_30d_pct": 11.5,
+   "within_60d_pct": 17.4,
+   "within_90d_pct": 17.4,
+   "within_180d_pct": 17.4,
+   "within_365d_pct": 17.4,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 619,
+   "average_risk_multiplier": 3.284
+  },
+  {
+   "scenario": "M3. Martingale from 0.25%",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 35.8,
+   "pass_phase2_given_phase1_pct": 54.8,
+   "pass_both_pct": 19.6,
+   "breach_phase1_pct": 64.2,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 16.2,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    24.0,
+    30.0,
+    39.0
+   ],
+   "phase2_days_p25_median_p75": [
+    12.0,
+    17.0,
+    23.0
+   ],
+   "both_days_p25_median_p75": [
+    40.0,
+    48.0,
+    59.0
+   ],
+   "funded_within_30d_pct": 1.2,
+   "within_60d_pct": 15.2,
+   "within_90d_pct": 19.4,
+   "within_180d_pct": 19.6,
+   "within_365d_pct": 19.6,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 929,
+   "average_risk_multiplier": 4.249
+  },
+  {
+   "scenario": "M4. Martingale from 0.5%, capped at 4%",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 46.3,
+   "pass_phase2_given_phase1_pct": 58.8,
+   "pass_both_pct": 27.2,
+   "breach_phase1_pct": 53.7,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 19.1,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    16.0,
+    18.0,
+    25.0
+   ],
+   "phase2_days_p25_median_p75": [
+    8.0,
+    10.0,
+    14.0
+   ],
+   "both_days_p25_median_p75": [
+    25.0,
+    30.0,
+    39.0
+   ],
+   "funded_within_30d_pct": 13.3,
+   "within_60d_pct": 26.4,
+   "within_90d_pct": 27.2,
+   "within_180d_pct": 27.2,
+   "within_365d_pct": 27.2,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 1916,
+   "average_risk_multiplier": 2.963
+  },
+  {
+   "scenario": "Ref. 1% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 50.9,
+   "pass_phase2_given_phase1_pct": 69.7,
+   "pass_both_pct": 35.5,
+   "breach_phase1_pct": 11.4,
+   "unfinished_phase1_365d_pct": 37.8,
+   "breach_phase2_pct": 5.4,
+   "unfinished_phase2_365d_pct": 10.0,
+   "phase1_days_p25_median_p75": [
+    32.0,
+    71.0,
+    156.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    29.0,
+    78.0
+   ],
+   "both_days_p25_median_p75": [
+    67.0,
+    129.0,
+    240.0
+   ],
+   "funded_within_30d_pct": 2.1,
+   "within_60d_pct": 7.5,
+   "within_90d_pct": 12.6,
+   "within_180d_pct": 22.6,
+   "within_365d_pct": 32.8,
+   "funded_year_survival_pct": 83.9,
+   "expected_payout_per_attempt_usd": 2120,
+   "average_risk_multiplier": 0.445
+  },
+  {
+   "scenario": "Ref. flat 1%",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 64.6,
+   "pass_phase2_given_phase1_pct": 73.0,
+   "pass_both_pct": 47.2,
+   "breach_phase1_pct": 35.1,
+   "unfinished_phase1_365d_pct": 0.2,
+   "breach_phase2_pct": 17.4,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    31.0,
+    57.0,
+    99.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    24.0,
+    47.0
+   ],
+   "both_days_p25_median_p75": [
+    58.0,
+    92.0,
+    145.0
+   ],
+   "funded_within_30d_pct": 2.7,
+   "within_60d_pct": 12.5,
+   "within_90d_pct": 23.0,
+   "within_180d_pct": 40.1,
+   "within_365d_pct": 46.9,
+   "funded_year_survival_pct": 7.8,
+   "expected_payout_per_attempt_usd": 5006,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "M1. Martingale from 1%",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 32.4,
+   "pass_phase2_given_phase1_pct": 49.4,
+   "pass_both_pct": 16.0,
+   "breach_phase1_pct": 67.6,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 16.4,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    8.0,
+    9.0,
+    11.0
+   ],
+   "phase2_days_p25_median_p75": [
+    4.0,
+    4.0,
+    8.0
+   ],
+   "both_days_p25_median_p75": [
+    12.0,
+    15.0,
+    19.0
+   ],
+   "funded_within_30d_pct": 15.7,
+   "within_60d_pct": 16.0,
+   "within_90d_pct": 16.0,
+   "within_180d_pct": 16.0,
+   "within_365d_pct": 16.0,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 183,
+   "average_risk_multiplier": 2.39
+  },
+  {
+   "scenario": "M2. Martingale from 0.5%",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 39.7,
+   "pass_phase2_given_phase1_pct": 57.4,
+   "pass_both_pct": 22.8,
+   "breach_phase1_pct": 60.3,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 16.9,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    15.0,
+    17.0,
+    23.0
+   ],
+   "phase2_days_p25_median_p75": [
+    8.0,
+    10.0,
+    12.0
+   ],
+   "both_days_p25_median_p75": [
+    22.0,
+    27.0,
+    34.0
+   ],
+   "funded_within_30d_pct": 13.4,
+   "within_60d_pct": 22.7,
+   "within_90d_pct": 22.8,
+   "within_180d_pct": 22.8,
+   "within_365d_pct": 22.8,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 1005,
+   "average_risk_multiplier": 3.078
+  },
+  {
+   "scenario": "M3. Martingale from 0.25%",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 42.4,
+   "pass_phase2_given_phase1_pct": 61.8,
+   "pass_both_pct": 26.2,
+   "breach_phase1_pct": 57.6,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 16.2,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    25.0,
+    33.0,
+    40.0
+   ],
+   "phase2_days_p25_median_p75": [
+    12.0,
+    18.0,
+    24.0
+   ],
+   "both_days_p25_median_p75": [
+    43.0,
+    52.0,
+    62.0
+   ],
+   "funded_within_30d_pct": 1.0,
+   "within_60d_pct": 18.4,
+   "within_90d_pct": 25.8,
+   "within_180d_pct": 26.2,
+   "within_365d_pct": 26.2,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 1796,
+   "average_risk_multiplier": 3.864
+  },
+  {
+   "scenario": "M4. Martingale from 0.5%, capped at 4%",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 53.8,
+   "pass_phase2_given_phase1_pct": 65.2,
+   "pass_both_pct": 35.1,
+   "breach_phase1_pct": 46.2,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 18.7,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    16.0,
+    19.0,
+    26.0
+   ],
+   "phase2_days_p25_median_p75": [
+    8.0,
+    10.0,
+    15.0
+   ],
+   "both_days_p25_median_p75": [
+    25.0,
+    32.0,
+    40.0
+   ],
+   "funded_within_30d_pct": 16.3,
+   "within_60d_pct": 33.6,
+   "within_90d_pct": 35.0,
+   "within_180d_pct": 35.1,
+   "within_365d_pct": 35.1,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 3339,
+   "average_risk_multiplier": 2.809
+  },
+  {
+   "scenario": "Ref. 1% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 81.7,
+   "pass_phase2_given_phase1_pct": 91.4,
+   "pass_both_pct": 74.7,
+   "breach_phase1_pct": 2.1,
+   "unfinished_phase1_365d_pct": 16.3,
+   "breach_phase2_pct": 1.3,
+   "unfinished_phase2_365d_pct": 5.7,
+   "phase1_days_p25_median_p75": [
+    31.0,
+    71.0,
+    152.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    25.0,
+    85.0
+   ],
+   "both_days_p25_median_p75": [
+    67.0,
+    131.0,
+    239.0
+   ],
+   "funded_within_30d_pct": 3.8,
+   "within_60d_pct": 16.1,
+   "within_90d_pct": 26.4,
+   "within_180d_pct": 46.5,
+   "within_365d_pct": 69.3,
+   "funded_year_survival_pct": 84.9,
+   "expected_payout_per_attempt_usd": 8261,
+   "average_risk_multiplier": 0.555
+  },
+  {
+   "scenario": "Ref. flat 1%",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 83.4,
+   "pass_phase2_given_phase1_pct": 85.7,
+   "pass_both_pct": 71.5,
+   "breach_phase1_pct": 16.5,
+   "unfinished_phase1_365d_pct": 0.1,
+   "breach_phase2_pct": 12.0,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    29.0,
+    51.0,
+    86.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    22.0,
+    43.0
+   ],
+   "both_days_p25_median_p75": [
+    52.0,
+    82.0,
+    123.0
+   ],
+   "funded_within_30d_pct": 5.1,
+   "within_60d_pct": 22.6,
+   "within_90d_pct": 39.6,
+   "within_180d_pct": 64.7,
+   "within_365d_pct": 71.3,
+   "funded_year_survival_pct": 12.0,
+   "expected_payout_per_attempt_usd": 12691,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "M1. Martingale from 1%",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 21.0,
+   "pass_phase2_given_phase1_pct": 38.2,
+   "pass_both_pct": 8.0,
+   "breach_phase1_pct": 79.0,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 13.0,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    9.0,
+    10.0,
+    15.0
+   ],
+   "phase2_days_p25_median_p75": [
+    4.0,
+    5.0,
+    9.0
+   ],
+   "both_days_p25_median_p75": [
+    14.0,
+    18.0,
+    22.0
+   ],
+   "funded_within_30d_pct": 7.7,
+   "within_60d_pct": 8.0,
+   "within_90d_pct": 8.0,
+   "within_180d_pct": 8.0,
+   "within_365d_pct": 8.0,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 47,
+   "average_risk_multiplier": 2.493
+  },
+  {
+   "scenario": "M2. Martingale from 0.5%",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 25.0,
+   "pass_phase2_given_phase1_pct": 44.1,
+   "pass_both_pct": 11.0,
+   "breach_phase1_pct": 75.0,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 14.0,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    17.0,
+    22.0,
+    25.0
+   ],
+   "phase2_days_p25_median_p75": [
+    9.0,
+    11.0,
+    16.0
+   ],
+   "both_days_p25_median_p75": [
+    27.0,
+    33.0,
+    39.0
+   ],
+   "funded_within_30d_pct": 4.2,
+   "within_60d_pct": 10.7,
+   "within_90d_pct": 11.0,
+   "within_180d_pct": 11.0,
+   "within_365d_pct": 11.0,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 233,
+   "average_risk_multiplier": 3.271
+  },
+  {
+   "scenario": "M3. Martingale from 0.25%",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 24.9,
+   "pass_phase2_given_phase1_pct": 49.0,
+   "pass_both_pct": 12.2,
+   "breach_phase1_pct": 75.1,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 12.7,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    31.0,
+    39.0,
+    51.0
+   ],
+   "phase2_days_p25_median_p75": [
+    17.0,
+    22.0,
+    29.0
+   ],
+   "both_days_p25_median_p75": [
+    51.0,
+    62.0,
+    75.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 5.3,
+   "within_90d_pct": 11.3,
+   "within_180d_pct": 12.2,
+   "within_365d_pct": 12.2,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 392,
+   "average_risk_multiplier": 4.208
+  },
+  {
+   "scenario": "M4. Martingale from 0.5%, capped at 4%",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 31.4,
+   "pass_phase2_given_phase1_pct": 49.7,
+   "pass_both_pct": 15.6,
+   "breach_phase1_pct": 68.6,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 15.8,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    18.0,
+    23.0,
+    32.0
+   ],
+   "phase2_days_p25_median_p75": [
+    9.0,
+    11.0,
+    16.0
+   ],
+   "both_days_p25_median_p75": [
+    30.0,
+    37.0,
+    46.0
+   ],
+   "funded_within_30d_pct": 3.9,
+   "within_60d_pct": 14.3,
+   "within_90d_pct": 15.6,
+   "within_180d_pct": 15.6,
+   "within_365d_pct": 15.6,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 576,
+   "average_risk_multiplier": 2.916
+  },
+  {
+   "scenario": "Ref. 1% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 13.1,
+   "pass_phase2_given_phase1_pct": 35.2,
+   "pass_both_pct": 4.6,
+   "breach_phase1_pct": 57.0,
+   "unfinished_phase1_365d_pct": 29.9,
+   "breach_phase2_pct": 6.6,
+   "unfinished_phase2_365d_pct": 1.9,
+   "phase1_days_p25_median_p75": [
+    24.0,
+    39.0,
+    79.0
+   ],
+   "phase2_days_p25_median_p75": [
+    9.0,
+    17.0,
+    38.0
+   ],
+   "both_days_p25_median_p75": [
+    41.0,
+    68.0,
+    131.0
+   ],
+   "funded_within_30d_pct": 0.5,
+   "within_60d_pct": 2.0,
+   "within_90d_pct": 2.8,
+   "within_180d_pct": 4.1,
+   "within_365d_pct": 4.6,
+   "funded_year_survival_pct": 42.0,
+   "expected_payout_per_attempt_usd": 92,
+   "average_risk_multiplier": 0.354
+  },
+  {
+   "scenario": "Ref. flat 1%",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 21.8,
+   "pass_phase2_given_phase1_pct": 41.2,
+   "pass_both_pct": 9.0,
+   "breach_phase1_pct": 77.9,
+   "unfinished_phase1_365d_pct": 0.3,
+   "breach_phase2_pct": 12.8,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    30.0,
+    51.0,
+    86.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    21.0,
+    39.0
+   ],
+   "both_days_p25_median_p75": [
+    54.0,
+    84.0,
+    124.0
+   ],
+   "funded_within_30d_pct": 0.5,
+   "within_60d_pct": 2.7,
+   "within_90d_pct": 4.9,
+   "within_180d_pct": 8.1,
+   "within_365d_pct": 9.0,
+   "funded_year_survival_pct": 0.4,
+   "expected_payout_per_attempt_usd": 254,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "M1. Martingale from 1%",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 25.9,
+   "pass_phase2_given_phase1_pct": 44.2,
+   "pass_both_pct": 11.4,
+   "breach_phase1_pct": 74.1,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 14.4,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    9.0,
+    10.0,
+    15.0
+   ],
+   "phase2_days_p25_median_p75": [
+    4.0,
+    5.0,
+    9.0
+   ],
+   "both_days_p25_median_p75": [
+    13.0,
+    18.0,
+    21.0
+   ],
+   "funded_within_30d_pct": 11.0,
+   "within_60d_pct": 11.4,
+   "within_90d_pct": 11.4,
+   "within_180d_pct": 11.4,
+   "within_365d_pct": 11.4,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 118,
+   "average_risk_multiplier": 2.397
+  },
+  {
+   "scenario": "M2. Martingale from 0.5%",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 28.8,
+   "pass_phase2_given_phase1_pct": 49.7,
+   "pass_both_pct": 14.3,
+   "breach_phase1_pct": 71.2,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 14.5,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    17.0,
+    23.0,
+    29.0
+   ],
+   "phase2_days_p25_median_p75": [
+    9.0,
+    11.0,
+    16.0
+   ],
+   "both_days_p25_median_p75": [
+    28.0,
+    34.0,
+    41.0
+   ],
+   "funded_within_30d_pct": 4.5,
+   "within_60d_pct": 13.9,
+   "within_90d_pct": 14.3,
+   "within_180d_pct": 14.3,
+   "within_365d_pct": 14.3,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 508,
+   "average_risk_multiplier": 3.102
+  },
+  {
+   "scenario": "M3. Martingale from 0.25%",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 32.7,
+   "pass_phase2_given_phase1_pct": 54.5,
+   "pass_both_pct": 17.8,
+   "breach_phase1_pct": 67.3,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 14.9,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    33.0,
+    43.0,
+    52.0
+   ],
+   "phase2_days_p25_median_p75": [
+    17.0,
+    23.0,
+    30.0
+   ],
+   "both_days_p25_median_p75": [
+    54.0,
+    64.0,
+    77.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 6.7,
+   "within_90d_pct": 15.6,
+   "within_180d_pct": 17.8,
+   "within_365d_pct": 17.8,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 827,
+   "average_risk_multiplier": 3.883
+  },
+  {
+   "scenario": "M4. Martingale from 0.5%, capped at 4%",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 40.0,
+   "pass_phase2_given_phase1_pct": 57.1,
+   "pass_both_pct": 22.8,
+   "breach_phase1_pct": 60.0,
+   "unfinished_phase1_365d_pct": 0.0,
+   "breach_phase2_pct": 17.2,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    18.0,
+    24.0,
+    33.0
+   ],
+   "phase2_days_p25_median_p75": [
+    9.0,
+    11.0,
+    17.0
+   ],
+   "both_days_p25_median_p75": [
+    31.0,
+    39.0,
+    48.0
+   ],
+   "funded_within_30d_pct": 5.2,
+   "within_60d_pct": 20.1,
+   "within_90d_pct": 22.5,
+   "within_180d_pct": 22.8,
+   "within_365d_pct": 22.8,
+   "funded_year_survival_pct": 0.0,
+   "expected_payout_per_attempt_usd": 1233,
+   "average_risk_multiplier": 2.771
+  },
+  {
+   "scenario": "Ref. 1% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 32.3,
+   "pass_phase2_given_phase1_pct": 56.2,
+   "pass_both_pct": 18.1,
+   "breach_phase1_pct": 24.7,
+   "unfinished_phase1_365d_pct": 43.1,
+   "breach_phase2_pct": 7.3,
+   "unfinished_phase2_365d_pct": 6.8,
+   "phase1_days_p25_median_p75": [
+    28.0,
+    57.0,
+    122.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    24.0,
+    58.0
+   ],
+   "both_days_p25_median_p75": [
+    60.0,
+    108.0,
+    199.0
+   ],
+   "funded_within_30d_pct": 1.2,
+   "within_60d_pct": 4.6,
+   "within_90d_pct": 7.8,
+   "within_180d_pct": 12.9,
+   "within_365d_pct": 17.2,
+   "funded_year_survival_pct": 70.9,
+   "expected_payout_per_attempt_usd": 706,
+   "average_risk_multiplier": 0.404
+  },
+  {
+   "scenario": "Ref. flat 1%",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pass_phase1_pct": 47.0,
+   "pass_phase2_given_phase1_pct": 63.8,
+   "pass_both_pct": 30.0,
+   "breach_phase1_pct": 52.6,
+   "unfinished_phase1_365d_pct": 0.4,
+   "breach_phase2_pct": 17.0,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    32.0,
+    61.0,
+    108.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    25.0,
+    52.0
+   ],
+   "both_days_p25_median_p75": [
+    61.0,
+    102.0,
+    157.0
+   ],
+   "funded_within_30d_pct": 1.5,
+   "within_60d_pct": 7.0,
+   "within_90d_pct": 13.1,
+   "within_180d_pct": 23.9,
+   "within_365d_pct": 29.7,
+   "funded_year_survival_pct": 2.8,
+   "expected_payout_per_attempt_usd": 1904,
+   "average_risk_multiplier": 1.0
+  }
+ ]
+}

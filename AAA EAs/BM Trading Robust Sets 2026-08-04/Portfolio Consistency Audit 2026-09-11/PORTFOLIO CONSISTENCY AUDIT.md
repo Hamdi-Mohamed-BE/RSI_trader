@@ -1,19 +1,19 @@
 # Portfolio consistency audit — 2026-09-12
 
-Evidence cutoff: **2026-09-05**. Four removals were applied after explicit user approval; DMC Current XAU was retained.
+Evidence cutoff: **2026-08-30**. Four removals were applied after explicit user approval; DMC Current XAU was retained.
 
 ## Portfolio scenario comparison
 
 | Scenario | Horizon | Return | PF | Win rate | Max DD | Trades |
 |---|---:|---:|---:|---:|---:|---:|
-| Active 33 before Sell Nasdaq mode change | 6m | +1394.94% | 3.80 | 43.57% | 10.56% | 902 |
-| Active 33 before Sell Nasdaq mode change | 1y | +10127.48% | 6.60 | 45.36% | 5.06% | 1788 |
-| Active 33 before Sell Nasdaq mode change | 3y | +51828.26% | 7.81 | 45.62% | 13.54% | 4790 |
-| Active 33 before Sell Nasdaq mode change | 5y | +92002.22% | 7.37 | 43.10% | 37.74% | 7550 |
-| Recommended active 33 | 6m | +1392.88% | 3.86 | 43.95% | 9.42% | 892 |
-| Recommended active 33 | 1y | +10136.03% | 6.67 | 45.81% | 4.54% | 1768 |
-| Recommended active 33 | 3y | +51835.07% | 7.90 | 45.73% | 15.39% | 4726 |
-| Recommended active 33 | 5y | +92019.13% | 7.42 | 43.25% | 37.04% | 7445 |
+| Active 34 before Sell Nasdaq mode change | 6m | +1413.52% | 3.86 | 46.83% | 10.78% | 963 |
+| Active 34 before Sell Nasdaq mode change | 1y | +10170.24% | 6.64 | 48.80% | 5.07% | 1922 |
+| Active 34 before Sell Nasdaq mode change | 3y | +51855.15% | 7.87 | 48.62% | 13.04% | 5206 |
+| Active 34 before Sell Nasdaq mode change | 5y | +92065.22% | 7.34 | 46.53% | 35.56% | 8276 |
+| Recommended active 34 | 6m | +1411.46% | 3.92 | 47.22% | 9.80% | 953 |
+| Recommended active 34 | 1y | +10178.79% | 6.71 | 49.26% | 4.55% | 1902 |
+| Recommended active 34 | 3y | +51861.95% | 7.95 | 48.76% | 14.89% | 5142 |
+| Recommended active 34 | 5y | +92082.12% | 7.39 | 46.71% | 34.90% | 8171 |
 
 ## Applied mode recommendations
 

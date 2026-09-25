@@ -1,0 +1,53 @@
+{
+  "purpose": "Native MT5 comparison requested 2026-09-23: Nasdaq 5M Candle Momentum current production vs InpRequireDIAgreement=true. Research only.",
+  "isolated_tester": "_Backtests/MT5-DMC-20260811",
+  "profile": "Calyx Research Empty",
+  "login": 472334559,
+  "server": "Exness-MT5Trial16",
+  "account_verification": {
+    "source": "normal MT5 MCP, initialize('C:\\Program Files\\MetaTrader 5\\terminal64.exe') at 2026-09-23 ~20:45 Africa/Lagos",
+    "normal_terminal_data_path": "C:\\Users\\hama101\\AppData\\Roaming\\MetaQuotes\\Terminal\\D0E8209F77C8CF37AD8BF550E51FF075",
+    "company": "Exness Technologies Ltd",
+    "trade_mode": "0 (demo)",
+    "margin_mode": "2 (retail hedging)",
+    "leverage": 2000,
+    "currency": "USD",
+    "symbol": "USTEC (Zero\\Indices\\USTEC), digits 2, point 0.01, volume min 0.05 / step 0.01 / max 500",
+    "isolated_tester_common_ini": "Login=472334559, Server=Exness-MT5Trial16; Bases and Tester/bases contain Exness-MT5Trial16 USTEC history and ticks",
+    "note": "Ava connector not used. Live account not changed."
+  },
+  "symbol": "USTEC",
+  "period": "M5",
+  "deposit": 10000,
+  "currency": "USD",
+  "leverage": "1:2000",
+  "model": 4,
+  "model_label": "Every tick based on real ticks",
+  "execution_delay_ms": 150,
+  "execution_delay_note": "Fixed 150 ms delay, same convention as the Gold Overnight Value Area native pipeline.",
+  "end_date": "2026.09.23",
+  "periods": {
+    "6m": "2026.03.23",
+    "1y": "2025.09.23",
+    "3y": "2023.09.23",
+    "5y": "2021.09.23",
+    "since2021": "2021.01.01"
+  },
+  "timeout_seconds": 2400,
+  "expert_dir": "AAA Research\\N5 DI Compare 20260923",
+  "current_ex5": "Active Portfolio Full Pipeline 2026-09-05/11 Nasdaq 5M Candle Momentum/EA/Nasdaq 5M Candle Momentum Audit EA.ex5",
+  "current_expert_file": "N5 Current Production.ex5",
+  "new_source": "EA/Nasdaq 5M Candle Momentum DI Filter EA.mq5",
+  "new_expert_file": "N5 DI Filter.ex5",
+  "current_set": "Selected Portfolio Settings 2026-09-01/11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R - HARD 1PCT.set",
+  "tester_overrides": {
+    "InpAutoServerUtcOffsetLive": "false",
+    "InpServerUtcOffsetHours": "0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpRiskPercent": "1.0"
+  },
+  "new_overrides": {
+    "InpRequireDIAgreement": "true",
+    "InpDIPeriod": "14"
+  }
+}

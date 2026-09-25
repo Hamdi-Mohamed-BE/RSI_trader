@@ -11,6 +11,7 @@ param(
     [string]$RiskMode = 'DEFAULT',
     [double]$RiskValue = 0.0,
     [switch]$UseRecommendedSelections,
+    [switch]$UseClaudeSelections,
     [switch]$UseAdaptiveProfile,
     [switch]$ValidateOnly,
     [switch]$PreflightOnly,
@@ -27,8 +28,12 @@ $IsFullSafe = $SafetyMode -eq 'SAFE'
 $UsesDynamicRisk = $RiskMode -ne 'DEFAULT'
 $EffectiveAdaptiveRiskPercent = $AdaptiveRiskPercent
 $RequestedRiskMoney = 0.0
+# claude_eas.bat (2026-09-25): Best Recommended selections plus the Claude-specific overrides below.
+if ($UseClaudeSelections) { $UseRecommendedSelections = [switch]$true }
 $ProfileName = if ($UseAdaptiveProfile) {
     if ($IsAdaptiveAccount) { 'Calyx ANY BALANCE - RECOMMENDED ADAPTIVE' } elseif ($IsSmallAccount) { 'Calyx 900 - RECOMMENDED ADAPTIVE' } else { 'Calyx 100K - RECOMMENDED ADAPTIVE' }
+} elseif ($UseClaudeSelections) {
+    if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - CLAUDE EAS' } elseif ($IsSmallAccount) { 'BM Trading 900 - CLAUDE EAS' } else { 'BM Trading 100K - CLAUDE EAS' }
 } elseif ($UseRecommendedSelections) {
     if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - BEST RECOMMENDED' } elseif ($IsSmallAccount) { 'BM Trading 900 - BEST RECOMMENDED' } else { 'BM Trading 100K - BEST RECOMMENDED' }
 } elseif ($IsFullSafe) {
@@ -183,6 +188,9 @@ function Get-PortfolioItems {
             Period = 5; Expert = 'Nasdaq 5M Open EMA ATR EA.ex5'
             ExpertSource = 'Active Portfolio Full Pipeline 2026-09-05\11 Nasdaq 5M Candle Momentum\EA\Nasdaq 5M Candle Momentum Audit EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true
+            # claude_eas.bat only: same EA plus the +DI/-DI agreement filter (Nasdaq 5M DI Promotion 2026-09-25).
+            ClaudeExpertSource = 'Active Portfolio Full Pipeline 2026-09-05\11 Nasdaq 5M Candle Momentum\EA\Nasdaq 5M Candle Momentum DI EA.ex5'
+            ClaudeSetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R + DI AGREE M5 - HARD 1PCT.set'
         },
         [pscustomobject]@{
             Label = 'Sell Nasdaq 15min'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
@@ -306,6 +314,12 @@ function Get-PortfolioItems {
         if (-not $item.PSObject.Properties['RecommendedSetSource']) {
             $item | Add-Member -NotePropertyName RecommendedSetSource -NotePropertyValue ''
         }
+        if (-not $item.PSObject.Properties['ClaudeExpertSource']) {
+            $item | Add-Member -NotePropertyName ClaudeExpertSource -NotePropertyValue ''
+        }
+        if (-not $item.PSObject.Properties['ClaudeSetSource']) {
+            $item | Add-Member -NotePropertyName ClaudeSetSource -NotePropertyValue ''
+        }
         if (-not $item.PSObject.Properties['LockRisk']) {
             $item | Add-Member -NotePropertyName LockRisk -NotePropertyValue $false
         }
@@ -316,6 +330,12 @@ function Get-PortfolioItems {
         $usesDedicatedSafePreset = [bool]$item.SafeSetSource -and ($IsFullSafe -or $safeByDesign)
         $selectedSetSource = if ($usesDedicatedSafePreset) { [string]$item.SafeSetSource } elseif ($dynamicByDesign) { [string]$item.RecommendedSetSource } else { [string]$item.SetSource }
         $selectedExpertSource = if ($dynamicByDesign -and [bool]$item.RecommendedExpertSource) { [string]$item.RecommendedExpertSource } else { [string]$item.ExpertSource }
+        $claudeByDesign = [bool]$UseClaudeSelections -and [bool]$item.ClaudeSetSource -and [bool]$item.ClaudeExpertSource
+        if ($claudeByDesign) {
+            $selectedSetSource = [string]$item.ClaudeSetSource
+            $selectedExpertSource = [string]$item.ClaudeExpertSource
+        }
+        $item | Add-Member -NotePropertyName ClaudeByDesign -NotePropertyValue $claudeByDesign
         $item | Add-Member -NotePropertyName UsesDedicatedSafePreset -NotePropertyValue $usesDedicatedSafePreset
         $item | Add-Member -NotePropertyName SafeByDesign -NotePropertyValue $safeByDesign
         $item | Add-Member -NotePropertyName DynamicByDesign -NotePropertyValue $dynamicByDesign
@@ -855,6 +875,12 @@ if ($UseRecommendedSelections) {
     }
 }
 
+if ($UseClaudeSelections) {
+    $claudeItems = @($portfolio | Where-Object { $_.ClaudeByDesign })
+    Write-Host ('CLAUDE EAS: Best Recommended settings plus {0} Claude-selected change(s): {1}.' -f $claudeItems.Count, (($claudeItems | ForEach-Object { $_.Label }) -join ', ')) -ForegroundColor Green
+    Write-Host 'Nasdaq 5M Candle Momentum uses the +DI/-DI agreement filter on the 09:30 New York M5 signal bar.' -ForegroundColor Green
+}
+
 Write-Stage 'Finding MT5'
 $candidates = @(Get-Mt5Candidates)
 if ($ValidateOnly) {
@@ -1203,6 +1229,8 @@ $manifest = @(
     'Safety mode: ' + $SafetyMode
     'Recommended selections: ' + [bool]$UseRecommendedSelections
     'Recommended adaptive profile: ' + [bool]$UseAdaptiveProfile
+    'Claude EAs selections: ' + [bool]$UseClaudeSelections
+    'Claude EAs changed: ' + ((@($portfolio | Where-Object { $_.ClaudeByDesign }) | ForEach-Object { $_.Label }) -join ', ')
     'Recommended Safe EAs: ' + ((@($portfolio | Where-Object { $_.SafeByDesign }) | ForEach-Object { $_.Label }) -join ', ')
     'Recommended Dynamic EAs: ' + ((@($portfolio | Where-Object { $_.DynamicByDesign }) | ForEach-Object { $_.Label }) -join ', ')
     'Risk mode: ' + $RiskMode

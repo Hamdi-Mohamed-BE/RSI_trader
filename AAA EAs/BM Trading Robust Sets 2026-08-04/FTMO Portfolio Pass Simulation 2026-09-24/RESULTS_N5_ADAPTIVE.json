@@ -1,0 +1,1245 @@
+{
+ "seed": 20260925,
+ "paths": 5000,
+ "ea": "nasdaq-5m-candle-momentum/standard",
+ "scenarios": {
+  "A. 1% + adaptive governor": {
+   "risk": 1.0,
+   "base": 1.0,
+   "adaptive": true
+  },
+  "B. Recommended Adaptive as installed (1% x 0.25 + governor)": {
+   "risk": 1.0,
+   "base": 0.25,
+   "adaptive": true
+  },
+  "C. Flat 1% (no governor)": {
+   "risk": 1.0,
+   "base": 1.0,
+   "adaptive": false
+  },
+  "D. 0.5% + adaptive governor": {
+   "risk": 0.5,
+   "base": 1.0,
+   "adaptive": true
+  }
+ },
+ "results": [
+  {
+   "scenario": "A. 1% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pool_trades": 1267,
+   "pool_mean_R": 0.065,
+   "pass_phase1_pct": 50.2,
+   "pass_phase2_given_phase1_pct": 69.2,
+   "pass_both_pct": 34.7,
+   "breach_phase1_pct": 10.7,
+   "unfinished_phase1_365d_pct": 39.1,
+   "breach_phase2_pct": 5.5,
+   "unfinished_phase2_365d_pct": 10.0,
+   "phase1_days_p25_median_p75": [
+    30.0,
+    66.0,
+    149.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    26.0,
+    85.0
+   ],
+   "both_days_p25_median_p75": [
+    62.0,
+    129.0,
+    235.0
+   ],
+   "funded_within_30d_pct": 2.1,
+   "within_60d_pct": 8.0,
+   "within_90d_pct": 13.1,
+   "within_180d_pct": 22.1,
+   "within_365d_pct": 32.0,
+   "funded_year_survival_pct": 83.2,
+   "expected_payout_per_attempt_usd": 2037,
+   "average_risk_multiplier": 0.439
+  },
+  {
+   "scenario": "A. 1% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "optimistic",
+   "pool_trades": 1267,
+   "pool_mean_R": 0.065,
+   "pass_phase1_pct": 51.6,
+   "pass_phase2_given_phase1_pct": 70.3,
+   "pass_both_pct": 36.3,
+   "breach_phase1_pct": 9.2,
+   "unfinished_phase1_365d_pct": 39.3,
+   "breach_phase2_pct": 4.7,
+   "unfinished_phase2_365d_pct": 10.6,
+   "phase1_days_p25_median_p75": [
+    31.0,
+    68.0,
+    150.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    29.0,
+    80.0
+   ],
+   "both_days_p25_median_p75": [
+    65.0,
+    132.0,
+    242.0
+   ],
+   "funded_within_30d_pct": 2.1,
+   "within_60d_pct": 8.2,
+   "within_90d_pct": 13.2,
+   "within_180d_pct": 22.4,
+   "within_365d_pct": 33.4,
+   "funded_year_survival_pct": 85.1,
+   "expected_payout_per_attempt_usd": 2151,
+   "average_risk_multiplier": 0.442
+  },
+  {
+   "scenario": "B. Recommended Adaptive as installed (1% x 0.25 + governor)",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pool_trades": 1267,
+   "pool_mean_R": 0.065,
+   "pass_phase1_pct": 14.9,
+   "pass_phase2_given_phase1_pct": 51.5,
+   "pass_both_pct": 7.7,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 85.1,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 7.2,
+   "phase1_days_p25_median_p75": [
+    207.0,
+    268.0,
+    319.0
+   ],
+   "phase2_days_p25_median_p75": [
+    101.0,
+    171.0,
+    248.0
+   ],
+   "both_days_p25_median_p75": [
+    356.0,
+    430.0,
+    513.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.0,
+   "within_180d_pct": 0.0,
+   "within_365d_pct": 2.1,
+   "funded_year_survival_pct": 100.0,
+   "expected_payout_per_attempt_usd": 239,
+   "average_risk_multiplier": 0.201
+  },
+  {
+   "scenario": "B. Recommended Adaptive as installed (1% x 0.25 + governor)",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "optimistic",
+   "pool_trades": 1267,
+   "pool_mean_R": 0.065,
+   "pass_phase1_pct": 15.0,
+   "pass_phase2_given_phase1_pct": 51.4,
+   "pass_both_pct": 7.7,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 85.0,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 7.3,
+   "phase1_days_p25_median_p75": [
+    213.0,
+    271.0,
+    317.0
+   ],
+   "phase2_days_p25_median_p75": [
+    107.0,
+    171.0,
+    249.0
+   ],
+   "both_days_p25_median_p75": [
+    358.0,
+    433.0,
+    527.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.0,
+   "within_180d_pct": 0.0,
+   "within_365d_pct": 2.1,
+   "funded_year_survival_pct": 100.0,
+   "expected_payout_per_attempt_usd": 247,
+   "average_risk_multiplier": 0.201
+  },
+  {
+   "scenario": "C. Flat 1% (no governor)",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pool_trades": 1267,
+   "pool_mean_R": 0.065,
+   "pass_phase1_pct": 63.2,
+   "pass_phase2_given_phase1_pct": 73.7,
+   "pass_both_pct": 46.5,
+   "breach_phase1_pct": 36.5,
+   "unfinished_phase1_365d_pct": 0.3,
+   "breach_phase2_pct": 16.6,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    32.0,
+    58.0,
+    102.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    24.0,
+    50.0
+   ],
+   "both_days_p25_median_p75": [
+    60.0,
+    93.0,
+    142.0
+   ],
+   "funded_within_30d_pct": 2.4,
+   "within_60d_pct": 11.7,
+   "within_90d_pct": 22.5,
+   "within_180d_pct": 39.8,
+   "within_365d_pct": 46.3,
+   "funded_year_survival_pct": 7.4,
+   "expected_payout_per_attempt_usd": 5016,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "C. Flat 1% (no governor)",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "optimistic",
+   "pool_trades": 1267,
+   "pool_mean_R": 0.065,
+   "pass_phase1_pct": 66.4,
+   "pass_phase2_given_phase1_pct": 75.4,
+   "pass_both_pct": 50.1,
+   "breach_phase1_pct": 33.0,
+   "unfinished_phase1_365d_pct": 0.6,
+   "breach_phase2_pct": 16.3,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    32.0,
+    60.0,
+    106.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    25.0,
+    52.0
+   ],
+   "both_days_p25_median_p75": [
+    61.0,
+    101.0,
+    154.0
+   ],
+   "funded_within_30d_pct": 2.4,
+   "within_60d_pct": 11.9,
+   "within_90d_pct": 22.0,
+   "within_180d_pct": 41.2,
+   "within_365d_pct": 49.6,
+   "funded_year_survival_pct": 11.6,
+   "expected_payout_per_attempt_usd": 5930,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "D. 0.5% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pool_trades": 1267,
+   "pool_mean_R": 0.065,
+   "pass_phase1_pct": 39.9,
+   "pass_phase2_given_phase1_pct": 67.2,
+   "pass_both_pct": 26.8,
+   "breach_phase1_pct": 0.2,
+   "unfinished_phase1_365d_pct": 59.8,
+   "breach_phase2_pct": 0.1,
+   "unfinished_phase2_365d_pct": 13.0,
+   "phase1_days_p25_median_p75": [
+    98.0,
+    159.0,
+    241.0
+   ],
+   "phase2_days_p25_median_p75": [
+    39.0,
+    78.0,
+    148.0
+   ],
+   "both_days_p25_median_p75": [
+    186.0,
+    272.0,
+    359.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.3,
+   "within_90d_pct": 0.8,
+   "within_180d_pct": 6.2,
+   "within_365d_pct": 20.7,
+   "funded_year_survival_pct": 96.3,
+   "expected_payout_per_attempt_usd": 1233,
+   "average_risk_multiplier": 0.628
+  },
+  {
+   "scenario": "D. 0.5% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "full 5y",
+   "equity_model": "optimistic",
+   "pool_trades": 1267,
+   "pool_mean_R": 0.065,
+   "pass_phase1_pct": 40.7,
+   "pass_phase2_given_phase1_pct": 66.8,
+   "pass_both_pct": 27.2,
+   "breach_phase1_pct": 0.2,
+   "unfinished_phase1_365d_pct": 59.1,
+   "breach_phase2_pct": 0.1,
+   "unfinished_phase2_365d_pct": 13.4,
+   "phase1_days_p25_median_p75": [
+    94.0,
+    150.0,
+    234.0
+   ],
+   "phase2_days_p25_median_p75": [
+    38.0,
+    73.0,
+    150.0
+   ],
+   "both_days_p25_median_p75": [
+    175.0,
+    256.0,
+    355.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.2,
+   "within_90d_pct": 0.9,
+   "within_180d_pct": 7.1,
+   "within_365d_pct": 20.9,
+   "funded_year_survival_pct": 96.2,
+   "expected_payout_per_attempt_usd": 1267,
+   "average_risk_multiplier": 0.628
+  },
+  {
+   "scenario": "A. 1% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pool_trades": 494,
+   "pool_mean_R": 0.16,
+   "pass_phase1_pct": 81.8,
+   "pass_phase2_given_phase1_pct": 90.7,
+   "pass_both_pct": 74.2,
+   "breach_phase1_pct": 2.0,
+   "unfinished_phase1_365d_pct": 16.2,
+   "breach_phase2_pct": 1.6,
+   "unfinished_phase2_365d_pct": 6.0,
+   "phase1_days_p25_median_p75": [
+    30.0,
+    66.0,
+    143.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    25.0,
+    73.0
+   ],
+   "both_days_p25_median_p75": [
+    64.0,
+    127.0,
+    228.0
+   ],
+   "funded_within_30d_pct": 4.3,
+   "within_60d_pct": 16.1,
+   "within_90d_pct": 27.2,
+   "within_180d_pct": 48.5,
+   "within_365d_pct": 69.4,
+   "funded_year_survival_pct": 85.8,
+   "expected_payout_per_attempt_usd": 8351,
+   "average_risk_multiplier": 0.552
+  },
+  {
+   "scenario": "A. 1% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "optimistic",
+   "pool_trades": 494,
+   "pool_mean_R": 0.16,
+   "pass_phase1_pct": 81.2,
+   "pass_phase2_given_phase1_pct": 90.9,
+   "pass_both_pct": 73.8,
+   "breach_phase1_pct": 2.1,
+   "unfinished_phase1_365d_pct": 16.7,
+   "breach_phase2_pct": 1.2,
+   "unfinished_phase2_365d_pct": 6.2,
+   "phase1_days_p25_median_p75": [
+    30.0,
+    66.0,
+    149.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    28.0,
+    80.0
+   ],
+   "both_days_p25_median_p75": [
+    65.0,
+    127.0,
+    236.0
+   ],
+   "funded_within_30d_pct": 4.2,
+   "within_60d_pct": 16.0,
+   "within_90d_pct": 27.2,
+   "within_180d_pct": 47.0,
+   "within_365d_pct": 68.3,
+   "funded_year_survival_pct": 85.7,
+   "expected_payout_per_attempt_usd": 8194,
+   "average_risk_multiplier": 0.551
+  },
+  {
+   "scenario": "B. Recommended Adaptive as installed (1% x 0.25 + governor)",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pool_trades": 494,
+   "pool_mean_R": 0.16,
+   "pass_phase1_pct": 49.1,
+   "pass_phase2_given_phase1_pct": 85.1,
+   "pass_both_pct": 41.8,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 50.9,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 7.3,
+   "phase1_days_p25_median_p75": [
+    191.0,
+    246.0,
+    304.0
+   ],
+   "phase2_days_p25_median_p75": [
+    87.0,
+    141.0,
+    218.0
+   ],
+   "both_days_p25_median_p75": [
+    321.0,
+    396.0,
+    470.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.0,
+   "within_180d_pct": 0.4,
+   "within_365d_pct": 16.7,
+   "funded_year_survival_pct": 99.2,
+   "expected_payout_per_attempt_usd": 2590,
+   "average_risk_multiplier": 0.216
+  },
+  {
+   "scenario": "B. Recommended Adaptive as installed (1% x 0.25 + governor)",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "optimistic",
+   "pool_trades": 494,
+   "pool_mean_R": 0.16,
+   "pass_phase1_pct": 49.8,
+   "pass_phase2_given_phase1_pct": 84.2,
+   "pass_both_pct": 41.9,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 50.2,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 7.8,
+   "phase1_days_p25_median_p75": [
+    187.0,
+    248.0,
+    302.0
+   ],
+   "phase2_days_p25_median_p75": [
+    94.0,
+    149.0,
+    215.0
+   ],
+   "both_days_p25_median_p75": [
+    320.0,
+    402.0,
+    479.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.0,
+   "within_180d_pct": 0.4,
+   "within_365d_pct": 16.0,
+   "funded_year_survival_pct": 99.4,
+   "expected_payout_per_attempt_usd": 2569,
+   "average_risk_multiplier": 0.216
+  },
+  {
+   "scenario": "C. Flat 1% (no governor)",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pool_trades": 494,
+   "pool_mean_R": 0.16,
+   "pass_phase1_pct": 82.1,
+   "pass_phase2_given_phase1_pct": 86.3,
+   "pass_both_pct": 70.8,
+   "breach_phase1_pct": 17.8,
+   "unfinished_phase1_365d_pct": 0.1,
+   "breach_phase2_pct": 11.3,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    29.0,
+    52.0,
+    87.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    23.0,
+    44.0
+   ],
+   "both_days_p25_median_p75": [
+    54.0,
+    85.0,
+    129.0
+   ],
+   "funded_within_30d_pct": 4.7,
+   "within_60d_pct": 21.2,
+   "within_90d_pct": 38.0,
+   "within_180d_pct": 63.3,
+   "within_365d_pct": 70.6,
+   "funded_year_survival_pct": 11.2,
+   "expected_payout_per_attempt_usd": 12637,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "C. Flat 1% (no governor)",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "optimistic",
+   "pool_trades": 494,
+   "pool_mean_R": 0.16,
+   "pass_phase1_pct": 85.4,
+   "pass_phase2_given_phase1_pct": 87.8,
+   "pass_both_pct": 75.0,
+   "breach_phase1_pct": 14.5,
+   "unfinished_phase1_365d_pct": 0.1,
+   "breach_phase2_pct": 10.4,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    29.0,
+    51.0,
+    89.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    23.0,
+    44.0
+   ],
+   "both_days_p25_median_p75": [
+    53.0,
+    84.0,
+    131.0
+   ],
+   "funded_within_30d_pct": 4.9,
+   "within_60d_pct": 23.1,
+   "within_90d_pct": 39.9,
+   "within_180d_pct": 66.3,
+   "within_365d_pct": 74.8,
+   "funded_year_survival_pct": 18.4,
+   "expected_payout_per_attempt_usd": 14539,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "D. 0.5% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pool_trades": 494,
+   "pool_mean_R": 0.16,
+   "pass_phase1_pct": 77.4,
+   "pass_phase2_given_phase1_pct": 90.6,
+   "pass_both_pct": 70.1,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 22.6,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 7.3,
+   "phase1_days_p25_median_p75": [
+    85.0,
+    135.0,
+    210.0
+   ],
+   "phase2_days_p25_median_p75": [
+    32.0,
+    60.0,
+    122.0
+   ],
+   "both_days_p25_median_p75": [
+    152.0,
+    223.0,
+    317.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.9,
+   "within_90d_pct": 4.3,
+   "within_180d_pct": 24.5,
+   "within_365d_pct": 58.7,
+   "funded_year_survival_pct": 91.1,
+   "expected_payout_per_attempt_usd": 5804,
+   "average_risk_multiplier": 0.748
+  },
+  {
+   "scenario": "D. 0.5% + adaptive governor",
+   "costs": "reference costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "optimistic",
+   "pool_trades": 494,
+   "pool_mean_R": 0.16,
+   "pass_phase1_pct": 76.9,
+   "pass_phase2_given_phase1_pct": 90.6,
+   "pass_both_pct": 69.7,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 23.1,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 7.2,
+   "phase1_days_p25_median_p75": [
+    85.0,
+    136.0,
+    219.0
+   ],
+   "phase2_days_p25_median_p75": [
+    33.0,
+    64.0,
+    127.0
+   ],
+   "both_days_p25_median_p75": [
+    153.0,
+    229.0,
+    327.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.8,
+   "within_90d_pct": 4.1,
+   "within_180d_pct": 23.8,
+   "within_365d_pct": 58.0,
+   "funded_year_survival_pct": 91.0,
+   "expected_payout_per_attempt_usd": 5778,
+   "average_risk_multiplier": 0.748
+  },
+  {
+   "scenario": "A. 1% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pool_trades": 1267,
+   "pool_mean_R": -0.094,
+   "pass_phase1_pct": 13.8,
+   "pass_phase2_given_phase1_pct": 31.8,
+   "pass_both_pct": 4.4,
+   "breach_phase1_pct": 56.5,
+   "unfinished_phase1_365d_pct": 29.7,
+   "breach_phase2_pct": 7.5,
+   "unfinished_phase2_365d_pct": 1.8,
+   "phase1_days_p25_median_p75": [
+    23.0,
+    38.0,
+    74.0
+   ],
+   "phase2_days_p25_median_p75": [
+    9.0,
+    18.0,
+    38.0
+   ],
+   "both_days_p25_median_p75": [
+    41.0,
+    69.0,
+    111.0
+   ],
+   "funded_within_30d_pct": 0.5,
+   "within_60d_pct": 1.8,
+   "within_90d_pct": 2.8,
+   "within_180d_pct": 3.9,
+   "within_365d_pct": 4.4,
+   "funded_year_survival_pct": 34.7,
+   "expected_payout_per_attempt_usd": 68,
+   "average_risk_multiplier": 0.355
+  },
+  {
+   "scenario": "A. 1% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "optimistic",
+   "pool_trades": 1267,
+   "pool_mean_R": -0.094,
+   "pass_phase1_pct": 12.7,
+   "pass_phase2_given_phase1_pct": 28.9,
+   "pass_both_pct": 3.7,
+   "breach_phase1_pct": 54.6,
+   "unfinished_phase1_365d_pct": 32.7,
+   "breach_phase2_pct": 7.2,
+   "unfinished_phase2_365d_pct": 1.8,
+   "phase1_days_p25_median_p75": [
+    24.0,
+    38.0,
+    79.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    19.0,
+    37.0
+   ],
+   "both_days_p25_median_p75": [
+    45.0,
+    71.0,
+    130.0
+   ],
+   "funded_within_30d_pct": 0.3,
+   "within_60d_pct": 1.7,
+   "within_90d_pct": 2.2,
+   "within_180d_pct": 3.2,
+   "within_365d_pct": 3.6,
+   "funded_year_survival_pct": 37.2,
+   "expected_payout_per_attempt_usd": 58,
+   "average_risk_multiplier": 0.351
+  },
+  {
+   "scenario": "B. Recommended Adaptive as installed (1% x 0.25 + governor)",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pool_trades": 1267,
+   "pool_mean_R": -0.094,
+   "pass_phase1_pct": 0.4,
+   "pass_phase2_given_phase1_pct": 0.0,
+   "pass_both_pct": 0.0,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 99.6,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 0.4,
+   "phase1_days_p25_median_p75": [
+    184.0,
+    227.0,
+    276.0
+   ],
+   "phase2_days_p25_median_p75": [
+    null,
+    null,
+    null
+   ],
+   "both_days_p25_median_p75": [
+    null,
+    null,
+    null
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.0,
+   "within_180d_pct": 0.0,
+   "within_365d_pct": 0.0,
+   "funded_year_survival_pct": null,
+   "expected_payout_per_attempt_usd": 0,
+   "average_risk_multiplier": 0.16
+  },
+  {
+   "scenario": "B. Recommended Adaptive as installed (1% x 0.25 + governor)",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "optimistic",
+   "pool_trades": 1267,
+   "pool_mean_R": -0.094,
+   "pass_phase1_pct": 0.4,
+   "pass_phase2_given_phase1_pct": 9.5,
+   "pass_both_pct": 0.0,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 99.6,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 0.4,
+   "phase1_days_p25_median_p75": [
+    226.0,
+    274.0,
+    290.0
+   ],
+   "phase2_days_p25_median_p75": [
+    89.0,
+    89.0,
+    89.0
+   ],
+   "both_days_p25_median_p75": [
+    300.0,
+    300.0,
+    300.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.0,
+   "within_180d_pct": 0.0,
+   "within_365d_pct": 0.0,
+   "funded_year_survival_pct": 100.0,
+   "expected_payout_per_attempt_usd": 0,
+   "average_risk_multiplier": 0.159
+  },
+  {
+   "scenario": "C. Flat 1% (no governor)",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pool_trades": 1267,
+   "pool_mean_R": -0.094,
+   "pass_phase1_pct": 22.6,
+   "pass_phase2_given_phase1_pct": 41.9,
+   "pass_both_pct": 9.5,
+   "breach_phase1_pct": 77.2,
+   "unfinished_phase1_365d_pct": 0.3,
+   "breach_phase2_pct": 13.1,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    30.0,
+    53.0,
+    94.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    19.0,
+    43.0
+   ],
+   "both_days_p25_median_p75": [
+    55.0,
+    88.0,
+    136.0
+   ],
+   "funded_within_30d_pct": 0.5,
+   "within_60d_pct": 2.8,
+   "within_90d_pct": 4.8,
+   "within_180d_pct": 8.4,
+   "within_365d_pct": 9.4,
+   "funded_year_survival_pct": 0.4,
+   "expected_payout_per_attempt_usd": 220,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "C. Flat 1% (no governor)",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "optimistic",
+   "pool_trades": 1267,
+   "pool_mean_R": -0.094,
+   "pass_phase1_pct": 23.5,
+   "pass_phase2_given_phase1_pct": 46.6,
+   "pass_both_pct": 11.0,
+   "breach_phase1_pct": 76.1,
+   "unfinished_phase1_365d_pct": 0.3,
+   "breach_phase2_pct": 12.6,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    31.0,
+    57.0,
+    100.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    22.0,
+    47.0
+   ],
+   "both_days_p25_median_p75": [
+    58.0,
+    91.0,
+    138.0
+   ],
+   "funded_within_30d_pct": 0.6,
+   "within_60d_pct": 2.9,
+   "within_90d_pct": 5.4,
+   "within_180d_pct": 9.6,
+   "within_365d_pct": 10.9,
+   "funded_year_survival_pct": 0.9,
+   "expected_payout_per_attempt_usd": 302,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "D. 0.5% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "conservative",
+   "pool_trades": 1267,
+   "pool_mean_R": -0.094,
+   "pass_phase1_pct": 4.6,
+   "pass_phase2_given_phase1_pct": 21.1,
+   "pass_both_pct": 1.0,
+   "breach_phase1_pct": 12.8,
+   "unfinished_phase1_365d_pct": 82.7,
+   "breach_phase2_pct": 0.6,
+   "unfinished_phase2_365d_pct": 3.0,
+   "phase1_days_p25_median_p75": [
+    78.0,
+    123.0,
+    198.0
+   ],
+   "phase2_days_p25_median_p75": [
+    30.0,
+    47.0,
+    73.0
+   ],
+   "both_days_p25_median_p75": [
+    128.0,
+    173.0,
+    237.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.1,
+   "within_180d_pct": 0.5,
+   "within_365d_pct": 1.0,
+   "funded_year_survival_pct": 77.1,
+   "expected_payout_per_attempt_usd": 11,
+   "average_risk_multiplier": 0.445
+  },
+  {
+   "scenario": "D. 0.5% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "full 5y",
+   "equity_model": "optimistic",
+   "pool_trades": 1267,
+   "pool_mean_R": -0.094,
+   "pass_phase1_pct": 4.4,
+   "pass_phase2_given_phase1_pct": 17.1,
+   "pass_both_pct": 0.8,
+   "breach_phase1_pct": 11.4,
+   "unfinished_phase1_365d_pct": 84.1,
+   "breach_phase2_pct": 0.6,
+   "unfinished_phase2_365d_pct": 3.0,
+   "phase1_days_p25_median_p75": [
+    85.0,
+    122.0,
+    178.0
+   ],
+   "phase2_days_p25_median_p75": [
+    26.0,
+    59.0,
+    94.0
+   ],
+   "both_days_p25_median_p75": [
+    125.0,
+    206.0,
+    248.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.1,
+   "within_180d_pct": 0.3,
+   "within_365d_pct": 0.7,
+   "funded_year_survival_pct": 78.9,
+   "expected_payout_per_attempt_usd": 6,
+   "average_risk_multiplier": 0.447
+  },
+  {
+   "scenario": "A. 1% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pool_trades": 494,
+   "pool_mean_R": 0.004,
+   "pass_phase1_pct": 34.3,
+   "pass_phase2_given_phase1_pct": 52.6,
+   "pass_both_pct": 18.0,
+   "breach_phase1_pct": 23.5,
+   "unfinished_phase1_365d_pct": 42.2,
+   "breach_phase2_pct": 8.1,
+   "unfinished_phase2_365d_pct": 8.2,
+   "phase1_days_p25_median_p75": [
+    29.0,
+    57.0,
+    121.0
+   ],
+   "phase2_days_p25_median_p75": [
+    10.0,
+    24.0,
+    59.0
+   ],
+   "both_days_p25_median_p75": [
+    55.0,
+    103.0,
+    204.0
+   ],
+   "funded_within_30d_pct": 1.2,
+   "within_60d_pct": 5.0,
+   "within_90d_pct": 8.1,
+   "within_180d_pct": 12.6,
+   "within_365d_pct": 17.0,
+   "funded_year_survival_pct": 70.2,
+   "expected_payout_per_attempt_usd": 704,
+   "average_risk_multiplier": 0.405
+  },
+  {
+   "scenario": "A. 1% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "optimistic",
+   "pool_trades": 494,
+   "pool_mean_R": 0.004,
+   "pass_phase1_pct": 33.4,
+   "pass_phase2_given_phase1_pct": 56.6,
+   "pass_both_pct": 18.9,
+   "breach_phase1_pct": 22.0,
+   "unfinished_phase1_365d_pct": 44.6,
+   "breach_phase2_pct": 6.9,
+   "unfinished_phase2_365d_pct": 7.5,
+   "phase1_days_p25_median_p75": [
+    29.0,
+    56.0,
+    129.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    25.0,
+    67.0
+   ],
+   "both_days_p25_median_p75": [
+    59.0,
+    110.0,
+    214.0
+   ],
+   "funded_within_30d_pct": 1.1,
+   "within_60d_pct": 4.9,
+   "within_90d_pct": 8.0,
+   "within_180d_pct": 13.2,
+   "within_365d_pct": 17.7,
+   "funded_year_survival_pct": 71.2,
+   "expected_payout_per_attempt_usd": 758,
+   "average_risk_multiplier": 0.405
+  },
+  {
+   "scenario": "B. Recommended Adaptive as installed (1% x 0.25 + governor)",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pool_trades": 494,
+   "pool_mean_R": 0.004,
+   "pass_phase1_pct": 4.7,
+   "pass_phase2_given_phase1_pct": 29.7,
+   "pass_both_pct": 1.4,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 95.3,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 3.3,
+   "phase1_days_p25_median_p75": [
+    218.0,
+    282.0,
+    323.0
+   ],
+   "phase2_days_p25_median_p75": [
+    114.0,
+    178.0,
+    257.0
+   ],
+   "both_days_p25_median_p75": [
+    358.0,
+    441.0,
+    534.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.0,
+   "within_180d_pct": 0.0,
+   "within_365d_pct": 0.4,
+   "funded_year_survival_pct": 100.0,
+   "expected_payout_per_attempt_usd": 30,
+   "average_risk_multiplier": 0.191
+  },
+  {
+   "scenario": "B. Recommended Adaptive as installed (1% x 0.25 + governor)",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "optimistic",
+   "pool_trades": 494,
+   "pool_mean_R": 0.004,
+   "pass_phase1_pct": 5.1,
+   "pass_phase2_given_phase1_pct": 29.0,
+   "pass_both_pct": 1.5,
+   "breach_phase1_pct": 0.0,
+   "unfinished_phase1_365d_pct": 94.9,
+   "breach_phase2_pct": 0.0,
+   "unfinished_phase2_365d_pct": 3.6,
+   "phase1_days_p25_median_p75": [
+    219.0,
+    267.0,
+    315.0
+   ],
+   "phase2_days_p25_median_p75": [
+    98.0,
+    168.0,
+    257.0
+   ],
+   "both_days_p25_median_p75": [
+    344.0,
+    443.0,
+    497.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.0,
+   "within_180d_pct": 0.0,
+   "within_365d_pct": 0.5,
+   "funded_year_survival_pct": 100.0,
+   "expected_payout_per_attempt_usd": 29,
+   "average_risk_multiplier": 0.191
+  },
+  {
+   "scenario": "C. Flat 1% (no governor)",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pool_trades": 494,
+   "pool_mean_R": 0.004,
+   "pass_phase1_pct": 48.5,
+   "pass_phase2_given_phase1_pct": 64.6,
+   "pass_both_pct": 31.3,
+   "breach_phase1_pct": 51.1,
+   "unfinished_phase1_365d_pct": 0.4,
+   "breach_phase2_pct": 17.2,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    32.0,
+    60.0,
+    101.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    23.0,
+    47.0
+   ],
+   "both_days_p25_median_p75": [
+    61.0,
+    97.0,
+    151.0
+   ],
+   "funded_within_30d_pct": 1.5,
+   "within_60d_pct": 7.5,
+   "within_90d_pct": 14.3,
+   "within_180d_pct": 26.1,
+   "within_365d_pct": 31.2,
+   "funded_year_survival_pct": 2.4,
+   "expected_payout_per_attempt_usd": 2057,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "C. Flat 1% (no governor)",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "optimistic",
+   "pool_trades": 494,
+   "pool_mean_R": 0.004,
+   "pass_phase1_pct": 49.0,
+   "pass_phase2_given_phase1_pct": 65.0,
+   "pass_both_pct": 31.9,
+   "breach_phase1_pct": 50.2,
+   "unfinished_phase1_365d_pct": 0.8,
+   "breach_phase2_pct": 17.2,
+   "unfinished_phase2_365d_pct": 0.0,
+   "phase1_days_p25_median_p75": [
+    31.0,
+    59.0,
+    109.0
+   ],
+   "phase2_days_p25_median_p75": [
+    11.0,
+    25.0,
+    53.0
+   ],
+   "both_days_p25_median_p75": [
+    60.0,
+    104.0,
+    161.0
+   ],
+   "funded_within_30d_pct": 1.4,
+   "within_60d_pct": 7.8,
+   "within_90d_pct": 13.5,
+   "within_180d_pct": 25.6,
+   "within_365d_pct": 31.6,
+   "funded_year_survival_pct": 4.5,
+   "expected_payout_per_attempt_usd": 2259,
+   "average_risk_multiplier": 1.0
+  },
+  {
+   "scenario": "D. 0.5% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "conservative",
+   "pool_trades": 494,
+   "pool_mean_R": 0.004,
+   "pass_phase1_pct": 20.2,
+   "pass_phase2_given_phase1_pct": 45.1,
+   "pass_both_pct": 9.1,
+   "breach_phase1_pct": 1.3,
+   "unfinished_phase1_365d_pct": 78.5,
+   "breach_phase2_pct": 0.4,
+   "unfinished_phase2_365d_pct": 10.7,
+   "phase1_days_p25_median_p75": [
+    93.0,
+    149.0,
+    229.0
+   ],
+   "phase2_days_p25_median_p75": [
+    37.0,
+    74.0,
+    144.0
+   ],
+   "both_days_p25_median_p75": [
+    166.0,
+    249.0,
+    348.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.0,
+   "within_90d_pct": 0.3,
+   "within_180d_pct": 2.6,
+   "within_365d_pct": 7.3,
+   "funded_year_survival_pct": 95.6,
+   "expected_payout_per_attempt_usd": 264,
+   "average_risk_multiplier": 0.561
+  },
+  {
+   "scenario": "D. 0.5% + adaptive governor",
+   "costs": "stressed costs",
+   "pool": "post-2024-09 (recent)",
+   "equity_model": "optimistic",
+   "pool_trades": 494,
+   "pool_mean_R": 0.004,
+   "pass_phase1_pct": 19.9,
+   "pass_phase2_given_phase1_pct": 48.5,
+   "pass_both_pct": 9.7,
+   "breach_phase1_pct": 1.5,
+   "unfinished_phase1_365d_pct": 78.6,
+   "breach_phase2_pct": 0.3,
+   "unfinished_phase2_365d_pct": 10.0,
+   "phase1_days_p25_median_p75": [
+    93.0,
+    143.0,
+    231.0
+   ],
+   "phase2_days_p25_median_p75": [
+    36.0,
+    60.0,
+    134.0
+   ],
+   "both_days_p25_median_p75": [
+    164.0,
+    249.0,
+    339.0
+   ],
+   "funded_within_30d_pct": 0.0,
+   "within_60d_pct": 0.1,
+   "within_90d_pct": 0.5,
+   "within_180d_pct": 2.9,
+   "within_365d_pct": 7.8,
+   "funded_year_survival_pct": 95.2,
+   "expected_payout_per_attempt_usd": 266,
+   "average_risk_multiplier": 0.562
+  }
+ ]
+}

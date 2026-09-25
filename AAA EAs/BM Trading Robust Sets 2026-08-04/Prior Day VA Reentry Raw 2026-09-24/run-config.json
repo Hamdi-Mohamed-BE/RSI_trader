@@ -1,0 +1,31 @@
+{
+  "purpose": "Raw native test requested 2026-09-24: previous-day value area re-entry ('80% rule') on XAUUSD. One native 5y run per variant; website windows sliced from that native ledger. Research only.",
+  "isolated_tester": "_Backtests/MT5-DMC-20260811",
+  "profile": "Calyx Research Empty",
+  "login": 472334559,
+  "server": "Exness-MT5Trial16",
+  "account_verification": "Isolated tester Config/common.ini Login/Server (password not read); same Exness demo server as the 2026-09-23/24 studies. Normal terminal and Ava not used.",
+  "symbol": "XAUUSD",
+  "deposit": 10000,
+  "currency": "USD",
+  "leverage": "1:2000",
+  "model": 4,
+  "execution_delay_ms": 150,
+  "start_date": "2021.09.19",
+  "end_date": "2026.09.19",
+  "website_windows": {"6m": "2026-03-19", "1y": "2025-09-19", "3y": "2023-09-19", "5y": "2021-09-19"},
+  "timeout_seconds": 2400,
+  "expert_dir": "AAA Research\\Prior Day VA Reentry 20260924",
+  "source": "EA/Prior Day VA Reentry.mq5",
+  "expert_file": "Prior Day VA Reentry.ex5",
+  "variants": {
+    "M30":       {"period": "M30", "inputs": {"InpSignalTimeframe": "30", "InpMaxDailyADX": "0"}},
+    "M30-adx20": {"period": "M30", "inputs": {"InpSignalTimeframe": "30", "InpMaxDailyADX": "20"}},
+    "M15":       {"period": "M15", "inputs": {"InpSignalTimeframe": "15", "InpMaxDailyADX": "0"}},
+    "M15-adx20": {"period": "M15", "inputs": {"InpSignalTimeframe": "15", "InpMaxDailyADX": "20"}}
+  },
+  "inputs": {"InpMinBodyFraction": "0.5", "InpLastEntryHourUTC": "18", "InpFlatHourUTC": "20", "InpFlatMinuteUTC": "45",
+             "InpBins": "64", "InpValueAreaPercent": "70", "InpMinimumProfileBars": "300", "InpRiskPercent": "1",
+             "InpServerUTCOffsetHours": "0", "InpExpectedLogin": "472334559", "InpExpectedServer": "Exness-MT5Trial16",
+             "InpMagic": "89240931"}
+}

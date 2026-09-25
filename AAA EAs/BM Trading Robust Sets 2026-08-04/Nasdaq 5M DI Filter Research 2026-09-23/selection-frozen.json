@@ -1,0 +1,11 @@
+{
+ "frozen_at_utc": "2026-09-23T19:18:58.954489",
+ "selection_rule": "Among 26 ADX/DI configs, highest development PF subject to keeping >=60% of development trades and development return >= baseline. Holdout (2026-05-01..2026-08-31) not inspected before this file was written.",
+ "selected": "DI_M5 agrees with trade",
+ "definition": "Long only if +DI(14) > -DI(14) on the just-closed 09:30 NY M5 bar; short only if -DI > +DI. MT5 iADX formula. All other inputs unchanged (EMA12 direction, 4 ATR stop, 2.5R target, flat 15:55 NY, 1% risk).",
+ "runners_up_for_reference": [
+  "ADX_M5 >= 25",
+  "ADX_H1 >= 25",
+  "ADX_D1 >= 15"
+ ]
+}

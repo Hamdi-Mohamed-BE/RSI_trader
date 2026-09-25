@@ -1,0 +1,130 @@
+{
+  "purpose": "Native MT5 raw test requested 2026-09-23: Asia-open to 09:30 NY value area, first M5 candle outside VAH/VAL, stop at the signal candle's opposite end, M5 candle trailing stop, no target, no time exit. Last year. Research only.",
+  "isolated_tester": "_Backtests/MT5-DMC-20260811",
+  "profile": "Calyx Research Empty",
+  "login": 472334559,
+  "server": "Exness-MT5Trial16",
+  "account_verification": "Isolated tester Config/common.ini Login/Server (password not read). Same Exness demo server verified via normal MT5 MCP earlier on 2026-09-23 (Nasdaq 5M DI Filter Research run-config.json). Normal terminal and Ava not used.",
+  "deposit": 10000,
+  "currency": "USD",
+  "leverage": "1:2000",
+  "model": 4,
+  "execution_delay_ms": 150,
+  "period": "M5",
+  "start_date": "2025.09.23",
+  "end_date": "2026.09.23",
+  "timeout_seconds": 1800,
+  "expert_dir": "AAA Research\\Overnight VA Candle Trail 20260923",
+  "source": "EA/Overnight VA Candle Trail.mq5",
+  "expert_file": "Overnight VA Candle Trail.ex5",
+  "symbols": [
+    "XAUUSD",
+    "BTCUSD",
+    "USTEC"
+  ],
+  "entry_modes": {
+    "first": {
+      "InpEntryMode": "0",
+      "label": "A: only the 09:30-09:35 NY candle"
+    },
+    "anytime": {
+      "InpEntryMode": "1",
+      "label": "B: first M5 close outside the value area until 16:00 NY"
+    }
+  },
+  "inputs": {
+    "InpBins": "64",
+    "InpValueAreaPercent": "70",
+    "InpMinimumProfileBars": "120",
+    "InpRiskPercent": "1",
+    "InpServerUTCOffsetHours": "0",
+    "InpExpectedLogin": "472334559",
+    "InpExpectedServer": "Exness-MT5Trial16",
+    "InpMagic": "89230901",
+    "InpTrailStartR": "0",
+    "InpTrailTimeframe": "5",
+    "InpTargetMode": "0",
+    "InpTrendFilter": "0",
+    "InpTrendEMA": "50",
+    "InpMinDailyADX": "0"
+  },
+  "purpose_v110": "2026-09-23 follow-up requested by user: exit variants on the same entries (EA v1.10).",
+  "variants": {
+    "base": {
+      "label": "v1.10 with defaults (parity check vs v1.00)",
+      "inputs": {},
+      "parity_only": "XAUUSD-first"
+    },
+    "trail1r": {
+      "label": "M5 candle trail only after +1R, no target",
+      "inputs": {
+        "InpTrailStartR": "1"
+      }
+    },
+    "m15": {
+      "label": "M15 candle trail from the start, no target",
+      "inputs": {
+        "InpTrailTimeframe": "15"
+      }
+    },
+    "target1r": {
+      "label": "Target overnight high/low + M5 trail after +1R",
+      "inputs": {
+        "InpTargetMode": "1",
+        "InpTrailStartR": "1"
+      }
+    }
+  },
+  "website_periods": {
+    "purpose": "2026-09-24: user asked for 'Gold Overnight IVB' (XAUUSD, entry B, target + trail after 1R) on the website windows before deciding on promotion. Windows copied from the website's gold-overnight-value-area cache.",
+    "case": {
+      "symbol": "XAUUSD",
+      "mode": "anytime",
+      "variant": "target1r"
+    },
+    "end_date": "2026.09.19",
+    "periods": {
+      "6m": "2026.03.19",
+      "1y": "2025.09.19",
+      "3y": "2023.09.19",
+      "5y": "2021.09.19"
+    }
+  },
+  "revision": {
+    "purpose": "2026-09-24 revision of Gold Overnight IVB (XAUUSD, entry B, target + trail after 1R). Four regime filters fixed before testing. Select on development window only; holdout checked once after freezing.",
+    "base_variant": {
+      "InpTargetMode": "1",
+      "InpTrailStartR": "1",
+      "InpEntryMode": "1"
+    },
+    "candidates": {
+      "R0-parity": {},
+      "R1-trend": {
+        "InpTrendFilter": "1"
+      },
+      "R2-adx20": {
+        "InpMinDailyADX": "20"
+      },
+      "R3-trend-adx20": {
+        "InpTrendFilter": "1",
+        "InpMinDailyADX": "20"
+      },
+      "R4-trend-adx25": {
+        "InpTrendFilter": "1",
+        "InpMinDailyADX": "25"
+      }
+    },
+    "selection_rule": "Highest development-window profit factor with at least 40% of the unfiltered development trades; ties by lower balance drawdown.",
+    "development": [
+      "2021-09-19",
+      "2024-09-19"
+    ],
+    "holdout": [
+      "2024-09-19",
+      "2026-09-19"
+    ],
+    "run_start": "2021.09.19",
+    "run_end": "2026.09.19",
+    "parity_note": "R0-parity = v1.20 with filters off; must reproduce the v1.10 5y website-window ledger exactly."
+  }
+}
