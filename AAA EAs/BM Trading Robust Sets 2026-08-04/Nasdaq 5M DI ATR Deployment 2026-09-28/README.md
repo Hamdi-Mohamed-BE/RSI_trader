@@ -27,7 +27,14 @@ successful fill or an extra trade. No throttling change was silently introduced
 under the same backtest statistics. Demo checking of broker request limits is
 required before live use, especially for overnight holding.
 
-No live MT5 deployment, terminal restart, account change, order submission or Git
-push is part of this update. The user reapplies a BAT on a suitable account when
-ready. Website files/caches require the running site's own restart/deployment.
+The deployment utility does not change running MT5 charts, restart a trading
+terminal, switch accounts, submit orders or push to GitHub. The selected update
+was separately published, with user authorization, in commit `bae7aefb9` on
+`new-telegram-copy`. The user reapplies a BAT on a suitable account when ready.
+Website files/caches require the running site's own restart/deployment.
+Read-only public-page verification on September 28 local time found the server
+still describing the old fixed 2.5R / no-trailing version; the repository push
+has not by itself deployed the public website. The owner confirmed they will
+update the public server themselves; the agent's scope is local files and the
+authorized GitHub push. The local port 8080 was offline during verification.
 Rollback copies are in `before/`. Verification results are written separately.

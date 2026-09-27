@@ -16,7 +16,9 @@
   common intersection. These remain closed-trade overlays, not simultaneous
   shared-margin or floating-equity backtests.
 - MT5 live process left untouched. No account, position, order or active profile
-  was changed. No assertion that the public server has deployed the files.
+  was changed. Read-only HTTP verification after the GitHub push returned 200
+  from the public Nasdaq page, but its text still specifies fixed 2.5R, no
+  trailing and a 15:55 exit. Public-site deployment is pending, not complete.
 
 Not claimed: clean out-of-sample validation, a completed Monte Carlo/FTMO pipeline
 for this management, guaranteed risk cap, or readiness for immediate live use.
