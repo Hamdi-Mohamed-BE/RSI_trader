@@ -51,7 +51,7 @@ APPROVED_EXCLUSIONS = {
 
 WATCHLIST = {
     "btc-top-down-fvg-liquidity": "5Y PF is only 1.21, although recent performance improved.",
-    "nasdaq-5m-candle-momentum": "Large historical return but thin edge: PF 1.12 over 5Y and 1.18 over 3Y.",
+    "nasdaq-5m-candle-momentum": "User-selected DI + wide price stop + ATR trail. 5Y PF 1.29 and equity DD 24.07% at 1% risk; retrospective selection, overnight/weekend exposure, not FTMO validation. Fixed-target pass forecasts are obsolete for this management.",
     "xau-regime-switch": "Strong long history but last six months are -4.95% with PF 0.43.",
     "xau-slow-trend": "Strong 3Y/5Y evidence but last six months are -7.13% with PF 0.48.",
     "news-pulse-xau": "Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations.",

@@ -186,11 +186,11 @@ function Get-PortfolioItems {
         [pscustomobject]@{
             Label = 'Nasdaq 5M Candle Momentum'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 5; Expert = 'Nasdaq 5M Open EMA ATR EA.ex5'
-            ExpertSource = 'Active Portfolio Full Pipeline 2026-09-05\11 Nasdaq 5M Candle Momentum\EA\Nasdaq 5M Candle Momentum Audit EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true
-            # claude_eas.bat only: same EA plus the +DI/-DI agreement filter (Nasdaq 5M DI Promotion 2026-09-25).
-            ClaudeExpertSource = 'Active Portfolio Full Pipeline 2026-09-05\11 Nasdaq 5M Candle Momentum\EA\Nasdaq 5M Candle Momentum DI EA.ex5'
-            ClaudeSetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R + DI AGREE M5 - HARD 1PCT.set'
+            ExpertSource = 'Nasdaq 5M DI ATR Deployment 2026-09-28\EA\Nasdaq 5M DI Wide ATR EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
+            # User-selected for all launchers: DI14, 0.60% price SL, no TP, ATR6 from +1R; overnight/weekend holding.
+            ClaudeExpertSource = 'Nasdaq 5M DI ATR Deployment 2026-09-28\EA\Nasdaq 5M DI Wide ATR EA.ex5'
+            ClaudeSetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set'
         },
         [pscustomobject]@{
             Label = 'Sell Nasdaq 15min'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
@@ -878,7 +878,7 @@ if ($UseRecommendedSelections) {
 if ($UseClaudeSelections) {
     $claudeItems = @($portfolio | Where-Object { $_.ClaudeByDesign })
     Write-Host ('CLAUDE EAS: Best Recommended settings plus {0} Claude-selected change(s): {1}.' -f $claudeItems.Count, (($claudeItems | ForEach-Object { $_.Label }) -join ', ')) -ForegroundColor Green
-    Write-Host 'Nasdaq 5M Candle Momentum uses the +DI/-DI agreement filter on the 09:30 New York M5 signal bar.' -ForegroundColor Green
+    Write-Host 'Nasdaq 5M: DI14, 0.60% price stop, no TP, ATR6 trail from +1R; overnight/weekend holding.' -ForegroundColor Green
 }
 
 Write-Stage 'Finding MT5'

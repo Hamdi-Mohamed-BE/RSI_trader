@@ -1,5 +1,25 @@
 # Calyx — EA Store
 
+## Nasdaq DI + wider stop + ATR management — 2026-09-28
+
+All eight normal portfolio BATs and the separately guarded FTMO BAT now select
+Nasdaq DI14 + EMA12, 0.60%-of-price initial stop, no TP, ATR14 × 6 trailing from
++1R, overnight/weekend holding. Risk policies are unchanged, including Adaptive's
+0.25x multiplier and FTMO's $50 cap with News OFF. The website default is
+**DI + Wide Stop + ATR**; Standard/Full Safe remain archived comparisons.
+
+Four exact-binary native caches end 2026-09-25. One year: +55.45%, 179 trades,
+51.4% wins, PF 1.48, 10.06% equity DD. Five-year equity DD: 24.07% at 1% risk.
+These are retrospective tests, not untouched validation or new FTMO pass forecasts.
+Real ticks begin January 2026; earlier ticks are generated. Portfolio graphs are
+recalculated closed-trade overlays on the common history intersection, not live
+results or shared-margin/equity simulations. Prior fixed-target FTMO projections
+must not be reused for the revised portfolio.
+
+Files/launchers changing does not update attached MT5 charts or prove the public
+server has deployed them. Reapply the chosen BAT and restart/redeploy the site
+when ready. Audit artifacts: `Nasdaq 5M DI ATR Deployment 2026-09-28`.
+
 ## Raw Gold Value Area and current website publication — 2026-09-19
 
 The maintained normal MT5 roster now contains **34 EAs**, including raw Gold Overnight Value Area. The optimized Gold candidate is not deployed. Its four independent native windows end September 18; the one-year result is +22.26%, 200 trades, 74% wins. Production parity matched all 200 original one-year trades. Gold News V9 remains evidence-pending, so 33 EAs contribute tested portfolio ledgers.

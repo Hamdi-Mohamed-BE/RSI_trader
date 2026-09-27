@@ -159,7 +159,7 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "AAA Final EMA3": ("ema3-xau", "dynamic-only", "Dynamic 60/20 only"),
     "AAA Final XAU Weakness": ("weakness-xau", "dynamic-only", "Dynamic 50/20"),
     "Nasdaq Overnight": ("overnight-ustec", "current", "Current EA exits"),
-    "Nasdaq 5M Candle Momentum": ("momentum-ustec", "current", "Fixed 2.5R / no trailing"),
+    "Nasdaq 5M Candle Momentum": ("momentum-ustec", "current", "0.60% price stop / ATR6 from +1R / no TP"),
     "Sell Nasdaq 15min": ("sell-nasdaq-15min", "current", "Fixed 2.22R / no trailing"),
     "USDJPY London Open Momentum": ("london-open-momentum-usdjpy", "current", "Time exit / BE at 0.75R"),
     "XAU Squeeze Momentum Standard": ("squeeze-momentum-xau-standard", "current", "3.5 ATR stop / 1.5R / ATR ratchet"),
@@ -932,20 +932,20 @@ CORE_META: dict[str, dict[str, Any]] = {
     },
     "Nasdaq 5M Candle Momentum": {
         "strategy": "US-open five-minute momentum",
-        "tagline": "Let the completed 09:30 Nasdaq candle choose direction, then hold for the validated 2.5R objective.",
-        "description": "After the 09:30-09:35 New York M5 candle closes, this EA buys above EMA 12 or sells below EMA 12. The optimized version uses a 4x ATR initial stop, a fixed 2.5R target, no trailing stop, and closes any unresolved position at 15:55 New York.",
+        "tagline": "Opening momentum with DI agreement, a wider price stop and an ATR-managed exit.",
+        "description": "After the 09:30-09:35 New York M5 candle closes, this EA buys above EMA12 with +DI14 > -DI14, or sells below EMA12 with -DI14 > +DI14. The selected version uses a 0.60%-of-price initial stop, no take profit, and a 6x ATR trail starting at +1R. It may hold overnight and over weekends; Standard and Full Safe are archived comparisons, not current BAT settings.",
         "session": "09:30 New York",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable MQ5 source, all development configurations, the frozen untouched year and exact three-year Every Tick MT5 reports were reviewed. ATR(14) is the volatility indicator and risk remained fixed at 1%.",
+        "logic_audit_note": "Selected QL_ATR management uses the exact tested binary and settings. Native Model 4 windows end 2026-09-25 with 150 ms delay; real ticks begin January 2026, earlier ticks are generated. This is retrospective selection, not an untouched validation or an FTMO pass forecast.",
         "logic": [
             {"title": "Wait for the opening candle to finish", "detail": "The signal is evaluated only when the closed M5 candle is timestamped 09:30 New York, meaning entry occurs just after the 09:30-09:35 bar has completed. Weekends are rejected and New York DST is calculated automatically."},
-            {"title": "Make one EMA decision", "detail": "Close above the 12-period M5 EMA triggers a long; close below it triggers a short. Equality produces no trade. Both directions are active and only one entry is allowed per New York date."},
-            {"title": "Set a 4x ATR initial stop", "detail": "The initial stop is four times M5 ATR(14) from entry, widened only when required by the broker's minimum stop or freeze distance. Volume is calculated so that the planned loss at that stop is exactly 1% of current equity."},
-            {"title": "Target 2.5R", "detail": "The take profit is placed 2.5 times the original entry-to-stop distance from entry. The exit objective was selected on the development window before the untouched locked year was opened."},
-            {"title": "Leave the position untrailed", "detail": "ATR trailing, Dynamic 50/20 and breakeven are disabled in the selected configuration. The full 2.5R payoff is preserved instead of tightening the stop during normal opening-session volatility."},
-            {"title": "Finish the position by 15:55", "detail": "The position exits through the original stop, the 2.5R target, or a forced close at 15:55 New York. Only one entry is permitted per New York date and New York daylight-saving changes are handled automatically."},
+            {"title": "Require EMA and DI agreement", "detail": "Buy above EMA12 only when +DI(14) exceeds -DI(14); sell below EMA12 only when -DI exceeds +DI. Indicators use the closed signal bar. Equality produces no entry."},
+            {"title": "Set the wider price stop", "detail": "Initial stop distance is 0.60% of entry price, subject to broker stop constraints. This is price distance, not account risk. Ordinary launchers retain selected risk and upward lot rounding; actual risk can exceed the target."},
+            {"title": "Leave take profit unset", "detail": "There is no fixed profit target. The old 2.5R target is disabled; a larger winner may continue while the protective stop tightens."},
+            {"title": "Trail with ATR after +1R", "detail": "Once open profit reaches one original stop distance, the stop follows the running favorable extreme at six times current M5 ATR(14), never loosening. This is tick-driven ATR management, not the separate completed-M15 Dynamic 50/20 overlay. Break-even and MA trailing are off."},
+            {"title": "Allow overnight holding", "detail": "The 15:55 close is disabled. One position at a time; an existing position suppresses the next daily signal. Overnight/weekend holding adds swap and gap risk. Stops cannot guarantee a cash loss cap."},
         ],
-        "risk_note": "Every BAT applies the user's selected equity-risk percentage to the 4x ATR(14) initial stop; pressing Enter defaults to the validated 1%. The target is fixed at 2.5R and any unresolved position is closed at 15:55 New York, but gaps and slippage can still exceed planned risk.",
+        "risk_note": "Normal BAT risk policies are unchanged; Recommended Adaptive retains its 0.25x Nasdaq multiplier. FTMO uses its separate guarded $50 maximum planned stop risk, News OFF. Five-year standalone equity drawdown was 24.07% at 1% risk. Prior fixed-target FTMO pass estimates do not apply to this changed portfolio.",
         "price": 499,
         "accent": "cyan",
         "featured": True,
@@ -1447,14 +1447,14 @@ def _nasdaq_open_one_year_evidence() -> Evidence | None:
 
 
 def _nasdaq_di_evidence() -> Evidence | None:
-    """claude_eas.bat mode: same EA with the +DI/-DI agreement filter (Nasdaq 5M DI Promotion 2026-09-25)."""
+    """User-selected DI + wider price stop + ATR management (2026-09-28)."""
     cache = STORE_ROOT / "data" / "evidence-cache" / "v1" / "products" / "nasdaq-5m-candle-momentum" / "dynamic" / "3y.json"
     if not cache.exists():
         return None
     cached = _load_json(cache)
     row = cached["stats"]
     return Evidence(
-        label="Exact three-year DI filter MT5 validation (claude_eas.bat)",
+        label="Three-year DI + wide stop + ATR native backtest (retrospective)",
         period=str(cached["period"]),
         return_pct=float(row["return_pct"]),
         profit_factor=float(row["profit_factor"]),
@@ -1465,13 +1465,13 @@ def _nasdaq_di_evidence() -> Evidence | None:
         recovery_factor=float(row["recovery_factor"]),
         history_quality=str(row.get("history_quality", "")),
         source_note=(
-            "Exness USTEC, native MT5 Every Tick with commission, swap and execution delay. Identical to the Standard "
-            "EA and SET except that longs need +DI(14) > -DI(14) and shorts need -DI > +DI on the closed 09:30 New York M5 bar."
+            "Exness USTEC, native Model 4, 150 ms delay and recorded commission/swap. DI14 + EMA12 entry; "
+            "0.60% price stop, no TP, 6 ATR trail from +1R, overnight/weekend holding. Real ticks start January 2026; older ticks are generated."
         ),
         status=_status_for(float(row["profit_factor"]), float(row["return_pct"]), float(row["max_drawdown_pct"]), int(row["trades"])),
         caution=(
-            "The DI rule was chosen from 26 ADX/DI variants on 2025-09 to 2026-04 data; earlier years were not used for the "
-            "choice but the latest year was. The Friday/holiday session-close carry of the base EA is unchanged. "
+            "ATR management was selected after comparing three alternatives on these same years, on top of prior DI selection. "
+            "Not an untouched holdout or proof of FTMO suitability. Five-year equity DD was 24.07% at 1% risk. "
             "Historical results are not a guarantee."
         ),
     )
@@ -2982,8 +2982,8 @@ def get_catalog() -> list[Product]:
         if recommended_safe_mode:
             deployment_note += " Its independently validated completed-D1 Safe gate is enabled by default in the Best Recommended portfolio."
         if recommended_dynamic_mode and is_nasdaq_di:
-            deployment_note += (" The website shows its +DI/-DI agreement filter by default; claude_eas.bat installs it with the filter ON. "
-                                "BEST RECOMMENDED 2026-09-01 and RECOMMENDED ADAPTIVE keep the original Standard EA.")
+            deployment_note += (" All maintained BATs now select DI + wide stop + ATR management, including claude_eas and Recommended Adaptive. "
+                                "The FTMO BAT preserves its separate risk guard; old FTMO forecasts have not been revalidated. Updating files does not alter attached MT5 charts.")
         elif recommended_dynamic_mode:
             deployment_note += " Its Dynamic London ATR-stop/3R preset is enabled by default in the Best Recommended portfolio."
         logic_steps = [dict(step) for step in meta["logic"]]
@@ -3012,8 +3012,8 @@ def get_catalog() -> list[Product]:
                 canonical=item["canonical"],
                 period_minutes=item["period_minutes"],
                 expert=item["expert"],
-                expert_source=item["expert_source"],
-                set_source=item["set_source"],
+                expert_source=(r"Active Portfolio Full Pipeline 2026-09-05\11 Nasdaq 5M Candle Momentum\EA\Nasdaq 5M Candle Momentum Audit EA.ex5" if is_nasdaq_di else item["expert_source"]),
+                set_source=(r"Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R - HARD 1PCT.set" if is_nasdaq_di else item["set_source"]),
                 safe_set_source=item["safe_set_source"],
                 dynamic_expert_source=(
                     r"Sell Nasdaq 15min Research 2026-09-08\Dynamic Exit Research\EA\Sell Nasdaq 15min Dynamic Exit Research EA.ex5"
@@ -3060,20 +3060,20 @@ def get_catalog() -> list[Product]:
                 ),
                 dynamic_mode_supported=bool(item["label"] == "Sell Nasdaq 15min" and sell_nasdaq_15m_dynamic) or is_nasdaq_di,
                 recommended_dynamic_mode=recommended_dynamic_mode,
-                dynamic_mode_label="DI Filter" if is_nasdaq_di else "Dynamic London",
+                dynamic_mode_label="DI + Wide Stop + ATR" if is_nasdaq_di else "Dynamic London",
                 dynamic_mode_note=(
-                    "Same EA and settings with the +DI/-DI agreement filter: longs need +DI(14) > -DI(14), shorts need -DI > +DI "
-                    "on the closed 09:30 New York M5 bar. Installed with the filter ON by claude_eas.bat."
+                    "DI14 + EMA12; 0.60%-of-price SL; no TP; 6x ATR14 trailing from +1R; overnight/weekend holding. "
+                    "All maintained launchers use this management with their existing risk policies."
                     if is_nasdaq_di else
                     "Saved research preset: bearish London confirmation, ATR(14) × 2.5 stop and 3R target. "
                     "The full portfolio audit selected it as the Best Recommended BAT default; Standard and London Safe remain available for comparison."
                 ),
                 dynamic_default_note=(
-                    "This is the website default and the claude_eas.bat setting."
+                    "This is the website default and all maintained BATs' selected Nasdaq management."
                     if is_nasdaq_di else "This is the Best Recommended BAT default."
                 ),
                 dynamic_default_standard_note=(
-                    "Standard mode is what BEST RECOMMENDED 2026-09-01 and RECOMMENDED ADAPTIVE install; claude_eas.bat and the website default use the DI Filter."
+                    "Standard and Full Safe retain archived fixed-target comparisons. Current BATs use DI + Wide Stop + ATR."
                     if is_nasdaq_di else
                     "Standard mode is available for comparison; the Best Recommended BAT defaults this EA to Dynamic mode."
                 ),
