@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "..\_Shared\CalyxORBComments.mqh"
 #include "SafeRegimeFilter.mqh"
 #include "DynamicTrailingSessionFilter.mqh"
 #include "..\_Shared\CalyxAdaptivePortfolio.mqh"
@@ -645,7 +646,8 @@ bool EnterTrade(const int direction,const MqlRates &signal)
    trade.SetExpertMagicNumber((ulong)InpMagic);
    trade.SetTypeFillingBySymbol(_Symbol);
    trade.SetDeviationInPoints(InpMaxDeviationPoints);
-   string comment=StringFormat("ORB RV %.2f BV %.2f",g_opening_relative_volume,BarRelativeVolume(signal));
+   string comment=CalyxORBTradeComment(InpOpeningRangeMinutes,InpSignalTimeframe,InpSessionZone==ORB_UTC,InpSessionHour,InpSessionMinute,
+      (InpEntryMode==ORB_BREAK_AND_RETEST ? "Retest" : ""),InpMinOpeningRelativeVolume>1.0 || InpMinBreakoutRelativeVolume>1.0,ProfileFilterEnabled());
    bool sent=(direction>0 ? trade.Buy(lots,_Symbol,0.0,stop,target,comment)
                           : trade.Sell(lots,_Symbol,0.0,stop,target,comment));
    if(!sent)

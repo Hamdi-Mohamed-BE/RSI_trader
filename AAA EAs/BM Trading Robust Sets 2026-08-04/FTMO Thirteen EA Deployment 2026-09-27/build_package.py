@@ -20,7 +20,7 @@ def replace_body(text,name,body):
         i+=1
     return text[:start]+"\n"+body+"\n"+text[i-1:]
 
-def build(compile_eas=True):
+def build(compile_eas=True, only_slugs=None):
     frozen=json.loads((BASE/"FTMO Fourteen EA Study 2026-09-27/FROZEN.json").read_text(encoding="utf-8-sig"))
     entries=[e for e in frozen["entries"] if e["slug"]!="news-pulse-xau"]
     assert len(entries)==13
@@ -33,6 +33,18 @@ def build(compile_eas=True):
                 e[key]=override[key]
             for key in ("expert","settings"):
                 e[key]=str(BASE/e[key])
+    # Explicit comment-only build replacement; never rewrite historical FROZEN.json.
+    comment_release=json.loads((BASE/"ORB Comment Labels 2026-09-28/RELEASE.json").read_text())
+    assert comment_release["comment_only"] is True
+    assert sha(BASE/comment_release["helper"])==comment_release["helper_sha"]
+    for e in entries:
+        if e["slug"] not in ("xau-orb-london-ny-overlap-m30","us100-h1-orb-13utc"):continue
+        matching=[b for b in comment_release["builds"] if (BASE/b["expert"]).resolve()==Path(e["expert"]).resolve()]
+        assert len(matching)==1,e["slug"]
+        b=matching[0]
+        assert b["logic_unchanged"] and e["expert_sha"]==b["expert_before_sha"]
+        assert sha(BASE/b["source"])==b["source_sha"]
+        e["expert_sha"]=b["expert_sha"]
     OUT.mkdir(exist_ok=True)
     cache={};evidence={}
     trade_path=TESTER/"MQL5/Include/Trade/Trade.mqh"
@@ -67,7 +79,8 @@ def build(compile_eas=True):
         (OUT/name).write_text(text,encoding="utf-8")
         return name
 
-    manifest=dict(version="FTMO13-20260928-DI-ATR",news_enabled=False,risk_usd=50,
+    manifest=dict(version="FTMO13-20260928-DI-ATR-ORB-COMMENTS",news_enabled=False,risk_usd=50,
+                  comment_release=comment_release["version"],
                   portfolio_forecast_status="Prior fixed-target simulations do not apply to the changed Nasdaq management",
                   reference_balance=10000,entries=[],source_hashes=evidence,
                   guard_sha=sha(ROOT/"CalyxFTMOGuard.mqh"))
@@ -108,7 +121,7 @@ def build(compile_eas=True):
         inputs.update(FTMOExpectedLogin="0",FTMOExpectedServer="",FTMOExpectedSymbol="",FTMOPhase="1")
         setname=name+".set"
         (OUT/setname).write_text("\n".join(f"{k}={v}" for k,v in inputs.items())+"\n",encoding="utf-8")
-        if compile_eas:
+        if compile_eas and (only_slugs is None or e["slug"] in only_slugs):
             log=OUT/(name+".log")
             p=subprocess.run(f'"{TESTER/"metaeditor64.exe"}" /portable /compile:"{mq5}" /log:"{log}"',
                              timeout=90,creationflags=subprocess.CREATE_NO_WINDOW)
@@ -126,4 +139,6 @@ def build(compile_eas=True):
     manifest["files"]={p.name:sha(p) for p in OUT.iterdir() if p.suffix in (".mq5",".mqh",".ex5",".set")}
     (ROOT/"PACKAGE.json").write_text(json.dumps(manifest,indent=2),encoding="utf-8")
     return manifest
-if __name__=="__main__":build("--source-only" not in sys.argv)
+if __name__=="__main__":
+    build("--source-only" not in sys.argv,
+          {"xau-orb-london-ny-overlap-m30","us100-h1-orb-13utc"} if "--only-orb" in sys.argv else None)

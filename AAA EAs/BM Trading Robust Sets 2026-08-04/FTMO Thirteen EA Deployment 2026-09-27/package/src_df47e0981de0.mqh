@@ -3,6 +3,7 @@
 #property strict
 
 #include "FTMO_Trade.mqh"
+#include "src_2779f41b01b7.mqh"
 #include "src_51f217c09290.mqh"
 #include "src_e24726d64fb4.mqh"
 #include "src_75fa4ea168c0.mqh"
@@ -645,7 +646,8 @@ bool EnterTrade(const int direction,const MqlRates &signal)
    trade.SetExpertMagicNumber((ulong)InpMagic);
    trade.SetTypeFillingBySymbol(_Symbol);
    trade.SetDeviationInPoints(InpMaxDeviationPoints);
-   string comment=StringFormat("ORB RV %.2f BV %.2f",g_opening_relative_volume,BarRelativeVolume(signal));
+   string comment=CalyxORBTradeComment(InpOpeningRangeMinutes,InpSignalTimeframe,InpSessionZone==ORB_UTC,InpSessionHour,InpSessionMinute,
+      (InpEntryMode==ORB_BREAK_AND_RETEST ? "Retest" : ""),InpMinOpeningRelativeVolume>1.0 || InpMinBreakoutRelativeVolume>1.0,ProfileFilterEnabled());
    bool sent=(direction>0 ? trade.Buy(lots,_Symbol,0.0,stop,target,comment)
                           : trade.Sell(lots,_Symbol,0.0,stop,target,comment));
    if(!sent)

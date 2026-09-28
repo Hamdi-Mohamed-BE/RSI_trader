@@ -3,6 +3,7 @@
 #property strict
 
 #include <Trade/Trade.mqh>
+#include "..\..\_Shared\CalyxORBComments.mqh"
 #include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
 
 input group "New York opening range"
@@ -412,7 +413,8 @@ bool EnterTrade(const int direction)
    trade.SetExpertMagicNumber((ulong)InpMagic);
    trade.SetTypeFillingBySymbol(_Symbol);
    trade.SetDeviationInPoints(InpMaximumDeviationPoints);
-   string note=StringFormat("US100 OR30 RV %.2f",g_opening_relative_volume);
+   string note=CalyxORBTradeComment(InpOpeningRangeMinutes,InpSignalTimeframe,false,9,30,
+      (InpUseTimeDirectionFilter ? "V3Retest" : "SelRetest"),InpMinimumOpeningRelativeVolume>1.0 || InpMinimumBreakoutRelativeVolume>1.0,false);
    bool sent=(direction>0 ? trade.Buy(lots,_Symbol,0.0,stop,target,note)
                           : trade.Sell(lots,_Symbol,0.0,stop,target,note));
    if(!sent)
