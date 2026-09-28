@@ -103,6 +103,8 @@ def news_payload_from_result(result: dict[str, Any]) -> dict[str, Any]:
             "Every website period is an independent fresh-balance run ending 2026-09-05, not the September-19 research comparison. "
             "These historical returns are not expected future returns or evidence of prop-firm safety. Calendar verification covers release times, not historical data vintages."
         )
+    if result.get('strategy_profile') in (XAU_PROFILE,MULTI_PROFILE):
+        notice += ' Historical evidence remains at 0.75% risk per pending order. The v2.18 launcher accepts a separate news percentage; these figures do not simulate your custom selection.'
     return {
         'strategy_profile':result.get('strategy_profile','news-pulse-v2.15'),
         'optimization_in_sample':result.get('optimization_in_sample',False),

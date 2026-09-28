@@ -989,7 +989,7 @@ def _news_pulse_meta(
     )
     return {
         "strategy": "Scheduled two-sided news momentum",
-        "tagline": f"A two-sided {symbol} event breakout with a source-locked 1.50% maximum planned exposure.",
+        "tagline": f"A two-sided {symbol} event breakout with separately selectable news risk per order.",
         "description": f"This {symbol} M1 configuration watches NFP, CPI and FOMC in MT5's USD economic calendar. {lead_seconds} seconds before release it places both a buy stop and a sell stop using the market-specific optimized geometry, then removes pending exposure and closes positions sixty seconds after the event.",
         "session": "NFP, CPI and FOMC",
         "logic_audit": "Source-code verified",
@@ -998,11 +998,11 @@ def _news_pulse_meta(
             {"title": "Find only primary high-impact USD events", "detail": "Live trading scans MT5's native USD calendar but accepts only high-impact target releases. CPI must begin with CPI, Core CPI, Consumer Price Index or Core Consumer Price Index, so Cleveland Fed Median CPI and inflation-expectation events cannot qualify. The schedule is cached eight days ahead and refreshed every 300 seconds. Strategy Tester uses a coverage-checked UTC calendar and version 2.16 rejects missing or out-of-range schedules. The current website history uses independently run 6-month, 1-year, 3-year and 5-year windows with official BLS/Federal Reserve release timestamps; real-tick coverage is disclosed separately."},
             {"title": "Anchor timing to broker data", "detail": "Calendar timestamps and quote timestamps share broker-server time. VPS local timezone is ignored, and placement is blocked unless MT5 is connected and a broker-stamped quote arrived during the preceding five seconds."},
             {"title": "Place both breakout stops", "detail": f"During the final {lead_seconds} seconds before release, the EA places a buy stop {entry} above Ask and a sell stop {entry} below Bid on {symbol}. Both independent pending orders remain armed after the first fill, allowing the opposite side to trigger during a reversal."},
-            {"title": "Hard-lock maximum planned risk", "detail": f"Each pending direction uses 0.75% equity to its {stop} initial stop. News Pulse bypasses the adaptive portfolio's entry stops and risk taper, so the BAT cannot change that hard-coded risk. Combined planned event exposure is 1.50% before gaps and slippage."},
+            {"title": "Standalone news risk per order", "detail": f"The BAT asks separately for news risk. Each pending direction uses your selected equity percentage to its {stop} initial stop; two triggers can double event exposure. Default and historical evidence risk is 0.75% per order, not a hard lock. News still bypasses adaptive entry stops and tapers; lot rounding, fees and gaps can exceed planned risk."},
             trail_step,
             {"title": "Force the event lifecycle to finish", "detail": "At sixty seconds after release, the EA deletes any unfilled pending order and closes any remaining News Pulse position. Account, symbol and magic-number state allow that lifecycle to recover after a terminal restart."},
         ],
-        "risk_note": "Risk is not controlled by the BAT prompt or Recommended Adaptive for this EA. Version 2.16 hard-locks 0.75% per pending stop and 1.50% maximum planned event exposure. News gaps, spread expansion, slippage, rejections or a market jumping over the stop can still produce a larger realized loss.",
+        "risk_note": "Version 2.18 uses the BAT's separate news percentage PER ORDER, independent of ordinary EA risk. The 0.75% default and historical evidence are unchanged; custom risk is not reflected in these backtest numbers. Both orders remain armed. News bypasses adaptive controls; rounding, spread, fees, slippage and gaps can exceed planned risk.",
         "price": 549,
         "accent": "yellow",
         "featured": symbol in {"XAUUSD", "XAGUSD", "BTCUSD"},
@@ -1037,7 +1037,7 @@ CORE_META["News Pulse XAU"].update({
         {"title":"Keep both pending directions", "detail":"Filling one side never cancels the other. Broker-invalid entries can still be rejected, including a previous-M1 level already crossed by price. Pending orders expire at the event-specific deadline."},
         {"title":"Research limitations", "detail":"Selected after examining the last year: +262.10%, 38 trades, 65.79% net wins, PF 10.97, 6.60% equity DD in the September-19-aligned research run. Only 71% real ticks. Earlier-selected parameters returned +5.70% on later validation versus +19.34% for the old preset. This is hindsight-optimized evidence, not a forward-profit forecast."},
     ],
-    "risk_note": "0.75% of equity per pending side, nominal 1.50% event risk, unchanged in every BAT including Recommended Adaptive. News bypasses adaptive controls. Lot rounding, commission and news gaps can exceed the planned risk; $2 stops are particularly execution-sensitive. These in-sample optimized settings were user-approved despite weaker chronological validation.",
+    "risk_note": "Historical evidence: 0.75% of equity per pending side, nominal 1.50% event risk. Runtime v2.18 lets every risk-prompt BAT choose a separate news percentage per order, independent of ordinary risk. Both orders stay armed; two fills can double event exposure. News bypasses adaptive controls. Rounding, fees and gaps can exceed the target; custom risk is not reflected in the historical results. These fitted event settings were user-approved despite weaker chronological validation.",
 })
 
 _orb_high_win_meta = dict(CORE_META["ORB Volume Profile"])

@@ -16,12 +16,19 @@ def test_dedicated_xau_build_is_independent_of_multi_asset_news():
  for slug in ['news-pulse-xag','news-pulse-btc','news-pulse-eurusd']:
   assert 'Multi Asset Event' in get_product(slug).expert_source
  old=PACKAGE_ROOT/'AAA Final EAs'/'AAA Final News Pulse EA'/'AAA Final News Pulse EA.mq5'
- assert hashlib.sha256(old.read_bytes()).hexdigest()=='895f66f0189f7bc8c7411aa1cddcc7c82dfc56d9110864cc3d0c00143a13920f'
+ # Pin the unchanged legacy code committed before this risk-input release
+ # (03a47d30). Normalize Git/Windows line endings, not code or whitespace.
+ assert hashlib.sha256(old.read_bytes().replace(b'\r\n',b'\n')).hexdigest()=='6546008051e57c0d4fe844dd9471a97e0b7356f363ea5a36f4dae0896e2d5ad4'
 
 def test_production_native_parity_and_runtime_event_recovery():
  product=get_product('news-pulse-xau');source=(PACKAGE_ROOT/product.expert_source).with_suffix('.mq5')
  parity=json.loads((ROOT/'PARITY.json').read_text())
- assert parity['passed'] and parity['source_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
+ assert parity['passed']
+ risk_root=PACKAGE_ROOT/'News Standalone Risk 2026-09-28'
+ risk=json.loads((risk_root/'NATIVE_VERIFICATION.json').read_text())
+ assert risk['passed'] and risk['build']['XAU']['source_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
+ assert parity['source_sha256']==risk['build']['XAU']['baseline_source_sha256']
+ assert any(x['asset']=='XAU' and x['default_risk_exact_trade_parity'] for x in risk['checks'])
  assert parity['stats']['trades']==38 and parity['stats']['return_pct']==262.1
  code=source.read_text()
  assert 'NP_LeadSeconds(candidate_kind)' in code and 'NP_LeadSeconds(g_cached_event_kind)' in code

@@ -1,5 +1,5 @@
 #property copyright "AAA Final News Pulse - NFP/CPI/FOMC straddle"
-#property version   "2.18"
+#property version   "2.16"
 #property strict
 
 #include "../AAA Final News Pulse EA/AAA_Final_Common.mqh"
@@ -12,7 +12,7 @@ input group "Trading"
 input bool   InpEnableTrading=true;
 input bool   InpEnableBuySide=true;
 input bool   InpEnableSellSide=true;
-input double InpRiskPercent=0.75;             // user-selected equity risk PER pending order; both sides can double exposure
+input double InpRiskPercent=0.75;             // locked compatibility value; EA rejects any other value
 input bool   InpAdaptivePortfolioControls=false;
 input long   InpMagic=860301;
 input int    InpMaxDeviationPoints=100;
@@ -77,6 +77,8 @@ string NP_KindFromComment(const string comment)
 }
 
 datetime g_active_event_time=0;
+const double NP_TOTAL_EVENT_RISK_PERCENT=1.50;
+const double NP_RISK_PER_STOP_PERCENT=0.75;
 long     g_last_event_id=0;
 string   g_active_state_key="";
 string   g_last_state_key="";
@@ -534,15 +536,15 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
    double sell_entry=AAA_Price(_Symbol,low-g_np_offset);
    double buy_sl=AAA_Price(_Symbol,buy_entry-g_np_stop);
    double sell_sl=AAA_Price(_Symbol,sell_entry+g_np_stop);
-   // Independent user-selected risk per order, recalculated from current equity.
-   // Both sides remain armed; lot rounding, fees and gaps can exceed this target.
+   // This is intentionally a source-level portfolio invariant. Each side is
+   // capped at 0.75%, so a two-sided event cannot plan more than 1.50% total.
    const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
    if(adaptive<=0.0)
    {
       Print("News Pulse: placement blocked by the Recommended Adaptive daily-entry stop.");
       return false;
    }
-   double side_risk=InpRiskPercent*adaptive;
+   double side_risk=NP_RISK_PER_STOP_PERCENT*adaptive;
    double buy_lots=0.0;
    double sell_lots=0.0;
    bool allow_buy=InpEnableBuySide && HAMA_SafeRegimeAllowsDirection(1);
@@ -604,8 +606,8 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
          (allow_buy ? DoubleToString(buy_entry,_Digits) : "disabled"),
          ", sell ",(allow_sell ? DoubleToString(sell_entry,_Digits) : "disabled"),
          ", SL distance $",DoubleToString(g_np_stop,2),
-         ", selected risk per enabled stop ",DoubleToString(side_risk,4),
-         "%; ",DoubleToString(side_risk*enabled_sides,4),"% planned event risk before lot rounding, costs and gaps. Server placement=",
+         ", hard risk per enabled stop ",DoubleToString(NP_RISK_PER_STOP_PERCENT,2),
+         "%; up to ",DoubleToString(NP_RISK_PER_STOP_PERCENT*enabled_sides,2),"% planned event risk. Server placement=",
          TimeToString(placement_time,TIME_DATE|TIME_SECONDS),", event=",
          TimeToString(event_time,TIME_DATE|TIME_SECONDS),", lead=",seconds_before,"s.");
    return true;
@@ -681,13 +683,13 @@ int OnInit()
 {
    if(!DTS_InputsValid()) return INIT_PARAMETERS_INCORRECT;
    if((!InpEnableBuySide && !InpEnableSellSide) ||
-      !MathIsValidNumber(InpRiskPercent) || InpRiskPercent<=0.0 || InpRiskPercent>10.0 ||
+      MathAbs(InpRiskPercent-NP_RISK_PER_STOP_PERCENT)>0.000001 ||
       InpEntryOffsetPrice<=0.0 || InpStopLossPrice<=0.0 ||
       InpTrailStartR<=0.0 || InpTrailDistancePrice<=0.0 || InpPlacementLeadSeconds<=0 ||
       InpForceCloseSecondsAfterEvent<=0 || InpMaxQuoteAgeSeconds<=0 ||
       InpCalendarLookaheadDays<=0 || InpCalendarRefreshSeconds<=0)
    {
-      Print("News Pulse: invalid distance/timing input, or risk is not finite and in (0,10]% per order.");
+      Print("News Pulse: invalid distance/timing input, or InpRiskPercent was changed. This build hard-locks 0.75% per stop / 1.50% total event exposure.");
       return INIT_PARAMETERS_INCORRECT;
    }
    AAA_TesterServerOffsetMode=InpTesterServerClockMode;
@@ -707,10 +709,10 @@ int OnInit()
    if(NP_XauEventSpecific()) Print("News Pulse XAU EVENT-SPECIFIC 2026-09-19: NFP T-10 closed M1 offset2 SL2 noTP noTrail close60; CPI T-5 closed M1 offset1 SL2 noTP trail1R/10 close300; FOMC T-60 quote offset1 SL2 TP5.5R trail0.5R/4 close120. Both pending sides retained.");
    string side_mode=InpEnableBuySide && InpEnableSellSide ? "two-sided" :
                     (InpEnableBuySide ? "long-only" : "short-only");
-   Print("AAA Final News Pulse v2.18 loaded on ",_Symbol,
+   Print("AAA Final News Pulse v2.16 loaded on ",_Symbol,
          ". Fallback geometry (event-specific XAU overrides when enabled): T-",InpPlacementLeadSeconds,
-         "s; mode=",side_mode,"; selected equity risk ",DoubleToString(InpRiskPercent,4),
-         "% per order / ",DoubleToString(InpRiskPercent*((InpEnableBuySide?1:0)+(InpEnableSellSide?1:0)),4),"% planned event exposure before rounding/costs/gaps; hard exit at T+",
+         "s; mode=",side_mode,"; hard risk ",DoubleToString(NP_RISK_PER_STOP_PERCENT,2),
+         "% per stop / ",DoubleToString(NP_TOTAL_EVENT_RISK_PERCENT,2),"% maximum planned event exposure; hard exit at T+",
          InpForceCloseSecondsAfterEvent,
          "s. Live timing is broker-quote/calendar anchored; VPS local timezone is ignored.");
    return INIT_SUCCEEDED;

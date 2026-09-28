@@ -2,9 +2,10 @@
 rem Nasdaq 5M: DI14 + EMA12, 0.60%% price SL, no TP, ATR6 trail from +1R; risk policies unchanged.
 rem Nasdaq may hold overnight/weekends. Old fixed-target FTMO estimates do not apply.
 rem For FTMO use "FTMO 10K SWING - 13 EAS - NEWS OFF.bat", not this unrestricted portfolio.
-rem XAU News Pulse v2.16: NFP/CPI/FOMC event-specific settings via shared installer; both pending sides retained.
-rem XAG/BTC/EURUSD News Pulse v2.17: approved full-year event combinations, adaptive exempt; no OCO.
+rem XAU News Pulse v2.16 event settings retained; v2.18 adds standalone user-selected percentage per order.
+rem XAG/BTC/EURUSD News Pulse v2.17 event settings retained in v2.18; adaptive exempt; no OCO.
 setlocal
+echo News risk is asked SEPARATELY per order. Both News Pulse triggers can double event exposure.
 rem Includes Gold Overnight Value Area RAW via the shared normal-MT5 installer.
 echo Gold Overnight Value Area RAW included: M5, overnight extreme TP, opposite value-area SL.
 title BM Trading - Best Recommended 2026-09-01
@@ -30,8 +31,8 @@ echo - DMC Fresh Reaction XAU adds M15 freshness plus W1/MN1 proximity, fixed 30
 echo - DMC Fresh Reaction US100 uses the same freshness logic in New York with 1.5 ATR stop, 2R and Dynamic 50-20
 echo - Full Safe switches Sell Nasdaq 15min to the original London-confirmed 600/1000 preset
 echo - XAU Weakness uses M30 structure stops, 4R and Dynamic 50-20 with its D1 Safe gate enabled
-echo - News Pulse v2.16 XAU uses T-15, live Ask/Bid +/- $4, a $4 stop, no trailing, and keeps both pending sides armed; XAG and BTC retain their validated geometry
-echo - All News Pulse markets use only primary NFP, CPI and FOMC events, with two stops at 0.75%% each and a 1.50%% total planned-risk cap
+echo - News Pulse uses approved per-event NFP/CPI/FOMC settings on XAU, XAG, BTC and EURUSD; both sides stay armed
+echo - Choose the news percentage separately below: PER ORDER, not per event; two triggers can double exposure
 echo - Gold News V9 Direction runs on XAUUSD M1 with the local prediction service and remains attached after every shared install
 echo - Every non-News EA follows the risk selected below; pressing Enter defaults to 1%%
 echo - Entry lots round UP to the broker step; below-minimum requests use minimum lot and are never skipped for sizing

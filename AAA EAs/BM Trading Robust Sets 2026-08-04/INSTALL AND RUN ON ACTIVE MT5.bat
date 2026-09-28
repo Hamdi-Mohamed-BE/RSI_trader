@@ -2,9 +2,10 @@
 rem Nasdaq 5M: DI14 + EMA12, 0.60%% price SL, no TP, ATR6 trail from +1R; risk policies unchanged.
 rem Nasdaq may hold overnight/weekends. Old fixed-target FTMO estimates do not apply.
 rem For FTMO use "FTMO 10K SWING - 13 EAS - NEWS OFF.bat", not this unrestricted portfolio.
-rem XAU News Pulse v2.16: NFP/CPI/FOMC event-specific settings via shared installer; both pending sides retained.
-rem XAG/BTC/EURUSD News Pulse v2.17: approved full-year event combinations, adaptive exempt; no OCO.
+rem XAU News Pulse v2.16 event settings retained; v2.18 adds standalone user-selected percentage per order.
+rem XAG/BTC/EURUSD News Pulse v2.17 event settings retained in v2.18; adaptive exempt; no OCO.
 setlocal
+echo News risk is asked SEPARATELY per order. Both News Pulse triggers can double event exposure.
 rem Includes Gold Overnight Value Area RAW via the shared normal-MT5 installer.
 echo Gold Overnight Value Area RAW included: M5, overnight extreme TP, opposite value-area SL.
 title Calyx managed EA Portfolio - Any Balance Auto Risk

@@ -10,6 +10,8 @@ param(
     [ValidateSet('DEFAULT', 'PERCENT', 'FIXED_USD')]
     [string]$RiskMode = 'DEFAULT',
     [double]$RiskValue = 0.0,
+    [ValidateScript({ -not [double]::IsNaN($_) -and -not [double]::IsInfinity($_) -and $_ -ge 0.00000001 -and $_ -le 10 })]
+    [double]$NewsRiskPercent = 0.75,
     [switch]$UseRecommendedSelections,
     [switch]$UseClaudeSelections,
     [switch]$UseAdaptiveProfile,
@@ -59,15 +61,14 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 function Get-PortfolioItems {
     # Locked selected portfolio. Each EA owns its selected exit mode:
     # Each strategy keeps its selected exit. The four News Pulse instances
-    # use source-locked risk; XAU v2.16 is unchanged and XAG/BTC/EURUSD use v2.17,
-    # 0.75% risk per pending side (1.50% maximum planned event exposure).
+    # use the separate user-selected NewsRiskPercent per pending side.
+    # LockRisk isolates news from the non-News input; it is NOT a hard 0.75% lock.
     # Live events come from MT5's USD calendar; Strategy Tester schedules are
     # generated from FXMacroData and fail closed outside verified coverage.
-    # Gold News V9 uses the local v9 prediction runtime and is locked to the
-    # same 0.75% base risk as the other news entries.
+    # Gold News V9 uses the same separate news percentage, on current balance;
+    # News Pulse sizes on current equity. Default 0.75% preserves old presets.
     # No portfolio-wide session overlay is applied.
-    # Risk defaults to 1% planned per EA trade except the news EAs, whose 0.75%
-    # base risk cannot be changed by the portfolio risk prompt.
+    # The two prompts are independent; news still bypasses adaptive controls.
     $items = @(
         [pscustomobject]@{
             Label = 'Gold Overnight Value Area'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -498,7 +499,7 @@ function Get-EffectiveInputs([object]$Item) {
         $inputs['InpUseMarkovRegimeFilter'] = 'false'
     }
     # Every current Calyx EA exposes the same native portfolio-governor switch.
-    # All five news EAs always retain their locked standalone risk. Override
+    # All five news EAs retain their independently selected percentage. Override
     # even a stale SET with the governor enabled; all shared BATs use this path.
     if (Test-NewsAdaptiveExemption $Item) {
         $inputs['InpAdaptivePortfolioControls'] = 'false'
@@ -577,6 +578,14 @@ function Get-EffectiveInputs([object]$Item) {
     return $inputs
 }
 
+function Get-ItemBaseRiskPercent([object]$Item) {
+    if (Test-NewsAdaptiveExemption $Item) { return $NewsRiskPercent }
+    if ([bool]$Item.LockRisk) { return [double]$Item.FixedPercentRisk }
+    if ($UsesDynamicRisk) { return $EffectiveAdaptiveRiskPercent }
+    if ([double]$Item.FixedPercentRisk -gt 0) { return [double]$Item.FixedPercentRisk }
+    return $AdaptiveRiskPercent
+}
+
 function Assert-EffectiveRiskInputs([object[]]$Items) {
     $percentKeys = @(
         'InpRiskPercent',
@@ -609,8 +618,8 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
             }
         }
 
-        if ($isNews -and -not [bool]$item.LockRisk) {
-            Stop-WithMessage "Risk audit failed for $($item.Label): news EAs must remain locked at 0.75% per planned entry."
+        if ($isNews -and (-not [bool]$item.LockRisk -or [Math]::Abs($expectedPercent - $NewsRiskPercent) -gt 0.0000001)) {
+            Stop-WithMessage "Risk audit failed for $($item.Label): news must use the separate NewsRiskPercent per order."
         }
         if (-not $isNews -and [bool]$item.LockRisk) {
             Stop-WithMessage "Risk audit failed for $($item.Label): a non-News EA must follow the user's selected risk."
@@ -618,7 +627,7 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
     }
     $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
     $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls apply to non-News EAs and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
-    Write-Host ("Risk audit passed: every non-News EA uses {0}{1}; all five news EAs bypass adaptive controls and remain locked at 0.7500% per planned entry. Four simultaneous News Pulse straddles plan 6% combined before rounding, gaps and fees." -f $modeText, $adaptiveText) -ForegroundColor Green
+    Write-Host ("Risk audit passed: non-News uses {0}{1}; five news EAs independently use {2:N4}% per order and bypass adaptive controls. Both News Pulse sides plan {3:N4}% per asset, before rounding, gaps and fees." -f $modeText, $adaptiveText, $NewsRiskPercent, (2 * $NewsRiskPercent)) -ForegroundColor Green
 }
 
 function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
@@ -984,7 +993,7 @@ foreach ($item in $portfolio) {
     $item | Add-Member -NotePropertyName BrokerSymbol -NotePropertyValue ([string]$match.name)
     $brokerMinimum = [double]$match.volume_min
     $item | Add-Member -NotePropertyName BrokerVolumeMinimum -NotePropertyValue $brokerMinimum
-    $basePercent = if ([bool]$item.LockRisk) { [double]$item.FixedPercentRisk } elseif ($UsesDynamicRisk) { $EffectiveAdaptiveRiskPercent } elseif ([double]$item.FixedPercentRisk -gt 0) { [double]$item.FixedPercentRisk } else { $AdaptiveRiskPercent }
+    $basePercent = Get-ItemBaseRiskPercent $item
     $effectiveItemRiskPercent = $basePercent * [double]$item.AdaptiveBaseMultiplier
     $targetRisk = if ([bool]$item.LockRisk) {
         [Math]::Round($balance * ($effectiveItemRiskPercent / 100.0), 2)
@@ -1049,7 +1058,7 @@ foreach ($item in $portfolio) {
         if ($isFixedNews -and $UseAdaptiveProfile -and -not (Test-NewsAdaptiveExemption $item)) {
             Write-Host ('{0,-42} {1,-8} -> {2}; MAX {3}% per planned entry before adaptive taper' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
         } elseif ($isFixedNews) {
-            Write-Host ('{0,-42} {1,-8} -> {2}; HARD {3}% per planned entry' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
+            Write-Host ('{0,-42} {1,-8} -> {2}; standalone news {3}% per order; recalculated at placement, not fixed cash' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
         } else {
             Write-Host ('{0,-42} {1,-8} -> {2}; fixed equity risk {3}%' -f $item.Label, $item.Canonical, $item.BrokerSymbol, $fixedRiskText) -ForegroundColor Yellow
         }
@@ -1235,6 +1244,8 @@ $manifest = @(
     'Recommended Dynamic EAs: ' + ((@($portfolio | Where-Object { $_.DynamicByDesign }) | ForEach-Object { $_.Label }) -join ', ')
     'Risk mode: ' + $RiskMode
     'Requested risk value: ' + $RiskValue.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+    'Standalone news risk percent PER ORDER: ' + $NewsRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+    'News Pulse both sides retained; two fills can double per-asset event exposure; news bypasses adaptive controls'
     'Entry volume policy: round up to broker step; use broker minimum when required; never skip solely for lot sizing'
     'Account: ' + $login
     'Balance at install: ' + $balance.ToString('N2') + ' ' + [string]$probe.account.currency

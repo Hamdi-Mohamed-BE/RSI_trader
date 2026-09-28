@@ -30,7 +30,11 @@ def test_selected_full_candidates_equal_production_params_and_native_parity(slug
         for key,value in [('g_np_offset',p[2]),('g_np_stop',p[3]),('g_np_trail_distance',p[6])]:
             assert f'{key}={value:.10f};' in line
     parity=json.loads((DEPLOY/(asset+'-PARITY.json')).read_text())
-    assert parity['passed'] and parity['source_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
+    assert parity['passed']
+    risk=json.loads((PACKAGE_ROOT/'News Standalone Risk 2026-09-28/NATIVE_VERIFICATION.json').read_text())
+    assert risk['passed'] and risk['build']['MULTI']['source_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
+    assert parity['source_sha256']==risk['build']['MULTI']['baseline_source_sha256']
+    assert any(x['asset']==asset and x['default_risk_exact_trade_parity'] for x in risk['checks'])
     expected=json.loads((ROOT/'native'/(asset+'Fitted')/'stats.json').read_text())
     assert parity['stats']['final_balance']==expected['final_balance']
     assert 'NP_LeadSeconds(candidate_kind)' in code

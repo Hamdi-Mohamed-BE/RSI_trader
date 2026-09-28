@@ -133,7 +133,15 @@ def independent_news_result(product: Product, mode: str, period: str, start: dat
     manifest = result.get('build') or json.loads((research_root / 'BUILD MANIFEST.json').read_text())
     original_source = (PACKAGE_ROOT / product.expert_source).with_suffix('.mq5')
     if file_hash(original_source) != manifest['source_sha256']:
-        raise RuntimeError('News Pulse source changed after the audited runs; rerun before publishing.')
+        # Keep historical 0.75% results bound to their actual archived source.
+        # The v2.18 risk-input release is explicitly checked, never relabelled
+        # as a new period backtest or a custom-risk performance simulation.
+        from app.news_runtime_compatibility import historical_news_source
+        historical_news_source(PACKAGE_ROOT, original_source, manifest['source_sha256'],
+                               product.slug.removeprefix('news-pulse-').upper())
+        if float(result['settings'].get('InpRiskPercent',0)) != .75:
+            raise RuntimeError('Only the original 0.75% news evidence has a compatibility record.')
+        result['runtime_risk_note']='Historical result at 0.75% per order; v2.18 launcher risk is independently configurable and is not represented by this backtest.'
     if product.slug=='news-pulse-xau':
         if result.get('strategy_profile')!='xau-event-specific-2026-09-19':
             raise RuntimeError('Stale XAU profile evidence.')
