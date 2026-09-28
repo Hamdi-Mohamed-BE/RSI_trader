@@ -2,6 +2,8 @@
 param(
     [string]$TargetTerminal,
     [ValidateSet('Challenge','Verification','Funded')][string]$Phase='Challenge',
+    [ValidateSet('ON','OFF')][string]$NasdaqDIFilter='ON',
+    [switch]$PromptNasdaqDIFilter,
     [switch]$ValidateOnly,
     [switch]$PreflightOnly
 )
@@ -29,6 +31,14 @@ foreach($helper in $helpers){
     . ([scriptblock]::Create($def[0].Extent.Text))
 }
 function Get-EffectiveInputs([object]$Item){return $Item.EffectiveInputs}
+function Get-FTMOPresetInputs([object]$Entry, [ValidateSet('ON','OFF')][string]$DIChoice='ON') {
+    $inputs=Read-SetInputs (Join-Path $Package $Entry.settings)
+    if($Entry.slug -eq 'nasdaq-5m-candle-momentum'){
+        if(-not $inputs.Contains('InpRequireDIAgreement')){throw 'Nasdaq preset does not support DI selection.'}
+        $inputs['InpRequireDIAgreement']=if($DIChoice -eq 'OFF'){'false'}else{'true'}
+    }
+    return $inputs
+}
 function Assert-Package {
     if((Get-FileHash -LiteralPath (Join-Path $StudyRoot 'CalyxFTMOGuard.mqh') -Algorithm SHA256).Hash -ine $manifest.guard_sha){
         throw 'Risk guard changed since compilation. Rebuild and verify the package first.'
@@ -51,7 +61,18 @@ function Assert-Package {
     }
 }
 Assert-Package
-if($ValidateOnly){Write-Host 'PASS: 13 integrity-checked guarded EAs, fixed $50 maximum stop risk, no news. No account accessed.';exit 0}
+if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilter') -and -not $ValidateOnly){
+    $diChoice=(Read-Host 'Nasdaq 5M DI14 filter ON or OFF [ON]').Trim().ToUpperInvariant()
+    if(-not $diChoice){$diChoice='ON'}
+    if($diChoice -notin @('ON','OFF')){throw 'Nasdaq DI filter must be ON or OFF.'}
+    $NasdaqDIFilter=$diChoice
+}
+Write-Host ("Nasdaq 5M DI14 filter: {0}; wider stop and ATR trailing unchanged." -f $NasdaqDIFilter)
+if($NasdaqDIFilter -eq 'OFF'){Write-Host 'DI OFF is a custom selection; published DI-ON results do not describe it.' -ForegroundColor Yellow}
+if($ValidateOnly){
+    foreach($entry in $manifest.entries){$null=Get-FTMOPresetInputs $entry $NasdaqDIFilter}
+    Write-Host 'PASS: 13 integrity-checked guarded EAs, fixed $50 maximum stop risk, no news. No account accessed.';exit 0
+}
 
 $candidates=@(Get-Mt5Candidates | Where-Object {
     $_.Running -and $_.Path -notmatch '(?i)\\(_Backtests|Tester|temp)\\|Ava'
@@ -100,7 +121,7 @@ $ProfileName='CF13-'+$login+'-'+(Get-Date -Format 'yyyyMMdd-HHmmss')
 $ExpertFolderName=$ProfileName
 $portfolio=@()
 foreach($entry in $manifest.entries){
-    $inputs=Read-SetInputs (Join-Path $Package $entry.settings)
+    $inputs=Get-FTMOPresetInputs $entry $NasdaqDIFilter
     $inputs['FTMOExpectedLogin']=$login
     $inputs['FTMOExpectedServer']=$server
     $inputs['FTMOExpectedSymbol']=$resolved[$entry.symbol]
@@ -118,7 +139,7 @@ Write-Host '13 EAs; News Pulse and Gold News V9 OFF. $50 maximum stop risk, roun
 Write-Host 'Limits: $225 open risk; $150 per symbol; $300 daily reserved loss; $9,200 equity buffer.'
 Write-Host 'Seven entries/day maximum; no new entries after three net losing positions; 80% margin cap.'
 Write-Host 'These are entry guards, not guaranteed protection from gaps, outages or FTMO rule breaches.'
-Write-Host 'Nasdaq now uses DI + 0.60% price stop + ATR6 from +1R, no TP; overnight/weekend holding.'
+Write-Host ("Nasdaq: DI14 {0} + 0.60% price stop + ATR6 from +1R, no TP; overnight/weekend holding." -f $NasdaqDIFilter)
 Write-Host 'Old fixed-target FTMO pass-rate/timing estimates do not apply to this revised portfolio.'
 $portfolio | Select-Object Label,BrokerSymbol,Period | Format-Table -AutoSize
 if($PreflightOnly){Write-Host 'Preflight complete. Nothing installed or restarted.';exit 0}
@@ -157,7 +178,7 @@ Set-IniValue $commonIni 'Experts' 'Enabled' '0'
 Set-IniValue $commonIni 'Experts' 'Account' '1'
 Set-IniValue $commonIni 'Charts' 'ProfileLast' $ProfileName
 [IO.File]::WriteAllText((Join-Path $profile 'DEPLOYMENT.txt'),
-    "Account: $login`r`nServer: $server`r`nPhase: $Phase`r`nNews: OFF`r`nRisk: max $50 stop risk; costs/gaps extra.`r`n",[Text.UTF8Encoding]::new($false))
+    "Account: $login`r`nServer: $server`r`nPhase: $Phase`r`nNews: OFF`r`nNasdaq DI14: $NasdaqDIFilter`r`nRisk: max USD 50 stop risk; costs/gaps extra.`r`n",[Text.UTF8Encoding]::new($false))
 Start-Process -FilePath $terminalPath -ArgumentList ('/profile:"'+$ProfileName+'"') -WindowStyle Hidden
 Write-Host "Installed profile $ProfileName. Algo Trading remains OFF."
 Write-Host 'Review all 13 charts and account details. Enable Algo Trading yourself only when satisfied.'

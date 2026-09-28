@@ -85,7 +85,8 @@ if ($parseErrors.Count) { throw 'Installer syntax error' }
 $names = @('Get-PortfolioItems','Get-EffectiveInputs','Test-NewsAdaptiveExemption')
 $functions = $ast.FindAll({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -in $names}, $true)
 foreach ($function in $functions) { . ([scriptblock]::Create($function.Extent.Text)) }
-function Read-SetInputs([string]$Path) { return [ordered]@{InpRiskPercent='0.75';InpAdaptivePortfolioControls='true'} }
+function Read-SetInputs([string]$Path) { return [ordered]@{InpRiskPercent='0.75';InpAdaptivePortfolioControls='true';InpRequireDIAgreement='true'} }
+$NasdaqDIFilter='ON'
 $UseRecommendedSelections=$true; $IsFullSafe=$false; $IsAdaptiveAccount=$true; $IsSmallAccount=$false
 $UsesDynamicRisk=$true; $RiskMode='PERCENT'; $GoldNewsRoot=Join-Path $PackageRoot '..\..\AI news'
 foreach ($UseAdaptiveProfile in @($true,$false)) {

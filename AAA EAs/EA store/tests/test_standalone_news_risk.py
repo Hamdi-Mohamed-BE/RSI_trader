@@ -9,8 +9,12 @@ import pytest
 from app.catalog import PACKAGE_ROOT
 
 def ps(script):
+    # powershell.exe is Windows PowerShell 5.1; a parent pwsh 7 module path can
+    # select its incompatible Utility module (and hide Get-FileHash).
+    module_path = ';'.join([str(Path(os.environ['WINDIR'])/'System32/WindowsPowerShell/v1.0/Modules'),
+                           str(Path(os.environ['PROGRAMFILES'])/'WindowsPowerShell/Modules')])
     return subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',script],
-        env={**os.environ,'CALYX_TEST_PACKAGE_ROOT':str(PACKAGE_ROOT)},capture_output=True,text=True,timeout=45)
+        env={**os.environ,'CALYX_TEST_PACKAGE_ROOT':str(PACKAGE_ROOT),'PSModulePath':module_path},capture_output=True,text=True,timeout=45)
 
 def test_independent_news_risk_all_modes_and_chart_inputs():
     result=ps(r'''
@@ -23,6 +27,7 @@ $names=@('Get-PortfolioItems','Get-EffectiveInputs','Get-ItemBaseRiskPercent','T
 foreach($f in $ast.FindAll({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -in $names},$true)){. ([scriptblock]::Create($f.Extent.Text))}
 function Stop-WithMessage([string]$Message){throw $Message}
 $IsAdaptiveAccount=$true;$IsSmallAccount=$false;$UsesDynamicRisk=$true;$UseClaudeSelections=$false
+$NasdaqDIFilter='ON'
 $GoldNewsRoot=Join-Path $PackageRoot '..\..\AI news';$ExpertFolderName='UnitTest';$EffectiveAdaptiveRiskPercent=1.6
 $checks=0
 foreach($mode in @('PERCENT','FIXED_USD')){foreach($safe in @($false,$true)){foreach($adaptive in @($false,$true)){foreach($news in @(.30,.75,1.25)){

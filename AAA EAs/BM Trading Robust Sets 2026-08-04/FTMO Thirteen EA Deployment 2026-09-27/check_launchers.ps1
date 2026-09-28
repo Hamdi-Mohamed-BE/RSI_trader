@@ -12,6 +12,7 @@ foreach($def in $ast.FindAll({param($n) $n -is [Management.Automation.Language.F
     if($def.Name -in $want){. ([scriptblock]::Create($def.Extent.Text))}
 }
 $UsesDynamicRisk=$false;$RiskMode='DEFAULT';$EffectiveAdaptiveRiskPercent=1.0
+$NasdaqDIFilter='ON'
 $IsAdaptiveAccount=$true;$IsSmallAccount=$false;$UseRecommendedSelections=$false
 $UseClaudeSelections=$false;$UseAdaptiveProfile=$false;$IsFullSafe=$false
 $checks=0

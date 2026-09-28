@@ -5,6 +5,7 @@ rem For FTMO use "FTMO 10K SWING - 13 EAS - NEWS OFF.bat", not this unrestricted
 rem XAU News Pulse v2.16 event settings retained; v2.18 adds standalone user-selected percentage per order.
 rem XAG/BTC/EURUSD News Pulse v2.17 event settings retained in v2.18; adaptive exempt; no OCO.
 setlocal
+echo Nasdaq 5M DI14 filter is selectable below: ON by default, or OFF. Wider stop and ATR trailing stay unchanged.
 echo News risk is asked SEPARATELY per order. Both News Pulse triggers can double event exposure.
 rem Includes Gold Overnight Value Area RAW via the shared normal-MT5 installer.
 echo Gold Overnight Value Area RAW included: M5, overnight extreme TP, opposite value-area SL.
@@ -42,7 +43,7 @@ echo - DMC Current XAU was explicitly retained after review
 echo - Earlier rejected research builds such as Engineered Liquidity BTC, US100 Fabio ORB and XAU Markov remain excluded
 echo.
 
-powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Start-Dynamic-Portfolio.ps1" -SafetyMode STANDARD -UseRecommendedSelections %*
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0_Auto Deploy\Start-Dynamic-Portfolio.ps1" -SafetyMode STANDARD -UseRecommendedSelections -PromptNasdaqDIFilter %*
 set "BM_EXIT=%ERRORLEVEL%"
 
 echo.

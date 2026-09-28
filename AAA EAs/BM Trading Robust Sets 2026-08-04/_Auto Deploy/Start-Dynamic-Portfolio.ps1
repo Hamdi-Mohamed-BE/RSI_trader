@@ -4,6 +4,9 @@ param(
     [string]$RiskMode = '',
     [double]$RiskValue = 0.0,
     [double]$NewsRiskPercent = 0.75,
+    [ValidateSet('ON', 'OFF')]
+    [string]$NasdaqDIFilter = 'ON',
+    [switch]$PromptNasdaqDIFilter,
     [ValidateSet('', 'STANDARD', 'SAFE')]
     [string]$SafetyMode = '',
     [string]$TargetTerminal = '',
@@ -78,7 +81,16 @@ if (-not $SafetyMode) {
     $SafetyMode = switch ($safe) { 'Y' { 'SAFE' } 'YES' { 'SAFE' } 'N' { 'STANDARD' } 'NO' { 'STANDARD' } default { Stop-Dynamic 'Safe-mode choice must be Y or N.' } }
 }
 
+if ($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilter') -and -not $ValidateOnly) {
+    $diChoice = (Read-Host 'Nasdaq 5M DI14 filter ON or OFF [ON]').Trim().ToUpperInvariant()
+    if (-not $diChoice) { $diChoice = 'ON' }
+    if ($diChoice -notin @('ON', 'OFF')) { Stop-Dynamic 'Nasdaq DI filter must be ON or OFF.' }
+    $NasdaqDIFilter = $diChoice
+}
+
 Write-Host "`nDynamic configuration" -ForegroundColor Green
+Write-Host ("  Nasdaq 5M DI14 filter: {0}; EMA12, 0.60% stop, ATR6 from +1R and no TP unchanged." -f $NasdaqDIFilter)
+if ($NasdaqDIFilter -eq 'OFF') { Write-Host '  DI OFF is a custom selection; the published DI-ON results do not describe this selection.' -ForegroundColor Yellow }
 Write-Host ('  Non-News risk: {0} {1}' -f $RiskValue, $(if ($RiskMode -eq 'PERCENT') { '%' } else { 'USD per EA trade' }))
 Write-Host '  Lot policy: round UP to the broker step; use minimum lot when required; never skip solely because of lot sizing' -ForegroundColor Yellow
 Write-Host '  News Pulse event settings unchanged: XAU NFP T-10s, CPI T-5s, FOMC T-60s; approved XAG/BTC/EURUSD combinations; both sides retained.'
@@ -93,6 +105,7 @@ if (-not $Yes -and -not $ValidateOnly) {
 }
 
 $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $installer, '-AccountProfile', 'AUTO', '-RiskMode', $RiskMode, '-RiskValue', $RiskValue.ToString('R', [Globalization.CultureInfo]::InvariantCulture), '-NewsRiskPercent', $NewsRiskPercent.ToString('R', [Globalization.CultureInfo]::InvariantCulture), '-SafetyMode', $SafetyMode)
+$arguments += @('-NasdaqDIFilter', $NasdaqDIFilter)
 if ($UseRecommendedSelections) { $arguments += '-UseRecommendedSelections' }
 if ($UseClaudeSelections) { $arguments += '-UseClaudeSelections' }
 if ($UseAdaptiveProfile) { $arguments += '-UseAdaptiveProfile' }

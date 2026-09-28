@@ -12,6 +12,8 @@ param(
     [double]$RiskValue = 0.0,
     [ValidateScript({ -not [double]::IsNaN($_) -and -not [double]::IsInfinity($_) -and $_ -ge 0.00000001 -and $_ -le 10 })]
     [double]$NewsRiskPercent = 0.75,
+    [ValidateSet('ON', 'OFF')]
+    [string]$NasdaqDIFilter = 'ON',
     [switch]$UseRecommendedSelections,
     [switch]$UseClaudeSelections,
     [switch]$UseAdaptiveProfile,
@@ -484,6 +486,10 @@ function Test-NewsAdaptiveExemption([object]$Item) {
 
 function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
+    if ($Item.Label -eq 'Nasdaq 5M Candle Momentum') {
+        if (-not $inputs.Contains('InpRequireDIAgreement')) { Stop-WithMessage 'Nasdaq preset does not support the requested DI selection.' }
+        $inputs['InpRequireDIAgreement'] = if ($NasdaqDIFilter -eq 'OFF') { 'false' } else { 'true' }
+    }
     # All Standard/Safe/Dynamic/Recommended Adaptive BATs share this guard.
     if ($Item.Label -eq 'News Pulse XAU') {
         $inputs['InpUseXauEventSpecific'] = 'true'
@@ -887,8 +893,9 @@ if ($UseRecommendedSelections) {
 if ($UseClaudeSelections) {
     $claudeItems = @($portfolio | Where-Object { $_.ClaudeByDesign })
     Write-Host ('CLAUDE EAS: Best Recommended settings plus {0} Claude-selected change(s): {1}.' -f $claudeItems.Count, (($claudeItems | ForEach-Object { $_.Label }) -join ', ')) -ForegroundColor Green
-    Write-Host 'Nasdaq 5M: DI14, 0.60% price stop, no TP, ATR6 trail from +1R; overnight/weekend holding.' -ForegroundColor Green
 }
+Write-Host ("Nasdaq 5M: DI14 {0}, 0.60% price stop, no TP, ATR6 trail from +1R; overnight/weekend holding." -f $NasdaqDIFilter) -ForegroundColor Green
+if ($NasdaqDIFilter -eq 'OFF') { Write-Host 'DI OFF is a custom selection; published DI-ON evidence does not apply.' -ForegroundColor Yellow }
 
 Write-Stage 'Finding MT5'
 $candidates = @(Get-Mt5Candidates)
