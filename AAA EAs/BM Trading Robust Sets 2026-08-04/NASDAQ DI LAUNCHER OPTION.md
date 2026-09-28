@@ -3,7 +3,9 @@
 BEST RECOMMENDED and FTMO 10K SWING now ask `Nasdaq 5M DI14 filter ON or OFF [ON]`.
 Press Enter for the existing DI-ON setting. OFF disables only `InpRequireDIAgreement`.
 The completed 09:30 candle, EMA12, 0.60% price stop, ATR14 x 6 trailing from +1R,
-no TP and overnight/weekend holding rules remain unchanged. Other EAs are unaffected.
+no TP and overnight/weekend holding rules remain unchanged. Other EA settings are unchanged.
+DI OFF can change entry frequency and therefore portfolio overlap or use of FTMO's
+shared risk/trade-count limits; it does not imply unchanged portfolio performance.
 
 This is a user-selected runtime setting, not an automatic indicator switch. Run the
 BAT again to choose a different configuration. Pulling Git does not change charts
