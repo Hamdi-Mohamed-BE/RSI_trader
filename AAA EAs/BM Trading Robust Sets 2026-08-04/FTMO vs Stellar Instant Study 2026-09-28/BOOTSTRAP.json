@@ -1,0 +1,2760 @@
+{
+  "paths": 500,
+  "source_blocks": 48,
+  "block_days": 28,
+  "seed": 20260928,
+  "horizons": [
+    30,
+    60,
+    120,
+    180
+  ],
+  "whole_trade_tails_kept": true,
+  "source_block_crossing_positions": 4344,
+  "configs": [
+    {
+      "config": {
+        "name": "FTMO full13 0.25%",
+        "firm": "FTMO",
+        "capital": 10000,
+        "risk": 0.0025,
+        "core": false,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": false,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 54.0,
+          "max_sampled_dd": 3.1246823319699613,
+          "max_envelope_dd": 3.124693660094963,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1206.9807398305984,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 17,
+          "phase2": 0,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 17,
+              "p10": 50.19972222222222,
+              "median": 57.88611111111111,
+              "p90": 59.71805555555556
+            },
+            "phase2_minute": null,
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 111.0,
+          "max_sampled_dd": 5.347792407437027,
+          "max_envelope_dd": 5.419076273838382,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1448.0334546561362,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 222,
+          "phase2": 36,
+          "funded": 19,
+          "payout": 4,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 496,
+          "payout_pct": 0.8,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 3.8,
+          "timing": {
+            "phase1_minute": {
+              "n": 222,
+              "p10": 63.60347222222222,
+              "median": 92.2375,
+              "p90": 113.86805555555556
+            },
+            "phase2_minute": {
+              "n": 36,
+              "p10": 92.74479166666666,
+              "median": 112.48333333333332,
+              "p90": 118.13506944444444
+            },
+            "funded_minute": {
+              "n": 19,
+              "p10": 93.09083333333334,
+              "median": 108.78194444444445,
+              "p90": 117.19291666666666
+            },
+            "first_request_minute": {
+              "n": 4,
+              "p10": 101.30395833333334,
+              "median": 110.63541666666666,
+              "p90": 114.36687500000001
+            }
+          },
+          "mean_cash": 1.5860985644419825,
+          "median_cash_if_paid": 177.13526304948027,
+          "mean_first_cash": 1.5860985644419825,
+          "base_fee_recovered": 3,
+          "fee_plus25_recovered": 3,
+          "fee_plus50_recovered": 2,
+          "regular_fee_recovered": 2,
+          "median_trades": 214.0,
+          "max_sampled_dd": 5.696068026160319,
+          "max_envelope_dd": 5.720603738969621,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1341.2840745501999,
+          "median_first_cash_if_paid": 177.13526304948027
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 383,
+          "phase2": 200,
+          "funded": 180,
+          "payout": 122,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 378,
+          "payout_pct": 24.4,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 36.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 383,
+              "p10": 66.73083333333334,
+              "median": 112.87152777777777,
+              "p90": 161.1990277777778
+            },
+            "phase2_minute": {
+              "n": 200,
+              "p10": 113.84159722222222,
+              "median": 147.28784722222224,
+              "p90": 172.86180555555555
+            },
+            "funded_minute": {
+              "n": 180,
+              "p10": 119.765,
+              "median": 149.01111111111112,
+              "p90": 175.9777777777778
+            },
+            "first_request_minute": {
+              "n": 122,
+              "p10": 133.36034722222223,
+              "median": 157.875,
+              "p90": 178.56291666666667
+            }
+          },
+          "mean_cash": 62.38571927504931,
+          "median_cash_if_paid": 221.32508678585438,
+          "mean_first_cash": 31.128347573949114,
+          "base_fee_recovered": 92,
+          "fee_plus25_recovered": 86,
+          "fee_plus50_recovered": 79,
+          "regular_fee_recovered": 80,
+          "median_trades": 320.0,
+          "max_sampled_dd": 6.4592185458321,
+          "max_envelope_dd": 6.4593811986337455,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1146.5242895643023,
+          "median_first_cash_if_paid": 107.1329904644881
+        }
+      ],
+      "artifact": "c0-0-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "FTMO full13 0.25%",
+        "firm": "FTMO",
+        "capital": 10000,
+        "risk": 0.0025,
+        "core": false,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": true,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 54.0,
+          "max_sampled_dd": 4.117554203809413,
+          "max_envelope_dd": 4.137612693054507,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1049.9795801463388,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 111.0,
+          "max_sampled_dd": 7.711963177626966,
+          "max_envelope_dd": 7.756454125874497,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1143.3523884863307,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 21,
+          "phase2": 0,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 21,
+              "p10": 85.86805555555556,
+              "median": 102.66666666666667,
+              "p90": 116.60833333333333
+            },
+            "phase2_minute": null,
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 217.0,
+          "max_sampled_dd": 8.979192843778328,
+          "max_envelope_dd": 9.016181442334856,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1203.7752259337185,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 83,
+          "phase2": 8,
+          "funded": 6,
+          "payout": 3,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 497,
+          "payout_pct": 0.6,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 1.2,
+          "timing": {
+            "phase1_minute": {
+              "n": 83,
+              "p10": 100.22777777777779,
+              "median": 140.87152777777777,
+              "p90": 172.0102777777778
+            },
+            "phase2_minute": {
+              "n": 8,
+              "p10": 143.10763888888889,
+              "median": 160.73819444444445,
+              "p90": 177.45493055555556
+            },
+            "funded_minute": {
+              "n": 6,
+              "p10": 146.2673611111111,
+              "median": 162.0420138888889,
+              "p90": 175.85104166666667
+            },
+            "first_request_minute": {
+              "n": 3,
+              "p10": 156.225,
+              "median": 177.625,
+              "p90": 177.92833333333334
+            }
+          },
+          "mean_cash": 1.0320920265110733,
+          "median_cash_if_paid": 228.8354070276706,
+          "mean_first_cash": 0.7411606946729299,
+          "base_fee_recovered": 2,
+          "fee_plus25_recovered": 2,
+          "fee_plus50_recovered": 2,
+          "regular_fee_recovered": 2,
+          "median_trades": 327.0,
+          "max_sampled_dd": 10.828123894301752,
+          "max_envelope_dd": 10.87259699828277,
+          "no_entry_last30days": 7,
+          "median_ending_balance_headroom": 1210.7179172178649,
+          "median_first_cash_if_paid": 103.60518417042623
+        }
+      ],
+      "artifact": "c0-1-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "FTMO full13 0.50%",
+        "firm": "FTMO",
+        "capital": 10000,
+        "risk": 0.005,
+        "core": false,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": false,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 28,
+          "phase2": 0,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 28,
+              "p10": 18.625,
+              "median": 22.45138888888889,
+              "p90": 24.740277777777777
+            },
+            "phase2_minute": null,
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 45.0,
+          "max_sampled_dd": 7.506686768836808,
+          "max_envelope_dd": 7.506701771278222,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1276.7631239966177,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 189,
+          "phase2": 30,
+          "funded": 17,
+          "payout": 2,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 498,
+          "payout_pct": 0.4,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 3.4000000000000004,
+          "timing": {
+            "phase1_minute": {
+              "n": 189,
+              "p10": 24.740277777777777,
+              "median": 44.10486111111111,
+              "p90": 56.10652777777778
+            },
+            "phase2_minute": {
+              "n": 30,
+              "p10": 39.559583333333336,
+              "median": 50.720486111111114,
+              "p90": 59.63041666666667
+            },
+            "funded_minute": {
+              "n": 17,
+              "p10": 45.97083333333333,
+              "median": 53.625,
+              "p90": 57.711527777777775
+            },
+            "first_request_minute": {
+              "n": 2,
+              "p10": 58.349999999999994,
+              "median": 59.08333333333333,
+              "p90": 59.81666666666667
+            }
+          },
+          "mean_cash": 1.2107502053299248,
+          "median_cash_if_paid": 302.68755133248123,
+          "mean_first_cash": 1.2107502053299248,
+          "base_fee_recovered": 2,
+          "fee_plus25_recovered": 2,
+          "fee_plus50_recovered": 2,
+          "regular_fee_recovered": 2,
+          "median_trades": 90.0,
+          "max_sampled_dd": 11.551855350396563,
+          "max_envelope_dd": 11.576175345513748,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1166.4322961787893,
+          "median_first_cash_if_paid": 302.68755133248123
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 346,
+          "phase2": 191,
+          "funded": 170,
+          "payout": 114,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 386,
+          "payout_pct": 22.8,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 34.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 346,
+              "p10": 31.970833333333335,
+              "median": 56.56388888888888,
+              "p90": 101.7357638888889
+            },
+            "phase2_minute": {
+              "n": 191,
+              "p10": 56.84166666666667,
+              "median": 80.68958333333333,
+              "p90": 113.03958333333334
+            },
+            "funded_minute": {
+              "n": 170,
+              "p10": 59.787777777777784,
+              "median": 85.71736111111112,
+              "p90": 113.71736111111112
+            },
+            "first_request_minute": {
+              "n": 114,
+              "p10": 74.1025,
+              "median": 93.78125,
+              "p90": 112.60638888888889
+            }
+          },
+          "mean_cash": 102.44703245807433,
+          "median_cash_if_paid": 401.0839842429159,
+          "mean_first_cash": 53.86234530831655,
+          "base_fee_recovered": 96,
+          "fee_plus25_recovered": 92,
+          "fee_plus50_recovered": 90,
+          "regular_fee_recovered": 91,
+          "median_trades": 171.0,
+          "max_sampled_dd": 12.994539697818382,
+          "max_envelope_dd": 12.994539697818382,
+          "no_entry_last30days": 27,
+          "median_ending_balance_headroom": 1014.5436347799505,
+          "median_first_cash_if_paid": 199.92435847697197
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 416,
+          "phase2": 337,
+          "funded": 327,
+          "payout": 276,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 224,
+          "payout_pct": 55.2,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 65.4,
+          "timing": {
+            "phase1_minute": {
+              "n": 416,
+              "p10": 33.77777777777778,
+              "median": 66.71354166666667,
+              "p90": 137.55555555555554
+            },
+            "phase2_minute": {
+              "n": 337,
+              "p10": 62.06666666666667,
+              "median": 112.83333333333333,
+              "p90": 162.9427777777778
+            },
+            "funded_minute": {
+              "n": 327,
+              "p10": 67.69166666666666,
+              "median": 116.05416666666666,
+              "p90": 164.26222222222225
+            },
+            "first_request_minute": {
+              "n": 276,
+              "p10": 85.29166666666666,
+              "median": 128.61458333333331,
+              "p90": 170.82291666666669
+            }
+          },
+          "mean_cash": 388.88589772717097,
+          "median_cash_if_paid": 603.3899828601352,
+          "mean_first_cash": 116.94082315556204,
+          "base_fee_recovered": 249,
+          "fee_plus25_recovered": 242,
+          "fee_plus50_recovered": 240,
+          "regular_fee_recovered": 240,
+          "median_trades": 257.0,
+          "max_sampled_dd": 14.09663062026546,
+          "max_envelope_dd": 14.12896367176516,
+          "no_entry_last30days": 53,
+          "median_ending_balance_headroom": 997.4724037509841,
+          "median_first_cash_if_paid": 166.05058727240103
+        }
+      ],
+      "artifact": "c1-0-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "FTMO full13 0.50%",
+        "firm": "FTMO",
+        "capital": 10000,
+        "risk": 0.005,
+        "core": false,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": true,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 3,
+          "phase2": 0,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 3,
+              "p10": 28.791666666666668,
+              "median": 28.791666666666668,
+              "p90": 28.798333333333336
+            },
+            "phase2_minute": null,
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 44.0,
+          "max_sampled_dd": 8.792053397384807,
+          "max_envelope_dd": 8.792053397384807,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1095.150950452713,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 49,
+          "phase2": 2,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 49,
+              "p10": 32.59222222222222,
+              "median": 46.625,
+              "p90": 57.99597222222223
+            },
+            "phase2_minute": {
+              "n": 2,
+              "p10": 58.214305555555555,
+              "median": 58.485416666666666,
+              "p90": 58.75652777777778
+            },
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 88.0,
+          "max_sampled_dd": 12.592142730589112,
+          "max_envelope_dd": 12.592159362150051,
+          "no_entry_last30days": 4,
+          "median_ending_balance_headroom": 1046.8945676390567,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 146,
+          "phase2": 41,
+          "funded": 36,
+          "payout": 20,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 480,
+          "payout_pct": 4.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 7.199999999999999,
+          "timing": {
+            "phase1_minute": {
+              "n": 146,
+              "p10": 42.791666666666664,
+              "median": 67.6875,
+              "p90": 111.25659722222221
+            },
+            "phase2_minute": {
+              "n": 41,
+              "p10": 66.68958333333333,
+              "median": 88.60833333333333,
+              "p90": 114.70902777777778
+            },
+            "funded_minute": {
+              "n": 36,
+              "p10": 72.26145833333334,
+              "median": 94.68993055555555,
+              "p90": 108.89722222222223
+            },
+            "first_request_minute": {
+              "n": 20,
+              "p10": 87.84826388888888,
+              "median": 106.45729166666666,
+              "p90": 116.2482638888889
+            }
+          },
+          "mean_cash": 7.938042632807183,
+          "median_cash_if_paid": 171.86793668864703,
+          "mean_first_cash": 7.120138999596055,
+          "base_fee_recovered": 14,
+          "fee_plus25_recovered": 13,
+          "fee_plus50_recovered": 10,
+          "regular_fee_recovered": 10,
+          "median_trades": 167.0,
+          "max_sampled_dd": 15.603699719805828,
+          "max_envelope_dd": 15.603699719805828,
+          "no_entry_last30days": 92,
+          "median_ending_balance_headroom": 873.7406834471321,
+          "median_first_cash_if_paid": 136.58156095615342
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 213,
+          "phase2": 90,
+          "funded": 87,
+          "payout": 54,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 446,
+          "payout_pct": 10.8,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 17.4,
+          "timing": {
+            "phase1_minute": {
+              "n": 213,
+              "p10": 46.625,
+              "median": 92.03958333333334,
+              "p90": 161.20000000000005
+            },
+            "phase2_minute": {
+              "n": 90,
+              "p10": 78.19965277777779,
+              "median": 128.08020833333333,
+              "p90": 166.1291666666667
+            },
+            "funded_minute": {
+              "n": 87,
+              "p10": 83.9673611111111,
+              "median": 133.83333333333334,
+              "p90": 172.01583333333335
+            },
+            "first_request_minute": {
+              "n": 54,
+              "p10": 94.05833333333334,
+              "median": 125.15798611111111,
+              "p90": 171.96652777777777
+            }
+          },
+          "mean_cash": 47.51450321229339,
+          "median_cash_if_paid": 424.51173460886355,
+          "mean_first_cash": 18.084003813652785,
+          "base_fee_recovered": 45,
+          "fee_plus25_recovered": 43,
+          "fee_plus50_recovered": 41,
+          "regular_fee_recovered": 42,
+          "median_trades": 246.0,
+          "max_sampled_dd": 17.919356341051117,
+          "max_envelope_dd": 17.936780357164388,
+          "no_entry_last30days": 172,
+          "median_ending_balance_headroom": 707.9539665571456,
+          "median_first_cash_if_paid": 138.15122210424818
+        }
+      ],
+      "artifact": "c1-1-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "FTMO existing guards 0.50%",
+        "firm": "FTMO",
+        "capital": 10000,
+        "risk": 0.005,
+        "core": false,
+        "existing": true,
+        "withdraw_all": false
+      },
+      "stress": false,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 78,
+          "phase2": 0,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 78,
+              "p10": 17.705694444444443,
+              "median": 24.740277777777777,
+              "p90": 29.074861111111108
+            },
+            "phase2_minute": null,
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 63.0,
+          "max_sampled_dd": 6.8212381859673945,
+          "max_envelope_dd": 6.870747611311326,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1381.5879064525743,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 332,
+          "phase2": 123,
+          "funded": 69,
+          "payout": 12,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 488,
+          "payout_pct": 2.4,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 13.8,
+          "timing": {
+            "phase1_minute": {
+              "n": 332,
+              "p10": 24.740277777777777,
+              "median": 38.74236111111111,
+              "p90": 53.46111111111111
+            },
+            "phase2_minute": {
+              "n": 123,
+              "p10": 39.56277777777778,
+              "median": 52.74027777777778,
+              "p90": 59.07694444444445
+            },
+            "funded_minute": {
+              "n": 69,
+              "p10": 43.15013888888889,
+              "median": 53.46111111111111,
+              "p90": 59.74027777777778
+            },
+            "first_request_minute": {
+              "n": 12,
+              "p10": 52.91736111111111,
+              "median": 57.69618055555556,
+              "p90": 59.677708333333335
+            }
+          },
+          "mean_cash": 4.1108276077323564,
+          "median_cash_if_paid": 117.27262556060015,
+          "mean_first_cash": 4.1108276077323564,
+          "base_fee_recovered": 6,
+          "fee_plus25_recovered": 6,
+          "fee_plus50_recovered": 5,
+          "regular_fee_recovered": 5,
+          "median_trades": 124.0,
+          "max_sampled_dd": 10.96785670609248,
+          "max_envelope_dd": 10.967864176795612,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1086.736808798888,
+          "median_first_cash_if_paid": 117.27262556060015
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 461,
+          "phase2": 393,
+          "funded": 376,
+          "payout": 284,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 216,
+          "payout_pct": 56.8,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 75.2,
+          "timing": {
+            "phase1_minute": {
+              "n": 461,
+              "p10": 28.089583333333334,
+              "median": 45.67638888888889,
+              "p90": 85.875
+            },
+            "phase2_minute": {
+              "n": 393,
+              "p10": 46.625,
+              "median": 74.83333333333333,
+              "p90": 106.78583333333334
+            },
+            "funded_minute": {
+              "n": 376,
+              "p10": 53.56180555555556,
+              "median": 80.7357638888889,
+              "p90": 109.63506944444444
+            },
+            "first_request_minute": {
+              "n": 284,
+              "p10": 66.87104166666667,
+              "median": 91.60347222222222,
+              "p90": 115.53493055555556
+            }
+          },
+          "mean_cash": 366.9684964117209,
+          "median_cash_if_paid": 583.1226374633727,
+          "mean_first_cash": 162.36230720020765,
+          "base_fee_recovered": 264,
+          "fee_plus25_recovered": 256,
+          "fee_plus50_recovered": 248,
+          "regular_fee_recovered": 249,
+          "median_trades": 235.0,
+          "max_sampled_dd": 11.95533408387888,
+          "max_envelope_dd": 12.004843509222809,
+          "no_entry_last30days": 10,
+          "median_ending_balance_headroom": 1018.3121615195369,
+          "median_first_cash_if_paid": 269.8438484425307
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 487,
+          "phase2": 462,
+          "funded": 457,
+          "payout": 435,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 65,
+          "payout_pct": 87.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 91.4,
+          "timing": {
+            "phase1_minute": {
+              "n": 487,
+              "p10": 28.089583333333334,
+              "median": 46.791666666666664,
+              "p90": 96.65250000000009
+            },
+            "phase2_minute": {
+              "n": 462,
+              "p10": 46.90895833333333,
+              "median": 80.88611111111112,
+              "p90": 135.62840277777778
+            },
+            "funded_minute": {
+              "n": 457,
+              "p10": 53.65,
+              "median": 87.71805555555555,
+              "p90": 137.54305555555555
+            },
+            "first_request_minute": {
+              "n": 435,
+              "p10": 70.83416666666666,
+              "median": 105.91666666666667,
+              "p90": 149.8913888888889
+            }
+          },
+          "mean_cash": 1123.2732027338477,
+          "median_cash_if_paid": 1263.4119178327703,
+          "mean_first_cash": 238.4727822418458,
+          "base_fee_recovered": 426,
+          "fee_plus25_recovered": 421,
+          "fee_plus50_recovered": 418,
+          "regular_fee_recovered": 418,
+          "median_trades": 361.0,
+          "max_sampled_dd": 12.050855182953947,
+          "max_envelope_dd": 12.100364608297877,
+          "no_entry_last30days": 21,
+          "median_ending_balance_headroom": 1006.3035694521841,
+          "median_first_cash_if_paid": 266.99785592311383
+        }
+      ],
+      "artifact": "c2-0-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "FTMO existing guards 0.50%",
+        "firm": "FTMO",
+        "capital": 10000,
+        "risk": 0.005,
+        "core": false,
+        "existing": true,
+        "withdraw_all": false
+      },
+      "stress": true,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 5,
+          "phase2": 0,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 5,
+              "p10": 28.91611111111111,
+              "median": 28.977777777777778,
+              "p90": 29.720555555555556
+            },
+            "phase2_minute": null,
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 63.0,
+          "max_sampled_dd": 8.234603805774896,
+          "max_envelope_dd": 8.2569008004038,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 1198.5274814874538,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 115,
+          "phase2": 7,
+          "funded": 0,
+          "payout": 0,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 500,
+          "payout_pct": 0.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 0.0,
+          "timing": {
+            "phase1_minute": {
+              "n": 115,
+              "p10": 32.15,
+              "median": 49.829861111111114,
+              "p90": 59.045833333333334
+            },
+            "phase2_minute": {
+              "n": 7,
+              "p10": 58.441805555555554,
+              "median": 59.084722222222226,
+              "p90": 59.78402777777778
+            },
+            "funded_minute": null,
+            "first_request_minute": null
+          },
+          "mean_cash": 0.0,
+          "median_cash_if_paid": null,
+          "mean_first_cash": 0.0,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 127.0,
+          "max_sampled_dd": 12.8478347075682,
+          "max_envelope_dd": 12.8478347075682,
+          "no_entry_last30days": 12,
+          "median_ending_balance_headroom": 1155.486814150312,
+          "median_first_cash_if_paid": null
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 272,
+          "phase2": 123,
+          "funded": 103,
+          "payout": 59,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 441,
+          "payout_pct": 11.799999999999999,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 20.599999999999998,
+          "timing": {
+            "phase1_minute": {
+              "n": 272,
+              "p10": 38.68277777777778,
+              "median": 67.6375,
+              "p90": 107.12770833333333
+            },
+            "phase2_minute": {
+              "n": 123,
+              "p10": 64.65638888888888,
+              "median": 92.86805555555556,
+              "p90": 114.3375
+            },
+            "funded_minute": {
+              "n": 103,
+              "p10": 70.68666666666667,
+              "median": 94.875,
+              "p90": 113.87569444444445
+            },
+            "first_request_minute": {
+              "n": 59,
+              "p10": 84.60763888888889,
+              "median": 102.66666666666667,
+              "p90": 115.35569444444445
+            }
+          },
+          "mean_cash": 33.311538446816385,
+          "median_cash_if_paid": 231.56763684722392,
+          "mean_first_cash": 22.033208728144636,
+          "base_fee_recovered": 46,
+          "fee_plus25_recovered": 45,
+          "fee_plus50_recovered": 41,
+          "regular_fee_recovered": 41,
+          "median_trades": 242.0,
+          "max_sampled_dd": 16.384791230698102,
+          "max_envelope_dd": 16.384791230698102,
+          "no_entry_last30days": 69,
+          "median_ending_balance_headroom": 1000.0,
+          "median_first_cash_if_paid": 191.43585243762357
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 347,
+          "phase2": 227,
+          "funded": 218,
+          "payout": 172,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 328,
+          "payout_pct": 34.4,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 43.6,
+          "timing": {
+            "phase1_minute": {
+              "n": 347,
+              "p10": 42.622499999999995,
+              "median": 80.66666666666667,
+              "p90": 147.5701388888889
+            },
+            "phase2_minute": {
+              "n": 227,
+              "p10": 72.34722222222223,
+              "median": 115.66666666666667,
+              "p90": 165.24625
+            },
+            "funded_minute": {
+              "n": 218,
+              "p10": 78.79076388888889,
+              "median": 121.10659722222223,
+              "p90": 165.55194444444444
+            },
+            "first_request_minute": {
+              "n": 172,
+              "p10": 94.45833333333333,
+              "median": 133.56770833333334,
+              "p90": 169.03666666666666
+            }
+          },
+          "mean_cash": 185.042659996657,
+          "median_cash_if_paid": 472.05648953739217,
+          "mean_first_cash": 65.01207924985177,
+          "base_fee_recovered": 160,
+          "fee_plus25_recovered": 158,
+          "fee_plus50_recovered": 154,
+          "regular_fee_recovered": 155,
+          "median_trades": 358.0,
+          "max_sampled_dd": 16.727069700372592,
+          "max_envelope_dd": 16.807010194218673,
+          "no_entry_last30days": 126,
+          "median_ending_balance_headroom": 837.129294405061,
+          "median_first_cash_if_paid": 174.63510052264394
+        }
+      ],
+      "artifact": "c2-1-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "Instant full13 0.15%",
+        "firm": "Instant",
+        "capital": 5000,
+        "risk": 0.0015,
+        "core": false,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": false,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 351,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 149,
+          "payout_pct": 70.19999999999999,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 351,
+              "p10": 14.565972222222221,
+              "median": 18.561805555555555,
+              "p90": 28.561805555555555
+            }
+          },
+          "mean_cash": 32.59837830019232,
+          "median_cash_if_paid": 41.809724971417104,
+          "mean_first_cash": 30.8957518839153,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 40.0,
+          "max_sampled_dd": 1.5142521812964331,
+          "max_envelope_dd": 1.526892177634327,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 237.18134117429008,
+          "median_first_cash_if_paid": 41.446162504292346
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 464,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 36,
+          "payout_pct": 92.80000000000001,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 464,
+              "p10": 14.565972222222221,
+              "median": 22.541319444444447,
+              "p90": 39.60604166666667
+            }
+          },
+          "mean_cash": 63.01423482931167,
+          "median_cash_if_paid": 75.94070860144947,
+          "mean_first_cash": 40.23113528723588,
+          "base_fee_recovered": 17,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 82.0,
+          "max_sampled_dd": 2.183115802682332,
+          "max_envelope_dd": 2.1847717088922765,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 188.55730696708406,
+          "median_first_cash_if_paid": 41.2576180362068
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 498,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 2,
+          "payout_pct": 99.6,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 498,
+              "p10": 14.565972222222221,
+              "median": 23.561805555555555,
+              "p90": 52.76243055555556
+            }
+          },
+          "mean_cash": 86.87885385691128,
+          "median_cash_if_paid": 83.7145875602248,
+          "mean_first_cash": 42.9519035332103,
+          "base_fee_recovered": 67,
+          "fee_plus25_recovered": 27,
+          "fee_plus50_recovered": 13,
+          "regular_fee_recovered": 13,
+          "median_trades": 159.0,
+          "max_sampled_dd": 2.906667067640428,
+          "max_envelope_dd": 2.9106670676404245,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 165.15049364812057,
+          "median_first_cash_if_paid": 40.91008617007483
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 499,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 1,
+          "payout_pct": 99.8,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 499,
+              "p10": 14.565972222222221,
+              "median": 23.561805555555555,
+              "p90": 52.97305555555556
+            }
+          },
+          "mean_cash": 123.62757253226172,
+          "median_cash_if_paid": 115.06082421631527,
+          "mean_first_cash": 43.027738899444586,
+          "base_fee_recovered": 282,
+          "fee_plus25_recovered": 187,
+          "fee_plus50_recovered": 108,
+          "regular_fee_recovered": 121,
+          "median_trades": 239.5,
+          "max_sampled_dd": 2.906667067640428,
+          "max_envelope_dd": 2.9106670676404245,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 158.13028008619722,
+          "median_first_cash_if_paid": 40.632516419127114
+        }
+      ],
+      "artifact": "c3-0-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "Instant full13 0.15%",
+        "firm": "Instant",
+        "capital": 5000,
+        "risk": 0.0015,
+        "core": false,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": true,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 77,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 423,
+          "payout_pct": 15.4,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 77,
+              "p10": 14.5625,
+              "median": 17.740277777777777,
+              "p90": 29.82638888888889
+            }
+          },
+          "mean_cash": 7.223657981850304,
+          "median_cash_if_paid": 41.14040060379084,
+          "mean_first_cash": 7.223657981850304,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 40.0,
+          "max_sampled_dd": 1.8551248791802575,
+          "max_envelope_dd": 1.8690288751519255,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 272.6933811393483,
+          "median_first_cash_if_paid": 41.14040060379084
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 195,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 305,
+          "payout_pct": 39.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 195,
+              "p10": 14.977777777777778,
+              "median": 31.742361111111112,
+              "p90": 57.86805555555556
+            }
+          },
+          "mean_cash": 18.840893643458024,
+          "median_cash_if_paid": 41.78115052002904,
+          "mean_first_cash": 17.159810107291417,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 83.0,
+          "max_sampled_dd": 2.9653511442911986,
+          "max_envelope_dd": 2.9657163434183893,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 243.63244223915035,
+          "median_first_cash_if_paid": 41.14040060379084
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 306,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 194,
+          "payout_pct": 61.199999999999996,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 306,
+              "p10": 15.833333333333334,
+              "median": 49.977777777777774,
+              "p90": 99.87708333333333
+            }
+          },
+          "mean_cash": 34.57141910919498,
+          "median_cash_if_paid": 47.3934561197897,
+          "mean_first_cash": 26.54200884120194,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 161.5,
+          "max_sampled_dd": 4.13314446406539,
+          "max_envelope_dd": 4.141834461547696,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 208.58741958456085,
+          "median_first_cash_if_paid": 40.879733831536484
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 362,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 138,
+          "payout_pct": 72.39999999999999,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 362,
+              "p10": 15.833333333333334,
+              "median": 58.01631944444445,
+              "p90": 141.84159722222222
+            }
+          },
+          "mean_cash": 45.21905689169704,
+          "median_cash_if_paid": 59.70837037818382,
+          "mean_first_cash": 31.32110387371279,
+          "base_fee_recovered": 2,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 242.0,
+          "max_sampled_dd": 4.814717486431091,
+          "max_envelope_dd": 4.822434656542082,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 183.0302942226126,
+          "median_first_cash_if_paid": 40.555547267555994
+        }
+      ],
+      "artifact": "c3-1-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "Instant full13 0.25%",
+        "firm": "Instant",
+        "capital": 5000,
+        "risk": 0.0025,
+        "core": false,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": false,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 408,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 92,
+          "payout_pct": 81.6,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 408,
+              "p10": 14.565972222222221,
+              "median": 15.8375,
+              "p90": 24.740277777777777
+            }
+          },
+          "mean_cash": 49.756856851713486,
+          "median_cash_if_paid": 56.80533736204634,
+          "mean_first_cash": 47.50473913387685,
+          "base_fee_recovered": 26,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 38.0,
+          "max_sampled_dd": 2.370215874223741,
+          "max_envelope_dd": 2.3860158696460894,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 207.1483339173219,
+          "median_first_cash_if_paid": 54.51450117025033
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 481,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 19,
+          "payout_pct": 96.2,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 481,
+              "p10": 14.565972222222221,
+              "median": 16.292361111111113,
+              "p90": 32.666666666666664
+            }
+          },
+          "mean_cash": 76.84819705753645,
+          "median_cash_if_paid": 81.14367021581737,
+          "mean_first_cash": 54.624230112380125,
+          "base_fee_recovered": 71,
+          "fee_plus25_recovered": 5,
+          "fee_plus50_recovered": 2,
+          "regular_fee_recovered": 3,
+          "median_trades": 78.0,
+          "max_sampled_dd": 3.2411767159565716,
+          "max_envelope_dd": 3.2428326224318695,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 168.38024805420673,
+          "median_first_cash_if_paid": 53.24725841192412
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 496,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 4,
+          "payout_pct": 99.2,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 496,
+              "p10": 14.565972222222221,
+              "median": 16.833333333333332,
+              "p90": 37.10486111111111
+            }
+          },
+          "mean_cash": 102.09949094116325,
+          "median_cash_if_paid": 96.33343957830783,
+          "mean_first_cash": 56.11894480327901,
+          "base_fee_recovered": 184,
+          "fee_plus25_recovered": 84,
+          "fee_plus50_recovered": 40,
+          "regular_fee_recovered": 44,
+          "median_trades": 153.0,
+          "max_sampled_dd": 3.835557111899907,
+          "max_envelope_dd": 3.8385571118999,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 154.53621932280066,
+          "median_first_cash_if_paid": 53.24725841192412
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 499,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 1,
+          "payout_pct": 99.8,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 499,
+              "p10": 14.565972222222221,
+              "median": 16.833333333333332,
+              "p90": 38.74027777777778
+            }
+          },
+          "mean_cash": 151.11280699794122,
+          "median_cash_if_paid": 141.96314132980524,
+          "mean_first_cash": 56.443631463767595,
+          "base_fee_recovered": 366,
+          "fee_plus25_recovered": 279,
+          "fee_plus50_recovered": 209,
+          "regular_fee_recovered": 224,
+          "median_trades": 231.0,
+          "max_sampled_dd": 3.835557111899907,
+          "max_envelope_dd": 3.8385571118999,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 152.68693378006492,
+          "median_first_cash_if_paid": 53.24725841192412
+        }
+      ],
+      "artifact": "c4-0-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "Instant full13 0.25%",
+        "firm": "Instant",
+        "capital": 5000,
+        "risk": 0.0025,
+        "core": false,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": true,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 206,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 294,
+          "payout_pct": 41.199999999999996,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 206,
+              "p10": 14.565972222222221,
+              "median": 16.104861111111113,
+              "p90": 24.948611111111113
+            }
+          },
+          "mean_cash": 20.807956489491016,
+          "median_cash_if_paid": 43.97425881647741,
+          "mean_first_cash": 20.02211634381627,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 37.0,
+          "max_sampled_dd": 2.838764435265293,
+          "max_envelope_dd": 2.854406430733434,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 230.68915262654855,
+          "median_first_cash_if_paid": 41.56715520632929
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 293,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 207,
+          "payout_pct": 58.599999999999994,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 293,
+              "p10": 14.565972222222221,
+              "median": 21.977777777777778,
+              "p90": 49.19472222222226
+            }
+          },
+          "mean_cash": 35.492785051250905,
+          "median_cash_if_paid": 49.455889489148284,
+          "mean_first_cash": 28.022697214327632,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 77.0,
+          "max_sampled_dd": 3.932129284313342,
+          "max_envelope_dd": 3.932494483440532,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 200.1662134096323,
+          "median_first_cash_if_paid": 41.44580775443219
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 354,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 146,
+          "payout_pct": 70.8,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 354,
+              "p10": 14.565972222222221,
+              "median": 24.742361111111112,
+              "p90": 76.68854166666662
+            }
+          },
+          "mean_cash": 49.28358523686245,
+          "median_cash_if_paid": 76.70237621092409,
+          "mean_first_cash": 33.65541179786488,
+          "base_fee_recovered": 1,
+          "fee_plus25_recovered": 1,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 151.0,
+          "max_sampled_dd": 4.6354278222958785,
+          "max_envelope_dd": 4.656515073439205,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 154.54000628415952,
+          "median_first_cash_if_paid": 41.64732684636751
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 386,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 114,
+          "payout_pct": 77.2,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 386,
+              "p10": 14.565972222222221,
+              "median": 28.926388888888887,
+              "p90": 107.00729166666667
+            }
+          },
+          "mean_cash": 57.61277192667338,
+          "median_cash_if_paid": 78.91624960974359,
+          "mean_first_cash": 36.601688569083116,
+          "base_fee_recovered": 5,
+          "fee_plus25_recovered": 4,
+          "fee_plus50_recovered": 1,
+          "regular_fee_recovered": 1,
+          "median_trades": 225.0,
+          "max_sampled_dd": 5.044444697558193,
+          "max_envelope_dd": 5.0521618676691835,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 139.86010340125176,
+          "median_first_cash_if_paid": 41.59539522924074
+        }
+      ],
+      "artifact": "c4-1-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "Instant core4 0.25%",
+        "firm": "Instant",
+        "capital": 5000,
+        "risk": 0.0025,
+        "core": true,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": false,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 354,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 146,
+          "payout_pct": 70.8,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 354,
+              "p10": 14.565972222222221,
+              "median": 15.62361111111111,
+              "p90": 23.625
+            }
+          },
+          "mean_cash": 37.955538203867455,
+          "median_cash_if_paid": 49.16904181352902,
+          "mean_first_cash": 37.265451352496605,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 31.0,
+          "max_sampled_dd": 2.4177955279611707,
+          "max_envelope_dd": 2.4177955279611707,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 218.37571423212103,
+          "median_first_cash_if_paid": 48.906246664875965
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 441,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 59,
+          "payout_pct": 88.2,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 441,
+              "p10": 14.565972222222221,
+              "median": 16.625,
+              "p90": 38.74236111111111
+            }
+          },
+          "mean_cash": 64.7764084377897,
+          "median_cash_if_paid": 76.2485430726877,
+          "mean_first_cash": 44.982218117519515,
+          "base_fee_recovered": 17,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 63.0,
+          "max_sampled_dd": 3.231121755691074,
+          "max_envelope_dd": 3.232777663965717,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 178.85669229849645,
+          "median_first_cash_if_paid": 46.3620692493615
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 476,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 24,
+          "payout_pct": 95.19999999999999,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 476,
+              "p10": 14.565972222222221,
+              "median": 16.757638888888888,
+              "p90": 53.053125
+            }
+          },
+          "mean_cash": 81.27700350495451,
+          "median_cash_if_paid": 85.72523761799002,
+          "mean_first_cash": 48.03101906932222,
+          "base_fee_recovered": 48,
+          "fee_plus25_recovered": 9,
+          "fee_plus50_recovered": 3,
+          "regular_fee_recovered": 3,
+          "median_trades": 123.5,
+          "max_sampled_dd": 3.523240525922538,
+          "max_envelope_dd": 3.5242578472492827,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 160.94440569617973,
+          "median_first_cash_if_paid": 46.3620692493615
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 493,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 7,
+          "payout_pct": 98.6,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 493,
+              "p10": 14.565972222222221,
+              "median": 16.993055555555557,
+              "p90": 63.06916666666671
+            }
+          },
+          "mean_cash": 101.61218152442116,
+          "median_cash_if_paid": 95.6245488605762,
+          "mean_first_cash": 49.52373034542495,
+          "base_fee_recovered": 166,
+          "fee_plus25_recovered": 84,
+          "fee_plus50_recovered": 40,
+          "regular_fee_recovered": 47,
+          "median_trades": 187.0,
+          "max_sampled_dd": 3.523240525922538,
+          "max_envelope_dd": 3.5242578472492827,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 157.59037193482254,
+          "median_first_cash_if_paid": 46.3620692493615
+        }
+      ],
+      "artifact": "c5-0-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "Instant core4 0.25%",
+        "firm": "Instant",
+        "capital": 5000,
+        "risk": 0.0025,
+        "core": true,
+        "existing": false,
+        "withdraw_all": false
+      },
+      "stress": true,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 199,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 301,
+          "payout_pct": 39.800000000000004,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 199,
+              "p10": 14.565972222222221,
+              "median": 17.970833333333335,
+              "p90": 25.309722222222224
+            }
+          },
+          "mean_cash": 16.817250938466586,
+          "median_cash_if_paid": 39.93807806294444,
+          "mean_first_cash": 16.817250938466586,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 31.0,
+          "max_sampled_dd": 2.8696958625013758,
+          "max_envelope_dd": 2.8696958625013758,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 235.48693074602943,
+          "median_first_cash_if_paid": 39.93807806294444
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 302,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 198,
+          "payout_pct": 60.4,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 302,
+              "p10": 14.565972222222221,
+              "median": 23.625,
+              "p90": 52.525000000000034
+            }
+          },
+          "mean_cash": 30.244634088900458,
+          "median_cash_if_paid": 41.27507963858852,
+          "mean_first_cash": 25.142270985109068,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 63.0,
+          "max_sampled_dd": 3.9768088142766644,
+          "max_envelope_dd": 3.981049363459406,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 204.16210815481008,
+          "median_first_cash_if_paid": 39.90977173733899
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 360,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 140,
+          "payout_pct": 72.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 360,
+              "p10": 15.46597222222222,
+              "median": 25.309722222222224,
+              "p90": 73.96215277777777
+            }
+          },
+          "mean_cash": 40.967406689089486,
+          "median_cash_if_paid": 47.02553920967421,
+          "mean_first_cash": 29.985754628553334,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 123.0,
+          "max_sampled_dd": 4.625465251013193,
+          "max_envelope_dd": 4.627094085546887,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 165.39848061400062,
+          "median_first_cash_if_paid": 39.90977173733899
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 386,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 114,
+          "payout_pct": 77.2,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 386,
+              "p10": 15.565972222222221,
+              "median": 29.561805555555555,
+              "p90": 107.09652777777778
+            }
+          },
+          "mean_cash": 47.22036817259249,
+          "median_cash_if_paid": 58.27371557750148,
+          "mean_first_cash": 32.244493361782006,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 185.0,
+          "max_sampled_dd": 4.9264621290284225,
+          "max_envelope_dd": 4.928090963562117,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 152.2466065302351,
+          "median_first_cash_if_paid": 39.90667553502462
+        }
+      ],
+      "artifact": "c5-1-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "Instant core4 0.25% all-profit withdrawal",
+        "firm": "Instant",
+        "capital": 5000,
+        "risk": 0.0025,
+        "core": true,
+        "existing": false,
+        "withdraw_all": true
+      },
+      "stress": false,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 354,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 146,
+          "payout_pct": 70.8,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 354,
+              "p10": 14.565972222222221,
+              "median": 15.62361111111111,
+              "p90": 23.625
+            }
+          },
+          "mean_cash": 38.76341060749245,
+          "median_cash_if_paid": 49.16904181352902,
+          "mean_first_cash": 37.265451352496605,
+          "base_fee_recovered": 7,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 31.0,
+          "max_sampled_dd": 2.4177955279611707,
+          "max_envelope_dd": 2.4177955279611707,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 218.37571423212103,
+          "median_first_cash_if_paid": 48.906246664875965
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 441,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 59,
+          "payout_pct": 88.2,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 441,
+              "p10": 14.565972222222221,
+              "median": 16.625,
+              "p90": 38.74236111111111
+            }
+          },
+          "mean_cash": 72.85654020656098,
+          "median_cash_if_paid": 84.75197987105693,
+          "mean_first_cash": 44.982218117519515,
+          "base_fee_recovered": 103,
+          "fee_plus25_recovered": 15,
+          "fee_plus50_recovered": 1,
+          "regular_fee_recovered": 2,
+          "median_trades": 63.0,
+          "max_sampled_dd": 3.231121755691074,
+          "max_envelope_dd": 3.232777663965717,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 168.92838780704778,
+          "median_first_cash_if_paid": 46.3620692493615
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 476,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 24,
+          "payout_pct": 95.19999999999999,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 476,
+              "p10": 14.565972222222221,
+              "median": 16.757638888888888,
+              "p90": 53.053125
+            }
+          },
+          "mean_cash": 112.29376017777348,
+          "median_cash_if_paid": 124.46020961466942,
+          "mean_first_cash": 48.03101906932222,
+          "base_fee_recovered": 340,
+          "fee_plus25_recovered": 190,
+          "fee_plus50_recovered": 58,
+          "regular_fee_recovered": 72,
+          "median_trades": 118.0,
+          "max_sampled_dd": 3.523240525922538,
+          "max_envelope_dd": 3.5242578472492827,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 110.13673283456501,
+          "median_first_cash_if_paid": 46.3620692493615
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 493,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 7,
+          "payout_pct": 98.6,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 493,
+              "p10": 14.565972222222221,
+              "median": 16.993055555555557,
+              "p90": 63.06916666666671
+            }
+          },
+          "mean_cash": 138.4716501568001,
+          "median_cash_if_paid": 145.73720707599048,
+          "mean_first_cash": 49.52373034542495,
+          "base_fee_recovered": 440,
+          "fee_plus25_recovered": 343,
+          "fee_plus50_recovered": 191,
+          "regular_fee_recovered": 221,
+          "median_trades": 165.0,
+          "max_sampled_dd": 3.523240525922538,
+          "max_envelope_dd": 3.5242578472492827,
+          "no_entry_last30days": 10,
+          "median_ending_balance_headroom": 80.31028850037819,
+          "median_first_cash_if_paid": 46.3620692493615
+        }
+      ],
+      "artifact": "c6-0-bootstrap.npz"
+    },
+    {
+      "config": {
+        "name": "Instant core4 0.25% all-profit withdrawal",
+        "firm": "Instant",
+        "capital": 5000,
+        "risk": 0.0025,
+        "core": true,
+        "existing": false,
+        "withdraw_all": true
+      },
+      "stress": true,
+      "summary": [
+        {
+          "days": 30,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 199,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 301,
+          "payout_pct": 39.800000000000004,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 199,
+              "p10": 14.565972222222221,
+              "median": 17.970833333333335,
+              "p90": 25.309722222222224
+            }
+          },
+          "mean_cash": 16.817250938466586,
+          "median_cash_if_paid": 39.93807806294444,
+          "mean_first_cash": 16.817250938466586,
+          "base_fee_recovered": 0,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 31.0,
+          "max_sampled_dd": 2.8696958625013758,
+          "max_envelope_dd": 2.8696958625013758,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 235.48693074602943,
+          "median_first_cash_if_paid": 39.93807806294444
+        },
+        {
+          "days": 60,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 302,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 198,
+          "payout_pct": 60.4,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 302,
+              "p10": 14.565972222222221,
+              "median": 23.625,
+              "p90": 52.525000000000034
+            }
+          },
+          "mean_cash": 30.336728020704804,
+          "median_cash_if_paid": 41.27507963858852,
+          "mean_first_cash": 25.142270985109068,
+          "base_fee_recovered": 1,
+          "fee_plus25_recovered": 0,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 63.0,
+          "max_sampled_dd": 3.9768088142766644,
+          "max_envelope_dd": 3.981049363459406,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 204.16210815481008,
+          "median_first_cash_if_paid": 39.90977173733899
+        },
+        {
+          "days": 120,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 360,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 140,
+          "payout_pct": 72.0,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 360,
+              "p10": 15.46597222222222,
+              "median": 25.309722222222224,
+              "p90": 73.96215277777777
+            }
+          },
+          "mean_cash": 42.48073569387832,
+          "median_cash_if_paid": 47.02553920967421,
+          "mean_first_cash": 29.985754628553334,
+          "base_fee_recovered": 19,
+          "fee_plus25_recovered": 1,
+          "fee_plus50_recovered": 0,
+          "regular_fee_recovered": 0,
+          "median_trades": 123.0,
+          "max_sampled_dd": 4.625465251013193,
+          "max_envelope_dd": 4.627094085546887,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 164.03973269930748,
+          "median_first_cash_if_paid": 39.90977173733899
+        },
+        {
+          "days": 180,
+          "starts": 500,
+          "phase1": 0,
+          "phase2": 0,
+          "funded": 500,
+          "payout": 386,
+          "breach_before": 0,
+          "breach_after": 0,
+          "unresolved": 114,
+          "payout_pct": 77.2,
+          "breach_before_pct": 0.0,
+          "breach_total_pct": 0.0,
+          "funded_pct": 100.0,
+          "timing": {
+            "phase1_minute": null,
+            "phase2_minute": null,
+            "funded_minute": {
+              "n": 500,
+              "p10": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "first_request_minute": {
+              "n": 386,
+              "p10": 15.565972222222221,
+              "median": 29.561805555555555,
+              "p90": 107.09652777777778
+            }
+          },
+          "mean_cash": 51.699044480764044,
+          "median_cash_if_paid": 58.27371557750148,
+          "mean_first_cash": 32.244493361782006,
+          "base_fee_recovered": 55,
+          "fee_plus25_recovered": 7,
+          "fee_plus50_recovered": 1,
+          "regular_fee_recovered": 2,
+          "median_trades": 184.0,
+          "max_sampled_dd": 4.9264621290284225,
+          "max_envelope_dd": 4.928090963562117,
+          "no_entry_last30days": 0,
+          "median_ending_balance_headroom": 145.1166955159597,
+          "median_first_cash_if_paid": 39.90667553502462
+        }
+      ],
+      "artifact": "c6-1-bootstrap.npz"
+    }
+  ]
+}

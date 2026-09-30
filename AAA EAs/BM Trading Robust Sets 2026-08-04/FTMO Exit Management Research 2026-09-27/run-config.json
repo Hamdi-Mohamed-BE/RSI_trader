@@ -1,0 +1,444 @@
+{
+  "date": "2026-09-27",
+  "from": "2026.03.02",
+  "to": "2026.08.31",
+  "model": 4,
+  "delay_ms": 150,
+  "note": "Native individual entry-signal reruns on isolated Exness tester; subsequent strict-$10K FTMO portfolio overlay. Not live deployment or independent validation.",
+  "initial_risk": "Original initial stop and native sizing retained for signal ledgers; same strict dollar-risk overlay as prior report.",
+  "variants": {
+    "native": {
+      "InpEMMode": 0
+    },
+    "rr075": {
+      "InpEMMode": 1,
+      "InpEMTargetR": 0.75
+    },
+    "rr050": {
+      "InpEMMode": 1,
+      "InpEMTargetR": 0.5
+    },
+    "atr": {
+      "InpEMMode": 2,
+      "InpEMActivateR": 1,
+      "InpEMATRMultiple": 2
+    },
+    "profile": {
+      "InpEMMode": 3,
+      "InpEMActivateR": 0.5,
+      "InpEMATRMultiple": 2
+    }
+  },
+  "accounts": "No normal or Ava terminal connections. Only existing isolated tester profile. No credentials exported.",
+  "reporting": "All alternatives are exploratory; this previously examined period is not untouched holdout.",
+  "eas": {
+    "gold": {
+      "key": "gold-overnight-value-area/standard",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gold Overnight Value Area EA\\EA\\Gold Overnight Value Area EA.mq5",
+      "wrapper": "gold.mq5",
+      "inputs": {
+        "InpEnableTrading": "true",
+        "InpAdaptivePortfolioControls": "false",
+        "InpRiskMode": "0",
+        "InpFixedRiskMoney": "100",
+        "InpAutoServerUTCOffset": "true",
+        "InpWriteAudit": "false",
+        "InpDirectionMode": "0",
+        "InpBins": "64",
+        "InpValueAreaPercent": "70",
+        "InpMinimumProfileBars": "120",
+        "InpRiskPercent": "1",
+        "InpServerUTCOffsetHours": "0",
+        "InpExpectedLogin": "0",
+        "InpExpectedServer": "",
+        "InpMagic": "89191901",
+        "InpCase": "gold-overnight-va-live",
+        "InpEntryEndMinute": "960",
+        "InpExitMinute": "960",
+        "InpStopMode": "0",
+        "InpMinimumR": "0",
+        "InpTargetR": "0",
+        "InpBreakEvenR": "0",
+        "InpTrailDistanceR": "0"
+      },
+      "source_report": null,
+      "symbol": "XAUUSD",
+      "timeframe": "M5",
+      "variants": [
+        "native",
+        "rr075",
+        "rr050",
+        "atr",
+        "profile"
+      ]
+    },
+    "overnight": {
+      "key": "nasdaq-overnight/standard",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq Overnight Negative Day EA\\Nasdaq Overnight Negative Day EA.mq5",
+      "wrapper": "overnight.mq5",
+      "inputs": {
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpUseDynamicTrailingSL": "false",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpEnableTrading": "true",
+        "InpRequireNegativeDay": "true",
+        "InpNegativeDayDefinition": "0",
+        "InpNegativeDayThresholdPercent": "0",
+        "InpAllowFridayEntry": "true",
+        "InpCashOpenHour": "9",
+        "InpCashOpenMinute": "30",
+        "InpCashCloseHour": "16",
+        "InpCashCloseMinute": "0",
+        "InpEntryHour": "16",
+        "InpEntryMinute": "0",
+        "InpExitHour": "9",
+        "InpExitMinute": "29",
+        "InpEntryWindowMinutes": "10",
+        "InpExitWindowMinutes": "31",
+        "InpMinimumCashSessionBars": "300",
+        "InpRiskPercent": "1",
+        "InpEmergencyStopPercent": "2",
+        "InpRewardRisk": "0",
+        "InpMaxSpreadPoints": "0",
+        "InpMaxDeviationPoints": "30",
+        "InpMagic": "84081601",
+        "InpUseAutomaticLiveServerOffset": "true",
+        "InpTesterServerUTCOffsetHours": "0",
+        "InpManualLiveServerUTCOffsetHours": "0",
+        "InpAdaptivePortfolioControls": "false"
+      },
+      "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\data\\evidence-cache\\v1\\source-runs\\nasdaq-overnight\\standard\\5y.htm",
+      "symbol": "USTEC",
+      "timeframe": "M1",
+      "variants": [
+        "native",
+        "rr075",
+        "rr050",
+        "atr"
+      ]
+    },
+    "ema": {
+      "key": "ema3/safe",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\AAA Final EMA3 EA.mq5",
+      "wrapper": "ema.mq5",
+      "inputs": {
+        "InpUseDynamicTrailingSL": "true",
+        "InpDynamicTriggerFraction": "0.60",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpUseMarkovRegimeFilter": "true",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpEnableTrading": "true",
+        "InpRiskPercent": "1",
+        "InpRewardRisk": "1.7",
+        "InpMagic": "3082026",
+        "InpMaxSpreadPoints": "0",
+        "InpTesterServerClockMode": "1",
+        "InpPivotBars": "5",
+        "InpTrendEMA": "200",
+        "InpTrendSlopeBars": "6",
+        "InpUseTrailing": "false",
+        "InpTrailStartR": "1.5",
+        "InpTrailDistanceR": "1",
+        "InpEMA3SignalTimeframe": "16388",
+        "InpEMA3StopMode": "0",
+        "InpEMA3ATRPeriod": "14",
+        "InpEMA3StopATR": "1.5",
+        "InpEMA3SignalBufferATR": "0.10",
+        "InpEMA3FixedStopPrice": "22.5",
+        "InpEMA3FastEMA": "20",
+        "InpEMA3MediumEMA": "50",
+        "InpAsiaBufferPercent": "0.03",
+        "InpAMDStopBufferRange": "0.03",
+        "InpDmCFixedStopPrice": "22.5",
+        "InpUseEconomicCalendar": "true",
+        "InpNewsExpiryMinutes": "15",
+        "InpNewsStopPrice": "9",
+        "InpAllowProvisionalWeekend": "false",
+        "InpGridLevels": "3",
+        "InpGridRiskPercent": "0.5",
+        "InpWeaknessATRImpulse": "2",
+        "InpAdaptivePortfolioControls": "false"
+      },
+      "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\data\\evidence-cache\\v1\\source-runs\\ema3\\safe\\5y.htm",
+      "symbol": "XAUUSD",
+      "timeframe": "H4",
+      "variants": [
+        "native",
+        "rr075",
+        "rr050",
+        "atr"
+      ]
+    },
+    "orb": {
+      "key": "orb-volume-profile-high-win-0-75r/standard",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.mq5",
+      "wrapper": "orb.mq5",
+      "inputs": {
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpUseDynamicTrailingSL": "true",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpEnableTrading": "true",
+        "InpSessionZone": "0",
+        "InpSessionHour": "9",
+        "InpSessionMinute": "30",
+        "InpOpeningRangeMinutes": "15",
+        "InpTradeWindowMinutes": "120",
+        "InpFlatHour": "15",
+        "InpFlatMinute": "55",
+        "InpWeekdaysOnly": "true",
+        "InpSignalTimeframe": "5",
+        "InpRelativeVolumeDays": "20",
+        "InpMinOpeningRelativeVolume": "0.6",
+        "InpBarVolumeLookback": "20",
+        "InpMinBreakoutRelativeVolume": "0.8",
+        "InpATRTimeframe": "15",
+        "InpATRPeriod": "14",
+        "InpMinRangeATR": "0.2",
+        "InpMaxRangeATR": "1.2",
+        "InpRequireVWAP": "false",
+        "InpUseEMATrend": "false",
+        "InpFastEMA": "20",
+        "InpSlowEMA": "50",
+        "InpUseProfileValueArea": "false",
+        "InpUseProfilePOCBias": "false",
+        "InpUseProfileBoundaryLVN": "false",
+        "InpProfileStartHour": "8",
+        "InpProfileStartMinute": "0",
+        "InpProfileBins": "48",
+        "InpProfileValueAreaPercent": "70.0",
+        "InpMaxBoundaryNodeRatio": "1.00",
+        "InpMinimumProfileTicks": "100",
+        "InpShowProfileLevels": "true",
+        "InpEntryMode": "0",
+        "InpBreakoutBodyMinimum": "0.55",
+        "InpBreakoutBufferATR": "0.03",
+        "InpRetestBars": "3",
+        "InpRetestToleranceATR": "0.15",
+        "InpRetestBodyMinimum": "0.3",
+        "InpStopMode": "1",
+        "InpStopBufferATR": "0.1",
+        "InpMaximumStopATR": "2.0",
+        "InpRewardRisk": "0.75",
+        "InpBreakEvenAtR": "1.0",
+        "InpTrailStartAtR": "0.0",
+        "InpTrailCandleBufferATR": "0.1",
+        "InpRiskPercent": "1.0",
+        "InpMaxSpreadRangePercent": "12.0",
+        "InpMaxDeviationPoints": "30",
+        "InpMagic": "86080708",
+        "InpUseAutomaticLiveServerOffset": "true",
+        "InpTesterServerUTCOffsetHours": "0",
+        "InpManualLiveServerUTCOffsetHours": "0",
+        "InpAdaptivePortfolioControls": "false"
+      },
+      "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\data\\evidence-cache\\v1\\source-runs\\orb-volume-profile-high-win-0-75r\\standard\\5y.htm",
+      "symbol": "XAUUSD",
+      "timeframe": "M5",
+      "variants": [
+        "native",
+        "rr075",
+        "rr050",
+        "atr",
+        "profile"
+      ]
+    },
+    "xau": {
+      "key": "news-pulse-xau/standard",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Event Parameters Research 2026-09-19\\NativeFullBestV2.mq5",
+      "wrapper": "xau.mq5",
+      "inputs": {
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpUseDynamicTrailingSL": "false",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpEnableTrading": "true",
+        "InpEnableBuySide": "true",
+        "InpEnableSellSide": "true",
+        "InpRiskPercent": "0.75",
+        "InpAdaptivePortfolioControls": "false",
+        "InpMagic": "861301",
+        "InpMaxDeviationPoints": "100",
+        "InpUseEconomicCalendar": "true",
+        "InpWatchNFP": "true",
+        "InpWatchCPI": "true",
+        "InpWatchFOMC": "true",
+        "InpMaxQuoteAgeSeconds": "5",
+        "InpCalendarLookaheadDays": "8",
+        "InpCalendarRefreshSeconds": "300",
+        "InpTesterServerClockMode": "0",
+        "InpTesterFromDateUTC": "20260302",
+        "InpTesterToDateUTC": "20260830"
+      },
+      "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Event Parameters Research 2026-09-19\\native\\NativeFullBestV2\\news-event-NativeFullBestV2.htm",
+      "symbol": "XAUUSD",
+      "timeframe": "M1",
+      "variants": [
+        "native",
+        "rr075",
+        "rr050"
+      ]
+    },
+    "xag": {
+      "key": "news-pulse-xag/standard",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Multi Asset Event Parameters 2026-09-19\\XAGFitted.mq5",
+      "wrapper": "xag.mq5",
+      "inputs": {
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpUseDynamicTrailingSL": "false",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpEnableTrading": "true",
+        "InpEnableBuySide": "true",
+        "InpEnableSellSide": "true",
+        "InpRiskPercent": "0.75",
+        "InpAdaptivePortfolioControls": "false",
+        "InpMagic": "861302",
+        "InpMaxDeviationPoints": "100",
+        "InpUseEconomicCalendar": "true",
+        "InpWatchNFP": "true",
+        "InpWatchCPI": "true",
+        "InpWatchFOMC": "true",
+        "InpMaxQuoteAgeSeconds": "5",
+        "InpCalendarLookaheadDays": "8",
+        "InpCalendarRefreshSeconds": "300",
+        "InpTesterServerClockMode": "0",
+        "InpTesterFromDateUTC": "20260302",
+        "InpTesterToDateUTC": "20260830"
+      },
+      "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Multi Asset Event Parameters 2026-09-19\\native\\XAGFitted\\multi-news-XAGFitted.htm",
+      "symbol": "XAGUSD",
+      "timeframe": "M1",
+      "variants": [
+        "native",
+        "rr075",
+        "rr050"
+      ]
+    }
+  },
+  "source_files": {
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gold Overnight Value Area EA\\EA\\Gold Overnight Value Area EA.mq5": {
+      "sha256": "9f0f3d3dd9ecbed6095e2d70cd834f51d3a8a64dccf16c47444550679c8970d5",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\Gold Overnight Value Area EA\\EA\\Gold Overnight Value Area EA.mq5"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Shared\\CalyxAdaptivePortfolio.mqh": {
+      "sha256": "3adaecf62184cdf1568995c92da8e6e39a69bb6392bc8bce735e6f853daee06a",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\_Shared\\CalyxAdaptivePortfolio.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq Overnight Negative Day EA\\Nasdaq Overnight Negative Day EA.mq5": {
+      "sha256": "4ee202a4a9a0129913e9631a092df95b137f500c09d3aa525a0f6d6cd873a401",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\Nasdaq Overnight Negative Day EA\\Nasdaq Overnight Negative Day EA.mq5"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq Overnight Negative Day EA\\SafeRegimeFilter.mqh": {
+      "sha256": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\Nasdaq Overnight Negative Day EA\\SafeRegimeFilter.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq Overnight Negative Day EA\\DynamicTrailingSessionFilter.mqh": {
+      "sha256": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\Nasdaq Overnight Negative Day EA\\DynamicTrailingSessionFilter.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\AAA Final EMA3 EA.mq5": {
+      "sha256": "8cb426382f48f47acf5a5413dc88c28a7f00dd30947b69ae76db069a09da34e0",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\AAA Final EAs\\AAA Final EMA3 EA\\AAA Final EMA3 EA.mq5"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\AAA_Final_Strategy_Engine.mqh": {
+      "sha256": "23f0bbc86d09e6cddf4083d6ff3e75579d36358663aa62d574b28f618d5b2027",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\AAA Final EAs\\AAA Final EMA3 EA\\AAA_Final_Strategy_Engine.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\AAA_Final_Common.mqh": {
+      "sha256": "89652f2750f68d1312705c88f46bd4ecacbd7d341cc55a9ae387d68c07fd4d37",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\AAA Final EAs\\AAA Final EMA3 EA\\AAA_Final_Common.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\DynamicTrailingSessionFilter.mqh": {
+      "sha256": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\AAA Final EAs\\AAA Final EMA3 EA\\DynamicTrailingSessionFilter.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\SafeRegimeFilter.mqh": {
+      "sha256": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\AAA Final EAs\\AAA Final EMA3 EA\\SafeRegimeFilter.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.mq5": {
+      "sha256": "711aabeefec6f2f249501a0f2d0ffc29b6ace0e9c7f917fdf9c8fa51e342ea96",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\ORB Volume Data EA\\ORB Volume Data EA.mq5"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\SafeRegimeFilter.mqh": {
+      "sha256": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\ORB Volume Data EA\\SafeRegimeFilter.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\DynamicTrailingSessionFilter.mqh": {
+      "sha256": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\ORB Volume Data EA\\DynamicTrailingSessionFilter.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Event Parameters Research 2026-09-19\\NativeFullBestV2.mq5": {
+      "sha256": "97e749dc973a092c33e131699e0a2dc9ed8f68a7a8546ea25f63d4b5d77337c1",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\News Pulse Event Parameters Research 2026-09-19\\NativeFullBestV2.mq5"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Event Parameters Research 2026-09-19\\CandidateBase.mqh": {
+      "sha256": "e0910b618d35e84e4af214d0ca062266d8c12479c08aa8bb3a8bd90130903947",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\News Pulse Event Parameters Research 2026-09-19\\CandidateBase.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse EA\\AAA_Final_Common.mqh": {
+      "sha256": "4be16d2124c69817d431019a7c26d7a9cc2a1d7ade30fe0ae86d8cb09821557b",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\AAA Final EAs\\AAA Final News Pulse EA\\AAA_Final_Common.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse EA\\SafeRegimeFilter.mqh": {
+      "sha256": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\AAA Final EAs\\AAA Final News Pulse EA\\SafeRegimeFilter.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse EA\\DynamicTrailingSessionFilter.mqh": {
+      "sha256": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\AAA Final EAs\\AAA Final News Pulse EA\\DynamicTrailingSessionFilter.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Event Parameters Research 2026-09-19\\Calendar.mqh": {
+      "sha256": "98a20e69111cdef9c7675cfc2e299b73f74ca0a294036712afe8e8253c1c411b",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\News Pulse Event Parameters Research 2026-09-19\\Calendar.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Multi Asset Event Parameters 2026-09-19\\XAGFitted.mq5": {
+      "sha256": "1e2295795aeed341d9cc2158a79017e0a1f5ca5a385a1f42ed9387f6f9bad9e9",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\News Pulse Multi Asset Event Parameters 2026-09-19\\XAGFitted.mq5"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Multi Asset Event Parameters 2026-09-19\\CandidateBase.mqh": {
+      "sha256": "e0910b618d35e84e4af214d0ca062266d8c12479c08aa8bb3a8bd90130903947",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\News Pulse Multi Asset Event Parameters 2026-09-19\\CandidateBase.mqh"
+    },
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\News Pulse Multi Asset Event Parameters 2026-09-19\\Calendar.mqh": {
+      "sha256": "98a20e69111cdef9c7675cfc2e299b73f74ca0a294036712afe8e8253c1c411b",
+      "clone": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Exit Management Research 2026-09-27\\snapshot\\News Pulse Multi Asset Event Parameters 2026-09-19\\Calendar.mqh"
+    }
+  }
+}

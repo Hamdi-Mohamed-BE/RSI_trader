@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "case": {
+    "id": "usdjpy-morning",
+    "label": "USDJPY morning range breakout",
+    "symbol": "USDJPY",
+    "mode": 1,
+    "control": false
+  },
+  "period": "5y",
+  "model": 1,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "inputs": {
+    "InpMode": "1",
+    "InpControl": "false",
+    "InpRiskPercent": "1.0",
+    "InpNotionalUSD": "10000.0",
+    "InpServerUtcOffsetHours": "0",
+    "InpMagic": "9274040",
+    "InpTag": "usdjpy-morning-5y-m1"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 35183.2,
+    "net_profit": 25183.2,
+    "return_pct": 251.83,
+    "profit_factor": 1.23,
+    "win_rate_pct": 44.33,
+    "max_drawdown_pct": 33.27,
+    "trades": 1173,
+    "sharpe_ratio": 2.2,
+    "recovery_factor": 2.21,
+    "history_quality": "100%",
+    "max_equity_dd_pct": 33.27,
+    "max_balance_dd_pct": 31.95,
+    "max_equity_dd_usd": 11378.24
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 0,
+    "margin_call": 0,
+    "entry_fail": 0,
+    "close_fail": 0,
+    "cancel_fail": 0
+  },
+  "frozen": {
+    "raw_build": {
+      "source_sha": "5e83f6c6058fc344958e25c2ebd0812260cbcb4240925bf49dc7464553c3d8f0",
+      "binary_sha": "960fbaf7472e0b6e62f34354afd23e62c311b7883c059658f3d31cbc94cef9b5",
+      "rules_sha": "4f1403d3b6841be69c93ea9e0fbdc89d33f79b214ba57a0c98cc812cabee62f9",
+      "config_sha": "f4f730096a7fe6182dd6a9203bd3302cfa1732036623677270bea5568435c549",
+      "compile": "75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 1049 ms elapsed, cpu='X64 Regular'\r\n"
+    },
+    "protocol_sha": "69e9b73c56c86111430617a8dad2476270e27c2c80d5fe0d65d951cb79515b20",
+    "runner_sha": "02f1307a557ea6ecdb205c382fa2a1e3d2f1990be4d14785fac9916ee92b0a57",
+    "periods": {
+      "6m": "2026.03.27",
+      "3y": "2023.09.27",
+      "5y": "2021.09.27"
+    },
+    "end": "2026.09.27",
+    "gate": {
+      "min_pf": 1.15,
+      "min_trades": 30,
+      "positive_net": true,
+      "control": "higher return/equityDD in BOTH 3y and 5y"
+    },
+    "deployment": false
+  },
+  "report_sha": "dd2bc84531436ad08a218ddfa1a84e1f796452010f02eabdc57b20f6ee8fd12f",
+  "elapsed_seconds": 13.549261093139648,
+  "summary": [
+    "IDEA_SUMMARY tag=usdjpy-morning-5y-m1 ranges=1201 missing=97 orders=2378 skips=24 entryfail=0 closefail=0 cancelfail=0",
+    "IDEA_SUMMARY tag=usdjpy-morning-5y-m1 ranges=1201 missing=97 orders=2378 skips=24 entryfail=0 closefail=0 cancelfail=0"
+  ],
+  "symbol_spec": [
+    "IDEA_SPEC symbol=USDJPY contract=100000.00000000 min=0.01000000 max=300.00000000 step=0.01000000 tick=0.00100000 stops=0 clockOffset=0",
+    "IDEA_SPEC symbol=USDJPY contract=100000.00000000 min=0.01000000 max=300.00000000 step=0.01000000 tick=0.00100000 stops=0 clockOffset=0"
+  ],
+  "real_ticks": []
+}

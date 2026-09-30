@@ -1,0 +1,76 @@
+{
+  "hashes": {
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Daily Equity Controls Audit 2026-09-29\\simulate.py": "6b4d5968c8186a6d76c5b91512d0c9cb53c289c1f07fb19b6d5baa764d56cc74",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Daily Equity Controls Audit 2026-09-29\\payout_followup.py": "2b4088d4e53a9530df16f3c5ff9a3a74dd226c87cc59a3b08ca5b8835776642a",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Daily Equity Controls Audit 2026-09-29\\recent-prepared.npz": "4ea68b5adaa95b2660730f33ee54cd8f8078de4c0f628b6801904ae946221e32",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Daily Equity Controls Audit 2026-09-29\\recent-AUDIT.json": "c544855c554d736afff072899e7166bfb31caa7d8d5f28bfae6957cf57e8195a",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Daily Equity Controls Audit 2026-09-29\\MODEL_SPECS.json": "7d8c864d501912abc37ca0d16f8bce67a977be7030d8d93bdb45f0cc2141ebfb",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Daily Equity Controls Audit 2026-09-29\\PAYOUT_RESULTS.json": "f1d1e7f369fb052d36665c628a11b20e96deb3dfd0ff5c9caec35d757e96e719"
+  },
+  "start": 29315520,
+  "end": 29838240,
+  "trades": 972,
+  "eas": [
+    "xau-rsi-vwap",
+    "gold-overnight-value-area",
+    "xau-squeeze-momentum-standard",
+    "dmc-fresh-reaction-us100",
+    "ema3",
+    "xau-trend-progression",
+    "xau-orb-london-ny-overlap-m30",
+    "nasdaq-overnight",
+    "us100-h1-orb-13utc",
+    "usdjpy-london-open-momentum",
+    "us100-month-end-flow",
+    "dmc-current-xau",
+    "nasdaq-5m-candle-momentum"
+  ],
+  "method": "M1 source-trade overlay; copied engine with optional risk parameters only",
+  "configs": [
+    {
+      "name": "Prior benchmark",
+      "risk": 50.0,
+      "fraction": 0.005,
+      "compound": false,
+      "loss": 200.0,
+      "target": 400.0,
+      "cap": 0.0
+    },
+    {
+      "name": "Requested",
+      "risk": 150.0,
+      "fraction": 0.015,
+      "compound": false,
+      "loss": 500.0,
+      "target": 800.0,
+      "cap": 0.0
+    },
+    {
+      "name": "Requested with buffer",
+      "risk": 150.0,
+      "fraction": 0.015,
+      "compound": false,
+      "loss": 400.0,
+      "target": 800.0,
+      "cap": 0.0
+    },
+    {
+      "name": "Middle-risk diagnostic",
+      "risk": 100.0,
+      "fraction": 0.01,
+      "compound": false,
+      "loss": 300.0,
+      "target": 800.0,
+      "cap": 0.0
+    },
+    {
+      "name": "Requested equity-sized",
+      "risk": 150.0,
+      "fraction": 0.015,
+      "compound": true,
+      "loss": 500.0,
+      "target": 800.0,
+      "cap": 0.0
+    }
+  ]
+}

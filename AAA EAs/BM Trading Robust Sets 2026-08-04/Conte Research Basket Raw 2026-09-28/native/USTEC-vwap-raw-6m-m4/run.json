@@ -1,0 +1,75 @@
+{
+  "ok": true,
+  "symbol": "USTEC",
+  "variant": {
+    "name": "vwap-raw",
+    "mode": 1,
+    "both": true,
+    "rr": 0,
+    "protected": false,
+    "control": "day-raw"
+  },
+  "window": "6m",
+  "model": 4,
+  "start": "2026.03.27",
+  "end": "2026.09.27",
+  "warmup_start": "2026.01.26",
+  "build": {
+    "hashes": {
+      "ConteBasket.mq5": "4d48a5ae4d648b0c061104a80e441ad98f6318aeeaaf0c5189cd4f224005cb74",
+      "ConteBasket.ex5": "6e1020ebbe8d5b6b7e25b717ef6334cb65351a6edf393799608ca6f9c9f0d203",
+      "RULES.md": "6f2bbbbbd85411b01beadf01108bc7fbb606a8f5c0454e17ea86578fc96e887d",
+      "run-config.json": "b92dce94c9360ca61c86580ad9660e19fc8d37b27315e292fdcc1c592cdb9336"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 903 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "1",
+    "InpBoth": "true",
+    "InpRR": "0",
+    "InpProtected": "false",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1774569600",
+    "InpTag": "USTEC-vwap-raw-6m-m4",
+    "InpMagic": "9282601"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9265.51,
+    "net_profit": -734.49,
+    "return_pct": -7.34,
+    "profit_factor": 0.98,
+    "win_rate_pct": 17.78,
+    "max_drawdown_pct": 35.35,
+    "trades": 1923,
+    "sharpe_ratio": -0.74,
+    "recovery_factor": -0.16,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 35.35,
+    "idea_pf": 0.9759622433537725
+  },
+  "groups": 1923,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "e8ddfa748188b8c8883565bf28a07cc7e6a4caf90220be09d416ff78e16a1b73",
+  "elapsed_seconds": 39.79839301109314,
+  "summaries": [
+    "CB_SUMMARY tag=USTEC-vwap-raw-6m-m4 entries=1923 signals=1923 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USTEC contract=1.00000000 tick=0.01000000 min=0.05000000 step=0.01000000 stops=0 swaplong=-698.10000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t20:27:04.998\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "DN\t0\t20:27:05.098\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "verified_already_closed_log_lines": 0
+}

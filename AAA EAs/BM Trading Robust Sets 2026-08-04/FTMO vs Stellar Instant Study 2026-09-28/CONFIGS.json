@@ -1,0 +1,111 @@
+{
+  "configs": [
+    {
+      "name": "FTMO full13 0.25%",
+      "firm": "FTMO",
+      "capital": 10000,
+      "risk": 0.0025,
+      "core": false,
+      "existing": false,
+      "withdraw_all": false
+    },
+    {
+      "name": "FTMO full13 0.50%",
+      "firm": "FTMO",
+      "capital": 10000,
+      "risk": 0.005,
+      "core": false,
+      "existing": false,
+      "withdraw_all": false
+    },
+    {
+      "name": "FTMO existing guards 0.50%",
+      "firm": "FTMO",
+      "capital": 10000,
+      "risk": 0.005,
+      "core": false,
+      "existing": true,
+      "withdraw_all": false
+    },
+    {
+      "name": "Instant full13 0.15%",
+      "firm": "Instant",
+      "capital": 5000,
+      "risk": 0.0015,
+      "core": false,
+      "existing": false,
+      "withdraw_all": false
+    },
+    {
+      "name": "Instant full13 0.25%",
+      "firm": "Instant",
+      "capital": 5000,
+      "risk": 0.0025,
+      "core": false,
+      "existing": false,
+      "withdraw_all": false
+    },
+    {
+      "name": "Instant core4 0.25%",
+      "firm": "Instant",
+      "capital": 5000,
+      "risk": 0.0025,
+      "core": true,
+      "existing": false,
+      "withdraw_all": false
+    },
+    {
+      "name": "Instant core4 0.25% all-profit withdrawal",
+      "firm": "Instant",
+      "capital": 5000,
+      "risk": 0.0025,
+      "core": true,
+      "existing": false,
+      "withdraw_all": true
+    }
+  ],
+  "clock": "Prague / seasonal UTC+2/+3 server",
+  "rolling_start": "weekly Mondays",
+  "bootstrap_paths": 500,
+  "bootstrap_block_days": 28,
+  "seed": 20260928,
+  "fields": [
+    "balance",
+    "phase",
+    "trades",
+    "wins",
+    "positive",
+    "negative",
+    "sampled_dd_pct",
+    "envelope_dd_pct",
+    "worst_daily_pct",
+    "phase1_minute",
+    "phase2_minute",
+    "funded_minute",
+    "first_request_minute",
+    "first_cash",
+    "total_cash",
+    "breach_minute",
+    "breach_phase",
+    "max_win_streak",
+    "max_loss_streak",
+    "payout_count",
+    "minimum_headroom",
+    "news_deducted",
+    "quickstrike_blocked",
+    "last_entry_minute",
+    "ending_loss_floor",
+    "open_positions"
+  ],
+  "rejections": [
+    "lot",
+    "margin",
+    "risk",
+    "daily",
+    "loss_stop",
+    "phase_wait",
+    "same_ea",
+    "payout_pause"
+  ],
+  "source_sha256": "15cfff9f40ed0bfb37bdc89e9063b40a7b70847e90444d4bbff5deb57f5e088c"
+}

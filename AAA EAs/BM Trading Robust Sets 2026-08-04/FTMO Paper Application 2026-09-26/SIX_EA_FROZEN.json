@@ -1,0 +1,85 @@
+{
+  "as_of": "2026-09-27",
+  "configs": [
+    {
+      "name": "Three-EA core",
+      "keys": [
+        "gold-overnight-value-area/standard",
+        "news-pulse-xau/standard",
+        "news-pulse-xag/standard"
+      ],
+      "risk": 71.42857142857143,
+      "news_risk": 10.0
+    },
+    {
+      "name": "Six EAs together",
+      "keys": [
+        "gold-overnight-value-area/standard",
+        "news-pulse-xau/standard",
+        "news-pulse-xag/standard",
+        "nasdaq-overnight/standard",
+        "ema3/safe",
+        "orb-volume-profile-high-win-0-75r/standard"
+      ],
+      "risk": 71.42857142857143,
+      "news_risk": 10.0
+    }
+  ],
+  "paths": 1000,
+  "seed": 20260926,
+  "source_start": "2026-03-02T00:00:00+00:00",
+  "source_end": "2026-08-31T00:00:00+00:00",
+  "historical_start": "2026-03-04T00:00:00+00:00",
+  "orb": {
+    "full_native_trades": 304,
+    "full_native_net": 1204.05,
+    "reconstructed_costs": true,
+    "unique_initial_stops": 304,
+    "metadata": {
+      "slug": "orb-volume-profile-high-win-0-75r",
+      "mode": "standard",
+      "from": "2021-09-05",
+      "to": "2026-09-05",
+      "canonical_symbol": "XAUUSD",
+      "timeframe": "M5",
+      "expert_sha256": "c4880a104cbe704c3c78064eb5f11568217a99372217c71b5ff8f4ea2a2b41aa",
+      "settings_sha256": "e658b29a60ab5ee72909f447ab8c7eec13a8687ed98d36ccc806381d838eab00"
+    },
+    "files": {
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\data\\evidence-cache\\v1\\source-runs\\orb-volume-profile-high-win-0-75r\\standard\\5y.htm": "2648321d706b46e0daf9adb9c8e4993106da85ee5f541a60df11ed457fdad4d1",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\data\\evidence-cache\\v1\\products\\orb-volume-profile-high-win-0-75r\\standard\\5y.trades.json": "b99fb9196c8226a79bcc64623d6e17e2e51a467398e483c827893e024bf170e3",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\data\\evidence-cache\\v1\\source-runs\\orb-volume-profile-high-win-0-75r\\standard\\5y.meta.json": "dfc940168fc2acc4a2e68bdfcef74534c1ea722762d9b42250b2cdf0f17643fd",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\05B ORB Volume Profile High Win 0.75R - DYNAMIC 50-20 - ALL DAY.set": "e658b29a60ab5ee72909f447ab8c7eec13a8687ed98d36ccc806381d838eab00",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\app\\mt5_evidence_jobs.py": "13cf39eefb35d3d4813c92005201cfd1d35578dcfb2e4eaf37843bca34375db3"
+    },
+    "limitation": "Saved historical build; no current-binary identity or deployment assertion."
+  },
+  "source_entries": {
+    "gold-overnight-value-area/standard": 100,
+    "news-pulse-xau/standard": 20,
+    "news-pulse-xag/standard": 17,
+    "nasdaq-overnight/standard": 56,
+    "ema3/safe": 17,
+    "orb-volume-profile-high-win-0-75r/standard": 37
+  },
+  "minimum_news_risk": {
+    "news-pulse-xau/standard": [
+      2.0
+    ],
+    "news-pulse-xag/standard": [
+      1.0
+    ]
+  },
+  "checks": {
+    "source_hashes": {
+      "prepared.json": "6953e7cc61a4b8697cced13a76a3318ebfb0d323763c2296d120337652638416",
+      "prepare.py": "6a8fcfbea8e321cfff2de14763ba27038780f7e1374ba7709942c08b59f1e60f",
+      "simulate.py": "1d24d67617483ec4aed546f361087aaf93fcbc71d7fa2b6f50bb91e430d1d7a9"
+    },
+    "new_checks": 7,
+    "historical_parity_fields": 8,
+    "legacy_tests_passed": 9,
+    "phase_tests": 11,
+    "strict_sizing_checks": 14
+  }
+}

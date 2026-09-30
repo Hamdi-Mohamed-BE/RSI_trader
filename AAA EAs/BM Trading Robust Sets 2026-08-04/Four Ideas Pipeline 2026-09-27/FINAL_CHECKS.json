@@ -1,0 +1,187 @@
+{
+  "ok": true,
+  "raw_cases": 36,
+  "raw_trades_audited": 19952,
+  "search_evaluations": 384,
+  "distinct_parameter_vectors": 339,
+  "search_native_runs": [
+    {
+      "case": "direction",
+      "evaluations": 9,
+      "optimization": true
+    },
+    {
+      "case": "entry",
+      "evaluations": 15,
+      "optimization": true
+    },
+    {
+      "case": "exit",
+      "evaluations": 49,
+      "optimization": true
+    },
+    {
+      "case": "filters",
+      "evaluations": 18,
+      "optimization": true
+    },
+    {
+      "case": "holdout",
+      "evaluations": 1,
+      "optimization": false
+    },
+    {
+      "case": "management",
+      "evaluations": 33,
+      "optimization": true
+    },
+    {
+      "case": "neighborhood-0",
+      "evaluations": 27,
+      "optimization": true
+    },
+    {
+      "case": "neighborhood-1",
+      "evaluations": 27,
+      "optimization": true
+    },
+    {
+      "case": "neighborhood-2",
+      "evaluations": 27,
+      "optimization": true
+    },
+    {
+      "case": "parity-extended",
+      "evaluations": 1,
+      "optimization": false
+    },
+    {
+      "case": "parity-off",
+      "evaluations": 1,
+      "optimization": false
+    },
+    {
+      "case": "range_duration",
+      "evaluations": 9,
+      "optimization": true
+    },
+    {
+      "case": "session",
+      "evaluations": 18,
+      "optimization": true
+    },
+    {
+      "case": "stop",
+      "evaluations": 48,
+      "optimization": true
+    },
+    {
+      "case": "timeframe_entry",
+      "evaluations": 29,
+      "optimization": true
+    },
+    {
+      "case": "trailing",
+      "evaluations": 75,
+      "optimization": true
+    },
+    {
+      "case": "validation-0",
+      "evaluations": 1,
+      "optimization": false
+    },
+    {
+      "case": "validation-1",
+      "evaluations": 1,
+      "optimization": false
+    },
+    {
+      "case": "validation-2",
+      "evaluations": 1,
+      "optimization": false
+    }
+  ],
+  "parity": {
+    "parity-off": true,
+    "parity-extended": true
+  },
+  "diagnostics": [
+    {
+      "case": "validation-1",
+      "first_trade": {
+        "number": 1,
+        "lot": 5.22,
+        "intended_risk_pct": 1.0001,
+        "fill_stop_risk_pct": 1.036262572789875,
+        "roundtrip_cost_pct": 0.1305,
+        "ftmo_1_to_30_margin_usd": 17400.0,
+        "equity_at_placement": 10000.0
+      },
+      "max_fill_stop_risk_pct": 7.50422807116019,
+      "median_fill_stop_risk_pct": 0.9997727546300312,
+      "median_roundtrip_cost_pct": 0.2141489680866296,
+      "orders_requiring_more_than_entire_equity_at_ftmo_leverage": 772,
+      "trades": 784,
+      "first_closed_balance_below_9000": {
+        "closed_at": "2024-03-29T10:40:35",
+        "closed_balance": 8049.88,
+        "trade_number": 7
+      },
+      "worst_closed_day": [
+        "2025-04-18",
+        -43782.5
+      ]
+    },
+    {
+      "case": "holdout",
+      "first_trade": {
+        "number": 1,
+        "lot": 26.32,
+        "intended_risk_pct": 0.9994,
+        "fill_stop_risk_pct": 1.2480676763737784,
+        "roundtrip_cost_pct": 0.658,
+        "ftmo_1_to_30_margin_usd": 87733.33333333333,
+        "equity_at_placement": 10000.0
+      },
+      "max_fill_stop_risk_pct": 2.560851905515919,
+      "median_fill_stop_risk_pct": 1.0160707349921232,
+      "median_roundtrip_cost_pct": 0.46089472751681826,
+      "orders_requiring_more_than_entire_equity_at_ftmo_leverage": 446,
+      "trades": 446,
+      "first_closed_balance_below_9000": {
+        "closed_at": "2020-09-30T10:09:21",
+        "closed_balance": 8999.0,
+        "trade_number": 6
+      },
+      "worst_closed_day": [
+        "2020-10-08",
+        -549.4
+      ]
+    }
+  ],
+  "neighborhoods": [
+    {
+      "case": "neighborhood-0",
+      "evaluations": 27,
+      "distinct_active_neighbors": 9,
+      "profitable_fraction": 1.0
+    },
+    {
+      "case": "neighborhood-1",
+      "evaluations": 27,
+      "distinct_active_neighbors": 9,
+      "profitable_fraction": 1.0
+    },
+    {
+      "case": "neighborhood-2",
+      "evaluations": 27,
+      "distinct_active_neighbors": 9,
+      "profitable_fraction": 1.0
+    }
+  ],
+  "fx_conversion_approximation_exceptions": 63,
+  "max_fx_conversion_approximation_difference_usd": 1.7513644151272274,
+  "holdout_rejected": true,
+  "production_changed": false,
+  "live_api_called": false
+}

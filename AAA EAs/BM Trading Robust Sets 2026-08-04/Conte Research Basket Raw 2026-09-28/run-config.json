@@ -1,0 +1,20 @@
+{
+ "symbols":["USTEC","US500"],"end":"2026.09.27",
+ "windows":{"6m":"2026.03.27","1y":"2025.09.27","3y":"2023.09.27","5y":"2021.09.27"},
+ "smoke_start":"2025.11.03","smoke_end":"2025.11.10","deposit":10000,"fixed_risk_money":100,
+ "variants":[
+  {"name":"orb-long-1r","mode":0,"both":false,"rr":1,"protected":true,"control":"orb-control"},
+  {"name":"orb-long-2r","mode":0,"both":false,"rr":2,"protected":true,"control":"orb-control"},
+  {"name":"orb-both-2r","mode":0,"both":true,"rr":2,"protected":true,"control":"orb-control"},
+  {"name":"orb-control","mode":4,"both":false,"rr":1,"protected":true},
+  {"name":"vwap-raw","mode":1,"both":true,"rr":0,"protected":false,"control":"day-raw"},
+  {"name":"vwap-atr","mode":1,"both":true,"rr":0,"protected":true,"control":"twap-atr"},
+  {"name":"twap-atr","mode":5,"both":true,"rr":0,"protected":true},
+  {"name":"overnight-raw","mode":2,"both":false,"rr":0,"protected":false,"control":"day-raw"},
+  {"name":"overnight-atr","mode":2,"both":false,"rr":0,"protected":true,"control":"day-atr"},
+  {"name":"day-raw","mode":3,"both":false,"rr":0,"protected":false},
+  {"name":"day-atr","mode":3,"both":false,"rr":0,"protected":true}
+ ],
+ "seed":9282601,"bootstrap_paths":500,"block_days":28,
+ "gate":"Positive, PF >= 1.15 and at least 30 trades on 3y and 5y, better net profit than named control. Model 1 screens all historical cases; only passing families and their controls advance to Model 4 historical confirmation. All variants get 6m/1y native Model 4."
+}

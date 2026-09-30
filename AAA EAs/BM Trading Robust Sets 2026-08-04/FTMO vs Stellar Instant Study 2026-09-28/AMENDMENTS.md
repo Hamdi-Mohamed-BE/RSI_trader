@@ -1,0 +1,19 @@
+# Method audit and clarifications
+
+28 September 2026. These corrections were made for accounting or observability, not to select a preferred firm or optimize a strategy. The original PROTOCOL.md remains unchanged and its recorded hash remains valid.
+
+- Withdrawal cashflows reduce the daily balance anchor by the same gross withdrawal. A withdrawal is not a trading loss. An initial intermediate run that did not do this was discarded and all published results were rerun.
+- Instant's post-withdrawal floor uses the conservative cycle-relative ratchet described by the firm's next-cycle example; the floor never decreases. Target-platform confirmation is still required.
+- A QuickStrike-blocked request does not permanently pause all future entries; trading can continue within all risk caps. Eligibility is rechecked later.
+- Added ending floor, last entry time and open-position counts. No entry for 30 days is reported separately from account breach; it is an inactivity diagnostic, not proof of permanent inability to trade.
+- First-cash and milestone medians are conditional on completing that milestone within 180 days. They are not unconditional expected completion times. No-completion paths stay in success-rate denominators.
+- FTMO modeled minimum gross request is $25, an internal assumption suitable for a bank-transfer scenario; the official page currently gives $20 closed profit for bank wire and $50 for crypto. The model does not validate a crypto withdrawal at $25.
+- Instant minimum partial gross request of $50 is a research assumption distinct from the official 1% growth eligibility rule. Exact minimum partial requests, checkout EA fee and instrument minimum lots remain unverified.
+- Known news calendar contains 29 distinct saved NFP/CPI/FOMC timestamps, not the complete FundedNext high-impact calendar. Stress additionally deducts 10% of other winning net trade profits. This is a sensitivity, not an exact news adjustment.
+- Source M1 spreads have zero median for USTEC and USDJPY. Native entry/exit fills are retained, but intermediate short-position ask prices can be optimistic where the bar spread is missing. No tick-exact compliance claim is made.
+- Source market gaps are carried forward; largest gaps are documented but not fully classified against historical trading sessions. First/last partial-minute adverse excursions can be missed, while summing multiple positions' same-minute worst prices can overstate simultaneous loss.
+- Bootstrap samples whole trade paths in four-week blocks. The longest trade is about 17.1 days; tails cross block boundaries. Same-EA overlap is rejected. Cross-market relative timing is retained within blocks, but an approximate New York wall-clock shift, broker daylight-saving transitions and block boundaries distort dependence. These 7,000 scenarios are not 7,000 independent pieces of market evidence.
+- Equity drawdown is (running peak minus equity) / initial capital, not divided by the changing peak; peak resets on phase resets and payouts in lifecycle runs. A decline greater than 10% from a prior profit peak is not necessarily a breach of FTMO's static 90%-of-initial floor.
+- Native signals/exits are not regenerated after rejected trades. Signals may differ in a fully integrated multi-EA terminal. The existing-guards case approximates the launcher settings; it is not an exact native reproduction of the wrapper.
+- Admission limits are not emergency liquidation rules. Retained profits are not cash payouts. Unpaid funded profit, account nominal size and fee refunds are excluded from reported USD reward cash. Breach is absorbing; marked open losses on a breached path are not settled as fictitious executed fills.
+- The freeze covered seven configurations and two cost cases. All are reported, including the poor and all-profit-withdrawal comparisons. No production settings were changed.

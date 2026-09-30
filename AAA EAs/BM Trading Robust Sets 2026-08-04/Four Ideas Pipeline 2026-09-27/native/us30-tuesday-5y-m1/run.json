@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "case": {
+    "id": "us30-tuesday",
+    "label": "US30 Turnaround Tuesday",
+    "symbol": "US30",
+    "mode": 2,
+    "control": false
+  },
+  "period": "5y",
+  "model": 1,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "inputs": {
+    "InpMode": "2",
+    "InpControl": "false",
+    "InpRiskPercent": "1.0",
+    "InpNotionalUSD": "10000.0",
+    "InpServerUtcOffsetHours": "0",
+    "InpMagic": "9274040",
+    "InpTag": "us30-tuesday-5y-m1"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 12171.73,
+    "net_profit": 2171.73,
+    "return_pct": 21.72,
+    "profit_factor": 2.15,
+    "win_rate_pct": 70.69,
+    "max_drawdown_pct": 7.6,
+    "trades": 58,
+    "sharpe_ratio": 2.68,
+    "recovery_factor": 2.61,
+    "history_quality": "98%",
+    "max_equity_dd_pct": 7.6,
+    "max_balance_dd_pct": 4.81,
+    "max_equity_dd_usd": 832.72
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 472,
+    "margin_call": 0,
+    "entry_fail": 0,
+    "close_fail": 236,
+    "cancel_fail": 0
+  },
+  "frozen": {
+    "raw_build": {
+      "source_sha": "5e83f6c6058fc344958e25c2ebd0812260cbcb4240925bf49dc7464553c3d8f0",
+      "binary_sha": "960fbaf7472e0b6e62f34354afd23e62c311b7883c059658f3d31cbc94cef9b5",
+      "rules_sha": "4f1403d3b6841be69c93ea9e0fbdc89d33f79b214ba57a0c98cc812cabee62f9",
+      "config_sha": "f4f730096a7fe6182dd6a9203bd3302cfa1732036623677270bea5568435c549",
+      "compile": "75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 1049 ms elapsed, cpu='X64 Regular'\r\n"
+    },
+    "protocol_sha": "69e9b73c56c86111430617a8dad2476270e27c2c80d5fe0d65d951cb79515b20",
+    "runner_sha": "02f1307a557ea6ecdb205c382fa2a1e3d2f1990be4d14785fac9916ee92b0a57",
+    "periods": {
+      "6m": "2026.03.27",
+      "3y": "2023.09.27",
+      "5y": "2021.09.27"
+    },
+    "end": "2026.09.27",
+    "gate": {
+      "min_pf": 1.15,
+      "min_trades": 30,
+      "positive_net": true,
+      "control": "higher return/equityDD in BOTH 3y and 5y"
+    },
+    "deployment": false
+  },
+  "report_sha": "218de16ef519b45f61797611d38c488a55085ee5229582799f04f32d3b3d46f5",
+  "elapsed_seconds": 10.201385974884033,
+  "summary": [
+    "IDEA_SUMMARY tag=us30-tuesday-5y-m1 ranges=0 missing=0 orders=58 skips=0 entryfail=0 closefail=118 cancelfail=0",
+    "IDEA_SUMMARY tag=us30-tuesday-5y-m1 ranges=0 missing=0 orders=58 skips=0 entryfail=0 closefail=118 cancelfail=0"
+  ],
+  "symbol_spec": [
+    "IDEA_SPEC symbol=US30 contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.10000000 stops=0 clockOffset=0",
+    "IDEA_SPEC symbol=US30 contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.10000000 stops=0 clockOffset=0"
+  ],
+  "real_ticks": []
+}

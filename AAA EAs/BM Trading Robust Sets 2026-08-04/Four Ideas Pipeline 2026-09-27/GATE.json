@@ -1,0 +1,3024 @@
+{
+  "decisions": [
+    {
+      "id": "usdjpy-morning",
+      "status": "PASS_NUMERIC_GATE",
+      "checks": [
+        {
+          "period": "3y",
+          "positive": true,
+          "pf": true,
+          "trades": true,
+          "control": true,
+          "history_no_fatal_warning": true
+        },
+        {
+          "period": "5y",
+          "positive": true,
+          "pf": true,
+          "trades": true,
+          "control": true,
+          "history_no_fatal_warning": true
+        }
+      ],
+      "optimization_allowed": true
+    },
+    {
+      "id": "us30-tuesday",
+      "status": "FAIL",
+      "checks": [
+        {
+          "period": "3y",
+          "positive": true,
+          "pf": true,
+          "trades": true,
+          "control": false,
+          "history_no_fatal_warning": true
+        },
+        {
+          "period": "5y",
+          "positive": true,
+          "pf": true,
+          "trades": true,
+          "control": false,
+          "history_no_fatal_warning": true
+        }
+      ],
+      "optimization_allowed": false
+    },
+    {
+      "id": "us100-daily",
+      "status": "FAIL",
+      "checks": [
+        {
+          "period": "3y",
+          "positive": true,
+          "pf": false,
+          "trades": true,
+          "control": false,
+          "history_no_fatal_warning": true
+        },
+        {
+          "period": "5y",
+          "positive": true,
+          "pf": false,
+          "trades": true,
+          "control": true,
+          "history_no_fatal_warning": true
+        }
+      ],
+      "optimization_allowed": false
+    },
+    {
+      "id": "us100-orb",
+      "status": "FAIL",
+      "checks": [
+        {
+          "period": "3y",
+          "positive": true,
+          "pf": false,
+          "trades": true,
+          "control": true,
+          "history_no_fatal_warning": true
+        },
+        {
+          "period": "5y",
+          "positive": true,
+          "pf": false,
+          "trades": true,
+          "control": true,
+          "history_no_fatal_warning": true
+        }
+      ],
+      "optimization_allowed": false
+    }
+  ],
+  "rows": [
+    {
+      "id": "usdjpy-morning",
+      "label": "USDJPY morning range breakout",
+      "period": "6m",
+      "trades": 127,
+      "net_usd": 1994.54,
+      "return_pct": 19.9454,
+      "win_rate_pct": 42.51968503937008,
+      "profit_factor": 1.3638104757805034,
+      "trades_per_month": 21.008491847826086,
+      "trades_per_weekday": 0.9694656488549618,
+      "max_win_streak": 17,
+      "max_loss_streak": 10,
+      "avg_win_streak": 2.076923076923077,
+      "avg_loss_streak": 2.92,
+      "balance_dd_pct": 23.87078839750131,
+      "commission": -216.15,
+      "swap": 0.0,
+      "monthly": {
+        "2026-03": {
+          "trades": 3,
+          "net_usd": 216.42,
+          "wins": 3,
+          "win_rate_pct": 100.0
+        },
+        "2026-04": {
+          "trades": 22,
+          "net_usd": -806.54,
+          "wins": 6,
+          "win_rate_pct": 27.272727272727273
+        },
+        "2026-05": {
+          "trades": 20,
+          "net_usd": -849.98,
+          "wins": 5,
+          "win_rate_pct": 25.0
+        },
+        "2026-06": {
+          "trades": 21,
+          "net_usd": -588.21,
+          "wins": 6,
+          "win_rate_pct": 28.571428571428573
+        },
+        "2026-07": {
+          "trades": 22,
+          "net_usd": 875.85,
+          "wins": 5,
+          "win_rate_pct": 22.727272727272727
+        },
+        "2026-08": {
+          "trades": 20,
+          "net_usd": 758.26,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 2388.74,
+          "wins": 18,
+          "win_rate_pct": 94.73684210526316
+        }
+      },
+      "equity_dd_pct": 24.35,
+      "quality": "100% real ticks",
+      "late_exits": 0,
+      "first_trade": "2026-03-27T06:59:28",
+      "last_trade": "2026-09-25T15:00:00",
+      "report_sha": "72ad24fb3902b96a1216dad8d81e34e89fcb106e33960a2c957f61656ee8cbdb",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\usdjpy-morning-6m-m4",
+      "history_warnings": []
+    },
+    {
+      "id": "usdjpy-morning",
+      "label": "USDJPY morning range breakout",
+      "period": "1y",
+      "trades": 252,
+      "net_usd": 2523.78,
+      "return_pct": 25.237799999999996,
+      "win_rate_pct": 42.857142857142854,
+      "profit_factor": 1.2060336213483804,
+      "trades_per_month": 21.014383561643836,
+      "trades_per_weekday": 0.9692307692307692,
+      "max_win_streak": 17,
+      "max_loss_streak": 10,
+      "avg_win_streak": 1.8620689655172413,
+      "avg_loss_streak": 2.526315789473684,
+      "balance_dd_pct": 31.344790238784277,
+      "commission": -375.3,
+      "swap": 0.0,
+      "monthly": {
+        "2025-09": {
+          "trades": 2,
+          "net_usd": 340.23,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2025-10": {
+          "trades": 23,
+          "net_usd": -265.41,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2025-11": {
+          "trades": 20,
+          "net_usd": 826.24,
+          "wins": 12,
+          "win_rate_pct": 60.0
+        },
+        "2025-12": {
+          "trades": 20,
+          "net_usd": 599.33,
+          "wins": 10,
+          "win_rate_pct": 50.0
+        },
+        "2026-01": {
+          "trades": 21,
+          "net_usd": -416.2,
+          "wins": 7,
+          "win_rate_pct": 33.333333333333336
+        },
+        "2026-02": {
+          "trades": 20,
+          "net_usd": -265.76,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2026-03": {
+          "trades": 22,
+          "net_usd": -162.58,
+          "wins": 9,
+          "win_rate_pct": 40.90909090909091
+        },
+        "2026-04": {
+          "trades": 22,
+          "net_usd": -836.75,
+          "wins": 6,
+          "win_rate_pct": 27.272727272727273
+        },
+        "2026-05": {
+          "trades": 20,
+          "net_usd": -888.86,
+          "wins": 5,
+          "win_rate_pct": 25.0
+        },
+        "2026-06": {
+          "trades": 21,
+          "net_usd": -614.36,
+          "wins": 6,
+          "win_rate_pct": 28.571428571428573
+        },
+        "2026-07": {
+          "trades": 22,
+          "net_usd": 916.34,
+          "wins": 5,
+          "win_rate_pct": 22.727272727272727
+        },
+        "2026-08": {
+          "trades": 20,
+          "net_usd": 790.11,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 2501.45,
+          "wins": 18,
+          "win_rate_pct": 94.73684210526316
+        }
+      },
+      "equity_dd_pct": 32.21,
+      "quality": "73% real ticks",
+      "late_exits": 0,
+      "first_trade": "2025-09-29T03:09:03",
+      "last_trade": "2026-09-25T15:00:00",
+      "report_sha": "539dbe91e8aacb6d46a7993eadc535b308971df8638296065ceb2d8b847ace2e",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Screenshot Ideas Raw 2026-09-27\\native\\usdjpy-morning",
+      "history_warnings": []
+    },
+    {
+      "id": "usdjpy-morning",
+      "label": "USDJPY morning range breakout",
+      "period": "3y",
+      "trades": 759,
+      "net_usd": 16718.5,
+      "return_pct": 167.185,
+      "win_rate_pct": 44.00527009222662,
+      "profit_factor": 1.277574577466028,
+      "trades_per_month": 21.078524178832115,
+      "trades_per_weekday": 0.9693486590038314,
+      "max_win_streak": 17,
+      "max_loss_streak": 11,
+      "avg_win_streak": 1.7486910994764397,
+      "avg_loss_streak": 2.236842105263158,
+      "balance_dd_pct": 31.204869211847676,
+      "commission": -1547.5,
+      "swap": 0.0,
+      "monthly": {
+        "2023-09": {
+          "trades": 3,
+          "net_usd": 80.74,
+          "wins": 1,
+          "win_rate_pct": 33.333333333333336
+        },
+        "2023-10": {
+          "trades": 21,
+          "net_usd": -75.61,
+          "wins": 8,
+          "win_rate_pct": 38.095238095238095
+        },
+        "2023-11": {
+          "trades": 22,
+          "net_usd": 104.71,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2023-12": {
+          "trades": 19,
+          "net_usd": 696.14,
+          "wins": 9,
+          "win_rate_pct": 47.36842105263158
+        },
+        "2024-01": {
+          "trades": 22,
+          "net_usd": 291.47,
+          "wins": 9,
+          "win_rate_pct": 40.90909090909091
+        },
+        "2024-02": {
+          "trades": 20,
+          "net_usd": 381.78,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2024-03": {
+          "trades": 20,
+          "net_usd": 377.3,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2024-04": {
+          "trades": 21,
+          "net_usd": 1227.08,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2024-05": {
+          "trades": 22,
+          "net_usd": 194.97,
+          "wins": 9,
+          "win_rate_pct": 40.90909090909091
+        },
+        "2024-06": {
+          "trades": 20,
+          "net_usd": 140.4,
+          "wins": 6,
+          "win_rate_pct": 30.0
+        },
+        "2024-07": {
+          "trades": 22,
+          "net_usd": 809.42,
+          "wins": 12,
+          "win_rate_pct": 54.54545454545455
+        },
+        "2024-08": {
+          "trades": 22,
+          "net_usd": 1431.26,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2024-09": {
+          "trades": 21,
+          "net_usd": -1236.33,
+          "wins": 5,
+          "win_rate_pct": 23.80952380952381
+        },
+        "2024-10": {
+          "trades": 23,
+          "net_usd": -151.67,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2024-11": {
+          "trades": 21,
+          "net_usd": 446.63,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2024-12": {
+          "trades": 19,
+          "net_usd": -703.73,
+          "wins": 6,
+          "win_rate_pct": 31.57894736842105
+        },
+        "2025-01": {
+          "trades": 21,
+          "net_usd": -338.01,
+          "wins": 5,
+          "win_rate_pct": 23.80952380952381
+        },
+        "2025-02": {
+          "trades": 20,
+          "net_usd": 866.76,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2025-03": {
+          "trades": 21,
+          "net_usd": 147.58,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2025-04": {
+          "trades": 22,
+          "net_usd": -238.25,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2025-05": {
+          "trades": 22,
+          "net_usd": 2566.97,
+          "wins": 15,
+          "win_rate_pct": 68.18181818181819
+        },
+        "2025-06": {
+          "trades": 20,
+          "net_usd": 1981.21,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2025-07": {
+          "trades": 22,
+          "net_usd": -102.87,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2025-08": {
+          "trades": 21,
+          "net_usd": 783.49,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2025-09": {
+          "trades": 22,
+          "net_usd": 2443.45,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2025-10": {
+          "trades": 23,
+          "net_usd": -568.38,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2025-11": {
+          "trades": 20,
+          "net_usd": 1750.46,
+          "wins": 12,
+          "win_rate_pct": 60.0
+        },
+        "2025-12": {
+          "trades": 20,
+          "net_usd": 1257.76,
+          "wins": 10,
+          "win_rate_pct": 50.0
+        },
+        "2026-01": {
+          "trades": 21,
+          "net_usd": -891.14,
+          "wins": 7,
+          "win_rate_pct": 33.333333333333336
+        },
+        "2026-02": {
+          "trades": 20,
+          "net_usd": -567.95,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2026-03": {
+          "trades": 22,
+          "net_usd": -331.42,
+          "wins": 9,
+          "win_rate_pct": 40.90909090909091
+        },
+        "2026-04": {
+          "trades": 22,
+          "net_usd": -1781.89,
+          "wins": 6,
+          "win_rate_pct": 27.272727272727273
+        },
+        "2026-05": {
+          "trades": 20,
+          "net_usd": -1890.55,
+          "wins": 5,
+          "win_rate_pct": 25.0
+        },
+        "2026-06": {
+          "trades": 21,
+          "net_usd": -1307.27,
+          "wins": 6,
+          "win_rate_pct": 28.571428571428573
+        },
+        "2026-07": {
+          "trades": 22,
+          "net_usd": 1958.1,
+          "wins": 5,
+          "win_rate_pct": 22.727272727272727
+        },
+        "2026-08": {
+          "trades": 20,
+          "net_usd": 1676.19,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 5289.7,
+          "wins": 18,
+          "win_rate_pct": 94.73684210526316
+        }
+      },
+      "equity_dd_pct": 32.06,
+      "quality": "24% real ticks",
+      "late_exits": 1,
+      "first_trade": "2023-09-27T04:14:31",
+      "last_trade": "2026-09-25T15:00:00",
+      "report_sha": "9b34fad961fe26cf65ddcb67a95ab0e66f4a8f9cd927593e426feb3011f86164",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\usdjpy-morning-3y-m4",
+      "history_warnings": [],
+      "control_return_pct": -66.8405,
+      "control_equity_dd_pct": 82.47,
+      "control_pf": 0.7720903462025401,
+      "return_dd": 5.214753587024329,
+      "control_return_dd": -0.8104825997332364,
+      "tests": {
+        "positive": true,
+        "pf": true,
+        "trades": true,
+        "control": true,
+        "history_no_fatal_warning": true
+      }
+    },
+    {
+      "id": "usdjpy-morning",
+      "label": "USDJPY morning range breakout",
+      "period": "5y",
+      "trades": 1178,
+      "net_usd": 24622.31,
+      "return_pct": 246.22310000000002,
+      "win_rate_pct": 43.97283531409168,
+      "profit_factor": 1.2359654008658794,
+      "trades_per_month": 19.636021358159912,
+      "trades_per_weekday": 0.9026819923371647,
+      "max_win_streak": 17,
+      "max_loss_streak": 14,
+      "avg_win_streak": 1.7559322033898306,
+      "avg_loss_streak": 2.2448979591836733,
+      "balance_dd_pct": 31.16507277422922,
+      "commission": -2471.59,
+      "swap": 0.0,
+      "monthly": {
+        "2021-09": {
+          "trades": 3,
+          "net_usd": -107.36,
+          "wins": 1,
+          "win_rate_pct": 33.333333333333336
+        },
+        "2021-10": {
+          "trades": 16,
+          "net_usd": 193.87,
+          "wins": 8,
+          "win_rate_pct": 50.0
+        },
+        "2021-11": {
+          "trades": 10,
+          "net_usd": -75.7,
+          "wins": 3,
+          "win_rate_pct": 30.0
+        },
+        "2021-12": {
+          "trades": 9,
+          "net_usd": -162.43,
+          "wins": 3,
+          "win_rate_pct": 33.333333333333336
+        },
+        "2022-01": {
+          "trades": 11,
+          "net_usd": 293.49,
+          "wins": 5,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2022-02": {
+          "trades": 11,
+          "net_usd": -411.72,
+          "wins": 4,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2022-03": {
+          "trades": 18,
+          "net_usd": 1253.02,
+          "wins": 11,
+          "win_rate_pct": 61.111111111111114
+        },
+        "2022-04": {
+          "trades": 17,
+          "net_usd": 854.8,
+          "wins": 12,
+          "win_rate_pct": 70.58823529411765
+        },
+        "2022-05": {
+          "trades": 18,
+          "net_usd": 378.56,
+          "wins": 6,
+          "win_rate_pct": 33.333333333333336
+        },
+        "2022-06": {
+          "trades": 22,
+          "net_usd": 973.61,
+          "wins": 13,
+          "win_rate_pct": 59.09090909090909
+        },
+        "2022-07": {
+          "trades": 18,
+          "net_usd": -342.31,
+          "wins": 7,
+          "win_rate_pct": 38.888888888888886
+        },
+        "2022-08": {
+          "trades": 19,
+          "net_usd": 32.43,
+          "wins": 10,
+          "win_rate_pct": 52.63157894736842
+        },
+        "2022-09": {
+          "trades": 22,
+          "net_usd": 818.23,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2022-10": {
+          "trades": 17,
+          "net_usd": 326.11,
+          "wins": 8,
+          "win_rate_pct": 47.05882352941177
+        },
+        "2022-11": {
+          "trades": 20,
+          "net_usd": 567.51,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2022-12": {
+          "trades": 21,
+          "net_usd": 39.79,
+          "wins": 8,
+          "win_rate_pct": 38.095238095238095
+        },
+        "2023-01": {
+          "trades": 21,
+          "net_usd": 573.0,
+          "wins": 8,
+          "win_rate_pct": 38.095238095238095
+        },
+        "2023-02": {
+          "trades": 16,
+          "net_usd": -190.38,
+          "wins": 6,
+          "win_rate_pct": 37.5
+        },
+        "2023-03": {
+          "trades": 20,
+          "net_usd": -302.02,
+          "wins": 9,
+          "win_rate_pct": 45.0
+        },
+        "2023-04": {
+          "trades": 16,
+          "net_usd": -1085.02,
+          "wins": 4,
+          "win_rate_pct": 25.0
+        },
+        "2023-05": {
+          "trades": 14,
+          "net_usd": -1226.36,
+          "wins": 2,
+          "win_rate_pct": 14.285714285714286
+        },
+        "2023-06": {
+          "trades": 19,
+          "net_usd": -240.03,
+          "wins": 8,
+          "win_rate_pct": 42.10526315789474
+        },
+        "2023-07": {
+          "trades": 21,
+          "net_usd": 286.45,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2023-08": {
+          "trades": 23,
+          "net_usd": -293.2,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2023-09": {
+          "trades": 20,
+          "net_usd": 936.68,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2023-10": {
+          "trades": 21,
+          "net_usd": -94.09,
+          "wins": 8,
+          "win_rate_pct": 38.095238095238095
+        },
+        "2023-11": {
+          "trades": 22,
+          "net_usd": 134.37,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2023-12": {
+          "trades": 19,
+          "net_usd": 914.07,
+          "wins": 9,
+          "win_rate_pct": 47.36842105263158
+        },
+        "2024-01": {
+          "trades": 22,
+          "net_usd": 370.36,
+          "wins": 9,
+          "win_rate_pct": 40.90909090909091
+        },
+        "2024-02": {
+          "trades": 20,
+          "net_usd": 490.92,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2024-03": {
+          "trades": 20,
+          "net_usd": 489.29,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2024-04": {
+          "trades": 21,
+          "net_usd": 1593.03,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2024-05": {
+          "trades": 22,
+          "net_usd": 246.21,
+          "wins": 9,
+          "win_rate_pct": 40.90909090909091
+        },
+        "2024-06": {
+          "trades": 20,
+          "net_usd": 186.1,
+          "wins": 6,
+          "win_rate_pct": 30.0
+        },
+        "2024-07": {
+          "trades": 22,
+          "net_usd": 1055.62,
+          "wins": 12,
+          "win_rate_pct": 54.54545454545455
+        },
+        "2024-08": {
+          "trades": 22,
+          "net_usd": 1847.19,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2024-09": {
+          "trades": 21,
+          "net_usd": -1590.89,
+          "wins": 5,
+          "win_rate_pct": 23.80952380952381
+        },
+        "2024-10": {
+          "trades": 23,
+          "net_usd": -195.73,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2024-11": {
+          "trades": 21,
+          "net_usd": 567.41,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2024-12": {
+          "trades": 19,
+          "net_usd": -912.65,
+          "wins": 6,
+          "win_rate_pct": 31.57894736842105
+        },
+        "2025-01": {
+          "trades": 21,
+          "net_usd": -437.84,
+          "wins": 5,
+          "win_rate_pct": 23.80952380952381
+        },
+        "2025-02": {
+          "trades": 20,
+          "net_usd": 1120.58,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2025-03": {
+          "trades": 21,
+          "net_usd": 192.87,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2025-04": {
+          "trades": 22,
+          "net_usd": -295.16,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2025-05": {
+          "trades": 22,
+          "net_usd": 3315.4,
+          "wins": 15,
+          "win_rate_pct": 68.18181818181819
+        },
+        "2025-06": {
+          "trades": 20,
+          "net_usd": 2555.73,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2025-07": {
+          "trades": 22,
+          "net_usd": -136.81,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2025-08": {
+          "trades": 21,
+          "net_usd": 1008.09,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2025-09": {
+          "trades": 22,
+          "net_usd": 3165.31,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2025-10": {
+          "trades": 23,
+          "net_usd": -733.4,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2025-11": {
+          "trades": 20,
+          "net_usd": 2258.27,
+          "wins": 12,
+          "win_rate_pct": 60.0
+        },
+        "2025-12": {
+          "trades": 20,
+          "net_usd": 1623.18,
+          "wins": 10,
+          "win_rate_pct": 50.0
+        },
+        "2026-01": {
+          "trades": 21,
+          "net_usd": -1159.01,
+          "wins": 7,
+          "win_rate_pct": 33.333333333333336
+        },
+        "2026-02": {
+          "trades": 20,
+          "net_usd": -724.68,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2026-03": {
+          "trades": 22,
+          "net_usd": -424.11,
+          "wins": 9,
+          "win_rate_pct": 40.90909090909091
+        },
+        "2026-04": {
+          "trades": 22,
+          "net_usd": -2311.4,
+          "wins": 6,
+          "win_rate_pct": 27.272727272727273
+        },
+        "2026-05": {
+          "trades": 20,
+          "net_usd": -2450.11,
+          "wins": 5,
+          "win_rate_pct": 25.0
+        },
+        "2026-06": {
+          "trades": 21,
+          "net_usd": -1693.13,
+          "wins": 6,
+          "win_rate_pct": 28.571428571428573
+        },
+        "2026-07": {
+          "trades": 22,
+          "net_usd": 2535.76,
+          "wins": 5,
+          "win_rate_pct": 22.727272727272727
+        },
+        "2026-08": {
+          "trades": 20,
+          "net_usd": 2177.08,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 6843.46,
+          "wins": 18,
+          "win_rate_pct": 94.73684210526316
+        }
+      },
+      "equity_dd_pct": 32.02,
+      "quality": "14% real ticks",
+      "late_exits": 1,
+      "first_trade": "2021-09-28T03:25:02",
+      "last_trade": "2026-09-25T15:00:00",
+      "report_sha": "00a54337a8ef309f6530923484feacfcd611c80d90dc7d6eee456102104c1df6",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\usdjpy-morning-5y-m4",
+      "history_warnings": [],
+      "control_return_pct": -75.0164,
+      "control_equity_dd_pct": 87.44,
+      "control_pf": 0.8526380759290169,
+      "return_dd": 7.689665833853841,
+      "control_return_dd": -0.8579185727355902,
+      "tests": {
+        "positive": true,
+        "pf": true,
+        "trades": true,
+        "control": true,
+        "history_no_fatal_warning": true
+      }
+    },
+    {
+      "id": "us30-tuesday",
+      "label": "US30 Turnaround Tuesday",
+      "period": "6m",
+      "trades": 7,
+      "net_usd": 420.91,
+      "return_pct": 4.2091,
+      "win_rate_pct": 71.42857142857143,
+      "profit_factor": 3.9849656052762223,
+      "trades_per_month": 1.1579483695652175,
+      "trades_per_weekday": 0.05343511450381679,
+      "max_win_streak": 4,
+      "max_loss_streak": 2,
+      "avg_win_streak": 2.5,
+      "avg_loss_streak": 2.0,
+      "balance_dd_pct": 1.3390233040003592,
+      "commission": -0.86,
+      "swap": -14.56,
+      "monthly": {
+        "2026-03": {
+          "trades": 1,
+          "net_usd": 320.35,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-04": {
+          "trades": 1,
+          "net_usd": 88.15,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-07": {
+          "trades": 2,
+          "net_usd": 122.31,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2026-09": {
+          "trades": 3,
+          "net_usd": -109.9,
+          "wins": 1,
+          "win_rate_pct": 33.333333333333336
+        }
+      },
+      "equity_dd_pct": 2.08,
+      "quality": "100% real ticks",
+      "late_exits": 0,
+      "first_trade": "2026-03-29T22:05:00",
+      "last_trade": "2026-09-22T20:50:00",
+      "report_sha": "0a67b9fcc6fdcb3bb883a9ff9c50c1b7435bc3ae259d8acfc2eca90e13d280f4",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\us30-tuesday-6m-m4",
+      "history_warnings": []
+    },
+    {
+      "id": "us30-tuesday",
+      "label": "US30 Turnaround Tuesday",
+      "period": "1y",
+      "trades": 16,
+      "net_usd": 1117.79,
+      "return_pct": 11.1779,
+      "win_rate_pct": 81.25,
+      "profit_factor": 4.21925580323714,
+      "trades_per_month": 1.334246575342466,
+      "trades_per_weekday": 0.06153846153846154,
+      "max_win_streak": 11,
+      "max_loss_streak": 2,
+      "avg_win_streak": 4.333333333333333,
+      "avg_loss_streak": 1.5,
+      "balance_dd_pct": 2.044626620897799,
+      "commission": -2.04,
+      "swap": -34.41,
+      "monthly": {
+        "2025-10": {
+          "trades": 1,
+          "net_usd": 85.46,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2025-11": {
+          "trades": 2,
+          "net_usd": -63.38,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2026-01": {
+          "trades": 1,
+          "net_usd": 31.51,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-02": {
+          "trades": 1,
+          "net_usd": 97.23,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-03": {
+          "trades": 5,
+          "net_usd": 866.41,
+          "wins": 5,
+          "win_rate_pct": 100.0
+        },
+        "2026-04": {
+          "trades": 1,
+          "net_usd": 88.15,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-07": {
+          "trades": 2,
+          "net_usd": 122.31,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2026-09": {
+          "trades": 3,
+          "net_usd": -109.9,
+          "wins": 1,
+          "win_rate_pct": 33.333333333333336
+        }
+      },
+      "equity_dd_pct": 3.28,
+      "quality": "73% real ticks",
+      "late_exits": 5,
+      "first_trade": "2025-10-12T22:05:00",
+      "last_trade": "2026-09-22T20:50:00",
+      "report_sha": "39b8ce17bf053a29679526bd46cc7aa4a90a041efdf137254ce1320308376797",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Screenshot Ideas Raw 2026-09-27\\native\\us30-tuesday",
+      "history_warnings": []
+    },
+    {
+      "id": "us30-tuesday",
+      "label": "US30 Turnaround Tuesday",
+      "period": "3y",
+      "trades": 53,
+      "net_usd": 2049.48,
+      "return_pct": 20.4948,
+      "win_rate_pct": 71.69811320754717,
+      "profit_factor": 2.2030853761622993,
+      "trades_per_month": 1.471886405109489,
+      "trades_per_weekday": 0.06768837803320563,
+      "max_win_streak": 11,
+      "max_loss_streak": 2,
+      "avg_win_streak": 3.4545454545454546,
+      "avg_loss_streak": 1.3636363636363635,
+      "balance_dd_pct": 4.8619063836520375,
+      "commission": -7.75,
+      "swap": -136.3,
+      "monthly": {
+        "2023-10": {
+          "trades": 5,
+          "net_usd": 220.31,
+          "wins": 4,
+          "win_rate_pct": 80.0
+        },
+        "2024-03": {
+          "trades": 1,
+          "net_usd": 99.83,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2024-04": {
+          "trades": 4,
+          "net_usd": -95.66,
+          "wins": 1,
+          "win_rate_pct": 25.0
+        },
+        "2024-06": {
+          "trades": 3,
+          "net_usd": 49.77,
+          "wins": 2,
+          "win_rate_pct": 66.66666666666667
+        },
+        "2024-08": {
+          "trades": 2,
+          "net_usd": -112.99,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2024-09": {
+          "trades": 1,
+          "net_usd": 93.95,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2024-10": {
+          "trades": 1,
+          "net_usd": 12.67,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2024-11": {
+          "trades": 1,
+          "net_usd": 80.15,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2024-12": {
+          "trades": 2,
+          "net_usd": -31.55,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2025-01": {
+          "trades": 3,
+          "net_usd": -6.48,
+          "wins": 1,
+          "win_rate_pct": 33.333333333333336
+        },
+        "2025-02": {
+          "trades": 1,
+          "net_usd": 48.12,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2025-03": {
+          "trades": 4,
+          "net_usd": -367.21,
+          "wins": 2,
+          "win_rate_pct": 50.0
+        },
+        "2025-04": {
+          "trades": 5,
+          "net_usd": 488.94,
+          "wins": 4,
+          "win_rate_pct": 80.0
+        },
+        "2025-06": {
+          "trades": 2,
+          "net_usd": 282.5,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2025-08": {
+          "trades": 2,
+          "net_usd": 169.34,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2025-10": {
+          "trades": 1,
+          "net_usd": 85.46,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2025-11": {
+          "trades": 2,
+          "net_usd": -63.38,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2026-01": {
+          "trades": 1,
+          "net_usd": 31.51,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-02": {
+          "trades": 1,
+          "net_usd": 97.23,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-03": {
+          "trades": 5,
+          "net_usd": 866.41,
+          "wins": 5,
+          "win_rate_pct": 100.0
+        },
+        "2026-04": {
+          "trades": 1,
+          "net_usd": 88.15,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-07": {
+          "trades": 2,
+          "net_usd": 122.31,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2026-09": {
+          "trades": 3,
+          "net_usd": -109.9,
+          "wins": 1,
+          "win_rate_pct": 33.333333333333336
+        }
+      },
+      "equity_dd_pct": 7.68,
+      "quality": "24% real ticks",
+      "late_exits": 13,
+      "first_trade": "2023-10-01T22:05:00",
+      "last_trade": "2026-09-22T20:50:00",
+      "report_sha": "3f7773432698600dd21ea29d947965988ec18178995ea0d6f6d73638ca1ed43e",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\us30-tuesday-3y-m4",
+      "history_warnings": [],
+      "control_return_pct": 28.8198,
+      "control_equity_dd_pct": 7.72,
+      "control_pf": 1.623469169213995,
+      "return_dd": 2.6685937500000003,
+      "control_return_dd": 3.733134715025907,
+      "tests": {
+        "positive": true,
+        "pf": true,
+        "trades": true,
+        "control": false,
+        "history_no_fatal_warning": true
+      }
+    },
+    {
+      "id": "us30-tuesday",
+      "label": "US30 Turnaround Tuesday",
+      "period": "5y",
+      "trades": 58,
+      "net_usd": 2173.63,
+      "return_pct": 21.7363,
+      "win_rate_pct": 70.6896551724138,
+      "profit_factor": 2.1577256990679095,
+      "trades_per_month": 0.9667990142387732,
+      "trades_per_weekday": 0.044444444444444446,
+      "max_win_streak": 11,
+      "max_loss_streak": 2,
+      "avg_win_streak": 3.1538461538461537,
+      "avg_loss_streak": 1.4166666666666667,
+      "balance_dd_pct": 4.804361048771998,
+      "commission": -8.65,
+      "swap": -151.48,
+      "monthly": {
+        "2023-07": {
+          "trades": 1,
+          "net_usd": 143.42,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2023-08": {
+          "trades": 2,
+          "net_usd": 67.07,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2023-09": {
+          "trades": 2,
+          "net_usd": -86.34,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2023-10": {
+          "trades": 5,
+          "net_usd": 220.31,
+          "wins": 4,
+          "win_rate_pct": 80.0
+        },
+        "2024-03": {
+          "trades": 1,
+          "net_usd": 99.83,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2024-04": {
+          "trades": 4,
+          "net_usd": -95.66,
+          "wins": 1,
+          "win_rate_pct": 25.0
+        },
+        "2024-06": {
+          "trades": 3,
+          "net_usd": 49.77,
+          "wins": 2,
+          "win_rate_pct": 66.66666666666667
+        },
+        "2024-08": {
+          "trades": 2,
+          "net_usd": -112.99,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2024-09": {
+          "trades": 1,
+          "net_usd": 93.95,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2024-10": {
+          "trades": 1,
+          "net_usd": 12.67,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2024-11": {
+          "trades": 1,
+          "net_usd": 80.15,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2024-12": {
+          "trades": 2,
+          "net_usd": -31.55,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2025-01": {
+          "trades": 3,
+          "net_usd": -6.48,
+          "wins": 1,
+          "win_rate_pct": 33.333333333333336
+        },
+        "2025-02": {
+          "trades": 1,
+          "net_usd": 48.12,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2025-03": {
+          "trades": 4,
+          "net_usd": -367.21,
+          "wins": 2,
+          "win_rate_pct": 50.0
+        },
+        "2025-04": {
+          "trades": 5,
+          "net_usd": 488.94,
+          "wins": 4,
+          "win_rate_pct": 80.0
+        },
+        "2025-06": {
+          "trades": 2,
+          "net_usd": 282.5,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2025-08": {
+          "trades": 2,
+          "net_usd": 169.34,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2025-10": {
+          "trades": 1,
+          "net_usd": 85.46,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2025-11": {
+          "trades": 2,
+          "net_usd": -63.38,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2026-01": {
+          "trades": 1,
+          "net_usd": 31.51,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-02": {
+          "trades": 1,
+          "net_usd": 97.23,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-03": {
+          "trades": 5,
+          "net_usd": 866.41,
+          "wins": 5,
+          "win_rate_pct": 100.0
+        },
+        "2026-04": {
+          "trades": 1,
+          "net_usd": 88.15,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2026-07": {
+          "trades": 2,
+          "net_usd": 122.31,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2026-09": {
+          "trades": 3,
+          "net_usd": -109.9,
+          "wins": 1,
+          "win_rate_pct": 33.333333333333336
+        }
+      },
+      "equity_dd_pct": 7.6,
+      "quality": "14% real ticks",
+      "late_exits": 13,
+      "first_trade": "2023-07-09T22:05:00",
+      "last_trade": "2026-09-22T20:50:00",
+      "report_sha": "2a3a3757c41a083630b65cf3b2191b6fbfd21d90646b8a1d1d6a4196632a69e1",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\us30-tuesday-5y-m4",
+      "history_warnings": [],
+      "control_return_pct": 31.5301,
+      "control_equity_dd_pct": 7.53,
+      "control_pf": 1.6229103035714991,
+      "return_dd": 2.8600394736842105,
+      "control_return_dd": 4.18726427622842,
+      "tests": {
+        "positive": true,
+        "pf": true,
+        "trades": true,
+        "control": false,
+        "history_no_fatal_warning": true
+      }
+    },
+    {
+      "id": "us100-daily",
+      "label": "US100 daily long",
+      "period": "6m",
+      "trades": 130,
+      "net_usd": 2138.02,
+      "return_pct": 21.3802,
+      "win_rate_pct": 57.69230769230769,
+      "profit_factor": 1.3941631945724715,
+      "trades_per_month": 21.50475543478261,
+      "trades_per_weekday": 0.9923664122137404,
+      "max_win_streak": 11,
+      "max_loss_streak": 6,
+      "avg_win_streak": 2.5,
+      "avg_loss_streak": 1.8333333333333333,
+      "balance_dd_pct": 11.79615113292821,
+      "commission": -28.13,
+      "swap": -271.6,
+      "monthly": {
+        "2026-03": {
+          "trades": 2,
+          "net_usd": 299.6,
+          "wins": 1,
+          "win_rate_pct": 50.0
+        },
+        "2026-04": {
+          "trades": 22,
+          "net_usd": 1457.39,
+          "wins": 18,
+          "win_rate_pct": 81.81818181818181
+        },
+        "2026-05": {
+          "trades": 21,
+          "net_usd": 766.98,
+          "wins": 15,
+          "win_rate_pct": 71.42857142857143
+        },
+        "2026-06": {
+          "trades": 22,
+          "net_usd": -207.94,
+          "wins": 11,
+          "win_rate_pct": 50.0
+        },
+        "2026-07": {
+          "trades": 23,
+          "net_usd": -804.62,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2026-08": {
+          "trades": 21,
+          "net_usd": 172.41,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 454.2,
+          "wins": 11,
+          "win_rate_pct": 57.89473684210526
+        }
+      },
+      "equity_dd_pct": 12.12,
+      "quality": "100% real ticks",
+      "late_exits": 5,
+      "first_trade": "2026-03-29T22:05:00",
+      "last_trade": "2026-09-25T20:50:00",
+      "report_sha": "3351ade2359928d8541abff6f2c1e579ba03e4231e28c282bfb7ecdcf715a052",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\us100-daily-6m-m4",
+      "history_warnings": []
+    },
+    {
+      "id": "us100-daily",
+      "label": "US100 daily long",
+      "period": "1y",
+      "trades": 258,
+      "net_usd": 1152.87,
+      "return_pct": 11.528699999999997,
+      "win_rate_pct": 53.10077519379845,
+      "profit_factor": 1.100046861576111,
+      "trades_per_month": 21.514726027397263,
+      "trades_per_weekday": 0.9923076923076923,
+      "max_win_streak": 11,
+      "max_loss_streak": 6,
+      "avg_win_streak": 2.1746031746031744,
+      "avg_loss_streak": 1.9516129032258065,
+      "balance_dd_pct": 12.791639968338956,
+      "commission": -59.44,
+      "swap": -702.79,
+      "monthly": {
+        "2025-09": {
+          "trades": 2,
+          "net_usd": 40.26,
+          "wins": 2,
+          "win_rate_pct": 100.0
+        },
+        "2025-10": {
+          "trades": 23,
+          "net_usd": 103.64,
+          "wins": 13,
+          "win_rate_pct": 56.52173913043478
+        },
+        "2025-11": {
+          "trades": 20,
+          "net_usd": -219.4,
+          "wins": 10,
+          "win_rate_pct": 50.0
+        },
+        "2025-12": {
+          "trades": 21,
+          "net_usd": -36.84,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2026-01": {
+          "trades": 21,
+          "net_usd": 118.22,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2026-02": {
+          "trades": 20,
+          "net_usd": -424.76,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2026-03": {
+          "trades": 23,
+          "net_usd": -266.67,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2026-04": {
+          "trades": 22,
+          "net_usd": 1457.39,
+          "wins": 18,
+          "win_rate_pct": 81.81818181818181
+        },
+        "2026-05": {
+          "trades": 21,
+          "net_usd": 766.98,
+          "wins": 15,
+          "win_rate_pct": 71.42857142857143
+        },
+        "2026-06": {
+          "trades": 22,
+          "net_usd": -207.94,
+          "wins": 11,
+          "win_rate_pct": 50.0
+        },
+        "2026-07": {
+          "trades": 23,
+          "net_usd": -804.62,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2026-08": {
+          "trades": 21,
+          "net_usd": 172.41,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 454.2,
+          "wins": 11,
+          "win_rate_pct": 57.89473684210526
+        }
+      },
+      "equity_dd_pct": 13.63,
+      "quality": "73% real ticks",
+      "late_exits": 93,
+      "first_trade": "2025-09-28T22:05:00",
+      "last_trade": "2026-09-25T20:50:00",
+      "report_sha": "febaee781bd4e919fe3adc5953f01fec5094fcdb6ef919f59a4aeda26f4cce80",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Screenshot Ideas Raw 2026-09-27\\native\\us100-daily",
+      "history_warnings": []
+    },
+    {
+      "id": "us100-daily",
+      "label": "US100 daily long",
+      "period": "3y",
+      "trades": 772,
+      "net_usd": 3542.63,
+      "return_pct": 35.4263,
+      "win_rate_pct": 54.27461139896373,
+      "profit_factor": 1.1066968850471721,
+      "trades_per_month": 21.439552919708028,
+      "trades_per_weekday": 0.9859514687100894,
+      "max_win_streak": 11,
+      "max_loss_streak": 8,
+      "avg_win_streak": 2.1055276381909547,
+      "avg_loss_streak": 1.7828282828282829,
+      "balance_dd_pct": 27.279928324415774,
+      "commission": -224.81,
+      "swap": -3131.2799999999997,
+      "monthly": {
+        "2023-09": {
+          "trades": 1,
+          "net_usd": 77.28,
+          "wins": 1,
+          "win_rate_pct": 100.0
+        },
+        "2023-10": {
+          "trades": 23,
+          "net_usd": -372.15,
+          "wins": 13,
+          "win_rate_pct": 56.52173913043478
+        },
+        "2023-11": {
+          "trades": 22,
+          "net_usd": 893.85,
+          "wins": 13,
+          "win_rate_pct": 59.09090909090909
+        },
+        "2023-12": {
+          "trades": 19,
+          "net_usd": 436.02,
+          "wins": 14,
+          "win_rate_pct": 73.6842105263158
+        },
+        "2024-01": {
+          "trades": 23,
+          "net_usd": -63.21,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2024-02": {
+          "trades": 21,
+          "net_usd": 330.41,
+          "wins": 12,
+          "win_rate_pct": 57.142857142857146
+        },
+        "2024-03": {
+          "trades": 20,
+          "net_usd": 25.09,
+          "wins": 9,
+          "win_rate_pct": 45.0
+        },
+        "2024-04": {
+          "trades": 22,
+          "net_usd": -692.59,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2024-05": {
+          "trades": 22,
+          "net_usd": 449.05,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2024-06": {
+          "trades": 21,
+          "net_usd": 465.91,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2024-07": {
+          "trades": 23,
+          "net_usd": -380.64,
+          "wins": 12,
+          "win_rate_pct": 52.17391304347826
+        },
+        "2024-08": {
+          "trades": 21,
+          "net_usd": -293.73,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2024-09": {
+          "trades": 22,
+          "net_usd": 115.49,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2024-10": {
+          "trades": 23,
+          "net_usd": -150.0,
+          "wins": 12,
+          "win_rate_pct": 52.17391304347826
+        },
+        "2024-11": {
+          "trades": 20,
+          "net_usd": 341.45,
+          "wins": 12,
+          "win_rate_pct": 60.0
+        },
+        "2024-12": {
+          "trades": 20,
+          "net_usd": 173.44,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2025-01": {
+          "trades": 22,
+          "net_usd": 148.2,
+          "wins": 12,
+          "win_rate_pct": 54.54545454545455
+        },
+        "2025-02": {
+          "trades": 20,
+          "net_usd": -647.73,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2025-03": {
+          "trades": 22,
+          "net_usd": -790.66,
+          "wins": 11,
+          "win_rate_pct": 50.0
+        },
+        "2025-04": {
+          "trades": 21,
+          "net_usd": 495.05,
+          "wins": 13,
+          "win_rate_pct": 61.904761904761905
+        },
+        "2025-05": {
+          "trades": 22,
+          "net_usd": 697.12,
+          "wins": 13,
+          "win_rate_pct": 59.09090909090909
+        },
+        "2025-06": {
+          "trades": 20,
+          "net_usd": 692.38,
+          "wins": 15,
+          "win_rate_pct": 75.0
+        },
+        "2025-07": {
+          "trades": 23,
+          "net_usd": 110.69,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2025-08": {
+          "trades": 21,
+          "net_usd": -20.21,
+          "wins": 8,
+          "win_rate_pct": 38.095238095238095
+        },
+        "2025-09": {
+          "trades": 22,
+          "net_usd": 389.51,
+          "wins": 15,
+          "win_rate_pct": 68.18181818181819
+        },
+        "2025-10": {
+          "trades": 23,
+          "net_usd": 103.64,
+          "wins": 13,
+          "win_rate_pct": 56.52173913043478
+        },
+        "2025-11": {
+          "trades": 20,
+          "net_usd": -219.4,
+          "wins": 10,
+          "win_rate_pct": 50.0
+        },
+        "2025-12": {
+          "trades": 21,
+          "net_usd": -36.84,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2026-01": {
+          "trades": 21,
+          "net_usd": 118.22,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2026-02": {
+          "trades": 20,
+          "net_usd": -424.76,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2026-03": {
+          "trades": 23,
+          "net_usd": -266.67,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2026-04": {
+          "trades": 22,
+          "net_usd": 1457.39,
+          "wins": 18,
+          "win_rate_pct": 81.81818181818181
+        },
+        "2026-05": {
+          "trades": 21,
+          "net_usd": 766.98,
+          "wins": 15,
+          "win_rate_pct": 71.42857142857143
+        },
+        "2026-06": {
+          "trades": 22,
+          "net_usd": -207.94,
+          "wins": 11,
+          "win_rate_pct": 50.0
+        },
+        "2026-07": {
+          "trades": 23,
+          "net_usd": -804.62,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2026-08": {
+          "trades": 21,
+          "net_usd": 172.41,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 454.2,
+          "wins": 11,
+          "win_rate_pct": 57.89473684210526
+        }
+      },
+      "equity_dd_pct": 28.69,
+      "quality": "24% real ticks",
+      "late_exits": 326,
+      "first_trade": "2023-09-27T22:05:00",
+      "last_trade": "2026-09-25T20:50:00",
+      "report_sha": "9b3c8b83dea77c306a1f9f5fce6f1f87db43e3ec975474e0c240616ea2bbda4d",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\us100-daily-3y-m4",
+      "history_warnings": [],
+      "control_return_pct": 57.6213,
+      "control_equity_dd_pct": 34.71,
+      "control_pf": null,
+      "return_dd": 1.2347960962007667,
+      "control_return_dd": 1.660077787381158,
+      "tests": {
+        "positive": true,
+        "pf": false,
+        "trades": true,
+        "control": false,
+        "history_no_fatal_warning": true
+      }
+    },
+    {
+      "id": "us100-daily",
+      "label": "US100 daily long",
+      "period": "5y",
+      "trades": 848,
+      "net_usd": 3145.92,
+      "return_pct": 31.459199999999996,
+      "win_rate_pct": 53.5377358490566,
+      "profit_factor": 1.0863499633977736,
+      "trades_per_month": 14.13526834611172,
+      "trades_per_weekday": 0.6498084291187739,
+      "max_win_streak": 11,
+      "max_loss_streak": 8,
+      "avg_win_streak": 2.0921658986175116,
+      "avg_loss_streak": 1.8240740740740742,
+      "balance_dd_pct": 28.217242523161758,
+      "commission": -255.84,
+      "swap": -3608.46,
+      "monthly": {
+        "2023-06": {
+          "trades": 14,
+          "net_usd": 156.69,
+          "wins": 7,
+          "win_rate_pct": 50.0
+        },
+        "2023-07": {
+          "trades": 21,
+          "net_usd": 445.12,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2023-08": {
+          "trades": 23,
+          "net_usd": -413.61,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2023-09": {
+          "trades": 19,
+          "net_usd": -507.63,
+          "wins": 9,
+          "win_rate_pct": 47.36842105263158
+        },
+        "2023-10": {
+          "trades": 23,
+          "net_usd": -372.15,
+          "wins": 13,
+          "win_rate_pct": 56.52173913043478
+        },
+        "2023-11": {
+          "trades": 22,
+          "net_usd": 893.85,
+          "wins": 13,
+          "win_rate_pct": 59.09090909090909
+        },
+        "2023-12": {
+          "trades": 19,
+          "net_usd": 436.02,
+          "wins": 14,
+          "win_rate_pct": 73.6842105263158
+        },
+        "2024-01": {
+          "trades": 23,
+          "net_usd": -63.21,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2024-02": {
+          "trades": 21,
+          "net_usd": 330.41,
+          "wins": 12,
+          "win_rate_pct": 57.142857142857146
+        },
+        "2024-03": {
+          "trades": 20,
+          "net_usd": 25.09,
+          "wins": 9,
+          "win_rate_pct": 45.0
+        },
+        "2024-04": {
+          "trades": 22,
+          "net_usd": -692.59,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2024-05": {
+          "trades": 22,
+          "net_usd": 449.05,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2024-06": {
+          "trades": 21,
+          "net_usd": 465.91,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2024-07": {
+          "trades": 23,
+          "net_usd": -380.64,
+          "wins": 12,
+          "win_rate_pct": 52.17391304347826
+        },
+        "2024-08": {
+          "trades": 21,
+          "net_usd": -293.73,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2024-09": {
+          "trades": 22,
+          "net_usd": 115.49,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2024-10": {
+          "trades": 23,
+          "net_usd": -150.0,
+          "wins": 12,
+          "win_rate_pct": 52.17391304347826
+        },
+        "2024-11": {
+          "trades": 20,
+          "net_usd": 341.45,
+          "wins": 12,
+          "win_rate_pct": 60.0
+        },
+        "2024-12": {
+          "trades": 20,
+          "net_usd": 173.44,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2025-01": {
+          "trades": 22,
+          "net_usd": 148.2,
+          "wins": 12,
+          "win_rate_pct": 54.54545454545455
+        },
+        "2025-02": {
+          "trades": 20,
+          "net_usd": -647.73,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2025-03": {
+          "trades": 22,
+          "net_usd": -790.66,
+          "wins": 11,
+          "win_rate_pct": 50.0
+        },
+        "2025-04": {
+          "trades": 21,
+          "net_usd": 495.05,
+          "wins": 13,
+          "win_rate_pct": 61.904761904761905
+        },
+        "2025-05": {
+          "trades": 22,
+          "net_usd": 697.12,
+          "wins": 13,
+          "win_rate_pct": 59.09090909090909
+        },
+        "2025-06": {
+          "trades": 20,
+          "net_usd": 692.38,
+          "wins": 15,
+          "win_rate_pct": 75.0
+        },
+        "2025-07": {
+          "trades": 23,
+          "net_usd": 110.69,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2025-08": {
+          "trades": 21,
+          "net_usd": -20.21,
+          "wins": 8,
+          "win_rate_pct": 38.095238095238095
+        },
+        "2025-09": {
+          "trades": 22,
+          "net_usd": 389.51,
+          "wins": 15,
+          "win_rate_pct": 68.18181818181819
+        },
+        "2025-10": {
+          "trades": 23,
+          "net_usd": 103.64,
+          "wins": 13,
+          "win_rate_pct": 56.52173913043478
+        },
+        "2025-11": {
+          "trades": 20,
+          "net_usd": -219.4,
+          "wins": 10,
+          "win_rate_pct": 50.0
+        },
+        "2025-12": {
+          "trades": 21,
+          "net_usd": -36.84,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2026-01": {
+          "trades": 21,
+          "net_usd": 118.22,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2026-02": {
+          "trades": 20,
+          "net_usd": -424.76,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2026-03": {
+          "trades": 23,
+          "net_usd": -266.67,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2026-04": {
+          "trades": 22,
+          "net_usd": 1457.39,
+          "wins": 18,
+          "win_rate_pct": 81.81818181818181
+        },
+        "2026-05": {
+          "trades": 21,
+          "net_usd": 766.98,
+          "wins": 15,
+          "win_rate_pct": 71.42857142857143
+        },
+        "2026-06": {
+          "trades": 22,
+          "net_usd": -207.94,
+          "wins": 11,
+          "win_rate_pct": 50.0
+        },
+        "2026-07": {
+          "trades": 23,
+          "net_usd": -804.62,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2026-08": {
+          "trades": 21,
+          "net_usd": 172.41,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 454.2,
+          "wins": 11,
+          "win_rate_pct": 57.89473684210526
+        }
+      },
+      "equity_dd_pct": 29.67,
+      "quality": "14% real ticks",
+      "late_exits": 345,
+      "first_trade": "2023-06-11T22:05:00",
+      "last_trade": "2026-09-25T20:50:00",
+      "report_sha": "caf94b00df5589adf6cd847258879ada2a12198d11ddd9e440523ad074e39718",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\us100-daily-5y-m4",
+      "history_warnings": [],
+      "control_return_pct": 17.1965,
+      "control_equity_dd_pct": 54.96,
+      "control_pf": null,
+      "return_dd": 1.0603033367037409,
+      "control_return_dd": 0.31289119359534207,
+      "tests": {
+        "positive": true,
+        "pf": false,
+        "trades": true,
+        "control": true,
+        "history_no_fatal_warning": true
+      }
+    },
+    {
+      "id": "us100-orb",
+      "label": "US100 New York ORB",
+      "period": "6m",
+      "trades": 130,
+      "net_usd": -1237.48,
+      "return_pct": -12.3748,
+      "win_rate_pct": 46.92307692307692,
+      "profit_factor": 0.786512918980559,
+      "trades_per_month": 21.50475543478261,
+      "trades_per_weekday": 0.9923664122137404,
+      "max_win_streak": 9,
+      "max_loss_streak": 6,
+      "avg_win_streak": 2.033333333333333,
+      "avg_loss_streak": 2.3,
+      "balance_dd_pct": 24.792336629079557,
+      "commission": -51.08,
+      "swap": -36.34,
+      "monthly": {
+        "2026-03": {
+          "trades": 3,
+          "net_usd": 398.43,
+          "wins": 3,
+          "win_rate_pct": 100.0
+        },
+        "2026-04": {
+          "trades": 21,
+          "net_usd": -25.32,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-05": {
+          "trades": 21,
+          "net_usd": -167.3,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2026-06": {
+          "trades": 22,
+          "net_usd": -914.39,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2026-07": {
+          "trades": 23,
+          "net_usd": -391.13,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2026-08": {
+          "trades": 21,
+          "net_usd": -298.08,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 160.31,
+          "wins": 10,
+          "win_rate_pct": 52.63157894736842
+        }
+      },
+      "equity_dd_pct": 25.86,
+      "quality": "100% real ticks",
+      "late_exits": 3,
+      "first_trade": "2026-03-27T13:55:00",
+      "last_trade": "2026-09-25T14:05:55",
+      "report_sha": "73850ba4657f6dde12664a46af00267bd42351d8de68d562c31ea1be646ed319",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\us100-orb-6m-m4",
+      "history_warnings": []
+    },
+    {
+      "id": "us100-orb",
+      "label": "US100 New York ORB",
+      "period": "1y",
+      "trades": 256,
+      "net_usd": -990.23,
+      "return_pct": -9.902299999999999,
+      "win_rate_pct": 47.265625,
+      "profit_factor": 0.9133870733554801,
+      "trades_per_month": 21.347945205479455,
+      "trades_per_weekday": 0.9846153846153847,
+      "max_win_streak": 9,
+      "max_loss_streak": 6,
+      "avg_win_streak": 1.9206349206349207,
+      "avg_loss_streak": 2.109375,
+      "balance_dd_pct": 24.891618561855804,
+      "commission": -112.15,
+      "swap": -132.9,
+      "monthly": {
+        "2025-09": {
+          "trades": 2,
+          "net_usd": -201.6,
+          "wins": 0,
+          "win_rate_pct": 0.0
+        },
+        "2025-10": {
+          "trades": 23,
+          "net_usd": 186.54,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2025-11": {
+          "trades": 19,
+          "net_usd": -386.58,
+          "wins": 7,
+          "win_rate_pct": 36.8421052631579
+        },
+        "2025-12": {
+          "trades": 22,
+          "net_usd": 50.48,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2026-01": {
+          "trades": 20,
+          "net_usd": 324.39,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2026-02": {
+          "trades": 20,
+          "net_usd": 1071.87,
+          "wins": 14,
+          "win_rate_pct": 70.0
+        },
+        "2026-03": {
+          "trades": 23,
+          "net_usd": -345.41,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2026-04": {
+          "trades": 21,
+          "net_usd": -24.91,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-05": {
+          "trades": 21,
+          "net_usd": -170.74,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2026-06": {
+          "trades": 22,
+          "net_usd": -942.82,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2026-07": {
+          "trades": 23,
+          "net_usd": -406.82,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2026-08": {
+          "trades": 21,
+          "net_usd": -309.81,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 165.18,
+          "wins": 10,
+          "win_rate_pct": 52.63157894736842
+        }
+      },
+      "equity_dd_pct": 25.94,
+      "quality": "73% real ticks",
+      "late_exits": 13,
+      "first_trade": "2025-09-29T13:50:00",
+      "last_trade": "2026-09-25T14:05:55",
+      "report_sha": "201136d81b8e00f9608a8b1f92b1efc12a37faccab67694f040d3fa73d8b47ac",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Screenshot Ideas Raw 2026-09-27\\native\\us100-orb",
+      "history_warnings": []
+    },
+    {
+      "id": "us100-orb",
+      "label": "US100 New York ORB",
+      "period": "3y",
+      "trades": 770,
+      "net_usd": 1705.32,
+      "return_pct": 17.0532,
+      "win_rate_pct": 49.48051948051948,
+      "profit_factor": 1.0424126556507305,
+      "trades_per_month": 21.38401003649635,
+      "trades_per_weekday": 0.9833971902937421,
+      "max_win_streak": 9,
+      "max_loss_streak": 6,
+      "avg_win_streak": 1.8768472906403941,
+      "avg_loss_streak": 1.916256157635468,
+      "balance_dd_pct": 24.855757291465483,
+      "commission": -560.91,
+      "swap": -360.58,
+      "monthly": {
+        "2023-09": {
+          "trades": 3,
+          "net_usd": 132.51,
+          "wins": 2,
+          "win_rate_pct": 66.66666666666667
+        },
+        "2023-10": {
+          "trades": 22,
+          "net_usd": 70.68,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2023-11": {
+          "trades": 22,
+          "net_usd": -334.76,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2023-12": {
+          "trades": 20,
+          "net_usd": 448.9,
+          "wins": 13,
+          "win_rate_pct": 65.0
+        },
+        "2024-01": {
+          "trades": 22,
+          "net_usd": -136.69,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2024-02": {
+          "trades": 21,
+          "net_usd": -6.58,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2024-03": {
+          "trades": 20,
+          "net_usd": -419.66,
+          "wins": 9,
+          "win_rate_pct": 45.0
+        },
+        "2024-04": {
+          "trades": 21,
+          "net_usd": 673.07,
+          "wins": 13,
+          "win_rate_pct": 61.904761904761905
+        },
+        "2024-05": {
+          "trades": 23,
+          "net_usd": 15.75,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2024-06": {
+          "trades": 20,
+          "net_usd": 50.9,
+          "wins": 10,
+          "win_rate_pct": 50.0
+        },
+        "2024-07": {
+          "trades": 23,
+          "net_usd": 772.77,
+          "wins": 15,
+          "win_rate_pct": 65.21739130434783
+        },
+        "2024-08": {
+          "trades": 22,
+          "net_usd": 181.73,
+          "wins": 12,
+          "win_rate_pct": 54.54545454545455
+        },
+        "2024-09": {
+          "trades": 21,
+          "net_usd": -385.28,
+          "wins": 8,
+          "win_rate_pct": 38.095238095238095
+        },
+        "2024-10": {
+          "trades": 23,
+          "net_usd": 124.25,
+          "wins": 13,
+          "win_rate_pct": 56.52173913043478
+        },
+        "2024-11": {
+          "trades": 21,
+          "net_usd": 96.56,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2024-12": {
+          "trades": 21,
+          "net_usd": 53.51,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2025-01": {
+          "trades": 21,
+          "net_usd": -71.66,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2025-02": {
+          "trades": 19,
+          "net_usd": 636.62,
+          "wins": 12,
+          "win_rate_pct": 63.1578947368421
+        },
+        "2025-03": {
+          "trades": 22,
+          "net_usd": 1223.23,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2025-04": {
+          "trades": 21,
+          "net_usd": 301.41,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2025-05": {
+          "trades": 22,
+          "net_usd": -458.87,
+          "wins": 9,
+          "win_rate_pct": 40.90909090909091
+        },
+        "2025-06": {
+          "trades": 20,
+          "net_usd": -1217.53,
+          "wins": 7,
+          "win_rate_pct": 35.0
+        },
+        "2025-07": {
+          "trades": 23,
+          "net_usd": 305.36,
+          "wins": 12,
+          "win_rate_pct": 52.17391304347826
+        },
+        "2025-08": {
+          "trades": 21,
+          "net_usd": 34.41,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2025-09": {
+          "trades": 22,
+          "net_usd": 643.59,
+          "wins": 13,
+          "win_rate_pct": 59.09090909090909
+        },
+        "2025-10": {
+          "trades": 23,
+          "net_usd": 245.03,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2025-11": {
+          "trades": 19,
+          "net_usd": -503.09,
+          "wins": 7,
+          "win_rate_pct": 36.8421052631579
+        },
+        "2025-12": {
+          "trades": 22,
+          "net_usd": 65.84,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2026-01": {
+          "trades": 20,
+          "net_usd": 422.75,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2026-02": {
+          "trades": 20,
+          "net_usd": 1384.33,
+          "wins": 14,
+          "win_rate_pct": 70.0
+        },
+        "2026-03": {
+          "trades": 23,
+          "net_usd": -446.4,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2026-04": {
+          "trades": 21,
+          "net_usd": -31.98,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-05": {
+          "trades": 21,
+          "net_usd": -227.24,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2026-06": {
+          "trades": 22,
+          "net_usd": -1213.83,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2026-07": {
+          "trades": 23,
+          "net_usd": -529.9,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2026-08": {
+          "trades": 21,
+          "net_usd": -405.46,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 211.05,
+          "wins": 10,
+          "win_rate_pct": 52.63157894736842
+        }
+      },
+      "equity_dd_pct": 25.94,
+      "quality": "24% real ticks",
+      "late_exits": 36,
+      "first_trade": "2023-09-27T14:05:00",
+      "last_trade": "2026-09-25T14:05:55",
+      "report_sha": "b6ed5ef72f04f36a9483c4df505a74aaf18442b7c9ecf4807af7f1c1c97c8eea",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\us100-orb-3y-m4",
+      "history_warnings": [],
+      "control_return_pct": 2.3598000000000003,
+      "control_equity_dd_pct": 42.51,
+      "control_pf": 1.0048841216373543,
+      "return_dd": 0.6574094063222822,
+      "control_return_dd": 0.055511644318983776,
+      "tests": {
+        "positive": true,
+        "pf": false,
+        "trades": true,
+        "control": true,
+        "history_no_fatal_warning": true
+      }
+    },
+    {
+      "id": "us100-orb",
+      "label": "US100 New York ORB",
+      "period": "5y",
+      "trades": 1285,
+      "net_usd": 2737.82,
+      "return_pct": 27.378199999999996,
+      "win_rate_pct": 48.94941634241245,
+      "profit_factor": 1.0392467005087784,
+      "trades_per_month": 21.419598849945235,
+      "trades_per_weekday": 0.9846743295019157,
+      "max_win_streak": 9,
+      "max_loss_streak": 8,
+      "avg_win_streak": 1.8720238095238095,
+      "avg_loss_streak": 1.946587537091988,
+      "balance_dd_pct": 24.808134987716464,
+      "commission": -1021.6,
+      "swap": -630.04,
+      "monthly": {
+        "2021-09": {
+          "trades": 4,
+          "net_usd": 104.76,
+          "wins": 2,
+          "win_rate_pct": 50.0
+        },
+        "2021-10": {
+          "trades": 21,
+          "net_usd": 169.05,
+          "wins": 12,
+          "win_rate_pct": 57.142857142857146
+        },
+        "2021-11": {
+          "trades": 22,
+          "net_usd": -117.95,
+          "wins": 11,
+          "win_rate_pct": 50.0
+        },
+        "2021-12": {
+          "trades": 21,
+          "net_usd": 449.58,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2022-01": {
+          "trades": 22,
+          "net_usd": -29.76,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2022-02": {
+          "trades": 20,
+          "net_usd": -238.73,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2022-03": {
+          "trades": 23,
+          "net_usd": -103.43,
+          "wins": 9,
+          "win_rate_pct": 39.130434782608695
+        },
+        "2022-04": {
+          "trades": 20,
+          "net_usd": 329.98,
+          "wins": 10,
+          "win_rate_pct": 50.0
+        },
+        "2022-05": {
+          "trades": 22,
+          "net_usd": 20.68,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2022-06": {
+          "trades": 22,
+          "net_usd": -75.22,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2022-07": {
+          "trades": 21,
+          "net_usd": 124.22,
+          "wins": 12,
+          "win_rate_pct": 57.142857142857146
+        },
+        "2022-08": {
+          "trades": 23,
+          "net_usd": -21.84,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2022-09": {
+          "trades": 22,
+          "net_usd": 139.23,
+          "wins": 13,
+          "win_rate_pct": 59.09090909090909
+        },
+        "2022-10": {
+          "trades": 20,
+          "net_usd": 877.83,
+          "wins": 13,
+          "win_rate_pct": 65.0
+        },
+        "2022-11": {
+          "trades": 22,
+          "net_usd": 22.78,
+          "wins": 12,
+          "win_rate_pct": 54.54545454545455
+        },
+        "2022-12": {
+          "trades": 21,
+          "net_usd": 573.78,
+          "wins": 13,
+          "win_rate_pct": 61.904761904761905
+        },
+        "2023-01": {
+          "trades": 20,
+          "net_usd": 132.57,
+          "wins": 9,
+          "win_rate_pct": 45.0
+        },
+        "2023-02": {
+          "trades": 20,
+          "net_usd": -296.35,
+          "wins": 8,
+          "win_rate_pct": 40.0
+        },
+        "2023-03": {
+          "trades": 23,
+          "net_usd": -414.12,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2023-04": {
+          "trades": 19,
+          "net_usd": 10.18,
+          "wins": 9,
+          "win_rate_pct": 47.36842105263158
+        },
+        "2023-05": {
+          "trades": 23,
+          "net_usd": -543.82,
+          "wins": 8,
+          "win_rate_pct": 34.78260869565217
+        },
+        "2023-06": {
+          "trades": 22,
+          "net_usd": 286.61,
+          "wins": 11,
+          "win_rate_pct": 50.0
+        },
+        "2023-07": {
+          "trades": 21,
+          "net_usd": 36.38,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2023-08": {
+          "trades": 23,
+          "net_usd": -152.54,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2023-09": {
+          "trades": 21,
+          "net_usd": -244.76,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2023-10": {
+          "trades": 22,
+          "net_usd": 73.04,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2023-11": {
+          "trades": 22,
+          "net_usd": -366.31,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2023-12": {
+          "trades": 20,
+          "net_usd": 486.96,
+          "wins": 13,
+          "win_rate_pct": 65.0
+        },
+        "2024-01": {
+          "trades": 22,
+          "net_usd": -149.32,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2024-02": {
+          "trades": 21,
+          "net_usd": -6.02,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2024-03": {
+          "trades": 20,
+          "net_usd": -457.72,
+          "wins": 9,
+          "win_rate_pct": 45.0
+        },
+        "2024-04": {
+          "trades": 21,
+          "net_usd": 732.41,
+          "wins": 13,
+          "win_rate_pct": 61.904761904761905
+        },
+        "2024-05": {
+          "trades": 23,
+          "net_usd": 15.62,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2024-06": {
+          "trades": 20,
+          "net_usd": 55.38,
+          "wins": 10,
+          "win_rate_pct": 50.0
+        },
+        "2024-07": {
+          "trades": 23,
+          "net_usd": 840.44,
+          "wins": 15,
+          "win_rate_pct": 65.21739130434783
+        },
+        "2024-08": {
+          "trades": 22,
+          "net_usd": 197.45,
+          "wins": 12,
+          "win_rate_pct": 54.54545454545455
+        },
+        "2024-09": {
+          "trades": 21,
+          "net_usd": -415.81,
+          "wins": 8,
+          "win_rate_pct": 38.095238095238095
+        },
+        "2024-10": {
+          "trades": 23,
+          "net_usd": 135.09,
+          "wins": 13,
+          "win_rate_pct": 56.52173913043478
+        },
+        "2024-11": {
+          "trades": 21,
+          "net_usd": 104.68,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2024-12": {
+          "trades": 21,
+          "net_usd": 58.3,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2025-01": {
+          "trades": 21,
+          "net_usd": -74.28,
+          "wins": 11,
+          "win_rate_pct": 52.38095238095238
+        },
+        "2025-02": {
+          "trades": 19,
+          "net_usd": 688.6,
+          "wins": 12,
+          "win_rate_pct": 63.1578947368421
+        },
+        "2025-03": {
+          "trades": 22,
+          "net_usd": 1323.98,
+          "wins": 14,
+          "win_rate_pct": 63.63636363636363
+        },
+        "2025-04": {
+          "trades": 21,
+          "net_usd": 327.01,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2025-05": {
+          "trades": 22,
+          "net_usd": -500.64,
+          "wins": 9,
+          "win_rate_pct": 40.90909090909091
+        },
+        "2025-06": {
+          "trades": 20,
+          "net_usd": -1328.41,
+          "wins": 7,
+          "win_rate_pct": 35.0
+        },
+        "2025-07": {
+          "trades": 23,
+          "net_usd": 329.58,
+          "wins": 12,
+          "win_rate_pct": 52.17391304347826
+        },
+        "2025-08": {
+          "trades": 21,
+          "net_usd": 38.89,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2025-09": {
+          "trades": 22,
+          "net_usd": 699.9,
+          "wins": 13,
+          "win_rate_pct": 59.09090909090909
+        },
+        "2025-10": {
+          "trades": 23,
+          "net_usd": 265.79,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2025-11": {
+          "trades": 19,
+          "net_usd": -547.65,
+          "wins": 7,
+          "win_rate_pct": 36.8421052631579
+        },
+        "2025-12": {
+          "trades": 22,
+          "net_usd": 71.88,
+          "wins": 10,
+          "win_rate_pct": 45.45454545454545
+        },
+        "2026-01": {
+          "trades": 20,
+          "net_usd": 459.84,
+          "wins": 11,
+          "win_rate_pct": 55.0
+        },
+        "2026-02": {
+          "trades": 20,
+          "net_usd": 1507.93,
+          "wins": 14,
+          "win_rate_pct": 70.0
+        },
+        "2026-03": {
+          "trades": 23,
+          "net_usd": -485.33,
+          "wins": 10,
+          "win_rate_pct": 43.47826086956522
+        },
+        "2026-04": {
+          "trades": 21,
+          "net_usd": -34.7,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-05": {
+          "trades": 21,
+          "net_usd": -248.08,
+          "wins": 9,
+          "win_rate_pct": 42.857142857142854
+        },
+        "2026-06": {
+          "trades": 22,
+          "net_usd": -1320.26,
+          "wins": 8,
+          "win_rate_pct": 36.36363636363637
+        },
+        "2026-07": {
+          "trades": 23,
+          "net_usd": -571.71,
+          "wins": 11,
+          "win_rate_pct": 47.82608695652174
+        },
+        "2026-08": {
+          "trades": 21,
+          "net_usd": -440.49,
+          "wins": 10,
+          "win_rate_pct": 47.61904761904762
+        },
+        "2026-09": {
+          "trades": 19,
+          "net_usd": 232.67,
+          "wins": 10,
+          "win_rate_pct": 52.63157894736842
+        }
+      },
+      "equity_dd_pct": 25.89,
+      "quality": "14% real ticks",
+      "late_exits": 65,
+      "first_trade": "2021-09-27T15:05:00",
+      "last_trade": "2026-09-25T14:05:55",
+      "report_sha": "74a186cf8ec08508681c62dfadae38ed0c6bc503da35b0a348939ad847aa96ca",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Four Ideas Pipeline 2026-09-27\\native\\us100-orb-5y-m4",
+      "history_warnings": [],
+      "control_return_pct": -1.573300000000001,
+      "control_equity_dd_pct": 42.91,
+      "control_pf": 0.9978405738778203,
+      "return_dd": 1.0574816531479334,
+      "control_return_dd": -0.0366651130272664,
+      "tests": {
+        "positive": true,
+        "pf": false,
+        "trades": true,
+        "control": true,
+        "history_no_fatal_warning": true
+      }
+    }
+  ],
+  "all_confirmed": true,
+  "control_criterion": "higher return/equityDD in BOTH 3y and 5y"
+}

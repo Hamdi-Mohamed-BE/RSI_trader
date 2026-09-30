@@ -1,0 +1,82 @@
+{
+  "configs": [
+    {
+      "name": "Core: Raw Gold + XAU/XAG news",
+      "keys": [
+        "gold-overnight-value-area/standard",
+        "news-pulse-xau/standard",
+        "news-pulse-xag/standard"
+      ],
+      "risk": 71.42857142857143,
+      "news_risk": 10.0
+    },
+    {
+      "name": "Core + Gold RSI VWAP",
+      "keys": [
+        "gold-overnight-value-area/standard",
+        "news-pulse-xau/standard",
+        "news-pulse-xag/standard",
+        "xau-rsi-vwap/standard"
+      ],
+      "risk": 71.42857142857143,
+      "news_risk": 10.0
+    },
+    {
+      "name": "Core + Nasdaq 5M DI",
+      "keys": [
+        "gold-overnight-value-area/standard",
+        "news-pulse-xau/standard",
+        "news-pulse-xag/standard",
+        "nasdaq-5m-candle-momentum/dynamic"
+      ],
+      "risk": 71.42857142857143,
+      "news_risk": 10.0
+    },
+    {
+      "name": "Core + Gold RSI VWAP + Nasdaq 5M DI",
+      "keys": [
+        "gold-overnight-value-area/standard",
+        "news-pulse-xau/standard",
+        "news-pulse-xag/standard",
+        "xau-rsi-vwap/standard",
+        "nasdaq-5m-candle-momentum/dynamic"
+      ],
+      "risk": 71.42857142857143,
+      "news_risk": 10.0
+    }
+  ],
+  "paths": 1000,
+  "seed": 20260926,
+  "pool_start": "2026-03-02T00:00:00+00:00",
+  "pool_end": "2026-08-31T00:00:00+00:00",
+  "di": {
+    "native_rows": 971,
+    "accepted_before_cutoff": 966,
+    "missing_or_ambiguous_stops": 0,
+    "report_metadata": {
+      "slug": "nasdaq-5m-candle-momentum",
+      "mode": "dynamic",
+      "from": "2021-09-07",
+      "to": "2026-09-07",
+      "canonical_symbol": "USTEC",
+      "timeframe": "M5",
+      "expert_sha256": "49c4f03622a8ec7fb8e70db990a2f19b3006b5641aeb915a5d7f2454f26bab35",
+      "settings_sha256": "8c28dd5522eb9a33f9f6033299beb996dfdcb29103f4ec773399ddac2076c1b9"
+    },
+    "files": {
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\data\\evidence-cache\\v1\\products\\nasdaq-5m-candle-momentum\\dynamic\\5y.trades.json": "807cfd79a3d785a077cc6d181d745543a8b8f28c0c48f71c09300456995f4e83",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\data\\evidence-cache\\v1\\source-runs\\nasdaq-5m-candle-momentum\\dynamic\\5y.htm": "69f00cc424d305011b7b0918a95b8ddbe22eaecafc93105733fcad898741df8d",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\data\\evidence-cache\\v1\\source-runs\\nasdaq-5m-candle-momentum\\dynamic\\5y.meta.json": "51c8cfdb3ab207f0e49ba701197e5c5d5e9012b6aec63b341cc69eabd9517c57",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R + DI AGREE M5 - HARD 1PCT.set": "8c28dd5522eb9a33f9f6033299beb996dfdcb29103f4ec773399ddac2076c1b9",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Active Portfolio Full Pipeline 2026-09-05\\11 Nasdaq 5M Candle Momentum\\EA\\Nasdaq 5M Candle Momentum DI EA.ex5": "49c4f03622a8ec7fb8e70db990a2f19b3006b5641aeb915a5d7f2454f26bab35",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\EA store\\app\\mt5_evidence_jobs.py": "13cf39eefb35d3d4813c92005201cfd1d35578dcfb2e4eaf37843bca34375db3"
+    }
+  },
+  "source_entries": {
+    "gold-overnight-value-area/standard": 100,
+    "news-pulse-xau/standard": 20,
+    "news-pulse-xag/standard": 17,
+    "xau-rsi-vwap/standard": 32,
+    "nasdaq-5m-candle-momentum/dynamic": 90
+  }
+}
