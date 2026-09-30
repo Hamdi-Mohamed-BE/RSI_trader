@@ -1,0 +1,68 @@
+{
+  "tag": "bitcoin-reversal-control-1y-m4",
+  "bot": {
+    "name": "bitcoin-reversal",
+    "symbol": "BTCUSD",
+    "mode": 1,
+    "rr": 1.5
+  },
+  "control": true,
+  "window": "1y",
+  "model": 4,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "1",
+    "InpControl": "true",
+    "InpRiskPercent": "1",
+    "InpRR": "1.5",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1758931200",
+    "InpTag": "bitcoin-reversal-control-1y-m4",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9304.23,
+    "net_profit": -695.7700000000002,
+    "return_pct": -6.957700000000003,
+    "profit_factor": 0.5582244402961383,
+    "win_rate_pct": 30.303030303030305,
+    "max_drawdown_pct": 11.11,
+    "trades": 33,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.62,
+    "history_quality": "59% real ticks",
+    "equity_dd_pct": 11.11,
+    "mean_trade": -21.083939393939396,
+    "mean_net_R": -0.20407695769045775
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 24.57,
+  "tick_coverage": [
+    "CS\t0\t01:25:52.176\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+    "QI\t0\t01:25:54.361\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "MS_SUMMARY entries=33 entryFails=0 closeFails=0 skips=0 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+  ],
+  "report_sha": "d35c8207361c8023641272730b8e3ab1affbf2a3e93e787b480b5f546c9ad103",
+  "attempt": 0
+}

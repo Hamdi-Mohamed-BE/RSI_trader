@@ -1,0 +1,619 @@
+{
+  "authorization": "Explicit exploratory override of failed Nasdaq raw gate",
+  "baseline": {
+    "tf": 60,
+    "entry": 0,
+    "offset": 0.25,
+    "stop": 0,
+    "sl": 1.5,
+    "rr": 3,
+    "trail": 0,
+    "start": 1,
+    "dist": 1.5,
+    "exit": 0,
+    "session": 0,
+    "direction": 0,
+    "filter": 0,
+    "day": 0,
+    "max_day": 1,
+    "max_pos": 1,
+    "reentry": 0,
+    "hold": 480,
+    "weekend": 1,
+    "flat": 1,
+    "atr": 14,
+    "fast": 50,
+    "slow": 200,
+    "pullback": 20,
+    "lookback": 1,
+    "slope": 5,
+    "cutoff": 20
+  },
+  "fields": [
+    "tf",
+    "entry",
+    "offset",
+    "stop",
+    "sl",
+    "rr",
+    "trail",
+    "start",
+    "dist",
+    "exit",
+    "session",
+    "direction",
+    "filter",
+    "day",
+    "max_day",
+    "max_pos",
+    "reentry",
+    "hold",
+    "weekend",
+    "flat",
+    "atr",
+    "fast",
+    "slow",
+    "pullback",
+    "lookback",
+    "slope",
+    "cutoff"
+  ],
+  "development": [
+    "2021.09.27",
+    "2024.03.27"
+  ],
+  "validation": [
+    "2024.03.27",
+    "2025.09.27"
+  ],
+  "recent": [
+    "2025.09.27",
+    "2026.09.27"
+  ],
+  "older": [
+    "2019.09.27",
+    "2021.09.27"
+  ],
+  "patches_at_default": {
+    "timeframe": [
+      {
+        "tf": 1
+      },
+      {
+        "tf": 3
+      },
+      {
+        "tf": 5
+      },
+      {
+        "tf": 15
+      },
+      {
+        "tf": 30
+      },
+      {
+        "tf": 60
+      },
+      {
+        "tf": 240
+      }
+    ],
+    "entry": [
+      {
+        "entry": 0
+      },
+      {
+        "entry": 1
+      },
+      {
+        "entry": 2,
+        "offset": 0.1
+      },
+      {
+        "entry": 2,
+        "offset": 0.25
+      },
+      {
+        "entry": 2,
+        "offset": 0.5
+      },
+      {
+        "entry": 4,
+        "offset": 0.1
+      },
+      {
+        "entry": 4,
+        "offset": 0.25
+      },
+      {
+        "entry": 4,
+        "offset": 0.5
+      },
+      {
+        "entry": 3,
+        "offset": 10
+      },
+      {
+        "entry": 3,
+        "offset": 25
+      },
+      {
+        "entry": 3,
+        "offset": 50
+      }
+    ],
+    "stop": [
+      {
+        "stop": 0,
+        "sl": 0.5
+      },
+      {
+        "stop": 0,
+        "sl": 0.75
+      },
+      {
+        "stop": 0,
+        "sl": 1
+      },
+      {
+        "stop": 0,
+        "sl": 1.5
+      },
+      {
+        "stop": 0,
+        "sl": 2
+      },
+      {
+        "stop": 0,
+        "sl": 3
+      },
+      {
+        "stop": 0,
+        "sl": 4
+      },
+      {
+        "stop": 1,
+        "sl": 0.05
+      },
+      {
+        "stop": 1,
+        "sl": 0.1
+      },
+      {
+        "stop": 1,
+        "sl": 0.2
+      },
+      {
+        "stop": 1,
+        "sl": 0.4
+      },
+      {
+        "stop": 2,
+        "sl": 20
+      },
+      {
+        "stop": 2,
+        "sl": 50
+      },
+      {
+        "stop": 2,
+        "sl": 100
+      },
+      {
+        "stop": 3
+      },
+      {
+        "stop": 4
+      },
+      {
+        "stop": 5
+      }
+    ],
+    "trailing": [
+      {
+        "trail": 0
+      },
+      {
+        "trail": 1,
+        "start": 0.5
+      },
+      {
+        "trail": 1,
+        "start": 1
+      },
+      {
+        "trail": 1,
+        "start": 1.5
+      },
+      {
+        "trail": 2,
+        "start": 0.5,
+        "dist": 1
+      },
+      {
+        "trail": 2,
+        "start": 0.5,
+        "dist": 1.5
+      },
+      {
+        "trail": 2,
+        "start": 0.5,
+        "dist": 2
+      },
+      {
+        "trail": 2,
+        "start": 1,
+        "dist": 1
+      },
+      {
+        "trail": 2,
+        "start": 1,
+        "dist": 1.5
+      },
+      {
+        "trail": 2,
+        "start": 1,
+        "dist": 2
+      },
+      {
+        "trail": 2,
+        "start": 1.5,
+        "dist": 1
+      },
+      {
+        "trail": 2,
+        "start": 1.5,
+        "dist": 1.5
+      },
+      {
+        "trail": 2,
+        "start": 1.5,
+        "dist": 2
+      },
+      {
+        "trail": 2,
+        "start": 2,
+        "dist": 1
+      },
+      {
+        "trail": 2,
+        "start": 2,
+        "dist": 1.5
+      },
+      {
+        "trail": 2,
+        "start": 2,
+        "dist": 2
+      },
+      {
+        "trail": 3,
+        "dist": 0.05
+      },
+      {
+        "trail": 3,
+        "dist": 0.1
+      },
+      {
+        "trail": 3,
+        "dist": 0.2
+      },
+      {
+        "trail": 4
+      },
+      {
+        "trail": 5
+      },
+      {
+        "trail": 7
+      },
+      {
+        "trail": 6,
+        "dist": 1.5
+      },
+      {
+        "trail": 6,
+        "dist": 2
+      },
+      {
+        "trail": 6,
+        "dist": 3
+      }
+    ],
+    "rr_exit": [
+      {
+        "exit": 0,
+        "rr": 0.5
+      },
+      {
+        "exit": 0,
+        "rr": 0.75
+      },
+      {
+        "exit": 0,
+        "rr": 1
+      },
+      {
+        "exit": 0,
+        "rr": 1.25
+      },
+      {
+        "exit": 0,
+        "rr": 1.5
+      },
+      {
+        "exit": 0,
+        "rr": 2
+      },
+      {
+        "exit": 0,
+        "rr": 2.5
+      },
+      {
+        "exit": 0,
+        "rr": 3
+      },
+      {
+        "exit": 0,
+        "rr": 4
+      },
+      {
+        "exit": 0,
+        "rr": 5
+      },
+      {
+        "exit": 0,
+        "rr": 6
+      },
+      {
+        "exit": 1,
+        "trail": 2,
+        "dist": 1
+      },
+      {
+        "exit": 1,
+        "trail": 2,
+        "dist": 1.5
+      },
+      {
+        "exit": 1,
+        "trail": 2,
+        "dist": 2
+      },
+      {
+        "exit": 1,
+        "trail": 2,
+        "dist": 3
+      },
+      {
+        "exit": 2
+      },
+      {
+        "exit": 3,
+        "trail": 0
+      },
+      {
+        "exit": 4,
+        "trail": 2,
+        "start": 1
+      },
+      {
+        "exit": 5
+      }
+    ],
+    "session": [
+      {
+        "session": 0
+      },
+      {
+        "session": 1
+      },
+      {
+        "session": 2
+      },
+      {
+        "session": 3
+      },
+      {
+        "session": 4
+      },
+      {
+        "session": 5
+      },
+      {
+        "session": 6
+      }
+    ],
+    "direction": [
+      {
+        "direction": 0
+      },
+      {
+        "direction": 1
+      },
+      {
+        "direction": 2
+      }
+    ],
+    "filters": [
+      {
+        "filter": 0
+      },
+      {
+        "filter": 1
+      },
+      {
+        "filter": 2
+      },
+      {
+        "filter": 3
+      },
+      {
+        "filter": 4
+      },
+      {
+        "filter": 5
+      },
+      {
+        "filter": 6
+      },
+      {
+        "filter": 7
+      }
+    ],
+    "management": [
+      {
+        "day": 0
+      },
+      {
+        "day": 1
+      },
+      {
+        "day": 2
+      },
+      {
+        "day": 3
+      },
+      {
+        "max_day": 1
+      },
+      {
+        "max_day": 2
+      },
+      {
+        "max_day": 3
+      },
+      {
+        "max_pos": 1
+      },
+      {
+        "max_pos": 2,
+        "max_day": 2
+      },
+      {
+        "reentry": 0
+      },
+      {
+        "reentry": 1
+      },
+      {
+        "hold": 0
+      },
+      {
+        "hold": 120
+      },
+      {
+        "hold": 240
+      },
+      {
+        "hold": 480
+      },
+      {
+        "hold": 960
+      },
+      {
+        "weekend": 0
+      },
+      {
+        "weekend": 1
+      },
+      {
+        "flat": 0
+      },
+      {
+        "flat": 1
+      },
+      {
+        "cutoff": 17
+      },
+      {
+        "cutoff": 18
+      },
+      {
+        "cutoff": 19
+      },
+      {
+        "cutoff": 20
+      }
+    ],
+    "signal": [
+      {
+        "atr": 7
+      },
+      {
+        "atr": 14
+      },
+      {
+        "atr": 28
+      },
+      {
+        "fast": 20
+      },
+      {
+        "fast": 35
+      },
+      {
+        "fast": 50
+      },
+      {
+        "fast": 75
+      },
+      {
+        "slow": 100
+      },
+      {
+        "slow": 150
+      },
+      {
+        "slow": 200
+      },
+      {
+        "slow": 250
+      },
+      {
+        "pullback": 10
+      },
+      {
+        "pullback": 20
+      },
+      {
+        "pullback": 30
+      },
+      {
+        "lookback": 1
+      },
+      {
+        "lookback": 2
+      },
+      {
+        "lookback": 3
+      },
+      {
+        "slope": 3
+      },
+      {
+        "slope": 5
+      },
+      {
+        "slope": 10
+      }
+    ]
+  },
+  "protocol_sha": "e923115f85e691e0c82fa70705d36e7df21756e443d871dd435193e39534cc1c",
+  "logic_sha": "df7815995873429307f0e060e14dcd411462d2860fc1f259d0097e2dd0cb60aa",
+  "core_sha": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+  "runner_sha": "05155b683fd14cf44967f97277785587e7d380321e77d47acc46c7c92751e785",
+  "development_gate": {
+    "min_trades": 60,
+    "pf": 1.15,
+    "net_positive": true
+  },
+  "evaluation_gate": {
+    "min_trades": 30,
+    "pf": 1.15,
+    "net_positive": true
+  },
+  "risk_percent": 1,
+  "delay_ms": 150,
+  "late_timed_exits": "retained and disclosed, not falsely guaranteed intraday",
+  "deployment_authorized": false
+}

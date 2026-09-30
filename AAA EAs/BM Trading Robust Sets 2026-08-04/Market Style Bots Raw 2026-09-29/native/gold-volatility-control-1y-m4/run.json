@@ -1,0 +1,68 @@
+{
+  "tag": "gold-volatility-control-1y-m4",
+  "bot": {
+    "name": "gold-volatility",
+    "symbol": "XAUUSD",
+    "mode": 2,
+    "rr": 2
+  },
+  "control": true,
+  "window": "1y",
+  "model": 4,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "2",
+    "InpControl": "true",
+    "InpRiskPercent": "1",
+    "InpRR": "2",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1758931200",
+    "InpTag": "gold-volatility-control-1y-m4",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10156.71,
+    "net_profit": 156.71000000000004,
+    "return_pct": 1.5671000000000004,
+    "profit_factor": 1.0616621350971698,
+    "win_rate_pct": 45.45454545454545,
+    "max_drawdown_pct": 9.21,
+    "trades": 44,
+    "sharpe_ratio": 1.02,
+    "recovery_factor": 0.16,
+    "history_quality": "59% real ticks",
+    "equity_dd_pct": 9.21,
+    "mean_trade": 3.56159090909091,
+    "mean_net_R": 0.033351701652958074
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 32.15,
+  "tick_coverage": [
+    "CS\t0\t01:26:53.463\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "PI\t0\t01:26:59.084\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "MS_SUMMARY entries=44 entryFails=0 closeFails=0 skips=0 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=XAUUSD description=Gold vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100.00000000 min=0.01000000 step=0.01000000 tick=0.00100000"
+  ],
+  "report_sha": "9be8dd7f512daf90212c8c83b7d586ea5d7b3a1c9d03be45b9bdc9931d0ae12c",
+  "attempt": 0
+}

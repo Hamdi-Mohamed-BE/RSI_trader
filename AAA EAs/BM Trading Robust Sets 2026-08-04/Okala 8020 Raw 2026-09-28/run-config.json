@@ -1,0 +1,19 @@
+{
+  "symbol": "USTEC",
+  "end": "2026.09.27",
+  "windows": {"6m":"2026.03.27", "1y":"2025.09.27", "3y":"2023.09.27", "5y":"2021.09.27"},
+  "smoke_start":"2026.09.01", "smoke_end":"2026.09.08",
+  "deposit":10000, "fixed_risk_money":100,
+  "variants":[
+    {"name":"fork", "setup":1, "grid_shift":0, "exit":0},
+    {"name":"cross", "setup":2, "grid_shift":0, "exit":0},
+    {"name":"h-cross", "setup":3, "grid_shift":0, "exit":0},
+    {"name":"combined", "setup":0, "grid_shift":0, "exit":0},
+    {"name":"combined-control", "setup":0, "grid_shift":50, "exit":0},
+    {"name":"combined-tp15", "setup":0, "grid_shift":0, "exit":1}
+  ],
+  "prop_accounts":["FTMO 10000 2-Step Swing", "FundedNext 5000 Stellar Instant"],
+  "prop_risks":{"FTMO":[0.0025,0.005], "Instant":[0.0015,0.0025]},
+  "bootstrap_paths":500, "bootstrap_block_days":28, "seed":9288020,
+  "gate":"No promotion without positive PF >=1.15 on 3y and 5y and superiority to shifted-level control. No optimization in this request."
+}

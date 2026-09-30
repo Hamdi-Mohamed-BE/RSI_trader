@@ -1,0 +1,1068 @@
+{
+  "runs": [
+    {
+      "tag": "nasdaq-trend-raw-6m-m4",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": false,
+      "window": "6m",
+      "model": 4,
+      "start": "2026.03.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1774569600",
+        "InpTag": "nasdaq-trend-raw-6m-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 12461.82,
+        "net_profit": 2461.82,
+        "return_pct": 24.6182,
+        "profit_factor": 1.8192576224483683,
+        "win_rate_pct": 51.78571428571429,
+        "max_drawdown_pct": 5.92,
+        "trades": 56,
+        "sharpe_ratio": 11.07,
+        "recovery_factor": 3.14,
+        "history_quality": "98% real ticks",
+        "equity_dd_pct": 5.92,
+        "mean_trade": 43.96107142857143,
+        "mean_net_R": 0.4034098784256977,
+        "trades_per_month": 9.26358695652174,
+        "trades_per_eligible_day": 0.42748091603053434,
+        "eligible_days": 131,
+        "win_streak": 6,
+        "loss_streak": 3,
+        "balance_dd_pct": 5.312586192093164,
+        "median_initial_risk_pct": 1.0062762701285373,
+        "max_initial_risk_pct": 1.0790946660752432,
+        "max_hold_hours": 58.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 1,
+        "swap_positions": 1
+      },
+      "seconds": 27.11,
+      "tick_coverage": [
+        "CS\t0\t01:20:50.262\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "ER\t0\t01:20:50.453\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=56 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "84ef71a2fa9c3e259f76b2a50247be7f46ef2a0165e76c4c6c9ba850f0f49838",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\nasdaq-trend-raw-6m-m4",
+      "fresh_run": false,
+      "costs": {
+        "gross_profit": 2538.5699999999997,
+        "commission": -34.65,
+        "swap": -42.1,
+        "fee": 0.0,
+        "net_profit": 2461.82
+      }
+    },
+    {
+      "tag": "nasdaq-trend-control-6m-m4",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": true,
+      "window": "6m",
+      "model": 4,
+      "start": "2026.03.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1774569600",
+        "InpTag": "nasdaq-trend-control-6m-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10743.4,
+        "net_profit": 743.4000000000001,
+        "return_pct": 7.434,
+        "profit_factor": 1.2432448350555267,
+        "win_rate_pct": 42.857142857142854,
+        "max_drawdown_pct": 8.99,
+        "trades": 56,
+        "sharpe_ratio": 3.54,
+        "recovery_factor": 0.81,
+        "history_quality": "98% real ticks",
+        "equity_dd_pct": 8.99,
+        "mean_trade": 13.275000000000002,
+        "mean_net_R": 0.13608177999356424,
+        "trades_per_month": 9.26358695652174,
+        "trades_per_eligible_day": 0.42748091603053434,
+        "eligible_days": 131,
+        "win_streak": 6,
+        "loss_streak": 8,
+        "balance_dd_pct": 7.360677977522974,
+        "median_initial_risk_pct": 1.0056060007970675,
+        "max_initial_risk_pct": 1.0719299677796152,
+        "max_hold_hours": 9.000833333333333
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0
+      },
+      "seconds": 26.15,
+      "tick_coverage": [
+        "CS\t0\t01:21:17.620\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "OM\t0\t01:21:18.331\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=56 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "05ebe4af52e6855ee7ec9b9d1765abfd6fac1282f2380303bb1217c4c86b80dd",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\nasdaq-trend-control-6m-m4",
+      "fresh_run": false,
+      "costs": {
+        "gross_profit": 774.1600000000001,
+        "commission": -30.76,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": 743.4000000000001
+      }
+    },
+    {
+      "tag": "nasdaq-trend-raw-1y-m4",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": false,
+      "window": "1y",
+      "model": 4,
+      "start": "2025.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1758931200",
+        "InpTag": "nasdaq-trend-raw-1y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 12521.7,
+        "net_profit": 2521.7000000000003,
+        "return_pct": 25.217,
+        "profit_factor": 1.4433220409304193,
+        "win_rate_pct": 45.63106796116505,
+        "max_drawdown_pct": 12.11,
+        "trades": 103,
+        "sharpe_ratio": 6.23,
+        "recovery_factor": 2.02,
+        "history_quality": "59% real ticks",
+        "equity_dd_pct": 12.11,
+        "mean_trade": 24.482524271844664,
+        "mean_net_R": 0.2273866196292856,
+        "trades_per_month": 8.589212328767124,
+        "trades_per_eligible_day": 0.3992248062015504,
+        "eligible_days": 258,
+        "win_streak": 6,
+        "loss_streak": 11,
+        "balance_dd_pct": 11.072575364761622,
+        "median_initial_risk_pct": 1.0045355462108734,
+        "max_initial_risk_pct": 1.0740327229721618,
+        "max_hold_hours": 58.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 2,
+        "swap_positions": 2
+      },
+      "seconds": 33.25,
+      "tick_coverage": [
+        "CS\t0\t01:24:20.909\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "HH\t0\t01:24:26.635\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=103 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "f5bf6cf2a4b352cbae7f54805756345f6657550a326cf68e6d2fcfedcc6c6f27",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\nasdaq-trend-raw-1y-m4",
+      "fresh_run": false,
+      "costs": {
+        "gross_profit": 2655.6800000000007,
+        "commission": -72.13000000000001,
+        "swap": -61.849999999999994,
+        "fee": 0.0,
+        "net_profit": 2521.7000000000003
+      }
+    },
+    {
+      "tag": "nasdaq-trend-control-1y-m4",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": true,
+      "window": "1y",
+      "model": 4,
+      "start": "2025.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1758931200",
+        "InpTag": "nasdaq-trend-control-1y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 11108.49,
+        "net_profit": 1108.490000000001,
+        "return_pct": 11.084900000000008,
+        "profit_factor": 1.1849897449504945,
+        "win_rate_pct": 39.80582524271845,
+        "max_drawdown_pct": 11.19,
+        "trades": 103,
+        "sharpe_ratio": 2.74,
+        "recovery_factor": 0.92,
+        "history_quality": "59% real ticks",
+        "equity_dd_pct": 11.19,
+        "mean_trade": 10.762038834951461,
+        "mean_net_R": 0.11005765807924751,
+        "trades_per_month": 8.589212328767124,
+        "trades_per_eligible_day": 0.3992248062015504,
+        "eligible_days": 258,
+        "win_streak": 6,
+        "loss_streak": 8,
+        "balance_dd_pct": 9.831615027302252,
+        "median_initial_risk_pct": 1.004825345854772,
+        "max_initial_risk_pct": 1.0723039813112178,
+        "max_hold_hours": 31.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 1,
+        "swap_positions": 1
+      },
+      "seconds": 34.13,
+      "tick_coverage": [
+        "CS\t0\t01:24:54.677\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "OJ\t0\t01:25:00.475\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=103 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "bcbc38c98b721c96547fae21b8c345bfe545e82105f38d2d3d6ef309105182f5",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\nasdaq-trend-control-1y-m4",
+      "fresh_run": false,
+      "costs": {
+        "gross_profit": 1202.9600000000003,
+        "commission": -71.99,
+        "swap": -22.48,
+        "fee": 0.0,
+        "net_profit": 1108.4900000000005
+      }
+    },
+    {
+      "tag": "nasdaq-trend-raw-3y-m1",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": false,
+      "window": "3y",
+      "model": 1,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1695772800",
+        "InpTag": "nasdaq-trend-raw-3y-m1",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 11704.02,
+        "net_profit": 1704.0200000000007,
+        "return_pct": 17.040200000000006,
+        "profit_factor": 1.084320733700534,
+        "win_rate_pct": 36.023054755043226,
+        "max_drawdown_pct": 21.21,
+        "trades": 347,
+        "sharpe_ratio": 1.26,
+        "recovery_factor": 0.75,
+        "history_quality": "98%",
+        "equity_dd_pct": 21.21,
+        "mean_trade": 4.910720461095102,
+        "mean_net_R": 0.05580506292637507,
+        "trades_per_month": 9.636690237226277,
+        "trades_per_eligible_day": 0.447741935483871,
+        "eligible_days": 775,
+        "win_streak": 6,
+        "loss_streak": 15,
+        "balance_dd_pct": 20.186670197072274,
+        "median_initial_risk_pct": 1.0032498886950763,
+        "max_initial_risk_pct": 1.031923333890095,
+        "max_hold_hours": 58.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 9,
+        "swap_positions": 6
+      },
+      "seconds": 12.97,
+      "tick_coverage": [],
+      "summaries": [
+        "MS_SUMMARY entries=347 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "79518be6d1e9e21bb65c1ef1fce2fcec9a56dbc54dd6931b81c502f6d62ae750",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\nasdaq-trend-raw-3y-m1",
+      "fresh_run": false,
+      "costs": {
+        "gross_profit": 2219.919999999999,
+        "commission": -343.97,
+        "swap": -171.93,
+        "fee": 0.0,
+        "net_profit": 1704.0200000000004
+      }
+    },
+    {
+      "tag": "nasdaq-trend-control-3y-m1",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": true,
+      "window": "3y",
+      "model": 1,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1695772800",
+        "InpTag": "nasdaq-trend-control-3y-m1",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 16850.05,
+        "net_profit": 6850.050000000003,
+        "return_pct": 68.50050000000003,
+        "profit_factor": 1.263191867776444,
+        "win_rate_pct": 39.19308357348703,
+        "max_drawdown_pct": 12.41,
+        "trades": 347,
+        "sharpe_ratio": 4.04,
+        "recovery_factor": 3.6,
+        "history_quality": "98%",
+        "equity_dd_pct": 12.41,
+        "mean_trade": 19.740778097982712,
+        "mean_net_R": 0.16123756445808105,
+        "trades_per_month": 9.636690237226277,
+        "trades_per_eligible_day": 0.447741935483871,
+        "eligible_days": 775,
+        "win_streak": 6,
+        "loss_streak": 8,
+        "balance_dd_pct": 11.719907056525297,
+        "median_initial_risk_pct": 1.002427398966435,
+        "max_initial_risk_pct": 1.015713341280193,
+        "max_hold_hours": 56.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 3,
+        "swap_positions": 1
+      },
+      "seconds": 12.85,
+      "tick_coverage": [],
+      "summaries": [
+        "MS_SUMMARY entries=347 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "8c56b8ab92b63129df05e2044b328e786012332b1644b057040dc7a5189bc93e",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\nasdaq-trend-control-3y-m1",
+      "fresh_run": false,
+      "costs": {
+        "gross_profit": 7335.629999999999,
+        "commission": -451.71999999999997,
+        "swap": -33.86,
+        "fee": 0.0,
+        "net_profit": 6850.050000000001
+      }
+    },
+    {
+      "tag": "nasdaq-trend-raw-5y-m1",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": false,
+      "window": "5y",
+      "model": 1,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1632700800",
+        "InpTag": "nasdaq-trend-raw-5y-m1",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 15866.34,
+        "net_profit": 5866.339999999998,
+        "return_pct": 58.66339999999999,
+        "profit_factor": 1.1345706570847027,
+        "win_rate_pct": 35.6140350877193,
+        "max_drawdown_pct": 21.14,
+        "trades": 570,
+        "sharpe_ratio": 2.23,
+        "recovery_factor": 1.91,
+        "history_quality": "98%",
+        "equity_dd_pct": 21.14,
+        "mean_trade": 10.291824561403509,
+        "mean_net_R": 0.09220383690563495,
+        "trades_per_month": 9.501300657174152,
+        "trades_per_eligible_day": 0.4408352668213457,
+        "eligible_days": 1293,
+        "win_streak": 6,
+        "loss_streak": 15,
+        "balance_dd_pct": 20.11954275732458,
+        "median_initial_risk_pct": 1.0023673616598838,
+        "max_initial_risk_pct": 1.015033743325845,
+        "max_hold_hours": 79.5
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 13,
+        "swap_positions": 6
+      },
+      "seconds": 16.43,
+      "tick_coverage": [],
+      "summaries": [
+        "MS_SUMMARY entries=570 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "9c1d50dfae15255464864a4cf56d3000634f1af42b75f5d467a93e665b694278",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\nasdaq-trend-raw-5y-m1",
+      "fresh_run": false,
+      "costs": {
+        "gross_profit": 6843.569999999999,
+        "commission": -744.5699999999999,
+        "swap": -232.65999999999997,
+        "fee": 0.0,
+        "net_profit": 5866.34
+      }
+    },
+    {
+      "tag": "nasdaq-trend-control-5y-m1",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": true,
+      "window": "5y",
+      "model": 1,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1632700800",
+        "InpTag": "nasdaq-trend-control-5y-m1",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 15572.2,
+        "net_profit": 5572.2000000000035,
+        "return_pct": 55.72200000000004,
+        "profit_factor": 1.146346459919002,
+        "win_rate_pct": 35.26315789473684,
+        "max_drawdown_pct": 22.21,
+        "trades": 570,
+        "sharpe_ratio": 2.12,
+        "recovery_factor": 2.37,
+        "history_quality": "98%",
+        "equity_dd_pct": 22.21,
+        "mean_trade": 9.77578947368421,
+        "mean_net_R": 0.08879753312025834,
+        "trades_per_month": 9.501300657174152,
+        "trades_per_eligible_day": 0.4408352668213457,
+        "eligible_days": 1293,
+        "win_streak": 6,
+        "loss_streak": 9,
+        "balance_dd_pct": 21.846982492471664,
+        "median_initial_risk_pct": 1.0028916804873471,
+        "max_initial_risk_pct": 1.0162828771139916,
+        "max_hold_hours": 56.5
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 5,
+        "swap_positions": 1
+      },
+      "seconds": 16.3,
+      "tick_coverage": [],
+      "summaries": [
+        "MS_SUMMARY entries=570 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "260a72a892dd0237ada6c7edbb8a61ba1d897c14d0bc8c4d76dfc6a06df32487",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\nasdaq-trend-control-5y-m1",
+      "fresh_run": false,
+      "costs": {
+        "gross_profit": 6244.129999999999,
+        "commission": -640.66,
+        "swap": -31.27,
+        "fee": 0.0,
+        "net_profit": 5572.2
+      }
+    },
+    {
+      "tag": "nasdaq-trend-raw-3y-m4",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": false,
+      "window": "3y",
+      "model": 4,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1695772800",
+        "InpTag": "nasdaq-trend-raw-3y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 11522.81,
+        "net_profit": 1522.8100000000018,
+        "return_pct": 15.228100000000017,
+        "profit_factor": 1.0753993619715019,
+        "win_rate_pct": 36.023054755043226,
+        "max_drawdown_pct": 22.04,
+        "trades": 347,
+        "sharpe_ratio": 1.13,
+        "recovery_factor": 0.65,
+        "history_quality": "22% real ticks",
+        "equity_dd_pct": 22.04,
+        "mean_trade": 4.388501440922191,
+        "mean_net_R": 0.05153690982554159,
+        "trades_per_month": 9.636690237226277,
+        "trades_per_eligible_day": 0.447741935483871,
+        "eligible_days": 775,
+        "win_streak": 6,
+        "loss_streak": 15,
+        "balance_dd_pct": 21.03393070331486,
+        "median_initial_risk_pct": 1.0030229284209835,
+        "max_initial_risk_pct": 1.0799845936577224,
+        "max_hold_hours": 58.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 9,
+        "swap_positions": 6
+      },
+      "seconds": 49.97,
+      "tick_coverage": [
+        "CS\t0\t02:26:31.931\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "EO\t0\t02:26:34.805\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=347 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "f424a3717b5fd0ca7d87d49f2f81b219ad625f8df5fa4a60ae77afd5e302c90b",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq Trend Pullback Pipeline 2026-09-29\\native\\nasdaq-trend-raw-3y-m4",
+      "fresh_run": true,
+      "costs": {
+        "gross_profit": 2034.0600000000004,
+        "commission": -341.4,
+        "swap": -169.85000000000002,
+        "fee": 0.0,
+        "net_profit": 1522.8100000000002
+      }
+    },
+    {
+      "tag": "nasdaq-trend-control-3y-m4",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": true,
+      "window": "3y",
+      "model": 4,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1695772800",
+        "InpTag": "nasdaq-trend-control-3y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 16671.64,
+        "net_profit": 6671.640000000002,
+        "return_pct": 66.71640000000002,
+        "profit_factor": 1.2556670753013122,
+        "win_rate_pct": 39.19308357348703,
+        "max_drawdown_pct": 12.43,
+        "trades": 347,
+        "sharpe_ratio": 3.95,
+        "recovery_factor": 3.51,
+        "history_quality": "22% real ticks",
+        "equity_dd_pct": 12.43,
+        "mean_trade": 19.226628242074923,
+        "mean_net_R": 0.15807811207282807,
+        "trades_per_month": 9.636690237226277,
+        "trades_per_eligible_day": 0.447741935483871,
+        "eligible_days": 775,
+        "win_streak": 6,
+        "loss_streak": 8,
+        "balance_dd_pct": 11.741082815771826,
+        "median_initial_risk_pct": 1.0022654548980543,
+        "max_initial_risk_pct": 1.0749637577897218,
+        "max_hold_hours": 56.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 3,
+        "swap_positions": 1
+      },
+      "seconds": 50.61,
+      "tick_coverage": [
+        "CS\t0\t02:27:21.445\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "DH\t0\t02:27:24.903\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=347 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "770206a73d50402e3d96219590c5a52801af43f10c083120c4d58cf970e79b70",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq Trend Pullback Pipeline 2026-09-29\\native\\nasdaq-trend-control-3y-m4",
+      "fresh_run": true,
+      "costs": {
+        "gross_profit": 7155.6,
+        "commission": -450.24,
+        "swap": -33.72,
+        "fee": 0.0,
+        "net_profit": 6671.6399999999985
+      }
+    },
+    {
+      "tag": "nasdaq-trend-raw-5y-m4",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": false,
+      "window": "5y",
+      "model": 4,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1632700800",
+        "InpTag": "nasdaq-trend-raw-5y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 15712.83,
+        "net_profit": 5712.830000000001,
+        "return_pct": 57.12830000000001,
+        "profit_factor": 1.1303426267296353,
+        "win_rate_pct": 35.6140350877193,
+        "max_drawdown_pct": 21.95,
+        "trades": 570,
+        "sharpe_ratio": 2.18,
+        "recovery_factor": 1.79,
+        "history_quality": "14% real ticks",
+        "equity_dd_pct": 21.95,
+        "mean_trade": 10.022508771929825,
+        "mean_net_R": 0.09068002911084747,
+        "trades_per_month": 9.501300657174152,
+        "trades_per_eligible_day": 0.4408352668213457,
+        "eligible_days": 1293,
+        "win_streak": 6,
+        "loss_streak": 15,
+        "balance_dd_pct": 20.93933613336797,
+        "median_initial_risk_pct": 1.0023103746020734,
+        "max_initial_risk_pct": 1.0737758796852988,
+        "max_hold_hours": 79.5
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 13,
+        "swap_positions": 6
+      },
+      "seconds": 55.15,
+      "tick_coverage": [
+        "CS\t0\t02:28:13.630\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "MS\t0\t02:28:16.306\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=570 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "40f2bc7f5ae9fcab4273e9c176078766acb80cf7f4cbcad93dbb96e5d3ad5af4",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq Trend Pullback Pipeline 2026-09-29\\native\\nasdaq-trend-raw-5y-m4",
+      "fresh_run": true,
+      "costs": {
+        "gross_profit": 6688.050000000001,
+        "commission": -743.74,
+        "swap": -231.48000000000002,
+        "fee": 0.0,
+        "net_profit": 5712.830000000001
+      }
+    },
+    {
+      "tag": "nasdaq-trend-control-5y-m4",
+      "bot": {
+        "name": "nasdaq-trend",
+        "symbol": "USTEC",
+        "mode": 0,
+        "rr": 3
+      },
+      "control": true,
+      "window": "5y",
+      "model": 4,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "0",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "3",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1632700800",
+        "InpTag": "nasdaq-trend-control-5y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 15445.43,
+        "net_profit": 5445.430000000004,
+        "return_pct": 54.454300000000046,
+        "profit_factor": 1.1422352973749794,
+        "win_rate_pct": 35.26315789473684,
+        "max_drawdown_pct": 22.5,
+        "trades": 570,
+        "sharpe_ratio": 2.08,
+        "recovery_factor": 2.29,
+        "history_quality": "14% real ticks",
+        "equity_dd_pct": 22.5,
+        "mean_trade": 9.553385964912282,
+        "mean_net_R": 0.08764600687396319,
+        "trades_per_month": 9.501300657174152,
+        "trades_per_eligible_day": 0.4408352668213457,
+        "eligible_days": 1293,
+        "win_streak": 6,
+        "loss_streak": 9,
+        "balance_dd_pct": 22.134856330765547,
+        "median_initial_risk_pct": 1.0028442012253638,
+        "max_initial_risk_pct": 1.0755792564355011,
+        "max_hold_hours": 56.5
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 5,
+        "swap_positions": 1
+      },
+      "seconds": 57.61,
+      "tick_coverage": [
+        "CS\t0\t02:29:10.242\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "PL\t0\t02:29:12.427\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=570 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "306d11e7a6a4adb962ca74d0933804b1bd78e1330abf10eb148ca112c2a816f9",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq Trend Pullback Pipeline 2026-09-29\\native\\nasdaq-trend-control-5y-m4",
+      "fresh_run": true,
+      "costs": {
+        "gross_profit": 6116.910000000001,
+        "commission": -640.27,
+        "swap": -31.21,
+        "fee": 0.0,
+        "net_profit": 5445.43
+      }
+    }
+  ],
+  "matched_controls": [
+    {
+      "raw_tag": "nasdaq-trend-raw-6m-m4",
+      "trades": 56,
+      "all_dates_matched": true,
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": 0.2673280984321333
+    },
+    {
+      "raw_tag": "nasdaq-trend-raw-1y-m4",
+      "trades": 103,
+      "all_dates_matched": true,
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": 0.117328961550038
+    },
+    {
+      "raw_tag": "nasdaq-trend-raw-3y-m1",
+      "trades": 347,
+      "all_dates_matched": true,
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": -0.10543250153170595
+    },
+    {
+      "raw_tag": "nasdaq-trend-raw-5y-m1",
+      "trades": 570,
+      "all_dates_matched": true,
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": 0.0034063037853766637
+    },
+    {
+      "raw_tag": "nasdaq-trend-raw-3y-m4",
+      "trades": 347,
+      "all_dates_matched": true,
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": -0.10654120224728653
+    },
+    {
+      "raw_tag": "nasdaq-trend-raw-5y-m4",
+      "trades": 570,
+      "all_dates_matched": true,
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": 0.003034022236884276
+    }
+  ]
+}

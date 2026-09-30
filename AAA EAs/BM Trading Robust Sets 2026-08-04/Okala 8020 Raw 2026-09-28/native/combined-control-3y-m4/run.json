@@ -1,0 +1,69 @@
+{
+  "ok": true,
+  "variant": {
+    "name": "combined-control",
+    "setup": 0,
+    "grid_shift": 50,
+    "exit": 0
+  },
+  "window": "3y",
+  "model": 4,
+  "start": "2023.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2023.09.25",
+  "build": {
+    "hashes": {
+      "Okala8020.mq5": "4f5e303371c26561ff3244e605a1cbc6abf7da74a0f6fd9ae3af023a8712a32d",
+      "Okala8020.ex5": "22b0a1219ed45fe9854452af9bc24fd48e05b6937b0276e86dca0fa00c51740a",
+      "RULES.md": "9cc34a771788e07c96c3c4ab068540cb1db15d2b0caa720ff13884cc0803d113",
+      "run-config.json": "2886e0131b25f6e0eab113a58d015736a282a0fecdcb0903e568ae737d04ec83"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 767 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpSetup": "0",
+    "InpGridShift": "50",
+    "InpExit": "0",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1695772800",
+    "InpTag": "combined-control-3y-m4",
+    "InpMagic": "9288020"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 12685.0,
+    "net_profit": 2685.0,
+    "return_pct": 26.85,
+    "profit_factor": 1.12,
+    "win_rate_pct": 52.25,
+    "max_drawdown_pct": 15.8,
+    "trades": 622,
+    "sharpe_ratio": 13.31,
+    "recovery_factor": 1.15,
+    "history_quality": "24% real ticks",
+    "equity_dd_pct": 15.8
+  },
+  "groups": 366,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "5575c53f9b9f98666b9f03055271b9fade167bac0545eca50cc67e8a8cd8d32e",
+  "elapsed_seconds": 44.22964906692505,
+  "summaries": [
+    "O8_SUMMARY tag=combined-control-3y-m4 entries=366 signals=482 skips=116 partials=256 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "O8_SPEC symbol=USTEC contract=1.00000000 tick=0.01000000 min=0.05000000 step=0.01000000 stops=0"
+  ],
+  "tick_coverage": [
+    "CS\t0\t19:25:42.730\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "IJ\t0\t19:25:46.883\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

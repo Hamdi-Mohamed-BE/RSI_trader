@@ -1,0 +1,65 @@
+{
+  "tag": "bitcoin-reversal-raw-3y-m1",
+  "bot": {
+    "name": "bitcoin-reversal",
+    "symbol": "BTCUSD",
+    "mode": 1,
+    "rr": 1.5
+  },
+  "control": false,
+  "window": "3y",
+  "model": 1,
+  "start": "2023.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "1",
+    "InpControl": "false",
+    "InpRiskPercent": "1",
+    "InpRR": "1.5",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1695772800",
+    "InpTag": "bitcoin-reversal-raw-3y-m1",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10667.55,
+    "net_profit": 667.55,
+    "return_pct": 6.6754999999999995,
+    "profit_factor": 1.1441677446942686,
+    "win_rate_pct": 46.22641509433962,
+    "max_drawdown_pct": 6.46,
+    "trades": 106,
+    "sharpe_ratio": 2.48,
+    "recovery_factor": 0.97,
+    "history_quality": "100%",
+    "equity_dd_pct": 6.46,
+    "mean_trade": 6.297641509433964,
+    "mean_net_R": 0.0655435751443247
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 13.53,
+  "tick_coverage": [],
+  "summaries": [
+    "MS_SUMMARY entries=106 entryFails=0 closeFails=0 skips=0 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+  ],
+  "report_sha": "d1ca86db0639ffc883cafaa12f7e9e38410c3946a9622d1f64cbdd461616d465",
+  "attempt": 0
+}

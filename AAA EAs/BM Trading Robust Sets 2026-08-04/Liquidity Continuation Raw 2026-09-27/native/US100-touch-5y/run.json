@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "asset": "US100",
+  "symbol": "USTEC",
+  "variant": "touch",
+  "window": "5y",
+  "smoke": false,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2020.12.01",
+  "inputs": {
+    "InpEntry": "0",
+    "InpControl": "false",
+    "InpRiskPercent": "1.0",
+    "InpTradeFrom": "1632700800",
+    "InpTag": "US100-touch-5y",
+    "InpMagic": "9278120"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 2.01,
+    "net_profit": -9997.99,
+    "return_pct": -99.98,
+    "profit_factor": 0.77,
+    "win_rate_pct": 41.7,
+    "max_drawdown_pct": 99.98,
+    "trades": 2616,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -1.0,
+    "history_quality": "12% real ticks",
+    "max_equity_dd_pct": 99.98,
+    "max_balance_dd_pct": 99.98,
+    "max_equity_dd_usd": 9997.99
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 18,
+    "margin_call": 0
+  },
+  "build": {
+    "source_sha": "510e2857f8ab3e5f9291ffb5e3bc5c072bd991874690544d1891bda31ae0fe01",
+    "binary_sha": "0066823c882ce5b676f0232e12b0950cebda2e2d5285db731c0069e440862f49",
+    "rules_sha": "b6773313f2a62f6c6c61210fc4530739c5478c34b97c5281887f13d46e8e38c7",
+    "config_sha": "93e78d31175ee5ea5aaff5a1abb4c8ccebcfaf45a2ed464571c66903ff207e37",
+    "compile": " 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 853 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "elapsed_seconds": 58.053829193115234,
+  "report_sha": "bb354c7ab4a33830d8a91205793a80d767de9dbcb1daea72a9d5e6f8afe5c2c6",
+  "summary": [
+    "LC_SUMMARY tag=US100-touch-5y forms=10128 missing=618 noDonor=0 touches=5997 orders=2616 busy=219 skips=3159 entryFails=3 closeFails=0 retestExpired=0 quotes=225931396 volumeQuotes=0 tradeFlags=0"
+  ],
+  "symbol_spec": [
+    "LC_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd currency=USD leverage=2000 contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.01000000 stops=0 swapLong=-696.10000000 swapShort=0.00000000"
+  ],
+  "tick_coverage": [
+    "CS\t0\t23:27:10.245\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "HN\t0\t23:27:12.268\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

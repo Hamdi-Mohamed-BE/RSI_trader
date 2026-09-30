@@ -1,0 +1,68 @@
+{
+  "tag": "gbpusd-range-raw-smoke-m4",
+  "bot": {
+    "name": "gbpusd-range",
+    "symbol": "GBPUSD",
+    "mode": 3,
+    "rr": 0
+  },
+  "control": false,
+  "window": "smoke",
+  "model": 4,
+  "start": "2026.08.01",
+  "end": "2026.09.01",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "3",
+    "InpControl": "false",
+    "InpRiskPercent": "1",
+    "InpRR": "0",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1785542400",
+    "InpTag": "gbpusd-range-raw-smoke-m4",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10175.75,
+    "net_profit": 175.75,
+    "return_pct": 1.7575,
+    "profit_factor": null,
+    "win_rate_pct": 100.0,
+    "max_drawdown_pct": 0.67,
+    "trades": 3,
+    "sharpe_ratio": 1.92,
+    "recovery_factor": 2.62,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 0.67,
+    "mean_trade": 58.583333333333336,
+    "mean_net_R": 0.5746609426181452
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 8.59,
+  "tick_coverage": [
+    "CS\t0\t01:09:42.140\tTicks\tGBPUSD : real ticks begin from 2026.01.01 00:00:00",
+    "IM\t0\t01:09:42.726\tCore 01\tGBPUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "MS_SUMMARY entries=3 entryFails=0 closeFails=0 skips=2 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=GBPUSD description=Great Britain Pound vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100000.00000000 min=0.01000000 step=0.01000000 tick=0.00001000"
+  ],
+  "report_sha": "5cecf065e205b8bfc2fe2aae73179cdc45ca2880044773be50c228b0c3deb2b2",
+  "attempt": 0
+}

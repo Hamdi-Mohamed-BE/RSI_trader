@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "asset": "US30",
+  "symbol": "US30",
+  "variant": "retest",
+  "window": "1y",
+  "smoke": false,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2024.12.01",
+  "inputs": {
+    "InpEntry": "1",
+    "InpControl": "false",
+    "InpRiskPercent": "1.0",
+    "InpTradeFrom": "1758931200",
+    "InpTag": "US30-retest-1y",
+    "InpMagic": "9278120"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9723.9,
+    "net_profit": -276.1,
+    "return_pct": -2.76,
+    "profit_factor": 0.99,
+    "win_rate_pct": 50.88,
+    "max_drawdown_pct": 19.02,
+    "trades": 456,
+    "sharpe_ratio": -1.19,
+    "recovery_factor": -0.13,
+    "history_quality": "40% real ticks",
+    "max_equity_dd_pct": 19.02,
+    "max_balance_dd_pct": 18.49,
+    "max_equity_dd_usd": 2159.17
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 200,
+    "margin_call": 0
+  },
+  "build": {
+    "source_sha": "510e2857f8ab3e5f9291ffb5e3bc5c072bd991874690544d1891bda31ae0fe01",
+    "binary_sha": "0066823c882ce5b676f0232e12b0950cebda2e2d5285db731c0069e440862f49",
+    "rules_sha": "b6773313f2a62f6c6c61210fc4530739c5478c34b97c5281887f13d46e8e38c7",
+    "config_sha": "93e78d31175ee5ea5aaff5a1abb4c8ccebcfaf45a2ed464571c66903ff207e37",
+    "compile": " 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 853 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "elapsed_seconds": 31.3886981010437,
+  "report_sha": "9e6f6bf67144cbbd92d5d74bc8475def4dd9b56cc73fb3fb72020d77563c0c66",
+  "summary": [
+    "LC_SUMMARY tag=US30-retest-1y forms=3164 missing=200 noDonor=0 touches=1190 orders=456 busy=34 skips=0 entryFails=0 closeFails=50 retestExpired=1286 quotes=112249242 volumeQuotes=0 tradeFlags=0"
+  ],
+  "symbol_spec": [
+    "LC_SPEC symbol=US30 description=US Wall Street 30 Index broker=Exness Technologies Ltd currency=USD leverage=2000 contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.10000000 stops=0 swapLong=-106.20000000 swapShort=0.00000000"
+  ],
+  "tick_coverage": [
+    "CD\t0\t22:38:26.532\tCore 01\tUS30 : real ticks begin from 2026.01.01 00:00:00",
+    "CS\t0\t22:38:25.121\tTicks\tUS30 : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

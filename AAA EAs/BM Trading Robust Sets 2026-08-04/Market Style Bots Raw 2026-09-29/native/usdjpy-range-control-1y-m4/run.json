@@ -1,0 +1,68 @@
+{
+  "tag": "usdjpy-range-control-1y-m4",
+  "bot": {
+    "name": "usdjpy-range",
+    "symbol": "USDJPY",
+    "mode": 3,
+    "rr": 0
+  },
+  "control": true,
+  "window": "1y",
+  "model": 4,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "3",
+    "InpControl": "true",
+    "InpRiskPercent": "1",
+    "InpRR": "0",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1758931200",
+    "InpTag": "usdjpy-range-control-1y-m4",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10060.64,
+    "net_profit": 60.639999999999986,
+    "return_pct": 0.6063999999999998,
+    "profit_factor": 1.0558014557701685,
+    "win_rate_pct": 57.14285714285714,
+    "max_drawdown_pct": 4.54,
+    "trades": 28,
+    "sharpe_ratio": 1.32,
+    "recovery_factor": 0.13,
+    "history_quality": "59% real ticks",
+    "equity_dd_pct": 4.54,
+    "mean_trade": 2.1657142857142873,
+    "mean_net_R": 0.023895803229478978
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 13.35,
+  "tick_coverage": [
+    "CS\t0\t01:28:27.082\tTicks\tUSDJPY : real ticks begin from 2026.01.01 00:00:00",
+    "LD\t0\t01:28:29.822\tCore 01\tUSDJPY : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "MS_SUMMARY entries=28 entryFails=0 closeFails=0 skips=15 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=USDJPY description=US Dollar vs Japanese Yen broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100000.00000000 min=0.01000000 step=0.01000000 tick=0.00100000"
+  ],
+  "report_sha": "860c2df3f4be97537ec694b09bbc7fa07d3311e60c671c6aaf12ce0b3b05193e",
+  "attempt": 0
+}

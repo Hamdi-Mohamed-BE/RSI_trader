@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "asset": "US500",
+  "symbol": "US500",
+  "variant": "touch-control",
+  "window": "6m",
+  "smoke": false,
+  "start": "2026.03.27",
+  "end": "2026.09.27",
+  "warmup_start": "2025.05.31",
+  "inputs": {
+    "InpEntry": "0",
+    "InpControl": "true",
+    "InpRiskPercent": "1.0",
+    "InpTradeFrom": "1774569600",
+    "InpTag": "US500-touch-control-6m",
+    "InpMagic": "9278120"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 5407.32,
+    "net_profit": -4592.68,
+    "return_pct": -45.93,
+    "profit_factor": 0.83,
+    "win_rate_pct": 48.15,
+    "max_drawdown_pct": 53.74,
+    "trades": 542,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.75,
+    "history_quality": "55% real ticks",
+    "max_equity_dd_pct": 53.74,
+    "max_balance_dd_pct": 53.7,
+    "max_equity_dd_usd": 6104.76
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 6,
+    "invalid_volume": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "build": {
+    "source_sha": "510e2857f8ab3e5f9291ffb5e3bc5c072bd991874690544d1891bda31ae0fe01",
+    "binary_sha": "0066823c882ce5b676f0232e12b0950cebda2e2d5285db731c0069e440862f49",
+    "rules_sha": "b6773313f2a62f6c6c61210fc4530739c5478c34b97c5281887f13d46e8e38c7",
+    "config_sha": "93e78d31175ee5ea5aaff5a1abb4c8ccebcfaf45a2ed464571c66903ff207e37",
+    "compile": " 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 853 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "elapsed_seconds": 19.769251585006714,
+  "report_sha": "6fb0ccebdba2b6c97f5e51f343b8a9d0e87da911b693cff2d8de1882b4796eea",
+  "summary": [
+    "LC_SUMMARY tag=US500-touch-control-6m forms=2217 missing=145 noDonor=88 touches=574 orders=542 busy=31 skips=0 entryFails=1 closeFails=0 retestExpired=0 quotes=50061330 volumeQuotes=0 tradeFlags=0"
+  ],
+  "symbol_spec": [
+    "LC_SPEC symbol=US500 description=US SPX 500 Index broker=Exness Technologies Ltd currency=USD leverage=2000 contract=1.00000000 min=0.14000000 max=1000.00000000 step=0.01000000 tick=0.01000000 stops=0 swapLong=-165.20000000 swapShort=0.00000000"
+  ],
+  "tick_coverage": [
+    "CS\t0\t22:56:08.788\tTicks\tUS500 : real ticks begin from 2026.01.01 00:00:00",
+    "OK\t0\t22:56:12.296\tCore 01\tUS500 : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

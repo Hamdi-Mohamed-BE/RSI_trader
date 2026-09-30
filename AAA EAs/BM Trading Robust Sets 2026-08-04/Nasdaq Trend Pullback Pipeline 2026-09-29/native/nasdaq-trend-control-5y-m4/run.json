@@ -1,0 +1,68 @@
+{
+  "tag": "nasdaq-trend-control-5y-m4",
+  "bot": {
+    "name": "nasdaq-trend",
+    "symbol": "USTEC",
+    "mode": 0,
+    "rr": 3
+  },
+  "control": true,
+  "window": "5y",
+  "model": 4,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "0",
+    "InpControl": "true",
+    "InpRiskPercent": "1",
+    "InpRR": "3",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1632700800",
+    "InpTag": "nasdaq-trend-control-5y-m4",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 15445.43,
+    "net_profit": 5445.430000000004,
+    "return_pct": 54.454300000000046,
+    "profit_factor": 1.1422352973749794,
+    "win_rate_pct": 35.26315789473684,
+    "max_drawdown_pct": 22.5,
+    "trades": 570,
+    "sharpe_ratio": 2.08,
+    "recovery_factor": 2.29,
+    "history_quality": "14% real ticks",
+    "equity_dd_pct": 22.5,
+    "mean_trade": 9.553385964912282,
+    "mean_net_R": 0.08764600687396319
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 5,
+    "swap_positions": 1
+  },
+  "seconds": 57.61,
+  "tick_coverage": [
+    "CS\t0\t02:29:10.242\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "PL\t0\t02:29:12.427\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "MS_SUMMARY entries=570 entryFails=0 closeFails=0 skips=0 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+  ],
+  "report_sha": "306d11e7a6a4adb962ca74d0933804b1bd78e1330abf10eb148ca112c2a816f9",
+  "attempt": 0
+}

@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "asset": "BTC",
+  "symbol": "BTCUSD",
+  "variant": "touch",
+  "window": "6m",
+  "smoke": false,
+  "start": "2026.03.27",
+  "end": "2026.09.27",
+  "warmup_start": "2025.05.31",
+  "inputs": {
+    "InpEntry": "0",
+    "InpControl": "false",
+    "InpRiskPercent": "1.0",
+    "InpTradeFrom": "1774569600",
+    "InpTag": "BTC-touch-6m",
+    "InpMagic": "9278120"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 14164.49,
+    "net_profit": 4164.49,
+    "return_pct": 41.64,
+    "profit_factor": 1.1,
+    "win_rate_pct": 59.18,
+    "max_drawdown_pct": 14.07,
+    "trades": 681,
+    "sharpe_ratio": 12.2,
+    "recovery_factor": 1.91,
+    "history_quality": "55% real ticks",
+    "max_equity_dd_pct": 14.07,
+    "max_balance_dd_pct": 14.07,
+    "max_equity_dd_usd": 2181.52
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 24,
+    "invalid_volume": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "build": {
+    "source_sha": "510e2857f8ab3e5f9291ffb5e3bc5c072bd991874690544d1891bda31ae0fe01",
+    "binary_sha": "0066823c882ce5b676f0232e12b0950cebda2e2d5285db731c0069e440862f49",
+    "rules_sha": "b6773313f2a62f6c6c61210fc4530739c5478c34b97c5281887f13d46e8e38c7",
+    "config_sha": "93e78d31175ee5ea5aaff5a1abb4c8ccebcfaf45a2ed464571c66903ff207e37",
+    "compile": " 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 853 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "elapsed_seconds": 29.337666273117065,
+  "report_sha": "48efd6dda3a3802b7756f797931c81d7c44beba28c14404911d1567aaf45dec6",
+  "summary": [
+    "LC_SUMMARY tag=BTC-touch-6m forms=3034 missing=3 noDonor=0 touches=729 orders=681 busy=44 skips=0 entryFails=4 closeFails=0 retestExpired=0 quotes=96799674 volumeQuotes=0 tradeFlags=0"
+  ],
+  "symbol_spec": [
+    "LC_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd currency=USD leverage=2000 contract=1.00000000 min=0.01000000 max=200.00000000 step=0.01000000 tick=0.01000000 stops=0 swapLong=-1855.50000000 swapShort=0.00000000"
+  ],
+  "tick_coverage": [
+    "CS\t0\t22:59:14.517\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+    "LD\t0\t22:59:16.351\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

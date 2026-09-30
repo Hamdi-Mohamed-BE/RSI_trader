@@ -1,0 +1,68 @@
+{
+  "tag": "gold-volatility-control-smoke-m4",
+  "bot": {
+    "name": "gold-volatility",
+    "symbol": "XAUUSD",
+    "mode": 2,
+    "rr": 2
+  },
+  "control": true,
+  "window": "smoke",
+  "model": 4,
+  "start": "2026.08.01",
+  "end": "2026.09.01",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "2",
+    "InpControl": "true",
+    "InpRiskPercent": "1",
+    "InpRR": "2",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1785542400",
+    "InpTag": "gold-volatility-control-smoke-m4",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10195.18,
+    "net_profit": 195.18,
+    "return_pct": 1.9518,
+    "profit_factor": 1.7818771782237712,
+    "win_rate_pct": 50.0,
+    "max_drawdown_pct": 2.73,
+    "trades": 4,
+    "sharpe_ratio": 1.19,
+    "recovery_factor": 0.7,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 2.73,
+    "mean_trade": 48.795,
+    "mean_net_R": 0.5107725899665313
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 13.17,
+  "tick_coverage": [
+    "CS\t0\t01:09:11.711\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "GJ\t0\t01:09:15.044\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "MS_SUMMARY entries=4 entryFails=0 closeFails=0 skips=0 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=XAUUSD description=Gold vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100.00000000 min=0.01000000 step=0.01000000 tick=0.00100000"
+  ],
+  "report_sha": "155054607a6fe3dc97c232653cedbeeb2836796211599af9817e96c05ee509b0",
+  "attempt": 0
+}

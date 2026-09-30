@@ -1,0 +1,2737 @@
+{
+  "passed": true,
+  "numerical_causal_windows": 324,
+  "baseline_native_signals": 103,
+  "native_cases": 454,
+  "compiled_batches": 19,
+  "frozen_plan_unchanged": true,
+  "positions": 72848,
+  "execution_rejected": 1,
+  "limitation": "Core logic and native H1 baseline oracle; not independent tick replay of every optional execution branch.",
+  "audited": [
+    {
+      "stage": "baseline-validation",
+      "index": 0,
+      "trades": 185,
+      "clean": true
+    },
+    {
+      "stage": "direction",
+      "index": 0,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "direction",
+      "index": 1,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "direction",
+      "index": 2,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "direction",
+      "index": 8,
+      "trades": 30,
+      "clean": true
+    },
+    {
+      "stage": "direction",
+      "index": 7,
+      "trades": 41,
+      "clean": true
+    },
+    {
+      "stage": "direction",
+      "index": 6,
+      "trades": 30,
+      "clean": true
+    },
+    {
+      "stage": "direction",
+      "index": 5,
+      "trades": 41,
+      "clean": true
+    },
+    {
+      "stage": "direction",
+      "index": 4,
+      "trades": 30,
+      "clean": true
+    },
+    {
+      "stage": "direction",
+      "index": 3,
+      "trades": 41,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 10,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 6,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 7,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 8,
+      "trades": 251,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 9,
+      "trades": 223,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 0,
+      "trades": 282,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 18,
+      "trades": 83,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 5,
+      "trades": 256,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 19,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 4,
+      "trades": 272,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 17,
+      "trades": 93,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 1,
+      "trades": 97,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 32,
+      "trades": 158,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 3,
+      "trades": 116,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 11,
+      "trades": 199,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 20,
+      "trades": 89,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 14,
+      "trades": 89,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 21,
+      "trades": 74,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 15,
+      "trades": 75,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 12,
+      "trades": 134,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 30,
+      "trades": 383,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 25,
+      "trades": 422,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 31,
+      "trades": 265,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 23,
+      "trades": 245,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 26,
+      "trades": 374,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 24,
+      "trades": 444,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 2,
+      "trades": 460,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 27,
+      "trades": 427,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 28,
+      "trades": 396,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 29,
+      "trades": 346,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 22,
+      "trades": 54,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 16,
+      "trades": 57,
+      "clean": true
+    },
+    {
+      "stage": "entry",
+      "index": 13,
+      "trades": 21,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 4,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 11,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 18,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 3,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 0,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 10,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 1,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 17,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 2,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 23,
+      "trades": 55,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 22,
+      "trades": 52,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 21,
+      "trades": 49,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 20,
+      "trades": 52,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 19,
+      "trades": 51,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 16,
+      "trades": 55,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 15,
+      "trades": 52,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 14,
+      "trades": 49,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 13,
+      "trades": 52,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 12,
+      "trades": 51,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 9,
+      "trades": 55,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 8,
+      "trades": 52,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 7,
+      "trades": 49,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 6,
+      "trades": 52,
+      "clean": true
+    },
+    {
+      "stage": "filters",
+      "index": 5,
+      "trades": 51,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 8,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 24,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 14,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 13,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 10,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 9,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 7,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 6,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 0,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 30,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 29,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 26,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 25,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 23,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 22,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 1,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 40,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 15,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 18,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 50,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 34,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 31,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 46,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 45,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 42,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 41,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 39,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 38,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 2,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 12,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 28,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 44,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 17,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 49,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 33,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 16,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 32,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 48,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 27,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 11,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 43,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 47,
+      "trades": 69,
+      "clean": false
+    },
+    {
+      "stage": "management",
+      "index": 37,
+      "trades": 35,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 36,
+      "trades": 50,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 35,
+      "trades": 54,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 21,
+      "trades": 35,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 20,
+      "trades": 50,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 19,
+      "trades": 54,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 5,
+      "trades": 35,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 4,
+      "trades": 50,
+      "clean": true
+    },
+    {
+      "stage": "management",
+      "index": 3,
+      "trades": 54,
+      "clean": true
+    },
+    {
+      "stage": "parity",
+      "index": 0,
+      "trades": 103,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 13,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 10,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 16,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 12,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 9,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 14,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 11,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 15,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 19,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 7,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 1,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 18,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 4,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 17,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 25,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 22,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 24,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 21,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 20,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 0,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 6,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 8,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 3,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 5,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 2,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 26,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-0",
+      "index": 23,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 13,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 10,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 16,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 12,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 9,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 14,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 11,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 15,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 19,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 7,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 1,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 18,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 4,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 17,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 25,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 22,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 24,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 21,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 20,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 0,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 6,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 8,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 3,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 5,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 2,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 26,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-1",
+      "index": 23,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 13,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 10,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 16,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 12,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 9,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 14,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 11,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 15,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 19,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 7,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 1,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 18,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 4,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 17,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 25,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 22,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 24,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 21,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 20,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 0,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 6,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 8,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 3,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 5,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 2,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 26,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "plateau-2",
+      "index": 23,
+      "trades": 62,
+      "clean": true
+    },
+    {
+      "stage": "recent-frozen",
+      "index": 0,
+      "trades": 27,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 0,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 9,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 1,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 27,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 2,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 26,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 30,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 29,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 28,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 14,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 50,
+      "trades": 251,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 39,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 12,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 11,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 10,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 43,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 42,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 41,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 40,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 44,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 13,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 45,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 46,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 25,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 8,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 15,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 48,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 18,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 38,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 16,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 20,
+      "trades": 251,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 19,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 49,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 24,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 32,
+      "trades": 251,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 37,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 7,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 23,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 36,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 5,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 6,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 35,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 47,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 33,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 21,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 3,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 31,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 17,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 4,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 22,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "rr_exit",
+      "index": 34,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 7,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 13,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 19,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 17,
+      "trades": 211,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 5,
+      "trades": 211,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 11,
+      "trades": 211,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 0,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 1,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 2,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 8,
+      "trades": 305,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 14,
+      "trades": 305,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 20,
+      "trades": 305,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 4,
+      "trades": 226,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 10,
+      "trades": 226,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 16,
+      "trades": 226,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 6,
+      "trades": 155,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 12,
+      "trades": 155,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 18,
+      "trades": 155,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 9,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 3,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "session",
+      "index": 15,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 38,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 24,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 10,
+      "trades": 66,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 43,
+      "trades": 73,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 29,
+      "trades": 73,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 15,
+      "trades": 73,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 2,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 1,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 0,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 35,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 21,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 7,
+      "trades": 71,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 37,
+      "trades": 73,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 23,
+      "trades": 73,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 9,
+      "trades": 73,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 44,
+      "trades": 68,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 30,
+      "trades": 68,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 16,
+      "trades": 68,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 33,
+      "trades": 68,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 19,
+      "trades": 68,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 5,
+      "trades": 68,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 41,
+      "trades": 81,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 27,
+      "trades": 81,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 13,
+      "trades": 81,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 36,
+      "trades": 75,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 22,
+      "trades": 75,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 8,
+      "trades": 75,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 34,
+      "trades": 70,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 20,
+      "trades": 70,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 6,
+      "trades": 70,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 42,
+      "trades": 86,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 28,
+      "trades": 86,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 14,
+      "trades": 86,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 31,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 17,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 3,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 32,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 18,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 4,
+      "trades": 69,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 39,
+      "trades": 109,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 25,
+      "trades": 109,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 11,
+      "trades": 109,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 40,
+      "trades": 49,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 26,
+      "trades": 49,
+      "clean": true
+    },
+    {
+      "stage": "signal",
+      "index": 12,
+      "trades": 49,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 7,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 39,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 23,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 8,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 40,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 24,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 38,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 6,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 22,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 50,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 34,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 0,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 49,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 1,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 18,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 2,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 48,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 31,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 15,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 12,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 11,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 14,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 28,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 17,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 47,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 33,
+      "trades": 226,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 44,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 30,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 46,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 21,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 16,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 13,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 5,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 37,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 27,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 32,
+      "trades": 222,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 3,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 29,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 20,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 19,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 43,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 4,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 36,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 26,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 45,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 35,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 10,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 25,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 41,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 42,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "stop",
+      "index": 9,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "timeframe",
+      "index": 0,
+      "trades": 282,
+      "clean": true
+    },
+    {
+      "stage": "timeframe",
+      "index": 6,
+      "trades": 97,
+      "clean": true
+    },
+    {
+      "stage": "timeframe",
+      "index": 5,
+      "trades": 460,
+      "clean": true
+    },
+    {
+      "stage": "timeframe",
+      "index": 4,
+      "trades": 550,
+      "clean": true
+    },
+    {
+      "stage": "timeframe",
+      "index": 3,
+      "trades": 641,
+      "clean": true
+    },
+    {
+      "stage": "timeframe",
+      "index": 2,
+      "trades": 642,
+      "clean": true
+    },
+    {
+      "stage": "timeframe",
+      "index": 1,
+      "trades": 584,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 3,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 7,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 15,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 16,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 17,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 6,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 22,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 0,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 8,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 21,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 5,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 55,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 13,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 14,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 23,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 31,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 64,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 12,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 39,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 32,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 10,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 63,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 24,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 65,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 11,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 20,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 40,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 30,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 25,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 71,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 41,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 56,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 70,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 9,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 53,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 61,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 1,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 2,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 37,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 28,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 38,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 60,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 4,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 58,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 26,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 46,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 72,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 69,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 51,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 45,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 62,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 47,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 19,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 73,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 57,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 29,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 36,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 59,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 27,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 54,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 74,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 35,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 67,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 68,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 34,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 18,
+      "trades": 255,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 44,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 48,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 66,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 33,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 49,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 50,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 52,
+      "trades": 227,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 43,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "trailing",
+      "index": 42,
+      "trades": 266,
+      "clean": true
+    },
+    {
+      "stage": "validation-0",
+      "index": 0,
+      "trades": 39,
+      "clean": true
+    },
+    {
+      "stage": "validation-1",
+      "index": 0,
+      "trades": 39,
+      "clean": true
+    },
+    {
+      "stage": "validation-2",
+      "index": 0,
+      "trades": 39,
+      "clean": true
+    }
+  ]
+}

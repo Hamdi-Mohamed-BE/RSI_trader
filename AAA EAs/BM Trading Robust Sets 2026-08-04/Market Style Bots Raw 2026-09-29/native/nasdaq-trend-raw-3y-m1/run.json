@@ -1,0 +1,65 @@
+{
+  "tag": "nasdaq-trend-raw-3y-m1",
+  "bot": {
+    "name": "nasdaq-trend",
+    "symbol": "USTEC",
+    "mode": 0,
+    "rr": 3
+  },
+  "control": false,
+  "window": "3y",
+  "model": 1,
+  "start": "2023.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "0",
+    "InpControl": "false",
+    "InpRiskPercent": "1",
+    "InpRR": "3",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1695772800",
+    "InpTag": "nasdaq-trend-raw-3y-m1",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 11704.02,
+    "net_profit": 1704.0200000000007,
+    "return_pct": 17.040200000000006,
+    "profit_factor": 1.084320733700534,
+    "win_rate_pct": 36.023054755043226,
+    "max_drawdown_pct": 21.21,
+    "trades": 347,
+    "sharpe_ratio": 1.26,
+    "recovery_factor": 0.75,
+    "history_quality": "98%",
+    "equity_dd_pct": 21.21,
+    "mean_trade": 4.910720461095102,
+    "mean_net_R": 0.05580506292637507
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 9,
+    "swap_positions": 6
+  },
+  "seconds": 12.97,
+  "tick_coverage": [],
+  "summaries": [
+    "MS_SUMMARY entries=347 entryFails=0 closeFails=0 skips=0 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+  ],
+  "report_sha": "79518be6d1e9e21bb65c1ef1fce2fcec9a56dbc54dd6931b81c502f6d62ae750",
+  "attempt": 0
+}

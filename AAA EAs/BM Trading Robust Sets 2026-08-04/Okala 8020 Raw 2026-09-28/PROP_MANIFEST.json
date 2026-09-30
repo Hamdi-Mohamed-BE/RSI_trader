@@ -1,0 +1,56 @@
+{
+  "seed": 9288020,
+  "paths": 500,
+  "block_days": 28,
+  "elapsed_seconds": 5.470849990844727,
+  "configs": [
+    {
+      "name": "FTMO 10K 0.25% cap / 30% margin",
+      "capital": 10000.0,
+      "risk": 0.0025,
+      "instant": false,
+      "margin": 0.3
+    },
+    {
+      "name": "FTMO 10K 0.50% cap / 30% margin",
+      "capital": 10000.0,
+      "risk": 0.005,
+      "instant": false,
+      "margin": 0.3
+    },
+    {
+      "name": "FTMO 10K 0.50% cap / 80% margin",
+      "capital": 10000.0,
+      "risk": 0.005,
+      "instant": false,
+      "margin": 0.8
+    },
+    {
+      "name": "Instant 5K 0.15% cap / 30% margin",
+      "capital": 5000.0,
+      "risk": 0.0015,
+      "instant": true,
+      "margin": 0.3
+    },
+    {
+      "name": "Instant 5K 0.25% cap / 30% margin",
+      "capital": 5000.0,
+      "risk": 0.0025,
+      "instant": true,
+      "margin": 0.3
+    }
+  ],
+  "files": {
+    "prop_sim.py": "e906f56e219edc64407ed98519cae0c37989c20df4b1f59951038e91e16a0981",
+    "PROP_PROTOCOL.md": "3ddbdf4563aa83f6c60795d9a7c916a1b96764c59d4eba66c47b0c51377cac7f",
+    "analyze.py": "6fd33979acbb6f9da26dc3f5fd2ebefdb1cf747c83524d67d543ed109f907280",
+    "native/combined-1y-m4/prop-ready.npz": "e2b6cdfaa5669355e7b06187bc8c24ea9cbbbce9a7a45c62e6b05fa1cef2cc88",
+    "native/combined-tp15-1y-m4/prop-ready.npz": "cbb64b3465f9e25bebaedae072199d080b628388fde512123963ca502f57217b"
+  },
+  "caveats": [
+    "Conditional bootstrap frequencies, not real pass probabilities",
+    "Paired source blocks retain news labels, not a future release calendar",
+    "Quick Strike ratio uses reference net positive partials in both cost cases; warning/forfeiture modeled conservatively",
+    "Same conservative quarter-lot floor is used even for TP15 for a controlled sizing comparison"
+  ]
+}

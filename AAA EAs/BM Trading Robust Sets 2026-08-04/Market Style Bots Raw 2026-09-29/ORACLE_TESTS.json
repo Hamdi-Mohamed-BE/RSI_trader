@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "windows_tested": 120,
+  "checks": [
+    "No entries on flat, constant-volatility prices in any model",
+    "Random-direction hash deterministic and uint32 wraparound safe",
+    "Past-only slices are invariant to future-price mutation",
+    "Long/short signal symmetry under reflected OHLC prices",
+    "Gold transition probabilities bounded; observations limited to 252"
+  ],
+  "limitation": "Structural oracle tests, not proof of predictive power or a separate market-data source."
+}

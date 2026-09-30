@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "asset": "US30",
+  "symbol": "US30",
+  "variant": "touch-control",
+  "window": "3y",
+  "smoke": false,
+  "start": "2023.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2022.12.01",
+  "inputs": {
+    "InpEntry": "0",
+    "InpControl": "true",
+    "InpRiskPercent": "1.0",
+    "InpTradeFrom": "1695772800",
+    "InpTag": "US30-touch-control-3y",
+    "InpMagic": "9278120"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 5.38,
+    "net_profit": -9994.62,
+    "return_pct": -99.95,
+    "profit_factor": 0.47,
+    "win_rate_pct": 40.85,
+    "max_drawdown_pct": 99.95,
+    "trades": 2201,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -1.0,
+    "history_quality": "19% real ticks",
+    "max_equity_dd_pct": 99.95,
+    "max_balance_dd_pct": 99.95,
+    "max_equity_dd_usd": 9994.62
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 38,
+    "margin_call": 0
+  },
+  "build": {
+    "source_sha": "510e2857f8ab3e5f9291ffb5e3bc5c072bd991874690544d1891bda31ae0fe01",
+    "binary_sha": "0066823c882ce5b676f0232e12b0950cebda2e2d5285db731c0069e440862f49",
+    "rules_sha": "b6773313f2a62f6c6c61210fc4530739c5478c34b97c5281887f13d46e8e38c7",
+    "config_sha": "93e78d31175ee5ea5aaff5a1abb4c8ccebcfaf45a2ed464571c66903ff207e37",
+    "compile": " 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 853 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "elapsed_seconds": 39.34956955909729,
+  "report_sha": "41e14299b0977501cd06b8e8bc20530ef2a68c55e52ae778ee9be8c4c4cc74c9",
+  "summary": [
+    "LC_SUMMARY tag=US30-touch-control-3y forms=6477 missing=408 noDonor=175 touches=3592 orders=2201 busy=144 skips=1246 entryFails=1 closeFails=8 retestExpired=0 quotes=135107869 volumeQuotes=0 tradeFlags=0"
+  ],
+  "symbol_spec": [
+    "LC_SPEC symbol=US30 description=US Wall Street 30 Index broker=Exness Technologies Ltd currency=USD leverage=2000 contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.10000000 stops=0 swapLong=-106.20000000 swapShort=0.00000000"
+  ],
+  "tick_coverage": [
+    "CS\t0\t23:02:50.774\tTicks\tUS30 : real ticks begin from 2026.01.01 00:00:00",
+    "KQ\t0\t23:02:50.957\tCore 01\tUS30 : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

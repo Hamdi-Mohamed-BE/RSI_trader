@@ -1,0 +1,65 @@
+{
+  "tag": "eurusd-range-raw-5y-m1",
+  "bot": {
+    "name": "eurusd-range",
+    "symbol": "EURUSD",
+    "mode": 3,
+    "rr": 0
+  },
+  "control": false,
+  "window": "5y",
+  "model": 1,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "3",
+    "InpControl": "false",
+    "InpRiskPercent": "1",
+    "InpRR": "0",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1632700800",
+    "InpTag": "eurusd-range-raw-5y-m1",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9838.99,
+    "net_profit": -161.01000000000084,
+    "return_pct": -1.6101000000000083,
+    "profit_factor": 0.977453527043585,
+    "win_rate_pct": 54.65116279069767,
+    "max_drawdown_pct": 13.46,
+    "trades": 172,
+    "sharpe_ratio": -0.56,
+    "recovery_factor": -0.11,
+    "history_quality": "100%",
+    "equity_dd_pct": 13.46,
+    "mean_trade": -0.93610465116279,
+    "mean_net_R": -0.005627272072831739
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 12.83,
+  "tick_coverage": [],
+  "summaries": [
+    "MS_SUMMARY entries=172 entryFails=0 closeFails=0 skips=133 stale=1"
+  ],
+  "spec": [
+    "MS_SPEC symbol=EURUSD description=Euro vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100000.00000000 min=0.01000000 step=0.01000000 tick=0.00001000"
+  ],
+  "report_sha": "719df65e6e4b9d77142718f46a374d595cd5fc18f428d41134893117d7e92e25",
+  "attempt": 0
+}

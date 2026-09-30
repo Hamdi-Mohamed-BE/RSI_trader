@@ -1,0 +1,65 @@
+{
+  "tag": "usdjpy-range-control-3y-m1",
+  "bot": {
+    "name": "usdjpy-range",
+    "symbol": "USDJPY",
+    "mode": 3,
+    "rr": 0
+  },
+  "control": true,
+  "window": "3y",
+  "model": 1,
+  "start": "2023.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "3",
+    "InpControl": "true",
+    "InpRiskPercent": "1",
+    "InpRR": "0",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1695772800",
+    "InpTag": "usdjpy-range-control-3y-m1",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9474.13,
+    "net_profit": -525.87,
+    "return_pct": -5.2587,
+    "profit_factor": 0.8298276498113405,
+    "win_rate_pct": 50.0,
+    "max_drawdown_pct": 9.42,
+    "trades": 76,
+    "sharpe_ratio": -4.02,
+    "recovery_factor": -0.55,
+    "history_quality": "100%",
+    "equity_dd_pct": 9.42,
+    "mean_trade": -6.919342105263158,
+    "mean_net_R": -0.0660208827988376
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 11.18,
+  "tick_coverage": [],
+  "summaries": [
+    "MS_SUMMARY entries=76 entryFails=0 closeFails=0 skips=50 stale=1"
+  ],
+  "spec": [
+    "MS_SPEC symbol=USDJPY description=US Dollar vs Japanese Yen broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100000.00000000 min=0.01000000 step=0.01000000 tick=0.00100000"
+  ],
+  "report_sha": "cf01f2d73703988735e1fa1a091f2f05505e50bb045bbb854ddba2c55b96cd4a",
+  "attempt": 0
+}

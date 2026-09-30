@@ -1,0 +1,68 @@
+{
+  "tag": "eurusd-range-control-6m-m4",
+  "bot": {
+    "name": "eurusd-range",
+    "symbol": "EURUSD",
+    "mode": 3,
+    "rr": 0
+  },
+  "control": true,
+  "window": "6m",
+  "model": 4,
+  "start": "2026.03.27",
+  "end": "2026.09.27",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "3",
+    "InpControl": "true",
+    "InpRiskPercent": "1",
+    "InpRR": "0",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1774569600",
+    "InpTag": "eurusd-range-control-6m-m4",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10253.84,
+    "net_profit": 253.83999999999992,
+    "return_pct": 2.5383999999999993,
+    "profit_factor": 1.42604900973481,
+    "win_rate_pct": 61.111111111111114,
+    "max_drawdown_pct": 3.8,
+    "trades": 18,
+    "sharpe_ratio": 6.21,
+    "recovery_factor": 0.63,
+    "history_quality": "98% real ticks",
+    "equity_dd_pct": 3.8,
+    "mean_trade": 14.10222222222222,
+    "mean_net_R": 0.14190705836191564
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 11.15,
+  "tick_coverage": [
+    "CS\t0\t01:23:15.762\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+    "QD\t0\t01:23:17.015\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "MS_SUMMARY entries=18 entryFails=0 closeFails=0 skips=16 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=EURUSD description=Euro vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100000.00000000 min=0.01000000 step=0.01000000 tick=0.00001000"
+  ],
+  "report_sha": "ac176c7228ef187d46a651dfa6b14bdca4f74856652a1ce49095be0cb023a96d",
+  "attempt": 0
+}

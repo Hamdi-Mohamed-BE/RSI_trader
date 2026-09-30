@@ -1,0 +1,68 @@
+{
+  "tag": "nasdaq-trend-raw-smoke-m4",
+  "bot": {
+    "name": "nasdaq-trend",
+    "symbol": "USTEC",
+    "mode": 0,
+    "rr": 3
+  },
+  "control": false,
+  "window": "smoke",
+  "model": 4,
+  "start": "2026.08.01",
+  "end": "2026.09.01",
+  "build": {
+    "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+    "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+    "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+    "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+  },
+  "inputs": {
+    "InpMode": "0",
+    "InpControl": "false",
+    "InpRiskPercent": "1",
+    "InpRR": "3",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1785542400",
+    "InpTag": "nasdaq-trend-raw-smoke-m4",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10598.16,
+    "net_profit": 598.1600000000002,
+    "return_pct": 5.981600000000002,
+    "profit_factor": 2.1107892293407615,
+    "win_rate_pct": 44.44444444444444,
+    "max_drawdown_pct": 3.61,
+    "trades": 9,
+    "sharpe_ratio": 2.44,
+    "recovery_factor": 1.51,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 3.61,
+    "mean_trade": 66.46222222222222,
+    "mean_net_R": 0.654881514052711
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 0,
+    "swap_positions": 0
+  },
+  "seconds": 18.47,
+  "tick_coverage": [
+    "CE\t0\t01:08:06.298\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "CS\t0\t01:08:03.365\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "MS_SUMMARY entries=9 entryFails=0 closeFails=0 skips=0 stale=0"
+  ],
+  "spec": [
+    "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+  ],
+  "report_sha": "efdca3c24d5b3413cc0dd4e8fe6e531a5bd3326805cb326b367c34d358462c59",
+  "attempt": 0
+}

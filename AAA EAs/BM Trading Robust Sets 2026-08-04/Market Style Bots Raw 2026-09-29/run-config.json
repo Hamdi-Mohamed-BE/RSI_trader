@@ -1,0 +1,21 @@
+{
+  "study":"Four market styles, six research bots",
+  "broker":"Exness-MT5Trial16",
+  "deposit":10000,
+  "risk_percent":1,
+  "seed":290929,
+  "end":"2026.09.27",
+  "windows":{"6m":"2026.03.27","1y":"2025.09.27","3y":"2023.09.27","5y":"2021.09.27"},
+  "smoke":["2026.08.01","2026.09.01"],
+  "bots":[
+    {"name":"nasdaq-trend","symbol":"USTEC","mode":0,"rr":3},
+    {"name":"bitcoin-reversal","symbol":"BTCUSD","mode":1,"rr":1.5},
+    {"name":"gold-volatility","symbol":"XAUUSD","mode":2,"rr":2},
+    {"name":"eurusd-range","symbol":"EURUSD","mode":3,"rr":0},
+    {"name":"gbpusd-range","symbol":"GBPUSD","mode":3,"rr":0},
+    {"name":"usdjpy-range","symbol":"USDJPY","mode":3,"rr":0}
+  ],
+  "raw_gate":{"pf":1.15,"min_trades":30,"positive_3y_5y":true,"beat_control_mean_R":true,"valid_execution":true},
+  "optimization_authorized":false,
+  "deployment_authorized":false
+}

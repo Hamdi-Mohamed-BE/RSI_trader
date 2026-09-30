@@ -1,0 +1,55 @@
+{
+ "case": "orbaudit-ORBVP__PROD-1y",
+ "symbol": "XAUUSD",
+ "variant": "ORBVP__PROD",
+ "period": "1y",
+ "start": "2025.09.05",
+ "end_exclusive": "2026.09.05",
+ "expert": "ORB Volume Data EA production.ex5",
+ "exit_code": 0,
+ "elapsed_seconds": 43.3,
+ "report_sha256": "784ccf01d39565f21429866f05e66813689dc67d214edd88a7770c3a63e9b0aa",
+ "report_checks": {
+  "expert_in_report": true,
+  "symbol_in_report": true,
+  "period_in_report": true,
+  "inputs_applied": false
+ },
+ "input_mismatches": [
+  "InpEnableTrading",
+  "InpSessionZone",
+  "InpSessionHour",
+  "InpSessionMinute",
+  "InpOpeningRangeMinutes",
+  "InpTradeWindowMinutes",
+  "InpFlatHour",
+  "InpFlatMinute",
+  "InpWeekdaysOnly",
+  "InpSignalTimeframe"
+ ],
+ "journal_flags": {
+  "init_failed": 0,
+  "no_history": 0,
+  "rejected": 0,
+  "size_below_min": 0,
+  "critical": 0
+ },
+ "real_tick_lines": [],
+ "set_sha256": "f6c8d802d08c5bc2433c7824512e9da1a81243993c98f97d77e1c8a8eba22af6",
+ "metrics": {
+  "initial_balance": 10000.0,
+  "final_balance": 11424.92,
+  "net_profit": 1424.92,
+  "return_pct": 14.25,
+  "profit_factor": 1.76,
+  "win_rate_pct": 62.75,
+  "max_drawdown_pct": 8.18,
+  "trades": 51,
+  "sharpe_ratio": 9.61,
+  "recovery_factor": 1.68,
+  "history_quality": "99%",
+  "balance_dd_pct": 7.03,
+  "expected_payoff": 27.94
+ },
+ "ok": false
+}
