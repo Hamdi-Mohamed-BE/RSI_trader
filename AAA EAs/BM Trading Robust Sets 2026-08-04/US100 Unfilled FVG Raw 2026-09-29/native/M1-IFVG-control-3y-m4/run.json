@@ -1,0 +1,71 @@
+{
+  "tag": "M1-IFVG-control-3y-m4",
+  "bot": {
+    "name": "M1-IFVG",
+    "symbol": "USTEC",
+    "mode": 1,
+    "rr": 1
+  },
+  "control": true,
+  "window": "3y",
+  "model": 4,
+  "start": "2023.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "UnfilledFVG.mq5": "ecbe3fc638bee37cda291e0059292750b80e38a5e19171d632f82762da2f4f98",
+    "UnfilledFVG.ex5": "cb7dac40489a0ef9319202dfa752cfe8d452b25f4a03e399c74ef053b2416bf3",
+    "RULES.md": "02921182fac787e2a31e8ddfbc16e04b89d71acd83f2f9f9827285e03ae68c7f",
+    "run-config.json": "2745ec1585eb12c5c35a90da724231eccdbb7ed4068fffa4673b951636c48149",
+    "logic.mqh": "011d8798468b9b28460344448c58e6dfef588978487130c6d9774488a4dedbf3",
+    "run.py": "93ac8721ac157ad7c31757cacd2ba48303dea80291d57e0726922f1b27ba8f32",
+    "prepare.py": "a9412a6222c655421ac34a4ab53a43fe18ba5af53c34b575c370ec6205dc8398"
+  },
+  "inputs": {
+    "InpMode": "1",
+    "InpControl": "true",
+    "InpRiskPercent": "1",
+    "InpRR": "1",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1695772800",
+    "InpTag": "M1-IFVG-control-3y-m4",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 202.71,
+    "net_profit": -9797.29000000003,
+    "return_pct": -97.9729000000003,
+    "profit_factor": 0.5653461068195637,
+    "win_rate_pct": 42.900763358778626,
+    "max_drawdown_pct": 98.31,
+    "trades": 1965,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -1.0,
+    "history_quality": "22% real ticks",
+    "equity_dd_pct": 98.31,
+    "mean_trade": -4.985898218829517,
+    "mean_net_R": -0.18641881497934545
+  },
+  "flags": {
+    "entry_fail": 2,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 4,
+    "stopout": 0,
+    "overnight_positions": 2,
+    "swap_positions": 2
+  },
+  "seconds": 80.71,
+  "tick_coverage": [
+    "CS\t0\t13:28:00.530\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "IE\t0\t13:28:01.960\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "MS_SUMMARY entries=1965 entryFails=1 closeFails=0 skips=128 stale=10 armed=9728 expired=141 touched=7377 triggered=2094"
+  ],
+  "spec": [
+    "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+  ],
+  "report_sha": "d8ae4b91cea67cae5e0c1d60635604a321adf003951e61155de202782fd58434",
+  "attempt": 0
+}

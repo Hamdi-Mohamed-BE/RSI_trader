@@ -1,0 +1,68 @@
+{
+  "tag": "M5-CISD-raw-5y-m1",
+  "bot": {
+    "name": "M5-CISD",
+    "symbol": "USTEC",
+    "mode": 2,
+    "rr": 1
+  },
+  "control": false,
+  "window": "5y",
+  "model": 1,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "build": {
+    "UnfilledFVG.mq5": "ecbe3fc638bee37cda291e0059292750b80e38a5e19171d632f82762da2f4f98",
+    "UnfilledFVG.ex5": "cb7dac40489a0ef9319202dfa752cfe8d452b25f4a03e399c74ef053b2416bf3",
+    "RULES.md": "02921182fac787e2a31e8ddfbc16e04b89d71acd83f2f9f9827285e03ae68c7f",
+    "run-config.json": "2745ec1585eb12c5c35a90da724231eccdbb7ed4068fffa4673b951636c48149",
+    "logic.mqh": "011d8798468b9b28460344448c58e6dfef588978487130c6d9774488a4dedbf3",
+    "run.py": "93ac8721ac157ad7c31757cacd2ba48303dea80291d57e0726922f1b27ba8f32",
+    "prepare.py": "a9412a6222c655421ac34a4ab53a43fe18ba5af53c34b575c370ec6205dc8398"
+  },
+  "inputs": {
+    "InpMode": "2",
+    "InpControl": "false",
+    "InpRiskPercent": "1",
+    "InpRR": "1",
+    "InpSeed": "290929",
+    "InpTradeFrom": "1632700800",
+    "InpTag": "M5-CISD-raw-5y-m1",
+    "InpMagic": "9294400"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 275.86,
+    "net_profit": -9724.139999999989,
+    "return_pct": -97.24139999999989,
+    "profit_factor": 0.36226992959755566,
+    "win_rate_pct": 35.80508474576271,
+    "max_drawdown_pct": 97.27,
+    "trades": 944,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -1.0,
+    "history_quality": "98%",
+    "equity_dd_pct": 97.27,
+    "mean_trade": -10.300995762711864,
+    "mean_net_R": -0.373569990884019
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0,
+    "overnight_positions": 1,
+    "swap_positions": 0
+  },
+  "seconds": 24.04,
+  "tick_coverage": [],
+  "summaries": [
+    "MS_SUMMARY entries=944 entryFails=0 closeFails=0 skips=221 stale=30 armed=2150 expired=413 touched=508 triggered=1165"
+  ],
+  "spec": [
+    "MS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.05000000 step=0.01000000 tick=0.01000000"
+  ],
+  "report_sha": "ea0e6e1fff5f13fb35436486376156ed123fcee233352809ea4fafe3ad632c21",
+  "attempt": 0
+}
