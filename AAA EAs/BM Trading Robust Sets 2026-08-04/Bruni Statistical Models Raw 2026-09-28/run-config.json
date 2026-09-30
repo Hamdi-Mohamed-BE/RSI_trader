@@ -1,0 +1,22 @@
+{
+  "symbols": ["USTEC", "USDJPY"],
+  "end": "2026.09.27",
+  "windows": {"6m": "2026.03.27", "1y": "2025.09.27", "3y": "2023.09.27", "5y": "2021.09.27"},
+  "smoke_start": "2025.11.03", "smoke_end": "2025.11.10",
+  "deposit": 10000, "fixed_risk_money": 100,
+  "variants": [
+    {"name": "single-print-control", "mode": 0, "both": true, "rr": 2, "protected": true},
+    {"name": "triple-print", "mode": 1, "both": true, "rr": 2, "protected": true, "control": "single-print-control"},
+    {"name": "triple-wick", "mode": 2, "both": true, "rr": 2, "protected": true, "control": "single-print-control"}
+  ],
+  "seed": 9282603,
+  "risk_overlays": ["fixed", "after-loss-half", "conditional-kelly-capped", "garch-vol-cap", "combined-capped", "vam-evidence-gated"],
+  "overlay_base_risks": {"FTMO": 0.005, "Instant": 0.0025},
+  "overlay_min_history": 100, "overlay_min_state": 30,
+  "overlay_kelly_fraction": 0.25, "overlay_multiplier_bounds": [0.5, 1.25],
+  "vam_loss_streak": 7, "vam_min_state": 30,
+  "garch": {"data": "D1 Exness closed bars", "min_returns": 252, "rolling_returns": 756, "refit": "monthly", "buckets": [0.25, 0.5, 0.9], "vol_multiplier_bounds": [0.5, 1.0]},
+  "overlay_validation_start": "2026-03-27", "overlay_rolling_start": "2026-03-30",
+  "overlay_horizons": [30, 60, 120, 180], "overlay_bootstrap": {"paths": 10000, "block_days": 28, "seed": 9282603},
+  "gate": "Raw candidates must be positive, PF >= 1.15, >= 30 trades and beat named control net profit on BOTH 3y and 5y. Model 1 is a screen only. Passing families require Model 4 confirmation. No optimization, deployment or live access. Risk overlays require paired second-half improvement with block-bootstrap lower confidence bound > 0, no extra breaches and no compliance issue; one reused year cannot promote an EA."
+}

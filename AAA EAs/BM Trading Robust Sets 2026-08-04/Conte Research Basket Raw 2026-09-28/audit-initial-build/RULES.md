@@ -1,0 +1,33 @@
+# Conte interview: frozen raw research protocol
+
+Frozen before any results, 2026-09-28. Research only. No production changes, orders, BATs, website or purchases. Live MT5 PID 11196 is outside this study. Only the isolated tester may run. Every variant, including controls and failed attempts, is retained. No parameter optimization or claim of untouched holdout.
+
+## Scope and source distinction
+
+The user requested the interview ideas as an addition to the Okala prop study. Test US100 (USTEC broker proxy) and US500, not individual stocks or futures. Four conceptual families, of which three have usable data. The existing Noise Boundary strategy is a different paper/model, not this simple VWAP cross.
+
+- Market Intraday Momentum, Gao et al. (2018), SSRN 2440866: original signal is previous close to 10:00 predicting 15:30-16:00, NOT this interview ORB. ORB below is explicitly an interview-inspired adaptation.
+- VWAP, Zarattini and Aziz (2023), SSRN 4631351: original QQQ/TQQQ M1, unlevered all-equity allocation, dynamic VWAP exit, no fixed risk percentage and no slippage. Our CFD tick-volume / fixed-lot / native fill test is NOT an exact replication of their returns.
+- Cliff, Cooper and Gulen (2008), SSRN 1004081: overnight return decomposition supports a hypothesis, not a promise of future returns.
+- PEAD: Ball/Brown 1968; Bernard/Thomas 1989; Livnat/Mendenhall 2006. Requires point-in-time EPS/consensus, release timestamps, individual-stock total-return prices, historical investable universe and delistings. Missing locally. Specify, but DO NOT simulate with index bars or invented earnings.
+
+## Common rules (ours unless directly specified)
+
+Native Model 4, 150ms execution delay, source broker bid/ask, commission and swap. Broker tester timestamps are UTC; NY daylight savings explicit. Full regular NYSE sessions for entries; holidays/early closes excluded, including 2025-01-09 closure. An overnight position exits at the next NYSE open, including an early-close session. Friday holds may remain open over weekends. No signal uses unfinished bars. One open idea per strategy, no pyramiding, no trailing, no breakeven, no martingale. A hard stop may gap beyond intended risk.
+
+All stopped variants size a fixed $100 initial stop-risk on $10K, lots rounded DOWN (explicit conservative deviation from pipeline rounding-up default), no compounding. Unstopped research benchmarks use fixed 1 CFD lot, NOT 1% risk and NOT one NQ/ES futures contract. Those returns are not directly comparable risk exposures to the stopped variants or across symbols. Raw no-stop variants are excluded from percentage-risk prop simulations. Broker minimums may skip trades. Warmup 60 calendar days; M5 ATR(14) and D1 ATR(14) use only completed bars. D1 is the source broker's UTC daily session, not NY RTH.
+
+## Mechanical entries and exits
+
+1. **ORB:** mark complete 09:30-10:00 NY M1 range. First completed M5 close outside it from 10:05 up to but excluding 15:30 triggers at next available quote. Long SL range low; short SL range high. TP actual quoted entry +/- 1R or 2R; slippage changes realized R. Flat 15:30. One trade per NY session. Predeclared variants: long 1R, long 2R, both 2R. Control buys 10:00 with one range-height stop and 1R TP, flat 15:30, irrespective of breakout. This is a simple directional-timing control, not perfectly exposure-matched to 2R.
+2. **VWAP:** cumulative HLC3 times M1 tick volume from 09:30. First decision 09:31; on each completed M1 bar long if close above VWAP, short if below, reverse when sign changes. Equality means flat. Flat 16:00. Raw fixed-lot no hard stop. Protected version uses a 2 x completed M5 ATR(14) hard stop, $100 risk; after a hard-stop exit it can re-enter at the next M1 decision. Control replaces volume weights by 1 (TWAP), preserving other protected rules. No claim tick volume equals consolidated exchange volume.
+3. **Overnight:** long first quote from 16:00 to 16:01 NY on a full session, exit first quote at/after 09:30 on next NYSE trading day. Raw fixed 1 lot, no hard stop/TP. Protected adds 1 x completed D1 ATR(14) initial hard stop, $100 risk, no TP. Control buys at 09:30 and exits 16:00, with the same raw/protected sizing; different duration is intentional. Missing timed quotes skip entry, do not enter late. Position exits remain eligible after a missed opening quote.
+4. **PEAD specification, not a result:** observe actual reported EPS greater than the last analyst consensus available BEFORE release; require positive first full-session close-to-previous-close return following the release. Enter next session open, hold 60 trading sessions, fixed 1% portfolio notional per name before any later risk overlay. Use historical small/midcap eligibility and adjusted prices, include delisted names, costs, gaps, borrow for any short extension. No short model here. Prop compatibility cannot be inferred until actual supported equity symbols and financing are known.
+
+## Evaluation and gates
+
+11 rule configurations x 2 symbols = 22 predeclared cases, not 22 independent discoveries. Native Model 4 last 6m/1y for all; Model 1 3y/5y is a coarse screening stage. Only families with positive PF >= 1.15 and >=30 trades on BOTH longer screens and net better than named control receive longer Model 4 confirmation. A screen failure stops that candidate, not secretly optimized into a winner. Every final table identifies evidence model. Stage 5 full optimization needs separate approval under canonical PIPELINE.md. Historical windows overlap; no fresh holdout is claimed.
+
+Trace records every minute plus fills, tracking the lowest tick equity within each interval. This supports more conservative floating-equity checks than closed-P&L-only Monte Carlo. Raw account drawdown comes directly from native MT5. Prop overlays must handle Prague midnight even during overnight positions, withdrawal accounting, balance trailing and payout timing. Source financing is not guaranteed to equal prop financing; stress it separately.
+
+Prop scenarios retain prior planned FTMO $10K 2-Step Swing and FundedNext $5K Stellar Instant (not $50K FNL futures). No-stop research benchmarks are ineligible for fixed-risk projection. Simulated milestone days exclude unmodelled KYC/payment delays; payout means request eligibility, not approved/received money. Bootstrap frequencies condition on this limited, reused source history and are not probabilities guaranteed for live trading.

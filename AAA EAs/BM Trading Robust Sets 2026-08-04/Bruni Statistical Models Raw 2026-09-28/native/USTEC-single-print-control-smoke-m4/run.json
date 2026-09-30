@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "symbol": "USTEC",
+  "variant": {
+    "name": "single-print-control",
+    "mode": 0,
+    "both": true,
+    "rr": 2,
+    "protected": true
+  },
+  "window": "smoke",
+  "model": 4,
+  "start": "2025.11.03",
+  "end": "2025.11.10",
+  "warmup_start": "2025.09.04",
+  "build": {
+    "hashes": {
+      "BruniProxy.mq5": "0d1b488e1f04fbfb501aa8d2b67217f06964bce438121d20f0128359b66dfd73",
+      "BruniProxy.ex5": "4ff9ffc64f5dd01465b434c5d24ba9b268c9638aa6479e90369042c0d7bcb2a0",
+      "RULES.md": "3eb0abeafab723105cdf53d8fcd27c4765bbf876134022643b62439159779e63",
+      "run-config.json": "20956d190eb41cd91501cee405df8c13d9526854e1abd9ce37314a6d2c693f37"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 797 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "0",
+    "InpBoth": "true",
+    "InpRR": "2",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1762128000",
+    "InpTag": "USTEC-single-print-control-smoke-m4",
+    "InpMagic": "9282603"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10189.84,
+    "net_profit": 189.84,
+    "return_pct": 1.9,
+    "profit_factor": 1.9,
+    "win_rate_pct": 50.0,
+    "max_drawdown_pct": 2.4,
+    "trades": 4,
+    "sharpe_ratio": 2.52,
+    "recovery_factor": 0.77,
+    "history_quality": "0% real ticks",
+    "equity_dd_pct": 2.4,
+    "idea_pf": 1.9219114219114217
+  },
+  "groups": 4,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "eb24523cfa47f5e135fcf02bb28c8cab9cafac85ac7334da4d6404102acb8a40",
+  "elapsed_seconds": 27.91577410697937,
+  "summaries": [
+    "CB_SUMMARY tag=USTEC-single-print-control-smoke-m4 entries=4 signals=4 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USTEC contract=1.00000000 tick=0.01000000 min=0.05000000 step=0.01000000 stops=0 swaplong=-698.10000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t21:14:07.734\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00, every tick generation used",
+    "GJ\t0\t21:14:09.952\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+  ],
+  "verified_already_closed_log_lines": 0
+}

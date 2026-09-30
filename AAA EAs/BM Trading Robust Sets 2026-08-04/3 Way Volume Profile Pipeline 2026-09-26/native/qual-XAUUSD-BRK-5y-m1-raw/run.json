@@ -1,0 +1,77 @@
+{
+  "symbol": "XAUUSD",
+  "variant": "BRK",
+  "start": "2021.09.26",
+  "end": "2026.09.26",
+  "period": "5y",
+  "model": 1,
+  "inputs": {
+    "InpEnableTrading": "true",
+    "InpRiskPercent": "1.0",
+    "InpRewardRisk": "2.0",
+    "InpMagic": "1092601",
+    "InpAdaptivePortfolioControls": "false",
+    "InpSignalTimeframe": "15",
+    "InpBins": "64",
+    "InpValueAreaPercent": "70.0",
+    "InpMinimumProfileBars": "300",
+    "InpATRPeriod": "14",
+    "InpPocStopATR": "0.2",
+    "InpStopBufferATR": "0.1",
+    "InpBreakoutATR": "1.0",
+    "InpPullbackNearATR": "0.5",
+    "InpMaxPullbackDepth": "0.25",
+    "InpMinStopSpreadMultiple": "3.0",
+    "InpUseDynamicTrailingSL": "false",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpSetups": 4,
+    "InpNoSignalControl": "false",
+    "InpControlSeed": 101,
+    "InpControlProbability": 0.004,
+    "InpControlStopATR": 2.0
+  },
+  "source_sha256": "262268867f6a4deb5ad5df11e9629ddbd982a64a2671401eb303571ae29a6c2c",
+  "case": "qual-XAUUSD-BRK-5y-m1-raw",
+  "control_seed": null,
+  "fingerprint": "085c7279010b51a8aac1134b817f4b7c9ec025cb18a5d65a8788c304f0fcd2f0",
+  "ok": true,
+  "checks": {
+    "inputs_exact": true,
+    "expert": true,
+    "symbol": true,
+    "dates": true,
+    "process_exit": true
+  },
+  "mismatches": [],
+  "journal": {
+    "critical": [],
+    "history": [],
+    "orders": [
+      "LJ\t2\t15:49:33.697\tCore 01\t2025.12.17 21:30:00   failed market buy 0.08 XAUUSD sl: 4319.812 tp: 4393.291 [Market closed]",
+      "CS\t2\t15:49:33.483\tTrades\t2025.12.17 21:30:00   failed market buy 0.08 XAUUSD sl: 4319.812 tp: 4393.291 [Market closed]"
+    ],
+    "coverage": [
+      "PK\t0\t15:49:31.377\tTester\tXAUUSD: history data begins from 2014.01.14 00:00",
+      "RK\t0\t15:49:33.697\tCore 01\tXAUUSD: history synchronized from 2018.01.02 to 2026.09.25",
+      "CS\t0\t15:49:31.947\tHistory\tXAUUSD: history synchronized from 2018.01.02 to 2026.09.25"
+    ]
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 19396.11,
+    "net_profit": 9396.11,
+    "return_pct": 93.96,
+    "profit_factor": 1.26,
+    "win_rate_pct": 39.24,
+    "max_drawdown_pct": 11.53,
+    "trades": 446,
+    "sharpe_ratio": 1.57,
+    "recovery_factor": 3.81,
+    "history_quality": "98%",
+    "balance_dd_pct": 10.85,
+    "expected_payoff": 21.07
+  },
+  "elapsed_seconds": 27.1,
+  "report_sha256": "49f898fad72331216a9e9c095bf2fcceb4ba78da114979fa9afd56ff56acd067"
+}

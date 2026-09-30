@@ -1,0 +1,73 @@
+{
+  "ok": true,
+  "symbol": "USTEC",
+  "variant": {
+    "name": "orb-control",
+    "mode": 4,
+    "both": false,
+    "rr": 1,
+    "protected": true
+  },
+  "window": "1y",
+  "model": 4,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2025.07.29",
+  "build": {
+    "hashes": {
+      "ConteBasket.mq5": "0f82cd285049b20a4b78e0d20e8dc6daba1fa9e88b0646affa244c2d4cbd454b",
+      "ConteBasket.ex5": "6f9d7197cc798fe4c9974148466023782bf6d50a8727e69f4336e6a6ba06529f",
+      "RULES.md": "d1055df8824d91a7c5c72026a1eb8b6e2d223c74585c4ce321a0bdb51614ad1a",
+      "run-config.json": "5c10a6eea8a6eb7602b4dfba8d7cbc626c780c810a8cc8ae71484d760631ca8f"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 719 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "4",
+    "InpBoth": "false",
+    "InpRR": "1",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1758931200",
+    "InpTag": "USTEC-orb-control-1y-m4",
+    "InpMagic": "9282601"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9213.59,
+    "net_profit": -786.41,
+    "return_pct": -7.86,
+    "profit_factor": 0.92,
+    "win_rate_pct": 51.61,
+    "max_drawdown_pct": 18.98,
+    "trades": 248,
+    "sharpe_ratio": -1.65,
+    "recovery_factor": -0.4,
+    "history_quality": "63% real ticks",
+    "equity_dd_pct": 18.98,
+    "idea_pf": 0.9218985249893734
+  },
+  "groups": 248,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "c6920cbbd4c06af36c1e719233c4fcd6e7238563e5f8436df2d792bb5e76937b",
+  "elapsed_seconds": 39.34958577156067,
+  "summaries": [
+    "CB_SUMMARY tag=USTEC-orb-control-1y-m4 entries=248 signals=248 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USTEC contract=1.00000000 tick=0.01000000 min=0.05000000 step=0.01000000 stops=0 swaplong=-696.10000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t19:56:35.821\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "FH\t0\t19:56:41.931\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "ok": true,
+  "symbol": "USDJPY",
+  "variant": {
+    "name": "triple-print",
+    "mode": 1,
+    "both": true,
+    "rr": 2,
+    "protected": true,
+    "control": "single-print-control"
+  },
+  "window": "6m",
+  "model": 4,
+  "start": "2026.03.27",
+  "end": "2026.09.27",
+  "warmup_start": "2026.01.26",
+  "build": {
+    "hashes": {
+      "BruniProxy.mq5": "0d1b488e1f04fbfb501aa8d2b67217f06964bce438121d20f0128359b66dfd73",
+      "BruniProxy.ex5": "4ff9ffc64f5dd01465b434c5d24ba9b268c9638aa6479e90369042c0d7bcb2a0",
+      "RULES.md": "3eb0abeafab723105cdf53d8fcd27c4765bbf876134022643b62439159779e63",
+      "run-config.json": "20956d190eb41cd91501cee405df8c13d9526854e1abd9ce37314a6d2c693f37"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 797 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "1",
+    "InpBoth": "true",
+    "InpRR": "2",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1774569600",
+    "InpTag": "USDJPY-triple-print-6m-m4",
+    "InpMagic": "9282603"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9620.75,
+    "net_profit": -379.25,
+    "return_pct": -3.79,
+    "profit_factor": 0.81,
+    "win_rate_pct": 32.14,
+    "max_drawdown_pct": 11.3,
+    "trades": 28,
+    "sharpe_ratio": -2.06,
+    "recovery_factor": -0.33,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 11.3,
+    "idea_pf": 0.8095943367808013
+  },
+  "groups": 28,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "41a58524e571e2c01adcedbb6dcc3fbcf8d2f6d14abc5c8f0d3ffb3f8f08836c",
+  "elapsed_seconds": 10.318256378173828,
+  "summaries": [
+    "CB_SUMMARY tag=USDJPY-triple-print-6m-m4 entries=28 signals=28 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USDJPY contract=100000.00000000 tick=0.00100000 min=0.01000000 step=0.01000000 stops=0 swaplong=0.00000000 swapshort=-14.10000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t21:22:33.274\tTicks\tUSDJPY : real ticks begin from 2026.01.01 00:00:00",
+    "RR\t0\t21:22:34.817\tCore 01\tUSDJPY : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "verified_already_closed_log_lines": 0
+}

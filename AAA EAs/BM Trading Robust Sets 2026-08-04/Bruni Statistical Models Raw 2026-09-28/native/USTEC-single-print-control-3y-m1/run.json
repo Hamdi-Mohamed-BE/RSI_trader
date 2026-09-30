@@ -1,0 +1,71 @@
+{
+  "ok": true,
+  "symbol": "USTEC",
+  "variant": {
+    "name": "single-print-control",
+    "mode": 0,
+    "both": true,
+    "rr": 2,
+    "protected": true
+  },
+  "window": "3y",
+  "model": 1,
+  "start": "2023.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2023.07.29",
+  "build": {
+    "hashes": {
+      "BruniProxy.mq5": "0d1b488e1f04fbfb501aa8d2b67217f06964bce438121d20f0128359b66dfd73",
+      "BruniProxy.ex5": "4ff9ffc64f5dd01465b434c5d24ba9b268c9638aa6479e90369042c0d7bcb2a0",
+      "RULES.md": "3eb0abeafab723105cdf53d8fcd27c4765bbf876134022643b62439159779e63",
+      "run-config.json": "20956d190eb41cd91501cee405df8c13d9526854e1abd9ce37314a6d2c693f37"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 797 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "0",
+    "InpBoth": "true",
+    "InpRR": "2",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1695772800",
+    "InpTag": "USTEC-single-print-control-3y-m1",
+    "InpMagic": "9282603"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 1336.78,
+    "net_profit": -8663.22,
+    "return_pct": -86.63,
+    "profit_factor": 0.8,
+    "win_rate_pct": 29.7,
+    "max_drawdown_pct": 92.13,
+    "trades": 606,
+    "sharpe_ratio": -3.12,
+    "recovery_factor": -0.93,
+    "history_quality": "98%",
+    "equity_dd_pct": 92.13,
+    "idea_pf": 0.8027895139407405
+  },
+  "groups": 606,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "69064986bc6d46333947cc5cd84a230cb7c04e240033899ac5e7af7bbca00849",
+  "elapsed_seconds": 9.655454397201538,
+  "summaries": [
+    "CB_SUMMARY tag=USTEC-single-print-control-3y-m1 entries=606 signals=606 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USTEC contract=1.00000000 tick=0.01000000 min=0.05000000 step=0.01000000 stops=0 swaplong=-698.10000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [],
+  "verified_already_closed_log_lines": 0
+}

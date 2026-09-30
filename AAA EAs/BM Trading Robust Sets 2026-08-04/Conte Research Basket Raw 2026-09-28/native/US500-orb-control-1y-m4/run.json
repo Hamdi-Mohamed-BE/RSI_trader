@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "symbol": "US500",
+  "variant": {
+    "name": "orb-control",
+    "mode": 4,
+    "both": false,
+    "rr": 1,
+    "protected": true
+  },
+  "window": "1y",
+  "model": 4,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2025.07.29",
+  "build": {
+    "hashes": {
+      "ConteBasket.mq5": "4d48a5ae4d648b0c061104a80e441ad98f6318aeeaaf0c5189cd4f224005cb74",
+      "ConteBasket.ex5": "6e1020ebbe8d5b6b7e25b717ef6334cb65351a6edf393799608ca6f9c9f0d203",
+      "RULES.md": "6f2bbbbbd85411b01beadf01108bc7fbb606a8f5c0454e17ea86578fc96e887d",
+      "run-config.json": "b92dce94c9360ca61c86580ad9660e19fc8d37b27315e292fdcc1c592cdb9336"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 903 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "4",
+    "InpBoth": "false",
+    "InpRR": "1",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1758931200",
+    "InpTag": "US500-orb-control-1y-m4",
+    "InpMagic": "9282601"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 8071.58,
+    "net_profit": -1928.42,
+    "return_pct": -19.28,
+    "profit_factor": 0.84,
+    "win_rate_pct": 47.18,
+    "max_drawdown_pct": 22.84,
+    "trades": 248,
+    "sharpe_ratio": -4.57,
+    "recovery_factor": -0.81,
+    "history_quality": "63% real ticks",
+    "equity_dd_pct": 22.84,
+    "idea_pf": 0.8382606405597244
+  },
+  "groups": 248,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "06148ecbf733960378226744ac69f22209910c0c91e5bcd155a81a130eecd4ed",
+  "elapsed_seconds": 32.743173360824585,
+  "summaries": [
+    "CB_SUMMARY tag=US500-orb-control-1y-m4 entries=248 signals=248 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=US500 contract=1.00000000 tick=0.01000000 min=0.14000000 step=0.01000000 stops=0 swaplong=-165.20000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t20:18:14.644\tTicks\tUS500 : real ticks begin from 2026.01.01 00:00:00",
+    "OM\t0\t20:18:16.959\tCore 01\tUS500 : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "verified_already_closed_log_lines": 0
+}

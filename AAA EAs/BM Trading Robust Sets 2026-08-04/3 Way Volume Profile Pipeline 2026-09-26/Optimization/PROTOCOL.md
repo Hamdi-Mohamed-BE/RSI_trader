@@ -1,0 +1,21 @@
+# Conditional full staged research search
+
+Only candidates marked QUALIFIED in ../qualification.json may enter. Fixed before the parameter search.
+
+- Research only. The saved Exness isolated tester, local agents, empty chart profile, no live trading.
+- Native Model 1 development screen: 2021-09-26 through 2024-09-26; $10k and target 1% equity risk, 150ms configured delay. Keep the top three eligible settings per stage. Eligibility: positive, PF > 1, at least 60 development trades. Rank by capped PF * sqrt(trades/100) * return/(5% + relative equity DD); never by return alone.
+- Search dimensions: M1/M3/M5/M15/M30/H1/H4/D1; market/confirmation/ATR-limit/fixed-price-limit/stop entry; structure/ATR/percent/fixed-price/signal/swing stops; none/breakeven/ATR/percent/EMA50/swing/chandelier/step trailing; 0.5-6R, no-TP trailing, next profile level, 24-bar time exit, session exit, partial 50% at 1R; sessions/direction/filters/day exclusions/trade caps/re-entry/holding; profile bins, value-area width, ATR, breakout and pullback thresholds. Final joint neighborhood checks.
+- A causally executable signal-close trade and next-bar market entry are the same first-tick implementation here, not two falsely distinct execution models. H4/D1 configurations are allowed to fail for insufficient trades.
+- Filters: none, EMA50 slope, closed H1 EMA50 bias, ADX>=20, DI alignment, rolling ATR 20th-80th percentile, spread<=10% ATR. A news blackout is excluded because a point-in-time complete 2019-2026 calendar has not been verified for this study; it is NOT counted as tested.
+- Exness UTC sessions: Asia 00-08, London 07-16, NY 09:30-16 local with correct US DST, overlap 12-16 UTC, NY open 09:30-11 local. Fixed London/overlap windows are explicit UTC definitions, not claims of complete UK-DST alignment.
+- Pending entries expire after four signal bars. Confirmation expires after four bars. Fixed-price retest is $0.50 gold / 0.01 USDJPY. Fixed price stop grids are instrument-specific. Structure/next-level targets use only completed prior-session data. If no profitable next level exists, skip the trade.
+- Trailing risk anchors are frozen from the filled position's initial stop. ATR/percent/step act on incoming modeled ticks; MA/structure/chandelier use completed signal bars. Partial close rounds down and skips the partial if either leg would be below the broker minimum. No variable is selected using the validation or holdout data during development.
+- Max positions compares one vs two (up to 2% nominal simultaneous exposure); that exposure change must be called out, not presented as an edge improvement. Re-entry-off means stop new trades for that UTC day after a net losing exit. Optional weekend exit is Friday from 20:55 UTC. No-TP always has a trail; remaining open trades are marked to market/closed by MT5 at test end and disclosed.
+- All cases are baked into a hashed EA binary per batch; InpCase is the native optimization index. Preserve full XML results, exact case vectors, source/binary hashes, INI and journals. Record duplicate configurations separately from the unique tested count. The baseline must reproduce the original raw gold trades exactly before searching.
+- Final plateau: at least two thirds of the tested neighbors positive with PF>1 and >=60 trades. Reject isolated spikes.
+- Validation: native Model 4 2024-09-26 to 2025-09-26 on three finalists, requiring PF>=1.15, positive return and >=30 trades. Select by the same score with validation minimum30. If none passes, stop.
+- Genuine unused older holdout: 2019-09-26 to 2021-09-26, final choice once, only with complete bar coverage. Require positive and PF>=1.15 and >=30 trades; fail means reject without re-tuning. The already-inspected last year is only a descriptive comparison, NOT a holdout.
+- Model 4 confirmations and 10,000 block-bootstrap paths remain required before promotion; generated ticks prior to 2026 and unmeasured execution stress prevent calling this broker-independent or FTMO-ready evidence. No production deployment is authorized.
+
+MT5 configuration reference: https://www.metatrader5.com/en/terminal/help/start_advanced/start
+Native tester statistics: https://www.mql5.com/en/docs/constants/environment_state/Statistics

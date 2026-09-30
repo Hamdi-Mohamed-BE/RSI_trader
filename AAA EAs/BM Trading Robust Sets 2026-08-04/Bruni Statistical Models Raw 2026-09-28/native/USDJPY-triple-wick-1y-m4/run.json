@@ -1,0 +1,75 @@
+{
+  "ok": true,
+  "symbol": "USDJPY",
+  "variant": {
+    "name": "triple-wick",
+    "mode": 2,
+    "both": true,
+    "rr": 2,
+    "protected": true,
+    "control": "single-print-control"
+  },
+  "window": "1y",
+  "model": 4,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2025.07.29",
+  "build": {
+    "hashes": {
+      "BruniProxy.mq5": "0d1b488e1f04fbfb501aa8d2b67217f06964bce438121d20f0128359b66dfd73",
+      "BruniProxy.ex5": "4ff9ffc64f5dd01465b434c5d24ba9b268c9638aa6479e90369042c0d7bcb2a0",
+      "RULES.md": "3eb0abeafab723105cdf53d8fcd27c4765bbf876134022643b62439159779e63",
+      "run-config.json": "20956d190eb41cd91501cee405df8c13d9526854e1abd9ce37314a6d2c693f37"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 797 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "2",
+    "InpBoth": "true",
+    "InpRR": "2",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1758931200",
+    "InpTag": "USDJPY-triple-wick-1y-m4",
+    "InpMagic": "9282603"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9541.8,
+    "net_profit": -458.2,
+    "return_pct": -4.58,
+    "profit_factor": 0.78,
+    "win_rate_pct": 31.03,
+    "max_drawdown_pct": 10.17,
+    "trades": 29,
+    "sharpe_ratio": -2.79,
+    "recovery_factor": -0.44,
+    "history_quality": "63% real ticks",
+    "equity_dd_pct": 10.17,
+    "idea_pf": 0.7782187802516941
+  },
+  "groups": 29,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "4c0b77be0b4271984e157f03f262f0bf26448b88d17f37c2159701436e9b36c0",
+  "elapsed_seconds": 15.778302192687988,
+  "summaries": [
+    "CB_SUMMARY tag=USDJPY-triple-wick-1y-m4 entries=29 signals=29 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USDJPY contract=100000.00000000 tick=0.00100000 min=0.01000000 step=0.01000000 stops=0 swaplong=0.00000000 swapshort=-14.10000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t21:17:35.093\tTicks\tUSDJPY : real ticks begin from 2026.01.01 00:00:00",
+    "QF\t0\t21:17:37.675\tCore 01\tUSDJPY : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "verified_already_closed_log_lines": 0
+}

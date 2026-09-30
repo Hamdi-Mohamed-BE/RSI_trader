@@ -1,0 +1,19 @@
+{
+  "name": "3 Way Volume Profile qualification",
+  "source": "EA/3WVP Qualification.mq5",
+  "expert_dir": "AAA Research\\3WVP Qualification 20260926",
+  "expert_file": "3WVP Qualification.ex5",
+  "end_date": "2026.09.26",
+  "periods": {"1y": "2025.09.26", "3y": "2023.09.26", "5y": "2021.09.26"},
+  "candidates": [
+    {"symbol": "BTCUSD", "variant": "REV", "setups": 2, "control_probability": 0.008},
+    {"symbol": "XAUUSD", "variant": "BRK", "setups": 4, "control_probability": 0.004},
+    {"symbol": "USDJPY", "variant": "ALL", "setups": 7, "control_probability": 0.009},
+    {"symbol": "USDJPY", "variant": "BRK", "setups": 4, "control_probability": 0.004}
+  ],
+  "control_seeds": [101, 202, 303],
+  "raw_gate": {"minimum_pf": 1.15, "minimum_trades": 30, "return_positive": true, "both_periods": true},
+  "risk_percent": 1.0,
+  "rr": 2.0,
+  "optimization_started": false
+}

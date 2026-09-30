@@ -1,0 +1,81 @@
+{
+  "symbol": "XAUUSD",
+  "variant": "BRK",
+  "start": "2025.09.26",
+  "end": "2026.09.26",
+  "period": "1y",
+  "model": 4,
+  "inputs": {
+    "InpEnableTrading": "true",
+    "InpRiskPercent": "1.0",
+    "InpRewardRisk": "2.0",
+    "InpMagic": "1092601",
+    "InpAdaptivePortfolioControls": "false",
+    "InpSignalTimeframe": "15",
+    "InpBins": "64",
+    "InpValueAreaPercent": "70.0",
+    "InpMinimumProfileBars": "300",
+    "InpATRPeriod": "14",
+    "InpPocStopATR": "0.2",
+    "InpStopBufferATR": "0.1",
+    "InpBreakoutATR": "1.0",
+    "InpPullbackNearATR": "0.5",
+    "InpMaxPullbackDepth": "0.25",
+    "InpMinStopSpreadMultiple": "3.0",
+    "InpUseDynamicTrailingSL": "false",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpSetups": 4,
+    "InpNoSignalControl": "false",
+    "InpControlSeed": 101,
+    "InpControlProbability": 0.004,
+    "InpControlStopATR": 2.0
+  },
+  "source_sha256": "262268867f6a4deb5ad5df11e9629ddbd982a64a2671401eb303571ae29a6c2c",
+  "case": "qual-XAUUSD-BRK-1y-m4-raw",
+  "control_seed": null,
+  "fingerprint": "08529887e91e6f7e52ec032280f874469ad8cf84126eab51dc67bcb469c21271",
+  "ok": true,
+  "checks": {
+    "inputs_exact": true,
+    "expert": true,
+    "symbol": true,
+    "dates": true,
+    "process_exit": true
+  },
+  "mismatches": [],
+  "journal": {
+    "critical": [],
+    "history": [],
+    "orders": [
+      "HP\t2\t15:47:01.387\tCore 01\t2025.12.17 21:30:00   failed market buy 0.05 XAUUSD sl: 4319.812 tp: 4393.291 [Market closed]",
+      "CS\t2\t15:47:00.356\tTrades\t2025.12.17 21:30:00   failed market buy 0.05 XAUUSD sl: 4319.812 tp: 4393.291 [Market closed]"
+    ],
+    "coverage": [
+      "LQ\t0\t15:46:47.214\tTester\tXAUUSD: history data begins from 2014.01.14 00:00",
+      "RP\t0\t15:46:55.283\tCore 01\tXAUUSD: history synchronized from 2018.01.02 to 2026.09.25",
+      "DR\t0\t15:46:55.283\tCore 01\tXAUUSD: history ticks synchronized from 2026.01.01 to 2026.09.25",
+      "EP\t0\t15:47:01.387\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+      "CS\t0\t15:46:49.177\tHistory\tXAUUSD: history synchronized from 2018.01.02 to 2026.09.25",
+      "CS\t0\t15:46:49.179\tTicks\tXAUUSD: history ticks synchronized from 2026.01.01 to 2026.09.25",
+      "CS\t0\t15:46:55.549\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+    ]
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 11981.68,
+    "net_profit": 1981.68,
+    "return_pct": 19.82,
+    "profit_factor": 1.3,
+    "win_rate_pct": 41.03,
+    "max_drawdown_pct": 13.43,
+    "trades": 78,
+    "sharpe_ratio": 2.26,
+    "recovery_factor": 1.09,
+    "history_quality": "73% real ticks",
+    "balance_dd_pct": 12.88,
+    "expected_payoff": 25.41
+  },
+  "elapsed_seconds": 51.1,
+  "report_sha256": "5e66aea672dc7937b7f69f680af5f1fea360a4c3c384a8001f29779b972e12ee"
+}

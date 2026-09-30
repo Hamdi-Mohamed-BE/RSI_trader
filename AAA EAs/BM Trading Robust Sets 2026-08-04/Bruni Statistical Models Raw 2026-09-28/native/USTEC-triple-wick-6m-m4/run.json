@@ -1,0 +1,75 @@
+{
+  "ok": true,
+  "symbol": "USTEC",
+  "variant": {
+    "name": "triple-wick",
+    "mode": 2,
+    "both": true,
+    "rr": 2,
+    "protected": true,
+    "control": "single-print-control"
+  },
+  "window": "6m",
+  "model": 4,
+  "start": "2026.03.27",
+  "end": "2026.09.27",
+  "warmup_start": "2026.01.26",
+  "build": {
+    "hashes": {
+      "BruniProxy.mq5": "0d1b488e1f04fbfb501aa8d2b67217f06964bce438121d20f0128359b66dfd73",
+      "BruniProxy.ex5": "4ff9ffc64f5dd01465b434c5d24ba9b268c9638aa6479e90369042c0d7bcb2a0",
+      "RULES.md": "3eb0abeafab723105cdf53d8fcd27c4765bbf876134022643b62439159779e63",
+      "run-config.json": "20956d190eb41cd91501cee405df8c13d9526854e1abd9ce37314a6d2c693f37"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 797 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "2",
+    "InpBoth": "true",
+    "InpRR": "2",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1774569600",
+    "InpTag": "USTEC-triple-wick-6m-m4",
+    "InpMagic": "9282603"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9683.51,
+    "net_profit": -316.49,
+    "return_pct": -3.16,
+    "profit_factor": 0.72,
+    "win_rate_pct": 31.25,
+    "max_drawdown_pct": 4.67,
+    "trades": 16,
+    "sharpe_ratio": -2.32,
+    "recovery_factor": -0.68,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 4.67,
+    "idea_pf": 0.7164525434965686
+  },
+  "groups": 16,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "841dc92fa8dbf2fe4e1a011fd0d96fee4f3bebc6a4fd44bd0c7da47788eb5b8d",
+  "elapsed_seconds": 24.014904499053955,
+  "summaries": [
+    "CB_SUMMARY tag=USTEC-triple-wick-6m-m4 entries=16 signals=16 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USTEC contract=1.00000000 tick=0.01000000 min=0.05000000 step=0.01000000 stops=0 swaplong=-698.10000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t21:22:02.119\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "PH\t0\t21:22:02.932\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "verified_already_closed_log_lines": 0
+}

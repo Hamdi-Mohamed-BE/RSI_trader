@@ -1,0 +1,791 @@
+{
+  "search_passes": 415,
+  "unique_configurations": 385,
+  "qualification": [
+    {
+      "symbol": "BTCUSD",
+      "variant": "REV",
+      "periods": [
+        {
+          "period": "3y",
+          "absolute_pass": false,
+          "median_control": null,
+          "beats_control": false
+        },
+        {
+          "period": "5y",
+          "absolute_pass": false,
+          "median_control": null,
+          "beats_control": false
+        }
+      ],
+      "status": "FAIL"
+    },
+    {
+      "symbol": "XAUUSD",
+      "variant": "BRK",
+      "periods": [
+        {
+          "period": "3y",
+          "absolute_pass": true,
+          "median_control": {
+            "return_pct": -23.93,
+            "profit_factor": 0.87
+          },
+          "beats_control": true
+        },
+        {
+          "period": "5y",
+          "absolute_pass": true,
+          "median_control": {
+            "return_pct": -31.41,
+            "profit_factor": 0.89
+          },
+          "beats_control": true
+        }
+      ],
+      "status": "QUALIFIED"
+    },
+    {
+      "symbol": "USDJPY",
+      "variant": "ALL",
+      "periods": [
+        {
+          "period": "3y",
+          "absolute_pass": true,
+          "median_control": null,
+          "beats_control": false
+        },
+        {
+          "period": "5y",
+          "absolute_pass": false,
+          "median_control": null,
+          "beats_control": false
+        }
+      ],
+      "status": "FAIL"
+    },
+    {
+      "symbol": "USDJPY",
+      "variant": "BRK",
+      "periods": [
+        {
+          "period": "3y",
+          "absolute_pass": true,
+          "median_control": null,
+          "beats_control": false
+        },
+        {
+          "period": "5y",
+          "absolute_pass": false,
+          "median_control": null,
+          "beats_control": false
+        }
+      ],
+      "status": "FAIL"
+    }
+  ],
+  "validation": {
+    "XAUUSD-raw-validation": {
+      "parameters": {
+        "tf": 15,
+        "rr": 2,
+        "bins": 64,
+        "value": 70,
+        "atr": 14,
+        "buffer": 0.1,
+        "breakout": 1,
+        "near": 0.5,
+        "depth": 0.25,
+        "entry": 0,
+        "stop": 0,
+        "stop_param": 2,
+        "trail": 0,
+        "trail_start": 1,
+        "trail_distance": 1.5,
+        "exit": 0,
+        "session": 0,
+        "direction": 0,
+        "filter": 0,
+        "day": 0,
+        "max_day": 0,
+        "max_positions": 1,
+        "reentry": 1,
+        "max_bars": 0,
+        "weekend": 1,
+        "setups": 4
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 13636.41,
+        "net_profit": 3636.41,
+        "return_pct": 36.36,
+        "profit_factor": 1.52,
+        "win_rate_pct": 46.74,
+        "max_drawdown_pct": 9.98,
+        "trades": 92,
+        "sharpe_ratio": 16.18,
+        "recovery_factor": 2.62,
+        "history_quality": "0% real ticks",
+        "balance_dd_pct": 8.04,
+        "expected_payoff": 39.53
+      },
+      "source_sha": "9ce4c561e2e499d3206e5a6b708d1b9e019146160fc938dab2fabfe1b19e067d",
+      "report_sha": "a19808b387066471c7828cdf1741bc940137cea8074558d1ca7f4379720bb09c",
+      "relative_equity_dd_pct": 9.98,
+      "coverage": [
+        "real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+      ],
+      "failures": [],
+      "detail": {
+        "positions": 92,
+        "exit_legs": 92,
+        "partially_closed_positions": 0,
+        "whole_position_win_pct": 46.73913043478261,
+        "whole_position_pf": 1.5202325617992636,
+        "max_equity_relative_dd_pct": 9.98,
+        "max_balance_relative_dd_pct": 8.04,
+        "max_win_streak": 7,
+        "max_loss_streak": 7,
+        "avg_win_streak": 1.9545454545454546,
+        "avg_loss_streak": 2.227272727272727,
+        "exact_cashflow_net": 3636.41,
+        "cashflow_reconciled": true,
+        "rounded_allocated_ledger_net": 3636.41,
+        "monthly": {
+          "2024-09": {
+            "positions": 1,
+            "exit_legs": 1,
+            "net_usd": 211.47
+          },
+          "2024-10": {
+            "positions": 9,
+            "exit_legs": 9,
+            "net_usd": -206.35
+          },
+          "2024-11": {
+            "positions": 5,
+            "exit_legs": 5,
+            "net_usd": 1109.6200000000001
+          },
+          "2024-12": {
+            "positions": 4,
+            "exit_legs": 4,
+            "net_usd": -153.64000000000001
+          },
+          "2025-01": {
+            "positions": 6,
+            "exit_legs": 6,
+            "net_usd": 293.07
+          },
+          "2025-02": {
+            "positions": 8,
+            "exit_legs": 8,
+            "net_usd": -256.59999999999997
+          },
+          "2025-03": {
+            "positions": 7,
+            "exit_legs": 7,
+            "net_usd": 486.67
+          },
+          "2025-04": {
+            "positions": 5,
+            "exit_legs": 5,
+            "net_usd": 70.60999999999999
+          },
+          "2025-05": {
+            "positions": 5,
+            "exit_legs": 5,
+            "net_usd": 1328.1
+          },
+          "2025-06": {
+            "positions": 11,
+            "exit_legs": 11,
+            "net_usd": 117.18999999999994
+          },
+          "2025-07": {
+            "positions": 10,
+            "exit_legs": 10,
+            "net_usd": 684.1099999999999
+          },
+          "2025-08": {
+            "positions": 9,
+            "exit_legs": 9,
+            "net_usd": -69.54000000000008
+          },
+          "2025-09": {
+            "positions": 12,
+            "exit_legs": 12,
+            "net_usd": 21.699999999999918
+          }
+        }
+      },
+      "manifest": {
+        "symbol": "XAUUSD",
+        "cases": [
+          {
+            "tf": 15,
+            "rr": 2,
+            "bins": 64,
+            "value": 70,
+            "atr": 14,
+            "buffer": 0.1,
+            "breakout": 1,
+            "near": 0.5,
+            "depth": 0.25,
+            "entry": 0,
+            "stop": 0,
+            "stop_param": 2,
+            "trail": 0,
+            "trail_start": 1,
+            "trail_distance": 1.5,
+            "exit": 0,
+            "session": 0,
+            "direction": 0,
+            "filter": 0,
+            "day": 0,
+            "max_day": 0,
+            "max_positions": 1,
+            "reentry": 1,
+            "max_bars": 0,
+            "weekend": 1,
+            "setups": 4
+          }
+        ],
+        "start": "2024.09.26",
+        "end": "2025.09.26",
+        "model": 4,
+        "optimize": false,
+        "logic_sha": "eadf265667767eb73e7e59e6e6b38057901e7fe1ba32d04f0b0608a31ef73ce7",
+        "core_sha": "c68944ee2a078b26447a785367f3e2392fd7eb7e6950e25909facaa47fcd7bc6",
+        "protocol_sha": "11d3efb3dd9d904f20ebba9cf6fbb22ac5a4a47f59802173626a2e9ef2bbc206"
+      }
+    },
+    "XAUUSD-BRK-validation-0": {
+      "parameters": {
+        "tf": 30,
+        "rr": 2,
+        "bins": 64,
+        "value": 70,
+        "atr": 14,
+        "buffer": 0.1,
+        "breakout": 1,
+        "near": 1,
+        "depth": 0.25,
+        "entry": 4,
+        "stop": 1,
+        "stop_param": 0.5,
+        "trail": 2,
+        "trail_start": 1,
+        "trail_distance": 1,
+        "exit": 5,
+        "session": 0,
+        "direction": 0,
+        "filter": 5,
+        "day": 0,
+        "max_day": 0,
+        "max_positions": 1,
+        "reentry": 1,
+        "max_bars": 0,
+        "weekend": 0,
+        "setups": 4
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10214.89,
+        "net_profit": 214.89,
+        "return_pct": 2.15,
+        "profit_factor": 1.07,
+        "win_rate_pct": 63.16,
+        "max_drawdown_pct": 8.81,
+        "trades": 95,
+        "sharpe_ratio": 9.12,
+        "recovery_factor": 0.23,
+        "history_quality": "0% real ticks",
+        "balance_dd_pct": 7.67,
+        "expected_payoff": 2.26
+      },
+      "source_sha": "4d77c971f5a76c6da2e4719f3cf2fb43f542f3cbe758f10e3a964632601bbebf",
+      "report_sha": "137771776fa82ccdabecc750da3dea9530a541cd0ce82b29d0f1d6530c4482b8",
+      "coverage": [
+        "real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+      ],
+      "failures": [],
+      "detail": {
+        "positions": 62,
+        "exit_legs": 95,
+        "partially_closed_positions": 33,
+        "whole_position_win_pct": 53.225806451612904,
+        "whole_position_pf": 1.0708967784092036,
+        "max_equity_relative_dd_pct": 8.81,
+        "max_balance_relative_dd_pct": 7.67,
+        "max_win_streak": 4,
+        "max_loss_streak": 7,
+        "avg_win_streak": 1.9411764705882353,
+        "avg_loss_streak": 1.8125,
+        "exact_cashflow_net": 214.89,
+        "cashflow_reconciled": true,
+        "rounded_allocated_ledger_net": 214.8300000000001,
+        "monthly": {
+          "2024-09": {
+            "positions": 1,
+            "exit_legs": 2,
+            "net_usd": 150.9
+          },
+          "2024-10": {
+            "positions": 1,
+            "exit_legs": 1,
+            "net_usd": -106.24
+          },
+          "2024-11": {
+            "positions": 2,
+            "exit_legs": 3,
+            "net_usd": 41.78
+          },
+          "2024-12": {
+            "positions": 5,
+            "exit_legs": 8,
+            "net_usd": 29.809999999999985
+          },
+          "2025-01": {
+            "positions": 5,
+            "exit_legs": 7,
+            "net_usd": -97.00999999999995
+          },
+          "2025-02": {
+            "positions": 9,
+            "exit_legs": 13,
+            "net_usd": -206.10999999999999
+          },
+          "2025-03": {
+            "positions": 6,
+            "exit_legs": 10,
+            "net_usd": 220.32999999999998
+          },
+          "2025-04": {
+            "positions": 4,
+            "exit_legs": 7,
+            "net_usd": 62.0
+          },
+          "2025-05": {
+            "positions": 6,
+            "exit_legs": 10,
+            "net_usd": 140.32999999999998
+          },
+          "2025-06": {
+            "positions": 4,
+            "exit_legs": 6,
+            "net_usd": -0.30999999999998806
+          },
+          "2025-07": {
+            "positions": 10,
+            "exit_legs": 13,
+            "net_usd": -376.71999999999997
+          },
+          "2025-08": {
+            "positions": 4,
+            "exit_legs": 6,
+            "net_usd": 1.440000000000012
+          },
+          "2025-09": {
+            "positions": 5,
+            "exit_legs": 9,
+            "net_usd": 354.63000000000005
+          }
+        }
+      },
+      "manifest": {
+        "symbol": "XAUUSD",
+        "cases": [
+          {
+            "tf": 30,
+            "rr": 2,
+            "bins": 64,
+            "value": 70,
+            "atr": 14,
+            "buffer": 0.1,
+            "breakout": 1,
+            "near": 1,
+            "depth": 0.25,
+            "entry": 4,
+            "stop": 1,
+            "stop_param": 0.5,
+            "trail": 2,
+            "trail_start": 1,
+            "trail_distance": 1,
+            "exit": 5,
+            "session": 0,
+            "direction": 0,
+            "filter": 5,
+            "day": 0,
+            "max_day": 0,
+            "max_positions": 1,
+            "reentry": 1,
+            "max_bars": 0,
+            "weekend": 0,
+            "setups": 4
+          }
+        ],
+        "start": "2024.09.26",
+        "end": "2025.09.26",
+        "model": 4,
+        "optimize": false,
+        "logic_sha": "eadf265667767eb73e7e59e6e6b38057901e7fe1ba32d04f0b0608a31ef73ce7",
+        "core_sha": "c68944ee2a078b26447a785367f3e2392fd7eb7e6950e25909facaa47fcd7bc6",
+        "protocol_sha": "11d3efb3dd9d904f20ebba9cf6fbb22ac5a4a47f59802173626a2e9ef2bbc206"
+      }
+    },
+    "XAUUSD-BRK-validation-1": {
+      "parameters": {
+        "tf": 30,
+        "rr": 2,
+        "bins": 64,
+        "value": 70,
+        "atr": 14,
+        "buffer": 0.1,
+        "breakout": 1,
+        "near": 1,
+        "depth": 0.25,
+        "entry": 4,
+        "stop": 1,
+        "stop_param": 0.5,
+        "trail": 2,
+        "trail_start": 1,
+        "trail_distance": 1,
+        "exit": 5,
+        "session": 0,
+        "direction": 0,
+        "filter": 5,
+        "day": 0,
+        "max_day": 2,
+        "max_positions": 1,
+        "reentry": 1,
+        "max_bars": 0,
+        "weekend": 1,
+        "setups": 4
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10247.58,
+        "net_profit": 247.58,
+        "return_pct": 2.48,
+        "profit_factor": 1.08,
+        "win_rate_pct": 63.16,
+        "max_drawdown_pct": 8.81,
+        "trades": 95,
+        "sharpe_ratio": 10.44,
+        "recovery_factor": 0.27,
+        "history_quality": "0% real ticks",
+        "balance_dd_pct": 7.67,
+        "expected_payoff": 2.61
+      },
+      "source_sha": "586c41c09f9f0c3db1a6f7a17fbc7c87b2579c627f4e1a74664cc1e99d9e39ba",
+      "report_sha": "01b856044c24cab8a9375362d3882020e44e57932b2970ceecdb76f53acc6c08",
+      "coverage": [
+        "real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+      ],
+      "failures": [],
+      "detail": {
+        "positions": 62,
+        "exit_legs": 95,
+        "partially_closed_positions": 33,
+        "whole_position_win_pct": 53.225806451612904,
+        "whole_position_pf": 1.0816849164076063,
+        "max_equity_relative_dd_pct": 8.81,
+        "max_balance_relative_dd_pct": 7.67,
+        "max_win_streak": 4,
+        "max_loss_streak": 7,
+        "avg_win_streak": 1.9411764705882353,
+        "avg_loss_streak": 1.8125,
+        "exact_cashflow_net": 247.58,
+        "cashflow_reconciled": true,
+        "rounded_allocated_ledger_net": 247.5200000000001,
+        "monthly": {
+          "2024-09": {
+            "positions": 1,
+            "exit_legs": 2,
+            "net_usd": 150.9
+          },
+          "2024-10": {
+            "positions": 1,
+            "exit_legs": 1,
+            "net_usd": -106.24
+          },
+          "2024-11": {
+            "positions": 2,
+            "exit_legs": 3,
+            "net_usd": 41.78
+          },
+          "2024-12": {
+            "positions": 5,
+            "exit_legs": 8,
+            "net_usd": 29.809999999999985
+          },
+          "2025-01": {
+            "positions": 5,
+            "exit_legs": 7,
+            "net_usd": -97.00999999999995
+          },
+          "2025-02": {
+            "positions": 9,
+            "exit_legs": 13,
+            "net_usd": -206.10999999999999
+          },
+          "2025-03": {
+            "positions": 6,
+            "exit_legs": 10,
+            "net_usd": 220.32999999999998
+          },
+          "2025-04": {
+            "positions": 4,
+            "exit_legs": 7,
+            "net_usd": 62.0
+          },
+          "2025-05": {
+            "positions": 6,
+            "exit_legs": 10,
+            "net_usd": 140.32999999999998
+          },
+          "2025-06": {
+            "positions": 4,
+            "exit_legs": 6,
+            "net_usd": -0.30999999999998806
+          },
+          "2025-07": {
+            "positions": 10,
+            "exit_legs": 13,
+            "net_usd": -376.71999999999997
+          },
+          "2025-08": {
+            "positions": 4,
+            "exit_legs": 6,
+            "net_usd": 1.440000000000012
+          },
+          "2025-09": {
+            "positions": 5,
+            "exit_legs": 9,
+            "net_usd": 387.32000000000005
+          }
+        }
+      },
+      "manifest": {
+        "symbol": "XAUUSD",
+        "cases": [
+          {
+            "tf": 30,
+            "rr": 2,
+            "bins": 64,
+            "value": 70,
+            "atr": 14,
+            "buffer": 0.1,
+            "breakout": 1,
+            "near": 1,
+            "depth": 0.25,
+            "entry": 4,
+            "stop": 1,
+            "stop_param": 0.5,
+            "trail": 2,
+            "trail_start": 1,
+            "trail_distance": 1,
+            "exit": 5,
+            "session": 0,
+            "direction": 0,
+            "filter": 5,
+            "day": 0,
+            "max_day": 2,
+            "max_positions": 1,
+            "reentry": 1,
+            "max_bars": 0,
+            "weekend": 1,
+            "setups": 4
+          }
+        ],
+        "start": "2024.09.26",
+        "end": "2025.09.26",
+        "model": 4,
+        "optimize": false,
+        "logic_sha": "eadf265667767eb73e7e59e6e6b38057901e7fe1ba32d04f0b0608a31ef73ce7",
+        "core_sha": "c68944ee2a078b26447a785367f3e2392fd7eb7e6950e25909facaa47fcd7bc6",
+        "protocol_sha": "11d3efb3dd9d904f20ebba9cf6fbb22ac5a4a47f59802173626a2e9ef2bbc206"
+      }
+    },
+    "XAUUSD-BRK-validation-2": {
+      "parameters": {
+        "tf": 30,
+        "rr": 2,
+        "bins": 64,
+        "value": 70,
+        "atr": 14,
+        "buffer": 0.1,
+        "breakout": 1,
+        "near": 1,
+        "depth": 0.25,
+        "entry": 4,
+        "stop": 1,
+        "stop_param": 0.5,
+        "trail": 2,
+        "trail_start": 1,
+        "trail_distance": 1,
+        "exit": 5,
+        "session": 0,
+        "direction": 0,
+        "filter": 5,
+        "day": 0,
+        "max_day": 3,
+        "max_positions": 1,
+        "reentry": 1,
+        "max_bars": 0,
+        "weekend": 1,
+        "setups": 4
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10247.58,
+        "net_profit": 247.58,
+        "return_pct": 2.48,
+        "profit_factor": 1.08,
+        "win_rate_pct": 63.16,
+        "max_drawdown_pct": 8.81,
+        "trades": 95,
+        "sharpe_ratio": 10.44,
+        "recovery_factor": 0.27,
+        "history_quality": "0% real ticks",
+        "balance_dd_pct": 7.67,
+        "expected_payoff": 2.61
+      },
+      "source_sha": "3c0f3d697f5d1b5c5ac3680d43307f1bb51bd62795b20c539010fd145ffa703b",
+      "report_sha": "18c475679c1372af4618f619fee3b2b83b14bb60a874b999b83aab65673b4562",
+      "coverage": [
+        "real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+      ],
+      "failures": [],
+      "detail": {
+        "positions": 62,
+        "exit_legs": 95,
+        "partially_closed_positions": 33,
+        "whole_position_win_pct": 53.225806451612904,
+        "whole_position_pf": 1.0816849164076063,
+        "max_equity_relative_dd_pct": 8.81,
+        "max_balance_relative_dd_pct": 7.67,
+        "max_win_streak": 4,
+        "max_loss_streak": 7,
+        "avg_win_streak": 1.9411764705882353,
+        "avg_loss_streak": 1.8125,
+        "exact_cashflow_net": 247.58,
+        "cashflow_reconciled": true,
+        "rounded_allocated_ledger_net": 247.5200000000001,
+        "monthly": {
+          "2024-09": {
+            "positions": 1,
+            "exit_legs": 2,
+            "net_usd": 150.9
+          },
+          "2024-10": {
+            "positions": 1,
+            "exit_legs": 1,
+            "net_usd": -106.24
+          },
+          "2024-11": {
+            "positions": 2,
+            "exit_legs": 3,
+            "net_usd": 41.78
+          },
+          "2024-12": {
+            "positions": 5,
+            "exit_legs": 8,
+            "net_usd": 29.809999999999985
+          },
+          "2025-01": {
+            "positions": 5,
+            "exit_legs": 7,
+            "net_usd": -97.00999999999995
+          },
+          "2025-02": {
+            "positions": 9,
+            "exit_legs": 13,
+            "net_usd": -206.10999999999999
+          },
+          "2025-03": {
+            "positions": 6,
+            "exit_legs": 10,
+            "net_usd": 220.32999999999998
+          },
+          "2025-04": {
+            "positions": 4,
+            "exit_legs": 7,
+            "net_usd": 62.0
+          },
+          "2025-05": {
+            "positions": 6,
+            "exit_legs": 10,
+            "net_usd": 140.32999999999998
+          },
+          "2025-06": {
+            "positions": 4,
+            "exit_legs": 6,
+            "net_usd": -0.30999999999998806
+          },
+          "2025-07": {
+            "positions": 10,
+            "exit_legs": 13,
+            "net_usd": -376.71999999999997
+          },
+          "2025-08": {
+            "positions": 4,
+            "exit_legs": 6,
+            "net_usd": 1.440000000000012
+          },
+          "2025-09": {
+            "positions": 5,
+            "exit_legs": 9,
+            "net_usd": 387.32000000000005
+          }
+        }
+      },
+      "manifest": {
+        "symbol": "XAUUSD",
+        "cases": [
+          {
+            "tf": 30,
+            "rr": 2,
+            "bins": 64,
+            "value": 70,
+            "atr": 14,
+            "buffer": 0.1,
+            "breakout": 1,
+            "near": 1,
+            "depth": 0.25,
+            "entry": 4,
+            "stop": 1,
+            "stop_param": 0.5,
+            "trail": 2,
+            "trail_start": 1,
+            "trail_distance": 1,
+            "exit": 5,
+            "session": 0,
+            "direction": 0,
+            "filter": 5,
+            "day": 0,
+            "max_day": 3,
+            "max_positions": 1,
+            "reentry": 1,
+            "max_bars": 0,
+            "weekend": 1,
+            "setups": 4
+          }
+        ],
+        "start": "2024.09.26",
+        "end": "2025.09.26",
+        "model": 4,
+        "optimize": false,
+        "logic_sha": "eadf265667767eb73e7e59e6e6b38057901e7fe1ba32d04f0b0608a31ef73ce7",
+        "core_sha": "c68944ee2a078b26447a785367f3e2392fd7eb7e6950e25909facaa47fcd7bc6",
+        "protocol_sha": "11d3efb3dd9d904f20ebba9cf6fbb22ac5a4a47f59802173626a2e9ef2bbc206"
+      }
+    }
+  },
+  "conclusion": "KEEP_RAW_REJECT_ALL_OPTIMIZED_FINALISTS",
+  "holdout_used": false,
+  "monte_carlo_run": false,
+  "production_changed": false
+}

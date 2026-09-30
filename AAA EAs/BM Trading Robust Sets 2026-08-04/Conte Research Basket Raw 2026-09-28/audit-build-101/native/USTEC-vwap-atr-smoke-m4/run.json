@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "symbol": "USTEC",
+  "variant": {
+    "name": "vwap-atr",
+    "mode": 1,
+    "both": true,
+    "rr": 0,
+    "protected": true,
+    "control": "twap-atr"
+  },
+  "window": "smoke",
+  "model": 4,
+  "start": "2026.09.01",
+  "end": "2026.09.08",
+  "warmup_start": "2026.07.03",
+  "build": {
+    "hashes": {
+      "ConteBasket.mq5": "0f82cd285049b20a4b78e0d20e8dc6daba1fa9e88b0646affa244c2d4cbd454b",
+      "ConteBasket.ex5": "6f9d7197cc798fe4c9974148466023782bf6d50a8727e69f4336e6a6ba06529f",
+      "RULES.md": "d1055df8824d91a7c5c72026a1eb8b6e2d223c74585c4ce321a0bdb51614ad1a",
+      "run-config.json": "5c10a6eea8a6eb7602b4dfba8d7cbc626c780c810a8cc8ae71484d760631ca8f"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 719 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "1",
+    "InpBoth": "true",
+    "InpRR": "0",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1788220800",
+    "InpTag": "USTEC-vwap-atr-smoke-m4",
+    "InpMagic": "9282601"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9378.7,
+    "net_profit": -621.3,
+    "return_pct": -6.21,
+    "profit_factor": 0.49,
+    "win_rate_pct": 17.86,
+    "max_drawdown_pct": 7.18,
+    "trades": 56,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.86,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 7.18,
+    "idea_pf": 0.4888481188656427
+  },
+  "groups": 56,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "225925f4bb14290c1ae3ba50528cb93d23f68f1323c4dd6f211c7f7f0c80a82d",
+  "elapsed_seconds": 14.152968168258667,
+  "summaries": [
+    "CB_SUMMARY tag=USTEC-vwap-atr-smoke-m4 entries=56 signals=56 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USTEC contract=1.00000000 tick=0.01000000 min=0.05000000 step=0.01000000 stops=0 swaplong=-696.10000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t19:52:38.951\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "FD\t0\t19:52:43.319\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

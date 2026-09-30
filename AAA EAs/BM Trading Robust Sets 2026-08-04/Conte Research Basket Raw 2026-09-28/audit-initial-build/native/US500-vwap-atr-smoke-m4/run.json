@@ -1,0 +1,73 @@
+{
+  "ok": true,
+  "symbol": "US500",
+  "variant": {
+    "name": "vwap-atr",
+    "mode": 1,
+    "both": true,
+    "rr": 0,
+    "protected": true,
+    "control": "twap-atr"
+  },
+  "window": "smoke",
+  "model": 4,
+  "start": "2026.09.01",
+  "end": "2026.09.08",
+  "warmup_start": "2026.07.03",
+  "build": {
+    "hashes": {
+      "ConteBasket.mq5": "339856db41fd10c710ae29a231689cb1e78aacf4ea12b5b312fc8eb9082e261e",
+      "ConteBasket.ex5": "e92f63d27dda2cd0a6fcce791457071280b9a42aaa05d2319efa614ad5df81a9",
+      "RULES.md": "36034ec36eb46563a3a5f92cc00e4c75dfc22b749e035a2aa45fba3e26697b6f",
+      "run-config.json": "5c10a6eea8a6eb7602b4dfba8d7cbc626c780c810a8cc8ae71484d760631ca8f"
+    },
+    "compile": "ormation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 1057 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "1",
+    "InpBoth": "true",
+    "InpRR": "0",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1788220800",
+    "InpTag": "US500-vwap-atr-smoke-m4",
+    "InpMagic": "9282601"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10204.96,
+    "net_profit": 204.96,
+    "return_pct": 2.05,
+    "profit_factor": 1.24,
+    "win_rate_pct": 23.81,
+    "max_drawdown_pct": 4.86,
+    "trades": 42,
+    "sharpe_ratio": 5.61,
+    "recovery_factor": 0.42,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 4.86
+  },
+  "groups": 42,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "c0990c2885bc8527d1f5a840e1ca6a445854edf0dbb5e076675d500a02d28de1",
+  "elapsed_seconds": 8.826956272125244,
+  "summaries": [
+    "CB_SUMMARY tag=US500-vwap-atr-smoke-m4 entries=42 signals=42 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=US500 contract=1.00000000 tick=0.01000000 min=0.14000000 step=0.01000000 stops=0 swaplong=-165.20000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t19:44:08.945\tTicks\tUS500 : real ticks begin from 2026.01.01 00:00:00",
+    "PN\t0\t19:44:09.988\tCore 01\tUS500 : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

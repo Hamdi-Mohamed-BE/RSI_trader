@@ -1,0 +1,82 @@
+{
+  "symbol": "USDJPY",
+  "variant": "BRK",
+  "start": "2021.09.26",
+  "end": "2026.09.26",
+  "period": "5y",
+  "model": 4,
+  "inputs": {
+    "InpEnableTrading": "true",
+    "InpRiskPercent": "1.0",
+    "InpRewardRisk": "2.0",
+    "InpMagic": "1092601",
+    "InpAdaptivePortfolioControls": "false",
+    "InpSignalTimeframe": "15",
+    "InpBins": "64",
+    "InpValueAreaPercent": "70.0",
+    "InpMinimumProfileBars": "300",
+    "InpATRPeriod": "14",
+    "InpPocStopATR": "0.2",
+    "InpStopBufferATR": "0.1",
+    "InpBreakoutATR": "1.0",
+    "InpPullbackNearATR": "0.5",
+    "InpMaxPullbackDepth": "0.25",
+    "InpMinStopSpreadMultiple": "3.0",
+    "InpUseDynamicTrailingSL": "false",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpSetups": 4,
+    "InpNoSignalControl": "false",
+    "InpControlSeed": 101,
+    "InpControlProbability": 0.004,
+    "InpControlStopATR": 2.0
+  },
+  "source_sha256": "262268867f6a4deb5ad5df11e9629ddbd982a64a2671401eb303571ae29a6c2c",
+  "case": "qual-USDJPY-BRK-5y-m4-raw",
+  "control_seed": null,
+  "fingerprint": "75e4c678613463329b872e94417409873510c5b353bc4f0220ab04a13639372b",
+  "ok": true,
+  "checks": {
+    "inputs_exact": true,
+    "expert": true,
+    "symbol": true,
+    "dates": true,
+    "process_exit": true
+  },
+  "mismatches": [],
+  "journal": {
+    "critical": [],
+    "history": [],
+    "orders": [
+      "KJ\t2\t15:59:38.099\tCore 01\t2022.01.21 21:15:00   failed market sell 0.28 USDJPY sl: 114.035 tp: 112.787 [Market closed]",
+      "CS\t2\t15:59:35.468\tTrades\t2022.01.21 21:15:00   failed market sell 0.28 USDJPY sl: 114.035 tp: 112.787 [Market closed]"
+    ],
+    "coverage": [
+      "CS\t0\t15:59:30.358\tTester\tUSDJPY: history data begins from 2018.01.02 00:00",
+      "QD\t0\t15:59:31.425\tTester\tUSDJPY: history data begins from 2018.01.02 00:00",
+      "LO\t0\t15:59:38.099\tCore 01\tUSDJPY: history synchronized from 2020.01.02 to 2026.09.25",
+      "CQ\t0\t15:59:38.099\tCore 01\tUSDJPY: history ticks synchronized from 2026.01.01 to 2026.09.25",
+      "GG\t0\t15:59:38.099\tCore 01\tUSDJPY : real ticks begin from 2026.01.01 00:00:00",
+      "CS\t0\t15:59:31.994\tHistory\tUSDJPY: history synchronized from 2020.01.02 to 2026.09.25",
+      "CS\t0\t15:59:31.994\tTicks\tUSDJPY: history ticks synchronized from 2026.01.01 to 2026.09.25",
+      "CS\t0\t15:59:35.055\tTicks\tUSDJPY : real ticks begin from 2026.01.01 00:00:00"
+    ]
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 13470.43,
+    "net_profit": 3470.43,
+    "return_pct": 34.7,
+    "profit_factor": 1.11,
+    "win_rate_pct": 36.59,
+    "max_drawdown_pct": 25.44,
+    "trades": 451,
+    "sharpe_ratio": 1.47,
+    "recovery_factor": 1.23,
+    "history_quality": "14% real ticks",
+    "balance_dd_pct": 23.51,
+    "expected_payoff": 7.69
+  },
+  "elapsed_seconds": 41.8,
+  "report_sha256": "f2bfbde58a1502801fa5eaf4a976c1894b3a6fd49d29f2e600002e4c288b087e"
+}

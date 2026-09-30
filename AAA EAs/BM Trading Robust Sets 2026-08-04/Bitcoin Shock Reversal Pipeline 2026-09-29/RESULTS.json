@@ -1,0 +1,3156 @@
+{
+  "runs": [
+    {
+      "tag": "bitcoin-reversal-raw-6m-m4",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": false,
+      "window": "6m",
+      "model": 4,
+      "start": "2026.03.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1774569600",
+        "InpTag": "bitcoin-reversal-raw-6m-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 9806.69,
+        "net_profit": -193.31,
+        "return_pct": -1.9331,
+        "profit_factor": 0.7440382400063558,
+        "win_rate_pct": 26.31578947368421,
+        "max_drawdown_pct": 4.23,
+        "trades": 19,
+        "sharpe_ratio": -3.0,
+        "recovery_factor": -0.46,
+        "history_quality": "98% real ticks",
+        "equity_dd_pct": 4.23,
+        "mean_trade": -10.17421052631579,
+        "mean_net_R": -0.10190571780315401,
+        "trades_per_month": 3.143002717391304,
+        "trades_per_eligible_day": 0.10326086956521739,
+        "eligible_days": 184,
+        "win_streak": 1,
+        "loss_streak": 6,
+        "balance_dd_pct": 3.8970999999999916,
+        "median_initial_risk_pct": 1.0360746938504795,
+        "max_initial_risk_pct": 1.0986584726836142,
+        "max_hold_hours": 6.000277777777778
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 15.6,
+      "tick_coverage": [
+        "CS\t0\t01:21:41.844\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+        "NP\t0\t01:21:45.603\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=19 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "79582c8ddd5d8a72039b3c30c60bffbb08b7af33ae4abfdae425daafb1da842e",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\bitcoin-reversal-raw-6m-m4",
+      "fresh_run": false,
+      "monthly_closed_pnl": [
+        {
+          "month": "2026-03",
+          "trades": 1,
+          "net_profit": -104.18
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": 0.8000000000000114
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -68.17999999999998
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -112.97999999999999
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": -97.25
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 34.42
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 154.06
+        }
+      ],
+      "costs": {
+        "gross_profit": -180.42999999999998,
+        "commission": -12.879999999999999,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": -193.31
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-control-6m-m4",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": true,
+      "window": "6m",
+      "model": 4,
+      "start": "2026.03.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1774569600",
+        "InpTag": "bitcoin-reversal-control-6m-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10054.08,
+        "net_profit": 54.080000000000084,
+        "return_pct": 0.5408000000000008,
+        "profit_factor": 1.0815120730714738,
+        "win_rate_pct": 36.84210526315789,
+        "max_drawdown_pct": 5.3,
+        "trades": 19,
+        "sharpe_ratio": 0.85,
+        "recovery_factor": 0.1,
+        "history_quality": "98% real ticks",
+        "equity_dd_pct": 5.3,
+        "mean_trade": 2.846315789473687,
+        "mean_net_R": 0.03235648570290717,
+        "trades_per_month": 3.143002717391304,
+        "trades_per_eligible_day": 0.10326086956521739,
+        "eligible_days": 184,
+        "win_streak": 2,
+        "loss_streak": 4,
+        "balance_dd_pct": 3.8801267448695476,
+        "median_initial_risk_pct": 1.0383758014335045,
+        "max_initial_risk_pct": 1.1474381359992853,
+        "max_hold_hours": 6.000277777777778
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 15.3,
+      "tick_coverage": [
+        "CS\t0\t01:21:57.620\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+        "KM\t0\t01:22:01.416\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=19 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "5511ceacdba9a862ee58d1c811278d6d10acbc2a0a5e5605d0beed2df4bdf79e",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\bitcoin-reversal-control-6m-m4",
+      "fresh_run": false,
+      "monthly_closed_pnl": [
+        {
+          "month": "2026-03",
+          "trades": 1,
+          "net_profit": -104.18
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": -1.7099999999999795
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -58.03999999999998
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -122.83
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": 145.32
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 41.46
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 154.06
+        }
+      ],
+      "costs": {
+        "gross_profit": 67.00999999999999,
+        "commission": -12.93,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": 54.080000000000055
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-raw-1y-m4",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": false,
+      "window": "1y",
+      "model": 4,
+      "start": "2025.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1758931200",
+        "InpTag": "bitcoin-reversal-raw-1y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 9855.57,
+        "net_profit": -144.43,
+        "return_pct": -1.4443000000000001,
+        "profit_factor": 0.8935886478840036,
+        "win_rate_pct": 36.36363636363637,
+        "max_drawdown_pct": 4.93,
+        "trades": 33,
+        "sharpe_ratio": -1.78,
+        "recovery_factor": -0.29,
+        "history_quality": "59% real ticks",
+        "equity_dd_pct": 4.93,
+        "mean_trade": -4.376666666666663,
+        "mean_net_R": -0.04703491593717431,
+        "trades_per_month": 2.7518835616438357,
+        "trades_per_eligible_day": 0.09041095890410959,
+        "eligible_days": 365,
+        "win_streak": 3,
+        "loss_streak": 6,
+        "balance_dd_pct": 4.3965528333615485,
+        "median_initial_risk_pct": 1.0338737122048023,
+        "max_initial_risk_pct": 1.098473724730739,
+        "max_hold_hours": 6.000555555555556
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 24.24,
+      "tick_coverage": [
+        "CS\t0\t01:25:26.882\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+        "OG\t0\t01:25:29.130\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=33 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "99e07cf8eef733d1ea70da5c0eb66245325b844ccb10bbaacaf8c82eb5cf5de5",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\bitcoin-reversal-raw-1y-m4",
+      "fresh_run": false,
+      "monthly_closed_pnl": [
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": 79.44
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": 23.93
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -131.25
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": -28.55000000000001
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": 1.1299999999999955
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": 0.8000000000000114
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -68.17999999999998
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -112.97999999999999
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": -97.25
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 34.42
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 154.06
+        }
+      ],
+      "costs": {
+        "gross_profit": -123.31000000000003,
+        "commission": -21.119999999999997,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": -144.4299999999999
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-control-1y-m4",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": true,
+      "window": "1y",
+      "model": 4,
+      "start": "2025.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1758931200",
+        "InpTag": "bitcoin-reversal-control-1y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 9304.23,
+        "net_profit": -695.7700000000002,
+        "return_pct": -6.957700000000003,
+        "profit_factor": 0.5582244402961383,
+        "win_rate_pct": 30.303030303030305,
+        "max_drawdown_pct": 11.11,
+        "trades": 33,
+        "sharpe_ratio": -5.0,
+        "recovery_factor": -0.62,
+        "history_quality": "59% real ticks",
+        "equity_dd_pct": 11.11,
+        "mean_trade": -21.083939393939396,
+        "mean_net_R": -0.20407695769045775,
+        "trades_per_month": 2.7518835616438357,
+        "trades_per_eligible_day": 0.09041095890410959,
+        "eligible_days": 365,
+        "win_streak": 2,
+        "loss_streak": 9,
+        "balance_dd_pct": 10.084799999999996,
+        "median_initial_risk_pct": 1.0404480096065125,
+        "max_initial_risk_pct": 1.1325058430632484,
+        "max_hold_hours": 6.000555555555556
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 24.57,
+      "tick_coverage": [
+        "CS\t0\t01:25:52.176\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+        "QI\t0\t01:25:54.361\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=33 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "d35c8207361c8023641272730b8e3ab1affbf2a3e93e787b480b5f546c9ad103",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\bitcoin-reversal-control-1y-m4",
+      "fresh_run": false,
+      "monthly_closed_pnl": [
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": -223.45
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": -163.24
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -274.63
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": 18.97999999999999
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": -197.75
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": -0.8999999999999773
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -51.85000000000001
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -115.64
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": 137.66
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 35.03
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 140.01999999999998
+        }
+      ],
+      "costs": {
+        "gross_profit": -675.96,
+        "commission": -19.81,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": -695.7700000000001
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-raw-3y-m1",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": false,
+      "window": "3y",
+      "model": 1,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1695772800",
+        "InpTag": "bitcoin-reversal-raw-3y-m1",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10667.55,
+        "net_profit": 667.55,
+        "return_pct": 6.6754999999999995,
+        "profit_factor": 1.1441677446942686,
+        "win_rate_pct": 46.22641509433962,
+        "max_drawdown_pct": 6.46,
+        "trades": 106,
+        "sharpe_ratio": 2.48,
+        "recovery_factor": 0.97,
+        "history_quality": "100%",
+        "equity_dd_pct": 6.46,
+        "mean_trade": 6.297641509433964,
+        "mean_net_R": 0.0655435751443247,
+        "trades_per_month": 2.943772810218978,
+        "trades_per_eligible_day": 0.09671532846715329,
+        "eligible_days": 1096,
+        "win_streak": 6,
+        "loss_streak": 6,
+        "balance_dd_pct": 5.476602429885076,
+        "median_initial_risk_pct": 1.0255141274355182,
+        "max_initial_risk_pct": 1.242132260159931,
+        "max_hold_hours": 6.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 13.53,
+      "tick_coverage": [],
+      "summaries": [
+        "MS_SUMMARY entries=106 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "d1ca86db0639ffc883cafaa12f7e9e38410c3946a9622d1f64cbdd461616d465",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\bitcoin-reversal-raw-3y-m1",
+      "fresh_run": false,
+      "monthly_closed_pnl": [
+        {
+          "month": "2023-09",
+          "trades": 1,
+          "net_profit": 147.84
+        },
+        {
+          "month": "2023-10",
+          "trades": 3,
+          "net_profit": 269.64000000000004
+        },
+        {
+          "month": "2023-11",
+          "trades": 5,
+          "net_profit": -12.11
+        },
+        {
+          "month": "2023-12",
+          "trades": 6,
+          "net_profit": -213.10000000000002
+        },
+        {
+          "month": "2024-01",
+          "trades": 3,
+          "net_profit": 205.26
+        },
+        {
+          "month": "2024-02",
+          "trades": 5,
+          "net_profit": 150.59999999999997
+        },
+        {
+          "month": "2024-04",
+          "trades": 4,
+          "net_profit": 47.419999999999995
+        },
+        {
+          "month": "2024-05",
+          "trades": 1,
+          "net_profit": 53.95
+        },
+        {
+          "month": "2024-06",
+          "trades": 5,
+          "net_profit": -293.01
+        },
+        {
+          "month": "2024-07",
+          "trades": 3,
+          "net_profit": 211.51
+        },
+        {
+          "month": "2024-08",
+          "trades": 2,
+          "net_profit": 0.7700000000000102
+        },
+        {
+          "month": "2024-09",
+          "trades": 4,
+          "net_profit": 187.27
+        },
+        {
+          "month": "2024-10",
+          "trades": 1,
+          "net_profit": -110.64
+        },
+        {
+          "month": "2024-11",
+          "trades": 3,
+          "net_profit": -65.77
+        },
+        {
+          "month": "2024-12",
+          "trades": 3,
+          "net_profit": 118.19999999999999
+        },
+        {
+          "month": "2025-01",
+          "trades": 4,
+          "net_profit": -127.85
+        },
+        {
+          "month": "2025-02",
+          "trades": 2,
+          "net_profit": 52.920000000000016
+        },
+        {
+          "month": "2025-03",
+          "trades": 4,
+          "net_profit": -11.999999999999964
+        },
+        {
+          "month": "2025-04",
+          "trades": 2,
+          "net_profit": 219.19
+        },
+        {
+          "month": "2025-05",
+          "trades": 2,
+          "net_profit": 226.40000000000003
+        },
+        {
+          "month": "2025-06",
+          "trades": 2,
+          "net_profit": -86.03999999999999
+        },
+        {
+          "month": "2025-07",
+          "trades": 3,
+          "net_profit": -105.95
+        },
+        {
+          "month": "2025-08",
+          "trades": 3,
+          "net_profit": -115.45
+        },
+        {
+          "month": "2025-09",
+          "trades": 2,
+          "net_profit": 93.71000000000001
+        },
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": 73.15
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": 31.300000000000004
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -145.10000000000002
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": -45.629999999999995
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": 4.75
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": 0.8999999999999773
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -69.42000000000002
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -123.62
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": -109.01
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 39.85
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 167.61999999999998
+        }
+      ],
+      "costs": {
+        "gross_profit": 754.7000000000003,
+        "commission": -87.14999999999999,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": 667.5500000000002
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-control-3y-m1",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": true,
+      "window": "3y",
+      "model": 1,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1695772800",
+        "InpTag": "bitcoin-reversal-control-3y-m1",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 8788.94,
+        "net_profit": -1211.0600000000004,
+        "return_pct": -12.110600000000005,
+        "profit_factor": 0.7479310976422006,
+        "win_rate_pct": 37.735849056603776,
+        "max_drawdown_pct": 19.57,
+        "trades": 106,
+        "sharpe_ratio": -4.83,
+        "recovery_factor": -0.59,
+        "history_quality": "100%",
+        "equity_dd_pct": 19.57,
+        "mean_trade": -11.425094339622643,
+        "mean_net_R": -0.11409259504884639,
+        "trades_per_month": 2.943772810218978,
+        "trades_per_eligible_day": 0.09671532846715329,
+        "eligible_days": 1096,
+        "win_streak": 5,
+        "loss_streak": 10,
+        "balance_dd_pct": 18.61236110804674,
+        "median_initial_risk_pct": 1.0351089888442937,
+        "max_initial_risk_pct": 1.1363533788209006,
+        "max_hold_hours": 6.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 13.5,
+      "tick_coverage": [],
+      "summaries": [
+        "MS_SUMMARY entries=106 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "23ba7e7e2c69ad593d65cac6de9e30716697f22fe793a1fab7be0a8a36c48e00",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\bitcoin-reversal-control-3y-m1",
+      "fresh_run": false,
+      "monthly_closed_pnl": [
+        {
+          "month": "2023-09",
+          "trades": 1,
+          "net_profit": -103.44
+        },
+        {
+          "month": "2023-10",
+          "trades": 3,
+          "net_profit": 325.84
+        },
+        {
+          "month": "2023-11",
+          "trades": 5,
+          "net_profit": -9.600000000000037
+        },
+        {
+          "month": "2023-12",
+          "trades": 6,
+          "net_profit": -93.08999999999999
+        },
+        {
+          "month": "2024-01",
+          "trades": 3,
+          "net_profit": -54.52000000000001
+        },
+        {
+          "month": "2024-02",
+          "trades": 5,
+          "net_profit": -107.15
+        },
+        {
+          "month": "2024-04",
+          "trades": 4,
+          "net_profit": -12.589999999999982
+        },
+        {
+          "month": "2024-05",
+          "trades": 1,
+          "net_profit": 50.09
+        },
+        {
+          "month": "2024-06",
+          "trades": 5,
+          "net_profit": -208.7
+        },
+        {
+          "month": "2024-07",
+          "trades": 3,
+          "net_profit": -173.61
+        },
+        {
+          "month": "2024-08",
+          "trades": 2,
+          "net_profit": -20.86999999999999
+        },
+        {
+          "month": "2024-09",
+          "trades": 4,
+          "net_profit": -126.60000000000001
+        },
+        {
+          "month": "2024-10",
+          "trades": 1,
+          "net_profit": -26.84
+        },
+        {
+          "month": "2024-11",
+          "trades": 3,
+          "net_profit": -300.5
+        },
+        {
+          "month": "2024-12",
+          "trades": 3,
+          "net_profit": 111.73000000000002
+        },
+        {
+          "month": "2025-01",
+          "trades": 4,
+          "net_profit": -60.7
+        },
+        {
+          "month": "2025-02",
+          "trades": 2,
+          "net_profit": 43.730000000000004
+        },
+        {
+          "month": "2025-03",
+          "trades": 4,
+          "net_profit": -103.22999999999999
+        },
+        {
+          "month": "2025-04",
+          "trades": 2,
+          "net_profit": -147.67000000000002
+        },
+        {
+          "month": "2025-05",
+          "trades": 2,
+          "net_profit": 199.92000000000002
+        },
+        {
+          "month": "2025-06",
+          "trades": 2,
+          "net_profit": -125.82
+        },
+        {
+          "month": "2025-07",
+          "trades": 3,
+          "net_profit": -87.22
+        },
+        {
+          "month": "2025-08",
+          "trades": 3,
+          "net_profit": 377.77
+        },
+        {
+          "month": "2025-09",
+          "trades": 2,
+          "net_profit": 76.45
+        },
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": -217.66
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": -144.76999999999998
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -255.78
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": 9.179999999999978
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": -176.56
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": 0.4199999999999733
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -48.17999999999998
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -105.80000000000001
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": 130.51
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 34.5
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 139.7
+        }
+      ],
+      "costs": {
+        "gross_profit": -1131.71,
+        "commission": -79.35,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": -1211.0600000000002
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-raw-5y-m1",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": false,
+      "window": "5y",
+      "model": 1,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1632700800",
+        "InpTag": "bitcoin-reversal-raw-5y-m1",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10369.92,
+        "net_profit": 369.9200000000001,
+        "return_pct": 3.6992000000000003,
+        "profit_factor": 1.0489940797054425,
+        "win_rate_pct": 47.752808988764045,
+        "max_drawdown_pct": 14.36,
+        "trades": 178,
+        "sharpe_ratio": 0.82,
+        "recovery_factor": 0.24,
+        "history_quality": "100%",
+        "equity_dd_pct": 14.36,
+        "mean_trade": 2.0782022471910118,
+        "mean_net_R": 0.022358046830787914,
+        "trades_per_month": 2.9670728368017527,
+        "trades_per_eligible_day": 0.09748083242059145,
+        "eligible_days": 1826,
+        "win_streak": 10,
+        "loss_streak": 6,
+        "balance_dd_pct": 13.773182710275996,
+        "median_initial_risk_pct": 1.0216868645156612,
+        "max_initial_risk_pct": 1.2761799558529376,
+        "max_hold_hours": 6.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 18.77,
+      "tick_coverage": [],
+      "summaries": [
+        "MS_SUMMARY entries=178 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "61554019a2c9578e74df37ee983a49a9fbbc34447b9ea78a0ff660fa019d1f56",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\bitcoin-reversal-raw-5y-m1",
+      "fresh_run": false,
+      "monthly_closed_pnl": [
+        {
+          "month": "2021-10",
+          "trades": 1,
+          "net_profit": 22.8
+        },
+        {
+          "month": "2021-11",
+          "trades": 3,
+          "net_profit": 303.78
+        },
+        {
+          "month": "2021-12",
+          "trades": 4,
+          "net_profit": 29.879999999999995
+        },
+        {
+          "month": "2022-01",
+          "trades": 2,
+          "net_profit": 172.23
+        },
+        {
+          "month": "2022-02",
+          "trades": 2,
+          "net_profit": -84.31
+        },
+        {
+          "month": "2022-03",
+          "trades": 1,
+          "net_profit": 48.25
+        },
+        {
+          "month": "2022-04",
+          "trades": 2,
+          "net_profit": 48.89
+        },
+        {
+          "month": "2022-05",
+          "trades": 1,
+          "net_profit": -110.06
+        },
+        {
+          "month": "2022-06",
+          "trades": 4,
+          "net_profit": -221.93
+        },
+        {
+          "month": "2022-07",
+          "trades": 3,
+          "net_profit": -61.89999999999998
+        },
+        {
+          "month": "2022-08",
+          "trades": 2,
+          "net_profit": -68.83999999999999
+        },
+        {
+          "month": "2022-09",
+          "trades": 4,
+          "net_profit": -21.379999999999995
+        },
+        {
+          "month": "2022-10",
+          "trades": 5,
+          "net_profit": -123.26999999999998
+        },
+        {
+          "month": "2022-11",
+          "trades": 5,
+          "net_profit": -379.45
+        },
+        {
+          "month": "2022-12",
+          "trades": 4,
+          "net_profit": -36.03999999999999
+        },
+        {
+          "month": "2023-01",
+          "trades": 2,
+          "net_profit": -46.1
+        },
+        {
+          "month": "2023-02",
+          "trades": 4,
+          "net_profit": -290.16999999999996
+        },
+        {
+          "month": "2023-03",
+          "trades": 2,
+          "net_profit": 48.17999999999998
+        },
+        {
+          "month": "2023-04",
+          "trades": 4,
+          "net_profit": 300.52
+        },
+        {
+          "month": "2023-05",
+          "trades": 2,
+          "net_profit": 185.5
+        },
+        {
+          "month": "2023-06",
+          "trades": 3,
+          "net_profit": 197.35
+        },
+        {
+          "month": "2023-07",
+          "trades": 5,
+          "net_profit": 118.68000000000002
+        },
+        {
+          "month": "2023-08",
+          "trades": 6,
+          "net_profit": -243.11
+        },
+        {
+          "month": "2023-09",
+          "trades": 2,
+          "net_profit": 42.18999999999998
+        },
+        {
+          "month": "2023-10",
+          "trades": 3,
+          "net_profit": 259.42999999999995
+        },
+        {
+          "month": "2023-11",
+          "trades": 5,
+          "net_profit": -5.720000000000013
+        },
+        {
+          "month": "2023-12",
+          "trades": 6,
+          "net_profit": -204.11
+        },
+        {
+          "month": "2024-01",
+          "trades": 3,
+          "net_profit": 203.2
+        },
+        {
+          "month": "2024-02",
+          "trades": 5,
+          "net_profit": 151.12
+        },
+        {
+          "month": "2024-04",
+          "trades": 4,
+          "net_profit": 56.190000000000005
+        },
+        {
+          "month": "2024-05",
+          "trades": 1,
+          "net_profit": 50.09
+        },
+        {
+          "month": "2024-06",
+          "trades": 5,
+          "net_profit": -282.87
+        },
+        {
+          "month": "2024-07",
+          "trades": 3,
+          "net_profit": 215.99
+        },
+        {
+          "month": "2024-08",
+          "trades": 2,
+          "net_profit": 0.7700000000000102
+        },
+        {
+          "month": "2024-09",
+          "trades": 4,
+          "net_profit": 185.73999999999998
+        },
+        {
+          "month": "2024-10",
+          "trades": 1,
+          "net_profit": -107.73
+        },
+        {
+          "month": "2024-11",
+          "trades": 3,
+          "net_profit": -65.77
+        },
+        {
+          "month": "2024-12",
+          "trades": 3,
+          "net_profit": 123.94999999999999
+        },
+        {
+          "month": "2025-01",
+          "trades": 4,
+          "net_profit": -127.85
+        },
+        {
+          "month": "2025-02",
+          "trades": 2,
+          "net_profit": 60.41000000000001
+        },
+        {
+          "month": "2025-03",
+          "trades": 4,
+          "net_profit": -20.95000000000001
+        },
+        {
+          "month": "2025-04",
+          "trades": 2,
+          "net_profit": 215.29000000000002
+        },
+        {
+          "month": "2025-05",
+          "trades": 2,
+          "net_profit": 226.40000000000003
+        },
+        {
+          "month": "2025-06",
+          "trades": 2,
+          "net_profit": -87.69999999999999
+        },
+        {
+          "month": "2025-07",
+          "trades": 3,
+          "net_profit": -99.81
+        },
+        {
+          "month": "2025-08",
+          "trades": 3,
+          "net_profit": -123.5
+        },
+        {
+          "month": "2025-09",
+          "trades": 2,
+          "net_profit": 85.07
+        },
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": 70.87
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": 31.300000000000004
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -140.39
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": -40.52000000000004
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": 4.75
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": 7.47999999999999
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -69.20000000000002
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -123.59
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": -103.82
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 40.19
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 153.52
+        }
+      ],
+      "costs": {
+        "gross_profit": 597.4200000000001,
+        "commission": -227.5,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": 369.92000000000013
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-control-5y-m1",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": true,
+      "window": "5y",
+      "model": 1,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1632700800",
+        "InpTag": "bitcoin-reversal-control-5y-m1",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 8432.5,
+        "net_profit": -1567.5000000000005,
+        "return_pct": -15.675000000000006,
+        "profit_factor": 0.7999402692478522,
+        "win_rate_pct": 40.44943820224719,
+        "max_drawdown_pct": 22.07,
+        "trades": 178,
+        "sharpe_ratio": -3.81,
+        "recovery_factor": -0.68,
+        "history_quality": "100%",
+        "equity_dd_pct": 22.07,
+        "mean_trade": -8.8061797752809,
+        "mean_net_R": -0.08828251663072911,
+        "trades_per_month": 2.9670728368017527,
+        "trades_per_eligible_day": 0.09748083242059145,
+        "eligible_days": 1826,
+        "win_streak": 6,
+        "loss_streak": 10,
+        "balance_dd_pct": 21.398712554809016,
+        "median_initial_risk_pct": 1.0193781232217618,
+        "max_initial_risk_pct": 1.172183154827875,
+        "max_hold_hours": 6.0
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 19.34,
+      "tick_coverage": [],
+      "summaries": [
+        "MS_SUMMARY entries=178 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "671a006e331f4d1073b6fb40a6c60be450cb96961df02e4e6f4a5474bc7e5dff",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Market Style Bots Raw 2026-09-29\\native\\bitcoin-reversal-control-5y-m1",
+      "fresh_run": false,
+      "monthly_closed_pnl": [
+        {
+          "month": "2021-10",
+          "trades": 1,
+          "net_profit": -32.29
+        },
+        {
+          "month": "2021-11",
+          "trades": 3,
+          "net_profit": -255.95
+        },
+        {
+          "month": "2021-12",
+          "trades": 4,
+          "net_profit": -92.66
+        },
+        {
+          "month": "2022-01",
+          "trades": 2,
+          "net_profit": 45.030000000000015
+        },
+        {
+          "month": "2022-02",
+          "trades": 2,
+          "net_profit": -135.15
+        },
+        {
+          "month": "2022-03",
+          "trades": 1,
+          "net_profit": 44.53
+        },
+        {
+          "month": "2022-04",
+          "trades": 2,
+          "net_profit": 293.43
+        },
+        {
+          "month": "2022-05",
+          "trades": 1,
+          "net_profit": 150.13
+        },
+        {
+          "month": "2022-06",
+          "trades": 4,
+          "net_profit": 38.02999999999999
+        },
+        {
+          "month": "2022-07",
+          "trades": 3,
+          "net_profit": -59.85000000000001
+        },
+        {
+          "month": "2022-08",
+          "trades": 2,
+          "net_profit": 103.41999999999999
+        },
+        {
+          "month": "2022-09",
+          "trades": 4,
+          "net_profit": -37.31000000000001
+        },
+        {
+          "month": "2022-10",
+          "trades": 5,
+          "net_profit": 127.84
+        },
+        {
+          "month": "2022-11",
+          "trades": 5,
+          "net_profit": -84.66000000000003
+        },
+        {
+          "month": "2022-12",
+          "trades": 4,
+          "net_profit": 107.75
+        },
+        {
+          "month": "2023-01",
+          "trades": 2,
+          "net_profit": 86.16
+        },
+        {
+          "month": "2023-02",
+          "trades": 4,
+          "net_profit": -55.479999999999976
+        },
+        {
+          "month": "2023-03",
+          "trades": 2,
+          "net_profit": -214.01
+        },
+        {
+          "month": "2023-04",
+          "trades": 4,
+          "net_profit": -134.01
+        },
+        {
+          "month": "2023-05",
+          "trades": 2,
+          "net_profit": -60.08
+        },
+        {
+          "month": "2023-06",
+          "trades": 3,
+          "net_profit": 38.50999999999999
+        },
+        {
+          "month": "2023-07",
+          "trades": 5,
+          "net_profit": -392.43
+        },
+        {
+          "month": "2023-08",
+          "trades": 6,
+          "net_profit": -26.110000000000024
+        },
+        {
+          "month": "2023-09",
+          "trades": 2,
+          "net_profit": 41.71000000000001
+        },
+        {
+          "month": "2023-10",
+          "trades": 3,
+          "net_profit": 312.45
+        },
+        {
+          "month": "2023-11",
+          "trades": 5,
+          "net_profit": -7.6200000000000045
+        },
+        {
+          "month": "2023-12",
+          "trades": 6,
+          "net_profit": -91.29000000000002
+        },
+        {
+          "month": "2024-01",
+          "trades": 3,
+          "net_profit": -56.660000000000025
+        },
+        {
+          "month": "2024-02",
+          "trades": 5,
+          "net_profit": -101.54000000000002
+        },
+        {
+          "month": "2024-04",
+          "trades": 4,
+          "net_profit": -13.170000000000002
+        },
+        {
+          "month": "2024-05",
+          "trades": 1,
+          "net_profit": 46.23
+        },
+        {
+          "month": "2024-06",
+          "trades": 5,
+          "net_profit": -195.86
+        },
+        {
+          "month": "2024-07",
+          "trades": 3,
+          "net_profit": -157.84
+        },
+        {
+          "month": "2024-08",
+          "trades": 2,
+          "net_profit": -20.86999999999999
+        },
+        {
+          "month": "2024-09",
+          "trades": 4,
+          "net_profit": -123.44
+        },
+        {
+          "month": "2024-10",
+          "trades": 1,
+          "net_profit": -25.26
+        },
+        {
+          "month": "2024-11",
+          "trades": 3,
+          "net_profit": -282.21000000000004
+        },
+        {
+          "month": "2024-12",
+          "trades": 3,
+          "net_profit": 110.03000000000002
+        },
+        {
+          "month": "2025-01",
+          "trades": 4,
+          "net_profit": -70.16
+        },
+        {
+          "month": "2025-02",
+          "trades": 2,
+          "net_profit": 42.69000000000001
+        },
+        {
+          "month": "2025-03",
+          "trades": 4,
+          "net_profit": -106.11000000000001
+        },
+        {
+          "month": "2025-04",
+          "trades": 2,
+          "net_profit": -136.62
+        },
+        {
+          "month": "2025-05",
+          "trades": 2,
+          "net_profit": 195.92000000000002
+        },
+        {
+          "month": "2025-06",
+          "trades": 2,
+          "net_profit": -115.77000000000001
+        },
+        {
+          "month": "2025-07",
+          "trades": 3,
+          "net_profit": -80.61
+        },
+        {
+          "month": "2025-08",
+          "trades": 3,
+          "net_profit": 362.9
+        },
+        {
+          "month": "2025-09",
+          "trades": 2,
+          "net_profit": 76.83
+        },
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": -201.65
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": -144.76999999999998
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -251.06
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": 12.549999999999983
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": -176.56
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": -2.5900000000000034
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -46.389999999999986
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -98.86
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": 122.83
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 34.83
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 125.6
+        }
+      ],
+      "costs": {
+        "gross_profit": -1348.5700000000002,
+        "commission": -218.93,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": -1567.5
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-raw-3y-m4",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": false,
+      "window": "3y",
+      "model": 4,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1695772800",
+        "InpTag": "bitcoin-reversal-raw-3y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10667.4,
+        "net_profit": 667.4000000000003,
+        "return_pct": 6.674000000000004,
+        "profit_factor": 1.143865041915729,
+        "win_rate_pct": 46.22641509433962,
+        "max_drawdown_pct": 6.47,
+        "trades": 106,
+        "sharpe_ratio": 2.48,
+        "recovery_factor": 0.96,
+        "history_quality": "22% real ticks",
+        "equity_dd_pct": 6.47,
+        "mean_trade": 6.29622641509434,
+        "mean_net_R": 0.06533992471983448,
+        "trades_per_month": 2.943772810218978,
+        "trades_per_eligible_day": 0.09671532846715329,
+        "eligible_days": 1096,
+        "win_streak": 6,
+        "loss_streak": 6,
+        "balance_dd_pct": 5.433850118910161,
+        "median_initial_risk_pct": 1.0253211374579545,
+        "max_initial_risk_pct": 1.242663923446227,
+        "max_hold_hours": 6.000555555555556
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 55.6,
+      "tick_coverage": [
+        "CS\t0\t03:01:03.645\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+        "LG\t0\t03:01:05.681\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=106 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "322363b40238004f618da3a7177b2e95ec122149b4c6dcb8ece0dd81bbc51a40",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Bitcoin Shock Reversal Pipeline 2026-09-29\\native\\bitcoin-reversal-raw-3y-m4",
+      "fresh_run": true,
+      "monthly_closed_pnl": [
+        {
+          "month": "2023-09",
+          "trades": 1,
+          "net_profit": 148.32
+        },
+        {
+          "month": "2023-10",
+          "trades": 3,
+          "net_profit": 270.7
+        },
+        {
+          "month": "2023-11",
+          "trades": 5,
+          "net_profit": -12.980000000000004
+        },
+        {
+          "month": "2023-12",
+          "trades": 6,
+          "net_profit": -214.14
+        },
+        {
+          "month": "2024-01",
+          "trades": 3,
+          "net_profit": 205.45999999999998
+        },
+        {
+          "month": "2024-02",
+          "trades": 5,
+          "net_profit": 150.45999999999998
+        },
+        {
+          "month": "2024-04",
+          "trades": 4,
+          "net_profit": 47.17999999999997
+        },
+        {
+          "month": "2024-05",
+          "trades": 1,
+          "net_profit": 53.95
+        },
+        {
+          "month": "2024-06",
+          "trades": 5,
+          "net_profit": -293.71
+        },
+        {
+          "month": "2024-07",
+          "trades": 3,
+          "net_profit": 211.29000000000002
+        },
+        {
+          "month": "2024-08",
+          "trades": 2,
+          "net_profit": 0.7700000000000102
+        },
+        {
+          "month": "2024-09",
+          "trades": 4,
+          "net_profit": 187.34000000000003
+        },
+        {
+          "month": "2024-10",
+          "trades": 1,
+          "net_profit": -111.55
+        },
+        {
+          "month": "2024-11",
+          "trades": 3,
+          "net_profit": -65.99
+        },
+        {
+          "month": "2024-12",
+          "trades": 3,
+          "net_profit": 118.57999999999998
+        },
+        {
+          "month": "2025-01",
+          "trades": 4,
+          "net_profit": -128.09
+        },
+        {
+          "month": "2025-02",
+          "trades": 2,
+          "net_profit": 53.09
+        },
+        {
+          "month": "2025-03",
+          "trades": 4,
+          "net_profit": -12.120000000000005
+        },
+        {
+          "month": "2025-04",
+          "trades": 2,
+          "net_profit": 215.24
+        },
+        {
+          "month": "2025-05",
+          "trades": 2,
+          "net_profit": 226.56000000000003
+        },
+        {
+          "month": "2025-06",
+          "trades": 2,
+          "net_profit": -86.05999999999999
+        },
+        {
+          "month": "2025-07",
+          "trades": 3,
+          "net_profit": -105.83
+        },
+        {
+          "month": "2025-08",
+          "trades": 3,
+          "net_profit": -115.75
+        },
+        {
+          "month": "2025-09",
+          "trades": 2,
+          "net_profit": 93.47
+        },
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": 72.4
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": 31.300000000000004
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -145.84
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": -43.650000000000006
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": 6.290000000000006
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": 2.469999999999999
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -75.08
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -118.16
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": -107.49
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 40.85
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 168.12
+        }
+      ],
+      "costs": {
+        "gross_profit": 754.51,
+        "commission": -87.11,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": 667.4000000000001
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-control-3y-m4",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": true,
+      "window": "3y",
+      "model": 4,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1695772800",
+        "InpTag": "bitcoin-reversal-control-3y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 8782.76,
+        "net_profit": -1217.24,
+        "return_pct": -12.1724,
+        "profit_factor": 0.7474254720054445,
+        "win_rate_pct": 37.735849056603776,
+        "max_drawdown_pct": 19.58,
+        "trades": 106,
+        "sharpe_ratio": -4.86,
+        "recovery_factor": -0.59,
+        "history_quality": "22% real ticks",
+        "equity_dd_pct": 19.58,
+        "mean_trade": -11.483396226415094,
+        "mean_net_R": -0.11456872548661291,
+        "trades_per_month": 2.943772810218978,
+        "trades_per_eligible_day": 0.09671532846715329,
+        "eligible_days": 1096,
+        "win_streak": 5,
+        "loss_streak": 10,
+        "balance_dd_pct": 18.68195958318906,
+        "median_initial_risk_pct": 1.0346455335889773,
+        "max_initial_risk_pct": 1.1364388640024714,
+        "max_hold_hours": 6.000555555555556
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 55.9,
+      "tick_coverage": [
+        "CS\t0\t03:01:59.179\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+        "ND\t0\t03:02:01.103\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=106 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "9c1dc47c545082f69727ead2e89e6fc729030ec2234cdbf40d3e1e7dad630988",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Bitcoin Shock Reversal Pipeline 2026-09-29\\native\\bitcoin-reversal-control-3y-m4",
+      "fresh_run": true,
+      "monthly_closed_pnl": [
+        {
+          "month": "2023-09",
+          "trades": 1,
+          "net_profit": -103.85
+        },
+        {
+          "month": "2023-10",
+          "trades": 3,
+          "net_profit": 326.86
+        },
+        {
+          "month": "2023-11",
+          "trades": 5,
+          "net_profit": -9.990000000000038
+        },
+        {
+          "month": "2023-12",
+          "trades": 6,
+          "net_profit": -93.49
+        },
+        {
+          "month": "2024-01",
+          "trades": 3,
+          "net_profit": -54.53999999999999
+        },
+        {
+          "month": "2024-02",
+          "trades": 5,
+          "net_profit": -107.85
+        },
+        {
+          "month": "2024-04",
+          "trades": 4,
+          "net_profit": -12.440000000000005
+        },
+        {
+          "month": "2024-05",
+          "trades": 1,
+          "net_profit": 50.09
+        },
+        {
+          "month": "2024-06",
+          "trades": 5,
+          "net_profit": -208.98
+        },
+        {
+          "month": "2024-07",
+          "trades": 3,
+          "net_profit": -173.76
+        },
+        {
+          "month": "2024-08",
+          "trades": 2,
+          "net_profit": -20.97999999999999
+        },
+        {
+          "month": "2024-09",
+          "trades": 4,
+          "net_profit": -126.76
+        },
+        {
+          "month": "2024-10",
+          "trades": 1,
+          "net_profit": -26.84
+        },
+        {
+          "month": "2024-11",
+          "trades": 3,
+          "net_profit": -301.14
+        },
+        {
+          "month": "2024-12",
+          "trades": 3,
+          "net_profit": 112.07000000000002
+        },
+        {
+          "month": "2025-01",
+          "trades": 4,
+          "net_profit": -60.74000000000001
+        },
+        {
+          "month": "2025-02",
+          "trades": 2,
+          "net_profit": 43.630000000000024
+        },
+        {
+          "month": "2025-03",
+          "trades": 4,
+          "net_profit": -103.38
+        },
+        {
+          "month": "2025-04",
+          "trades": 2,
+          "net_profit": -147.69
+        },
+        {
+          "month": "2025-05",
+          "trades": 2,
+          "net_profit": 200.06
+        },
+        {
+          "month": "2025-06",
+          "trades": 2,
+          "net_profit": -125.84
+        },
+        {
+          "month": "2025-07",
+          "trades": 3,
+          "net_profit": -87.11
+        },
+        {
+          "month": "2025-08",
+          "trades": 3,
+          "net_profit": 378.14
+        },
+        {
+          "month": "2025-09",
+          "trades": 2,
+          "net_profit": 76.27
+        },
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": -218.8
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": -145.43
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -256.33
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": 11.889999999999986
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": -177.05
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": -0.08000000000002672
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -50.17999999999998
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -108.46
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": 130.01999999999998
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 35.330000000000005
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 140.10999999999999
+        }
+      ],
+      "costs": {
+        "gross_profit": -1137.93,
+        "commission": -79.31,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": -1217.24
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-raw-5y-m4",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": false,
+      "window": "5y",
+      "model": 4,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "false",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1632700800",
+        "InpTag": "bitcoin-reversal-raw-5y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10370.77,
+        "net_profit": 370.7700000000003,
+        "return_pct": 3.7077000000000035,
+        "profit_factor": 1.048985464355831,
+        "win_rate_pct": 47.752808988764045,
+        "max_drawdown_pct": 14.43,
+        "trades": 178,
+        "sharpe_ratio": 0.82,
+        "recovery_factor": 0.24,
+        "history_quality": "14% real ticks",
+        "equity_dd_pct": 14.43,
+        "mean_trade": 2.0829775280898883,
+        "mean_net_R": 0.02186352300797113,
+        "trades_per_month": 2.9670728368017527,
+        "trades_per_eligible_day": 0.09748083242059145,
+        "eligible_days": 1826,
+        "win_streak": 10,
+        "loss_streak": 6,
+        "balance_dd_pct": 13.847121736395094,
+        "median_initial_risk_pct": 1.0214373794568168,
+        "max_initial_risk_pct": 1.2775848732108341,
+        "max_hold_hours": 6.000555555555556
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 75.37,
+      "tick_coverage": [
+        "CS\t0\t03:02:58.132\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+        "ON\t0\t03:03:03.637\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=178 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "7970c58e3dafdf1e44cdff7f59dc32be3e1f857198e4137d5bb2a4ac55592c14",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Bitcoin Shock Reversal Pipeline 2026-09-29\\native\\bitcoin-reversal-raw-5y-m4",
+      "fresh_run": true,
+      "monthly_closed_pnl": [
+        {
+          "month": "2021-10",
+          "trades": 1,
+          "net_profit": 22.8
+        },
+        {
+          "month": "2021-11",
+          "trades": 3,
+          "net_profit": 304.02
+        },
+        {
+          "month": "2021-12",
+          "trades": 4,
+          "net_profit": 29.879999999999995
+        },
+        {
+          "month": "2022-01",
+          "trades": 2,
+          "net_profit": 172.29999999999998
+        },
+        {
+          "month": "2022-02",
+          "trades": 2,
+          "net_profit": -84.52
+        },
+        {
+          "month": "2022-03",
+          "trades": 1,
+          "net_profit": 48.25
+        },
+        {
+          "month": "2022-04",
+          "trades": 2,
+          "net_profit": 49.07000000000002
+        },
+        {
+          "month": "2022-05",
+          "trades": 1,
+          "net_profit": -110.29
+        },
+        {
+          "month": "2022-06",
+          "trades": 4,
+          "net_profit": -222.92000000000002
+        },
+        {
+          "month": "2022-07",
+          "trades": 3,
+          "net_profit": -63.41
+        },
+        {
+          "month": "2022-08",
+          "trades": 2,
+          "net_profit": -70.38
+        },
+        {
+          "month": "2022-09",
+          "trades": 4,
+          "net_profit": -21.379999999999995
+        },
+        {
+          "month": "2022-10",
+          "trades": 5,
+          "net_profit": -121.64
+        },
+        {
+          "month": "2022-11",
+          "trades": 5,
+          "net_profit": -382.93
+        },
+        {
+          "month": "2022-12",
+          "trades": 4,
+          "net_profit": -36.849999999999994
+        },
+        {
+          "month": "2023-01",
+          "trades": 2,
+          "net_profit": -46.26
+        },
+        {
+          "month": "2023-02",
+          "trades": 4,
+          "net_profit": -290.76
+        },
+        {
+          "month": "2023-03",
+          "trades": 2,
+          "net_profit": 48.28999999999999
+        },
+        {
+          "month": "2023-04",
+          "trades": 4,
+          "net_profit": 300.93
+        },
+        {
+          "month": "2023-05",
+          "trades": 2,
+          "net_profit": 186.36
+        },
+        {
+          "month": "2023-06",
+          "trades": 3,
+          "net_profit": 197.35
+        },
+        {
+          "month": "2023-07",
+          "trades": 5,
+          "net_profit": 120.32000000000001
+        },
+        {
+          "month": "2023-08",
+          "trades": 6,
+          "net_profit": -245.62
+        },
+        {
+          "month": "2023-09",
+          "trades": 2,
+          "net_profit": 42.44999999999999
+        },
+        {
+          "month": "2023-10",
+          "trades": 3,
+          "net_profit": 260.43999999999994
+        },
+        {
+          "month": "2023-11",
+          "trades": 5,
+          "net_profit": -6.550000000000011
+        },
+        {
+          "month": "2023-12",
+          "trades": 6,
+          "net_profit": -205.12
+        },
+        {
+          "month": "2024-01",
+          "trades": 3,
+          "net_profit": 203.39999999999998
+        },
+        {
+          "month": "2024-02",
+          "trades": 5,
+          "net_profit": 150.99
+        },
+        {
+          "month": "2024-04",
+          "trades": 4,
+          "net_profit": 55.97999999999998
+        },
+        {
+          "month": "2024-05",
+          "trades": 1,
+          "net_profit": 50.09
+        },
+        {
+          "month": "2024-06",
+          "trades": 5,
+          "net_profit": -283.54
+        },
+        {
+          "month": "2024-07",
+          "trades": 3,
+          "net_profit": 215.81000000000003
+        },
+        {
+          "month": "2024-08",
+          "trades": 2,
+          "net_profit": 0.7700000000000102
+        },
+        {
+          "month": "2024-09",
+          "trades": 4,
+          "net_profit": 185.81
+        },
+        {
+          "month": "2024-10",
+          "trades": 1,
+          "net_profit": -108.61
+        },
+        {
+          "month": "2024-11",
+          "trades": 3,
+          "net_profit": -65.99
+        },
+        {
+          "month": "2024-12",
+          "trades": 3,
+          "net_profit": 124.32999999999998
+        },
+        {
+          "month": "2025-01",
+          "trades": 4,
+          "net_profit": -128.09
+        },
+        {
+          "month": "2025-02",
+          "trades": 2,
+          "net_profit": 60.58
+        },
+        {
+          "month": "2025-03",
+          "trades": 4,
+          "net_profit": -21.100000000000023
+        },
+        {
+          "month": "2025-04",
+          "trades": 2,
+          "net_profit": 215.24
+        },
+        {
+          "month": "2025-05",
+          "trades": 2,
+          "net_profit": 226.56000000000003
+        },
+        {
+          "month": "2025-06",
+          "trades": 2,
+          "net_profit": -87.72
+        },
+        {
+          "month": "2025-07",
+          "trades": 3,
+          "net_profit": -99.69
+        },
+        {
+          "month": "2025-08",
+          "trades": 3,
+          "net_profit": -123.80000000000001
+        },
+        {
+          "month": "2025-09",
+          "trades": 2,
+          "net_profit": 84.86999999999999
+        },
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": 70.12
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": 31.300000000000004
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -141.1
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": -38.660000000000025
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": 6.290000000000006
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": 9.069999999999993
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -70.59999999999998
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -118.14999999999999
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": -102.37
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 41.160000000000004
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 153.99
+        }
+      ],
+      "costs": {
+        "gross_profit": 598.1699999999997,
+        "commission": -227.39999999999998,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": 370.7700000000001
+      }
+    },
+    {
+      "tag": "bitcoin-reversal-control-5y-m4",
+      "bot": {
+        "name": "bitcoin-reversal",
+        "symbol": "BTCUSD",
+        "mode": 1,
+        "rr": 1.5
+      },
+      "control": true,
+      "window": "5y",
+      "model": 4,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "build": {
+        "MarketStyles.mq5": "18bf3f46adc744c0e00c50bd218a00110609edddbe85de56774da3e22ff77591",
+        "MarketStyles.ex5": "b838d37c37076269c8f3c8978c0e77d5ed47048893d1c1ca1183d5a7781a2e80",
+        "RULES.md": "676f5ad15b06e0dd8a1b671a68014be58fdd09839764f34d7c3db74885940e53",
+        "run-config.json": "f4729da605f0e8b66daa7beb7e29b142708b3f990c2ab81a22d40e7d4bc50f67"
+      },
+      "inputs": {
+        "InpMode": "1",
+        "InpControl": "true",
+        "InpRiskPercent": "1",
+        "InpRR": "1.5",
+        "InpSeed": "290929",
+        "InpTradeFrom": "1632700800",
+        "InpTag": "bitcoin-reversal-control-5y-m4",
+        "InpMagic": "9294400"
+      },
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 8430.31,
+        "net_profit": -1569.6899999999996,
+        "return_pct": -15.696899999999998,
+        "profit_factor": 0.8003228539372148,
+        "win_rate_pct": 40.44943820224719,
+        "max_drawdown_pct": 22.13,
+        "trades": 178,
+        "sharpe_ratio": -3.81,
+        "recovery_factor": -0.68,
+        "history_quality": "14% real ticks",
+        "equity_dd_pct": 22.13,
+        "mean_trade": -8.818483146067415,
+        "mean_net_R": -0.08844065650464895,
+        "trades_per_month": 2.9670728368017527,
+        "trades_per_eligible_day": 0.09748083242059145,
+        "eligible_days": 1826,
+        "win_streak": 6,
+        "loss_streak": 10,
+        "balance_dd_pct": 21.508681325034207,
+        "median_initial_risk_pct": 1.018511574656404,
+        "max_initial_risk_pct": 1.1726002725738867,
+        "max_hold_hours": 6.000555555555556
+      },
+      "flags": {
+        "entry_fail": 0,
+        "close_fail": 0,
+        "invalid_volume": 0,
+        "invalid_stops": 0,
+        "stopout": 0,
+        "overnight_positions": 0,
+        "swap_positions": 0,
+        "late_timed_exits": 0
+      },
+      "seconds": 76.19,
+      "tick_coverage": [
+        "CN\t0\t03:04:20.273\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+        "CS\t0\t03:04:14.992\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "summaries": [
+        "MS_SUMMARY entries=178 entryFails=0 closeFails=0 skips=0 stale=0"
+      ],
+      "spec": [
+        "MS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=1.00000000 min=0.01000000 step=0.01000000 tick=0.01000000"
+      ],
+      "report_sha": "9d299e591defb5b011fef43db9e68561ba6205380258f5987d5316de4fba84b9",
+      "attempt": 0,
+      "evidence_root": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Bitcoin Shock Reversal Pipeline 2026-09-29\\native\\bitcoin-reversal-control-5y-m4",
+      "fresh_run": true,
+      "monthly_closed_pnl": [
+        {
+          "month": "2021-10",
+          "trades": 1,
+          "net_profit": -32.29
+        },
+        {
+          "month": "2021-11",
+          "trades": 3,
+          "net_profit": -255.97
+        },
+        {
+          "month": "2021-12",
+          "trades": 4,
+          "net_profit": -93.05
+        },
+        {
+          "month": "2022-01",
+          "trades": 2,
+          "net_profit": 44.530000000000015
+        },
+        {
+          "month": "2022-02",
+          "trades": 2,
+          "net_profit": -135.34
+        },
+        {
+          "month": "2022-03",
+          "trades": 1,
+          "net_profit": 44.53
+        },
+        {
+          "month": "2022-04",
+          "trades": 2,
+          "net_profit": 293.9
+        },
+        {
+          "month": "2022-05",
+          "trades": 1,
+          "net_profit": 151.62
+        },
+        {
+          "month": "2022-06",
+          "trades": 4,
+          "net_profit": 38.3
+        },
+        {
+          "month": "2022-07",
+          "trades": 3,
+          "net_profit": -60.03
+        },
+        {
+          "month": "2022-08",
+          "trades": 2,
+          "net_profit": 104.47
+        },
+        {
+          "month": "2022-09",
+          "trades": 4,
+          "net_profit": -37.31000000000001
+        },
+        {
+          "month": "2022-10",
+          "trades": 5,
+          "net_profit": 134.45
+        },
+        {
+          "month": "2022-11",
+          "trades": 5,
+          "net_profit": -84.87000000000003
+        },
+        {
+          "month": "2022-12",
+          "trades": 4,
+          "net_profit": 110.13000000000002
+        },
+        {
+          "month": "2023-01",
+          "trades": 2,
+          "net_profit": 86.16
+        },
+        {
+          "month": "2023-02",
+          "trades": 4,
+          "net_profit": -56.089999999999975
+        },
+        {
+          "month": "2023-03",
+          "trades": 2,
+          "net_profit": -215.04
+        },
+        {
+          "month": "2023-04",
+          "trades": 4,
+          "net_profit": -135.28
+        },
+        {
+          "month": "2023-05",
+          "trades": 2,
+          "net_profit": -60.58
+        },
+        {
+          "month": "2023-06",
+          "trades": 3,
+          "net_profit": 38.06999999999999
+        },
+        {
+          "month": "2023-07",
+          "trades": 5,
+          "net_profit": -393.1
+        },
+        {
+          "month": "2023-08",
+          "trades": 6,
+          "net_profit": -27.31000000000004
+        },
+        {
+          "month": "2023-09",
+          "trades": 2,
+          "net_profit": 41.510000000000005
+        },
+        {
+          "month": "2023-10",
+          "trades": 3,
+          "net_profit": 313.43
+        },
+        {
+          "month": "2023-11",
+          "trades": 5,
+          "net_profit": -7.990000000000023
+        },
+        {
+          "month": "2023-12",
+          "trades": 6,
+          "net_profit": -91.68
+        },
+        {
+          "month": "2024-01",
+          "trades": 3,
+          "net_profit": -56.69000000000001
+        },
+        {
+          "month": "2024-02",
+          "trades": 5,
+          "net_profit": -102.22000000000003
+        },
+        {
+          "month": "2024-04",
+          "trades": 4,
+          "net_profit": -13.039999999999978
+        },
+        {
+          "month": "2024-05",
+          "trades": 1,
+          "net_profit": 46.23
+        },
+        {
+          "month": "2024-06",
+          "trades": 5,
+          "net_profit": -196.13
+        },
+        {
+          "month": "2024-07",
+          "trades": 3,
+          "net_profit": -158.0
+        },
+        {
+          "month": "2024-08",
+          "trades": 2,
+          "net_profit": -20.97999999999999
+        },
+        {
+          "month": "2024-09",
+          "trades": 4,
+          "net_profit": -123.6
+        },
+        {
+          "month": "2024-10",
+          "trades": 1,
+          "net_profit": -25.26
+        },
+        {
+          "month": "2024-11",
+          "trades": 3,
+          "net_profit": -282.81
+        },
+        {
+          "month": "2024-12",
+          "trades": 3,
+          "net_profit": 110.35000000000002
+        },
+        {
+          "month": "2025-01",
+          "trades": 4,
+          "net_profit": -70.2
+        },
+        {
+          "month": "2025-02",
+          "trades": 2,
+          "net_profit": 42.59999999999998
+        },
+        {
+          "month": "2025-03",
+          "trades": 4,
+          "net_profit": -106.25
+        },
+        {
+          "month": "2025-04",
+          "trades": 2,
+          "net_profit": -136.62
+        },
+        {
+          "month": "2025-05",
+          "trades": 2,
+          "net_profit": 196.07000000000002
+        },
+        {
+          "month": "2025-06",
+          "trades": 2,
+          "net_profit": -115.78
+        },
+        {
+          "month": "2025-07",
+          "trades": 3,
+          "net_profit": -80.50999999999999
+        },
+        {
+          "month": "2025-08",
+          "trades": 3,
+          "net_profit": 363.25
+        },
+        {
+          "month": "2025-09",
+          "trades": 2,
+          "net_profit": 76.64999999999999
+        },
+        {
+          "month": "2025-10",
+          "trades": 3,
+          "net_profit": -202.72000000000003
+        },
+        {
+          "month": "2025-11",
+          "trades": 2,
+          "net_profit": -145.43
+        },
+        {
+          "month": "2025-12",
+          "trades": 3,
+          "net_profit": -251.59
+        },
+        {
+          "month": "2026-02",
+          "trades": 5,
+          "net_profit": 15.22999999999999
+        },
+        {
+          "month": "2026-03",
+          "trades": 2,
+          "net_profit": -177.05
+        },
+        {
+          "month": "2026-04",
+          "trades": 4,
+          "net_profit": -3.0999999999999943
+        },
+        {
+          "month": "2026-05",
+          "trades": 6,
+          "net_profit": -48.47999999999999
+        },
+        {
+          "month": "2026-06",
+          "trades": 3,
+          "net_profit": -102.78999999999999
+        },
+        {
+          "month": "2026-07",
+          "trades": 1,
+          "net_profit": 122.37
+        },
+        {
+          "month": "2026-08",
+          "trades": 2,
+          "net_profit": 35.650000000000006
+        },
+        {
+          "month": "2026-09",
+          "trades": 2,
+          "net_profit": 125.99
+        }
+      ],
+      "costs": {
+        "gross_profit": -1350.6800000000003,
+        "commission": -219.01,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": -1569.6899999999998
+      }
+    }
+  ],
+  "matched_controls": [
+    {
+      "raw_tag": "bitcoin-reversal-raw-6m-m4",
+      "matched_trades": 19,
+      "all_dates_matched": true,
+      "raw_only_dates": [],
+      "control_only_dates": [],
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": -0.1342622035060612
+    },
+    {
+      "raw_tag": "bitcoin-reversal-raw-1y-m4",
+      "matched_trades": 33,
+      "all_dates_matched": true,
+      "raw_only_dates": [],
+      "control_only_dates": [],
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": 0.15704204175328337
+    },
+    {
+      "raw_tag": "bitcoin-reversal-raw-3y-m1",
+      "matched_trades": 106,
+      "all_dates_matched": true,
+      "raw_only_dates": [],
+      "control_only_dates": [],
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": 0.1796361701931711
+    },
+    {
+      "raw_tag": "bitcoin-reversal-raw-5y-m1",
+      "matched_trades": 178,
+      "all_dates_matched": true,
+      "raw_only_dates": [],
+      "control_only_dates": [],
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": 0.11064056346151703
+    },
+    {
+      "raw_tag": "bitcoin-reversal-raw-3y-m4",
+      "matched_trades": 106,
+      "all_dates_matched": true,
+      "raw_only_dates": [],
+      "control_only_dates": [],
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": 0.1799086502064474
+    },
+    {
+      "raw_tag": "bitcoin-reversal-raw-5y-m4",
+      "matched_trades": 178,
+      "all_dates_matched": true,
+      "raw_only_dates": [],
+      "control_only_dates": [],
+      "max_entry_seconds": 0.0,
+      "mean_net_R_delta": 0.11030417951262012
+    }
+  ]
+}
