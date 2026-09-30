@@ -1,0 +1,77 @@
+{
+  "ok": true,
+  "symbol": "USTEC",
+  "variant": {
+    "name": "aligned-smt-1r-be",
+    "mode": 3,
+    "both": true,
+    "rr": 0,
+    "protected": true,
+    "control": "aligned-smt-static"
+  },
+  "window": "6m",
+  "model": 4,
+  "start": "2026.03.27",
+  "end": "2026.09.27",
+  "warmup_start": "2026.01.26",
+  "build": {
+    "hashes": {
+      "KaneProxy.mq5": "f3fa997124f70a2053e1d8463e7e0ebd4efbf2bb71bf77ff09c839bd5b7afdc2",
+      "KaneProxy.ex5": "81087a0601deb9c61bee4de753a56bd4c0315789bf5dc05e949d72f9856d0502",
+      "RULES.md": "db40de005409eb54910c749a1cd1cc45e0337006e858d5d13272104b3fb08c99",
+      "run-config.json": "e36c531718a810286c42762a380cd985070891ef76071e5c351633ba9b7631a9"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 789 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "3",
+    "InpBoth": "true",
+    "InpRR": "0",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1774569600",
+    "InpTag": "USTEC-aligned-smt-1r-be-6m-m4",
+    "InpMagic": "9282605"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10642.76,
+    "net_profit": 642.76,
+    "return_pct": 6.43,
+    "profit_factor": 3.0,
+    "win_rate_pct": 72.73,
+    "max_drawdown_pct": 2.58,
+    "trades": 11,
+    "sharpe_ratio": 18.8,
+    "recovery_factor": 2.48,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 2.58,
+    "idea_pf": 3.0728175690928436
+  },
+  "groups": 11,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "243811873d45771a7d94a2d593334851d2874f0b4d6147404fe0643f0dd0ee53",
+  "elapsed_seconds": 33.97673034667969,
+  "summaries": [
+    "CB_SUMMARY tag=USTEC-aligned-smt-1r-be-6m-m4 entries=11 signals=20 skips=9 partials=0 failures=0 beRetries=0 beMoves=5 decisions=3741 syncMissing=0 referenceMissing=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USTEC contract=1.00000000 tick=0.01000000 min=0.05000000 step=0.01000000 stops=0 swaplong=-698.10000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t21:44:54.578\tTicks\tUS500 : real ticks begin from 2026.01.01 00:00:00",
+    "CS\t0\t21:44:59.409\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "DO\t0\t21:45:05.055\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "LH\t0\t21:44:58.950\tCore 01\tUS500 : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "verified_already_closed_log_lines": 0
+}

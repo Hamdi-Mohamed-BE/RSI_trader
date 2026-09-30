@@ -1,0 +1,69 @@
+{
+  "ok": true,
+  "case": {
+    "id": "us100-daily",
+    "label": "US100 daily long",
+    "symbol": "USTEC",
+    "mode": 3,
+    "control": false
+  },
+  "smoke": true,
+  "start": "2026.07.01",
+  "end": "2026.08.01",
+  "inputs": {
+    "InpMode": "3",
+    "InpControl": "false",
+    "InpRiskPercent": "1.0",
+    "InpNotionalUSD": "10000.0",
+    "InpServerUtcOffsetHours": "0",
+    "InpMagic": "9274040",
+    "InpTag": "smoke-us100-daily"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9349.99,
+    "net_profit": -650.01,
+    "return_pct": -6.5,
+    "profit_factor": 0.61,
+    "win_rate_pct": 40.91,
+    "max_drawdown_pct": 10.86,
+    "trades": 22,
+    "sharpe_ratio": -2.94,
+    "recovery_factor": -0.59,
+    "history_quality": "100% real ticks",
+    "max_equity_dd_pct": 10.86,
+    "max_balance_dd_pct": 9.96,
+    "max_equity_dd_usd": 1094.38
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 0,
+    "margin_call": 0,
+    "entry_fail": 0,
+    "close_fail": 0,
+    "cancel_fail": 0
+  },
+  "build": {
+    "source_sha": "5e83f6c6058fc344958e25c2ebd0812260cbcb4240925bf49dc7464553c3d8f0",
+    "binary_sha": "960fbaf7472e0b6e62f34354afd23e62c311b7883c059658f3d31cbc94cef9b5",
+    "rules_sha": "4f1403d3b6841be69c93ea9e0fbdc89d33f79b214ba57a0c98cc812cabee62f9",
+    "config_sha": "f4f730096a7fe6182dd6a9203bd3302cfa1732036623677270bea5568435c549",
+    "compile": "75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 1049 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "report_sha": "c13c36f20cee967a016767f5d194f9e30173152363a7a677560d1ae61a47c397",
+  "elapsed_seconds": 12.164700984954834,
+  "summary": [
+    "IDEA_SUMMARY tag=smoke-us100-daily ranges=0 missing=0 orders=22 skips=0 entryfail=0 closefail=0 cancelfail=0",
+    "IDEA_SUMMARY tag=smoke-us100-daily ranges=0 missing=0 orders=22 skips=0 entryfail=0 closefail=0 cancelfail=0"
+  ],
+  "symbol_spec": [
+    "IDEA_SPEC symbol=USTEC contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.01000000 stops=0 clockOffset=0",
+    "IDEA_SPEC symbol=USTEC contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.01000000 stops=0 clockOffset=0"
+  ],
+  "real_ticks": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

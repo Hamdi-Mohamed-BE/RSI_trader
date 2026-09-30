@@ -1,0 +1,511 @@
+{
+  "verdict": "NOT PASSED: baseline native gate failed; material financing-model discrepancy unresolved",
+  "stage_reached": 4,
+  "optimization_runs": 0,
+  "stress_simulations": 0,
+  "production_changed": false,
+  "checks": [
+    "All four frozen build/config/protocol hashes unchanged",
+    "Raw gate is a JSON boolean false; cannot be truthy string",
+    "EA refuses initialization outside Strategy Tester",
+    "London/New York clock rules match IANA at 105,168 hourly observations, including DST boundaries",
+    "All eight native reports match their archived report hashes and frozen build",
+    "All deal volumes close completely; independent price-times-contract cash calculation reconciles",
+    "All deal cash components, final balances, trade counts and PFs reconcile to native reports",
+    "All raw fills enter within the London 23:00 five-minute slot, once per local weekday",
+    "All non-smoke raw positions hold at least 120 minutes, with no order failures or test-end closes",
+    "Every raw position avoids 17:00 New York rollover; charged swap retained, not erased",
+    "Smoke has one explicitly logged test-end administrative close, not a normal two-hour exit"
+  ],
+  "runs": [
+    {
+      "tag": "control-3y-m1",
+      "window": "3y",
+      "variant": "control",
+      "model": 1,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 13259.54,
+        "net_profit": 3259.5399999999936,
+        "return_pct": 32.595399999999934,
+        "profit_factor": 1.122717407059505,
+        "win_rate_pct": 50.678733031674206,
+        "max_drawdown_pct": 22.06,
+        "trades": 663,
+        "sharpe_ratio": 2.02,
+        "recovery_factor": 0.94,
+        "history_quality": "98%",
+        "equity_dd_pct": 22.06,
+        "mean_trade": 4.916349924585218,
+        "trades_per_month": 18.412465784671532,
+        "trades_per_available_utc_day": 0.7106109324758842,
+        "available_utc_days": 933,
+        "win_streak": 8,
+        "loss_streak": 8
+      },
+      "cost": {
+        "gross": 3971.39,
+        "commission": -364.6499999999999,
+        "swap": -347.2,
+        "fee": 0.0,
+        "native_net": 3259.539999999999,
+        "excluding_swap_net": 3606.74,
+        "excluding_swap_pf": 1.1364900493586927,
+        "swap_charged_trades": 42,
+        "positions_crossing_published_ny17_roll": 9
+      },
+      "execution": {
+        "min_hold_minutes": 105.0,
+        "max_hold_minutes": 301.0,
+        "holds_over_125_minutes": 9,
+        "test_boundary_close_log_mentions": 0,
+        "close_failure_retcodes": [
+          "10018"
+        ],
+        "flags": {
+          "entry_fail": 0,
+          "close_fail": 572,
+          "invalid_volume": 0,
+          "invalid_stops": 0,
+          "stopout": 0
+        }
+      },
+      "history_quality": "98%",
+      "tick_coverage": [],
+      "cohort_comparison_with_previous": null
+    },
+    {
+      "tag": "control-5y-m1",
+      "window": "5y",
+      "variant": "control",
+      "model": 1,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 11521.84,
+        "net_profit": 1521.840000000001,
+        "return_pct": 15.21840000000001,
+        "profit_factor": 1.043935866522547,
+        "win_rate_pct": 49.0072202166065,
+        "max_drawdown_pct": 24.79,
+        "trades": 1108,
+        "sharpe_ratio": 0.63,
+        "recovery_factor": 0.44,
+        "history_quality": "98%",
+        "equity_dd_pct": 24.79,
+        "mean_trade": 1.3735018050541516,
+        "trades_per_month": 18.46919496166484,
+        "trades_per_available_utc_day": 0.712998712998713,
+        "available_utc_days": 1554,
+        "win_streak": 8,
+        "loss_streak": 8
+      },
+      "cost": {
+        "gross": 2713.6400000000003,
+        "commission": -609.3999999999999,
+        "swap": -582.4000000000001,
+        "fee": 0.0,
+        "native_net": 1521.8400000000001,
+        "excluding_swap_net": 2104.2400000000002,
+        "excluding_swap_pf": 1.0611962739675034,
+        "swap_charged_trades": 70,
+        "positions_crossing_published_ny17_roll": 18
+      },
+      "execution": {
+        "min_hold_minutes": 75.0,
+        "max_hold_minutes": 301.0,
+        "holds_over_125_minutes": 18,
+        "test_boundary_close_log_mentions": 0,
+        "close_failure_retcodes": [
+          "10018"
+        ],
+        "flags": {
+          "entry_fail": 0,
+          "close_fail": 1330,
+          "invalid_volume": 0,
+          "invalid_stops": 0,
+          "stopout": 0
+        }
+      },
+      "history_quality": "98%",
+      "tick_coverage": [],
+      "cohort_comparison_with_previous": null
+    },
+    {
+      "tag": "control-smoke-m4",
+      "window": "smoke",
+      "variant": "control",
+      "model": 4,
+      "start": "2026.09.01",
+      "end": "2026.09.15",
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10210.52,
+        "net_profit": 210.51999999999995,
+        "return_pct": 2.1051999999999995,
+        "profit_factor": 1.39867436795758,
+        "win_rate_pct": 40.0,
+        "max_drawdown_pct": 3.14,
+        "trades": 10,
+        "sharpe_ratio": 1.36,
+        "recovery_factor": 0.67,
+        "history_quality": "100% real ticks",
+        "equity_dd_pct": 3.14,
+        "mean_trade": 21.051999999999996,
+        "trades_per_month": 21.74107142857143,
+        "trades_per_available_utc_day": 0.8333333333333334,
+        "available_utc_days": 12,
+        "win_streak": 2,
+        "loss_streak": 3
+      },
+      "cost": {
+        "gross": 249.62000000000003,
+        "commission": -5.5,
+        "swap": -33.6,
+        "fee": 0.0,
+        "native_net": 210.51999999999995,
+        "excluding_swap_net": 244.11999999999998,
+        "excluding_swap_pf": 1.4774963325183375,
+        "swap_charged_trades": 2,
+        "positions_crossing_published_ny17_roll": 1
+      },
+      "execution": {
+        "min_hold_minutes": 120.0,
+        "max_hold_minutes": 301.51666666666665,
+        "holds_over_125_minutes": 1,
+        "test_boundary_close_log_mentions": 0,
+        "close_failure_retcodes": [],
+        "flags": {
+          "entry_fail": 0,
+          "close_fail": 0,
+          "invalid_volume": 0,
+          "invalid_stops": 0,
+          "stopout": 0
+        }
+      },
+      "history_quality": "100% real ticks",
+      "tick_coverage": [
+        "CS\t0\t00:47:52.182\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+        "DF\t0\t00:47:52.816\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "cohort_comparison_with_previous": null
+    },
+    {
+      "tag": "raw-1y-m4",
+      "window": "1y",
+      "variant": "raw",
+      "model": 4,
+      "start": "2025.09.27",
+      "end": "2026.09.27",
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 12537.96,
+        "net_profit": 2537.960000000002,
+        "return_pct": 25.379600000000018,
+        "profit_factor": 1.197901956671421,
+        "win_rate_pct": 47.0,
+        "max_drawdown_pct": 15.67,
+        "trades": 200,
+        "sharpe_ratio": 3.34,
+        "recovery_factor": 1.13,
+        "history_quality": "72% real ticks",
+        "equity_dd_pct": 15.67,
+        "mean_trade": 12.689800000000002,
+        "trades_per_month": 16.678082191780824,
+        "trades_per_available_utc_day": 0.6430868167202572,
+        "available_utc_days": 311,
+        "win_streak": 6,
+        "loss_streak": 7
+      },
+      "cost": {
+        "gross": 4316.759999999999,
+        "commission": -109.99999999999997,
+        "swap": -1668.8000000000002,
+        "fee": 0.0,
+        "native_net": 2537.9600000000005,
+        "excluding_swap_net": 4206.76,
+        "excluding_swap_pf": 1.3509619676349052,
+        "swap_charged_trades": 200,
+        "positions_crossing_published_ny17_roll": 0
+      },
+      "execution": {
+        "min_hold_minutes": 120.0,
+        "max_hold_minutes": 120.01666666666667,
+        "holds_over_125_minutes": 0,
+        "test_boundary_close_log_mentions": 0,
+        "close_failure_retcodes": [],
+        "flags": {
+          "entry_fail": 0,
+          "close_fail": 0,
+          "invalid_volume": 0,
+          "invalid_stops": 0,
+          "stopout": 0
+        }
+      },
+      "history_quality": "72% real ticks",
+      "tick_coverage": [
+        "CS\t0\t00:53:41.810\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+        "JH\t0\t00:53:45.721\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "cohort_comparison_with_previous": {
+        "previous_trades": 199,
+        "matched_entry_slots": 199,
+        "native_only_slots": 1,
+        "previous_only_slots": 0
+      }
+    },
+    {
+      "tag": "raw-3y-m1",
+      "window": "3y",
+      "variant": "raw",
+      "model": 1,
+      "start": "2023.09.27",
+      "end": "2026.09.27",
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 11926.84,
+        "net_profit": 1926.8400000000017,
+        "return_pct": 19.268400000000018,
+        "profit_factor": 1.1025313020481355,
+        "win_rate_pct": 42.57095158597663,
+        "max_drawdown_pct": 16.21,
+        "trades": 599,
+        "sharpe_ratio": 1.29,
+        "recovery_factor": 0.89,
+        "history_quality": "98%",
+        "equity_dd_pct": 19.32,
+        "mean_trade": 3.216761268781302,
+        "trades_per_month": 16.63509352189781,
+        "trades_per_available_utc_day": 0.6420150053590568,
+        "available_utc_days": 933,
+        "win_streak": 7,
+        "loss_streak": 16
+      },
+      "cost": {
+        "gross": 7301.889999999999,
+        "commission": -329.44999999999993,
+        "swap": -5045.6,
+        "fee": 0.0,
+        "native_net": 1926.84,
+        "excluding_swap_net": 6972.4400000000005,
+        "excluding_swap_pf": 1.429350128575229,
+        "swap_charged_trades": 599,
+        "positions_crossing_published_ny17_roll": 0
+      },
+      "execution": {
+        "min_hold_minutes": 120.0,
+        "max_hold_minutes": 120.16666666666667,
+        "holds_over_125_minutes": 0,
+        "test_boundary_close_log_mentions": 0,
+        "close_failure_retcodes": [],
+        "flags": {
+          "entry_fail": 0,
+          "close_fail": 0,
+          "invalid_volume": 0,
+          "invalid_stops": 0,
+          "stopout": 0
+        }
+      },
+      "history_quality": "98%",
+      "tick_coverage": [],
+      "cohort_comparison_with_previous": {
+        "previous_trades": 597,
+        "matched_entry_slots": 597,
+        "native_only_slots": 2,
+        "previous_only_slots": 0
+      }
+    },
+    {
+      "tag": "raw-5y-m1",
+      "window": "5y",
+      "variant": "raw",
+      "model": 1,
+      "start": "2021.09.27",
+      "end": "2026.09.27",
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 8755.04,
+        "net_profit": -1244.9600000000064,
+        "return_pct": -12.449600000000064,
+        "profit_factor": 0.947983491226267,
+        "win_rate_pct": 38.8560157790927,
+        "max_drawdown_pct": 48.03,
+        "trades": 1014,
+        "sharpe_ratio": -0.5,
+        "recovery_factor": -0.26,
+        "history_quality": "98%",
+        "equity_dd_pct": 48.03,
+        "mean_trade": -1.2277712031558181,
+        "trades_per_month": 16.902313800657176,
+        "trades_per_available_utc_day": 0.6525096525096525,
+        "available_utc_days": 1554,
+        "win_streak": 7,
+        "loss_streak": 16
+      },
+      "cost": {
+        "gross": 7847.14,
+        "commission": -557.6999999999998,
+        "swap": -8534.399999999998,
+        "fee": 0.0,
+        "native_net": -1244.9599999999996,
+        "excluding_swap_net": 7289.4400000000005,
+        "excluding_swap_pf": 1.3761352002906109,
+        "swap_charged_trades": 1014,
+        "positions_crossing_published_ny17_roll": 0
+      },
+      "execution": {
+        "min_hold_minutes": 120.0,
+        "max_hold_minutes": 122.0,
+        "holds_over_125_minutes": 0,
+        "test_boundary_close_log_mentions": 0,
+        "close_failure_retcodes": [],
+        "flags": {
+          "entry_fail": 0,
+          "close_fail": 0,
+          "invalid_volume": 0,
+          "invalid_stops": 0,
+          "stopout": 0
+        }
+      },
+      "history_quality": "98%",
+      "tick_coverage": [],
+      "cohort_comparison_with_previous": {
+        "previous_trades": 1011,
+        "matched_entry_slots": 1011,
+        "native_only_slots": 3,
+        "previous_only_slots": 0
+      }
+    },
+    {
+      "tag": "raw-6m-m4",
+      "window": "6m",
+      "variant": "raw",
+      "model": 4,
+      "start": "2026.03.27",
+      "end": "2026.09.27",
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 10191.61,
+        "net_profit": 191.60999999999996,
+        "return_pct": 1.9160999999999995,
+        "profit_factor": 1.0363290604043385,
+        "win_rate_pct": 40.19607843137255,
+        "max_drawdown_pct": 18.74,
+        "trades": 102,
+        "sharpe_ratio": 0.74,
+        "recovery_factor": 0.09,
+        "history_quality": "100% real ticks",
+        "equity_dd_pct": 18.74,
+        "mean_trade": 1.878529411764701,
+        "trades_per_month": 16.87296195652174,
+        "trades_per_available_utc_day": 0.6538461538461539,
+        "available_utc_days": 156,
+        "win_streak": 6,
+        "loss_streak": 6
+      },
+      "cost": {
+        "gross": 1098.9099999999994,
+        "commission": -56.09999999999997,
+        "swap": -851.2,
+        "fee": 0.0,
+        "native_net": 191.6099999999995,
+        "excluding_swap_net": 1042.81,
+        "excluding_swap_pf": 1.2166400751211162,
+        "swap_charged_trades": 102,
+        "positions_crossing_published_ny17_roll": 0
+      },
+      "execution": {
+        "min_hold_minutes": 120.0,
+        "max_hold_minutes": 120.01666666666667,
+        "holds_over_125_minutes": 0,
+        "test_boundary_close_log_mentions": 0,
+        "close_failure_retcodes": [],
+        "flags": {
+          "entry_fail": 0,
+          "close_fail": 0,
+          "invalid_volume": 0,
+          "invalid_stops": 0,
+          "stopout": 0
+        }
+      },
+      "history_quality": "100% real ticks",
+      "tick_coverage": [
+        "CS\t0\t00:53:16.794\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+        "ND\t0\t00:53:19.328\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "cohort_comparison_with_previous": {
+        "previous_trades": 102,
+        "matched_entry_slots": 102,
+        "native_only_slots": 0,
+        "previous_only_slots": 0
+      }
+    },
+    {
+      "tag": "raw-smoke-m4",
+      "window": "smoke",
+      "variant": "raw",
+      "model": 4,
+      "start": "2026.09.01",
+      "end": "2026.09.15",
+      "metrics": {
+        "initial_balance": 10000.0,
+        "final_balance": 9600.3,
+        "net_profit": -399.7,
+        "return_pct": -3.997,
+        "profit_factor": 0.22630223960047238,
+        "win_rate_pct": 25.0,
+        "max_drawdown_pct": 4.66,
+        "trades": 8,
+        "sharpe_ratio": -3.05,
+        "recovery_factor": -0.85,
+        "history_quality": "100% real ticks",
+        "equity_dd_pct": 4.66,
+        "mean_trade": -49.96249999999999,
+        "trades_per_month": 17.392857142857142,
+        "trades_per_available_utc_day": 0.6666666666666666,
+        "available_utc_days": 12,
+        "win_streak": 2,
+        "loss_streak": 4
+      },
+      "cost": {
+        "gross": -333.70000000000005,
+        "commission": -4.4,
+        "swap": -61.599999999999994,
+        "fee": 0.0,
+        "native_net": -399.69999999999993,
+        "excluding_swap_net": -338.0999999999999,
+        "excluding_swap_pf": 0.27479033053774055,
+        "swap_charged_trades": 7,
+        "positions_crossing_published_ny17_roll": 0
+      },
+      "execution": {
+        "min_hold_minutes": 119.41666666666667,
+        "max_hold_minutes": 120.01666666666667,
+        "holds_over_125_minutes": 0,
+        "test_boundary_close_log_mentions": 2,
+        "close_failure_retcodes": [],
+        "flags": {
+          "entry_fail": 0,
+          "close_fail": 0,
+          "invalid_volume": 0,
+          "invalid_stops": 0,
+          "stopout": 0
+        }
+      },
+      "history_quality": "100% real ticks",
+      "tick_coverage": [
+        "CS\t0\t00:47:41.791\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+        "PH\t0\t00:47:42.417\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "cohort_comparison_with_previous": {
+        "previous_trades": 8,
+        "matched_entry_slots": 8,
+        "native_only_slots": 0,
+        "previous_only_slots": 0
+      }
+    }
+  ]
+}

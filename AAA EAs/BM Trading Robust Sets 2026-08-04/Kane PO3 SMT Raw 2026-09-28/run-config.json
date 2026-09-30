@@ -1,0 +1,68 @@
+{
+  "symbols": [
+    "USTEC"
+  ],
+  "end": "2026.09.27",
+  "windows": {
+    "6m": "2026.03.27",
+    "1y": "2025.09.27",
+    "3y": "2023.09.27",
+    "5y": "2021.09.27"
+  },
+  "smoke_start": "2026.02.02",
+  "smoke_end": "2026.02.16",
+  "deposit": 10000,
+  "fixed_risk_money": 100,
+  "variants": [
+    {
+      "name": "sweep-inversion-control",
+      "mode": 0,
+      "both": true,
+      "rr": 0,
+      "protected": true
+    },
+    {
+      "name": "aligned-smt-static",
+      "mode": 1,
+      "both": true,
+      "rr": 0,
+      "protected": true,
+      "control": "sweep-inversion-control"
+    },
+    {
+      "name": "aligned-smt-structural-be",
+      "mode": 2,
+      "both": true,
+      "rr": 0,
+      "protected": true,
+      "control": "aligned-smt-static"
+    },
+    {
+      "name": "aligned-smt-1r-be",
+      "mode": 3,
+      "both": true,
+      "rr": 0,
+      "protected": true,
+      "control": "aligned-smt-static"
+    }
+  ],
+  "seed": 9282605,
+  "gate": "Both 3y and 5y: positive net, idea PF >= 1.15, >=30 trades, net greater than named control; neither candidate nor control capital-exhausted. Model 1 screen only. Passing cases require Model 4 confirmation. No optimization or deployment.",
+  "prop": {
+    "FTMO": {
+      "capital": 10000,
+      "base_risk": 0.005
+    },
+    "Instant": {
+      "capital": 5000,
+      "base_risk": 0.0025
+    },
+    "horizons": [
+      30,
+      60,
+      120,
+      180
+    ]
+  }
+}
+

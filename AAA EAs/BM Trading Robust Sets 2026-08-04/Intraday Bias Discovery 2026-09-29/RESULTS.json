@@ -1,0 +1,2117 @@
+{
+  "finalists_sha256": "4c06bbf7d7c35ee9c505fe6aa70804dde7845d57542116c2a85a56830d0a4314",
+  "bootstrap_paths": 10000,
+  "bootstrap_block_days": 5,
+  "results": [
+    {
+      "candidate": {
+        "symbol": "US30",
+        "hold_minutes": 30,
+        "direction": 1,
+        "clock": "UTC",
+        "slot": 27,
+        "selection_score": 1.422532461754857,
+        "development_net_mean_bps": 1.6693001004607542,
+        "development_pf": 1.1800046982671895,
+        "distinct_configurations": 806
+      },
+      "phases": {
+        "development": {
+          "n": 643,
+          "mean_bps": 1.6693001004607542,
+          "return_pct": 10.733599645962649,
+          "pf": 1.1800046982671895,
+          "win_pct": 49.766718506998444,
+          "t": 1.422532461754857,
+          "closed_dd_pct": 4.135351861347229,
+          "win_streak": 8,
+          "loss_streak": 9,
+          "excess_mean_bps": 2.9671578381720556,
+          "excess_t": 2.585957713989612,
+          "stress_mean_bps": 0.21074020531972723,
+          "stress_pf": 1.0210042957986138,
+          "stress_return_pct": 1.355059520205846,
+          "trades_per_month": 21.459772478070175,
+          "trades_per_trading_day": 0.8286082474226805,
+          "marked_dd_pct": 4.1749172507619665,
+          "half1_mean_bps": 2.4384384796504146,
+          "half2_mean_bps": 0.8977656515539916
+        },
+        "validation": {
+          "n": 387,
+          "mean_bps": -0.8185233329367735,
+          "return_pct": -3.1676852984653134,
+          "pf": 0.9250734529086271,
+          "win_pct": 45.47803617571059,
+          "t": -0.5439658481285465,
+          "closed_dd_pct": 7.770029993476406,
+          "win_streak": 6,
+          "loss_streak": 13,
+          "excess_mean_bps": 0.23188796546420848,
+          "excess_t": 0.1589640846949823,
+          "stress_mean_bps": -2.0066723526196055,
+          "stress_pf": 0.8267507773229573,
+          "stress_return_pct": -7.765822004637873,
+          "trades_per_month": 21.45594262295082,
+          "trades_per_trading_day": 0.8269230769230769,
+          "marked_dd_pct": 7.960550233159153,
+          "half1_mean_bps": -2.980543910109275,
+          "half2_mean_bps": 1.3546994233920622
+        },
+        "holdout": {
+          "n": 257,
+          "mean_bps": -2.052698040221512,
+          "return_pct": -5.275433963369284,
+          "pf": 0.7998788672260608,
+          "win_pct": 50.19455252918288,
+          "t": -1.2974474037776218,
+          "closed_dd_pct": 6.587473514874295,
+          "win_streak": 7,
+          "loss_streak": 7,
+          "excess_mean_bps": -1.2552036087421752,
+          "excess_t": -0.8054649757317307,
+          "stress_mean_bps": -3.02804396012084,
+          "stress_pf": 0.7184488243930027,
+          "stress_return_pct": -7.782072977510559,
+          "trades_per_month": 21.431335616438357,
+          "trades_per_trading_day": 0.8237179487179487,
+          "marked_dd_pct": 6.849807831679134,
+          "half1_mean_bps": -1.15197248166869,
+          "half2_mean_bps": -2.9464412301033813
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 643,
+            "mean_bps": -1.8323112299367614,
+            "return_pct": -11.781761208493377,
+            "pf": 0.6854561460860014,
+            "win_pct": 44.47900466562986,
+            "t": -3.43820004117367,
+            "closed_dd_pct": 13.126711782057784,
+            "win_streak": 10,
+            "loss_streak": 10
+          },
+          {
+            "offset_minutes": 30,
+            "n": 644,
+            "mean_bps": -3.002767068490497,
+            "return_pct": -19.3378199210788,
+            "pf": 0.7014783348470481,
+            "win_pct": 45.3416149068323,
+            "t": -3.059086357529217,
+            "closed_dd_pct": 20.989617262230905,
+            "win_streak": 8,
+            "loss_streak": 10
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 387,
+            "mean_bps": -0.8709722440560694,
+            "return_pct": -3.370662584496989,
+            "pf": 0.8233223336307243,
+            "win_pct": 48.57881136950905,
+            "t": -1.24282195703109,
+            "closed_dd_pct": 5.30697141768016,
+            "win_streak": 7,
+            "loss_streak": 8
+          },
+          {
+            "offset_minutes": 30,
+            "n": 385,
+            "mean_bps": -0.6739138095830404,
+            "return_pct": -2.5945681668947054,
+            "pf": 0.9180637259630242,
+            "win_pct": 51.688311688311686,
+            "t": -0.5914231713367663,
+            "closed_dd_pct": 5.66533019256408,
+            "win_streak": 7,
+            "loss_streak": 8
+          }
+        ]
+      },
+      "failures": [
+        "development: neighbor -30m nonpositive/empty",
+        "development: neighbor +30m nonpositive/empty",
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: neighbor -30m nonpositive/empty",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: no time-specific excess",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -2.052698040221512,
+          "lower95_bps": -5.053123419151711,
+          "upper95_bps": 0.6805371226896926,
+          "p": 0.881011898810119
+        },
+        "excess": {
+          "mean_bps": -1.2552036087421752,
+          "lower95_bps": -4.198730167401069,
+          "upper95_bps": 1.4435676072672936,
+          "p": 0.7679232076792321
+        }
+      },
+      "raw_p": 0.881011898810119,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "USTEC",
+        "hold_minutes": 120,
+        "direction": 1,
+        "clock": "America/New_York",
+        "slot": 27,
+        "selection_score": 0.8587062788157194,
+        "development_net_mean_bps": 2.102867337068356,
+        "development_pf": 1.103879249830112,
+        "distinct_configurations": 806
+      },
+      "phases": {
+        "development": {
+          "n": 623,
+          "mean_bps": 2.102867337068356,
+          "return_pct": 13.10086350993586,
+          "pf": 1.103879249830112,
+          "win_pct": 54.574638844301774,
+          "t": 0.8587062788157194,
+          "closed_dd_pct": 7.588155345319012,
+          "win_streak": 8,
+          "loss_streak": 5,
+          "excess_mean_bps": 4.040795508480205,
+          "excess_t": 1.7651571870878426,
+          "stress_mean_bps": -0.10843077214433594,
+          "stress_pf": 0.9949061293202108,
+          "stress_return_pct": -0.6755237104592129,
+          "trades_per_month": 20.792283442982455,
+          "trades_per_trading_day": 0.8028350515463918,
+          "marked_dd_pct": 8.036367529344547,
+          "half1_mean_bps": 4.355460523359772,
+          "half2_mean_bps": -0.15696891413074962
+        },
+        "validation": {
+          "n": 372,
+          "mean_bps": -1.9060858696559502,
+          "return_pct": -7.090639435120135,
+          "pf": 0.8802508035244682,
+          "win_pct": 51.075268817204304,
+          "t": -0.7348190195013042,
+          "closed_dd_pct": 11.605706211705446,
+          "win_streak": 5,
+          "loss_streak": 8,
+          "excess_mean_bps": -0.9177713887538314,
+          "excess_t": -0.3854164362823658,
+          "stress_mean_bps": -3.4444367709793173,
+          "stress_pf": 0.7933393976014547,
+          "stress_return_pct": -12.81330478804306,
+          "trades_per_month": 20.62431693989071,
+          "trades_per_trading_day": 0.7948717948717948,
+          "marked_dd_pct": 11.626954545073092,
+          "half1_mean_bps": -3.586386183836731,
+          "half2_mean_bps": -0.22578555547516968
+        },
+        "holdout": {
+          "n": 247,
+          "mean_bps": -2.3021780204806244,
+          "return_pct": -5.6863797105871425,
+          "pf": 0.8392450335568078,
+          "win_pct": 48.987854251012145,
+          "t": -0.9739317964023246,
+          "closed_dd_pct": 10.000634595967561,
+          "win_streak": 11,
+          "loss_streak": 10,
+          "excess_mean_bps": -1.625634878872239,
+          "excess_t": -0.7439464475337796,
+          "stress_mean_bps": -3.403558035702326,
+          "stress_pf": 0.7714463959189419,
+          "stress_return_pct": -8.406788348184744,
+          "trades_per_month": 20.597431506849315,
+          "trades_per_trading_day": 0.7916666666666666,
+          "marked_dd_pct": 10.243950907590316,
+          "half1_mean_bps": -1.1269617112433312,
+          "half2_mean_bps": -3.449189138296222
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 622,
+            "mean_bps": 1.5151880629072132,
+            "return_pct": 9.424469751282865,
+            "pf": 1.0738119934580908,
+            "win_pct": 53.69774919614147,
+            "t": 0.6388353382039262,
+            "closed_dd_pct": 8.088572388484732,
+            "win_streak": 11,
+            "loss_streak": 6
+          },
+          {
+            "offset_minutes": 30,
+            "n": 157,
+            "mean_bps": 0.7874964760694273,
+            "return_pct": 1.236369467429001,
+            "pf": 1.0543231527949017,
+            "win_pct": 51.59235668789809,
+            "t": 0.2429638410313157,
+            "closed_dd_pct": 5.99763935056687,
+            "win_streak": 5,
+            "loss_streak": 4
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 372,
+            "mean_bps": 0.24393938555131808,
+            "return_pct": 0.9074545142509032,
+            "pf": 1.0151881723909244,
+            "win_pct": 50.0,
+            "t": 0.07959420696284245,
+            "closed_dd_pct": 8.616949482162179,
+            "win_streak": 6,
+            "loss_streak": 8
+          },
+          {
+            "offset_minutes": 30,
+            "n": 315,
+            "mean_bps": -3.251041914419794,
+            "return_pct": -10.240782030422352,
+            "pf": 0.8008090096357093,
+            "win_pct": 53.65079365079365,
+            "t": -1.1878049328355411,
+            "closed_dd_pct": 14.590940464504845,
+            "win_streak": 11,
+            "loss_streak": 11
+          }
+        ]
+      },
+      "failures": [
+        "development: PF below 1.15",
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: no time-specific excess",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: no time-specific excess",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -2.3021780204806244,
+          "lower95_bps": -5.839391828945166,
+          "upper95_bps": 1.2545690598203794,
+          "p": 0.8653134686531346
+        },
+        "excess": {
+          "mean_bps": -1.625634878872239,
+          "lower95_bps": -4.841708248458364,
+          "upper95_bps": 1.5552190459534132,
+          "p": 0.8002199780021998
+        }
+      },
+      "raw_p": 0.8653134686531346,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "US500",
+        "hold_minutes": 120,
+        "direction": 1,
+        "clock": "America/New_York",
+        "slot": 27,
+        "selection_score": 0.5383028262889427,
+        "development_net_mean_bps": 1.0483245681132907,
+        "development_pf": 1.063547477892982,
+        "distinct_configurations": 806
+      },
+      "phases": {
+        "development": {
+          "n": 623,
+          "mean_bps": 1.0483245681132907,
+          "return_pct": 6.531062059345801,
+          "pf": 1.063547477892982,
+          "win_pct": 53.93258426966292,
+          "t": 0.5383028262889427,
+          "closed_dd_pct": 7.523237946833947,
+          "win_streak": 8,
+          "loss_streak": 5,
+          "excess_mean_bps": 3.122510892207564,
+          "excess_t": 1.6990280638245525,
+          "stress_mean_bps": -1.340866821501828,
+          "stress_pf": 0.9239998141251812,
+          "stress_return_pct": -8.353600297956389,
+          "trades_per_month": 20.792283442982455,
+          "trades_per_trading_day": 0.8028350515463918,
+          "marked_dd_pct": 7.617261782907313,
+          "half1_mean_bps": 2.8514401632513504,
+          "half2_mean_bps": -0.7605888263660496
+        },
+        "validation": {
+          "n": 372,
+          "mean_bps": -1.4613831697937223,
+          "return_pct": -5.4363453916326465,
+          "pf": 0.8830195534303446,
+          "win_pct": 51.344086021505376,
+          "t": -0.7118435996198973,
+          "closed_dd_pct": 9.137166036556597,
+          "win_streak": 6,
+          "loss_streak": 6,
+          "excess_mean_bps": -0.14262721628552014,
+          "excess_t": -0.07569119236012985,
+          "stress_mean_bps": -3.257093768873394,
+          "stress_pf": 0.7570959297965321,
+          "stress_return_pct": -12.116388820209027,
+          "trades_per_month": 20.62431693989071,
+          "trades_per_trading_day": 0.7948717948717948,
+          "marked_dd_pct": 9.153911944167525,
+          "half1_mean_bps": -3.0865732504800025,
+          "half2_mean_bps": 0.16380691089255847
+        },
+        "holdout": {
+          "n": 247,
+          "mean_bps": -2.2065044542370065,
+          "return_pct": -5.450066001965406,
+          "pf": 0.8096701664849625,
+          "win_pct": 50.607287449392715,
+          "t": -1.1585902776273753,
+          "closed_dd_pct": 7.780196068139054,
+          "win_streak": 8,
+          "loss_streak": 10,
+          "excess_mean_bps": -1.2629999227964155,
+          "excess_t": -0.7204039619480137,
+          "stress_mean_bps": -3.5998779236942484,
+          "stress_pf": 0.7074179425051912,
+          "stress_return_pct": -8.891698471524794,
+          "trades_per_month": 20.597431506849315,
+          "trades_per_trading_day": 0.7916666666666666,
+          "marked_dd_pct": 7.960655134680149,
+          "half1_mean_bps": -1.2769081137137075,
+          "half2_mean_bps": -3.113790482587747
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 622,
+            "mean_bps": -0.07885004030824448,
+            "return_pct": -0.4904472507172807,
+            "pf": 0.9953063920568691,
+            "win_pct": 52.09003215434084,
+            "t": -0.04238095291119038,
+            "closed_dd_pct": 10.521470347509265,
+            "win_streak": 8,
+            "loss_streak": 8
+          },
+          {
+            "offset_minutes": 30,
+            "n": 157,
+            "mean_bps": 0.4536368194587631,
+            "return_pct": 0.7122098065502581,
+            "pf": 1.0379009766877383,
+            "win_pct": 52.86624203821656,
+            "t": 0.16480069960647972,
+            "closed_dd_pct": 4.962159664798428,
+            "win_streak": 7,
+            "loss_streak": 4
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 372,
+            "mean_bps": 0.18038317325049052,
+            "return_pct": 0.6710254044918247,
+            "pf": 1.0139219581693073,
+            "win_pct": 53.76344086021505,
+            "t": 0.0715888587357206,
+            "closed_dd_pct": 7.236764354697892,
+            "win_streak": 6,
+            "loss_streak": 8
+          },
+          {
+            "offset_minutes": 30,
+            "n": 315,
+            "mean_bps": -2.3059769680100906,
+            "return_pct": -7.263827449231785,
+            "pf": 0.8261017465773389,
+            "win_pct": 53.333333333333336,
+            "t": -1.0325997482682243,
+            "closed_dd_pct": 10.726238410771987,
+            "win_streak": 10,
+            "loss_streak": 12
+          }
+        ]
+      },
+      "failures": [
+        "development: PF below 1.15",
+        "development: neighbor -30m nonpositive/empty",
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: no time-specific excess",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: no time-specific excess",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -2.2065044542370065,
+          "lower95_bps": -5.18651488233552,
+          "upper95_bps": 0.6300360773660272,
+          "p": 0.8893110688931107
+        },
+        "excess": {
+          "mean_bps": -1.2629999227964155,
+          "lower95_bps": -3.9250509840177954,
+          "upper95_bps": 1.3402869868852598,
+          "p": 0.7765223477652234
+        }
+      },
+      "raw_p": 0.8893110688931107,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "XAUUSD",
+        "hold_minutes": 120,
+        "direction": 1,
+        "clock": "Europe/London",
+        "slot": 46,
+        "selection_score": 2.5231945785111307,
+        "development_net_mean_bps": 1.3744839250375636,
+        "development_pf": 1.3877680649778623,
+        "distinct_configurations": 812
+      },
+      "phases": {
+        "development": {
+          "n": 515,
+          "mean_bps": 1.3744839250375636,
+          "return_pct": 7.078592213943453,
+          "pf": 1.3877680649778623,
+          "win_pct": 53.592233009708735,
+          "t": 2.5231945785111307,
+          "closed_dd_pct": 3.182768597397818,
+          "win_streak": 13,
+          "loss_streak": 8,
+          "excess_mean_bps": 2.0156784473632157,
+          "excess_t": 3.1687087777156946,
+          "stress_mean_bps": 0.5274352291755786,
+          "stress_pf": 1.1329241065991262,
+          "stress_return_pct": 2.71629143025423,
+          "trades_per_month": 17.18784265350877,
+          "trades_per_trading_day": 0.6645161290322581,
+          "marked_dd_pct": 3.3524131597584677,
+          "half1_mean_bps": -0.12213474379712327,
+          "half2_mean_bps": 2.876926012817133
+        },
+        "validation": {
+          "n": 297,
+          "mean_bps": 1.8978701604733021,
+          "return_pct": 5.636674376605708,
+          "pf": 1.4151038910452487,
+          "win_pct": 53.535353535353536,
+          "t": 1.952756063200113,
+          "closed_dd_pct": 1.7129395886297953,
+          "win_streak": 10,
+          "loss_streak": 9,
+          "excess_mean_bps": 1.0873776150962309,
+          "excess_t": 0.9886221343866781,
+          "stress_mean_bps": 1.2987730324860782,
+          "stress_pf": 1.2673141839837008,
+          "stress_return_pct": 3.8573559064836527,
+          "trades_per_month": 16.466188524590162,
+          "trades_per_trading_day": 0.6346153846153846,
+          "marked_dd_pct": 2.051098918293349,
+          "half1_mean_bps": 1.4528272334719252,
+          "half2_mean_bps": 2.345920134278742
+        },
+        "holdout": {
+          "n": 199,
+          "mean_bps": 5.68492339799877,
+          "return_pct": 11.312997562017554,
+          "pf": 1.475492531388898,
+          "win_pct": 53.266331658291456,
+          "t": 1.8424551092754133,
+          "closed_dd_pct": 4.129919282996707,
+          "win_streak": 8,
+          "loss_streak": 6,
+          "excess_mean_bps": 5.912174788385962,
+          "excess_t": 1.9662483393680557,
+          "stress_mean_bps": 5.390212041306129,
+          "stress_pf": 1.4456676552996153,
+          "stress_return_pct": 10.726521962199197,
+          "trades_per_month": 16.59469178082192,
+          "trades_per_trading_day": 0.639871382636656,
+          "marked_dd_pct": 4.347246232246755,
+          "half1_mean_bps": 8.7758334915323,
+          "half2_mean_bps": 2.7455285051286493
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 37,
+            "mean_bps": -1.3093981046466543,
+            "return_pct": -0.48447729871926204,
+            "pf": 0.789880736776978,
+            "win_pct": 54.054054054054056,
+            "t": -0.5425768419239161,
+            "closed_dd_pct": 0.9288773207493014,
+            "win_streak": 3,
+            "loss_streak": 2
+          },
+          {
+            "offset_minutes": 30,
+            "n": 517,
+            "mean_bps": -0.5393249755895454,
+            "return_pct": -2.7883101237979497,
+            "pf": 0.8956298552776616,
+            "win_pct": 48.35589941972921,
+            "t": -0.8611139883398096,
+            "closed_dd_pct": 6.6288682655121205,
+            "win_streak": 9,
+            "loss_streak": 8
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 17,
+            "mean_bps": 2.8333098551288183,
+            "return_pct": 0.4816626753718991,
+            "pf": 2.137958169590306,
+            "win_pct": 52.94117647058824,
+            "t": 1.2469226721646296,
+            "closed_dd_pct": 0.18223375903188518,
+            "win_streak": 2,
+            "loss_streak": 3
+          },
+          {
+            "offset_minutes": 30,
+            "n": 310,
+            "mean_bps": 1.5661168201238576,
+            "return_pct": 4.854962142383958,
+            "pf": 1.2585364298468718,
+            "win_pct": 50.645161290322584,
+            "t": 1.3848884265800694,
+            "closed_dd_pct": 2.9206709275694704,
+            "win_streak": 7,
+            "loss_streak": 6
+          }
+        ]
+      },
+      "failures": [
+        "development: neighbor -30m nonpositive/empty",
+        "development: neighbor +30m nonpositive/empty",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": 5.68492339799877,
+          "lower95_bps": 0.5831730354425317,
+          "upper95_bps": 11.093265743222688,
+          "p": 0.04229577042295771
+        },
+        "excess": {
+          "mean_bps": 5.912174788385962,
+          "lower95_bps": 1.2106060219343577,
+          "upper95_bps": 11.150714454594162,
+          "p": 0.0341965803419658
+        }
+      },
+      "raw_p": 0.04229577042295771,
+      "holm_p": 0.5498450154984502,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "BTCUSD",
+        "hold_minutes": 120,
+        "direction": 1,
+        "clock": "America/New_York",
+        "slot": 11,
+        "selection_score": 0.4184382852461561,
+        "development_net_mean_bps": 1.0001393386021231,
+        "development_pf": 1.0476208897508072,
+        "distinct_configurations": 844
+      },
+      "phases": {
+        "development": {
+          "n": 912,
+          "mean_bps": 1.0001393386021231,
+          "return_pct": 9.121270768051364,
+          "pf": 1.0476208897508072,
+          "win_pct": 46.71052631578947,
+          "t": 0.4184382852461561,
+          "closed_dd_pct": 15.359825544391256,
+          "win_streak": 7,
+          "loss_streak": 10,
+          "excess_mean_bps": 5.630043916946516,
+          "excess_t": 2.4553948231426777,
+          "stress_mean_bps": -4.196347078541771,
+          "stress_pf": 0.825194600597938,
+          "stress_return_pct": -38.270685356300945,
+          "trades_per_month": 30.4375,
+          "trades_per_trading_day": 1.0,
+          "marked_dd_pct": 17.540462603935666,
+          "half1_mean_bps": 2.6886774116851266,
+          "half2_mean_bps": -0.6883987344808802
+        },
+        "validation": {
+          "n": 547,
+          "mean_bps": -2.033499003242973,
+          "return_pct": -11.123239547739063,
+          "pf": 0.8980304950744952,
+          "win_pct": 49.177330895795244,
+          "t": -0.8654322070303907,
+          "closed_dd_pct": 13.940011515006598,
+          "win_streak": 8,
+          "loss_streak": 6,
+          "excess_mean_bps": -0.4481724422896984,
+          "excess_t": -0.19097147929127917,
+          "stress_mean_bps": -4.484559277662814,
+          "stress_pf": 0.7886791172142447,
+          "stress_return_pct": -24.53053924881559,
+          "trades_per_month": 30.326616575591984,
+          "trades_per_trading_day": 0.9963570127504554,
+          "marked_dd_pct": 14.546190830232058,
+          "half1_mean_bps": -0.4647767597240843,
+          "half2_mean_bps": -3.6195233303300856
+        },
+        "holdout": {
+          "n": 365,
+          "mean_bps": -2.252619045029917,
+          "return_pct": -8.222059514359195,
+          "pf": 0.8796834339393469,
+          "win_pct": 48.21917808219178,
+          "t": -0.8082423055035914,
+          "closed_dd_pct": 13.152618401929976,
+          "win_streak": 7,
+          "loss_streak": 10,
+          "excess_mean_bps": 0.2584628170310308,
+          "excess_t": 0.09527875008910607,
+          "stress_mean_bps": -3.763211876616239,
+          "stress_pf": 0.8072300883146419,
+          "stress_return_pct": -13.735723349649271,
+          "trades_per_month": 30.437500000000004,
+          "trades_per_trading_day": 1.0,
+          "marked_dd_pct": 13.503616029969416,
+          "half1_mean_bps": -2.7843860698980873,
+          "half2_mean_bps": -1.7179302233218112
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 909,
+            "mean_bps": -1.1262028092093739,
+            "return_pct": -10.237183535713209,
+            "pf": 0.9468938148632319,
+            "win_pct": 44.884488448844884,
+            "t": -0.4970729270338705,
+            "closed_dd_pct": 22.56173427235288,
+            "win_streak": 10,
+            "loss_streak": 12
+          },
+          {
+            "offset_minutes": 30,
+            "n": 911,
+            "mean_bps": -1.7925134526948645,
+            "return_pct": -16.329797554050216,
+            "pf": 0.9198828915204956,
+            "win_pct": 45.664105378704726,
+            "t": -0.7949064524771013,
+            "closed_dd_pct": 28.792093063189967,
+            "win_streak": 11,
+            "loss_streak": 12
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 545,
+            "mean_bps": -1.5713359727058531,
+            "return_pct": -8.563781051246899,
+            "pf": 0.9169754483768108,
+            "win_pct": 47.88990825688074,
+            "t": -0.7096969076172555,
+            "closed_dd_pct": 9.827256607108776,
+            "win_streak": 7,
+            "loss_streak": 8
+          },
+          {
+            "offset_minutes": 30,
+            "n": 547,
+            "mean_bps": -2.8426348080790405,
+            "return_pct": -15.549212400192351,
+            "pf": 0.8515991494669543,
+            "win_pct": 50.822669104204756,
+            "t": -1.2971634490282404,
+            "closed_dd_pct": 16.993412920179697,
+            "win_streak": 8,
+            "loss_streak": 7
+          }
+        ]
+      },
+      "failures": [
+        "development: PF below 1.15",
+        "development: neighbor -30m nonpositive/empty",
+        "development: neighbor +30m nonpositive/empty",
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: no time-specific excess",
+        "validation: neighbor -30m nonpositive/empty",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -2.252619045029917,
+          "lower95_bps": -6.574223104227363,
+          "upper95_bps": 2.289369597240157,
+          "p": 0.8064193580641936
+        },
+        "excess": {
+          "mean_bps": 0.2584628170310308,
+          "lower95_bps": -4.068905958542206,
+          "upper95_bps": 4.648973565229186,
+          "p": 0.45455454454554545
+        }
+      },
+      "raw_p": 0.8064193580641936,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "ETHUSD",
+        "hold_minutes": 120,
+        "direction": -1,
+        "clock": "Europe/London",
+        "slot": 3,
+        "selection_score": 0.3348226224419149,
+        "development_net_mean_bps": 1.200874415330385,
+        "development_pf": 1.037193527301365,
+        "distinct_configurations": 844
+      },
+      "phases": {
+        "development": {
+          "n": 909,
+          "mean_bps": 1.200874415330385,
+          "return_pct": 10.9159484353532,
+          "pf": 1.037193527301365,
+          "win_pct": 49.064906490649065,
+          "t": 0.3348226224419149,
+          "closed_dd_pct": 29.712662431696984,
+          "win_streak": 7,
+          "loss_streak": 12,
+          "excess_mean_bps": 9.65815979468427,
+          "excess_t": 2.793353586798169,
+          "stress_mean_bps": -6.815921904658402,
+          "stress_pf": 0.8140399654134963,
+          "stress_return_pct": -61.956730113344875,
+          "trades_per_month": 30.337376644736842,
+          "trades_per_trading_day": 0.9967105263157895,
+          "marked_dd_pct": 30.802456134608818,
+          "half1_mean_bps": 4.762509533483209,
+          "half2_mean_bps": -2.368605714095904
+        },
+        "validation": {
+          "n": 545,
+          "mean_bps": -3.606640995454572,
+          "return_pct": -19.656193425227418,
+          "pf": 0.9078811404184358,
+          "win_pct": 46.055045871559635,
+          "t": -0.6715603174851096,
+          "closed_dd_pct": 38.20679084448283,
+          "win_streak": 6,
+          "loss_streak": 9,
+          "excess_mean_bps": 3.4181073343280857,
+          "excess_t": 0.6547244525224968,
+          "stress_mean_bps": -10.198171761700733,
+          "stress_pf": 0.7623564032298694,
+          "stress_return_pct": -55.580036101268995,
+          "trades_per_month": 30.215733151183972,
+          "trades_per_trading_day": 0.9927140255009107,
+          "marked_dd_pct": 40.38176564362753,
+          "half1_mean_bps": -6.451006358438628,
+          "half2_mean_bps": -0.7518184068713112
+        },
+        "holdout": {
+          "n": 364,
+          "mean_bps": -0.026744606070634818,
+          "return_pct": -0.09735036609711073,
+          "pf": 0.9991155403565175,
+          "win_pct": 49.45054945054945,
+          "t": -0.005601355649375724,
+          "closed_dd_pct": 16.669541595085065,
+          "win_streak": 9,
+          "loss_streak": 6,
+          "excess_mean_bps": 3.6321656293887608,
+          "excess_t": 0.7892681567383846,
+          "stress_mean_bps": -5.100061078459017,
+          "stress_pf": 0.8447826357295399,
+          "stress_return_pct": -18.564222325590823,
+          "trades_per_month": 30.354109589041098,
+          "trades_per_trading_day": 0.9972602739726028,
+          "marked_dd_pct": 18.718465395345703,
+          "half1_mean_bps": -2.029185428420989,
+          "half2_mean_bps": 1.9978226342062417
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 909,
+            "mean_bps": -1.400996055202576,
+            "return_pct": -12.735054141791416,
+            "pf": 0.9597156504379372,
+            "win_pct": 47.964796479647966,
+            "t": -0.39739959971460714,
+            "closed_dd_pct": 49.913766510418874,
+            "win_streak": 7,
+            "loss_streak": 10
+          },
+          {
+            "offset_minutes": 30,
+            "n": 910,
+            "mean_bps": -2.9625105311120965,
+            "return_pct": -26.958845833120076,
+            "pf": 0.9088742665205418,
+            "win_pct": 44.72527472527473,
+            "t": -0.9060063048626159,
+            "closed_dd_pct": 63.41314499355245,
+            "win_streak": 9,
+            "loss_streak": 13
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 545,
+            "mean_bps": -2.215424229708615,
+            "return_pct": -12.074062051911952,
+            "pf": 0.9435238138805251,
+            "win_pct": 43.669724770642205,
+            "t": -0.402030425565248,
+            "closed_dd_pct": 44.869567967389685,
+            "win_streak": 6,
+            "loss_streak": 12
+          },
+          {
+            "offset_minutes": 30,
+            "n": 547,
+            "mean_bps": -8.181282730043426,
+            "return_pct": -44.75161653333754,
+            "pf": 0.7939785539608539,
+            "win_pct": 43.51005484460695,
+            "t": -1.8472106300375242,
+            "closed_dd_pct": 58.273708441029775,
+            "win_streak": 8,
+            "loss_streak": 10
+          }
+        ]
+      },
+      "failures": [
+        "development: PF below 1.15",
+        "development: neighbor -30m nonpositive/empty",
+        "development: neighbor +30m nonpositive/empty",
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: neighbor -30m nonpositive/empty",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -0.026744606070634818,
+          "lower95_bps": -8.07787875999814,
+          "upper95_bps": 8.227932798336795,
+          "p": 0.49975002499750026
+        },
+        "excess": {
+          "mean_bps": 3.6321656293887608,
+          "lower95_bps": -4.022347514765265,
+          "upper95_bps": 11.370027986051584,
+          "p": 0.2226777322267773
+        }
+      },
+      "raw_p": 0.49975002499750026,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "EURUSD",
+        "hold_minutes": 30,
+        "direction": -1,
+        "clock": "America/New_York",
+        "slot": 15,
+        "selection_score": 3.881733164417931,
+        "development_net_mean_bps": 1.301164505539499,
+        "development_pf": 1.5440690962096335,
+        "distinct_configurations": 844
+      },
+      "phases": {
+        "development": {
+          "n": 649,
+          "mean_bps": 1.301164505539499,
+          "return_pct": 8.444557640951349,
+          "pf": 1.5440690962096335,
+          "win_pct": 56.08628659476117,
+          "t": 3.881733164417931,
+          "closed_dd_pct": 1.628618264411964,
+          "win_streak": 10,
+          "loss_streak": 8,
+          "excess_mean_bps": 1.893777802246504,
+          "excess_t": 5.7292864214828745,
+          "stress_mean_bps": 0.6202873247610923,
+          "stress_pf": 1.2283574347549648,
+          "stress_return_pct": 4.025664737699489,
+          "trades_per_month": 21.66001918859649,
+          "trades_per_trading_day": 0.8320512820512821,
+          "marked_dd_pct": 1.6963149478044977,
+          "half1_mean_bps": 1.8010846092756128,
+          "half2_mean_bps": 0.7997014385202487
+        },
+        "validation": {
+          "n": 388,
+          "mean_bps": 0.05508354235396881,
+          "return_pct": 0.21372414433339898,
+          "pf": 1.0216620691601732,
+          "win_pct": 47.680412371134025,
+          "t": 0.16040786186282696,
+          "closed_dd_pct": 1.7662614199245732,
+          "win_streak": 8,
+          "loss_streak": 16,
+          "excess_mean_bps": 0.728053026746852,
+          "excess_t": 2.1033401864469226,
+          "stress_mean_bps": -0.6796238653014041,
+          "stress_pf": 0.7700306915188643,
+          "stress_return_pct": -2.6369405973694477,
+          "trades_per_month": 21.511384335154826,
+          "trades_per_trading_day": 0.825531914893617,
+          "marked_dd_pct": 1.8169258209190202,
+          "half1_mean_bps": -0.40188195058460713,
+          "half2_mean_bps": 0.5167844290017525
+        },
+        "holdout": {
+          "n": 257,
+          "mean_bps": 0.04379247108780861,
+          "return_pct": 0.11254665069566812,
+          "pf": 1.0203214443042081,
+          "win_pct": 54.08560311284047,
+          "t": 0.1228650780093666,
+          "closed_dd_pct": 1.1928250262605764,
+          "win_streak": 9,
+          "loss_streak": 6,
+          "excess_mean_bps": 0.5464628819930556,
+          "excess_t": 1.5532147803091267,
+          "stress_mean_bps": -0.5653251114596093,
+          "stress_pf": 0.769002472660732,
+          "stress_return_pct": -1.4528855364511957,
+          "trades_per_month": 21.431335616438357,
+          "trades_per_trading_day": 0.8237179487179487,
+          "marked_dd_pct": 1.2694047957542802,
+          "half1_mean_bps": -0.5317713332615255,
+          "half2_mean_bps": 0.614894540519706
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 649,
+            "mean_bps": -0.43467981779877957,
+            "return_pct": -2.8210720175140795,
+            "pf": 0.8530280078386722,
+            "win_pct": 48.07395993836672,
+            "t": -1.5040857321680499,
+            "closed_dd_pct": 3.1015596764905746,
+            "win_streak": 5,
+            "loss_streak": 9
+          },
+          {
+            "offset_minutes": 30,
+            "n": 648,
+            "mean_bps": -1.4107426885962278,
+            "return_pct": -9.141612622103557,
+            "pf": 0.6622287254835488,
+            "win_pct": 42.43827160493827,
+            "t": -3.7821083779966167,
+            "closed_dd_pct": 9.19946085303171,
+            "win_streak": 7,
+            "loss_streak": 9
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 388,
+            "mean_bps": -0.00841376888880076,
+            "return_pct": -0.03264542328854695,
+            "pf": 0.996144433471569,
+            "win_pct": 50.77319587628865,
+            "t": -0.028487353159579693,
+            "closed_dd_pct": 2.193867594430021,
+            "win_streak": 8,
+            "loss_streak": 11
+          },
+          {
+            "offset_minutes": 30,
+            "n": 389,
+            "mean_bps": -1.4197246304016704,
+            "return_pct": -5.522728812262497,
+            "pf": 0.6045861389584066,
+            "win_pct": 45.75835475578406,
+            "t": -3.6622968667836124,
+            "closed_dd_pct": 6.239287877066129,
+            "win_streak": 8,
+            "loss_streak": 14
+          }
+        ]
+      },
+      "failures": [
+        "development: neighbor -30m nonpositive/empty",
+        "development: neighbor +30m nonpositive/empty",
+        "validation: PF below 1.15",
+        "validation: neighbor -30m nonpositive/empty",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": 0.04379247108780861,
+          "lower95_bps": -0.5554153401288211,
+          "upper95_bps": 0.6237417981679341,
+          "p": 0.4570542945705429
+        },
+        "excess": {
+          "mean_bps": 0.5464628819930556,
+          "lower95_bps": -0.0251692890521659,
+          "upper95_bps": 1.1035637147376705,
+          "p": 0.05349465053494651
+        }
+      },
+      "raw_p": 0.4570542945705429,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "GBPUSD",
+        "hold_minutes": 30,
+        "direction": -1,
+        "clock": "Europe/London",
+        "slot": 25,
+        "selection_score": 2.1676927836798985,
+        "development_net_mean_bps": 0.9050361437000093,
+        "development_pf": 1.2829398044396911,
+        "distinct_configurations": 844
+      },
+      "phases": {
+        "development": {
+          "n": 649,
+          "mean_bps": 0.9050361437000093,
+          "return_pct": 5.873684572613061,
+          "pf": 1.2829398044396911,
+          "win_pct": 54.39137134052389,
+          "t": 2.1676927836798985,
+          "closed_dd_pct": 2.2764423172189963,
+          "win_streak": 10,
+          "loss_streak": 11,
+          "excess_mean_bps": 1.5213662778816348,
+          "excess_t": 3.7471957290753646,
+          "stress_mean_bps": 0.3028268609756519,
+          "stress_pf": 1.0866081541780959,
+          "stress_return_pct": 1.965346327731981,
+          "trades_per_month": 21.66001918859649,
+          "trades_per_trading_day": 0.8320512820512821,
+          "marked_dd_pct": 2.474097981765214,
+          "half1_mean_bps": 0.7172338319872966,
+          "half2_mean_bps": 1.0934180921772676
+        },
+        "validation": {
+          "n": 388,
+          "mean_bps": -0.639715759539007,
+          "return_pct": -2.482097147011347,
+          "pf": 0.7736637957538908,
+          "win_pct": 46.391752577319586,
+          "t": -1.875742354342051,
+          "closed_dd_pct": 3.1498807645040667,
+          "win_streak": 6,
+          "loss_streak": 8,
+          "excess_mean_bps": 0.03109119500257458,
+          "excess_t": 0.09066644333274441,
+          "stress_mean_bps": -1.3330103342413833,
+          "stress_pf": 0.5876256365877736,
+          "stress_return_pct": -5.172080096856567,
+          "trades_per_month": 21.511384335154826,
+          "trades_per_trading_day": 0.825531914893617,
+          "marked_dd_pct": 3.1740677374128414,
+          "half1_mean_bps": -1.3275903502425586,
+          "half2_mean_bps": 0.05528706526509944
+        },
+        "holdout": {
+          "n": 257,
+          "mean_bps": -0.7025466064985896,
+          "return_pct": -1.8055447787013754,
+          "pf": 0.7557458735209132,
+          "win_pct": 49.80544747081712,
+          "t": -1.5567769825416127,
+          "closed_dd_pct": 2.561474261868045,
+          "win_streak": 6,
+          "loss_streak": 9,
+          "excess_mean_bps": -0.22116319682743518,
+          "excess_t": -0.501005210064871,
+          "stress_mean_bps": -1.2363553708623627,
+          "stress_pf": 0.6091166241790615,
+          "stress_return_pct": -3.1774333031162723,
+          "trades_per_month": 21.431335616438357,
+          "trades_per_trading_day": 0.8237179487179487,
+          "marked_dd_pct": 2.5942179605664917,
+          "half1_mean_bps": -1.538176803105932,
+          "half2_mean_bps": 0.1266058366466803
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 649,
+            "mean_bps": -0.573685351198709,
+            "return_pct": -3.7232179292796213,
+            "pf": 0.8586537473727628,
+            "win_pct": 47.919876733436055,
+            "t": -1.1842685485046454,
+            "closed_dd_pct": 6.067600863597405,
+            "win_streak": 7,
+            "loss_streak": 11
+          },
+          {
+            "offset_minutes": 30,
+            "n": 648,
+            "mean_bps": -0.5582201908950484,
+            "return_pct": -3.6172668369999132,
+            "pf": 0.8596270278595947,
+            "win_pct": 48.76543209876543,
+            "t": -1.4167038123780882,
+            "closed_dd_pct": 4.383264237796182,
+            "win_streak": 6,
+            "loss_streak": 7
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 388,
+            "mean_bps": -0.3998904605970034,
+            "return_pct": -1.551574987116373,
+            "pf": 0.8522123266541517,
+            "win_pct": 51.03092783505154,
+            "t": -1.0957095433795208,
+            "closed_dd_pct": 3.0162085839927233,
+            "win_streak": 7,
+            "loss_streak": 11
+          },
+          {
+            "offset_minutes": 30,
+            "n": 390,
+            "mean_bps": -0.9619598516303793,
+            "return_pct": -3.7516434213584797,
+            "pf": 0.6955511757099117,
+            "win_pct": 43.84615384615385,
+            "t": -2.78038935296042,
+            "closed_dd_pct": 5.106226926759518,
+            "win_streak": 7,
+            "loss_streak": 11
+          }
+        ]
+      },
+      "failures": [
+        "development: neighbor -30m nonpositive/empty",
+        "development: neighbor +30m nonpositive/empty",
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: neighbor -30m nonpositive/empty",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: no time-specific excess",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -0.7025466064985896,
+          "lower95_bps": -1.4816701188411767,
+          "upper95_bps": 0.05729271487389247,
+          "p": 0.9312068793120688
+        },
+        "excess": {
+          "mean_bps": -0.22116319682743518,
+          "lower95_bps": -0.9746560222483728,
+          "upper95_bps": 0.4962811000333452,
+          "p": 0.7010298970102989
+        }
+      },
+      "raw_p": 0.9312068793120688,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "USDJPY",
+        "hold_minutes": 120,
+        "direction": 1,
+        "clock": "America/New_York",
+        "slot": 0,
+        "selection_score": 2.215353307192872,
+        "development_net_mean_bps": 1.1119044626714567,
+        "development_pf": 1.2840177120094705,
+        "distinct_configurations": 844
+      },
+      "phases": {
+        "development": {
+          "n": 650,
+          "mean_bps": 1.1119044626714567,
+          "return_pct": 7.227379007364468,
+          "pf": 1.2840177120094705,
+          "win_pct": 55.230769230769226,
+          "t": 2.215353307192872,
+          "closed_dd_pct": 1.1814281108221394,
+          "win_streak": 12,
+          "loss_streak": 6,
+          "excess_mean_bps": 1.325665682588957,
+          "excess_t": 2.6319645595231025,
+          "stress_mean_bps": 0.48474542989548486,
+          "stress_pf": 1.1151532447352097,
+          "stress_return_pct": 3.1508452943206517,
+          "trades_per_month": 21.693393640350877,
+          "trades_per_trading_day": 0.8333333333333334,
+          "marked_dd_pct": 1.4279752635148,
+          "half1_mean_bps": 0.7595621811326198,
+          "half2_mean_bps": 1.4664216965654717
+        },
+        "validation": {
+          "n": 390,
+          "mean_bps": -1.7464580689135902,
+          "return_pct": -6.811186468763002,
+          "pf": 0.7262081018818907,
+          "win_pct": 44.871794871794876,
+          "t": -1.9280383584483178,
+          "closed_dd_pct": 7.432159945436225,
+          "win_streak": 8,
+          "loss_streak": 7,
+          "excess_mean_bps": -1.2750969887336392,
+          "excess_t": -1.4442988169126836,
+          "stress_mean_bps": -2.308631470441559,
+          "stress_pf": 0.6553918540489125,
+          "stress_return_pct": -9.00366273472208,
+          "trades_per_month": 21.622267759562842,
+          "trades_per_trading_day": 0.8297872340425532,
+          "marked_dd_pct": 7.615222459050268,
+          "half1_mean_bps": -2.372551945298391,
+          "half2_mean_bps": -1.1203641925287895
+        },
+        "holdout": {
+          "n": 258,
+          "mean_bps": -0.009166440173934426,
+          "return_pct": -0.023649415648750817,
+          "pf": 0.9976777874662217,
+          "win_pct": 53.100775193798455,
+          "t": -0.012601950229413326,
+          "closed_dd_pct": 1.879431534893304,
+          "win_streak": 7,
+          "loss_streak": 7,
+          "excess_mean_bps": 0.22453541116949866,
+          "excess_t": 0.31361230646115945,
+          "stress_mean_bps": -0.5273128187108233,
+          "stress_pf": 0.8744020335213091,
+          "stress_return_pct": -1.360467072273924,
+          "trades_per_month": 21.514726027397263,
+          "trades_per_trading_day": 0.8269230769230769,
+          "marked_dd_pct": 1.9999836940933418,
+          "half1_mean_bps": 0.877422154267085,
+          "half2_mean_bps": -0.8821152100850921
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 650,
+            "mean_bps": 0.7895531902466377,
+            "return_pct": 5.132095736603145,
+            "pf": 1.1996657083244522,
+            "win_pct": 55.53846153846153,
+            "t": 1.5667158745449923,
+            "closed_dd_pct": 2.656864391656473,
+            "win_streak": 12,
+            "loss_streak": 6
+          },
+          {
+            "offset_minutes": 30,
+            "n": 650,
+            "mean_bps": 0.23605899529686808,
+            "return_pct": 1.5343834694296425,
+            "pf": 1.0440809542096972,
+            "win_pct": 50.61538461538462,
+            "t": 0.39625930536951137,
+            "closed_dd_pct": 4.361980363621308,
+            "win_streak": 15,
+            "loss_streak": 8
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 390,
+            "mean_bps": -0.5527470092949507,
+            "return_pct": -2.1557133362503076,
+            "pf": 0.9061183860221103,
+            "win_pct": 49.48717948717949,
+            "t": -0.5803327713299716,
+            "closed_dd_pct": 3.8962739132299733,
+            "win_streak": 7,
+            "loss_streak": 9
+          },
+          {
+            "offset_minutes": 30,
+            "n": 390,
+            "mean_bps": -1.3329862356143483,
+            "return_pct": -5.198646318895958,
+            "pf": 0.8047339863196882,
+            "win_pct": 47.43589743589743,
+            "t": -1.5349369212526716,
+            "closed_dd_pct": 6.264290605930557,
+            "win_streak": 5,
+            "loss_streak": 7
+          }
+        ]
+      },
+      "failures": [
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: no time-specific excess",
+        "validation: neighbor -30m nonpositive/empty",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -0.009166440173934426,
+          "lower95_bps": -1.1723797939533978,
+          "upper95_bps": 1.128278767072314,
+          "p": 0.51994800519948
+        },
+        "excess": {
+          "mean_bps": 0.22453541116949866,
+          "lower95_bps": -1.0169192966579081,
+          "upper95_bps": 1.410667125330418,
+          "p": 0.37676232376762325
+        }
+      },
+      "raw_p": 0.51994800519948,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "AUDUSD",
+        "hold_minutes": 120,
+        "direction": 1,
+        "clock": "UTC",
+        "slot": 2,
+        "selection_score": 1.6911227316021835,
+        "development_net_mean_bps": 1.396297843867059,
+        "development_pf": 1.191787627643046,
+        "distinct_configurations": 844
+      },
+      "phases": {
+        "development": {
+          "n": 648,
+          "mean_bps": 1.396297843867059,
+          "return_pct": 9.048010028258544,
+          "pf": 1.191787627643046,
+          "win_pct": 52.77777777777778,
+          "t": 1.6911227316021835,
+          "closed_dd_pct": 2.3982960086010947,
+          "win_streak": 8,
+          "loss_streak": 8,
+          "excess_mean_bps": 2.7073418164855148,
+          "excess_t": 3.4374345206272983,
+          "stress_mean_bps": -0.02464893026112817,
+          "stress_pf": 0.9969176856022529,
+          "stress_return_pct": -0.15972506809211054,
+          "trades_per_month": 21.626644736842106,
+          "trades_per_trading_day": 0.8307692307692308,
+          "marked_dd_pct": 2.654468766267827,
+          "half1_mean_bps": 1.7752617915629785,
+          "half2_mean_bps": 1.0149873701792147
+        },
+        "validation": {
+          "n": 390,
+          "mean_bps": 0.47063179627063856,
+          "return_pct": 1.8354640054554903,
+          "pf": 1.0707730358905039,
+          "win_pct": 54.61538461538461,
+          "t": 0.495008394837766,
+          "closed_dd_pct": 4.0318080659046025,
+          "win_streak": 9,
+          "loss_streak": 5,
+          "excess_mean_bps": 1.7814855247249934,
+          "excess_t": 2.0354968918859986,
+          "stress_mean_bps": -1.0074636128500316,
+          "stress_pf": 0.8632905474778726,
+          "stress_return_pct": -3.9291080901151236,
+          "trades_per_month": 21.622267759562842,
+          "trades_per_trading_day": 0.8297872340425532,
+          "marked_dd_pct": 4.293475349708604,
+          "half1_mean_bps": 0.6036665599908515,
+          "half2_mean_bps": 0.3375970325504259
+        },
+        "holdout": {
+          "n": 258,
+          "mean_bps": -1.4521415567930769,
+          "return_pct": -3.746525216526138,
+          "pf": 0.7772458240069128,
+          "win_pct": 47.286821705426355,
+          "t": -1.4923795011346475,
+          "closed_dd_pct": 5.194019051651262,
+          "win_streak": 6,
+          "loss_streak": 8,
+          "excess_mean_bps": -0.6119900642685757,
+          "excess_t": -0.6645062532019942,
+          "stress_mean_bps": -2.7631599702360146,
+          "stress_pf": 0.6179598364468606,
+          "stress_return_pct": -7.128952723208918,
+          "trades_per_month": 21.514726027397263,
+          "trades_per_trading_day": 0.8269230769230769,
+          "marked_dd_pct": 5.5861457767215486,
+          "half1_mean_bps": 0.4898930898522451,
+          "half2_mean_bps": -3.364298747336163
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 648,
+            "mean_bps": -0.4559230642650374,
+            "return_pct": -2.954381456437442,
+            "pf": 0.9472633366127932,
+            "win_pct": 50.0,
+            "t": -0.5359449734137028,
+            "closed_dd_pct": 8.070099164136712,
+            "win_streak": 11,
+            "loss_streak": 8
+          },
+          {
+            "offset_minutes": 30,
+            "n": 648,
+            "mean_bps": -0.11537900870591399,
+            "return_pct": -0.7476559764143227,
+            "pf": 0.9854027492114795,
+            "win_pct": 48.76543209876543,
+            "t": -0.14153701514806322,
+            "closed_dd_pct": 4.079610493247701,
+            "win_streak": 7,
+            "loss_streak": 11
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 390,
+            "mean_bps": -0.558209894766427,
+            "return_pct": -2.1770185895890655,
+            "pf": 0.9238031124018263,
+            "win_pct": 53.07692307692308,
+            "t": -0.5659087266619618,
+            "closed_dd_pct": 4.388693089001501,
+            "win_streak": 6,
+            "loss_streak": 6
+          },
+          {
+            "offset_minutes": 30,
+            "n": 390,
+            "mean_bps": 0.10415455297713375,
+            "return_pct": 0.4062027566108216,
+            "pf": 1.016130922056362,
+            "win_pct": 52.820512820512825,
+            "t": 0.11203647452991126,
+            "closed_dd_pct": 3.9986046161632305,
+            "win_streak": 9,
+            "loss_streak": 6
+          }
+        ]
+      },
+      "failures": [
+        "development: neighbor -30m nonpositive/empty",
+        "development: neighbor +30m nonpositive/empty",
+        "validation: PF below 1.15",
+        "validation: neighbor -30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: no time-specific excess",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -1.4521415567930769,
+          "lower95_bps": -3.0693985542428326,
+          "upper95_bps": 0.12971819362010337,
+          "p": 0.9326067393260674
+        },
+        "excess": {
+          "mean_bps": -0.6119900642685757,
+          "lower95_bps": -2.165054278533336,
+          "upper95_bps": 0.9026876034713119,
+          "p": 0.7346265373462654
+        }
+      },
+      "raw_p": 0.9326067393260674,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "NZDUSD",
+        "hold_minutes": 30,
+        "direction": -1,
+        "clock": "UTC",
+        "slot": 35,
+        "selection_score": 3.639172387397039,
+        "development_net_mean_bps": 1.2742453615460352,
+        "development_pf": 1.5001682664547231,
+        "distinct_configurations": 844
+      },
+      "phases": {
+        "development": {
+          "n": 650,
+          "mean_bps": 1.2742453615460352,
+          "return_pct": 8.282594850049229,
+          "pf": 1.5001682664547231,
+          "win_pct": 58.15384615384615,
+          "t": 3.639172387397039,
+          "closed_dd_pct": 1.9948962592485953,
+          "win_streak": 19,
+          "loss_streak": 11,
+          "excess_mean_bps": 2.942231232292039,
+          "excess_t": 8.64534256502806,
+          "stress_mean_bps": -0.508042934950114,
+          "stress_pf": 0.8552348929203822,
+          "stress_return_pct": -3.3022790771757413,
+          "trades_per_month": 21.693393640350877,
+          "trades_per_trading_day": 0.8333333333333334,
+          "marked_dd_pct": 2.0607013415155797,
+          "half1_mean_bps": 1.9360110032095466,
+          "half2_mean_bps": 0.6083947467858358
+        },
+        "validation": {
+          "n": 390,
+          "mean_bps": -0.44555944650749857,
+          "return_pct": -1.7376818413792443,
+          "pf": 0.8446348354719552,
+          "win_pct": 49.23076923076923,
+          "t": -1.123364270175977,
+          "closed_dd_pct": 3.6488658680125803,
+          "win_streak": 7,
+          "loss_streak": 10,
+          "excess_mean_bps": 1.8091381239848292,
+          "excess_t": 4.623996314306623,
+          "stress_mean_bps": -2.7481574538315034,
+          "stress_pf": 0.3527794899304852,
+          "stress_return_pct": -10.717814069942863,
+          "trades_per_month": 21.622267759562842,
+          "trades_per_trading_day": 0.8297872340425532,
+          "marked_dd_pct": 3.7159330764685863,
+          "half1_mean_bps": -1.4404874272031334,
+          "half2_mean_bps": 0.5493685341881365
+        },
+        "holdout": {
+          "n": 258,
+          "mean_bps": -1.0077794683733468,
+          "return_pct": -2.6000710284032347,
+          "pf": 0.6577302776464424,
+          "win_pct": 49.224806201550386,
+          "t": -2.3452964029420533,
+          "closed_dd_pct": 2.9243246077414313,
+          "win_streak": 8,
+          "loss_streak": 6,
+          "excess_mean_bps": 0.5164898110219521,
+          "excess_t": 1.2198888936903987,
+          "stress_mean_bps": -2.5596611318394875,
+          "stress_pf": 0.3365928843384418,
+          "stress_return_pct": -6.603925720145878,
+          "trades_per_month": 21.514726027397263,
+          "trades_per_trading_day": 0.8269230769230769,
+          "marked_dd_pct": 2.9622978799320707,
+          "half1_mean_bps": -0.8850497273077609,
+          "half2_mean_bps": -1.1286210595763848
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 649,
+            "mean_bps": -1.5908868561148306,
+            "return_pct": -10.32485569618525,
+            "pf": 0.6214195714574015,
+            "win_pct": 41.14021571648691,
+            "t": -4.486551726651458,
+            "closed_dd_pct": 10.324855696185255,
+            "win_streak": 6,
+            "loss_streak": 9
+          },
+          {
+            "offset_minutes": 30,
+            "n": 649,
+            "mean_bps": -3.839490512901493,
+            "return_pct": -24.91829342873069,
+            "pf": 0.38126665225455275,
+            "win_pct": 33.59013867488444,
+            "t": -7.956588866778072,
+            "closed_dd_pct": 24.91829342873072,
+            "win_streak": 6,
+            "loss_streak": 17
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 390,
+            "mean_bps": -2.854678833864013,
+            "return_pct": -11.133247452069652,
+            "pf": 0.3872941832439007,
+            "win_pct": 37.43589743589744,
+            "t": -6.083855501956874,
+            "closed_dd_pct": 11.221621371649173,
+            "win_streak": 5,
+            "loss_streak": 14
+          },
+          {
+            "offset_minutes": 30,
+            "n": 390,
+            "mean_bps": -3.975327125164034,
+            "return_pct": -15.503775788139732,
+            "pf": 0.26717936175979673,
+            "win_pct": 25.384615384615383,
+            "t": -8.8281213218146,
+            "closed_dd_pct": 15.503775788139741,
+            "win_streak": 6,
+            "loss_streak": 15
+          }
+        ]
+      },
+      "failures": [
+        "development: neighbor -30m nonpositive/empty",
+        "development: neighbor +30m nonpositive/empty",
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: neighbor -30m nonpositive/empty",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -1.0077794683733468,
+          "lower95_bps": -1.7701988622858411,
+          "upper95_bps": -0.27299258697345585,
+          "p": 0.9864013598640136
+        },
+        "excess": {
+          "mean_bps": 0.5164898110219521,
+          "lower95_bps": -0.22283043536926342,
+          "upper95_bps": 1.2552821449392442,
+          "p": 0.1267873212678732
+        }
+      },
+      "raw_p": 0.9864013598640136,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "USDCAD",
+        "hold_minutes": 120,
+        "direction": 1,
+        "clock": "UTC",
+        "slot": 22,
+        "selection_score": 1.3469734595450886,
+        "development_net_mean_bps": 0.8004867938889189,
+        "development_pf": 1.1577262651999518,
+        "distinct_configurations": 844
+      },
+      "phases": {
+        "development": {
+          "n": 648,
+          "mean_bps": 0.8004867938889189,
+          "return_pct": 5.187154424400194,
+          "pf": 1.1577262651999518,
+          "win_pct": 53.39506172839506,
+          "t": 1.3469734595450886,
+          "closed_dd_pct": 2.761834862818768,
+          "win_streak": 7,
+          "loss_streak": 8,
+          "excess_mean_bps": 1.4189007089575651,
+          "excess_t": 2.529944856116513,
+          "stress_mean_bps": 0.032107779745870986,
+          "stress_pf": 1.0058826534038945,
+          "stress_return_pct": 0.20805841275324397,
+          "trades_per_month": 21.626644736842106,
+          "trades_per_trading_day": 0.8307692307692308,
+          "marked_dd_pct": 3.1410583334082163,
+          "half1_mean_bps": 1.0848460115841807,
+          "half2_mean_bps": 0.516127576193657
+        },
+        "validation": {
+          "n": 388,
+          "mean_bps": -0.3291105786378205,
+          "return_pct": -1.2769490451147434,
+          "pf": 0.9276277469479182,
+          "win_pct": 47.16494845360825,
+          "t": -0.543968319852855,
+          "closed_dd_pct": 3.377821954881597,
+          "win_streak": 7,
+          "loss_streak": 7,
+          "excess_mean_bps": 0.48080559178899,
+          "excess_t": 0.8595936156398492,
+          "stress_mean_bps": -1.245837014088438,
+          "stress_pf": 0.754085402485867,
+          "stress_return_pct": -4.8338476146631395,
+          "trades_per_month": 21.511384335154826,
+          "trades_per_trading_day": 0.825531914893617,
+          "marked_dd_pct": 3.3851133741065587,
+          "half1_mean_bps": -0.14477604182371814,
+          "half2_mean_bps": -0.5172854183022167
+        },
+        "holdout": {
+          "n": 257,
+          "mean_bps": -1.0212377447217345,
+          "return_pct": -2.624581003934858,
+          "pf": 0.7749266116350477,
+          "win_pct": 48.249027237354085,
+          "t": -1.4911972739899022,
+          "closed_dd_pct": 3.176442451053725,
+          "win_streak": 6,
+          "loss_streak": 6,
+          "excess_mean_bps": -0.4053811007455067,
+          "excess_t": -0.6319937910381607,
+          "stress_mean_bps": -1.6825410189564978,
+          "stress_pf": 0.6555357811136505,
+          "stress_return_pct": -4.324130418718199,
+          "trades_per_month": 21.431335616438357,
+          "trades_per_trading_day": 0.8237179487179487,
+          "marked_dd_pct": 3.2965569765373575,
+          "half1_mean_bps": -1.5491882233869898,
+          "half2_mean_bps": -0.49737990542597715
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 648,
+            "mean_bps": 0.21733457071506138,
+            "return_pct": 1.4083280182335978,
+            "pf": 1.0500536373059741,
+            "win_pct": 50.308641975308646,
+            "t": 0.4764637558676953,
+            "closed_dd_pct": 1.9725878030173203,
+            "win_streak": 8,
+            "loss_streak": 8
+          },
+          {
+            "offset_minutes": 30,
+            "n": 647,
+            "mean_bps": 0.4645615800960927,
+            "return_pct": 3.0057134232217195,
+            "pf": 1.0813434246872278,
+            "win_pct": 49.92272024729521,
+            "t": 0.7222809652271146,
+            "closed_dd_pct": 3.746468954865249,
+            "win_streak": 7,
+            "loss_streak": 6
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 388,
+            "mean_bps": -0.03501555642895553,
+            "return_pct": -0.13586035894434745,
+            "pf": 0.9892948102185752,
+            "win_pct": 48.45360824742268,
+            "t": -0.07914659238466176,
+            "closed_dd_pct": 2.018793408848713,
+            "win_streak": 10,
+            "loss_streak": 7
+          },
+          {
+            "offset_minutes": 30,
+            "n": 388,
+            "mean_bps": -1.2628180808070888,
+            "return_pct": -4.899734153531504,
+            "pf": 0.7671153481782211,
+            "win_pct": 45.876288659793815,
+            "t": -1.9082324955872803,
+            "closed_dd_pct": 7.580056440169979,
+            "win_streak": 9,
+            "loss_streak": 13
+          }
+        ]
+      },
+      "failures": [
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: neighbor -30m nonpositive/empty",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: no time-specific excess",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -1.0212377447217345,
+          "lower95_bps": -2.203761155137104,
+          "upper95_bps": 0.1772401996842203,
+          "p": 0.922107789221078
+        },
+        "excess": {
+          "mean_bps": -0.4053811007455067,
+          "lower95_bps": -1.5113539260980835,
+          "upper95_bps": 0.6905835080676611,
+          "p": 0.7316268373162683
+        }
+      },
+      "raw_p": 0.922107789221078,
+      "holm_p": 1.0,
+      "survives": false
+    },
+    {
+      "candidate": {
+        "symbol": "USDCHF",
+        "hold_minutes": 120,
+        "direction": 1,
+        "clock": "America/New_York",
+        "slot": 23,
+        "selection_score": 1.1370389621139418,
+        "development_net_mean_bps": 0.6294568311399414,
+        "development_pf": 1.1251922375345367,
+        "distinct_configurations": 844
+      },
+      "phases": {
+        "development": {
+          "n": 649,
+          "mean_bps": 0.6294568311399414,
+          "return_pct": 4.08517483409822,
+          "pf": 1.1251922375345367,
+          "win_pct": 51.771956856702616,
+          "t": 1.1370389621139418,
+          "closed_dd_pct": 3.136869000263232,
+          "win_streak": 9,
+          "loss_streak": 7,
+          "excess_mean_bps": 1.631617425371524,
+          "excess_t": 3.0542832578275605,
+          "stress_mean_bps": -0.33302468566641175,
+          "stress_pf": 0.9398676664652728,
+          "stress_return_pct": -2.161330209975012,
+          "trades_per_month": 21.66001918859649,
+          "trades_per_trading_day": 0.8320512820512821,
+          "marked_dd_pct": 3.2592411321038184,
+          "half1_mean_bps": 0.9638815239199635,
+          "half2_mean_bps": 0.2919260266622722
+        },
+        "validation": {
+          "n": 390,
+          "mean_bps": -0.06886966205450908,
+          "return_pct": -0.26859168201258543,
+          "pf": 0.9864585392339961,
+          "win_pct": 47.179487179487175,
+          "t": -0.09329697991124615,
+          "closed_dd_pct": 3.5962475399331124,
+          "win_streak": 9,
+          "loss_streak": 7,
+          "excess_mean_bps": 1.3221562899845571,
+          "excess_t": 1.8792873863068718,
+          "stress_mean_bps": -1.2616640100533199,
+          "stress_pf": 0.7809495966932132,
+          "stress_return_pct": -4.920489639207947,
+          "trades_per_month": 21.622267759562842,
+          "trades_per_trading_day": 0.8297872340425532,
+          "marked_dd_pct": 3.6243578449449383,
+          "half1_mean_bps": -1.4460198014534609,
+          "half2_mean_bps": 1.3082804773444427
+        },
+        "holdout": {
+          "n": 258,
+          "mean_bps": -0.17839126397141464,
+          "return_pct": -0.46024946104624975,
+          "pf": 0.9593476162732929,
+          "win_pct": 48.06201550387597,
+          "t": -0.2591431915476095,
+          "closed_dd_pct": 2.8125654259614623,
+          "win_streak": 7,
+          "loss_streak": 11,
+          "excess_mean_bps": 0.6541129923014637,
+          "excess_t": 0.9929506178948336,
+          "stress_mean_bps": -1.186953121413377,
+          "stress_pf": 0.7590924721510978,
+          "stress_return_pct": -3.0623390532465127,
+          "trades_per_month": 21.514726027397263,
+          "trades_per_trading_day": 0.8269230769230769,
+          "marked_dd_pct": 2.8734812220662804,
+          "half1_mean_bps": -1.6200236559626848,
+          "half2_mean_bps": 1.241062168143067
+        }
+      },
+      "neighbors": {
+        "development": [
+          {
+            "offset_minutes": -30,
+            "n": 649,
+            "mean_bps": 0.1036782557884305,
+            "return_pct": 0.6728718800669139,
+            "pf": 1.0171330358287722,
+            "win_pct": 51.00154083204931,
+            "t": 0.16486166816261247,
+            "closed_dd_pct": 5.457206417147465,
+            "win_streak": 8,
+            "loss_streak": 8
+          },
+          {
+            "offset_minutes": 30,
+            "n": 648,
+            "mean_bps": 0.26228414559599045,
+            "return_pct": 1.6996012634620181,
+            "pf": 1.0566660744429184,
+            "win_pct": 49.2283950617284,
+            "t": 0.534335311793822,
+            "closed_dd_pct": 3.15678578284501,
+            "win_streak": 7,
+            "loss_streak": 11
+          }
+        ],
+        "validation": [
+          {
+            "offset_minutes": -30,
+            "n": 390,
+            "mean_bps": -0.38862305279679754,
+            "return_pct": -1.5156299059075105,
+            "pf": 0.9290346695248924,
+            "win_pct": 48.717948717948715,
+            "t": -0.5168206890292114,
+            "closed_dd_pct": 2.357507945253182,
+            "win_streak": 7,
+            "loss_streak": 9
+          },
+          {
+            "offset_minutes": 30,
+            "n": 389,
+            "mean_bps": -0.9537012848878227,
+            "return_pct": -3.70989799821363,
+            "pf": 0.8184943622658207,
+            "win_pct": 45.501285347043705,
+            "t": -1.2790738407410247,
+            "closed_dd_pct": 5.653828847740645,
+            "win_streak": 8,
+            "loss_streak": 11
+          }
+        ]
+      },
+      "failures": [
+        "development: PF below 1.15",
+        "validation: PF below 1.15",
+        "validation: net mean not positive",
+        "validation: neighbor -30m nonpositive/empty",
+        "validation: neighbor +30m nonpositive/empty",
+        "holdout: PF below 1.15",
+        "holdout: net mean not positive",
+        "holdout: higher costs erase mean",
+        "holdout: losing half-year",
+        "holdout: lower confidence bound not positive",
+        "holdout: Holm multiple-test threshold"
+      ],
+      "inference": {
+        "net": {
+          "mean_bps": -0.17839126397141464,
+          "lower95_bps": -1.452504891177815,
+          "upper95_bps": 1.098942130195012,
+          "p": 0.5915408459154085
+        },
+        "excess": {
+          "mean_bps": 0.6541129923014637,
+          "lower95_bps": -0.5866570321212262,
+          "upper95_bps": 1.8822638563468248,
+          "p": 0.1934806519348065
+        }
+      },
+      "raw_p": 0.5915408459154085,
+      "holm_p": 1.0,
+      "survives": false
+    }
+  ]
+}

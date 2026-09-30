@@ -1,0 +1,54 @@
+{
+  "tag": "control-smoke-m4",
+  "variant": "control",
+  "window": "smoke",
+  "model": 4,
+  "start": "2026.09.01",
+  "end": "2026.09.15",
+  "build": {
+    "GoldClock.mq5": "8e390d3e59be249e963b405af6b5405ef4de917b354f0091f32bbe495d5090f9",
+    "GoldClock.ex5": "9e68eecd30d43297d1eb63c10e45e6487e3af9232c8495e355c6f8992ddb7d57",
+    "PROTOCOL.md": "9ddde94dc781ded30603a856dd3bffcb1a605c077e3170430ff97e040644de3e",
+    "run-config.json": "19f205a36a5f2c568b70279797fd5a6649ba354f0d9a3960630cee6477722338"
+  },
+  "inputs": {
+    "InpControl": "true",
+    "InpLots": "0.1",
+    "InpEntryMinute": "1380",
+    "InpHoldMinutes": "120",
+    "InpTradeFrom": "1788220800",
+    "InpTag": "control-smoke-m4",
+    "InpMagic": "9292300"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10210.52,
+    "net_profit": 210.51999999999995,
+    "return_pct": 2.1051999999999995,
+    "profit_factor": 1.39867436795758,
+    "win_rate_pct": 40.0,
+    "max_drawdown_pct": 3.14,
+    "trades": 10,
+    "sharpe_ratio": 1.36,
+    "recovery_factor": 0.67,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 3.14,
+    "mean_trade": 21.051999999999996
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0
+  },
+  "seconds": 9.59,
+  "tick_coverage": [
+    "CS\t0\t00:47:52.182\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "DF\t0\t00:47:52.816\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "GC_SUMMARY entries=10 entryFails=0 closeFails=0 skips=0"
+  ],
+  "report_sha": "025d3312ec5f8f4dfa8f10ac566ce12ccebad6ad355685c42aa6529c1c0cc5ad"
+}

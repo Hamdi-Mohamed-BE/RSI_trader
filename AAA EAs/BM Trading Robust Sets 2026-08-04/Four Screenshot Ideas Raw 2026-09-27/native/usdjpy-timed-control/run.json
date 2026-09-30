@@ -1,0 +1,69 @@
+{
+  "ok": true,
+  "case": {
+    "id": "usdjpy-timed-control",
+    "label": "USDJPY timed alternating control",
+    "symbol": "USDJPY",
+    "mode": 1,
+    "control": true
+  },
+  "smoke": false,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "inputs": {
+    "InpMode": "1",
+    "InpControl": "true",
+    "InpRiskPercent": "1.0",
+    "InpNotionalUSD": "10000.0",
+    "InpServerUtcOffsetHours": "0",
+    "InpMagic": "9274040",
+    "InpTag": "usdjpy-timed-control"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9123.28,
+    "net_profit": -876.72,
+    "return_pct": -8.77,
+    "profit_factor": 0.95,
+    "win_rate_pct": 28.02,
+    "max_drawdown_pct": 55.11,
+    "trades": 257,
+    "sharpe_ratio": -0.47,
+    "recovery_factor": -0.13,
+    "history_quality": "73% real ticks",
+    "max_equity_dd_pct": 55.11,
+    "max_balance_dd_pct": 50.46,
+    "max_equity_dd_usd": 6500.6
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 0,
+    "margin_call": 0,
+    "entry_fail": 0,
+    "close_fail": 0,
+    "cancel_fail": 0
+  },
+  "build": {
+    "source_sha": "5e83f6c6058fc344958e25c2ebd0812260cbcb4240925bf49dc7464553c3d8f0",
+    "binary_sha": "960fbaf7472e0b6e62f34354afd23e62c311b7883c059658f3d31cbc94cef9b5",
+    "rules_sha": "4f1403d3b6841be69c93ea9e0fbdc89d33f79b214ba57a0c98cc812cabee62f9",
+    "config_sha": "f4f730096a7fe6182dd6a9203bd3302cfa1732036623677270bea5568435c549",
+    "compile": "75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 1049 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "report_sha": "eb6881af9a2db67cb42ac66e8e9f977169ced76ff535b97f30af23c71e79fa25",
+  "elapsed_seconds": 15.30561351776123,
+  "summary": [
+    "IDEA_SUMMARY tag=usdjpy-timed-control ranges=258 missing=0 orders=257 skips=1 entryfail=0 closefail=0 cancelfail=0",
+    "IDEA_SUMMARY tag=usdjpy-timed-control ranges=258 missing=0 orders=257 skips=1 entryfail=0 closefail=0 cancelfail=0"
+  ],
+  "symbol_spec": [
+    "IDEA_SPEC symbol=USDJPY contract=100000.00000000 min=0.01000000 max=300.00000000 step=0.01000000 tick=0.00100000 stops=0 clockOffset=0",
+    "IDEA_SPEC symbol=USDJPY contract=100000.00000000 min=0.01000000 max=300.00000000 step=0.01000000 tick=0.00100000 stops=0 clockOffset=0"
+  ],
+  "real_ticks": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

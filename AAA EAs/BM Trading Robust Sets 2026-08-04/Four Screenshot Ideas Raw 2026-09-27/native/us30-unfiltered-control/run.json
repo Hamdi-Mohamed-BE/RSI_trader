@@ -1,0 +1,69 @@
+{
+  "ok": true,
+  "case": {
+    "id": "us30-unfiltered-control",
+    "label": "US30 unfiltered Monday control",
+    "symbol": "US30",
+    "mode": 2,
+    "control": true
+  },
+  "smoke": false,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "inputs": {
+    "InpMode": "2",
+    "InpControl": "true",
+    "InpRiskPercent": "1.0",
+    "InpNotionalUSD": "10000.0",
+    "InpServerUtcOffsetHours": "0",
+    "InpMagic": "9274040",
+    "InpTag": "us30-unfiltered-control"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 11688.94,
+    "net_profit": 1688.94,
+    "return_pct": 16.89,
+    "profit_factor": 2.2,
+    "win_rate_pct": 61.54,
+    "max_drawdown_pct": 3.39,
+    "trades": 52,
+    "sharpe_ratio": 3.19,
+    "recovery_factor": 4.15,
+    "history_quality": "73% real ticks",
+    "max_equity_dd_pct": 3.73,
+    "max_balance_dd_pct": 2.86,
+    "max_equity_dd_usd": 406.93
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 716,
+    "margin_call": 0,
+    "entry_fail": 0,
+    "close_fail": 358,
+    "cancel_fail": 0
+  },
+  "build": {
+    "source_sha": "5e83f6c6058fc344958e25c2ebd0812260cbcb4240925bf49dc7464553c3d8f0",
+    "binary_sha": "960fbaf7472e0b6e62f34354afd23e62c311b7883c059658f3d31cbc94cef9b5",
+    "rules_sha": "4f1403d3b6841be69c93ea9e0fbdc89d33f79b214ba57a0c98cc812cabee62f9",
+    "config_sha": "f4f730096a7fe6182dd6a9203bd3302cfa1732036623677270bea5568435c549",
+    "compile": "75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 1049 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "report_sha": "1d7a42be95d1af7e7ba60da8f70ff51c07e70c918b717d1850b114242b93dc15",
+  "elapsed_seconds": 24.32238221168518,
+  "summary": [
+    "IDEA_SUMMARY tag=us30-unfiltered-control ranges=0 missing=0 orders=52 skips=0 entryfail=0 closefail=179 cancelfail=0",
+    "IDEA_SUMMARY tag=us30-unfiltered-control ranges=0 missing=0 orders=52 skips=0 entryfail=0 closefail=179 cancelfail=0"
+  ],
+  "symbol_spec": [
+    "IDEA_SPEC symbol=US30 contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.10000000 stops=0 clockOffset=0",
+    "IDEA_SPEC symbol=US30 contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.10000000 stops=0 clockOffset=0"
+  ],
+  "real_ticks": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

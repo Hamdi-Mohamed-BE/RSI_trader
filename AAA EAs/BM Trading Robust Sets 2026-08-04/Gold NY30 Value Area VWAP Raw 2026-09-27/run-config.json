@@ -1,0 +1,86 @@
+{
+  "name": "Gold NY30 Value Area + VWAP — raw research",
+  "frozen_date": "2026-09-27",
+  "status": "rules frozen before tests",
+  "authorization": "User: find the best approach and let's do it; raw comparison, no live deployment or parameter optimization",
+  "source": "User-supplied transcript of https://www.instagram.com/reel/DacxHJqNuUZ/",
+  "symbol": "XAUUSD",
+  "broker": "Isolated Exness-MT5Trial16 data; not the live terminal",
+  "deposit": 10000,
+  "risk_percent": 1,
+  "lot_rounding": "UP per canonical raw pipeline; actual risk can exceed 1%",
+  "delay_ms": 150,
+  "variants": {
+    "reversal": 1,
+    "continuation": 2,
+    "combined": 3,
+    "control": 0
+  },
+  "periods": {
+    "smoke": [
+      "2026.06.01",
+      "2026.06.15"
+    ],
+    "6m": [
+      "2026.03.27",
+      "2026.09.27"
+    ],
+    "1y": [
+      "2025.09.27",
+      "2026.09.27"
+    ],
+    "3y": [
+      "2023.09.27",
+      "2026.09.27"
+    ],
+    "5y": [
+      "2021.09.27",
+      "2026.09.27"
+    ]
+  },
+  "fixed": {
+    "profile_start_NY": "09:30",
+    "profile_end_NY": "10:00",
+    "timeframe": "M1",
+    "profile_bins": 64,
+    "value_area_percent": 70,
+    "profile_method": "M1 HLC3 assigned to one price bin, weighted by tick_volume; proxy, not exchange volume-at-price",
+    "vwap": "Cumulative M1 HLC3 * tick_volume from 09:30",
+    "band": "VWAP +/- sqrt(volume-weighted HLC3 variance)",
+    "rr": 3,
+    "stop_buffer_ticks": 1,
+    "min_stop_spread_multiple": 3,
+    "entry_cutoff_NY": "15:30",
+    "flat_request_NY": "15:55",
+    "max_trades_per_day": 2,
+    "max_per_engine_per_day": 1,
+    "one_open_position": true,
+    "excursion_expiry_minutes": 15,
+    "retest_expiry_minutes": 10,
+    "server_utc_offset_hours": 0
+  },
+  "reversal": "Previous post-10:00 M1 bar breaches opening range high/low. Track extreme for 15 minutes. A later M1 close inside VA, below upper/above lower VWAP band, still on the excursion side of VWAP -> fade next tick. SL beyond excursion extreme including signal bar. If price touches latest completed-M1 VWAP favorably after entry, move SL to actual fill (gross BE); no trailing.",
+  "continuation": "M1 close crosses beyond both VA edge and same-direction VWAP band. Within next 10 M1 bars, retest the current closed-bar band, close back beyond band and VA edge with candle body in direction -> enter next tick. Cancel on close across VWAP. SL beyond retest candle extreme. No BE or trailing. Symmetric directions. Independent of reversal, not forced stop-and-reverse.",
+  "control": "First M1 close crossing opening range boundary, without VP/VWAP filters or retest. Signal candle extreme stop; same 3R/sizing/session constraints; one per direction/day, max 2. Structural benchmark, not a matched randomized causal control.",
+  "arbitration": "Reversal has priority if both engines signal on same bar. One attempt per engine/day; invalid or rejected first qualifying signal consumes attempt. Both engines maintain signals while another position is open but no entries then.",
+  "gate": {
+    "min_trades": 30,
+    "min_pf": 1.15,
+    "required_windows": [
+      "3y",
+      "5y"
+    ],
+    "positive_return": true,
+    "beat_control": "higher PF and return/maximum-equity-DD on both long windows",
+    "data_caveat": "Generated/mixed tick periods are not real-tick confirmation; no promotion without full coverage",
+    "selection": "Only eligible versions ranked by minimum 3y/5y return/max-equity-DD; ties lower DD then fewer rules. Short windows diagnostic, no retuning."
+  },
+  "schedule": "Smoke all four; Model 1 screen 3y/5y all four; Model 4 requested-mode confirmation 6m/1y/3y/5y all four. Explicitly disclose actual real-tick start and mixed coverage.",
+  "no_claims": [
+    "Not a clone of proprietary Deep-M IVB",
+    "Not scientifically verified for this exact rule set or gold",
+    "3R is a target, not a daily return",
+    "All overlapping periods are in-sample descriptive; no OOS claim",
+    "No production/BAT/website modifications"
+  ]
+}

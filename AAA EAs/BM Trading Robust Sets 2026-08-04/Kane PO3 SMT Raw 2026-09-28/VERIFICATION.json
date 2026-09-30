@@ -1,0 +1,179 @@
+{
+  "passed": true,
+  "scope": "Execution/accounting/timing checks; NOT strategy promotion or complete data coverage",
+  "complete_reference_history": false,
+  "valid_native_cases": 20,
+  "unit_tests": 18,
+  "assertions_at_least": 86269,
+  "nested_window_parity": [
+    {
+      "variant": "sweep-inversion-control",
+      "matched": 73
+    },
+    {
+      "variant": "aligned-smt-static",
+      "matched": 11
+    },
+    {
+      "variant": "aligned-smt-structural-be",
+      "matched": 11
+    },
+    {
+      "variant": "aligned-smt-1r-be",
+      "matched": 11
+    }
+  ],
+  "reference_coverage": [
+    {
+      "case": "USTEC-aligned-smt-1r-be-1y-m4",
+      "reference_rejections": 80,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 7391
+    },
+    {
+      "case": "USTEC-aligned-smt-1r-be-3y-m1",
+      "reference_rejections": 130,
+      "synchronization_rejections": 58,
+      "entry_window_checks": 22340
+    },
+    {
+      "case": "USTEC-aligned-smt-1r-be-5y-m1",
+      "reference_rejections": 160,
+      "synchronization_rejections": 148,
+      "entry_window_checks": 37295
+    },
+    {
+      "case": "USTEC-aligned-smt-1r-be-6m-m4",
+      "reference_rejections": 0,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 3741
+    },
+    {
+      "case": "USTEC-aligned-smt-1r-be-smoke-m4",
+      "reference_rejections": 0,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 300
+    },
+    {
+      "case": "USTEC-aligned-smt-static-1y-m4",
+      "reference_rejections": 80,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 7391
+    },
+    {
+      "case": "USTEC-aligned-smt-static-3y-m1",
+      "reference_rejections": 130,
+      "synchronization_rejections": 58,
+      "entry_window_checks": 22333
+    },
+    {
+      "case": "USTEC-aligned-smt-static-5y-m1",
+      "reference_rejections": 160,
+      "synchronization_rejections": 148,
+      "entry_window_checks": 37288
+    },
+    {
+      "case": "USTEC-aligned-smt-static-6m-m4",
+      "reference_rejections": 0,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 3741
+    },
+    {
+      "case": "USTEC-aligned-smt-static-smoke-m4",
+      "reference_rejections": 0,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 300
+    },
+    {
+      "case": "USTEC-aligned-smt-structural-be-1y-m4",
+      "reference_rejections": 80,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 7425
+    },
+    {
+      "case": "USTEC-aligned-smt-structural-be-3y-m1",
+      "reference_rejections": 130,
+      "synchronization_rejections": 58,
+      "entry_window_checks": 22385
+    },
+    {
+      "case": "USTEC-aligned-smt-structural-be-5y-m1",
+      "reference_rejections": 160,
+      "synchronization_rejections": 148,
+      "entry_window_checks": 37354
+    },
+    {
+      "case": "USTEC-aligned-smt-structural-be-6m-m4",
+      "reference_rejections": 0,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 3758
+    },
+    {
+      "case": "USTEC-aligned-smt-structural-be-smoke-m4",
+      "reference_rejections": 0,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 300
+    },
+    {
+      "case": "USTEC-sweep-inversion-control-1y-m4",
+      "reference_rejections": 80,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 6536
+    },
+    {
+      "case": "USTEC-sweep-inversion-control-3y-m1",
+      "reference_rejections": 130,
+      "synchronization_rejections": 58,
+      "entry_window_checks": 19822
+    },
+    {
+      "case": "USTEC-sweep-inversion-control-5y-m1",
+      "reference_rejections": 160,
+      "synchronization_rejections": 148,
+      "entry_window_checks": 33069
+    },
+    {
+      "case": "USTEC-sweep-inversion-control-6m-m4",
+      "reference_rejections": 0,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 3301
+    },
+    {
+      "case": "USTEC-sweep-inversion-control-smoke-m4",
+      "reference_rejections": 0,
+      "synchronization_rejections": 0,
+      "entry_window_checks": 247
+    }
+  ],
+  "independent_history": {
+    "independent_archive_sha": {
+      "Exness-USTEC-M1-2026.csv.gz": "b7815fcbf46f25e06ac43b84f89d2b3d7a38f8c4551c5cac8b8e03ef8bec1fc8",
+      "Exness-SP500-US500-M1-2026.csv.gz": "d835992dc390d0012718b8f76fbe3f96e18622f8a37b913f91406db086a0e7f3"
+    },
+    "latest_common_bar": "2026-08-10T00:00:00+00:00",
+    "decisions": 520,
+    "numeric_comparisons": 9880,
+    "mismatching_decisions": 0,
+    "mismatches": []
+  },
+  "live_process": {
+    "ProcessId": 11196,
+    "ExecutablePath": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
+    "CreatedUtc": "2026-09-27T20:58:13.3017840Z"
+  },
+  "tracked_git_diff_empty": true,
+  "hashes": {
+    "audit_history.py": "f84d758e9fd6a97d041ef13d27a62ce2850dc1f0080c2cef77d54cdf12bc2c05",
+    "KaneProxy.ex5": "81087a0601deb9c61bee4de753a56bd4c0315789bf5dc05e949d72f9856d0502",
+    "KaneProxy.mq5": "f3fa997124f70a2053e1d8463e7e0ebd4efbf2bb71bf77ff09c839bd5b7afdc2",
+    "native_analysis.py": "ca9d071b24a96e87b4db4cd591ec2a45a3e7e2fd837d8748276d8a95721d772b",
+    "prop_engine.py": "3a9158e65948216cf8067af28cc110e3972c333989fa7f81c1c36875b9a1735c",
+    "report.py": "9acb429d58cfaf80b4bb3b3ca2976f4902ae7d369fb7bdcecaf66d2d9a8ef7f3",
+    "run.py": "8857c367f5fda1210380250b0c2a79bf4cebad1d0984959db91cd23593ba8600",
+    "study.py": "0164df9cd8eee19d51aaf72c86c216d902582ac95c143f282c6f46804e4083cd",
+    "test_research.py": "0289000091e29087b571a57a64ce1bf824c60150e1d364dae2b277d9504f69c4",
+    "verify.py": "789f3d322fcf84b9b9524d3fbb492c13d7a893de168ff6e2aaf2d88624c70505",
+    "verify_signals.py": "4a7800377d1ec51d2db01b7614a9a1d785d31a147884a6c436d3ee4d2db39730"
+  },
+  "infrastructure_retry_reports": 3
+}
