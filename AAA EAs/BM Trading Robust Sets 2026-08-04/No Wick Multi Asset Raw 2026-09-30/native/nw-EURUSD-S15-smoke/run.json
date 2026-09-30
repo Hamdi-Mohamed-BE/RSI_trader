@@ -1,0 +1,69 @@
+{
+  "case": "nw-EURUSD-S15-smoke",
+  "symbol": "EURUSD",
+  "variant": "S15",
+  "period": "smoke",
+  "start": "2026.09.01",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 33.8,
+  "report_sha256": "00e8154c9dfc60a809638352d4dd5ffe6b1f444751c9a77e89509203322b4187",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 2,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "db794910667c4a2d0dd79f1014b211787afff59649aa446cb75ff839a4d7010b",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10144.14,
+    "net_profit": 144.14,
+    "return_pct": 1.44,
+    "profit_factor": 1.05,
+    "win_rate_pct": 58.82,
+    "max_drawdown_pct": 8.68,
+    "trades": 51,
+    "sharpe_ratio": 1.5,
+    "recovery_factor": 0.17,
+    "history_quality": "100% real ticks",
+    "balance_dd_pct": 8.47,
+    "expected_payoff": 2.83,
+    "max_relative_equity_dd_pct": 8.68,
+    "max_relative_balance_dd_pct": 8.47
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 118,
+    "causal_and_1R_checks": 118,
+    "spec_lines": [
+      "NW_SPEC symbol=EURUSD description=Euro vs US Dollar digits=5 point=0.0000100000 tick=0.0000100000 contract=100000.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=69 placed=59 invalid_geometry=10 missing_pivot=0 rejected=0 expired=8"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:16:42.504\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+      "HS\t0\t17:16:42.640\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -407.03,
+    "swap": -72.9,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "1f2ff0354a83ac4a6cc519fb97875d9e4eb265991ae66d95d560db4281fd05c7"
+  }
+}

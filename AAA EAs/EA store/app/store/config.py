@@ -109,6 +109,12 @@ def cookie_secure_mode() -> str:
     return (env("CALYX_COOKIE_SECURE", "auto") or "auto").lower()
 
 
+def store_enabled() -> bool:
+    """Public launch switch. Off by default: the site renders as before the store (WhatsApp checkout, list prices)
+    and no store route, database or payment watcher is loaded. Set CALYX_STORE_ENABLED=1 to go live."""
+    return (env("CALYX_STORE_ENABLED", "0") or "0").lower() in {"1", "true", "yes", "on"}
+
+
 def watcher_enabled() -> bool:
     return (env("CALYX_STORE_WATCHER", "1") or "1") not in {"0", "false", "no", "off"}
 

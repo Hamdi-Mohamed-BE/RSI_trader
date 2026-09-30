@@ -29,7 +29,9 @@
   <p class="mt-4 min-h-[44px] text-xs leading-5 text-muted">{{ product.one_year_note or 'A separate three-year statistics report is not available.' }}</p>
   {% endif %}
   <div class="mt-6 flex items-end justify-between border-t border-white/10 pt-5">
-    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ store_price(product)|money }}</strong> <span class="text-xs text-muted line-through">{{ product.price|money }}</span></div>
+{% if store_enabled %}    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ store_price(product)|money }}</strong> <span class="text-xs text-muted line-through">{{ product.price|money }}</span></div>
+{% else %}    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ product.price|money }}</strong></div>
+{% endif %}
     <span class="card-link">View details <span aria-hidden="true">→</span></span>
   </div>
 </a>

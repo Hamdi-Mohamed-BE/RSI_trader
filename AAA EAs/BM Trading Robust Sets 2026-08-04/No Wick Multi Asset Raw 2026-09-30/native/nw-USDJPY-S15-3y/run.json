@@ -1,0 +1,69 @@
+{
+  "case": "nw-USDJPY-S15-3y",
+  "symbol": "USDJPY",
+  "variant": "S15",
+  "period": "3y",
+  "start": "2023.09.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 21.4,
+  "report_sha256": "e54b2fd51446b5e4702e986f367e3e2f5686f6cc6e1f52efb564f64f39eb869b",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 344,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "db794910667c4a2d0dd79f1014b211787afff59649aa446cb75ff839a4d7010b",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 125.83,
+    "net_profit": -9874.17,
+    "return_pct": -98.74,
+    "profit_factor": 0.49,
+    "win_rate_pct": 41.2,
+    "max_drawdown_pct": 98.77,
+    "trades": 1170,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -1.0,
+    "history_quality": "24% real ticks",
+    "balance_dd_pct": 98.77,
+    "expected_payoff": -8.44,
+    "max_relative_equity_dd_pct": 98.77,
+    "max_relative_balance_dd_pct": 98.77
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 2984,
+    "causal_and_1R_checks": 2984,
+    "spec_lines": [
+      "NW_SPEC symbol=USDJPY description=US Dollar vs Japanese Yen digits=3 point=0.0010000000 tick=0.0010000000 contract=100000.0000 minlot=0.01000000 step=0.01000000 maxlot=300.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=1681 placed=1492 invalid_geometry=180 missing_pivot=0 rejected=9 expired=322"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:38:49.821\tTicks\tUSDJPY : real ticks begin from 2026.01.01 00:00:00",
+      "JS\t0\t17:38:53.809\tCore 01\tUSDJPY : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -1422.1,
+    "swap": -91.23,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "b3e785179ce1e07d61db01e6faf09c59261d2813af206c9c0d958193c14f1cd8"
+  }
+}

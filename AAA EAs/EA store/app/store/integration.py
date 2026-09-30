@@ -15,6 +15,7 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 
 from . import cart, pricing
+from .config import store_enabled
 from .db import init_db
 from .payments import watcher
 from .routes_admin import router as admin_router
@@ -41,11 +42,17 @@ def install(app: FastAPI, templates: Jinja2Templates, base_context: Callable[[Re
     env.globals["store_discount_percent"] = int(pricing.DISCOUNT_RATE * 100)
     env.globals["store_pack_rule"] = pricing.PACK_RULE_TEXT
     env.globals["store_cart_count"] = _cart_count
+    env.globals["store_enabled"] = store_enabled()
+    if not store_enabled():
+        log.info("store disabled (CALYX_STORE_ENABLED is not set): checkout, license and admin routes not mounted")
+        return
     app.include_router(public_router)
     app.include_router(admin_router)
 
 
 def startup() -> None:
+    if not store_enabled():
+        return
     try:
         init_db()
     except Exception:  # the catalogue must stay online even if the store database is unavailable
@@ -55,4 +62,5 @@ def startup() -> None:
 
 
 def shutdown() -> None:
-    watcher.stop()
+    if store_enabled():
+        watcher.stop()

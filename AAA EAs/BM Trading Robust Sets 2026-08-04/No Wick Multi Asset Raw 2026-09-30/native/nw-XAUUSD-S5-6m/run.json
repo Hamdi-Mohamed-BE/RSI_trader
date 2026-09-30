@@ -1,0 +1,69 @@
+{
+  "case": "nw-XAUUSD-S5-6m",
+  "symbol": "XAUUSD",
+  "variant": "S5",
+  "period": "6m",
+  "start": "2026.03.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 17.6,
+  "report_sha256": "84313b6d5ba752ea7548bfe678c2a82c1197fba1e1ad998e987d369b959ed09e",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 2,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "0d97ea11bcae7c749bc9406e80931446746dbff89fe7401e9c96d6d236f7e915",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 6117.85,
+    "net_profit": -3882.15,
+    "return_pct": -38.82,
+    "profit_factor": 0.78,
+    "win_rate_pct": 46.98,
+    "max_drawdown_pct": 50.11,
+    "trades": 364,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.74,
+    "history_quality": "100% real ticks",
+    "balance_dd_pct": 49.59,
+    "expected_payoff": -10.67,
+    "max_relative_equity_dd_pct": 50.11,
+    "max_relative_balance_dd_pct": 49.59
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 952,
+    "causal_and_1R_checks": 952,
+    "spec_lines": [
+      "NW_SPEC symbol=XAUUSD description=Gold vs US Dollar digits=3 point=0.0010000000 tick=0.0010000000 contract=100.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=523 placed=476 invalid_geometry=47 missing_pivot=0 rejected=0 expired=112"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:17:59.698\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+      "DO\t0\t17:18:03.021\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -697.45,
+    "swap": -30.68,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "138f9fd881a811e9cdc1c2a920647162be6779ed0f8ec432f5f97c83a31c6e90"
+  }
+}

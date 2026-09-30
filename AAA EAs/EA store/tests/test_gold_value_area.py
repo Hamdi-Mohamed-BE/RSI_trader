@@ -43,10 +43,10 @@ def test_portfolio_inventory_and_cash_flow(period):
     p=json.loads((CACHE_ROOT/'portfolio/standard'/f'{period}.json').read_text())
     rr=json.loads((CACHE_ROOT/'portfolio/standard'/f'{period}.trades.json').read_text())
     assert p['available_from']==start.isoformat() and p['available_to']==end.isoformat()
-    assert p['included_ea_count']==34 and p['tested_ea_count']==33
+    assert p['included_ea_count']==35 and p['tested_ea_count']==34  # 3 Way Gold added 2026-09-30
     assert abs(sum(r['net_profit'] for r in rr)-p['stats']['net_profit'])<.05
     assert any(r['cache_slug']==SLUG for r in rr)
     assert all(start.isoformat()<=r['close_time'][:10]<=end.isoformat() for r in rr)
     m=json.loads((CACHE_ROOT/'manifest.json').read_text())
-    assert m['recommended_ea_count']==34
+    assert m['recommended_ea_count']==35
     assert any(r['slug']==SLUG and r['period']==period for r in m['generated_runs'])

@@ -1,0 +1,475 @@
+@echo off
+setlocal
+set "CALYX_BUNDLE_FILE=%~f0"
+set "CALYX_VALIDATE_ONLY=0"
+set "CALYX_LIBRARY_ONLY=0"
+if /I "%~1"=="--validate" set "CALYX_VALIDATE_ONLY=1"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop';try{$s=[IO.File]::ReadAllText($env:CALYX_BUNDLE_FILE);$marker='#'+' CALYX_POWERSHELL_START';$i=$s.IndexOf($marker);if($i -lt 0){throw 'Installer damaged'};& ([ScriptBlock]::Create($s.Substring($i+$marker.Length)))}catch{Write-Host $_ -ForegroundColor Red;exit 1}"
+set "CALYX_EXIT=%errorlevel%"
+if not "%~1"=="--validate" pause
+exit /b %CALYX_EXIT%
+# CALYX_POWERSHELL_START
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
+$Package = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('eyJsaWNlbmNlIjogeyJpZCI6ICJDQUxZWC1UT1A1LTIwMjYwOTMwLTAxIiwgImlzc3VlZF91dGMiOiAiMjAyNi0wOS0zMFQxNzozOToxNCswMDowMCIsICJleHBpcmVzX3V0YyI6ICIyMDI2LTEwLTMwVDE3OjM5OjE0KzAwOjAwIiwgImJvdW5kX2xvZ2luIjogMCwgImJvdW5kX3NlcnZlciI6ICIifSwgImVudHJpZXMiOiBbeyJzbHVnIjogImdvbGQtb3Zlcm5pZ2h0LXZhbHVlLWFyZWEiLCAibGFiZWwiOiAiR29sZCBPdmVybmlnaHQgVmFsdWUgQXJlYSIsICJleHBlcnQiOiAiQ2FseXggVG9wNSAxIEdvbGQgT3Zlcm5pZ2h0IFZhbHVlIEFyZWEuZXg1IiwgImV4NV9zaGEyNTYiOiAiOGQzM2E1ZjVlZTdkYWRiZGI0N2NiMzlmYjFmZjdlNDA4ZTRjMmM4MmYyN2M3NmRkNjVjMWI0Y2YyNWYyYzNkZSIsICJzeW1ib2wiOiAiWEFVVVNEIiwgInBlcmlvZCI6ICJNNSIsICJpbnB1dHMiOiB7IklucEVuYWJsZVRyYWRpbmciOiAidHJ1ZSIsICJJbnBBZGFwdGl2ZVBvcnRmb2xpb0NvbnRyb2xzIjogImZhbHNlIiwgIklucFJpc2tNb2RlIjogIjAiLCAiSW5wRml4ZWRSaXNrTW9uZXkiOiAiMTAwIiwgIklucEF1dG9TZXJ2ZXJVVENPZmZzZXQiOiAidHJ1ZSIsICJJbnBXcml0ZUF1ZGl0IjogImZhbHNlIiwgIklucERpcmVjdGlvbk1vZGUiOiAiMCIsICJJbnBCaW5zIjogIjY0IiwgIklucFZhbHVlQXJlYVBlcmNlbnQiOiAiNzAiLCAiSW5wTWluaW11bVByb2ZpbGVCYXJzIjogIjEyMCIsICJJbnBSaXNrUGVyY2VudCI6ICIxIiwgIklucFNlcnZlclVUQ09mZnNldEhvdXJzIjogIjAiLCAiSW5wRXhwZWN0ZWRMb2dpbiI6ICIwIiwgIklucEV4cGVjdGVkU2VydmVyIjogIiIsICJJbnBNYWdpYyI6ICI5MzA5NTAwMSIsICJJbnBDYXNlIjogImdvbGQtb3Zlcm5pZ2h0LXZhLWxpdmUiLCAiSW5wRW50cnlFbmRNaW51dGUiOiAiOTYwIiwgIklucEV4aXRNaW51dGUiOiAiOTYwIiwgIklucFN0b3BNb2RlIjogIjAiLCAiSW5wTWluaW11bVIiOiAiMCIsICJJbnBUYXJnZXRSIjogIjAiLCAiSW5wQnJlYWtFdmVuUiI6ICIwIiwgIklucFRyYWlsRGlzdGFuY2VSIjogIjAiLCAiQ2xpZW50Umlza01vZGUiOiAiMCIsICJDbGllbnRSaXNrVmFsdWUiOiAiNTAiLCAiQ2xpZW50RXhwZWN0ZWRMb2dpbiI6ICIwIiwgIkNsaWVudEV4cGVjdGVkU2VydmVyIjogIiIsICJDbGllbnRFeHBlY3RlZFN5bWJvbCI6ICIifSwgIm9yaWdpbmFsX21hZ2ljIjogIjg5MTkxOTAxIiwgInNvdXJjZV9zaGEyNTYiOiAiOWYwZjNkM2RkOWVjYmVkNjA5NWUyZDcwY2Q4MzRmNTFkM2E4YTY0ZGNjZjE2YzQ3NDQ0NTUwNjc5Yzg5NzBkNSJ9LCB7InNsdWciOiAieGF1LXJzaS12d2FwIiwgImxhYmVsIjogIlhBVSBSU0kgVldBUCIsICJleHBlcnQiOiAiQ2FseXggVG9wNSAyIFhBVSBSU0kgVldBUC5leDUiLCAiZXg1X3NoYTI1NiI6ICJkNmQ5Mjk4NDk5ZGU5YmMwZWFjNWViZDg5MmUwZmY2MmJmNTU4MmEwNjdkNGMyNTgyMDQzYmUzY2MyZjI2OWUzIiwgInN5bWJvbCI6ICJYQVVVU0QiLCAicGVyaW9kIjogIkgxIiwgImlucHV0cyI6IHsiSW5wUlNJTGVuZ3RoIjogIjE2IiwgIklucE92ZXJzb2xkIjogIjE4LjAiLCAiSW5wT3ZlcmJvdWdodCI6ICI4MC4wIiwgIklucFJpc2tQZXJjZW50IjogIjEuMCIsICJJbnBFeGl0TW9kZSI6ICIyIiwgIklucFN0b3BNb2RlIjogIjEiLCAiSW5wQVRSUGVyaW9kIjogIjE0IiwgIklucFN0b3BBVFIiOiAiMiIsICJJbnBTd2luZ0xvb2tiYWNrIjogIjUiLCAiSW5wU3RvcEJ1ZmZlckFUUiI6ICIwLjEwIiwgIklucFJld2FyZFJpc2siOiAiMC41IiwgIklucFNpZ25hbENsb3NlUGVyY2VudCI6ICIxMDAuMCIsICJJbnBVc2VCcmVha0V2ZW4iOiAidHJ1ZSIsICJJbnBCcmVha0V2ZW5BdFIiOiAiMC43NSIsICJJbnBCcmVha0V2ZW5Mb2NrUiI6ICIwLjA1IiwgIklucFVzZUFUUlRyYWlsaW5nIjogImZhbHNlIiwgIklucFRyYWlsU3RhcnRSIjogIjEiLCAiSW5wVHJhaWxBVFIiOiAiMiIsICJJbnBNYXhpbXVtSG9sZGluZ0JhcnMiOiAiMCIsICJJbnBTZXNzaW9uIjogIjAiLCAiSW5wTWF4aW11bVNwcmVhZFBvaW50cyI6ICIwIiwgIklucE1heGltdW1EZXZpYXRpb25Qb2ludHMiOiAiODAiLCAiSW5wTWFnaWMiOiAiOTMwOTUwMDIiLCAiQ2xpZW50Umlza01vZGUiOiAiMCIsICJDbGllbnRSaXNrVmFsdWUiOiAiNTAiLCAiQ2xpZW50RXhwZWN0ZWRMb2dpbiI6ICIwIiwgIkNsaWVudEV4cGVjdGVkU2VydmVyIjogIiIsICJDbGllbnRFeHBlY3RlZFN5bWJvbCI6ICIifSwgIm9yaWdpbmFsX21hZ2ljIjogIjkyNjQwMDAwNiIsICJzb3VyY2Vfc2hhMjU2IjogIjg3ZGUxMjM4OTczY2RjYjdlZDAyODUwODg0MTEzOTcwNmVmNGI5MzlhMjJmM2ZlYTM1Y2EzYmVhOWQ2ZjgzNWMifSwgeyJzbHVnIjogIm5hc2RhcS1vdmVybmlnaHQiLCAibGFiZWwiOiAiTmFzZGFxIE92ZXJuaWdodCIsICJleHBlcnQiOiAiQ2FseXggVG9wNSAzIE5hc2RhcSBPdmVybmlnaHQuZXg1IiwgImV4NV9zaGEyNTYiOiAiM2NmNGE2Y2M4MDNjMzRiMjE1NGY5ZWI0OGEzN2MxN2VjOGM0NmJhMGFhMjY3MGM0OGIwOWJlNjQ2ZDVmZTk1NiIsICJzeW1ib2wiOiAiVVNURUMiLCAicGVyaW9kIjogIk0xIiwgImlucHV0cyI6IHsiSW5wRW5hYmxlVHJhZGluZyI6ICJ0cnVlIiwgIklucFJlcXVpcmVOZWdhdGl2ZURheSI6ICJ0cnVlIiwgIklucE5lZ2F0aXZlRGF5RGVmaW5pdGlvbiI6ICIwIiwgIklucE5lZ2F0aXZlRGF5VGhyZXNob2xkUGVyY2VudCI6ICIwIiwgIklucEFsbG93RnJpZGF5RW50cnkiOiAidHJ1ZSIsICJJbnBDYXNoT3BlbkhvdXIiOiAiOSIsICJJbnBDYXNoT3Blbk1pbnV0ZSI6ICIzMCIsICJJbnBDYXNoQ2xvc2VIb3VyIjogIjE2IiwgIklucENhc2hDbG9zZU1pbnV0ZSI6ICIwIiwgIklucEVudHJ5SG91ciI6ICIxNiIsICJJbnBFbnRyeU1pbnV0ZSI6ICIwIiwgIklucEV4aXRIb3VyIjogIjkiLCAiSW5wRXhpdE1pbnV0ZSI6ICIyOSIsICJJbnBFbnRyeVdpbmRvd01pbnV0ZXMiOiAiMTAiLCAiSW5wRXhpdFdpbmRvd01pbnV0ZXMiOiAiMzEiLCAiSW5wTWluaW11bUNhc2hTZXNzaW9uQmFycyI6ICIzMDAiLCAiSW5wUmlza1BlcmNlbnQiOiAiMSIsICJJbnBFbWVyZ2VuY3lTdG9wUGVyY2VudCI6ICIyIiwgIklucFJld2FyZFJpc2siOiAiMCIsICJJbnBNYXhTcHJlYWRQb2ludHMiOiAiMCIsICJJbnBNYXhEZXZpYXRpb25Qb2ludHMiOiAiMzAiLCAiSW5wTWFnaWMiOiAiOTMwOTUwMDMiLCAiSW5wVXNlQXV0b21hdGljTGl2ZVNlcnZlck9mZnNldCI6ICJ0cnVlIiwgIklucFRlc3RlclNlcnZlclVUQ09mZnNldEhvdXJzIjogIjAiLCAiSW5wTWFudWFsTGl2ZVNlcnZlclVUQ09mZnNldEhvdXJzIjogIjAiLCAiSW5wVXNlRHluYW1pY1RyYWlsaW5nU0wiOiAiZmFsc2UiLCAiSW5wRHluYW1pY1RyaWdnZXJGcmFjdGlvbiI6ICIwLjUwIiwgIklucER5bmFtaWNMb2NrRnJhY3Rpb24iOiAiMC4yMCIsICJJbnBSZXNlYXJjaFNlc3Npb24iOiAiMCIsICJJbnBSZXNlYXJjaEJyb2tlclV0Y09mZnNldE1pbnV0ZXMiOiAiMCIsICJJbnBVc2VNYXJrb3ZSZWdpbWVGaWx0ZXIiOiAiZmFsc2UiLCAiSW5wTWFya292UmV0dXJuV2luZG93IjogIjQwIiwgIklucE1hcmtvdlRocmVzaG9sZCI6ICIwLjA1IiwgIklucE1hcmtvdlNpZ25hbEdhdGUiOiAiMC4wNSIsICJJbnBNYXJrb3ZNaW5MYWJlbHMiOiAiMjUyIiwgIklucE1hcmtvdkhpc3RvcnlCYXJzIjogIjI2MDAiLCAiQ2xpZW50Umlza01vZGUiOiAiMCIsICJDbGllbnRSaXNrVmFsdWUiOiAiNTAiLCAiQ2xpZW50RXhwZWN0ZWRMb2dpbiI6ICIwIiwgIkNsaWVudEV4cGVjdGVkU2VydmVyIjogIiIsICJDbGllbnRFeHBlY3RlZFN5bWJvbCI6ICIifSwgIm9yaWdpbmFsX21hZ2ljIjogIjg0MDgxNjAxIiwgInNvdXJjZV9zaGEyNTYiOiAiNGVlMjAyYTRhOWEwMTI5OTEzZTk2MzFhMDkyZGY5NWIxMzdmNTAwYzA5ZDNhYTUyNWEwZjZkNmNkODczYTQwMSJ9LCB7InNsdWciOiAibmFzZGFxLTVtLWNhbmRsZS1tb21lbnR1bSIsICJsYWJlbCI6ICJOYXNkYXEgNU0gQ2FuZGxlIE1vbWVudHVtIiwgImV4cGVydCI6ICJDYWx5eCBUb3A1IDQgTmFzZGFxIDVNIENhbmRsZSBNb21lbnR1bS5leDUiLCAiZXg1X3NoYTI1NiI6ICJhNWM4ZjdmYTYyYTM3NGYwMGQzYjBhNDk1NWQ2NmUyNDFhYTRmZjJkNWZjMjY2NGU3NTg4OWFhZmI5M2UwMDg0IiwgInN5bWJvbCI6ICJVU1RFQyIsICJwZXJpb2QiOiAiTTUiLCAiaW5wdXRzIjogeyJJbnBTaWduYWxUaW1lZnJhbWUiOiAiNSIsICJJbnBTaWduYWxIb3VyTlkiOiAiOSIsICJJbnBTaWduYWxNaW51dGVOWSI6ICIzMCIsICJJbnBFTUFQZXJpb2QiOiAiMTIiLCAiSW5wQWxsb3dMb25nIjogInRydWUiLCAiSW5wQWxsb3dTaG9ydCI6ICJ0cnVlIiwgIklucFJlcXVpcmVFTUFTbG9wZSI6ICJmYWxzZSIsICJJbnBNaW5pbXVtQm9keUFUUiI6ICIwLjAiLCAiSW5wTWF4aW11bUJvZHlBVFIiOiAiMC4wIiwgIklucE1pbmltdW1Cb2R5RnJhY3Rpb24iOiAiMC4wIiwgIklucE1pbmltdW1FTUFEaXN0YW5jZUFUUiI6ICIwLjAiLCAiSW5wTWF4aW11bUVNQURpc3RhbmNlQVRSIjogIjAuMCIsICJJbnBSZWxhdGl2ZVZvbHVtZVBlcmlvZCI6ICIwIiwgIklucE1pbmltdW1SZWxhdGl2ZVZvbHVtZSI6ICIwLjAiLCAiSW5wUmVxdWlyZURJQWdyZWVtZW50IjogInRydWUiLCAiSW5wRElQZXJpb2QiOiAiMTQiLCAiSW5wQVRSUGVyaW9kIjogIjE0IiwgIklucFN0b3BNb2RlIjogIjIiLCAiSW5wSW5pdGlhbFN0b3BBVFIiOiAiNC4wIiwgIklucFNpZ25hbFN0b3BCdWZmZXJBVFIiOiAiMC4xMCIsICJJbnBNYXhpbXVtU3RvcEFUUiI6ICIwLjAiLCAiSW5wVXNlRml4ZWRUYXJnZXQiOiAiZmFsc2UiLCAiSW5wUmV3YXJkUmlzayI6ICIyLjUiLCAiSW5wVXNlQWRhcHRpdmVSUiI6ICJmYWxzZSIsICJJbnBBZGFwdGl2ZVN0cm9uZ0JvZHlBVFIiOiAiMS4wIiwgIklucEFkYXB0aXZlU3Ryb25nUlIiOiAiMy4wIiwgIklucFVzZUFUUlRyYWlsaW5nIjogInRydWUiLCAiSW5wVHJhaWxpbmdBVFIiOiAiNi4wIiwgIklucFRyYWlsU3RhcnRSIjogIjEuMCIsICJJbnBVc2VCcmVha0V2ZW4iOiAiZmFsc2UiLCAiSW5wQnJlYWtFdmVuVHJpZ2dlclIiOiAiMS4wIiwgIklucEJyZWFrRXZlbkxvY2tSIjogIjAuMCIsICJJbnBNYXhpbXVtSG9sZGluZ01pbnV0ZXMiOiAiMCIsICJJbnBDbG9zZUF0U2Vzc2lvbkVuZCI6ICJmYWxzZSIsICJJbnBDbG9zZUhvdXJOWSI6ICIxNSIsICJJbnBDbG9zZU1pbnV0ZU5ZIjogIjU1IiwgIklucEF1dG9TZXJ2ZXJVdGNPZmZzZXRMaXZlIjogInRydWUiLCAiSW5wU2VydmVyVXRjT2Zmc2V0SG91cnMiOiAiMCIsICJJbnBFbmFibGVUcmFkaW5nIjogInRydWUiLCAiSW5wUmlza1BlcmNlbnQiOiAiMS4wIiwgIklucE1heGltdW1TcHJlYWRBVFIiOiAiMC4wIiwgIklucE1hZ2ljIjogIjkzMDk1MDA0IiwgIklucE1heGltdW1EZXZpYXRpb25Qb2ludHMiOiAiNTAiLCAiSW5wVXNlRHluYW1pY1RyYWlsaW5nU0wiOiAiZmFsc2UiLCAiSW5wRHluYW1pY1RyaWdnZXJGcmFjdGlvbiI6ICIwLjUwIiwgIklucER5bmFtaWNMb2NrRnJhY3Rpb24iOiAiMC4yMCIsICJJbnBSZXNlYXJjaFNlc3Npb24iOiAiMCIsICJJbnBSZXNlYXJjaEJyb2tlclV0Y09mZnNldE1pbnV0ZXMiOiAiMCIsICJJbnBVc2VNYXJrb3ZSZWdpbWVGaWx0ZXIiOiAiZmFsc2UiLCAiSW5wTWFya292UmV0dXJuV2luZG93IjogIjQwIiwgIklucE1hcmtvdlRocmVzaG9sZCI6ICIwLjA1IiwgIklucE1hcmtvdlNpZ25hbEdhdGUiOiAiMC4wNSIsICJJbnBNYXJrb3ZNaW5MYWJlbHMiOiAiMjUyIiwgIklucE1hcmtvdkhpc3RvcnlCYXJzIjogIjI2MDAiLCAiSW5wSW5pdGlhbFN0b3BQZXJjZW50IjogIjAuNjAiLCAiSW5wVXNlTUFUcmFpbGluZyI6ICJmYWxzZSIsICJDbGllbnRSaXNrTW9kZSI6ICIwIiwgIkNsaWVudFJpc2tWYWx1ZSI6ICI1MCIsICJDbGllbnRFeHBlY3RlZExvZ2luIjogIjAiLCAiQ2xpZW50RXhwZWN0ZWRTZXJ2ZXIiOiAiIiwgIkNsaWVudEV4cGVjdGVkU3ltYm9sIjogIiJ9LCAib3JpZ2luYWxfbWFnaWMiOiAiODYyMDIwIiwgInNvdXJjZV9zaGEyNTYiOiAiYWM5YjdlZGRmYzMxMzVlY2Q4N2I3NDY4ODgwODdmYTBkNDEwMDNhYTI1YjQwMGNjY2FkZTMxZTZiNTEzNmZmYSJ9LCB7InNsdWciOiAib3JiLXZvbHVtZS1wcm9maWxlIiwgImxhYmVsIjogIk9SQiBWb2x1bWUgUHJvZmlsZSIsICJleHBlcnQiOiAiQ2FseXggVG9wNSA1IE9SQiBWb2x1bWUgUHJvZmlsZS5leDUiLCAiZXg1X3NoYTI1NiI6ICI2NDE4Y2JkY2E5YTMzYmE2MmI4NzExZTFlZGJjYTNlNDRiYTkxYTIxNzQ2ODMzZTM1Y2NhZjE2MGUzYzJmMWI4IiwgInN5bWJvbCI6ICJYQVVVU0QiLCAicGVyaW9kIjogIk01IiwgImlucHV0cyI6IHsiSW5wRW5hYmxlVHJhZGluZyI6ICJ0cnVlIiwgIklucFNlc3Npb25ab25lIjogIjAiLCAiSW5wU2Vzc2lvbkhvdXIiOiAiOSIsICJJbnBTZXNzaW9uTWludXRlIjogIjMwIiwgIklucE9wZW5pbmdSYW5nZU1pbnV0ZXMiOiAiMTUiLCAiSW5wVHJhZGVXaW5kb3dNaW51dGVzIjogIjEyMCIsICJJbnBGbGF0SG91ciI6ICIxNSIsICJJbnBGbGF0TWludXRlIjogIjU1IiwgIklucFdlZWtkYXlzT25seSI6ICJ0cnVlIiwgIklucFNpZ25hbFRpbWVmcmFtZSI6ICI1IiwgIklucFJlbGF0aXZlVm9sdW1lRGF5cyI6ICIyMCIsICJJbnBNaW5PcGVuaW5nUmVsYXRpdmVWb2x1bWUiOiAiMC42IiwgIklucEJhclZvbHVtZUxvb2tiYWNrIjogIjIwIiwgIklucE1pbkJyZWFrb3V0UmVsYXRpdmVWb2x1bWUiOiAiMC44IiwgIklucEFUUlRpbWVmcmFtZSI6ICIxNSIsICJJbnBBVFJQZXJpb2QiOiAiMTQiLCAiSW5wTWluUmFuZ2VBVFIiOiAiMC4yIiwgIklucE1heFJhbmdlQVRSIjogIjEuMiIsICJJbnBSZXF1aXJlVldBUCI6ICJmYWxzZSIsICJJbnBVc2VFTUFUcmVuZCI6ICJmYWxzZSIsICJJbnBGYXN0RU1BIjogIjIwIiwgIklucFNsb3dFTUEiOiAiNTAiLCAiSW5wVXNlUHJvZmlsZVZhbHVlQXJlYSI6ICJmYWxzZSIsICJJbnBVc2VQcm9maWxlUE9DQmlhcyI6ICJmYWxzZSIsICJJbnBVc2VQcm9maWxlQm91bmRhcnlMVk4iOiAiZmFsc2UiLCAiSW5wUHJvZmlsZVN0YXJ0SG91ciI6ICI4IiwgIklucFByb2ZpbGVTdGFydE1pbnV0ZSI6ICIwIiwgIklucFByb2ZpbGVCaW5zIjogIjQ4IiwgIklucFByb2ZpbGVWYWx1ZUFyZWFQZXJjZW50IjogIjcwLjAiLCAiSW5wTWF4Qm91bmRhcnlOb2RlUmF0aW8iOiAiMS4wMCIsICJJbnBNaW5pbXVtUHJvZmlsZVRpY2tzIjogIjEwMCIsICJJbnBTaG93UHJvZmlsZUxldmVscyI6ICJ0cnVlIiwgIklucEVudHJ5TW9kZSI6ICIwIiwgIklucEJyZWFrb3V0Qm9keU1pbmltdW0iOiAiMC41NSIsICJJbnBCcmVha291dEJ1ZmZlckFUUiI6ICIwLjAzIiwgIklucFJldGVzdEJhcnMiOiAiMyIsICJJbnBSZXRlc3RUb2xlcmFuY2VBVFIiOiAiMC4xNSIsICJJbnBSZXRlc3RCb2R5TWluaW11bSI6ICIwLjMiLCAiSW5wU3RvcE1vZGUiOiAiMSIsICJJbnBTdG9wQnVmZmVyQVRSIjogIjAuMSIsICJJbnBNYXhpbXVtU3RvcEFUUiI6ICIyLjAiLCAiSW5wUmV3YXJkUmlzayI6ICIyLjUiLCAiSW5wQnJlYWtFdmVuQXRSIjogIjEuMCIsICJJbnBUcmFpbFN0YXJ0QXRSIjogIjAuMCIsICJJbnBUcmFpbENhbmRsZUJ1ZmZlckFUUiI6ICIwLjEiLCAiSW5wUmlza1BlcmNlbnQiOiAiMS4wIiwgIklucE1heFNwcmVhZFJhbmdlUGVyY2VudCI6ICIxMi4wIiwgIklucE1heERldmlhdGlvblBvaW50cyI6ICIzMCIsICJJbnBNYWdpYyI6ICI5MzA5NTAwNSIsICJJbnBVc2VBdXRvbWF0aWNMaXZlU2VydmVyT2Zmc2V0IjogInRydWUiLCAiSW5wVGVzdGVyU2VydmVyVVRDT2Zmc2V0SG91cnMiOiAiMCIsICJJbnBNYW51YWxMaXZlU2VydmVyVVRDT2Zmc2V0SG91cnMiOiAiMCIsICJJbnBVc2VEeW5hbWljVHJhaWxpbmdTTCI6ICJ0cnVlIiwgIklucER5bmFtaWNUcmlnZ2VyRnJhY3Rpb24iOiAiMC41MCIsICJJbnBEeW5hbWljTG9ja0ZyYWN0aW9uIjogIjAuMjAiLCAiSW5wUmVzZWFyY2hTZXNzaW9uIjogIjAiLCAiSW5wUmVzZWFyY2hCcm9rZXJVdGNPZmZzZXRNaW51dGVzIjogIjAiLCAiQ2xpZW50Umlza01vZGUiOiAiMCIsICJDbGllbnRSaXNrVmFsdWUiOiAiNTAiLCAiQ2xpZW50RXhwZWN0ZWRMb2dpbiI6ICIwIiwgIkNsaWVudEV4cGVjdGVkU2VydmVyIjogIiIsICJDbGllbnRFeHBlY3RlZFN5bWJvbCI6ICIifSwgIm9yaWdpbmFsX21hZ2ljIjogIjg2MDgwNzA3IiwgInNvdXJjZV9zaGEyNTYiOiAiNzczNzcwYWUwY2FiY2UzNzg0MzZlODg5YTA5NmNjNDJjZDMzZGY3ZmM2MTQ5YWVjZGJlZTNiMjQ1ZjI2OTlkOCJ9XX0=')) | ConvertFrom-Json
+$Bundle = Split-Path -Parent $env:CALYX_BUNDLE_FILE
+$Unicode = [Text.Encoding]::Unicode
+function New-ChartText([string]$ChartSymbol, [int]$Minutes, [string]$ExpertName, [string]$ExpertPath, $Inputs) {
+    $inputLines = @($Inputs.Keys | ForEach-Object { '{0}={1}' -f $_, $Inputs[$_] }) -join "`r`n"
+    $periodType = if ($Minutes -lt 60) { 0 } elseif ($Minutes -lt 1440) { 1 } else { 2 }
+    $periodSize = if ($periodType -eq 0) { $Minutes } elseif ($periodType -eq 1) { [int]($Minutes / 60) } else { [int]($Minutes / 1440) }
+    # expertmode=0: the EA is attached but "Allow Algo Trading" stays OFF until the user enables it.
+    return @"
+<chart>
+id=1
+symbol=$ChartSymbol
+description=$ChartSymbol
+period_type=$periodType
+period_size=$periodSize
+digits=5
+tick_size=0.000000
+position_time=0
+scale_fix=0
+scale_fixed_min=0.000000
+scale_fixed_max=0.000000
+scale_fix11=0
+scale_bar=0
+scale_bar_val=0.000000
+scale=8
+mode=1
+fore=0
+grid=1
+volume=0
+scroll=1
+shift=1
+shift_size=20.000000
+fixed_pos=0.000000
+ticker=1
+ohlc=1
+one_click=0
+one_click_btn=1
+bidline=1
+askline=0
+lastline=0
+days=1
+descriptions=0
+tradelines=1
+tradehistory=1
+window_left=0
+window_top=0
+window_right=960
+window_bottom=560
+window_type=3
+floating=0
+floating_left=0
+floating_top=0
+floating_right=0
+floating_bottom=0
+floating_type=1
+floating_toolbar=1
+floating_tbstate=
+background_color=0
+foreground_color=16777215
+barup_color=65280
+bardown_color=255
+bullcandle_color=65280
+bearcandle_color=255
+chartline_color=65280
+volumes_color=5592405
+grid_color=2236962
+bidline_color=8421504
+askline_color=255
+lastline_color=8421504
+stops_color=255
+windows_total=1
+
+<expert>
+name=$ExpertName
+path=$ExpertPath
+expertmode=0
+<inputs>
+$inputLines
+</inputs>
+</expert>
+
+<window>
+height=100.000000
+objects=0
+
+<indicator>
+name=Main
+path=
+apply=1
+show_data=1
+scale_inherit=0
+scale_line=0
+scale_line_percent=50
+scale_line_value=0.000000
+scale_fix_min=0
+scale_fix_min_val=0.000000
+scale_fix_max=0
+scale_fix_max_val=0.000000
+expertmode=0
+fixed_height=-1
+</indicator>
+</window>
+</chart>
+"@
+}
+
+function File-Hash([string]$Path) {
+    $algorithm = [Security.Cryptography.SHA256]::Create()
+    $stream = [IO.File]::OpenRead($Path)
+    try { return ([BitConverter]::ToString($algorithm.ComputeHash($stream))).Replace('-','').ToLowerInvariant() }
+    finally { $stream.Dispose(); $algorithm.Dispose() }
+}
+
+function Check-Bundle {
+    foreach ($ea in $Package.entries) {
+        $p = Join-Path $Bundle $ea.expert
+        if (!(Test-Path -LiteralPath $p -PathType Leaf)) { throw "Missing compiled bot: $($ea.expert). Extract all seven files together." }
+        if ((File-Hash $p) -ine $ea.ex5_sha256) { throw "File verification failed: $($ea.expert). Ask the owner for a fresh package." }
+    }
+}
+function Read-Choice([string]$Prompt, [int]$Count) {
+    $answer = Read-Host $Prompt
+    $number = 0
+    if (![int]::TryParse($answer, [ref]$number) -or $number -lt 1 -or $number -gt $Count) { throw 'Invalid selection. Nothing has been installed.' }
+    return $number - 1
+}
+function Safe-Line([string]$Value, [string]$Label) {
+    if ([string]::IsNullOrWhiteSpace($Value) -or $Value -match '[\r\n<>="\\/]') { throw "Invalid $Label" }
+    return $Value.Trim()
+}
+function Test-Running([string]$Exe) {
+    foreach ($p in @(Get-Process -Name terminal64 -ErrorAction SilentlyContinue)) {
+        try { $processPath = $p.Path } catch { return $true }
+        if (!$processPath) { return $true }
+        if ($processPath -ieq $Exe) { return $true }
+    }
+    return $false
+}
+function Ini-Value([string]$Path, [string]$Section, [string]$Key) {
+    if (!(Test-Path -LiteralPath $Path)) { return '' }
+    $inside=$false
+    foreach ($line in [IO.File]::ReadAllLines($Path)) {
+        if ($line -match '^\s*\[([^\]]+)\]') { $inside=$Matches[1] -ieq $Section; continue }
+        if ($inside -and $line -match ('^\s*'+[regex]::Escape($Key)+'\s*=(.*)$')) { return $Matches[1].Trim() }
+    }
+    return ''
+}
+# Broker metadata, never a blind substring match or cached symbols from another server.
+function Read-BrokerCatalog([string]$Path,[string]$Nonce,[long]$Login,[string]$Server) {
+    if (!(Test-Path -LiteralPath $Path -PathType Leaf)) { throw 'Detector has not produced a fresh snapshot. Run it in the selected MT5, then try again.' }
+    $rows=@(Import-Csv -LiteralPath $Path -Delimiter "`t" -Encoding Unicode)
+    if (!$rows.Count) { throw 'Broker returned an empty symbol catalogue.' }
+    $now=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+    foreach ($r in $rows) {
+        if ($r.schema -ne '1' -or $r.nonce -cne $Nonce -or $r.login -ne [string]$Login -or $r.server -cne $Server) { throw 'Symbol snapshot belongs to a different request/account/server.' }
+        if ($r.account_currency -cne 'USD' -or $r.margin_mode -ne '2') { throw 'The connected MT5 account is not USD hedging. No bots will be installed.' }
+        if ([math]::Abs($now-[long]$r.generated_utc) -gt 900) { throw 'Symbol snapshot is stale. Re-run the detector.' }
+        $null=Safe-Line $r.name 'broker symbol'
+    }
+    if (@($rows.name | Select-Object -Unique).Count -ne $rows.Count) { throw 'Duplicate symbol records in snapshot.' }
+    return $rows
+}
+function Find-SymbolCandidates($Rows,[string]$Canonical) {
+    foreach ($r in $Rows) {
+        if ($r.custom -ne '0' -or $r.trade -ne 'SYMBOL_TRADE_MODE_FULL' -or $r.profit -cne 'USD' -or [long]$r.expiry -ne 0) { continue }
+        if ($r.calc -notin @('SYMBOL_CALC_MODE_FOREX','SYMBOL_CALC_MODE_FOREX_NO_LEVERAGE','SYMBOL_CALC_MODE_CFD','SYMBOL_CALC_MODE_CFDINDEX','SYMBOL_CALC_MODE_CFDLEVERAGE')) { continue }
+        $valid=$true
+        foreach ($field in @('contract','tick_size','volume_min','volume_step')) {
+            $num=0.0
+            if (![double]::TryParse($r.$field,[Globalization.NumberStyles]::Float,[Globalization.CultureInfo]::InvariantCulture,[ref]$num) -or [double]::IsInfinity($num) -or [double]::IsNaN($num) -or $num -le 0) { $valid=$false }
+        }
+        if (!$valid) { continue }
+        $words=$r.name+' '+$r.description+' '+$r.path
+        if ($words -match '(?i)\b(futures?|options?|ETF|ETN|shares?|equities|synthetic|volatility|inverse)\b') { continue }
+        $name=($r.name -replace '[^A-Za-z0-9]','').ToUpperInvariant()
+        $desc=$r.description
+        $match=$false
+        if ($Canonical -eq 'XAUUSD') {
+            # Currency metadata rules out XAUEUR/XAUAUD, including symbols called just GOLD.
+            $match=($r.base -ceq 'XAU' -or $name -match 'XAUUSD' -or ($name -match 'GOLD' -and $desc -match '(?i)gold|XAU'))
+        } elseif ($Canonical -eq 'USTEC') {
+            if ($r.calc -notin @('SYMBOL_CALC_MODE_CFD','SYMBOL_CALC_MODE_CFDINDEX','SYMBOL_CALC_MODE_CFDLEVERAGE')) { continue }
+            # Reject broad Nasdaq Composite, Nasdaq stock shares, NQ/MNQ and dated futures.
+            if ($words -match '(?i)composite|nasdaq\s*inc\b') { continue }
+            $alias=$name -match 'USTEC|US100|NAS100|NASDAQ100|NDX100|USTECH100|TECH100'
+            $identity=$desc -match '(?i)(nasdaq|nas|us\s*tech|us\s*technology|tech|ndx)[\s._-]*100|US100|USTEC'
+            $match=$identity -or ($alias -and $desc -match '(?i)nasdaq|us\s*tech|us\s*technology')
+        }
+        if ($match) { $r }
+    }
+}
+function Select-BrokerSymbols($Rows) {
+    $mapping=@{}
+    foreach ($canonical in @($Package.entries.symbol | Select-Object -Unique)) {
+        $matches=@(Find-SymbolCandidates $Rows $canonical | Sort-Object name)
+        if (!$matches.Count) { throw "No compatible USD spot/CFD match for $canonical. Do not substitute futures or a different index. Ask the owner to review the broker's catalogue." }
+        Write-Host "`n$canonical - compatible broker symbols:"
+        for($i=0;$i -lt $matches.Count;$i++) {
+            $m=$matches[$i]
+            Write-Host ("{0}. {1} | {2} | contract={3}; min lot={4}; step={5}; Market Watch={6}" -f ($i+1),$m.name,$m.description,$m.contract,$m.volume_min,$m.volume_step,$m.selected)
+        }
+        $pick=0
+        if ($matches.Count -gt 1) { $pick=Read-Choice 'Multiple valid contracts: choose the one for this account (no default guess)' $matches.Count }
+        $mapping[$canonical]=[string]$matches[$pick].name
+        Write-Host ("Mapped {0} -> {1}" -f $canonical,$mapping[$canonical]) -ForegroundColor Green
+    }
+    return $mapping
+}
+function Discover-BrokerSymbols($Target,[long]$Login,[string]$Server) {
+    if (!(Test-Running $Target.Exe)) { throw 'Open the selected MT5 and log into the intended account before discovery. The detector does not log you in.' }
+    Write-Host 'The BAT can read the real broker catalogue through a read-only MT5 detector. No Python, DLLs, orders or global AutoTrading changes.'
+    if ((Read-Host 'Press Enter to install the detector in this terminal, or type CANCEL') -ne '') { throw 'Cancelled before discovery.' }
+    $scriptDir=Join-Path $Target.Data 'MQL5\Scripts\CalyxTop5'
+    $fileDir=Join-Path $Target.Data 'MQL5\Files\CalyxTop5'
+    $null=New-Item -ItemType Directory -Path $scriptDir -Force
+    $null=New-Item -ItemType Directory -Path $fileDir -Force
+    $scriptPath=Join-Path $scriptDir 'Detect Broker Symbols.ex5'
+    [IO.File]::WriteAllBytes($scriptPath,[Convert]::FromBase64String('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'))
+    if ((File-Hash $scriptPath) -cne '9b158b533be701b75e1efa86c22a90178b8d5bd4d0acf6af6466a8bc4df6bf74') { throw 'Detector verification failed.' }
+    $nonce=[Guid]::NewGuid().ToString('N')
+    [IO.File]::WriteAllLines((Join-Path $fileDir 'discovery-request.txt'),@($nonce,[string]$Login,$Server),[Text.Encoding]::Unicode)
+    Write-Host 'In the SAME MT5: Navigator > Scripts > right-click Refresh > CalyxTop5 > Detect Broker Symbols.' -ForegroundColor Cyan
+    Write-Host 'Double-click that detector on a chart WITHOUT another script running. Leave existing EAs in place; do not enable AutoTrading for this step.'
+    Write-Host 'After its completion message, return here. It only reads the broker symbols and writes a local snapshot.'
+    $null=Read-Host 'Press Enter after the detector says complete'
+    $rows=Read-BrokerCatalog (Join-Path $fileDir ("symbols-$nonce.tsv")) $nonce $Login $Server
+    return Select-BrokerSymbols $rows
+}
+
+function Get-OnlyActiveTarget($Candidates,$Processes) {
+    $active=@($Candidates | Where-Object Running)
+    if (@($Processes).Count -ne 1 -or $active.Count -ne 1) { throw 'Keep exactly ONE supported MT5 terminal open and logged in, then run this installer again. No terminal was changed.' }
+    $target=$active[0]
+    $p=@($Processes)[0]
+    if (!$p.Path -or $p.Path -ine $target.Exe) { throw 'Cannot identify the active MT5 safely.' }
+    $info=Get-CimInstance Win32_Process -Filter ("ProcessId="+$p.Id)
+    if (!$info.CommandLine) { throw 'Cannot inspect MT5 startup settings safely.' }
+    if ($info.CommandLine -match '(?i)/portable|/tester') { throw 'Portable and tester terminals are not supported. Open your normal MT5 terminal.' }
+    if ($info.CommandLine -match '(?i)/config:') {
+        if(!(Test-CalyxRecoveryConfig $info.CommandLine $target.Data)){throw 'MT5 is using an unrelated custom configuration. Close it normally and reopen it from its usual shortcut before setup.'}
+        Write-Host 'Recognized the previous Calyx detector startup. Continuing with manual symbols; the detector will not be run again.'
+    }
+    return $target
+}
+function Test-CalyxRecoveryConfig([string]$CommandLine,[string]$DataDir) {
+    $argsFound=[regex]::Matches($CommandLine,'(?i)(?:^|\s)/config:(?:"([^"]+)"|([^\s"]+))')
+    if($argsFound.Count -ne 1){return $false}
+    $m=$argsFound[0];$path=if($m.Groups[1].Success){$m.Groups[1].Value}else{$m.Groups[2].Value}
+    try {
+        $full=[IO.Path]::GetFullPath($path)
+        $expected=[IO.Path]::GetFullPath((Join-Path $DataDir 'MQL5\Files\CalyxTop5'))
+        if([IO.Path]::GetDirectoryName($full) -ine $expected -or [IO.Path]::GetFileName($full) -notmatch '^startup-[a-f0-9]{32}\.ini$'){return $false}
+        if(!(Test-Path -LiteralPath $full -PathType Leaf)){return $false}
+        $profile=Safe-Line (Ini-Value $full 'Charts' 'ProfileLast') 'recovery profile'
+        $symbol=Safe-Line (Ini-Value $full 'StartUp' 'Symbol') 'recovery symbol'
+        $saved=Ini-Value (Join-Path $DataDir 'config\common.ini') 'Charts' 'ProfileLast'
+        if($profile -cne $saved){return $false}
+        # Accept only our exact read-only detector config, without any account,
+        # credential, tester, Expert or global AutoTrading overrides.
+        $expectedText="[Charts]`nProfileLast=$profile`n[StartUp]`nScript=CalyxTop5\Detect Broker Symbols`nSymbol=$symbol`nPeriod=M1`nShutdownTerminal=0"
+        return ([IO.File]::ReadAllText($full).Replace("`r`n","`n").Trim() -ceq $expectedText)
+    } catch {return $false}
+}
+function Close-SelectedTerminal([string]$Exe) {
+    $processes=@(Get-Process -Name terminal64 -ErrorAction SilentlyContinue | Where-Object { $_.Path -ieq $Exe })
+    if($processes.Count -ne 1){throw 'Selected MT5 process changed. Setup stopped.'}
+    if(!$processes[0].CloseMainWindow()){throw 'MT5 did not accept a normal close request. No forced termination will be used.'}
+    if(!$processes[0].WaitForExit(30000)){throw 'MT5 is waiting on a dialog or did not close. Setup stopped without force-killing it.'}
+}
+function Start-SelectedTerminal([string]$Exe,[string]$Arguments='') {
+    if(Test-Running $Exe){throw 'MT5 is already running; refusing a conflicting startup.'}
+    if($Arguments){Start-Process -FilePath $Exe -ArgumentList $Arguments -WindowStyle Hidden | Out-Null}
+    else{Start-Process -FilePath $Exe -WindowStyle Hidden | Out-Null}
+}
+function Read-SavedContext($Target) {
+    $ini=Join-Path $Target.Data 'config\common.ini'
+    $login=0L;$raw=Ini-Value $ini 'Common' 'Login'
+    if(![long]::TryParse($raw,[ref]$login) -or $login -le 0){throw 'The active account could not be read from saved MT5 settings.'}
+    $server=Safe-Line (Ini-Value $ini 'Common' 'Server') 'saved broker server'
+    $profile=Safe-Line (Ini-Value $ini 'Charts' 'ProfileLast') 'saved active profile'
+    if($profile -in @('.','..')){throw 'Invalid saved chart profile'}
+    $folder=Join-Path $Target.Data ('MQL5\Profiles\Charts\'+$profile)
+    $charts=@(Get-ChildItem -LiteralPath $folder -Filter '*.chr' -File)
+    if(!$charts.Count){throw 'Open at least one chart in MT5 before setup.'}
+    $anchor=''
+    foreach($chart in $charts){$body=[IO.File]::ReadAllText($chart.FullName);if($body -match '(?m)^symbol=([^\r\n]+)'){$anchor=Safe-Line $Matches[1] 'chart symbol';break}}
+    if(!$anchor){throw 'No saved chart symbol found for automatic discovery.'}
+    return [pscustomobject]@{Login=$login;Server=$server;Profile=$profile;Anchor=$anchor}
+}
+function Select-AutomaticSymbols($Rows) {
+    $map=@{}
+    foreach($canonical in @($Package.entries.symbol | Select-Object -Unique)) {
+        $matches=@(Find-SymbolCandidates $Rows $canonical)
+        if($matches.Count -gt 1){
+            $selected=@($matches | Where-Object { $_.selected -eq '1' })
+            if($selected.Count -eq 1){$matches=$selected}
+        }
+        if($matches.Count -ne 1){throw "Cannot safely auto-map $canonical. Keep just the desired compatible contract in Market Watch, then retry. No five-EA profile will be activated."}
+        $map[$canonical]=[string]$matches[0].name
+    }
+    return $map
+}
+function Discover-Automatically($Target,$Context) {
+    $scriptDir=Join-Path $Target.Data 'MQL5\Scripts\CalyxTop5'
+    $fileDir=Join-Path $Target.Data 'MQL5\Files\CalyxTop5'
+    $null=New-Item -ItemType Directory -Path $scriptDir -Force
+    $null=New-Item -ItemType Directory -Path $fileDir -Force
+    $scriptPath=Join-Path $scriptDir 'Detect Broker Symbols.ex5'
+    [IO.File]::WriteAllBytes($scriptPath,[Convert]::FromBase64String('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'))
+    if((File-Hash $scriptPath) -cne '9b158b533be701b75e1efa86c22a90178b8d5bd4d0acf6af6466a8bc4df6bf74'){throw 'Detector verification failed'}
+    $nonce=[Guid]::NewGuid().ToString('N')
+    [IO.File]::WriteAllLines((Join-Path $fileDir 'discovery-request.txt'),@($nonce,[string]$Context.Login,$Context.Server),[Text.Encoding]::Unicode)
+    $config=Join-Path $fileDir ("startup-$nonce.ini")
+    # No login/password override, no global Experts settings. An extra temporary chart
+    # avoids replacing any existing EA/script and is not saved by the startup mechanism.
+    $text="[Charts]`r`nProfileLast=$($Context.Profile)`r`n[StartUp]`r`nScript=CalyxTop5\Detect Broker Symbols`r`nSymbol=$($Context.Anchor)`r`nPeriod=M1`r`nShutdownTerminal=0`r`n"
+    [IO.File]::WriteAllText($config,$text,[Text.Encoding]::Unicode)
+    Start-SelectedTerminal $Target.Exe ('/config:"'+$config+'"')
+    $snapshot=Join-Path $fileDir ("symbols-$nonce.tsv")
+    # MT5 may update itself and load chart history before it initializes a Script.
+    # The previous 90-second budget included that work and could kill initialization.
+    $deadline=[DateTime]::UtcNow.AddSeconds(300)
+    $nextNotice=[DateTime]::UtcNow.AddSeconds(15)
+    $errorPath=Join-Path $fileDir ("symbols-$nonce.error")
+    $startedPath=Join-Path $fileDir ("symbols-$nonce.started")
+    while(!(Test-Path -LiteralPath $snapshot)){
+        if(Test-Path -LiteralPath $errorPath){throw ([IO.File]::ReadAllText($errorPath))}
+        if([DateTime]::UtcNow -ge $deadline){
+            if(Test-Path -LiteralPath $startedPath){throw 'Detector started but did not finish within five minutes. Check MT5 Experts log. No client bots were attached.'}
+            throw 'MT5 did not initialize the detector within five minutes. Let terminal updates/history loading finish, then retry. No client bots were attached.'
+        }
+        if([DateTime]::UtcNow -ge $nextNotice){
+            if(Test-Path -LiteralPath $startedPath){Write-Host 'Detector running; checking broker connection and symbols...'}
+            else{Write-Host 'Waiting for MT5 startup, chart history and detector initialization...'}
+            $nextNotice=[DateTime]::UtcNow.AddSeconds(15)
+        }
+        Start-Sleep -Milliseconds 500
+    }
+    $rows=Read-BrokerCatalog $snapshot $nonce $Context.Login $Context.Server
+    $map=Select-AutomaticSymbols $rows
+    Close-SelectedTerminal $Target.Exe
+    return $map
+}
+
+function Write-Profile([string]$DataDir, [string]$SourceProfile, [string]$ProfileName, [long]$Login, [string]$Server, [hashtable]$Symbols, [int]$RiskMode, [double]$RiskValue) {
+    $charts = Join-Path $DataDir 'MQL5\Profiles\Charts'
+    $sourceDir = Join-Path $charts $SourceProfile
+    $profileDir = Join-Path $charts $ProfileName
+    if (Test-Path -LiteralPath $profileDir) { throw 'Destination already exists; restart installer to create a fresh profile.' }
+    $oldMagic = @($Package.entries | ForEach-Object { [string]$_.original_magic })
+    $clientMagic = @($Package.entries | ForEach-Object { [string]$_.inputs.InpMagic })
+    $sourceFiles = @(Get-ChildItem -LiteralPath $sourceDir -Filter '*.chr' -File)
+    foreach ($file in $sourceFiles) {
+        $content = [IO.File]::ReadAllText($file.FullName)
+        foreach ($magic in $oldMagic) {
+            if ($content -match "(?m)^InpMagic=$magic(?:\|.*)?\r?`$") { throw 'An original version of one of these bots is already attached. Review/remove that chart first to prevent duplicate trading.' }
+        }
+    }
+    $null = New-Item -ItemType Directory -Path $profileDir
+    # Copy all chart/profile data, leaving the original profile intact as the backup.
+    foreach ($file in @(Get-ChildItem -LiteralPath $sourceDir -File)) { Copy-Item -LiteralPath $file.FullName -Destination $profileDir }
+    $index = 1
+    foreach ($file in @(Get-ChildItem -LiteralPath $profileDir -Filter '*.chr' -File)) {
+        $content = [IO.File]::ReadAllText($file.FullName)
+        $ours = $false
+        foreach ($magic in $clientMagic) { if ($content -match "(?m)^InpMagic=$magic(?:\|.*)?\r?`$") { $ours = $true } }
+        if ($ours) { Remove-Item -LiteralPath $file.FullName } # Only duplicates in the NEW inactive profile.
+    }
+    foreach ($ea in $Package.entries) {
+        while (Test-Path -LiteralPath (Join-Path $profileDir ('chart{0:D2}.chr' -f $index))) { $index++ }
+        $inputs = [ordered]@{}
+        foreach ($prop in $ea.inputs.PSObject.Properties) { $inputs[$prop.Name] = [string]$prop.Value }
+        $inputs['ClientRiskMode'] = [string]$RiskMode
+        $inputs['ClientRiskValue'] = $RiskValue.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+        $inputs['ClientExpectedLogin'] = [string]$Login
+        $inputs['ClientExpectedServer'] = $Server
+        $inputs['ClientExpectedSymbol'] = $Symbols[$ea.symbol]
+        $name = [IO.Path]::GetFileNameWithoutExtension($ea.expert)
+        $minutes = switch ($ea.period) { 'M1' {1} 'M5' {5} 'M15' {15} 'M30' {30} 'H1' {60} 'H4' {240} 'D1' {1440} default {throw 'Unsupported timeframe'} }
+        $chart = New-ChartText $Symbols[$ea.symbol] $minutes $name ("Experts\CalyxTop5\" + $ea.expert) $inputs
+        # The user explicitly confirms attachment. Global AutoTrading is NEVER changed.
+        $chart = $chart.Replace('expertmode=0','expertmode=1') -replace '(?m)^id=1\r?$', ('id=' + ([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() + $index))
+        [IO.File]::WriteAllText((Join-Path $profileDir ('chart{0:D2}.chr' -f $index)), $chart, $Unicode)
+        $index++
+    }
+    return $profileDir
+}
+function Main {
+    Check-Bundle
+    if ($env:CALYX_VALIDATE_ONLY -eq '1') { Write-Host 'PASS: five EX5 hashes, embedded settings and installer loaded. No MT5 changes.'; return }
+    Write-Host "`nCALYX - TOP FIVE CLIENT EDITION" -ForegroundColor Green
+    Write-Host "Licence expiry: $($Package.licence.expires_utc) (UTC/broker clock, whichever reaches it first)."
+    if ([DateTimeOffset]::UtcNow -ge [DateTimeOffset]::Parse($Package.licence.expires_utc)) { throw 'Package has expired. Ask owner to renew the compiled bots.' }
+    Write-Host 'USD HEDGING accounts only. This is real trading software, not a paper simulator.' -ForegroundColor Yellow
+    Write-Host 'Risk is PER TRADE, PER BOT, not a portfolio cap. Five bots can stack risk; fees/gaps can exceed the planned stop.'
+    $terminalRoot = Join-Path $env:APPDATA 'MetaQuotes\Terminal'
+    $candidates = @()
+    if (Test-Path -LiteralPath $terminalRoot) {
+        foreach ($dir in @(Get-ChildItem -LiteralPath $terminalRoot -Directory)) {
+            $originFile = Join-Path $dir.FullName 'origin.txt'
+            if (!(Test-Path -LiteralPath $originFile)) { continue }
+            $origin = [IO.File]::ReadAllText($originFile).Trim()
+            $exe = Join-Path $origin 'terminal64.exe'
+            if (!(Test-Path -LiteralPath $exe) -or !(Test-Path -LiteralPath (Join-Path $dir.FullName 'MQL5'))) { continue }
+            if (($origin + ' ' + $dir.FullName) -match '(?i)ava|backtest|research|tester|MT5-DMC') { continue }
+            $candidates += [pscustomobject]@{ Data=$dir.FullName; Exe=$exe; Running=(Test-Running $exe) }
+        }
+    }
+    if ($candidates.Count -eq 0) { throw 'No supported standard MT5 installation found. Open MT5 once. Portable/research terminals are not auto-installed.' }
+    $target=Get-OnlyActiveTarget $candidates @(Get-Process -Name terminal64 -ErrorAction SilentlyContinue)
+    Write-Host 'Enter risk and the exact Gold/Nasdaq symbols from Market Watch. Setup restarts MT5 once; EA management briefly pauses. AutoTrading stays unchanged.'
+    Write-Host 'Submitting the final symbol starts setup. If AutoTrading is already on, bots may trade immediately after installation. Symbols are not automatically verified.' -ForegroundColor Yellow
+    $mode = Read-Choice 'Risk: 1 = fixed USD per trade; 2 = percent of current BALANCE' 2
+    $valueText = Read-Host $(if ($mode -eq 0) {'USD risk per trade (example: 50)'} else {'Balance percent per trade (example: 0.5; maximum 5)'})
+    $value = 0.0
+    if (![double]::TryParse($valueText,[Globalization.NumberStyles]::Float,[Globalization.CultureInfo]::InvariantCulture,[ref]$value) -or [double]::IsNaN($value) -or [double]::IsInfinity($value) -or $value -le 0 -or ($mode -eq 1 -and $value -gt 5)) { throw 'Invalid risk amount. Use a dot for decimals.' }
+    $symbols=@{}
+    $symbols['XAUUSD']=Safe-Line (Read-Host 'Exact Gold / USD symbol (examples: XAUUSD, XAUUSDr, GOLD)') 'Gold symbol'
+    $symbols['USTEC']=Safe-Line (Read-Host 'Exact Nasdaq 100 CFD symbol (examples: USTECr, US100, NAS100)') 'Nasdaq symbol'
+    if($symbols['XAUUSD'] -ieq $symbols['USTEC']){throw 'Gold and Nasdaq must have different symbols. No terminal changed.'}
+    $restoreNeeded=$false
+    try {
+    Close-SelectedTerminal $target.Exe
+    $restoreNeeded=$true
+    $context=Read-SavedContext $target
+    $loginId=$context.Login;$server=$context.Server;$source=$context.Profile
+    if ($Package.licence.bound_login -gt 0 -and $loginId -ne $Package.licence.bound_login) { throw 'This package is licensed to a different account.' }
+    if ($Package.licence.bound_server -and $server -cne $Package.licence.bound_server) { throw 'Broker server does not match licence.' }
+    Write-Host 'Using your entered symbols. Account/server and current profile were read from saved MT5 settings. USD hedging compatibility is enforced by the EAs on startup.'
+    $saved=Read-SavedContext $target
+    if($saved.Login -ne $loginId -or $saved.Server -cne $server -or $saved.Profile -cne $source){throw 'Account/profile changed during setup. No client profile will be activated.'}
+    Check-Bundle
+    $profileName = 'Calyx Top5 ' + (Get-Date -Format 'yyyyMMdd-HHmmss')
+    $profileDir = Write-Profile $target.Data $source $profileName $loginId $server $symbols $mode $value
+    $expertDir = Join-Path $target.Data 'MQL5\Experts\CalyxTop5'
+    $null = New-Item -ItemType Directory -Path $expertDir -Force
+    # Keep previous binaries for recovery on renewals; nothing is deleted from the old profile.
+    $backup = Join-Path $target.Data ('CalyxBackups\' + $profileName)
+    foreach ($ea in $Package.entries) {
+        $destination = Join-Path $expertDir $ea.expert
+        if (Test-Path -LiteralPath $destination) { $null = New-Item -ItemType Directory -Path $backup -Force; Copy-Item -LiteralPath $destination -Destination $backup }
+        Copy-Item -LiteralPath (Join-Path $Bundle $ea.expert) -Destination $destination
+        if ((File-Hash $destination) -ine $ea.ex5_sha256) { throw 'Installed binary verification failed. Do not enable trading; contact owner.' }
+    }
+    Write-Host "Installed. Original profile retained: $source. New profile: $profileName" -ForegroundColor Green
+    Write-Host 'At expiry NEW entries stop, own pending entries are cancelled; open positions keep SL/TP/trailing/time management while MT5 stays connected.'
+    Write-Host 'To stop trading manually, disable Algo Trading. To roll back charts, select the original profile. Renewals need replacement EX5s from the owner.'
+    Start-SelectedTerminal $target.Exe ('/profile:"' + $profileName + '"')
+    $restoreNeeded=$false
+    Write-Host 'Check all five charts and the Experts log. If Algo Trading is OFF, enable it yourself only after checking account, symbols and risk.'
+    } finally {
+        if($restoreNeeded){
+            # Restore normal startup, never force-kill. Do not mask the original error.
+            try {
+                if(Test-Running $target.Exe){Close-SelectedTerminal $target.Exe}
+                Start-SelectedTerminal $target.Exe
+                Write-Host 'Original MT5 session restarted; client setup did not finish.' -ForegroundColor Yellow
+            } catch { Write-Warning 'MT5 could not be restored automatically. Reopen it normally; the original profile is retained.' }
+        }
+    }
+}
+if ($env:CALYX_LIBRARY_ONLY -ne '1') { Main }

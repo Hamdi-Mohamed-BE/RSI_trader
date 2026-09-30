@@ -1,0 +1,69 @@
+{
+  "case": "nw-XAUUSD-S15-5y",
+  "symbol": "XAUUSD",
+  "variant": "S15",
+  "period": "5y",
+  "start": "2021.09.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 55.1,
+  "report_sha256": "97f651f98fc0b3eaf620070f7b24ebab42047c3a8e295bfbf1aad0539016c766",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 12808,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "db794910667c4a2d0dd79f1014b211787afff59649aa446cb75ff839a4d7010b",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 384.02,
+    "net_profit": -9615.98,
+    "return_pct": -96.16,
+    "profit_factor": 0.7,
+    "win_rate_pct": 43.85,
+    "max_drawdown_pct": 98.15,
+    "trades": 1382,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.97,
+    "history_quality": "14% real ticks",
+    "balance_dd_pct": 97.69,
+    "expected_payoff": -6.96,
+    "max_relative_equity_dd_pct": 98.15,
+    "max_relative_balance_dd_pct": 97.69
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 3670,
+    "causal_and_1R_checks": 3670,
+    "spec_lines": [
+      "NW_SPEC symbol=XAUUSD description=Gold vs US Dollar digits=3 point=0.0010000000 tick=0.0010000000 contract=100.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=2072 placed=1835 invalid_geometry=219 missing_pivot=0 rejected=18 expired=452"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:23:16.917\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+      "IH\t0\t17:23:19.502\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -2368.18,
+    "swap": -1079.75,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "991c992a1efb1563eaa1274f2bddf7d90fb500515b311418035897b48e2dc223"
+  }
+}

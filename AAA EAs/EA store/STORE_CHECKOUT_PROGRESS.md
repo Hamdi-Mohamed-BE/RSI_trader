@@ -38,3 +38,17 @@ production site on :8080 untouched; preview only on :8082).
    pre-existing ones; the other 13 (test_gold_value_area, test_nasdaq_di_prompt, test_nasdaq_wide_atr,
    test_orb_comments) concern FTMO/portfolio artefacts being changed by the parallel session (13 vs 14 EAs,
    portfolio dates, "Wrong portfolio scope") and touch no store code.
+8. (after a usage-limit interruption) Browser/visual check with headless Chrome via CDP (`tools/video/verify_pages.py`)
+   at 1440x900 and 390x844: pricing, detail, cart, checkout, order pending/paid, how-it-works, admin login/dashboard/
+   orders/licenses/settings; no horizontal overflow. Fixes: nav links wrapped at 1440 px (desktop nav now from `lg`,
+   EA-count badge from `2xl`, WhatsApp button from `xl`); order page left column stretched (`content-start`).
+   The Claude Browser pane loaded /how-it-works: video metadata 204.4 s, 1920x1080, caption track showing.
+9. 3 Way Gold finalised by the other session → store builds rebuilt: 26 builds / 35 products, 26/26 compiled,
+   0 errors 0 warnings (3 Way Gold build id changed to calyx-3-way-gold-ea-51a55bc6).
+10. Video: `tools/video/` (script.json, make_voiceover.py adapted from clipper, edge_tts_threaded.py copied,
+    cdp.py, capture_shots.py, mocks.py, render_video.py). Voice en-US-AndrewNeural; 15 scenes; frames from the local
+    :8082 demo server (DEMO addresses, DEMO banners) + HTML mock-ups for ZIP, installer console (real output of the
+    installer run against fake folders, paths anonymised) and MT5 steps (fake account 12345678, labelled
+    ILLUSTRATION). Output `static/video/calyx-how-it-works.mp4` (3:24, 31.9 MB), poster JPG, `.en.vtt` captions.
+11. Final full suite: 240 passed, 7 failed (the pre-existing test_store.py set), 1 skipped (`qrcode` not installed
+    in the project venv; that comparison was run separately: 480/480 identical).

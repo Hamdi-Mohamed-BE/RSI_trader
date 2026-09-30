@@ -1,0 +1,54 @@
+{
+  "case": "nw-USTEC-nasdaq-overnight-balance-3m",
+  "symbol": "USTEC",
+  "variant": "nasdaq-overnight-balance",
+  "period": "3m",
+  "start": "2026.06.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "Calyx Top5 3 Nasdaq Overnight.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 23.1,
+  "report_sha256": "ce1b8d835cb8c0f6c3b3be137c1fe0cc6a59f0aaf83ccaaea1100a07bf7fb96e",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 0,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "a8fd011bc7176bf4488fc61015412f8f301096ef023a7ba05aed447e43c80617",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10012.93,
+    "net_profit": 12.93,
+    "return_pct": 0.13,
+    "profit_factor": 1.02,
+    "win_rate_pct": 51.52,
+    "max_drawdown_pct": 2.4,
+    "trades": 33,
+    "sharpe_ratio": 0.18,
+    "recovery_factor": 0.05,
+    "history_quality": "100% real ticks",
+    "balance_dd_pct": 1.85,
+    "expected_payoff": 0.39,
+    "relative_equity_dd_pct": 2.4
+  },
+  "ok": true,
+  "audited": true,
+  "ex5_sha256": "3cf4a6cc803c34b2154f9eb48a37c17ec8c46ba0aa2670c48b09be646d5fe956",
+  "risk_mode": "balance",
+  "risk_value": 1,
+  "risk_audits": 66,
+  "slug": "nasdaq-overnight",
+  "trades_sha256": "1ee587ed2e7c6e3e36369bf620023b2e05ff7890304e894bb000171e82816ac4"
+}

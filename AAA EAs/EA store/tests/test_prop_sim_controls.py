@@ -41,7 +41,7 @@ def test_profit_close_locks_the_day_at_the_target():
 def test_presets_default_to_fixed_50_usd_with_daily_controls():
     presets = {p["id"]: p for p in client.get("/api/prop-sim/catalog").json()["presets"]}
     controls = presets["ftmo13-controls"]
-    assert controls["sizing"] == "fixed_usd" and controls["risk_usd"] == 50 and len(controls["eas"]) == 13
+    assert controls["sizing"] == "fixed_usd" and controls["risk_usd"] == 50 and len(controls["eas"]) == 14
     assert controls["guards"] == {"equity_stop_pct": 2.0, "profit_close_pct": 4.0}
     assert "NOT installed" in controls["note"]
     assert presets["ftmo13"]["guards"] == {}

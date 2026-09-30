@@ -1,0 +1,69 @@
+{
+  "case": "nw-BTCUSD-S15-5y",
+  "symbol": "BTCUSD",
+  "variant": "S15",
+  "period": "5y",
+  "start": "2021.09.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 65.5,
+  "report_sha256": "18d7dd792ee2adbf3ffeb9567bbb472ae189b77597e3ae2d0efe28929c9a8b6e",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 8,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "db794910667c4a2d0dd79f1014b211787afff59649aa446cb75ff839a4d7010b",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 162.86,
+    "net_profit": -9837.14,
+    "return_pct": -98.37,
+    "profit_factor": 0.54,
+    "win_rate_pct": 44.44,
+    "max_drawdown_pct": 98.74,
+    "trades": 1719,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.99,
+    "history_quality": "14% real ticks",
+    "balance_dd_pct": 98.73,
+    "expected_payoff": -5.72,
+    "max_relative_equity_dd_pct": 98.74,
+    "max_relative_balance_dd_pct": 98.73
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 4432,
+    "causal_and_1R_checks": 4432,
+    "spec_lines": [
+      "NW_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar digits=2 point=0.0100000000 tick=0.0100000000 contract=1.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=2448 placed=2216 invalid_geometry=231 missing_pivot=0 rejected=1 expired=494"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:29:27.743\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+      "EP\t0\t17:29:29.388\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -1832.76,
+    "swap": -155.25,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "b9354622a44bab8109479953f2861478540230a4f15ea49c6dd797f935002302"
+  }
+}

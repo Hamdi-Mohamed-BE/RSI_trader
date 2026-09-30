@@ -1,5 +1,60 @@
 # Calyx — EA Store
 
+## Direct checkout (USDT), online licenses, admin panel, installer, video — 2026-09-30
+
+Local implementation, **not deployed**. Code in `app/store/`; hooks in `app/main.py` are limited to an import, the
+lifespan start/stop calls and `store_integration.install(...)` at the end. Running log: `STORE_CHECKOUT_PROGRESS.md`.
+
+**Prices.** Every EA is 40% below its catalogue list price (`app/store/pricing.py`; `app/catalog.py` is unchanged).
+Cart rule *buy 3, get 1 free*: for every 4 bots the n//4 cheapest are free. The complete-portfolio price ($1,990 →
+$1,194) applies automatically when every sellable EA is in the cart and it is cheaper than the pack total.
+
+**Payment.** USDT sent directly to the owner's Binance deposit addresses — TRC20 (contract
+`TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`, 6 decimals) or BEP20 (`0x55d398326f99059fF775485246999027B3197955`, 18 decimals).
+Each order gets a unique amount (base + 0.01…0.99 USDT) and expires after 60 min (30-min late window). A background
+watcher reads TronGrid REST and BSC JSON-RPC `eth_getLogs` and confirms an order only for the exact amount, the right
+token and address, inside the window and after the configured confirmations (20 TRC20 / 15 BEP20). Everything else is
+listed under *Chain transfers* for manual review; the admin can mark an order paid with a note.
+
+**Licenses.** One key per bot (1 live + 1 demo MT5 account). Accounts can be entered at checkout, later on the order
+page, or are bound on first activation. The store-build EA calls `POST /api/license/check` on start and every 24 h
+(72 h offline grace, signed terminal global variable), verifies the HMAC-signed answer, and on denial prints the reason
+and calls `ExpertRemove()` (open positions are then unmanaged). The Strategy Tester is bypassed completely. Licenses are
+bound to the product slug and to the product's SET magic number (products sharing one EX5 differ only by SET).
+
+**Store builds.** `uv run python tools/build_store_eas.py` writes `data/store-builds/` (gitignored — wrappers embed
+per-build secrets): per EA binary a wrapper `.mq5` that includes `CalyxLicense.mqh`, renames the original callbacks
+with `#define` (pattern from `FTMO Thirteen EA Deployment 2026-09-27/build_package.py`), includes a copy of the
+original source graph and compiles it with the isolated MetaEditor (0 errors, 0 warnings required), plus
+`manifest.json`. Original sources/EX5/SETs/installer are only read. Rebuild after any EA/SET change or after changing
+`CALYX_LICENSE_SECRET` or the activation URL (`--activation-url`).
+
+**Downloads.** The order page (private link, only its hash is stored) lists each license with a signed download link
+(2 h). Each ZIP holds the store EX5, the SET with `InpCalyxLicenseKey` pre-filled, `INSTALL <bot>.bat`,
+`Install-CalyxBot.ps1` (PowerShell only: picks the MT5 data folder via `origin.txt`, refuses Ava/test/tester folders,
+asks the broker symbol, copies EX5/SET, creates a chart profile, adds the license origin to the WebRequest list only
+when MT5 is closed, never enables Algo Trading; `-ValidateOnly`, `-TargetDataFolder`), `README.txt`, `LICENSE.txt`.
+
+**Owner setup.**
+1. Secrets: create `.env` in this folder (gitignored) with `CALYX_STORE_SECRET=<64 random hex>` and
+   `CALYX_LICENSE_SECRET=<64 random hex>`, or keep the auto-generated `data/store-secrets.json` (gitignored).
+   The license secret must be identical on the build machine and the web server; store builds made on this PC used
+   `data/store-secrets.json` — copy that file (or its values) to the server, or rebuild there.
+2. `uv run python tools/create_admin.py` (prompts for username/password, stores an scrypt hash).
+3. Sign in at `/admin/login` (not linked publicly), enable 2FA under *Security*.
+4. *Settings*: paste the Binance TRC20 and/or BEP20 USDT deposit addresses (validated; checkout shows "payments not
+   configured" until one is set), confirmations, expiry, RPC URLs, optional TronGrid API key.
+5. `uv run python tools/build_store_eas.py`, then restart the site. The activation URL compiled into the builds is
+   `https://calyx.duckdns.org/api/license/check`; it must be reachable over HTTPS (Caddy already proxies the site).
+
+Other environment variables: `CALYX_STORE_DB` (default `data/store.sqlite3`), `CALYX_STORE_WATCHER=0` (disable the
+watcher), `CALYX_COOKIE_SECURE` (`auto`/`1`/`0`), `CALYX_TRUSTED_PROXIES` (default `127.0.0.1,::1`),
+`CALYX_STORE_BUILDS`, `CALYX_STORE_DEMO=1` (DEMO banners, preview/video only).
+
+**Pages.** `/cart`, `/checkout`, `/order/{token}`, `/download/{token}`, `/how-it-works` (video
+`static/video/calyx-how-it-works.mp4`, 3:24, English Edge-TTS voice-over, captions `.en.vtt`), `/admin/*`,
+`POST /api/license/check`. Video sources: `tools/video/` (script, CDP capture, mocks, voice-over, ffmpeg render).
+
 ## Prop Challenge Simulator and site-wide Sharpe — 2026-09-29
 
 **Sharpe (daily, annualised)** is now shown for every EA (cards, detail page incl. period switch, catalogue sort)
@@ -138,7 +193,7 @@ stored under `C:\Calyx-Caddy`.
 
 The installer PowerShell file is the source of truth for the catalogue. Restart the web server after changing the installer.
 
-Descriptions and prices are in `app\catalog.py`. Public names remove the internal `AAA Final` prefix. Purchase buttons open WhatsApp for `+216 93 830 957` with the EA and price already included in the message. The available-EA package is USD 1,990. This version does not process payments or automatically issue licenses.
+Descriptions and prices are in `app\catalog.py`. Public names remove the internal `AAA Final` prefix. List prices stay in `app\catalog.py`; the store charges 40% less (see the 2026-09-30 section). Purchases go through the cart and USDT checkout; WhatsApp remains for questions.
 
 ## Evidence
 

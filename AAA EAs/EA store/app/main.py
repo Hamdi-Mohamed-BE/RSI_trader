@@ -53,6 +53,7 @@ from .risk_visuals import risk_series, sharpe_sparkline_svg, streak_bars_svg
 from .prop_sim.service import SimRequest, catalog_payload, run_simulation
 from .prop_sim.ratelimit import SlidingWindowLimiter
 from .store import integration as store_integration
+from .store.config import store_enabled
 from .store.pricing import package_sale_cents, sale_cents
 
 
@@ -387,8 +388,8 @@ async def storefront(request: Request) -> HTMLResponse:
         "validated_count": validated,
         "asset_count": len({product.asset_group for product in products}),
         "portfolio": _portfolio_audit(),
-        "package_url": "/pricing",
-        "package_price": package_sale_cents() / 100,
+        "package_url": "/pricing" if store_enabled() else package_buy_url("Complete Available EA Portfolio", 1990),
+        "package_price": package_sale_cents() / 100 if store_enabled() else 1990,
     }
     return templates.TemplateResponse(request=request, name="home.html", context=context)
 
@@ -543,9 +544,9 @@ async def portfolio(
         "period_options": PERIOD_OPTIONS,
         "portfolio_period_rows": _cached_portfolio_rows(),
         "consistency_audit": consistency_audit,
-        "full_price": sum(sale_cents(product) for product in products) / 100,
-        "package_price": package_sale_cents() / 100,
-        "package_url": "/pricing",
+        "full_price": sum(sale_cents(product) for product in products) / 100 if store_enabled() else sum(product.price for product in products),
+        "package_price": package_sale_cents() / 100 if store_enabled() else 1990,
+        "package_url": "/pricing" if store_enabled() else package_buy_url("Complete Available EA Portfolio", 1990),
     }
     return templates.TemplateResponse(request=request, name="portfolio.html", context=context)
 
@@ -553,6 +554,8 @@ async def portfolio(
 @app.get("/pricing", response_class=HTMLResponse)
 async def pricing(request: Request) -> HTMLResponse:
     products = get_sellable_catalog()
+    if not store_enabled():
+        return templates.TemplateResponse(request=request, name="pricing.html", context=_legacy_pricing_context(request, products))
     cheapest = min((product for product in products), key=lambda product: product.price, default=None)
     packages = [
         {
@@ -588,7 +591,42 @@ async def pricing(request: Request) -> HTMLResponse:
         "individual_total": sum(sale_cents(product) for product in products) / 100,
         "package_price": package_sale_cents() / 100,
     }
-    return templates.TemplateResponse(request=request, name="pricing.html", context=context)
+    return templates.TemplateResponse(request=request, name="pricing_store.html", context=context)
+
+
+def _legacy_pricing_context(request: Request, products: list) -> dict:
+    """Pre-store /pricing (WhatsApp checkout, list prices), served while CALYX_STORE_ENABLED is off."""
+    packages = [
+        {
+            "name": "Choose one EA",
+            "price": "From $149",
+            "description": "One compiled EA, its active BAT preset and installation guidance.",
+            "features": ["1 live + 1 demo MT5 account", "Compiled EX5 and SET", "12 months of updates", "WhatsApp setup support"],
+            "url": package_buy_url("Individual EA License", 149),
+            "featured": False,
+        },
+        {
+            "name": "Choose 3 + bonus EA",
+            "price": "$499",
+            "description": "Choose any three available EAs and receive one additional available EA selected by us at no extra cost.",
+            "features": ["4 EA licenses in total", "You choose the first 3", "One random available bonus EA", "WhatsApp compatibility check"],
+            "url": package_buy_url("Choose 3 plus Random Bonus EA", 499),
+            "featured": True,
+        },
+        {
+            "name": "Complete Available Portfolio",
+            "price": "$1,990",
+            "description": f"All {len(products)} currently available EAs. Development builds are excluded.",
+            "features": ["All available EAs and presets", "Installer and symbol mapping", "1 live + 1 demo MT5 account", "Priority WhatsApp setup support"],
+            "url": package_buy_url("Complete Available EA Portfolio", 1990),
+            "featured": False,
+        },
+    ]
+    return _base_context(request, "pricing") | {
+        "packages": packages,
+        "individual_total": sum(product.price for product in products),
+        "package_price": 1990,
+    }
 
 
 @app.get("/risk", response_class=HTMLResponse)

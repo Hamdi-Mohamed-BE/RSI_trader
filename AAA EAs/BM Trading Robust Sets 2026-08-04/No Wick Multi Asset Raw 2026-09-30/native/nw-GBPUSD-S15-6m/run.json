@@ -1,0 +1,69 @@
+{
+  "case": "nw-GBPUSD-S15-6m",
+  "symbol": "GBPUSD",
+  "variant": "S15",
+  "period": "6m",
+  "start": "2026.03.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 11.5,
+  "report_sha256": "793f230b47743cd97002c2af341ad9a52bda0fb9f61e975984e6c555b42e06f9",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 2,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "db794910667c4a2d0dd79f1014b211787afff59649aa446cb75ff839a4d7010b",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 7770.75,
+    "net_profit": -2229.25,
+    "return_pct": -22.29,
+    "profit_factor": 0.78,
+    "win_rate_pct": 47.03,
+    "max_drawdown_pct": 23.95,
+    "trades": 185,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.92,
+    "history_quality": "100% real ticks",
+    "balance_dd_pct": 23.51,
+    "expected_payoff": -12.05,
+    "max_relative_equity_dd_pct": 23.95,
+    "max_relative_balance_dd_pct": 23.51
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 456,
+    "causal_and_1R_checks": 456,
+    "spec_lines": [
+      "NW_SPEC symbol=GBPUSD description=Great Britain Pound vs US Dollar digits=5 point=0.0000100000 tick=0.0000100000 contract=100000.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=261 placed=228 invalid_geometry=33 missing_pivot=0 rejected=0 expired=43"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:36:27.661\tTicks\tGBPUSD : real ticks begin from 2026.01.01 00:00:00",
+      "RI\t0\t17:36:28.630\tCore 01\tGBPUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -1323.74,
+    "swap": -48.9,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "5c47215c004cf9bbc06b7f00d521a85c34abaa274a39fc1715eb7f061c9e0fc2"
+  }
+}

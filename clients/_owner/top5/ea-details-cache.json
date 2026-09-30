@@ -1,0 +1,408 @@
+{
+  "copied_utc": "2026-09-30T20:08:16+00:00",
+  "source": "Existing Calyx website catalogue",
+  "source_sha256": "56ce1ef3a1cb235c55bf14bca667d6e13bc3d19319a0ec6f8b86b5ef77eeedc3",
+  "entries": {
+    "gold-overnight-value-area": {
+      "strategy": "Overnight value-area breakout \u2014 raw",
+      "tagline": "The approved raw gold model: overnight value, a completed M5 breakout and the overnight extreme as target.",
+      "description": "Builds a 64-bin, 70% tick-volume profile from 18:00 to 09:30 New York. The first completed M5 close outside value selects direction. A valid trade targets the overnight high or low, with its stop beyond the opposite value-area edge. This is the raw model, not the optimized candidate.",
+      "session": "09:35\u201316:00 America/New_York, DST-aware",
+      "logic_audit": "Raw source and native MT5 evidence",
+      "logic_audit_note": "Research reports are preserved separately. Production adds restart protection, automatic live broker-time conversion and the existing optional Adaptive governor; no optimized entry or exit filters.",
+      "logic": [
+        {
+          "title": "Build overnight value",
+          "detail": "Completed M1 HLC3 prices weighted by broker tick volume; 64 bins and a contiguous 70% value area. This is not exchange-traded gold volume."
+        },
+        {
+          "title": "Wait for the first M5 close",
+          "detail": "After 09:30 NY, buy above VAH or sell below VAL on a completed M5 candle. One attempt per day; invalid stop/target geometry consumes the attempt."
+        },
+        {
+          "title": "Use structural protection",
+          "detail": "Stop one tick beyond the opposite value-area edge; target the overnight high/low. RR varies and can be below 1R. No trailing or break-even."
+        },
+        {
+          "title": "Exit on schedule",
+          "detail": "Close at 16:00 NY or the broker's earlier session cutoff; retry if the market is unavailable. An exit time is not a guaranteed fill."
+        },
+        {
+          "title": "Follow selected sizing",
+          "detail": "Default 1% equity, or the BAT's selected percentage/fixed amount. Lots round up, so minimum lot can exceed the risk target. Adaptive mode applies the existing non-news controls."
+        }
+      ],
+      "risk_note": "Raw 1% standalone evidence is not an FTMO recommendation. Five-year equity drawdown is about 28.9%. A high win rate does not guarantee positive expectancy; live spread, gaps, fees and lot rounding matter.",
+      "inputs": {
+        "InpEnableTrading": "true",
+        "InpAdaptivePortfolioControls": "false",
+        "InpRiskMode": "0",
+        "InpFixedRiskMoney": "100",
+        "InpAutoServerUTCOffset": "true",
+        "InpWriteAudit": "false",
+        "InpDirectionMode": "0",
+        "InpBins": "64",
+        "InpValueAreaPercent": "70",
+        "InpMinimumProfileBars": "120",
+        "InpRiskPercent": "1",
+        "InpServerUTCOffsetHours": "0",
+        "InpExpectedLogin": "0",
+        "InpExpectedServer": "",
+        "InpMagic": "93095001",
+        "InpCase": "gold-overnight-va-live",
+        "InpEntryEndMinute": "960",
+        "InpExitMinute": "960",
+        "InpStopMode": "0",
+        "InpMinimumR": "0",
+        "InpTargetR": "0",
+        "InpBreakEvenR": "0",
+        "InpTrailDistanceR": "0",
+        "ClientRiskMode": "0",
+        "ClientRiskValue": "50",
+        "ClientExpectedLogin": "0",
+        "ClientExpectedServer": "",
+        "ClientExpectedSymbol": ""
+      }
+    },
+    "xau-rsi-vwap": {
+      "strategy": "RSI-of-VWAP pullback continuation",
+      "tagline": "A long-only XAUUSD H1 pullback model built from session VWAP momentum and a structural swing stop.",
+      "description": "This locked XAUUSD build calculates a broker-volume VWAP that resets each broker day, applies Wilder RSI to that VWAP series, and buys only when the completed H1 signal crosses up from an unusually oversold reading. The selected setup uses a recent-swing stop and a compact 0.5R target.",
+      "session": "All broker sessions / H1",
+      "logic_audit": "Source-code verified",
+      "logic_audit_note": "Readable MQ5 source, the exact selected SET and its locked MT5 Every Tick report were reviewed together.",
+      "logic": [
+        {
+          "title": "Rebuild the daily anchored VWAP",
+          "detail": "On every new H1 bar, the EA reconstructs VWAP from completed chart bars and resets the cumulative price-volume calculation at each broker-day boundary. Real volume is used when available, otherwise broker tick volume is used."
+        },
+        {
+          "title": "Measure momentum on VWAP rather than price",
+          "detail": "A 16-period Wilder RSI is calculated from the reconstructed VWAP series. This deliberately smooths the input and asks whether accepted value, rather than one candle's close, is recovering from an extreme."
+        },
+        {
+          "title": "Enter only the completed oversold cross",
+          "detail": "The selected build is long-only. It requires the prior completed RSI-of-VWAP value to be at or below 18 and the newest completed value to cross above 18; the signal is evaluated once when the next H1 bar begins."
+        },
+        {
+          "title": "Place the stop beyond recent structure",
+          "detail": "The stop is placed below the lowest low of the preceding five completed H1 candles with an additional 0.10 ATR(14) buffer. Broker minimum stop distance is enforced before position size is calculated."
+        },
+        {
+          "title": "Size the trade from current equity",
+          "detail": "OrderCalcProfit measures the one-lot loss from entry to the structural stop, then volume is rounded up to the broker step to target 1% of current equity. The dynamic BAT can replace that percentage without changing the signal rules; the broker minimum lot is used when necessary."
+        },
+        {
+          "title": "Take the compact continuation objective",
+          "detail": "The locked target is 0.5 times initial risk. A break-even rule is configured at 0.75R, which is beyond the target and therefore does not activate in normal fills; ATR trailing and maximum-hold exits are disabled."
+        }
+      ],
+      "risk_note": "Dynamic equity risk, default 1%, with no spread ceiling in the locked research preset. The 0.5R target needs a win rate above roughly 66.7% before costs; the locked year achieved 72.73% over only 44 trades.",
+      "inputs": {
+        "InpRSILength": "16",
+        "InpOversold": "18.0",
+        "InpOverbought": "80.0",
+        "InpRiskPercent": "1.0",
+        "InpExitMode": "2",
+        "InpStopMode": "1",
+        "InpATRPeriod": "14",
+        "InpStopATR": "2",
+        "InpSwingLookback": "5",
+        "InpStopBufferATR": "0.10",
+        "InpRewardRisk": "0.5",
+        "InpSignalClosePercent": "100.0",
+        "InpUseBreakEven": "true",
+        "InpBreakEvenAtR": "0.75",
+        "InpBreakEvenLockR": "0.05",
+        "InpUseATRTrailing": "false",
+        "InpTrailStartR": "1",
+        "InpTrailATR": "2",
+        "InpMaximumHoldingBars": "0",
+        "InpSession": "0",
+        "InpMaximumSpreadPoints": "0",
+        "InpMaximumDeviationPoints": "80",
+        "InpMagic": "93095002",
+        "ClientRiskMode": "0",
+        "ClientRiskValue": "50",
+        "ClientExpectedLogin": "0",
+        "ClientExpectedServer": "",
+        "ClientExpectedSymbol": ""
+      }
+    },
+    "orb-volume-profile": {
+      "strategy": "New York opening-range breakout",
+      "tagline": "A direct 15-minute New York ORB filtered by range quality and broker quote activity.",
+      "description": "The active XAUUSD M5 preset trades direct breaks of the 09:30-09:45 New York opening range. It does build and display a tick-activity profile, but POC, value-area and boundary-node filters are deliberately OFF in the validated preset; VWAP, EMA and Safe/Markov filters are also OFF. The retained configuration returned 49.38% over the exact three-year MT5 test with PF 1.68, a 46.75% win rate, 5.85% maximum drawdown and 169 trades.",
+      "session": "09:30 New York / weekdays",
+      "logic_audit": "Source-code verified",
+      "logic_audit_note": "Readable MQ5 source, the active BAT preset, the development matrix, untouched locked year, exact three-year MT5 Every Tick evidence and 10,000-path Monte Carlo were reviewed. Display-only features are separated from entry filters below.",
+      "logic": [
+        {
+          "title": "Build the 15-minute New York range",
+          "detail": "At 09:45 New York time, the EA takes the high and low of 09:30-09:45 from M1 bars. The range must measure between 0.20 and 1.20 times M15 ATR(14). Server offset and US daylight saving are handled automatically."
+        },
+        {
+          "title": "Confirm active opening activity",
+          "detail": "Opening-window tick volume must be at least 0.60 times the median volume of the same window across the previous 20 valid weekdays. This is broker quote activity, not centralized exchange volume."
+        },
+        {
+          "title": "Calculate profile levels for display",
+          "detail": "Quote ticks from 08:00 through 09:45 are distributed into 48 price bins to draw POC, VAH and VAL for a 70% value area. In the active preset all three profile entry filters are OFF, so these lines are visual context only."
+        },
+        {
+          "title": "Qualify a direct M5 breakout",
+          "detail": "During the next 120 minutes, a closed M5 candle must have at least a 55% body, at least 0.80 relative tick volume versus its prior 20 bars, and close beyond the range by 0.03 ATR in its own direction. Retest mode, VWAP and EMA trend filtering are disabled."
+        },
+        {
+          "title": "Use the opposite range boundary as the stop",
+          "detail": "The EA enters at market. Stop loss is beyond the opposite side of the opening range by 0.10 ATR; signals needing more than 2.0 ATR of stop distance are rejected. Take profit is 2.5R and spread may not exceed 12% of the opening-range width."
+        },
+        {
+          "title": "Manage one trade for the session",
+          "detail": "Risk is 1% of current equity. The stop first moves to entry at +1R. Dynamic 50/20 then evaluates completed M15 candles and, after a close reaches halfway to the 2.5R target, advances the stop to lock 20% of the target path. Candle trailing is disabled, no second trade is allowed that New York date, and any open position is closed at 15:55 New York."
+        }
+      ],
+      "risk_note": "Dynamic 1% of current equity, sized from entry to the opposite-range stop. The exact three-year test produced a 46.75% win rate over 169 trades; the 10,000-path Monte Carlo return P5 was +16.23% with 0% simulated ruin. Gap, spread and execution slippage can still make realized risk differ from the calculation.",
+      "inputs": {
+        "InpEnableTrading": "true",
+        "InpSessionZone": "0",
+        "InpSessionHour": "9",
+        "InpSessionMinute": "30",
+        "InpOpeningRangeMinutes": "15",
+        "InpTradeWindowMinutes": "120",
+        "InpFlatHour": "15",
+        "InpFlatMinute": "55",
+        "InpWeekdaysOnly": "true",
+        "InpSignalTimeframe": "5",
+        "InpRelativeVolumeDays": "20",
+        "InpMinOpeningRelativeVolume": "0.6",
+        "InpBarVolumeLookback": "20",
+        "InpMinBreakoutRelativeVolume": "0.8",
+        "InpATRTimeframe": "15",
+        "InpATRPeriod": "14",
+        "InpMinRangeATR": "0.2",
+        "InpMaxRangeATR": "1.2",
+        "InpRequireVWAP": "false",
+        "InpUseEMATrend": "false",
+        "InpFastEMA": "20",
+        "InpSlowEMA": "50",
+        "InpUseProfileValueArea": "false",
+        "InpUseProfilePOCBias": "false",
+        "InpUseProfileBoundaryLVN": "false",
+        "InpProfileStartHour": "8",
+        "InpProfileStartMinute": "0",
+        "InpProfileBins": "48",
+        "InpProfileValueAreaPercent": "70.0",
+        "InpMaxBoundaryNodeRatio": "1.00",
+        "InpMinimumProfileTicks": "100",
+        "InpShowProfileLevels": "true",
+        "InpEntryMode": "0",
+        "InpBreakoutBodyMinimum": "0.55",
+        "InpBreakoutBufferATR": "0.03",
+        "InpRetestBars": "3",
+        "InpRetestToleranceATR": "0.15",
+        "InpRetestBodyMinimum": "0.3",
+        "InpStopMode": "1",
+        "InpStopBufferATR": "0.1",
+        "InpMaximumStopATR": "2.0",
+        "InpRewardRisk": "2.5",
+        "InpBreakEvenAtR": "1.0",
+        "InpTrailStartAtR": "0.0",
+        "InpTrailCandleBufferATR": "0.1",
+        "InpRiskPercent": "1.0",
+        "InpMaxSpreadRangePercent": "12.0",
+        "InpMaxDeviationPoints": "30",
+        "InpMagic": "93095005",
+        "InpUseAutomaticLiveServerOffset": "true",
+        "InpTesterServerUTCOffsetHours": "0",
+        "InpManualLiveServerUTCOffsetHours": "0",
+        "InpUseDynamicTrailingSL": "true",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "ClientRiskMode": "0",
+        "ClientRiskValue": "50",
+        "ClientExpectedLogin": "0",
+        "ClientExpectedServer": "",
+        "ClientExpectedSymbol": ""
+      }
+    },
+    "nasdaq-overnight": {
+      "strategy": "Overnight anomaly",
+      "tagline": "Long Nasdaq after a negative New York close, then exit one minute before the next cash open.",
+      "description": "This is the optimized active long-only close-to-open configuration. It reconstructs the New York cash session from M1 data, compares today's 16:00 close with the previous trading day's 16:00 close, and buys only when that return is negative. A separately saved conservative preset adds a 1% negative-day threshold, 3% emergency stop, 0.75R target and Dynamic 50/20 management, but the larger-sample current version remains the deployed recommendation.",
+      "session": "16:00 to 09:29 New York",
+      "logic_audit": "Source-code verified",
+      "logic_audit_note": "Readable MQ5 source, the exact active USTEC preset, 40 Standard optimization tests, four native Safe validations and the untouched locked-year reports were reviewed, including exact US daylight-saving conversion.",
+      "logic": [
+        {
+          "title": "Rebuild the completed cash session",
+          "detail": "The EA reads 09:30-15:59 New York M1 bars and requires at least 300 session bars. It also finds the prior trading day's 15:59 close."
+        },
+        {
+          "title": "Require a negative close-to-close day",
+          "detail": "The active definition is today's 16:00 cash close below the previous trading day's close. Threshold is 0%, so any strictly negative return qualifies."
+        },
+        {
+          "title": "Buy just after 16:00 New York",
+          "detail": "One long may be opened during the ten-minute window beginning at the cash close. The active SET explicitly fixes the entry at 16:00 New York; Friday entries are allowed and may be held through the weekend."
+        },
+        {
+          "title": "Use an emergency stop only",
+          "detail": "The protective stop is 2% below entry price. There is no take profit; the position remains exposed to overnight gaps."
+        },
+        {
+          "title": "Exit before the next cash open",
+          "detail": "A position from an earlier New York date is closed beginning at 09:29, with a 31-minute permitted exit window."
+        },
+        {
+          "title": "Handle account and clock differences",
+          "detail": "Lot size targets the risk selected by the BAT, defaulting to the validated 1% of current equity against the 2% emergency stop. Broker-to-UTC offset and exact modern New York DST rules are resolved automatically in live trading."
+        }
+      ],
+      "risk_note": "Every BAT asks for risk before installation; the default and validated value is 1% of current equity to a stop 2% below entry. Weekend and overnight gaps can bypass that stop, so realized risk is not capped at exactly 1%. The separate conservative preset is research-only. Native validation showed that the Markov gate reduced the locked sample from 72 to 30 trades and the exact three-year return from 7.81% to 4.14%, so Full Safe deliberately preserves this EA's Standard inputs.",
+      "inputs": {
+        "InpEnableTrading": "true",
+        "InpRequireNegativeDay": "true",
+        "InpNegativeDayDefinition": "0",
+        "InpNegativeDayThresholdPercent": "0",
+        "InpAllowFridayEntry": "true",
+        "InpCashOpenHour": "9",
+        "InpCashOpenMinute": "30",
+        "InpCashCloseHour": "16",
+        "InpCashCloseMinute": "0",
+        "InpEntryHour": "16",
+        "InpEntryMinute": "0",
+        "InpExitHour": "9",
+        "InpExitMinute": "29",
+        "InpEntryWindowMinutes": "10",
+        "InpExitWindowMinutes": "31",
+        "InpMinimumCashSessionBars": "300",
+        "InpRiskPercent": "1",
+        "InpEmergencyStopPercent": "2",
+        "InpRewardRisk": "0",
+        "InpMaxSpreadPoints": "0",
+        "InpMaxDeviationPoints": "30",
+        "InpMagic": "93095003",
+        "InpUseAutomaticLiveServerOffset": "true",
+        "InpTesterServerUTCOffsetHours": "0",
+        "InpManualLiveServerUTCOffsetHours": "0",
+        "InpUseDynamicTrailingSL": "false",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "ClientRiskMode": "0",
+        "ClientRiskValue": "50",
+        "ClientExpectedLogin": "0",
+        "ClientExpectedServer": "",
+        "ClientExpectedSymbol": ""
+      }
+    },
+    "nasdaq-5m-candle-momentum": {
+      "strategy": "US-open five-minute momentum",
+      "tagline": "Opening momentum with DI agreement, a wider price stop and an ATR-managed exit.",
+      "description": "After the 09:30-09:35 New York M5 candle closes, this EA buys above EMA12 with +DI14 > -DI14, or sells below EMA12 with -DI14 > +DI14. The selected version uses a 0.60%-of-price initial stop, no take profit, and a 6x ATR trail starting at +1R. It may hold overnight and over weekends; Standard and Full Safe are archived comparisons, not current BAT settings.",
+      "session": "09:30 New York",
+      "logic_audit": "Source-code verified",
+      "logic_audit_note": "Selected QL_ATR management uses the exact tested binary and settings. Native Model 4 windows end 2026-09-25 with 150 ms delay; real ticks begin January 2026, earlier ticks are generated. This is retrospective selection, not an untouched validation or an FTMO pass forecast.",
+      "logic": [
+        {
+          "title": "Wait for the opening candle to finish",
+          "detail": "The signal is evaluated only when the closed M5 candle is timestamped 09:30 New York, meaning entry occurs just after the 09:30-09:35 bar has completed. Weekends are rejected and New York DST is calculated automatically."
+        },
+        {
+          "title": "Require EMA and DI agreement",
+          "detail": "Buy above EMA12 only when +DI(14) exceeds -DI(14); sell below EMA12 only when -DI exceeds +DI. Indicators use the closed signal bar. Equality produces no entry."
+        },
+        {
+          "title": "Set the wider price stop",
+          "detail": "Initial stop distance is 0.60% of entry price, subject to broker stop constraints. This is price distance, not account risk. Ordinary launchers retain selected risk and upward lot rounding; actual risk can exceed the target."
+        },
+        {
+          "title": "Leave take profit unset",
+          "detail": "There is no fixed profit target. The old 2.5R target is disabled; a larger winner may continue while the protective stop tightens."
+        },
+        {
+          "title": "Trail with ATR after +1R",
+          "detail": "Once open profit reaches one original stop distance, the stop follows the running favorable extreme at six times current M5 ATR(14), never loosening. This is tick-driven ATR management, not the separate completed-M15 Dynamic 50/20 overlay. Break-even and MA trailing are off."
+        },
+        {
+          "title": "Allow overnight holding",
+          "detail": "The 15:55 close is disabled. One position at a time; an existing position suppresses the next daily signal. Overnight/weekend holding adds swap and gap risk. Stops cannot guarantee a cash loss cap."
+        }
+      ],
+      "risk_note": "Normal BAT risk policies are unchanged; Recommended Adaptive retains its 0.25x Nasdaq multiplier. FTMO uses its separate guarded $50 maximum planned stop risk, News OFF. Five-year standalone equity drawdown was 24.07% at 1% risk. Prior fixed-target FTMO pass estimates do not apply to this changed portfolio.",
+      "inputs": {
+        "InpSignalTimeframe": "5",
+        "InpSignalHourNY": "9",
+        "InpSignalMinuteNY": "30",
+        "InpEMAPeriod": "12",
+        "InpAllowLong": "true",
+        "InpAllowShort": "true",
+        "InpRequireEMASlope": "false",
+        "InpMinimumBodyATR": "0.0",
+        "InpMaximumBodyATR": "0.0",
+        "InpMinimumBodyFraction": "0.0",
+        "InpMinimumEMADistanceATR": "0.0",
+        "InpMaximumEMADistanceATR": "0.0",
+        "InpRelativeVolumePeriod": "0",
+        "InpMinimumRelativeVolume": "0.0",
+        "InpRequireDIAgreement": "true",
+        "InpDIPeriod": "14",
+        "InpATRPeriod": "14",
+        "InpStopMode": "2",
+        "InpInitialStopATR": "4.0",
+        "InpSignalStopBufferATR": "0.10",
+        "InpMaximumStopATR": "0.0",
+        "InpUseFixedTarget": "false",
+        "InpRewardRisk": "2.5",
+        "InpUseAdaptiveRR": "false",
+        "InpAdaptiveStrongBodyATR": "1.0",
+        "InpAdaptiveStrongRR": "3.0",
+        "InpUseATRTrailing": "true",
+        "InpTrailingATR": "6.0",
+        "InpTrailStartR": "1.0",
+        "InpUseBreakEven": "false",
+        "InpBreakEvenTriggerR": "1.0",
+        "InpBreakEvenLockR": "0.0",
+        "InpMaximumHoldingMinutes": "0",
+        "InpCloseAtSessionEnd": "false",
+        "InpCloseHourNY": "15",
+        "InpCloseMinuteNY": "55",
+        "InpAutoServerUtcOffsetLive": "true",
+        "InpServerUtcOffsetHours": "0",
+        "InpEnableTrading": "true",
+        "InpRiskPercent": "1.0",
+        "InpMaximumSpreadATR": "0.0",
+        "InpMagic": "93095004",
+        "InpMaximumDeviationPoints": "50",
+        "InpUseDynamicTrailingSL": "false",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpInitialStopPercent": "0.60",
+        "InpUseMATrailing": "false",
+        "ClientRiskMode": "0",
+        "ClientRiskValue": "50",
+        "ClientExpectedLogin": "0",
+        "ClientExpectedServer": "",
+        "ClientExpectedSymbol": ""
+      }
+    }
+  }
+}

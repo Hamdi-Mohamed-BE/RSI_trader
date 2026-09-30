@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "study": "Strict no-wick retest multi-asset raw test",
+  "isolated_tester": "_Backtests/MT5-DMC-20260811",
+  "profile": "Calyx Research Empty",
+  "server": "Exness-MT5Trial16",
+  "deposit": 10000,
+  "currency": "USD",
+  "leverage": "1:2000",
+  "model": 4,
+  "execution_delay_ms": 150,
+  "period": "M15",
+  "timeout_seconds": 1800,
+  "end_date": "2026.09.30",
+  "periods": {
+    "6m": "2026.03.30",
+    "1y": "2025.09.30",
+    "3y": "2023.09.30",
+    "5y": "2021.09.30",
+    "smoke": "2026.09.01"
+  },
+  "expert_dir": "AAA Research\\No Wick Strict 20260930",
+  "source": "EA/No Wick Strict Research EA.mq5",
+  "expert_file": "No Wick Strict Research EA.ex5",
+  "common_inputs": {
+    "InpEnableTrading": "true",
+    "InpRiskPercent": "1.0",
+    "InpRewardRisk": "1.0",
+    "InpMagic": "1093007",
+    "InpAdaptivePortfolioControls": "false",
+    "InpTrendFast": "50",
+    "InpTrendSlow": "200",
+    "InpSwingLookback": "100",
+    "InpPivotWidth": "2",
+    "InpExpiryBars": "20",
+    "InpUseDynamicTrailingSL": "false",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0"
+  },
+  "variants": {
+    "S5": {
+      "inputs": {
+        "InpSignalTimeframe": "5",
+        "InpSignalMode": "0"
+      }
+    },
+    "S15": {
+      "inputs": {
+        "InpSignalTimeframe": "15",
+        "InpSignalMode": "0"
+      }
+    }
+  },
+  "controls": {
+    "C5": {
+      "inputs": {
+        "InpSignalTimeframe": "5",
+        "InpSignalMode": "1"
+      }
+    },
+    "C15": {
+      "inputs": {
+        "InpSignalTimeframe": "15",
+        "InpSignalMode": "1"
+      }
+    }
+  },
+  "matrix": [
+    [
+      "XAUUSD",
+      "S5"
+    ],
+    [
+      "XAUUSD",
+      "S15"
+    ],
+    [
+      "BTCUSD",
+      "S5"
+    ],
+    [
+      "BTCUSD",
+      "S15"
+    ],
+    [
+      "USTEC",
+      "S5"
+    ],
+    [
+      "EURUSD",
+      "S15"
+    ],
+    [
+      "GBPUSD",
+      "S15"
+    ],
+    [
+      "USDJPY",
+      "S15"
+    ],
+    [
+      "USDCHF",
+      "S15"
+    ],
+    [
+      "USDCAD",
+      "S15"
+    ],
+    [
+      "AUDUSD",
+      "S15"
+    ],
+    [
+      "NZDUSD",
+      "S15"
+    ]
+  ],
+  "main_periods": [
+    "6m",
+    "1y",
+    "3y",
+    "5y"
+  ],
+  "control_periods": [
+    "3y",
+    "5y"
+  ],
+  "gate": {
+    "min_pf": 1.15,
+    "min_trades": 30,
+    "positive_both_long_windows": true,
+    "beats_control_return_both": true
+  }
+}

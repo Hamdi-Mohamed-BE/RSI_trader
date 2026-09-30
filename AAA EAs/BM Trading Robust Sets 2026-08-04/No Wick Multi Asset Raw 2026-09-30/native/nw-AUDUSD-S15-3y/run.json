@@ -1,0 +1,69 @@
+{
+  "case": "nw-AUDUSD-S15-3y",
+  "symbol": "AUDUSD",
+  "variant": "S15",
+  "period": "3y",
+  "start": "2023.09.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 16.6,
+  "report_sha256": "00c77a59f1270733f485ebcc1627fdf3eddcb2a6acb99479f4f65755b1147c9f",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 2094,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "db794910667c4a2d0dd79f1014b211787afff59649aa446cb75ff839a4d7010b",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 56.67,
+    "net_profit": -9943.33,
+    "return_pct": -99.43,
+    "profit_factor": 0.53,
+    "win_rate_pct": 42.04,
+    "max_drawdown_pct": 99.56,
+    "trades": 1394,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.96,
+    "history_quality": "24% real ticks",
+    "balance_dd_pct": 99.56,
+    "expected_payoff": -7.13,
+    "max_relative_equity_dd_pct": 99.56,
+    "max_relative_balance_dd_pct": 99.56
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 3582,
+    "causal_and_1R_checks": 3582,
+    "spec_lines": [
+      "NW_SPEC symbol=AUDUSD description=Australian Dollar vs US Dollar digits=5 point=0.0000100000 tick=0.0000100000 contract=100000.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=2101 placed=1791 invalid_geometry=302 missing_pivot=0 rejected=8 expired=397"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:43:47.516\tTicks\tAUDUSD : real ticks begin from 2026.01.01 00:00:00",
+      "MI\t0\t17:43:51.803\tCore 01\tAUDUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -2742.0,
+    "swap": -56.35,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "ca889cd4586f99bac3bc2add003de052a7857c15ee6c62dfb48121e602c10050"
+  }
+}

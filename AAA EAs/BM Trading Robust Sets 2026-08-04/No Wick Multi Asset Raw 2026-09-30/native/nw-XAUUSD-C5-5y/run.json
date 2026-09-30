@@ -1,0 +1,69 @@
+{
+  "case": "nw-XAUUSD-C5-5y",
+  "symbol": "XAUUSD",
+  "variant": "C5",
+  "period": "5y",
+  "start": "2021.09.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 93.9,
+  "report_sha256": "0c631fddea38c99a26681acf05af520f88ae5d1998706512c001530eb2ac8ff5",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 277828,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "1383eb8ebd40a704993eec86c4b020625d79fe49e79dda3e5552e84f70541b2a",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 0.34,
+    "net_profit": -9999.66,
+    "return_pct": -100.0,
+    "profit_factor": 0.34,
+    "win_rate_pct": 36.5,
+    "max_drawdown_pct": 100.0,
+    "trades": 863,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.99,
+    "history_quality": "14% real ticks",
+    "balance_dd_pct": 100.0,
+    "expected_payoff": -11.59,
+    "max_relative_equity_dd_pct": 100.0,
+    "max_relative_balance_dd_pct": 100.0
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 75304,
+    "causal_and_1R_checks": 75304,
+    "spec_lines": [
+      "NW_SPEC symbol=XAUUSD description=Gold vs US Dollar digits=3 point=0.0010000000 tick=0.0010000000 contract=100.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=52806 placed=37652 invalid_geometry=14473 missing_pivot=0 rejected=681 expired=5974"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:49:55.916\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+      "NI\t0\t17:49:58.496\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -2190.76,
+    "swap": -229.07,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "70c07fa68b37d3b7e507bdcf0b15dbd7871b03167a13c8d69223e21bd3c67ce7"
+  }
+}

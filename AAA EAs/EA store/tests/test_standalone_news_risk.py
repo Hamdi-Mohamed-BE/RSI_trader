@@ -93,7 +93,7 @@ def test_eight_risk_prompt_bats_route_through_shared_prompt_and_ftmo_stays_off()
     assert len(bats)==8
     for p in bats:assert 'News risk is asked SEPARATELY per order' in p.read_text()
     ftmo=json.loads((PACKAGE_ROOT/'FTMO Thirteen EA Deployment 2026-09-27/PACKAGE.json').read_text())
-    assert ftmo['news_enabled'] is False and len(ftmo['entries'])==13
+    assert ftmo['news_enabled'] is False and len(ftmo['entries'])==14
 
 def test_active_news_sources_use_runtime_input_without_event_geometry_changes():
     root=PACKAGE_ROOT/'News Standalone Risk 2026-09-28'

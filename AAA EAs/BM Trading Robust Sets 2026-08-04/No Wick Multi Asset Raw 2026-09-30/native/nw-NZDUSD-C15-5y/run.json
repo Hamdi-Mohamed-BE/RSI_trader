@@ -1,0 +1,69 @@
+{
+  "case": "nw-NZDUSD-C15-5y",
+  "symbol": "NZDUSD",
+  "variant": "C15",
+  "period": "5y",
+  "start": "2021.09.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 14.0,
+  "report_sha256": "38fdc41c619148a59b1e02980fc8f6f83380eb3fd184948b5cf83ee1d8ac437b",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 3060,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "e2158a522909798b465b614554658884ea294229b55957795a29ee0b13c4814b",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": -0.34,
+    "net_profit": -10000.34,
+    "return_pct": -100.0,
+    "profit_factor": 0.31,
+    "win_rate_pct": 37.78,
+    "max_drawdown_pct": 100.0,
+    "trades": 982,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -1.0,
+    "history_quality": "14% real ticks",
+    "balance_dd_pct": 100.0,
+    "expected_payoff": -10.18,
+    "max_relative_equity_dd_pct": 100.0,
+    "max_relative_balance_dd_pct": 100.0
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 2400,
+    "causal_and_1R_checks": 2400,
+    "spec_lines": [
+      "NW_SPEC symbol=NZDUSD description=New Zealand Dollar vs US Dollar digits=5 point=0.0000100000 tick=0.0000100000 contract=100000.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=1757 placed=1200 invalid_geometry=555 missing_pivot=0 rejected=2 expired=218"
+    ],
+    "tick_notes": [
+      "CS\t0\t18:03:48.241\tTicks\tNZDUSD : real ticks begin from 2026.01.01 00:00:00",
+      "DN\t0\t18:03:49.792\tCore 01\tNZDUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -2635.78,
+    "swap": -22.36,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "0072bfb916d13cc4258e92ee0cb0459725ff36ea9423288ceac0b92ed08a31c1"
+  }
+}

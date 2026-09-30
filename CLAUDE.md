@@ -167,6 +167,86 @@ of what is currently attached to a live terminal.
   tester auto-updated its build on 2026-09-30. Unrelated older "3 way gold 2026-09-13"
   research stays research-only. See `AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Gold
   Deployment 2026-09-30/README.md`. Nothing installed on a terminal; no push.
+- 2026-09-30: EA store gained a USDT direct-checkout store (app/store/, admin /admin, online
+  license activation, per-bot ZIP + PowerShell install BAT, 26 store builds in the gitignored
+  data/store-builds, How-it-works video in static/video). It is behind the launch switch
+  **CALYX_STORE_ENABLED (default OFF)**: off = pre-store site (list prices, WhatsApp), no store
+  routes/DB/watcher. Tests run with it on; tests/test_store_disabled.py covers off. Not proven:
+  a live-chart license check and a real on-chain payment. Owner setup steps in the EA store
+  README / STORE_CHECKOUT_PROGRESS.md. Hosting facts: the PUBLIC site calyx.duckdns.org runs on
+  the VPS 51.91.121.15 (34 entries, not updated); port 8080 on this PC is only a local copy
+  (restarted detached 2026-09-30 with the store off; log ea-store-local-8080.log).
+
+- 2026-09-30: Strict no-wick candle retest RAW study COMPLETE and REJECTED.
+  Tested XAUUSD/BTCUSD M5+M15, USTEC CFD M5 and seven forex majors M15:
+  48 raw native Model-4 runs (6m/1y/3y/5y) +24 any-candle controls +1 separate
+  smoke test, 150ms, $10k per separate simulation, 1% target risk rounded UP.
+  All 12 versions FAIL the predeclared raw gate; all lost over 1y, with net
+  win rates 40.2%-51.9%, not the video claim of ~90%. US100 is best only
+  retrospectively: 6m +26.44%, net PF 1.10, equity DD 13.46%; 1y -2.94%,
+  net PF 0.99, DD 37.54%. No version advances to optimization or deployment.
+  EMA50/200 trend and confirmed 2+2 pivot stops are disclosed assumptions;
+  strict zero wick, limit retest, 1:1 TP, 20-timeframe-duration pending expiry.
+  Holds can cross nights/weekends; cancellations can be delayed at market
+  closures. Older ticks are generated (real history starts 2026-01-01);
+  all 6m reports say 100% real ticks. Minimum-lot sizing amplifies depletion.
+  73 report/ledger/build audits passed, 5 unit tests passed. A post-processing
+  log-parser restart preserved native results; EA source and EX5 unchanged.
+  See `AAA EAs/BM Trading Robust Sets 2026-08-04/No Wick Multi Asset Raw
+  2026-09-30/REPORT.md`, `REPORT.html`, `RULES.md`, and `VERIFICATION.json`.
+  Previous September-25 near-wick study preserved. No active terminal/SET,
+  installer, website or live trading changed; new research remains local.
+
+- 2026-09-30: Recent EA shortlist research COMPLETE (local, no deployment).
+  Reran 12 current recommended presets, 24 native Model-4 tests, 150ms, $10k,
+  selected standalone 1% settings unchanged, 2026-03-30/06-30 to 09-30 exclusive.
+  All report 100% real ticks; report/input/binary/ledger reconciliation passed.
+  Only XAU RSI VWAP and current Nasdaq 5M DI14/EMA12 pass the predeclared
+  positive-profit/PF>=1.20 screen in BOTH windows with >=20/10 trades.
+  XAU RSI: 6m 71.88% net win, PF1.323, +3.51%, n32; 3m PF1.507, +2.76%, n18.
+  Nasdaq 5M: 6m 48.86% net win, PF1.398, +19.79%, n88; 3m PF1.230, +5.62%, n45.
+  Gold Overnight, Nasdaq Overnight and ORB VP remain 6m high-win/PF shortlist
+  alternatives but FAIL the latest-3m PF screen. Do not market five as qualified.
+  News Pulse excluded: checked-in verified calendar only Jun12–Sep11; no bypass.
+  BTC FVG/MonthEnd/VolumeConfirmed ORB samples too small; 3WayGold remains watch-only.
+  Existing store licensing review: expiry/binding/renewal and per-EA BAT exist,
+  but current 24h checks/72h grace and ExpertRemove denial need safe entry-only
+  expiry changes before offering strict 30-day rentals. No licences/packages issued.
+  12 existing licence tests and 2 study accounting tests passed. FIFO fragments
+  recombined by exit deal ticket; partial exits still count separately (disclosed).
+  See `AAA EAs/BM Trading Robust Sets 2026-08-04/Recent EA Shortlist 2026-09-30/`
+  (`REPORT.html`, `REPORT.md`, `ANALYSIS.json`, `VERIFICATION.json`, frozen snapshots).
+  This is retrospective recent screening, not a new out-of-sample validation.
+
+- 2026-09-30: Client Top Five package created at `clients/top 5` (SEVEN files:
+  five licensed EX5s, `Install Top 5.bat`, `Performance and Setup.html`). Owner-only
+  source/build/renew/test evidence lives in `clients/_owner/top5`; NEVER send that folder.
+  Includes Gold Overnight Value Area, XAU RSI VWAP, Nasdaq Overnight, current Nasdaq
+  5M DI14/EMA12/.60%/ATRx6, and standard ORB Volume Profile. Original sources/SETs unchanged.
+  Client sizing is intentionally different: fixed USD or CURRENT BALANCE percentage,
+  rounded DOWN, skip below minimum, USD hedging only. Per-trade risk stacks across bots;
+  NO shared/daily risk cap. Stable dedicated magics 93095001–93095005.
+  Licence issued 2026-09-30 17:39:14 UTC, expires 2026-10-30 17:39:14 UTC; broker clock
+  may expire earlier. Compiled entry-only expiry, own pending cancellation, protective
+  management continues. Offline EX5 renewal, no website dependency or automatic grace.
+  Recipient login/server not supplied: permanent binding remains UNSET; installer
+  operational locks are not anti-sharing. Do not claim offline DRM is tamper-proof.
+  Twenty fresh native client benchmarks ($100 fixed / 1% balance, 3m / 6m, all 100%
+  real ticks) + five mid-position forced-expiry runs + one native guard harness passed.
+  Existing-position exit times/P&L preserved after expiry; foreign orders protected.
+  Windows PowerShell fixture tests + BAT hash-only validation passed; seven-file audit
+  and 1,839 journal risk-audit observations passed (not independent trade count).
+  Fixed-$100 combined LEDGER OVERLAY: 6m +44.38%, PF1.565, WR60.66%, n305
+  (50.45/month, 2.31/weekday), closed DD6.36%; 3m +7.48%, PF1.160, WR56.36%, n165
+  (54.59/month, 2.50/weekday), closed DD8.45%. NOT a shared-account native backtest;
+  combined floating equity DD unavailable. Only RSI VWAP / Nasdaq5M pass both-window
+  PF>=1.20 screen. Report exposes all weaker results, risk modes and evidence caveats.
+  Installer requires recipient confirmation and normal terminal closure; preserves
+  unrelated charts/original profile and global AutoTrading state. Normal MT5 PID11196
+  was not restarted, attached or modified. Recipient interactive demo acceptance still
+  required. No Git push or public website change. Explicit future renewal only via
+  `clients/_owner/top5/renew.py --days N`; licence-only fingerprint check + historical
+  evidence notice, no claim of a fresh backtest. See owner README/VERIFICATION.json.
 
 ## Main locations
 

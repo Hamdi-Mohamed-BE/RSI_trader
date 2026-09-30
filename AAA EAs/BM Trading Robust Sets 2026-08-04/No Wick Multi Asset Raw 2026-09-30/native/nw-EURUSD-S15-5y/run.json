@@ -1,0 +1,69 @@
+{
+  "case": "nw-EURUSD-S15-5y",
+  "symbol": "EURUSD",
+  "variant": "S15",
+  "period": "5y",
+  "start": "2021.09.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 21.5,
+  "report_sha256": "7ac3fcdea45991d05f651d58a1db21e43610f225960aec9da659d71a787cc366",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 3136,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "db794910667c4a2d0dd79f1014b211787afff59649aa446cb75ff839a4d7010b",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": -0.53,
+    "net_profit": -10000.53,
+    "return_pct": -100.01,
+    "profit_factor": 0.53,
+    "win_rate_pct": 38.98,
+    "max_drawdown_pct": 100.01,
+    "trades": 1470,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -1.0,
+    "history_quality": "14% real ticks",
+    "balance_dd_pct": 100.01,
+    "expected_payoff": -6.8,
+    "max_relative_equity_dd_pct": 100.01,
+    "max_relative_balance_dd_pct": 100.01
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 3746,
+    "causal_and_1R_checks": 3746,
+    "spec_lines": [
+      "NW_SPEC symbol=EURUSD description=Euro vs US Dollar digits=5 point=0.0000100000 tick=0.0000100000 contract=100000.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=3962 placed=1873 invalid_geometry=565 missing_pivot=0 rejected=1524 expired=403"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:35:50.139\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+      "HN\t0\t17:35:54.093\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -2368.51,
+    "swap": -139.57,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "2005b76b34148d1a59b19fd3c4f29a8eb6645b673723e7898f80737980da3965"
+  }
+}

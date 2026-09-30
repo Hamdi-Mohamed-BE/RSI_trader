@@ -180,7 +180,7 @@ def test_page_and_catalog_render():
     assert client.get("/prop-simulator").status_code == 200
     cat = client.get("/api/prop-sim/catalog").json()
     assert len(cat["programmes"]) >= 14 and len(cat["eas"]) >= 30
-    assert any(p["id"] == "ftmo13" and len(p["eas"]) == 13 for p in cat["presets"])
+    assert any(p["id"] == "ftmo13" and len(p["eas"]) == 14 for p in cat["presets"])
 
 
 def test_run_ftmo13_package_returns_both_equity_modes_and_standard_stats():

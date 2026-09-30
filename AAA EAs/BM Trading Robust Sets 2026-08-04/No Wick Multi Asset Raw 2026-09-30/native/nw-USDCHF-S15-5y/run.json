@@ -1,0 +1,69 @@
+{
+  "case": "nw-USDCHF-S15-5y",
+  "symbol": "USDCHF",
+  "variant": "S15",
+  "period": "5y",
+  "start": "2021.09.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 16.4,
+  "report_sha256": "fe4242886dc812e494dc76e19e4fe7f57188edf00d141ef346d1e347f856bd2b",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 18,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "db794910667c4a2d0dd79f1014b211787afff59649aa446cb75ff839a4d7010b",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": -0.93,
+    "net_profit": -10000.93,
+    "return_pct": -100.01,
+    "profit_factor": 0.39,
+    "win_rate_pct": 37.71,
+    "max_drawdown_pct": 100.01,
+    "trades": 1225,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -1.0,
+    "history_quality": "14% real ticks",
+    "balance_dd_pct": 100.01,
+    "expected_payoff": -8.16,
+    "max_relative_equity_dd_pct": 100.01,
+    "max_relative_balance_dd_pct": 100.01
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 3138,
+    "causal_and_1R_checks": 3138,
+    "spec_lines": [
+      "NW_SPEC symbol=USDCHF description=US Dollar vs Swiss Franc digits=5 point=0.0000100000 tick=0.0000100000 contract=100000.0000 minlot=0.01000000 step=0.01000000 maxlot=200.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=1894 placed=1569 invalid_geometry=317 missing_pivot=0 rejected=8 expired=344"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:41:11.122\tTicks\tUSDCHF : real ticks begin from 2026.01.01 00:00:00",
+      "MO\t0\t17:41:14.957\tCore 01\tUSDCHF : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -3028.77,
+    "swap": -155.85,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "9f3bda26b9f3d17fa75f9461de3d71c860b0374cd174d559fdb7cc2b570cd4de"
+  }
+}

@@ -47,26 +47,31 @@
           <span class="block text-[10px] font-semibold uppercase tracking-[.28em] text-muted">Trading Systems</span>
         </span>
       </a>
-      <div class="hidden items-center gap-1 md:flex">
+      <div class="hidden items-center gap-1 whitespace-nowrap lg:flex">
         <a href="/store" class="nav-link {% if active == 'store' %}nav-active{% endif %}">Store</a>
         <a href="/eas" class="nav-link {% if active == 'catalogue' %}nav-active{% endif %}">EAs</a>
         <a href="/portfolio" class="nav-link {% if active == 'portfolio' %}nav-active{% endif %}">Portfolio</a>
         <a href="/prop-simulator" class="nav-link {% if active == 'prop' %}nav-active{% endif %}">Prop Simulator</a>
         <a href="/" class="nav-link {% if active == 'live' %}nav-active{% endif %}">Live</a>
         <a href="/pricing" class="nav-link {% if active == 'pricing' %}nav-active{% endif %}">Pricing</a>
-        <a href="/how-it-works" class="nav-link {% if active == 'how' %}nav-active{% endif %}">How it works</a>
+{% if store_enabled %}        <a href="/how-it-works" class="nav-link {% if active == 'how' %}nav-active{% endif %}">How it works</a>
+{% else %}{% endif %}
         <a href="/risk" class="nav-link {% if active == 'risk' %}nav-active{% endif %}">Risk</a>
       </div>
-      <div class="hidden items-center gap-3 md:flex">
-        <span class="hidden rounded-full border border-white/10 px-3 py-1.5 font-mono text-[11px] text-muted xl:inline">{{ product_count }} AVAILABLE EAs</span>
+{% if store_enabled %}      <div class="hidden items-center gap-3 whitespace-nowrap lg:flex">
+        <span class="hidden rounded-full border border-white/10 px-3 py-1.5 font-mono text-[11px] text-muted 2xl:inline">{{ product_count }} AVAILABLE EAs</span>
         {% set cart_count = store_cart_count(request) %}<a href="/cart" class="nav-link {% if active == 'cart' %}nav-active{% endif %}" aria-label="Cart, {{ cart_count }} bots">Cart{% if cart_count %} <span class="ml-1 rounded-full bg-mint px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink">{{ cart_count }}</span>{% endif %}</a>
+        <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%20Calyx%2C%20I%20have%20a%20question%20about%20your%20MT5%20EAs." target="_blank" rel="noopener" class="button-primary hidden text-sm xl:inline-flex">Talk on WhatsApp</a>
+{% else %}      <div class="hidden items-center gap-3 md:flex">
+        <span class="rounded-full border border-white/10 px-3 py-1.5 font-mono text-[11px] text-muted">{{ product_count }} AVAILABLE EAs</span>
         <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%20Calyx%2C%20I%20have%20a%20question%20about%20your%20MT5%20EAs." target="_blank" rel="noopener" class="button-primary text-sm">Talk on WhatsApp</a>
+{% endif %}
       </div>
-      <button id="menu-button" class="grid h-10 w-10 place-items-center rounded-xl border border-white/10 md:hidden" aria-label="Open navigation" aria-expanded="false">
+      <button id="menu-button" class="grid h-10 w-10 place-items-center rounded-xl border border-white/10 lg:hidden" aria-label="Open navigation" aria-expanded="false">
         <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </nav>
-    <div id="mobile-menu" class="hidden border-t border-white/10 px-5 py-4 md:hidden">
+    <div id="mobile-menu" class="hidden border-t border-white/10 px-5 py-4 lg:hidden">
       <div class="grid gap-1">
         <a href="/store" class="mobile-nav">Store home</a>
         <a href="/eas" class="mobile-nav">EA catalogue</a>
@@ -74,8 +79,9 @@
         <a href="/prop-simulator" class="mobile-nav">Prop challenge simulator</a>
         <a href="/" class="mobile-nav">Live MT5 account</a>
         <a href="/pricing" class="mobile-nav">Pricing</a>
-        <a href="/how-it-works" class="mobile-nav">How it works</a>
+{% if store_enabled %}        <a href="/how-it-works" class="mobile-nav">How it works</a>
         <a href="/cart" class="mobile-nav">Cart{% if store_cart_count(request) %} ({{ store_cart_count(request) }}){% endif %}</a>
+{% else %}{% endif %}
         <a href="/risk" class="mobile-nav">Risk disclosure</a>
       </div>
     </div>
@@ -100,7 +106,8 @@
           <a href="/portfolio" class="hover:text-white">Portfolio audit</a>
           <a href="/" class="hover:text-white">Live MT5 account</a>
           <a href="/pricing" class="hover:text-white">Pricing</a>
-          <a href="/how-it-works" class="hover:text-white">How it works</a>
+{% if store_enabled %}          <a href="/how-it-works" class="hover:text-white">How it works</a>
+{% else %}{% endif %}
           <a href="/risk" class="hover:text-white">Risk disclosure</a>
         </div>
       </div>

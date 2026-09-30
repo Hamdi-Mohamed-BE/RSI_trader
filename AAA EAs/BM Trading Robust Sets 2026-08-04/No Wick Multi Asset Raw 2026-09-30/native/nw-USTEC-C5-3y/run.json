@@ -1,0 +1,69 @@
+{
+  "case": "nw-USTEC-C5-3y",
+  "symbol": "USTEC",
+  "variant": "C5",
+  "period": "3y",
+  "start": "2023.09.30",
+  "end_exclusive": "2026.09.30",
+  "expert": "No Wick Strict Research EA.ex5",
+  "exit_code": 0,
+  "elapsed_seconds": 64.9,
+  "report_sha256": "c4c2890feaa7c4665bdcb36bbd8fd31a3cdc46a292cba452829ef42fbdf25858",
+  "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+  },
+  "input_mismatches": [],
+  "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 123952,
+    "size_below_min": 0,
+    "critical": 0
+  },
+  "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "set_sha256": "1383eb8ebd40a704993eec86c4b020625d79fe49e79dda3e5552e84f70541b2a",
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 0.94,
+    "net_profit": -9999.06,
+    "return_pct": -99.99,
+    "profit_factor": 0.26,
+    "win_rate_pct": 28.35,
+    "max_drawdown_pct": 99.99,
+    "trades": 769,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -1.0,
+    "history_quality": "24% real ticks",
+    "balance_dd_pct": 99.99,
+    "expected_payoff": -13.0,
+    "max_relative_equity_dd_pct": 99.99,
+    "max_relative_balance_dd_pct": 99.99
+  },
+  "ok": true,
+  "audit": {
+    "exact_inputs": true,
+    "ledger_reconciled": true,
+    "signals_logged": 43238,
+    "causal_and_1R_checks": 43238,
+    "spec_lines": [
+      "NW_SPEC symbol=USTEC description=US Tech 100 Index digits=2 point=0.0100000000 tick=0.0100000000 contract=1.0000 minlot=0.05000000 step=0.01000000 maxlot=500.0000 stops=0 freeze=0 account_currency=USD leverage=2000 server=Exness-MT5Trial16"
+    ],
+    "stats_lines": [
+      "NW_STATS signals=31090 placed=21619 invalid_geometry=8969 missing_pivot=0 rejected=502 expired=3800"
+    ],
+    "tick_notes": [
+      "CS\t0\t17:57:21.648\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+      "NJ\t0\t17:57:25.772\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "commission": -1589.14,
+    "swap": -91.89,
+    "source_sha256": "3987a8b6f7a403fd2288dc06f7a7aaadb4ed603d753a64389c870b5f0ea29093",
+    "ex5_sha256": "f7326c1a1b27c1d49e7636e3276baa9229f69cd96497251c739670e82b6e3891",
+    "trades_sha256": "c84b802886b86bc4751dd9606bde9a323f79aba018f05b7ac48ffa16d49a3741"
+  }
+}
