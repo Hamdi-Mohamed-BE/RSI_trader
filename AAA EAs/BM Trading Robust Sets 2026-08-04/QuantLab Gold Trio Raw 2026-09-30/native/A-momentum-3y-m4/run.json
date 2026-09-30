@@ -1,0 +1,67 @@
+{
+  "tag": "A-momentum-3y-m4",
+  "spec": {
+    "name": "A-momentum",
+    "modules": 1,
+    "q4": false,
+    "control": false
+  },
+  "window": "3y",
+  "model": 4,
+  "start": "2023.09.29",
+  "end": "2026.09.29",
+  "warmup_from": "2023.07.01",
+  "build": {
+    "GoldTrio.mq5": "8a763ae6d381d53e6afae807f10227cb1750c4384b1ba22455785045dea0ad6f",
+    "GoldTrio.ex5": "abe7c3fe19689a70bd01598b8d74c03676ed736e504915c7ff6e5bb71c03257f",
+    "RULES.md": "cc60d579f8894c50e7b68971d635a03d1aa0ae0f8ef8d2da8dd103681ed2d786",
+    "run-config.json": "fded5eff531812bd1ccdf921b4819c165c082f5026241b1c9256896496bc2c41"
+  },
+  "inputs": {
+    "InpModules": "1",
+    "InpBreakoutQ4Only": "false",
+    "InpControl": "false",
+    "InpRiskPercent": "1",
+    "InpSeed": "300930",
+    "InpTradeFrom": "1695945600",
+    "InpTag": "A-momentum-3y-m4",
+    "InpMagic": "9309300"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 12694.27,
+    "net_profit": 2694.2700000000004,
+    "return_pct": 26.942700000000002,
+    "profit_factor": 1.0834087414374522,
+    "win_rate_pct": 49.074074074074076,
+    "max_drawdown_pct": 20.78,
+    "trades": 432,
+    "sharpe_ratio": 0.66,
+    "recovery_factor": 0.83,
+    "history_quality": "22% real ticks",
+    "equity_dd_pct": 20.78,
+    "balance_dd_pct": 19.69,
+    "mean_net_R": 0.06579120256701498
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "modify_fail": 14,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0
+  },
+  "seconds": 52.75,
+  "tick_coverage": [
+    "CS\t0\t08:37:17.166\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "PL\t0\t08:37:20.940\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "GT_SUMMARY A=432 B=0 C=0 D=0 entryFails=0 closeFails=0 modifyFails=7 skips=0 stale=2 trails=1093 reversals=0"
+  ],
+  "spec_lines": [
+    "GT_SPEC symbol=XAUUSD broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100.00000000 min=0.01000000 step=0.01000000 tick=0.00100000 modules=1 q4=0 control=0"
+  ],
+  "report_sha": "a9b1b9b4840ee8bba3cb5a2fb1819be7bb4a9289e0a2de58594e032ed335768a",
+  "attempt": 0
+}

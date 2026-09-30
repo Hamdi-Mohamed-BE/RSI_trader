@@ -1,0 +1,134 @@
+{
+  "BEST trio": {
+    "label": "BEST trio",
+    "verdict": "WATCH_ONLY",
+    "metrics": {
+      "trades": 616,
+      "return_pct": 114.3514,
+      "profit_factor": 1.4393821444352655,
+      "win_rate_pct": 73.05194805194806,
+      "annualized_sharpe": 1.6164293398975584,
+      "deflated_sharpe_pct": 62.95470479721206,
+      "recent_half_profit_factor": 1.2692155309033282,
+      "profitable_thirds": 3
+    },
+    "bootstrap": {
+      "paths": 10000,
+      "probability_profit_pct": 99.94,
+      "return_p05_pct": 47.60577794745625,
+      "return_p50_pct": 113.21891108740644,
+      "return_p95_pct": 212.14518781274458,
+      "profit_factor_p05": 1.1965635740525855,
+      "profit_factor_p50": 1.44250018931102,
+      "max_drawdown_p50_pct": 9.763008282756143,
+      "max_drawdown_p95_pct": 16.227303888250013,
+      "closed_pnl_daily_limit_breach_pct": 0.0,
+      "closed_pnl_total_limit_breach_pct": 2.9899999999999998
+    },
+    "gates": {
+      "minimum_30_closed_trades": true,
+      "positive_locked_return": true,
+      "profit_factor_above_1": true,
+      "bootstrap_return_p05_positive": true,
+      "bootstrap_pf_p05_above_1": true,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": true,
+      "two_of_three_subperiods_profitable": true,
+      "closed_pnl_total_breach_below_5pct": true,
+      "cost_stress_supplied": true,
+      "cost_stress_pf_above_1": true
+    },
+    "cost_stress": {
+      "extra_cost_per_trade": 0.0309,
+      "net_profit": 11416.105599999999,
+      "return_pct": 114.16105599999999,
+      "profit_factor": 1.4385643322170303
+    },
+    "measured_extra_cost_per_trade": 0.0309,
+    "reshuffle": {
+      "max_dd_p50": 10.93,
+      "max_dd_p95": 18.54,
+      "loss_streak_p50": 6,
+      "loss_streak_p95": 8
+    },
+    "removal": {
+      "10": {
+        "return_p05": 86.17,
+        "return_p50": 102.83,
+        "pf_p05": 1.36
+      },
+      "20": {
+        "return_p05": 67.98,
+        "return_p50": 91.98,
+        "pf_p05": 1.314
+      }
+    },
+    "tested_configurations": 1770
+  },
+  "PROP trio": {
+    "label": "PROP trio",
+    "verdict": "WATCH_ONLY",
+    "metrics": {
+      "trades": 708,
+      "return_pct": 96.1317,
+      "profit_factor": 1.2920832645903082,
+      "win_rate_pct": 73.44632768361582,
+      "annualized_sharpe": 1.3695069441180878,
+      "deflated_sharpe_pct": 38.428065386660556,
+      "recent_half_profit_factor": 1.1626097405258622,
+      "profitable_thirds": 3
+    },
+    "bootstrap": {
+      "paths": 10000,
+      "probability_profit_pct": 99.77000000000001,
+      "return_p05_pct": 32.258095201867384,
+      "return_p50_pct": 95.17206716556329,
+      "return_p95_pct": 191.77424172450222,
+      "profit_factor_p05": 1.0906484243812382,
+      "profit_factor_p50": 1.2947882740543166,
+      "max_drawdown_p50_pct": 11.777984832077896,
+      "max_drawdown_p95_pct": 19.523913331892327,
+      "closed_pnl_daily_limit_breach_pct": 0.0,
+      "closed_pnl_total_limit_breach_pct": 7.07
+    },
+    "gates": {
+      "minimum_30_closed_trades": true,
+      "positive_locked_return": true,
+      "profit_factor_above_1": true,
+      "bootstrap_return_p05_positive": true,
+      "bootstrap_pf_p05_above_1": true,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": true,
+      "two_of_three_subperiods_profitable": true,
+      "closed_pnl_total_breach_below_5pct": false,
+      "cost_stress_supplied": true,
+      "cost_stress_pf_above_1": true
+    },
+    "cost_stress": {
+      "extra_cost_per_trade": 0.0404,
+      "net_profit": 9584.566799999999,
+      "return_pct": 95.84566799999999,
+      "profit_factor": 1.2911470067768962
+    },
+    "measured_extra_cost_per_trade": 0.0404,
+    "reshuffle": {
+      "max_dd_p50": 14.16,
+      "max_dd_p95": 23.51,
+      "loss_streak_p50": 6,
+      "loss_streak_p95": 8
+    },
+    "removal": {
+      "10": {
+        "return_p05": 68.12,
+        "return_p50": 86.89,
+        "pf_p05": 1.226
+      },
+      "20": {
+        "return_p05": 52.88,
+        "return_p50": 76.61,
+        "pf_p05": 1.195
+      }
+    },
+    "tested_configurations": 1770
+  }
+}

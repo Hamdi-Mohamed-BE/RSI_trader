@@ -1,0 +1,67 @@
+{
+  "tag": "BQ4-breakout-q4-3y-m4",
+  "spec": {
+    "name": "BQ4-breakout-q4",
+    "modules": 2,
+    "q4": true,
+    "control": false
+  },
+  "window": "3y",
+  "model": 4,
+  "start": "2023.09.29",
+  "end": "2026.09.29",
+  "warmup_from": "2023.07.01",
+  "build": {
+    "GoldTrio.mq5": "8a763ae6d381d53e6afae807f10227cb1750c4384b1ba22455785045dea0ad6f",
+    "GoldTrio.ex5": "abe7c3fe19689a70bd01598b8d74c03676ed736e504915c7ff6e5bb71c03257f",
+    "RULES.md": "cc60d579f8894c50e7b68971d635a03d1aa0ae0f8ef8d2da8dd103681ed2d786",
+    "run-config.json": "fded5eff531812bd1ccdf921b4819c165c082f5026241b1c9256896496bc2c41"
+  },
+  "inputs": {
+    "InpModules": "2",
+    "InpBreakoutQ4Only": "true",
+    "InpControl": "false",
+    "InpRiskPercent": "1",
+    "InpSeed": "300930",
+    "InpTradeFrom": "1695945600",
+    "InpTag": "BQ4-breakout-q4-3y-m4",
+    "InpMagic": "9309300"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 13058.16,
+    "net_profit": 3058.1600000000003,
+    "return_pct": 30.5816,
+    "profit_factor": 2.049226673254011,
+    "win_rate_pct": 63.63636363636363,
+    "max_drawdown_pct": 6.35,
+    "trades": 66,
+    "sharpe_ratio": 10.39,
+    "recovery_factor": 4.4,
+    "history_quality": "22% real ticks",
+    "equity_dd_pct": 6.35,
+    "balance_dd_pct": 4.36,
+    "mean_net_R": 0.37942019675350624
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "modify_fail": 2,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0
+  },
+  "seconds": 37.01,
+  "tick_coverage": [
+    "CS\t0\t08:38:52.220\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "FQ\t0\t08:38:56.067\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "GT_SUMMARY A=0 B=66 C=0 D=0 entryFails=0 closeFails=0 modifyFails=1 skips=0 stale=4 trails=158 reversals=0"
+  ],
+  "spec_lines": [
+    "GT_SPEC symbol=XAUUSD broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100.00000000 min=0.01000000 step=0.01000000 tick=0.00100000 modules=2 q4=1 control=0"
+  ],
+  "report_sha": "5f6aada9b67c9d0263bc0ee0ce23ce145cbf10c34b870675c37bad98de942bf1",
+  "attempt": 0
+}

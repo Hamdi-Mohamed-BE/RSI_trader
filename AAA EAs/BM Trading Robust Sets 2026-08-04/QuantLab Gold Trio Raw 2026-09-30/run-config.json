@@ -1,0 +1,29 @@
+{
+  "study": "QuantLab-style Gold Trio raw reproduction (momentum, breakout, turn of month)",
+  "broker": "Exness-MT5Trial16",
+  "symbol": "XAUUSD",
+  "deposit": 10000,
+  "risk_percent": 1,
+  "seed": 300930,
+  "end": "2026.09.29",
+  "windows": {"3y": "2023.09.29"},
+  "smoke": ["2026.07.01", "2026.09.29"],
+  "model": 4,
+  "cases": [
+    {"name": "A-momentum", "modules": 1, "q4": false, "control": false},
+    {"name": "B-breakout", "modules": 2, "q4": false, "control": false},
+    {"name": "BQ4-breakout-q4", "modules": 2, "q4": true, "control": false},
+    {"name": "C-turn-of-month", "modules": 4, "q4": false, "control": false},
+    {"name": "D-ma-trend", "modules": 8, "q4": false, "control": false},
+    {"name": "video-A+B+C", "modules": 7, "q4": false, "control": false},
+    {"name": "video-A+BQ4+C", "modules": 7, "q4": true, "control": false},
+    {"name": "website-A+D+B", "modules": 11, "q4": false, "control": false},
+    {"name": "A-momentum-control", "modules": 1, "q4": false, "control": true},
+    {"name": "B-breakout-control", "modules": 2, "q4": false, "control": true},
+    {"name": "C-turn-of-month-control", "modules": 4, "q4": false, "control": true}
+  ],
+  "raw_gate": {"pf": 1.15, "min_trades": 30, "positive": true, "beat_control_mean_R": true, "valid_execution": true,
+               "note": "3y only in this run; 5y is still required by PIPELINE.md before any optimisation"},
+  "optimization_authorized": false,
+  "deployment_authorized": false
+}

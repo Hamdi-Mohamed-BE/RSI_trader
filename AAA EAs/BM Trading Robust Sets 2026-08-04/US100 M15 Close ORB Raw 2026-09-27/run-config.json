@@ -1,0 +1,22 @@
+{
+  "name": "US100 M15 Close ORB raw",
+  "symbol": "USTEC",
+  "range": "09:30-09:45 America/New_York with US DST",
+  "signal": "First later completed M15 candle closing strictly outside the opening range; earliest entry 10:00 NY",
+  "entry": "Next available tick after completed signal, at market; both directions",
+  "stop": "Long at signal candle low, short at signal candle high, zero added buffer",
+  "targets": {"half": 0.5, "third": 0.3333333333333333},
+  "defaults_ours": ["One signal attempt and at most one filled trade per NY date", "Entry before 15:55 NY; remaining position close requested from 15:55", "Closed-market exit waits for an available trading session; retries throttled to 60 seconds", "No filters, trailing, breakeven or re-entry", "Invalid broker stops or unavailable session: skip, do not widen"],
+  "native_risk": "1 percent of equity, existing upward broker-lot rounding convention; actual rounded risk may exceed nominal",
+  "native_deposit": 10000,
+  "native_model": 4,
+  "native_delay_ms": 150,
+  "native_leverage": "1:2000 isolated Exness tester; FTMO margin applied only in portfolio overlay",
+  "periods": {"smoke": ["2026.06.01", "2026.06.08"], "latest6m": ["2026.03.27", "2026.09.27"], "aligned": ["2026.03.02", "2026.08.31"]},
+  "portfolio_control": "Prior eight-EA J; no Nasdaq 5M DI; retain all existing instances",
+  "portfolio_candidates": ["J + ORB half", "J + ORB third"],
+  "portfolio_risk": "Fixed-dollar ordinary risk at most 500/7; news 10/order; strict floor lot sizing; unchanged shared gates and margin",
+  "portfolio_window": "2026-03-04 to 2026-08-30 inclusive",
+  "monte_carlo": {"paths_per_cost_case": 1000, "seed": 20260926, "joint_week_pool": 26, "reporting_days": 180},
+  "gate": "No promotion from this six-month screen; report both presets regardless of results. Existing eight is the portfolio control; no independent randomized entry control claimed. Full pipeline not requested."
+}

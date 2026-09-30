@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "asset": "XAU",
+  "symbol": "XAUUSD",
+  "timeframe": 5,
+  "variant": "reversal",
+  "window": "5y",
+  "smoke": false,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2021.08.13",
+  "inputs": {
+    "InpTimeframe": "5",
+    "InpControl": "false",
+    "InpRiskPercent": "1.0",
+    "InpRR": "2.0",
+    "InpSeed": "9282026",
+    "InpTradeFrom": "1632700800",
+    "InpExportBars": "true",
+    "InpTag": "XAU-M5-reversal-5y",
+    "InpMagic": "9282610"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 1823.35,
+    "net_profit": -8176.65,
+    "return_pct": -81.77,
+    "profit_factor": 0.82,
+    "win_rate_pct": 32.06,
+    "max_drawdown_pct": 83.85,
+    "trades": 1338,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.98,
+    "history_quality": "14% real ticks",
+    "max_equity_dd_pct": 83.85,
+    "max_balance_dd_pct": 83.76,
+    "max_equity_dd_usd": 8384.57
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "export_failed": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "market_closed": 6,
+    "margin_call": 0
+  },
+  "build": {
+    "hashes": {
+      "Sweep.mq5": "cebdba09973557a45ef803f8ac085317a6ea615b69e077c9947ed9680ef75398",
+      "Sweep.ex5": "4049eb09066cbe405753bec75e3f41ae4d2e8f8dc7ca9c15b9032eb7a00943f2",
+      "RULES.md": "1fd09b81598ad80aeb9c3745bec58f6137f14ee93c61ab09ae9a37087b7a4944",
+      "run-config.json": "d65b7b6a4ba050b32ff171c37e52124342c5b8d0fd356303caea6d29a4a2de1b"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 829 ms elapsed, cpu='X64 Regular'\r\n",
+    "compiled_utc": "2026-09-28T10:34:55.169050+00:00"
+  },
+  "elapsed_seconds": 71.56518244743347,
+  "report_sha": "38c4cbc9c38701a75bc7fea56702035c40673eb6a89ff01de472ef8a2ea465fc",
+  "deals_sha": "2ffc89a91d247fe58fc52a6f9de5fe516693583ed4ea87d0a3f013013589d80b",
+  "summary": [
+    "PS_SUMMARY tag=XAU-M5-reversal-5y signals=1390 ambiguous=13 stale=2623 missing=0 busy=20 invalid=31 marginSkip=0 orders=1338 entryFails=1 closeFails=0"
+  ],
+  "symbol_spec": [
+    "PS_SPEC symbol=XAUUSD description=Gold vs US Dollar broker=Exness Technologies Ltd currency=USD leverage=2000 contract=100.00000000 min=0.01000000 max=200.00000000 step=0.01000000 tick=0.00100000 stops=0 swapLong=-567.40000000 swapShort=0.00000000"
+  ],
+  "tick_coverage": [
+    "CS\t0\t12:11:27.460\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "GG\t0\t12:11:32.617\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

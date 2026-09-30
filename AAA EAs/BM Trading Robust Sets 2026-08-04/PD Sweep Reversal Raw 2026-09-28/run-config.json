@@ -1,0 +1,20 @@
+{
+  "name": "Previous-day sweep rejection — raw M5 versus M15",
+  "frozen_on": "2026-09-28",
+  "end": "2026.09.27",
+  "windows": {"1y": "2025.09.27", "6m": "2026.03.27", "3y": "2023.09.27", "5y": "2021.09.27"},
+  "symbols": {"US30": "US30", "US100": "USTEC", "XAU": "XAUUSD", "BTC": "BTCUSD"},
+  "timeframes": [5, 15],
+  "variants": ["reversal", "random-direction-control"],
+  "risk_percent": 1.0,
+  "deposit": 10000,
+  "rr": 2.0,
+  "model": 4,
+  "delay_ms": 150,
+  "warmup_days": 45,
+  "control_seed": 9282026,
+  "smoke_start": "2026.07.01",
+  "smoke_end": "2026.07.15",
+  "optimization": false,
+  "raw_gate": "Positive return, net PF >= 1.15, >=30 trades, higher net PF AND return than fixed-seed random-direction control, on BOTH 3y and 5y."
+}

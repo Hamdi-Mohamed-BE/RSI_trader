@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "asset": "US100",
+  "symbol": "USTEC",
+  "timeframe": 15,
+  "variant": "reversal",
+  "window": "5y",
+  "smoke": false,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2021.08.13",
+  "inputs": {
+    "InpTimeframe": "15",
+    "InpControl": "false",
+    "InpRiskPercent": "1.0",
+    "InpRR": "2.0",
+    "InpSeed": "9282026",
+    "InpTradeFrom": "1632700800",
+    "InpExportBars": "true",
+    "InpTag": "US100-M15-reversal-5y",
+    "InpMagic": "9282610"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 1415.99,
+    "net_profit": -8584.01,
+    "return_pct": -85.84,
+    "profit_factor": 0.74,
+    "win_rate_pct": 31.57,
+    "max_drawdown_pct": 89.91,
+    "trades": 1302,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.91,
+    "history_quality": "14% real ticks",
+    "max_equity_dd_pct": 89.91,
+    "max_balance_dd_pct": 89.81,
+    "max_equity_dd_usd": 9390.61
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "export_failed": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "market_closed": 24,
+    "margin_call": 0
+  },
+  "build": {
+    "hashes": {
+      "Sweep.mq5": "cebdba09973557a45ef803f8ac085317a6ea615b69e077c9947ed9680ef75398",
+      "Sweep.ex5": "4049eb09066cbe405753bec75e3f41ae4d2e8f8dc7ca9c15b9032eb7a00943f2",
+      "RULES.md": "1fd09b81598ad80aeb9c3745bec58f6137f14ee93c61ab09ae9a37087b7a4944",
+      "run-config.json": "d65b7b6a4ba050b32ff171c37e52124342c5b8d0fd356303caea6d29a4a2de1b"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 829 ms elapsed, cpu='X64 Regular'\r\n",
+    "compiled_utc": "2026-09-28T10:34:55.169050+00:00"
+  },
+  "elapsed_seconds": 61.17421579360962,
+  "report_sha": "314be8c6e760ae42b92d0571c01162ed248ce8cad4f5a6be304035de6b2cc18f",
+  "deals_sha": "b183bf571d93d4ea174a0bb86a2d2c3376f6e5d3719b5ee70732e3f0ca4d83a2",
+  "summary": [
+    "PS_SUMMARY tag=US100-M15-reversal-5y signals=1379 ambiguous=94 stale=2608 missing=0 busy=34 invalid=39 marginSkip=0 orders=1302 entryFails=4 closeFails=0"
+  ],
+  "symbol_spec": [
+    "PS_SPEC symbol=USTEC description=US Tech 100 Index broker=Exness Technologies Ltd currency=USD leverage=2000 contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.01000000 stops=0 swapLong=-696.10000000 swapShort=0.00000000"
+  ],
+  "tick_coverage": [
+    "CS\t0\t12:09:17.624\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "NF\t0\t12:09:20.157\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

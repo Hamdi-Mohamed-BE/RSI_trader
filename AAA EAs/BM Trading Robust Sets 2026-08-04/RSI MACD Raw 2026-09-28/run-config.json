@@ -1,0 +1,20 @@
+{
+  "name": "RSI + native MT5 MACD: frozen M15 raw comparison",
+  "frozen_on": "2026-09-28",
+  "end": "2026.09.27",
+  "windows": {"1y": "2025.09.27", "6m": "2026.03.27", "3y": "2023.09.27", "5y": "2021.09.27"},
+  "symbols": {"XAU": "XAUUSD", "BTC": "BTCUSD", "US30": "US30", "US100": "USTEC", "EURUSD": "EURUSD", "GBPUSD": "GBPUSD", "USDJPY": "USDJPY", "USDCHF": "USDCHF", "USDCAD": "USDCAD", "AUDUSD": "AUDUSD", "NZDUSD": "NZDUSD"},
+  "variants": {"A_pullback": 0, "B_extreme": 1, "C_MACD_only": 2, "D_A_without_RSI": 3},
+  "risk_percent": 1.0,
+  "deposit": 10000,
+  "rr": 1.0,
+  "model": 4,
+  "delay_ms": 150,
+  "warmup_days": 120,
+  "smoke_start": "2026.07.01",
+  "smoke_end": "2026.07.15",
+  "optimization": false,
+  "raw_gate": "A/B: net return >0, net PF >=1.15, >=30 closed trades, and higher net PF AND return than C_MACD_only, in BOTH 3y and 5y. A must also beat D_A_without_RSI in PF and return in both windows to demonstrate RSI's incremental benefit. 60% wins is a separate descriptive objective, never a substitute for this gate.",
+  "expected_main_runs": 176,
+  "expected_smoke_runs": 4
+}

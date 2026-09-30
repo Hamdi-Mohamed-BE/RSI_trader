@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "asset": "US30",
+  "symbol": "US30",
+  "timeframe": 5,
+  "variant": "reversal",
+  "window": "5y",
+  "smoke": false,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2021.08.13",
+  "inputs": {
+    "InpTimeframe": "5",
+    "InpControl": "false",
+    "InpRiskPercent": "1.0",
+    "InpRR": "2.0",
+    "InpSeed": "9282026",
+    "InpTradeFrom": "1632700800",
+    "InpExportBars": "true",
+    "InpTag": "US30-M5-reversal-5y",
+    "InpMagic": "9282610"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 965.66,
+    "net_profit": -9034.34,
+    "return_pct": -90.34,
+    "profit_factor": 0.74,
+    "win_rate_pct": 29.99,
+    "max_drawdown_pct": 91.01,
+    "trades": 1307,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.99,
+    "history_quality": "14% real ticks",
+    "max_equity_dd_pct": 91.01,
+    "max_balance_dd_pct": 91.0,
+    "max_equity_dd_usd": 9147.58
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "export_failed": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "market_closed": 18,
+    "margin_call": 0
+  },
+  "build": {
+    "hashes": {
+      "Sweep.mq5": "cebdba09973557a45ef803f8ac085317a6ea615b69e077c9947ed9680ef75398",
+      "Sweep.ex5": "4049eb09066cbe405753bec75e3f41ae4d2e8f8dc7ca9c15b9032eb7a00943f2",
+      "RULES.md": "1fd09b81598ad80aeb9c3745bec58f6137f14ee93c61ab09ae9a37087b7a4944",
+      "run-config.json": "d65b7b6a4ba050b32ff171c37e52124342c5b8d0fd356303caea6d29a4a2de1b"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 829 ms elapsed, cpu='X64 Regular'\r\n",
+    "compiled_utc": "2026-09-28T10:34:55.169050+00:00"
+  },
+  "elapsed_seconds": 46.39773988723755,
+  "report_sha": "7a49b04072ed4b439edb736f6467abefa6241d397656d3644abf4825d269e398",
+  "deals_sha": "da80335b30d7cce76708474495993e3cd741d2d07922fac043c8abbf1dee0ade",
+  "summary": [
+    "PS_SUMMARY tag=US30-M5-reversal-5y signals=1444 ambiguous=42 stale=3217 missing=0 busy=13 invalid=121 marginSkip=0 orders=1307 entryFails=3 closeFails=0"
+  ],
+  "symbol_spec": [
+    "PS_SPEC symbol=US30 description=US Wall Street 30 Index broker=Exness Technologies Ltd currency=USD leverage=2000 contract=1.00000000 min=0.05000000 max=500.00000000 step=0.01000000 tick=0.10000000 stops=0 swapLong=-106.20000000 swapShort=0.00000000"
+  ],
+  "tick_coverage": [
+    "CS\t0\t12:04:30.607\tTicks\tUS30 : real ticks begin from 2026.01.01 00:00:00",
+    "OP\t0\t12:04:36.144\tCore 01\tUS30 : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

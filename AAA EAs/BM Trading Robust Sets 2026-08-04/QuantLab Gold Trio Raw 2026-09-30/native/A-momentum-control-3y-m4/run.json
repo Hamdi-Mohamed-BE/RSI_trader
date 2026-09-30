@@ -1,0 +1,67 @@
+{
+  "tag": "A-momentum-control-3y-m4",
+  "spec": {
+    "name": "A-momentum-control",
+    "modules": 1,
+    "q4": false,
+    "control": true
+  },
+  "window": "3y",
+  "model": 4,
+  "start": "2023.09.29",
+  "end": "2026.09.29",
+  "warmup_from": "2023.07.01",
+  "build": {
+    "GoldTrio.mq5": "8a763ae6d381d53e6afae807f10227cb1750c4384b1ba22455785045dea0ad6f",
+    "GoldTrio.ex5": "abe7c3fe19689a70bd01598b8d74c03676ed736e504915c7ff6e5bb71c03257f",
+    "RULES.md": "cc60d579f8894c50e7b68971d635a03d1aa0ae0f8ef8d2da8dd103681ed2d786",
+    "run-config.json": "fded5eff531812bd1ccdf921b4819c165c082f5026241b1c9256896496bc2c41"
+  },
+  "inputs": {
+    "InpModules": "1",
+    "InpBreakoutQ4Only": "false",
+    "InpControl": "true",
+    "InpRiskPercent": "1",
+    "InpSeed": "300930",
+    "InpTradeFrom": "1695945600",
+    "InpTag": "A-momentum-control-3y-m4",
+    "InpMagic": "9309300"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10881.68,
+    "net_profit": 881.6800000000002,
+    "return_pct": 8.816800000000002,
+    "profit_factor": 1.0299096718952958,
+    "win_rate_pct": 48.61407249466951,
+    "max_drawdown_pct": 21.12,
+    "trades": 469,
+    "sharpe_ratio": 0.21,
+    "recovery_factor": 0.33,
+    "history_quality": "22% real ticks",
+    "equity_dd_pct": 21.12,
+    "balance_dd_pct": 20.02,
+    "mean_net_R": 0.019908648315555194
+  },
+  "flags": {
+    "entry_fail": 0,
+    "close_fail": 0,
+    "modify_fail": 20,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "stopout": 0
+  },
+  "seconds": 53.82,
+  "tick_coverage": [
+    "CS\t0\t08:47:58.876\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "KP\t0\t08:48:02.961\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summaries": [
+    "GT_SUMMARY A=469 B=0 C=0 D=0 entryFails=0 closeFails=0 modifyFails=10 skips=0 stale=1 trails=1180 reversals=0"
+  ],
+  "spec_lines": [
+    "GT_SPEC symbol=XAUUSD broker=Exness Technologies Ltd server=Exness-MT5Trial16 demo=1 currency=USD contract=100.00000000 min=0.01000000 step=0.01000000 tick=0.00100000 modules=1 q4=0 control=1"
+  ],
+  "report_sha": "628409811c94547fa3280025b4ecb59e745720786a050d2f8cde2e318f00b6fc",
+  "attempt": 0
+}

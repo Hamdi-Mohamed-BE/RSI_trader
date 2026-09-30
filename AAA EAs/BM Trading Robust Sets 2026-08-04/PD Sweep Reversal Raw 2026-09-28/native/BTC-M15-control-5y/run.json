@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "asset": "BTC",
+  "symbol": "BTCUSD",
+  "timeframe": 15,
+  "variant": "random-direction-control",
+  "window": "5y",
+  "smoke": false,
+  "start": "2021.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2021.08.13",
+  "inputs": {
+    "InpTimeframe": "15",
+    "InpControl": "true",
+    "InpRiskPercent": "1.0",
+    "InpRR": "2.0",
+    "InpSeed": "9282026",
+    "InpTradeFrom": "1632700800",
+    "InpExportBars": "false",
+    "InpTag": "BTC-M15-control-5y",
+    "InpMagic": "9282610"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 555.24,
+    "net_profit": -9444.76,
+    "return_pct": -94.45,
+    "profit_factor": 0.68,
+    "win_rate_pct": 30.9,
+    "max_drawdown_pct": 94.62,
+    "trades": 1398,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.98,
+    "history_quality": "14% real ticks",
+    "max_equity_dd_pct": 94.62,
+    "max_balance_dd_pct": 94.55,
+    "max_equity_dd_usd": 9596.61
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "export_failed": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "build": {
+    "hashes": {
+      "Sweep.mq5": "cebdba09973557a45ef803f8ac085317a6ea615b69e077c9947ed9680ef75398",
+      "Sweep.ex5": "4049eb09066cbe405753bec75e3f41ae4d2e8f8dc7ca9c15b9032eb7a00943f2",
+      "RULES.md": "1fd09b81598ad80aeb9c3745bec58f6137f14ee93c61ab09ae9a37087b7a4944",
+      "run-config.json": "d65b7b6a4ba050b32ff171c37e52124342c5b8d0fd356303caea6d29a4a2de1b"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 829 ms elapsed, cpu='X64 Regular'\r\n",
+    "compiled_utc": "2026-09-28T10:34:55.169050+00:00"
+  },
+  "elapsed_seconds": 80.32889723777771,
+  "report_sha": "786a9d51745ed3b4f2b462712a18dc122cd7c2eca49d86f63e36b0327f11e4a9",
+  "deals_sha": "d6fa165aded9cb33a0b2e042cb3bb7dd4d03d24ae762cfda8d68705fcd94682f",
+  "summary": [
+    "PS_SUMMARY tag=BTC-M15-control-5y signals=1469 ambiguous=7 stale=1879 missing=0 busy=6 invalid=65 marginSkip=0 orders=1398 entryFails=0 closeFails=0"
+  ],
+  "symbol_spec": [
+    "PS_SPEC symbol=BTCUSD description=Bitcoin vs US Dollar broker=Exness Technologies Ltd currency=USD leverage=2000 contract=1.00000000 min=0.01000000 max=200.00000000 step=0.01000000 tick=0.01000000 stops=0 swapLong=-1855.50000000 swapShort=0.00000000"
+  ],
+  "tick_coverage": [
+    "CS\t0\t12:21:02.349\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+    "JG\t0\t12:21:05.652\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

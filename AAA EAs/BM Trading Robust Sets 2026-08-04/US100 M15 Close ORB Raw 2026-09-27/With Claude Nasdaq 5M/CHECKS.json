@@ -1,0 +1,64 @@
+{
+  "inherited": {
+    "source_hashes": {
+      "prepared.json": "6953e7cc61a4b8697cced13a76a3318ebfb0d323763c2296d120337652638416",
+      "prepare.py": "6a8fcfbea8e321cfff2de14763ba27038780f7e1374ba7709942c08b59f1e60f",
+      "simulate.py": "1d24d67617483ec4aed546f361087aaf93fcbc71d7fa2b6f50bb91e430d1d7a9"
+    },
+    "new_checks": 7,
+    "historical_parity_fields": 8,
+    "legacy_tests_passed": 9,
+    "phase_tests": 11,
+    "strict_sizing_checks": 14
+  },
+  "historical_control_parity": [
+    {
+      "control": "J",
+      "stress": false,
+      "full_ledger": true
+    },
+    {
+      "control": "J",
+      "stress": true,
+      "full_ledger": true
+    },
+    {
+      "control": "O50",
+      "stress": false,
+      "full_ledger": true
+    },
+    {
+      "control": "O50",
+      "stress": true,
+      "full_ledger": true
+    },
+    {
+      "control": "O33",
+      "stress": false,
+      "full_ledger": true
+    },
+    {
+      "control": "O33",
+      "stress": true,
+      "full_ledger": true
+    }
+  ],
+  "nine_ea_exact_parity": [
+    {
+      "stress": false,
+      "historical": true,
+      "summary": true,
+      "paths": 1000
+    },
+    {
+      "stress": true,
+      "historical": true,
+      "summary": true,
+      "paths": 1000
+    }
+  ],
+  "cases_validated": 6,
+  "paths_checked": 6000,
+  "unchanged_evidence_files": 81,
+  "unchanged_production_sources": 22
+}

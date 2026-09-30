@@ -1,0 +1,102 @@
+{
+  "inherited": {
+    "source_hashes": {
+      "prepared.json": "6953e7cc61a4b8697cced13a76a3318ebfb0d323763c2296d120337652638416",
+      "prepare.py": "6a8fcfbea8e321cfff2de14763ba27038780f7e1374ba7709942c08b59f1e60f",
+      "simulate.py": "1d24d67617483ec4aed546f361087aaf93fcbc71d7fa2b6f50bb91e430d1d7a9"
+    },
+    "new_checks": 7,
+    "historical_parity_fields": 8,
+    "legacy_tests_passed": 9,
+    "phase_tests": 11,
+    "strict_sizing_checks": 14
+  },
+  "native_audits": [
+    {
+      "period": "latest6m",
+      "target": "half",
+      "independent_range_days": 130,
+      "independent_signal_days": 129,
+      "verified_signal_entries": 129,
+      "verified_native_stops": 129,
+      "skipped_signals": 0,
+      "close_failures": 0,
+      "exact_cash_reconciliation": true,
+      "no_lookahead_bar_checks": true,
+      "one_entry_per_day": true,
+      "first_entry": "2026-03-27T14:00:00",
+      "last_entry": "2026-09-25T14:00:00",
+      "overnight_holds": 1,
+      "end_of_test_exits": []
+    },
+    {
+      "period": "latest6m",
+      "target": "third",
+      "independent_range_days": 130,
+      "independent_signal_days": 129,
+      "verified_signal_entries": 129,
+      "verified_native_stops": 129,
+      "skipped_signals": 0,
+      "close_failures": 0,
+      "exact_cash_reconciliation": true,
+      "no_lookahead_bar_checks": true,
+      "one_entry_per_day": true,
+      "first_entry": "2026-03-27T14:00:00",
+      "last_entry": "2026-09-25T14:00:00",
+      "overnight_holds": 0,
+      "end_of_test_exits": []
+    },
+    {
+      "period": "aligned",
+      "target": "half",
+      "independent_range_days": 129,
+      "independent_signal_days": 128,
+      "verified_signal_entries": 128,
+      "verified_native_stops": 128,
+      "skipped_signals": 0,
+      "close_failures": 0,
+      "exact_cash_reconciliation": true,
+      "no_lookahead_bar_checks": true,
+      "one_entry_per_day": true,
+      "first_entry": "2026-03-02T15:15:00",
+      "last_entry": "2026-08-28T14:15:00",
+      "overnight_holds": 1,
+      "end_of_test_exits": []
+    },
+    {
+      "period": "aligned",
+      "target": "third",
+      "independent_range_days": 129,
+      "independent_signal_days": 128,
+      "verified_signal_entries": 128,
+      "verified_native_stops": 128,
+      "skipped_signals": 0,
+      "close_failures": 0,
+      "exact_cash_reconciliation": true,
+      "no_lookahead_bar_checks": true,
+      "one_entry_per_day": true,
+      "first_entry": "2026-03-02T15:15:00",
+      "last_entry": "2026-08-28T14:15:00",
+      "overnight_holds": 0,
+      "end_of_test_exits": []
+    }
+  ],
+  "baseline_parity": [
+    {
+      "stress": false,
+      "historical": true,
+      "summary": true,
+      "paths": 1000
+    },
+    {
+      "stress": true,
+      "historical": true,
+      "summary": true,
+      "paths": 1000
+    }
+  ],
+  "paths_checked": 6000,
+  "case_count": 6,
+  "unchanged_evidence_files": 65,
+  "unchanged_production_sources": 22
+}
