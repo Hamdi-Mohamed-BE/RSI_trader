@@ -99,6 +99,7 @@ function Main {
     if ([DateTimeOffset]::UtcNow -ge [DateTimeOffset]::Parse($Package.licence.expires_utc)) { throw 'Package has expired. Ask owner to renew the compiled bots.' }
     Write-Host 'USD HEDGING accounts only. This is real trading software, not a paper simulator.' -ForegroundColor Yellow
     Write-Host 'Risk is PER TRADE, PER BOT, not a portfolio cap. Five bots can stack risk; fees/gaps can exceed the planned stop.'
+    Write-Host 'MINIMUM LOT OVERRIDE: if your selected risk is too small, the bot uses the broker minimum lot and risks MORE than your selection.' -ForegroundColor Yellow
     $terminalRoot = Join-Path $env:APPDATA 'MetaQuotes\Terminal'
     $candidates = @()
     if (Test-Path -LiteralPath $terminalRoot) {

@@ -195,7 +195,6 @@ void OnTick() {
  if(lotstep<=0 || desired<=0){rejected++;return;}
  double lots=MathFloor(desired/MathAbs(unit)/lotstep+1e-10)*lotstep;
  lots=NormalizeDouble(MathMin(SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX),MathMax(SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN),lots)),8);
- if(lots* MathAbs(unit)>desired+0.001){rejected++;return;}
  double margin=0;if(!OrderCalcMargin(type,_Symbol,lots,entry,margin) || margin>AccountInfoDouble(ACCOUNT_MARGIN_FREE)){
   rejected++;Audit("margin_rejected",now,side,entry,stop,target,lots,MathAbs(unit)*lots);return;}
  bool sent=side>0?trade.Buy(lots,_Symbol,0,stop,target,"Gold Overnight VA"):trade.Sell(lots,_Symbol,0,stop,target,"Gold Overnight VA");

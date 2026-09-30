@@ -64,8 +64,8 @@ def build(days=30,bound_login=0,bound_server='',test_expiry=None,only_slug=None)
                     old='double desired=(InpRiskMode==1?InpFixedRiskMoney:equity*InpRiskPercent/100)*multiplier;'
                     assert old in text;text=text.replace(old,'double desired=ClientRiskCash();')
                     text=text.replace('MathCeil(desired/MathAbs(unit)/lotstep-1e-10)','MathFloor(desired/MathAbs(unit)/lotstep+1e-10)')
-                    target='double margin=0;if(!OrderCalcMargin'
-                    assert target in text;text=text.replace(target,'if(lots* MathAbs(unit)>desired+0.001){rejected++;return;}\n '+target)
+                    # Original Gold code clamps to the broker minimum. The common
+                    # order gateway now allows that explicitly and logs the excess.
                 elif slug=='xau-rsi-vwap':text=body(text,'RiskVolume','return ClientSizedVolume(ORDER_TYPE_BUY,entry,stop);')
                 elif slug=='nasdaq-overnight':text=body(text,'LotsForRisk','return ClientSizedVolume(ORDER_TYPE_BUY,entry,stop);')
                 elif slug=='nasdaq-5m-candle-momentum':text=body(text,'LotsForRisk','return ClientSizedVolume(type,entry,stop);')
@@ -112,7 +112,7 @@ void OnTimer(){{ClientPulse();{'ClientStrategyTimer();' if has_timer else ''}}}
           'period':row['period'],'inputs':inputs,'original_magic':original_magic,'source_sha256':row['source_sha256']})
         print('Compiled '+slug,flush=True)
     manifest={'licence':terms,'entries':artifacts,'source_hashes':hashes,'guard_sha256':sha(ROOT/'ClientGuard.mqh'),
-      'risk_policy':'USD hedging only; fixed USD or current BALANCE percentage; round DOWN, skip below minimum; costs and gaps excluded from planned risk',
+      'risk_policy':'USD hedging only; fixed USD or current BALANCE percentage; round DOWN then use broker MINIMUM LOT if needed, which CAN EXCEED selected risk; costs and gaps excluded',
       'expiry_policy':'earlier of UTC and broker clock deadline; backward clock blocks entries; keep managing own positions; tester bypass unless test build'}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2))
     if not test_expiry:

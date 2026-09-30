@@ -37,7 +37,9 @@ def main():
             assert values['all']['equity_dd_pct'] is None
     days=(datetime.fromisoformat(m['licence']['expires_utc'])-datetime.fromisoformat(m['licence']['issued_utc'])).total_seconds()/86400
     assert days==30
-    out={'customer_file_count':7,'compiled_eas':5,'clean_compilation':True,'native_benchmarks':20,'forced_expiry_runs':5,
+    current_evidence=all(r['ex5_sha256']==next(e['ex5_sha256'] for e in m['entries'] if e['slug'] in r['case']) for r in runs)
+    if not current_evidence:assert d.get('riskPolicyRevision') and 'PREVIOUS' in d['licenceEditionNote']
+    out={'current_build_native_evidence':current_evidence,'historical_tests_apply_to_current_build':current_evidence,'customer_file_count':7,'compiled_eas':5,'clean_compilation':True,'native_benchmarks':20,'forced_expiry_runs':5,
        'native_guard_harness':True,'risk_audits':sum(r['risk_audits'] for r in runs),'history_quality':'100%',
        'licence_days':days,'expires_utc':m['licence']['expires_utc'],'compiled_account_binding':bool(m['licence']['bound_login']),
        'original_sources_unchanged':True,'installer_fixture_and_validation':'passed under Windows PowerShell',

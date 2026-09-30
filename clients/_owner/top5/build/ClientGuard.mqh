@@ -50,7 +50,12 @@ double ClientSizedVolume(const ENUM_ORDER_TYPE type,const double entry,const dou
  if(!OrderCalcProfit(type,_Symbol,1,entry,stop,unit) || unit>=0)return 0;
  double lots=MathFloor((target/MathAbs(unit)+1e-10)/step)*step;
  lots=NormalizeDouble(MathMin(lots,SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX)),8);
- if(lots<SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN)-1e-10)return 0;
+ double minimum=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN);
+ if(minimum<=0 || minimum>SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MAX))return 0;
+ if(lots<minimum){
+  lots=minimum;
+  PrintFormat("CLIENT_MIN_LOT_OVERRIDE: selected risk=%.2f USD; broker minimum=%.8f lots; planned stop risk=%.2f USD. Selected risk exceeded.",target,lots,lots*MathAbs(unit));
+ }
  return lots;
 }
 bool ClientOwnPosition(const ulong ticket){
@@ -124,7 +129,7 @@ void ClientPulse(){
 }
 int ClientInit(){
  if(!ClientContext() || ClientRiskCash()<=0){Print("CLIENT_INIT: require USD hedging account, valid risk and matching account/server/symbol inputs.");return INIT_PARAMETERS_INCORRECT;}
- Print("CLIENT_LICENCE ",CLIENT_ID," expires ",TimeToString(CLIENT_EXPIRES,TIME_DATE|TIME_SECONDS),"; UTC/broker clock, whichever reaches expiry first. Rounds risk DOWN; costs/gaps can exceed planned stop risk.");
+ Print("CLIENT_LICENCE ",CLIENT_ID," expires ",TimeToString(CLIENT_EXPIRES,TIME_DATE|TIME_SECONDS),"; UTC/broker clock, whichever reaches expiry first. Uses broker MINIMUM LOT when selected risk is too small; selected risk is NOT a hard cap. Costs/gaps can add losses.");
  if(!ClientLicenseValid())Print("CLIENT_EXPIRED: starting in management-only mode.");
  return INIT_SUCCEEDED;
 }
