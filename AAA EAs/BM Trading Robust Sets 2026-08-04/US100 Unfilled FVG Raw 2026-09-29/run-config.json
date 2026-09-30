@@ -1,0 +1,17 @@
+{
+  "study":"US100 unfilled FVG, six frozen raw interpretations",
+  "symbol":"USTEC", "broker":"Exness-MT5Trial16", "deposit":10000,
+  "risk_percent":1, "seed":290929, "end":"2026.09.27",
+  "windows":{"6m":"2026.03.27","1y":"2025.09.27","3y":"2023.09.27","5y":"2021.09.27"},
+  "smoke":["2026.08.01","2026.09.01"],
+  "bots":[
+    {"name":"M1-CISD","symbol":"USTEC","mode":0,"rr":1},
+    {"name":"M1-IFVG","symbol":"USTEC","mode":1,"rr":1},
+    {"name":"M5-CISD","symbol":"USTEC","mode":2,"rr":1},
+    {"name":"M5-IFVG","symbol":"USTEC","mode":3,"rr":1},
+    {"name":"M15-CISD","symbol":"USTEC","mode":4,"rr":1},
+    {"name":"M15-IFVG","symbol":"USTEC","mode":5,"rr":1}
+  ],
+  "raw_gate":{"pf":1.15,"min_trades":30,"positive_3y_5y":true,"beat_control_mean_R":true,"positive_recent_year":true},
+  "optimization_authorized":false,"deployment_authorized":false
+}

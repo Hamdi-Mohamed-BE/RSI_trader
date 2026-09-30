@@ -1,0 +1,69 @@
+{
+  "ok": true,
+  "tag": "US500-3y-continuation-m4",
+  "period": "3y",
+  "variant": "continuation",
+  "model": 4,
+  "start": "2023.09.27",
+  "end": "2026.09.27",
+  "delay_ms": 150,
+  "inputs": {
+    "InpMode": "2",
+    "InpRiskPercent": "1.0",
+    "InpRewardRisk": "3.0",
+    "InpBins": "64",
+    "InpValueArea": "70.0",
+    "InpServerUtcOffsetHours": "0",
+    "InpExcursionMinutes": "15",
+    "InpRetestMinutes": "10",
+    "InpMinStopSpread": "3.0",
+    "InpMagic": "9273030",
+    "InpAuditTag": "US500-3y-continuation-m4"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 4173.46,
+    "net_profit": -5826.54,
+    "return_pct": -58.27,
+    "profit_factor": 0.8,
+    "win_rate_pct": 23.9,
+    "max_drawdown_pct": 64.19,
+    "trades": 498,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.8,
+    "history_quality": "24% real ticks",
+    "max_equity_dd_pct": 64.19,
+    "max_balance_dd_pct": 63.9,
+    "max_equity_dd_usd": 7266.05
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 0,
+    "entry_fail": 0,
+    "close_fail": 0,
+    "be_fail": 0,
+    "margin_call": 0,
+    "no_history": 0
+  },
+  "real_ticks": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summary": [
+    "NY30_SUMMARY ranges=770 missing_profiles=1 signals=719 fills=498 skips=221 entry_failures=0 close_failures=0 be_moves=0"
+  ],
+  "coverage_lines": [
+    "CS\t0\t14:13:41.612\tTester\tUS500,M1 (Exness-MT5Trial16): generating based on real ticks",
+    "CS\t0\t14:13:47.944\tTicks\tUS500 : real ticks begin from 2026.01.01 00:00:00",
+    "JL\t0\t14:13:47.622\tCore 01\tUS500,M1 (Exness-MT5Trial16): generating based on real ticks",
+    "PO\t0\t14:13:53.731\tCore 01\tUS500 : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "elapsed": 45.454150438308716,
+  "source_sha256": "1f28e8055c8229f1f17c79b739c20059c4ece46b98dc2eb063de9ed208306f71",
+  "binary_sha256": "94dfa79ce4a5f2ed1986340c674f685d51c48cf414cb6097285079b3d4a84641",
+  "config_sha256": "9512228bd1d8e1807eb2db44d67040eaf4a4bea554cf7d1afcfd9c7702e1d9c4",
+  "rules_sha256": "86cbf6e24c1edf2e05b6c5fb578f70e98b4287294e4ba6d3bf614ebc036a9fb2",
+  "report_sha256": "6c7d65248c3b7d1cfad5c6882630397362d3f2bf34003b3e08a09af2ae437b36"
+}
