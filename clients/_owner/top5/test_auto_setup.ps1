@@ -3,10 +3,17 @@ $root=Split-Path -Parent $MyInvocation.MyCommand.Path
 $env:CALYX_LIBRARY_ONLY='1';$env:CALYX_BUNDLE_FILE=Join-Path (Split-Path -Parent (Split-Path -Parent $root)) 'top 5\Install Top 5.bat'
 . (Join-Path $root 'installer.generated.ps1')
 function Get-CimInstance { [pscustomobject]@{CommandLine='"C:\MT5\terminal64.exe"'} }
+function Read-Choice($Prompt,$Count){return 0}
 $target=[pscustomobject]@{Exe='C:\MT5\terminal64.exe';Data='C:\unused';Running=$true}
 $p=[pscustomobject]@{Path=$target.Exe;Id=123}
 if((Get-OnlyActiveTarget @($target) @($p)).Exe -ne $target.Exe){throw 'Single terminal detection failed'}
 foreach($processes in @(@(),@($p,$p))){$blocked=$false;try{$null=Get-OnlyActiveTarget @($target) $processes}catch{$blocked=$true};if(!$blocked){throw 'Ambiguous terminal accepted'}}
+$second=[pscustomobject]@{Exe='C:\Second MT5\terminal64.exe';Data='C:\other';Running=$true}
+$p2=[pscustomobject]@{Path=$second.Exe;Id=456;MainWindowTitle='Second broker demo'}
+function Read-Choice($Prompt,$Count){if($Count -ne 2){throw 'Expected two terminals'};return 1}
+if((Get-OnlyActiveTarget @($target,$second) @($p,$p2)).Exe -ne $second.Exe){throw 'Chosen terminal not honored'}
+function Read-Choice($Prompt,$Count){return 0}
+if((Get-OnlyActiveTarget @($target) @($p,$p2)).Exe -ne $target.Exe){throw 'Unrelated terminal should not block selected terminal'}
 function Get-CimInstance { [pscustomobject]@{CommandLine='terminal64.exe /portable'} }
 $blocked=$false;try{$null=Get-OnlyActiveTarget @($target) @($p)}catch{$blocked=$true};if(!$blocked){throw 'Portable process accepted'}
 # Stub the already-tested classifier to focus on automatic ambiguity handling.

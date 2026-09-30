@@ -1,8 +1,22 @@
 function Get-OnlyActiveTarget($Candidates,$Processes) {
-    $active=@($Candidates | Where-Object Running)
-    if (@($Processes).Count -ne 1 -or $active.Count -ne 1) { throw 'Keep exactly ONE supported MT5 terminal open and logged in, then run this installer again. No terminal was changed.' }
-    $target=$active[0]
-    $p=@($Processes)[0]
+    $options=@()
+    foreach($candidate in @($Candidates | Where-Object Running)) {
+        $matching=@($Processes | Where-Object {$_.Path -and $_.Path -ieq $candidate.Exe})
+        if($matching.Count -ne 1){continue}
+        if(@($Candidates | Where-Object {$_.Exe -ieq $candidate.Exe}).Count -ne 1){continue}
+        $options += [pscustomobject]@{Target=$candidate;Process=$matching[0]}
+    }
+    if(!$options.Count){throw 'No uniquely identified supported running MT5 found. Open the intended standard MT5 terminal and log in, then retry.'}
+    Write-Host "`nChoose the MT5 terminal to install into. Other terminals will not be changed:" -ForegroundColor Cyan
+    for($i=0;$i -lt $options.Count;$i++) {
+        $item=$options[$i];$title=''
+        if($item.Process.PSObject.Properties['MainWindowTitle']){$title=$item.Process.MainWindowTitle}
+        Write-Host ("{0}. {1} | PID {2} | {3}" -f ($i+1),$title,$item.Process.Id,$item.Target.Exe)
+        Write-Host ("   Data folder: {0}" -f $item.Target.Data)
+    }
+    $pick=Read-Choice 'MT5 terminal number' $options.Count
+    $target=$options[$pick].Target
+    $p=$options[$pick].Process
     if (!$p.Path -or $p.Path -ine $target.Exe) { throw 'Cannot identify the active MT5 safely.' }
     $info=Get-CimInstance Win32_Process -Filter ("ProcessId="+$p.Id)
     if (!$info.CommandLine) { throw 'Cannot inspect MT5 startup settings safely.' }
