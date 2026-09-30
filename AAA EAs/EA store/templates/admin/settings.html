@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-extrabold">Settings</h1>
+<p class="mt-2 text-sm text-muted">Deposit addresses are only stored here — never in code. Checkout shows "payments not configured" until at least one address is set. Double-check each address against Binance → Deposit → USDT → the matching network before saving: payments go directly to it.</p>
+{% for error in errors %}<p class="store-error mt-3">{{ error }}</p>{% endfor %}
+<form method="post" action="/admin/settings" class="mt-5 store-panel grid gap-5" onsubmit="return confirm('Save settings? Wrong deposit addresses send buyer payments to the wrong wallet.')">
+  <input type="hidden" name="csrf" value="{{ admin_csrf }}">
+  {% for spec in specs %}
+  <div>
+    <label class="store-label" for="{{ spec.key }}">{{ spec.label }}</label>
+    {% if spec.kind == 'secret' %}
+    <input class="store-input" id="{{ spec.key }}" name="{{ spec.key }}" type="password" autocomplete="off" placeholder="{{ 'stored — leave empty to keep' if values[spec.key] else 'not set' }}">
+    {% if values[spec.key] %}<label class="mt-2 flex gap-2 text-xs text-muted"><input type="checkbox" name="{{ spec.key }}__clear" value="1"> clear the stored value</label>{% endif %}
+    {% else %}
+    <input class="store-input mono" id="{{ spec.key }}" name="{{ spec.key }}" value="{{ values[spec.key] }}" {% if spec.kind == 'int' %}inputmode="numeric"{% endif %} autocomplete="off" spellcheck="false">
+    {% endif %}
+    {% if spec.help %}<p class="store-help">{{ spec.help }}</p>{% endif %}
+  </div>
+  {% endfor %}
+  <button class="button-primary justify-center">Save settings</button>
+</form>
+{% endblock %}

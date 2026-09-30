@@ -1,0 +1,85 @@
+[project]
+name = "crypto-lab"
+version = "0.1.0"
+description = "Research-first crypto and prediction-market bots (Polymarket scanner, wallet tracker, CEX arbitage, Solana rotation) with a secure FastAPI admin dashboard."
+readme = "README.md"
+authors = [{ name = "Hamdi-Mohamed-BE" }]
+requires-python = ">=3.12"
+keywords = ["polymarket", "arbitrage", "prediction-markets", "paper-trading", "fastapi", "trading-bot"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: FastAPI",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "alembic>=1.20.0",
+    "argon2-cffi>=25.1.0",
+    "cryptography>=50.0.1",
+    "fastapi>=0.141.1",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "keyring>=25.7.0",
+    "pydantic-settings>=2.15.0",
+    "pyotp>=2.10.0",
+    "python-multipart>=0.0.32",
+    "segno>=1.6.6",
+    "sqlalchemy[asyncio]>=2.1.1",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+crypto-lab = "crypto_lab:main"
+
+[build-system]
+requires = ["uv_build>=0.11.9,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.3.1",
+    "pytailwindcss>=0.3.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.9",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-q"
+markers = ["network: hits real public APIs (deselect with -m 'not network')"]
+
+[tool.coverage.run]
+source = ["crypto_lab"]
+concurrency = ["greenlet", "thread"]  # SQLAlchemy async runs code inside greenlets
+omit = ["*/migrations/*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "S", "SIM", "RUF", "ASYNC", "PL", "C4", "PT"]
+ignore = ["PLR0913", "PLR2004", "PLR0911", "RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "PLR2004", "S311", "PT018"]
+"src/crypto_lab/web/routers/*" = ["PLR0917"]  # FastAPI handlers receive injected dependencies positionally
+"src/crypto_lab/infrastructure/db/migrations/versions/*" = ["E501", "W291"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+packages = ["crypto_lab"]
+plugins = []
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["segno", "pyotp", "keyring.*", "alembic.*"]
+ignore_missing_imports = true

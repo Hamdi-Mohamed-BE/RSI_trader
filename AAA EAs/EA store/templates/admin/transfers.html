@@ -1,0 +1,10 @@
+{% extends "admin/base.html" %}
+{% block title %}Chain transfers{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-extrabold">Chain transfers</h1>
+<p class="mt-2 text-sm text-muted">Incoming USDT transfers seen by the watcher ({{ 'running' if watcher.running else 'stopped' }}; last run {{ watcher.last_run or '—' }}). "unmatched" transfers did not match an open order exactly — review them and use "Mark paid manually" on the right order if appropriate.</p>
+{% if watcher.last_error %}<p class="store-error mt-3">Last watcher error: {{ watcher.last_error }}</p>{% endif %}
+<div class="mt-4 overflow-x-auto store-panel"><table class="admin-table"><thead><tr><th>Seen</th><th>Network</th><th>Status</th><th>Amount units</th><th>From</th><th>Tx</th><th>Block</th><th>Conf.</th><th>Order</th><th>Note</th></tr></thead><tbody>
+{% for t in rows %}<tr><td class="mono">{{ t.seen_at[:16] }}</td><td>{{ t.network }}</td><td>{{ t.status }}</td><td class="mono">{{ t.amount_units }}</td><td class="mono text-[11px] break-all">{{ t.from_addr }}</td><td class="mono text-[11px] break-all">{{ t.tx_hash }}</td><td class="mono">{{ t.block_number or '—' }}</td><td class="mono">{{ t.confirmations }}</td><td>{% if t.order_id %}<a class="mono" href="/admin/orders/{{ t.order_id }}">{{ t.public_id }}</a>{% else %}—{% endif %}</td><td>{{ t.note or '' }}</td></tr>{% else %}<tr><td colspan="10" class="text-muted">No transfers observed yet.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

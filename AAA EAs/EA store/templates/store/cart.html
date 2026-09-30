@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Cart — Calyx{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', path='store.css') }}?v=20260930-store">{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="mx-auto max-w-7xl px-5 py-12 lg:px-8"><p class="eyebrow-simple">Your cart</p><h1 class="page-title">{% if quote.count %}{{ quote.count }} bot{{ 's' if quote.count != 1 }} selected{% else %}Your cart is empty{% endif %}</h1><p class="page-lead">{{ pack_rule }}</p></div></section>
+<section class="mx-auto grid max-w-7xl gap-8 px-5 py-12 lg:grid-cols-[1fr_380px] lg:px-8" data-cart>
+  <div>
+    {% if quote.count %}
+    <div class="store-panel">
+      {% for product in products %}{% set line = quote.lines[loop.index0] %}
+      <div class="store-row" data-cart-line="{{ product.slug }}">
+        <div class="min-w-0">
+          <a href="/eas/{{ product.slug }}" class="font-bold hover:text-mint">{{ product.label }}</a>
+          <p class="mt-1 font-mono text-[10px] uppercase tracking-[.14em] text-muted">{{ product.canonical }} · {{ product.timeframe }} · 1 live + 1 demo account</p>
+        </div>
+        <div class="flex shrink-0 items-center gap-4">
+          <div class="text-right">
+            {% if line.free %}<span class="store-free">FREE · 3+1</span><p class="mt-1 text-xs text-muted line-through">{{ format_usd(line.sale_cents) }}</p>
+            {% else %}<strong class="font-mono">{{ format_usd(line.sale_cents) }}</strong><p class="mt-1 text-xs text-muted line-through">{{ format_usd(line.list_cents) }}</p>{% endif %}
+          </div>
+          <form method="post" action="/cart/remove"><input type="hidden" name="slug" value="{{ product.slug }}"><button type="submit" class="rounded-lg border border-white/10 px-2.5 py-1.5 text-xs text-muted hover:border-red-300/40 hover:text-red-200" aria-label="Remove {{ product.label }}">Remove</button></form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
+      <a href="/eas" class="button-secondary">← Add more bots</a>
+      <form method="post" action="/cart/clear"><button type="submit" class="text-xs text-muted hover:text-white">Empty cart</button></form>
+    </div>
+    {% else %}
+    <div class="store-panel text-center"><p class="text-muted">Pick bots from the catalogue. Every bot is {{ store_discount_percent }}% below its previous list price, and the cheapest of every 4 bots is free.</p><div class="mt-6 flex flex-wrap justify-center gap-3"><a href="/eas" class="button-primary">Browse the EAs</a><form method="post" action="/cart/add-all"><button type="submit" class="button-secondary">Add all {{ all_count }} EAs</button></form></div></div>
+    {% endif %}
+  </div>
+  <aside class="store-panel h-fit lg:sticky lg:top-28">
+    <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Summary</p>
+    <div class="mt-4">
+      <div class="store-total"><span>Previous list prices</span><strong class="line-through text-muted">{{ format_usd(quote.list_total_cents) }}</strong></div>
+      <div class="store-total"><span>New prices (−{{ store_discount_percent }}%)</span><strong>{{ format_usd(quote.sale_total_cents) }}</strong></div>
+      {% if quote.free_count %}<div class="store-total"><span>Buy 3, get 1 free ({{ quote.free_count }} free)</span><strong class="text-mint">−{{ format_usd(quote.pack_discount_cents) }}</strong></div>{% endif %}
+      {% if quote.package_applied %}<div class="store-total"><span>Complete portfolio price</span><strong class="text-mint">−{{ format_usd(quote.package_discount_cents) }}</strong></div>{% endif %}
+      <div class="store-total grand"><span>Total</span><strong data-cart-total>{{ format_usd(quote.total_cents) }}</strong></div>
+      <p class="store-help">Paid in USDT. A few cents are added at checkout to make your payment amount unique.</p>
+    </div>
+    {% if quote.count %}
+      {% if quote.count % pack_size %}<p class="store-rule mt-5">Add {{ quote.next_free_in }} more bot{{ 's' if quote.next_free_in != 1 }} and the cheapest of the next group of 4 is free.</p>{% else %}<p class="store-rule mt-5">Pack rule applied: the {{ quote.free_count }} cheapest bot{{ 's are' if quote.free_count != 1 else ' is' }} free.</p>{% endif %}
+      <a href="/checkout" class="button-primary mt-5 w-full justify-center" data-checkout-link>Checkout with USDT</a>
+    {% endif %}
+    <p class="mt-4 text-center text-[11px] leading-5 text-muted">Not a promise of profit. Read the <a href="/risk" class="text-mint">risk disclosure</a>.</p>
+  </aside>
+</section>
+{% endblock %}

@@ -21,7 +21,10 @@ def test_raw_native_totals_and_routes(period):
     assert page.status_code==200
     result=c.get(f'/api/evidence/{SLUG}/series?period={period}')
     assert result.status_code==200
-    assert result.json()['stats']==p['stats']
+    served=dict(result.json()['stats'])
+    # The API adds the site-wide annualised Sharpe on top of the immutable cached stats.
+    assert isinstance(served.pop('sharpe_annualized'),float)
+    assert served==p['stats']
     assert result.json()['cached_trade_count']==len(rows)
 
 def test_only_raw_mode_is_approved():

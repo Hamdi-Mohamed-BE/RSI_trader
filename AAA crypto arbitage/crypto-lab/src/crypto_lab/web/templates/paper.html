@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "_macros.html" import hero, stat %}
+{% block title %}Shared paper portfolio · {{ app_name }}{% endblock %}
+{% block hero %}{{ hero("Paper lab · one shared wallet", "100 USDC paper portfolio", "Maximum 10 USDC committed per entry, including modeled entry costs. This is an exposure cap, not leveraged stop-loss risk. Trading bots share the same available cash; the wallet tracker does not trade.") }}{% endblock %}
+{% block content %}
+<div data-auto-refresh="10"></div>
+<div class="stats-strip">
+{{ stat("Starting USDC", portfolio.initial|money) }}{{ stat("Available cash", portfolio.cash|money) }}{{ stat("Committed cost", portfolio.locked|money) }}{{ stat("Realized P/L", portfolio.realized|money) }}{{ stat("Marked equity", portfolio.marked_equity|money) }}{{ stat("Entry cap", portfolio.limit|money) }}
+</div>
+<p class="muted-note mt-4">Marked equity includes recent net exit quotes. “—” means an open holding has a missing/stale quote or pending resolution; it is not a zero value. CEX inventory has BTC price exposure. These results do not prove profitability.</p>
+<div class="card mt-8 overflow-x-auto p-0"><table class="data-table"><thead><tr><th>Bot</th><th>Worker</th><th>Open</th><th>Closed</th><th>Realized P/L</th><th>Latest activity</th></tr></thead><tbody>
+{% for r in rows %}<tr><td>{{ r.bot.name }}</td><td>{{ health[r.bot.slug] }}</td><td>{{ r.open }}</td><td>{{ r.closed }}</td><td>{{ r.realized|money(4) }}</td><td>{{ latest[r.bot.slug].message if latest[r.bot.slug] else 'Starting / waiting' }}</td></tr>{% endfor %}
+</tbody></table></div>
+<div class="chart-panel mt-8"><p class="field-label">Closed-trade balance only (excludes open-position price changes)</p>{{ chart|safe }}</div>
+<div class="stats-strip mt-6">{{ stat("Closed trades", table.trades) }}{{ stat("Closed return", (table.return_pct|num) ~ "%") }}{{ stat("Profit factor", table.profit_factor|num) }}{{ stat("Win rate", table.win_rate|pct) }}{{ stat("Balance drawdown", (table.max_balance_dd_pct|num) ~ "%") }}</div>
+<h2 class="section-title mt-10">Positions and completed trades</h2>
+<div class="card mt-4 overflow-x-auto p-0"><table class="data-table"><thead><tr><th>Opened (UTC)</th><th>Bot / venue</th><th>Asset</th><th>Status</th><th>Entry cost</th><th>Exit / last mark</th><th>Net P/L</th></tr></thead><tbody>
+{% for p in positions %}<tr><td>{{ p.opened_at|dt }}</td><td>{{ p.bot }}<br>{{ p.venue }}</td><td>{{ p.symbol }}</td><td>{{ 'closed' if p.closed_at else 'open' }}</td><td>{{ p.capital|money(4) }}</td><td>{{ (p.proceeds if p.closed_at else p.mark)|money(4) }}<br><span class="muted-note">{{ p.mark_at|dt }}</span></td><td>{{ (p.proceeds - p.capital)|money(4) if p.proceeds is not none else 'Unrealized' }}</td></tr>{% else %}<tr><td colspan="7">No positions yet. See Activity for each bot's waiting reason.</td></tr>{% endfor %}
+</tbody></table></div>
+<h2 class="section-title mt-10">Polymarket arbitrage fills and missed opportunities</h2>
+<div class="card mt-4 overflow-x-auto p-0"><table class="data-table"><thead><tr><th>Time</th><th>Market</th><th>Status</th><th>Capital</th><th>Realized P/L</th><th>Note</th></tr></thead><tbody>
+{% for p in scanner_trades %}<tr><td>{{ p.opened_at|dt }}</td><td>{{ p.title }}</td><td>{{ p.status }}</td><td>{{ p.capital|money(4) }}</td><td>{{ p.realized_pnl|money(4) }}</td><td>{{ p.note }}</td></tr>{% else %}<tr><td colspan="6">No qualifying arbitrage fills yet. An active scanner does not guarantee an opportunity.</td></tr>{% endfor %}
+</tbody></table></div>
+{% if selection %}<div class="card mt-8"><h2 class="section-title">Forward-only copy selection</h2><p class="muted-note mt-3">{{ selection.selection }}. Frozen at {{ selection.since }}. Historic wallet gains are not this bot's gains.</p>{% for w in selection.wallets %}<a class="nav-link" href="/polymarket/wallets/{{ w }}">{{ w[:10] }}…{{ w[-6:] }}</a>{% endfor %}</div>{% endif %}
+<p class="muted-note mt-8">Paper assumptions: CEX 0.20% fee + 0.05% slippage per leg; Polymarket market fee schedule and live depth; Jupiter quoted fees + 0.50% adverse-fill allowance + 0.01 USDC network allowance per swap. No real exchange inventory, transfers, signatures or orders are created. Kill/OFF pauses management; holdings remain in the ledger.</p>
+{% endblock %}

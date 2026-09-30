@@ -39,6 +39,7 @@ SELL_NASDAQ_15M_ROOT = PACKAGE_ROOT / "Sell Nasdaq 15min Research 2026-09-08"
 LONDON_OPEN_FX_MOMENTUM_ROOT = PACKAGE_ROOT / "London Open FX Momentum Research 2026-09-08"
 DMC_FRESH_REACTION_ROOT = PACKAGE_ROOT / "DMC Fresh Reaction Research 2026-09-09"
 XAU_SQUEEZE_MOMENTUM_ROOT = PACKAGE_ROOT / "XAU Squeeze Momentum Research 2026-09-10"
+THREE_WAY_GOLD_ROOT = PACKAGE_ROOT / "QuantLab Gold Trio Pipeline 2026-09-30"
 INSTALLER_PATH = PACKAGE_ROOT / "_Auto Deploy" / "Install-BMTradingPortfolio.ps1"
 WHATSAPP_NUMBER = "21693830957"
 
@@ -70,7 +71,8 @@ class Evidence(BaseModel):
     drawdown_pct: float
     win_rate_pct: float
     trades: int
-    sharpe_ratio: float | None = None
+    sharpe_ratio: float | None = None  # MT5 report / research-source value (method varies by source)
+    sharpe_annualized: float | None = None  # site-wide consistent metric, see app/risk_metrics.py
     recovery_factor: float | None = None
     max_win_streak: int | None = None
     max_loss_streak: int | None = None
@@ -175,6 +177,7 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "XAU Regime Switch": ("regime-switch-xau", "current", "6R trend / 3R VWAP regime switch"),
     "XAG Session VWAP Snapback": ("session-vwap-xag", "current", "Fixed 1R / no trailing"),
     "US100 Month End Flow": ("month-end-flow-us100", "current", "Fixed 2.5R / six-hour exit"),
+    "3 Way Gold": ("three-way-gold", "current", "Momentum ATR trail / breakout 2.5R / turn-of-month 2.5R; 50% at +1R"),
 }
 
 
@@ -436,6 +439,26 @@ CORE_META: dict[str, dict[str, Any]] = {
         "risk_note": "Every BAT applies the user's selected equity-risk percentage; pressing Enter defaults to the validated 1%. The untouched year returned +5.53% with PF 1.34, 47.06% wins and 5.74% equity drawdown across 34 trades. Monte Carlo return P5 was -5.24%, so this is a demo-forward candidate rather than a proven live-capital core.",
         "price": 299,
         "accent": "indigo",
+        "featured": False,
+    },
+    "3 Way Gold": {
+        "strategy": "Three independent XAUUSD modules: momentum, breakout and turn of month",
+        "tagline": "Gold H4 momentum, an M15 London-New York breakout and a month-end long, each with its own risk.",
+        "description": "3 Way Gold runs three independent XAUUSD modules on one chart, each with its own magic number and the BAT-selected risk per trade. Momentum (H4) buys or sells after a 24-bar breakout with an EMA200 bias; the breakout module (M15) trades a 60-bar break at the edge of the 960-bar range during the London-New York overlap; the turn-of-month module buys on the last trading day and exits on trading day +2. The settings are the optimised BEST version from a 1,770-test pipeline.",
+        "session": "Momentum all hours (H4) · Breakout 12:00-16:00 UTC (M15) · Turn of month from session open",
+        "logic_audit": "Source-code verified",
+        "logic_audit_note": "Readable MQ5 source, frozen search protocol, exact raw and production parity (439/439 trades), plateau checks, validation, recent-year and untouched 2019-2021 holdout runs and a 10,000-path Monte Carlo were reviewed together.",
+        "logic": [
+            {"title": "Momentum module (H4)", "detail": "Requires the 24-bar close change to exceed 0.5 ATR, EMA50 rising (falling for shorts), a close beyond the prior 24-bar high (low) and price on the right side of EMA200. No Monday entries. Entry is a limit order 0.5 ATR back, valid for four bars."},
+            {"title": "Breakout module (M15)", "detail": "Requires a close beyond the prior 60-bar high (low) while price sits in the top (bottom) 10% of the prior 960-bar range and ATR is above its 50-bar average. Entries only 12:00-16:00 UTC and only when the spread is at most 0.1 ATR; limit order 0.5 ATR back."},
+            {"title": "Turn-of-month module (D1 calendar)", "detail": "Buys at the session open of the last trading day of each month and exits in the last 15 minutes of trading day +2 of the new month. No entry when the last trading day is a Monday."},
+            {"title": "Stops and targets", "detail": "Momentum: 3 ATR stop, no target, 50% closed at +1R and an ATR trail of 1 ATR from +0.5R. Breakout: 4 ATR stop, 2.5R target, 50% at +1R and a 1.5 ATR trail from +1R. Turn of month: 2 D1-ATR stop, 2.5R target, stop to entry at +0.5R."},
+            {"title": "Risk per module", "detail": "Each module sizes its own trade from the BAT-selected risk (percent of equity or fixed USD; adaptive controls when the BAT enables them). Volume is rounded up to the broker step; the minimum lot is used if needed. All three modules can be open at once, so combined planned risk can reach three times the per-trade setting."},
+            {"title": "Clock and execution", "detail": "Session filters are defined in UTC; the EA derives the broker's UTC offset automatically on live accounts. Trailing-stop updates rejected during the daily market break are retried after the reopen. A hedging account is required."},
+        ],
+        "risk_note": "Research evidence only. The optimised version made +114% over five years (PF 1.44, 7.9% equity drawdown) but those years include the data it was tuned on; on untouched 2019-2021 history it lost 20.3% (PF 0.74). The Monte Carlo deflated Sharpe was 63% (the pipeline needs 95%). Run on demo first.",
+        "price": 299,
+        "accent": "amber",
         "featured": False,
     },
     "Sell Nasdaq 15min": {
@@ -2075,6 +2098,28 @@ def _month_end_flow_us100_evidence() -> Evidence | None:
     )
 
 
+def _three_way_gold_evidence() -> Evidence | None:
+    path = THREE_WAY_GOLD_ROOT / "COMBINATIONS.json"
+    if not path.is_file():
+        return None
+    row = _load_json(path)["BEST trio"]["periods"]["recent"]["total"]
+    return Evidence(
+        label="Frozen BEST version, most recent year - 3 Way Gold",
+        period="2025-09-29 to 2026-09-29",
+        return_pct=float(row["return_pct"]),
+        profit_factor=float(row["pf"]),
+        drawdown_pct=float(row["equity_dd_pct"]),
+        win_rate_pct=float(row["win_pct"]),
+        trades=int(row["trades"]),
+        max_win_streak=int(row["max_win_streak"]),
+        max_loss_streak=int(row["max_loss_streak"]),
+        history_quality="Real ticks from 2026-01-01; earlier ticks generated",
+        source_note="Exness XAUUSD, native MT5 Model 4 (every tick), 150 ms delay, broker spread, commission and swap, 1% risk per module. The settings were frozen on development and validation data before this year was run; the raw rules had been seen on this year earlier.",
+        status="Watch only - failed older holdout",
+        caution="The optimised settings lost 20.3% (PF 0.74) on untouched 2019-2021 history and the deflated Sharpe was 63% against a 95% requirement. Longer-window results include the development years the settings were tuned on.",
+    )
+
+
 def _news_pulse_hard_evidence(label: str) -> Evidence | None:
     slug={"News Pulse XAU":"news-pulse-xau","News Pulse XAG":"news-pulse-xag","News Pulse BTC":"news-pulse-btc","News Pulse EURUSD":"news-pulse-eurusd"}.get(label)
     payload=load_news_summary(slug) if slug else None
@@ -2803,6 +2848,7 @@ def get_catalog() -> list[Product]:
     regime_switch_xau = _regime_switch_xau_evidence()
     session_vwap_xag = _session_vwap_xag_evidence()
     month_end_flow_us100 = _month_end_flow_us100_evidence()
+    three_way_gold = _three_way_gold_evidence()
     orb_h1_us100 = _orb_h1_us100_evidence()
     selective_orb_v3 = _selective_orb_v3_evidence()
     sell_nasdaq_15m = _sell_nasdaq_15m_evidence()
@@ -2862,6 +2908,8 @@ def get_catalog() -> list[Product]:
             evidence = session_vwap_xag
         elif item["label"] == "US100 Month End Flow":
             evidence = month_end_flow_us100
+        elif item["label"] == "3 Way Gold":
+            evidence = three_way_gold
         elif item["label"] == "US100 H1 ORB 13UTC":
             evidence = orb_h1_us100
         elif item["label"] == "US100 Selective ORB V3":

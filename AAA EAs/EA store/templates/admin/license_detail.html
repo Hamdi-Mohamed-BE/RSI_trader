@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% block title %}License {{ lic.license_key }}{% endblock %}
+{% block content %}
+<a href="/admin/licenses" class="text-xs text-muted">← Licenses</a>
+<div class="mt-2 flex flex-wrap items-center gap-3"><h1 class="text-2xl font-extrabold mono break-all">{{ lic.license_key }}</h1><span class="status-pill status-{{ lic.status }}">{{ lic.status }}</span></div>
+<div class="mt-5 grid gap-4 lg:grid-cols-2">
+  <div class="store-panel overflow-x-auto text-sm"><table class="admin-table"><tbody>
+    <tr><th>Product</th><td>{{ lic.label }} <span class="mono text-muted">({{ lic.product_slug }})</span></td></tr>
+    <tr><th>Buyer</th><td>{{ lic.email }}</td></tr>
+    <tr><th>Order</th><td><a href="/admin/orders/{{ order.id }}" class="mono">{{ order.public_id }}</a> · {{ order.status }}</td></tr>
+    <tr><th>Live account</th><td class="mono">{{ lic.live_login or '—' }} {{ lic.live_server or '' }}</td></tr>
+    <tr><th>Demo account</th><td class="mono">{{ lic.demo_login or '—' }} {{ lic.demo_server or '' }}</td></tr>
+    <tr><th>Activations</th><td class="mono">{{ lic.activations }}</td></tr>
+    <tr><th>Created</th><td class="mono">{{ lic.created_at }}</td></tr>
+    <tr><th>Expires</th><td class="mono">{{ lic.expires_at or 'perpetual (no expiry)' }}</td></tr>
+    <tr><th>Updates until</th><td class="mono">{{ lic.updates_until or '—' }}</td></tr>
+    <tr><th>Last check</th><td class="mono">{{ lic.last_check_at or '—' }} {{ lic.last_check_result or '' }} {{ lic.last_check_ip or '' }}</td></tr>
+    {% if lic.status == 'revoked' %}<tr><th>Revoked</th><td>{{ lic.revoked_at }} — {{ lic.revoke_reason or 'no reason' }}</td></tr>{% endif %}
+    <tr><th>Store build</th><td class="mono">{{ product.get('build_id', 'none') }} · magic {{ product.get('magic', '—') }}</td></tr>
+  </tbody></table></div>
+  <div class="grid gap-4">
+    {% if lic.status == 'active' %}
+    <form method="post" action="/admin/licenses/{{ lic.id }}/revoke" class="store-panel grid gap-3" onsubmit="return confirm('Revoke this license? The EA stops at its next check.')"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Revoke</h2><input class="store-input" name="reason" placeholder="Reason (shown in the audit log)"><button class="button-secondary justify-center">Revoke license</button><p class="store-help">A running EA is removed at its next check (24 h cycle; if the server is unreachable, after the 72 h offline grace). Open positions are then unmanaged.</p></form>
+    {% else %}
+    <form method="post" action="/admin/licenses/{{ lic.id }}/unrevoke" class="store-panel grid gap-3"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Re-activate</h2><button class="button-primary justify-center">Unrevoke license</button></form>
+    {% endif %}
+    <form method="post" action="/admin/licenses/{{ lic.id }}/reset" class="store-panel grid gap-3" onsubmit="return confirm('Reset the account binding?')"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Reset accounts</h2><select class="store-input" name="slot"><option value="both">Live and demo</option><option value="live">Live only</option><option value="demo">Demo only</option></select><button class="button-secondary justify-center">Reset binding</button></form>
+    <form method="post" action="/admin/licenses/{{ lic.id }}/accounts" class="store-panel grid gap-3"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Set accounts</h2><div class="grid gap-2 sm:grid-cols-2"><input class="store-input" name="live_login" value="{{ lic.live_login or '' }}" placeholder="Live account"><input class="store-input" name="demo_login" value="{{ lic.demo_login or '' }}" placeholder="Demo account"></div><button class="button-secondary justify-center">Save accounts</button><p class="store-help">Changing a number clears its bound server; the next activation records it.</p></form>
+    <form method="post" action="/admin/licenses/{{ lic.id }}/extend" class="store-panel grid gap-3"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Extend</h2><div class="grid gap-2 sm:grid-cols-2"><select class="store-input" name="target"><option value="updates">Updates period</option><option value="expiry">License expiry</option></select><input class="store-input" name="days" type="number" min="1" max="3650" value="365"></div><button class="button-secondary justify-center">Extend by days</button></form>
+    <form method="post" action="/admin/licenses/{{ lic.id }}/expiry" class="store-panel grid gap-3"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Set expiry date</h2><input class="store-input" name="expires_on" placeholder="YYYY-MM-DD (empty = perpetual)" value="{{ (lic.expires_at or '')[:10] }}"><button class="button-secondary justify-center">Save expiry</button></form>
+  </div>
+</div>
+<div class="mt-4 store-panel"><h2 class="font-bold">Recent checks</h2><div class="overflow-x-auto"><table class="admin-table mt-2"><thead><tr><th>Time</th><th>Result</th><th>Login</th><th>Server</th><th>Mode</th><th>Build</th><th>Magic</th><th>IP</th></tr></thead><tbody>
+{% for c in checks %}<tr><td class="mono">{{ c.at[:19] }}</td><td>{{ 'allowed' if c.allowed else 'denied' }} · {{ c.code }}</td><td class="mono">{{ c.login }}</td><td>{{ c.server }}</td><td>{{ c.trade_mode }}</td><td class="mono text-[11px]">{{ c.build }}</td><td class="mono">{{ c.magic }}</td><td class="mono">{{ c.ip }}</td></tr>{% else %}<tr><td colspan="8" class="text-muted">No checks yet.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{
+  "platforms": [
+    "MT5"
+  ],
+  "fee_currency": "USD",
+  "fees": {},
+  "consistency": null,
+  "hold_time": null,
+  "straddle_allowed": true,
+  "handover_days": [],
+  "news": {
+    "challenge": "allowed",
+    "funded": "restricted"
+  },
+  "weekend_holding": {
+    "challenge": true,
+    "funded": true
+  },
+  "fee_note": "Fees change often and promotions are common. Enter the price you will pay.",
+  "id": "fundednext-stellar-instant",
+  "firm": "FundedNext",
+  "programme": "Stellar Instant (no challenge)",
+  "verification": {
+    "status": "secondary",
+    "checked": "2026-09-28",
+    "sources": [
+      "https://fundednext.com/cfds/stellar-instant",
+      "https://help.fundednext.com/en/articles/11641163-what-are-the-daily-loss-limit-and-the-maximum-loss-limit-for-the-stellar-instant-accounts"
+    ],
+    "notes": "From the research protocol (PROP_PROTOCOL.md, rules checked 2026-09-28): funded from day 0, 6% balance-trailing loss floor capped at the initial balance, no daily limit, 70% starting share. EA add-on required; Quick-Strike (≤30 s trades) not modelled."
+  },
+  "ea_policy": {
+    "status": "allowed",
+    "notes": "EA add-on required at purchase."
+  },
+  "account_sizes": [
+    5000,
+    10000,
+    20000,
+    40000,
+    80000
+  ],
+  "phases": [],
+  "daily_loss": null,
+  "max_loss": {
+    "pct": 6,
+    "type": "eod_trailing_lock_initial"
+  },
+  "payout": {
+    "split_pct": 70,
+    "first_after_days": 14,
+    "every_days": 14,
+    "min_usd": 50,
+    "fee_refund": false
+  }
+}

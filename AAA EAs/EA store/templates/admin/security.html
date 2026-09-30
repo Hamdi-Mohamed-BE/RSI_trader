@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}Security{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-extrabold">Security</h1>
+<div class="mt-5 grid gap-4 lg:grid-cols-2">
+  <div class="store-panel">
+    <h2 class="font-bold">Two-factor authentication (TOTP)</h2>
+    {% if admin.admin.totp_enabled %}
+      <p class="mt-2 text-sm text-mint">Enabled. Sign-in requires the 6-digit code from your authenticator app.</p>
+      <form method="post" action="/admin/security/totp/disable" class="mt-4 grid gap-3"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><input class="store-input" type="password" name="password" placeholder="Current password" required><button class="button-secondary justify-center">Disable 2FA</button></form>
+    {% elif setup_qr %}
+      <p class="mt-2 text-sm text-muted">Scan with Google Authenticator, Aegis, 1Password… then enter the current code to finish.</p>
+      <div class="qr-box mt-4">{{ setup_qr|safe }}</div>
+      <p class="mt-3 text-xs text-muted">Manual key: <span class="mono text-white break-all">{{ secret }}</span></p>
+      <form method="post" action="/admin/security/totp/confirm" class="mt-4 grid gap-3"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><input class="store-input" name="code" inputmode="numeric" maxlength="6" placeholder="6-digit code" required><button class="button-primary justify-center">Enable 2FA</button></form>
+    {% else %}
+      <p class="mt-2 text-sm text-muted">Not enabled. Strongly recommended for the public server.</p>
+      <form method="post" action="/admin/security/totp/start" class="mt-4"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><button class="button-primary justify-center">Set up 2FA</button></form>
+    {% endif %}
+  </div>
+  <form method="post" action="/admin/security/password" class="store-panel grid gap-3"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Change password</h2><input class="store-input" type="password" name="current" placeholder="Current password" required autocomplete="current-password"><input class="store-input" type="password" name="new" placeholder="New password (12+ characters)" required minlength="12" autocomplete="new-password"><input class="store-input" type="password" name="confirm" placeholder="Repeat new password" required minlength="12" autocomplete="new-password"><button class="button-secondary justify-center">Change password</button><p class="store-help">All sessions are signed out after a change.</p></form>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07100f">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/app.css') }}">
+  <script src="{{ url_for('static', path='js/app.js') }}" defer></script>
+</head>
+<body class="bg-ink font-sans text-white antialiased">
+  <div class="noise" aria-hidden="true"></div>
+  <header class="sticky top-0 z-50 border-b border-white/10 bg-ink/85 backdrop-blur-xl">
+    <nav class="mx-auto flex min-h-18 max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-3 lg:px-8" aria-label="Primary">
+      <a href="/" class="flex items-center gap-3" aria-label="{{ app_name }} home">
+        <span class="logo-mark">CL</span>
+        <span>
+          <span class="block text-sm font-extrabold tracking-[.16em]">CALYX</span>
+          <span class="block text-[10px] font-semibold uppercase tracking-[.28em] text-muted">Crypto Lab</span>
+        </span>
+      </a>
+      {% if admin %}
+      <div class="order-3 flex w-full items-center gap-1 overflow-x-auto lg:order-none lg:w-auto">
+        {% set nav = [('/', 'Overview'), ('/polymarket/scanner', 'Scanner'), ('/paper', 'Paper'),
+                      ('/activity', 'Activity'), ('/polymarket/wallets', 'Wallets'), ('/admin/bots', 'Bots'),
+                      ('/admin/audit', 'Audit')] %}
+        {% for href, label in nav %}
+          <a href="{{ href }}" class="nav-link {% if path == href or (href != '/' and path.startswith(href)) %}nav-active{% endif %}">{{ label }}</a>
+        {% endfor %}
+      </div>
+      <div class="flex items-center gap-2">
+        {% if local_paper_access %}
+        <span class="badge badge-safe">LOCAL PAPER · NO LOGIN</span>
+        {% else %}
+        <a class="nav-link" href="/admin/keys">API keys</a>
+        <a href="/account/2fa" class="nav-link font-mono text-[11px]">{{ admin.user.username }}{% if not admin.user.totp_enabled %} · 2FA off{% endif %}</a>
+        <form method="post" action="/logout">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button class="button-secondary" type="submit">Sign out</button>
+        </form>
+        {% endif %}
+      </div>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% block hero %}{% endblock %}
+
+  <main class="mx-auto max-w-7xl px-5 py-8 lg:px-8">
+    {% if local_paper_access %}<p class="flash flash-neutral mb-6">Local paper test · Shared 100 USDC starting balance · Maximum 10 USDC committed per trade · No real orders</p>{% endif %}
+    {% if flash %}
+      <div class="flash flash-{{ flash[0] }} mb-6" role="status">{{ flash[1] }}</div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="mx-auto max-w-7xl px-5 pb-10 lg:px-8">
+    <p class="muted-note border-t border-white/10 pt-6">
+      Research software. Shadow and paper results are simulations, not forecasts or financial advice.
+      Live trading is disabled unless explicitly enabled in configuration.
+    </p>
+  </footer>
+</body>
+</html>

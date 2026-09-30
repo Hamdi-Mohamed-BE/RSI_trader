@@ -1,0 +1,4601 @@
+{
+ "programmes": {
+  "ftmo-2step-swing": {
+   "programme": "FTMO \u2014 2-Step Challenge \u2014 Swing",
+   "account_size": 10000,
+   "fee": 155.0,
+   "fee_currency": "EUR",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.75
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.8605,
+       0.933
+      ],
+      "pass_phase1": [
+       0.9295,
+       0.962
+      ],
+      "breach": [
+       0.6335,
+       0.3845
+      ],
+      "median_days_to_funded": 49.0,
+      "expected_payout_usd": 5309.565820611904,
+      "expected_value_usd": 5282.208320611904,
+      "trades_per_month": 51.1,
+      "profit_factor": 1.58,
+      "win_rate_pct": 45.39,
+      "sharpe_annualized": 3.6,
+      "max_balance_dd_pct": 10.32,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.991,
+       0.995
+      ],
+      "pass_phase1": [
+       0.9925,
+       0.996
+      ],
+      "breach": [
+       0.1195,
+       0.041
+      ],
+      "median_days_to_funded": 29.0,
+      "expected_payout_usd": 16834.805119130364,
+      "expected_value_usd": 16832.325119130364,
+      "trades_per_month": 50.93,
+      "profit_factor": 2.41,
+      "win_rate_pct": 49.34,
+      "sharpe_annualized": 5.59,
+      "max_balance_dd_pct": 2.6,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.75% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 86%\u201393%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 99%\u2013100%.",
+     "search_seconds": 41.9
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.985,
+       0.9955
+      ],
+      "pass_phase1": [
+       0.9925,
+       0.998
+      ],
+      "breach": [
+       0.055,
+       0.028
+      ],
+      "median_days_to_funded": 77.0,
+      "expected_payout_usd": 4645.004312279831,
+      "expected_value_usd": 4642.13681227983,
+      "trades_per_month": 43.93,
+      "profit_factor": 1.73,
+      "win_rate_pct": 47.64,
+      "sharpe_annualized": 3.84,
+      "max_balance_dd_pct": 5.14,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0005,
+       0.0
+      ],
+      "median_days_to_funded": 48.0,
+      "expected_payout_usd": 9632.327798715032,
+      "expected_value_usd": 9632.32779871503,
+      "trades_per_month": 40.22,
+      "profit_factor": 2.69,
+      "win_rate_pct": 48.01,
+      "sharpe_annualized": 5.18,
+      "max_balance_dd_pct": 2.29,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 98%\u2013100%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 39.4
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "eth-top-down-fvg-liquidity",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.75
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.5535,
+       0.773
+      ],
+      "pass_phase1": [
+       0.7105,
+       0.8705
+      ],
+      "breach": [
+       0.992,
+       0.799
+      ],
+      "median_days_to_funded": 38.0,
+      "expected_payout_usd": 1398.4961898139018,
+      "expected_value_usd": 1313.8661898139017,
+      "trades_per_month": 60.47,
+      "profit_factor": 1.44,
+      "win_rate_pct": 40.55,
+      "sharpe_annualized": 3.19,
+      "max_balance_dd_pct": 15.47,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.8405,
+       0.9935
+      ],
+      "pass_phase1": [
+       0.8845,
+       0.999
+      ],
+      "breach": [
+       0.839,
+       0.04
+      ],
+      "median_days_to_funded": 27.0,
+      "expected_payout_usd": 8176.755048866106,
+      "expected_value_usd": 8143.507548866106,
+      "trades_per_month": 65.09,
+      "profit_factor": 2.19,
+      "win_rate_pct": 45.34,
+      "sharpe_annualized": 6.19,
+      "max_balance_dd_pct": 2.5,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.75% risk, guard 'daily-2'. Selected on 2021-09-25 to 2025-09-04 (pass all 55%\u201377%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 84%\u201399%.",
+     "search_seconds": 43.0
+    }
+   }
+  },
+  "blueberry-prime-2step": {
+   "programme": "Blueberry Funded \u2014 Prime Challenge (2-Step)",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.9875,
+       0.995
+      ],
+      "pass_phase1": [
+       0.994,
+       0.997
+      ],
+      "breach": [
+       0.0715,
+       0.036
+      ],
+      "median_days_to_funded": 68.0,
+      "expected_payout_usd": 5182.783211287319,
+      "expected_value_usd": null,
+      "trades_per_month": 53.33,
+      "profit_factor": 1.6,
+      "win_rate_pct": 46.26,
+      "sharpe_annualized": 3.7,
+      "max_balance_dd_pct": 8.72,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0005,
+       0.0
+      ],
+      "median_days_to_funded": 44.0,
+      "expected_payout_usd": 10273.560664673352,
+      "expected_value_usd": null,
+      "trades_per_month": 50.0,
+      "profit_factor": 2.37,
+      "win_rate_pct": 49.41,
+      "sharpe_annualized": 5.17,
+      "max_balance_dd_pct": 2.58,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 99%\u2013100%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 42.2
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.991,
+       0.9945
+      ],
+      "pass_phase1": [
+       0.997,
+       0.9985
+      ],
+      "breach": [
+       0.049,
+       0.023
+      ],
+      "median_days_to_funded": 76.0,
+      "expected_payout_usd": 4352.5648385908235,
+      "expected_value_usd": null,
+      "trades_per_month": 39.33,
+      "profit_factor": 1.73,
+      "win_rate_pct": 44.25,
+      "sharpe_annualized": 3.81,
+      "max_balance_dd_pct": 6.11,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0005,
+       0.0
+      ],
+      "median_days_to_funded": 45.0,
+      "expected_payout_usd": 9470.679612255599,
+      "expected_value_usd": null,
+      "trades_per_month": 37.27,
+      "profit_factor": 2.73,
+      "win_rate_pct": 46.83,
+      "sharpe_annualized": 5.29,
+      "max_balance_dd_pct": 2.28,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 99%\u201399%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 40.5
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile-volume-confirmed",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.7835,
+       0.908
+      ],
+      "pass_phase1": [
+       0.868,
+       0.949
+      ],
+      "breach": [
+       0.7435,
+       0.3945
+      ],
+      "median_days_to_funded": 60.0,
+      "expected_payout_usd": 2891.0104777332945,
+      "expected_value_usd": null,
+      "trades_per_month": 62.71,
+      "profit_factor": 1.45,
+      "win_rate_pct": 40.55,
+      "sharpe_annualized": 3.2,
+      "max_balance_dd_pct": 11.58,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.001,
+       0.0
+      ],
+      "median_days_to_funded": 35.0,
+      "expected_payout_usd": 13583.305987172966,
+      "expected_value_usd": null,
+      "trades_per_month": 63.07,
+      "profit_factor": 2.33,
+      "win_rate_pct": 46.26,
+      "sharpe_annualized": 6.27,
+      "max_balance_dd_pct": 2.0,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 78%\u201391%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 42.7
+    }
+   }
+  },
+  "e8-one-4pct": {
+   "programme": "E8 Markets \u2014 E8 One (4% drawdown option)",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile-volume-confirmed",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-squeeze-momentum-standard",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-overnight",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.8295,
+       0.925
+      ],
+      "pass_phase1": [
+       0.8295,
+       0.925
+      ],
+      "breach": [
+       0.5255,
+       0.2275
+      ],
+      "median_days_to_funded": 62.0,
+      "expected_payout_usd": 1342.6589269385258,
+      "expected_value_usd": null,
+      "trades_per_month": 27.1,
+      "profit_factor": 1.68,
+      "win_rate_pct": 54.17,
+      "sharpe_annualized": 2.89,
+      "max_balance_dd_pct": 3.12,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.863,
+       0.961
+      ],
+      "pass_phase1": [
+       0.863,
+       0.961
+      ],
+      "breach": [
+       0.37,
+       0.115
+      ],
+      "median_days_to_funded": 82.0,
+      "expected_payout_usd": 1098.544847731444,
+      "expected_value_usd": null,
+      "trades_per_month": 25.46,
+      "profit_factor": 1.65,
+      "win_rate_pct": 51.32,
+      "sharpe_annualized": 2.9,
+      "max_balance_dd_pct": 2.46,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "9 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 83%\u201392%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 86%\u201396%.",
+     "search_seconds": 39.8
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.375
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.375
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.375
+      },
+      {
+       "slug": "xau-squeeze-momentum-standard",
+       "risk_pct": 0.375
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.375
+      },
+      {
+       "slug": "xau-orb-new-york-m30",
+       "risk_pct": 0.375
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.375
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.96,
+       0.9755
+      ],
+      "pass_phase1": [
+       0.96,
+       0.9755
+      ],
+      "breach": [
+       0.073,
+       0.0265
+      ],
+      "median_days_to_funded": 107.0,
+      "expected_payout_usd": 1021.375567698296,
+      "expected_value_usd": null,
+      "trades_per_month": 22.16,
+      "profit_factor": 1.73,
+      "win_rate_pct": 55.1,
+      "sharpe_annualized": 2.75,
+      "max_balance_dd_pct": 2.19,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.734,
+       0.757
+      ],
+      "pass_phase1": [
+       0.7355,
+       0.7585
+      ],
+      "breach": [
+       0.235,
+       0.1595
+      ],
+      "median_days_to_funded": 165.0,
+      "expected_payout_usd": 305.50018520483377,
+      "expected_value_usd": null,
+      "trades_per_month": 15.85,
+      "profit_factor": 1.48,
+      "win_rate_pct": 45.74,
+      "sharpe_annualized": 1.84,
+      "max_balance_dd_pct": 2.58,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "7 EAs at 0.375% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 96%\u201398%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 73%\u201376%.",
+     "search_seconds": 33.2
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "asia-breakout",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "dmc-fresh-reaction-us100",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-squeeze-momentum-standard",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.491,
+       0.5745
+      ],
+      "pass_phase1": [
+       0.491,
+       0.5745
+      ],
+      "breach": [
+       0.9985,
+       0.9875
+      ],
+      "median_days_to_funded": 25.0,
+      "expected_payout_usd": 404.5677296514142,
+      "expected_value_usd": null,
+      "trades_per_month": 40.01,
+      "profit_factor": 1.38,
+      "win_rate_pct": 42.45,
+      "sharpe_annualized": 2.52,
+      "max_balance_dd_pct": 12.19,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.7595,
+       0.922
+      ],
+      "pass_phase1": [
+       0.7595,
+       0.922
+      ],
+      "breach": [
+       0.927,
+       0.491
+      ],
+      "median_days_to_funded": 24.0,
+      "expected_payout_usd": 1897.4271554606569,
+      "expected_value_usd": null,
+      "trades_per_month": 49.66,
+      "profit_factor": 1.69,
+      "win_rate_pct": 43.29,
+      "sharpe_annualized": 4.58,
+      "max_balance_dd_pct": 2.29,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 49%\u201357%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 76%\u201392%.",
+     "search_seconds": 33.5
+    }
+   }
+  },
+  "ftmo-1step": {
+   "programme": "FTMO \u2014 1-Step Challenge",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-orb-london-ny-overlap-m30",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.958,
+       0.9815
+      ],
+      "pass_phase1": [
+       0.958,
+       0.9815
+      ],
+      "breach": [
+       0.1545,
+       0.0815
+      ],
+      "median_days_to_funded": 43.0,
+      "expected_payout_usd": 5240.993542849892,
+      "expected_value_usd": null,
+      "trades_per_month": 50.72,
+      "profit_factor": 1.61,
+      "win_rate_pct": 46.27,
+      "sharpe_annualized": 3.7,
+      "max_balance_dd_pct": 7.9,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9,
+       0.999
+      ],
+      "pass_phase1": [
+       0.9,
+       0.999
+      ],
+      "breach": [
+       0.683,
+       0.003
+      ],
+      "median_days_to_funded": 28.0,
+      "expected_payout_usd": 5636.322537875244,
+      "expected_value_usd": null,
+      "trades_per_month": 47.89,
+      "profit_factor": 2.35,
+      "win_rate_pct": 48.42,
+      "sharpe_annualized": 5.01,
+      "max_balance_dd_pct": 2.97,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 96%\u201398%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 90%\u2013100%.",
+     "search_seconds": 41.2
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile-volume-confirmed",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.9935,
+       0.9965
+      ],
+      "pass_phase1": [
+       0.9935,
+       0.9965
+      ],
+      "breach": [
+       0.0175,
+       0.0095
+      ],
+      "median_days_to_funded": 49.0,
+      "expected_payout_usd": 5018.703058240087,
+      "expected_value_usd": null,
+      "trades_per_month": 49.83,
+      "profit_factor": 1.62,
+      "win_rate_pct": 49.09,
+      "sharpe_annualized": 3.73,
+      "max_balance_dd_pct": 6.01,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.92,
+       1.0
+      ],
+      "pass_phase1": [
+       0.92,
+       1.0
+      ],
+      "breach": [
+       0.661,
+       0.0
+      ],
+      "median_days_to_funded": 32.0,
+      "expected_payout_usd": 5663.967325550661,
+      "expected_value_usd": null,
+      "trades_per_month": 41.15,
+      "profit_factor": 2.64,
+      "win_rate_pct": 51.02,
+      "sharpe_annualized": 5.12,
+      "max_balance_dd_pct": 2.71,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 99%\u2013100%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 92%\u2013100%.",
+     "search_seconds": 39.8
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.473,
+       0.8755
+      ],
+      "pass_phase1": [
+       0.473,
+       0.8755
+      ],
+      "breach": [
+       0.9975,
+       0.503
+      ],
+      "median_days_to_funded": 35.0,
+      "expected_payout_usd": 408.8547444720357,
+      "expected_value_usd": null,
+      "trades_per_month": 55.4,
+      "profit_factor": 1.45,
+      "win_rate_pct": 40.26,
+      "sharpe_annualized": 3.05,
+      "max_balance_dd_pct": 11.59,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.901,
+       0.9945
+      ],
+      "pass_phase1": [
+       0.901,
+       0.9945
+      ],
+      "breach": [
+       0.8225,
+       0.0285
+      ],
+      "median_days_to_funded": 22.0,
+      "expected_payout_usd": 5877.001728649072,
+      "expected_value_usd": null,
+      "trades_per_month": 57.17,
+      "profit_factor": 2.33,
+      "win_rate_pct": 46.31,
+      "sharpe_annualized": 5.92,
+      "max_balance_dd_pct": 2.69,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "8 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 47%\u201388%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 90%\u201399%.",
+     "search_seconds": 37.1
+    }
+   }
+  },
+  "ftmo-2step-standard": {
+   "programme": "FTMO \u2014 2-Step Challenge \u2014 Standard",
+   "account_size": 10000,
+   "fee": 155.0,
+   "fee_currency": "EUR",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-orb-london-ny-overlap-m30",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.75
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.775,
+       0.838
+      ],
+      "pass_phase1": [
+       0.864,
+       0.905
+      ],
+      "breach": [
+       0.793,
+       0.6215
+      ],
+      "median_days_to_funded": 65.0,
+      "expected_payout_usd": 2605.5596734037117,
+      "expected_value_usd": 2560.4546734037117,
+      "trades_per_month": 50.17,
+      "profit_factor": 1.38,
+      "win_rate_pct": 44.8,
+      "sharpe_annualized": 2.67,
+      "max_balance_dd_pct": 13.53,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9705,
+       0.988
+      ],
+      "pass_phase1": [
+       0.989,
+       0.997
+      ],
+      "breach": [
+       0.2815,
+       0.104
+      ],
+      "median_days_to_funded": 57.0,
+      "expected_payout_usd": 6215.995938644936,
+      "expected_value_usd": 6209.408438644937,
+      "trades_per_month": 49.58,
+      "profit_factor": 1.66,
+      "win_rate_pct": 47.62,
+      "sharpe_annualized": 4.15,
+      "max_balance_dd_pct": 4.56,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.75% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 78%\u201384%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 97%\u201399%.",
+     "search_seconds": 22.6
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile-volume-confirmed",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.876,
+       0.9
+      ],
+      "pass_phase1": [
+       0.934,
+       0.9525
+      ],
+      "breach": [
+       0.2545,
+       0.1675
+      ],
+      "median_days_to_funded": 131.0,
+      "expected_payout_usd": 1735.3566381017272,
+      "expected_value_usd": 1711.2541381017272,
+      "trades_per_month": 41.13,
+      "profit_factor": 1.37,
+      "win_rate_pct": 44.58,
+      "sharpe_annualized": 2.23,
+      "max_balance_dd_pct": 11.43,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0,
+       0.0
+      ],
+      "median_days_to_funded": 100.0,
+      "expected_payout_usd": 3409.4389714488852,
+      "expected_value_usd": 3409.4389714488852,
+      "trades_per_month": 41.4,
+      "profit_factor": 1.69,
+      "win_rate_pct": 48.68,
+      "sharpe_annualized": 3.69,
+      "max_balance_dd_pct": 3.26,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "7 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 88%\u201390%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 18.5
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "orb-volume-profile-volume-confirmed",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "gold-overnight-value-area",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "eth-top-down-fvg-liquidity",
+       "risk_pct": 1.0
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.439,
+       0.551
+      ],
+      "pass_phase1": [
+       0.6135,
+       0.7035
+      ],
+      "breach": [
+       0.9985,
+       0.9825
+      ],
+      "median_days_to_funded": 42.0,
+      "expected_payout_usd": 688.7061728850273,
+      "expected_value_usd": 583.6936728850272,
+      "trades_per_month": 63.92,
+      "profit_factor": 1.22,
+      "win_rate_pct": 47.09,
+      "sharpe_annualized": 1.89,
+      "max_balance_dd_pct": 20.81,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.897,
+       0.9775
+      ],
+      "pass_phase1": [
+       0.9735,
+       0.996
+      ],
+      "breach": [
+       0.5815,
+       0.23
+      ],
+      "median_days_to_funded": 34.0,
+      "expected_payout_usd": 9738.480621112225,
+      "expected_value_usd": 9716.160621112225,
+      "trades_per_month": 69.14,
+      "profit_factor": 1.69,
+      "win_rate_pct": 50.37,
+      "sharpe_annualized": 5.49,
+      "max_balance_dd_pct": 4.63,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 1.0% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 44%\u201355%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 90%\u201398%.",
+     "search_seconds": 22.4
+    }
+   }
+  },
+  "fxify-two-phase": {
+   "programme": "FXIFY \u2014 Two-Phase",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.75
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.893,
+       0.9455
+      ],
+      "pass_phase1": [
+       0.939,
+       0.973
+      ],
+      "breach": [
+       0.5475,
+       0.298
+      ],
+      "median_days_to_funded": 50.0,
+      "expected_payout_usd": 5867.05844628696,
+      "expected_value_usd": null,
+      "trades_per_month": 52.51,
+      "profit_factor": 1.6,
+      "win_rate_pct": 46.26,
+      "sharpe_annualized": 3.66,
+      "max_balance_dd_pct": 12.03,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.996,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.036,
+       0.0025
+      ],
+      "median_days_to_funded": 33.0,
+      "expected_payout_usd": 16391.591225612465,
+      "expected_value_usd": null,
+      "trades_per_month": 50.08,
+      "profit_factor": 2.44,
+      "win_rate_pct": 50.17,
+      "sharpe_annualized": 5.41,
+      "max_balance_dd_pct": 3.05,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.75% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 89%\u201395%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 41.5
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "eth-top-down-fvg-liquidity",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.984,
+       0.993
+      ],
+      "pass_phase1": [
+       0.9915,
+       0.9975
+      ],
+      "breach": [
+       0.0705,
+       0.037
+      ],
+      "median_days_to_funded": 77.0,
+      "expected_payout_usd": 4545.045238770624,
+      "expected_value_usd": null,
+      "trades_per_month": 40.3,
+      "profit_factor": 1.74,
+      "win_rate_pct": 44.65,
+      "sharpe_annualized": 3.79,
+      "max_balance_dd_pct": 5.84,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0,
+       0.0
+      ],
+      "median_days_to_funded": 46.0,
+      "expected_payout_usd": 10030.205715463351,
+      "expected_value_usd": null,
+      "trades_per_month": 40.89,
+      "profit_factor": 2.62,
+      "win_rate_pct": 46.39,
+      "sharpe_annualized": 5.31,
+      "max_balance_dd_pct": 2.1,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 98%\u201399%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 39.1
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 1.0
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.524,
+       0.647
+      ],
+      "pass_phase1": [
+       0.692,
+       0.7785
+      ],
+      "breach": [
+       0.9925,
+       0.9445
+      ],
+      "median_days_to_funded": 37.0,
+      "expected_payout_usd": 1190.509465125132,
+      "expected_value_usd": null,
+      "trades_per_month": 41.59,
+      "profit_factor": 1.36,
+      "win_rate_pct": 38.45,
+      "sharpe_annualized": 2.28,
+      "max_balance_dd_pct": 26.73,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.893,
+       0.9135
+      ],
+      "pass_phase1": [
+       0.9365,
+       0.952
+      ],
+      "breach": [
+       0.68,
+       0.553
+      ],
+      "median_days_to_funded": 25.0,
+      "expected_payout_usd": 12617.850796763898,
+      "expected_value_usd": null,
+      "trades_per_month": 44.27,
+      "profit_factor": 2.3,
+      "win_rate_pct": 45.14,
+      "sharpe_annualized": 5.56,
+      "max_balance_dd_pct": 4.93,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 1.0% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 52%\u201365%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 89%\u201391%.",
+     "search_seconds": 41.6
+    }
+   }
+  },
+  "fundednext-stellar-1step": {
+   "programme": "FundedNext \u2014 Stellar 1-Step",
+   "account_size": 6000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 6000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "dmc-fresh-reaction-us100",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.877,
+       0.9135
+      ],
+      "pass_phase1": [
+       0.877,
+       0.9135
+      ],
+      "breach": [
+       0.732,
+       0.536
+      ],
+      "median_days_to_funded": 65.0,
+      "expected_payout_usd": 1152.828052050755,
+      "expected_value_usd": null,
+      "trades_per_month": 47.0,
+      "profit_factor": 1.39,
+      "win_rate_pct": 44.36,
+      "sharpe_annualized": 2.69,
+      "max_balance_dd_pct": 8.15,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9865,
+       0.9955
+      ],
+      "pass_phase1": [
+       0.9865,
+       0.9955
+      ],
+      "breach": [
+       0.333,
+       0.1585
+      ],
+      "median_days_to_funded": 63.0,
+      "expected_payout_usd": 1735.192309990912,
+      "expected_value_usd": null,
+      "trades_per_month": 42.75,
+      "profit_factor": 1.57,
+      "win_rate_pct": 47.34,
+      "sharpe_annualized": 3.71,
+      "max_balance_dd_pct": 3.63,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 88%\u201391%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 99%\u2013100%.",
+     "search_seconds": 37.2
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 6000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-squeeze-momentum-standard",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-overnight",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.965,
+       0.987
+      ],
+      "pass_phase1": [
+       0.9655,
+       0.9875
+      ],
+      "breach": [
+       0.2515,
+       0.0975
+      ],
+      "median_days_to_funded": 89.0,
+      "expected_payout_usd": 1183.9751142099726,
+      "expected_value_usd": null,
+      "trades_per_month": 34.13,
+      "profit_factor": 1.56,
+      "win_rate_pct": 47.15,
+      "sharpe_annualized": 2.8,
+      "max_balance_dd_pct": 5.32,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9955,
+       0.9975
+      ],
+      "pass_phase1": [
+       0.9955,
+       0.9975
+      ],
+      "breach": [
+       0.032,
+       0.0125
+      ],
+      "median_days_to_funded": 94.0,
+      "expected_payout_usd": 1298.5773907711227,
+      "expected_value_usd": null,
+      "trades_per_month": 31.87,
+      "profit_factor": 1.78,
+      "win_rate_pct": 49.21,
+      "sharpe_annualized": 3.6,
+      "max_balance_dd_pct": 2.27,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 96%\u201399%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 34.9
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 6000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile-volume-confirmed",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "eth-top-down-fvg-liquidity",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.476,
+       0.7585
+      ],
+      "pass_phase1": [
+       0.476,
+       0.7585
+      ],
+      "breach": [
+       0.998,
+       0.909
+      ],
+      "median_days_to_funded": 38.0,
+      "expected_payout_usd": 209.7197271683039,
+      "expected_value_usd": null,
+      "trades_per_month": 60.37,
+      "profit_factor": 1.3,
+      "win_rate_pct": 42.37,
+      "sharpe_annualized": 2.39,
+      "max_balance_dd_pct": 15.15,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9995,
+       1.0
+      ],
+      "pass_phase1": [
+       0.9995,
+       1.0
+      ],
+      "breach": [
+       0.1565,
+       0.0525
+      ],
+      "median_days_to_funded": 39.0,
+      "expected_payout_usd": 3620.702882968464,
+      "expected_value_usd": null,
+      "trades_per_month": 59.19,
+      "profit_factor": 1.68,
+      "win_rate_pct": 45.44,
+      "sharpe_annualized": 4.9,
+      "max_balance_dd_pct": 3.29,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 48%\u201376%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 36.8
+    }
+   }
+  },
+  "fundednext-stellar-2step": {
+   "programme": "FundedNext \u2014 Stellar 2-Step",
+   "account_size": 6000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 6000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.8735,
+       0.912
+      ],
+      "pass_phase1": [
+       0.926,
+       0.947
+      ],
+      "breach": [
+       0.4285,
+       0.2885
+      ],
+      "median_days_to_funded": 81.0,
+      "expected_payout_usd": 1645.6445798352672,
+      "expected_value_usd": null,
+      "trades_per_month": 53.33,
+      "profit_factor": 1.39,
+      "win_rate_pct": 42.65,
+      "sharpe_annualized": 2.73,
+      "max_balance_dd_pct": 11.48,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.999,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.01,
+       0.004
+      ],
+      "median_days_to_funded": 69.0,
+      "expected_payout_usd": 2867.3556344154695,
+      "expected_value_usd": null,
+      "trades_per_month": 48.14,
+      "profit_factor": 1.73,
+      "win_rate_pct": 47.46,
+      "sharpe_annualized": 4.32,
+      "max_balance_dd_pct": 3.98,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 87%\u201391%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 37.7
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 6000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.952,
+       0.9605
+      ],
+      "pass_phase1": [
+       0.976,
+       0.985
+      ],
+      "breach": [
+       0.123,
+       0.0805
+      ],
+      "median_days_to_funded": 112.0,
+      "expected_payout_usd": 1379.2489120663395,
+      "expected_value_usd": null,
+      "trades_per_month": 47.84,
+      "profit_factor": 1.37,
+      "win_rate_pct": 47.51,
+      "sharpe_annualized": 2.62,
+      "max_balance_dd_pct": 11.05,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0,
+       0.0
+      ],
+      "median_days_to_funded": 91.0,
+      "expected_payout_usd": 1841.8510070452044,
+      "expected_value_usd": null,
+      "trades_per_month": 41.57,
+      "profit_factor": 1.6,
+      "win_rate_pct": 48.68,
+      "sharpe_annualized": 3.75,
+      "max_balance_dd_pct": 3.12,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "9 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 95%\u201396%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 37.4
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 6000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "btc-top-down-fvg-liquidity",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "eth-top-down-fvg-liquidity",
+       "risk_pct": 0.75
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.518,
+       0.5965
+      ],
+      "pass_phase1": [
+       0.6945,
+       0.7505
+      ],
+      "breach": [
+       0.986,
+       0.9455
+      ],
+      "median_days_to_funded": 49.0,
+      "expected_payout_usd": 553.7843512476186,
+      "expected_value_usd": null,
+      "trades_per_month": 52.62,
+      "profit_factor": 1.25,
+      "win_rate_pct": 37.94,
+      "sharpe_annualized": 1.84,
+      "max_balance_dd_pct": 23.53,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9945,
+       0.999
+      ],
+      "pass_phase1": [
+       0.9985,
+       1.0
+      ],
+      "breach": [
+       0.0415,
+       0.0075
+      ],
+      "median_days_to_funded": 37.0,
+      "expected_payout_usd": 7515.406033439601,
+      "expected_value_usd": null,
+      "trades_per_month": 60.96,
+      "profit_factor": 1.77,
+      "win_rate_pct": 44.54,
+      "sharpe_annualized": 5.4,
+      "max_balance_dd_pct": 3.87,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.75% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 52%\u201360%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 99%\u2013100%.",
+     "search_seconds": 40.8
+    }
+   }
+  },
+  "fundednext-stellar-instant": {
+   "programme": "FundedNext \u2014 Stellar Instant (no challenge)",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-orb-london-ny-overlap-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-squeeze-momentum-standard",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": null,
+      "breach": [
+       0.5055,
+       0.2855
+      ],
+      "median_days_to_funded": null,
+      "expected_payout_usd": 2518.123903105819,
+      "expected_value_usd": null,
+      "trades_per_month": 37.51,
+      "profit_factor": 1.57,
+      "win_rate_pct": 51.3,
+      "sharpe_annualized": 3.06,
+      "max_balance_dd_pct": 6.17,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": null,
+      "breach": [
+       0.032,
+       0.0095
+      ],
+      "median_days_to_funded": null,
+      "expected_payout_usd": 2759.084953463422,
+      "expected_value_usd": null,
+      "trades_per_month": 32.97,
+      "profit_factor": 1.64,
+      "win_rate_pct": 47.31,
+      "sharpe_annualized": 3.11,
+      "max_balance_dd_pct": 2.39,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 100%\u2013100%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 32.5
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "gold-overnight-value-area",
+       "risk_pct": 1.0
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": null,
+      "breach": [
+       0.8475,
+       0.758
+      ],
+      "median_days_to_funded": null,
+      "expected_payout_usd": 243.95947458765406,
+      "expected_value_usd": null,
+      "trades_per_month": 17.21,
+      "profit_factor": 0.94,
+      "win_rate_pct": 66.87,
+      "sharpe_annualized": -0.36,
+      "max_balance_dd_pct": 25.9,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": null,
+      "breach": [
+       0.009,
+       0.0005
+      ],
+      "median_days_to_funded": null,
+      "expected_payout_usd": 1123.6336600166628,
+      "expected_value_usd": null,
+      "trades_per_month": 15.18,
+      "profit_factor": 1.69,
+      "win_rate_pct": 76.67,
+      "sharpe_annualized": 2.61,
+      "max_balance_dd_pct": 2.27,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "1 EAs at 1.0% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 100%\u2013100%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 8.3
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "gold-overnight-value-area",
+       "risk_pct": 1.0
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": null,
+      "breach": [
+       0.8475,
+       0.758
+      ],
+      "median_days_to_funded": null,
+      "expected_payout_usd": 243.95947458765406,
+      "expected_value_usd": null,
+      "trades_per_month": 17.21,
+      "profit_factor": 0.94,
+      "win_rate_pct": 66.87,
+      "sharpe_annualized": -0.36,
+      "max_balance_dd_pct": 25.9,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": null,
+      "breach": [
+       0.009,
+       0.0005
+      ],
+      "median_days_to_funded": null,
+      "expected_payout_usd": 1123.6336600166628,
+      "expected_value_usd": null,
+      "trades_per_month": 15.18,
+      "profit_factor": 1.69,
+      "win_rate_pct": 76.67,
+      "sharpe_annualized": 2.61,
+      "max_balance_dd_pct": 2.27,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "1 EAs at 1.0% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 100%\u2013100%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 8.2
+    }
+   }
+  },
+  "fundednext-stellar-lite": {
+   "programme": "FundedNext \u2014 Stellar Lite",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.8925,
+       0.932
+      ],
+      "pass_phase1": [
+       0.939,
+       0.961
+      ],
+      "breach": [
+       0.4255,
+       0.268
+      ],
+      "median_days_to_funded": 84.0,
+      "expected_payout_usd": 2483.226298980965,
+      "expected_value_usd": null,
+      "trades_per_month": 48.12,
+      "profit_factor": 1.41,
+      "win_rate_pct": 45.35,
+      "sharpe_annualized": 2.86,
+      "max_balance_dd_pct": 10.82,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.994,
+       0.9975
+      ],
+      "pass_phase1": [
+       0.996,
+       0.999
+      ],
+      "breach": [
+       0.0625,
+       0.02
+      ],
+      "median_days_to_funded": 67.0,
+      "expected_payout_usd": 4129.6028958218485,
+      "expected_value_usd": null,
+      "trades_per_month": 44.94,
+      "profit_factor": 1.66,
+      "win_rate_pct": 47.47,
+      "sharpe_annualized": 4.25,
+      "max_balance_dd_pct": 3.43,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 89%\u201393%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 99%\u2013100%.",
+     "search_seconds": 41.6
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-squeeze-momentum-standard",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.9615,
+       0.969
+      ],
+      "pass_phase1": [
+       0.983,
+       0.9875
+      ],
+      "breach": [
+       0.1295,
+       0.0795
+      ],
+      "median_days_to_funded": 114.0,
+      "expected_payout_usd": 2041.680321958658,
+      "expected_value_usd": null,
+      "trades_per_month": 29.0,
+      "profit_factor": 1.56,
+      "win_rate_pct": 45.67,
+      "sharpe_annualized": 2.7,
+      "max_balance_dd_pct": 8.96,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.991,
+       0.996
+      ],
+      "pass_phase1": [
+       0.998,
+       0.9995
+      ],
+      "breach": [
+       0.025,
+       0.0095
+      ],
+      "median_days_to_funded": 99.0,
+      "expected_payout_usd": 2595.965378704253,
+      "expected_value_usd": null,
+      "trades_per_month": 30.18,
+      "profit_factor": 1.73,
+      "win_rate_pct": 46.37,
+      "sharpe_annualized": 3.29,
+      "max_balance_dd_pct": 3.55,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "8 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 96%\u201397%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 99%\u2013100%.",
+     "search_seconds": 35.8
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-orb-london-ny-overlap-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "dmc-current-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "asia-breakout",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.505,
+       0.671
+      ],
+      "pass_phase1": [
+       0.642,
+       0.7735
+      ],
+      "breach": [
+       0.9795,
+       0.8315
+      ],
+      "median_days_to_funded": 56.5,
+      "expected_payout_usd": 630.4403510341402,
+      "expected_value_usd": null,
+      "trades_per_month": 61.93,
+      "profit_factor": 1.26,
+      "win_rate_pct": 39.63,
+      "sharpe_annualized": 2.04,
+      "max_balance_dd_pct": 19.35,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9945,
+       0.997
+      ],
+      "pass_phase1": [
+       0.9985,
+       0.9995
+      ],
+      "breach": [
+       0.129,
+       0.0495
+      ],
+      "median_days_to_funded": 46.0,
+      "expected_payout_usd": 7933.705279963352,
+      "expected_value_usd": null,
+      "trades_per_month": 74.79,
+      "profit_factor": 1.69,
+      "win_rate_pct": 44.31,
+      "sharpe_annualized": 5.02,
+      "max_balance_dd_pct": 2.89,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 50%\u201367%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 99%\u2013100%.",
+     "search_seconds": 41.3
+    }
+   }
+  },
+  "fundingpips-2step": {
+   "programme": "FundingPips \u2014 2-Step Standard (8% option)",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.75
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.8805,
+       0.945
+      ],
+      "pass_phase1": [
+       0.942,
+       0.9715
+      ],
+      "breach": [
+       0.586,
+       0.323
+      ],
+      "median_days_to_funded": 45.0,
+      "expected_payout_usd": 5620.063739626849,
+      "expected_value_usd": null,
+      "trades_per_month": 54.12,
+      "profit_factor": 1.56,
+      "win_rate_pct": 45.43,
+      "sharpe_annualized": 3.55,
+      "max_balance_dd_pct": 11.07,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0145,
+       0.0
+      ],
+      "median_days_to_funded": 27.0,
+      "expected_payout_usd": 17995.54251569265,
+      "expected_value_usd": null,
+      "trades_per_month": 52.53,
+      "profit_factor": 2.47,
+      "win_rate_pct": 50.08,
+      "sharpe_annualized": 5.76,
+      "max_balance_dd_pct": 2.6,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.75% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 88%\u201394%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 45.8
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-orb-new-york-m30",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.9905,
+       0.996
+      ],
+      "pass_phase1": [
+       0.9935,
+       0.998
+      ],
+      "breach": [
+       0.046,
+       0.0235
+      ],
+      "median_days_to_funded": 70.0,
+      "expected_payout_usd": 4749.276892461906,
+      "expected_value_usd": null,
+      "trades_per_month": 41.13,
+      "profit_factor": 1.75,
+      "win_rate_pct": 44.48,
+      "sharpe_annualized": 3.8,
+      "max_balance_dd_pct": 4.96,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0015,
+       0.0
+      ],
+      "median_days_to_funded": 42.0,
+      "expected_payout_usd": 9727.669672112026,
+      "expected_value_usd": null,
+      "trades_per_month": 39.63,
+      "profit_factor": 2.7,
+      "win_rate_pct": 46.6,
+      "sharpe_annualized": 5.18,
+      "max_balance_dd_pct": 2.36,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 99%\u2013100%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 43.8
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "dmc-fresh-reaction-xau",
+       "risk_pct": 1.0
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.5055,
+       0.619
+      ],
+      "pass_phase1": [
+       0.6965,
+       0.7735
+      ],
+      "breach": [
+       0.9925,
+       0.9455
+      ],
+      "median_days_to_funded": 37.0,
+      "expected_payout_usd": 1168.886768998222,
+      "expected_value_usd": null,
+      "trades_per_month": 35.36,
+      "profit_factor": 1.37,
+      "win_rate_pct": 37.46,
+      "sharpe_annualized": 2.14,
+      "max_balance_dd_pct": 34.46,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.8875,
+       0.916
+      ],
+      "pass_phase1": [
+       0.936,
+       0.953
+      ],
+      "breach": [
+       0.689,
+       0.5545
+      ],
+      "median_days_to_funded": 26.0,
+      "expected_payout_usd": 11855.959588200913,
+      "expected_value_usd": null,
+      "trades_per_month": 43.51,
+      "profit_factor": 2.25,
+      "win_rate_pct": 44.57,
+      "sharpe_annualized": 5.36,
+      "max_balance_dd_pct": 4.81,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 1.0% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 51%\u201362%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 89%\u201392%.",
+     "search_seconds": 46.2
+    }
+   }
+  },
+  "gft-2step-goat": {
+   "programme": "Goat Funded Trader \u2014 2-Step GOAT",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.978,
+       0.9895
+      ],
+      "pass_phase1": [
+       0.989,
+       0.995
+      ],
+      "breach": [
+       0.2425,
+       0.1545
+      ],
+      "median_days_to_funded": 67.0,
+      "expected_payout_usd": 3778.947222085774,
+      "expected_value_usd": null,
+      "trades_per_month": 53.69,
+      "profit_factor": 1.59,
+      "win_rate_pct": 45.75,
+      "sharpe_annualized": 3.72,
+      "max_balance_dd_pct": 8.11,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.999,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.082,
+       0.021
+      ],
+      "median_days_to_funded": 42.0,
+      "expected_payout_usd": 4530.039887051168,
+      "expected_value_usd": null,
+      "trades_per_month": 49.91,
+      "profit_factor": 2.33,
+      "win_rate_pct": 48.48,
+      "sharpe_annualized": 5.12,
+      "max_balance_dd_pct": 3.1,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 98%\u201399%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 54.8
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.9885,
+       0.994
+      ],
+      "pass_phase1": [
+       0.996,
+       0.999
+      ],
+      "breach": [
+       0.1065,
+       0.061
+      ],
+      "median_days_to_funded": 77.0,
+      "expected_payout_usd": 3048.3148045973053,
+      "expected_value_usd": null,
+      "trades_per_month": 42.22,
+      "profit_factor": 1.71,
+      "win_rate_pct": 47.12,
+      "sharpe_annualized": 3.81,
+      "max_balance_dd_pct": 6.27,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0435,
+       0.017
+      ],
+      "median_days_to_funded": 47.0,
+      "expected_payout_usd": 3618.493216004162,
+      "expected_value_usd": null,
+      "trades_per_month": 36.51,
+      "profit_factor": 2.81,
+      "win_rate_pct": 48.27,
+      "sharpe_annualized": 5.19,
+      "max_balance_dd_pct": 2.41,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 99%\u201399%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 435.4
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "dmc-current-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.63,
+       0.89
+      ],
+      "pass_phase1": [
+       0.7855,
+       0.943
+      ],
+      "breach": [
+       0.9685,
+       0.6055
+      ],
+      "median_days_to_funded": 57.0,
+      "expected_payout_usd": 933.3115155498714,
+      "expected_value_usd": null,
+      "trades_per_month": 63.83,
+      "profit_factor": 1.42,
+      "win_rate_pct": 39.74,
+      "sharpe_annualized": 3.0,
+      "max_balance_dd_pct": 11.7,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9715,
+       0.9935
+      ],
+      "pass_phase1": [
+       0.982,
+       0.9975
+      ],
+      "breach": [
+       0.3125,
+       0.113
+      ],
+      "median_days_to_funded": 32.0,
+      "expected_payout_usd": 7272.557773861295,
+      "expected_value_usd": null,
+      "trades_per_month": 71.84,
+      "profit_factor": 2.17,
+      "win_rate_pct": 45.42,
+      "sharpe_annualized": 6.01,
+      "max_balance_dd_pct": 3.22,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 63%\u201389%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 97%\u201399%.",
+     "search_seconds": 38.2
+    }
+   }
+  },
+  "gft-2step-standard": {
+   "programme": "Goat Funded Trader \u2014 2-Step Standard",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.75
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.875,
+       0.932
+      ],
+      "pass_phase1": [
+       0.932,
+       0.959
+      ],
+      "breach": [
+       0.7835,
+       0.55
+      ],
+      "median_days_to_funded": 49.0,
+      "expected_payout_usd": 3589.4743155235155,
+      "expected_value_usd": null,
+      "trades_per_month": 52.87,
+      "profit_factor": 1.58,
+      "win_rate_pct": 45.71,
+      "sharpe_annualized": 3.66,
+      "max_balance_dd_pct": 11.16,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.994,
+       0.999
+      ],
+      "pass_phase1": [
+       0.999,
+       1.0
+      ],
+      "breach": [
+       0.418,
+       0.197
+      ],
+      "median_days_to_funded": 32.0,
+      "expected_payout_usd": 6645.7518244281055,
+      "expected_value_usd": null,
+      "trades_per_month": 49.91,
+      "profit_factor": 2.43,
+      "win_rate_pct": 49.49,
+      "sharpe_annualized": 5.4,
+      "max_balance_dd_pct": 3.7,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.75% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 88%\u201393%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 99%\u2013100%.",
+     "search_seconds": 39.0
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.985,
+       0.9955
+      ],
+      "pass_phase1": [
+       0.9925,
+       0.998
+      ],
+      "breach": [
+       0.1035,
+       0.053
+      ],
+      "median_days_to_funded": 77.0,
+      "expected_payout_usd": 3445.709124853606,
+      "expected_value_usd": null,
+      "trades_per_month": 43.93,
+      "profit_factor": 1.73,
+      "win_rate_pct": 47.64,
+      "sharpe_annualized": 3.84,
+      "max_balance_dd_pct": 5.14,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       1.0,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.037,
+       0.015
+      ],
+      "median_days_to_funded": 47.0,
+      "expected_payout_usd": 4096.364534576976,
+      "expected_value_usd": null,
+      "trades_per_month": 40.22,
+      "profit_factor": 2.69,
+      "win_rate_pct": 48.01,
+      "sharpe_annualized": 5.18,
+      "max_balance_dd_pct": 2.29,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 98%\u2013100%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 36.1
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "news-pulse-xau",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "eth-top-down-fvg-liquidity",
+       "risk_pct": 1.0
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 1.0
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.5105,
+       0.626
+      ],
+      "pass_phase1": [
+       0.6755,
+       0.759
+      ],
+      "breach": [
+       1.0,
+       0.98
+      ],
+      "median_days_to_funded": 36.0,
+      "expected_payout_usd": 839.1760625186483,
+      "expected_value_usd": null,
+      "trades_per_month": 41.02,
+      "profit_factor": 1.38,
+      "win_rate_pct": 38.36,
+      "sharpe_annualized": 2.32,
+      "max_balance_dd_pct": 28.96,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9075,
+       0.9415
+      ],
+      "pass_phase1": [
+       0.954,
+       0.9735
+      ],
+      "breach": [
+       0.6615,
+       0.492
+      ],
+      "median_days_to_funded": 26.0,
+      "expected_payout_usd": 8858.31039794314,
+      "expected_value_usd": null,
+      "trades_per_month": 45.19,
+      "profit_factor": 2.29,
+      "win_rate_pct": 44.96,
+      "sharpe_annualized": 5.75,
+      "max_balance_dd_pct": 4.11,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 1.0% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 51%\u201363%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 91%\u201394%.",
+     "search_seconds": 44.7
+    }
+   }
+  },
+  "the5ers-high-stakes": {
+   "programme": "The5ers \u2014 High Stakes (2-Step)",
+   "account_size": 10000,
+   "fee": null,
+   "fee_currency": "USD",
+   "objectives": {
+    "expected_value": {
+     "objective": "expected_value",
+     "objective_label": "Best expected value",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "orb-volume-profile",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-elliott-wave-1-2-3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.8765,
+       0.9175
+      ],
+      "pass_phase1": [
+       0.9245,
+       0.9475
+      ],
+      "breach": [
+       0.4255,
+       0.278
+      ],
+      "median_days_to_funded": 95.0,
+      "expected_payout_usd": 2664.277918354177,
+      "expected_value_usd": null,
+      "trades_per_month": 54.12,
+      "profit_factor": 1.39,
+      "win_rate_pct": 43.48,
+      "sharpe_annualized": 2.79,
+      "max_balance_dd_pct": 12.65,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.996,
+       0.9975
+      ],
+      "pass_phase1": [
+       0.9975,
+       0.999
+      ],
+      "breach": [
+       0.0345,
+       0.015
+      ],
+      "median_days_to_funded": 73.5,
+      "expected_payout_usd": 4710.963649246978,
+      "expected_value_usd": null,
+      "trades_per_month": 47.38,
+      "profit_factor": 1.75,
+      "win_rate_pct": 47.51,
+      "sharpe_annualized": 4.34,
+      "max_balance_dd_pct": 3.53,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 88%\u201392%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 31.8
+    },
+    "pass_rate": {
+     "objective": "pass_rate",
+     "objective_label": "Highest pass rate",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-selective-orb-v3",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "btc-poc-fibonacci",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "xau-rsi-vwap",
+       "risk_pct": 0.5
+      },
+      {
+       "slug": "us100-month-end-flow",
+       "risk_pct": 0.5
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": null,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": null,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.931,
+       0.956
+      ],
+      "pass_phase1": [
+       0.9605,
+       0.9765
+      ],
+      "breach": [
+       0.236,
+       0.1485
+      ],
+      "median_days_to_funded": 106.5,
+      "expected_payout_usd": 2622.0745186595195,
+      "expected_value_usd": null,
+      "trades_per_month": 49.62,
+      "profit_factor": 1.41,
+      "win_rate_pct": 48.02,
+      "sharpe_annualized": 2.71,
+      "max_balance_dd_pct": 10.4,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.9995,
+       1.0
+      ],
+      "pass_phase1": [
+       1.0,
+       1.0
+      ],
+      "breach": [
+       0.0065,
+       0.002
+      ],
+      "median_days_to_funded": 88.0,
+      "expected_payout_usd": 3860.9982875730943,
+      "expected_value_usd": null,
+      "trades_per_month": 46.2,
+      "profit_factor": 1.6,
+      "win_rate_pct": 48.72,
+      "sharpe_annualized": 3.67,
+      "max_balance_dd_pct": 3.4,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.5% risk, guard 'none'. Selected on 2021-09-25 to 2025-09-04 (pass all 93%\u201396%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 100%\u2013100%.",
+     "search_seconds": 32.7
+    },
+    "speed": {
+     "objective": "speed",
+     "objective_label": "Fastest pass",
+     "account_size": 10000,
+     "sizing": "pct_initial",
+     "eas": [
+      {
+       "slug": "usdjpy-london-open-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "nasdaq-5m-candle-momentum",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-h1-orb-13utc",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "lta-volume-profile",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-slow-trend",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-regime-switch",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-weakness",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "sell-nasdaq-15min",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "xau-trend-progression",
+       "risk_pct": 0.75
+      },
+      {
+       "slug": "us100-orb-new-york-m30",
+       "risk_pct": 0.75
+      }
+     ],
+     "guards": {
+      "daily_stop_pct": 2.0,
+      "profit_lock_pct": null,
+      "max_open_risk_pct": 3.0,
+      "max_entries_per_day": null
+     },
+     "development": {
+      "pass_all": [
+       0.499,
+       0.5905
+      ],
+      "pass_phase1": [
+       0.6515,
+       0.7255
+      ],
+      "breach": [
+       0.989,
+       0.9455
+      ],
+      "median_days_to_funded": 54.0,
+      "expected_payout_usd": 879.6534204298323,
+      "expected_value_usd": null,
+      "trades_per_month": 50.08,
+      "profit_factor": 1.26,
+      "win_rate_pct": 38.55,
+      "sharpe_annualized": 1.85,
+      "max_balance_dd_pct": 26.01,
+      "window": {
+       "from": "2021-09-25",
+       "to": "2025-09-04",
+       "days": 1441
+      }
+     },
+     "holdout": {
+      "pass_all": [
+       0.968,
+       0.99
+      ],
+      "pass_phase1": [
+       0.994,
+       0.999
+      ],
+      "breach": [
+       0.272,
+       0.0795
+      ],
+      "median_days_to_funded": 44.0,
+      "expected_payout_usd": 10062.829134147021,
+      "expected_value_usd": null,
+      "trades_per_month": 61.21,
+      "profit_factor": 1.7,
+      "win_rate_pct": 43.39,
+      "sharpe_annualized": 4.84,
+      "max_balance_dd_pct": 3.54,
+      "window": {
+       "from": "2025-09-05",
+       "to": "2026-08-31",
+       "days": 361
+      }
+     },
+     "summary": "10 EAs at 0.75% risk, guard 'daily-2-open-3'. Selected on 2021-09-25 to 2025-09-04 (pass all 50%\u201359%); combination-selection holdout 2025-09-05 to 2026-08-31: pass all 97%\u201399%.",
+     "search_seconds": 28.5
+    }
+   }
+  }
+ },
+ "generated_at": "2026-09-29T23:07:29+00:00",
+ "period": "5y",
+ "method": "Greedy forward selection at 0.5% risk, then risk (0.25, 0.375, 0.5, 0.75, 1.0) x guards ['none', 'daily-2', 'daily-2-open-3'] on the first 80% of the common 5y window; 2000 calendar-block bootstrap paths, 365-day horizon; frozen choice re-run on the untouched final 20%. Conservative (open risk at stop) \u2013 optimistic (closed trades) ranges. The holdout is untouched only for choosing the combination: the EAs' own settings were developed on this history, so neither window is a true out-of-sample test."
+}

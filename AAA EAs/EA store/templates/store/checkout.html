@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Checkout — Calyx{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', path='store.css') }}?v=20260930-store"><meta name="robots" content="noindex">{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="mx-auto max-w-7xl px-5 py-12 lg:px-8"><p class="eyebrow-simple">Checkout</p><h1 class="page-title">Pay with USDT</h1><p class="page-lead">Send USDT from any wallet or exchange. Your order gets a unique amount and stays open for {{ expiry_minutes }} minutes; payment is confirmed automatically from the public blockchain.</p></div></section>
+<section class="mx-auto grid max-w-7xl gap-8 px-5 py-12 lg:grid-cols-[1fr_380px] lg:px-8">
+  <div>
+    {% if demo_mode %}<p class="demo-ribbon mb-6">DEMO STORE — payment addresses on this server are fake. Do not send funds.</p>{% endif %}
+    {% if not networks %}
+    <div class="store-error" data-payments-not-configured><strong>Payments are not configured yet.</strong> The owner has not entered a USDT deposit address. Please try again later or ask on WhatsApp.</div>
+    {% else %}
+    {% if error %}<div class="store-error mb-6" role="alert">{{ error }}</div>{% endif %}
+    <form method="post" action="/checkout" class="store-panel grid gap-6" data-checkout-form>
+      <input type="hidden" name="csrf" value="{{ csrf_token }}">
+      <div>
+        <label class="store-label" for="email">Email</label>
+        <input class="store-input" id="email" name="email" type="email" required maxlength="254" autocomplete="email" value="{{ form.get('email', '') }}">
+        <p class="store-help">Stored with your licenses so support can find your order. No newsletter.</p>
+      </div>
+      <fieldset>
+        <legend class="store-label">Network</legend>
+        <div class="grid gap-3 sm:grid-cols-2">
+          {% for network in networks %}
+          <label class="network-option"><input type="radio" name="network" value="{{ network }}" required {% if form.get('network') == network or (not form.get('network') and loop.first) %}checked{% endif %}><span><strong>USDT · {{ network }}</strong><span class="mt-1 block text-xs text-muted">{{ network_labels[network] }}</span></span></label>
+          {% endfor %}
+        </div>
+        <p class="store-help">Send on exactly this network. Sending on another network (e.g. ERC20) can lose the funds.</p>
+      </fieldset>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div><label class="store-label" for="live_login">MT5 live account (optional)</label><input class="store-input" id="live_login" name="live_login" inputmode="numeric" pattern="[0-9]{3,12}" maxlength="12" value="{{ form.get('live_login', '') }}"></div>
+        <div><label class="store-label" for="demo_login">MT5 demo account (optional)</label><input class="store-input" id="demo_login" name="demo_login" inputmode="numeric" pattern="[0-9]{3,12}" maxlength="12" value="{{ form.get('demo_login', '') }}"></div>
+        <p class="store-help sm:col-span-2">Each license allows 1 live + 1 demo MT5 account. You can enter them now (applied to every bot in this order), later on your order page, or leave them empty: the first activation from each account type binds it.</p>
+      </div>
+      <label class="flex gap-3 text-sm text-[#b6c8c3]"><input type="checkbox" name="accept" value="yes" class="mt-1 accent-[#7ef7c7]" required {% if form.get('accept') == 'yes' %}checked{% endif %}><span>I understand the license terms (use on 1 live + 1 demo account per bot, no resale, online activation) and the <a href="/risk" class="text-mint" target="_blank">risk disclosure</a>: backtests are not a forecast and trading can lose all deposited capital.</span></label>
+      <button type="submit" class="button-primary justify-center">Create order and show payment details</button>
+    </form>
+    {% endif %}
+  </div>
+  <aside class="store-panel h-fit">
+    <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Order summary</p>
+    <div class="mt-3">
+      {% for line in quote.lines %}<div class="store-row text-sm"><span>{{ line.label }}</span>{% if line.free %}<span class="store-free">FREE</span>{% else %}<span class="font-mono">{{ format_usd(line.sale_cents) }}</span>{% endif %}</div>{% endfor %}
+    </div>
+    <div class="mt-3">
+      <div class="store-total"><span>Subtotal (−{{ store_discount_percent }}% prices)</span><strong>{{ format_usd(quote.sale_total_cents) }}</strong></div>
+      {% if quote.free_count %}<div class="store-total"><span>Buy 3, get 1 free</span><strong class="text-mint">−{{ format_usd(quote.pack_discount_cents) }}</strong></div>{% endif %}
+      {% if quote.package_applied %}<div class="store-total"><span>Complete portfolio price</span><strong class="text-mint">−{{ format_usd(quote.package_discount_cents) }}</strong></div>{% endif %}
+      <div class="store-total grand"><span>Total</span><strong>{{ format_usd(quote.total_cents) }}</strong></div>
+      <p class="store-help">+ 0.01–0.99 USDT unique identifier added on the next page.</p>
+    </div>
+    <p class="store-rule mt-4">{{ pack_rule }}</p>
+  </aside>
+</section>
+{% endblock %}

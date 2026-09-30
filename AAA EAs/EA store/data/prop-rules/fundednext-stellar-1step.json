@@ -1,0 +1,71 @@
+{
+  "platforms": [
+    "MT5"
+  ],
+  "fee_currency": "USD",
+  "fees": {},
+  "consistency": null,
+  "hold_time": null,
+  "straddle_allowed": true,
+  "handover_days": [
+    2
+  ],
+  "news": {
+    "challenge": "allowed",
+    "funded": "restricted"
+  },
+  "weekend_holding": {
+    "challenge": true,
+    "funded": true
+  },
+  "fee_note": "Fees change often and promotions are common. Enter the price you will pay.",
+  "id": "fundednext-stellar-1step",
+  "firm": "FundedNext",
+  "programme": "Stellar 1-Step",
+  "verification": {
+    "status": "secondary",
+    "checked": "2026-09-29",
+    "sources": [
+      "https://proptradingvibes.com/blog/fundednext-stellar-1-step"
+    ],
+    "notes": "10% target, 3% daily, 6% static max. Minimum trading days not verified (0 used)."
+  },
+  "ea_policy": {
+    "status": "allowed",
+    "notes": "As Stellar 2-Step."
+  },
+  "account_sizes": [
+    6000,
+    15000,
+    25000,
+    50000,
+    100000,
+    200000
+  ],
+  "phases": [
+    {
+      "name": "Phase 1",
+      "target_pct": 10,
+      "min_trading_days": 0,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    }
+  ],
+  "daily_loss": {
+    "pct": 3,
+    "basis": "initial_from_day_start_balance",
+    "reset": "server midnight"
+  },
+  "max_loss": {
+    "pct": 6,
+    "type": "static"
+  },
+  "payout": {
+    "split_pct": 80,
+    "first_after_days": 21,
+    "every_days": 14,
+    "min_usd": 20,
+    "fee_refund": true
+  }
+}

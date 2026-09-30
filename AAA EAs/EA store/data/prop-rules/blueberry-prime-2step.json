@@ -1,0 +1,82 @@
+{
+  "platforms": [
+    "MT5"
+  ],
+  "fee_currency": "USD",
+  "fees": {},
+  "consistency": null,
+  "hold_time": null,
+  "straddle_allowed": true,
+  "handover_days": [
+    2,
+    5
+  ],
+  "news": {
+    "challenge": "allowed",
+    "funded": "allowed"
+  },
+  "weekend_holding": {
+    "challenge": true,
+    "funded": true
+  },
+  "fee_note": "Fees change often and promotions are common. Enter the price you will pay.",
+  "id": "blueberry-prime-2step",
+  "firm": "Blueberry Funded",
+  "programme": "Prime Challenge (2-Step)",
+  "verification": {
+    "status": "secondary",
+    "checked": "2026-09-29",
+    "sources": [
+      "https://help.blueberryfunded.com/en/collections/15056548-prime-challenge-2-step",
+      "https://thetrustedprop.com/blogs/blueberry-funded-prime-challenge-rules-payouts-guide-2026"
+    ],
+    "notes": "8% / 6% targets, 4% daily of the initial balance, 10% static max, 5 trading days, 1:30 leverage, 80% split."
+  },
+  "ea_policy": {
+    "status": "allowed",
+    "notes": "EAs allowed; HFT/tick scalping and cross-account hedging banned."
+  },
+  "account_sizes": [
+    2500,
+    5000,
+    10000,
+    25000,
+    50000,
+    100000,
+    200000
+  ],
+  "phases": [
+    {
+      "name": "Phase 1",
+      "target_pct": 8,
+      "min_trading_days": 5,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    },
+    {
+      "name": "Phase 2",
+      "target_pct": 6,
+      "min_trading_days": 5,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    }
+  ],
+  "daily_loss": {
+    "pct": 4,
+    "basis": "initial_from_day_start_balance",
+    "reset": "server midnight"
+  },
+  "max_loss": {
+    "pct": 10,
+    "type": "static"
+  },
+  "payout": {
+    "split_pct": 80,
+    "first_after_days": 14,
+    "every_days": 14,
+    "min_usd": 20,
+    "fee_refund": true
+  }
+}

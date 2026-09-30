@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}How it works — Calyx{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', path='store.css') }}?v=20260930-store"><meta name="description" content="How to buy a Calyx EA with USDT, activate the license and install it in MetaTrader 5 with one click.">{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="mx-auto max-w-7xl px-5 py-14 lg:px-8"><p class="eyebrow-simple">How it works</p><h1 class="page-title">From catalogue to a running MT5 chart.</h1><p class="page-lead">Pick your bots, pay in USDT, download a ZIP per bot and let the installer set up MetaTrader 5. The license activates online for your accounts. Watch the four-minute walkthrough or read the steps below.</p></div></section>
+<section class="mx-auto max-w-5xl px-5 py-12 lg:px-8">
+  {% if video_available %}
+  <div class="video-frame"><video controls preload="metadata" playsinline poster="{{ url_for('static', path='video/calyx-how-it-works-poster.jpg') }}?v={{ video_version }}" data-how-video>
+    <source src="{{ url_for('static', path='video/calyx-how-it-works.mp4') }}?v={{ video_version }}" type="video/mp4">
+    <track kind="captions" srclang="en" label="English" src="{{ url_for('static', path='video/calyx-how-it-works.en.vtt') }}?v={{ video_version }}" default>
+    Your browser cannot play this video. <a href="{{ url_for('static', path='video/calyx-how-it-works.mp4') }}">Download the MP4</a>.
+  </video></div>
+  <p class="mt-3 text-center text-xs text-muted">English voice-over with captions. Payment details shown in the video are clearly marked DEMO values; MT5 screens are illustrative mock-ups without real account data.</p>
+  {% else %}
+  <div class="store-panel text-center text-muted">The walkthrough video is being produced. The written steps below cover the same flow.</div>
+  {% endif %}
+</section>
+<section class="mx-auto grid max-w-7xl gap-10 px-5 pb-20 lg:grid-cols-2 lg:px-8">
+  <div>
+    <p class="eyebrow-simple">Buy</p><h2 class="section-title">Four steps to your licenses.</h2>
+    <ol class="step-list mt-8">
+      <li><strong>Browse the catalogue.</strong> Every EA page shows its logic, limitations and cached MT5 evidence. Prices are {{ store_discount_percent }}% below the previous list prices.</li>
+      <li><strong>Build your cart.</strong> {{ pack_rule }}</li>
+      <li><strong>Checkout with USDT.</strong> Choose TRC20 or BEP20, then send the exact amount shown (base price plus a few unique cents) to the address or QR code. Wrong network or token means lost funds.</li>
+      <li><strong>Automatic confirmation.</strong> The store reads the public blockchain; after the required confirmations your order page shows one license key per bot and a download button for each.</li>
+    </ol>
+  </div>
+  <div>
+    <p class="eyebrow-simple">Install</p><h2 class="section-title">One BAT per bot.</h2>
+    <ol class="step-list mt-8">
+      <li><strong>Extract the ZIP</strong> (EX5, SET with your key pre-filled, INSTALL … .bat, README, LICENSE) and double-click the BAT.</li>
+      <li><strong>Choose your MT5 terminal</strong> from the list and type your broker's symbol name (for example XAUUSD, XAUUSD.r or GOLD).</li>
+      <li><strong>Allow WebRequest</strong> for the Calyx license server in Tools → Options → Expert Advisors (done for you when MT5 was closed).</li>
+      <li><strong>Load the profile</strong> File → Profiles → “Calyx – bot name”, enable “Allow Algo Trading” on the EA (F7 → Common) and the Algo Trading button — only when you are ready. The installer never switches trading on.</li>
+      <li><strong>Check the chart.</strong> The Experts tab shows “Calyx license: activated for account …”. The license is re-checked every 24 hours with a 72-hour offline grace.</li>
+    </ol>
+  </div>
+</section>
+<section class="border-t border-white/10"><div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-5 py-14 sm:flex-row sm:items-center lg:px-8"><div><h2 class="text-2xl font-bold">Ready to choose?</h2><p class="mt-2 text-sm text-muted">Historical tests are evidence, not a forecast. Start on the demo account.</p></div><div class="flex flex-wrap gap-3"><a href="/eas" class="button-primary">Browse the EAs</a><a href="/pricing" class="button-secondary">Pricing</a></div></div></section>
+{% endblock %}

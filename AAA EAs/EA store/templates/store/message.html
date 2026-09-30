@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — Calyx{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', path='store.css') }}?v=20260930-store"><meta name="robots" content="noindex">{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-3xl px-5 py-24 text-center lg:px-8"><p class="eyebrow-simple justify-center">Calyx store</p><h1 class="mt-4 text-4xl font-extrabold tracking-tight">{{ title }}</h1><p class="mt-5 text-muted">{{ message }}</p><div class="mt-8 flex justify-center gap-3"><a href="/eas" class="button-secondary">Browse the EAs</a><a href="https://wa.me/{{ whatsapp_number }}" target="_blank" rel="noopener" class="button-primary">Contact support</a></div></section>
+{% endblock %}

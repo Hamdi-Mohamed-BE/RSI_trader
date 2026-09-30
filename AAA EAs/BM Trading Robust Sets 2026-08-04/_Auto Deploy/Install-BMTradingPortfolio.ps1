@@ -283,6 +283,15 @@ function Get-PortfolioItems {
             Period = 30; Expert = 'Calyx Month End Flow EA.ex5'
             ExpertSource = 'Month End Institutional Flow Research 2026-09-06\EA\Calyx Month End Flow EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\19 US100 Month End Flow M30 - FIRST3 NY - LOCKED 2P5R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+        },
+        [pscustomobject]@{
+            Label = '3 Way Gold'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
+            Period = 15; Expert = '3 Way Gold EA.ex5'
+            ExpertSource = '3 Way Gold EA\3 Way Gold EA.ex5'
+            SetSource = 'Selected Portfolio Settings 2026-09-01\25 3 Way Gold - BEST OPTIMISED - 1PCT PER MODULE.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
+            # Added 2026-09-30 (user request): optimised BEST version of the QuantLab-style gold trio. The BAT's risk
+            # (percent or fixed USD, adaptive or not) applies to EACH of its three modules. Research evidence only:
+            # the optimised version lost on the untouched 2019-2021 holdout (QuantLab Gold Trio Pipeline 2026-09-30).
         }
     )
 

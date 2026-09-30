@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% from "_macros.html" import stat %}
+{% block title %}{{ wallet.user_name or wallet.address }} · {{ app_name }}{% endblock %}
+{% block content %}
+{% set s = wallet.stats or {} %}
+<a href="/polymarket/wallets" class="nav-link">← Wallets</a>
+<div class="mt-4 flex flex-wrap items-end justify-between gap-4">
+  <div>
+    <span class="eyebrow">Wallet</span>
+    <h1 class="mt-3 break-all font-mono text-xl">{{ wallet.address }}</h1>
+    <p class="text-sm text-muted">{{ wallet.user_name }}{% if wallet.leaderboard_rank %} · rank #{{ wallet.leaderboard_rank }} ({{ wallet.leaderboard_period }}){% endif %}</p>
+  </div>
+  <a class="button-secondary" href="https://polymarket.com/profile/{{ wallet.address }}" target="_blank" rel="noopener noreferrer">Open on Polymarket</a>
+</div>
+<div class="stats-strip mt-6">
+  {{ stat("Realised P/L (closed)", s.realized_pnl|money if s.realized_pnl else "—") }}
+  {{ stat("Closed positions", s.closed_positions if s else "—") }}
+  {{ stat("Win rate / low 95%", (s.win_rate|pct(1)) ~ " / " ~ (s.win_rate_lower95|pct(1)) if s.win_rate is not none else "—") }}
+  {{ stat("Profit factor", s.profit_factor|num if s.profit_factor is not none else "—") }}
+  {{ stat("Trades (sample)", s.trades if s else "—") }}
+  {{ stat("Trades / day", s.trades_per_day|num if s.trades_per_day is not none else "—") }}
+  {{ stat("Median trade (USDC)", s.median_trade_usdc|money if s.median_trade_usdc else "—") }}
+  {{ stat("Style", s.style or "—") }}
+</div>
+<h2 class="section-title mt-10">Recent trades</h2>
+<div class="card mt-4 overflow-x-auto p-0">
+  <table class="data-table">
+    <thead><tr><th>Time</th><th>Side</th><th>Outcome</th><th>Market</th><th class="num">Size</th><th class="num">Price</th><th class="num">USDC</th></tr></thead>
+    <tbody>
+    {% for t in trades %}
+      <tr><td class="font-mono text-xs">{{ t.at|dt }}</td>
+        <td><span class="badge {{ 'badge-good' if t.side == 'BUY' else 'badge-bad' }}">{{ t.side }}</span></td>
+        <td>{{ t.outcome }}</td><td class="max-w-md">{{ t.title }}</td>
+        <td class="num">{{ t.size|money }}</td><td class="num">{{ t.price|money(3) }}</td><td class="num">{{ (t.size * t.price)|money }}</td></tr>
+    {% else %}
+      <tr><td colspan="7" class="text-muted">No trades stored yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

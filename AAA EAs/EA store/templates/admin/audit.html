@@ -1,0 +1,8 @@
+{% extends "admin/base.html" %}
+{% block title %}Audit log{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-extrabold">Audit log</h1>
+<div class="mt-4 overflow-x-auto store-panel"><table class="admin-table"><thead><tr><th>Time (UTC)</th><th>Actor</th><th>Action</th><th>Target</th><th>Detail</th></tr></thead><tbody>
+{% for r in rows %}<tr><td class="mono">{{ r.at[:19] }}</td><td>{{ r.actor }}</td><td class="mono">{{ r.action }}</td><td class="mono">{{ r.target or '' }}</td><td class="break-all">{{ r.detail or '' }}</td></tr>{% else %}<tr><td colspan="5" class="text-muted">Empty.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

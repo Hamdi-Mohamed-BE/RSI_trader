@@ -1,0 +1,76 @@
+{
+  "platforms": [
+    "MT4",
+    "MT5",
+    "cTrader",
+    "MatchTrader",
+    "TradeLocker"
+  ],
+  "fee_currency": "USD",
+  "fees": {},
+  "consistency": null,
+  "hold_time": null,
+  "straddle_allowed": false,
+  "handover_days": [
+    2
+  ],
+  "news": {
+    "challenge": "allowed",
+    "funded": "allowed"
+  },
+  "weekend_holding": {
+    "challenge": true,
+    "funded": true
+  },
+  "fee_note": "Fees change often and promotions are common. Enter the price you will pay.",
+  "id": "e8-one-4pct",
+  "firm": "E8 Markets",
+  "programme": "E8 One (4% drawdown option)",
+  "verification": {
+    "status": "secondary",
+    "checked": "2026-09-29",
+    "sources": [
+      "https://tradetanto.com/learn/e8-markets-rules",
+      "https://e8markets.com/e8-one"
+    ],
+    "notes": "Customisable; base option: 6% target (1.5 × drawdown), 3% daily, 4% dynamic (closed-balance trailing) max, no minimum days, no deadline. Straddling is banned."
+  },
+  "ea_policy": {
+    "status": "allowed",
+    "notes": "Any EA incl. martingale; one strategy per user; ≤50% of trades under 1 minute; 2,000 requests/day."
+  },
+  "account_sizes": [
+    5000,
+    10000,
+    25000,
+    50000,
+    100000,
+    200000
+  ],
+  "phases": [
+    {
+      "name": "Evaluation",
+      "target_pct": 6,
+      "min_trading_days": 0,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    }
+  ],
+  "daily_loss": {
+    "pct": 3,
+    "basis": "initial_from_day_start_balance",
+    "reset": "server midnight"
+  },
+  "max_loss": {
+    "pct": 4,
+    "type": "eod_trailing"
+  },
+  "payout": {
+    "split_pct": 80,
+    "first_after_days": 14,
+    "every_days": 14,
+    "min_usd": 20,
+    "fee_refund": true
+  }
+}

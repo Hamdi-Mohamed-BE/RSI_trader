@@ -1,5 +1,5 @@
 {
-  "version": "FTMO13-20260928-DI-ATR-ORB-COMMENTS",
+  "version": "FTMO14-20260930-3WAYGOLD-MARKET",
   "news_enabled": false,
   "risk_usd": 50,
   "comment_release": "ORB-COMMENTS-20260928",
@@ -733,6 +733,37 @@
       },
       "expert_sha": "12ad430f6064db64830f994ffd21c5ab7a0fa5575e2f8c52e2f1365582ea630b",
       "settings_sha": "a229b6b22b62eafc1ba2e2c9157626f3d36009ee8cfb01ffbd97a06794cf3187"
+    },
+    {
+      "slug": "3-way-gold",
+      "label": "3 Way Gold",
+      "symbol": "XAUUSD",
+      "timeframe": "M15",
+      "expert": "FTMO13-3-way-gold.ex5",
+      "settings": "FTMO13-3-way-gold.set",
+      "inputs": {
+        "InpEnableTrading": "true",
+        "InpEnableMomentum": "true",
+        "InpEnableBreakout": "true",
+        "InpEnableTurnOfMonth": "true",
+        "InpMarketEntries": "true",
+        "InpRiskPercent": "0.5",
+        "InpRiskMode": "0",
+        "InpFixedRiskMoney": "50",
+        "InpAdaptivePortfolioControls": "false",
+        "InpMagic": "930930100",
+        "InpMaximumDeviationPoints": "1000",
+        "InpAutoServerUtcOffsetLive": "true",
+        "InpServerUtcOffsetHours": "0",
+        "InpTradeFrom": "0",
+        "InpResearchLedger": "false",
+        "FTMOExpectedLogin": "0",
+        "FTMOExpectedServer": "",
+        "FTMOExpectedSymbol": "",
+        "FTMOPhase": "1"
+      },
+      "expert_sha": "664f898ed7f4e2b396f67a1d9b9d72d274ee326720b2b28cd74d78d48367fe5a",
+      "settings_sha": "3c108ab62a3234dd304361ed8f18c80ed9f2d19dd6bc210b31049d5c74b60f8d"
     }
   ],
   "source_hashes": {
@@ -766,11 +797,15 @@
     "AAA Final EAs\\AAA Final DmC EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
     "Nasdaq 5M DI ATR Deployment 2026-09-28\\EA\\Nasdaq 5M DI Wide ATR EA.mq5": "ac9b7eddfc3135ecd87b746888087fa0d41003aa25b400cccade31e6b5136ffa",
     "Nasdaq 5M DI ATR Deployment 2026-09-28\\EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
-    "Nasdaq 5M DI ATR Deployment 2026-09-28\\EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78"
+    "Nasdaq 5M DI ATR Deployment 2026-09-28\\EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+    "3 Way Gold EA\\3 Way Gold EA.mq5": "4050870aee6cc7496573d472bd372c70068ae7b332f3fd131432cca7095e15da"
   },
   "guard_sha": "58d847f2f7175d4221a63d5684b8b76ba0a55406a8633ae77c7a7c7a536040bb",
   "files": {
     "CalyxFTMOGuard.mqh": "58d847f2f7175d4221a63d5684b8b76ba0a55406a8633ae77c7a7c7a536040bb",
+    "FTMO13-3-way-gold.ex5": "664f898ed7f4e2b396f67a1d9b9d72d274ee326720b2b28cd74d78d48367fe5a",
+    "FTMO13-3-way-gold.mq5": "9f5588f11efda1752edc273e3554cc84d75776acb6f779bb607a3f0dab3068fd",
+    "FTMO13-3-way-gold.set": "3c108ab62a3234dd304361ed8f18c80ed9f2d19dd6bc210b31049d5c74b60f8d",
     "FTMO13-dmc-current-xau.ex5": "057d274d081ce8975b7e6193058ccde8b136a70aad16c4de38d2c378f3b66391",
     "FTMO13-dmc-current-xau.mq5": "01b45c63c9897dbaa7ed6936d168f3a321e563f4d20c2d4c76d227626f8f085b",
     "FTMO13-dmc-current-xau.set": "0c31c57eff246eecd05a8a841a3296b428bb0dad77b17f2bfa024d7735840f46",
@@ -821,6 +856,7 @@
     "src_266bb768805f.mqh": "73357749c65d1c4d2a475bd52e674fc67b510e51d35a70b29eef719cbcbf6575",
     "src_2779f41b01b7.mqh": "fd117d60bf7e56255504305446dc7015eb6e84544cb5991607566836dcdd385a",
     "src_2d0ba348fccf.mqh": "fe3eaeeef9175956a2984f1c275ee533dea643d7598809d587989f64fc254b4d",
+    "src_352f595c0b2f.mqh": "e19bbe2026667f5a48e0a61c3fede9d1b8c493e265bdcf663f954976942b557d",
     "src_367712e6111c.mqh": "0414dec579b7d165186b866f5f359f98bb5736fce26f67d8a3454fbbfb6dd495",
     "src_36a79a81148c.mqh": "0414dec579b7d165186b866f5f359f98bb5736fce26f67d8a3454fbbfb6dd495",
     "src_3ca2888f009b.mqh": "9356779bda8b101f502416efcad92a14877e8816d024ae414cb1c0577827ced9",

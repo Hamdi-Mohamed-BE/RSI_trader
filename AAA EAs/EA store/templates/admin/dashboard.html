@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-extrabold">Dashboard</h1>
+{% for warning in warnings %}<p class="store-error mt-3">{{ warning }}</p>{% endfor %}
+<div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+  <div class="admin-kpi"><span>Paid orders</span><strong>{{ counts.get('paid', 0) }}</strong></div>
+  <div class="admin-kpi"><span>Pending orders</span><strong>{{ counts.get('pending', 0) }}</strong></div>
+  <div class="admin-kpi"><span>Revenue (USDT)</span><strong>{{ format_usd(revenue) }}</strong></div>
+  <div class="admin-kpi"><span>Licenses (revoked)</span><strong>{{ licenses_total }} ({{ licenses_revoked }})</strong></div>
+  <div class="admin-kpi"><span>Checks 24h (allowed)</span><strong>{{ checks_24h[0] }} ({{ checks_24h[1] }})</strong></div>
+  <div class="admin-kpi"><span>Unmatched transfers</span><strong>{{ unmatched }}</strong></div>
+  <div class="admin-kpi"><span>Payment watcher</span><strong class="text-base">{{ 'running' if watcher.running else 'stopped' }}</strong><p class="mt-1 text-[11px] text-muted">last run {{ watcher.last_run or '—' }}{% if watcher.last_error %}<br><span class="text-red-300">{{ watcher.last_error }}</span>{% endif %}</p></div>
+  <div class="admin-kpi"><span>Store builds</span><strong class="text-base">{{ manifest.get('builds', {})|length }} builds · {{ manifest.get('products', {})|length }} products</strong><p class="mt-1 text-[11px] text-muted">generated {{ manifest.get('generated_at', '—') }}</p></div>
+</div>
+<div class="mt-6 store-panel">
+  <div class="flex items-center justify-between"><h2 class="font-bold">Recent orders</h2><a href="/admin/orders" class="text-sm text-mint">All orders →</a></div>
+  <div class="mt-3 overflow-x-auto"><table class="admin-table"><thead><tr><th>Order</th><th>Status</th><th>Amount</th><th>Network</th><th>Email</th><th>Created</th></tr></thead><tbody>
+  {% for o in recent_orders %}<tr><td><a href="/admin/orders/{{ o.id }}" class="mono">{{ o.public_id }}</a></td><td><span class="status-pill status-{{ o.status }}">{{ o.status }}</span></td><td class="mono">{{ '%d.%02d'|format(o.amount_cents // 100, o.amount_cents % 100) }}</td><td>{{ o.network }}</td><td>{{ o.email }}</td><td class="mono">{{ o.created_at[:16] }}</td></tr>{% else %}<tr><td colspan="6" class="text-muted">No orders yet.</td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+<div class="mt-6 store-panel text-sm text-muted"><p><strong class="text-white">Deposit addresses:</strong> TRC20 <span class="mono">{{ values.trc20_address or 'not set' }}</span> · BEP20 <span class="mono">{{ values.bep20_address or 'not set' }}</span> — <a href="/admin/settings" class="text-mint">edit</a></p></div>
+{% endblock %}

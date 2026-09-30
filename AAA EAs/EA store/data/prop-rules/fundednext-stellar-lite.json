@@ -1,0 +1,80 @@
+{
+  "platforms": [
+    "MT5"
+  ],
+  "fee_currency": "USD",
+  "fees": {},
+  "consistency": null,
+  "hold_time": null,
+  "straddle_allowed": true,
+  "handover_days": [
+    2,
+    5
+  ],
+  "news": {
+    "challenge": "allowed",
+    "funded": "restricted"
+  },
+  "weekend_holding": {
+    "challenge": true,
+    "funded": true
+  },
+  "fee_note": "Fees change often and promotions are common. Enter the price you will pay.",
+  "id": "fundednext-stellar-lite",
+  "firm": "FundedNext",
+  "programme": "Stellar Lite",
+  "verification": {
+    "status": "secondary",
+    "checked": "2026-09-29",
+    "sources": [
+      "https://thetrustedprop.com/blogs/fundednext-stellar-lite-account-explained"
+    ],
+    "notes": "8% / 4% targets, 4% daily, 8% static max. Minimum trading days not verified (0 used)."
+  },
+  "ea_policy": {
+    "status": "allowed",
+    "notes": "As Stellar 2-Step."
+  },
+  "account_sizes": [
+    5000,
+    10000,
+    25000,
+    50000,
+    100000,
+    200000
+  ],
+  "phases": [
+    {
+      "name": "Phase 1",
+      "target_pct": 8,
+      "min_trading_days": 0,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    },
+    {
+      "name": "Phase 2",
+      "target_pct": 4,
+      "min_trading_days": 0,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    }
+  ],
+  "daily_loss": {
+    "pct": 4,
+    "basis": "initial_from_day_start_balance",
+    "reset": "server midnight"
+  },
+  "max_loss": {
+    "pct": 8,
+    "type": "static"
+  },
+  "payout": {
+    "split_pct": 80,
+    "first_after_days": 21,
+    "every_days": 14,
+    "min_usd": 20,
+    "fee_refund": true
+  }
+}

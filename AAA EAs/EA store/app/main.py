@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.concurrency import run_in_threadpool
+from pydantic import ValidationError as PydanticValidationError
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -46,14 +48,22 @@ from .mt5_live import live_mt5
 from .mt5_evidence_jobs import _native_trades, mt5_evidence_jobs
 from .trade_metrics import enrich_trades, outcome_streaks
 from .news_evidence import load_news_summary
+from .risk_metrics import SHARPE_DEFINITION, SHARPE_LABEL, portfolio_sharpe, product_sharpe
+from .risk_visuals import risk_series, sharpe_sparkline_svg, streak_bars_svg
+from .prop_sim.service import SimRequest, catalog_payload, run_simulation
+from .prop_sim.ratelimit import SlidingWindowLimiter
+from .store import integration as store_integration
+from .store.pricing import package_sale_cents, sale_cents
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     live_mt5.start()
+    store_integration.startup()
     try:
         yield
     finally:
+        store_integration.shutdown()
         live_mt5.stop()
 
 
@@ -80,6 +90,22 @@ templates.env.filters["money"] = money
 templates.env.filters["percent"] = percent
 
 
+def card_risk_visuals(product: Product, period: str = DEFAULT_PERIOD) -> dict[str, str]:
+    """Inline Sharpe-trend sparkline and streak bars for a catalogue card (cached per trade-file mtime)."""
+    try:
+        mode = "standard" if product.label.startswith("News Pulse ") else _recommended_mode(product)
+        summary = load_product_summary(product.slug, mode, period)
+        data = risk_series(product.slug, mode, period, (summary or {}).get("stats"))
+    except (ValueError, OSError):
+        data = None
+    if not data:
+        return {"sparkline": "", "streaks": ""}
+    return {"sparkline": sharpe_sparkline_svg(data["rolling_sharpe"]), "streaks": streak_bars_svg(data["streaks"])}
+
+
+templates.env.globals["card_risk_visuals"] = card_risk_visuals
+
+
 def _recommended_mode(product: Product) -> str:
     if product.recommended_dynamic_mode and product.dynamic_mode_supported:
         return "dynamic"
@@ -95,8 +121,10 @@ def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> P
     if not cached or not cached.get("stats") or base_evidence is None:
         return product
     stats = cached["stats"]
+    sharpe_mode = "standard" if product.label.startswith("News Pulse ") else mode
     evidence = base_evidence.model_copy(
         update={
+            "sharpe_annualized": product_sharpe(product.slug, sharpe_mode, period, stats),
             "label": cached.get("evidence_label") or f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
             "period": str(cached["period"]),
             "return_pct": float(stats.get("return_pct") or 0),
@@ -228,6 +256,8 @@ def _base_context(request: Request, active: str) -> dict[str, Any]:
         "whatsapp_number": WHATSAPP_NUMBER,
         "whatsapp_display": "+216 93 830 957",
         "current_year": datetime.now().year,
+        "sharpe_label": SHARPE_LABEL,
+        "sharpe_definition": SHARPE_DEFINITION,
         "installer_updated": datetime.fromtimestamp(INSTALLER_PATH.stat().st_mtime).strftime("%d %b %Y"),
     }
 
@@ -247,7 +277,7 @@ def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> di
             "win_rate_pct": float(combined["win_rate_pct"] or 0),
             "trades": int(combined["trades"]),
             "realized_balance_dd_pct": float(combined["max_drawdown_pct"]),
-            "sharpe_ratio": float(combined.get("sharpe_ratio") or 0),
+            "sharpe_ratio": portfolio_sharpe(mode, period, combined),  # site-wide annualised daily Sharpe
             "recovery_factor": float(combined.get("recovery_factor") or 0),
             "commission": float(combined.get("commission") or 0),
             "swap": float(combined.get("swap") or 0),
@@ -335,7 +365,9 @@ def _cached_portfolio_rows() -> list[dict[str, Any]]:
     for option in PERIOD_OPTIONS:
         payload = load_portfolio_summary("standard", option["value"])
         if payload and payload.get("stats"):
-            rows.append({"key": option["value"], "label": option["label"], **payload["stats"]})
+            stats = payload["stats"]
+            rows.append({"key": option["value"], "label": option["label"], **stats,
+                         "sharpe_ratio": portfolio_sharpe("standard", option["value"], stats)})
     return rows
 
 
@@ -355,7 +387,8 @@ async def storefront(request: Request) -> HTMLResponse:
         "validated_count": validated,
         "asset_count": len({product.asset_group for product in products}),
         "portfolio": _portfolio_audit(),
-        "package_url": package_buy_url("Complete Available EA Portfolio", 1990),
+        "package_url": "/pricing",
+        "package_price": package_sale_cents() / 100,
     }
     return templates.TemplateResponse(request=request, name="home.html", context=context)
 
@@ -400,7 +433,7 @@ async def catalogue(
         "win-desc": (lambda product: product.evidence.win_rate_pct if product.evidence else float("-inf"), True),
         "dd-asc": (lambda product: product.evidence.drawdown_pct if product.evidence else float("inf"), False),
         "return-desc": (lambda product: product.evidence.return_pct if product.evidence else float("-inf"), True),
-        "sharpe-desc": (lambda product: product.evidence.sharpe_ratio if product.evidence and product.evidence.sharpe_ratio is not None else float("-inf"), True),
+        "sharpe-desc": (lambda product: product.evidence.sharpe_annualized if product.evidence and product.evidence.sharpe_annualized is not None else float("-inf"), True),
         "recovery-desc": (lambda product: product.evidence.recovery_factor if product.evidence and product.evidence.recovery_factor is not None else float("-inf"), True),
         "trades-desc": (lambda product: product.evidence.trades if product.evidence else -1, True),
         "name-asc": (lambda product: product.label.lower(), False),
@@ -457,6 +490,7 @@ async def product_detail(
         stats = cached["stats"]
         display_evidence = display_evidence.model_copy(
             update={
+                "sharpe_annualized": product_sharpe(product.slug, "standard" if is_news_pulse else mode, period, stats),
                 "label": cached.get("evidence_label") or f"Precomputed {next(option['label'] for option in PERIOD_OPTIONS if option['value'] == period)} — active recommended configuration",
                 "period": str(cached["period"]),
                 "return_pct": float(stats.get("return_pct") or 0),
@@ -509,9 +543,9 @@ async def portfolio(
         "period_options": PERIOD_OPTIONS,
         "portfolio_period_rows": _cached_portfolio_rows(),
         "consistency_audit": consistency_audit,
-        "full_price": sum(product.price for product in products),
-        "package_price": 1990,
-        "package_url": package_buy_url("Complete Available EA Portfolio", 1990),
+        "full_price": sum(sale_cents(product) for product in products) / 100,
+        "package_price": package_sale_cents() / 100,
+        "package_url": "/pricing",
     }
     return templates.TemplateResponse(request=request, name="portfolio.html", context=context)
 
@@ -519,36 +553,40 @@ async def portfolio(
 @app.get("/pricing", response_class=HTMLResponse)
 async def pricing(request: Request) -> HTMLResponse:
     products = get_sellable_catalog()
+    cheapest = min((product for product in products), key=lambda product: product.price, default=None)
     packages = [
         {
             "name": "Choose one EA",
-            "price": "From $149",
-            "description": "One compiled EA, its active BAT preset and installation guidance.",
-            "features": ["1 live + 1 demo MT5 account", "Compiled EX5 and SET", "12 months of updates", "WhatsApp setup support"],
-            "url": package_buy_url("Individual EA License", 149),
+            "price": f"From {money(sale_cents(cheapest) / 100)}" if cheapest else "—",
+            "was": f"From {money(cheapest.price)}" if cheapest else "",
+            "description": "One compiled EA with its active SET, online license activation and a one-click install BAT.",
+            "features": ["1 live + 1 demo MT5 account", "Compiled EX5 and SET", "12 months of updates", "Pay in USDT (TRC20 or BEP20)"],
+            "action": {"type": "link", "url": "/eas", "label": "Browse the EAs"},
             "featured": False,
         },
         {
-            "name": "Choose 3 + bonus EA",
-            "price": "$499",
-            "description": "Choose any three available EAs and receive one additional available EA selected by us at no extra cost.",
-            "features": ["4 EA licenses in total", "You choose the first 3", "One random available bonus EA", "WhatsApp compatibility check"],
-            "url": package_buy_url("Choose 3 plus Random Bonus EA", 499),
+            "name": "Buy 3, get 1 free",
+            "price": "4 for 3",
+            "was": "",
+            "description": "For every 4 bots in your cart the cheapest one is free — applied automatically at checkout.",
+            "features": ["You choose all 4 bots", "Cheapest of every 4 is free", "8 bots = 2 free, 12 bots = 3 free", "Shown on the cart and the order"],
+            "action": {"type": "link", "url": "/cart", "label": "Open the cart"},
             "featured": True,
         },
         {
             "name": "Complete Available Portfolio",
-            "price": "$1,990",
+            "price": money(package_sale_cents() / 100),
+            "was": "$1,990",
             "description": f"All {len(products)} currently available EAs. Development builds are excluded.",
-            "features": ["All available EAs and presets", "Installer and symbol mapping", "1 live + 1 demo MT5 account", "Priority WhatsApp setup support"],
-            "url": package_buy_url("Complete Available EA Portfolio", 1990),
+            "features": ["All available EAs and presets", "One install BAT per EA", "1 live + 1 demo MT5 account each", "Applied when every EA is in the cart"],
+            "action": {"type": "add-all", "url": "/cart/add-all", "label": "Add all EAs to the cart"},
             "featured": False,
         },
     ]
     context = _base_context(request, "pricing") | {
         "packages": packages,
-        "individual_total": sum(product.price for product in products),
-        "package_price": 1990,
+        "individual_total": sum(sale_cents(product) for product in products) / 100,
+        "package_price": package_sale_cents() / 100,
     }
     return templates.TemplateResponse(request=request, name="pricing.html", context=context)
 
@@ -608,23 +646,43 @@ async def evidence_series(
     payload = load_product_cache(product.slug, selected_mode, period)
     if payload is None:
         raise HTTPException(status_code=503, detail=f"The {period} {selected_mode} evidence cache is not ready yet.")
+    payload["stats"] = {**payload["stats"], "sharpe_annualized": product_sharpe(product.slug, selected_mode, period, payload["stats"])}
     if mode == "compare" and product.safe_filter_supported:
         safe = load_product_cache(product.slug, "safe", period)
         if safe is not None:
             payload["datasets"] = [
                 {"label": "Standard", "color": "#7ef7c7", "series": payload["series"], "stats": payload["stats"], "trades": payload["trades"]},
-                {"label": product.safe_mode_label, "color": "#68a7ff", "series": safe["series"], "stats": safe["stats"], "trades": safe["trades"]},
+                {"label": product.safe_mode_label, "color": "#68a7ff", "series": safe["series"], "stats": {**safe["stats"], "sharpe_annualized": product_sharpe(product.slug, "safe", period, safe["stats"])}, "trades": safe["trades"]},
             ]
             if product.dynamic_mode_supported:
                 dynamic = load_product_cache(product.slug, "dynamic", period)
                 if dynamic is not None:
                     payload["datasets"].append(
-                        {"label": product.dynamic_mode_label, "color": "#f2bd5b", "series": dynamic["series"], "stats": dynamic["stats"], "trades": dynamic["trades"]}
+                        {"label": product.dynamic_mode_label, "color": "#f2bd5b", "series": dynamic["series"], "stats": {**dynamic["stats"], "sharpe_annualized": product_sharpe(product.slug, "dynamic", period, dynamic["stats"])}, "trades": dynamic["trades"]}
                     )
     return JSONResponse(
         payload,
         headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"},
     )
+
+
+@app.get("/api/evidence/{slug}/risk-series", name="evidence_risk_series")
+async def evidence_risk_series(
+    slug: str,
+    mode: str = Query(default="standard", pattern=r"^(standard|safe|dynamic)$"),
+    period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
+) -> JSONResponse:
+    product = get_product(slug)
+    if product is None or product.evidence is None:
+        raise HTTPException(status_code=404, detail="EA not found")
+    if product.label.startswith("News Pulse "):
+        mode = "standard"
+    summary = load_product_summary(product.slug, mode, period)
+    data = risk_series(product.slug, mode, period, (summary or {}).get("stats"))
+    if data is None:
+        raise HTTPException(status_code=503, detail=f"The {period} {mode} evidence cache is not ready yet.")
+    data["sharpe_annualized"] = product_sharpe(product.slug, mode, period, (summary or {}).get("stats"))
+    return JSONResponse(data, headers={"Cache-Control": "public, max-age=300"})
 
 
 @app.post("/api/evidence/{slug}/refresh", name="refresh_evidence")
@@ -749,6 +807,7 @@ async def api_portfolio_equity_series(
     # Keep the previous profile in the private cache for audits and broker
     # comparisons, but publish only the approved Recommended Adaptive view.
     payload.pop("datasets", None)
+    payload["stats"] = {**payload["stats"], "sharpe_ratio": portfolio_sharpe(mode, period, payload["stats"])}
     for row in payload.get("included_eas", []):
         row.pop("current", None)
     return JSONResponse(
@@ -782,6 +841,41 @@ async def api_evidence_cache_manifest() -> JSONResponse:
     if manifest is None:
         raise HTTPException(status_code=503, detail="Evidence cache generation has not completed.")
     return JSONResponse(manifest, headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"})
+
+
+_prop_limiter = SlidingWindowLimiter(limit=20, window_seconds=60)
+
+
+@app.get("/prop-simulator", response_class=HTMLResponse)
+async def prop_simulator(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request=request, name="prop_simulator.html",
+                                      context=_base_context(request, "prop"))
+
+
+@app.get("/api/prop-sim/catalog", name="prop_sim_catalog")
+async def prop_sim_catalog() -> JSONResponse:
+    payload = await run_in_threadpool(catalog_payload)
+    return JSONResponse(payload, headers={"Cache-Control": "public, max-age=300"})
+
+
+@app.post("/api/prop-sim/run", name="prop_sim_run")
+async def prop_sim_run(request: Request) -> JSONResponse:
+    client = request.client.host if request.client else "unknown"
+    if not _prop_limiter.allow(client):
+        return JSONResponse({"detail": "Too many simulations. Please wait a minute and try again."}, status_code=429)
+    raw = await request.body()
+    if len(raw) > 20_000:
+        return JSONResponse({"detail": "Request too large."}, status_code=413)
+    try:
+        req = SimRequest.model_validate_json(raw)
+    except PydanticValidationError as exc:
+        errors = [f"{'.'.join(str(part) for part in err['loc'])}: {err['msg']}" for err in exc.errors()[:6]]
+        return JSONResponse({"detail": "Invalid simulation settings.", "errors": errors}, status_code=422)
+    try:
+        result = await run_in_threadpool(run_simulation, req)
+    except ValueError as exc:
+        return JSONResponse({"detail": str(exc)}, status_code=422)
+    return JSONResponse(result, headers={"Cache-Control": "no-store"})
 
 
 @app.get("/api/health")
@@ -821,3 +915,7 @@ async def not_found(request: Request, _exc: Exception) -> HTMLResponse:
         context=_base_context(request, "") | {},
         status_code=404,
     )
+
+
+# Direct checkout (USDT), license activation, downloads and the /admin panel live in app/store/.
+store_integration.install(app, templates, _base_context)

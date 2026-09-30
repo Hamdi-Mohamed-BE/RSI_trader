@@ -1,5 +1,37 @@
 # Calyx — EA Store
 
+## Prop Challenge Simulator and site-wide Sharpe — 2026-09-29
+
+**Sharpe (daily, annualised)** is now shown for every EA (cards, detail page incl. period switch, catalogue sort)
+and for the portfolio page, using one definition from `app/risk_metrics.py`: mean ÷ standard deviation of daily
+closed-trade returns × √365, every calendar day counted (no-trade days = 0 %), no risk-free rate. It is computed from
+each cached native trade ledger (cached per file mtime). The MT5 report's own Sharpe is kept in the data and shown only
+as a labelled note, because its method is platform-specific and not comparable across EAs.
+
+**`/prop-simulator`** (public) — pick a prop programme, account size, EAs and risk per trade (plus optional daily loss
+guard, daily profit lock, max open risk, entries per day), then replay 100–5,000 calendar-block bootstrap paths (or
+historical rolling starts) built from the EAs' cached native MT5 trades. Output: pass rate per phase and overall,
+breach causes, days to funded, payout probabilities, expected payouts / value after fee, and the standard statistics
+of the combination (trades, trades/month, trades/day, return, PF, win rate, consistency, streaks, Sharpe, max balance
+DD, worst day, per-EA table, correlation matrix, monthly returns). Every rate is shown as a *conservative – optimistic*
+range (open positions assumed at full stop vs closed trades only) because intraday floating drawdown is not recorded.
+
+- Rules as data: `data/prop-rules/*.json` (14 programmes / 8 firms at launch: FTMO 2-Step Standard & Swing, 1-Step;
+  FundedNext Stellar 2-Step, 1-Step, Lite, Instant; The5ers High Stakes; E8 One; FXIFY Two-Phase; Goat Funded Trader
+  2-Step Standard & GOAT; FundingPips 2-Step; Blueberry Prime). Each file records `verification.status`
+  (`official` = firm's own page, `secondary` = comparison source), check date and sources; the page shows them.
+- EA compatibility per programme (weekend holding > 10 % of trades, news trading, straddle bans, EA-approval
+  policies, hold-time rules) is derived from the cached trades; blocked EAs cannot be selected.
+- Code: `app/prop_sim/` (rules, ledger, engine, metrics, service, ratelimit), routes in `app/main.py`
+  (`/prop-simulator`, `/api/prop-sim/catalog`, `POST /api/prop-sim/run`, 20 runs/min/IP, cached results),
+  page `templates/prop_simulator.html` + `static/prop-simulator.js`, tests `tests/test_prop_sim.py`.
+- Suggestions (three per programme: best expected value, highest pass rate, fastest pass):
+  `uv run python tools\precompute_prop_suggestions.py [programme_id ...]` → `data/prop-sim/suggestions.json`.
+  Selection on the first 80 % of the common 5-year window, frozen choice reported on the final 20 %. That holdout is
+  untouched only for choosing the combination — the EAs' own settings were developed on this history — so all
+  results are labelled in-sample backtest evidence, not forecasts.
+- Plan and decisions: `PROP_CHALLENGE_SIMULATOR_PLAN.md`.
+
 ## Nasdaq DI + wider stop + ATR management — 2026-09-28
 
 All eight normal portfolio BATs and the separately guarded FTMO BAT now select
@@ -94,6 +126,8 @@ stored under `C:\Calyx-Caddy`.
 - `/live` — read-only active MT5 account, equity curve, positions, orders and complete reconstructed trade history
 - `/pricing` — individual and bundle prices
 - `/risk` — disclosure and responsible-use page
+- `/prop-simulator` — public prop-firm challenge simulator (see the 2026-09-29 section above)
+- `/api/prop-sim/catalog`, `POST /api/prop-sim/run` — simulator catalogue and runs
 - `/api/eas` — JSON catalogue
 - `/api/live/portfolio` — uncached live MT5 snapshot used by the dashboard
 - `/api/portfolio/equity-series?period=3y` — cached recommended-portfolio evidence (website default)

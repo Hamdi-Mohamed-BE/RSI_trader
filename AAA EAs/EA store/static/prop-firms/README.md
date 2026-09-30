@@ -1,0 +1,1 @@
+﻿Put official prop-firm logo files here as <firm-slug>.svg / .png / .webp (e.g. ftmo.svg, fundednext.png, the5ers.svg, e8-markets.svg, fxify.svg, goat-funded-trader.png, fundingpips.svg, blueberry-funded.png). The simulator uses them automatically; without a file it shows a neutral initials badge. Use logos only with each firm's brand/affiliate permission.

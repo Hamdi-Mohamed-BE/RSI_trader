@@ -16,9 +16,9 @@
       <p class="mt-6 max-w-3xl text-lg leading-8 text-[#a9bcb7]">{{ product.tagline }}</p>
     </div>
     <div class="buy-panel min-w-[285px]">
-      <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Individual license</p><p class="mt-2 text-4xl font-extrabold">{{ product.price|money }}</p><p class="mt-2 text-xs text-muted">One live + one demo MT5 account</p>
-      <a href="{{ product.buy_url }}" target="_blank" rel="noopener" class="button-primary mt-6 w-full justify-center">Buy via WhatsApp</a>
-      <p class="mt-3 text-center text-[10px] leading-4 text-muted">Compatibility and delivery are confirmed before payment.</p>
+      <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Individual license</p><p class="mt-2 flex items-baseline gap-3"><span class="text-4xl font-extrabold">{{ store_price(product)|money }}</span><span class="text-sm text-muted line-through">{{ product.price|money }}</span><span class="badge badge-good">−{{ store_discount_percent }}%</span></p><p class="mt-2 text-xs text-muted">One live + one demo MT5 account · pay in USDT</p>
+      <form method="post" action="/cart/add" class="mt-6"><input type="hidden" name="slug" value="{{ product.slug }}"><input type="hidden" name="next" value="/cart"><button type="submit" class="button-primary w-full justify-center" data-add-to-cart="{{ product.slug }}">Add to cart</button></form>
+      <p class="mt-3 text-center text-[10px] leading-4 text-muted">Buy 3, get 1 free: the cheapest of every 4 bots is free.<br><a href="/how-it-works" class="text-mint hover:text-white">How buying and installing works</a></p>
     </div>
   </div>
 </section>
@@ -37,10 +37,11 @@
     <div><span>Win rate</span><strong data-dynamic-stat="win_rate_pct">{{ display_evidence.win_rate_pct|percent }}</strong></div>
     <div><span>Max DD</span><strong data-dynamic-stat="max_drawdown_pct">{{ display_evidence.drawdown_pct|percent }}</strong></div>
     <div><span>Trades</span><strong data-dynamic-stat="trades">{{ display_evidence.trades }}</strong></div>
+    <div title="{{ sharpe_definition }}"><span>Sharpe (ann.)</span><strong data-dynamic-stat="sharpe_annualized">{{ '%.2f'|format(display_evidence.sharpe_annualized) if display_evidence.sharpe_annualized is not none else '—' }}</strong></div>
     <div title="Longest run of consecutive profitable trades"><span>Max win streak</span><strong data-dynamic-stat="max_win_streak">{{ streak_stats.get('max_win_streak', '—') }}</strong></div>
     <div title="Longest run of consecutive losing trades"><span>Max losing streak</span><strong data-dynamic-stat="max_loss_streak">{{ streak_stats.get('max_loss_streak', '—') }}</strong></div>
   </div>
-  <p class="metric-disclosure mt-4">{% if is_news_pulse %}Metric basis: return, profit factor and win rate use native MT5 deals after recorded commission and swap. Maximum drawdown is the native relative equity drawdown, including floating P/L.{% else %}Metric basis: the headline return, profit factor, win rate and maximum drawdown come from this EA's native MT5 report for the selected saved mode.{% endif %} Portfolio contribution figures are separately recalculated from net closed trades after period clipping, recorded costs and adaptive scaling, so they can differ without either figure being incorrect.</p>
+  <p class="metric-disclosure mt-4">{% if is_news_pulse %}Metric basis: return, profit factor and win rate use native MT5 deals after recorded commission and swap. Maximum drawdown is the native relative equity drawdown, including floating P/L.{% else %}Metric basis: the headline return, profit factor, win rate and maximum drawdown come from this EA's native MT5 report for the selected saved mode.{% endif %} {{ sharpe_label }}: {{ sharpe_definition }}{% if display_evidence.sharpe_ratio is not none %} The MT5 report's own Sharpe for this run is {{ '%.2f'|format(display_evidence.sharpe_ratio) }} (platform-specific method, not comparable across EAs).{% endif %} Portfolio contribution figures are separately recalculated from net closed trades after period clipping, recorded costs and adaptive scaling, so they can differ without either figure being incorrect.</p>
   {% if is_news_pulse %}<p class="mt-4 rounded-xl border border-amber-300/20 bg-amber-300/[.04] p-4 text-xs leading-6 text-amber-100/80">Real-tick coverage: <strong data-dynamic-history-quality>{{ display_evidence.history_quality }}</strong>. Full calendar coverage does not mean full real-tick history. Where older broker ticks are missing, MT5 generates them; news fills and live slippage can differ substantially.</p>{% endif %}
   <div class="evidence-controls mt-5" data-chart-controls>
     <label><span>Evidence period</span><select data-chart-period>
@@ -62,6 +63,18 @@
       <svg class="evidence-chart hidden" data-chart-svg role="img" aria-label="Cached equity curve for {{ product.label }}" viewBox="0 0 1000 360" preserveAspectRatio="xMidYMid meet"></svg>
     </div>
     <aside class="evidence-note"><p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Test context</p><p class="mt-4 text-sm font-semibold" data-dynamic-period>{{ display_evidence.period }}</p><p class="mt-3 text-xs leading-6 text-muted" data-dynamic-source>{{ display_evidence.source_note }}</p><dl class="mt-5 space-y-3 border-t border-white/10 pt-5 text-xs"><div class="flex justify-between gap-3"><dt class="text-muted">History quality</dt><dd data-dynamic-history-quality>{{ display_evidence.history_quality }}</dd></div><div class="flex justify-between gap-3"><dt class="text-muted">Evidence status</dt><dd>{{ display_evidence.status }}</dd></div></dl></aside>
+  </div>
+  <div class="mt-5 grid gap-5 transition-opacity lg:grid-cols-2" data-risk-visuals data-risk-url="/api/evidence/{{ product.slug }}/risk-series?mode={{ 'standard' if is_news_pulse else selected_mode }}">
+    <div class="relative rounded-3xl border border-white/10 bg-white/[.025] p-5" data-risk-panel>
+      <div class="flex items-baseline justify-between gap-3"><p class="font-mono text-[10px] uppercase tracking-[.14em] text-muted" title="{{ sharpe_definition }}">Rolling Sharpe (ann.) · 90-day window</p><p class="shrink-0 whitespace-nowrap font-mono text-xs text-muted">Latest <strong class="text-white" data-risk-sharpe-latest>—</strong></p></div>
+      <svg class="mt-3 block w-full" data-risk-sharpe role="img" aria-label="Rolling 90-day annualised Sharpe ratio for {{ product.label }}" viewBox="0 0 640 240"></svg>
+      <p class="mt-2 text-[11px] leading-5 text-muted" data-risk-sharpe-note>Loading…</p>
+    </div>
+    <div class="relative rounded-3xl border border-white/10 bg-white/[.025] p-5" data-risk-panel>
+      <div class="flex items-baseline justify-between gap-3"><p class="font-mono text-[10px] uppercase tracking-[.14em] text-muted">Win / loss streak distribution</p><p class="shrink-0 whitespace-nowrap font-mono text-xs text-muted">Max <strong class="text-white" data-risk-streak-max>—</strong></p></div>
+      <svg class="mt-3 block w-full" data-risk-streaks role="img" aria-label="Winning and losing streak lengths for {{ product.label }}" viewBox="0 0 640 240"></svg>
+      <p class="mt-2 text-[11px] leading-5 text-muted" data-risk-streak-note></p>
+    </div>
   </div>
   {% else %}
   <div class="mb-12 rounded-3xl border border-amber-300/20 bg-amber-300/[.06] p-6"><span class="badge badge-warn">Evidence pending</span><p class="mt-4 text-sm leading-6 text-[#c7c0a7]">A standardized public result has not been connected to this active installer entry. No performance figures are being invented.</p></div>
@@ -113,9 +126,9 @@
 
 <section class="mx-auto grid max-w-7xl gap-8 px-5 py-20 lg:grid-cols-[1fr_380px] lg:px-8">
   <div><p class="eyebrow-simple">Before you buy</p><h2 class="section-title">Limitations stay part of the product.</h2><ul class="mt-8 grid gap-3">{% for item in product.limitations %}<li class="risk-list-item"><span>!</span><p>{{ item }}</p></li>{% endfor %}</ul></div>
-  <aside class="included-card"><p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Included</p><h3 class="mt-3 text-2xl font-bold">Ready for MT5 setup</h3><ul class="mt-6 space-y-4 text-sm"><li>✓ Compiled <span class="font-mono">.ex5</span> Expert Advisor</li><li>✓ Active BAT <span class="font-mono">.set</span> configuration</li><li>✓ Symbol and timeframe guidance</li><li>✓ One live + one demo account license</li><li>✓ 12 months of updates</li><li>✓ WhatsApp setup support</li></ul><a href="{{ product.buy_url }}" target="_blank" rel="noopener" class="button-primary mt-8 w-full justify-center">Ask about {{ product.label }}</a></aside>
+  <aside class="included-card"><p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Included</p><h3 class="mt-3 text-2xl font-bold">Ready for MT5 setup</h3><ul class="mt-6 space-y-4 text-sm"><li>✓ Compiled <span class="font-mono">.ex5</span> Expert Advisor</li><li>✓ Active BAT <span class="font-mono">.set</span> configuration</li><li>✓ Symbol and timeframe guidance</li><li>✓ One live + one demo account license</li><li>✓ 12 months of updates</li><li>✓ One-click install BAT for MT5</li><li>✓ WhatsApp setup support</li></ul><form method="post" action="/cart/add" class="mt-8"><input type="hidden" name="slug" value="{{ product.slug }}"><input type="hidden" name="next" value="/cart"><button type="submit" class="button-primary w-full justify-center">Add {{ product.label }} to cart</button></form><a href="https://wa.me/{{ whatsapp_number }}?text={{ ('Hello Calyx, I have a question about ' ~ product.label)|urlencode }}" target="_blank" rel="noopener" class="button-secondary mt-3 w-full justify-center">Ask a question on WhatsApp</a></aside>
 </section>
 
 {% if related %}<section class="border-t border-white/10"><div class="mx-auto max-w-7xl px-5 py-20 lg:px-8"><div class="section-heading-row"><div><p class="eyebrow-simple">Related systems</p><h2 class="mt-2 text-2xl font-bold">More {{ product.category|lower }} setups</h2></div></div><div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{% for product in related %}{% include "partials/product_card.html" %}{% endfor %}</div></div></section>{% endif %}
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', path='evidence.js') }}?v=20260912-news-full-coverage" defer></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='evidence.js') }}?v=20260912-news-full-coverage" defer></script><script src="{{ url_for('static', path='ea-metrics.js') }}?v=20260930-risk-3" defer></script>{% endblock %}

@@ -93,7 +93,7 @@ foreach($entry in $manifest.entries){
  if($off['FTMOExpectedLogin'] -ne '0' -or $off['InpRiskPercent'] -ne '0.5' -or $off['InpAdaptivePortfolioControls'] -ne 'false'){throw 'FTMO policy changed'}
  $count++
 }
-if($manifest.news_enabled -or $count -ne 47){throw 'Wrong portfolio scope'}
+if($manifest.news_enabled -or $count -ne 49){throw 'Wrong portfolio scope'}
 Write-Output 'PASS 47 presets; exactly one DI key changes in each Nasdaq preset'
 ''')
     assert result.returncode == 0, result.stdout + result.stderr

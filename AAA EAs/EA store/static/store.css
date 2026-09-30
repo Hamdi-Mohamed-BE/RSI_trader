@@ -1,0 +1,52 @@
+/* Calyx direct checkout — cart, checkout, order page, how-it-works, admin. Extends site.css. */
+.store-panel { border:1px solid rgba(255,255,255,.09); border-radius:20px; padding:1.25rem; background:linear-gradient(145deg,rgba(14,31,27,.72),rgba(8,18,16,.84)); }
+.store-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.9rem 0; border-bottom:1px solid rgba(255,255,255,.07); }
+.store-row:last-child { border-bottom:0; }
+.store-free { color:#06110e; background:linear-gradient(135deg,#c4ff63,#7ef7c7); border-radius:999px; padding:.18rem .5rem; font-family:"DM Mono",monospace; font-size:.62rem; font-weight:700; letter-spacing:.08em; }
+.store-total { display:flex; justify-content:space-between; gap:1rem; padding:.45rem 0; font-size:.9rem; color:#b6c8c3; }
+.store-total strong { color:#fff; font-family:"DM Mono",monospace; }
+.store-total.grand { margin-top:.4rem; padding-top:.9rem; border-top:1px solid rgba(255,255,255,.12); font-size:1.15rem; color:#fff; }
+.store-rule { border:1px solid rgba(126,247,199,.22); border-radius:16px; padding:.9rem 1rem; background:rgba(126,247,199,.055); color:#bfe9da; font-size:.85rem; line-height:1.5rem; }
+.store-input { width:100%; min-height:46px; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:0 .9rem; color:#fff; background:#0b1715; font-size:.9rem; outline:none; }
+.store-input:focus { border-color:rgba(126,247,199,.5); }
+.store-label { display:block; margin-bottom:.4rem; color:#9cafaa; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.store-help { margin-top:.35rem; color:#71877f; font-size:.75rem; line-height:1.2rem; }
+.network-option { display:flex; gap:.8rem; align-items:flex-start; border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:.9rem; cursor:pointer; background:rgba(255,255,255,.02); }
+.network-option:has(input:checked) { border-color:rgba(126,247,199,.55); background:rgba(126,247,199,.07); }
+.network-option input { margin-top:.25rem; accent-color:#7ef7c7; }
+.store-error { border:1px solid rgba(248,113,113,.35); border-radius:14px; padding:.8rem 1rem; background:rgba(248,113,113,.08); color:#fecaca; font-size:.88rem; }
+.store-flash { border:1px solid rgba(126,247,199,.3); border-radius:14px; padding:.8rem 1rem; background:rgba(126,247,199,.07); color:#c9f7e5; font-size:.88rem; }
+.demo-ribbon { position:relative; border:2px dashed #fbbf24; border-radius:16px; padding:.8rem 1rem; background:rgba(251,191,36,.1); color:#fde68a; font-weight:800; letter-spacing:.06em; text-align:center; }
+.qr-box { width:220px; max-width:100%; border-radius:18px; padding:10px; background:#fff; }
+.qr-box svg { display:block; width:100%; height:auto; }
+.pay-field { border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:.8rem .9rem; background:#0b1715; }
+.pay-field span { display:block; color:#7f958f; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; }
+.pay-field code { display:block; margin-top:.35rem; color:#fff; font-family:"DM Mono",monospace; font-size:.95rem; overflow-wrap:anywhere; }
+.pay-amount code { font-size:1.6rem; color:#c4ff63; }
+.copy-button { margin-top:.5rem; border:1px solid rgba(126,247,199,.3); border-radius:10px; padding:.3rem .6rem; color:#9ff9d4; font-size:.72rem; font-weight:700; }
+.copy-button:hover { background:rgba(126,247,199,.08); }
+.network-warning { border:1px solid rgba(248,113,113,.4); border-radius:16px; padding:.9rem 1rem; background:rgba(248,113,113,.08); color:#fecaca; font-size:.85rem; line-height:1.4rem; }
+.status-pill { display:inline-flex; align-items:center; gap:.45rem; border-radius:999px; padding:.35rem .75rem; font-family:"DM Mono",monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; }
+.status-pending { color:#fde68a; border:1px solid rgba(251,191,36,.35); background:rgba(251,191,36,.08); }
+.status-paid { color:#9ff9d4; border:1px solid rgba(126,247,199,.35); background:rgba(126,247,199,.08); }
+.status-expired, .status-cancelled, .status-revoked { color:#fecaca; border:1px solid rgba(248,113,113,.35); background:rgba(248,113,113,.08); }
+.status-active { color:#9ff9d4; border:1px solid rgba(126,247,199,.35); background:rgba(126,247,199,.08); }
+.license-key { font-family:"DM Mono",monospace; font-size:1rem; letter-spacing:.06em; color:#c4ff63; overflow-wrap:anywhere; }
+.step-list { counter-reset:step; display:grid; gap:.9rem; }
+.step-list li { counter-increment:step; position:relative; padding:1rem 1rem 1rem 3.4rem; border:1px solid rgba(255,255,255,.09); border-radius:16px; background:rgba(255,255,255,.025); color:#b6c8c3; font-size:.92rem; line-height:1.55rem; }
+.step-list li::before { content:counter(step); position:absolute; left:1rem; top:1rem; display:grid; place-items:center; width:1.6rem; height:1.6rem; border-radius:999px; background:linear-gradient(135deg,#c4ff63,#7ef7c7); color:#06110e; font-weight:800; font-size:.8rem; }
+.step-list strong { color:#fff; }
+.video-frame { overflow:hidden; border:1px solid rgba(126,247,199,.2); border-radius:22px; background:#000; box-shadow:0 30px 90px rgba(0,0,0,.35); }
+.video-frame video { display:block; width:100%; height:auto; aspect-ratio:16/9; background:#000; }
+/* admin */
+.admin-table { width:100%; border-collapse:collapse; font-size:.8rem; }
+.admin-table th { padding:.55rem .6rem; border-bottom:1px solid rgba(255,255,255,.12); color:#7f958f; font-size:.66rem; font-weight:700; letter-spacing:.08em; text-align:left; text-transform:uppercase; white-space:nowrap; }
+.admin-table td { padding:.55rem .6rem; border-bottom:1px solid rgba(255,255,255,.06); color:#d4e1dd; vertical-align:top; }
+.admin-table tr:hover td { background:rgba(255,255,255,.02); }
+.admin-table a { color:#9ff9d4; }
+.admin-nav a { display:block; border-radius:10px; padding:.55rem .8rem; color:#9cafaa; font-size:.85rem; font-weight:600; }
+.admin-nav a:hover, .admin-nav a.on { background:rgba(126,247,199,.08); color:#fff; }
+.admin-kpi { border:1px solid rgba(255,255,255,.09); border-radius:16px; padding:1rem; background:rgba(255,255,255,.025); }
+.admin-kpi span { display:block; color:#7f958f; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; }
+.admin-kpi strong { display:block; margin-top:.35rem; font-family:"DM Mono",monospace; font-size:1.3rem; }
+.mono { font-family:"DM Mono",monospace; }

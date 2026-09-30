@@ -157,7 +157,8 @@ def test_every_product_detail_page_renders() -> None:
         response = client.get(f"/eas/{product.slug}")
         assert response.status_code == 200
         assert product.label in response.text
-        assert product.buy_url.replace("&", "&amp;") in response.text
+        # 2026-09-30: direct USDT checkout replaced the per-EA WhatsApp purchase link (see app/store/).
+        assert f'data-add-to-cart="{product.slug}"' in response.text
 
 
 def test_recommended_safe_eas_default_to_safe_evidence_and_are_tagged() -> None:
@@ -258,7 +259,7 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
 
 def test_recommended_exit_settings_are_synced_per_ea() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 33
+    assert len(products) == 35
     assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 8
     assert sum(product.exit_mode == "Dynamic 60/20 only" for product in products) == 1
     assert sum(product.exit_mode == "Current EA exits" for product in products) == 6
@@ -862,8 +863,9 @@ def test_fixed_cached_evidence_periods_and_pricing_bundle() -> None:
     assert 'value="3y" selected' in portfolio_page.text
     assert MAX_DAYS == 366 * 5
     pricing = client.get("/pricing")
-    assert "Choose 3 + bonus EA" in pricing.text
-    assert "$499" in pricing.text
+    # 2026-09-30 owner decision: prices 40% lower, "Choose 3 + bonus" became the buy-3-get-1-free cart rule.
+    assert "Buy 3, get 1 free" in pricing.text
+    assert "$1,194" in pricing.text
 
 
 def test_cached_trades_include_price_move_and_estimated_r_without_mt5_rerun() -> None:
@@ -910,7 +912,7 @@ def test_outcome_streaks_are_ordered_and_break_even_is_neutral() -> None:
 
 def test_all_recommended_eas_and_portfolio_have_every_fixed_cache() -> None:
     products = get_sellable_catalog()
-    assert len(products) == 33
+    assert len(products) == 35
     periods = ("6m", "1y", "3y", "5y")
     for period in periods:
         portfolio = client.get("/api/portfolio/equity-series", params={"period": period})

@@ -1,0 +1,9 @@
+{% extends "admin/base.html" %}
+{% block title %}Licenses{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-extrabold">Licenses</h1>
+<form class="mt-4 flex flex-wrap gap-2" method="get"><input class="store-input max-w-xs" name="q" value="{{ q }}" placeholder="Key, email, product, account, order"><select name="status" class="store-input max-w-[160px]"><option value="">All</option>{% for s in ['active','revoked'] %}<option value="{{ s }}" {{ 'selected' if status == s }}>{{ s }}</option>{% endfor %}</select><button class="button-secondary">Filter</button></form>
+<div class="mt-4 overflow-x-auto store-panel"><table class="admin-table"><thead><tr><th>Key</th><th>Product</th><th>Buyer</th><th>Order</th><th>Status</th><th>Live</th><th>Demo</th><th>Activations</th><th>Last check</th><th>Expires</th></tr></thead><tbody>
+{% for l in rows %}<tr><td><a class="mono" href="/admin/licenses/{{ l.id }}">{{ l.license_key }}</a></td><td>{{ l.label }}</td><td>{{ l.email }}</td><td class="mono">{{ l.public_id }}</td><td><span class="status-pill status-{{ l.status }}">{{ l.status }}</span></td><td class="mono">{{ l.live_login or '—' }}</td><td class="mono">{{ l.demo_login or '—' }}</td><td class="mono">{{ l.activations }}</td><td class="mono">{{ (l.last_check_at or '—')[:16] }}<br><span class="text-muted">{{ l.last_check_result or '' }}</span></td><td class="mono">{{ (l.expires_at or 'perpetual')[:10] }}</td></tr>{% else %}<tr><td colspan="10" class="text-muted">No licenses.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

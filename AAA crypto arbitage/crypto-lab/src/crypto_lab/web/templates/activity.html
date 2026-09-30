@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% from "_macros.html" import hero %}
+{% block title %}Bot activity · {{ app_name }}{% endblock %}
+{% block hero %}{{ hero("Paper lab", "What the bots are doing", "Refreshes every 10 seconds. A completed scan can legitimately produce no trade. Errors, skipped entries and fills are reported here; account changes are in Audit.") }}{% endblock %}
+{% block content %}
+<div data-auto-refresh="10"></div>
+<div class="grid gap-4 md:grid-cols-2">
+{% for b in bots %}<article class="card"><h2 class="section-title">{{ b.name }}</h2><p class="mt-3 badge badge-safe">{{ health[b.slug] }} · {{ b.mode }}</p><p class="muted-note mt-3">Last heartbeat: {{ b.heartbeat_at|dt }}</p><p class="mt-3 text-sm">{{ latest[b.slug].message if latest[b.slug] else 'Waiting for first completed cycle.' }}</p></article>{% endfor %}
+</div>
+<div class="card mt-8 overflow-x-auto p-0"><table class="data-table"><thead><tr><th>UTC</th><th>Bot</th><th>Event</th><th>Result / reason</th></tr></thead><tbody>
+{% for e in activity %}<tr><td>{{ e.at|dt }}</td><td>{{ e.bot }}</td><td>{{ e.status }}</td><td>{{ e.message }}</td></tr>{% else %}<tr><td colspan="4">No completed cycles yet. Workers begin when the dashboard starts.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

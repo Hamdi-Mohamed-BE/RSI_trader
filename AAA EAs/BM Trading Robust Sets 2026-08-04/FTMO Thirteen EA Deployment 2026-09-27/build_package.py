@@ -24,6 +24,13 @@ def build(compile_eas=True, only_slugs=None):
     frozen=json.loads((BASE/"FTMO Fourteen EA Study 2026-09-27/FROZEN.json").read_text(encoding="utf-8-sig"))
     entries=[e for e in frozen["entries"] if e["slug"]!="news-pulse-xau"]
     assert len(entries)==13
+    # 2026-09-30 (user request): 3 Way Gold appended as entry 14, market-entry build (the guard admits no pending
+    # orders). The first 13 entries, their sources, settings and binaries are unchanged.
+    extra=json.loads((BASE/"3 Way Gold Deployment 2026-09-30/FTMO_ENTRY.json").read_text(encoding="utf-8"))
+    for e in extra:
+        for key in ("expert","settings"):e[key]=str(BASE/e[key])
+    entries+=extra
+    assert len(entries)==14 and entries[-1]["slug"]=="3-way-gold"
     # Explicit management replacement; preserve the original experiment's frozen inputs/results.
     override_path=BASE/"Nasdaq 5M DI ATR Deployment 2026-09-28/SELECTION.json"
     override=json.loads(override_path.read_text(encoding="utf-8"))
@@ -79,7 +86,7 @@ def build(compile_eas=True, only_slugs=None):
         (OUT/name).write_text(text,encoding="utf-8")
         return name
 
-    manifest=dict(version="FTMO13-20260928-DI-ATR-ORB-COMMENTS",news_enabled=False,risk_usd=50,
+    manifest=dict(version="FTMO14-20260930-3WAYGOLD-MARKET",news_enabled=False,risk_usd=50,
                   comment_release=comment_release["version"],
                   portfolio_forecast_status="Prior fixed-target simulations do not apply to the changed Nasdaq management",
                   reference_balance=10000,entries=[],source_hashes=evidence,
@@ -140,5 +147,6 @@ def build(compile_eas=True, only_slugs=None):
     (ROOT/"PACKAGE.json").write_text(json.dumps(manifest,indent=2),encoding="utf-8")
     return manifest
 if __name__=="__main__":
-    build("--source-only" not in sys.argv,
-          {"xau-orb-london-ny-overlap-m30","us100-h1-orb-13utc"} if "--only-orb" in sys.argv else None)
+    only={"xau-orb-london-ny-overlap-m30","us100-h1-orb-13utc"} if "--only-orb" in sys.argv else None
+    if "--only-3wg" in sys.argv:only={"3-way-gold"}
+    build("--source-only" not in sys.argv,only)

@@ -47,7 +47,7 @@ def test_ftmo_guarded_package_keeps_risk_and_news_policy():
     root = PACKAGE_ROOT/'FTMO Thirteen EA Deployment 2026-09-27'
     manifest = json.loads((root/'PACKAGE.json').read_text())
     assert manifest['risk_usd'] == 50 and manifest['news_enabled'] is False
-    assert len(manifest['entries']) == 13
+    assert len(manifest['entries']) == 14  # 13 original + 3 Way Gold (2026-09-30)
     entry = next(e for e in manifest['entries'] if e['slug']==SLUG)
     assert entry['inputs']['InpRiskPercent'] == '0.5'
     assert entry['inputs']['FTMOExpectedLogin'] == '0'

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "_macros.html" import csrf_field %}
+{% block title %}Two-factor · {{ app_name }}{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-2xl">
+  <div class="terminal-card p-7">
+    <span class="eyebrow"><span class="pulse-dot"></span>Account</span>
+    <h1 class="mt-4 text-2xl font-extrabold">Two-factor authentication</h1>
+    {% if admin.user.totp_enabled %}
+      <div class="flash flash-good mt-5">2FA is on for <strong>{{ admin.user.username }}</strong>. Sign-in and LIVE mode changes require a code.</div>
+    {% else %}
+      <p class="muted-note mt-2">Scan the QR code with an authenticator app (Aegis, 1Password, Google Authenticator…), then enter the 6-digit code to turn 2FA on.</p>
+      {% if error %}<div class="flash flash-bad mt-5" role="alert">{{ error }}</div>{% endif %}
+      <div class="mt-6 grid items-start gap-6 sm:grid-cols-[auto_1fr]">
+        <div class="rounded-2xl bg-white p-3">{{ qr_svg|safe }}</div>
+        <form method="post" action="/account/2fa" class="space-y-4">
+          {{ csrf_field(csrf_token) }}
+          <input type="hidden" name="secret" value="{{ secret }}">
+          <div><span class="field-label">Manual key</span><code class="block break-all font-mono text-xs text-mint">{{ secret }}</code></div>
+          <label class="block"><span class="field-label">Code</span>
+            <input class="field-input font-mono" name="code" inputmode="numeric" autocomplete="one-time-code" required maxlength="12"></label>
+          <button class="button-primary" type="submit">Turn on 2FA</button>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

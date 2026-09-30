@@ -1,0 +1,17 @@
+{% macro hero(eyebrow, title, lead='') -%}
+<section class="page-hero">
+  <div class="mx-auto max-w-7xl px-5 py-10 lg:px-8">
+    <span class="eyebrow"><span class="pulse-dot"></span>{{ eyebrow }}</span>
+    <h1 class="page-title">{{ title }}</h1>
+    {% if lead %}<p class="page-lead">{{ lead }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro %}
+
+{% macro csrf_field(token) -%}
+<input type="hidden" name="csrf_token" value="{{ token }}">
+{%- endmacro %}
+
+{% macro stat(label, value) -%}
+<div><span>{{ label }}</span><strong>{{ value }}</strong></div>
+{%- endmacro %}

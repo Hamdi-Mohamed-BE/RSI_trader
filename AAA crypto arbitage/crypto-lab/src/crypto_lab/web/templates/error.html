@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · {{ app_name }}{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-10 max-w-xl">
+  <span class="badge badge-bad">{{ title }}</span>
+  <p class="mt-4 text-sm text-white/80">{{ message }}</p>
+  <a href="/" class="button-secondary mt-6">Back to overview</a>
+</div>
+{% endblock %}

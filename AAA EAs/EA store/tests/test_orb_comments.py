@@ -29,7 +29,9 @@ def test_ftmo_only_orb_binaries_changed_and_guards_unchanged():
     after=json.loads((folder/'PACKAGE.json').read_text())
     assert after['news_enabled'] is False and after['risk_usd']==50
     assert after['guard_sha']==before['guard_sha']==build.sha(folder/'CalyxFTMOGuard.mqh')
-    assert len(after['entries'])==len(before['entries'])==13
+    # 2026-09-30: 3 Way Gold appended as entry 14; the original 13 must stay unchanged.
+    assert len(before['entries']) in (13,14) and len(after['entries'])==14 and after['entries'][13]['slug']=='3-way-gold'
+    assert after['entries'][13]['inputs']['InpMarketEntries']=='true' and after['entries'][13]['inputs']['InpRiskPercent']=='0.5'
     for old,new in zip(before['entries'],after['entries']):
         assert old['inputs']==new['inputs'] and old['settings_sha']==new['settings_sha']
         differences={key for key in old if old[key]!=new[key]}

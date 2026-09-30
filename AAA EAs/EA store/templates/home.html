@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="absolute -bottom-5 -left-5 hidden rounded-2xl border border-white/10 bg-[#0d1c19] p-4 shadow-2xl sm:block">
-        <p class="font-mono text-[9px] uppercase tracking-[.16em] text-muted">Checkout</p><p class="mt-1 text-sm font-semibold text-mint">Direct on WhatsApp</p>
+        <p class="font-mono text-[9px] uppercase tracking-[.16em] text-muted">Checkout</p><p class="mt-1 text-sm font-semibold text-mint">USDT · TRC20 / BEP20</p>
       </div>
     </div>
   </div>
@@ -88,7 +88,7 @@
 <section class="mx-auto max-w-7xl px-5 py-24 lg:px-8">
   <div class="cta-panel">
     <div><p class="eyebrow-simple text-mint">Available collection</p><h2 class="mt-4 max-w-2xl text-4xl font-extrabold tracking-tight">Get every production-ready EA currently offered.</h2><p class="mt-4 max-w-2xl text-sm leading-7 text-muted">The package contains the {{ product_count }} available systems, symbol mapping and setup support. Auction Market development builds are excluded.</p></div>
-    <div class="lg:text-right"><p class="font-mono text-xs text-muted">AVAILABLE PACKAGE</p><p class="mt-2 text-4xl font-extrabold">$1,990</p><a href="{{ package_url }}" target="_blank" rel="noopener" class="button-primary mt-5 justify-center">Discuss on WhatsApp</a></div>
+    <div class="lg:text-right"><p class="font-mono text-xs text-muted">AVAILABLE PACKAGE</p><p class="mt-2 text-4xl font-extrabold">{{ package_price|money }}</p><p class="mt-1 text-xs text-muted">previously <span class="line-through">$1,990</span></p><a href="{{ package_url }}" class="button-primary mt-5 justify-center">See pricing</a></div>
   </div>
 </section>
 {% endblock %}

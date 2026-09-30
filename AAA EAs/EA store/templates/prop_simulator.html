@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Prop Challenge Simulator — Calyx{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-20">
+    <p class="eyebrow-simple">Prop challenge simulator</p>
+    <h1 class="page-title">How would these EAs handle a prop challenge?</h1>
+    <p class="page-lead">Pick a prop-firm programme, choose EAs and their risk per trade, and replay thousands of paths built from the EAs' own native MT5 trade history. You get simulated pass rates for each phase, breach causes, time to funding, expected payouts and the full statistics of your combination.</p>
+    <p class="mt-4 max-w-3xl text-xs leading-6 text-amber-100/80">Simulated scenario frequencies from historical backtests — not a prediction, guarantee or financial advice. Rules come from each firm's published terms on the date shown; the firm's current terms always apply. Calyx is not affiliated with or endorsed by any prop firm.</p>
+  </div>
+</section>
+
+<section class="mx-auto max-w-7xl px-5 py-12 lg:px-8" data-prop-sim>
+  <div class="grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
+    <div class="rounded-3xl border border-white/10 bg-white/[.025] p-6">
+      <h2 class="text-lg font-bold">1 · Programme</h2>
+      <div class="evidence-controls mt-4 sm:grid-cols-2">
+        <div class="text-left sm:col-span-2">
+          <p class="mb-[.4rem] font-mono text-[9px] uppercase tracking-[.13em] text-[#789089]" id="programme-label" style="text-align:left">Prop firm programme</p>
+          <div class="relative" data-programme-picker>
+            <button type="button" class="flex min-h-[44px] w-full items-center justify-between gap-3 rounded-[11px] border border-white/10 bg-[#0b1715] px-3 text-left text-sm text-[#e8f4f0] outline-none focus:border-mint/45" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="programme-label" data-programme-toggle>
+              <span class="flex min-w-0 items-center gap-2" data-programme-current></span>
+              <svg viewBox="0 0 20 20" class="h-4 w-4 shrink-0 text-[#789089]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5"/></svg>
+            </button>
+            <ul class="absolute left-0 right-0 z-40 mt-1 hidden max-h-80 overflow-y-auto rounded-[11px] border border-white/10 bg-[#0b1715] py-1 shadow-2xl" role="listbox" aria-labelledby="programme-label" tabindex="-1" data-programme-list></ul>
+          </div>
+          <select data-programme class="sr-only" tabindex="-1" aria-hidden="true"></select>
+        </div>
+        <label><span>Account size</span><select data-size></select></label>
+        <label><span>Challenge fee (optional)</span><input data-fee type="number" min="0" step="1" placeholder="List price"></label>
+      </div>
+      <div class="mt-4 rounded-2xl border border-white/[.07] bg-ink/40 p-4 text-xs leading-6 text-muted" data-programme-info></div>
+    </div>
+    <div class="rounded-3xl border border-white/10 bg-white/[.025] p-6">
+      <h2 class="text-lg font-bold">2 · Risk management</h2>
+      <div class="evidence-controls mt-4 sm:grid-cols-2">
+        <label><span data-risk-label>Risk per trade ($)</span><input data-risk type="number" min="1" step="1" value="50"></label>
+        <label><span>Position sizing</span><select data-sizing><option value="fixed_usd" selected>Fixed $ per trade (round lots down)</option><option value="pct_initial">% of initial balance</option><option value="pct_balance">% of current balance</option></select></label>
+        <label><span>Daily equity stop — close all (%)</span><input data-equity-stop type="number" min="0.1" max="20" step="0.1" placeholder="Off"></label>
+        <label><span>Daily profit close — close all (%)</span><input data-profit-close type="number" min="0.1" max="30" step="0.1" placeholder="Off"></label>
+        <label><span>Daily loss guard (stop new entries, %)</span><input data-daily-stop type="number" min="0.1" max="10" step="0.1" placeholder="Off"></label>
+        <label><span>Daily profit lock (stop new entries, %)</span><input data-profit-lock type="number" min="0.1" max="20" step="0.1" placeholder="Off"></label>
+        <label><span>Max open risk at once (%)</span><input data-open-risk type="number" min="0.1" max="30" step="0.1" placeholder="Off"></label>
+        <label><span>Max entries per day</span><input data-max-entries type="number" min="1" max="100" step="1" placeholder="Off"></label>
+      </div>
+      <details class="mt-4 text-xs text-muted"><summary class="cursor-pointer font-mono uppercase tracking-[.12em]">Simulation settings</summary>
+        <div class="evidence-controls mt-3 sm:grid-cols-2">
+          <label><span>Evidence window</span><select data-period><option value="1y">Last 1 year</option><option value="3y" selected>Last 3 years</option><option value="5y">Last 5 years</option></select></label>
+          <label><span>Method</span><select data-method><option value="bootstrap">Calendar-block bootstrap</option><option value="rolling">Historical rolling starts</option></select></label>
+          <label><span>Paths</span><input data-paths type="number" min="100" max="5000" step="100" value="2000"></label>
+          <label><span>Horizon (days)</span><input data-horizon type="number" min="30" max="730" step="15" value="365"></label>
+          <label><span>Block length (days)</span><input data-block type="number" min="7" max="90" step="1" value="28"></label>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="mt-6 rounded-3xl border border-white/10 bg-white/[.025] p-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div><h2 class="text-lg font-bold">3 · EAs</h2><p class="mt-1 text-xs text-muted">Tick the EAs to combine. Each row's risk overrides the default. Blocked EAs break a rule of the selected programme (hover for the reason).</p></div>
+      <div class="flex flex-wrap gap-2" data-presets></div>
+    </div>
+    <div class="mt-4 hidden overflow-x-auto rounded-2xl border border-mint/15 bg-mint/[.035] p-4" data-suggestions></div>
+    <div class="mt-4 overflow-x-auto"><table class="w-full min-w-[720px] text-left text-sm" data-ea-table>
+      <thead class="font-mono text-[10px] uppercase tracking-[.12em] text-muted"><tr><th class="py-2 pr-3"><input type="checkbox" data-select-all aria-label="Select all compatible EAs"></th><th class="py-2 pr-3">EA</th><th class="py-2 pr-3">Market</th><th class="py-2 pr-3">Trades (3y)</th><th class="py-2 pr-3">Compatibility</th><th class="py-2" data-risk-head>Risk $</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <div class="mt-6 flex flex-wrap items-center gap-4">
+      <button type="button" class="button-primary" data-run>Run simulation</button>
+      <span class="text-xs text-muted" data-status></span>
+    </div>
+  </div>
+
+  <div class="mt-10 hidden" data-results>
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div><p class="eyebrow-simple">Results</p><h2 class="mt-2 text-2xl font-bold" data-result-title></h2></div>
+      <span class="badge badge-warn" title="These EAs were selected and configured using this history">In-sample backtest evidence</span>
+    </div>
+    <p class="mt-3 text-xs leading-6 text-muted">Each rate is shown as <strong class="text-white">conservative – optimistic</strong>. Conservative assumes every open position sits at its full stop at the worst moment of the day; optimistic counts closed trades only. Intraday floating drawdown was not recorded, so the real answer lies between them.</p>
+    <div class="stats-strip stats-strip-expanded mt-5" data-kpis></div>
+    <div class="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <div class="chart-panel !block"><p class="font-mono text-[10px] uppercase tracking-[.14em] text-muted">Combined return across sampled paths (no prop rules) · 5/25/50/75/95th percentile</p><canvas data-fan height="260" class="mt-3 w-full"></canvas></div>
+      <div class="rounded-3xl border border-white/10 bg-white/[.025] p-5"><p class="font-mono text-[10px] uppercase tracking-[.14em] text-muted">How accounts end (conservative)</p><div class="mt-4 grid gap-3 text-sm" data-outcomes></div></div>
+    </div>
+    <h3 class="mt-10 text-lg font-bold">Combination statistics (historical ledger at your risk)</h3>
+    <div class="stats-strip stats-strip-expanded mt-4" data-stats></div>
+    <div class="mt-6 grid gap-6 lg:grid-cols-2">
+      <div class="overflow-x-auto rounded-3xl border border-white/10 bg-white/[.025] p-5"><p class="font-mono text-[10px] uppercase tracking-[.14em] text-muted">Per EA</p><table class="mt-3 w-full text-left text-xs" data-per-ea></table></div>
+      <div class="overflow-x-auto rounded-3xl border border-white/10 bg-white/[.025] p-5"><p class="font-mono text-[10px] uppercase tracking-[.14em] text-muted">Daily P/L correlation</p><div class="mt-3" data-corr></div></div>
+    </div>
+    <div class="mt-6 overflow-x-auto rounded-3xl border border-white/10 bg-white/[.025] p-5"><p class="font-mono text-[10px] uppercase tracking-[.14em] text-muted">Monthly returns</p><div class="mt-3 flex flex-wrap gap-2" data-months></div></div>
+    <div class="mt-6 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-3xl border border-white/10 bg-white/[.025] p-5 text-xs leading-6 text-muted"><p class="font-mono text-[10px] uppercase tracking-[.14em]">Rules and compatibility used</p><div class="mt-3" data-rules-used></div></div>
+      <div class="rounded-3xl border border-white/10 bg-white/[.025] p-5 text-xs leading-6 text-muted"><p class="font-mono text-[10px] uppercase tracking-[.14em]">Method and assumptions</p><ul class="mt-3 list-disc space-y-1 pl-4" data-assumptions></ul></div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='prop-simulator.js') }}?v=20260930-prop-sim-6" defer></script>{% endblock %}

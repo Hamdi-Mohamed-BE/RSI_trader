@@ -300,7 +300,11 @@
     const note = root.querySelector('[data-range-note]');
     if (note && stats) {
       const extras = [
-        stats.sharpe_ratio == null ? null : `Sharpe ${Number(stats.sharpe_ratio).toFixed(2)}`,
+        // Product payloads carry the site-wide annualised Sharpe; portfolio payloads already publish it as sharpe_ratio.
+        (() => {
+          const sharpe = 'sharpe_annualized' in stats ? stats.sharpe_annualized : stats.sharpe_ratio;
+          return sharpe == null ? null : `Sharpe (ann.) ${Number(sharpe).toFixed(2)}`;
+        })(),
         stats.recovery_factor == null ? null : `Recovery ${Number(stats.recovery_factor).toFixed(2)}`,
       ].filter(Boolean).join(' · ');
       const tradeSource = ['precomputed-native-mt5-cache', 'native-mt5-background-job', 'adaptive-replay-of-native-mt5-cache', 'verified-news-schedule-replay'].includes(payload.source)

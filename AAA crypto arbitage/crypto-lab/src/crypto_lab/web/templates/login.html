@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Sign in · {{ app_name }}{% endblock %}
+{% block content %}
+<div class="mx-auto mt-10 max-w-md">
+  <div class="terminal-card p-7">
+    <span class="eyebrow"><span class="pulse-dot"></span>Admin</span>
+    <h1 class="mt-5 text-3xl font-extrabold tracking-tight">Sign in to <span class="text-gradient">Crypto Lab</span></h1>
+    {% if not has_admin %}
+      <div class="flash flash-warn mt-5">
+        No admin account exists yet. Create one from a terminal in the project folder:
+        <code class="mt-2 block font-mono text-xs">uv run crypto-lab create-admin &lt;username&gt;</code>
+      </div>
+    {% endif %}
+    {% if error %}<div class="flash flash-bad mt-5" role="alert">{{ error }}</div>{% endif %}
+    <form method="post" action="/login" class="mt-6 space-y-4" autocomplete="on">
+      <input type="hidden" name="next" value="{{ next }}">
+      <label class="block"><span class="field-label">Username</span>
+        <input class="field-input" name="username" autocomplete="username" required maxlength="64"></label>
+      <label class="block"><span class="field-label">Password</span>
+        <input class="field-input" type="password" name="password" autocomplete="current-password" required maxlength="256"></label>
+      <label class="block"><span class="field-label">Authenticator code (if 2FA is on)</span>
+        <input class="field-input font-mono" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="12" pattern="[0-9 ]*"></label>
+      <button class="button-primary w-full" type="submit">Sign in</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

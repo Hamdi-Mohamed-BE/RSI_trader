@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}Admin{% endblock %} — Calyx admin</title>
+  <link rel="icon" type="image/jpeg" href="{{ url_for('static', path='images/calyx-logo.jpg') }}">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Manrope', 'sans-serif'], mono: ['DM Mono', 'monospace'] }, colors: { ink: '#07100f', panel: '#0b1715', mint: '#7ef7c7', lime: '#c4ff63', muted: '#8fa6a1' } } } }</script>
+  <link rel="stylesheet" href="{{ url_for('static', path='site.css') }}?v=20260907-blue-safe-badges">
+  <link rel="stylesheet" href="{{ url_for('static', path='store.css') }}?v=20260930-store">
+</head>
+<body class="bg-ink text-white antialiased">
+{% if admin %}
+<header class="border-b border-white/10 bg-black/30">
+  <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 lg:px-8">
+    <a href="/admin" class="flex items-center gap-3"><img src="{{ url_for('static', path='images/calyx-logo.jpg') }}" alt="" width="34" height="34" class="rounded-lg"><span class="font-extrabold tracking-[.14em]">CALYX ADMIN</span></a>
+    <div class="flex items-center gap-3 text-xs text-muted"><span>{{ admin.username }}</span><form method="post" action="/admin/logout"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><button class="rounded-lg border border-white/10 px-3 py-1.5 hover:text-white">Log out</button></form></div>
+  </div>
+</header>
+<div class="mx-auto grid max-w-7xl gap-6 px-5 py-6 lg:grid-cols-[190px_1fr] lg:px-8">
+  <nav class="admin-nav flex flex-wrap gap-1 lg:flex-col" aria-label="Admin">
+    <a href="/admin" class="{{ 'on' if nav == 'dashboard' }}">Dashboard</a>
+    <a href="/admin/orders" class="{{ 'on' if nav in ['orders', 'order_detail'] }}">Orders</a>
+    <a href="/admin/licenses" class="{{ 'on' if nav in ['licenses', 'license_detail'] }}">Licenses</a>
+    <a href="/admin/checks" class="{{ 'on' if nav == 'checks' }}">Activation log</a>
+    <a href="/admin/transfers" class="{{ 'on' if nav == 'transfers' }}">Chain transfers</a>
+    <a href="/admin/settings" class="{{ 'on' if nav == 'settings' }}">Settings</a>
+    <a href="/admin/security" class="{{ 'on' if nav == 'security' }}">Security</a>
+    <a href="/admin/audit" class="{{ 'on' if nav == 'audit' }}">Audit log</a>
+  </nav>
+  <main class="min-w-0">
+    {% if flash %}<div class="store-flash mb-5" role="status">{{ flash }}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% else %}
+<main>{% block public %}{% endblock %}</main>
+{% endif %}
+</body>
+</html>

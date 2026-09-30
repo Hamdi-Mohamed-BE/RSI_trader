@@ -1,0 +1,8 @@
+{% extends "admin/base.html" %}
+{% block title %}Activation log{% endblock %}
+{% block content %}
+<div class="flex flex-wrap items-center justify-between gap-3"><h1 class="text-2xl font-extrabold">Activation / check log</h1><div class="flex gap-2 text-sm"><a href="/admin/checks" class="button-secondary {{ 'border-mint' if not only }}">All</a><a href="/admin/checks?only=denied" class="button-secondary">Denied only</a></div></div>
+<div class="mt-4 overflow-x-auto store-panel"><table class="admin-table"><thead><tr><th>Time (UTC)</th><th>Result</th><th>Key</th><th>Product</th><th>Login</th><th>Server</th><th>Mode</th><th>Build</th><th>Magic</th><th>IP</th></tr></thead><tbody>
+{% for c in rows %}<tr><td class="mono">{{ c.at[:19] }}</td><td class="{{ 'text-mint' if c.allowed else 'text-red-300' }}">{{ 'allowed' if c.allowed else 'denied' }} · {{ c.code }}</td><td class="mono">{% if c.license_id %}<a href="/admin/licenses/{{ c.license_id }}">{{ c.key_hint }}</a>{% else %}{{ c.key_hint or '—' }}{% endif %}</td><td>{{ c.label or c.product or '—' }}</td><td class="mono">{{ c.login }}</td><td>{{ c.server }}</td><td>{{ c.trade_mode }}</td><td class="mono text-[11px]">{{ c.build }}</td><td class="mono">{{ c.magic }}</td><td class="mono">{{ c.ip }}</td></tr>{% else %}<tr><td colspan="10" class="text-muted">No license checks yet.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

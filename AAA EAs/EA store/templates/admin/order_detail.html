@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+{% block title %}Order {{ order.public_id }}{% endblock %}
+{% block content %}
+<a href="/admin/orders" class="text-xs text-muted">← Orders</a>
+<div class="mt-2 flex flex-wrap items-center gap-3"><h1 class="text-2xl font-extrabold mono">{{ order.public_id }}</h1><span class="status-pill status-{{ order.status }}">{{ order.status }}</span></div>
+{% if new_link %}<div class="store-flash mt-4"><strong>New buyer link (shown once, the old link no longer works):</strong><br><span class="mono break-all" data-new-order-link>{{ new_link }}</span></div>{% endif %}
+<div class="mt-5 grid gap-4 lg:grid-cols-2">
+  <div class="store-panel overflow-x-auto text-sm"><table class="admin-table"><tbody>
+    <tr><th>Email</th><td>{{ order.email }}</td></tr>
+    <tr><th>Network</th><td>{{ order.network }}</td></tr>
+    <tr><th>Deposit address</th><td class="mono break-all">{{ order.deposit_address }}</td></tr>
+    <tr><th>Amount</th><td class="mono">{{ amount }} USDT (base {{ format_usd(order.base_cents) }} + {{ order.offset_cents }}¢)<br>units {{ order.amount_units }}</td></tr>
+    <tr><th>Created / expires</th><td class="mono">{{ order.created_at }}<br>{{ order.expires_at }}</td></tr>
+    <tr><th>Paid</th><td class="mono">{{ order.paid_at or '—' }} {{ order.paid_by or '' }}</td></tr>
+    <tr><th>Tx</th><td class="mono break-all">{{ order.tx_hash or '—' }}<br>from {{ order.tx_from or '—' }} · block {{ order.tx_block or '—' }} · {{ order.confirmations }} conf.</td></tr>
+    <tr><th>Note</th><td>{{ order.manual_note or '—' }}</td></tr>
+    <tr><th>Checkout accounts</th><td class="mono">live {{ order.live_login or '—' }} · demo {{ order.demo_login or '—' }}</td></tr>
+  </tbody></table></div>
+  <div class="store-panel text-sm">
+    <h2 class="font-bold">Items</h2>
+    {% for item in items %}<div class="store-row"><span>{{ item.label }}</span><span class="mono">{% if item.free %}FREE (3+1){% else %}{{ format_usd(item.sale_cents) }}{% endif %}</span></div>{% endfor %}
+    <div class="store-total"><span>Subtotal</span><strong>{{ format_usd(pricing.sale_total_cents) }}</strong></div>
+    <div class="store-total"><span>Pack rule ({{ pricing.free_count }} free)</span><strong>−{{ format_usd(pricing.pack_discount_cents) }}</strong></div>
+    {% if pricing.package_applied %}<div class="store-total"><span>Portfolio price</span><strong>−{{ format_usd(pricing.package_discount_cents) }}</strong></div>{% endif %}
+    <div class="store-total grand"><span>Charged</span><strong>{{ amount }} USDT</strong></div>
+  </div>
+</div>
+<div class="mt-4 grid gap-4 lg:grid-cols-3">
+  {% if order.status != 'paid' %}
+  <form method="post" action="/admin/orders/{{ order.id }}/mark-paid" class="store-panel grid gap-3" onsubmit="return confirm('Mark this order paid and issue licenses?')"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Mark paid manually</h2><input class="store-input" name="tx_hash" placeholder="Transaction hash (optional)"><textarea class="store-input min-h-[80px] py-2" name="note" required minlength="5" placeholder="Reason / evidence (required)"></textarea><button class="button-primary justify-center">Mark paid &amp; issue licenses</button></form>
+  {% if order.status != 'cancelled' %}<form method="post" action="/admin/orders/{{ order.id }}/cancel" class="store-panel grid gap-3" onsubmit="return confirm('Cancel this order?')"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Cancel order</h2><input class="store-input" name="note" placeholder="Reason"><button class="button-secondary justify-center">Cancel order</button></form>{% endif %}
+  {% endif %}
+  <form method="post" action="/admin/orders/{{ order.id }}/new-link" class="store-panel grid gap-3" onsubmit="return confirm('Create a new private link? The old one stops working.')"><input type="hidden" name="csrf" value="{{ admin_csrf }}"><h2 class="font-bold">Buyer lost the link?</h2><p class="text-xs text-muted">Only a hash of the link is stored. Generate a new one and send it to the buyer.</p><button class="button-secondary justify-center">New order link</button></form>
+</div>
+<div class="mt-4 store-panel"><h2 class="font-bold">Licenses</h2><div class="overflow-x-auto"><table class="admin-table mt-2"><thead><tr><th>Key</th><th>Product</th><th>Status</th><th>Live</th><th>Demo</th><th>Last check</th></tr></thead><tbody>
+{% for l in licenses %}<tr><td><a class="mono" href="/admin/licenses/{{ l.id }}">{{ l.license_key }}</a></td><td>{{ l.label }}</td><td><span class="status-pill status-{{ l.status }}">{{ l.status }}</span></td><td class="mono">{{ l.live_login or '—' }}</td><td class="mono">{{ l.demo_login or '—' }}</td><td class="mono">{{ (l.last_check_at or '—')[:16] }} {{ l.last_check_result or '' }}</td></tr>{% else %}<tr><td colspan="6" class="text-muted">Issued when the order is paid.</td></tr>{% endfor %}
+</tbody></table></div></div>
+<div class="mt-4 store-panel"><h2 class="font-bold">Chain transfers linked to this order</h2><div class="overflow-x-auto"><table class="admin-table mt-2"><thead><tr><th>Tx</th><th>Units</th><th>Block</th><th>Conf.</th><th>Status</th><th>Note</th></tr></thead><tbody>
+{% for t in transfers %}<tr><td class="mono text-[11px] break-all">{{ t.tx_hash }}</td><td class="mono">{{ t.amount_units }}</td><td class="mono">{{ t.block_number or '—' }}</td><td class="mono">{{ t.confirmations }}</td><td>{{ t.status }}</td><td>{{ t.note or '' }}</td></tr>{% else %}<tr><td colspan="6" class="text-muted">None.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

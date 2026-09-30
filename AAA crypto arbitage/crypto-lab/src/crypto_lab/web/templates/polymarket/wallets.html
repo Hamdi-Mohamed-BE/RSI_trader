@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "_macros.html" import hero, csrf_field %}
+{% block title %}Wallet tracker · {{ app_name }}{% endblock %}
+{% block hero %}{{ hero("Model D · wallets", "Wallet tracker",
+  "Leaderboard wallets plus your watchlist, with stats from their closed positions and recent trades. Win-rate lower bound is the 95% Wilson bound; 'hedged' wallets often hold both sides (arbitrage / market making). Descriptive only: past leaders are partly luck.") }}{% endblock %}
+{% block content %}
+{% if error %}<div class="flash flash-bad mb-6" role="alert">{{ error }}</div>{% endif %}
+<form method="post" action="/polymarket/wallets/track" class="card mb-6 flex flex-wrap items-end gap-3">
+  {{ csrf_field(csrf_token) }}
+  <label class="min-w-[320px] flex-1"><span class="field-label">Add wallet to watchlist</span>
+    <input class="field-input font-mono" name="address" placeholder="0x…" maxlength="64" required autocomplete="off"></label>
+  <input type="hidden" name="tracked" value="true">
+  <button class="button-primary" type="submit">Track</button>
+</form>
+<div class="card overflow-x-auto p-0">
+  <table class="data-table">
+    <thead><tr><th class="num">Rank</th><th>Wallet</th><th class="num">Leaderboard P/L</th><th class="num">Volume</th><th>Style</th>
+      <th class="num">Closed</th><th class="num">Win rate</th><th class="num">WR low 95%</th><th class="num">PF</th><th class="num">Trades/day</th>
+      <th class="num">Both sides</th><th class="num">Avg buy</th><th>Updated</th><th></th></tr></thead>
+    <tbody>
+    {% for w in wallets %}
+      {% set s = w.stats or {} %}
+      <tr>
+        <td class="num">{{ w.leaderboard_rank or "—" }}</td>
+        <td><a class="card-link font-mono text-xs text-mint hover:text-white" href="/polymarket/wallets/{{ w.address }}">{{ w.address[:8] }}…{{ w.address[-6:] }}</a>
+          <div class="text-xs text-muted">{{ w.user_name }}</div>
+          {% if w.tracked %}<span class="badge badge-safe mt-1">watchlist</span>{% endif %}</td>
+        <td class="num">{{ w.leaderboard_pnl|money(0) }}</td>
+        <td class="num">{{ w.leaderboard_volume|money(0) }}</td>
+        <td>{% if s.style %}<span class="badge {{ 'badge-good' if s.style == 'hedged' else 'badge-neutral' }}">{{ s.style }}</span>{% else %}—{% endif %}</td>
+        <td class="num">{{ s.closed_positions if s else "—" }}</td>
+        <td class="num">{{ s.win_rate|pct(1) if s.win_rate is not none else "—" }}</td>
+        <td class="num">{{ s.win_rate_lower95|pct(1) if s.win_rate_lower95 is not none else "—" }}</td>
+        <td class="num">{{ s.profit_factor|num if s.profit_factor is not none else "—" }}</td>
+        <td class="num">{{ s.trades_per_day|num if s.trades_per_day is not none else "—" }}</td>
+        <td class="num">{{ s.both_sides_ratio|pct(0) if s.both_sides_ratio is not none else "—" }}</td>
+        <td class="num">{{ s.avg_buy_price|money(3) if s.avg_buy_price else "—" }}</td>
+        <td class="font-mono text-[11px]">{{ w.stats_updated_at|dt }}</td>
+        <td>
+          <form method="post" action="/polymarket/wallets/track">{{ csrf_field(csrf_token) }}
+            <input type="hidden" name="address" value="{{ w.address }}">
+            <input type="hidden" name="tracked" value="{{ 'false' if w.tracked else 'true' }}">
+            <button class="button-secondary" type="submit">{{ 'Untrack' if w.tracked else 'Track' }}</button></form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="14" class="text-muted">No wallets yet. Run <code class="font-mono">uv run crypto-lab worker poly-wallets --once</code> or set <em>poly-wallets</em> to SHADOW.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

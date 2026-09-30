@@ -1,8 +1,12 @@
 # Calyx Crypto Arbitrage - Research and Implementation Master Plan
 
 Created: 2026-09-19  
-Status: PLAN ONLY - no trading deployment or profitability validation  
-Owner workspace: `C:\Users\hama101\Desktop\geek\ai trader\AAA crypto arbitage`
+Re-planned: 2026-09-29 - application stack fixed to **FastAPI + SQLite + Tailwind CSS (Calyx site theme) + uv**, with an
+admin dashboard for API keys; cost and paper-trading tables added (§11, §12, §16, §17).  
+Status: PLAN ONLY - no trading deployment or profitability validation; nothing installed, no keys created  
+Owner workspace: `C:\Users\hama101\Desktop\geek\ai trader\AAA crypto arbitage`  
+Sister plan: `POLYMARKET_COPY_AND_MEME_ROTATION_PLAN.md` (Models D and E). Both plans share **one** application
+platform defined in §16-§17 of this file.
 
 ## 1. Purpose and decisions already agreed
 
@@ -12,8 +16,13 @@ The intended deliverable is an evidence-based BTC-first experiment, followed onl
 
 Current decisions:
 
-- Use **HftBacktest as the initial research/backtesting foundation**.
-- Use **Hummingbot as the preferred later trading-prototype foundation**. Its existing exchange connectors and order-management components are useful, but its standard arbitrage executor is not assumed suitable for millisecond latency trading unchanged.
+- **Application stack (decided 2026-09-29):** Python 3.12 managed with **uv** (`pyproject.toml` + `uv.lock`), **FastAPI**
+  (+ Jinja2 templates), **SQLite** as the only database for now, **Tailwind CSS** using the Calyx website's design tokens,
+  and an **admin dashboard** for API keys, bot modes and risk limits. See §16-§17.
+- Use **HftBacktest as the initial research/backtesting foundation** (pip/uv-installable).
+- Use **ccxt** (MIT, uv-installable) as the first exchange adapter layer for REST and WebSocket access in paper/shadow mode.
+  **Hummingbot** remains an optional later execution reference, but it is normally run from its own Docker/conda
+  environment, so it is kept **outside** the uv project and is not a phase-1 dependency.
 - Add **Cryptofeed only if needed** for recording or exchange coverage. Do not build multiple overlapping data systems unnecessarily.
 - Keep **Flashbots simple-arbitrage as a separate educational reference**, not the initial implementation and not a contract to fund unchanged.
 - Start with BTC on two eligible exchanges, preferably the same spot pair and quote asset on both. ETH is a later extension.
@@ -187,6 +196,12 @@ Logical components:
 
 Keep the trading-critical path separate from dashboards, databases that can block, and AI responses. AI may assist offline development, investigation and reporting; it must not authorize each millisecond-sensitive trade.
 
+Mapping onto the 2026-09-29 stack: components 1-6 run as **uv-managed worker processes**, and component 7 plus all
+control and configuration lives in the **FastAPI dashboard** (§16-§17). Workers read their configuration and decrypted
+keys at start-up and write fills and ledger rows to SQLite through a non-blocking queue. The dashboard never sits
+between a signal and an order. High-frequency order-book recordings stay in compressed files and are **not** stored in
+SQLite (see §16.3).
+
 ### Required recorded fields
 
 - Venue, market type, symbol, base/quote asset and contract specification where applicable.
@@ -305,22 +320,43 @@ Stop or redesign if fees remove the edge; order arrival occurs after opportuniti
 
 Do not proceed to live merely because a simulation displays a high win rate. Some profitable-looking cycles may not cover inventory, rebalancing or infrastructure costs.
 
-## 11. Budget and purchasing policy
+## 11. Budget, API-key costs, paper trading and purchasing policy
 
-Planning allowances in USD, excluding labor, taxes and trading losses:
+Re-checked 2026-09-29. Prices change; re-verify before paying anything. Figures exclude labour, taxes and trading losses.
 
-| Item | Read-only research | Small live pilot |
-|---|---:|---:|
-| Server | $24-$48/month | $42-$100/month |
-| Storage, backups, monitoring | $10-$30/month | $10-$50/month |
-| Public exchange market data | Budget $0 initially; verify access/limits | Verify requirements |
-| Trading capital | $0 | $500-$1,000 total at risk |
-| HftBacktest/Hummingbot software license fee | $0 for open-source use under applicable licenses | $0 for open-source use under applicable licenses |
-| Paid historical data | Not included; obtain quote if needed | Not assumed |
+### 11.1 Cost per API key / service (Models A and B)
 
-Expected initial research infrastructure expense: approximately **$35-$80 for one month**. Possible pilot allocation: approximately **$550-$1,150 including capital and one month's infrastructure**. These totals are allowances, not quotes or minimum viable profitable capital.
+| Service | Key needed? | Cost of the key/subscription | Per-trade cost | Paper trading available? |
+|---|---|---|---|---|
+| Binance spot API | Yes (trading); no key for public books | $0 | 0.10% maker/taker (0.075% paying fees in BNB) at the regular tier | **Yes**: Spot Testnet with virtual balances. Plumbing only; its liquidity is not the real market. |
+| Bybit spot API | Yes (trading) | $0 | 0.10% / 0.10% at the regular tier | **Yes**: separate testnet, plus a demo account on mainnet with pre-funded virtual balances |
+| OKX spot API | Yes (trading) | $0 | 0.08% maker / 0.10% taker at the regular tier | **Yes**: demo-trading API keys and a simulated-trading header |
+| Kraken spot API | Yes (trading) | $0 | Higher at low volume; check the account's tier | Spot: no official sandbox found, so use shadow mode |
+| Public WebSocket order books and trades (all venues) | No | $0 | - | Used for **shadow/paper mode on real books**, which is the only paper mode that measures real economics |
+| ccxt, HftBacktest, Cryptofeed (open source) | No | $0 | - | - |
+| Historical L2 data vendor (e.g. Tardis-style) | Yes | **Not budgeted.** Get a quote only if 30 days of self-recording is not enough. | - | - |
+| Telegram Bot API (alerts, `/pause`, `/kill`) | Bot token | $0 | - | - |
+| Claude API (optional weekly research summaries, never in the trade path) | Yes | Usage-based; weekly summaries on a small model should cost a few dollars a month. Check anthropic.com/pricing. | - | - |
+| Server: local Windows PC (phases 0-3) | - | $0 (latency not representative) | - | - |
+| Server: DigitalOcean (measured regions) | - | 4 GB basic **$24/month**; 4 GB CPU-optimised **$42/month** (reviewed 2026-09-29) | - | - |
+| Backups/monitoring | - | $0-$10/month | - | - |
 
-DigitalOcean's pricing page reviewed on 2026-09-19 lists a 4 GB basic instance at $24/month and a 4 GB CPU-optimized instance at $42/month. Ordinary cloud hosting does not establish exchange colocation or a speed advantage. Choose regions by measurement, including tail latency and connection stability, not solely marketing or ping.
+Round-trip hurdle for Model A at regular-tier taker fees on both venues: about **0.20% of notional**, before slippage
+and rebalancing. A gap smaller than that is not an opportunity.
+
+### 11.2 Expected initial cost
+
+| Stage | One-off | Monthly | Notes |
+|---|---:|---:|---|
+| Phases 0-3: recorder, shadow/paper mode, dashboard on the local PC | $0 | **$0** | All keys are free; public data only; testnet keys for plumbing tests |
+| Same, on a cloud server for realistic latency | $0 | **$24-$52** | $24-$42 server + $0-$10 backups |
+| Phase 4: tiny live pilot (only after explicit approval) | **$500-$1,000 capital** split across two venues | $24-$52 | Capital is at risk. Fees are paid per fill from the capital. |
+
+**Paper first? Yes, for both Model A and Model B.** Use shadow mode on real public books, with simulated fills at
+executable depth and modelled latency. Use exchange testnets and demos only to prove order and plumbing code; never
+count their P/L as evidence.
+
+DigitalOcean pricing (re-checked 2026-09-29): a 4 GB basic Droplet is $24/month and a 4 GB CPU-optimised Droplet is $42/month, now billed per second with a monthly cap. Ordinary cloud hosting does not establish exchange colocation or a speed advantage. Choose regions by measurement, including tail latency and connection stability, not solely marketing or ping.
 
 BJF's crypto product page reviewed on that date lists a $1,790 one-time license. This plan does not recommend purchasing it before feasibility is demonstrated. Hosting and trading capital would be additional.
 
@@ -330,25 +366,41 @@ No credible expected monthly income is available yet. Do not extrapolate vendor 
 
 ## 12. Suggested future project organization
 
-Only this Markdown plan is created now. Proposed directories after implementation approval:
+**Implemented from 2026-09-29 in `crypto-lab/`** (Model D first; see `crypto-lab/README.md` and `crypto-lab/progress.md`).
+The code lives in that subfolder so it can be extracted and open-sourced as its own repository. There is **one uv project** for all five models
+(A-E), with one dashboard and separate workers:
 
 ```text
 AAA crypto arbitage/
   CRYPTO_ARBITRAGE_MASTER_PLAN.md
-  docs/                 # decisions, venue matrix, security and experiment specifications
-  vendor/               # pinned upstream checkouts, if needed
-  src/                  # adapters, strategy rules, risk and accounting
-  configs/              # non-secret experiment definitions
-  tests/                # unit, replay, execution and accounting tests
-  data/raw/             # immutable local recordings; excluded from Git by default
-  data/normalized/      # reproducible replay inputs
-  experiments/          # manifests, configuration hashes and run metadata
-  reports/              # human-readable results, tables and graphs
+  POLYMARKET_COPY_AND_MEME_ROTATION_PLAN.md
+  pyproject.toml  uv.lock  .python-version      # uv-managed, Python 3.12
+  .env.example                                  # names only, never values
+  app/
+    main.py                  # FastAPI app factory, routers, Jinja2
+    settings.py              # pydantic-settings; DB path, bind host, master-key source
+    db.py  models.py         # SQLModel/SQLAlchemy 2 on SQLite (WAL mode)
+    migrations/              # Alembic
+    security/  auth.py  vault.py  csrf.py       # admin login, encrypted key vault
+    routers/   admin_keys.py  admin_bots.py  admin_risk.py  audit.py
+               cex.py  polymarket.py  solana.py  research.py
+    templates/ base.html  admin/*.html  cex/*.html  polymarket/*.html  solana/*.html
+    static/    calyx.css (tokens copied from the site)  app.css (Tailwind build output)
+  workers/
+    cex_recorder.py  cex_arb_shadow.py           # Models A/B
+    poly_collector.py  poly_scanner.py  poly_copy_paper.py   # Model D
+    sol_scanner.py  sol_rugfilter.py  sol_rotation_paper.py  # Model E
+    telegram_bot.py
+  tests/                     # unit, replay, accounting, vault and auth tests
+  data/                      # git-ignored
+    crypto_lab.sqlite        # app state, ledgers, paper fills, audit log
+    raw/  normalized/        # compressed order-book/trade recordings (Parquet/zstd)
+  experiments/  reports/     # manifests, standard results tables, graphs
 ```
 
-Use a separate research environment. Do not install into or alter the active MT5/Calyx runtime implicitly. Do not commit API keys or large market-data archives. Preserve upstream licenses and notices.
+Keep this environment separate: do not install into or alter the active MT5/Calyx runtime or the public website. Do not commit API keys, the SQLite file or market-data archives. Preserve upstream licenses and notices.
 
-Website integration is a later optional change: a clearly labeled research page with simulated versus live evidence, not replacement of current EA statistics. Trading logic should run independently of website availability.
+The dashboard reuses the Calyx website's **look** (§16.4). It is a separate app on its own port and is **not** mounted on the public site. A public research page on the Calyx website remains a later, separately approved change. Trading logic runs independently of website availability.
 
 ## 13. Tests required before enabling execution
 
@@ -371,7 +423,7 @@ Passing these tests proves specified behaviors under tested conditions, not abse
 2. Ask which crypto exchange accounts are available and confirm residence/product eligibility without requesting secrets in chat.
 3. Confirm starting capital, allowed operating budget and spot-only scope. Do not assume historic FTMO/Exness authorization applies.
 4. Recheck official repository health, releases, licenses, exchange docs and fee schedules because they change.
-5. Select and pin HftBacktest first; assess Hummingbot connectors for the chosen venues without enabling live trading.
+5. Create the uv project and dashboard skeleton (§16-§17) only after approval. Pin HftBacktest and ccxt first; assess Hummingbot connectors separately (outside the uv project) without enabling live trading.
 6. Check historical depth availability and provenance. If unsuitable, prepare the read-only recorder and explain the collection period.
 7. Freeze a BTC-only experiment specification, data schema and accounting convention.
 8. Run data-quality and no-lookahead tests before any performance report.
@@ -398,5 +450,121 @@ Sources reviewed for this plan on 2026-09-19. Repository default branches and pr
 14. Ethereum smart-contract security: https://ethereum.org/developers/docs/smart-contracts/security
 15. Bybit fee reference; verify actual account rate: https://www.bybit.com/en-GB/help-center/article/Bybit-Spot-Fees-Explained?category=fab47a9a78e803e784
 16. DigitalOcean instance prices: https://www.digitalocean.com/pricing/droplets
+
+Added 2026-09-29 (cost re-plan):
+
+17. Binance / Bybit / OKX spot fees and testnet/demo environments (comparison, verify on each venue): https://edge-ledger.io/blog/binance-vs-bybit-vs-okx-2026 and https://developers.binance.com/docs/binance-spot-api-docs/faqs/testnet and https://www.bybit.com/en/help-center/article/FAQ-Demo-Trading
+18. DigitalOcean per-second billing and Droplet prices (re-checked): https://www.digitalocean.com/pricing/droplets
+19. uv package manager: https://docs.astral.sh/uv/
+20. Tailwind CSS standalone CLI (no Node.js needed): https://tailwindcss.com/blog/standalone-cli
+
+## 16. Shared application platform (decided 2026-09-29; applies to Models A-E)
+
+### 16.1 Stack
+
+| Layer | Choice | Notes |
+|---|---|---|
+| Package/env manager | **uv** | `uv init`, `uv add`, `uv lock`, `uv run`. Python pinned in `.python-version` (3.12). `uv.lock` is committed; `.venv` is not. No pip/conda in this project. |
+| Web/API | **FastAPI** + Jinja2 + Uvicorn | Server-rendered pages like the Calyx site; small vanilla JS or HTMX for live panels; WebSocket or SSE for live feeds. |
+| Database | **SQLite** (for now) via SQLModel/SQLAlchemy 2 + Alembic migrations | WAL mode, `busy_timeout`, one writer queue per process. Can be swapped for Postgres later without rewriting models. |
+| CSS | **Tailwind CSS** with the Calyx theme tokens | Built with the Tailwind standalone CLI (e.g. the `pytailwindcss` dev dependency via uv), so no Node.js toolchain is needed. The Calyx site uses the Tailwind CDN script; the lab builds a static CSS file instead. |
+| Charts | TradingView Lightweight Charts (Apache-2.0) or inline SVG | Equity/balance curves, spreads, order-book depth. |
+| Workers | Separate `uv run python -m workers.<name>` processes | One process per bot/recorder; supervised by a small launcher or Windows Task Scheduler / systemd on a server. |
+| Alerts/control | Telegram bot | `/status`, `/pause`, `/kill`. Never accepts or displays key material. |
+| Tests/lint | pytest, ruff (uv dev dependencies) | |
+
+Indicative first dependency set (added only after implementation approval; pin versions when adding):
+`uv add fastapi "uvicorn[standard]" jinja2 python-multipart sqlmodel alembic pydantic-settings httpx websockets cryptography keyring argon2-cffi pyotp itsdangerous ccxt polars pyarrow`
+and `uv add --dev pytest ruff pytailwindcss`. Model-specific extras: `hftbacktest` (A/B); the official Polymarket CLOB
+client, checked for CLOB V2 compatibility at build time (D); `solders`/`solana` (E).
+
+Local run (after approval): `uv run uvicorn app.main:app --host 127.0.0.1 --port 8090`. Port 8090 avoids the EA store's
+existing 8080 and other local tools; confirm the port is free first.
+
+### 16.2 Process model
+
+```text
+ FastAPI dashboard (127.0.0.1:8090)  <--- admin browser (login, 2FA)
+   | reads/writes config, keys (encrypted), modes, limits; reads ledgers
+ SQLite  data/crypto_lab.sqlite  (WAL)
+   ^ fills, paper ledger, heartbeats, alerts          ^ config + decrypted keys at start-up only
+ workers: cex_recorder | cex_arb_shadow | poly_collector | poly_scanner | poly_copy_paper | sol_scanner | sol_rotation_paper | telegram_bot
+```
+
+- Workers poll a `bot_control` table (mode, pause, kill) every second. A kill sets mode OFF, cancels open orders and
+  reconciles positions before the worker exits.
+- A worker heartbeat older than N seconds shows red in the dashboard and triggers a Telegram alert.
+
+### 16.3 What goes in SQLite vs files
+
+| SQLite tables (app state) | Compressed files (high-frequency data) |
+|---|---|
+| `admin_user`, `session`, `api_credential` (encrypted), `wallet` (public address; secret only if burner, encrypted), `bot`, `bot_control`, `risk_limit`, `paper_order`, `paper_fill`, `live_order`, `live_fill`, `position`, `ledger_entry`, `opportunity` (Model A/D scanner hits), `wallet_profile` (Model D), `token_screen` (Model E), `alert`, `audit_log`, `cost_entry` (subscriptions + fees), `experiment`, `result_row` | Raw WebSocket messages and normalised order books/trades, partitioned by venue/pair/UTC date (Parquet + zstd, with checksums). SQLite stores only their manifest rows. |
+
+### 16.4 Calyx theme for the dashboard
+
+The theme is taken from the Calyx website source (`AAA EAs/EA store/templates/base.html` and `static/site.css`, which
+render e.g. `https://calyx.duckdns.org/eas/xau-slow-trend?period=3y`). The **tokens and component classes are copied** into
+the lab's own `static/`, so it never links the public site's CSS.
+
+| Token | Value |
+|---|---|
+| `ink` (page background) | `#07100f` |
+| `panel` | `#0b1715` |
+| `mint` (primary accent) | `#7ef7c7` |
+| `lime` (gradient start) | `#c4ff63` |
+| `muted` text | `#8fa6a1` |
+| `line` borders | `rgba(255,255,255,.10)` |
+| Positive / warning / negative badges | `#9ff9d4` / `#f7d98e` / `#fca5a5` on 7% tints |
+| Fonts | **Manrope** 400-800 (UI), **DM Mono** 400/500 (numbers, eyebrows, badges) |
+
+Reused components: sticky blurred header with the Calyx logo mark; `eyebrow` labels (DM Mono, uppercase, 0.16em
+tracking); `button-primary` (lime→mint gradient) and `button-secondary`; `terminal-card` / `product-card` panels (20-24px
+radius, dark green gradient); `stats-strip` and `mini-stat` metric tiles; `chart-panel` for equity curves;
+`evidence-controls` for period selectors (1y / 3y / 5y style); `badge-good|warn|bad|neutral`; the subtle noise overlay
+and 56px grid hero. The layout mirrors the EA detail page: title + badges, a metric strip, the equity/balance chart with
+period controls, then trade tables.
+
+Every results view uses the standard Calyx research table: return %, PF, win rate, consistency score, average
+win/loss streak, Sharpe, max balance DD, max equity DD, **trades, trades/month, trades/day**. It is labelled clearly as
+PAPER, SHADOW or LIVE.
+
+## 17. Admin dashboard (API keys, bots, risk)
+
+### 17.1 Access and hosting
+- Single admin account (more users later). Password hashed with **argon2id**; optional TOTP 2FA (`pyotp`).
+  HttpOnly + SameSite=Strict session cookie; CSRF token on every form; login rate limiting and lockout.
+- Bound to **127.0.0.1** by default. For remote use, go through a private network (e.g. Tailscale) or a reverse proxy
+  with HTTPS and IP allow-listing. **Never** exposed on the public `calyx.duckdns.org` site.
+- Every change is written to `audit_log` (who, when, what field; **never the secret value**).
+
+### 17.2 API key vault
+| Feature | Behaviour |
+|---|---|
+| Add / edit / rotate / disable / delete key | Per provider: Binance, Bybit, OKX, Kraken, Polymarket CLOB (L2 API creds), Kalshi (key id + RSA private key), Helius, Jupiter, Birdeye, Etherscan, Telegram bot token, Anthropic. Fields: label, environment (**testnet / demo / paper-data / live**), created, last rotated, expiry reminder. |
+| Storage | Encrypted at rest (AES-GCM via `cryptography`). The master key comes from the Windows Credential Manager / OS keyring (`keyring`) or a server secret, never from the repo, the SQLite file or `.env` in Git. |
+| Display | Write-only: after saving, only the provider, label and last 4 characters are shown. There is no "reveal" or export endpoint. |
+| Test connection | A read-only call (balance or permission endpoint) that reports OK or FAIL without printing the secret. Where the venue exposes key permissions (e.g. Binance API restrictions), it **blocks live mode if withdrawals are enabled** and shows whether an IP whitelist is set. |
+| Wallet keys (Polymarket signer, Solana burner) | Public address stored in plain text. The private key is only for **dedicated burner wallets** and uses a *separate* passphrase entered at worker start (held in memory, not persisted in plain text). The UI never shows it again. The main wallet is never entered. |
+| Logs | Secrets are redacted by a logging filter; tests check that no key string appears in logs, HTML or API responses. |
+
+### 17.3 Bot and risk control pages
+- **Bots:** one card per worker (Model A/B/D/E), with mode **OFF → SHADOW → PAPER → LIVE**, heartbeat, last error, and
+  pause / kill buttons. LIVE stays locked until the model's paper gate is marked passed, and then needs a typed
+  confirmation plus the 2FA code.
+- **Risk limits** (per bot, stored in SQLite, read by workers): max per trade, max open positions, daily loss stop,
+  max trades per hour, max slippage, max price deviation for copy trades, kill switch.
+- **Ledgers:** paper and live orders, fills, fees, positions and equity curve, in the Calyx theme, with CSV export
+  (no secrets).
+- **Costs:** subscriptions (Helius, Jupiter, server, etc.) plus fees paid, compared with P/L, so the net business
+  result is visible.
+- **Research:** the standard results table per experiment, with dev / validation / holdout labels and trades/month/day.
+
+### 17.4 Build order (after approval)
+1. uv project skeleton, settings, SQLite + Alembic, admin login + 2FA, audit log, Calyx-themed base template.
+2. Key vault + "test connection" for public/testnet keys only.
+3. Bot control table + one worker (the Model D read-only collector or the Model A recorder) + heartbeat page.
+4. Paper ledgers and results pages; Telegram alerts.
+5. Live mode stays disabled in code until a model passes its gate **and** the user approves amount and venue.
 
 **Final principle:** reuse established infrastructure, measure the execution edge, protect keys and capital, and be willing to stop if the real economics do not work.

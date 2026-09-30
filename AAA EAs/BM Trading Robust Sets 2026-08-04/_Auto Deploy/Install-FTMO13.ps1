@@ -43,7 +43,7 @@ function Assert-Package {
     if((Get-FileHash -LiteralPath (Join-Path $StudyRoot 'CalyxFTMOGuard.mqh') -Algorithm SHA256).Hash -ine $manifest.guard_sha){
         throw 'Risk guard changed since compilation. Rebuild and verify the package first.'
     }
-    if($manifest.news_enabled -or $manifest.risk_usd -ne 50 -or $manifest.entries.Count -ne 13){
+    if($manifest.news_enabled -or $manifest.risk_usd -ne 50 -or $manifest.entries.Count -ne 14){
         throw 'Unexpected portfolio policy'
     }
     if(@($manifest.entries | Where-Object slug -match 'news').Count){throw 'News must stay OFF'}
@@ -71,7 +71,7 @@ Write-Host ("Nasdaq 5M DI14 filter: {0}; wider stop and ATR trailing unchanged."
 if($NasdaqDIFilter -eq 'OFF'){Write-Host 'DI OFF is a custom selection; published DI-ON results do not describe it.' -ForegroundColor Yellow}
 if($ValidateOnly){
     foreach($entry in $manifest.entries){$null=Get-FTMOPresetInputs $entry $NasdaqDIFilter}
-    Write-Host 'PASS: 13 integrity-checked guarded EAs, fixed $50 maximum stop risk, no news. No account accessed.';exit 0
+    Write-Host 'PASS: 14 integrity-checked guarded EAs (incl. 3 Way Gold, market entries), fixed $50 maximum stop risk, no news. No account accessed.';exit 0
 }
 
 $candidates=@(Get-Mt5Candidates | Where-Object {
@@ -135,7 +135,7 @@ foreach($entry in $manifest.entries){
     }
 }
 Write-Host "FTMO $Phase / login $login / $server / $($probe.account.balance) USD"
-Write-Host '13 EAs; News Pulse and Gold News V9 OFF. $50 maximum stop risk, rounded DOWN.'
+Write-Host '14 EAs incl. 3 Way Gold (3 modules, market entries); News Pulse and Gold News V9 OFF. $50 maximum stop risk per trade, rounded DOWN.'
 Write-Host 'Limits: $225 open risk; $150 per symbol; $300 daily reserved loss; $9,200 equity buffer.'
 Write-Host 'Seven entries/day maximum; no new entries after three net losing positions; 80% margin cap.'
 Write-Host 'These are entry guards, not guaranteed protection from gaps, outages or FTMO rule breaches.'
@@ -167,7 +167,7 @@ for($i=0;$i -lt $portfolio.Count;$i++){
     $chart=New-ChartText $item $item.BrokerSymbol ([DateTime]::UtcNow.Ticks+$i) $i
     [IO.File]::WriteAllText((Join-Path $profile ('chart{0:D2}.chr' -f ($i+1))),$chart.TrimStart(),$Unicode)
 }
-$order=((1..13 | ForEach-Object {'chart{0:D2}.chr' -f $_}) -join "`r`n")+"`r`n"
+$order=((1..$portfolio.Count | ForEach-Object {'chart{0:D2}.chr' -f $_}) -join "`r`n")+"`r`n"
 [IO.File]::WriteAllText((Join-Path $profile 'order.wnd'),$order,$Unicode)
 Test-ManagedProfile $profile $portfolio 'FTMO installed profile'
 $commonIni=Join-Path $dataRoot 'config\common.ini'
@@ -181,5 +181,5 @@ Set-IniValue $commonIni 'Charts' 'ProfileLast' $ProfileName
     "Account: $login`r`nServer: $server`r`nPhase: $Phase`r`nNews: OFF`r`nNasdaq DI14: $NasdaqDIFilter`r`nRisk: max USD 50 stop risk; costs/gaps extra.`r`n",[Text.UTF8Encoding]::new($false))
 Start-Process -FilePath $terminalPath -ArgumentList ('/profile:"'+$ProfileName+'"') -WindowStyle Hidden
 Write-Host "Installed profile $ProfileName. Algo Trading remains OFF."
-Write-Host 'Review all 13 charts and account details. Enable Algo Trading yourself only when satisfied.'
+Write-Host ('Review all {0} charts and account details. Enable Algo Trading yourself only when satisfied.' -f $portfolio.Count)
 Write-Host 'New phase/account requires running this launcher again. No automatic phase/account switching.'

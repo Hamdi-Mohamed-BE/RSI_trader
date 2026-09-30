@@ -1,0 +1,9 @@
+{% extends "admin/base.html" %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-extrabold">Orders</h1>
+<form class="mt-4 flex flex-wrap gap-2" method="get"><input class="store-input max-w-xs" name="q" value="{{ q }}" placeholder="Order id, email or tx hash"><select name="status" class="store-input max-w-[160px]"><option value="">All statuses</option>{% for s in ['pending','paid','expired','cancelled'] %}<option value="{{ s }}" {{ 'selected' if status == s }}>{{ s }}</option>{% endfor %}</select><button class="button-secondary">Filter</button></form>
+<div class="mt-4 overflow-x-auto store-panel"><table class="admin-table"><thead><tr><th>Order</th><th>Status</th><th>Amount USDT</th><th>Network</th><th>Tx hash</th><th>Conf.</th><th>Email</th><th>Created</th><th>Expires</th></tr></thead><tbody>
+{% for o in rows %}<tr><td><a class="mono" href="/admin/orders/{{ o.id }}">{{ o.public_id }}</a></td><td><span class="status-pill status-{{ o.status }}">{{ o.status }}</span></td><td class="mono">{{ '%d.%02d'|format(o.amount_cents // 100, o.amount_cents % 100) }}</td><td>{{ o.network }}</td><td class="mono text-[11px]">{{ (o.tx_hash or '—')[:18] }}{% if o.tx_hash and o.tx_hash|length > 18 %}…{% endif %}</td><td class="mono">{{ o.confirmations }}</td><td>{{ o.email }}</td><td class="mono">{{ o.created_at[:16] }}</td><td class="mono">{{ o.expires_at[:16] }}</td></tr>{% else %}<tr><td colspan="9" class="text-muted">No orders.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

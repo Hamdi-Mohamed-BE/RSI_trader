@@ -1,0 +1,89 @@
+{
+  "platforms": [
+    "MT4",
+    "MT5",
+    "cTrader",
+    "DXtrade"
+  ],
+  "fee_currency": "EUR",
+  "fees": {
+    "10000": 155,
+    "25000": 250,
+    "50000": 345,
+    "100000": 540,
+    "200000": 1080
+  },
+  "consistency": null,
+  "hold_time": null,
+  "straddle_allowed": true,
+  "handover_days": [
+    2,
+    5
+  ],
+  "news": {
+    "challenge": "allowed",
+    "funded": "allowed"
+  },
+  "weekend_holding": {
+    "challenge": true,
+    "funded": true
+  },
+  "fee_note": "Swing is usually priced like Standard; check ftmo.com.",
+  "id": "ftmo-2step-swing",
+  "firm": "FTMO",
+  "programme": "2-Step Challenge — Swing",
+  "verification": {
+    "status": "official",
+    "checked": "2026-09-29",
+    "sources": [
+      "https://ftmo.com/en/trading-objectives/",
+      "https://ftmo.com/faq/ftmo-swing-account-type/"
+    ],
+    "notes": "Same objectives as Standard; Swing permits news trading and weekend/overnight holding."
+  },
+  "ea_policy": {
+    "status": "allowed",
+    "notes": "EAs allowed unless a forbidden practice."
+  },
+  "account_sizes": [
+    10000,
+    25000,
+    50000,
+    100000,
+    200000
+  ],
+  "phases": [
+    {
+      "name": "Challenge",
+      "target_pct": 10,
+      "min_trading_days": 4,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    },
+    {
+      "name": "Verification",
+      "target_pct": 5,
+      "min_trading_days": 4,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    }
+  ],
+  "daily_loss": {
+    "pct": 5,
+    "basis": "initial_from_day_start_balance",
+    "reset": "00:00 CE(S)T"
+  },
+  "max_loss": {
+    "pct": 10,
+    "type": "static"
+  },
+  "payout": {
+    "split_pct": 80,
+    "first_after_days": 14,
+    "every_days": 14,
+    "min_usd": 20,
+    "fee_refund": true
+  }
+}

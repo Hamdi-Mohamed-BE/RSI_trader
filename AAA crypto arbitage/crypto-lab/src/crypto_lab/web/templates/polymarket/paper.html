@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% from "_macros.html" import hero, stat %}
+{% block title %}Paper ledger · {{ app_name }}{% endblock %}
+{% block hero %}{{ hero("Model D · paper", "Paper ledger",
+  "Each new opportunity is re-priced from a second order-book fetch after the modelled latency. It is filled only if still profitable at the same size; otherwise it is logged as missed. Paper bankroll: " ~ (bankroll|money) ~ " USDC.") }}{% endblock %}
+{% block content %}
+{% set t = table %}
+<div class="stats-strip">
+  {{ stat("Trades", t.trades) }}
+  {{ stat("Trades / month", t.trades_per_month|num) }}
+  {{ stat("Trades / day", t.trades_per_day|num) }}
+  {{ stat("Return", t.return_pct|num ~ "%") }}
+  {{ stat("Profit factor", t.profit_factor|num if t.profit_factor is not none else "∞ / —") }}
+  {{ stat("Win rate", t.win_rate|pct(1)) }}
+  {{ stat("Consistency", t.consistency|pct(1)) }}
+  {{ stat("Avg win / loss streak", (t.avg_win_streak|num(1)) ~ " / " ~ (t.avg_loss_streak|num(1))) }}
+  {{ stat("Sharpe (daily, √365)", t.sharpe|num) }}
+  {{ stat("Max balance DD", t.max_balance_dd_pct|num ~ "%") }}
+  {{ stat("Max equity DD", (t.max_equity_dd_pct|num ~ "%") if t.max_equity_dd_pct is not none else "n/a (no MTM yet)") }}
+  {{ stat("Net P/L (USDC)", t.net_pnl|money) }}
+</div>
+<div class="mt-4 grid gap-3 sm:grid-cols-4">
+  <div class="mini-stat"><span>Settled</span><strong>{{ summary.settled }}</strong></div>
+  <div class="mini-stat"><span>Open (held to resolution)</span><strong>{{ summary.open }}</strong></div>
+  <div class="mini-stat"><span>Missed after latency</span><strong>{{ summary.missed }}</strong></div>
+  <div class="mini-stat"><span>Locked capital</span><strong>{{ summary.locked_capital|money }}</strong></div>
+</div>
+
+<div class="chart-panel mt-6">
+  <p class="field-label">Closed-trade balance (USDC)</p>
+  {{ chart|safe }}
+</div>
+
+<h2 class="section-title mt-10">Paper trades</h2>
+<div class="card mt-4 overflow-x-auto p-0">
+  <table class="data-table">
+    <thead><tr><th>Opened</th><th>Status</th><th>Kind</th><th>Market / event</th><th class="num">Shares</th><th class="num">Capital</th>
+      <th class="num">Detected edge</th><th class="num">P/L</th><th class="num">Latency</th><th>Note</th></tr></thead>
+    <tbody>
+    {% for p in trades %}
+      <tr>
+        <td class="font-mono text-xs">{{ p.opened_at|dt }}</td>
+        <td><span class="badge {{ {'settled': 'badge-good', 'open': 'badge-warn', 'missed': 'badge-neutral'}[p.status] }}">{{ p.status }}</span></td>
+        <td class="font-mono text-[11px]">{{ p.kind.replace('_', ' ') }}</td>
+        <td class="max-w-sm">{{ p.title }}</td>
+        <td class="num">{{ p.shares|money(0) }}</td><td class="num">{{ p.capital|money }}</td>
+        <td class="num">{{ p.detected_edge|money }}</td><td class="num">{{ p.realized_pnl|money }}</td>
+        <td class="num">{{ p.latency_ms }} ms</td><td class="muted-note">{{ p.note }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="10" class="text-muted">No paper trades yet. Put <em>poly-scanner</em> in PAPER mode.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

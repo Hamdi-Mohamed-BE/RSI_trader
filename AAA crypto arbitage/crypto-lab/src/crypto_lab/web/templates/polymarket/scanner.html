@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% from "_macros.html" import hero, stat %}
+{% block title %}Polymarket scanner · {{ app_name }}{% endblock %}
+{% block hero %}{{ hero("Model D · scanner", "Fee-aware arbitrage feed",
+  "Opportunities priced at executable depth with each market's own taker-fee schedule. A row stays active while every scan keeps finding it; seen-count and first/last seen show how long an edge survives.") }}{% endblock %}
+{% block content %}
+{% set last = runs[0] if runs else None %}
+<div class="stats-strip">
+  {{ stat("Last scan", last.started_at|dt if last else "never") }}
+  {{ stat("Mode", last.mode if last else "—") }}
+  {{ stat("Events / markets", (last.events_scanned ~ " / " ~ last.markets_scanned) if last else "—") }}
+  {{ stat("Books (stale)", (last.books_fetched ~ " (" ~ last.stale_books ~ ")") if last else "—") }}
+  {{ stat("Opportunities", last.opportunities if last else "—") }}
+  {{ stat("Scan time", (last.duration_ms ~ " ms") if last else "—") }}
+  {{ stat("Lowest YES+NO ask", last.best_ask_sum|money(3) if last else "—") }}
+  {{ stat("Highest YES+NO bid", last.best_bid_sum|money(3) if last else "—") }}
+</div>
+
+<div class="mt-8 flex items-end justify-between gap-4">
+  <h2 class="section-title">{{ "Active opportunities" if show != "all" else "All opportunities" }}</h2>
+  <div class="flex gap-2">
+    <a class="nav-link {% if show != 'all' %}nav-active{% endif %}" href="?show=active">Active</a>
+    <a class="nav-link {% if show == 'all' %}nav-active{% endif %}" href="?show=all">History</a>
+  </div>
+</div>
+<div class="card mt-4 overflow-x-auto p-0">
+  <table class="data-table">
+    <thead><tr><th>Kind</th><th>Market / event</th><th class="num">Shares</th><th class="num">Capital</th><th class="num">Fees</th>
+      <th class="num">Net edge</th><th class="num">Edge %</th><th class="num">Best edge</th><th>Locked</th><th>First → last seen</th><th class="num">Seen</th></tr></thead>
+    <tbody>
+    {% for o in opportunities %}
+      <tr>
+        <td><span class="badge {{ 'badge-warn' if o.holds_to_resolution else 'badge-good' }}">{{ o.kind.replace('_', ' ') }}</span>
+            {% if not o.active %}<span class="badge badge-neutral mt-1">gone</span>{% endif %}</td>
+        <td class="max-w-md"><div class="font-semibold">{{ o.title }}</div>
+          <details class="mt-1"><summary class="cursor-pointer font-mono text-[11px] text-muted">{{ o.legs|length }} legs</summary>
+            <table class="mt-2 w-full font-mono text-[11px] text-white/70">
+              {% for leg in o.legs %}<tr><td>{{ leg.side }} {{ leg.outcome }}</td><td class="num">{{ leg.shares }} @ {{ leg.avg_price|money(4) }}</td><td class="num">worst {{ leg.worst_price }}</td><td class="num">fee {{ leg.fee|money(4) }}</td></tr>{% endfor %}
+            </table></details></td>
+        <td class="num">{{ o.shares|money(0) }}</td>
+        <td class="num">{{ o.capital|money }}</td>
+        <td class="num">{{ o.fees|money }}</td>
+        <td class="num text-good">{{ o.net_edge|money }}</td>
+        <td class="num">{{ o.edge_pct|pct }}</td>
+        <td class="num">{{ o.best_net_edge|money }}</td>
+        <td class="font-mono text-[11px]">{{ ("until " ~ (o.resolves_at|dt)) if o.holds_to_resolution else "instant (merge/split)" }}</td>
+        <td class="font-mono text-[11px]">{{ o.first_seen_at|dt }}<br>{{ o.last_seen_at|dt }}</td>
+        <td class="num">{{ o.seen_count }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="11" class="text-muted">No opportunities {{ "right now" if show != "all" else "recorded yet" }}. That is the normal state for liquid markets after fees.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2 class="section-title mt-10">Scan health</h2>
+<div class="card mt-4 overflow-x-auto p-0">
+  <table class="data-table">
+    <thead><tr><th>Started</th><th>Mode</th><th class="num">Events</th><th class="num">Markets</th><th class="num">Books</th><th class="num">Stale</th><th class="num">Opps</th><th class="num">Paper fills</th><th class="num">Min ask sum</th><th class="num">Max bid sum</th><th class="num">ms</th></tr></thead>
+    <tbody>
+    {% for r in runs %}
+      <tr><td class="font-mono text-xs">{{ r.started_at|dt }}</td><td><span class="badge {{ mode_badge[r.mode] }}">{{ r.mode }}</span></td>
+        <td class="num">{{ r.events_scanned }}</td><td class="num">{{ r.markets_scanned }}</td><td class="num">{{ r.books_fetched }}</td>
+        <td class="num">{{ r.stale_books }}</td><td class="num">{{ r.opportunities }}</td><td class="num">{{ r.paper_trades }}</td>
+        <td class="num">{{ r.best_ask_sum|money(3) }}</td><td class="num">{{ r.best_bid_sum|money(3) }}</td><td class="num">{{ r.duration_ms }}</td></tr>
+    {% else %}
+      <tr><td colspan="11" class="text-muted">No scans yet. Set <em>poly-scanner</em> to SHADOW or PAPER on the Bots page and start the worker: <code class="font-mono">uv run crypto-lab worker poly-scanner</code></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

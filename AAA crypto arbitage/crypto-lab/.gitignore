@@ -1,0 +1,23 @@
+# Python / uv
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Local state: database, recordings, dev master key. Never commit.
+data/
+*.sqlite
+*.sqlite-*
+*.key
+.env
+.env.*
+!.env.example
+
+# Tailwind standalone binary cache (pytailwindcss)
+.tailwindcss/

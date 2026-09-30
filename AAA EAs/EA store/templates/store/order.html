@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.public_id }} — Calyx{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', path='store.css') }}?v=20260930-store"><meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="mx-auto max-w-7xl px-5 py-10 lg:px-8">
+  <p class="eyebrow-simple">Order {{ order.public_id }}</p>
+  <div class="mt-3 flex flex-wrap items-center gap-4"><h1 class="text-3xl font-extrabold tracking-tight sm:text-5xl">{% if order.status == 'paid' %}Payment confirmed{% elif order.status == 'pending' %}Waiting for your payment{% elif order.status == 'expired' %}Order expired{% else %}Order cancelled{% endif %}</h1><span class="status-pill status-{{ order.status }}" data-order-status>{{ order.status }}</span></div>
+  <p class="page-lead">Bookmark this page. Its private link is your access to your license keys and downloads; anyone with the link can see them.</p>
+</div></section>
+
+<section class="mx-auto grid max-w-7xl gap-8 px-5 py-10 lg:grid-cols-[1fr_360px] lg:px-8">
+  <div class="grid gap-6">
+    {% if demo_mode %}<p class="demo-ribbon">DEMO — the address and amount below are fake demonstration values. Never send funds to them.</p>{% endif %}
+    {% if flash %}<div class="store-flash" role="status">{{ flash }}</div>{% endif %}
+
+    {% if order.status == 'pending' %}
+    <div class="store-panel" data-payment-box data-status-url="/order/{{ token }}/status" data-seconds-left="{{ seconds_left }}">
+      <div class="grid gap-6 md:grid-cols-[220px_1fr]">
+        <div><div class="qr-box" aria-label="QR code of the deposit address">{{ qr|safe }}</div><p class="mt-2 text-center text-[11px] text-muted">QR = deposit address only.<br>Type the amount yourself.</p></div>
+        <div class="grid gap-3">
+          <div class="pay-field"><span>Network</span><code>USDT · {{ order.network }} — {{ network_label }}</code></div>
+          <div class="pay-field"><span>Deposit address</span><code data-copy-source="address">{{ order.deposit_address }}</code><button type="button" class="copy-button" data-copy="address">Copy address</button></div>
+          <div class="pay-field pay-amount"><span>Exact amount (USDT)</span><code data-copy-source="amount">{{ amount }}</code><button type="button" class="copy-button" data-copy="amount">Copy amount</button></div>
+          <p class="text-xs text-muted">Time left: <strong class="font-mono text-white" data-countdown>—</strong> · Status: <span data-chain-status>{% if order.tx_hash %}payment detected, {{ order.confirmations }}/{{ required_confirmations }} confirmations{% else %}not detected yet{% endif %}</span></p>
+        </div>
+      </div>
+      <div class="network-warning mt-5"><strong>Send USDT on {{ order.network }} only.</strong> Wrong network or wrong token = lost funds. The payment must arrive as <strong>exactly {{ amount }} USDT</strong>: if your exchange deducts a withdrawal fee from the amount, add the fee so the received amount is exact. One transfer only. Token contract: <span class="font-mono break-all">{{ contract }}</span>.</div>
+      <p class="mt-4 text-xs leading-5 text-muted">This page refreshes by itself. Transfers that arrive up to {{ late_minutes }} minutes after the timer ends are still matched automatically. Anything else (other amount, other network) is reviewed manually — contact support with your transaction hash.</p>
+    </div>
+    {% elif order.status == 'expired' %}
+    <div class="store-panel"><p class="text-muted">This order expired before a matching payment was confirmed. If you already sent <strong class="text-white">{{ amount }} USDT</strong> on {{ order.network }}, contact support with the transaction hash — it will be matched manually. Otherwise simply <a href="/cart" class="text-mint">start a new checkout</a>.</p></div>
+    {% elif order.status == 'cancelled' %}
+    <div class="store-panel"><p class="text-muted">This order was cancelled. Contact support if you believe this is a mistake.</p></div>
+    {% endif %}
+
+    {% if order.status == 'paid' %}
+    <div id="licenses" class="grid gap-4">
+      <div class="success-banner"><span class="text-mint">✓</span><div><strong>Paid{% if order.tx_hash %} · tx <span class="font-mono text-xs break-all">{{ order.tx_hash }}</span>{% endif %}</strong><p class="mt-1 text-sm text-muted">One license per bot. Download each bot, extract the ZIP and double-click the INSTALL … .bat file. Download links refresh every time you open this page and stay valid for two hours.</p></div></div>
+      {% for item in licenses %}{% set lic = item.row %}
+      <article class="store-panel" data-license="{{ lic.product_slug }}">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div><h2 class="text-xl font-bold">{{ lic.label }}</h2><p class="mt-1 font-mono text-[10px] uppercase tracking-[.14em] text-muted">{% if item.product %}{{ item.product.canonical }} · {{ item.product.timeframe }}{% endif %} · updates until {{ (lic.updates_until or '')[:10] }}</p></div>
+          <span class="status-pill status-{{ lic.status }}">{{ lic.status }}</span>
+        </div>
+        <div class="mt-4 pay-field"><span>License key (pre-filled in the SET)</span><code class="license-key" data-copy-source="key-{{ lic.id }}">{{ lic.license_key }}</code><button type="button" class="copy-button" data-copy="key-{{ lic.id }}">Copy key</button></div>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
+          <div class="pay-field"><span>Live account</span><code>{{ lic.live_login or 'not bound yet' }}{% if lic.live_server %} · {{ lic.live_server }}{% endif %}</code></div>
+          <div class="pay-field"><span>Demo account</span><code>{{ lic.demo_login or 'not bound yet' }}{% if lic.demo_server %} · {{ lic.demo_server }}{% endif %}</code></div>
+        </div>
+        <details class="mt-3 text-sm"><summary class="cursor-pointer text-mint">Set or change account numbers</summary>
+          <form method="post" action="/order/{{ token }}/accounts" class="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+            <input type="hidden" name="csrf" value="{{ csrf_token }}"><input type="hidden" name="license_id" value="{{ lic.id }}">
+            <input class="store-input" name="live_login" inputmode="numeric" placeholder="Live account number" value="{{ lic.live_login or '' }}" {% if lic.live_server %}readonly title="Activated — ask support to reset"{% endif %}>
+            <input class="store-input" name="demo_login" inputmode="numeric" placeholder="Demo account number" value="{{ lic.demo_login or '' }}" {% if lic.demo_server %}readonly title="Activated — ask support to reset"{% endif %}>
+            <button type="submit" class="button-secondary justify-center">Save</button>
+          </form>
+          <p class="store-help">Activated accounts are locked; support can reset them (for example after changing broker).</p>
+        </details>
+        <div class="mt-5">{% if item.download_url %}<a href="{{ item.download_url }}" class="button-primary" data-download>Download {{ lic.label }} (.zip)</a>{% elif lic.status != 'active' %}<p class="store-error">This license is {{ lic.status }}{% if lic.revoke_reason %}: {{ lic.revoke_reason }}{% endif %}.</p>{% else %}<p class="store-error">The download for this bot is being prepared. Contact support — your license is already issued.</p>{% endif %}</div>
+      </article>
+      {% endfor %}
+      <div class="store-panel"><p class="font-bold">After installing</p><ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted"><li>MT5 → Tools → Options → Expert Advisors → tick “Allow WebRequest for listed URL” and add <span class="font-mono text-white">{{ activation_origin }}</span> (the installer does this when MT5 is closed).</li><li>File → Profiles → “Calyx – bot name”.</li><li>Press F7 on the chart → Common → tick “Allow Algo Trading”, then switch on the Algo Trading button — only when you are ready.</li><li>Experts tab shows “Calyx license: activated for account …”.</li></ol><a href="/how-it-works" class="mt-4 inline-block text-sm text-mint">Watch the full walkthrough →</a></div>
+    </div>
+    {% endif %}
+  </div>
+
+  <aside class="store-panel h-fit">
+    <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Order {{ order.public_id }}</p>
+    <div class="mt-3">
+      {% for line in items %}<div class="store-row text-sm"><span>{{ line.label }}</span>{% if line.free %}<span class="store-free">FREE · 3+1</span>{% else %}<span class="font-mono">{{ format_usd(line.sale_cents) }}</span>{% endif %}</div>{% endfor %}
+    </div>
+    <div class="mt-3">
+      <div class="store-total"><span>Subtotal (−{{ store_discount_percent }}% prices)</span><strong>{{ format_usd(pricing.sale_total_cents) }}</strong></div>
+      {% if pricing.free_count %}<div class="store-total"><span>Buy 3, get 1 free ({{ pricing.free_count }} free)</span><strong class="text-mint">−{{ format_usd(pricing.pack_discount_cents) }}</strong></div>{% endif %}
+      {% if pricing.package_applied %}<div class="store-total"><span>Complete portfolio price</span><strong class="text-mint">−{{ format_usd(pricing.package_discount_cents) }}</strong></div>{% endif %}
+      <div class="store-total"><span>Unique amount identifier</span><strong>+{{ format_usd(order.offset_cents) }}</strong></div>
+      <div class="store-total grand"><span>Amount (USDT)</span><strong>{{ amount }}</strong></div>
+    </div>
+    <p class="store-rule mt-4">{{ pack_rule }}</p>
+  </aside>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='store.js') }}?v=20260930-store" defer></script>{% endblock %}

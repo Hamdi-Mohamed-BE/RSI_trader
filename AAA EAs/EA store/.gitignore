@@ -4,3 +4,11 @@ __pycache__/
 *.pyc
 data/*.sqlite3
 data/*.sqlite3-*
+# Calyx direct checkout (local secrets and private order data)
+.env
+data/store.sqlite3
+data/store.sqlite3-*
+data/store-secrets.json
+data/store-secrets.tmp
+# store builds embed per-build license secrets: never commit them
+data/store-builds/

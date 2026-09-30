@@ -10,11 +10,141 @@ __pycache__/
 _Backtests/
 
 # Regenerable local/tool caches.
+**/node_modules/
+**/.venv/
 **/.mypy_cache/
+**/.pytest_cache/
+**/.ruff_cache/
 **/__pycache__/
 *.log
+*.log.err
 /tmp/
 /AI news/tmp/
+
+# Local credentials and explicitly private account snapshots are not publication artifacts.
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+*.private.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/XAU Slow Trend Filter Review 2026-09-29/account-audit.json
+
+# Separate third-party checkout; maintained outside this repository by user choice.
+/AAA BTC JEV/
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Bruni Statistical Models Raw 2026-09-28/export-insufficient-history-attempt.txt.gz
+
+# Raw tester journals, terminal inputs and account-bound research launchers stay local.
+# These contain the isolated tester account identifier; reports and trade ledgers remain published.
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Gold Deployment 2026-09-30/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Gold Deployment 2026-09-30/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Volume Profile All Variants Optimization 2026-09-26 Corrected/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Volume Profile All Variants Optimization 2026-09-26 Corrected/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Volume Profile All Variants Optimization 2026-09-26/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Volume Profile All Variants Optimization 2026-09-26/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Volume Profile Pipeline 2026-09-26/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Volume Profile Pipeline 2026-09-26/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Volume Profile Raw 2026-09-26/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Volume Profile Raw 2026-09-26/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/ATR Touch Raw 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/ATR Touch Raw 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Bitcoin Shock Reversal Pipeline 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Bitcoin Shock Reversal Pipeline 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Bruni Statistical Models Raw 2026-09-28/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Bruni Statistical Models Raw 2026-09-28/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Bruni Statistical Models Raw 2026-09-28/**/export_daily.py
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Conte Research Basket Raw 2026-09-28/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Conte Research Basket Raw 2026-09-28/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Crypto Stock Edge Screen 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Crypto Stock Edge Screen 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/DMC Video Levels Research 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/DMC Video Levels Research 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/EMA VWAP Pullback Raw 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/EMA VWAP Pullback Raw 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Four Ideas Pipeline 2026-09-27/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Four Ideas Pipeline 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Four Screenshot Ideas Raw 2026-09-27/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Four Screenshot Ideas Raw 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO Exit Management Research 2026-09-27/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO Exit Management Research 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO Exit Management Research 2026-09-27/**/run.py
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO Fourteen EA Study 2026-09-27/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO Fourteen EA Study 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO Fourteen EA Study 2026-09-27/**/native.py
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO Thirteen EA Deployment 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO vs Stellar Instant Study 2026-09-28/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO vs Stellar Instant Study 2026-09-28/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/FTMO vs Stellar Instant Study 2026-09-28/**/export_rates.py
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Gold Intraday Bias Pipeline 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Gold Intraday Bias Pipeline 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Gold NY30 Value Area VWAP Raw 2026-09-27/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Gold NY30 Value Area VWAP Raw 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Gold Volatility Regime Pipeline 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Gold Volatility Regime Pipeline 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/In Play ORB Raw 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/In Play ORB Raw 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Intraday Bias Discovery 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Intraday Bias Discovery 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Kane PO3 SMT Raw 2026-09-28/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Kane PO3 SMT Raw 2026-09-28/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Liquidity Continuation Pipeline 2026-09-28/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Liquidity Continuation Raw 2026-09-27/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Liquidity Continuation Raw 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Market Style Bots Raw 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Market Style Bots Raw 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq 5M DI Toggle Comparison 2026-09-28/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq 5M Index Transfer 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq 5M Index Transfer 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq 5M QuantLab Style Research 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq 5M QuantLab Style Research 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq Trend Pullback Exploratory 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq Trend Pullback Exploratory 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq Trend Pullback Pipeline 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq Trend Pullback Pipeline 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/No Wick Candle Raw 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/No Wick Candle Raw 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Okala 8020 Raw 2026-09-28/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Okala 8020 Raw 2026-09-28/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/ORB Trade Count Audit 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/ORB Trade Count Audit 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Order Block 30m Raw 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Order Block 30m Raw 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/PD Sweep Reversal Raw 2026-09-28/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Previous Green 1H Raw 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Previous Green 1H Raw 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/QuantLab Gold Trio Pipeline 2026-09-30/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/QuantLab Gold Trio Pipeline 2026-09-30/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/QuantLab Gold Trio Raw 2026-09-30/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/QuantLab Gold Trio Raw 2026-09-30/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/RSI Mean Reversion 15m Raw 2026-09-25/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/RSI Mean Reversion 15m Raw 2026-09-25/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/US100 M15 Close ORB Raw 2026-09-27/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/US100 M15 Close ORB Raw 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/US100 NY30 Value Area VWAP Raw 2026-09-27/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/US100 NY30 Value Area VWAP Raw 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/US100 Unfilled FVG Raw 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/US100 Unfilled FVG Raw 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/US500 NY30 Value Area VWAP Raw 2026-09-27/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/US500 NY30 Value Area VWAP Raw 2026-09-27/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/XAU Slow Trend Filter Review 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/XAU Slow Trend Filter Review 2026-09-29/**/*journal*.gz
+/AAA EAs/BM Trading Robust Sets 2026-08-04/XAU Slow Trend Weekly Review 2026-09-29/**/*.ini
+/AAA EAs/BM Trading Robust Sets 2026-08-04/XAU Slow Trend Weekly Review 2026-09-29/**/*journal*.gz
+
+# Machine-specific tester configurations containing account identifiers.
+/AAA EAs/BM Trading Robust Sets 2026-08-04/3 Way Volume Profile Raw 2026-09-26/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/ATR Touch Raw 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Crypto Stock Edge Screen 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/DMC Video Levels Research 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/EMA VWAP Pullback Raw 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/In Play ORB Raw 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq 5M Index Transfer 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq 5M QuantLab Style Research 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/No Wick Candle Raw 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/ORB Trade Count Audit 2026-09-29/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Order Block 30m Raw 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/Previous Green 1H Raw 2026-09-25/run-config.json
+/AAA EAs/BM Trading Robust Sets 2026-08-04/RSI Mean Reversion 15m Raw 2026-09-25/run-config.json
 
 # Raw MT5 parameter-screen reports. Keep the compact CSV manifests, locked
 # validation reports, final reports, charts, source code, and .set files.

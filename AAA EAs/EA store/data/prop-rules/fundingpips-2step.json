@@ -1,0 +1,80 @@
+{
+  "platforms": [
+    "MT5"
+  ],
+  "fee_currency": "USD",
+  "fees": {},
+  "consistency": null,
+  "hold_time": null,
+  "straddle_allowed": true,
+  "handover_days": [
+    2,
+    5
+  ],
+  "news": {
+    "challenge": "allowed",
+    "funded": "allowed"
+  },
+  "weekend_holding": {
+    "challenge": true,
+    "funded": true
+  },
+  "fee_note": "Fees change often and promotions are common. Enter the price you will pay.",
+  "id": "fundingpips-2step",
+  "firm": "FundingPips",
+  "programme": "2-Step Standard (8% option)",
+  "verification": {
+    "status": "secondary",
+    "checked": "2026-09-29",
+    "sources": [
+      "https://proptradingvibes.com/blog/fundingpips-two-step-challenge",
+      "https://tradetanto.com/learn/fundingpips-rules"
+    ],
+    "notes": "8% / 5% targets, 5% daily and 10% max (both static from the initial balance), 3 trading days per phase."
+  },
+  "ea_policy": {
+    "status": "restricted",
+    "notes": "Own-coded EAs only, with proof of source code; third-party EAs only as trade/risk managers."
+  },
+  "account_sizes": [
+    5000,
+    10000,
+    25000,
+    50000,
+    100000
+  ],
+  "phases": [
+    {
+      "name": "Phase 1",
+      "target_pct": 8,
+      "min_trading_days": 3,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    },
+    {
+      "name": "Phase 2",
+      "target_pct": 5,
+      "min_trading_days": 3,
+      "min_profitable_days": 0,
+      "profitable_day_pct": 0.0,
+      "time_limit_days": null
+    }
+  ],
+  "daily_loss": {
+    "pct": 5,
+    "basis": "initial_from_day_start_balance",
+    "reset": "server midnight"
+  },
+  "max_loss": {
+    "pct": 10,
+    "type": "static"
+  },
+  "payout": {
+    "split_pct": 80,
+    "first_after_days": 14,
+    "every_days": 14,
+    "min_usd": 20,
+    "fee_refund": true
+  }
+}

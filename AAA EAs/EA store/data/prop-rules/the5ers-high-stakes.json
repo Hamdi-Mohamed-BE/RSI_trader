@@ -1,0 +1,80 @@
+{
+  "platforms": [
+    "MT5"
+  ],
+  "fee_currency": "USD",
+  "fees": {},
+  "consistency": null,
+  "hold_time": null,
+  "straddle_allowed": true,
+  "handover_days": [
+    2,
+    5
+  ],
+  "news": {
+    "challenge": "restricted",
+    "funded": "restricted"
+  },
+  "weekend_holding": {
+    "challenge": true,
+    "funded": true
+  },
+  "fee_note": "Fees change often and promotions are common. Enter the price you will pay.",
+  "id": "the5ers-high-stakes",
+  "firm": "The5ers",
+  "programme": "High Stakes (2-Step)",
+  "verification": {
+    "status": "official",
+    "checked": "2026-09-29",
+    "sources": [
+      "https://the5ers.com/high-stakes/"
+    ],
+    "notes": "10% / 5% targets, 5% daily, 10% max, 3 profitable days (≥0.5% of initial closed profit), unlimited time, news prohibited ±2 min, weekend holding allowed, 1:100 leverage."
+  },
+  "ea_policy": {
+    "status": "allowed",
+    "notes": "Automated trading allowed; own source code required; no HFT, rollover-night scalping, third-party or copy EAs."
+  },
+  "account_sizes": [
+    2500,
+    5000,
+    10000,
+    25000,
+    50000,
+    100000
+  ],
+  "phases": [
+    {
+      "name": "Step 1",
+      "target_pct": 10,
+      "min_trading_days": 0,
+      "min_profitable_days": 3,
+      "profitable_day_pct": 0.5,
+      "time_limit_days": null
+    },
+    {
+      "name": "Step 2",
+      "target_pct": 5,
+      "min_trading_days": 0,
+      "min_profitable_days": 3,
+      "profitable_day_pct": 0.5,
+      "time_limit_days": null
+    }
+  ],
+  "daily_loss": {
+    "pct": 5,
+    "basis": "initial_from_day_start_balance",
+    "reset": "server midnight"
+  },
+  "max_loss": {
+    "pct": 10,
+    "type": "static"
+  },
+  "payout": {
+    "split_pct": 80,
+    "first_after_days": 14,
+    "every_days": 14,
+    "min_usd": 20,
+    "fee_refund": true
+  }
+}

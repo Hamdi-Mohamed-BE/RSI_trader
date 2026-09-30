@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_macros.html" import hero %}
+{% block title %}Audit log · {{ app_name }}{% endblock %}
+{% block hero %}{{ hero("Audit", "Audit log", "Every admin change and login attempt. Secret values are never recorded.") }}{% endblock %}
+{% block content %}
+<div class="card overflow-x-auto p-0">
+  <table class="data-table">
+    <thead><tr><th>When</th><th>Actor</th><th>IP</th><th>Action</th><th>Target</th><th>Detail</th></tr></thead>
+    <tbody>
+    {% for e in events %}
+      <tr>
+        <td class="font-mono text-xs">{{ e.at|dt }}</td><td>{{ e.actor }}</td><td class="font-mono text-xs text-muted">{{ e.ip }}</td>
+        <td class="font-mono text-xs">{{ e.action }}</td><td class="font-mono text-[11px] text-muted">{{ e.target }}</td>
+        <td class="font-mono text-[11px] text-muted">{% for k, v in e.detail.items() %}{{ k }}={{ v }} {% endfor %}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6" class="text-muted">No events yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
