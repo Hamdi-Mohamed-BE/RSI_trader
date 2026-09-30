@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "symbol": "US500",
+  "variant": {
+    "name": "twap-atr",
+    "mode": 5,
+    "both": true,
+    "rr": 0,
+    "protected": true
+  },
+  "window": "1y",
+  "model": 4,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2025.07.29",
+  "build": {
+    "hashes": {
+      "ConteBasket.mq5": "4d48a5ae4d648b0c061104a80e441ad98f6318aeeaaf0c5189cd4f224005cb74",
+      "ConteBasket.ex5": "6e1020ebbe8d5b6b7e25b717ef6334cb65351a6edf393799608ca6f9c9f0d203",
+      "RULES.md": "6f2bbbbbd85411b01beadf01108bc7fbb606a8f5c0454e17ea86578fc96e887d",
+      "run-config.json": "b92dce94c9360ca61c86580ad9660e19fc8d37b27315e292fdcc1c592cdb9336"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 903 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "5",
+    "InpBoth": "true",
+    "InpRR": "0",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1758931200",
+    "InpTag": "US500-twap-atr-1y-m4",
+    "InpMagic": "9282601"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 45.37,
+    "net_profit": -9954.63,
+    "return_pct": -99.55,
+    "profit_factor": 0.89,
+    "win_rate_pct": 19.04,
+    "max_drawdown_pct": 99.61,
+    "trades": 4217,
+    "sharpe_ratio": -3.81,
+    "recovery_factor": -0.85,
+    "history_quality": "63% real ticks",
+    "equity_dd_pct": 99.61,
+    "idea_pf": 0.8868402544466726
+  },
+  "groups": 4217,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "1a827e54a99bd41f855080629c1440a80b0e9b3831b4df63ca365bc68e70546b",
+  "elapsed_seconds": 32.89392566680908,
+  "summaries": [
+    "CB_SUMMARY tag=US500-twap-atr-1y-m4 entries=4217 signals=8726 skips=4509 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=US500 contract=1.00000000 tick=0.01000000 min=0.14000000 step=0.01000000 stops=0 swaplong=-167.70000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t20:22:12.428\tTicks\tUS500 : real ticks begin from 2026.01.01 00:00:00",
+    "NJ\t0\t20:22:15.736\tCore 01\tUS500 : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "verified_already_closed_log_lines": 0
+}

@@ -1,0 +1,75 @@
+{
+  "ok": true,
+  "symbol": "USTEC",
+  "variant": {
+    "name": "overnight-atr",
+    "mode": 2,
+    "both": false,
+    "rr": 0,
+    "protected": true,
+    "control": "day-atr"
+  },
+  "window": "1y",
+  "model": 4,
+  "start": "2025.09.27",
+  "end": "2026.09.27",
+  "warmup_start": "2025.07.29",
+  "build": {
+    "hashes": {
+      "ConteBasket.mq5": "4d48a5ae4d648b0c061104a80e441ad98f6318aeeaaf0c5189cd4f224005cb74",
+      "ConteBasket.ex5": "6e1020ebbe8d5b6b7e25b717ef6334cb65351a6edf393799608ca6f9c9f0d203",
+      "RULES.md": "6f2bbbbbd85411b01beadf01108bc7fbb606a8f5c0454e17ea86578fc96e887d",
+      "run-config.json": "b92dce94c9360ca61c86580ad9660e19fc8d37b27315e292fdcc1c592cdb9336"
+    },
+    "compile": "formation: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 903 ms elapsed, cpu='X64 Regular'\r\n"
+  },
+  "inputs": {
+    "InpMode": "2",
+    "InpBoth": "false",
+    "InpRR": "0",
+    "InpProtected": "true",
+    "InpFixedRisk": "100",
+    "InpTradeFrom": "1758931200",
+    "InpTag": "USTEC-overnight-atr-1y-m4",
+    "InpMagic": "9282601"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10127.32,
+    "net_profit": 127.32,
+    "return_pct": 1.27,
+    "profit_factor": 1.03,
+    "win_rate_pct": 51.61,
+    "max_drawdown_pct": 9.39,
+    "trades": 248,
+    "sharpe_ratio": 0.19,
+    "recovery_factor": 0.13,
+    "history_quality": "63% real ticks",
+    "equity_dd_pct": 9.39,
+    "idea_pf": 1.025286689731602
+  },
+  "groups": 248,
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "history_shortened": 0,
+    "invalid_volume": 0,
+    "invalid_stops": 0,
+    "order_fail": 0,
+    "market_closed": 0,
+    "margin_call": 0
+  },
+  "report_sha": "cd9b42e393535ce4fa55799bf627ac0bc5caec498e6e65312a622414f2a42743",
+  "elapsed_seconds": 49.54148197174072,
+  "summaries": [
+    "CB_SUMMARY tag=USTEC-overnight-atr-1y-m4 entries=248 signals=248 skips=0 partials=0 failures=0 beRetries=0"
+  ],
+  "spec": [
+    "CB_SPEC symbol=USTEC contract=1.00000000 tick=0.01000000 min=0.05000000 step=0.01000000 stops=0 swaplong=-698.10000000 swapshort=0.00000000 swapmode=1"
+  ],
+  "tick_coverage": [
+    "CS\t0\t20:14:11.428\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "GE\t0\t20:14:17.203\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "verified_already_closed_log_lines": 0
+}
