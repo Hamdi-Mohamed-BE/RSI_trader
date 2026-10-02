@@ -1,0 +1,69 @@
+{
+  "name": "portfolio",
+  "symbol": "XAUUSD",
+  "start": "2026.04.01",
+  "end_exclusive": "2026.10.02",
+  "warmup": "2026.01.02",
+  "model": 4,
+  "execution_delay_ms": 150,
+  "requested_risk_usd": 100,
+  "deposit": 10000,
+  "seconds": 64.64,
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9294.5,
+    "net_profit": -705.5,
+    "return_pct": -7.05,
+    "profit_factor": 0.922869874755108,
+    "win_rate_pct": 39.037433155080215,
+    "max_drawdown_pct": 28.48,
+    "trades": 187,
+    "sharpe_ratio": -0.84,
+    "recovery_factor": -0.25,
+    "history_quality": "100% real ticks",
+    "equity_dd_relative_pct": 28.48,
+    "max_win_streak": 5,
+    "max_loss_streak": 13,
+    "commission": -61.47000000000001,
+    "swap": -53.34
+  },
+  "inputs": {
+    "InpFixedRiskUSD": "100",
+    "InpMagic": "1002001",
+    "InpTradeFrom": "1775001600",
+    "InpTag": "portfolio-6m",
+    "InpBrokerUtcOffsetHours": "0",
+    "InpSeasonalReferenceClock": "true",
+    "InpATRIncludesSignal": "true",
+    "InpMaximumDeviationPoints": "1000",
+    "InpRangeSymbol": "DE30",
+    "InpGoldSymbol": "XAUUSD"
+  },
+  "source_hashes": {
+    "ThreeBotPortfolio.mq5": "c0e7ef36697ce00d6b2dde8c18224a3898e5ac8f60841181116fa340257d3b87",
+    "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+    "ThreeBotPortfolio.ex5": "6aba55790887912c17a9d7fd9f6cc0b73636a4c98e3c068bf24260d2779d68a6",
+    "PortfolioModules.mqh": "aa4bd0fcee48f253dcfb4c79dd2bd6c5f8c016050617bff74891480e289ac952",
+    "build_portfolio.py": "f843a2cdc4b2493bb6c0b6965a0825ac3c3328a10106e4b9fe1b2844ced1e6b9"
+  },
+  "summary": [
+    "RR_SUMMARY candidates=129 entries=125 entryFails=1 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+    "RR_SUMMARY candidates=51 entries=41 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=10 expiredSkips=0 ocoRaces=0",
+    "RR_SUMMARY candidates=21 entries=21 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+    "RR_SUMMARY candidates=129 entries=125 entryFails=1 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+    "RR_SUMMARY candidates=51 entries=41 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=10 expiredSkips=0 ocoRaces=0",
+    "RR_SUMMARY candidates=21 entries=21 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0"
+  ],
+  "tick_notes": [
+    "CS\t0\t01:15:46.647\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+    "CS\t0\t01:15:53.041\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "CS\t0\t01:16:08.980\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+    "FL\t0\t01:15:57.299\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "MR\t0\t01:16:14.306\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+    "QJ\t0\t01:15:51.196\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+  ],
+  "portfolio_summary": [
+    "PORTFOLIO_SUMMARY maxOpen=3 nativeEquityDD=28.4763",
+    "PORTFOLIO_SUMMARY maxOpen=3 nativeEquityDD=28.4763"
+  ]
+}

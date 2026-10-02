@@ -3,7 +3,7 @@
 #define OnInit FTMO_StrategyInit
 #define OnTick FTMO_StrategyTick
 #define OnTimer FTMO_StrategyTimer
-#include "src_a9d0618a1e5e.mqh"
+#include "src_ef4b4345e305.mqh"
 #undef OnInit
 #undef OnTick
 #undef OnTimer

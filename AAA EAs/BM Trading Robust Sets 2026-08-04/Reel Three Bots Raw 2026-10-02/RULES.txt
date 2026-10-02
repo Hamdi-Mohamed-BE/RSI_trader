@@ -1,0 +1,92 @@
+REEL THREE BOTS - INITIAL, UNOPTIMISED RESEARCH - 2 OCTOBER 2026
+
+These are new screenshot reconstructions, not changes to existing production EAs.
+All three EX5 files deliberately require MT5 Strategy Tester. Nothing is attached
+to a live chart. Each individual native test starts with USD 10,000 and fixed
+USD 100 planned stop risk, with volume rounded DOWN; below-minimum volume is
+skipped. Commissions, swaps, spread and 150 ms execution delay are included as
+provided by the Exness demo tester environment. Slippage and gaps can exceed
+planned risk. Results are individual tests, not a shared portfolio simulation.
+
+Primary window: 1 October 2025 through 1 October 2026, end boundary 2 October.
+Fresh six-month window: 1 April 2026 through 1 October 2026, end boundary 2 October.
+Historical warm-up precedes the entry window and produces no entries.
+Model 4 is real-tick mode but MT5 generates ticks when broker real ticks are absent;
+read run.json tick_notes and report history_quality. Do not call the whole yearly
+window a 100% real-tick result. Smoke tests are implementation checks, not evidence
+for selecting a strategy. None of these runs is untouched out-of-sample validation.
+
+SHARED PORTFOLIO ADDITION (requested after the individual raw tests)
+ThreeBotPortfolio.ex5 is a native multicurrency MT5 test on ONE USD hedging account.
+DE30 range plus two independent gold modules can hold positions simultaneously;
+each module retains its own position limit and magic ID. No extra daily/FTMO
+controls are added. Tester leverage remains 1:2000, not FTMO account leverage.
+InpRiskPercent=1 means 1% of CURRENT SHARED BALANCE per new trade. Each module's
+sizing target refreshes before its entry logic. InpRiskPercent=0 uses fixed USD
+comparison mode. Pending range risk is sized when placed, not continuously resized.
+Same downward lot rounding and minimum-lot skip policy as the raw individual tests.
+Gold runs on every XAUUSD chart tick; DE30 checks its latest quote from chart events
+and a 1-second timer fallback. Shared execution scheduling/conversion quotes can
+produce slightly different entries than separate single-symbol tests.
+Actual portfolio equity/balance/margin are exported at 5-minute intervals. Native
+MT5 reports measure full equity drawdown; chart DD is sampled and can understate it.
+One range placement was rejected with invalid price (10015) on 2 June 2026 after
+execution delay; that day was skipped. Annual test also skipped four market-closed
+ATR signals. These rejections are retained in the results, not repaired post hoc.
+The report is Shared Portfolio.html. Frozen source/EX5 copies are saved alongside
+the native runs. To reproduce a fresh test:
+  python build_portfolio.py
+  python run.py compile portfolio-percent
+  python run.py run portfolio-percent 6m|1y
+  python portfolio_report.py
+Existing results cannot be overwritten by the runner. build_portfolio.py adapts
+the frozen single-bot common source mechanically into independent stateful modules;
+original single-bot source hashes and baseline results remain unchanged.
+
+1. DE40 RANGE IDEA / EXNESS DE30 DATA PROXY - DE40Range.ex5
+The available instrument is named DE30 and described by the broker as Germany 30
+Index. This has NOT been independently certified as the exact DE40 contract/feed.
+Report results as Exness DE30, not verified DE40 performance.
+Reference clock: UTC+2 in winter / UTC+3 between the last Sundays in March and
+October (switch at 01:00 UTC); underlying Exness server offset in these tests is 0.
+Set InpSeasonalReferenceClock=false to use broker clock directly (unrun alternative).
+High/low: available completed M1 bars in [08:00,11:00), reference clock.
+Place unbuffered buy stop at high / sell stop at low on first eligible tick after
+11:00, within five minutes. Initial SL at the opposite boundary. No TP or trailing.
+Cancel opposite pending on fill, maximum one filled entry per day. Expiry and
+flatten at 18:00 reference clock (first executable tick). If one order fails to
+place, cancel the other. If levels are already crossed or too close to market,
+skip the day rather than chase entry. OCO is software cancellation, not an atomic
+broker-side guarantee; test journals track double-fill races.
+
+2. GOLD ATR CANDLE IDEA - GoldATRCandle.ex5
+Check each completed H1 candle using broker's H1 alignment. Native MT5 ATR(200),
+including signal candle by default (InpATRIncludesSignal=true).
+Signal range is high-low, strictly greater than 2.5 ATR. Buy requires bullish body
+and close in upper 25%; sell requires bearish body and close in lower 25%.
+Market entry on first tick of next H1 bar, within five minutes; no future candle
+is read. SL = signal close +/- 0.5% of signal close; TP = signal close +/- 3.5%.
+Actual execution price, spread and delay can change the nominal 7:1 reward/risk.
+Assumption: at most one open position. Other signals while occupied are skipped.
+No trailing, break-even or time exit. A market-closed rejection is not chased later.
+
+3. GOLD DONCHIAN IDEA - GoldDonchian.ex5
+Channel: highest high / lowest low of latest 175 completed H1 bars at decision time.
+Entry trigger is last completed M1 close strictly outside the channel; market
+entry at first tick of next M1 bar, within 60 seconds. SL is 0.5% of entry quote;
+TP is 1% of entry quote. Actual fill differences can change the nominal 2:1.
+Assumption: one open position total, no opposite-side hedge. Each side disarms
+after successful entry and resets on a completed M1 crossing of the rolling
+channel midpoint in the opposite direction. Failed entries do not disarm a side.
+Trailing checks every tick when executable favourable move reaches 0.5% of entry
+price. Candidate SL follows current Bid for buy / Ask for sell at a distance of
+0.1% of original entry price. SL only tightens and must respect broker stop levels.
+No additional session restriction, break-even or timed exit.
+
+Reproduce in the isolated research terminal:
+  python run.py compile range|atr|donchian
+  python run.py run range|atr|donchian smoke|1y|6m
+Existing result folders are protected from reuse/overwrite. The runner checks
+fresh report creation, actual tester inputs, warm-up exclusion, all positions
+closed, and equality of ledger net P/L to native report net P/L. Raw source hashes
+are saved with each result. Never treat compile success as profitability evidence.

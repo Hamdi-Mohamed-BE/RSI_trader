@@ -136,6 +136,10 @@ def ftmo13_presets() -> list[dict[str, Any]]:
     if not FTMO_PACKAGE.is_file():
         return []
     package = json.loads(FTMO_PACKAGE.read_text(encoding="utf-8"))
+    if package.get('gold_target_release'):
+        # Fixed-$50 guarded fills and new targets have not been rerun together.
+        # Generic cache re-sizing must not masquerade as the installed FTMO package.
+        return []
     balance = float(package.get("reference_balance") or 10_000)
     risk_usd = float(package.get("risk_usd") or 50)
     base = {
@@ -155,6 +159,8 @@ def ftmo13_presets() -> list[dict[str, Any]]:
     ]
 
 def load_suggestions() -> dict[str, Any] | None:
+    if (PACKAGE_ROOT / 'Gold Targets Deployment 2026-10-02/SELECTION.json').is_file():
+        return None  # Earlier frozen combinations used the old Gold target ledgers.
     if not SUGGESTIONS.is_file():
         return None
     return dict(json.loads(SUGGESTIONS.read_text(encoding="utf-8")))

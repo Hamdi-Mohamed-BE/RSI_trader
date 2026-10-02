@@ -262,7 +262,7 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert len(products) == 35
     assert sum(product.exit_mode == "Dynamic 50/20" for product in products) == 8
     assert sum(product.exit_mode == "Dynamic 60/20 only" for product in products) == 1
-    assert sum(product.exit_mode == "Current EA exits" for product in products) == 6
+    assert sum(product.exit_mode == "Current EA exits" for product in products) == 5
     assert sum(product.exit_mode == "Native 60-second exit" for product in products) == 0
     assert sum(product.exit_mode == "Event-specific NFP / CPI / FOMC exits" for product in products) == 4
     assert sum(product.exit_mode == "Fixed 5R / no trailing" for product in products) == 1
@@ -272,7 +272,9 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert sum(product.exit_mode == "Nominal 6R / timed flat" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 2R / BE at 1R" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 3R / no trailing" for product in products) == 1
-    assert sum(product.exit_mode == "Fixed 6R / no trailing" for product in products) == 1
+    assert sum(product.exit_mode == "Fixed 6R / no trailing" for product in products) == 0
+    assert sum(product.exit_mode == "Fixed 0.6R / BE threshold retained at 1R" for product in products) == 1
+    assert sum(product.exit_mode == "Fixed 1R normal / 0.5R FTMO / no trailing" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 1R / no trailing" for product in products) == 0
     assert sum(product.exit_mode == "Fixed 2.5R / six-hour exit" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 2.5R / no trailing" for product in products) == 1

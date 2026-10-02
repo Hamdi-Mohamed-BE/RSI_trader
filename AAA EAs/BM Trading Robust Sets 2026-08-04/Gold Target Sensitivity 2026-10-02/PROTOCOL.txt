@@ -1,0 +1,39 @@
+Gold target-only sensitivity study — frozen 2 October 2026
+
+Finish the Reel Three Bots pipeline before running this study. Research only.
+No live orders, active terminal changes, production EA edits, store/cache updates or deployment.
+
+Use the exact locked recommended Trend Progression H4 and Slow Trend H4 sources/settings.
+Original targets: Trend Progression 3R; Slow Trend 6R. Only target changes:
+0.5R, 0.6R, 0.7R, 1R, 2R, 3R, 6R for each EA. Seven complete reruns each;
+shorter targets can release occupancy and cause new future entries, so do not clip an old ledger.
+Keep all entry, stop, cooldown and management logic unchanged. In particular Trend Progression
+retains break-even at 1R with a +0.05R lock; Slow Trend retains management=none.
+
+Native isolated portable MT5 tester only; USD hedging, $10,000 deposit, nominal 1% equity risk,
+1:2000 research leverage, broker costs, 150 ms execution delay, Model 4 every tick.
+Preserve current broker-minimum/ceil volume policy for like-for-like target comparison.
+Actual risk can exceed 1%; record initial fill-to-stop risk, commissions/swap and boundary closures.
+365 calendar days of no-entry warm-up for all variants. H4 chart.
+Windows, end-exclusive: 6m 2026.04.01–2026.10.02; 1y 2025.10.01–2026.10.02;
+3y 2023.10.01–2026.10.02; 5y 2021.10.01–2026.10.02.
+Real ticks begin January 2026. Older ticks are generated. Windows overlap.
+This is exploratory historical target sensitivity, NOT a fresh independent pipeline qualification.
+The sources and cached recommended settings were already selected using historical data.
+
+Instrumented wrapper is tester-only: renamed event handlers, target assigned by case table,
+warm-up gate, observational trade return-code logging, position-ID ledger and native worst-tick DD.
+Preserve original CTrade return values; do not alter decisions, management, fills or risk sizing.
+Verify a fresh baseline parity run without the CTrade logging subclass before accepting results.
+Retain original-source/setting/helper hashes and every batch's source, native report and journal.
+
+Selection predeclared before results: screen clean execution, positive returns, PF>=1.20,
+positive daily closed-P/L Sharpe in BOTH 5y and 1y; minimum 30 positions in 5y and 20 in 1y.
+Highest-win-rate research candidate: largest 1y net win rate among screened variants;
+tie-break 5y PF, then 1y return/native equity DD. Balanced research candidate: maximum
+minimum(1y,5y) daily Sharpe among screened variants; tie-break 5y PF then lower 1y equity DD.
+Six-month/3y evidence shown for context and fragility; no post-hoc changes to selection gates.
+No screened variant => report none. Maximum winning streak is descriptive and is not optimized
+alone: it grows with sample size. Show average/max win and loss runs, full TP rate separately
+from small positive SL/break-even exits, realized payoff, PF, Sharpe, drawdown and trade counts.
+All 14 target settings and all results disclosed. No future-profit or FTMO passing claims.

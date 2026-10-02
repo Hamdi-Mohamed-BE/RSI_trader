@@ -38,20 +38,16 @@ def test_profit_close_locks_the_day_at_the_target():
     assert f.skipped == {"daily profit close": 1}
 
 
-def test_presets_default_to_fixed_50_usd_with_daily_controls():
+def test_changed_gold_targets_hide_stale_ftmo_package_forecasts():
     presets = {p["id"]: p for p in client.get("/api/prop-sim/catalog").json()["presets"]}
-    controls = presets["ftmo13-controls"]
-    assert controls["sizing"] == "fixed_usd" and controls["risk_usd"] == 50 and len(controls["eas"]) == 14
-    assert controls["guards"] == {"equity_stop_pct": 2.0, "profit_close_pct": 4.0}
-    assert "NOT installed" in controls["note"]
-    assert presets["ftmo13"]["guards"] == {}
+    assert 'ftmo13' not in presets and 'ftmo13-controls' not in presets
 
 
 def test_run_accepts_daily_controls():
     _prop_limiter._hits.clear()
-    preset = next(p for p in client.get("/api/prop-sim/catalog").json()["presets"] if p["id"] == "ftmo13-controls")
-    body = {"programme_id": preset["programme_id"], "account_size": 10000, "eas": preset["eas"], "paths": 200,
-            **preset["guards"]}
+    body = {"programme_id": 'ftmo-2step-swing', "account_size": 10000,
+            "eas": [{'slug':'xau-trend-progression','risk_pct':1.0}, {'slug':'xau-slow-trend','risk_pct':1.0}],
+            "paths": 200, "equity_stop_pct":0.05, "profit_close_pct":0.05}
     res = client.post("/api/prop-sim/run", json=body)
     assert res.status_code == 200, res.text
     assert any(k.startswith("closed flat by") or k.startswith("daily") for k in res.json()["stats"]["skipped"])

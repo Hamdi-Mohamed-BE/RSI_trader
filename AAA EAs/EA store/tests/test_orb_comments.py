@@ -33,6 +33,13 @@ def test_ftmo_only_orb_binaries_changed_and_guards_unchanged():
     assert len(before['entries']) in (13,14) and len(after['entries'])==14 and after['entries'][13]['slug']=='3-way-gold'
     assert after['entries'][13]['inputs']['InpMarketEntries']=='true' and after['entries'][13]['inputs']['InpRiskPercent']=='0.5'
     for old,new in zip(before['entries'],after['entries']):
+        if new['slug']=='xau-trend-progression':
+            # Separate, explicitly selected target release; guard/other inputs unchanged.
+            assert after['gold_target_release']=='GOLD-TARGETS-20261002'
+            expected={**old['inputs'],'InpRewardRisk':'0.6'}
+            assert new['inputs']==expected
+            assert new['settings_sha']!=old['settings_sha'] and new['expert_sha']!=old['expert_sha']
+            continue
         assert old['inputs']==new['inputs'] and old['settings_sha']==new['settings_sha']
         differences={key for key in old if old[key]!=new[key]}
         if new['slug'] in ('xau-orb-london-ny-overlap-m30','us100-h1-orb-13utc'):

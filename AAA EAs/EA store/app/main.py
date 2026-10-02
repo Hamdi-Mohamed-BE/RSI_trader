@@ -139,10 +139,11 @@ def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> P
             "max_loss_streak": stats.get("max_loss_streak"),
             "history_quality": str(cached.get("history_quality") or "Native MT5 report"),
             "source_note": str(cached.get("notice")),
+            "status": cached.get("evidence_status", base_evidence.status),
         }
     )
     changes: dict[str, Any] = {"evidence": evidence}
-    if period == DEFAULT_PERIOD:
+    if period == "1y":
         changes.update({"one_year_evidence": evidence, "one_year_return_pct": evidence.return_pct})
     return product.model_copy(update=changes)
 
@@ -505,6 +506,7 @@ async def product_detail(
                 "max_loss_streak": stats.get("max_loss_streak"),
                 "history_quality": str(cached.get("history_quality") or "Native MT5 report"),
                 "source_note": str(cached.get("notice")),
+                "status": cached.get("evidence_status", display_evidence.status),
             }
         )
     context = _base_context(request, "catalogue") | {
@@ -685,19 +687,20 @@ async def evidence_series(
     if payload is None:
         raise HTTPException(status_code=503, detail=f"The {period} {selected_mode} evidence cache is not ready yet.")
     payload["stats"] = {**payload["stats"], "sharpe_annualized": product_sharpe(product.slug, selected_mode, period, payload["stats"])}
-    if mode == "compare" and product.safe_filter_supported:
-        safe = load_product_cache(product.slug, "safe", period)
-        if safe is not None:
-            payload["datasets"] = [
-                {"label": "Standard", "color": "#7ef7c7", "series": payload["series"], "stats": payload["stats"], "trades": payload["trades"]},
-                {"label": product.safe_mode_label, "color": "#68a7ff", "series": safe["series"], "stats": {**safe["stats"], "sharpe_annualized": product_sharpe(product.slug, "safe", period, safe["stats"])}, "trades": safe["trades"]},
-            ]
-            if product.dynamic_mode_supported:
-                dynamic = load_product_cache(product.slug, "dynamic", period)
-                if dynamic is not None:
-                    payload["datasets"].append(
-                        {"label": product.dynamic_mode_label, "color": "#f2bd5b", "series": dynamic["series"], "stats": {**dynamic["stats"], "sharpe_annualized": product_sharpe(product.slug, "dynamic", period, dynamic["stats"])}, "trades": dynamic["trades"]}
-                    )
+    if mode == "compare":
+        payload["datasets"] = [
+            {"label": 'Standard' if product.standard_mode_label=='Standard mode' else product.standard_mode_label, "color": "#7ef7c7", "series": payload["series"], "stats": payload["stats"], "trades": payload["trades"]}
+        ]
+        for cache_mode,supported,label,color in (
+            ('safe',product.safe_filter_supported,product.safe_mode_label,'#68a7ff'),
+            ('dynamic',product.dynamic_mode_supported,product.dynamic_mode_label,'#f2bd5b'),
+        ):
+            if not supported: continue
+            comparison=load_product_cache(product.slug,cache_mode,period)
+            if comparison is not None:
+                payload['datasets'].append(dict(label=label,color=color,series=comparison['series'],
+                    stats={**comparison['stats'],'sharpe_annualized':product_sharpe(product.slug,cache_mode,period,comparison['stats'])},
+                    trades=comparison['trades']))
     return JSONResponse(
         payload,
         headers={"Cache-Control": "public, max-age=300", "X-Evidence-Cache": "HIT"},

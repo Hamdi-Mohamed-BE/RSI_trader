@@ -40,6 +40,14 @@ def build(compile_eas=True, only_slugs=None):
                 e[key]=override[key]
             for key in ("expert","settings"):
                 e[key]=str(BASE/e[key])
+    # User-selected target release. Do not mutate the historical FTMO experiment.
+    gold_path=BASE/'Gold Targets Deployment 2026-10-02/SELECTION.json'
+    gold=json.loads(gold_path.read_text(encoding='utf-8'))
+    for e in entries:
+        if e['slug'] not in gold['profiles']:continue
+        p=gold['profiles'][e['slug']]; f=p['ftmo']
+        e.update(expert=str(BASE/p['expert']),expert_sha=p['expert_sha'],
+                 settings=str(BASE/f['settings']),settings_sha=f['settings_sha'],inputs=f['inputs'])
     # Explicit comment-only build replacement; never rewrite historical FROZEN.json.
     comment_release=json.loads((BASE/"ORB Comment Labels 2026-09-28/RELEASE.json").read_text())
     assert comment_release["comment_only"] is True
@@ -86,9 +94,10 @@ def build(compile_eas=True, only_slugs=None):
         (OUT/name).write_text(text,encoding="utf-8")
         return name
 
-    manifest=dict(version="FTMO14-20260930-3WAYGOLD-MARKET",news_enabled=False,risk_usd=50,
+    manifest=dict(version="FTMO14-20261002-GOLD-TARGETS",news_enabled=False,risk_usd=50,
                   comment_release=comment_release["version"],
-                  portfolio_forecast_status="Prior fixed-target simulations do not apply to the changed Nasdaq management",
+                  gold_target_release=gold['version'],
+                  portfolio_forecast_status="Prior simulations do not apply to revised Nasdaq management and Gold targets; standalone 1% evidence is not a guarded FTMO forecast",
                   reference_balance=10000,entries=[],source_hashes=evidence,
                   guard_sha=sha(ROOT/"CalyxFTMOGuard.mqh"))
     for e in entries:

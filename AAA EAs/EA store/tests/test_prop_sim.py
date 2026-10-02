@@ -180,13 +180,13 @@ def test_page_and_catalog_render():
     assert client.get("/prop-simulator").status_code == 200
     cat = client.get("/api/prop-sim/catalog").json()
     assert len(cat["programmes"]) >= 14 and len(cat["eas"]) >= 30
-    assert any(p["id"] == "ftmo13" and len(p["eas"]) == 14 for p in cat["presets"])
+    assert not any(p['id']=='ftmo13' for p in cat['presets'])  # New Gold targets require a fresh guarded-package replay.
 
 
-def test_run_ftmo13_package_returns_both_equity_modes_and_standard_stats():
+def test_custom_ledger_replay_returns_both_equity_modes_and_standard_stats():
     _prop_limiter._hits.clear()
-    preset = next(p for p in client.get("/api/prop-sim/catalog").json()["presets"] if p["id"] == "ftmo13")
-    body = {"programme_id": preset["programme_id"], "account_size": 10000, "eas": preset["eas"], "paths": 300}
+    body = {"programme_id": 'ftmo-2step-swing', "account_size": 10000,
+            "eas": [{'slug':'ema3','risk_pct':0.5},{'slug':'nasdaq-overnight','risk_pct':0.5}], "paths": 300}
     res = client.post("/api/prop-sim/run", json=body)
     assert res.status_code == 200, res.text
     data = res.json()

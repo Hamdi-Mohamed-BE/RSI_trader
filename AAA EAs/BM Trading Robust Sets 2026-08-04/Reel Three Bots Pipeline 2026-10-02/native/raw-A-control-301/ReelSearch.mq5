@@ -1,0 +1,7 @@
+#property strict
+#property version "1.00"
+#property description "Tester-only Gold Trio search EA (generated case table)."
+double Cases[][34]={
+{0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.1,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,175.0,2.5,0.25,8.0,11.0,18.0,1.0,0.0,60.0,200.0,0.0,0.0,20.0,20.0,80.0}
+};
+#include "Main.mqh"

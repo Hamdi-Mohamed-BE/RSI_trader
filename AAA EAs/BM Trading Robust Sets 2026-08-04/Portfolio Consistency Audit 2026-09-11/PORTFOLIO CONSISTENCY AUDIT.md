@@ -6,14 +6,14 @@ Evidence cutoff: **2026-08-30**. Four removals were applied after explicit user 
 
 | Scenario | Horizon | Return | PF | Win rate | Max DD | Trades |
 |---|---:|---:|---:|---:|---:|---:|
-| Active 34 before Sell Nasdaq mode change | 6m | +1423.48% | 3.89 | 47.71% | 9.23% | 962 |
-| Active 34 before Sell Nasdaq mode change | 1y | +10162.58% | 6.71 | 49.42% | 4.97% | 1912 |
-| Active 34 before Sell Nasdaq mode change | 3y | +51896.92% | 7.90 | 49.33% | 10.05% | 5165 |
-| Active 34 before Sell Nasdaq mode change | 5y | +92118.30% | 7.35 | 47.02% | 34.28% | 8228 |
-| Recommended active 34 | 6m | +1421.42% | 3.95 | 48.11% | 9.49% | 952 |
-| Recommended active 34 | 1y | +10171.13% | 6.78 | 49.89% | 4.46% | 1892 |
-| Recommended active 34 | 3y | +51903.73% | 7.99 | 49.48% | 11.90% | 5101 |
-| Recommended active 34 | 5y | +92135.21% | 7.40 | 47.21% | 33.69% | 8123 |
+| Active 35 before Sell Nasdaq mode change | 6m | +1443.25% | 3.55 | 50.09% | 11.06% | 1106 |
+| Active 35 before Sell Nasdaq mode change | 1y | +10180.17% | 6.28 | 51.62% | 5.52% | 2189 |
+| Active 35 before Sell Nasdaq mode change | 3y | +51889.59% | 7.51 | 52.44% | 8.11% | 6096 |
+| Active 35 before Sell Nasdaq mode change | 5y | +92163.18% | 7.07 | 50.46% | 33.07% | 9761 |
+| Recommended active 35 | 6m | +1441.19% | 3.59 | 50.46% | 11.36% | 1096 |
+| Recommended active 35 | 1y | +10188.72% | 6.34 | 52.05% | 5.02% | 2169 |
+| Recommended active 35 | 3y | +51896.39% | 7.59 | 52.60% | 9.92% | 6032 |
+| Recommended active 35 | 5y | +92180.09% | 7.12 | 50.65% | 32.51% | 9656 |
 
 ## Applied mode recommendations
 
@@ -41,7 +41,8 @@ DMC Current XAU remains active by explicit user decision.
 | BTC Top Down FVG Liquidity | 5Y PF is only 1.21, although recent performance improved. |
 | Nasdaq 5M Candle Momentum | User-selected DI + wide price stop + ATR trail. 5Y PF 1.29 and equity DD 24.07% at 1% risk; retrospective selection, overnight/weekend exposure, not FTMO validation. Fixed-target pass forecasts are obsolete for this management. |
 | XAU Regime Switch | Strong long history but last six months are -4.95% with PF 0.43. |
-| XAU Slow Trend | Strong 3Y/5Y evidence but last six months are -7.13% with PF 0.48. |
+| XAU Trend Progression | User-selected 0.6R; retrospective sensitivity, five-year PF 1.156 fails the strict 1.20 screen. Not FTMO validation. |
+| XAU Slow Trend | Normal BATs use 1R (one-year PF 1.198, five-year PF 1.134); FTMO target 0.5R has one-year PF 1.106. Strict cross-window screen failed; standalone tests are not guarded FTMO results. |
 | News Pulse XAU | Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations. |
 | News Pulse XAG | Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations. |
 | News Pulse BTC | Required News Pulse exposure retained at fixed risk. Review the independent period's trade count and real-tick coverage; older generated ticks and live news slippage remain limitations. |

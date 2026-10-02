@@ -75,6 +75,25 @@ Before re-running a long test, determine whether cached evidence already matches
 
 ## 4. Repository architecture
 
+### Current Gold target selection — 2026-10-02
+
+`Gold Targets Deployment 2026-10-02` is the current release: all eight maintained
+normal BAT modes select Trend Progression 0.6R and Slow Trend 1R. The guarded
+FTMO roster selects Trend 0.6R; Slow 0.5R is prepared but adding Slow to that
+roster requires the pending user choice (it was not in the existing 14 EAs).
+No live terminal/chart/settings were changed. Original research files remain
+archived; source copies change only the target input default. Existing normal
+ceil/minimum-lot policy and the separate FTMO fixed-$50 guard are unchanged.
+
+Website evidence comes from the target-sensitivity native position ledgers,
+four independent windows ending 2026-10-02 exclusive. Slow's FTMO-target tab is
+a nominal 1% standalone comparison, not guarded FTMO evidence. All chosen
+targets failed the strict cross-window PF screen; retain Research labels.
+Old FTMO package pass/payout presets and prop suggestions are hidden until
+new guarded-portfolio simulations exist. Portfolio overlays are rebuilt on
+the common coverage; they are not shared-margin/floating-equity tests.
+Local website changes do not prove deployment to the public VPS.
+
 ### Active EA and research root
 
 `AAA EAs\BM Trading Robust Sets 2026-08-04`

@@ -128,6 +128,7 @@ class Product(BaseModel):
     dynamic_mode_supported: bool = False
     recommended_dynamic_mode: bool = False
     dynamic_mode_label: str = "Dynamic London"
+    standard_mode_label: str = "Standard mode"
     dynamic_default_note: str = "This is the Best Recommended BAT default."
     dynamic_default_standard_note: str = "Standard mode is available for comparison; the Best Recommended BAT defaults this EA to Dynamic mode."
     dynamic_mode_note: str = "Research preset using volatility-scaled exits."
@@ -173,7 +174,8 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "XAU RSI VWAP": ("rsi-vwap-xau", "current", "Current EA exits"),
     "BTC POC Fibonacci": ("pocfib-btc", "current", "Fixed 5R / no trailing"),
     "XAU Elliott Wave 1-2-3": ("elliott-xau", "current", "Fixed 3R / no trailing"),
-    "XAU Slow Trend": ("slow-trend-xau", "current", "Fixed 6R / no trailing"),
+    "XAU Trend Progression": ("trend-progression-xau", "current", "Fixed 0.6R / BE threshold retained at 1R"),
+    "XAU Slow Trend": ("slow-trend-xau", "current", "Fixed 1R normal / 0.5R FTMO / no trailing"),
     "XAU Regime Switch": ("regime-switch-xau", "current", "6R trend / 3R VWAP regime switch"),
     "XAG Session VWAP Snapback": ("session-vwap-xag", "current", "Fixed 1R / no trailing"),
     "US100 Month End Flow": ("month-end-flow-us100", "current", "Fixed 2.5R / six-hour exit"),
@@ -343,20 +345,20 @@ CORE_META: dict[str, dict[str, Any]] = {
     },
     "XAU Trend Progression": {
         "strategy": "H4 trend-pullback continuation",
-        "tagline": "An optimized long-only XAUUSD H4 continuation model with structural risk and a 3R objective.",
-        "description": "This locked optimized build follows established XAUUSD H4 uptrends, waits for price to pull back into the 20 EMA area, and enters only after the completed signal candle confirms continuation. It uses a five-bar structural stop, a 3R target and a small locked-profit break-even move after +1R.",
+        "tagline": "A long-only XAUUSD H4 continuation model with structural risk and a user-selected 0.6R target.",
+        "description": "Follows established XAUUSD H4 uptrends, waits for a pullback into the 20 EMA area, and requires completed-candle continuation confirmation. All maintained normal and FTMO BATs now target 0.6R. The five-bar structural stop is unchanged; the retained break-even threshold at +1R normally lies beyond this target.",
         "session": "All broker sessions / H4",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable MQ5 source, the exact optimized 1% SET and its locked MT5 Every Tick report were reviewed together.",
+        "logic_audit_note": "User-selected target-only release, 2 October 2026. Native 6m/1y/3y/5y sensitivity evidence; not a fresh untouched validation. Five-year PF is 1.156, below the 1.20 strict screen.",
         "logic": [
             {"title": "Confirm the established H4 uptrend", "detail": "The completed signal candle must close above the 50 EMA, the 20 EMA must be above the 50 EMA, and the 50 EMA must be higher than it was three H4 bars earlier. Shorts are disabled in the promoted XAUUSD preset."},
             {"title": "Require genuine multi-bar momentum", "detail": "The close must be at least 0.50 ATR above the close from twenty-four H4 bars earlier. Signal bodies smaller than 0.05 ATR and total candle ranges larger than 2.50 ATR are rejected."},
             {"title": "Wait for the pullback to value", "detail": "The completed H4 signal candle must touch the 20 EMA within a tolerance of 0.25 ATR. The range-leadership filter is disabled, so the EA does not require price to finish in a fixed percentile of its 48-bar range."},
             {"title": "Accept objective bullish confirmation", "detail": "The optimized preset uses the EA's any-confirmation mode: a bullish body, bullish engulfing pattern or bullish pin-bar can confirm that the pullback is attempting to resume upward."},
             {"title": "Place the structural stop and size from chosen risk", "detail": "The stop goes below the lowest low of the latest five completed H4 candles with a 0.10 ATR buffer. OrderCalcProfit measures the one-lot loss to that stop, and volume is rounded up to the broker step from the risk selected when the BAT starts. The default and validated value is 1% of current equity; the broker minimum lot is used when necessary, even if that exceeds the target."},
-            {"title": "Target 3R and protect after +1R", "detail": "Take profit is three times the original stop distance. Once price reaches +1R, the stop can advance to entry plus 0.05R. ATR trailing, Dynamic 50/20, maximum-hold exits, session filtering and the experimental regime gate are disabled."},
+            {"title": "Take the 0.6R base hit", "detail": "Take profit is 0.6 times the original stop distance in both normal and FTMO presets. Break-even remains configured at +1R with +0.05R lock; target normally fills before that threshold. ATR trailing, Dynamic 50/20, maximum-hold exits, sessions and the experimental regime gate remain disabled."},
         ],
-        "risk_note": "Every BAT asks for risk before installation; the default and validated value is 1% of current equity per trade. The selected model is long-only, so it can remain inactive during extended bearish or non-trending gold conditions.",
+        "risk_note": "Normal BATs use selected risk (default nominal 1% equity), with ceil/minimum-lot override that can exceed it. FTMO retains its separate fixed $50 admission guard. Displayed standalone tests are not guarded FTMO results. Long-only; may remain inactive in bearish/non-trending conditions.",
         "price": 349,
         "accent": "gold",
         "featured": True,
@@ -384,19 +386,19 @@ CORE_META: dict[str, dict[str, Any]] = {
     "XAU Slow Trend": {
         "strategy": "Slow multi-horizon time-series momentum",
         "tagline": "A selective XAUUSD H4 trend model combining one-, three- and six-month momentum.",
-        "description": "The promoted XAUUSD build votes across completed one-, three- and six-month momentum horizons, aligns the result with EMA100, and trades the accepted direction from H4 data. It uses a 1.5 ATR stop, fixed 6R objective, no trailing and percentage-based equity risk.",
+        "description": "Votes across completed one-, three- and six-month momentum horizons, aligns with EMA100, and trades H4 signals. Uses a 1.5 ATR stop, no trailing, and user-selected 1R for normal BATs or 0.5R for the separately guarded FTMO BAT. Switch below to inspect target-only standalone evidence; neither variant passed the strict cross-window PF screen.",
         "session": "All broker sessions / H4",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Readable MQ5 source, the frozen optimized SET, untouched locked-year native MT5 report, three-year context and rolling walk-forward audit were reviewed together.",
+        "logic_audit_note": "2 October 2026 target-only release. 1R normal: one-year PF 1.198, five-year PF 1.134. 0.5R FTMO target: one-year PF 1.106, five-year PF 1.081. These are retrospective standalone tests, not new FTMO validation.",
         "logic": [
             {"title": "Vote across three slow horizons", "detail": "The EA compares the latest completed H4 close with scaled 21-, 63- and 126-trading-day lookbacks. Their signs are averaged, and a trade requires a non-zero majority direction."},
             {"title": "Confirm direction with EMA100", "detail": "A long requires the completed H4 close above the scaled EMA100; a short requires it below. Both directions remain enabled in the locked XAU preset."},
             {"title": "Use completed data and avoid late attachment entries", "detail": "Signals use the last completed H4 candle. On a live attach or terminal restart, the EA records the existing signal and waits for the next completed H4 candle rather than entering an old setup late."},
             {"title": "Place the ATR stop", "detail": "The initial stop is 1.5 times H4 ATR(14) from entry. Volume is rounded up to the broker step from the calculated one-lot loss so the planned loss targets the percentage selected in the BAT. If the requested size is below the broker minimum, the minimum lot is used and the trade is not skipped for sizing."},
-            {"title": "Leave the wide winner intact", "detail": "The target is fixed at six times original risk. Break-even, ATR trailing, chandelier trailing, Dynamic 50/20 and maximum-hold exits are disabled in the promoted configuration."},
+            {"title": "Use the account-profile target", "detail": "Normal portfolio BATs target 1R; the FTMO BAT targets 0.5R. Break-even, ATR/chandelier trailing, Dynamic 50/20 and maximum-hold exits remain disabled. The entry votes, 24-hour cooldown and one-position limit are unchanged."},
             {"title": "Isolate this chart from other XAU EAs", "detail": "Magic number 969060311 uniquely identifies this strategy. On hedging accounts it scans all positions and manages only its own matching XAU position."},
         ],
-        "risk_note": "Every BAT applies the user's selected equity-risk percentage to this EA; pressing Enter defaults to the validated 1%. The locked year had 35 trades, so it should begin on demo forward testing.",
+        "risk_note": "Normal BATs retain selected risk (default nominal 1% equity) and minimum-lot override. FTMO keeps the separate fixed $50 admission guard and account locks. Displayed 0.5R comparison uses standalone 1% research sizing, NOT the guarded FTMO portfolio. High win rate does not guarantee adequate PF or a pass.",
         "price": 399,
         "accent": "emerald",
         "featured": True,
@@ -1884,29 +1886,9 @@ def _rsi_vwap_xau_evidence() -> Evidence | None:
 
 
 def _trend_progression_xau_evidence() -> Evidence | None:
-    path = TREND_PROGRESSION_ROOT / "final-audit.json"
-    if not path.exists():
-        return None
-    data = _load_json(path)
-    row = data.get("symbols", {}).get("xauusd", {}).get("optimized_locked")
-    if not row:
-        return None
-    report = Path(str(row["path"]))
-    trades = int(row["trades"])
-    return Evidence(
-        label="Locked optimized one-year MT5 validation",
-        period=f"{data['test_design']['locked'].replace(' to ', ' to ')}",
-        return_pct=float(row["return_pct"]),
-        profit_factor=float(row["profit_factor"]),
-        drawdown_pct=float(row["equity_dd_pct"]),
-        win_rate_pct=float(row["win_rate_pct"]),
-        trades=trades,
-        history_quality=str(row.get("history_quality", "99%")),
-        source_note="Exness XAUUSD H4, native MT5 Every Tick history, broker spread, commission, swap and random execution delay using the exact optimized 1% risk preset.",
-        chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
-        status="Validated evidence",
-        caution="The locked year contains only 25 trades. Its 10,000-path Monte Carlo P5 was positive, but the sample remains small and does not guarantee the next year.",
-    )
+    from .gold_targets import evidence
+    data=evidence('xau-trend-progression')
+    return Evidence(**data) if data else None
 
 
 def _elliott_wave_xau_evidence() -> Evidence | None:
@@ -1949,31 +1931,9 @@ def _elliott_wave_xau_evidence() -> Evidence | None:
 
 
 def _slow_trend_xau_evidence() -> Evidence | None:
-    path = SLOW_TREND_ROOT / "summary.json"
-    if not path.is_file():
-        return None
-    data = _load_json(path)
-    row = next((item for item in data.get("native", []) if item.get("symbol") == "XAUUSD"), None)
-    if row is None:
-        return None
-    report = SLOW_TREND_ROOT / "Native" / "xauusd-selected-test-model0" / "xauusd-selected-test-model0.htm"
-    trades = int(row["locked_trades"])
-    return Evidence(
-        label="Untouched locked-year MT5 validation — optimized slow trend",
-        period="2025-09-01 to 2026-09-01",
-        return_pct=float(row["locked_return"]),
-        profit_factor=float(row["locked_pf"]),
-        drawdown_pct=float(row["locked_equity_dd"]),
-        win_rate_pct=float(row["locked_win_rate"]),
-        trades=trades,
-        sharpe_ratio=float(row["locked_sharpe"]),
-        recovery_factor=float(row["locked_recovery"]),
-        history_quality="99%",
-        source_note="Exness XAUUSD H4, native MT5 generated Every Tick history, broker spread, commission, swap and random execution delay using the frozen 1% configuration selected before the locked year.",
-        chart_path=report.with_suffix(".png") if report.with_suffix(".png").is_file() else None,
-        status="Validated evidence",
-        caution=f"The locked year contains {trades} trades and is historical evidence, not a forecast. The wide 6R target creates a deliberately lower win rate and requires patient demo forward testing.",
-    )
+    from .gold_targets import evidence
+    data=evidence('xau-slow-trend')
+    return Evidence(**data) if data else None
 
 
 def _regime_switch_xau_evidence() -> Evidence | None:
@@ -2845,6 +2805,9 @@ def get_catalog() -> list[Product]:
     trend_progression_xau = _trend_progression_xau_evidence()
     elliott_wave_xau = _elliott_wave_xau_evidence()
     slow_trend_xau = _slow_trend_xau_evidence()
+    from .gold_targets import evidence as gold_target_evidence
+    slow_ftmo_data = gold_target_evidence('xau-slow-trend', 'dynamic')
+    slow_ftmo_evidence = Evidence(**slow_ftmo_data) if slow_ftmo_data else None
     regime_switch_xau = _regime_switch_xau_evidence()
     session_vwap_xag = _session_vwap_xag_evidence()
     month_end_flow_us100 = _month_end_flow_us100_evidence()
@@ -3064,12 +3027,14 @@ def get_catalog() -> list[Product]:
                 set_source=(r"Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M Candle Momentum - OPTIMIZED 2P5R - HARD 1PCT.set" if is_nasdaq_di else item["set_source"]),
                 safe_set_source=item["safe_set_source"],
                 dynamic_expert_source=(
+                    item['expert_source'] if item['label'] == 'XAU Slow Trend' else
                     r"Sell Nasdaq 15min Research 2026-09-08\Dynamic Exit Research\EA\Sell Nasdaq 15min Dynamic Exit Research EA.ex5"
                     if item["label"] == "Sell Nasdaq 15min"
                     else item["claude_expert_source"] if is_nasdaq_di
                     else None
                 ),
                 dynamic_set_source=(
+                    r'Gold Targets Deployment 2026-10-02\Sets\xau-slow-trend-ftmo-target.set' if item['label'] == 'XAU Slow Trend' else
                     r"Sell Nasdaq 15min Research 2026-09-08\Dynamic Exit Research\Sets\Sell Nasdaq 15min - london-safe dynamic exit candidate - 1pct.set"
                     if item["label"] == "Sell Nasdaq 15min"
                     else item["claude_set_source"] if is_nasdaq_di
@@ -3106,10 +3071,12 @@ def get_catalog() -> list[Product]:
                     if item["label"] == "Sell Nasdaq 15min"
                     else "Independent completed-D1 Markov gate enabled inside this EA."
                 ),
-                dynamic_mode_supported=bool(item["label"] == "Sell Nasdaq 15min" and sell_nasdaq_15m_dynamic) or is_nasdaq_di,
+                dynamic_mode_supported=bool(item["label"] == "Sell Nasdaq 15min" and sell_nasdaq_15m_dynamic) or is_nasdaq_di or item['label'] == 'XAU Slow Trend',
                 recommended_dynamic_mode=recommended_dynamic_mode,
-                dynamic_mode_label="DI + Wide Stop + ATR" if is_nasdaq_di else "Dynamic London",
+                dynamic_mode_label="FTMO target 0.5R" if item['label'] == 'XAU Slow Trend' else "DI + Wide Stop + ATR" if is_nasdaq_di else "Dynamic London",
+                standard_mode_label='Normal target 1R' if item['label'] == 'XAU Slow Trend' else 'Target 0.6R' if item['label'] == 'XAU Trend Progression' else 'Standard mode',
                 dynamic_mode_note=(
+                    '0.5R target comparison: separate $10k account, nominal 1% risk. NOT guarded $50 FTMO results or pass forecasts. Normal BATs use 1R.' if item['label'] == 'XAU Slow Trend' else
                     "DI14 + EMA12; 0.60%-of-price SL; no TP; 6x ATR14 trailing from +1R; overnight/weekend holding. "
                     "All maintained launchers use this management with their existing risk policies."
                     if is_nasdaq_di else
@@ -3127,7 +3094,7 @@ def get_catalog() -> list[Product]:
                 ),
                 evidence=evidence,
                 safe_evidence=safe_evidence,
-                dynamic_evidence=sell_nasdaq_15m_dynamic if item["label"] == "Sell Nasdaq 15min" else nasdaq_di if is_nasdaq_di else None,
+                dynamic_evidence=slow_ftmo_evidence if item['label'] == 'XAU Slow Trend' else sell_nasdaq_15m_dynamic if item["label"] == "Sell Nasdaq 15min" else nasdaq_di if is_nasdaq_di else None,
                 one_year_evidence=one_year_result,
                 one_year_return_pct=one_year_result.return_pct if one_year_result else None,
                 one_year_note=None,

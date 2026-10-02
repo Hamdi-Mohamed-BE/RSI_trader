@@ -1,0 +1,55 @@
+{
+  "name": "range",
+  "symbol": "DE30",
+  "start": "2025.10.01",
+  "end_exclusive": "2026.10.02",
+  "warmup": "2025.06.01",
+  "model": 4,
+  "execution_delay_ms": 150,
+  "requested_risk_usd": 100,
+  "deposit": 10000,
+  "seconds": 38.17,
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10961.5,
+    "net_profit": 961.5,
+    "return_pct": 9.62,
+    "profit_factor": 1.1088535339755483,
+    "win_rate_pct": 46.913580246913575,
+    "max_drawdown_pct": 11.61,
+    "trades": 243,
+    "sharpe_ratio": 1.46,
+    "recovery_factor": 0.71,
+    "history_quality": "55% real ticks",
+    "equity_dd_relative_pct": 11.61,
+    "max_win_streak": 6,
+    "max_loss_streak": 8,
+    "commission": -96.18,
+    "swap": 0.0
+  },
+  "inputs": {
+    "InpFixedRiskUSD": "100",
+    "InpMagic": "1002001",
+    "InpTradeFrom": "1759276800",
+    "InpTag": "range-1y",
+    "InpBrokerUtcOffsetHours": "0",
+    "InpSeasonalReferenceClock": "true",
+    "InpATRIncludesSignal": "true",
+    "InpMaximumDeviationPoints": "1000"
+  },
+  "source_hashes": {
+    "DE40Range.mq5": "196dbf4920ba94c2d0b4bce3f29e156d4a2f0cca0ed8aaf1f71b3bd7dae40a3e",
+    "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+    "DE40Range.ex5": "36a9ab58f1f026a7a65a7ae7be743172fcb49c796e5705618cc13a7d65b7b9f7"
+  },
+  "summary": [
+    "RR_SUMMARY candidates=253 entries=243 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+    "RR_SUMMARY candidates=253 entries=243 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0"
+  ],
+  "tick_notes": [
+    "CN\t0\t00:54:09.505\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+    "CS\t0\t00:54:01.613\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+    "CS\t0\t00:54:04.403\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+    "HL\t0\t00:54:09.505\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+  ]
+}

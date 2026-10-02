@@ -1,0 +1,53 @@
+{
+  "name": "atr",
+  "symbol": "XAUUSD",
+  "start": "2026.04.01",
+  "end_exclusive": "2026.10.02",
+  "warmup": "2026.01.02",
+  "model": 4,
+  "execution_delay_ms": 150,
+  "requested_risk_usd": 100,
+  "deposit": 10000,
+  "seconds": 30.8,
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9758.53,
+    "net_profit": -241.47,
+    "return_pct": -2.41,
+    "profit_factor": 0.9253844798976574,
+    "win_rate_pct": 12.195121951219512,
+    "max_drawdown_pct": 17.46,
+    "trades": 41,
+    "sharpe_ratio": -0.58,
+    "recovery_factor": -0.14,
+    "history_quality": "100% real ticks",
+    "equity_dd_relative_pct": 17.46,
+    "max_win_streak": 2,
+    "max_loss_streak": 12,
+    "commission": -9.14,
+    "swap": -53.34
+  },
+  "inputs": {
+    "InpFixedRiskUSD": "100",
+    "InpMagic": "1002002",
+    "InpTradeFrom": "1775001600",
+    "InpTag": "atr-6m",
+    "InpBrokerUtcOffsetHours": "0",
+    "InpSeasonalReferenceClock": "true",
+    "InpATRIncludesSignal": "true",
+    "InpMaximumDeviationPoints": "1000"
+  },
+  "source_hashes": {
+    "GoldATRCandle.mq5": "e6024acc38af03ce5e3efdac328608bef08504674fd1b81b71da9a70905d8426",
+    "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+    "GoldATRCandle.ex5": "da3f18175e7e486ab13a82aeefc136eafd90500f0ee1473dd487ae4d4bdd33b4"
+  },
+  "summary": [
+    "RR_SUMMARY candidates=51 entries=41 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=10 expiredSkips=0 ocoRaces=0",
+    "RR_SUMMARY candidates=51 entries=41 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=10 expiredSkips=0 ocoRaces=0"
+  ],
+  "tick_notes": [
+    "CS\t0\t01:01:56.250\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "PS\t0\t01:02:01.850\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

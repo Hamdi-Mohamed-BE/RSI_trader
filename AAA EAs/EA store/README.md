@@ -1,5 +1,30 @@
 # Calyx — EA Store
 
+## Gold target release — 2026-10-02
+
+All maintained normal portfolio BATs now use Trend Progression **0.6R** and
+Slow Trend **1R**. The guarded FTMO package uses Trend **0.6R**; a Slow **0.5R**
+FTMO target preset is prepared separately (Slow was not in the existing roster).
+Risk policies, entry logic, management thresholds and account locks are unchanged.
+Applying files does not update attached MT5 charts.
+
+`Gold Targets Deployment 2026-10-02` retains copied production sources, compiled
+EX5s, exact SETs, selection hashes, offline publication and launcher checks.
+Original research sources/settings are preserved. Licensed store download builds
+use the new normal presets without refreshing existing licenses.
+
+The website imports native target-sensitivity position ledgers for 6m/1y/3y/5y
+ending **2026-10-02 exclusive**. Slow's comparison tab shows the 0.5R target at
+standalone nominal 1% research risk, **not** the guarded $50 FTMO profile. Historical
+selection failed the strict cross-window PF >=1.20 screen; it is labelled Research.
+Recorded costs are included; real ticks begin January 2026, earlier ticks are
+generated. Ceil/minimum-lot sizing can exceed nominal normal-account risk.
+
+Portfolio charts are rebuilt closed-ledger overlays over the common coverage,
+not shared-margin/floating-equity tests. Old FTMO package forecasts and automatic
+prop suggestions are hidden pending fresh simulation of the revised settings.
+Local publication does not itself deploy the public VPS website.
+
 ## Direct checkout (USDT), online licenses, admin panel, installer, video — 2026-09-30
 
 Local implementation, **not deployed**. Code in `app/store/`; hooks in `app/main.py` are limited to an import, the

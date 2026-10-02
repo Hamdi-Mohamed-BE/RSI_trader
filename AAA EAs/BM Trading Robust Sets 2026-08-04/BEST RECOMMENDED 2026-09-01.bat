@@ -21,7 +21,8 @@ echo - BTC POC Fibonacci keeps its optimized New York session; no master session
 echo - BTC Top Down FVG defaults to all-day 2R; its session and embedded Safe filter remain per-EA inputs
 echo - XAU Elliott Wave uses H4 EMA50 confirmation, signal-candle stop, fixed 3R and no trailing
 echo - LTA Volume Profile, EMA3, XAU Weakness and XAU Squeeze Momentum default to their evidence-selected Safe mode
-echo - XAU Slow Trend uses H4 1/3/6-month momentum, EMA100, 1.5 ATR stop and fixed 6R
+echo - XAU Slow Trend uses H4 1/3/6-month momentum, EMA100, 1.5 ATR stop and fixed 1R
+echo - XAU Trend Progression targets 0.6R; separate FTMO BAT uses Slow 0.5R
 echo - XAU Regime Switch is DEMO-STAGE: H4 6R slow trend in directional regimes and M5 3R overlap VWAP snapback in sideways regimes
 echo - US100 Month-End Flow uses M30, first 3 business days, NY first-hour entry, 1.5 ATR stop, fixed 2.5R and a 6-hour exit
 echo - Sell Nasdaq 15min defaults to Dynamic London: bearish London confirmation, ATR14 x2.5 stop, fixed 3R target and a 60-minute entry window

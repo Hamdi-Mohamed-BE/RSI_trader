@@ -1,0 +1,53 @@
+{
+  "name": "donchian",
+  "symbol": "XAUUSD",
+  "start": "2025.10.01",
+  "end_exclusive": "2026.10.02",
+  "warmup": "2025.06.01",
+  "model": 4,
+  "execution_delay_ms": 150,
+  "requested_risk_usd": 100,
+  "deposit": 10000,
+  "seconds": 36.12,
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10216.44,
+    "net_profit": 216.44,
+    "return_pct": 2.16,
+    "profit_factor": 1.1721055979643764,
+    "win_rate_pct": 57.57575757575758,
+    "max_drawdown_pct": 5.63,
+    "trades": 33,
+    "sharpe_ratio": 4.42,
+    "recovery_factor": 0.37,
+    "history_quality": "56% real ticks",
+    "equity_dd_relative_pct": 5.63,
+    "max_win_streak": 5,
+    "max_loss_streak": 4,
+    "commission": -7.2299999999999995,
+    "swap": -2.05
+  },
+  "inputs": {
+    "InpFixedRiskUSD": "100",
+    "InpMagic": "1002003",
+    "InpTradeFrom": "1759276800",
+    "InpTag": "donchian-1y",
+    "InpBrokerUtcOffsetHours": "0",
+    "InpSeasonalReferenceClock": "true",
+    "InpATRIncludesSignal": "true",
+    "InpMaximumDeviationPoints": "1000"
+  },
+  "source_hashes": {
+    "GoldDonchian.mq5": "77fed8a5451135baf087c52a1fa8d113a13083fc916dca65918da8077d35c638",
+    "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+    "GoldDonchian.ex5": "6c04eea9b70867e7f6dcae8e62b12bd7aade358e2487bd97ae4ddea8b93271ef"
+  },
+  "summary": [
+    "RR_SUMMARY candidates=33 entries=33 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+    "RR_SUMMARY candidates=33 entries=33 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0"
+  ],
+  "tick_notes": [
+    "CS\t0\t00:58:15.559\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "ND\t0\t00:58:20.581\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

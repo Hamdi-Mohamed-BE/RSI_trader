@@ -270,6 +270,12 @@ def cleanup_stale_dynamic_artifacts() -> int:
 
 
 def run_native(product: Product, mode: str, period: str, start: date, end: date, *, force: bool) -> Path:
+    from app.gold_targets import SLUGS, verified_payload
+    if product.slug in SLUGS:
+        if force: raise RuntimeError('Use the audited Gold target runner for fresh native tests')
+        verified_payload(product, mode, period, start, end)
+        # Marker only; product_payload reads the audited position ledger, not this report.
+        return source_paths(product, mode, period)[1]
     if product.slug=='gold-overnight-value-area':
         if force:raise RuntimeError('Use the audited Gold Value Area pipeline for fresh runs')
         return gold_raw_result(mode,period,start,end)[2]
@@ -337,6 +343,9 @@ def run_native(product: Product, mode: str, period: str, start: date, end: date,
 
 
 def product_payload(product: Product, mode: str, period: str, start: date, end: date, report: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    from app.gold_targets import SLUGS, verified_payload
+    if product.slug in SLUGS:
+        return verified_payload(product, mode, period, start, end)
     if product.slug=='gold-overnight-value-area':
         p,rows,verified=gold_raw_result(mode,period,start,end)
         if file_hash(report)!=file_hash(verified):raise RuntimeError('Gold report identity mismatch')

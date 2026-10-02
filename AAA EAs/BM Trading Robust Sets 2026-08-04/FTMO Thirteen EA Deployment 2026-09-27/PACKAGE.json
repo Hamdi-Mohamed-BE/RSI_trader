@@ -1,9 +1,10 @@
 {
-  "version": "FTMO14-20260930-3WAYGOLD-MARKET",
+  "version": "FTMO14-20261002-GOLD-TARGETS",
   "news_enabled": false,
   "risk_usd": 50,
   "comment_release": "ORB-COMMENTS-20260928",
-  "portfolio_forecast_status": "Prior fixed-target simulations do not apply to the changed Nasdaq management",
+  "gold_target_release": "GOLD-TARGETS-20261002",
+  "portfolio_forecast_status": "Prior simulations do not apply to revised Nasdaq management and Gold targets; standalone 1% evidence is not a guarded FTMO forecast",
   "reference_balance": 10000,
   "entries": [
     {
@@ -274,7 +275,7 @@
         "InpSwingLookback": "5",
         "InpStopATR": "2",
         "InpStopBufferATR": "0.1",
-        "InpRewardRisk": "3",
+        "InpRewardRisk": "0.6",
         "InpUseBreakEven": "true",
         "InpBreakEvenAtR": "1",
         "InpBreakEvenLockR": "0.05",
@@ -300,8 +301,8 @@
         "FTMOExpectedSymbol": "",
         "FTMOPhase": "1"
       },
-      "expert_sha": "4241cfe253fa4b8d5e78395bbeb8f4fadba22bb03e8834c675c2a9dc9fd4f6e2",
-      "settings_sha": "f47c147b9179d0696468075adc09241bb6cadf03f26a68e78beaabdfce2be0f3"
+      "expert_sha": "30c47393d55295bc80269decd55e57351b4a16beaa2470fb3f7c02ac20ab31de",
+      "settings_sha": "e72a59a299beda43ea8a670355196b35f698219957c2ac07638807a6be00e0b0"
     },
     {
       "slug": "xau-orb-london-ny-overlap-m30",
@@ -781,7 +782,7 @@
     "AAA Final EAs\\AAA Final EMA3 EA\\AAA_Final_Common.mqh": "89652f2750f68d1312705c88f46bd4ecacbd7d341cc55a9ae387d68c07fd4d37",
     "AAA Final EAs\\AAA Final EMA3 EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
     "AAA Final EAs\\AAA Final EMA3 EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
-    "Trend Progression Research 2026-09-02\\EA\\Trend Progression EA.mq5": "1881d0b1b5f99fc2b55f17576d87aea3f7f9f24bc5e2d6edbd30361a42c84b4c",
+    "Gold Targets Deployment 2026-10-02\\EA\\Trend Progression EA.mq5": "4298a273f89d014dbded547d2c49a73e016220caa5c59c335217644b0cace00e",
     "ORB Volume Data EA\\ORB Volume Data EA.mq5": "773770ae0cabce378436e889a096cc42cd33df7fc6149aecdbee3b245f2699d8",
     "_Shared\\CalyxORBComments.mqh": "669fb48a3d800b8ad68ac0faa9e0355a157c2ac871b9895e6729982c42828055",
     "ORB Volume Data EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
@@ -842,9 +843,9 @@
     "FTMO13-xau-squeeze-momentum-standard.ex5": "59ca616a16954a4c1d925034e926f99e13e6422e636ee46fb6ae4c795c661c14",
     "FTMO13-xau-squeeze-momentum-standard.mq5": "053256af1b10ac7ddb0508b6e63d7869b1c14e3bdb5c1f54b08f7946a23e8a00",
     "FTMO13-xau-squeeze-momentum-standard.set": "0d3a84e4f308c2c4e3ff51967a274a2c7f94f6380efd8de7dbfa49afe9e3a7e8",
-    "FTMO13-xau-trend-progression.ex5": "4241cfe253fa4b8d5e78395bbeb8f4fadba22bb03e8834c675c2a9dc9fd4f6e2",
-    "FTMO13-xau-trend-progression.mq5": "4dee820adc122a6575ac25e13bda99c02610c69f4d911a856a0fcb1f50346cb9",
-    "FTMO13-xau-trend-progression.set": "f47c147b9179d0696468075adc09241bb6cadf03f26a68e78beaabdfce2be0f3",
+    "FTMO13-xau-trend-progression.ex5": "30c47393d55295bc80269decd55e57351b4a16beaa2470fb3f7c02ac20ab31de",
+    "FTMO13-xau-trend-progression.mq5": "feb9cb65d6ec94644a780fed421826e92b28ba0520a8874ff09a0cfdcac194d1",
+    "FTMO13-xau-trend-progression.set": "e72a59a299beda43ea8a670355196b35f698219957c2ac07638807a6be00e0b0",
     "FTMO_Trade.mqh": "7c651aa5e67d936a9bcd12157e6de62e0f80a3be2ab16935826582ea3db21db8",
     "src_0bc9b9d98dc3.mqh": "333b1a00717e8d802ed9dd50dfe4d7e6e52554ed254a7d66b8fd8f71e52c98f8",
     "src_0df6c0c9078b.mqh": "62f553afb927ea93aa4bd1ab70001e4aaa6d130bccda0b1fa06ea783fd2316a8",
@@ -880,6 +881,7 @@
     "src_cb5f09e7f45d.mqh": "62233edb2e409e24dd6aeb2625a89474bcd00a93b474117f71ad27681ce5b00f",
     "src_ddd694eb2e4d.mqh": "8404c40e3c7efe8507c8aa8ff1da565de794730534d1c8df7f5656aa5302dc6a",
     "src_df47e0981de0.mqh": "859e981a8d727cb13a5f4518271bf837a5fe87b268d8e8c35f868e61edfcb83a",
-    "src_e24726d64fb4.mqh": "0414dec579b7d165186b866f5f359f98bb5736fce26f67d8a3454fbbfb6dd495"
+    "src_e24726d64fb4.mqh": "0414dec579b7d165186b866f5f359f98bb5736fce26f67d8a3454fbbfb6dd495",
+    "src_ef4b4345e305.mqh": "6a903ec1a0851f078e9327d6e2fd385008920f6ea98042f1db6aec36832417b8"
   }
 }

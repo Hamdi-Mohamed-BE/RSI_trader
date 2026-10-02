@@ -1,0 +1,55 @@
+{
+  "name": "range",
+  "symbol": "DE30",
+  "start": "2026.09.01",
+  "end_exclusive": "2026.09.15",
+  "warmup": "2026.07.01",
+  "model": 4,
+  "execution_delay_ms": 150,
+  "requested_risk_usd": 100,
+  "deposit": 10000,
+  "seconds": 52.93,
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 10241.26,
+    "net_profit": 241.26,
+    "return_pct": 2.41,
+    "profit_factor": 1.7921851912658022,
+    "win_rate_pct": 50.0,
+    "max_drawdown_pct": 3.67,
+    "trades": 10,
+    "sharpe_ratio": 1.45,
+    "recovery_factor": 0.64,
+    "history_quality": "100% real ticks",
+    "equity_dd_relative_pct": 3.67,
+    "max_win_streak": 4,
+    "max_loss_streak": 5,
+    "commission": -4.43,
+    "swap": 0.0
+  },
+  "inputs": {
+    "InpFixedRiskUSD": "100",
+    "InpMagic": "1002001",
+    "InpTradeFrom": "1788220800",
+    "InpTag": "range-smoke",
+    "InpBrokerUtcOffsetHours": "0",
+    "InpSeasonalReferenceClock": "true",
+    "InpATRIncludesSignal": "true",
+    "InpMaximumDeviationPoints": "1000"
+  },
+  "source_hashes": {
+    "DE40Range.mq5": "196dbf4920ba94c2d0b4bce3f29e156d4a2f0cca0ed8aaf1f71b3bd7dae40a3e",
+    "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+    "DE40Range.ex5": "36a9ab58f1f026a7a65a7ae7be743172fcb49c796e5705618cc13a7d65b7b9f7"
+  },
+  "summary": [
+    "RR_SUMMARY candidates=10 entries=10 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+    "RR_SUMMARY candidates=10 entries=10 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0"
+  ],
+  "tick_notes": [
+    "CS\t0\t00:53:20.767\tTicks\tDE30 : real ticks begin from 2026.07.01 00:00:00",
+    "CS\t0\t00:53:22.967\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+    "DI\t0\t00:53:23.273\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+    "DO\t0\t00:53:23.273\tCore 01\tDE30 : real ticks begin from 2026.07.01 00:00:00"
+  ]
+}

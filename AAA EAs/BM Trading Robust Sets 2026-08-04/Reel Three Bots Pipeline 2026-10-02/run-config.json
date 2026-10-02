@@ -1,0 +1,231 @@
+{
+  "date": "2026-10-02",
+  "risk": "1% current shared balance; floor volume; skip below minimum",
+  "exploratory_failure_override": true,
+  "policy": {
+    "version": "2026-09-10",
+    "development": {
+      "raw_replication_first": true,
+      "one_factor_at_a_time": true,
+      "record_all_tested_configurations": true,
+      "selection_target": "stable parameter plateau, not maximum backtest return"
+    },
+    "locked_evidence": {
+      "minimum_closed_trades": 30,
+      "preferred_closed_trades": 100,
+      "minimum_profit_factor": 1.0,
+      "minimum_deflated_sharpe_probability_pct": 95.0,
+      "minimum_bootstrap_profit_probability_pct": 95.0,
+      "require_bootstrap_return_p05_positive": true,
+      "require_bootstrap_pf_p05_above_1": true,
+      "minimum_profitable_chronological_thirds": 2,
+      "require_recent_half_pf_above_1": true
+    },
+    "risk": {
+      "default_daily_loss_limit_pct": 5.0,
+      "default_total_loss_limit_pct": 10.0,
+      "maximum_closed_pnl_total_breach_probability_pct": 5.0,
+      "native_equity_path_still_required": true,
+      "block_bootstrap_paths": 10000,
+      "block_length": 5
+    },
+    "execution": {
+      "broker_specific_extra_cost_stress_required": true,
+      "do_not_invent_missing_spread_or_slippage": true
+    },
+    "macro": {
+      "provider": "FXMacroData",
+      "optional_overlay_only": true,
+      "raw_baseline_must_pass_first": true,
+      "join_field": "announcement_datetime",
+      "require_point_in_time_safe": true,
+      "require_source_and_freshness_metadata": true,
+      "reject_incomplete_history": true
+    }
+  },
+  "search_space": {
+    "version": "2026-09-26",
+    "purpose": "Default stage-5 search space for the Calyx EA pipeline (see PIPELINE.md). A study copies the dimensions that apply to its logic into its own run-config and records every configuration tried.",
+    "data_split": {
+      "development": "all history except the last ~18-24 months",
+      "validation": "next ~12 months",
+      "holdout": "most recent ~6-12 months + any earlier unused history; used once on the final choice"
+    },
+    "dimensions": {
+      "timeframe": [
+        "M1",
+        "M3",
+        "M5",
+        "M15",
+        "M30",
+        "H1",
+        "H4",
+        "D1"
+      ],
+      "entry_model": [
+        "market_on_signal_close",
+        "next_bar_open",
+        "limit_retest_fixed",
+        "limit_retest_atr_offset",
+        "stop_entry_breakout",
+        "confirmation_candle"
+      ],
+      "stop_type": [
+        "fixed_points",
+        "atr_multiple",
+        "percent_of_price",
+        "signal_candle_extreme",
+        "swing_extreme",
+        "structure_level"
+      ],
+      "stop_atr_multiples": [
+        0.5,
+        0.75,
+        1.0,
+        1.5,
+        2.0,
+        3.0,
+        4.0
+      ],
+      "stop_management": [
+        "none",
+        "breakeven_at_R",
+        "atr_trail",
+        "percent_trail",
+        "ma_trail",
+        "swing_trail",
+        "chandelier",
+        "step_lock_dynamic_50_20"
+      ],
+      "breakeven_trigger_R": [
+        0.5,
+        1.0,
+        1.5
+      ],
+      "trail_start_R": [
+        0.5,
+        1.0,
+        1.5,
+        2.0
+      ],
+      "reward_risk": [
+        0.5,
+        0.75,
+        1.0,
+        1.25,
+        1.5,
+        2.0,
+        2.5,
+        3.0,
+        4.0,
+        5.0,
+        6.0
+      ],
+      "exit_model": [
+        "fixed_R",
+        "no_target_trail",
+        "next_level",
+        "time_exit",
+        "end_of_session",
+        "partial_50pct_at_1R_plus_trail"
+      ],
+      "session": [
+        "asia",
+        "london",
+        "new_york",
+        "london_ny_overlap",
+        "ny_open_only",
+        "all_hours"
+      ],
+      "session_utc_note": "Exness server clock is UTC; New York windows follow US DST. Asia 00:00-08:00 UTC, London 07:00-16:00 UTC, New York 13:30-20:00 UTC (DST-adjusted), overlap 12:00-16:00 UTC unless the study defines otherwise.",
+      "day_of_week_exclusions": [
+        "none",
+        "monday",
+        "friday",
+        "monday_and_friday"
+      ],
+      "direction": [
+        "long_only",
+        "short_only",
+        "both"
+      ],
+      "filters": [
+        "none",
+        "ema_slope",
+        "htf_bias",
+        "adx_min",
+        "di_agreement",
+        "atr_percentile_regime",
+        "news_blackout",
+        "spread_cap"
+      ],
+      "trade_management": {
+        "max_trades_per_day": [
+          1,
+          2,
+          3
+        ],
+        "position_mode": [
+          "one_position",
+          "pyramiding"
+        ],
+        "reentry_after_stop": [
+          false,
+          true
+        ],
+        "max_holding": [
+          "none",
+          "session",
+          "N_bars"
+        ],
+        "overnight": [
+          "flat_at_session_end",
+          "hold_overnight",
+          "hold_weekend"
+        ]
+      },
+      "risk_model": [
+        "fixed_1pct",
+        "reduced_risk",
+        "adaptive_portfolio_controls"
+      ]
+    },
+    "procedure": {
+      "search": "staged: timeframe -> entry -> stop type -> stop management -> RR/exit -> session -> direction -> filters -> management; keep top 3 per stage",
+      "plateau_check": "joint small grid around finalists; neighbours must stay profitable",
+      "ranking": "development PF and return/drawdown with minimum trade counts, never return alone",
+      "count_configurations": true
+    },
+    "monte_carlo": {
+      "required_for_best_version": true,
+      "block_bootstrap_paths": 10000,
+      "block_length": 5,
+      "trade_order_reshuffle": true,
+      "random_trade_removal_pct": [
+        10,
+        20
+      ],
+      "cost_stress": "measured extra spread/slippage per trade only",
+      "prop_firm_sim": "FTMO phase 1/2 pass and breach probabilities, days to pass",
+      "portfolio_overlap": "correlation and marginal effect vs current portfolio",
+      "tools": [
+        "AAA EAs/Calyx Research Pipeline/calyx_pipeline.py",
+        "FTMO Portfolio Pass Simulation 2026-09-24/"
+      ]
+    }
+  },
+  "controls": {
+    "seeds": [
+      301,
+      307,
+      311,
+      313,
+      317
+    ],
+    "gold": "direction randomised conditional on raw trigger",
+    "range": "random direction at range-end, same range-stop width and flat"
+  },
+  "end_exclusive": "2026-10-02",
+  "original_common_sha": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+  "protocol_sha": "b61f69a8c4d4ba006785569db4c39fb411ab596795d74d8eb494031b6cbac9ad"
+}

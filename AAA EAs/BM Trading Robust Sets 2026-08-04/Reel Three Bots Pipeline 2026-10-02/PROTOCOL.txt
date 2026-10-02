@@ -1,0 +1,89 @@
+REEL THREE IDEAS - FULL RESEARCH PIPELINE - FROZEN 2 OCTOBER 2026
+
+User scope: DE30 range breakout, gold ATR candle breakout, gold Donchian breakout.
+User explicitly authorised exploratory optimisation despite a failed raw gate.
+Original baselines in Reel Three Bots Raw 2026-10-02 remain unchanged. No production
+EA, live terminal, installer, website cache, broker order or GitHub push is in scope.
+Use only isolated portable MT5-DMC-20260811, empty profile, live/Experts/DLL disabled,
+one terminal at a time, local compute agents only. Log all attempted configurations.
+
+Risk: 1% CURRENT BALANCE per entry; one common balance in portfolio runs. Downward
+lot rounding and below-minimum skip preserve the original raw implementation,
+explicitly deviating from the canonical pipeline's upward lot-rounding default.
+Costs: broker spread, commission, swap, fixed 150ms delay. $10,000, USD hedging,
+1:2000 research leverage. No FTMO-native claim, no fitted risk multipliers/daily caps.
+
+Frozen periods, all end-exclusive, 180-day no-entry warm-up:
+  6m: 2026-04-01 to 2026-10-02; 1y: 2025-10-01 to 2026-10-02
+  3y: 2023-10-01 to 2026-10-02; 5y: 2021-10-01 to 2026-10-02
+  Development: 2021-10-01 to 2024-04-01 (Model 1 screening only)
+  Validation: 2024-04-01 to 2025-10-01 (Model 4)
+  Recent check: 2025-10-01 to 2026-10-02 (already viewed, NOT untouched)
+  Older unused holdout: 2019-10-01 to 2021-04-01 (Model 4, if data available)
+The older holdout ends before the 5-year warm-up starts. Data gaps or shifted test
+start dates block claims, never invented history. Real ticks begin in January 2026;
+MT5 generates older ticks. All Model 4 tables disclose native history quality.
+
+Raw stage: exact fixed-cash smoke parity vs original EA; raw 3y/5y Model 1 screen,
+then 6m/1y/3y/5y Model 4 at dynamic 1% balance. Raw gate: positive net, PF>=1.15,
+>=30 trades in BOTH 3y and 5y, outperform frozen control median. Failure persists
+on record despite the authorised exploratory search.
+
+Controls: five fixed random seeds [301,307,311,313,317]. Gold controls randomise
+direction conditional on the original completed-bar trigger and retain exits,
+position limits and sizing; occupancy may differ, so not exact trade-for-trade pairs.
+Range control enters random direction at the range end, using full range stop
+distance and same end-of-day flat; it is a time/risk-matched control, not matched
+fill times or counts. Compare native 5y controls; do not select a favourable seed.
+Control outperform gate uses PF above median control PF AND mean net P/L per
+closed trade above median control mean P/L. No-trade control means unavailable.
+
+Search: broad staged beam, NOT exhaustive/global optimisation. Top 3 development
+leaders per stage by (PF-1)*sqrt(trades)/(1+equityDD/10); minimum 60 trades,
+net>0 and PF>=1.15 for final eligibility. Negative clean cases can carry through
+early stages under the exploratory override, but cannot qualify as finalists.
+Stages: timeframe, entry, stop, trailing, target/exit, session, direction, filters,
+trade management, core signal parameters. Every attempted pass is counted.
+RR grid .5,.75,1,1.25,1.5,2,2.5,3,4,5,6 plus raw (ATR raw is 7R), no target.
+Entry: original, completed confirmation, limit/stop offset .1/.25/.5 ATR14.
+Stops: original, entry-price .1/.2/.5%, ATR14 .5/.75/1/1.5/2/3/4,
+five-bar swing or 20-bar structure + .1 ATR.
+Trailing: raw, none, BE .5/1/1.5R, ATR 1/1.5/2/3 from .5/1/1.5/2R,
+percent .1/.2/.5%, EMA20, five-bar swing, chandelier3ATR, 50/20 step-lock.
+Exits: fixed RR/no TP, 8/16/32-bar time exit, session flat, 50% at1R + remaining TP.
+Sessions: all, Asia, London, NY (US DST), overlap, NY-open only. Directions both/long/short.
+Filters: EMA200 slope+bias, H4 EMA50, ADX14>=15/20/25/30, DI agreement,
+ADX+DI, ATR percentile regimes, spread<=.1ATR, D1 EMA50; all use completed bars.
+Management: weekdays, max1/2/3 entries/day, one/two concurrent gold positions,
+reentry after stop, daily/Friday flat, holding limits. Range pyramiding excluded
+because it conflicts with OCO; range entry window and flat time are searched.
+Core: ATR threshold1.5/2/2.5/3/3.5/4, period100/200/400, edge10/25/35%;
+Donchian channel75/100/125/175/250, channel timeframeM15/H1/H4, midpoint reset.
+Range bar timeframeM1/M3/M5/M15/M30/H1; H4/D1 straddle the session, excluded.
+Gold timeframeM1/M3/M5/M15/M30/H1/H4. D1 excluded for warm-up and intraday intent.
+Exact market-on-close price is excluded as noncausal; first executable next tick
+is the raw entry. News blackout excluded without a complete point-in-time calendar.
+Transfer symbols excluded: this request is the three original asset/idea pairs.
+
+Plateau: top3 eligible finalists, 27 neighbours over three active numeric axes
+(+/-20%); >=2/3 positive execution-clean neighbours, median PF>1. Validation chooses
+one among plateau-passing finalists (>=30 trades, PF>=1.15, net>0). Freeze once.
+Failed plateau/validation picks are labelled rejected, not promoted. No retuning
+after the older holdout or recent checks. Website-length windows are overlapping
+historical context, NOT out of sample.
+
+Frozen best picks get Model 4 6m/1y/3y/5y and older holdout, plus native shared
+portfolio if at least two picks exist. Rejected exploratory picks can be graphed
+but are never described as qualified. Survivors-only portfolio reported separately.
+
+Robustness: reuse calyx_pipeline functions on reconciled ledgers (avoid its simple
+HTML position pairing for overlapping portfolios). 10,000 paths, five-trade block
+bootstrap; reshuffle streak/DD, 10/20% trade removal, measured broker extra-cost
+stress only where evidence available, DSR accounting ALL tried configurations.
+Require p05 return>0, p05 PF>1, DSR>=95%; report chronological/recent-half stability.
+Closed-P/L FTMO 5/10 breach screens are diagnostic, not floating-equity phase/pass
+or payout forecasts. Exact FTMO phase/payout claims require a separate rule-aware
+equity-path simulation. Do not invent probabilities when prerequisites fail.
+
+Stop after research results for review. Production/installer/website/go-live are
+separate approval stages, never implied by a pipeline request.

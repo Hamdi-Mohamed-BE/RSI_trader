@@ -257,8 +257,8 @@ function Get-PortfolioItems {
         [pscustomobject]@{
             Label = 'XAU Trend Progression'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 240; Expert = 'Trend Progression EA.ex5'
-            ExpertSource = 'Trend Progression Research 2026-09-02\EA\Trend Progression EA.ex5'
-            SetSource = 'Trend Progression Research 2026-09-02\Sets\TrendProgression-xauusd--h4--optimized--locked.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+            ExpertSource = 'Gold Targets Deployment 2026-10-02\EA\Trend Progression EA.ex5'
+            SetSource = 'Gold Targets Deployment 2026-10-02\Sets\xau-trend-progression-normal.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'XAU Elliott Wave 1-2-3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -269,8 +269,8 @@ function Get-PortfolioItems {
         [pscustomobject]@{
             Label = 'XAU Slow Trend'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 240; Expert = 'Calyx Slow Trend EA.ex5'
-            ExpertSource = 'Slow Multi Asset Trend Research 2026-09-06\EA\Calyx Slow Trend EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\17 XAU Slow Trend H4 - LOCKED 6R - HARD 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+            ExpertSource = 'Gold Targets Deployment 2026-10-02\EA\Calyx Slow Trend EA.ex5'
+            SetSource = 'Gold Targets Deployment 2026-10-02\Sets\xau-slow-trend-normal.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'XAU Regime Switch'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')

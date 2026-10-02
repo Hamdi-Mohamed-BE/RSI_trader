@@ -1,0 +1,153 @@
+{
+  "signature": "d081852cdc650ad440f11cdb51db6c62ae98f5c8491375319bc2e6232e702e27",
+  "result": {
+    "verdict": "WATCH_ONLY",
+    "stats": {
+      "trades": 33,
+      "trades_per_month": 2.74,
+      "trades_per_day": 0.126,
+      "return_pct": 2.13,
+      "net": 212.58,
+      "pf": 1.166,
+      "win_pct": 57.6,
+      "consistency_pct": 46.2,
+      "avg_win_streak": 1.9,
+      "avg_loss_streak": 1.4,
+      "max_win_streak": 5,
+      "max_loss_streak": 4,
+      "sharpe": 0.46,
+      "balance_dd_pct": 4.84,
+      "equity_dd_pct": 5.63,
+      "mean_R": 0.099,
+      "long_trades": 17,
+      "short_trades": 16,
+      "swap": -2.05,
+      "commission": -7.33
+    },
+    "native_equity_dd": 5.63340171,
+    "calendar_days": 366,
+    "gates": {
+      "clean_execution": true,
+      "minimum30": true,
+      "positive_net": true,
+      "pf_gt1": true,
+      "bootstrap_p05_return": false,
+      "bootstrap_p05_pf": false,
+      "bootstrap_profit95": false,
+      "dsr95": false,
+      "two_calendar_thirds": true,
+      "recent_half_pf": true,
+      "closed_total_breach_lt5": true,
+      "measured_cost_stress": true,
+      "position_limits": true,
+      "data_history": true
+    },
+    "bootstrap": {
+      "paths": 10000,
+      "block_length": 5,
+      "probability_profit_pct": 67.56,
+      "return_p05_pct": -5.165264098065612,
+      "return_p50_pct": 2.203220636910408,
+      "return_p95_pct": 9.994985571560793,
+      "max_drawdown_p50_pct": 3.755723103869227,
+      "max_drawdown_p95_pct": 7.79716403581144,
+      "profit_factor_p05": 0.7094839205136029,
+      "profit_factor_p50": 1.1720629377783796,
+      "profit_factor_p95": 1.9700807119585069,
+      "closed_pnl_daily_limit_breach_pct": 0.0,
+      "closed_pnl_total_limit_breach_pct": 0.58,
+      "breach_scope": "closed-trade P&L proxy; floating drawdown is not recoverable from an MT5 summary report"
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.456232020843009,
+      "probabilistic_sharpe_pct": 67.52403164721149,
+      "deflated_sharpe_pct": 0.1945109611155682,
+      "multiple_test_benchmark_sharpe": 3.3546090979704375,
+      "daily_skewness": -0.26922225304735614,
+      "daily_kurtosis": 11.644469725648303
+    },
+    "calendar_thirds": [
+      {
+        "trades": 9,
+        "net": 222.31,
+        "pf": 1.8283712784588442
+      },
+      {
+        "trades": 11,
+        "net": -344.8,
+        "pf": 0.4836158868987
+      },
+      {
+        "trades": 13,
+        "net": 335.07000000000005,
+        "pf": 1.9638973591853175
+      }
+    ],
+    "recent_half_pf": 1.0323519658056672,
+    "cost_evidence": {
+      "status": "measured_native_quote_stress",
+      "quotes": {
+        "XAUUSD": {
+          "quote_count": 62,
+          "median": 0.0500000000001819,
+          "p90": 0.1180000000003929
+        }
+      },
+      "scenario": "One additional p90 observed native bid/ask spread per closed position. Quotes mix entries and forced closes; not a per-fill slippage estimate. Older simulated quotes are broker-model evidence, not historical live fills."
+    },
+    "cost_stress": {
+      "extra_total_usd": 15.694070750679403,
+      "net": 196.88592924932058,
+      "pf": 1.1525592197180483,
+      "return_pct": 1.9688592924932058
+    },
+    "perturbations": {
+      "paths": 10000,
+      "scope": "Closed cash P/L; no floating equity, lot recomputation or shared-margin replay",
+      "reshuffle": {
+        "dd_p50": 3.879349369767384,
+        "dd_p95": 6.175462755386195,
+        "loss_streak_p95": 6.0
+      },
+      "removal": {
+        "10": {
+          "return_p05": -0.3071999999999993,
+          "return_p50": 1.5461000000000007,
+          "pf_p05": 0.9760693614601429
+        },
+        "20": {
+          "return_p05": -1.713465,
+          "return_p50": 1.7113,
+          "pf_p05": 0.8565283846589655
+        }
+      }
+    },
+    "scope": "Conditional historical resampling, not a return forecast or FTMO phase/payout probability. Full zero-filled frozen daily calendar; DSR is an approximate conservative multiple-testing screen, not an exact independent-trial estimate.",
+    "position_limits": {
+      "passed": true,
+      "limits": {
+        "C_DON": 1
+      },
+      "ledger_observed": {
+        "C_DON": 1
+      },
+      "native_max_open": 1,
+      "scope": "Ledger timestamps have one-second resolution; same-second opens/closes are not separable. Native max-open counter provides an additional total-position check."
+    },
+    "data_evidence": {
+      "passed": true,
+      "issues": [],
+      "scope": "Post-run check of frozen warm-up coverage and required indicator handles; a missing module is not a valid full-portfolio holdout."
+    },
+    "closed_loss_proxy_definition": "Bootstrap daily check: sampled daily loss >=5% of preceding closed balance. Total check: sampled closed balance <=90% of initial balance. This is not FTMO daily midnight-reset balance/equity accounting or a phase/payout simulation.",
+    "risk_evidence": {
+      "requested_risk_usd_min": 97.8506,
+      "requested_risk_usd_max": 102.8295,
+      "actual_to_requested_mean": 0.8805133617743965,
+      "actual_to_requested_max": 1.0070130919527973,
+      "scope": "Initial stop-loss risk from native fills, excluding commissions, swap and gaps after entry; a nominal sizing target is not a guaranteed loss cap."
+    },
+    "tested_configurations": 1359
+  },
+  "scope": "Intermediate calculation cache. Final trial count and DSR are recomputed after native study completion. Not a promotion result."
+}

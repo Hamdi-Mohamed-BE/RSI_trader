@@ -1,0 +1,368 @@
+[
+  {
+    "name": "range",
+    "symbol": "DE30",
+    "start": "2026.04.01",
+    "end_exclusive": "2026.10.02",
+    "warmup": "2026.01.02",
+    "model": 4,
+    "execution_delay_ms": 150,
+    "requested_risk_usd": 100,
+    "deposit": 10000,
+    "seconds": 19.55,
+    "metrics": {
+      "initial_balance": 10000.0,
+      "final_balance": 9460.34,
+      "net_profit": -539.66,
+      "return_pct": -5.4,
+      "profit_factor": 0.8920822451436411,
+      "win_rate_pct": 45.16129032258064,
+      "max_drawdown_pct": 12.68,
+      "trades": 124,
+      "sharpe_ratio": -1.54,
+      "recovery_factor": -0.42,
+      "history_quality": "100% real ticks",
+      "equity_dd_relative_pct": 12.68,
+      "max_win_streak": 6,
+      "max_loss_streak": 7,
+      "commission": -47.3,
+      "swap": 0.0
+    },
+    "inputs": {
+      "InpFixedRiskUSD": "100",
+      "InpMagic": "1002001",
+      "InpTradeFrom": "1775001600",
+      "InpTag": "range-6m",
+      "InpBrokerUtcOffsetHours": "0",
+      "InpSeasonalReferenceClock": "true",
+      "InpATRIncludesSignal": "true",
+      "InpMaximumDeviationPoints": "1000"
+    },
+    "source_hashes": {
+      "DE40Range.mq5": "196dbf4920ba94c2d0b4bce3f29e156d4a2f0cca0ed8aaf1f71b3bd7dae40a3e",
+      "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+      "DE40Range.ex5": "36a9ab58f1f026a7a65a7ae7be743172fcb49c796e5705618cc13a7d65b7b9f7"
+    },
+    "summary": [
+      "RR_SUMMARY candidates=128 entries=124 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+      "RR_SUMMARY candidates=128 entries=124 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0"
+    ],
+    "tick_notes": [
+      "CS\t0\t00:59:43.351\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+      "CS\t0\t00:59:46.101\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+      "FO\t0\t00:59:50.549\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+      "IM\t0\t00:59:50.549\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+    ],
+    "verification": {
+      "source_hash_verified": true,
+      "ledger_matches_native_report": true,
+      "no_overlapping_positions": true,
+      "entry_rejection_codes": [],
+      "entry_rejection_meaning": "None"
+    }
+  },
+  {
+    "name": "atr",
+    "symbol": "XAUUSD",
+    "start": "2026.04.01",
+    "end_exclusive": "2026.10.02",
+    "warmup": "2026.01.02",
+    "model": 4,
+    "execution_delay_ms": 150,
+    "requested_risk_usd": 100,
+    "deposit": 10000,
+    "seconds": 30.8,
+    "metrics": {
+      "initial_balance": 10000.0,
+      "final_balance": 9758.53,
+      "net_profit": -241.47,
+      "return_pct": -2.41,
+      "profit_factor": 0.9253844798976574,
+      "win_rate_pct": 12.195121951219512,
+      "max_drawdown_pct": 17.46,
+      "trades": 41,
+      "sharpe_ratio": -0.58,
+      "recovery_factor": -0.14,
+      "history_quality": "100% real ticks",
+      "equity_dd_relative_pct": 17.46,
+      "max_win_streak": 2,
+      "max_loss_streak": 12,
+      "commission": -9.14,
+      "swap": -53.34
+    },
+    "inputs": {
+      "InpFixedRiskUSD": "100",
+      "InpMagic": "1002002",
+      "InpTradeFrom": "1775001600",
+      "InpTag": "atr-6m",
+      "InpBrokerUtcOffsetHours": "0",
+      "InpSeasonalReferenceClock": "true",
+      "InpATRIncludesSignal": "true",
+      "InpMaximumDeviationPoints": "1000"
+    },
+    "source_hashes": {
+      "GoldATRCandle.mq5": "e6024acc38af03ce5e3efdac328608bef08504674fd1b81b71da9a70905d8426",
+      "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+      "GoldATRCandle.ex5": "da3f18175e7e486ab13a82aeefc136eafd90500f0ee1473dd487ae4d4bdd33b4"
+    },
+    "summary": [
+      "RR_SUMMARY candidates=51 entries=41 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=10 expiredSkips=0 ocoRaces=0",
+      "RR_SUMMARY candidates=51 entries=41 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=10 expiredSkips=0 ocoRaces=0"
+    ],
+    "tick_notes": [
+      "CS\t0\t01:01:56.250\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+      "PS\t0\t01:02:01.850\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "verification": {
+      "source_hash_verified": true,
+      "ledger_matches_native_report": true,
+      "no_overlapping_positions": true,
+      "entry_rejection_codes": [],
+      "entry_rejection_meaning": "None"
+    }
+  },
+  {
+    "name": "donchian",
+    "symbol": "XAUUSD",
+    "start": "2026.04.01",
+    "end_exclusive": "2026.10.02",
+    "warmup": "2026.01.02",
+    "model": 4,
+    "execution_delay_ms": 150,
+    "requested_risk_usd": 100,
+    "deposit": 10000,
+    "seconds": 35.23,
+    "metrics": {
+      "initial_balance": 10000.0,
+      "final_balance": 9929.63,
+      "net_profit": -70.37,
+      "return_pct": -0.7,
+      "profit_factor": 0.9227450377656771,
+      "win_rate_pct": 52.38095238095239,
+      "max_drawdown_pct": 5.79,
+      "trades": 21,
+      "sharpe_ratio": -2.29,
+      "recovery_factor": -0.12,
+      "history_quality": "100% real ticks",
+      "equity_dd_relative_pct": 5.79,
+      "max_win_streak": 5,
+      "max_loss_streak": 4,
+      "commission": -4.68,
+      "swap": 0.0
+    },
+    "inputs": {
+      "InpFixedRiskUSD": "100",
+      "InpMagic": "1002003",
+      "InpTradeFrom": "1775001600",
+      "InpTag": "donchian-6m",
+      "InpBrokerUtcOffsetHours": "0",
+      "InpSeasonalReferenceClock": "true",
+      "InpATRIncludesSignal": "true",
+      "InpMaximumDeviationPoints": "1000"
+    },
+    "source_hashes": {
+      "GoldDonchian.mq5": "77fed8a5451135baf087c52a1fa8d113a13083fc916dca65918da8077d35c638",
+      "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+      "GoldDonchian.ex5": "6c04eea9b70867e7f6dcae8e62b12bd7aade358e2487bd97ae4ddea8b93271ef"
+    },
+    "summary": [
+      "RR_SUMMARY candidates=21 entries=21 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+      "RR_SUMMARY candidates=21 entries=21 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0"
+    ],
+    "tick_notes": [
+      "CS\t0\t01:04:23.561\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+      "RP\t0\t01:04:27.559\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "verification": {
+      "source_hash_verified": true,
+      "ledger_matches_native_report": true,
+      "no_overlapping_positions": true,
+      "entry_rejection_codes": [],
+      "entry_rejection_meaning": "None"
+    }
+  },
+  {
+    "name": "range",
+    "symbol": "DE30",
+    "start": "2025.10.01",
+    "end_exclusive": "2026.10.02",
+    "warmup": "2025.06.01",
+    "model": 4,
+    "execution_delay_ms": 150,
+    "requested_risk_usd": 100,
+    "deposit": 10000,
+    "seconds": 38.17,
+    "metrics": {
+      "initial_balance": 10000.0,
+      "final_balance": 10961.5,
+      "net_profit": 961.5,
+      "return_pct": 9.62,
+      "profit_factor": 1.1088535339755483,
+      "win_rate_pct": 46.913580246913575,
+      "max_drawdown_pct": 11.61,
+      "trades": 243,
+      "sharpe_ratio": 1.46,
+      "recovery_factor": 0.71,
+      "history_quality": "55% real ticks",
+      "equity_dd_relative_pct": 11.61,
+      "max_win_streak": 6,
+      "max_loss_streak": 8,
+      "commission": -96.18,
+      "swap": 0.0
+    },
+    "inputs": {
+      "InpFixedRiskUSD": "100",
+      "InpMagic": "1002001",
+      "InpTradeFrom": "1759276800",
+      "InpTag": "range-1y",
+      "InpBrokerUtcOffsetHours": "0",
+      "InpSeasonalReferenceClock": "true",
+      "InpATRIncludesSignal": "true",
+      "InpMaximumDeviationPoints": "1000"
+    },
+    "source_hashes": {
+      "DE40Range.mq5": "196dbf4920ba94c2d0b4bce3f29e156d4a2f0cca0ed8aaf1f71b3bd7dae40a3e",
+      "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+      "DE40Range.ex5": "36a9ab58f1f026a7a65a7ae7be743172fcb49c796e5705618cc13a7d65b7b9f7"
+    },
+    "summary": [
+      "RR_SUMMARY candidates=253 entries=243 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+      "RR_SUMMARY candidates=253 entries=243 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0"
+    ],
+    "tick_notes": [
+      "CN\t0\t00:54:09.505\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+      "CS\t0\t00:54:01.613\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+      "CS\t0\t00:54:04.403\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+      "HL\t0\t00:54:09.505\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+    ],
+    "verification": {
+      "source_hash_verified": true,
+      "ledger_matches_native_report": true,
+      "no_overlapping_positions": true,
+      "entry_rejection_codes": [],
+      "entry_rejection_meaning": "None"
+    }
+  },
+  {
+    "name": "atr",
+    "symbol": "XAUUSD",
+    "start": "2025.10.01",
+    "end_exclusive": "2026.10.02",
+    "warmup": "2025.06.01",
+    "model": 4,
+    "execution_delay_ms": 150,
+    "requested_risk_usd": 100,
+    "deposit": 10000,
+    "seconds": 38.02,
+    "metrics": {
+      "initial_balance": 10000.0,
+      "final_balance": 12372.73,
+      "net_profit": 2372.73,
+      "return_pct": 23.73,
+      "profit_factor": 1.367072353815713,
+      "win_rate_pct": 17.045454545454543,
+      "max_drawdown_pct": 14.26,
+      "trades": 88,
+      "sharpe_ratio": 3.0,
+      "recovery_factor": 1.3,
+      "history_quality": "56% real ticks",
+      "equity_dd_relative_pct": 14.26,
+      "max_win_streak": 2,
+      "max_loss_streak": 14,
+      "commission": -18.830000000000002,
+      "swap": -87.2
+    },
+    "inputs": {
+      "InpFixedRiskUSD": "100",
+      "InpMagic": "1002002",
+      "InpTradeFrom": "1759276800",
+      "InpTag": "atr-1y",
+      "InpBrokerUtcOffsetHours": "0",
+      "InpSeasonalReferenceClock": "true",
+      "InpATRIncludesSignal": "true",
+      "InpMaximumDeviationPoints": "1000"
+    },
+    "source_hashes": {
+      "GoldATRCandle.mq5": "e6024acc38af03ce5e3efdac328608bef08504674fd1b81b71da9a70905d8426",
+      "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+      "GoldATRCandle.ex5": "da3f18175e7e486ab13a82aeefc136eafd90500f0ee1473dd487ae4d4bdd33b4"
+    },
+    "summary": [
+      "RR_SUMMARY candidates=114 entries=88 entryFails=4 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=22 expiredSkips=0 ocoRaces=0",
+      "RR_SUMMARY candidates=114 entries=88 entryFails=4 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=22 expiredSkips=0 ocoRaces=0"
+    ],
+    "tick_notes": [
+      "CS\t0\t00:55:55.547\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+      "FM\t0\t00:55:59.513\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "verification": {
+      "source_hash_verified": true,
+      "ledger_matches_native_report": true,
+      "no_overlapping_positions": true,
+      "entry_rejection_codes": [
+        "10018"
+      ],
+      "entry_rejection_meaning": "10018: market closed; signal not chased after reopen"
+    }
+  },
+  {
+    "name": "donchian",
+    "symbol": "XAUUSD",
+    "start": "2025.10.01",
+    "end_exclusive": "2026.10.02",
+    "warmup": "2025.06.01",
+    "model": 4,
+    "execution_delay_ms": 150,
+    "requested_risk_usd": 100,
+    "deposit": 10000,
+    "seconds": 36.12,
+    "metrics": {
+      "initial_balance": 10000.0,
+      "final_balance": 10216.44,
+      "net_profit": 216.44,
+      "return_pct": 2.16,
+      "profit_factor": 1.1721055979643764,
+      "win_rate_pct": 57.57575757575758,
+      "max_drawdown_pct": 5.63,
+      "trades": 33,
+      "sharpe_ratio": 4.42,
+      "recovery_factor": 0.37,
+      "history_quality": "56% real ticks",
+      "equity_dd_relative_pct": 5.63,
+      "max_win_streak": 5,
+      "max_loss_streak": 4,
+      "commission": -7.2299999999999995,
+      "swap": -2.05
+    },
+    "inputs": {
+      "InpFixedRiskUSD": "100",
+      "InpMagic": "1002003",
+      "InpTradeFrom": "1759276800",
+      "InpTag": "donchian-1y",
+      "InpBrokerUtcOffsetHours": "0",
+      "InpSeasonalReferenceClock": "true",
+      "InpATRIncludesSignal": "true",
+      "InpMaximumDeviationPoints": "1000"
+    },
+    "source_hashes": {
+      "GoldDonchian.mq5": "77fed8a5451135baf087c52a1fa8d113a13083fc916dca65918da8077d35c638",
+      "ReelRules.mqh": "0a93ec07e40adf8deac1e20ee22e64e24a2bccf508e53ef0e8466baa406d0c4e",
+      "GoldDonchian.ex5": "6c04eea9b70867e7f6dcae8e62b12bd7aade358e2487bd97ae4ddea8b93271ef"
+    },
+    "summary": [
+      "RR_SUMMARY candidates=33 entries=33 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0",
+      "RR_SUMMARY candidates=33 entries=33 entryFails=0 modifyFails=0 closeFails=0 sizeSkips=0 dataSkips=0 existingSkips=0 expiredSkips=0 ocoRaces=0"
+    ],
+    "tick_notes": [
+      "CS\t0\t00:58:15.559\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+      "ND\t0\t00:58:20.581\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "verification": {
+      "source_hash_verified": true,
+      "ledger_matches_native_report": true,
+      "no_overlapping_positions": true,
+      "entry_rejection_codes": [],
+      "entry_rejection_meaning": "None"
+    }
+  }
+]
