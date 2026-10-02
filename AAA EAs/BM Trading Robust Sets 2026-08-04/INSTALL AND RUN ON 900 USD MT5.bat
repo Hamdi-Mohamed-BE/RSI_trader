@@ -3,7 +3,8 @@ rem Nasdaq 5M: DI14 + EMA12, 0.60%% price SL, no TP, ATR6 trail from +1R; risk p
 rem Nasdaq may hold overnight/weekends. Old fixed-target FTMO estimates do not apply.
 rem For FTMO use "FTMO 10K SWING - 13 EAS - NEWS OFF.bat", not this unrestricted portfolio.
 rem XAU News Pulse v2.16 event settings retained; v2.18 adds standalone user-selected percentage per order.
-rem XAG/BTC/EURUSD News Pulse v2.17 event settings retained in v2.18; adaptive exempt; no OCO.
+rem Gold-only news policy: XAG/BTC/EURUSD News Pulse disabled in the shared installer.
+echo News EAs: XAU News Pulse and Gold News V9 only. All non-gold news OFF.
 setlocal
 echo News risk is asked SEPARATELY per order. Both News Pulse triggers can double event exposure.
 rem Includes Gold Overnight Value Area RAW via the shared normal-MT5 installer.

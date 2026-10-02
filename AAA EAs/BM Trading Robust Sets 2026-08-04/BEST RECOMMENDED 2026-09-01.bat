@@ -3,7 +3,8 @@ rem Nasdaq 5M: DI14 + EMA12, 0.60%% price SL, no TP, ATR6 trail from +1R; risk p
 rem Nasdaq may hold overnight/weekends. Old fixed-target FTMO estimates do not apply.
 rem For FTMO use "FTMO 10K SWING - 13 EAS - NEWS OFF.bat", not this unrestricted portfolio.
 rem XAU News Pulse v2.16 event settings retained; v2.18 adds standalone user-selected percentage per order.
-rem XAG/BTC/EURUSD News Pulse v2.17 event settings retained in v2.18; adaptive exempt; no OCO.
+rem Gold-only news policy: XAG/BTC/EURUSD News Pulse disabled in the shared installer.
+echo News EAs: XAU News Pulse and Gold News V9 only. All non-gold news OFF.
 setlocal
 echo Nasdaq 5M DI14 filter is selectable below: ON by default, or OFF. Wider stop and ATR trailing stay unchanged.
 echo News risk is asked SEPARATELY per order. Both News Pulse triggers can double event exposure.
@@ -33,7 +34,7 @@ echo - DMC Fresh Reaction XAU adds M15 freshness plus W1/MN1 proximity, fixed 30
 echo - DMC Fresh Reaction US100 uses the same freshness logic in New York with 1.5 ATR stop, 2R and Dynamic 50-20
 echo - Full Safe switches Sell Nasdaq 15min to the original London-confirmed 600/1000 preset
 echo - XAU Weakness uses M30 structure stops, 4R and Dynamic 50-20 with its D1 Safe gate enabled
-echo - News Pulse uses approved per-event NFP/CPI/FOMC settings on XAU, XAG, BTC and EURUSD; both sides stay armed
+echo - Only XAU News Pulse uses the approved NFP/CPI/FOMC settings; both sides stay armed. Other news assets OFF
 echo - Choose the news percentage separately below: PER ORDER, not per event; two triggers can double exposure
 echo - Gold News V9 Direction runs on XAUUSD M1 with the local prediction service and remains attached after every shared install
 echo - Every non-News EA follows the risk selected below; pressing Enter defaults to 1%%

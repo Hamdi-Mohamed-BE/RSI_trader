@@ -3,6 +3,7 @@ setlocal
 title BM Trading +20 Percent - Any Balance Auto Risk
 
 rem This compatibility launcher uses the maintained risk-and-safety prompt.
+echo News EAs: XAU News Pulse and Gold News V9 only. All non-gold news OFF.
 powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\_Auto Deploy\Start-Dynamic-Portfolio.ps1" %*
 set "BM_EXIT=%ERRORLEVEL%"
 

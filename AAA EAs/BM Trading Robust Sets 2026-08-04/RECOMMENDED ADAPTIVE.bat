@@ -3,7 +3,8 @@ rem Nasdaq 5M: DI14 + EMA12, 0.60%% price SL, no TP, ATR6 trail from +1R; risk p
 rem Nasdaq may hold overnight/weekends. Old fixed-target FTMO estimates do not apply.
 rem For FTMO use "FTMO 10K SWING - 13 EAS - NEWS OFF.bat", not this unrestricted portfolio.
 rem XAU News Pulse v2.16 event settings retained; v2.18 adds standalone user-selected percentage per order.
-rem XAG/BTC/EURUSD News Pulse v2.17 event settings retained in v2.18; adaptive exempt; no OCO.
+rem Gold-only news policy: XAG/BTC/EURUSD News Pulse disabled in the shared installer.
+echo News EAs: XAU News Pulse and Gold News V9 only. All non-gold news OFF.
 setlocal
 echo News risk is asked SEPARATELY per order. Both News Pulse triggers can double event exposure.
 rem Includes Gold Overnight Value Area RAW via the shared normal-MT5 installer.
@@ -15,8 +16,8 @@ echo - Every EA keeps its evidence-selected Standard, Safe or Dynamic preset.
 echo - Every non-News EA follows the risk you select; pressing Enter defaults to 1%%.
 echo - Entry lots round UP to the broker step; below-minimum requests use minimum lot and are never skipped for sizing.
 echo - Actual stop risk can exceed the selected target when the broker lot step or minimum requires it.
-echo - News Pulse XAU, XAG, BTC, EURUSD and Gold News V9 bypass ALL adaptive entry stops and risk tapers.
-echo - Four simultaneous News Pulse straddles plan 8x your selected news percentage; Gold News V9 adds exposure.
+echo - Only XAU News Pulse and Gold News V9 bypass adaptive entry stops and risk tapers. Other news assets OFF.
+echo - The XAU News Pulse straddle plans 2x your selected news percentage; Gold News V9 adds exposure.
 echo - Event-specific News Pulse results are hindsight optimized, not a forecast or proof of prop-firm safety.
 echo - News uses its own selected percentage per order, recalculated at placement; it does not follow the non-News risk.
 echo - Default news risk is 0.75%% per order only if you press Enter. Signal and broker checks remain active.

@@ -6,6 +6,7 @@ $TerminalPath = 'C:\Program Files\Ava Trade MT5 Terminal\terminal64.exe'
 $ProfileName = 'Calyx-Ava-EAs'
 $ExpertFolderName = 'Calyx Ava Futures'
 $PackageRoot = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PackageRoot '_Auto Deploy\News-Launcher-Policy.ps1')
 $Utf8 = [Text.UTF8Encoding]::new($false)
 $Unicode = [Text.UnicodeEncoding]::new($false, $true)
 
@@ -198,6 +199,8 @@ $portfolio = @(
     [pscustomobject]@{ Label='US100 ORB New York M30'; Symbol='MNQZ26'; Period=30; Expert='ORB Volume Data EA.ex5'; ExpertSource=(Join-Path $PSScriptRoot 'EA\ORB Volume Data\ORB Volume Data EA.ex5'); SetSource=(Join-Path $PackageRoot 'Selected Portfolio Settings 2026-09-01\16 US100 ORB New York M30 - LOCKED STANDALONE.set'); SafeMode=$false }
 )
 
+$portfolio = @(Select-XauNewsOnlyItems -Items $portfolio)
+Write-Host 'NEWS POLICY: Gold News Pulse only. Silver and all other non-gold news EAs are disabled.' -ForegroundColor Yellow
 foreach ($item in $portfolio) {
     if (-not (Test-Path -LiteralPath $item.ExpertSource)) { Stop-Install "Missing Ava EA build: $($item.ExpertSource)" }
     if (-not (Test-Path -LiteralPath $item.SetSource)) { Stop-Install "Missing settings: $($item.SetSource)" }

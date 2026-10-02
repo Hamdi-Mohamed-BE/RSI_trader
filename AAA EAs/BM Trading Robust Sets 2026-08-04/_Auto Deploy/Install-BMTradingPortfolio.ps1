@@ -49,6 +49,7 @@ $ExpertFolderName = $ProfileName
 $ProbePath = Join-Path $PSScriptRoot 'Probe-MT5.py'
 $GoldNewsRoot = [IO.Path]::GetFullPath((Join-Path $PackageRoot '..\..\AI news'))
 $GoldNewsRuntimeInstaller = Join-Path $GoldNewsRoot 'Install-GoldNewsV9EA.ps1'
+. (Join-Path $PSScriptRoot 'News-Launcher-Policy.ps1')
 $Unicode = New-Object System.Text.UnicodeEncoding($false, $true)
 
 function Write-Stage([string]$Message) {
@@ -62,7 +63,7 @@ function Stop-WithMessage([string]$Message, [int]$Code = 1) {
 
 function Get-PortfolioItems {
     # Locked selected portfolio. Each EA owns its selected exit mode:
-    # Each strategy keeps its selected exit. The four News Pulse instances
+    # Each strategy keeps its selected exit. The gold News Pulse instance
     # use the separate user-selected NewsRiskPercent per pending side.
     # LockRisk isolates news from the non-News input; it is NOT a hard 0.75% lock.
     # Live events come from MT5's USD calendar; Strategy Tester schedules are
@@ -295,6 +296,9 @@ function Get-PortfolioItems {
         }
     )
 
+    # Filter before file checks, symbol discovery, risk settings or chart creation.
+    # Keep disabled definitions as history; no launcher switch can re-enable them.
+    $items = @(Select-XauNewsOnlyItems -Items $items)
     foreach ($item in $items) {
         if (-not $item.PSObject.Properties['FixedPercentRisk']) {
             $item | Add-Member -NotePropertyName FixedPercentRisk -NotePropertyValue 0.0
@@ -642,7 +646,7 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
     }
     $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
     $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls apply to non-News EAs and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
-    Write-Host ("Risk audit passed: non-News uses {0}{1}; five news EAs independently use {2:N4}% per order and bypass adaptive controls. Both News Pulse sides plan {3:N4}% per asset, before rounding, gaps and fees." -f $modeText, $adaptiveText, $NewsRiskPercent, (2 * $NewsRiskPercent)) -ForegroundColor Green
+    Write-Host ("Risk audit passed: non-News uses {0}{1}; only the two XAU news EAs use {2:N4}% per order and bypass adaptive controls. Both XAU News Pulse sides plan {3:N4}%, before rounding, gaps and fees. XAG/BTC/EURUSD news OFF." -f $modeText, $adaptiveText, $NewsRiskPercent, (2 * $NewsRiskPercent)) -ForegroundColor Green
 }
 
 function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
@@ -871,6 +875,7 @@ function Close-TargetTerminal([string]$ExecutablePath) {
 
 Write-Stage 'Checking portfolio files'
 $portfolio = @(Get-PortfolioItems)
+Write-Host 'NEWS POLICY: XAU News Pulse and Gold News V9 only; XAG/BTC/EURUSD news excluded.' -ForegroundColor Yellow
 foreach ($item in $portfolio) {
     if (-not (Test-Path -LiteralPath $item.ExpertFullPath)) { Stop-WithMessage "Missing EA: $($item.ExpertFullPath)" }
     if (-not (Test-Path -LiteralPath $item.SetFullPath)) { Stop-WithMessage "Missing settings: $($item.SetFullPath)" }
