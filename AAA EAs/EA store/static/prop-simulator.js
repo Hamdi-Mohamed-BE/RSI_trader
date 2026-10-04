@@ -182,7 +182,7 @@
   function applyUnitLabels() {
     const usdMode = sizingUnit() === 'usd';
     $('[data-risk-label]').textContent = usdMode ? 'Risk per trade ($)' : 'Risk per trade (% of account)';
-    $('[data-risk-head]').textContent = usdMode ? 'Risk $' : 'Risk %';
+    $('[data-risk-head]').textContent = usdMode ? 'Risk / reference $' : 'Risk / reference %';
     riskAttrs($('[data-risk]'));
     state.rows.forEach((row) => riskAttrs(row.risk));
   }
@@ -212,23 +212,51 @@
       riskAttrs(risk);
       risk.value = positive(prev?.risk?.value) ?? defaultRisk;  // keep the previous row's value across re-renders
       state.rows.set(ea.slug, { box, risk, checked: box.checked });
-      box.addEventListener('change', () => { state.rows.get(ea.slug).checked = box.checked; });
+      box.addEventListener('change', () => {
+        state.rows.get(ea.slug).checked = box.checked;
+        if (box.checked && !ea.supported_periods.includes($('[data-period]').value)) {
+          $('[data-period]').value = ea.supported_periods.includes('1y') ? '1y' : ea.supported_periods[0];
+          setStatus(`Evidence window changed to ${$('[data-period]').value} for ${ea.label}; no longer-period history was invented.`);
+          renderEaTable();
+        }
+        updateEvidenceInfo();
+      });
       return el('tr', { class: `border-t border-white/[.06] ${c.status === 'blocked' ? 'opacity-50' : ''}` },
         el('td', { class: 'py-2 pr-3' }, box),
-        el('td', { class: 'py-2 pr-3' }, el('a', { href: `/eas/${ea.slug}`, target: '_blank', class: 'font-semibold hover:text-mint', text: ea.label })),
+        el('td', { class: 'py-2 pr-3' }, el('a', { href: `/eas/${ea.slug}`, target: '_blank', class: 'font-semibold hover:text-mint', text: ea.label }),
+          ea.ftmo_profile_member ? el('span', { class: 'ml-2 badge badge-good', text: 'FTMO profile' }) : '',
+          ea.risk_basis === 'historical_loss_reference'
+            ? el('p', { class: 'mt-1 max-w-sm text-xs text-amber-200', text: 'Experimental · no SL · history-based sizing, not capped risk', title: ea.risk_note }) : ''),
         el('td', { class: 'py-2 pr-3 font-mono text-xs text-muted', text: `${ea.symbol} ${ea.timeframe}` }),
-        el('td', { class: 'py-2 pr-3 font-mono text-xs', text: ea.trades }),
-        el('td', { class: 'py-2 pr-3' }, el('span', { class: `badge ${badgeClass[c.status]}`, title: c.reasons.join(' ') || 'No conflicts found', text: statusText[c.status] })),
+        el('td', { class: 'py-2 pr-3 font-mono text-xs', text: ea.period_trade_counts[$('[data-period]').value] ?? 'No evidence' }),
+        el('td', { class: 'py-2 pr-3' }, el('span', { class: `badge ${badgeClass[c.status]}`, title: c.reasons.join(' ') || 'No conflicts found',
+          text: ea.risk_basis === 'historical_loss_reference' && c.status !== 'blocked' ? 'Experiment · no SL' : statusText[c.status] })),
         el('td', { class: 'py-2' }, risk));
     }));
+    updateEvidenceInfo();
+  }
+
+  function updateEvidenceInfo() {
+    const selected = state.catalog.eas.filter((ea) => state.rows.get(ea.slug)?.box.checked);
+    const hourly = selected.some((ea) => ea.risk_basis === 'historical_loss_reference');
+    const missing = selected.filter((ea) => !ea.supported_periods.includes($('[data-period]').value));
+    $('[data-selection-info]').textContent = `${selected.length} selected / ${state.catalog.catalog_count} catalogue EAs · Evidence: ${$('[data-period]').value}. ` +
+      (missing.length ? `No evidence in this window for: ${missing.map((ea) => ea.label).join(', ')}. Change the window or deselect them. ` : '') +
+      (hourly ? 'NO-STOP EXPERIMENT: the hourly reference is not a loss cap. Neither replay scenario bounds actual equity risk; the FTMO guarded launcher still excludes these bots.' :
+        'Current FTMO selection is synced from its package; cached standalone replay is not an exact validation of the installed guard.');
+    const boxes = [...state.rows.values()].filter((row) => !row.box.disabled);
+    $('[data-select-all]').checked = boxes.length > 0 && boxes.every((row) => row.box.checked);
+    $('[data-select-all]').indeterminate = boxes.some((row) => row.box.checked) && !boxes.every((row) => row.box.checked);
   }
 
   function applyPreset(preset) {
+    $('[data-results]').classList.add('hidden');
     if (preset.programme_id && state.catalog.programmes.some((p) => p.id === preset.programme_id)) {
       $('[data-programme]').value = preset.programme_id;
       renderProgrammeInfo();
     }
     if (preset.account_size) { $('[data-size]').value = preset.account_size; updateFeePlaceholder(); }
+    if (preset.period) $('[data-period]').value = preset.period;
     if (preset.sizing) { $('[data-sizing]').value = preset.sizing; state.unit = sizingUnit(); applyUnitLabels(); }
     const guards = preset.guards || {};
     $('[data-equity-stop]').value = guards.equity_stop_pct ?? '';
@@ -246,6 +274,7 @@
       row.box.checked = selected; row.checked = selected;
       if (selected) row.risk.value = picks.get(slug);
     });
+    renderEaTable();
     setStatus(`Loaded: ${preset.label}. ${preset.note || ''}`);
   }
 
@@ -266,7 +295,7 @@
       });
     }
     const clear = el('button', { type: 'button', class: 'button-secondary text-xs', text: 'Clear' });
-    clear.addEventListener('click', () => state.rows.forEach((row) => { row.box.checked = false; row.checked = false; }));
+    clear.addEventListener('click', () => { state.rows.forEach((row) => { row.box.checked = false; row.checked = false; }); updateEvidenceInfo(); });
     holder.replaceChildren(...buttons, clear);
     renderSuggestionTable(suggestions);
   }
@@ -323,6 +352,8 @@
   async function run() {
     const body = request();
     if (!body.eas.length) { setStatus('Select at least one compatible EA.', true); return; }
+    const missing = body.eas.filter((pick) => !state.catalog.eas.find((ea) => ea.slug === pick.slug).supported_periods.includes(body.period));
+    if (missing.length) { setStatus(`No ${body.period} sizing evidence for ${missing.map((e) => e.slug).join(', ')}. Choose an available window; hourly EAs support 1y/6m only.`, true); return; }
     const button = $('[data-run]');
     button.disabled = true; setStatus(`Simulating ${body.paths.toLocaleString('en-US')} paths…`);
     try {
@@ -341,6 +372,10 @@
     const c = data.results.conservative, o = data.results.optimistic;
     const p = data.programme;
     $('[data-results]').classList.remove('hidden');
+    $('[data-result-notice]').textContent = data.notice;
+    $('[data-envelope-note]').textContent = data.historical_risk_experiment
+      ? 'Historical-reference reserve versus closed-trade replay. There is NO protective stop on the hourly EAs: these rates are not conservative/optimistic equity bounds. Actual losses and breach rates can be worse than either scenario.'
+      : 'Stop-reserve versus closed-trade replay. Floating equity was not recorded; gaps and execution can exceed stops, so these are scenario assumptions, not guaranteed bounds.';
     $('[data-result-title]').textContent = `${p.label} · $${data.request.account_size.toLocaleString('en-US')} · ${Object.keys(data.eas).length} EA${Object.keys(data.eas).length > 1 ? 's' : ''}`;
     const kpis = [];
     c.phases.forEach((ph, i) => kpis.push(tile(`Pass phase ${ph.phase}${i ? ' (cumulative)' : ''}`, range(ph.pass_rate, o.phases[i].pass_rate))));
@@ -373,7 +408,7 @@
       tile('Avg win / loss streak', `${num(s.avg_win_streak, 1)} / ${num(s.avg_loss_streak, 1)}`), tile('Max win / loss streak', `${s.max_win_streak} / ${s.max_loss_streak}`),
       tile('Sharpe (ann.)', num(s.sharpe_annualized, 2), 'Daily closed-trade returns, √365, same definition as every EA page'),
       tile('Max balance DD', `${num(s.max_balance_dd_pct, 2)}%`), tile('Max equity DD', 'n/a', 'Intratrade equity is not recorded in the cached evidence'),
-      tile('Worst day', `${num(s.worst_day_pct, 2)}%`), tile('Worst day, open risk at stop', `${num(s.worst_intraday_envelope_pct, 2)}%`),
+      tile('Worst day', `${num(s.worst_day_pct, 2)}%`), tile('Worst day, modelled reserve', `${num(s.worst_intraday_envelope_pct, 2)}%`, 'Stop/reference reserve scenario; not measured equity or a guaranteed loss bound'),
     );
 
     const perEa = $('[data-per-ea]');
@@ -434,20 +469,23 @@
 
   async function init() {
     try {
-      const response = await fetch('/api/prop-sim/catalog?v=20260930-5');
+      const response = await fetch('/api/prop-sim/catalog?v=20261004-sync-1');
+      if (!response.ok) throw new Error('Catalogue failed');
       state.catalog = await response.json();
     } catch (error) { setStatus('Could not load the simulator catalogue.', true); return; }
     renderProgrammes(); wirePicker(); renderProgrammeInfo();
+    root.addEventListener('change', () => $('[data-results]').classList.add('hidden'));
     $('[data-size]').addEventListener('change', updateFeePlaceholder);
     $('[data-run]').addEventListener('click', run);
-    $('[data-select-all]').addEventListener('change', (e) => state.rows.forEach((row) => { if (!row.box.disabled) { row.box.checked = e.target.checked; row.checked = e.target.checked; } }));
+    $('[data-select-all]').addEventListener('change', (e) => { state.rows.forEach((row) => { if (!row.box.disabled) { row.box.checked = e.target.checked; row.checked = e.target.checked; } }); updateEvidenceInfo(); });
+    $('[data-period]').addEventListener('change', renderEaTable);
     $('[data-risk]').addEventListener('change', () => state.rows.forEach((row) => { row.risk.value = $('[data-risk]').value; }));
     state.unit = sizingUnit();
     applyUnitLabels();
     $('[data-sizing]').addEventListener('change', () => { convertRisk(state.unit, sizingUnit()); state.unit = sizingUnit(); applyUnitLabels(); });
     $('[data-size]').addEventListener('change', applyUnitLabels);
-    // Default: the saved FTMO 13 package with the tested -2% / +4% daily controls (owner's choice), else a suggestion.
-    const ftmo = state.catalog.presets.find((p) => p.id === 'ftmo13-controls') || state.catalog.presets.find((p) => p.id === 'ftmo13');
+    // Current package is the selection source of truth; never default to a stale forecast/suggestion.
+    const ftmo = state.catalog.presets.find((p) => p.id === state.catalog.default_preset_id);
     const suggestion = state.catalog.suggestions?.programmes?.[programme().id]?.objectives?.expected_value;
     if (ftmo) applyPreset(ftmo);
     else if (suggestion) applyPreset({ ...suggestion, programme_id: programme().id, label: `Suggested (${suggestion.objective_label})`, note: suggestion.summary });

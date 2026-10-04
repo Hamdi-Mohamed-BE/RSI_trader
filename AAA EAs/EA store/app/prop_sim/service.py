@@ -9,11 +9,11 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
-from ..catalog import PACKAGE_ROOT, STORE_ROOT
+from ..catalog import PACKAGE_ROOT, STORE_ROOT, get_website_catalog
 from .engine import SimConfig, fan_chart, sample_indices, simulate, summarise
-from .ledger import Guards, Selection, available_eas, build_features, load_ea
+from .ledger import Guards, Selection, build_features, load_ea
 from .metrics import combo_stats, common_window
-from .rules import LOGO_ROOT, Programme, compatibility, get_programme, programmes
+from .rules import LOGO_ROOT, RULES_ROOT, Programme, compatibility, get_programme, programmes
 
 FTMO_PACKAGE = PACKAGE_ROOT / "FTMO Thirteen EA Deployment 2026-09-27" / "PACKAGE.json"
 SUGGESTIONS = STORE_ROOT / "data" / "prop-sim" / "suggestions.json"
@@ -26,7 +26,8 @@ ASSUMPTIONS = (
     "Source-broker commissions and swaps are kept; spreads and costs at the prop firm can differ.",
     "Daily loss resets on the UTC calendar day of the evidence (firms often reset at CE(S)T or server midnight).",
     "Intraday floating drawdown is not recorded: 'conservative' assumes every open position sits at its full stop "
-    "at the worst moment of the day; 'optimistic' uses closed trades only. The real result lies between them.",
+    "at the worst moment of the day; the second scenario uses closed trades only. These are assumptions, "
+    "NOT guaranteed bounds on actual equity losses or pass rates (gaps can exceed stops).",
     "Paths are built from whole historical calendar blocks, so all selected EAs keep their real day-by-day "
     "correlation. Frequencies are simulated scenario rates, not a guarantee or a forecast of your result.",
     "Daily equity stop / profit close: when the day's P/L reaches the level, the crossing trade is capped at it, "
@@ -54,7 +55,7 @@ class SimRequest(BaseModel):
     max_entries_per_day: int | None = Field(default=None, ge=1, le=100)
     equity_stop_pct: float | None = Field(default=None, gt=0, le=20)
     profit_close_pct: float | None = Field(default=None, gt=0, le=30)
-    period: Literal["1y", "3y", "5y"] = "3y"
+    period: Literal["6m", "1y", "3y", "5y"] = "3y"
     method: Literal["bootstrap", "rolling"] = "bootstrap"
     paths: int = Field(default=2000, ge=100, le=MAX_PATHS)
     horizon_days: int = Field(default=365, ge=30, le=730)
@@ -77,11 +78,11 @@ def _validate(req: SimRequest) -> Programme:
 
 
 def run_simulation(req: SimRequest) -> dict[str, Any]:
-    return json.loads(_cached_run(req.model_dump_json()))
+    return json.loads(_cached_run(req.model_dump_json(), _data_stamp()))
 
 
 @lru_cache(maxsize=128)
-def _cached_run(payload: str) -> str:
+def _cached_run(payload: str, data_stamp: str) -> str:
     return json.dumps(_run(SimRequest.model_validate_json(payload)), allow_nan=False)
 
 
@@ -89,7 +90,7 @@ def _run(req: SimRequest) -> dict[str, Any]:
     programme = _validate(req)
     ledgers, profiles, compat = {}, {}, {}
     for pick in req.eas:
-        loaded = load_ea(pick.slug, req.period)
+        loaded = load_ea(pick.slug, req.period, ftmo_mode(pick.slug))
         if loaded is None:
             raise ValueError(f"No cached {req.period} evidence for '{pick.slug}'.")
         profile, trades = loaded
@@ -114,6 +115,19 @@ def _run(req: SimRequest) -> dict[str, Any]:
         mode: summarise(simulate(programme, challenge, funded, cfg, idx, mode), cfg, req.horizon_days)
         for mode in ("envelope", "closed")
     }
+    unbounded = any(p.risk_basis == "historical_loss_reference" for p in profiles.values())
+    assumptions = list(ASSUMPTIONS)
+    if unbounded:
+        assumptions += [
+            "Hourly EAs have NO SL: their risk input sizes against a frozen largest completed historical loss, "
+            "NOT planned-stop R. The open-risk envelope reserves that reference only; actual floating losses "
+            "can exceed it without bound. Neither scenario is a conservative upper/lower bound.",
+            "Hourly evidence is the original source-broker fixed-lot ledger, normalized by its frozen cash-loss "
+            "reference. This proxy assumes 0.01 lot step/minimum and skips below-minimum trades; it does not "
+            "reproduce broker-specific conversion or the normal BAT's minimum-lot override.",
+            "Hourly hours and sizing reference were selected on this same recent history and failed the "
+            "long-history gate. This is NOT a native FTMO guarded-portfolio validation or a payout forecast.",
+        ]
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "programme": programme.public(),
@@ -126,11 +140,48 @@ def _run(req: SimRequest) -> dict[str, Any]:
         "fan": fan_chart(challenge.pnl, idx, req.sizing),
         "compatibility": compat,
         "eas": {slug: profile.public() for slug, profile in profiles.items()},
-        "assumptions": list(ASSUMPTIONS),
+        "assumptions": assumptions,
+        "historical_risk_experiment": unbounded,
+        "notice": ("NO-STOP EXPERIMENT: historical-loss sizing is not a loss cap. Scenario rates are not "
+                   "equity-risk bounds or validated FTMO forecasts; the guarded FTMO launcher excludes these EAs.")
+                  if unbounded else "Cached standalone-ledger proxy, not an exact replay of the installed FTMO guard.",
     }
 
 
 # ---- presets and catalogue ------------------------------------------------------------------------------------
+def ftmo_mode(slug: str) -> str | None:
+    """Avoid silently using Markov-safe evidence for FTMO's non-Markov Squeeze."""
+    if not FTMO_PACKAGE.is_file():
+        return None
+    package = json.loads(FTMO_PACKAGE.read_text(encoding="utf-8"))
+    row = next((e for e in package.get("entries", []) if e["slug"] == slug), {})
+    if slug == "xau-squeeze-momentum-standard" and row.get("inputs", {}).get("InpUseMarkovRegimeFilter") == "false":
+        return "standard"
+    return None
+
+
+def current_ftmo_preset() -> dict[str, Any] | None:
+    """Current roster/settings selector; not a precomputed or validated forecast."""
+    if not FTMO_PACKAGE.is_file():
+        return None
+    package = json.loads(FTMO_PACKAGE.read_text(encoding="utf-8"))
+    entries = package.get("entries", [])
+    balance = float(package.get("reference_balance") or 10_000)
+    risk = float(package.get("risk_usd") or 50)
+    return {
+        "id": "ftmo-current", "label": f"Current FTMO profile · {len(entries)} EAs",
+        "package_version": package.get("version"), "programme_id": "ftmo-2step-swing",
+        "account_size": int(balance), "sizing": "fixed_usd", "period": "1y",
+        "eas": [{"slug": e["slug"], "risk_pct": risk / balance * 100, "risk_usd": risk} for e in entries],
+        "guards": {"max_open_risk_pct": 2.25, "max_entries_per_day": 7},
+        "note": f"Synced from PACKAGE.json ({package.get('version', '')}); ${risk:g} per trade, news off. "
+                "Loads the current selection only, NOT previously validated pass/payout numbers. "
+                "Standalone cached settings, UTC resets and simulator controls do not exactly reproduce "
+                "the native guard (including its three-loss stop, margin and same-symbol checks). "
+                "Hourly no-SL EAs remain optional experiments, NOT in this guarded profile.",
+    }
+
+
 def ftmo13_presets() -> list[dict[str, Any]]:
     """The saved FTMO 13-EA package, as installed and with the tested (not installed) -2% / +4% daily controls."""
     if not FTMO_PACKAGE.is_file():
@@ -168,24 +219,55 @@ def load_suggestions() -> dict[str, Any] | None:
 
 @lru_cache(maxsize=4)
 def _catalog(stamp: str) -> str:
-    profiles = available_eas("3y")
+    rows, profiles = [], {}
+    current = current_ftmo_preset()
+    members = {e["slug"] for e in current["eas"]} if current else set()
+    for product in get_website_catalog():
+        loaded = {period: value for period in ("3y", "1y", "6m", "5y")
+                  if (value := load_ea(product.slug, period, ftmo_mode(product.slug))) is not None and value[1]}
+        profile = next((value[0] for value in loaded.values()), None)
+        row = profile.public() if profile else {
+            "slug": product.slug, "label": product.label, "symbol": product.canonical,
+            "timeframe": product.timeframe, "trades": 0, "period": None,
+            "risk_basis": "unavailable", "risk_note": "No cached ledger with usable sizing evidence.",
+        }
+        row.update(supported_periods=list(loaded), period_trade_counts={p: v[0].trades for p, v in loaded.items()},
+                   ftmo_profile_member=product.slug in members)
+        rows.append(row)
+        profiles[product.slug] = profile
     progs = programmes()
     matrix = {
-        pid: {p.slug: {"status": (v := compatibility(prog, p)).status, "reasons": list(v.reasons)} for p in profiles}
+        pid: {slug: ({"status": (v := compatibility(prog, p)).status, "reasons": list(v.reasons)} if p else
+                     {"status": "blocked", "reasons": ["No cached ledger with usable sizing evidence; listed for catalogue sync only."]})
+              for slug, p in profiles.items()}
         for pid, prog in progs.items()
     }
     return json.dumps({
         "programmes": [p.public() for p in progs.values()],
-        "eas": [p.public() for p in profiles],
+        "eas": rows,
         "compatibility": matrix,
-        "presets": ftmo13_presets(),
+        "presets": ([current] if current else []) + ftmo13_presets(),
+        "default_preset_id": "ftmo-current" if current else None,
+        "catalog_count": len(rows),
     })
 
 
+def _data_stamp() -> str:
+    """Invalidate catalogue and run caches when package/roster/evidence files change."""
+    import hashlib
+    from ..evidence_cache import CACHE_ROOT
+    inputs = [FTMO_PACKAGE, PACKAGE_ROOT / "_Auto Deploy/Install-BMTradingPortfolio.ps1",
+              PACKAGE_ROOT / "Hourly Profiles Deployment 2026-10-04/RELEASE.json"]
+    inputs += list((CACHE_ROOT / "products").glob("*/*/*.json"))
+    inputs += list(RULES_ROOT.glob("*.json"))
+    fingerprints = "|".join(f"{p}:{p.stat().st_mtime_ns}:{p.stat().st_size}" for p in inputs if p.is_file())
+    return hashlib.sha256(fingerprints.encode()).hexdigest()
+
+
 def catalog_payload() -> dict[str, Any]:
-    # Refresh hourly, and immediately when firm logos are added or replaced.
+    # Refresh hourly, and immediately when package/evidence or firm logos change.
     logos = max((p.stat().st_mtime for p in LOGO_ROOT.glob("*")), default=0.0) if LOGO_ROOT.is_dir() else 0.0
-    stamp = f"{datetime.now(timezone.utc).strftime('%Y-%m-%d %H')}|{logos}"
+    stamp = f"{datetime.now(timezone.utc).strftime('%Y-%m-%d %H')}|{logos}|{_data_stamp()}"
     payload = json.loads(_catalog(stamp))
     payload["suggestions"] = load_suggestions()
     return payload

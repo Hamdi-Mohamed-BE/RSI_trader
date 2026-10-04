@@ -9,7 +9,9 @@ correlation is preserved). All paths advance one day at a time through the progr
 Loss rules are checked every day before that day's P/L is booked, using the day's worst intraday point:
     * ``closed``   worst closed-trade balance of the day (optimistic: ignores floating drawdown of open trades)
     * ``envelope`` every open position assumed at its full stop at the worst moment (conservative)
-Both are reported, so the true (unrecorded) intraday answer sits between them.
+Both are scenario assumptions, not guaranteed bounds on the unrecorded intraday
+answer. For no-stop hourly experiments, the reserve is a historical loss reference
+only; actual floating losses can exceed it without bound.
 """
 
 from __future__ import annotations

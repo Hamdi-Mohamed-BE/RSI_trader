@@ -216,6 +216,31 @@ stored under `C:\Calyx-Caddy`.
 
 ## Catalogue and pricing
 
+### Prop simulator sync — 4 October 2026
+
+`/api/prop-sim/catalog` now uses the whole website roster (37 entries), not just
+sellable EAs with three-year stop-risk ledgers. Rows without usable sizing evidence
+remain visible but disabled. The current FTMO package supplies the default 14-EA
+selection automatically: Swing, $10k, fixed $50, last year. This is a selection
+preset, **not** a validated forecast of the exact native guarded package; old
+FTMO13 forecast presets remain hidden after the Gold target change.
+
+US30/US100 Hourly Profiles are optional experiments, unchecked by default. They
+support only 1y/6m replay, normalized against the frozen source-account largest
+completed cash loss. This is not stop R or a future-loss cap. Warnings accompany
+selection and results; neither reserve nor closed-trade scenario bounds actual
+equity risk. The proxy assumes 0.01 lot step/minimum and skips too-small trades,
+unlike the normal BAT's broker-specific minimum-lot fallback. The FTMO guarded
+launcher, Ava and licensed checkout are unchanged. Squeeze defaults to the
+FTMO profile's Standard/non-Markov evidence.
+
+Package/installer/evidence changes invalidate simulator catalogue and result
+caches. Regression coverage: `tests/test_prop_sim_sync.py`. Every future EA
+addition must reconcile installer, website/API, simulator, FTMO selection,
+evidence and deployment boundaries (see the root handoff document, section 26).
+Git push alone does not update the public VPS: pull and restart its website
+process as well.
+
 The installer PowerShell file is the source of truth for the catalogue. Restart the web server after changing the installer.
 
 Descriptions and prices are in `app\catalog.py`. Public names remove the internal `AAA Final` prefix. List prices stay in `app\catalog.py`; the store charges 40% less (see the 2026-09-30 section). Purchases go through the cart and USDT checkout; WhatsApp remains for questions.

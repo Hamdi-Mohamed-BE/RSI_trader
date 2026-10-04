@@ -187,6 +187,9 @@ def compatibility(programme: Programme, profile: Any) -> Compatibility:
     if programme.hold_time_min_seconds and profile.short_trade_share > 0:
         notes.append(f"{profile.short_trade_share:.0%} of trades close within {programme.hold_time_min_seconds}s; "
                      "their profit is voided in the funded stage (modelled).")
+    if getattr(profile, "risk_basis", "") == "historical_loss_reference":
+        notes.append("Optional no-SL historical-sizing experiment only; NOT compatible with the current "
+                     "guarded FTMO installer. The reference is not a loss cap; true equity losses are unbounded.")
     if blocked:
         return Compatibility("blocked", tuple(dict.fromkeys(blocked)))
     policy = programme.ea_policy.get("status", "allowed")

@@ -45,7 +45,7 @@
       </div>
       <details class="mt-4 text-xs text-muted"><summary class="cursor-pointer font-mono uppercase tracking-[.12em]">Simulation settings</summary>
         <div class="evidence-controls mt-3 sm:grid-cols-2">
-          <label><span>Evidence window</span><select data-period><option value="1y">Last 1 year</option><option value="3y" selected>Last 3 years</option><option value="5y">Last 5 years</option></select></label>
+          <label><span>Evidence window</span><select data-period><option value="6m">Last 6 months</option><option value="1y" selected>Last 1 year</option><option value="3y">Last 3 years</option><option value="5y">Last 5 years</option></select></label>
           <label><span>Method</span><select data-method><option value="bootstrap">Calendar-block bootstrap</option><option value="rolling">Historical rolling starts</option></select></label>
           <label><span>Paths</span><input data-paths type="number" min="100" max="5000" step="100" value="2000"></label>
           <label><span>Horizon (days)</span><input data-horizon type="number" min="30" max="730" step="15" value="365"></label>
@@ -53,6 +53,7 @@
         </div>
       </details>
     </div>
+    <p class="mt-4 rounded-xl border border-amber-200/20 bg-amber-200/5 p-3 text-xs leading-6 text-amber-100" data-selection-info></p>
   </div>
 
   <div class="mt-6 rounded-3xl border border-white/10 bg-white/[.025] p-6">
@@ -62,7 +63,7 @@
     </div>
     <div class="mt-4 hidden overflow-x-auto rounded-2xl border border-mint/15 bg-mint/[.035] p-4" data-suggestions></div>
     <div class="mt-4 overflow-x-auto"><table class="w-full min-w-[720px] text-left text-sm" data-ea-table>
-      <thead class="font-mono text-[10px] uppercase tracking-[.12em] text-muted"><tr><th class="py-2 pr-3"><input type="checkbox" data-select-all aria-label="Select all compatible EAs"></th><th class="py-2 pr-3">EA</th><th class="py-2 pr-3">Market</th><th class="py-2 pr-3">Trades (3y)</th><th class="py-2 pr-3">Compatibility</th><th class="py-2" data-risk-head>Risk $</th></tr></thead>
+      <thead class="font-mono text-[10px] uppercase tracking-[.12em] text-muted"><tr><th class="py-2 pr-3"><input type="checkbox" data-select-all aria-label="Select all compatible EAs"></th><th class="py-2 pr-3">EA</th><th class="py-2 pr-3">Market</th><th class="py-2 pr-3">Trades (chosen window)</th><th class="py-2 pr-3">Replay compatibility</th><th class="py-2" data-risk-head>Risk / reference $</th></tr></thead>
       <tbody></tbody>
     </table></div>
     <div class="mt-6 flex flex-wrap items-center gap-4">
@@ -76,7 +77,8 @@
       <div><p class="eyebrow-simple">Results</p><h2 class="mt-2 text-2xl font-bold" data-result-title></h2></div>
       <span class="badge badge-warn" title="These EAs were selected and configured using this history">In-sample backtest evidence</span>
     </div>
-    <p class="mt-3 text-xs leading-6 text-muted">Each rate is shown as <strong class="text-white">conservative – optimistic</strong>. Conservative assumes every open position sits at its full stop at the worst moment of the day; optimistic counts closed trades only. Intraday floating drawdown was not recorded, so the real answer lies between them.</p>
+    <p class="mt-3 text-xs leading-6 text-amber-100" data-result-notice></p>
+    <p class="mt-3 text-xs leading-6 text-muted" data-envelope-note>Stop/reference reserve versus closed-trade replay. Floating equity was not recorded; these scenarios are not guaranteed risk bounds.</p>
     <div class="stats-strip stats-strip-expanded mt-5" data-kpis></div>
     <div class="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
       <div class="chart-panel !block"><p class="font-mono text-[10px] uppercase tracking-[.14em] text-muted">Combined return across sampled paths (no prop rules) · 5/25/50/75/95th percentile</p><canvas data-fan height="260" class="mt-3 w-full"></canvas></div>
@@ -96,4 +98,4 @@
   </div>
 </section>
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', path='prop-simulator.js') }}?v=20260930-prop-sim-6" defer></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='prop-simulator.js') }}?v=20261004-sync-1" defer></script>{% endblock %}

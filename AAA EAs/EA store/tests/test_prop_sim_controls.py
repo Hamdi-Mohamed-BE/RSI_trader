@@ -41,6 +41,8 @@ def test_profit_close_locks_the_day_at_the_target():
 def test_changed_gold_targets_hide_stale_ftmo_package_forecasts():
     presets = {p["id"]: p for p in client.get("/api/prop-sim/catalog").json()["presets"]}
     assert 'ftmo13' not in presets and 'ftmo13-controls' not in presets
+    from app.prop_sim.service import current_ftmo_preset
+    assert presets['ftmo-current'] == current_ftmo_preset()
 
 
 def test_run_accepts_daily_controls():

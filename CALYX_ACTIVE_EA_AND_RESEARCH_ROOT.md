@@ -1,6 +1,6 @@
 # Calyx Active EA and Research Root — Master Agent Prompt
 
-**Version:** 2026-10-04 (normal hourly-profile deployment and exploratory FTMO comparison)
+**Version:** 2026-10-04 (hourly deployment, exploratory FTMO comparison and simulator catalogue sync)
 
 **Repository:** `C:\Users\hama101\Desktop\geek\ai trader`
 **Purpose:** Recreate the complete Calyx EA research, MT5 validation, deployment, portfolio, website-evidence, and live-audit context in a new Codex/chat session.
@@ -922,3 +922,44 @@ three-loss limits. A genuine FTMO promotion requires bounded risk and native tes
 - Product cards/details/API/risk visuals use the same four recent caches. Headlines use net native position outcomes and native tickwise floating-equity drawdown. Charts use closed position-completion balance, costs attributed at close; site-wide annualised daily Sharpe remains distinct from MT5 report Sharpe.
 - The portfolio is not rebuilt for this website-only addition: its roster and all portfolio cache hashes must remain unchanged, as recorded in the release. Active-installation or promotion would require a separate explicit request and a new portfolio audit.
 - Local website restart/reload is not Git publishing or public VPS deployment. Never claim that the public site has been deployed without confirming it.
+
+## 26. Catalogue / prop-simulator sync policy (2026-10-04)
+
+The owner explicitly requested the hourly EAs in `/prop-simulator` and wants future
+EA changes reflected across all relevant surfaces. The earlier restriction on
+simulator visibility in section 25 is superseded, NOT the guarded FTMO deployment
+restriction. The normal catalogue and simulator now list 37 entries, including
+US30/US100 Hourly Profiles. Missing usable sizing evidence must appear explicitly
+as an unavailable/disabled simulator row, never silently disappear or invent risk.
+
+The simulator default selection is generated from the current
+`FTMO Thirteen EA Deployment 2026-09-27/PACKAGE.json` (currently 14 EAs), not a
+hard-coded list, an old FTMO13 preset or a suggestions cache. Default programme:
+FTMO 2-step Swing, $10k, fixed $50, 1y evidence. It represents the current ROSTER,
+not a validated forecast of the exact guarded build. Squeeze uses Standard
+non-Markov evidence. The seven-entry and 2.25% open-risk settings reproduce only
+part of the native guard; three-loss, same-symbol, margin, Prague reset and other
+native controls are not fully reproduced by the web simulator.
+
+Hourlies are optional, UNCHECKED by default because they are not in that guarded
+FTMO package. Their simulator evidence supports only 1y/6m. Selecting one from an
+unsupported window switches to available recent evidence, with disclosure. Cash
+sizing reference comes from the hash-bound deployment RELEASE.json / 1y+6m
+ledgers, not invented stop R. No SL means the reserve envelope is not an equity
+bound. Display prominent warnings in selection and results. Do not claim reliable
+pass/payout forecasts or silently install them into FTMO, Ava or licensed Top 5.
+
+For every future roster/EA/settings change, check:
+
+- shared installer and all compatible normal BAT wrappers;
+- website catalogue, detail routes and public API;
+- simulator catalogue, supported periods, sizing basis and explicit unavailable rows;
+- current FTMO preset against PACKAGE.json (only update actual FTMO deployment when requested and compatible);
+- affected evidence fingerprints, cache invalidation and labels; never reuse a stale forecast as current;
+- portfolio/checkout/license exclusions remain explicit where policy differs;
+- local server reload, Git push, and public VPS pull/restart are separate actions.
+
+`tests/test_prop_sim_sync.py` enforces catalogue equality, current-package defaults,
+recent-only hourly evidence, source-bound risk, cache invalidation, API replay and
+no-stop warnings. Run it with the existing prop and hourly tests. No active MT5
+chart or FTMO launcher was modified for this simulator change.

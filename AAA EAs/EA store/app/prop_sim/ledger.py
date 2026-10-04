@@ -18,7 +18,7 @@ from typing import Any
 
 import numpy as np
 
-from ..catalog import Product, get_product, get_sellable_catalog
+from ..catalog import Product, PACKAGE_ROOT, get_website_product, get_website_catalog
 from ..evidence_cache import CACHE_ROOT, validate_period
 
 LOT_STEP = 0.01
@@ -56,6 +56,9 @@ class EaProfile:
     straddle: bool
     short_trade_share: float
     evidence_status: str
+    period: str = "3y"
+    risk_basis: str = "estimated_planned_risk"
+    risk_note: str = ""
 
     def public(self) -> dict[str, Any]:
         return {"slug": self.slug, "label": self.label, "symbol": self.symbol, "timeframe": self.timeframe,
@@ -63,7 +66,32 @@ class EaProfile:
                 "trades": self.trades, "weekend_holds": self.weekend_holds,
                 "weekend_hold_share": round(self.weekend_hold_share, 4), "news_ea": self.news_ea,
                 "straddle": self.straddle, "short_trade_share": round(self.short_trade_share, 4),
-                "evidence_status": self.evidence_status}
+                "evidence_status": self.evidence_status, "period": self.period,
+                "risk_basis": self.risk_basis, "risk_note": self.risk_note}
+
+
+def hourly_reference(slug: str) -> float | None:
+    """Source-account USD per one lot, not a protective stop or forward loss limit."""
+    import hashlib
+    from ..hourly_profiles import PROFILES
+    if slug not in PROFILES:
+        return None
+    path = PACKAGE_ROOT / "Hourly Profiles Deployment 2026-10-04/RELEASE.json"
+    if not path.is_file():
+        return None
+    release = json.loads(path.read_text(encoding="utf-8"))
+    asset = PROFILES[slug][0]
+    entry = next((e for e in release.get("entries", []) if e["asset"] == asset), None)
+    if not entry:
+        return None
+    base = CACHE_ROOT / "products" / slug / "standard"
+    for filename, digest in entry.get("ledger_sha256", {}).items():
+        ledger = base / filename
+        if not ledger.is_file() or hashlib.sha256(ledger.read_bytes()).hexdigest() != digest:
+            return None
+    worst = entry.get("worst_trade") or {}
+    volume = float(worst.get("volume") or 0)
+    return abs(float(worst.get("net_profit") or 0)) / volume if volume > 0 else None
 
 
 def recommended_mode(product: Product) -> str:
@@ -93,26 +121,30 @@ def _holds_weekend(opened: datetime, closed: datetime) -> bool:
 
 
 @lru_cache(maxsize=256)
-def _load(slug: str, mode: str, period: str, stamp: int) -> tuple[EaProfile, tuple[LedgerTrade, ...]] | None:
+def _load(slug: str, mode: str, period: str, stamp: tuple) -> tuple[EaProfile, tuple[LedgerTrade, ...]] | None:
     base = CACHE_ROOT / "products" / slug / mode
     summary_path, trades_path = base / f"{period}.json", base / f"{period}.trades.json"
     if not summary_path.is_file() or not trades_path.is_file():
         return None
     from ..evidence_cache import load_product_summary
-    summary = load_product_summary(slug,mode,period) or {}
+    summary = load_product_summary(slug,mode,period)
+    if summary is None:
+        return None
     rows = json.loads(trades_path.read_text(encoding="utf-8-sig"))
-    product = get_product(slug)
+    product = get_website_product(slug)
     stats = summary.get("stats") or {}
     start, end = _dt(stats.get("from")), _dt(stats.get("to"))
     if product is None or start is None or end is None:
         return None
     trades: list[LedgerTrade] = []
+    reference = hourly_reference(slug)
     for row in rows:
         opened, closed = _dt(row.get("open_time")), _dt(row.get("close_time"))
-        risk = float(row.get("estimated_risk_cash") or 0.0)
+        risk = (reference * float(row.get("volume") or 0) if reference else
+                float(row.get("estimated_risk_cash") or 0.0))
         if opened is None or closed is None or risk <= 0:
             continue
-        r = row.get("estimated_r")
+        r = None if reference else row.get("estimated_r")
         r_value = float(r) if r is not None else float(row.get("net_profit") or 0.0) / risk
         trades.append(LedgerTrade(slug, str(row.get("symbol") or product.canonical), opened, closed, r_value,
                                   float(row.get("volume") or 0.0), risk))
@@ -127,24 +159,33 @@ def _load(slug: str, mode: str, period: str, stamp: int) -> tuple[EaProfile, tup
         news_ea=news, straddle=news,
         short_trade_share=(sum(t.seconds < SHORT_TRADE_SECONDS for t in trades) / len(trades)) if trades else 0.0,
         evidence_status=summary.get('evidence_status') or (product.evidence.status if product.evidence else "pending"),
+        period=period,
+        risk_basis="historical_loss_reference" if reference else "estimated_planned_risk",
+        risk_note=("No stop loss. Sized against the largest completed net loss in the frozen 1y/6m ledgers "
+                   f"(${reference:.2f} per source-broker lot). This is NOT planned-stop R, intratrade MAE or "
+                   "a future-loss cap. Failed long-history gate; selection-period evidence only. "
+                   "Optional simulator experiment, NOT included in the guarded FTMO installer.") if reference else "",
     )
     return profile, tuple(trades)
 
 
-def load_ea(slug: str, period: str) -> tuple[EaProfile, tuple[LedgerTrade, ...]] | None:
+def load_ea(slug: str, period: str, mode: str | None = None) -> tuple[EaProfile, tuple[LedgerTrade, ...]] | None:
     validate_period(period)
-    product = get_product(slug)
+    product = get_website_product(slug)
     if product is None or product.evidence is None:
         return None
-    mode = "standard" if slug.startswith("news-pulse-") else recommended_mode(product)
+    mode = mode or ("standard" if slug.startswith("news-pulse-") else recommended_mode(product))
     path = CACHE_ROOT / "products" / slug / mode / f"{period}.trades.json"
-    stamp = path.stat().st_mtime_ns if path.is_file() else 0
+    summary = path.with_name(f"{period}.json")
+    release = PACKAGE_ROOT / "Hourly Profiles Deployment 2026-10-04/RELEASE.json"
+    bound = (path, summary, release, path.with_name("1y.trades.json"), path.with_name("6m.trades.json"))
+    stamp = tuple((str(p), p.stat().st_mtime_ns, p.stat().st_size) for p in bound if p.is_file())
     return _load(slug, mode, period, stamp)
 
 
 def available_eas(period: str) -> list[EaProfile]:
     profiles = []
-    for product in get_sellable_catalog():
+    for product in get_website_catalog():
         loaded = load_ea(product.slug, period)
         if loaded is not None and loaded[1]:
             profiles.append(loaded[0])

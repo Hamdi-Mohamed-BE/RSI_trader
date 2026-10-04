@@ -198,13 +198,17 @@ def test_custom_ledger_replay_returns_both_equity_modes_and_standard_stats():
             "max_balance_dd_pct", "avg_win_streak", "max_loss_streak"} <= set(stats)
 
 
-def test_invalid_and_incompatible_requests_are_rejected():
+def test_invalid_and_incompatible_requests_are_rejected(monkeypatch):
     _prop_limiter._hits.clear()
     bad = client.post("/api/prop-sim/run", json={"programme_id": "ftmo-2step-swing", "account_size": 10000, "eas": []})
     assert bad.status_code == 422
     wrong_size = client.post("/api/prop-sim/run", json={"programme_id": "ftmo-2step-swing", "account_size": 12345,
                                                         "eas": [{"slug": "ema3", "risk_pct": 0.5}]})
     assert wrong_size.status_code == 422 and "account sizes" in wrong_size.json()["detail"]
+    # Isolate rule rejection from the current news cache's unavailable sizing evidence.
+    from app.prop_sim import service
+    monkeypatch.setattr(service, "load_ea", lambda slug, period, mode=None:
+                        (profile(news_ea=True, straddle=True), (T(slug, 5, 8, 1, 1.0),)))
     blocked = client.post("/api/prop-sim/run", json={"programme_id": "ftmo-2step-standard", "account_size": 10000,
                                                      "eas": [{"slug": "news-pulse-xau", "risk_pct": 0.5}]})
     assert blocked.status_code == 422 and "cannot run" in blocked.json()["detail"]
