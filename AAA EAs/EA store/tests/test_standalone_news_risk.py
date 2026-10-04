@@ -51,7 +51,7 @@ foreach($mode in @('PERCENT','FIXED_USD')){foreach($safe in @($false,$true)){for
   }elseif($adaptive -and $inputs['InpAdaptivePortfolioControls'] -ne 'true'){throw 'Non-News protection changed'}
   if($item.Label -eq 'Nasdaq 5M Candle Momentum' -and $adaptive -and $risk -ne .4){throw 'Nasdaq allocation changed'}
  }
- if($n -ne 5 -or $items.Count -ne 35){throw 'Wrong scope'}
+ if($n -ne 5 -or $items.Count -ne 37){throw 'Wrong scope'}
  Assert-EffectiveRiskInputs $items;$checks++
 }}}}
 Write-Output ('PASS configurations='+$checks)

@@ -35,8 +35,8 @@ foreach ($mode in @('Standard','Safe','Recommended','Claude','Adaptive')) {
     $IsFullSafe=$mode -eq 'Safe'
     $real=@(Get-PortfolioItems)
     $news=@($real | Where-Object { $_.Label -match '(?i)news' -or $_.Expert -match '(?i)news' })
-    if ($real.Count -ne 35 -or $news.Count -ne 5) {throw "$mode actual manifest invalid"}
-    Write-Host "PASS: actual $mode manifest has 35 EAs, all five selected news EAs."
+    if ($real.Count -ne 37 -or $news.Count -ne 5) {throw "$mode actual manifest invalid"}
+    Write-Host "PASS: actual $mode manifest has 37 EAs, all five selected news EAs."
 }
 $avaFile=Join-Path $PackageRoot 'Ava Futures Portfolio Research 2026-09-09\Install-AvaFuturesTop10.ps1'
 $tokens=$null;$errors=$null

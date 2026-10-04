@@ -70,7 +70,7 @@ def test_native_cache_card_detail_ledger_agree(slug,period):
 
 def test_roster_magics_and_bat_routes():
     products=get_sellable_catalog()
-    assert len(products)==35  # 3 Way Gold added 2026-09-30
+    assert len(products)==35  # Hourly profiles are installed but not licensed for sale.
     news=[p for p in products if p.label.startswith('News Pulse ')]
     assert len(news)==4
     magics=[]

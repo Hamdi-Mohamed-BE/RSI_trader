@@ -47,6 +47,8 @@ def label_product_payload(slug, mode, payload):
 def label_portfolio_payload(payload):
     if payload is None:return None
     payload=dict(payload)
+    payload['notice']='US30/US100 hourly profiles were added to normal BATs on 4 October 2026. This older portfolio evidence excludes them and does not measure the new historical-loss-sized portfolio. '+str(payload.get('notice') or '')
+    payload['is_current_configuration']=False
     if payload.get('configuration_release')!=VERSION:
         payload['notice']=HISTORICAL_NOTE+' '+str(payload.get('notice') or '')
         payload.update(label='Archived pre-ADX/DI portfolio',evidence_status='Archived portfolio configuration',is_current_configuration=False)

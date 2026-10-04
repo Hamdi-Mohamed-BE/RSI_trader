@@ -1177,6 +1177,7 @@ def parse_installer_items() -> list[dict[str, Any]]:
                 "set_source": set_source,
                 "safe_set_source": safe_set_source or None,
                 "optional_symbol": bool(re.search(r"\bOptionalSymbol\s*=\s*\$true", block)),
+                "historical_loss_sizing": bool(re.search(r"\bHistoricalLossSizing\s*=\s*\$true", block)),
                 "supports_safe_filter": not bool(re.search(r"\bSupportsSafeFilter\s*=\s*\$false", block)),
                 "recommended_safe_mode": bool(re.search(r"\bRecommendedSafe\s*=\s*\$true", block)),
                 "recommended_dynamic_mode": bool(re.search(r"\bRecommendedDynamic\s*=\s*\$true", block)),
@@ -2838,6 +2839,8 @@ def get_catalog() -> list[Product]:
     }
     products: list[Product] = []
     for item in parse_installer_items():
+        if item.get("historical_loss_sizing"):
+            continue  # Recent-only experimental products have separate benchmark metadata.
         meta = _meta_for(item)
         evidence = one_year.get(item["label"])
         if item["label"] == "Nasdaq 5M Candle Momentum":
@@ -3106,7 +3109,8 @@ def get_catalog() -> list[Product]:
             )
         )
     from .admission_release import apply_product_release
-    return [apply_product_release(product) for product in products]
+    from .hourly_profiles import website_products
+    return [apply_product_release(product) for product in products] + website_products()
 
 
 def get_sellable_catalog() -> list[Product]:
@@ -3114,8 +3118,7 @@ def get_sellable_catalog() -> list[Product]:
 
 
 def get_website_catalog() -> list[Product]:
-    from .hourly_profiles import website_products
-    return [product for product in get_catalog() if not product.development] + website_products()
+    return [product for product in get_catalog() if not product.development]
 
 
 def get_website_product(slug: str) -> Product | None:

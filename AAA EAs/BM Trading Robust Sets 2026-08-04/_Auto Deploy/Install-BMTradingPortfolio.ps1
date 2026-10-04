@@ -11,6 +11,9 @@ param(
     [string]$RiskMode = 'DEFAULT',
     [double]$RiskValue = 0.0,
     [ValidateScript({ -not [double]::IsNaN($_) -and -not [double]::IsInfinity($_) -and $_ -ge 0.00000001 -and $_ -le 10 })]
+    [double]$HourlyRiskPercent = 0.5,
+    [switch]$HourlyUseDefaultRisk,
+    [ValidateScript({ -not [double]::IsNaN($_) -and -not [double]::IsInfinity($_) -and $_ -ge 0.00000001 -and $_ -le 10 })]
     [double]$NewsRiskPercent = 0.75,
     [ValidateSet('ON', 'OFF')]
     [string]$NasdaqDIFilter = 'ON',
@@ -296,10 +299,28 @@ function Get-PortfolioItems {
         }
     )
 
+    $items += @(
+        [pscustomobject]@{
+            Label = 'US30 Hourly Profiles'; Canonical = 'US30'; Aliases = @('US30', 'DJ30', 'WS30', 'DOW30', 'WALLSTREET', 'DOW')
+            Period = 1; Expert = 'CalyxHourlyProfiles History Sized.ex5'
+            ExpertSource = 'Hourly Profiles Deployment 2026-10-04\EA\CalyxHourlyProfiles History Sized.ex5'
+            SetSource = 'Hourly Profiles Deployment 2026-10-04\Sets\US30.set'; SmallDynamicRisk = $false; PercentRisk = $true; SupportsSafeFilter = $false; OptionalSymbol = $true; HistoricalLossSizing = $true
+        },
+        [pscustomobject]@{
+            Label = 'US100 Hourly Profiles'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
+            Period = 1; Expert = 'CalyxHourlyProfiles History Sized.ex5'
+            ExpertSource = 'Hourly Profiles Deployment 2026-10-04\EA\CalyxHourlyProfiles History Sized.ex5'
+            SetSource = 'Hourly Profiles Deployment 2026-10-04\Sets\US100.set'; SmallDynamicRisk = $false; PercentRisk = $true; SupportsSafeFilter = $false; OptionalSymbol = $true; HistoricalLossSizing = $true
+        }
+    )
+
     # Filter before file checks, symbol discovery, risk settings or chart creation.
     # Owner restored all five selected news systems in normal BATs on 2026-10-03.
     $items = @(Select-NormalNewsItems -Items $items)
     foreach ($item in $items) {
+        if (-not $item.PSObject.Properties['HistoricalLossSizing']) {
+            $item | Add-Member -NotePropertyName HistoricalLossSizing -NotePropertyValue $false
+        }
         if (-not $item.PSObject.Properties['FixedPercentRisk']) {
             $item | Add-Member -NotePropertyName FixedPercentRisk -NotePropertyValue 0.0
         }
@@ -499,6 +520,15 @@ function Test-NewsAdaptiveExemption([object]$Item) {
 
 function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
+    if ([bool]$Item.HistoricalLossSizing) {
+        # No stop is added. Risk here means the frozen historical-loss scenario,
+        # not maximum possible future loss. Recalculate volume on each entry.
+        $inputs['InpSizingMode'] = if ($UsesDynamicRisk -and $RiskMode -eq 'FIXED_USD') { '2' } else { '1' }
+        $inputs['InpRiskPercent'] = ([double]$Item.EffectiveRiskPercent).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+        $inputs['InpFixedRiskMoney'] = ([double]$Item.EffectiveRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+        $inputs['InpAdaptivePortfolioControls'] = if ($UseAdaptiveProfile) { 'true' } else { 'false' }
+        return $inputs
+    }
     if ($Item.Label -eq 'Nasdaq 5M Candle Momentum') {
         if (-not $inputs.Contains('InpRequireDIAgreement')) { Stop-WithMessage 'Nasdaq preset does not support the requested DI selection.' }
         $inputs['InpRequireDIAgreement'] = if ($NasdaqDIFilter -eq 'OFF') { 'false' } else { 'true' }
@@ -600,6 +630,10 @@ function Get-EffectiveInputs([object]$Item) {
 }
 
 function Get-ItemBaseRiskPercent([object]$Item) {
+    if ([bool]$Item.HistoricalLossSizing) {
+        if ($UsesDynamicRisk -and -not $HourlyUseDefaultRisk) { return $EffectiveAdaptiveRiskPercent }
+        return $HourlyRiskPercent
+    }
     if (Test-NewsAdaptiveExemption $Item) { return $NewsRiskPercent }
     if ([bool]$Item.LockRisk) { return [double]$Item.FixedPercentRisk }
     if ($UsesDynamicRisk) { return $EffectiveAdaptiveRiskPercent }
@@ -648,7 +682,8 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
     }
     $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
     $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls apply to non-News EAs and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
-    Write-Host ("Risk audit passed: non-News uses {0}{1}; all five news EAs use {2:N4}% per order and bypass adaptive controls. Each straddle plans {3:N4}%; four concurrent straddles plan {4:N4}%, plus V9, before rounding, gaps and fees." -f $modeText, $adaptiveText, $NewsRiskPercent, (2 * $NewsRiskPercent), (8 * $NewsRiskPercent)) -ForegroundColor Green
+    Write-Host ("Risk audit passed: stop-based non-News uses {0}{1}; all five news EAs use {2:N4}% per order and bypass adaptive controls. Each straddle plans {3:N4}%; four concurrent straddles plan {4:N4}%, plus V9, before rounding, gaps and fees." -f $modeText, $adaptiveText, $NewsRiskPercent, (2 * $NewsRiskPercent), (8 * $NewsRiskPercent)) -ForegroundColor Green
+    Write-Host 'Hourly profiles: chosen risk sizes against the frozen worst completed-trade loss from the published recent windows. NO SL; future loss is not capped. Broker minimum/rounding can exceed this scenario budget.' -ForegroundColor Yellow
 }
 
 function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
@@ -878,6 +913,7 @@ function Close-TargetTerminal([string]$ExecutablePath) {
 Write-Stage 'Checking portfolio files'
 $portfolio = @(Get-PortfolioItems)
 Write-Host 'NEWS POLICY: XAU/XAG/BTC/EURUSD News Pulse and Gold News V9 enabled; fresh-quote repair. FTMO unchanged.' -ForegroundColor Yellow
+Write-Host 'HOURLY POLICY: US30 and US100 included where available. Historical-loss sizing defaults to 0.5% of balance unless a risk is selected. NO SL; timed exits can be delayed. Separate FTMO/Ava and licensed Top 5 remain excluded.' -ForegroundColor Yellow
 foreach ($item in $portfolio) {
     if (-not (Test-Path -LiteralPath $item.ExpertFullPath)) { Stop-WithMessage "Missing EA: $($item.ExpertFullPath)" }
     if (-not (Test-Path -LiteralPath $item.SetFullPath)) { Stop-WithMessage "Missing settings: $($item.SetFullPath)" }
@@ -1028,10 +1064,13 @@ foreach ($item in $portfolio) {
         [Math]::Round(40.0 * [double]$item.AdaptiveBaseMultiplier, 2)
     } else { 0.0 }
     $item | Add-Member -NotePropertyName EffectiveRiskPercent -NotePropertyValue $effectiveItemRiskPercent
-    if ($IsAdaptiveAccount) {
+    if ($IsAdaptiveAccount -or [bool]$item.HistoricalLossSizing) {
         $item | Add-Member -NotePropertyName EffectiveRisk -NotePropertyValue $targetRisk
     }
-    if (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$item.SmallDynamicRisk) {
+    if ([bool]$item.HistoricalLossSizing) {
+        $item.EffectiveRisk = if ($UsesDynamicRisk -and $RiskMode -eq 'FIXED_USD') { $RequestedRiskMoney } else { [Math]::Round($balance * ($effectiveItemRiskPercent / 100.0), 2) }
+        Write-Host ('{0} -> {1}; historical-loss scenario {2:N4}% of BALANCE (or selected fixed cash); NOT a stop-loss cap. Volume recalculated each entry.' -f $item.Label, $item.BrokerSymbol, $effectiveItemRiskPercent) -ForegroundColor Yellow
+    } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$item.SmallDynamicRisk) {
         $price = [Math]::Max([Math]::Max([double]$match.bid, [double]$match.ask), [double]$match.reference_price)
         $tickSize = [Math]::Abs([double]$match.trade_tick_size)
         $tickValue = [Math]::Max([Math]::Abs([double]$match.trade_tick_value_loss), [Math]::Abs([double]$match.trade_tick_value))
@@ -1277,7 +1316,9 @@ $manifest = @(
     ''
     'Charts:'
 ) + @($portfolio | ForEach-Object {
-    if ($UsesDynamicRisk) {
+    if ([bool]$_.HistoricalLossSizing) {
+        '{0}: {1}, period {2}, {3}; historical-loss sizing {4:N4}% of balance / cash {5:N2}; NO SL, no guaranteed max loss; set {6}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveRiskPercent, $_.EffectiveRisk, $_.EffectiveSetPath
+    } elseif ($UsesDynamicRisk) {
         '{0}: {1}, period {2}, {3}; dynamic target {4:N2} {5} ({6:N4}% at install); set {7}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveRisk, [string]$probe.account.currency, $_.EffectiveRiskPercent, $_.EffectiveSetPath
     } elseif (($IsAdaptiveAccount -or $IsSmallAccount) -and [bool]$_.SmallDynamicRisk) {
         '{0}: {1}, period {2}, {3}; lot {4}; hard SL {5:N4}%; target risk {6:N2} {7}; set {8}' -f $_.Label, $_.BrokerSymbol, $_.Period, $_.Expert, $_.EffectiveLot, $_.EffectiveStopPercent, $_.EffectiveRisk, [string]$probe.account.currency, $_.EffectiveSetPath

@@ -1,6 +1,6 @@
 # Calyx Active EA and Research Root — Master Agent Prompt
 
-**Version:** 2026-09-19 (News Pulse multi-asset promotion)
+**Version:** 2026-10-04 (normal hourly-profile deployment and exploratory FTMO comparison)
 
 **Repository:** `C:\Users\hama101\Desktop\geek\ai trader`
 **Purpose:** Recreate the complete Calyx EA research, MT5 validation, deployment, portfolio, website-evidence, and live-audit context in a new Codex/chat session.
@@ -878,6 +878,40 @@ Core principle: **one coded rule set, one exact test artifact, one evidence chai
 ---
 
 ## 25. Website-only hourly profile previews (2026-10-04)
+
+**Superseded deployment boundary on 4 October 2026:** the owner explicitly requested
+US30/US100 in all maintained normal portfolio BATs. The normal roster is now 37.
+`Hourly Profiles Deployment 2026-10-04` contains a separately compiled v1.11 build,
+unique per-asset magic IDs, deployment SETs and frozen recent-history loss references.
+Selected percentage sizes against the largest completed net loss in the published
+one-year/six-month ledgers; default 0.5% of current BALANCE when no percentage is
+explicitly selected. Fixed cash works separately. Broker OrderCalcProfit converts
+the scenario at each entry, then rounding DOWN/minimum-volume policy applies.
+Adaptive mode applies native entry blocks/tapers. NO SL was added: future loss,
+floating loss and minimum-lot rounding can exceed the scenario budget. The reference
+is not a five-year maximum or intratrade MAE. No active MT5 chart was modified here.
+The original one-lot website evidence remains an archived benchmark, NOT measured
+performance of the new sizing or expanded portfolio. Licensed checkout/Top 5,
+FTMO guarded installer and Ava netting installer remain excluded. A separate FTMO
+comparison was requested and does not by itself change the guarded installer.
+The historical paragraphs below describe the initial website-only release; these
+new explicit instructions supersede their active-roster/hash-preservation boundary.
+
+`FTMO Hourly Comparison 2026-10-04/Results.html` and `Results.json` are an
+EXPLORATORY shared-cash cached-ledger comparison of the current 14-EA FTMO roster
+with US30, US100, or both added hypothetically. Common window is 2025-10-03 through
+2026-08-31 inclusive (333 days), not a full fresh year. Fixed $50 baseline and
+0.5% current-balance hourly scenario sizing, assumed FTMO 0.01-step/minimum,
+floor rounding, admission caps and joint four-week 1,000-path block bootstrap.
+Recorded costs plus explicit FTMO cost floors; separate stressed execution/carry
+and 3x/10x historical reservation scenarios. Equity drawdown is NOT measured.
+Cached standalone settings, simplified multi-module/partial-close state and
+estimated entry risk are not exact native guarded binaries. Use this only to
+identify follow-up candidates; no validated pass probability or payout forecast.
+The report models only FIRST payout; medians are conditional on success. Do not
+replace older website portfolio caches with these results or claim FTMO deployment.
+US30 alone is the more promising follow-up; both together crowd daily entries and
+three-loss limits. A genuine FTMO promotion requires bounded risk and native tests.
 
 - User selected US30 and US100 from `Indices Hourly EA Pipeline 2026-10-03` for website display only. SP500 is not added.
 - Routes: `/eas/us30-hourly-profiles` and `/eas/us100-hourly-profiles`. Publish only `1y` and `6m`, both ending **2026-10-03 exclusive**; starts are 2025-10-03 and 2026-04-03. Unsupported detail periods redirect to 1y; long-period series endpoints reject them. Other products' period choices remain unchanged.

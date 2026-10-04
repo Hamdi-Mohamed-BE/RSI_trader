@@ -1,4 +1,5 @@
 @echo off
+echo US30/US100 hourly profiles included: selected risk uses historical-loss sizing; default 0.5%%. NO SL, no guaranteed loss cap.
 setlocal
 title BM Trading +20 Percent - Any Balance Auto Risk
 

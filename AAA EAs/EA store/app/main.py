@@ -255,7 +255,7 @@ def _base_context(request: Request, active: str) -> dict[str, Any]:
         "request": request,
         "active": active,
         "product_count": len(get_website_catalog()),
-        "installer_product_count": len(products) + len(development),
+        "installer_product_count": len(get_catalog()),
         "development_count": len(development),
         "whatsapp_number": WHATSAPP_NUMBER,
         "whatsapp_display": "+216 93 830 957",
@@ -541,6 +541,7 @@ async def portfolio(
     for product in products:
         groups.setdefault(product.category, []).append(product)
     context = _base_context(request, "portfolio") | {
+        "product_count": len(products),  # Archived evidence scope, not the expanded installer.
         "products": products,
         "groups": groups,
         "portfolio": _portfolio_audit("standard", period),
@@ -942,8 +943,10 @@ async def api_health() -> dict[str, Any]:
         "status": "ok",
         "catalogue_source": str(INSTALLER_PATH),
         "active_entries": len(products),
-        "available_entries": len(sellable),
-        "development_entries": len(products) - len(sellable),
+        "available_entries": len(get_website_catalog()),
+        "sellable_entries": len(sellable),
+        "experimental_entries": sum(p.website_only for p in products),
+        "development_entries": len(get_development_catalog()),
         "whatsapp_checkout": True,
         "live_mt5_telemetry": bool(live_state["connected"]),
         "live_mt5_last_update": live_state["last_update"],

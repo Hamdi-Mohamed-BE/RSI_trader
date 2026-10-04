@@ -48,7 +48,7 @@ def test_catalogue_is_synchronized_with_active_installer() -> None:
     assert [product.installer_label for product in products] == [item["label"] for item in installer_items]
     assert len({product.slug for product in products}) == len(products)
     assert all("aaa" not in product.label.lower() for product in products)
-    assert len(get_sellable_catalog()) == len(installer_items)
+    assert len(get_sellable_catalog()) == len(installer_items) - 2  # Hourly experimental additions are not licensed products.
     assert len(get_development_catalog()) == 0
 
 
@@ -78,7 +78,7 @@ def test_portfolio_risk_policy_has_only_news_exception() -> None:
         present = risk_keys & values.keys()
         assert present, item["label"]
         is_news = item["label"].startswith("News Pulse ") or item["label"] == "Gold News V9 Direction"
-        expected = 0.75 if is_news else 1.0
+        expected = 0.5 if item.get('historical_loss_sizing') else 0.75 if is_news else 1.0
         assert all(abs(float(values[key]) - expected) < 1e-9 for key in present), item["label"]
 
         if is_news:

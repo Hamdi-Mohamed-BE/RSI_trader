@@ -105,9 +105,9 @@ foreach ($UseAdaptiveProfile in @($true,$false)) {
       if ($inputs['InpAdaptivePortfolioControls'] -ne 'false' -or $inputs['InpRiskPercent'] -ne '0.75') { throw "News exemption failed: $($item.Label)" }
     } elseif ($UseAdaptiveProfile -and $inputs['InpAdaptivePortfolioControls'] -ne 'true') { throw "Non-News controls disabled: $($item.Label)" }
   }
-  if ($items.Count -ne 35 -or $exemptCount -ne 5) { throw 'Wrong exemption scope' }
+  if ($items.Count -ne 37 -or $exemptCount -ne 5) { throw 'Wrong exemption scope' }
 }
-Write-Output 'PASS: 35 EAs, exactly 5 news exemptions, both profile paths, stale true inputs overridden'
+Write-Output 'PASS: 37 EAs, exactly 5 news exemptions, both profile paths, stale true inputs overridden'
 '''
     import os
     result = subprocess.run(['powershell.exe', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', script],

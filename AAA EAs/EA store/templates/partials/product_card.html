@@ -10,7 +10,7 @@
     <div class="flex flex-col items-end gap-2">{% if product.recommended_dynamic_mode %}<span class="badge badge-dynamic">Running in Dynamic mode</span>{% elif product.recommended_safe_mode %}<span class="badge badge-safe">Running in Safe mode</span>{% endif %}{% if product.optional_symbol %}<span class="badge badge-neutral">Optional</span>{% endif %}</div>
   </div>
   <p class="mt-5 min-h-[48px] text-sm leading-6 text-muted">{{ product.tagline }}</p>
-  {% if product.website_only %}<p class="mt-2 text-xs text-amber-200/80">Research preview · {{ product.evidence.period if product.evidence else '' }} · Fixed 1 CFD lot, no stop loss</p>{% endif %}
+  {% if product.website_only %}<p class="mt-2 text-xs text-amber-200/80">Experimental normal-BAT addition · {{ product.evidence.period if product.evidence else '' }} · Chart: original 1-lot benchmark, no SL</p>{% endif %}
   {% if product.evidence %}
   <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
     <div class="mini-stat"><span>Return</span><strong class="{{ 'text-mint' if product.evidence.return_pct >= 0 else 'text-red-300' }}">{{ product.evidence.return_pct|percent(true) }}</strong></div>
@@ -53,7 +53,7 @@
   <div class="mt-5"><span class="badge badge-neutral">Evidence pending</span></div>
   {% endif %}
   <div class="mt-6 flex items-end justify-between border-t border-white/10 pt-5">
-{% if product.website_only %}<div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">Website only</span><strong class="text-sm">Research preview · not for sale</strong></div>
+{% if product.website_only %}<div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">Normal BATs included</span><strong class="text-sm">Historical-loss sizing · not for sale</strong></div>
 {% else %}
 {% if store_enabled %}    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ store_price(product)|money }}</strong> <span class="text-xs text-muted line-through">{{ product.price|money }}</span></div>
 {% else %}    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ product.price|money }}</strong></div>

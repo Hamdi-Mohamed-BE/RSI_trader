@@ -3,6 +3,8 @@ param(
     [ValidateSet('', 'PERCENT', 'FIXED_USD')]
     [string]$RiskMode = '',
     [double]$RiskValue = 0.0,
+    [ValidateScript({ -not [double]::IsNaN($_) -and -not [double]::IsInfinity($_) -and $_ -ge 0.00000001 -and $_ -le 10 })]
+    [double]$HourlyRiskPercent = 0.5,
     [double]$NewsRiskPercent = 0.75,
     [ValidateSet('ON', 'OFF')]
     [string]$NasdaqDIFilter = 'ON',
@@ -34,6 +36,7 @@ if ($ValidateOnly -and -not $RiskMode) {
 if ($ValidateOnly -and -not $SafetyMode) {
     $SafetyMode = 'STANDARD'
 }
+$riskWasSelected = $PSBoundParameters.ContainsKey('RiskValue') -and $RiskValue -gt 0
 
 if (-not $RiskMode) {
     Write-Host "`nChoose risk sizing for every non-News EA trade:" -ForegroundColor Cyan
@@ -50,6 +53,7 @@ if (-not $RiskMode) {
 if ($RiskValue -le 0.0) {
     $label = if ($RiskMode -eq 'PERCENT') { 'Risk per trade in percent [1]' } else { 'Risk per trade in USD (example: 50)' }
     $raw = (Read-Host $label).Trim()
+    if ($raw) { $riskWasSelected = $true }
     if (-not $raw -and $RiskMode -eq 'PERCENT') { $raw = '1' }
     $parsed = 0.0
     if (-not [double]::TryParse($raw, [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$parsed)) {
@@ -92,7 +96,10 @@ Write-Host "`nDynamic configuration" -ForegroundColor Green
 Write-Host ("  Nasdaq 5M DI14 filter: {0}; EMA12, 0.60% stop, ATR6 from +1R and no TP unchanged." -f $NasdaqDIFilter)
 if ($NasdaqDIFilter -eq 'OFF') { Write-Host '  DI OFF is a custom selection; the published DI-ON results do not describe this selection.' -ForegroundColor Yellow }
 Write-Host ('  Non-News risk: {0} {1}' -f $RiskValue, $(if ($RiskMode -eq 'PERCENT') { '%' } else { 'USD per EA trade' }))
+if ($riskWasSelected -and $RiskMode -eq 'PERCENT') { $HourlyRiskPercent = $RiskValue }
+Write-Host ('  US30/US100 hourly: {0:N4}% of BALANCE for historical-loss sizing unless fixed USD is selected. NO SL: this is not a future-loss cap.' -f $HourlyRiskPercent) -ForegroundColor Yellow
 Write-Host '  Lot policy: round UP to the broker step; use minimum lot when required; never skip solely because of lot sizing' -ForegroundColor Yellow
+Write-Host '  Hourly exception: round DOWN to keep historical scenario within budget; broker-minimum fallback can exceed it.' -ForegroundColor Yellow
 Write-Host '  NEWS POLICY: all four News Pulse assets and Gold News V9 enabled. FTMO remains news-free.'
 Write-Host '  XAU News Pulse event settings unchanged: NFP T-10s, CPI T-5s, FOMC T-60s; both sides retained.'
 Write-Host ('  Standalone news risk: {0:N4}% per order; {1:N4}% for both sides on ONE asset. Not a fixed-dollar amount.' -f $NewsRiskPercent, (2 * $NewsRiskPercent)) -ForegroundColor Cyan
@@ -107,6 +114,10 @@ if (-not $Yes -and -not $ValidateOnly) {
 
 $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $installer, '-AccountProfile', 'AUTO', '-RiskMode', $RiskMode, '-RiskValue', $RiskValue.ToString('R', [Globalization.CultureInfo]::InvariantCulture), '-NewsRiskPercent', $NewsRiskPercent.ToString('R', [Globalization.CultureInfo]::InvariantCulture), '-SafetyMode', $SafetyMode)
 $arguments += @('-NasdaqDIFilter', $NasdaqDIFilter)
+# A blank percentage answer keeps the existing 1% default for other EAs,
+# but must not silently override the new hourly default of 0.5%.
+$arguments += @('-HourlyRiskPercent', $HourlyRiskPercent.ToString('R', [Globalization.CultureInfo]::InvariantCulture))
+if (-not $riskWasSelected -and $RiskMode -eq 'PERCENT') { $arguments += '-HourlyUseDefaultRisk' }
 if ($UseRecommendedSelections) { $arguments += '-UseRecommendedSelections' }
 if ($UseClaudeSelections) { $arguments += '-UseClaudeSelections' }
 if ($UseAdaptiveProfile) { $arguments += '-UseAdaptiveProfile' }
