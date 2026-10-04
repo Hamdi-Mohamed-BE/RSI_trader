@@ -121,6 +121,8 @@ class Product(BaseModel):
     accent: str
     featured: bool = False
     development: bool = False
+    website_only: bool = False  # Research listing; not a sellable/installer/portfolio member.
+    supported_evidence_periods: tuple[str, ...] = ("6m", "1y", "3y", "5y")
     safe_filter_supported: bool = False
     recommended_safe_mode: bool = False
     safe_mode_label: str = "Full Safe"
@@ -139,6 +141,8 @@ class Product(BaseModel):
     one_year_return_pct: float | None = None
     one_year_note: str | None = None
     buy_url: str = ""
+    admission_filter: str | None = None
+    admission_provisional: bool = False
 
 
 SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
@@ -167,7 +171,7 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "USDJPY London Open Momentum": ("london-open-momentum-usdjpy", "current", "Time exit / BE at 0.75R"),
     "XAU Squeeze Momentum Standard": ("squeeze-momentum-xau-standard", "current", "3.5 ATR stop / 1.5R / ATR ratchet"),
     "XAU Squeeze Momentum High Win 0.75R": ("squeeze-momentum-xau-high-win", "current", "3 ATR stop / 0.75R / ATR ratchet"),
-    "News Pulse XAU": ("news-xau-event-specific-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
+    "News Pulse XAU": ("news-xau-quote-stop10-20261003", "current", "Native T+30-second cleanup / event-specific trailing"),
     "News Pulse XAG": ("news-xag-event-full-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
     "News Pulse BTC": ("news-btc-event-full-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
     "News Pulse EURUSD": ("news-eurusd-event-full-20260919", "current", "Event-specific NFP / CPI / FOMC exits"),
@@ -1051,18 +1055,18 @@ for _news_asset in ('XAG', 'BTC', 'EURUSD'):
 
 CORE_META["News Pulse XAU"].update({
     "strategy": "Event-specific two-sided news breakout",
-    "tagline": "Separate NFP, CPI and FOMC settings; both pending directions retained.",
-    "description": "Approved XAU event-specific combination (2026-09-19). NFP places 10 seconds before release using the previous closed M1 high/low plus a $2 offset, $2 SL, no TP and no trailing, closing at T+60s. CPI uses T-5s, closed M1 high/low plus $1, $2 SL, no TP, trailing from 1R at $10 distance, and T+300s exit. FOMC uses T-60s, current Ask/Bid plus $1, $2 SL, 5.5R TP, trailing from 0.5R at $4 distance and T+120s exit. All dollar distances are gold price units, not cash risk.",
-    "logic_audit_note": "Production v2.16 remains the dedicated XAU build, unchanged by the separate v2.17 XAG/BTC/EURUSD promotion. It retains the high-impact primary event filter, fresh broker quote timing, independent pending sides and account/symbol/magic restart recovery. Website periods are independent native runs of the promoted configuration, not old results relabelled as new.",
+    "tagline": "$6 quote offsets, $10 initial stops and a T+30-second cleanup for all three event families.",
+    "description": "XAU v2.20 uses current Ask plus $6 for buy-stop and current Bid minus $6 for sell-stop, with a $10 initial stop for NFP, CPI and FOMC. Placement remains T-10s for NFP, T-5s for CPI and T-60s for FOMC. NFP has no TP or trailing; CPI has no TP and trails from 1R at $10 distance; FOMC keeps 5.5R TP and trailing from 0.5R at $4 distance. At T+30s the running EA attempts to delete its pending orders and close its positions. All dollar distances are gold price units, not account cash risk. Execution and broker stop restrictions can change realised distances.",
+    "logic_audit_note": "The October-3 placement release replaces closed-M1 anchors with fresh quotes and tracks each side independently across restarts. A crossed buy level may become a market buy, and a crossed sell level a market sell, before release only. Uncertain responses are reconciled rather than blindly resent. Old September event-specific evidence is NOT evidence for this changed configuration; source/SET hash checks must invalidate stale caches until the new periods are independently precomputed.",
     "logic": [
         {"title":"Primary high-impact events only", "detail":"Native MT5 calendar high-importance NFP, headline/core CPI and FOMC decision/statement. Cleveland Median CPI and secondary inflation series are not accepted."},
-        {"title":"NFP: closed M1, T-10 seconds", "detail":"Prior closed M1 high adjusted by current spread for buy, low for sell; $2 offset and $2 SL. No TP or trailing. Close at T+60 seconds."},
-        {"title":"CPI: closed M1, T-5 seconds", "detail":"Prior closed M1 high/low anchors; $1 offset and $2 SL. No TP. Trail from +1R with $10 distance. Close at T+300 seconds."},
-        {"title":"FOMC: quote, T-60 seconds", "detail":"Current Ask/Bid anchors; $1 offset, $2 SL, 5.5R TP. Trail from +0.5R with $4 distance. Close at T+120 seconds."},
-        {"title":"Keep both pending directions", "detail":"Filling one side never cancels the other. Broker-invalid entries can still be rejected, including a previous-M1 level already crossed by price. Pending orders expire at the event-specific deadline."},
-        {"title":"Research limitations", "detail":"Selected after examining the last year: +262.10%, 38 trades, 65.79% net wins, PF 10.97, 6.60% equity DD in the September-19-aligned research run. Only 71% real ticks. Earlier-selected parameters returned +5.70% on later validation versus +19.34% for the old preset. This is hindsight-optimized evidence, not a forward-profit forecast."},
+        {"title":"NFP: current quote, T-10 seconds", "detail":"Current Ask/Bid plus/minus $6; $10 initial SL. No TP or trailing. EA cleanup begins at T+30 seconds."},
+        {"title":"CPI: current quote, T-5 seconds", "detail":"Current Ask/Bid plus/minus $6; $10 initial SL. No TP. Trail from +1R with $10 distance. EA cleanup begins at T+30 seconds."},
+        {"title":"FOMC: current quote, T-60 seconds", "detail":"Current Ask/Bid plus/minus $6; $10 initial SL, 5.5R TP. Trail from +0.5R with $4 distance. EA cleanup begins at T+30 seconds."},
+        {"title":"Independent sides and crossed-level fallback", "detail":"Filling one side never cancels the other. Definitively rejected missing sides may retry before release, but accepted or uncertain sides are never blindly re-entered. Crossed pending prices may use same-direction market entry with stops and size recalculated from the fresh quote. Broker permissions, margin and uncertain responses can still prevent placement; fills are not guaranteed."},
+        {"title":"Cleanup and research limitations", "detail":"The EA must remain running and connected to close/delete at T+30s; execution can finish later. A later, whole-minute server expiration is a pending-order backup, not the holding time and not a position stop. Old September fitted results used different geometry and cannot be relabelled as v2.20. The matched October-3-year research comparison discloses real-tick coverage separately; no forward-profit guarantee."},
     ],
-    "risk_note": "Historical evidence: 0.75% of equity per pending side, nominal 1.50% event risk. Runtime v2.18 lets every risk-prompt BAT choose a separate news percentage per order, independent of ordinary risk. Both orders stay armed; two fills can double event exposure. News bypasses adaptive controls. Rounding, fees and gaps can exceed the target; custom risk is not reflected in the historical results. These fitted event settings were user-approved despite weaker chronological validation.",
+    "risk_note": "Comparison sizing is 0.75% of equity per side, nominal 1.50% event risk. Risk-prompt BATs choose a separate news percentage per order, independent of ordinary risk. Both sides remain eligible and market fallback can enter before the release. News bypasses adaptive controls in the recommended profile. Lot rounding, broker minimum lot, spread, fees and gaps can exceed selected risk; $10 is a price-distance stop, not a $10 account-loss cap. Changing risk does not refresh historical evidence.",
 })
 
 _orb_high_win_meta = dict(CORE_META["ORB Volume Profile"])
@@ -3101,11 +3105,21 @@ def get_catalog() -> list[Product]:
                 buy_url="" if development else _buy_url(display_label, price),
             )
         )
-    return products
+    from .admission_release import apply_product_release
+    return [apply_product_release(product) for product in products]
 
 
 def get_sellable_catalog() -> list[Product]:
-    return [product for product in get_catalog() if not product.development]
+    return [product for product in get_catalog() if not product.development and not product.website_only]
+
+
+def get_website_catalog() -> list[Product]:
+    from .hourly_profiles import website_products
+    return [product for product in get_catalog() if not product.development] + website_products()
+
+
+def get_website_product(slug: str) -> Product | None:
+    return next((product for product in get_website_catalog() if product.slug == slug), None)
 
 
 def get_development_catalog() -> list[Product]:

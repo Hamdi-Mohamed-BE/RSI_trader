@@ -1,0 +1,12 @@
+Filter-only exploratory native MT5 screen. Frozen before new results.
+Five preselected bots: Trend Progression (0.6R), EMA3 (1.7R), Asia Breakout (3R), USDJPY London Momentum, RSI VWAP (0.5R).
+Baseline is the named installer SET, not a website cache or an inferred active-chart setting. Existing SET parameters, stops, exits, clock modes and existing regime switches are retained.
+Period 2025-10-02 inclusive to 2026-10-02 exclusive; 10000 USD; 1% equity risk target; broker minimum/upward lot rounding retained. Separate accounts, NOT a shared portfolio.
+Exness native tester Model 4, 150ms execution delay, broker spread/commission/swap. Check real tick notes and history quality; disclose generated data.
+Exactly six variants per bot: BASE, DI_ONLY, ADX20, ADX25, ADX20_DI, ADX25_DI. ADX period 14, completed bar shift 1. Buffers 0 ADX, 1 +DI, 2 -DI. Directional agreement means +DI > -DI for long, inverse for short.
+Trend Progression and EMA3 use H4 ADX floors; Asia H1 floor; London M15 floor. RSI VWAP uses H1 ceilings because it is mean reversion. No stop/target/session tuning.
+Each filter is checked immediately before a viable market entry, never applied to exits. Default-off copies must match original compiled EA trade-for-trade in time, side, volume, prices and costs over the same year.
+Reject promotion automatically: the year is a search sample, not untouched out-of-sample evidence. No installer/BAT/live terminal/website changes in this screen.
+Descriptive candidate screen: at least 30 trades, at least 50% of baseline trade count, PF >= 1.20, PF >= baseline + 0.05, positive net profit, return >= baseline, equity DD <= baseline. Rank eligible versions by PF then return; if none, retain BASE. This does not demonstrate a real edge.
+Report all 30 outcomes, native floating equity DD, net-cost PF/win rate, return, trade count/month/weekday, winning and losing streaks and calendar daily-return Sharpe. Also report audit rejections and net trade-count differences; these are not interchangeable because the exposure path changes.
+Independent review here is code/data crosschecks by this agent (no delegated agents). Further holdout, rolling tests and cost-stress/Monte Carlo are required before deployment.

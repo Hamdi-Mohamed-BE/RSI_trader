@@ -1,10 +1,13 @@
 @echo off
+rem ADXDI-FINAL-20261003: final user selection, only USDJPY keeps added ADX/DI.
+echo Entry filters: USDJPY ADX20 plus DI; EMA3, Asia Gold and Trend added ADX/DI removed. RSI VWAP unchanged.
+echo Selected-preset evidence is retrospective: 1, 3 and 5 years. Previous FTMO forecasts are not revalidated.
 rem Nasdaq 5M: DI14 + EMA12, 0.60%% price SL, no TP, ATR6 trail from +1R; risk policies unchanged.
 rem Nasdaq may hold overnight/weekends. Old fixed-target FTMO estimates do not apply.
 rem For FTMO use "FTMO 10K SWING - 13 EAS - NEWS OFF.bat", not this unrestricted portfolio.
-rem XAU News Pulse v2.16 event settings retained; v2.18 adds standalone user-selected percentage per order.
-rem Gold-only news policy: XAG/BTC/EURUSD News Pulse disabled in the shared installer.
-echo News EAs: XAU News Pulse and Gold News V9 only. All non-gold news OFF.
+rem News Pulse v2.21: same exits/risk; definitive failures repair from fresh quotes, then same-direction market fallback.
+rem All five selected news EAs restored by owner 2026-10-03; FTMO and Ava remain separate.
+echo News EAs: XAU, XAG, BTC, EURUSD News Pulse plus Gold News V9 enabled.
 setlocal
 echo News risk is asked SEPARATELY per order. Both News Pulse triggers can double event exposure.
 rem Includes Gold Overnight Value Area RAW via the shared normal-MT5 installer.
@@ -35,7 +38,7 @@ echo - DMC Fresh Reaction XAU adds M15 freshness plus W1/MN1 proximity, fixed 30
 echo - DMC Fresh Reaction US100 uses the same freshness logic in New York with 1.5 ATR stop, 2R and Dynamic 50-20
 echo - Full Safe switches Sell Nasdaq 15min to the original London-confirmed 600/1000 preset
 echo - XAU Weakness uses M30 structure stops, 4R and Dynamic 50-20 with its D1 Safe gate enabled
-echo - Only XAU News Pulse uses the approved NFP/CPI/FOMC settings; both sides stay armed. Other news assets OFF
+echo - All News Pulse assets keep their event-specific exits/risk and both directions; fresh-quote order repair enabled.
 echo - Choose the news percentage separately below: PER ORDER, not per event; two triggers can double exposure
 echo - Gold News V9 Direction runs on XAUUSD M1 with the local prediction service and remains attached after every shared install
 echo - Every non-News EA follows the risk selected below; pressing Enter defaults to 1%%

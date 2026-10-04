@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-03",
+  "builds": [
+    {
+      "source": "AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse XAU Event Specific EA\\AAA Final News Pulse XAU Event Specific EA.mq5",
+      "source_sha256": "18abcadbc09f379bf73b85d89c5c0d81e0c4673e8cfa2b2320600eec5af911c0",
+      "binary_sha256": "0383d50154e6a5ff168f246a43281bd0963b2ba78e02083256ecb758dd4ed3c1",
+      "compiler_result": "0 errors, 0 warnings, 2103 ms elapsed, cpu='X64 Regular'"
+    },
+    {
+      "source": "AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse Multi Asset Event EA\\AAA Final News Pulse Multi Asset Event EA.mq5",
+      "source_sha256": "d59045e1d74606bb935780c4c9de59576816bac222f2a93a915376d66f00ee1d",
+      "binary_sha256": "b052e1ead0f3d2ef49b977a4f34f87fb076fbc299aecca9074b39370b32c3ff7",
+      "compiler_result": "0 errors, 0 warnings, 2004 ms elapsed, cpu='X64 Regular'"
+    },
+    {
+      "source": "AI news\\mt5\\GoldNewsV9EA.mq5",
+      "source_sha256": "3450e1316d75f04d2f76270eb2454583c5e8c8b9739212ca4193dd0c94a3c1a5",
+      "binary_sha256": "ad42de853acab714576b59efc504e635664902e473d619d26cefc3eb558dc5d2",
+      "compiler_result": "0 errors, 0 warnings, 1571 ms elapsed, cpu='X64 Regular'"
+    }
+  ],
+  "helper_sha256": "cbbde6c421bc345213fa6237191e31d52c6b139a5c2cd809c3098fa740624d25",
+  "native_fault_checks": {
+    "passed": true,
+    "not_performance_evidence": true,
+    "results": [
+      {
+        "asset": "XAU",
+        "passed": true,
+        "source_sha": "18abcadbc09f379bf73b85d89c5c0d81e0c4673e8cfa2b2320600eec5af911c0",
+        "case": "New-XAU-fault-150-2026.10.02",
+        "not_performance_evidence": true
+      },
+      {
+        "asset": "XAG",
+        "passed": true,
+        "source_sha": "d59045e1d74606bb935780c4c9de59576816bac222f2a93a915376d66f00ee1d",
+        "case": "New-XAG-fault-150-2026.10.02",
+        "not_performance_evidence": true
+      },
+      {
+        "asset": "BTC",
+        "passed": true,
+        "source_sha": "d59045e1d74606bb935780c4c9de59576816bac222f2a93a915376d66f00ee1d",
+        "case": "New-BTC-fault-150-2026.10.02",
+        "not_performance_evidence": true
+      },
+      {
+        "asset": "EURUSD",
+        "passed": true,
+        "source_sha": "d59045e1d74606bb935780c4c9de59576816bac222f2a93a915376d66f00ee1d",
+        "case": "New-EURUSD-fault-150-2026.10.02",
+        "not_performance_evidence": true
+      }
+    ],
+    "tested": [
+      "two rejected buy pendings -> fresh quote then market buy",
+      "missing sell repaired independently",
+      "rejected sell pending reanchored at current quote",
+      "accepted masks survive manual close/reload",
+      "no duplicated side",
+      "unchanged timed cleanup"
+    ]
+  },
+  "pytest": "56 passed",
+  "launcher_policy": "Standard/Safe/Recommended/Claude/Adaptive: 35 EAs, all five news systems; Ava unchanged",
+  "ftmo_unchanged_sha256": "fefbb53e320ed9f9a84c9b4a347dcc3ebc0155352229c48dfcaee68b30c3dc22",
+  "live_terminal_changed": false,
+  "exit_optimisation_applied": false,
+  "performance_replay_pending": true,
+  "risk_and_event_exit_tables": "unchanged from saved baseline",
+  "git_push_performed": false
+}

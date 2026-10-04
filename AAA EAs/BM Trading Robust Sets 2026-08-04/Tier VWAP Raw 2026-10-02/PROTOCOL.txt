@@ -1,0 +1,21 @@
+Frozen raw baseline: VWAP band-reclaim mean reversion, 2026-10-02.
+Interpretation, not replication: tier-list clip provides no executable VWAP rules.
+Assets USTEC and US500, tested independently, USD 10,000 each. No portfolio overlay.
+NY regular-session anchor 09:30 with US DST. Broker history is UTC (same tested feed as ORB).
+Completed M1 typical prices (H+L+C)/3 weighted by broker tick volume, not exchange volume.
+Weighted population SD around VWAP. Include only bars completed by signal close.
+Completed M5 rejection: low <= VWAP-2SD and lower band < close < VWAP for BUY;
+high >= VWAP+2SD and VWAP < close < upper band for SELL. Ambiguous both rejected.
+First eligible signal each NY weekday: signal close >=10:00 and next tick before15:00 NY.
+Target fixed at signal-close VWAP, stop same price distance from current entry quote (1:1).
+No dynamic target, trailing, BE, trend filter, optimisation, or same-day retry.
+Requested risk 1% current balance; lots floored to broker step; skip below minimum.
+Quotes rounded to tick size, broker stops/session/margin must allow entry. No min-lot override.
+Close requested at15:30 NY or10min before currently reported broker session ends, whichever earlier.
+Close overdue holdings on next tradable tick. Historical holiday schedules not available: carryovers reported.
+Native MT5 Model4 with150ms delay and native spread/commission/swap. No fabricated extra-cost stress.
+Windows end-exclusive2026-10-02: 1y2025-10-02;3y2023-10-02;5y2021-10-02;6m2026-04-02.
+Raw gate: positive net and PF>1 in both3y and5y; user preferred PF>=1.2. Separately inspect latestyear.
+Enhanced audit10,000 bootstrap paths block5, DSR2 asset candidates; missing measured extra costs blocks promotion.
+Earlier, different VWAP3SD-touch study tried108 variants and failed: disclose broader idea-selection bias.
+No live EA/website/BAT/FTMO/account changes. Stop after raw results for review.

@@ -110,7 +110,8 @@
       "label": "Asia Breakout",
       "symbol": "XAUUSD",
       "timeframe": "H1",
-      "mode": "standard"
+      "mode": "standard",
+      "admission_release": "ADXDI-FINAL-20261003"
     },
     {
       "slug": "dmc-current-xau",
@@ -138,7 +139,8 @@
       "label": "EMA3",
       "symbol": "XAUUSD",
       "timeframe": "H4",
-      "mode": "safe"
+      "mode": "standard",
+      "admission_release": "ADXDI-FINAL-20261003"
     },
     {
       "slug": "xau-weakness",
@@ -173,7 +175,8 @@
       "label": "USDJPY London Open Momentum",
       "symbol": "USDJPY",
       "timeframe": "M15",
-      "mode": "standard"
+      "mode": "standard",
+      "admission_release": "ADXDI-FINAL-20261003"
     },
     {
       "slug": "xau-squeeze-momentum-standard",
@@ -229,7 +232,8 @@
       "label": "XAU Trend Progression",
       "symbol": "XAUUSD",
       "timeframe": "H4",
-      "mode": "standard"
+      "mode": "standard",
+      "admission_release": "ADXDI-FINAL-20261003"
     },
     {
       "slug": "xau-elliott-wave-1-2-3",
@@ -5748,5 +5752,43 @@
     }
   ],
   "failures": [],
-  "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard, Safe or Dynamic mode. The current portfolio chronologically overlays those realized cash flows; the website default applies the approved Recommended Adaptive rules to the same signals without claiming a shared-margin MT5 run."
+  "methodology": "Each cached EA period is an independent native MT5 Every Tick run from a USD 10,000 starting balance using its exact active recommended EA, SET and evidence-selected Standard, Safe or Dynamic mode. The current portfolio chronologically overlays those realized cash flows; the website default applies the approved Recommended Adaptive rules to the same signals without claiming a shared-margin MT5 run.",
+  "admission_release": {
+    "version": "ADXDI-FINAL-20261003",
+    "current_periods": [
+      "1y",
+      "3y",
+      "5y"
+    ],
+    "updated_slugs": [
+      "ema3",
+      "asia-breakout",
+      "usdjpy-london-open-momentum",
+      "xau-trend-progression"
+    ],
+    "filtered_slugs": [
+      "usdjpy-london-open-momentum"
+    ],
+    "restored_slugs": [
+      "ema3",
+      "asia-breakout",
+      "xau-trend-progression"
+    ],
+    "portfolio_status": "Prior portfolio/FTMO forecasts archived, not revalidated",
+    "selection": "Explicit user final decision"
+  },
+  "website_only_hourly_research": {
+    "source": "native-mt5-hourly-profiles-20261003",
+    "slugs": [
+      "us100-hourly-profiles",
+      "us30-hourly-profiles"
+    ],
+    "periods": [
+      "6m",
+      "1y"
+    ],
+    "end_exclusive": "2026-10-03",
+    "native_runs": 4,
+    "active_portfolio_changed": false
+  }
 }

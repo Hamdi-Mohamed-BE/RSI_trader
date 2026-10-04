@@ -1,0 +1,33 @@
+Frozen raw US100 hourly timing study — 2026-10-03
+Scope: Exness USTEC CFD, not NQ futures. No live terminal changes. No optimisation.
+Data: broker M1 bid OHLC and recorded spread, 2021-10-02 inclusive to
+2026-10-02 exclusive (latest shared complete historical endpoint; through Oct 1).
+Clock: broker history timestamps are UTC (same verified Exness isolated feed as
+the preceding native studies); convert with America/New_York including DST.
+Primary: buy at 11:00 New York, sell at 12:00. Secondary descriptive screen:
+all 24 civil hours, report only hours with at least 100 eligible full holds.
+Execution approximation: entry minute bid open plus recorded bar spread times
+symbol point; exit bid open exactly 60 minutes later. Require each of the 61
+minute timestamps; exclude missing/closed-market windows, never bridge a gap.
+Only eligible starts (Monday-Friday New York) in this experiment. For random
+controls, draw an eligible start minute within the same NY date as each hour's
+trade. Thus dates, weekdays, sample size and 60-minute duration are matched.
+One fixed CFD lot, cash per point verified from broker tick specifications;
+report index points, cash if linear tick conversion valid, fixed $10,000 reference
+return, PF, net win rate, closing DD, intrahour M1-marked approximate DD, streaks,
+trades/month/day, and annualised close-to-close daily Sharpe (zero nontrade days).
+No stop: risk percentage and R are undefined. Fixed-lot capital can be exhausted;
+not a native margin simulation. No leverage/margin/liquidation model.
+Spread included approximately, commission and overnight financing not simulated.
+UTC-midnight-crossing holds explicitly flagged. No 150ms fill simulation.
+Windows: 5y, first 3y, last 2y, last 1y, last 6m, last 3m, fixed dates.
+Inference: edge = hourly points minus same-date mean eligible random-minute
+points. 10,000 circular moving-block (5 trading dates) centred bootstrap null
+resamples shared calendar rows; studentised means and max-T over all tested
+hours. One-sided raw and familywise-adjusted p-values; 95% block-bootstrap
+mean-edge intervals. No IID assumption. 2,000 matched random equity paths for
+11:00 descriptive terminal distribution. Seed 20261003, no threshold tuning.
+All-hour means are descriptive selections; recent windows have already been
+seen in other research and are not pristine holdouts. Bar spread is not exact
+historical ask execution, and M1 OHLC misses tick-level floating excursions.
+Stop after showing results for user review. ADX/DI batch work is next, not started.

@@ -47,7 +47,7 @@ def test_old_or_mismatched_news_summary_is_rejected(tmp_path,monkeypatch):
     assert news_evidence.load_news_summary('news-pulse-xau','5y') is None
 
 
-@pytest.mark.parametrize('slug',sorted(news_evidence.NEWS_SLUGS))
+@pytest.mark.parametrize('slug',sorted(news_evidence.NEWS_SLUGS-{'news-pulse-xau'}))
 def test_every_news_period_has_independent_complete_evidence(slug):
     calendar=json.loads((ROOT/'OFFICIAL CALENDAR.json').read_text())
     hashes=[]

@@ -1,0 +1,27 @@
+{
+  "status": "EXPLORATORY ONLY \u2014 latest-year profitability failed",
+  "live_eligible": false,
+  "latest_year_failed_gates": [
+    "positive_locked_return",
+    "profit_factor_above_1",
+    "bootstrap_return_p05_positive",
+    "bootstrap_pf_p05_above_1",
+    "deflated_sharpe_95pct",
+    "recent_half_pf_above_1",
+    "two_of_three_subperiods_profitable",
+    "closed_pnl_total_breach_below_5pct",
+    "cost_stress_supplied",
+    "cost_stress_pf_above_1"
+  ],
+  "chosen_on": "development only; frozen before validation/test",
+  "parameters": {
+    "opening_minutes": 15,
+    "rr": 3,
+    "entry_cutoff": 930,
+    "direction": 1,
+    "ema": 100,
+    "adaptive_close": 1
+  },
+  "tested_configurations": 27,
+  "no_live_changes": true
+}

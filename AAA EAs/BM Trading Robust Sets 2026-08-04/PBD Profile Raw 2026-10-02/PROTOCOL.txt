@@ -1,0 +1,61 @@
+PBD Exness CFD volume-profile proxy — frozen raw research, 2026-10-02
+
+Scope: USTEC (US100), XAUUSD, BTCUSD on the existing isolated Exness tester.
+No live installation, account mutation, website/BAT change, paid data or optimisation.
+The clip is an incomplete discretionary description, not an executable specification.
+All thresholds below are our predeclared operationalisation, not verified author rules.
+No aggressor-side order flow or contract volume is inferred from quote tick counts.
+
+PROFILE
+Same daily New York anchor for all assets: 09:30 inclusive to 10:30 exclusive.
+USTEC/XAU weekdays only; BTC also weekends. US daylight-saving rules, broker UTC.
+Require all 60 completed M1 bars, timestamps and positive tick volume; otherwise skip.
+64 equal-width price bins between initial-hour low/high. Allocate each M1 tick-volume
+count uniformly over its high-low interval, weighted by price-bin overlap; zero-range
+bar goes into its price bin. This is an OHLC tick-volume approximation, NOT actual
+exchange volume-at-price and NOT individual broker quote locations.
+POC is largest bin, first/lower on ties. Grow contiguous value area from POC towards
+the larger adjacent bin until at least 70% of volume; grow upwards on equal volumes.
+Freeze the initial-hour POC/VAL/VAH for the rest of that day; never use full-day future data.
+Classify with normalized POC p, volume centroid c and (last close-first open)/range d:
+P: p >= .65 AND c >= .60 AND d >= .25.
+b: p <= .35 AND c <= .40 AND d <= -.25.
+D: .35 <= p <= .65 AND .40 <= c <= .60 AND abs(d) <= .25.
+Other/unclassified: no entries. Labels describe our heuristic, not observed buyer/seller aggression.
+
+SIGNALS (completed M5 candles after profile ends)
+ATR14 is arithmetic mean of true ranges of the 14 M5 candles BEFORE the signal candle.
+Conviction comparison is signal tick volume versus mean of preceding 20 M5 tick volumes.
+1 RECLAIM: P buys a bullish candle that sweeps below VAL and closes strictly inside VA;
+b sells bearish sweep above VAH closing inside. D permits either mirror fade. Target
+opposite VA edge. Stop beyond signal extreme by .1 prior ATR. Candle wicks suffice;
+no multi-bar excursion memory in this baseline. Reject simultaneous buy/sell ambiguity.
+2 WEAK FADE: on P, bearish wick above VAH closing inside, volume <= prior20 mean,
+sell towards POC; on b, bullish wick below VAL closing inside, same volume condition,
+buy towards POC. Stop beyond wick by .1 ATR. D excluded to avoid duplicate reclaim.
+3 STRONG BREAKOUT: previous M5 close inside inclusive VA, then P long/b short (D either)
+closes > VAH+.1 ATR / < VAL-.1 ATR, direction agrees with candle colour, directional
+body >= .5 ATR and volume >= 1.5 x prior20 mean. Stop at opposite VA edge minus/plus
+.1 ATR. Fixed 2R target from next-tick quote. No assumed retest, delta, trailing or BE.
+4 COMBINED: identical modules evaluated reclaim then weak-fade then strong-breakout.
+One open position per asset/test. At most one eligible attempt per module per NY day.
+Used flag set only once basic stop/target/spread/lot/session checks pass; failed order
+does consume attempt. Combined can trade up to three non-overlapping trades/day.
+No entries before 10:35 or at/after 15:30 NY. Request flat at 16:00 or 10 minutes
+before broker session close; retry once/minute while tradable. Export carryovers.
+
+EXECUTION / WINDOWS
+$10,000 independent account per asset/version; 1% current BALANCE requested stop risk.
+Floor broker lot step, skip below minimum, no min-lot override. Require stop distance
+>= 3 x quoted spread and valid broker stop/freeze conditions. Costs/spread/swap native.
+Native Model4, real ticks where broker has them, otherwise generated tick execution;
+150ms execution delay. 1% is requested pre-cost risk, not an absolute loss guarantee.
+Raw last year 2025-10-02 through 2026-10-01, end-exclusive 2026-10-02.
+Fresh latest6m 2026-04-02 through 2026-10-01 for each of four frozen versions/three assets.
+Last-year early months may lack real execution ticks; preserve/report native warnings.
+Actual historical M1 broker tick_volume and exchange volume are different data objects.
+Smoke Sept2026 for all assets combined before the raw runs. No changes chosen from smoke P&L.
+Signals, 60 profile inputs/day, M5 inputs and position-net ledger exported and independently
+recomputed. Native equity DD includes floating positions; closing-balance plots do not.
+Test twelve asset/version candidates without calling them pristine holdouts. No optimisation
+or live recommendation; exploratory screens cannot establish an institutional edge.

@@ -16,6 +16,7 @@ from app.catalog import (
     get_development_catalog,
     get_product,
     get_sellable_catalog,
+    get_website_catalog,
     parse_installer_items,
 )
 from app.main import _display_catalog, app
@@ -162,7 +163,8 @@ def test_every_product_detail_page_renders() -> None:
 
 
 def test_recommended_safe_eas_default_to_safe_evidence_and_are_tagged() -> None:
-    expected = {"lta-volume-profile", "ema3", "xau-weakness", "xau-squeeze-momentum-standard"}
+    # EMA3 now uses the explicitly selected ADX-only preset, not an extra Markov gate.
+    expected = {"lta-volume-profile", "xau-weakness", "xau-squeeze-momentum-standard"}
     products = {product.slug: product for product in _display_catalog()}
     assert {slug for slug, product in products.items() if product.recommended_safe_mode} == expected
 
@@ -222,7 +224,7 @@ def test_recommended_safe_eas_default_to_safe_evidence_and_are_tagged() -> None:
 def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     products = get_sellable_catalog()
     runtime_only = {"Gold News V9 Direction"}
-    assert all(len(product.logic) == 6 for product in products if product.label not in runtime_only)
+    assert all(len(product.logic) == 6 + bool(product.admission_filter) for product in products if product.label not in runtime_only)
     assert all(step.title and len(step.detail) >= 80 for product in products if product.label not in runtime_only for step in product.logic)
 
     compiled_only: set[str] = set()
@@ -234,7 +236,8 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
         if product.label not in compiled_only | runtime_only
     )
 
-    by_name = {product.label: product for product in products}
+    # Check the unchanged core strategy separately from the new leading admission step.
+    by_name = {product.label: product.model_copy(update={"logic": product.logic[1:]}) if product.admission_filter else product for product in products}
     assert {"DMC Current XAU", "DMC Fresh Reaction XAU", "DMC Fresh Reaction US100"} <= set(by_name)
     assert by_name["DMC Current XAU"].evidence.win_rate_pct == 40.8
     assert by_name["DMC Fresh Reaction XAU"].evidence.win_rate_pct == 60.0
@@ -246,7 +249,7 @@ def test_sellable_logic_is_specific_and_audit_labeled() -> None:
     assert "15:55" in by_name["Nasdaq 5M Candle Momentum"].logic[5].detail
     assert "T-5 seconds" in by_name["News Pulse XAU"].logic[2].title
     assert "5.5R TP" in by_name["News Pulse XAU"].logic[3].detail
-    assert "0.75% of equity per pending side" in by_name["News Pulse XAU"].risk_note
+    assert "0.75% of equity per side" in by_name["News Pulse XAU"].risk_note
     assert "Filling one side never cancels the other" in by_name["News Pulse XAU"].logic[4].detail
     assert "preceding twelve M15 bars" in by_name["BTC Top Down FVG Liquidity"].logic[1].detail
     assert "target is 4R" in by_name["ETH Top Down FVG Liquidity"].logic[5].detail
@@ -264,7 +267,8 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     assert sum(product.exit_mode == "Dynamic 60/20 only" for product in products) == 1
     assert sum(product.exit_mode == "Current EA exits" for product in products) == 5
     assert sum(product.exit_mode == "Native 60-second exit" for product in products) == 0
-    assert sum(product.exit_mode == "Event-specific NFP / CPI / FOMC exits" for product in products) == 4
+    assert sum(product.exit_mode == "Event-specific NFP / CPI / FOMC exits" for product in products) == 3
+    assert sum(product.exit_mode == "Native T+30-second cleanup / event-specific trailing" for product in products) == 1
     assert sum(product.exit_mode == "Fixed 5R / no trailing" for product in products) == 1
     assert sum(product.exit_mode == "Native 1.5R / BE at 0.5R" for product in products) == 1
     assert sum(product.exit_mode == "Native 1R / BE at 0.5R" for product in products) == 1
@@ -332,13 +336,15 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
     news_products = [product for product in products if product.label.startswith("News Pulse ")]
     assert {product.label for product in news_products} == {"News Pulse XAU", "News Pulse XAG", "News Pulse BTC", "News Pulse EURUSD"}
     assert all(product.safe_filter_supported is False for product in news_products)
+    assert next(p for p in news_products if p.label=='News Pulse XAU').evidence is None
+    news_products=[p for p in news_products if p.label!='News Pulse XAU']
     assert all(product.evidence is not None for product in news_products)
     assert all(
         product.evidence.status == "User-approved — hindsight optimized"
         for product in news_products
     )
     assert all(product.evidence.trades > 30 for product in news_products)
-    assert all(("v2.16" if product.label=="News Pulse XAU" else "v2.17") in product.logic_audit_note for product in news_products)
+    assert all("v2.17" in product.logic_audit_note for product in news_products)
     xau_ny = next(product for product in products if product.label == "XAU ORB New York M30")
     assert xau_ny.deployment_session == "09:30 New York / M30"
     assert xau_ny.exit_mode == "Native 1.5R / BE at 0.5R"
@@ -545,7 +551,8 @@ def test_recommended_exit_settings_are_synced_per_ea() -> None:
 
 
 def test_news_pulse_cards_details_and_series_use_the_same_verified_evidence() -> None:
-    for slug in ("news-pulse-xau", "news-pulse-xag", "news-pulse-btc", "news-pulse-eurusd"):
+    assert client.get('/api/evidence/news-pulse-xau/series',params={'period':'3y'}).status_code in (404,503)
+    for slug in ("news-pulse-xag", "news-pulse-btc", "news-pulse-eurusd"):
         result_root=(PACKAGE_ROOT/'News Pulse Event Parameters Research 2026-09-19'/'Deployment'
                      if slug=='news-pulse-xau' else PACKAGE_ROOT/'News Pulse Multi Asset Event Parameters 2026-09-19'/'Deployment')
         result_path = result_root / f'{slug}-3y-model4.json'
@@ -556,8 +563,8 @@ def test_news_pulse_cards_details_and_series_use_the_same_verified_evidence() ->
         evidence_period = '2023-09-05 to 2026-09-05'
         product = get_product(slug)
         assert product is not None
-        card = client.get("/eas", params={"q": product.label})
-        detail = client.get(f"/eas/{slug}")
+        card = client.get("/eas", params={"q": product.label, "period": "3y"})
+        detail = client.get(f"/eas/{slug}", params={"period": "3y"})
         series = client.get(f"/api/evidence/{slug}/series", params={"period": "3y"})
         assert card.status_code == detail.status_code == series.status_code == 200
         for page in (card.text, detail.text):
@@ -585,7 +592,7 @@ def test_news_pulse_cards_details_and_series_use_the_same_verified_evidence() ->
 
 
 def test_period_matched_news_trade_chart_is_available(monkeypatch) -> None:
-    series = client.get("/api/evidence/news-pulse-xau/series").json()
+    series = client.get("/api/evidence/news-pulse-xag/series").json()
     trade = series["trades"][0]
 
     def fake_price_bars(symbol, timeframe, start, end):
@@ -603,7 +610,7 @@ def test_period_matched_news_trade_chart_is_available(monkeypatch) -> None:
 
     monkeypatch.setattr(live_mt5, "price_bars", fake_price_bars)
     response = client.get(
-        f"/api/evidence/news-pulse-xau/cached-trades/3y/{trade['number']}/chart"
+        f"/api/evidence/news-pulse-xag/cached-trades/3y/{trade['number']}/chart"
     )
     assert response.status_code == 200
     payload = response.json()
@@ -611,7 +618,7 @@ def test_period_matched_news_trade_chart_is_available(monkeypatch) -> None:
     assert len(payload["bars"]) == 2
     assert response.headers["cache-control"].startswith("no-store")
 
-    missing = client.get("/api/evidence/news-pulse-xau/cached-trades/3y/999999/chart")
+    missing = client.get("/api/evidence/news-pulse-xag/cached-trades/3y/999999/chart")
     assert missing.status_code == 404
 
     evidence_js = (Path(__file__).resolve().parents[1] / "static" / "evidence.js").read_text(encoding="utf-8")
@@ -622,7 +629,7 @@ def test_period_matched_news_trade_chart_is_available(monkeypatch) -> None:
 
 def test_nasdaq_overnight_uses_fresh_native_curve_and_active_inputs() -> None:
     product = next(product for product in get_sellable_catalog() if product.label == "Nasdaq Overnight")
-    response = client.get(f"/api/evidence/{product.slug}/series")
+    response = client.get(f"/api/evidence/{product.slug}/series", params={"period": "3y"})
     assert response.status_code == 200
     payload = response.json()
     assert payload["period_key"] == "3y"
@@ -660,7 +667,7 @@ def test_api_and_evidence_chart() -> None:
 
     payload = client.get("/api/eas")
     assert payload.status_code == 200
-    assert len(payload.json()) == expected
+    assert len(payload.json()) == len(get_website_catalog())
     assert all(not item["development"] for item in payload.json())
 
     product = next(item for item in get_catalog() if item.evidence and item.evidence.chart_path)

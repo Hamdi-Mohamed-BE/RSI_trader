@@ -1,0 +1,68 @@
+US100 ORB exploratory optimisation, frozen 2026-10-02 before running.
+
+User explicitly authorised optimisation after the raw ORB statistical failure.
+Do not promote, install, change BATs, website, active EAs, risk settings or other assets.
+Preserve Tier ORB Raw 2026-10-02 as the original benchmark.
+
+Data: isolated Exness USTEC CFD, UTC history, NY DST. $10,000 USD,
+1% current balance risk, lots rounded down, skip below broker minimum.
+Native spreads/commission/swap and 150ms delay. No invented measured extra-cost stress.
+Native model 1 (M1 OHLC) is development screening only; model 4 confirmation is
+required. Model 4 still uses generated historical ticks when real ticks are unavailable.
+
+Chronology (end-exclusive):
+development 2021-10-02 to 2024-10-02;
+validation 2024-10-02 to 2025-10-02;
+configuration-locked test 2025-10-02 to 2026-10-02.
+This history has already been examined with other strategies and the raw ORB.
+Do NOT call the locked test a pristine untouched data holdout.
+90 calendar days of warmup, no trading before window start.
+
+Rules retained: first completed M5 close outside a completed NY 09:30 opening
+range; market entry next tick; opposite range-boundary stop; one qualifying
+attempt per NY date, one open position. No grid, martingale, risk increase,
+re-entry, breakeven or trailing.
+
+Operational control: separately test unchanged 15:55 NY flat request against
+session-aware pre-close: 10 minutes before the current tradable broker session
+ends OR 15:55 NY, whichever is earlier. No entries after either cutoff.
+Broker weekday sessions are not a historical holiday calendar; actual market
+closures may still prevent a fill. Carryovers must be counted, not removed.
+
+One-factor staged search on DEVELOPMENT ONLY, keeping earlier chosen factors:
+1 target R: 0 (timed exit only), 0.5, 0.6, 0.7, 1, 1.5, 2, 3;
+2 opening-range minutes: 5, 10, 15, 20, 30, 45, 60;
+3 last entry NY minute: 630, 690, 750, 810, 930 (10:30..15:30);
+4 direction: both, long only, short only;
+5 simple H1 EMA direction confirmation: none, 50, 100, 200. Use previous
+completed H1 close and EMA(1), never an unfinished H1 bar. This is a simple
+MA filter, not a Markov regime model.
+No weekday search or retuning after viewing validation/test.
+
+Rank development net PF/Sharpe, lower equity DD and neighbouring stability;
+prefer broad stable settings rather than the maximum dollar profit. Minimum
+development sample 100 closed trades. PF >=1.2, positive return and Sharpe,
+DD <=25% preferred. Within qualifying settings prefer balanced win rate and
+return-to-drawdown. If none qualify, retain the best exploratory candidate and
+clearly mark the failure. Neighbours are adjacent tested values, not CI evidence.
+
+Confirm top 3 UNIQUE clean development candidates with model 4 on the same
+development period; choose and hash-lock ONE primary before validation/test.
+Show all development trials, alternatives and discarded candidates. Count all
+unique configurations, including original and operational controls, for DSR.
+Repeated windows/model checks aren't new parameter configurations.
+
+Run frozen primary on validation, locked last year, recent 6 months, full
+3/5 years. Full-window totals are in-sample exploratory illustrations, not OOS.
+Compare original raw and session-aware raw on the same recent/full windows.
+Run 150 vs 500ms native execution-delay sensitivity on locked year as an
+illustrative stress, not measured broker fill calibration.
+Raw audit: 10,000 block bootstrap paths, block 5, Wilson CI, DSR corrected for
+all tried settings, chronological thirds and recent-half PF. Closed-P&L prop
+breach proxies are not FTMO passing/payout forecasts. No cost-stress gate can
+pass without supplied broker-calibrated extra-cost evidence.
+Persist exact source/ex5/SET/build hashes, frozen case manifests, optimiser XML,
+reconciled initial-risk and complete position ledgers, signals and equity trace.
+Final graphs: closing balance + drawdown, native floating equity where traced,
+selection/development versus validation/locked-year metrics and raw comparison.
+Stop after this US100 report; do not start VWAP or other tier-list ideas.

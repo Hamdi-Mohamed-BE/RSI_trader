@@ -1,10 +1,11 @@
 {
-  "version": "FTMO14-20261002-GOLD-TARGETS",
+  "version": "FTMO14-20261003-ADXDI-FINAL",
   "news_enabled": false,
   "risk_usd": 50,
+  "admission_release": "ADXDI-FINAL-20261003",
   "comment_release": "ORB-COMMENTS-20260928",
   "gold_target_release": "GOLD-TARGETS-20261002",
-  "portfolio_forecast_status": "Prior simulations do not apply to revised Nasdaq management and Gold targets; standalone 1% evidence is not a guarded FTMO forecast",
+  "portfolio_forecast_status": "Prior simulations do not apply to revised ADX/DI admission, Nasdaq management and Gold targets; standalone 1% evidence is not a guarded FTMO forecast",
   "reference_balance": 10000,
   "entries": [
     {
@@ -244,7 +245,7 @@
         "FTMOExpectedSymbol": "",
         "FTMOPhase": "1"
       },
-      "expert_sha": "1ec567e8b1940b1e409d542768791d9d2ff5267e03e57c56b0379c7e43ddedaf",
+      "expert_sha": "33e66e99ca4c4a02b659485d2185cb39dab6bfb073856ae6113fedc8c0052751",
       "settings_sha": "8d2db49096b9dd9650dce7cce08fdacf80c3ec2e3c299b38c38990e7b0d12830"
     },
     {
@@ -301,7 +302,7 @@
         "FTMOExpectedSymbol": "",
         "FTMOPhase": "1"
       },
-      "expert_sha": "30c47393d55295bc80269decd55e57351b4a16beaa2470fb3f7c02ac20ab31de",
+      "expert_sha": "6601cc9ca2673faa9c4c1baed8ac2d9bfa64440e4653e89975c8cc24fa44efae",
       "settings_sha": "e72a59a299beda43ea8a670355196b35f698219957c2ac07638807a6be00e0b0"
     },
     {
@@ -563,13 +564,17 @@
         "InpTesterManualUTCOffsetHours": "0",
         "InpManualLiveServerUTCOffsetHours": "0",
         "InpAdaptivePortfolioControls": "false",
+        "InpUseADXFilter": "true",
+        "InpADXMinimum": "20",
+        "InpRequireDIAgreement": "true",
+        "InpADXTimeframe": "15",
         "FTMOExpectedLogin": "0",
         "FTMOExpectedServer": "",
         "FTMOExpectedSymbol": "",
         "FTMOPhase": "1"
       },
-      "expert_sha": "15a4f6ce2e580c05b512779fe075aa26d5ced3ff73eae0f79dc4f38e90b241e3",
-      "settings_sha": "2bb5bc53456297e65efbdb5e7bcfe641797bf0e48f3d99b37dbc1c4a8fb5fe6c"
+      "expert_sha": "349440c35864fc23ba7f31b6c90b3f055445b7549163b83f15196619a331188b",
+      "settings_sha": "cc2517202695911894a94493689e2fabe2fa20974dfef40f02e77545523b0a6d"
     },
     {
       "slug": "us100-month-end-flow",
@@ -790,7 +795,8 @@
     "Nasdaq Overnight Negative Day EA\\Nasdaq Overnight Negative Day EA.mq5": "4ee202a4a9a0129913e9631a092df95b137f500c09d3aa525a0f6d6cd873a401",
     "Nasdaq Overnight Negative Day EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
     "Nasdaq Overnight Negative Day EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
-    "London Open FX Momentum Research 2026-09-08\\Pipeline\\EA\\Calyx London Open FX Momentum Pipeline EA.mq5": "8c67f803307681fc4ab5c8c3f1c4492620ed3fa56d7cc62b5c7d57013c9ec318",
+    "ADX DI Deployment 2026-10-03\\EA\\london\\Calyx London Open FX Momentum Pipeline EA.mq5": "01b41af84d48059b5043e8c9e464a937b2dcf08e43d8273a64ac6d72fdd08f31",
+    "ADX DI Deployment 2026-10-03\\EA\\CalyxAdmission.mqh": "ca63c51e63571ea664b7540fa435a5d6f9725a3fb38eab16c2c5f9c3c93fa8de",
     "Month End Institutional Flow Research 2026-09-06\\EA\\Calyx Month End Flow EA.mq5": "a5e9ed1d46d16b3bb658828ef59577eb7e1372a5e3916c34e58dae7503bb4295",
     "AAA Final EAs\\AAA Final DmC EA\\AAA Final DmC EA.mq5": "24c7f2e4efa363d79c6b25e837a7244768987250845247036e841ed5c45eecf9",
     "AAA Final EAs\\AAA Final DmC EA\\AAA_Final_Strategy_Engine.mqh": "07991475bd2ebe1b08ac9dda7fdbc31d119237320cc4c41eb925c07c8147e8c2",
@@ -813,7 +819,7 @@
     "FTMO13-dmc-fresh-reaction-us100.ex5": "e8e36f53c3e6491a55d086babb3815223bf1680b9c29598ee9233e6e357d6137",
     "FTMO13-dmc-fresh-reaction-us100.mq5": "05f2262716a683bb759028f44f47d0fc9f9b07863e198715a160e7f65d083c73",
     "FTMO13-dmc-fresh-reaction-us100.set": "fa7d3e0efd4e0a7c816d3ae63d71999661075fd6a918df2ced10d69f4cb0de40",
-    "FTMO13-ema3.ex5": "1ec567e8b1940b1e409d542768791d9d2ff5267e03e57c56b0379c7e43ddedaf",
+    "FTMO13-ema3.ex5": "33e66e99ca4c4a02b659485d2185cb39dab6bfb073856ae6113fedc8c0052751",
     "FTMO13-ema3.mq5": "e99dfa6fa16073f0271904e6190239ef5de9d20c3b80b8d35f5783c870487301",
     "FTMO13-ema3.set": "8d2db49096b9dd9650dce7cce08fdacf80c3ec2e3c299b38c38990e7b0d12830",
     "FTMO13-gold-overnight-value-area.ex5": "7c993158ee0c29adcbb0bef21577b59488a43c7a8dd4f3f944aca6141beb8b66",
@@ -831,9 +837,9 @@
     "FTMO13-us100-month-end-flow.ex5": "f058f798ee84c7c800e7c473bce71f1663916f61bcef32672c57db67213d4669",
     "FTMO13-us100-month-end-flow.mq5": "819b8a9b67f8b402545655a3a2518cd54638d83fe80478e94d17ffd38403415e",
     "FTMO13-us100-month-end-flow.set": "f10e1e56064bbcf826700047c0c8d3fb202aba17c1a7ae98f25b91c466f842ef",
-    "FTMO13-usdjpy-london-open-momentum.ex5": "15a4f6ce2e580c05b512779fe075aa26d5ced3ff73eae0f79dc4f38e90b241e3",
-    "FTMO13-usdjpy-london-open-momentum.mq5": "15593101fc163d3229757b27cc28be0b2d5ec027bb8d835a505dd9c88e3656d7",
-    "FTMO13-usdjpy-london-open-momentum.set": "2bb5bc53456297e65efbdb5e7bcfe641797bf0e48f3d99b37dbc1c4a8fb5fe6c",
+    "FTMO13-usdjpy-london-open-momentum.ex5": "349440c35864fc23ba7f31b6c90b3f055445b7549163b83f15196619a331188b",
+    "FTMO13-usdjpy-london-open-momentum.mq5": "2754684bde7819b2c5897607dd4db47f77542974fa95a55590f9a940890d2095",
+    "FTMO13-usdjpy-london-open-momentum.set": "cc2517202695911894a94493689e2fabe2fa20974dfef40f02e77545523b0a6d",
     "FTMO13-xau-orb-london-ny-overlap-m30.ex5": "44ab7fa6bf4787fcf58de6177122015995da14c114a441cf7054e469b8b45ba7",
     "FTMO13-xau-orb-london-ny-overlap-m30.mq5": "14844d6e6768123689026dd52343ce8f209efacd0a819b5c580c290423af3b08",
     "FTMO13-xau-orb-london-ny-overlap-m30.set": "e378d3f7084da5554d310cc5778537f821b900faf9c202e0e9e43a72e5053448",
@@ -843,10 +849,12 @@
     "FTMO13-xau-squeeze-momentum-standard.ex5": "59ca616a16954a4c1d925034e926f99e13e6422e636ee46fb6ae4c795c661c14",
     "FTMO13-xau-squeeze-momentum-standard.mq5": "053256af1b10ac7ddb0508b6e63d7869b1c14e3bdb5c1f54b08f7946a23e8a00",
     "FTMO13-xau-squeeze-momentum-standard.set": "0d3a84e4f308c2c4e3ff51967a274a2c7f94f6380efd8de7dbfa49afe9e3a7e8",
-    "FTMO13-xau-trend-progression.ex5": "30c47393d55295bc80269decd55e57351b4a16beaa2470fb3f7c02ac20ab31de",
+    "FTMO13-xau-trend-progression.ex5": "6601cc9ca2673faa9c4c1baed8ac2d9bfa64440e4653e89975c8cc24fa44efae",
     "FTMO13-xau-trend-progression.mq5": "feb9cb65d6ec94644a780fed421826e92b28ba0520a8874ff09a0cfdcac194d1",
     "FTMO13-xau-trend-progression.set": "e72a59a299beda43ea8a670355196b35f698219957c2ac07638807a6be00e0b0",
     "FTMO_Trade.mqh": "7c651aa5e67d936a9bcd12157e6de62e0f80a3be2ab16935826582ea3db21db8",
+    "src_01d74776331d.mqh": "c768e66d90d366c21843f283b3a00228b613ee2d3232020718633b2aa94657cc",
+    "src_028369a12f11.mqh": "b704064b1771252c0676fa19bfb0f41ccc7ddc97eee4dfb6b1e592e18d965a65",
     "src_0bc9b9d98dc3.mqh": "333b1a00717e8d802ed9dd50dfe4d7e6e52554ed254a7d66b8fd8f71e52c98f8",
     "src_0df6c0c9078b.mqh": "62f553afb927ea93aa4bd1ab70001e4aaa6d130bccda0b1fa06ea783fd2316a8",
     "src_0fe81250e766.mqh": "29923a64684ccdc0d59cede9addb9c50825116599937c48725e8999790385633",
@@ -863,10 +871,12 @@
     "src_3ca2888f009b.mqh": "9356779bda8b101f502416efcad92a14877e8816d024ae414cb1c0577827ced9",
     "src_3ffda10ba7b3.mqh": "92827aebf3eaa24e62f59f6ea2b3523c8090c5e808a7af574482fbdb5c6ac331",
     "src_450f8aeccbfd.mqh": "29923a64684ccdc0d59cede9addb9c50825116599937c48725e8999790385633",
+    "src_4aa51bf395cf.mqh": "dd250188cb84b4e955bc99e360663529da021f717b8faba2f2419a32abc0ced9",
     "src_4b88b16fefc3.mqh": "e1c0ff6bd35222858e1ba641623546ea97fbe99d9c315e1e3a17a7629a911ccb",
     "src_51f217c09290.mqh": "29923a64684ccdc0d59cede9addb9c50825116599937c48725e8999790385633",
     "src_57219576a05a.mqh": "29923a64684ccdc0d59cede9addb9c50825116599937c48725e8999790385633",
     "src_5f7af4e2a411.mqh": "0414dec579b7d165186b866f5f359f98bb5736fce26f67d8a3454fbbfb6dd495",
+    "src_65ff14d92db5.mqh": "0414dec579b7d165186b866f5f359f98bb5736fce26f67d8a3454fbbfb6dd495",
     "src_66b171e5fe66.mqh": "65032a649dd2f61eda22a214f1f866d695e28248271725311ebd33a2b49fac3c",
     "src_6cced4c28b90.mqh": "0414dec579b7d165186b866f5f359f98bb5736fce26f67d8a3454fbbfb6dd495",
     "src_6e4c95b0671c.mqh": "a19a7c3e3b4498e93cf9aa2379fde94784f43add23318031f37d559b50c8eb5a",
@@ -875,13 +885,17 @@
     "src_797d93c8d386.mqh": "0414dec579b7d165186b866f5f359f98bb5736fce26f67d8a3454fbbfb6dd495",
     "src_7d38bc4ea479.mqh": "8236813b314f86a17e236490517b8e32c057b673a4f11625a1c7c432cfcad85c",
     "src_923f512928a8.mqh": "641e719d2040b7aec07b86f77df8c6bea4a29ae2da1e0ff33904fe28ed5f0dc6",
+    "src_99ad07e9f34e.mqh": "e5863788810462fa3b6018404f98b9e270a1972cba3e98c94f70b75718f7a722",
     "src_9f16b8553c15.mqh": "27d455c644cd11df91f701a50f1af9cb07e30d3801d694037e2368b34256c483",
     "src_a9d0618a1e5e.mqh": "40f2600990ca229c057d4cecfd9b02aba29c876a171e44af48eaae3b53f0a4d3",
+    "src_aceab273e284.mqh": "9a71ddd2044b3e53b3ec20e6d44f365535c474cd711297c83c3cbc22fe2b7b32",
     "src_c55cc5e16c06.mqh": "0ac47ad7862dbfe9300eff2891691791decb8d7f430f8419218a483216ea19bd",
     "src_cb5f09e7f45d.mqh": "62233edb2e409e24dd6aeb2625a89474bcd00a93b474117f71ad27681ce5b00f",
+    "src_d80b3d360ae4.mqh": "0b48a4c8e808f2e4b5e1f5ac64670177f1e5cbb47dd3697265a5c44d3bc91388",
     "src_ddd694eb2e4d.mqh": "8404c40e3c7efe8507c8aa8ff1da565de794730534d1c8df7f5656aa5302dc6a",
     "src_df47e0981de0.mqh": "859e981a8d727cb13a5f4518271bf837a5fe87b268d8e8c35f868e61edfcb83a",
     "src_e24726d64fb4.mqh": "0414dec579b7d165186b866f5f359f98bb5736fce26f67d8a3454fbbfb6dd495",
+    "src_e65a8b00dda9.mqh": "29923a64684ccdc0d59cede9addb9c50825116599937c48725e8999790385633",
     "src_ef4b4345e305.mqh": "6a903ec1a0851f078e9327d6e2fd385008920f6ea98042f1db6aec36832417b8"
   }
 }

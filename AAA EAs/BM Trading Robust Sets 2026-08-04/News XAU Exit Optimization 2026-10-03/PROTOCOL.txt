@@ -1,0 +1,13 @@
+XAU News Pulse v2.20 - exploratory exit optimisation
+Frozen 12-case menu; exit-only changes. No production, installer or live-chart changes.
+Initial stop10, quote offset6, unchanged risk0.75% equity per side, keep both sides, fresh quote / missing-side / uncertainty guards retained.
+Maximum holding deadline is event+30s. Same placement leads and broker constraints.
+Development: 2025-10-03 inclusive to 2026-07-03 exclusive.
+Chronological validation: 2026-07-03 inclusive to 2026-10-03 exclusive.
+This validation period was already seen in the earlier baseline comparison. It is NOT a genuinely untouched holdout.
+Freeze development winner BEFORE inspecting its validation. Maximise net return among cases with net win rate >= baseline, PF>=1.2, return>baseline and equity DD<=max(1.5%, 1.5*baseline DD).
+If no eligible winner, report failure; do not silently lower the win-rate criterion or replace it using validation outcomes.
+Validation must preserve baseline win rate and beat baseline return, with PF>=1.2. Show failures too.
+Verify selected winner over full last-year window and at 1000ms execution delay, compared with existing matched baseline.
+75% real ticks in full year; earlier data generated. Simulated fills, no live-liquidity guarantee. Small sample and multiple testing.
+Reported PF/win rate include recorded commissions, swap and fees by native position; equity DD is native MT5.

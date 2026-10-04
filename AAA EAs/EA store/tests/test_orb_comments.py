@@ -32,7 +32,16 @@ def test_ftmo_only_orb_binaries_changed_and_guards_unchanged():
     # 2026-09-30: 3 Way Gold appended as entry 14; the original 13 must stay unchanged.
     assert len(before['entries']) in (13,14) and len(after['entries'])==14 and after['entries'][13]['slug']=='3-way-gold'
     assert after['entries'][13]['inputs']['InpMarketEntries']=='true' and after['entries'][13]['inputs']['InpRiskPercent']=='0.5'
+    admission=json.loads((PACKAGE_ROOT/'ADX DI Final Selection 2026-10-03/SELECTION.json').read_text())
     for old,new in zip(before['entries'],after['entries']):
+        if new['slug'] in admission['profiles']:
+            profile=admission['profiles'][new['slug']]
+            gates={k:profile['inputs'][k] for k in ('InpUseADXFilter','InpADXMinimum','InpRequireDIAgreement','InpADXTimeframe')} if profile['filter_status']=='kept' else {}
+            expected={**old['inputs'],**gates}
+            if new['slug']=='xau-trend-progression':expected['InpRewardRisk']='0.6'
+            assert after['admission_release']==admission['version'] and new['inputs']==expected
+            assert new['inputs']==expected  # restored baseline need not differ from historical artifact
+            continue
         if new['slug']=='xau-trend-progression':
             # Separate, explicitly selected target release; guard/other inputs unchanged.
             assert after['gold_target_release']=='GOLD-TARGETS-20261002'

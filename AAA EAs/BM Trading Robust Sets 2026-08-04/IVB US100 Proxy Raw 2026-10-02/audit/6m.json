@@ -1,0 +1,234 @@
+{
+  "label": "US100 IVB quote-count proxy 6m",
+  "verdict": "REJECT",
+  "metadata": {
+    "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\reports\\ivb-us100-proxy-20261002\\ivb-6m-9b2d41d5.htm",
+    "initial_balance": 10000.0,
+    "reported_net_profit": -406.85,
+    "reported_profit_factor": 0.62,
+    "reported_win_rate_pct": 42.86,
+    "reported_max_drawdown_pct": 8.05,
+    "reported_trades": 21,
+    "reported_sharpe": -5.0,
+    "reported_recovery": -0.5,
+    "history_quality": "100% real ticks"
+  },
+  "metrics": {
+    "trades": 21,
+    "wins": 9,
+    "losses": 12,
+    "win_rate_pct": 42.857142857142854,
+    "win_rate_wilson_95_pct": [
+      24.46996892537595,
+      63.453445630693274
+    ],
+    "net_profit": -406.84999999999997,
+    "return_pct": -4.0685,
+    "profit_factor": 0.6211048818193671,
+    "expected_payoff": -19.373809523809523,
+    "max_win_streak": 4,
+    "max_loss_streak": 5,
+    "daily_expected_shortfall_95_pct": 1.0208954861062156,
+    "recent_half_profit_factor": 1.004100730771253,
+    "profitable_thirds": 1,
+    "tested_configurations": 1,
+    "annualized_sharpe": -1.5528340665706337,
+    "probabilistic_sharpe_pct": 16.061463902218787,
+    "deflated_sharpe_pct": 16.061463902218787,
+    "multiple_test_benchmark_sharpe": 0.0,
+    "daily_skewness": -0.35587086272117485,
+    "daily_kurtosis": 5.814039646597679
+  },
+  "bootstrap": {
+    "paths": 10000,
+    "block_length": 5,
+    "probability_profit_pct": 17.22,
+    "return_p05_pct": -10.748760125277876,
+    "return_p50_pct": -3.9487878696121745,
+    "return_p95_pct": 2.9604486658150977,
+    "max_drawdown_p50_pct": 5.899576510934251,
+    "max_drawdown_p95_pct": 11.518107238103049,
+    "profit_factor_p05": 0.24757478218922427,
+    "profit_factor_p50": 0.6135758911557463,
+    "profit_factor_p95": 1.5125228229320518,
+    "closed_pnl_daily_limit_breach_pct": 0.0,
+    "closed_pnl_total_limit_breach_pct": 9.04,
+    "breach_scope": "closed-trade P&L proxy; floating drawdown is not recoverable from an MT5 summary report"
+  },
+  "subperiods": [
+    {
+      "part": 1,
+      "start": "2026-05-01T15:47:32",
+      "end": "2026-06-11T14:58:48",
+      "trades": 7,
+      "net_profit": -309.54,
+      "profit_factor": 0.3831529861899922,
+      "win_rate_pct": 28.57142857142857
+    },
+    {
+      "part": 2,
+      "start": "2026-06-22T13:43:04",
+      "end": "2026-08-18T13:45:00",
+      "trades": 7,
+      "net_profit": -179.08999999999997,
+      "profit_factor": 0.5363965829666063,
+      "win_rate_pct": 42.857142857142854
+    },
+    {
+      "part": 3,
+      "start": "2026-08-20T18:00:00",
+      "end": "2026-09-24T18:00:00",
+      "trades": 7,
+      "net_profit": 81.78,
+      "profit_factor": 1.4404588786556796,
+      "win_rate_pct": 57.14285714285714
+    }
+  ],
+  "cost_stress": {
+    "status": "not_run",
+    "reason": "supply --extra-cost-per-trade from broker evidence"
+  },
+  "gates": {
+    "minimum_30_closed_trades": false,
+    "positive_locked_return": false,
+    "profit_factor_above_1": false,
+    "bootstrap_return_p05_positive": false,
+    "bootstrap_pf_p05_above_1": false,
+    "deflated_sharpe_95pct": false,
+    "recent_half_pf_above_1": true,
+    "two_of_three_subperiods_profitable": false,
+    "closed_pnl_total_breach_below_5pct": false,
+    "cost_stress_supplied": false,
+    "cost_stress_pf_above_1": false
+  },
+  "trades": [
+    {
+      "closed_at": "2026-05-01T15:47:32",
+      "pnl": 97.97,
+      "commission": -0.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-11T14:31:43",
+      "pnl": -101.49,
+      "commission": -0.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-15T18:00:00",
+      "pnl": 94.3,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-22T14:02:31",
+      "pnl": -103.76,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-08T13:48:40",
+      "pnl": -104.94,
+      "commission": -1.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-10T15:15:12",
+      "pnl": -95.76,
+      "commission": -0.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-11T14:58:48",
+      "pnl": -95.86,
+      "commission": -0.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-22T13:43:04",
+      "pnl": -96.24,
+      "commission": -0.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-30T13:59:48",
+      "pnl": 92.67999999999999,
+      "commission": -0.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-31T13:44:41",
+      "pnl": -95.30999999999999,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-04T15:02:49",
+      "pnl": 94.02,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-05T14:30:10",
+      "pnl": -100.25999999999999,
+      "commission": -0.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-13T18:00:00",
+      "pnl": 20.509999999999998,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-18T13:45:00",
+      "pnl": -94.49,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-20T18:00:00",
+      "pnl": -66.2,
+      "commission": -0.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-25T13:39:02",
+      "pnl": -95.67999999999999,
+      "commission": -0.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-27T18:00:00",
+      "pnl": 3.87,
+      "commission": -0.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-03T18:00:00",
+      "pnl": 75.24,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-14T15:44:08",
+      "pnl": 94.07000000000001,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-22T14:32:15",
+      "pnl": 94.27,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-24T18:00:00",
+      "pnl": -23.79,
+      "commission": -0.16,
+      "swap": 0.0
+    }
+  ],
+  "native_equity_drawdown_pct": 8.05,
+  "promotion_block": "Quote-count proxy, NOT NQ order flow. Generated-tick delta is invalid validation evidence; primary real2026 and6m only. No pristine holdout, prospective demo or measured extra cost stress. DSR1 excludes broader prior idea selection. Not an FTMO forecast."
+}

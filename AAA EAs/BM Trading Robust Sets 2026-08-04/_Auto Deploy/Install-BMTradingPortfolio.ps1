@@ -149,7 +149,7 @@ function Get-PortfolioItems {
             Label = 'AAA Final Asia Breakout'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 60; Expert = 'AAA Final Asia Breakout EA.ex5'
             ExpertSource = 'AAA Final EAs\AAA Final Asia Breakout EA\AAA Final Asia Breakout EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\06 Asia Breakout - DYNAMIC 50-20 - ALL DAY.set'; SmallDynamicRisk = $false; PercentRisk = $true
+            SetSource = 'ADX DI Final Selection 2026-10-03\Sets\asia-breakout.set'; SmallDynamicRisk = $false; PercentRisk = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'DMC Current XAU'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -172,8 +172,8 @@ function Get-PortfolioItems {
         [pscustomobject]@{
             Label = 'AAA Final EMA3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 240; Expert = 'AAA Final EMA3 EA.ex5'
-            ExpertSource = 'AAA Final EAs\AAA Final EMA3 EA\AAA Final EMA3 EA.ex5'; RecommendedSafe = $true
-            SetSource = 'Selected Portfolio Settings 2026-09-01\08 EMA3 - H4 PIVOT 1.7R - DYNAMIC 60-20 ONLY.set'; SmallDynamicRisk = $false; PercentRisk = $true
+            ExpertSource = 'AAA Final EAs\AAA Final EMA3 EA\AAA Final EMA3 EA.ex5'; RecommendedSafe = $false
+            SetSource = 'ADX DI Final Selection 2026-10-03\Sets\ema3.set'; SmallDynamicRisk = $false; PercentRisk = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'AAA Final XAU Weakness'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -209,8 +209,8 @@ function Get-PortfolioItems {
         [pscustomobject]@{
             Label = 'USDJPY London Open Momentum'; Canonical = 'USDJPY'; Aliases = @('USDJPY')
             Period = 15; Expert = 'Calyx London Open FX Momentum Pipeline EA.ex5'
-            ExpertSource = 'London Open FX Momentum Research 2026-09-08\Pipeline\EA\Calyx London Open FX Momentum Pipeline EA.ex5'
-            SetSource = 'London Open FX Momentum Research 2026-09-08\Pipeline\Sets\London Open FX Momentum - USDJPY - pipeline selected - 1pct.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
+            ExpertSource = 'ADX DI Deployment 2026-10-03\EA\london\Calyx London Open FX Momentum Pipeline EA.ex5'
+            SetSource = 'ADX DI Final Selection 2026-10-03\Sets\usdjpy-london-open-momentum.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'XAU Squeeze Momentum Standard'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -259,7 +259,7 @@ function Get-PortfolioItems {
             Label = 'XAU Trend Progression'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
             Period = 240; Expert = 'Trend Progression EA.ex5'
             ExpertSource = 'Gold Targets Deployment 2026-10-02\EA\Trend Progression EA.ex5'
-            SetSource = 'Gold Targets Deployment 2026-10-02\Sets\xau-trend-progression-normal.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
+            SetSource = 'ADX DI Final Selection 2026-10-03\Sets\xau-trend-progression.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; SupportsSafeFilter = $false
         },
         [pscustomobject]@{
             Label = 'XAU Elliott Wave 1-2-3'; Canonical = 'XAUUSD'; Aliases = @('XAUUSD', 'GOLD')
@@ -297,8 +297,8 @@ function Get-PortfolioItems {
     )
 
     # Filter before file checks, symbol discovery, risk settings or chart creation.
-    # Keep disabled definitions as history; no launcher switch can re-enable them.
-    $items = @(Select-XauNewsOnlyItems -Items $items)
+    # Owner restored all five selected news systems in normal BATs on 2026-10-03.
+    $items = @(Select-NormalNewsItems -Items $items)
     foreach ($item in $items) {
         if (-not $item.PSObject.Properties['FixedPercentRisk']) {
             $item | Add-Member -NotePropertyName FixedPercentRisk -NotePropertyValue 0.0
@@ -506,11 +506,13 @@ function Get-EffectiveInputs([object]$Item) {
     # All Standard/Safe/Dynamic/Recommended Adaptive BATs share this guard.
     if ($Item.Label -eq 'News Pulse XAU') {
         $inputs['InpUseXauEventSpecific'] = 'true'
+        $inputs['InpMarketFallbackOnCrossedLevel'] = 'true'
     }
     if ($Item.Label -in @('News Pulse XAG', 'News Pulse BTC', 'News Pulse EURUSD')) {
         $inputs['InpUseAssetEventSpecific'] = 'true'
     }
     if ($Item.Label -like 'News Pulse *') {
+        $inputs['InpMarketFallbackOnCrossedLevel'] = 'true'
         $inputs['InpEnableBuySide'] = 'true'
         $inputs['InpEnableSellSide'] = 'true'
         $inputs['InpUseDynamicTrailingSL'] = 'false'
@@ -646,7 +648,7 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
     }
     $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
     $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls apply to non-News EAs and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
-    Write-Host ("Risk audit passed: non-News uses {0}{1}; only the two XAU news EAs use {2:N4}% per order and bypass adaptive controls. Both XAU News Pulse sides plan {3:N4}%, before rounding, gaps and fees. XAG/BTC/EURUSD news OFF." -f $modeText, $adaptiveText, $NewsRiskPercent, (2 * $NewsRiskPercent)) -ForegroundColor Green
+    Write-Host ("Risk audit passed: non-News uses {0}{1}; all five news EAs use {2:N4}% per order and bypass adaptive controls. Each straddle plans {3:N4}%; four concurrent straddles plan {4:N4}%, plus V9, before rounding, gaps and fees." -f $modeText, $adaptiveText, $NewsRiskPercent, (2 * $NewsRiskPercent), (8 * $NewsRiskPercent)) -ForegroundColor Green
 }
 
 function New-ChartText([object]$Item, [string]$Symbol, [long]$Id, [int]$Index) {
@@ -875,7 +877,7 @@ function Close-TargetTerminal([string]$ExecutablePath) {
 
 Write-Stage 'Checking portfolio files'
 $portfolio = @(Get-PortfolioItems)
-Write-Host 'NEWS POLICY: XAU News Pulse and Gold News V9 only; XAG/BTC/EURUSD news excluded.' -ForegroundColor Yellow
+Write-Host 'NEWS POLICY: XAU/XAG/BTC/EURUSD News Pulse and Gold News V9 enabled; fresh-quote repair. FTMO unchanged.' -ForegroundColor Yellow
 foreach ($item in $portfolio) {
     if (-not (Test-Path -LiteralPath $item.ExpertFullPath)) { Stop-WithMessage "Missing EA: $($item.ExpertFullPath)" }
     if (-not (Test-Path -LiteralPath $item.SetFullPath)) { Stop-WithMessage "Missing settings: $($item.SetFullPath)" }

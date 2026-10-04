@@ -1,0 +1,534 @@
+{
+  "US30": {
+    "1y": {
+      "day_blocks": [
+        {
+          "paths": 10000,
+          "seed": 20261004,
+          "block_days": 1,
+          "probability_profit_pct": 99.82,
+          "return_p05_p50_p95": [
+            32.77325499999983,
+            74.5932500000001,
+            115.14646500000117
+          ],
+          "pf_p05_p50_p95": [
+            1.1351943773694786,
+            1.334570416316746,
+            1.5626811983156093
+          ],
+          "closed_dd_p05_p50_p95": [
+            5.381957352412292,
+            9.688915516780932,
+            18.71084819797919
+          ],
+          "below_initial_minus_10pct_fraction_pct": 8.690000000000001,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        },
+        {
+          "paths": 10000,
+          "seed": 20261008,
+          "block_days": 5,
+          "probability_profit_pct": 99.88,
+          "return_p05_p50_p95": [
+            34.04166499999977,
+            75.01009999999997,
+            116.36807000000091
+          ],
+          "pf_p05_p50_p95": [
+            1.1422045960538563,
+            1.3364218861609691,
+            1.5630059354874533
+          ],
+          "closed_dd_p05_p50_p95": [
+            5.386422630907179,
+            9.820794506190941,
+            19.19465316727781
+          ],
+          "below_initial_minus_10pct_fraction_pct": 8.99,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        },
+        {
+          "paths": 10000,
+          "seed": 20261013,
+          "block_days": 10,
+          "probability_profit_pct": 99.87,
+          "return_p05_p50_p95": [
+            35.06416999999992,
+            74.63925000000023,
+            113.26797000000076
+          ],
+          "pf_p05_p50_p95": [
+            1.1453783249607403,
+            1.3360240130008498,
+            1.5421540261703859
+          ],
+          "closed_dd_p05_p50_p95": [
+            5.437719369951415,
+            9.868976402916596,
+            18.838061532622294
+          ],
+          "below_initial_minus_10pct_fraction_pct": 7.99,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        }
+      ],
+      "shuffle": {
+        "paths": 10000,
+        "seed": 20261203,
+        "terminal_return_pct_constant": 74.50730000000001,
+        "closed_dd_p05_p50_p95": [
+          6.027260763419111,
+          8.725709853774323,
+          14.316759254277082
+        ],
+        "win_streak_p05_p50_p95": [
+          8.0,
+          10.0,
+          14.0
+        ],
+        "loss_streak_p05_p50_p95": [
+          7.0,
+          8.0,
+          12.0
+        ],
+        "scope": "trade-order reshuffle; return and PF do not change"
+      },
+      "missed": [
+        {
+          "miss_rate": 0.1,
+          "paths": 10000,
+          "return_p05_p50_p95": [
+            54.977385000000005,
+            67.1911,
+            78.84335999999999
+          ],
+          "pf_p05_p50_p95": [
+            1.2680524769789778,
+            1.3333846211658469,
+            1.4024492756554727
+          ],
+          "scope": "random missed-trade sensitivity, not full account simulation"
+        },
+        {
+          "miss_rate": 0.2,
+          "paths": 10000,
+          "return_p05_p50_p95": [
+            43.51156,
+            59.5856,
+            75.0585
+          ],
+          "pf_p05_p50_p95": [
+            1.235205519431563,
+            1.3322111027706036,
+            1.436792331944469
+          ],
+          "scope": "random missed-trade sensitivity, not full account simulation"
+        }
+      ]
+    },
+    "5y": {
+      "status": "not_run_on_incomplete_horizon",
+      "reason": "Native account stopped out and terminated early. Do not resample the unobserved remainder as zero returns. One-year complete-path Monte Carlo is still supplied.",
+      "last_exit_utc": "2023-03-12T22:30:00+00:00"
+    }
+  },
+  "US100": {
+    "1y": {
+      "day_blocks": [
+        {
+          "paths": 10000,
+          "seed": 20261104,
+          "block_days": 1,
+          "probability_profit_pct": 99.91,
+          "return_p05_p50_p95": [
+            29.50088999999993,
+            62.03359999999982,
+            95.07638
+          ],
+          "pf_p05_p50_p95": [
+            1.1323340242599895,
+            1.3014298048485586,
+            1.4965056541217434
+          ],
+          "closed_dd_p05_p50_p95": [
+            4.649017482378092,
+            7.755209267141539,
+            14.215004610349832
+          ],
+          "below_initial_minus_10pct_fraction_pct": 3.2800000000000002,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        },
+        {
+          "paths": 10000,
+          "seed": 20261108,
+          "block_days": 5,
+          "probability_profit_pct": 99.86,
+          "return_p05_p50_p95": [
+            28.30756999999993,
+            61.593149999999795,
+            97.79654499999992
+          ],
+          "pf_p05_p50_p95": [
+            1.1288348095738203,
+            1.2992665574845375,
+            1.5025394237943956
+          ],
+          "closed_dd_p05_p50_p95": [
+            4.6025326346130795,
+            7.482547824841592,
+            13.697268187444209
+          ],
+          "below_initial_minus_10pct_fraction_pct": 3.39,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        },
+        {
+          "paths": 10000,
+          "seed": 20261113,
+          "block_days": 10,
+          "probability_profit_pct": 99.87,
+          "return_p05_p50_p95": [
+            25.61598999999985,
+            60.90369999999977,
+            102.21042500000016
+          ],
+          "pf_p05_p50_p95": [
+            1.1191363307941014,
+            1.2952235115519386,
+            1.5241669070173165
+          ],
+          "closed_dd_p05_p50_p95": [
+            4.442925425774533,
+            7.116710301694217,
+            12.448355128530514
+          ],
+          "below_initial_minus_10pct_fraction_pct": 2.29,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        }
+      ],
+      "shuffle": {
+        "paths": 10000,
+        "seed": 20261204,
+        "terminal_return_pct_constant": 62.04880000000001,
+        "closed_dd_p05_p50_p95": [
+          5.555719950372667,
+          8.065050935673344,
+          13.037190001188984
+        ],
+        "win_streak_p05_p50_p95": [
+          8.0,
+          11.0,
+          15.0
+        ],
+        "loss_streak_p05_p50_p95": [
+          6.0,
+          8.0,
+          11.0
+        ],
+        "scope": "trade-order reshuffle; return and PF do not change"
+      },
+      "missed": [
+        {
+          "miss_rate": 0.1,
+          "paths": 10000,
+          "return_p05_p50_p95": [
+            45.54520000000001,
+            55.93765,
+            66.11462500000002
+          ],
+          "pf_p05_p50_p95": [
+            1.2406834230493426,
+            1.3010936788222662,
+            1.3661900324825254
+          ],
+          "scope": "random missed-trade sensitivity, not full account simulation"
+        },
+        {
+          "miss_rate": 0.2,
+          "paths": 10000,
+          "return_p05_p50_p95": [
+            35.74071,
+            49.73975,
+            63.30809000000001
+          ],
+          "pf_p05_p50_p95": [
+            1.2094500577824836,
+            1.3017239051354008,
+            1.398742545489392
+          ],
+          "scope": "random missed-trade sensitivity, not full account simulation"
+        }
+      ]
+    },
+    "5y": {
+      "status": "not_run_on_incomplete_horizon",
+      "reason": "Native account stopped out and terminated early. Do not resample the unobserved remainder as zero returns. One-year complete-path Monte Carlo is still supplied.",
+      "last_exit_utc": "2023-10-25T17:42:00+00:00"
+    }
+  },
+  "SP500": {
+    "1y": {
+      "day_blocks": [
+        {
+          "paths": 10000,
+          "seed": 20261204,
+          "block_days": 1,
+          "probability_profit_pct": 96.73,
+          "return_p05_p50_p95": [
+            0.1815549999999985,
+            1.6874499999999988,
+            3.2646149999999916
+          ],
+          "pf_p05_p50_p95": [
+            1.0392668062698647,
+            1.4211849072081566,
+            1.9550508850181643
+          ],
+          "closed_dd_p05_p50_p95": [
+            0.3130177390985288,
+            0.547127366911613,
+            1.0331598390535897
+          ],
+          "below_initial_minus_10pct_fraction_pct": 0.0,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        },
+        {
+          "paths": 10000,
+          "seed": 20261208,
+          "block_days": 5,
+          "probability_profit_pct": 96.58,
+          "return_p05_p50_p95": [
+            0.17207499999999165,
+            1.6902500000000056,
+            3.3415249999999967
+          ],
+          "pf_p05_p50_p95": [
+            1.037696135779095,
+            1.420640279549119,
+            1.94309536568707
+          ],
+          "closed_dd_p05_p50_p95": [
+            0.30422803396021525,
+            0.5223014499640957,
+            0.9837286006553332
+          ],
+          "below_initial_minus_10pct_fraction_pct": 0.0,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        },
+        {
+          "paths": 10000,
+          "seed": 20261213,
+          "block_days": 10,
+          "probability_profit_pct": 96.47,
+          "return_p05_p50_p95": [
+            0.13919000000000054,
+            1.6813999999999942,
+            3.341559999999996
+          ],
+          "pf_p05_p50_p95": [
+            1.0305345698250787,
+            1.4192680714018318,
+            1.9262654978864562
+          ],
+          "closed_dd_p05_p50_p95": [
+            0.3093375124071821,
+            0.5211986603952913,
+            0.996352159957587
+          ],
+          "below_initial_minus_10pct_fraction_pct": 0.0,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        }
+      ],
+      "shuffle": {
+        "paths": 10000,
+        "seed": 20261205,
+        "terminal_return_pct_constant": 1.7033999999999998,
+        "closed_dd_p05_p50_p95": [
+          0.3612509966031847,
+          0.5383231624011982,
+          0.8555751046595488
+        ],
+        "win_streak_p05_p50_p95": [
+          5.0,
+          7.0,
+          10.0
+        ],
+        "loss_streak_p05_p50_p95": [
+          5.0,
+          7.0,
+          10.0
+        ],
+        "scope": "trade-order reshuffle; return and PF do not change"
+      },
+      "missed": [
+        {
+          "miss_rate": 0.1,
+          "paths": 10000,
+          "return_p05_p50_p95": [
+            1.05259,
+            1.5465000000000002,
+            1.9821049999999998
+          ],
+          "pf_p05_p50_p95": [
+            1.279861013558483,
+            1.4243844123574294,
+            1.5825479283964923
+          ],
+          "scope": "random missed-trade sensitivity, not full account simulation"
+        },
+        {
+          "miss_rate": 0.2,
+          "paths": 10000,
+          "return_p05_p50_p95": [
+            0.7294850000000002,
+            1.3731,
+            1.9709249999999994
+          ],
+          "pf_p05_p50_p95": [
+            1.2144182913465165,
+            1.4248005621825084,
+            1.667408301826001
+          ],
+          "scope": "random missed-trade sensitivity, not full account simulation"
+        }
+      ]
+    },
+    "5y": {
+      "day_blocks": [
+        {
+          "paths": 10000,
+          "seed": 20262204,
+          "block_days": 1,
+          "probability_profit_pct": 0.0,
+          "return_p05_p50_p95": [
+            -10.132624999999996,
+            -7.272550000000001,
+            -4.354445000000019
+          ],
+          "pf_p05_p50_p95": [
+            0.5717184832396802,
+            0.6775237104321841,
+            0.7971907414753686
+          ],
+          "closed_dd_p05_p50_p95": [
+            4.9065120988314685,
+            7.5971667242886545,
+            10.390599733118703
+          ],
+          "below_initial_minus_10pct_fraction_pct": 6.9,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        },
+        {
+          "paths": 10000,
+          "seed": 20262208,
+          "block_days": 5,
+          "probability_profit_pct": 0.0,
+          "return_p05_p50_p95": [
+            -10.058369999999998,
+            -7.319700000000003,
+            -4.437655000000005
+          ],
+          "pf_p05_p50_p95": [
+            0.5716445114556965,
+            0.6752306509747843,
+            0.7948805282029855
+          ],
+          "closed_dd_p05_p50_p95": [
+            4.988825763136058,
+            7.668630110731179,
+            10.282922596246504
+          ],
+          "below_initial_minus_10pct_fraction_pct": 6.279999999999999,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        },
+        {
+          "paths": 10000,
+          "seed": 20262213,
+          "block_days": 10,
+          "probability_profit_pct": 0.0,
+          "return_p05_p50_p95": [
+            -10.275145,
+            -7.325600000000013,
+            -4.242950000000011
+          ],
+          "pf_p05_p50_p95": [
+            0.5620111227764167,
+            0.6761284492552582,
+            0.8056171449566522
+          ],
+          "closed_dd_p05_p50_p95": [
+            4.853192495237392,
+            7.6800817450202405,
+            10.514514527699026
+          ],
+          "below_initial_minus_10pct_fraction_pct": 8.0,
+          "capital_exhausted_fraction_pct": 0.0,
+          "scope": "conditional historical day-block bootstrap; fixed dollars; closed P&L only; not forecast or FTMO pass odds"
+        }
+      ],
+      "shuffle": {
+        "paths": 10000,
+        "seed": 20261205,
+        "terminal_return_pct_constant": -7.2801,
+        "closed_dd_p05_p50_p95": [
+          7.2847339750512505,
+          7.543211705950641,
+          8.15952407164708
+        ],
+        "win_streak_p05_p50_p95": [
+          5.0,
+          6.0,
+          9.0
+        ],
+        "loss_streak_p05_p50_p95": [
+          10.0,
+          13.0,
+          18.0
+        ],
+        "scope": "trade-order reshuffle; return and PF do not change"
+      },
+      "missed": [
+        {
+          "miss_rate": 0.1,
+          "paths": 10000,
+          "return_p05_p50_p95": [
+            -7.452305,
+            -6.544999999999999,
+            -5.688735
+          ],
+          "pf_p05_p50_p95": [
+            0.6388645103728432,
+            0.6783936874875963,
+            0.7144139774569528
+          ],
+          "scope": "random missed-trade sensitivity, not full account simulation"
+        },
+        {
+          "miss_rate": 0.2,
+          "paths": 10000,
+          "return_p05_p50_p95": [
+            -7.026504999999999,
+            -5.81915,
+            -4.662380000000001
+          ],
+          "pf_p05_p50_p95": [
+            0.6209462279095527,
+            0.678235911211418,
+            0.734443967136848
+          ],
+          "scope": "random missed-trade sensitivity, not full account simulation"
+        }
+      ]
+    }
+  }
+}

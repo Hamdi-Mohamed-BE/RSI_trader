@@ -98,7 +98,8 @@ def _load(slug: str, mode: str, period: str, stamp: int) -> tuple[EaProfile, tup
     summary_path, trades_path = base / f"{period}.json", base / f"{period}.trades.json"
     if not summary_path.is_file() or not trades_path.is_file():
         return None
-    summary = json.loads(summary_path.read_text(encoding="utf-8-sig"))
+    from ..evidence_cache import load_product_summary
+    summary = load_product_summary(slug,mode,period) or {}
     rows = json.loads(trades_path.read_text(encoding="utf-8-sig"))
     product = get_product(slug)
     stats = summary.get("stats") or {}
@@ -125,7 +126,7 @@ def _load(slug: str, mode: str, period: str, stamp: int) -> tuple[EaProfile, tup
         weekend_hold_share=weekend / len(trades) if trades else 0.0,
         news_ea=news, straddle=news,
         short_trade_share=(sum(t.seconds < SHORT_TRADE_SECONDS for t in trades) / len(trades)) if trades else 0.0,
-        evidence_status=product.evidence.status if product.evidence else "pending",
+        evidence_status=summary.get('evidence_status') or (product.evidence.status if product.evidence else "pending"),
     )
     return profile, tuple(trades)
 

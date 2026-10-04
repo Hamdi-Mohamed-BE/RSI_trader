@@ -48,6 +48,14 @@ def build(compile_eas=True, only_slugs=None):
         p=gold['profiles'][e['slug']]; f=p['ftmo']
         e.update(expert=str(BASE/p['expert']),expert_sha=p['expert_sha'],
                  settings=str(BASE/f['settings']),settings_sha=f['settings_sha'],inputs=f['inputs'])
+    # User-approved ADX/DI admission release; preserve guarded FTMO risk and exits.
+    admission_path=BASE/'ADX DI Final Selection 2026-10-03/SELECTION.json'
+    admission=json.loads(admission_path.read_text(encoding='utf-8'))
+    for e in entries:
+        if e['slug'] not in admission['profiles']:continue
+        p=admission['profiles'][e['slug']]
+        e.update(expert=str(BASE/p['expert']),expert_sha=p['expert_sha'],
+                 settings=str(BASE/p['settings']),settings_sha=p['settings_sha'],inputs=p['inputs'])
     # Explicit comment-only build replacement; never rewrite historical FROZEN.json.
     comment_release=json.loads((BASE/"ORB Comment Labels 2026-09-28/RELEASE.json").read_text())
     assert comment_release["comment_only"] is True
@@ -94,10 +102,11 @@ def build(compile_eas=True, only_slugs=None):
         (OUT/name).write_text(text,encoding="utf-8")
         return name
 
-    manifest=dict(version="FTMO14-20261002-GOLD-TARGETS",news_enabled=False,risk_usd=50,
+    manifest=dict(version="FTMO14-20261003-ADXDI-FINAL",news_enabled=False,risk_usd=50,
+                  admission_release=admission['version'],
                   comment_release=comment_release["version"],
                   gold_target_release=gold['version'],
-                  portfolio_forecast_status="Prior simulations do not apply to revised Nasdaq management and Gold targets; standalone 1% evidence is not a guarded FTMO forecast",
+                  portfolio_forecast_status="Prior simulations do not apply to revised ADX/DI admission, Nasdaq management and Gold targets; standalone 1% evidence is not a guarded FTMO forecast",
                   reference_balance=10000,entries=[],source_hashes=evidence,
                   guard_sha=sha(ROOT/"CalyxFTMOGuard.mqh"))
     for e in entries:
@@ -158,4 +167,6 @@ def build(compile_eas=True, only_slugs=None):
 if __name__=="__main__":
     only={"xau-orb-london-ny-overlap-m30","us100-h1-orb-13utc"} if "--only-orb" in sys.argv else None
     if "--only-3wg" in sys.argv:only={"3-way-gold"}
+    if "--only-adxdi" in sys.argv:only={'ema3','xau-trend-progression','usdjpy-london-open-momentum'}
+    if "--only-final" in sys.argv:only={'ema3','xau-trend-progression'}
     build("--source-only" not in sys.argv,only)

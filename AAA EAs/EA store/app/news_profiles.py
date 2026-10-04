@@ -25,12 +25,13 @@ def event_profile_meta(asset):
     logic += [
         {'title':'Primary high-impact USD events only','detail':'Native MT5 calendar accepts primary CPI/Core CPI, non-private NFP and FOMC decisions/statements. Cleveland Median CPI and secondary releases remain excluded. Broker calendar/quote time is used, not VPS local time.'},
         {'title':'Keep both pending directions','detail':'Both sides are retained, not OCO. Each targets 0.75% equity risk before costs and lot rounding. Recommended Adaptive does not block or taper News Pulse. Fresh quotes, symbol history, broker order and margin constraints still apply.'},
-        {'title':'Recover the active event after restart','detail':'Account/symbol/magic state and order comments restore the event family before applying its trailing and timed exit. Do not change a profile with owned exposure open.'},
+        {'title':'Repair missing sides using fresh quotes','detail':'Each enabled side requires a broker acknowledgement. A definitive price rejection retries at current Ask/Bid plus the selected offset, then uses a same-direction market fallback if needed. SL, TP and volume are recalculated. Unknown timeout outcomes reconcile without blind retry; a filled or manually closed side is never entered again during the same event. Repairs remain pre-release only.'},
+        {'title':'Recover the active event after restart','detail':'Account/symbol/magic state and order comments restore event family and per-side acknowledgement before applying unchanged trailing and timed exits. Do not change a profile with owned exposure open.'},
     ]
     return dict(strategy='Event-specific two-sided news breakout',
                 tagline=f'{symbol}: separate NFP, CPI and FOMC settings; both pending directions retained.',
                 description='User-approved full-year optimized configuration, selected on 19 September 2025–19 September 2026. '+ ' '.join(x['title']+'. '+x['detail'] for x in logic[:3]),
                 session='NFP, CPI and FOMC',logic_audit='Source-code verified',
-                logic_audit_note='Production v2.17. Native production/research parity is checked before publishing independent website-period replays. Full-year parameter fitting overlaps the displayed history; this is not untouched validation or a forecast.',
+                logic_audit_note='Production v2.21 retains the selected event exits/risk and adds fresh-quote placement repair. Previous v2.17 performance is not current-build evidence; new matching period replays are required. Full-year parameter fitting was retrospective, not untouched validation or a forecast.',
                 logic=logic,risk_note='HINDSIGHT-OPTIMIZED. Very tight stops can create large positions and losses far above 0.75% per side during gaps or adverse fills. Four concurrent News Pulse charts plan 6% combined before costs/rounding; Gold News V9 is additional exposure. Not demonstrated prop-firm-safe. Historical spread, recorded commission/swap and tester execution assumptions are disclosed by period.',
                 price=549,accent='yellow',featured=True)

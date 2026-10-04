@@ -1,0 +1,55 @@
+{ Reimplementation of published IVB rule logic, research only.
+  Apply to NQ M5. Chart must explicitly specify Trade Vol or Tick Count.
+  Chart timestamp timezone MUST be New York; do not assume local PC time.
+  Source timing: this bar on close, not a guarantee of an executable fill.
+  Literal source behaviour retained: entry can occur at1400 after EOD block;
+  a new date clears bracket levels even if a position remains open.
+  These hazards require review before prospective trading.
+  This file has NOT been compiled/validated in MultiCharts/TradeStation. }
+Inputs: BeginRange(0830), FinishRange(0900), FinishTrading(1400),
+        MinimumDelta(200), RequireRunningDelta(false), RunningDeltaFloor(500),
+        ContractsToTrade(1), RewardMultiple(1.0);
+Vars: RangeTop(0), RangeBottom(0), RangeReady(false), HasRange(false),
+      DateSeen(0), EnteredDate(false), DeltaOnBar(0), RunningFlow(0),
+      LiveStop(0), LiveTarget(0), PreviouslyLong(false), PriorClock(0), Qualified(false);
+
+if CurrentBar >= 2 then begin
+ if Date <> DateSeen then begin
+  DateSeen = Date;
+  RangeTop = 0; RangeBottom = 0;
+  HasRange = false; RangeReady = false; EnteredDate = false;
+  RunningFlow = 0; LiveStop = 0; LiveTarget = 0; PreviouslyLong = false;
+ end;
+ DeltaOnBar = UpTicks - DownTicks;
+ if Time > BeginRange and Time <= FinishTrading then
+  RunningFlow = RunningFlow + DeltaOnBar;
+ if Time > BeginRange and Time <= FinishRange then begin
+  if not HasRange then begin
+   RangeTop = High; RangeBottom = Low; HasRange = true;
+  end else begin
+   RangeTop = MaxList(RangeTop, High); RangeBottom = MinList(RangeBottom, Low);
+  end;
+ end;
+ if HasRange and Time > FinishRange then RangeReady = true;
+ if MarketPosition = 1 then PreviouslyLong = true;
+ if MarketPosition = 0 and PreviouslyLong then begin
+  PreviouslyLong = false; LiveStop = 0; LiveTarget = 0;
+ end;
+ if Time >= FinishTrading and PriorClock < FinishTrading and MarketPosition = 1 then
+  Sell ("IVB-Time") this bar on close;
+ PriorClock = Time;
+ if MarketPosition = 1 and LiveStop <> 0 and LiveTarget <> 0 then begin
+  Sell ("IVB-Profit") next bar at LiveTarget limit;
+  Sell ("IVB-Risk") next bar at LiveStop stop;
+ end;
+ Qualified = DeltaOnBar >= MinimumDelta;
+ if RequireRunningDelta then Qualified = Qualified and RunningFlow >= RunningDeltaFloor;
+ if RangeReady and not EnteredDate and MarketPosition = 0
+    and Time > FinishRange and Time <= FinishTrading and Close > RangeTop
+    and RangeBottom < Close and Qualified then begin
+  LiveStop = RangeBottom;
+  LiveTarget = Close + RewardMultiple * (Close - RangeBottom);
+  Buy ("IVB-Long") ContractsToTrade contracts this bar on close;
+  EnteredDate = true;
+ end;
+end;

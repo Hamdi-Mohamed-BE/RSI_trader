@@ -54,6 +54,7 @@ def test_effective_inputs_change_one_key_only_on_both_portfolios():
     result = ps(r'''
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop';$PackageRoot=$env:CALYX_TEST_PACKAGE_ROOT
+. (Join-Path $PackageRoot '_Auto Deploy\News-Launcher-Policy.ps1')
 # Function definitions include their parameter lists, so import at script scope directly.
 $t=$null;$e=$null
 $ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $PackageRoot '_Auto Deploy\Install-BMTradingPortfolio.ps1'),[ref]$t,[ref]$e)
@@ -66,6 +67,7 @@ $UseRecommendedSelections=$true;$UseClaudeSelections=$false;$UseAdaptiveProfile=
 $GoldNewsRoot=Join-Path $PackageRoot '..\..\AI news';$ExpertFolderName='OfflineOnly'
 $NewsRiskPercent=.3;$EffectiveAdaptiveRiskPercent=.5
 $count=0
+$expectedCount=@(Get-PortfolioItems).Count+14
 foreach($item in @(Get-PortfolioItems)){
  $item|Add-Member EffectiveRiskPercent .5;$item|Add-Member EffectiveRisk 50
  $item|Add-Member EffectiveLot .01;$item|Add-Member EffectiveStopPercent 1
@@ -93,7 +95,7 @@ foreach($entry in $manifest.entries){
  if($off['FTMOExpectedLogin'] -ne '0' -or $off['InpRiskPercent'] -ne '0.5' -or $off['InpAdaptivePortfolioControls'] -ne 'false'){throw 'FTMO policy changed'}
  $count++
 }
-if($manifest.news_enabled -or $count -ne 49){throw 'Wrong portfolio scope'}
+if($manifest.news_enabled -or $count -ne $expectedCount){throw 'Wrong portfolio scope'}
 Write-Output 'PASS 47 presets; exactly one DI key changes in each Nasdaq preset'
 ''')
     assert result.returncode == 0, result.stdout + result.stderr

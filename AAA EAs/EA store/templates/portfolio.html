@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Applied EA Portfolio — Calyx{% endblock %}
 {% block content %}
-{% set selected_period = selected_period|default('3y', true) %}
+{% set selected_period = selected_period|default('1y', true) %}
 <section class="page-hero">
   <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-20">
-    <div class="max-w-4xl"><p class="eyebrow-simple">Recommended adaptive BAT configuration</p><h1 class="page-title">{{ product_count }} EAs with the approved adaptive risk controls.</h1><p class="page-lead">Every listed system keeps its selected compiled EA, symbol, timeframe and recommended SET. The BAT enables the 5% daily closed-loss stop, drawdown taper and loss-streak taper for non-News EAs only. All five news EAs are exempt.</p></div>
+    <div class="max-w-4xl"><p class="eyebrow-simple">Recommended adaptive BAT configuration</p><h1 class="page-title">{{ product_count }} EAs with the approved adaptive risk controls.</h1><p class="page-lead">Every listed system keeps its selected compiled EA, symbol, timeframe and recommended SET. The BAT enables the 5% daily closed-loss stop, drawdown taper and loss-streak taper for non-News EAs only. Only gold news remains enabled; it is exempt.</p></div>
   </div>
 </section>
 
 <section class="mx-auto max-w-7xl px-5 py-14 lg:px-8">
   <div class="mb-8 rounded-2xl border border-amber-300/30 bg-amber-300/[.04] p-5 text-sm leading-7">
     <strong>News exemption: original locked risk, no adaptive controls.</strong>
-    <p>News Pulse XAU, XAG, BTC, EURUSD and Gold News V9 Direction bypass adaptive daily entry stops, portfolio drawdown tapers and per-EA loss-streak tapers. Their planned risk remains 0.75% per entry (1.50% combined for each two-sided News Pulse chart). Four simultaneous straddles plan 6% combined before rounding, fees and gaps; Gold News V9 adds exposure. Their signal filters, broker constraints and protective exits remain active.</p>
+    <p>Only News Pulse XAU and Gold News V9 Direction remain in the normal BATs. XAG, BTC and EURUSD news are disabled. Gold news bypasses adaptive controls and follows its separate user-selected news percentage (default 0.75% per order). The XAU straddle can double that exposure; Gold News V9 adds exposure. FTMO keeps all news disabled. Archived portfolio records may contain previous non-gold news trades.</p>
     <p class="mt-3 text-amber-200">News Pulse event settings are hindsight-optimized on overlapping history. The portfolio is an overlay of separately sized backtests, not a shared-margin or floating-equity account simulation. Tight news stops can lose far more than planned risk. These figures are not a forecast or proof of prop-firm safety.</p>
     <p class="mt-2 text-muted">News profits and losses still affect account-wide controls for non-News EAs. Reapply RECOMMENDED ADAPTIVE.bat to activate these settings in MT5; a website update alone does not change attached charts. Gold News V9 remains evidence pending and is not assigned invented backtest results.</p>
   </div>
@@ -23,8 +23,9 @@
   </div>
 
   {% if consistency_audit %}
+    <p class="mt-4 rounded-xl border border-amber-300/20 bg-amber-300/[.04] p-4 text-xs leading-6 text-amber-100/80">Historical consistency audit: the watchlist reasons below describe earlier configurations. USDJPY alone keeps the added ADX/DI filter; EMA3, Asia Gold and Trend are restored to baseline. Current selected-preset standalone results are on each EA's page for 1, 3 and 5 years; these results have not revalidated the combined portfolio or FTMO forecasts.</p>
   <div class="mb-8 rounded-2xl border border-[#68a7ff]/30 bg-[#68a7ff]/[.045] p-5 lg:p-6">
-    <div class="flex flex-wrap items-start justify-between gap-4"><div><p class="eyebrow-simple">Saved mode-selection audit · updated portfolio replay</p><h2 class="mt-2 text-2xl font-bold">Recommended Adaptive is the active website profile.</h2><p class="mt-3 max-w-4xl text-sm leading-6 text-muted">Existing Standard, Safe and Dynamic selections retain their prior audit. Raw Gold Overnight Value Area was added on 19 Sep 2026; its optimized candidate is not deployed. Portfolio figures use the common available date range shown below, not a fresh simultaneous MT5 account test. The approved daily-stop, drawdown-taper, loss-streak and reduced Nasdaq allocation apply only to non-News entries; news trades retain their original locked risk without adaptive skips or scaling. All figures below are net of recorded MT5 commission and swap.</p></div><span class="badge badge-dynamic">{{ product_count }} active EAs</span></div>
+    <div class="flex flex-wrap items-start justify-between gap-4"><div><p class="eyebrow-simple">Archived mode-selection audit</p><h2 class="mt-2 text-2xl font-bold">Historical portfolio replay — before the current ADX/DI release.</h2><p class="mt-3 max-w-4xl text-sm leading-6 text-muted">These figures describe the previous settings and their common available dates, not the new filtered basket or a simultaneous MT5 account test. Four EAs now use the user-selected ADX/DI admission rules. Their current standalone one-year results are on the individual pages; portfolio/FTMO pass and payout forecasts have not been revalidated. Historical replay figures remain net of recorded costs.</p></div><span class="badge badge-warn">Archived configuration</span></div>
     <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <div class="analysis-kpi"><span>5Y return</span><strong class="text-mint">{{ adaptive_portfolio_5y.return_pct|percent(true) }}</strong></div>
       <div class="analysis-kpi"><span>5Y profit factor</span><strong>{{ '%.2f'|format(adaptive_portfolio_5y.profit_factor) }}</strong></div>

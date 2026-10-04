@@ -1,0 +1,58 @@
+XAU NEWS PULSE - MATCHED OLD/NEW NATIVE MT5 REPLAY
+2025-10-03 inclusive to 2026-10-03 exclusive; includes 2 October NFP.
+$10,000 USD start; 0.75% equity risk per side; isolated Exness XAUUSD tester.
+Real-tick mode requested; report quality 75% real ticks. Before January 2026 ticks are generated.
+
+Variant | Delay | Return | NET PF | Net win rate | Trades | Native equity DD | Win / loss streak | Weekday closed-balance Sharpe
+Current-test | 150ms | +338.02% | 11.826 | 66.67% | 39 | 4.45% | 8 / 4 | 3.36
+New-fixed-test | 150ms | +27.03% | 7.614 | 82.76% | 29 | 1.04% | 7 / 2 | 3.35
+Current-test | 1000ms | +292.30% | 10.714 | 65.79% | 38 | 3.92% | 7 / 4 | 3.16
+New-fixed-test | 1000ms | +30.47% | 8.049 | 79.31% | 29 | 1.10% | 7 / 3 | 3.42
+
+150ms event-family breakdown: kind / trades / net cash / net wins / net PF
+Current-test
+  NFP: 12 / $19344.27 / 66.67% / 16.827
+  CPI: 13 / $9534.04 / 61.54% / 7.597
+  FOMC: 14 / $4923.91 / 71.43% / 11.823
+  Placement rejections: 4; trailing-modify rejections: 0; complete two-side acknowledgements: not instrumented in old source
+New-fixed-test
+  NFP: 10 / $1514.63 / 80.00% / 12.024
+  CPI: 12 / $930.28 / 75.00% / 4.429
+  FOMC: 7 / $258.15 / 100.00% / undefined (no net losses)
+  Placement rejections: 0; trailing-modify rejections: 1; complete two-side acknowledgements: 30
+
+Real-tick subperiod (Jan 1-Oct 3, same ledger; NOT a fresh-balance backtest):
+Current-test 150ms: return +270.48% on Jan starting balance $11823.18, net PF 11.749, win 64.52%, 31 trades.
+New-fixed-test 150ms: return +25.11% on Jan starting balance $10153.78, net PF 7.238, win 80.00%, 25 trades.
+Current-test 1000ms: return +231.78% on Jan starting balance $11823.86, net PF 10.593, win 63.33%, 30 trades.
+New-fixed-test 1000ms: return +27.63% on Jan starting balance $10222.25, net PF 7.535, win 76.00%, 25 trades.
+
+EXECUTION CHECKS AND LIMITS
+31 official scheduled releases: NFP12 / CPI11 / FOMC8. All 30 tradable events attempted.
+3 April NFP was on Good Friday during XAU market closure; no usable placement-window quote.
+Corrected new model: 60 sides accepted, 30 complete straddles, zero rejected submissions or duplicate side/event entries in each year replay.
+One FOMC trailing-stop modification was rejected at 150ms; original protective SL remained. This was not an entry rejection.
+Old model can count a partially accepted setup as successful; inspect unique rejection records in ANALYSIS.json.
+Both pending directions remain active (NOT OCO). Missing sides retry before release only.
+Same-direction market fallback is reserved for price crossing a frozen pending level during submission.
+Native fault test forced a crossed buy, skipped the first sell, manually closed buy and reloaded masks: repair and no re-entry checks passed.
+native/New-test-* is the DISQUALIFIED short-expiration prototype; it is retained for debugging, not included in the final comparison. New-fault-test is fault injection, not performance evidence.
+Cleanup starts at event+30 seconds for THIS EA symbol/magic only, not every account trade.
+Broker execution can finish later; both tester delays had no closes later than T+30 plus delay plus a 2-second execution tolerance.
+Pending server expiration is a >=120-second whole-minute backup. Positions still require the EA connected/running for timed close.
+$10 SL and $6 offset are XAU price distances, not $10/$6 account risk. Broker tick/stops restrictions can widen geometry.
+Lots are rounded up, and broker minimum lot, gaps, fees or market-fill slippage can exceed selected risk.
+No blind retry of unknown broker responses. No system can guarantee orders through market closure, permission, margin or network failure.
+
+INTERPRETATION
+New version improves placement reliability, win rate and drawdown here; it reduces historical return and PF materially.
+These tests are not forward profitability proof: only 29 new trades, partly generated ticks and a hindsight-fitted old baseline.
+The baseline used separate $1/$2 offsets, $2 stops and 60/300/120-second holds; this is a bundled change, not an isolated stop-size experiment.
+Sharpe above is recomputed from weekday closing-balance returns including zero-trade days; it excludes intraday floating P/L. Native huge Sharpe values are not comparable.
+Old website cached returns are withheld for the changed source/SET; they were NOT relabelled as new results.
+
+DELIVERY
+Production v2.20 source, compiled EX5, selected SET, shared installer and website logic updated.
+No normal MT5 terminal restarted, no running chart changed, no live trade placed, no Git push.
+Reinstall/reload the revised compiled EA when you choose to use it. Other news EAs and FTMO news-OFF policy are unchanged.
+See RELEASE.json, ANALYSIS.json, SUMMARY.json, FAULT_CHECK.json and native compressed reports/deals for receipts.

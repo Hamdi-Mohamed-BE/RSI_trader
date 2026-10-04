@@ -1,0 +1,506 @@
+{
+  "bots": {
+    "weakness": {
+      "label": "XAU Weakness",
+      "slug": "xau-weakness",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final XAU Weakness EA\\AAA Final XAU Weakness EA.mq5",
+      "original": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final XAU Weakness EA\\AAA Final XAU Weakness EA.ex5",
+      "setting": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\09 XAU Weakness - M30 STRUCTURE 4R - DYNAMIC 50-20.set",
+      "symbol": "XAUUSD",
+      "period": "M30",
+      "tf": 30,
+      "gate": 1,
+      "inputs": {
+        "InpEnableTrading": "true",
+        "InpRiskPercent": "1.0",
+        "InpRewardRisk": "4.00",
+        "InpMagic": "4080402",
+        "InpMaxSpreadPoints": "0",
+        "InpPivotBars": "5",
+        "InpTrendEMA": "200",
+        "InpTrendSlopeBars": "6",
+        "InpUseTrailing": "false",
+        "InpTrailStartR": "1.50",
+        "InpTrailDistanceR": "1.00",
+        "InpAsiaBufferPercent": "0.03",
+        "InpAMDStopBufferRange": "0.03",
+        "InpDmCFixedStopPrice": "22.5",
+        "InpUseEconomicCalendar": "true",
+        "InpNewsExpiryMinutes": "15",
+        "InpNewsStopPrice": "9",
+        "InpAllowProvisionalWeekend": "false",
+        "InpGridLevels": "3",
+        "InpGridRiskPercent": "0.5",
+        "InpWeaknessATRImpulse": "2.00",
+        "InpTesterServerClockMode": "1",
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpUseDynamicTrailingSL": "true",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "180",
+        "InpWeaknessTimeframe": "30",
+        "InpWeaknessNewerMaxBars": "16",
+        "InpWeaknessMinSeparationBars": "4",
+        "InpWeaknessExpiryBars": "8",
+        "InpWeaknessATRPeriod": "14",
+        "InpWeaknessNewerMinBars": "4",
+        "InpWeaknessLookbackBars": "30",
+        "InpWeaknessAllowLong": "true",
+        "InpWeaknessMaxSpanBars": "16",
+        "InpWeaknessBreakoutBufferATR": "0.05",
+        "InpWeaknessToleranceATR": "0.20",
+        "InpWeaknessAllowShort": "true",
+        "InpWeaknessStopATR": "1.50",
+        "InpWeaknessStopMode": "0",
+        "InpAdaptivePortfolioControls": "false"
+      },
+      "original_sha": "49094a2aae1073028898388e365055e5cb1e1718dfe36a424c405dda6a0ee38c",
+      "source_sha": "3f4984754ce7f55a8f3f72874f66c945fdd9e0e1761c4bcff6197d5e3ee6e377",
+      "set_sha": "57c75d041f090be721a8275afa696cd59f556c1180da575b0fd58bebf2d9533c",
+      "helpers": {
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final XAU Weakness EA\\AAA_Final_Common.mqh": "89652f2750f68d1312705c88f46bd4ecacbd7d341cc55a9ae387d68c07fd4d37",
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final XAU Weakness EA\\AAA_Final_Strategy_Engine.mqh": "e2308f85dd3f06a253b54daa097d0f010f889fea4446e86c360b3cedc9b053e0",
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final XAU Weakness EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78"
+      }
+    },
+    "sell": {
+      "label": "Sell Nasdaq 15min",
+      "slug": "sell-nasdaq-15min",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Sell Nasdaq 15min Research 2026-09-08\\EA\\Sell Nasdaq 15min EA.mq5",
+      "original": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Sell Nasdaq 15min Research 2026-09-08\\EA\\Sell Nasdaq 15min EA.ex5",
+      "setting": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Sell Nasdaq 15min Research 2026-09-08\\Sets\\Sell Nasdaq 15min - selected research - 1pct.set",
+      "symbol": "USTEC",
+      "period": "M15",
+      "tf": 15,
+      "gate": 1,
+      "inputs": {
+        "InpEnableTrading": "true",
+        "InpNewYorkOpenHour": "9.5",
+        "InpOpeningRangeMinutes": "15",
+        "InpRequirePriorLondonBearish": "false",
+        "InpMinimumBodyFraction": "0.0",
+        "InpMinimumSetupRangePips": "400.0",
+        "InpMaximumSetupRangePips": "2400.0",
+        "InpEntryBufferPips": "0.0",
+        "InpEntryWindowMinutes": "30",
+        "InpCancelIfSetupHighBreaks": "false",
+        "InpTradeMonday": "false",
+        "InpTradeTuesday": "true",
+        "InpTradeWednesday": "true",
+        "InpTradeThursday": "true",
+        "InpTradeFriday": "true",
+        "InpRiskPercent": "1.0",
+        "InpStopPips": "450.0",
+        "InpTargetPips": "1000.0",
+        "InpHardExitNyHour": "15.9166667",
+        "InpBreakEvenAtR": "0.0",
+        "InpTrailStartAtR": "0.0",
+        "InpTrailDistanceR": "0.5",
+        "InpUseDynamic5020": "false",
+        "InpMaxSpreadBrokerPoints": "0",
+        "InpMaxDeviationBrokerPoints": "30",
+        "InpMagic": "980908999",
+        "InpUseAutomaticLiveServerOffset": "true",
+        "InpTesterServerClock": "0",
+        "InpTesterManualUTCOffsetHours": "0",
+        "InpManualLiveServerUTCOffsetHours": "0"
+      },
+      "original_sha": "900e74f54037be4bed010de5237666449eab9dcb2c075120a2285f0fd185c0fb",
+      "source_sha": "7893773b317c345a9355f1f438ab5568673295b632a0d5e18f438be6ae083b02",
+      "set_sha": "c25807c354810b93944f416175716f87bc093869b7645f5ca65f7ec6ed62d1e8",
+      "helpers": {
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Sell Nasdaq 15min Research 2026-09-08\\EA\\SafeRegimeFilter.mqh": "66d143c15d33e7b62c01e3e0693da8253f995cc15e807d6e6b95c49b6165370c"
+      }
+    },
+    "squeeze": {
+      "label": "XAU Squeeze Momentum Standard",
+      "slug": "xau-squeeze-momentum-standard",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\XAU Squeeze Momentum Research 2026-09-10\\EA\\Calyx XAU Squeeze Momentum Research EA.mq5",
+      "original": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\XAU Squeeze Momentum Research 2026-09-10\\EA\\Calyx XAU Squeeze Momentum Research EA.ex5",
+      "setting": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\23 XAU Squeeze Momentum Standard - ATR3P5 1P5R - 1PCT.set",
+      "symbol": "XAUUSD",
+      "period": "H1",
+      "tf": 16385,
+      "gate": 1,
+      "inputs": {
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpEnableTrading": "true",
+        "InpRiskPercent": "1.0",
+        "InpMaximumEffectiveLeverage": "9.8",
+        "InpMagic": "109102301",
+        "InpTradeComment": "SQZ-H1-STD",
+        "InpMaximumSpreadPoints": "0",
+        "InpSqueezeLength": "24",
+        "InpBollingerMultiplier": "1.8",
+        "InpKeltnerMultiplier": "1.3",
+        "InpMomentumLength": "28",
+        "InpTrendSMAPeriod": "200",
+        "InpRequireMomentumRising": "true",
+        "InpATRPeriod": "14",
+        "InpATRMethod": "0",
+        "InpStopATR": "3.5",
+        "InpTargetR": "1.5",
+        "InpTrailingMode": "1",
+        "InpTrailATR": "3.5",
+        "InpBreakEvenAtR": "0.0",
+        "InpPartialExitAtR": "0.0",
+        "InpPartialExitFraction": "0.5",
+        "InpMomentumExitMode": "2",
+        "InpMomentumFadeFraction": "0.5",
+        "InpMaximumHoldH1Bars": "0",
+        "InpDynamicTriggerFraction": "0.5",
+        "InpDynamicLockFraction": "0.2",
+        "InpSessionStartHourUTC": "0",
+        "InpSessionEndHourUTC": "24",
+        "InpWeekdayMask": "62",
+        "InpAdaptivePortfolioControls": "false"
+      },
+      "original_sha": "663dfcbdf85ee7982d4f3a20ba0bdefeef1fcf60cdeb00f5081024e092d9d924",
+      "source_sha": "f06a2c5b5c4fa3645249477640d7222ffe00cb73d2611adcd37ccb95f98a961b",
+      "set_sha": "b91f1d622f570362295fe8f810f257a1e42b4fa2fd9308189e1b6dc8b22ab038",
+      "helpers": {
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\XAU Squeeze Momentum Research 2026-09-10\\EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72"
+      }
+    },
+    "trio": {
+      "label": "3 Way Gold",
+      "slug": "3-way-gold",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\3 Way Gold EA\\3 Way Gold EA.mq5",
+      "original": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\3 Way Gold EA\\3 Way Gold EA.ex5",
+      "setting": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\25 3 Way Gold - BEST OPTIMISED - 1PCT PER MODULE.set",
+      "symbol": "XAUUSD",
+      "period": "M15",
+      "tf": 15,
+      "gate": 1,
+      "inputs": {
+        "InpEnableTrading": "true",
+        "InpEnableMomentum": "true",
+        "InpEnableBreakout": "true",
+        "InpEnableTurnOfMonth": "true",
+        "InpMarketEntries": "false",
+        "InpRiskPercent": "1.0",
+        "InpRiskMode": "0",
+        "InpFixedRiskMoney": "0",
+        "InpAdaptivePortfolioControls": "false",
+        "InpMagic": "930930100",
+        "InpMaximumDeviationPoints": "1000",
+        "InpAutoServerUtcOffsetLive": "true",
+        "InpServerUtcOffsetHours": "0",
+        "InpTradeFrom": "0",
+        "InpResearchLedger": "true"
+      },
+      "original_sha": "63d2dd2744a9e91713ad17273d638ab3aa1c150e24f2b21e99ab176e4527c66d",
+      "source_sha": "4050870aee6cc7496573d472bd372c70068ae7b332f3fd131432cca7095e15da",
+      "set_sha": "6a21579d8783b7fb86ed8d6bb9bf5e9920e59d4346da4e50f8061486a65562e6",
+      "helpers": {}
+    },
+    "orb": {
+      "label": "ORB Volume Profile",
+      "slug": "orb-volume-profile",
+      "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.mq5",
+      "original": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.ex5",
+      "setting": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\05 ORB Volume Profile - DYNAMIC 50-20 - ALL DAY.set",
+      "symbol": "XAUUSD",
+      "period": "M5",
+      "tf": 5,
+      "gate": 1,
+      "inputs": {
+        "InpEnableTrading": "true",
+        "InpSessionZone": "0",
+        "InpSessionHour": "9",
+        "InpSessionMinute": "30",
+        "InpOpeningRangeMinutes": "15",
+        "InpTradeWindowMinutes": "120",
+        "InpFlatHour": "15",
+        "InpFlatMinute": "55",
+        "InpWeekdaysOnly": "true",
+        "InpSignalTimeframe": "5",
+        "InpRelativeVolumeDays": "20",
+        "InpMinOpeningRelativeVolume": "0.6",
+        "InpBarVolumeLookback": "20",
+        "InpMinBreakoutRelativeVolume": "0.8",
+        "InpATRTimeframe": "15",
+        "InpATRPeriod": "14",
+        "InpMinRangeATR": "0.2",
+        "InpMaxRangeATR": "1.2",
+        "InpRequireVWAP": "false",
+        "InpUseEMATrend": "false",
+        "InpFastEMA": "20",
+        "InpSlowEMA": "50",
+        "InpUseProfileValueArea": "false",
+        "InpUseProfilePOCBias": "false",
+        "InpUseProfileBoundaryLVN": "false",
+        "InpProfileStartHour": "8",
+        "InpProfileStartMinute": "0",
+        "InpProfileBins": "48",
+        "InpProfileValueAreaPercent": "70.0",
+        "InpMaxBoundaryNodeRatio": "1.00",
+        "InpMinimumProfileTicks": "100",
+        "InpShowProfileLevels": "true",
+        "InpEntryMode": "0",
+        "InpBreakoutBodyMinimum": "0.55",
+        "InpBreakoutBufferATR": "0.03",
+        "InpRetestBars": "3",
+        "InpRetestToleranceATR": "0.15",
+        "InpRetestBodyMinimum": "0.3",
+        "InpStopMode": "1",
+        "InpStopBufferATR": "0.1",
+        "InpMaximumStopATR": "2.0",
+        "InpRewardRisk": "2.5",
+        "InpBreakEvenAtR": "1.0",
+        "InpTrailStartAtR": "0.0",
+        "InpTrailCandleBufferATR": "0.1",
+        "InpRiskPercent": "1.0",
+        "InpMaxSpreadRangePercent": "12.0",
+        "InpMaxDeviationPoints": "30",
+        "InpMagic": "86080707",
+        "InpUseAutomaticLiveServerOffset": "true",
+        "InpTesterServerUTCOffsetHours": "0",
+        "InpManualLiveServerUTCOffsetHours": "0",
+        "InpUseDynamicTrailingSL": "true",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpAdaptivePortfolioControls": "false"
+      },
+      "original_sha": "67ee6976b45e2e1d1f034729c2edcb3a9e2fcdf1355c988fad1bf54e7ef319b9",
+      "source_sha": "773770ae0cabce378436e889a096cc42cd33df7fc6149aecdbee3b245f2699d8",
+      "set_sha": "046cbb470ad454f5a8dc0986dbc8853239f0f5bb1c249c207af9703e30639be8",
+      "helpers": {
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+        "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72"
+      }
+    }
+  },
+  "variants": {
+    "weakness": {
+      "BASE": [
+        0,
+        false,
+        0
+      ],
+      "DI_ONLY": [
+        0,
+        true,
+        0
+      ],
+      "ADX20": [
+        20,
+        false,
+        0
+      ],
+      "ADX25": [
+        25,
+        false,
+        0
+      ],
+      "ADX20_DI": [
+        20,
+        true,
+        0
+      ],
+      "ADX25_DI": [
+        25,
+        true,
+        0
+      ]
+    },
+    "sell": {
+      "BASE": [
+        0,
+        false,
+        0
+      ],
+      "DI_ONLY": [
+        0,
+        true,
+        0
+      ],
+      "ADX20": [
+        20,
+        false,
+        0
+      ],
+      "ADX25": [
+        25,
+        false,
+        0
+      ],
+      "ADX20_DI": [
+        20,
+        true,
+        0
+      ],
+      "ADX25_DI": [
+        25,
+        true,
+        0
+      ]
+    },
+    "squeeze": {
+      "BASE": [
+        0,
+        false,
+        0
+      ],
+      "DI_ONLY": [
+        0,
+        true,
+        0
+      ],
+      "ADX20": [
+        20,
+        false,
+        0
+      ],
+      "ADX25": [
+        25,
+        false,
+        0
+      ],
+      "ADX20_DI": [
+        20,
+        true,
+        0
+      ],
+      "ADX25_DI": [
+        25,
+        true,
+        0
+      ],
+      "ADX_RISING": [
+        -1,
+        false,
+        0
+      ],
+      "ADX_RISING_DI": [
+        -1,
+        true,
+        0
+      ]
+    },
+    "trio": {
+      "BASE": [
+        0,
+        false,
+        0
+      ],
+      "A_DI_ONLY": [
+        0,
+        true,
+        1
+      ],
+      "A_ADX20": [
+        20,
+        false,
+        1
+      ],
+      "A_ADX25": [
+        25,
+        false,
+        1
+      ],
+      "A_ADX20_DI": [
+        20,
+        true,
+        1
+      ],
+      "A_ADX25_DI": [
+        25,
+        true,
+        1
+      ],
+      "B_DI_ONLY": [
+        0,
+        true,
+        2
+      ],
+      "B_ADX20": [
+        20,
+        false,
+        2
+      ],
+      "B_ADX25": [
+        25,
+        false,
+        2
+      ],
+      "B_ADX20_DI": [
+        20,
+        true,
+        2
+      ],
+      "B_ADX25_DI": [
+        25,
+        true,
+        2
+      ]
+    },
+    "orb": {
+      "BASE": [
+        0,
+        false,
+        0
+      ],
+      "DI_ONLY": [
+        0,
+        true,
+        0
+      ],
+      "ADX20": [
+        20,
+        false,
+        0
+      ],
+      "ADX25": [
+        25,
+        false,
+        0
+      ],
+      "ADX20_DI": [
+        20,
+        true,
+        0
+      ],
+      "ADX25_DI": [
+        25,
+        true,
+        0
+      ]
+    }
+  },
+  "windows": {
+    "1y": [
+      "2025.10.02",
+      "2026.10.02"
+    ],
+    "3m": [
+      "2026.07.02",
+      "2026.10.02"
+    ],
+    "3y": [
+      "2023.10.02",
+      "2026.10.02"
+    ],
+    "5y": [
+      "2021.10.02",
+      "2026.10.02"
+    ]
+  },
+  "protocol_sha": "77f8e905722b1076eb0a4c98a4d551134d5d6e60c0c2236c9b64f58f0b4932d7",
+  "filter_sha": "a3c6e73e5b13f48aca292d680984bae4cc9cdd47bb36252979cc72188af85e78",
+  "full_pipeline": false,
+  "promotion": false
+}

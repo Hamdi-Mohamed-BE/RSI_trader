@@ -1,0 +1,281 @@
+{
+  "complete": true,
+  "comparison_runs": 24,
+  "total_overlapping_window_trades": 16737,
+  "parity": {
+    "trades": 179,
+    "identical_entry_exit_volume_costs": true,
+    "production_net": 5705.4,
+    "research_net": 5705.4,
+    "fields": [
+      "open_time",
+      "close_time",
+      "side",
+      "volume",
+      "open_price",
+      "close_price",
+      "commission",
+      "swap",
+      "net_profit"
+    ]
+  },
+  "source_sha256": "ad77a3266961a273878e65b7bb2ae35e57cd55fe8a8fd7c5f59789f92bf840b3",
+  "checks": [
+    {
+      "key": "CURRENT-available",
+      "verified_trades": 1322,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [
+        {
+          "signal": "2020-03-09 09:30:00-04:00",
+          "fill": "2020-03-09 09:51:00-04:00",
+          "delay_after_nominal_close_seconds": 960
+        }
+      ],
+      "stop_modification_rejection_reasons": {
+        "market closed": 84542,
+        "invalid stops": 214
+      }
+    },
+    {
+      "key": "EMA_ONLY-available",
+      "verified_trades": 1684,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [
+        {
+          "signal": "2020-03-09 09:30:00-04:00",
+          "fill": "2020-03-09 09:51:00-04:00",
+          "delay_after_nominal_close_seconds": 960
+        }
+      ],
+      "stop_modification_rejection_reasons": {
+        "market closed": 133926,
+        "invalid stops": 266
+      }
+    },
+    {
+      "key": "VIDEO_ATR-available",
+      "verified_trades": 1592,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [
+        {
+          "signal": "2020-03-09 09:30:00-04:00",
+          "fill": "2020-03-09 09:51:00-04:00",
+          "delay_after_nominal_close_seconds": 960
+        }
+      ],
+      "stop_modification_rejection_reasons": {
+        "market closed": 132260,
+        "invalid stops": 266
+      }
+    },
+    {
+      "key": "VIDEO_ATR_DI-available",
+      "verified_trades": 1240,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [
+        {
+          "signal": "2020-03-09 09:30:00-04:00",
+          "fill": "2020-03-09 09:51:00-04:00",
+          "delay_after_nominal_close_seconds": 960
+        }
+      ],
+      "stop_modification_rejection_reasons": {
+        "market closed": 82876,
+        "invalid stops": 214
+      }
+    },
+    {
+      "key": "SYMMETRIC_ATR-available",
+      "verified_trades": 1489,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 122232,
+        "invalid stops": 52
+      }
+    },
+    {
+      "key": "VIDEO_MA-available",
+      "verified_trades": 1577,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [
+        {
+          "signal": "2020-03-09 09:30:00-04:00",
+          "fill": "2020-03-09 09:51:00-04:00",
+          "delay_after_nominal_close_seconds": 960
+        }
+      ],
+      "stop_modification_rejection_reasons": {
+        "market closed": 476192,
+        "unknown retcode 3": 20,
+        "invalid stops": 160
+      }
+    },
+    {
+      "key": "CURRENT-5y",
+      "verified_trades": 922,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 79782,
+        "invalid stops": 214
+      }
+    },
+    {
+      "key": "EMA_ONLY-5y",
+      "verified_trades": 1194,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 124032,
+        "invalid stops": 266
+      }
+    },
+    {
+      "key": "VIDEO_ATR-5y",
+      "verified_trades": 1130,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 122366,
+        "invalid stops": 266
+      }
+    },
+    {
+      "key": "VIDEO_ATR_DI-5y",
+      "verified_trades": 867,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 39058,
+        "invalid stops": 107
+      }
+    },
+    {
+      "key": "SYMMETRIC_ATR-5y",
+      "verified_trades": 1055,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 112338,
+        "invalid stops": 52
+      }
+    },
+    {
+      "key": "VIDEO_MA-5y",
+      "verified_trades": 1114,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 415710,
+        "unknown retcode 3": 20,
+        "invalid stops": 160
+      }
+    },
+    {
+      "key": "CURRENT-1y",
+      "verified_trades": 179,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 47288,
+        "invalid stops": 6
+      }
+    },
+    {
+      "key": "EMA_ONLY-1y",
+      "verified_trades": 238,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 54514,
+        "invalid stops": 6
+      }
+    },
+    {
+      "key": "VIDEO_ATR-1y",
+      "verified_trades": 227,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 54514,
+        "invalid stops": 6
+      }
+    },
+    {
+      "key": "VIDEO_ATR_DI-1y",
+      "verified_trades": 169,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 47288,
+        "invalid stops": 6
+      }
+    },
+    {
+      "key": "SYMMETRIC_ATR-1y",
+      "verified_trades": 211,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 48990
+      }
+    },
+    {
+      "key": "VIDEO_MA-1y",
+      "verified_trades": 221,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "market closed": 197578,
+        "invalid stops": 26,
+        "unknown retcode 3": 14
+      }
+    },
+    {
+      "key": "CURRENT-3m",
+      "verified_trades": 45,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {}
+    },
+    {
+      "key": "EMA_ONLY-3m",
+      "verified_trades": 61,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {}
+    },
+    {
+      "key": "VIDEO_ATR-3m",
+      "verified_trades": 56,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {}
+    },
+    {
+      "key": "VIDEO_ATR_DI-3m",
+      "verified_trades": 41,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {}
+    },
+    {
+      "key": "SYMMETRIC_ATR-3m",
+      "verified_trades": 50,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {}
+    },
+    {
+      "key": "VIDEO_MA-3m",
+      "verified_trades": 53,
+      "verified_signal_clock_body_ema_di_volume_costs": true,
+      "delayed_entries": [],
+      "stop_modification_rejection_reasons": {
+        "invalid stops": 6
+      }
+    }
+  ]
+}

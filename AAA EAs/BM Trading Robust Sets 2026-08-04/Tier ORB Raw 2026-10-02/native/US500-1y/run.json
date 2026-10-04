@@ -1,0 +1,63 @@
+{
+  "ok": true,
+  "manifest": {
+    "symbol": "US500",
+    "window": "1y",
+    "start": "2025.10.02",
+    "end": "2026.10.02",
+    "values": {
+      "InpRiskPercent": 1.0,
+      "InpServerUtcOffsetHours": 0,
+      "InpCloseHourNY": 15,
+      "InpCloseMinuteNY": 55,
+      "InpMagic": 10021545,
+      "InpAuditTag": "US500-1y"
+    },
+    "model": 4,
+    "delay_ms": 150,
+    "deposit": 10000,
+    "currency": "USD",
+    "leverage": "1:2000",
+    "source_sha256": "68f220da55142748e64e4a6986d70b99d92c5f10674a5123879c42e6c71a31f1",
+    "binary_sha256": "a24dd7b8414213ce4d55671f650b91a120adb1b52b79ba632cc87a1ba579ecfe",
+    "rules_sha256": "241754fd9598fc95cbe7145bc5c7faf2738cec89aec2835577a791b9248daf7c"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9811.08,
+    "net_profit": -188.92,
+    "return_pct": -1.89,
+    "profit_factor": 0.99,
+    "win_rate_pct": 41.25,
+    "max_drawdown_pct": 19.56,
+    "trades": 257,
+    "sharpe_ratio": -0.25,
+    "recovery_factor": -0.08,
+    "history_quality": "75% real ticks",
+    "max_relative_equity_drawdown_pct": 19.56
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "entry_fail": 0,
+    "close_fail": 0,
+    "stopout": 0,
+    "start_changed": 0
+  },
+  "real_tick_notes": [
+    "CS\t0\t10:11:01.127\tTicks\tUS500 : real ticks begin from 2026.01.01 00:00:00",
+    "PN\t0\t10:11:04.928\tCore 01\tUS500 : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summary": [
+    "RAWORB_SUMMARY ranges=258 signals=257 fills=257 skips=0 close_failures=0"
+  ],
+  "symbol_specs": [
+    "RAWORB_SPEC symbol=US500 digits=2 ticksize=0.01000000 tickvalue=0.01000000 lots_min=0.14000000 lots_step=0.01000000 lots_max=1000.00000000 stops=0 point=0.01000000"
+  ],
+  "elapsed_seconds": 23.94,
+  "report_sha256": "d517fbacd189c672ed17deeeb1e650c5529e210bf1ea80f5561081303dd4f4ab",
+  "verified_input_count": 6,
+  "verified_signals": 257
+}

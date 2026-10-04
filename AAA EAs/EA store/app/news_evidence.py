@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from datetime import date, datetime, timezone
 from calendar import monthrange
 from pathlib import Path
@@ -11,6 +12,10 @@ from .news_profiles import MULTI_PROFILE, MULTI_SLUGS
 NEWS_SLUGS=frozenset({'news-pulse-xau','news-pulse-xag','news-pulse-btc','news-pulse-eurusd'})
 NEWS_EVIDENCE_VERSION=1
 XAU_PROFILE='xau-event-specific-2026-09-19'
+# Preserve the archived profile identifier; do not relabel its fitted history.
+ACTIVE_XAU_PROFILE='xau-quote-offset6-stop10-close30-2026-10-03'
+ACTIVE_MULTI_PROFILE='multi-fresh-quote-placement-2026-10-03'
+XAU_PACKAGE=Path(__file__).resolve().parents[2]/'BM Trading Robust Sets 2026-08-04'
 CACHE_ROOT=Path(__file__).resolve().parents[1]/'data'/'evidence-cache'/'v1'
 
 def load_news_summary(slug: str, period: str='3y') -> dict[str, Any] | None:
@@ -38,10 +43,37 @@ def load_news_summary(slug: str, period: str='3y') -> dict[str, Any] | None:
             return None
     except (KeyError,TypeError,ValueError):
         return None
-    if slug=='news-pulse-xau' and payload.get('strategy_profile')!=XAU_PROFILE:
-        return None
-    if slug in MULTI_SLUGS and payload.get('strategy_profile')!=MULTI_PROFILE:
-        return None
+    if slug=='news-pulse-xau':
+        if payload.get('strategy_profile')!=ACTIVE_XAU_PROFILE:
+            return None
+        # News uses a separate loader from ordinary EA evidence. Pin its full
+        # changed execution geometry too, so an old cache cannot appear current.
+        folder=XAU_PACKAGE/'AAA Final EAs/AAA Final News Pulse XAU Event Specific EA'
+        bindings={
+            'source_sha256':folder/'AAA Final News Pulse XAU Event Specific EA.mq5',
+            'placement_helper_sha256':folder/'NewsPulsePlacement.mqh',
+            'set_sha256':XAU_PACKAGE/'Selected Portfolio Settings 2026-09-01/12A News Pulse XAU Two Sided - HARD 1.5 TOTAL.set',
+        }
+        try:
+            if any(payload.get(key)!=hashlib.sha256(path.read_bytes()).hexdigest() for key,path in bindings.items()):
+                return None
+        except OSError:
+            return None
+    if slug in MULTI_SLUGS:
+        if payload.get('strategy_profile')!=ACTIVE_MULTI_PROFILE:
+            return None
+        folder=XAU_PACKAGE/'AAA Final EAs/AAA Final News Pulse Multi Asset Event EA'
+        set_name={'news-pulse-xag':'12B News Pulse XAG Two Sided - HARD 1.5 TOTAL.set',
+                  'news-pulse-btc':'12C News Pulse BTC Two Sided - HARD 1.5 TOTAL.set',
+                  'news-pulse-eurusd':'12D News Pulse EURUSD Event Specific - HARD 1.5 TOTAL.set'}[slug]
+        bindings={'source_sha256':folder/'AAA Final News Pulse Multi Asset Event EA.mq5',
+                  'placement_helper_sha256':XAU_PACKAGE/'AAA Final EAs/AAA Final News Pulse XAU Event Specific EA/NewsPulsePlacement.mqh',
+                  'set_sha256':XAU_PACKAGE/'Selected Portfolio Settings 2026-09-01'/set_name}
+        try:
+            if any(payload.get(key)!=hashlib.sha256(path.read_bytes()).hexdigest() for key,path in bindings.items()):
+                return None
+        except OSError:
+            return None
     return payload
 
 

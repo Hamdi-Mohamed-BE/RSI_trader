@@ -1,0 +1,63 @@
+{
+  "ok": true,
+  "manifest": {
+    "symbol": "USTEC",
+    "window": "1y",
+    "start": "2025.10.02",
+    "end": "2026.10.02",
+    "values": {
+      "InpRiskPercent": 1.0,
+      "InpServerUtcOffsetHours": 0,
+      "InpCloseHourNY": 15,
+      "InpCloseMinuteNY": 55,
+      "InpMagic": 10021545,
+      "InpAuditTag": "USTEC-1y"
+    },
+    "model": 4,
+    "delay_ms": 150,
+    "deposit": 10000,
+    "currency": "USD",
+    "leverage": "1:2000",
+    "source_sha256": "68f220da55142748e64e4a6986d70b99d92c5f10674a5123879c42e6c71a31f1",
+    "binary_sha256": "a24dd7b8414213ce4d55671f650b91a120adb1b52b79ba632cc87a1ba579ecfe",
+    "rules_sha256": "241754fd9598fc95cbe7145bc5c7faf2738cec89aec2835577a791b9248daf7c"
+  },
+  "metrics": {
+    "initial_balance": 10000.0,
+    "final_balance": 9039.39,
+    "net_profit": -960.61,
+    "return_pct": -9.61,
+    "profit_factor": 0.93,
+    "win_rate_pct": 43.19,
+    "max_drawdown_pct": 31.7,
+    "trades": 257,
+    "sharpe_ratio": -1.42,
+    "recovery_factor": -0.24,
+    "history_quality": "75% real ticks",
+    "max_relative_equity_drawdown_pct": 31.7
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "entry_fail": 0,
+    "close_fail": 0,
+    "stopout": 0,
+    "start_changed": 0
+  },
+  "real_tick_notes": [
+    "CS\t0\t10:07:59.682\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "PD\t0\t10:08:05.573\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "summary": [
+    "RAWORB_SUMMARY ranges=258 signals=257 fills=257 skips=0 close_failures=0"
+  ],
+  "symbol_specs": [
+    "RAWORB_SPEC symbol=USTEC digits=2 ticksize=0.01000000 tickvalue=0.01000000 lots_min=0.05000000 lots_step=0.01000000 lots_max=500.00000000 stops=0 point=0.01000000"
+  ],
+  "elapsed_seconds": 43.25,
+  "report_sha256": "bd0d09660067e0689d9c1bbe3497784a0f2e0bd9f2aea1b0115ea00a05862dde",
+  "verified_input_count": 6,
+  "verified_signals": 257
+}

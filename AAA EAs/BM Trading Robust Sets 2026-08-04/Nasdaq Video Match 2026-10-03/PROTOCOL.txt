@@ -1,0 +1,40 @@
+Frozen Nasdaq video matching study — 2026-10-03
+Research only. No production, client, BAT, website, terminal-chart or live changes.
+Requested lookback: 2017-10-02 through 2026-10-01 (nine years), Exness USTEC.
+First perform an isolated tester history probe. If historical start is later,
+do not fabricate earlier years. Record the first feed date and use 2019-08-01
+as the frozen fallback trade start when the feed begins in July 2019, retaining
+July history as indicator warmup. Stop for a different fallback if not adequate.
+Clock: 09:30-09:35 New York M5 candle, DST-aware; enter after its close.
+Literal video: buy requires bullish candle AND close above M5 EMA12; short
+requires close below EMA12 (bearish body NOT explicitly specified). DI not
+mentioned. Test symmetric bullish-long/bearish-short interpretation separately.
+Initial SL and trailing formula are not disclosed. Hold no fixed TP, overnight
+and weekends. One position at a time; held positions suppress next day's entries.
+Use the previously observed 0.60% price SL from earlier user's QuantLab clip;
+this is an assumption for the present video. Risk 1% equity at entry, $10,000,
+same existing production round-UP broker-lot sizing, so actual risk may exceed
+1% and gaps/costs may exceed planned stop loss. No portfolio/daily cap.
+Model 4, 150ms execution delay, native bid/ask and charged commission/swap.
+Historical real ticks start in 2026; older periods contain generated ticks.
+Fixed six versions, no subsequent parameter tuning:
+CURRENT: exact selected production binary/settings; DI14, no candle-body rule,
+  0.60% price stop, ATR14 M5 trail at 6 ATR from +1R, no TP, hold overnight.
+EMA_ONLY: CURRENT, DI off; isolates DI agreement.
+VIDEO_ATR: EMA_ONLY, bullish body required for long only. Primary literal model;
+  retains current ATR exit as an explicitly assumed exit.
+VIDEO_ATR_DI: VIDEO_ATR plus current DI14 agreement; isolates direction filter.
+SYMMETRIC_ATR: VIDEO_ATR, bearish candle required for shorts too (ours).
+VIDEO_MA: VIDEO_ATR, substitute closed-bar EMA200 M5 trail from +0.5R (ours),
+  ATR trailing off. This was an assumption in the prior video recreation too.
+Windows frozen: longest available (fallback above), last 5y, last 1y, last 3m,
+all ending 2026-10-02 exclusive. Six versions / 24 performance runs, plus smoke
+and parity diagnostics; count all six configurations including baseline.
+Default-off research switches must reproduce the selected production binary
+trade-for-trade on the identical last-year window before candidate testing.
+Report return, net PF, net win rate, native equity DD, daily Sharpe (cash), trades,
+trades/month and weekday, average/max winning/losing streaks, holding times,
+overnight/weekend counts, commission/swap, long/short breakdown, equity graphs.
+All windows are retrospective and previously explored. No untouched holdout,
+Monte Carlo promotion, exact vendor replication, or FTMO pass-rate claim.
+Selection by these results is exploratory only. Do not risk-size to chase 982%.

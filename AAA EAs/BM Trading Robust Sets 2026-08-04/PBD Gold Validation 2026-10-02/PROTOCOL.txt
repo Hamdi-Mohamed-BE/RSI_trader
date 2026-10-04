@@ -1,0 +1,57 @@
+Frozen PBD Gold validation, 2026-10-02; no optimisation or live changes.
+
+Candidate: ONLY XAUUSD COMBINED from PBD Profile Raw 2026-10-02.
+Reuse the exact EA Main.mqh bytes (SHA256 36fc9d9a910c8926c27531696037f14947dc52e7c95eda51e7513560b415f113).
+All profile, shape, signal, stops, targets, clocks, floor-lot risk and exit rules stay unchanged.
+Original incomplete-video / D-extension / CFD tick-volume caveats remain in force.
+$10k, 1% requested BALANCE risk, Exness XAUUSD, native Model4, 150ms delay.
+No entry retuning, volume-window adjustment, filters, risk optimisation or EA deployment.
+
+PREDECLARED TESTS
+1. Fresh last-year parity: 2025-10-02 to 2026-10-02 (exclusive) vs saved original ledger.
+2. Frozen 3y and 5y, respectively 2023-10-02 and 2021-10-02 to 2026-10-02.
+3. Four disjoint older annual windows: Oct2 2021-22, 2022-23, 2023-24, 2024-25.
+   Independent fresh $10k for each, not a clipped combined ledger.
+4. Fresh 2026 real-tick window: Jan1 to Oct2 2026. The already-seen latest6m remains reference.
+5. Native 500ms entry/market-exit delay sensitivity on last year and latest6m, no setting selection.
+   Market-order delay is simulated; this is not guaranteed live slippage or a stop-order delay stress.
+Preserve native real/generated tick quality, skipped data, compile logs, inputs, hashes, deals.
+Real ticks only since Jan2026; older tick-volume profiles still use the broker's M1 bar history,
+but old intrabar execution and historical spread assumptions cannot be independently confirmed.
+No independent vendor or exchange volume-at-price available; data limitation cannot be removed by statistics.
+
+GATES
+Raw historical gate: BOTH 3y/5y positive return, PF >=1.15, >=30 closed trades.
+If either fails, reject historical validation and stop before optimisation, random controls or promotion.
+Diagnostic cost/MC checks listed above may still finish to explain the failure; never select a new version.
+Statistical gate: 10k circular block bootstrap, block5, seed20261002, return p05>0,
+PF p05>1, historical bootstrap profit frequency>=95%, DSR>=95% with 12 original
+asset/module candidates counted, recent-half PF>1, >=2/3 chronological trade thirds profitable.
+These are historic-resampling diagnostics, NOT future profit/pass/payout probabilities.
+Original one-year / six-month samples overlap, selected after inspecting 12 candidates;
+older samples are a historical extension, NOT prospective chronological out-of-sample trading.
+Broader prior study/idea-selection bias is not fully corrected by DSR12.
+
+ADDITIONAL DIAGNOSTICS
+10k risk-unit bootstrap sensitivity blocks1/5/10; circular sample net_profit/requested_risk,
+compound at 1% per trade (ignores changing broker lot floors/eligibility after resampling).
+10k trade-order reshuffles: closed-balance DD and losing streaks only; order cannot improve
+compounded return for fixed returns. Not floating-equity MC or FTMO simulation.
+10k random removal paths keeping90% or80% trades; do not regenerate missed-trade opportunities.
+These are separate missing-fill stress diagnostics, not a newly simulated strategy.
+Measured extra-cost stress: pair exported entry_quote/quoted_risk with initial filled risk.
+Adverse entry slippage USD = max(0, actual_risk - quoted_risk); measure per-lot p95 on
+original last-year 150ms trades, then charge one EXTRA such per-lot cost to each trade.
+Existing broker spread/commission/slippage remain included already. This is an extra observed
+entry-friction shock; no independent future spread/exit-slippage measurement is claimed.
+Also disclose doubling recorded commission as a separate fee stress; no invented fixed USD cost.
+Stress must remain net positive / PF>1; native500ms must remain net positive/PF>1 too.
+
+VALIDATION STATUS
+Failure of raw/statistical/execution gates => NOT VALIDATED / NOT LIVE ELIGIBLE.
+Even if numerical gates pass, control advantage, pristine holdout, true volume data and prospective
+demo are absent. Do NOT label institutional validation or live eligibility.
+Matched no-signal controls are conditional on passing the raw3y/5y gate; until actually run and
+verified they remain a blocked promotion requirement, not an assumed pass.
+No FTMO probabilities computed from incomplete/sampled floating paths.
+All active MT5 accounts, EAs, BATs, website and Git remote left untouched.

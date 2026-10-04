@@ -1,5 +1,5 @@
 #property copyright "Gold News V9"
-#property version   "1.14"
+#property version   "1.15"
 #property strict
 #property description "Consumes the local Gold News V9 API for NFP, CPI, and FOMC."
 
@@ -745,8 +745,9 @@ double RiskSizedLot(
    return lot;
   }
 
-bool OpenPredictedTrade()
+bool OpenPredictedTrade(const int retry=0)
   {
+   if(release_utc<=0 || TimeGMT()>=release_utc || retry>2) return false;
    MqlTick tick;
    if(!TradingChecks(tick))
       return false;
@@ -758,6 +759,15 @@ bool OpenPredictedTrade()
       is_buy ? entry-InpStopDistanceUSD : entry+InpStopDistanceUSD,
       digits
    );
+   // Rebuild from the CURRENT quote each attempt; retain selected distance
+   // unless the broker requires a wider protective stop.
+   double point=SymbolInfoDouble(trade_symbol,SYMBOL_POINT);
+   double quantum=SymbolInfoDouble(trade_symbol,SYMBOL_TRADE_TICK_SIZE);
+   if(quantum<=0) quantum=point;
+   if(quantum<=0) return false;
+   double broker_gap=SymbolInfoInteger(trade_symbol,SYMBOL_TRADE_STOPS_LEVEL)*point+quantum;
+   stop=NormalizeDouble(is_buy ? MathFloor(MathMin(stop,tick.bid-broker_gap)/quantum)*quantum :
+                                 MathCeil(MathMax(stop,tick.ask+broker_gap)/quantum)*quantum,digits);
    double target=0.0;
    if(InpTakeProfitDistanceUSD>0)
       target=NormalizeDouble(
@@ -805,12 +815,30 @@ bool OpenPredictedTrade()
    bool sent=is_buy
       ? trade.Buy(lot,trade_symbol,0.0,stop,target,comment)
       : trade.Sell(lot,trade_symbol,0.0,stop,target,comment);
-   if(!sent)
+   const uint entry_rc=trade.ResultRetcode();
+   const bool accepted=sent && (entry_rc==TRADE_RETCODE_DONE || entry_rc==TRADE_RETCODE_PLACED || entry_rc==TRADE_RETCODE_DONE_PARTIAL);
+   if(!accepted)
      {
+      ulong already_open=0;
+      if(FindOurPosition(already_open))
+        {
+         position_ticket=already_open;state=GNV9_POSITION_OPEN;SaveState();return true;
+        }
       SetStatus(
          "Order rejected: "+IntegerToString((int)trade.ResultRetcode())+
          " "+trade.ResultRetcodeDescription()
       );
+      const bool repairable=entry_rc==TRADE_RETCODE_INVALID_PRICE || entry_rc==TRADE_RETCODE_INVALID_STOPS ||
+         entry_rc==TRADE_RETCODE_REQUOTE || entry_rc==TRADE_RETCODE_PRICE_CHANGED ||
+         entry_rc==TRADE_RETCODE_PRICE_OFF || entry_rc==TRADE_RETCODE_INVALID_FILL;
+      if(repairable && retry<2 && TimeGMT()<release_utc)
+        {
+         state=GNV9_ARMED;SaveState();
+         Print("Gold News V9: definitive price rejection; retrying same direction with a fresh market quote.");
+         return OpenPredictedTrade(retry+1);
+        }
+      // Timeout/connection/error/empty results remain non-retriable: execution
+      // may already have happened. Persist DONE, then reconcile owned exposure.
       state=GNV9_DONE;
       SaveState();
       return false;
@@ -835,6 +863,10 @@ bool OpenPredictedTrade()
       is_buy ? fill-InpStopDistanceUSD : fill+InpStopDistanceUSD,
       digits
    );
+   MqlTick protection_tick;
+   if(SymbolInfoTick(trade_symbol,protection_tick))
+      exact_stop=NormalizeDouble(is_buy ? MathFloor(MathMin(exact_stop,protection_tick.bid-broker_gap)/quantum)*quantum :
+                                           MathCeil(MathMax(exact_stop,protection_tick.ask+broker_gap)/quantum)*quantum,digits);
    double exact_target=0.0;
    if(InpTakeProfitDistanceUSD>0)
       exact_target=NormalizeDouble(

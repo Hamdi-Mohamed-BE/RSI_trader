@@ -1,0 +1,58 @@
+{
+  "variants": {
+    "CURRENT": {
+      "body": 0,
+      "di": true,
+      "trail": "ATR"
+    },
+    "EMA_ONLY": {
+      "body": 0,
+      "di": false,
+      "trail": "ATR"
+    },
+    "VIDEO_ATR": {
+      "body": 1,
+      "di": false,
+      "trail": "ATR"
+    },
+    "VIDEO_ATR_DI": {
+      "body": 1,
+      "di": true,
+      "trail": "ATR"
+    },
+    "SYMMETRIC_ATR": {
+      "body": 2,
+      "di": false,
+      "trail": "ATR"
+    },
+    "VIDEO_MA": {
+      "body": 1,
+      "di": false,
+      "trail": "EMA200"
+    }
+  },
+  "windows": {
+    "available": [
+      "2019.08.01",
+      "2026.10.02"
+    ],
+    "5y": [
+      "2021.10.02",
+      "2026.10.02"
+    ],
+    "1y": [
+      "2025.10.02",
+      "2026.10.02"
+    ],
+    "3m": [
+      "2026.07.02",
+      "2026.10.02"
+    ]
+  },
+  "requested_years": 9,
+  "actual_longest_start": "2019.08.01",
+  "baseline_set_sha256": "24911cd513b21077cf16d13058371d6998a706c7c8d090a8761fb80918db896a",
+  "baseline_ex5_sha256": "fe9f391db5af2bc3cb0b36e52ae5c0775786c8cb8353abe8b8b7542a2bc72dca",
+  "protocol_sha256": "734a1db1b553fd8b77900605a935a325ab17028883df43f17053be979844b961",
+  "tested_configurations": 6
+}

@@ -1,0 +1,9 @@
+After the raw bar-level analysis, added an execution verification of the already
+frozen primary 11:00-12:00 NY rule (no parameter selection or optimisation).
+Native MT5 Model 4, 150 ms execution delay, fixed one USTEC lot, $10,000 deposit,
+same six predeclared windows. No SL or TP; close at first tick at/after noon.
+No broker-current spread substitution in the raw bar screen: many recent
+recorded M1 spreads are zero. Check actual native quote/fill differences.
+This does not turn the all-hour random-control screen into tick-level inference.
+Headline primary metrics will be native; all-hour comparisons remain labelled
+bar approximation. Swap/commission as charged by native tester, if any.

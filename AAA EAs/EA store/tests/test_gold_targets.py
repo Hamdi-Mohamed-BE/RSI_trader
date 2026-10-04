@@ -17,7 +17,7 @@ def values(path): return dict(l.split('=',1) for l in read(path).splitlines() if
 def test_normal_catalog_selects_target_and_research_status(slug,target):
     p=get_product(slug)
     assert float(values(PACKAGE_ROOT/p.set_source)['InpRewardRisk'])==target
-    assert p.evidence.status=='Research evidence'
+    assert p.evidence.status==('Retrospective research evidence' if slug=='xau-trend-progression' else 'Research evidence')
     assert not p.recommended_dynamic_mode
     if slug=='xau-slow-trend':
         assert float(values(PACKAGE_ROOT/p.dynamic_set_source)['InpRewardRisk'])==.5
@@ -29,7 +29,7 @@ def test_normal_catalog_selects_target_and_research_status(slug,target):
     ('xau-slow-trend','dynamic',231,1090.14,1.106),
 ])
 def test_exact_native_ledgers_and_dates(slug,mode,trades,net,pf):
-    p,rows=verified_payload(get_product(slug),mode,'1y',date(2025,10,1),date(2026,10,2))
+    p,rows=verified_payload(get_product(slug),mode,'1y',date(2025,10,1),date(2026,10,2),archived=slug=='xau-trend-progression')
     assert len(rows)==p['stats']['trades']==trades
     assert sum(r['net_profit'] for r in rows)==pytest.approx(net,abs=.011)
     assert p['stats']['profit_factor']==pytest.approx(pf,abs=.001)
@@ -37,7 +37,7 @@ def test_exact_native_ledgers_and_dates(slug,mode,trades,net,pf):
     assert 'not untouched validation' in p['notice']
     if mode=='dynamic': assert 'NOT guarded' in p['notice']
     with pytest.raises(RuntimeError,match='independent fixed windows'):
-        verified_payload(get_product(slug),mode,'1y',date(2025,9,1),date(2026,10,2))
+        verified_payload(get_product(slug),mode,'1y',date(2025,9,1),date(2026,10,2),archived=slug=='xau-trend-progression')
 
 def test_source_only_changes_reward_default():
     release=json.loads(read(ROOT/'SELECTION.json'))

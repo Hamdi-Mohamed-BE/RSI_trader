@@ -1,0 +1,37 @@
+2026-10-02. Two user-authorised replications, not deployed strategies.
+
+IVB: recreate the public EasyLanguage code in the Matfinog protocol, not the
+contradictory second report. Source:
+https://www.scribd.com/document/1043229440/Fabio-IVB-Model-The-Institutional-Protocol
+M5 bar-close timestamps; NY08:30-09:00 range; strict close above range high;
+bar UpTicks-DownTicks>=200; cumulative filter OFF (optional threshold500 only
+when explicitly enabled). One long per date, one NQ contract, SL range low,
+TP entry + (entry-SL), exit at14:00 NY. No filters/optimisation invented.
+UpTicks/DownTicks depend on chart Trade Vol versus Tick Count setting. The
+original report does not establish this; prefer native M5 exports with chart
+settings supplied. OHLCV alone cannot supply either. No CFD signed-candle proxy.
+Archive literal bar-close execution and causal next-open sensitivity separately.
+Literal code permits entry at14:00 after its EOD exit block: flag separately.
+Raw NQ tick downloads may incur charges; metadata/cost checks only until budget approved.
+Desired NQ window2021-10-02 through2026-10-01, USD100k reference for fixed1contract;
+not the earlier USD10k/1% sizing policy. True futures costs and rollover must be known.
+
+QQQ/TQQQ: same rule independently per fund; hold while completed daily close
+is above its own200-trading-day simple average. Flat below; equality retains
+prior state. Full USD10k cash position, fractional units, no additional leverage,
+no shorts/stops/profit target. Zero cash interest. Signals executed next session
+open. Same-close execution is separately labelled optimistic timing sensitivity.
+Adjusted close and open=raw split-adjusted open*(adj_close/close), providing a
+dividend-adjusted synthetic total-return series. Baseline no extra fees; a
+separate5bp per-side cost scenario is illustrative, not measured broker costs.
+Never apply both adjusted close and separate dividends/splits; no double adjustment.
+Window2010-10-02 through2026-10-01 inclusive; exact16calendar-year requested
+span. Require200 genuinely available daily bars: no pre-inception TQQQ filling.
+Also compare common eligible start after both SMAs exist; and last1/3/5years.
+Latest date end-exclusive2026-10-02. Warmup fetch2009-01-01 onwards; drop wholly
+missing rows without forward fill. Reject partial OHLC or invalid OHLC/splits.
+Historical simulation only. Show marked-to-market equity, total return, CAGR,
+max close-equity DD, closed-trade PF/WR/streaks and daily Sharpe sqrt252;
+separately disclose unclosed final holding. No forced final trade masquerading
+as strategy signal; buy-and-hold benchmark per fund. Bootstrap20k daily blocks20.
+No parameter search. No live terminal/EA/BAT/website/account changes or Git push.

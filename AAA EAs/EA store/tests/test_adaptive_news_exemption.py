@@ -79,6 +79,7 @@ def test_shared_installer_exempts_exactly_five_news_even_with_stale_true_input()
     script = r'''
 $ErrorActionPreference = 'Stop'
 $PackageRoot = $env:CALYX_TEST_PACKAGE_ROOT
+. (Join-Path $PackageRoot '_Auto Deploy\News-Launcher-Policy.ps1')
 $tokens = $null; $parseErrors = $null
 $ast = [Management.Automation.Language.Parser]::ParseFile((Join-Path $PackageRoot '_Auto Deploy\Install-BMTradingPortfolio.ps1'), [ref]$tokens, [ref]$parseErrors)
 if ($parseErrors.Count) { throw 'Installer syntax error' }
@@ -109,7 +110,7 @@ foreach ($UseAdaptiveProfile in @($true,$false)) {
 Write-Output 'PASS: 35 EAs, exactly 5 news exemptions, both profile paths, stale true inputs overridden'
 '''
     import os
-    result = subprocess.run(['powershell.exe', '-NoProfile', '-NonInteractive', '-Command', script],
+    result = subprocess.run(['powershell.exe', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', script],
                             env={**os.environ, 'CALYX_TEST_PACKAGE_ROOT': str(PACKAGE_ROOT)},
                             capture_output=True, text=True, timeout=30)
     assert result.returncode == 0, result.stdout + result.stderr

@@ -1,0 +1,7146 @@
+{
+  "label": "VWAP raw USTEC-5y",
+  "verdict": "REJECT",
+  "metadata": {
+    "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\reports\\tier-vwap-raw-20261002\\vwap-USTEC-5y-01679544.htm",
+    "initial_balance": 10000.0,
+    "reported_net_profit": -6434.35,
+    "reported_profit_factor": 0.84,
+    "reported_win_rate_pct": 46.38,
+    "reported_max_drawdown_pct": 67.81,
+    "reported_trades": 1173,
+    "reported_sharpe": -5.0,
+    "reported_recovery": -0.93,
+    "history_quality": "15% real ticks"
+  },
+  "metrics": {
+    "trades": 1173,
+    "wins": 544,
+    "losses": 629,
+    "win_rate_pct": 46.3768115942029,
+    "win_rate_wilson_95_pct": [
+      43.539460242538894,
+      49.23781664867652
+    ],
+    "net_profit": -6434.35,
+    "return_pct": -64.3435,
+    "profit_factor": 0.834903046096339,
+    "expected_payoff": -5.48537936913896,
+    "max_win_streak": 7,
+    "max_loss_streak": 10,
+    "daily_expected_shortfall_95_pct": 1.1696278541112517,
+    "recent_half_profit_factor": 0.8394120095349805,
+    "profitable_thirds": 0,
+    "tested_configurations": 2,
+    "annualized_sharpe": -1.2896578293677616,
+    "probabilistic_sharpe_pct": 0.20452653218233086,
+    "deflated_sharpe_pct": 0.03483811681886384,
+    "multiple_test_benchmark_sharpe": 0.23346724433322114,
+    "daily_skewness": 0.08137815293682438,
+    "daily_kurtosis": 1.2094917008400776
+  },
+  "bootstrap": {
+    "paths": 10000,
+    "block_length": 5,
+    "probability_profit_pct": 0.16,
+    "return_p05_pct": -79.57073207189833,
+    "return_p50_pct": -64.41595057770563,
+    "return_p95_pct": -37.512732056304124,
+    "max_drawdown_p50_pct": 67.79837894660166,
+    "max_drawdown_p95_pct": 80.92073958379187,
+    "profit_factor_p05": 0.7537066791503881,
+    "profit_factor_p50": 0.8354270434643922,
+    "profit_factor_p95": 0.9281801205153464,
+    "closed_pnl_daily_limit_breach_pct": 0.0,
+    "closed_pnl_total_limit_breach_pct": 99.96000000000001,
+    "breach_scope": "closed-trade P&L proxy; floating drawdown is not recoverable from an MT5 summary report"
+  },
+  "subperiods": [
+    {
+      "part": 1,
+      "start": "2021-10-04T19:30:00",
+      "end": "2023-06-12T14:05:20",
+      "trades": 391,
+      "net_profit": -2663.9,
+      "profit_factor": 0.853481807741555,
+      "win_rate_pct": 46.80306905370844
+    },
+    {
+      "part": 2,
+      "start": "2023-06-13T14:53:33",
+      "end": "2025-02-10T20:30:00",
+      "trades": 391,
+      "net_profit": -2702.54,
+      "profit_factor": 0.7885076648696279,
+      "win_rate_pct": 45.26854219948849
+    },
+    {
+      "part": 3,
+      "start": "2025-02-11T16:57:13",
+      "end": "2026-10-01T14:11:51",
+      "trades": 391,
+      "net_profit": -1067.91,
+      "profit_factor": 0.866733970851215,
+      "win_rate_pct": 47.05882352941176
+    }
+  ],
+  "cost_stress": {
+    "status": "not_run",
+    "reason": "supply --extra-cost-per-trade from broker evidence"
+  },
+  "gates": {
+    "minimum_30_closed_trades": true,
+    "positive_locked_return": false,
+    "profit_factor_above_1": false,
+    "bootstrap_return_p05_positive": false,
+    "bootstrap_pf_p05_above_1": false,
+    "deflated_sharpe_95pct": false,
+    "recent_half_pf_above_1": false,
+    "two_of_three_subperiods_profitable": false,
+    "closed_pnl_total_breach_below_5pct": false,
+    "cost_stress_supplied": false,
+    "cost_stress_pf_above_1": false
+  },
+  "trades": [
+    {
+      "closed_at": "2021-10-04T19:30:00",
+      "pnl": -40.85,
+      "commission": -0.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-05T14:03:36",
+      "pnl": -102.31,
+      "commission": -2.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-06T14:14:15",
+      "pnl": 97.89,
+      "commission": -0.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-08T15:50:43",
+      "pnl": -101.86999999999999,
+      "commission": -1.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-11T19:30:00",
+      "pnl": -40.0,
+      "commission": -0.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-12T15:08:38",
+      "pnl": 98.99000000000001,
+      "commission": -1.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-13T14:11:19",
+      "pnl": -102.81,
+      "commission": -3.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-14T15:58:30",
+      "pnl": -99.81,
+      "commission": -1.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-15T14:02:34",
+      "pnl": 97.45,
+      "commission": -5.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-19T16:56:46",
+      "pnl": -100.78,
+      "commission": -2.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-20T14:00:25",
+      "pnl": -109.64999999999999,
+      "commission": -6.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-22T14:38:22",
+      "pnl": 88.79,
+      "commission": -7.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-25T18:21:31",
+      "pnl": -98.4,
+      "commission": -1.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-26T15:33:27",
+      "pnl": 95.22999999999999,
+      "commission": -1.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-27T17:02:38",
+      "pnl": -98.03,
+      "commission": -1.42,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-28T14:15:33",
+      "pnl": 85.2,
+      "commission": -10.77,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-10-29T15:19:04",
+      "pnl": -98.86,
+      "commission": -1.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-01T17:42:39",
+      "pnl": 94.56,
+      "commission": -1.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-03T14:16:15",
+      "pnl": 92.65,
+      "commission": -3.91,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-05T16:44:19",
+      "pnl": -102.19999999999999,
+      "commission": -4.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-08T15:56:14",
+      "pnl": 95.59,
+      "commission": -2.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-10T17:43:29",
+      "pnl": 98.09,
+      "commission": -0.99,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-11T15:20:34",
+      "pnl": -110.57000000000001,
+      "commission": -9.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-15T15:10:15",
+      "pnl": -101.24,
+      "commission": -3.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-16T20:30:00",
+      "pnl": -12.299999999999999,
+      "commission": -1.02,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-17T15:39:34",
+      "pnl": -100.39,
+      "commission": -3.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-18T16:12:32",
+      "pnl": 93.73,
+      "commission": -1.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-19T18:28:18",
+      "pnl": 96.2,
+      "commission": -1.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-22T16:27:41",
+      "pnl": -98.61,
+      "commission": -1.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-23T15:38:36",
+      "pnl": -97.5,
+      "commission": -0.99,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-24T15:13:34",
+      "pnl": 93.53999999999999,
+      "commission": -2.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-26T16:11:21",
+      "pnl": -97.78,
+      "commission": -0.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-29T15:10:41",
+      "pnl": -98.32,
+      "commission": -2.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-11-30T15:36:33",
+      "pnl": 92.92,
+      "commission": -1.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-01T15:21:37",
+      "pnl": 95.59,
+      "commission": -2.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-02T16:07:27",
+      "pnl": 94.73,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-06T15:52:37",
+      "pnl": 96.36,
+      "commission": -0.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-08T15:56:39",
+      "pnl": -104.71000000000001,
+      "commission": -5.2,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-09T15:07:27",
+      "pnl": -101.47,
+      "commission": -2.45,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-10T16:05:39",
+      "pnl": -97.06,
+      "commission": -1.22,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-13T15:00:37",
+      "pnl": -100.69,
+      "commission": -3.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-14T15:25:29",
+      "pnl": 93.56,
+      "commission": -1.07,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-15T15:09:00",
+      "pnl": -99.22,
+      "commission": -4.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-16T16:12:29",
+      "pnl": -93.97,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-17T15:49:36",
+      "pnl": -93.17999999999999,
+      "commission": -0.82,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-20T15:03:38",
+      "pnl": 92.07,
+      "commission": -1.67,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-21T16:05:25",
+      "pnl": 92.32,
+      "commission": -0.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-22T16:13:25",
+      "pnl": -95.11,
+      "commission": -1.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-23T15:12:38",
+      "pnl": -99.96000000000001,
+      "commission": -3.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-27T18:24:37",
+      "pnl": -93.22,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-28T15:07:14",
+      "pnl": 89.57000000000001,
+      "commission": -3.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-29T15:05:57",
+      "pnl": -96.13,
+      "commission": -3.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2021-12-31T15:18:37",
+      "pnl": 90.08,
+      "commission": -1.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-03T20:30:00",
+      "pnl": 0.9199999999999999,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-04T15:16:35",
+      "pnl": -94.6,
+      "commission": -1.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-05T15:14:39",
+      "pnl": 88.43,
+      "commission": -2.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-06T15:25:16",
+      "pnl": 91.22,
+      "commission": -0.47,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-07T20:30:00",
+      "pnl": 37.760000000000005,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-10T15:13:04",
+      "pnl": -94.78,
+      "commission": -1.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-11T15:40:35",
+      "pnl": 91.28999999999999,
+      "commission": -1.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-12T15:31:40",
+      "pnl": 92.25,
+      "commission": -1.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-13T15:44:37",
+      "pnl": -95.03,
+      "commission": -0.99,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-14T16:32:25",
+      "pnl": 92.54,
+      "commission": -0.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-17T17:51:29",
+      "pnl": -100.08000000000001,
+      "commission": -3.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-18T15:54:53",
+      "pnl": 92.07,
+      "commission": -0.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-19T17:26:39",
+      "pnl": 93.96,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-20T16:43:57",
+      "pnl": 94.16,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-21T15:31:05",
+      "pnl": 95.78,
+      "commission": -0.7,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-24T15:19:26",
+      "pnl": -97.69,
+      "commission": -0.92,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-25T18:25:41",
+      "pnl": 94.8,
+      "commission": -0.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-26T15:15:29",
+      "pnl": 96.39,
+      "commission": -1.02,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-27T16:00:37",
+      "pnl": 97.42,
+      "commission": -0.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-01-28T15:33:27",
+      "pnl": 97.77,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-01T15:21:38",
+      "pnl": 98.25999999999999,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-02T15:35:27",
+      "pnl": -104.64,
+      "commission": -1.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-03T15:05:03",
+      "pnl": -112.7,
+      "commission": -7.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-04T20:30:00",
+      "pnl": -61.56,
+      "commission": -0.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-07T16:17:57",
+      "pnl": -100.58,
+      "commission": -1.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-08T15:17:29",
+      "pnl": 97.6,
+      "commission": -1.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-09T15:02:25",
+      "pnl": 96.42999999999999,
+      "commission": -2.98,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-10T20:30:00",
+      "pnl": -59.400000000000006,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-11T15:06:24",
+      "pnl": 97.60000000000001,
+      "commission": -0.99,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-14T15:01:20",
+      "pnl": 96.58999999999999,
+      "commission": -2.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-16T18:23:22",
+      "pnl": 98.36000000000001,
+      "commission": -2.07,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-17T18:21:31",
+      "pnl": -103.25,
+      "commission": -1.02,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-18T16:03:19",
+      "pnl": -102.63,
+      "commission": -1.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-21T16:19:36",
+      "pnl": -103.80000000000001,
+      "commission": -2.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-22T18:45:27",
+      "pnl": -98.07,
+      "commission": -0.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-23T15:25:39",
+      "pnl": -98.66,
+      "commission": -0.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-24T16:18:40",
+      "pnl": -96.28999999999999,
+      "commission": -0.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-25T15:08:36",
+      "pnl": 94.21,
+      "commission": -0.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-02-28T15:05:02",
+      "pnl": -105.11,
+      "commission": -7.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-01T15:15:40",
+      "pnl": 93.54,
+      "commission": -3.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-02T15:29:27",
+      "pnl": 95.26,
+      "commission": -0.91,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-03T15:15:35",
+      "pnl": -98.34,
+      "commission": -1.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-08T15:19:38",
+      "pnl": 94.96,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-09T15:50:38",
+      "pnl": -99.3,
+      "commission": -1.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-10T15:25:40",
+      "pnl": -101.99,
+      "commission": -4.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-11T15:00:53",
+      "pnl": -96.94,
+      "commission": -1.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-14T14:33:42",
+      "pnl": 92.36,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-15T14:31:24",
+      "pnl": -96.28999999999999,
+      "commission": -0.91,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-16T18:54:27",
+      "pnl": 93.39999999999999,
+      "commission": -0.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-17T19:30:00",
+      "pnl": -6.4,
+      "commission": -0.57,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-18T18:57:04",
+      "pnl": -94.95,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-21T18:46:31",
+      "pnl": 92.71000000000001,
+      "commission": -0.47,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-22T15:15:35",
+      "pnl": -94.54,
+      "commission": -0.62,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-23T14:14:44",
+      "pnl": -96.12,
+      "commission": -1.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-24T14:10:36",
+      "pnl": 90.72,
+      "commission": -2.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-25T14:02:42",
+      "pnl": -97.57,
+      "commission": -2.6,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-28T15:50:14",
+      "pnl": -93.17,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-29T15:26:28",
+      "pnl": 90.74,
+      "commission": -0.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-30T14:05:02",
+      "pnl": -108.71000000000001,
+      "commission": -11.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-03-31T16:03:34",
+      "pnl": 89.67999999999999,
+      "commission": -1.42,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-01T16:00:52",
+      "pnl": -93.42,
+      "commission": -1.22,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-05T14:01:05",
+      "pnl": -99.86,
+      "commission": -3.0,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-06T18:32:26",
+      "pnl": 90.53,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-07T14:08:38",
+      "pnl": 89.02999999999999,
+      "commission": -2.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-08T17:43:11",
+      "pnl": 91.66,
+      "commission": -0.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-11T14:27:13",
+      "pnl": -95.05000000000001,
+      "commission": -1.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-12T15:30:35",
+      "pnl": 91.82,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-13T18:50:13",
+      "pnl": -94.42,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-18T14:00:14",
+      "pnl": -98.74000000000001,
+      "commission": -4.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-19T14:39:23",
+      "pnl": -91.37,
+      "commission": -0.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-20T17:13:36",
+      "pnl": 88.98,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-21T14:20:37",
+      "pnl": -92.23,
+      "commission": -0.97,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-22T18:55:25",
+      "pnl": -90.42999999999999,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-25T15:01:40",
+      "pnl": 88.67999999999999,
+      "commission": -0.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-26T15:03:35",
+      "pnl": -90.34,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-27T14:48:41",
+      "pnl": 89.05,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-28T19:30:00",
+      "pnl": -32.48,
+      "commission": -0.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-04-29T14:16:05",
+      "pnl": 89.27,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-02T15:03:29",
+      "pnl": 90.77,
+      "commission": -0.55,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-03T14:11:41",
+      "pnl": -96.34,
+      "commission": -3.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-04T16:23:03",
+      "pnl": 89.74,
+      "commission": -0.62,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-05T14:05:00",
+      "pnl": -92.58999999999999,
+      "commission": -0.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-06T15:58:43",
+      "pnl": 89.5,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-09T14:07:54",
+      "pnl": -93.53999999999999,
+      "commission": -1.57,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-10T14:50:12",
+      "pnl": -90.73,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-11T17:05:18",
+      "pnl": -89.47000000000001,
+      "commission": -0.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-12T14:24:38",
+      "pnl": -89.97,
+      "commission": -0.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-16T14:05:38",
+      "pnl": 87.22,
+      "commission": -2.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-17T14:04:27",
+      "pnl": 88.41,
+      "commission": -1.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-18T14:05:29",
+      "pnl": 88.28,
+      "commission": -1.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-19T16:41:14",
+      "pnl": 90.22999999999999,
+      "commission": -0.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-20T14:05:28",
+      "pnl": -96.47,
+      "commission": -5.07,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-23T14:17:38",
+      "pnl": 90.22,
+      "commission": -0.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-24T14:14:26",
+      "pnl": -92.17999999999999,
+      "commission": -0.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-25T14:30:01",
+      "pnl": -92.73,
+      "commission": -1.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-27T14:22:39",
+      "pnl": -91.35,
+      "commission": -1.22,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-30T14:05:38",
+      "pnl": -100.77,
+      "commission": -10.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-05-31T19:30:00",
+      "pnl": -9.86,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-01T14:00:28",
+      "pnl": 86.96000000000001,
+      "commission": -2.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-02T14:21:39",
+      "pnl": 87.59,
+      "commission": -1.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-03T14:05:30",
+      "pnl": 90.27,
+      "commission": -3.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-06T15:09:36",
+      "pnl": 90.13,
+      "commission": -1.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-07T19:30:00",
+      "pnl": -8.14,
+      "commission": -0.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-08T16:33:39",
+      "pnl": -92.37,
+      "commission": -1.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-09T14:52:02",
+      "pnl": 88.83,
+      "commission": -1.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-10T14:01:15",
+      "pnl": -92.14,
+      "commission": -1.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-13T15:10:39",
+      "pnl": -90.37,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-14T17:43:19",
+      "pnl": 88.6,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-15T14:30:39",
+      "pnl": 88.41,
+      "commission": -1.62,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-16T14:41:00",
+      "pnl": -91.85000000000001,
+      "commission": -1.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-17T14:33:42",
+      "pnl": -91.31,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-20T14:01:24",
+      "pnl": -95.83,
+      "commission": -6.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-22T14:17:39",
+      "pnl": -89.01,
+      "commission": -0.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-23T14:10:38",
+      "pnl": -93.74,
+      "commission": -4.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-24T19:30:00",
+      "pnl": -20.919999999999998,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-28T14:03:15",
+      "pnl": -88.3,
+      "commission": -2.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-29T14:17:13",
+      "pnl": 84.2,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-06-30T16:26:36",
+      "pnl": -86.52000000000001,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-01T19:30:00",
+      "pnl": -18.44,
+      "commission": -0.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-04T14:05:18",
+      "pnl": -111.78,
+      "commission": -19.82,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-05T14:27:38",
+      "pnl": -85.99000000000001,
+      "commission": -1.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-06T16:13:59",
+      "pnl": 81.5,
+      "commission": -1.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-08T16:40:12",
+      "pnl": 82.68,
+      "commission": -0.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-11T18:50:36",
+      "pnl": 83.9,
+      "commission": -0.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-13T14:43:39",
+      "pnl": -86.4,
+      "commission": -0.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-14T15:41:36",
+      "pnl": -86.35,
+      "commission": -0.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-15T16:08:41",
+      "pnl": 83.0,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-18T14:57:24",
+      "pnl": 82.47000000000001,
+      "commission": -2.07,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-19T14:06:02",
+      "pnl": 84.12,
+      "commission": -1.47,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-20T19:30:00",
+      "pnl": -41.349999999999994,
+      "commission": -0.55,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-21T14:20:20",
+      "pnl": -120.06,
+      "commission": -14.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-22T14:54:37",
+      "pnl": 85.13,
+      "commission": -1.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-25T14:15:17",
+      "pnl": -89.81,
+      "commission": -2.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-26T14:24:37",
+      "pnl": -86.64999999999999,
+      "commission": -2.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-28T19:30:00",
+      "pnl": -70.64,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-07-29T19:30:00",
+      "pnl": -40.18,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-01T17:02:27",
+      "pnl": 81.92,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-02T14:20:27",
+      "pnl": 80.49000000000001,
+      "commission": -3.02,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-03T14:05:28",
+      "pnl": -85.89999999999999,
+      "commission": -1.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-04T14:30:38",
+      "pnl": -86.10000000000001,
+      "commission": -1.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-05T17:00:27",
+      "pnl": 81.58,
+      "commission": -0.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-08T16:17:57",
+      "pnl": -83.96,
+      "commission": -0.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-09T14:50:03",
+      "pnl": 81.21000000000001,
+      "commission": -1.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-10T14:19:40",
+      "pnl": -86.51,
+      "commission": -2.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-11T14:41:35",
+      "pnl": 81.82000000000001,
+      "commission": -1.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-15T14:11:36",
+      "pnl": 82.33,
+      "commission": -1.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-16T14:30:29",
+      "pnl": -87.35000000000001,
+      "commission": -1.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-17T14:35:38",
+      "pnl": -86.71,
+      "commission": -1.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-18T14:06:26",
+      "pnl": 81.84,
+      "commission": -4.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-22T14:34:38",
+      "pnl": -85.35,
+      "commission": -1.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-23T17:29:16",
+      "pnl": 81.22,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-24T14:00:30",
+      "pnl": -87.28,
+      "commission": -3.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-25T15:16:18",
+      "pnl": 81.4,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-26T18:08:34",
+      "pnl": -83.16999999999999,
+      "commission": -0.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-29T14:33:13",
+      "pnl": 81.11,
+      "commission": -1.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-30T14:05:42",
+      "pnl": -85.92999999999999,
+      "commission": -1.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-08-31T14:23:37",
+      "pnl": -84.36999999999999,
+      "commission": -2.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-01T14:13:39",
+      "pnl": -85.33,
+      "commission": -1.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-02T14:10:51",
+      "pnl": 79.11000000000001,
+      "commission": -1.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-05T15:29:27",
+      "pnl": 79.85000000000001,
+      "commission": -2.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-08T16:06:18",
+      "pnl": 81.12,
+      "commission": -0.6,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-09T19:30:00",
+      "pnl": -43.25,
+      "commission": -0.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-12T16:43:38",
+      "pnl": 81.12,
+      "commission": -1.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-13T14:39:42",
+      "pnl": -83.91000000000001,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-14T14:35:38",
+      "pnl": 78.71000000000001,
+      "commission": -5.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-15T14:51:04",
+      "pnl": -84.22,
+      "commission": -0.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-16T14:02:37",
+      "pnl": 81.26,
+      "commission": -1.91,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-19T15:29:26",
+      "pnl": 82.0,
+      "commission": -0.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-20T14:11:28",
+      "pnl": 82.35,
+      "commission": -2.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-22T16:24:38",
+      "pnl": 85.1,
+      "commission": -0.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-23T14:57:03",
+      "pnl": 86.02,
+      "commission": -0.97,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-26T14:16:35",
+      "pnl": -89.55000000000001,
+      "commission": -1.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-27T14:46:36",
+      "pnl": 85.10000000000001,
+      "commission": -0.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-29T19:30:00",
+      "pnl": 27.43,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-09-30T14:02:16",
+      "pnl": 85.10000000000001,
+      "commission": -1.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-03T17:22:04",
+      "pnl": -88.25,
+      "commission": -0.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-04T17:56:34",
+      "pnl": 85.47,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-05T17:07:02",
+      "pnl": -88.46000000000001,
+      "commission": -0.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-06T15:21:35",
+      "pnl": 86.01,
+      "commission": -0.72,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-07T16:24:19",
+      "pnl": -88.16,
+      "commission": -0.8,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-10T17:00:32",
+      "pnl": -87.61,
+      "commission": -0.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-11T14:39:29",
+      "pnl": 84.60000000000001,
+      "commission": -0.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-12T14:27:38",
+      "pnl": 86.27,
+      "commission": -1.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-13T15:09:29",
+      "pnl": -88.38,
+      "commission": -0.55,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-14T14:14:28",
+      "pnl": -87.41,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-17T14:25:38",
+      "pnl": 83.97,
+      "commission": -1.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-18T14:30:37",
+      "pnl": -87.85,
+      "commission": -1.02,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-19T14:55:41",
+      "pnl": 85.1,
+      "commission": -0.75,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-20T16:21:35",
+      "pnl": 85.5,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-21T14:35:38",
+      "pnl": 86.55,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-24T14:21:01",
+      "pnl": -89.66,
+      "commission": -0.99,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-26T14:07:39",
+      "pnl": -91.68,
+      "commission": -2.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-27T19:30:00",
+      "pnl": -18.67,
+      "commission": -0.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-28T14:46:39",
+      "pnl": -86.96000000000001,
+      "commission": -0.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-10-31T16:42:26",
+      "pnl": 85.04,
+      "commission": -0.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-02T14:05:37",
+      "pnl": 74.8,
+      "commission": -13.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-03T14:14:27",
+      "pnl": 86.63,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-04T19:09:29",
+      "pnl": 87.38,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-07T15:23:35",
+      "pnl": 87.11,
+      "commission": -2.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-08T15:02:02",
+      "pnl": -93.48,
+      "commission": -3.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-09T15:00:41",
+      "pnl": 89.04,
+      "commission": -3.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-10T15:40:00",
+      "pnl": 89.16,
+      "commission": -0.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-11T15:11:26",
+      "pnl": -93.97,
+      "commission": -2.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-14T15:10:14",
+      "pnl": -91.85000000000001,
+      "commission": -2.01,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-15T16:02:37",
+      "pnl": -90.39,
+      "commission": -1.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-16T16:27:30",
+      "pnl": 87.06,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-17T16:09:35",
+      "pnl": 87.35,
+      "commission": -1.2,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-18T17:15:26",
+      "pnl": -91.44,
+      "commission": -1.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-21T15:22:04",
+      "pnl": -92.11,
+      "commission": -2.0,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-22T18:34:02",
+      "pnl": -88.80999999999999,
+      "commission": -0.99,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-23T19:02:28",
+      "pnl": 86.48,
+      "commission": -0.99,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-24T15:58:15",
+      "pnl": -100.32,
+      "commission": -9.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-25T15:17:50",
+      "pnl": -91.27,
+      "commission": -3.47,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-28T18:45:02",
+      "pnl": -87.22,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-11-29T15:00:29",
+      "pnl": 80.92999999999999,
+      "commission": -4.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-02T16:00:57",
+      "pnl": 84.0,
+      "commission": -1.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-05T15:09:40",
+      "pnl": -89.32000000000001,
+      "commission": -1.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-08T18:40:26",
+      "pnl": -86.26,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-09T15:20:53",
+      "pnl": 83.29,
+      "commission": -2.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-12T16:03:57",
+      "pnl": 83.19,
+      "commission": -2.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-13T15:17:00",
+      "pnl": -88.7,
+      "commission": -2.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-14T18:18:39",
+      "pnl": 84.23,
+      "commission": -1.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-15T15:31:34",
+      "pnl": -87.21,
+      "commission": -1.0,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-16T15:36:43",
+      "pnl": -86.30999999999999,
+      "commission": -0.99,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-19T19:01:04",
+      "pnl": -85.48,
+      "commission": -1.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-20T15:32:12",
+      "pnl": -84.58,
+      "commission": -0.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-21T20:30:00",
+      "pnl": 11.280000000000001,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-22T15:30:40",
+      "pnl": -84.03,
+      "commission": -0.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-23T15:38:38",
+      "pnl": -82.84,
+      "commission": -0.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-28T15:51:29",
+      "pnl": -83.1,
+      "commission": -1.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2022-12-30T16:20:43",
+      "pnl": 79.63,
+      "commission": -1.47,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-04T15:46:14",
+      "pnl": 80.45,
+      "commission": -0.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-05T15:23:29",
+      "pnl": 80.63,
+      "commission": -1.7,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-06T19:20:37",
+      "pnl": -82.91,
+      "commission": -0.45,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-10T15:29:37",
+      "pnl": 80.49,
+      "commission": -1.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-11T15:35:39",
+      "pnl": 81.24,
+      "commission": -1.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-12T20:30:00",
+      "pnl": 23.14,
+      "commission": -0.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-13T15:00:19",
+      "pnl": -92.28999999999999,
+      "commission": -7.77,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-16T15:37:21",
+      "pnl": 76.56,
+      "commission": -6.42,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-17T15:00:26",
+      "pnl": -86.91,
+      "commission": -2.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-18T15:01:52",
+      "pnl": -85.73,
+      "commission": -2.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-19T18:21:37",
+      "pnl": 81.21,
+      "commission": -1.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-20T18:37:18",
+      "pnl": -84.28,
+      "commission": -0.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-24T17:02:14",
+      "pnl": 80.8,
+      "commission": -1.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-25T15:37:37",
+      "pnl": -85.77,
+      "commission": -1.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-26T15:16:55",
+      "pnl": 80.49,
+      "commission": -1.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-27T15:49:16",
+      "pnl": 82.23,
+      "commission": -0.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-30T15:36:14",
+      "pnl": -85.31,
+      "commission": -1.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-01-31T15:06:26",
+      "pnl": 81.27,
+      "commission": -2.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-01T15:00:37",
+      "pnl": 84.02999999999999,
+      "commission": -2.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-02T15:17:29",
+      "pnl": 84.65,
+      "commission": -2.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-03T16:37:00",
+      "pnl": -96.0,
+      "commission": -0.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-06T15:15:26",
+      "pnl": 84.17,
+      "commission": -1.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-07T15:10:04",
+      "pnl": -90.00999999999999,
+      "commission": -2.91,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-08T15:00:19",
+      "pnl": -90.78,
+      "commission": -5.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-09T16:03:24",
+      "pnl": -84.75999999999999,
+      "commission": -1.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-10T15:10:26",
+      "pnl": 83.42,
+      "commission": -1.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-13T15:49:36",
+      "pnl": -85.47,
+      "commission": -1.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-14T15:37:27",
+      "pnl": 82.08999999999999,
+      "commission": -0.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-15T15:00:37",
+      "pnl": 82.27,
+      "commission": -2.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-16T15:00:35",
+      "pnl": 79.67,
+      "commission": -6.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-17T17:11:38",
+      "pnl": 83.5,
+      "commission": -1.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-20T16:19:05",
+      "pnl": 78.24000000000001,
+      "commission": -7.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-21T15:11:22",
+      "pnl": -89.91,
+      "commission": -2.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-22T19:12:39",
+      "pnl": 85.07,
+      "commission": -1.12,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-23T15:31:24",
+      "pnl": -89.64,
+      "commission": -1.85,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-24T15:54:35",
+      "pnl": -87.6,
+      "commission": -1.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-27T15:36:05",
+      "pnl": 83.09,
+      "commission": -1.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-02-28T15:16:36",
+      "pnl": 84.11,
+      "commission": -1.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-01T15:41:18",
+      "pnl": 85.74,
+      "commission": -1.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-02T15:21:15",
+      "pnl": 85.25,
+      "commission": -2.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-03T17:46:27",
+      "pnl": -89.28,
+      "commission": -1.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-06T16:18:33",
+      "pnl": -89.01,
+      "commission": -1.12,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-07T15:35:37",
+      "pnl": 85.47999999999999,
+      "commission": -0.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-08T15:09:40",
+      "pnl": 88.93,
+      "commission": -3.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-09T17:48:31",
+      "pnl": -90.02,
+      "commission": -1.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-10T16:26:39",
+      "pnl": -88.49,
+      "commission": -1.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-13T15:49:39",
+      "pnl": -87.0,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-14T17:16:02",
+      "pnl": 84.22,
+      "commission": -1.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-15T14:04:27",
+      "pnl": 85.63000000000001,
+      "commission": -2.35,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-16T14:20:13",
+      "pnl": 86.05,
+      "commission": -1.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-17T14:18:58",
+      "pnl": 86.44,
+      "commission": -1.47,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-20T14:58:26",
+      "pnl": -90.67,
+      "commission": -1.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-21T14:05:03",
+      "pnl": -102.13,
+      "commission": -11.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-22T14:05:14",
+      "pnl": -95.11,
+      "commission": -7.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-23T14:06:37",
+      "pnl": -89.51,
+      "commission": -3.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-24T14:15:39",
+      "pnl": 82.2,
+      "commission": -3.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-27T15:00:36",
+      "pnl": -87.71,
+      "commission": -1.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-28T15:15:26",
+      "pnl": 83.72,
+      "commission": -1.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-29T14:10:00",
+      "pnl": -108.93,
+      "commission": -20.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-30T14:05:35",
+      "pnl": 81.17,
+      "commission": -4.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-03-31T15:57:00",
+      "pnl": -87.13,
+      "commission": -1.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-03T14:38:38",
+      "pnl": 82.50999999999999,
+      "commission": -2.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-04T14:20:35",
+      "pnl": 84.25,
+      "commission": -1.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-05T14:30:03",
+      "pnl": -88.9,
+      "commission": -1.9,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-06T15:17:31",
+      "pnl": -86.65,
+      "commission": -1.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-10T15:16:26",
+      "pnl": -86.89999999999999,
+      "commission": -1.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-11T17:45:16",
+      "pnl": 82.13000000000001,
+      "commission": -1.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-12T15:57:28",
+      "pnl": 83.26,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-13T14:04:38",
+      "pnl": -95.16,
+      "commission": -5.0,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-14T18:23:37",
+      "pnl": 83.57,
+      "commission": -0.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-17T15:30:16",
+      "pnl": -87.75,
+      "commission": -2.12,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-18T14:25:36",
+      "pnl": -86.06,
+      "commission": -1.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-19T15:01:20",
+      "pnl": -86.88000000000001,
+      "commission": -2.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-20T16:58:38",
+      "pnl": -84.85,
+      "commission": -2.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-21T18:01:34",
+      "pnl": -83.47,
+      "commission": -1.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-25T14:11:12",
+      "pnl": -85.94,
+      "commission": -3.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-26T14:15:35",
+      "pnl": 77.8,
+      "commission": -2.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-04-27T14:36:30",
+      "pnl": -83.06,
+      "commission": -1.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-01T14:05:04",
+      "pnl": -88.2,
+      "commission": -6.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-02T14:09:36",
+      "pnl": -84.86,
+      "commission": -3.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-03T14:07:15",
+      "pnl": 76.26,
+      "commission": -2.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-04T14:20:28",
+      "pnl": -90.7,
+      "commission": -6.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-05T14:13:34",
+      "pnl": -80.14999999999999,
+      "commission": -1.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-08T14:41:41",
+      "pnl": 75.39,
+      "commission": -2.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-09T14:09:25",
+      "pnl": 75.22,
+      "commission": -3.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-10T14:57:59",
+      "pnl": -80.27000000000001,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-11T14:31:14",
+      "pnl": 72.8,
+      "commission": -5.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-12T14:32:13",
+      "pnl": -80.4,
+      "commission": -1.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-15T14:35:38",
+      "pnl": 77.07,
+      "commission": -1.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-16T14:55:27",
+      "pnl": -82.87,
+      "commission": -3.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-17T15:22:32",
+      "pnl": 76.01,
+      "commission": -2.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-18T14:21:32",
+      "pnl": -81.63999999999999,
+      "commission": -1.57,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-19T14:18:15",
+      "pnl": 75.41,
+      "commission": -2.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-22T19:26:13",
+      "pnl": 76.77,
+      "commission": -1.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-23T14:00:04",
+      "pnl": -92.61,
+      "commission": -5.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-24T15:27:34",
+      "pnl": 77.52,
+      "commission": -1.22,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-25T15:06:33",
+      "pnl": -82.78,
+      "commission": -1.6,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-29T14:16:31",
+      "pnl": -93.66,
+      "commission": -14.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-30T17:28:15",
+      "pnl": -78.64,
+      "commission": -0.91,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-05-31T17:40:25",
+      "pnl": 76.17999999999999,
+      "commission": -0.9,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-01T14:06:40",
+      "pnl": -80.48,
+      "commission": -1.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-05T14:53:14",
+      "pnl": -79.65,
+      "commission": -2.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-06T14:19:36",
+      "pnl": -82.81,
+      "commission": -3.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-07T14:03:17",
+      "pnl": -78.32,
+      "commission": -2.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-08T14:26:15",
+      "pnl": -77.02000000000001,
+      "commission": -1.9,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-09T15:11:42",
+      "pnl": 72.93,
+      "commission": -0.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-12T14:05:20",
+      "pnl": -84.97,
+      "commission": -6.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-13T14:53:33",
+      "pnl": 72.75999999999999,
+      "commission": -0.7,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-14T14:40:36",
+      "pnl": -76.06,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-15T15:38:29",
+      "pnl": -73.67,
+      "commission": -0.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-16T16:10:35",
+      "pnl": 71.35000000000001,
+      "commission": -1.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-20T14:14:26",
+      "pnl": -76.52000000000001,
+      "commission": -1.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-21T14:03:04",
+      "pnl": -73.24,
+      "commission": -0.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-22T14:47:04",
+      "pnl": 71.13,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-23T18:45:36",
+      "pnl": 71.65,
+      "commission": -0.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-26T14:52:15",
+      "pnl": 72.84,
+      "commission": -1.07,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-27T14:06:13",
+      "pnl": 71.62,
+      "commission": -2.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-28T14:03:40",
+      "pnl": 72.53,
+      "commission": -2.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-29T14:01:30",
+      "pnl": 72.61,
+      "commission": -4.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-06-30T15:40:17",
+      "pnl": 74.96,
+      "commission": -1.17,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-03T14:39:26",
+      "pnl": -79.53,
+      "commission": -2.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-05T18:42:03",
+      "pnl": 74.9,
+      "commission": -1.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-06T14:01:26",
+      "pnl": -82.24000000000001,
+      "commission": -3.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-07T14:53:34",
+      "pnl": 74.67,
+      "commission": -1.42,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-10T16:50:39",
+      "pnl": 75.91999999999999,
+      "commission": -0.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-11T17:47:39",
+      "pnl": 76.33,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-12T14:09:35",
+      "pnl": -79.97,
+      "commission": -1.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-13T14:25:05",
+      "pnl": -88.80000000000001,
+      "commission": -7.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-14T14:37:39",
+      "pnl": 76.53,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-17T18:22:22",
+      "pnl": -79.05,
+      "commission": -1.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-18T15:00:36",
+      "pnl": -80.18,
+      "commission": -3.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-19T14:24:24",
+      "pnl": 77.47,
+      "commission": -5.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-20T14:20:38",
+      "pnl": -78.74,
+      "commission": -1.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-21T14:29:48",
+      "pnl": -76.77000000000001,
+      "commission": -0.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-25T14:30:38",
+      "pnl": 74.0,
+      "commission": -1.45,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-26T15:53:24",
+      "pnl": 74.76,
+      "commission": -1.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-27T14:21:14",
+      "pnl": -79.80000000000001,
+      "commission": -2.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-28T17:35:36",
+      "pnl": 75.75999999999999,
+      "commission": -0.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-07-31T14:30:13",
+      "pnl": 76.30999999999999,
+      "commission": -1.4,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-01T14:12:32",
+      "pnl": 77.78999999999999,
+      "commission": -4.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-02T14:55:37",
+      "pnl": -78.86,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-03T14:35:30",
+      "pnl": 75.17,
+      "commission": -4.97,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-04T14:32:36",
+      "pnl": 77.19,
+      "commission": -0.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-07T14:08:28",
+      "pnl": 78.38,
+      "commission": -2.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-09T15:14:48",
+      "pnl": -80.41999999999999,
+      "commission": -0.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-10T17:42:35",
+      "pnl": -78.95,
+      "commission": -0.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-11T14:15:40",
+      "pnl": -80.50999999999999,
+      "commission": -1.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-14T14:26:14",
+      "pnl": -77.9,
+      "commission": -1.17,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-15T14:05:19",
+      "pnl": -80.53,
+      "commission": -1.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-16T14:18:26",
+      "pnl": -78.14,
+      "commission": -2.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-17T14:06:03",
+      "pnl": -78.45,
+      "commission": -2.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-18T14:01:31",
+      "pnl": -77.44,
+      "commission": -3.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-21T16:20:36",
+      "pnl": 72.45,
+      "commission": -1.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-22T14:53:34",
+      "pnl": 73.84,
+      "commission": -1.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-23T15:15:14",
+      "pnl": -75.28,
+      "commission": -0.7,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-24T14:29:38",
+      "pnl": -74.13,
+      "commission": -0.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-25T14:06:21",
+      "pnl": 76.01,
+      "commission": -3.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-28T14:53:33",
+      "pnl": -76.61999999999999,
+      "commission": -1.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-30T14:12:25",
+      "pnl": -75.82,
+      "commission": -1.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-08-31T14:13:34",
+      "pnl": -75.34,
+      "commission": -2.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-01T19:30:00",
+      "pnl": 20.01,
+      "commission": -0.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-05T14:00:39",
+      "pnl": -75.25999999999999,
+      "commission": -3.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-06T15:08:54",
+      "pnl": -71.61,
+      "commission": -0.8,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-07T15:53:32",
+      "pnl": 69.25999999999999,
+      "commission": -0.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-08T14:10:18",
+      "pnl": -86.94999999999999,
+      "commission": -11.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-11T19:30:00",
+      "pnl": -20.31,
+      "commission": -0.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-12T14:22:34",
+      "pnl": 68.69,
+      "commission": -1.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-13T14:26:25",
+      "pnl": 70.06,
+      "commission": -0.95,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-14T14:00:18",
+      "pnl": -92.36,
+      "commission": -8.3,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-15T17:31:00",
+      "pnl": -71.46000000000001,
+      "commission": -0.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-18T14:16:38",
+      "pnl": -73.80000000000001,
+      "commission": -2.9,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-19T17:03:26",
+      "pnl": 68.54,
+      "commission": -0.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-20T15:16:59",
+      "pnl": -71.36,
+      "commission": -1.67,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-21T16:51:20",
+      "pnl": 68.12,
+      "commission": -1.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-22T14:15:19",
+      "pnl": 69.52000000000001,
+      "commission": -2.82,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-25T15:18:36",
+      "pnl": -71.42999999999999,
+      "commission": -1.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-26T14:16:29",
+      "pnl": -71.23,
+      "commission": -1.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-27T14:23:31",
+      "pnl": 68.32000000000001,
+      "commission": -1.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-28T19:30:00",
+      "pnl": -8.16,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-09-29T14:23:18",
+      "pnl": 69.08,
+      "commission": -1.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-02T14:30:15",
+      "pnl": 69.25999999999999,
+      "commission": -0.87,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-03T14:00:28",
+      "pnl": 70.99,
+      "commission": -1.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-04T14:19:36",
+      "pnl": 71.28999999999999,
+      "commission": -1.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-05T14:39:33",
+      "pnl": -72.74000000000001,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-06T14:05:30",
+      "pnl": -76.45,
+      "commission": -2.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-09T17:30:01",
+      "pnl": -72.1,
+      "commission": -1.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-10T14:18:31",
+      "pnl": -72.08000000000001,
+      "commission": -1.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-11T14:51:35",
+      "pnl": 69.33999999999999,
+      "commission": -1.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-12T14:27:27",
+      "pnl": -73.83,
+      "commission": -1.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-13T14:00:05",
+      "pnl": 72.02,
+      "commission": -6.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-16T14:27:11",
+      "pnl": -71.5,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-17T14:35:28",
+      "pnl": -69.98,
+      "commission": -0.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-19T14:22:18",
+      "pnl": 67.63,
+      "commission": -1.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-20T14:11:18",
+      "pnl": -73.78,
+      "commission": -2.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-23T19:30:00",
+      "pnl": 43.300000000000004,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-24T14:18:40",
+      "pnl": 65.58,
+      "commission": -3.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-25T15:51:23",
+      "pnl": -72.02,
+      "commission": -1.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-26T18:53:34",
+      "pnl": 68.05,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-27T14:09:20",
+      "pnl": 67.80000000000001,
+      "commission": -1.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-30T17:51:30",
+      "pnl": 69.41,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-10-31T14:40:26",
+      "pnl": 70.27,
+      "commission": -1.3,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-01T16:41:26",
+      "pnl": 71.22,
+      "commission": -0.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-02T14:27:32",
+      "pnl": 69.78,
+      "commission": -3.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-03T14:05:39",
+      "pnl": -83.16,
+      "commission": -6.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-06T15:05:40",
+      "pnl": -78.9,
+      "commission": -4.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-07T15:28:25",
+      "pnl": -74.55,
+      "commission": -1.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-08T15:11:25",
+      "pnl": -85.06,
+      "commission": -8.42,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-09T15:05:03",
+      "pnl": -82.86,
+      "commission": -9.95,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-10T17:33:31",
+      "pnl": -70.19000000000001,
+      "commission": -0.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-13T15:53:36",
+      "pnl": -71.2,
+      "commission": -2.22,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-14T16:57:39",
+      "pnl": 66.34,
+      "commission": -1.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-15T15:18:32",
+      "pnl": 68.56,
+      "commission": -2.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-16T15:19:24",
+      "pnl": 68.37,
+      "commission": -1.35,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-17T15:15:32",
+      "pnl": 71.33,
+      "commission": -5.17,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-20T18:03:26",
+      "pnl": -73.02,
+      "commission": -1.17,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-21T15:01:34",
+      "pnl": -77.14999999999999,
+      "commission": -4.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-22T15:01:34",
+      "pnl": -70.39,
+      "commission": -0.97,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-24T15:26:33",
+      "pnl": -71.66,
+      "commission": -3.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-27T15:24:26",
+      "pnl": 67.02000000000001,
+      "commission": -1.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-28T15:00:37",
+      "pnl": 65.41000000000001,
+      "commission": -4.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-29T16:17:12",
+      "pnl": -69.51,
+      "commission": -0.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-11-30T18:31:04",
+      "pnl": -68.87,
+      "commission": -0.75,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-01T15:05:40",
+      "pnl": 66.34,
+      "commission": -2.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-04T15:15:41",
+      "pnl": -71.99000000000001,
+      "commission": -3.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-05T16:54:26",
+      "pnl": 66.96,
+      "commission": -0.67,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-06T16:13:38",
+      "pnl": 67.49,
+      "commission": -0.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-07T15:22:38",
+      "pnl": -70.79,
+      "commission": -1.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-08T16:38:24",
+      "pnl": 67.42,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-11T16:13:36",
+      "pnl": 67.6,
+      "commission": -0.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-12T18:48:36",
+      "pnl": -70.78,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-13T15:10:55",
+      "pnl": 65.73,
+      "commission": -3.17,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-15T15:11:30",
+      "pnl": 68.4,
+      "commission": -2.07,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-18T15:18:18",
+      "pnl": -73.16999999999999,
+      "commission": -2.85,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-19T15:00:19",
+      "pnl": 61.49999999999999,
+      "commission": -8.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-20T19:27:17",
+      "pnl": 68.53,
+      "commission": -1.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-21T15:15:16",
+      "pnl": -74.59,
+      "commission": -2.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-22T16:41:38",
+      "pnl": -73.03,
+      "commission": -3.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-26T15:30:32",
+      "pnl": -78.1,
+      "commission": -7.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-27T15:00:39",
+      "pnl": -79.97,
+      "commission": -5.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2023-12-28T15:25:34",
+      "pnl": 64.10000000000001,
+      "commission": -3.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-02T20:30:00",
+      "pnl": -34.39,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-04T15:00:04",
+      "pnl": -73.03999999999999,
+      "commission": -3.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-05T17:07:35",
+      "pnl": 66.32,
+      "commission": -0.87,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-09T15:05:04",
+      "pnl": -79.65,
+      "commission": -10.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-10T15:00:53",
+      "pnl": -72.80000000000001,
+      "commission": -4.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-11T18:38:34",
+      "pnl": 65.28,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-12T15:08:13",
+      "pnl": 66.26,
+      "commission": -1.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-15T23:05:00",
+      "pnl": 47.58,
+      "commission": -2.9,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-16T17:04:41",
+      "pnl": 67.73,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-17T18:32:13",
+      "pnl": 67.85,
+      "commission": -0.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-19T15:00:27",
+      "pnl": -72.52999999999999,
+      "commission": -2.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-23T15:28:13",
+      "pnl": 65.92999999999999,
+      "commission": -2.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-24T15:05:03",
+      "pnl": -83.53,
+      "commission": -8.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-25T15:08:30",
+      "pnl": 68.12,
+      "commission": -3.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-26T15:10:39",
+      "pnl": -78.93,
+      "commission": -6.42,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-29T15:10:23",
+      "pnl": 64.13,
+      "commission": -11.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-01-31T15:29:28",
+      "pnl": -70.65,
+      "commission": -1.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-01T15:00:14",
+      "pnl": -72.57000000000001,
+      "commission": -2.98,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-02T16:51:28",
+      "pnl": -68.11,
+      "commission": -0.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-05T15:16:35",
+      "pnl": -68.13000000000001,
+      "commission": -1.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-06T15:25:30",
+      "pnl": -67.15,
+      "commission": -0.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-07T20:30:00",
+      "pnl": -11.96,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-08T15:30:38",
+      "pnl": 64.14,
+      "commission": -2.17,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-09T15:17:27",
+      "pnl": -68.65,
+      "commission": -1.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-12T15:39:05",
+      "pnl": -68.77,
+      "commission": -3.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-13T15:15:26",
+      "pnl": 63.5,
+      "commission": -1.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-14T15:18:27",
+      "pnl": -68.21000000000001,
+      "commission": -2.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-15T15:15:04",
+      "pnl": 63.349999999999994,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-16T16:16:36",
+      "pnl": 64.64999999999999,
+      "commission": -0.45,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-21T15:26:35",
+      "pnl": 63.910000000000004,
+      "commission": -2.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-22T15:45:35",
+      "pnl": 67.13000000000001,
+      "commission": -1.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-23T15:23:28",
+      "pnl": -68.78,
+      "commission": -1.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-26T18:01:26",
+      "pnl": 65.33999999999999,
+      "commission": -1.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-27T17:55:36",
+      "pnl": -69.04,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-28T16:46:00",
+      "pnl": -67.67,
+      "commission": -1.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-02-29T15:00:03",
+      "pnl": -75.93,
+      "commission": -8.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-01T17:37:38",
+      "pnl": -65.4,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-04T15:00:27",
+      "pnl": -71.22999999999999,
+      "commission": -4.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-05T19:43:34",
+      "pnl": -63.73,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-06T15:00:42",
+      "pnl": -65.37,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-07T15:30:14",
+      "pnl": -63.5,
+      "commission": -1.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-08T16:02:38",
+      "pnl": 61.02,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-11T14:30:53",
+      "pnl": 61.459999999999994,
+      "commission": -1.02,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-12T19:30:00",
+      "pnl": -41.76,
+      "commission": -0.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-13T14:43:29",
+      "pnl": 61.39,
+      "commission": -1.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-15T14:06:36",
+      "pnl": -64.21,
+      "commission": -0.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-18T14:24:36",
+      "pnl": -66.51,
+      "commission": -2.0,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-19T15:32:35",
+      "pnl": -63.02,
+      "commission": -1.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-20T18:28:14",
+      "pnl": -62.94,
+      "commission": -1.01,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-21T14:00:38",
+      "pnl": -63.86,
+      "commission": -2.91,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-22T14:13:27",
+      "pnl": -66.85,
+      "commission": -3.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-25T17:43:00",
+      "pnl": -60.730000000000004,
+      "commission": -0.85,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-26T14:00:40",
+      "pnl": -62.81,
+      "commission": -2.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-27T19:30:00",
+      "pnl": 19.13,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-03-28T18:01:35",
+      "pnl": -60.39,
+      "commission": -1.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-01T15:10:34",
+      "pnl": -58.68,
+      "commission": -0.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-02T14:25:35",
+      "pnl": 56.2,
+      "commission": -1.12,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-03T14:00:00",
+      "pnl": -68.78,
+      "commission": -7.01,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-04T14:19:37",
+      "pnl": -60.040000000000006,
+      "commission": -2.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-05T14:56:33",
+      "pnl": -56.690000000000005,
+      "commission": -0.6,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-08T15:36:26",
+      "pnl": 55.07,
+      "commission": -0.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-09T19:29:14",
+      "pnl": 55.879999999999995,
+      "commission": -0.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-10T14:02:37",
+      "pnl": 56.8,
+      "commission": -2.02,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-11T14:00:28",
+      "pnl": 56.910000000000004,
+      "commission": -4.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-12T14:00:36",
+      "pnl": 57.04,
+      "commission": -1.77,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-15T14:53:39",
+      "pnl": -59.5,
+      "commission": -0.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-16T14:15:25",
+      "pnl": -59.730000000000004,
+      "commission": -1.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-17T14:03:00",
+      "pnl": -59.68,
+      "commission": -1.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-18T14:56:28",
+      "pnl": -57.25,
+      "commission": -0.67,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-19T14:09:02",
+      "pnl": -58.629999999999995,
+      "commission": -2.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-22T14:18:02",
+      "pnl": -59.33,
+      "commission": -2.07,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-23T14:13:17",
+      "pnl": -55.89,
+      "commission": -0.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-24T14:03:36",
+      "pnl": -58.300000000000004,
+      "commission": -2.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-25T14:11:25",
+      "pnl": -55.9,
+      "commission": -1.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-26T14:12:36",
+      "pnl": -54.04,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-29T18:58:41",
+      "pnl": 52.12,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-04-30T14:05:22",
+      "pnl": -57.97,
+      "commission": -4.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-01T14:00:14",
+      "pnl": 49.71,
+      "commission": -3.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-02T14:08:29",
+      "pnl": -54.16,
+      "commission": -0.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-03T14:30:26",
+      "pnl": 52.849999999999994,
+      "commission": -4.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-06T16:16:36",
+      "pnl": 52.26,
+      "commission": -1.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-07T14:01:39",
+      "pnl": -56.550000000000004,
+      "commission": -2.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-08T16:35:34",
+      "pnl": 52.46,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-09T18:59:11",
+      "pnl": -54.86,
+      "commission": -0.82,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-10T14:21:03",
+      "pnl": -54.08,
+      "commission": -1.01,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-14T14:37:37",
+      "pnl": 52.300000000000004,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-15T15:07:52",
+      "pnl": -54.39,
+      "commission": -0.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-16T14:55:28",
+      "pnl": -54.73,
+      "commission": -1.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-17T14:02:53",
+      "pnl": 48.17,
+      "commission": -5.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-21T14:33:32",
+      "pnl": -54.14,
+      "commission": -1.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-23T15:09:35",
+      "pnl": 51.78,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-24T14:15:38",
+      "pnl": -53.8,
+      "commission": -1.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-27T15:24:20",
+      "pnl": -53.74,
+      "commission": -1.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-29T14:24:36",
+      "pnl": -54.03,
+      "commission": -1.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-30T14:22:39",
+      "pnl": 49.76,
+      "commission": -1.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-05-31T14:01:04",
+      "pnl": -52.830000000000005,
+      "commission": -0.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-03T14:00:28",
+      "pnl": 50.54,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-04T14:00:11",
+      "pnl": 49.550000000000004,
+      "commission": -2.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-05T14:00:28",
+      "pnl": 52.86,
+      "commission": -2.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-06T14:12:37",
+      "pnl": 50.59,
+      "commission": -2.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-07T14:00:37",
+      "pnl": -57.47,
+      "commission": -3.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-10T14:27:32",
+      "pnl": -55.57,
+      "commission": -2.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-11T14:03:12",
+      "pnl": 50.82,
+      "commission": -2.35,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-12T18:16:13",
+      "pnl": 51.28,
+      "commission": -1.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-13T14:00:22",
+      "pnl": 47.1,
+      "commission": -5.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-14T15:59:15",
+      "pnl": 51.09,
+      "commission": -3.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-17T16:25:30",
+      "pnl": -54.17,
+      "commission": -0.72,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-18T14:25:05",
+      "pnl": -59.63,
+      "commission": -5.6,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-20T14:58:57",
+      "pnl": 51.94,
+      "commission": -0.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-21T15:50:19",
+      "pnl": -54.33,
+      "commission": -0.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-24T14:28:19",
+      "pnl": 52.3,
+      "commission": -0.67,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-25T14:31:37",
+      "pnl": -55.63,
+      "commission": -1.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-26T14:28:39",
+      "pnl": 51.91,
+      "commission": -0.82,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-27T14:20:30",
+      "pnl": -60.76,
+      "commission": -4.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-06-28T19:30:00",
+      "pnl": -14.93,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-01T19:30:00",
+      "pnl": -5.34,
+      "commission": -0.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-02T14:46:40",
+      "pnl": -54.02,
+      "commission": -1.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-03T14:00:38",
+      "pnl": 52.76,
+      "commission": -1.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-04T14:20:32",
+      "pnl": -59.55,
+      "commission": -5.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-05T14:09:40",
+      "pnl": 50.72,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-09T14:00:14",
+      "pnl": -55.68,
+      "commission": -2.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-10T14:23:27",
+      "pnl": 50.57,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-11T15:30:29",
+      "pnl": -51.58,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-12T14:40:38",
+      "pnl": -51.839999999999996,
+      "commission": -0.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-15T14:36:34",
+      "pnl": -51.67,
+      "commission": -0.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-16T15:10:40",
+      "pnl": 49.77,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-17T15:50:37",
+      "pnl": -51.13999999999999,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-18T15:32:35",
+      "pnl": -50.0,
+      "commission": -0.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-19T14:44:37",
+      "pnl": -50.410000000000004,
+      "commission": -0.67,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-22T15:30:41",
+      "pnl": -49.48,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-23T14:38:13",
+      "pnl": 47.82,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-24T19:30:00",
+      "pnl": -43.239999999999995,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-25T14:29:37",
+      "pnl": 48.26,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-26T14:15:38",
+      "pnl": 47.89,
+      "commission": -1.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-29T16:02:27",
+      "pnl": 49.510000000000005,
+      "commission": -0.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-30T14:34:39",
+      "pnl": -51.1,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-07-31T14:01:38",
+      "pnl": -51.7,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-01T14:32:30",
+      "pnl": -49.86,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-02T15:44:37",
+      "pnl": 48.91,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-05T18:46:31",
+      "pnl": 48.58,
+      "commission": -0.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-06T18:21:35",
+      "pnl": -50.38,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-07T14:25:40",
+      "pnl": -50.47,
+      "commission": -1.12,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-08T16:05:34",
+      "pnl": -49.22,
+      "commission": -0.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-09T14:22:02",
+      "pnl": -49.49,
+      "commission": -1.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-12T15:24:38",
+      "pnl": 47.31,
+      "commission": -0.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-13T14:33:03",
+      "pnl": 48.67,
+      "commission": -1.01,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-14T14:58:52",
+      "pnl": 48.09,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-15T14:20:03",
+      "pnl": -50.18,
+      "commission": -0.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-16T14:06:42",
+      "pnl": -50.16,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-20T14:11:37",
+      "pnl": 48.160000000000004,
+      "commission": -1.62,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-21T14:14:40",
+      "pnl": 48.919999999999995,
+      "commission": -0.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-22T14:06:20",
+      "pnl": -51.96,
+      "commission": -1.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-23T14:00:13",
+      "pnl": -50.7,
+      "commission": -1.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-26T14:07:45",
+      "pnl": -50.09,
+      "commission": -1.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-27T14:10:39",
+      "pnl": -48.76,
+      "commission": -0.75,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-28T15:02:38",
+      "pnl": -48.059999999999995,
+      "commission": -0.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-29T14:17:36",
+      "pnl": 46.230000000000004,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-08-30T14:02:42",
+      "pnl": -48.23,
+      "commission": -0.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-02T14:16:29",
+      "pnl": -51.42,
+      "commission": -2.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-03T14:00:15",
+      "pnl": -47.78,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-05T17:47:25",
+      "pnl": 44.86,
+      "commission": -0.2,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-06T14:25:18",
+      "pnl": -46.37,
+      "commission": -0.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-09T14:07:42",
+      "pnl": 45.120000000000005,
+      "commission": -1.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-10T14:11:28",
+      "pnl": 46.040000000000006,
+      "commission": -0.98,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-11T14:00:26",
+      "pnl": -47.57,
+      "commission": -0.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-12T15:00:41",
+      "pnl": 45.440000000000005,
+      "commission": -0.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-13T14:07:35",
+      "pnl": -48.1,
+      "commission": -1.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-16T14:26:31",
+      "pnl": 45.62,
+      "commission": -0.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-17T14:58:36",
+      "pnl": 46.03,
+      "commission": -0.9,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-18T14:15:02",
+      "pnl": -54.96,
+      "commission": -5.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-20T14:10:30",
+      "pnl": -49.26,
+      "commission": -1.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-23T14:11:04",
+      "pnl": 44.87,
+      "commission": -1.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-24T14:00:05",
+      "pnl": -48.28,
+      "commission": -1.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-25T14:19:35",
+      "pnl": -46.730000000000004,
+      "commission": -0.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-26T14:24:29",
+      "pnl": -47.68,
+      "commission": -1.17,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-27T14:00:03",
+      "pnl": -49.08,
+      "commission": -3.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-09-30T14:15:40",
+      "pnl": -45.75,
+      "commission": -0.82,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-02T14:19:23",
+      "pnl": -44.77,
+      "commission": -0.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-03T14:02:38",
+      "pnl": -44.31,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-07T14:03:40",
+      "pnl": 42.06,
+      "commission": -1.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-08T19:30:00",
+      "pnl": -20.35,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-09T14:06:40",
+      "pnl": -45.46,
+      "commission": -1.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-10T14:36:39",
+      "pnl": 42.47,
+      "commission": -0.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-11T14:00:36",
+      "pnl": 41.68,
+      "commission": -1.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-14T16:46:36",
+      "pnl": 43.07,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-15T14:28:41",
+      "pnl": -45.13,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-16T18:23:41",
+      "pnl": -44.36000000000001,
+      "commission": -0.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-17T14:22:30",
+      "pnl": 42.93,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-18T14:18:41",
+      "pnl": 42.620000000000005,
+      "commission": -1.47,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-21T14:06:25",
+      "pnl": -45.440000000000005,
+      "commission": -1.02,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-22T16:25:41",
+      "pnl": 43.13999999999999,
+      "commission": -0.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-24T14:07:29",
+      "pnl": 42.949999999999996,
+      "commission": -1.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-25T17:21:15",
+      "pnl": 44.440000000000005,
+      "commission": -0.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-28T14:01:30",
+      "pnl": 43.69,
+      "commission": -1.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-29T14:22:29",
+      "pnl": -45.650000000000006,
+      "commission": -0.7,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-10-30T19:30:00",
+      "pnl": -16.71,
+      "commission": -0.55,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-01T14:46:42",
+      "pnl": 44.07,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-04T16:43:23",
+      "pnl": 44.64,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-05T16:01:14",
+      "pnl": 45.06,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-06T15:51:14",
+      "pnl": 45.54,
+      "commission": -0.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-07T15:50:14",
+      "pnl": -47.43,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-11T20:30:00",
+      "pnl": 40.11000000000001,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-12T15:03:20",
+      "pnl": 45.160000000000004,
+      "commission": -1.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-13T16:20:03",
+      "pnl": 46.22,
+      "commission": -0.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-14T15:36:28",
+      "pnl": 46.62,
+      "commission": -0.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-18T20:30:00",
+      "pnl": 10.870000000000001,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-19T15:15:29",
+      "pnl": 46.370000000000005,
+      "commission": -2.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-21T20:30:00",
+      "pnl": -9.719999999999999,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-22T15:28:42",
+      "pnl": -49.13,
+      "commission": -0.67,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-25T20:30:00",
+      "pnl": 5.32,
+      "commission": -0.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-26T15:05:03",
+      "pnl": 40.019999999999996,
+      "commission": -8.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-27T15:01:19",
+      "pnl": -51.019999999999996,
+      "commission": -1.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-28T15:00:18",
+      "pnl": -65.91,
+      "commission": -15.4,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-11-29T15:18:14",
+      "pnl": -47.93,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-02T20:30:00",
+      "pnl": -11.28,
+      "commission": -0.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-03T15:20:40",
+      "pnl": 46.13,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-05T15:03:38",
+      "pnl": 45.63999999999999,
+      "commission": -1.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-09T15:00:38",
+      "pnl": -53.6,
+      "commission": -5.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-10T15:30:40",
+      "pnl": 46.15,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-12T15:00:41",
+      "pnl": 44.42,
+      "commission": -3.92,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-13T15:53:04",
+      "pnl": -48.29,
+      "commission": -0.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-16T15:21:28",
+      "pnl": 46.64,
+      "commission": -0.8,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-17T15:10:14",
+      "pnl": 47.300000000000004,
+      "commission": -0.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-18T15:40:04",
+      "pnl": -49.28,
+      "commission": -1.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-19T15:02:03",
+      "pnl": -48.5,
+      "commission": -0.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-20T15:11:42",
+      "pnl": -48.839999999999996,
+      "commission": -1.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-23T16:04:30",
+      "pnl": 46.29,
+      "commission": -0.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-24T15:46:39",
+      "pnl": -47.94,
+      "commission": -0.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-26T20:30:00",
+      "pnl": -6.8100000000000005,
+      "commission": -0.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-30T15:14:30",
+      "pnl": 46.07,
+      "commission": -0.98,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2024-12-31T15:19:27",
+      "pnl": 46.27,
+      "commission": -1.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-02T20:30:00",
+      "pnl": 19.98,
+      "commission": -0.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-03T15:12:19",
+      "pnl": 47.010000000000005,
+      "commission": -0.91,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-06T17:40:39",
+      "pnl": 47.65,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-07T15:39:38",
+      "pnl": -49.0,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-08T15:10:27",
+      "pnl": 47.959999999999994,
+      "commission": -0.7,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-10T15:37:30",
+      "pnl": 48.48,
+      "commission": -0.2,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-13T15:06:38",
+      "pnl": -50.35,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-14T15:07:40",
+      "pnl": 48.04,
+      "commission": -0.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-15T16:32:30",
+      "pnl": 49.17,
+      "commission": -0.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-16T15:08:03",
+      "pnl": 49.24,
+      "commission": -0.98,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-17T15:02:03",
+      "pnl": 49.79,
+      "commission": -0.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-20T15:21:39",
+      "pnl": -52.440000000000005,
+      "commission": -1.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-21T15:20:42",
+      "pnl": 49.25,
+      "commission": -1.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-22T16:26:40",
+      "pnl": -51.699999999999996,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-23T16:29:40",
+      "pnl": -51.5,
+      "commission": -1.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-24T15:20:36",
+      "pnl": -51.910000000000004,
+      "commission": -1.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-27T16:06:21",
+      "pnl": 48.29,
+      "commission": -0.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-28T15:21:39",
+      "pnl": -50.0,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-29T15:43:39",
+      "pnl": -50.45,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-30T15:29:30",
+      "pnl": -49.33,
+      "commission": -0.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-01-31T15:56:31",
+      "pnl": -48.559999999999995,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-03T15:19:43",
+      "pnl": -47.76,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-04T15:08:32",
+      "pnl": -47.3,
+      "commission": -0.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-05T16:09:41",
+      "pnl": -47.650000000000006,
+      "commission": -0.7,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-06T15:25:42",
+      "pnl": 45.839999999999996,
+      "commission": -0.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-07T15:00:24",
+      "pnl": -46.89,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-10T20:30:00",
+      "pnl": -15.12,
+      "commission": -0.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-11T16:57:13",
+      "pnl": 45.39,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-12T17:17:05",
+      "pnl": -46.84,
+      "commission": -0.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-13T15:07:29",
+      "pnl": 45.7,
+      "commission": -0.75,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-14T15:01:39",
+      "pnl": 44.769999999999996,
+      "commission": -2.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-17T16:02:13",
+      "pnl": -49.16,
+      "commission": -1.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-18T15:27:37",
+      "pnl": -47.339999999999996,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-19T15:02:40",
+      "pnl": -48.0,
+      "commission": -1.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-20T20:30:00",
+      "pnl": 33.31,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-21T15:00:38",
+      "pnl": -47.36,
+      "commission": -0.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-25T18:00:57",
+      "pnl": 44.410000000000004,
+      "commission": -0.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-26T15:18:42",
+      "pnl": -46.44,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-27T20:30:00",
+      "pnl": -32.64,
+      "commission": -0.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-02-28T15:05:41",
+      "pnl": 44.56,
+      "commission": -0.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-03T15:30:29",
+      "pnl": 44.65,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-04T15:17:43",
+      "pnl": -46.66,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-05T15:00:27",
+      "pnl": 44.94,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-06T15:39:39",
+      "pnl": -45.82,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-07T16:41:27",
+      "pnl": -44.88,
+      "commission": -0.2,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-10T14:00:40",
+      "pnl": -45.61,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-11T14:37:42",
+      "pnl": -44.75,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-12T14:03:13",
+      "pnl": -44.22,
+      "commission": -0.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-13T14:14:41",
+      "pnl": 43.29,
+      "commission": -0.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-14T14:06:02",
+      "pnl": 43.34,
+      "commission": -1.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-17T15:34:19",
+      "pnl": -44.79,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-19T14:04:40",
+      "pnl": -44.49,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-21T14:09:41",
+      "pnl": 43.12,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-25T14:29:30",
+      "pnl": -45.67,
+      "commission": -1.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-26T16:55:39",
+      "pnl": -43.9,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-27T14:37:31",
+      "pnl": -43.24,
+      "commission": -0.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-28T14:00:39",
+      "pnl": -44.46,
+      "commission": -1.0,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-03-31T14:24:04",
+      "pnl": 41.53,
+      "commission": -0.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-01T14:11:39",
+      "pnl": -43.589999999999996,
+      "commission": -0.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-02T17:04:32",
+      "pnl": -42.15,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-03T14:45:39",
+      "pnl": -42.24,
+      "commission": -0.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-04T14:05:41",
+      "pnl": 41.05,
+      "commission": -0.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-07T14:10:39",
+      "pnl": -40.480000000000004,
+      "commission": -0.1,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-08T14:55:38",
+      "pnl": 40.919999999999995,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-09T14:06:25",
+      "pnl": 41.74,
+      "commission": -0.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-10T14:34:40",
+      "pnl": 42.18,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-11T14:44:41",
+      "pnl": 42.2,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-14T15:45:43",
+      "pnl": -43.13,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-15T14:43:29",
+      "pnl": 42.0,
+      "commission": -0.35,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-16T14:12:16",
+      "pnl": 42.48,
+      "commission": -0.45,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-17T14:27:30",
+      "pnl": -44.04,
+      "commission": -0.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-21T15:31:38",
+      "pnl": -43.5,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-22T17:28:31",
+      "pnl": 42.25,
+      "commission": -0.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-23T14:07:42",
+      "pnl": 42.660000000000004,
+      "commission": -0.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-25T14:21:39",
+      "pnl": 43.25,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-28T14:24:41",
+      "pnl": 43.28,
+      "commission": -0.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-29T14:27:38",
+      "pnl": 44.309999999999995,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-04-30T14:08:43",
+      "pnl": 44.67,
+      "commission": -0.35,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-01T14:05:38",
+      "pnl": 44.35,
+      "commission": -1.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-02T14:05:41",
+      "pnl": -46.86,
+      "commission": -1.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-05T14:01:17",
+      "pnl": -46.23,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-06T14:08:42",
+      "pnl": 44.300000000000004,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-07T14:50:41",
+      "pnl": 44.410000000000004,
+      "commission": -0.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-08T14:12:39",
+      "pnl": -46.1,
+      "commission": -0.72,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-09T14:11:37",
+      "pnl": 43.81,
+      "commission": -1.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-12T14:44:38",
+      "pnl": 44.99,
+      "commission": -0.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-13T14:14:19",
+      "pnl": -46.089999999999996,
+      "commission": -0.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-14T16:33:26",
+      "pnl": -46.48,
+      "commission": -0.72,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-15T14:10:20",
+      "pnl": 44.15,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-16T14:10:39",
+      "pnl": 41.410000000000004,
+      "commission": -5.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-19T19:30:00",
+      "pnl": 21.2,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-20T14:18:28",
+      "pnl": 45.51,
+      "commission": -0.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-21T14:56:25",
+      "pnl": -47.599999999999994,
+      "commission": -0.73,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-22T14:38:40",
+      "pnl": 45.339999999999996,
+      "commission": -0.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-23T14:24:29",
+      "pnl": -47.6,
+      "commission": -0.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-26T15:04:37",
+      "pnl": -47.519999999999996,
+      "commission": -1.01,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-27T16:38:37",
+      "pnl": -45.96,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-28T18:52:29",
+      "pnl": -45.82,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-29T17:02:31",
+      "pnl": 43.88,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-05-30T15:34:37",
+      "pnl": 44.339999999999996,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-02T19:30:00",
+      "pnl": -39.81,
+      "commission": -0.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-03T14:02:38",
+      "pnl": -46.07,
+      "commission": -0.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-04T14:20:38",
+      "pnl": 44.239999999999995,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-05T15:17:38",
+      "pnl": -45.669999999999995,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-06T14:37:41",
+      "pnl": 44.129999999999995,
+      "commission": -0.85,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-09T19:30:00",
+      "pnl": -6.69,
+      "commission": -0.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-10T14:44:40",
+      "pnl": -47.25,
+      "commission": -1.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-11T15:10:05",
+      "pnl": 44.309999999999995,
+      "commission": -0.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-12T14:15:19",
+      "pnl": -46.34,
+      "commission": -1.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-13T14:00:25",
+      "pnl": 43.17,
+      "commission": -1.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-16T14:35:15",
+      "pnl": -45.74,
+      "commission": -0.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-17T14:05:14",
+      "pnl": 36.800000000000004,
+      "commission": -9.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-18T17:22:36",
+      "pnl": 44.9,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-23T16:25:41",
+      "pnl": 45.13,
+      "commission": -0.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-24T14:10:31",
+      "pnl": -51.14,
+      "commission": -4.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-25T14:11:29",
+      "pnl": -47.54,
+      "commission": -1.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-26T14:20:40",
+      "pnl": -46.71,
+      "commission": -1.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-27T17:44:38",
+      "pnl": 43.95,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-06-30T17:19:13",
+      "pnl": 43.980000000000004,
+      "commission": -1.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-01T14:21:28",
+      "pnl": 43.830000000000005,
+      "commission": -2.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-02T14:25:38",
+      "pnl": -46.6,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-03T14:01:40",
+      "pnl": -46.589999999999996,
+      "commission": -1.01,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-04T15:17:26",
+      "pnl": 43.82,
+      "commission": -1.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-07T14:07:04",
+      "pnl": 42.75,
+      "commission": -2.87,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-08T14:05:27",
+      "pnl": -49.59,
+      "commission": -2.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-09T14:48:12",
+      "pnl": -46.15,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-10T15:57:02",
+      "pnl": 44.339999999999996,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-11T15:14:05",
+      "pnl": 44.54,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-14T16:52:03",
+      "pnl": -46.4,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-15T15:24:15",
+      "pnl": 44.370000000000005,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-16T14:30:29",
+      "pnl": 44.97,
+      "commission": -0.6,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-17T14:49:30",
+      "pnl": -46.8,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-18T14:00:27",
+      "pnl": 43.89,
+      "commission": -1.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-23T14:56:01",
+      "pnl": 45.29,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-24T14:37:29",
+      "pnl": 45.04,
+      "commission": -1.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-25T14:12:36",
+      "pnl": -48.69,
+      "commission": -1.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-28T14:08:29",
+      "pnl": -48.85,
+      "commission": -2.0,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-29T15:28:34",
+      "pnl": -46.73,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-30T14:30:35",
+      "pnl": -47.690000000000005,
+      "commission": -1.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-07-31T14:50:37",
+      "pnl": -45.9,
+      "commission": -0.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-05T14:23:14",
+      "pnl": -45.75,
+      "commission": -0.91,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-06T14:00:21",
+      "pnl": -51.1,
+      "commission": -5.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-07T14:08:13",
+      "pnl": 42.949999999999996,
+      "commission": -1.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-11T14:07:38",
+      "pnl": -47.59,
+      "commission": -2.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-12T19:30:00",
+      "pnl": -39.13,
+      "commission": -0.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-13T14:04:37",
+      "pnl": -44.660000000000004,
+      "commission": -1.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-14T15:22:28",
+      "pnl": 42.279999999999994,
+      "commission": -0.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-15T17:56:35",
+      "pnl": 42.71,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-18T14:04:29",
+      "pnl": 42.59,
+      "commission": -0.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-19T14:39:03",
+      "pnl": -44.54,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-21T14:25:04",
+      "pnl": -44.25,
+      "commission": -0.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-25T14:49:40",
+      "pnl": -43.81,
+      "commission": -0.72,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-26T14:19:14",
+      "pnl": -44.04,
+      "commission": -1.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-27T16:37:41",
+      "pnl": 42.01,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-08-28T14:08:39",
+      "pnl": 41.900000000000006,
+      "commission": -0.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-02T17:28:39",
+      "pnl": 42.720000000000006,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-03T14:00:30",
+      "pnl": 42.260000000000005,
+      "commission": -1.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-04T14:25:18",
+      "pnl": 43.57,
+      "commission": -0.72,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-05T14:00:16",
+      "pnl": -72.8,
+      "commission": -27.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-08T14:07:39",
+      "pnl": -45.5,
+      "commission": -1.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-09T14:00:15",
+      "pnl": 40.91,
+      "commission": -1.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-10T14:00:32",
+      "pnl": 40.91,
+      "commission": -3.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-11T15:18:38",
+      "pnl": -44.94,
+      "commission": -0.72,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-12T16:57:31",
+      "pnl": -44.29,
+      "commission": -0.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-15T15:58:03",
+      "pnl": -44.03,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-16T15:02:38",
+      "pnl": -44.04,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-17T14:24:42",
+      "pnl": -43.92,
+      "commission": -1.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-18T14:20:29",
+      "pnl": -42.13,
+      "commission": -0.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-19T14:18:01",
+      "pnl": 40.669999999999995,
+      "commission": -1.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-22T14:28:37",
+      "pnl": -42.87,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-23T17:16:42",
+      "pnl": -42.65,
+      "commission": -1.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-24T15:34:40",
+      "pnl": -42.120000000000005,
+      "commission": -0.99,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-25T14:48:41",
+      "pnl": -40.25,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-26T14:24:41",
+      "pnl": -40.809999999999995,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-29T15:10:43",
+      "pnl": 39.57,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-09-30T15:20:40",
+      "pnl": 39.46,
+      "commission": -0.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-01T17:28:31",
+      "pnl": -40.830000000000005,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-02T15:37:41",
+      "pnl": -40.88,
+      "commission": -0.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-03T15:15:32",
+      "pnl": 39.11,
+      "commission": -0.62,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-06T15:04:39",
+      "pnl": 39.4,
+      "commission": -0.92,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-07T14:35:31",
+      "pnl": -42.59,
+      "commission": -1.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-08T14:05:40",
+      "pnl": -40.69,
+      "commission": -0.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-09T15:16:02",
+      "pnl": 39.21,
+      "commission": -0.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-10T14:22:14",
+      "pnl": 38.85,
+      "commission": -1.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-13T19:30:00",
+      "pnl": -5.15,
+      "commission": -0.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-14T16:21:30",
+      "pnl": -39.31999999999999,
+      "commission": -0.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-15T15:36:17",
+      "pnl": 39.43,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-16T14:05:01",
+      "pnl": -46.16,
+      "commission": -8.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-17T14:12:14",
+      "pnl": -40.37,
+      "commission": -0.4,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-20T14:04:32",
+      "pnl": -40.760000000000005,
+      "commission": -1.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-21T14:02:41",
+      "pnl": -40.61000000000001,
+      "commission": -1.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-22T15:24:15",
+      "pnl": -38.309999999999995,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-23T19:30:00",
+      "pnl": -3.33,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-24T15:13:38",
+      "pnl": 37.9,
+      "commission": -0.86,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-27T14:19:38",
+      "pnl": 37.970000000000006,
+      "commission": -0.8,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-28T14:31:40",
+      "pnl": -40.85,
+      "commission": -1.57,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-29T14:05:41",
+      "pnl": 34.379999999999995,
+      "commission": -4.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-31T15:37:26",
+      "pnl": 38.69,
+      "commission": -0.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-03T17:37:31",
+      "pnl": 38.589999999999996,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-04T16:19:42",
+      "pnl": 39.22,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-05T20:30:00",
+      "pnl": -4.45,
+      "commission": -0.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-06T17:26:42",
+      "pnl": -39.21,
+      "commission": -0.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-07T15:10:30",
+      "pnl": 38.14,
+      "commission": -2.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-10T15:49:39",
+      "pnl": 39.52,
+      "commission": -0.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-11T15:14:38",
+      "pnl": -42.09,
+      "commission": -1.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-12T15:52:25",
+      "pnl": -40.91,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-13T15:23:41",
+      "pnl": 38.959999999999994,
+      "commission": -0.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-14T20:30:00",
+      "pnl": -0.13,
+      "commission": -0.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-17T16:37:39",
+      "pnl": 40.010000000000005,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-18T15:17:00",
+      "pnl": -40.46,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-20T15:06:31",
+      "pnl": 39.540000000000006,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-21T15:06:30",
+      "pnl": 39.95,
+      "commission": -0.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-24T15:34:43",
+      "pnl": -41.01,
+      "commission": -0.5,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-25T16:21:17",
+      "pnl": -40.9,
+      "commission": -0.55,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-26T15:09:04",
+      "pnl": 39.22,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-27T16:22:40",
+      "pnl": 38.47,
+      "commission": -2.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-28T16:26:41",
+      "pnl": 40.0,
+      "commission": -0.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-01T15:34:28",
+      "pnl": 40.660000000000004,
+      "commission": -0.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-02T17:17:30",
+      "pnl": 40.58,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-03T15:10:42",
+      "pnl": -44.28,
+      "commission": -1.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-04T15:34:42",
+      "pnl": 41.269999999999996,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-05T15:10:40",
+      "pnl": -42.45,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-08T16:06:42",
+      "pnl": -41.9,
+      "commission": -0.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-09T15:31:04",
+      "pnl": -42.089999999999996,
+      "commission": -0.97,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-10T15:49:40",
+      "pnl": 40.22,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-11T20:30:00",
+      "pnl": -3.3000000000000003,
+      "commission": -0.2,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-12T15:28:30",
+      "pnl": -41.51,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-15T15:25:39",
+      "pnl": -40.0,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-16T15:07:41",
+      "pnl": -41.27,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-18T17:10:30",
+      "pnl": 38.89,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-22T16:15:38",
+      "pnl": 39.42,
+      "commission": -0.9,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-23T15:01:28",
+      "pnl": -42.36,
+      "commission": -1.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-24T15:10:30",
+      "pnl": -43.04,
+      "commission": -2.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-26T15:31:40",
+      "pnl": 39.25,
+      "commission": -0.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-29T18:35:25",
+      "pnl": 39.61,
+      "commission": -0.4,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-30T15:09:40",
+      "pnl": 39.88,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-31T18:40:12",
+      "pnl": 40.56,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-02T15:25:19",
+      "pnl": -41.36,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-05T15:28:05",
+      "pnl": -40.75,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-06T15:56:25",
+      "pnl": 40.050000000000004,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-07T15:40:23",
+      "pnl": -43.49,
+      "commission": -2.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-09T16:00:04",
+      "pnl": -43.949999999999996,
+      "commission": -0.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-12T19:31:48",
+      "pnl": -40.63,
+      "commission": -0.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-13T15:15:47",
+      "pnl": -40.57,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-14T17:58:04",
+      "pnl": -39.32,
+      "commission": -0.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-15T15:10:47",
+      "pnl": -40.760000000000005,
+      "commission": -2.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-16T15:36:19",
+      "pnl": -38.97,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-19T16:12:20",
+      "pnl": -39.089999999999996,
+      "commission": -0.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-20T15:00:58",
+      "pnl": 31.8,
+      "commission": -1.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-21T15:35:52",
+      "pnl": -37.53,
+      "commission": -0.22,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-23T15:22:33",
+      "pnl": -37.230000000000004,
+      "commission": -0.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-26T20:30:00",
+      "pnl": 0.09000000000000002,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-28T15:27:17",
+      "pnl": -39.620000000000005,
+      "commission": -1.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-29T15:42:45",
+      "pnl": -37.0,
+      "commission": -0.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-30T15:35:36",
+      "pnl": 34.54,
+      "commission": -0.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-02T20:30:00",
+      "pnl": -9.81,
+      "commission": -0.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-03T17:12:06",
+      "pnl": -35.8,
+      "commission": -0.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-04T15:41:04",
+      "pnl": 34.62,
+      "commission": -0.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-05T16:30:00",
+      "pnl": 36.06,
+      "commission": -0.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-06T18:04:48",
+      "pnl": -35.879999999999995,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-09T15:50:18",
+      "pnl": -35.599999999999994,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-10T16:22:30",
+      "pnl": 36.07,
+      "commission": -0.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-11T17:26:47",
+      "pnl": 34.67,
+      "commission": -0.1,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-12T15:41:37",
+      "pnl": -37.18,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-13T15:15:17",
+      "pnl": -31.73,
+      "commission": -1.07,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-16T16:10:35",
+      "pnl": 35.1,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-17T16:03:09",
+      "pnl": 37.33,
+      "commission": -0.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-18T19:57:47",
+      "pnl": 36.440000000000005,
+      "commission": -0.12,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-19T15:03:29",
+      "pnl": -38.38,
+      "commission": -0.49,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-20T15:06:56",
+      "pnl": 37.449999999999996,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-23T15:52:46",
+      "pnl": -37.65,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-24T20:30:00",
+      "pnl": 4.67,
+      "commission": -0.16,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-26T15:12:15",
+      "pnl": -37.129999999999995,
+      "commission": -0.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-27T15:08:30",
+      "pnl": -38.279999999999994,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-02T16:27:32",
+      "pnl": 35.5,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-03T15:20:59",
+      "pnl": -36.6,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-04T15:06:41",
+      "pnl": -36.95,
+      "commission": -0.82,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-05T15:20:22",
+      "pnl": 36.53,
+      "commission": -0.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-06T15:31:17",
+      "pnl": -36.53,
+      "commission": -0.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-09T14:46:57",
+      "pnl": -35.86,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-10T14:08:02",
+      "pnl": -37.730000000000004,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-11T14:08:03",
+      "pnl": 33.75,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-12T19:30:00",
+      "pnl": -13.9,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-13T15:46:53",
+      "pnl": -35.18,
+      "commission": -0.17,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-16T14:06:54",
+      "pnl": -37.370000000000005,
+      "commission": -1.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-17T18:06:44",
+      "pnl": 35.150000000000006,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-18T14:06:09",
+      "pnl": -36.980000000000004,
+      "commission": -1.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-19T14:29:01",
+      "pnl": 32.89,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-20T17:33:39",
+      "pnl": -35.010000000000005,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-23T15:37:50",
+      "pnl": 33.63,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-24T14:59:19",
+      "pnl": 37.849999999999994,
+      "commission": -0.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-25T14:12:41",
+      "pnl": 34.47,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-26T14:41:29",
+      "pnl": 37.309999999999995,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-27T14:46:27",
+      "pnl": -37.14,
+      "commission": -0.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-30T18:57:47",
+      "pnl": -35.559999999999995,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-31T14:47:44",
+      "pnl": 35.32,
+      "commission": -0.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-01T14:39:21",
+      "pnl": -36.41,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-02T14:16:27",
+      "pnl": -35.47,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-06T16:37:25",
+      "pnl": 33.79,
+      "commission": -0.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-07T15:55:13",
+      "pnl": 35.41,
+      "commission": -0.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-08T14:31:17",
+      "pnl": -35.839999999999996,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-09T14:10:07",
+      "pnl": -38.660000000000004,
+      "commission": -0.89,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-10T14:14:36",
+      "pnl": 33.809999999999995,
+      "commission": -0.59,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-13T16:29:33",
+      "pnl": -35.77,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-14T14:28:50",
+      "pnl": -35.53,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-15T14:15:38",
+      "pnl": -35.910000000000004,
+      "commission": -0.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-16T14:08:12",
+      "pnl": 34.97,
+      "commission": -0.51,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-17T14:33:21",
+      "pnl": -35.43,
+      "commission": -0.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-20T14:26:11",
+      "pnl": 36.17,
+      "commission": -0.72,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-21T14:17:11",
+      "pnl": -35.3,
+      "commission": -0.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-22T14:14:54",
+      "pnl": -35.0,
+      "commission": -0.6,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-23T16:05:03",
+      "pnl": 33.06,
+      "commission": -0.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-24T14:00:11",
+      "pnl": -20.29,
+      "commission": -1.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-27T14:35:59",
+      "pnl": 54.11,
+      "commission": -1.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-28T14:50:41",
+      "pnl": -33.95,
+      "commission": -0.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-29T14:28:31",
+      "pnl": -34.36,
+      "commission": -0.5,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-30T14:16:55",
+      "pnl": -34.0,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-04T14:07:57",
+      "pnl": -36.010000000000005,
+      "commission": -1.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-05T19:30:00",
+      "pnl": 2.1399999999999997,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-06T18:11:03",
+      "pnl": -33.37,
+      "commission": -0.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-07T14:05:01",
+      "pnl": -32.35,
+      "commission": -0.7,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-11T14:05:52",
+      "pnl": 32.470000000000006,
+      "commission": -0.37,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-12T14:15:28",
+      "pnl": 32.14,
+      "commission": -0.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-13T14:52:33",
+      "pnl": -35.010000000000005,
+      "commission": -0.42,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-14T17:25:45",
+      "pnl": 31.869999999999997,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-15T19:30:00",
+      "pnl": 28.23,
+      "commission": -0.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-18T14:33:13",
+      "pnl": -34.98,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-19T14:05:40",
+      "pnl": -35.38,
+      "commission": -0.53,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-20T14:15:02",
+      "pnl": 16.41,
+      "commission": -2.6,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-21T14:15:47",
+      "pnl": 31.820000000000004,
+      "commission": -0.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-22T14:23:44",
+      "pnl": -31.68,
+      "commission": -0.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-25T15:10:57",
+      "pnl": 33.1,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-26T15:52:07",
+      "pnl": 32.5,
+      "commission": -0.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-27T16:41:18",
+      "pnl": 33.48,
+      "commission": -0.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-28T15:26:10",
+      "pnl": -34.53,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-29T15:11:14",
+      "pnl": 32.96,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-01T14:16:43",
+      "pnl": 33.53,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-02T15:56:19",
+      "pnl": -34.29,
+      "commission": -0.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-03T17:56:13",
+      "pnl": 33.14,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-04T14:11:25",
+      "pnl": 33.42,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-05T16:17:34",
+      "pnl": -33.52,
+      "commission": -0.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-08T14:09:40",
+      "pnl": 34.25,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-09T15:25:06",
+      "pnl": -33.43,
+      "commission": -0.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-10T14:49:08",
+      "pnl": 32.85,
+      "commission": -0.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-11T15:15:53",
+      "pnl": 32.83,
+      "commission": -0.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-12T14:10:58",
+      "pnl": -35.14,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-15T15:20:29",
+      "pnl": -35.720000000000006,
+      "commission": -0.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-16T14:59:03",
+      "pnl": -33.660000000000004,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-17T14:12:34",
+      "pnl": 34.63,
+      "commission": -0.4,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-18T14:24:28",
+      "pnl": -34.050000000000004,
+      "commission": -0.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-19T14:01:02",
+      "pnl": 33.129999999999995,
+      "commission": -1.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-22T14:17:53",
+      "pnl": 34.41,
+      "commission": -0.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-24T14:25:20",
+      "pnl": 34.32,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-26T19:30:00",
+      "pnl": 19.88,
+      "commission": -0.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-29T14:05:02",
+      "pnl": -36.349999999999994,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-30T19:30:00",
+      "pnl": -13.729999999999999,
+      "commission": -0.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-01T14:45:06",
+      "pnl": 34.25,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-02T14:10:48",
+      "pnl": 35.02,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-03T14:42:24",
+      "pnl": 35.0,
+      "commission": -1.03,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-06T16:10:30",
+      "pnl": -35.79,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-07T14:11:48",
+      "pnl": -33.76,
+      "commission": -0.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-08T14:20:50",
+      "pnl": 35.03,
+      "commission": -0.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-09T14:39:58",
+      "pnl": 34.75,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-10T14:44:37",
+      "pnl": 34.620000000000005,
+      "commission": -0.47,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-13T14:21:15",
+      "pnl": 34.38,
+      "commission": -1.04,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-14T14:16:11",
+      "pnl": -35.84,
+      "commission": -0.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-15T14:36:59",
+      "pnl": -35.779999999999994,
+      "commission": -0.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-16T19:07:26",
+      "pnl": -35.4,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-17T14:17:02",
+      "pnl": -34.01,
+      "commission": -0.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-20T14:56:42",
+      "pnl": -34.699999999999996,
+      "commission": -0.22,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-21T14:00:00",
+      "pnl": -89.34,
+      "commission": -19.56,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-22T14:42:04",
+      "pnl": 33.47,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-23T14:37:49",
+      "pnl": 33.629999999999995,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-24T15:01:01",
+      "pnl": 33.19,
+      "commission": -0.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-27T14:25:20",
+      "pnl": -34.39,
+      "commission": -0.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-28T19:30:00",
+      "pnl": -2.25,
+      "commission": -0.09,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-29T14:24:18",
+      "pnl": -34.66,
+      "commission": -0.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-30T19:30:00",
+      "pnl": -15.7,
+      "commission": -0.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-31T17:01:48",
+      "pnl": 32.300000000000004,
+      "commission": -0.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-03T14:18:42",
+      "pnl": -34.81,
+      "commission": -0.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-04T17:15:01",
+      "pnl": -33.86,
+      "commission": -0.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-05T14:05:25",
+      "pnl": 31.07,
+      "commission": -0.65,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-07T14:05:02",
+      "pnl": -35.04,
+      "commission": -0.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-10T14:54:16",
+      "pnl": 33.47,
+      "commission": -0.32,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-11T18:27:42",
+      "pnl": -34.29,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-12T14:37:13",
+      "pnl": 33.059999999999995,
+      "commission": -0.77,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-14T15:00:05",
+      "pnl": -34.290000000000006,
+      "commission": -0.45,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-17T14:10:14",
+      "pnl": 31.25,
+      "commission": -1.25,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-18T14:03:21",
+      "pnl": 33.29,
+      "commission": -0.5,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-20T15:05:48",
+      "pnl": 32.68,
+      "commission": -0.43,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-21T14:59:26",
+      "pnl": 33.82,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-24T19:30:00",
+      "pnl": -0.35,
+      "commission": -0.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-25T14:01:06",
+      "pnl": -37.41,
+      "commission": -0.68,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-26T14:10:30",
+      "pnl": 35.04,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-27T14:00:55",
+      "pnl": 32.23,
+      "commission": -0.92,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-28T14:19:24",
+      "pnl": 34.910000000000004,
+      "commission": -0.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-31T14:18:27",
+      "pnl": 35.63,
+      "commission": -0.62,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-01T14:15:30",
+      "pnl": -38.57,
+      "commission": -0.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-02T14:00:01",
+      "pnl": -37.04,
+      "commission": -5.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-03T19:30:00",
+      "pnl": -4.85,
+      "commission": -0.13,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-04T14:11:03",
+      "pnl": 34.24,
+      "commission": -0.57,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-07T14:38:26",
+      "pnl": 33.49,
+      "commission": -1.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-08T18:49:00",
+      "pnl": 38.83,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-09T14:19:25",
+      "pnl": 35.93,
+      "commission": -0.29,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-10T14:37:56",
+      "pnl": -36.290000000000006,
+      "commission": -0.34,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-11T14:33:27",
+      "pnl": 35.14,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-14T15:37:49",
+      "pnl": -37.17,
+      "commission": -0.21,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-15T14:12:33",
+      "pnl": -35.93,
+      "commission": -0.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-16T14:07:43",
+      "pnl": -35.89,
+      "commission": -1.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-17T15:05:57",
+      "pnl": 34.75,
+      "commission": -0.48,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-18T16:23:33",
+      "pnl": -36.07,
+      "commission": -0.4,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-22T14:42:07",
+      "pnl": 35.15,
+      "commission": -0.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-24T14:46:04",
+      "pnl": 35.309999999999995,
+      "commission": -0.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-25T14:13:51",
+      "pnl": -38.13,
+      "commission": -0.64,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-28T14:38:02",
+      "pnl": -36.220000000000006,
+      "commission": -0.38,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-29T15:05:01",
+      "pnl": 35.739999999999995,
+      "commission": -0.45,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-30T17:26:36",
+      "pnl": 34.12,
+      "commission": -0.28,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-10-01T14:11:51",
+      "pnl": -36.86,
+      "commission": -0.61,
+      "swap": 0.0
+    }
+  ],
+  "native_equity_drawdown_pct": 67.81,
+  "promotion_block": "No pristine holdout, measured incremental-cost stress or prospective demo. Prior different VWAP study searched108 variants; DSR2 adjusts only current asset candidates. Broader idea-selection bias remains. Not FTMO predictions."
+}

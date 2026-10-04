@@ -1,5 +1,5 @@
 #property copyright "AAA Final News Pulse - NFP/CPI/FOMC straddle"
-#property version   "2.18"
+#property version   "2.21"
 #property strict
 
 #include "../AAA Final News Pulse EA/AAA_Final_Common.mqh"
@@ -7,6 +7,7 @@
 #include "../AAA Final News Pulse EA/DynamicTrailingSessionFilter.mqh"
 #include "../AAA Final News Pulse EA/NewsPulseTesterCalendar.mqh"
 #include "..\..\_Shared\CalyxAdaptivePortfolio.mqh"
+#include "../AAA Final News Pulse XAU Event Specific EA/NewsPulsePlacement.mqh"
 
 input group "Trading"
 input bool   InpEnableTrading=true;
@@ -16,6 +17,7 @@ input double InpRiskPercent=0.75;             // user-selected equity risk PER p
 input bool   InpAdaptivePortfolioControls=false;
 input long   InpMagic=860301;
 input int    InpMaxDeviationPoints=100;
+input bool   InpMarketFallbackOnCrossedLevel=true; // repair with fresh quotes; same-direction market fallback
 
 input group "Events"
 input bool   InpUseEconomicCalendar=true;
@@ -95,6 +97,9 @@ long     g_attempt_event_id=0;
 datetime g_last_placement_attempt=0;
 double   g_event_buy_entry=0.0;
 double   g_event_sell_entry=0.0;
+int      g_side_accepted=0; // buy/sell acknowledgments persist even after closure
+int      g_side_inflight=0; // uncertainty must reconcile, never blind retry
+int      g_side_required=0;
 double   g_event_max_ask=-DBL_MAX;
 double   g_event_min_bid=DBL_MAX;
 datetime g_last_broker_quote_time=0;
@@ -186,6 +191,58 @@ void NP_SaveState()
    int kind_code=g_active_event_kind=="NFP"?1:g_active_event_kind=="CPI"?2:g_active_event_kind=="FOMC"?3:0;
    if(g_active_event_time>0) GlobalVariableSet(NP_StateKey("KIND"),kind_code);
    else if(GlobalVariableCheck(NP_StateKey("KIND"))) GlobalVariableDel(NP_StateKey("KIND"));
+   if(g_active_event_time>0)
+   {
+      GlobalVariableSet(NP_StateKey("SIDE_EVENT"),(double)g_active_event_time);
+      GlobalVariableSet(NP_StateKey("ACCEPTED"),g_side_accepted);
+      GlobalVariableSet(NP_StateKey("INFLIGHT"),g_side_inflight);
+      GlobalVariableSet(NP_StateKey("REQUIRED"),g_side_required);
+      GlobalVariableSet(NP_StateKey("BUY_LEVEL"),g_event_buy_entry);
+      GlobalVariableSet(NP_StateKey("SELL_LEVEL"),g_event_sell_entry);
+   }
+   GlobalVariablesFlush();
+}
+
+void NP_LoadSideState()
+{
+   if((datetime)GlobalVariableGet(NP_StateKey("SIDE_EVENT"))!=g_active_event_time) return;
+   g_side_accepted=(int)GlobalVariableGet(NP_StateKey("ACCEPTED"));
+   g_side_inflight=(int)GlobalVariableGet(NP_StateKey("INFLIGHT"));
+   g_side_required=(int)GlobalVariableGet(NP_StateKey("REQUIRED"));
+   g_event_buy_entry=GlobalVariableGet(NP_StateKey("BUY_LEVEL"));
+   g_event_sell_entry=GlobalVariableGet(NP_StateKey("SELL_LEVEL"));
+}
+
+int NP_SideFromComment(const string comment)
+{
+   const string prefix="NP|"+IntegerToString((long)g_active_event_time)+"|"+g_active_event_kind+"|";
+   if(comment==prefix+"B") return 1;
+   if(comment==prefix+"S") return 2;
+   return 0;
+}
+
+void NP_ReconcileSides()
+{
+   if(g_active_event_time<=0) return;
+   int found=0;
+   for(int i=OrdersTotal()-1;i>=0;i--)
+      if(OrderGetTicket(i)>0 && NP_IsOurOrderSelected())
+         found|=NP_SideFromComment(OrderGetString(ORDER_COMMENT));
+   for(int i=PositionsTotal()-1;i>=0;i--)
+      if(PositionGetTicket(i)>0 && NP_IsOurPositionSelected())
+         found|=NP_SideFromComment(PositionGetString(POSITION_COMMENT));
+   // Closed/cancelled legs must not be re-entered during the same release.
+   if(HistorySelect(g_active_event_time-g_np_lead-60,NP_ServerNow()+1))
+      for(int i=HistoryOrdersTotal()-1;i>=0;i--)
+      {
+         ulong ticket=HistoryOrderGetTicket(i);
+         if(ticket==0 || HistoryOrderGetString(ticket,ORDER_SYMBOL)!=_Symbol ||
+            HistoryOrderGetInteger(ticket,ORDER_MAGIC)!=InpMagic ||
+            HistoryOrderGetInteger(ticket,ORDER_STATE)==ORDER_STATE_REJECTED) continue;
+         found|=NP_SideFromComment(HistoryOrderGetString(ticket,ORDER_COMMENT));
+      }
+   if(found>0 && ((g_side_accepted & found)!=found || (g_side_inflight & found)!=0))
+      {g_side_accepted|=found;g_side_inflight&=~found;NP_SaveState();}
 }
 
 bool NP_IsOurPositionSelected()
@@ -505,6 +562,89 @@ bool NP_FindUpcomingEvent(datetime &event_time,long &event_id,string &kind)
    return NP_FindLiveEvent(event_time,event_id,kind);
 }
 
+bool NP_SendSide(const bool buy,const double level,const double side_risk,const datetime expiry,const string comment)
+{
+   const int bit=buy ? 1 : 2;
+   if((g_side_accepted & bit)!=0) return true;
+   if((g_side_inflight & bit)!=0) return false; // reconcile first; never blindly resend
+   // Definitive price/geometry rejection: retry from CURRENT Ask/Bid plus
+   // the selected offset, then try a same-direction market order. Preserve
+   // exits/risk and PRE-release timing; unknown outcomes never blind-retry.
+   bool force_market=false;
+   for(int attempt=0;attempt<3;attempt++)
+   {
+      datetime now=0;
+      if(!NP_GetFreshBrokerPlacementTime(now) || now>=g_active_event_time ||
+         now<g_active_event_time-g_np_lead) return false;
+      MqlTick tick;
+      if(!SymbolInfoTick(_Symbol,tick) || tick.ask<=0 || tick.bid<=0 || tick.ask<tick.bid) return false;
+      double quantum=SymbolInfoDouble(_Symbol,SYMBOL_TRADE_TICK_SIZE);
+      if(quantum<=0) quantum=SymbolInfoDouble(_Symbol,SYMBOL_POINT);
+      const double gap=SymbolInfoInteger(_Symbol,SYMBOL_TRADE_STOPS_LEVEL)*SymbolInfoDouble(_Symbol,SYMBOL_POINT);
+      double entry=0,sl=0,tp=0;bool market=false;
+      const long expiration_modes=SymbolInfoInteger(_Symbol,SYMBOL_EXPIRATION_MODE);
+      ENUM_ORDER_TYPE_TIME time_type=ORDER_TIME_SPECIFIED;
+      datetime order_expiry=expiry;
+      if((expiration_modes & SYMBOL_EXPIRATION_SPECIFIED)==0)
+      {
+         if((expiration_modes & SYMBOL_EXPIRATION_GTC)!=0) {time_type=ORDER_TIME_GTC;order_expiry=0;}
+         else if((expiration_modes & SYMBOL_EXPIRATION_DAY)!=0) {time_type=ORDER_TIME_DAY;order_expiry=0;}
+         else force_market=true;
+      }
+      if((SymbolInfoInteger(_Symbol,SYMBOL_ORDER_MODE) & SYMBOL_ORDER_STOP)==0) force_market=true;
+      if(force_market && !InpMarketFallbackOnCrossedLevel) return false;
+      double requested_level=level;
+      if(attempt>0) requested_level=buy ? tick.ask+g_np_offset : tick.bid-g_np_offset;
+      if(force_market) requested_level=buy ? tick.ask : tick.bid;
+      if(!NP_PlanSide(buy,requested_level,tick.bid,tick.ask,g_np_stop,g_np_tp,gap,quantum,
+                      InpMarketFallbackOnCrossedLevel,entry,sl,tp,market)) return false;
+      entry=AAA_Price(_Symbol,entry);sl=AAA_Price(_Symbol,sl);tp=AAA_Price(_Symbol,tp);
+      double lots=AAA_LotsForRisk(_Symbol,buy ? ORDER_TYPE_BUY : ORDER_TYPE_SELL,entry,sl,side_risk);
+      if(lots<=0) {Print("News Pulse: no broker-valid size for ",comment);return false;}
+      // Persist intent before crossing the IPC/network boundary. If the EA
+      // crashes or times out, recovery checks broker evidence instead of
+      // assuming the request failed and duplicating the trade.
+      if(buy) g_event_buy_entry=entry;else g_event_sell_entry=entry;
+      g_side_inflight|=bit;NP_SaveState();
+      bool sent=false;
+      if(market)
+      {
+         Print("NP_MARKET_FALLBACK|",comment,"|requested level=",DoubleToString(requested_level,_Digits),
+               "|entry quote=",DoubleToString(entry,_Digits),"|SL=",DoubleToString(sl,_Digits),"|lots=",DoubleToString(lots,8));
+         sent=buy ? AAA_Trade.Buy(lots,_Symbol,entry,sl,tp,comment) :
+                    AAA_Trade.Sell(lots,_Symbol,entry,sl,tp,comment);
+      }
+      else sent=buy ? AAA_Trade.BuyStop(lots,entry,_Symbol,sl,tp,time_type,order_expiry,comment) :
+                      AAA_Trade.SellStop(lots,entry,_Symbol,sl,tp,time_type,order_expiry,comment);
+      const uint rc=AAA_Trade.ResultRetcode();
+      if(sent && (rc==TRADE_RETCODE_DONE || rc==TRADE_RETCODE_PLACED || rc==TRADE_RETCODE_DONE_PARTIAL))
+      {
+         g_side_accepted|=bit;g_side_inflight&=~bit;NP_SaveState();
+         Print("NP_SIDE_ACCEPTED|",comment,"|mode=",market ? "market" : "pending",
+               "|order=",AAA_Trade.ResultOrder(),"|deal=",AAA_Trade.ResultDeal(),"|retcode=",rc);
+         return true;
+      }
+      NP_ReconcileSides();
+      if((g_side_accepted & bit)!=0) return true;
+      // These responses (or an empty response) cannot prove non-execution.
+      if(rc==0 || rc==TRADE_RETCODE_TIMEOUT || rc==TRADE_RETCODE_CONNECTION || rc==TRADE_RETCODE_ERROR)
+      {
+         Print("NP_SIDE_UNCERTAIN|",comment,"|retcode=",rc,"|no blind retry; broker reconciliation required");
+         return false;
+      }
+      g_side_inflight&=~bit;NP_SaveState();
+      Print("NP_SIDE_REJECTED|",comment,"|retcode=",rc,"|",AAA_Trade.ResultRetcodeDescription());
+      const bool repairable=rc==TRADE_RETCODE_INVALID_PRICE || rc==TRADE_RETCODE_INVALID_STOPS ||
+         rc==TRADE_RETCODE_INVALID_EXPIRATION || rc==TRADE_RETCODE_INVALID_ORDER ||
+         rc==TRADE_RETCODE_INVALID_FILL || rc==TRADE_RETCODE_REQUOTE ||
+         rc==TRADE_RETCODE_PRICE_CHANGED || rc==TRADE_RETCODE_PRICE_OFF;
+      if(!repairable) return false; // margin, permissions, closed market are not price failures
+      force_market=market || attempt>=1;
+      Print("NP_FRESH_QUOTE_RETRY|",comment,"|next=",force_market ? "same-direction market" : "fresh-quote pending");
+   }
+   return false;
+}
+
 bool NP_SendStraddle(const datetime event_time,const long event_id,const string kind)
 {
    NP_ApplyEventParameters(kind);
@@ -522,27 +662,16 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
 
    MqlTick tick;
    if(!SymbolInfoTick(_Symbol,tick) || tick.ask<=0.0 || tick.bid<=0.0) return false;
-   double point=SymbolInfoDouble(_Symbol,SYMBOL_POINT);
-   double broker_gap=(double)SymbolInfoInteger(_Symbol,SYMBOL_TRADE_STOPS_LEVEL)*point;
-   if(g_np_offset+point<broker_gap)
-   {
-      Print("News Pulse: $",DoubleToString(g_np_offset,2)," entry offset is below this broker's minimum distance of ",
-            DoubleToString(broker_gap,(int)SymbolInfoInteger(_Symbol,SYMBOL_DIGITS)),".");
-      return false;
-   }
-
    double high=tick.ask,low=tick.bid;
-   if(g_np_anchor>0)
+   if(g_np_anchor>0 && g_active_event_time==0)
    {
-      int shift=(g_np_anchor==1 ? 0:1);
+      int shift=(g_np_anchor==1 ? 0 : 1);
       double h=iHigh(_Symbol,PERIOD_M1,shift),l=iLow(_Symbol,PERIOD_M1,shift);
-      if(h<=0 || l<=0 || h<l) {Print("News Pulse: M1 anchor unavailable; waiting for history.");return false;}
-      high=h+(tick.ask-tick.bid);low=l;
+      if(h>0 && l>0 && h>=l) {high=h+(tick.ask-tick.bid);low=l;}
+      else Print("News Pulse: M1 anchor unavailable; using fresh Ask/Bid instead.");
    }
    double buy_entry=AAA_Price(_Symbol,high+g_np_offset);
    double sell_entry=AAA_Price(_Symbol,low-g_np_offset);
-   double buy_sl=AAA_Price(_Symbol,buy_entry-g_np_stop);
-   double sell_sl=AAA_Price(_Symbol,sell_entry+g_np_stop);
    // Independent user-selected risk per order, recalculated from current equity.
    // Both sides remain armed; lot rounding, fees and gaps can exceed this target.
    const double adaptive=CalyxAdaptiveRiskMultiplier(InpAdaptivePortfolioControls,InpMagic);
@@ -552,45 +681,43 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
       return false;
    }
    double side_risk=InpRiskPercent*adaptive;
-   double buy_lots=0.0;
-   double sell_lots=0.0;
    bool allow_buy=InpEnableBuySide && HAMA_SafeRegimeAllowsDirection(1);
    bool allow_sell=InpEnableSellSide && HAMA_SafeRegimeAllowsDirection(-1);
-   if(allow_buy)
-      buy_lots=AAA_LotsForRisk(_Symbol,ORDER_TYPE_BUY,buy_entry,buy_sl,side_risk);
-   if(allow_sell)
-      sell_lots=AAA_LotsForRisk(_Symbol,ORDER_TYPE_SELL,sell_entry,sell_sl,side_risk);
    if(!allow_buy && !allow_sell)
    {
       Print("News Pulse: both order directions were vetoed by this EA's completed-D1 Safe Mode gate.");
       return false;
    }
-   if((allow_buy && buy_lots<=0.0) || (allow_sell && sell_lots<=0.0))
+   if(g_active_event_time==0)
    {
-      Print("News Pulse: broker contract data prevents risk-based sizing.");
-      return false;
+      g_active_event_time=event_time;g_active_event_kind=kind;g_last_event_id=event_id;
+      g_side_accepted=0;g_side_inflight=0;
+      g_side_required=(allow_buy ? 1 : 0)|(allow_sell ? 2 : 0);
+      g_event_buy_entry=buy_entry;g_event_sell_entry=sell_entry;
+      g_event_max_ask=tick.ask;g_event_min_bid=tick.bid;
+      NP_SaveState();
    }
-
-   datetime expiry=event_time+g_np_hold;
+   NP_ReconcileSides();
+   // Broker/tester expiration validation may use whole minutes and reject
+   // short horizons. Round a >=120s backup UP to the next complete minute.
+   // Server expiry is a backup, not our holding time: lifecycle still deletes
+   // all owned pendings and closes all owned positions at the unchanged event-specific deadline.
+   datetime expiry=(datetime)(60*MathCeil(MathMax((double)(event_time+g_np_hold),
+                                                  (double)(placement_time+120))/60.0));
    string prefix="NP|"+IntegerToString((long)event_time)+"|"+kind+"|";
    AAA_Trade.SetExpertMagicNumber((ulong)InpMagic);
+   AAA_Trade.SetAsyncMode(false);
    AAA_Trade.SetTypeFillingBySymbol(_Symbol);
    AAA_Trade.SetDeviationInPoints(InpMaxDeviationPoints);
-   bool buy_ok=false;
-   bool sell_ok=false;
-   if(allow_buy)
+   if(allow_buy && (g_side_required & 1)!=0) NP_SendSide(true,g_event_buy_entry,side_risk,expiry,prefix+"B");
+   if(allow_sell && (g_side_required & 2)!=0) NP_SendSide(false,g_event_sell_entry,side_risk,expiry,prefix+"S");
+   const bool complete=g_side_required>0 && (g_side_accepted & g_side_required)==g_side_required;
+   if(!complete)
    {
-      buy_ok=AAA_Trade.BuyStop(buy_lots,buy_entry,_Symbol,buy_sl,(g_np_tp>0 ? AAA_Price(_Symbol,buy_entry+g_np_tp*g_np_stop):0.0),ORDER_TIME_SPECIFIED,expiry,prefix+"B");
-      if(!buy_ok)
-         Print("News Pulse: buy-stop placement failed: ",AAA_Trade.ResultRetcodeDescription());
+      Print("NP_SETUP_INCOMPLETE|",kind,"|accepted mask=",g_side_accepted,"|required=",g_side_required,
+            "|uncertain=",g_side_inflight,"|missing sides may retry before release only");
+      return false;
    }
-   if(allow_sell)
-   {
-      sell_ok=AAA_Trade.SellStop(sell_lots,sell_entry,_Symbol,sell_sl,(g_np_tp>0 ? AAA_Price(_Symbol,sell_entry-g_np_tp*g_np_stop):0.0),ORDER_TIME_SPECIFIED,expiry,prefix+"S");
-      if(!sell_ok)
-         Print("News Pulse: sell-stop placement failed: ",AAA_Trade.ResultRetcodeDescription());
-   }
-   if(!buy_ok && !sell_ok) return false;
 
    if((bool)MQLInfoInteger(MQL_TESTER) && event_id!=g_tester_last_successful_event_id)
    {
@@ -598,20 +725,12 @@ bool NP_SendStraddle(const datetime event_time,const long event_id,const string 
       g_tester_last_successful_event_id=event_id;
    }
 
-   g_active_event_time=event_time;
-   g_active_event_kind=kind;
-   g_last_event_id=event_id;
-   g_event_buy_entry=allow_buy ? buy_entry : 0.0;
-   g_event_sell_entry=allow_sell ? sell_entry : 0.0;
-   g_event_max_ask=tick.ask;
-   g_event_min_bid=tick.bid;
-   NP_SaveState();
    string side_mode=allow_buy && allow_sell ? "two-sided" :
                     (allow_buy ? "long-only" : "short-only");
    double enabled_sides=(allow_buy ? 1.0 : 0.0)+(allow_sell ? 1.0 : 0.0);
-   Print("News Pulse: ",kind," ",side_mode," orders placed. Buy ",
-         (allow_buy ? DoubleToString(buy_entry,_Digits) : "disabled"),
-         ", sell ",(allow_sell ? DoubleToString(sell_entry,_Digits) : "disabled"),
+   Print("News Pulse: ",kind," ",side_mode," setup acknowledged (pending or crossed-level market). Original buy level ",
+         (allow_buy ? DoubleToString(g_event_buy_entry,_Digits) : "disabled"),
+         ", sell ",(allow_sell ? DoubleToString(g_event_sell_entry,_Digits) : "disabled"),
          ", SL distance $",DoubleToString(g_np_stop,2),
          ", selected risk per enabled stop ",DoubleToString(side_risk,4),
          "%; ",DoubleToString(side_risk*enabled_sides,4),"% planned event risk before lot rounding, costs and gaps. Server placement=",
@@ -658,6 +777,7 @@ void NP_ManageLifecycle()
          g_active_event_kind="";
          g_event_buy_entry=0.0;
          g_event_sell_entry=0.0;
+         g_side_accepted=0;g_side_inflight=0;g_side_required=0;
          g_event_max_ask=-DBL_MAX;
          g_event_min_bid=DBL_MAX;
          NP_SaveState();
@@ -668,7 +788,18 @@ void NP_ManageLifecycle()
 void NP_Run()
 {
    NP_ManageLifecycle();
-   if(!InpEnableTrading || AAA_HasExposure(_Symbol,InpMagic)) return;
+   if(!InpEnableTrading) return;
+   if(g_active_event_time>0)
+   {
+      NP_ReconcileSides();
+      const datetime now=NP_ServerNow();
+      if(now>=g_active_event_time || g_side_required==0 ||
+         (g_side_accepted & g_side_required)==g_side_required || now-g_last_placement_attempt<1) return;
+      g_last_placement_attempt=now;
+      NP_SendStraddle(g_active_event_time,(long)g_active_event_time,g_active_event_kind);
+      return;
+   }
+   if(AAA_HasExposure(_Symbol,InpMagic)) return;
    datetime event_time=0;
    long event_id=0;
    string kind="";
@@ -688,7 +819,7 @@ void NP_Run()
 
 int OnInit()
 {
-   if(!InpUseAssetEventSpecific || NP_Asset()=="") {Print("News Pulse v2.18 requires the approved XAG, BTC or EURUSD event profile.");return INIT_PARAMETERS_INCORRECT;}
+   if(!InpUseAssetEventSpecific || NP_Asset()=="") {Print("News Pulse v2.21 requires the approved XAG, BTC or EURUSD event profile.");return INIT_PARAMETERS_INCORRECT;}
    if(!DTS_InputsValid()) return INIT_PARAMETERS_INCORRECT;
    if((!InpEnableBuySide && !InpEnableSellSide) ||
       !MathIsValidNumber(InpRiskPercent) || InpRiskPercent<=0.0 || InpRiskPercent>10.0 ||
@@ -713,15 +844,17 @@ int OnInit()
    g_active_event_kind=kind_code==1?"NFP":kind_code==2?"CPI":kind_code==3?"FOMC":"";
    NP_RecoverActiveEvent();
    NP_ApplyEventParameters(g_active_event_kind);
+   NP_LoadSideState();
+   NP_ReconcileSides();
    EventSetTimer(1);
    string side_mode=InpEnableBuySide && InpEnableSellSide ? "two-sided" :
                     (InpEnableBuySide ? "long-only" : "short-only");
-   Print("AAA Final News Pulse v2.18 FULL-YEAR FITTED loaded on ",_Symbol,
+   Print("AAA Final News Pulse v2.21 FULL-YEAR FITTED loaded on ",_Symbol,
          ". Fallback geometry (asset/event-specific overrides): T-",InpPlacementLeadSeconds,
          "s; mode=",side_mode,"; selected equity risk ",DoubleToString(InpRiskPercent,4),
          "% per order / ",DoubleToString(InpRiskPercent*((InpEnableBuySide?1:0)+(InpEnableSellSide?1:0)),4),"% planned event exposure before rounding/costs/gaps; hard exit at T+",
          InpForceCloseSecondsAfterEvent,
-         "s. Live timing is broker-quote/calendar anchored; VPS local timezone is ignored.");
+         "s. Current exits/risk unchanged; fresh-quote pending repair and same-direction market fallback. Live clock is broker anchored.");
    return INIT_SUCCEEDED;
 }
 

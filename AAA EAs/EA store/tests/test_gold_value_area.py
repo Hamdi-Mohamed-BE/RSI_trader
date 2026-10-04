@@ -42,11 +42,15 @@ def test_portfolio_inventory_and_cash_flow(period):
     assert end==date(2026,8,30)
     p=json.loads((CACHE_ROOT/'portfolio/standard'/f'{period}.json').read_text())
     rr=json.loads((CACHE_ROOT/'portfolio/standard'/f'{period}.trades.json').read_text())
-    assert p['available_from']==start.isoformat() and p['available_to']==end.isoformat()
+    # The combined record is archived: its old shared window need not equal the
+    # intersection after newer independent ADX/DI results are published.
+    archived_start=date.fromisoformat(p['available_from'])
+    archived_end=date.fromisoformat(p['available_to'])
+    assert start>=archived_start and end==archived_end
     assert p['included_ea_count']==35 and p['tested_ea_count']==34  # 3 Way Gold added 2026-09-30
     assert abs(sum(r['net_profit'] for r in rr)-p['stats']['net_profit'])<.05
     assert any(r['cache_slug']==SLUG for r in rr)
-    assert all(start.isoformat()<=r['close_time'][:10]<=end.isoformat() for r in rr)
+    assert all(archived_start.isoformat()<=r['close_time'][:10]<=archived_end.isoformat() for r in rr)
     m=json.loads((CACHE_ROOT/'manifest.json').read_text())
     assert m['recommended_ea_count']==35
     assert any(r['slug']==SLUG and r['period']==period for r in m['generated_runs'])

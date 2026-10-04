@@ -1,0 +1,63 @@
+VIX spike / confirmed reversal — frozen raw daily ETF screen, 2026-10-02
+
+The source video only names VIX mean reversion; every numerical rule below is ours,
+not a replication of a disclosed institutional strategy. One configuration only.
+No optimisation, active-terminal access, deployment, paid data, or Git push.
+
+Instrument: LONG SVXY, cash funded, no leverage or short borrowing. Signal: VIX.
+SVXY is -0.5x DAILY short-term VIX FUTURES exposure, not -0.5x spot VIX.
+ETF management/roll economics are embedded in its prices. Trading costs are not
+known from daily bars; headline results are gross before broker execution costs.
+Daily bars cannot provide MT5 tick-equity DD or FTMO/payout forecasts.
+
+Data: daily SVXY from the market-data connector. Official Cboe VIX daily OHLC is
+preferred signal source, with connector VIX used for independent close checks.
+Save and hash all source files. End-exclusive 2026-10-02; ignore incomplete today.
+Independently reset $10,000 accounts for 6m,1y,3y,5y and annual diagnostic windows.
+No inception position; warm indicators and arm state with pre-window observations.
+Rules are frozen before examining any strategy results; history has been used in
+previous research, so these are not pristine out-of-sample windows.
+
+Spike: VIX close >=25 AND >=1.25 * mean of PREVIOUS 20 session closes.
+On the first spike of an episode (prior session did not satisfy spike), arm for
+the next 5 VIX/ETF joint sessions. Do not renew the timer on subsequent spikes.
+Confirmation within that window: VIX close below prior session LOW and below
+prior close. No same-spike-day entry. Consume the arm on confirmation; one entry
+per episode, no pyramiding. Signals that occur while a trade is open are not used.
+Entry: next joint-session SVXY OPEN after the completed VIX confirmation.
+Stop: entry fill minus 2 * prior-session SVXY Wilder ATR(14).
+Target: entry fill plus 2 * stop distance (2R). No breakeven or trailing stop.
+ATR initialises with the first 14 true ranges, then Wilder recursive smoothing.
+Volatility exit: after VIX CLOSE <= its 20-session pre-confirmation mean (frozen
+at confirmation), request ETF exit at the NEXT session open. Time exit: request
+after 10 held daily bars, fill at the following open. Gap stop takes priority;
+pending time/mean exits precede intraday brackets. A gap above TP fills at TP,
+not a windfall better price. If both daily SL/TP touched, conservative SL first.
+Final open position is marked at last close, not silently forced into a trade.
+
+Sizing: floor whole shares to 1% current closed balance / stop distance, then
+cap by available cash. Requested risk is a budget, not a guarantee: gaps can
+lose more. Skip <1 share. No minimum-lot override, margin, interest or taxes.
+Daily close and adverse intraday sampled equity DD reported separately. Daily
+OHLC cannot reconstruct an exact multi-tick path; intraday-DD metric is a bound
+from a conservative assumed low-before-high path, not native equity DD.
+Annualised Sharpe: close-to-close account returns, sqrt(252), risk-free zero.
+Closed-trade PF, WR, max/average streaks; trades/month and session frequency.
+
+Control frozen: 1,000 long-SVXY random-entry schedules per 3y/5y window, exactly
+same closed trade count (or flag count mismatch), same entry weekdays, same
+max eligible holding horizon sequence as observed baseline realised durations,
+same cash/risk/ATR/brackets. Candidate dates permuted chronologically, enforce
+non-overlap for the whole allocated horizon. This is an exposure/holding-horizon
+matched timing diagnostic, not an exact alternative VIX strategy. Also show
+cash-funded buy-and-hold benchmark, not treated as same risk.
+
+Gate: BOTH 3y/5y positive return, PF >=1.15, >=30 closed trades, and return
+above 95th percentile of matched random control. Native executable-instrument
+ticks, measured incremental costs, statistical evidence, and holdout required
+before any production promotion. If raw gate fails stop; no tuning a loser.
+Optional diagnostic bootstrap: 10,000 circular block-5 risk-unit paths and
+return/PF lower bounds; does NOT produce future pass/payout probabilities.
+Illustrative 5bps and 10bps each side are sensitivity scenarios ONLY, not
+measured execution costs, not canonical measured-cost gate satisfaction.
+Only this single raw configuration is tested; do not select a winning variant.

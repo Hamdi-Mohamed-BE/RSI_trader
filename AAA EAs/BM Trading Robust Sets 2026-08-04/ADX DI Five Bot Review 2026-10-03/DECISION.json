@@ -1,0 +1,225 @@
+[
+  {
+    "ea": "trend",
+    "label": "XAU Trend Progression",
+    "baseline": "trend-BASE",
+    "selected": "trend-BASE",
+    "selected_variant": "BASE",
+    "passes_descriptive_screen": false,
+    "highest_filtered_pf": "trend-DI_ONLY",
+    "assessment": [
+      {
+        "variant": "DI_ONLY",
+        "fails": [
+          "fewer than 30 trades"
+        ]
+      },
+      {
+        "variant": "ADX20",
+        "fails": [
+          "PF below 1.20",
+          "PF improvement below 0.05",
+          "return below baseline",
+          "equity DD worse than baseline"
+        ]
+      },
+      {
+        "variant": "ADX25",
+        "fails": [
+          "fewer than 30 trades",
+          "PF below 1.20",
+          "PF improvement below 0.05",
+          "return below baseline"
+        ]
+      },
+      {
+        "variant": "ADX20_DI",
+        "fails": [
+          "fewer than 30 trades",
+          "PF below 1.20",
+          "PF improvement below 0.05",
+          "return below baseline",
+          "equity DD worse than baseline"
+        ]
+      },
+      {
+        "variant": "ADX25_DI",
+        "fails": [
+          "fewer than 30 trades",
+          "PF improvement below 0.05",
+          "return below baseline"
+        ]
+      }
+    ],
+    "promotion": "NOT APPROVED: same-year search and partial real-tick coverage"
+  },
+  {
+    "ea": "ema3",
+    "label": "EMA3 Gold",
+    "baseline": "ema3-BASE",
+    "selected": "ema3-ADX25",
+    "selected_variant": "ADX25",
+    "passes_descriptive_screen": true,
+    "highest_filtered_pf": "ema3-ADX25",
+    "assessment": [
+      {
+        "variant": "DI_ONLY",
+        "fails": []
+      },
+      {
+        "variant": "ADX20",
+        "fails": []
+      },
+      {
+        "variant": "ADX25",
+        "fails": []
+      },
+      {
+        "variant": "ADX20_DI",
+        "fails": []
+      },
+      {
+        "variant": "ADX25_DI",
+        "fails": [
+          "equity DD worse than baseline"
+        ]
+      }
+    ],
+    "promotion": "NOT APPROVED: same-year search and partial real-tick coverage"
+  },
+  {
+    "ea": "asia",
+    "label": "Asia Breakout Gold",
+    "baseline": "asia-BASE",
+    "selected": "asia-DI_ONLY",
+    "selected_variant": "DI_ONLY",
+    "passes_descriptive_screen": true,
+    "highest_filtered_pf": "asia-ADX20_DI",
+    "assessment": [
+      {
+        "variant": "DI_ONLY",
+        "fails": []
+      },
+      {
+        "variant": "ADX20",
+        "fails": [
+          "PF improvement below 0.05",
+          "equity DD worse than baseline"
+        ]
+      },
+      {
+        "variant": "ADX25",
+        "fails": [
+          "PF improvement below 0.05",
+          "return below baseline",
+          "equity DD worse than baseline"
+        ]
+      },
+      {
+        "variant": "ADX20_DI",
+        "fails": [
+          "equity DD worse than baseline"
+        ]
+      },
+      {
+        "variant": "ADX25_DI",
+        "fails": [
+          "PF improvement below 0.05",
+          "return below baseline",
+          "equity DD worse than baseline"
+        ]
+      }
+    ],
+    "promotion": "NOT APPROVED: same-year search and partial real-tick coverage"
+  },
+  {
+    "ea": "london",
+    "label": "USDJPY London Momentum",
+    "baseline": "london-BASE",
+    "selected": "london-ADX20_DI",
+    "selected_variant": "ADX20_DI",
+    "passes_descriptive_screen": true,
+    "highest_filtered_pf": "london-ADX20_DI",
+    "assessment": [
+      {
+        "variant": "DI_ONLY",
+        "fails": []
+      },
+      {
+        "variant": "ADX20",
+        "fails": []
+      },
+      {
+        "variant": "ADX25",
+        "fails": []
+      },
+      {
+        "variant": "ADX20_DI",
+        "fails": []
+      },
+      {
+        "variant": "ADX25_DI",
+        "fails": [
+          "retains less than half the baseline trade count"
+        ]
+      }
+    ],
+    "promotion": "NOT APPROVED: same-year search and partial real-tick coverage"
+  },
+  {
+    "ea": "rsi",
+    "label": "XAU RSI VWAP",
+    "baseline": "rsi-BASE",
+    "selected": "rsi-BASE",
+    "selected_variant": "BASE",
+    "passes_descriptive_screen": false,
+    "highest_filtered_pf": "rsi-ADX20",
+    "assessment": [
+      {
+        "variant": "DI_ONLY",
+        "fails": [
+          "PF below 1.20",
+          "PF improvement below 0.05",
+          "non-positive net",
+          "return below baseline",
+          "equity DD worse than baseline"
+        ]
+      },
+      {
+        "variant": "ADX20",
+        "fails": [
+          "fewer than 30 trades",
+          "retains less than half the baseline trade count",
+          "return below baseline"
+        ]
+      },
+      {
+        "variant": "ADX25",
+        "fails": [
+          "fewer than 30 trades",
+          "retains less than half the baseline trade count",
+          "return below baseline"
+        ]
+      },
+      {
+        "variant": "ADX20_DI",
+        "fails": [
+          "fewer than 30 trades",
+          "retains less than half the baseline trade count",
+          "return below baseline"
+        ]
+      },
+      {
+        "variant": "ADX25_DI",
+        "fails": [
+          "fewer than 30 trades",
+          "retains less than half the baseline trade count",
+          "PF below 1.20",
+          "PF improvement below 0.05",
+          "return below baseline"
+        ]
+      }
+    ],
+    "promotion": "NOT APPROVED: same-year search and partial real-tick coverage"
+  }
+]

@@ -1,0 +1,22 @@
+Additional reporting notes (no change to frozen entry/exit/risk configurations):
+When no filter arm meets the pre-written nomination gate, keep its nomination
+empty. For completeness only, run a fresh-start native quarter on that EA's
+highest-PF PREDEFINED year arm. This is a diagnostic of the rejected arm, not a
+new selection, promotion, new search dimension or independent holdout claim.
+The diagnostic is identified separately in QUARTER_DIAGNOSTICS.json.
+All displayed quarter comparisons are fresh-start native MT5 simulations,
+including the original baseline. They are not year closing-trade cohorts;
+that planned cohort-only diagnostic was superseded by the stricter native
+restart comparison without changing year selection or any trading inputs.
+The quarter overlaps the searched year, so it is not an untouched holdout.
+
+3 Way Gold: report trade counts and win/PF/streak metrics per completed position
+ID, grouping partial exits. Reconstructed curves and daily Sharpe book the full
+position's P/L on its final-close date; they do not model intermediate partial
+profit realization. Floating equity drawdown is read from the native MT5 report.
+Do not compare its position win rate to older partial-close-deal win rates.
+
+The previously quoted 390 XAU Weakness and 225 Sell Nasdaq trade counts came
+from stored THREE-YEAR catalog evidence, despite the field name one_year_evidence.
+The current study uses verified native exact dates, never that field as a year.
+No website or live configuration is changed by this research.

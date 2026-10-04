@@ -1,0 +1,188 @@
+[
+  {
+    "asset": "US30",
+    "verdict": "RESEARCH ONLY \u2014 FAILED LONG-WINDOW GATE",
+    "gates": {
+      "raw_3y_5y_positive_pf115": false,
+      "year_pf120_win50": true,
+      "quarter_pf120_win50": true,
+      "bootstrap_profit95": true,
+      "bootstrap_return_p05_positive": true,
+      "bootstrap_pf_p05_above1": true,
+      "deflated_sharpe95": false,
+      "recent_half_pf_above1": true,
+      "two_profitable_thirds": true,
+      "measured_cost_pf_above1": true,
+      "native_500ms_pf_above1": true,
+      "all_neighbors_profitable": false,
+      "no_native_account_failure": false,
+      "independent_broker_test": false,
+      "untouched_prospective_holdout": false,
+      "native_equity_path_present": true,
+      "closed_pnl_10pct_breach_below5pct": false,
+      "historical_bid_ask_spread_integrity_verified": false
+    },
+    "friction": {
+      "entry_spread_median_usd_per_lot": 0.0,
+      "entry_spread_p95_usd_per_lot": 0.5,
+      "adverse_entry_fill_p95_usd_per_lot": 1.5999999999985448,
+      "surcharge_per_trade": 2.099999999998545,
+      "cpp": 1.0,
+      "scope": "one extra observed P95 entry spread plus P95 adverse fill; exit spread not independently measured"
+    },
+    "cost_stress": {
+      "double_commission": {
+        "pf": 1.2939672184850195,
+        "return_pct": 66.7646,
+        "win_rate_pct": 52.156224572823426
+      },
+      "double_negative_swap": {
+        "pf": 1.3334228340491152,
+        "return_pct": 74.50730000000001,
+        "win_rate_pct": 53.37672904800651
+      },
+      "measured_extra_friction": {
+        "pf": 1.2064297262401251,
+        "return_pct": 48.698300000017895,
+        "win_rate_pct": 50.52888527257934
+      },
+      "all_extra_costs": {
+        "pf": 1.170818440029944,
+        "return_pct": 40.95560000001788,
+        "win_rate_pct": 49.959316517493896
+      }
+    },
+    "trial_count": 294,
+    "why_not_promoted": "Hours were chosen on the latest year; no genuinely untouched holdout or independent broker. Bootstrap does not correct this selection bias.",
+    "data_quality": {
+      "asset": "US30",
+      "year_zero_entry_spread_fraction_pct": 68.67371847030105,
+      "real2026_zero_entry_spread_fraction_pct": 90.36402569593149,
+      "warning": "Many native entry quotes have zero recorded bid/ask spread, including the real-tick section. Native costs are the recorded tester costs, not proof of realistic historical/live spreads or fills. Additional measured-friction stress is supplied, but realistic historical quote coverage remains unverified."
+    }
+  },
+  {
+    "asset": "US100",
+    "verdict": "RESEARCH ONLY \u2014 FAILED LONG-WINDOW GATE",
+    "gates": {
+      "raw_3y_5y_positive_pf115": false,
+      "year_pf120_win50": true,
+      "quarter_pf120_win50": false,
+      "bootstrap_profit95": true,
+      "bootstrap_return_p05_positive": true,
+      "bootstrap_pf_p05_above1": true,
+      "deflated_sharpe95": false,
+      "recent_half_pf_above1": true,
+      "two_profitable_thirds": true,
+      "measured_cost_pf_above1": true,
+      "native_500ms_pf_above1": true,
+      "all_neighbors_profitable": false,
+      "no_native_account_failure": false,
+      "independent_broker_test": false,
+      "untouched_prospective_holdout": false,
+      "native_equity_path_present": true,
+      "closed_pnl_10pct_breach_below5pct": true,
+      "historical_bid_ask_spread_integrity_verified": false
+    },
+    "friction": {
+      "entry_spread_median_usd_per_lot": 0.0,
+      "entry_spread_p95_usd_per_lot": 1.0,
+      "adverse_entry_fill_p95_usd_per_lot": 1.6899999999986903,
+      "surcharge_per_trade": 2.6899999999986903,
+      "cpp": 1.0,
+      "scope": "one extra observed P95 entry spread plus P95 adverse fill; exit spread not independently measured"
+    },
+    "cost_stress": {
+      "double_commission": {
+        "pf": 1.2609293066591702,
+        "return_pct": 54.671500000000016,
+        "win_rate_pct": 54.05636208368916
+      },
+      "double_negative_swap": {
+        "pf": 1.2993678450028059,
+        "return_pct": 61.77210000000001,
+        "win_rate_pct": 54.824935952177626
+      },
+      "measured_extra_friction": {
+        "pf": 1.138281061511787,
+        "return_pct": 30.54890000001534,
+        "win_rate_pct": 51.83603757472246
+      },
+      "all_extra_costs": {
+        "pf": 1.1018937318726325,
+        "return_pct": 22.89490000001535,
+        "win_rate_pct": 51.06746370623399
+      }
+    },
+    "trial_count": 294,
+    "why_not_promoted": "Hours were chosen on the latest year; no genuinely untouched holdout or independent broker. Bootstrap does not correct this selection bias.",
+    "data_quality": {
+      "asset": "US100",
+      "year_zero_entry_spread_fraction_pct": 50.72587532023911,
+      "real2026_zero_entry_spread_fraction_pct": 66.8918918918919,
+      "warning": "Many native entry quotes have zero recorded bid/ask spread, including the real-tick section. Native costs are the recorded tester costs, not proof of realistic historical/live spreads or fills. Additional measured-friction stress is supplied, but realistic historical quote coverage remains unverified."
+    }
+  },
+  {
+    "asset": "SP500",
+    "verdict": "RESEARCH ONLY \u2014 FAILED LONG-WINDOW GATE",
+    "gates": {
+      "raw_3y_5y_positive_pf115": false,
+      "year_pf120_win50": true,
+      "quarter_pf120_win50": false,
+      "bootstrap_profit95": true,
+      "bootstrap_return_p05_positive": true,
+      "bootstrap_pf_p05_above1": true,
+      "deflated_sharpe95": false,
+      "recent_half_pf_above1": true,
+      "two_profitable_thirds": true,
+      "measured_cost_pf_above1": false,
+      "native_500ms_pf_above1": true,
+      "all_neighbors_profitable": false,
+      "no_native_account_failure": true,
+      "independent_broker_test": false,
+      "untouched_prospective_holdout": false,
+      "native_equity_path_present": true,
+      "closed_pnl_10pct_breach_below5pct": true,
+      "historical_bid_ask_spread_integrity_verified": false
+    },
+    "friction": {
+      "entry_spread_median_usd_per_lot": 0.0,
+      "entry_spread_p95_usd_per_lot": 0.5,
+      "adverse_entry_fill_p95_usd_per_lot": 0.15000000000031832,
+      "surcharge_per_trade": 0.6500000000003183,
+      "cpp": 1.0,
+      "scope": "one extra observed P95 entry spread plus P95 adverse fill; exit spread not independently measured"
+    },
+    "cost_stress": {
+      "double_commission": {
+        "pf": 1.2774561075831157,
+        "return_pct": 1.1884,
+        "win_rate_pct": 50.48543689320388
+      },
+      "double_negative_swap": {
+        "pf": 1.422858277685376,
+        "return_pct": 1.7033999999999998,
+        "win_rate_pct": 50.970873786407765
+      },
+      "measured_extra_friction": {
+        "pf": 1.0772852598089746,
+        "return_pct": 0.36439999999934386,
+        "win_rate_pct": 44.1747572815534
+      },
+      "all_extra_costs": {
+        "pf": 0.9699167016238898,
+        "return_pct": -0.15060000000065585,
+        "win_rate_pct": 42.71844660194174
+      }
+    },
+    "trial_count": 294,
+    "why_not_promoted": "Hours were chosen on the latest year; no genuinely untouched holdout or independent broker. Bootstrap does not correct this selection bias.",
+    "data_quality": {
+      "asset": "SP500",
+      "year_zero_entry_spread_fraction_pct": 67.47572815533981,
+      "real2026_zero_entry_spread_fraction_pct": 88.53503184713377,
+      "warning": "Many native entry quotes have zero recorded bid/ask spread, including the real-tick section. Native costs are the recorded tester costs, not proof of realistic historical/live spreads or fills. Additional measured-friction stress is supplied, but realistic historical quote coverage remains unverified."
+    }
+  }
+]

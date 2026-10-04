@@ -453,7 +453,9 @@ Active News products:
 - News Pulse EURUSD — EURUSD;
 - Gold News V9 Direction — separate XAU direction system, evidence-pending unless newer verified evidence exists.
 
-EURUSD was explicitly restored by the user on 2026-09-19. The maintained roster has 33 EAs. Four simultaneous News Pulse straddles plan 6% combined before rounding, gaps and costs; Gold News V9 adds exposure. Do not silently reduce approved risk or remove assets, but keep these limitations visible.
+Normal BATs restore all five news systems under the user's 2026-10-03 instruction. The maintained normal roster has 35 EAs. The separate FTMO launcher remains unchanged and news-free; Ava remains gold-only. Four simultaneous News Pulse straddles plan 6% combined before rounding, gaps and costs; Gold News V9 adds exposure. Do not silently reduce approved risk or remove assets, but keep these limitations visible.
+
+2026-10-03 placement release: XAU and Multi Asset News Pulse v2.21 retry only missing, definitively rejected sides at fresh quotes before the event deadline. Repaired geometry is risk-sized again. Crossed/unplaceable pending levels may fall back to same-direction market entries with attached protective stops. Persist accepted and uncertain side masks, reconcile owned orders/positions/history, and do not re-enter a manually closed accepted side or blindly retry an uncertain broker response. Brokers can still reject for market closure, margin or permissions. Original event risk, timing and exits are retained; this is not the superseded exit optimisation. Gold News V9 v1.15 retains directional market logic with bounded fresh-quote repair. Native injected-failure tests are functional evidence, not performance evidence. Older source-generation backtests must not be displayed as current v2.21 performance; matching replay evidence is pending.
 
 Every News backtest must disclose calendar coverage, real/generated tick coverage, bid/ask availability, costs, event-count audit, skipped events, sequencing limitations, and that generated ticks do not prove live news fills.
 
@@ -610,7 +612,7 @@ The website displays evidence; it does not invent it.
 - Show current selected/Recommended Adaptive evidence, not the old Raw Spread comparison view.
 - Support 6m, 1y, 3y, and 5y where coverage exists.
 - Keep XAU/XAG/BTC/EURUSD News data mapped to the matching product and source generation.
-- News Pulse EURUSD is active again with the approved v2.17 full-year fitted profile; never substitute XAG legacy chart data for it.
+- News Pulse EURUSD is active in the normal BAT roster with current v2.21 placement logic and unchanged event parameters. Older fitted-profile results are historical only until a source-bound current replay exists; never substitute XAG legacy chart data for it.
 - Card, detail metrics, trade count/table, and chart must come from one cache generation.
 - “View trades” must reach populated history.
 - Build price charts when underlying evidence permits; explain unavailable charts.
@@ -872,3 +874,17 @@ Update this prompt whenever the active roster, selected profile, News logic/geom
 Do not hard-code headline returns here. Read current product/portfolio numbers from generated evidence and verify against ledgers each time.
 
 Core principle: **one coded rule set, one exact test artifact, one evidence chain, one matching website representation.**
+
+---
+
+## 25. Website-only hourly profile previews (2026-10-04)
+
+- User selected US30 and US100 from `Indices Hourly EA Pipeline 2026-10-03` for website display only. SP500 is not added.
+- Routes: `/eas/us30-hourly-profiles` and `/eas/us100-hourly-profiles`. Publish only `1y` and `6m`, both ending **2026-10-03 exclusive**; starts are 2025-10-03 and 2026-04-03. Unsupported detail periods redirect to 1y; long-period series endpoints reject them. Other products' period choices remain unchanged.
+- Two six-month native Model 4 tests use the same frozen EX5/hours, $10k initial balance, one fixed CFD lot and 150ms execution delay. No hour re-selection. `WEBSITE-NATIVE.json` and `WEBSITE-RELEASE.json` retain source/SET/report hashes and reconciliation. Original full-pipeline results remain archived unchanged.
+- US30 buys NY 02/06 and sells 00/15/22; US100 buys NY 02/13/20 and sells 14/22. Timed 60-minute exit, no SL/TP/trailing, delayed/weekend exits included. **One lot is not 1% risk.** No Est. R may be invented.
+- Labels must stay **Research evidence**: selected on the latest year, overlapping recent windows, failed long-history gate, frequent zero-spread historical quotes and no independent/prospective validation. Recent-only publication must not suppress these limitations.
+- `get_catalog()` and `get_sellable_catalog()` retain the active installer roster. `get_website_catalog()` separately adds these `website_only` previews. Do not silently add them to BATs, the shared portfolio, FTMO simulations, licensed deliverables, checkout or live MT5 charts. They are not for sale by this change.
+- Product cards/details/API/risk visuals use the same four recent caches. Headlines use net native position outcomes and native tickwise floating-equity drawdown. Charts use closed position-completion balance, costs attributed at close; site-wide annualised daily Sharpe remains distinct from MT5 report Sharpe.
+- The portfolio is not rebuilt for this website-only addition: its roster and all portfolio cache hashes must remain unchanged, as recorded in the release. Active-installation or promotion would require a separate explicit request and a new portfolio audit.
+- Local website restart/reload is not Git publishing or public VPS deployment. Never claim that the public site has been deployed without confirming it.

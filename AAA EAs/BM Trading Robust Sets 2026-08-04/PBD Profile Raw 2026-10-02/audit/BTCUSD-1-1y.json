@@ -1,0 +1,492 @@
+{
+  "label": "PBD CFD proxy raw BTCUSD-1-1y",
+  "verdict": "REJECT",
+  "metadata": {
+    "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\reports\\pbd-profile-raw-20261002\\pbd-BTCUSD-1-1y-f844b1b5.htm",
+    "initial_balance": 10000.0,
+    "reported_net_profit": -1064.07,
+    "reported_profit_factor": 0.74,
+    "reported_win_rate_pct": 38.1,
+    "reported_max_drawdown_pct": 16.04,
+    "reported_trades": 63,
+    "reported_sharpe": -5.0,
+    "reported_recovery": -0.64,
+    "history_quality": "75% real ticks"
+  },
+  "metrics": {
+    "trades": 63,
+    "wins": 24,
+    "losses": 39,
+    "win_rate_pct": 38.095238095238095,
+    "win_rate_wilson_95_pct": [
+      27.117468465679718,
+      50.44136961976913
+    ],
+    "net_profit": -1064.07,
+    "return_pct": -10.640699999999999,
+    "profit_factor": 0.736075421904299,
+    "expected_payoff": -16.89,
+    "max_win_streak": 5,
+    "max_loss_streak": 10,
+    "daily_expected_shortfall_95_pct": 1.1237995276492794,
+    "recent_half_profit_factor": 0.431733128563611,
+    "profitable_thirds": 1,
+    "tested_configurations": 12,
+    "annualized_sharpe": -1.1105949041916572,
+    "probabilistic_sharpe_pct": 14.707004726546636,
+    "deflated_sharpe_pct": 0.3324871924700823,
+    "multiple_test_benchmark_sharpe": 1.7624265324527604,
+    "daily_skewness": 1.3879953147464266,
+    "daily_kurtosis": 12.028035123841565
+  },
+  "bootstrap": {
+    "paths": 10000,
+    "block_length": 5,
+    "probability_profit_pct": 12.879999999999999,
+    "return_p05_pct": -23.641457191710707,
+    "return_p50_pct": -10.763209975571257,
+    "return_p95_pct": 4.912229013673793,
+    "max_drawdown_p50_pct": 15.08184977340221,
+    "max_drawdown_p95_pct": 25.642395432044736,
+    "profit_factor_p05": 0.41562266894770405,
+    "profit_factor_p50": 0.7316527929510726,
+    "profit_factor_p95": 1.206605777499282,
+    "closed_pnl_daily_limit_breach_pct": 0.0,
+    "closed_pnl_total_limit_breach_pct": 66.12,
+    "breach_scope": "closed-trade P&L proxy; floating drawdown is not recoverable from an MT5 summary report"
+  },
+  "subperiods": [
+    {
+      "part": 1,
+      "start": "2025-10-02T15:50:40",
+      "end": "2026-01-07T16:36:01",
+      "trades": 21,
+      "net_profit": -553.41,
+      "profit_factor": 0.6223256512273854,
+      "win_rate_pct": 33.33333333333333
+    },
+    {
+      "part": 2,
+      "start": "2026-01-11T16:12:28",
+      "end": "2026-06-04T16:13:05",
+      "trades": 21,
+      "net_profit": 562.6,
+      "profit_factor": 1.5852856726727975,
+      "win_rate_pct": 57.14285714285714
+    },
+    {
+      "part": 3,
+      "start": "2026-06-10T14:49:18",
+      "end": "2026-09-22T15:00:01",
+      "trades": 21,
+      "net_profit": -1073.26,
+      "profit_factor": 0.3313730009905492,
+      "win_rate_pct": 23.809523809523807
+    }
+  ],
+  "cost_stress": {
+    "status": "not_run",
+    "reason": "supply --extra-cost-per-trade from broker evidence"
+  },
+  "gates": {
+    "minimum_30_closed_trades": true,
+    "positive_locked_return": false,
+    "profit_factor_above_1": false,
+    "bootstrap_return_p05_positive": false,
+    "bootstrap_pf_p05_above_1": false,
+    "deflated_sharpe_95pct": false,
+    "recent_half_pf_above_1": false,
+    "two_of_three_subperiods_profitable": false,
+    "closed_pnl_total_breach_below_5pct": false,
+    "cost_stress_supplied": false,
+    "cost_stress_pf_above_1": false
+  },
+  "trades": [
+    {
+      "closed_at": "2025-10-02T15:50:40",
+      "pnl": 79.14,
+      "commission": -1.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-03T14:37:13",
+      "pnl": -103.78,
+      "commission": -3.76,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-06T14:56:14",
+      "pnl": 204.14000000000001,
+      "commission": -2.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-13T16:22:19",
+      "pnl": -101.33999999999999,
+      "commission": -0.96,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-22T14:56:12",
+      "pnl": 120.14,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-10-31T14:52:32",
+      "pnl": 134.17,
+      "commission": -1.62,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-09T16:57:24",
+      "pnl": -103.08,
+      "commission": -1.36,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-14T18:23:28",
+      "pnl": -99.37,
+      "commission": -0.92,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-17T16:01:20",
+      "pnl": -101.61,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-21T17:06:41",
+      "pnl": 108.31,
+      "commission": -0.61,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-23T17:01:37",
+      "pnl": 29.79,
+      "commission": -0.92,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-24T16:01:28",
+      "pnl": -101.76,
+      "commission": -1.4,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-27T15:36:53",
+      "pnl": -102.87,
+      "commission": -3.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-30T16:20:10",
+      "pnl": -101.78,
+      "commission": -2.45,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-03T17:49:28",
+      "pnl": 236.21,
+      "commission": -1.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-11T15:49:39",
+      "pnl": -103.41,
+      "commission": -2.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-19T15:47:28",
+      "pnl": -100.68,
+      "commission": -1.23,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-27T16:20:14",
+      "pnl": -121.57,
+      "commission": -17.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-28T15:52:30",
+      "pnl": -129.12,
+      "commission": -20.83,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-02T16:15:14",
+      "pnl": -96.88,
+      "commission": -1.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-07T16:36:01",
+      "pnl": -98.06,
+      "commission": -1.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-11T16:12:28",
+      "pnl": -90.58,
+      "commission": -13.52,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-20T16:42:30",
+      "pnl": 112.32000000000001,
+      "commission": -1.05,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-01-25T15:39:49",
+      "pnl": 44.98,
+      "commission": -6.74,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-09T16:42:03",
+      "pnl": 317.90999999999997,
+      "commission": -1.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-12T15:54:01",
+      "pnl": -106.00999999999999,
+      "commission": -2.1,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-17T17:50:50",
+      "pnl": -103.86,
+      "commission": -2.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-19T16:07:17",
+      "pnl": 110.38000000000001,
+      "commission": -1.27,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-22T17:33:10",
+      "pnl": 159.67999999999998,
+      "commission": -5.08,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-27T15:52:58",
+      "pnl": 182.0,
+      "commission": -2.71,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-12T15:27:43",
+      "pnl": 150.19,
+      "commission": -1.66,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-15T14:56:12",
+      "pnl": 83.52000000000001,
+      "commission": -3.41,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-17T15:50:58",
+      "pnl": -100.29,
+      "commission": -2.54,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-03-22T15:05:03",
+      "pnl": -107.19,
+      "commission": -3.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-05T15:10:08",
+      "pnl": 2.44,
+      "commission": -3.85,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-12T14:39:56",
+      "pnl": 142.29000000000002,
+      "commission": -6.39,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-03T14:52:19",
+      "pnl": -115.11,
+      "commission": -11.81,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-05T15:11:52",
+      "pnl": 214.99,
+      "commission": -3.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-09T14:51:13",
+      "pnl": -129.1,
+      "commission": -18.9,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-12T14:40:38",
+      "pnl": 3.14,
+      "commission": -1.31,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-05-20T14:53:23",
+      "pnl": -108.0,
+      "commission": -2.67,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-04T16:13:05",
+      "pnl": -101.10000000000001,
+      "commission": -1.84,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-10T14:49:18",
+      "pnl": -104.77000000000001,
+      "commission": -8.18,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-17T15:08:49",
+      "pnl": -96.42,
+      "commission": -1.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-28T14:50:26",
+      "pnl": 52.24,
+      "commission": -6.3,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-02T17:35:23",
+      "pnl": -105.45,
+      "commission": -4.11,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-04T15:00:19",
+      "pnl": -97.25,
+      "commission": -7.57,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-09T15:22:43",
+      "pnl": -106.35000000000001,
+      "commission": -3.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-22T15:14:46",
+      "pnl": 179.13,
+      "commission": -2.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-27T18:15:15",
+      "pnl": -101.38,
+      "commission": -4.33,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-07-29T15:00:46",
+      "pnl": -98.78999999999999,
+      "commission": -2.63,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-04T15:42:12",
+      "pnl": -102.25,
+      "commission": -3.15,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-07T16:31:29",
+      "pnl": -105.36,
+      "commission": -2.67,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-09T14:37:46",
+      "pnl": -110.57,
+      "commission": -14.79,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-21T16:49:27",
+      "pnl": -90.78999999999999,
+      "commission": -1.88,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-23T17:01:46",
+      "pnl": -112.19,
+      "commission": -13.78,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-24T15:03:44",
+      "pnl": -90.26,
+      "commission": -1.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-28T15:00:07",
+      "pnl": -92.94000000000001,
+      "commission": -1.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-31T14:36:34",
+      "pnl": -88.95,
+      "commission": -1.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-04T15:37:34",
+      "pnl": 123.07,
+      "commission": -2.93,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-05T15:20:07",
+      "pnl": -101.44999999999999,
+      "commission": -11.24,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-16T14:48:57",
+      "pnl": 113.67,
+      "commission": -3.06,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-22T15:00:01",
+      "pnl": 63.800000000000004,
+      "commission": -0.79,
+      "swap": 0.0
+    }
+  ],
+  "native_equity_drawdown_pct": 16.04,
+  "promotion_block": "No independent volume-at-price, pristine holdout, matched-random control, measured incremental-cost stress or prospective demo. DSR12 adjusts current asset/module candidates only; prior volume-profile studies and broader idea-selection bias remain. Not FTMO predictions.",
+  "illustrative_005R_extra_friction": {
+    "net": -1371.9288199999999,
+    "return_pct": -13.7192882,
+    "pf": 0.6754322854707715,
+    "not_broker_measured": true
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "label": "PBD CFD proxy raw BTCUSD-2-1y",
+  "verdict": "WATCH_ONLY",
+  "metadata": {
+    "source_report": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\reports\\pbd-profile-raw-20261002\\pbd-BTCUSD-2-1y-6042cb91.htm",
+    "initial_balance": 10000.0,
+    "reported_net_profit": 206.83,
+    "reported_profit_factor": 1.42,
+    "reported_win_rate_pct": 60.0,
+    "reported_max_drawdown_pct": 2.48,
+    "reported_trades": 10,
+    "reported_sharpe": 4.69,
+    "reported_recovery": 0.8,
+    "history_quality": "75% real ticks"
+  },
+  "metrics": {
+    "trades": 10,
+    "wins": 6,
+    "losses": 4,
+    "win_rate_pct": 60.0,
+    "win_rate_wilson_95_pct": [
+      31.267376973365828,
+      83.18196702937637
+    ],
+    "net_profit": 206.83,
+    "return_pct": 2.0683,
+    "profit_factor": 1.489063867016623,
+    "expected_payoff": 20.683,
+    "max_win_streak": 3,
+    "max_loss_streak": 2,
+    "daily_expected_shortfall_95_pct": 0.013230976287291937,
+    "recent_half_profit_factor": 0.5158683286189426,
+    "profitable_thirds": 2,
+    "tested_configurations": 12,
+    "annualized_sharpe": 0.6249019604810695,
+    "probabilistic_sharpe_pct": 73.19189003356837,
+    "deflated_sharpe_pct": 14.773792367905203,
+    "multiple_test_benchmark_sharpe": 1.6816985460821183,
+    "daily_skewness": 3.9792812651291665,
+    "daily_kurtosis": 62.16464318884807
+  },
+  "bootstrap": {
+    "paths": 10000,
+    "block_length": 5,
+    "probability_profit_pct": 72.89999999999999,
+    "return_p05_pct": -3.0599353311383743,
+    "return_p50_pct": 1.9768028585406272,
+    "return_p95_pct": 8.051735582685703,
+    "max_drawdown_p50_pct": 2.08355448160593,
+    "max_drawdown_p95_pct": 4.678075812764676,
+    "profit_factor_p05": 0.7099922452762384,
+    "profit_factor_p50": 1.489063867016623,
+    "profit_factor_p95": 2.806723219072246,
+    "closed_pnl_daily_limit_breach_pct": 0.0,
+    "closed_pnl_total_limit_breach_pct": 0.0,
+    "breach_scope": "closed-trade P&L proxy; floating drawdown is not recoverable from an MT5 summary report"
+  },
+  "subperiods": [
+    {
+      "part": 1,
+      "start": "2025-11-05T16:20:27",
+      "end": "2025-12-27T18:13:40",
+      "trades": 3,
+      "net_profit": -4.490000000000002,
+      "profit_factor": 0.9556324110671938,
+      "win_rate_pct": 66.66666666666666
+    },
+    {
+      "part": 2,
+      "start": "2026-02-17T15:44:56",
+      "end": "2026-06-10T15:31:08",
+      "trades": 4,
+      "net_profit": 151.16,
+      "profit_factor": 1.7001065258672594,
+      "win_rate_pct": 50.0
+    },
+    {
+      "part": 3,
+      "start": "2026-06-17T15:30:29",
+      "end": "2026-09-18T16:17:04",
+      "trades": 3,
+      "net_profit": 60.16000000000002,
+      "profit_factor": 1.5686200378071835,
+      "win_rate_pct": 66.66666666666666
+    }
+  ],
+  "cost_stress": {
+    "status": "not_run",
+    "reason": "supply --extra-cost-per-trade from broker evidence"
+  },
+  "gates": {
+    "minimum_30_closed_trades": false,
+    "positive_locked_return": true,
+    "profit_factor_above_1": true,
+    "bootstrap_return_p05_positive": false,
+    "bootstrap_pf_p05_above_1": false,
+    "deflated_sharpe_95pct": false,
+    "recent_half_pf_above_1": false,
+    "two_of_three_subperiods_profitable": true,
+    "closed_pnl_total_breach_below_5pct": true,
+    "cost_stress_supplied": false,
+    "cost_stress_pf_above_1": false
+  },
+  "trades": [
+    {
+      "closed_at": "2025-11-05T16:20:27",
+      "pnl": 43.46,
+      "commission": -1.44,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-11-14T16:25:38",
+      "pnl": -101.2,
+      "commission": -1.14,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2025-12-27T18:13:40",
+      "pnl": 53.25,
+      "commission": -21.26,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-02-17T15:44:56",
+      "pnl": 219.82999999999998,
+      "commission": -4.55,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-05T15:04:39",
+      "pnl": 147.24,
+      "commission": -17.19,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-04-08T16:30:29",
+      "pnl": -106.27,
+      "commission": -2.58,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-10T15:31:08",
+      "pnl": -109.64,
+      "commission": -3.46,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-06-17T15:30:29",
+      "pnl": 59.190000000000005,
+      "commission": -3.94,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-08-09T16:02:39",
+      "pnl": 106.77000000000001,
+      "commission": -26.69,
+      "swap": 0.0
+    },
+    {
+      "closed_at": "2026-09-18T16:17:04",
+      "pnl": -105.8,
+      "commission": -2.58,
+      "swap": 0.0
+    }
+  ],
+  "native_equity_drawdown_pct": 2.48,
+  "promotion_block": "No independent volume-at-price, pristine holdout, matched-random control, measured incremental-cost stress or prospective demo. DSR12 adjusts current asset/module candidates only; prior volume-profile studies and broader idea-selection bias remain. Not FTMO predictions.",
+  "illustrative_005R_extra_friction": {
+    "net": 156.08968999999996,
+    "return_pct": 1.5608968999999997,
+    "pf": 1.3520310635948793,
+    "not_broker_measured": true
+  }
+}

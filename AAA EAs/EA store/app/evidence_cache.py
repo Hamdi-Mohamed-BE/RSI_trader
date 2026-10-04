@@ -17,7 +17,7 @@ PERIOD_OPTIONS: tuple[dict[str, str], ...] = (
     {"value": "5y", "label": "Last 5 years"},
 )
 PERIOD_KEYS = frozenset(option["value"] for option in PERIOD_OPTIONS)
-DEFAULT_PERIOD = "3y"
+DEFAULT_PERIOD = "1y"
 
 
 def validate_period(period: str) -> str:
@@ -63,27 +63,33 @@ def _with_cached_trades(payload_path: Path, trades_path: Path) -> dict[str, Any]
 
 
 def load_product_cache(slug: str, mode: str, period: str) -> dict[str, Any] | None:
-    return _with_cached_trades(
+    from .admission_release import label_product_payload
+    from .hourly_profiles import verified_cache
+    return verified_cache(slug, mode, period, label_product_payload(slug, mode, _with_cached_trades(
         product_cache_path(slug, mode, period),
         product_trades_path(slug, mode, period),
-    )
+    )))
 
 
 def load_product_summary(slug: str, mode: str, period: str) -> dict[str, Any] | None:
     path = product_cache_path(slug, mode, period)
-    return dict(_read_json(path)) if path.is_file() else None
+    from .admission_release import label_product_payload
+    from .hourly_profiles import verified_cache
+    return verified_cache(slug, mode, period, label_product_payload(slug, mode, dict(_read_json(path)) if path.is_file() else None))
 
 
 def load_portfolio_cache(mode: str, period: str) -> dict[str, Any] | None:
-    return _with_cached_trades(
+    from .admission_release import label_portfolio_payload
+    return label_portfolio_payload(_with_cached_trades(
         portfolio_cache_path(mode, period),
         portfolio_trades_path(mode, period),
-    )
+    ))
 
 
 def load_portfolio_summary(mode: str, period: str) -> dict[str, Any] | None:
     path = portfolio_cache_path(mode, period)
-    return dict(_read_json(path)) if path.is_file() else None
+    from .admission_release import label_portfolio_payload
+    return label_portfolio_payload(dict(_read_json(path)) if path.is_file() else None)
 
 
 def load_cached_trade(slug: str, mode: str, period: str, number: int) -> dict[str, Any] | None:

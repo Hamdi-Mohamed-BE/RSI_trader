@@ -1,0 +1,34 @@
+{
+  "version": "ADXDI-FINAL-20261003",
+  "final_selection": {
+    "USDJPY London": "Keep ADX14 >=20 + DI on completed M15",
+    "Asia Gold": "Remove added ADX/DI; preserve existing Markov gate",
+    "EMA3 Gold": "Remove added ADX/DI; exact baseline, Markov off",
+    "Trend Progression": "Remove added ADX/DI; preserve 0.6R target",
+    "RSI VWAP": "Unchanged"
+  },
+  "targeted_tests_passed": 103,
+  "targeted_test_modules": [
+    "test_admission_release", "test_gold_targets", "test_orb_comments",
+    "test_nasdaq_di_prompt", "test_nasdaq_wide_atr", "test_risk_metrics",
+    "test_risk_visuals", "test_store_chain"
+  ],
+  "offline_installer_modes_passed": 8,
+  "matching_bats": 9,
+  "ftmo_integrity_checked_eas": 14,
+  "ftmo_guard_and_risk_unchanged": true,
+  "ftmo_binaries_rebuilt": ["ema3", "xau-trend-progression"],
+  "usd_jpy_ftmo_binary_and_inputs_unchanged": true,
+  "rsi_and_licensed_client_hashes_unchanged": true,
+  "native_selected_arm_cache_checks": 12,
+  "local_http_evidence_checks": 12,
+  "current_standalone_periods": ["1y", "3y", "5y"],
+  "six_month_and_combined_forecasts": "Archived; not revalidated",
+  "prior_research_preserved": true,
+  "git_diff_check_passed": true,
+  "live_mt5_accessed_or_changed": false,
+  "local_website_restarted": true,
+  "remote_website_deployed": false,
+  "github_pushed": false,
+  "scope": "Targeted final-selection checks; not a claim that unrelated legacy tests pass"
+}

@@ -1,0 +1,15 @@
+Before presenting or selecting an hour, native execution verification was added
+because prior M1 evidence disclosed zero-spread artifacts and omitted commission.
+No timing choices have changed. Both directions, all hours, same two windows.
+Native Model 4 real ticks where available, generated fallback explicitly retained;
+150ms execution setting, actual charged commission/swap, independent hour magics.
+One native pass per asset/window executes the whole comparison family on a large
+$1,000,000 research balance to prevent unrelated comparison legs exhausting shared
+test margin. Each strategy's return/DD uses its own $10,000 reference, 1 fixed lot.
+This is NOT a deployable portfolio or margin-tested $10,000 account. Entry within
+first NY hour minute, fixed 60-minute scheduled hold; 16:00/17:00 NY excluded for
+known daily market closure. Missing entry/end timestamps or M1 holes are removed
+from comparison statistics AFTER execution. No future-data rule chooses entries.
+Native per-strategy equity drawdown will be kept separately from closed-balance
+DD. The screenshot overnight rule is tested separately to avoid comparison-stack
+interference. No live terminal chart/risk/order settings are changed.

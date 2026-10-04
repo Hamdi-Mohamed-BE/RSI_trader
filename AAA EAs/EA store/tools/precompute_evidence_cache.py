@@ -270,6 +270,11 @@ def cleanup_stale_dynamic_artifacts() -> int:
 
 
 def run_native(product: Product, mode: str, period: str, start: date, end: date, *, force: bool) -> Path:
+    from app.admission_release import MANAGED_SLUGS, verified_payload as admission_payload
+    if product.slug in MANAGED_SLUGS:
+        if force:raise RuntimeError('Use the frozen ADX/DI release runner for fresh native tests')
+        admission_payload(product,mode,period,start,end)
+        return source_paths(product,mode,period)[0]
     from app.gold_targets import SLUGS, verified_payload
     if product.slug in SLUGS:
         if force: raise RuntimeError('Use the audited Gold target runner for fresh native tests')
@@ -343,6 +348,12 @@ def run_native(product: Product, mode: str, period: str, start: date, end: date,
 
 
 def product_payload(product: Product, mode: str, period: str, start: date, end: date, report: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    from app.admission_release import MANAGED_SLUGS, verified_payload as admission_payload
+    if product.slug in MANAGED_SLUGS:
+        p,rows=admission_payload(product,mode,period,start,end)
+        if file_hash(report)!=p['source_fingerprint']['production_native_report_sha256']:
+            raise RuntimeError('ADX/DI source report identity mismatch')
+        return p,rows
     from app.gold_targets import SLUGS, verified_payload
     if product.slug in SLUGS:
         return verified_payload(product, mode, period, start, end)

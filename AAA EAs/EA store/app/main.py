@@ -11,7 +11,7 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.concurrency import run_in_threadpool
 from pydantic import ValidationError as PydanticValidationError
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -27,7 +27,8 @@ from .catalog import (
     Product,
     get_development_catalog,
     get_catalog,
-    get_product,
+    get_website_product as get_product,
+    get_website_catalog,
     get_sellable_catalog,
     _legacy_news_pulse_hard_evidence,
     package_buy_url,
@@ -149,7 +150,8 @@ def _cached_display_product(product: Product, period: str = DEFAULT_PERIOD) -> P
 
 
 def _display_catalog(period: str = DEFAULT_PERIOD) -> list[Product]:
-    return [_cached_display_product(product, period) for product in get_sellable_catalog()]
+    return [_cached_display_product(product, period) for product in get_website_catalog()
+            if period in product.supported_evidence_periods]
 
 
 @lru_cache(maxsize=4)
@@ -252,7 +254,7 @@ def _base_context(request: Request, active: str) -> dict[str, Any]:
     return {
         "request": request,
         "active": active,
-        "product_count": len(products),
+        "product_count": len(get_website_catalog()),
         "installer_product_count": len(products) + len(development),
         "development_count": len(development),
         "whatsapp_number": WHATSAPP_NUMBER,
@@ -284,10 +286,11 @@ def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> di
             "commission": float(combined.get("commission") or 0),
             "swap": float(combined.get("swap") or 0),
             "total_costs": float(combined.get("total_costs") or 0),
-            "verdict": "PRECOMPUTED RECOMMENDED ADAPTIVE PORTFOLIO" if mode == "standard" else "PRECOMPUTED CURRENT PORTFOLIO",
+            "verdict": "ARCHIVED PRE-ADX/DI PORTFOLIO" if cached.get('is_current_configuration') is False else "PRECOMPUTED RECOMMENDED ADAPTIVE PORTFOLIO" if mode == "standard" else "PRECOMPUTED CURRENT PORTFOLIO",
             "period": str(cached["period"]),
             "mode": mode,
-            "label": "Recommended adaptive configuration" if mode == "standard" else "Current configuration",
+            "label": "Archived pre-ADX/DI configuration" if cached.get('is_current_configuration') is False else "Recommended adaptive configuration" if mode == "standard" else "Current configuration",
+            "is_current_configuration": cached.get('is_current_configuration',True),
             "individually_filtered_eas": sum(1 for product in get_sellable_catalog() if product.exit_mode == "Dynamic 50/20"),
             "safe_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_safe_mode),
             "dynamic_by_design_eas": sum(1 for product in get_sellable_catalog() if product.recommended_dynamic_mode),
@@ -357,7 +360,7 @@ def _portfolio_audit(mode: str = "standard", period: str = DEFAULT_PERIOD) -> di
 
 def _portfolio_monte_carlo(period: str = DEFAULT_PERIOD) -> dict[str, Any]:
     cached = load_portfolio_summary("standard", period)
-    if not cached or not cached.get("monte_carlo"):
+    if not cached or not cached.get("monte_carlo") or cached.get('is_current_configuration') is False:
         return {"available": False}
     return {"available": True, **cached["monte_carlo"]}
 
@@ -375,7 +378,7 @@ def _cached_portfolio_rows() -> list[dict[str, Any]]:
 
 @app.get("/store", response_class=HTMLResponse)
 async def storefront(request: Request) -> HTMLResponse:
-    products = _display_catalog()
+    products = [product for product in _display_catalog() if not product.website_only]
     ranked_products = sorted(
         products,
         key=lambda product: product.one_year_return_pct if product.one_year_return_pct is not None else float("-inf"),
@@ -470,6 +473,8 @@ async def product_detail(
     product = get_product(slug)
     if product is None:
         raise HTTPException(status_code=404, detail="EA not found")
+    if period not in product.supported_evidence_periods:
+        return RedirectResponse(f"/eas/{product.slug}?period=1y", status_code=302)
     if mode is None:
         mode = _recommended_mode(product)
     related = [
@@ -514,7 +519,8 @@ async def product_detail(
         "related": related,
         "selected_mode": mode,
         "selected_period": period,
-        "period_options": PERIOD_OPTIONS,
+        "period_options": tuple(option for option in PERIOD_OPTIONS
+                                if option["value"] in product.supported_evidence_periods),
         "display_evidence": display_evidence,
         "is_news_pulse": is_news_pulse,
         "streak_stats": (cached or {}).get("stats", {}),
@@ -528,7 +534,7 @@ async def portfolio(
     mode: str = Query(default="standard", pattern=r"^(standard|current|safe)$"),
     period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
 ) -> HTMLResponse:
-    products = _display_catalog(period)
+    products = [product for product in _display_catalog(period) if not product.website_only]
     audit_path = STORE_ROOT / "data" / "portfolio-consistency-audit.json"
     consistency_audit = json.loads(audit_path.read_text(encoding="utf-8-sig")) if audit_path.is_file() else None
     groups: dict[str, list[Product]] = {}
@@ -675,6 +681,8 @@ async def evidence_series(
     product = get_product(slug)
     if product is None or product.evidence is None:
         raise HTTPException(status_code=404, detail="Evidence series not found")
+    if period not in product.supported_evidence_periods:
+        raise HTTPException(status_code=422, detail="This research listing supports only 6m and 1y evidence.")
     if mode == "safe" and not product.safe_filter_supported:
         raise HTTPException(status_code=409, detail="This vendor binary does not support embedded Safe mode")
     if mode == "dynamic" and not product.dynamic_mode_supported:
@@ -716,6 +724,8 @@ async def evidence_risk_series(
     product = get_product(slug)
     if product is None or product.evidence is None:
         raise HTTPException(status_code=404, detail="EA not found")
+    if period not in product.supported_evidence_periods:
+        raise HTTPException(status_code=422, detail="This research listing supports only 6m and 1y evidence.")
     if product.label.startswith("News Pulse "):
         mode = "standard"
     summary = load_product_summary(product.slug, mode, period)
@@ -808,6 +818,9 @@ async def cached_evidence_trade_chart(
         validate_period(period)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    product = get_product(slug)
+    if product is None or period not in product.supported_evidence_periods:
+        raise HTTPException(status_code=404, detail="Evidence period not available for this EA.")
     trade = load_cached_trade(slug, mode, period, trade_number)
     if trade is None:
         raise HTTPException(status_code=404, detail="Cached MT5 trade not found.")

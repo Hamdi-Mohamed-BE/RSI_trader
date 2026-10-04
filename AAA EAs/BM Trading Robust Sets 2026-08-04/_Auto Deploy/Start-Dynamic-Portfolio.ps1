@@ -93,11 +93,11 @@ Write-Host ("  Nasdaq 5M DI14 filter: {0}; EMA12, 0.60% stop, ATR6 from +1R and 
 if ($NasdaqDIFilter -eq 'OFF') { Write-Host '  DI OFF is a custom selection; the published DI-ON results do not describe this selection.' -ForegroundColor Yellow }
 Write-Host ('  Non-News risk: {0} {1}' -f $RiskValue, $(if ($RiskMode -eq 'PERCENT') { '%' } else { 'USD per EA trade' }))
 Write-Host '  Lot policy: round UP to the broker step; use minimum lot when required; never skip solely because of lot sizing' -ForegroundColor Yellow
-Write-Host '  NEWS POLICY: XAU News Pulse and Gold News V9 only. XAG, BTC and EURUSD news are disabled in every managed launcher.'
+Write-Host '  NEWS POLICY: all four News Pulse assets and Gold News V9 enabled. FTMO remains news-free.'
 Write-Host '  XAU News Pulse event settings unchanged: NFP T-10s, CPI T-5s, FOMC T-60s; both sides retained.'
 Write-Host ('  Standalone news risk: {0:N4}% per order; {1:N4}% for both sides on ONE asset. Not a fixed-dollar amount.' -f $NewsRiskPercent, (2 * $NewsRiskPercent)) -ForegroundColor Cyan
-Write-Host ('  The XAU straddle plans {0:N4}% combined; Gold News V9 can add {1:N4}%. Lot rounding, fees and gaps can increase losses.' -f (2 * $NewsRiskPercent), $NewsRiskPercent) -ForegroundColor Yellow
-Write-Host '  XAU News Pulse sizes from current equity; Gold News V9 from current balance. These two remain exempt from adaptive stops/tapers.' -ForegroundColor Yellow
+Write-Host ('  Four concurrent straddles plan {0:N4}% combined; Gold News V9 can add {1:N4}%. Lot rounding, fees and gaps can increase losses.' -f (8 * $NewsRiskPercent), $NewsRiskPercent) -ForegroundColor Yellow
+Write-Host '  News Pulse sizes from current equity; Gold News V9 from current balance. All five remain exempt from adaptive stops/tapers.' -ForegroundColor Yellow
 Write-Host '  Historical website results keep their original 0.75% research risk, not your custom risk. No prop-firm safety is implied.' -ForegroundColor Yellow
 Write-Host ('  Mode: {0}' -f $SafetyMode)
 if (-not $Yes -and -not $ValidateOnly) {

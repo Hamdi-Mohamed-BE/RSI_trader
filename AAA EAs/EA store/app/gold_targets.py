@@ -19,9 +19,14 @@ def evidence(slug, mode='standard', period='1y'):
         max_loss_streak=s['max_loss_streak'],history_quality=p['history_quality'],source_note=p['notice'],
         status='Research evidence',caution='User-selected retrospective target; strict cross-window PF screen failed. Not an FTMO pass forecast.')
 
-def verified_payload(product, mode, period, start, end):
+def verified_payload(product, mode, period, start, end, *, archived=False):
     folder=STORE/f'data/evidence-cache/v1/products/{product.slug}/{mode}'
     p=json.loads((folder/f'{period}.json').read_text(encoding='utf-8-sig'))
+    if p.get('source')!='native-mt5-target-sensitivity' and archived:
+        # Explicit historical audit only. The ordinary cache builder must NOT
+        # overwrite the current ADX/DI record with the old target-only result.
+        folder=BASE/'ADX DI Deployment 2026-10-03/before/data/evidence-cache/v1/products'/product.slug/mode
+        p=json.loads((folder/f'{period}.json').read_text(encoding='utf-8-sig'))
     if p.get('source')!='native-mt5-target-sensitivity': raise RuntimeError('Stale Gold target evidence')
     if p['available_from']!=str(start) or p['end_exclusive']!=str(end):
         raise RuntimeError('Gold target evidence has independent fixed windows; use its audited runner for new dates')

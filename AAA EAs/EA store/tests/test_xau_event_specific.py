@@ -26,7 +26,9 @@ def test_production_native_parity_and_runtime_event_recovery():
  assert parity['passed']
  risk_root=PACKAGE_ROOT/'News Standalone Risk 2026-09-28'
  risk=json.loads((risk_root/'NATIVE_VERIFICATION.json').read_text())
- assert risk['passed'] and risk['build']['XAU']['source_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
+ archived=json.loads((Path(__file__).resolve().parents[1]/'data/evidence-cache/v1/products/news-pulse-xau/standard/1y.json').read_text())
+ assert risk['passed'] and risk['build']['XAU']['baseline_source_sha256']==archived['source_sha256']
+ assert risk['build']['XAU']['source_sha256']!=hashlib.sha256(source.read_bytes()).hexdigest()
  assert parity['source_sha256']==risk['build']['XAU']['baseline_source_sha256']
  assert any(x['asset']=='XAU' and x['default_risk_exact_trade_parity'] for x in risk['checks'])
  assert parity['stats']['trades']==38 and parity['stats']['return_pct']==262.1
@@ -38,30 +40,31 @@ def test_production_native_parity_and_runtime_event_recovery():
  assert 'Deliberately not OCO' in code
 
 @pytest.mark.parametrize('period,start',[('6m','2026-03-05'),('1y','2025-09-05'),('3y','2023-09-05'),('5y','2021-09-05')])
-def test_current_xau_web_data_is_new_native_profile(period,start):
- payload=load_news_summary('news-pulse-xau',period)
+def test_prior_xau_web_data_is_archived_not_published_as_changed_geometry(period,start):
+ payload=json.loads((Path(__file__).resolve().parents[1]/f'data/evidence-cache/v1/products/news-pulse-xau/standard/{period}.json').read_text())
  assert payload and payload['strategy_profile']==XAU_PROFILE
- result,_=independent_news_result(get_product('news-pulse-xau'),'standard',period,date.fromisoformat(start),date(2026,9,5))
+ result=json.loads((ROOT/f'news-pulse-xau-{period}-model4.json').read_text())
  assert payload['stats']['trades']==result['stats']['trades']
  assert payload['stats']['net_profit']==result['stats']['net_profit']
  assert payload['optimization_in_sample'] is True
+ assert load_news_summary('news-pulse-xau',period) is None
+ with pytest.raises(RuntimeError,match='source changed'):
+  independent_news_result(get_product('news-pulse-xau'),'standard',period,date.fromisoformat(start),date(2026,9,5))
  with TestClient(app) as client:
   api=client.get('/api/evidence/news-pulse-xau/series',params={'period':period})
-  assert api.status_code==200
-  trades=api.json()['trades']
-  assert len(trades)==payload['stats']['trades']
-  assert sum(t['net_profit'] for t in trades)==pytest.approx(payload['stats']['net_profit'],abs=.05)
+  assert api.status_code in (404,503)
   page=client.get('/eas/news-pulse-xau',params={'period':period})
   assert page.status_code==200
-  assert f"{payload['stats']['return_pct']:+,.2f}%" in page.text
-  assert 'Hindsight-optimized' in page.text
+  assert f"{payload['stats']['return_pct']:+,.2f}%" not in page.text
+  assert 'T+30' in page.text
   assert 'T-5s' in page.text and 'T-60s' in page.text
 
 def test_all_maintained_bats_route_to_new_xau():
  for name in ['BEST RECOMMENDED 2026-09-01.bat','INSTALL AND RUN DYNAMIC CONFIG ON ACTIVE MT5.bat','INSTALL AND RUN FULL SAFE ON ACTIVE MT5.bat','INSTALL AND RUN ON 100K MT5.bat','INSTALL AND RUN ON 900 USD MT5.bat','INSTALL AND RUN ON ACTIVE MT5.bat','RECOMMENDED ADAPTIVE.bat']:
   text=(PACKAGE_ROOT/name).read_text()
-  assert 'XAU News Pulse v2.16' in text
+  assert 'XAU News Pulse v2.20' in text
  script=(PACKAGE_ROOT/'_Auto Deploy'/'Install-BMTradingPortfolio.ps1').read_text()
  assert "$inputs['InpUseXauEventSpecific'] = 'true'" in script
+ assert "$inputs['InpMarketFallbackOnCrossedLevel'] = 'true'" in script
  assert "$inputs['InpEnableSellSide'] = 'true'" in script
  assert "$inputs['InpEnableBuySide'] = 'true'" in script

@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "not_performance_evidence": true,
+  "results": [
+    {
+      "asset": "XAU",
+      "passed": true,
+      "source_sha": "18abcadbc09f379bf73b85d89c5c0d81e0c4673e8cfa2b2320600eec5af911c0",
+      "case": "New-XAU-fault-150-2026.10.02",
+      "not_performance_evidence": true
+    },
+    {
+      "asset": "XAG",
+      "passed": true,
+      "source_sha": "d59045e1d74606bb935780c4c9de59576816bac222f2a93a915376d66f00ee1d",
+      "case": "New-XAG-fault-150-2026.10.02",
+      "not_performance_evidence": true
+    },
+    {
+      "asset": "BTC",
+      "passed": true,
+      "source_sha": "d59045e1d74606bb935780c4c9de59576816bac222f2a93a915376d66f00ee1d",
+      "case": "New-BTC-fault-150-2026.10.02",
+      "not_performance_evidence": true
+    },
+    {
+      "asset": "EURUSD",
+      "passed": true,
+      "source_sha": "d59045e1d74606bb935780c4c9de59576816bac222f2a93a915376d66f00ee1d",
+      "case": "New-EURUSD-fault-150-2026.10.02",
+      "not_performance_evidence": true
+    }
+  ],
+  "tested": [
+    "two rejected buy pendings -> fresh quote then market buy",
+    "missing sell repaired independently",
+    "rejected sell pending reanchored at current quote",
+    "accepted masks survive manual close/reload",
+    "no duplicated side",
+    "unchanged timed cleanup"
+  ]
+}

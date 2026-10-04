@@ -1,0 +1,81 @@
+{
+  "provider": "FXMacroData MCP",
+  "requested_from": "2025-10-03",
+  "requested_to": "2026-10-02",
+  "quality": {
+    "is_official": true,
+    "is_proxy": false,
+    "is_fallback": false,
+    "is_stale": false,
+    "has_announcement_datetime": true,
+    "point_in_time_safe": false,
+    "unverified_vintage_count": 97,
+    "unknown_publication_time_count": 0,
+    "latest_available_date": "2026-10-02",
+    "data_lag_days": 1,
+    "source_name": "Official release calendars",
+    "source_type": "official",
+    "is_derived": false,
+    "row_count": 97,
+    "announcement_datetime_count": 97,
+    "missing_announcement_datetime_count": 0,
+    "has_assumed_release_times": false,
+    "assumed_release_time_count": 0,
+    "bounded_release_time_count": 0,
+    "unbounded_release_time_count": 0,
+    "quality_scope": "scheduled_releases"
+  },
+  "returned_from": "2026-07-27T12:30:00+00:00",
+  "events": [
+    {
+      "kind": "FOMC",
+      "epoch": 1785348000,
+      "release_utc": "2026-07-29T18:00:00+00:00",
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "release_date_confirmed": true
+    },
+    {
+      "kind": "NFP",
+      "epoch": 1786105800,
+      "release_utc": "2026-08-07T12:30:00+00:00",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm",
+      "release_date_confirmed": true
+    },
+    {
+      "kind": "CPI",
+      "epoch": 1786537800,
+      "release_utc": "2026-08-12T12:30:00+00:00",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm",
+      "release_date_confirmed": true
+    },
+    {
+      "kind": "NFP",
+      "epoch": 1788525000,
+      "release_utc": "2026-09-04T12:30:00+00:00",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm",
+      "release_date_confirmed": true
+    },
+    {
+      "kind": "CPI",
+      "epoch": 1789129800,
+      "release_utc": "2026-09-11T12:30:00+00:00",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm",
+      "release_date_confirmed": true
+    },
+    {
+      "kind": "FOMC",
+      "epoch": 1789581600,
+      "release_utc": "2026-09-16T18:00:00+00:00",
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "release_date_confirmed": true
+    },
+    {
+      "kind": "NFP",
+      "epoch": 1790944200,
+      "release_utc": "2026-10-02T12:30:00+00:00",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm",
+      "release_date_confirmed": true
+    }
+  ],
+  "note": "Returned calendar covers only recent months, NOT the full requested year. Merge earlier cached official BLS/Fed calendar through 2026-09-05; verify overlap."
+}

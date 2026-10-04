@@ -1,0 +1,16 @@
+Expanded XAU News Pulse v2.20 exit/hold optimisation - user changed the 30s constraint.
+Research only. Production, BAT selection and all live charts remain unchanged.
+$10 initial stop and $6 quote offset retained, 0.75% equity risk per side, two independent sides retained.
+"$40 TP" means 40 XAU price units (4R at a $10 initial stop), NOT $40 account profit. Targets $40/$60/$80.
+User clarified a maximum HOLD SETTING of two minutes after release before this expanded study started.
+Close/delete requests start by T+120s; broker execution delay can finish later. This is not a guaranteed 120-second fill deadline.
+Frozen 18-case finite menu; holds 30/60/120 seconds after the release. NO 300-second candidate. No overnight holding.
+Development: 2025-10-03 inclusive to 2026-07-03 exclusive.
+Chronological validation: 2026-07-03 inclusive to 2026-10-03 exclusive.
+Validation dates were already inspected in the baseline replay: this is NOT a genuinely untouched holdout.
+Freeze the highest-return development case with net win rate >= baseline, net PF>=1.2 and equity DD<=max(1.5%,1.5*baseline DD), before inspecting validation.
+If no qualifying development improvement exists, select unchanged baseline. Do not silently reduce the win-rate floor.
+Validation must beat baseline return and retain baseline win rate; report failures instead of choosing another case using validation outcomes.
+Full last-year replay and 1000ms execution-delay stress of the frozen winner, compared with matched current v2.20 baseline.
+All stages include recorded spread/commission/swap/fee and native equity drawdown. Stops and timers remain subject to broker execution delay.
+Full-year history is 75% real ticks; pre-Jan-2026 missing ticks generated. Small sample, news-liquidity uncertainty and multiple testing remain.

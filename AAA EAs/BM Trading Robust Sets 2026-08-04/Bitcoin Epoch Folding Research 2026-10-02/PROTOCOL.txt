@@ -1,0 +1,48 @@
+Bitcoin epoch-folding experiment -- frozen before downloading / scoring results
+Date: 2026-10-02. Research only. No trading account, orders, EA deployment or Git push.
+
+Instrument: Binance SPOT BTCUSDT, not a broker CFD or futures contract.
+Source: official Binance public archive, 1-minute klines, SHA256 checksums.
+Test: 2025-10-02 00:00 UTC through 2026-10-02 00:00 UTC, exclusive end (365 days).
+Warm-up/training: 2025-04-01 onward; preceding day supplies the first close-to-close return.
+Require monotonic unique one-minute timestamps, OHLC validity, full coverage; report missing
+bars and do not interpolate returns across gaps. Exclude incomplete 15-minute RV bins.
+
+Signal visualization: epoch-fold absolute one-minute log returns by minute within the hour,
+minute of UTC day, and minute of week. No directional trading interpretation.
+Primary forecasts: next 15-minute realized variance (sum of squared minute log returns).
+Forecast issued before the bin starts; realized return uses closes only after issuance.
+Models: EWMA level only; EWMA plus hourly phase (4 bins); daily phase (96 bins);
+daily plus weekly phase (672 bins). EWMA lambda 0.97 for all models, not optimized.
+Daily refit using trailing 180 days, excluding the forecast day. Seasonality estimated
+from RV normalized by each UTC week's in-sample mean to reduce regime-level confounding.
+Daily pattern cyclically smoothed with a 3-bin average. Weekly pattern smoothed within
+each weekday with 3 bins and shrunk toward the daily profile with 30 pseudo-observations.
+Hourly smoothed not applied (4 phase bins). Clip factors to [0.15, 6], normalize to mean 1.
+Estimate deseasonalized EWMA level using the previous 7 days and update online after each
+realization, multiplying by the calendar factor of the next bin. All models have the same
+initialization window and update equation. No parameter chosen using the test results.
+QLIKE = realized/forecast - log(realized/forecast) - 1, lower is better.
+Actual zero-RV bins are excluded from this dimensionless score and counted explicitly.
+Report mean, % reduction vs baseline, 95% paired moving-block bootstrap intervals, and
+monthly consistency. Bootstrap daily paired losses, circular blocks 7 days, 5,000 draws,
+seed 20261002. Include 14-day-block sensitivity. Holm correction over the three baseline
+comparisons and the incremental weekly-vs-daily comparison (4 tests).
+Secondary robustness: EWMA lambda 0.94 and 0.99, all models / all results retained.
+No strategy P&L, win rate, PF or Sharpe claimed: a volatility predictor is not a trading bot.
+
+Period discovery uses PRE-TEST training only, aggregated mean absolute return in 5-minute
+bins. Search 14 predeclared periods in minutes: 30,45,60,90,120,180,240,360,480,720,
+1440,2880,4320,10080. Phase-bin width 5 minutes. Statistic is relative variance of folded
+mean profile. Use complete UTC Monday-aligned 7-day blocks, normalize each by its mean,
+and generate 999 independent circular shifts of each block. This retains within-block
+volatility clusters (except one wrap boundary), destroys fixed-clock alignment, and does
+NOT assume independent Gaussian noise. Bonferroni-adjust empirical p-values for 14 trials.
+Sensitivity: 14-day shift blocks. Periods are aliases/harmonics, not independent cycles.
+Discovery is separate from forecast evaluation; no discovered period replaces fixed
+hourly/daily/weekly forecast models. Report full grid, including failures.
+
+QA: unit tests for folding, gap handling, causal update alignment, seeded null inference,
+synthetic seasonal recovery, forecast-only past-data invariance and checksum integrity.
+Output: source manifest, test forecasts/losses, daily/monthly scores, significance table,
+static scientific figures and standalone results report. No live settings changed.

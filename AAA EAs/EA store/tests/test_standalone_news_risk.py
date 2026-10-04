@@ -20,6 +20,7 @@ def test_independent_news_risk_all_modes_and_chart_inputs():
     result=ps(r'''
 $ErrorActionPreference='Stop'
 $PackageRoot=$env:CALYX_TEST_PACKAGE_ROOT
+. (Join-Path $PackageRoot '_Auto Deploy\News-Launcher-Policy.ps1')
 $tokens=$null;$errors=$null
 $ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $PackageRoot '_Auto Deploy\Install-BMTradingPortfolio.ps1'),[ref]$tokens,[ref]$errors)
 if($errors.Count){throw 'Syntax error'}
@@ -95,10 +96,14 @@ def test_eight_risk_prompt_bats_route_through_shared_prompt_and_ftmo_stays_off()
     ftmo=json.loads((PACKAGE_ROOT/'FTMO Thirteen EA Deployment 2026-09-27/PACKAGE.json').read_text())
     assert ftmo['news_enabled'] is False and len(ftmo['entries'])==14
 
-def test_active_news_sources_use_runtime_input_without_event_geometry_changes():
+def test_standalone_risk_release_used_runtime_input_without_event_geometry_changes():
     root=PACKAGE_ROOT/'News Standalone Risk 2026-09-28'
     for name in ['AAA Final News Pulse XAU Event Specific EA','AAA Final News Pulse Multi Asset Event EA']:
-        code=(PACKAGE_ROOT/'AAA Final EAs'/name/(name+'.mq5')).read_text()
+        # The later XAU v2.20 placement release deliberately changes geometry.
+        # Keep this regression attached to the preserved v2.18 risk-only release.
+        path=(PACKAGE_ROOT/'News XAU Placement Fix 2026-10-03/snapshot/Current.mq5'
+              if 'XAU' in name else PACKAGE_ROOT/'News Placement All Assets 2026-10-03/baseline'/(name+'.mq5'))
+        code=path.read_text()
         old=(root/'baseline'/(name+'.mq5')).read_text()
         assert 'double side_risk=InpRiskPercent*adaptive;' in code
         assert 'MathAbs(InpRiskPercent-NP_RISK_PER_STOP_PERCENT)' not in code

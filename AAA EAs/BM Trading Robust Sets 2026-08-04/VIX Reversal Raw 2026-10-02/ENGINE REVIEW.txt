@@ -1,0 +1,11 @@
+Implementation review, before final outputs:
+1. Scheduled next-open exits must not use the remainder of that day's low when
+   calculating sampled equity drawdown. Corrected; unit test covers this.
+2. Baseline held_sessions includes the exit session. Random allocated horizons
+   originally allowed one extra bar. Corrected to exact maximum horizon, with
+   close-of-entry-session exit for horizon 1. Unit tests cover horizons 1,2,5.
+3. Cache random weekday pools and use namedtuples to reduce simulation overhead.
+   These are performance changes, not strategy parameter changes.
+4. Initial incomplete control process stopped by exact verified owned PID and
+   command-line match. Final run recomputes all outputs after repairs. The same
+   frozen baseline rules and 1% risk are retained; no optimisation is performed.

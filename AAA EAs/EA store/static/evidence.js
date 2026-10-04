@@ -288,7 +288,7 @@
     const periodInput = root.querySelector('[data-chart-period]');
     if (evidenceTitle && periodInput) {
       const periodLabel = periodInput.options[periodInput.selectedIndex]?.textContent || payload.period_key;
-      evidenceTitle.textContent = `Precomputed ${periodLabel} — active recommended configuration`;
+      evidenceTitle.textContent = payload.evidence_label || `Precomputed ${periodLabel} — active recommended configuration`;
     }
     const body = root.querySelector('[data-backtest-trades-body]');
     if (body) {
@@ -307,7 +307,7 @@
         })(),
         stats.recovery_factor == null ? null : `Recovery ${Number(stats.recovery_factor).toFixed(2)}`,
       ].filter(Boolean).join(' · ');
-      const tradeSource = ['precomputed-native-mt5-cache', 'native-mt5-background-job', 'adaptive-replay-of-native-mt5-cache', 'verified-news-schedule-replay'].includes(payload.source)
+      const tradeSource = ['precomputed-native-mt5-cache', 'native-mt5-background-job', 'adaptive-replay-of-native-mt5-cache', 'verified-news-schedule-replay', 'native-mt5-hourly-profiles-20261003'].includes(payload.source)
         ? 'Trade rows are parsed directly from native MT5 deals.'
         : 'Trade rows are reconstructed from archived MT5 balance events.';
       const displayLimit = Number(payload.cached_trade_count) > Number(payload.displayed_trade_count)

@@ -1,4 +1,7 @@
 @echo off
+rem ADXDI-FINAL-20261003: final user selection, only USDJPY keeps added ADX/DI.
+echo Entry filters: USDJPY ADX20 plus DI; EMA3, Asia Gold and Trend added ADX/DI removed. RSI VWAP unchanged.
+echo Selected-preset evidence is retrospective: 1, 3 and 5 years. Previous FTMO forecasts are not revalidated.
 setlocal
 title Calyx FTMO 10K Swing - 14 EAs (incl. 3 Way Gold) - News OFF
 echo FTMO 2-Step Swing ONLY. 14 EAs incl. 3 Way Gold (market entries). Fixed $50 maximum planned stop risk per trade. News OFF.

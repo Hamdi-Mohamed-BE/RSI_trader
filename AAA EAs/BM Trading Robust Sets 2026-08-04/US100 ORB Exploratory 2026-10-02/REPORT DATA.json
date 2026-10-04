@@ -1,0 +1,223 @@
+{
+  "primary": [
+    [
+      "Development: 2021\u201324",
+      "+33.61%",
+      "1.271",
+      "47.5%",
+      "9.79%",
+      "236",
+      "0.95",
+      "6/6",
+      "1"
+    ],
+    [
+      "Validation: 2024\u201325",
+      "+17.90%",
+      "1.490",
+      "54.2%",
+      "5.89%",
+      "83",
+      "1.62",
+      "4/4",
+      "2"
+    ],
+    [
+      "Locked latest year",
+      "-1.69%",
+      "0.958",
+      "49.4%",
+      "9.82%",
+      "89",
+      "-0.12",
+      "4/7",
+      "3"
+    ],
+    [
+      "Latest 6 months",
+      "+3.51%",
+      "1.138",
+      "51.9%",
+      "9.85%",
+      "52",
+      "0.62",
+      "4/2",
+      "1"
+    ],
+    [
+      "Full 3 years: exploratory",
+      "+40.97%",
+      "1.292",
+      "52.9%",
+      "9.84%",
+      "255",
+      "1.14",
+      "4/7",
+      "5"
+    ],
+    [
+      "Full 5 years: exploratory",
+      "+54.73%",
+      "1.232",
+      "49.3%",
+      "9.87%",
+      "408",
+      "0.88",
+      "6/7",
+      "6"
+    ]
+  ],
+  "comparison": [
+    [
+      "Latest year \u2014 original raw",
+      "-9.61%",
+      "0.929",
+      "43.2%",
+      "31.70%",
+      "257",
+      "-0.47",
+      "5/6",
+      "15"
+    ],
+    [
+      "Latest year \u2014 pre-close raw",
+      "-7.77%",
+      "0.941",
+      "44.4%",
+      "31.66%",
+      "257",
+      "-0.37",
+      "7/6",
+      "4"
+    ],
+    [
+      "Latest year \u2014 selected version",
+      "-1.69%",
+      "0.958",
+      "49.4%",
+      "9.82%",
+      "89",
+      "-0.12",
+      "4/7",
+      "3"
+    ],
+    [
+      "Full 5 years \u2014 original raw",
+      "+63.06%",
+      "1.065",
+      "44.3%",
+      "31.77%",
+      "1285",
+      "0.59",
+      "7/9",
+      "69"
+    ],
+    [
+      "Full 5 years \u2014 pre-close raw",
+      "+64.70%",
+      "1.068",
+      "44.7%",
+      "31.79%",
+      "1285",
+      "0.60",
+      "7/9",
+      "11"
+    ],
+    [
+      "Full 5 years \u2014 selected version",
+      "+54.73%",
+      "1.232",
+      "49.3%",
+      "9.87%",
+      "408",
+      "0.88",
+      "6/7",
+      "6"
+    ]
+  ],
+  "audits": [
+    [
+      "validation",
+      "WATCH_ONLY",
+      "38.9%",
+      "1.024",
+      "-0.13%",
+      "94.8%"
+    ],
+    [
+      "locked-1y",
+      "REJECT",
+      "1.6%",
+      "0.618",
+      "-17.31%",
+      "41.6%"
+    ],
+    [
+      "full-3y",
+      "WATCH_ONLY",
+      "51.4%",
+      "1.030",
+      "+3.15%",
+      "96.6%"
+    ],
+    [
+      "full-5y",
+      "WATCH_ONLY",
+      "50.3%",
+      "1.036",
+      "+5.54%",
+      "96.9%"
+    ]
+  ],
+  "delay_stress": [
+    [
+      "150ms locked year",
+      "-1.69%",
+      "0.958",
+      "49.4%",
+      "9.82%",
+      "89",
+      "-0.12",
+      "4/7",
+      "3"
+    ],
+    [
+      "500ms sensitivity",
+      "-2.16%",
+      "0.946",
+      "48.3%",
+      "10.18%",
+      "89",
+      "-0.17",
+      "4/7",
+      "3"
+    ]
+  ],
+  "decision": {
+    "status": "EXPLORATORY ONLY \u2014 latest-year profitability failed",
+    "live_eligible": false,
+    "latest_year_failed_gates": [
+      "positive_locked_return",
+      "profit_factor_above_1",
+      "bootstrap_return_p05_positive",
+      "bootstrap_pf_p05_above_1",
+      "deflated_sharpe_95pct",
+      "recent_half_pf_above_1",
+      "two_of_three_subperiods_profitable",
+      "closed_pnl_total_breach_below_5pct",
+      "cost_stress_supplied",
+      "cost_stress_pf_above_1"
+    ],
+    "chosen_on": "development only; frozen before validation/test",
+    "parameters": {
+      "opening_minutes": 15,
+      "rr": 3,
+      "entry_cutoff": 930,
+      "direction": 1,
+      "ema": 100,
+      "adaptive_close": 1
+    },
+    "tested_configurations": 27,
+    "no_live_changes": true
+  }
+}
