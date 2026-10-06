@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-06",
+  "scope": "Reviewed launcher and retained-evidence website; no new performance backtests",
+  "inventory": {"total": 37, "live": 25, "paused": 6, "review": 6},
+  "live_label": "Passed to live trading phase",
+  "label_meaning": "Owner deployment choice, not a statistical validation pass or proof of installation",
+  "checks": {
+    "bat_validate_only": "passed; exits before account probe, compile, profile writes and terminal restart",
+    "pure_risk_di_combinations": 8,
+    "di_prompt_bots": ["Nasdaq 5M Candle Momentum", "USDJPY London Open Momentum"],
+    "dmc_non_risk_inputs_unchanged": true,
+    "hourly_selected": ["US30 Hourly Profiles", "US100 Hourly Profiles"],
+    "hourly_rule_inputs_unchanged": true,
+    "hourly_usd_percent_historical_loss_sizing": "passed in all 8 pure-function configurations; no SL/future loss cap",
+    "news_selected": 5,
+    "news_separate_risk_percent_per_order": true,
+    "news_current_version_performance_missing": 5,
+    "normal_launcher_roster_retained": 37,
+    "ava_launcher_roster_retained": 8,
+    "news_launcher_regression": "passed",
+    "hourly_launcher_regression": "passed",
+    "website_focused_tests_passed": 82,
+    "website_ui": "desktop/mobile, search, client/server phase transitions, version warning passed; no page errors or outer horizontal overflow",
+    "local_master_review_ui": "23/8/6 filters, search, evidence links and mobile layout passed",
+    "tracked_mq5_ex5_set_diff": "none",
+    "pinned_orb_source_binary_set_helpers_unchanged": 7,
+    "git_diff_check": "Current launcher/website/pipeline code passed; historical native CSV comment whitespace and original research EOFs retained byte-for-byte"
+  },
+  "artifact_sha256": {
+    "selection.json": "d04105445d173868181188ae6536126ae52f6bc26baabfeda0621869dfa8c7a1",
+    "../reviwed_Eas.bat": "22443ddec127135225f95d15c37d569a38bd84b8b537a0b5b011096efe89fa13",
+    "../_Auto Deploy/Start-Reviewed-Portfolio.ps1": "6856f8340ddba1dc104d468e2f317694580f4f205c84a028e55b7046fc2ff90f",
+    "../_Auto Deploy/Reviewed-Portfolio-Policy.ps1": "2991ebb43598e8b4e8b098ae7e0d63c75d0174423882d5afd08821b60e10b20c",
+    "../../EA store/data/ea-review.json": "bb7634dc8b2e2cbaea7d85f2549c4e585b568f78c15d646c0564b27c6a475a9b"
+  },
+  "mt5_account_accessed": false,
+  "trading_account_or_profile_modified": false,
+  "live_mt5_pid_unchanged": 34040,
+  "original_production_eas_recompiled": false,
+  "github_pushed_at_build": false,
+  "publication_note": "Build/test snapshot; current publication is verified by comparing local HEAD to the GitHub branch, not by this historical build field.",
+  "public_website_deployed": false,
+  "local_preview": "http://127.0.0.1:8080/ea-review",
+  "important_limits": [
+    "Existing fixed-USD compatibility: percentage-only EAs use the installation-balance equivalent and then float with equity.",
+    "Lot rounding/minimum, spread, gaps and simultaneous signals can exceed selected risk; no shared daily-loss cap is added.",
+    "Installing the reviewed profile does not close trades of excluded EAs and stops their EA management in that active profile.",
+    "Other normal/FTMO/Ava/client launchers retain their selections; Trend 1.5R is applied only by reviwed_Eas.",
+    "Retained news evidence gaps, candidate failures and sample limitations are not removed by the owner phase label."
+  ]
+}

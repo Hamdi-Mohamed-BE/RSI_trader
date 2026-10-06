@@ -1,0 +1,75 @@
+QuantLab 04 - XAUUSD Speed / Q4 / Turn - RAW RESEARCH
+Frozen 2026-10-05 BEFORE compile/smoke/results. Not the proprietary vendor EA.
+
+Source pages (public only, read 2026-10-05):
+https://api-quantlab.com/algorithmen/funded-xauusd-3x-momentum
+https://api-quantlab.com/algorithmen/funded-xauusd-3x-momentum/analyse
+https://www.quantlab-ai.com/
+Published: adaptive momentum H4, Q4 breakout H1, turn-of-month H1 scheduling; overnight/weekend and hedging allowed with switch.
+Exact entries/exits, adaptive speed mechanism and shared budget are masked subscription content.
+All numerical strategy settings below are OUR preregistered interpretation, NOT extracted private rules.
+Existing Gold Trio uses H1 momentum and M30 breakout; not exact match. No unrelated/current-production comparison.
+
+Account: XAUUSD, Exness-MT5Trial16 isolated tester only; shared USD 10,000, leverage 1:2000.
+Default 1% current equity per new entry, three independent module slots, one open position per module.
+Lots round DOWN to broker step and skip if broker minimum would exceed selected cash risk.
+This deliberate safe-size convention differs from legacy pipeline rounded-up text; never force an oversize minimum lot.
+No aggregate daily equity stop/goal or vendor adaptive-risk multiplier is invented.
+SL risk excludes gaps/delay/spread changes/fees; realised loss can exceed initial requested cash.
+Signals use COMPLETED bars; enter first eligible next-bar tick, max five-minute lateness, next bar immediately follows signal.
+180 calendar days no-trade warmup; native completed bars must provide full lookbacks.
+All weekdays/all broker sessions; A/B need >=30 minutes left; C needs >=60 minutes on entry.
+Server clock UTC; Q4/month definitions use broker UTC calendar, no DST local-time rules.
+Hedging account required. Tester-only source rejects real/demo chart attachment. Never touches live terminal.
+Model 4 real ticks where available, otherwise native generated ticks; execution delay 150ms and native broker costs.
+Trace samples balance/equity every five clock minutes (not continuous tick-level equity).
+Native MT5 equity DD is authoritative; graphs label sampled vs closed balance separately.
+
+A - Adaptive speed momentum H4 (ALL OUR numerical rules):
+- ATR14 = simple average true ranges on completed H4.
+- Fast mode when current ATR14 > mean of latest 50 completed ATR14 values.
+- Fast momentum/breakout lookback 6 H4 bars; slow mode lookback 24 H4 bars.
+- Long: signal close minus close[lookback] > 0.5*ATR14, EMA100 rising,
+  signal close > highest HIGH of prior lookback bars (excluding signal).
+- Short: mirrored.
+- SL 2.5*ATR14; no TP.
+- From +1 initial R, trail at original stop distance behind best completed-bar high/low;
+  tighten only on H4 close, valid current quote and open broker session required.
+
+B - Q4 breakout H1 (ALL OUR numerical rules):
+- New entries in Oct/Nov/Dec ONLY, determined by entry tick date. Existing trades held until own exit.
+- Current ATR14 > mean latest 50 completed ATR14 values.
+- Long: completed close breaks HIGH of prior 60 H1 bars AND lies in top 10% of prior 480-bar high-low range.
+- Short: lower 60-bar low and bottom 10% of same range.
+- SL 2*ATR14; TP2.5R.
+- Trail from +1 initial R at original stop distance behind best completed H1 extreme; tighten only on H1 close.
+
+C - Turn-of-month H1 scheduling, weekday calendar (ALL OUR numerical rules):
+- Long first eligible tick of last Monday-Friday day of month.
+- One entry attempt per last weekday date, including if stopped. Holidays NOT predicted/modelled in calendar.
+- SL 2*D1 ATR14 from completed daily candles; no TP or trail.
+- Exit within last 15 minutes of trade session on second Monday-Friday date of next month.
+- If missed/non-tradable, retry at first eligible tick after scheduled date; max ten calendar days safeguard.
+- Intraday timing runs each tick; H1 is descriptive scheduling, not an H1 directional signal.
+
+Controls (one fixed control, not optimised):
+- A/B: signal dates unchanged initially, replace signal direction with timestamp-hashed seeded coin flip 20261005;
+  same stops/trails/sizing/holding limits. Exits change future position eligibility, so NOT exact matched entry counts.
+- C: long on 10th weekday of month and exit end of 12th; same D1 ATR stop/cash sizing.
+- Controls combine all three on one native account. Single seed is diagnostic, NOT a significance test.
+
+End-exclusive: 2026-10-05; last tradable date likely 2026-10-02 (weekend).
+Windows: 5Y2021-10-05;3Y2023-10-05;1Y2025-10-05;6M2026-04-05;3M2026-07-05.
+Smoke:2025-11-01..2026-01-10exclusive to exercise Q4 and all modules.
+Additional: last COMPLETE Q4 2025-10-01..2026-01-01exclusive (seasonality diagnostic, not tuning).
+Raw shared runs above; each module standalone 1Y; combined controls3Y/5Y; mandatory frozen XAGUSD1Y transfer.
+No optimisation or Monte Carlo claimed in this raw step. Stop for user review.
+
+Gate BEFORE results:
+3Y and5Y: positive net, net complete-position PF>=1.15, >=30 complete positions, clean execution,
+mean net initial R greater than preregistered combined control.
+Pass would permit asking about further pipeline only. Fail stops optimisation without fresh explicit approval.
+All attempted runs/settings documented, never relabel raw as independent out-of-sample.
+Recent Q4 sample is very small: 3M and6M cover summer plus first October weekdays only; absence of Q4 module trades is not a failed season gate.
+Source/UI marketing figures are unverified and not directly comparable.
+

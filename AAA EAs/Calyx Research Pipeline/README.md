@@ -15,6 +15,22 @@ This folder adds a common evidence audit and an optional point-in-time macro-dat
 
 ## Run an enhanced audit
 
+**2026-10-06 user rule: the final OOS is always the last two calendar years.** Freeze the study end-exclusive date
+(normally start of today UTC, through yesterday); put the 12-month finalist-validation period immediately BEFORE
+OOS and development before validation. Selection never uses the OOS or its recent-year/6m/3m subwindows.
+Insufficient history means insufficient evidence, not a shorter OOS. Previously viewed history is labelled
+retrospective, not untouched; old dated reports remain unchanged.
+
+Generate and freeze the common split before running a study:
+
+```powershell
+python .\data_split.py --history-start 2019-10-06 --end-exclusive 2026-10-06 --output C:\path\to\study\data-split.json
+```
+
+This gives development 2019-10-06–2023-10-06, validation 2023-10-06–2024-10-06 and final OOS 2024-10-06–2026-10-06
+(all end-exclusive). The helper reads the central policy and rejects insufficient older history. It only plans and
+checks dates: existing study runners must consume its manifest; it does not change archived runs or relaunch MT5.
+
 ```powershell
 python .\calyx_pipeline.py `
   --report "C:\path\to\locked-report.htm" `

@@ -1,0 +1,19 @@
+# US100 H1 ORB: frozen, research-only optimisation
+
+Current deployed identity: USTEC, 13:00–14:00 UTC range, completed M15 breakout during 14:00–15:00 UTC, opposite-range stop +0.10 H1 ATR, maximum stop 3 ATR, 6R target, close at 20:00 UTC. No EMA/VWAP/profile/Markov/trailing filters. Risk 1% current equity, broker-valid lot rounding UP, $10,000 USD.
+
+Never modify production files, live terminals, website, installer BATs or accounts. Isolated tester only, exclusive lease. Compare exact original binary against an instrumented unchanged research copy before searching.
+
+Dates, end-exclusive 2026-10-06 (through completed October 5): development 2021-10-06→2024-10-06; older validation 2024-10-06→2025-10-06; recent year 2025-10-06→2026-10-06; recent six months April 6; recent three months July 6; full three/five years October 6 2023/2021. Earlier studies have already used overlapping historical data: none is an untouched holdout.
+
+Bounded staged search, NOT the complete production-promotion pipeline. First fixed targets 0.5,0.6,0.75,1,1.25,1.5,2,3,4,6R plus no fixed target; retain up to three preferred older-development variants. Then flatten hours 16,18,20,22 UTC on those variants; then test break-even from 0.5/1R and candle trailing from 1R on the two strongest variants. Optional permissive existing EMA/VWAP/volume confirmation tested only on those two. Parameter plans are frozen before each stage; no recent-year tuning. No lot/risk optimisation, no stop widening to increase returns.
+
+Training preference gate: ≥120 trades, PF≥1.20, net wins≥50%, net profit positive, equity DD≤12%, longest winning run greater than losing run. Older validation: ≥25 trades, same PF/win/run/return/DD screens. Rank qualified variants by annualised daily equity Sharpe, then PF, return, DD. If none qualify, rank the best descriptive variant with explicit failed gates; do not relax requirements or deploy. User previously authorized exploratory optimisation despite failures.
+
+Screening: native generated ticks Model 1, 150ms delay. Final original/copy parity and current/candidate confirmations: native Model 4 every tick based on real ticks, generated fallback where broker ticks unavailable. Every report must verify inputs, model, time range and costs. Complete position grouping, all deal cash costs, 5-minute sampled equity for daily annualised Sharpe. Native tick equity DD reported separately; no claim of shared portfolio/FTMO pass timing.
+
+Fresh 3M original/copy parity; fresh current 1Y/6M/3Y/5Y. Top three distinct candidates on older native Model4 validation, freeze selected parameters BEFORE recent tests. Candidate 1Y/6M/3M/3Y/5Y Model4. No manual inference of missing ticks. Record execution failures and exclude failing variants from promotion.
+
+Robustness: 10,000 circular block-bootstrap paths (block length five whole-position proportional returns), trade reshuffles, 10/20% omitted-trade tests, Wilson 95% win-rate interval, approximate deflated daily-equity Sharpe including this study's tested count and identifiable earlier H1 trials. MC requirements positive≥95%, P5 return>0, P5 PF>1; DSR probability≥95%. Extra recorded entry-spread and adverse entry-fill + duplicate negative swap/commission/fee stress, using exported broker cash-per-point-per-lot (not a gold contract assumption). Costs already present in native results. MC is closed-return proxy, not floating-equity/margin/FTMO replay.
+
+Recent replacement preference: positive year/six/three-month returns, PF≥1.20 on year and recent quarter, ≥50% wins and win run>loss run on year; no execution failures and older-validation/MC/DSR screens. No replacement if any gate fails. Display baseline regardless of its own failures. Full dates, annual breakdown, payoff/time-exit attribution, candidate details, all tested settings and graphs.

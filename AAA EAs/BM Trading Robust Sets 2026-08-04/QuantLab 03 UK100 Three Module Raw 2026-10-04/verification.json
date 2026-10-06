@@ -1,0 +1,54 @@
+{
+  "reconciliation_passed": true,
+  "deployment_approved": false,
+  "full_pipeline_passed": false,
+  "regression": "Exact hedged non-FIFO position pairing, unequal lots, entry costs, native cash balance, missing-map rejection and London DST checks passed.",
+  "runs": [
+    {
+      "window": "SMOKE",
+      "reconciled": true,
+      "positions": 14,
+      "module_counts": {
+        "1": 1,
+        "2": 2,
+        "3": 11
+      },
+      "max_concurrent_positions": 2,
+      "pauses": 3,
+      "history_quality": "100% real ticks",
+      "module_contributions_sum_to_native": true,
+      "no_order_errors": true
+    },
+    {
+      "window": "1Y",
+      "reconciled": true,
+      "positions": 153,
+      "module_counts": {
+        "1": 33,
+        "2": 16,
+        "3": 104
+      },
+      "max_concurrent_positions": 2,
+      "pauses": 19,
+      "history_quality": "75% real ticks",
+      "module_contributions_sum_to_native": true,
+      "no_order_errors": true
+    },
+    {
+      "window": "3M",
+      "reconciled": true,
+      "positions": 42,
+      "module_counts": {
+        "1": 6,
+        "2": 5,
+        "3": 31
+      },
+      "max_concurrent_positions": 2,
+      "pauses": 8,
+      "history_quality": "100% real ticks",
+      "module_contributions_sum_to_native": true,
+      "no_order_errors": true
+    }
+  ],
+  "notes": "Frozen source/binary/preset/protocol/report hashes. Native exact position-ID pairing, complete costs, actual deal-timed balance, closed H1 conditions, London session/DST, module/day uniqueness, overlapping-position cap and every net losing-streak pause checked. One-cent account-currency risk audit tolerance; actual fills and costs retained."
+}

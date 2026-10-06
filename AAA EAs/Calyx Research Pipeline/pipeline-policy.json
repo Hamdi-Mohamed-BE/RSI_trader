@@ -1,5 +1,14 @@
 {
-  "version": "2026-09-10",
+  "version": "2026-10-06",
+  "data_split": {
+    "final_out_of_sample_years": 2,
+    "anchor": "frozen study end-exclusive date; normally start of today UTC, through yesterday",
+    "validation_months_before_oos": 12,
+    "selection_must_end_before_oos": true,
+    "final_configuration_frozen_before_oos_evaluation": true,
+    "do_not_shorten_oos_for_missing_history": true,
+    "previously_inspected_history_is_not_untouched": true
+  },
   "development": {
     "raw_replication_first": true,
     "one_factor_at_a_time": true,

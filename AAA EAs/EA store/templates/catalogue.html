@@ -7,7 +7,10 @@
   </div>
 </section>
 <section class="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
+  {% include 'partials/review_controls.html' %}
+  <p class="review-disclaimer"><a href="/ea-review" class="text-mint">Open the full reviewed table: recent/year results, win rate, PF, trades, drawdown and winning/losing runs →</a></p>
   <form method="get" action="/eas" class="filter-panel" id="catalogue-filters">
+    <select name="phase" id="phase-filter" aria-label="Filter by reviewed phase">{% for phase,label in review_phase_labels.items() %}<option value="{{ phase }}" {% if selected_phase==phase %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
     <label class="search-field"><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="live-search" name="q" value="{{ query }}" placeholder="Search EA, symbol or strategy…" autocomplete="off"></label>
     <select name="symbol" id="asset-filter" aria-label="Filter by trading asset">
       <option value="all" {% if selected_symbol == 'all' %}selected{% endif %}>All assets</option>

@@ -1,0 +1,14 @@
+UK100 independent three-module full research pipeline. Frozen 2026-10-04 before long-history runs/search.
+User explicitly permits exploratory optimisation despite raw-gate failure.
+This is not QuantLab's proprietary rules. No deployment, BAT/website changes or push.
+
+Baseline: original frozen tester-only EA and RAW.set, rounded-down 1% equity risk per trade; same shared account, native costs, 150 ms delay, USD 10,000. Raw 6m/1y/3y/5y Model4. Original 1y/3m evidence reused, not new configurations. XAGUSD is the mandatory frozen logic portability check (not a reason to discard a UK100-only edge).
+Raw gate: positive net, PF >=1.15 and >=30 complete positions on 3y and5y, then superiority over a matched signal-free control. Failing absolutes -> exploratory search, never a retrospective raw pass. Control design and seed registered before control runs.
+
+Splits: development 2021-10-04 to2024-10-01 exclusive; validation 2024-10-08 to2025-09-28 exclusive; previously viewed recent diagnostic 2025-10-04 to2026-10-04 exclusive and recent quarter2026-07-04 to2026-10-04 exclusive. Latest periods are NOT pristine holdout. Earlier reserve2019-10-04 to2021-09-27 exclusive is locked until the final choice, conditional on available broker history. >=7day purge gaps; initial indicator warmup uses prior price bars but never future bars/labels.
+
+Full staged bounded search on development only: timeframe -> entry -> stop type -> stop management -> RR/exit -> session -> direction -> filters -> management; carry up to3 stable finalists per stage, then joint neighbours. Applicable exact choices and every configuration recorded in SEARCH PLAN.json before each phase. Risk held1%, never used to create an edge. XAG frozen transfer. Validation ranks a maximum3 finalists once; final earlier holdout once, no retuning. If earlier history unavailable/no viable finalist, report limitation and reject promotion.
+
+Final native Model4 confirmations, annual/recent comparison, chronological subperiods and walk-forward diagnostics, 10,000-path block bootstrap with five-trade blocks, trade-order shuffle, missed-trade10/20% and measured-cost stress. Common Calyx audit uses exact hedged position outcomes, not its sequential pending-cost parser. Native account equity DD reported separately from closed-P&L Monte Carlo. FTMO/portfolio evidence only if statistical/holdout gates support proceeding; otherwise stages explicitly rejected/incomplete, not invented pass/payout probabilities.
+
+One isolated tester at a time; never liveMT5. Preserve original raw evidence/hashes. No minimum-lot risk override. All counts include rejected configurations. Desktop/mobile report QA; Assert-EAResearchMarkets.ps1 final summary CSV check.

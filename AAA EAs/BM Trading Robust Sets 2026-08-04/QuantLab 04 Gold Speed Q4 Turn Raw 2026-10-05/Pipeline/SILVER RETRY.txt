@@ -1,0 +1,3 @@
+Silver transfer first attempt did not finish normally. The tester journal ended with a disconnected local agent and "some error after pass finished"; the generated HTML had empty settings and a 1970 date range, and no final ledger existed. This is a failed infrastructure attempt, not a valid backtest or evidence of zero trades.
+
+The failed journal and empty HTML are retained under native/final-XAG1Y/FAILED-ATTEMPT-1-*. The identical frozen cases, risk, dates and symbol are retried without changing EA logic. The report-input assertion remains mandatory. One extra failed attempt is conservatively added to the statistical trial-count penalty.

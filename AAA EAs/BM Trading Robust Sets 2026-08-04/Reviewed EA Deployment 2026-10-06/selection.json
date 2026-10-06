@@ -1,0 +1,282 @@
+{
+  "version": "2026-10-06",
+  "title": "reviwed_Eas",
+  "phase_label": "Passed to live trading phase",
+  "approval_kind": "Owner deployment decision, not statistical certification",
+  "expected_counts": {
+    "live": 25,
+    "paused": 6,
+    "review": 6
+  },
+  "entries": [
+    {
+      "slug": "xau-rsi-vwap",
+      "installer_label": "XAU RSI VWAP",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "nasdaq-5m-candle-momentum",
+      "installer_label": "Nasdaq 5M Candle Momentum",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation.",
+      "di_input": "InpRequireDIAgreement",
+      "di_default": "ON"
+    },
+    {
+      "slug": "usdjpy-london-open-momentum",
+      "installer_label": "USDJPY London Open Momentum",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation.",
+      "di_input": "InpRequireDIAgreement",
+      "di_default": "ON"
+    },
+    {
+      "slug": "xau-weakness",
+      "installer_label": "AAA Final XAU Weakness",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "orb-volume-profile",
+      "installer_label": "ORB Volume Profile",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "ema3",
+      "installer_label": "AAA Final EMA3",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "nasdaq-overnight",
+      "installer_label": "Nasdaq Overnight",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "btc-top-down-fvg-liquidity",
+      "installer_label": "BTC Top Down FVG Liquidity",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "orb-volume-profile-volume-confirmed",
+      "installer_label": "ORB Volume Profile Volume Confirmed",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "xau-orb-new-york-m30",
+      "installer_label": "XAU ORB New York M30",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "xau-orb-london-ny-overlap-m30",
+      "installer_label": "XAU ORB London NY Overlap M30",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "us100-orb-new-york-m30",
+      "installer_label": "US100 ORB New York M30",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "us100-month-end-flow",
+      "installer_label": "US100 Month End Flow",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "xau-trend-progression",
+      "installer_label": "XAU Trend Progression",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation.",
+      "input_overrides": {
+        "InpAdaptivePortfolioControls": "false",
+        "InpAllowLong": "true",
+        "InpAllowShort": "false",
+        "InpFastEMA": "20",
+        "InpSlowEMA": "50",
+        "InpSlopeLookback": "3",
+        "InpMomentumLookback": "24",
+        "InpMinimumMomentumATR": "0.5",
+        "InpRangeLookback": "48",
+        "InpRangePositionMinimum": "0.65",
+        "InpUseRangeFilter": "false",
+        "InpPullbackMode": "0",
+        "InpPullbackToleranceATR": "0.25",
+        "InpConfirmation": "0",
+        "InpMinimumBodyATR": "0.05",
+        "InpMaximumSignalATR": "2.5",
+        "InpStopMode": "1",
+        "InpSwingLookback": "3",
+        "InpStopATR": "2.0",
+        "InpStopBufferATR": "0.1",
+        "InpRewardRisk": "1.5",
+        "InpUseBreakEven": "false",
+        "InpBreakEvenAtR": "1.0",
+        "InpBreakEvenLockR": "0.05",
+        "InpUseATRTrailing": "false",
+        "InpTrailStartR": "1.0",
+        "InpTrailATR": "2.0",
+        "InpUseDynamicM15Stop": "false",
+        "InpDynamicTriggerR": "0.5",
+        "InpDynamicLockR": "0.2",
+        "InpMaximumHoldingBars": "0",
+        "InpSession": "0",
+        "InpUseRegimeGate": "false",
+        "InpRegimeReturnBars": "20",
+        "InpRegimeThresholdATR": "2",
+        "InpRegimeTrainingBars": "500",
+        "InpRegimeMinimumProbability": "0.4",
+        "InpMaximumSpreadPoints": "0",
+        "InpMaximumDeviationPoints": "80",
+        "InpMagic": "926300006"
+      },
+      "variant": "1.5R, 3-bar swing, no BE/trailing, ADX/DI off"
+    },
+    {
+      "slug": "news-pulse-xau",
+      "installer_label": "News Pulse XAU",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "news-pulse-xag",
+      "installer_label": "News Pulse XAG",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "news-pulse-btc",
+      "installer_label": "News Pulse BTC",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "news-pulse-eurusd",
+      "installer_label": "News Pulse EURUSD",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "gold-news-v9-direction",
+      "installer_label": "Gold News V9 Direction",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "gold-overnight-value-area",
+      "installer_label": "Gold Overnight Value Area",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "dmc-current-xau",
+      "installer_label": "DMC Current XAU",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "dmc-fresh-reaction-xau",
+      "installer_label": "DMC Fresh Reaction XAU",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "dmc-fresh-reaction-us100",
+      "installer_label": "DMC Fresh Reaction US100",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "lta-volume-profile",
+      "installer_label": "LTA Volume Profile",
+      "phase": "paused",
+      "decision": "Pause live new entries; first optimisation priority"
+    },
+    {
+      "slug": "xau-slow-trend",
+      "installer_label": "XAU Slow Trend",
+      "phase": "paused",
+      "decision": "Pause normal 1R version"
+    },
+    {
+      "slug": "btc-poc-fibonacci",
+      "installer_label": "BTC POC Fibonacci",
+      "phase": "paused",
+      "decision": "Demo only; poor fit for your objective"
+    },
+    {
+      "slug": "xau-regime-switch",
+      "installer_label": "XAU Regime Switch",
+      "phase": "paused",
+      "decision": "Demo only; recent breakdown"
+    },
+    {
+      "slug": "3-way-gold",
+      "installer_label": "3 Way Gold",
+      "phase": "paused",
+      "decision": "Demo only; failed untouched holdout"
+    },
+    {
+      "slug": "us30-hourly-profiles",
+      "installer_label": "US30 Hourly Profiles",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "us100-hourly-profiles",
+      "installer_label": "US100 Hourly Profiles",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "us100-selective-orb-v3",
+      "installer_label": "US100 Selective ORB V3",
+      "phase": "paused",
+      "decision": "Demo only; 80% win rate is five trades"
+    },
+    {
+      "slug": "asia-breakout",
+      "installer_label": "AAA Final Asia Breakout",
+      "phase": "review",
+      "decision": "Recent deterioration; high review priority"
+    },
+    {
+      "slug": "eth-top-down-fvg-liquidity",
+      "installer_label": "ETH Top Down FVG Liquidity",
+      "phase": "review",
+      "decision": "Recent weakness, small sample"
+    },
+    {
+      "slug": "us100-h1-orb-13utc",
+      "installer_label": "US100 H1 ORB 13UTC",
+      "phase": "review",
+      "decision": "Recent payoff collapse"
+    },
+    {
+      "slug": "sell-nasdaq-15min",
+      "installer_label": "Sell Nasdaq 15min",
+      "phase": "review",
+      "decision": "Sell-only regime weakness"
+    },
+    {
+      "slug": "xau-elliott-wave-1-2-3",
+      "installer_label": "XAU Elliott Wave 1-2-3",
+      "phase": "review",
+      "decision": "Good annual expectancy, four recent losses"
+    },
+    {
+      "slug": "xau-squeeze-momentum-standard",
+      "installer_label": "XAU Squeeze Momentum Standard",
+      "phase": "review",
+      "decision": "Audit inactivity; no recent evidence"
+    }
+  ]
+}

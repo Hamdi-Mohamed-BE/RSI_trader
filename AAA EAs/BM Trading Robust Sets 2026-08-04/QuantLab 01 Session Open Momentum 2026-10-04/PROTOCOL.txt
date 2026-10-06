@@ -1,0 +1,27 @@
+FROZEN BEFORE FIRST TEST: 2026-10-04
+Step 1 only: independent Session Open Momentum video-rule reconstruction.
+Public source: https://api-quantlab.com/algorithmen/session-open-momentum
+Vendor's detailed numerical rules are subscriber-only; no exact replication claimed.
+Buy: completed 09:30-09:35 New York M5 candle bullish AND close above EMA12.
+Literal sell: that candle closes below EMA12; colour not required.
+Sensitivity sell: bearish AND below EMA12. These two interpretations are frozen, not optimised.
+Both reconstruction variants: no DI filter. One position, one new entry per NY date.
+ASSUMED EXITS (not claimed vendor values): our current EA's 0.60% price stop,
+ATR14 M5 trailing distance 6 ATR, activation at +1 initial R, no target, no session close.
+Overnight and weekend holds permitted. All other core code identical to current EA.
+Native controls: current DI-on; current DI-off; old DI-on 4 ATR stop, 2.5R TP, 15:55 NY close.
+Two-week parity control first: body-mode zero must reproduce byte-identical current DI-off trade results.
+1-year: 2025-10-04 inclusive through 2026-10-04 exclusive.
+3-month: 2026-07-04 inclusive through 2026-10-04 exclusive.
+Each run begins fresh and flat, USD 10,000, 1% equity planned risk per entry, USTEC M5,
+Exness-MT5Trial16, leverage 1:2000, native MT5 model 4, fixed execution delay 150ms.
+No portfolio multipliers or shared FTMO guards. Existing lot rounding is retained:
+broker-volume rounding upwards can exceed the intended 1%; disclose this limitation.
+Costs: native spread/commission/swap. No invented extra cost stress.
+Real ticks only available since 2026-01-01; pre-2026 generated ticks in one-year tests.
+Boundary liquidations remain in headline results and are separately counted.
+PF and win rate computed on full net closed positions including costs.
+Native MT5 equity drawdown and native Sharpe displayed separately from closed-balance graphs.
+No optimisation. This is initial comparative research, not a passed full validation pipeline.
+No live terminal, BAT, production source, deployment setting, website or Git remote is changed.
+Stop after this idea and request user review before beginning NQBlade.

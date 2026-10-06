@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "parser_regression": "Passed non-FIFO closes, unequal lots, costs and missing-mapping rejection",
+  "runs": [
+    {
+      "window": "SMOKE",
+      "baskets": 10,
+      "positions": 40,
+      "passed": true,
+      "net_usd": -33.47,
+      "equity_dd_pct": 7.25,
+      "history_quality": "100% real ticks",
+      "counts_reconciled": true,
+      "exact_position_mapping": true,
+      "closed_bar_signal_audit": true,
+      "total_budget_not_fourfold": true,
+      "no_weekend_holding": true,
+      "weekend_carry_baskets": []
+    },
+    {
+      "window": "1Y",
+      "baskets": 245,
+      "positions": 980,
+      "passed": true,
+      "net_usd": -2024.13,
+      "equity_dd_pct": 23.84,
+      "history_quality": "75% real ticks",
+      "counts_reconciled": true,
+      "exact_position_mapping": true,
+      "closed_bar_signal_audit": true,
+      "total_budget_not_fourfold": true,
+      "no_weekend_holding": false,
+      "weekend_carry_baskets": [
+        "20251205",
+        "20260109",
+        "20260703"
+      ]
+    },
+    {
+      "window": "3M",
+      "baskets": 62,
+      "positions": 248,
+      "passed": true,
+      "net_usd": -625.74,
+      "equity_dd_pct": 13.43,
+      "history_quality": "100% real ticks",
+      "counts_reconciled": true,
+      "exact_position_mapping": true,
+      "closed_bar_signal_audit": true,
+      "total_budget_not_fourfold": true,
+      "no_weekend_holding": true,
+      "weekend_carry_baskets": []
+    }
+  ],
+  "checks": "Frozen source/executable/preset/protocol/report hashes; native position-ticket/deal associations; complete costs and counts; one basket per NY date; non-overlapping baskets; four portions; closed-bar EMA/ADX/DI audit; risk budgets; native DD; no failed orders/modifications. Weekend carries are retained and flagged, not assumed away.",
+  "limitations": "Raw assumptions only. No optimisation, independent holdout, cost stress, Monte Carlo, FTMO/portfolio model, live deployment or vendor-rule parity."
+}

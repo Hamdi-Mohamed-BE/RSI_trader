@@ -262,6 +262,12 @@ Do not erase those limitations or pretend every intended daily close executed ex
 static vs trailing stops, 0.5–6R, sessions Asia/London/NY/overlap, direction, filters, management), and Monte Carlo on
 the best version is mandatory before promotion. Where this section and PIPELINE.md differ, PIPELINE.md wins.
 
+**Amended 2026-10-06 (user): final OOS always covers the last TWO calendar years**, anchored to the frozen study
+end-exclusive date (normally through yesterday UTC). The prior 12 months are finalist validation; development is
+older still. Use `AAA EAs/Calyx Research Pipeline/data_split.py`. Recent 1y/6m/3m are OOS diagnostics, never selection
+windows. Insufficient history does not shorten OOS. Preserve old reports; previously inspected dates are retrospective,
+not untouched. In-flight studies need a separately frozen date revision before new selection/OOS claims.
+
 Default workflow: raw definition -> raw evidence -> user review -> approved pipeline -> separate promotion.
 Do not optimize an unreviewed idea merely because an older strategy received approval.
 

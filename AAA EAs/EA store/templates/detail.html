@@ -37,6 +37,8 @@
 </section>
 
 <div data-evidence-scope>
+{% set review = review_by_slug.get(product.slug) %}
+{% if review %}<aside class="mx-auto max-w-7xl px-5 pt-8 lg:px-8"><p class="review-phase-badge phase-{{ review.phase }}">{{ review.phase_label }} · owner deployment choice, not research certification or proof of installation.</p><p class="review-disclaimer">Reviewed variant: {{ review.variant }}. <a class="text-mint" href="/ea-review?q={{ product.label|urlencode }}">See reviewed dates, exact results and limitations →</a>{% if product.slug == 'xau-trend-progression' %} This page's normal 0.6R cache remains separate from the reviewed 1.5R candidate.{% endif %}{% if review.di_note is defined %} {{ review.di_note }}{% endif %}</p></aside>{% endif %}
 <section class="mx-auto max-w-7xl px-5 py-16 lg:px-8">
   {% if display_evidence %}
   {% if product.website_only %}<div class="mb-8 rounded-2xl border border-amber-300/25 bg-amber-300/[.06] p-5 text-sm leading-7 text-amber-100/90">{{ display_evidence.caution }}</div>{% endif %}

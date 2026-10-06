@@ -1,0 +1,22 @@
+const fs=require('fs');
+const path=require('path');
+const {pathToFileURL}=require('url');
+const {chromium}=require('C:/Users/hama101/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+(async()=>{
+ const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];
+ page.on('pageerror',e=>errors.push(String(e)));await page.goto(pathToFileURL(path.join(__dirname,'Results.html')).href);
+ await page.locator('h1').waitFor();
+ const links=await page.locator('a').evaluateAll(a=>a.map(x=>x.getAttribute('href')));
+ const missing=links.filter(x=>!/^https?:/.test(x)&&!fs.existsSync(path.join(__dirname,x)));
+ if(missing.length||errors.length)throw new Error(JSON.stringify({missing,errors}));
+ const svgs=await page.locator('svg').count();if(svgs!==2)throw new Error('Chart count '+svgs);
+ const summaryRows=await page.locator('section').first().locator('tbody tr').count();if(summaryRows!==6)throw new Error('Summary row count');
+ await page.screenshot({path:path.join(__dirname,'Preview.png'),fullPage:false});
+ await page.locator('svg').first().screenshot({path:path.join(__dirname,'Balance Preview.png')});
+ await page.locator('details').first().locator('summary').click();if(await page.locator('details[open]').count()!==1)throw new Error('Trade detail does not open');
+ await page.locator('details').first().locator('summary').click();await page.setViewportSize({width:420,height:900});
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);if(overflow)throw new Error('Mobile page overflow');
+ await page.screenshot({path:path.join(__dirname,'Mobile Preview.png'),fullPage:false});
+ fs.writeFileSync(path.join(__dirname,'html-qa.json'),JSON.stringify({ok:true,summaryRows,svgs,localLinks:links.length,errors,missing,mobileOverflow:overflow},null,2));
+ await browser.close();console.log('HTML QA passed');
+})().catch(e=>{console.error(e);process.exit(1)});

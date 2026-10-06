@@ -1,0 +1,11 @@
+User-requested addendum, 4 October 2026.
+Preserve both completed original runs and their frozen protocol/source hashes.
+Add CURRENT_NO_DI using the exact same current compiled EX5 and selected source SET.
+Only strategy input difference versus CURRENT: InpRequireDIAgreement=false.
+Retain all entry timing, EMA, stop, trailing, risk, holding and sizing settings.
+Same dates, broker, real-tick model, 150 ms delay, deposit and fresh flat start.
+Explicitly compare manifests to verify that only this strategy input changed.
+Preserve end-of-test liquidations if any; label them separately, not as natural exits.
+Do not assume identical trade counts, matching entries, or profitable exits.
+Report net-position PF, native equity drawdown and individual trade ledgers.
+This is a short retrospective filter ablation, not optimization or live deployment.

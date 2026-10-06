@@ -17,6 +17,9 @@ param(
     [double]$NewsRiskPercent = 0.75,
     [ValidateSet('ON', 'OFF')]
     [string]$NasdaqDIFilter = 'ON',
+    [ValidateSet('ON', 'OFF')]
+    [string]$UsdJpyDIFilter = 'ON',
+    [switch]$UseReviewedSelections,
     [switch]$UseRecommendedSelections,
     [switch]$UseClaudeSelections,
     [switch]$UseAdaptiveProfile,
@@ -37,7 +40,13 @@ $EffectiveAdaptiveRiskPercent = $AdaptiveRiskPercent
 $RequestedRiskMoney = 0.0
 # claude_eas.bat (2026-09-25): Best Recommended selections plus the Claude-specific overrides below.
 if ($UseClaudeSelections) { $UseRecommendedSelections = [switch]$true }
-$ProfileName = if ($UseAdaptiveProfile) {
+if ($UseReviewedSelections) {
+    if ($UseAdaptiveProfile -or $UseClaudeSelections -or $SafetyMode -ne 'STANDARD' -or $AccountProfile -ne 'AUTO' -or $RiskMode -eq 'DEFAULT') { throw 'Reviewed launcher requires AUTO account, explicit risk, preferred STANDARD selections and no Adaptive/Claude overlay.' }
+    $UseRecommendedSelections = [switch]$true
+}
+$ProfileName = if ($UseReviewedSelections) {
+    'Calyx REVIWED EAS'
+} elseif ($UseAdaptiveProfile) {
     if ($IsAdaptiveAccount) { 'Calyx ANY BALANCE - RECOMMENDED ADAPTIVE' } elseif ($IsSmallAccount) { 'Calyx 900 - RECOMMENDED ADAPTIVE' } else { 'Calyx 100K - RECOMMENDED ADAPTIVE' }
 } elseif ($UseClaudeSelections) {
     if ($IsAdaptiveAccount) { 'BM Trading ANY BALANCE - CLAUDE EAS' } elseif ($IsSmallAccount) { 'BM Trading 900 - CLAUDE EAS' } else { 'BM Trading 100K - CLAUDE EAS' }
@@ -53,6 +62,7 @@ $ProbePath = Join-Path $PSScriptRoot 'Probe-MT5.py'
 $GoldNewsRoot = [IO.Path]::GetFullPath((Join-Path $PackageRoot '..\..\AI news'))
 $GoldNewsRuntimeInstaller = Join-Path $GoldNewsRoot 'Install-GoldNewsV9EA.ps1'
 . (Join-Path $PSScriptRoot 'News-Launcher-Policy.ps1')
+. (Join-Path $PSScriptRoot 'Reviewed-Portfolio-Policy.ps1')
 $Unicode = New-Object System.Text.UnicodeEncoding($false, $true)
 
 function Write-Stage([string]$Message) {
@@ -317,6 +327,10 @@ function Get-PortfolioItems {
     # Filter before file checks, symbol discovery, risk settings or chart creation.
     # Owner restored all five selected news systems in normal BATs on 2026-10-03.
     $items = @(Select-NormalNewsItems -Items $items)
+    # Get-Variable keeps older static manifest tests compatible when this opt-in flag is absent.
+    if (Get-Variable UseReviewedSelections -ValueOnly -ErrorAction SilentlyContinue) {
+        $items = @(Select-ReviewedItems $items)
+    }
     foreach ($item in $items) {
         if (-not $item.PSObject.Properties['HistoricalLossSizing']) {
             $item | Add-Member -NotePropertyName HistoricalLossSizing -NotePropertyValue $false
@@ -520,6 +534,7 @@ function Test-NewsAdaptiveExemption([object]$Item) {
 
 function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
+    if ($Item.PSObject.Properties['ReviewedEntry']) { Set-ReviewedInputs $Item $inputs }
     if ([bool]$Item.HistoricalLossSizing) {
         # No stop is added. Risk here means the frozen historical-loss scenario,
         # not maximum possible future loss. Recalculate volume on each entry.
@@ -913,7 +928,9 @@ function Close-TargetTerminal([string]$ExecutablePath) {
 Write-Stage 'Checking portfolio files'
 $portfolio = @(Get-PortfolioItems)
 Write-Host 'NEWS POLICY: XAU/XAG/BTC/EURUSD News Pulse and Gold News V9 enabled; fresh-quote repair. FTMO unchanged.' -ForegroundColor Yellow
-Write-Host 'HOURLY POLICY: US30 and US100 included where available. Historical-loss sizing defaults to 0.5% of balance unless a risk is selected. NO SL; timed exits can be delayed. Separate FTMO/Ava and licensed Top 5 remain excluded.' -ForegroundColor Yellow
+if (-not $UseReviewedSelections) {
+    Write-Host 'HOURLY POLICY: US30 and US100 included where available. Historical-loss sizing defaults to 0.5% of balance unless a risk is selected. NO SL; timed exits can be delayed. Separate FTMO/Ava and licensed Top 5 remain excluded.' -ForegroundColor Yellow
+}
 foreach ($item in $portfolio) {
     if (-not (Test-Path -LiteralPath $item.ExpertFullPath)) { Stop-WithMessage "Missing EA: $($item.ExpertFullPath)" }
     if (-not (Test-Path -LiteralPath $item.SetFullPath)) { Stop-WithMessage "Missing settings: $($item.SetFullPath)" }
@@ -948,6 +965,12 @@ if ($UseClaudeSelections) {
 }
 Write-Host ("Nasdaq 5M: DI14 {0}, 0.60% price stop, no TP, ATR6 trail from +1R; overnight/weekend holding." -f $NasdaqDIFilter) -ForegroundColor Green
 if ($NasdaqDIFilter -eq 'OFF') { Write-Host 'DI OFF is a custom selection; published DI-ON evidence does not apply.' -ForegroundColor Yellow }
+if ($UseReviewedSelections) {
+    Write-Host 'REVIWED EAS: 25 owner-selected entries only. Passed to live trading phase is a user decision, NOT research qualification.' -ForegroundColor Cyan
+    Write-Host ("USDJPY: DI {0}; ADX >=20 stays unchanged. Trend Progression: approved 1.5R / 3-bar swing / no BE or trailing." -f $UsdJpyDIFilter)
+    Write-Host 'US30 and US100 hourly are included unchanged with historical-loss sizing and NO stop-loss. LTA, Slow Trend, 3 Way Gold and other unselected entries remain excluded.'
+    if ($UsdJpyDIFilter -eq 'OFF') { Write-Host 'USDJPY DI OFF is custom; published ADX20 + DI results do not describe it.' -ForegroundColor Yellow }
+}
 
 Write-Stage 'Finding MT5'
 $candidates = @(Get-Mt5Candidates)
@@ -1306,6 +1329,8 @@ $manifest = @(
     'Recommended Dynamic EAs: ' + ((@($portfolio | Where-Object { $_.DynamicByDesign }) | ForEach-Object { $_.Label }) -join ', ')
     'Risk mode: ' + $RiskMode
     'Requested risk value: ' + $RiskValue.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
+    'Reviewed roster selected: ' + [bool]$UseReviewedSelections
+    'USDJPY DI choice (reviewed profile only): ' + $UsdJpyDIFilter
     'Standalone news risk percent PER ORDER: ' + $NewsRiskPercent.ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
     'News Pulse both sides retained; two fills can double per-asset event exposure; news bypasses adaptive controls'
     'Entry volume policy: round up to broker step; use broker minimum when required; never skip solely for lot sizing'

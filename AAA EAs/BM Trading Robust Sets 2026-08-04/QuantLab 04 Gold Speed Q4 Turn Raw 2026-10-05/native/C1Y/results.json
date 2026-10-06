@@ -1,0 +1,154 @@
+{
+  "manifest": {
+    "case": {
+      "id": "C1Y",
+      "window": "1Y",
+      "modules": 4,
+      "symbol": "XAUUSD",
+      "control": false
+    },
+    "start": "2025.10.05",
+    "end_exclusive": "2026.10.05",
+    "warmup_from": "2025.04.08",
+    "build": {
+      "source_sha256": "f817591ff43759e80f6181c481ff425302fa72f233727128913fc179171ccae8",
+      "binary_sha256": "65657d633913b80071c4e8b7e2874a2a7eb5368adc0fce32fda35314ca50de5e",
+      "protocol_sha256": "5e39e26c825b253716e657400eb9299043d326e2348df82d2dd0afbc1be65656",
+      "config_sha256": "b0e724f2ae19ee7a6db123f831b363cde3923ab3705a0e1d5bd6b03e236d6cf3",
+      "compiler_tail": "code 51%\r\n : information: generating code 54%\r\n : information: generating code 57%\r\n : information: generating code 60%\r\n : information: generating code 63%\r\n : information: generating code 66%\r\n : information: generating code 69%\r\n : information: generating code 72%\r\n : information: generating code 75%\r\n : information: generating code 78%\r\n : information: generating code 81%\r\n : information: generating code 84%\r\n : information: generating code 87%\r\n : information: generating code 90%\r\n : information: generating code 93%\r\n : information: generating code 95%\r\n : information: generating code 100%\r\n : information: code generated\r\nResult: 0 errors, 0 warnings, 968 ms elapsed, cpu='X64 Regular'\r\n"
+    },
+    "inputs": {
+      "InpModules": 4,
+      "InpBreakoutQ4Only": "true",
+      "InpControl": "false",
+      "InpRiskPercent": 1,
+      "InpSeed": 20261005,
+      "InpTradeFrom": "2025.10.05 00:00:00",
+      "InpTag": "C1Y",
+      "InpMagic": 1005040
+    },
+    "deposit": 10000,
+    "model": 4,
+    "delay_ms": 150,
+    "symbol": "XAUUSD",
+    "period": "M1"
+  },
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10000.0,
+    "net_profit": 0.0,
+    "return_pct": 0.0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "max_drawdown_pct": 0.0,
+    "trades": 0,
+    "sharpe_ratio": 0.0,
+    "recovery_factor": 0.0,
+    "history_quality": "50% real ticks",
+    "equity_dd_pct": 0.0,
+    "balance_dd_pct": 0.0
+  },
+  "net_metrics": {
+    "trades": 0,
+    "net_profit": 0,
+    "return_pct": 0.0,
+    "net_pf": null,
+    "win_rate_pct": null,
+    "wins": 0,
+    "losses": 0,
+    "flat": 0,
+    "max_win_streak": 0,
+    "max_loss_streak": 0,
+    "avg_win_usd": null,
+    "avg_loss_usd": null,
+    "expectancy_usd": null,
+    "mean_net_initial_R": null
+  },
+  "module_metrics": {
+    "A_SPEED": {
+      "trades": 0,
+      "net_profit": 0,
+      "return_pct": 0.0,
+      "net_pf": null,
+      "win_rate_pct": null,
+      "wins": 0,
+      "losses": 0,
+      "flat": 0,
+      "max_win_streak": 0,
+      "max_loss_streak": 0,
+      "avg_win_usd": null,
+      "avg_loss_usd": null,
+      "expectancy_usd": null,
+      "mean_net_initial_R": null
+    },
+    "B_Q4": {
+      "trades": 0,
+      "net_profit": 0,
+      "return_pct": 0.0,
+      "net_pf": null,
+      "win_rate_pct": null,
+      "wins": 0,
+      "losses": 0,
+      "flat": 0,
+      "max_win_streak": 0,
+      "max_loss_streak": 0,
+      "avg_win_usd": null,
+      "avg_loss_usd": null,
+      "expectancy_usd": null,
+      "mean_net_initial_R": null
+    },
+    "C_TURN": {
+      "trades": 0,
+      "net_profit": 0,
+      "return_pct": 0.0,
+      "net_pf": null,
+      "win_rate_pct": null,
+      "wins": 0,
+      "losses": 0,
+      "flat": 0,
+      "max_win_streak": 0,
+      "max_loss_streak": 0,
+      "avg_win_usd": null,
+      "avg_loss_usd": null,
+      "expectancy_usd": null,
+      "mean_net_initial_R": null
+    }
+  },
+  "trades": [],
+  "ledger": [],
+  "counters": {
+    "A": 0,
+    "B": 0,
+    "C": 0,
+    "entryFails": 0,
+    "closeFails": 0,
+    "modifyFails": 0,
+    "skips": 0,
+    "minlot_skips": 12,
+    "stale": 0,
+    "trails": 0
+  },
+  "flags": {
+    "entry_errors": 0,
+    "close_errors": 0,
+    "modify_errors": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "stopout": 0
+  },
+  "audit": {
+    "accepted_position_audits": 0,
+    "signal_algebra_passed": true,
+    "one_slot_per_module": true,
+    "max_concurrent_positions": 0,
+    "requested_quote_risk_cash_allowance_usd": 0.011,
+    "max_quote_risk_excess_usd": 0,
+    "max_actual_stop_risk_to_budget": 0
+  },
+  "seconds": 61.6,
+  "report_sha256": "e15e8150cabf21782e53c7922af68771cd9b60b42d3017dba70992b653acf029",
+  "trace_note": "Five-minute sampled equity, not continuous tick-level equity",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

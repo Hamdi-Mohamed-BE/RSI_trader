@@ -1,0 +1,51 @@
+{
+  "asset": "XAUUSD",
+  "asof_candidate": "2026-10-02T15:00:00+00:00",
+  "completed_d1_start": "2026-10-01T00:00:00+00:00",
+  "params": {
+    "window": 40,
+    "threshold": 0.05,
+    "minimum_labels": 252
+  },
+  "states": [
+    "Bear",
+    "Sideways",
+    "Bull"
+  ],
+  "current_regime": "Sideways",
+  "transition_matrix": [
+    [
+      0.8125,
+      0.1875,
+      0.0
+    ],
+    [
+      0.03352891869237217,
+      0.9262363788767812,
+      0.040234702430846606
+    ],
+    [
+      0.0,
+      0.0732824427480916,
+      0.9267175572519084
+    ]
+  ],
+  "next_state_probabilities": {
+    "bear": 0.03352891869237217,
+    "sideways": 0.9262363788767812,
+    "bull": 0.040234702430846606
+  },
+  "signal": 0.006705783738,
+  "persistence_diagonal": {
+    "bear": 0.8125,
+    "sideways": 0.9262363788767812,
+    "bull": 0.9267175572519084
+  },
+  "stationary_distribution": {
+    "bear": 0.10349288486416636,
+    "sideways": 0.5787516170763258,
+    "bull": 0.3177554980595078
+  },
+  "scope": "Last recorded historical entry candidate, not current market forecast. Matrix uses only that candidate\u2019s past completed D1 history. Snapshot stationary mix NOT applied to earlier trades or risk sizing.",
+  "framework": "Roan (@RohOnChain); skill helper script unavailable, exact EA implementation audited directly; historical, not forward-looking."
+}

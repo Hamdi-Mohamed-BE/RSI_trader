@@ -13,6 +13,8 @@
   const asset = document.querySelector('#asset-filter');
   const assetClass = document.querySelector('#asset-class-filter');
   const evidence = document.querySelector('#evidence-filter');
+  const phase = document.querySelector('#phase-filter');
+  const loadedPhase = new URL(location.href).searchParams.get('phase') || 'all';
   const sort = document.querySelector('#sort-filter');
   const grid = document.querySelector('#product-grid');
   const cards = [...document.querySelectorAll('#product-grid .product-card')];
@@ -31,12 +33,19 @@
       const matchesAsset = assetValue === 'all' || card.dataset.symbol === assetValue;
       const matchesAssetClass = assetClassValue === 'all' || card.dataset.asset === assetClassValue;
       const matchesEvidence = evidenceValue === 'all' || card.dataset.evidence.startsWith(evidenceValue);
-      const show = matchesSearch && matchesAsset && matchesAssetClass && matchesEvidence;
+      const matchesPhase = !phase || phase.value === 'all' || card.querySelector('[data-card-phase]')?.dataset.cardPhase === phase.value;
+      const show = matchesSearch && matchesAsset && matchesAssetClass && matchesEvidence && matchesPhase;
       card.classList.toggle('hidden', !show);
       if (show) visible += 1;
     });
     if (count) count.textContent = String(visible);
     empty?.classList.toggle('hidden', visible !== 0);
+    document.querySelectorAll('[data-phase-link]').forEach((link) => {
+      const active = link.dataset.phaseLink === (phase?.value || 'all');
+      link.classList.toggle('active', active);
+      if (active) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
 
     const number = (card, key, fallback) => {
       const value = Number(card.dataset[key]);
@@ -61,5 +70,15 @@
   asset?.addEventListener('change', applyLiveFilters);
   assetClass?.addEventListener('change', applyLiveFilters);
   evidence?.addEventListener('change', applyLiveFilters);
+  phase?.addEventListener('change', () => {
+    if (loadedPhase !== 'all' && phase.value !== loadedPhase) {
+      const url = new URL(location.href);
+      url.searchParams.set('phase', phase.value);
+      url.searchParams.set('q', (search?.value || '').trim());
+      location.assign(url.href);
+      return;
+    }
+    applyLiveFilters();
+  });
   sort?.addEventListener('change', applyLiveFilters);
 })();

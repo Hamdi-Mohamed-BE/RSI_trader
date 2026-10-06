@@ -1,0 +1,89 @@
+{
+  "ok": true,
+  "checks": {
+    "fifteen_features": true,
+    "ER_monotonic_and_zigzag_sanity": true,
+    "NY_DST_sessions_correct": true,
+    "prefix_history_identical": true,
+    "future_mutation_identical": true,
+    "scaling_and_coefficients_replay": true,
+    "training_median_only": true,
+    "all_forecasts_past_only": true,
+    "exact_production_parity": true,
+    "native_deal_reconciliation": true,
+    "production_and_BAT_hashes_unchanged": true,
+    "all_gate_logic_reconciled": true
+  },
+  "runs": [
+    {
+      "case": "2Y_BASE",
+      "positions": 356,
+      "deal_audit": 712,
+      "equity_dd": 10.06,
+      "quality": "37% real ticks"
+    },
+    {
+      "case": "2Y_LAG",
+      "positions": 186,
+      "deal_audit": 372,
+      "equity_dd": 10.6,
+      "quality": "37% real ticks"
+    },
+    {
+      "case": "2Y_ML",
+      "positions": 239,
+      "deal_audit": 478,
+      "equity_dd": 12.72,
+      "quality": "37% real ticks"
+    },
+    {
+      "case": "3M_BASE",
+      "positions": 43,
+      "deal_audit": 86,
+      "equity_dd": 6.55,
+      "quality": "100% real ticks"
+    },
+    {
+      "case": "3M_LAG",
+      "positions": 17,
+      "deal_audit": 34,
+      "equity_dd": 3.56,
+      "quality": "100% real ticks"
+    },
+    {
+      "case": "3M_ML",
+      "positions": 29,
+      "deal_audit": 58,
+      "equity_dd": 6.34,
+      "quality": "100% real ticks"
+    },
+    {
+      "case": "3M_ORIGINAL",
+      "positions": 43,
+      "deal_audit": null,
+      "equity_dd": 6.55,
+      "quality": "100% real ticks"
+    },
+    {
+      "case": "6M_BASE",
+      "positions": 86,
+      "deal_audit": 172,
+      "equity_dd": 6.54,
+      "quality": "100% real ticks"
+    },
+    {
+      "case": "6M_LAG",
+      "positions": 38,
+      "deal_audit": 76,
+      "equity_dd": 5.49,
+      "quality": "100% real ticks"
+    },
+    {
+      "case": "6M_ML",
+      "positions": 57,
+      "deal_audit": 114,
+      "equity_dd": 6.35,
+      "quality": "100% real ticks"
+    }
+  ]
+}

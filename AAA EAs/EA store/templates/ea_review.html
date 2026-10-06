@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Reviewed EA decisions — Calyx{% endblock %}
+{% macro stats(m) %}
+{% if m and m.trades %}
+<small>{{ m.start }} → {{ m.end_exclusive }} exclusive</small>
+<strong>{{ m.trades }} trades · PF {{ '%.3f'|format(m.pf) if m.pf is number else m.pf|default('—', true) }} · {{ '%.1f'|format(m.win_rate) }}% wins</strong>
+<p class="{{ 'phase-live' if m.return_pct >= 0 else 'phase-paused' }}">{{ '%+.2f'|format(m.return_pct) }}% · winning/losing run {{ m.win_streak }}/{{ m.loss_streak }}</p>
+{% if m.equity_dd_pct is defined and m.equity_dd_pct is not none %}<p>Native equity DD {{ '%.2f'|format(m.equity_dd_pct) }}%</p>{% endif %}
+{% if m.return_method is defined %}<small>{{ m.return_method }}</small>{% endif %}
+{% elif m %}<strong>No closed positions</strong><p>PF, win rate and streaks: not assessable.</p>
+{% else %}<strong>Current-version evidence not available</strong><p>Missing data is not zero performance.</p>{% endif %}
+{% endmacro %}
+{% block content %}
+<section class="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+<p class="eyebrow-simple">CALYX · OWNER REVIEW · {{ review_version }}</p>
+<h1 class="page-title">Reviewed bots.<br>Clear deployment decisions.</h1>
+<p class="page-lead">The new <strong>reviwed_Eas.bat</strong> selects 25 EAs, including US30 and US100 hourly, with normal USD/% risk, separate news percentage per order, and individual DI choices. Hourly sizing uses historical losses, not a guaranteed cap; those EAs have no stop-loss. Other launchers and FTMO stay separate. No account has been changed by creating this package.</p>
+{% include 'partials/review_controls.html' %}
+<p class="review-disclaimer">Retained standalone net results—not a shared portfolio simulation or a fresh backtest. Each row names its dates and variant. Recent slices have different cutoffs; some older ticks were generated. Custom risk or DI OFF does not inherit these returns.</p>
+<form method="get" class="phase-controls"><input id="review-search" name="q" value="{{ query }}" placeholder="Search EA or symbol…" aria-label="Search reviewed EAs"><select id="review-phase" name="phase" aria-label="Reviewed phase">{% for phase,label in review_phase_labels.items() %}<option value="{{ phase }}" {% if selected_phase==phase %}selected{% endif %}>{{ label }}</option>{% endfor %}</select><button type="submit" class="button-secondary">Apply</button></form>
+<p id="review-visible-count" class="review-disclaimer">{{ review_rows|length }} of {{ review_total }} EAs shown</p>
+<div class="review-table-wrap"><table class="review-table"><thead><tr><th>EA / reviewed variant</th><th>Recent available results</th><th>Recorded ~1-year results</th><th>Decision and evidence limits</th></tr></thead><tbody>
+{% for row in review_rows %}<tr data-review-phase="{{ row.phase }}" data-review-search="{{ (row.label ~ ' ' ~ row.canonical)|lower }}" id="review-{{ row.slug }}"><td><a href="/eas/{{ row.slug }}?period=1y">{{ row.label }}</a><small>{{ row.canonical }} · {{ row.mode }}</small><p class="phase-{{ row.phase }}">{{ row.phase_label }}</p><small>{{ row.variant }}</small>{% if row.di_default is defined %}<p>DI ON by default; OFF selectable in the BAT.</p>{% endif %}</td><td>{{ stats(row.recent) }}</td><td>{{ stats(row.year) }}</td><td><strong>{{ row.decision }}</strong><p>{{ row.reason }}</p><details><summary>Evidence and next check</summary><p>{{ row.next_review }}</p>{% if row.di_note is defined %}<p>{{ row.di_note }}</p>{% endif %}{% if row.provenance %}<p>{{ row.provenance }}</p>{% endif %}{% for note in row.limitations or [] %}<p>{{ note }}</p>{% endfor %}</details></td></tr>{% endfor %}
+</tbody></table></div>
+<p class="review-disclaimer">DMCs and Gold Overnight keep their preferred normal rules. Trend Progression uses your selected 1.5R candidate only in the reviewed launcher; normal/FTMO versions are unchanged. News audits remain unfinished and their warnings are retained even though you selected them for this package.</p>
+</section><script src="{{ url_for('static',path='ea-review.js') }}?v=20261006"></script>
+{% endblock %}

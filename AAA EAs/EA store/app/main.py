@@ -33,6 +33,7 @@ from .catalog import (
     _legacy_news_pulse_hard_evidence,
     package_buy_url,
 )
+from .ea_review import PHASE_LABELS, review_data, phase_links
 from .evidence_cache import (
     DEFAULT_PERIOD,
     PERIOD_OPTIONS,
@@ -263,6 +264,11 @@ def _base_context(request: Request, active: str) -> dict[str, Any]:
         "sharpe_label": SHARPE_LABEL,
         "sharpe_definition": SHARPE_DEFINITION,
         "installer_updated": datetime.fromtimestamp(INSTALLER_PATH.stat().st_mtime).strftime("%d %b %Y"),
+        "review_by_slug": review_data()['by_slug'],
+        "review_counts": review_data()['counts'],
+        "review_total": review_data()['total'],
+        "review_phase_labels": PHASE_LABELS,
+        "review_phase_links": phase_links(request),
     }
 
 
@@ -405,6 +411,7 @@ async def catalogue(
     asset: str = Query(default="all", pattern=r"^(all|metals|indices|crypto|forex|stocks)$"),
     symbol: str = Query(default="all", max_length=20),
     evidence: str = Query(default="all", pattern=r"^(all|validated|research|experimental)$"),
+    phase: str = Query(default="all", pattern=r"^(all|live|paused|review)$"),
     period: str = Query(default=DEFAULT_PERIOD, pattern=r"^(6m|1y|3y|5y)$"),
     sort: str = Query(
         default="recommended",
@@ -414,6 +421,8 @@ async def catalogue(
     all_products = _display_catalog(period)
     catalogue_order = {product.slug: index for index, product in enumerate(all_products)}
     products = list(all_products)
+    if phase != 'all':
+        products=[p for p in products if review_data()['by_slug'].get(p.slug,{}).get('phase') == phase]
     query = q.strip().lower()
     selected_symbol = symbol.strip().upper()
     if query:
@@ -452,6 +461,7 @@ async def catalogue(
         "selected_asset": asset,
         "selected_symbol": selected_symbol.lower(),
         "selected_evidence": evidence,
+        "selected_phase": phase,
         "selected_sort": sort,
         "selected_period": period,
         "period_options": PERIOD_OPTIONS,
@@ -461,6 +471,18 @@ async def catalogue(
         "catalogue_order": catalogue_order,
     }
     return templates.TemplateResponse(request=request, name="catalogue.html", context=context)
+
+
+@app.get('/ea-review', response_class=HTMLResponse)
+async def reviewed_eas(request: Request, phase: str=Query(default='all',pattern=r'^(all|live|paused|review)$'), q: str=Query(default='',max_length=80)):
+    data=review_data()
+    rows=[r for r in data['rows'] if (phase=='all' or r['phase']==phase) and q.lower().strip() in (r['label']+' '+r['canonical']).lower()]
+    return templates.TemplateResponse(request=request, name='ea_review.html', context=_base_context(request,'review') | dict(review_rows=rows, selected_phase=phase, query=q, review_version=data['version']))
+
+
+@app.get('/api/ea-review')
+async def reviewed_eas_api():
+    return {k:v for k,v in review_data().items() if k != 'by_slug'}
 
 
 @app.get("/eas/{slug}", response_class=HTMLResponse)

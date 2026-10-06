@@ -1,0 +1,74 @@
+{
+  "case": "1Y-3000",
+  "window": [
+    "2025.10.05",
+    "2026.10.05"
+  ],
+  "delay_ms": 3000,
+  "original": false,
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 12868.99,
+    "net_profit": 2868.99,
+    "return_pct": 28.69,
+    "profit_factor": 5.11,
+    "win_rate_pct": 72.41,
+    "max_drawdown_pct": 2.48,
+    "trades": 29,
+    "sharpe_ratio": 414.5,
+    "recovery_factor": 8.88,
+    "history_quality": "75% real ticks",
+    "equity_dd_pct": 2.48
+  },
+  "metrics": {
+    "trades": 29,
+    "net_profit": 2868.99,
+    "return_pct": 28.689899999999998,
+    "pf": 5.169679969770079,
+    "win_rate": 72.41379310344827,
+    "win_streak": 7,
+    "loss_streak": 3,
+    "daily_equity_sharpe": 3.155563064529368,
+    "trades_month": 2.4183219178082194,
+    "trades_weekday": 0.11153846153846154
+  },
+  "errors": {
+    "rejected": 0,
+    "uncertain": 0,
+    "incomplete_attempts": 0,
+    "modify_failed": 12,
+    "close_failed": 0,
+    "delete_failed": 0,
+    "fallbacks": 0
+  },
+  "event_audit": {
+    "expected": 31,
+    "attempted": 30,
+    "complete": 30
+  },
+  "event_basket_metrics": {
+    "trades": 26,
+    "net_profit": 2868.99,
+    "return_pct": 28.6899,
+    "pf": 7.998390047566777,
+    "win_rate": 80.76923076923077,
+    "win_streak": 10,
+    "loss_streak": 3,
+    "daily_equity_sharpe": null,
+    "trades_month": 2.168150684931507,
+    "trades_weekday": 0.1
+  },
+  "both_sides_filled_events": 3,
+  "max_actual_risk_budget_ratio": 3.030496050288977,
+  "latest_exit_seconds_after_deadline": 9,
+  "qualification_failures": [
+    "NP|1761309000|CPI|B: exit late 9s",
+    "Incomplete event setup coverage 30/31, attempted 30",
+    "Execution errors: {\"rejected\": 0, \"uncertain\": 0, \"incomplete_attempts\": 0, \"modify_failed\": 12, \"close_failed\": 0, \"delete_failed\": 0, \"fallbacks\": 0}"
+  ],
+  "report_sha": "86035ac9bad55f7f27753144e3d62482e80ef9de6ed654f617a2a5d05d109bf5",
+  "binary_sha": "af91d5a12693bf409c35c99ff31c31513d593310ecfd2b31c110536d41ca11ed",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

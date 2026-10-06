@@ -1,0 +1,9 @@
+{
+  "reason": "Retain actual broker market-closed rejects in all rows without fictional fills",
+  "source_and_binary_unchanged": true,
+  "original_runner_hash": "66642dc253e7e021680c680fa7826b6104cb0dc42f167919aa6a55e7aedb96d9",
+  "extension_runner_hash": "0a4c96fb1cefebfb72b2d8202ac6f56e51b5017354d3b16f730695601a734542",
+  "analysis_resume_hash": "7fff97d309c74e14f76f6a239dee0c61d769ebda3985e48ca94a71e2e71a764f",
+  "only_changed_assertion": "assert not any(counters[k] for k in ['order_failed','close_failed'])",
+  "replacement": "assert counters['close_failed']==0\n  rejected=[x for x in events if x['event']=='order_failed']\n  assert len(rejected)==counters['order_failed']\n  assert all(x['note']=='market closed' for x in rejected),'Unexpected rejected entry'"
+}

@@ -1,0 +1,30 @@
+{
+  "recorded": "2026-10-05",
+  "deployment_update_2026_10_06": "Owner selected all five news bots for reviwed_Eas.bat. The audit/research deferral and warnings below remain; deployment choice is not qualification. No account changed.",
+  "instruction": "User deferred news research: return to Gold and Silver later; advance to the next non-news optimisation idea.",
+  "scope": "Research queue only. No change to live trading, production EAs, BATs or public website.",
+  "next_non_news_ea": "gold-overnight-value-area",
+  "entries": [
+    {
+      "slug": "news-pulse-xau",
+      "label": "News Pulse Gold (XAU)",
+      "status": "DEFERRED BY USER — audit saved, revisit later",
+      "audit_folder": "News Pulse XAU Current Audit 2026-10-05",
+      "completed_diagnostic_native_replays": 8,
+      "optimisation_completed": false,
+      "notes": "Exact-current parity passed. Recent raw returns not a validation pass; year has mixed ticks, actual initial risk reached 3.11x budget, trailing issues and slower liquidation require review. Three-year replay aborted at input gate, five-year not run. No replacement selected."
+    },
+    {
+      "slug": "news-pulse-xag",
+      "label": "News Pulse Silver (XAG)",
+      "status": "DEFERRED BY USER — audit saved, revisit later",
+      "audit_folder": "News Pulse XAG Current Audit 2026-10-05",
+      "completed_diagnostic_native_replays": 6,
+      "optimisation_completed": false,
+      "notes": "Exact-current parity passed. Fitted/overlapping dates, mixed older ticks and frequent zero-spread request quotes prevent promotion. Year win rate46.2%, maximum win/loss streak3/6; initial exposure30.16x budget, maximum realised net position loss12.48x. Three-/five-year not run. No replacement selected."
+    },
+    {"slug": "news-pulse-btc", "label": "News Pulse BTC", "status": "NEWS QUEUE DEFERRED — current audit not started"},
+    {"slug": "news-pulse-eurusd", "label": "News Pulse EURUSD", "status": "NEWS QUEUE DEFERRED — current audit not started"},
+    {"slug": "gold-news-v9-direction", "label": "Gold News V9 Direction", "status": "NEWS QUEUE DEFERRED — current audit not started"}
+  ]
+}

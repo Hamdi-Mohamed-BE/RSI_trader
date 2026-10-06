@@ -1,0 +1,63 @@
+FROZEN BEFORE FIRST TEST, 2026-10-04.
+Independent UK100 three-module raw prototype, not QuantLab's proprietary EA/preset.
+Public source: https://api-quantlab.com/algorithmen/uk100-premium
+Also inspected https://api-quantlab.com/algorithmen/uk100-premium/analyse .
+Publicly supported concept only: UK100 H1, post-drop recovery long, Monday dip
+long, trend pullbacks in both directions, losing-streak defence. Overnight and
+weekend holdings and hedging may occur. Actual numerical conditions unavailable.
+No verified matching EA in current collection; no unrelated control.
+
+ALL NUMERIC RULES BELOW ARE INDEPENDENT ASSUMPTIONS, NOT EXTRACTED VENDOR SETTINGS.
+SIGNALS: evaluate completed H1 bars at first new H1 tick, London weekday entries
+08:00 inclusive–16:00 exclusive, with last-Sunday March/October DST conversion.
+Server clock UTC. Signal normally opens exactly one hour before entry tick.
+1 DROP: highest high of the 24 completed H1 bars preceding the signal bar minus
+the previous bar's close is >=3*ATR14 of that previous bar. Previous-bar RSI2<=10.
+Signal bar bullish and closes strictly above the previous bar's high. Long.
+2 MONDAY: London entry day Monday. Previous H1 close <= most recent completed
+broker-Friday D1 close minus 0.5*previous-bar ATR14. Signal bullish, closes above
+previous H1 high. Long. Friday daily close is fully historical, not Monday close.
+3 TREND: EMA50 above EMA200 and EMA50 rising, previous H1 close <= previous EMA20,
+signal bullish and closes >signal EMA20: long. Reverse inequalities and bearish
+body for short. No ADX/DI, anchored VWAP or extra filters.
+
+EXIT/SIZING: stop 2*signal ATR14 from requested executable quote, tick aligned,
+widened only to actual broker stop/freeze distance. Drop/Monday nominal TP1R,
+Trend TP2R from pre-order quote/common initial stop. Actual delayed fills retained.
+No trailing, break-even, grid, averaging down or opposite-signal forced exit.
+Survivors closed after 48h at next broker-permitted tick. Overnight/weekend holds
+allowed; timed close is not guaranteed during weekends/closures or quote gaps.
+Current broker session specification governs tester trading permission.
+Three independent module positions may coexist and hedge. One per module at any
+time, at most one new entry per module per London date, max three in shared account.
+
+RISK: EACH entry risks 1% of current equity, on a single shared USD10,000 account.
+Up to 3% planned stop exposure can stack; this is NOT a 1% combined risk budget.
+Cash loss via native broker OrderCalcProfit; lot size rounded DOWN, skip under
+minimum lot. Native fees, swap, delayed fills and gaps may exceed planned risk.
+All modules are enabled from the start. Not three separate additive test ledgers.
+
+LOSS BRAKE: shared consecutive net losing complete positions, including entry and
+exit costs. A winner or flat resets the streak. After three losses, pause new
+entries for 24 clock hours and reset loss counter. Existing positions keep stops,
+targets and 48h exits. Other existing closures may reset or extend a subsequent
+pause; no synthetic skipped winners. Ordering follows actual deal completion.
+
+TESTS: isolated portable Exness-MT5Trial16 terminal only, UK100 H1, model4,
+150ms execution delay, USD10,000, leverage1:2000. No optimization. Fresh-flat runs:
+SMOKE 2026-09-01 through 2026-10-04 exclusive; enough days for the three modules.
+1Y 2025-10-04 through 2026-10-04 exclusive.
+3M 2026-07-04 through 2026-10-04 exclusive.
+Data/tick quality reported from actual native run; do not claim a full year of
+recorded ticks if generated earlier history is used. Test-end closures retained.
+Exact position pairing by native position ticket/journal, not same-symbol FIFO.
+Module figures are contributions within the same live-equity simulation, not
+standalone equity simulations. Native floating-equity DD, net position PF/WR,
+actual deal-timed account-balance charts (entry costs booked on entry).
+No FTMO/shared external EA simulation, cost stress, Monte Carlo or full pipeline.
+
+Research EA refuses normal live/demo execution and requires hedging.
+Failed orders/audits invalidate runs; never infer/force unavailable fills.
+No live terminal, production source/preset, BAT, website, Git remote or trading
+permission changed. Stop after this idea and await review before Gold.
+

@@ -1,0 +1,49 @@
+FROZEN BEFORE ANY BACKTEST: 2026-10-04, independent NQBlade-inspired concept.
+Not QuantLab's proprietary executable or exact published strategy settings.
+Public verified concept: https://api-quantlab.com/algorithmen/nqblade
+Nasdaq M3 EMA-cross, entry confirmation, four portions/three targets plus runner.
+Numerical settings are unavailable publicly. Everything numeric below is our assumption.
+No verified existing EA follows this combination. Standalone tests; no unrelated EA comparison.
+
+SIGNAL: completed M3 EMA(9) crosses EMA(21). Cross requires prior bar fast<=slow then fast>slow
+for buy, reverse for sell. Signal-bar ADX(14)>=20, +DI>-DI for buy, -DI>+DI for sell.
+Only closed bars/indicators, no delayed confirmation or lookahead.
+Signal candles open 09:30 inclusive to 15:30 exclusive New York, weekdays.
+Entry next bar first tradable tick (with 150ms native execution delay).
+Maximum one basket per New York entry date; no new basket while any portion remains open.
+
+INITIAL STOP: common basket SL at 2*ATR(14 M3) from initial requested entry quote,
+aligned to tick size and widened only if necessary to meet actual broker stop/freeze distance.
+FOUR PORTIONS: four hedged positions, each assigned one quarter of the cash-risk budget.
+Portions 1/2/3: nominal TP 1R/2R/3R from each portion's pre-order quote to common stop.
+Actual fills may differ due to execution delay; actual realized initial RR is not forced to equal nominal.
+Runner portion: no TP. After its favourable move reaches +1 initial R, latch trailing active;
+on completed M3 bars, trail at closed-bar EMA21, never widen, respect broker gap.
+No break-even rule on target portions. No opposite-cross liquidation.
+BOUNDARIES (assumptions): close all surviving portions after 24 hours at next tradable tick,
+and on Friday at/after 15:55 NY. No weekend holding. Monday-Thursday overnight holds possible.
+
+RISK: 1% of current account equity per entire basket, not per portion. Deposit USD 10,000.
+Broker lot sizing rounded DOWN. Skip entire basket if its initial quarter-risk lot cannot meet
+minimum volume. No minimum-lot risk override in this research-only prototype.
+Actual fills/gaps and costs can exceed planned risk; no guarantee of a hard maximum loss.
+Partial entry failure: flatten already opened legs and flag test invalid; never manufacture fills.
+Broker hedging account required. EA refuses non-tester execution.
+No martingale, grid, averaging down or portfolio/adaptive controls.
+
+NATIVE TESTS: Exness-MT5Trial16 USTEC M3, 1:2000 leverage, model 4 (every tick based on real ticks),
+execution delay 150ms, native spread/commission/swap. No invented spread or cost stress.
+Smoke: 2026-09-20 inclusive through 2026-10-04 exclusive.
+1Y: 2025-10-04 inclusive through 2026-10-04 exclusive.
+3M: 2026-07-04 inclusive through 2026-10-04 exclusive.
+Each test fresh/flat; recent window not copied from tail of the yearly run.
+Real ticks available from 2026-01-01; earlier part of yearly test generated ticks.
+All end-of-test liquidations stay in headline results and are separately identified.
+
+STATISTICS: primary trade count, win rate, net PF and streaks measured per full four-portion basket.
+Native position statistics are separately shown as leg statistics, not inflated basket win rates.
+P&L includes all four legs, commissions and swaps. Equity DD is MT5 native floating-equity DD.
+Closed-balance graphs book every leg at its actual closing timestamp, not just basket completion.
+No parameter optimisation, holdout validation, Monte Carlo or full-pipeline approval at this step.
+No production EA, live terminal, BAT, website, Git commit or remote changed.
+Stop after this standalone idea and wait for user review before the next algorithm.

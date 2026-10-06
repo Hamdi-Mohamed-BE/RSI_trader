@@ -1,0 +1,96 @@
+{
+  "parity": "Passed exact original trades and metrics",
+  "native_runs": [
+    {
+      "window": "1Y",
+      "version": "CURRENT",
+      "positions": 178,
+      "passed": true,
+      "history_quality": "75% real ticks",
+      "end_liquidations": 0,
+      "stop_modify_failures": 47294
+    },
+    {
+      "window": "1Y",
+      "version": "CURRENT_NO_DI",
+      "positions": 238,
+      "passed": true,
+      "history_quality": "75% real ticks",
+      "end_liquidations": 1,
+      "stop_modify_failures": 54520
+    },
+    {
+      "window": "1Y",
+      "version": "OLD",
+      "positions": 187,
+      "passed": true,
+      "history_quality": "75% real ticks",
+      "end_liquidations": 0,
+      "stop_modify_failures": 0
+    },
+    {
+      "window": "1Y",
+      "version": "VIDEO_LITERAL",
+      "positions": 226,
+      "passed": true,
+      "history_quality": "75% real ticks",
+      "end_liquidations": 0,
+      "stop_modify_failures": 54520
+    },
+    {
+      "window": "1Y",
+      "version": "VIDEO_SYMMETRIC",
+      "positions": 210,
+      "passed": true,
+      "history_quality": "75% real ticks",
+      "end_liquidations": 0,
+      "stop_modify_failures": 48990
+    },
+    {
+      "window": "3M",
+      "version": "CURRENT",
+      "positions": 43,
+      "passed": true,
+      "history_quality": "100% real ticks",
+      "end_liquidations": 0,
+      "stop_modify_failures": 0
+    },
+    {
+      "window": "3M",
+      "version": "CURRENT_NO_DI",
+      "positions": 60,
+      "passed": true,
+      "history_quality": "100% real ticks",
+      "end_liquidations": 1,
+      "stop_modify_failures": 0
+    },
+    {
+      "window": "3M",
+      "version": "OLD",
+      "positions": 45,
+      "passed": true,
+      "history_quality": "100% real ticks",
+      "end_liquidations": 0,
+      "stop_modify_failures": 0
+    },
+    {
+      "window": "3M",
+      "version": "VIDEO_LITERAL",
+      "positions": 54,
+      "passed": true,
+      "history_quality": "100% real ticks",
+      "end_liquidations": 0,
+      "stop_modify_failures": 0
+    },
+    {
+      "window": "3M",
+      "version": "VIDEO_SYMMETRIC",
+      "positions": 49,
+      "passed": true,
+      "history_quality": "100% real ticks",
+      "end_liquidations": 0,
+      "stop_modify_failures": 0
+    }
+  ],
+  "checks": "Source, executable, preset, protocol and native-report hashes; exact one-factor inputs; complete net-position costs; NY entries; unique daily entries; no overlapping positions; SL/TP; counts; real-tick coverage; boundary exits."
+}

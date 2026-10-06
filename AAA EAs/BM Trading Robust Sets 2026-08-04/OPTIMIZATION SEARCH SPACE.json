@@ -1,10 +1,16 @@
 {
-  "version": "2026-09-26",
+  "version": "2026-10-06",
   "purpose": "Default stage-5 search space for the Calyx EA pipeline (see PIPELINE.md). A study copies the dimensions that apply to its logic into its own run-config and records every configuration tried.",
   "data_split": {
-    "development": "all history except the last ~18-24 months",
-    "validation": "next ~12 months",
-    "holdout": "most recent ~6-12 months + any earlier unused history; used once on the final choice"
+    "development": "available history before the older pre-OOS validation window",
+    "validation": "12 months immediately BEFORE the final two-year OOS; finalist selection only here",
+    "holdout": "always last TWO calendar years ending at the frozen study end-exclusive date; final candidate used once",
+    "holdout_years": 2,
+    "calendar_years_not_fixed_days": true,
+    "missing_history_action": "insufficient evidence; never shorten OOS",
+    "recent_1y_6m_3m": "diagnostic OOS subwindows only; never tune/select on them",
+    "previously_seen_history": "label retrospective, not untouched",
+    "shared_date_planner": "AAA EAs/Calyx Research Pipeline/data_split.py"
   },
   "dimensions": {
     "timeframe": ["M1", "M3", "M5", "M15", "M30", "H1", "H4", "D1"],

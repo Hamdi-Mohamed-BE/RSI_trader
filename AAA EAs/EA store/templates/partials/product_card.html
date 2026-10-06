@@ -1,4 +1,6 @@
 <a href="/eas/{{ product.slug }}?period={{ selected_period|default('1y', true) }}" class="product-card group" aria-label="View {{ product.label }} details" data-order="{{ catalogue_order.get(product.slug, 0) if catalogue_order is defined else 0 }}" data-asset="{{ product.asset_group }}" data-symbol="{{ product.canonical|lower }}" data-evidence="{{ 'experimental' if product.evidence and product.evidence.status.startswith('User-approved') else product.evidence.status|lower if product.evidence else 'pending' }}" data-return="{{ product.evidence.return_pct if product.evidence else '' }}" data-pf="{{ product.evidence.profit_factor if product.evidence else '' }}" data-dd="{{ product.evidence.drawdown_pct if product.evidence else '' }}" data-win="{{ product.evidence.win_rate_pct if product.evidence else '' }}" data-sharpe="{{ product.evidence.sharpe_annualized if product.evidence and product.evidence.sharpe_annualized is not none else '' }}" data-recovery="{{ product.evidence.recovery_factor if product.evidence and product.evidence.recovery_factor is not none else '' }}" data-trades="{{ product.evidence.trades if product.evidence else '' }}" data-label="{{ product.label|lower }}" data-search="{{ (product.label ~ ' ' ~ product.strategy ~ ' ' ~ product.canonical)|lower }}">
+  {% set review = review_by_slug.get(product.slug) %}
+  <span hidden data-card-phase="{{ review.phase if review else 'review' }}"></span>
   <div class="flex items-start justify-between gap-4">
     <div class="flex items-center gap-3">
       <span class="asset-icon accent-{{ product.accent }}">{{ product.canonical[:2] }}</span>
@@ -10,6 +12,7 @@
     <div class="flex flex-col items-end gap-2">{% if product.recommended_dynamic_mode %}<span class="badge badge-dynamic">Running in Dynamic mode</span>{% elif product.recommended_safe_mode %}<span class="badge badge-safe">Running in Safe mode</span>{% endif %}{% if product.optional_symbol %}<span class="badge badge-neutral">Optional</span>{% endif %}</div>
   </div>
   <p class="mt-5 min-h-[48px] text-sm leading-6 text-muted">{{ product.tagline }}</p>
+  {% if review %}<p class="review-phase-badge phase-{{ review.phase }}">{{ review.phase_label }} · owner decision{% if product.slug == 'xau-trend-progression' %}<br>Reviewed BAT: 1.5R candidate. These normal-preset card results are not that candidate.{% endif %}</p>{% endif %}
   {% if product.website_only %}<p class="mt-2 text-xs text-amber-200/80">Experimental normal-BAT addition · {{ product.evidence.period if product.evidence else '' }} · Chart: original 1-lot benchmark, no SL</p>{% endif %}
   {% if product.evidence %}
   <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">

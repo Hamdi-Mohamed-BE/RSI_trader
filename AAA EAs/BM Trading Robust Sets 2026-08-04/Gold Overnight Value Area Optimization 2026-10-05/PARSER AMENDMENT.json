@@ -1,0 +1,7 @@
+{
+  "scope": "Analytical risk cross-check only; frozen EA, SET, chronology, search and selected settings are unchanged",
+  "before_runner": "1c92fb5a9908c14323cc6498e71d34e0d85e9b0d2071d4de565cc79707e8493b",
+  "after_runner": "8ac328a3a8b424358872d474cbe53c895eb741f362fb40dd73808db21b1e5fbf",
+  "reason": "Native OrderCalcProfit cash rounding differs by at most 0.008USD from price-distance*contract. Analytical risk tolerance changed from 0.002 to 0.011USD. Exported deals still require exact native HTML reconciliation and cash totals within 0.021USD.",
+  "failed_attempt": "raw-3m was fully executed but analysis stopped; archived under failed-attempt-1 and repeated, not counted as an additional strategy configuration"
+}

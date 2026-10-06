@@ -1,0 +1,578 @@
+{
+  "version": "2026-10-04",
+  "exploratory_after_raw_failure": true,
+  "stages": [
+    {
+      "stage": "01-timeframe",
+      "changes": [
+        {
+          "InpSignalTimeframe": 1
+        },
+        {
+          "InpSignalTimeframe": 3
+        },
+        {
+          "InpSignalTimeframe": 5
+        },
+        {
+          "InpSignalTimeframe": 15
+        },
+        {
+          "InpSignalTimeframe": 30
+        },
+        {
+          "InpSignalTimeframe": 16385
+        },
+        {
+          "InpSignalTimeframe": 16388
+        },
+        {
+          "InpSignalTimeframe": 16408
+        }
+      ]
+    },
+    {
+      "stage": "02-entry",
+      "changes": [
+        {
+          "InpEntryMode": 0
+        },
+        {
+          "InpEntryMode": 1
+        },
+        {
+          "InpEntryMode": 2
+        },
+        {
+          "InpEntryMode": 3
+        },
+        {
+          "InpEntryMode": 2,
+          "InpEntryOffsetATR": 0.1
+        },
+        {
+          "InpEntryMode": 2,
+          "InpEntryOffsetATR": 0.5
+        },
+        {
+          "InpEntryMode": 3,
+          "InpEntryOffsetATR": 0.1
+        },
+        {
+          "InpEntryMode": 3,
+          "InpEntryOffsetATR": 0.5
+        },
+        {
+          "InpDropATR": 2
+        },
+        {
+          "InpDropATR": 3
+        },
+        {
+          "InpDropATR": 4
+        },
+        {
+          "InpOversoldRSI": 5
+        },
+        {
+          "InpOversoldRSI": 10
+        },
+        {
+          "InpOversoldRSI": 20
+        },
+        {
+          "InpDropLookback": 12
+        },
+        {
+          "InpDropLookback": 24
+        },
+        {
+          "InpDropLookback": 48
+        },
+        {
+          "InpMondayDipATR": 0.25
+        },
+        {
+          "InpMondayDipATR": 0.5
+        },
+        {
+          "InpMondayDipATR": 1
+        },
+        {
+          "InpPullbackEMA": 10
+        },
+        {
+          "InpPullbackEMA": 20
+        },
+        {
+          "InpPullbackEMA": 30
+        },
+        {
+          "InpTrendEMA": 30
+        },
+        {
+          "InpTrendEMA": 50
+        },
+        {
+          "InpTrendEMA": 100
+        },
+        {
+          "InpSlowEMA": 100
+        },
+        {
+          "InpSlowEMA": 200
+        },
+        {
+          "InpSlowEMA": 300
+        }
+      ]
+    },
+    {
+      "stage": "03-stop",
+      "changes": [
+        {
+          "InpStopMode": 0
+        },
+        {
+          "InpStopMode": 1
+        },
+        {
+          "InpStopMode": 2
+        },
+        {
+          "InpStopMode": 0,
+          "InpStopATR": 0.5
+        },
+        {
+          "InpStopMode": 0,
+          "InpStopATR": 0.75
+        },
+        {
+          "InpStopMode": 0,
+          "InpStopATR": 1
+        },
+        {
+          "InpStopMode": 0,
+          "InpStopATR": 1.5
+        },
+        {
+          "InpStopMode": 0,
+          "InpStopATR": 2
+        },
+        {
+          "InpStopMode": 0,
+          "InpStopATR": 3
+        },
+        {
+          "InpStopMode": 0,
+          "InpStopATR": 4
+        },
+        {
+          "InpStopMode": 3,
+          "InpStopPercent": 0.25
+        },
+        {
+          "InpStopMode": 3,
+          "InpStopPercent": 0.5
+        },
+        {
+          "InpStopMode": 3,
+          "InpStopPercent": 1
+        },
+        {
+          "InpStopMode": 4,
+          "InpStopPriceUnits": 25
+        },
+        {
+          "InpStopMode": 4,
+          "InpStopPriceUnits": 50
+        },
+        {
+          "InpStopMode": 4,
+          "InpStopPriceUnits": 100
+        }
+      ]
+    },
+    {
+      "stage": "04-management",
+      "changes": [
+        {
+          "InpManagement": 0
+        },
+        {
+          "InpManagement": 1
+        },
+        {
+          "InpManagement": 2
+        },
+        {
+          "InpManagement": 3
+        },
+        {
+          "InpManagement": 4
+        },
+        {
+          "InpManagement": 5
+        },
+        {
+          "InpManagement": 6
+        },
+        {
+          "InpManagement": 7
+        },
+        {
+          "InpManagement": 1,
+          "InpTrailStartR": 0.5
+        },
+        {
+          "InpManagement": 1,
+          "InpTrailStartR": 1
+        },
+        {
+          "InpManagement": 1,
+          "InpTrailStartR": 1.5
+        },
+        {
+          "InpManagement": 2,
+          "InpTrailATR": 0.5
+        },
+        {
+          "InpManagement": 2,
+          "InpTrailATR": 1
+        },
+        {
+          "InpManagement": 2,
+          "InpTrailATR": 2
+        },
+        {
+          "InpManagement": 6,
+          "InpTrailATR": 1
+        },
+        {
+          "InpManagement": 6,
+          "InpTrailATR": 2
+        },
+        {
+          "InpManagement": 6,
+          "InpTrailATR": 3
+        }
+      ]
+    },
+    {
+      "stage": "05-exit",
+      "changes": [
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 0.5,
+          "InpMondayTargetR": 0.5,
+          "InpTrendTargetR": 0.5
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 0.75,
+          "InpMondayTargetR": 0.75,
+          "InpTrendTargetR": 0.75
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 1,
+          "InpMondayTargetR": 1,
+          "InpTrendTargetR": 1
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 1.25,
+          "InpMondayTargetR": 1.25,
+          "InpTrendTargetR": 1.25
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 1.5,
+          "InpMondayTargetR": 1.5,
+          "InpTrendTargetR": 1.5
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 2,
+          "InpMondayTargetR": 2,
+          "InpTrendTargetR": 2
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 2.5,
+          "InpMondayTargetR": 2.5,
+          "InpTrendTargetR": 2.5
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 3,
+          "InpMondayTargetR": 3,
+          "InpTrendTargetR": 3
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 4,
+          "InpMondayTargetR": 4,
+          "InpTrendTargetR": 4
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 5,
+          "InpMondayTargetR": 5,
+          "InpTrendTargetR": 5
+        },
+        {
+          "InpExitMode": 0,
+          "InpDropTargetR": 6,
+          "InpMondayTargetR": 6,
+          "InpTrendTargetR": 6
+        },
+        {
+          "InpExitMode": 1,
+          "InpManagement": 2
+        },
+        {
+          "InpExitMode": 2
+        },
+        {
+          "InpExitMode": 3
+        },
+        {
+          "InpExitMode": 4,
+          "InpManagement": 2,
+          "InpDropTargetR": 3,
+          "InpMondayTargetR": 3,
+          "InpTrendTargetR": 3
+        }
+      ]
+    },
+    {
+      "stage": "06-session",
+      "changes": [
+        {
+          "InpSessionMode": 0
+        },
+        {
+          "InpSessionMode": 1
+        },
+        {
+          "InpSessionMode": 2
+        },
+        {
+          "InpSessionMode": 3
+        },
+        {
+          "InpSessionMode": 4
+        },
+        {
+          "InpSessionMode": 5
+        },
+        {
+          "InpSessionMode": 6
+        },
+        {
+          "InpExcludeDays": 0
+        },
+        {
+          "InpExcludeDays": 1
+        },
+        {
+          "InpExcludeDays": 2
+        },
+        {
+          "InpExcludeDays": 3
+        }
+      ]
+    },
+    {
+      "stage": "07-direction",
+      "changes": [
+        {
+          "InpDirection": 0
+        },
+        {
+          "InpDirection": 1
+        },
+        {
+          "InpDirection": -1
+        }
+      ]
+    },
+    {
+      "stage": "08-filter",
+      "changes": [
+        {
+          "InpFilter": 0
+        },
+        {
+          "InpFilter": 2
+        },
+        {
+          "InpFilter": 4
+        },
+        {
+          "InpFilter": 5
+        },
+        {
+          "InpFilter": 6
+        },
+        {
+          "InpFilter": 1,
+          "InpADXMin": 15
+        },
+        {
+          "InpFilter": 1,
+          "InpADXMin": 20
+        },
+        {
+          "InpFilter": 1,
+          "InpADXMin": 25
+        },
+        {
+          "InpFilter": 1,
+          "InpADXMin": 30
+        },
+        {
+          "InpFilter": 3,
+          "InpADXMin": 15
+        },
+        {
+          "InpFilter": 3,
+          "InpADXMin": 20
+        },
+        {
+          "InpFilter": 3,
+          "InpADXMin": 25
+        },
+        {
+          "InpFilter": 3,
+          "InpADXMin": 30
+        },
+        {
+          "InpMaxSpreadATR": 0.04
+        },
+        {
+          "InpMaxSpreadATR": 0.08
+        },
+        {
+          "InpMaxSpreadATR": 0.16
+        }
+      ]
+    },
+    {
+      "stage": "09-trade-management",
+      "changes": [
+        {
+          "InpMaxHoldingHours": 6
+        },
+        {
+          "InpMaxHoldingHours": 12
+        },
+        {
+          "InpMaxHoldingHours": 24
+        },
+        {
+          "InpMaxHoldingHours": 48
+        },
+        {
+          "InpMaxHoldingHours": 96
+        },
+        {
+          "InpMaxPositions": 1
+        },
+        {
+          "InpMaxPositions": 2
+        },
+        {
+          "InpMaxPositions": 3
+        },
+        {
+          "InpPerModuleDay": 1
+        },
+        {
+          "InpPerModuleDay": 2
+        },
+        {
+          "InpPerModuleDay": 3
+        },
+        {
+          "InpLossesBeforePause": 3,
+          "InpPauseHours": 24
+        },
+        {
+          "InpLossesBeforePause": 3,
+          "InpPauseHours": 48
+        },
+        {
+          "InpLossesBeforePause": 5,
+          "InpPauseHours": 24
+        },
+        {
+          "InpLossesBeforePause": 10000,
+          "InpPauseHours": 24
+        },
+        {
+          "InpEnableDrop": true,
+          "InpEnableMonday": true,
+          "InpEnableTrend": true
+        },
+        {
+          "InpEnableDrop": true,
+          "InpEnableMonday": true,
+          "InpEnableTrend": false
+        },
+        {
+          "InpEnableDrop": true,
+          "InpEnableMonday": false,
+          "InpEnableTrend": true
+        },
+        {
+          "InpEnableDrop": true,
+          "InpEnableMonday": false,
+          "InpEnableTrend": false
+        },
+        {
+          "InpEnableDrop": false,
+          "InpEnableMonday": true,
+          "InpEnableTrend": true
+        },
+        {
+          "InpEnableDrop": false,
+          "InpEnableMonday": true,
+          "InpEnableTrend": false
+        },
+        {
+          "InpEnableDrop": false,
+          "InpEnableMonday": false,
+          "InpEnableTrend": true
+        }
+      ]
+    }
+  ],
+  "models": {
+    "screen": 1,
+    "confirmation": 4
+  },
+  "development": [
+    "2021.10.04",
+    "2024.10.01"
+  ],
+  "validation": [
+    "2024.10.08",
+    "2025.09.28"
+  ],
+  "reserved_holdout": [
+    "2019.10.04",
+    "2021.09.27"
+  ],
+  "recent_is_previously_viewed": true,
+  "carry": 3,
+  "ranking": "minimum30 development positions; PF -0.006*DD +0.03*return/max(DD,1); no recent/holdout rankings",
+  "omissions": {
+    "news_blackout": "No point-in-time multi-year calendar supplied; not invented",
+    "same_close_vs_next_open": "Same closed-bar first executable quote; duplicate, not counted twice",
+    "no_stop": "Unbounded risk cannot support cash-risk sizing",
+    "silver_optimisation": "Frozen transfer only"
+  },
+  "neighbours": "3x3 stopATR +/-20% and targetR +/-20% around development finalists; >=2/3 positive, PF>1 and >=30positions"
+}

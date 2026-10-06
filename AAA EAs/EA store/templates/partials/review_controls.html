@@ -1,0 +1,12 @@
+<div class="review-counters" aria-label="Reviewed EA totals">
+  <div>Normal installer EAs<strong>{{ review_total }}</strong></div>
+  <div class="phase-live">Passed to live trading phase<strong>{{ review_counts.live }}</strong></div>
+  <div class="phase-paused">Pause live / demo only<strong>{{ review_counts.paused }}</strong></div>
+  <div class="phase-review">Deeper review<strong>{{ review_counts.review }}</strong></div>
+</div>
+<div class="phase-controls" aria-label="Filter by reviewed deployment phase">
+{% for phase, label in review_phase_labels.items() %}
+  <a href="{{ review_phase_links[phase] }}" data-phase-link="{{ phase }}" class="{{ 'active' if selected_phase|default('all') == phase else '' }}" {% if selected_phase|default('all') == phase %}aria-current="page"{% endif %}>{{ label }} · {{ review_total if phase == 'all' else review_counts[phase] }}</a>
+{% endfor %}
+</div>
+<p class="review-disclaimer">“Passed to live trading phase” records the owner's deployment choice—not a statistical validation pass, profitability promise, or confirmation that an EA is installed. Failed tests, sample limits and missing evidence still apply.</p>

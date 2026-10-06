@@ -1,0 +1,21 @@
+QuantLab idea 03: UK100 3x Drop Monday Pullback
+Completed 2026-10-04. Standalone raw independent prototype, not an exact vendor recreation.
+
+Public concept source: https://api-quantlab.com/algorithmen/uk100-premium
+Detailed thresholds are subscription-only. Every numerical rule in PROTOCOL.txt is an explicit frozen assumption.
+No matching existing EA was found; no unrelated comparison was made.
+
+One shared USD 10,000 native Exness UK100 account. H1 signals. 1% planned equity risk per entry, maximum three module positions; actual maximum concurrent positions was two. No live/account/BAT/website deployment.
+
+1Y: 2025-10-04 inclusive to 2026-10-04 exclusive.
+153 trades; net +$645.63 (+6.46%); net PF 1.065; net win rate 43.1%; native maximum equity drawdown 18.42%; native MT5 Sharpe 0.89; max winning/losing streak 9/7. 75% real ticks, generated earlier ticks.
+
+3M: 2026-07-04 inclusive to 2026-10-04 exclusive.
+42 trades; net -$1,751.73 (-17.52%); net PF 0.420; net win rate 23.8%; native maximum equity drawdown 18.42%; native MT5 Sharpe -5.00; max winning/losing streak 2/7. 100% real ticks.
+
+Verification passed: unchanged frozen source/preset/protocol across smoke and both windows; complete position costs, exact hedged position-ID pairing, native cash balance, closed-bar signals, London DST/session, module/day limits and three-loss pause records reconcile. One-cent cash-risk audit precision allowance is disclosed. No order errors. Offline HTML links, six SVG graphs, desktop/mobile layout and page errors checked.
+
+Verdict: weak annual performance and a severe recent-quarter failure. Do not deploy this version. Post-drop recovery is the most interesting annual contribution but has only six approximately flat quarterly trades; it is not independently validated. Module contributions are not standalone backtests.
+
+No optimisation, Monte Carlo or passed full pipeline. No Git commit/push. Live MT5 PID 31668 remained unchanged.
+Stop for user review. Next catalogue idea is XAUUSD 3x Speed Q4 Turn; NOT started.

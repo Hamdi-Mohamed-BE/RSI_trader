@@ -1,0 +1,30 @@
+RAW RESEARCH ONLY -- main Martin Luk pullback interpretation, not exact replication.
+No optimization, live deployment, catalogue/BAT changes, or Git publication.
+Five supported Exness symbols: USTEC, US30, UK100, XAUUSD, BTCUSD. UK30 unavailable, no substitute.
+Independent USD10,000 accounts; risk0.5% current balance at entry, volume floored to broker step, skip below min.
+Native MT5 Model4 requested, 150ms delay, native historical spreads/commissions/swaps. Audit tick coverage.
+Windows end-exclusive2026-10-04: 1y2025-10-04 and3m2026-07-04.400calendar-day warmup, no warmup trades.
+Broker feed timestamps interpreted UTC as prior research; New York conversion includes US DST.
+Main trend setup only; no stock relative-strength scanner, EP/VCP or exhaustion modules.
+Completed daily EMA9>EMA21, rising EMA9, close>EMA50 for longs. Mirrored for shorts.
+Daily ATR14 measures proximity. Daily EMA9/21 are frozen from prior completed D1.
+Anchor: most recent CONFIRMED daily swing low(long)/high(short) among last60completed days.
+Pivot has2completed D1 bars on each side. Anchor starts at pivot day's open, chosen without future bars.
+AVWAP: completed H1 typical prices weighted by broker TICK volume from anchor through last completed H1.
+H1 proxy, NOT exchange-volume VWAP or the discretionary minute-precise anchors from interview.
+Confluence: AVWAP within0.5daily ATR of EMA9 orEMA21; choose nearest of those EMAs.
+Signal: bullish(long)/bearish(short) completed candle touches confluence zone (+0.15ATR tolerance),
+closes beyond directional edge, with penetration no deeper than0.5ATR below/above zone.
+Weekday NY09:30-09:45 use completed M1;09:45-11:30 use completed M5. Same NY window on ALL assets.
+Enter at first tick breaking signal candle high(long)/low(short), signal expires at next same-TF bar.
+Reject signals formed before NY09:30 or on another NY day. Max1entry/day and1open position/symbol.
+Stop at current BROKER D1 low/high through entry. If distance>2.5% of entry, use signal low/high.
+Skip if stop still>2.5%, nonpositive, or invalid broker stop/session/margin.
+No fixed TP. Trim20% ORIGINAL volume at+3R, another20%at+5R, subject to valid min/step remainder.
+If trim quantity rounds below broker minimum, no partial possible; record this limitation.
+Runner exits when next completed daily close crosses belowEMA9(long)/aboveEMA9(short).
+No break-even/extra trailing. Long and short runner exits symmetric, not discretionary fast short covers.
+Weekend/overnight positions allowed. Native test boundary liquidates residual positions; disclose count.
+One-entry/day, EMA/ATR tolerances, fixed pivot, TF/session mapping and partial management are assumptions.
+First-pullback preference is NOT encoded; stocks/theme selection, discretionary anchor/stop/exits not reproduced.
+Comparisons are adaptation evidence, not validation of original discretionary trader or future-return forecasts.

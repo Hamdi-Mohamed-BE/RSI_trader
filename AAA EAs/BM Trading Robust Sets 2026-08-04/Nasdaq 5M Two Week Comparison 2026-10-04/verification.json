@@ -1,0 +1,29 @@
+[
+  {
+    "version": "CURRENT",
+    "positions": 5,
+    "end_liquidations": 0,
+    "checks": "passed: exact source hashes, report hash, net reconciliation, entries, stops, no overlap, labelled boundary exits, real-tick quality"
+  },
+  {
+    "version": "CURRENT_NO_DI",
+    "positions": 10,
+    "end_liquidations": 1,
+    "checks": "passed: exact source hashes, report hash, net reconciliation, entries, stops, no overlap, labelled boundary exits, real-tick quality"
+  },
+  {
+    "version": "OLD",
+    "positions": 5,
+    "end_liquidations": 0,
+    "checks": "passed: exact source hashes, report hash, net reconciliation, entries, stops, no overlap, labelled boundary exits, real-tick quality"
+  },
+  {
+    "filter_ablation": "same current binary and source preset; only InpRequireDIAgreement differs",
+    "input_differences": {
+      "InpRequireDIAgreement": [
+        "true",
+        "false"
+      ]
+    }
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "ok": true,
+  "parity": {
+    "passed": true,
+    "whole_positions": 254,
+    "same_all_trade_times_prices_lots_and_costs": true,
+    "reference_binary": "82f88b8489f57744f7a84df80a3ea1adaab9a8c54d8fd73e30a7a4ac87e1bb2a",
+    "new_binary": "0c88d5a0f85957ce2b18b9c359aa67d32c60ddea2e59b2708128b3461e85dffe"
+  },
+  "native_audits": {
+    "RANGE_OFF_3Y": {
+      "gate": {
+        "mode": 0,
+        "ungated": true
+      },
+      "deals": {
+        "native_deal_rows": 1959,
+        "all_exported_deals_match_native_report": true
+      }
+    },
+    "RANGE_DAILY_3Y": {
+      "gate": {
+        "mode": 1,
+        "candidate_gate_checks": 1252,
+        "allowed_checks": 513,
+        "rejected_checks": 739,
+        "all_entries_closed_D1_sideways": true,
+        "closed_H1_ADX_verified": true,
+        "matrix_probabilities_checked_when_full_history_export_available": 0,
+        "gate_times_and_classifications_recomputed": true
+      },
+      "deals": {
+        "native_deal_rows": 1276,
+        "all_exported_deals_match_native_report": true
+      }
+    },
+    "RANGE_COMBO_3Y": {
+      "gate": {
+        "mode": 2,
+        "candidate_gate_checks": 1783,
+        "allowed_checks": 189,
+        "rejected_checks": 1594,
+        "all_entries_closed_D1_sideways": true,
+        "closed_H1_ADX_verified": true,
+        "matrix_probabilities_checked_when_full_history_export_available": 0,
+        "gate_times_and_classifications_recomputed": true
+      },
+      "deals": {
+        "native_deal_rows": 471,
+        "all_exported_deals_match_native_report": true
+      }
+    }
+  },
+  "whole_positions_including_partials_and_costs": true,
+  "production_hashes_unchanged": true,
+  "no_deployment": true,
+  "range_unit_tests": 16
+}

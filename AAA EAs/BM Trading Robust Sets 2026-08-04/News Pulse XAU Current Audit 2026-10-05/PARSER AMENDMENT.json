@@ -1,0 +1,7 @@
+{
+  "original_runner_sha": "5225303290c4535f8194d7456f8e97d4ac7c9dd662f9bab5edf4fd9598b9f3c0",
+  "corrected_runner_sha": "09c72c145011788fcc04aeeb0b80dc10b9b65ca35324db2f32f107bef2174ece",
+  "reason": "MT5 FileWrite serializes datetime equity trace cells as formatted dates, not numeric epochs. Correct only the derived date parser; ignore per-report EA label in semantic parity. Recover already completed native replay instead of repeating it.",
+  "trading_rules_inputs_calendar_audit_binary_unchanged": true,
+  "amended_on": "2026-10-05"
+}

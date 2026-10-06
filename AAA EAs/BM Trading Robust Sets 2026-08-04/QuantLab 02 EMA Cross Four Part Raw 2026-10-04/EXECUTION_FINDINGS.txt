@@ -1,0 +1,36 @@
+Added after the frozen raw runs; no strategy settings or native outcomes changed.
+
+1. Four simultaneous hedged positions may close out of order. The established
+   same-symbol FIFO reader was unsuitable here. The standalone reader now pairs
+   exit order IDs with exact position tickets from native journal messages and
+   takes all dates, prices, volumes, commissions, swaps and profits from native
+   HTML deal rows. Regression fixture tests unequal-volume, non-FIFO exits and
+   refuses missing mappings. All 980 annual / 248 quarterly positions reconcile.
+
+2. Intended Friday 15:55 New York liquidation is not guaranteed by this broker
+   tester. Current Friday session ends at 20:55 UTC. Winter 15:55 NY equals
+   20:55 UTC. On 5 December 2025 and 9 January 2026, historical quotes continued
+   beyond that time, but session permission was closed. A separate tiny simulated
+   position on 5 December was opened successfully at 20:53 UTC, then the attempted
+   close at 20:55 UTC was explicitly rejected: retcode 10018, market closed.
+   The diagnostic EA refuses non-tester execution. It was not a performance run.
+
+3. On 3 July 2026 historical quotes ended at 16:59:59 UTC, before the intended
+   Friday 19:55 UTC / 15:55 NY flatten. No later Friday tick could run that exit.
+
+4. Three annual setups / eight portions therefore carried into Sunday reopening:
+   NY entry dates 2025-12-05, 2026-01-09 and 2026-07-03. Their actual gap prices,
+   costs and exits remain in the raw results. The quarterly run had no such carry.
+   Do not claim the implementation or these raw runs guarantee no weekend holding.
+   No synthetic liquidation prices were inserted, and no historical parameters
+   were changed after outcomes to improve the result. Earlier/holiday-aware close
+   logic would be a separately specified future experiment, not this frozen run.
+
+5. Recorded real ticks start 1 January 2026. The annual test reports 75% real
+   ticks; the quarterly test 100%. Native tester uses the broker's available
+   symbol specification/session permissions. It is not a full historic exchange
+   microstructure reconstruction. No vendor-rule parity or full pipeline passed.
+
+6. Source/executable/preset/protocol/native-report hashes and monetary totals
+   passed verification. This is reconciliation success, not strategy validation.
+   No active MT5 account, production EA, BAT, website or Git remote was changed.

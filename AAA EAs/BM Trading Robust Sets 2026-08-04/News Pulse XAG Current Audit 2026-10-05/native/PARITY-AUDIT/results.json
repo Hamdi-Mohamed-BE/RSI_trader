@@ -1,0 +1,70 @@
+{
+  "case": "PARITY-AUDIT",
+  "window": [
+    "2026.08.01",
+    "2026.09.01"
+  ],
+  "delay_ms": 150,
+  "original": false,
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10944.86,
+    "net_profit": 944.86,
+    "return_pct": 9.45,
+    "profit_factor": 2.09,
+    "win_rate_pct": 25.0,
+    "max_drawdown_pct": 7.14,
+    "trades": 4,
+    "sharpe_ratio": 0.29,
+    "recovery_factor": 1.12,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 7.14
+  },
+  "metrics": {
+    "trades": 4,
+    "net_profit": 944.86,
+    "return_pct": 9.448599999999999,
+    "pf": 2.1373441186383553,
+    "win_rate": 25.0,
+    "win_streak": 1,
+    "loss_streak": 2,
+    "daily_equity_sharpe": 2.0912934096135203,
+    "trades_month": 3.9274193548387095,
+    "trades_weekday": 0.19047619047619047
+  },
+  "errors": {
+    "rejected": 0,
+    "uncertain": 0,
+    "incomplete_attempts": 0,
+    "modify_failed": 0,
+    "close_failed": 0,
+    "delete_failed": 0,
+    "fallbacks": 2
+  },
+  "event_audit": {
+    "expected": 2,
+    "attempted": 2,
+    "complete": 2
+  },
+  "event_basket_metrics": {
+    "trades": 2,
+    "net_profit": 944.86,
+    "return_pct": 9.448599999999997,
+    "pf": 2.3691043716401254,
+    "win_rate": 50.0,
+    "win_streak": 1,
+    "loss_streak": 1,
+    "daily_equity_sharpe": null,
+    "trades_month": 1.9637096774193548,
+    "trades_weekday": 0.09523809523809523
+  },
+  "both_sides_filled_events": 2,
+  "max_actual_risk_budget_ratio": 3.4000000000005683,
+  "latest_exit_seconds_after_deadline": 0,
+  "qualification_failures": [],
+  "report_sha": "52dfc1306c397f4c49e981eeaa698c02c96158cca752e8687170a8597783407e",
+  "binary_sha": "d461043a0b813cdd98d017aae70628f9307023fc17df64e5182045478c859198",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ]
+}
