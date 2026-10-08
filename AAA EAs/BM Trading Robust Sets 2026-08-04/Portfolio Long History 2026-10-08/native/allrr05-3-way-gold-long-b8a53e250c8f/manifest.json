@@ -1,0 +1,59 @@
+{
+  "tag": "allrr05-3-way-gold-long-b8a53e250c8f",
+  "slug": "3-way-gold",
+  "variant": "long-b8a53e250c8f",
+  "inputs": {
+    "InpEnableTrading": "true",
+    "InpEnableMomentum": "true",
+    "InpEnableBreakout": "true",
+    "InpEnableTurnOfMonth": "true",
+    "InpMarketEntries": "true",
+    "InpRiskPercent": "1.0",
+    "InpRiskMode": "0",
+    "InpFixedRiskMoney": "0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMagic": "930930100",
+    "InpMaximumDeviationPoints": "1000",
+    "InpAutoServerUtcOffsetLive": "true",
+    "InpServerUtcOffsetHours": "0",
+    "InpTradeFrom": "0",
+    "InpResearchLedger": "false",
+    "FTMOExpectedLogin": "0",
+    "FTMOExpectedServer": "",
+    "FTMOExpectedSymbol": "",
+    "FTMOPhase": "1",
+    "FTMOAllocationMode": "0",
+    "FTMOAllocationValue": "50",
+    "InpRR05AuditTag": "allrr05-3-way-gold-long-b8a53e250c8f",
+    "InpRR05ModuleTarget": "0"
+  },
+  "start": "2021.10.06",
+  "end_exclusive": "2026.10.06",
+  "model": 4,
+  "delay": 150,
+  "symbol": "XAUUSD",
+  "period": "M15",
+  "build": {
+    "source_sha256": "257bb45147c8cc8ce5080394e53bc5673cd5bceb8a57a480828792072ce28bbe",
+    "source_copy_sha256": "0c28b78424699733541a2a8d92c95653e22d0790b22dc721ffd1d615dbdf1e75",
+    "audit_sha256": "f232acd6fe94bee98409ec0b5a14c2984461d441d7e413201e06357151b09705",
+    "binary_sha256": "6ec3d72667875caaf19b3489ac31dc6a9469988f1179db166b86769e968a0897",
+    "callbacks": {
+      "OnInit": true,
+      "OnDeinit": true,
+      "OnTick": true,
+      "OnTimer": false
+    },
+    "patches": [
+      "TP accessor override for MOM/BRK only; baseline override is zero."
+    ],
+    "production_hashes": {
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\3 Way Gold EA\\3 Way Gold EA.ex5": "63d2dd2744a9e91713ad17273d638ab3aa1c150e24f2b21e99ab176e4527c66d",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\3 Way Gold EA\\3 Way Gold EA.mq5": "4050870aee6cc7496573d472bd372c70068ae7b332f3fd131432cca7095e15da",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Shared\\CalyxAdaptivePortfolio.mqh": "3adaecf62184cdf1568995c92da8e6e39a69bb6392bc8bce735e6f853daee06a",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\25 3 Way Gold - BEST OPTIMISED - 1PCT PER MODULE.set": "6a21579d8783b7fb86ed8d6bb9bf5e9920e59d4346da4e50f8061486a65562e6"
+    },
+    "compile": "0 errors, 0 warnings",
+    "tester_only": true
+  }
+}

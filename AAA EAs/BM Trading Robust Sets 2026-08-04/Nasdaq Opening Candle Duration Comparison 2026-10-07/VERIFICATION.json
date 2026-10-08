@@ -1,0 +1,286 @@
+{
+  "passed": true,
+  "baseline_parity": {
+    "passed": true,
+    "period": [
+      "2026-07-07",
+      "2026-10-07"
+    ],
+    "positions": 44,
+    "fields": [
+      "open_time",
+      "close_time",
+      "side",
+      "volume",
+      "open_price",
+      "close_price",
+      "gross_profit",
+      "commission",
+      "swap",
+      "net_profit",
+      "initial_sl",
+      "initial_tp",
+      "exit_comment"
+    ],
+    "production_binary": "fe9f391db5af2bc3cb0b36e52ae5c0775786c8cb8353abe8b8b7542a2bc72dca",
+    "adapter_binary": "74e09048a76c937eec09c7179c3a10522a9e217693cecdb80a0e73cd8d4f39db"
+  },
+  "runs": [
+    {
+      "name": "3m-M5-PRODUCTION",
+      "positions": 44,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "exact production binary"
+      ]
+    },
+    {
+      "name": "3m-M1",
+      "positions": 39,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "3m-M3",
+      "positions": 40,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "3m-M10",
+      "positions": 45,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "3m-M15",
+      "positions": 43,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "6m-M5-PRODUCTION",
+      "positions": 87,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "exact production binary"
+      ]
+    },
+    {
+      "name": "6m-M1",
+      "positions": 86,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "6m-M3",
+      "positions": 73,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "6m-M10",
+      "positions": 92,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "6m-M15",
+      "positions": 92,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "1y-M5-PRODUCTION",
+      "positions": 179,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "exact production binary"
+      ]
+    },
+    {
+      "name": "1y-M1",
+      "positions": 160,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "1y-M3",
+      "positions": 149,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "1y-M10",
+      "positions": 180,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    },
+    {
+      "name": "1y-M15",
+      "positions": 181,
+      "passed": true,
+      "checks": [
+        "source/preset/report hashes",
+        "native cash and count parity",
+        "net PF and wins",
+        "native floating DD",
+        "NY DST and entry timing",
+        "one position and entry per NY day",
+        "no TP",
+        "cost reconciliation",
+        "independent daily-realized Sharpe",
+        "completed-M5 indicator timing"
+      ]
+    }
+  ],
+  "verified_positions": 1490
+}

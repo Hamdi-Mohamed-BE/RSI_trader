@@ -1,0 +1,51 @@
+FULL EXPLORATORY PIPELINE — 2026-10-07
+Vault Break and Overnight Bias ORB, US100/Exness USTEC only; independent accounts.
+Research only. User explicitly approved continued exploratory optimisation even
+after a failed raw gate. No production, BAT, website, live account or Git push.
+Preserve the original dated raw study, code, presets and results unchanged.
+Raw gates remain PF>=1.15, positive, >=30 positions on both 3Y and 5Y plus a
+control comparison. Exploratory continuation does NOT turn failure into a pass.
+
+Dates are frozen in run-config.json and shared-planner data-split.json.
+Development 2021-10-07 to 2023-10-07; validation 2023-10-07 to 2024-10-07;
+final two-calendar-year OOS 2024-10-07 to 2026-10-07, end exclusive.
+OOS was exposed by yesterday's raw results. Label it RETROSPECTIVE, not untouched.
+Never search/rank on recent 1Y/6M/3M or OOS. One final candidate per bot, chosen
+by older validation and frozen before OOS. Failure rejects; no second choice.
+Earlier optimisation wrappers with reversed/shortened holdouts must not be reused.
+
+1% current-equity planned initial-stop sizing, floor to broker step. Extra costs,
+fill delay and gaps are not covered by that budget; no minimum-lot override.
+Native Model 4, 150ms, broker spread/commission/swap for raw/final confirmation.
+Model 1 native optimisation is SCREENING ONLY, not labelled real-tick evidence.
+Missing older real ticks stay disclosed. Verify requested first/last data dates;
+insufficient development/OOS history stops the claim, not shortens the windows.
+
+Controls: Vault same window, fixed stop/target and cap, but no noise/VWAP gate;
+Overnight same OR/ATR stop/3R and cap, but no overnight bias/ADX gate. These are
+signal-ablation benchmarks, not random-entry proof. Compare PF and mean net R.
+
+Stage 5 uses staged native optimisation: timeframe -> entry -> stop type ->
+management -> RR/exit -> session -> direction -> filters -> daily/holding rules
+-> source parameters. Keep top 3 using development PF and return/DD, >=30 trades.
+Predeclare concrete values in SEARCH PLAN.json before running. Record every
+attempt/configuration, including failures, controls, smoke and parity, for DSR.
+Neighbourhood check on stop scale, reward/R and threshold; no isolated spike.
+Signal-specific sessions remain mandatory: Overnight cannot enter before the
+08:30-08:45 Chicago OR exists. Never manufacture Asia/London ORB opportunities.
+H4/D1 overnight variants are excluded if bar-close timing cannot honour the OR
+and intraday cutoff. Report other omitted dimensions with reasons, not silently.
+No lookahead for VWAP, custom daily ATR, ADX, DI, EMA/ATR regimes or news times.
+Use completed candles, historical Chicago DST and causal pending-order expiry.
+Test protective early-session close/holiday handling as an explicit default-off
+research switch, not a silent rewrite of the baseline. Verify switches-off parity.
+
+Final native evidence: development, validation, OOS, 5Y, 3Y, 1Y, 6M and 3M.
+Monte Carlo: 10,000 block paths length5, shuffle, 10/20% trade removal, measured
+extra execution-cost stress, FTMO two-phase closed-PnL proxy (with equity caveat),
+current-portfolio overlap and marginal proxy if aligned evidence is available.
+Run MC even for a failing frozen candidate and report all failed gates. Confidence
+metrics use complete net-position cash flows, not gross TP hit counts. Native
+floating-equity DD and simulated closed-PnL DD are different evidence types.
+All result tables include counts/frequency, return, PF, WR, equity DD and streaks.
+No prediction of future profitability or reproducibility of proprietary code.

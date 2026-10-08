@@ -1,0 +1,61 @@
+{
+  "daily_return_correlation": 0.14540848271813395,
+  "overlapping_entry_events": 52,
+  "max_concurrent_positions": 2,
+  "stale_cache_context": {
+    "start": "2024-10-07",
+    "end_exclusive": "2026-08-31",
+    "cached_only": {
+      "label": "Stale 34-EA arithmetic cache",
+      "return_pct": 42988.6842,
+      "closed_daily_dd": 26.656564136788585,
+      "daily_calendar_sharpe": 2.4740657386526754,
+      "scope": "Re-sized daily return overlay, not shared MT5 fills/equity, margin or guard replay"
+    },
+    "plus_vault": {
+      "label": "Cache + Vault candidate daily overlay",
+      "return_pct": 43501.45693089654,
+      "closed_daily_dd": 26.980350995463233,
+      "daily_calendar_sharpe": 2.4780511420438853,
+      "scope": "Re-sized daily return overlay, not shared MT5 fills/equity, margin or guard replay"
+    },
+    "plus_overnight": {
+      "label": "Cache + Overnight candidate daily overlay",
+      "return_pct": 54046.85366660351,
+      "closed_daily_dd": 26.656564136788585,
+      "daily_calendar_sharpe": 2.5445712460564787,
+      "scope": "Re-sized daily return overlay, not shared MT5 fills/equity, margin or guard replay"
+    },
+    "plus_both": {
+      "label": "Cache + both candidates daily overlay",
+      "return_pct": 54672.1848567115,
+      "closed_daily_dd": 26.980350995463233,
+      "daily_calendar_sharpe": 2.5483701737790976,
+      "scope": "Re-sized daily return overlay, not shared MT5 fills/equity, margin or guard replay"
+    },
+    "correlation_vault": -0.0037093323406511246,
+    "correlation_overnight": 0.040265149557259274,
+    "caution": "Shortened contextual cache overlap ONLY. Final candidate OOS remains the full two calendar years. Rebased cached cash flows are stale independent-test arithmetic, not current allocations or native shared equity."
+  },
+  "raw_pair": {
+    "label": "Raw pair",
+    "return_pct": 67.85098283319219,
+    "closed_daily_dd": 8.938076266993388,
+    "daily_calendar_sharpe": 1.6037030732532416,
+    "scope": "Re-sized daily return overlay, not shared MT5 fills/equity, margin or guard replay"
+  },
+  "candidate_pair": {
+    "label": "Frozen candidate pair",
+    "return_pct": 29.068737756747986,
+    "closed_daily_dd": 4.75543431430685,
+    "daily_calendar_sharpe": 1.5180546857369452,
+    "scope": "Re-sized daily return overlay, not shared MT5 fills/equity, margin or guard replay"
+  },
+  "current_portfolio_assessment": {
+    "status": "NOT A CURRENT-PORTFOLIO VALIDATION",
+    "cached_label": "Current 34-EA tested portfolio",
+    "cached_period": "2023-10-01 to 2026-08-30",
+    "sha256": "9423cbf156d3e744ca008e33dbd57c9983e2107e62a25bdeff7eb2dd6a9cb3e4",
+    "reason": "Cached combined evidence ends 2026-08-30 and describes 34 EAs. It does not represent the current reviewed roster/settings or cover the full frozen two-year holdout. No stale/current result is fabricated."
+  }
+}

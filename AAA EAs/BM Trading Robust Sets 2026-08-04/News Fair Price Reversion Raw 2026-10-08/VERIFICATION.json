@@ -1,0 +1,101 @@
+{
+  "verified_utc": "2026-10-07T23:44:30.345870+00:00",
+  "checks": 4558,
+  "arithmetic_and_recorded_chronology_pass": true,
+  "source_settings_calendar_unchanged": true,
+  "native_deals_xml_statistics_cash_reconciled": true,
+  "no_overnight_positions": true,
+  "no_rejected_entries_or_time_closes": true,
+  "live_changes": false,
+  "rows": {
+    "EURUSD short_only": {
+      "trades": 14,
+      "calendar_dispositions": 31,
+      "skipped_no_quote_events": 0,
+      "native_cash_reconciled": true,
+      "maximum_hold_minutes": 60.0,
+      "all_2026_entry_quotes_zero_spread": true,
+      "research_only": true,
+      "live_promotion": false
+    },
+    "EURUSD mirrored_both_sides": {
+      "trades": 25,
+      "calendar_dispositions": 31,
+      "skipped_no_quote_events": 0,
+      "native_cash_reconciled": true,
+      "maximum_hold_minutes": 60.0,
+      "all_2026_entry_quotes_zero_spread": true,
+      "research_only": true,
+      "live_promotion": false
+    },
+    "BTCUSD short_only": {
+      "trades": 9,
+      "calendar_dispositions": 31,
+      "skipped_no_quote_events": 0,
+      "native_cash_reconciled": true,
+      "maximum_hold_minutes": 60.0,
+      "all_2026_entry_quotes_zero_spread": true,
+      "research_only": true,
+      "live_promotion": false
+    },
+    "BTCUSD mirrored_both_sides": {
+      "trades": 15,
+      "calendar_dispositions": 31,
+      "skipped_no_quote_events": 0,
+      "native_cash_reconciled": true,
+      "maximum_hold_minutes": 60.0,
+      "all_2026_entry_quotes_zero_spread": true,
+      "research_only": true,
+      "live_promotion": false
+    },
+    "XAUUSD short_only": {
+      "trades": 14,
+      "calendar_dispositions": 31,
+      "skipped_no_quote_events": 1,
+      "native_cash_reconciled": true,
+      "maximum_hold_minutes": 60.0,
+      "all_2026_entry_quotes_zero_spread": false,
+      "research_only": true,
+      "live_promotion": false
+    },
+    "XAUUSD mirrored_both_sides": {
+      "trades": 21,
+      "calendar_dispositions": 31,
+      "skipped_no_quote_events": 1,
+      "native_cash_reconciled": true,
+      "maximum_hold_minutes": 60.0,
+      "all_2026_entry_quotes_zero_spread": false,
+      "research_only": true,
+      "live_promotion": false
+    },
+    "USTEC short_only": {
+      "trades": 16,
+      "calendar_dispositions": 31,
+      "skipped_no_quote_events": 0,
+      "native_cash_reconciled": true,
+      "maximum_hold_minutes": 60.0,
+      "all_2026_entry_quotes_zero_spread": false,
+      "research_only": true,
+      "live_promotion": false
+    },
+    "USTEC mirrored_both_sides": {
+      "trades": 21,
+      "calendar_dispositions": 31,
+      "skipped_no_quote_events": 0,
+      "native_cash_reconciled": true,
+      "maximum_hold_minutes": 60.0,
+      "all_2026_entry_quotes_zero_spread": false,
+      "research_only": true,
+      "live_promotion": false
+    }
+  },
+  "limitations": [
+    "Chronology checks use saved native decisions and source guards; this is not a second independent full tick-engine implementation.",
+    "Pivot prior-close and ATR values originate in the native engine; audit confirms recorded readiness/freeze and guards, not an independent historical-price reconstruction.",
+    "Request-price-to-stop sizing is checked using native OrderCalcProfit cash risk. Decision bid/ask are sampled after send; 150ms fill movement means request price cannot be reconstructed exactly from these quote samples.",
+    "All 2026 EURUSD/BTCUSD entry quotes and most USTEC entry quotes have zero bid/ask spread. Gold has one such entry per version. All 2025 ticks are generated fallback. Data quality is not live-execution validation.",
+    "Added-cost sensitivity only subtracts assumed cash penalties from recorded trades; lots and paths are not rerun.",
+    "HTML numerical/structure checks performed. Browser rendering was not inspected because local file access was blocked.",
+    "Not a full pipeline or untouched out-of-sample test. No live promotion."
+  ]
+}

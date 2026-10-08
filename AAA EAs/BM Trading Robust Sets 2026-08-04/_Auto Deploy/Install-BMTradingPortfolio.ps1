@@ -19,6 +19,7 @@ param(
     [string]$NasdaqDIFilter = 'ON',
     [ValidateSet('ON', 'OFF')]
     [string]$UsdJpyDIFilter = 'ON',
+    [switch]$ApplyLiveProfileDIChoices,
     [switch]$UseReviewedSelections,
     [switch]$UseRecommendedSelections,
     [switch]$UseClaudeSelections,
@@ -535,6 +536,10 @@ function Test-NewsAdaptiveExemption([object]$Item) {
 function Get-EffectiveInputs([object]$Item) {
     $inputs = Read-SetInputs $Item.SetFullPath
     if ($Item.PSObject.Properties['ReviewedEntry']) { Set-ReviewedInputs $Item $inputs }
+    if ($ApplyLiveProfileDIChoices -and $Item.Label -eq 'USDJPY London Open Momentum') {
+        if (-not $inputs.Contains('InpRequireDIAgreement')) { Stop-WithMessage 'USDJPY preset does not support DI selection.' }
+        $inputs['InpRequireDIAgreement'] = if ($UsdJpyDIFilter -eq 'OFF') { 'false' } else { 'true' }
+    }
     if ([bool]$Item.HistoricalLossSizing) {
         # No stop is added. Risk here means the frozen historical-loss scenario,
         # not maximum possible future loss. Recalculate volume on each entry.
@@ -972,6 +977,10 @@ if ($UseReviewedSelections) {
     if ($UsdJpyDIFilter -eq 'OFF') { Write-Host 'USDJPY DI OFF is custom; published ADX20 + DI results do not describe it.' -ForegroundColor Yellow }
 }
 
+if ($ValidateOnly -and $ApplyLiveProfileDIChoices) {
+    Write-Host "`nNamed portfolio file validation passed. No terminal enumeration, MT5 API or account access." -ForegroundColor Green
+    exit 0
+}
 Write-Stage 'Finding MT5'
 $candidates = @(Get-Mt5Candidates)
 if ($ValidateOnly) {

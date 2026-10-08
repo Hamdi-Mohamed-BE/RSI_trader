@@ -1,0 +1,85 @@
+{
+  "name": "FTMO Pure ORB Swing",
+  "status": "Research profile only; not an installed or validated guarded EA package",
+  "account": "FTMO 2-Step Swing",
+  "capital_usd": 10000,
+  "risk_mode": "fixed USD",
+  "risk_per_trade_usd": 50,
+  "news": false,
+  "selection": "Native net win rate >=60% and finite PF >=1.15; rechecked under the FTMO $50 single-EA overlay",
+  "only_opening_range_strategies": true,
+  "no_non_orb_eas": true,
+  "phase_targets_pct": [
+    10,
+    5
+  ],
+  "official_daily_equity_loss_usd": 500,
+  "official_total_equity_loss_usd": 1000,
+  "minimum_trading_days_per_phase": 4,
+  "unlimited_evaluation_time": true,
+  "shared_guard": {
+    "entries_per_prague_day": 7,
+    "closed_losses_per_day": 3,
+    "aggregate_initial_risk_usd": 225,
+    "same_symbol_initial_risk_usd": 150,
+    "daily_admission_reserve_usd": 300,
+    "equity_admission_buffer_usd": 9200,
+    "initial_stop_reserve_multiple": 1.25,
+    "additional_reserve_usd_per_position": 5,
+    "margin_fraction": 0.8,
+    "lot_step": 0.01,
+    "minimum_lot": 0.01,
+    "rounding": "down, skip below minimum",
+    "guard_source_sha256": "58d847f2f7175d4221a63d5684b8b76ba0a55406a8633ae77c7a7c7a536040bb"
+  },
+  "entries": [
+    {
+      "slug": "us100-h1-orb-13utc",
+      "label": "US100 H1 ORB 13UTC",
+      "symbol": "USTEC",
+      "timeframe": "M15",
+      "reward_risk": 0.5,
+      "variant": "half",
+      "expert_source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.ex5",
+      "preset_source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB H1 Range Research 2026-09-05\\Sets\\USTEC - overlap-1300 - H1 opening range - RR6 - 1pct.set",
+      "warning": null
+    },
+    {
+      "slug": "us100-selective-orb-v3",
+      "label": "US100 Selective ORB V3",
+      "symbol": "USTEC",
+      "timeframe": "M5",
+      "reward_risk": 2.0,
+      "variant": "current",
+      "expert_source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US100 Selective ORB Research 2026-08-21\\EA\\US100 Selective ORB Retest EA.ex5",
+      "preset_source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US100 Selective ORB Research 2026-08-21\\Sets\\BEST V3 - US100 USTEC M5 - TIME DIRECTION OR30 - 1pct.set",
+      "warning": "Only 5 native trades; exploratory, not sufficient validation"
+    },
+    {
+      "slug": "xau-orb-new-york-m30",
+      "label": "XAU ORB New York M30",
+      "symbol": "XAUUSD",
+      "timeframe": "M30",
+      "reward_risk": 0.5,
+      "variant": "half",
+      "expert_source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.ex5",
+      "preset_source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\14 XAU ORB New York M30 - LOCKED STANDALONE.set",
+      "warning": "Only 12 native trades"
+    },
+    {
+      "slug": "xau-orb-london-ny-overlap-m30",
+      "label": "XAU ORB London NY Overlap M30",
+      "symbol": "XAUUSD",
+      "timeframe": "M30",
+      "reward_risk": 0.5,
+      "variant": "half",
+      "expert_source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.ex5",
+      "preset_source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\15 XAU ORB London NY Overlap M30 - LOCKED STANDALONE.set",
+      "warning": null
+    }
+  ],
+  "protective_stops_required": true,
+  "market_entries_only": true,
+  "live_installation": false,
+  "caveat": "A source SET or EX5 is not automatically a guarded FTMO build. No installer is created and no source input is deployed."
+}

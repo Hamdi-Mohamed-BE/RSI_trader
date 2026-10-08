@@ -1,0 +1,143 @@
+{
+  "tag": "allrr05-news-pulse-xau-calendar-parity-original-month",
+  "slug": "news-pulse-xau",
+  "variant": "calendar-parity-original-month",
+  "window": [
+    "2021.10.06",
+    "2021.11.06"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "false",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpEnableBuySide": "true",
+    "InpEnableSellSide": "true",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMagic": "861301",
+    "InpMaxDeviationPoints": "100",
+    "InpMarketFallbackOnCrossedLevel": "true",
+    "InpUseEconomicCalendar": "true",
+    "InpWatchNFP": "true",
+    "InpWatchCPI": "true",
+    "InpWatchFOMC": "true",
+    "InpPlacementLeadSeconds": "30",
+    "InpMaxQuoteAgeSeconds": "5",
+    "InpCalendarLookaheadDays": "8",
+    "InpCalendarRefreshSeconds": "300",
+    "InpUseXauEventSpecific": "true",
+    "InpEntryOffsetPrice": "6",
+    "InpStopLossPrice": "10",
+    "InpTrailStartR": "1.5",
+    "InpTrailDistancePrice": "15",
+    "InpForceCloseSecondsAfterEvent": "30",
+    "InpTesterServerClockMode": "0",
+    "InpTesterFromDateUTC": "20211006",
+    "InpTesterToDateUTC": "20211105",
+    "InpRR05AuditTag": "allrr05-news-pulse-xau-calendar-parity-original-month"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10012.22,
+    "net_profit": 12.22,
+    "return_pct": 0.12,
+    "profit_factor": 23.22,
+    "win_rate_pct": 100.0,
+    "max_drawdown_pct": 0.0,
+    "trades": 1,
+    "sharpe_ratio": 0.0,
+    "recovery_factor": 22.22,
+    "history_quality": "0% real ticks",
+    "equity_dd_pct": 0.0,
+    "balance_dd_pct": 0.01
+  },
+  "metrics": {
+    "trades": 1,
+    "return_pct": 0.1222,
+    "net_profit": 12.22,
+    "pf": null,
+    "wins": 1,
+    "losses": 0,
+    "flat": 0,
+    "win_rate": 100.0,
+    "equity_dd_pct": 0.0,
+    "balance_dd_pct": 0.01,
+    "sharpe_daily_equity": 3.384456448906598,
+    "win_streak": 1,
+    "loss_streak": 0,
+    "avg_win": 12.22,
+    "avg_loss": null,
+    "partial_positions": 0,
+    "exit_legs": 1,
+    "commission": -0.55,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1633696226,
+      "close_epoch": 1633696230,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.1,
+      "open_price": 1768.104,
+      "close_price": 1769.381,
+      "net": 12.22,
+      "magic": 861301,
+      "sl": 1758.093,
+      "tp": 0.0,
+      "entry_comment": "NP|1633696200|NFP|B",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 12.77,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1633696226,
+      "deal": 2,
+      "balance": 9999.45,
+      "net": -0.55
+    },
+    {
+      "epoch": 1633696230,
+      "deal": 3,
+      "balance": 10012.22,
+      "net": 12.77
+    }
+  ],
+  "seconds": 55.343059062957764,
+  "binary_sha256": "99172259343d19fe8d68a30de5b4d139a2eb26c76e0e36895ac55d45f1a2d46b",
+  "report_sha256": "2f99c76ab113d6e38b9668b99a8c0a2e18fc9e97f5e80e2f969c7c6a01d01b65",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

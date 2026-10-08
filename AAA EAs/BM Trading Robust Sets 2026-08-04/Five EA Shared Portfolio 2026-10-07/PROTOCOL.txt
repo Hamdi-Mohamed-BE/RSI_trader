@@ -1,0 +1,36 @@
+FIVE EA SHARED PORTFOLIO - RAW CURRENT-CONFIGURATION RETROSPECTIVE
+
+Window: 2026-07-07 00:00 through 2026-10-07 00:00 exclusive, archived Exness server clock UTC.
+Account: fresh USD 10,000, native retail hedging, tester leverage 1:2000.
+Requested modeling: real historical ticks, 150ms simulated execution delay. No optimizer.
+
+US30 hourly: current frozen NY hours, 60-minute holds, balance-based 1% scenario sized against 611.53 historical loss points; no SL/TP.
+US100 hourly: current frozen NY hours, 60-minute holds, balance-based 1% scenario sized against 358.71 historical loss points; no SL/TP.
+Nasdaq momentum: current M5 + DI14, 0.60% price stop, no TP, ATR6 trailing from +1R, overnight/weekend holding. Equity-based 1% target.
+RSI VWAP Gold: current H1, existing RSI/VWAP signal, swing stop, 0.5R target/managed exits. Equity-based 1% target.
+EMA3 Gold: current H4 pivot structure, 1.7R, existing 60/20 dynamic stop management, added DI/ADX disabled. Equity-based 1% target.
+No adaptive governor, news bots, FTMO restrictions, or aggregate 1% portfolio cap.
+
+Current production sources/dependencies/presets are fingerprinted in CONFIG.json and remain unchanged.
+Production inputs are frozen and identifiers are mechanically namespaced in a research-only wrapper.
+Shared dispatch: primary XAUUSD tick handler and 5-second timer consume latest symbol quotes. Hourly timers retained.
+Single-module controls use their own native symbol as primary chart and their actual chart timeframe.
+Nasdaq standalone wrapper is compared trade-for-trade against the exact production executable's existing fresh native three-month run.
+This wrapper refuses initialization outside the tester. No trading API, live orders, live profile changes or BAT installation.
+
+Accounting: exported native deals paired by DEAL_POSITION_ID, NOT FIFO by symbol.
+Net includes all entry/exit commissions, swap and fees. Shared contributions must sum to native total cash P&L.
+Every raw ticket, symbol, timestamp, price, volume, profit, commission and swap is independently matched to the native HTML report.
+Native cash/count/PF reconciled. Net win rate uses strictly positive complete-position P&L after all costs.
+Native MT5 profitable-trade count here uses nonnegative gross movement, which can differ on breakeven/minimum-profit fills.
+Monthly return uses actual deal-date cash movements; July and October are partial months.
+Headline equity drawdown includes floating positions. Dispatcher-observed and native-reported measurements are both retained.
+Positions start flat. Any native end-of-test close is identified and reported separately.
+
+Limits: current minimum-lot/round-up policies can exceed selected 1% target exposure. Hourly historical-loss scenario is NOT a future maximum loss.
+Current hourly selections and loss references use evidence overlapping this window; NOT an untouched out-of-sample test.
+Separate live chart handlers can differ in quote timing from the multi-symbol adapter. Native costs/history/delay do not establish future execution.
+Standalone controls are not added together: their compounded account sizing differs from the shared account.
+
+Diagnostic smoke (first revision) omitted the millisecond-edge boundary deal in its history export. No result from that revision is accepted.
+Corrected smoke-r2 reconciles every position and cash amount. All accepted full-window cases use the corrected same compiled binary.

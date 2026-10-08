@@ -1,0 +1,572 @@
+{
+  "tag": "allrr05-xau-orb-new-york-m30-current",
+  "slug": "xau-orb-new-york-m30",
+  "variant": "current",
+  "window": [
+    "2025.10.06",
+    "2026.10.06"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "false",
+    "InpDynamicTriggerFraction": "0.5",
+    "InpDynamicLockFraction": "0.2",
+    "InpResearchSession": "3",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpSessionZone": "0",
+    "InpSessionHour": "9",
+    "InpSessionMinute": "30",
+    "InpOpeningRangeMinutes": "30",
+    "InpTradeWindowMinutes": "180",
+    "InpFlatHour": "15",
+    "InpFlatMinute": "55",
+    "InpWeekdaysOnly": "true",
+    "InpSignalTimeframe": "30",
+    "InpRelativeVolumeDays": "20",
+    "InpMinOpeningRelativeVolume": "0.6",
+    "InpBarVolumeLookback": "20",
+    "InpMinBreakoutRelativeVolume": "0.8",
+    "InpATRTimeframe": "15",
+    "InpATRPeriod": "14",
+    "InpMinRangeATR": "0.2",
+    "InpMaxRangeATR": "1.8",
+    "InpRequireVWAP": "false",
+    "InpUseEMATrend": "false",
+    "InpFastEMA": "20",
+    "InpSlowEMA": "50",
+    "InpUseProfileValueArea": "false",
+    "InpUseProfilePOCBias": "false",
+    "InpUseProfileBoundaryLVN": "false",
+    "InpProfileStartHour": "8",
+    "InpProfileStartMinute": "0",
+    "InpProfileBins": "48",
+    "InpProfileValueAreaPercent": "70.0",
+    "InpMaxBoundaryNodeRatio": "1.0",
+    "InpMinimumProfileTicks": "100",
+    "InpShowProfileLevels": "false",
+    "InpEntryMode": "0",
+    "InpTradeDirection": "0",
+    "InpUsePaperStopEntry": "false",
+    "InpRequireOpeningCandleDirection": "false",
+    "InpBreakoutBodyMinimum": "0.55",
+    "InpBreakoutBufferATR": "0.03",
+    "InpRetestBars": "3",
+    "InpRetestToleranceATR": "0.15",
+    "InpRetestBodyMinimum": "0.3",
+    "InpStopMode": "1",
+    "InpStopBufferATR": "0.1",
+    "InpMaximumStopATR": "2.0",
+    "InpDailyATRStopFraction": "0.1",
+    "InpUseFixedTarget": "true",
+    "InpRewardRisk": "1.5",
+    "InpBreakEvenAtR": "0.5",
+    "InpTrailStartAtR": "0.0",
+    "InpTrailCandleBufferATR": "0.1",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMaxSpreadRangePercent": "12.0",
+    "InpMaxDeviationPoints": "30",
+    "InpMagic": "961000301",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpRR05AuditTag": "allrr05-xau-orb-new-york-m30-current"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10141.92,
+    "net_profit": 141.92,
+    "return_pct": 1.42,
+    "profit_factor": 1.84,
+    "win_rate_pct": 41.67,
+    "max_drawdown_pct": 2.83,
+    "trades": 12,
+    "sharpe_ratio": 1.64,
+    "recovery_factor": 0.49,
+    "history_quality": "76% real ticks",
+    "equity_dd_pct": 2.83,
+    "balance_dd_pct": 1.56
+  },
+  "metrics": {
+    "trades": 12,
+    "return_pct": 1.4192000000000002,
+    "net_profit": 141.92,
+    "pf": 1.8474859667980412,
+    "wins": 5,
+    "losses": 7,
+    "flat": 0,
+    "win_rate": 41.666666666666664,
+    "equity_dd_pct": 2.83,
+    "balance_dd_pct": 1.56,
+    "sharpe_daily_equity": 0.6632402752825993,
+    "win_streak": 2,
+    "loss_streak": 4,
+    "avg_win": 61.876,
+    "avg_loss": -23.922857142857143,
+    "partial_positions": 0,
+    "exit_legs": 12,
+    "commission": -3.5,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1763395200,
+      "close_epoch": 1763396283,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 4064.301,
+      "close_price": 4064.316,
+      "net": -0.42,
+      "magic": 961000301,
+      "sl": 4083.234,
+      "tp": 4035.854,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        "sl 4064.301"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.09,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1764171000,
+      "close_epoch": 1764190500,
+      "last_deal": 5,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 4156.76,
+      "close_price": 4161.939,
+      "net": 35.86,
+      "magic": 961000301,
+      "sl": 4140.741,
+      "tp": 4180.789,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 36.25,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1773671400,
+      "close_epoch": 1773678399,
+      "last_deal": 7,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 5015.074,
+      "close_price": 4983.258,
+      "net": 158.8,
+      "magic": 961000301,
+      "sl": 5036.09,
+      "tp": 4983.348,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        "tp 4983.348"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 159.08,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1774281600,
+      "close_epoch": 1774295700,
+      "last_deal": 9,
+      "side": "Short",
+      "volume": 0.01,
+      "open_price": 4363.379,
+      "close_price": 4409.126,
+      "net": -45.81,
+      "magic": 961000301,
+      "sl": 4473.275,
+      "tp": 4199.205,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -45.75,
+      "commission": -0.06,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1775836800,
+      "close_epoch": 1775837621,
+      "last_deal": 11,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 4762.348,
+      "close_price": 4762.373,
+      "net": -0.48,
+      "magic": 961000301,
+      "sl": 4779.868,
+      "tp": 4735.75,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        "sl 4762.348"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.15,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1779114600,
+      "close_epoch": 1779130993,
+      "last_deal": 13,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 4561.952,
+      "close_price": 4562.281,
+      "net": -1.93,
+      "magic": 961000301,
+      "sl": 4585.976,
+      "tp": 4524.546,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        "sl 4561.952"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -1.65,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1781627400,
+      "close_epoch": 1781630408,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 4344.536,
+      "close_price": 4330.777,
+      "net": -110.51,
+      "magic": 961000301,
+      "sl": 4330.797,
+      "tp": 4365.145,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        "sl 4330.797"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.07,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1784044800,
+      "close_epoch": 1784058900,
+      "last_deal": 17,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 4066.73,
+      "close_price": 4055.574,
+      "net": 55.5,
+      "magic": 961000301,
+      "sl": 4090.253,
+      "tp": 4030.993,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.78,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1786114800,
+      "close_epoch": 1786132500,
+      "last_deal": 19,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4341.64,
+      "close_price": 4343.601,
+      "net": -8.06,
+      "magic": 961000301,
+      "sl": 4369.791,
+      "tp": 4299.621,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -7.84,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1786719600,
+      "close_epoch": 1786737300,
+      "last_deal": 21,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 4382.091,
+      "close_price": 4378.163,
+      "net": 27.11,
+      "magic": 961000301,
+      "sl": 4398.026,
+      "tp": 4356.601,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 27.5,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1789137000,
+      "close_epoch": 1789140824,
+      "last_deal": 23,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4375.557,
+      "close_price": 4375.566,
+      "net": -0.25,
+      "magic": 961000301,
+      "sl": 4404.538,
+      "tp": 4331.431,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        "sl 4375.557"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.03,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1789657200,
+      "close_epoch": 1789674900,
+      "last_deal": 25,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 4354.136,
+      "close_price": 4347.658,
+      "net": 32.11,
+      "magic": 961000301,
+      "sl": 4375.64,
+      "tp": 4322.265,
+      "entry_comment": "ORB 30m M30 NY09:30",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 32.39,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1763395200,
+      "deal": 2,
+      "balance": 9999.67,
+      "net": -0.33
+    },
+    {
+      "epoch": 1763396283,
+      "deal": 3,
+      "balance": 9999.58,
+      "net": -0.09
+    },
+    {
+      "epoch": 1764171000,
+      "deal": 4,
+      "balance": 9999.19,
+      "net": -0.39
+    },
+    {
+      "epoch": 1764190500,
+      "deal": 5,
+      "balance": 10035.44,
+      "net": 36.25
+    },
+    {
+      "epoch": 1773671400,
+      "deal": 6,
+      "balance": 10035.16,
+      "net": -0.28
+    },
+    {
+      "epoch": 1773678399,
+      "deal": 7,
+      "balance": 10194.24,
+      "net": 159.08
+    },
+    {
+      "epoch": 1774281600,
+      "deal": 8,
+      "balance": 10194.18,
+      "net": -0.06
+    },
+    {
+      "epoch": 1774295700,
+      "deal": 9,
+      "balance": 10148.43,
+      "net": -45.75
+    },
+    {
+      "epoch": 1775836800,
+      "deal": 10,
+      "balance": 10148.1,
+      "net": -0.33
+    },
+    {
+      "epoch": 1775837621,
+      "deal": 11,
+      "balance": 10147.95,
+      "net": -0.15
+    },
+    {
+      "epoch": 1779114600,
+      "deal": 12,
+      "balance": 10147.67,
+      "net": -0.28
+    },
+    {
+      "epoch": 1779130993,
+      "deal": 13,
+      "balance": 10146.02,
+      "net": -1.65
+    },
+    {
+      "epoch": 1781627400,
+      "deal": 14,
+      "balance": 10145.58,
+      "net": -0.44
+    },
+    {
+      "epoch": 1781630408,
+      "deal": 15,
+      "balance": 10035.51,
+      "net": -110.07
+    },
+    {
+      "epoch": 1784044800,
+      "deal": 16,
+      "balance": 10035.23,
+      "net": -0.28
+    },
+    {
+      "epoch": 1784058900,
+      "deal": 17,
+      "balance": 10091.01,
+      "net": 55.78
+    },
+    {
+      "epoch": 1786114800,
+      "deal": 18,
+      "balance": 10090.79,
+      "net": -0.22
+    },
+    {
+      "epoch": 1786132500,
+      "deal": 19,
+      "balance": 10082.95,
+      "net": -7.84
+    },
+    {
+      "epoch": 1786719600,
+      "deal": 20,
+      "balance": 10082.56,
+      "net": -0.39
+    },
+    {
+      "epoch": 1786737300,
+      "deal": 21,
+      "balance": 10110.06,
+      "net": 27.5
+    },
+    {
+      "epoch": 1789137000,
+      "deal": 22,
+      "balance": 10109.84,
+      "net": -0.22
+    },
+    {
+      "epoch": 1789140824,
+      "deal": 23,
+      "balance": 10109.81,
+      "net": -0.03
+    },
+    {
+      "epoch": 1789657200,
+      "deal": 24,
+      "balance": 10109.53,
+      "net": -0.28
+    },
+    {
+      "epoch": 1789674900,
+      "deal": 25,
+      "balance": 10141.92,
+      "net": 32.39
+    }
+  ],
+  "seconds": 167.43269896507263,
+  "binary_sha256": "9157d289863272db5ea4c587af09b6fd9466ed892c6a6a3aa26d0fbc80bbeb06",
+  "report_sha256": "a1236027ed83832dcdcf9403af46ec91bfff7a69a44957cf91d6710c123e7bbd",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

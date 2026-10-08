@@ -1,0 +1,830 @@
+{
+  "schema": 1,
+  "stages": {
+    "anchor": [
+      {
+        "ResearchAnchor": 0
+      },
+      {
+        "ResearchAnchor": 1
+      },
+      {
+        "ResearchAnchor": 2
+      },
+      {
+        "ResearchAnchor": 3
+      },
+      {
+        "ResearchAnchor": 4
+      },
+      {
+        "ResearchAnchor": 5
+      },
+      {
+        "ResearchAnchor": 6
+      },
+      {
+        "ResearchAnchor": 7
+      }
+    ],
+    "timeframe": [
+      {
+        "InpSignalTimeframe": 1
+      },
+      {
+        "InpSignalTimeframe": 3
+      },
+      {
+        "InpSignalTimeframe": 5
+      },
+      {
+        "InpSignalTimeframe": 10
+      },
+      {
+        "InpSignalTimeframe": 15
+      },
+      {
+        "InpSignalTimeframe": 30
+      }
+    ],
+    "ema": [
+      {
+        "InpEMAPeriod": 8
+      },
+      {
+        "InpEMAPeriod": 12
+      },
+      {
+        "InpEMAPeriod": 20
+      },
+      {
+        "InpEMAPeriod": 34
+      },
+      {
+        "InpEMAPeriod": 50
+      }
+    ],
+    "stop": [
+      {
+        "InpStopMode": 2,
+        "InpInitialStopPercent": 0.2
+      },
+      {
+        "InpStopMode": 2,
+        "InpInitialStopPercent": 0.3
+      },
+      {
+        "InpStopMode": 2,
+        "InpInitialStopPercent": 0.4
+      },
+      {
+        "InpStopMode": 2,
+        "InpInitialStopPercent": 0.6
+      },
+      {
+        "InpStopMode": 2,
+        "InpInitialStopPercent": 0.8
+      },
+      {
+        "InpStopMode": 2,
+        "InpInitialStopPercent": 1.0
+      },
+      {
+        "InpStopMode": 0,
+        "InpInitialStopATR": 2
+      },
+      {
+        "InpStopMode": 0,
+        "InpInitialStopATR": 3
+      },
+      {
+        "InpStopMode": 0,
+        "InpInitialStopATR": 4
+      },
+      {
+        "InpStopMode": 0,
+        "InpInitialStopATR": 6
+      },
+      {
+        "InpStopMode": 1,
+        "InpSignalStopBufferATR": 0.1
+      },
+      {
+        "InpStopMode": 1,
+        "InpSignalStopBufferATR": 0.25
+      },
+      {
+        "InpStopMode": 1,
+        "InpSignalStopBufferATR": 0.5
+      }
+    ],
+    "target": [
+      {
+        "InpUseFixedTarget": 0,
+        "InpUseAdaptiveRR": 0
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 0,
+        "InpRewardRisk": 0.5
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 0,
+        "InpRewardRisk": 0.6
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 0,
+        "InpRewardRisk": 0.75
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 0,
+        "InpRewardRisk": 1
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 0,
+        "InpRewardRisk": 1.5
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 0,
+        "InpRewardRisk": 2
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 0,
+        "InpRewardRisk": 3
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 0,
+        "InpRewardRisk": 4
+      }
+    ],
+    "trail": [
+      {
+        "InpUseATRTrailing": 0,
+        "InpUseMATrailing": 0
+      },
+      {
+        "InpUseATRTrailing": 1,
+        "InpUseMATrailing": 0,
+        "InpTrailingATR": 2,
+        "InpTrailStartR": 0.5
+      },
+      {
+        "InpUseATRTrailing": 1,
+        "InpUseMATrailing": 0,
+        "InpTrailingATR": 2,
+        "InpTrailStartR": 1
+      },
+      {
+        "InpUseATRTrailing": 1,
+        "InpUseMATrailing": 0,
+        "InpTrailingATR": 4,
+        "InpTrailStartR": 0.5
+      },
+      {
+        "InpUseATRTrailing": 1,
+        "InpUseMATrailing": 0,
+        "InpTrailingATR": 4,
+        "InpTrailStartR": 1
+      },
+      {
+        "InpUseATRTrailing": 1,
+        "InpUseMATrailing": 0,
+        "InpTrailingATR": 6,
+        "InpTrailStartR": 0.5
+      },
+      {
+        "InpUseATRTrailing": 1,
+        "InpUseMATrailing": 0,
+        "InpTrailingATR": 6,
+        "InpTrailStartR": 1
+      },
+      {
+        "InpUseATRTrailing": 1,
+        "InpUseMATrailing": 0,
+        "InpTrailingATR": 8,
+        "InpTrailStartR": 0.5
+      },
+      {
+        "InpUseATRTrailing": 1,
+        "InpUseMATrailing": 0,
+        "InpTrailingATR": 8,
+        "InpTrailStartR": 1
+      },
+      {
+        "InpUseATRTrailing": 0,
+        "InpUseMATrailing": 1,
+        "InpTrailMAPeriod": 50,
+        "InpTrailMAStartR": 0.5
+      },
+      {
+        "InpUseATRTrailing": 0,
+        "InpUseMATrailing": 1,
+        "InpTrailMAPeriod": 100,
+        "InpTrailMAStartR": 0.5
+      },
+      {
+        "InpUseATRTrailing": 0,
+        "InpUseMATrailing": 1,
+        "InpTrailMAPeriod": 200,
+        "InpTrailMAStartR": 0.5
+      }
+    ],
+    "breakeven": [
+      {
+        "InpUseBreakEven": 0
+      },
+      {
+        "InpUseBreakEven": 1,
+        "InpBreakEvenTriggerR": 0.5,
+        "InpBreakEvenLockR": 0
+      },
+      {
+        "InpUseBreakEven": 1,
+        "InpBreakEvenTriggerR": 1,
+        "InpBreakEvenLockR": 0
+      },
+      {
+        "InpUseBreakEven": 1,
+        "InpBreakEvenTriggerR": 1,
+        "InpBreakEvenLockR": 0.25
+      },
+      {
+        "InpUseBreakEven": 1,
+        "InpBreakEvenTriggerR": 1.5,
+        "InpBreakEvenLockR": 0.5
+      }
+    ],
+    "holding": [
+      {
+        "InpCloseAtSessionEnd": 0,
+        "InpMaximumHoldingMinutes": 0,
+        "ResearchBerlinClose": 0
+      },
+      {
+        "InpCloseAtSessionEnd": 0,
+        "InpMaximumHoldingMinutes": 30,
+        "ResearchBerlinClose": 0
+      },
+      {
+        "InpCloseAtSessionEnd": 0,
+        "InpMaximumHoldingMinutes": 60,
+        "ResearchBerlinClose": 0
+      },
+      {
+        "InpCloseAtSessionEnd": 0,
+        "InpMaximumHoldingMinutes": 120,
+        "ResearchBerlinClose": 0
+      },
+      {
+        "InpCloseAtSessionEnd": 0,
+        "InpMaximumHoldingMinutes": 240,
+        "ResearchBerlinClose": 0
+      },
+      {
+        "InpCloseAtSessionEnd": 0,
+        "InpMaximumHoldingMinutes": 360,
+        "ResearchBerlinClose": 0
+      },
+      {
+        "InpCloseAtSessionEnd": 1,
+        "InpMaximumHoldingMinutes": 0,
+        "ResearchBerlinClose": 0
+      },
+      {
+        "InpCloseAtSessionEnd": 1,
+        "InpMaximumHoldingMinutes": 0,
+        "ResearchBerlinClose": 1
+      }
+    ],
+    "quality": [
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 1,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 1,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 1,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 15,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 20,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 25,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 1,
+        "ResearchADXMinimum": 15,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 1,
+        "ResearchADXMinimum": 20,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 1,
+        "ResearchADXMinimum": 25,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0.5,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0.65,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0.3,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0.5,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 1,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0.1,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0.25,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 2,
+        "InpRelativeVolumePeriod": 0,
+        "InpMinimumRelativeVolume": 0
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 20,
+        "InpMinimumRelativeVolume": 1
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 20,
+        "InpMinimumRelativeVolume": 1.2
+      },
+      {
+        "InpRequireDIAgreement": 0,
+        "ResearchADXMinimum": 0,
+        "ResearchADXMaximum": 0,
+        "ResearchRequireBodyDirection": 0,
+        "InpRequireEMASlope": 0,
+        "InpMinimumBodyATR": 0,
+        "InpMinimumBodyFraction": 0,
+        "InpMinimumEMADistanceATR": 0,
+        "InpMaximumEMADistanceATR": 0,
+        "InpRelativeVolumePeriod": 20,
+        "InpMinimumRelativeVolume": 1.5
+      }
+    ],
+    "direction": [
+      {
+        "InpAllowLong": 1,
+        "InpAllowShort": 1,
+        "ResearchSkipWeekday": 0
+      },
+      {
+        "InpAllowLong": 1,
+        "InpAllowShort": 1,
+        "ResearchSkipWeekday": 1
+      },
+      {
+        "InpAllowLong": 1,
+        "InpAllowShort": 1,
+        "ResearchSkipWeekday": 2
+      },
+      {
+        "InpAllowLong": 1,
+        "InpAllowShort": 1,
+        "ResearchSkipWeekday": 3
+      },
+      {
+        "InpAllowLong": 1,
+        "InpAllowShort": 0,
+        "ResearchSkipWeekday": 0
+      },
+      {
+        "InpAllowLong": 1,
+        "InpAllowShort": 0,
+        "ResearchSkipWeekday": 1
+      },
+      {
+        "InpAllowLong": 1,
+        "InpAllowShort": 0,
+        "ResearchSkipWeekday": 2
+      },
+      {
+        "InpAllowLong": 1,
+        "InpAllowShort": 0,
+        "ResearchSkipWeekday": 3
+      },
+      {
+        "InpAllowLong": 0,
+        "InpAllowShort": 1,
+        "ResearchSkipWeekday": 0
+      },
+      {
+        "InpAllowLong": 0,
+        "InpAllowShort": 1,
+        "ResearchSkipWeekday": 1
+      },
+      {
+        "InpAllowLong": 0,
+        "InpAllowShort": 1,
+        "ResearchSkipWeekday": 2
+      },
+      {
+        "InpAllowLong": 0,
+        "InpAllowShort": 1,
+        "ResearchSkipWeekday": 3
+      }
+    ],
+    "adaptive": [
+      {
+        "InpUseAdaptiveRR": 0
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 1,
+        "InpRewardRisk": 0.5,
+        "InpAdaptiveStrongRR": 1,
+        "InpAdaptiveStrongBodyATR": 1
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 1,
+        "InpRewardRisk": 1,
+        "InpAdaptiveStrongRR": 2,
+        "InpAdaptiveStrongBodyATR": 1
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 1,
+        "InpRewardRisk": 1.5,
+        "InpAdaptiveStrongRR": 3,
+        "InpAdaptiveStrongBodyATR": 1
+      },
+      {
+        "InpUseFixedTarget": 1,
+        "InpUseAdaptiveRR": 1,
+        "InpRewardRisk": 2,
+        "InpAdaptiveStrongRR": 3,
+        "InpAdaptiveStrongBodyATR": 1
+      }
+    ],
+    "dynamic": [
+      {
+        "InpUseDynamicTrailingSL": 0
+      },
+      {
+        "InpUseDynamicTrailingSL": 1,
+        "InpDynamicTriggerFraction": 0.5,
+        "InpDynamicLockFraction": 0.2
+      },
+      {
+        "InpUseDynamicTrailingSL": 1,
+        "InpDynamicTriggerFraction": 0.75,
+        "InpDynamicLockFraction": 0.25
+      }
+    ]
+  },
+  "baseline": {
+    "InpSignalTimeframe": 5.0,
+    "InpSignalHourNY": 9.0,
+    "InpSignalMinuteNY": 30.0,
+    "InpEMAPeriod": 12.0,
+    "InpAllowLong": 1,
+    "InpAllowShort": 1,
+    "InpRequireEMASlope": 0,
+    "InpMinimumBodyATR": 0.0,
+    "InpMaximumBodyATR": 0.0,
+    "InpMinimumBodyFraction": 0.0,
+    "InpMinimumEMADistanceATR": 0.0,
+    "InpMaximumEMADistanceATR": 0.0,
+    "InpRelativeVolumePeriod": 0.0,
+    "InpMinimumRelativeVolume": 0.0,
+    "InpRequireDIAgreement": 1,
+    "InpDIPeriod": 14.0,
+    "InpATRPeriod": 14.0,
+    "InpStopMode": 2.0,
+    "InpInitialStopATR": 4.0,
+    "InpSignalStopBufferATR": 0.1,
+    "InpMaximumStopATR": 0.0,
+    "InpUseFixedTarget": 0,
+    "InpRewardRisk": 2.5,
+    "InpUseAdaptiveRR": 0,
+    "InpAdaptiveStrongBodyATR": 1.0,
+    "InpAdaptiveStrongRR": 3.0,
+    "InpInitialStopPercent": 0.6,
+    "InpUseATRTrailing": 1,
+    "InpTrailingATR": 6.0,
+    "InpTrailStartR": 1.0,
+    "InpUseBreakEven": 0,
+    "InpBreakEvenTriggerR": 1.0,
+    "InpBreakEvenLockR": 0.0,
+    "InpMaximumHoldingMinutes": 0.0,
+    "InpCloseAtSessionEnd": 0,
+    "InpCloseHourNY": 15.0,
+    "InpCloseMinuteNY": 55.0,
+    "InpUseMATrailing": 0,
+    "InpTrailMAPeriod": 200.0,
+    "InpTrailMAMethod": 1,
+    "InpTrailMAStartR": 0.5,
+    "InpAutoServerUtcOffsetLive": 1,
+    "InpServerUtcOffsetHours": 0.0,
+    "InpEnableTrading": 1,
+    "InpRiskPercent": 1,
+    "InpAdaptivePortfolioControls": 0,
+    "InpMaximumSpreadATR": 0.0,
+    "InpMagic": 862020.0,
+    "InpMaximumDeviationPoints": 50.0,
+    "InpUseDynamicTrailingSL": 0,
+    "InpDynamicTriggerFraction": 0.5,
+    "InpDynamicLockFraction": 0.2,
+    "InpResearchSession": 0.0,
+    "InpResearchBrokerUtcOffsetMinutes": 0.0,
+    "ResearchAnchor": 0,
+    "ResearchADXMinimum": 0,
+    "ResearchADXMaximum": 0,
+    "ResearchRequireBodyDirection": 0,
+    "ResearchSkipWeekday": 0,
+    "ResearchBerlinClose": 0
+  },
+  "fields": [
+    "InpSignalTimeframe",
+    "InpSignalHourNY",
+    "InpSignalMinuteNY",
+    "InpEMAPeriod",
+    "InpAllowLong",
+    "InpAllowShort",
+    "InpRequireEMASlope",
+    "InpMinimumBodyATR",
+    "InpMaximumBodyATR",
+    "InpMinimumBodyFraction",
+    "InpMinimumEMADistanceATR",
+    "InpMaximumEMADistanceATR",
+    "InpRelativeVolumePeriod",
+    "InpMinimumRelativeVolume",
+    "InpRequireDIAgreement",
+    "InpDIPeriod",
+    "InpATRPeriod",
+    "InpStopMode",
+    "InpInitialStopATR",
+    "InpSignalStopBufferATR",
+    "InpMaximumStopATR",
+    "InpUseFixedTarget",
+    "InpRewardRisk",
+    "InpUseAdaptiveRR",
+    "InpAdaptiveStrongBodyATR",
+    "InpAdaptiveStrongRR",
+    "InpInitialStopPercent",
+    "InpUseATRTrailing",
+    "InpTrailingATR",
+    "InpTrailStartR",
+    "InpUseBreakEven",
+    "InpBreakEvenTriggerR",
+    "InpBreakEvenLockR",
+    "InpMaximumHoldingMinutes",
+    "InpCloseAtSessionEnd",
+    "InpCloseHourNY",
+    "InpCloseMinuteNY",
+    "InpUseMATrailing",
+    "InpTrailMAPeriod",
+    "InpTrailMAMethod",
+    "InpTrailMAStartR",
+    "InpAutoServerUtcOffsetLive",
+    "InpServerUtcOffsetHours",
+    "InpEnableTrading",
+    "InpRiskPercent",
+    "InpAdaptivePortfolioControls",
+    "InpMaximumSpreadATR",
+    "InpMagic",
+    "InpMaximumDeviationPoints",
+    "InpUseDynamicTrailingSL",
+    "InpDynamicTriggerFraction",
+    "InpDynamicLockFraction",
+    "InpResearchSession",
+    "InpResearchBrokerUtcOffsetMinutes",
+    "ResearchAnchor",
+    "ResearchADXMinimum",
+    "ResearchADXMaximum",
+    "ResearchRequireBodyDirection",
+    "ResearchSkipWeekday",
+    "ResearchBerlinClose"
+  ],
+  "beam_width": 2,
+  "one_factor_at_a_time": true,
+  "minimum_development_trades": 60,
+  "preferred_trades": 100,
+  "preferred_win_rate": 50,
+  "preferred_pf": 1.15,
+  "selection_target": "balanced PF, sample size, win rate/streak and drawdown; stable parameter neighbourhood, not maximum return",
+  "neighbourhood": "Stop distance \u00d7 [0.8,1,1.2] and TP RR (if used) or trailing distance \u00d7 [0.8,1,1.2]; one-factor axis neighbours, including center",
+  "internal_validation": "2023 only; at most three development finalists, plus unchanged raw control",
+  "final_holdout": "2024-01-01 onward, evaluated only after FROZEN.json exists; no candidate reselection after seeing holdout results",
+  "previously_viewed_baseline_future": true,
+  "markov_overlay": "OFF throughout; not added to this study",
+  "execution": "original retry, volume ceiling/minimum and 1% maximum allocation policies retained",
+  "research_only": true
+}

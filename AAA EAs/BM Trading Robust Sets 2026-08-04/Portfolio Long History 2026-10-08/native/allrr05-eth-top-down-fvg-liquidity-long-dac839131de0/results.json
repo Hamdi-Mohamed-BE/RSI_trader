@@ -1,0 +1,2306 @@
+{
+  "tag": "allrr05-eth-top-down-fvg-liquidity-long-dac839131de0",
+  "slug": "eth-top-down-fvg-liquidity",
+  "variant": "long-dac839131de0",
+  "window": [
+    "2021.10.06",
+    "2026.10.06"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "true",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpSignalTimeframe": "15",
+    "InpBiasMode": "1",
+    "InpBiasFastPeriod": "20",
+    "InpBiasSlowPeriod": "50",
+    "InpAllowLong": "true",
+    "InpAllowShort": "true",
+    "InpSweepLookbackBars": "24",
+    "InpSweepBufferATR": "0.02",
+    "InpRequireSweepCloseBack": "true",
+    "InpDisplacementBodyATR": "0.6",
+    "InpMinimumFVGATR": "0.03",
+    "InpMaximumFVGATR": "1.00",
+    "InpRetestExpiryBars": "3",
+    "InpATRPeriod": "14",
+    "InpStopBufferATR": "0.10",
+    "InpMinimumStopATR": "0.30",
+    "InpMaximumStopATR": "3.00",
+    "InpRewardRisk": "4",
+    "InpBreakEvenAtR": "0",
+    "InpMaximumHoldingBars": "96",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMaximumSpreadATRPercent": "15.0",
+    "InpMaximumTradesPerBrokerDay": "2",
+    "InpWeekdaysOnly": "false",
+    "InpMaximumDeviationPoints": "50",
+    "InpMagic": "86270828",
+    "InpRR05AuditTag": "allrr05-eth-top-down-fvg-liquidity-long-dac839131de0"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 11462.46,
+    "net_profit": 1462.46,
+    "return_pct": 14.62,
+    "profit_factor": 1.33,
+    "win_rate_pct": 36.07,
+    "max_drawdown_pct": 7.29,
+    "trades": 61,
+    "sharpe_ratio": 6.41,
+    "recovery_factor": 1.62,
+    "history_quality": "15% real ticks",
+    "equity_dd_pct": 7.49,
+    "balance_dd_pct": 7.29
+  },
+  "metrics": {
+    "trades": 61,
+    "return_pct": 14.624600000000001,
+    "net_profit": 1462.46,
+    "pf": 1.3364885510234135,
+    "wins": 22,
+    "losses": 39,
+    "flat": 0,
+    "win_rate": 36.0655737704918,
+    "equity_dd_pct": 7.49,
+    "balance_dd_pct": 7.29,
+    "sharpe_daily_equity": 0.43281450254386666,
+    "win_streak": 4,
+    "loss_streak": 6,
+    "avg_win": 264.03181818181815,
+    "avg_loss": -111.44205128205128,
+    "partial_positions": 0,
+    "exit_legs": 61,
+    "commission": -266.18,
+    "swap": -14.85,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1637682444,
+      "close_epoch": 1637684178,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 2.9,
+      "open_price": 4299.39,
+      "close_price": 4334.13,
+      "net": -102.2,
+      "magic": 86270828,
+      "sl": 4333.92,
+      "tp": 4161.27,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 4333.92"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.75,
+      "commission": -1.45,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1639827634,
+      "close_epoch": 1639865785,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 3.43,
+      "open_price": 3966.36,
+      "close_price": 3995.71,
+      "net": -102.4,
+      "magic": 86270828,
+      "sl": 3995.28,
+      "tp": 3850.68,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 3995.28"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.68,
+      "commission": -1.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1643045318,
+      "close_epoch": 1643046088,
+      "last_deal": 7,
+      "side": "Short",
+      "volume": 2.77,
+      "open_price": 2264.54,
+      "close_price": 2300.2,
+      "net": -100.16,
+      "magic": 86270828,
+      "sl": 2300.03,
+      "tp": 2122.58,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2300.03"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.77,
+      "commission": -1.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1643123909,
+      "close_epoch": 1643131288,
+      "last_deal": 9,
+      "side": "Short",
+      "volume": 1.73,
+      "open_price": 2415.69,
+      "close_price": 2471.8699999999994,
+      "net": -98.07,
+      "magic": 86270828,
+      "sl": 2471.8,
+      "tp": 2191.25,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2471.80"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.2,
+      "commission": -0.87,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1648573598,
+      "close_epoch": 1648590577,
+      "last_deal": 11,
+      "side": "Long",
+      "volume": 2.18,
+      "open_price": 3408.02,
+      "close_price": 3363.98,
+      "net": -97.09,
+      "magic": 86270828,
+      "sl": 3363.98,
+      "tp": 3584.18,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 3363.98"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.0,
+      "commission": -1.09,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1655195730,
+      "close_epoch": 1655210490,
+      "last_deal": 13,
+      "side": "Short",
+      "volume": 3.97,
+      "open_price": 1230.95,
+      "close_price": 1211.92,
+      "net": 73.56,
+      "magic": 86270828,
+      "sl": 1254.9,
+      "tp": 1135.15,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 1211.79"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 75.55,
+      "commission": -1.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1657936168,
+      "close_epoch": 1657951153,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 10.55,
+      "open_price": 1216.98,
+      "close_price": 1207.84,
+      "net": -101.71,
+      "magic": 86270828,
+      "sl": 1207.9,
+      "tp": 1253.3,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 1207.90"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.43,
+      "commission": -5.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1659343435,
+      "close_epoch": 1659350555,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 8.83,
+      "open_price": 1684.0,
+      "close_price": 1673.15,
+      "net": -100.23,
+      "magic": 86270828,
+      "sl": 1673.27,
+      "tp": 1726.92,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 1673.27"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -95.81,
+      "commission": -4.42,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1659916954,
+      "close_epoch": 1659938718,
+      "last_deal": 19,
+      "side": "Long",
+      "volume": 11.56,
+      "open_price": 1696.14,
+      "close_price": 1728.7200000000003,
+      "net": 370.84,
+      "magic": 86270828,
+      "sl": 1688.03,
+      "tp": 1728.58,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "tp 1728.58"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 376.62,
+      "commission": -5.78,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1661329344,
+      "close_epoch": 1661341765,
+      "last_deal": 21,
+      "side": "Short",
+      "volume": 7.71,
+      "open_price": 1638.65,
+      "close_price": 1651.33,
+      "net": -101.62,
+      "magic": 86270828,
+      "sl": 1651.3,
+      "tp": 1588.05,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 1651.30"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.76,
+      "commission": -3.86,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1661707474,
+      "close_epoch": 1661727795,
+      "last_deal": 23,
+      "side": "Short",
+      "volume": 12.16,
+      "open_price": 1490.29,
+      "close_price": 1458.47,
+      "net": 380.85,
+      "magic": 86270828,
+      "sl": 1498.22,
+      "tp": 1458.57,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "tp 1458.57"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 386.93,
+      "commission": -6.08,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1663589412,
+      "close_epoch": 1663591201,
+      "last_deal": 25,
+      "side": "Short",
+      "volume": 13.46,
+      "open_price": 1312.84,
+      "close_price": 1320.32,
+      "net": -107.41,
+      "magic": 86270828,
+      "sl": 1320.29,
+      "tp": 1283.04,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 1320.29"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.68,
+      "commission": -6.73,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1668159218,
+      "close_epoch": 1668171625,
+      "last_deal": 27,
+      "side": "Short",
+      "volume": 7.21,
+      "open_price": 1277.96,
+      "close_price": 1292.01,
+      "net": -104.91,
+      "magic": 86270828,
+      "sl": 1291.72,
+      "tp": 1222.92,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 1291.72"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.3,
+      "commission": -3.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1676390499,
+      "close_epoch": 1676461227,
+      "last_deal": 29,
+      "side": "Short",
+      "volume": 5.71,
+      "open_price": 1553.72,
+      "close_price": 1571.28,
+      "net": -103.13,
+      "magic": 86270828,
+      "sl": 1570.9,
+      "tp": 1485.0,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 1570.90"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.27,
+      "commission": -2.86,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1698376048,
+      "close_epoch": 1698417103,
+      "last_deal": 31,
+      "side": "Long",
+      "volume": 6.71,
+      "open_price": 1787.86,
+      "close_price": 1773.28,
+      "net": -101.19,
+      "magic": 86270828,
+      "sl": 1773.38,
+      "tp": 1845.78,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 1773.38"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.83,
+      "commission": -3.36,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 32,
+      "open_epoch": 1703772409,
+      "close_epoch": 1703775447,
+      "last_deal": 33,
+      "side": "Long",
+      "volume": 3.53,
+      "open_price": 2387.94,
+      "close_price": 2360.7,
+      "net": -97.93,
+      "magic": 86270828,
+      "sl": 2360.7,
+      "tp": 2496.9,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2360.70"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.16,
+      "commission": -1.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 34,
+      "open_epoch": 1704399695,
+      "close_epoch": 1704400684,
+      "last_deal": 35,
+      "side": "Short",
+      "volume": 6.53,
+      "open_price": 2283.2,
+      "close_price": 2297.94,
+      "net": -99.52,
+      "magic": 86270828,
+      "sl": 2297.77,
+      "tp": 2224.92,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2297.77"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.25,
+      "commission": -3.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 36,
+      "open_epoch": 1708945501,
+      "close_epoch": 1708960956,
+      "last_deal": 37,
+      "side": "Long",
+      "volume": 5.16,
+      "open_price": 3052.38,
+      "close_price": 3125.46,
+      "net": 374.51,
+      "magic": 86270828,
+      "sl": 3034.12,
+      "tp": 3125.42,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "tp 3125.42"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 377.09,
+      "commission": -2.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 38,
+      "open_epoch": 1711209206,
+      "close_epoch": 1711212150,
+      "last_deal": 39,
+      "side": "Short",
+      "volume": 4.27,
+      "open_price": 3403.55,
+      "close_price": 3426.83,
+      "net": -101.54,
+      "magic": 86270828,
+      "sl": 3426.5,
+      "tp": 3311.75,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 3426.50"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -99.4,
+      "commission": -2.14,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 40,
+      "open_epoch": 1713455848,
+      "close_epoch": 1713465340,
+      "last_deal": 41,
+      "side": "Short",
+      "volume": 3.84,
+      "open_price": 3071.82,
+      "close_price": 3052.07,
+      "net": 73.92,
+      "magic": 86270828,
+      "sl": 3097.06,
+      "tp": 2970.86,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 3051.63"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 75.84,
+      "commission": -1.92,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 42,
+      "open_epoch": 1718201737,
+      "close_epoch": 1718248760,
+      "last_deal": 43,
+      "side": "Short",
+      "volume": 3.23,
+      "open_price": 3626.83,
+      "close_price": 3505.5500000000006,
+      "net": 390.11,
+      "magic": 86270828,
+      "sl": 3657.11,
+      "tp": 3505.71,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "tp 3505.71"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 391.73,
+      "commission": -1.62,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 44,
+      "open_epoch": 1734045571,
+      "close_epoch": 1734105064,
+      "last_deal": 45,
+      "side": "Long",
+      "volume": 2.56,
+      "open_price": 3871.98,
+      "close_price": 3903.69,
+      "net": 78.55,
+      "magic": 86270828,
+      "sl": 3832.28,
+      "tp": 4030.78,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 3903.74"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 81.18,
+      "commission": -1.28,
+      "swap": -1.35,
+      "fee": 0.0
+    },
+    {
+      "position_id": 46,
+      "open_epoch": 1734962742,
+      "close_epoch": 1734969222,
+      "last_deal": 47,
+      "side": "Short",
+      "volume": 5.5,
+      "open_price": 3342.05,
+      "close_price": 3267.51,
+      "net": 407.22,
+      "magic": 86270828,
+      "sl": 3360.65,
+      "tp": 3267.65,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "tp 3267.65"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 409.97,
+      "commission": -2.75,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 48,
+      "open_epoch": 1735742825,
+      "close_epoch": 1735760895,
+      "last_deal": 49,
+      "side": "Short",
+      "volume": 5.9,
+      "open_price": 3340.67,
+      "close_price": 3358.7000000000003,
+      "net": -109.33,
+      "magic": 86270828,
+      "sl": 3358.69,
+      "tp": 3268.59,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 3358.69"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.38,
+      "commission": -2.95,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 50,
+      "open_epoch": 1737931957,
+      "close_epoch": 1737932498,
+      "last_deal": 51,
+      "side": "Long",
+      "volume": 5.39,
+      "open_price": 3298.13,
+      "close_price": 3278.4400000000005,
+      "net": -108.83,
+      "magic": 86270828,
+      "sl": 3278.6,
+      "tp": 3376.25,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 3278.60"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.13,
+      "commission": -2.7,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 52,
+      "open_epoch": 1738015355,
+      "close_epoch": 1738101755,
+      "last_deal": 53,
+      "side": "Short",
+      "volume": 1.54,
+      "open_price": 3173.27,
+      "close_price": 3051.16,
+      "net": 187.28,
+      "magic": 86270828,
+      "sl": 3241.31,
+      "tp": 2901.11,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 188.05,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 54,
+      "open_epoch": 1738179571,
+      "close_epoch": 1738179638,
+      "last_deal": 55,
+      "side": "Short",
+      "volume": 2.93,
+      "open_price": 3100.35,
+      "close_price": 3136.55,
+      "net": -107.53,
+      "magic": 86270828,
+      "sl": 3136.48,
+      "tp": 2955.08,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 3136.48"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.06,
+      "commission": -1.47,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 56,
+      "open_epoch": 1738361381,
+      "close_epoch": 1738392330,
+      "last_deal": 57,
+      "side": "Long",
+      "volume": 3.97,
+      "open_price": 3303.01,
+      "close_price": 3276.46,
+      "net": -113.67,
+      "magic": 86270828,
+      "sl": 3276.53,
+      "tp": 3408.93,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 3276.53"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.4,
+      "commission": -1.99,
+      "swap": -6.28,
+      "fee": 0.0
+    },
+    {
+      "position_id": 58,
+      "open_epoch": 1738679552,
+      "close_epoch": 1738679617,
+      "last_deal": 59,
+      "side": "Short",
+      "volume": 4.37,
+      "open_price": 2816.61,
+      "close_price": 2840.3,
+      "net": -105.71,
+      "magic": 86270828,
+      "sl": 2840.25,
+      "tp": 2721.45,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2840.25"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.52,
+      "commission": -2.19,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 60,
+      "open_epoch": 1744118499,
+      "close_epoch": 1744124737,
+      "last_deal": 61,
+      "side": "Short",
+      "volume": 8.01,
+      "open_price": 1579.95,
+      "close_price": 1528.54,
+      "net": 407.78,
+      "magic": 86270828,
+      "sl": 1592.79,
+      "tp": 1528.59,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "tp 1528.59"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 411.79,
+      "commission": -4.01,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 62,
+      "open_epoch": 1746952237,
+      "close_epoch": 1746978871,
+      "last_deal": 63,
+      "side": "Long",
+      "volume": 3.45,
+      "open_price": 2480.75,
+      "close_price": 2449.6,
+      "net": -109.2,
+      "magic": 86270828,
+      "sl": 2449.71,
+      "tp": 2604.91,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2449.71"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -107.47,
+      "commission": -1.73,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 64,
+      "open_epoch": 1753052441,
+      "close_epoch": 1753138841,
+      "last_deal": 65,
+      "side": "Long",
+      "volume": 1.74,
+      "open_price": 3740.11,
+      "close_price": 3764.7,
+      "net": 41.92,
+      "magic": 86270828,
+      "sl": 3679.32,
+      "tp": 3983.27,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 42.79,
+      "commission": -0.87,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 66,
+      "open_epoch": 1760255317,
+      "close_epoch": 1760257594,
+      "last_deal": 67,
+      "side": "Short",
+      "volume": 6.41,
+      "open_price": 3833.31,
+      "close_price": 3850.08,
+      "net": -110.7,
+      "magic": 86270828,
+      "sl": 3849.89,
+      "tp": 3766.99,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 3849.89"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -107.49,
+      "commission": -3.21,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 68,
+      "open_epoch": 1760823059,
+      "close_epoch": 1760851035,
+      "last_deal": 69,
+      "side": "Short",
+      "volume": 5.22,
+      "open_price": 3891.79,
+      "close_price": 3911.93,
+      "net": -107.74,
+      "magic": 86270828,
+      "sl": 3911.91,
+      "tp": 3811.31,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 3911.91"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.13,
+      "commission": -2.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 70,
+      "open_epoch": 1762931342,
+      "close_epoch": 1762935376,
+      "last_deal": 71,
+      "side": "Short",
+      "volume": 10.92,
+      "open_price": 3448.76,
+      "close_price": 3441.21,
+      "net": 76.99,
+      "magic": 86270828,
+      "sl": 3458.28,
+      "tp": 3410.68,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 3441.14"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 82.45,
+      "commission": -5.46,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 72,
+      "open_epoch": 1763617595,
+      "close_epoch": 1763639619,
+      "last_deal": 73,
+      "side": "Short",
+      "volume": 4.87,
+      "open_price": 3041.55,
+      "close_price": 3024.5,
+      "net": 80.59,
+      "magic": 86270828,
+      "sl": 3063.06,
+      "tp": 2955.51,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 3024.34"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 83.03,
+      "commission": -2.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 74,
+      "open_epoch": 1764878885,
+      "close_epoch": 1764950940,
+      "last_deal": 75,
+      "side": "Long",
+      "volume": 2.43,
+      "open_price": 3108.29,
+      "close_price": 3064.72,
+      "net": -108.37,
+      "magic": 86270828,
+      "sl": 3064.73,
+      "tp": 3282.53,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 3064.73"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.87,
+      "commission": -1.22,
+      "swap": -1.28,
+      "fee": 0.0
+    },
+    {
+      "position_id": 76,
+      "open_epoch": 1765254932,
+      "close_epoch": 1765295068,
+      "last_deal": 77,
+      "side": "Long",
+      "volume": 4.9,
+      "open_price": 3110.91,
+      "close_price": 3196.22,
+      "net": 415.57,
+      "magic": 86270828,
+      "sl": 3089.59,
+      "tp": 3196.19,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "tp 3196.19"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 418.02,
+      "commission": -2.45,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 78,
+      "open_epoch": 1766022516,
+      "close_epoch": 1766024020,
+      "last_deal": 79,
+      "side": "Short",
+      "volume": 15.77,
+      "open_price": 2831.52,
+      "close_price": 2838.63,
+      "net": -120.02,
+      "magic": 86270828,
+      "sl": 2838.41,
+      "tp": 2803.96,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2838.41"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.13,
+      "commission": -7.89,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 80,
+      "open_epoch": 1767367268,
+      "close_epoch": 1767453672,
+      "last_deal": 81,
+      "side": "Long",
+      "volume": 2.2,
+      "open_price": 3065.75,
+      "close_price": 3102.81,
+      "net": 76.95,
+      "magic": 86270828,
+      "sl": 3016.82,
+      "tp": 3261.47,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 81.53,
+      "commission": -1.1,
+      "swap": -3.48,
+      "fee": 0.0
+    },
+    {
+      "position_id": 82,
+      "open_epoch": 1769444565,
+      "close_epoch": 1769487133,
+      "last_deal": 83,
+      "side": "Short",
+      "volume": 2.73,
+      "open_price": 2911.49,
+      "close_price": 2950.88,
+      "net": -108.9,
+      "magic": 86270828,
+      "sl": 2950.88,
+      "tp": 2752.48,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2950.88"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -107.53,
+      "commission": -1.37,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 84,
+      "open_epoch": 1770736034,
+      "close_epoch": 1770744758,
+      "last_deal": 85,
+      "side": "Short",
+      "volume": 4.8,
+      "open_price": 2018.24,
+      "close_price": 2040.43,
+      "net": -108.91,
+      "magic": 86270828,
+      "sl": 2040.41,
+      "tp": 1928.66,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2040.41"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.51,
+      "commission": -2.4,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 86,
+      "open_epoch": 1770944791,
+      "close_epoch": 1770953434,
+      "last_deal": 87,
+      "side": "Short",
+      "volume": 7.57,
+      "open_price": 1940.63,
+      "close_price": 1954.18,
+      "net": -106.36,
+      "magic": 86270828,
+      "sl": 1954.13,
+      "tp": 1884.08,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 1954.13"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.57,
+      "commission": -3.79,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 88,
+      "open_epoch": 1772677891,
+      "close_epoch": 1772697165,
+      "last_deal": 89,
+      "side": "Long",
+      "volume": 7.29,
+      "open_price": 2120.91,
+      "close_price": 2106.56,
+      "net": -108.26,
+      "magic": 86270828,
+      "sl": 2106.69,
+      "tp": 2178.74,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2106.69"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.61,
+      "commission": -3.65,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 90,
+      "open_epoch": 1773001961,
+      "close_epoch": 1773007451,
+      "last_deal": 91,
+      "side": "Short",
+      "volume": 10.47,
+      "open_price": 1961.68,
+      "close_price": 1922.13,
+      "net": 408.85,
+      "magic": 86270828,
+      "sl": 1971.81,
+      "tp": 1922.21,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "tp 1922.21"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 414.09,
+      "commission": -5.24,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 92,
+      "open_epoch": 1773422769,
+      "close_epoch": 1773423695,
+      "last_deal": 93,
+      "side": "Long",
+      "volume": 5.12,
+      "open_price": 2131.03,
+      "close_price": 2109.44,
+      "net": -113.1,
+      "magic": 86270828,
+      "sl": 2109.6,
+      "tp": 2215.0,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2109.60"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.54,
+      "commission": -2.56,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 94,
+      "open_epoch": 1775747299,
+      "close_epoch": 1775773036,
+      "last_deal": 95,
+      "side": "Long",
+      "volume": 6.94,
+      "open_price": 2171.39,
+      "close_price": 2233.02,
+      "net": 424.24,
+      "magic": 86270828,
+      "sl": 2156.0,
+      "tp": 2232.95,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "tp 2232.95"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 427.71,
+      "commission": -3.47,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 96,
+      "open_epoch": 1779180120,
+      "close_epoch": 1779185053,
+      "last_deal": 97,
+      "side": "Short",
+      "volume": 15.8,
+      "open_price": 2137.41,
+      "close_price": 2109.18,
+      "net": 438.14,
+      "magic": 86270828,
+      "sl": 2144.44,
+      "tp": 2109.29,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "tp 2109.29"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 446.04,
+      "commission": -7.9,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 98,
+      "open_epoch": 1780272182,
+      "close_epoch": 1780322121,
+      "last_deal": 99,
+      "side": "Short",
+      "volume": 9.04,
+      "open_price": 2008.11,
+      "close_price": 1952.77,
+      "net": 495.75,
+      "magic": 86270828,
+      "sl": 2020.89,
+      "tp": 1956.99,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "tp 1956.99"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 500.27,
+      "commission": -4.52,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 100,
+      "open_epoch": 1782153909,
+      "close_epoch": 1782154537,
+      "last_deal": 101,
+      "side": "Long",
+      "volume": 15.95,
+      "open_price": 1736.66,
+      "close_price": 1728.32,
+      "net": -141.01,
+      "magic": 86270828,
+      "sl": 1728.55,
+      "tp": 1766.3,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 1728.55"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -133.03,
+      "commission": -7.98,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 102,
+      "open_epoch": 1782852451,
+      "close_epoch": 1782868397,
+      "last_deal": 103,
+      "side": "Short",
+      "volume": 19.57,
+      "open_price": 1575.22,
+      "close_price": 1550.88,
+      "net": 466.55,
+      "magic": 86270828,
+      "sl": 1581.3,
+      "tp": 1550.9,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "tp 1550.90"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 476.34,
+      "commission": -9.79,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 104,
+      "open_epoch": 1782918114,
+      "close_epoch": 1782919383,
+      "last_deal": 105,
+      "side": "Short",
+      "volume": 8.58,
+      "open_price": 1601.89,
+      "close_price": 1617.94,
+      "net": -142.0,
+      "magic": 86270828,
+      "sl": 1616.53,
+      "tp": 1544.48,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 1616.53"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -137.71,
+      "commission": -4.29,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 106,
+      "open_epoch": 1785293239,
+      "close_epoch": 1785295802,
+      "last_deal": 107,
+      "side": "Long",
+      "volume": 10.37,
+      "open_price": 1909.09,
+      "close_price": 1897.48,
+      "net": -125.58,
+      "magic": 86270828,
+      "sl": 1897.56,
+      "tp": 1956.51,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 1897.56"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -120.39,
+      "commission": -5.19,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 108,
+      "open_epoch": 1785471281,
+      "close_epoch": 1785481421,
+      "last_deal": 109,
+      "side": "Long",
+      "volume": 18.64,
+      "open_price": 1903.06,
+      "close_price": 1896.3099999999997,
+      "net": -135.14,
+      "magic": 86270828,
+      "sl": 1896.57,
+      "tp": 1929.02,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 1896.57"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -125.82,
+      "commission": -9.32,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 110,
+      "open_epoch": 1785570806,
+      "close_epoch": 1785581392,
+      "last_deal": 111,
+      "side": "Short",
+      "volume": 52.7,
+      "open_price": 1868.35,
+      "close_price": 1866.5400000000002,
+      "net": 69.04,
+      "magic": 86270828,
+      "sl": 1870.62,
+      "tp": 1859.27,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 1866.53"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 95.39,
+      "commission": -26.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 112,
+      "open_epoch": 1786364307,
+      "close_epoch": 1786365303,
+      "last_deal": 113,
+      "side": "Long",
+      "volume": 30.31,
+      "open_price": 1916.39,
+      "close_price": 1912.41,
+      "net": -135.79,
+      "magic": 86270828,
+      "sl": 1912.42,
+      "tp": 1932.27,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 1912.42"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -120.63,
+      "commission": -15.16,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 114,
+      "open_epoch": 1786767677,
+      "close_epoch": 1786798721,
+      "last_deal": 115,
+      "side": "Short",
+      "volume": 44.55,
+      "open_price": 1882.42,
+      "close_price": 1880.36,
+      "net": 69.49,
+      "magic": 86270828,
+      "sl": 1885.09,
+      "tp": 1871.74,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 1880.28"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 91.77,
+      "commission": -22.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 116,
+      "open_epoch": 1787754480,
+      "close_epoch": 1787756581,
+      "last_deal": 117,
+      "side": "Long",
+      "volume": 8.52,
+      "open_price": 2448.77,
+      "close_price": 2434.58,
+      "net": -125.16,
+      "magic": 86270828,
+      "sl": 2434.87,
+      "tp": 2505.12,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2434.87"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -120.9,
+      "commission": -4.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 118,
+      "open_epoch": 1789612704,
+      "close_epoch": 1789621311,
+      "last_deal": 119,
+      "side": "Short",
+      "volume": 7.15,
+      "open_price": 2427.84,
+      "close_price": 2444.4,
+      "net": -121.98,
+      "magic": 86270828,
+      "sl": 2444.27,
+      "tp": 2361.37,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2444.27"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -118.4,
+      "commission": -3.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 120,
+      "open_epoch": 1790090286,
+      "close_epoch": 1790165866,
+      "last_deal": 121,
+      "side": "Long",
+      "volume": 4.67,
+      "open_price": 2739.0,
+      "close_price": 2712.45,
+      "net": -128.79,
+      "magic": 86270828,
+      "sl": 2714.11,
+      "tp": 2839.71,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2714.11"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -123.99,
+      "commission": -2.34,
+      "swap": -2.46,
+      "fee": 0.0
+    },
+    {
+      "position_id": 122,
+      "open_epoch": 1791207042,
+      "close_epoch": 1791210682,
+      "last_deal": 123,
+      "side": "Long",
+      "volume": 15.71,
+      "open_price": 2714.75,
+      "close_price": 2707.29,
+      "net": -125.05,
+      "magic": 86270828,
+      "sl": 2707.37,
+      "tp": 2744.27,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2707.37"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -117.19,
+      "commission": -7.86,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1637682444,
+      "deal": 2,
+      "balance": 9998.55,
+      "net": -1.45
+    },
+    {
+      "epoch": 1637684178,
+      "deal": 3,
+      "balance": 9897.8,
+      "net": -100.75
+    },
+    {
+      "epoch": 1639827634,
+      "deal": 4,
+      "balance": 9896.08,
+      "net": -1.72
+    },
+    {
+      "epoch": 1639865785,
+      "deal": 5,
+      "balance": 9795.4,
+      "net": -100.68
+    },
+    {
+      "epoch": 1643045318,
+      "deal": 6,
+      "balance": 9794.01,
+      "net": -1.39
+    },
+    {
+      "epoch": 1643046088,
+      "deal": 7,
+      "balance": 9695.24,
+      "net": -98.77
+    },
+    {
+      "epoch": 1643123909,
+      "deal": 8,
+      "balance": 9694.37,
+      "net": -0.87
+    },
+    {
+      "epoch": 1643131288,
+      "deal": 9,
+      "balance": 9597.17,
+      "net": -97.2
+    },
+    {
+      "epoch": 1648573598,
+      "deal": 10,
+      "balance": 9596.08,
+      "net": -1.09
+    },
+    {
+      "epoch": 1648590577,
+      "deal": 11,
+      "balance": 9500.08,
+      "net": -96.0
+    },
+    {
+      "epoch": 1655195730,
+      "deal": 12,
+      "balance": 9498.09,
+      "net": -1.99
+    },
+    {
+      "epoch": 1655210490,
+      "deal": 13,
+      "balance": 9573.64,
+      "net": 75.55
+    },
+    {
+      "epoch": 1657936168,
+      "deal": 14,
+      "balance": 9568.36,
+      "net": -5.28
+    },
+    {
+      "epoch": 1657951153,
+      "deal": 15,
+      "balance": 9471.93,
+      "net": -96.43
+    },
+    {
+      "epoch": 1659343435,
+      "deal": 16,
+      "balance": 9467.51,
+      "net": -4.42
+    },
+    {
+      "epoch": 1659350555,
+      "deal": 17,
+      "balance": 9371.7,
+      "net": -95.81
+    },
+    {
+      "epoch": 1659916954,
+      "deal": 18,
+      "balance": 9365.92,
+      "net": -5.78
+    },
+    {
+      "epoch": 1659938718,
+      "deal": 19,
+      "balance": 9742.54,
+      "net": 376.62
+    },
+    {
+      "epoch": 1661329344,
+      "deal": 20,
+      "balance": 9738.68,
+      "net": -3.86
+    },
+    {
+      "epoch": 1661341765,
+      "deal": 21,
+      "balance": 9640.92,
+      "net": -97.76
+    },
+    {
+      "epoch": 1661707474,
+      "deal": 22,
+      "balance": 9634.84,
+      "net": -6.08
+    },
+    {
+      "epoch": 1661727795,
+      "deal": 23,
+      "balance": 10021.77,
+      "net": 386.93
+    },
+    {
+      "epoch": 1663589412,
+      "deal": 24,
+      "balance": 10015.04,
+      "net": -6.73
+    },
+    {
+      "epoch": 1663591201,
+      "deal": 25,
+      "balance": 9914.36,
+      "net": -100.68
+    },
+    {
+      "epoch": 1668159218,
+      "deal": 26,
+      "balance": 9910.75,
+      "net": -3.61
+    },
+    {
+      "epoch": 1668171625,
+      "deal": 27,
+      "balance": 9809.45,
+      "net": -101.3
+    },
+    {
+      "epoch": 1676390499,
+      "deal": 28,
+      "balance": 9806.59,
+      "net": -2.86
+    },
+    {
+      "epoch": 1676461227,
+      "deal": 29,
+      "balance": 9706.32,
+      "net": -100.27
+    },
+    {
+      "epoch": 1698376048,
+      "deal": 30,
+      "balance": 9702.96,
+      "net": -3.36
+    },
+    {
+      "epoch": 1698417103,
+      "deal": 31,
+      "balance": 9605.13,
+      "net": -97.83
+    },
+    {
+      "epoch": 1703772409,
+      "deal": 32,
+      "balance": 9603.36,
+      "net": -1.77
+    },
+    {
+      "epoch": 1703775447,
+      "deal": 33,
+      "balance": 9507.2,
+      "net": -96.16
+    },
+    {
+      "epoch": 1704399695,
+      "deal": 34,
+      "balance": 9503.93,
+      "net": -3.27
+    },
+    {
+      "epoch": 1704400684,
+      "deal": 35,
+      "balance": 9407.68,
+      "net": -96.25
+    },
+    {
+      "epoch": 1708945501,
+      "deal": 36,
+      "balance": 9405.1,
+      "net": -2.58
+    },
+    {
+      "epoch": 1708960956,
+      "deal": 37,
+      "balance": 9782.19,
+      "net": 377.09
+    },
+    {
+      "epoch": 1711209206,
+      "deal": 38,
+      "balance": 9780.05,
+      "net": -2.14
+    },
+    {
+      "epoch": 1711212150,
+      "deal": 39,
+      "balance": 9680.65,
+      "net": -99.4
+    },
+    {
+      "epoch": 1713455848,
+      "deal": 40,
+      "balance": 9678.73,
+      "net": -1.92
+    },
+    {
+      "epoch": 1713465340,
+      "deal": 41,
+      "balance": 9754.57,
+      "net": 75.84
+    },
+    {
+      "epoch": 1718201737,
+      "deal": 42,
+      "balance": 9752.95,
+      "net": -1.62
+    },
+    {
+      "epoch": 1718248760,
+      "deal": 43,
+      "balance": 10144.68,
+      "net": 391.73
+    },
+    {
+      "epoch": 1734045571,
+      "deal": 44,
+      "balance": 10143.4,
+      "net": -1.28
+    },
+    {
+      "epoch": 1734105064,
+      "deal": 45,
+      "balance": 10223.23,
+      "net": 79.83
+    },
+    {
+      "epoch": 1734962742,
+      "deal": 46,
+      "balance": 10220.48,
+      "net": -2.75
+    },
+    {
+      "epoch": 1734969222,
+      "deal": 47,
+      "balance": 10630.45,
+      "net": 409.97
+    },
+    {
+      "epoch": 1735742825,
+      "deal": 48,
+      "balance": 10627.5,
+      "net": -2.95
+    },
+    {
+      "epoch": 1735760895,
+      "deal": 49,
+      "balance": 10521.12,
+      "net": -106.38
+    },
+    {
+      "epoch": 1737931957,
+      "deal": 50,
+      "balance": 10518.42,
+      "net": -2.7
+    },
+    {
+      "epoch": 1737932498,
+      "deal": 51,
+      "balance": 10412.29,
+      "net": -106.13
+    },
+    {
+      "epoch": 1738015355,
+      "deal": 52,
+      "balance": 10411.52,
+      "net": -0.77
+    },
+    {
+      "epoch": 1738101755,
+      "deal": 53,
+      "balance": 10599.57,
+      "net": 188.05
+    },
+    {
+      "epoch": 1738179571,
+      "deal": 54,
+      "balance": 10598.1,
+      "net": -1.47
+    },
+    {
+      "epoch": 1738179638,
+      "deal": 55,
+      "balance": 10492.04,
+      "net": -106.06
+    },
+    {
+      "epoch": 1738361381,
+      "deal": 56,
+      "balance": 10490.05,
+      "net": -1.99
+    },
+    {
+      "epoch": 1738392330,
+      "deal": 57,
+      "balance": 10378.37,
+      "net": -111.68
+    },
+    {
+      "epoch": 1738679552,
+      "deal": 58,
+      "balance": 10376.18,
+      "net": -2.19
+    },
+    {
+      "epoch": 1738679617,
+      "deal": 59,
+      "balance": 10272.66,
+      "net": -103.52
+    },
+    {
+      "epoch": 1744118499,
+      "deal": 60,
+      "balance": 10268.65,
+      "net": -4.01
+    },
+    {
+      "epoch": 1744124737,
+      "deal": 61,
+      "balance": 10680.44,
+      "net": 411.79
+    },
+    {
+      "epoch": 1746952237,
+      "deal": 62,
+      "balance": 10678.71,
+      "net": -1.73
+    },
+    {
+      "epoch": 1746978871,
+      "deal": 63,
+      "balance": 10571.24,
+      "net": -107.47
+    },
+    {
+      "epoch": 1753052441,
+      "deal": 64,
+      "balance": 10570.37,
+      "net": -0.87
+    },
+    {
+      "epoch": 1753138841,
+      "deal": 65,
+      "balance": 10613.16,
+      "net": 42.79
+    },
+    {
+      "epoch": 1760255317,
+      "deal": 66,
+      "balance": 10609.95,
+      "net": -3.21
+    },
+    {
+      "epoch": 1760257594,
+      "deal": 67,
+      "balance": 10502.46,
+      "net": -107.49
+    },
+    {
+      "epoch": 1760823059,
+      "deal": 68,
+      "balance": 10499.85,
+      "net": -2.61
+    },
+    {
+      "epoch": 1760851035,
+      "deal": 69,
+      "balance": 10394.72,
+      "net": -105.13
+    },
+    {
+      "epoch": 1762931342,
+      "deal": 70,
+      "balance": 10389.26,
+      "net": -5.46
+    },
+    {
+      "epoch": 1762935376,
+      "deal": 71,
+      "balance": 10471.71,
+      "net": 82.45
+    },
+    {
+      "epoch": 1763617595,
+      "deal": 72,
+      "balance": 10469.27,
+      "net": -2.44
+    },
+    {
+      "epoch": 1763639619,
+      "deal": 73,
+      "balance": 10552.3,
+      "net": 83.03
+    },
+    {
+      "epoch": 1764878885,
+      "deal": 74,
+      "balance": 10551.08,
+      "net": -1.22
+    },
+    {
+      "epoch": 1764950940,
+      "deal": 75,
+      "balance": 10443.93,
+      "net": -107.15
+    },
+    {
+      "epoch": 1765254932,
+      "deal": 76,
+      "balance": 10441.48,
+      "net": -2.45
+    },
+    {
+      "epoch": 1765295068,
+      "deal": 77,
+      "balance": 10859.5,
+      "net": 418.02
+    },
+    {
+      "epoch": 1766022516,
+      "deal": 78,
+      "balance": 10851.61,
+      "net": -7.89
+    },
+    {
+      "epoch": 1766024020,
+      "deal": 79,
+      "balance": 10739.48,
+      "net": -112.13
+    },
+    {
+      "epoch": 1767367268,
+      "deal": 80,
+      "balance": 10738.38,
+      "net": -1.1
+    },
+    {
+      "epoch": 1767453672,
+      "deal": 81,
+      "balance": 10816.43,
+      "net": 78.05
+    },
+    {
+      "epoch": 1769444565,
+      "deal": 82,
+      "balance": 10815.06,
+      "net": -1.37
+    },
+    {
+      "epoch": 1769487133,
+      "deal": 83,
+      "balance": 10707.53,
+      "net": -107.53
+    },
+    {
+      "epoch": 1770736034,
+      "deal": 84,
+      "balance": 10705.13,
+      "net": -2.4
+    },
+    {
+      "epoch": 1770744758,
+      "deal": 85,
+      "balance": 10598.62,
+      "net": -106.51
+    },
+    {
+      "epoch": 1770944791,
+      "deal": 86,
+      "balance": 10594.83,
+      "net": -3.79
+    },
+    {
+      "epoch": 1770953434,
+      "deal": 87,
+      "balance": 10492.26,
+      "net": -102.57
+    },
+    {
+      "epoch": 1772677891,
+      "deal": 88,
+      "balance": 10488.61,
+      "net": -3.65
+    },
+    {
+      "epoch": 1772697165,
+      "deal": 89,
+      "balance": 10384.0,
+      "net": -104.61
+    },
+    {
+      "epoch": 1773001961,
+      "deal": 90,
+      "balance": 10378.76,
+      "net": -5.24
+    },
+    {
+      "epoch": 1773007451,
+      "deal": 91,
+      "balance": 10792.85,
+      "net": 414.09
+    },
+    {
+      "epoch": 1773422769,
+      "deal": 92,
+      "balance": 10790.29,
+      "net": -2.56
+    },
+    {
+      "epoch": 1773423695,
+      "deal": 93,
+      "balance": 10679.75,
+      "net": -110.54
+    },
+    {
+      "epoch": 1775747299,
+      "deal": 94,
+      "balance": 10676.28,
+      "net": -3.47
+    },
+    {
+      "epoch": 1775773036,
+      "deal": 95,
+      "balance": 11103.99,
+      "net": 427.71
+    },
+    {
+      "epoch": 1779180120,
+      "deal": 96,
+      "balance": 11096.09,
+      "net": -7.9
+    },
+    {
+      "epoch": 1779185053,
+      "deal": 97,
+      "balance": 11542.13,
+      "net": 446.04
+    },
+    {
+      "epoch": 1780272182,
+      "deal": 98,
+      "balance": 11537.61,
+      "net": -4.52
+    },
+    {
+      "epoch": 1780322121,
+      "deal": 99,
+      "balance": 12037.88,
+      "net": 500.27
+    },
+    {
+      "epoch": 1782153909,
+      "deal": 100,
+      "balance": 12029.9,
+      "net": -7.98
+    },
+    {
+      "epoch": 1782154537,
+      "deal": 101,
+      "balance": 11896.87,
+      "net": -133.03
+    },
+    {
+      "epoch": 1782852451,
+      "deal": 102,
+      "balance": 11887.08,
+      "net": -9.79
+    },
+    {
+      "epoch": 1782868397,
+      "deal": 103,
+      "balance": 12363.42,
+      "net": 476.34
+    },
+    {
+      "epoch": 1782918114,
+      "deal": 104,
+      "balance": 12359.13,
+      "net": -4.29
+    },
+    {
+      "epoch": 1782919383,
+      "deal": 105,
+      "balance": 12221.42,
+      "net": -137.71
+    },
+    {
+      "epoch": 1785293239,
+      "deal": 106,
+      "balance": 12216.23,
+      "net": -5.19
+    },
+    {
+      "epoch": 1785295802,
+      "deal": 107,
+      "balance": 12095.84,
+      "net": -120.39
+    },
+    {
+      "epoch": 1785471281,
+      "deal": 108,
+      "balance": 12086.52,
+      "net": -9.32
+    },
+    {
+      "epoch": 1785481421,
+      "deal": 109,
+      "balance": 11960.7,
+      "net": -125.82
+    },
+    {
+      "epoch": 1785570806,
+      "deal": 110,
+      "balance": 11934.35,
+      "net": -26.35
+    },
+    {
+      "epoch": 1785581392,
+      "deal": 111,
+      "balance": 12029.74,
+      "net": 95.39
+    },
+    {
+      "epoch": 1786364307,
+      "deal": 112,
+      "balance": 12014.58,
+      "net": -15.16
+    },
+    {
+      "epoch": 1786365303,
+      "deal": 113,
+      "balance": 11893.95,
+      "net": -120.63
+    },
+    {
+      "epoch": 1786767677,
+      "deal": 114,
+      "balance": 11871.67,
+      "net": -22.28
+    },
+    {
+      "epoch": 1786798721,
+      "deal": 115,
+      "balance": 11963.44,
+      "net": 91.77
+    },
+    {
+      "epoch": 1787754480,
+      "deal": 116,
+      "balance": 11959.18,
+      "net": -4.26
+    },
+    {
+      "epoch": 1787756581,
+      "deal": 117,
+      "balance": 11838.28,
+      "net": -120.9
+    },
+    {
+      "epoch": 1789612704,
+      "deal": 118,
+      "balance": 11834.7,
+      "net": -3.58
+    },
+    {
+      "epoch": 1789621311,
+      "deal": 119,
+      "balance": 11716.3,
+      "net": -118.4
+    },
+    {
+      "epoch": 1790090286,
+      "deal": 120,
+      "balance": 11713.96,
+      "net": -2.34
+    },
+    {
+      "epoch": 1790165866,
+      "deal": 121,
+      "balance": 11587.51,
+      "net": -126.45
+    },
+    {
+      "epoch": 1791207042,
+      "deal": 122,
+      "balance": 11579.65,
+      "net": -7.86
+    },
+    {
+      "epoch": 1791210682,
+      "deal": 123,
+      "balance": 11462.46,
+      "net": -117.19
+    }
+  ],
+  "seconds": 77.1375424861908,
+  "binary_sha256": "66e6cc9e0e13890059434d2c393634164fce31a7e4a136e2ab670355c8af4d83",
+  "report_sha256": "15af147ebac3ebeb03ad956989a45566b5344a99a615ecdd51263a92a258bf21",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

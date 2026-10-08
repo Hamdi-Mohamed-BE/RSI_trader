@@ -1,0 +1,23 @@
+Frozen raw recreation, not an exact reproduction of the unidentified clip.
+Instrument assumed from conversation: Exness USTEC / US100 CFD, not exchange NQ futures.
+Window: 2020-01-01 00:00 UTC to 2024-01-01 00:00 UTC exclusive, covering all of 2020-2023.
+Timeframe H1, using broker UTC-aligned bars. Indicators use full continuous CFD history, not only cash-session bars.
+Bollinger 20-period SMA of close, population standard deviation x2, no horizontal shift.
+ATR14 via native iATR. Initial hard stop = 2 x completed signal-bar ATR from the submission quote.
+Entries: next available tick after a completed H1 candle, while flat and inside 09:30-15:58 America/New_York, Mon-Fri. DST handled explicitly.
+Above upper band => buy; below lower band => sell. A fresh crossing from inside the bands is not required.
+One position at a time. No extra DI, ADX, volume, body, news, or directional filters.
+After a midpoint exit, do not reverse on that same bar. After a stop/TP, next completed qualifying bar may enter again.
+Main variant: no profit target; buy exits after an H1 close at/below its middle band; sell exits after a close at/above middle; alternatively flatten at the first available tick outside the NY session.
+Fixed-target control: same momentum entry/SL, target 2 initial R, no middle-band exit, session end still flattens.
+Contrarian control: lower-band close buys, upper-band close sells; exit after close back to middle in favourable direction, or session end; same initial stop.
+US cash-session clock assumed; scheduled liquidation is at 15:58 NY normally, 12:58 NY on published 13:00 half-days, two minutes before the exchange close because archived quote days often end in that minute. Broker weekday close (minus 60 seconds) wins if earlier. Published 2020-2023 US cash-market holidays/half-days are encoded in CALENDAR.json and independently matched in the compiled source. H1 bars are not re-anchored to 09:30 (first eligible hourly decision is normally 10:00 NY).
+Start flat USD10,000; target risk 1% current equity, broker lots rounded DOWN, skip if below broker minimum. Gross stop sizing excludes costs/slippage.
+150 ms simulated execution delay, native every-tick simulation from historical M1 bars (Model=0); 2020-2023 real-tick archives are not available in this isolated terminal.
+Generated ticks are not authentic historical ticks; stop/target order, fills and session exits are modelling-dependent. Report available native history quality and data gaps.
+Three variants preregistered; no parameter search, no post-2023 testing, no claim of replicating the clip's R totals or random-strategy significance.
+Research-only EA refuses to initialise outside MT5 tester. Only the owned isolated portable research terminal may be started; live terminal remains unchanged.
+Technical repair R2: the initial 16:00 scheduled-close run was rejected due to market-closed execution errors. Its diagnostics are preserved in native/momentum-middle but not accepted as results. All three R2 cases share the same repaired 15:59 clock, set before accepting any performance comparison; this is not parameter optimisation.
+Technical repair R3: R2 still encountered Friday's earlier broker close. R3 reads the broker's native weekday trading-session schedule and flattens 60 seconds before any broker close if earlier than 15:59 NY. The earlier rejected runs are not results; all three R3 cases share this execution repair. Native broker session schedules are exported for audit.
+Technical repair R4: quote archives sometimes contain no 15:59 NY minute, causing unintended overnight/weekend carry in R3. R4 uses a shared 15:58 NY close and generated every-tick mode (Model=0); R3 was actually the faster 1-minute OHLC mode (Model=1). R3 is preliminary diagnostic evidence, not the final comparison. Flag any remaining exits delayed beyond the intended session because of holiday or data gaps; do not hide carryovers.
+Final calendar repair: remaining R4 carryovers were Black Friday half-days. Encode the published US cash-session holiday/early-close schedule, common to all three final cases. All prior revisions are diagnostics, not the accepted comparison. Require zero cross-session-date holdings in the final strategy tests. No trading inputs were chosen for better returns, and no post-2023 strategy data were tested.

@@ -1,0 +1,73 @@
+{
+  "tag": "allrr05-news-pulse-btc-long-1abd36c90f3b",
+  "slug": "news-pulse-btc",
+  "variant": "long-1abd36c90f3b",
+  "inputs": {
+    "InpEnableTrading": "true",
+    "InpEnableBuySide": "true",
+    "InpEnableSellSide": "true",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMagic": "861305",
+    "InpMaxDeviationPoints": "100",
+    "InpUseEconomicCalendar": "true",
+    "InpWatchNFP": "true",
+    "InpWatchCPI": "true",
+    "InpWatchFOMC": "true",
+    "InpPlacementLeadSeconds": "30",
+    "InpMaxQuoteAgeSeconds": "5",
+    "InpCalendarLookaheadDays": "8",
+    "InpCalendarRefreshSeconds": "300",
+    "InpEntryOffsetPrice": "75",
+    "InpStopLossPrice": "75",
+    "InpTrailStartR": "1.5",
+    "InpTrailDistancePrice": "112.5",
+    "InpForceCloseSecondsAfterEvent": "60",
+    "InpTesterServerClockMode": "0",
+    "InpUseDynamicTrailingSL": "false",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpUseAssetEventSpecific": "true",
+    "InpUseMarkovRegimeFilter": "false",
+    "InpTesterFromDateUTC": "20211006",
+    "InpTesterToDateUTC": "20261006",
+    "InpRR05AuditTag": "allrr05-news-pulse-btc-long-1abd36c90f3b"
+  },
+  "start": "2021.10.06",
+  "end_exclusive": "2026.10.06",
+  "model": 4,
+  "delay": 150,
+  "symbol": "BTCUSD",
+  "period": "M1",
+  "build": {
+    "source_sha256": "8f6b53ac9be39c137767589734259f7f8f8e8544a96efdbd5b3663fda1285a9b",
+    "source_copy_sha256": "522d707a487b59a35362437c2c9953a56d2069b1e58f4621712c3491b1897e9f",
+    "audit_sha256": "f232acd6fe94bee98409ec0b5a14c2984461d441d7e413201e06357151b09705",
+    "binary_sha256": "a956060245cc273a987149ace3299b16873d696867c220caf63a24561801c7e8",
+    "callbacks": {
+      "OnInit": true,
+      "OnDeinit": true,
+      "OnTick": true,
+      "OnTimer": true
+    },
+    "patches": [
+      "immutable-utc-calendar-binary-search-v1; timer/callbacks/trading unchanged"
+    ],
+    "production_hashes": {
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Shared\\CalyxAdaptivePortfolio.mqh": "3adaecf62184cdf1568995c92da8e6e39a69bb6392bc8bce735e6f853daee06a",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse EA\\AAA_Final_Common.mqh": "4be16d2124c69817d431019a7c26d7a9cc2a1d7ade30fe0ae86d8cb09821557b",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse EA\\NewsPulseTesterCalendar.mqh": "27664a1372f1eb459d64dce25766d93b7392d5fb36e8140f6205a9a909bc4acb",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse Multi Asset Event EA\\AAA Final News Pulse Multi Asset Event EA.ex5": "b052e1ead0f3d2ef49b977a4f34f87fb076fbc299aecca9074b39370b32c3ff7",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse Multi Asset Event EA\\AAA Final News Pulse Multi Asset Event EA.mq5": "d59045e1d74606bb935780c4c9de59576816bac222f2a93a915376d66f00ee1d",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final News Pulse XAU Event Specific EA\\NewsPulsePlacement.mqh": "cbbde6c421bc345213fa6237191e31d52c6b139a5c2cd809c3098fa740624d25",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\12C News Pulse BTC Two Sided - HARD 1.5 TOTAL.set": "8b9ccfd9147516ce729ca8fb73f35220dbbbeff19a4c7fd6cd6787fb4e0f5770"
+    },
+    "compile": "0 errors, 0 warnings",
+    "tester_only": true,
+    "calendar_search_version": "immutable-utc-calendar-binary-search-v1"
+  }
+}

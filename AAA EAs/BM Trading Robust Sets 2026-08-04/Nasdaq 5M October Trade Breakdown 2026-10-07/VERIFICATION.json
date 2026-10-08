@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "native_raw_deal_rows": 10,
+  "native_positions": 5,
+  "same_binary": true,
+  "only_strategy_input_difference": "InpRequireDIAgreement",
+  "effective_window": [
+    "2026-10-01T00:00:00Z",
+    "2026-10-07T00:00:00Z"
+  ],
+  "current_day_included": false,
+  "history_quality": [
+    "100% real ticks",
+    "100% real ticks"
+  ],
+  "checks": [
+    "raw HTML deal costs/count/times/prices reconcile",
+    "stop modifications monotonic and inside position lifetimes",
+    "report SHA matches",
+    "one DI input changed",
+    "native actual date cutoff independently read from journals"
+  ]
+}

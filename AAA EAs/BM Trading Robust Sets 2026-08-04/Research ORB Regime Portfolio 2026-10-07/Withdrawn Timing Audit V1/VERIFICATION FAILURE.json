@@ -1,0 +1,5 @@
+{
+  "error": "More than one entry per NY day",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Research ORB Regime Portfolio 2026-10-07\\verify.py\", line 82, in <module>\n    try:main()\n        ^^^^^^\n  File \"C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Research ORB Regime Portfolio 2026-10-07\\verify.py\", line 52, in main\n    dates=[str(ny(t['open_epoch']).date()) for t in ledger];check(len(set(dates))==len(dates),'More than one entry per NY day')\n                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Research ORB Regime Portfolio 2026-10-07\\verify.py\", line 11, in check\n    assert value,message;checks+=1\n           ^^^^^\nAssertionError: More than one entry per NY day\n",
+  "checks_completed": 1408
+}

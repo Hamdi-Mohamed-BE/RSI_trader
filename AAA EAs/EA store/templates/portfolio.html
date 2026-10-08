@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Applied EA Portfolio — Calyx{% endblock %}
+{% block title %}Archived Adaptive Portfolio Audit — Calyx{% endblock %}
 {% block content %}
 {% set selected_period = selected_period|default('1y', true) %}
+<div class="mx-auto max-w-7xl px-5 pt-8 lg:px-8"><div class="rounded-2xl border border-amber-300/30 bg-amber-300/[.04] p-5 text-sm leading-7"><strong>Archived adaptive audit.</strong> The topology, settings and release notes below describe earlier configurations, not today’s portfolio selection or installed account. <a href="/portfolios" class="text-mint">Open the current portfolio library →</a></div></div>
 <section class="page-hero">
   <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-20">
     <div class="max-w-4xl"><p class="eyebrow-simple">Recommended adaptive BAT configuration</p><h1 class="page-title">{{ product_count }} EAs with the approved adaptive risk controls.</h1><p class="page-lead">Every listed system keeps its selected compiled EA, symbol, timeframe and recommended SET. The BAT enables the 5% daily closed-loss stop, drawdown taper and loss-streak taper for non-News EAs only. Only gold news remains enabled; it is exempt.</p></div>

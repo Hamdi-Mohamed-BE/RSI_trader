@@ -1,0 +1,69 @@
+{
+  "title": "Roboquant NY Open Range Breakout — reproduction audit",
+  "audit_date": "2026-10-06",
+  "template_url": "https://roboquant.dev/dashboard?section=templates&templateId=d1d8993b-1ffd-419e-97bd-0358bf9d5f1a",
+  "research_strategy_id": "cb3f4965-1936-4bc2-b069-0389e7a81355",
+  "copied_showcase_backtest_id": "a9ddd735-d0a0-4a28-bf28-2fcdcdded4c4",
+  "source_version_visible": "48b6d5f",
+  "fresh_backtest_completed": false,
+  "fresh_backtest_id": null,
+  "reproduction_verdict": "Not yet verified. The visible result is the copied template showcase, not a rerun.",
+  "attempts": [
+    {"fills": "Tick", "outcome": "Blocked: account must upgrade to Starter or above. No purchase made."},
+    {"fills": "OHLCV", "outcome": "Blocked: CME personal/non-professional market-data attestation required. Not accepted on the user's behalf. OHLCV would not reproduce tick fills even if completed."}
+  ],
+  "extraction": {
+    "source": "ny_open_range_breakout.rq",
+    "source_sha256": "610129617431D2E1BC1C722FCC0F31A6B1F53832F4E612FF9078908DD07F597D",
+    "preset": "ny-open-range-breakout-mnq-15m.set",
+    "preset_sha256": "407A76989267433D0A346BF358D3FC26EA0C1E0C334128295AD1D8BA4AEDA2B7",
+    "source_matches_browser_after_line_ending_normalization": true,
+    "preset_matches_browser_after_line_ending_normalization": true,
+    "preset_origin": "Exported through Save .set file from the research copy, with all 20 benchmark parameters unchanged; not claimed byte-identical to the original template attachment.",
+    "format": "Roboquant Rust source and Roboquant parameter preset, not MT5 MQL5 source or a compiled MT5 EA."
+  },
+  "benchmark_settings": {
+    "symbol": "MNQ",
+    "timeframe": "15m",
+    "date_from": "2021-03-25",
+    "date_to_displayed": "2026-09-30",
+    "fills": "Tick",
+    "initial_capital_usd": 10000,
+    "commission_usd_per_contract_per_side": 0.5,
+    "commission_percent": 0,
+    "slippage_percent": 0.005,
+    "leverage": 100,
+    "parameters": {
+      "range_bars": 1, "rr_target": 0.4,
+      "risk_mode": 1, "risk_pct": 1, "risk_usd": 3000,
+      "stop_mode": 1, "atr_stop_mult": 0.4, "atr_period": 14, "max_stop_pts": 0,
+      "use_rvol": true, "min_rvol": 1, "rvol_period": 20,
+      "use_atr_regime": true, "min_atr_pct": 0.1, "max_atr_pct": 0.6,
+      "cutoff_hhmm": 1500, "flat_hhmm": 1555,
+      "one_trade_per_day": true, "allow_long": true, "allow_short": true
+    }
+  },
+  "published_showcase_only": {
+    "return_percent": 1908.98, "net_profit_usd": 190898,
+    "trades": 1340, "wins": 992, "losses": 348,
+    "win_rate_percent_displayed": 74.0, "profit_factor_displayed": 1.22,
+    "sharpe_displayed": 1.37, "sortino_displayed": 1.70, "calmar_displayed": 1.72,
+    "max_drawdown_percent_displayed": 42.1,
+    "drawdown_basis": "Closed-trade equity, not independently verified floating equity drawdown.",
+    "expectancy_usd_displayed": 142.46,
+    "average_win_usd_displayed": 1083.22, "average_loss_usd_displayed": -2539.25,
+    "average_reward_risk_displayed": 0.43,
+    "maximum_winning_streak": 21, "maximum_losing_streak": 6,
+    "longest_underwater_calendar_days_displayed": 316,
+    "yearly": [
+      {"year": 2021, "partial_year": true, "net_usd": 31376.5, "trades": 189, "win_rate_percent_displayed": 75.7, "continuous_account_return_percent": 313.76},
+      {"year": 2022, "partial_year": false, "net_usd": 14620.5, "trades": 243, "win_rate_percent_displayed": 72.4, "continuous_account_return_percent": 35.34},
+      {"year": 2023, "partial_year": false, "net_usd": 26721, "trades": 245, "win_rate_percent_displayed": 73.9, "continuous_account_return_percent": 47.72},
+      {"year": 2024, "partial_year": false, "net_usd": 50082, "trades": 246, "win_rate_percent_displayed": 75.2, "continuous_account_return_percent": 60.55},
+      {"year": 2025, "partial_year": false, "net_usd": 56590.5, "trades": 233, "win_rate_percent_displayed": 74.7, "continuous_account_return_percent": 42.61},
+      {"year": 2026, "partial_year": true, "net_usd": 11507.5, "trades": 184, "win_rate_percent_displayed": 72.3, "continuous_account_return_percent": 6.08}
+    ]
+  },
+  "production_changes": false,
+  "git_push_performed": false
+}

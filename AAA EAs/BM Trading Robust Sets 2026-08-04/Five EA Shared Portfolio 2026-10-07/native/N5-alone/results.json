@@ -1,0 +1,57 @@
+{
+  "manifest": {
+    "tag": "N5-alone",
+    "index": 3,
+    "primary_symbol": "USTEC",
+    "period": "M5",
+    "start": "2026-07-07",
+    "end_exclusive": "2026-10-07",
+    "model": 4,
+    "delay_ms": 150,
+    "deposit": 10000,
+    "production": false,
+    "binary_sha256": "06b9bd22b68a0f75c7e0aabee1fe4880489b3771f1ade273142483ba22707596",
+    "config_sha256": "b82fb1734da3f8ca8a7cb10087aa3d216d12e0f39917f558df268a29e10e383b",
+    "inputs": {
+      "InpCase": "3"
+    }
+  },
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10539.9,
+    "net_profit": 539.9,
+    "return_pct": 5.4,
+    "profit_factor": 1.25,
+    "win_rate_pct": 52.27,
+    "max_drawdown_pct": 6.55,
+    "trades": 44,
+    "sharpe_ratio": 2.38,
+    "recovery_factor": 0.79,
+    "history_quality": "100% real ticks",
+    "floating_dd_relative_pct": 6.55,
+    "balance_dd_relative_pct": 5.63
+  },
+  "seconds": 80.8,
+  "warnings": {
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 0,
+    "not_enough_money": 0,
+    "entry_reject": 0,
+    "hourly_close_reject": 0
+  },
+  "report_sha256": "a1ee8db0d6af82264c69de8fe0562a6c29927545c5347903ff192a73c6819662",
+  "tick_notes": [
+    "CS\t0\t19:22:26.499\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "CS\t0\t19:22:29.935\tTicks\tUS30 : real ticks begin from 2026.01.01 00:00:00",
+    "CS\t0\t19:22:32.091\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "OE\t0\t19:22:34.926\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "OK\t0\t19:22:34.926\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "RR\t0\t19:22:34.926\tCore 01\tUS30 : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "audit": [
+    "FIVE_COMPLETE case=3 balance=10539.9 measured_dd=6.605311274912107 max_positions=1 H30attempted=0 H30accepted=0 H100attempted=0 H100accepted=0",
+    "FIVE_COMPLETE case=3 balance=10539.9 measured_dd=6.605311274912107 max_positions=1 H30attempted=0 H30accepted=0 H100attempted=0 H100accepted=0"
+  ],
+  "raw_deals": 88
+}

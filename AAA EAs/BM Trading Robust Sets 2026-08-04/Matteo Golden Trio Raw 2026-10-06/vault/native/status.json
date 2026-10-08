@@ -1,0 +1,66 @@
+{
+  "ok": true,
+  "from": "2023.10.06",
+  "end_exclusive": "2026.10.06",
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 12785.3,
+    "net_profit": 2785.3,
+    "return_pct": 27.85,
+    "profit_factor": 1.13,
+    "win_rate_pct": 64.75,
+    "max_drawdown_pct": 14.24,
+    "trades": 712,
+    "sharpe_ratio": 7.92,
+    "recovery_factor": 1.84,
+    "history_quality": "25% real ticks",
+    "equity_drawdown_relative_pct": 14.24
+  },
+  "elapsed_seconds": 100.5416419506073,
+  "inputs": {
+    "InpRiskPct": "1.0",
+    "InpDailyATRPeriod": "14",
+    "InpATRMeanSessions": "15",
+    "InpNoiseFraction": "0.30",
+    "InpADXPeriod": "14",
+    "InpADXMinimum": "20.0",
+    "InpVaultStopPoints": "75.0",
+    "InpVaultTargetPoints": "40.0",
+    "InpPullbackMaxTrades": "1",
+    "InpPullbackEntryStart": "1000",
+    "InpPullbackEntryEnd": "1430",
+    "InpPullbackStopBars": "20",
+    "InpPullbackTargetBars": "5",
+    "InpOvernightRR": "3.0"
+  },
+  "flags": {
+    "init_failed": 0,
+    "critical": 0,
+    "invalid_volume": 0,
+    "stopout": 0,
+    "margin": 0
+  },
+  "report_sha256": "7375608d147a54af75a87a8e4918d73d927927f45dae328404d201889d6d3116",
+  "build": {
+    "files": {
+      "Golden Trio Engine.mqh": "aa0b66e1ae2b7ea970d5710736f8e263762a9f64f9fc9beff2d045f680219f48",
+      "PROTOCOL.txt": "f86c6e7cd0701cb0d7838a1231746e6228e564cfdd2bd98d7737a0b3ab39eafb",
+      "run-config.json": "a2bf52dca82aaa02ccb0cac251d372966230a87129586e98bfcebd9d76ccafff",
+      "Vault Break.mq5": "837ca4d97222d79486a0c3628fba7fc081e64fdd41ce5120341ffe84c2ac4084",
+      "Vault Break 1pct.set": "c6ca1ca73fd05302267cf17953bed5f0fa5fa65afa5517328dc2dd4b442e1eab",
+      "VWAP Pullback ADX.mq5": "075c8c7f4ab0a2c686ad505d6a8584bc7e13719fcd3e52f115bae2167a1e01ed",
+      "VWAP Pullback ADX 1pct.set": "c6ca1ca73fd05302267cf17953bed5f0fa5fa65afa5517328dc2dd4b442e1eab",
+      "Overnight Bias ORB.mq5": "6acf12adee85cbc200935ad7fdf22184a48a421415d2166e419c263d19194ebd",
+      "Overnight Bias ORB 1pct.set": "c6ca1ca73fd05302267cf17953bed5f0fa5fa65afa5517328dc2dd4b442e1eab"
+    },
+    "binaries": {
+      "Vault Break": "e115a476e065b37749f1d8e9b23b21a5377e286e564ecb06ff7b623cc5fdf5c7",
+      "VWAP Pullback ADX": "14184cd8849b974dd94745ffc1ba00057beefcbaf989ed7fbba0786ff413d7b6",
+      "Overnight Bias ORB": "e8521b8b5841ecc6fc63fd02aa2e333da534e92e90aa3671e348785813b7ec31"
+    }
+  },
+  "broker_stop_rejections": 0,
+  "real_tick_notes": [
+    "USTEC : real ticks begin from 2026.01.01 00:00:00"
+  ]
+}

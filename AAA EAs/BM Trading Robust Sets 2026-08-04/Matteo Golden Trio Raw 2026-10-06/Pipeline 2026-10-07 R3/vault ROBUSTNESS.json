@@ -1,0 +1,328 @@
+{
+  "metrics": {
+    "trades": 121,
+    "wins": 67,
+    "losses": 54,
+    "flat": 0,
+    "net": 24.27999999999999,
+    "return_pct": 0.2427999999999999,
+    "pf": 1.035655545112782,
+    "win_rate": 55.371900826446286,
+    "closed_balance_dd": 1.8278700793294442,
+    "daily_balance_sharpe": 0.08274196340317547,
+    "win_streak": 7,
+    "loss_streak": 6,
+    "avg_win": 10.525970149253732,
+    "avg_loss": -12.61037037037037,
+    "commission": -13.32,
+    "swap": 0.0,
+    "trades_per_month": 5.045119863013699,
+    "trades_per_weekday": 0.23180076628352492,
+    "equity_dd": 2.035889843763996,
+    "daily_calendar_sharpe": 0.0842292328583119,
+    "daily_balance_sharpe_basis": "weekday/252 legacy comparison; calendar/365 additionally includes weekend cash flows"
+  },
+  "exit_mix": {
+    "zero_gross_SL_exits_with_net_loss": 0,
+    "longest_net_loss_streak": 6,
+    "streak_net_cash": -13.309999999999999,
+    "streak_opening_balance": 9967.829999999998,
+    "streak_loss_pct_of_opening_balance": 0.13352956460934828,
+    "streak_zero_gross_SL_exits": 0,
+    "scope": "Net-position win rate and streaks include fees. Zero-gross SL exits are counted separately, never relabelled as wins. Streak percentage is reconstructed closing balance, not native intraday equity."
+  },
+  "sharpe": {
+    "annualized_sharpe": 0.08422923285831194,
+    "probabilistic_sharpe_pct": 54.69797726492782,
+    "deflated_sharpe_pct": 0.14564670293676918,
+    "multiple_test_benchmark_sharpe": 2.208457418916352,
+    "daily_skewness": -3.796413230354532,
+    "daily_kurtosis": 65.96799928722062
+  },
+  "monte_carlo": {
+    "probability_profit_pct": 55.65,
+    "return_p05_pct": -3.5177245267016963,
+    "return_p50_pct": 0.3101362564202903,
+    "return_p95_pct": 3.9331570298397462,
+    "max_drawdown_p50_pct": 2.1022615572511336,
+    "max_drawdown_p95_pct": 4.652072932747306,
+    "closed_pnl_total_breach_pct": 0.0,
+    "closed_pnl_daily_breach_pct": 0.0,
+    "paths": 10000,
+    "block_length": 5,
+    "profit_factor_p05": 0.6516135703062096,
+    "profit_factor_p50": 1.046937684521629,
+    "profit_factor_p95": 1.813149184825861,
+    "scope": "calendar-day closing balance bootstrap; trade-block PF separately; not native equity/rule pass probability",
+    "missed_trade_stress": {
+      "0.1": {
+        "probability_profit_pct": 55.730000000000004,
+        "return_p05_pct": -3.120252748766119,
+        "return_p50_pct": 0.294537595879385,
+        "return_p95_pct": 3.465488738378019,
+        "max_drawdown_p50_pct": 1.9366763787418306,
+        "max_drawdown_p95_pct": 4.147756470018181,
+        "closed_pnl_total_breach_pct": 0.0,
+        "closed_pnl_daily_breach_pct": 0.0
+      },
+      "0.2": {
+        "probability_profit_pct": 55.279999999999994,
+        "return_p05_pct": -2.9898756419591566,
+        "return_p50_pct": 0.2618191492767319,
+        "return_p95_pct": 3.300336824614612,
+        "max_drawdown_p50_pct": 1.8037964048412791,
+        "max_drawdown_p95_pct": 3.9944040702258743,
+        "closed_pnl_total_breach_pct": 0.0,
+        "closed_pnl_daily_breach_pct": 0.0
+      }
+    },
+    "reshuffle": {
+      "probability_profit_pct": 100.0,
+      "return_p05_pct": 0.24279999999989865,
+      "return_p50_pct": 0.24279999999998747,
+      "return_p95_pct": 0.2428000000000985,
+      "max_drawdown_p50_pct": 2.131006092977872,
+      "max_drawdown_p95_pct": 3.199918781411657,
+      "closed_pnl_total_breach_pct": 0.0,
+      "closed_pnl_daily_breach_pct": 0.0,
+      "max_win_streak_p50": 7.0,
+      "max_loss_streak_p50": 5.0,
+      "max_loss_streak_p95": 8.0
+    },
+    "reshuffle_note": "Compounded normalized closing-trade returns; preserves the observed sign/count sample, not changing regimes."
+  },
+  "cost_stress": {
+    "status": "measured",
+    "fill_quote_rows": 242,
+    "mean_roundtrip_spread_cash": 0.27770330578509445,
+    "mean_roundtrip_commission_cash": 0.11008264462809919,
+    "mean_adverse_entry_slippage_cash": 0.027078512396675695,
+    "scenarios": [
+      {
+        "extra_recorded_roundtrip_cost_multiple": 1,
+        "mean_extra_cash_per_position": 0.4148644628098693,
+        "net": -25.91859999999422,
+        "return_pct": -0.2591859999999422,
+        "pf": 0.9631736743476231,
+        "win_rate": 50.413223140495866
+      },
+      {
+        "extra_recorded_roundtrip_cost_multiple": 2,
+        "mean_extra_cash_per_position": 0.8297289256197387,
+        "net": -76.11719999998837,
+        "return_pct": -0.7611719999998837,
+        "pf": 0.8957216350221751,
+        "win_rate": 47.93388429752066
+      }
+    ],
+    "zero_spread_warning": false,
+    "scope": "Extra 1x/2x recorded fill-time spread + commissions + adverse requested-versus-filled entry slippage, on top of native costs. Zero measured spread is disclosed, not replaced with invented prices. Algebraic stress only; different fills, exit slippage and future costs are not reproduced."
+  },
+  "thirds": [
+    {
+      "part": 1,
+      "start": "2024-10-08T19:30:00",
+      "end": "2025-06-11T19:30:00",
+      "trades": 40,
+      "net_profit": -104.13,
+      "profit_factor": 0.6537540732858949,
+      "win_rate_pct": 57.49999999999999
+    },
+    {
+      "part": 2,
+      "start": "2025-06-13T19:30:00",
+      "end": "2026-03-09T19:30:00",
+      "trades": 41,
+      "net_profit": 82.71,
+      "profit_factor": 1.5865541450960925,
+      "win_rate_pct": 48.78048780487805
+    },
+    {
+      "part": 3,
+      "start": "2026-03-10T19:30:00",
+      "end": "2026-10-05T19:30:00",
+      "trades": 40,
+      "net_profit": 45.699999999999996,
+      "profit_factor": 1.19104552485264,
+      "win_rate_pct": 60.0
+    }
+  ],
+  "recent_half_pf": 1.3494153023722018,
+  "gates": {
+    "older_validation_clean": true,
+    "older_validation_minimum15": true,
+    "older_validation_positive": false,
+    "older_validation_pf_above1": false,
+    "oos_execution_clean": true,
+    "minimum30": true,
+    "positive": true,
+    "pf_above1": true,
+    "bootstrap_p05_positive": false,
+    "bootstrap_pf_p05_above1": false,
+    "bootstrap_probability95": false,
+    "deflated_sharpe95": false,
+    "two_profitable_thirds": true,
+    "recent_half_pf_above1": true,
+    "closed_total_breach_below5": true,
+    "cost_stress_pf_above1": false
+  },
+  "verdict": "WATCH / NOT VALIDATED",
+  "ftmo": {
+    "paths": 10000,
+    "horizon_calendar_days": 365,
+    "closed_pnl_phase1_pass_pct": 0.0,
+    "closed_pnl_phase2_pass_given_phase1_pct": null,
+    "closed_pnl_two_phase_pass_pct": 0.0,
+    "closed_pnl_breach_pct": 0.0,
+    "unfinished_pct": 100.0,
+    "median_calendar_days_to_pass": null,
+    "median_calendar_days_to_funded": null,
+    "phase1_median_days": null,
+    "engine": "Existing app.prop_sim.engine, closed ledger mode, 5-calendar-day blocks",
+    "handover_days": [
+      2,
+      5
+    ],
+    "rules_snapshot": {
+      "status": "official",
+      "checked": "2026-09-29",
+      "sources": [
+        "https://ftmo.com/en/trading-objectives/"
+      ],
+      "notes": "Targets, loss limits and minimum days read from FTMO's official Trading Objectives page. Standard FTMO Accounts restrict news trading and weekend holding; Swing lifts both."
+    },
+    "scope": "Exploratory daily closing-position-PnL proxy: 10%/5% targets, 4 active days each, 5% daily / 10% static loss. Within-day closing-PnL minimum retained; floating equity, exact CE(S)T resets, entry-commission timing and installed FTMO guards are not replayed. Cached rule snapshot, not a forecast or current-account validation."
+  },
+  "tested_configurations": 576,
+  "multiple_test_note": "Analytic DSR approximation; recorded prior-revision development configurations are included. Correlated trials and earlier informal exposure prevent an untouched institutional-validation claim.",
+  "raw_ftmo_comparison": {
+    "paths": 10000,
+    "horizon_calendar_days": 365,
+    "closed_pnl_phase1_pass_pct": 81.74,
+    "closed_pnl_phase2_pass_given_phase1_pct": 76.07046733545387,
+    "closed_pnl_two_phase_pass_pct": 62.18,
+    "closed_pnl_breach_pct": 7.88,
+    "unfinished_pct": 29.94,
+    "median_calendar_days_to_pass": 213.0,
+    "median_calendar_days_to_funded": 218.0,
+    "phase1_median_days": 144.0,
+    "engine": "Existing app.prop_sim.engine, closed ledger mode, 5-calendar-day blocks",
+    "handover_days": [
+      2,
+      5
+    ],
+    "rules_snapshot": {
+      "status": "official",
+      "checked": "2026-09-29",
+      "sources": [
+        "https://ftmo.com/en/trading-objectives/"
+      ],
+      "notes": "Targets, loss limits and minimum days read from FTMO's official Trading Objectives page. Standard FTMO Accounts restrict news trading and weekend holding; Swing lifts both."
+    },
+    "scope": "Exploratory daily closing-position-PnL proxy: 10%/5% targets, 4 active days each, 5% daily / 10% static loss. Within-day closing-PnL minimum retained; floating equity, exact CE(S)T resets, entry-commission timing and installed FTMO guards are not replayed. Cached rule snapshot, not a forecast or current-account validation."
+  },
+  "raw_monte_carlo_comparison": {
+    "probability_profit_pct": 97.49,
+    "return_p05_pct": 4.999608407558631,
+    "return_p50_pct": 36.10627546496373,
+    "return_p95_pct": 75.67175380146851,
+    "max_drawdown_p50_pct": 9.115272669531944,
+    "max_drawdown_p95_pct": 16.73133959962337,
+    "closed_pnl_total_breach_pct": 6.11,
+    "closed_pnl_daily_breach_pct": 0.0,
+    "paths": 10000,
+    "block_length": 5,
+    "profit_factor_p05": 1.0352911342379518,
+    "profit_factor_p50": 1.2319570750782942,
+    "profit_factor_p95": 1.4759997857178901,
+    "scope": "calendar-day closing balance bootstrap; trade-block PF separately; not native equity/rule pass probability",
+    "missed_trade_stress": {
+      "0.1": {
+        "probability_profit_pct": 97.38,
+        "return_p05_pct": 5.036906062016246,
+        "return_p50_pct": 32.15485490497237,
+        "return_p95_pct": 66.50784099676895,
+        "max_drawdown_p50_pct": 8.890477475139512,
+        "max_drawdown_p95_pct": 15.74006683864288,
+        "closed_pnl_total_breach_pct": 5.34,
+        "closed_pnl_daily_breach_pct": 0.0
+      },
+      "0.2": {
+        "probability_profit_pct": 96.64,
+        "return_p05_pct": 2.6511222111137904,
+        "return_p50_pct": 28.424134064134154,
+        "return_p95_pct": 58.4810085656704,
+        "max_drawdown_p50_pct": 8.466122422647803,
+        "max_drawdown_p95_pct": 15.159451045562498,
+        "closed_pnl_total_breach_pct": 5.08,
+        "closed_pnl_daily_breach_pct": 0.0
+      }
+    },
+    "reshuffle": {
+      "probability_profit_pct": 100.0,
+      "return_p05_pct": 36.0544999999997,
+      "return_p50_pct": 36.05449999999997,
+      "return_p95_pct": 36.05450000000023,
+      "max_drawdown_p50_pct": 8.792903070389634,
+      "max_drawdown_p95_pct": 13.549535923344562,
+      "closed_pnl_total_breach_pct": 1.79,
+      "closed_pnl_daily_breach_pct": 0.0,
+      "max_win_streak_p50": 13.0,
+      "max_loss_streak_p50": 5.0,
+      "max_loss_streak_p95": 7.0
+    },
+    "reshuffle_note": "Compounded normalized closing-trade returns; preserves the observed sign/count sample, not changing regimes."
+  },
+  "five_year_monte_carlo_context": {
+    "probability_profit_pct": 97.39999999999999,
+    "return_p05_pct": 1.2072980457807838,
+    "return_p50_pct": 7.487042053266046,
+    "return_p95_pct": 13.5989646793997,
+    "max_drawdown_p50_pct": 2.1948717013245522,
+    "max_drawdown_p95_pct": 4.320606362780444,
+    "closed_pnl_total_breach_pct": 0.0,
+    "closed_pnl_daily_breach_pct": 0.0,
+    "paths": 10000,
+    "block_length": 5,
+    "profit_factor_p05": 1.0420055909021788,
+    "profit_factor_p50": 1.4912017600429441,
+    "profit_factor_p95": 2.16278034372011,
+    "scope": "calendar-day closing balance bootstrap; trade-block PF separately; not native equity/rule pass probability",
+    "missed_trade_stress": {
+      "0.1": {
+        "probability_profit_pct": 96.56,
+        "return_p05_pct": 0.5968513980893021,
+        "return_p50_pct": 6.718425815257866,
+        "return_p95_pct": 12.830940835677167,
+        "max_drawdown_p50_pct": 2.161441498772332,
+        "max_drawdown_p95_pct": 4.256504870724389,
+        "closed_pnl_total_breach_pct": 0.0,
+        "closed_pnl_daily_breach_pct": 0.0
+      },
+      "0.2": {
+        "probability_profit_pct": 95.66,
+        "return_p05_pct": 0.2672932658329792,
+        "return_p50_pct": 5.903567788612518,
+        "return_p95_pct": 11.644516788208668,
+        "max_drawdown_p50_pct": 2.028679319629767,
+        "max_drawdown_p95_pct": 4.066549483460345,
+        "closed_pnl_total_breach_pct": 0.0,
+        "closed_pnl_daily_breach_pct": 0.0
+      }
+    },
+    "reshuffle": {
+      "probability_profit_pct": 100.0,
+      "return_p05_pct": 7.361499999999888,
+      "return_p50_pct": 7.361500000000065,
+      "return_p95_pct": 7.361500000000243,
+      "max_drawdown_p50_pct": 2.0434139533031748,
+      "max_drawdown_p95_pct": 3.2370524588467626,
+      "closed_pnl_total_breach_pct": 0.0,
+      "closed_pnl_daily_breach_pct": 0.0,
+      "max_win_streak_p50": 10.0,
+      "max_loss_streak_p50": 5.0,
+      "max_loss_streak_p95": 8.0
+    },
+    "reshuffle_note": "Compounded normalized closing-trade returns; preserves the observed sign/count sample, not changing regimes."
+  }
+}

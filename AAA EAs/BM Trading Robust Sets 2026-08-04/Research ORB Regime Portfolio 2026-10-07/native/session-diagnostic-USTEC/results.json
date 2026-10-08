@@ -1,0 +1,108 @@
+[
+  {
+    "index": 0,
+    "parameters": {
+      "module": 0,
+      "range_minutes": 15,
+      "target_r": 2,
+      "stop_atr": 0,
+      "rvol_min": 0,
+      "range_min": 0,
+      "range_max": 0,
+      "markov": 0,
+      "trail_atr": 0,
+      "cutoff": 1200
+    },
+    "stage": "session-diagnostic-USTEC",
+    "start": "2026-01-16",
+    "end": "2026-01-20",
+    "model": 4,
+    "metrics": {
+      "trades": 2,
+      "net": 400.0,
+      "return_pct": 4.0,
+      "pf": null,
+      "win_rate_pct": 100.0,
+      "equity_dd": 1.429859754875564,
+      "balance_dd": 0.0082558978677479,
+      "mt5_sharpe": 0.9257933087384742,
+      "daily_closed_balance_sharpe": 13.603749177196706,
+      "max_win_streak": 2,
+      "max_loss_streak": 0,
+      "average_trade": 200.0,
+      "yearly": [
+        {
+          "year": 2026,
+          "trades": 2,
+          "net": 400.0,
+          "pf": null
+        }
+      ]
+    },
+    "native": {
+      "net": 400.0,
+      "equity_dd": 1.429859754875564,
+      "balance_dd": 0.0082558978677479,
+      "failed_entries": 0.0,
+      "failed_updates": 3058.0,
+      "market_closed_updates": 0.0,
+      "balance": 10400.0,
+      "open_position": 0.0,
+      "last_quote_epoch": 1768867198.0,
+      "ticks": 280369.0,
+      "mt5_sharpe": 0.9257933087384742,
+      "trades": 2.0,
+      "minimum_lot_skips": 0.0,
+      "filter_skips": 0.0
+    },
+    "clean": true,
+    "stop_update_rejections_included": true,
+    "binary_sha256": "1948a67eb3cd3f9861bdbb7c10ba23df485f3e5ec7a3ad16c07aba13a13fef12",
+    "report_sha256": "e618370697b5f0f032a20c7b87ce1d702db72e69ba8da457fd87fdf867115222",
+    "trades": [
+      {
+        "position_id": 2,
+        "open_epoch": 1768575300,
+        "close_epoch": 1768777210,
+        "open_time": "2026-01-16T14:55:00",
+        "close_time": "2026-01-18T23:00:10",
+        "side": "sell",
+        "volume": 0.94,
+        "open_price": 25648.14,
+        "close_price": 25332.97,
+        "profit": 296.26,
+        "commission": -0.59,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": 295.67,
+        "initial_sl": 25754.43,
+        "initial_tp": 25436.4,
+        "exit_reason": 5
+      },
+      {
+        "position_id": 4,
+        "open_epoch": 1768834800,
+        "close_epoch": 1768863602,
+        "open_time": "2026-01-19T15:00:00",
+        "close_time": "2026-01-19T23:00:02",
+        "side": "buy",
+        "volume": 1.36,
+        "open_price": 25188.24,
+        "close_price": 25265.58,
+        "profit": 105.18,
+        "commission": -0.85,
+        "swap": 0.0,
+        "fee": 0.0,
+        "net_profit": 104.33000000000001,
+        "initial_sl": 25111.03,
+        "initial_tp": 25337.62,
+        "exit_reason": 3
+      }
+    ],
+    "live_changes": false,
+    "client_shutdown_recovered": false,
+    "tick_notes": [
+      "USTEC : real ticks begin from 2026.01.01 00:00:00"
+    ]
+  }
+]

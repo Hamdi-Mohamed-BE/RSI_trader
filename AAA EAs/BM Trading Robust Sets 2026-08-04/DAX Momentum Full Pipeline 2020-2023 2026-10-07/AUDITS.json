@@ -1,0 +1,740 @@
+{
+  "2020\u20132023 baseline": {
+    "sharpe": {
+      "annualized_sharpe": 0.6492817075508425,
+      "probabilistic_sharpe_pct": 90.64667326067098,
+      "deflated_sharpe_pct": 7.2280774534892345,
+      "multiple_test_benchmark_sharpe": 1.3673181342896505,
+      "daily_skewness": 1.0141711832312814,
+      "daily_kurtosis": 7.720933219747856
+    },
+    "wilson95_pct": [
+      45.4105793866714,
+      52.760602128041135
+    ],
+    "cost_stress": {
+      "status": "unavailable",
+      "observations": 0
+    },
+    "data_quality": {
+      "history_quality": "0% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:09:11.394\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:09:13.021\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used",
+        "CS\t0\t22:09:16.836\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used",
+        "HM\t0\t22:09:20.286\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "KI\t0\t22:09:20.286\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used",
+        "LO\t0\t22:09:20.286\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "2020\u20132023 candidate": {
+    "sharpe": {
+      "annualized_sharpe": 1.3708592312743257,
+      "probabilistic_sharpe_pct": 99.78378013583212,
+      "deflated_sharpe_pct": 52.99542528368799,
+      "multiple_test_benchmark_sharpe": 1.3347535168912663,
+      "daily_skewness": 1.2103461786352858,
+      "daily_kurtosis": 7.8263034303853045
+    },
+    "wilson95_pct": [
+      50.00599774351252,
+      59.08803207945886
+    ],
+    "cost_stress": {
+      "status": "unavailable",
+      "observations": 0
+    },
+    "data_quality": {
+      "history_quality": "0% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:37:19.959\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:37:21.624\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used",
+        "CS\t0\t22:37:25.538\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used",
+        "IO\t0\t22:37:28.897\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "PO\t0\t22:37:28.897\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used",
+        "QQ\t0\t22:37:28.897\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "OOS candidate": {
+    "metrics": {
+      "trades": 305,
+      "net": 3642.279999999999,
+      "return_pct": 36.42279999999999,
+      "pf": 1.2320454167545318,
+      "win_rate_pct": 54.75409836065573,
+      "equity_dd": 13.57374454418464,
+      "balance_dd": 13.01807361956877,
+      "mt5_sharpe": 1.9184047183559136,
+      "daily_closed_balance_sharpe": 1.022227813545197,
+      "max_win_streak": 7,
+      "max_loss_streak": 6,
+      "average_trade": 11.941901639344259,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 108,
+          "net": 1171.3899999999999,
+          "pf": 1.225717875297228
+        },
+        {
+          "year": 2025,
+          "trades": 108,
+          "net": -65.22000000000008,
+          "pf": 0.988896228599447
+        },
+        {
+          "year": 2026,
+          "trades": 89,
+          "net": 2536.11,
+          "pf": 1.5473882554051168
+        }
+      ]
+    },
+    "wilson95_pct": [
+      49.14356102953149,
+      60.24637000846321
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 20261009,
+      "return_p05_p50_p95": [
+        0.9264709951800292,
+        36.354321609142815,
+        83.93746398033802
+      ],
+      "pf_p05_p50_p95": [
+        1.032894676948029,
+        1.233434017066214,
+        1.471082734172144
+      ],
+      "max_dd_p05_p50_p95": [
+        6.794358940177194,
+        11.091215121691844,
+        19.952004674191734
+      ],
+      "probability_profit_pct": 95.5,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 11.64,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 1.044032619765136,
+      "probabilistic_sharpe_pct": 96.3418525311393,
+      "deflated_sharpe_pct": 16.19421985936719,
+      "multiple_test_benchmark_sharpe": 1.6188389974952915,
+      "daily_skewness": 1.2463563876810808,
+      "daily_kurtosis": 9.873391911942988
+    },
+    "recent_half_pf": 1.426706489132151,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-01-03T09:59:32",
+        "end": "2024-11-28T10:34:34",
+        "trades": 102,
+        "net_profit": 951.2399999999999,
+        "profit_factor": 1.196182521268368,
+        "win_rate_pct": 55.88235294117647
+      },
+      {
+        "part": 2,
+        "start": "2024-11-29T18:55:30",
+        "end": "2025-11-05T20:26:06",
+        "trades": 101,
+        "net_profit": 95.9199999999999,
+        "profit_factor": 1.0173337911343225,
+        "win_rate_pct": 50.495049504950494
+      },
+      {
+        "part": 3,
+        "start": "2025-11-11T23:12:03",
+        "end": "2026-10-06T23:59:52",
+        "trades": 102,
+        "net_profit": 2595.12,
+        "profit_factor": 1.4883589639364994,
+        "win_rate_pct": 57.84313725490197
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 89,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 13.57374454418464,
+    "sampled_minute_dd_pct": 13.52421750115581,
+    "daily_equity_expected_shortfall_95_pct": 1.1668598822272642,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.1662752614749952,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": true,
+      "bootstrap_pf_p05_above_1": true,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": true,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "27% real ticks",
+      "real_tick_notes": [
+        "CD\t0\t22:38:50.077\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "CS\t0\t22:38:39.230\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:38:42.764\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:38:46.792\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "KL\t0\t22:38:50.077\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "RS\t0\t22:38:50.077\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "OOS baseline": {
+    "metrics": {
+      "trades": 472,
+      "net": 3148.880000000001,
+      "return_pct": 31.488800000000012,
+      "pf": 1.112301774820833,
+      "win_rate_pct": 49.78813559322034,
+      "equity_dd": 13.388125670119797,
+      "balance_dd": 12.882305968818688,
+      "mt5_sharpe": 0.9417436500133528,
+      "daily_closed_balance_sharpe": 0.6496780738641105,
+      "max_win_streak": 6,
+      "max_loss_streak": 7,
+      "average_trade": 6.671355932203392,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 166,
+          "net": -319.3000000000001,
+          "pf": 0.9595122192452002
+        },
+        {
+          "year": 2025,
+          "trades": 169,
+          "net": 4453.9,
+          "pf": 1.4617890528446182
+        },
+        {
+          "year": 2026,
+          "trades": 137,
+          "net": -985.7199999999999,
+          "pf": 0.9061955189451326
+        }
+      ]
+    },
+    "wilson95_pct": [
+      45.29739766014853,
+      54.28229428074357
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 20261010,
+      "return_p05_p50_p95": [
+        -15.63783687184795,
+        30.765992988992018,
+        112.03790287911944
+      ],
+      "pf_p05_p50_p95": [
+        0.9279100495702569,
+        1.1100997212927486,
+        1.3281048184081952
+      ],
+      "max_dd_p05_p50_p95": [
+        10.80696390007536,
+        18.16290097901527,
+        32.49348262064169
+      ],
+      "probability_profit_pct": 84.02,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 37.36,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.6420292492300014,
+      "probabilistic_sharpe_pct": 87.69454730049411,
+      "deflated_sharpe_pct": 5.2780911923412885,
+      "multiple_test_benchmark_sharpe": 1.537922540504511,
+      "daily_skewness": 5.193821221279013,
+      "daily_kurtosis": 77.427932042761
+    },
+    "recent_half_pf": 1.0608947673695215,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-01-03T09:59:32",
+        "end": "2024-11-29T19:13:30",
+        "trades": 157,
+        "net_profit": -625.4700000000001,
+        "profit_factor": 0.9172572266149505,
+        "win_rate_pct": 52.22929936305732
+      },
+      {
+        "part": 2,
+        "start": "2024-12-03T19:00:41",
+        "end": "2025-10-29T19:51:39",
+        "trades": 158,
+        "net_profit": 4477.639999999999,
+        "profit_factor": 1.5233235470117434,
+        "win_rate_pct": 51.26582278481012
+      },
+      {
+        "part": 3,
+        "start": "2025-11-03T08:48:32",
+        "end": "2026-10-06T23:59:52",
+        "trades": 157,
+        "net_profit": -703.2899999999998,
+        "profit_factor": 0.9410193490818579,
+        "win_rate_pct": 45.85987261146497
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 137,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 13.388125670119797,
+    "sampled_minute_dd_pct": 13.313080875415551,
+    "daily_equity_expected_shortfall_95_pct": 1.4354059527787875,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.2784865896118274,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": true,
+      "two_of_three_chronological_parts_positive": false,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "27% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:40:05.788\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:40:09.203\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:40:12.933\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "HO\t0\t22:40:16.466\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "OQ\t0\t22:40:16.466\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "PS\t0\t22:40:16.466\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "2024 candidate": {
+    "sharpe": {
+      "annualized_sharpe": 1.0899726809497408,
+      "probabilistic_sharpe_pct": 86.5244390445178,
+      "deflated_sharpe_pct": 4.7052432484778475,
+      "multiple_test_benchmark_sharpe": 2.7425495778464586,
+      "daily_skewness": 0.523453200598681,
+      "daily_kurtosis": 6.25993167106795
+    },
+    "wilson95_pct": [
+      46.15361820505991,
+      64.57585557553391
+    ],
+    "cost_stress": {
+      "status": "unavailable",
+      "observations": 0
+    },
+    "data_quality": {
+      "history_quality": "0% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:41:38.282\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:41:38.823\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used",
+        "CS\t0\t22:41:40.637\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used",
+        "MF\t0\t22:41:46.122\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "MH\t0\t22:41:46.122\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used",
+        "PF\t0\t22:41:46.122\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "2024 baseline": {
+    "sharpe": {
+      "annualized_sharpe": -0.18451975596929354,
+      "probabilistic_sharpe_pct": 42.685733003150425,
+      "deflated_sharpe_pct": 0.1524764601909201,
+      "multiple_test_benchmark_sharpe": 2.780412299206802,
+      "daily_skewness": 0.14887742397710213,
+      "daily_kurtosis": 3.9574639940460266
+    },
+    "wilson95_pct": [
+      45.43764348285193,
+      60.45020043313636
+    ],
+    "cost_stress": {
+      "status": "unavailable",
+      "observations": 0
+    },
+    "data_quality": {
+      "history_quality": "0% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:42:18.072\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:42:18.553\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used",
+        "CS\t0\t22:42:20.321\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used",
+        "HM\t0\t22:42:25.798\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "QI\t0\t22:42:25.798\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used",
+        "RO\t0\t22:42:25.798\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "2025 candidate": {
+    "sharpe": {
+      "annualized_sharpe": 0.002770514183728507,
+      "probabilistic_sharpe_pct": 50.110383034001686,
+      "deflated_sharpe_pct": 0.27553964598867053,
+      "multiple_test_benchmark_sharpe": 2.781953073051673,
+      "daily_skewness": 0.8950291216735821,
+      "daily_kurtosis": 8.18992614286356
+    },
+    "wilson95_pct": [
+      41.62913692842407,
+      60.159108701674924
+    ],
+    "cost_stress": {
+      "status": "unavailable",
+      "observations": 0
+    },
+    "data_quality": {
+      "history_quality": "0% real ticks",
+      "real_tick_notes": [
+        "CD\t0\t22:48:56.214\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used",
+        "CS\t0\t22:48:48.164\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:48:48.874\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used",
+        "CS\t0\t22:48:50.998\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "KJ\t0\t22:48:56.214\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "MO\t0\t22:48:56.214\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "2025 baseline": {
+    "sharpe": {
+      "annualized_sharpe": 1.792661186382534,
+      "probabilistic_sharpe_pct": 99.20085718078458,
+      "deflated_sharpe_pct": 35.605900493640895,
+      "multiple_test_benchmark_sharpe": 2.067227856821551,
+      "daily_skewness": 6.667247763886975,
+      "daily_kurtosis": 81.7344558188398
+    },
+    "wilson95_pct": [
+      42.83532859406722,
+      57.74323629818898
+    ],
+    "cost_stress": {
+      "status": "unavailable",
+      "observations": 0
+    },
+    "data_quality": {
+      "history_quality": "0% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:49:33.294\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:49:34.019\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used",
+        "CS\t0\t22:49:36.071\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "FO\t0\t22:49:41.320\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "LQ\t0\t22:49:41.320\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00, every tick generation used",
+        "PG\t0\t22:49:41.320\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "2026 YTD candidate": {
+    "sharpe": {
+      "annualized_sharpe": 2.176049984743153,
+      "probabilistic_sharpe_pct": 98.27602246743956,
+      "deflated_sharpe_pct": 25.337669141275633,
+      "multiple_test_benchmark_sharpe": 2.8593030172040925,
+      "daily_skewness": 2.025356741199473,
+      "daily_kurtosis": 12.525228850967858
+    },
+    "wilson95_pct": [
+      48.04710436601586,
+      68.109470714272
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 89,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "data_quality": {
+      "history_quality": "99% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:50:24.577\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:50:26.992\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:50:29.327\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "LE\t0\t22:50:34.358\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "OG\t0\t22:50:34.358\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "QO\t0\t22:50:34.358\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "2026 YTD baseline": {
+    "sharpe": {
+      "annualized_sharpe": -0.4945066493736052,
+      "probabilistic_sharpe_pct": 33.594717324057115,
+      "deflated_sharpe_pct": 0.06826944713271832,
+      "multiple_test_benchmark_sharpe": 3.2437706253110528,
+      "daily_skewness": 1.427469552350785,
+      "daily_kurtosis": 8.569913417900082
+    },
+    "wilson95_pct": [
+      37.163542776459884,
+      53.6062205383675
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 137,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "data_quality": {
+      "history_quality": "99% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:51:18.832\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:51:21.153\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:51:23.410\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "CS\t0\t22:51:28.439\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "EO\t0\t22:51:28.439\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "NQ\t0\t22:51:28.439\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "1 year candidate": {
+    "sharpe": {
+      "annualized_sharpe": 2.244185046983054,
+      "probabilistic_sharpe_pct": 99.29583204915076,
+      "deflated_sharpe_pct": 37.327580045972375,
+      "multiple_test_benchmark_sharpe": 2.5396062219138944,
+      "daily_skewness": 1.7725298470941573,
+      "daily_kurtosis": 12.356707367622434
+    },
+    "wilson95_pct": [
+      50.56205421161983,
+      68.42941932813662
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 89,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "data_quality": {
+      "history_quality": "76% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:52:14.063\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:52:16.722\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:52:19.218\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "GI\t0\t22:52:24.081\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "GP\t0\t22:52:24.081\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "RO\t0\t22:52:24.081\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "1 year baseline": {
+    "sharpe": {
+      "annualized_sharpe": -0.06412634780477475,
+      "probabilistic_sharpe_pct": 47.4559001738833,
+      "deflated_sharpe_pct": 0.22406309686802683,
+      "multiple_test_benchmark_sharpe": 2.7919007774640243,
+      "daily_skewness": 1.2651633480464426,
+      "daily_kurtosis": 8.30278809486825
+    },
+    "wilson95_pct": [
+      39.95271880901392,
+      54.84019716068025
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 137,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "data_quality": {
+      "history_quality": "76% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:53:13.021\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:53:15.603\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:53:18.001\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "EG\t0\t22:53:22.881\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "NL\t0\t22:53:22.881\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "NQ\t0\t22:53:22.881\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "6 months candidate": {
+    "sharpe": {
+      "annualized_sharpe": 2.1446122639966867,
+      "probabilistic_sharpe_pct": 94.78635444749285,
+      "deflated_sharpe_pct": 12.4283397803449,
+      "multiple_test_benchmark_sharpe": 3.6678877292044603,
+      "daily_skewness": 1.4267677462287987,
+      "daily_kurtosis": 8.757571731284573
+    },
+    "wilson95_pct": [
+      47.493215951001204,
+      71.91124220512563
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 58,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "data_quality": {
+      "history_quality": "100% real ticks",
+      "real_tick_notes": [
+        "CF\t0\t22:54:19.739\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "CS\t0\t22:54:10.879\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:54:12.383\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:54:14.245\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "NL\t0\t22:54:19.739\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "QO\t0\t22:54:19.739\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "6 months baseline": {
+    "sharpe": {
+      "annualized_sharpe": -0.6400472002993183,
+      "probabilistic_sharpe_pct": 32.885138760190756,
+      "deflated_sharpe_pct": 0.06378145715993933,
+      "multiple_test_benchmark_sharpe": 4.0133329163409535,
+      "daily_skewness": 0.9974764356727233,
+      "daily_kurtosis": 5.718027768813832
+    },
+    "wilson95_pct": [
+      35.659616907557776,
+      55.81536643079179
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 90,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "data_quality": {
+      "history_quality": "100% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:54:55.089\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:54:56.667\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:54:58.464\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "ED\t0\t22:55:03.944\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "GI\t0\t22:55:03.944\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "NO\t0\t22:55:03.944\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "3 months candidate": {
+    "sharpe": {
+      "annualized_sharpe": 1.4102981250886304,
+      "probabilistic_sharpe_pct": 75.91623615064427,
+      "deflated_sharpe_pct": 1.9006748457495781,
+      "multiple_test_benchmark_sharpe": 5.568788978834834,
+      "daily_skewness": 0.1879536852637355,
+      "daily_kurtosis": 4.298513491081635
+    },
+    "wilson95_pct": [
+      45.51356365479487,
+      78.12607919389927
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 30,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "data_quality": {
+      "history_quality": "100% real ticks",
+      "real_tick_notes": [
+        "CD\t0\t22:55:45.469\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "CS\t0\t22:55:37.384\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:55:38.103\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:55:39.696\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "GM\t0\t22:55:45.469\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "JR\t0\t22:55:45.469\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "3 months baseline": {
+    "sharpe": {
+      "annualized_sharpe": -2.848796294625264,
+      "probabilistic_sharpe_pct": 7.958436866826435,
+      "deflated_sharpe_pct": 0.001418363181837634,
+      "multiple_test_benchmark_sharpe": 5.62186242104897,
+      "daily_skewness": -0.012842893239099491,
+      "daily_kurtosis": 3.069984288450476
+    },
+    "wilson95_pct": [
+      28.9687024672703,
+      56.69921129079686
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 45,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "data_quality": {
+      "history_quality": "100% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t22:56:10.663\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:56:11.378\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:56:12.838\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "DF\t0\t22:56:18.650\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "HK\t0\t22:56:18.650\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "KI\t0\t22:56:18.650\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "proof": {
+    "production_unchanged": true,
+    "original_707_trade_parity": true,
+    "holdout_manifests_after_freeze": {
+      "oos-candidate": true,
+      "oos-baseline": true,
+      "2024-candidate": true,
+      "2024-baseline": true,
+      "2025-candidate": true,
+      "2025-baseline": true,
+      "2026-ytd-candidate": true,
+      "2026-ytd-baseline": true,
+      "1-year-candidate": true,
+      "1-year-baseline": true,
+      "6-months-candidate": true,
+      "6-months-baseline": true,
+      "3-months-candidate": true,
+      "3-months-baseline": true
+    }
+  }
+}

@@ -1,0 +1,302 @@
+use rq_sdk::prelude::*;
+
+// New York RTH opens 09:30 ET. The opening range is the first `range_bars`
+// 15-minute bars from 09:30 ET; breakouts are taken after the range completes.
+const OR_START_HHMM: u32 = 930;
+
+#[strategy(name = "NY Open Range Breakout")]
+pub struct NyOpenRangeBreakout {
+    #[param(default = 1, min = 1, max = 4, title = "Opening range bars (15m from 09:30 ET)")]
+    range_bars: i64,
+    #[param(default = 0.4, min = 0.1, max = 5.0, step = 0.1, title = "Target (R multiple)")]
+    rr_target: f64,
+
+    // ---- risk sizing: choose percent-of-equity OR fixed dollars ----
+    #[param(default = 1, options = [0, 1], title = "Risk mode (0 = % equity, 1 = fixed $)")]
+    risk_mode: i64,
+    #[param(default = 1.0, min = 0.1, max = 5.0, step = 0.1, title = "Risk % of equity per trade")]
+    risk_pct: f64,
+    #[param(default = 3000, options = [100, 250, 500, 750, 1000, 1500, 2000, 3000], title = "Fixed $ risk per trade")]
+    risk_usd: f64,
+
+    // ---- stop distance: range-based OR ATR-based ----
+    #[param(default = 1, options = [0, 1], title = "Stop mode (0 = range side, 1 = ATR)")]
+    stop_mode: i64,
+    #[param(default = 0.4, min = 0.1, max = 40.0, step = 0.1, title = "ATR stop multiple")]
+    atr_stop_mult: f64,
+    #[param(default = 14, min = 2, max = 100, title = "ATR period")]
+    atr_period: i64,
+    #[param(default = 0.0, min = 0.0, max = 200.0, title = "Max stop distance in points (0 = no cap)")]
+    max_stop_pts: f64,
+
+    // ---- regime filters ----
+    #[param(default = true, title = "Use RVOL participation filter")]
+    use_rvol: bool,
+    #[param(default = 1.0, min = 0.0, max = 5.0, step = 0.1, title = "Min RVOL (bar volume vs same-bar average)")]
+    min_rvol: f64,
+    #[param(default = 20, min = 2, max = 200, title = "RVOL lookback (bars)")]
+    rvol_period: i64,
+    #[param(default = true, title = "Use ATR volatility regime filter")]
+    use_atr_regime: bool,
+    #[param(default = 0.10, min = 0.0, max = 1.0, step = 0.01, title = "Min ATR% of price (vol floor)")]
+    min_atr_pct: f64,
+    #[param(default = 0.60, min = 0.0, max = 2.0, step = 0.01, title = "Max ATR% of price (vol ceiling)")]
+    max_atr_pct: f64,
+
+    // ---- session windows ----
+    #[param(default = 1500, min = 1000, max = 1559, title = "No new entries at/after HHMM ET")]
+    cutoff_hhmm: i64,
+    #[param(default = 1555, min = 1400, max = 1600, title = "Flat & freeze all at HHMM ET")]
+    flat_hhmm: i64,
+
+    #[param(default = true, title = "One trade per day")]
+    one_trade_per_day: bool,
+    #[param(default = true, title = "Allow longs")]
+    allow_long: bool,
+    #[param(default = true, title = "Allow shorts")]
+    allow_short: bool,
+
+    // ---- state ----
+    atr: Ind,
+    day: u32,
+    or_high: f64,
+    or_low: f64,
+    bars_seen: i64,
+    range_ready: bool,
+    traded: bool,
+    done: bool,
+    prev_day: u32,
+    prev_close: f64,
+    rvol: Rolling<f64>,
+    or_zone: Option<DrawingId>,
+    risk_zone: Option<DrawingId>,
+    target_zone: Option<DrawingId>,
+}
+
+impl Strategy for NyOpenRangeBreakout {
+    fn on_init(&mut self, init: &mut Init) {
+        self.atr = init.add(Atr::new(self.atr_period.max(2) as usize));
+        self.rvol = Rolling::new(self.rvol_period.max(2) as usize);
+    }
+
+    fn on_bar(&mut self, ctx: &mut Ctx, bar: Bar) {
+        let day = bar.time.et_date_num();
+        let hhmm = bar.time.et_hhmm();
+
+        // New exchange date: close out yesterday's drawings and reset the range.
+        if day != self.day {
+            if let Some(id) = self.or_zone.take() { ctx.freeze(id); }
+            if let Some(id) = self.risk_zone.take() { ctx.freeze(id); }
+            if let Some(id) = self.target_zone.take() { ctx.freeze(id); }
+            self.day = day;
+            self.or_high = bar.high;
+            self.or_low = bar.low;
+            self.bars_seen = 0;
+            self.range_ready = false;
+            self.traded = false;
+            self.done = false;
+        }
+
+        // ---- end of NY session: flatten and bound every drawing ----
+        if !self.done && hhmm >= self.flat_hhmm as u32 {
+            if let Some(id) = self.or_zone.take() { ctx.freeze(id); }
+            if let Some(id) = self.risk_zone.take() { ctx.freeze(id); }
+            if let Some(id) = self.target_zone.take() { ctx.freeze(id); }
+            if ctx.position() != 0 {
+                ctx.close_position();
+                ctx.log("flat at session end");
+            }
+            self.done = true;
+            self.prev_day = day;
+            self.prev_close = bar.close;
+            self.rvol.push(bar.volume);
+            return;
+        }
+
+        // ---- build the opening range ----
+        if hhmm >= OR_START_HHMM && self.bars_seen < self.range_bars {
+            if self.bars_seen == 0 {
+                self.or_high = bar.high;
+                self.or_low = bar.low;
+                let t = ctx.time();
+                self.or_zone = Some(
+                    ctx.plot_zone(self.or_high, self.or_low)
+                        .starting_at(t)
+                        .label("NY Opening Range")
+                        .color("#2962ff")
+                        .fill("rgba(41,98,255,0.15)")
+                        .send(),
+                );
+            } else {
+                self.or_high = self.or_high.max(bar.high);
+                self.or_low = self.or_low.min(bar.low);
+                if let Some(id) = self.or_zone {
+                    ctx.update(id, self.or_high, self.or_low);
+                }
+            }
+            self.bars_seen += 1;
+            if self.bars_seen >= self.range_bars {
+                self.range_ready = true;
+                if let Some(id) = self.or_zone.take() { ctx.freeze(id); }
+                ctx.log(&format!(
+                    "range set: {:.2} / {:.2} ({:.2} pts)",
+                    self.or_high, self.or_low, self.or_high - self.or_low
+                ));
+            }
+            self.prev_day = day;
+            self.prev_close = bar.close;
+            self.rvol.push(bar.volume);
+            return;
+        }
+
+        // ---- trade the breakout ----
+        if !self.range_ready || ctx.position() != 0 {
+            self.prev_day = day;
+            self.prev_close = bar.close;
+            self.rvol.push(bar.volume);
+            return;
+        }
+        if self.one_trade_per_day && self.traded { self.prev_day = day; self.rvol.push(bar.volume); return; }
+        if hhmm >= self.cutoff_hhmm as u32 { self.prev_day = day; self.rvol.push(bar.volume); return; }
+
+        let range_hi = self.or_high;
+        let range_lo = self.or_low;
+        if range_hi <= range_lo { self.prev_day = day; self.rvol.push(bar.volume); return; }
+
+        // Breakout direction (close beyond the range edge).
+        let long_sig = self.allow_long && bar.close > range_hi;
+        let short_sig = self.allow_short && bar.close < range_lo;
+
+        // ---- regime gates (only evaluated on a breakout bar) ----
+        let mut ok = long_sig || short_sig;
+
+        if ok && self.use_rvol {
+            let m = self.rvol.mean();
+            let vok = match m {
+                Some(avg) if avg > 0.0 => bar.volume >= self.min_rvol * avg,
+                _ => false,
+            };
+            if !vok {
+                ctx.log(&format!(
+                    "signal blocked: RVOL {:.2} < {:.2}",
+                    match m { Some(a) if a > 0.0 => bar.volume / a, _ => 0.0 },
+                    self.min_rvol
+                ));
+                ok = false;
+            }
+        }
+
+        if ok && self.use_atr_regime {
+            let atr_pct = match ctx.val(self.atr) {
+                Some(a) if bar.close > 0.0 => a / bar.close * 100.0,
+                _ => 0.0,
+            };
+            let vok = atr_pct >= self.min_atr_pct && atr_pct <= self.max_atr_pct;
+            if !vok {
+                ctx.log(&format!(
+                    "signal blocked: ATR% {:.3} outside [{:.3},{:.3}]",
+                    atr_pct, self.min_atr_pct, self.max_atr_pct
+                ));
+                ok = false;
+            }
+        }
+
+        if ok {
+            let atr_now = ctx.val(self.atr).unwrap_or(0.0);
+            if long_sig {
+                self.enter(ctx, true, bar, range_hi, range_lo, atr_now, range_lo);
+            } else {
+                self.enter(ctx, false, bar, range_hi, range_lo, atr_now, range_hi);
+            }
+        }
+
+        self.prev_day = day;
+        self.prev_close = bar.close;
+        self.rvol.push(bar.volume);
+    }
+
+    fn on_trade(&mut self, ctx: &mut Ctx, txn: TradeTxn) {
+        if txn.kind == TxnKind::PositionClosed {
+            if let Some(id) = self.risk_zone.take() { ctx.freeze(id); }
+            if let Some(id) = self.target_zone.take() { ctx.freeze(id); }
+            ctx.log(&format!("exit pnl={:.2}", txn.pnl.unwrap_or(0.0)));
+        }
+    }
+}
+
+impl NyOpenRangeBreakout {
+    fn enter(
+        &mut self,
+        ctx: &mut Ctx,
+        is_long: bool,
+        bar: Bar,
+        range_hi: f64,
+        range_lo: f64,
+        atr_now: f64,
+        range_stop: f64,
+    ) {
+        let entry = bar.close;
+
+        // Stop distance: ATR-based or the far side of the range.
+        let dist = if self.stop_mode == 1 && atr_now > 0.0 {
+            self.atr_stop_mult * atr_now
+        } else {
+            (entry - range_stop).abs()
+        };
+        if dist <= 0.0 { return; }
+        if self.max_stop_pts > 0.0 && dist > self.max_stop_pts {
+            ctx.log(&format!("skip: stop {:.2} pts > cap {:.2}", dist, self.max_stop_pts));
+            return;
+        }
+
+        // Position size: fixed $ risk or % of equity.
+        let mult = ctx.contract().multiplier;
+        let size = if self.risk_mode == 1 {
+            let loss_per_contract = dist * mult;
+            if loss_per_contract > 0.0 {
+                (self.risk_usd / loss_per_contract).floor() as i64
+            } else { 0 }
+        } else {
+            ctx.size_risk_pct(self.risk_pct / 100.0, dist)
+        };
+        if size <= 0 {
+            ctx.log("skip: computed size 0");
+            return;
+        }
+
+        let stop = if is_long { entry - dist } else { entry + dist };
+        let target = if is_long { entry + self.rr_target * dist } else { entry - self.rr_target * dist };
+        let t = ctx.time();
+
+        if is_long {
+            self.risk_zone = Some(
+                ctx.plot_zone(entry, stop).starting_at(t)
+                    .color("#ef4444").fill("rgba(239,68,68,0.15)").send(),
+            );
+            self.target_zone = Some(
+                ctx.plot_zone(target, entry).starting_at(t)
+                    .color("#22c55e").fill("rgba(34,197,94,0.15)").send(),
+            );
+            ctx.log(&format!(
+                "LONG {:.2} > OR {:.2} | stop {:.2} ({:.2} pts) | target {:.2} | size {}",
+                entry, range_hi, stop, dist, target, size
+            ));
+            ctx.buy(size).sl(stop).tp(target).send();
+        } else {
+            self.risk_zone = Some(
+                ctx.plot_zone(stop, entry).starting_at(t)
+                    .color("#ef4444").fill("rgba(239,68,68,0.15)").send(),
+            );
+            self.target_zone = Some(
+                ctx.plot_zone(entry, target).starting_at(t)
+                    .color("#22c55e").fill("rgba(34,197,94,0.15)").send(),
+            );
+            ctx.log(&format!(
+                "SHORT {:.2} < OR {:.2} | stop {:.2} ({:.2} pts) | target {:.2} | size {}",
+                entry, range_lo, stop, dist, target, size
+            ));
+            ctx.sell(size).sl(stop).tp(target).send();
+        }
+        self.traded = true;
+    }
+}

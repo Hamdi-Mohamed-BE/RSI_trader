@@ -1,0 +1,4 @@
+<nav class="pf-period-pills" aria-label="Performance period">
+  {% for key,label in period_labels.items() %}<a href="{{ profile.url }}?period={{ key }}" data-period="{{ key }}" class="{{ 'selected' if selected_period==key else '' }}" {% if selected_period==key %}aria-current="true"{% endif %}>{{ label }}</a>{% endfor %}
+</nav>
+<p class="pf-load-status pf-small" role="status" aria-live="polite"></p>

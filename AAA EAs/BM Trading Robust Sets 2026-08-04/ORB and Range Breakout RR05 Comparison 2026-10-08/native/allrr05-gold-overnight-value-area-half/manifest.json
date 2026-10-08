@@ -1,0 +1,60 @@
+{
+  "tag": "allrr05-gold-overnight-value-area-half",
+  "slug": "gold-overnight-value-area",
+  "variant": "half",
+  "inputs": {
+    "InpEnableTrading": "true",
+    "InpAdaptivePortfolioControls": "false",
+    "InpRiskMode": "0",
+    "InpFixedRiskMoney": "100",
+    "InpAutoServerUTCOffset": "true",
+    "InpWriteAudit": "false",
+    "InpDirectionMode": "0",
+    "InpBins": "64",
+    "InpValueAreaPercent": "70",
+    "InpMinimumProfileBars": "120",
+    "InpRiskPercent": "1.0",
+    "InpServerUTCOffsetHours": "0",
+    "InpExpectedLogin": "0",
+    "InpExpectedServer": "",
+    "InpMagic": "89191901",
+    "InpCase": "gold-overnight-va-live",
+    "InpEntryEndMinute": "960",
+    "InpExitMinute": "960",
+    "InpStopMode": "0",
+    "InpMinimumR": "0",
+    "InpTargetR": "0.5",
+    "InpBreakEvenR": "0",
+    "InpTrailDistanceR": "0",
+    "InpRR05AuditTag": "allrr05-gold-overnight-value-area-half"
+  },
+  "start": "2025.10.06",
+  "end_exclusive": "2026.10.06",
+  "model": 4,
+  "delay": 150,
+  "symbol": "XAUUSD",
+  "period": "M5",
+  "build": {
+    "source_sha256": "5b58e008d46737d59f8efc6ba39c3712b7e3cfa3b6c58accede5a99b08d50135",
+    "source_copy_sha256": "fc693a6a0af2ba7fe41c440efc900a8c772ad3d727ba27fab0e04538131df0ea",
+    "audit_sha256": "f232acd6fe94bee98409ec0b5a14c2984461d441d7e413201e06357151b09705",
+    "binary_sha256": "33799e60d60f3d726a6a66fc125b93077ee2d2f9a524abfba1745302e5d23bd9",
+    "callbacks": {
+      "OnInit": true,
+      "OnDeinit": true,
+      "OnTick": true,
+      "OnTimer": true
+    },
+    "patches": [
+      "Removed only InpTargetR!=0 from approved-raw parameter guard in tester copy."
+    ],
+    "production_hashes": {
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Shared\\CalyxAdaptivePortfolio.mqh": "3adaecf62184cdf1568995c92da8e6e39a69bb6392bc8bce735e6f853daee06a",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gold Overnight Value Area EA\\EA\\Gold Overnight Value Area EA.ex5": "7939971bbe0fba204ea7f08e5a1c95ac0c71675a3131d64f7b190124fd16063e",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gold Overnight Value Area EA\\EA\\Gold Overnight Value Area EA.mq5": "9f0f3d3dd9ecbed6095e2d70cd834f51d3a8a64dccf16c47444550679c8970d5",
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\24 Gold Overnight Value Area - RAW - 1PCT.set": "64e66bb089621087866658f846799ecacaf85396d1604b5ea76a6bdbd7bf93d7"
+    },
+    "compile": "0 errors, 0 warnings",
+    "tester_only": true
+  }
+}

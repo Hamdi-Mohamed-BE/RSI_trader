@@ -1,0 +1,7476 @@
+{
+  "tag": "allrr05-xau-regime-switch-long-202aaccf8ba2",
+  "slug": "xau-regime-switch",
+  "variant": "long-202aaccf8ba2",
+  "window": [
+    "2021.10.06",
+    "2026.10.06"
+  ],
+  "inputs": {
+    "InpRegimeReturnWindow": "40",
+    "InpRegimeThreshold": "0.02",
+    "InpRegimeHistory": "126",
+    "InpRegimeSignalGate": "0.0",
+    "InpSidewaysProbability": "0.50",
+    "InpTrendTimeframe": "16388",
+    "InpTrendStopATR": "1.50",
+    "InpTrendRewardRisk": "6.00",
+    "InpVWAPTimeframe": "5",
+    "InpVWAPSigma": "2.00",
+    "InpMaximumVWAPADX": "20.00",
+    "InpVWAPStopATR": "1.50",
+    "InpVWAPRewardRisk": "3.00",
+    "InpMaximumVWAPTradesPerSession": "1",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMaximumSpreadRiskPercent": "25.00",
+    "InpMaximumDeviationPoints": "100",
+    "InpMagic": "969070101",
+    "InpTesterOnly": "false",
+    "InpDemoOnly": "true",
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpShowStatus": "true",
+    "InpRR05AuditTag": "allrr05-xau-regime-switch-long-202aaccf8ba2"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 19153.57,
+    "net_profit": 9153.57,
+    "return_pct": 91.54,
+    "profit_factor": 1.44,
+    "win_rate_pct": 27.8,
+    "max_drawdown_pct": 18.13,
+    "trades": 205,
+    "sharpe_ratio": 1.74,
+    "recovery_factor": 2.24,
+    "history_quality": "15% real ticks",
+    "equity_dd_pct": 19.47,
+    "balance_dd_pct": 17.35
+  },
+  "metrics": {
+    "trades": 205,
+    "return_pct": 91.53569999999999,
+    "net_profit": 9153.57,
+    "pf": 1.4438684217927618,
+    "wins": 57,
+    "losses": 148,
+    "flat": 0,
+    "win_rate": 27.804878048780488,
+    "equity_dd_pct": 19.47,
+    "balance_dd_pct": 17.35,
+    "sharpe_daily_equity": 0.8735496854989496,
+    "win_streak": 3,
+    "loss_streak": 9,
+    "avg_win": 522.3829824561403,
+    "avg_loss": -139.3395945945946,
+    "partial_positions": 0,
+    "exit_legs": 205,
+    "commission": -158.33,
+    "swap": -2680.62,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1633529100,
+      "close_epoch": 1633531813,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.31,
+      "open_price": 1759.357,
+      "close_price": 1762.629,
+      "net": -103.14,
+      "magic": 969070101,
+      "sl": 1762.617,
+      "tp": 1749.577,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1762.617"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.43,
+      "commission": -1.71,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1633903500,
+      "close_epoch": 1634047135,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 1757.309,
+      "close_price": 1768.545,
+      "net": -101.63,
+      "magic": 969070101,
+      "sl": 1768.541,
+      "tp": 1689.918,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1768.541"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.13,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1634054400,
+      "close_epoch": 1634122399,
+      "last_deal": 7,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 1760.845,
+      "close_price": 1772.479,
+      "net": -105.2,
+      "magic": 969070101,
+      "sl": 1772.477,
+      "tp": 1691.055,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1772.477"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.7,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1634508300,
+      "close_epoch": 1634618284,
+      "last_deal": 9,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 1767.018,
+      "close_price": 1775.88,
+      "net": -98.09,
+      "magic": 969070101,
+      "sl": 1775.873,
+      "tp": 1713.886,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1775.873"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.48,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1634688000,
+      "close_epoch": 1634719135,
+      "last_deal": 11,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 1768.701,
+      "close_price": 1778.739,
+      "net": -100.93,
+      "magic": 969070101,
+      "sl": 1778.737,
+      "tp": 1708.486,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1778.737"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.38,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1634774400,
+      "close_epoch": 1634884719,
+      "last_deal": 13,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 1781.413,
+      "close_price": 1791.795,
+      "net": -104.37,
+      "magic": 969070101,
+      "sl": 1791.779,
+      "tp": 1719.218,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1791.779"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.82,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1635343500,
+      "close_epoch": 1635343634,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 0.34,
+      "open_price": 1793.599,
+      "close_price": 1790.744,
+      "net": -98.94,
+      "magic": 969070101,
+      "sl": 1790.76,
+      "tp": 1802.115,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1790.760"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.07,
+      "commission": -1.87,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1636070400,
+      "close_epoch": 1636555204,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1791.484,
+      "close_price": 1867.822,
+      "net": 597.7,
+      "magic": 969070101,
+      "sl": 1778.762,
+      "tp": 1867.813,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 1867.813"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 610.71,
+      "commission": -0.44,
+      "swap": -12.57,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1636560000,
+      "close_epoch": 1637577864,
+      "last_deal": 19,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1851.949,
+      "close_price": 1838.127,
+      "net": -161.27,
+      "magic": 969070101,
+      "sl": 1838.133,
+      "tp": 1934.844,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1838.133"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.57,
+      "commission": -0.44,
+      "swap": -50.26,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1637582400,
+      "close_epoch": 1637589691,
+      "last_deal": 21,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1842.484,
+      "close_price": 1829.347,
+      "net": -105.53,
+      "magic": 969070101,
+      "sl": 1829.355,
+      "tp": 1921.258,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1829.355"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.09,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1637853000,
+      "close_epoch": 1637859600,
+      "last_deal": 23,
+      "side": "Long",
+      "volume": 0.84,
+      "open_price": 1788.968,
+      "close_price": 1789.6119999999999,
+      "net": 49.48,
+      "magic": 969070101,
+      "sl": 1787.822,
+      "tp": 1792.407,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.1,
+      "commission": -4.62,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1638376200,
+      "close_epoch": 1638377319,
+      "last_deal": 25,
+      "side": "Long",
+      "volume": 0.33,
+      "open_price": 1786.266,
+      "close_price": 1783.233,
+      "net": -101.91,
+      "magic": 969070101,
+      "sl": 1783.255,
+      "tp": 1795.298,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1783.255"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.09,
+      "commission": -1.82,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1638546600,
+      "close_epoch": 1638550800,
+      "last_deal": 27,
+      "side": "Long",
+      "volume": 0.25,
+      "open_price": 1769.593,
+      "close_price": 1780.742,
+      "net": 277.34,
+      "magic": 969070101,
+      "sl": 1765.695,
+      "tp": 1781.286,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 278.72,
+      "commission": -1.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1639581000,
+      "close_epoch": 1639587600,
+      "last_deal": 29,
+      "side": "Short",
+      "volume": 0.35,
+      "open_price": 1769.917,
+      "close_price": 1767.982,
+      "net": 65.8,
+      "magic": 969070101,
+      "sl": 1772.803,
+      "tp": 1761.259,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 67.73,
+      "commission": -1.93,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1639753500,
+      "close_epoch": 1639760400,
+      "last_deal": 31,
+      "side": "Short",
+      "volume": 0.33,
+      "open_price": 1807.276,
+      "close_price": 1806.208,
+      "net": 33.43,
+      "magic": 969070101,
+      "sl": 1810.344,
+      "tp": 1798.074,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 35.25,
+      "commission": -1.82,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 32,
+      "open_epoch": 1640706300,
+      "close_epoch": 1640707226,
+      "last_deal": 33,
+      "side": "Long",
+      "volume": 0.45,
+      "open_price": 1813.038,
+      "close_price": 1810.796,
+      "net": -103.37,
+      "magic": 969070101,
+      "sl": 1810.814,
+      "tp": 1819.711,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1810.814"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.89,
+      "commission": -2.48,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 34,
+      "open_epoch": 1641499200,
+      "close_epoch": 1641813804,
+      "last_deal": 35,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 1788.0,
+      "close_price": 1801.0350000000003,
+      "net": -104.72,
+      "magic": 969070101,
+      "sl": 1801.01,
+      "tp": 1709.939,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1801.010"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.28,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 36,
+      "open_epoch": 1642464000,
+      "close_epoch": 1642496077,
+      "last_deal": 37,
+      "side": "Long",
+      "volume": 0.15,
+      "open_price": 1819.247,
+      "close_price": 1812.565,
+      "net": -101.06,
+      "magic": 969070101,
+      "sl": 1812.568,
+      "tp": 1859.322,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1812.568"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.23,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 38,
+      "open_epoch": 1642636800,
+      "close_epoch": 1643223808,
+      "last_deal": 39,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 1838.658,
+      "close_price": 1827.933,
+      "net": -115.86,
+      "magic": 969070101,
+      "sl": 1827.943,
+      "tp": 1902.95,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1827.943"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.52,
+      "commission": -0.5,
+      "swap": -18.84,
+      "fee": 0.0
+    },
+    {
+      "position_id": 40,
+      "open_epoch": 1643227200,
+      "close_epoch": 1643288413,
+      "last_deal": 41,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1819.607,
+      "close_price": 1806.3829999999998,
+      "net": -118.8,
+      "magic": 969070101,
+      "sl": 1806.384,
+      "tp": 1899.019,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1806.384"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.8,
+      "commission": -0.44,
+      "swap": -12.56,
+      "fee": 0.0
+    },
+    {
+      "position_id": 42,
+      "open_epoch": 1643814300,
+      "close_epoch": 1643815528,
+      "last_deal": 43,
+      "side": "Short",
+      "volume": 0.29,
+      "open_price": 1804.292,
+      "close_price": 1807.6049999999998,
+      "net": -97.68,
+      "magic": 969070101,
+      "sl": 1807.598,
+      "tp": 1794.373,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1807.598"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.08,
+      "commission": -1.6,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 44,
+      "open_epoch": 1644249900,
+      "close_epoch": 1644251428,
+      "last_deal": 45,
+      "side": "Short",
+      "volume": 0.44,
+      "open_price": 1815.792,
+      "close_price": 1817.946,
+      "net": -97.19,
+      "magic": 969070101,
+      "sl": 1817.935,
+      "tp": 1809.362,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1817.935"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.77,
+      "commission": -2.42,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 46,
+      "open_epoch": 1644793500,
+      "close_epoch": 1645675695,
+      "last_deal": 47,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1855.801,
+      "close_price": 1931.563,
+      "net": 555.39,
+      "magic": 969070101,
+      "sl": 1843.179,
+      "tp": 1931.535,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 1931.535"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 606.09,
+      "commission": -0.44,
+      "swap": -50.26,
+      "fee": 0.0
+    },
+    {
+      "position_id": 48,
+      "open_epoch": 1645689600,
+      "close_epoch": 1645715858,
+      "last_deal": 49,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 1945.404,
+      "close_price": 1929.645,
+      "net": -110.7,
+      "magic": 969070101,
+      "sl": 1929.649,
+      "tp": 2039.932,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1929.649"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.31,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 50,
+      "open_epoch": 1645776000,
+      "close_epoch": 1651067135,
+      "last_deal": 51,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 1913.537,
+      "close_price": 1882.664,
+      "net": -247.1,
+      "magic": 969070101,
+      "sl": 1882.671,
+      "tp": 2098.734,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1882.671"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -123.49,
+      "commission": -0.22,
+      "swap": -123.39,
+      "fee": 0.0
+    },
+    {
+      "position_id": 52,
+      "open_epoch": 1652097600,
+      "close_epoch": 1655071500,
+      "last_deal": 53,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 1860.462,
+      "close_price": 1878.232,
+      "net": -106.95,
+      "magic": 969070101,
+      "sl": 1877.542,
+      "tp": 1757.983,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1877.542"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.62,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 54,
+      "open_epoch": 1655179200,
+      "close_epoch": 1655393583,
+      "last_deal": 55,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 1825.428,
+      "close_price": 1845.8370000000002,
+      "net": -102.33,
+      "magic": 969070101,
+      "sl": 1845.809,
+      "tp": 1703.141,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1845.809"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.05,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 56,
+      "open_epoch": 1655438400,
+      "close_epoch": 1657588297,
+      "last_deal": 57,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 1842.2,
+      "close_price": 1725.269,
+      "net": 584.37,
+      "magic": 969070101,
+      "sl": 1861.688,
+      "tp": 1725.271,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 1725.271"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 584.65,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 58,
+      "open_epoch": 1657598400,
+      "close_epoch": 1657725217,
+      "last_deal": 59,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 1733.397,
+      "close_price": 1745.27,
+      "net": -107.36,
+      "magic": 969070101,
+      "sl": 1745.268,
+      "tp": 1662.174,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1745.268"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.86,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 60,
+      "open_epoch": 1657728000,
+      "close_epoch": 1659014911,
+      "last_deal": 61,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 1737.499,
+      "close_price": 1752.744,
+      "net": -107.11,
+      "magic": 969070101,
+      "sl": 1752.735,
+      "tp": 1646.081,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1752.735"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.72,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 62,
+      "open_epoch": 1659024000,
+      "close_epoch": 1659075754,
+      "last_deal": 63,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 1752.989,
+      "close_price": 1766.941,
+      "net": -98.06,
+      "magic": 969070101,
+      "sl": 1766.932,
+      "tp": 1669.328,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1766.932"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.67,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 64,
+      "open_epoch": 1659110400,
+      "close_epoch": 1659442632,
+      "last_deal": 65,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 1765.922,
+      "close_price": 1781.557,
+      "net": -109.84,
+      "magic": 969070101,
+      "sl": 1781.55,
+      "tp": 1672.152,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1781.550"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -109.45,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 66,
+      "open_epoch": 1659456000,
+      "close_epoch": 1659629981,
+      "last_deal": 67,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 1778.091,
+      "close_price": 1790.7219999999998,
+      "net": -101.49,
+      "magic": 969070101,
+      "sl": 1790.688,
+      "tp": 1702.51,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1790.688"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.05,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 68,
+      "open_epoch": 1659643200,
+      "close_epoch": 1662036090,
+      "last_deal": 69,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 1793.55,
+      "close_price": 1697.759,
+      "net": 574.42,
+      "magic": 969070101,
+      "sl": 1809.515,
+      "tp": 1697.763,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 1697.763"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 574.75,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 70,
+      "open_epoch": 1662387000,
+      "close_epoch": 1662388680,
+      "last_deal": 71,
+      "side": "Short",
+      "volume": 0.69,
+      "open_price": 1711.343,
+      "close_price": 1712.791,
+      "net": -103.71,
+      "magic": 969070101,
+      "sl": 1712.776,
+      "tp": 1707.045,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1712.776"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -99.91,
+      "commission": -3.8,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 72,
+      "open_epoch": 1662473400,
+      "close_epoch": 1662477985,
+      "last_deal": 73,
+      "side": "Long",
+      "volume": 0.25,
+      "open_price": 1705.645,
+      "close_price": 1701.724,
+      "net": -99.41,
+      "magic": 969070101,
+      "sl": 1701.745,
+      "tp": 1717.345,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1701.745"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.03,
+      "commission": -1.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 74,
+      "open_epoch": 1662737400,
+      "close_epoch": 1662737838,
+      "last_deal": 75,
+      "side": "Short",
+      "volume": 0.44,
+      "open_price": 1715.89,
+      "close_price": 1718.1049999999998,
+      "net": -99.88,
+      "magic": 969070101,
+      "sl": 1718.096,
+      "tp": 1709.272,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1718.096"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.46,
+      "commission": -2.42,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 76,
+      "open_epoch": 1662994200,
+      "close_epoch": 1662996926,
+      "last_deal": 77,
+      "side": "Short",
+      "volume": 0.33,
+      "open_price": 1729.285,
+      "close_price": 1732.219,
+      "net": -98.64,
+      "magic": 969070101,
+      "sl": 1732.199,
+      "tp": 1720.543,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1732.199"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.82,
+      "commission": -1.82,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 78,
+      "open_epoch": 1663113600,
+      "close_epoch": 1664224413,
+      "last_deal": 79,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 1702.178,
+      "close_price": 1621.406,
+      "net": 645.73,
+      "magic": 969070101,
+      "sl": 1715.638,
+      "tp": 1621.42,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 1621.420"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 646.17,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 80,
+      "open_epoch": 1664236800,
+      "close_epoch": 1664371773,
+      "last_deal": 81,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 1627.674,
+      "close_price": 1644.638,
+      "net": -102.12,
+      "magic": 969070101,
+      "sl": 1644.631,
+      "tp": 1525.93,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1644.631"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.79,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 82,
+      "open_epoch": 1664380800,
+      "close_epoch": 1664806023,
+      "last_deal": 83,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 1658.798,
+      "close_price": 1676.029,
+      "net": -103.71,
+      "magic": 969070101,
+      "sl": 1676.026,
+      "tp": 1555.431,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1676.026"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.38,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 84,
+      "open_epoch": 1664812800,
+      "close_epoch": 1664866106,
+      "last_deal": 85,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 1690.381,
+      "close_price": 1705.687,
+      "net": -107.53,
+      "magic": 969070101,
+      "sl": 1705.675,
+      "tp": 1598.619,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1705.675"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -107.14,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 86,
+      "open_epoch": 1664899200,
+      "close_epoch": 1666228418,
+      "last_deal": 87,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 1725.787,
+      "close_price": 1625.393,
+      "net": 602.03,
+      "magic": 969070101,
+      "sl": 1742.519,
+      "tp": 1625.396,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 1625.396"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 602.36,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 88,
+      "open_epoch": 1666238400,
+      "close_epoch": 1666262430,
+      "last_deal": 89,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 1626.254,
+      "close_price": 1636.764,
+      "net": -105.65,
+      "magic": 969070101,
+      "sl": 1636.733,
+      "tp": 1563.38,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1636.733"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.1,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 90,
+      "open_epoch": 1666324800,
+      "close_epoch": 1666357361,
+      "last_deal": 91,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 1621.63,
+      "close_price": 1634.2679999999998,
+      "net": -114.24,
+      "magic": 969070101,
+      "sl": 1634.266,
+      "tp": 1545.813,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1634.266"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -113.74,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 92,
+      "open_epoch": 1666562700,
+      "close_epoch": 1667572890,
+      "last_deal": 93,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 1660.012,
+      "close_price": 1675.25,
+      "net": -107.06,
+      "magic": 969070101,
+      "sl": 1675.237,
+      "tp": 1568.662,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1675.237"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.67,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 94,
+      "open_epoch": 1667577600,
+      "close_epoch": 1667920170,
+      "last_deal": 95,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 1671.17,
+      "close_price": 1690.489,
+      "net": -116.24,
+      "magic": 969070101,
+      "sl": 1690.483,
+      "tp": 1555.292,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1690.483"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -115.91,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 96,
+      "open_epoch": 1668182400,
+      "close_epoch": 1668993462,
+      "last_deal": 97,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 1763.869,
+      "close_price": 1745.472,
+      "net": -135.83,
+      "magic": 969070101,
+      "sl": 1745.484,
+      "tp": 1874.178,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1745.484"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.38,
+      "commission": -0.33,
+      "swap": -25.12,
+      "fee": 0.0
+    },
+    {
+      "position_id": 98,
+      "open_epoch": 1669248000,
+      "close_epoch": 1669662191,
+      "last_deal": 99,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 1752.465,
+      "close_price": 1740.282,
+      "net": -119.57,
+      "magic": 969070101,
+      "sl": 1740.291,
+      "tp": 1825.506,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1740.291"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -109.65,
+      "commission": -0.5,
+      "swap": -9.42,
+      "fee": 0.0
+    },
+    {
+      "position_id": 100,
+      "open_epoch": 1669665600,
+      "close_epoch": 1670203864,
+      "last_deal": 101,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 1740.436,
+      "close_price": 1805.267,
+      "net": 550.01,
+      "magic": 969070101,
+      "sl": 1729.631,
+      "tp": 1805.264,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 1805.264"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 583.48,
+      "commission": -0.5,
+      "swap": -32.97,
+      "fee": 0.0
+    },
+    {
+      "position_id": 102,
+      "open_epoch": 1670212800,
+      "close_epoch": 1670235740,
+      "last_deal": 103,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1808.739,
+      "close_price": 1794.734,
+      "net": -112.48,
+      "magic": 969070101,
+      "sl": 1794.742,
+      "tp": 1892.724,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1794.742"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.04,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 104,
+      "open_epoch": 1670299200,
+      "close_epoch": 1672820559,
+      "last_deal": 105,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 1772.141,
+      "close_price": 1864.2049999999997,
+      "net": 537.88,
+      "magic": 969070101,
+      "sl": 1756.797,
+      "tp": 1864.205,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 1864.205"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 644.45,
+      "commission": -0.39,
+      "swap": -106.18,
+      "fee": 0.0
+    },
+    {
+      "position_id": 106,
+      "open_epoch": 1672833600,
+      "close_epoch": 1672924540,
+      "last_deal": 107,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 1860.3,
+      "close_price": 1843.556,
+      "net": -128.59,
+      "magic": 969070101,
+      "sl": 1843.591,
+      "tp": 1960.554,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1843.591"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -117.21,
+      "commission": -0.39,
+      "swap": -10.99,
+      "fee": 0.0
+    },
+    {
+      "position_id": 108,
+      "open_epoch": 1672934400,
+      "close_epoch": 1674159085,
+      "last_deal": 109,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 1826.987,
+      "close_price": 1933.251,
+      "net": 593.3,
+      "magic": 969070101,
+      "sl": 1809.277,
+      "tp": 1933.247,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 1933.247"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 637.59,
+      "commission": -0.33,
+      "swap": -43.96,
+      "fee": 0.0
+    },
+    {
+      "position_id": 110,
+      "open_epoch": 1674172800,
+      "close_epoch": 1674482852,
+      "last_deal": 111,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1931.845,
+      "close_price": 1916.9779999999998,
+      "net": -123.57,
+      "magic": 969070101,
+      "sl": 1917.005,
+      "tp": 2020.888,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1917.005"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -118.94,
+      "commission": -0.44,
+      "swap": -4.19,
+      "fee": 0.0
+    },
+    {
+      "position_id": 112,
+      "open_epoch": 1674489600,
+      "close_epoch": 1675152856,
+      "last_deal": 113,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1923.116,
+      "close_price": 1908.462,
+      "net": -151.18,
+      "magic": 969070101,
+      "sl": 1908.478,
+      "tp": 2010.942,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1908.478"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -117.23,
+      "commission": -0.44,
+      "swap": -33.51,
+      "fee": 0.0
+    },
+    {
+      "position_id": 114,
+      "open_epoch": 1675166400,
+      "close_epoch": 1675431402,
+      "last_deal": 115,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 1904.369,
+      "close_price": 1891.99,
+      "net": -135.46,
+      "magic": 969070101,
+      "sl": 1891.994,
+      "tp": 1978.62,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1891.994"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -111.41,
+      "commission": -0.5,
+      "swap": -23.55,
+      "fee": 0.0
+    },
+    {
+      "position_id": 116,
+      "open_epoch": 1675440000,
+      "close_epoch": 1676307445,
+      "last_deal": 117,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 1873.233,
+      "close_price": 1851.173,
+      "net": -131.53,
+      "magic": 969070101,
+      "sl": 1851.184,
+      "tp": 2005.528,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1851.184"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.3,
+      "commission": -0.28,
+      "swap": -20.95,
+      "fee": 0.0
+    },
+    {
+      "position_id": 118,
+      "open_epoch": 1676318400,
+      "close_epoch": 1676446345,
+      "last_deal": 119,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 1852.937,
+      "close_price": 1840.021,
+      "net": -126.16,
+      "magic": 969070101,
+      "sl": 1840.031,
+      "tp": 1930.372,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1840.031"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -116.24,
+      "commission": -0.5,
+      "swap": -9.42,
+      "fee": 0.0
+    },
+    {
+      "position_id": 120,
+      "open_epoch": 1676448000,
+      "close_epoch": 1676620957,
+      "last_deal": 121,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1835.76,
+      "close_price": 1820.9770000000003,
+      "net": -135.45,
+      "magic": 969070101,
+      "sl": 1820.98,
+      "tp": 1924.439,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1820.980"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -118.26,
+      "commission": -0.44,
+      "swap": -16.75,
+      "fee": 0.0
+    },
+    {
+      "position_id": 122,
+      "open_epoch": 1676905800,
+      "close_epoch": 1676906610,
+      "last_deal": 123,
+      "side": "Long",
+      "volume": 0.72,
+      "open_price": 1845.118,
+      "close_price": 1843.658,
+      "net": -109.08,
+      "magic": 969070101,
+      "sl": 1843.682,
+      "tp": 1849.425,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1843.682"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.12,
+      "commission": -3.96,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 124,
+      "open_epoch": 1678894500,
+      "close_epoch": 1678896000,
+      "last_deal": 125,
+      "side": "Short",
+      "volume": 0.23,
+      "open_price": 1925.212,
+      "close_price": 1927.345,
+      "net": -50.33,
+      "magic": 969070101,
+      "sl": 1929.776,
+      "tp": 1911.52,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.06,
+      "commission": -1.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 126,
+      "open_epoch": 1678977300,
+      "close_epoch": 1678980161,
+      "last_deal": 127,
+      "side": "Short",
+      "volume": 0.22,
+      "open_price": 1929.801,
+      "close_price": 1915.7679999999998,
+      "net": 307.51,
+      "magic": 969070101,
+      "sl": 1934.476,
+      "tp": 1915.775,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "tp 1915.775"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 308.72,
+      "commission": -1.21,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 128,
+      "open_epoch": 1679263500,
+      "close_epoch": 1679386022,
+      "last_deal": 129,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 1986.087,
+      "close_price": 1963.9850000000001,
+      "net": -113.41,
+      "magic": 969070101,
+      "sl": 1964.004,
+      "tp": 2118.585,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1964.004"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.51,
+      "commission": -0.28,
+      "swap": -2.62,
+      "fee": 0.0
+    },
+    {
+      "position_id": 130,
+      "open_epoch": 1679529600,
+      "close_epoch": 1679913512,
+      "last_deal": 131,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 1969.917,
+      "close_price": 1951.562,
+      "net": -116.74,
+      "magic": 969070101,
+      "sl": 1951.565,
+      "tp": 2080.029,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1951.565"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.13,
+      "commission": -0.33,
+      "swap": -6.28,
+      "fee": 0.0
+    },
+    {
+      "position_id": 132,
+      "open_epoch": 1679918400,
+      "close_epoch": 1683151287,
+      "last_deal": 133,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 1954.316,
+      "close_price": 2066.683,
+      "net": 557.69,
+      "magic": 969070101,
+      "sl": 1935.591,
+      "tp": 2066.669,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2066.669"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 674.2,
+      "commission": -0.33,
+      "swap": -116.18,
+      "fee": 0.0
+    },
+    {
+      "position_id": 134,
+      "open_epoch": 1683158400,
+      "close_epoch": 1683185481,
+      "last_deal": 135,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2052.121,
+      "close_price": 2033.383,
+      "net": -112.76,
+      "magic": 969070101,
+      "sl": 2033.398,
+      "tp": 2164.458,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2033.398"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.43,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 136,
+      "open_epoch": 1683244800,
+      "close_epoch": 1683289815,
+      "last_deal": 137,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2050.086,
+      "close_price": 2028.304,
+      "net": -109.19,
+      "magic": 969070101,
+      "sl": 2028.374,
+      "tp": 2180.355,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2028.374"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -108.91,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 138,
+      "open_epoch": 1683497100,
+      "close_epoch": 1684254696,
+      "last_deal": 139,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2016.59,
+      "close_price": 1991.704,
+      "net": -145.66,
+      "magic": 969070101,
+      "sl": 1991.71,
+      "tp": 2165.869,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1991.710"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -124.43,
+      "commission": -0.28,
+      "swap": -20.95,
+      "fee": 0.0
+    },
+    {
+      "position_id": 140,
+      "open_epoch": 1684267200,
+      "close_epoch": 1684331797,
+      "last_deal": 141,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 1990.069,
+      "close_price": 1977.703,
+      "net": -116.5,
+      "magic": 969070101,
+      "sl": 1977.723,
+      "tp": 2064.147,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1977.723"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -111.29,
+      "commission": -0.5,
+      "swap": -4.71,
+      "fee": 0.0
+    },
+    {
+      "position_id": 142,
+      "open_epoch": 1684765200,
+      "close_epoch": 1684771200,
+      "last_deal": 143,
+      "side": "Long",
+      "volume": 0.28,
+      "open_price": 1971.457,
+      "close_price": 1972.487,
+      "net": 27.3,
+      "magic": 969070101,
+      "sl": 1967.71,
+      "tp": 1982.699,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 28.84,
+      "commission": -1.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 144,
+      "open_epoch": 1686801600,
+      "close_epoch": 1686836840,
+      "last_deal": 145,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 1934.876,
+      "close_price": 1948.9409999999998,
+      "net": -112.96,
+      "magic": 969070101,
+      "sl": 1948.938,
+      "tp": 1850.502,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1948.938"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.52,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 146,
+      "open_epoch": 1687276800,
+      "close_epoch": 1689165220,
+      "last_deal": 147,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 1935.145,
+      "close_price": 1946.477,
+      "net": -113.87,
+      "magic": 969070101,
+      "sl": 1946.476,
+      "tp": 1867.158,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1946.476"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -113.32,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 148,
+      "open_epoch": 1689258000,
+      "close_epoch": 1689264000,
+      "last_deal": 149,
+      "side": "Short",
+      "volume": 0.33,
+      "open_price": 1959.634,
+      "close_price": 1955.137,
+      "net": 146.58,
+      "magic": 969070101,
+      "sl": 1962.756,
+      "tp": 1950.268,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 148.4,
+      "commission": -1.82,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 150,
+      "open_epoch": 1689344400,
+      "close_epoch": 1689350400,
+      "last_deal": 151,
+      "side": "Long",
+      "volume": 0.25,
+      "open_price": 1953.88,
+      "close_price": 1958.116,
+      "net": 104.52,
+      "magic": 969070101,
+      "sl": 1949.746,
+      "tp": 1966.282,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 105.9,
+      "commission": -1.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 152,
+      "open_epoch": 1689775500,
+      "close_epoch": 1689775890,
+      "last_deal": 153,
+      "side": "Long",
+      "volume": 0.42,
+      "open_price": 1977.132,
+      "close_price": 1974.595,
+      "net": -108.86,
+      "magic": 969070101,
+      "sl": 1974.614,
+      "tp": 1984.687,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1974.614"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.55,
+      "commission": -2.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 154,
+      "open_epoch": 1690212600,
+      "close_epoch": 1690214400,
+      "last_deal": 155,
+      "side": "Long",
+      "volume": 0.38,
+      "open_price": 1960.405,
+      "close_price": 1959.676,
+      "net": -29.79,
+      "magic": 969070101,
+      "sl": 1957.69,
+      "tp": 1968.55,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -27.7,
+      "commission": -2.09,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 156,
+      "open_epoch": 1690553100,
+      "close_epoch": 1690553375,
+      "last_deal": 157,
+      "side": "Short",
+      "volume": 0.32,
+      "open_price": 1956.182,
+      "close_price": 1959.476,
+      "net": -107.17,
+      "magic": 969070101,
+      "sl": 1959.467,
+      "tp": 1946.326,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1959.467"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.41,
+      "commission": -1.76,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 158,
+      "open_epoch": 1690900800,
+      "close_epoch": 1690902918,
+      "last_deal": 159,
+      "side": "Long",
+      "volume": 0.26,
+      "open_price": 1946.749,
+      "close_price": 1942.809,
+      "net": -103.87,
+      "magic": 969070101,
+      "sl": 1942.81,
+      "tp": 1958.566,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1942.810"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.44,
+      "commission": -1.43,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 160,
+      "open_epoch": 1691071800,
+      "close_epoch": 1691078400,
+      "last_deal": 161,
+      "side": "Short",
+      "volume": 0.27,
+      "open_price": 1937.085,
+      "close_price": 1933.184,
+      "net": 103.84,
+      "magic": 969070101,
+      "sl": 1940.881,
+      "tp": 1925.698,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 105.33,
+      "commission": -1.49,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 162,
+      "open_epoch": 1691590200,
+      "close_epoch": 1691593024,
+      "last_deal": 163,
+      "side": "Short",
+      "volume": 0.37,
+      "open_price": 1925.5,
+      "close_price": 1917.289,
+      "net": 301.77,
+      "magic": 969070101,
+      "sl": 1928.235,
+      "tp": 1917.295,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "tp 1917.295"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 303.81,
+      "commission": -2.04,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 164,
+      "open_epoch": 1692108300,
+      "close_epoch": 1692109528,
+      "last_deal": 165,
+      "side": "Short",
+      "volume": 0.31,
+      "open_price": 1903.152,
+      "close_price": 1906.6119999999999,
+      "net": -108.97,
+      "magic": 969070101,
+      "sl": 1906.577,
+      "tp": 1892.876,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1906.577"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -107.26,
+      "commission": -1.71,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 166,
+      "open_epoch": 1692198900,
+      "close_epoch": 1692200677,
+      "last_deal": 167,
+      "side": "Long",
+      "volume": 0.57,
+      "open_price": 1903.931,
+      "close_price": 1902.1080000000002,
+      "net": -107.05,
+      "magic": 969070101,
+      "sl": 1902.112,
+      "tp": 1909.389,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1902.112"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.91,
+      "commission": -3.14,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 168,
+      "open_epoch": 1692281100,
+      "close_epoch": 1692282877,
+      "last_deal": 169,
+      "side": "Long",
+      "volume": 0.34,
+      "open_price": 1896.972,
+      "close_price": 1893.9070000000002,
+      "net": -106.08,
+      "magic": 969070101,
+      "sl": 1893.912,
+      "tp": 1906.152,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1893.912"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.21,
+      "commission": -1.87,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 170,
+      "open_epoch": 1693491300,
+      "close_epoch": 1693497600,
+      "last_deal": 171,
+      "side": "Short",
+      "volume": 0.4,
+      "open_price": 1942.877,
+      "close_price": 1940.758,
+      "net": 82.56,
+      "magic": 969070101,
+      "sl": 1945.423,
+      "tp": 1935.238,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 84.76,
+      "commission": -2.2,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 172,
+      "open_epoch": 1693915200,
+      "close_epoch": 1695125856,
+      "last_deal": 173,
+      "side": "Short",
+      "volume": 0.15,
+      "open_price": 1930.435,
+      "close_price": 1937.2630000000001,
+      "net": -103.25,
+      "magic": 969070101,
+      "sl": 1937.255,
+      "tp": 1889.513,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1937.255"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.42,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 174,
+      "open_epoch": 1695132600,
+      "close_epoch": 1695132938,
+      "last_deal": 175,
+      "side": "Long",
+      "volume": 0.49,
+      "open_price": 1933.348,
+      "close_price": 1931.263,
+      "net": -104.86,
+      "magic": 969070101,
+      "sl": 1931.267,
+      "tp": 1939.591,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1931.267"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.16,
+      "commission": -2.7,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 176,
+      "open_epoch": 1695305100,
+      "close_epoch": 1695312000,
+      "last_deal": 177,
+      "side": "Long",
+      "volume": 0.34,
+      "open_price": 1918.094,
+      "close_price": 1917.4649999999997,
+      "net": -23.26,
+      "magic": 969070101,
+      "sl": 1915.158,
+      "tp": 1926.901,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -21.39,
+      "commission": -1.87,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 178,
+      "open_epoch": 1695391500,
+      "close_epoch": 1695393566,
+      "last_deal": 179,
+      "side": "Short",
+      "volume": 0.54,
+      "open_price": 1927.056,
+      "close_price": 1928.9289999999999,
+      "net": -104.12,
+      "magic": 969070101,
+      "sl": 1928.918,
+      "tp": 1921.471,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1928.918"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.15,
+      "commission": -2.97,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 180,
+      "open_epoch": 1695910200,
+      "close_epoch": 1695913061,
+      "last_deal": 181,
+      "side": "Short",
+      "volume": 0.33,
+      "open_price": 1875.586,
+      "close_price": 1866.455,
+      "net": 299.5,
+      "magic": 969070101,
+      "sl": 1878.618,
+      "tp": 1866.491,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "tp 1866.491"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 301.32,
+      "commission": -1.82,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 182,
+      "open_epoch": 1695945600,
+      "close_epoch": 1695993029,
+      "last_deal": 183,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 1866.733,
+      "close_price": 1876.3820000000003,
+      "net": -106.75,
+      "magic": 969070101,
+      "sl": 1876.333,
+      "tp": 1809.13,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1876.333"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.14,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 184,
+      "open_epoch": 1696197900,
+      "close_epoch": 1696878807,
+      "last_deal": 185,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 1847.322,
+      "close_price": 1859.9180000000001,
+      "net": -101.2,
+      "magic": 969070101,
+      "sl": 1859.891,
+      "tp": 1771.906,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1859.891"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.76,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 186,
+      "open_epoch": 1696881600,
+      "close_epoch": 1697040341,
+      "last_deal": 187,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 1863.228,
+      "close_price": 1876.2920000000001,
+      "net": -104.96,
+      "magic": 969070101,
+      "sl": 1876.265,
+      "tp": 1785.009,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1876.265"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.52,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 188,
+      "open_epoch": 1697054400,
+      "close_epoch": 1697110882,
+      "last_deal": 189,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 1873.651,
+      "close_price": 1883.528,
+      "net": -99.32,
+      "magic": 969070101,
+      "sl": 1883.513,
+      "tp": 1814.48,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1883.513"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.77,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 190,
+      "open_epoch": 1697140800,
+      "close_epoch": 1697175833,
+      "last_deal": 191,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 1868.295,
+      "close_price": 1877.671,
+      "net": -103.74,
+      "magic": 969070101,
+      "sl": 1877.666,
+      "tp": 1812.066,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1877.666"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.13,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 192,
+      "open_epoch": 1697468700,
+      "close_epoch": 1697472000,
+      "last_deal": 193,
+      "side": "Short",
+      "volume": 0.35,
+      "open_price": 1920.133,
+      "close_price": 1921.65,
+      "net": -55.02,
+      "magic": 969070101,
+      "sl": 1922.896,
+      "tp": 1911.845,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -53.09,
+      "commission": -1.93,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 194,
+      "open_epoch": 1697724900,
+      "close_epoch": 1697731200,
+      "last_deal": 195,
+      "side": "Long",
+      "volume": 0.28,
+      "open_price": 1952.388,
+      "close_price": 1956.2079999999999,
+      "net": 105.42,
+      "magic": 969070101,
+      "sl": 1948.865,
+      "tp": 1962.958,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 106.96,
+      "commission": -1.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 196,
+      "open_epoch": 1698105600,
+      "close_epoch": 1698145228,
+      "last_deal": 197,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 1973.717,
+      "close_price": 1958.723,
+      "net": -105.35,
+      "magic": 969070101,
+      "sl": 1958.751,
+      "tp": 2063.516,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1958.751"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.96,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 198,
+      "open_epoch": 1698192000,
+      "close_epoch": 1699360776,
+      "last_deal": 199,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1972.988,
+      "close_price": 1960.221,
+      "net": -157.02,
+      "magic": 969070101,
+      "sl": 1960.226,
+      "tp": 2049.56,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1960.226"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.13,
+      "commission": -0.44,
+      "swap": -54.45,
+      "fee": 0.0
+    },
+    {
+      "position_id": 200,
+      "open_epoch": 1699372800,
+      "close_epoch": 1699458031,
+      "last_deal": 201,
+      "side": "Long",
+      "volume": 0.1,
+      "open_price": 1963.461,
+      "close_price": 1953.026,
+      "net": -110.13,
+      "magic": 969070101,
+      "sl": 1953.027,
+      "tp": 2026.067,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1953.027"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.35,
+      "commission": -0.55,
+      "swap": -5.23,
+      "fee": 0.0
+    },
+    {
+      "position_id": 202,
+      "open_epoch": 1699459200,
+      "close_epoch": 1699517969,
+      "last_deal": 203,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 1955.486,
+      "close_price": 1945.1289999999997,
+      "net": -107.84,
+      "magic": 969070101,
+      "sl": 1945.134,
+      "tp": 2017.598,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1945.134"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -93.21,
+      "commission": -0.5,
+      "swap": -14.13,
+      "fee": 0.0
+    },
+    {
+      "position_id": 204,
+      "open_epoch": 1699833600,
+      "close_epoch": 1701048461,
+      "last_deal": 205,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1940.537,
+      "close_price": 2015.0110000000002,
+      "net": 536.71,
+      "magic": 969070101,
+      "sl": 1928.127,
+      "tp": 2014.999,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2014.999"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 595.79,
+      "commission": -0.44,
+      "swap": -58.64,
+      "fee": 0.0
+    },
+    {
+      "position_id": 206,
+      "open_epoch": 1701057600,
+      "close_epoch": 1701447220,
+      "last_deal": 207,
+      "side": "Long",
+      "volume": 0.13,
+      "open_price": 2009.693,
+      "close_price": 2056.416,
+      "net": 565.87,
+      "magic": 969070101,
+      "sl": 2001.913,
+      "tp": 2056.372,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2056.372"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 607.4,
+      "commission": -0.72,
+      "swap": -40.81,
+      "fee": 0.0
+    },
+    {
+      "position_id": 208,
+      "open_epoch": 1701460800,
+      "close_epoch": 1701698678,
+      "last_deal": 209,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2067.281,
+      "close_price": 2052.029,
+      "net": -110.82,
+      "magic": 969070101,
+      "sl": 2052.036,
+      "tp": 2158.75,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2052.036"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.77,
+      "commission": -0.39,
+      "swap": -3.66,
+      "fee": 0.0
+    },
+    {
+      "position_id": 210,
+      "open_epoch": 1701705600,
+      "close_epoch": 1702305041,
+      "last_deal": 211,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 2022.652,
+      "close_price": 1989.071,
+      "net": -149.19,
+      "magic": 969070101,
+      "sl": 1989.075,
+      "tp": 2224.299,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 1989.075"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -134.33,
+      "commission": -0.22,
+      "swap": -14.64,
+      "fee": 0.0
+    },
+    {
+      "position_id": 212,
+      "open_epoch": 1702394100,
+      "close_epoch": 1702400400,
+      "last_deal": 213,
+      "side": "Short",
+      "volume": 0.28,
+      "open_price": 1982.062,
+      "close_price": 1981.148,
+      "net": 24.06,
+      "magic": 969070101,
+      "sl": 1985.728,
+      "tp": 1971.064,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 25.6,
+      "commission": -1.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 214,
+      "open_epoch": 1702479900,
+      "close_epoch": 1702480408,
+      "last_deal": 215,
+      "side": "Long",
+      "volume": 0.44,
+      "open_price": 1982.126,
+      "close_price": 1979.785,
+      "net": -105.42,
+      "magic": 969070101,
+      "sl": 1979.823,
+      "tp": 1989.035,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 1979.823"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.0,
+      "commission": -2.42,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 216,
+      "open_epoch": 1702912500,
+      "close_epoch": 1702918800,
+      "last_deal": 217,
+      "side": "Long",
+      "volume": 0.38,
+      "open_price": 2021.814,
+      "close_price": 2022.317,
+      "net": 17.03,
+      "magic": 969070101,
+      "sl": 2019.161,
+      "tp": 2029.772,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 19.12,
+      "commission": -2.09,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 218,
+      "open_epoch": 1702944000,
+      "close_epoch": 1704990973,
+      "last_deal": 219,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 2027.731,
+      "close_price": 2015.579,
+      "net": -227.62,
+      "magic": 969070101,
+      "sl": 2015.586,
+      "tp": 2100.6,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2015.586"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -109.37,
+      "commission": -0.5,
+      "swap": -117.75,
+      "fee": 0.0
+    },
+    {
+      "position_id": 220,
+      "open_epoch": 1705017600,
+      "close_epoch": 1705468226,
+      "last_deal": 221,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 2035.25,
+      "close_price": 2021.888,
+      "net": -119.91,
+      "magic": 969070101,
+      "sl": 2021.933,
+      "tp": 2115.151,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2021.933"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.9,
+      "commission": -0.44,
+      "swap": -12.57,
+      "fee": 0.0
+    },
+    {
+      "position_id": 222,
+      "open_epoch": 1706572800,
+      "close_epoch": 1707139298,
+      "last_deal": 223,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 2031.125,
+      "close_price": 2019.983,
+      "net": -129.04,
+      "magic": 969070101,
+      "sl": 2019.983,
+      "tp": 2097.979,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2019.983"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.28,
+      "commission": -0.5,
+      "swap": -28.26,
+      "fee": 0.0
+    },
+    {
+      "position_id": 224,
+      "open_epoch": 1708443000,
+      "close_epoch": 1708448400,
+      "last_deal": 225,
+      "side": "Short",
+      "volume": 0.43,
+      "open_price": 2029.135,
+      "close_price": 2027.063,
+      "net": 86.73,
+      "magic": 969070101,
+      "sl": 2031.39,
+      "tp": 2022.369,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 89.1,
+      "commission": -2.37,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 226,
+      "open_epoch": 1708527900,
+      "close_epoch": 1708530930,
+      "last_deal": 227,
+      "side": "Long",
+      "volume": 0.5,
+      "open_price": 2027.732,
+      "close_price": 2025.765,
+      "net": -101.1,
+      "magic": 969070101,
+      "sl": 2025.794,
+      "tp": 2033.545,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 2025.794"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.35,
+      "commission": -2.75,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 228,
+      "open_epoch": 1709137500,
+      "close_epoch": 1709139600,
+      "last_deal": 229,
+      "side": "Short",
+      "volume": 0.54,
+      "open_price": 2033.333,
+      "close_price": 2033.71,
+      "net": -23.33,
+      "magic": 969070101,
+      "sl": 2035.099,
+      "tp": 2028.036,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -20.36,
+      "commission": -2.97,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 230,
+      "open_epoch": 1709221200,
+      "close_epoch": 1709226000,
+      "last_deal": 231,
+      "side": "Short",
+      "volume": 0.33,
+      "open_price": 2049.258,
+      "close_price": 2045.0470000000003,
+      "net": 137.14,
+      "magic": 969070101,
+      "sl": 2052.138,
+      "tp": 2040.617,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 138.96,
+      "commission": -1.82,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 232,
+      "open_epoch": 1709510400,
+      "close_epoch": 1709886577,
+      "last_deal": 233,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 2083.756,
+      "close_price": 2165.619,
+      "net": 629.33,
+      "magic": 969070101,
+      "sl": 2070.113,
+      "tp": 2165.614,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2165.614"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 654.9,
+      "commission": -0.44,
+      "swap": -25.13,
+      "fee": 0.0
+    },
+    {
+      "position_id": 234,
+      "open_epoch": 1709899200,
+      "close_epoch": 1710252580,
+      "last_deal": 235,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2168.387,
+      "close_price": 2153.744,
+      "net": -110.21,
+      "magic": 969070101,
+      "sl": 2153.752,
+      "tp": 2256.197,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2153.752"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.5,
+      "commission": -0.39,
+      "swap": -7.32,
+      "fee": 0.0
+    },
+    {
+      "position_id": 236,
+      "open_epoch": 1710259200,
+      "close_epoch": 1712066609,
+      "last_deal": 237,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2163.173,
+      "close_price": 2269.415,
+      "net": 571.18,
+      "magic": 969070101,
+      "sl": 2145.466,
+      "tp": 2269.415,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2269.415"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 637.45,
+      "commission": -0.33,
+      "swap": -65.94,
+      "fee": 0.0
+    },
+    {
+      "position_id": 238,
+      "open_epoch": 1712073600,
+      "close_epoch": 1712887601,
+      "last_deal": 239,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2258.819,
+      "close_price": 2394.818,
+      "net": 648.29,
+      "magic": 969070101,
+      "sl": 2236.155,
+      "tp": 2394.806,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2394.806"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 679.99,
+      "commission": -0.28,
+      "swap": -31.42,
+      "fee": 0.0
+    },
+    {
+      "position_id": 240,
+      "open_epoch": 1712894400,
+      "close_epoch": 1712940459,
+      "last_deal": 241,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2384.409,
+      "close_price": 2361.556,
+      "net": -114.55,
+      "magic": 969070101,
+      "sl": 2361.57,
+      "tp": 2521.442,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2361.570"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -114.27,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 242,
+      "open_epoch": 1713132540,
+      "close_epoch": 1713189981,
+      "last_deal": 243,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 2369.267,
+      "close_price": 2338.582,
+      "net": -122.96,
+      "magic": 969070101,
+      "sl": 2338.582,
+      "tp": 2553.378,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2338.582"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -122.74,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 244,
+      "open_epoch": 1713225600,
+      "close_epoch": 1713784685,
+      "last_deal": 245,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 2382.058,
+      "close_price": 2346.029,
+      "net": -156.88,
+      "magic": 969070101,
+      "sl": 2346.03,
+      "tp": 2598.229,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2346.030"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -144.11,
+      "commission": -0.22,
+      "swap": -12.55,
+      "fee": 0.0
+    },
+    {
+      "position_id": 246,
+      "open_epoch": 1713787200,
+      "close_epoch": 1713836307,
+      "last_deal": 247,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2342.202,
+      "close_price": 2316.188,
+      "net": -132.97,
+      "magic": 969070101,
+      "sl": 2316.19,
+      "tp": 2498.272,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2316.190"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -130.07,
+      "commission": -0.28,
+      "swap": -2.62,
+      "fee": 0.0
+    },
+    {
+      "position_id": 248,
+      "open_epoch": 1713873600,
+      "close_epoch": 1721143421,
+      "last_deal": 249,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2302.307,
+      "close_price": 2462.465,
+      "net": 580.55,
+      "magic": 969070101,
+      "sl": 2275.617,
+      "tp": 2462.45,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2462.450"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 800.79,
+      "commission": -0.28,
+      "swap": -219.96,
+      "fee": 0.0
+    },
+    {
+      "position_id": 250,
+      "open_epoch": 1721145600,
+      "close_epoch": 1721329887,
+      "last_deal": 251,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2463.367,
+      "close_price": 2443.008,
+      "net": -135.04,
+      "magic": 969070101,
+      "sl": 2443.016,
+      "tp": 2585.475,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2443.016"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -122.15,
+      "commission": -0.33,
+      "swap": -12.56,
+      "fee": 0.0
+    },
+    {
+      "position_id": 252,
+      "open_epoch": 1721332800,
+      "close_epoch": 1721352517,
+      "last_deal": 253,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2443.111,
+      "close_price": 2421.007,
+      "net": -136.1,
+      "magic": 969070101,
+      "sl": 2421.019,
+      "tp": 2575.66,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2421.019"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -132.63,
+      "commission": -0.33,
+      "swap": -3.14,
+      "fee": 0.0
+    },
+    {
+      "position_id": 254,
+      "open_epoch": 1721419200,
+      "close_epoch": 1721871632,
+      "last_deal": 255,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2398.919,
+      "close_price": 2378.085,
+      "net": -144.17,
+      "magic": 969070101,
+      "sl": 2378.103,
+      "tp": 2523.817,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2378.103"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -125.0,
+      "commission": -0.33,
+      "swap": -18.84,
+      "fee": 0.0
+    },
+    {
+      "position_id": 256,
+      "open_epoch": 1721880000,
+      "close_epoch": 1721928509,
+      "last_deal": 257,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2374.85,
+      "close_price": 2355.912,
+      "net": -113.96,
+      "magic": 969070101,
+      "sl": 2355.914,
+      "tp": 2488.463,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2355.914"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -113.63,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 258,
+      "open_epoch": 1721966400,
+      "close_epoch": 1723837838,
+      "last_deal": 259,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2371.966,
+      "close_price": 2506.469,
+      "net": 617.25,
+      "magic": 969070101,
+      "sl": 2349.55,
+      "tp": 2506.46,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2506.460"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 672.52,
+      "commission": -0.28,
+      "swap": -54.99,
+      "fee": 0.0
+    },
+    {
+      "position_id": 260,
+      "open_epoch": 1723838400,
+      "close_epoch": 1724333562,
+      "last_deal": 261,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2508.052,
+      "close_price": 2485.597,
+      "net": -153.9,
+      "magic": 969070101,
+      "sl": 2485.604,
+      "tp": 2642.74,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2485.604"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -134.73,
+      "commission": -0.33,
+      "swap": -18.84,
+      "fee": 0.0
+    },
+    {
+      "position_id": 262,
+      "open_epoch": 1724342400,
+      "close_epoch": 1726816275,
+      "last_deal": 263,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2481.988,
+      "close_price": 2609.739,
+      "net": 675.11,
+      "magic": 969070101,
+      "sl": 2460.698,
+      "tp": 2609.73,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2609.730"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 766.5,
+      "commission": -0.33,
+      "swap": -91.06,
+      "fee": 0.0
+    },
+    {
+      "position_id": 264,
+      "open_epoch": 1726819200,
+      "close_epoch": 1729657351,
+      "last_deal": 265,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2607.259,
+      "close_price": 2749.797,
+      "net": 757.56,
+      "magic": 969070101,
+      "sl": 2583.505,
+      "tp": 2749.783,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2749.783"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 855.23,
+      "commission": -0.33,
+      "swap": -97.34,
+      "fee": 0.0
+    },
+    {
+      "position_id": 266,
+      "open_epoch": 1729670400,
+      "close_epoch": 1729688981,
+      "last_deal": 267,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 2755.049,
+      "close_price": 2739.209,
+      "net": -143.06,
+      "magic": 969070101,
+      "sl": 2739.212,
+      "tp": 2850.07,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2739.212"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -142.56,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 268,
+      "open_epoch": 1729756800,
+      "close_epoch": 1730874761,
+      "last_deal": 269,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2733.749,
+      "close_price": 2715.386,
+      "net": -169.2,
+      "magic": 969070101,
+      "sl": 2715.395,
+      "tp": 2843.875,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2715.395"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -128.54,
+      "commission": -0.39,
+      "swap": -40.27,
+      "fee": 0.0
+    },
+    {
+      "position_id": 270,
+      "open_epoch": 1730880000,
+      "close_epoch": 1730893100,
+      "last_deal": 271,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2725.97,
+      "close_price": 2706.73,
+      "net": -135.07,
+      "magic": 969070101,
+      "sl": 2706.741,
+      "tp": 2841.259,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2706.741"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -134.68,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 272,
+      "open_epoch": 1731024000,
+      "close_epoch": 1731288040,
+      "last_deal": 273,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 2707.006,
+      "close_price": 2673.928,
+      "net": -134.62,
+      "magic": 969070101,
+      "sl": 2673.934,
+      "tp": 2905.437,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2673.934"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -132.31,
+      "commission": -0.22,
+      "swap": -2.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 274,
+      "open_epoch": 1732030800,
+      "close_epoch": 1732035600,
+      "last_deal": 275,
+      "side": "Long",
+      "volume": 0.25,
+      "open_price": 2624.484,
+      "close_price": 2626.388,
+      "net": 46.22,
+      "magic": 969070101,
+      "sl": 2619.518,
+      "tp": 2639.382,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 47.6,
+      "commission": -1.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 276,
+      "open_epoch": 1732115400,
+      "close_epoch": 1732122000,
+      "last_deal": 277,
+      "side": "Short",
+      "volume": 0.23,
+      "open_price": 2645.901,
+      "close_price": 2650.759,
+      "net": -113.01,
+      "magic": 969070101,
+      "sl": 2651.301,
+      "tp": 2629.701,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -111.74,
+      "commission": -1.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 278,
+      "open_epoch": 1732203600,
+      "close_epoch": 1732208400,
+      "last_deal": 279,
+      "side": "Short",
+      "volume": 0.24,
+      "open_price": 2668.879,
+      "close_price": 2664.851,
+      "net": 95.36,
+      "magic": 969070101,
+      "sl": 2673.966,
+      "tp": 2653.619,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 96.68,
+      "commission": -1.32,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 280,
+      "open_epoch": 1732489500,
+      "close_epoch": 1732503028,
+      "last_deal": 281,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2711.313,
+      "close_price": 2692.979,
+      "net": -128.73,
+      "magic": 969070101,
+      "sl": 2692.982,
+      "tp": 2821.361,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2692.982"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -128.34,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 282,
+      "open_epoch": 1732896900,
+      "close_epoch": 1732899600,
+      "last_deal": 283,
+      "side": "Short",
+      "volume": 0.3,
+      "open_price": 2659.425,
+      "close_price": 2662.29,
+      "net": -87.6,
+      "magic": 969070101,
+      "sl": 2663.464,
+      "tp": 2647.309,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -85.95,
+      "commission": -1.65,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 284,
+      "open_epoch": 1733153700,
+      "close_epoch": 1733155299,
+      "last_deal": 285,
+      "side": "Long",
+      "volume": 0.25,
+      "open_price": 2644.135,
+      "close_price": 2639.243,
+      "net": -123.68,
+      "magic": 969070101,
+      "sl": 2639.268,
+      "tp": 2658.735,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 2639.268"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -122.3,
+      "commission": -1.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 286,
+      "open_epoch": 1733325300,
+      "close_epoch": 1733325940,
+      "last_deal": 287,
+      "side": "Short",
+      "volume": 0.28,
+      "open_price": 2650.64,
+      "close_price": 2655.001,
+      "net": -123.65,
+      "magic": 969070101,
+      "sl": 2654.984,
+      "tp": 2637.608,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 2654.984"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -122.11,
+      "commission": -1.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 288,
+      "open_epoch": 1734566400,
+      "close_epoch": 1734572014,
+      "last_deal": 289,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 2588.28,
+      "close_price": 2606.836,
+      "net": -130.28,
+      "magic": 969070101,
+      "sl": 2606.834,
+      "tp": 2476.955,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2606.834"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -129.89,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 290,
+      "open_epoch": 1734652800,
+      "close_epoch": 1734706479,
+      "last_deal": 291,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 2593.52,
+      "close_price": 2618.009,
+      "net": -122.73,
+      "magic": 969070101,
+      "sl": 2618.005,
+      "tp": 2446.612,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2618.005"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -122.45,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 292,
+      "open_epoch": 1735314000,
+      "close_epoch": 1735318800,
+      "last_deal": 293,
+      "side": "Long",
+      "volume": 0.3,
+      "open_price": 2616.05,
+      "close_price": 2617.961,
+      "net": 55.68,
+      "magic": 969070101,
+      "sl": 2612.184,
+      "tp": 2627.648,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.33,
+      "commission": -1.65,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 294,
+      "open_epoch": 1735571700,
+      "close_epoch": 1735575447,
+      "last_deal": 295,
+      "side": "Long",
+      "volume": 0.26,
+      "open_price": 2604.056,
+      "close_price": 2599.559,
+      "net": -118.36,
+      "magic": 969070101,
+      "sl": 2599.566,
+      "tp": 2617.526,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        "sl 2599.566"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -116.93,
+      "commission": -1.43,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 296,
+      "open_epoch": 1735819200,
+      "close_epoch": 1736149049,
+      "last_deal": 297,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 2642.144,
+      "close_price": 2626.41,
+      "net": -134.69,
+      "magic": 969070101,
+      "sl": 2626.444,
+      "tp": 2736.347,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2626.444"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -125.87,
+      "commission": -0.44,
+      "swap": -8.38,
+      "fee": 0.0
+    },
+    {
+      "position_id": 298,
+      "open_epoch": 1736352900,
+      "close_epoch": 1736355600,
+      "last_deal": 299,
+      "side": "Long",
+      "volume": 0.34,
+      "open_price": 2664.864,
+      "close_price": 2669.649,
+      "net": 160.82,
+      "magic": 969070101,
+      "sl": 2661.527,
+      "tp": 2674.876,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 162.69,
+      "commission": -1.87,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 300,
+      "open_epoch": 1736726400,
+      "close_epoch": 1736769563,
+      "last_deal": 301,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 2691.263,
+      "close_price": 2676.114,
+      "net": -121.63,
+      "magic": 969070101,
+      "sl": 2676.119,
+      "tp": 2782.128,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2676.119"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -121.19,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 302,
+      "open_epoch": 1736985600,
+      "close_epoch": 1738247311,
+      "last_deal": 303,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 2695.12,
+      "close_price": 2787.596,
+      "net": 680.73,
+      "magic": 969070101,
+      "sl": 2679.709,
+      "tp": 2787.588,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2787.588"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 739.81,
+      "commission": -0.44,
+      "swap": -58.64,
+      "fee": 0.0
+    },
+    {
+      "position_id": 304,
+      "open_epoch": 1738252800,
+      "close_epoch": 1738547773,
+      "last_deal": 305,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 2795.522,
+      "close_price": 2780.599,
+      "net": -144.23,
+      "magic": 969070101,
+      "sl": 2780.604,
+      "tp": 2885.044,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2780.604"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -134.31,
+      "commission": -0.5,
+      "swap": -9.42,
+      "fee": 0.0
+    },
+    {
+      "position_id": 306,
+      "open_epoch": 1738555200,
+      "close_epoch": 1739170099,
+      "last_deal": 307,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2774.589,
+      "close_price": 2889.781,
+      "net": 780.33,
+      "magic": 969070101,
+      "sl": 2755.394,
+      "tp": 2889.779,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 2889.779"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 806.35,
+      "commission": -0.39,
+      "swap": -25.63,
+      "fee": 0.0
+    },
+    {
+      "position_id": 308,
+      "open_epoch": 1739174400,
+      "close_epoch": 1739367029,
+      "last_deal": 309,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2895.614,
+      "close_price": 2871.4259999999995,
+      "net": -151.73,
+      "magic": 969070101,
+      "sl": 2871.436,
+      "tp": 3040.659,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2871.436"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -145.12,
+      "commission": -0.33,
+      "swap": -6.28,
+      "fee": 0.0
+    },
+    {
+      "position_id": 310,
+      "open_epoch": 1739376000,
+      "close_epoch": 1740714122,
+      "last_deal": 311,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2894.649,
+      "close_price": 2867.635,
+      "net": -182.48,
+      "magic": 969070101,
+      "sl": 2867.637,
+      "tp": 3056.722,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2867.637"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -135.07,
+      "commission": -0.28,
+      "swap": -47.13,
+      "fee": 0.0
+    },
+    {
+      "position_id": 312,
+      "open_epoch": 1740715200,
+      "close_epoch": 1740751682,
+      "last_deal": 313,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2865.867,
+      "close_price": 2843.349,
+      "net": -135.44,
+      "magic": 969070101,
+      "sl": 2843.363,
+      "tp": 3000.89,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2843.363"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -135.11,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 314,
+      "open_epoch": 1740956700,
+      "close_epoch": 1742273498,
+      "last_deal": 315,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2873.755,
+      "close_price": 3015.915,
+      "net": 805.53,
+      "magic": 969070101,
+      "sl": 2850.068,
+      "tp": 3015.878,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 3015.878"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 852.96,
+      "commission": -0.33,
+      "swap": -47.1,
+      "fee": 0.0
+    },
+    {
+      "position_id": 316,
+      "open_epoch": 1742284800,
+      "close_epoch": 1743401598,
+      "last_deal": 317,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 3016.622,
+      "close_price": 3124.299,
+      "net": 806.52,
+      "magic": 969070101,
+      "sl": 2998.678,
+      "tp": 3124.284,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 3124.284"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 861.41,
+      "commission": -0.44,
+      "swap": -54.45,
+      "fee": 0.0
+    },
+    {
+      "position_id": 318,
+      "open_epoch": 1743408000,
+      "close_epoch": 1743677899,
+      "last_deal": 319,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 3124.613,
+      "close_price": 3099.598,
+      "net": -166.12,
+      "magic": 969070101,
+      "sl": 3099.632,
+      "tp": 3274.496,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3099.632"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -150.09,
+      "commission": -0.33,
+      "swap": -15.7,
+      "fee": 0.0
+    },
+    {
+      "position_id": 320,
+      "open_epoch": 1743681600,
+      "close_epoch": 1743685961,
+      "last_deal": 321,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 3093.34,
+      "close_price": 3055.172,
+      "net": -152.89,
+      "magic": 969070101,
+      "sl": 3055.189,
+      "tp": 3322.168,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3055.189"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -152.67,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 322,
+      "open_epoch": 1743768000,
+      "close_epoch": 1743773763,
+      "last_deal": 323,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3110.41,
+      "close_price": 3061.697,
+      "net": -146.31,
+      "magic": 969070101,
+      "sl": 3061.706,
+      "tp": 3402.442,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3061.706"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -146.14,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 324,
+      "open_epoch": 1743977580,
+      "close_epoch": 1743984641,
+      "last_deal": 325,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3028.822,
+      "close_price": 2972.655,
+      "net": -168.67,
+      "magic": 969070101,
+      "sl": 2972.668,
+      "tp": 3365.746,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 2972.668"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -168.5,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 326,
+      "open_epoch": 1744123200,
+      "close_epoch": 1744128000,
+      "last_deal": 327,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 3016.03,
+      "close_price": 3001.732,
+      "net": 270.61,
+      "magic": 969070101,
+      "sl": 3023.216,
+      "tp": 2994.471,
+      "entry_comment": "Calyx Regime VWAP",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 271.66,
+      "commission": -1.05,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 328,
+      "open_epoch": 1744243200,
+      "close_epoch": 1745196221,
+      "last_deal": 329,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3086.908,
+      "close_price": 3368.519,
+      "net": 830.54,
+      "magic": 969070101,
+      "sl": 3039.948,
+      "tp": 3368.479,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 3368.479"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 844.84,
+      "commission": -0.17,
+      "swap": -14.13,
+      "fee": 0.0
+    },
+    {
+      "position_id": 330,
+      "open_epoch": 1745208000,
+      "close_epoch": 1745359320,
+      "last_deal": 331,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 3382.6,
+      "close_price": 3337.588,
+      "net": -182.36,
+      "magic": 969070101,
+      "sl": 3338.132,
+      "tp": 3649.406,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3338.132"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -180.05,
+      "commission": -0.22,
+      "swap": -2.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 332,
+      "open_epoch": 1745366400,
+      "close_epoch": 1745416180,
+      "last_deal": 333,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3336.708,
+      "close_price": 3279.6390000000006,
+      "net": -171.37,
+      "magic": 969070101,
+      "sl": 3279.643,
+      "tp": 3679.343,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3279.643"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -171.2,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 334,
+      "open_epoch": 1745452800,
+      "close_epoch": 1746059082,
+      "last_deal": 335,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 3316.487,
+      "close_price": 3245.5469999999996,
+      "net": -149.33,
+      "magic": 969070101,
+      "sl": 3245.553,
+      "tp": 3742.092,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3245.553"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -141.88,
+      "commission": -0.11,
+      "swap": -7.34,
+      "fee": 0.0
+    },
+    {
+      "position_id": 336,
+      "open_epoch": 1746072000,
+      "close_epoch": 1747226818,
+      "last_deal": 337,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 3229.676,
+      "close_price": 3190.097,
+      "net": -181.53,
+      "magic": 969070101,
+      "sl": 3190.104,
+      "tp": 3467.108,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3190.104"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -158.31,
+      "commission": -0.22,
+      "swap": -23.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 338,
+      "open_epoch": 1747238400,
+      "close_epoch": 1747282287,
+      "last_deal": 339,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 3182.765,
+      "close_price": 3147.312,
+      "net": -148.31,
+      "magic": 969070101,
+      "sl": 3147.331,
+      "tp": 3395.37,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3147.331"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -141.81,
+      "commission": -0.22,
+      "swap": -6.28,
+      "fee": 0.0
+    },
+    {
+      "position_id": 340,
+      "open_epoch": 1747324800,
+      "close_epoch": 1747392698,
+      "last_deal": 341,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 3219.915,
+      "close_price": 3179.159,
+      "net": -165.33,
+      "magic": 969070101,
+      "sl": 3179.199,
+      "tp": 3464.209,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3179.199"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -163.02,
+      "commission": -0.22,
+      "swap": -2.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 342,
+      "open_epoch": 1747411200,
+      "close_epoch": 1756695400,
+      "last_deal": 343,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3183.65,
+      "close_price": 3479.948,
+      "net": 722.3,
+      "magic": 969070101,
+      "sl": 3134.267,
+      "tp": 3479.946,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 3479.946"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 888.89,
+      "commission": -0.17,
+      "swap": -166.42,
+      "fee": 0.0
+    },
+    {
+      "position_id": 344,
+      "open_epoch": 1756699200,
+      "close_epoch": 1757326454,
+      "last_deal": 345,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 3474.608,
+      "close_price": 3618.784,
+      "net": 842.74,
+      "magic": 969070101,
+      "sl": 3450.579,
+      "tp": 3618.784,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 3618.784"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 865.05,
+      "commission": -0.33,
+      "swap": -21.98,
+      "fee": 0.0
+    },
+    {
+      "position_id": 346,
+      "open_epoch": 1757332800,
+      "close_epoch": 1758618206,
+      "last_deal": 347,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 3620.003,
+      "close_price": 3777.411,
+      "net": 897.02,
+      "magic": 969070101,
+      "sl": 3593.771,
+      "tp": 3777.396,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 3777.396"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 944.45,
+      "commission": -0.33,
+      "swap": -47.1,
+      "fee": 0.0
+    },
+    {
+      "position_id": 348,
+      "open_epoch": 1758628800,
+      "close_epoch": 1758654013,
+      "last_deal": 349,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 3783.672,
+      "close_price": 3755.783,
+      "net": -167.66,
+      "magic": 969070101,
+      "sl": 3755.785,
+      "tp": 3950.994,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3755.785"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -167.33,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 350,
+      "open_epoch": 1758715200,
+      "close_epoch": 1758730624,
+      "last_deal": 351,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 3769.049,
+      "close_price": 3737.952,
+      "net": -155.77,
+      "magic": 969070101,
+      "sl": 3737.954,
+      "tp": 3955.622,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3737.954"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -155.49,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 352,
+      "open_epoch": 1758801600,
+      "close_epoch": 1759761339,
+      "last_deal": 353,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 3753.1,
+      "close_price": 3955.8670000000006,
+      "net": 989.99,
+      "magic": 969070101,
+      "sl": 3719.308,
+      "tp": 3955.851,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 3955.851"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1013.84,
+      "commission": -0.28,
+      "swap": -23.57,
+      "fee": 0.0
+    },
+    {
+      "position_id": 354,
+      "open_epoch": 1759766400,
+      "close_epoch": 1760513918,
+      "last_deal": 355,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 3962.571,
+      "close_price": 4207.092,
+      "net": 1198.75,
+      "magic": 969070101,
+      "sl": 3921.82,
+      "tp": 4207.075,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 4207.075"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1222.6,
+      "commission": -0.28,
+      "swap": -23.57,
+      "fee": 0.0
+    },
+    {
+      "position_id": 356,
+      "open_epoch": 1760515200,
+      "close_epoch": 1761056560,
+      "last_deal": 357,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4207.849,
+      "close_price": 4154.366,
+      "net": -226.71,
+      "magic": 969070101,
+      "sl": 4154.379,
+      "tp": 4528.667,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4154.379"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -213.94,
+      "commission": -0.22,
+      "swap": -12.55,
+      "fee": 0.0
+    },
+    {
+      "position_id": 358,
+      "open_epoch": 1761062400,
+      "close_epoch": 1761091575,
+      "last_deal": 359,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4138.816,
+      "close_price": 4047.592,
+      "net": -183.61,
+      "magic": 969070101,
+      "sl": 4047.592,
+      "tp": 4685.8,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4047.592"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -182.45,
+      "commission": -0.11,
+      "swap": -1.05,
+      "fee": 0.0
+    },
+    {
+      "position_id": 360,
+      "open_epoch": 1761148800,
+      "close_epoch": 1761636693,
+      "last_deal": 361,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4037.129,
+      "close_price": 3929.732,
+      "net": -221.2,
+      "magic": 969070101,
+      "sl": 3929.752,
+      "tp": 4681.36,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 3929.752"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -214.8,
+      "commission": -0.11,
+      "swap": -6.29,
+      "fee": 0.0
+    },
+    {
+      "position_id": 362,
+      "open_epoch": 1761638400,
+      "close_epoch": 1765551120,
+      "last_deal": 363,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3932.587,
+      "close_price": 4346.906,
+      "net": 1169.0,
+      "magic": 969070101,
+      "sl": 3863.544,
+      "tp": 4346.895,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 4346.895"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1242.96,
+      "commission": -0.17,
+      "swap": -73.79,
+      "fee": 0.0
+    },
+    {
+      "position_id": 364,
+      "open_epoch": 1765555200,
+      "close_epoch": 1768177949,
+      "last_deal": 365,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4290.488,
+      "close_price": 4577.555,
+      "net": 1087.4,
+      "magic": 969070101,
+      "sl": 4242.696,
+      "tp": 4577.485,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 4577.485"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1148.27,
+      "commission": -0.22,
+      "swap": -60.65,
+      "fee": 0.0
+    },
+    {
+      "position_id": 366,
+      "open_epoch": 1768190400,
+      "close_epoch": 1768969407,
+      "last_deal": 367,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 4570.73,
+      "close_price": 4852.792,
+      "net": 1386.46,
+      "magic": 969070101,
+      "sl": 4523.777,
+      "tp": 4852.762,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 4852.762"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1410.31,
+      "commission": -0.28,
+      "swap": -23.57,
+      "fee": 0.0
+    },
+    {
+      "position_id": 368,
+      "open_epoch": 1768982400,
+      "close_epoch": 1769016688,
+      "last_deal": 369,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 4855.109,
+      "close_price": 4808.806,
+      "net": -231.8,
+      "magic": 969070101,
+      "sl": 4808.887,
+      "tp": 5133.232,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4808.887"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -231.52,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 370,
+      "open_epoch": 1769068800,
+      "close_epoch": 1769578905,
+      "last_deal": 371,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4832.956,
+      "close_price": 5265.86,
+      "net": 1292.26,
+      "magic": 969070101,
+      "sl": 4760.561,
+      "tp": 5265.808,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 5265.808"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1298.71,
+      "commission": -0.17,
+      "swap": -6.28,
+      "fee": 0.0
+    },
+    {
+      "position_id": 372,
+      "open_epoch": 1769587200,
+      "close_epoch": 1769700463,
+      "last_deal": 373,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 5290.398,
+      "close_price": 5202.676,
+      "net": -268.04,
+      "magic": 969070101,
+      "sl": 5202.73,
+      "tp": 5816.65,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 5202.730"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -263.16,
+      "commission": -0.17,
+      "swap": -4.71,
+      "fee": 0.0
+    },
+    {
+      "position_id": 374,
+      "open_epoch": 1769702400,
+      "close_epoch": 1769764465,
+      "last_deal": 375,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 5182.044,
+      "close_price": 5019.711,
+      "net": -325.83,
+      "magic": 969070101,
+      "sl": 5019.717,
+      "tp": 6161.91,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 5019.717"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -324.67,
+      "commission": -0.11,
+      "swap": -1.05,
+      "fee": 0.0
+    },
+    {
+      "position_id": 376,
+      "open_epoch": 1769788800,
+      "close_epoch": 1769796751,
+      "last_deal": 377,
+      "side": "Long",
+      "volume": 0.01,
+      "open_price": 5050.66,
+      "close_price": 4792.042,
+      "net": -258.68,
+      "magic": 969070101,
+      "sl": 4792.298,
+      "tp": 6600.909,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4792.298"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -258.62,
+      "commission": -0.06,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 378,
+      "open_epoch": 1769986898,
+      "close_epoch": 1770013265,
+      "last_deal": 379,
+      "side": "Long",
+      "volume": 0.01,
+      "open_price": 4793.898,
+      "close_price": 4497.067,
+      "net": -296.89,
+      "magic": 969070101,
+      "sl": 4497.279,
+      "tp": 6573.614,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4497.279"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -296.83,
+      "commission": -0.06,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 380,
+      "open_epoch": 1770076800,
+      "close_epoch": 1774217003,
+      "last_deal": 381,
+      "side": "Long",
+      "volume": 0.01,
+      "open_price": 4775.276,
+      "close_price": 4451.898,
+      "net": -348.47,
+      "magic": 969070101,
+      "sl": 4453.558,
+      "tp": 6699.895,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4453.558"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -323.38,
+      "commission": -0.06,
+      "swap": -25.03,
+      "fee": 0.0
+    },
+    {
+      "position_id": 382,
+      "open_epoch": 1774224000,
+      "close_epoch": 1774403425,
+      "last_deal": 383,
+      "side": "Short",
+      "volume": 0.02,
+      "open_price": 4465.116,
+      "close_price": 4597.47,
+      "net": -264.82,
+      "magic": 969070101,
+      "sl": 4597.42,
+      "tp": 3668.414,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4597.420"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -264.71,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 384,
+      "open_epoch": 1777478400,
+      "close_epoch": 1777535820,
+      "last_deal": 385,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4548.022,
+      "close_price": 4602.311,
+      "net": -217.37,
+      "magic": 969070101,
+      "sl": 4602.306,
+      "tp": 4221.867,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4602.306"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -217.15,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 386,
+      "open_epoch": 1777564801,
+      "close_epoch": 1778053584,
+      "last_deal": 387,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4615.594,
+      "close_price": 4676.842,
+      "net": -245.21,
+      "magic": 969070101,
+      "sl": 4676.788,
+      "tp": 4247.879,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4676.788"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -244.99,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 388,
+      "open_epoch": 1778529600,
+      "close_epoch": 1778591812,
+      "last_deal": 389,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4733.723,
+      "close_price": 4679.894,
+      "net": -217.62,
+      "magic": 969070101,
+      "sl": 4679.901,
+      "tp": 5055.253,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4679.901"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -215.31,
+      "commission": -0.22,
+      "swap": -2.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 390,
+      "open_epoch": 1779148800,
+      "close_epoch": 1781047630,
+      "last_deal": 391,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4582.397,
+      "close_price": 4224.589,
+      "net": 1431.01,
+      "magic": 969070101,
+      "sl": 4641.615,
+      "tp": 4224.611,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "tp 4224.611"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1431.23,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 392,
+      "open_epoch": 1781049600,
+      "close_epoch": 1781474572,
+      "last_deal": 393,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4222.297,
+      "close_price": 4283.928,
+      "net": -246.74,
+      "magic": 969070101,
+      "sl": 4283.872,
+      "tp": 3851.932,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4283.872"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -246.52,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 394,
+      "open_epoch": 1781481600,
+      "close_epoch": 1781717620,
+      "last_deal": 395,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4293.899,
+      "close_price": 4376.686,
+      "net": -248.53,
+      "magic": 969070101,
+      "sl": 4376.408,
+      "tp": 3800.014,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4376.408"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -248.36,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 396,
+      "open_epoch": 1781726400,
+      "close_epoch": 1781740985,
+      "last_deal": 397,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4235.177,
+      "close_price": 4290.193,
+      "net": -220.28,
+      "magic": 969070101,
+      "sl": 4290.002,
+      "tp": 3909.017,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4290.002"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -220.06,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 398,
+      "open_epoch": 1781812800,
+      "close_epoch": 1785975825,
+      "last_deal": 399,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4216.751,
+      "close_price": 4283.212,
+      "net": -266.07,
+      "magic": 969070101,
+      "sl": 4283.2,
+      "tp": 3819.349,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4283.200"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -265.85,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 400,
+      "open_epoch": 1787169600,
+      "close_epoch": 1787227577,
+      "last_deal": 401,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4511.556,
+      "close_price": 4452.4,
+      "net": -243.12,
+      "magic": 969070101,
+      "sl": 4452.646,
+      "tp": 4864.001,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4452.646"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -236.62,
+      "commission": -0.22,
+      "swap": -6.28,
+      "fee": 0.0
+    },
+    {
+      "position_id": 402,
+      "open_epoch": 1787256000,
+      "close_epoch": 1787938930,
+      "last_deal": 403,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4528.604,
+      "close_price": 4463.333,
+      "net": -208.54,
+      "magic": 969070101,
+      "sl": 4463.368,
+      "tp": 4919.641,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4463.368"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -195.81,
+      "commission": -0.17,
+      "swap": -12.56,
+      "fee": 0.0
+    },
+    {
+      "position_id": 404,
+      "open_epoch": 1788163200,
+      "close_epoch": 1788251421,
+      "last_deal": 405,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4443.538,
+      "close_price": 4379.647,
+      "net": -257.87,
+      "magic": 969070101,
+      "sl": 4379.738,
+      "tp": 4823.976,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4379.738"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -255.56,
+      "commission": -0.22,
+      "swap": -2.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 406,
+      "open_epoch": 1788264000,
+      "close_epoch": 1788310927,
+      "last_deal": 407,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4374.466,
+      "close_price": 4308.446,
+      "net": -199.8,
+      "magic": 969070101,
+      "sl": 4308.671,
+      "tp": 4768.303,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4308.671"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -198.06,
+      "commission": -0.17,
+      "swap": -1.57,
+      "fee": 0.0
+    },
+    {
+      "position_id": 408,
+      "open_epoch": 1788364800,
+      "close_epoch": 1789067008,
+      "last_deal": 409,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4372.974,
+      "close_price": 4314.685,
+      "net": -254.3,
+      "magic": 969070101,
+      "sl": 4314.736,
+      "tp": 4722.933,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "sl 4314.736"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -233.16,
+      "commission": -0.22,
+      "swap": -20.92,
+      "fee": 0.0
+    },
+    {
+      "position_id": 410,
+      "open_epoch": 1790546490,
+      "close_epoch": 1791244798,
+      "last_deal": 411,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 4269.896,
+      "close_price": 4134.604,
+      "net": 676.18,
+      "magic": 969070101,
+      "sl": 4312.96,
+      "tp": 4015.231,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "end of test"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 676.46,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1633529100,
+      "deal": 2,
+      "balance": 9998.29,
+      "net": -1.71
+    },
+    {
+      "epoch": 1633531813,
+      "deal": 3,
+      "balance": 9896.86,
+      "net": -101.43
+    },
+    {
+      "epoch": 1633903500,
+      "deal": 4,
+      "balance": 9896.36,
+      "net": -0.5
+    },
+    {
+      "epoch": 1634047135,
+      "deal": 5,
+      "balance": 9795.23,
+      "net": -101.13
+    },
+    {
+      "epoch": 1634054400,
+      "deal": 6,
+      "balance": 9794.73,
+      "net": -0.5
+    },
+    {
+      "epoch": 1634122399,
+      "deal": 7,
+      "balance": 9690.03,
+      "net": -104.7
+    },
+    {
+      "epoch": 1634508300,
+      "deal": 8,
+      "balance": 9689.42,
+      "net": -0.61
+    },
+    {
+      "epoch": 1634618284,
+      "deal": 9,
+      "balance": 9591.94,
+      "net": -97.48
+    },
+    {
+      "epoch": 1634688000,
+      "deal": 10,
+      "balance": 9591.39,
+      "net": -0.55
+    },
+    {
+      "epoch": 1634719135,
+      "deal": 11,
+      "balance": 9491.01,
+      "net": -100.38
+    },
+    {
+      "epoch": 1634774400,
+      "deal": 12,
+      "balance": 9490.46,
+      "net": -0.55
+    },
+    {
+      "epoch": 1634884719,
+      "deal": 13,
+      "balance": 9386.64,
+      "net": -103.82
+    },
+    {
+      "epoch": 1635343500,
+      "deal": 14,
+      "balance": 9384.77,
+      "net": -1.87
+    },
+    {
+      "epoch": 1635343634,
+      "deal": 15,
+      "balance": 9287.7,
+      "net": -97.07
+    },
+    {
+      "epoch": 1636070400,
+      "deal": 16,
+      "balance": 9287.26,
+      "net": -0.44
+    },
+    {
+      "epoch": 1636555204,
+      "deal": 17,
+      "balance": 9885.4,
+      "net": 598.14
+    },
+    {
+      "epoch": 1636560000,
+      "deal": 18,
+      "balance": 9884.96,
+      "net": -0.44
+    },
+    {
+      "epoch": 1637577864,
+      "deal": 19,
+      "balance": 9724.13,
+      "net": -160.83
+    },
+    {
+      "epoch": 1637582400,
+      "deal": 20,
+      "balance": 9723.69,
+      "net": -0.44
+    },
+    {
+      "epoch": 1637589691,
+      "deal": 21,
+      "balance": 9618.6,
+      "net": -105.09
+    },
+    {
+      "epoch": 1637853000,
+      "deal": 22,
+      "balance": 9613.98,
+      "net": -4.62
+    },
+    {
+      "epoch": 1637859600,
+      "deal": 23,
+      "balance": 9668.08,
+      "net": 54.1
+    },
+    {
+      "epoch": 1638376200,
+      "deal": 24,
+      "balance": 9666.26,
+      "net": -1.82
+    },
+    {
+      "epoch": 1638377319,
+      "deal": 25,
+      "balance": 9566.17,
+      "net": -100.09
+    },
+    {
+      "epoch": 1638546600,
+      "deal": 26,
+      "balance": 9564.79,
+      "net": -1.38
+    },
+    {
+      "epoch": 1638550800,
+      "deal": 27,
+      "balance": 9843.51,
+      "net": 278.72
+    },
+    {
+      "epoch": 1639581000,
+      "deal": 28,
+      "balance": 9841.58,
+      "net": -1.93
+    },
+    {
+      "epoch": 1639587600,
+      "deal": 29,
+      "balance": 9909.31,
+      "net": 67.73
+    },
+    {
+      "epoch": 1639753500,
+      "deal": 30,
+      "balance": 9907.49,
+      "net": -1.82
+    },
+    {
+      "epoch": 1639760400,
+      "deal": 31,
+      "balance": 9942.74,
+      "net": 35.25
+    },
+    {
+      "epoch": 1640706300,
+      "deal": 32,
+      "balance": 9940.26,
+      "net": -2.48
+    },
+    {
+      "epoch": 1640707226,
+      "deal": 33,
+      "balance": 9839.37,
+      "net": -100.89
+    },
+    {
+      "epoch": 1641499200,
+      "deal": 34,
+      "balance": 9838.93,
+      "net": -0.44
+    },
+    {
+      "epoch": 1641813804,
+      "deal": 35,
+      "balance": 9734.65,
+      "net": -104.28
+    },
+    {
+      "epoch": 1642464000,
+      "deal": 36,
+      "balance": 9733.82,
+      "net": -0.83
+    },
+    {
+      "epoch": 1642496077,
+      "deal": 37,
+      "balance": 9633.59,
+      "net": -100.23
+    },
+    {
+      "epoch": 1642636800,
+      "deal": 38,
+      "balance": 9633.09,
+      "net": -0.5
+    },
+    {
+      "epoch": 1643223808,
+      "deal": 39,
+      "balance": 9517.73,
+      "net": -115.36
+    },
+    {
+      "epoch": 1643227200,
+      "deal": 40,
+      "balance": 9517.29,
+      "net": -0.44
+    },
+    {
+      "epoch": 1643288413,
+      "deal": 41,
+      "balance": 9398.93,
+      "net": -118.36
+    },
+    {
+      "epoch": 1643814300,
+      "deal": 42,
+      "balance": 9397.33,
+      "net": -1.6
+    },
+    {
+      "epoch": 1643815528,
+      "deal": 43,
+      "balance": 9301.25,
+      "net": -96.08
+    },
+    {
+      "epoch": 1644249900,
+      "deal": 44,
+      "balance": 9298.83,
+      "net": -2.42
+    },
+    {
+      "epoch": 1644251428,
+      "deal": 45,
+      "balance": 9204.06,
+      "net": -94.77
+    },
+    {
+      "epoch": 1644793500,
+      "deal": 46,
+      "balance": 9203.62,
+      "net": -0.44
+    },
+    {
+      "epoch": 1645675695,
+      "deal": 47,
+      "balance": 9759.45,
+      "net": 555.83
+    },
+    {
+      "epoch": 1645689600,
+      "deal": 48,
+      "balance": 9759.06,
+      "net": -0.39
+    },
+    {
+      "epoch": 1645715858,
+      "deal": 49,
+      "balance": 9648.75,
+      "net": -110.31
+    },
+    {
+      "epoch": 1645776000,
+      "deal": 50,
+      "balance": 9648.53,
+      "net": -0.22
+    },
+    {
+      "epoch": 1651067135,
+      "deal": 51,
+      "balance": 9401.65,
+      "net": -246.88
+    },
+    {
+      "epoch": 1652097600,
+      "deal": 52,
+      "balance": 9401.32,
+      "net": -0.33
+    },
+    {
+      "epoch": 1655071500,
+      "deal": 53,
+      "balance": 9294.7,
+      "net": -106.62
+    },
+    {
+      "epoch": 1655179200,
+      "deal": 54,
+      "balance": 9294.42,
+      "net": -0.28
+    },
+    {
+      "epoch": 1655393583,
+      "deal": 55,
+      "balance": 9192.37,
+      "net": -102.05
+    },
+    {
+      "epoch": 1655438400,
+      "deal": 56,
+      "balance": 9192.09,
+      "net": -0.28
+    },
+    {
+      "epoch": 1657588297,
+      "deal": 57,
+      "balance": 9776.74,
+      "net": 584.65
+    },
+    {
+      "epoch": 1657598400,
+      "deal": 58,
+      "balance": 9776.24,
+      "net": -0.5
+    },
+    {
+      "epoch": 1657725217,
+      "deal": 59,
+      "balance": 9669.38,
+      "net": -106.86
+    },
+    {
+      "epoch": 1657728000,
+      "deal": 60,
+      "balance": 9668.99,
+      "net": -0.39
+    },
+    {
+      "epoch": 1659014911,
+      "deal": 61,
+      "balance": 9562.27,
+      "net": -106.72
+    },
+    {
+      "epoch": 1659024000,
+      "deal": 62,
+      "balance": 9561.88,
+      "net": -0.39
+    },
+    {
+      "epoch": 1659075754,
+      "deal": 63,
+      "balance": 9464.21,
+      "net": -97.67
+    },
+    {
+      "epoch": 1659110400,
+      "deal": 64,
+      "balance": 9463.82,
+      "net": -0.39
+    },
+    {
+      "epoch": 1659442632,
+      "deal": 65,
+      "balance": 9354.37,
+      "net": -109.45
+    },
+    {
+      "epoch": 1659456000,
+      "deal": 66,
+      "balance": 9353.93,
+      "net": -0.44
+    },
+    {
+      "epoch": 1659629981,
+      "deal": 67,
+      "balance": 9252.88,
+      "net": -101.05
+    },
+    {
+      "epoch": 1659643200,
+      "deal": 68,
+      "balance": 9252.55,
+      "net": -0.33
+    },
+    {
+      "epoch": 1662036090,
+      "deal": 69,
+      "balance": 9827.3,
+      "net": 574.75
+    },
+    {
+      "epoch": 1662387000,
+      "deal": 70,
+      "balance": 9823.5,
+      "net": -3.8
+    },
+    {
+      "epoch": 1662388680,
+      "deal": 71,
+      "balance": 9723.59,
+      "net": -99.91
+    },
+    {
+      "epoch": 1662473400,
+      "deal": 72,
+      "balance": 9722.21,
+      "net": -1.38
+    },
+    {
+      "epoch": 1662477985,
+      "deal": 73,
+      "balance": 9624.18,
+      "net": -98.03
+    },
+    {
+      "epoch": 1662737400,
+      "deal": 74,
+      "balance": 9621.76,
+      "net": -2.42
+    },
+    {
+      "epoch": 1662737838,
+      "deal": 75,
+      "balance": 9524.3,
+      "net": -97.46
+    },
+    {
+      "epoch": 1662994200,
+      "deal": 76,
+      "balance": 9522.48,
+      "net": -1.82
+    },
+    {
+      "epoch": 1662996926,
+      "deal": 77,
+      "balance": 9425.66,
+      "net": -96.82
+    },
+    {
+      "epoch": 1663113600,
+      "deal": 78,
+      "balance": 9425.22,
+      "net": -0.44
+    },
+    {
+      "epoch": 1664224413,
+      "deal": 79,
+      "balance": 10071.39,
+      "net": 646.17
+    },
+    {
+      "epoch": 1664236800,
+      "deal": 80,
+      "balance": 10071.06,
+      "net": -0.33
+    },
+    {
+      "epoch": 1664371773,
+      "deal": 81,
+      "balance": 9969.27,
+      "net": -101.79
+    },
+    {
+      "epoch": 1664380800,
+      "deal": 82,
+      "balance": 9968.94,
+      "net": -0.33
+    },
+    {
+      "epoch": 1664806023,
+      "deal": 83,
+      "balance": 9865.56,
+      "net": -103.38
+    },
+    {
+      "epoch": 1664812800,
+      "deal": 84,
+      "balance": 9865.17,
+      "net": -0.39
+    },
+    {
+      "epoch": 1664866106,
+      "deal": 85,
+      "balance": 9758.03,
+      "net": -107.14
+    },
+    {
+      "epoch": 1664899200,
+      "deal": 86,
+      "balance": 9757.7,
+      "net": -0.33
+    },
+    {
+      "epoch": 1666228418,
+      "deal": 87,
+      "balance": 10360.06,
+      "net": 602.36
+    },
+    {
+      "epoch": 1666238400,
+      "deal": 88,
+      "balance": 10359.51,
+      "net": -0.55
+    },
+    {
+      "epoch": 1666262430,
+      "deal": 89,
+      "balance": 10254.41,
+      "net": -105.1
+    },
+    {
+      "epoch": 1666324800,
+      "deal": 90,
+      "balance": 10253.91,
+      "net": -0.5
+    },
+    {
+      "epoch": 1666357361,
+      "deal": 91,
+      "balance": 10140.17,
+      "net": -113.74
+    },
+    {
+      "epoch": 1666562700,
+      "deal": 92,
+      "balance": 10139.78,
+      "net": -0.39
+    },
+    {
+      "epoch": 1667572890,
+      "deal": 93,
+      "balance": 10033.11,
+      "net": -106.67
+    },
+    {
+      "epoch": 1667577600,
+      "deal": 94,
+      "balance": 10032.78,
+      "net": -0.33
+    },
+    {
+      "epoch": 1667920170,
+      "deal": 95,
+      "balance": 9916.87,
+      "net": -115.91
+    },
+    {
+      "epoch": 1668182400,
+      "deal": 96,
+      "balance": 9916.54,
+      "net": -0.33
+    },
+    {
+      "epoch": 1668993462,
+      "deal": 97,
+      "balance": 9781.04,
+      "net": -135.5
+    },
+    {
+      "epoch": 1669248000,
+      "deal": 98,
+      "balance": 9780.54,
+      "net": -0.5
+    },
+    {
+      "epoch": 1669662191,
+      "deal": 99,
+      "balance": 9661.47,
+      "net": -119.07
+    },
+    {
+      "epoch": 1669665600,
+      "deal": 100,
+      "balance": 9660.97,
+      "net": -0.5
+    },
+    {
+      "epoch": 1670203864,
+      "deal": 101,
+      "balance": 10211.48,
+      "net": 550.51
+    },
+    {
+      "epoch": 1670212800,
+      "deal": 102,
+      "balance": 10211.04,
+      "net": -0.44
+    },
+    {
+      "epoch": 1670235740,
+      "deal": 103,
+      "balance": 10099.0,
+      "net": -112.04
+    },
+    {
+      "epoch": 1670299200,
+      "deal": 104,
+      "balance": 10098.61,
+      "net": -0.39
+    },
+    {
+      "epoch": 1672820559,
+      "deal": 105,
+      "balance": 10636.88,
+      "net": 538.27
+    },
+    {
+      "epoch": 1672833600,
+      "deal": 106,
+      "balance": 10636.49,
+      "net": -0.39
+    },
+    {
+      "epoch": 1672924540,
+      "deal": 107,
+      "balance": 10508.29,
+      "net": -128.2
+    },
+    {
+      "epoch": 1672934400,
+      "deal": 108,
+      "balance": 10507.96,
+      "net": -0.33
+    },
+    {
+      "epoch": 1674159085,
+      "deal": 109,
+      "balance": 11101.59,
+      "net": 593.63
+    },
+    {
+      "epoch": 1674172800,
+      "deal": 110,
+      "balance": 11101.15,
+      "net": -0.44
+    },
+    {
+      "epoch": 1674482852,
+      "deal": 111,
+      "balance": 10978.02,
+      "net": -123.13
+    },
+    {
+      "epoch": 1674489600,
+      "deal": 112,
+      "balance": 10977.58,
+      "net": -0.44
+    },
+    {
+      "epoch": 1675152856,
+      "deal": 113,
+      "balance": 10826.84,
+      "net": -150.74
+    },
+    {
+      "epoch": 1675166400,
+      "deal": 114,
+      "balance": 10826.34,
+      "net": -0.5
+    },
+    {
+      "epoch": 1675431402,
+      "deal": 115,
+      "balance": 10691.38,
+      "net": -134.96
+    },
+    {
+      "epoch": 1675440000,
+      "deal": 116,
+      "balance": 10691.1,
+      "net": -0.28
+    },
+    {
+      "epoch": 1676307445,
+      "deal": 117,
+      "balance": 10559.85,
+      "net": -131.25
+    },
+    {
+      "epoch": 1676318400,
+      "deal": 118,
+      "balance": 10559.35,
+      "net": -0.5
+    },
+    {
+      "epoch": 1676446345,
+      "deal": 119,
+      "balance": 10433.69,
+      "net": -125.66
+    },
+    {
+      "epoch": 1676448000,
+      "deal": 120,
+      "balance": 10433.25,
+      "net": -0.44
+    },
+    {
+      "epoch": 1676620957,
+      "deal": 121,
+      "balance": 10298.24,
+      "net": -135.01
+    },
+    {
+      "epoch": 1676905800,
+      "deal": 122,
+      "balance": 10294.28,
+      "net": -3.96
+    },
+    {
+      "epoch": 1676906610,
+      "deal": 123,
+      "balance": 10189.16,
+      "net": -105.12
+    },
+    {
+      "epoch": 1678894500,
+      "deal": 124,
+      "balance": 10187.89,
+      "net": -1.27
+    },
+    {
+      "epoch": 1678896000,
+      "deal": 125,
+      "balance": 10138.83,
+      "net": -49.06
+    },
+    {
+      "epoch": 1678977300,
+      "deal": 126,
+      "balance": 10137.62,
+      "net": -1.21
+    },
+    {
+      "epoch": 1678980161,
+      "deal": 127,
+      "balance": 10446.34,
+      "net": 308.72
+    },
+    {
+      "epoch": 1679263500,
+      "deal": 128,
+      "balance": 10446.06,
+      "net": -0.28
+    },
+    {
+      "epoch": 1679386022,
+      "deal": 129,
+      "balance": 10332.93,
+      "net": -113.13
+    },
+    {
+      "epoch": 1679529600,
+      "deal": 130,
+      "balance": 10332.6,
+      "net": -0.33
+    },
+    {
+      "epoch": 1679913512,
+      "deal": 131,
+      "balance": 10216.19,
+      "net": -116.41
+    },
+    {
+      "epoch": 1679918400,
+      "deal": 132,
+      "balance": 10215.86,
+      "net": -0.33
+    },
+    {
+      "epoch": 1683151287,
+      "deal": 133,
+      "balance": 10773.88,
+      "net": 558.02
+    },
+    {
+      "epoch": 1683158400,
+      "deal": 134,
+      "balance": 10773.55,
+      "net": -0.33
+    },
+    {
+      "epoch": 1683185481,
+      "deal": 135,
+      "balance": 10661.12,
+      "net": -112.43
+    },
+    {
+      "epoch": 1683244800,
+      "deal": 136,
+      "balance": 10660.84,
+      "net": -0.28
+    },
+    {
+      "epoch": 1683289815,
+      "deal": 137,
+      "balance": 10551.93,
+      "net": -108.91
+    },
+    {
+      "epoch": 1683497100,
+      "deal": 138,
+      "balance": 10551.65,
+      "net": -0.28
+    },
+    {
+      "epoch": 1684254696,
+      "deal": 139,
+      "balance": 10406.27,
+      "net": -145.38
+    },
+    {
+      "epoch": 1684267200,
+      "deal": 140,
+      "balance": 10405.77,
+      "net": -0.5
+    },
+    {
+      "epoch": 1684331797,
+      "deal": 141,
+      "balance": 10289.77,
+      "net": -116.0
+    },
+    {
+      "epoch": 1684765200,
+      "deal": 142,
+      "balance": 10288.23,
+      "net": -1.54
+    },
+    {
+      "epoch": 1684771200,
+      "deal": 143,
+      "balance": 10317.07,
+      "net": 28.84
+    },
+    {
+      "epoch": 1686801600,
+      "deal": 144,
+      "balance": 10316.63,
+      "net": -0.44
+    },
+    {
+      "epoch": 1686836840,
+      "deal": 145,
+      "balance": 10204.11,
+      "net": -112.52
+    },
+    {
+      "epoch": 1687276800,
+      "deal": 146,
+      "balance": 10203.56,
+      "net": -0.55
+    },
+    {
+      "epoch": 1689165220,
+      "deal": 147,
+      "balance": 10090.24,
+      "net": -113.32
+    },
+    {
+      "epoch": 1689258000,
+      "deal": 148,
+      "balance": 10088.42,
+      "net": -1.82
+    },
+    {
+      "epoch": 1689264000,
+      "deal": 149,
+      "balance": 10236.82,
+      "net": 148.4
+    },
+    {
+      "epoch": 1689344400,
+      "deal": 150,
+      "balance": 10235.44,
+      "net": -1.38
+    },
+    {
+      "epoch": 1689350400,
+      "deal": 151,
+      "balance": 10341.34,
+      "net": 105.9
+    },
+    {
+      "epoch": 1689775500,
+      "deal": 152,
+      "balance": 10339.03,
+      "net": -2.31
+    },
+    {
+      "epoch": 1689775890,
+      "deal": 153,
+      "balance": 10232.48,
+      "net": -106.55
+    },
+    {
+      "epoch": 1690212600,
+      "deal": 154,
+      "balance": 10230.39,
+      "net": -2.09
+    },
+    {
+      "epoch": 1690214400,
+      "deal": 155,
+      "balance": 10202.69,
+      "net": -27.7
+    },
+    {
+      "epoch": 1690553100,
+      "deal": 156,
+      "balance": 10200.93,
+      "net": -1.76
+    },
+    {
+      "epoch": 1690553375,
+      "deal": 157,
+      "balance": 10095.52,
+      "net": -105.41
+    },
+    {
+      "epoch": 1690900800,
+      "deal": 158,
+      "balance": 10094.09,
+      "net": -1.43
+    },
+    {
+      "epoch": 1690902918,
+      "deal": 159,
+      "balance": 9991.65,
+      "net": -102.44
+    },
+    {
+      "epoch": 1691071800,
+      "deal": 160,
+      "balance": 9990.16,
+      "net": -1.49
+    },
+    {
+      "epoch": 1691078400,
+      "deal": 161,
+      "balance": 10095.49,
+      "net": 105.33
+    },
+    {
+      "epoch": 1691590200,
+      "deal": 162,
+      "balance": 10093.45,
+      "net": -2.04
+    },
+    {
+      "epoch": 1691593024,
+      "deal": 163,
+      "balance": 10397.26,
+      "net": 303.81
+    },
+    {
+      "epoch": 1692108300,
+      "deal": 164,
+      "balance": 10395.55,
+      "net": -1.71
+    },
+    {
+      "epoch": 1692109528,
+      "deal": 165,
+      "balance": 10288.29,
+      "net": -107.26
+    },
+    {
+      "epoch": 1692198900,
+      "deal": 166,
+      "balance": 10285.15,
+      "net": -3.14
+    },
+    {
+      "epoch": 1692200677,
+      "deal": 167,
+      "balance": 10181.24,
+      "net": -103.91
+    },
+    {
+      "epoch": 1692281100,
+      "deal": 168,
+      "balance": 10179.37,
+      "net": -1.87
+    },
+    {
+      "epoch": 1692282877,
+      "deal": 169,
+      "balance": 10075.16,
+      "net": -104.21
+    },
+    {
+      "epoch": 1693491300,
+      "deal": 170,
+      "balance": 10072.96,
+      "net": -2.2
+    },
+    {
+      "epoch": 1693497600,
+      "deal": 171,
+      "balance": 10157.72,
+      "net": 84.76
+    },
+    {
+      "epoch": 1693915200,
+      "deal": 172,
+      "balance": 10156.89,
+      "net": -0.83
+    },
+    {
+      "epoch": 1695125856,
+      "deal": 173,
+      "balance": 10054.47,
+      "net": -102.42
+    },
+    {
+      "epoch": 1695132600,
+      "deal": 174,
+      "balance": 10051.77,
+      "net": -2.7
+    },
+    {
+      "epoch": 1695132938,
+      "deal": 175,
+      "balance": 9949.61,
+      "net": -102.16
+    },
+    {
+      "epoch": 1695305100,
+      "deal": 176,
+      "balance": 9947.74,
+      "net": -1.87
+    },
+    {
+      "epoch": 1695312000,
+      "deal": 177,
+      "balance": 9926.35,
+      "net": -21.39
+    },
+    {
+      "epoch": 1695391500,
+      "deal": 178,
+      "balance": 9923.38,
+      "net": -2.97
+    },
+    {
+      "epoch": 1695393566,
+      "deal": 179,
+      "balance": 9822.23,
+      "net": -101.15
+    },
+    {
+      "epoch": 1695910200,
+      "deal": 180,
+      "balance": 9820.41,
+      "net": -1.82
+    },
+    {
+      "epoch": 1695913061,
+      "deal": 181,
+      "balance": 10121.73,
+      "net": 301.32
+    },
+    {
+      "epoch": 1695945600,
+      "deal": 182,
+      "balance": 10121.12,
+      "net": -0.61
+    },
+    {
+      "epoch": 1695993029,
+      "deal": 183,
+      "balance": 10014.98,
+      "net": -106.14
+    },
+    {
+      "epoch": 1696197900,
+      "deal": 184,
+      "balance": 10014.54,
+      "net": -0.44
+    },
+    {
+      "epoch": 1696878807,
+      "deal": 185,
+      "balance": 9913.78,
+      "net": -100.76
+    },
+    {
+      "epoch": 1696881600,
+      "deal": 186,
+      "balance": 9913.34,
+      "net": -0.44
+    },
+    {
+      "epoch": 1697040341,
+      "deal": 187,
+      "balance": 9808.82,
+      "net": -104.52
+    },
+    {
+      "epoch": 1697054400,
+      "deal": 188,
+      "balance": 9808.27,
+      "net": -0.55
+    },
+    {
+      "epoch": 1697110882,
+      "deal": 189,
+      "balance": 9709.5,
+      "net": -98.77
+    },
+    {
+      "epoch": 1697140800,
+      "deal": 190,
+      "balance": 9708.89,
+      "net": -0.61
+    },
+    {
+      "epoch": 1697175833,
+      "deal": 191,
+      "balance": 9605.76,
+      "net": -103.13
+    },
+    {
+      "epoch": 1697468700,
+      "deal": 192,
+      "balance": 9603.83,
+      "net": -1.93
+    },
+    {
+      "epoch": 1697472000,
+      "deal": 193,
+      "balance": 9550.74,
+      "net": -53.09
+    },
+    {
+      "epoch": 1697724900,
+      "deal": 194,
+      "balance": 9549.2,
+      "net": -1.54
+    },
+    {
+      "epoch": 1697731200,
+      "deal": 195,
+      "balance": 9656.16,
+      "net": 106.96
+    },
+    {
+      "epoch": 1698105600,
+      "deal": 196,
+      "balance": 9655.77,
+      "net": -0.39
+    },
+    {
+      "epoch": 1698145228,
+      "deal": 197,
+      "balance": 9550.81,
+      "net": -104.96
+    },
+    {
+      "epoch": 1698192000,
+      "deal": 198,
+      "balance": 9550.37,
+      "net": -0.44
+    },
+    {
+      "epoch": 1699360776,
+      "deal": 199,
+      "balance": 9393.79,
+      "net": -156.58
+    },
+    {
+      "epoch": 1699372800,
+      "deal": 200,
+      "balance": 9393.24,
+      "net": -0.55
+    },
+    {
+      "epoch": 1699458031,
+      "deal": 201,
+      "balance": 9283.66,
+      "net": -109.58
+    },
+    {
+      "epoch": 1699459200,
+      "deal": 202,
+      "balance": 9283.16,
+      "net": -0.5
+    },
+    {
+      "epoch": 1699517969,
+      "deal": 203,
+      "balance": 9175.82,
+      "net": -107.34
+    },
+    {
+      "epoch": 1699833600,
+      "deal": 204,
+      "balance": 9175.38,
+      "net": -0.44
+    },
+    {
+      "epoch": 1701048461,
+      "deal": 205,
+      "balance": 9712.53,
+      "net": 537.15
+    },
+    {
+      "epoch": 1701057600,
+      "deal": 206,
+      "balance": 9711.81,
+      "net": -0.72
+    },
+    {
+      "epoch": 1701447220,
+      "deal": 207,
+      "balance": 10278.4,
+      "net": 566.59
+    },
+    {
+      "epoch": 1701460800,
+      "deal": 208,
+      "balance": 10278.01,
+      "net": -0.39
+    },
+    {
+      "epoch": 1701698678,
+      "deal": 209,
+      "balance": 10167.58,
+      "net": -110.43
+    },
+    {
+      "epoch": 1701705600,
+      "deal": 210,
+      "balance": 10167.36,
+      "net": -0.22
+    },
+    {
+      "epoch": 1702305041,
+      "deal": 211,
+      "balance": 10018.39,
+      "net": -148.97
+    },
+    {
+      "epoch": 1702394100,
+      "deal": 212,
+      "balance": 10016.85,
+      "net": -1.54
+    },
+    {
+      "epoch": 1702400400,
+      "deal": 213,
+      "balance": 10042.45,
+      "net": 25.6
+    },
+    {
+      "epoch": 1702479900,
+      "deal": 214,
+      "balance": 10040.03,
+      "net": -2.42
+    },
+    {
+      "epoch": 1702480408,
+      "deal": 215,
+      "balance": 9937.03,
+      "net": -103.0
+    },
+    {
+      "epoch": 1702912500,
+      "deal": 216,
+      "balance": 9934.94,
+      "net": -2.09
+    },
+    {
+      "epoch": 1702918800,
+      "deal": 217,
+      "balance": 9954.06,
+      "net": 19.12
+    },
+    {
+      "epoch": 1702944000,
+      "deal": 218,
+      "balance": 9953.56,
+      "net": -0.5
+    },
+    {
+      "epoch": 1704990973,
+      "deal": 219,
+      "balance": 9726.44,
+      "net": -227.12
+    },
+    {
+      "epoch": 1705017600,
+      "deal": 220,
+      "balance": 9726.0,
+      "net": -0.44
+    },
+    {
+      "epoch": 1705468226,
+      "deal": 221,
+      "balance": 9606.53,
+      "net": -119.47
+    },
+    {
+      "epoch": 1706572800,
+      "deal": 222,
+      "balance": 9606.03,
+      "net": -0.5
+    },
+    {
+      "epoch": 1707139298,
+      "deal": 223,
+      "balance": 9477.49,
+      "net": -128.54
+    },
+    {
+      "epoch": 1708443000,
+      "deal": 224,
+      "balance": 9475.12,
+      "net": -2.37
+    },
+    {
+      "epoch": 1708448400,
+      "deal": 225,
+      "balance": 9564.22,
+      "net": 89.1
+    },
+    {
+      "epoch": 1708527900,
+      "deal": 226,
+      "balance": 9561.47,
+      "net": -2.75
+    },
+    {
+      "epoch": 1708530930,
+      "deal": 227,
+      "balance": 9463.12,
+      "net": -98.35
+    },
+    {
+      "epoch": 1709137500,
+      "deal": 228,
+      "balance": 9460.15,
+      "net": -2.97
+    },
+    {
+      "epoch": 1709139600,
+      "deal": 229,
+      "balance": 9439.79,
+      "net": -20.36
+    },
+    {
+      "epoch": 1709221200,
+      "deal": 230,
+      "balance": 9437.97,
+      "net": -1.82
+    },
+    {
+      "epoch": 1709226000,
+      "deal": 231,
+      "balance": 9576.93,
+      "net": 138.96
+    },
+    {
+      "epoch": 1709510400,
+      "deal": 232,
+      "balance": 9576.49,
+      "net": -0.44
+    },
+    {
+      "epoch": 1709886577,
+      "deal": 233,
+      "balance": 10206.26,
+      "net": 629.77
+    },
+    {
+      "epoch": 1709899200,
+      "deal": 234,
+      "balance": 10205.87,
+      "net": -0.39
+    },
+    {
+      "epoch": 1710252580,
+      "deal": 235,
+      "balance": 10096.05,
+      "net": -109.82
+    },
+    {
+      "epoch": 1710259200,
+      "deal": 236,
+      "balance": 10095.72,
+      "net": -0.33
+    },
+    {
+      "epoch": 1712066609,
+      "deal": 237,
+      "balance": 10667.23,
+      "net": 571.51
+    },
+    {
+      "epoch": 1712073600,
+      "deal": 238,
+      "balance": 10666.95,
+      "net": -0.28
+    },
+    {
+      "epoch": 1712887601,
+      "deal": 239,
+      "balance": 11315.52,
+      "net": 648.57
+    },
+    {
+      "epoch": 1712894400,
+      "deal": 240,
+      "balance": 11315.24,
+      "net": -0.28
+    },
+    {
+      "epoch": 1712940459,
+      "deal": 241,
+      "balance": 11200.97,
+      "net": -114.27
+    },
+    {
+      "epoch": 1713132540,
+      "deal": 242,
+      "balance": 11200.75,
+      "net": -0.22
+    },
+    {
+      "epoch": 1713189981,
+      "deal": 243,
+      "balance": 11078.01,
+      "net": -122.74
+    },
+    {
+      "epoch": 1713225600,
+      "deal": 244,
+      "balance": 11077.79,
+      "net": -0.22
+    },
+    {
+      "epoch": 1713784685,
+      "deal": 245,
+      "balance": 10921.13,
+      "net": -156.66
+    },
+    {
+      "epoch": 1713787200,
+      "deal": 246,
+      "balance": 10920.85,
+      "net": -0.28
+    },
+    {
+      "epoch": 1713836307,
+      "deal": 247,
+      "balance": 10788.16,
+      "net": -132.69
+    },
+    {
+      "epoch": 1713873600,
+      "deal": 248,
+      "balance": 10787.88,
+      "net": -0.28
+    },
+    {
+      "epoch": 1721143421,
+      "deal": 249,
+      "balance": 11368.71,
+      "net": 580.83
+    },
+    {
+      "epoch": 1721145600,
+      "deal": 250,
+      "balance": 11368.38,
+      "net": -0.33
+    },
+    {
+      "epoch": 1721329887,
+      "deal": 251,
+      "balance": 11233.67,
+      "net": -134.71
+    },
+    {
+      "epoch": 1721332800,
+      "deal": 252,
+      "balance": 11233.34,
+      "net": -0.33
+    },
+    {
+      "epoch": 1721352517,
+      "deal": 253,
+      "balance": 11097.57,
+      "net": -135.77
+    },
+    {
+      "epoch": 1721419200,
+      "deal": 254,
+      "balance": 11097.24,
+      "net": -0.33
+    },
+    {
+      "epoch": 1721871632,
+      "deal": 255,
+      "balance": 10953.4,
+      "net": -143.84
+    },
+    {
+      "epoch": 1721880000,
+      "deal": 256,
+      "balance": 10953.07,
+      "net": -0.33
+    },
+    {
+      "epoch": 1721928509,
+      "deal": 257,
+      "balance": 10839.44,
+      "net": -113.63
+    },
+    {
+      "epoch": 1721966400,
+      "deal": 258,
+      "balance": 10839.16,
+      "net": -0.28
+    },
+    {
+      "epoch": 1723837838,
+      "deal": 259,
+      "balance": 11456.69,
+      "net": 617.53
+    },
+    {
+      "epoch": 1723838400,
+      "deal": 260,
+      "balance": 11456.36,
+      "net": -0.33
+    },
+    {
+      "epoch": 1724333562,
+      "deal": 261,
+      "balance": 11302.79,
+      "net": -153.57
+    },
+    {
+      "epoch": 1724342400,
+      "deal": 262,
+      "balance": 11302.46,
+      "net": -0.33
+    },
+    {
+      "epoch": 1726816275,
+      "deal": 263,
+      "balance": 11977.9,
+      "net": 675.44
+    },
+    {
+      "epoch": 1726819200,
+      "deal": 264,
+      "balance": 11977.57,
+      "net": -0.33
+    },
+    {
+      "epoch": 1729657351,
+      "deal": 265,
+      "balance": 12735.46,
+      "net": 757.89
+    },
+    {
+      "epoch": 1729670400,
+      "deal": 266,
+      "balance": 12734.96,
+      "net": -0.5
+    },
+    {
+      "epoch": 1729688981,
+      "deal": 267,
+      "balance": 12592.4,
+      "net": -142.56
+    },
+    {
+      "epoch": 1729756800,
+      "deal": 268,
+      "balance": 12592.01,
+      "net": -0.39
+    },
+    {
+      "epoch": 1730874761,
+      "deal": 269,
+      "balance": 12423.2,
+      "net": -168.81
+    },
+    {
+      "epoch": 1730880000,
+      "deal": 270,
+      "balance": 12422.81,
+      "net": -0.39
+    },
+    {
+      "epoch": 1730893100,
+      "deal": 271,
+      "balance": 12288.13,
+      "net": -134.68
+    },
+    {
+      "epoch": 1731024000,
+      "deal": 272,
+      "balance": 12287.91,
+      "net": -0.22
+    },
+    {
+      "epoch": 1731288040,
+      "deal": 273,
+      "balance": 12153.51,
+      "net": -134.4
+    },
+    {
+      "epoch": 1732030800,
+      "deal": 274,
+      "balance": 12152.13,
+      "net": -1.38
+    },
+    {
+      "epoch": 1732035600,
+      "deal": 275,
+      "balance": 12199.73,
+      "net": 47.6
+    },
+    {
+      "epoch": 1732115400,
+      "deal": 276,
+      "balance": 12198.46,
+      "net": -1.27
+    },
+    {
+      "epoch": 1732122000,
+      "deal": 277,
+      "balance": 12086.72,
+      "net": -111.74
+    },
+    {
+      "epoch": 1732203600,
+      "deal": 278,
+      "balance": 12085.4,
+      "net": -1.32
+    },
+    {
+      "epoch": 1732208400,
+      "deal": 279,
+      "balance": 12182.08,
+      "net": 96.68
+    },
+    {
+      "epoch": 1732489500,
+      "deal": 280,
+      "balance": 12181.69,
+      "net": -0.39
+    },
+    {
+      "epoch": 1732503028,
+      "deal": 281,
+      "balance": 12053.35,
+      "net": -128.34
+    },
+    {
+      "epoch": 1732896900,
+      "deal": 282,
+      "balance": 12051.7,
+      "net": -1.65
+    },
+    {
+      "epoch": 1732899600,
+      "deal": 283,
+      "balance": 11965.75,
+      "net": -85.95
+    },
+    {
+      "epoch": 1733153700,
+      "deal": 284,
+      "balance": 11964.37,
+      "net": -1.38
+    },
+    {
+      "epoch": 1733155299,
+      "deal": 285,
+      "balance": 11842.07,
+      "net": -122.3
+    },
+    {
+      "epoch": 1733325300,
+      "deal": 286,
+      "balance": 11840.53,
+      "net": -1.54
+    },
+    {
+      "epoch": 1733325940,
+      "deal": 287,
+      "balance": 11718.42,
+      "net": -122.11
+    },
+    {
+      "epoch": 1734566400,
+      "deal": 288,
+      "balance": 11718.03,
+      "net": -0.39
+    },
+    {
+      "epoch": 1734572014,
+      "deal": 289,
+      "balance": 11588.14,
+      "net": -129.89
+    },
+    {
+      "epoch": 1734652800,
+      "deal": 290,
+      "balance": 11587.86,
+      "net": -0.28
+    },
+    {
+      "epoch": 1734706479,
+      "deal": 291,
+      "balance": 11465.41,
+      "net": -122.45
+    },
+    {
+      "epoch": 1735314000,
+      "deal": 292,
+      "balance": 11463.76,
+      "net": -1.65
+    },
+    {
+      "epoch": 1735318800,
+      "deal": 293,
+      "balance": 11521.09,
+      "net": 57.33
+    },
+    {
+      "epoch": 1735571700,
+      "deal": 294,
+      "balance": 11519.66,
+      "net": -1.43
+    },
+    {
+      "epoch": 1735575447,
+      "deal": 295,
+      "balance": 11402.73,
+      "net": -116.93
+    },
+    {
+      "epoch": 1735819200,
+      "deal": 296,
+      "balance": 11402.29,
+      "net": -0.44
+    },
+    {
+      "epoch": 1736149049,
+      "deal": 297,
+      "balance": 11268.04,
+      "net": -134.25
+    },
+    {
+      "epoch": 1736352900,
+      "deal": 298,
+      "balance": 11266.17,
+      "net": -1.87
+    },
+    {
+      "epoch": 1736355600,
+      "deal": 299,
+      "balance": 11428.86,
+      "net": 162.69
+    },
+    {
+      "epoch": 1736726400,
+      "deal": 300,
+      "balance": 11428.42,
+      "net": -0.44
+    },
+    {
+      "epoch": 1736769563,
+      "deal": 301,
+      "balance": 11307.23,
+      "net": -121.19
+    },
+    {
+      "epoch": 1736985600,
+      "deal": 302,
+      "balance": 11306.79,
+      "net": -0.44
+    },
+    {
+      "epoch": 1738247311,
+      "deal": 303,
+      "balance": 11987.96,
+      "net": 681.17
+    },
+    {
+      "epoch": 1738252800,
+      "deal": 304,
+      "balance": 11987.46,
+      "net": -0.5
+    },
+    {
+      "epoch": 1738547773,
+      "deal": 305,
+      "balance": 11843.73,
+      "net": -143.73
+    },
+    {
+      "epoch": 1738555200,
+      "deal": 306,
+      "balance": 11843.34,
+      "net": -0.39
+    },
+    {
+      "epoch": 1739170099,
+      "deal": 307,
+      "balance": 12624.06,
+      "net": 780.72
+    },
+    {
+      "epoch": 1739174400,
+      "deal": 308,
+      "balance": 12623.73,
+      "net": -0.33
+    },
+    {
+      "epoch": 1739367029,
+      "deal": 309,
+      "balance": 12472.33,
+      "net": -151.4
+    },
+    {
+      "epoch": 1739376000,
+      "deal": 310,
+      "balance": 12472.05,
+      "net": -0.28
+    },
+    {
+      "epoch": 1740714122,
+      "deal": 311,
+      "balance": 12289.85,
+      "net": -182.2
+    },
+    {
+      "epoch": 1740715200,
+      "deal": 312,
+      "balance": 12289.52,
+      "net": -0.33
+    },
+    {
+      "epoch": 1740751682,
+      "deal": 313,
+      "balance": 12154.41,
+      "net": -135.11
+    },
+    {
+      "epoch": 1740956700,
+      "deal": 314,
+      "balance": 12154.08,
+      "net": -0.33
+    },
+    {
+      "epoch": 1742273498,
+      "deal": 315,
+      "balance": 12959.94,
+      "net": 805.86
+    },
+    {
+      "epoch": 1742284800,
+      "deal": 316,
+      "balance": 12959.5,
+      "net": -0.44
+    },
+    {
+      "epoch": 1743401598,
+      "deal": 317,
+      "balance": 13766.46,
+      "net": 806.96
+    },
+    {
+      "epoch": 1743408000,
+      "deal": 318,
+      "balance": 13766.13,
+      "net": -0.33
+    },
+    {
+      "epoch": 1743677899,
+      "deal": 319,
+      "balance": 13600.34,
+      "net": -165.79
+    },
+    {
+      "epoch": 1743681600,
+      "deal": 320,
+      "balance": 13600.12,
+      "net": -0.22
+    },
+    {
+      "epoch": 1743685961,
+      "deal": 321,
+      "balance": 13447.45,
+      "net": -152.67
+    },
+    {
+      "epoch": 1743768000,
+      "deal": 322,
+      "balance": 13447.28,
+      "net": -0.17
+    },
+    {
+      "epoch": 1743773763,
+      "deal": 323,
+      "balance": 13301.14,
+      "net": -146.14
+    },
+    {
+      "epoch": 1743977580,
+      "deal": 324,
+      "balance": 13300.97,
+      "net": -0.17
+    },
+    {
+      "epoch": 1743984641,
+      "deal": 325,
+      "balance": 13132.47,
+      "net": -168.5
+    },
+    {
+      "epoch": 1744123200,
+      "deal": 326,
+      "balance": 13131.42,
+      "net": -1.05
+    },
+    {
+      "epoch": 1744128000,
+      "deal": 327,
+      "balance": 13403.08,
+      "net": 271.66
+    },
+    {
+      "epoch": 1744243200,
+      "deal": 328,
+      "balance": 13402.91,
+      "net": -0.17
+    },
+    {
+      "epoch": 1745196221,
+      "deal": 329,
+      "balance": 14233.62,
+      "net": 830.71
+    },
+    {
+      "epoch": 1745208000,
+      "deal": 330,
+      "balance": 14233.4,
+      "net": -0.22
+    },
+    {
+      "epoch": 1745359320,
+      "deal": 331,
+      "balance": 14051.26,
+      "net": -182.14
+    },
+    {
+      "epoch": 1745366400,
+      "deal": 332,
+      "balance": 14051.09,
+      "net": -0.17
+    },
+    {
+      "epoch": 1745416180,
+      "deal": 333,
+      "balance": 13879.89,
+      "net": -171.2
+    },
+    {
+      "epoch": 1745452800,
+      "deal": 334,
+      "balance": 13879.78,
+      "net": -0.11
+    },
+    {
+      "epoch": 1746059082,
+      "deal": 335,
+      "balance": 13730.56,
+      "net": -149.22
+    },
+    {
+      "epoch": 1746072000,
+      "deal": 336,
+      "balance": 13730.34,
+      "net": -0.22
+    },
+    {
+      "epoch": 1747226818,
+      "deal": 337,
+      "balance": 13549.03,
+      "net": -181.31
+    },
+    {
+      "epoch": 1747238400,
+      "deal": 338,
+      "balance": 13548.81,
+      "net": -0.22
+    },
+    {
+      "epoch": 1747282287,
+      "deal": 339,
+      "balance": 13400.72,
+      "net": -148.09
+    },
+    {
+      "epoch": 1747324800,
+      "deal": 340,
+      "balance": 13400.5,
+      "net": -0.22
+    },
+    {
+      "epoch": 1747392698,
+      "deal": 341,
+      "balance": 13235.39,
+      "net": -165.11
+    },
+    {
+      "epoch": 1747411200,
+      "deal": 342,
+      "balance": 13235.22,
+      "net": -0.17
+    },
+    {
+      "epoch": 1756695400,
+      "deal": 343,
+      "balance": 13957.69,
+      "net": 722.47
+    },
+    {
+      "epoch": 1756699200,
+      "deal": 344,
+      "balance": 13957.36,
+      "net": -0.33
+    },
+    {
+      "epoch": 1757326454,
+      "deal": 345,
+      "balance": 14800.43,
+      "net": 843.07
+    },
+    {
+      "epoch": 1757332800,
+      "deal": 346,
+      "balance": 14800.1,
+      "net": -0.33
+    },
+    {
+      "epoch": 1758618206,
+      "deal": 347,
+      "balance": 15697.45,
+      "net": 897.35
+    },
+    {
+      "epoch": 1758628800,
+      "deal": 348,
+      "balance": 15697.12,
+      "net": -0.33
+    },
+    {
+      "epoch": 1758654013,
+      "deal": 349,
+      "balance": 15529.79,
+      "net": -167.33
+    },
+    {
+      "epoch": 1758715200,
+      "deal": 350,
+      "balance": 15529.51,
+      "net": -0.28
+    },
+    {
+      "epoch": 1758730624,
+      "deal": 351,
+      "balance": 15374.02,
+      "net": -155.49
+    },
+    {
+      "epoch": 1758801600,
+      "deal": 352,
+      "balance": 15373.74,
+      "net": -0.28
+    },
+    {
+      "epoch": 1759761339,
+      "deal": 353,
+      "balance": 16364.01,
+      "net": 990.27
+    },
+    {
+      "epoch": 1759766400,
+      "deal": 354,
+      "balance": 16363.73,
+      "net": -0.28
+    },
+    {
+      "epoch": 1760513918,
+      "deal": 355,
+      "balance": 17562.76,
+      "net": 1199.03
+    },
+    {
+      "epoch": 1760515200,
+      "deal": 356,
+      "balance": 17562.54,
+      "net": -0.22
+    },
+    {
+      "epoch": 1761056560,
+      "deal": 357,
+      "balance": 17336.05,
+      "net": -226.49
+    },
+    {
+      "epoch": 1761062400,
+      "deal": 358,
+      "balance": 17335.94,
+      "net": -0.11
+    },
+    {
+      "epoch": 1761091575,
+      "deal": 359,
+      "balance": 17152.44,
+      "net": -183.5
+    },
+    {
+      "epoch": 1761148800,
+      "deal": 360,
+      "balance": 17152.33,
+      "net": -0.11
+    },
+    {
+      "epoch": 1761636693,
+      "deal": 361,
+      "balance": 16931.24,
+      "net": -221.09
+    },
+    {
+      "epoch": 1761638400,
+      "deal": 362,
+      "balance": 16931.07,
+      "net": -0.17
+    },
+    {
+      "epoch": 1765551120,
+      "deal": 363,
+      "balance": 18100.24,
+      "net": 1169.17
+    },
+    {
+      "epoch": 1765555200,
+      "deal": 364,
+      "balance": 18100.02,
+      "net": -0.22
+    },
+    {
+      "epoch": 1768177949,
+      "deal": 365,
+      "balance": 19187.64,
+      "net": 1087.62
+    },
+    {
+      "epoch": 1768190400,
+      "deal": 366,
+      "balance": 19187.36,
+      "net": -0.28
+    },
+    {
+      "epoch": 1768969407,
+      "deal": 367,
+      "balance": 20574.1,
+      "net": 1386.74
+    },
+    {
+      "epoch": 1768982400,
+      "deal": 368,
+      "balance": 20573.82,
+      "net": -0.28
+    },
+    {
+      "epoch": 1769016688,
+      "deal": 369,
+      "balance": 20342.3,
+      "net": -231.52
+    },
+    {
+      "epoch": 1769068800,
+      "deal": 370,
+      "balance": 20342.13,
+      "net": -0.17
+    },
+    {
+      "epoch": 1769578905,
+      "deal": 371,
+      "balance": 21634.56,
+      "net": 1292.43
+    },
+    {
+      "epoch": 1769587200,
+      "deal": 372,
+      "balance": 21634.39,
+      "net": -0.17
+    },
+    {
+      "epoch": 1769700463,
+      "deal": 373,
+      "balance": 21366.52,
+      "net": -267.87
+    },
+    {
+      "epoch": 1769702400,
+      "deal": 374,
+      "balance": 21366.41,
+      "net": -0.11
+    },
+    {
+      "epoch": 1769764465,
+      "deal": 375,
+      "balance": 21040.69,
+      "net": -325.72
+    },
+    {
+      "epoch": 1769788800,
+      "deal": 376,
+      "balance": 21040.63,
+      "net": -0.06
+    },
+    {
+      "epoch": 1769796751,
+      "deal": 377,
+      "balance": 20782.01,
+      "net": -258.62
+    },
+    {
+      "epoch": 1769986898,
+      "deal": 378,
+      "balance": 20781.95,
+      "net": -0.06
+    },
+    {
+      "epoch": 1770013265,
+      "deal": 379,
+      "balance": 20485.12,
+      "net": -296.83
+    },
+    {
+      "epoch": 1770076800,
+      "deal": 380,
+      "balance": 20485.06,
+      "net": -0.06
+    },
+    {
+      "epoch": 1774217003,
+      "deal": 381,
+      "balance": 20136.65,
+      "net": -348.41
+    },
+    {
+      "epoch": 1774224000,
+      "deal": 382,
+      "balance": 20136.54,
+      "net": -0.11
+    },
+    {
+      "epoch": 1774403425,
+      "deal": 383,
+      "balance": 19871.83,
+      "net": -264.71
+    },
+    {
+      "epoch": 1777478400,
+      "deal": 384,
+      "balance": 19871.61,
+      "net": -0.22
+    },
+    {
+      "epoch": 1777535820,
+      "deal": 385,
+      "balance": 19654.46,
+      "net": -217.15
+    },
+    {
+      "epoch": 1777564801,
+      "deal": 386,
+      "balance": 19654.24,
+      "net": -0.22
+    },
+    {
+      "epoch": 1778053584,
+      "deal": 387,
+      "balance": 19409.25,
+      "net": -244.99
+    },
+    {
+      "epoch": 1778529600,
+      "deal": 388,
+      "balance": 19409.03,
+      "net": -0.22
+    },
+    {
+      "epoch": 1778591812,
+      "deal": 389,
+      "balance": 19191.63,
+      "net": -217.4
+    },
+    {
+      "epoch": 1779148800,
+      "deal": 390,
+      "balance": 19191.41,
+      "net": -0.22
+    },
+    {
+      "epoch": 1781047630,
+      "deal": 391,
+      "balance": 20622.64,
+      "net": 1431.23
+    },
+    {
+      "epoch": 1781049600,
+      "deal": 392,
+      "balance": 20622.42,
+      "net": -0.22
+    },
+    {
+      "epoch": 1781474572,
+      "deal": 393,
+      "balance": 20375.9,
+      "net": -246.52
+    },
+    {
+      "epoch": 1781481600,
+      "deal": 394,
+      "balance": 20375.73,
+      "net": -0.17
+    },
+    {
+      "epoch": 1781717620,
+      "deal": 395,
+      "balance": 20127.37,
+      "net": -248.36
+    },
+    {
+      "epoch": 1781726400,
+      "deal": 396,
+      "balance": 20127.15,
+      "net": -0.22
+    },
+    {
+      "epoch": 1781740985,
+      "deal": 397,
+      "balance": 19907.09,
+      "net": -220.06
+    },
+    {
+      "epoch": 1781812800,
+      "deal": 398,
+      "balance": 19906.87,
+      "net": -0.22
+    },
+    {
+      "epoch": 1785975825,
+      "deal": 399,
+      "balance": 19641.02,
+      "net": -265.85
+    },
+    {
+      "epoch": 1787169600,
+      "deal": 400,
+      "balance": 19640.8,
+      "net": -0.22
+    },
+    {
+      "epoch": 1787227577,
+      "deal": 401,
+      "balance": 19397.9,
+      "net": -242.9
+    },
+    {
+      "epoch": 1787256000,
+      "deal": 402,
+      "balance": 19397.73,
+      "net": -0.17
+    },
+    {
+      "epoch": 1787938930,
+      "deal": 403,
+      "balance": 19189.36,
+      "net": -208.37
+    },
+    {
+      "epoch": 1788163200,
+      "deal": 404,
+      "balance": 19189.14,
+      "net": -0.22
+    },
+    {
+      "epoch": 1788251421,
+      "deal": 405,
+      "balance": 18931.49,
+      "net": -257.65
+    },
+    {
+      "epoch": 1788264000,
+      "deal": 406,
+      "balance": 18931.32,
+      "net": -0.17
+    },
+    {
+      "epoch": 1788310927,
+      "deal": 407,
+      "balance": 18731.69,
+      "net": -199.63
+    },
+    {
+      "epoch": 1788364800,
+      "deal": 408,
+      "balance": 18731.47,
+      "net": -0.22
+    },
+    {
+      "epoch": 1789067008,
+      "deal": 409,
+      "balance": 18477.39,
+      "net": -254.08
+    },
+    {
+      "epoch": 1790546490,
+      "deal": 410,
+      "balance": 18477.11,
+      "net": -0.28
+    },
+    {
+      "epoch": 1791244798,
+      "deal": 411,
+      "balance": 19153.57,
+      "net": 676.46
+    }
+  ],
+  "seconds": 933.2310955524445,
+  "binary_sha256": "d16e4ee81efcf1933d750a3a56be1143f7de67399a63900da27f5d263d8d2d39",
+  "report_sha256": "8f51168bc9e97e0ab9b2ece4e12bfabfd525e67179fb4dabcbd9101dab77084c",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

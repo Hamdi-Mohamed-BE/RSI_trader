@@ -1,0 +1,81 @@
+GOLDEN TRIO — FROZEN RAW RECONSTRUCTION, 2026-10-06
+Source: https://www.youtube.com/watch?v=A0G14JYYVTk
+No original source code or preset was supplied. These are independently written,
+explicitly labelled CFD reconstructions of the newly published interview, not
+verified replicas of its proprietary futures strategies or claimed prop results.
+
+Requested test: Exness USTEC (US100), 2023-10-06 inclusive through 2026-10-05,
+end exclusive 2026-10-06 UTC. Independent $10,000 accounts, 1% current equity
+planned initial-stop risk per trade. Native MT5 Model 4, 150ms execution delay,
+broker spread/commission/swap. No optimisation, Monte Carlo, live attachment,
+BAT or website edits. No combined portfolio claim. No prop bench filter.
+One isolated tester only; no live API connection or terminal restart.
+Volume floors to the broker step, minimum-lot oversizing skips. The pipeline's
+round-up sizing is deliberately not used because it could exceed the 1% budget.
+Costs, gaps and delayed fills can exceed planned risk. Report both net metrics
+and native floating-equity drawdown; no assertion of a guaranteed loss cap.
+
+TIME AND SHARED INDICATORS
+All rule clocks are America/Chicago, with historical US DST. Exness server
+timestamps are treated as UTC, matching the existing Exness studies.
+Daily/session ATR is NOT ATR(15): the source explicitly requires the 15-session
+simple moving average of daily ATR. Sessions are midnight through 16:00 Chicago.
+Underlying ATR period/type is unspecified: Wilder ATR(14) is OUR default.
+Session OHLC is built from completed M30 bars, excluding bars at/after 16:00.
+ATR uses gaps from the prior available session close, a 14-TR seed, and Wilder
+recursion; the latest 15 completed session ATR readings define the day's level.
+No-data sessions are omitted; available shortened holiday sessions are included.
+Warm-up starts 240 calendar days before the native test's first tick. Indicator
+state carries forward; it is not re-seeded or fit using the evaluation period.
+Midnight VWAP = cumulative HLC3 * broker tick volume / cumulative tick volume,
+using closed bars at each strategy's timeframe. Formula and CFD tick-volume
+substitution are OUR implementation, not true exchange-traded volume.
+ADX uses iADXWilder(14), closed-bar readings; period/type is OUR default.
+Market orders are sent on the first tick of the next bar. Stop/target anchors
+use its current executable Ask/Bid quote (not a future exact fill). No widening,
+retry, fallback or forced minimum lot. Invalid levels or broker rejection skip.
+
+1 — VAULT BREAK (source chapter 08:26; clarified 53:00 onwards)
+M30, long only. Day's static upper noise barrier = midnight opening price +
+0.30 * SMA15(session ATR). Midnight opening price is the first available M30
+bar opening in the Chicago calendar day. Closed M30 close > barrier AND >
+midnight VWAP. Next-bar order times 10:00 inclusive to 14:30 exclusive Chicago.
+No crossing requirement: re-entry allowed after an exit, max 3 filled trades/day,
+one position at a time. One-NQ-contract $1500 stop/$800 target translate to
+75 / 40 Nasdaq price points; preserve those distances, NOT dollar loss amounts.
+Flatten on first available tick at/after 14:30 Chicago. No trailing/filter added.
+
+2 — VWAP PULLBACK + ADX (source chapter 22:34)
+M1, long only. Opening range 08:30 inclusive to 09:00 exclusive Chicago.
+Closed M1 close above OR high arms setup. A subsequent (or same) candle's low
+touches VWAP; close back above VWAP records reclaim. ADX >20 AND ADX no greater
+than its previous closed-bar value; gate may become valid on a later bar.
+Current close must still be above VWAP when delayed ADX qualifies (OUR default).
+Next-bar long; SL = lowest low last 20 completed M1 bars; TP = highest high
+last 5 completed M1 bars, both INCLUDING signal candle. Reject if execution
+quote is already beyond a target or invalid against broker constraints.
+Flatten at 15:55 Chicago (as explicitly stated in the interview).
+Gaps in published rules: entry cutoff, trade limit, VWAP anchor, state reset.
+OUR frozen defaults: entry 10:00–14:30 Chicago, max 1 filled trade/day,
+midnight VWAP; arm/touch/reclaim persist until fill or daily reset. No trailing.
+
+3 — OVERNIGHT BIAS ORB (source chapter 35:50)
+M15, both directions. Overnight range prior 23:00 to current 08:30 Chicago.
+Freeze bias from the 08:30 opening quote: >= upper-third boundary long;
+<= lower-third boundary short; inside middle third no trade. Boundary equality
+and opens outside the overnight range follow the corresponding side (OUR detail).
+First M15 bar 08:30–08:45 is OR. Later completed M15 close beyond OR high for
+long bias or OR low for short bias AND ADX >20. Next-bar entry, 1 filled trade/day.
+Opposite breaks don't invalidate frozen bias. SL = 0.30*SMA15(session ATR),
+TP = 3*SL distance from quote. Flatten first available tick at/after 14:30 CT.
+No trailing, ADX slope, news filter or overnight holding.
+
+INTERPRETATION
+Raw results only; three fixed configurations, no search. Calendar/recent slices
+are diagnostic slices of a continuing compounded account, not independently
+reset backtests or untouched holdouts. The entire last two years are already
+exposed by raw testing; future optimisation must use the canonical split and
+label its final check retrospective OOS. No edge/promotion gate claimed here:
+the 5-year/control/Monte Carlo stages have not been requested or completed.
+Record history quality and actual real-tick coverage; modelled older ticks can
+materially distort short-horizon stops and targets, especially VWAP Pullback.

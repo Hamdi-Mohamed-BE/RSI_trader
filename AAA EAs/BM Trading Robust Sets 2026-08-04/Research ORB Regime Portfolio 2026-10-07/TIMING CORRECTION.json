@@ -1,0 +1,10 @@
+{
+  "status": "Original preliminary results withdrawn",
+  "found_by": "Independent one-entry-per-New-York-date audit",
+  "cause": "Cutoff checked only the upper HHMM bound. At midnight the latest completed M5 candle could still belong to yesterday, and the cutoff reopened at 00:00 with the previous range/state.",
+  "example": "US100 reversal included 00:00 NY entries on 2025-08-21, 2025-08-26 and 2026-05-12; two dates also had later valid morning entries.",
+  "fix": "Entry clock must be >= 09:30 plus OR duration AND strictly before 12:00 NY. Old source retained as engine-v1-timing-bug.mq5; old outputs preserved in Withdrawn Timing Audit V1 and original native archives.",
+  "method": "Same original frozen finalist parameters. No parameter re-selection after seeing results. Corrected development, validation and two-year Model-4 account paths rerun.",
+  "disclosure": "The corrected test is retrospective and previously inspected, not untouched OOS. Six corrected asset/settings combinations are added to the trial count.",
+  "live_changes": false
+}

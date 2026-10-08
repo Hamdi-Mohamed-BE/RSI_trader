@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Portfolios — Calyx{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static',path='portfolios.css') }}?v=20261008-risk2"><script src="{{ url_for('static',path='portfolios.js') }}?v=20261008-risk2" defer></script>{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="mx-auto max-w-7xl px-5 py-16 lg:px-8"><p class="eyebrow-simple">Portfolio library · {{ publication.version }}</p><h1 class="page-title">Different baskets. Clear rules.</h1><p class="page-lead">See each portfolio’s included EAs, risk settings, loss controls and recorded history. Portfolio status is separate from the individual EA catalogue.</p></div></section>
+<section class="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+  <div class="pf-notice">{{ publication.status_meaning }} A website update does not attach, disable or change EAs on your MT5 account.</div>
+  {% for warning in publication.warnings %}<p class="pf-warning">{{ warning }}</p>{% endfor %}
+  <nav class="pf-filters" aria-label="Portfolio status">{% for key,label in status_labels.items() %}<a href="/portfolios?status={{ key }}&amp;period={{ selected_period }}" class="{{ 'selected' if selected_status==key else '' }}" {% if selected_status==key %}aria-current="page"{% endif %}>{{ label }} · {{ publication.portfolios|length if key=='all' else publication.counts[key] }}</a>{% endfor %}</nav>
+  <div class="pf-global-period"><p class="pf-small">Change period for all portfolios</p><nav class="pf-period-pills" data-global-periods aria-label="All portfolios performance period">{% for key,label in period_labels.items() %}<a href="/portfolios?status={{ selected_status }}&amp;period={{ key }}" data-period="{{ key }}" class="{{ 'selected' if selected_period==key else '' }}" {% if selected_period==key %}aria-current="true"{% endif %}>{{ label }}</a>{% endfor %}</nav><p class="pf-small">{{ publication.period_note }}</p></div>
+  <div class="pf-grid">
+  {% for profile in portfolios %}{% set history=profile.history|selectattr('id','equalto',selected_period)|first %}{% set compact=true %}
+    <article class="pf-card" data-portfolio="{{ profile.slug }}" data-portfolio-status="{{ profile.status }}" data-portfolio-view="{{ profile.slug }}" data-compact="true">
+      <div class="pf-card-heading"><span class="badge {{ 'badge-good' if profile.status=='active' else 'badge-warn' }}">{{ profile.status_label }}</span><span class="pf-small">{{ profile.ea_count }} EAs</span></div>
+      <h2><a href="{{ profile.url }}">{{ profile.name }}</a></h2><p class="pf-description">{{ profile.description }}</p><p class="pf-risk">{{ profile.risk_summary }}</p>
+      {% include 'partials/portfolio_periods.html' %}
+      {% include 'partials/portfolio_calculator.html' %}
+      <div data-history-panel>{% include 'partials/portfolio_history.html' %}</div>
+      <div class="pf-card-footer"><a href="{{ profile.url }}?period={{ selected_period }}" data-detail-link class="button-secondary">EAs, history &amp; risk rules →</a><span class="pf-small">{{ profile.launcher or 'No live launcher' }}</span></div>
+    </article>
+  {% endfor %}
+  </div>
+  <div class="pf-notice pf-bottom"><strong>How to read the comparison.</strong><p>{{ publication.metrics_note }} These rows have different risk, controls, source windows and evidence completeness; their raw returns are not an equal-risk ranking. Missing metrics show “—”, not zero.</p></div>
+  <a href="/portfolio" class="text-mint">Open the archived full adaptive audit →</a>
+</section>
+{% endblock %}

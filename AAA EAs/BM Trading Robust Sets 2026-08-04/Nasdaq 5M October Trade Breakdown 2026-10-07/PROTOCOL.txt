@@ -1,0 +1,12 @@
+October-only native reproduction of the current Nasdaq 5M DI Wide ATR EA.
+Start flat on 2026-10-01, USD 10,000, 1% equity target risk per trade.
+Copy the exact production EX5 and current 1% preset; no compilation or rule changes.
+DI ON, opening M5 close versus EMA12, 0.60% price stop, ATR14 x6 trail after +1R, no TP or session exit.
+Adaptive portfolio overlay disabled for the standalone backtest, as in the existing duration comparison.
+Exness USTEC CFD, real-tick MT5 model 4, 150 ms execution delay, 1:2000 leverage.
+Request through 2026-10-08 exclusive to include available ticks on 7 October.
+Actual last available simulated tick governs the cutoff, not the requested calendar end.
+Any end-of-test liquidation is a valuation of an otherwise open position, not a strategy exit.
+Natural closed-trade win rate excludes end-of-test liquidations.
+Isolated portable research terminal only; blank chart profile; no live account orders or modifications.
+Results are simulated, not the user's actual account journal, and depend on broker history and costs.

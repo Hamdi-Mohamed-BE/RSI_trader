@@ -64,6 +64,7 @@ foreach($f in $ast.FindAll({param($n) $n -is [Management.Automation.Language.Fun
 function Stop-WithMessage([string]$Message){throw $Message}
 $UsesDynamicRisk=$true;$RiskMode='PERCENT';$IsAdaptiveAccount=$true;$IsSmallAccount=$false
 $UseRecommendedSelections=$true;$UseClaudeSelections=$false;$UseAdaptiveProfile=$false;$IsFullSafe=$false
+$ApplyLiveProfileDIChoices=$false
 $GoldNewsRoot=Join-Path $PackageRoot '..\..\AI news';$ExpertFolderName='OfflineOnly'
 $NewsRiskPercent=.3;$EffectiveAdaptiveRiskPercent=.5
 $count=0

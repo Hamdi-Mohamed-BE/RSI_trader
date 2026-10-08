@@ -1,0 +1,7 @@
+{
+  "reason": "Run independent frozen final accounts concurrently using native MT5 enumerated-case optimisation; no tuning or parameter selection occurs in these final batches.",
+  "unchanged": ["Frozen settings", "Model 4", "150ms delay", "1% equity-risk target", "two-year date window", "10000 USD initial deposit", "ledger and native floating-equity reconciliation"],
+  "reuse": "Identical raw and selected breakout settings reuse one complete native account; the US100 control was also repeated independently with an identical ledger.",
+  "excluded": "The in-progress sequential US100 reversal test was interrupted only to switch execution scheduling. It is not accepted as a result; its partial files are retained. No normal/live MT5 process was targeted.",
+  "reporting": "Native per-pass statistics, deals, quotes, decisions and equity paths remain available. Grouped native XML does not contain a per-pass HTML history-quality percentage; exact tick availability is taken from the journal."
+}

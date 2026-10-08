@@ -1,0 +1,1808 @@
+{
+  "USTEC raw": {
+    "metrics": {
+      "trades": 508,
+      "net": 1484.7999999999988,
+      "return_pct": 14.847999999999988,
+      "pf": 1.049518604327743,
+      "win_rate_pct": 46.45669291338583,
+      "equity_dd": 29.31100050512687,
+      "balance_dd": 28.87964403144824,
+      "mt5_sharpe": 0.9664062539704767,
+      "daily_closed_balance_sharpe": 0.48243682121881176,
+      "max_win_streak": 6,
+      "max_loss_streak": 6,
+      "average_trade": 2.922834645669289,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 61,
+          "net": 937.1199999999999,
+          "pf": 1.3239782336631472
+        },
+        {
+          "year": 2025,
+          "trades": 251,
+          "net": 2317.2400000000002,
+          "pf": 1.1647369955141011
+        },
+        {
+          "year": 2026,
+          "trades": 196,
+          "net": -1769.5600000000002,
+          "pf": 0.8641501322370516
+        }
+      ]
+    },
+    "wilson95_pct": [
+      42.16247447265399,
+      50.804097621184276
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100700,
+      "return_p05_p50_p95": [
+        -24.558096980199757,
+        14.55440219433216,
+        74.28674315640701
+      ],
+      "pf_p05_p50_p95": [
+        0.8782268909569092,
+        1.048887555147577,
+        1.2474896325808504
+      ],
+      "max_dd_p05_p50_p95": [
+        11.8293418547801,
+        20.335716412082725,
+        36.48365817047923
+      ],
+      "probability_profit_pct": 70.35,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 48.699999999999996,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.48456796100268995,
+      "probabilistic_sharpe_pct": 75.49206353733324,
+      "deflated_sharpe_pct": 3.1373501559377237,
+      "multiple_test_benchmark_sharpe": 1.791376065486145,
+      "daily_skewness": 0.608221747585935,
+      "daily_kurtosis": 2.787663953794047
+    },
+    "recent_half_pf": 0.9124795430011123,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:16:28",
+        "end": "2025-06-06T14:29:38",
+        "trades": 169,
+        "net_profit": 2499.38,
+        "profit_factor": 1.2825432030938242,
+        "win_rate_pct": 48.5207100591716
+      },
+      {
+        "part": 2,
+        "start": "2025-06-09T19:55:00",
+        "end": "2026-02-09T20:55:00",
+        "trades": 170,
+        "net_profit": 2348.02,
+        "profit_factor": 1.258087137741295,
+        "win_rate_pct": 48.8235294117647
+      },
+      {
+        "part": 3,
+        "start": "2026-02-10T20:06:42",
+        "end": "2026-10-06T19:55:00",
+        "trades": 169,
+        "net_profit": -3362.6000000000004,
+        "profit_factor": 0.720735160992949,
+        "win_rate_pct": 42.01183431952663
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 196,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 29.31100050512687,
+    "sampled_minute_dd_pct": 29.31100050512687,
+    "daily_equity_expected_shortfall_95_pct": 1.1427793781309812,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.1495972075674692,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": true,
+      "intended_same_day_liquidation": false,
+      "no_rejected_management_requests": false
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [
+        "MH\t0\t23:59:13.700\tTester\tUSTEC: ticks data begins from 2026.01.01 00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 253,
+      "net": 841.28,
+      "return_pct": 8.412799999999999,
+      "pf": 1.0632819222876806,
+      "win_rate_pct": 44.26877470355731,
+      "equity_dd": 12.771310607159316,
+      "balance_dd": 11.403909640634364,
+      "mt5_sharpe": 1.251830189158566,
+      "daily_closed_balance_sharpe": 0.5250150763308332,
+      "max_win_streak": 7,
+      "max_loss_streak": 6,
+      "average_trade": 3.325217391304348,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 59,
+          "net": 279.56999999999994,
+          "pf": 1.1025019615319749
+        },
+        {
+          "year": 2024,
+          "trades": 194,
+          "net": 561.71,
+          "pf": 1.053158507386412
+        }
+      ]
+    },
+    "execution": {
+      "overnight_trades": 24,
+      "overnight_positions": [
+        {
+          "position_id": 80,
+          "open_ny": "2024-11-29T09:55:00-05:00",
+          "close_ny": "2024-12-01T18:00:00-05:00",
+          "net_profit": 100.73
+        },
+        {
+          "position_id": 90,
+          "open_ny": "2024-12-06T09:50:00-05:00",
+          "close_ny": "2024-12-08T21:32:00-05:00",
+          "net_profit": 36.910000000000004
+        },
+        {
+          "position_id": 100,
+          "open_ny": "2024-12-13T10:45:00-05:00",
+          "close_ny": "2024-12-15T18:00:00-05:00",
+          "net_profit": -57.410000000000004
+        },
+        {
+          "position_id": 118,
+          "open_ny": "2024-12-27T10:05:00-05:00",
+          "close_ny": "2024-12-29T18:00:00-05:00",
+          "net_profit": -50.769999999999996
+        },
+        {
+          "position_id": 126,
+          "open_ny": "2025-01-03T11:35:00-05:00",
+          "close_ny": "2025-01-05T18:00:00-05:00",
+          "net_profit": 41.74999999999999
+        },
+        {
+          "position_id": 134,
+          "open_ny": "2025-01-10T09:50:00-05:00",
+          "close_ny": "2025-01-12T18:00:00-05:00",
+          "net_profit": 13.6
+        },
+        {
+          "position_id": 172,
+          "open_ny": "2025-02-07T10:05:00-05:00",
+          "close_ny": "2025-02-09T18:00:00-05:00",
+          "net_profit": 153.02
+        },
+        {
+          "position_id": 182,
+          "open_ny": "2025-02-14T10:10:00-05:00",
+          "close_ny": "2025-02-16T18:00:00-05:00",
+          "net_profit": 142.35000000000002
+        },
+        {
+          "position_id": 202,
+          "open_ny": "2025-02-28T10:15:00-05:00",
+          "close_ny": "2025-03-02T18:00:00-05:00",
+          "net_profit": 139.97
+        },
+        {
+          "position_id": 376,
+          "open_ny": "2025-07-04T09:55:00-04:00",
+          "close_ny": "2025-07-06T18:00:00-04:00",
+          "net_profit": 75.42999999999999
+        },
+        {
+          "position_id": 564,
+          "open_ny": "2025-11-14T09:50:00-05:00",
+          "close_ny": "2025-11-16T18:00:00-05:00",
+          "net_profit": 116.24000000000001
+        },
+        {
+          "position_id": 582,
+          "open_ny": "2025-11-28T11:10:00-05:00",
+          "close_ny": "2025-11-30T18:00:00-05:00",
+          "net_profit": 77.66000000000001
+        },
+        {
+          "position_id": 612,
+          "open_ny": "2025-12-19T10:00:00-05:00",
+          "close_ny": "2025-12-21T18:00:00-05:00",
+          "net_profit": 49.300000000000004
+        },
+        {
+          "position_id": 618,
+          "open_ny": "2025-12-24T10:15:00-05:00",
+          "close_ny": "2025-12-25T18:00:00-05:00",
+          "net_profit": 125.74
+        },
+        {
+          "position_id": 620,
+          "open_ny": "2025-12-26T10:05:00-05:00",
+          "close_ny": "2025-12-28T18:00:00-05:00",
+          "net_profit": -26.68
+        },
+        {
+          "position_id": 646,
+          "open_ny": "2026-01-16T09:55:00-05:00",
+          "close_ny": "2026-01-18T18:00:10-05:00",
+          "net_profit": 390.03000000000003
+        },
+        {
+          "position_id": 656,
+          "open_ny": "2026-01-23T10:00:00-05:00",
+          "close_ny": "2026-01-25T18:00:01-05:00",
+          "net_profit": -248.46
+        },
+        {
+          "position_id": 666,
+          "open_ny": "2026-01-30T10:05:00-05:00",
+          "close_ny": "2026-02-01T18:00:02-05:00",
+          "net_profit": 322.86
+        },
+        {
+          "position_id": 676,
+          "open_ny": "2026-02-06T09:50:00-05:00",
+          "close_ny": "2026-02-08T18:00:02-05:00",
+          "net_profit": 144.36
+        },
+        {
+          "position_id": 686,
+          "open_ny": "2026-02-13T10:10:00-05:00",
+          "close_ny": "2026-02-15T18:00:01-05:00",
+          "net_profit": -20.360000000000003
+        },
+        {
+          "position_id": 696,
+          "open_ny": "2026-02-20T10:05:00-05:00",
+          "close_ny": "2026-02-22T18:00:01-05:00",
+          "net_profit": 28.360000000000003
+        },
+        {
+          "position_id": 706,
+          "open_ny": "2026-02-27T09:50:00-05:00",
+          "close_ny": "2026-03-01T18:00:01-05:00",
+          "net_profit": -289.64000000000004
+        },
+        {
+          "position_id": 864,
+          "open_ny": "2026-06-19T10:00:00-04:00",
+          "close_ny": "2026-06-21T18:00:01-04:00",
+          "net_profit": -407.79
+        },
+        {
+          "position_id": 884,
+          "open_ny": "2026-07-03T10:15:00-04:00",
+          "close_ny": "2026-07-05T18:00:02-04:00",
+          "net_profit": -151.97
+        }
+      ],
+      "rejected_management_requests": 55451,
+      "flatten_schedule": "Attempt close from 15:55 New York; cannot fill while market closed or if no executable tick. Some broker sessions/holiday closures do not permit this schedule.",
+      "same_day_liquidation_observed": false,
+      "native_market_closed_counter": "Not instrumented in frozen source; its exported zero is a placeholder, NOT evidence of zero market-closed rejections.",
+      "preserved_in_results": true,
+      "scope": "All positions, including overnight carry and rejected-close outcomes, remain in native P&L, DD and bootstrap. Same-day liquidation failures block promotion; this is not a clean strict-intraday backtest for affected versions."
+    }
+  },
+  "USTEC breakout": {
+    "metrics": {
+      "trades": 508,
+      "net": 1484.7999999999988,
+      "return_pct": 14.847999999999988,
+      "pf": 1.049518604327743,
+      "win_rate_pct": 46.45669291338583,
+      "equity_dd": 29.31100050512687,
+      "balance_dd": 28.87964403144824,
+      "mt5_sharpe": 0.9664062539704767,
+      "daily_closed_balance_sharpe": 0.48243682121881176,
+      "max_win_streak": 6,
+      "max_loss_streak": 6,
+      "average_trade": 2.922834645669289,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 61,
+          "net": 937.1199999999999,
+          "pf": 1.3239782336631472
+        },
+        {
+          "year": 2025,
+          "trades": 251,
+          "net": 2317.2400000000002,
+          "pf": 1.1647369955141011
+        },
+        {
+          "year": 2026,
+          "trades": 196,
+          "net": -1769.5600000000002,
+          "pf": 0.8641501322370516
+        }
+      ]
+    },
+    "wilson95_pct": [
+      42.16247447265399,
+      50.804097621184276
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100700,
+      "return_p05_p50_p95": [
+        -24.558096980199757,
+        14.55440219433216,
+        74.28674315640701
+      ],
+      "pf_p05_p50_p95": [
+        0.8782268909569092,
+        1.048887555147577,
+        1.2474896325808504
+      ],
+      "max_dd_p05_p50_p95": [
+        11.8293418547801,
+        20.335716412082725,
+        36.48365817047923
+      ],
+      "probability_profit_pct": 70.35,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 48.699999999999996,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.48456796100268995,
+      "probabilistic_sharpe_pct": 75.49206353733324,
+      "deflated_sharpe_pct": 3.1373501559377237,
+      "multiple_test_benchmark_sharpe": 1.791376065486145,
+      "daily_skewness": 0.608221747585935,
+      "daily_kurtosis": 2.787663953794047
+    },
+    "recent_half_pf": 0.9124795430011123,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:16:28",
+        "end": "2025-06-06T14:29:38",
+        "trades": 169,
+        "net_profit": 2499.38,
+        "profit_factor": 1.2825432030938242,
+        "win_rate_pct": 48.5207100591716
+      },
+      {
+        "part": 2,
+        "start": "2025-06-09T19:55:00",
+        "end": "2026-02-09T20:55:00",
+        "trades": 170,
+        "net_profit": 2348.02,
+        "profit_factor": 1.258087137741295,
+        "win_rate_pct": 48.8235294117647
+      },
+      {
+        "part": 3,
+        "start": "2026-02-10T20:06:42",
+        "end": "2026-10-06T19:55:00",
+        "trades": 169,
+        "net_profit": -3362.6000000000004,
+        "profit_factor": 0.720735160992949,
+        "win_rate_pct": 42.01183431952663
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 196,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 29.31100050512687,
+    "sampled_minute_dd_pct": 29.31100050512687,
+    "daily_equity_expected_shortfall_95_pct": 1.1427793781309812,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.1495972075674692,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": true,
+      "intended_same_day_liquidation": false,
+      "no_rejected_management_requests": false
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [
+        "MH\t0\t23:59:13.700\tTester\tUSTEC: ticks data begins from 2026.01.01 00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 253,
+      "net": 841.28,
+      "return_pct": 8.412799999999999,
+      "pf": 1.0632819222876806,
+      "win_rate_pct": 44.26877470355731,
+      "equity_dd": 12.771310607159316,
+      "balance_dd": 11.403909640634364,
+      "mt5_sharpe": 1.251830189158566,
+      "daily_closed_balance_sharpe": 0.5250150763308332,
+      "max_win_streak": 7,
+      "max_loss_streak": 6,
+      "average_trade": 3.325217391304348,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 59,
+          "net": 279.56999999999994,
+          "pf": 1.1025019615319749
+        },
+        {
+          "year": 2024,
+          "trades": 194,
+          "net": 561.71,
+          "pf": 1.053158507386412
+        }
+      ]
+    },
+    "execution": {
+      "overnight_trades": 24,
+      "overnight_positions": [
+        {
+          "position_id": 80,
+          "open_ny": "2024-11-29T09:55:00-05:00",
+          "close_ny": "2024-12-01T18:00:00-05:00",
+          "net_profit": 100.73
+        },
+        {
+          "position_id": 90,
+          "open_ny": "2024-12-06T09:50:00-05:00",
+          "close_ny": "2024-12-08T21:32:00-05:00",
+          "net_profit": 36.910000000000004
+        },
+        {
+          "position_id": 100,
+          "open_ny": "2024-12-13T10:45:00-05:00",
+          "close_ny": "2024-12-15T18:00:00-05:00",
+          "net_profit": -57.410000000000004
+        },
+        {
+          "position_id": 118,
+          "open_ny": "2024-12-27T10:05:00-05:00",
+          "close_ny": "2024-12-29T18:00:00-05:00",
+          "net_profit": -50.769999999999996
+        },
+        {
+          "position_id": 126,
+          "open_ny": "2025-01-03T11:35:00-05:00",
+          "close_ny": "2025-01-05T18:00:00-05:00",
+          "net_profit": 41.74999999999999
+        },
+        {
+          "position_id": 134,
+          "open_ny": "2025-01-10T09:50:00-05:00",
+          "close_ny": "2025-01-12T18:00:00-05:00",
+          "net_profit": 13.6
+        },
+        {
+          "position_id": 172,
+          "open_ny": "2025-02-07T10:05:00-05:00",
+          "close_ny": "2025-02-09T18:00:00-05:00",
+          "net_profit": 153.02
+        },
+        {
+          "position_id": 182,
+          "open_ny": "2025-02-14T10:10:00-05:00",
+          "close_ny": "2025-02-16T18:00:00-05:00",
+          "net_profit": 142.35000000000002
+        },
+        {
+          "position_id": 202,
+          "open_ny": "2025-02-28T10:15:00-05:00",
+          "close_ny": "2025-03-02T18:00:00-05:00",
+          "net_profit": 139.97
+        },
+        {
+          "position_id": 376,
+          "open_ny": "2025-07-04T09:55:00-04:00",
+          "close_ny": "2025-07-06T18:00:00-04:00",
+          "net_profit": 75.42999999999999
+        },
+        {
+          "position_id": 564,
+          "open_ny": "2025-11-14T09:50:00-05:00",
+          "close_ny": "2025-11-16T18:00:00-05:00",
+          "net_profit": 116.24000000000001
+        },
+        {
+          "position_id": 582,
+          "open_ny": "2025-11-28T11:10:00-05:00",
+          "close_ny": "2025-11-30T18:00:00-05:00",
+          "net_profit": 77.66000000000001
+        },
+        {
+          "position_id": 612,
+          "open_ny": "2025-12-19T10:00:00-05:00",
+          "close_ny": "2025-12-21T18:00:00-05:00",
+          "net_profit": 49.300000000000004
+        },
+        {
+          "position_id": 618,
+          "open_ny": "2025-12-24T10:15:00-05:00",
+          "close_ny": "2025-12-25T18:00:00-05:00",
+          "net_profit": 125.74
+        },
+        {
+          "position_id": 620,
+          "open_ny": "2025-12-26T10:05:00-05:00",
+          "close_ny": "2025-12-28T18:00:00-05:00",
+          "net_profit": -26.68
+        },
+        {
+          "position_id": 646,
+          "open_ny": "2026-01-16T09:55:00-05:00",
+          "close_ny": "2026-01-18T18:00:10-05:00",
+          "net_profit": 390.03000000000003
+        },
+        {
+          "position_id": 656,
+          "open_ny": "2026-01-23T10:00:00-05:00",
+          "close_ny": "2026-01-25T18:00:01-05:00",
+          "net_profit": -248.46
+        },
+        {
+          "position_id": 666,
+          "open_ny": "2026-01-30T10:05:00-05:00",
+          "close_ny": "2026-02-01T18:00:02-05:00",
+          "net_profit": 322.86
+        },
+        {
+          "position_id": 676,
+          "open_ny": "2026-02-06T09:50:00-05:00",
+          "close_ny": "2026-02-08T18:00:02-05:00",
+          "net_profit": 144.36
+        },
+        {
+          "position_id": 686,
+          "open_ny": "2026-02-13T10:10:00-05:00",
+          "close_ny": "2026-02-15T18:00:01-05:00",
+          "net_profit": -20.360000000000003
+        },
+        {
+          "position_id": 696,
+          "open_ny": "2026-02-20T10:05:00-05:00",
+          "close_ny": "2026-02-22T18:00:01-05:00",
+          "net_profit": 28.360000000000003
+        },
+        {
+          "position_id": 706,
+          "open_ny": "2026-02-27T09:50:00-05:00",
+          "close_ny": "2026-03-01T18:00:01-05:00",
+          "net_profit": -289.64000000000004
+        },
+        {
+          "position_id": 864,
+          "open_ny": "2026-06-19T10:00:00-04:00",
+          "close_ny": "2026-06-21T18:00:01-04:00",
+          "net_profit": -407.79
+        },
+        {
+          "position_id": 884,
+          "open_ny": "2026-07-03T10:15:00-04:00",
+          "close_ny": "2026-07-05T18:00:02-04:00",
+          "net_profit": -151.97
+        }
+      ],
+      "rejected_management_requests": 55451,
+      "flatten_schedule": "Attempt close from 15:55 New York; cannot fill while market closed or if no executable tick. Some broker sessions/holiday closures do not permit this schedule.",
+      "same_day_liquidation_observed": false,
+      "native_market_closed_counter": "Not instrumented in frozen source; its exported zero is a placeholder, NOT evidence of zero market-closed rejections.",
+      "preserved_in_results": true,
+      "scope": "All positions, including overnight carry and rejected-close outcomes, remain in native P&L, DD and bootstrap. Same-day liquidation failures block promotion; this is not a clean strict-intraday backtest for affected versions."
+    }
+  },
+  "USTEC reversal": {
+    "metrics": {
+      "trades": 117,
+      "net": -1594.4100000000014,
+      "return_pct": -15.944100000000015,
+      "pf": 0.7480679378011074,
+      "win_rate_pct": 39.31623931623932,
+      "equity_dd": 26.199146549372298,
+      "balance_dd": 24.964594866823692,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -0.8866735555929043,
+      "max_win_streak": 5,
+      "max_loss_streak": 13,
+      "average_trade": -13.62743589743591,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 22,
+          "net": -16.27000000000004,
+          "pf": 0.9870996899802571
+        },
+        {
+          "year": 2025,
+          "trades": 49,
+          "net": -931.98,
+          "pf": 0.6571497941751001
+        },
+        {
+          "year": 2026,
+          "trades": 46,
+          "net": -646.16,
+          "pf": 0.724943491160783
+        }
+      ]
+    },
+    "wilson95_pct": [
+      30.9403674424791,
+      48.37136857595537
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100702,
+      "return_p05_p50_p95": [
+        -31.221684328887996,
+        -15.986514483113567,
+        3.65501189862635
+      ],
+      "pf_p05_p50_p95": [
+        0.504553059210987,
+        0.7455248355517416,
+        1.0647853674661762
+      ],
+      "max_dd_p05_p50_p95": [
+        10.068013643685815,
+        20.865479919850088,
+        33.427425825325564
+      ],
+      "probability_profit_pct": 8.459999999999999,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 82.58,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": -0.8868896086882828,
+      "probabilistic_sharpe_pct": 12.079976072895398,
+      "deflated_sharpe_pct": 0.009881199875999558,
+      "multiple_test_benchmark_sharpe": 1.9321018161639352,
+      "daily_skewness": 2.8431614822822233,
+      "daily_kurtosis": 26.410408992088183
+    },
+    "recent_half_pf": 0.8148656099241903,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:16:35",
+        "end": "2025-03-13T15:36:29",
+        "trades": 39,
+        "net_profit": -390.5000000000001,
+        "profit_factor": 0.8302026263153317,
+        "win_rate_pct": 41.02564102564102
+      },
+      {
+        "part": 2,
+        "start": "2025-04-03T14:41:15",
+        "end": "2026-02-05T20:55:00",
+        "trades": 39,
+        "net_profit": -1016.59,
+        "profit_factor": 0.5304759485485994,
+        "win_rate_pct": 35.8974358974359
+      },
+      {
+        "part": 3,
+        "start": "2026-02-06T16:07:04",
+        "end": "2026-10-01T14:00:38",
+        "trades": 39,
+        "net_profit": -187.31999999999994,
+        "profit_factor": 0.8994945755400315,
+        "win_rate_pct": 41.02564102564102
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 46,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 26.199146549372298,
+    "sampled_minute_dd_pct": 26.03952184187718,
+    "daily_equity_expected_shortfall_95_pct": 1.0171344328385639,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.0171344328385632,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": false,
+      "pf_above_1": false,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": false,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false,
+      "intended_same_day_liquidation": false,
+      "no_rejected_management_requests": false
+    },
+    "all_gates_pass": false,
+    "verdict": "REJECT",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [
+        "MH\t0\t23:59:13.700\tTester\tUSTEC: ticks data begins from 2026.01.01 00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 37,
+      "net": -1819.4,
+      "return_pct": -18.194000000000003,
+      "pf": 0.28018389058352017,
+      "win_rate_pct": 21.62162162162162,
+      "equity_dd": 19.156363288593205,
+      "balance_dd": 18.71022393191357,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -3.232836444559996,
+      "max_win_streak": 4,
+      "max_loss_streak": 12,
+      "average_trade": -49.17297297297298,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 8,
+          "net": -513.76,
+          "pf": 0.20829673462468992
+        },
+        {
+          "year": 2024,
+          "trades": 29,
+          "net": -1305.64,
+          "pf": 0.30501527684626273
+        }
+      ]
+    },
+    "execution": {
+      "overnight_trades": 1,
+      "overnight_positions": [
+        {
+          "position_id": 52,
+          "open_ny": "2025-01-10T10:40:00-05:00",
+          "close_ny": "2025-01-12T18:00:00-05:00",
+          "net_profit": -39.99
+        }
+      ],
+      "rejected_management_requests": 1321,
+      "flatten_schedule": "Attempt close from 15:55 New York; cannot fill while market closed or if no executable tick. Some broker sessions/holiday closures do not permit this schedule.",
+      "same_day_liquidation_observed": false,
+      "native_market_closed_counter": "Not instrumented in frozen source; its exported zero is a placeholder, NOT evidence of zero market-closed rejections.",
+      "preserved_in_results": true,
+      "scope": "All positions, including overnight carry and rejected-close outcomes, remain in native P&L, DD and bootstrap. Same-day liquidation failures block promotion; this is not a clean strict-intraday backtest for affected versions."
+    }
+  },
+  "USTEC hybrid": {
+    "metrics": {
+      "trades": 141,
+      "net": -1547.62,
+      "return_pct": -15.476199999999999,
+      "pf": 0.7859334238867323,
+      "win_rate_pct": 40.42553191489361,
+      "equity_dd": 20.891047589807712,
+      "balance_dd": 19.26339277185765,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -0.8576142170144793,
+      "max_win_streak": 5,
+      "max_loss_streak": 5,
+      "average_trade": -10.976028368794326,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 28,
+          "net": -477.34,
+          "pf": 0.7223508335175255
+        },
+        {
+          "year": 2025,
+          "trades": 56,
+          "net": 35.09000000000004,
+          "pf": 1.0126981254975755
+        },
+        {
+          "year": 2026,
+          "trades": 57,
+          "net": -1105.3700000000001,
+          "pf": 0.5976082999635967
+        }
+      ]
+    },
+    "wilson95_pct": [
+      32.68335515595418,
+      48.675573275286936
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100703,
+      "return_p05_p50_p95": [
+        -30.344811095303307,
+        -15.794802608928432,
+        2.2163704346157407
+      ],
+      "pf_p05_p50_p95": [
+        0.5785949414343206,
+        0.7847240861613856,
+        1.0402686770843426
+      ],
+      "max_dd_p05_p50_p95": [
+        10.01440733014493,
+        20.432944742884256,
+        32.58826544405762
+      ],
+      "probability_profit_pct": 7.430000000000001,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 82.94,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": -0.8601561095754308,
+      "probabilistic_sharpe_pct": 12.154532279582108,
+      "deflated_sharpe_pct": 0.010027094563519467,
+      "multiple_test_benchmark_sharpe": 1.8798047389100023,
+      "daily_skewness": 1.7211308171043709,
+      "daily_kurtosis": 14.819955963682242
+    },
+    "recent_half_pf": 0.634065225602881,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:16:28",
+        "end": "2025-04-04T19:55:00",
+        "trades": 47,
+        "net_profit": -196.7199999999999,
+        "profit_factor": 0.9262668665667168,
+        "win_rate_pct": 40.42553191489361
+      },
+      {
+        "part": 2,
+        "start": "2025-04-07T14:13:38",
+        "end": "2026-02-09T15:06:16",
+        "trades": 47,
+        "net_profit": -528.52,
+        "profit_factor": 0.7798402079462805,
+        "win_rate_pct": 38.297872340425535
+      },
+      {
+        "part": 3,
+        "start": "2026-02-13T15:27:57",
+        "end": "2026-10-01T17:30:43",
+        "trades": 47,
+        "net_profit": -822.38,
+        "profit_factor": 0.6194447015270708,
+        "win_rate_pct": 42.5531914893617
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 57,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 20.891047589807712,
+    "sampled_minute_dd_pct": 20.73390107107351,
+    "daily_equity_expected_shortfall_95_pct": 1.0141639287222395,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.0141639287222404,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": false,
+      "pf_above_1": false,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": false,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false,
+      "intended_same_day_liquidation": false,
+      "no_rejected_management_requests": false
+    },
+    "all_gates_pass": false,
+    "verdict": "REJECT",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [
+        "MH\t0\t23:59:13.700\tTester\tUSTEC: ticks data begins from 2026.01.01 00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 44,
+      "net": -408.5300000000001,
+      "return_pct": -4.085300000000001,
+      "pf": 0.8242133209409598,
+      "win_rate_pct": 40.909090909090914,
+      "equity_dd": 8.044987702198116,
+      "balance_dd": 7.149545112362815,
+      "mt5_sharpe": -3.8660884562248232,
+      "daily_closed_balance_sharpe": -0.5376792961782048,
+      "max_win_streak": 5,
+      "max_loss_streak": 3,
+      "average_trade": -9.28477272727273,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 10,
+          "net": -191.72,
+          "pf": 0.6759789754770235
+        },
+        {
+          "year": 2024,
+          "trades": 34,
+          "net": -216.81,
+          "pf": 0.8748441396508728
+        }
+      ]
+    },
+    "execution": {
+      "overnight_trades": 5,
+      "overnight_positions": [
+        {
+          "position_id": 40,
+          "open_ny": "2024-12-13T10:45:00-05:00",
+          "close_ny": "2024-12-15T18:00:00-05:00",
+          "net_profit": -52.62
+        },
+        {
+          "position_id": 52,
+          "open_ny": "2024-12-27T10:05:00-05:00",
+          "close_ny": "2024-12-29T18:00:00-05:00",
+          "net_profit": -44.73
+        },
+        {
+          "position_id": 64,
+          "open_ny": "2025-01-10T09:50:00-05:00",
+          "close_ny": "2025-01-12T18:00:00-05:00",
+          "net_profit": 11.98
+        },
+        {
+          "position_id": 72,
+          "open_ny": "2025-02-28T10:15:00-05:00",
+          "close_ny": "2025-03-02T18:00:00-05:00",
+          "net_profit": 109.78
+        },
+        {
+          "position_id": 186,
+          "open_ny": "2026-02-06T09:50:00-05:00",
+          "close_ny": "2026-02-08T18:00:02-05:00",
+          "net_profit": 91.64999999999999
+        }
+      ],
+      "rejected_management_requests": 9587,
+      "flatten_schedule": "Attempt close from 15:55 New York; cannot fill while market closed or if no executable tick. Some broker sessions/holiday closures do not permit this schedule.",
+      "same_day_liquidation_observed": false,
+      "native_market_closed_counter": "Not instrumented in frozen source; its exported zero is a placeholder, NOT evidence of zero market-closed rejections.",
+      "preserved_in_results": true,
+      "scope": "All positions, including overnight carry and rejected-close outcomes, remain in native P&L, DD and bootstrap. Same-day liquidation failures block promotion; this is not a clean strict-intraday backtest for affected versions."
+    }
+  },
+  "XAUUSD raw": {
+    "metrics": {
+      "trades": 506,
+      "net": 2293.5500000000025,
+      "return_pct": 22.935500000000026,
+      "pf": 1.084961337599767,
+      "win_rate_pct": 44.26877470355731,
+      "equity_dd": 15.377342922001002,
+      "balance_dd": 14.65816712951268,
+      "mt5_sharpe": 1.6120976514754153,
+      "daily_closed_balance_sharpe": 0.684599689648993,
+      "max_win_streak": 7,
+      "max_loss_streak": 14,
+      "average_trade": 4.532707509881428,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 61,
+          "net": 1281.0100000000002,
+          "pf": 1.5376115293900403
+        },
+        {
+          "year": 2025,
+          "trades": 250,
+          "net": 1460.5000000000002,
+          "pf": 1.1099610976383774
+        },
+        {
+          "year": 2026,
+          "trades": 195,
+          "net": -447.95999999999987,
+          "pf": 0.9604641290255391
+        }
+      ]
+    },
+    "wilson95_pct": [
+      40.00023931319019,
+      48.62367523974577
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100704,
+      "return_p05_p50_p95": [
+        -18.646543083811107,
+        23.197739218581034,
+        87.38952608345946
+      ],
+      "pf_p05_p50_p95": [
+        0.9073619296793682,
+        1.086182236759152,
+        1.2920078618601913
+      ],
+      "max_dd_p05_p50_p95": [
+        11.316627106359311,
+        18.990417583012565,
+        33.95145971023794
+      ],
+      "probability_profit_pct": 79.33,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 42.3,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.6852650575197767,
+      "probabilistic_sharpe_pct": 83.71191325135365,
+      "deflated_sharpe_pct": 5.839975676940245,
+      "multiple_test_benchmark_sharpe": 1.7789356077581497,
+      "daily_skewness": 0.8186801232988481,
+      "daily_kurtosis": 2.8472862347262273
+    },
+    "recent_half_pf": 0.9882662889170473,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:43:30",
+        "end": "2025-06-05T15:46:37",
+        "trades": 169,
+        "net_profit": 526.4800000000002,
+        "profit_factor": 1.0633018996100745,
+        "win_rate_pct": 43.786982248520715
+      },
+      {
+        "part": 2,
+        "start": "2025-06-06T14:22:41",
+        "end": "2026-02-06T20:55:00",
+        "trades": 168,
+        "net_profit": 1816.78,
+        "profit_factor": 1.2059196895302602,
+        "win_rate_pct": 46.42857142857143
+      },
+      {
+        "part": 3,
+        "start": "2026-02-09T20:55:00",
+        "end": "2026-10-06T15:33:00",
+        "trades": 169,
+        "net_profit": -49.70999999999991,
+        "profit_factor": 0.9949561107565429,
+        "win_rate_pct": 42.60355029585799
+      }
+    ],
+    "cost_stress": {
+      "status": "measured_extra_spread_sensitivity",
+      "observations": 195,
+      "median_extra_usd_per_lot": 5.0,
+      "mean_extra_usd_per_trade": 0.48231225296442687,
+      "net": 2049.5000000000005,
+      "return_pct": 20.495000000000005,
+      "pf": 1.0755355486987763,
+      "win_rate_pct": 44.26877470355731,
+      "scope": "One additional full quoted bid/ask spread per round trip, using the median entry spread cash per lot measured on available 2026 native real-tick quotes. Existing spread, commissions and swaps already remain in baseline P&L. Indicative widening sensitivity, not an exact rerun with widened quotes or a guaranteed future spread."
+    },
+    "native_dd_pct": 15.377342922001002,
+    "sampled_minute_dd_pct": 15.35300578200074,
+    "daily_equity_expected_shortfall_95_pct": 1.0195525086778798,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.032434212527552,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": true,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false,
+      "intended_same_day_liquidation": false,
+      "no_rejected_management_requests": true
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [
+        "DM\t0\t00:04:28.962\tTester\tXAUUSD: ticks data begins from 2026.01.01 00:00",
+        "PD\t0\t00:04:28.962\tTester\tXAUUSD: ticks data begins from 2026.01.01 00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 248,
+      "net": -2957.9599999999996,
+      "return_pct": -29.579599999999996,
+      "pf": 0.7523615135453723,
+      "win_rate_pct": 34.274193548387096,
+      "equity_dd": 34.8067704776514,
+      "balance_dd": 33.825792522370136,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -1.9971891537405142,
+      "max_win_streak": 4,
+      "max_loss_streak": 8,
+      "average_trade": -11.927258064516128,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 54,
+          "net": -310.83,
+          "pf": 0.8894264461575129
+        },
+        {
+          "year": 2024,
+          "trades": 194,
+          "net": -2647.1299999999997,
+          "pf": 0.7101767101690462
+        }
+      ]
+    },
+    "execution": {
+      "overnight_trades": 3,
+      "overnight_positions": [
+        {
+          "position_id": 378,
+          "open_ny": "2025-07-04T10:05:00-04:00",
+          "close_ny": "2025-07-06T18:05:00-04:00",
+          "net_profit": -215.15
+        },
+        {
+          "position_id": 614,
+          "open_ny": "2025-12-24T09:55:00-05:00",
+          "close_ny": "2025-12-25T18:11:00-05:00",
+          "net_profit": -104.77
+        },
+        {
+          "position_id": 862,
+          "open_ny": "2026-06-19T09:50:00-04:00",
+          "close_ny": "2026-06-21T18:01:30-04:00",
+          "net_profit": 41.28
+        }
+      ],
+      "rejected_management_requests": 0,
+      "flatten_schedule": "Attempt close from 15:55 New York; cannot fill while market closed or if no executable tick. Some broker sessions/holiday closures do not permit this schedule.",
+      "same_day_liquidation_observed": false,
+      "native_market_closed_counter": "Not instrumented in frozen source; its exported zero is a placeholder, NOT evidence of zero market-closed rejections.",
+      "preserved_in_results": true,
+      "scope": "All positions, including overnight carry and rejected-close outcomes, remain in native P&L, DD and bootstrap. Same-day liquidation failures block promotion; this is not a clean strict-intraday backtest for affected versions."
+    }
+  },
+  "XAUUSD breakout": {
+    "metrics": {
+      "trades": 506,
+      "net": 2293.5500000000025,
+      "return_pct": 22.935500000000026,
+      "pf": 1.084961337599767,
+      "win_rate_pct": 44.26877470355731,
+      "equity_dd": 15.377342922001002,
+      "balance_dd": 14.65816712951268,
+      "mt5_sharpe": 1.6120976514754153,
+      "daily_closed_balance_sharpe": 0.684599689648993,
+      "max_win_streak": 7,
+      "max_loss_streak": 14,
+      "average_trade": 4.532707509881428,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 61,
+          "net": 1281.0100000000002,
+          "pf": 1.5376115293900403
+        },
+        {
+          "year": 2025,
+          "trades": 250,
+          "net": 1460.5000000000002,
+          "pf": 1.1099610976383774
+        },
+        {
+          "year": 2026,
+          "trades": 195,
+          "net": -447.95999999999987,
+          "pf": 0.9604641290255391
+        }
+      ]
+    },
+    "wilson95_pct": [
+      40.00023931319019,
+      48.62367523974577
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100704,
+      "return_p05_p50_p95": [
+        -18.646543083811107,
+        23.197739218581034,
+        87.38952608345946
+      ],
+      "pf_p05_p50_p95": [
+        0.9073619296793682,
+        1.086182236759152,
+        1.2920078618601913
+      ],
+      "max_dd_p05_p50_p95": [
+        11.316627106359311,
+        18.990417583012565,
+        33.95145971023794
+      ],
+      "probability_profit_pct": 79.33,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 42.3,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.6852650575197767,
+      "probabilistic_sharpe_pct": 83.71191325135365,
+      "deflated_sharpe_pct": 5.839975676940245,
+      "multiple_test_benchmark_sharpe": 1.7789356077581497,
+      "daily_skewness": 0.8186801232988481,
+      "daily_kurtosis": 2.8472862347262273
+    },
+    "recent_half_pf": 0.9882662889170473,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:43:30",
+        "end": "2025-06-05T15:46:37",
+        "trades": 169,
+        "net_profit": 526.4800000000002,
+        "profit_factor": 1.0633018996100745,
+        "win_rate_pct": 43.786982248520715
+      },
+      {
+        "part": 2,
+        "start": "2025-06-06T14:22:41",
+        "end": "2026-02-06T20:55:00",
+        "trades": 168,
+        "net_profit": 1816.78,
+        "profit_factor": 1.2059196895302602,
+        "win_rate_pct": 46.42857142857143
+      },
+      {
+        "part": 3,
+        "start": "2026-02-09T20:55:00",
+        "end": "2026-10-06T15:33:00",
+        "trades": 169,
+        "net_profit": -49.70999999999991,
+        "profit_factor": 0.9949561107565429,
+        "win_rate_pct": 42.60355029585799
+      }
+    ],
+    "cost_stress": {
+      "status": "measured_extra_spread_sensitivity",
+      "observations": 195,
+      "median_extra_usd_per_lot": 5.0,
+      "mean_extra_usd_per_trade": 0.48231225296442687,
+      "net": 2049.5000000000005,
+      "return_pct": 20.495000000000005,
+      "pf": 1.0755355486987763,
+      "win_rate_pct": 44.26877470355731,
+      "scope": "One additional full quoted bid/ask spread per round trip, using the median entry spread cash per lot measured on available 2026 native real-tick quotes. Existing spread, commissions and swaps already remain in baseline P&L. Indicative widening sensitivity, not an exact rerun with widened quotes or a guaranteed future spread."
+    },
+    "native_dd_pct": 15.377342922001002,
+    "sampled_minute_dd_pct": 15.35300578200074,
+    "daily_equity_expected_shortfall_95_pct": 1.0195525086778798,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.032434212527552,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": true,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false,
+      "intended_same_day_liquidation": false,
+      "no_rejected_management_requests": true
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [
+        "DM\t0\t00:04:28.962\tTester\tXAUUSD: ticks data begins from 2026.01.01 00:00",
+        "PD\t0\t00:04:28.962\tTester\tXAUUSD: ticks data begins from 2026.01.01 00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 248,
+      "net": -2957.9599999999996,
+      "return_pct": -29.579599999999996,
+      "pf": 0.7523615135453723,
+      "win_rate_pct": 34.274193548387096,
+      "equity_dd": 34.8067704776514,
+      "balance_dd": 33.825792522370136,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -1.9971891537405142,
+      "max_win_streak": 4,
+      "max_loss_streak": 8,
+      "average_trade": -11.927258064516128,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 54,
+          "net": -310.83,
+          "pf": 0.8894264461575129
+        },
+        {
+          "year": 2024,
+          "trades": 194,
+          "net": -2647.1299999999997,
+          "pf": 0.7101767101690462
+        }
+      ]
+    },
+    "execution": {
+      "overnight_trades": 3,
+      "overnight_positions": [
+        {
+          "position_id": 378,
+          "open_ny": "2025-07-04T10:05:00-04:00",
+          "close_ny": "2025-07-06T18:05:00-04:00",
+          "net_profit": -215.15
+        },
+        {
+          "position_id": 614,
+          "open_ny": "2025-12-24T09:55:00-05:00",
+          "close_ny": "2025-12-25T18:11:00-05:00",
+          "net_profit": -104.77
+        },
+        {
+          "position_id": 862,
+          "open_ny": "2026-06-19T09:50:00-04:00",
+          "close_ny": "2026-06-21T18:01:30-04:00",
+          "net_profit": 41.28
+        }
+      ],
+      "rejected_management_requests": 0,
+      "flatten_schedule": "Attempt close from 15:55 New York; cannot fill while market closed or if no executable tick. Some broker sessions/holiday closures do not permit this schedule.",
+      "same_day_liquidation_observed": false,
+      "native_market_closed_counter": "Not instrumented in frozen source; its exported zero is a placeholder, NOT evidence of zero market-closed rejections.",
+      "preserved_in_results": true,
+      "scope": "All positions, including overnight carry and rejected-close outcomes, remain in native P&L, DD and bootstrap. Same-day liquidation failures block promotion; this is not a clean strict-intraday backtest for affected versions."
+    }
+  },
+  "XAUUSD reversal": {
+    "metrics": {
+      "trades": 76,
+      "net": 1632.1499999999999,
+      "return_pct": 16.3215,
+      "pf": 1.5923867872140414,
+      "win_rate_pct": 55.26315789473685,
+      "equity_dd": 6.546889757049719,
+      "balance_dd": 4.593099999999995,
+      "mt5_sharpe": 10.653176326785887,
+      "daily_closed_balance_sharpe": 1.1507107159055203,
+      "max_win_streak": 6,
+      "max_loss_streak": 5,
+      "average_trade": 21.47565789473684,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 5,
+          "net": -458.48,
+          "pf": 0.0
+        },
+        {
+          "year": 2025,
+          "trades": 42,
+          "net": 885.57,
+          "pf": 1.5363807608675901
+        },
+        {
+          "year": 2026,
+          "trades": 29,
+          "net": 1205.06,
+          "pf": 2.8662268475500214
+        }
+      ]
+    },
+    "wilson95_pct": [
+      44.10051506448649,
+      65.91934193482787
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100706,
+      "return_p05_p50_p95": [
+        -1.912122177981707,
+        15.58325614251933,
+        40.18474206877209
+      ],
+      "pf_p05_p50_p95": [
+        0.937130050049567,
+        1.6050944911438532,
+        2.6725631989780654
+      ],
+      "max_dd_p05_p50_p95": [
+        3.0315069398315195,
+        5.636042753400469,
+        10.845162343923274
+      ],
+      "probability_profit_pct": 92.06,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 2.18,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 1.150710715905517,
+      "probabilistic_sharpe_pct": 96.54677721918081,
+      "deflated_sharpe_pct": 23.17674790413895,
+      "multiple_test_benchmark_sharpe": 1.6146910339123026,
+      "daily_skewness": 3.862487877160555,
+      "daily_kurtosis": 37.173841467164586
+    },
+    "recent_half_pf": 1.8689932814803694,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-30T14:55:41",
+        "end": "2025-07-15T15:29:29",
+        "trades": 25,
+        "net_profit": -53.12999999999997,
+        "profit_factor": 0.9554076511171167,
+        "win_rate_pct": 48.0
+      },
+      {
+        "part": 2,
+        "start": "2025-07-24T14:17:37",
+        "end": "2026-01-28T16:07:57",
+        "trades": 26,
+        "net_profit": 770.0600000000001,
+        "profit_factor": 1.772415868398616,
+        "win_rate_pct": 53.84615384615385
+      },
+      {
+        "part": 3,
+        "start": "2026-01-30T16:35:38",
+        "end": "2026-10-02T14:25:56",
+        "trades": 25,
+        "net_profit": 915.22,
+        "profit_factor": 2.614714184897671,
+        "win_rate_pct": 64.0
+      }
+    ],
+    "cost_stress": {
+      "status": "measured_extra_spread_sensitivity",
+      "observations": 29,
+      "median_extra_usd_per_lot": 5.0,
+      "mean_extra_usd_per_trade": 0.5625,
+      "net": 1589.4,
+      "return_pct": 15.894,
+      "pf": 1.5724040321099428,
+      "win_rate_pct": 55.26315789473685,
+      "scope": "One additional full quoted bid/ask spread per round trip, using the median entry spread cash per lot measured on available 2026 native real-tick quotes. Existing spread, commissions and swaps already remain in baseline P&L. Indicative widening sensitivity, not an exact rerun with widened quotes or a guaranteed future spread."
+    },
+    "native_dd_pct": 6.546889757049719,
+    "sampled_minute_dd_pct": 6.391165496773443,
+    "daily_equity_expected_shortfall_95_pct": 0.03856001014286509,
+    "daily_closed_balance_expected_shortfall_95_pct": 0.03856001014286506,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": true,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": true,
+      "measured_cost_stress_pf_above_1": true,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false,
+      "intended_same_day_liquidation": true,
+      "no_rejected_management_requests": true
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [
+        "DM\t0\t00:04:28.962\tTester\tXAUUSD: ticks data begins from 2026.01.01 00:00",
+        "PD\t0\t00:04:28.962\tTester\tXAUUSD: ticks data begins from 2026.01.01 00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 44,
+      "net": -937.0200000000006,
+      "return_pct": -9.370200000000006,
+      "pf": 0.5935383961376128,
+      "win_rate_pct": 43.18181818181818,
+      "equity_dd": 13.998765312401678,
+      "balance_dd": 12.974600000000027,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -1.4475082214265296,
+      "max_win_streak": 4,
+      "max_loss_streak": 5,
+      "average_trade": -21.295909090909102,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 4,
+          "net": -402.22,
+          "pf": 0.0
+        },
+        {
+          "year": 2024,
+          "trades": 40,
+          "net": -534.8,
+          "pf": 0.7189833376246
+        }
+      ]
+    },
+    "execution": {
+      "overnight_trades": 0,
+      "overnight_positions": [],
+      "rejected_management_requests": 0,
+      "flatten_schedule": "Attempt close from 15:55 New York; cannot fill while market closed or if no executable tick. Some broker sessions/holiday closures do not permit this schedule.",
+      "same_day_liquidation_observed": true,
+      "native_market_closed_counter": "Not instrumented in frozen source; its exported zero is a placeholder, NOT evidence of zero market-closed rejections.",
+      "preserved_in_results": true,
+      "scope": "All positions, including overnight carry and rejected-close outcomes, remain in native P&L, DD and bootstrap. Same-day liquidation failures block promotion; this is not a clean strict-intraday backtest for affected versions."
+    }
+  },
+  "XAUUSD hybrid": {
+    "metrics": {
+      "trades": 106,
+      "net": 496.2099999999995,
+      "return_pct": 4.962099999999995,
+      "pf": 1.120117743032609,
+      "win_rate_pct": 47.16981132075472,
+      "equity_dd": 8.641176815014665,
+      "balance_dd": 7.14653998888778,
+      "mt5_sharpe": 1.8769389837532773,
+      "daily_closed_balance_sharpe": 0.3775402491317359,
+      "max_win_streak": 4,
+      "max_loss_streak": 7,
+      "average_trade": 4.6812264150943355,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 6,
+          "net": -118.02999999999999,
+          "pf": 0.4603109282121628
+        },
+        {
+          "year": 2025,
+          "trades": 60,
+          "net": 913.4000000000001,
+          "pf": 1.422494819419775
+        },
+        {
+          "year": 2026,
+          "trades": 40,
+          "net": -299.16,
+          "pf": 0.8290914699984575
+        }
+      ]
+    },
+    "wilson95_pct": [
+      37.932755120322106,
+      56.60482653198056
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100707,
+      "return_p05_p50_p95": [
+        -9.829624968145847,
+        4.741499562167151,
+        22.625653604618403
+      ],
+      "pf_p05_p50_p95": [
+        0.7971582525446208,
+        1.119626184175552,
+        1.5107454768910706
+      ],
+      "max_dd_p05_p50_p95": [
+        4.205831379414779,
+        7.759101463939222,
+        14.827871803789265
+      ],
+      "probability_profit_pct": 69.52000000000001,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 11.129999999999999,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.3775402491317436,
+      "probabilistic_sharpe_pct": 70.76258816129184,
+      "deflated_sharpe_pct": 2.2504297241579154,
+      "multiple_test_benchmark_sharpe": 1.7624619533441988,
+      "daily_skewness": 2.454742870082303,
+      "daily_kurtosis": 19.783550878591896
+    },
+    "recent_half_pf": 0.8318318957263284,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-30T19:55:00",
+        "end": "2025-08-08T14:08:31",
+        "trades": 35,
+        "net_profit": 233.04000000000008,
+        "profit_factor": 1.1850008335516444,
+        "win_rate_pct": 48.57142857142857
+      },
+      {
+        "part": 2,
+        "start": "2025-08-12T15:28:28",
+        "end": "2026-01-29T15:10:11",
+        "trades": 36,
+        "net_profit": 522.03,
+        "profit_factor": 1.3822827265004833,
+        "win_rate_pct": 52.77777777777778
+      },
+      {
+        "part": 3,
+        "start": "2026-01-30T17:12:23",
+        "end": "2026-10-02T15:12:15",
+        "trades": 35,
+        "net_profit": -258.86,
+        "profit_factor": 0.8280913799973436,
+        "win_rate_pct": 40.0
+      }
+    ],
+    "cost_stress": {
+      "status": "measured_extra_spread_sensitivity",
+      "observations": 40,
+      "median_extra_usd_per_lot": 5.0,
+      "mean_extra_usd_per_trade": 0.31933962264150945,
+      "net": 462.3600000000001,
+      "return_pct": 4.6236000000000015,
+      "pf": 1.1114300381025373,
+      "win_rate_pct": 47.16981132075472,
+      "scope": "One additional full quoted bid/ask spread per round trip, using the median entry spread cash per lot measured on available 2026 native real-tick quotes. Existing spread, commissions and swaps already remain in baseline P&L. Indicative widening sensitivity, not an exact rerun with widened quotes or a guaranteed future spread."
+    },
+    "native_dd_pct": 8.641176815014665,
+    "sampled_minute_dd_pct": 8.641176815014662,
+    "daily_equity_expected_shortfall_95_pct": 0.9067590077433161,
+    "daily_closed_balance_expected_shortfall_95_pct": 0.9067590077433176,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": true,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false,
+      "intended_same_day_liquidation": true,
+      "no_rejected_management_requests": true
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [
+        "DM\t0\t00:04:28.962\tTester\tXAUUSD: ticks data begins from 2026.01.01 00:00",
+        "PD\t0\t00:04:28.962\tTester\tXAUUSD: ticks data begins from 2026.01.01 00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 47,
+      "net": -951.79,
+      "return_pct": -9.5179,
+      "pf": 0.5942854950638543,
+      "win_rate_pct": 36.17021276595745,
+      "equity_dd": 11.835406133087062,
+      "balance_dd": 11.205527739777716,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -1.4701695080990433,
+      "max_win_streak": 3,
+      "max_loss_streak": 4,
+      "average_trade": -20.250851063829785,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 4,
+          "net": -59.20000000000002,
+          "pf": 0.7624969910936371
+        },
+        {
+          "year": 2024,
+          "trades": 43,
+          "net": -892.5899999999999,
+          "pf": 0.5742881671197597
+        }
+      ]
+    },
+    "execution": {
+      "overnight_trades": 0,
+      "overnight_positions": [],
+      "rejected_management_requests": 0,
+      "flatten_schedule": "Attempt close from 15:55 New York; cannot fill while market closed or if no executable tick. Some broker sessions/holiday closures do not permit this schedule.",
+      "same_day_liquidation_observed": true,
+      "native_market_closed_counter": "Not instrumented in frozen source; its exported zero is a placeholder, NOT evidence of zero market-closed rejections.",
+      "preserved_in_results": true,
+      "scope": "All positions, including overnight carry and rejected-close outcomes, remain in native P&L, DD and bootstrap. Same-day liquidation failures block promotion; this is not a clean strict-intraday backtest for affected versions."
+    }
+  }
+}

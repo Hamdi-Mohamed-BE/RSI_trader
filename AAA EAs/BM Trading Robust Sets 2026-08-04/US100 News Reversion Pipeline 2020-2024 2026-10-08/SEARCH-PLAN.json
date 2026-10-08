@@ -1,0 +1,109 @@
+{
+  "baseline": {
+    "allow_longs": 1,
+    "sl_mult": 2,
+    "impulse_mult": 1,
+    "body_mult": 0.5,
+    "body_fraction": 0.6,
+    "signal_mode": 0,
+    "window_minutes": 30,
+    "hold_minutes": 60,
+    "target_fraction": 1
+  },
+  "stages": [
+    [
+      "stop",
+      "sl_mult",
+      [
+        1,
+        1.5,
+        2,
+        2.5,
+        3,
+        4
+      ]
+    ],
+    [
+      "impulse",
+      "impulse_mult",
+      [
+        0.5,
+        1,
+        1.5,
+        2
+      ]
+    ],
+    [
+      "body",
+      "body_mult",
+      [
+        0.25,
+        0.5,
+        0.75,
+        1
+      ]
+    ],
+    [
+      "strength",
+      "body_fraction",
+      [
+        0.5,
+        0.6,
+        0.75
+      ]
+    ],
+    [
+      "signal",
+      "signal_mode",
+      [
+        0,
+        1,
+        2
+      ]
+    ],
+    [
+      "window",
+      "window_minutes",
+      [
+        10,
+        20,
+        30
+      ]
+    ],
+    [
+      "hold",
+      "hold_minutes",
+      [
+        15,
+        30,
+        45,
+        60
+      ]
+    ],
+    [
+      "target",
+      "target_fraction",
+      [
+        0.5,
+        0.75,
+        1
+      ]
+    ]
+  ],
+  "beam_width": 2,
+  "finalists": 3,
+  "neighbourhood": [
+    "sl_mult",
+    "impulse_mult",
+    "hold_minutes"
+  ],
+  "neighbourhood_factors": [
+    0.8,
+    1,
+    1.2
+  ],
+  "objective": "PF stability and positive years first; shrink sparse win rates, penalise drawdown and too few trades. No OOS or event-group reselection.",
+  "finalists_validation": "2024 only; average development/2024 score with no-trade/negative/PF<=1 penalty.",
+  "minimum_development_trades": 30,
+  "minimum_validation_trades": 10
+}

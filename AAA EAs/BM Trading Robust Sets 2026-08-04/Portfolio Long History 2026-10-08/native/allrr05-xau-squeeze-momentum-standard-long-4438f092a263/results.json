@@ -1,0 +1,1835 @@
+{
+  "tag": "allrr05-xau-squeeze-momentum-standard-long-4438f092a263",
+  "slug": "xau-squeeze-momentum-standard",
+  "variant": "long-4438f092a263",
+  "window": [
+    "2021.10.06",
+    "2026.10.06"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "true",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpEnableTrading": "true",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMaximumEffectiveLeverage": "9.8",
+    "InpMagic": "109102301",
+    "InpTradeComment": "Safe SQZ-H1-STD",
+    "InpMaximumSpreadPoints": "0",
+    "InpSqueezeLength": "24",
+    "InpBollingerMultiplier": "1.8",
+    "InpKeltnerMultiplier": "1.3",
+    "InpMomentumLength": "28",
+    "InpTrendSMAPeriod": "200",
+    "InpRequireMomentumRising": "true",
+    "InpATRPeriod": "14",
+    "InpATRMethod": "0",
+    "InpStopATR": "3.5",
+    "InpTargetR": "1.5",
+    "InpTrailingMode": "1",
+    "InpTrailATR": "3.5",
+    "InpBreakEvenAtR": "0.0",
+    "InpPartialExitAtR": "0.0",
+    "InpPartialExitFraction": "0.5",
+    "InpMomentumExitMode": "2",
+    "InpMomentumFadeFraction": "0.5",
+    "InpMaximumHoldH1Bars": "0",
+    "InpDynamicTriggerFraction": "0.5",
+    "InpDynamicLockFraction": "0.2",
+    "InpSessionStartHourUTC": "0",
+    "InpSessionEndHourUTC": "24",
+    "InpWeekdayMask": "62",
+    "InpRR05AuditTag": "allrr05-xau-squeeze-momentum-standard-long-4438f092a263"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 12967.92,
+    "net_profit": 2967.92,
+    "return_pct": 29.68,
+    "profit_factor": 2.9,
+    "win_rate_pct": 60.42,
+    "max_drawdown_pct": 5.04,
+    "trades": 48,
+    "sharpe_ratio": 41.22,
+    "recovery_factor": 4.76,
+    "history_quality": "15% real ticks",
+    "equity_dd_pct": 5.04,
+    "balance_dd_pct": 3.63
+  },
+  "metrics": {
+    "trades": 48,
+    "return_pct": 29.6792,
+    "net_profit": 2967.92,
+    "pf": 2.9090967567637107,
+    "wins": 29,
+    "losses": 19,
+    "flat": 0,
+    "win_rate": 60.416666666666664,
+    "equity_dd_pct": 5.04,
+    "balance_dd_pct": 3.63,
+    "sharpe_daily_equity": 1.4750954000659942,
+    "win_streak": 7,
+    "loss_streak": 4,
+    "avg_win": 155.9496551724138,
+    "avg_loss": -81.8221052631579,
+    "partial_positions": 0,
+    "exit_legs": 48,
+    "commission": -13.770000000000001,
+    "swap": -136.62,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1637031600,
+      "close_epoch": 1637071720,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1867.62,
+      "close_price": 1861.8840000000002,
+      "net": -46.33,
+      "magic": 109102301,
+      "sl": 1854.839,
+      "tp": 1886.792,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 1861.886"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -45.89,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1645484460,
+      "close_epoch": 1645520242,
+      "last_deal": 5,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 1909.9,
+      "close_price": 1898.755,
+      "net": -82.06,
+      "magic": 109102301,
+      "sl": 1893.718,
+      "tp": 1934.255,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 1898.782"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -78.01,
+      "commission": -0.39,
+      "swap": -3.66,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1646355600,
+      "close_epoch": 1646607918,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 1947.377,
+      "close_price": 1981.868,
+      "net": 169.55,
+      "magic": 109102301,
+      "sl": 1924.388,
+      "tp": 1981.848,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 1981.848"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 172.45,
+      "commission": -0.28,
+      "swap": -2.62,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1646722800,
+      "close_epoch": 1646754363,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 2017.051,
+      "close_price": 2068.058,
+      "net": 152.85,
+      "magic": 109102301,
+      "sl": 1983.048,
+      "tp": 2068.056,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2068.056"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 153.02,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1669798800,
+      "close_epoch": 1669821574,
+      "last_deal": 11,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 1759.69,
+      "close_price": 1751.235,
+      "net": -76.59,
+      "magic": 109102301,
+      "sl": 1747.98,
+      "tp": 1777.255,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 1751.238"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -76.09,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1670425200,
+      "close_epoch": 1670599419,
+      "last_deal": 13,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 1783.291,
+      "close_price": 1790.231,
+      "net": 33.54,
+      "magic": 109102301,
+      "sl": 1767.812,
+      "tp": 1806.51,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 1790.246"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 48.58,
+      "commission": -0.39,
+      "swap": -14.65,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1671202800,
+      "close_epoch": 1671465363,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 1792.266,
+      "close_price": 1786.633,
+      "net": -43.48,
+      "magic": 109102301,
+      "sl": 1775.395,
+      "tp": 1817.573,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 1786.641"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -39.43,
+      "commission": -0.39,
+      "swap": -3.66,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1673424000,
+      "close_epoch": 1673448386,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1881.724,
+      "close_price": 1873.348,
+      "net": -67.45,
+      "magic": 109102301,
+      "sl": 1868.282,
+      "tp": 1901.887,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 1873.352"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -67.01,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1675281600,
+      "close_epoch": 1675348538,
+      "last_deal": 19,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 1943.153,
+      "close_price": 1942.301,
+      "net": -12.39,
+      "magic": 109102301,
+      "sl": 1922.364,
+      "tp": 1974.315,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 1942.310"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -4.26,
+      "commission": -0.28,
+      "swap": -7.85,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1680174000,
+      "close_epoch": 1680282000,
+      "last_deal": 21,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1968.978,
+      "close_price": 1977.1450000000002,
+      "net": 60.71,
+      "magic": 109102301,
+      "sl": 1954.74,
+      "tp": 1990.335,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 65.34,
+      "commission": -0.44,
+      "swap": -4.19,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1700838000,
+      "close_epoch": 1701048464,
+      "last_deal": 23,
+      "side": "Long",
+      "volume": 0.11,
+      "open_price": 2001.341,
+      "close_price": 2015.987,
+      "net": 154.74,
+      "magic": 109102301,
+      "sl": 1991.591,
+      "tp": 2015.966,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2015.966"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 161.11,
+      "commission": -0.61,
+      "swap": -5.76,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1701183600,
+      "close_epoch": 1701218556,
+      "last_deal": 25,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 2026.237,
+      "close_price": 2046.019,
+      "net": 153.62,
+      "magic": 109102301,
+      "sl": 2013.055,
+      "tp": 2046.009,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2046.009"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 158.25,
+      "commission": -0.44,
+      "swap": -4.19,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1701428400,
+      "close_epoch": 1701452654,
+      "last_deal": 27,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 2043.888,
+      "close_price": 2063.947,
+      "net": 160.04,
+      "magic": 109102301,
+      "sl": 2030.534,
+      "tp": 2063.919,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2063.919"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 160.48,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1709895600,
+      "close_epoch": 1709918261,
+      "last_deal": 29,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2168.606,
+      "close_price": 2193.518,
+      "net": 174.0,
+      "magic": 109102301,
+      "sl": 2152.008,
+      "tp": 2193.503,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2193.503"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 174.39,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1710345600,
+      "close_epoch": 1710416838,
+      "last_deal": 31,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2171.826,
+      "close_price": 2167.911,
+      "net": -38.78,
+      "magic": 109102301,
+      "sl": 2154.484,
+      "tp": 2197.838,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 2167.919"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -27.4,
+      "commission": -0.39,
+      "swap": -10.99,
+      "fee": 0.0
+    },
+    {
+      "position_id": 32,
+      "open_epoch": 1711623600,
+      "close_epoch": 1711922859,
+      "last_deal": 33,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2212.28,
+      "close_price": 2242.55,
+      "net": 175.01,
+      "magic": 109102301,
+      "sl": 2192.152,
+      "tp": 2242.471,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2242.471"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 181.62,
+      "commission": -0.33,
+      "swap": -6.28,
+      "fee": 0.0
+    },
+    {
+      "position_id": 34,
+      "open_epoch": 1712858400,
+      "close_epoch": 1712929350,
+      "last_deal": 35,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 2356.435,
+      "close_price": 2401.324,
+      "net": 177.25,
+      "magic": 109102301,
+      "sl": 2326.527,
+      "tp": 2401.298,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2401.298"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 179.56,
+      "commission": -0.22,
+      "swap": -2.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 36,
+      "open_epoch": 1715259600,
+      "close_epoch": 1715304161,
+      "last_deal": 37,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2326.808,
+      "close_price": 2355.717,
+      "net": 169.98,
+      "magic": 109102301,
+      "sl": 2307.547,
+      "tp": 2355.699,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2355.699"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 173.45,
+      "commission": -0.33,
+      "swap": -3.14,
+      "fee": 0.0
+    },
+    {
+      "position_id": 38,
+      "open_epoch": 1715680800,
+      "close_epoch": 1715762580,
+      "last_deal": 39,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2346.004,
+      "close_price": 2371.335,
+      "net": 173.27,
+      "magic": 109102301,
+      "sl": 2329.125,
+      "tp": 2371.323,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2371.323"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 177.32,
+      "commission": -0.39,
+      "swap": -3.66,
+      "fee": 0.0
+    },
+    {
+      "position_id": 40,
+      "open_epoch": 1723636800,
+      "close_epoch": 1723641604,
+      "last_deal": 41,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2474.872,
+      "close_price": 2457.621,
+      "net": -103.83,
+      "magic": 109102301,
+      "sl": 2455.442,
+      "tp": 2504.016,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 2457.632"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.5,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 42,
+      "open_epoch": 1723798800,
+      "close_epoch": 1723815517,
+      "last_deal": 43,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2462.436,
+      "close_price": 2492.739,
+      "net": 181.48,
+      "magic": 109102301,
+      "sl": 2442.236,
+      "tp": 2492.736,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2492.736"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 181.81,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 44,
+      "open_epoch": 1726146000,
+      "close_epoch": 1726167279,
+      "last_deal": 45,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2528.638,
+      "close_price": 2557.609,
+      "net": 173.49,
+      "magic": 109102301,
+      "sl": 2509.318,
+      "tp": 2557.607,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2557.607"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 173.82,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 46,
+      "open_epoch": 1727190000,
+      "close_epoch": 1727282798,
+      "last_deal": 47,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 2643.782,
+      "close_price": 2650.215,
+      "net": 35.13,
+      "magic": 109102301,
+      "sl": 2620.923,
+      "tp": 2678.07,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 2650.224"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 38.6,
+      "commission": -0.33,
+      "swap": -3.14,
+      "fee": 0.0
+    },
+    {
+      "position_id": 48,
+      "open_epoch": 1727348400,
+      "close_epoch": 1727356301,
+      "last_deal": 49,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 2672.785,
+      "close_price": 2664.942,
+      "net": -55.3,
+      "magic": 109102301,
+      "sl": 2654.109,
+      "tp": 2700.798,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 2664.951"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -54.91,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 50,
+      "open_epoch": 1729008000,
+      "close_epoch": 1729215100,
+      "last_deal": 51,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2664.809,
+      "close_price": 2700.7779999999993,
+      "net": 166.47,
+      "magic": 109102301,
+      "sl": 2640.837,
+      "tp": 2700.768,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2700.768"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 179.84,
+      "commission": -0.28,
+      "swap": -13.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 52,
+      "open_epoch": 1738681200,
+      "close_epoch": 1738770702,
+      "last_deal": 53,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2839.455,
+      "close_price": 2882.039,
+      "net": 210.02,
+      "magic": 109102301,
+      "sl": 2811.081,
+      "tp": 2882.028,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2882.028"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 212.92,
+      "commission": -0.28,
+      "swap": -2.62,
+      "fee": 0.0
+    },
+    {
+      "position_id": 54,
+      "open_epoch": 1740405600,
+      "close_epoch": 1740466800,
+      "last_deal": 55,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2954.531,
+      "close_price": 2935.9499999999994,
+      "net": -95.81,
+      "magic": 109102301,
+      "sl": 2926.632,
+      "tp": 2996.379,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.91,
+      "commission": -0.28,
+      "swap": -2.62,
+      "fee": 0.0
+    },
+    {
+      "position_id": 56,
+      "open_epoch": 1741338000,
+      "close_epoch": 1741572000,
+      "last_deal": 57,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2922.503,
+      "close_price": 2912.144,
+      "net": -54.7,
+      "magic": 109102301,
+      "sl": 2896.346,
+      "tp": 2961.738,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -51.8,
+      "commission": -0.28,
+      "swap": -2.62,
+      "fee": 0.0
+    },
+    {
+      "position_id": 58,
+      "open_epoch": 1741798800,
+      "close_epoch": 1741880320,
+      "last_deal": 59,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2936.267,
+      "close_price": 2975.3869999999997,
+      "net": 187.47,
+      "magic": 109102301,
+      "sl": 2910.19,
+      "tp": 2975.382,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 2975.382"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 195.6,
+      "commission": -0.28,
+      "swap": -7.85,
+      "fee": 0.0
+    },
+    {
+      "position_id": 60,
+      "open_epoch": 1742227200,
+      "close_epoch": 1742301834,
+      "last_deal": 61,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 2997.291,
+      "close_price": 3033.6669999999995,
+      "net": 178.98,
+      "magic": 109102301,
+      "sl": 2973.045,
+      "tp": 3033.66,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 3033.660"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 181.88,
+      "commission": -0.28,
+      "swap": -2.62,
+      "fee": 0.0
+    },
+    {
+      "position_id": 62,
+      "open_epoch": 1743390000,
+      "close_epoch": 1743522761,
+      "last_deal": 63,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 3106.83,
+      "close_price": 3118.247,
+      "net": 43.36,
+      "magic": 109102301,
+      "sl": 3073.166,
+      "tp": 3157.326,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 3118.255"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 45.67,
+      "commission": -0.22,
+      "swap": -2.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 64,
+      "open_epoch": 1743638400,
+      "close_epoch": 1743661836,
+      "last_deal": 65,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3162.682,
+      "close_price": 3118.085,
+      "net": -133.96,
+      "magic": 109102301,
+      "sl": 3116.312,
+      "tp": 3232.257,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 3118.096"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -133.79,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 66,
+      "open_epoch": 1745852400,
+      "close_epoch": 1745928039,
+      "last_deal": 67,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3328.714,
+      "close_price": 3308.043,
+      "net": -63.75,
+      "magic": 109102301,
+      "sl": 3268.801,
+      "tp": 3418.558,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 3308.059"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -62.01,
+      "commission": -0.17,
+      "swap": -1.57,
+      "fee": 0.0
+    },
+    {
+      "position_id": 68,
+      "open_epoch": 1747879200,
+      "close_epoch": 1747904442,
+      "last_deal": 69,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 3338.23,
+      "close_price": 3307.792,
+      "net": -121.97,
+      "magic": 109102301,
+      "sl": 3298.29,
+      "tp": 3398.14,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 3307.792"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -121.75,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 70,
+      "open_epoch": 1748422800,
+      "close_epoch": 1748450716,
+      "last_deal": 71,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 3321.765,
+      "close_price": 3290.445,
+      "net": -125.5,
+      "magic": 109102301,
+      "sl": 3285.282,
+      "tp": 3376.489,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 3290.460"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -125.28,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 72,
+      "open_epoch": 1757044800,
+      "close_epoch": 1757316041,
+      "last_deal": 73,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 3558.476,
+      "close_price": 3610.006,
+      "net": 203.81,
+      "magic": 109102301,
+      "sl": 3524.126,
+      "tp": 3610.001,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 3610.001"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 206.12,
+      "commission": -0.22,
+      "swap": -2.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 74,
+      "open_epoch": 1757646000,
+      "close_epoch": 1757896781,
+      "last_deal": 75,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 3649.047,
+      "close_price": 3633.7300000000005,
+      "net": -79.49,
+      "magic": 109102301,
+      "sl": 3619.155,
+      "tp": 3693.885,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 3633.747"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -76.59,
+      "commission": -0.28,
+      "swap": -2.62,
+      "fee": 0.0
+    },
+    {
+      "position_id": 76,
+      "open_epoch": 1757948400,
+      "close_epoch": 1758073039,
+      "last_deal": 77,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 3663.585,
+      "close_price": 3678.859,
+      "net": 70.85,
+      "magic": 109102301,
+      "sl": 3633.84,
+      "tp": 3708.202,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 3678.866"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 76.37,
+      "commission": -0.28,
+      "swap": -5.24,
+      "fee": 0.0
+    },
+    {
+      "position_id": 78,
+      "open_epoch": 1758898800,
+      "close_epoch": 1759191902,
+      "last_deal": 79,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3778.952,
+      "close_price": 3839.743,
+      "net": 179.06,
+      "magic": 109102301,
+      "sl": 3738.445,
+      "tp": 3839.713,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 3839.713"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 182.37,
+      "commission": -0.17,
+      "swap": -3.14,
+      "fee": 0.0
+    },
+    {
+      "position_id": 80,
+      "open_epoch": 1759849200,
+      "close_epoch": 1759939900,
+      "last_deal": 81,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 3985.752,
+      "close_price": 4054.096,
+      "net": 203.29,
+      "magic": 109102301,
+      "sl": 3940.204,
+      "tp": 4054.074,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 4054.074"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 205.03,
+      "commission": -0.17,
+      "swap": -1.57,
+      "fee": 0.0
+    },
+    {
+      "position_id": 82,
+      "open_epoch": 1760490000,
+      "close_epoch": 1760623602,
+      "last_deal": 83,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4162.713,
+      "close_price": 4260.798,
+      "net": 192.92,
+      "magic": 109102301,
+      "sl": 4097.342,
+      "tp": 4260.789,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 4260.789"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 196.17,
+      "commission": -0.11,
+      "swap": -3.14,
+      "fee": 0.0
+    },
+    {
+      "position_id": 84,
+      "open_epoch": 1762740000,
+      "close_epoch": 1762816934,
+      "last_deal": 85,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4044.079,
+      "close_price": 4120.939,
+      "net": 230.41,
+      "magic": 109102301,
+      "sl": 3992.823,
+      "tp": 4120.934,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 4120.934"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 230.58,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 86,
+      "open_epoch": 1762963200,
+      "close_epoch": 1763045021,
+      "last_deal": 87,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4181.481,
+      "close_price": 4189.517,
+      "net": 19.23,
+      "magic": 109102301,
+      "sl": 4127.195,
+      "tp": 4262.953,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 4189.534"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 24.11,
+      "commission": -0.17,
+      "swap": -4.71,
+      "fee": 0.0
+    },
+    {
+      "position_id": 88,
+      "open_epoch": 1769544000,
+      "close_epoch": 1769569457,
+      "last_deal": 89,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 5099.032,
+      "close_price": 5237.334,
+      "net": 275.45,
+      "magic": 109102301,
+      "sl": 5006.833,
+      "tp": 5237.33,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 5237.330"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 276.61,
+      "commission": -0.11,
+      "swap": -1.05,
+      "fee": 0.0
+    },
+    {
+      "position_id": 90,
+      "open_epoch": 1770811200,
+      "close_epoch": 1770816652,
+      "last_deal": 91,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 5112.073,
+      "close_price": 5022.058,
+      "net": -180.14,
+      "magic": 109102301,
+      "sl": 5022.749,
+      "tp": 5245.389,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 5022.749"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -180.03,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 92,
+      "open_epoch": 1771005600,
+      "close_epoch": 1771257600,
+      "last_deal": 93,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 5020.824,
+      "close_price": 4979.76,
+      "net": -83.29,
+      "magic": 109102301,
+      "sl": 4899.269,
+      "tp": 5203.474,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -82.13,
+      "commission": -0.11,
+      "swap": -1.05,
+      "fee": 0.0
+    },
+    {
+      "position_id": 94,
+      "open_epoch": 1771585200,
+      "close_epoch": 1771600005,
+      "last_deal": 95,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 5034.951,
+      "close_price": 4990.107,
+      "net": -89.8,
+      "magic": 109102301,
+      "sl": 4968.524,
+      "tp": 5134.521,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "sl 4990.207"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -89.69,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 96,
+      "open_epoch": 1772208000,
+      "close_epoch": 1772406580,
+      "last_deal": 97,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 5239.864,
+      "close_price": 5348.723,
+      "net": 216.56,
+      "magic": 109102301,
+      "sl": 5167.838,
+      "tp": 5347.678,
+      "entry_comment": "Safe SQZ-H1-STD",
+      "exit_comments": [
+        "tp 5347.678"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 217.72,
+      "commission": -0.11,
+      "swap": -1.05,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1637031600,
+      "deal": 2,
+      "balance": 9999.56,
+      "net": -0.44
+    },
+    {
+      "epoch": 1637071720,
+      "deal": 3,
+      "balance": 9953.67,
+      "net": -45.89
+    },
+    {
+      "epoch": 1645484460,
+      "deal": 4,
+      "balance": 9953.28,
+      "net": -0.39
+    },
+    {
+      "epoch": 1645520242,
+      "deal": 5,
+      "balance": 9871.61,
+      "net": -81.67
+    },
+    {
+      "epoch": 1646355600,
+      "deal": 6,
+      "balance": 9871.33,
+      "net": -0.28
+    },
+    {
+      "epoch": 1646607918,
+      "deal": 7,
+      "balance": 10041.16,
+      "net": 169.83
+    },
+    {
+      "epoch": 1646722800,
+      "deal": 8,
+      "balance": 10040.99,
+      "net": -0.17
+    },
+    {
+      "epoch": 1646754363,
+      "deal": 9,
+      "balance": 10194.01,
+      "net": 153.02
+    },
+    {
+      "epoch": 1669798800,
+      "deal": 10,
+      "balance": 10193.51,
+      "net": -0.5
+    },
+    {
+      "epoch": 1669821574,
+      "deal": 11,
+      "balance": 10117.42,
+      "net": -76.09
+    },
+    {
+      "epoch": 1670425200,
+      "deal": 12,
+      "balance": 10117.03,
+      "net": -0.39
+    },
+    {
+      "epoch": 1670599419,
+      "deal": 13,
+      "balance": 10150.96,
+      "net": 33.93
+    },
+    {
+      "epoch": 1671202800,
+      "deal": 14,
+      "balance": 10150.57,
+      "net": -0.39
+    },
+    {
+      "epoch": 1671465363,
+      "deal": 15,
+      "balance": 10107.48,
+      "net": -43.09
+    },
+    {
+      "epoch": 1673424000,
+      "deal": 16,
+      "balance": 10107.04,
+      "net": -0.44
+    },
+    {
+      "epoch": 1673448386,
+      "deal": 17,
+      "balance": 10040.03,
+      "net": -67.01
+    },
+    {
+      "epoch": 1675281600,
+      "deal": 18,
+      "balance": 10039.75,
+      "net": -0.28
+    },
+    {
+      "epoch": 1675348538,
+      "deal": 19,
+      "balance": 10027.64,
+      "net": -12.11
+    },
+    {
+      "epoch": 1680174000,
+      "deal": 20,
+      "balance": 10027.2,
+      "net": -0.44
+    },
+    {
+      "epoch": 1680282000,
+      "deal": 21,
+      "balance": 10088.35,
+      "net": 61.15
+    },
+    {
+      "epoch": 1700838000,
+      "deal": 22,
+      "balance": 10087.74,
+      "net": -0.61
+    },
+    {
+      "epoch": 1701048464,
+      "deal": 23,
+      "balance": 10243.09,
+      "net": 155.35
+    },
+    {
+      "epoch": 1701183600,
+      "deal": 24,
+      "balance": 10242.65,
+      "net": -0.44
+    },
+    {
+      "epoch": 1701218556,
+      "deal": 25,
+      "balance": 10396.71,
+      "net": 154.06
+    },
+    {
+      "epoch": 1701428400,
+      "deal": 26,
+      "balance": 10396.27,
+      "net": -0.44
+    },
+    {
+      "epoch": 1701452654,
+      "deal": 27,
+      "balance": 10556.75,
+      "net": 160.48
+    },
+    {
+      "epoch": 1709895600,
+      "deal": 28,
+      "balance": 10556.36,
+      "net": -0.39
+    },
+    {
+      "epoch": 1709918261,
+      "deal": 29,
+      "balance": 10730.75,
+      "net": 174.39
+    },
+    {
+      "epoch": 1710345600,
+      "deal": 30,
+      "balance": 10730.36,
+      "net": -0.39
+    },
+    {
+      "epoch": 1710416838,
+      "deal": 31,
+      "balance": 10691.97,
+      "net": -38.39
+    },
+    {
+      "epoch": 1711623600,
+      "deal": 32,
+      "balance": 10691.64,
+      "net": -0.33
+    },
+    {
+      "epoch": 1711922859,
+      "deal": 33,
+      "balance": 10866.98,
+      "net": 175.34
+    },
+    {
+      "epoch": 1712858400,
+      "deal": 34,
+      "balance": 10866.76,
+      "net": -0.22
+    },
+    {
+      "epoch": 1712929350,
+      "deal": 35,
+      "balance": 11044.23,
+      "net": 177.47
+    },
+    {
+      "epoch": 1715259600,
+      "deal": 36,
+      "balance": 11043.9,
+      "net": -0.33
+    },
+    {
+      "epoch": 1715304161,
+      "deal": 37,
+      "balance": 11214.21,
+      "net": 170.31
+    },
+    {
+      "epoch": 1715680800,
+      "deal": 38,
+      "balance": 11213.82,
+      "net": -0.39
+    },
+    {
+      "epoch": 1715762580,
+      "deal": 39,
+      "balance": 11387.48,
+      "net": 173.66
+    },
+    {
+      "epoch": 1723636800,
+      "deal": 40,
+      "balance": 11387.15,
+      "net": -0.33
+    },
+    {
+      "epoch": 1723641604,
+      "deal": 41,
+      "balance": 11283.65,
+      "net": -103.5
+    },
+    {
+      "epoch": 1723798800,
+      "deal": 42,
+      "balance": 11283.32,
+      "net": -0.33
+    },
+    {
+      "epoch": 1723815517,
+      "deal": 43,
+      "balance": 11465.13,
+      "net": 181.81
+    },
+    {
+      "epoch": 1726146000,
+      "deal": 44,
+      "balance": 11464.8,
+      "net": -0.33
+    },
+    {
+      "epoch": 1726167279,
+      "deal": 45,
+      "balance": 11638.62,
+      "net": 173.82
+    },
+    {
+      "epoch": 1727190000,
+      "deal": 46,
+      "balance": 11638.29,
+      "net": -0.33
+    },
+    {
+      "epoch": 1727282798,
+      "deal": 47,
+      "balance": 11673.75,
+      "net": 35.46
+    },
+    {
+      "epoch": 1727348400,
+      "deal": 48,
+      "balance": 11673.36,
+      "net": -0.39
+    },
+    {
+      "epoch": 1727356301,
+      "deal": 49,
+      "balance": 11618.45,
+      "net": -54.91
+    },
+    {
+      "epoch": 1729008000,
+      "deal": 50,
+      "balance": 11618.17,
+      "net": -0.28
+    },
+    {
+      "epoch": 1729215100,
+      "deal": 51,
+      "balance": 11784.92,
+      "net": 166.75
+    },
+    {
+      "epoch": 1738681200,
+      "deal": 52,
+      "balance": 11784.64,
+      "net": -0.28
+    },
+    {
+      "epoch": 1738770702,
+      "deal": 53,
+      "balance": 11994.94,
+      "net": 210.3
+    },
+    {
+      "epoch": 1740405600,
+      "deal": 54,
+      "balance": 11994.66,
+      "net": -0.28
+    },
+    {
+      "epoch": 1740466800,
+      "deal": 55,
+      "balance": 11899.13,
+      "net": -95.53
+    },
+    {
+      "epoch": 1741338000,
+      "deal": 56,
+      "balance": 11898.85,
+      "net": -0.28
+    },
+    {
+      "epoch": 1741572000,
+      "deal": 57,
+      "balance": 11844.43,
+      "net": -54.42
+    },
+    {
+      "epoch": 1741798800,
+      "deal": 58,
+      "balance": 11844.15,
+      "net": -0.28
+    },
+    {
+      "epoch": 1741880320,
+      "deal": 59,
+      "balance": 12031.9,
+      "net": 187.75
+    },
+    {
+      "epoch": 1742227200,
+      "deal": 60,
+      "balance": 12031.62,
+      "net": -0.28
+    },
+    {
+      "epoch": 1742301834,
+      "deal": 61,
+      "balance": 12210.88,
+      "net": 179.26
+    },
+    {
+      "epoch": 1743390000,
+      "deal": 62,
+      "balance": 12210.66,
+      "net": -0.22
+    },
+    {
+      "epoch": 1743522761,
+      "deal": 63,
+      "balance": 12254.24,
+      "net": 43.58
+    },
+    {
+      "epoch": 1743638400,
+      "deal": 64,
+      "balance": 12254.07,
+      "net": -0.17
+    },
+    {
+      "epoch": 1743661836,
+      "deal": 65,
+      "balance": 12120.28,
+      "net": -133.79
+    },
+    {
+      "epoch": 1745852400,
+      "deal": 66,
+      "balance": 12120.11,
+      "net": -0.17
+    },
+    {
+      "epoch": 1745928039,
+      "deal": 67,
+      "balance": 12056.53,
+      "net": -63.58
+    },
+    {
+      "epoch": 1747879200,
+      "deal": 68,
+      "balance": 12056.31,
+      "net": -0.22
+    },
+    {
+      "epoch": 1747904442,
+      "deal": 69,
+      "balance": 11934.56,
+      "net": -121.75
+    },
+    {
+      "epoch": 1748422800,
+      "deal": 70,
+      "balance": 11934.34,
+      "net": -0.22
+    },
+    {
+      "epoch": 1748450716,
+      "deal": 71,
+      "balance": 11809.06,
+      "net": -125.28
+    },
+    {
+      "epoch": 1757044800,
+      "deal": 72,
+      "balance": 11808.84,
+      "net": -0.22
+    },
+    {
+      "epoch": 1757316041,
+      "deal": 73,
+      "balance": 12012.87,
+      "net": 204.03
+    },
+    {
+      "epoch": 1757646000,
+      "deal": 74,
+      "balance": 12012.59,
+      "net": -0.28
+    },
+    {
+      "epoch": 1757896781,
+      "deal": 75,
+      "balance": 11933.38,
+      "net": -79.21
+    },
+    {
+      "epoch": 1757948400,
+      "deal": 76,
+      "balance": 11933.1,
+      "net": -0.28
+    },
+    {
+      "epoch": 1758073039,
+      "deal": 77,
+      "balance": 12004.23,
+      "net": 71.13
+    },
+    {
+      "epoch": 1758898800,
+      "deal": 78,
+      "balance": 12004.06,
+      "net": -0.17
+    },
+    {
+      "epoch": 1759191902,
+      "deal": 79,
+      "balance": 12183.29,
+      "net": 179.23
+    },
+    {
+      "epoch": 1759849200,
+      "deal": 80,
+      "balance": 12183.12,
+      "net": -0.17
+    },
+    {
+      "epoch": 1759939900,
+      "deal": 81,
+      "balance": 12386.58,
+      "net": 203.46
+    },
+    {
+      "epoch": 1760490000,
+      "deal": 82,
+      "balance": 12386.47,
+      "net": -0.11
+    },
+    {
+      "epoch": 1760623602,
+      "deal": 83,
+      "balance": 12579.5,
+      "net": 193.03
+    },
+    {
+      "epoch": 1762740000,
+      "deal": 84,
+      "balance": 12579.33,
+      "net": -0.17
+    },
+    {
+      "epoch": 1762816934,
+      "deal": 85,
+      "balance": 12809.91,
+      "net": 230.58
+    },
+    {
+      "epoch": 1762963200,
+      "deal": 86,
+      "balance": 12809.74,
+      "net": -0.17
+    },
+    {
+      "epoch": 1763045021,
+      "deal": 87,
+      "balance": 12829.14,
+      "net": 19.4
+    },
+    {
+      "epoch": 1769544000,
+      "deal": 88,
+      "balance": 12829.03,
+      "net": -0.11
+    },
+    {
+      "epoch": 1769569457,
+      "deal": 89,
+      "balance": 13104.59,
+      "net": 275.56
+    },
+    {
+      "epoch": 1770811200,
+      "deal": 90,
+      "balance": 13104.48,
+      "net": -0.11
+    },
+    {
+      "epoch": 1770816652,
+      "deal": 91,
+      "balance": 12924.45,
+      "net": -180.03
+    },
+    {
+      "epoch": 1771005600,
+      "deal": 92,
+      "balance": 12924.34,
+      "net": -0.11
+    },
+    {
+      "epoch": 1771257600,
+      "deal": 93,
+      "balance": 12841.16,
+      "net": -83.18
+    },
+    {
+      "epoch": 1771585200,
+      "deal": 94,
+      "balance": 12841.05,
+      "net": -0.11
+    },
+    {
+      "epoch": 1771600005,
+      "deal": 95,
+      "balance": 12751.36,
+      "net": -89.69
+    },
+    {
+      "epoch": 1772208000,
+      "deal": 96,
+      "balance": 12751.25,
+      "net": -0.11
+    },
+    {
+      "epoch": 1772406580,
+      "deal": 97,
+      "balance": 12967.92,
+      "net": 216.67
+    }
+  ],
+  "seconds": 58.370803356170654,
+  "binary_sha256": "639c0d44b46fa25d41bec8885e8804c1b2a080f44dc71588c1e9d71748124e31",
+  "report_sha256": "31e9409766c61509c099a131443b03fc64083ed311ea14e1e40aca4fcbd1cfbb",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

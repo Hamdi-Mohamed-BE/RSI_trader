@@ -1,0 +1,1336 @@
+{
+  "USTEC raw": {
+    "metrics": {
+      "trades": 508,
+      "net": 1312.200000000005,
+      "return_pct": 13.12200000000005,
+      "pf": 1.04433996405361,
+      "win_rate_pct": 46.25984251968504,
+      "equity_dd": 29.31264263489712,
+      "balance_dd": 28.880452230474283,
+      "mt5_sharpe": 0.8533639966916626,
+      "daily_closed_balance_sharpe": 0.4397229449006633,
+      "max_win_streak": 6,
+      "max_loss_streak": 7,
+      "average_trade": 2.583070866141742,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 61,
+          "net": 937.1199999999999,
+          "pf": 1.3239782336631472
+        },
+        {
+          "year": 2025,
+          "trades": 251,
+          "net": 2135.11,
+          "pf": 1.1540575662178905
+        },
+        {
+          "year": 2026,
+          "trades": 196,
+          "net": -1760.0299999999997,
+          "pf": 0.862951202115499
+        }
+      ]
+    },
+    "wilson95_pct": [
+      41.968337508278466,
+      50.60748859077303
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100700,
+      "return_p05_p50_p95": [
+        -25.654143594267747,
+        12.742205202388812,
+        71.17121048076493
+      ],
+      "pf_p05_p50_p95": [
+        0.8734409081691672,
+        1.0436805780418843,
+        1.2411943710195752
+      ],
+      "max_dd_p05_p50_p95": [
+        11.971166195711467,
+        20.736096517686157,
+        37.11435537974289
+      ],
+      "probability_profit_pct": 67.78,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 50.67,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.4416930826078644,
+      "probabilistic_sharpe_pct": 73.5183100599479,
+      "deflated_sharpe_pct": 2.858310854152207,
+      "multiple_test_benchmark_sharpe": 1.7782561422574212,
+      "daily_skewness": 0.6062328509374191,
+      "daily_kurtosis": 2.7889775815644104
+    },
+    "recent_half_pf": 0.9179636249797407,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:16:28",
+        "end": "2025-06-06T14:29:38",
+        "trades": 169,
+        "net_profit": 2227.84,
+        "profit_factor": 1.2529176165003133,
+        "win_rate_pct": 47.928994082840234
+      },
+      {
+        "part": 2,
+        "start": "2025-06-09T19:55:00",
+        "end": "2026-02-09T20:55:00",
+        "trades": 170,
+        "net_profit": 2414.84,
+        "profit_factor": 1.2708625665564077,
+        "win_rate_pct": 48.8235294117647
+      },
+      {
+        "part": 3,
+        "start": "2026-02-10T20:06:42",
+        "end": "2026-10-06T19:55:00",
+        "trades": 169,
+        "net_profit": -3330.48,
+        "profit_factor": 0.7194236967718999,
+        "win_rate_pct": 42.01183431952663
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 196,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 29.31264263489712,
+    "sampled_minute_dd_pct": 29.312642634897113,
+    "daily_equity_expected_shortfall_95_pct": 1.143169410326103,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.1499661113048925,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": true
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "38% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t23:27:13.205\tTester\tUSTEC,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t23:27:33.193\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "DI\t0\t23:27:19.184\tCore 01\tUSTEC,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "LP\t0\t23:27:37.511\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 254,
+      "net": 880.81,
+      "return_pct": 8.8081,
+      "pf": 1.0672207276820633,
+      "win_rate_pct": 44.48818897637795,
+      "equity_dd": 11.306594087918064,
+      "balance_dd": 10.43819601404864,
+      "mt5_sharpe": 1.243864612050246,
+      "daily_closed_balance_sharpe": 0.5468001175651988,
+      "max_win_streak": 7,
+      "max_loss_streak": 6,
+      "average_trade": 3.467755905511811,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 59,
+          "net": 279.56999999999994,
+          "pf": 1.1025019615319749
+        },
+        {
+          "year": 2024,
+          "trades": 195,
+          "net": 601.2399999999999,
+          "pf": 1.0579464310669355
+        }
+      ]
+    }
+  },
+  "USTEC breakout": {
+    "metrics": {
+      "trades": 508,
+      "net": 1312.200000000005,
+      "return_pct": 13.12200000000005,
+      "pf": 1.04433996405361,
+      "win_rate_pct": 46.25984251968504,
+      "equity_dd": 29.31264263489712,
+      "balance_dd": 28.880452230474283,
+      "mt5_sharpe": 0.8533639966916626,
+      "daily_closed_balance_sharpe": 0.4397229449006633,
+      "max_win_streak": 6,
+      "max_loss_streak": 7,
+      "average_trade": 2.583070866141742,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 61,
+          "net": 937.1199999999999,
+          "pf": 1.3239782336631472
+        },
+        {
+          "year": 2025,
+          "trades": 251,
+          "net": 2135.11,
+          "pf": 1.1540575662178905
+        },
+        {
+          "year": 2026,
+          "trades": 196,
+          "net": -1760.0299999999997,
+          "pf": 0.862951202115499
+        }
+      ]
+    },
+    "wilson95_pct": [
+      41.968337508278466,
+      50.60748859077303
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100700,
+      "return_p05_p50_p95": [
+        -25.654143594267747,
+        12.742205202388812,
+        71.17121048076493
+      ],
+      "pf_p05_p50_p95": [
+        0.8734409081691672,
+        1.0436805780418843,
+        1.2411943710195752
+      ],
+      "max_dd_p05_p50_p95": [
+        11.971166195711467,
+        20.736096517686157,
+        37.11435537974289
+      ],
+      "probability_profit_pct": 67.78,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 50.67,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.4416930826078644,
+      "probabilistic_sharpe_pct": 73.5183100599479,
+      "deflated_sharpe_pct": 2.858310854152207,
+      "multiple_test_benchmark_sharpe": 1.7782561422574212,
+      "daily_skewness": 0.6062328509374191,
+      "daily_kurtosis": 2.7889775815644104
+    },
+    "recent_half_pf": 0.9179636249797407,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:16:28",
+        "end": "2025-06-06T14:29:38",
+        "trades": 169,
+        "net_profit": 2227.84,
+        "profit_factor": 1.2529176165003133,
+        "win_rate_pct": 47.928994082840234
+      },
+      {
+        "part": 2,
+        "start": "2025-06-09T19:55:00",
+        "end": "2026-02-09T20:55:00",
+        "trades": 170,
+        "net_profit": 2414.84,
+        "profit_factor": 1.2708625665564077,
+        "win_rate_pct": 48.8235294117647
+      },
+      {
+        "part": 3,
+        "start": "2026-02-10T20:06:42",
+        "end": "2026-10-06T19:55:00",
+        "trades": 169,
+        "net_profit": -3330.48,
+        "profit_factor": 0.7194236967718999,
+        "win_rate_pct": 42.01183431952663
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 196,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 29.31264263489712,
+    "sampled_minute_dd_pct": 29.312642634897113,
+    "daily_equity_expected_shortfall_95_pct": 1.143169410326103,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.1499661113048925,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": true
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "38% real ticks",
+      "real_tick_notes": [
+        "CS\t0\t23:27:13.205\tTester\tUSTEC,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t23:27:33.193\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+        "DI\t0\t23:27:19.184\tCore 01\tUSTEC,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "LP\t0\t23:27:37.511\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 254,
+      "net": 880.81,
+      "return_pct": 8.8081,
+      "pf": 1.0672207276820633,
+      "win_rate_pct": 44.48818897637795,
+      "equity_dd": 11.306594087918064,
+      "balance_dd": 10.43819601404864,
+      "mt5_sharpe": 1.243864612050246,
+      "daily_closed_balance_sharpe": 0.5468001175651988,
+      "max_win_streak": 7,
+      "max_loss_streak": 6,
+      "average_trade": 3.467755905511811,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 59,
+          "net": 279.56999999999994,
+          "pf": 1.1025019615319749
+        },
+        {
+          "year": 2024,
+          "trades": 195,
+          "net": 601.2399999999999,
+          "pf": 1.0579464310669355
+        }
+      ]
+    }
+  },
+  "USTEC reversal": {
+    "metrics": {
+      "trades": 119,
+      "net": -1617.8300000000004,
+      "return_pct": -16.178300000000004,
+      "pf": 0.745302638394073,
+      "win_rate_pct": 39.49579831932773,
+      "equity_dd": 26.402406719596872,
+      "balance_dd": 25.17125103186084,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -0.902913062515754,
+      "max_win_streak": 5,
+      "max_loss_streak": 12,
+      "average_trade": -13.595210084033617,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 22,
+          "net": -16.27000000000004,
+          "pf": 0.9870996899802571
+        },
+        {
+          "year": 2025,
+          "trades": 50,
+          "net": -982.62,
+          "pf": 0.6424808254864577
+        },
+        {
+          "year": 2026,
+          "trades": 47,
+          "net": -618.94,
+          "pf": 0.7357577103043136
+        }
+      ]
+    },
+    "wilson95_pct": [
+      31.17346506448596,
+      48.47509964647916
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100702,
+      "return_p05_p50_p95": [
+        -31.323558823459837,
+        -16.23835323859728,
+        3.4352678892919877
+      ],
+      "pf_p05_p50_p95": [
+        0.4955824422275069,
+        0.7417530309467558,
+        1.0588936637219923
+      ],
+      "max_dd_p05_p50_p95": [
+        10.18662807218649,
+        21.016207559469194,
+        33.654465984545745
+      ],
+      "probability_profit_pct": 8.18,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 83.19,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": -0.9031332263672966,
+      "probabilistic_sharpe_pct": 11.69180515234181,
+      "deflated_sharpe_pct": 0.009916347064625741,
+      "multiple_test_benchmark_sharpe": 1.9197009491553014,
+      "daily_skewness": 2.85821850415198,
+      "daily_kurtosis": 26.489170325858034
+    },
+    "recent_half_pf": 0.8231742112198209,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:16:35",
+        "end": "2025-04-03T14:41:15",
+        "trades": 40,
+        "net_profit": -487.05000000000007,
+        "profit_factor": 0.7967533957894297,
+        "win_rate_pct": 40.0
+      },
+      {
+        "part": 2,
+        "start": "2025-04-04T14:29:29",
+        "end": "2026-02-05T20:55:00",
+        "trades": 39,
+        "net_profit": -969.83,
+        "profit_factor": 0.5376147226393955,
+        "win_rate_pct": 35.8974358974359
+      },
+      {
+        "part": 3,
+        "start": "2026-02-06T16:07:04",
+        "end": "2026-10-01T14:00:38",
+        "trades": 40,
+        "net_profit": -160.95,
+        "profit_factor": 0.9133825215131016,
+        "win_rate_pct": 42.5
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 47,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 26.402406719596872,
+    "sampled_minute_dd_pct": 26.24318592954509,
+    "daily_equity_expected_shortfall_95_pct": 1.0169402278265798,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.0169402278265798,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": false,
+      "pf_above_1": false,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": false,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false
+    },
+    "all_gates_pass": false,
+    "verdict": "REJECT",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 38,
+      "net": -1779.46,
+      "return_pct": -17.7946,
+      "pf": 0.2980184700837504,
+      "win_rate_pct": 23.684210526315788,
+      "equity_dd": 18.765049108534885,
+      "balance_dd": 18.31458098721392,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -3.143441015527644,
+      "max_win_streak": 4,
+      "max_loss_streak": 9,
+      "average_trade": -46.827894736842104,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 8,
+          "net": -513.76,
+          "pf": 0.20829673462468992
+        },
+        {
+          "year": 2024,
+          "trades": 30,
+          "net": -1265.7,
+          "pf": 0.32889002004263035
+        }
+      ]
+    }
+  },
+  "USTEC hybrid": {
+    "metrics": {
+      "trades": 142,
+      "net": -1589.5499999999997,
+      "return_pct": -15.895499999999997,
+      "pf": 0.7806134349514106,
+      "win_rate_pct": 40.140845070422536,
+      "equity_dd": 21.281654307906287,
+      "balance_dd": 19.663905519873747,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -0.8843091201969883,
+      "max_win_streak": 5,
+      "max_loss_streak": 5,
+      "average_trade": -11.19401408450704,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 28,
+          "net": -477.34,
+          "pf": 0.7223508335175255
+        },
+        {
+          "year": 2025,
+          "trades": 57,
+          "net": -16.109999999999925,
+          "pf": 0.9942358059853158
+        },
+        {
+          "year": 2026,
+          "trades": 57,
+          "net": -1096.1000000000001,
+          "pf": 0.598699553703819
+        }
+      ]
+    },
+    "wilson95_pct": [
+      32.44082206902531,
+      48.36024764982274
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100703,
+      "return_p05_p50_p95": [
+        -30.667726982764034,
+        -16.21581715109444,
+        1.8021531654589888
+      ],
+      "pf_p05_p50_p95": [
+        0.5759422027513832,
+        0.779113568185294,
+        1.033246169512559
+      ],
+      "max_dd_p05_p50_p95": [
+        10.1684683240974,
+        20.766453466805114,
+        32.791143448430184
+      ],
+      "probability_profit_pct": 6.859999999999999,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 83.7,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": -0.8869349393648343,
+      "probabilistic_sharpe_pct": 11.470116764286503,
+      "deflated_sharpe_pct": 0.009479331838946337,
+      "multiple_test_benchmark_sharpe": 1.8674435617065779,
+      "daily_skewness": 1.7273427518386848,
+      "daily_kurtosis": 14.80923688789116
+    },
+    "recent_half_pf": 0.634893036295998,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:16:28",
+        "end": "2025-04-04T19:55:00",
+        "trades": 47,
+        "net_profit": -196.7199999999999,
+        "profit_factor": 0.9262668665667168,
+        "win_rate_pct": 40.42553191489361
+      },
+      {
+        "part": 2,
+        "start": "2025-04-07T14:13:38",
+        "end": "2026-02-09T15:06:16",
+        "trades": 48,
+        "net_profit": -580.67,
+        "profit_factor": 0.7611276574738366,
+        "win_rate_pct": 37.5
+      },
+      {
+        "part": 3,
+        "start": "2026-02-13T15:27:57",
+        "end": "2026-10-01T17:30:43",
+        "trades": 47,
+        "net_profit": -812.1600000000001,
+        "profit_factor": 0.6216440334490227,
+        "win_rate_pct": 42.5531914893617
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 57,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 21.281654307906287,
+    "sampled_minute_dd_pct": 21.125283712554634,
+    "daily_equity_expected_shortfall_95_pct": 1.0140670182864977,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.0140670182864961,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": false,
+      "pf_above_1": false,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": false,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false
+    },
+    "all_gates_pass": false,
+    "verdict": "REJECT",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 45,
+      "net": -353.96999999999997,
+      "return_pct": -3.5397,
+      "pf": 0.8479967363765192,
+      "win_rate_pct": 42.22222222222222,
+      "equity_dd": 8.01584460504073,
+      "balance_dd": 7.115992723395798,
+      "mt5_sharpe": -3.325167512870125,
+      "daily_closed_balance_sharpe": -0.45783666102134657,
+      "max_win_streak": 5,
+      "max_loss_streak": 3,
+      "average_trade": -7.866,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 10,
+          "net": -191.72,
+          "pf": 0.6759789754770235
+        },
+        {
+          "year": 2024,
+          "trades": 35,
+          "net": -162.24999999999997,
+          "pf": 0.9065923627382686
+        }
+      ]
+    }
+  },
+  "XAUUSD raw": {
+    "metrics": {
+      "trades": 508,
+      "net": 2187.4100000000017,
+      "return_pct": 21.874100000000016,
+      "pf": 1.080559902388685,
+      "win_rate_pct": 44.48818897637795,
+      "equity_dd": 16.40595233893847,
+      "balance_dd": 15.24291637745874,
+      "mt5_sharpe": 1.5135165150500431,
+      "daily_closed_balance_sharpe": 0.6629289695484231,
+      "max_win_streak": 7,
+      "max_loss_streak": 14,
+      "average_trade": 4.305925196850397,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 61,
+          "net": 1281.0100000000002,
+          "pf": 1.5376115293900403
+        },
+        {
+          "year": 2025,
+          "trades": 250,
+          "net": 1525.7,
+          "pf": 1.1153479187174054
+        },
+        {
+          "year": 2026,
+          "trades": 197,
+          "net": -619.2999999999998,
+          "pf": 0.9463478320383059
+        }
+      ]
+    },
+    "wilson95_pct": [
+      40.22413661355487,
+      48.83497553241576
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100704,
+      "return_p05_p50_p95": [
+        -19.000575122724168,
+        22.12514731835996,
+        84.34961038561643
+      ],
+      "pf_p05_p50_p95": [
+        0.9031004948701655,
+        1.0798761405075228,
+        1.286495354873676
+      ],
+      "max_dd_p05_p50_p95": [
+        11.257603682333725,
+        19.068833059328306,
+        33.869209212806744
+      ],
+      "probability_profit_pct": 78.53,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 42.67,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.663586305988774,
+      "probabilistic_sharpe_pct": 82.92222172828029,
+      "deflated_sharpe_pct": 5.710993631677602,
+      "multiple_test_benchmark_sharpe": 1.7656189792861219,
+      "daily_skewness": 0.8150071309221595,
+      "daily_kurtosis": 2.870737091496049
+    },
+    "recent_half_pf": 0.965300047194356,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:43:30",
+        "end": "2025-06-05T15:46:37",
+        "trades": 169,
+        "net_profit": 828.4000000000002,
+        "profit_factor": 1.1019302016825128,
+        "win_rate_pct": 44.97041420118343
+      },
+      {
+        "part": 2,
+        "start": "2025-06-06T14:22:41",
+        "end": "2026-02-10T20:55:00",
+        "trades": 170,
+        "net_profit": 1706.3700000000001,
+        "profit_factor": 1.190033955914109,
+        "win_rate_pct": 46.470588235294116
+      },
+      {
+        "part": 3,
+        "start": "2026-02-11T20:55:00",
+        "end": "2026-10-06T15:33:00",
+        "trades": 169,
+        "net_profit": -347.3599999999999,
+        "profit_factor": 0.965423639058467,
+        "win_rate_pct": 42.01183431952663
+      }
+    ],
+    "cost_stress": {
+      "status": "measured_extra_spread_sensitivity",
+      "observations": 197,
+      "median_extra_usd_per_lot": 5.0,
+      "mean_extra_usd_per_trade": 0.4834645669291338,
+      "net": 1941.8100000000004,
+      "return_pct": 19.418100000000003,
+      "pf": 1.071151402428032,
+      "win_rate_pct": 44.48818897637795,
+      "scope": "One additional full quoted bid/ask spread per round trip, using the median entry spread cash per lot measured on available 2026 native real-tick quotes. Existing spread, commissions and swaps already remain in baseline P&L. Indicative widening sensitivity, not an exact rerun with widened quotes or a guaranteed future spread."
+    },
+    "native_dd_pct": 16.40595233893847,
+    "sampled_minute_dd_pct": 16.382344274684325,
+    "daily_equity_expected_shortfall_95_pct": 1.029443377531764,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.0424464269243965,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": true,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 250,
+      "net": -2687.4199999999996,
+      "return_pct": -26.874199999999995,
+      "pf": 0.7794182707026731,
+      "win_rate_pct": 35.199999999999996,
+      "equity_dd": 33.182702829124864,
+      "balance_dd": 32.61130360893855,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -1.7714106070193956,
+      "max_win_streak": 4,
+      "max_loss_streak": 8,
+      "average_trade": -10.749679999999998,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 54,
+          "net": 80.46999999999998,
+          "pf": 1.029793662136095
+        },
+        {
+          "year": 2024,
+          "trades": 196,
+          "net": -2767.89,
+          "pf": 0.7081029948051235
+        }
+      ]
+    }
+  },
+  "XAUUSD breakout": {
+    "metrics": {
+      "trades": 508,
+      "net": 2187.4100000000017,
+      "return_pct": 21.874100000000016,
+      "pf": 1.080559902388685,
+      "win_rate_pct": 44.48818897637795,
+      "equity_dd": 16.40595233893847,
+      "balance_dd": 15.24291637745874,
+      "mt5_sharpe": 1.5135165150500431,
+      "daily_closed_balance_sharpe": 0.6629289695484231,
+      "max_win_streak": 7,
+      "max_loss_streak": 14,
+      "average_trade": 4.305925196850397,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 61,
+          "net": 1281.0100000000002,
+          "pf": 1.5376115293900403
+        },
+        {
+          "year": 2025,
+          "trades": 250,
+          "net": 1525.7,
+          "pf": 1.1153479187174054
+        },
+        {
+          "year": 2026,
+          "trades": 197,
+          "net": -619.2999999999998,
+          "pf": 0.9463478320383059
+        }
+      ]
+    },
+    "wilson95_pct": [
+      40.22413661355487,
+      48.83497553241576
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100704,
+      "return_p05_p50_p95": [
+        -19.000575122724168,
+        22.12514731835996,
+        84.34961038561643
+      ],
+      "pf_p05_p50_p95": [
+        0.9031004948701655,
+        1.0798761405075228,
+        1.286495354873676
+      ],
+      "max_dd_p05_p50_p95": [
+        11.257603682333725,
+        19.068833059328306,
+        33.869209212806744
+      ],
+      "probability_profit_pct": 78.53,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 42.67,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.663586305988774,
+      "probabilistic_sharpe_pct": 82.92222172828029,
+      "deflated_sharpe_pct": 5.710993631677602,
+      "multiple_test_benchmark_sharpe": 1.7656189792861219,
+      "daily_skewness": 0.8150071309221595,
+      "daily_kurtosis": 2.870737091496049
+    },
+    "recent_half_pf": 0.965300047194356,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-07T14:43:30",
+        "end": "2025-06-05T15:46:37",
+        "trades": 169,
+        "net_profit": 828.4000000000002,
+        "profit_factor": 1.1019302016825128,
+        "win_rate_pct": 44.97041420118343
+      },
+      {
+        "part": 2,
+        "start": "2025-06-06T14:22:41",
+        "end": "2026-02-10T20:55:00",
+        "trades": 170,
+        "net_profit": 1706.3700000000001,
+        "profit_factor": 1.190033955914109,
+        "win_rate_pct": 46.470588235294116
+      },
+      {
+        "part": 3,
+        "start": "2026-02-11T20:55:00",
+        "end": "2026-10-06T15:33:00",
+        "trades": 169,
+        "net_profit": -347.3599999999999,
+        "profit_factor": 0.965423639058467,
+        "win_rate_pct": 42.01183431952663
+      }
+    ],
+    "cost_stress": {
+      "status": "measured_extra_spread_sensitivity",
+      "observations": 197,
+      "median_extra_usd_per_lot": 5.0,
+      "mean_extra_usd_per_trade": 0.4834645669291338,
+      "net": 1941.8100000000004,
+      "return_pct": 19.418100000000003,
+      "pf": 1.071151402428032,
+      "win_rate_pct": 44.48818897637795,
+      "scope": "One additional full quoted bid/ask spread per round trip, using the median entry spread cash per lot measured on available 2026 native real-tick quotes. Existing spread, commissions and swaps already remain in baseline P&L. Indicative widening sensitivity, not an exact rerun with widened quotes or a guaranteed future spread."
+    },
+    "native_dd_pct": 16.40595233893847,
+    "sampled_minute_dd_pct": 16.382344274684325,
+    "daily_equity_expected_shortfall_95_pct": 1.029443377531764,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.0424464269243965,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": true,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 250,
+      "net": -2687.4199999999996,
+      "return_pct": -26.874199999999995,
+      "pf": 0.7794182707026731,
+      "win_rate_pct": 35.199999999999996,
+      "equity_dd": 33.182702829124864,
+      "balance_dd": 32.61130360893855,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -1.7714106070193956,
+      "max_win_streak": 4,
+      "max_loss_streak": 8,
+      "average_trade": -10.749679999999998,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 54,
+          "net": 80.46999999999998,
+          "pf": 1.029793662136095
+        },
+        {
+          "year": 2024,
+          "trades": 196,
+          "net": -2767.89,
+          "pf": 0.7081029948051235
+        }
+      ]
+    }
+  },
+  "XAUUSD reversal": {
+    "metrics": {
+      "trades": 81,
+      "net": 1412.9100000000003,
+      "return_pct": 14.129100000000003,
+      "pf": 1.4802418696976285,
+      "win_rate_pct": 54.32098765432099,
+      "equity_dd": 6.581526638800904,
+      "balance_dd": 5.5480999999999945,
+      "mt5_sharpe": 8.05286045590174,
+      "daily_closed_balance_sharpe": 0.9999782251328149,
+      "max_win_streak": 6,
+      "max_loss_streak": 6,
+      "average_trade": 17.44333333333334,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 6,
+          "net": -553.98,
+          "pf": 0.0
+        },
+        {
+          "year": 2025,
+          "trades": 45,
+          "net": 886.9000000000001,
+          "pf": 1.534634605067244
+        },
+        {
+          "year": 2026,
+          "trades": 30,
+          "net": 1079.99,
+          "pf": 2.481041126698756
+        }
+      ]
+    },
+    "wilson95_pct": [
+      43.52401589667707,
+      64.72666731563538
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100706,
+      "return_p05_p50_p95": [
+        -4.392493375128499,
+        13.498737993820075,
+        37.57492989667532
+      ],
+      "pf_p05_p50_p95": [
+        0.8829429942602619,
+        1.4817563078353773,
+        2.478121269842587
+      ],
+      "max_dd_p05_p50_p95": [
+        3.3303443997751727,
+        6.198646918833069,
+        12.126221321397171
+      ],
+      "probability_profit_pct": 88.69,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 3.4799999999999995,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.9999782251328174,
+      "probabilistic_sharpe_pct": 93.96831707373728,
+      "deflated_sharpe_pct": 16.391762400671535,
+      "multiple_test_benchmark_sharpe": 1.6303821735431228,
+      "daily_skewness": 3.7309105161397698,
+      "daily_kurtosis": 36.481688605571286
+    },
+    "recent_half_pf": 1.7067020732331233,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-30T14:55:41",
+        "end": "2025-07-15T15:29:29",
+        "trades": 27,
+        "net_profit": -150.67999999999992,
+        "profit_factor": 0.8829178840057189,
+        "win_rate_pct": 48.148148148148145
+      },
+      {
+        "part": 2,
+        "start": "2025-07-24T14:17:37",
+        "end": "2026-01-27T15:37:15",
+        "trades": 27,
+        "net_profit": 662.2700000000001,
+        "profit_factor": 1.659086611665655,
+        "win_rate_pct": 51.85185185185185
+      },
+      {
+        "part": 3,
+        "start": "2026-01-28T16:07:57",
+        "end": "2026-10-02T14:25:56",
+        "trades": 27,
+        "net_profit": 901.3199999999999,
+        "profit_factor": 2.3860277722246996,
+        "win_rate_pct": 62.96296296296296
+      }
+    ],
+    "cost_stress": {
+      "status": "measured_extra_spread_sensitivity",
+      "observations": 30,
+      "median_extra_usd_per_lot": 5.0,
+      "mean_extra_usd_per_trade": 0.5339506172839507,
+      "net": 1369.66,
+      "return_pct": 13.6966,
+      "pf": 1.4621328168757466,
+      "win_rate_pct": 54.32098765432099,
+      "scope": "One additional full quoted bid/ask spread per round trip, using the median entry spread cash per lot measured on available 2026 native real-tick quotes. Existing spread, commissions and swaps already remain in baseline P&L. Indicative widening sensitivity, not an exact rerun with widened quotes or a guaranteed future spread."
+    },
+    "native_dd_pct": 6.581526638800904,
+    "sampled_minute_dd_pct": 6.42434496751757,
+    "daily_equity_expected_shortfall_95_pct": 0.774697649157046,
+    "daily_closed_balance_expected_shortfall_95_pct": 0.7746976491570468,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": true,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": true,
+      "measured_cost_stress_pf_above_1": true,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 45,
+      "net": -933.080000000001,
+      "return_pct": -9.330800000000009,
+      "pf": 0.5960465307571422,
+      "win_rate_pct": 44.44444444444444,
+      "equity_dd": 13.9146720064267,
+      "balance_dd": 12.889600000000028,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -1.4387969797236848,
+      "max_win_streak": 4,
+      "max_loss_streak": 5,
+      "average_trade": -20.73511111111113,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 4,
+          "net": -402.22,
+          "pf": 0.0
+        },
+        {
+          "year": 2024,
+          "trades": 41,
+          "net": -530.86,
+          "pf": 0.7217204413807564
+        }
+      ]
+    }
+  },
+  "XAUUSD hybrid": {
+    "metrics": {
+      "trades": 106,
+      "net": 437.50999999999976,
+      "return_pct": 4.375099999999998,
+      "pf": 1.1066166615491837,
+      "win_rate_pct": 47.16981132075472,
+      "equity_dd": 8.459555152065363,
+      "balance_dd": 6.9513820276826985,
+      "mt5_sharpe": 1.617893973782403,
+      "daily_closed_balance_sharpe": 0.34065087447469417,
+      "max_win_streak": 4,
+      "max_loss_streak": 7,
+      "average_trade": 4.127452830188677,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 6,
+          "net": -118.02999999999999,
+          "pf": 0.4603109282121628
+        },
+        {
+          "year": 2025,
+          "trades": 60,
+          "net": 827.2500000000001,
+          "pf": 1.3826459813499112
+        },
+        {
+          "year": 2026,
+          "trades": 40,
+          "net": -271.71000000000004,
+          "pf": 0.8423004596740493
+        }
+      ]
+    },
+    "wilson95_pct": [
+      37.932755120322106,
+      56.60482653198056
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 26100707,
+      "return_p05_p50_p95": [
+        -10.105745144225216,
+        4.189403213389742,
+        21.931232550822617
+      ],
+      "pf_p05_p50_p95": [
+        0.7881687480510332,
+        1.1059890060312414,
+        1.4898211388754738
+      ],
+      "max_dd_p05_p50_p95": [
+        4.244289509308346,
+        7.82190029742701,
+        14.844357965429092
+      ],
+      "probability_profit_pct": 67.52,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 11.65,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 0.34065087447469544,
+      "probabilistic_sharpe_pct": 68.8581109837072,
+      "deflated_sharpe_pct": 2.073647275169621,
+      "multiple_test_benchmark_sharpe": 1.7527352113231678,
+      "daily_skewness": 2.433701775502607,
+      "daily_kurtosis": 20.032200544091754
+    },
+    "recent_half_pf": 0.8416633656545477,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-10-30T19:55:00",
+        "end": "2025-08-08T14:08:31",
+        "trades": 35,
+        "net_profit": 233.04000000000008,
+        "profit_factor": 1.1850008335516444,
+        "win_rate_pct": 48.57142857142857
+      },
+      {
+        "part": 2,
+        "start": "2025-08-12T15:28:28",
+        "end": "2026-01-29T15:10:11",
+        "trades": 36,
+        "net_profit": 435.88,
+        "profit_factor": 1.319195055508363,
+        "win_rate_pct": 52.77777777777778
+      },
+      {
+        "part": 3,
+        "start": "2026-01-30T17:12:23",
+        "end": "2026-10-02T15:12:15",
+        "trades": 35,
+        "net_profit": -231.41,
+        "profit_factor": 0.8434673791727264,
+        "win_rate_pct": 40.0
+      }
+    ],
+    "cost_stress": {
+      "status": "measured_extra_spread_sensitivity",
+      "observations": 40,
+      "median_extra_usd_per_lot": 5.0,
+      "mean_extra_usd_per_trade": 0.31650943396226416,
+      "net": 403.96000000000015,
+      "return_pct": 4.039600000000002,
+      "pf": 1.0980050123367533,
+      "win_rate_pct": 47.16981132075472,
+      "scope": "One additional full quoted bid/ask spread per round trip, using the median entry spread cash per lot measured on available 2026 native real-tick quotes. Existing spread, commissions and swaps already remain in baseline P&L. Indicative widening sensitivity, not an exact rerun with widened quotes or a guaranteed future spread."
+    },
+    "native_dd_pct": 8.459555152065363,
+    "sampled_minute_dd_pct": 8.459555152065368,
+    "daily_equity_expected_shortfall_95_pct": 0.9038115425182508,
+    "daily_closed_balance_expected_shortfall_95_pct": 0.9038115425182505,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": false,
+      "bootstrap_pf_p05_above_1": false,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": false,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": true,
+      "native_floating_path_present": true,
+      "supported_positive_pre_oos_validation": false
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "Model 4; native optimisation export (no per-pass HTML percentage)",
+      "real_tick_notes": [],
+      "dynamic_helper_rejection_log_lines": 0
+    },
+    "pre_oos_validation": {
+      "trades": 48,
+      "net": -852.9999999999999,
+      "return_pct": -8.53,
+      "pf": 0.6428152689144597,
+      "win_rate_pct": 37.5,
+      "equity_dd": 11.089402076585172,
+      "balance_dd": 10.236053565925952,
+      "mt5_sharpe": -5.0,
+      "daily_closed_balance_sharpe": -1.2775876352255098,
+      "max_win_streak": 3,
+      "max_loss_streak": 4,
+      "average_trade": -17.770833333333332,
+      "yearly": [
+        {
+          "year": 2023,
+          "trades": 5,
+          "net": 75.02999999999997,
+          "pf": 1.301010992537912
+        },
+        {
+          "year": 2024,
+          "trades": 43,
+          "net": -928.03,
+          "pf": 0.566109983823158
+        }
+      ]
+    }
+  }
+}

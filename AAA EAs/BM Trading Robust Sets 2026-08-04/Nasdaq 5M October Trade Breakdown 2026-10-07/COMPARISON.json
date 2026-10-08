@@ -1,0 +1,1756 @@
+[
+  {
+    "manifest": {
+      "name": "OctoberCurrent20261007",
+      "minutes": 5,
+      "window": "October",
+      "start": "2026-10-01",
+      "end_exclusive": "2026-10-08",
+      "production": true,
+      "symbol": "USTEC",
+      "indicator_timeframe": "M5",
+      "deposit": 10000,
+      "risk_percent": 1,
+      "model": 4,
+      "delay_ms": 150,
+      "binary_sha256": "fe9f391db5af2bc3cb0b36e52ae5c0775786c8cb8353abe8b8b7542a2bc72dca",
+      "preset_sha256": "24911cd513b21077cf16d13058371d6998a706c7c8d090a8761fb80918db896a",
+      "protocol_sha256": "bca23ae6e7ae5b8143dbcaff10c0fb4b17272658252f34060e57727e4b558b1c",
+      "inputs": {
+        "InpSignalTimeframe": "5",
+        "InpSignalHourNY": "9",
+        "InpSignalMinuteNY": "30",
+        "InpEMAPeriod": "12",
+        "InpAllowLong": "true",
+        "InpAllowShort": "true",
+        "InpRequireEMASlope": "false",
+        "InpMinimumBodyATR": "0.0",
+        "InpMaximumBodyATR": "0.0",
+        "InpMinimumBodyFraction": "0.0",
+        "InpMinimumEMADistanceATR": "0.0",
+        "InpMaximumEMADistanceATR": "0.0",
+        "InpRelativeVolumePeriod": "0",
+        "InpMinimumRelativeVolume": "0.0",
+        "InpRequireDIAgreement": "true",
+        "InpDIPeriod": "14",
+        "InpATRPeriod": "14",
+        "InpStopMode": "2",
+        "InpInitialStopATR": "4.0",
+        "InpSignalStopBufferATR": "0.10",
+        "InpMaximumStopATR": "0.0",
+        "InpUseFixedTarget": "false",
+        "InpRewardRisk": "2.5",
+        "InpUseAdaptiveRR": "false",
+        "InpAdaptiveStrongBodyATR": "1.0",
+        "InpAdaptiveStrongRR": "3.0",
+        "InpUseATRTrailing": "true",
+        "InpTrailingATR": "6.0",
+        "InpTrailStartR": "1.0",
+        "InpUseBreakEven": "false",
+        "InpBreakEvenTriggerR": "1.0",
+        "InpBreakEvenLockR": "0.0",
+        "InpMaximumHoldingMinutes": "0",
+        "InpCloseAtSessionEnd": "false",
+        "InpCloseHourNY": "15",
+        "InpCloseMinuteNY": "55",
+        "InpAutoServerUtcOffsetLive": "true",
+        "InpServerUtcOffsetHours": "0",
+        "InpEnableTrading": "true",
+        "InpRiskPercent": "1.0",
+        "InpMaximumSpreadATR": "0.0",
+        "InpMagic": "862020",
+        "InpMaximumDeviationPoints": "50",
+        "InpUseDynamicTrailingSL": "false",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpInitialStopPercent": "0.60",
+        "InpUseMATrailing": "false",
+        "InpAdaptivePortfolioControls": "false"
+      }
+    },
+    "native": {
+      "initial_balance": 10000.0,
+      "final_balance": 10106.66,
+      "net_profit": 106.66,
+      "return_pct": 1.07,
+      "profit_factor": 157.85,
+      "win_rate_pct": 100.0,
+      "max_drawdown_pct": 1.52,
+      "trades": 2,
+      "sharpe_ratio": 0.34,
+      "recovery_factor": 0.69,
+      "history_quality": "100% real ticks",
+      "equity_dd_pct": 1.52
+    },
+    "summary": {
+      "trades": 2,
+      "wins": 2,
+      "losses": 0,
+      "flats": 0,
+      "win_rate": 100.0,
+      "pf": null,
+      "net": 106.66,
+      "return_pct": 1.0666,
+      "floating_dd": 1.52,
+      "daily_realized_sharpe": 8.325069616847458,
+      "max_win_streak": 2,
+      "max_loss_streak": 0,
+      "commission": -0.68,
+      "swap": -3.76,
+      "boundary_exits": 0,
+      "boundary_net": 0,
+      "mean_hold_hours": 8.011666666666667
+    },
+    "trades": [
+      {
+        "number": 1,
+        "ea": "OctoberCurrent20261007",
+        "symbol": "USTEC",
+        "side": "Short",
+        "volume": 0.55,
+        "open_time": "2026-10-01T13:35:00",
+        "close_time": "2026-10-01T17:25:02",
+        "open_price": 30580.1,
+        "close_price": 30556.1,
+        "gross_profit": 13.2,
+        "commission": -0.34,
+        "swap": 0.0,
+        "total_costs": -0.34,
+        "net_profit": 12.86,
+        "result": "Win",
+        "source": "Native MT5 deals",
+        "entry_comment": "N5EMA short",
+        "exit_comment": "sl 30556.03",
+        "open_ny": "2026-10-01T09:35:00-04:00",
+        "close_ny": "2026-10-01T13:25:02-04:00",
+        "hold_hours": 3.8338888888888887,
+        "boundary_exit": false,
+        "initial_sl": 30765.09,
+        "initial_tp": 0.0,
+        "initial_stop_pct_from_fill": 0.6049358896798951,
+        "entry_order_id": "2",
+        "sl_modifications": [
+          {
+            "time": "2026-10-01T14:05:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30764.04
+          },
+          {
+            "time": "2026-10-01T14:06:40",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30763.96
+          },
+          {
+            "time": "2026-10-01T14:06:40",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30763.6
+          },
+          {
+            "time": "2026-10-01T15:10:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30731.37
+          },
+          {
+            "time": "2026-10-01T15:10:09",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30731.3
+          },
+          {
+            "time": "2026-10-01T15:10:09",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30730.59
+          },
+          {
+            "time": "2026-10-01T15:10:09",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30730.44
+          },
+          {
+            "time": "2026-10-01T15:10:10",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30729.87
+          },
+          {
+            "time": "2026-10-01T15:10:11",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30728.3
+          },
+          {
+            "time": "2026-10-01T15:10:12",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30727.59
+          },
+          {
+            "time": "2026-10-01T15:11:11",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30727.44
+          },
+          {
+            "time": "2026-10-01T15:11:11",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30727.08
+          },
+          {
+            "time": "2026-10-01T15:11:12",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30723.72
+          },
+          {
+            "time": "2026-10-01T15:15:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30700.84
+          },
+          {
+            "time": "2026-10-01T15:30:28",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30672.83
+          },
+          {
+            "time": "2026-10-01T15:40:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30669.29
+          },
+          {
+            "time": "2026-10-01T15:50:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30663.41
+          },
+          {
+            "time": "2026-10-01T15:55:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30657.84
+          },
+          {
+            "time": "2026-10-01T16:00:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30650.51
+          },
+          {
+            "time": "2026-10-01T16:05:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30642.71
+          },
+          {
+            "time": "2026-10-01T16:10:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30636.61
+          },
+          {
+            "time": "2026-10-01T16:15:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30626.38
+          },
+          {
+            "time": "2026-10-01T16:20:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30609.49
+          },
+          {
+            "time": "2026-10-01T16:25:35",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30602.15
+          },
+          {
+            "time": "2026-10-01T16:30:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30588.97
+          },
+          {
+            "time": "2026-10-01T16:51:39",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30558.7
+          },
+          {
+            "time": "2026-10-01T16:55:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30557.63
+          },
+          {
+            "time": "2026-10-01T17:00:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30556.03
+          }
+        ],
+        "trailing_activated": true,
+        "final_sl": 30556.03,
+        "move_points": 24.0,
+        "cash_per_point_per_lot": 0.9999999999999998,
+        "initial_cash_risk": 101.74450000000088,
+        "risk_pct_balance": 1.0174450000000088,
+        "net_R": 0.12639503855245138,
+        "balance_before": 10000,
+        "balance_after": 10012.86,
+        "open_lagos": "2026-10-01T14:35:00+01:00",
+        "close_lagos": "2026-10-01T18:25:02+01:00",
+        "status": "ATR trailing stop",
+        "exit_slippage_points": -0.07
+      },
+      {
+        "number": 2,
+        "ea": "OctoberCurrent20261007",
+        "symbol": "USTEC",
+        "side": "Long",
+        "volume": 0.54,
+        "open_time": "2026-10-05T13:35:00",
+        "close_time": "2026-10-06T01:46:22",
+        "open_price": 30941.4,
+        "close_price": 31122.7,
+        "gross_profit": 97.9,
+        "commission": -0.34,
+        "swap": -3.76,
+        "total_costs": -4.1,
+        "net_profit": 93.8,
+        "result": "Win",
+        "source": "Native MT5 deals",
+        "entry_comment": "N5EMA long",
+        "exit_comment": "sl 31122.88",
+        "open_ny": "2026-10-05T09:35:00-04:00",
+        "close_ny": "2026-10-05T21:46:22-04:00",
+        "hold_hours": 12.189444444444444,
+        "boundary_exit": false,
+        "initial_sl": 30755.75,
+        "initial_tp": 0.0,
+        "initial_stop_pct_from_fill": 0.6000051710653088,
+        "entry_order_id": "4",
+        "sl_modifications": [
+          {
+            "time": "2026-10-05T19:02:32",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.04
+          },
+          {
+            "time": "2026-10-05T19:02:33",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.11
+          },
+          {
+            "time": "2026-10-05T19:02:33",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.32
+          },
+          {
+            "time": "2026-10-05T19:02:33",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.47
+          },
+          {
+            "time": "2026-10-05T19:02:34",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.61
+          },
+          {
+            "time": "2026-10-05T19:02:34",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.75
+          },
+          {
+            "time": "2026-10-05T19:02:35",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.85
+          },
+          {
+            "time": "2026-10-05T19:02:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.9
+          },
+          {
+            "time": "2026-10-05T19:02:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31047.47
+          },
+          {
+            "time": "2026-10-05T19:02:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31047.9
+          },
+          {
+            "time": "2026-10-05T19:02:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.18
+          },
+          {
+            "time": "2026-10-05T19:02:40",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.32
+          },
+          {
+            "time": "2026-10-05T19:02:40",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.47
+          },
+          {
+            "time": "2026-10-05T19:02:41",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.61
+          },
+          {
+            "time": "2026-10-05T19:02:41",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.75
+          },
+          {
+            "time": "2026-10-05T19:14:03",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.94
+          },
+          {
+            "time": "2026-10-05T19:14:03",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31049.37
+          },
+          {
+            "time": "2026-10-05T19:14:03",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31049.79
+          },
+          {
+            "time": "2026-10-05T19:14:03",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31049.94
+          },
+          {
+            "time": "2026-10-05T19:14:03",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31050.25
+          },
+          {
+            "time": "2026-10-05T19:14:04",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31050.37
+          },
+          {
+            "time": "2026-10-05T19:14:04",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31050.94
+          },
+          {
+            "time": "2026-10-05T19:14:05",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31051.08
+          },
+          {
+            "time": "2026-10-05T19:14:05",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31051.22
+          },
+          {
+            "time": "2026-10-05T19:14:05",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31051.37
+          },
+          {
+            "time": "2026-10-05T19:14:06",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31051.67
+          },
+          {
+            "time": "2026-10-05T19:14:06",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31051.81
+          },
+          {
+            "time": "2026-10-05T19:14:07",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31051.94
+          },
+          {
+            "time": "2026-10-05T19:14:07",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31052.08
+          },
+          {
+            "time": "2026-10-05T19:14:08",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31052.22
+          },
+          {
+            "time": "2026-10-05T19:14:08",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31052.79
+          },
+          {
+            "time": "2026-10-05T19:14:10",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31052.94
+          },
+          {
+            "time": "2026-10-05T19:14:11",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.08
+          },
+          {
+            "time": "2026-10-05T19:14:11",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.22
+          },
+          {
+            "time": "2026-10-05T19:14:17",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.37
+          },
+          {
+            "time": "2026-10-05T19:14:17",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.51
+          },
+          {
+            "time": "2026-10-05T19:14:17",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.65
+          },
+          {
+            "time": "2026-10-05T19:14:20",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.79
+          },
+          {
+            "time": "2026-10-05T19:14:20",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.94
+          },
+          {
+            "time": "2026-10-05T19:14:21",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.22
+          },
+          {
+            "time": "2026-10-05T19:14:21",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.37
+          },
+          {
+            "time": "2026-10-05T19:14:30",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.51
+          },
+          {
+            "time": "2026-10-05T19:14:31",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.8
+          },
+          {
+            "time": "2026-10-05T19:14:32",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.81
+          },
+          {
+            "time": "2026-10-05T19:14:33",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.94
+          },
+          {
+            "time": "2026-10-05T19:14:34",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31055.23
+          },
+          {
+            "time": "2026-10-05T19:14:36",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31055.24
+          },
+          {
+            "time": "2026-10-05T19:15:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31064.09
+          },
+          {
+            "time": "2026-10-05T19:20:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31066.65
+          },
+          {
+            "time": "2026-10-05T20:50:19",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31072.71
+          },
+          {
+            "time": "2026-10-05T20:55:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31079.57
+          },
+          {
+            "time": "2026-10-05T22:00:01",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31081.87
+          },
+          {
+            "time": "2026-10-05T22:05:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31099.77
+          },
+          {
+            "time": "2026-10-05T22:05:06",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31101.97
+          },
+          {
+            "time": "2026-10-05T22:10:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31103.47
+          },
+          {
+            "time": "2026-10-05T22:30:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31104.71
+          },
+          {
+            "time": "2026-10-05T23:15:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31115.18
+          },
+          {
+            "time": "2026-10-05T23:20:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31115.49
+          },
+          {
+            "time": "2026-10-05T23:25:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31117.42
+          },
+          {
+            "time": "2026-10-05T23:45:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31122.88
+          }
+        ],
+        "trailing_activated": true,
+        "final_sl": 31122.88,
+        "move_points": 181.29999999999927,
+        "cash_per_point_per_lot": 0.9999795714081469,
+        "initial_cash_risk": 100.25100000000079,
+        "risk_pct_balance": 1.0012224279576543,
+        "net_R": 0.9356515146981004,
+        "balance_before": 10012.86,
+        "balance_after": 10106.66,
+        "open_lagos": "2026-10-05T14:35:00+01:00",
+        "close_lagos": "2026-10-06T02:46:22+01:00",
+        "status": "ATR trailing stop",
+        "exit_slippage_points": -0.18
+      }
+    ],
+    "report_sha256": "232d5370502749c073b4601766ad263538fed37fefe4a18292f41545e3a612c2",
+    "stop_modify_failures": 0,
+    "tick_notes": [
+      "CS\t0\t15:55:49.126\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+      "QD\t0\t15:55:52.993\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "seconds": 17.9,
+    "signal_checks": 0,
+    "label": "Current M5 \u2014 DI ON",
+    "effective_start_utc": "2026-10-01T00:00:00+00:00",
+    "effective_end_exclusive_utc": "2026-10-07T00:00:00+00:00",
+    "closed_summary": {
+      "entries": 2,
+      "completed": 2,
+      "open_at_cutoff": 0,
+      "wins": 2,
+      "losses": 0,
+      "win_rate_pct": 100.0,
+      "net_pf": null,
+      "closed_net": 106.66,
+      "valuation_net": 0,
+      "total_net": 106.66,
+      "return_pct": 1.0666,
+      "commission": -0.68,
+      "swap": -3.76,
+      "average_closed_win": 53.33,
+      "max_floating_dd_pct": 1.52,
+      "max_win_streak": 2,
+      "max_loss_streak": 0,
+      "all_exit_including_boundary_win_rate": 100.0,
+      "native_deal_pf": 157.85,
+      "native_sharpe": 0.34
+    }
+  },
+  {
+    "manifest": {
+      "name": "OctoberNoDI20261007",
+      "minutes": 5,
+      "window": "October",
+      "start": "2026-10-01",
+      "end_exclusive": "2026-10-08",
+      "production": true,
+      "symbol": "USTEC",
+      "indicator_timeframe": "M5",
+      "deposit": 10000,
+      "risk_percent": 1,
+      "model": 4,
+      "delay_ms": 150,
+      "binary_sha256": "fe9f391db5af2bc3cb0b36e52ae5c0775786c8cb8353abe8b8b7542a2bc72dca",
+      "preset_sha256": "24911cd513b21077cf16d13058371d6998a706c7c8d090a8761fb80918db896a",
+      "protocol_sha256": "bca23ae6e7ae5b8143dbcaff10c0fb4b17272658252f34060e57727e4b558b1c",
+      "inputs": {
+        "InpSignalTimeframe": "5",
+        "InpSignalHourNY": "9",
+        "InpSignalMinuteNY": "30",
+        "InpEMAPeriod": "12",
+        "InpAllowLong": "true",
+        "InpAllowShort": "true",
+        "InpRequireEMASlope": "false",
+        "InpMinimumBodyATR": "0.0",
+        "InpMaximumBodyATR": "0.0",
+        "InpMinimumBodyFraction": "0.0",
+        "InpMinimumEMADistanceATR": "0.0",
+        "InpMaximumEMADistanceATR": "0.0",
+        "InpRelativeVolumePeriod": "0",
+        "InpMinimumRelativeVolume": "0.0",
+        "InpRequireDIAgreement": "false",
+        "InpDIPeriod": "14",
+        "InpATRPeriod": "14",
+        "InpStopMode": "2",
+        "InpInitialStopATR": "4.0",
+        "InpSignalStopBufferATR": "0.10",
+        "InpMaximumStopATR": "0.0",
+        "InpUseFixedTarget": "false",
+        "InpRewardRisk": "2.5",
+        "InpUseAdaptiveRR": "false",
+        "InpAdaptiveStrongBodyATR": "1.0",
+        "InpAdaptiveStrongRR": "3.0",
+        "InpUseATRTrailing": "true",
+        "InpTrailingATR": "6.0",
+        "InpTrailStartR": "1.0",
+        "InpUseBreakEven": "false",
+        "InpBreakEvenTriggerR": "1.0",
+        "InpBreakEvenLockR": "0.0",
+        "InpMaximumHoldingMinutes": "0",
+        "InpCloseAtSessionEnd": "false",
+        "InpCloseHourNY": "15",
+        "InpCloseMinuteNY": "55",
+        "InpAutoServerUtcOffsetLive": "true",
+        "InpServerUtcOffsetHours": "0",
+        "InpEnableTrading": "true",
+        "InpRiskPercent": "1.0",
+        "InpMaximumSpreadATR": "0.0",
+        "InpMagic": "862020",
+        "InpMaximumDeviationPoints": "50",
+        "InpUseDynamicTrailingSL": "false",
+        "InpDynamicTriggerFraction": "0.50",
+        "InpDynamicLockFraction": "0.20",
+        "InpResearchSession": "0",
+        "InpResearchBrokerUtcOffsetMinutes": "0",
+        "InpUseMarkovRegimeFilter": "false",
+        "InpMarkovReturnWindow": "40",
+        "InpMarkovThreshold": "0.05",
+        "InpMarkovSignalGate": "0.05",
+        "InpMarkovMinLabels": "252",
+        "InpMarkovHistoryBars": "2600",
+        "InpInitialStopPercent": "0.60",
+        "InpUseMATrailing": "false",
+        "InpAdaptivePortfolioControls": "false"
+      }
+    },
+    "native": {
+      "initial_balance": 10000.0,
+      "final_balance": 10106.12,
+      "net_profit": 106.12,
+      "return_pct": 1.06,
+      "profit_factor": 45.97,
+      "win_rate_pct": 66.67,
+      "max_drawdown_pct": 2.38,
+      "trades": 3,
+      "sharpe_ratio": 0.16,
+      "recovery_factor": 0.44,
+      "history_quality": "100% real ticks",
+      "equity_dd_pct": 2.38
+    },
+    "summary": {
+      "trades": 3,
+      "wins": 2,
+      "losses": 1,
+      "flats": 0,
+      "win_rate": 66.66666666666666,
+      "pf": 64.16666666666667,
+      "net": 106.12,
+      "return_pct": 1.0612,
+      "floating_dd": 2.38,
+      "daily_realized_sharpe": 9.041467644377427,
+      "max_win_streak": 2,
+      "max_loss_streak": 1,
+      "commission": -1.02,
+      "swap": -15.04,
+      "boundary_exits": 1,
+      "boundary_net": -1.68,
+      "mean_hold_hours": 32.81314814814815
+    },
+    "trades": [
+      {
+        "number": 1,
+        "ea": "OctoberNoDI20261007",
+        "symbol": "USTEC",
+        "side": "Short",
+        "volume": 0.55,
+        "open_time": "2026-10-01T13:35:00",
+        "close_time": "2026-10-01T17:25:02",
+        "open_price": 30580.1,
+        "close_price": 30556.1,
+        "gross_profit": 13.2,
+        "commission": -0.34,
+        "swap": 0.0,
+        "total_costs": -0.34,
+        "net_profit": 12.86,
+        "result": "Win",
+        "source": "Native MT5 deals",
+        "entry_comment": "N5EMA short",
+        "exit_comment": "sl 30556.03",
+        "open_ny": "2026-10-01T09:35:00-04:00",
+        "close_ny": "2026-10-01T13:25:02-04:00",
+        "hold_hours": 3.8338888888888887,
+        "boundary_exit": false,
+        "initial_sl": 30765.09,
+        "initial_tp": 0.0,
+        "initial_stop_pct_from_fill": 0.6049358896798951,
+        "entry_order_id": "2",
+        "sl_modifications": [
+          {
+            "time": "2026-10-01T14:05:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30764.04
+          },
+          {
+            "time": "2026-10-01T14:06:40",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30763.96
+          },
+          {
+            "time": "2026-10-01T14:06:40",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30763.6
+          },
+          {
+            "time": "2026-10-01T15:10:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30731.37
+          },
+          {
+            "time": "2026-10-01T15:10:09",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30731.3
+          },
+          {
+            "time": "2026-10-01T15:10:09",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30730.59
+          },
+          {
+            "time": "2026-10-01T15:10:09",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30730.44
+          },
+          {
+            "time": "2026-10-01T15:10:10",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30729.87
+          },
+          {
+            "time": "2026-10-01T15:10:11",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30728.3
+          },
+          {
+            "time": "2026-10-01T15:10:12",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30727.59
+          },
+          {
+            "time": "2026-10-01T15:11:11",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30727.44
+          },
+          {
+            "time": "2026-10-01T15:11:11",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30727.08
+          },
+          {
+            "time": "2026-10-01T15:11:12",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30723.72
+          },
+          {
+            "time": "2026-10-01T15:15:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30700.84
+          },
+          {
+            "time": "2026-10-01T15:30:28",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30672.83
+          },
+          {
+            "time": "2026-10-01T15:40:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30669.29
+          },
+          {
+            "time": "2026-10-01T15:50:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30663.41
+          },
+          {
+            "time": "2026-10-01T15:55:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30657.84
+          },
+          {
+            "time": "2026-10-01T16:00:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30650.51
+          },
+          {
+            "time": "2026-10-01T16:05:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30642.71
+          },
+          {
+            "time": "2026-10-01T16:10:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30636.61
+          },
+          {
+            "time": "2026-10-01T16:15:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30626.38
+          },
+          {
+            "time": "2026-10-01T16:20:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30609.49
+          },
+          {
+            "time": "2026-10-01T16:25:35",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30602.15
+          },
+          {
+            "time": "2026-10-01T16:30:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30588.97
+          },
+          {
+            "time": "2026-10-01T16:51:39",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30558.7
+          },
+          {
+            "time": "2026-10-01T16:55:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30557.63
+          },
+          {
+            "time": "2026-10-01T17:00:00",
+            "ticket": "2",
+            "side": "sell",
+            "sl": 30556.03
+          }
+        ],
+        "trailing_activated": true,
+        "final_sl": 30556.03,
+        "move_points": 24.0,
+        "cash_per_point_per_lot": 0.9999999999999998,
+        "initial_cash_risk": 101.74450000000088,
+        "risk_pct_balance": 1.0174450000000088,
+        "net_R": 0.12639503855245138,
+        "balance_before": 10000,
+        "balance_after": 10012.86,
+        "open_lagos": "2026-10-01T14:35:00+01:00",
+        "close_lagos": "2026-10-01T18:25:02+01:00",
+        "status": "ATR trailing stop",
+        "exit_slippage_points": -0.07
+      },
+      {
+        "number": 2,
+        "ea": "OctoberNoDI20261007",
+        "symbol": "USTEC",
+        "side": "Long",
+        "volume": 0.54,
+        "open_time": "2026-10-02T13:35:00",
+        "close_time": "2026-10-06T01:46:22",
+        "open_price": 30918.4,
+        "close_price": 31122.7,
+        "gross_profit": 110.32,
+        "commission": -0.34,
+        "swap": -15.04,
+        "total_costs": -15.38,
+        "net_profit": 94.94,
+        "result": "Win",
+        "source": "Native MT5 deals",
+        "entry_comment": "N5EMA long",
+        "exit_comment": "sl 31122.88",
+        "open_ny": "2026-10-02T09:35:00-04:00",
+        "close_ny": "2026-10-05T21:46:22-04:00",
+        "hold_hours": 84.18944444444445,
+        "boundary_exit": false,
+        "initial_sl": 30732.96,
+        "initial_tp": 0.0,
+        "initial_stop_pct_from_fill": 0.5997723038708417,
+        "entry_order_id": "4",
+        "sl_modifications": [
+          {
+            "time": "2026-10-05T17:45:09",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31000.04
+          },
+          {
+            "time": "2026-10-05T18:28:42",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31010.33
+          },
+          {
+            "time": "2026-10-05T18:28:43",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31010.49
+          },
+          {
+            "time": "2026-10-05T18:28:43",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31010.63
+          },
+          {
+            "time": "2026-10-05T18:28:43",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31010.92
+          },
+          {
+            "time": "2026-10-05T18:28:43",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31011.35
+          },
+          {
+            "time": "2026-10-05T18:28:43",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31011.49
+          },
+          {
+            "time": "2026-10-05T18:28:44",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31012.06
+          },
+          {
+            "time": "2026-10-05T18:28:44",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31012.35
+          },
+          {
+            "time": "2026-10-05T18:28:44",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31012.49
+          },
+          {
+            "time": "2026-10-05T18:36:27",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31015.54
+          },
+          {
+            "time": "2026-10-05T18:41:01",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31016.77
+          },
+          {
+            "time": "2026-10-05T18:57:34",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31034.4
+          },
+          {
+            "time": "2026-10-05T18:58:11",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31034.47
+          },
+          {
+            "time": "2026-10-05T18:58:11",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31034.61
+          },
+          {
+            "time": "2026-10-05T19:00:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31039.86
+          },
+          {
+            "time": "2026-10-05T19:01:36",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31040.04
+          },
+          {
+            "time": "2026-10-05T19:01:36",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31040.11
+          },
+          {
+            "time": "2026-10-05T19:01:36",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31040.39
+          },
+          {
+            "time": "2026-10-05T19:01:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31040.47
+          },
+          {
+            "time": "2026-10-05T19:01:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31040.9
+          },
+          {
+            "time": "2026-10-05T19:01:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31041.08
+          },
+          {
+            "time": "2026-10-05T19:01:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31041.32
+          },
+          {
+            "time": "2026-10-05T19:01:38",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31041.36
+          },
+          {
+            "time": "2026-10-05T19:01:38",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31041.47
+          },
+          {
+            "time": "2026-10-05T19:01:44",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31041.61
+          },
+          {
+            "time": "2026-10-05T19:02:15",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31041.75
+          },
+          {
+            "time": "2026-10-05T19:02:15",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31042.25
+          },
+          {
+            "time": "2026-10-05T19:02:15",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31042.39
+          },
+          {
+            "time": "2026-10-05T19:02:16",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31042.61
+          },
+          {
+            "time": "2026-10-05T19:02:16",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31042.75
+          },
+          {
+            "time": "2026-10-05T19:02:16",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31043.54
+          },
+          {
+            "time": "2026-10-05T19:02:18",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31043.61
+          },
+          {
+            "time": "2026-10-05T19:02:18",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31044.18
+          },
+          {
+            "time": "2026-10-05T19:02:24",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31044.32
+          },
+          {
+            "time": "2026-10-05T19:02:24",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31044.47
+          },
+          {
+            "time": "2026-10-05T19:02:25",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31044.61
+          },
+          {
+            "time": "2026-10-05T19:02:27",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31044.82
+          },
+          {
+            "time": "2026-10-05T19:02:29",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31044.9
+          },
+          {
+            "time": "2026-10-05T19:02:29",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31045.18
+          },
+          {
+            "time": "2026-10-05T19:02:29",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31045.32
+          },
+          {
+            "time": "2026-10-05T19:02:30",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31045.39
+          },
+          {
+            "time": "2026-10-05T19:02:31",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31045.47
+          },
+          {
+            "time": "2026-10-05T19:02:31",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31045.61
+          },
+          {
+            "time": "2026-10-05T19:02:31",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31045.75
+          },
+          {
+            "time": "2026-10-05T19:02:31",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31045.9
+          },
+          {
+            "time": "2026-10-05T19:02:32",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.04
+          },
+          {
+            "time": "2026-10-05T19:02:33",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.11
+          },
+          {
+            "time": "2026-10-05T19:02:33",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.32
+          },
+          {
+            "time": "2026-10-05T19:02:33",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.47
+          },
+          {
+            "time": "2026-10-05T19:02:34",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.61
+          },
+          {
+            "time": "2026-10-05T19:02:34",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.75
+          },
+          {
+            "time": "2026-10-05T19:02:35",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.85
+          },
+          {
+            "time": "2026-10-05T19:02:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31046.9
+          },
+          {
+            "time": "2026-10-05T19:02:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31047.47
+          },
+          {
+            "time": "2026-10-05T19:02:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31047.9
+          },
+          {
+            "time": "2026-10-05T19:02:37",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.18
+          },
+          {
+            "time": "2026-10-05T19:02:40",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.32
+          },
+          {
+            "time": "2026-10-05T19:02:40",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.47
+          },
+          {
+            "time": "2026-10-05T19:02:41",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.61
+          },
+          {
+            "time": "2026-10-05T19:02:41",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31048.75
+          },
+          {
+            "time": "2026-10-05T19:05:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31052.34
+          },
+          {
+            "time": "2026-10-05T19:14:08",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31052.37
+          },
+          {
+            "time": "2026-10-05T19:14:08",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31052.79
+          },
+          {
+            "time": "2026-10-05T19:14:10",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31052.94
+          },
+          {
+            "time": "2026-10-05T19:14:11",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.08
+          },
+          {
+            "time": "2026-10-05T19:14:11",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.22
+          },
+          {
+            "time": "2026-10-05T19:14:17",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.37
+          },
+          {
+            "time": "2026-10-05T19:14:17",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.51
+          },
+          {
+            "time": "2026-10-05T19:14:17",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.65
+          },
+          {
+            "time": "2026-10-05T19:14:20",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.79
+          },
+          {
+            "time": "2026-10-05T19:14:20",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31053.94
+          },
+          {
+            "time": "2026-10-05T19:14:21",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.22
+          },
+          {
+            "time": "2026-10-05T19:14:21",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.37
+          },
+          {
+            "time": "2026-10-05T19:14:30",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.51
+          },
+          {
+            "time": "2026-10-05T19:14:31",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.8
+          },
+          {
+            "time": "2026-10-05T19:14:32",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.81
+          },
+          {
+            "time": "2026-10-05T19:14:33",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31054.94
+          },
+          {
+            "time": "2026-10-05T19:14:34",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31055.23
+          },
+          {
+            "time": "2026-10-05T19:14:36",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31055.24
+          },
+          {
+            "time": "2026-10-05T19:15:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31064.09
+          },
+          {
+            "time": "2026-10-05T19:20:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31066.65
+          },
+          {
+            "time": "2026-10-05T20:50:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31073.67
+          },
+          {
+            "time": "2026-10-05T20:55:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31079.57
+          },
+          {
+            "time": "2026-10-05T22:00:01",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31081.87
+          },
+          {
+            "time": "2026-10-05T22:05:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31099.77
+          },
+          {
+            "time": "2026-10-05T22:05:06",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31101.97
+          },
+          {
+            "time": "2026-10-05T22:10:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31103.47
+          },
+          {
+            "time": "2026-10-05T22:30:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31104.71
+          },
+          {
+            "time": "2026-10-05T23:15:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31115.18
+          },
+          {
+            "time": "2026-10-05T23:20:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31115.49
+          },
+          {
+            "time": "2026-10-05T23:25:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31117.42
+          },
+          {
+            "time": "2026-10-05T23:45:00",
+            "ticket": "4",
+            "side": "buy",
+            "sl": 31122.88
+          }
+        ],
+        "trailing_activated": true,
+        "final_sl": 31122.88,
+        "move_points": 204.29999999999927,
+        "cash_per_point_per_lot": 0.9999818712496182,
+        "initial_cash_risk": 100.13760000000127,
+        "risk_pct_balance": 1.0000898844086632,
+        "net_R": 0.9480954207011032,
+        "balance_before": 10012.86,
+        "balance_after": 10107.8,
+        "open_lagos": "2026-10-02T14:35:00+01:00",
+        "close_lagos": "2026-10-06T02:46:22+01:00",
+        "status": "ATR trailing stop",
+        "exit_slippage_points": -0.18
+      },
+      {
+        "number": 3,
+        "ea": "OctoberNoDI20261007",
+        "symbol": "USTEC",
+        "side": "Short",
+        "volume": 0.54,
+        "open_time": "2026-10-06T13:35:00",
+        "close_time": "2026-10-06T23:59:58",
+        "open_price": 31276.52,
+        "close_price": 31279.0,
+        "gross_profit": -1.34,
+        "commission": -0.34,
+        "swap": 0.0,
+        "total_costs": -0.34,
+        "net_profit": -1.68,
+        "result": "Loss",
+        "source": "Native MT5 deals",
+        "entry_comment": "N5EMA short",
+        "exit_comment": "end of test",
+        "open_ny": "2026-10-06T09:35:00-04:00",
+        "close_ny": "2026-10-06T19:59:58-04:00",
+        "hold_hours": 10.41611111111111,
+        "boundary_exit": true,
+        "initial_sl": 31465.11,
+        "initial_tp": 0.0,
+        "initial_stop_pct_from_fill": 0.6029762902010842,
+        "entry_order_id": "6",
+        "sl_modifications": [],
+        "trailing_activated": false,
+        "final_sl": 31465.11,
+        "move_points": -2.4799999999995634,
+        "cash_per_point_per_lot": 1.0005973715652896,
+        "initial_cash_risk": 101.83860000000008,
+        "risk_pct_balance": 1.007524881774472,
+        "net_R": -0.016496691824121685,
+        "balance_before": 10107.8,
+        "balance_after": 10106.12,
+        "open_lagos": "2026-10-06T14:35:00+01:00",
+        "close_lagos": "2026-10-07T00:59:58+01:00",
+        "status": "Open at cutoff; tester liquidation valuation"
+      }
+    ],
+    "report_sha256": "4dcd937edd62a08d7c1de27ef3c02f38beb94c908e0057224e0f8204ab953cbc",
+    "stop_modify_failures": 0,
+    "seconds": 21.2,
+    "label": "Same M5 \u2014 DI OFF",
+    "effective_start_utc": "2026-10-01T00:00:00+00:00",
+    "effective_end_exclusive_utc": "2026-10-07T00:00:00+00:00",
+    "closed_summary": {
+      "entries": 3,
+      "completed": 2,
+      "open_at_cutoff": 1,
+      "wins": 2,
+      "losses": 0,
+      "win_rate_pct": 100.0,
+      "net_pf": null,
+      "closed_net": 107.8,
+      "valuation_net": -1.68,
+      "total_net": 106.12,
+      "return_pct": 1.0612000000000001,
+      "commission": -1.02,
+      "swap": -15.04,
+      "average_closed_win": 53.9,
+      "max_floating_dd_pct": 2.38,
+      "max_win_streak": 2,
+      "max_loss_streak": 0,
+      "all_exit_including_boundary_win_rate": 66.67,
+      "native_deal_pf": 45.97,
+      "native_sharpe": 0.16
+    }
+  }
+]

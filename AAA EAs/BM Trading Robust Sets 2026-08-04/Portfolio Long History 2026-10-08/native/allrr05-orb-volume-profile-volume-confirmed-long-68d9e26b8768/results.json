@@ -1,0 +1,4424 @@
+{
+  "tag": "allrr05-orb-volume-profile-volume-confirmed-long-68d9e26b8768",
+  "slug": "orb-volume-profile-volume-confirmed",
+  "variant": "long-68d9e26b8768",
+  "window": [
+    "2021.10.06",
+    "2026.10.06"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "true",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpSessionZone": "0",
+    "InpSessionHour": "9",
+    "InpSessionMinute": "30",
+    "InpOpeningRangeMinutes": "15",
+    "InpTradeWindowMinutes": "120",
+    "InpFlatHour": "15",
+    "InpFlatMinute": "55",
+    "InpWeekdaysOnly": "true",
+    "InpSignalTimeframe": "5",
+    "InpRelativeVolumeDays": "20",
+    "InpMinOpeningRelativeVolume": "0.80",
+    "InpBarVolumeLookback": "20",
+    "InpMinBreakoutRelativeVolume": "1.10",
+    "InpATRTimeframe": "15",
+    "InpATRPeriod": "14",
+    "InpMinRangeATR": "0.2",
+    "InpMaxRangeATR": "1.2",
+    "InpRequireVWAP": "false",
+    "InpUseEMATrend": "false",
+    "InpFastEMA": "20",
+    "InpSlowEMA": "50",
+    "InpUseProfileValueArea": "false",
+    "InpUseProfilePOCBias": "false",
+    "InpUseProfileBoundaryLVN": "false",
+    "InpProfileStartHour": "8",
+    "InpProfileStartMinute": "0",
+    "InpProfileBins": "48",
+    "InpProfileValueAreaPercent": "70.0",
+    "InpMaxBoundaryNodeRatio": "1.00",
+    "InpMinimumProfileTicks": "100",
+    "InpShowProfileLevels": "true",
+    "InpEntryMode": "0",
+    "InpTradeDirection": "0",
+    "InpUsePaperStopEntry": "false",
+    "InpRequireOpeningCandleDirection": "false",
+    "InpBreakoutBodyMinimum": "0.55",
+    "InpBreakoutBufferATR": "0.03",
+    "InpRetestBars": "3",
+    "InpRetestToleranceATR": "0.15",
+    "InpRetestBodyMinimum": "0.3",
+    "InpStopMode": "1",
+    "InpStopBufferATR": "0.1",
+    "InpMaximumStopATR": "2.0",
+    "InpDailyATRStopFraction": "0.1",
+    "InpUseFixedTarget": "true",
+    "InpRewardRisk": "2.5",
+    "InpBreakEvenAtR": "1.0",
+    "InpTrailStartAtR": "0.0",
+    "InpTrailCandleBufferATR": "0.1",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMaxSpreadRangePercent": "12.0",
+    "InpMaxDeviationPoints": "30",
+    "InpMagic": "86080709",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpRR05AuditTag": "allrr05-orb-volume-profile-volume-confirmed-long-68d9e26b8768"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 13816.59,
+    "net_profit": 3816.59,
+    "return_pct": 38.17,
+    "profit_factor": 1.69,
+    "win_rate_pct": 43.7,
+    "max_drawdown_pct": 6.08,
+    "trades": 119,
+    "sharpe_ratio": 19.3,
+    "recovery_factor": 5.5,
+    "history_quality": "15% real ticks",
+    "equity_dd_pct": 6.08,
+    "balance_dd_pct": 5.68
+  },
+  "metrics": {
+    "trades": 119,
+    "return_pct": 38.1659,
+    "net_profit": 3816.59,
+    "pf": 1.696882771616277,
+    "wins": 51,
+    "losses": 68,
+    "flat": 0,
+    "win_rate": 42.857142857142854,
+    "equity_dd_pct": 6.08,
+    "balance_dd_pct": 5.68,
+    "sharpe_daily_equity": 0.9783700562366376,
+    "win_streak": 6,
+    "loss_streak": 7,
+    "avg_win": 182.22058823529412,
+    "avg_loss": -80.53911764705882,
+    "partial_positions": 0,
+    "exit_legs": 119,
+    "commission": -108.46,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1635515400,
+      "close_epoch": 1635516538,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 1772.284,
+      "close_price": 1779.998,
+      "net": -101.0,
+      "magic": 86080709,
+      "sl": 1779.989,
+      "tp": 1753.022,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1779.989"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.28,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1637337000,
+      "close_epoch": 1637355300,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 0.18,
+      "open_price": 1855.98,
+      "close_price": 1847.241,
+      "net": 156.31,
+      "magic": 86080709,
+      "sl": 1861.79,
+      "tp": 1841.455,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 157.3,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1637679900,
+      "close_epoch": 1637693800,
+      "last_deal": 7,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 1788.2,
+      "close_price": 1788.21,
+      "net": -1.24,
+      "magic": 86080709,
+      "sl": 1793.628,
+      "tp": 1774.63,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1788.200"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.19,
+      "commission": -1.05,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1638975900,
+      "close_epoch": 1638996900,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 0.19,
+      "open_price": 1784.896,
+      "close_price": 1785.647,
+      "net": 13.22,
+      "magic": 86080709,
+      "sl": 1779.321,
+      "tp": 1798.834,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 14.27,
+      "commission": -1.05,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1641309300,
+      "close_epoch": 1641314079,
+      "last_deal": 11,
+      "side": "Long",
+      "volume": 0.24,
+      "open_price": 1810.261,
+      "close_price": 1812.375,
+      "net": 49.42,
+      "magic": 86080709,
+      "sl": 1806.029,
+      "tp": 1820.841,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1812.377"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.74,
+      "commission": -1.32,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1642523700,
+      "close_epoch": 1642539300,
+      "last_deal": 13,
+      "side": "Short",
+      "volume": 0.18,
+      "open_price": 1811.306,
+      "close_price": 1813.912,
+      "net": -47.9,
+      "magic": 86080709,
+      "sl": 1817.115,
+      "tp": 1796.784,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -46.91,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1642777500,
+      "close_epoch": 1642798500,
+      "last_deal": 15,
+      "side": "Short",
+      "volume": 0.23,
+      "open_price": 1838.464,
+      "close_price": 1829.83,
+      "net": 197.31,
+      "magic": 86080709,
+      "sl": 1842.973,
+      "tp": 1827.191,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 198.58,
+      "commission": -1.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1644591000,
+      "close_epoch": 1644604322,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 0.27,
+      "open_price": 1831.856,
+      "close_price": 1841.504,
+      "net": 259.01,
+      "magic": 86080709,
+      "sl": 1828.002,
+      "tp": 1841.491,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 1841.491"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 260.5,
+      "commission": -1.49,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1645801500,
+      "close_epoch": 1645822500,
+      "last_deal": 19,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 1885.96,
+      "close_price": 1889.906,
+      "net": -52.02,
+      "magic": 86080709,
+      "sl": 1894.356,
+      "tp": 1864.97,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -51.3,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1646146500,
+      "close_epoch": 1646167716,
+      "last_deal": 21,
+      "side": "Long",
+      "volume": 0.14,
+      "open_price": 1925.325,
+      "close_price": 1945.3090000000002,
+      "net": 279.01,
+      "magic": 86080709,
+      "sl": 1917.334,
+      "tp": 1945.303,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 1945.303"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 279.78,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1646238900,
+      "close_epoch": 1646251527,
+      "last_deal": 23,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 1917.941,
+      "close_price": 1930.438,
+      "net": -112.97,
+      "magic": 86080709,
+      "sl": 1930.408,
+      "tp": 1886.774,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1930.408"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.47,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1646667600,
+      "close_epoch": 1646686500,
+      "last_deal": 25,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 1988.672,
+      "close_price": 1998.4749999999997,
+      "net": 68.24,
+      "magic": 86080709,
+      "sl": 1972.447,
+      "tp": 2029.207,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 68.63,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1646924400,
+      "close_epoch": 1646928076,
+      "last_deal": 27,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 1997.14,
+      "close_price": 1997.1500000000003,
+      "net": -0.72,
+      "magic": 86080709,
+      "sl": 2007.441,
+      "tp": 1971.412,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1997.140"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.11,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1647011100,
+      "close_epoch": 1647032100,
+      "last_deal": 29,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 1979.376,
+      "close_price": 1984.695,
+      "net": 42.11,
+      "magic": 86080709,
+      "sl": 1964.289,
+      "tp": 2017.163,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 42.55,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1647265800,
+      "close_epoch": 1647287700,
+      "last_deal": 31,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 1955.46,
+      "close_price": 1954.643,
+      "net": 9.9,
+      "magic": 86080709,
+      "sl": 1963.765,
+      "tp": 1934.697,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.62,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 32,
+      "open_epoch": 1648129800,
+      "close_epoch": 1648131507,
+      "last_deal": 33,
+      "side": "Short",
+      "volume": 0.18,
+      "open_price": 1951.403,
+      "close_price": 1957.66,
+      "net": -113.62,
+      "magic": 86080709,
+      "sl": 1957.644,
+      "tp": 1935.801,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1957.644"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.63,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 34,
+      "open_epoch": 1652363700,
+      "close_epoch": 1652385300,
+      "last_deal": 35,
+      "side": "Short",
+      "volume": 0.14,
+      "open_price": 1840.75,
+      "close_price": 1824.593,
+      "net": 225.43,
+      "magic": 86080709,
+      "sl": 1848.785,
+      "tp": 1820.662,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 226.2,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 36,
+      "open_epoch": 1655388300,
+      "close_epoch": 1655391341,
+      "last_deal": 37,
+      "side": "Short",
+      "volume": 0.18,
+      "open_price": 1826.469,
+      "close_price": 1832.642,
+      "net": -112.11,
+      "magic": 86080709,
+      "sl": 1832.634,
+      "tp": 1811.057,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1832.634"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -111.12,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 38,
+      "open_epoch": 1655819400,
+      "close_epoch": 1655824347,
+      "last_deal": 39,
+      "side": "Long",
+      "volume": 0.22,
+      "open_price": 1837.466,
+      "close_price": 1837.453,
+      "net": -1.49,
+      "magic": 86080709,
+      "sl": 1832.504,
+      "tp": 1849.871,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1837.466"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.28,
+      "commission": -1.21,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 40,
+      "open_epoch": 1656079200,
+      "close_epoch": 1656079236,
+      "last_deal": 41,
+      "side": "Short",
+      "volume": 0.23,
+      "open_price": 1822.714,
+      "close_price": 1827.5000000000002,
+      "net": -111.35,
+      "magic": 86080709,
+      "sl": 1827.477,
+      "tp": 1810.716,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1827.477"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.08,
+      "commission": -1.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 42,
+      "open_epoch": 1656424200,
+      "close_epoch": 1656426099,
+      "last_deal": 43,
+      "side": "Short",
+      "volume": 0.22,
+      "open_price": 1820.412,
+      "close_price": 1825.307,
+      "net": -108.9,
+      "magic": 86080709,
+      "sl": 1825.299,
+      "tp": 1808.195,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1825.299"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -107.69,
+      "commission": -1.21,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 44,
+      "open_epoch": 1657115400,
+      "close_epoch": 1657119479,
+      "last_deal": 45,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 1760.02,
+      "close_price": 1745.842,
+      "net": 268.33,
+      "magic": 86080709,
+      "sl": 1765.678,
+      "tp": 1745.854,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 1745.854"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 269.38,
+      "commission": -1.05,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 46,
+      "open_epoch": 1657893000,
+      "close_epoch": 1657914900,
+      "last_deal": 47,
+      "side": "Short",
+      "volume": 0.17,
+      "open_price": 1702.428,
+      "close_price": 1704.5760000000002,
+      "net": -37.45,
+      "magic": 86080709,
+      "sl": 1708.834,
+      "tp": 1686.413,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -36.51,
+      "commission": -0.94,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 48,
+      "open_epoch": 1659022200,
+      "close_epoch": 1659038100,
+      "last_deal": 49,
+      "side": "Long",
+      "volume": 0.17,
+      "open_price": 1755.937,
+      "close_price": 1755.219,
+      "net": -13.15,
+      "magic": 86080709,
+      "sl": 1749.465,
+      "tp": 1772.117,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -12.21,
+      "commission": -0.94,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 50,
+      "open_epoch": 1659363300,
+      "close_epoch": 1659363935,
+      "last_deal": 51,
+      "side": "Long",
+      "volume": 0.24,
+      "open_price": 1772.78,
+      "close_price": 1768.163,
+      "net": -112.13,
+      "magic": 86080709,
+      "sl": 1768.165,
+      "tp": 1784.318,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1768.165"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.81,
+      "commission": -1.32,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 52,
+      "open_epoch": 1660312500,
+      "close_epoch": 1660312960,
+      "last_deal": 53,
+      "side": "Long",
+      "volume": 0.28,
+      "open_price": 1797.376,
+      "close_price": 1793.485,
+      "net": -110.49,
+      "magic": 86080709,
+      "sl": 1793.487,
+      "tp": 1807.098,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1793.487"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -108.95,
+      "commission": -1.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 54,
+      "open_epoch": 1661523900,
+      "close_epoch": 1661526818,
+      "last_deal": 55,
+      "side": "Short",
+      "volume": 0.22,
+      "open_price": 1749.415,
+      "close_price": 1737.407,
+      "net": 262.97,
+      "magic": 86080709,
+      "sl": 1754.215,
+      "tp": 1737.415,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 1737.415"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 264.18,
+      "commission": -1.21,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 56,
+      "open_epoch": 1661781000,
+      "close_epoch": 1661800417,
+      "last_deal": 57,
+      "side": "Long",
+      "volume": 0.2,
+      "open_price": 1741.932,
+      "close_price": 1736.522,
+      "net": -109.3,
+      "magic": 86080709,
+      "sl": 1736.532,
+      "tp": 1755.432,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1736.532"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -108.2,
+      "commission": -1.1,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 58,
+      "open_epoch": 1661868000,
+      "close_epoch": 1661868208,
+      "last_deal": 59,
+      "side": "Long",
+      "volume": 0.37,
+      "open_price": 1732.571,
+      "close_price": 1729.5990000000002,
+      "net": -112.01,
+      "magic": 86080709,
+      "sl": 1729.626,
+      "tp": 1739.933,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1729.626"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -109.97,
+      "commission": -2.04,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 60,
+      "open_epoch": 1662041100,
+      "close_epoch": 1662045183,
+      "last_deal": 61,
+      "side": "Short",
+      "volume": 0.22,
+      "open_price": 1693.535,
+      "close_price": 1698.481,
+      "net": -110.02,
+      "magic": 86080709,
+      "sl": 1698.464,
+      "tp": 1681.213,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1698.464"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -108.81,
+      "commission": -1.21,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 62,
+      "open_epoch": 1663941000,
+      "close_epoch": 1663962900,
+      "last_deal": 63,
+      "side": "Short",
+      "volume": 0.12,
+      "open_price": 1645.06,
+      "close_price": 1643.858,
+      "net": 13.76,
+      "magic": 86080709,
+      "sl": 1653.781,
+      "tp": 1623.258,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 14.42,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 64,
+      "open_epoch": 1664373000,
+      "close_epoch": 1664394900,
+      "last_deal": 65,
+      "side": "Long",
+      "volume": 0.12,
+      "open_price": 1651.039,
+      "close_price": 1661.082,
+      "net": 119.85,
+      "magic": 86080709,
+      "sl": 1641.633,
+      "tp": 1674.554,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 120.51,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 66,
+      "open_epoch": 1667310600,
+      "close_epoch": 1667311778,
+      "last_deal": 67,
+      "side": "Short",
+      "volume": 0.34,
+      "open_price": 1651.093,
+      "close_price": 1643.1370000000002,
+      "net": 268.63,
+      "magic": 86080709,
+      "sl": 1654.275,
+      "tp": 1643.138,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 1643.138"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 270.5,
+      "commission": -1.87,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 68,
+      "open_epoch": 1668091800,
+      "close_epoch": 1668113700,
+      "last_deal": 69,
+      "side": "Long",
+      "volume": 0.15,
+      "open_price": 1743.505,
+      "close_price": 1754.61,
+      "net": 165.74,
+      "magic": 86080709,
+      "sl": 1736.199,
+      "tp": 1761.77,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 166.57,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 70,
+      "open_epoch": 1668783900,
+      "close_epoch": 1668786807,
+      "last_deal": 71,
+      "side": "Short",
+      "volume": 0.22,
+      "open_price": 1752.375,
+      "close_price": 1757.45,
+      "net": -112.86,
+      "magic": 86080709,
+      "sl": 1757.443,
+      "tp": 1739.705,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1757.443"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -111.65,
+      "commission": -1.21,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 72,
+      "open_epoch": 1670598600,
+      "close_epoch": 1670600378,
+      "last_deal": 73,
+      "side": "Short",
+      "volume": 0.27,
+      "open_price": 1795.465,
+      "close_price": 1795.466,
+      "net": -1.51,
+      "magic": 86080709,
+      "sl": 1799.631,
+      "tp": 1785.05,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1795.465"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.02,
+      "commission": -1.49,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 74,
+      "open_epoch": 1675784100,
+      "close_epoch": 1675789296,
+      "last_deal": 75,
+      "side": "Long",
+      "volume": 0.25,
+      "open_price": 1871.825,
+      "close_price": 1874.086,
+      "net": 55.14,
+      "magic": 86080709,
+      "sl": 1867.28,
+      "tp": 1883.188,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1874.098"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.52,
+      "commission": -1.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 76,
+      "open_epoch": 1676559300,
+      "close_epoch": 1676560899,
+      "last_deal": 77,
+      "side": "Short",
+      "volume": 0.21,
+      "open_price": 1828.398,
+      "close_price": 1833.799,
+      "net": -114.58,
+      "magic": 86080709,
+      "sl": 1833.796,
+      "tp": 1814.903,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1833.796"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -113.42,
+      "commission": -1.16,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 78,
+      "open_epoch": 1677078600,
+      "close_epoch": 1677079574,
+      "last_deal": 79,
+      "side": "Short",
+      "volume": 0.24,
+      "open_price": 1833.823,
+      "close_price": 1838.478,
+      "net": -113.04,
+      "magic": 86080709,
+      "sl": 1838.474,
+      "tp": 1822.196,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1838.474"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -111.72,
+      "commission": -1.32,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 80,
+      "open_epoch": 1679320800,
+      "close_epoch": 1679321978,
+      "last_deal": 81,
+      "side": "Short",
+      "volume": 0.15,
+      "open_price": 1977.993,
+      "close_price": 1974.2870000000003,
+      "net": 54.76,
+      "magic": 86080709,
+      "sl": 1985.408,
+      "tp": 1959.456,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1974.286"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.59,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 82,
+      "open_epoch": 1679579700,
+      "close_epoch": 1679594620,
+      "last_deal": 83,
+      "side": "Long",
+      "volume": 0.15,
+      "open_price": 1982.159,
+      "close_price": 2000.3650000000002,
+      "net": 272.26,
+      "magic": 86080709,
+      "sl": 1974.878,
+      "tp": 2000.362,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 2000.362"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 273.09,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 84,
+      "open_epoch": 1679925900,
+      "close_epoch": 1679926776,
+      "last_deal": 85,
+      "side": "Short",
+      "volume": 0.23,
+      "open_price": 1946.378,
+      "close_price": 1951.315,
+      "net": -114.83,
+      "magic": 86080709,
+      "sl": 1951.311,
+      "tp": 1934.046,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1951.311"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -113.56,
+      "commission": -1.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 86,
+      "open_epoch": 1681393800,
+      "close_epoch": 1681396597,
+      "last_deal": 87,
+      "side": "Long",
+      "volume": 0.21,
+      "open_price": 2045.103,
+      "close_price": 2039.65,
+      "net": -115.67,
+      "magic": 86080709,
+      "sl": 2039.667,
+      "tp": 2058.693,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2039.667"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -114.51,
+      "commission": -1.16,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 88,
+      "open_epoch": 1684851300,
+      "close_epoch": 1684855180,
+      "last_deal": 89,
+      "side": "Long",
+      "volume": 0.18,
+      "open_price": 1972.349,
+      "close_price": 1966.192,
+      "net": -111.81,
+      "magic": 86080709,
+      "sl": 1966.208,
+      "tp": 1987.701,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1966.208"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.82,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 90,
+      "open_epoch": 1685455800,
+      "close_epoch": 1685466037,
+      "last_deal": 91,
+      "side": "Long",
+      "volume": 0.27,
+      "open_price": 1957.293,
+      "close_price": 1959.3070000000002,
+      "net": 52.89,
+      "magic": 86080709,
+      "sl": 1953.256,
+      "tp": 1967.385,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1959.311"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.38,
+      "commission": -1.49,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 92,
+      "open_epoch": 1685973000,
+      "close_epoch": 1685973751,
+      "last_deal": 93,
+      "side": "Long",
+      "volume": 0.28,
+      "open_price": 1947.982,
+      "close_price": 1957.7289999999998,
+      "net": 271.37,
+      "magic": 86080709,
+      "sl": 1944.095,
+      "tp": 1957.699,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 1957.699"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 272.91,
+      "commission": -1.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 94,
+      "open_epoch": 1689344100,
+      "close_epoch": 1689346117,
+      "last_deal": 95,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 1952.835,
+      "close_price": 1958.882,
+      "net": -115.94,
+      "magic": 86080709,
+      "sl": 1958.869,
+      "tp": 1937.75,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1958.869"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -114.89,
+      "commission": -1.05,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 96,
+      "open_epoch": 1690900500,
+      "close_epoch": 1690919700,
+      "last_deal": 97,
+      "side": "Short",
+      "volume": 0.2,
+      "open_price": 1943.647,
+      "close_price": 1944.611,
+      "net": -20.38,
+      "magic": 86080709,
+      "sl": 1949.153,
+      "tp": 1929.882,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -19.28,
+      "commission": -1.1,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 98,
+      "open_epoch": 1692021000,
+      "close_epoch": 1692022273,
+      "last_deal": 99,
+      "side": "Short",
+      "volume": 0.32,
+      "open_price": 1902.905,
+      "close_price": 1906.3459999999998,
+      "net": -111.87,
+      "magic": 86080709,
+      "sl": 1906.341,
+      "tp": 1894.315,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1906.341"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.11,
+      "commission": -1.76,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 100,
+      "open_epoch": 1692712200,
+      "close_epoch": 1692712898,
+      "last_deal": 101,
+      "side": "Short",
+      "volume": 0.46,
+      "open_price": 1892.496,
+      "close_price": 1892.529,
+      "net": -4.04,
+      "magic": 86080709,
+      "sl": 1894.884,
+      "tp": 1886.526,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 1892.496"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -1.51,
+      "commission": -2.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 102,
+      "open_epoch": 1697205000,
+      "close_epoch": 1697219558,
+      "last_deal": 103,
+      "side": "Long",
+      "volume": 0.16,
+      "open_price": 1911.941,
+      "close_price": 1929.044,
+      "net": 272.76,
+      "magic": 86080709,
+      "sl": 1905.103,
+      "tp": 1929.036,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 1929.036"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 273.64,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 104,
+      "open_epoch": 1698156600,
+      "close_epoch": 1698177300,
+      "last_deal": 105,
+      "side": "Long",
+      "volume": 0.21,
+      "open_price": 1965.12,
+      "close_price": 1972.076,
+      "net": 144.92,
+      "magic": 86080709,
+      "sl": 1959.767,
+      "tp": 1978.502,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 146.08,
+      "commission": -1.16,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 106,
+      "open_epoch": 1701701400,
+      "close_epoch": 1701703373,
+      "last_deal": 107,
+      "side": "Long",
+      "volume": 0.18,
+      "open_price": 2049.241,
+      "close_price": 2042.875,
+      "net": -115.58,
+      "magic": 86080709,
+      "sl": 2042.886,
+      "tp": 2065.128,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2042.886"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -114.59,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 108,
+      "open_epoch": 1701788700,
+      "close_epoch": 1701788790,
+      "last_deal": 109,
+      "side": "Long",
+      "volume": 0.25,
+      "open_price": 2026.275,
+      "close_price": 2021.8,
+      "net": -113.26,
+      "magic": 86080709,
+      "sl": 2021.822,
+      "tp": 2037.401,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2021.822"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -111.88,
+      "commission": -1.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 110,
+      "open_epoch": 1703170200,
+      "close_epoch": 1703171000,
+      "last_deal": 111,
+      "side": "Long",
+      "volume": 0.23,
+      "open_price": 2046.001,
+      "close_price": 2041.004,
+      "net": -116.2,
+      "magic": 86080709,
+      "sl": 2041.024,
+      "tp": 2058.444,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2041.024"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -114.93,
+      "commission": -1.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 112,
+      "open_epoch": 1705421100,
+      "close_epoch": 1705438500,
+      "last_deal": 113,
+      "side": "Short",
+      "volume": 0.16,
+      "open_price": 2036.063,
+      "close_price": 2028.778,
+      "net": 115.68,
+      "magic": 86080709,
+      "sl": 2042.968,
+      "tp": 2018.828,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 116.56,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 114,
+      "open_epoch": 1706281500,
+      "close_epoch": 1706302500,
+      "last_deal": 115,
+      "side": "Short",
+      "volume": 0.24,
+      "open_price": 2018.133,
+      "close_price": 2018.935,
+      "net": -20.57,
+      "magic": 86080709,
+      "sl": 2022.869,
+      "tp": 2006.293,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -19.25,
+      "commission": -1.32,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 116,
+      "open_epoch": 1706799600,
+      "close_epoch": 1706799810,
+      "last_deal": 117,
+      "side": "Short",
+      "volume": 0.27,
+      "open_price": 2046.132,
+      "close_price": 2046.143,
+      "net": -1.79,
+      "magic": 86080709,
+      "sl": 2050.218,
+      "tp": 2035.917,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2046.132"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.3,
+      "commission": -1.49,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 118,
+      "open_epoch": 1706885400,
+      "close_epoch": 1706907300,
+      "last_deal": 119,
+      "side": "Long",
+      "volume": 0.15,
+      "open_price": 2034.794,
+      "close_price": 2037.248,
+      "net": 35.98,
+      "magic": 86080709,
+      "sl": 2027.469,
+      "tp": 2053.107,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 36.81,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 120,
+      "open_epoch": 1709306100,
+      "close_epoch": 1709308057,
+      "last_deal": 121,
+      "side": "Long",
+      "volume": 0.23,
+      "open_price": 2055.757,
+      "close_price": 2067.798,
+      "net": 275.67,
+      "magic": 86080709,
+      "sl": 2050.946,
+      "tp": 2067.785,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 2067.785"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 276.94,
+      "commission": -1.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 122,
+      "open_epoch": 1709654100,
+      "close_epoch": 1709666186,
+      "last_deal": 123,
+      "side": "Short",
+      "volume": 0.15,
+      "open_price": 2125.893,
+      "close_price": 2133.78,
+      "net": -119.13,
+      "magic": 86080709,
+      "sl": 2133.741,
+      "tp": 2106.273,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2133.741"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -118.3,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 124,
+      "open_epoch": 1710429600,
+      "close_epoch": 1710446100,
+      "last_deal": 125,
+      "side": "Short",
+      "volume": 0.15,
+      "open_price": 2157.331,
+      "close_price": 2163.449,
+      "net": -92.6,
+      "magic": 86080709,
+      "sl": 2165.192,
+      "tp": 2137.679,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -91.77,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 126,
+      "open_epoch": 1710511500,
+      "close_epoch": 1710523890,
+      "last_deal": 127,
+      "side": "Long",
+      "volume": 0.18,
+      "open_price": 2162.434,
+      "close_price": 2156.174,
+      "net": -113.67,
+      "magic": 86080709,
+      "sl": 2156.179,
+      "tp": 2178.072,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2156.179"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.68,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 128,
+      "open_epoch": 1711117500,
+      "close_epoch": 1711126094,
+      "last_deal": 129,
+      "side": "Short",
+      "volume": 0.27,
+      "open_price": 2172.831,
+      "close_price": 2162.631,
+      "net": 273.91,
+      "magic": 86080709,
+      "sl": 2176.901,
+      "tp": 2162.656,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 2162.656"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 275.4,
+      "commission": -1.49,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 130,
+      "open_epoch": 1711634100,
+      "close_epoch": 1711636828,
+      "last_deal": 131,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 2204.621,
+      "close_price": 2210.637,
+      "net": -115.35,
+      "magic": 86080709,
+      "sl": 2210.616,
+      "tp": 2189.634,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2210.616"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -114.3,
+      "commission": -1.05,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 132,
+      "open_epoch": 1713367800,
+      "close_epoch": 1713372339,
+      "last_deal": 133,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 2385.1,
+      "close_price": 2362.654,
+      "net": 291.08,
+      "magic": 86080709,
+      "sl": 2394.041,
+      "tp": 2362.657,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 2362.657"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 291.8,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 134,
+      "open_epoch": 1713535200,
+      "close_epoch": 1713536173,
+      "last_deal": 135,
+      "side": "Short",
+      "volume": 0.14,
+      "open_price": 2378.665,
+      "close_price": 2387.388,
+      "net": -122.89,
+      "magic": 86080709,
+      "sl": 2387.382,
+      "tp": 2356.869,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2387.382"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -122.12,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 136,
+      "open_epoch": 1714657800,
+      "close_epoch": 1714659572,
+      "last_deal": 137,
+      "side": "Short",
+      "volume": 0.16,
+      "open_price": 2288.961,
+      "close_price": 2296.289,
+      "net": -118.12,
+      "magic": 86080709,
+      "sl": 2296.284,
+      "tp": 2270.653,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2296.284"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -117.24,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 138,
+      "open_epoch": 1715351100,
+      "close_epoch": 1715360016,
+      "last_deal": 139,
+      "side": "Short",
+      "volume": 0.16,
+      "open_price": 2362.31,
+      "close_price": 2369.588,
+      "net": -117.33,
+      "magic": 86080709,
+      "sl": 2369.574,
+      "tp": 2344.154,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2369.574"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -116.45,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 140,
+      "open_epoch": 1719415200,
+      "close_epoch": 1719431700,
+      "last_deal": 141,
+      "side": "Long",
+      "volume": 0.12,
+      "open_price": 2303.478,
+      "close_price": 2298.884,
+      "net": -55.79,
+      "magic": 86080709,
+      "sl": 2294.274,
+      "tp": 2326.488,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -55.13,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 142,
+      "open_epoch": 1725544200,
+      "close_epoch": 1725545678,
+      "last_deal": 143,
+      "side": "Short",
+      "volume": 0.2,
+      "open_price": 2514.27,
+      "close_price": 2514.272,
+      "net": -1.14,
+      "magic": 86080709,
+      "sl": 2519.837,
+      "tp": 2500.353,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2514.270"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.04,
+      "commission": -1.1,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 144,
+      "open_epoch": 1725635700,
+      "close_epoch": 1725638619,
+      "last_deal": 145,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 2514.353,
+      "close_price": 2501.329,
+      "net": -117.72,
+      "magic": 86080709,
+      "sl": 2501.333,
+      "tp": 2546.921,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2501.333"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -117.22,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 146,
+      "open_epoch": 1726581000,
+      "close_epoch": 1726584151,
+      "last_deal": 147,
+      "side": "Long",
+      "volume": 0.21,
+      "open_price": 2578.053,
+      "close_price": 2572.708,
+      "net": -113.4,
+      "magic": 86080709,
+      "sl": 2572.708,
+      "tp": 2591.415,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2572.708"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.24,
+      "commission": -1.16,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 148,
+      "open_epoch": 1727187600,
+      "close_epoch": 1727196280,
+      "last_deal": 149,
+      "side": "Long",
+      "volume": 0.17,
+      "open_price": 2638.465,
+      "close_price": 2654.942,
+      "net": 279.16,
+      "magic": 86080709,
+      "sl": 2631.881,
+      "tp": 2654.925,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 2654.925"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 280.1,
+      "commission": -0.94,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 150,
+      "open_epoch": 1728053700,
+      "close_epoch": 1728055605,
+      "last_deal": 151,
+      "side": "Long",
+      "volume": 0.11,
+      "open_price": 2658.961,
+      "close_price": 2658.956,
+      "net": -0.66,
+      "magic": 86080709,
+      "sl": 2648.198,
+      "tp": 2685.883,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2658.961"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.05,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 152,
+      "open_epoch": 1728396900,
+      "close_epoch": 1728400047,
+      "last_deal": 153,
+      "side": "Short",
+      "volume": 0.14,
+      "open_price": 2634.21,
+      "close_price": 2614.466,
+      "net": 275.65,
+      "magic": 86080709,
+      "sl": 2642.097,
+      "tp": 2614.472,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 2614.472"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 276.42,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 154,
+      "open_epoch": 1732028100,
+      "close_epoch": 1732031010,
+      "last_deal": 155,
+      "side": "Short",
+      "volume": 0.25,
+      "open_price": 2625.921,
+      "close_price": 2625.943,
+      "net": -1.93,
+      "magic": 86080709,
+      "sl": 2630.483,
+      "tp": 2614.516,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2625.921"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.55,
+      "commission": -1.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 156,
+      "open_epoch": 1734707400,
+      "close_epoch": 1734712166,
+      "last_deal": 157,
+      "side": "Long",
+      "volume": 0.16,
+      "open_price": 2620.161,
+      "close_price": 2623.754,
+      "net": 56.6,
+      "magic": 86080709,
+      "sl": 2612.994,
+      "tp": 2638.152,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2623.759"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.48,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 158,
+      "open_epoch": 1735834200,
+      "close_epoch": 1735840033,
+      "last_deal": 159,
+      "side": "Long",
+      "volume": 0.17,
+      "open_price": 2652.852,
+      "close_price": 2652.85,
+      "net": -0.97,
+      "magic": 86080709,
+      "sl": 2645.775,
+      "tp": 2670.544,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2652.852"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.03,
+      "commission": -0.94,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 160,
+      "open_epoch": 1735916100,
+      "close_epoch": 1735937700,
+      "last_deal": 161,
+      "side": "Short",
+      "volume": 0.18,
+      "open_price": 2646.57,
+      "close_price": 2637.76,
+      "net": 157.59,
+      "magic": 86080709,
+      "sl": 2653.084,
+      "tp": 2630.285,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 158.58,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 162,
+      "open_epoch": 1736175000,
+      "close_epoch": 1736190091,
+      "last_deal": 163,
+      "side": "Long",
+      "volume": 0.16,
+      "open_price": 2629.567,
+      "close_price": 2633.379,
+      "net": 60.11,
+      "magic": 86080709,
+      "sl": 2621.912,
+      "tp": 2648.705,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2633.395"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 60.99,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 164,
+      "open_epoch": 1737041700,
+      "close_epoch": 1737060900,
+      "last_deal": 165,
+      "side": "Long",
+      "volume": 0.18,
+      "open_price": 2719.199,
+      "close_price": 2715.841,
+      "net": -61.43,
+      "magic": 86080709,
+      "sl": 2712.537,
+      "tp": 2735.844,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -60.44,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 166,
+      "open_epoch": 1739202000,
+      "close_epoch": 1739206169,
+      "last_deal": 167,
+      "side": "Long",
+      "volume": 0.14,
+      "open_price": 2910.093,
+      "close_price": 2901.347,
+      "net": -123.21,
+      "magic": 86080709,
+      "sl": 2901.355,
+      "tp": 2931.938,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2901.355"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -122.44,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 168,
+      "open_epoch": 1741362300,
+      "close_epoch": 1741380900,
+      "last_deal": 169,
+      "side": "Short",
+      "volume": 0.14,
+      "open_price": 2914.453,
+      "close_price": 2908.513,
+      "net": 82.39,
+      "magic": 86080709,
+      "sl": 2922.77,
+      "tp": 2893.793,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 83.16,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 170,
+      "open_epoch": 1741615800,
+      "close_epoch": 1741625196,
+      "last_deal": 171,
+      "side": "Long",
+      "volume": 0.17,
+      "open_price": 2904.922,
+      "close_price": 2898.181,
+      "net": -115.53,
+      "magic": 86080709,
+      "sl": 2898.187,
+      "tp": 2921.837,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 2898.187"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -114.59,
+      "commission": -0.94,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 172,
+      "open_epoch": 1743775500,
+      "close_epoch": 1743796500,
+      "last_deal": 173,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 3056.812,
+      "close_price": 3036.416,
+      "net": 101.7,
+      "magic": 86080709,
+      "sl": 3082.244,
+      "tp": 2993.137,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 101.98,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 174,
+      "open_epoch": 1746200100,
+      "close_epoch": 1746215700,
+      "last_deal": 175,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 3242.488,
+      "close_price": 3233.522,
+      "net": 62.38,
+      "magic": 86080709,
+      "sl": 3260.631,
+      "tp": 3197.117,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 62.77,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 176,
+      "open_epoch": 1747318200,
+      "close_epoch": 1747327229,
+      "last_deal": 177,
+      "side": "Long",
+      "volume": 0.13,
+      "open_price": 3198.274,
+      "close_price": 3222.056,
+      "net": 308.45,
+      "magic": 86080709,
+      "sl": 3188.707,
+      "tp": 3222.027,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 3222.027"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 309.17,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 178,
+      "open_epoch": 1747921800,
+      "close_epoch": 1747923999,
+      "last_deal": 179,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 3302.683,
+      "close_price": 3296.938,
+      "net": 62.58,
+      "magic": 86080709,
+      "sl": 3314.179,
+      "tp": 3273.957,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 3296.938"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 63.19,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 180,
+      "open_epoch": 1750168200,
+      "close_epoch": 1750171050,
+      "last_deal": 181,
+      "side": "Short",
+      "volume": 0.15,
+      "open_price": 3390.009,
+      "close_price": 3369.805,
+      "net": 302.23,
+      "magic": 86080709,
+      "sl": 3398.088,
+      "tp": 3369.811,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 3369.811"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 303.06,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 182,
+      "open_epoch": 1751896500,
+      "close_epoch": 1751916877,
+      "last_deal": 183,
+      "side": "Long",
+      "volume": 0.13,
+      "open_price": 3315.405,
+      "close_price": 3339.694,
+      "net": 315.03,
+      "magic": 86080709,
+      "sl": 3305.691,
+      "tp": 3339.69,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 3339.690"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 315.75,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 184,
+      "open_epoch": 1752501900,
+      "close_epoch": 1752503402,
+      "last_deal": 185,
+      "side": "Short",
+      "volume": 0.21,
+      "open_price": 3352.454,
+      "close_price": 3352.4679999999994,
+      "net": -1.46,
+      "magic": 86080709,
+      "sl": 3358.586,
+      "tp": 3337.124,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 3352.454"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.3,
+      "commission": -1.16,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 186,
+      "open_epoch": 1753192200,
+      "close_epoch": 1753192771,
+      "last_deal": 187,
+      "side": "Long",
+      "volume": 0.2,
+      "open_price": 3419.097,
+      "close_price": 3412.6980000000003,
+      "net": -129.08,
+      "magic": 86080709,
+      "sl": 3412.704,
+      "tp": 3435.08,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 3412.704"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -127.98,
+      "commission": -1.1,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 188,
+      "open_epoch": 1754575200,
+      "close_epoch": 1754575950,
+      "last_deal": 189,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 3384.933,
+      "close_price": 3384.9420000000005,
+      "net": -1.22,
+      "magic": 86080709,
+      "sl": 3391.723,
+      "tp": 3367.958,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 3384.933"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.17,
+      "commission": -1.05,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 190,
+      "open_epoch": 1754662200,
+      "close_epoch": 1754670337,
+      "last_deal": 191,
+      "side": "Short",
+      "volume": 0.14,
+      "open_price": 3389.577,
+      "close_price": 3398.544,
+      "net": -126.31,
+      "magic": 86080709,
+      "sl": 3398.544,
+      "tp": 3366.995,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 3398.544"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -125.54,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 192,
+      "open_epoch": 1758033900,
+      "close_epoch": 1758039784,
+      "last_deal": 193,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 3689.495,
+      "close_price": 3689.495,
+      "net": -0.72,
+      "magic": 86080709,
+      "sl": 3699.23,
+      "tp": 3665.157,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 3689.495"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 0.0,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 194,
+      "open_epoch": 1758290100,
+      "close_epoch": 1758303999,
+      "last_deal": 195,
+      "side": "Long",
+      "volume": 0.18,
+      "open_price": 3660.386,
+      "close_price": 3677.712,
+      "net": 310.88,
+      "magic": 86080709,
+      "sl": 3653.462,
+      "tp": 3677.696,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 3677.696"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 311.87,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 196,
+      "open_epoch": 1759332000,
+      "close_epoch": 1759348500,
+      "last_deal": 197,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 3863.4,
+      "close_price": 3868.656,
+      "net": -47.8,
+      "magic": 86080709,
+      "sl": 3878.06,
+      "tp": 3826.785,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -47.3,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 198,
+      "open_epoch": 1763656200,
+      "close_epoch": 1763672100,
+      "last_deal": 199,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 4065.187,
+      "close_price": 4076.144,
+      "net": -55.06,
+      "magic": 86080709,
+      "sl": 4092.975,
+      "tp": 3995.808,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -54.78,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 200,
+      "open_epoch": 1763736900,
+      "close_epoch": 1763739619,
+      "last_deal": 201,
+      "side": "Long",
+      "volume": 0.1,
+      "open_price": 4074.335,
+      "close_price": 4060.62,
+      "net": -137.7,
+      "magic": 86080709,
+      "sl": 4060.624,
+      "tp": 4108.592,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4060.624"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -137.15,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 202,
+      "open_epoch": 1765898400,
+      "close_epoch": 1765904798,
+      "last_deal": 203,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 4316.708,
+      "close_price": 4308.588,
+      "net": 64.52,
+      "magic": 86080709,
+      "sl": 4332.971,
+      "tp": 4276.044,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4308.575"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 64.96,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 204,
+      "open_epoch": 1767624600,
+      "close_epoch": 1767646500,
+      "last_deal": 205,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 4436.76,
+      "close_price": 4442.561,
+      "net": 40.22,
+      "magic": 86080709,
+      "sl": 4416.813,
+      "tp": 4486.628,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 40.61,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 206,
+      "open_epoch": 1774360800,
+      "close_epoch": 1774371916,
+      "last_deal": 207,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4381.528,
+      "close_price": 4397.965,
+      "net": 65.53,
+      "magic": 86080709,
+      "sl": 4348.984,
+      "tp": 4464.001,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4398.023"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 65.75,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 208,
+      "open_epoch": 1774446600,
+      "close_epoch": 1774450257,
+      "last_deal": 209,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 4552.266,
+      "close_price": 4578.438,
+      "net": -131.14,
+      "magic": 86080709,
+      "sl": 4578.366,
+      "tp": 4487.261,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4578.366"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -130.86,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 210,
+      "open_epoch": 1777385100,
+      "close_epoch": 1777395158,
+      "last_deal": 211,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 4565.972,
+      "close_price": 4593.494,
+      "net": -137.89,
+      "magic": 86080709,
+      "sl": 4593.457,
+      "tp": 4498.369,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4593.457"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -137.61,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 212,
+      "open_epoch": 1778167800,
+      "close_epoch": 1778174827,
+      "last_deal": 213,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 4740.505,
+      "close_price": 4692.057,
+      "net": 338.75,
+      "magic": 86080709,
+      "sl": 4759.522,
+      "tp": 4692.088,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 4692.088"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 339.14,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 214,
+      "open_epoch": 1779112500,
+      "close_epoch": 1779113153,
+      "last_deal": 215,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 4583.494,
+      "close_price": 4562.561,
+      "net": -146.92,
+      "magic": 86080709,
+      "sl": 4563.47,
+      "tp": 4633.463,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4563.470"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -146.53,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 216,
+      "open_epoch": 1779286800,
+      "close_epoch": 1779290139,
+      "last_deal": 217,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 4498.42,
+      "close_price": 4540.032,
+      "net": 332.46,
+      "magic": 86080709,
+      "sl": 4482.125,
+      "tp": 4539.977,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 4539.977"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 332.9,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 218,
+      "open_epoch": 1779977400,
+      "close_epoch": 1779985103,
+      "last_deal": 219,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 4438.943,
+      "close_price": 4494.303,
+      "net": 331.83,
+      "magic": 86080709,
+      "sl": 4416.993,
+      "tp": 4494.126,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 4494.126"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 332.16,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 220,
+      "open_epoch": 1780581300,
+      "close_epoch": 1780602900,
+      "last_deal": 221,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 4498.837,
+      "close_price": 4478.068,
+      "net": 165.72,
+      "magic": 86080709,
+      "sl": 4516.347,
+      "tp": 4455.076,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 166.16,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 222,
+      "open_epoch": 1780927200,
+      "close_epoch": 1780948500,
+      "last_deal": 223,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 4327.086,
+      "close_price": 4328.414,
+      "net": -9.69,
+      "magic": 86080709,
+      "sl": 4348.284,
+      "tp": 4274.357,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -9.3,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 224,
+      "open_epoch": 1782139800,
+      "close_epoch": 1782142752,
+      "last_deal": 225,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 4201.382,
+      "close_price": 4181.996,
+      "net": -136.09,
+      "magic": 86080709,
+      "sl": 4182.075,
+      "tp": 4250.003,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4182.075"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -135.7,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 226,
+      "open_epoch": 1782401100,
+      "close_epoch": 1782417300,
+      "last_deal": 227,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 4038.032,
+      "close_price": 4026.053,
+      "net": -60.17,
+      "magic": 86080709,
+      "sl": 4009.42,
+      "tp": 4109.335,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -59.89,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 228,
+      "open_epoch": 1783519500,
+      "close_epoch": 1783524295,
+      "last_deal": 229,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 4066.237,
+      "close_price": 4027.438,
+      "net": 348.69,
+      "magic": 86080709,
+      "sl": 4081.748,
+      "tp": 4027.46,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 4027.460"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 349.19,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 230,
+      "open_epoch": 1784038800,
+      "close_epoch": 1784039655,
+      "last_deal": 231,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 4073.571,
+      "close_price": 4090.325,
+      "net": -134.47,
+      "magic": 86080709,
+      "sl": 4090.188,
+      "tp": 4030.079,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4090.188"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -134.03,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 232,
+      "open_epoch": 1785333300,
+      "close_epoch": 1785334730,
+      "last_deal": 233,
+      "side": "Short",
+      "volume": 0.14,
+      "open_price": 4009.161,
+      "close_price": 4009.206,
+      "net": -1.4,
+      "magic": 86080709,
+      "sl": 4018.824,
+      "tp": 3984.909,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4009.161"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.63,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 234,
+      "open_epoch": 1785938700,
+      "close_epoch": 1785942204,
+      "last_deal": 235,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 4210.704,
+      "close_price": 4258.808,
+      "net": 336.34,
+      "magic": 86080709,
+      "sl": 4191.395,
+      "tp": 4258.753,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 4258.753"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 336.73,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 236,
+      "open_epoch": 1786372200,
+      "close_epoch": 1786389867,
+      "last_deal": 237,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 4345.99,
+      "close_price": 4388.132,
+      "net": 378.78,
+      "magic": 86080709,
+      "sl": 4328.9,
+      "tp": 4387.899,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "tp 4387.899"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 379.28,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 238,
+      "open_epoch": 1789654200,
+      "close_epoch": 1789656968,
+      "last_deal": 239,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 4377.005,
+      "close_price": 4354.652,
+      "net": -156.87,
+      "magic": 86080709,
+      "sl": 4354.694,
+      "tp": 4434.067,
+      "entry_comment": "ORB 15m M5 NY09:30 VolConf",
+      "exit_comments": [
+        "sl 4354.694"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -156.48,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1635515400,
+      "deal": 2,
+      "balance": 9999.28,
+      "net": -0.72
+    },
+    {
+      "epoch": 1635516538,
+      "deal": 3,
+      "balance": 9899.0,
+      "net": -100.28
+    },
+    {
+      "epoch": 1637337000,
+      "deal": 4,
+      "balance": 9898.01,
+      "net": -0.99
+    },
+    {
+      "epoch": 1637355300,
+      "deal": 5,
+      "balance": 10055.31,
+      "net": 157.3
+    },
+    {
+      "epoch": 1637679900,
+      "deal": 6,
+      "balance": 10054.26,
+      "net": -1.05
+    },
+    {
+      "epoch": 1637693800,
+      "deal": 7,
+      "balance": 10054.07,
+      "net": -0.19
+    },
+    {
+      "epoch": 1638975900,
+      "deal": 8,
+      "balance": 10053.02,
+      "net": -1.05
+    },
+    {
+      "epoch": 1638996900,
+      "deal": 9,
+      "balance": 10067.29,
+      "net": 14.27
+    },
+    {
+      "epoch": 1641309300,
+      "deal": 10,
+      "balance": 10065.97,
+      "net": -1.32
+    },
+    {
+      "epoch": 1641314079,
+      "deal": 11,
+      "balance": 10116.71,
+      "net": 50.74
+    },
+    {
+      "epoch": 1642523700,
+      "deal": 12,
+      "balance": 10115.72,
+      "net": -0.99
+    },
+    {
+      "epoch": 1642539300,
+      "deal": 13,
+      "balance": 10068.81,
+      "net": -46.91
+    },
+    {
+      "epoch": 1642777500,
+      "deal": 14,
+      "balance": 10067.54,
+      "net": -1.27
+    },
+    {
+      "epoch": 1642798500,
+      "deal": 15,
+      "balance": 10266.12,
+      "net": 198.58
+    },
+    {
+      "epoch": 1644591000,
+      "deal": 16,
+      "balance": 10264.63,
+      "net": -1.49
+    },
+    {
+      "epoch": 1644604322,
+      "deal": 17,
+      "balance": 10525.13,
+      "net": 260.5
+    },
+    {
+      "epoch": 1645801500,
+      "deal": 18,
+      "balance": 10524.41,
+      "net": -0.72
+    },
+    {
+      "epoch": 1645822500,
+      "deal": 19,
+      "balance": 10473.11,
+      "net": -51.3
+    },
+    {
+      "epoch": 1646146500,
+      "deal": 20,
+      "balance": 10472.34,
+      "net": -0.77
+    },
+    {
+      "epoch": 1646167716,
+      "deal": 21,
+      "balance": 10752.12,
+      "net": 279.78
+    },
+    {
+      "epoch": 1646238900,
+      "deal": 22,
+      "balance": 10751.62,
+      "net": -0.5
+    },
+    {
+      "epoch": 1646251527,
+      "deal": 23,
+      "balance": 10639.15,
+      "net": -112.47
+    },
+    {
+      "epoch": 1646667600,
+      "deal": 24,
+      "balance": 10638.76,
+      "net": -0.39
+    },
+    {
+      "epoch": 1646686500,
+      "deal": 25,
+      "balance": 10707.39,
+      "net": 68.63
+    },
+    {
+      "epoch": 1646924400,
+      "deal": 26,
+      "balance": 10706.78,
+      "net": -0.61
+    },
+    {
+      "epoch": 1646928076,
+      "deal": 27,
+      "balance": 10706.67,
+      "net": -0.11
+    },
+    {
+      "epoch": 1647011100,
+      "deal": 28,
+      "balance": 10706.23,
+      "net": -0.44
+    },
+    {
+      "epoch": 1647032100,
+      "deal": 29,
+      "balance": 10748.78,
+      "net": 42.55
+    },
+    {
+      "epoch": 1647265800,
+      "deal": 30,
+      "balance": 10748.06,
+      "net": -0.72
+    },
+    {
+      "epoch": 1647287700,
+      "deal": 31,
+      "balance": 10758.68,
+      "net": 10.62
+    },
+    {
+      "epoch": 1648129800,
+      "deal": 32,
+      "balance": 10757.69,
+      "net": -0.99
+    },
+    {
+      "epoch": 1648131507,
+      "deal": 33,
+      "balance": 10645.06,
+      "net": -112.63
+    },
+    {
+      "epoch": 1652363700,
+      "deal": 34,
+      "balance": 10644.29,
+      "net": -0.77
+    },
+    {
+      "epoch": 1652385300,
+      "deal": 35,
+      "balance": 10870.49,
+      "net": 226.2
+    },
+    {
+      "epoch": 1655388300,
+      "deal": 36,
+      "balance": 10869.5,
+      "net": -0.99
+    },
+    {
+      "epoch": 1655391341,
+      "deal": 37,
+      "balance": 10758.38,
+      "net": -111.12
+    },
+    {
+      "epoch": 1655819400,
+      "deal": 38,
+      "balance": 10757.17,
+      "net": -1.21
+    },
+    {
+      "epoch": 1655824347,
+      "deal": 39,
+      "balance": 10756.89,
+      "net": -0.28
+    },
+    {
+      "epoch": 1656079200,
+      "deal": 40,
+      "balance": 10755.62,
+      "net": -1.27
+    },
+    {
+      "epoch": 1656079236,
+      "deal": 41,
+      "balance": 10645.54,
+      "net": -110.08
+    },
+    {
+      "epoch": 1656424200,
+      "deal": 42,
+      "balance": 10644.33,
+      "net": -1.21
+    },
+    {
+      "epoch": 1656426099,
+      "deal": 43,
+      "balance": 10536.64,
+      "net": -107.69
+    },
+    {
+      "epoch": 1657115400,
+      "deal": 44,
+      "balance": 10535.59,
+      "net": -1.05
+    },
+    {
+      "epoch": 1657119479,
+      "deal": 45,
+      "balance": 10804.97,
+      "net": 269.38
+    },
+    {
+      "epoch": 1657893000,
+      "deal": 46,
+      "balance": 10804.03,
+      "net": -0.94
+    },
+    {
+      "epoch": 1657914900,
+      "deal": 47,
+      "balance": 10767.52,
+      "net": -36.51
+    },
+    {
+      "epoch": 1659022200,
+      "deal": 48,
+      "balance": 10766.58,
+      "net": -0.94
+    },
+    {
+      "epoch": 1659038100,
+      "deal": 49,
+      "balance": 10754.37,
+      "net": -12.21
+    },
+    {
+      "epoch": 1659363300,
+      "deal": 50,
+      "balance": 10753.05,
+      "net": -1.32
+    },
+    {
+      "epoch": 1659363935,
+      "deal": 51,
+      "balance": 10642.24,
+      "net": -110.81
+    },
+    {
+      "epoch": 1660312500,
+      "deal": 52,
+      "balance": 10640.7,
+      "net": -1.54
+    },
+    {
+      "epoch": 1660312960,
+      "deal": 53,
+      "balance": 10531.75,
+      "net": -108.95
+    },
+    {
+      "epoch": 1661523900,
+      "deal": 54,
+      "balance": 10530.54,
+      "net": -1.21
+    },
+    {
+      "epoch": 1661526818,
+      "deal": 55,
+      "balance": 10794.72,
+      "net": 264.18
+    },
+    {
+      "epoch": 1661781000,
+      "deal": 56,
+      "balance": 10793.62,
+      "net": -1.1
+    },
+    {
+      "epoch": 1661800417,
+      "deal": 57,
+      "balance": 10685.42,
+      "net": -108.2
+    },
+    {
+      "epoch": 1661868000,
+      "deal": 58,
+      "balance": 10683.38,
+      "net": -2.04
+    },
+    {
+      "epoch": 1661868208,
+      "deal": 59,
+      "balance": 10573.41,
+      "net": -109.97
+    },
+    {
+      "epoch": 1662041100,
+      "deal": 60,
+      "balance": 10572.2,
+      "net": -1.21
+    },
+    {
+      "epoch": 1662045183,
+      "deal": 61,
+      "balance": 10463.39,
+      "net": -108.81
+    },
+    {
+      "epoch": 1663941000,
+      "deal": 62,
+      "balance": 10462.73,
+      "net": -0.66
+    },
+    {
+      "epoch": 1663962900,
+      "deal": 63,
+      "balance": 10477.15,
+      "net": 14.42
+    },
+    {
+      "epoch": 1664373000,
+      "deal": 64,
+      "balance": 10476.49,
+      "net": -0.66
+    },
+    {
+      "epoch": 1664394900,
+      "deal": 65,
+      "balance": 10597.0,
+      "net": 120.51
+    },
+    {
+      "epoch": 1667310600,
+      "deal": 66,
+      "balance": 10595.13,
+      "net": -1.87
+    },
+    {
+      "epoch": 1667311778,
+      "deal": 67,
+      "balance": 10865.63,
+      "net": 270.5
+    },
+    {
+      "epoch": 1668091800,
+      "deal": 68,
+      "balance": 10864.8,
+      "net": -0.83
+    },
+    {
+      "epoch": 1668113700,
+      "deal": 69,
+      "balance": 11031.37,
+      "net": 166.57
+    },
+    {
+      "epoch": 1668783900,
+      "deal": 70,
+      "balance": 11030.16,
+      "net": -1.21
+    },
+    {
+      "epoch": 1668786807,
+      "deal": 71,
+      "balance": 10918.51,
+      "net": -111.65
+    },
+    {
+      "epoch": 1670598600,
+      "deal": 72,
+      "balance": 10917.02,
+      "net": -1.49
+    },
+    {
+      "epoch": 1670600378,
+      "deal": 73,
+      "balance": 10917.0,
+      "net": -0.02
+    },
+    {
+      "epoch": 1675784100,
+      "deal": 74,
+      "balance": 10915.62,
+      "net": -1.38
+    },
+    {
+      "epoch": 1675789296,
+      "deal": 75,
+      "balance": 10972.14,
+      "net": 56.52
+    },
+    {
+      "epoch": 1676559300,
+      "deal": 76,
+      "balance": 10970.98,
+      "net": -1.16
+    },
+    {
+      "epoch": 1676560899,
+      "deal": 77,
+      "balance": 10857.56,
+      "net": -113.42
+    },
+    {
+      "epoch": 1677078600,
+      "deal": 78,
+      "balance": 10856.24,
+      "net": -1.32
+    },
+    {
+      "epoch": 1677079574,
+      "deal": 79,
+      "balance": 10744.52,
+      "net": -111.72
+    },
+    {
+      "epoch": 1679320800,
+      "deal": 80,
+      "balance": 10743.69,
+      "net": -0.83
+    },
+    {
+      "epoch": 1679321978,
+      "deal": 81,
+      "balance": 10799.28,
+      "net": 55.59
+    },
+    {
+      "epoch": 1679579700,
+      "deal": 82,
+      "balance": 10798.45,
+      "net": -0.83
+    },
+    {
+      "epoch": 1679594620,
+      "deal": 83,
+      "balance": 11071.54,
+      "net": 273.09
+    },
+    {
+      "epoch": 1679925900,
+      "deal": 84,
+      "balance": 11070.27,
+      "net": -1.27
+    },
+    {
+      "epoch": 1679926776,
+      "deal": 85,
+      "balance": 10956.71,
+      "net": -113.56
+    },
+    {
+      "epoch": 1681393800,
+      "deal": 86,
+      "balance": 10955.55,
+      "net": -1.16
+    },
+    {
+      "epoch": 1681396597,
+      "deal": 87,
+      "balance": 10841.04,
+      "net": -114.51
+    },
+    {
+      "epoch": 1684851300,
+      "deal": 88,
+      "balance": 10840.05,
+      "net": -0.99
+    },
+    {
+      "epoch": 1684855180,
+      "deal": 89,
+      "balance": 10729.23,
+      "net": -110.82
+    },
+    {
+      "epoch": 1685455800,
+      "deal": 90,
+      "balance": 10727.74,
+      "net": -1.49
+    },
+    {
+      "epoch": 1685466037,
+      "deal": 91,
+      "balance": 10782.12,
+      "net": 54.38
+    },
+    {
+      "epoch": 1685973000,
+      "deal": 92,
+      "balance": 10780.58,
+      "net": -1.54
+    },
+    {
+      "epoch": 1685973751,
+      "deal": 93,
+      "balance": 11053.49,
+      "net": 272.91
+    },
+    {
+      "epoch": 1689344100,
+      "deal": 94,
+      "balance": 11052.44,
+      "net": -1.05
+    },
+    {
+      "epoch": 1689346117,
+      "deal": 95,
+      "balance": 10937.55,
+      "net": -114.89
+    },
+    {
+      "epoch": 1690900500,
+      "deal": 96,
+      "balance": 10936.45,
+      "net": -1.1
+    },
+    {
+      "epoch": 1690919700,
+      "deal": 97,
+      "balance": 10917.17,
+      "net": -19.28
+    },
+    {
+      "epoch": 1692021000,
+      "deal": 98,
+      "balance": 10915.41,
+      "net": -1.76
+    },
+    {
+      "epoch": 1692022273,
+      "deal": 99,
+      "balance": 10805.3,
+      "net": -110.11
+    },
+    {
+      "epoch": 1692712200,
+      "deal": 100,
+      "balance": 10802.77,
+      "net": -2.53
+    },
+    {
+      "epoch": 1692712898,
+      "deal": 101,
+      "balance": 10801.26,
+      "net": -1.51
+    },
+    {
+      "epoch": 1697205000,
+      "deal": 102,
+      "balance": 10800.38,
+      "net": -0.88
+    },
+    {
+      "epoch": 1697219558,
+      "deal": 103,
+      "balance": 11074.02,
+      "net": 273.64
+    },
+    {
+      "epoch": 1698156600,
+      "deal": 104,
+      "balance": 11072.86,
+      "net": -1.16
+    },
+    {
+      "epoch": 1698177300,
+      "deal": 105,
+      "balance": 11218.94,
+      "net": 146.08
+    },
+    {
+      "epoch": 1701701400,
+      "deal": 106,
+      "balance": 11217.95,
+      "net": -0.99
+    },
+    {
+      "epoch": 1701703373,
+      "deal": 107,
+      "balance": 11103.36,
+      "net": -114.59
+    },
+    {
+      "epoch": 1701788700,
+      "deal": 108,
+      "balance": 11101.98,
+      "net": -1.38
+    },
+    {
+      "epoch": 1701788790,
+      "deal": 109,
+      "balance": 10990.1,
+      "net": -111.88
+    },
+    {
+      "epoch": 1703170200,
+      "deal": 110,
+      "balance": 10988.83,
+      "net": -1.27
+    },
+    {
+      "epoch": 1703171000,
+      "deal": 111,
+      "balance": 10873.9,
+      "net": -114.93
+    },
+    {
+      "epoch": 1705421100,
+      "deal": 112,
+      "balance": 10873.02,
+      "net": -0.88
+    },
+    {
+      "epoch": 1705438500,
+      "deal": 113,
+      "balance": 10989.58,
+      "net": 116.56
+    },
+    {
+      "epoch": 1706281500,
+      "deal": 114,
+      "balance": 10988.26,
+      "net": -1.32
+    },
+    {
+      "epoch": 1706302500,
+      "deal": 115,
+      "balance": 10969.01,
+      "net": -19.25
+    },
+    {
+      "epoch": 1706799600,
+      "deal": 116,
+      "balance": 10967.52,
+      "net": -1.49
+    },
+    {
+      "epoch": 1706799810,
+      "deal": 117,
+      "balance": 10967.22,
+      "net": -0.3
+    },
+    {
+      "epoch": 1706885400,
+      "deal": 118,
+      "balance": 10966.39,
+      "net": -0.83
+    },
+    {
+      "epoch": 1706907300,
+      "deal": 119,
+      "balance": 11003.2,
+      "net": 36.81
+    },
+    {
+      "epoch": 1709306100,
+      "deal": 120,
+      "balance": 11001.93,
+      "net": -1.27
+    },
+    {
+      "epoch": 1709308057,
+      "deal": 121,
+      "balance": 11278.87,
+      "net": 276.94
+    },
+    {
+      "epoch": 1709654100,
+      "deal": 122,
+      "balance": 11278.04,
+      "net": -0.83
+    },
+    {
+      "epoch": 1709666186,
+      "deal": 123,
+      "balance": 11159.74,
+      "net": -118.3
+    },
+    {
+      "epoch": 1710429600,
+      "deal": 124,
+      "balance": 11158.91,
+      "net": -0.83
+    },
+    {
+      "epoch": 1710446100,
+      "deal": 125,
+      "balance": 11067.14,
+      "net": -91.77
+    },
+    {
+      "epoch": 1710511500,
+      "deal": 126,
+      "balance": 11066.15,
+      "net": -0.99
+    },
+    {
+      "epoch": 1710523890,
+      "deal": 127,
+      "balance": 10953.47,
+      "net": -112.68
+    },
+    {
+      "epoch": 1711117500,
+      "deal": 128,
+      "balance": 10951.98,
+      "net": -1.49
+    },
+    {
+      "epoch": 1711126094,
+      "deal": 129,
+      "balance": 11227.38,
+      "net": 275.4
+    },
+    {
+      "epoch": 1711634100,
+      "deal": 130,
+      "balance": 11226.33,
+      "net": -1.05
+    },
+    {
+      "epoch": 1711636828,
+      "deal": 131,
+      "balance": 11112.03,
+      "net": -114.3
+    },
+    {
+      "epoch": 1713367800,
+      "deal": 132,
+      "balance": 11111.31,
+      "net": -0.72
+    },
+    {
+      "epoch": 1713372339,
+      "deal": 133,
+      "balance": 11403.11,
+      "net": 291.8
+    },
+    {
+      "epoch": 1713535200,
+      "deal": 134,
+      "balance": 11402.34,
+      "net": -0.77
+    },
+    {
+      "epoch": 1713536173,
+      "deal": 135,
+      "balance": 11280.22,
+      "net": -122.12
+    },
+    {
+      "epoch": 1714657800,
+      "deal": 136,
+      "balance": 11279.34,
+      "net": -0.88
+    },
+    {
+      "epoch": 1714659572,
+      "deal": 137,
+      "balance": 11162.1,
+      "net": -117.24
+    },
+    {
+      "epoch": 1715351100,
+      "deal": 138,
+      "balance": 11161.22,
+      "net": -0.88
+    },
+    {
+      "epoch": 1715360016,
+      "deal": 139,
+      "balance": 11044.77,
+      "net": -116.45
+    },
+    {
+      "epoch": 1719415200,
+      "deal": 140,
+      "balance": 11044.11,
+      "net": -0.66
+    },
+    {
+      "epoch": 1719431700,
+      "deal": 141,
+      "balance": 10988.98,
+      "net": -55.13
+    },
+    {
+      "epoch": 1725544200,
+      "deal": 142,
+      "balance": 10987.88,
+      "net": -1.1
+    },
+    {
+      "epoch": 1725545678,
+      "deal": 143,
+      "balance": 10987.84,
+      "net": -0.04
+    },
+    {
+      "epoch": 1725635700,
+      "deal": 144,
+      "balance": 10987.34,
+      "net": -0.5
+    },
+    {
+      "epoch": 1725638619,
+      "deal": 145,
+      "balance": 10870.12,
+      "net": -117.22
+    },
+    {
+      "epoch": 1726581000,
+      "deal": 146,
+      "balance": 10868.96,
+      "net": -1.16
+    },
+    {
+      "epoch": 1726584151,
+      "deal": 147,
+      "balance": 10756.72,
+      "net": -112.24
+    },
+    {
+      "epoch": 1727187600,
+      "deal": 148,
+      "balance": 10755.78,
+      "net": -0.94
+    },
+    {
+      "epoch": 1727196280,
+      "deal": 149,
+      "balance": 11035.88,
+      "net": 280.1
+    },
+    {
+      "epoch": 1728053700,
+      "deal": 150,
+      "balance": 11035.27,
+      "net": -0.61
+    },
+    {
+      "epoch": 1728055605,
+      "deal": 151,
+      "balance": 11035.22,
+      "net": -0.05
+    },
+    {
+      "epoch": 1728396900,
+      "deal": 152,
+      "balance": 11034.45,
+      "net": -0.77
+    },
+    {
+      "epoch": 1728400047,
+      "deal": 153,
+      "balance": 11310.87,
+      "net": 276.42
+    },
+    {
+      "epoch": 1732028100,
+      "deal": 154,
+      "balance": 11309.49,
+      "net": -1.38
+    },
+    {
+      "epoch": 1732031010,
+      "deal": 155,
+      "balance": 11308.94,
+      "net": -0.55
+    },
+    {
+      "epoch": 1734707400,
+      "deal": 156,
+      "balance": 11308.06,
+      "net": -0.88
+    },
+    {
+      "epoch": 1734712166,
+      "deal": 157,
+      "balance": 11365.54,
+      "net": 57.48
+    },
+    {
+      "epoch": 1735834200,
+      "deal": 158,
+      "balance": 11364.6,
+      "net": -0.94
+    },
+    {
+      "epoch": 1735840033,
+      "deal": 159,
+      "balance": 11364.57,
+      "net": -0.03
+    },
+    {
+      "epoch": 1735916100,
+      "deal": 160,
+      "balance": 11363.58,
+      "net": -0.99
+    },
+    {
+      "epoch": 1735937700,
+      "deal": 161,
+      "balance": 11522.16,
+      "net": 158.58
+    },
+    {
+      "epoch": 1736175000,
+      "deal": 162,
+      "balance": 11521.28,
+      "net": -0.88
+    },
+    {
+      "epoch": 1736190091,
+      "deal": 163,
+      "balance": 11582.27,
+      "net": 60.99
+    },
+    {
+      "epoch": 1737041700,
+      "deal": 164,
+      "balance": 11581.28,
+      "net": -0.99
+    },
+    {
+      "epoch": 1737060900,
+      "deal": 165,
+      "balance": 11520.84,
+      "net": -60.44
+    },
+    {
+      "epoch": 1739202000,
+      "deal": 166,
+      "balance": 11520.07,
+      "net": -0.77
+    },
+    {
+      "epoch": 1739206169,
+      "deal": 167,
+      "balance": 11397.63,
+      "net": -122.44
+    },
+    {
+      "epoch": 1741362300,
+      "deal": 168,
+      "balance": 11396.86,
+      "net": -0.77
+    },
+    {
+      "epoch": 1741380900,
+      "deal": 169,
+      "balance": 11480.02,
+      "net": 83.16
+    },
+    {
+      "epoch": 1741615800,
+      "deal": 170,
+      "balance": 11479.08,
+      "net": -0.94
+    },
+    {
+      "epoch": 1741625196,
+      "deal": 171,
+      "balance": 11364.49,
+      "net": -114.59
+    },
+    {
+      "epoch": 1743775500,
+      "deal": 172,
+      "balance": 11364.21,
+      "net": -0.28
+    },
+    {
+      "epoch": 1743796500,
+      "deal": 173,
+      "balance": 11466.19,
+      "net": 101.98
+    },
+    {
+      "epoch": 1746200100,
+      "deal": 174,
+      "balance": 11465.8,
+      "net": -0.39
+    },
+    {
+      "epoch": 1746215700,
+      "deal": 175,
+      "balance": 11528.57,
+      "net": 62.77
+    },
+    {
+      "epoch": 1747318200,
+      "deal": 176,
+      "balance": 11527.85,
+      "net": -0.72
+    },
+    {
+      "epoch": 1747327229,
+      "deal": 177,
+      "balance": 11837.02,
+      "net": 309.17
+    },
+    {
+      "epoch": 1747921800,
+      "deal": 178,
+      "balance": 11836.41,
+      "net": -0.61
+    },
+    {
+      "epoch": 1747923999,
+      "deal": 179,
+      "balance": 11899.6,
+      "net": 63.19
+    },
+    {
+      "epoch": 1750168200,
+      "deal": 180,
+      "balance": 11898.77,
+      "net": -0.83
+    },
+    {
+      "epoch": 1750171050,
+      "deal": 181,
+      "balance": 12201.83,
+      "net": 303.06
+    },
+    {
+      "epoch": 1751896500,
+      "deal": 182,
+      "balance": 12201.11,
+      "net": -0.72
+    },
+    {
+      "epoch": 1751916877,
+      "deal": 183,
+      "balance": 12516.86,
+      "net": 315.75
+    },
+    {
+      "epoch": 1752501900,
+      "deal": 184,
+      "balance": 12515.7,
+      "net": -1.16
+    },
+    {
+      "epoch": 1752503402,
+      "deal": 185,
+      "balance": 12515.4,
+      "net": -0.3
+    },
+    {
+      "epoch": 1753192200,
+      "deal": 186,
+      "balance": 12514.3,
+      "net": -1.1
+    },
+    {
+      "epoch": 1753192771,
+      "deal": 187,
+      "balance": 12386.32,
+      "net": -127.98
+    },
+    {
+      "epoch": 1754575200,
+      "deal": 188,
+      "balance": 12385.27,
+      "net": -1.05
+    },
+    {
+      "epoch": 1754575950,
+      "deal": 189,
+      "balance": 12385.1,
+      "net": -0.17
+    },
+    {
+      "epoch": 1754662200,
+      "deal": 190,
+      "balance": 12384.33,
+      "net": -0.77
+    },
+    {
+      "epoch": 1754670337,
+      "deal": 191,
+      "balance": 12258.79,
+      "net": -125.54
+    },
+    {
+      "epoch": 1758033900,
+      "deal": 192,
+      "balance": 12258.07,
+      "net": -0.72
+    },
+    {
+      "epoch": 1758039784,
+      "deal": 193,
+      "balance": 12258.07,
+      "net": 0.0
+    },
+    {
+      "epoch": 1758290100,
+      "deal": 194,
+      "balance": 12257.08,
+      "net": -0.99
+    },
+    {
+      "epoch": 1758303999,
+      "deal": 195,
+      "balance": 12568.95,
+      "net": 311.87
+    },
+    {
+      "epoch": 1759332000,
+      "deal": 196,
+      "balance": 12568.45,
+      "net": -0.5
+    },
+    {
+      "epoch": 1759348500,
+      "deal": 197,
+      "balance": 12521.15,
+      "net": -47.3
+    },
+    {
+      "epoch": 1763656200,
+      "deal": 198,
+      "balance": 12520.87,
+      "net": -0.28
+    },
+    {
+      "epoch": 1763672100,
+      "deal": 199,
+      "balance": 12466.09,
+      "net": -54.78
+    },
+    {
+      "epoch": 1763736900,
+      "deal": 200,
+      "balance": 12465.54,
+      "net": -0.55
+    },
+    {
+      "epoch": 1763739619,
+      "deal": 201,
+      "balance": 12328.39,
+      "net": -137.15
+    },
+    {
+      "epoch": 1765898400,
+      "deal": 202,
+      "balance": 12327.95,
+      "net": -0.44
+    },
+    {
+      "epoch": 1765904798,
+      "deal": 203,
+      "balance": 12392.91,
+      "net": 64.96
+    },
+    {
+      "epoch": 1767624600,
+      "deal": 204,
+      "balance": 12392.52,
+      "net": -0.39
+    },
+    {
+      "epoch": 1767646500,
+      "deal": 205,
+      "balance": 12433.13,
+      "net": 40.61
+    },
+    {
+      "epoch": 1774360800,
+      "deal": 206,
+      "balance": 12432.91,
+      "net": -0.22
+    },
+    {
+      "epoch": 1774371916,
+      "deal": 207,
+      "balance": 12498.66,
+      "net": 65.75
+    },
+    {
+      "epoch": 1774446600,
+      "deal": 208,
+      "balance": 12498.38,
+      "net": -0.28
+    },
+    {
+      "epoch": 1774450257,
+      "deal": 209,
+      "balance": 12367.52,
+      "net": -130.86
+    },
+    {
+      "epoch": 1777385100,
+      "deal": 210,
+      "balance": 12367.24,
+      "net": -0.28
+    },
+    {
+      "epoch": 1777395158,
+      "deal": 211,
+      "balance": 12229.63,
+      "net": -137.61
+    },
+    {
+      "epoch": 1778167800,
+      "deal": 212,
+      "balance": 12229.24,
+      "net": -0.39
+    },
+    {
+      "epoch": 1778174827,
+      "deal": 213,
+      "balance": 12568.38,
+      "net": 339.14
+    },
+    {
+      "epoch": 1779112500,
+      "deal": 214,
+      "balance": 12567.99,
+      "net": -0.39
+    },
+    {
+      "epoch": 1779113153,
+      "deal": 215,
+      "balance": 12421.46,
+      "net": -146.53
+    },
+    {
+      "epoch": 1779286800,
+      "deal": 216,
+      "balance": 12421.02,
+      "net": -0.44
+    },
+    {
+      "epoch": 1779290139,
+      "deal": 217,
+      "balance": 12753.92,
+      "net": 332.9
+    },
+    {
+      "epoch": 1779977400,
+      "deal": 218,
+      "balance": 12753.59,
+      "net": -0.33
+    },
+    {
+      "epoch": 1779985103,
+      "deal": 219,
+      "balance": 13085.75,
+      "net": 332.16
+    },
+    {
+      "epoch": 1780581300,
+      "deal": 220,
+      "balance": 13085.31,
+      "net": -0.44
+    },
+    {
+      "epoch": 1780602900,
+      "deal": 221,
+      "balance": 13251.47,
+      "net": 166.16
+    },
+    {
+      "epoch": 1780927200,
+      "deal": 222,
+      "balance": 13251.08,
+      "net": -0.39
+    },
+    {
+      "epoch": 1780948500,
+      "deal": 223,
+      "balance": 13241.78,
+      "net": -9.3
+    },
+    {
+      "epoch": 1782139800,
+      "deal": 224,
+      "balance": 13241.39,
+      "net": -0.39
+    },
+    {
+      "epoch": 1782142752,
+      "deal": 225,
+      "balance": 13105.69,
+      "net": -135.7
+    },
+    {
+      "epoch": 1782401100,
+      "deal": 226,
+      "balance": 13105.41,
+      "net": -0.28
+    },
+    {
+      "epoch": 1782417300,
+      "deal": 227,
+      "balance": 13045.52,
+      "net": -59.89
+    },
+    {
+      "epoch": 1783519500,
+      "deal": 228,
+      "balance": 13045.02,
+      "net": -0.5
+    },
+    {
+      "epoch": 1783524295,
+      "deal": 229,
+      "balance": 13394.21,
+      "net": 349.19
+    },
+    {
+      "epoch": 1784038800,
+      "deal": 230,
+      "balance": 13393.77,
+      "net": -0.44
+    },
+    {
+      "epoch": 1784039655,
+      "deal": 231,
+      "balance": 13259.74,
+      "net": -134.03
+    },
+    {
+      "epoch": 1785333300,
+      "deal": 232,
+      "balance": 13258.97,
+      "net": -0.77
+    },
+    {
+      "epoch": 1785334730,
+      "deal": 233,
+      "balance": 13258.34,
+      "net": -0.63
+    },
+    {
+      "epoch": 1785938700,
+      "deal": 234,
+      "balance": 13257.95,
+      "net": -0.39
+    },
+    {
+      "epoch": 1785942204,
+      "deal": 235,
+      "balance": 13594.68,
+      "net": 336.73
+    },
+    {
+      "epoch": 1786372200,
+      "deal": 236,
+      "balance": 13594.18,
+      "net": -0.5
+    },
+    {
+      "epoch": 1786389867,
+      "deal": 237,
+      "balance": 13973.46,
+      "net": 379.28
+    },
+    {
+      "epoch": 1789654200,
+      "deal": 238,
+      "balance": 13973.07,
+      "net": -0.39
+    },
+    {
+      "epoch": 1789656968,
+      "deal": 239,
+      "balance": 13816.59,
+      "net": -156.48
+    }
+  ],
+  "seconds": 333.04725193977356,
+  "binary_sha256": "28612ce35f8ce41b494a4b1a140da020cc68e406ce3e608b396ae191fde021b5",
+  "report_sha256": "2e20889570b3c1c5eec298375bb7a0ac370b57948713ac02f6a27a542b1fd719",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

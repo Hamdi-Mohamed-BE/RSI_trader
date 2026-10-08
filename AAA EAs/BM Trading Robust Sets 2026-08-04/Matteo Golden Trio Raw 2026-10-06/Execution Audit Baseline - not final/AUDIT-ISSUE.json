@@ -1,0 +1,7 @@
+{
+  "superseded_not_final": true,
+  "parameter_optimisation": false,
+  "issue": "50 VWAP entries had structural TP at/below executable buy Ask. Bid-based broker-validity check omitted frozen protocol requirement to reject quote beyond target.",
+  "fix": "Check positive reward against executable entry quote in addition to broker Bid/Ask stop constraints. Keep all parameters/indicator/entry rules unchanged.",
+  "required_regression": "Rerun all three native tests. Vault and Overnight must match these baseline trade ledgers exactly; VWAP will be corrected, not selected by performance."
+}

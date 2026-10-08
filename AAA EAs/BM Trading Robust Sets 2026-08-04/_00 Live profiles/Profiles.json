@@ -1,0 +1,68 @@
+{
+  "version": "2026-10-08",
+  "profiles": [
+    {
+      "slug": "ftmo",
+      "name": "FTMO guarded - Current 14",
+      "file": "FTMO guarded - Current 14.bat",
+      "default_mode": "FIXED_USD",
+      "default_percent": 0.5,
+      "default_usd": 50,
+      "default_news_percent": 0,
+      "di_parameters": [
+        "NasdaqDIFilter",
+        "UsdJpyDIFilter"
+      ],
+      "eas": 14,
+      "warning": "FTMO USD 10K Swing hedging only. Requested risk is capped at USD50 per trade. Existing daily/exposure/phase guards stay unchanged. No news or hourly EAs."
+    },
+    {
+      "slug": "current14-orb05",
+      "name": "Current 14 + ORB 0.5R",
+      "file": "Current 14 + ORB 0.5R.bat",
+      "default_mode": "PERCENT",
+      "default_percent": 0.5,
+      "default_usd": 50,
+      "default_news_percent": 0,
+      "di_parameters": [
+        "NasdaqDIFilter",
+        "UsdJpyDIFilter"
+      ],
+      "eas": 15,
+      "warning": "15 unique systems. Three ORBs at 0.5R; no shared daily stop or FTMO guard. Risk applies per trade/per 3-Way module."
+    },
+    {
+      "slug": "orbs-only",
+      "name": "ORB-only - 50pct+ PF1.15+",
+      "file": "ORB-only - 50pct+ PF1.15+.bat",
+      "default_mode": "PERCENT",
+      "default_percent": 0.5,
+      "default_usd": 50,
+      "default_news_percent": 0,
+      "di_parameters": [],
+      "eas": 5,
+      "warning": "Five research-selected ORBs, not an all-0.5R profile. Three 0.5R, US100 NY 4R, Selective V3 2R. No shared loss guard; small fitted samples."
+    },
+    {
+      "slug": "full-eas",
+      "name": "Full EA portfolio - Recommended Adaptive",
+      "file": "Full EA portfolio - Recommended Adaptive.bat",
+      "default_mode": "PERCENT",
+      "default_percent": 0.25,
+      "default_usd": 25,
+      "default_news_percent": 0.1,
+      "di_parameters": [
+        "NasdaqDIFilter",
+        "UsdJpyDIFilter"
+      ],
+      "eas": 37,
+      "warning": "37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq uses 0.25x selection. Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe."
+    }
+  ],
+  "live_account_access": false,
+  "policy": "Creating BAT files does not install or start them. No backtest inherits a changed risk/DI choice.",
+  "packages": {
+    "ftmo": "FTMO14-LIVE-PROMPTS-20261008",
+    "orbs-only": "ORB-ONLY-LIVE-PROMPTS-20261008"
+  }
+}

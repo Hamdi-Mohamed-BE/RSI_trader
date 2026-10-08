@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "checks": 6971,
+  "unique_searched_configurations": 52,
+  "independent_feature_checks": 316,
+  "feature_verification_sha256": "ef392ec4830c43958c81496e76823d2c9318b618e0a3f9d89359ce4418e37fb1",
+  "dsr_tested_configurations": 53,
+  "raw_parity": {
+    "passed": true,
+    "trades": 21,
+    "net": 1279.88,
+    "fields": [
+      "open_epoch",
+      "close_epoch",
+      "side",
+      "volume",
+      "open_price",
+      "close_price",
+      "net_profit",
+      "initial_sl",
+      "initial_tp"
+    ]
+  },
+  "frozen_inputs_unchanged": true,
+  "development_validation_gates": {
+    "raw_3y_5y_gates_pass": false,
+    "selected_development_positive": false,
+    "selected_2024_validation_positive": false,
+    "selected_2024_validation_pf_above_1": false,
+    "majority_neighbours_profitable": false,
+    "delay_500ms_pf_above_1": false,
+    "delay_1000ms_pf_above_1": false
+  },
+  "selection_parameters": {
+    "allow_longs": 1,
+    "sl_mult": 4,
+    "impulse_mult": 1,
+    "body_mult": 0.25,
+    "body_fraction": 0.75,
+    "signal_mode": 1,
+    "window_minutes": 20,
+    "hold_minutes": 60,
+    "target_fraction": 1
+  },
+  "normal_mt5_untouched": true,
+  "live_changes": false,
+  "research_only": true,
+  "limitations": [
+    "Current-vintage official calendar, no point-in-time schedule archive.",
+    "Past 2025/2026 results informed asset/model choice: retrospective holdout.",
+    "Generated ticks before 2026; many zero-spread event quotes in 2026.",
+    "Minute equity sampled; native full-tick floating DD is authoritative.",
+    "Monte Carlo and extra-spread subtraction are not a trade reexecution or prop challenge probability."
+  ]
+}

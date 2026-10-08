@@ -8,7 +8,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.concurrency import run_in_threadpool
 from pydantic import ValidationError as PydanticValidationError
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
@@ -34,6 +34,7 @@ from .catalog import (
     package_buy_url,
 )
 from .ea_review import PHASE_LABELS, review_data, phase_links
+from .portfolios import STATUSES as PORTFOLIO_STATUSES, PERIODS as PORTFOLIO_PERIODS, portfolio_catalog, portfolio_by_slug, portfolio_history, portfolio_scenario
 from .evidence_cache import (
     DEFAULT_PERIOD,
     PERIOD_OPTIONS,
@@ -548,6 +549,81 @@ async def product_detail(
         "streak_stats": (cached or {}).get("stats", {}),
     }
     return templates.TemplateResponse(request=request, name="detail.html", context=context)
+
+
+@app.get("/portfolios", response_class=HTMLResponse)
+async def portfolios_page(request: Request, status: str = Query(default="all", pattern=r"^(all|active|disabled)$"),
+                          period: str = Query(default="1y", pattern=r"^(3m|6m|1y|3y|5y)$")) -> HTMLResponse:
+    publication = portfolio_catalog()
+    return templates.TemplateResponse(request=request, name="portfolios.html", context=_base_context(request, "portfolios") | {
+        "publication": publication, "status_labels": PORTFOLIO_STATUSES, "selected_status": status,
+        "period_labels": PORTFOLIO_PERIODS, "selected_period": period,
+        "portfolios": [p for p in publication['portfolios'] if status == 'all' or p['status'] == status],
+    })
+
+
+def portfolio_risk_options(risk_mode: str = Query(default='recorded',pattern=r'^(recorded|fixed|percent)$'),
+        risk_value: float = 50., initial_balance: float = 10000., news_risk_percent: float = .10,
+        daily_limit_mode: str = Query(default='off',pattern=r'^(off|fixed|percent)$'), daily_limit_value: float = 0.) -> dict:
+    return dict(risk_mode=risk_mode,risk_value=risk_value,initial_balance=initial_balance,
+                news_risk_percent=news_risk_percent,daily_limit_mode=daily_limit_mode,daily_limit_value=daily_limit_value)
+
+
+@app.get("/portfolios/{slug}", response_class=HTMLResponse)
+async def portfolio_detail(request: Request, slug: str, period: str | None = None,
+                           risk_options: dict = Depends(portfolio_risk_options)) -> HTMLResponse:
+    profile = portfolio_by_slug(slug)
+    if profile is None:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    try:
+        history = await run_in_threadpool(portfolio_scenario, profile, period or '1y', **risk_options)
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    if history is None:
+        raise HTTPException(status_code=404, detail="This portfolio has no evidence for that period; another portfolio's result is not substituted.")
+    return templates.TemplateResponse(request=request, name="portfolio_detail.html", context=_base_context(request, "portfolios") | {
+        "publication": portfolio_catalog(), "profile": profile, "history": history,
+        "period_labels": PORTFOLIO_PERIODS, "selected_period": history['id'],
+        "risk_options": risk_options,
+    })
+
+
+@app.get("/portfolios/{slug}/history", response_class=HTMLResponse)
+async def portfolio_history_panel(request: Request, slug: str,
+        period: str = Query(default="1y", pattern=r"^(3m|6m|1y|3y|5y)$"), compact: bool = False,
+        risk_options: dict = Depends(portfolio_risk_options)) -> HTMLResponse:
+    profile = portfolio_by_slug(slug)
+    if profile is None:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    try:
+        history = await run_in_threadpool(portfolio_scenario, profile, period, **risk_options)
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    if history is None:
+        raise HTTPException(status_code=404, detail="Period not published")
+    return templates.TemplateResponse(request=request, name="partials/portfolio_history.html", context={
+        "profile": profile, "history": history, "compact": compact,
+    })
+
+
+@app.get("/api/portfolios")
+async def api_portfolios() -> JSONResponse:
+    return JSONResponse(portfolio_catalog())
+
+
+@app.get("/api/portfolios/{slug}")
+async def api_portfolio_details(slug: str, period: str | None = Query(default=None, pattern=r"^(3m|6m|1y|3y|5y)$"),
+                               risk_options: dict = Depends(portfolio_risk_options)) -> JSONResponse:
+    profile = portfolio_by_slug(slug)
+    if profile is None:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    try:
+        history = await run_in_threadpool(portfolio_scenario,profile,period or '1y',**risk_options)
+    except ValueError as error:
+        raise HTTPException(status_code=422,detail=str(error)) from error
+    if period or risk_options['risk_mode']!='recorded':
+        return JSONResponse(history)
+    return JSONResponse(profile)
 
 
 @app.get("/portfolio", response_class=HTMLResponse)

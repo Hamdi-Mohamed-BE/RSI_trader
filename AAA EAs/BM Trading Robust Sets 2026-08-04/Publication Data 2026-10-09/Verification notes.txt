@@ -1,0 +1,19 @@
+Publication checks - 9 October 2026
+
+Focused portfolio, custom-risk, named-launcher, EA-review and hourly-profile
+tests: 103 passed. Browser QA: all four portfolios, all five periods, dynamic
+fixed/percentage scenarios, daily closed DD in percent and USD, responsive
+desktop/mobile layout and the unchanged 37-EA catalogue passed.
+
+The wider EA-store suite was also run: 399 passed, 30 failed, 1 skipped.
+This is NOT a claim that the entire repository test suite passes. The failed
+groups include historical News Pulse source/cache compatibility, previous
+catalogue/exit/launcher expectations. An isolated DI helper fixture was updated
+to initialize the new optional named-profile switch and passed on the rerun.
+Native historical receipts are not rewritten to make these checks pass, and
+this publication does not silently revalidate earlier news evidence.
+
+Six oversized raw CSVs have lossless gzip copies with round-trip SHA-256 checks.
+No source data was truncated or removed locally. Private research run configs,
+tester inputs and journals are excluded. The existing live MT5 account and its
+attached EAs were not changed by these checks or by the Git publication.

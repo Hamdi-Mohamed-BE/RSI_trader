@@ -1,0 +1,62 @@
+{
+  "exact": true,
+  "original_trades": 707,
+  "research_trades": 707,
+  "fields_compared": [
+    "open_time",
+    "close_time",
+    "side",
+    "volume",
+    "open_price",
+    "close_price",
+    "commission",
+    "swap",
+    "net_profit"
+  ],
+  "normalized_side_labels": {
+    "Long": "buy",
+    "Short": "sell"
+  },
+  "mismatches": [],
+  "metrics": {
+    "trades": 707,
+    "net": 4723.409999999999,
+    "return_pct": 47.23409999999999,
+    "pf": 1.10555393912415,
+    "win_rate_pct": 49.08062234794908,
+    "equity_dd": 24.46244292578113,
+    "balance_dd": 23.294777020122787,
+    "mt5_sharpe": 0.9282349177883008,
+    "daily_closed_balance_sharpe": 0.6617582319318492,
+    "max_win_streak": 7,
+    "max_loss_streak": 8,
+    "average_trade": 6.6809193776520495,
+    "yearly": [
+      {
+        "year": 2020,
+        "trades": 190,
+        "net": 1128.1799999999996,
+        "pf": 1.1059611481425475
+      },
+      {
+        "year": 2021,
+        "trades": 160,
+        "net": 1921.35,
+        "pf": 1.2318723570642416
+      },
+      {
+        "year": 2022,
+        "trades": 200,
+        "net": 1856.5400000000002,
+        "pf": 1.1250682083666235
+      },
+      {
+        "year": 2023,
+        "trades": 157,
+        "net": -182.65999999999997,
+        "pf": 0.9833509704034467
+      }
+    ]
+  },
+  "note": "Native tester chart is M1 for all research passes. MT5 Sharpe can differ from an M5 chart despite identical trades; independently computed daily metrics govern selection."
+}

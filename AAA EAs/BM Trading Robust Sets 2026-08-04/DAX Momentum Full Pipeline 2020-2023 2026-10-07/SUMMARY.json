@@ -1,0 +1,323 @@
+{
+  "study": {
+    "study": "DAX momentum pipeline \u00e2\u20ac\u201d requested 2020\u00e2\u20ac\u201c2023 development",
+    "symbol": "DE30",
+    "deposit": 10000,
+    "currency": "USD",
+    "risk_percent": 1,
+    "development": [
+      "2020-01-01",
+      "2023-01-01"
+    ],
+    "validation": [
+      "2023-01-01",
+      "2024-01-01"
+    ],
+    "full_in_sample": [
+      "2020-01-01",
+      "2024-01-01"
+    ],
+    "out_of_sample": [
+      "2024-01-01",
+      "2026-10-08"
+    ],
+    "end_exclusive": "2026-10-08",
+    "complete_day_end_exclusive": "2026-10-07",
+    "client_study_date": "2026-10-07",
+    "client_timezone": "Africa/Lagos",
+    "tester_timezone": "UTC",
+    "current_day_provisional": true,
+    "holdout_label": "retrospective temporal holdout; baseline later history previously viewed",
+    "date_override": "User explicitly requests 2020\u00e2\u20ac\u201c2023 for development and all dates from 2024 through today for validation. This study overrides, but does not edit, the central rolling last-two-year policy.",
+    "search_model": 1,
+    "final_model": 4,
+    "execution_delay_ms": 150,
+    "bootstrap_paths": 10000,
+    "bootstrap_block": 5,
+    "seed": 20261007,
+    "live_changes_authorized": false,
+    "push_authorized": false
+  },
+  "last_available_oos_broker_quote_utc": "2026-10-06 23:59:52",
+  "chosen_parameters": {
+    "InpSignalTimeframe": 5.0,
+    "InpSignalHourNY": 9.0,
+    "InpSignalMinuteNY": 30.0,
+    "InpEMAPeriod": 12.0,
+    "InpAllowLong": 1,
+    "InpAllowShort": 1,
+    "InpRequireEMASlope": 0,
+    "InpMinimumBodyATR": 0,
+    "InpMaximumBodyATR": 0.0,
+    "InpMinimumBodyFraction": 0,
+    "InpMinimumEMADistanceATR": 0,
+    "InpMaximumEMADistanceATR": 0,
+    "InpRelativeVolumePeriod": 0,
+    "InpMinimumRelativeVolume": 0,
+    "InpRequireDIAgreement": 1,
+    "InpDIPeriod": 14.0,
+    "InpATRPeriod": 14.0,
+    "InpStopMode": 2.0,
+    "InpInitialStopATR": 4.0,
+    "InpSignalStopBufferATR": 0.1,
+    "InpMaximumStopATR": 0.0,
+    "InpUseFixedTarget": 1,
+    "InpRewardRisk": 3,
+    "InpUseAdaptiveRR": 0,
+    "InpAdaptiveStrongBodyATR": 1.0,
+    "InpAdaptiveStrongRR": 3.0,
+    "InpInitialStopPercent": 0.6,
+    "InpUseATRTrailing": 1,
+    "InpTrailingATR": 4,
+    "InpTrailStartR": 1,
+    "InpUseBreakEven": 0,
+    "InpBreakEvenTriggerR": 1.0,
+    "InpBreakEvenLockR": 0.0,
+    "InpMaximumHoldingMinutes": 0.0,
+    "InpCloseAtSessionEnd": 0,
+    "InpCloseHourNY": 15.0,
+    "InpCloseMinuteNY": 55.0,
+    "InpUseMATrailing": 0,
+    "InpTrailMAPeriod": 200.0,
+    "InpTrailMAMethod": 1,
+    "InpTrailMAStartR": 0.5,
+    "InpAutoServerUtcOffsetLive": 1,
+    "InpServerUtcOffsetHours": 0.0,
+    "InpEnableTrading": 1,
+    "InpRiskPercent": 1,
+    "InpAdaptivePortfolioControls": 0,
+    "InpMaximumSpreadATR": 0.0,
+    "InpMagic": 862020.0,
+    "InpMaximumDeviationPoints": 50.0,
+    "InpUseDynamicTrailingSL": 1,
+    "InpDynamicTriggerFraction": 0.5,
+    "InpDynamicLockFraction": 0.2,
+    "InpResearchSession": 0.0,
+    "InpResearchBrokerUtcOffsetMinutes": 0.0,
+    "ResearchAnchor": 7,
+    "ResearchADXMinimum": 15,
+    "ResearchADXMaximum": 0,
+    "ResearchRequireBodyDirection": 0,
+    "ResearchSkipWeekday": 3,
+    "ResearchBerlinClose": 0
+  },
+  "unique_configurations": 208,
+  "native_search_passes": 243,
+  "internal_validation_pass": true,
+  "candidate_oos": {
+    "trades": 305,
+    "net": 3642.279999999999,
+    "return_pct": 36.42279999999999,
+    "pf": 1.2320454167545318,
+    "win_rate_pct": 54.75409836065573,
+    "equity_dd": 13.57374454418464,
+    "balance_dd": 13.01807361956877,
+    "mt5_sharpe": 1.9184047183559136,
+    "daily_closed_balance_sharpe": 1.022227813545197,
+    "max_win_streak": 7,
+    "max_loss_streak": 6,
+    "average_trade": 11.941901639344259,
+    "yearly": [
+      {
+        "year": 2024,
+        "trades": 108,
+        "net": 1171.3899999999999,
+        "pf": 1.225717875297228
+      },
+      {
+        "year": 2025,
+        "trades": 108,
+        "net": -65.22000000000008,
+        "pf": 0.988896228599447
+      },
+      {
+        "year": 2026,
+        "trades": 89,
+        "net": 2536.11,
+        "pf": 1.5473882554051168
+      }
+    ]
+  },
+  "baseline_oos": {
+    "trades": 472,
+    "net": 3148.880000000001,
+    "return_pct": 31.488800000000012,
+    "pf": 1.112301774820833,
+    "win_rate_pct": 49.78813559322034,
+    "equity_dd": 13.388125670119797,
+    "balance_dd": 12.882305968818688,
+    "mt5_sharpe": 0.9417436500133528,
+    "daily_closed_balance_sharpe": 0.6496780738641105,
+    "max_win_streak": 6,
+    "max_loss_streak": 7,
+    "average_trade": 6.671355932203392,
+    "yearly": [
+      {
+        "year": 2024,
+        "trades": 166,
+        "net": -319.3000000000001,
+        "pf": 0.9595122192452002
+      },
+      {
+        "year": 2025,
+        "trades": 169,
+        "net": 4453.9,
+        "pf": 1.4617890528446182
+      },
+      {
+        "year": 2026,
+        "trades": 137,
+        "net": -985.7199999999999,
+        "pf": 0.9061955189451326
+      }
+    ]
+  },
+  "candidate_audit": {
+    "metrics": {
+      "trades": 305,
+      "net": 3642.279999999999,
+      "return_pct": 36.42279999999999,
+      "pf": 1.2320454167545318,
+      "win_rate_pct": 54.75409836065573,
+      "equity_dd": 13.57374454418464,
+      "balance_dd": 13.01807361956877,
+      "mt5_sharpe": 1.9184047183559136,
+      "daily_closed_balance_sharpe": 1.022227813545197,
+      "max_win_streak": 7,
+      "max_loss_streak": 6,
+      "average_trade": 11.941901639344259,
+      "yearly": [
+        {
+          "year": 2024,
+          "trades": 108,
+          "net": 1171.3899999999999,
+          "pf": 1.225717875297228
+        },
+        {
+          "year": 2025,
+          "trades": 108,
+          "net": -65.22000000000008,
+          "pf": 0.988896228599447
+        },
+        {
+          "year": 2026,
+          "trades": 89,
+          "net": 2536.11,
+          "pf": 1.5473882554051168
+        }
+      ]
+    },
+    "wilson95_pct": [
+      49.14356102953149,
+      60.24637000846321
+    ],
+    "monte_carlo": {
+      "paths": 10000,
+      "block": 5,
+      "seed": 20261009,
+      "return_p05_p50_p95": [
+        0.9264709951800292,
+        36.354321609142815,
+        83.93746398033802
+      ],
+      "pf_p05_p50_p95": [
+        1.032894676948029,
+        1.233434017066214,
+        1.471082734172144
+      ],
+      "max_dd_p05_p50_p95": [
+        6.794358940177194,
+        11.091215121691844,
+        19.952004674191734
+      ],
+      "probability_profit_pct": 95.5,
+      "daily_5pct_breach_proxy_pct": 0.0,
+      "initial_balance_10pct_breach_proxy_pct": 11.64,
+      "scope": "Closed-balance daily returns / trade cash separately resampled in circular five-observation blocks. Monte Carlo omits floating/intraday extrema and does not resize/reexecute synthetic trades. Breaches are closed-P&L proxies, not FTMO challenge probabilities."
+    },
+    "sharpe": {
+      "annualized_sharpe": 1.044032619765136,
+      "probabilistic_sharpe_pct": 96.3418525311393,
+      "deflated_sharpe_pct": 16.19421985936719,
+      "multiple_test_benchmark_sharpe": 1.6188389974952915,
+      "daily_skewness": 1.2463563876810808,
+      "daily_kurtosis": 9.873391911942988
+    },
+    "recent_half_pf": 1.426706489132151,
+    "thirds": [
+      {
+        "part": 1,
+        "start": "2024-01-03T09:59:32",
+        "end": "2024-11-28T10:34:34",
+        "trades": 102,
+        "net_profit": 951.2399999999999,
+        "profit_factor": 1.196182521268368,
+        "win_rate_pct": 55.88235294117647
+      },
+      {
+        "part": 2,
+        "start": "2024-11-29T18:55:30",
+        "end": "2025-11-05T20:26:06",
+        "trades": 101,
+        "net_profit": 95.9199999999999,
+        "profit_factor": 1.0173337911343225,
+        "win_rate_pct": 50.495049504950494
+      },
+      {
+        "part": 3,
+        "start": "2025-11-11T23:12:03",
+        "end": "2026-10-06T23:59:52",
+        "trades": 102,
+        "net_profit": 2595.12,
+        "profit_factor": 1.4883589639364994,
+        "win_rate_pct": 57.84313725490197
+      }
+    ],
+    "cost_stress": {
+      "status": "unavailable_zero_spread_quotes",
+      "observations": 89,
+      "median_extra_usd_per_lot": 0,
+      "scope": "All sampled 2026 entry quotes have identical bid/ask. Charging another zero spread is not a meaningful stress test. No positive broker cost was invented; the mandatory extra-cost gate fails. Results may be optimistic if this feed does not represent executable spreads."
+    },
+    "native_dd_pct": 13.57374454418464,
+    "sampled_minute_dd_pct": 13.52421750115581,
+    "daily_equity_expected_shortfall_95_pct": 1.1668598822272642,
+    "daily_closed_balance_expected_shortfall_95_pct": 1.1662752614749952,
+    "gates": {
+      "minimum_30_trades": true,
+      "positive_return": true,
+      "pf_above_1": true,
+      "bootstrap_return_p05_positive": true,
+      "bootstrap_pf_p05_above_1": true,
+      "deflated_sharpe_95pct": false,
+      "recent_half_pf_above_1": true,
+      "two_of_three_chronological_parts_positive": true,
+      "total_breach_proxy_below_5pct": false,
+      "measured_cost_stress_pf_above_1": false,
+      "native_floating_path_present": true
+    },
+    "all_gates_pass": false,
+    "verdict": "WATCH_ONLY",
+    "live_promotion": false,
+    "deflated_sharpe_note": "Uses central pipeline independent-trial approximation with every unique searched configuration; not a correction for all researcher choices or a promise of future Sharpe.",
+    "data_quality": {
+      "history_quality": "27% real ticks",
+      "real_tick_notes": [
+        "CD\t0\t22:38:50.077\tCore 01\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "CS\t0\t22:38:39.230\tTester\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "CS\t0\t22:38:42.764\tTicks\tDE30 : real ticks begin from 2026.01.02 00:00:00",
+        "CS\t0\t22:38:46.792\tTicks\tEURUSD : real ticks begin from 2026.01.01 00:00:00",
+        "KL\t0\t22:38:50.077\tCore 01\tDE30,M1 (Exness-MT5Trial16): generating based on real ticks",
+        "RS\t0\t22:38:50.077\tCore 01\tDE30 : real ticks begin from 2026.01.02 00:00:00"
+      ],
+      "dynamic_helper_rejection_log_lines": 0
+    }
+  },
+  "production_unchanged": true,
+  "failed_gates": [
+    "deflated_sharpe_95pct",
+    "total_breach_proxy_below_5pct",
+    "measured_cost_stress_pf_above_1"
+  ],
+  "decision": "Research only. Fails one or more validation gates; do not call it a validated improvement."
+}

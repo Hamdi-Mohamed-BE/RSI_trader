@@ -1,0 +1,50 @@
+{
+  "study": "News fair-price reversion — raw price-pattern adaptation",
+  "study_date": "2026-10-08",
+  "start": "2025-10-08",
+  "end_exclusive": "2026-10-08",
+  "actual_event_end": "2026-10-02",
+  "symbols": [
+    "EURUSD",
+    "BTCUSD",
+    "XAUUSD",
+    "USTEC"
+  ],
+  "deposit": 10000,
+  "risk_percent": 1,
+  "execution_delay_ms": 150,
+  "event_types": [
+    "CPI",
+    "NFP",
+    "FOMC"
+  ],
+  "variants": [
+    "short_only",
+    "mirrored_both_sides"
+  ],
+  "risk_inputs": {
+    "pre_event_atr_timeframe": "M5",
+    "pre_event_atr_period": 14,
+    "static_stop_atr_multiple": 2
+  },
+  "entries": {
+    "timeframe": "M1",
+    "initial_impulse_atr_multiple": 1,
+    "displacement_body_atr_multiple": 0.5,
+    "displacement_body_range_fraction_min": 0.6,
+    "displacement_close_outer_fraction": 0.25,
+    "pivot": "3-bar local low/high; known only after the right-hand candle closes; enter on subsequent M1 close through pivot",
+    "combine_signals": "Displacement OR confirmed pivot structure break",
+    "entry_window_minutes_after_release": 30
+  },
+  "exit": {
+    "target": "Exact completed M1 bid-close immediately before release, rounded to broker tick size",
+    "max_hold_minutes_from_fill": 60,
+    "max_end_minutes_after_release": 90,
+    "trailing": false
+  },
+  "calendar": "Cached official BLS/Fed receipts, cross-check current official schedules, add October 2 NFP from public USD release-calendar connector",
+  "expectation_filter": "None; not a claim the release was priced in. Archive of per-release market consensus was not retrieved; nowcasts are not market consensus.",
+  "scope": "Raw one-year exploratory test requested by user; not a full pipeline or untouched out-of-sample validation; no optimisation on this year.",
+  "live_changes": false
+}

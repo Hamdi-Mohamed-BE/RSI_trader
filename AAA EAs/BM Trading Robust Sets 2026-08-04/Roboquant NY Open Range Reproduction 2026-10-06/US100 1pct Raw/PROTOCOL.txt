@@ -1,0 +1,21 @@
+Frozen raw test: 6 October 2023 through 5 October 2026 inclusive.
+Native MT5 tester dates FromDate=2023.10.06 ToDate=2026.10.06 (end exclusive).
+USD 10,000 initial capital. Exness USTEC CFD. Planned initial-stop risk = 1% of current equity; entry equity equals balance in this single-position isolated test. Compounding, not $100 fixed risk.
+
+Original source and unchanged showcase preset are retained in the parent folder. The 20 MT5 inputs map one-to-one to that preset, with only risk_mode changed from 1 (fixed cash) to 0 (percent equity). Original risk_pct=1 remains 1. No optimisation, no production installation or website/BAT changes.
+
+Build the range from the first completed 15-minute bar opening at/after 09:30 America/New_York. One bar by default (09:30-09:45). Subsequent completed-bar close above the range high buys; below the range low sells. No extra crossing requirement, no 09:59 snapshot, no time-close after 8 minutes, no ADX/DI, no trailing. One trade attempt per NY date; both directions enabled.
+
+RVOL = signal bar tick volume / mean of previous 20 completed M15 bar tick volumes EXCLUDING signal. Volume history continues overnight and across dates. Minimum RVOL 1.0. ATR14 includes the completed signal bar. ATR as percent of signal close must be in inclusive [0.10,0.60]. Stop is 0.4 ATR14; target is 0.4R = 0.16 ATR14. Both anchored to signal close, not repositioned to fill. Max stop point cap disabled.
+
+Clock semantics intentionally follow source: cutoff 15:00 and flat 15:55 compare to the CLOSED BAR'S OPEN timestamp. On a regular M15 grid, the first bar-open >=15:55 is 16:00, processed after its 16:15 close. This is not a 15:55 tick-timer exit. First tradable breakout bar normally opens 09:45 and closes at 10:00. NY UTC offset follows the actual US DST schedule; Exness server timestamp assumed UTC, matching existing USTEC research convention.
+
+MT5 adaptation uses first available tick following M15 bar completion for the callback and native 150ms market execution delay. Bid OHLC signals and broker Bid/Ask fills replace futures prints. Tick volume replaces exchange volume. Native MT5 iATR is used; equivalence to Roboquant SDK smoothing/initialisation is unverified. A native CFD run cannot establish identical MNQ results.
+
+CFD sizing uses OrderCalcProfit for one lot from current executable Bid/Ask to rounded stop, floors to broker lot step, caps at broker maximum, and skips if below minimum. Broker-invalid stops skip, not widen. Costs, gaps and slippage can exceed the planned 1%; this is not a guaranteed maximum loss. Futures use integer contracts, CFD uses fractional broker lots.
+
+MT5 model 4: real ticks when available, generated ticks where missing. Broker spread, native tester commission/swap, 150ms execution delay, leverage 1:2000. The historical real-tick start and quality will be reported, never assumed. Shared tester uses an exclusive lease. Only isolated portable MT5 with an empty chart profile and disabled live experts; live trading terminal is untouched.
+
+Report whole-position NET win rate/PF including entry and exit costs, native tick equity drawdown, closed-balance drawdown and daily weekday closing-balance Sharpe (sqrt(252), zero risk-free rate). Year slices use one continuing account. This is raw in-sample historical research, not out-of-sample validation.
+
+Primary sources: https://roboquant.dev/docs/python-strategies and https://roboquant.dev/docs/runtime-reference (on_bar closed, bar.time open). Original template https://roboquant.dev/dashboard?section=templates&templateId=d1d8993b-1ffd-419e-97bd-0358bf9d5f1a

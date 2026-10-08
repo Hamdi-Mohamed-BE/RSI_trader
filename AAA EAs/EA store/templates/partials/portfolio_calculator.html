@@ -1,0 +1,16 @@
+{% set settings = risk_options|default({'risk_mode':'recorded','risk_value':50,'initial_balance':10000,'news_risk_percent':0.10,'daily_limit_mode':'off','daily_limit_value':0}) %}
+<details class="pf-calculator pf-expand" {% if settings.risk_mode!='recorded' or not compact %}open{% endif %}><summary>Risk &amp; daily-loss calculator · fixed USD / dynamic %</summary>
+  <form method="get" action="{{ profile.url }}" data-risk-form data-default-percent="{{ profile.risk_defaults.percent }}" data-default-fixed="{{ profile.risk_defaults.fixed }}">
+    <input type="hidden" name="period" value="{{ selected_period }}">
+    <div class="pf-calc-fields">
+      <label>Sizing<select name="risk_mode"><option value="recorded" {% if settings.risk_mode=='recorded' %}selected{% endif %}>Recorded reference</option><option value="fixed" {% if settings.risk_mode=='fixed' %}selected{% endif %}>Fixed USD per trade</option><option value="percent" {% if settings.risk_mode=='percent' %}selected{% endif %}>Dynamic % · closed-balance proxy</option></select></label>
+      <label>Risk per trade<input type="number" name="risk_value" min="0.00000001" max="{{ 10 if settings.risk_mode=='percent' else 100000 }}" step="any" value="{{ settings.risk_value }}" {% if settings.risk_mode=='recorded' %}readonly{% endif %} required></label>
+      <label>Starting balance · USD<input type="number" name="initial_balance" min="100" max="10000000" step="any" value="{{ settings.initial_balance }}" {% if profile.slug=='ftmo' or settings.risk_mode=='recorded' %}readonly{% endif %} {% if profile.slug=='ftmo' %}title="Saved FTMO guard is specific to a USD 10,000 account"{% endif %} required></label>
+      <label>Additional daily loss limit<select name="daily_limit_mode"><option value="off" {% if settings.daily_limit_mode=='off' %}selected{% endif %}>Off · preserve profile rules</option><option value="fixed" {% if settings.daily_limit_mode=='fixed' %}selected{% endif %}>Fixed USD</option><option value="percent" {% if settings.daily_limit_mode=='percent' %}selected{% endif %}>% of day-start closed balance</option></select></label>
+      <label>Daily limit value<input type="number" name="daily_limit_value" min="0" max="{{ 100 if settings.daily_limit_mode=='percent' else 100000 }}" step="any" value="{{ settings.daily_limit_value }}" {% if settings.daily_limit_mode=='off' %}readonly{% endif %} required></label>
+      {% if profile.slug=='full-eas' %}<label>Separate news % per order<input type="number" name="news_risk_percent" min="0.00000001" max="10" step="any" value="{{ settings.news_risk_percent }}" {% if settings.risk_mode=='recorded' %}readonly{% endif %} required></label>{% endif %}
+    </div>
+    <button type="submit" class="button-secondary">Calculate scenario</button> <button type="button" data-reset-risk class="button-secondary">Reset reference</button>
+    <p class="pf-small">Percentage sizes each entry from simulated closed balance, not a measured floating-equity path. Limits block new entries only; open trades can exceed them. Calculations do not change BATs or MT5. {% if profile.slug=='ftmo' %}FTMO’s $50 hard ceiling and original guards remain.{% endif %}</p>
+  </form>
+</details>

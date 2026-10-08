@@ -1,0 +1,974 @@
+{
+  "schema": 1,
+  "raw": {
+    "vault": {
+      "mode": 1,
+      "tf": 30,
+      "entry": 0,
+      "offset": 0,
+      "stop": 0,
+      "sl": 75,
+      "rr": 0.5333333333333333,
+      "trail": 0,
+      "arm": 1,
+      "dist": 1,
+      "flat": 1430,
+      "start": 1000,
+      "end": 1430,
+      "direction": 0,
+      "filter": 0,
+      "threshold": 20,
+      "day": 0,
+      "maxday": 3,
+      "hold": 0,
+      "noise": 0.3,
+      "atr": 14,
+      "mean": 15,
+      "adx": 20,
+      "orminutes": 15
+    },
+    "overnight": {
+      "mode": 3,
+      "tf": 15,
+      "entry": 0,
+      "offset": 0,
+      "stop": 1,
+      "sl": 0.3,
+      "rr": 3,
+      "trail": 0,
+      "arm": 1,
+      "dist": 1,
+      "flat": 1430,
+      "start": 845,
+      "end": 1430,
+      "direction": 2,
+      "filter": 9,
+      "threshold": 20,
+      "day": 0,
+      "maxday": 1,
+      "hold": 0,
+      "noise": 0.3,
+      "atr": 14,
+      "mean": 15,
+      "adx": 20,
+      "orminutes": 15
+    }
+  },
+  "stages": [
+    "timeframe",
+    "entry",
+    "stop",
+    "stop_management",
+    "exit",
+    "session",
+    "direction",
+    "filters",
+    "management",
+    "logic"
+  ],
+  "variants": {
+    "vault": {
+      "timeframe": [
+        {
+          "tf": 1
+        },
+        {
+          "tf": 5
+        },
+        {
+          "tf": 15
+        },
+        {
+          "tf": 30
+        },
+        {
+          "tf": 60
+        },
+        {
+          "tf": 240
+        }
+      ],
+      "entry": [
+        {
+          "entry": 0
+        },
+        {
+          "entry": 1
+        },
+        {
+          "entry": 2,
+          "offset": 0.1
+        },
+        {
+          "entry": 2,
+          "offset": 0.3
+        },
+        {
+          "entry": 3,
+          "offset": 0.1
+        },
+        {
+          "entry": 3,
+          "offset": 0.3
+        }
+      ],
+      "stop": [
+        {
+          "stop": 0,
+          "sl": 40
+        },
+        {
+          "stop": 0,
+          "sl": 75
+        },
+        {
+          "stop": 0,
+          "sl": 100
+        },
+        {
+          "stop": 0,
+          "sl": 150
+        },
+        {
+          "stop": 1,
+          "sl": 0.15
+        },
+        {
+          "stop": 1,
+          "sl": 0.3
+        },
+        {
+          "stop": 1,
+          "sl": 0.5
+        },
+        {
+          "stop": 2,
+          "sl": 1
+        },
+        {
+          "stop": 2,
+          "sl": 2
+        },
+        {
+          "stop": 2,
+          "sl": 3
+        },
+        {
+          "stop": 3,
+          "sl": 0.25
+        },
+        {
+          "stop": 3,
+          "sl": 0.5
+        },
+        {
+          "stop": 4,
+          "sl": 1
+        },
+        {
+          "stop": 5,
+          "sl": 1
+        },
+        {
+          "stop": 6,
+          "sl": 1
+        }
+      ],
+      "stop_management": [
+        {
+          "trail": 0
+        },
+        {
+          "trail": 1,
+          "arm": 0.5
+        },
+        {
+          "trail": 1,
+          "arm": 1
+        },
+        {
+          "trail": 1,
+          "arm": 1.5
+        },
+        {
+          "trail": 2,
+          "arm": 1,
+          "dist": 1
+        },
+        {
+          "trail": 2,
+          "arm": 1,
+          "dist": 2
+        },
+        {
+          "trail": 2,
+          "arm": 1,
+          "dist": 3
+        },
+        {
+          "trail": 3,
+          "arm": 1,
+          "dist": 0.1
+        },
+        {
+          "trail": 3,
+          "arm": 1,
+          "dist": 0.25
+        },
+        {
+          "trail": 4,
+          "arm": 1,
+          "dist": 2
+        },
+        {
+          "trail": 5,
+          "arm": 1,
+          "dist": 2
+        },
+        {
+          "trail": 6,
+          "arm": 1,
+          "dist": 2
+        },
+        {
+          "trail": 7,
+          "arm": 1,
+          "dist": 2
+        }
+      ],
+      "exit": [
+        {
+          "rr": 0,
+          "hold": 0
+        },
+        {
+          "rr": 0.5,
+          "hold": 0
+        },
+        {
+          "rr": 0.75,
+          "hold": 0
+        },
+        {
+          "rr": 1,
+          "hold": 0
+        },
+        {
+          "rr": 1.25,
+          "hold": 0
+        },
+        {
+          "rr": 1.5,
+          "hold": 0
+        },
+        {
+          "rr": 2,
+          "hold": 0
+        },
+        {
+          "rr": 2.5,
+          "hold": 0
+        },
+        {
+          "rr": 3,
+          "hold": 0
+        },
+        {
+          "rr": 4,
+          "hold": 0
+        },
+        {
+          "rr": 5,
+          "hold": 0
+        },
+        {
+          "rr": 6,
+          "hold": 0
+        },
+        {
+          "hold": 4
+        },
+        {
+          "hold": 8
+        },
+        {
+          "hold": 16
+        }
+      ],
+      "session": [
+        {
+          "start": 100,
+          "end": 600
+        },
+        {
+          "start": 300,
+          "end": 900
+        },
+        {
+          "start": 700,
+          "end": 1100
+        },
+        {
+          "start": 845,
+          "end": 1200
+        },
+        {
+          "start": 1000,
+          "end": 1430
+        },
+        {
+          "start": 1100,
+          "end": 1430
+        }
+      ],
+      "direction": [
+        {
+          "direction": 0
+        },
+        {
+          "direction": 1
+        },
+        {
+          "direction": 2
+        }
+      ],
+      "filters": [
+        {
+          "filter": 0
+        },
+        {
+          "filter": 2
+        },
+        {
+          "filter": 4
+        },
+        {
+          "filter": 5
+        },
+        {
+          "filter": 6
+        },
+        {
+          "filter": 7
+        },
+        {
+          "filter": 8
+        },
+        {
+          "filter": 9
+        },
+        {
+          "filter": 1,
+          "threshold": 15
+        },
+        {
+          "filter": 1,
+          "threshold": 20
+        },
+        {
+          "filter": 1,
+          "threshold": 25
+        },
+        {
+          "filter": 1,
+          "threshold": 30
+        },
+        {
+          "filter": 1,
+          "threshold": 35
+        },
+        {
+          "filter": 3,
+          "threshold": 15
+        },
+        {
+          "filter": 3,
+          "threshold": 20
+        },
+        {
+          "filter": 3,
+          "threshold": 25
+        },
+        {
+          "filter": 3,
+          "threshold": 30
+        },
+        {
+          "filter": 3,
+          "threshold": 35
+        }
+      ],
+      "management": [
+        {
+          "day": 0
+        },
+        {
+          "day": 1
+        },
+        {
+          "day": 2
+        },
+        {
+          "day": 3
+        },
+        {
+          "maxday": 1
+        },
+        {
+          "maxday": 2
+        },
+        {
+          "maxday": 3
+        },
+        {
+          "flat": 1200
+        },
+        {
+          "flat": 1300
+        },
+        {
+          "flat": 1400
+        },
+        {
+          "flat": 1430
+        },
+        {
+          "flat": 1500
+        },
+        {
+          "flat": 1600
+        }
+      ],
+      "logic": [
+        {
+          "noise": 0.15
+        },
+        {
+          "noise": 0.3
+        },
+        {
+          "noise": 0.45
+        },
+        {
+          "noise": 0.6
+        },
+        {
+          "atr": 7
+        },
+        {
+          "atr": 14
+        },
+        {
+          "atr": 21
+        },
+        {
+          "atr": 28
+        },
+        {
+          "mean": 10
+        },
+        {
+          "mean": 15
+        },
+        {
+          "mean": 20
+        }
+      ]
+    },
+    "overnight": {
+      "timeframe": [
+        {
+          "tf": 1
+        },
+        {
+          "tf": 5
+        },
+        {
+          "tf": 15
+        },
+        {
+          "tf": 30
+        },
+        {
+          "tf": 60
+        }
+      ],
+      "entry": [
+        {
+          "entry": 0
+        },
+        {
+          "entry": 1
+        },
+        {
+          "entry": 2,
+          "offset": 0.1
+        },
+        {
+          "entry": 2,
+          "offset": 0.3
+        },
+        {
+          "entry": 3,
+          "offset": 0.1
+        },
+        {
+          "entry": 3,
+          "offset": 0.3
+        }
+      ],
+      "stop": [
+        {
+          "stop": 0,
+          "sl": 40
+        },
+        {
+          "stop": 0,
+          "sl": 75
+        },
+        {
+          "stop": 0,
+          "sl": 100
+        },
+        {
+          "stop": 0,
+          "sl": 150
+        },
+        {
+          "stop": 1,
+          "sl": 0.15
+        },
+        {
+          "stop": 1,
+          "sl": 0.3
+        },
+        {
+          "stop": 1,
+          "sl": 0.5
+        },
+        {
+          "stop": 2,
+          "sl": 1
+        },
+        {
+          "stop": 2,
+          "sl": 2
+        },
+        {
+          "stop": 2,
+          "sl": 3
+        },
+        {
+          "stop": 3,
+          "sl": 0.25
+        },
+        {
+          "stop": 3,
+          "sl": 0.5
+        },
+        {
+          "stop": 4,
+          "sl": 1
+        },
+        {
+          "stop": 5,
+          "sl": 1
+        },
+        {
+          "stop": 6,
+          "sl": 1
+        }
+      ],
+      "stop_management": [
+        {
+          "trail": 0
+        },
+        {
+          "trail": 1,
+          "arm": 0.5
+        },
+        {
+          "trail": 1,
+          "arm": 1
+        },
+        {
+          "trail": 1,
+          "arm": 1.5
+        },
+        {
+          "trail": 2,
+          "arm": 1,
+          "dist": 1
+        },
+        {
+          "trail": 2,
+          "arm": 1,
+          "dist": 2
+        },
+        {
+          "trail": 2,
+          "arm": 1,
+          "dist": 3
+        },
+        {
+          "trail": 3,
+          "arm": 1,
+          "dist": 0.1
+        },
+        {
+          "trail": 3,
+          "arm": 1,
+          "dist": 0.25
+        },
+        {
+          "trail": 4,
+          "arm": 1,
+          "dist": 2
+        },
+        {
+          "trail": 5,
+          "arm": 1,
+          "dist": 2
+        },
+        {
+          "trail": 6,
+          "arm": 1,
+          "dist": 2
+        },
+        {
+          "trail": 7,
+          "arm": 1,
+          "dist": 2
+        }
+      ],
+      "exit": [
+        {
+          "rr": 0,
+          "hold": 0
+        },
+        {
+          "rr": 0.5,
+          "hold": 0
+        },
+        {
+          "rr": 0.75,
+          "hold": 0
+        },
+        {
+          "rr": 1,
+          "hold": 0
+        },
+        {
+          "rr": 1.25,
+          "hold": 0
+        },
+        {
+          "rr": 1.5,
+          "hold": 0
+        },
+        {
+          "rr": 2,
+          "hold": 0
+        },
+        {
+          "rr": 2.5,
+          "hold": 0
+        },
+        {
+          "rr": 3,
+          "hold": 0
+        },
+        {
+          "rr": 4,
+          "hold": 0
+        },
+        {
+          "rr": 5,
+          "hold": 0
+        },
+        {
+          "rr": 6,
+          "hold": 0
+        },
+        {
+          "hold": 4
+        },
+        {
+          "hold": 8
+        },
+        {
+          "hold": 16
+        }
+      ],
+      "session": [
+        {
+          "start": 845,
+          "end": 1000
+        },
+        {
+          "start": 845,
+          "end": 1200
+        },
+        {
+          "start": 900,
+          "end": 1200
+        },
+        {
+          "start": 1000,
+          "end": 1430
+        },
+        {
+          "start": 1100,
+          "end": 1430
+        },
+        {
+          "start": 845,
+          "end": 1430
+        }
+      ],
+      "direction": [
+        {
+          "direction": 0
+        },
+        {
+          "direction": 1
+        },
+        {
+          "direction": 2
+        }
+      ],
+      "filters": [
+        {
+          "filter": 0
+        },
+        {
+          "filter": 2
+        },
+        {
+          "filter": 4
+        },
+        {
+          "filter": 5
+        },
+        {
+          "filter": 6
+        },
+        {
+          "filter": 7
+        },
+        {
+          "filter": 8
+        },
+        {
+          "filter": 9
+        },
+        {
+          "filter": 1,
+          "threshold": 15
+        },
+        {
+          "filter": 1,
+          "threshold": 20
+        },
+        {
+          "filter": 1,
+          "threshold": 25
+        },
+        {
+          "filter": 1,
+          "threshold": 30
+        },
+        {
+          "filter": 1,
+          "threshold": 35
+        },
+        {
+          "filter": 3,
+          "threshold": 15
+        },
+        {
+          "filter": 3,
+          "threshold": 20
+        },
+        {
+          "filter": 3,
+          "threshold": 25
+        },
+        {
+          "filter": 3,
+          "threshold": 30
+        },
+        {
+          "filter": 3,
+          "threshold": 35
+        }
+      ],
+      "management": [
+        {
+          "day": 0
+        },
+        {
+          "day": 1
+        },
+        {
+          "day": 2
+        },
+        {
+          "day": 3
+        },
+        {
+          "maxday": 1
+        },
+        {
+          "maxday": 2
+        },
+        {
+          "maxday": 3
+        },
+        {
+          "flat": 1200
+        },
+        {
+          "flat": 1300
+        },
+        {
+          "flat": 1400
+        },
+        {
+          "flat": 1430
+        },
+        {
+          "flat": 1500
+        },
+        {
+          "flat": 1600
+        }
+      ],
+      "logic": [
+        {
+          "noise": 0.15
+        },
+        {
+          "noise": 0.3
+        },
+        {
+          "noise": 0.45
+        },
+        {
+          "noise": 0.6
+        },
+        {
+          "atr": 7
+        },
+        {
+          "atr": 14
+        },
+        {
+          "atr": 21
+        },
+        {
+          "atr": 28
+        },
+        {
+          "mean": 10
+        },
+        {
+          "mean": 15
+        },
+        {
+          "mean": 20
+        },
+        {
+          "adx": 15
+        },
+        {
+          "adx": 20
+        },
+        {
+          "adx": 25
+        },
+        {
+          "adx": 30
+        },
+        {
+          "orminutes": 15
+        },
+        {
+          "orminutes": 30
+        },
+        {
+          "orminutes": 60
+        }
+      ]
+    }
+  },
+  "top_per_stage": 3,
+  "minimum_development_trades": 30,
+  "minimum_validation_trades": 15,
+  "development_rank": "(net PF - 1) * sqrt(trades) / (1 + native equity DD / 10), clean execution first",
+  "validation_rank": "same score, minimum 15 trades, never recent/OOS",
+  "neighbourhood": "three older-data finalists; stop scale .8/1/1.2, RR .8/1/1.2, noise .8/1/1.2; evaluate all 27 neighbours",
+  "plateau": "report profitable-neighbour share, median PF and return; favour >=60% positive neighbours before validation ranking",
+  "controls": [
+    "Vault: no VWAP confirmation",
+    "Vault: zero noise barrier",
+    "Overnight: direction without frozen overnight bias",
+    "Overnight: ADX removed"
+  ],
+  "codes": {
+    "entry": {
+      "0": "next-bar market",
+      "1": "additional closed-bar confirmation",
+      "2": "ATR-offset pullback limit, 2-bar expiry",
+      "3": "ATR-offset continuation stop, 2-bar expiry"
+    },
+    "stop": {
+      "0": "fixed price points",
+      "1": "SMA of completed session ATR times fraction",
+      "2": "closed strategy-TF ATR multiplier",
+      "3": "entry-price percent",
+      "4": "signal candle opposite extreme",
+      "5": "last 20 closed-bar swing",
+      "6": "opening/overnight range opposite side"
+    },
+    "trail": {
+      "0": "unchanged",
+      "1": "break even",
+      "2": "ATR trail",
+      "3": "percent-price trail",
+      "4": "EMA12 trail",
+      "5": "closed 5-bar swing trail",
+      "6": "50% profit step lock",
+      "7": "50% partial at 1R plus break even"
+    },
+    "filter": {
+      "0": "no extra filter; also disables overnight ADX",
+      "1": "ADX threshold",
+      "2": "DI agreement",
+      "3": "ADX + DI",
+      "4": "EMA50 direction",
+      "5": "H1 EMA200 direction",
+      "6": "ATR14/ATR50 0.75..2",
+      "7": "spread <= 10% ATR",
+      "8": "ADX rising",
+      "9": "source ADX (Overnight) / no extra (Vault)"
+    },
+    "direction": {
+      "0": "long",
+      "1": "short",
+      "2": "both"
+    },
+    "day": {
+      "0": "all",
+      "1": "exclude Monday",
+      "2": "exclude Friday",
+      "3": "exclude both"
+    }
+  },
+  "exclusions": {
+    "news_blackout": "No timestamped point-in-time event feed frozen for this run; not fabricated.",
+    "daily_timeframe": "Intraday closing-bar entry windows and overnight OR make D1 signals non-equivalent; intraday TFs only.",
+    "exchange_volume": "Exness broker tick volume proxy, not NQ exchange volume.",
+    "historical_holiday_calendar": "No verified historical broker early-close calendar. Test earlier fixed daily closes explicitly, not an invented calendar."
+  }
+}
