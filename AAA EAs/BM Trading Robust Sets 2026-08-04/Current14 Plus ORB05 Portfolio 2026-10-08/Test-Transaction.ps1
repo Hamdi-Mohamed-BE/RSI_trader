@@ -53,7 +53,7 @@ foreach($MockMode in @('SUCCESS','FAIL','DEFAULTS')){
  if((Get-Content -LiteralPath (Join-Path $untouched 'user.txt') -Raw) -ne 'do not change'){throw 'Unrelated profile changed'};$checks++
  if($MockMode -ne 'FAIL'){
   if($rejected -or $Closed -ne 1 -or $Started.Count -ne 1){throw 'Wrong success restart sequence'};$checks++
-  foreach($i in @(0,1,2)){$filter=@('*.ex5','*.set','*.chr')[$i];if(@(Get-ChildItem -LiteralPath (Join-Path $data $managed[$i]) -Filter $filter).Count -ne 15){throw 'Missing portfolio files'};$checks++}
+  foreach($i in @(0,1,2)){$filter=@('*.ex5','*.set','*.chr')[$i];if(@(Get-ChildItem -LiteralPath (Join-Path $data $managed[$i]) -Filter $filter).Count -ne 17){throw 'Missing portfolio files'};$checks++}
   $receipts=@(Get-ChildItem -LiteralPath (Join-Path $data 'MQL5\Profiles\CalyxCurrent14ORB05Setup') -Filter Receipt.json -Recurse)
   $receipt=Get-Content -LiteralPath $receipts[0].FullName -Raw|ConvertFrom-Json
   $expectedRisk=if($MockMode -eq 'DEFAULTS'){0.5}else{1.5};$expectedNasdaqDI=if($MockMode -eq 'DEFAULTS'){'ON'}else{'OFF'}

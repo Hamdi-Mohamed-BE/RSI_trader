@@ -16,6 +16,8 @@ R = B/'_00 Live profiles'
 CURRENT = B/'Current14 Plus ORB05 Portfolio 2026-10-08'
 OLD_FTMO = B/'FTMO Thirteen EA Deployment 2026-09-27'
 EDITOR = B/'_Backtests/MT5-DMC-20260811/MetaEditor64.exe'
+POLICY = json.loads((R/'ORB05-policy.json').read_text(encoding='utf-8'))
+ORBS = POLICY['slugs']
 
 
 def read(path):
@@ -71,18 +73,53 @@ double FTMOAllocationBudget() {
     for path in (target/'CalyxFTMOGuard.mqh',target/'package/CalyxFTMOGuard.mqh'):
         write(path, guard)
     manifest=json.loads(read(OLD_FTMO/'PACKAGE.json'))
-    manifest['version']='FTMO14-LIVE-PROMPTS-20261008'
+    manifest['version']='FTMO17-ORB05-LIVE-PROMPTS-20261012'
+    plan={p['slug']:p for p in json.loads(read(B/'ORB and Range Breakout RR05 Comparison 2026-10-08/PLAN.json'))['setups']}
+    cache={}
+    def graph(path):
+        path=path.resolve()
+        if path in cache:return cache[path]
+        name='src_orb05_'+hashlib.sha256(str(path.relative_to(B)).encode()).hexdigest()[:12]+'.mqh'
+        cache[path]=name
+        text=read(path).replace('#include <Trade/Trade.mqh>','#include "FTMO_Trade.mqh"')
+        text=re.sub(r'\bOrderSend\(', 'FTMOOrderSend(', text)
+        text=re.sub(r'#include\s+"([^"]+)"',lambda m: '#include "FTMO_Trade.mqh"' if m[1]=='FTMO_Trade.mqh' else '#include "'+graph(path.parent/m[1].replace('\\','/'))+'"',text)
+        write(target/'package'/name,text)
+        return name
+    for slug in ORBS:
+        if slug in {e['slug'] for e in manifest['entries']}:continue
+        p=plan[slug]; include=graph(Path(p['source']))
+        name='FTMO13-'+slug
+        # Identical account guard and guarded CTrade shim as the retained 14.
+        code='#property strict\n#include "CalyxFTMOGuard.mqh"\n#define OnInit FTMO_StrategyInit\n#define OnTick FTMO_StrategyTick\n#define OnTimer FTMO_StrategyTimer\n#include "'+include+'"\n#undef OnInit\n#undef OnTick\n#undef OnTimer\n'
+        code+='int OnInit(){if(FTMOInit()!=INIT_SUCCEEDED)return INIT_FAILED;return FTMO_StrategyInit();}\nvoid OnTick(){if(FTMOPulse())FTMO_StrategyTick();}\n'
+        def expansion(n,seen=None):
+            seen=set() if seen is None else seen
+            if n in seen:return ''
+            seen.add(n);body=read(target/'package'/n)
+            return body+'\n'+'\n'.join(expansion(v,seen) for v in re.findall(r'#include "(src_orb05_[^"]+)"',body))
+        expanded=expansion(include)
+        if re.search(r'void\s+OnTimer\s*\(', expanded):code+='void OnTimer(){if(FTMOPulse())FTMO_StrategyTimer();}\n'
+        write(target/'package'/(name+'.mq5'),code)
+        inputs=dict(p['input_settings'],InpRiskPercent='0.5',InpAdaptivePortfolioControls='false',FTMOExpectedLogin='0',FTMOExpectedServer='',FTMOExpectedSymbol='',FTMOPhase='1')
+        manifest['entries'].append(dict(slug=slug,label=p['label'],symbol=p['symbol'],timeframe=p['period'],expert=name+'.ex5',settings=name+'.set',inputs=inputs))
     for entry in manifest['entries']:
         path=target/'package'/entry['expert'].replace('.ex5','.mq5')
         compile_ea(path)
         values=dict(entry['inputs'],FTMOAllocationMode='0',FTMOAllocationValue='50')
+        if entry['slug'] in ORBS:values['InpRewardRisk']='0.5'
         entry['inputs']=values
         write(target/'package'/entry['settings'], '\n'.join(k+'='+str(v) for k,v in values.items())+'\n')
+        entry['expert_sha']=sha(path.with_suffix('.ex5'))
+        entry['settings_sha']=sha(target/'package'/entry['settings'])
+    manifest['orb_keys']=list(ORBS)
     manifest['guard_sha']=sha(target/'CalyxFTMOGuard.mqh')
     manifest['files']={str(p.relative_to(target/'package')).replace('\\','/'):sha(p)
         for p in (target/'package').rglob('*') if p.is_file() and p.suffix not in ('.log',)}
     save(target/'PACKAGE.json', manifest)
     installer=read(B/'_Auto Deploy/Install-FTMO13.ps1')
+    installer=installer.replace('$manifest.entries.Count -ne 14','$manifest.entries.Count -ne 17').replace('PASS: 14 integrity-checked','PASS: 17 integrity-checked')
+    installer=installer.replace('14 EAs incl. 3 Way Gold (3 modules, market entries);','17 EAs incl. 3 Way Gold; ALL five ORBs at 0.5R;')
     installer=installer.replace("    [string]$TargetTerminal,", "    [string]$TargetTerminal,\n    [ValidateSet('PERCENT','FIXED_USD')][string]$RiskMode='FIXED_USD',\n    [double]$RiskValue=50,\n    [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',")
     installer=installer.replace('$PackageRoot=Split-Path -Parent $PSScriptRoot',"$PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\\..\\..'))")
     installer=installer.replace("(Join-Path $PSScriptRoot 'Install-BMTradingPortfolio.ps1')", "(Join-Path $PackageRoot '_Auto Deploy\\Install-BMTradingPortfolio.ps1')")
@@ -148,6 +185,7 @@ def orb_package():
         source=Path(source_plan[member['slug']]['source'])
         include=graph(source)
         inputs={k:str(v) for k,v in member['inputs'].items()}
+        inputs['InpRewardRisk']='0.5'
         inputs.update(InpRiskPercent='0.5',InpAdaptivePortfolioControls='false',InpPortfolioRiskMode='0',
             InpPortfolioPercent='0.5',InpPortfolioFixedUSD='50.0',InpPortfolioExpectedLogin='0',
             InpPortfolioExpectedServer='',InpPortfolioExpectedSymbol='',InpPortfolioInstallNonce='')
@@ -180,15 +218,15 @@ def orb_package():
         (target/'Experts').mkdir(exist_ok=True)
         shutil.copy2(path.with_suffix('.ex5'),target/entry['expert'])
     installer=read(CURRENT/'Install-Portfolio.ps1')
-    installer=installer.replace('.Count -ne 15', '.Count -ne 5').replace('return $ready -eq 15','return $ready -eq 5').replace('15-chart','5-chart')
+    installer=re.sub(r'\.Count -ne 17', '.Count -ne 5',installer).replace('return $ready -eq 17','return $ready -eq 5').replace('17-chart','5-chart')
     installer=installer.replace("foreach ($canonical in @('USDJPY', 'USTEC', 'XAUUSD'))",'foreach ($canonical in @($Package.entries.canonical | Sort-Object -Unique))')
     installer=installer.replace('No FTMO restrictions, no shared $400/$450 daily stop. This is NOT the previously simulated guarded portfolio. Three-Way Gold risk applies to each module.',
-        'Research-selected 5-ORB portfolio; three 0.5R targets, US100 NY 4R, Selective V3 2R. No shared daily stop or FTMO guard. Small samples are not proven edges.')
+        'Owner-selected five ORBs, ALL at 0.5R. Previous PF admission screen overridden by owner; NY PF below 1.15 and Selective sample tiny. No shared daily stop or FTMO guard.')
     installer=installer.replace('CalyxCurrent14ORB05Setup','CalyxORBOnlySetup')
     installer=installer.replace("$parameter in @('NasdaqDIFilter','UsdJpyDIFilter')",'$parameter in @()')
     write(target/'Install-Portfolio.ps1',installer)
-    manifest=dict(version='ORB-ONLY-LIVE-PROMPTS-20261008',profile='Calyx ORB-only 50pct PF1p15',entries=entries,
-        orb_keys=[m['slug'] for m in selection['members'] if m['target_rr']==.5],default_percent=.5,news=False,
+    manifest=dict(version='ORB-ONLY-ALL5-RR05-20261012',profile='Calyx ORB-only 50pct PF1p15',entries=entries,
+        orb_keys=list(ORBS),default_percent=.5,news=False,
         ftmo_guard=False,shared_daily_stop=False,original_hashes=original,selection_window=selection['selection_window'])
     assert len(entries)==5 and len({e['magic'] for e in entries})==5
     save(target/'Package.json',manifest)
@@ -204,16 +242,21 @@ def main():
     R.mkdir(exist_ok=True)
     ftmo=ftmo_package()
     orb=orb_package()
+    plan=json.loads(read(B/'ORB and Range Breakout RR05 Comparison 2026-10-08/PLAN.json'))
+    for item in plan['setups']:
+        if item['slug'] not in ORBS:continue
+        values=dict(item['input_settings'],InpRewardRisk='0.5')
+        write(R/'ORB05 Sets'/(item['slug']+'.set'),'\n'.join(k+'='+str(v) for k,v in values.items())+'\n')
     profiles=[
-        dict(slug='ftmo',name='FTMO guarded - Current 14',file='FTMO guarded - Current 14.bat',default_mode='FIXED_USD',default_percent=.5,default_usd=50,
-            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=14,
+        dict(slug='ftmo',name='FTMO guarded - Current 14 + ORB 0.5R',file='FTMO guarded - Current 14.bat',default_mode='FIXED_USD',default_percent=.5,default_usd=50,
+            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=17,
             warning='FTMO USD 10K Swing hedging only. Requested risk is capped at USD50 per trade. Existing daily/exposure/phase guards stay unchanged. No news or hourly EAs.'),
         dict(slug='current14-orb05',name='Current 14 + ORB 0.5R',file='Current 14 + ORB 0.5R.bat',default_mode='PERCENT',default_percent=.5,default_usd=50,
-            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=15,
-            warning='15 unique systems. Three ORBs at 0.5R; no shared daily stop or FTMO guard. Risk applies per trade/per 3-Way module.'),
-        dict(slug='orbs-only',name='ORB-only - 50pct+ PF1.15+',file='ORB-only - 50pct+ PF1.15+.bat',default_mode='PERCENT',default_percent=.5,default_usd=50,
+            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=17,
+            warning='17 unique systems. ALL five ORBs at 0.5R; no shared daily stop or FTMO guard. Owner overrides previous PF admission screen. Risk applies per trade/per 3-Way module.'),
+        dict(slug='orbs-only',name='ORB-only - All five at 0.5R',file='ORB-only - 50pct+ PF1.15+.bat',default_mode='PERCENT',default_percent=.5,default_usd=50,
             default_news_percent=0,di_parameters=[],eas=5,
-            warning='Five research-selected ORBs, not an all-0.5R profile. Three 0.5R, US100 NY 4R, Selective V3 2R. No shared loss guard; small fitted samples.'),
+            warning='Owner-selected five ORBs, ALL at 0.5R. NY PF0.97 and five-trade Selective sample remain limitations. No shared loss guard. Legacy BAT filename retained for compatibility.'),
         dict(slug='full-eas',name='Full EA portfolio - Recommended Adaptive',file='Full EA portfolio - Recommended Adaptive.bat',default_mode='PERCENT',default_percent=.25,default_usd=25,
             default_news_percent=.10,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=37,
             warning='37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq uses 0.25x selection. Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe.'),
@@ -221,15 +264,16 @@ def main():
     for p in profiles:
         text='@echo off\r\nsetlocal\r\ntitle Calyx - '+p['name']+'\r\npowershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0Start-LiveProfile.ps1" -Portfolio "'+p['slug']+'" %*\r\nset "CALYX_EXIT=%ERRORLEVEL%"\r\nif /I not "%~1"=="-ValidateOnly" pause\r\nexit /b %CALYX_EXIT%\r\n'
         (R/p['file']).write_bytes(text.encode('ascii'))
-    save(R/'Profiles.json',dict(version='2026-10-08',profiles=profiles,live_account_access=False,
+    save(R/'Profiles.json',dict(version='2026-10-12',profiles=profiles,live_account_access=False,
         policy='Creating BAT files does not install or start them. No backtest inherits a changed risk/DI choice.',
         packages={'ftmo':ftmo['version'],'orbs-only':orb['version']}))
-    write(R/'README.txt', '''CALYX NAMED PORTFOLIOS - 2026-10-08
+    write(R/'README.txt', '''CALYX NAMED PORTFOLIOS - 2026-10-12
 Keep this entire folder and its sibling EA folders together; these small BATs are not standalone embedded distributions.
 Each BAT asks for risk type/value, then separate DI ON/OFF for Nasdaq and USDJPY where included (ADX20 stays).
 FTMO: default fixed USD50, or equity %; all requests remain capped at USD50, with existing guard restrictions.
 Current14+ORB: default 0.5% per trade/module, fixed USD default 50; no shared daily stop.
-ORB-only: same default 0.5%/USD50; five selected versions with mixed targets; research-only until reviewed.
+ALL FIVE ORBS: 0.5R in FTMO (17 EAs), Current14+ORB (17), ORB-only (5), normal/full (37) and reviewed profiles.
+ORB-only: same default 0.5%/USD50; owner-approved despite NY PF0.97 and Selective five-trade sample. Legacy filenames retained.
 Full: lower starting allocation 0.25% or USD25, news separately 0.10% per order; no-stop hourly exposure remains.
 These defaults are starting allocations, not optimal settings or guaranteed maximum losses. Published history is not recalculated for custom selections.
 Normal MT5 hedging account required. Installers ask for terminal/account and confirmation; inspect all charts before using Algo Trading.

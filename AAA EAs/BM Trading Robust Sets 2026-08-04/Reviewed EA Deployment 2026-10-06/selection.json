@@ -1,12 +1,12 @@
 {
-  "version": "2026-10-06",
+  "version": "2026-10-12",
   "title": "reviwed_Eas",
   "phase_label": "Passed to live trading phase",
   "approval_kind": "Owner deployment decision, not statistical certification",
   "expected_counts": {
-    "live": 25,
-    "paused": 6,
-    "review": 6
+    "live": 27,
+    "paused": 5,
+    "review": 5
   },
   "entries": [
     {
@@ -71,19 +71,31 @@
       "slug": "xau-orb-new-york-m30",
       "installer_label": "XAU ORB New York M30",
       "phase": "live",
-      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation.",
+      "input_overrides": {
+        "InpRewardRisk": "0.5"
+      },
+      "variant": "Owner-selected 0.5R / entry and management rules retained"
     },
     {
       "slug": "xau-orb-london-ny-overlap-m30",
       "installer_label": "XAU ORB London NY Overlap M30",
       "phase": "live",
-      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation.",
+      "input_overrides": {
+        "InpRewardRisk": "0.5"
+      },
+      "variant": "Owner-selected 0.5R / entry and management rules retained"
     },
     {
       "slug": "us100-orb-new-york-m30",
       "installer_label": "US100 ORB New York M30",
       "phase": "live",
-      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation.",
+      "input_overrides": {
+        "InpRewardRisk": "0.5"
+      },
+      "variant": "Owner-selected 0.5R / entry and management rules retained"
     },
     {
       "slug": "us100-month-end-flow",
@@ -139,6 +151,18 @@
         "InpMagic": "926300006"
       },
       "variant": "1.5R, 3-bar swing, no BE/trailing, ADX/DI off"
+    },
+    {
+      "slug": "us30-hourly-profiles",
+      "installer_label": "US30 Hourly Profiles",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
+    },
+    {
+      "slug": "us100-hourly-profiles",
+      "installer_label": "US100 Hourly Profiles",
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
     },
     {
       "slug": "news-pulse-xau",
@@ -225,22 +249,14 @@
       "decision": "Demo only; failed untouched holdout"
     },
     {
-      "slug": "us30-hourly-profiles",
-      "installer_label": "US30 Hourly Profiles",
-      "phase": "live",
-      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
-    },
-    {
-      "slug": "us100-hourly-profiles",
-      "installer_label": "US100 Hourly Profiles",
-      "phase": "live",
-      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation."
-    },
-    {
       "slug": "us100-selective-orb-v3",
       "installer_label": "US100 Selective ORB V3",
-      "phase": "paused",
-      "decision": "Demo only; 80% win rate is five trades"
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation.",
+      "input_overrides": {
+        "InpRewardRisk": "0.5"
+      },
+      "variant": "Owner-selected 0.5R / entry and management rules retained"
     },
     {
       "slug": "asia-breakout",
@@ -257,8 +273,12 @@
     {
       "slug": "us100-h1-orb-13utc",
       "installer_label": "US100 H1 ORB 13UTC",
-      "phase": "review",
-      "decision": "Recent payoff collapse"
+      "phase": "live",
+      "decision": "Owner-selected for the reviewed live-trading phase; not a statistical validation pass or proof of installation.",
+      "input_overrides": {
+        "InpRewardRisk": "0.5"
+      },
+      "variant": "Owner-selected 0.5R / entry and management rules retained"
     },
     {
       "slug": "sell-nasdaq-15min",

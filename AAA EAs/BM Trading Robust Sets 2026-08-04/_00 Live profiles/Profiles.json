@@ -1,9 +1,9 @@
 {
-  "version": "2026-10-08",
+  "version": "2026-10-12",
   "profiles": [
     {
       "slug": "ftmo",
-      "name": "FTMO guarded - Current 14",
+      "name": "FTMO guarded - Current 14 + ORB 0.5R",
       "file": "FTMO guarded - Current 14.bat",
       "default_mode": "FIXED_USD",
       "default_percent": 0.5,
@@ -13,7 +13,7 @@
         "NasdaqDIFilter",
         "UsdJpyDIFilter"
       ],
-      "eas": 14,
+      "eas": 17,
       "warning": "FTMO USD 10K Swing hedging only. Requested risk is capped at USD50 per trade. Existing daily/exposure/phase guards stay unchanged. No news or hourly EAs."
     },
     {
@@ -28,12 +28,12 @@
         "NasdaqDIFilter",
         "UsdJpyDIFilter"
       ],
-      "eas": 15,
-      "warning": "15 unique systems. Three ORBs at 0.5R; no shared daily stop or FTMO guard. Risk applies per trade/per 3-Way module."
+      "eas": 17,
+      "warning": "17 unique systems. ALL five ORBs at 0.5R; no shared daily stop or FTMO guard. Owner overrides previous PF admission screen. Risk applies per trade/per 3-Way module."
     },
     {
       "slug": "orbs-only",
-      "name": "ORB-only - 50pct+ PF1.15+",
+      "name": "ORB-only - All five at 0.5R",
       "file": "ORB-only - 50pct+ PF1.15+.bat",
       "default_mode": "PERCENT",
       "default_percent": 0.5,
@@ -41,7 +41,7 @@
       "default_news_percent": 0,
       "di_parameters": [],
       "eas": 5,
-      "warning": "Five research-selected ORBs, not an all-0.5R profile. Three 0.5R, US100 NY 4R, Selective V3 2R. No shared loss guard; small fitted samples."
+      "warning": "Owner-selected five ORBs, ALL at 0.5R. NY PF0.97 and five-trade Selective sample remain limitations. No shared loss guard. Legacy BAT filename retained for compatibility."
     },
     {
       "slug": "full-eas",
@@ -62,7 +62,7 @@
   "live_account_access": false,
   "policy": "Creating BAT files does not install or start them. No backtest inherits a changed risk/DI choice.",
   "packages": {
-    "ftmo": "FTMO14-LIVE-PROMPTS-20261008",
-    "orbs-only": "ORB-ONLY-LIVE-PROMPTS-20261008"
+    "ftmo": "FTMO17-ORB05-LIVE-PROMPTS-20261012",
+    "orbs-only": "ORB-ONLY-ALL5-RR05-20261012"
   }
 }

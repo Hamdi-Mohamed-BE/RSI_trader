@@ -11,10 +11,10 @@ function Reject([scriptblock]$Action,[string]$Label){$bad=$false;try{& $Action}c
 $Checks=0
 $package=Test-Package
 $ProfileName=$package.profile;$ExpertFolderName=$ProfileName
-Assert ($package.entries.Count -eq 15 -and $package.orb_keys.Count -eq 3) 'deduplicated 15-EA roster / three ORBs'
+Assert ($package.entries.Count -eq 17 -and $package.orb_keys.Count -eq 5) 'deduplicated 17-EA roster / five ORBs'
 Assert (-not $package.ftmo_guard -and -not $package.shared_daily_stop) 'no FTMO guard or implicit daily stop'
-Assert (@($package.entries|Where-Object{$_.key -in $package.orb_keys -and [double]$_.inputs.InpRewardRisk -eq 0.5}).Count -eq 3) 'all selected ORBs 0.5R'
-Assert (@($package.entries|Where-Object{$_.key -eq 'us100-selective-orb-v3'}).Count -eq 0) 'untested 0.5R V3 excluded'
+Assert (@($package.entries|Where-Object{$_.key -in $package.orb_keys -and [double]$_.inputs.InpRewardRisk -eq 0.5}).Count -eq 5) 'all selected ORBs 0.5R'
+Assert (@($package.entries|Where-Object{$_.key -eq 'us100-selective-orb-v3'}).Count -eq 1) 'owner-approved 0.5R V3 included once'
 $ActiveLogin='12345';$ActiveServer='Mock-Broker-Hedge';$InstallNonce='offline-test'
 $candidate=[pscustomobject]@{Path='C:\Mock MT5\terminal64.exe';DataRoot='C:\MockData\Terminal\123456';Running=$true}
 $probe=[pscustomobject]@{
@@ -24,7 +24,7 @@ $probe=[pscustomobject]@{
 }
 Assert-Account $probe $candidate 'FIXED_USD'
 $portfolio=@(Get-Portfolio $package $probe)
-Assert ($portfolio.Count -eq 15) 'whole portfolio mapped'
+Assert ($portfolio.Count -eq 17) 'whole portfolio mapped'
 foreach($item in $portfolio){Assert ($item.BrokerSymbol -in @('USDJPYm','USTECm','XAUUSDm')) 'suffix mapping'}
 foreach($NasdaqDIFilter in @('ON','OFF')){foreach($UsdJpyDIFilter in @('ON','OFF')){
  foreach($mode in @('PERCENT','FIXED_USD')){
@@ -63,7 +63,7 @@ $testRoot=Assert-ChildPath $PackageRoot (Join-Path $PackageRoot ('NativeTests\of
 [void](New-Item -Path $testRoot -ItemType Directory)
 $RiskMode='FIXED_USD';$RiskValue=200.0;$NasdaqDIFilter='OFF';$UsdJpyDIFilter='ON'
 for($i=0;$i -lt $portfolio.Count;$i++){$item=$portfolio[$i];[IO.File]::WriteAllText((Join-Path $testRoot ('chart{0:D2}.chr' -f ($i+1))),(New-ChartText $item $item.BrokerSymbol (1000+$i) $i),[Text.Encoding]::Unicode)}
-Assert-ChartInputs $testRoot $portfolio;Assert $true 'all 15 exact chart inputs validated'
+Assert-ChartInputs $testRoot $portfolio;Assert $true 'all 17 exact chart inputs validated'
 $chart=Join-Path $testRoot 'chart13.chr';$text=Get-Content -LiteralPath $chart -Raw
 [IO.File]::WriteAllText($chart,$text.Replace('InpPortfolioFixedUSD=200','InpPortfolioFixedUSD=201'),[Text.Encoding]::Unicode)
 Reject {Assert-ChartInputs $testRoot $portfolio} 'corrupt chart cash rejected'

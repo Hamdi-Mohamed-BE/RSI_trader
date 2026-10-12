@@ -12,14 +12,14 @@ client=TestClient(app)
 
 def test_reviewed_launcher_and_website_share_roster_and_identity():
     d=review_data(); manifest=json.loads(SELECTION.read_text())
-    assert d['total']==37 and d['counts']=={'live':25,'paused':6,'review':6}
+    assert d['total']==37 and d['counts']=={'live':27,'paused':5,'review':5}
     assert set(d['by_slug'])=={p.slug for p in get_website_catalog()}
     assert json.loads(SNAPSHOT.read_text())['selection_sha256']==hashlib.sha256(SELECTION.read_bytes()).hexdigest()
     assert {r['slug'] for r in d['rows'] if r['phase']=='live'}=={e['slug'] for e in manifest['entries'] if e['phase']=='live'}
     for slug in ('dmc-current-xau','dmc-fresh-reaction-xau','dmc-fresh-reaction-us100','gold-overnight-value-area','news-pulse-xau','news-pulse-xag','news-pulse-btc','news-pulse-eurusd','gold-news-v9-direction','us30-hourly-profiles','us100-hourly-profiles'):
         assert d['by_slug'][slug]['phase']=='live'
 
-@pytest.mark.parametrize('phase,n',[('all',37),('live',25),('paused',6),('review',6)])
+@pytest.mark.parametrize('phase,n',[('all',37),('live',27),('paused',5),('review',5)])
 def test_server_filters_are_consistent(phase,n):
     result=client.get(f'/ea-review?phase={phase}')
     assert result.status_code==200
@@ -37,7 +37,7 @@ def test_search_missing_evidence_and_unqualified_candidate_remain_explicit():
     assert 'These normal-preset card results are not that candidate' in client.get('/eas?phase=live&period=1y&q=Trend').text
     assert client.get('/ea-review?phase=bogus').status_code==422
     assert client.get('/eas?phase=bogus').status_code==422
-    assert Counter(r['phase'] for r in client.get('/api/ea-review').json()['rows'])=={'live':25,'paused':6,'review':6}
+    assert Counter(r['phase'] for r in client.get('/api/ea-review').json()['rows'])=={'live':27,'paused':5,'review':5}
     for slug in ('us30-hourly-profiles','us100-hourly-profiles'):
         row=review_data()['by_slug'][slug]
         assert 'no SL' in row['variant'] and 'not the history-sized' in row['next_review']

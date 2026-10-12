@@ -8,7 +8,8 @@ import argparse,base64,hashlib,io,json,re,shutil,subprocess,time,zipfile
 R=Path(__file__).resolve().parent; B=R.parent
 OLD=B/'FTMO Thirteen EA Deployment 2026-09-27'; FIVE=B/'Five EA Portfolio Standalone 2026-10-07'
 TESTER=B/'_Backtests/MT5-DMC-20260811'
-ORBS=['us100-h1-orb-13utc','xau-orb-new-york-m30','xau-orb-london-ny-overlap-m30']
+POLICY=json.loads((B/'_00 Live profiles/ORB05-policy.json').read_text(encoding='utf-8'))
+ORBS=POLICY['slugs']
 
 def read(p):
     raw=p.read_bytes()
@@ -72,11 +73,11 @@ def main():
         write(R/'Sources'/name,s);return name
     orbplan={x['slug']:x for x in json.loads(read(B/'ORB and Range Breakout RR05 Comparison 2026-10-08/PLAN.json'))['setups']}
     selected=list(m['entries'])
-    additions=['xau-orb-new-york-m30']+(['us100-selective-orb-v3'] if args.include_selective else [])
+    additions=[key for key in ORBS if key not in {e['slug'] for e in selected}]
     for key in additions:
         p=orbplan[key]
         selected.append(dict(slug=key,label=p['label'],symbol=p['symbol'],timeframe=p['period'],inputs=dict(p['input_settings']),source=p['source']))
-    orbs=ORBS+(['us100-selective-orb-v3'] if args.include_selective else [])
+    orbs=list(ORBS)
     for e in selected:
         values={k:str(v) for k,v in e['inputs'].items() if not k.startswith('FTMO')}
         values.update(InpRiskPercent='0.5',InpAdaptivePortfolioControls='false')
@@ -113,14 +114,14 @@ def main():
         expert=R/'Experts'/(name+'.ex5')
         entries.append(dict(key=e['slug'],label=e['label'],canonical=e['symbol'],period={'M1':1,'M5':5,'M15':15,'M30':30,'H1':60,'H4':240}[e['timeframe']],magic=int(values['InpMagic']),hourly=False,expert=str(expert.relative_to(R)).replace('\\','/'),settings=str(sp.relative_to(R)).replace('\\','/'),inputs=values,di_input='InpRequireDIAgreement' if e['slug'] in ['nasdaq-5m-candle-momentum','usdjpy-london-open-momentum'] else None,source=str(path.relative_to(R)).replace('\\','/')))
         print('BUILT '+e['slug'],flush=True)
-    count=len(entries);assert count==15+args.include_selective
+    count=len(entries);assert count==17
     assert len({e['key'] for e in entries})==count and len({e['magic'] for e in entries})==count
     shutil.copy2(FIVE/'Installer-Helpers.ps1',R/'Installer-Helpers.ps1')
     shutil.copy2(FIVE/'Probe-MT5.py',R/'Probe-MT5.py')
     write(R/'Install-Portfolio.ps1',transform_installer(count))
-    package=dict(version='CURRENT14-ORB05-20261008',profile='Calyx CURRENT14 ORB05',entries=entries,orb_keys=orbs,
+    package=dict(version='CURRENT14-ORB05-20261012-ALL5',profile='Calyx CURRENT14 ORB05',entries=entries,orb_keys=orbs,
         current14_manifest=m['version'],default_percent=.5,required_margin_mode=2,news=False,ftmo_guard=False,shared_daily_stop=False,
-        selective_included=args.include_selective,selection='Current14 deduplicated plus only requested 0.5R ORBs',
+        selective_included=True,selection=POLICY['selection_note'],
         compatibility='MT5 demo/live hedging accounts; percentage in account currency, fixed USD with fresh direct currency conversion. Netting and MT4 not supported.',
         no_live_installation=True,original_hashes=original)
     save(R/'Package.json',package)

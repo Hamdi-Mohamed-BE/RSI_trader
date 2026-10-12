@@ -12,13 +12,13 @@ import json
 import math
 from collections import defaultdict
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from functools import lru_cache
 from typing import Any
 
 import numpy as np
 
-from ..catalog import Product, PACKAGE_ROOT, get_website_product, get_website_catalog
+from ..catalog import Product, PACKAGE_ROOT, STORE_ROOT, get_website_product, get_website_catalog
 from ..evidence_cache import CACHE_ROOT, validate_period
 
 LOT_STEP = 0.01
@@ -174,6 +174,18 @@ def load_ea(slug: str, period: str, mode: str | None = None) -> tuple[EaProfile,
     product = get_website_product(slug)
     if product is None or product.evidence is None:
         return None
+    policy=PACKAGE_ROOT/'_00 Live profiles/ORB05-policy.json'
+    if policy.is_file() and slug in json.loads(policy.read_text())['slugs']:
+        # Changed targets must never reuse old cached 2R/4R/6R trades. Only the
+        # matching annual raw 0.5R signal ledger is currently published.
+        if period not in ('1y','6m') or mode not in (None,'standard'):
+            return None
+        source=STORE_ROOT/'data/portfolio-risk-ledgers.json'
+        if not source.is_file():return None
+        publication=STORE_ROOT/'data/portfolios.json'
+        bound=(source,publication,policy)
+        stamp=tuple((str(p),p.stat().st_mtime_ns,p.stat().st_size) for p in bound if p.is_file())
+        return _load_orb05(slug,period,stamp)
     mode = mode or ("standard" if slug.startswith("news-pulse-") else recommended_mode(product))
     path = CACHE_ROOT / "products" / slug / mode / f"{period}.trades.json"
     summary = path.with_name(f"{period}.json")
@@ -181,6 +193,43 @@ def load_ea(slug: str, period: str, mode: str | None = None) -> tuple[EaProfile,
     bound = (path, summary, release, path.with_name("1y.trades.json"), path.with_name("6m.trades.json"))
     stamp = tuple((str(p), p.stat().st_mtime_ns, p.stat().st_size) for p in bound if p.is_file())
     return _load(slug, mode, period, stamp)
+
+
+@lru_cache(maxsize=32)
+def _load_orb05(slug: str,period: str,stamp: tuple):
+    import hashlib
+    product=get_website_product(slug)
+    path=STORE_ROOT/'data/portfolio-risk-ledgers.json'
+    publication=json.loads((STORE_ROOT/'data/portfolios.json').read_text())
+    if hashlib.sha256(path.read_bytes()).hexdigest()!=publication.get('risk_ledger_sha256'):
+        raise ValueError('Mixed-version ORB05 evidence; rebuild the portfolio publication.')
+    profile=next((p for p in publication['portfolios'] if p['slug']=='orbs-only'),{})
+    member=next((m for m in profile.get('members',[]) if m['slug']==slug),{})
+    if member.get('target_rr')!=.5:raise ValueError('ORB05 target mismatch')
+    payload=json.loads(path.read_text())
+    rows=payload.get('orbs-only',[])
+    if not isinstance(rows,list):return None
+    start=datetime(2025,10,6) if period=='1y' else datetime(2026,4,6)
+    end=datetime(2026,10,6)
+    trades=[]
+    for r in rows:
+        if r['key']!=slug:continue
+        opened=datetime.fromtimestamp(r['op'],timezone.utc).replace(tzinfo=None)
+        closed=datetime.fromtimestamp(r['cl'],timezone.utc).replace(tzinfo=None)
+        if not start<=opened<=closed<end:continue
+        unit=float(r['unit_risk'])
+        assert unit>0
+        net=float(r['unit_gross'])+float(r['unit_comm'])+float(r['unit_swap'])
+        trades.append(LedgerTrade(slug,product.canonical,opened,closed,net/unit,1.0,unit))
+    trades.sort(key=lambda t:(t.opened,t.closed))
+    weekend=sum(_holds_weekend(t.opened,t.closed) for t in trades)
+    profile=EaProfile(slug=slug,label=product.label,symbol=product.canonical,timeframe=product.timeframe,mode='standard',
+        start=start.date(),end=(end-timedelta(days=1)).date(),trades=len(trades),weekend_holds=weekend>0,
+        weekend_hold_share=weekend/len(trades) if trades else 0.,news_ea=False,straddle=False,
+        short_trade_share=sum(t.seconds<SHORT_TRADE_SECONDS for t in trades)/len(trades) if trades else 0.,
+        evidence_status='Owner-selected 0.5R / matching native annual signals; not untouched OOS',period=period,
+        risk_note='Current 0.5R target; annual raw native signal ledger, 76% real ticks. Recent window is a slice. Lot re-sizing and guards are simulator approximations; no matched 3-/5-year target history.')
+    return profile,tuple(trades)
 
 
 def available_eas(period: str) -> list[EaProfile]:

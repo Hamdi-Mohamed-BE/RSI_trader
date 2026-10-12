@@ -18,6 +18,8 @@ EXTRA = {
     'news-pulse-xau', 'news-pulse-xag', 'news-pulse-btc', 'news-pulse-eurusd',
     'gold-news-v9-direction', 'gold-overnight-value-area', 'xau-trend-progression',
     'us30-hourly-profiles', 'us100-hourly-profiles',
+    'us100-h1-orb-13utc', 'us100-orb-new-york-m30', 'us100-selective-orb-v3',
+    'xau-orb-new-york-m30', 'xau-orb-london-ny-overlap-m30',
 }
 DI = {'nasdaq-5m-candle-momentum': 'InpRequireDIAgreement', 'usdjpy-london-open-momentum': 'InpRequireDIAgreement'}
 
@@ -38,6 +40,7 @@ def main():
     comparisons = json.loads((PACKAGE_ROOT / 'Trend Progression Optimization 2026-10-05' / 'COMPARISON.json').read_text())
     chosen = {r['period']: r for r in comparisons if r['variant'] == 'CANDIDATE'}
     entries, public = [], []
+    orbs=json.loads((PACKAGE_ROOT/'_00 Live profiles/ORB05-policy.json').read_text())['slugs']
     for r in rows:
         slug = r['slug']; p = products[slug]
         original = r.get('original_recommendation', r['recommendation'])
@@ -49,6 +52,8 @@ def main():
         if slug == 'xau-trend-progression':
             entry['input_overrides'] = overrides
             entry['variant'] = '1.5R, 3-bar swing, no BE/trailing, ADX/DI off'
+        if slug in orbs:
+            entry.update(input_overrides={'InpRewardRisk':'0.5'},variant='Owner-selected 0.5R / entry and management rules retained')
         entries.append(entry)
         row = {k:r.get(k) for k in ('slug','label','canonical','mode','year','recent','reason','next_review','limitations','provenance','history_quality')}
         row.update(phase=phase, decision=decision, original_recommendation=original, variant=entry.get('variant','Unchanged preferred normal preset'))
@@ -63,20 +68,27 @@ def main():
         if slug in DI:
             row['di_default']='ON'
             row['di_note']='DI OFF is a custom unvalidated selection; published DI-ON results do not describe it.'
+        if slug in orbs:
+            case=json.loads((PACKAGE_ROOT/'ORB and Range Breakout RR05 Comparison 2026-10-08/comparisons'/(slug+'.json')).read_text())['half']
+            row['year']=dict(case['metrics'],start='2025-10-06',end_exclusive='2026-10-06')
+            row['recent']=None
+            row['reason']='Owner approved all five ORBs at 0.5R on 12 October 2026. These annual metrics match that target; NY PF0.97 and Selective five-trade sample remain limitations. Original entry filters retained.'
+            row['next_review']='Recent-quarter standalone target-matched evidence not republished here; use matching portfolio slices. Observe forward execution; approval is not statistical certification.'
+            row['mode']='Owner-selected 0.5R'
         if slug in ('us30-hourly-profiles','us100-hourly-profiles'):
             row['variant']='Unchanged hours; selected risk against frozen historical loss; no SL'
             row['reason']='Owner approved the unchanged hourly EA for this profile. '+(r.get('reason') or '')
             row['next_review']='Retained results are the original fixed-one-lot benchmark, not the history-sized reviewed profile. No stop-loss: a future trade can lose more than the selected risk scenario. '+(r.get('next_review') or '')
         public.append(row)
     counts=Counter(e['phase'] for e in entries)
-    assert counts == dict(live=25, paused=6, review=6), counts
-    manifest=dict(version='2026-10-06', title='reviwed_Eas', phase_label='Passed to live trading phase',
+    assert counts == dict(live=27, paused=5, review=5), counts
+    manifest=dict(version='2026-10-12', title='reviwed_Eas', phase_label='Passed to live trading phase',
                   approval_kind='Owner deployment decision, not statistical certification',
                   expected_counts=dict(counts), entries=entries)
     target=PACKAGE_ROOT/'Reviewed EA Deployment 2026-10-06'/'selection.json'
     write(target,manifest)
     public.sort(key=lambda r: (['live','paused','review'].index(r['phase']),r['label']))
-    write(ROOT/'data'/'ea-review.json', dict(version='2026-10-06', selection_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
+    write(ROOT/'data'/'ea-review.json', dict(version='2026-10-12', selection_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
         source_review='Active EA Recent Review 2026-10-05', scope='Retained standalone evidence, not a shared portfolio or new backtest. Per-row dates and variant apply.', rows=public))
     print(json.dumps(dict(total=len(entries),counts=counts,di_prompts=list(DI),backtests_run=0)))
 

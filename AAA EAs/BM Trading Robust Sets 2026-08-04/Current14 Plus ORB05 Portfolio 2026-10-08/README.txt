@@ -11,12 +11,13 @@ defaults to 0.5% of current equity. Risk applies per trade, not to the complete
 portfolio. Each of 3-Way Gold's modules receives that risk. USDJPY's ADX20 filter
 is retained regardless of the DI choice. DI OFF is not the tested DI-ON preset.
 
-15 unique EAs: all 14 current FTMO strategy-input variants, WITHOUT the FTMO
-guard, plus Gold New York ORB at 0.5R. Existing US100 H1 and Gold London–NY ORBs
-are changed to 0.5R rather than duplicated. Selective US100 V3 is excluded: its
-previously accepted result used 2R, not 0.5R. No news or hourly-timed EAs added.
+17 unique EAs: all 14 retained FTMO strategy-input variants, WITHOUT the FTMO
+guard, plus Gold New York, US100 New York and Selective V3 ORBs. ALL five ORBs
+use 0.5R; existing ORBs are replaced, not duplicated. Owner explicitly overrode
+the PF screen: US100 NY PF0.97, Selective five wins / no losses / undefined PF.
+No news or hourly-timed EAs added. Archived original builds remain unchanged.
 
-Included roster (current inputs except the two indicated ORB target changes):
+Included roster (current inputs except the five ORB target changes):
   1. XAU RSI VWAP
   2. Gold Overnight Value Area
   3. XAU Squeeze Momentum Standard
@@ -32,6 +33,8 @@ Included roster (current inputs except the two indicated ORB target changes):
  13. Nasdaq 5M Candle Momentum — DI prompt
  14. 3-Way Gold — selected risk is per module trade
  15. XAU ORB New York M30 — added with 0.5R target
+ 16. US100 ORB New York M30 — added with 0.5R target
+ 17. US100 Selective ORB V3 — added with 0.5R target
 
 Compatibility: MT5 demo and live HEDGING accounts, any account balance/broker
 that supplies tradable XAUUSD, US100/USTEC and USDJPY contracts. Broker suffixes
@@ -47,7 +50,8 @@ It is NOT the previously simulated guarded portfolio. Its performance and
 funding probabilities have not been established by those earlier simulations.
 Native lot minimum/rounding policies, leverage limits, fees and gaps can make
 actual losses differ from the chosen target. Native stops/management are
-preserved except the three explicit ORB target changes.
+preserved except the five explicit ORB target changes. Old 3-/5-year and funding
+results do not validate this new all-five 0.5R roster.
 
 Setup only affects the chosen running terminal, keeps login/Algo Trading
 preferences unchanged, and restarts MT5 after confirmation. It creates its own

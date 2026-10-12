@@ -196,7 +196,7 @@ function Main {
     }
     Assert-Risk $RiskMode $RiskValue
     Write-Host 'PER TRADE / PER EA, not a portfolio cap. Broker minimum/rounding, gaps and costs can exceed the target.' -ForegroundColor Yellow
-    Write-Host 'Research-selected 5-ORB portfolio; three 0.5R targets, US100 NY 4R, Selective V3 2R. No shared daily stop or FTMO guard. Small samples are not proven edges.' -ForegroundColor Yellow
+    Write-Host 'Owner-selected five ORBs, ALL at 0.5R. Previous PF admission screen overridden by owner; NY PF below 1.15 and Selective sample tiny. No shared daily stop or FTMO guard.' -ForegroundColor Yellow
     foreach ($parameter in @()) {
         if (-not (Get-Variable -Name $parameter -ValueOnly)) {
             $label=if ($parameter -eq 'NasdaqDIFilter') {'Nasdaq 5M'} else {'USDJPY London'}

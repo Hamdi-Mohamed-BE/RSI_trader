@@ -25,6 +25,8 @@ NEW = PACKAGE_ROOT / 'Current14 Plus ORB05 Portfolio 2026-10-08' / 'Package.json
 RESEARCH = PACKAGE_ROOT / 'FTMO ORB RR05 Portfolio Simulation 2026-10-08'
 ORB = PACKAGE_ROOT / 'ORB and Range Breakout RR05 Comparison 2026-10-08'
 LONG = PACKAGE_ROOT / 'Portfolio Long History 2026-10-08'
+POLICY = json.loads((PACKAGE_ROOT/'_00 Live profiles/ORB05-policy.json').read_text(encoding='utf-8'))
+ALL_ORBS = POLICY['slugs']
 START, END = '2025-10-06', '2026-10-06'
 SOURCES = {}
 RISK_ROWS = {}
@@ -105,6 +107,9 @@ def normal_member(product):
             key,value = line.split('=',1)
             inputs[key.strip()] = value.split('||',1)[0].strip()
     mode = 'Dynamic' if product.recommended_dynamic_mode else 'Safe' if product.recommended_safe_mode else 'Standard'
+    if product.slug in ALL_ORBS:
+        inputs['InpRewardRisk']='0.5'
+        mode='Owner-selected 0.5R'
     return member(product, inputs, mode + ' saved normal preset; BAT risk/adaptive overrides apply')
 
 
@@ -117,7 +122,9 @@ def native_rows(case, slug, symbol):
         assert t['sl'] > 0 and t['volume'] > 0
         unit = abs(t['open_price'] - t['sl']) * contract / (t['sl'] if symbol == 'USDJPY' else 1.0)
         assert unit > 0
-        rows.append(dict(key=slug, cl=t['close_epoch'], op=t['open_epoch'], position_id=t['position_id'],
+        rows.append(dict(key=slug, symbol=symbol, news=False, side=t['side'],
+                         open_price=t['open_price'],close_price=t['close_price'],
+                         cl=t['close_epoch'], op=t['open_epoch'], position_id=t['position_id'],
                          unit_risk=unit, unit_gross=t['gross']/t['volume'],
                          unit_comm=(t['commission']+t.get('fee', 0))/t['volume'], unit_swap=t['swap']/t['volume']))
     return rows
@@ -187,9 +194,9 @@ def main():
     for name in ('Profiles.json','Packages/ORB-only/Package.json'):
         if (live/name).is_file():read(live/name)
     frozen = read(RESEARCH/'FROZEN_ROWS.json')
-    RISK_ROWS['ftmo'] = frozen['baseline']
     research = read(RESEARCH/'Results.json')
-    assert len(ftmo['entries']) == 14 and len(new['entries']) == 15 and len(catalog) == 37
+    read(live/'ORB05-policy.json')
+    assert len(ftmo['entries']) == 14 and len(new['entries']) == 17 and len(ftmo_live['entries']) == 17 and len(catalog) == 37
     guard_rules = [
         rule('Risk selection / hard ceiling', 'Named launcher asks for fixed USD (default $50) or current-equity % (default 0.5%). All requested allocations remain capped at $50 planned initial-stop risk per trade on a $10,000 USD account. Lots round down; skip when minimum lot exceeds budget. The recorded reference remains fixed $50.'),
         rule('DI choices', 'Separate Nasdaq 5M and USDJPY DI ON/OFF prompts, default ON; USDJPY ADX ≥20 remains enabled. Changing DI does not inherit the recorded DI-ON performance.'),
@@ -199,21 +206,6 @@ def main():
         rule('Phase rules in the saved build', '$11,000 phase-1 / $10,500 phase-2 balance target after at least 4 trading days. New entries pause for review/new account; phase transitions are not automatic.'),
         rule('Margin and account', 'Projected margin at most 80% of protected equity and within free margin. Bound FTMO USD hedging account / server / symbol. News and no-stop hourly EAs excluded.'),
     ]
-    baseline = next(x for x in research['historical'] if x['name']=='baseline')
-    # Matching accepted-position log, not balance changes (which also contain entry fees).
-    logged = read(PACKAGE_ROOT/'FTMO Three Portfolios Risk200 Daily400-450 2026-10-08/Results.json')
-    accepted = next(x for x in logged['historical'] if x['profile']=='current14' and x['policy']=='original_50')
-    for key in ('trades', 'pf', 'return_pct'):
-        assert abs(accepted['portfolio'][key]-baseline['portfolio'][key]) < 1e-7
-    ft_trades = [dict(slug=t['ea'], position_id=i, close_time=datetime.fromisoformat(t['close']).astimezone(timezone.utc).isoformat(),
-                      net_profit=t['net_profit']) for i,t in enumerate(accepted['log'])]
-    ft_history = period_histories(ft_trades, START, END, 'saved guarded $50 proxy',
-        'Fixed $50 / $10,000; modelled FTMO admission rules.',
-        'Slice of the saved annual accepted-position ledger, not a fresh guard replay for each window or a native simultaneous FTMO account. '
-        'All position costs are attributed to final close; drawdown and Sharpe use closed-position cash, not entry-fee timing or floating equity. '
-        'Guard retries, partial timing and broker execution are approximate.')
-    assert abs(next(h for h in ft_history if h['id']=='1y')['stats']['return_pct']-baseline['portfolio']['return_pct']) < 1e-5
-    assert {e['slug'] for e in ftmo_live['entries']}=={e['slug'] for e in ftmo['entries']}
     members_ft = [member(catalog[e['slug']], e['inputs'], 'Named FTMO default inputs; allocation capped at $50') for e in ftmo_live['entries']]
     members_new = [member(catalog[e['key']], e['inputs'], '0.5R ORB' if e['key'] in new['orb_keys'] else 'Current14 strategy inputs; no FTMO guard') for e in new['entries']]
     new_keys = {e['key'] for e in new['entries']}
@@ -223,6 +215,19 @@ def main():
         assert float(c['half']['inputs']['InpRewardRisk']) == .5
         new_rows += native_rows(c['half'], key, c['symbol'])
     assert {r['key'] for r in new_rows} == new_keys
+    assert set(ALL_ORBS)==set(new['orb_keys'])
+    assert {e['slug'] for e in ftmo_live['entries']}==new_keys
+    RISK_ROWS['ftmo']=new_rows
+    publish_guard_engine()
+    from app.portfolio_guard_replay import replay
+    stamp=lambda s:datetime.fromisoformat(s).replace(tzinfo=timezone.utc).timestamp()
+    guarded=replay(new_rows,[],stamp(START),stamp(END),challenge=False,detail=True)
+    ft_trades=[dict(slug=t['ea'],position_id=i,close_time=t['close'],net_profit=t['net_profit']) for i,t in enumerate(guarded['log'])]
+    ft_history=period_histories(ft_trades,START,END,'all-five 0.5R guarded $50 proxy',
+        'Fixed $50 / $10,000; offline modelled FTMO admission rules.',
+        'Replayed annual signals with all five ORBs at 0.5R; recent periods slice that accepted ledger. Not a native simultaneous account. '
+        'Guard retries, margin, partial timing and execution are approximate; costs include the saved FTMO fee floor. '
+        'Closed cash drawdown is not measured floating equity; original 14-EA pass probabilities do not describe this roster.')
 
     # Only actual opening-range systems, not every strategy in the range-breakout study.
     orb_keys = ['us100-h1-orb-13utc','us100-orb-new-york-m30','us100-selective-orb-v3',
@@ -234,7 +239,7 @@ def main():
         qualified = [(name,c[name]) for name in ('half','current') if c[name]['metrics']['pf'] is not None
                      and math.isfinite(c[name]['metrics']['pf']) and c[name]['metrics']['pf'] >= 1.15
                      and c[name]['metrics']['win_rate'] >= 50]
-        chosen = max(qualified, key=lambda item:item[1]['metrics']['win_rate']) if qualified else None
+        chosen = ('half',c['half']) if key in ALL_ORBS else None
         screening.append(dict(slug=key, label=c['label'], selected=bool(chosen), variants=[
             dict(name=n, win_rate=c[n]['metrics']['win_rate'], profit_factor=c[n]['metrics']['pf'], trades=c[n]['metrics']['trades'],
                  selected=chosen is not None and chosen[0]==n) for n in ('half','current')]))
@@ -264,38 +269,50 @@ def main():
         'not fresh window-specific compounding runs. Hourly additions and revised news/filters/targets are not revalidated here. '
         'Source ends before the other portfolios; do not compare raw returns as equal-risk matched tests.',
         sorted(set(catalog)-coverage))
+    # Replace only the five changed ORB signal streams. Old long-window targets
+    # are not valid evidence for the new policy even when membership is equal.
+    long_rows=read(LONG/'RISK_ROWS.json')['full-eas']
+    audit=read(LONG/'AUDIT.json')['portfolios']['full-eas']
+    full_rows=[r for r in long_rows if r['key'] not in ALL_ORBS]+orb_rows
+    full_history=normalized_histories(full_rows,'all-five 0.5R, partial fixed-$50 reference','full-eas')
+    missing=audit['missing']
+    for h in full_history:
+        h['missing_members']=[m['slug'] for m in missing]
+        if h['available']:
+            h['coverage']='partial'
+            h['scope']+=' Missing components: '+', '.join(m['slug'] for m in missing)+'. These are not assumed to earn zero.'
 
     profiles = [
-        dict(slug='ftmo', name='FTMO guarded · Current 14', status='active', status_note='Existing guarded launcher available; not confirmation it is installed or passing.',
-             description='Fourteen selected systems with the dedicated account-wide FTMO admission guard.',
-             launcher='FTMO guarded - Current 14.bat', version='FTMO14-LIVE-PROMPTS-20261008', members=members_ft,
+        dict(slug='ftmo', name='FTMO guarded · Current 14 + ORB 0.5R', status='active', status_note='Owner-selected guarded launcher available; not confirmation it is installed or passing.',
+             description='Seventeen unique systems with all five ORBs at 0.5R and the retained account-wide FTMO admission guard.',
+             launcher='FTMO guarded - Current 14.bat', version=ftmo_live['version'], members=members_ft,
              risk_summary='Choose fixed USD or equity % · default $50 · hard $50 ceiling', rules=guard_rules, history=ft_history,
              caveats=['Named launcher adds allocation/DI choices to an isolated package; original FTMO guards remain. Custom choices are not a native validation.', 'Saved package rules are not a live statement of any firm’s current contract. Check the account agreement.', research['status']]),
         dict(slug='current14-orb05', name='Current 14 + ORB 0.5R', status='active', status_note='New compiled launcher available; not confirmation of live installation.',
-             description='Fifteen unique systems: current 14 plus Gold New York ORB. Existing Gold overlap / US100 H1 ORBs are replaced, not duplicated.',
+             description='Seventeen unique systems: current 14 plus the other three ORBs. All five ORBs use 0.5R; existing ORBs are replaced, not duplicated.',
              launcher='Current 14 + ORB 0.5R.bat', version=new['version'], members=members_new,
              risk_summary='Choose fixed USD or dynamic equity % · default 0.5%',
              rules=[rule('Risk selection','Installer asks for fixed USD or dynamic % of current equity. Default 0.5% per trade; each 3-Way Gold module receives that risk. Not a portfolio-wide cap.'),
                     rule('Daily and overall drawdown','No shared daily stop, $400/$450 stop, total-loss limit, profit lock, FTMO phase target or fixed-$50 clamp. Individual protective stops and native exit logic remain.'),
                     rule('DI choices','Separate ON/OFF prompts for Nasdaq 5M and USDJPY (default ON). USDJPY ADX ≥20 stays enabled. DI OFF has not inherited DI-ON validation.'),
-                    rule('Targets','Exactly three ORBs use 0.5R: US100 H1, Gold NY and Gold London–NY overlap. Trend retains 0.6R; Standard Squeeze uses Markov OFF. Selective V3 is not included.'),
+                    rule('Targets','All five ORBs use 0.5R: US100 H1, US100 New York, Selective V3, Gold New York and Gold overlap. Stops, entry filters, BE/trailing/time exits are retained. Trend retains 0.6R; Standard Squeeze uses Markov OFF.'),
                     rule('Account support','Supported MT5 demo/live hedging accounts; broker aliases mapped. Netting, MT4 and portable/tester/custom-config terminals are unsupported by this installer.'),
                     rule('Cash conversion and execution','Fixed USD on non-USD accounts requires fresh direct currency conversion; missing conversion skips entry. Fees, minimum lot/rounding, slippage and gaps can exceed the target. No news or hourly-timed EAs.')],
              history=normalized_histories(new_rows,'fixed-$50 reference, no shared guard','current14-orb05'),
              caveats=['Default dynamic-equity 0.5% performance has not been natively backtested as a combined account.', 'Previous guarded FTMO funding probabilities do not apply to this unrestricted package.']),
-        dict(slug='orbs-only', name='ORB-only · 50%+ / PF 1.15+', status='disabled', status_note='Compiled named launcher available for review; composition remains disabled/research-only pending owner approval. Nothing has been installed.',
-             description='All tested opening-range strategies meeting the requested annual net win-rate and finite profit-factor thresholds. Highest-win-rate qualifying version retained per EA.',
-             launcher='ORB-only - 50pct+ PF1.15+.bat', version='ORB-ONLY-LIVE-PROMPTS-20261008', members=orb_members, screening=screening,
-             risk_summary='Choose fixed USD or equity % · default 0.5% · research-only',
-             rules=[rule('Admission screen','Annual native standalone win rate ≥50% and finite net PF ≥1.15. One qualifying version per EA; no duplicate strategies. Undefined PF is not treated as infinite.'),
-                    rule('Targets are explicit','Three ORBs qualify at 0.5R; US100 New York qualifies only at its current target, and Selective V3 uses 2R. This five-EA profile is NOT an all-0.5R portfolio.'),
+        dict(slug='orbs-only', name='ORB-only · All five at 0.5R', status='active', status_note='Owner approved all five at 0.5R on 12 October 2026. Compiled launcher available, not observed live installation.',
+             description='Owner-selected five opening-range systems, all with 0.5R targets. This overrides the previous profitability admission screen; it is not a statistical validation pass.',
+             launcher='ORB-only - 50pct+ PF1.15+.bat', version='ORB-ONLY-ALL5-RR05-20261012', members=orb_members, screening=screening,
+             risk_summary='Choose fixed USD or equity % · default 0.5% · owner-selected',
+             rules=[rule('Owner override','Previous PF ≥1.15 screen overridden for these five at 0.5R. US100 New York annual PF is 0.97; Selective V3 has five wins and no losses, so PF is undefined, not infinite. Legacy BAT filename retained for compatibility.'),
+                    rule('Targets are explicit','ALL five ORBs now target 0.5R. Entries, stops, filters and management retained; management thresholds above TP may never activate.'),
                     rule('Risk mode','Named launcher asks for fixed USD (default $50) or dynamic current-equity % (default 0.5%) per trade. Recorded history remains a fixed-$50 fractional-lot reference; custom calculator scenarios are offline approximations. No DI-enabled EA occurs in this selected roster, so no DI prompt is needed.'),
                     rule('Daily drawdown','No implemented portfolio-specific daily/total stop for this new five-EA selection. Older three/four-ORB FTMO and $200 / $400–450 simulations are different guarded profiles, not these results.')],
              selection_window=dict(start=START, end_exclusive=END),
-             history=normalized_histories(orb_rows,'five screened ORBs, fixed-$50 reference','orbs-only'),
+             history=normalized_histories(orb_rows,'all five at 0.5R, fixed-$50 reference','orbs-only'),
              caveats=['Selected on the same year shown: exploratory, not untouched out-of-sample validation.', 'Selective V3 has only five trades and Gold NY twelve; high win rate alone is not robust evidence.']),
         dict(slug='full-eas', name='Full EA portfolio · Recommended Adaptive', status='active', status_note='Existing normal launcher / 37-EA inventory; not proof every EA is attached or running.',
-             description='The normal full portfolio, including news and the two no-stop hourly profiles. Archived evidence is kept separate from current membership.',
+             description='The normal full portfolio, including news and both hourly profiles. All five selected ORBs now target 0.5R; other rules remain unchanged.',
              launcher='Full EA portfolio - Recommended Adaptive.bat', version='NORMAL-37-LIVE-PROMPTS-20261008', members=[normal_member(p) for p in catalog.values()],
              risk_summary='Fixed USD or % · default non-news 0.25%; news separate 0.10%',
              rules=[rule('Standard risk','Named launcher asks for fixed USD (default $25) or current-equity % (default 0.25%) per non-news allocation. Nasdaq 5M uses 0.25× selected risk. XAU Weakness halves its idea budget per limit/stop order; each 3-Way Gold module receives the selected allocation. These are lower starting allocations, not optimized or guaranteed loss caps. Older normal BAT defaults remain 1%/0.75% news.'),
@@ -308,11 +325,13 @@ def main():
              history=full_history,
              caveats=['The archived combined results do not validate the current 37-EA composition, revised settings or hourly history-sizing.', 'News event settings and hourly selections are fitted to overlapping history; gaps and unbounded no-stop exposure matter.']),
     ]
-    extend_long_evidence(profiles)
+    for p in profiles:
+        p['caveats'].append('12 October 2026: all five ORBs changed to 0.5R by owner request. The new annual reference uses matching 0.5R component ledgers. Old 3-/5-year results and funding simulations are not substituted for these new settings; longer matched re-tests are pending.')
+        p['caveats'].append(POLICY['selection_note'])
     for profile in profiles:
         keys=[m['slug'] for m in profile['members']]
         assert len(keys)==len(set(keys)) and set(keys)<=set(catalog)
-    payload=dict(version='2026-10-08', launcher_directory=PACKAGE_ROOT.name+'/_00 Live profiles', status_meaning='Active means a configured launcher is available, not observed live installation. Disabled means research-only / not approved for live use, even when a compiled launcher is provided for review.',
+    payload=dict(version='2026-10-12', launcher_directory=PACKAGE_ROOT.name+'/_00 Live profiles', status_meaning='Active means an owner-selected configured launcher is available, not observed live installation or a statistical validation pass.',
                  metrics_note='Portfolio PF, win rate and streaks use net closed cash in chronological exit order; DD is closed-balance peak-to-trough. Daily closed DD uses each UTC day’s intraday closed-cash peak. Floating-equity DD is unavailable without intraday equity history; no proxy is presented as measured equity. Sharpe uses daily closed returns × sqrt(365), including no-trade days; payoff = average win / absolute average loss.',
                  period_options=[dict(value=p,label=l) for p,l,_ in PERIODS],
                  period_note='Calendar-month windows end at each portfolio’s latest saved coverage date, not necessarily today. The selected period changes metrics, curves and streaks; it never changes the selected EAs or risk rules.',

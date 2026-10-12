@@ -91,7 +91,7 @@ def test_ftmo_guarded_fixed_reference_and_ceiling():
     fixed=portfolio_scenario(p,risk_mode='fixed',risk_value=50)
     higher=portfolio_scenario(p,risk_mode='fixed',risk_value=200)
     reference=portfolio_history(p)
-    assert fixed['stats']['trades']==reference['stats']['trades']==836
+    assert fixed['stats']['trades']==reference['stats']['trades']==866
     assert fixed['stats']['net_profit']==pytest.approx(reference['stats']['net_profit'])
     assert higher['stats']==fixed['stats'] # Retained hard ceiling, not a fourfold scale.
     assert fixed['stats']['max_daily_equity_drawdown_pct'] is None
@@ -99,19 +99,13 @@ def test_ftmo_guarded_fixed_reference_and_ceiling():
     assert 'PROXY' in fixed['scope']
 
 
-def test_ftmo_long_history_keeps_loss_buffer_and_restarts_each_window():
+def test_ftmo_old_long_history_is_not_reused_after_target_change():
     p=portfolio_by_slug('ftmo')
     five=portfolio_scenario(p,'5y',risk_mode='fixed',risk_value=50)
     three=portfolio_scenario(p,'3y',risk_mode='fixed',risk_value=50)
-    assert five['available'] and three['available']
-    assert five['start']=='2021-10-06' and three['start']=='2023-10-06'
-    assert five['stats']['trades']==213 and three['stats']['trades']==2409
-    assert five['stats']['return_pct']<0<three['stats']['return_pct']
-    assert five['scenario']['skips']['total_loss_buffer_rejected']>0
-    assert five['scenario']['unclosed_positions']==0
-    assert 'continuous account' in five['scope'] and '$9,200 buffer blocked' in five['scope']
-    assert five['stats']['net_profit']==pytest.approx(portfolio_history(p,'5y')['stats']['net_profit'])
-    assert five['stats']['max_daily_equity_drawdown_pct'] is None
+    assert not five['available'] and not three['available']
+    assert five['requested_start']=='2021-10-06' and three['requested_start']=='2023-10-06'
+    assert not five['stats'] and not three['stats']
 
 
 @pytest.mark.parametrize('slug',['ftmo','current14-orb05','orbs-only','full-eas'])
@@ -178,28 +172,22 @@ def test_invalid_inputs_return_422_not_false_results(params):
 def test_ftmo_account_size_and_missing_history_boundaries():
     assert client.get('/api/portfolios/ftmo',params=dict(risk_mode='fixed',initial_balance=20000)).status_code==422
     response=client.get('/api/portfolios/orbs-only',params=dict(period='5y',risk_mode='percent',risk_value=1))
-    assert response.status_code==200 and response.json()['available']
-    assert response.json()['start']=='2021-10-06'
-    assert response.json()['stats']['trades']==574
-    assert response.json()['curve']
+    assert response.status_code==200 and not response.json()['available']
+    assert response.json()['requested_start']=='2021-10-06'
+    assert not response.json()['stats'] and not response.json()['curve']
 
 
 @pytest.mark.parametrize('period,expected,start',[('3y',358,'2023-10-06'),('5y',574,'2021-10-06')])
-def test_long_orb_risk_scenarios_use_long_ledger_not_annual_fallback(period,expected,start):
+def test_changed_orb_long_risk_scenarios_refuse_annual_fallback(period,expected,start):
     p=portfolio_by_slug('orbs-only')
     reference=portfolio_history(p,period)
     fixed=portfolio_scenario(p,period,risk_mode='fixed',risk_value=50)
     doubled=portfolio_scenario(p,period,risk_mode='fixed',risk_value=100)
     dynamic=portfolio_scenario(p,period,risk_mode='percent',risk_value=1.5,
                                daily_limit_mode='percent',daily_limit_value=3)
-    assert fixed['stats']['trades']==reference['stats']['trades']==expected
-    assert fixed['start']==start and fixed['end_exclusive']=='2026-10-06'
-    assert fixed['stats']['net_profit']==pytest.approx(reference['stats']['net_profit'])
-    assert doubled['stats']['net_profit']==pytest.approx(2*fixed['stats']['net_profit'])
-    assert dynamic['stats']['net_profit']!=pytest.approx(3*fixed['stats']['net_profit'])
-    assert dynamic['source_history_quality']==reference['source_history_quality']
-    assert 'not independent native tests' in dynamic['scope']
-    assert fixed['stats']['max_daily_equity_drawdown_pct'] is None
+    for h in (reference,fixed,doubled,dynamic):
+        assert not h['available'] and not h['stats'] and not h['curve']
+        assert h['requested_start']==start and h['end_exclusive']=='2026-10-06'
 
 
 def test_news_budget_and_nasdaq_taper_are_separate():
@@ -225,6 +213,6 @@ def test_mixed_publication_versions_never_produce_a_risk_result(tmp_path,monkeyp
     module._risk_rows.cache_clear();module._scenario.cache_clear()
     try:
         with pytest.raises(ValueError,match='mixed-version'):
-            portfolio_scenario(portfolio_by_slug('orbs-only'),'5y',risk_mode='fixed',risk_value=50)
+            portfolio_scenario(portfolio_by_slug('orbs-only'),'1y',risk_mode='fixed',risk_value=50)
     finally:
         module._risk_rows.cache_clear();module._scenario.cache_clear()

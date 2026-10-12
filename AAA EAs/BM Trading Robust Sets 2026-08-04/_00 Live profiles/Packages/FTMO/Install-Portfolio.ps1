@@ -57,7 +57,7 @@ function Assert-Package {
     if((Get-CalyxFileHash (Join-Path $StudyRoot 'CalyxFTMOGuard.mqh')) -ine $manifest.guard_sha){
         throw 'Risk guard changed since compilation. Rebuild and verify the package first.'
     }
-    if($manifest.news_enabled -or $manifest.risk_usd -ne 50 -or $manifest.entries.Count -ne 14){
+    if($manifest.news_enabled -or $manifest.risk_usd -ne 50 -or $manifest.entries.Count -ne 17){
         throw 'Unexpected portfolio policy'
     }
     if(@($manifest.entries | Where-Object slug -match 'news').Count){throw 'News must stay OFF'}
@@ -87,7 +87,7 @@ Write-Host ("Nasdaq 5M DI14 filter: {0}; wider stop and ATR trailing unchanged."
 if($NasdaqDIFilter -eq 'OFF'){Write-Host 'DI OFF is a custom selection; published DI-ON results do not describe it.' -ForegroundColor Yellow}
 if($ValidateOnly){
     foreach($entry in $manifest.entries){$null=Get-FTMOPresetInputs $entry $NasdaqDIFilter}
-    Write-Host 'PASS: 14 integrity-checked guarded EAs (incl. 3 Way Gold, market entries), selected risk with fixed $50 maximum stop risk, no news. No account accessed.';exit 0
+    Write-Host 'PASS: 17 integrity-checked guarded EAs (incl. 3 Way Gold, market entries), selected risk with fixed $50 maximum stop risk, no news. No account accessed.';exit 0
 }
 
 $candidates=@(Get-Mt5Candidates | Where-Object {
@@ -151,7 +151,7 @@ foreach($entry in $manifest.entries){
     }
 }
 Write-Host "FTMO $Phase / login $login / $server / $($probe.account.balance) USD"
-Write-Host '14 EAs incl. 3 Way Gold (3 modules, market entries); News Pulse and Gold News V9 OFF. $50 maximum stop risk per trade, rounded DOWN.'
+Write-Host '17 EAs incl. 3 Way Gold; ALL five ORBs at 0.5R; News Pulse and Gold News V9 OFF. $50 maximum stop risk per trade, rounded DOWN.'
 Write-Host 'Limits: $225 open risk; $150 per symbol; $300 daily reserved loss; $9,200 equity buffer.'
 Write-Host 'Seven entries/day maximum; no new entries after three net losing positions; 80% margin cap.'
 Write-Host 'These are entry guards, not guaranteed protection from gaps, outages or FTMO rule breaches.'

@@ -1,0 +1,30 @@
+{
+  "version": "2026-10-12",
+  "research_only": true,
+  "user_approved_reconstruction": true,
+  "video_url": "https://www.youtube.com/watch?v=t9Bssop4uqo",
+  "title": "This Is Exactly How I TRADE DMC (Day trading Strategy)",
+  "creator": "Dumb Money Hunter | Maven Founder",
+  "scope": "Separate research version; no live bot, BAT, website catalogue or portfolio membership changes.",
+  "deposit_usd": 10000,
+  "risk_percent": 1,
+  "start": "2023-10-12",
+  "end_exclusive": "2026-10-12",
+  "recent_windows": {"1y":"2025-10-12","6m":"2026-04-12","3m":"2026-07-12"},
+  "model": 4,
+  "execution_delay_ms": 150,
+  "assumptions": [
+    "Confirmed body pivots: two closed bars on each side; the forming candle is excluded.",
+    "Weekly, daily and H4 pivot-body zones map levels. H1 pivot zones approximate trend starts; completed-close structure breaks define D1/H1 direction.",
+    "Trend-following M15 rejections at H1 zones require agreeing D1/H1 directions. Counter-trend M15 rejection scalps at W1/D1/H4 zones are permitted, as in the video example.",
+    "M15 close beyond the latest confirmed M15 pivot can arm a break-and-retest entry, expiring after eight M15 bars.",
+    "Stop beyond both the zone and signal-bar extreme plus 0.1 M15 ATR(14). No creator-specified numeric stop was available.",
+    "Target nearest mapped W1/D1/H4/H1 body-pivot level in the trade direction; no fixed R cap. Skip room below 0.25R or broker stop constraints.",
+    "Move stop to entry at +0.5 initial R, only if the broker permits. Price break-even is not net cash break-even after costs.",
+    "One position at a time, all sessions; no daily trade cap or forced time exit. A traded zone can rearm after price closes through its far edge.",
+    "New model floors lot size to 1% current equity; existing models retain their original upward rounding, which can exceed nominal risk slightly.",
+    "Existing controls retain exact selected entry, session and dynamic trailing settings. BTC control is a Fresh Reaction US100-rules transfer, not an existing active BTC DMC.",
+    "Raw retrospective reconstruction, not optimisation, untouched OOS, institutional validation or a claim to reproduce the creator's discretionary trades."
+  ],
+  "frozen_before_results": true
+}

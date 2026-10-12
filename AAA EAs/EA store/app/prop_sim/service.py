@@ -15,7 +15,7 @@ from .ledger import Guards, Selection, build_features, load_ea
 from .metrics import combo_stats, common_window
 from .rules import LOGO_ROOT, RULES_ROOT, Programme, compatibility, get_programme, programmes
 
-FTMO_PACKAGE = PACKAGE_ROOT / "FTMO Thirteen EA Deployment 2026-09-27" / "PACKAGE.json"
+FTMO_PACKAGE = PACKAGE_ROOT / "_00 Live profiles/Packages/FTMO/PACKAGE.json"
 SUGGESTIONS = STORE_ROOT / "data" / "prop-sim" / "suggestions.json"
 MAX_PATHS = 5000
 ASSUMPTIONS = (
@@ -175,6 +175,7 @@ def current_ftmo_preset() -> dict[str, Any] | None:
         "eas": [{"slug": e["slug"], "risk_pct": risk / balance * 100, "risk_usd": risk} for e in entries],
         "guards": {"max_open_risk_pct": 2.25, "max_entries_per_day": 7},
         "note": f"Synced from PACKAGE.json ({package.get('version', '')}); ${risk:g} per trade, news off. "
+                "All five ORBs use 0.5R and matching annual signal ledgers; older targets are not substituted. "
                 "Loads the current selection only, NOT previously validated pass/payout numbers. "
                 "Standalone cached settings, UTC resets and simulator controls do not exactly reproduce "
                 "the native guard (including its three-loss stop, margin and same-symbol checks). "
@@ -257,7 +258,8 @@ def _data_stamp() -> str:
     import hashlib
     from ..evidence_cache import CACHE_ROOT
     inputs = [FTMO_PACKAGE, PACKAGE_ROOT / "_Auto Deploy/Install-BMTradingPortfolio.ps1",
-              PACKAGE_ROOT / "Hourly Profiles Deployment 2026-10-04/RELEASE.json"]
+              PACKAGE_ROOT / "Hourly Profiles Deployment 2026-10-04/RELEASE.json",
+              PACKAGE_ROOT / "_00 Live profiles/ORB05-policy.json", STORE_ROOT/'data/portfolio-risk-ledgers.json']
     inputs += list((CACHE_ROOT / "products").glob("*/*/*.json"))
     inputs += list(RULES_ROOT.glob("*.json"))
     fingerprints = "|".join(f"{p}:{p.stat().st_mtime_ns}:{p.stat().st_size}" for p in inputs if p.is_file())

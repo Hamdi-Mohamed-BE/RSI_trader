@@ -1,0 +1,346 @@
+{
+  "date": "2026-10-12",
+  "cutoff_utc": "2026-10-12T17:56:36.108161+00:00",
+  "broker": "Exness-MT5Trial15",
+  "deposit_usd": 10000,
+  "risk_percent": 1,
+  "risk_basis": "Separate 1% initial-$10k risk scenarios per EA; summed observed cash is an unrestricted overlay, not shared-equity/FTMO guard execution.",
+  "rr": 0.5,
+  "cases": [
+    {
+      "slug": "us100-h1-orb-13utc",
+      "label": "US100 H1 ORB 13UTC",
+      "symbol": "USTEC",
+      "range_start": "2026-10-12T13:00:00+00:00",
+      "range_end": "2026-10-12T14:00:00+00:00",
+      "entry_cutoff": "2026-10-12T15:00:00+00:00",
+      "high": 30896.8,
+      "low": 30745.56,
+      "range_width": 151.23999999999796,
+      "opening_rvol": 1.082732710207223,
+      "minimum_opening_rvol": 0.5,
+      "minimum_range_atr": 0.35,
+      "maximum_range_atr": 4.0,
+      "smallest_observed_range_atr": 2.16631880499283,
+      "range_ready": "2026-10-12T14:00:00+00:00",
+      "atr": 69.81428571428503,
+      "checks": [
+        {
+          "bar_open": "2026-10-12T14:00:00+00:00",
+          "decision": "2026-10-12T14:15:00+00:00",
+          "close": 30696.56,
+          "body_ratio": 0.6951011916020562,
+          "breakout_rvol": 4.382480396203054,
+          "direction": -1,
+          "reasons": []
+        }
+      ],
+      "trade": {
+        "side": "Sell",
+        "direction": -1,
+        "open_epoch": 1791814500.171,
+        "entry": 30697.81,
+        "request_quote": 30696.81,
+        "sl": 30903.78,
+        "tp": 30593.33,
+        "initial_risk_distance": 206.96999999999753,
+        "volume": 0.49,
+        "planned_stop_usd": 101.41529999999878,
+        "delay_ms": 150,
+        "status": "OPEN",
+        "exit_or_mark_epoch": 1791827791.764,
+        "exit_or_mark_price": 30697.34,
+        "profit_usd": 0.23,
+        "return_pct": 0.0023,
+        "commission_assumption": 0,
+        "swap_assumption": 0,
+        "broker_spread_included": true,
+        "closed": false
+      },
+      "reason": "Qualifying breakout"
+    },
+    {
+      "slug": "us100-orb-new-york-m30",
+      "label": "US100 ORB New York M30",
+      "symbol": "USTEC",
+      "range_start": "2026-10-12T13:30:00+00:00",
+      "range_end": "2026-10-12T13:35:00+00:00",
+      "entry_cutoff": "2026-10-12T16:35:00+00:00",
+      "high": 30858.06,
+      "low": 30745.56,
+      "range_width": 112.5,
+      "opening_rvol": 1.1458620588494148,
+      "minimum_opening_rvol": 0.6,
+      "minimum_range_atr": 0.2,
+      "maximum_range_atr": 1.8,
+      "smallest_observed_range_atr": 2.089191913832498,
+      "range_ready": null,
+      "atr": null,
+      "checks": [],
+      "trade": null,
+      "reason": "Opening-volume/range-size gate failed"
+    },
+    {
+      "slug": "us100-selective-orb-v3",
+      "label": "US100 Selective ORB V3",
+      "symbol": "USTEC",
+      "range_start": "2026-10-12T13:30:00+00:00",
+      "range_end": "2026-10-12T14:00:00+00:00",
+      "entry_cutoff": "2026-10-12T15:30:00+00:00",
+      "high": 30858.06,
+      "low": 30745.56,
+      "range_width": 112.5,
+      "daily_atr_proxy": 335.15999999999985,
+      "opening_rvol": 1.1798490719967367,
+      "normalized_range": 0.3356605800214824,
+      "checks": [
+        {
+          "bar_open": "2026-10-12T14:00:00+00:00",
+          "decision": "2026-10-12T14:05:00+00:00",
+          "body_ratio": 0.4531463748290329,
+          "close": 30756.81,
+          "reasons": [
+            "body too weak"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T14:05:00+00:00",
+          "decision": "2026-10-12T14:10:00+00:00",
+          "body_ratio": 0.932852700028274,
+          "close": 30690.32,
+          "reasons": [
+            "breakout armed; waits for retest"
+          ],
+          "breakout_rvol": 1.0334671035676153,
+          "vwap": 30783.336105791444
+        },
+        {
+          "bar_open": "2026-10-12T14:10:00+00:00",
+          "decision": "2026-10-12T14:15:00+00:00",
+          "body_ratio": 0.18948905109493724,
+          "close": 30696.56,
+          "reasons": [
+            "waiting for retest"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T14:15:00+00:00",
+          "decision": "2026-10-12T14:20:00+00:00",
+          "body_ratio": 0.9551166965888666,
+          "close": 30734.05,
+          "reasons": [
+            "waiting for retest"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T14:20:00+00:00",
+          "decision": "2026-10-12T14:25:00+00:00",
+          "body_ratio": 0.7865751590223754,
+          "close": 30686.81,
+          "reasons": []
+        }
+      ],
+      "trade": {
+        "side": "Sell",
+        "direction": -1,
+        "open_epoch": 1791815100.169,
+        "entry": 30687.06,
+        "request_quote": 30687.06,
+        "sl": 30863.690000000002,
+        "tp": 30598.75,
+        "initial_risk_distance": 176.63000000000102,
+        "volume": 0.5700000000000001,
+        "planned_stop_usd": 100.67910000000059,
+        "delay_ms": 150,
+        "status": "OPEN",
+        "exit_or_mark_epoch": 1791827791.764,
+        "exit_or_mark_price": 30697.34,
+        "profit_usd": -5.86,
+        "return_pct": -0.0586,
+        "commission_assumption": 0,
+        "swap_assumption": 0,
+        "broker_spread_included": true,
+        "closed": false
+      },
+      "reason": "Qualifying breakout and retest"
+    },
+    {
+      "slug": "xau-orb-new-york-m30",
+      "label": "XAU ORB New York M30",
+      "symbol": "XAUUSD",
+      "range_start": "2026-10-12T13:30:00+00:00",
+      "range_end": "2026-10-12T14:00:00+00:00",
+      "entry_cutoff": "2026-10-12T17:00:00+00:00",
+      "high": 4175.538,
+      "low": 4169.366,
+      "range_width": 6.171999999999571,
+      "opening_rvol": 0.6763234590456305,
+      "minimum_opening_rvol": 0.6,
+      "minimum_range_atr": 0.2,
+      "maximum_range_atr": 1.8,
+      "smallest_observed_range_atr": 1.0137500586606016,
+      "range_ready": "2026-10-12T14:00:00+00:00",
+      "atr": 6.08828571428564,
+      "checks": [
+        {
+          "bar_open": "2026-10-12T14:00:00+00:00",
+          "decision": "2026-10-12T14:30:00+00:00",
+          "close": 4165.073,
+          "body_ratio": 0.3978123885388159,
+          "breakout_rvol": 1.702738810955244,
+          "direction": -1,
+          "reasons": [
+            "body too weak"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T14:30:00+00:00",
+          "decision": "2026-10-12T15:00:00+00:00",
+          "close": 4164.208,
+          "body_ratio": 0.13109196214166258,
+          "breakout_rvol": 1.216281099956351,
+          "direction": -1,
+          "reasons": [
+            "body too weak"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T15:00:00+00:00",
+          "decision": "2026-10-12T15:30:00+00:00",
+          "close": 4167.047,
+          "body_ratio": 0.35190355329938966,
+          "breakout_rvol": 1.017655143249815,
+          "direction": 0,
+          "reasons": [
+            "body too weak",
+            "no direction-matching close beyond buffered range"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T15:30:00+00:00",
+          "decision": "2026-10-12T16:00:00+00:00",
+          "close": 4165.16,
+          "body_ratio": 0.29733046946917663,
+          "breakout_rvol": 0.6895618690810699,
+          "direction": -1,
+          "reasons": [
+            "body too weak",
+            "breakout volume too low"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T16:00:00+00:00",
+          "decision": "2026-10-12T16:30:00+00:00",
+          "close": 4162.494,
+          "body_ratio": 0.6636563339027609,
+          "breakout_rvol": 0.6704725658103393,
+          "direction": -1,
+          "reasons": [
+            "breakout volume too low"
+          ]
+        }
+      ],
+      "trade": null,
+      "reason": "No completed candle passed every entry gate"
+    },
+    {
+      "slug": "xau-orb-london-ny-overlap-m30",
+      "label": "XAU ORB London NY Overlap M30",
+      "symbol": "XAUUSD",
+      "range_start": "2026-10-12T13:00:00+00:00",
+      "range_end": "2026-10-12T13:05:00+00:00",
+      "entry_cutoff": "2026-10-12T16:05:00+00:00",
+      "high": 4168.199,
+      "low": 4162.891,
+      "range_width": 5.307999999999993,
+      "opening_rvol": 0.6496316758747698,
+      "minimum_opening_rvol": 0.6,
+      "minimum_range_atr": 0.2,
+      "maximum_range_atr": 1.8,
+      "smallest_observed_range_atr": 0.9282038471146686,
+      "range_ready": "2026-10-12T13:05:00+00:00",
+      "atr": 5.7185714285713924,
+      "checks": [
+        {
+          "bar_open": "2026-10-12T13:30:00+00:00",
+          "decision": "2026-10-12T14:00:00+00:00",
+          "close": 4171.817,
+          "body_ratio": 0.3710304601425993,
+          "breakout_rvol": 1.7375949932945909,
+          "direction": 0,
+          "reasons": [
+            "body too weak",
+            "no direction-matching close beyond buffered range"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T14:00:00+00:00",
+          "decision": "2026-10-12T14:30:00+00:00",
+          "close": 4165.073,
+          "body_ratio": 0.3978123885388159,
+          "breakout_rvol": 1.702738810955244,
+          "direction": 0,
+          "reasons": [
+            "body too weak",
+            "no direction-matching close beyond buffered range"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T14:30:00+00:00",
+          "decision": "2026-10-12T15:00:00+00:00",
+          "close": 4164.208,
+          "body_ratio": 0.13109196214166258,
+          "breakout_rvol": 1.216281099956351,
+          "direction": 0,
+          "reasons": [
+            "body too weak",
+            "no direction-matching close beyond buffered range"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T15:00:00+00:00",
+          "decision": "2026-10-12T15:30:00+00:00",
+          "close": 4167.047,
+          "body_ratio": 0.35190355329938966,
+          "breakout_rvol": 1.017655143249815,
+          "direction": 0,
+          "reasons": [
+            "body too weak",
+            "no direction-matching close beyond buffered range"
+          ]
+        },
+        {
+          "bar_open": "2026-10-12T15:30:00+00:00",
+          "decision": "2026-10-12T16:00:00+00:00",
+          "close": 4165.16,
+          "body_ratio": 0.29733046946917663,
+          "breakout_rvol": 0.6895618690810699,
+          "direction": 0,
+          "reasons": [
+            "body too weak",
+            "breakout volume too low",
+            "no direction-matching close beyond buffered range"
+          ]
+        }
+      ],
+      "trade": null,
+      "reason": "No completed candle passed every entry gate"
+    }
+  ],
+  "trades": 2,
+  "closed": 0,
+  "open": 2,
+  "realized": 0,
+  "floating": -5.63,
+  "aggregate_equity": 9994.37,
+  "win_rate": null,
+  "method": "Read-only connected broker bars/ticks; closed-bar rule reconstruction, not native MT5 Strategy Tester. Isolated native test rejected future end date for the incomplete current day.",
+  "assumptions": [
+    "Assumes each EA running before its opening window and no carried same-magic position. Does not reproduce live restart history or all-account blockers.",
+    "Original filters retained. Bid/ask spread included. Deterministic 150ms quote delay; unknown broker rejections, acknowledgement and slippage not modelled.",
+    "No same-day commission/swap charged in this raw Exness demo reconstruction. FTMO commissions, shared guards, risk taper, margin constraints are not applied.",
+    "1% setting is not a guaranteed maximum loss; original lot rounding rounds up. All targets use 0.5R from order-request quote; actual fill can change realized R slightly."
+  ],
+  "data_sha256": "b04a6e8c3210fabe29b14d1a3c900643d6bfc393519bc1d3f095131e46a075e2",
+  "no_live_changes": true
+}

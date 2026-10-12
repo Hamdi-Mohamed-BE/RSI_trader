@@ -3110,7 +3110,22 @@ def get_catalog() -> list[Product]:
         )
     from .admission_release import apply_product_release
     from .hourly_profiles import website_products
-    return [apply_product_release(product) for product in products] + website_products()
+    published=[apply_product_release(product) for product in products] + website_products()
+    policy_path=PACKAGE_ROOT/'_00 Live profiles/ORB05-policy.json'
+    if policy_path.is_file():
+        policy=json.loads(policy_path.read_text(encoding='utf-8'))
+        for product in published:
+            if product.slug not in policy['slugs']:continue
+            note='12 October 2026 owner override: current launchers use 0.5R. Entry filters, protective stops and management are retained. Older standalone benchmark cards/periods show archived targets, not results for this override; matching 0.5R evidence is on the portfolio pages.'
+            product.exit_mode='0.5R target / original BE, trailing and time exits retained'
+            product.logic.insert(0,LogicStep(title='Current target override',detail=note))
+            product.limitations.insert(0,note)
+            product.one_year_note=note
+            current_set=PACKAGE_ROOT/'_00 Live profiles/ORB05 Sets'/(product.slug+'.set')
+            if current_set.is_file():product.set_source=str(current_set.relative_to(PACKAGE_ROOT))
+            for evidence in (product.evidence,product.one_year_evidence,product.safe_evidence,product.dynamic_evidence):
+                if evidence:evidence.caution=note+' '+(evidence.caution or '')
+    return published
 
 
 def get_sellable_catalog() -> list[Product]:

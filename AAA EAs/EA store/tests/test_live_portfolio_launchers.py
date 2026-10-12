@@ -78,7 +78,7 @@ def test_ftmo_allocation_and_both_di_prompts_preserve_original_strategy(mode,val
  }};$out|ConvertTo-Json -Depth 8 -Compress
  """
     entries=json.loads(powershell(script))
-    assert len(entries)==14
+    assert len(entries)==17
     for entry in entries:
         inputs=entry['inputs']
         assert inputs['FTMOAllocationMode']==('0' if mode=='FIXED_USD' else '1')
@@ -105,7 +105,7 @@ def test_current_portfolio_risk_and_per_ea_di_inputs(mode,value):
  }};$out|ConvertTo-Json -Depth 8 -Compress
  """
     entries=json.loads(powershell(script))
-    assert len(entries)==15
+    assert len(entries)==17
     for entry in entries:
         inputs=entry['inputs']
         assert inputs['InpPortfolioRiskMode']==('1' if mode=='FIXED_USD' else '0')
@@ -118,7 +118,7 @@ def test_isolated_ftmo_guard_keeps_ceiling_and_origins():
     guard=(LIVE/'Packages/FTMO/CalyxFTMOGuard.mqh').read_text()
     assert 'MathMin(50.0,requested)' in guard and 'FTMOAllocationValid' in guard
     assert 'FTMOAllocationBudget()/unit' in guard
-    for folder,n in [('FTMO',14),('ORB-only',5)]:
+    for folder,n in [('FTMO',17),('ORB-only',5)]:
         package=LIVE/'Packages'/folder
         binaries=list(package.rglob('*.ex5'))
         assert len({hashlib.sha256(p.read_bytes()).hexdigest() for p in binaries})==n

@@ -646,6 +646,15 @@ function Get-EffectiveInputs([object]$Item) {
         $inputs['InpMarkovMinLabels'] = '252'
         $inputs['InpMarkovHistoryBars'] = '2600'
     }
+    # Owner-approved 2026-10-12 target policy, shared by normal, safe, dynamic,
+    # recommended and reviewed launchers. This does not change entry filters.
+    # Kept pure for helper/import tests and deployed hosts; synchronization tests
+    # verify this exact list against _00 Live profiles/ORB05-policy.json.
+    $orbLabels = @('US100 H1 ORB 13UTC','US100 ORB New York M30','US100 Selective ORB V3','XAU ORB New York M30','XAU ORB London NY Overlap M30')
+    if ($Item.Label -in $orbLabels) {
+        if (-not $inputs.Contains('InpRewardRisk')) { throw "Missing ORB target input: $($Item.Label)" }
+        $inputs['InpRewardRisk'] = '0.5'
+    }
     return $inputs
 }
 

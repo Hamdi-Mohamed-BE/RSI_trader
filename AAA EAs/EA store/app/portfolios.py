@@ -19,7 +19,7 @@ PERIODS = {'3m': '3 months', '6m': '6 months', '1y': '1 year', '3y': '3 years', 
 MANIFESTS = ('FTMO Thirteen EA Deployment 2026-09-27/PACKAGE.json',
              'Current14 Plus ORB05 Portfolio 2026-10-08/Package.json',
              '_00 Live profiles/Profiles.json', '_00 Live profiles/Packages/FTMO/PACKAGE.json',
-             '_00 Live profiles/Packages/ORB-only/Package.json')
+             '_00 Live profiles/Packages/ORB-only/Package.json', '_00 Live profiles/ORB05-policy.json')
 
 
 def _chart(history):

@@ -1,0 +1,315 @@
+<!doctype html><html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>All five ORBs · 0.5R · 12 October</title><style>body{font:16px system-ui;background:#081b14;color:#eafff5;max-width:1450px;margin:30px auto;padding:20px}p{line-height:1.6;color:#bdd6cb}table{border-collapse:collapse;width:100%}td,th{padding:13px;text-align:left;border-bottom:1px solid #375848}details{margin:20px 0}pre{overflow:auto;max-height:600px}.wide{overflow:auto}</style><h1>Five ORBs at 0.5R — today, 12 October 2026</h1><p>Read-only connected broker bars/ticks; closed-bar rule reconstruction, not native MT5 Strategy Tester. Isolated native test rejected future end date for the incomplete current day.</p><p>Cutoff: 2026-10-12T17:56:36.108161+00:00. $10,000, 1% initial risk per EA. All original entry filters, stops and management retained. This is an unrestricted summed scenario, not a guarded FTMO portfolio.</p><p>Closed trades: 0, open: 2. Realized: $+0.00, floating: $-5.63. Marked balance/equity: $9,994.37.</p><div class="wide"><table><tr><th>EA</th><th>Trades</th><th>Direction</th><th>Entry</th><th>Status</th><th>P/L</th><th>Decision</th></tr><tr><td>US100 H1 ORB 13UTC</td><td>1</td><td>Sell</td><td>14:15:00.171 UTC</td><td>OPEN</td><td>$+0.23</td><td>Qualifying breakout</td></tr><tr><td>US100 ORB New York M30</td><td>0</td><td>—</td><td>—</td><td>No trade</td><td>—</td><td>Opening-volume/range-size gate failed</td></tr><tr><td>US100 Selective ORB V3</td><td>1</td><td>Sell</td><td>14:25:00.169 UTC</td><td>OPEN</td><td>$-5.86</td><td>Qualifying breakout and retest</td></tr><tr><td>XAU ORB New York M30</td><td>0</td><td>—</td><td>—</td><td>No trade</td><td>—</td><td>No completed candle passed every entry gate</td></tr><tr><td>XAU ORB London NY Overlap M30</td><td>0</td><td>—</td><td>—</td><td>No trade</td><td>—</td><td>No completed candle passed every entry gate</td></tr></table></div><h2>Assumptions</h2><ul><li>Assumes each EA running before its opening window and no carried same-magic position. Does not reproduce live restart history or all-account blockers.</li><li>Original filters retained. Bid/ask spread included. Deterministic 150ms quote delay; unknown broker rejections, acknowledgement and slippage not modelled.</li><li>No same-day commission/swap charged in this raw Exness demo reconstruction. FTMO commissions, shared guards, risk taper, margin constraints are not applied.</li><li>1% setting is not a guaranteed maximum loss; original lot rounding rounds up. All targets use 0.5R from order-request quote; actual fill can change realized R slightly.</li></ul><h2>Detailed gate audit and trades</h2><details><summary>US100 H1 ORB 13UTC — range and every entry check</summary><pre>{
+  &quot;slug&quot;: &quot;us100-h1-orb-13utc&quot;,
+  &quot;label&quot;: &quot;US100 H1 ORB 13UTC&quot;,
+  &quot;symbol&quot;: &quot;USTEC&quot;,
+  &quot;range_start&quot;: &quot;2026-10-12T13:00:00+00:00&quot;,
+  &quot;range_end&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+  &quot;entry_cutoff&quot;: &quot;2026-10-12T15:00:00+00:00&quot;,
+  &quot;high&quot;: 30896.8,
+  &quot;low&quot;: 30745.56,
+  &quot;range_width&quot;: 151.23999999999796,
+  &quot;opening_rvol&quot;: 1.082732710207223,
+  &quot;minimum_opening_rvol&quot;: 0.5,
+  &quot;minimum_range_atr&quot;: 0.35,
+  &quot;maximum_range_atr&quot;: 4.0,
+  &quot;smallest_observed_range_atr&quot;: 2.16631880499283,
+  &quot;range_ready&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+  &quot;atr&quot;: 69.81428571428503,
+  &quot;checks&quot;: [
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T14:15:00+00:00&quot;,
+      &quot;close&quot;: 30696.56,
+      &quot;body_ratio&quot;: 0.6951011916020562,
+      &quot;breakout_rvol&quot;: 4.382480396203054,
+      &quot;direction&quot;: -1,
+      &quot;reasons&quot;: []
+    }
+  ],
+  &quot;trade&quot;: {
+    &quot;side&quot;: &quot;Sell&quot;,
+    &quot;direction&quot;: -1,
+    &quot;open_epoch&quot;: 1791814500.171,
+    &quot;entry&quot;: 30697.81,
+    &quot;request_quote&quot;: 30696.81,
+    &quot;sl&quot;: 30903.78,
+    &quot;tp&quot;: 30593.33,
+    &quot;initial_risk_distance&quot;: 206.96999999999753,
+    &quot;volume&quot;: 0.49,
+    &quot;planned_stop_usd&quot;: 101.41529999999878,
+    &quot;delay_ms&quot;: 150,
+    &quot;status&quot;: &quot;OPEN&quot;,
+    &quot;exit_or_mark_epoch&quot;: 1791827791.764,
+    &quot;exit_or_mark_price&quot;: 30697.34,
+    &quot;profit_usd&quot;: 0.23,
+    &quot;return_pct&quot;: 0.0023,
+    &quot;commission_assumption&quot;: 0,
+    &quot;swap_assumption&quot;: 0,
+    &quot;broker_spread_included&quot;: true,
+    &quot;closed&quot;: false
+  },
+  &quot;reason&quot;: &quot;Qualifying breakout&quot;
+}</pre></details><details><summary>US100 ORB New York M30 — range and every entry check</summary><pre>{
+  &quot;slug&quot;: &quot;us100-orb-new-york-m30&quot;,
+  &quot;label&quot;: &quot;US100 ORB New York M30&quot;,
+  &quot;symbol&quot;: &quot;USTEC&quot;,
+  &quot;range_start&quot;: &quot;2026-10-12T13:30:00+00:00&quot;,
+  &quot;range_end&quot;: &quot;2026-10-12T13:35:00+00:00&quot;,
+  &quot;entry_cutoff&quot;: &quot;2026-10-12T16:35:00+00:00&quot;,
+  &quot;high&quot;: 30858.06,
+  &quot;low&quot;: 30745.56,
+  &quot;range_width&quot;: 112.5,
+  &quot;opening_rvol&quot;: 1.1458620588494148,
+  &quot;minimum_opening_rvol&quot;: 0.6,
+  &quot;minimum_range_atr&quot;: 0.2,
+  &quot;maximum_range_atr&quot;: 1.8,
+  &quot;smallest_observed_range_atr&quot;: 2.089191913832498,
+  &quot;range_ready&quot;: null,
+  &quot;atr&quot;: null,
+  &quot;checks&quot;: [],
+  &quot;trade&quot;: null,
+  &quot;reason&quot;: &quot;Opening-volume/range-size gate failed&quot;
+}</pre></details><details><summary>US100 Selective ORB V3 — range and every entry check</summary><pre>{
+  &quot;slug&quot;: &quot;us100-selective-orb-v3&quot;,
+  &quot;label&quot;: &quot;US100 Selective ORB V3&quot;,
+  &quot;symbol&quot;: &quot;USTEC&quot;,
+  &quot;range_start&quot;: &quot;2026-10-12T13:30:00+00:00&quot;,
+  &quot;range_end&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+  &quot;entry_cutoff&quot;: &quot;2026-10-12T15:30:00+00:00&quot;,
+  &quot;high&quot;: 30858.06,
+  &quot;low&quot;: 30745.56,
+  &quot;range_width&quot;: 112.5,
+  &quot;daily_atr_proxy&quot;: 335.15999999999985,
+  &quot;opening_rvol&quot;: 1.1798490719967367,
+  &quot;normalized_range&quot;: 0.3356605800214824,
+  &quot;checks&quot;: [
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T14:05:00+00:00&quot;,
+      &quot;body_ratio&quot;: 0.4531463748290329,
+      &quot;close&quot;: 30756.81,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:05:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T14:10:00+00:00&quot;,
+      &quot;body_ratio&quot;: 0.932852700028274,
+      &quot;close&quot;: 30690.32,
+      &quot;reasons&quot;: [
+        &quot;breakout armed; waits for retest&quot;
+      ],
+      &quot;breakout_rvol&quot;: 1.0334671035676153,
+      &quot;vwap&quot;: 30783.336105791444
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:10:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T14:15:00+00:00&quot;,
+      &quot;body_ratio&quot;: 0.18948905109493724,
+      &quot;close&quot;: 30696.56,
+      &quot;reasons&quot;: [
+        &quot;waiting for retest&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:15:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T14:20:00+00:00&quot;,
+      &quot;body_ratio&quot;: 0.9551166965888666,
+      &quot;close&quot;: 30734.05,
+      &quot;reasons&quot;: [
+        &quot;waiting for retest&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:20:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T14:25:00+00:00&quot;,
+      &quot;body_ratio&quot;: 0.7865751590223754,
+      &quot;close&quot;: 30686.81,
+      &quot;reasons&quot;: []
+    }
+  ],
+  &quot;trade&quot;: {
+    &quot;side&quot;: &quot;Sell&quot;,
+    &quot;direction&quot;: -1,
+    &quot;open_epoch&quot;: 1791815100.169,
+    &quot;entry&quot;: 30687.06,
+    &quot;request_quote&quot;: 30687.06,
+    &quot;sl&quot;: 30863.690000000002,
+    &quot;tp&quot;: 30598.75,
+    &quot;initial_risk_distance&quot;: 176.63000000000102,
+    &quot;volume&quot;: 0.5700000000000001,
+    &quot;planned_stop_usd&quot;: 100.67910000000059,
+    &quot;delay_ms&quot;: 150,
+    &quot;status&quot;: &quot;OPEN&quot;,
+    &quot;exit_or_mark_epoch&quot;: 1791827791.764,
+    &quot;exit_or_mark_price&quot;: 30697.34,
+    &quot;profit_usd&quot;: -5.86,
+    &quot;return_pct&quot;: -0.0586,
+    &quot;commission_assumption&quot;: 0,
+    &quot;swap_assumption&quot;: 0,
+    &quot;broker_spread_included&quot;: true,
+    &quot;closed&quot;: false
+  },
+  &quot;reason&quot;: &quot;Qualifying breakout and retest&quot;
+}</pre></details><details><summary>XAU ORB New York M30 — range and every entry check</summary><pre>{
+  &quot;slug&quot;: &quot;xau-orb-new-york-m30&quot;,
+  &quot;label&quot;: &quot;XAU ORB New York M30&quot;,
+  &quot;symbol&quot;: &quot;XAUUSD&quot;,
+  &quot;range_start&quot;: &quot;2026-10-12T13:30:00+00:00&quot;,
+  &quot;range_end&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+  &quot;entry_cutoff&quot;: &quot;2026-10-12T17:00:00+00:00&quot;,
+  &quot;high&quot;: 4175.538,
+  &quot;low&quot;: 4169.366,
+  &quot;range_width&quot;: 6.171999999999571,
+  &quot;opening_rvol&quot;: 0.6763234590456305,
+  &quot;minimum_opening_rvol&quot;: 0.6,
+  &quot;minimum_range_atr&quot;: 0.2,
+  &quot;maximum_range_atr&quot;: 1.8,
+  &quot;smallest_observed_range_atr&quot;: 1.0137500586606016,
+  &quot;range_ready&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+  &quot;atr&quot;: 6.08828571428564,
+  &quot;checks&quot;: [
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T14:30:00+00:00&quot;,
+      &quot;close&quot;: 4165.073,
+      &quot;body_ratio&quot;: 0.3978123885388159,
+      &quot;breakout_rvol&quot;: 1.702738810955244,
+      &quot;direction&quot;: -1,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:30:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T15:00:00+00:00&quot;,
+      &quot;close&quot;: 4164.208,
+      &quot;body_ratio&quot;: 0.13109196214166258,
+      &quot;breakout_rvol&quot;: 1.216281099956351,
+      &quot;direction&quot;: -1,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T15:00:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T15:30:00+00:00&quot;,
+      &quot;close&quot;: 4167.047,
+      &quot;body_ratio&quot;: 0.35190355329938966,
+      &quot;breakout_rvol&quot;: 1.017655143249815,
+      &quot;direction&quot;: 0,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;,
+        &quot;no direction-matching close beyond buffered range&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T15:30:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T16:00:00+00:00&quot;,
+      &quot;close&quot;: 4165.16,
+      &quot;body_ratio&quot;: 0.29733046946917663,
+      &quot;breakout_rvol&quot;: 0.6895618690810699,
+      &quot;direction&quot;: -1,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;,
+        &quot;breakout volume too low&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T16:00:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T16:30:00+00:00&quot;,
+      &quot;close&quot;: 4162.494,
+      &quot;body_ratio&quot;: 0.6636563339027609,
+      &quot;breakout_rvol&quot;: 0.6704725658103393,
+      &quot;direction&quot;: -1,
+      &quot;reasons&quot;: [
+        &quot;breakout volume too low&quot;
+      ]
+    }
+  ],
+  &quot;trade&quot;: null,
+  &quot;reason&quot;: &quot;No completed candle passed every entry gate&quot;
+}</pre></details><details><summary>XAU ORB London NY Overlap M30 — range and every entry check</summary><pre>{
+  &quot;slug&quot;: &quot;xau-orb-london-ny-overlap-m30&quot;,
+  &quot;label&quot;: &quot;XAU ORB London NY Overlap M30&quot;,
+  &quot;symbol&quot;: &quot;XAUUSD&quot;,
+  &quot;range_start&quot;: &quot;2026-10-12T13:00:00+00:00&quot;,
+  &quot;range_end&quot;: &quot;2026-10-12T13:05:00+00:00&quot;,
+  &quot;entry_cutoff&quot;: &quot;2026-10-12T16:05:00+00:00&quot;,
+  &quot;high&quot;: 4168.199,
+  &quot;low&quot;: 4162.891,
+  &quot;range_width&quot;: 5.307999999999993,
+  &quot;opening_rvol&quot;: 0.6496316758747698,
+  &quot;minimum_opening_rvol&quot;: 0.6,
+  &quot;minimum_range_atr&quot;: 0.2,
+  &quot;maximum_range_atr&quot;: 1.8,
+  &quot;smallest_observed_range_atr&quot;: 0.9282038471146686,
+  &quot;range_ready&quot;: &quot;2026-10-12T13:05:00+00:00&quot;,
+  &quot;atr&quot;: 5.7185714285713924,
+  &quot;checks&quot;: [
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T13:30:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+      &quot;close&quot;: 4171.817,
+      &quot;body_ratio&quot;: 0.3710304601425993,
+      &quot;breakout_rvol&quot;: 1.7375949932945909,
+      &quot;direction&quot;: 0,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;,
+        &quot;no direction-matching close beyond buffered range&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:00:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T14:30:00+00:00&quot;,
+      &quot;close&quot;: 4165.073,
+      &quot;body_ratio&quot;: 0.3978123885388159,
+      &quot;breakout_rvol&quot;: 1.702738810955244,
+      &quot;direction&quot;: 0,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;,
+        &quot;no direction-matching close beyond buffered range&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T14:30:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T15:00:00+00:00&quot;,
+      &quot;close&quot;: 4164.208,
+      &quot;body_ratio&quot;: 0.13109196214166258,
+      &quot;breakout_rvol&quot;: 1.216281099956351,
+      &quot;direction&quot;: 0,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;,
+        &quot;no direction-matching close beyond buffered range&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T15:00:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T15:30:00+00:00&quot;,
+      &quot;close&quot;: 4167.047,
+      &quot;body_ratio&quot;: 0.35190355329938966,
+      &quot;breakout_rvol&quot;: 1.017655143249815,
+      &quot;direction&quot;: 0,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;,
+        &quot;no direction-matching close beyond buffered range&quot;
+      ]
+    },
+    {
+      &quot;bar_open&quot;: &quot;2026-10-12T15:30:00+00:00&quot;,
+      &quot;decision&quot;: &quot;2026-10-12T16:00:00+00:00&quot;,
+      &quot;close&quot;: 4165.16,
+      &quot;body_ratio&quot;: 0.29733046946917663,
+      &quot;breakout_rvol&quot;: 0.6895618690810699,
+      &quot;direction&quot;: 0,
+      &quot;reasons&quot;: [
+        &quot;body too weak&quot;,
+        &quot;breakout volume too low&quot;,
+        &quot;no direction-matching close beyond buffered range&quot;
+      ]
+    }
+  ],
+  &quot;trade&quot;: null,
+  &quot;reason&quot;: &quot;No completed candle passed every entry gate&quot;
+}</pre></details></html>

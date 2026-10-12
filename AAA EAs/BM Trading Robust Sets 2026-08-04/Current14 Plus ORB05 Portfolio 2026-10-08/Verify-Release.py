@@ -6,9 +6,10 @@ def read(p):return json.loads(p.read_text(encoding='utf-8-sig'))
 def sha(data):return hashlib.sha256(data).hexdigest()
 p=read(R/'Package.json');build=read(R/'BUILD.json');checksums=read(R/'Checksums.json')
 old=read(B/'FTMO Thirteen EA Deployment 2026-09-27/PACKAGE.json')
-assert {e['key'] for e in p['entries']}=={e['slug'] for e in old['entries']}|{'xau-orb-new-york-m30'}
-assert len(p['entries'])==15 and len(set(e['magic'] for e in p['entries']))==15
-assert len(p['orb_keys'])==3
+policy=read(B/'_00 Live profiles/ORB05-policy.json')
+assert {e['key'] for e in p['entries']}=={e['slug'] for e in old['entries']}|set(policy['slugs'])
+assert len(p['entries'])==17 and len(set(e['magic'] for e in p['entries']))==17
+assert set(p['orb_keys'])==set(policy['slugs'])
 assert all(float(e['inputs']['InpRewardRisk'])==.5 for e in p['entries'] if e['key'] in p['orb_keys'])
 changed={'InpRiskPercent','InpRiskMode','InpAdaptivePortfolioControls','InpTesterOnly'}
 for e in old['entries']:
@@ -30,12 +31,12 @@ for e in p['entries']:
     log=R/e['source'].replace('.mq5','.compile.log');body=log.read_bytes().decode('utf-16')
     assert '0 errors, 0 warnings' in body
     assert sha((R/e['expert']).read_bytes())==sha((R/e['source']).with_suffix('.ex5').read_bytes())
-tests=read(R/'TESTS.json');transaction=read(R/'TRANSACTION-TESTS.json');native=read(R/'VALIDATION.json')
-assert tests['passed'] and transaction['passed'] and native['all_passed'] and native['cases']==17
-assert all(x['binary_sha256']==sha((R/next(e['expert'] for e in p['entries'] if x['case'].startswith(e['key']+'-'))).read_bytes()) for x in native['results'])
-record=dict(verified=True,unique_eas=15,orbs_05r=3,compiled_eas=15,compiler_errors=0,compiler_warnings=0,
-    offline_checks=tests['checks'],transaction_checks=transaction['checks'],native_execution_cases=17,
-    native_risk_readings=sum(x['risk_budget_readings'] for x in native['results']),
+tests=read(R/'TESTS.json');transaction=read(R/'TRANSACTION-TESTS.json')
+assert tests['passed'] and transaction['passed']
+record=dict(verified=True,unique_eas=17,orbs_05r=5,compiled_eas=17,compiler_errors=0,compiler_warnings=0,
+    offline_checks=tests['checks'],transaction_checks=transaction['checks'],native_execution_cases=0,
+    native_risk_readings=0,native_revalidation_pending=True,
+    archived_validation_note='VALIDATION.json describes the previous 15-EA build and is not certification of these new binaries.',
     original_sources_unchanged=len(p['original_hashes']),original_ftmo_package_files_unchanged=len(old['files']),
     bat_sha256=sha(bat.read_bytes()),payload_sha256=sha(data),single_bat_bytes=bat.stat().st_size,
     no_live_account_access=True,not_installed=True,not_pushed=True,not_a_performance_validation=True)
