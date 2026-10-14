@@ -176,9 +176,9 @@ def load_ea(slug: str, period: str, mode: str | None = None) -> tuple[EaProfile,
         return None
     policy=PACKAGE_ROOT/'_00 Live profiles/ORB05-policy.json'
     if policy.is_file() and slug in json.loads(policy.read_text())['slugs']:
-        # Changed targets must never reuse old cached 2R/4R/6R trades. Only the
-        # matching annual raw 0.5R signal ledger is currently published.
-        if period not in ('1y','6m') or mode not in (None,'standard'):
+        # Changed targets must never reuse old cached 2R/4R/6R trades. Use only
+        # the matching published 0.5R source for the requested date window.
+        if mode not in (None,'standard'):
             return None
         source=STORE_ROOT/'data/portfolio-risk-ledgers.json'
         if not source.is_file():return None
@@ -208,9 +208,15 @@ def _load_orb05(slug: str,period: str,stamp: tuple):
     if member.get('target_rr')!=.5:raise ValueError('ORB05 target mismatch')
     payload=json.loads(path.read_text())
     rows=payload.get('orbs-only',[])
+    history=next((h for h in profile.get('history',[]) if h['id']==period),None)
+    if not history or not history.get('available') or history.get('coverage')!='complete':return None
+    if isinstance(rows,dict):
+        source=rows.get('window_sources',{}).get(period)
+        if not source or source not in rows:return None
+        rows=rows[source]
     if not isinstance(rows,list):return None
-    start=datetime(2025,10,6) if period=='1y' else datetime(2026,4,6)
-    end=datetime(2026,10,6)
+    start=datetime.fromisoformat(history['start'])
+    end=datetime.fromisoformat(history['end_exclusive'])
     trades=[]
     for r in rows:
         if r['key']!=slug:continue
@@ -227,8 +233,9 @@ def _load_orb05(slug: str,period: str,stamp: tuple):
         start=start.date(),end=(end-timedelta(days=1)).date(),trades=len(trades),weekend_holds=weekend>0,
         weekend_hold_share=weekend/len(trades) if trades else 0.,news_ea=False,straddle=False,
         short_trade_share=sum(t.seconds<SHORT_TRADE_SECONDS for t in trades)/len(trades) if trades else 0.,
-        evidence_status='Owner-selected 0.5R / matching native annual signals; not untouched OOS',period=period,
-        risk_note='Current 0.5R target; annual raw native signal ledger, 76% real ticks. Recent window is a slice. Lot re-sizing and guards are simulator approximations; no matched 3-/5-year target history.')
+        evidence_status='Owner-selected 0.5R / matching native signal ledger; not untouched OOS',period=period,
+        risk_note='Current 0.5R target; matching published signal ledger, '+', '.join(history.get('source_history_quality',[]))+'. '
+                  'Selected window is a slice/replay, not independent OOS. Lot re-sizing and guards are simulator approximations; mixed/generated ticks are not full execution validation.')
     return profile,tuple(trades)
 
 

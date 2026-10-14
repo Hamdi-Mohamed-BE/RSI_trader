@@ -1,10 +1,10 @@
 # Calyx — EA Store
 
-## Portfolio library — 2026-10-08
+## Portfolio library — matched all-0.5R histories, 2026-10-14
 
-`/portfolios` lists four independently defined baskets: guarded FTMO (14 EAs),
-Current14 + ORB05 (15), screened ORB-only (5; research/disabled), and full normal
-Recommended Adaptive (37). Status is portfolio-level and means launcher availability,
+`/portfolios` lists four owner-approved baskets: guarded FTMO (17 EAs),
+Current14 + ORB05 (17), ORB-only (5), and full normal Recommended Adaptive (37).
+All five selected ORBs use 0.5R in every portfolio. Status means launcher availability,
 not observed MT5 installation. Individual EA review phases, prices, carts, licenses,
 BATs and MT5 accounts are unchanged. The old `/portfolio` remains an archived audit.
 
@@ -22,11 +22,17 @@ history; the full portfolio covers 36 of 37 current members and explicitly lacks
 Gold News V9's historical predictions. Raw returns are not equal-risk matched
 comparisons. `/api/portfolios` exposes the same publication.
 
-The ORB-only screen is annual net win rate >=50% and finite PF >=1.15, choosing the
-highest-win-rate qualifying version per strategy. Three qualify at 0.5R, US100 NY
-at 4R and Selective V3 at 2R (only five trades); it is not an all-0.5R portfolio.
-A named ORB-only BAT is available, but its portfolio remains research/disabled
-pending an owner decision. A custom calculator limit does not add a live guard.
+The owner explicitly overrode the former PF/win-rate admission screen on 12 October.
+Do not restore the old 4R/2R benchmarks as current evidence. The 14 October repair
+uses `Portfolio Long History All ORB05 2026-10-14`: changed components were rerun,
+and existing receipts reused only after source-closure and active-input checks.
+Every period (3m/6m/1y/3y/5y) and custom-risk scenario uses the matching long ledger,
+ending 6 October 2026 exclusive. A fresh risk/guard replay starts at each window.
+The full basket remains explicitly partial (36/37; Gold News V9 predictions absent).
+History includes selection dates and mixed/generated ticks, not untouched OOS or
+a native simultaneous account. A custom calculator limit does not add a live guard.
+The publisher checks roster/settings and refuses to erase previously available
+3-/5-year evidence when its matching source is missing.
 
 Commit the website snapshot along with the new module/templates/styles when deploying;
 the public web host does not need the large research folders. Local updates do not

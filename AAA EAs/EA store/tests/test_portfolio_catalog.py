@@ -146,7 +146,7 @@ def test_recent_windows_are_calendar_months_and_do_not_change_members():
         ('3m','2026-07-06'),('6m','2026-04-06'),('1y','2025-10-06')]
     assert p['history'][0]['stats']['trades']<p['history'][1]['stats']['trades']<p['history'][2]['stats']['trades']
     full=portfolio_by_slug('full-eas')
-    assert full['history'][-1]['coverage']=='unavailable'
+    assert full['history'][-1]['coverage']=='partial'
     end='2026-10-06'
     assert all(h['end_exclusive']==end for h in full['history'])
     assert client.get('/portfolios?period=3m').text.count('data-loaded-period="3m"')==4
@@ -159,9 +159,14 @@ def test_old_mixed_target_long_history_is_not_reused_for_all05():
     assert len(profile['members'])==5
     for period,start in [('3y','2023-10-06'),('5y','2021-10-06')]:
         h=client.get('/api/portfolios/orbs-only?period='+period).json()
-        assert not h['available'] and not h['stats']
-        assert h['requested_start']==start and h['end_exclusive']=='2026-10-06'
-        assert 'No matching' in h['scope']
+        assert h['available'] and h['stats'] and h['coverage']=='complete'
+        assert h['start']==h['requested_start']==start and h['end_exclusive']=='2026-10-06'
+        assert h['member_coverage']=={'tested':5,'total':5}
+        assert h['evidence_kind']=='matched-five-year-native-signal-ledger-offline-portfolio-replay'
+    plan=json.loads((PACKAGE_ROOT/'Portfolio Long History All ORB05 2026-10-14/PLAN.json').read_text())
+    index={c['case_id']:c for c in plan['cases']}
+    for slug,case in plan['mappings']['orbs-only'].items():
+        assert float(index[case]['input_settings']['InpRewardRisk'])==.5
 
 
 @pytest.mark.parametrize('slug,members',[('ftmo',17),('current14-orb05',17),('orbs-only',5)])
@@ -170,14 +175,16 @@ def test_changed_portfolio_long_windows_do_not_substitute_old_rules(slug,members
     assert p['ea_count']==members
     for period,start in [('3y','2023-10-06'),('5y','2021-10-06')]:
         h=client.get('/api/portfolios/'+slug,params={'period':period}).json()
-        assert not h['available'] and h['coverage']=='unavailable'
-        assert h['requested_start']==start and h['end_exclusive']=='2026-10-06'
-        assert not h['stats']
+        assert h['available'] and h['coverage']=='complete'
+        assert h['start']==h['requested_start']==start and h['end_exclusive']=='2026-10-06'
+        assert h['stats'] and h['curve'] and h['member_coverage']=={'tested':members,'total':members}
 
 
-def test_old_long_result_is_not_a_current_result():
+def test_new_matched_long_result_is_published_without_annual_fallback():
     h=client.get('/api/portfolios/current14-orb05?period=5y').json()
-    assert not h['available'] and not h['curve'] and not h['stats']
+    assert h['available'] and h['curve'] and h['stats'] and h['start']=='2021-10-06'
+    publication=portfolio_catalog()
+    assert any('Portfolio Long History All ORB05 2026-10-14' in name for name in publication['source_hashes'])
 
 
 def test_changed_manifest_is_disclosed(tmp_path,monkeypatch):
@@ -194,11 +201,8 @@ def test_changed_manifest_is_disclosed(tmp_path,monkeypatch):
 @pytest.mark.parametrize('period',['3m','6m','1y','3y','5y'])
 def test_full_long_history_is_current_partial_not_archived_or_zero_filled(period):
     h=client.get('/api/portfolios/full-eas',params={'period':period}).json()
-    if period in ('3y','5y'):
-        assert not h['available'] and not h['stats']
-        return
     assert h['available'] and h['coverage']=='partial'
     assert h['missing_members']==['gold-news-v9-direction']
     assert h['end_exclusive']=='2026-10-06'
-    assert 'not a native shared-margin' in h['scope']
+    assert 'not a native simultaneous shared-margin' in h['scope']
     assert h['stats']['max_daily_equity_drawdown_pct'] is None

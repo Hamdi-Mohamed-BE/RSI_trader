@@ -30,13 +30,20 @@ def test_both_new_wrapped_packages_and_ftmo_guarded_package():
     assert len({e['inputs']['InpMagic'] for e in ftmo['entries']})==17
 
 @pytest.mark.parametrize('slug',sorted(ORBS))
-def test_simulator_target_ledger_is_not_old_cached_target(slug):
-    p,trades=load_ea(slug,'1y')
+@pytest.mark.parametrize('period',['6m','1y','3y','5y'])
+def test_simulator_target_ledger_is_not_old_cached_target(slug,period):
+    p,trades=load_ea(slug,period)
     assert '0.5R' in p.risk_note
-    assert load_ea(slug,'3y') is None and load_ea(slug,'5y') is None
-    c=json.loads((PACKAGE_ROOT/'ORB and Range Breakout RR05 Comparison 2026-10-08/comparisons'/(slug+'.json')).read_text())['half']
-    assert len(trades)==c['metrics']['trades']
-    assert sum(t.r*t.risk_cash for t in trades)==pytest.approx(sum(t['net']/t['volume'] for t in c['trades']),abs=.001)
+    from app.catalog import STORE_ROOT
+    from datetime import datetime,timezone
+    payload=json.loads((STORE_ROOT/'data/portfolio-risk-ledgers.json').read_text())['orbs-only']
+    rows=payload[payload['window_sources'][period]]
+    start=datetime.combine(p.start,datetime.min.time()).replace(tzinfo=timezone.utc).timestamp()
+    end=datetime.combine(p.end,datetime.max.time()).replace(tzinfo=timezone.utc).timestamp()
+    expected=[r for r in rows if r['key']==slug and start<=r['op']<=r['cl']<end]
+    assert len(trades)==len(expected)
+    assert sum(t.r*t.risk_cash for t in trades)==pytest.approx(sum(t['unit_gross']+t['unit_comm']+t['unit_swap'] for t in expected),abs=.001)
+    assert load_ea(slug,period,'safe') is None
 
 def test_normal_safe_dynamic_reviewed_shared_installer_forces05_only_on_these_labels():
     product={p.slug:p for p in get_website_catalog()}

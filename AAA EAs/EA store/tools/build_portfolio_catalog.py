@@ -25,6 +25,7 @@ NEW = PACKAGE_ROOT / 'Current14 Plus ORB05 Portfolio 2026-10-08' / 'Package.json
 RESEARCH = PACKAGE_ROOT / 'FTMO ORB RR05 Portfolio Simulation 2026-10-08'
 ORB = PACKAGE_ROOT / 'ORB and Range Breakout RR05 Comparison 2026-10-08'
 LONG = PACKAGE_ROOT / 'Portfolio Long History 2026-10-08'
+LONG_CURRENT = PACKAGE_ROOT / 'Portfolio Long History All ORB05 2026-10-14'
 POLICY = json.loads((PACKAGE_ROOT/'_00 Live profiles/ORB05-policy.json').read_text(encoding='utf-8'))
 ALL_ORBS = POLICY['slugs']
 START, END = '2025-10-06', '2026-10-06'
@@ -153,18 +154,40 @@ def normalized_histories(rows, label, slug):
 def extend_long_evidence(profiles):
     """Publish verified matching longer windows, never a different roster.
 
-    Preserve existing annual references for the three selected portfolios; their
-    risk scenarios keep the original annual signal ledger. New 3y/5y scenarios
-    use the separately audited longer ledger. Full replaces its old archive with
-    matching current members and discloses every untestable/missing member.
+    Use the same matching signal source for every selectable window. Each window
+    starts a fresh risk/guard replay, with no annual-source fallback for longer
+    periods. Every untestable/missing member remains explicitly disclosed.
     """
-    if not (LONG/'HISTORIES.json').is_file():return
-    histories=read(LONG/'HISTORIES.json');audit=read(LONG/'AUDIT.json');rows=read(LONG/'RISK_ROWS.json')
+    if not (LONG_CURRENT/'HISTORIES.json').is_file():
+        # A later rebuild must not silently erase histories already published.
+        if OUT.is_file():
+            previous=json.loads(OUT.read_text(encoding='utf-8'))
+            if any(h['available'] and h['id'] in ('3y','5y')
+                   for p in previous['portfolios'] for h in p['history']):
+                raise ValueError('Matched long-history source is missing; refusing to erase published 3-/5-year evidence.')
+        return
+    histories=read(LONG_CURRENT/'HISTORIES.json');audit=read(LONG_CURRENT/'AUDIT.json');rows=read(LONG_CURRENT/'RISK_ROWS.json')
+    plan=read(LONG_CURRENT/'PLAN.json')
+    cases={c['case_id']:c for c in plan['cases']}
     assert audit['production_files_unchanged'] and audit['selection_frozen'] and not audit['live_changes']
     assert not audit['native_simultaneous_portfolio']
+    assert audit['pending_cases']==0,'Do not publish unfinished long-history tests'
     for profile in profiles:
         slug=profile['slug']
         if slug not in histories:continue
+        assert set(plan['mappings'][slug])=={m['slug'] for m in profile['members']},'Long-history roster is stale'
+        for member_row in profile['members']:
+            inputs={k:str(v).lower() if isinstance(v,bool) else str(v) for k,v in member_row['inputs'].items()}
+            for key in inputs:
+                if key in ('InpRiskPercent','InpGridRiskPercent','InpMomentumRiskPercent','InpContrarianRiskPercent'):
+                    inputs[key]='1.0'
+                if key=='InpAdaptivePortfolioControls':inputs[key]='false'
+            if member_row['slug'].startswith('news-pulse-'):
+                inputs.update(InpTesterFromDateUTC='20211006',InpTesterToDateUTC='20261006')
+            if member_row['slug'].endswith('hourly-profiles'):
+                inputs.update(InpAuditTag='portfolio-long-'+member_row['slug'])
+            tested_case=cases[plan['mappings'][slug][member_row['slug']]]
+            assert inputs==tested_case['input_settings'],'Long-history active settings are stale: '+member_row['slug']
         evidence=audit['portfolios'][slug]
         tested={s['slug'] for s in evidence['sources']};missing={m['slug'] for m in evidence['missing']}
         assert tested|missing=={m['slug'] for m in profile['members']} and not tested&missing
@@ -172,9 +195,9 @@ def extend_long_evidence(profiles):
         if slug!='full-eas':assert not missing,'A selected portfolio still has incomplete component tests'
         original=RISK_ROWS[slug]
         RISK_ROWS[slug]=dict(annual=original,long=rows[slug],window_sources={
-            period:('long' if slug=='full-eas' or period in ('3y','5y') else 'annual') for period,_,_ in PERIODS})
+            period:'long' for period,_,_ in PERIODS})
         updates={h['id']:h for h in histories[slug]}
-        profile['history']=[updates[h['id']] if slug=='full-eas' or h['id'] in ('3y','5y') else h for h in profile['history']]
+        profile['history']=[updates[h['id']] for h in profile['history']]
         profile['history_provenance']=dict(window=audit['window'],tested_members=len(tested),
             total_members=len(tested)+len(missing),missing=evidence['missing'],selection_frozen=True,
             source_history_quality=sorted(set(s['history_quality'] for s in evidence['sources'])))
@@ -326,12 +349,13 @@ def main():
              caveats=['The archived combined results do not validate the current 37-EA composition, revised settings or hourly history-sizing.', 'News event settings and hourly selections are fitted to overlapping history; gaps and unbounded no-stop exposure matter.']),
     ]
     for p in profiles:
-        p['caveats'].append('12 October 2026: all five ORBs changed to 0.5R by owner request. The new annual reference uses matching 0.5R component ledgers. Old 3-/5-year results and funding simulations are not substituted for these new settings; longer matched re-tests are pending.')
+        p['caveats'].append('12 October 2026: all five ORBs changed to 0.5R by owner request. Annual and longer histories must use matching settings; old mixed-target results are never substituted. Long-history views are historical replays, not updated funding/pass-rate simulations.')
         p['caveats'].append(POLICY['selection_note'])
     for profile in profiles:
         keys=[m['slug'] for m in profile['members']]
         assert len(keys)==len(set(keys)) and set(keys)<=set(catalog)
-    payload=dict(version='2026-10-12', launcher_directory=PACKAGE_ROOT.name+'/_00 Live profiles', status_meaning='Active means an owner-selected configured launcher is available, not observed live installation or a statistical validation pass.',
+    extend_long_evidence(profiles)
+    payload=dict(version='2026-10-14', launcher_directory=PACKAGE_ROOT.name+'/_00 Live profiles', status_meaning='Active means an owner-selected configured launcher is available, not observed live installation or a statistical validation pass.',
                  metrics_note='Portfolio PF, win rate and streaks use net closed cash in chronological exit order; DD is closed-balance peak-to-trough. Daily closed DD uses each UTC day’s intraday closed-cash peak. Floating-equity DD is unavailable without intraday equity history; no proxy is presented as measured equity. Sharpe uses daily closed returns × sqrt(365), including no-trade days; payoff = average win / absolute average loss.',
                  period_options=[dict(value=p,label=l) for p,l,_ in PERIODS],
                  period_note='Calendar-month windows end at each portfolio’s latest saved coverage date, not necessarily today. The selected period changes metrics, curves and streaks; it never changes the selected EAs or risk rules.',
