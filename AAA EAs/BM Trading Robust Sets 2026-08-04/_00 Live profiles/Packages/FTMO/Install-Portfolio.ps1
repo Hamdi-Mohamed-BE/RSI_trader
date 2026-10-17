@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
     [string]$TargetTerminal,
+    [ValidateSet('FTMO17','PROP_READY9')][string]$PortfolioVariant='FTMO17',
     [ValidateSet('PERCENT','FIXED_USD')][string]$RiskMode='FIXED_USD',
     [double]$RiskValue=50,
     [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',
@@ -16,6 +17,7 @@ $PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))
 $StudyRoot=$PSScriptRoot
 $Package=Join-Path $StudyRoot 'package'
 $manifest=Get-Content -Raw -LiteralPath (Join-Path $StudyRoot 'PACKAGE.json') | ConvertFrom-Json
+. (Join-Path $StudyRoot 'Profile-Selection.ps1')
 $Unicode=New-Object System.Text.UnicodeEncoding($false,$true)
 
 # Import only pure helper declarations. NEVER execute the ordinary portfolio installer:
@@ -77,6 +79,14 @@ function Assert-Package {
 if([double]::IsNaN($RiskValue) -or [double]::IsInfinity($RiskValue) -or $RiskValue -le 0 -or ($RiskMode -eq 'PERCENT' -and $RiskValue -gt 10)){throw 'Invalid risk selection'}
 Write-Host "Requested risk: $RiskValue $RiskMode. FTMO hard maximum stays USD50 per trade; aggregate/daily guards remain." -ForegroundColor Yellow
 Assert-Package
+$selectedEntries=@(Get-FTMOProfileEntries $manifest $PortfolioVariant)
+$isPropReady=$PortfolioVariant -eq 'PROP_READY9'
+$portfolioLabel=if($isPropReady){'Prop ready - Core 4 + five ORBs 0.5R'}else{'FTMO guarded - Current 14 + ORB 0.5R'}
+Write-Host ("Selected portfolio: {0}; {1} EAs; phase {2}." -f $portfolioLabel,$selectedEntries.Count,$Phase) -ForegroundColor Cyan
+foreach($entry in $selectedEntries){
+    $inputs=Get-FTMOPresetInputs $entry $NasdaqDIFilter
+    if($entry.slug -match '-orb-' -and $inputs['InpRewardRisk'] -ne '0.5'){throw 'All selected ORBs must retain their 0.5R target.'}
+}
 if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilter') -and -not $ValidateOnly){
     $diChoice=(Read-Host 'Nasdaq 5M DI14 filter ON or OFF [ON]').Trim().ToUpperInvariant()
     if(-not $diChoice){$diChoice='ON'}
@@ -84,10 +94,12 @@ if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilte
     $NasdaqDIFilter=$diChoice
 }
 Write-Host ("Nasdaq 5M DI14 filter: {0}; wider stop and ATR trailing unchanged." -f $NasdaqDIFilter)
+Write-Host ("USDJPY London DI filter: {0}; ADX >=20 stays enabled." -f $UsdJpyDIFilter)
 if($NasdaqDIFilter -eq 'OFF'){Write-Host 'DI OFF is a custom selection; published DI-ON results do not describe it.' -ForegroundColor Yellow}
+if($UsdJpyDIFilter -eq 'OFF'){Write-Host 'USDJPY DI OFF is a custom selection; published DI-ON results do not describe it.' -ForegroundColor Yellow}
 if($ValidateOnly){
-    foreach($entry in $manifest.entries){$null=Get-FTMOPresetInputs $entry $NasdaqDIFilter}
-    Write-Host 'PASS: 17 integrity-checked guarded EAs (incl. 3 Way Gold, market entries), selected risk with fixed $50 maximum stop risk, no news. No account accessed.';exit 0
+    foreach($entry in $selectedEntries){$null=Get-FTMOPresetInputs $entry $NasdaqDIFilter}
+    Write-Host ('PASS: {0} integrity-checked guarded EAs; all five ORBs at 0.5R; selected risk with fixed $50 maximum stop risk, no news. No account accessed.' -f $selectedEntries.Count);exit 0
 }
 
 $candidates=@(Get-Mt5Candidates | Where-Object {
@@ -133,10 +145,11 @@ foreach($symbol in $aliasMap.Keys){
     if($match.volume_min -le 0 -or $match.volume_step -le 0){throw "Invalid volume rules: $($match.name)"}
     $resolved[$symbol]=$match.name
 }
-$ProfileName='Calyx-FTMO14-'+$login+'-'+(Get-Date -Format 'yyyyMMdd-HHmmss')
+$profilePrefix=if($isPropReady){'Calyx-PropReady9-'}else{'Calyx-FTMO14-'}
+$ProfileName=$profilePrefix+$login+'-'+(Get-Date -Format 'yyyyMMdd-HHmmss')
 $ExpertFolderName=$ProfileName
 $portfolio=@()
-foreach($entry in $manifest.entries){
+foreach($entry in $selectedEntries){
     $inputs=Get-FTMOPresetInputs $entry $NasdaqDIFilter
     $inputs['FTMOExpectedLogin']=$login
     $inputs['FTMOExpectedServer']=$server
@@ -151,12 +164,12 @@ foreach($entry in $manifest.entries){
     }
 }
 Write-Host "FTMO $Phase / login $login / $server / $($probe.account.balance) USD"
-Write-Host '17 EAs incl. 3 Way Gold; ALL five ORBs at 0.5R; News Pulse and Gold News V9 OFF. $50 maximum stop risk per trade, rounded DOWN.'
+Write-Host ('{0} EAs; ALL five ORBs at 0.5R; News Pulse and Gold News V9 OFF. $50 maximum stop risk per trade, rounded DOWN.' -f $portfolio.Count)
 Write-Host 'Limits: $225 open risk; $150 per symbol; $300 daily reserved loss; $9,200 equity buffer.'
 Write-Host 'Seven entries/day maximum; no new entries after three net losing positions; 80% margin cap.'
 Write-Host 'These are entry guards, not guaranteed protection from gaps, outages or FTMO rule breaches.'
 Write-Host ("Nasdaq: DI14 {0} + 0.60% price stop + ATR6 from +1R, no TP; overnight/weekend holding." -f $NasdaqDIFilter)
-Write-Host 'Old fixed-target FTMO pass-rate/timing estimates do not apply to this revised portfolio.'
+Write-Host 'Historical screens are not future pass guarantees. Custom risk/DI choices do not inherit the screened results.'
 $portfolio | Select-Object Label,BrokerSymbol,Period | Format-Table -AutoSize
 if($PreflightOnly){Write-Host 'Preflight complete. Nothing installed or restarted.';exit 0}
 Write-Host 'Use ONE terminal only for this account. Disable all other copies/VPS/manual trading.'
@@ -164,6 +177,18 @@ Write-Host 'Only select this profile for a USD $10,000 FTMO 2-Step Swing account
 $expected="FTMO SWING 10000 $login $Phase"
 if((Read-Host "Type exactly: $expected") -cne $expected){throw 'Confirmation mismatch. Nothing installed.'}
 
+# Confirm the account is still the one approved after the human prompt.
+# A trade/account switch during that prompt must not evade the original flat-account checks.
+$confirmationText=(& $python (Join-Path $StudyRoot 'probe_ftmo.py') --terminal $terminalPath) -join "`n"
+if($LASTEXITCODE -ne 0){throw 'Final account check failed; nothing installed.'}
+$confirmation=$confirmationText | ConvertFrom-Json
+if(-not $confirmation.ok -or -not $confirmation.terminal.connected -or
+   [string]$confirmation.account.login -cne $login -or [string]$confirmation.account.server -cne $server -or
+   [string]$confirmation.terminal.data_path -ine [string]$probe.terminal.data_path -or
+   $confirmation.terminal.trade_allowed -or $confirmation.positions -ne 0 -or $confirmation.orders -ne 0 -or
+   -not $confirmation.account.trade_allowed -or -not $confirmation.account.trade_expert){
+    throw 'Account or trading state changed during confirmation; nothing installed. Run the launcher again.'
+}
 # Clean close only; never force-kill a trading terminal.
 Close-TargetTerminal $terminalPath
 $mql=Join-Path $dataRoot 'MQL5'
@@ -194,7 +219,7 @@ Set-IniValue $commonIni 'Experts' 'Enabled' '0'
 Set-IniValue $commonIni 'Experts' 'Account' '1'
 Set-IniValue $commonIni 'Charts' 'ProfileLast' $ProfileName
 [IO.File]::WriteAllText((Join-Path $profile 'DEPLOYMENT.txt'),
-    "Account: $login`r`nServer: $server`r`nPhase: $Phase`r`nNews: OFF`r`nNasdaq DI14: $NasdaqDIFilter`r`nUSDJPY DI: $UsdJpyDIFilter`r`nRequested risk: $RiskMode $RiskValue`r`nRisk: max USD 50 stop risk; costs/gaps extra.`r`n",[Text.UTF8Encoding]::new($false))
+    "Portfolio: $portfolioLabel`r`nVariant: $PortfolioVariant`r`nEAs: $($portfolio.Count)`r`nAccount: $login`r`nServer: $server`r`nPhase: $Phase`r`nNews: OFF`r`nNasdaq DI14: $NasdaqDIFilter`r`nUSDJPY DI: $UsdJpyDIFilter`r`nRequested risk: $RiskMode $RiskValue`r`nRisk: max USD 50 stop risk; costs/gaps extra.`r`n",[Text.UTF8Encoding]::new($false))
 Start-Process -FilePath $terminalPath -ArgumentList ('/profile:"'+$ProfileName+'"') -WindowStyle Hidden
 Write-Host "Installed profile $ProfileName. Algo Trading remains OFF."
 Write-Host ('Review all {0} charts and account details. Enable Algo Trading yourself only when satisfied.' -f $portfolio.Count)

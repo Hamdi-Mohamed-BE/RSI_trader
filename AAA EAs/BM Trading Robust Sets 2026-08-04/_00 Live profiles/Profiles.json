@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-12",
+  "version": "2026-10-17",
   "profiles": [
     {
       "slug": "ftmo",
@@ -44,6 +44,22 @@
       "warning": "Owner-selected five ORBs, ALL at 0.5R. NY PF0.97 and five-trade Selective sample remain limitations. No shared loss guard. Legacy BAT filename retained for compatibility."
     },
     {
+      "slug": "prop-ready",
+      "name": "Prop ready - Core 4 + five ORBs 0.5R",
+      "file": "Prop ready.bat",
+      "default_mode": "FIXED_USD",
+      "default_percent": 0.5,
+      "default_usd": 50,
+      "default_news_percent": 0,
+      "di_parameters": [
+        "NasdaqDIFilter",
+        "UsdJpyDIFilter"
+      ],
+      "eas": 9,
+      "website_catalog": false,
+      "warning": "Nine selected EAs; all five ORBs at 0.5R. FTMO USD 10K 2-Step Swing hedging only, not a generic prop-firm installer. Risk is capped at USD50 per trade; existing daily/exposure/phase guards remain. Custom risk or DI choices do not inherit the screened pass-rate/timing results."
+    },
+    {
       "slug": "full-eas",
       "name": "Full EA portfolio - Recommended Adaptive",
       "file": "Full EA portfolio - Recommended Adaptive.bat",
@@ -63,6 +79,7 @@
   "policy": "Creating BAT files does not install or start them. No backtest inherits a changed risk/DI choice.",
   "packages": {
     "ftmo": "FTMO17-ORB05-LIVE-PROMPTS-20261012",
+    "prop-ready": "FTMO17-ORB05-LIVE-PROMPTS-20261012 / PROP_READY9",
     "orbs-only": "ORB-ONLY-ALL5-RR05-20261012"
   }
 }

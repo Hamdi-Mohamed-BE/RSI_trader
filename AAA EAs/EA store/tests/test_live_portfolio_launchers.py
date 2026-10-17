@@ -42,20 +42,24 @@ Import-CalyxHelpers {quote(path)} @({','.join(quote(n) for n in names)})
 
 def test_named_bats_and_website_are_synchronized():
     publication={p['slug']:p for p in portfolio_catalog()['portfolios']}
-    assert len(CONFIG['profiles'])==4 and len(list(LIVE.glob('*.bat')))==4
+    assert len(CONFIG['profiles'])==5 and len(list(LIVE.glob('*.bat')))==5
+    published_profiles={p['slug'] for p in CONFIG['profiles'] if p.get('website_catalog',True)}
+    assert published_profiles==set(publication)
+    assert {p['slug'] for p in CONFIG['profiles'] if not p.get('website_catalog',True)}=={'prop-ready'}
     for profile in CONFIG['profiles']:
-        assert publication[profile['slug']]['launcher']==profile['file']
-        assert publication[profile['slug']]['ea_count']==profile['eas']
         bat=(LIVE/profile['file']).read_text()
         assert '%~dp0Start-LiveProfile.ps1' in bat and f'-Portfolio "{profile["slug"]}"' in bat
-        assert profile['default_usd']==publication[profile['slug']]['risk_defaults']['fixed']
-    assert CONFIG['profiles'][-1]['default_news_percent']==.1
+        if profile.get('website_catalog',True):
+            assert publication[profile['slug']]['launcher']==profile['file']
+            assert publication[profile['slug']]['ea_count']==profile['eas']
+            assert profile['default_usd']==publication[profile['slug']]['risk_defaults']['fixed']
+    assert next(p for p in CONFIG['profiles'] if p['slug']=='full-eas')['default_news_percent']==.1
     manifest=json.loads((LIVE/'Packages/FTMO/PACKAGE.json').read_text())
     assert {e['slug']:e['inputs'] for e in manifest['entries']}=={e['slug']:e['inputs'] for e in publication['ftmo']['members']}
 
 
 @pytest.mark.skipif(os.name!='nt',reason='Windows launcher validation')
-@pytest.mark.parametrize('slug',['ftmo','current14-orb05','orbs-only','full-eas'])
+@pytest.mark.parametrize('slug',['ftmo','current14-orb05','orbs-only','full-eas','prop-ready'])
 def test_validate_only_is_offline_and_does_not_change_files(slug):
     before=hashlib.sha256(SHARED.read_bytes()).hexdigest()
     result=powershell(f"& {quote(LIVE/'Start-LiveProfile.ps1')} -Portfolio '{slug}' -ValidateOnly")

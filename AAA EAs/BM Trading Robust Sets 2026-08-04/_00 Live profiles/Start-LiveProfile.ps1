@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)][ValidateSet('ftmo','current14-orb05','orbs-only','full-eas')][string]$Portfolio,
+    [Parameter(Mandatory=$true)][ValidateSet('ftmo','current14-orb05','orbs-only','full-eas','prop-ready')][string]$Portfolio,
     [ValidateSet('','PERCENT','FIXED_USD')][string]$RiskMode='',
     [double]$RiskValue=0,
     [double]$NewsRiskPercent=0,
@@ -69,6 +69,11 @@ if($ValidateOnly){$arguments.ValidateOnly=$true}
 if($PreflightOnly){$arguments.PreflightOnly=$true}
 if($TargetTerminal){$arguments.TargetTerminal=$TargetTerminal}
 switch($Portfolio){
+    'prop-ready' {
+        $arguments.Phase=$Phase
+        $arguments.PortfolioVariant='PROP_READY9'
+        & (Join-Path $PSScriptRoot 'Packages\FTMO\Install-Portfolio.ps1') @arguments
+    }
     'ftmo' {
         $arguments.Phase=$Phase
         & (Join-Path $PSScriptRoot 'Packages\FTMO\Install-Portfolio.ps1') @arguments

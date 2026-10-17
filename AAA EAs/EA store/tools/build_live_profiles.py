@@ -52,6 +52,13 @@ def compile_ea(path):
 
 def ftmo_package():
     target=R/'Packages/FTMO'
+    # The installer and pure roster selector are maintained source files. Check
+    # before any copy/compile/write, and never erase later safeguards or the
+    # Prop ready subset by regenerating from the older 14-EA installer.
+    installer=read(target/'Install-Portfolio.ps1')
+    assert "[string]$PortfolioVariant='FTMO17'" in installer
+    assert "Profile-Selection.ps1" in installer and 'Get-FTMOProfileEntries' in installer
+    assert (target/'Profile-Selection.ps1').is_file()
     shutil.copytree(OLD_FTMO/'package', target/'package', dirs_exist_ok=True)
     guard=read(OLD_FTMO/'CalyxFTMOGuard.mqh')
     allocation='''input int FTMOAllocationMode=0; // 0=fixed USD, 1=current equity percentage
@@ -117,39 +124,6 @@ double FTMOAllocationBudget() {
     manifest['files']={str(p.relative_to(target/'package')).replace('\\','/'):sha(p)
         for p in (target/'package').rglob('*') if p.is_file() and p.suffix not in ('.log',)}
     save(target/'PACKAGE.json', manifest)
-    installer=read(B/'_Auto Deploy/Install-FTMO13.ps1')
-    installer=installer.replace('$manifest.entries.Count -ne 14','$manifest.entries.Count -ne 17').replace('PASS: 14 integrity-checked','PASS: 17 integrity-checked')
-    installer=installer.replace('14 EAs incl. 3 Way Gold (3 modules, market entries);','17 EAs incl. 3 Way Gold; ALL five ORBs at 0.5R;')
-    installer=installer.replace("    [string]$TargetTerminal,", "    [string]$TargetTerminal,\n    [ValidateSet('PERCENT','FIXED_USD')][string]$RiskMode='FIXED_USD',\n    [double]$RiskValue=50,\n    [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',")
-    installer=installer.replace('$PackageRoot=Split-Path -Parent $PSScriptRoot',"$PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\\..\\..'))")
-    installer=installer.replace("(Join-Path $PSScriptRoot 'Install-BMTradingPortfolio.ps1')", "(Join-Path $PackageRoot '_Auto Deploy\\Install-BMTradingPortfolio.ps1')")
-    installer=installer.replace("$StudyRoot=Join-Path $PackageRoot 'FTMO Thirteen EA Deployment 2026-09-27'",'$StudyRoot=$PSScriptRoot')
-    installer=installer.replace('Assert-Package\nif($PromptNasdaqDIFilter', "if([double]::IsNaN($RiskValue) -or [double]::IsInfinity($RiskValue) -or $RiskValue -le 0 -or ($RiskMode -eq 'PERCENT' -and $RiskValue -gt 10)){throw 'Invalid risk selection'}\nAssert-Package\nif($PromptNasdaqDIFilter")
-    point="    return $inputs\n}"
-    extra="""    if($Entry.slug -eq 'usdjpy-london-open-momentum'){
-        if(-not $inputs.Contains('InpRequireDIAgreement')){throw 'USDJPY does not support DI selection'}
-        $inputs['InpRequireDIAgreement']=if($UsdJpyDIFilter -eq 'OFF'){'false'}else{'true'}
-    }
-    $inputs['FTMOAllocationMode']=if($RiskMode -eq 'FIXED_USD'){'0'}else{'1'}
-    $inputs['FTMOAllocationValue']=$RiskValue.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)
-    return $inputs
-}"""
-    assert installer.count(point)==1
-    installer=installer.replace(point,extra)
-    installer=installer.replace("$ProfileName='CF13-'", "$ProfileName='Calyx-FTMO14-'")
-    installer=installer.replace("Assert-Package\nif($Prompt", "Write-Host \"Requested risk: $RiskValue $RiskMode. FTMO hard maximum stays USD50 per trade; aggregate/daily guards remain.\" -ForegroundColor Yellow\nAssert-Package\nif($Prompt")
-    installer=installer.replace('fixed $50 maximum stop risk', 'selected risk with fixed $50 maximum stop risk')
-    installer=installer.replace('Nasdaq DI14: $NasdaqDIFilter`r`nRisk:', 'Nasdaq DI14: $NasdaqDIFilter`r`nUSDJPY DI: $UsdJpyDIFilter`r`nRequested risk: $RiskMode $RiskValue`r`nRisk:')
-    hash_helper='''function Get-CalyxFileHash([string]$Path) {
-    $stream=[IO.File]::OpenRead($Path);$hash=[Security.Cryptography.SHA256]::Create()
-    try { return ([BitConverter]::ToString($hash.ComputeHash($stream))).Replace('-','').ToLowerInvariant() }
-    finally { $hash.Dispose();$stream.Dispose() }
-}
-'''
-    installer=installer.replace('function Assert-Package {',hash_helper+'function Assert-Package {')
-    installer=installer.replace("(Get-FileHash -LiteralPath (Join-Path $StudyRoot 'CalyxFTMOGuard.mqh') -Algorithm SHA256).Hash", "(Get-CalyxFileHash (Join-Path $StudyRoot 'CalyxFTMOGuard.mqh'))")
-    installer=installer.replace('(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash','(Get-CalyxFileHash $path)')
-    write(target/'Install-Portfolio.ps1', installer)
     shutil.copy2(OLD_FTMO/'probe_ftmo.py',target/'probe_ftmo.py')
     return manifest
 
@@ -237,6 +211,27 @@ def orb_package():
     return manifest
 
 
+def named_profiles():
+    """Launcher metadata only; safe to inspect without compiling or MT5 access."""
+    return [
+        dict(slug='ftmo',name='FTMO guarded - Current 14 + ORB 0.5R',file='FTMO guarded - Current 14.bat',default_mode='FIXED_USD',default_percent=.5,default_usd=50,
+            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=17,
+            warning='FTMO USD 10K Swing hedging only. Requested risk is capped at USD50 per trade. Existing daily/exposure/phase guards stay unchanged. No news or hourly EAs.'),
+        dict(slug='current14-orb05',name='Current 14 + ORB 0.5R',file='Current 14 + ORB 0.5R.bat',default_mode='PERCENT',default_percent=.5,default_usd=50,
+            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=17,
+            warning='17 unique systems. ALL five ORBs at 0.5R; no shared daily stop or FTMO guard. Owner overrides previous PF admission screen. Risk applies per trade/per 3-Way module.'),
+        dict(slug='orbs-only',name='ORB-only - All five at 0.5R',file='ORB-only - 50pct+ PF1.15+.bat',default_mode='PERCENT',default_percent=.5,default_usd=50,
+            default_news_percent=0,di_parameters=[],eas=5,
+            warning='Owner-selected five ORBs, ALL at 0.5R. NY PF0.97 and five-trade Selective sample remain limitations. No shared loss guard. Legacy BAT filename retained for compatibility.'),
+        dict(slug='prop-ready',name='Prop ready - Core 4 + five ORBs 0.5R',file='Prop ready.bat',default_mode='FIXED_USD',default_percent=.5,default_usd=50,
+            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=9,website_catalog=False,
+            warning='Nine selected EAs; all five ORBs at 0.5R. FTMO USD 10K 2-Step Swing hedging only, not a generic prop-firm installer. Risk is capped at USD50 per trade; existing daily/exposure/phase guards remain. Custom risk or DI choices do not inherit the screened pass-rate/timing results.'),
+        dict(slug='full-eas',name='Full EA portfolio - Recommended Adaptive',file='Full EA portfolio - Recommended Adaptive.bat',default_mode='PERCENT',default_percent=.25,default_usd=25,
+            default_news_percent=.10,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=37,
+            warning='37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq uses 0.25x selection. Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe.'),
+    ]
+
+
 def main():
     assert EDITOR.is_file()
     R.mkdir(exist_ok=True)
@@ -247,30 +242,18 @@ def main():
         if item['slug'] not in ORBS:continue
         values=dict(item['input_settings'],InpRewardRisk='0.5')
         write(R/'ORB05 Sets'/(item['slug']+'.set'),'\n'.join(k+'='+str(v) for k,v in values.items())+'\n')
-    profiles=[
-        dict(slug='ftmo',name='FTMO guarded - Current 14 + ORB 0.5R',file='FTMO guarded - Current 14.bat',default_mode='FIXED_USD',default_percent=.5,default_usd=50,
-            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=17,
-            warning='FTMO USD 10K Swing hedging only. Requested risk is capped at USD50 per trade. Existing daily/exposure/phase guards stay unchanged. No news or hourly EAs.'),
-        dict(slug='current14-orb05',name='Current 14 + ORB 0.5R',file='Current 14 + ORB 0.5R.bat',default_mode='PERCENT',default_percent=.5,default_usd=50,
-            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=17,
-            warning='17 unique systems. ALL five ORBs at 0.5R; no shared daily stop or FTMO guard. Owner overrides previous PF admission screen. Risk applies per trade/per 3-Way module.'),
-        dict(slug='orbs-only',name='ORB-only - All five at 0.5R',file='ORB-only - 50pct+ PF1.15+.bat',default_mode='PERCENT',default_percent=.5,default_usd=50,
-            default_news_percent=0,di_parameters=[],eas=5,
-            warning='Owner-selected five ORBs, ALL at 0.5R. NY PF0.97 and five-trade Selective sample remain limitations. No shared loss guard. Legacy BAT filename retained for compatibility.'),
-        dict(slug='full-eas',name='Full EA portfolio - Recommended Adaptive',file='Full EA portfolio - Recommended Adaptive.bat',default_mode='PERCENT',default_percent=.25,default_usd=25,
-            default_news_percent=.10,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=37,
-            warning='37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq uses 0.25x selection. Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe.'),
-    ]
+    profiles=named_profiles()
     for p in profiles:
         text='@echo off\r\nsetlocal\r\ntitle Calyx - '+p['name']+'\r\npowershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0Start-LiveProfile.ps1" -Portfolio "'+p['slug']+'" %*\r\nset "CALYX_EXIT=%ERRORLEVEL%"\r\nif /I not "%~1"=="-ValidateOnly" pause\r\nexit /b %CALYX_EXIT%\r\n'
         (R/p['file']).write_bytes(text.encode('ascii'))
-    save(R/'Profiles.json',dict(version='2026-10-12',profiles=profiles,live_account_access=False,
+    save(R/'Profiles.json',dict(version='2026-10-17',profiles=profiles,live_account_access=False,
         policy='Creating BAT files does not install or start them. No backtest inherits a changed risk/DI choice.',
-        packages={'ftmo':ftmo['version'],'orbs-only':orb['version']}))
-    write(R/'README.txt', '''CALYX NAMED PORTFOLIOS - 2026-10-12
+        packages={'ftmo':ftmo['version'],'prop-ready':ftmo['version']+' / PROP_READY9','orbs-only':orb['version']}))
+    write(R/'README.txt', '''CALYX NAMED PORTFOLIOS - 2026-10-17
 Keep this entire folder and its sibling EA folders together; these small BATs are not standalone embedded distributions.
 Each BAT asks for risk type/value, then separate DI ON/OFF for Nasdaq and USDJPY where included (ADX20 stays).
 FTMO: default fixed USD50, or equity %; all requests remain capped at USD50, with existing guard restrictions.
+Prop ready: nine EAs (Core 4 plus five 0.5R ORBs), same FTMO USD10K Swing guards/default fixed USD50. Separate DI prompts; see PROP READY GUIDE.txt. Local launcher only, not a new website portfolio.
 Current14+ORB: default 0.5% per trade/module, fixed USD default 50; no shared daily stop.
 ALL FIVE ORBS: 0.5R in FTMO (17 EAs), Current14+ORB (17), ORB-only (5), normal/full (37) and reviewed profiles.
 ORB-only: same default 0.5%/USD50; owner-approved despite NY PF0.97 and Selective five-trade sample. Legacy filenames retained.
@@ -279,7 +262,7 @@ These defaults are starting allocations, not optimal settings or guaranteed maxi
 Normal MT5 hedging account required. Installers ask for terminal/account and confirmation; inspect all charts before using Algo Trading.
 To check files without accessing MT5, append -ValidateOnly to a BAT. Never use PreflightOnly as an offline test (it reads the account).
 ''')
-    print('Four named BATs and compiled packages ready. No live account accessed.',flush=True)
+    print('Five named BATs and compiled packages ready. No live account accessed.',flush=True)
 
 
 if __name__=='__main__':

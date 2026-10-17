@@ -116,7 +116,17 @@ function Read-Host { throw 'ValidateOnly must not prompt' }
 
 def test_only_requested_bats_add_prompt_and_baseline_stays_di_on():
     bats = [p.name for p in PACKAGE_ROOT.glob('*.bat') if '-PromptNasdaqDIFilter' in p.read_text()]
-    assert sorted(bats) == ['BEST RECOMMENDED 2026-09-01.bat', 'FTMO 10K SWING - 13 EAS - NEWS OFF.bat']
+    assert sorted(bats) == ['BEST RECOMMENDED 2026-09-01.bat']
+    # The FTMO BAT now delegates risk and both DI prompts to the named wrapper,
+    # rather than passing the legacy Nasdaq-only prompt switch directly.
+    ftmo = (PACKAGE_ROOT/'FTMO 10K SWING - 13 EAS - NEWS OFF.bat').read_text()
+    assert '%~dp0_00 Live profiles\\Start-LiveProfile.ps1' in ftmo
+    assert '-Portfolio ftmo' in ftmo
+    live = PACKAGE_ROOT/'_00 Live profiles'
+    profile = next(p for p in json.loads((live/'Profiles.json').read_text())['profiles'] if p['slug']=='ftmo')
+    assert profile['di_parameters']==['NasdaqDIFilter','UsdJpyDIFilter']
+    wrapper = (live/'Start-LiveProfile.ps1').read_text()
+    assert "DI filter ON or OFF [ON]" in wrapper and "if($ValidateOnly){'ON'}" in wrapper
     preset = PACKAGE_ROOT/'Selected Portfolio Settings 2026-09-01/11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set'
     assert 'InpRequireDIAgreement=true' in preset.read_text()
 
