@@ -38,14 +38,15 @@ if(-not $RiskMode){
     if($ValidateOnly){$RiskMode=$selected.default_mode}
     else {
         $default=if($selected.default_mode -eq 'FIXED_USD'){'2'}else{'1'}
-        Write-Host '1 = percentage of current equity; 2 = fixed USD per trade'
+        if($Portfolio -eq 'prop-ready'){Write-Host '1 = percentage of current equity; 2 = fixed cash in account currency per trade (USD on USD accounts)'}
+        else{Write-Host '1 = percentage of current equity; 2 = fixed USD per trade'}
         $choice=(Read-Host "Risk type [$default]").Trim();if(-not $choice){$choice=$default}
         $RiskMode=switch($choice){'1'{'PERCENT'}'2'{'FIXED_USD'}default{throw 'Choose 1 or 2.'}}
     }
 }
 if($RiskValue -eq 0){
     $default=if($RiskMode -eq 'PERCENT'){[double]$selected.default_percent}else{[double]$selected.default_usd}
-    $RiskValue=if($ValidateOnly){$default}else{Read-PositiveNumber $(if($RiskMode -eq 'PERCENT'){'Percent per trade'}else{'USD per trade'}) $default}
+    $RiskValue=if($ValidateOnly){$default}else{Read-PositiveNumber $(if($RiskMode -eq 'PERCENT'){'Percent per trade'}elseif($Portfolio -eq 'prop-ready'){'Cash per trade in account currency'}else{'USD per trade'}) $default}
 }
 Assert-LiveProfileRisk $RiskMode $RiskValue
 if($Portfolio -eq 'full-eas'){
@@ -70,9 +71,8 @@ if($PreflightOnly){$arguments.PreflightOnly=$true}
 if($TargetTerminal){$arguments.TargetTerminal=$TargetTerminal}
 switch($Portfolio){
     'prop-ready' {
-        $arguments.Phase=$Phase
-        $arguments.PortfolioVariant='PROP_READY9'
-        & (Join-Path $PSScriptRoot 'Packages\FTMO\Install-Portfolio.ps1') @arguments
+        $arguments.Phase=if($PSBoundParameters.ContainsKey('Phase')){$Phase}else{'Funded'}
+        & (Join-Path $PSScriptRoot 'Packages\PropReady\Install-Portfolio.ps1') @arguments
     }
     'ftmo' {
         $arguments.Phase=$Phase

@@ -2,7 +2,7 @@ CALYX NAMED PORTFOLIOS - 2026-10-17
 Keep this entire folder and its sibling EA folders together; these small BATs are not standalone embedded distributions.
 Each BAT asks for risk type/value, then separate DI ON/OFF for Nasdaq and USDJPY where included (ADX20 stays).
 FTMO: default fixed USD50, or equity %; all requests remain capped at USD50, with existing guard restrictions.
-Prop ready: nine EAs (Core 4 plus five 0.5R ORBs), same FTMO USD10K Swing guards/default fixed USD50. Separate DI prompts; see PROP READY GUIDE.txt. Local launcher only, not a new website portfolio.
+Prop ready: nine EAs (Core 4 plus five 0.5R ORBs), broker-neutral demo/live hedging accounts. Default fixed 50 in account currency, or 0.5% equity; hard cap 0.5% of persisted initial balance with scaled daily/exposure guards. Default continuous mode, not a phase profit stop. Separate DI prompts; see PROP READY GUIDE.txt. Local launcher only.
 Current14+ORB: default 0.5% per trade/module, fixed USD default 50; no shared daily stop.
 ALL FIVE ORBS: 0.5R in FTMO (17 EAs), Current14+ORB (17), ORB-only (5), normal/full (37) and reviewed profiles.
 ORB-only: same default 0.5%/USD50; owner-approved despite NY PF0.97 and Selective five-trade sample. Legacy filenames retained.

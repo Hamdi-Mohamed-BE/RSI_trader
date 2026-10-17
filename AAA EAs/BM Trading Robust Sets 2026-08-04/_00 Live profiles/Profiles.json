@@ -57,7 +57,7 @@
       ],
       "eas": 9,
       "website_catalog": false,
-      "warning": "Nine selected EAs; all five ORBs at 0.5R. FTMO USD 10K 2-Step Swing hedging only, not a generic prop-firm installer. Risk is capped at USD50 per trade; existing daily/exposure/phase guards remain. Custom risk or DI choices do not inherit the screened pass-rate/timing results."
+      "warning": "Nine selected EAs; all five ORBs at 0.5R. Broker-neutral demo/live MT5 hedging account; fixed cash uses account currency. Planned risk capped at 0.5% of saved initial balance, with scaled daily/exposure guards. Default continuous mode; no phase profit stop. Other brokers/custom risk/DI choices do not inherit FTMO pass rates or guarantee firm compliance."
     },
     {
       "slug": "full-eas",
@@ -79,7 +79,7 @@
   "policy": "Creating BAT files does not install or start them. No backtest inherits a changed risk/DI choice.",
   "packages": {
     "ftmo": "FTMO17-ORB05-LIVE-PROMPTS-20261012",
-    "prop-ready": "FTMO17-ORB05-LIVE-PROMPTS-20261012 / PROP_READY9",
+    "prop-ready": "PROP-READY9-BROKER-NEUTRAL-20261017",
     "orbs-only": "ORB-ONLY-ALL5-RR05-20261012"
   }
 }

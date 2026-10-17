@@ -1,100 +1,93 @@
-PROP READY — NINE-EA GUARDED LAUNCHER
+PROP READY - NINE EAs / BROKER-NEUTRAL DEMO OR LIVE
 
 Start: Prop ready.bat
-Profile selection: prop-ready / PROP_READY9
+Dedicated package: Packages/PropReady (NOT the FTMO-only guarded package).
 
-WHAT IT IS
-This is the nine-EA research shortlist, packaged through the existing FTMO
-guarded installer. It is intended ONLY for a USD $10,000 FTMO 2-Step Swing
-hedging account. The name does not mean compatibility with every prop firm.
-MT5 account details cannot prove which product you purchased; verify it yourself.
-Nothing is installed, traded or enabled merely by receiving these files.
+COMPATIBILITY
+Use a normal MT5 HEDGING demo or live account with fully tradeable cash gold,
+Nasdaq100 and USDJPY symbols. No FTMO-company restriction, no USD-only currency
+restriction, no $10,000 balance restriction and no 1:30 leverage restriction.
+Aliases/suffixes are resolved at installation; broker margin and minimum lots
+still apply. NETTING is rejected: it merges independent EAs' positions.
+Missing/unsupported symbols stop installation; no unrelated asset or futures
+contract is substituted. Cent accounts use their displayed currency units.
 
-THE EXACT NINE EAs
-1. Nasdaq M5 Momentum — DI ON by default.
-2. USDJPY London Momentum — ADX >=20; DI ON by default.
+THE SAME NINE EAs
+1. Nasdaq M5 Momentum - DI ON by default, trailing unchanged.
+2. USDJPY London Momentum - ADX >=20; DI ON by default.
 3. US100 Month End Flow.
-4. Gold RSI VWAP — current 0.5R version.
-5. US100 H1 ORB 13UTC — 0.5R.
-6. US100 New York ORB M30 — 0.5R.
-7. US100 Selective ORB V3 — 0.5R.
-8. Gold New York ORB M30 — 0.5R.
-9. Gold London–New York Overlap ORB M30 — 0.5R.
-No news or stop-less hourly strategies are included.
+4. Gold RSI VWAP - current 0.5R version.
+5. US100 H1 ORB 13UTC - 0.5R.
+6. US100 New York ORB M30 - 0.5R.
+7. US100 Selective ORB V3 - 0.5R.
+8. Gold New York ORB M30 - 0.5R.
+9. Gold London-New York Overlap ORB M30 - 0.5R.
+No news or stop-less hourly EAs. Signals, stops and targets are unchanged.
 
 REQUIREMENTS
-- Windows with MT5 already running and logged into the intended account.
-- Python available as python.exe, with the MetaTrader5 Python module installed.
-  Actual installation/account preflight requires these; this launcher does not
-  install them. It is NOT a Python-free installer.
-- Keep the BAT in its original folder and retain the supplied package tree,
-  including Start-LiveProfile.ps1, Profiles.json, Packages/FTMO, and the shared
-  _Auto Deploy installer helpers. Copying the BAT alone is not sufficient.
-- A flat account: no open positions and no pending orders. Algo Trading OFF.
-  Use one terminal/copy only; disable other copies/VPS trading on this account.
+Windows, running/logged-in MT5, python.exe and its MetaTrader5 module. The
+installer is not Python-free; compiled EAs run inside MT5 after installation
+without a Python trading service. Retain the whole package/sibling folders.
+Flat account, no pending orders, Algo Trading OFF. Use one terminal/copy only;
+no manual/VPS trading during installation or portfolio operation.
 
-RUNNING IT
-1. Check the account, product and phase in MT5. Turn Algo Trading OFF. Do not
-   place trades or let another copy trade while the installer is waiting.
-2. Double-click Prop ready.bat. Choose fixed USD or percentage allocation,
-   enter its value, and choose DI ON/OFF for Nasdaq and USDJPY separately.
-3. Recommended/tested-model defaults: FIXED USD 50, both DI filters ON.
-   Percentage mode offers 0.5% by default, but is a custom allocation choice,
-   not necessarily equivalent to fixed $50 as equity and lot steps change.
-4. Review the selected terminal, account, nine EAs and settings. Type the
-   installer’s exact account/phase confirmation only if they are correct.
-5. After confirmation the selected terminal is cleanly closed and restarted
-   into a newly named profile. Algo Trading remains OFF. No existing position
-   is automatically closed to make installation possible.
-6. Review all NINE charts, symbols, Inputs, account and phase. Enable Algo
-   Trading yourself only after you are satisfied. Keep monitoring the account.
+DEMO TEST
+1. Log into your DEMO account and switch Algo Trading OFF.
+2. Run Prop ready.bat. Choose percentage or fixed cash, then the amount.
+3. Choose Nasdaq DI and USDJPY DI independently; ON remains the default.
+4. Review account, currency, resolved symbols, nine EAs and effective limits.
+5. Type the exact confirmation. Identity, balance, exposure and permissions
+   are checked again before files change.
+6. Only the selected terminal is cleanly restarted into a NEW nine-chart
+   profile, Algo Trading OFF. Review charts/Inputs, then enable it yourself.
+No orders placed by installer. No existing positions automatically closed.
 
-RISK AND GUARD LIMITS
-The chosen fixed amount or percentage is a REQUESTED allocation ceiling.
-The existing guard retains the source-request volume cap and a hard maximum
-of $50 PLANNED initial-stop risk per entry, rounding lots DOWN. Requests above
-$50 cannot raise that ceiling. Too-small allocations may produce no valid lot.
-Slippage, gaps, fees, swaps and failures can still make actual losses larger.
+RISK SETTINGS
+Fixed cash is ACCOUNT CURRENCY: 50 means USD50 on USD, EUR50 on EUR, etc.
+It is NOT an FX-converted USD amount on non-USD accounts. The legacy command
+parameter FIXED_USD is retained for compatibility only. Fixed default: 50.
+Percentage mode default: 0.5% of current equity.
+Additional hard ceiling: 0.5% of saved initial deployment balance per entry,
+retaining a smaller original strategy volume where applicable. Lots round DOWN;
+if the minimum lot does not fit, no entry. 10K USD -> USD50 cap; 5K -> USD25.
+Larger requests cannot bypass this. Gaps, costs, swaps, slippage and outages
+can still make actual losses exceed planned initial-stop risk.
 
-Existing guard policies remain: $225 aggregate / $150 per-symbol initial-stop
-risk, $300 daily entry-stop protection, a $9,200 admission buffer, at most seven
-entries per Prague day, no new entries after three completed net losing
-positions that day, and a margin cap. Hard account floors are $9,000 equity
-and Prague day-start balance minus $500. These are ENTRY guards, not forced
-liquidation or guaranteed compliance.
-Existing safety latches are not reset by giving the profile a new name.
+GUARDS (SCALED FROM INITIAL DEPLOYMENT BALANCE)
+Aggregate original stop risk <=2.25%; per symbol <=1.5%; daily reserved-loss
+budget 3%; equity entry buffer 92% of reference. Hard latched floor: 90% of
+reference or daily loss 5% of reference. Seven entries / three completed net
+losing positions maximum per Prague day. Margin <=80% of protected equity
+and within free margin. Original stop risk stays reserved when stops trail.
+These block NEW entries, not forced liquidation; position management remains
+available after entry stops/history failure. Firm-specific rules can differ.
 
-PHASE / ACCOUNT CHANGES
-Default phase: Challenge. A new phase or account requires running the launcher
-again; it does not switch phases/accounts automatically. From PowerShell in
-this folder, use the appropriate explicit phase when needed:
+PERSISTENCE / HISTORY
+First flat-account installation saves reference/start in:
+MQL5/Files/Calyx-PropReady-<login>-<server hash>.json
+Installation-day anchor is that approved balance; later days reconstruct the
+day-start from history. Re-running retains reference/start, never clears loss
+latches. Do NOT delete/edit this state or terminal variables to bypass a stop.
+Post-install deposits/withdrawals/credit adjustments or unavailable history
+block new entries until review. Login/server/currency/symbol remain bound.
 
-  & ".\Prop ready.bat" -Phase Verification
-  & ".\Prop ready.bat" -Phase Funded
+CONTINUOUS MODE / PHASES
+Default internal Phase=Funded means continuous demo/live operation WITHOUT
+a challenge profit-target stop; it does not assert an actual funded account.
+Optional -Phase Challenge or -Phase Verification applies a relative 10% or
+5% profit admission stop after four trading days. These optional screens do
+not declare any firm's current rules. The separate FTMO guarded BAT remains
+FTMO USD10K Swing restricted, with its original guard/settings intact.
 
-CHECKS WITHOUT INSTALLING
+OFFLINE FILE CHECK (no account access or installation):
   & ".\Prop ready.bat" -ValidateOnly
-    File/settings/integrity checks only. No account access or MT5 restart.
-    Passing this does not prove broker/account compatibility.
 
+READ-ONLY COMPATIBILITY CHECK (reads selected logged-in MT5 account):
   & ".\Prop ready.bat" -PreflightOnly
-    Read-only checks of the selected running MT5/account, including the Python
-    probe; nothing is installed or restarted. Follow the displayed prompts.
+Follow risk/DI prompts; no installation/restart in this mode.
 
-IF A CHECK FAILS
-Stop and read the error; do not bypass it or weaken the guard. Missing Python
-or MetaTrader5 dependencies, wrong product/account, open trades/orders, Algo
-Trading ON, unsupported symbols or altered package files require correction
-before continuing. No force-kill or automatic position cleanup is intended.
-
-WHAT THE RESEARCH DOES NOT PROMISE
-The nine-EA shortlist was selected from 12 predeclared historical baskets using
-overlapping starts and sampled five-minute floating equity, not genuine FTMO
-execution or untouched forward data. A >=75% historical gate — or even 134/134
-historical completions — is NOT a future pass-probability guarantee.
-The model’s fixed-$50 / DI-ON results do not describe custom risk, percentage
-mode, either DI filter OFF, another account size, broker or prop-firm programme.
-Actual account review/KYC, access dates, costs and live outcomes can differ.
-
-This launcher does not update the website, deploy to another device or push Git
-changes. Keep the original risk warnings and review the research before use.
+HISTORY CAVEAT
+Original $10K/fixed-$50/DI-ON FTMO screening is NOT a backtest of a different
+broker, currency, size or custom risk/DI setting. No future profit, pass rate
+or identical fills are promised. Demo-test first. Building these files does
+not deploy to MT5, update the website or push to GitHub.

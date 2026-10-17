@@ -225,7 +225,7 @@ def named_profiles():
             warning='Owner-selected five ORBs, ALL at 0.5R. NY PF0.97 and five-trade Selective sample remain limitations. No shared loss guard. Legacy BAT filename retained for compatibility.'),
         dict(slug='prop-ready',name='Prop ready - Core 4 + five ORBs 0.5R',file='Prop ready.bat',default_mode='FIXED_USD',default_percent=.5,default_usd=50,
             default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=9,website_catalog=False,
-            warning='Nine selected EAs; all five ORBs at 0.5R. FTMO USD 10K 2-Step Swing hedging only, not a generic prop-firm installer. Risk is capped at USD50 per trade; existing daily/exposure/phase guards remain. Custom risk or DI choices do not inherit the screened pass-rate/timing results.'),
+            warning='Nine selected EAs; all five ORBs at 0.5R. Broker-neutral demo/live MT5 hedging account; fixed cash uses account currency. Planned risk capped at 0.5% of saved initial balance, with scaled daily/exposure guards. Default continuous mode; no phase profit stop. Other brokers/custom risk/DI choices do not inherit FTMO pass rates or guarantee firm compliance.'),
         dict(slug='full-eas',name='Full EA portfolio - Recommended Adaptive',file='Full EA portfolio - Recommended Adaptive.bat',default_mode='PERCENT',default_percent=.25,default_usd=25,
             default_news_percent=.10,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=37,
             warning='37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq uses 0.25x selection. Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe.'),
@@ -236,6 +236,9 @@ def main():
     assert EDITOR.is_file()
     R.mkdir(exist_ok=True)
     ftmo=ftmo_package()
+    from tools.build_prop_ready import main as build_prop_ready
+    build_prop_ready()
+    prop_ready=json.loads(read(R/'Packages/PropReady/PACKAGE.json'))
     orb=orb_package()
     plan=json.loads(read(B/'ORB and Range Breakout RR05 Comparison 2026-10-08/PLAN.json'))
     for item in plan['setups']:
@@ -248,12 +251,12 @@ def main():
         (R/p['file']).write_bytes(text.encode('ascii'))
     save(R/'Profiles.json',dict(version='2026-10-17',profiles=profiles,live_account_access=False,
         policy='Creating BAT files does not install or start them. No backtest inherits a changed risk/DI choice.',
-        packages={'ftmo':ftmo['version'],'prop-ready':ftmo['version']+' / PROP_READY9','orbs-only':orb['version']}))
+        packages={'ftmo':ftmo['version'],'prop-ready':prop_ready['version'],'orbs-only':orb['version']}))
     write(R/'README.txt', '''CALYX NAMED PORTFOLIOS - 2026-10-17
 Keep this entire folder and its sibling EA folders together; these small BATs are not standalone embedded distributions.
 Each BAT asks for risk type/value, then separate DI ON/OFF for Nasdaq and USDJPY where included (ADX20 stays).
 FTMO: default fixed USD50, or equity %; all requests remain capped at USD50, with existing guard restrictions.
-Prop ready: nine EAs (Core 4 plus five 0.5R ORBs), same FTMO USD10K Swing guards/default fixed USD50. Separate DI prompts; see PROP READY GUIDE.txt. Local launcher only, not a new website portfolio.
+Prop ready: nine EAs (Core 4 plus five 0.5R ORBs), broker-neutral demo/live hedging accounts. Default fixed 50 in account currency, or 0.5% equity; hard cap 0.5% of persisted initial balance with scaled daily/exposure guards. Default continuous mode, not a phase profit stop. Separate DI prompts; see PROP READY GUIDE.txt. Local launcher only.
 Current14+ORB: default 0.5% per trade/module, fixed USD default 50; no shared daily stop.
 ALL FIVE ORBS: 0.5R in FTMO (17 EAs), Current14+ORB (17), ORB-only (5), normal/full (37) and reviewed profiles.
 ORB-only: same default 0.5%/USD50; owner-approved despite NY PF0.97 and Selective five-trade sample. Legacy filenames retained.

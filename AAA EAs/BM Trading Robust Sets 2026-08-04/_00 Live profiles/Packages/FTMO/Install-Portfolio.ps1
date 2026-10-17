@@ -13,6 +13,12 @@ param(
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
+# Legacy direct PROP_READY9 calls must use the broker-neutral package too.
+if($PortfolioVariant -eq 'PROP_READY9'){
+    $forward=@{};foreach($key in $PSBoundParameters.Keys){if($key -ne 'PortfolioVariant'){$forward[$key]=$PSBoundParameters[$key]}}
+    & (Join-Path $PSScriptRoot '..\PropReady\Install-Portfolio.ps1') @forward
+    exit $LASTEXITCODE
+}
 $PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))
 $StudyRoot=$PSScriptRoot
 $Package=Join-Path $StudyRoot 'package'
