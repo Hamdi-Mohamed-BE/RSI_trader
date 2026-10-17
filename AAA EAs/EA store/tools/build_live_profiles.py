@@ -226,6 +226,9 @@ def named_profiles():
         dict(slug='prop-ready',name='Prop ready - Core 4 + five ORBs 0.5R',file='Prop ready.bat',default_mode='FIXED_USD',default_percent=.5,default_usd=50,
             default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=9,website_catalog=False,
             warning='Nine selected EAs; all five ORBs at 0.5R. Broker-neutral demo/live MT5 hedging account; fixed cash uses account currency. Planned risk capped at 0.5% of saved initial balance, with scaled daily/exposure guards. Default continuous mode; no phase profit stop. Other brokers/custom risk/DI choices do not inherit FTMO pass rates or guarantee firm compliance.'),
+        dict(slug='codex-best-ftmo',name='Codex_Best_FTMO',file='Codex_Best_FTMO.bat',default_mode='FIXED_USD',default_percent=.5,default_usd=50,
+            default_news_percent=0,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=9,website_catalog=False,default_phase='Challenge',
+            warning='Core 4 plus five 0.5R ORBs; DI ON by default for Nasdaq and USDJPY. Broker-neutral MT5 hedging, any supported account currency/balance; no FTMO-only lock. Ask Challenge/Verification/continuous mode. Cash allocation is in account currency; planned risk capped at 0.5% of saved initial balance. Reuses Prop Ready safety state; different brokers or custom inputs do not inherit historical pass rates.'),
         dict(slug='full-eas',name='Full EA portfolio - Recommended Adaptive',file='Full EA portfolio - Recommended Adaptive.bat',default_mode='PERCENT',default_percent=.25,default_usd=25,
             default_news_percent=.10,di_parameters=['NasdaqDIFilter','UsdJpyDIFilter'],eas=37,
             warning='37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq uses 0.25x selection. Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe.'),
@@ -251,12 +254,13 @@ def main():
         (R/p['file']).write_bytes(text.encode('ascii'))
     save(R/'Profiles.json',dict(version='2026-10-17',profiles=profiles,live_account_access=False,
         policy='Creating BAT files does not install or start them. No backtest inherits a changed risk/DI choice.',
-        packages={'ftmo':ftmo['version'],'prop-ready':prop_ready['version'],'orbs-only':orb['version']}))
+        packages={'ftmo':ftmo['version'],'prop-ready':prop_ready['version'],'codex-best-ftmo':prop_ready['version'],'orbs-only':orb['version']}))
     write(R/'README.txt', '''CALYX NAMED PORTFOLIOS - 2026-10-17
 Keep this entire folder and its sibling EA folders together; these small BATs are not standalone embedded distributions.
 Each BAT asks for risk type/value, then separate DI ON/OFF for Nasdaq and USDJPY where included (ADX20 stays).
 FTMO: default fixed USD50, or equity %; all requests remain capped at USD50, with existing guard restrictions.
 Prop ready: nine EAs (Core 4 plus five 0.5R ORBs), broker-neutral demo/live hedging accounts. Default fixed 50 in account currency, or 0.5% equity; hard cap 0.5% of persisted initial balance with scaled daily/exposure guards. Default continuous mode, not a phase profit stop. Separate DI prompts; see PROP READY GUIDE.txt. Local launcher only.
+Codex_Best_FTMO: the same nine selected EAs and unchanged guarded binaries, with its own named MT5 profile. Broker-neutral, not FTMO/USD/10K restricted. Prompts risk, both DI filters (default ON) and Challenge/Verification/continuous mode (default Challenge). Shares the retained Prop Ready baseline and safety latches; see Codex_Best_FTMO GUIDE.txt. Cash means account currency, not currency conversion. Local launcher only.
 Current14+ORB: default 0.5% per trade/module, fixed USD default 50; no shared daily stop.
 ALL FIVE ORBS: 0.5R in FTMO (17 EAs), Current14+ORB (17), ORB-only (5), normal/full (37) and reviewed profiles.
 ORB-only: same default 0.5%/USD50; owner-approved despite NY PF0.97 and Selective five-trade sample. Legacy filenames retained.
@@ -265,7 +269,7 @@ These defaults are starting allocations, not optimal settings or guaranteed maxi
 Normal MT5 hedging account required. Installers ask for terminal/account and confirmation; inspect all charts before using Algo Trading.
 To check files without accessing MT5, append -ValidateOnly to a BAT. Never use PreflightOnly as an offline test (it reads the account).
 ''')
-    print('Five named BATs and compiled packages ready. No live account accessed.',flush=True)
+    print(f'{len(profiles)} named BATs and compiled packages ready. No live account accessed.',flush=True)
 
 
 if __name__=='__main__':

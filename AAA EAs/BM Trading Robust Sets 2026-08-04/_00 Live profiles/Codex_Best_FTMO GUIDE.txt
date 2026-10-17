@@ -1,0 +1,92 @@
+Codex_Best_FTMO - nine-EA guarded profile - 17 October 2026
+
+START
+Run Codex_Best_FTMO.bat from this folder. Keep the entire repository folder
+structure, including Packages/PropReady and the sibling _Auto Deploy folder.
+This small BAT is not a standalone, embedded installer.
+Windows PowerShell, Python and the MetaTrader5 Python package are required by
+the existing installer preflight. The nine compiled EAs run inside MT5 afterward.
+
+ROSTER (exact historical CORE4_PLUS_FIVE_ORBS_05R selection)
+  Nasdaq 5M Candle Momentum       US100 M5   DI ON; ATR trailing, no fixed TP
+  USDJPY London Open Momentum    USDJPY M15 DI ON + ADX20; time exit
+  US100 Month End Flow           US100 M30  2.5R target / six-hour maximum hold
+  XAU RSI VWAP                   Gold H1    0.5R target / RSI exit
+  US100 H1 ORB 13UTC              US100 M15  0.5R target
+  US100 ORB New York M30          US100 M30  0.5R target
+  US100 Selective ORB V3          US100 M5   0.5R target
+  XAU ORB New York M30            Gold M30   0.5R target
+  XAU ORB London/NY Overlap M30   Gold M30   0.5R target
+No hourly profiles, news, EMA3 or DMCs are added. Chart period is not necessarily
+the opening-range length. No entry, exit or compiled trading logic was changed.
+
+BROKER COMPATIBILITY
+There is no FTMO-only, USD-only, leverage or $10,000 balance lock. Demo and live
+MT5 HEDGING accounts are supported, subject to the broker providing tradeable
+cash CFDs for Nasdaq and gold plus USDJPY and valid contract/lot rules. Netting
+and exchange-netting accounts are deliberately blocked: they would merge the
+independent bots' positions. This is not a promise of identical execution or
+performance on every broker. Unsupported or unsafe setups fail closed.
+Symbols with prefixes/suffixes are resolved from the selected broker. Review
+the displayed mapping. Exact overrides: -GoldSymbol "GOLD" -NasdaqSymbol
+"US100.cash" -UsdJpySymbol "USDJPY.a". They must exist in the account's symbol
+list and be fully tradeable cash instruments. No futures substitution.
+
+PROMPTS AND DEFAULTS
+1. Risk: fixed cash (default 50) or current-equity percentage (default 0.5%).
+   Cash is denominated in ACCOUNT CURRENCY: 50 EUR on an EUR account, 50 JPY on
+   a JPY account, not a converted USD50. Choose an appropriate amount.
+2. Nasdaq DI ON/OFF (default ON).
+3. USDJPY DI ON/OFF (default ON; ADX >=20 is retained).
+4. Account mode: Challenge (+10%, default), Verification (+5%), or continuous
+   demo/live (no profit-target entry stop; internal parameter name Funded).
+   For ordinary demo testing choose 3. This does not certify a funded account.
+5. Choose the already-running normal MT5 terminal/account and confirm details.
+
+SAFETY / RISK
+The reused Prop Ready guard caps planned stop risk at 0.5% of saved initial
+balance, even when a higher amount is requested; source requested volume can
+reduce it further. Lot sizes round down and trades below minimum size are
+skipped, never forced. On a fresh 10,000 account, the planned cap is 50.
+All limits scale with saved initial account-currency balance:
+  Total retained initial risk 2.25%; per-symbol risk 1.5%.
+  Daily new-entry/reserved-loss pause 3%; daily hard-loss latch 5%.
+  Static hard equity floor 90%; projected admission equity buffer 92%.
+  Seven entries / three net losing positions per Prague day; 3-second cooldown.
+  Reserve 1.25 times retained initial risk plus 0.05% initial balance per open
+  position and known negative swap; protected-equity margin cap 80%.
+Stops pause NEW entries. Existing trades keep their original exits; they are
+not forcibly liquidated. Gaps, slippage, fees and broker failures can exceed
+planned risk and drawdown thresholds. This is not guaranteed prop compliance.
+
+Challenge/Verification modes stop new entries at the respective balance target
+after four distinct Prague entry days; existing trades must naturally flatten.
+There is no automatic pass certification, automatic phase handover or account
+switch. A new phase should use the new flat phase account and correct mode.
+
+INSTALLATION AND REINSTALLATION
+Before installing, log into the intended account, close all positions/pending
+orders yourself, and turn Algo Trading OFF. The installer will not close trades.
+It verifies the account again before changes, then gracefully restarts the
+selected terminal with a Codex_Best_FTMO-<login>-<timestamp> nine-chart profile.
+Algo Trading remains OFF. Inspect all charts/settings before enabling it yourself.
+Never run this profile together with old copies, manual trades or another VPS.
+
+The same binary package and account safety identity as Prop Ready are reused.
+Both names share the saved Calyx-PropReady account/server baseline and guard
+latches. Renaming or reinstalling does NOT reset drawdowns or clear safety
+stops; do not delete that state to evade limits. Existing profiles are retained.
+
+OFFLINE CHECK (no account/process access, no installation)
+  Codex_Best_FTMO.bat -ValidateOnly
+Read-only account preflight (requires connected account, does not install):
+  Codex_Best_FTMO.bat -PreflightOnly
+Noninteractive selections (account confirmation still required):
+  Codex_Best_FTMO.bat -RiskMode PERCENT -RiskValue 0.5 -NasdaqDIFilter ON -UsdJpyDIFilter ON -Phase Funded
+
+HISTORICAL EVIDENCE
+Sibling folder: FTMO Faster Portfolio Screen 2026-10-16/Results.html.
+It is a retrospectively selected, sampled-equity replay using Exness proxies,
+partly generated ticks and overlapping starts, not a calibrated future pass
+probability or proof of current firm compliance. Other brokers, balances,
+currencies, execution costs, custom risk and DI OFF do not inherit those results.

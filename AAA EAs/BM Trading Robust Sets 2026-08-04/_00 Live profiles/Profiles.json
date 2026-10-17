@@ -60,6 +60,23 @@
       "warning": "Nine selected EAs; all five ORBs at 0.5R. Broker-neutral demo/live MT5 hedging account; fixed cash uses account currency. Planned risk capped at 0.5% of saved initial balance, with scaled daily/exposure guards. Default continuous mode; no phase profit stop. Other brokers/custom risk/DI choices do not inherit FTMO pass rates or guarantee firm compliance."
     },
     {
+      "slug": "codex-best-ftmo",
+      "name": "Codex_Best_FTMO",
+      "file": "Codex_Best_FTMO.bat",
+      "default_mode": "FIXED_USD",
+      "default_percent": 0.5,
+      "default_usd": 50,
+      "default_news_percent": 0,
+      "di_parameters": [
+        "NasdaqDIFilter",
+        "UsdJpyDIFilter"
+      ],
+      "eas": 9,
+      "website_catalog": false,
+      "default_phase": "Challenge",
+      "warning": "Core 4 plus five 0.5R ORBs; DI ON by default for Nasdaq and USDJPY. Broker-neutral MT5 hedging, any supported account currency/balance; no FTMO-only lock. Ask Challenge/Verification/continuous mode. Cash allocation is in account currency; planned risk capped at 0.5% of saved initial balance. Reuses Prop Ready safety state; different brokers or custom inputs do not inherit historical pass rates."
+    },
+    {
       "slug": "full-eas",
       "name": "Full EA portfolio - Recommended Adaptive",
       "file": "Full EA portfolio - Recommended Adaptive.bat",
@@ -80,6 +97,7 @@
   "packages": {
     "ftmo": "FTMO17-ORB05-LIVE-PROMPTS-20261012",
     "prop-ready": "PROP-READY9-BROKER-NEUTRAL-20261017",
+    "codex-best-ftmo": "PROP-READY9-BROKER-NEUTRAL-20261017",
     "orbs-only": "ORB-ONLY-ALL5-RR05-20261012"
   }
 }

@@ -3,6 +3,7 @@ Keep this entire folder and its sibling EA folders together; these small BATs ar
 Each BAT asks for risk type/value, then separate DI ON/OFF for Nasdaq and USDJPY where included (ADX20 stays).
 FTMO: default fixed USD50, or equity %; all requests remain capped at USD50, with existing guard restrictions.
 Prop ready: nine EAs (Core 4 plus five 0.5R ORBs), broker-neutral demo/live hedging accounts. Default fixed 50 in account currency, or 0.5% equity; hard cap 0.5% of persisted initial balance with scaled daily/exposure guards. Default continuous mode, not a phase profit stop. Separate DI prompts; see PROP READY GUIDE.txt. Local launcher only.
+Codex_Best_FTMO: the same nine selected EAs and unchanged guarded binaries, with its own named MT5 profile. Broker-neutral, not FTMO/USD/10K restricted. Prompts risk, both DI filters (default ON) and Challenge/Verification/continuous mode (default Challenge). Shares the retained Prop Ready baseline and safety latches; see Codex_Best_FTMO GUIDE.txt. Cash means account currency, not currency conversion. Local launcher only.
 Current14+ORB: default 0.5% per trade/module, fixed USD default 50; no shared daily stop.
 ALL FIVE ORBS: 0.5R in FTMO (17 EAs), Current14+ORB (17), ORB-only (5), normal/full (37) and reviewed profiles.
 ORB-only: same default 0.5%/USD50; owner-approved despite NY PF0.97 and Selective five-trade sample. Legacy filenames retained.

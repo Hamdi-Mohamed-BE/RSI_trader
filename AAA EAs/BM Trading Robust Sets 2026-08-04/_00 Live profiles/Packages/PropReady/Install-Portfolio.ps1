@@ -6,6 +6,10 @@ param(
     [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',
     [ValidateSet('ON','OFF')][string]$NasdaqDIFilter='ON',
     [ValidateSet('Challenge','Verification','Funded')][string]$Phase='Funded',
+    [ValidateSet('PropReady','Codex_Best_FTMO')][string]$ProfileVariant='PropReady',
+    [string]$GoldSymbol,
+    [string]$NasdaqSymbol,
+    [string]$UsdJpySymbol,
     [switch]$PromptNasdaqDIFilter,
     [switch]$ValidateOnly,
     [switch]$PreflightOnly
@@ -15,6 +19,15 @@ $ErrorActionPreference='Stop'
 $PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))
 $Package=Join-Path $PSScriptRoot 'package'
 . (Join-Path $PSScriptRoot 'Account-Helpers.ps1')
+$isCodexProfile=$ProfileVariant -eq 'Codex_Best_FTMO'
+$profileDisplay=if($isCodexProfile){'Codex_Best_FTMO'}else{'PROP READY'}
+$profileFolderPrefix=if($isCodexProfile){'Codex_Best_FTMO'}else{'Calyx-PropReady9'}
+$profileDeploymentLabel=if($isCodexProfile){'Codex_Best_FTMO'}else{'Prop Ready 9'}
+$profileValidationLabel=if($isCodexProfile){'Codex_Best_FTMO installed profile'}else{'Prop Ready installed profile'}
+$profileBackupSuffix=if($isCodexProfile){'.Codex_Best_FTMO-backup-'}else{'.prop-ready-backup-'}
+if(-not $isCodexProfile -and ($GoldSymbol -or $NasdaqSymbol -or $UsdJpySymbol)){
+    throw 'Exact symbol overrides are available only for Codex_Best_FTMO.'
+}
 
 # Import declarations, never execute the ordinary installer or its news service.
 $tokens=$null;$parseErrors=$null
@@ -28,6 +41,45 @@ foreach($helper in @('Stop-WithMessage','Get-Mt5Candidates','Select-Mt5Candidate
     . ([scriptblock]::Create($definition[0].Extent.Text))
 }
 function Get-EffectiveInputs([object]$Item){return $Item.EffectiveInputs}
+function Find-CodexCashSymbol([object[]]$Symbols,[string[]]$Aliases,[string]$ExactName,[string]$Label){
+    # Broker symbols are written verbatim into chart and input records.
+    $unsafeSymbolPattern='[\p{Cc}\p{Cf}\p{Zl}\p{Zp}<>=]'
+    if($ExactName -match $unsafeSymbolPattern){throw 'Unsafe exact broker symbol name; control characters and chart delimiters are not allowed.'}
+    $tradeable=@($Symbols | Where-Object {[int]$_.trade_mode -eq 4})
+    $match=$null
+    if(-not $ExactName){$match=Find-BrokerSymbol $tradeable $Aliases}
+    if(-not $ExactName -and -not $match){
+        Write-Host "No automatic cash-symbol match for $Label. Use the exact equivalent shown in this broker's Market Watch; futures are not supported." -ForegroundColor Yellow
+        $ExactName=Read-Host "Exact $Label cash symbol (blank cancels)"
+        if($ExactName -match $unsafeSymbolPattern){throw 'Unsafe exact broker symbol name; control characters and chart delimiters are not allowed.'}
+        $ExactName=$ExactName.Trim()
+        if(-not $ExactName){throw "No $Label symbol selected. Nothing installed."}
+    }
+    if($ExactName){
+        $matches=@($tradeable | Where-Object {[string]$_.name -ieq $ExactName})
+        if($matches.Count -ne 1){throw "Exact fully tradeable broker symbol not found: $ExactName"}
+        $match=$matches[0]
+    }
+    if(-not $match){throw "No fully tradeable cash symbol for $Label."}
+    if([string]::IsNullOrWhiteSpace([string]$match.name) -or [string]$match.name -match $unsafeSymbolPattern){
+        throw 'Unsafe selected broker symbol name; control characters and chart delimiters are not allowed.'
+    }
+    if(([string]$match.path+' '+[string]$match.name) -match '(?i)future'){
+        throw "Futures substitution is not supported: $($match.name)"
+    }
+    $numericRules=@{}
+    foreach($field in @('volume_min','volume_max','volume_step','trade_contract_size')){
+        try{$number=[double]$match.$field}catch{throw "Invalid cash-contract numeric rule: $field"}
+        if([double]::IsNaN($number) -or [double]::IsInfinity($number) -or $number -le 0){
+            throw "Invalid cash-contract numeric rule: $field"
+        }
+        $numericRules[$field]=$number
+    }
+    if($numericRules['volume_max'] -lt $numericRules['volume_min']){
+        throw "Invalid cash-contract volume rules: $($match.name)"
+    }
+    return $match
+}
 function Get-PropReadyHash([string]$Path){
     $stream=[IO.File]::OpenRead($Path);$hash=[Security.Cryptography.SHA256]::Create()
     try{return ([BitConverter]::ToString($hash.ComputeHash($stream))).Replace('-','').ToLowerInvariant()}
@@ -62,7 +114,7 @@ if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilte
     if($answer -notin @('ON','OFF')){throw 'DI choice must be ON or OFF.'}
     $NasdaqDIFilter=$answer
 }
-Write-Host 'PROP READY: nine EAs / five ORBs at 0.5R / broker-neutral MT5 hedging profile.' -ForegroundColor Cyan
+Write-Host "${profileDisplay}: nine EAs / five ORBs at 0.5R / broker-neutral MT5 hedging profile." -ForegroundColor Cyan
 Write-Host 'Fixed cash is in ACCOUNT CURRENCY (USD on a USD account); % uses current equity. Legacy parameter name: FIXED_USD.'
 Write-Host 'Allocation is capped at 0.5% of saved initial balance and at the original strategy volume; lots round DOWN.' -ForegroundColor Yellow
 if($ValidateOnly){
@@ -87,6 +139,7 @@ if(-not(Test-Path -LiteralPath (Join-Path $dataRoot 'MQL5'))){throw 'Invalid ter
 $login=[string]$probe.account.login;$server=[string]$probe.account.server;$currency=[string]$probe.account.currency
 $serverHasher=[Security.Cryptography.SHA256]::Create()
 try{$serverHash=([BitConverter]::ToString($serverHasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($server)))).Replace('-','').Substring(0,16)}finally{$serverHasher.Dispose()}
+# Branding must not reset the retained account baseline or shared safety state.
 $statePath=Join-Path $dataRoot ("MQL5\Files\Calyx-PropReady-$login-$serverHash.json")
 $oldState=if(Test-Path -LiteralPath $statePath){Get-Content -Raw -LiteralPath $statePath | ConvertFrom-Json}else{$null}
 $reference=Get-PropReadyReference $probe $oldState
@@ -94,14 +147,20 @@ $initial=[double]$reference.reference_balance
 if([double]$probe.account.equity -lt $initial*0.92){throw 'Account is below the retained 92% entry buffer; stop for review. Reinstallation does not reset losses.'}
 $phaseNumber=@{Challenge=1;Verification=2;Funded=3}[$Phase]
 $aliasMap=@{XAUUSD=@('XAUUSD','GOLD');USTEC=@('USTEC','US100','NAS100','NDX100','UT100','NASDAQ100','NASUSD','USTECH','USNDX');USDJPY=@('USDJPY')}
+$exactSymbols=@{XAUUSD=$GoldSymbol;USTEC=$NasdaqSymbol;USDJPY=$UsdJpySymbol}
+if($isCodexProfile){
+    $aliasMap['USTEC']+=@('USA100','NAS100.cash','US100.cash','USTEC.cash','NASDAQ','USTECH100','USNAS100','USNDX100','NAS100USD')
+}
 $resolved=@{}
 foreach($symbol in $aliasMap.Keys){
-    $match=Find-BrokerSymbol @($probe.symbols | Where-Object {[int]$_.trade_mode -eq 4}) $aliasMap[$symbol]
+    $match=if($isCodexProfile){Find-CodexCashSymbol @($probe.symbols) $aliasMap[$symbol] $exactSymbols[$symbol] $symbol}else{
+        Find-BrokerSymbol @($probe.symbols | Where-Object {[int]$_.trade_mode -eq 4}) $aliasMap[$symbol]
+    }
     if(-not $match){throw "No fully tradeable cash symbol for $symbol. Netting/futures substitution is not supported."}
     if($match.volume_min -le 0 -or $match.volume_step -le 0){throw "Invalid volume rules: $($match.name)"}
     $resolved[$symbol]=$match.name
 }
-$ProfileName='Calyx-PropReady9-'+$login+'-'+(Get-Date -Format 'yyyyMMdd-HHmmss')
+$ProfileName=$profileFolderPrefix+'-'+$login+'-'+(Get-Date -Format 'yyyyMMdd-HHmmss')
 $ExpertFolderName=$ProfileName
 $portfolio=@()
 foreach($entry in $manifest.entries){
@@ -127,7 +186,7 @@ Write-Host 'Other broker, currency, balance or DI/risk choices do NOT inherit hi
 $portfolio | Select-Object Label,BrokerSymbol,Period | Format-Table -AutoSize
 if($PreflightOnly){Write-Host 'Preflight complete. Nothing installed or restarted.';exit 0}
 Write-Host 'Use one terminal/copy for this account. Stop other VPS/manual trading before confirming.'
-$expected="PROP READY $login $currency $Phase"
+$expected="$profileDisplay $login $currency $Phase"
 if((Read-Host "Type exactly: $expected") -cne $expected){throw 'Confirmation mismatch. Nothing installed.'}
 $confirmationText=(& $python (Join-Path $PSScriptRoot 'probe_account.py') --terminal $terminalPath) -join "`n"
 if($LASTEXITCODE -ne 0){throw 'Final account check failed; nothing installed.'}
@@ -153,7 +212,7 @@ for($i=0;$i -lt $portfolio.Count;$i++){
 }
 $order=((1..$portfolio.Count | ForEach-Object {'chart{0:D2}.chr' -f $_}) -join "`r`n")+"`r`n"
 [IO.File]::WriteAllText((Join-Path $profile 'order.wnd'),$order,$unicode)
-Test-ManagedProfile $profile $portfolio 'Prop Ready installed profile'
+Test-ManagedProfile $profile $portfolio $profileValidationLabel
 # Preserve baseline on reruns; never clear terminal global-variable safety latches.
 if(-not(Test-Path -LiteralPath $statePath)){
     [void](New-Item -ItemType Directory -Path (Split-Path -Parent $statePath) -Force)
@@ -161,12 +220,12 @@ if(-not(Test-Path -LiteralPath $statePath)){
 }
 $commonIni=Join-Path $dataRoot 'config\common.ini'
 if(-not(Test-Path -LiteralPath $commonIni)){throw 'Cannot locate common.ini. Files installed, terminal NOT restarted.'}
-Copy-Item -LiteralPath $commonIni -Destination ($commonIni+'.prop-ready-backup-'+(Get-Date -Format 'yyyyMMdd-HHmmss'))
+Copy-Item -LiteralPath $commonIni -Destination ($commonIni+$profileBackupSuffix+(Get-Date -Format 'yyyyMMdd-HHmmss'))
 Set-IniValue $commonIni 'Experts' 'Enabled' '0'
 Set-IniValue $commonIni 'Experts' 'Account' '1'
 Set-IniValue $commonIni 'Charts' 'ProfileLast' $ProfileName
 [IO.File]::WriteAllText((Join-Path $profile 'DEPLOYMENT.txt'),
-    "Portfolio: Prop Ready 9 broker-neutral`r`nAccount: $login / $server / $currency`r`nPhase: $Phase`r`nReference: $initial; start UTC: $($reference.start_utc)`r`nRequested allocation: $RiskMode $RiskValue`r`nNasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNews: OFF; five ORBs: 0.5R; Algo Trading: OFF`r`n",[Text.UTF8Encoding]::new($false))
+    "Portfolio: $profileDeploymentLabel broker-neutral`r`nAccount: $login / $server / $currency`r`nPhase: $Phase`r`nReference: $initial; start UTC: $($reference.start_utc)`r`nRequested allocation: $RiskMode $RiskValue`r`nNasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNews: OFF; five ORBs: 0.5R; Algo Trading: OFF`r`n",[Text.UTF8Encoding]::new($false))
 Start-Process -FilePath $terminalPath -ArgumentList ('/profile:"'+$ProfileName+'"') -WindowStyle Hidden
 Write-Host "Installed $ProfileName. Review all nine charts and inputs; Algo Trading remains OFF."
 Write-Host 'Enable Algo Trading yourself only when satisfied. No orders were placed by this installer.'
